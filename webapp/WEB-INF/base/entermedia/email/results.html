@@ -1,0 +1,71 @@
+#set( $emailhome = $context.getContentProperty("emailhome"))
+$emailhome
+	<div style="text-align: left; padding-left: 20px; padding-top: 5px;">
+
+
+				#if ( $emailhits.totalPages == 0 )
+				
+				#elseif( $emailhits.totalPages == 1 )
+				
+				#elseif( $emailhits )
+
+							#set($thispage = $emailhits.getPage())
+							Page <b>$thispage</b> of $emailhits.totalPages
+							&nbsp;&nbsp;
+							
+							#if( $emailhits.prevPage() )
+							<a href="$home$content.path?page=$emailhits.prevPage()&foldername=$searcher.getFolderName()" ><b>&lt;&lt;  Back</a>
+							#end
+							
+							
+							#if ( $emailhits.nextPage() )
+							<a href="$home$content.path?page=$emailhits.nextPage()&foldername=$searcher.getFolderName()" ><b> Forward &gt;&gt; </a>
+							#end
+				#end
+			</div>
+#set( $details = $searcher.getDetailsForView("emailresults", $user) )
+ 
+<table width="100%">
+	
+	#foreach( $searchItem in $details)
+	#set( $inputed = "$!emailhits.getInput($searchItem.getId())")
+	<th >
+	${searchItem.getText()}
+	</th>
+	#end
+
+	#foreach ($hit in $emailhits.getPageOfHits())
+	#if ( $even == false )
+		<tr style="background-color: #EEEEEE;">
+		#set( $even = true )
+	#else
+		<tr>
+		#set( $even = false )
+	#end
+	
+	#foreach( $searchItem in $details)
+	<td>
+		#if($searchItem.isDate())
+		#set($value = $hit.get("$searchItem.id"))
+		$context.toDate($emailhits.toDate($value))
+		
+		#else
+		$!hit.get("$searchItem.id")
+		#end
+	</td>
+	#end
+	<td><a href="$home$emailhome/show/index.html?id=${hit.id}">View Notification</a></td>	
+	</tr>
+	#end
+</table>
+
+ <table width="100%">
+<tr>
+	<td  >Search Query: $!emailhits.searchQuery.toFriendly()
+	</td>
+	<td class="oe-module-actions" width="100">
+		<a href="$home/$applicationid/logs/export.csv?foldername=$searcher.getFolderName()" >CSV Export</a>
+	</td>
+	</tr>
+	</table>
+

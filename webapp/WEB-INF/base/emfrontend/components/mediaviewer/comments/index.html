@@ -1,0 +1,30 @@
+<div id="emcommentarea">
+<h2>[[Comments]]</h2>
+#if(!$comments)
+	#set($comments = $commentArchive.loadComments($asset))
+	$context.putPageValue("comments",$comments)
+#end
+
+$pages.include("${apphome}/components/mediaviewer/comments/list.html", $context)
+
+	#set($incrsize = $comments.size() + 1)
+	#if( $cancomment )
+		<form name="addcomment" class="ajaxform commentresizer" targetdiv="emcommentarea" action="${home}${apphome}/tools/mediaviewer/comments/addcomment.html" method="post">
+			<textarea id="commenttext" class="commentinput" name="comment"  initialtext="[[Add a comment]]" style="width:200px;height: 20px;">[[Add a comment]]</textarea> 
+			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
+			<input type="hidden" name="oemaxlevel" value="1"/>
+			<input type="hidden" name="catalogid" value="$catalogid"/>
+			<span id="commentsubmit" style="display:none;">
+			<input type="submit" value="[[save]]" />
+			</span>
+		</form>
+
+	#end	
+</div>
+#if(!$user)
+<p>[[You must be]] <a href="$home/$applicationid/authentication/login.html">[[logged in]]</a> [[to leave a comment]]</p>
+
+<br/>
+#end
+
+

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<page-action name="UserProfileModule.saveResultViewPreference" />
+	<permission name="view">
+		<boolean value="true"/>
+	</permission>
+</page>

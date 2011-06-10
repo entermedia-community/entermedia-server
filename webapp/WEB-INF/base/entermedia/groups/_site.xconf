@@ -1,0 +1,6 @@
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/userhomelayout.html</inner-layout>
+	<property name="matttabstabid">browse</property>
+	<property name="sectiontitle">Groups</property>
+	
+</page>

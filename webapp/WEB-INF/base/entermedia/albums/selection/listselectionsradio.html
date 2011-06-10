@@ -1,0 +1,20 @@
+#foreach( $col in $albumlist.getSelectionAlbums() )
+	#set($colSize = ${col.size($context)})
+	<div  style="margin-left: 30px;width:auto; padding: 2px;">
+		<input type="radio" name="albumid" value="$col.id">
+		<a style="display:inline;" target="_parent"
+		#if( $col.id == "1" )
+			href="$home/$applicationid/users/$user.id/albums/clipboards/share.html?albumid=$col.id">
+		#elseif( $col.id == "2" )
+			href="$home/$applicationid/users/$user.id/albums/clipboards/categorize.html?albumid=$col.id">		
+		#elseif( $col.id == "3" )
+			href="$home/$applicationid/users/$user.id/albums/clipboards/downloads.html?albumid=$col.id">
+		#else
+			href="$home/$applicationid/users/$user.id/albums/view/index.html?albumid=$col.id">
+		#end
+			<img src="$home$themeprefix/entermedia/images/navigation/selection${col.getId()}on.png"/>
+			$context.getText("selection$col.getId()") ($colSize)
+		</a>
+		</input>
+	</div>
+#end

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.View Catalog">
+    <value>View Catalog</value>
+    <value locale="es">Ver Catálogo</value>
+  </property>
+  <property name="text.Actions">
+    <value>Actions</value>
+    <value locale="es">Acciones</value>
+  </property>
+  <property name="text.Add New Asset">
+    <value>Add New Asset</value>
+    <value locale="es">Añadir un nuevo asseto</value>
+  </property>
+  <property name="text.View Orders">
+    <value>View Orders</value>
+    <value locale="es">Ver Pedidos</value>
+  </property>
+  <property name="text.View Download Report">
+    <value>View Download Report</value>
+    <value locale="es">Ver Descargar informe</value>
+  </property>
+  <property name="text.View Search Report">
+    <value>View Search Report</value>
+    <value locale="es">Ver informe de búsqueda</value>
+  </property>
+</page>

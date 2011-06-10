@@ -1,0 +1,20 @@
+	#foreach ($comment in $comments)
+		<div class="emcomment">
+		<span class="emcommentuser">$comment.user.shortDescription </span>	
+		<span class="emcommenttext">$comment.comment</span>
+		<span class="emcommentdate">$comment.getShortDate($context.locale)</span>
+			#if($caneditasset)
+				<div align="right">
+				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}/${catalogid}/detailviewer/comments/removecomment.html">
+					<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
+					<input type="hidden" name="commenttext" value="$comment.comment"/>
+					<input type="hidden" name="commentuser" value="$comment.user.userName"/>
+					<input type="hidden" name="commentdate" value="$comment.date.time"/>
+					<input type="hidden" name="catalogid" value="$catalogid"/>
+				</form>
+				<a href="#" onclick="jQuery('#removeComment${velocityCount}').submit();return false;">remove</a>
+				</div>
+			#end
+		</div>
+	#end
+

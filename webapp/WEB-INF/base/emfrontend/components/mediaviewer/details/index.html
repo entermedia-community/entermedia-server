@@ -1,0 +1,41 @@
+<div class="emdetailsbox">
+
+<h2>Details</h2>
+[[Uploaded]]
+#if( $asset.assetaddeddate )
+[[on]]	<span class="emdetaildate">$!context.getDate($asset.assetaddeddate)</span>
+#end
+
+#if( $asset.owner )
+[[by]] <a href="$home$apphome/users/${asset.owner}/index.html">$userManager.getScreenName($asset.owner)</a>
+#end
+
+#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+<span class="emdetailviews">
+#if( $views > 0 )
+[[has]] <a class="emdialog" href="$home$apphome/components/mediaviewer/views/index.html?foldername=/${asset.catalogid}/assetpreviewLog&field=sourcepath&sourcepath.value=$asset.sourcepath&operation=exact">$views views</a>
+#end
+</span>
+
+	<ul class="emdetailactions">
+#if( $cansocialshare )
+		<li class="emdetailsecureshare"><a class="emdialog" href="$home$apphome/components/share/secureshare.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=800&height=550"><img src="$home$themeprefix/images/buttons/email.png" /> Send link</a></li>
+		<li class="emdetailfacebook"><a class="emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=850&height=600"><img src="$home$themeprefix/images/buttons/facebooksm.png" alt="Share with social media sites"> Social Media</a></li>
+#end
+#if( $candownload )
+		<li class="emdetaildownload"><a href="$home$mediaarchive.asLinkToOriginal($asset)"><img src="$home$themeprefix/images/buttons/download.png" /> Download</a></li>
+#end
+#if( $canviewsettings )		
+		<li class="emdetaileditasset"><a href="$home/${asset.catalogid}/detailviewer/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId"><img src="$home$themeprefix/images/buttons/editasset.png" />[[Edit Metadata]]</a></li>
+#end		
+	</ul>
+
+	<div class="emdetailvotes">
+	<span id="assetVoteCount">
+			$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
+	</span>
+	</div>
+
+
+$pages.include("$apphome/components/mediaviewer/comments/mini.html",$context)
+</div>

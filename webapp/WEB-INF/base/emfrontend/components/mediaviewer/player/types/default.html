@@ -1,0 +1,17 @@
+#if (!$cell)
+	#set ($cell = $asset)
+#end
+
+#if (!$cell)
+	#set ($cell = $data)
+#end
+
+
+#set ($ext = $cell.fileformat)
+#set ($thumbend = "$mediaarchive.getThemePrefix()/entermedia/images/mimetypes/${ext}.gif")
+#if (!$pages.doesExist($thumbend))
+	#set ($thumbend = "$mediaarchive.getThemePrefix()/entermedia/images/mimetypes/missing.gif")
+#end
+<img 
+	#if($cell.caption) alt = "${cell.caption}" #else alt="${cell.name}" #end 
+	src="$home$thumbend" border="0">

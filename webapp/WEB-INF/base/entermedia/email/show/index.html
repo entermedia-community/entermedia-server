@@ -1,0 +1,8 @@
+#set( $searcher = $searcherManager.getSearcher(${catalogid}, "email" ))
+
+#set( $details = $searcher.getDetailsForView("emaildetails", $user) )
+
+<h1>[[Notification Details]]</h1>
+#foreach($detail in $details)
+<b>$detail.getText(): </b> $email.get($detail.id)<br>
+#end

@@ -1,0 +1,8 @@
+<page>
+	<property name="sectiontitle">
+		<value>System Events</value>
+	</property>
+	<property name="fallbackdirectory">/WEB-INF/base/entermedia/tools/events</property>
+	<property name="tab">events</property>
+	<property name="eventroot">/${applicationid}/settings/servermaintenance/events</property>
+</page>

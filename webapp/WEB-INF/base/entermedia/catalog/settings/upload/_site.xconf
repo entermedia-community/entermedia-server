@@ -1,0 +1,5 @@
+<page>
+   	<view-requirements>
+		<permission name="oe.edit.upload"/>
+	</view-requirements>
+</page>

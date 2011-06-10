@@ -1,0 +1,11 @@
+<page>
+
+	<property name="redirect">false</property>
+	<property name="virtual">true</property>
+	<property name="bidirectional">true</property>
+	<path-action name="RelatedAssetsModule.addRelatedAsset"/>
+	<path-action name="Admin.redirectToOriginal"/>
+	<permission name="view">
+		<pagevalue name="canrelateassets" equals="true"/>
+	</permission>
+</page>

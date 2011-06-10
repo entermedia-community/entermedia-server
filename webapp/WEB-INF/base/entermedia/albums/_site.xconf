@@ -1,0 +1,6 @@
+<page>
+	<property name="matttabstabid">albums</property>
+	<property name="sectiontitle">Postings</property>
+	<property name="nopadding">true</property>
+	<inner-layout>/${themeprefix}/entermedia/layouts/albumlist.html</inner-layout>
+</page>

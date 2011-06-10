@@ -1,0 +1,10 @@
+#
+#Tue Apr 27 17:03:39 EDT 2010
+Add\ $results.size()\ items\ to\ selected\ clipboard\:=add $ results.size () Elemente zur ausgew\u00E4hlten Zwischenablage\:
+Add=hinzuf\u00FCgen
+items\ to\ selected\ clipboard\:=Elemente zur ausgew\u00E4hlten Zwischenablage\:
+Ok=ok
+Clipboard=Zwischenablage
+Add\ Items\ to\ Selection=Items zur Auswahl hinzuf\u00C3\u00BCgen
+clipboard=Zwischenablage
+Adding=Hinzuf\u00FCgen

@@ -1,0 +1,8 @@
+<properties>
+  <property id="id" index="true" stored="true">Invite Id</property>
+  <property id="ownerid" index="true" stored="true">Owner ID</property>
+  <property id="email" index="true" stored="true">Email</property>
+  <property id="datesent" type="date" format="yyyy-MM-dd'T'HH:mm:ss.SSSZ" index="true" stored="true">Date Sent</property>
+  <property id="subject" index="true" stored="true" >Subject</property>
+  <property id="body" >Body</property> 
+</properties>

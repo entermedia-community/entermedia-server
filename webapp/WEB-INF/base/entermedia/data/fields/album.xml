@@ -1,0 +1,13 @@
+<properties>		
+	<property id="id" index="true" stored="true"  keyword="true"  >id</property>
+	<property id="name" index="true" stored="true" editable="true" keyword="true"  >Name</property>
+	<property id="details"  index="true" stored="true" editable="true" keyword="true"  >Details</property>
+	<property id="lastmodified" index="true" stored="true" type="date" format="yyyy-MM-dd HH:mm:ss Z">Last Modified</property>
+	<property id="private" index="true" stored="true" editable="true" type="boolean"  >Private</property>
+	<property id="owner" index="true" stored="true" editable="true" listid="user" listcatalogid="system" >Owner</property>
+	<property id="participants" index="false" >Participants</property>
+	<property id="lastcomment" index="true" stored="true">Last Comment</property>
+	<property id="lastcommentauthor" index="true" stored="true">Last Comment Author</property>
+	<property id="lastcommentdate" index="true" stored="true">Last Comment Dat</property>
+	<property id="status" index="true" stored="true">Status</property>
+</properties>

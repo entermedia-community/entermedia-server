@@ -1,0 +1,10 @@
+#set($currentcatalog = $context.getRequestParameter("currentcat"))
+#if(!$currentcatalog)
+	#set($currentcatalog = $catalogid)
+#end
+$context.putPageValue("currentcatalog", $currentcatalog)
+
+
+    	<div class="em-rounded">
+			$pages.include("$home$usermanagerhome/users/listusers.html")    
+     	</div>

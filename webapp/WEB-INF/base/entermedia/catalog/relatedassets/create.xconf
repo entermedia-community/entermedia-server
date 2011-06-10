@@ -1,0 +1,32 @@
+<page>
+	<path-action name="PageValue.loadPageVariable" bean="searcherManager" />
+
+	<property name="text.Create New Version">
+		<value>Create New Version</value>
+		<value locale="es">Crear Nueva Versión</value>
+	</property>
+	<property name="text.This will create a new related version of">
+		<value>This will create a new related version of</value>
+		<value locale="es">Esto creará una nueva versión de</value>
+	</property>
+	<property name="text.It will also create a relationship between these assets">
+		<value>It will also create a relationship between these assets</value>
+		<value locale="es">Y entonces creará una relación entre los dos versiones</value>
+	</property>
+	<property name="text.Version Type">
+		<value>Version Type</value>
+		<value locale="es">Tipo de Versión</value>
+	</property>
+	<property name="text.Description">
+		<value>Description</value>
+		<value locale="es">Descripción</value>
+	</property>
+	<permission name="view">
+		<not>
+			<or>
+				<pagevalue name="caneditasset" equals="false"/>
+				<pagevalue name="canrelateassets" equals="false"/>
+			</or>
+		</not>
+	</permission>
+</page>

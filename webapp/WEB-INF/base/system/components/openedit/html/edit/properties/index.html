@@ -1,0 +1,43 @@
+<form  method="post" 
+	action="$home/system/components/openedit/html/edit/seo/save.html" >
+	
+#set ( $editPath = $editorSession.getEditPath() )
+#set ( $origURL = $context.getRequestParameter("origURL") )
+<input name="editPath" type="hidden" value="$!editPath" />
+<input name="origURL" type="hidden" value="$!origlURL" />
+
+<div style="height: 400px;">
+
+<h2>File Properties: $editPage.path</h2>
+
+		#set( $revision = $pageManager.getLatestVersion($editPage.path) )
+		#if( $revision.author )	[[Last Edited By]]: $revision.author on 
+		#else
+		[[Last Edited]]:
+		#end	
+		$editPage.getLastModified("MM/dd/yy h:mm a") <br>	[[File Size]]: $filesize.inEnglish( $editPage.path )
+
+<h2>Fall Backs</h2>
+
+<table>
+#foreach( $fallback in $editPage.getPageSettings().getFallBacks() )
+	<tr>
+	<td>	$fallback.getParentFolder()/$editPage.getName()</td>
+	</tr>
+#end
+</table>
+
+<br>
+
+  <table class="oepropertiestable" >
+  	<tr>
+   	<td class="oetableleft">[[Editable]]</td>
+	<td  class="oetableright">
+		<input type="hidden" name="field" value="editable" />
+		<input type="checkbox" name="editable.value" #if( $editPage.get('editable') == "true")checked#end />
+	</td>  
+   </tr>   
+   </table>
+	
+</div>
+

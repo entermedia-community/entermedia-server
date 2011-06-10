@@ -1,0 +1,6 @@
+<page>
+	<property name="sectiontitle">
+    	<value>Authentication Report</value>
+  	</property>
+	<property name="tab">logins</property>
+</page>

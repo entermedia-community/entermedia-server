@@ -1,0 +1,16 @@
+#set( $node = $pageTree.treeRenderer.findNodeByUrl($pageTree.model.root, $editPage.path) ) 
+#set( $paths = $pageTree.model.getParentPaths($node.ID) )
+#if (!($canusecrumbs == false))
+<div  >	
+<table><tr>
+#set ($numcrumbs = 4)
+#foreach ($part in $paths)
+	#if ($paths.size() - $velocityCount < $numcrumbs)
+		#set( $name = $part.Name )
+		<td><a class="ajax" style="padding: 0 20px 3px 0;display:block;" targetdiv="allsections" href="$home$page.filerootpath/tab.html?path=$part.URL&oemaxlevel=1"><img style="vertical-align:bottom;" #if( $part.isLeaf() ) src="$home/${applicationid}/tools/images/tree/page.gif" #else src="$home/${applicationid}/tools/images/tree/folder.gif" #end  border=0  />$name</a></td>
+	#end
+#end
+</tr>
+</table>
+</div>
+#end

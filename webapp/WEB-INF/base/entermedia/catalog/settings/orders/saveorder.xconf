@@ -1,0 +1,4 @@
+<page>
+<path-action name="OrderModule.saveOrder"/>
+<inner-layout/>
+</page>

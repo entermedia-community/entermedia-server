@@ -1,0 +1,49 @@
+<h2>[[Edit Sync]]</h2>
+<form id="syncform" class="ajaxform" targetdiv="parent.synctool" style="text-align:right;" name="syncform" action="save.html">
+	<table>
+	<tr>
+		<td>
+			[[Sync Name]]:
+		</td>
+		<td>
+			<input name="name" #if($sync) value="$!sync.get('name')" #end/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			[[Account Name]]:
+		</td>
+		<td>
+			<input name="accountname" #if($sync) value="$!sync.get('accountname')" #end/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			[[Site URL]]:
+		</td>
+		<td>
+			<input name="siteurl" #if($sync) value="$!sync.get('siteurl')" #end/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			[[Exclude]]:
+		</td>
+		<td>
+			<input name="exclude" #if($sync) value="$!sync.get('exclude')" #end/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			[[Sync Path]]:
+		</td>
+		<td>
+			<input name="syncpath" #if($sync) value="$!sync.get('syncpath')" #end/>
+		</td>
+	</tr>
+	
+	</table>
+<input type="hidden" name="syncid" value="$!sync.get('id')"/>
+<input type="hidden" name="applicationid" value="$applicationid"/>
+<input type="button" onclick="jQuery('#syncform').submit();" value="[[Save]]"/>
+</form>

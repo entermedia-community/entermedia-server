@@ -1,0 +1,67 @@
+<div class="emsectionheader">
+	<h3>Folders</h3>
+</div>	
+
+#if ($querylist && $querylist.size() > 0)
+#set ($rows = $querylist.getPageInRows(2))
+
+#set( $reporttype = $context.getRequestParameter("reporttype"))
+<div class="subcolumns" style="white-space:nowrap;">   
+
+#foreach($row in $rows )
+
+#set($item1 = $row.get(0))
+#set ($reporttype1 = $item1.getId() )
+
+#if($row.size() > 1)
+	#set($item2 = $row.get(1))
+	#set ($reporttype2 = $item2.getId() )
+#else
+	#set($item2 = "")
+#end
+	<div class="c50l">
+		<div class="subcl" >
+		<div class="folderlink#if( $reporttype && $reporttype1 == $reporttype) selectedfolder#end" >	
+			<a href="$home$apphome/views/search/reports/runsavedsearch.html?queryid=$item1.id&searchtype=asset&reporttype=$reporttype1">
+			<span>$item1.getName()</span></a>
+		</div>
+					
+		</div>
+	</div>
+	#if($item2 && $item2 != "")
+	<div class="c50r">
+		<div class="subcr">
+			<div class="folderlink#if( $reporttype && $reporttype2 == $reporttype) selectedfolder#end" >	
+					<a href="$home$apphome/views/search/reports/runsavedsearch.html?queryid=$item2.id&searchtype=asset&reporttype=$reporttype2">
+					<span>$item2.getName()</span></a>
+				</div>
+		
+		</div>
+	</div>
+	#end
+#end
+
+	<div class="c50l">
+		<div class="subcl" >
+		<div class="folderlink#if( $reporttype && "recentlyordered" == $reporttype) selectedfolder#end" >	
+			<a href="$home$apphome/views/search/reports/assetsrecentlyordered.html?reporttype=recentlyordered">
+			<span>Recently Ordered</span></a>
+		</div>
+					
+		</div>
+	</div>
+	<div class="c50r">
+		<div class="subcr">
+		<div class="folderlink#if( $reporttype && "recentlyviewed" == $reporttype) selectedfolder#end" >	
+				<a href="$home$apphome/views/search/reports/assetsrecentlyviewed.html?reporttype=recentlyviewed">
+				<span>Recently Viewed</span></a>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+#else
+<p>No saved searches found.</p>
+#end

@@ -1,0 +1,45 @@
+
+<br/>
+#if ($querylist && $querylist.size() > 0)
+<table cellpadding=0 cellspacing=0 border=0  class="striped">
+<tr>
+	<th>[[Query]]&nbsp;</th>
+	<th>[[Description]]&nbsp;</th>
+	<th></th>
+	
+</tr>  
+#foreach($query in $querylist)
+
+      #set( $asset = $item.getAsset() )
+	<tr>
+	  <td>
+	    $context.putPageValue("query", $query)
+       $pages.include("/${applicationid}/components/searchbuilder/friendly.html", $context)
+     
+	   </td>
+      <td>
+     $query.getName()
+      	
+	   </td>
+    
+      
+      	<td align="center">
+				<a href="$home/${applicationid}/components/savedqueries/runsavedquery.html?queryid=$query.id&searchtype=asset">[[Execute this query]]</a>	
+      		#if( $canrssfeed)	
+      			| <a href="$home/${applicationid}/components/savedqueries/rss/${query.id}.rss"><img src="$home${themeprefix}/entermedia/images/rss.gif" alt="RSS"/></a> 
+			#end
+				#if($caneditsavedquery)
+					 | <a	href="$home/${applicationid}/components/savedqueries/delete.html?id=${query.id}&catalogid=${applicationid}">[[Delete Query]]</a>			
+				#end
+      	</td>
+
+      	#end
+    
+</tr>
+</table>
+#else
+<p>No saved queries found.</p>
+#end
+#if($hits)
+<a href="$home/${applicationid}/components/savedqueries/savequery.html?hitssessionid=$hits.sessionId&catalogid=${catalogid}">Save this search</a>
+#end

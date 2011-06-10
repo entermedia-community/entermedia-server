@@ -1,0 +1,33 @@
+<linktree>
+	<a href="/${applicationid}/index.html" userdata="index" id="index" text="Home">
+		<a href="/${catalogid}/admin/index.html"  id="admin" text="Archive Admin" />
+		<a href="/${catalogid}/categories/index.html" id="categories" text="Categories" />
+		<a href="/${catalogid}/voting/index.html"  id="voting" text="Voting" />
+	
+		<a id="assetactions" >
+			<a href="/${catalogid}/detailviewer/viewer/index.html" id="viewmediaviewer" text="Media Viewer" />
+			<a href="/${catalogid}/detailviewer/generalinformation/index.html" id="metadatadetails" text="Asset Metadata" userdata="multi" />
+			<a href="/${catalogid}/detailviewer/categorize/index.html"  id="editassetcategories" text="Categories / Tags" userdata="multi"/>		    	
+			<a href="/${catalogid}/detailviewer/permissions/index.html" id="assetpermissions" text="Custom Permissions"/>
+			<a href="/${catalogid}/detailviewer/attachments/index.html" id="viewattachments" text="Attachments" />
+			<a href="/${catalogid}/detailviewer/edit/index.html"  id="viewassetedit" text="Media Editor" />
+			<a href="/${catalogid}/detailviewer/fatwire/index.html"  id="fatwireexport" text="Fatwire"/>
+			<a href="/${catalogid}/detailviewer/downloads/index.html"  id="viewassetdownloads" text="Download Links" />		    	
+			<a href="/${catalogid}/detailviewer/comments/index.html"  id="comment" text="View Comments" />
+			<a href="/${catalogid}/detailviewer/map/index.html"  id="map" userdata="multi" text="Geo Location Info" />		    	
+			<a href="/${catalogid}/detailviewer/historydownloads/index.html"  id="viewassetdownloadhistory" text="Download History" />
+			<a href="/${catalogid}/detailviewer/historyedits/index.html"  id="viewassetedithistory" text="Data Edit History" />
+			<a href="/${catalogid}/detailviewer/historypreviews/index.html"  id="viewassetpreviewhistory" text="Preview History" />
+			<a href="/${catalogid}/detailviewer/historyorders/index.html"  id="viewassetorderhistory" text="Order History" />
+					    	
+			<a href="/${catalogid}/detailviewer/delete/index.html"  id="deleteasset" userdata="multi" text="Remove Asset" />
+<!-- 
+			<a href="/${catalogid}/detailviewer/edithistory/index.html"  id="viewassetedithistory" text="Edit History" />	
+			<a href="/${catalogid}/detailviewer/approvals/index.html"  id="viewassetdownloads2" text="Approvals" />    	
+			<a href="/${catalogid}/detailviewer/voting/showvotes.html"  id="assetviewvotes" text="View Likes" />	
+			HQ printing?
+ -->
+
+		</a>	
+	</a>
+</linktree>

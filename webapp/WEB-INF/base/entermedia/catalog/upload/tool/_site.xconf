@@ -1,0 +1,5 @@
+<page>
+	<property name="uploaderpath">/${catalogid}/upload/multiupload</property>
+	<property name="appletserial">2010010706</property>
+	<property name="oemaxlevel">1</property>
+</page>

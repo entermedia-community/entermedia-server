@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<settingsgroups>
+  <settingsgroup id="administrator" name="Administrators" upload="true" viewupload="true" assetadmin="true" vieworders="true" viewsettings="true" profilesearchfilters="hideassettype">Administrators</settingsgroup>
+  <settingsgroup id="guest" name="Guests" viewupload="" assetadmin="partial" viewassets="true" vieworders="" viewsettings="" profilesearchfilters="hideassettype">Guests</settingsgroup>
+</settingsgroups>

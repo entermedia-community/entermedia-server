@@ -1,0 +1,3 @@
+<plugin projectname="entermedia-server">
+	<depend>entermedia</depend>
+</plugin>

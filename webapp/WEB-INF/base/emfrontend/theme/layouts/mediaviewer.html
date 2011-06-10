@@ -1,0 +1,32 @@
+#if( $asset )
+<table width="100%">
+<tr>
+<td id="emplayerplayer" >
+	<div class="emrounded"><h4><br></h4>
+	<div class="emroundedbody">
+	<div class="embox">
+		$pages.include("/${applicationid}/components/mediaviewer/player/index.html",$context)
+	</div>	
+	</div>	
+	</div>	
+</td>
+<td id="emviewerdetails" >
+	<div class="emrounded"><h4><br></h4>
+	<div class="emroundedbody">
+	<div class="embox">
+	$pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
+	</div>	
+	</div>	
+	</div>	
+</td></tr></table>
+#end
+<div id="emplayerresults" >
+	<div class="emrounded"><h4><br></h4>
+	<div class="emroundedbody">
+	<div class="embox">
+	$pages.include("/${applicationid}/components/results/mini.html",$context)
+	</div>	
+	</div>	
+	</div>	
+
+</div>

@@ -1,0 +1,119 @@
+#set( $root = "$home$apphome/components/upload/types/dragsync")
+#set($catalogid = $context.getRequestParameter("uploadcatalog"))
+#set($path = "/${catalogid}/temp/uploading/${user.getUserName()}")
+
+<table>
+<tr>
+<td width="190" style="padding-top: 53px;">
+<div class="em-rounded"  >
+<div class="emsectionheader"  ><h3>[[Drag Files Below]]</h3></div>
+<APPLET code="org.openedit.sync.DropBoxFilePickerApplet"
+	width="190" height="280" MAYSCRIPT
+	archive="$home/system/openedit-upload.jar?v=$context.findValue('appletserial')">
+	<PARAM name="showdialog" value="false"/>
+	<PARAM name="dropimagepath" value="$home$themeprefix/images/dragdropbox.jpg"/>
+	<PARAM name="draglabel" value=""/>
+	<PARAM name="pickerlabel" value="[[Pick Files]]"/>
+	<PARAM name="bgcolor" value="$page.bgcolor"/>
+</APPLET>
+</div>
+
+</td>
+<td style="padding-left: 10px;">
+
+#set( $action = $context.getRequestParameter("action"))
+#if( !$action )
+#set( $action =	"/$applicationid/views/upload/finish.html" )
+#end
+
+<form name="uploadwizard" id="uploadwizard"  method="post" target="_top" action="$home$action" >
+
+<input type="hidden" name="catalogid" value="$!catalogid"/>
+<input type="hidden" name="searchtype" value="$page.searchtype"/>
+
+<div class="enabledwithpick">
+<ul class="embuttons">
+<li><a href="#" onclick="document.uploadwizard.submit()"><span>Upload</span></a></li>
+</ul>
+
+		<table id="emfilelist" style="width: 700px;" class="emresultscontent">
+				<tr id="tableheader">
+					<th class="firstheader" ></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th  class="lastheader" > Asset Type</th>
+				</tr>
+				<tbody>
+				</tbody>
+		</table>
+
+</div>
+
+<!-- Fields pointing to files go here -->
+<div id="uploadforminsertionpoint" > </div>
+		<input type="hidden" name="hitsname" value="hits" />
+		<input type="hidden" name="field" value="assettitle" />
+		<input type="hidden" name="field" value="assettype" />
+		<input type="hidden" name="field" value="editstatus" />
+</form>
+</td>
+</tr>
+</table>
+
+<script type="text/javascript">
+		var oktosubmit = false;
+		var queuecompleted = false;
+		var idcounter = 0;
+addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
+{
+	var inserthere = jQuery("#uploadforminsertionpoint");
+	//inserthere.empty();
+
+	var names = innames.split(";");
+	var localpaths = inlocalpaths.split(";");
+	var parentpaths = inparentpaths.split(";");
+	var sizes = insizes.split(";");
+	
+	for( var i=0;i<names.length;i++)
+	{
+		/*
+		var newField = "<input type='hidden' name='localfilepath' value='" + pathsa[i] +"' />";
+		inserthere.append(newField);
+
+		var newFieldP = "<input type='hidden' name='parentpath' value='" + parentsa[i] +"' />";
+		inserthere.append(newFieldP);
+
+		var newFieldSize = "<input type='hidden' name='filesize' value='" + sizea[i] +"' />";
+		inserthere.append(newFieldSize);
+		*/
+	    queuecompleted = false;
+		try 
+		{
+			var link = "$root/uploadrow.html";
+			
+			jQuery.ajax(
+			{
+			   type: "POST",
+			   url: link,
+			   async: false,
+			   data: "id=" + idcounter + "&name=" + names[i] + "&localpath=" + localpaths[i] + "&parentpath=" + parentpaths[i] + "&size=" + sizes[i],
+			   success: function(html)
+			   {
+			   		idcounter++;
+					jQuery("#emfilelist > tbody:last").append(html);
+					//swfu.startUpload(file.id);
+					jQuery(".enabledwithpick").css("visibility","visible");			   
+			   }
+			 });
+		}
+		catch (ex) 
+		{
+			alert( ex);
+		}
+	}
+}
+
+function removeUpload(inId) 
+		{
+			jQuery("#emfilelist #row" + inId).html("");			
+		}	   
+
+</script>
+

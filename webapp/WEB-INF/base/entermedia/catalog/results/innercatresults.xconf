@@ -1,0 +1,8 @@
+<page>
+	<page-action alltypes="true" name="AlbumModule.loadAlbum"/>
+	<page-action name="DataEditModule.loadPageOfSearch" />
+	<page-action name="DataEditModule.changeSort" />
+	<page-action name="DataEditModule.addChildQuery" />
+  	<page-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<inner-layout/>
+</page>

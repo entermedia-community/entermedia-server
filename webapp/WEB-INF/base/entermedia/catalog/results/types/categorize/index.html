@@ -1,0 +1,23 @@
+$context.putPageValue("showactions", true)
+$context.putPageValue("showselections", false)
+
+#if ($hits && $hits.size() > 0)
+
+$pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
+
+##$pages.include("$cataloghome/results/actionsmenu.html", $context)
+
+<div id="resultscontent_$catalogid">
+	$pages.include("${cataloghome}/results/navigate/navigate.html", $context)
+	<table cellpadding=0 cellspacing=0 border=0 width="100%" class="striped">
+	#if ( $hits && $hits.size() > 0 )
+		#foreach( $hit in $hits.getPageOfHits() )
+		    #set( $asset = $mediaarchive.getAssetBySourcePath($hit.sourcepath))
+			$context.putPageValue("asset", $asset)
+			$context.setRequestParameter("sourcepath", $asset.sourcepath)	
+			$pages.include("${cataloghome}/results/types/categorize/row.html", $context)
+		#end
+	#end
+	</table>
+</div>	
+#end	

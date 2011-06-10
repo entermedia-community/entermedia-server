@@ -1,0 +1,15 @@
+#if($order.sharenote)
+$order.sharenote
+
+Access to these files will expire on $expiresformat.format($expiresondate)
+#else
+
+Assets were shared with you.  Review below:
+<br/>
+<a href="$context.siteRoot$home/visualdata/views/activity/download/index.html?orderid=$order.id">View</a><br/><br/>
+
+
+<br/>
+
+
+#end

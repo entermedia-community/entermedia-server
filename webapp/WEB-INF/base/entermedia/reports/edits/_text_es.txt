@@ -1,0 +1,4 @@
+#
+#Tue Apr 27 12:22:45 CLT 2010
+Search=Buscar
+Record\ Edit\ Report=Reporte de Edici\u00F3n de Registros

@@ -1,0 +1,10 @@
+#
+#Thu Aug 12 21:22:30 EDT 2010
+Sites=Sitios
+Assets=Art\u00EDculos
+Log\ In=Entrar
+Home=Inicio
+Settings=Preferencias
+Add\ Media=Agregar Media
+Log\ Out=Salir
+Collections=Colecciones

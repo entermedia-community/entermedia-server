@@ -1,0 +1,53 @@
+<beans>
+
+
+<bean id="relatedassetSearcher" bean="xmlFileSearcher" /> 
+	<bean id="publishqueueSearcher" bean="xmlFileSearcher"/>
+
+
+<!--  Old? -->
+	<bean id="assetThesaurusSearcher" bean="thesaurusSearcher"/>
+	<bean id="usagehistorySearcher" bean="xmlFileSearcher"/>
+	<bean id="assetalbumsSearcher" bean="xmlFileSearcher"/>
+	<bean id="conversionSearcher" bean="xmlFileSearcher"/>
+	<bean id="publishSearcher" bean="xmlFileSearcher"/>
+	<bean id="productArchive" bean="assetXmlProductArchive" /> 
+    <bean id="catalogImportConverter" bean="assetCompositeConverter" /> 
+    <bean id="productThesaurusSearcher" bean="thesaurusSearcher" /> 
+
+
+	<bean id="campaigntableSearcher" bean="xmlFileSearcher" />
+	<bean id="expirationsSearcher" bean="xmlFileSearcher" />
+	<bean id="assetstatesavailableSearcher" bean="xmlFileSearcher" /> 
+  	<bean id="assetstatesunavailableSearcher" bean="xmlFileSearcher" /> 
+  	<bean id="assetstatesSearcher" bean="xmlFileSearcher" /> 
+  	<bean id="assetzonesavailableSearcher" bean="xmlFileSearcher" /> 
+  	<bean id="assetzonesunavailableSearcher" bean="xmlFileSearcher" /> 
+  	<bean id="assetzonesSearcher" bean="xmlFileSearcher" /> 
+    <bean id="reviewersSearcher" bean="xmlFileSearcher" /> 
+  	<bean id="specialrestrictionsSearcher" bean="xmlFileSearcher" /> 
+  	<bean id="timingtableSearcher" bean="xmlFileSearcher" /> 
+    <bean id="assetvotesSearcher" bean="xmlFileSearcher" />
+	    
+    <!-- Not Needed -->
+    <!--  
+	    <bean id="afoSearcher" bean="xmlFileSearcher" /> 
+		<bean id="agentSearcher" bean="xmlFileSearcher" />  
+		<bean id="filingnumberSearcher" bean="xmlFileSearcher" />  
+		<bean id="insertSearcher" bean="xmlFileSearcher" /> 
+	  	<bean id="orderingcostSearcher" bean="xmlFileSearcher" /> 
+	  	<bean id="orderingSearcher" bean="xmlFileSearcher" /> 
+	  	<bean id="orderingunitsSearcher" bean="xmlFileSearcher" /> 
+	  	<bean id="productioninformationsSearcher" bean="xmlFileSearcher" /> 
+	  	<bean id="productorderableplatformsSearcher" bean="xmlFileSearcher" /> 
+	 	<bean id="variabletextSearcher" bean="xmlFileSearcher" /> 
+		<bean id="vpaSearcher" bean="xmlFileSearcher" /> 
+		<bean id="productorderableplatformsavailableSearcher" bean="xmlFileSearcher" /> 
+		<bean id="productorderableplatformsunavailableSearcher" bean="xmlFileSearcher" /> 
+	-->  
+   
+   
+   
+   
+  
+</beans>

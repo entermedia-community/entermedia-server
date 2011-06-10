@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="MultiSearchModule.loadCurrentQuery"/>
+	<property name="titleprefix">Save New</property>
+	<property name="text.Create New Saved Search Query">
+		<value>Create New Saved Search Query</value>
+		<value locale="es">Crear nueva Búsqueda Guardada</value>
+	</property>
+	<property name="text.Search criteria was">
+		<value>Search criteria was</value>
+		<value locale="es">El criterio de búsqueda fue</value>
+	</property>
+	<property name="text.Name of this search">
+		<value>Name of this search</value>
+		<value locale="es">Nombre de esta búsqueda</value>
+	</property>
+	
+</page>

@@ -1,0 +1,9 @@
+<page>
+	<property name="fallbackdirectory">/${applicationid}/components/search</property>
+	<property name="searchtype">assettype</property>
+	<property name="searchhome">/${applicationid}/views/settings/assettypes</property>
+	<property name="showsearch">false</property>
+	<property name="showactions">true</property>
+	<property name="tab">assettypes</property>
+	
+</page>

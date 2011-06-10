@@ -1,0 +1,51 @@
+<div id="emalbumcontent">
+
+#foreach( $albumhit in $albums )
+	#set( $album = $entermedia.albumSearcher.getAlbum($albumhit.id,$albumhit.owner) )
+	
+	#if($currentyear)
+		#if(!$album.lastmodified.startsWith($currentyear))
+			#set($currentyear = $album.lastmodified.substring(0,4))
+			</ul>
+			<div style="clear: both"> </div>
+			<h2>$currentyear</h2>
+			<ul class="emthumbnails">
+		#end	
+	#else
+		#set($currentyear = $album.lastmodified.substring(0,4))
+		<h2>$currentyear</h2>
+		<ul class="emthumbnails">
+	#end
+
+	<li  class="emthumbnail">	
+	#set( $albumlink = "$home/${applicationid}/users/$album.owner/albums/$album.id/index.html" )
+	#set( $hit = false )
+	
+	
+#set( $items = $album.getAlbumItems($context) )
+
+##check and see if the logged in user is a friend of the owner
+#if($isfriend || $autofriend || $owner.id == $user.id)
+<a href="$albumlink"> 
+#end
+#set($thumb = false)
+#set( $thumb = $album.loadThumbData($context) )
+#if( $thumb )
+$pages.include("$thumb", $context)
+
+		<h4>[[$album.name]]</h4>
+		<div class="emh2sub">[[$album.size($context) photos posted by $userManager.getScreenName($album.owner)]]</div>
+#else
+<img src="$home$themeprefix/entermedia/images/mimetypes/missing.gif" />
+		<h4>[[$album.name]]</h4>
+		<div class="emh2sub">[[new album created by $userManager.getScreenName($album.owner)]]</div>
+#end
+#if($isfriend || $owner.id == $user.id)
+		</a>
+#end
+		
+	</li>
+#end
+</ul>
+</div>
+<div style="clear: both"> </div>

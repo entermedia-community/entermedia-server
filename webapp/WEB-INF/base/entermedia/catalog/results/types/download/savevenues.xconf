@@ -1,0 +1,5 @@
+<page>
+	<property name="virtual">true</property>
+	<page-action name="AssetEditModule.saveSelectionProperties"/>
+	<page-action name="Admin.redirectToOriginal"/>
+</page>

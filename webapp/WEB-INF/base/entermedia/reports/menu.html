@@ -1,0 +1,150 @@
+#set($reportshome = "$home/$applicationid/reports")
+<div>
+  <b class="spiffy">
+  <b class="spiffy1"><b></b></b>
+  <b class="spiffy2"><b></b></b>
+  <b class="spiffy3"></b>
+  <b class="spiffy4"></b>
+  <b class="spiffy5"></b></b>
+  <div class="spiffyfg">
+		#set($tab = $content.getProperty("tab"))
+		<div class="catalogs_menu_item">
+			#if($tab == "downloads")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+  			
+			<a href="$reportshome/downloads/index.html"><img src="$home$themeprefix/entermedia/images/settings/clearinvalidassets.png">[[Asset Downloads]]</a>	
+			
+			#if($tab == "downloads")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+			
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "usersearches")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$reportshome/searches/index.html"><img src="$home$themeprefix/entermedia/images/settings/viewusagereports.png">[[Asset Searches]]</a>
+			
+			#if($tab == "usersearches")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "useredits")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$reportshome/edits/index.html"><img src="$home$themeprefix/entermedia/images/settings/changetheme.png" >[[Asset Edits]]</a>
+			#if($tab == "useredits")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "logins")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+  					<div class="spiffyfgthree">
+  			#end		
+			<a href="$reportshome/logins/index.html"><img src="$home$themeprefix/entermedia/images/settings/security.png">[[User Authentication]]</a>
+			#if($tab == "logins")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "datalogs")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+  					<div class="spiffyfgthree">
+  			#end		
+			<a href="$home/$applicationid/settings/logs/index.html"><img src="$home$themeprefix/entermedia/images/settings/viewdatalogs.png">[[Data Logs]]</a>
+			#if($tab == "datalogs")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_settings">
+	  		<a href="$home/$applicationid/settings/index.html" ><span>[[Settings]]</span></a>
+		</div>
+  </div>
+
+  <b class="spiffy">
+  <b class="spiffy5"></b>
+  <b class="spiffy4"></b>
+  <b class="spiffy3"></b>
+  <b class="spiffy2"><b></b></b>
+  <b class="spiffy1"><b></b></b></b>
+</div>
+

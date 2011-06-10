@@ -1,0 +1,81 @@
+<div class="textheader TEXTHEADER" >[[Reports]] -  #if($hits)$!hits.searchQuery.name #end</div>
+
+
+
+<table cellpadding=0 cellspacing=0 width="100%">
+<tr>
+
+<td valign=top class="catalogtreeborder SIDEMENU" width="220px">
+
+
+
+<form name="search" method="post" action="$home/${applicationid}/components/savedqueries/runreport.html">
+$context.putPageValue("hits",$hits)	
+$context.putPageValue("searcher",$searcher)	
+$context.putPageValue("view","reportsearch")	
+#set( $details = $searcher.getDataProperties("reportsearch",$user) )
+$context.putPageValue("details",$details)	
+<div class="oesearchformflat">
+$pages.include("/${applicationid}/components/xml/fieldsearch.html",$context)
+#set( $hits = $hits)
+			<input type="submit" value="[[Run Report]]" />
+	</div>
+</form>
+</td>
+<td valign="top" style="padding-left: 10px;">
+<table width="100%" cellpadding="0" cellspacing="0" >
+	<tr><td>
+	<div class="textheader TEXTHEADER" >[[Results]] </div>	
+<a href="$home/${applicationid}/components/savedqueries/report/export.csv">[[Download Report]]</a>
+#if($caneditsavedquery)
+| <a href="$home/${applicationid}/components/savedqueries/savequery.html?id=bob">[[Save As New Report]]</a>
+
+#end
+	</td><td width="50%">&nbsp;</td>
+	
+	<td nowrap>
+		<form  action="$home$content.path" style="margin-bottom:0;padding-right:15px;" target="_parent" name="changesort"  valign="middle">
+		<input type="hidden" name="oe-action" value="StoreSearchModule.changeSort" />
+		[[Sort by]]: <select name="sortby" onchange="document.changesort.submit()"><option value=""></option>
+			#foreach( $searchItem in $archive.getDataProperties("orderby") )
+			<option value="${searchItem.getId()}Up" #if( $hits.getOrdering() && $hits.getOrdering() == "${searchItem.getId()}Up" ) selected #end >${searchItem.getText($context)}#if($searchItem.isDate()) [[[Oldest First]]] #else [[[A-Z]]]#end</option>
+			<option value="${searchItem.getId()}Down" #if( $hits.getOrdering() && $hits.getOrdering() == "${searchItem.getId()}Down" ) selected #end >${searchItem.getText($context)}#if($searchItem.isDate()) [[[Newest First]]] #else [[[Z-A]]]#end</option>
+			#end
+			<option value="random" #if( $hits.getOrdering() && $hits.getOrdering() == "random" ) selected #end >[[Random]]</option>			
+			</select> 
+		</form>
+	</td>
+	<td nowrap>
+<!--
+		<form action="$home/${applicationid}/tools/search/changehits.html" style="margin-bottom:0;" target="_parent" name="changeview"  valign="middle">
+		<input name="origURL" type="hidden" value="${applicationid}//search/results.html"/>
+		[[Show]] <select name="count" onchange="this.form.submit()">
+			#foreach( $item in $store.getProperties("hitcount") ) 
+			
+			<option value="$item.id" #if( $item.id == "$archive.getHitsPerPage()" ) selected #end>$item</option>
+			#end
+		</select> [[items per page]]
+		</form>
+-->
+    </td>
+</table>
+
+<div class="ERROR">$!hits.getInput("error")</div>
+
+<div id="navigationrow">
+
+$pages.include("/${applicationid}/tools/results/navigate.html", $context)		
+</div>
+<p>[[Total Hits]]: $hits.size() </p>
+$pages.includeContent()
+
+
+
+</td>
+</tr>
+</table>
+
+
+
+
+

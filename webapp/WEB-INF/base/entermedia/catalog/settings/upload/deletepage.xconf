@@ -1,0 +1,5 @@
+<page>
+    <property name='virtual'>true</property>
+	<path-action name="Page.deletePage" />
+	<path-action name="Admin.redirectToOriginal" />
+</page>

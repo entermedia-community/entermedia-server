@@ -1,0 +1,8 @@
+<page>
+	<path-action name="DataEditModule.removeFromView" />
+		<path-action name="Script.run" >
+		<script>./export.groovy</script>
+	</path-action>
+			
+	
+</page>

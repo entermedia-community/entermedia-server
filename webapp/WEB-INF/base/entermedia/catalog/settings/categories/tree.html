@@ -1,0 +1,47 @@
+#set( $category = $storeeditor.currentCatalog )
+<script type="text/javascript">
+storeAdminCatalogTree = new Object();
+storeAdminCatalogTree.lastselected = "";
+storeAdminCatalogTree.name = "storeAdminCatalogTree";
+
+subtab = "$content.subtab";
+
+setTreeSubTab = function(inTab)
+{
+	subtab = inTab;
+}
+
+storeAdminCatalogTree.jumpToNode = function(inUrl, inNodeId)
+{
+	this.selectRow( inNodeId );
+	jQuery("#"+this.name + "treerow" + inNodeId).load( '$home/$content.catalogid/settings/categories/tree/select.html',{nodeID: inNodeId, path: inUrl, origURL: "$content.path" });
+	var openpath = "$home/$content.catalogid/settings/categories/index.html";
+	jQuery("#"+"categoryeditor").load( openpath,{oemaxlevel: 1,categoryid:inNodeId, origURL: "$content.path" });
+	return false;
+}
+storeAdminCatalogTree.toggleNode = function(inUrl, inTreeId, inNodeId)
+{
+	jQuery("#"+this.name + "treerow"+inNodeId).load( '$home/$content.catalogid/settings/categories/tree/toggle.html',{nodeID: inNodeId, treeid: inTreeId, origURL: "$content.path" });
+	return false;
+}
+storeAdminCatalogTree.jumpAndOpenNode = function(inUrl, inTreeId, inNodeId)
+{
+	//this.toggleNode(inUrl,inTreeId,inNodeId);
+	this.jumpToNode(inUrl, inNodeId);
+	return false;
+}
+storeAdminCatalogTree.selectRow = function( inNodeId )
+{
+	if( this.lastselected.length > 0 )
+	{
+		jQuery("div.dtree .dTreeNodeSel").removeClass("dTreeNodeSel");
+		jQuery("#" + this.name + "treeitem" + inNodeId).addClass("dTreeNodeSel");
+	}
+	this.lastselected = inNodeId;
+}
+</script>
+<link rel="stylesheet" type="text/css" href="$home$themeprefix/entermedia/styles/dtree.css">
+<div class="oelist-box" style="overflow:auto;height:300px;">
+	$pages.include("/${catalogid}/settings/categories/tree/tree.html" )	
+</div>
+

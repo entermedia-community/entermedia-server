@@ -1,0 +1,68 @@
+<script type="text/javascript">
+updateRelatedAssetId = function ()
+{
+	var selected = document.getElementById("id.value");
+	var target = document.getElementById("relatedtoassetid");
+	target.value = selected.value;
+	return true;
+}
+</script>
+
+<h2>[[Create a relationship to an existing item]]</h2>
+
+#if( $pages.canView("${page.directory}/relate.xconf") )
+<p>[[This will create a relationship between]] $asset [[and the selected version]].</p>
+
+<form name="edittypes" method="post" action="$home/system/data/list/index.html">
+	<input type="hidden" name="catalogid" value="${catalogid}"/>
+	<input type="hidden" name="searchtype" value="datatype"/>
+	<input type="hidden" name="origURL" value="${page.path}?assetid=$asset.id"/>
+</form>
+
+<form name="relateassets" 
+	action="$home$cataloghome/relatedassets/relate.html"
+	onsubmit="javascript:updateRelatedAssetId();">
+
+<table>
+	<tr>
+		<td>[[Search for existing item]]</td>
+		<td>
+			#set( $args = "view=normalsearch&fieldname=id&catalogid=${catalogid}&searchtype=asset&searchinputfield=description&useid=true")
+			
+			$pages.include("/${applicationid}/components/xml/dropdownlist.html?$args", $context)
+			<input type="hidden" name="assetid" value="$asset.id"/>
+			<input type="hidden" name="parentrelationship" value="original"/>
+			<input type="hidden" name="origURL" value="$cataloghome/relatedassets/index.html?assetid=$asset.id"/>
+			<input type="hidden" name="redirect" value="false"/>
+			<input type="hidden" id="relatedtoassetid" name="relatedtoassetid" value=""/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			#set( $types = $mediaarchive.getProperties('datatype') ) 
+			[[Version Type]]:
+		</td>
+		<td>
+			<select name="type" id="type">
+			#foreach($type in $types)
+				 <option value="$type.id">$type</option>
+			#end
+			</select>
+			<a href="#" onclick="javascript:document.edittypes.submit(); return false;">
+			edit
+			</a>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			<input type="submit" name="Create" value="[[Ok]]"/>
+		</td>
+	</tr>
+</table>
+</form>
+
+#else
+
+	<p>You don't have permission to relate this asset.</p>
+#end

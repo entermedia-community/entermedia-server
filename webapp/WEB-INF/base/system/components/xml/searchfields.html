@@ -1,0 +1,50 @@
+##requires $details  //List of Detail
+##requires $hits //Gets input from that
+##requires $searcher //used to get the catalogid and searcherManager
+<table>
+#foreach( $searchItem in $details)
+	#set($inputed = false)
+	#set( $inputed = $hits.getInput($hits.searchQuery.getTerm($searchItem.id).id) )
+	#if( !$inputed )
+		#set( $inputed = "$!hits.getInput($searchItem.getId())")
+	#end
+<tr>		
+	<td><label>${searchItem.getText($context)}</label></td> 
+	<td>
+		<input name="field" value="${searchItem.getId()}" type="hidden">
+		#if( $searchItem.isList() )
+			##set( $types = $searcher.searcherManager.getList($searchItem))  ##new API
+			#set( $types = $searcher.searcherManager.getList($searchItem.getListCatalogId(), $searchItem.getListId())) 
+			<input name="operation" type="hidden" value="matches" />
+			<select name="${searchItem.getId()}.value">
+				<option value=""></option>
+				#foreach( $type in $types ) #set( $key = $type.id)
+				<option value="$key" #if( $inputed && $key == $inputed ) selected #end>
+					$type
+				</option>
+				#end
+			</select>
+		#elseif ($searchItem.isDate())
+		<select name="operation">
+			<option value="after">[[After]]</option>
+			<option value="before">[[Before]]</option>
+		</select>			
+		<input name="${searchItem.getId()}.value" id="datevalue${searchItem.id}" value="$!inputed"
+			class="datepicker" size="8" type="text">
+		#elseif ($searchItem.id == "filename")
+			<input name="operation" value="matches" type="hidden">
+			<input name="${searchItem.getId()}.value" value="$!inputed"
+				size="15" type="text">
+		#else
+			<input name="operation" value="startswith" type="hidden">
+			<input name="${searchItem.getId()}.value" value="$!inputed"
+				size="28" type="text">
+		#end
+	</td>
+</tr>	
+#end
+</table>
+
+#if( $details.size() == 0)
+	[[No search fields found with index]]=true
+#end

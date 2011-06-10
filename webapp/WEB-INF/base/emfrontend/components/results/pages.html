@@ -1,0 +1,58 @@
+#if( $hits && $hits.totalPages > 1 )
+#set($resultsPage = "$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&oemaxlevel=1")
+#set($resultsPage = "$resultsPage&page")
+#set($thispage = $hits.getPage())
+
+<table class="emnavigateboxes" cellspacing=0 cellpadding=0 align="right">
+		<tr>
+			<td nowrap >
+				#if( $hits.prevPage() )
+				<a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><img src="$home${themeprefix}/images/buttons/previous-button.png" align="absmiddle"  /></a>
+				#end
+			</td>
+		
+			<td >
+				<table>
+					<tr>
+						#set( $befores = $hits.linksBefore() )					
+						#if($befores.size()!=0)
+						  #if($befores.get(0)>1)
+							<td  id="navbox"><a class="ajax" targetdiv="emresultscontent" href="$resultsPage=1'" >1</a></td>	
+						    <td>...</td>
+						   #end
+						#end
+						#set( $afters = $hits.linksAfter() )					
+						
+						#foreach( $before in $befores )
+						<td  id="navbox"><a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$before" >$before</a></td>		
+						#end
+						<td  id="navboxselected"><a  class="ajax" targetdiv="emresultscontent" href="$resultsPage=$thispage" >$!thispage</a></div></td>
+						#foreach( $after in $afters )
+						<td  id="navbox"><a  class="ajax" targetdiv="emresultscontent" href="$resultsPage=$after">$after</a></td>		
+						#end
+						#set($size=${afters.size()})
+						#set( $size = $size - 1 )
+						
+						
+						#if($size>0)
+							#if ($afters.get($size)< $hits.getTotalPages() )
+								<td>...</td>
+								<td  id="navbox"><a  class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></td>	
+							#end
+						#end
+					
+					</tr>
+				</table>
+			</td>
+			
+			<td nowrap valign="center">
+				#if ( $hits.nextPage() )
+				&nbsp;<a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n"><img src="$home${themeprefix}/images/buttons/next-button.png" align="absmiddle"  /></a>
+				#end
+				
+				
+			</td>
+		</tr>
+	</table>
+	
+#end	

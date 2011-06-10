@@ -1,0 +1,12 @@
+<properties>
+	<property id="name" />
+	<property id="inputtype"/>
+	<property id="outputfile" />
+	<property id="fileexportformat" />
+	<property id="type" />
+	<property id="guid" />
+	<property id="onimport" />
+	
+</properties>
+
+   

@@ -1,0 +1,34 @@
+
+
+#set( $sections = ["htmledit","text","preview", "seo","versions","styles","scripts", "properties"] )
+#set( $thissection = $content.section )
+#set($origURL = $context.getRequestParameter('origURL'))
+#foreach( $section in $sections )
+
+		<div class="catalogs_menu_item">
+			#if($thissection == $section)
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+  				  <div class="spiffyfgthree">
+  			#end
+			#set( $img = "/system/components/openedit/html/theme/images/${section}.png")
+			#set( $link = "$home/system/components/openedit/html/edit/${section}/index.html?width=1000&editPath=$context.getRequestParameter('editPath')&textheight=500px&origURL=$!origURL")
+			<a href="$link" ><img border=0 src="$img"> $context.getText($content.get($section))</a>
+			#if($thissection == $section)
+				  </div>
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				 </div>
+			#end
+  
+#end
+			

@@ -1,0 +1,5 @@
+<page>
+	<property name="tab">myaccountuser</property>
+	<inner-layout>/${catalogid}/myaccount/user/layout.html</inner-layout>
+	<property name="virtual">true</property>
+</page>

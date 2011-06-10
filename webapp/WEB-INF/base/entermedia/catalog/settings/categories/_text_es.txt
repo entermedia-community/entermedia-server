@@ -1,0 +1,10 @@
+#
+#Tue Apr 27 17:05:46 EDT 2010
+Are\ you\ sure\ you\ want\ to\ delete\ this\ category?=\u00BFEst\u00E1s seguro de que desea eliminar esta categor\u00EDa?
+Add\ Child\ Category=Agregar categor\u00EDa hija
+Please\ select\ or\ add\ a\ category.\ FOO\ FOO\ FOO=por favor seleccione una categor\u00EDa o a\u00F1adir. 
+Delete\ Selected=Eliminar Seleccionados
+Edit\ Name=Editar Nombre
+Categories=Categor\u00EDas
+Please\ select\ or\ add\ a\ category.=Por favor, seleccione o agregue una categor\u00EDa.
+Reload\ Tree=Recargar \u00C1rbol

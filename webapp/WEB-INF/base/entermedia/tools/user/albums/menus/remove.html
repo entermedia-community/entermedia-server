@@ -1,0 +1,16 @@
+#set( $id = "remove")
+<a  href="#" class="emactionsheader"  onmouseover="OEPopUp.showPopUp(this,'${id}menu',0,22);" onmouseout="OEPopUp.hide('${id}menu');">[[remove]]<br><img src="$home/system/images/toolbar/x.gif" border="0" /></a>
+<div id="${id}menu" class="empopupsection" onmouseover="OEPopUp.showPopUp(this,'${id}menu',0,22);" onmouseout="OEPopUp.hide('${id}menu');">
+
+<ul class="emactionsheadermenu">
+#foreach( $col in $albumlist.getSelectionAlbums() )
+	<li>
+		<a href="$home/$applicationid/albums/actions/removeselection.html?albumid=$album.id&selectionid=$col.id" ><img border="0"  title="${col.size($context)} items" align="top" src="$home${themeprefix}/entermedia/images/selection${col.getId()}on.png" /></a>
+	</li>
+#end
+</ul>
+
+
+</div>
+
+

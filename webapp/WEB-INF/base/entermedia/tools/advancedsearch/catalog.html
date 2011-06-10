@@ -1,0 +1,18 @@
+ #set ($removed = $context.getRequestParameter('removed'))
+ #if( !$removed )
+ #set ($catalogid = $context.getRequestParameter('catalogid'))
+ #set ($searcher = $searcherManager.getSearcher($catalogid, "asset"))
+ $context.putPageValue("view", "asset/advancedsearch")
+ $context.putPageValue("searcher", $searcher)
+ $context.putPageValue("catalogid", $catalogid)
+
+##get the came of the catalog
+#set ($catalog = $searcherManager.getSearcher("${applicationid}", "catalogs").searchById("$!catalogid"))
+<div class="advancedsearchcatalog">
+<h2>$catalog</h2>
+<div class="advancedsearchcatalogfields">
+$pages.include("/${applicationid}/tools/data/search/fieldsearch.html", $context)
+$pages.include("/${applicationid}/tools/advancedsearch/filters.html", $context)
+</div>
+</div>
+#end

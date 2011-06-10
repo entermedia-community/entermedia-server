@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Uploading, please wait">
+    <value>Uploading, please wait</value>
+    <value locale="es">Cargando, por favor, espere</value>
+  </property>
+  <property name="text.Next Step">
+    <value>Next Step</value>
+    <value locale="es">Siguiente Paso</value>
+  </property>
+</page>

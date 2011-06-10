@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="MediaSearchModule.searchCategories" alltypes="true" >
+	</path-action>
+	<inner-layout>./recent.html</inner-layout>
+	<layout/>
+	<view-permissions><blank /></view-permissions>
+	<property name="forcelayout">true</property>	
+	<property name="virtual">true</property>
+	<generator name="velocity" />
+</page>

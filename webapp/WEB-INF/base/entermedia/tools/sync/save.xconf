@@ -1,0 +1,4 @@
+<page>
+	<path-action name="UpdateModule.saveSync" />
+	<property name="oemaxlevel">1</property>
+</page>

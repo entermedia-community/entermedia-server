@@ -1,0 +1,6 @@
+<page>
+<inner-layout />
+<generator name="velocityGenerator" />
+<path-action name="MultiSearchModule.loadApplicationId"  alltypes="true"/>
+<path-action name="MultiSearchModule.getEnterMedia"  alltypes="true"/>
+</page>

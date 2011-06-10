@@ -1,0 +1,13 @@
+<properties>
+<property id="firstName" />
+<property id="lastName" />
+<property id="screenname" />
+<property id="email" />
+<property id="enabled" />
+
+
+<property id="showdebug" />
+	<property id="showeditor"/>
+	
+
+</properties> 

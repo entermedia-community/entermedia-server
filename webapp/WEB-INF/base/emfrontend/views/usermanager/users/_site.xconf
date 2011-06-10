@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<property name="sectiontitle">
+    	<value>User Manager</value>
+  	</property>
+  <inner-layout>${usermanagerhome}/users/innerlayout.html</inner-layout>
+  <path-action name="DataEditModule.loadPageOfSearch" >
+    <property name="searchtype">member</property>
+  </path-action>
+  <property name="hitsname">members</property>
+  <property name="tab">users</property>
+  <property name="oeuseradmintabid">userstab</property>
+</page>

@@ -1,0 +1,49 @@
+<h2>Invite Friends</h2>
+
+<p>
+Invite your friends, relatives, or colleagues to join you on EnterMedia.
+Enter their email addresses below, separated by commas: 
+</p>
+
+<div style="width: 700px;">
+	<style>
+		th { font-size: 10pt; text-align: right; padding-right: 10px; }
+		#notificationform td { border-style:none; padding: 7px;}
+	</style>
+	<form name="editForm" id="viewForm" method="post"  action="$home$content.directory/invite.html">
+	#set( $oemaxlevel = $context.getRequestParameter("oemaxlevel") )
+	<input type="hidden" name="oemaxlevel" value="$!oemaxlevel"/>
+		<table id="notificationform" >
+		<tr>
+			<td>
+				<strong>[[To]]:</strong>
+			</td>
+			<td>
+			<div id="extraemailsbox">
+				<textarea id="extraemails" name="email" style="width:90%;"></textarea>
+			</div>
+			</td>
+		</tr>
+			<tr>
+				<td><strong>[[Subject]]</strong>:</td>
+				<td><input type="text" size="60" name="subject" value="$user.shortDescription has sent you an invitation"/></td>
+			</tr> 
+			<tr>
+				<td colspan="2">
+					<br>
+					<textarea id="content" rows="80"  name="body">
+					$pages.include("inviteemail.html", $context)
+					</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+			 		<input type="submit" name="Send" value="Invite">
+				</td>
+				<td></td>
+			</tr>
+		</table>	
+		 
+	</form>
+	$pages.include("/system/tools/html/textarea.html?htmltextarea=content&true")
+</div>

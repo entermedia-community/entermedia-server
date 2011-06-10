@@ -1,0 +1,4 @@
+#set( $q = $searchstring)
+#foreach ($res in $suggestions)
+	$res.get("id")
+#end

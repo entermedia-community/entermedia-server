@@ -1,0 +1,225 @@
+#set($settingshome = "/$currentcatalog/settings")
+<div>
+  <b class="spiffy">
+  <b class="spiffy1"><b></b></b>
+  <b class="spiffy2"><b></b></b>
+  <b class="spiffy3"></b>
+  <b class="spiffy4"></b>
+  <b class="spiffy5"></b></b>
+  <div class="spiffyfg">
+		#set($tab = $content.getProperty("tab"))
+		<div class="catalogs_menu_item">
+			#if($tab == "filemanager")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home/$applicationid/settings/filemanager/index.html"><img src="$home$themeprefix/entermedia/images/settings/filemanager.png">[[File Manager]]</a>
+			
+			#if($tab == "filemanager")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "changetheme")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home/$applicationid/settings/servermaintenance/changetheme.html"><img src="$home$themeprefix/entermedia/images/settings/changetheme.png">[[Edit Layout]]</a>	
+			#if($tab == "changetheme")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "mounts")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home/$applicationid/settings/mounts/index.html"><img src="$home$themeprefix/entermedia/images/settings/filemanager.png" >[[Folder Mounts]]</a>
+			#if($tab == "mounts")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "plugins")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+  					<div class="spiffyfgthree">
+  			#end		
+			<a href="$home/$applicationid/tools/plugins/index.html"><img src="$home$themeprefix/entermedia/images/settings/upgradeserver.png">[[Extensions]]</a>
+			#if($tab == "plugins")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "sync")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home/$applicationid/tools/sync/index.html"><img src="$home$themeprefix/entermedia/images/settings/contentsync.png">[[Content Sync]]</a>
+			#if($tab == "sync")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "events")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home/$applicationid/settings/servermaintenance/events/index.html"><img src="$home$themeprefix/entermedia/images/settings/events.png">[[System Events]]</a>
+			
+			#if($tab == "events")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "translations")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home/$applicationid/tools/translation/index.html"><img src="$home$themeprefix/entermedia/images/settings/translationicon.png">[[Translations]]</a>
+			
+			#if($tab == "translations")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "albumreindex")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home/$applicationid/settings/servermaintenance/albumreindex.html"><img src="$home$themeprefix/entermedia/images/settings/reindexalbums.png">[[Re-Index Albums]]</a>
+				#if($tab == "albumreindex")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_settings">
+	  		<a href="$home/$applicationid/settings/index.html" ><span>[[Settings]]</span></a>
+		</div>
+  </div>
+
+  <b class="spiffy">
+  <b class="spiffy5"></b>
+  <b class="spiffy4"></b>
+  <b class="spiffy3"></b>
+  <b class="spiffy2"><b></b></b>
+  <b class="spiffy1"><b></b></b></b>
+</div>
+

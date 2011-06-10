@@ -1,0 +1,8 @@
+<page>
+	<property name="albumid">4</property>
+	<property name="autocreatealbum">true</property>
+	<path-action name="AlbumModule.loadAlbum" />
+	<property name="showaddselections">false</property>
+  <property name="showremoveselections">true</property>
+	<property name="section">basket</property>
+</page>

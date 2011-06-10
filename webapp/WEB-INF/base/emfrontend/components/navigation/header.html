@@ -1,0 +1,30 @@
+<table width="100%">
+<tr>
+<td>
+$pages.include("$apphome/views/content/logo.html")
+
+</td>
+<td>
+<div id="emtopmenu">
+	<a href="$home$apphome/index.html">Home</a> |
+#if( $user )
+<a href="$home$apphome/users/$!{user.getId()}/index.html">$!user.getScreenName()</a> | <a href="$home$apphome/authentication/logout.html">Logout</a>
+#if( $canviewsettings )
+ | <a href="$home/$catalogid/settings/index.html">Settings</a>
+#end
+#else
+	<a href="$home$apphome/authentication/login.html">Login</a>
+#end	
+</div>
+#if( $canupload )
+<div id="emtopmenuactions">
+	<a href="$home$apphome/components/upload/index.html?width=900&height=600" class="emdialog"><img src="$home$themeprefix/images/buttons/upload.png" />Upload</a>
+</div>
+#end
+<div id="emtopmenuactions">
+	$pages.include("$apphome/components/navigation/quicksearch.html")
+</div>
+
+</td>
+</tr>
+</table>

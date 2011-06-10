@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="tab">permissionscatalog</property>
+  <property name="fallbackdirectory">/WEB-INF/base/entermedia/tools/permissions</property>
+  <property name="permissionrootpath">/${catalogid}/settings/permissionscatalog/xml</property>
+  <property name="permissiontype">permissionscatalog</property>
+  <property name="editPath">/${catalogid}/_site.xconf</property>
+  
+</page>

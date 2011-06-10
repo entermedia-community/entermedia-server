@@ -1,0 +1,25 @@
+<table width="100%">
+<tr>
+<td id="emlogin" width="400">
+	<div class="emrounded"><h4><br></h4>
+	<div class="emroundedbody">
+	<div class="embox">
+		$pages.include("$content.loginroot/loginform.html",$context)
+	</div>	
+	</div>	
+	</div>	
+</td>
+<td id="emregister"  width="100%">
+#if( $content.allowguestregistration == "true" )
+	<div class="emrounded"><h4><br></h4>
+	<div class="emroundedbody">
+	<div class="embox">
+		$pages.include("$content.loginroot/register.html",$context)
+	</div>	
+	</div>	
+	</div>	
+#end
+&nbsp;
+</td>
+</tr></table>
+

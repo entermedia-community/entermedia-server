@@ -1,0 +1,33 @@
+#set($catalogid = $context.getRequestParameter("catalogid"))
+#set($resultsPage = "$home/${catalogid}/results/catresults.html")
+<form  action="$resultsPage" class="ajaxform" targetdiv="oeresults_$!catalogid"  target="_parent" name="changesort_$!catalogid" id="changesort_$!catalogid" valign="middle">
+<input type="hidden"  name="oemaxlevel" value="1" />
+<input type="hidden" name="catalogid" value="$!catalogid" />
+<input type="hidden" name="searchtype" value="asset" />
+<input type="hidden" name="hitssessionid" value="$hits.sessionId" />
+#if($album)
+	<input type="hidden" name="albumid" value="$album.id"/>
+	<input type="hidden" name="username" value="$album.getProperty('owner')"/>
+#end
+<div class="emcatalogheadericon">
+<label>[[sort by]]</label> <select name="sortby" onchange="jQuery(this).parent().submit();"><option value=""></option>
+	#set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
+	
+	#foreach( $searchItem in $searcher.getDetailsForView("asset/orderby", $user) )
+		#set( $ordering = false)
+		#set( $ordering = $hits.getOrdering())
+		#if( $searchItem.isDate() )
+			<option value="${searchItem.getId()}Down" #if(  $ordering == "${searchItem.getId()}Down" ) selected #end >${searchItem.getText($context)} [[[Newer First]]]</option>
+			<option value="${searchItem.getId()}Up" #if(  $ordering == "${searchItem.getId()}Up" ) selected #end >${searchItem.getText($context)} [[[Newer Last]]]</option>
+		#elseif ( $searchItem.isDataType("number") )
+			<option value="${searchItem.getId()}Up" #if( $ordering == "${searchItem.getId()}Up" ) selected #end >${searchItem.getText($context)} [- +]</option>
+			<option value="${searchItem.getId()}Down" #if( $ordering == "${searchItem.getId()}Down" ) selected #end >${searchItem.getText($context)} [+ -]</option>		
+		#else
+			<option value="${searchItem.getId()}Up" #if( $ordering == "${searchItem.getId()}Up" ) selected #end >${searchItem.getText($context)} [[[A-Z]]]</option>
+			<option value="${searchItem.getId()}Down" #if( $ordering == "${searchItem.getId()}Down" ) selected #end >${searchItem.getText($context)} [[[Z-A]]]</option>
+		#end
+	#end
+	<option value="random" #if( $hits.getOrdering() && $hits.getOrdering() == "random" ) selected #end >[[Random]]</option>			
+	</select> 
+</div>
+</form>

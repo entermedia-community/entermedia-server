@@ -1,0 +1,10 @@
+<page>
+	<property name="matttabstabid">reports</property>
+	<property name="sectiontitle">Reports</property>
+	<property name="dataroot">/${applicationid}/tools/data</property>
+	<property name="logroot">/${applicationid}/reports</property>
+	<permission name="view">
+		<pagevalue name="canviewreports" equals="true"/>
+	</permission>
+	<inner-layout>${themeprefix}/entermedia/layouts/reportslayout.html</inner-layout>
+</page>

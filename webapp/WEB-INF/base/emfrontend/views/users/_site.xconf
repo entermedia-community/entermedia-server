@@ -1,0 +1,5 @@
+<page>
+	<inner-layout>/${applicationid}/tools/user/layouts/userhomelayout.html</inner-layout>
+	<path-action name="UserProfileModule.loadOwner"/>
+	<property name="virtual">true</property>
+</page>

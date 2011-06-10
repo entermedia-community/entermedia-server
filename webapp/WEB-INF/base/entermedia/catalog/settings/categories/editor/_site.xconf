@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CategoryEditModule.loadCategory"/>
+  <property name="virtual">true</property>
+  <property name="subtab">categoryeditor</property>
+</page>

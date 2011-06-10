@@ -1,0 +1,71 @@
+#set( $targetid = "assetselect_${catalogid}" )
+#set( $values = $context.getRequestParameters($targetid))
+#if(!$values || $values.size() == 0)
+	#set($values = $context.getRequestParameter("hitssessionid"))
+	#set($values = $context.getSessionValue($values))
+#end
+
+#set( $currentpage = $context.getRequestParameter("page") )
+#if( !$currentpage )
+	#set( $currentpage = 1 )
+#else
+	#set( $currentpage = $numberutils.toInt($currentpage) )
+#end
+#set( $base = $currentpage - 1 )
+#set( $base = 12 * $base )
+
+#if( $values.size() > 0 )
+	<table>
+	
+	#foreach( $i in [0..3] )
+		<tr>
+		#foreach( $j in [0..2] )
+			<td style="padding: 1em; text-align: center; vertical-align: middle;">
+			#set( $index = 3 * $i )
+			#set( $index = $base + $index )
+			#set( $index = $index + $j )
+			#if( $index < $values.size() )
+				#set( $asset = false)
+				#set( $asset = $mediaarchive.getAsset($values.get($index)) )
+				#if(!$asset)
+					#set($asset = $values.get($index))
+				#end
+				#set( $type = $mediaarchive.getMediaRenderType( $asset.fileformat ) )
+				$context.putPageValue("cell", $asset)
+				$context.putPageValue("hit", $asset)
+				$pages.include("$cataloghome/results/thumbnails/media/${type}.html", $context)
+				<br/>$asset.name
+			#else
+				&nbsp;
+			#end
+			</td>
+		#end
+		</tr>
+	#end
+
+	</table>
+
+	#if( $currentpage > 1 )
+		#set( $prevpage = $currentpage - 1 )
+	#end
+	#if( $values.size() > $index + 1  )
+		#set( $nextpage = $currentpage + 1 )
+	#end
+	#set( $args = $context.requestParamsAsList )
+	<div>
+		#if( $prevpage )
+			<a href="?page=$prevpage&$args">Previous page</a>
+		#end
+		#if( $nextpage )
+			<a href="?page=$nextpage&$args">Next page</a>
+		#end
+	</div>
+	<script type="text/javascript">
+		jQuery("window").onload(new function()
+		{
+			setTimeout('window.onload = window.print();', 1000);
+		});
+	</script>
+#else
+	No items selected.
+#end

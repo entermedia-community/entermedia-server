@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="MediaEmailModule.sendAssetNotification" />
+	<property name="from">info@openedit.org</property>
+	<permission name="editassets">
+		<boolean value="false"/>
+	</permission>
+</page>

@@ -1,0 +1,8 @@
+<page>
+
+<path-action name="MultiSearchModule.loadQuery"/>
+<path-action name="MultiSearchModule.runCurrentQuery">
+<property name="applicationid">${catalogid}</property>
+</path-action>
+<inner-layout>/${applicationid}/theme/layouts/searchlayout.html</inner-layout>
+</page>

@@ -1,0 +1,24 @@
+#if( $lasthits  )
+	#set($catalogs = $lasthits.searchQuery.catalogs )
+#else
+	#set($catalogs = $query.catalogs )	
+#end
+#set ($allcatalogs = $usersettings.getCatalogs())
+#set( $show = true)
+
+#if( $catalogs.size() == $allcatalogs.size() )
+	#set( $show = false )
+#end
+#if( $show )	
+<div class="emsearchcatalogselect"> [[Add]]:
+	
+	<select id="addcatalog" onchange="addCatalog(this.value)">
+		<option value="" selected>&nbsp;</option>		
+		#foreach ($catalog in $allcatalogs)
+			#if( !$catalogs.contains($catalog.id) )
+					<option value="$catalog.id">$catalog</option>
+			#end
+		#end
+	</select>
+</div>
+#end	

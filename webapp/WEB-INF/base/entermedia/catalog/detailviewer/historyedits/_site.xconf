@@ -1,0 +1,11 @@
+<page>
+	<property name="sectiontitle">
+    	<value>Metadata Edits</value>
+  	</property>
+	<property name="subtab">viewassetedithistory</property>
+	<property name="hitsname">loghits</property>
+	<property name="foldername">${catalogid}/asseteditLog</property>
+	<property name="sortby">dateDown</property>
+	<path-action name="LogSearchModule.loadPageOfSearch" />
+	
+</page>

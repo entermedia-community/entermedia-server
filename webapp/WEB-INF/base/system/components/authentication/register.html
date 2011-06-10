@@ -1,0 +1,34 @@
+<div id="emregister">
+
+<h1>[[Register]]</h1>
+
+<form name="wizard" method="post" action="./register-finish.html">
+
+$context.putPageValue("view", "user/userprofile")	
+<table>
+<td>
+$pages.include("/system/components/xml/detaileditor.html", $context)
+
+    <p>[[A password will be e-mailed to you.]]</p>
+
+ #if( !$user && !$answer )
+[[Registration test]]: $question.description <input type="text" name="answerid" size=2 />
+#end
+<table><tr><td>
+<div class="embutton" style="padding-left: 100px;">
+<input  type="submit" class="embutton" value="[[Create New Account]]">
+</div>
+</tr></td></table>
+
+</td>
+</tr>
+</table>
+
+#if( $fullOriginalEntryPage )
+	<input type="hidden" name="loginokpage" value="$fullOriginalEntryPage" />
+#end
+  
+</form>
+</div>
+
+

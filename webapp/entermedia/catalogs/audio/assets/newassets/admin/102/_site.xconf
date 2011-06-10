@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <asset name="tbf-02.mp3" id="102">
+    <category id="newassets_admin"/>
+    <property name="datatype">original</property>
+    <property name="fileformat">mp3</property>
+    <property name="primaryimagename">tbf-02.mp3</property>
+    <property name="assetmodificationdate">2009-06-22 10:43:43</property>
+    <property name="filesize">609545</property>
+  </asset>
+</page>

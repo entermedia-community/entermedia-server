@@ -1,0 +1,34 @@
+#set( $pluginpath = $context.getRequestParameter("pluginpath"))
+#set( $plugin = $pages.getPage($pluginpath))
+#set( $show = "${plugin.show}")
+#set( $closable = $plugin.closable)
+#if( !$user.hasProperty($show) || $user.isPropertyTrue($show) )
+	#set( $open = "down")
+#else
+	#set( $open = "up")
+#end
+
+<div id="$show">
+<div class="emsidecontent">
+<div id="emsidecontentheader">
+#set($menulabel = $plugin.getProperty("text.menulabel", $context.getLocale() ))
+#if( $closable && $closable == "false")
+$plugin.getText("$menulabel", $context.getLocale())
+#else
+<a href="javascript:toggleSideMenu('$show','${cataloghome}/side/toggle.html?assetid=$asset.id','$pluginpath');" ><img border="0" src="$home${themeprefix}/entermedia/images/triangle${open}.gif" />$plugin.getText("$menulabel", $context.getLocale())</a>
+#end
+</div>
+#if( $open == "down" || ($closable && $closable == "false"))
+#set( $origURL = $context.getRequestParameter("origURL") )
+#if( !$origURL )
+#set( $origURL = $content.path )
+#end
+<div class="emsidecontentbody">
+<div class="emsidecontentbodyinner">
+$pages.include("$plugin?origURL=$origURL")
+</div>
+</div>
+#end
+</div>
+</div>
+</div>

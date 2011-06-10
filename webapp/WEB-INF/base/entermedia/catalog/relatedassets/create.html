@@ -1,0 +1,51 @@
+
+#set ( $searcher = $mediaarchive.assetSearcher )
+
+<h2>[[Create New Version]]</h2>
+#if( $pages.canView("${page.directory}/copyandrelate.html") )
+<p>[[This will create a new related version of]] #if(${asset.name}) ${asset.name} #else [[this asset]]#end. [[It will also create a relationship between these assets]].</p>
+
+<form name="edittypes" method="post" action="$home/system/data/list/index.html">
+<input type="hidden" name="catalogid" value="$!catalogid"/>
+<input type="hidden" name="searchtype" value="datatype"/>
+<input type="hidden" name="origURL" value="$!page.path?sourcepath=$asset.sourcePath&editPath=$cataloghome/data/originals/$asset.sourcePath"/>
+</form>
+
+<form name="copyandrelate" 
+	action="$home$cataloghome/relatedassets/copyandrelate.html" 
+	onsubmit="javascript: updateVersionType();">
+<input name="assetid" type="hidden" value="$asset.id"/>
+<input name="copyimage" type="hidden" value="false" />
+<input name="parentrelationship" type="hidden" value="original"/>
+
+<input type="hidden" name="field" value="name"/>
+<input type="hidden" name="name.value" value=""/>
+<input type="hidden" name="field" value="editstatus"/>
+<input type="hidden" name="editstatus.value" value="6"/><!-- Work in progress -->
+
+#set ($types = $searcherManager.getSearcher($catalogid, 'datatype').getAllHits())
+<table>
+<tr>
+	<td>[[Version Type]]:</td>
+	<td><select name="type" id="type">
+		#foreach($type in $types)$home/${applicationid}/tools/relate/index.html?assetid=$asset.id&catalogid=${catalogid}&origURL=$cataloghome/layout
+ 		<option value="$type.id">$type</option>
+		#end
+		</select>
+		<a href="#" onclick="document.edittypes.submit(); return false;">edit...</a>
+	</td>
+</tr>
+<tr>
+	<td></td>
+	<td><input type="submit" value="[[Ok]]"/></td>
+</tr>
+</table>
+</form>
+<br>
+<p>
+<b>Note: </b>[[Relationships can also be created to <a href="$home/${applicationid}/tools/relate/index.html?assetid=$asset.id&catalogid=${catalogid}&origURL=$cataloghome/relatedassets/index.html?assetid=$asset.id">existing items</a> that have been selected.]]	  		
+</p>
+
+#else
+	<p>You don't have permissions to create a related version for this asset.</p>
+#end

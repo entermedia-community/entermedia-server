@@ -1,0 +1,14 @@
+Hi!<br/>
+I would like you to check the following assets in $content.title: <br/>
+<ul>
+#set( $assetids = $context.getRequestParameters("assetselect_$mediaarchive.catalogId") )
+#foreach($assetid in $assetids)
+	#set( $asset = $mediaarchive.getAsset($assetid) )
+	<li><a href="$context.siteRoot$home$cataloghome/assets/${asset.sourcePath}.html">$asset.name</a></li>
+#end
+</ul>
+<br/>
+Thanks!<br/><br/>
+
+-- <br/>
+$user.shortDescription

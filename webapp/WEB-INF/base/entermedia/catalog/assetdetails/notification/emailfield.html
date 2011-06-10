@@ -1,0 +1,95 @@
+<tr>
+	<td colspan="2">
+		Type in a State Farm alias or full e-mail address and click 'Add'.
+		We recommend that you add your name to the email distribution for your own records.
+	</td>
+</tr>
+<tr>
+	<td>
+		<strong>[[Email to State Farm users]]:</strong>
+	</td>
+	<td>
+		<input name="field" value="givenName" id="givenName_input" type="hidden"/>
+		
+		<div class="auto_complete" id="givenName_auto_complete"></div>
+			
+		<div id="sfuserarea" style="padding: 2px; display:none;"></div>
+		
+		<input name="givenName" type="text" id="givenName" size="60"/>
+		<input type=button onclick="addemailaddress('sfuserarea', givenName.value)" value="[[Add]]">
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<div id="extraemailslink">
+			<a href="javascript:showid('extraemailsbox');hideid('extraemailslink');">
+				Paste in extra e-mail addresses that are separated by commas and click 'Add'.
+			</a>
+		</div>
+		<div id="extraemailsbox" style="display:none;">
+			<textarea id="extraemails" style="width:100%;"></textarea>
+			<input type=button onclick="addcsemails('extraemails');hideid('extraemailsbox');showid('extraemailslink');" value="[[Add]]">
+		</div>
+	</td>
+</tr>
+
+
+
+
+<script type="text/javascript">
+//<![CDATA[
+var email_auto_completer = new Ajax.Autocompleter('givenName', 'givenName_auto_complete', '$home$cataloghome/assetdetails/notification/userlist.html', {paramName: "value", afterUpdateElement : updateField
+ });
+
+function updateField(text, li) 
+{
+  var inputvalue = document.getElementById("${fieldname}_input");
+  inputvalue.style.borderColor	 = "#AAFFAA"; 
+  var value = document.getElementById("${fieldname}.value");
+  if(value)
+  {
+  	value.value = li.id;
+  }
+}
+removeuser = function(email)
+{
+	Element.remove("selected_"+email);
+}
+addemailaddress = function(updatearea, emailtoadd)
+{
+	div = document.getElementById(updatearea);
+	if(emailtoadd!=null && emailtoadd!="")
+	{
+		div.style.display = 'block';
+		jQuery("#"+updatearea).load( '$home$cataloghome/assetdetails/notification/userfield.html',{ email: emailtoadd});
+	}
+}
+
+addcsemails = function(textareaid)
+{
+	var textarea = document.getElementById(textareaid); 
+	var string = textarea.value;
+	var parts = string.split(",");
+	for (var i = 0; i < parts.size(); i++)
+	{
+		addemailaddress('sfuserarea', parts[i]);
+	}
+	textarea.value = "";
+}
+
+showid = function(inId)
+{
+	document.getElementById(inId).style.display = 'block';
+}
+
+hideid = function(inId)
+{
+	document.getElementById(inId).style.display = 'none';
+}
+//]]>
+</script>
+
+
+
+
+

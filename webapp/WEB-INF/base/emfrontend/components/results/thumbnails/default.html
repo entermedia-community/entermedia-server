@@ -1,0 +1,26 @@
+
+#set ($sourcepath = $cell.sourcepath)
+
+#if (!$cell)
+	#set ($cell = $asset)
+#end
+
+#if (!$cell)
+	#set ($cell = $data)
+#end
+	#if( $cell.importstatus && $cell.importstatus == "uploading" )
+		<div class="miniassetstatus" assetid="$cell.id">
+		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${cell.id}")</div>
+	#elseif( $cell.previewstatus && $cell.previewstatus == "2")
+		<img sourcepath="$sourcepath" catalogid="$catalogid" assetid="$cell.id" alt="" 	title=#if($cell.caption)"${cell.caption}"#elseif($cell.assettitle )"$cell.assettitle" #else "$!{cell.name}" #end style="height:64px;" src="$home$cataloghome/downloads/preview/crop/$sourcepath/thumb.jpg" border="0" />
+	#else
+		#set ($mime = $mediaarchive.getMimeTypeIcon($cell.fileformat))
+		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+		<img class="mimethumb" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$cell.id" alt="" title=#if($cell.caption)"${cell.caption}"#elseif($cell.assettitle )"$cell.assettitle" #else "$!{cell.name}" #end 
+			 src="$home$thumbpath" border="0"/>
+	#end	
+
+
+#if( !$showcaption )
+$pages.include("${cataloghome}/results/thumbnails/resultdetails.html", $context)
+#end

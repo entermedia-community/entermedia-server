@@ -1,0 +1,32 @@
+<script type="text/javascript">
+	addAsset('$asset.id');
+</script>
+
+<h2>$page.text_title</h2> <span class="stepnumber">$!page.text_step1</span>
+
+<hr/>
+
+<p>$page.text_complete_form</p>
+
+
+<div class="uploadarea">
+<div>
+<span style="color: #c80817;">User Alias:</span>$user.userName
+</div>
+
+$context.putPageValue("filePath", $context.getRequestParameter('localFilePath'))
+$pages.include("$page.uploaderpath/uploader.html", $context)
+
+
+<form id="finishform" method="post" class="ajaxform" targetdiv="uploadsection" 
+	action="$home$page.uploaderpath/finish.html">
+	<input type="hidden" name="uploadpath" id="uploadpath"/>
+	<input type="hidden" name="filename" id="filename"/>
+	<input type="hidden" name="imagefilename" id="imagefilename"/>
+	<input type="hidden" name="assetid" value="${asset.id}"/>
+</form>
+
+<div id="uploadstatuspanelbody">
+	<div id="uploadprogressbar"></div>
+</div>
+</div>

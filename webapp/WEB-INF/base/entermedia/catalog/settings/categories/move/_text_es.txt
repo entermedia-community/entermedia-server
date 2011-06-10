@@ -1,0 +1,9 @@
+#
+#Tue Apr 27 10:32:33 CLT 2010
+\tMove\ and\ Sort=Mover y Ordenar
+Move\ selected\ category\ into=Mover categor\u00EDa seleccionada
+Save=Guardar
+Move\ Up=Subir
+Sort\ Children\ Alphabetically=Ordenar hijos alfab\u00E9ticamente
+Move\ Down=Bajar
+

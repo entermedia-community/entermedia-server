@@ -1,0 +1,14 @@
+<page>
+	<layout/>
+	<inner-layout/>
+    
+	<page-action name="AutoCompleteModule.searchSuggestions" alltypes="true">
+		<property name="cancelactions">true</property>
+		<property name="hitsname">suggestions</property>
+		<property name="searchtype">compositeLucene</property>
+	</page-action>
+	
+	
+	<generator name="velocityGenerator" />
+	
+</page>

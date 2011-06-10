@@ -1,0 +1,27 @@
+<script type="text/javascript" src="$home$page.uploaderpath/common.js"> </script>
+<script type="text/javascript" src="$home$page.uploaderpath/${page.uploadtype}.js"> </script>
+
+<div id="uploadsection">
+<h2>$page.text_title</h2> <span class="stepnumber">$!page.text_step1</span>
+
+<hr/>
+
+<p>$page.text_complete_form</p>
+
+<div class="uploadarea">
+
+$pages.include("$page.uploaderpath/uploadform.html")
+
+</div>
+</div>
+
+
+##This will be appended by Javascript to show the results afterwards
+<form id="uploadsearchform" action="$home/$applicationid/search/multicatsearch/multiresults.html" method="get">
+<input type="hidden" name="catalogid" value="$!page.catalogid"/>
+<input type="hidden" name="searchtype" value="asset"/>
+</form>
+
+
+<div id="hiddenuploadsection" style="display:none">
+</div>

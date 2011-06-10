@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<user enabled="true">
+  <user-name>admin</user-name>
+  <password>DES:2JPGMLB8Y60=</password>
+  <creation-date>1146231775645</creation-date>
+  <properties>
+    <property name="productvpa" value="false"/>
+    <property name="enabled" value="true"/>
+    <property name="lastName" value="Administrator"/>
+    <property name="productspecialrestrictions" value="false"/>
+    <property name="screenname" value="admin"/>
+    <property name="searchtype" value="categories"/>
+    <property name="productavailability" value="false"/>
+    <property name="resultstype" value="thumbs"/>
+    <property name="oe.edit.mode" value="preview"/>
+    <property name="datalevel" value="advanced"/>
+    <property name="productexpirations" value="false"/>
+    <property name="productzones" value="false"/>
+    <property name="orderingcost" value="false"/>
+    <property name="openadmintoolbar" value="true"/>
+    <property name="productlegal" value="false"/>
+    <property name="productreviewers" value="false"/>
+    <property name="resulttype" value="thumbs"/>
+    <property name="email" value="support@openedit.org"/>
+    <property name="retention" value="false"/>
+    <property name="showfilter" value="false"/>
+    <property name="photooptions" value="false"/>
+    <property name="firstName" value="The"/>
+    <property name="productorderingoptions" value="false"/>
+  </properties>
+  <group id="photoeditors"/>
+  <group id="developers"/>
+  <group id="administrators"/>
+</user>

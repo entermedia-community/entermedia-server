@@ -1,0 +1,7 @@
+<publishtype>
+	<location id="aspera">Aspera</location> 
+	<location id="smartjog">Smart Jog</location>
+	<location id="ftp" >FTP</location>
+	<location id="smb" >Windows Server</location>
+	<location id="amazon" >Amazon S3</location>
+</publishtype>

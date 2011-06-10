@@ -1,0 +1,10 @@
+<page>
+	<property name="sectiontitle">
+		<value>Folder Mounts</value>
+		<value locale="es">Preferencias</value>
+	</property>
+	<page-action bean="searcherManager" name="PageValue.loadPageVariable"/>
+	<property name="filerootpath">/${applicationid}/settings/filemanager</property>
+	<property name="tab">mounts</property>
+	<inner-layout>/${applicationid}/settings/servermaintenance/inner-layout.html</inner-layout>
+</page>

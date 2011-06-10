@@ -1,0 +1,8 @@
+<properties>
+	<property id="id" index="true" stored="true">Record Id</property>
+	<property id="name" index="true" stored="true" >Name</property>
+	<property id="type" index="true" stored="true" type="list" listid="albumedittypes">Type</property>
+	<property id="user"  keyword="true"  index="true" stored="true">User</property>
+	<property id="date" type="date" date="true" format="dd/MM/yyyy HH:mm"  index="true" stored="true" editable="true">Date</property>
+	<property id="albumid" index="true" stored="true">Album Id</property>
+</properties>

@@ -1,0 +1,87 @@
+#set ($assetTypeSearcher = $searcherManager.getSearcher($catalogid, "assettype"))
+
+#set ($types = $assetTypeSearcher.fieldSearch(id, "*", "name"))
+#set ($rows = $types.getPageInRows(2))
+
+#set( $notselected = $userprofile.getValues("hideassettype") ) 
+
+<div class="subcolumns" style="white-space:nowrap;">   
+#foreach($row in $rows )
+
+#set($item1 = $row.get(0))
+#if($row.size() > 1)
+	#set($item2 = $row.get(1))
+#else
+#set($item2 = "")
+#end
+
+#if( $notselected.contains( $item1.getId() ) )
+#set( $selected = false)
+#else
+#set( $selected = true)
+#end
+
+	<div class="c50l">
+		<div class="subcl" >
+			<ul>
+				<li style="list-style-type:none;"><input class="assettypeselect" type="checkbox" name="childquery" value="$item1.getId()" #if( $selected )checked #end/> $item1.name</li> 			
+			</ul>
+		</div>
+	</div>
+	#if($item2 && $item2 != "")
+
+#if( $notselected.contains( $item2.getId() ) )
+#set( $selected = false)
+#else
+#set( $selected = true)
+#end
+
+	<div class="c50r">
+		<div class="subcr">
+			<ul>
+				
+					<li style="list-style-type:none;"><input class="assettypeselect" type="checkbox" name="childquery" value="$item2.getId()" #if( $selected )checked #end/> $item2.name</li> 
+				
+			</ul>
+		</div>
+	</div>
+	#end
+#end
+
+</div>
+	
+<form  action="$apphome/components/results/table.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
+	##<input type="hidden"  name="oemaxlevel" value="1" />
+	<input type="hidden" name="catalogid" value="$!catalogid" />
+	<input type="hidden" name="searchtype" value="asset" />
+	<input type="hidden" name="hitssessionid" value="$hits.sessionId" />
+		
+	<input type="hidden" name="childquery" value="none" /> ## causes the search to re-run even when no types are selected	 
+</form>
+
+<script type="text/javascript">
+
+applyDontShow = function()
+{	
+	jQuery('#spinner').css('visibility', 'visible');
+	
+	var inputs = jQuery('input[name="childquery"]');
+	var query = "hitssessionid=$hits.getSessionId()&cache=false&profilesearchfilters=hideassettype";
+	for (var i = 0; i < inputs.size(); i++)
+	{
+		input = inputs[i];
+		if (!input.checked)
+		{
+			query += "&hideassettype=" + input.value;
+		} 
+	}
+	
+	jQuery('#dontshow').attr('action', "$apphome/components/results/table.html?" + query);
+	jQuery('#dontshow').submit();
+}
+
+jQuery('.assettypeselect').bind('click',applyDontShow);
+
+</script>
+
+

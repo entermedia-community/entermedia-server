@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	
+  <path-action name="User.getUserManager"/>
+  <property name="usermanagerhome">/${applicationid}/settings/usermanager</property>
+  <inner-layout>${themeprefix}/entermedia/layouts/usersecurity.html</inner-layout>
+	<property name="allowpathrequestactions">true</property>
+
+
+  <path-action allowduplicates="true" name="TabModule.selectTab">
+    <tablistname>oeuseradmin</tablistname>
+  </path-action>
+
+	<!-- Translations -->
+	
+	<property name="text.note.group.inputformat">
+		<value>
+			<![CDATA[
+			The group input format is defined <a href="http://www.openedit.org/oemanual/pages/admin-toolbar/accounts/Importing_Users.html">here</a>.
+			]]>
+		</value>
+		<value locale="es">
+			<![CDATA[
+			El formato de entrada de grupos está definido <a href="http://www.openedit.org/oemanual/pages/admin-toolbar/accounts/Importing_Users.html">aquí</a>.
+			]]>
+		</value>
+	</property>
+	<property name="text.note.group.script">
+		<value>
+			<![CDATA[
+			A programmer can edit <a href="$home/${applicationid}/settings/filemanager/index.html?path=/${applicationid}/settings/usermanager/admin/csvgroupimport.bsh&editPath=/${applicationid}/settings/usermanager/admin/csvgroupimport.bsh">the script</a> used to import groups.
+			]]>
+		</value>
+		<value locale="es">
+			<![CDATA[
+			Un programador puede editar <a href="$home/${applicationid}/settings/filemanager/index.html?path=/${applicationid}/settings/usermanager/admin/csvgroupimport.bsh&editPath=/${applicationid}/settings/usermanager/admin/csvgroupimport.bsh">el programa</a> usado para importar grupos.
+			]]>
+		</value>
+	</property>
+	<property name="text.note.user.inputformat">
+		<value>
+			<![CDATA[
+			The user input format is defined <a href="http://www.openedit.org/oemanual/pages/admin-toolbar/accounts/Importing_Users.html">here</a>.
+			]]>
+		</value>
+		<value locale="es">
+			<![CDATA[
+			El formato de entrada de usuarios está definido <a href="http://www.openedit.org/oemanual/pages/admin-toolbar/accounts/Importing_Users.html">aquí</a>.
+			]]>
+		</value>
+	</property>
+	<property name="text.note.user.script">
+		<value>
+			<![CDATA[
+			A programmer can edit <a href="$home/${applicationid}/settings/filemanager/index.html?path=/${applicationid}/settings/usermanager/admin/csvgroupimport.bsh&editPath=/${applicationid}/settings/usermanager/admin/csvimport.bsh">the script</a> used to import users.
+			]]>
+		</value>
+		<value locale="es">
+			<![CDATA[
+			Un programador puede editar <a href="$home/${applicationid}/settings/filemanager/index.html?path=/${applicationid}/settings/usermanager/admin/csvgroupimport.bsh&editPath=/${applicationid}/settings/usermanager/admin/csvimport.bsh">el programa</a> usado para importar usuarios.
+			]]>
+		</value>
+	</property>
+	<property name="text.export.allusers">
+		<value>
+			<![CDATA[
+			<a href="accountexport.csv?query=all">All Users</a> (CSV Format)
+			]]>
+		</value>
+		<value locale="es">
+			<![CDATA[
+			<a href="accountexport.csv?query=all">Todos los usuarios</a> (Formato CSV)
+			]]>
+		</value>
+	</property>
+</page>

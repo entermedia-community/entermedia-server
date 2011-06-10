@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="MediaEmailModule.sendAssetNotification" />
+	<property name="from">info@openedit.org</property>
+	<property name="e-mail_layout">/${catalogid}/notification/notificationlayout.html</property>
+	<permission name="editassets">
+		<boolean value="false"/>
+	</permission>
+	
+	<property name="text.Your message has been sent">
+		<value>Your message has been sent</value>
+		<value locale="es">Su mensaje ha sido enviado</value>
+	</property>
+	
+</page>

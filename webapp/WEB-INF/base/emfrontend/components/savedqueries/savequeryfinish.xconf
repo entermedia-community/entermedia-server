@@ -1,0 +1,8 @@
+<page>
+	<path-action name="MultiSearchModule.saveQuery"/>
+	<path-action name="MultiSearchModule.loadSavedQueryList"/>
+	<property name="text.Saved">
+		<value>Saved</value>
+		<value locale="es">Guardado</value>
+	</property>
+</page>

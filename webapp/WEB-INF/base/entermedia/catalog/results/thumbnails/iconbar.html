@@ -1,0 +1,46 @@
+<div class="thumbicons">
+	<table cellspacing="0" cellpadding="0" align="center" id="thumblinks">
+		<tr>
+			#if( $olink )
+			<td>
+				<a  href="$home$olink" alt="[[Download]]" class="downloadlink" >
+				<img class="thumbicon" src="$home${themeprefix}/entermedia/images/down_16x16.png" alt="download" title="[[Download]]"></a>
+			</td> 
+			#end
+			<td>
+				#set ($link = "$home$cataloghome/downloads/preview/cache/${cell.sourcepath}/preview.jpg")
+				<a href="$link" class="thickbox"><img class="thumbicon" src="$home${themeprefix}/entermedia/images/search.png" title="[[Preview]]"/></a>
+			</td>
+			#if( $user )
+				<td>
+					<a href="$home$mediaarchive.getLinkToAssetDetails(${cell.sourcepath})"><img class="thumbicon" src="$home${themeprefix}/entermedia/images/about_16x16.png" alt="info" title="Info"></a>
+				</td>
+				#if($album && $caneditalbum)
+				<td>
+					<a href="#" onclick="return removeAlbumItem('$album.getUserName()','$album.getId()','$cell.catalogid','$cell.id');"><img class="thumbicon" src="$home${themeprefix}/entermedia/images/cancl_16x16.png" alt="remove" title="[[Remove From Album]]"></a>
+				</td>
+				#end
+				<td>
+			    	#set( $id = "thumbmenu$catalogid$cell.id")
+			    	<a href="#"   onmouseover="OEPopUp.showPopUp(this,'${id}menu',0,22);" onmouseout="OEPopUp.hide('${id}menu');">
+			    		<img  class="thumbicon" alt="Options" title="Options" src="$home$themeprefix/entermedia/images/icon_thumbmenu.png"/>
+			    	</a>
+					<div id="${id}menu" class="empopupsection" style="visibility:hidden;width:16px;" onmouseover="OEPopUp.showPopUp(this,'${id}menu',0,22);" onmouseout="OEPopUp.hide('${id}menu');">
+					<ul class="emactionsheadermenu" >
+			    				<li>			    				
+			    					#set( $args = "applicationid=$applicationid&assetid=$cell.id&catalogid=$catalogid&KeepThis=true&TB_iframe=true" )
+			    					<a class="thickbox" href="${home}/${catalogid}/downloads/history/downloadform.html?$args&height=600&width=800">[[Download]]</a>
+									<a class="thickbox" href="${home}/${catalogid}/results/thumbnails/shareasset.html?$args&height=600&width=800">[[Mail Link to...]]</a>
+									<a class="thickbox" href="$home/$applicationid/albums/addtogallery.html?$args&height=300&width=400">[[Add To Album]]</a>
+ 					    			<a class="thickbox" href="$home/$applicationid/albums/removefromgallery.html?$args&height=300&width=400">[[Remove From Album]]</a>
+								</li>
+		    			</ul>
+					</div>
+				</td>
+			#end			
+		</tr>
+	</table>
+	#if(!$album)
+		$pages.include("${cataloghome}/results/thumbnails/selection.html", $context)
+	#end	
+</div>

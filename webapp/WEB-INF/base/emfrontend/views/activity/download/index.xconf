@@ -1,0 +1,4 @@
+<page>
+	<path-action name="OrderModule.findOrderAssets"/>
+	<page-action bean="pathUtils" class="com.openedit.util.PathUtilities" name="PageValue.loadPageVariable"/>
+</page>

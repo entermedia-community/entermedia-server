@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Clear Invalid Assets">
+    <value locale="es">Eliminar Artículos Inválidos</value>
+  </property>
+  <property name="text.Clear Assets">
+    <value locale="es">Limpiar Artículos</value>
+  </property>
+  <property name="text.This tool will remove all assets for a given catalog/subfolder whose original files no longer exist.">
+    <value locale="es">Esta herramienta va a eliminar todos los elementos para un catálogo/subdirectorio dado cuyos archivos originales ya no existen.</value>
+  </property>
+  <property name="text.Which catalog would you like to clear?">
+    <value locale="es">¿Cuál catálogo desea limpiar?</value>
+  </property>
+  <property name="text.You may specify a source path to only clear assets in that path.">
+    <value locale="es">Puede especificar una ruta de origen para sólo limpiar los artículos en dicha ruta.</value>
+  </property>
+</page>

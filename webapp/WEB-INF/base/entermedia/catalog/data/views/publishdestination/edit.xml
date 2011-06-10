@@ -1,0 +1,36 @@
+<properties>
+	<property id="id" />
+	<property id="name" />
+	
+	<property id="publishtype"  />
+	<property id="notifyadmin" />
+	<property id="server" note="IP or server name/ID" />
+	<property id="url" />
+	<property id="onimport" />
+	
+	<property id="username" />
+	<property id="convertpreset" />
+	
+	<property id="bucket" />
+	<property id="accesskey"/>
+	<property id="secretkey" />
+	
+	
+	
+	<property id="company" />
+	<property id="division" />
+		
+	<property id="technicalcontact" />
+	<property id="technicalphone" />
+	<property id="technicalemail" />
+
+	<property id="administrativecontact" />
+	<property id="administrativephone" />
+	<property id="administrativeemail" />
+	
+	<property id="emergencycontact" />
+	<property id="emergencyphone" />
+	<property id="emergencyemail" />
+
+	
+</properties>

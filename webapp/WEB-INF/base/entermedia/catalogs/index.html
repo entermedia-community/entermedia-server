@@ -1,0 +1,14 @@
+[[Please select a catalog]]
+<ul>
+	#set ($catalogs = $searcherManager.getSearcher($content.applicationid, "catalogs").getAllHits())
+	#foreach ($catalog in $catalogs)
+		#if( $pages.canView("/$catalog.id"))
+			#set( $catalogname = $context.getPageProperty("text.${catalog.id}") )
+			<li ><a  href="$home/$catalog.id/categories/index.html">
+				#if($catalogname) $catalogname #else $catalog #end
+			</a></li>
+		#end
+	#end
+</ul>
+
+

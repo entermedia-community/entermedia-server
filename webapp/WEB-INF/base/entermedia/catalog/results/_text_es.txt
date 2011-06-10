@@ -1,0 +1,19 @@
+#
+#Thu Aug 12 21:25:16 EDT 2010
+Select\ All=Seleccionar Todos
+Remove\ from=Eliminar de
+Photo\ Edit=Editar Foto
+Categories=Categor\u00EDas
+Tags=Etiquetas
+Download\ Selected=Descargar Selecci\u00F3n
+Name=Nombre
+Video\ title=T\u00EDtulo del v\u00EDdeo
+Add\ To\ Clipboard=a\u00F1adir al portapapeles
+Edit\ Metadata=Editar Metadata
+Title=T\u00EDtulo
+Caption=Etiqueta
+Download=Descargar
+Add\ to=Agregar a
+Deselect\ All=Deseleccionar Todos
+Mail\ Link\ to...=Enviar Enlace a...
+Print\ Selected=Imprimir Selecci\u00F3n

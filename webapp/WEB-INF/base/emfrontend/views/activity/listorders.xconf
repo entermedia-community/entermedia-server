@@ -1,0 +1,4 @@
+<page>
+	<path-action name="OrderModule.findOrdersForUser" />
+	<page-action name="OrderModule.loadOrderManager" />
+</page>

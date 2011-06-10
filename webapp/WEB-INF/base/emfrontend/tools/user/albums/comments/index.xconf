@@ -1,0 +1,11 @@
+<page>
+	<page-action name="CommentModule.loadComments"/>
+	<property name="text.Album Discussion">
+		<value>Album Discussion</value>
+	</property>
+	<property name="text.Post a new comment">
+		<value>Post a new comment</value>
+		<value locale="es">Agregue un nuevo comentario</value>
+	</property>
+	
+</page>

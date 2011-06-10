@@ -1,0 +1,22 @@
+<div class="em-rounded">
+	#set($owner = $userManager.getUser($order.userid))	
+	<h2>Delete</h2>
+	<p>Are you sure you want to mark this asset as deleted?</p>
+	
+<form id="usereditform" method="post" action="$home$apphome/views/activity/delete/index.html">
+
+#set( $sourcepath = $context.getRequestParameter("sourcepath"))	
+#set( $asset = $mediaarchive.getAssetBySourcePath($sourcepath))
+
+#set( $deleterecord = $context.getRequestParameter("deleterecord"))	
+
+<input type="hidden" name="sourcepath" value="$sourcepath" />
+<input type="hidden" name="deleterecord" value="$deleterecord" />
+
+<input style="margin-left: 300px;" type="submit" name="submit" value="Delete"/> 
+
+	
+</form>
+
+
+</div>

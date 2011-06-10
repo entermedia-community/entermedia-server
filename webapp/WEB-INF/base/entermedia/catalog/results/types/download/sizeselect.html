@@ -1,0 +1,16 @@
+#set( $cat = $asset.catalogId )
+<input type="hidden" name="${cat}.${asset.id}.width" id="${cat}.${asset.id}.width"/>
+<input type="hidden" name="${cat}.${asset.id}.extension" id="${cat}.${asset.id}.extension"/>
+#set( $searcher = $mediaarchive.getSearcherManager().getSearcher($mediaarchive.getCatalogId(),"conversiontypes"))
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+#set( $sizes = $searcher.fieldSearch("mediatype",$type))
+#if( $sizes.size() > 0 )
+<select name="width" onchange="setWidthHeightExtension('${cat}', '$asset.id', this.options[this.selectedIndex].value);">
+#if( $candownload)
+	<option value="">[[High Rez (Original)]]</value>
+#end
+#foreach( $hit in $sizes )
+    <option value="$!hit.width">$context.getText($hit.name)</options>
+#end
+</select>
+#end

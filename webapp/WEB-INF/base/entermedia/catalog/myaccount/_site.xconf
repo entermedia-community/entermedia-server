@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<property name="editable">false</property>
+	<!-- <path-action name="CartModule.loadCustomer" /> -->
+	<property name="hitsname">orderidlist</property>
+	<property name="ordersort">orderdateDown</property>
+	<property name="showcompany">true</property>
+	
+	<inner-layout>/${catalogid}/myaccount/myaccountlayout.html</inner-layout>
+</page>

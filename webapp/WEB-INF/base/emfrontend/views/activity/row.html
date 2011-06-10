@@ -1,0 +1,75 @@
+<input type="hidden" name="itemid" value="$item.id"/>
+<input type="hidden" name="field" value="status"/>
+<input type="hidden" name="assetselect_${catalogid}" value="$asset.id"/>
+
+
+<tr class="assetrow" id="assetrow_${assetid}" >
+	<td > <input type="checkbox"  checked /></td>
+
+	<td class="imagepad" valign="top"> 
+		#set( $catalogid = $asset.catalogId )
+	   	#set( $mediaarchive = $enterMedia.getMediaArchive($catalogid) )
+	   	#set( $sourcepath = $asset.sourcePath )
+	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+		#set( $tsize = "$home$thumbend" )
+		#set ($presetsearcher = $searcherManager.getList($catalogid, "convertpreset"))
+		
+		#if( $parenthits )
+			#set( $rootid = $parenthits.sessionId )
+		#else
+			#set( $rootid = $hits.sessionId )
+		#end
+			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
+		
+			<a href="$click" class="emdialog" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
+			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+			$context.putPageValue("cell", $asset)
+			$context.putPageValue("showdetails", "false")
+			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+			</a>
+		</td>
+		<td>
+			$asset.name
+		</td>
+
+	      
+	      #set($selectedpreset = $searcherManager.getData($catalogid, "convertpreset", $item.presetid))
+	      #set ($status = $searcherManager.getData($catalogid, "orderstatus", $order.get("orderstatus")))
+		   	   	<td >	
+		   	   		#set ($orderstatus = $order.get("orderstatus")) 
+			   	   	#if ( $orderstatus == "preorder" || !$orderstatus)
+			   	   	    <select name="presetid.value">
+			   	    	#foreach ($preset in $presetsearcher.getAllHits())
+			   	    		<option #if($preset.id == $selectedpreset.id)selected #end value="$preset.id">$preset</option>
+			   	    	#end
+			   	    	</select>
+		   	   		#else 
+		   	   		$!selectedpreset
+		   	   	#end
+	</td>
+<td>
+   #if($item.status == "complete")
+     #set($selecteddestionation = $searcherManager.getData($catalogid, "publishdestination", $item.destinationid))
+	 #if( $selecteddestionation.type == "aspera")  	   	
+	   	   	##Download Options
+	   	   	
+	   	   	<a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id&sourcepath=$asset.sourcePath&presetpath=${selectedpreset.outputfile}">
+	   	   	  	DOWNLOAD NOW
+	   	   	 </a>
+  	   	  #else
+  	   	    Delivered
+  	   	  #end 
+  	#else
+		#set($status = $searcherManager.getData($catalogid, "orderitem/status", $item.status))
+		$status   	  
+		$!item.errorcount
+		$!item.errordetails
+	#end	
+ </td>
+      
+ </tr>	  
+
+  
+ 
+   

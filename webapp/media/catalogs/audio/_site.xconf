@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/WEB-INF/base/entermedia/catalog</property>
+  <property name="catalogid">media/catalogs/audio</property>
+  <permission name="editasset">
+    <not>
+      <group id="guest"/>
+    </not>
+  </permission>
+  <permission name="view">
+    <not>
+      <group id="guest"/>
+    </not>
+  </permission>
+</page>

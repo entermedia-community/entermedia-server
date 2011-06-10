@@ -1,0 +1,23 @@
+#set( $catalogid = $page.catalogid )
+#set( $searcher = $searcherManager.getSearcher($catalogid, "asset") )
+$context.putPageValue("catalogid", $catalogid)
+
+<p class="sectiontitle">
+	<span>1</span>
+	Choose photos to upload:
+	<span class="uploadmessage">(Select multiple photos or a
+	 folder containing multiple photos)</span>
+</p>
+$pages.include("$page.uploaderpath/filepicker.html", $context)
+
+<p class="sectiontitle">
+	<span>2</span>
+	Provide Master Meta Data:
+	<span class="uploadmessage">(Applies to all photos being uploaded)</span>
+</p>
+
+<div id="messages"></div>
+$context.putPageValue("viewname", "asset/uploadcommon")
+$context.putPageValue("searcher", $searcher)
+$context.putPageValue("fieldsperrow", 2)
+$pages.include("$page.uploaderpath/edittable.html", $context)

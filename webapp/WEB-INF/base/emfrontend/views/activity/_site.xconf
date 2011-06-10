@@ -1,0 +1,4 @@
+<page>
+	<script id="jquery-autosave" src="/${applicationid}/components/javascript/jquery.autosave.min.js" />
+	
+</page>

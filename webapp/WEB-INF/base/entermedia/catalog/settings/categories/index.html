@@ -1,0 +1,14 @@
+<div id="categoryeditor">
+#if( $category )
+<div id="tabsubcontent" style="border-left: solid 2px black;padding-left: 20px;">
+$pages.include("/$content.catalogid/settings/categories/editor/index.html")
+<hr>
+$pages.include("/$content.catalogid/settings/categories/move/movelayout.html")
+</div>
+#else
+<div style="padding:30px;">
+  <p>[[Please select or add a category.]]</p>
+</div>
+#end
+
+</div>

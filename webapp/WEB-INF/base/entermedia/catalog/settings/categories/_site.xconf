@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="sectiontitle">
+    <value>Categories</value>
+    <value locale="es">Categoría Editor</value>
+  </property>
+  <property name="tab">categories</property>
+  <property name="subtab">categoryeditor</property>
+  <inner-layout>/${catalogid}/settings/categories/innerlayout.html</inner-layout>
+  <path-action name="CategoryEditModule.loadCategory"/>
+  
+</page>

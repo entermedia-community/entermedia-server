@@ -1,0 +1,8 @@
+<properties>
+ 
+ 
+ 
+ 
+  <property id="asset_hitsperpage" index="true" stored="true" listid="hitsperpage">Hits Per Page</property>
+  
+</properties>

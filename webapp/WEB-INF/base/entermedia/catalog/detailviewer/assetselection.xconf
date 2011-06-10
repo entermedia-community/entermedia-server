@@ -1,0 +1,10 @@
+<page>
+	<property name="text.menulabel">
+		<value>Selection</value>
+	</property>
+	
+	<property name="show">assetselection</property>
+  <layout />
+  <inner-layout />
+	
+</page>

@@ -1,0 +1,14 @@
+#
+#Thu Apr 08 15:33:04 EDT 2010
+Remove\ from=entfernen
+Add\ to\ $content.albumname=Hinzuf\u00FCgen zu $ content.albumname
+Photo\ Edit=Foto bearbeiten
+Categories=Kategorien
+Remove\ from\ $content.albumname=Remove from $ content.albumname
+Add\ To\ Clipboard=dem Clipboard hinzuf\u00FCgen
+Video\ title=Videotitel
+Edit\ Metadata=Bearbeiten von Metadaten
+Caption=Bildunterschrift
+Download=download
+Add\ to=erg\u00E4nzen
+Mail\ Link\ to...=Mail-Link zu ...

@@ -1,0 +1,18 @@
+
+<div class="uploadarea">
+
+$pages.include("$page.uploaderpath/uploadform.html")
+
+</div>
+</div>
+
+
+##This will be appended by Javascript to show the results afterwards
+<form id="uploadsearchform" action="$home/$applicationid/search/multicatsearch/multiresults.html" method="get">
+<input type="hidden" name="catalogid" value="$!page.catalogid"/>
+<input type="hidden" name="searchtype" value="asset"/>
+</form>
+
+
+<div id="hiddenuploadsection" style="display:none">
+</div>

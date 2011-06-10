@@ -1,0 +1,8 @@
+#set( $rootpath = "${cataloghome}/detailviewer/categories")
+
+#if( "$canviewcategories" != "false" )
+#set ($categories = $asset.getCategories())
+
+	$pages.include("$cataloghome/detailviewer/categories/index.html")
+
+#end

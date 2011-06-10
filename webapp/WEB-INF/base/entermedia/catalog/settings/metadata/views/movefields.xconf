@@ -1,0 +1,9 @@
+<page>
+	<path-action name="DataEditModule.moveFieldInView" />
+		<inner-layout />
+		<path-action name="Script.run" >
+		<script>./export.groovy</script>
+	</path-action>
+			
+		
+</page>

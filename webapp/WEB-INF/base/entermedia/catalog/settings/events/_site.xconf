@@ -1,0 +1,5 @@
+<page>
+	  <property name="fallbackdirectory">/entermedia/tools/events</property>
+		<property name="eventroot">/${catalogid}/settings/events</property>
+	  <property name="tab">events</property>
+</page>

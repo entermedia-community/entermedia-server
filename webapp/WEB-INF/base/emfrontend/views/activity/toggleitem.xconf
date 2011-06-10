@@ -1,0 +1,7 @@
+<page>
+<path-action name="OrderModule.loadOrderBasket"/>
+	
+<path-action name="OrderModule.addItemToOrderBasket"/>
+<inner-layout/>
+
+</page>

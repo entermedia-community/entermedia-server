@@ -1,0 +1,55 @@
+#set ( $catalog = $storeeditor.getCurrentCatalog() )
+#set( $cells = $hits.getPageOfHits() )
+
+			<div style="text-align: left; padding-left: 20px; padding-top: 5px;">
+
+
+				#if ( $hits.totalPages == 0 )
+				
+				#elseif( $hits.totalPages == 1 )
+				
+				#elseif( $hits )
+
+							#set($thispage = $hits.getPage())
+							[[Page]] <b>$thispage</b> [[of]] $hits.totalPages
+							&nbsp;&nbsp;
+							
+							#if( $hits.prevPage() )
+							<a href="$home$content.path?page=$hits.prevPage()" ><b>&lt;&lt;  [[Back]]</a>
+							#end
+							
+							
+							#if ( $hits.nextPage() )
+							<a href="$home$content.path?page=$hits.nextPage()" ><b> [[Forward]] &gt;&gt; </a>
+							#end
+				#end
+			</div>
+		<div class="list-box">
+			
+			<table width="100%" cellspacing="0" cellpadding="2" >
+				<tr><th></th><th align="left">Asset Id</th><th width="20%" align="left">[[Asset Name]]</th><th width="30%" align="left">[[Price]]</th><th></th></tr>
+
+#set( $even = "false" )
+#foreach ( $asset in $cells )
+
+#if ( $even == "false" )
+				<tr style="background-color: #EEEEEE;">
+#set( $even = "true" )
+#else
+				<tr>
+#set( $even = "false" )
+#end
+					<td></td>
+					<td>
+						<a href="$home/${catalogid}/settings/assets/editor/${asset.id}.html"	>${asset.id}</a>
+					</td>
+					<td>
+						${asset.name}
+					</td>
+					<td>$!asset.yourPrice</td>
+					<td><!-- TODO: Remove From Category --></td>
+				</tr>
+#end
+			</table>
+			
+		</div>

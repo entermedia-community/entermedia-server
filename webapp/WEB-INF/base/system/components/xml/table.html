@@ -1,0 +1,77 @@
+#set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
+#set( $candelete = $context.getRequestParameter("candelete")) 
+
+<div id="${searchtype}_table">
+
+#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))##productid
+#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))##4322
+#set( $view = $context.getRequestParameter("view"))
+#set( $editpath = $context.getRequestParameter("editpath"))
+
+#set ($catalogId = $context.getRequestParameter("catalogid") )
+			
+#set( $joinsearcher = $searcherManager.getSearcher($catalogId, $searchtype))
+#if(!$existingrecords)
+	#set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
+#end
+#set( $details = $joinsearcher.getDataProperties($view,$user) )
+#set( $passalong = $context.getRequestParameter("passalong"))
+#set( $passalongdec = $url_util.decode($passalong) )
+#set( $passalong = $url_util.encode($passalongdec) )
+
+#set( $args = "catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&view=$view&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
+
+#if( $existingrecords && $existingrecords.size() > 0 )
+
+<table class="emdatatable striped">
+	<tr>
+	#foreach( $detail in $details )
+	<th>$detail.text</th>
+	#end
+	<th></th>
+	</tr>
+	#foreach ( $hit in $existingrecords )
+		#set( $editargs = "id=$hit.id&$args")
+		<tr >
+		#foreach( $detail in $details )
+			<td style="padding:4px;">
+			#set( $val = "$!hit.get($detail.id)" )
+			#if( $detail.isList() )
+				#set( $val = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )
+			#end
+			#if( "$candelete" != "false" )
+			<a href="#" class="oeactionlinkselect"  onclick="showpath('${view}editor', '$home$editpath?$editargs&edit=true',1);return false;">
+			#end
+			#if ($detail.isBoolean())
+				#if ($val == "true")
+					Yes
+				#else
+					No
+				#end
+			#elseif($detail.isDate() && $val.length()>0) 
+				$context.getDate($val)			
+			#else
+				$val
+			#end
+			#if( "$candelete" != "false" ) </a> #end
+			</td>
+		#end
+		
+		#if($candelete && $candelete == true)<td>
+		
+			<a href="#" onclick="if(confirm('Delete Item?')) { showpath('${searchtype}_table', '$home/system/components/xml/table-deleterow.html?delete=true&$editargs'); } return false;">
+				[[delete]]
+			</a>
+		
+		#end</td>		
+		</tr>
+	#end
+	</tr>
+</table>
+#end
+
+#if( !$existingrecords || $existingrecords.size() == 0 )
+	<p>#text("No records found")</p>
+#end
+
+</div>

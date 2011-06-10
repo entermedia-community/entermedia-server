@@ -1,0 +1,17 @@
+#if($errors.get($detail.id) == "error-format")
+	#set($val = "")
+	<span style="color: red;">
+	[[Sorry - wrong format]]
+	</span><br>
+#end
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+<input name="${detail.getId()}.value" #if ($detail.picker != "false") class="datepicker autosubmited" #else class="autosubmited" #end id="${detail.id}${idcount}.value" value="#esc($!val)" size="8" type="text" onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()${idcount}');">
+
+#if ($detail.picker == "false" && $detail.format)
+	<span style="color:gray;font-style:italic;font-size:.9em;">$detail.format<span>
+#end

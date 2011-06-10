@@ -1,0 +1,17 @@
+<page>
+	<property name="browserid">${catalogid}/browser</property>
+	
+	<path-action name="CategoryModule.loadCrumbs" />
+
+	<path-action allowduplicates="true" name="CategoryModule.getCatalogTree">
+	    <tree-name>categoryPickerTree</tree-name>
+	    <url-prefix>/${catalogid}/categories/</url-prefix>
+	    <url-postfix>.html?oemaxlevel=1&amp;</url-postfix>
+	</path-action>
+
+	<property name="uploadsourcepath">webuploads</property>
+    
+    <script id="em-browser-component" src="/${catalogid}/components/browser/script.js"/>
+    <style id="em-browser-component-css" href="/${catalogid}/components/browser/styles.css"/>
+ 
+</page>

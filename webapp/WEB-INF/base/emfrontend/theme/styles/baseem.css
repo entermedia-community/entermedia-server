@@ -1,0 +1,162 @@
+/** This is a shared standard css. Don't create a second baseem.css */
+
+/** Data entry **/
+#emcontainer .emdataeditor td
+{
+	padding: 2px;
+}
+#emcontainer .emdatafield
+{
+	white-space: nowrap;
+	padding-right: 5px;
+	text-align: right;
+	vertical-align: middle;
+}
+#emcontainer .emdatafieldvalue
+{
+	white-space: nowrap;
+	padding-right: 5px;
+	text-align: left;
+	vertical-align: middle;
+}
+#emcontainer .emdatafieldvalue input
+{
+	margin-left: 2px;
+}
+
+ul.embuttons 
+{
+	padding: 5px;
+	margin: 10px;
+	list-style: none;
+	clear: left;
+	height: 22px;
+}
+
+ul.embuttons li {
+	float: left;
+	display: inline; /*For ignore double margin in IE6*/
+	margin: 0 10px;
+}
+
+ul.embuttons li a {
+	text-decoration: none;
+	float:left;
+ 	color: #633108;
+	cursor: pointer;
+	font: 12px/22px "Arial", Helvetica, sans-serif;
+	padding-bottom: 6px;
+	background: url(../images/buttons/embuttons.png) no-repeat top right;
+}
+
+ul.embuttons li a span {
+	white-space: nowrap;
+
+	margin: 0 10px 0 -10px;
+	padding: 0px 8px 0px 18px;
+	position: relative; /*To fix IE6 problem (not displaying)*/
+	float:left;
+	background: url(../images/buttons/embuttons.png) no-repeat top left;
+}
+
+ul.embuttons li a.current,ul.embuttons  li a:hover  
+{
+ 	color: #633108;
+	background: url(../images/buttons/embuttonshover.png) no-repeat top right;
+}
+
+ul.embuttons li a.current span, ul.embuttons li a:hover span 
+{
+	background: url(../images/buttons/embuttonshover.png) no-repeat top left;
+}
+
+ul.embuttonsvert li {
+	float: none;
+	display: block; 
+}
+
+
+#emcontainer #emselectable table { border: 0px }
+#emcontainer #emselectable table th 
+{
+ 	white-space: nowrap; padding: 4px; text-align: left; font-weight: bold; 
+ 	background: #858689 url("../images/background.1.png") repeat-x; 
+ 	color: #fff;
+ }
+#emcontainer #emselectable table tr {	cursor:pointer;  }
+#emcontainer #emselectable table tr td {	padding: 4px;   }
+#emcontainer #emselectable table tr.emhighlight {	cursor:pointer; background: #a88; color:#ccc}
+#emcontainer #emselectable table tr.emborderhover {	 background: #a88; color:#fff  }
+#emcontainer #emselectable .emselectabledetails { padding-left: 20px; }
+
+#emcontainer .emdatatable { border: 2px solid #abb8b5; }
+#emcontainer .emdatatable th { padding: 4px; text-align: left; font-weight: bold; }
+#emcontainer .emdatatable tr {	 border-bottom: 1px solid #999999;   }
+#emcontainer .emdatatable tr td {	padding: 4px;   }
+
+#emcontainer #emdropdown {
+    background: url("../images/backgrounds/dropdown_bg.gif") no-repeat scroll right top #FFFFFF;
+    cursor: pointer;
+    height: 20px;
+    margin-right: 14px;
+    min-width: 80px;
+    position: relative;
+    top: -3px;
+}
+#emcontainer #emdropdown .emvalue {
+    color: black;
+    height: 13px;
+    margin-right: 22px;
+    overflow: hidden;
+    padding: 2px 14px 1px 10px;
+}
+#emcontainer #emdropdown .emdropdowncontent {
+
+    background-color: white;
+    border: 1px solid #222222;
+    min-width: 250px;
+    display: none;
+    position: absolute;
+    z-index: 600;
+}
+
+.headerdraggable
+{
+	border-left: 2px solid transparent;
+}
+.rowdraggable
+{
+	border-top: 2px solid transparent;
+}
+.headerdraggableenabled
+{
+	border-left: 2px solid blue;
+}
+.rowdraggableenabled
+{
+	border-top: 2px solid blue;
+}
+
+.baseemshowonhover
+{
+	visibility:hidden;
+}
+
+.baseemshowonhovershow
+{
+	visibility:visible;
+}	
+
+th.editcolumnheader
+{
+	border-left: 1px solid #777;
+}
+a.baseemenableonhover
+{
+	opacity: .2;
+}
+
+a.baseemenableonhover:hover
+{
+	opacity: 1;
+}	

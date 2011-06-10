@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.menulabel">
+    <value>View Clipboards</value>
+    <value locale="es">Buscar</value>
+  </property>
+
+  <property name="closable">false</property>
+  
+</page>

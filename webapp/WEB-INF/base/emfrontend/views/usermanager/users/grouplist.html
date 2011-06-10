@@ -1,0 +1,51 @@
+<script language="javascript">
+removegroup = function()
+{
+	var grouptoremove = jQuery("#emselectedrow").attr("value");
+	jQuery("#grouparea").load("$home$usermanagerhome/users/grouplist.html", {groupid: grouptoremove, removeUsernames: '$selectedUser.getUserName()', username: '$selectedUser.getUserName()'});
+}
+viewgroup = function()
+{
+	var grouptoremove = jQuery("#emselectedrow").attr('value');
+	document.location = "$home$usermanagerhome/groups/modifygroup.html?groupid=" + grouptoremove;
+}
+addgroup = function()
+{
+	var grouptoadd = jQuery("#groupselect").attr("value");
+	if(grouptoadd!=null && grouptoadd!="")
+	{
+		jQuery("#grouparea").load("$home$usermanagerhome/users/grouplist.html", { groupid: grouptoadd, addUsernames: '$selectedUser.getUserName()', username: '$selectedUser.getUserName()'}); 
+	}
+}
+</script>
+#if( $selectedUser.getGroups().size() < $UserManager.getGroups().size() ) 
+<select name="group" id="groupselect">
+	<option value=""></option>
+	#foreach ( $group in $UserManager.getGroups() )
+		#if( !$selectedUser.isInGroup($group) )  
+	    	<option value="$group.getId()">$group.getName()</option>
+		#end
+	#end     
+</select>  
+
+<input type=button onclick="addgroup()" value="[[Add]]">
+
+#end
+<br/>
+<br/>
+
+<div id="emselectable" >
+<table width="100%">
+	#foreach ( $group in $selectedUser.getGroups() )
+		<tr rowid="$group.id"><td>$group.getName()</td></tr>
+	#end	
+</table>
+	<input type="hidden" id="emselectedrow" name="groupid" />
+</div>
+<div class="embutton">
+		<a href="#" onclick="removegroup()">[[Remove]]</a>
+</div>
+<br>
+<div class="embutton">
+		<a href="#" onclick="viewgroup()">[[View Group]]</a>
+</div>

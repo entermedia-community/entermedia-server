@@ -1,0 +1,13 @@
+<page>
+	<property name="eventname">Publish videos</property>	
+	<property name="delay">50</property>
+	<property name="period">5m</property>
+	<path-action name="Script.run"  allowduplicates="true">
+		<script>../scripts/publishing/publishassets.groovy</script>
+	</path-action>
+	
+	<path-action name="Script.run"  allowduplicates="true">
+		<script>../scripts/publishing/publishorders.groovy</script>
+	</path-action>
+	
+</page>

@@ -1,0 +1,6 @@
+#if( $browser.isHtml5VideoOnly() )
+	$pages.include("$apphome/components/mediaviewer/player/html5/index.html",$context)
+#else
+	$pages.include("$apphome/components/mediaviewer/player/flowplayer/index.html", $context)
+#end
+<link rel="image_src" type="image/jpeg" href="$cataloghome/downloads/preview/mediumplus/$asset.sourcepath/thumb.jpg" />

@@ -1,0 +1,8 @@
+<page>
+  <permission name="forcewatermark">
+    <and>
+	    <not><group id="administrators" /></not>
+    	<not><action name="OrderModule.checkItemApproval" /></not>
+    </and>
+  </permission>
+ </page>

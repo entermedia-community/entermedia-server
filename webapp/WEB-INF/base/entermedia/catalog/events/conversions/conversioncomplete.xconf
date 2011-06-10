@@ -1,0 +1,6 @@
+<page>
+	<property name="runmultiple">true</property>
+	
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/publishing/publishassets.html" />
+	
+</page>

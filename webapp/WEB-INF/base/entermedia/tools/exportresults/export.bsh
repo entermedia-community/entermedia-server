@@ -1,0 +1,113 @@
+import com.openedit.hittracker.*;
+import org.openedit.data.*;
+applicationid = context.findValue("applicationid");
+searcherManager = context.getPageValue("searcherManager");
+catalogSearcher = searcherManager.getSearcher(applicationid, "catalogs");
+
+
+public String esc(text)
+{
+	if (text == null) return "";
+	newtext = text.replaceAll("\"", "\"\"");
+	return "\"" + newtext + "\"";
+}
+
+public String catalogName(catalogid)
+{
+	catalog = catalogSearcher.searchById(catalogid);
+	if (catalog == null)
+	{
+		return "(Unknown)";
+	}
+	return catalog.name;
+}
+
+public String getText(detail, hit)
+{
+	String text = null;
+	if(detail.isList())
+	{
+		searcher = searcherManager.getListSearcher(detail);
+		item = searcher.searchById(hit.get(detail.id));
+		if (item != null)
+		{
+			text = item.name;
+		}
+	}
+	else
+	{
+		text = hit.get(detail.id);
+	}
+	return esc(text);
+}
+
+public void exportResults( catalogid, view, results , out )
+{
+	String searchtype = "asset"; //TODO: CHANGE THIS!
+	Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
+	View details = searcher.getDetailsForView(view, context.user);
+	
+	out.println(esc("Results for catalog: "+catalogName(catalogid)));
+	// Headers
+	Iterator i = details.iterator();
+	detail = i.next();
+	out.print(esc(detail.text));
+	for(;i.hasNext();)
+	{
+		out.print(",");
+		detail = i.next();
+		out.print(esc(detail.text));		
+	}
+	out.println();
+	
+	for(i = results.iterator(); i.hasNext();)
+	{
+		hit = i.next();
+		j = details.iterator();
+		detail = j.next();
+		out.print(esc(hit.get(detail.id)));
+		for(;j.hasNext();)
+		{
+			out.print(",");
+			detail = j.next();
+			out.print(getText(detail, hit));
+		}
+		out.println();
+	}
+	out.println();
+}
+
+sessionId = context.getRequestParameter("hitssessionid");
+results = context.getSessionValue(sessionId);
+
+view = context.getRequestParameter("view");
+if (view == null)
+{
+	view = "asset/csvexport";
+}
+
+if (results == null)
+{
+	context.redirect("./error.html");
+}
+
+buffer = new StringWriter();
+out = new PrintWriter(buffer);
+
+if (results instanceof CompositeHitTracker)
+{
+	for (i = results.hitTrackers.keySet().iterator(); i.hasNext();)
+	{
+		catalog = i.next();
+		exportResults(catalog, view, results.getSubTracker(catalog), out);
+	}
+}
+else
+{
+	catalog = results.searchQuery.catalogId;
+	exportResults(catalog, view, results, out);
+}
+
+writer = context.writer;
+writer.write(buffer.toString());
+writer.flush();

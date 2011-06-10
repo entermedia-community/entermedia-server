@@ -1,0 +1,7 @@
+<page>
+
+	<property name="sectiontitle">
+		<value>Settings</value>
+		<value locale="es">Preferencias</value>
+	</property>
+</page>

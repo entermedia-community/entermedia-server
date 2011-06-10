@@ -1,0 +1,19 @@
+#
+#Wed Oct 20 15:33:26 EDT 2010
+Settings=Einstellungen
+Translations=\u00DCbersetzungen
+Content\ Sync=Inhalt sync
+Debug\ Mode=Debug-Modus
+Server\ Maintenance=Server-Wartung
+Add-Ons=Add-ons
+Extensions=Erweiterungen
+Are\ you\ sure\ you\ want\ to\ change\ your\ theme?=Sind Sie sicher, dass Sie Ihr Thema wechseln?
+Reload\ the\ album\ searcher=reload das Album Searcher
+Folder\ Mounts=Ordner mounts
+File\ Manager=Datei-Manager
+Edit\ Layout=Layout bearbeiten
+Show\ Page\ Boxes=zeigen, Seiten-Boxen
+Change\ Theme=Vorbehalt Thema
+System\ Events=System-Ereignisse
+Hide\ Page\ Boxes=Seite ausblenden Boxen
+Re-Index\ Albums=re-index Alben

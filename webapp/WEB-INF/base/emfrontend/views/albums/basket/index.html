@@ -1,0 +1,16 @@
+<div id="collectionbasket">
+
+#set( $assets = $album.getAssets($catalogid, $context) )
+
+#if($assets.size() >0 )
+
+$context.putPageValue("hits",$assets)
+
+$pages.include("$apphome/components/results/thumbs.html",$context)
+
+#else
+
+[[No Items in Basket]]
+
+#end
+</div>

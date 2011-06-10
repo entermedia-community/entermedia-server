@@ -1,0 +1,13 @@
+<properties>
+	<property id="id" index="true" stored="true">ID</property>
+	<property id="name" index="true" stored="true" editable="true">Preset Name</property>
+	<property id="inputtype" index="true" stored="true" type="list" editable="true" listid="rendertype">Media Type</property>
+	<property id="outputfile"  index="true" stored="true" editable="true">Generated File Name</property>
+	<property id="fileexportformat"  index="true" stored="true" editable="true" note="${date}${time}-${filename}.mp4">File Export Format</property>
+	<property id="type" listid="transcoder" index="true" stored="true" editable="true" viewtype="list" type="list" >Transcoder</property>
+	<property id="guid" index="true" stored="true" editable="true">GUID</property>
+	<property id="onimport" type="boolean" index="true" stored="true" editable="true">On Import</property>
+	
+</properties>
+
+   

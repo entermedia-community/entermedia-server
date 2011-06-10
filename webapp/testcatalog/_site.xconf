@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
+  <property name="title">Test Catalog</property>
+  <property name="applicationid">testcatalog</property>
+  <property name="catalogid">entermedia/catalogs/testcatalog</property>
+  <property name="parentapplicationid">entermedia</property>
+  
+</page>

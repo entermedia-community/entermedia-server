@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="default" name="upgrade">
+
+	<target name="default" depends="clean, update-dependencies, unwar, baseupgrade"/>
+
+	<property name="appname" value="${ant.project.name}"/>
+	<property name="org" value="eInnovation, inc."/>
+	<property name="build" location="./tmp/oe_upgrade"/>
+	<property name="wardir" location="${build}/wartmp"/>
+	<property name="webinf" location="WEB-INF"/>
+	<property name="workdir" location="${build}/unpacked" />
+
+	<target name="clean">
+		<!-- do nothing -->
+	</target>
+
+	<target name="update-dependencies" depends="clean">
+		<delete dir="${build}"/>
+		<mkdir dir="${build}"/>
+		<get src="http://dev.entermediasoftware.com/projects/entermedia-server/ROOT.war" dest="${build}/ROOT.war" />	
+	</target>
+
+	<target name="unwar" depends="update-dependencies">
+		<mkdir dir="${build}/unpacked"/>
+		<unwar dest="${build}/unpacked">
+		<fileset dir="${build}">
+			<include name="ROOT.war"/>
+		</fileset>
+		</unwar>
+	</target>
+
+	<target name="baseupgrade" depends="unwar">
+
+		<delete quiet="true">
+			<fileset dir="../WEB-INF/base/entermedia/" />
+			<fileset dir="../WEB-INF/base/sfentermedia/" />
+			<fileset dir="../WEB-INF/base/themes/baseem" />
+			<fileset dir="../WEB-INF/base/themes/empty" />
+			<fileset dir="../WEB-INF/base/themes/jobtracker" />
+			<fileset dir="../WEB-INF/base/themes/rational" />
+		</delete>
+		<copy todir="../WEB-INF/base/entermedia" preservelastmodified="true" overwrite="true">
+			<fileset dir="${workdir}/WEB-INF/base/entermedia" />
+		</copy>
+	  
+	  	<copy todir="../WEB-INF/base/themes" preservelastmodified="true" overwrite="true">
+	  		<fileset dir="${workdir}/WEB-INF/base/themes" />
+	  	</copy>
+
+		<delete quiet="true">
+			<fileset dir="./lib" includes="entermedia**.jar"/>
+		</delete>
+		
+		<mkdir dir="./lib"/>
+	    <delete>
+	      <fileset dir="./lib" includes="spring**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="openedit-3**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="openedit-4**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="openedit-5**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="openedit-editor**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="repository**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="eiistrainer**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="eiiusersystem**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="jtidy**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="lucene**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="EdenLib.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="velocity-**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="commons-fileupload-**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="commons-logging-**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="log4j**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="dom4j**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="jazzy**.jar"/>
+	    </delete>
+	    <delete>
+	          <fileset dir="./lib" includes="cvslib**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="jtidy**.jar"/>
+	    </delete>
+	  	<delete>
+	  	      <fileset dir="./lib" includes="mail**.jar"/>
+	  	</delete>
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="activation**.jar"/>
+	  	</delete>
+	    
+	  	<delete dir="../base/openedit"/>
+	  	<delete dir="../WEB-INF/base/openedit"/>
+
+		<copy todir="./lib" overwrite="false" preservelastmodified="true">
+			<fileset dir="${workdir}/WEB-INF/lib"/>
+		</copy>
+
+		<touch file="web.xml"/>
+		<delete dir="${build}"/>
+
+		<get src="http://dev.entermediasoftware.com/entermedia-server/install.xml" dest="install.xml"/>  
+	</target>
+</project>

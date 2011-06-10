@@ -1,0 +1,7 @@
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/asseteditor.html</inner-layout>
+	<path-action name="AssetEditModule.getAsset"  />
+	<path-action name="Admin.loadPermissions"  />
+	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
+	<property name="assetrootfolder">/${catalogid}/assets</property>
+</page>

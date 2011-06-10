@@ -1,0 +1,17 @@
+#set( $searcher = $searcherManager.getSearcher(${catalogid}, "email" ))
+
+#set( $details = $searcher.getDetailsForView("emaildetails", $user) )
+
+<h1>Notification Details</h1>
+
+<h4>[[Sent on:]]</h4> $email.sent-date
+<h4>[[Sent By:]]</h4> $email.senderfirstname $email.senderlastname ($email.senderuserid)
+	#set($groups = $email.groups.split(","))
+	#set($emails = $email.emails.split(","))
+<h4>[[Sent To:]]</h4>
+#if($groups)<b>Groups</b> <br> #foreach($group in $groups)$group<br>#end #end
+#if($emails)<b>Emails</b> <br> #foreach($email in $emails)$email<br>#end #end 
+<br>
+<h4>[[Subject]]:</h4> $email.subject<br>
+<h4>[[Message as sent]]:</h4> $email.message<br>
+

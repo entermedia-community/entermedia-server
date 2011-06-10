@@ -1,0 +1,9 @@
+	<br>
+#set( $rowcount = $context.getRequestParameter("rowcount"))
+#if( !$rowcount)
+	#set( $rowcount = "0")
+#end
+<input type="file" size="70" onchange="addAnotherFile();" name="file.${rowcount}">
+<input type="hidden" name="path.${rowcount}" size="30"  value="$home$cataloghome/data/upload/$user.userName/">   
+<input type="hidden" name="unzip.${rowcount}" value="checked" />
+

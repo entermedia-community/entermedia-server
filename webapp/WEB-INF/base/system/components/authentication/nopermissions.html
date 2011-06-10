@@ -1,0 +1,8 @@
+#if( $user )
+<h2>Permission Error</h2>
+
+<p>You do not have permissions to perform the previous action.</p>
+
+#else
+	$pages.include("${apphome}/authentication/login.html",$context)
+#end

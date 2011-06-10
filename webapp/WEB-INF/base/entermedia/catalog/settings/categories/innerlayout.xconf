@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Delete Selected Category">
+    <value>Delete Selected Category</value>
+    <value locale="es">Eliminar categoría seleccionada</value>
+  </property>
+  <property name="text.Add New Child Category">
+    <value>Add New Child Category</value>
+    <value locale="es">Añadir nuevo niño categoría</value>
+  </property>
+  <property name="text.Are you sure you want to delete this category?">
+    <value>Are you sure you want to delete this category?</value>
+    <value locale="es">¿Estás seguro de que deseas eliminar esta categoría?</value>
+  </property>
+  <property name="text.Reload Tree">
+    <value>Reload Tree</value>
+    <value locale="es">Recargar Árbol</value>
+  </property>
+</page>

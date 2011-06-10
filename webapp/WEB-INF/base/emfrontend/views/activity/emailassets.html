@@ -1,0 +1,103 @@
+<div class="em-rounded">
+#set($order = $data)
+#if( $order.userid != $user.getId() )
+No assets have been selected.
+#else
+
+	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	#set($owner = $userManager.getUser($order.userid))
+	
+	<h2>Email</h2>
+	
+<form class="validate" id="usereditform" method="post" action="processorder.html">
+#set($searcher = $searcherManager.getSearcher($catalogid, "order"))
+$context.putPageValue("searcher", $searcher)	 
+$context.putPageValue("data", $order)	 
+$context.putPageValue("view", "order/emailform")	
+<input type="hidden" name="view" value="order/emailform"/>
+<input type="hidden" name="searchtype" value="order"/>
+<input type="hidden" name="catalogid" value="$catalogid"/>
+<input type="hidden" name="orderid" value="$order.id"/>
+<input type="hidden" name="newuserstatus" value="emailrequested"/>
+
+<input type="hidden" name="field" value="publishdestination" />
+<input type="hidden" name="publishdestination.value" value="1" /> ## this should be aspera
+
+<input type="hidden" name="field" value="ordertype" />
+<input type="hidden" name="ordertype.value" value="email" />
+
+<br/>
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+<input type="hidden" name="field" value="sharenote" />
+<textarea name="sharenote.value" rows="25" >
+$pages.include("$apphome/views/activity/orderemailtemplate.html", $context)
+</textarea>
+$pages.include("/system/tools/html/textarea.html?htmltextarea=sharenote.value&fckheight=200&fckwidth=700")
+
+<br/>
+
+
+<input style="margin-left: 300px;" type="submit" name="submit" value="Send"/> 
+##	<a href="submitorder.html?orderid=$order.getId()">Resubmit Order</a>
+	
+	<div >
+	<br><br>
+	<table class="striped" >
+	#foreach( $item in $orderassets )
+		<input type="hidden" name="itemid" value="$item.id"/>
+	<tr>
+		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+
+	<td colspan="2">-----------------   ${asset.name}  -------------------------------------------------------------------------------------------------------------</td>
+	</tr>
+	<tr>
+	<td>		
+		 
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("item", $item)
+				$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+	
+	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+		#set( $tsize = "$home$thumbend" )
+		
+		#if( $parenthits )
+			#set( $rootid = $parenthits.sessionId )
+		#else
+			#set( $rootid = $hits.sessionId )
+		#end
+			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
+		
+			<a href="$click" class="emdialog" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
+			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+			$context.putPageValue("cell", $asset)
+			$context.putPageValue("showdetails", "false")
+		   	#set( $sourcepath = $asset.sourcePath )
+			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+			</a>
+</td>
+<td>
+	      #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
+	      <input type="hidden" name="field" value="presetid"/>
+  	   	    <select name="${item.id}.presetid.value">
+  	   	    	<option value="">Preview Only</option>
+  	    	#foreach ($preset in $presetsearcher.getAllHits())
+  	    		<option value="$preset.id">$preset</option>
+  	    	#end
+  	    	</select>
+	</td>
+	</tr>	
+	#end
+	
+</table>
+	
+	<div id="itemsave"></div>
+	
+	
+</form>
+<br><br>
+#end
+
+
+</div>

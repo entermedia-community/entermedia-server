@@ -1,0 +1,62 @@
+#if( $hits && $hits.totalPages > 1 )
+#set($resultsPage = "$home/${catalogid}/results/catresults.html")
+#set($thispage = $hits.getPage())
+
+#set($resultsPage = "$resultsPage?hitssessionid=$hits.sessionId&catalogid=$catalogid&searchtype=asset&hitsperpage=$!hits.hitsPerPage")
+#if($album)
+	#set($resultsPage = "$resultsPage&albumid=$album.id&username=$album.getProperty('owner')")
+#end
+#if($caneditalbum)
+	#set($resultsPage = "$resultsPage&caneditalbum=$caneditalbum")
+#end
+#set($resultsPage = "$resultsPage&page")
+
+<table class="navigateboxes" cellspacing=0 cellpadding=0 >
+		<tr>
+			<td >
+				<table>
+					<tr>
+					
+						#if($hits.linksBefore().size()!=0)
+						  #if($hits.linksBefore().get(0)>1)
+							<td  id="navbox"><a class="ajax" targetdiv="oeresults_$!catalogid" href="$resultsPage=1&oemaxlayout=2'" >1</a></td>	
+						    <td>...</td>
+						   #end
+						#end
+						
+						#foreach( $before in $hits.linksBefore() )
+						<td  id="navbox"><a class="ajax" targetdiv="oeresults_$!catalogid" href="$resultsPage=$before&oemaxlayout=2" >$before</a></td>		
+						#end
+						<td  id="navboxselected"><a  class="ajax" targetdiv="oeresults_$!catalogid" href="$resultsPage=$thispage&oemaxlayout=2" >$!thispage</a></div></td>
+						#foreach( $after in $hits.linksAfter() )
+						<td  id="navbox"><a  class="ajax" targetdiv="oeresults_$!catalogid" href="$resultsPage=$after&oemaxlayout=2">$after</a></td>		
+						#end
+						#set($size=${hits.linksAfter().size()})
+						#set( $size = $size - 1 )
+						
+						
+						#if($size>0)
+							#if ($hits.linksAfter().get($size)< $hits.getTotalPages() )
+								<td>...</td>
+								<td  id="navbox"><a  class="ajax" targetdiv="oeresults_$!catalogid" href="$resultsPage=$hits.getTotalPages()&oemaxlayout=2" >$hits.getTotalPages()</a></td>	
+							#end
+						#end
+					
+					</tr>
+				</table>
+			</td>
+			
+			<td nowrap >
+				#if( $hits.prevPage() )
+				<a class="ajax" targetdiv="oeresults_$!catalogid" href="$resultsPage=$hits.prevPage()&oemaxlayout=2" title="Previous ( alt p enter)" accesskey="p" ><img src="$home${themeprefix}/entermedia/images/back_16x16.png" align="absmiddle"  /></a>
+				#end
+			</td>
+			<td nowrap valign="center">
+				#if ( $hits.nextPage() )
+				&nbsp;<a class="ajax" targetdiv="oeresults_$!catalogid" href="$resultsPage=$hits.nextPage()&oemaxlayout=2"   title="Next (alt n enter)" accesskey="n"><img src="$home${themeprefix}/entermedia/images/forwd_16x16.png" align="absmiddle"  /></a>
+				#end
+			</td>
+		</tr>
+	</table>
+	
+#end	

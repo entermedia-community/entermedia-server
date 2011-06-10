@@ -1,0 +1,6 @@
+#
+#Fri Jul 09 14:12:57 EDT 2010
+Administration\ Interface=nistrationsoberfl\u00E4che
+\ with\ a\ password\ of\ =einem Passwort
+Front\ End=t-End
+To\ start\ with\ please\ login\ as=e loggen Sie sich mit als Start-

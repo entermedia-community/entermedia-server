@@ -1,0 +1,21 @@
+#set( $parentpage = $context.parent.page )
+
+<div class="uploadapplet">
+	<APPLET code="org.openedit.uploader.UploadApplet" width="0" height="0" MAYSCRIPT
+		id="uploadapplet$!count"
+		archive="$home/system/system-upload.jar?v=$parentpage.appletserial">
+		<PARAM name="uploadurl"
+			value="${context.siteRoot}$home/${applicationid}/settings/filemanager/upload/uploadfile-finish.html" />
+		<PARAM name="localpath" value="$filePath"/>
+		<PARAM name="cookies" value="$browser.getCookieListing()" />
+		<PARAM name="savepath" value="${catalogid}/data/originals/${asset.sourcePath}/" />
+		#if( $parentpage.uploadtype == "multi" )
+		<PARAM name="count" value="$count"/>
+		#end
+		
+		 Your browser does not support Java Applets. Please check that Java is 
+		 properly installed in this computer and that you're using a Java-compatible
+		 web browser. 
+	
+	</APPLET>
+</div>

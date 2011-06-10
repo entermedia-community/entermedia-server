@@ -1,0 +1,82 @@
+<h2>[[Installed Apps]]</h2>
+
+
+#set( $searcher = $searcherManager.getSearcher($applicationid,"sites") )
+
+#set( $hits = $searcher.getAllHits() )
+#if( $hits.size() > 0 )
+
+<div >
+<table >
+#foreach( $rows in $hits.getPageInRows(4))
+<tr >
+	#foreach( $view in $rows )
+	<td align="center" style="padding:8px;" nowrap>
+		<a href="$home$view.path"><h3>$view.name</h3><img src="$home/$applicationid/sites/images/${view.frontend}.png"/><br>$context.siteRoot$view.path</a>
+	</td>
+	#end
+</tr>
+#end
+
+</table>
+
+#set( $searchtype = $context.getRequestParameter("searchtype") )
+<form name="editview" > 
+	<input type="hidden" name="link" id="emselectedrow" />
+</form>
+
+</div>
+#end
+
+
+#if( $canviewsettings )
+
+<br><br>
+
+<div class="emcalloutcontent" style="width: 600px">
+<h2>Install New Application</h2>
+<form name="addsite" action="addnew.html">
+
+#set( $catalogs = $usersettings.getCatalogs() )
+#if( $catalogs.size() == 0 )
+[[You are not allowed to upload assets to any catalogs.]]
+#elseif( $catalogs.size() == 1 )
+<input name="catalogid" value="$catalogs.get(0).getId()" type="hidden" />
+#else
+
+<div style="text-align: right; width: 500px;">
+	#set( $searcher = $searcherManager.getSearcher($applicationid,"frontends") )
+	#set( $frontends = $searcher.getAllHits() )
+	[[Application:]]
+	<select name="frontend.value" >
+		<option value=""></option>
+		#foreach ($front in $frontends)
+		<option value="$front.path">$front.name</option>
+		#end
+	</select>
+	<br><br>
+
+	[[Title]]:  <input name="title.value" value="" /> 
+	
+	<br><br>
+	
+	[[Catalog:]]
+	
+	<select name="newcatalogid" >
+		<option value=""></option>
+		#foreach ($catalog in $catalogs)
+		<option value="$catalog.id">$context.getText($catalog.name)</option>
+		#end
+	</select>
+	<br><br>
+	#end
+
+	
+	[[Website]]: $context.siteRoot/ <input name="newpath" value="foldername" /> 
+	<input  type="submit" value="[[Add]]"/>
+</div>
+</form>
+
+</div>
+</div>
+#end

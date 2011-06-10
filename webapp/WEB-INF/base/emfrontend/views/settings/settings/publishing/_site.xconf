@@ -1,0 +1,8 @@
+<page>
+	<property name="fallbackdirectory">/${applicationid}/components/search</property>
+	<property name="searchtype">publishdestination</property>
+	<property name="searchhome">/${applicationid}/views/settings/publishing</property>
+	<property name="showsearch">false</property>
+	<property name="showactions">true</property>
+	<property name="tab">publish</property>
+</page>

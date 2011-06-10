@@ -1,0 +1,14 @@
+#if($context.parent.page.uploadtype == "multi")
+	#set( $multiselect = "true" )
+#else
+	#set( $multiselect = "false" )
+#end
+<div>
+
+<APPLET style="margin-left: 20px;" code="org.openedit.uploader.FilePickerApplet"
+	width="600" height="70" MAYSCRIPT
+	archive="$home/system/system-upload.jar?v=$context.findValue('appletserial')">
+	<PARAM name="bgcolor" value="E0E0E0" />
+	<PARAM name="multiselect" value="$multiselect"/>
+</APPLET>
+</div>

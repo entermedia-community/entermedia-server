@@ -1,0 +1,24 @@
+<div id="emcomments">
+##TODO set pages
+
+	#foreach ($comment in $comments.getPageOfHits())
+		<div class="emcomment">
+		<span class="emcommentuser"><a href="$home$apphome/users/${user.getId()}/index.html">$comment.user.shortDescription</a> </span>	
+		<span class="emcommenttext">$comment.comment</span>
+		<span class="emcommentdate">$comment.getShortDate($context.locale)</span>
+			#if($caneditasset)
+				<div align="right">
+				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}/${catalogid}/comments/removecomment.html">
+					<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
+					<input type="hidden" name="commenttext" value="#esc($comment.comment)"/>
+					<input type="hidden" name="commentuser" value="$comment.user.userName"/>
+					<input type="hidden" name="commentdate" value="$comment.date.time"/>
+					<input type="hidden" name="catalogid" value="$catalogid"/>
+				</form>
+				<a href="#" onclick="jQuery('#removeComment${velocityCount}').submit();return false;">remove</a>
+				</div>
+			#end
+		</div>
+	#end
+</div>
+

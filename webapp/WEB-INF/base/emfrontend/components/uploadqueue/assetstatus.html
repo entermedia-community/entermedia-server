@@ -1,0 +1,13 @@
+#if( $asset.getUploadPercentage() == 1)
+		#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
+		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+		<img class="smallthumb" style="height:64px;" src="$home$thumbpath" border="0" />
+#else
+#set( $barsize=$asset.getUploadPercentage()*120)
+#set( $percentage=$asset.getUploadPercentage()*100)
+#set( $percentageString=$percentage.toString())
+#set( $percentageString=$percentageString.substring(0, $percentageString.indexOf(".")) )
+<div style="border:1px solid #000000;width:120px;text-align: left;">
+	<div style="background-color:#6fa45e;width:${barsize}px;height:12px;">$percentageString%</div>
+</div>
+#end

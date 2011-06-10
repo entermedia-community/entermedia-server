@@ -1,0 +1,15 @@
+<form id="uploadform" class="ajaxform" targetdiv="messages"
+	method="post" action="$home$page.uploaderpath/validate.html">
+<input type="hidden" name="oemaxlevel" value="1"/>
+<input type="hidden" name="nextstep" value="$home$page.uploaderpath/step2.html"/>
+<input type="hidden" name="catalogid" value="$!catalogid"/>
+<input type="hidden" name="searchtype" value="$page.searchtype"/>
+
+<!-- Fields pointing to files go here -->
+<input id="uploadforminsertionpoint" type="hidden"/>
+
+$pages.include("$page.uploaderpath/step1.html?count=0")
+
+<p><button type="submit" class="uploadbutton">Upload</button></p>
+
+</form>

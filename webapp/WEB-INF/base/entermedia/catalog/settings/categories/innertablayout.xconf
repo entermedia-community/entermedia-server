@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Assets">
+    <value>Assets</value>
+    <value locale="es">Assetos</value>
+  </property>
+  <property name="text.Edit Name">
+    <value>Edit Name</value>
+    <value locale="es">Editar Nombre</value>
+  </property>
+  <property name="text.Move and Sort">
+    <value>Move and Sort</value>
+    <value locale="es">Mover y Clasificar</value>
+  </property>
+  <property name="text.Images">
+    <value>Images</value>
+    <value locale="es">Imágenes</value>
+  </property>
+  <property name="text.Selected">
+    <value>Selected</value>
+    <value locale="es">Selección</value>
+  </property>
+  <property name="text.Permissions">
+    <value>Permissions</value>
+    <value locale="es">Permisos</value>
+  </property>
+  <property name="text.Options">
+    <value>Options</value>
+    <value locale="es">Opciones</value>
+  </property>
+  <property name="text.Properties">
+    <value>Properties</value>
+    <value locale="es">Propiedades</value>
+  </property>
+</page>

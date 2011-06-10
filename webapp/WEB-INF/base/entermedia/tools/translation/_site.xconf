@@ -1,0 +1,7 @@
+<page>
+	<property name="sectiontitle">
+		<value>Translation Exporter</value>
+	</property>
+	<property name="tab">translations</property>
+	<inner-layout>/${applicationid}/settings/servermaintenance/inner-layout.html</inner-layout>
+</page>

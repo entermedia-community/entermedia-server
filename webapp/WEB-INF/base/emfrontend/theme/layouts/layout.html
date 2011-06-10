@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+#if( $asset )
+	<title>$asset - $content.title</title>
+#elseif( $category.name )
+	<title>$category.name  - $content.title</title>
+#elseif( $content.sectiontitle )   
+	<title>$content.sectiontitle  - $content.title</title>
+#else
+	<title>$content.title</title>
+#end
+
+#if( $asset.caption )
+<meta name=”description” content=”$asset.caption” />
+#end
+
+$pages.include("${themeprefix}/layout/includes.html")
+</head>
+
+<body id="embody">
+$pages.includeContent()
+</body>
+</html>

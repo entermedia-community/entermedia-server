@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="MediaAdminModule.changeTheme"/>
+  
+  <property name="text.Theme has been changed.">
+    <value locale="es">El Tema ha sido cambiado.</value>
+  </property>
+  <property name="text.Refresh Page">
+    <value locale="es">Actualizar página</value>
+  </property>
+  <property name="text.Theme Change">
+    <value locale="es">Cambio de Tema</value>
+  </property>
+</page>

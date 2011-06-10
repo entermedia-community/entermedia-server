@@ -1,0 +1,9 @@
+#set( $catalogid = $context.getRequestParameter("catalogid") )
+#set( $searcher = $searcherManager.getSearcher($content.applicationid, "catalogs") )
+#set( $item = $searcher.searchById($catalogid) )
+
+<div id="row_$!catalogid">
+	$item.name
+	<a href="#" onclick="removeCatalog('$catalogid')"><img src="$home/system/images/toolbar/deletefile.gif"/></a>
+	<input type="hidden" name="catalogid" value="$!catalogid"/>
+</div>

@@ -1,0 +1,5 @@
+<page>
+	<property name="fallbackdirectory">/${applicationid}/tools/data</property>
+	<property name="showsidemenu">true</property>
+	<property name="dataroot">/${catalogid}/side/search</property>
+</page>

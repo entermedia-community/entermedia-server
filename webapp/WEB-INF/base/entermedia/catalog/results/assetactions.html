@@ -1,0 +1,32 @@
+#set( $id = "thumbmenu$hit.catalogid$hit.id")
+#set($hitssessionid = $context.findValue("hitssessionid"))
+#if($hitssessionid)
+	#set($hits = $context.getSessionValue($hitssessionid))
+#end
+
+
+#set( $args = "applicationid=$applicationid&assetid=$hit.id&catalogid=$hit.catalogid&KeepThis=true&TB_iframe=true&hitssessionid=$!hits.sessionId" )
+<ul class="emactions">
+
+	<li><a class="thickbox" href="$home$cataloghome/downloads/history/downloadform.html?iframe=true&height=200&width=400&sourcepath=$asset.sourcepath">[[Download]]</a><li>
+	<li><a class="thickbox" href="${home}/${hit.catalogid}/results/thumbnails/shareasset.html?$args&height=600&width=800">[[Mail Link to...]]</a></li>
+	#if($caneditasset)
+		<li><a href="$home/$hit.catalogid/detailviewer/generalinformation/index.html?assetid=${hit.id}&hitssessionid=$!hits.sessionId">[[Edit Metadata]]</a></li>
+		#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+		#if( $type == "image")<li><a href="$home/$hit.catalogid/edit/index.html?assetid=${hit.id}&hitssessionid=$!hits.sessionId">[[Photo Edit]]</a></li>#end
+	#end
+	#if($caneditalbums)
+	<li><a class="thickbox" href="$home/$applicationid/albums/addtogallery.html?$args&height=300&width=400">[[Add to]] $content.albumname</a></li>
+	<li><a class="thickbox" href="$home/$applicationid/albums/removefromgallery.html?$args&height=300&width=400">[[Remove from]] $content.albumname</a></li>
+	#end
+	<li>
+		<a href="http://www.facebook.com/sharer.php?u=$context.siteRoot$home/$asset.catalogid/assets/$asset.sourcepath/index.html&t=$!asset.caption" onclick="window.open(this.href, 'child', 'left=300,top=150,height=400,width=700,scrollbars'); return false"><img src="$home$themeprefix/entermedia/images/faceb_share.png" /></a>
+	</li>
+	<li>
+	</li>
+</ul>
+#if( $canviewclipboards )
+<p style="text-align: left;">[[Copy To Clipboard]]:</p>
+<div style="padding: 4px 0 0 20px;">$pages.include("/$applicationid/albums/selection/toggleitem.html?assetid=$asset.getId()&catalogid=$asset.getCatalogId()&viewtype=thumbs")
+</div>
+#end

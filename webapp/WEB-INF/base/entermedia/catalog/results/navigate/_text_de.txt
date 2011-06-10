@@ -1,0 +1,4 @@
+#
+#Tue Apr 27 17:03:39 EDT 2010
+Edit\ Layout=Layout bearbeiten
+settings=Einstellungen

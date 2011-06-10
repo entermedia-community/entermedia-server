@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<page>
+  
+	<path-action name="Admin.autoLogin" />
+    <path-action name="MediaArchiveModule.loadApplicationId" />
+	<path-action name="ProfileModule.loadUserProfile"></path-action>
+    <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+    <property name="recentactivityid">${parentapplicationid}</property>
+
+	<property name="profilemanagerid">${catalogid}</property>
+
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="UserProfileModule.loadUserPreferences"  />	
+	<path-action name="Admin.allowViewing">
+		<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
+	</path-action>
+
+	<inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
+  	
+	<!-- Properties -->
+	<property name="editable">false</property>
+	<property name="enableprofilefilters">true</property>
+	<property name="systemfromemail">noreply@entermediasoftware.com</property>
+	<property name="systemfromemailname">EnterMedia</property>
+	<property name="oetextfilter">translation</property>
+	<property name="makeversion">false</property>
+  	<property name="hitsname">hits</property>
+  	<property name="allowguestregistration">true</property>
+	<property name="homelink">http://entermediasoftware.com/</property>
+	<property name="section">home</property>
+
+	<!-- property name="contentsiteroot">http://s3.amazonaws.com/emtube</property -->
+
+ 	<property name="themeprefix">/${applicationid}/theme</property>
+
+	<permission name="view">
+		<user/>
+	</permission>
+
+  	<permission name="viewupload">
+		<userprofile property="viewupload" equals="true" />
+	</permission>
+  	<permission name="vieworders">
+		<userprofile property="vieworders" equals="true" />
+	</permission>
+  	<permission name="viewassets">
+		<or>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="viewassets" equals="true" />
+		</or>
+	</permission>
+	  	<permission name="editasset">
+			<or>
+				<userprofile property="assetadmin" equals="true" />
+				<userprofile property="editasset" equals="true" />
+			</or>	
+		</permission>
+	<permission name="viewsettings">
+		<or>
+			<userprofile property="viewsettings" equals="true" />
+			<userprofile property="viewsettings" equals="partial" />
+		</or>
+	</permission>
+
+	<permission name="comment">
+		<user />
+	</permission>		
+	<permission name="vote">
+		<user />
+	</permission>	
+	<permission name="upload">
+		<user />
+	</permission>
+	<permission name="download">
+		<user />
+	</permission>
+	<permission name="socialshare">
+		<user />
+	</permission>
+	
+</page>

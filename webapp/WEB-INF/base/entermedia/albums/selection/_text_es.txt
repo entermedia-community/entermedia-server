@@ -1,0 +1,5 @@
+#
+#Tue May 04 12:18:32 CLT 2010
+View\ Clipboard=Ver Portapapeles
+Buscar=Buscar
+Clipboard=Portapapeles

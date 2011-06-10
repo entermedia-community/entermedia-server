@@ -1,0 +1,4 @@
+#
+#Thu Apr 08 16:07:28 EDT 2010
+User\ Activity\ Log=Benutzer Aktivit\u00E4tsprotokoll
+text.selection1=Senden

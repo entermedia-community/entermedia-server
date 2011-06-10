@@ -1,0 +1,11 @@
+<page>
+	<layout />
+	<inner-layout />
+	
+	<path-action allowduplicates="true" name="CategoryModule.getCatalogTree">
+	    <tree-name>catalogTree</tree-name>
+	    <url-prefix>/${catalogid}/categories/</url-prefix>
+	    <url-postfix>.html?oemaxlevel=1&amp;</url-postfix>
+	</path-action>
+	
+</page>

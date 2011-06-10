@@ -1,0 +1,27 @@
+
+#set ($itemid = $context.getRequestParameter("itemid"))
+#set ($publishdestid = $context.getRequestParameter("publishdestid"))
+
+#set ($publishdestsearcher = $searcherManager.getSearcher($catalogid, "publishdestination"))
+#set ($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
+
+#set ($showselector = true)
+
+#if ($publishdestid)
+	#set ($dest = $publishdestsearcher.searchById($publishdestid))
+	#if ($dest.convertpreset)
+		#set ($showselector = false)
+		#set ($defaultpreset = $presetsearcher.searchById($dest.convertpreset))
+		$defaultpreset
+		<input type="hidden" name="${itemid}.presetid.value" value="$dest.convertpreset"/>	
+	#end
+#end
+
+#if ($showselector)
+	<select name="${itemid}.presetid.value">
+	#foreach ($preset in $presetsearcher.getAllHits())
+		<option value="$preset.id">$preset</option>
+	#end
+	</select>
+#end
+	      

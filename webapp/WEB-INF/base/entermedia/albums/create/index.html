@@ -1,0 +1,64 @@
+#set($numfriends = $friends.size())
+
+<h2>[[New]] $content.albumname</h2>
+<form name="createposting" action="./newposting.html">
+	<input type="hidden" name="createshare" value="true"/>
+	<div id="newposting" style="margin: 10px;width: 700px; background-color: #F7F7F7; border: 1px solid #BBB; padding: 5px;">
+		<div style="display: inline-block; width: 75px;float: left; padding: 5px;" >
+			<img src="$home/$applicationid/catalogs/public/downloads/preview/small/users/$owner.id/image.jpg"/>
+		</div>
+		<div class="emtable" style="margin: 5px;">
+			<div class="row">			
+				<span><b>[[Send To]]:</b></span>
+				<span>
+					<select name="postingsendto" onchange="selectPostingSendTo('$numfriends'); return false;">
+						<option selected value="homepage">[[Home Page]]</option>
+						<option selected value="email">[[Email Addresses]]</option>
+						#if($numfriends > 0)
+						<option value="allfriends">[[All My Friends]]</option>
+						<option value="selectfriends">[[Select Friends]]</option>
+						#end
+					</select>
+				</span>
+			</div>
+			<div class="row">
+				<span></span>
+				<span>
+					<div id="postingsendtodetail" style="display:none"></div>
+				</span>
+			</div>
+			<div class="row">
+				<span><b>[[Subject]]: </b></span>
+				<span>
+					<input name="postingsubject" value="#if(!$album.isSelection())$!album.name#end" size="54"/>
+				</span>
+			</div>
+			<div class="row">
+				<span><b>[[Description]]: </b></span>
+				<span>
+					<textarea id="postingbody" rows="5" cols="34" name="postingbody" class="resizer">$!album.details</textarea>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div style="margin:10px;width:700px;">[[Include Clipboard:]]
+		<select name="postingattachments" onchange="showPostingAttachments('$user.getId()'); return false;">
+			<option value="none">[[none]]</option>
+			#foreach($selection in $albumlist.getSelectionAlbums())
+				<option #if($selection.id == "1") selected #end value="$selection.id">$context.getText("selection${selection.getId()}") ($selection.size($context))</option>
+			#end
+		</select>
+		<input style="float:right;padding-bottom:2px;" type="submit" value="[[Post]]"/> 
+	</div>
+	<div style="margin:10px;width:712px;">
+		<div id="postingshowattachments" style="display:none"></div>
+	</div>
+</form>
+<script>
+	jQuery(document).ready(
+		function() {
+			showPostingAttachments('$user.getId()');
+			selectPostingSendTo('$numfriends');
+		}
+	); 
+</script>

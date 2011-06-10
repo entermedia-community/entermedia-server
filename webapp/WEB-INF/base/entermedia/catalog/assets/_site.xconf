@@ -1,0 +1,121 @@
+<page>
+	<inner-layout>/${themeprefix}/entermedia/layouts/asseteditor.html</inner-layout>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<!-- in case it looks for the $asset variable -->
+	<path-action name="AssetControlModule.loadAssetPermissions"  />
+	
+	<property name="virtual">true</property>
+	<property name="assetrootfolder">/${catalogid}/assets</property>
+	<property name="importtype">imageimportconvert</property>
+	<property name="mountsonly">true</property>
+	<property name="indexfolders">false</property>
+	<property name="showsidemenu">true</property>
+
+	<permission name="editasset">
+		<or>
+			<group name="administrators"/>
+			<action name="AssetControlModule.checkFolderMatchesUserName" />
+		</or>
+	</permission> 
+	<permission name="changeattachment">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="deleteasset">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="editassetcategories">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+
+	<permission name="comment"><boolean value="true" /></permission>	
+	<permission name="viewasset">
+		<or>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="viewassets" equals="true" />
+		</or>
+	</permission>
+	<permission name="convert"><boolean value="true"/></permission>
+	<permission name="viewassetdownloads"><boolean value="true"/></permission>
+	<permission name="viewmediaviewer"><boolean value="true"/></permission>
+	
+	<permission name="metadatadetails"><user /></permission>
+	
+	<permission name="viewattachments">		
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+
+
+	<permission name="download">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+			<group name="guest"/>
+		</or>
+	</permission>
+	<permission name="assetpermissions">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="assetpermissions">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="viewassetedit">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="viewassetdownloadhistory">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="viewassetedithistory">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="viewassetpreviewhistory">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	<permission name="viewassetorderhistory">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+	
+	<permission name="forcewatermark"><boolean value="false" /></permission>
+  <!--default to false permission name="forcewatermark">
+    <and>
+      <not>
+        <group id="administrators"/>
+      </not>
+      <not>
+        <action name="OrderModule.checkItemApproval"/>
+      </not>
+    </and>
+  </permission -->
+</page>

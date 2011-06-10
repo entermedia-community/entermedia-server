@@ -1,0 +1,21 @@
+<permissions>
+	<permission id="viewaddmedia" name="Add Media" description="View the create new media link"/>
+	<permission id="browsecategories" name="Asset Browser" description="Allow browsing of assets by category"/>
+	<permission id="viewadvancedsearch" name="Advanced Search" description="Use the advanced search"/>
+	<permission id="viewsites" name="View Sites" description="View front end web sites"/>
+	<permission id="editsites" name="Edit Sites" description="Edit list of front end web sites"/>
+	<permission id="viewclipboards" name="Clipboards" description="View Clipboards"/>	
+	<permission id="viewcatalogsettings" name="Catalog Settings" description="View Catalog Settings"/>	
+	<permission id="editsavedquery" name="Edit Live Search" description="Be able to delete and add new live searches viewable to others"/>
+	<permission id="vieweditwebserver" name="Edit Web Server" description="Change theme and edit using filemanager"/>
+	<permission id="rssfeed" name="Provide RSS Feed" description="Provide RSS feed link for saved searches"/>
+	<permission id="viewreports" name="Reports" description="Run reports"/>
+	<permission id="viewsettings" name="Show Settings" description="Allow admin settings to be changed"/>
+	<permission id="viewusersecurity" name="User Manager" description="View User and Group manager"/>
+	<permission id="viewsavedquery" name="View Live Searches" description="View live searches that have been previously created"/>
+	<permission id="view" name="View Site" description="Forces users to login before they can visit the site"/>
+	<permission id="viewaquicksearch" name="Quick Search" description="Use the quick search"/>
+	<permission id="upload" name="Upload Files" description="Be able to upload files"/>
+	<permission id="multiedit" name="Show Multi Edit Link" description="Be able to edit multiple records at once" />
+</permissions>
+

@@ -1,0 +1,22 @@
+<page>
+	<property name="text.Create a relationship to an existing item">
+		<value>Create a relationship to an existing item</value>
+		<value locale="es">Crear relación con un item existente</value>
+	</property>
+	<property name="text.This will create a relationship between">
+		<value>This will create a relationship between</value>
+		<value locale="es">Esto creará una relación entre</value>
+	</property>
+	<property name="text.and the selected version">
+		<value>and the selected version</value>
+		<value locale="es">y la versión seleccionada</value>
+	</property>
+	<property name="text.Search for existing item">
+		<value>Search for existing item</value>
+		<value locale="es">Busque un item existente</value>
+	</property>
+	<property name="text.Version Type">
+		<value>Version Type</value>
+		<value locale="es">Tipo de Versión</value>
+	</property>
+</page>

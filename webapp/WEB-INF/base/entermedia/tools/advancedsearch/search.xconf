@@ -1,0 +1,3 @@
+<page>
+	<path-action name="PageValue.loadPageVariable" bean="searcherManager"/>
+</page>

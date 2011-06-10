@@ -1,0 +1,128 @@
+/*
+ * Created on May 19, 2006
+ */
+package org.openedit.entermedia.generators;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.openedit.OpenEditException;
+import com.openedit.WebPageRequest;
+import com.openedit.generators.Output;
+import com.openedit.page.Page;
+import com.openedit.users.User;
+
+public class ToolbarGenerator extends BaseToolBarGenerator
+{
+	private static final Log log = LogFactory.getLog(ToolbarGenerator.class);
+	
+	public void generate(WebPageRequest inPageRequest, Page inPage, Output inOut) throws OpenEditException
+	{
+		boolean added = addHeader(inPageRequest, inOut);
+
+		if (added)
+		{
+			Page header = getPageManager().getPage( getHeaderPath() );
+			if( header.exists() )
+			{
+				inPageRequest.putPageValue("editPage",inPage);
+				header.generate(inPageRequest, inOut);
+			}
+		}	
+		
+		getWraps().generate(inPageRequest, inPage, inOut);
+		
+		if ( added && getFooterPath() != null )
+		{
+			addFooter(inPageRequest, inOut);
+		}
+	}	
+	public boolean addHeader( WebPageRequest inPageRequest, Output inOut ) throws OpenEditException
+	{
+		User user = inPageRequest.getUser();
+		
+		if (user == null)
+		{
+			return false;
+		}
+		Page requestedPage  = inPageRequest.getPage();
+		boolean edit = Boolean.parseBoolean(user.get("showeditor"));
+		if (edit && !requestedPage.isBinary() && inPageRequest.isEditable() )
+		{
+			return true;
+		}
+
+		boolean debug = Boolean.parseBoolean(user.get("showdebug"));
+
+		if( debug && requestedPage.isHtml())
+		{
+			return true; //we probably don't need to check for the header
+		}
+		
+		
+	
+		
+//		String show = inPageRequest.getRequestParameter("showtoolbar");
+//		if ( show != null && !Boolean.parseBoolean(show))
+//		{
+//			return false;
+//		}
+
+			return false;
+	}
+	public boolean addFooter(WebPageRequest inPageRequest, Output inOut) throws OpenEditException
+	{
+		Page requestedPage  = inPageRequest.getPage();
+		if ( requestedPage.isBinary())
+		{
+			return false;
+		}
+		Page footer = getPageManager().getPage( getFooterPath() );
+
+		inPageRequest.putPageValue("editPage",requestedPage);
+		footer.generate(inPageRequest, inOut);
+		return true;
+	}
+	/**
+	 * This seems to complex. The only thing needed now is editable checks
+	 * @param inPageRequest
+	 * @return
+	 * @throws OpenEditException
+	 
+	protected boolean checkFlags( WebPageRequest inPageRequest ) throws OpenEditException
+	{
+		PageAction inAction = inPageRequest.getCurrentAction();
+
+		String flagKey = inAction.getConfig().getChildValue( "flag" );
+		
+		Page requestedPage  = (Page)inPageRequest.getPage();
+		String propertyFlag = requestedPage.getProperty( flagKey );
+		String pageValueFlag = (String)inPageRequest.getPageValue( flagKey );
+		String requestParameterFlag = inPageRequest.getRequestParameter( flagKey );
+		log.debug( "Checking decoration flag " + flagKey + " for page " + requestedPage );
+		if ( "false".equals( propertyFlag )
+		  || "false".equals( pageValueFlag )
+		  || "false".equals( requestParameterFlag ) )
+		{
+			return false;
+		}
+		
+		String permission = inAction.getConfig().getChildValue( "permission" );
+		if ( permission != null )
+		{
+			if ( inPageRequest.getUser() == null)
+			{
+				return false;				
+			}
+			else
+			{
+				log.debug("Checking user");
+				return inPageRequest.getUser().hasPermission(permission);
+			}
+		}
+		return true;
+	}
+	*/
+	
+
+}

@@ -1,0 +1,45 @@
+		#set($hitssessionid = $context.findValue("hitssessionid"))
+		#if($hitssessionid)
+			#set($hits = $context.getSessionValue($hitssessionid))
+		#end
+		#if( $hits )
+		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+		#set($showIndex = $indexOf + 1)
+		#set($previous = $hits.previous($indexOf))
+		#set($next = $hits.next($indexOf))
+		<div class="emmenuarea">
+			<div class="emphotocount">
+				#set ($catalogname = $searcherManager.getSearcher(${applicationid}, "catalogs").searchById($catalogid))
+				<a href="$home$cataloghome/categories/index.html">$catalogname</a>
+				
+			#if( $hits.dataSource )
+				#set( $backurl = "$home/${hits.dataSource}.html" )
+				&gt; <a href="$backurl?hitssessionid=$hits.sessionId">[[Results]] </a>
+			#end
+			    #foreach ( $parent in $archivemenu.findSelectedParents(1) )
+					#if( $parent.path )
+						&gt; <a href="$home${parent.path}#if( $asset )?assetid=$asset.id#end" >$parent.text</a>
+					#end
+				#end
+				&gt; [[Item]] $showIndex [[of]] $hits.size()
+			</div>
+			
+			<div class="emprevnext" >
+				#if($previous)
+					<a href="${home}/${previous.catalogid}/detailviewer/viewer/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits">[[Previous]]</a>
+				#end
+				#if($next)
+					$context.putPageValue("hits", $hits)
+					<a href="${home}/${next.catalogid}/detailviewer/viewer/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">[[Next]]</a>
+					###set( $gonext = "showpath('emmediaviewer','${home}/${next.catalogid}/detailviewer/viewer/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}&slideshow=3000',2)")
+				#end
+			    | <!-- start lightbox slideshow stuff -->
+			    #set ($link = $mediaarchive.asLinkToPreview($asset.sourcepath))
+				<a class="slideshow thickbox" 
+					href="$home$link" target="_parent"
+					pageturner="$home/${applicationid}/tools/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
+				    title="$asset.name">[[Slideshow]]</a>
+			</div>
+		</div>
+		#end
+

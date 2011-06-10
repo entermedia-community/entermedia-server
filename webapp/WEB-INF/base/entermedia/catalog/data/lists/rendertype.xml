@@ -1,0 +1,7 @@
+<properties>
+	<property id="all" >All Types</property>
+	<property id="document" >Documents</property>
+	<property id="video" >Video</property>
+	<property id="image" >Image</property>
+	<property id="audio" >Audio</property>
+</properties>	

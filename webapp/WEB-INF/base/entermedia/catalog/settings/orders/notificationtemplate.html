@@ -1,0 +1,49 @@
+<p>Thank you for your recent order.</p>
+
+<p>Here is the updated status of your order:</p> 
+
+Order Number: $data.getId()
+
+<p>
+THESE RETOUCHING NOTES ARE FOR EVERY PHOTO. YOU WILL NOTICE 
+ADDITIONAL NOTES NEXT TO EACH FILE NAME. SUBDUE WRINKLES UNDER 
+AND AROUND EYES, REMOVE STRETCH MARKS, BLUR FANS, REMOVE LOGOS FROM 
+KNEE, ELBOW PADS AND GLOVES, REMOVE ACNE FROM ARMS, SHOULDERS AND 
+CHEST, DO NOT FLOP PHOTOS, SMOOTH UNDER BREASTS AND ON STOMACH, 
+TRIM WAIST AREA, SOFTEN FOREHEAD, REMOVE ANY ACNE ON ARMS AND 
+FOREARM, CLEAN UP FLY AWAY HAIRS.
+</p>
+Order List:
+<table>
+
+#foreach( $item in $orderassets )
+	 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+<tr>
+	<td>$asset.getName()</td>
+	<td>
+	#set ($status = $item.status)
+	#if ($status == "rejected") Hi-res access rejected
+	#elseif ($status == "approved") 
+	 Hi-res access granted
+	#else Request Received
+	#end
+	</td>
+</tr>
+<tr>
+	<td>Job Notes:</td>
+</tr>
+<tr>
+	<td>$!item.get("jobnotes")</td>
+</tr>
+<tr></tr>
+#end
+</table>
+
+#set( $appid = $data.applicationid )
+#if( !$appid )
+	#set( $appid = "archive")
+#end	
+<p><a href="$context.siteRoot$home/$appid/components/orders/vieworder.html?orderid=${data.id}">
+Click here</a> to review your order and download your images.</p>
+
+<p>If you have any questions, please reply to this email.</p>

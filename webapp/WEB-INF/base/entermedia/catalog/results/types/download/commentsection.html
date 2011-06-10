@@ -1,0 +1,20 @@
+#if(!$asset)
+	#set($assetid = $context.getRequestParameter("assetid"))		
+	#set($catalogid = $context.getRequestParameter("catalogid"))
+	#set($sourcepath = $context.getRequestParameter("sourcepath"))
+#else
+	#set($assetid = $asset.id)		
+	#set($catalogid = $asset.catalogId)
+	#set($sourcepath = $asset.sourcePath)
+#end
+	
+	#if( $comments && $comments.size() > 0 )
+		#foreach( $comment in $comments )
+			#set($lastcomment = $comment)
+		#end
+		$lastcomment.comment - $lastcomment.user 
+	#end
+	<br>
+<a style="text-decoration: none;" href="#" 
+	onclick="jQuery("#"+'downloadcommentsection_${catalogid}_${assetid}').load( '$home$cataloghome/results/types/download/addcomment.html',{assetid: '${assetid}'}); return false;"> 
+[[Change Note]]</a>

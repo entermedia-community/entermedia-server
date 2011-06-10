@@ -1,0 +1,3 @@
+<page>
+	<path-action name="UserProfileModule.loadUserPreferences" alltypes="true" />	
+</page>

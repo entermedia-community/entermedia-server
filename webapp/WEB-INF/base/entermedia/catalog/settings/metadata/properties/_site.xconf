@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+	<property name="searchtype">asset</property>
+</page>

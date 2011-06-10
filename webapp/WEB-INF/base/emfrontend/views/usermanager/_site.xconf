@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	
+	<property name="usermanagerhome">/${applicationid}/views/usermanager</property>
+	
+	<inner-layout>/${applicationid}/views/settings/innerlayout.html</inner-layout>
+	
+  	<path-action name="User.getUserManager"/>
+	<property name="allowpathrequestactions">true</property>
+
+  	<path-action allowduplicates="true" name="TabModule.selectTab">
+  	  <tablistname>oeuseradmin</tablistname>
+  	</path-action>
+  	
+</page>

@@ -1,0 +1,24 @@
+<h2>Friend Suggestions</h2>
+#set($users = $userManager.getUsers())
+#set($base = "$home/$applicationid/users")
+
+##Search box here
+
+<table>
+	#foreach( $usr in $users ) ##member is an ElementData object
+		#set($ismyfriend = $friends.getById("${owner.id}${usr}"))
+		
+		#if($user.id != $usr && !$ismyfriend)
+		<tr>
+			<td>
+				<a target="_parent" href="$base/${usr}/index.html"><img src="$base/${usr}/preview/thumb/image.jpg?subfolder=users/images&catalogid=$applicationid&sourcepath=${usr}/profile.jpg"/></a>
+			</td>
+			<td style="padding:10px">
+				<a target="_parent" href="$base/${usr}/index.html">$usr</a><br/>
+				<a href="$base/$usr/friends/addfriend.html?targetid=$usr"">add as friend</a>
+			</td>
+		</tr>
+		#end
+		#set($ismyfriend = false)	
+	#end
+</table>

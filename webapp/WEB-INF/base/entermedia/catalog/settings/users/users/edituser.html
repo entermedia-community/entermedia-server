@@ -1,0 +1,22 @@
+<form class="ajaxform validate" id="usereditform" targetdiv="usereditarea" action="$home$usermanagerhome/users/saveuser.html?">
+<input type="hidden" name="username" value="$userName"/>
+$context.putPageValue("searcher", $searcher)	 
+$context.putPageValue("view", "user/simpleuseredit")	
+$context.putPageValue("data", $selectedUser)	
+<input type="hidden" name="view" value="user/simpleuseredit"/>
+<input type="hidden" name="searchtype" value="user"/>
+<input type="hidden" name="catalogid" value="$searcher.catalogId"/>
+
+
+<br/>
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+<!-- 
+<table><tr><td>
+<div class="embutton" style="padding-left: 100px;">
+<a href="#" onclick="jQuery('#usereditform').submit();" >[[Save Changes]]</a>
+</div>
+</td></tr></table>
+ -->
+ 
+</form>

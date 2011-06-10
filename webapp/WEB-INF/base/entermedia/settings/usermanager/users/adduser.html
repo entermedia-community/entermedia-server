@@ -1,0 +1,22 @@
+<form class="ajaxform" targetdiv="parent.usersearchpanel" action="$home$usermanagerhome/users/adduser-finish.html" name="adduser" id="adduser">
+#set ( $group = $context.getRequestParameter("groupid") )
+#if ( !$group )
+	#set ( $group = $context.getRequestParameter("groups") )
+#end
+#if ($group)
+<input name="groups" type="hidden" value="$group"/>
+#end
+<h2>Create New User</h2>
+
+<div style="text-align:right;">
+[[Username]]:
+<input type="text" name="username" width="20" value="$!context.getRequestParameter("username")">
+<br/>
+[[Password]]:
+<input type="password" name="newpassword" value="">
+<br/>
+[[Retype password]]:
+<input type="password" name="retypedPassword" value="">
+<br/>
+<input type="button" value="Create" onclick="jQuery('#adduser').submit();">
+</form>

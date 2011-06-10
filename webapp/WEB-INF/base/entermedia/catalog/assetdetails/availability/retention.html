@@ -1,0 +1,27 @@
+#set ($view = $context.getRequestParameter("view"))
+#set( $print = $context.getRequestParameter("print") )
+
+$pages.include("$cataloghome/detailviewer/generic.html?view=$view",$context)
+
+#if($asset.recordseries)
+ 	#set( $retentionsearcher = $searcherManager.getSearcher("$mediaarchive.getCatalogId()","recordseries") )
+	#set( $series = $retentionsearcher.searchById($asset.recordseries) )
+	#set( $triggereventsearcher = $searcherManager.getSearcher("$mediaarchive.getCatalogId()","triggerevent") )
+	#if($series.triggerevent)
+		#set( $triggerevent = $triggereventsearcher.searchById($series.triggerevent) )
+		[[Trigger Event]]: $triggerevent.name
+	#end
+#end
+
+
+#if(!($print && $print==true))
+<p>Select the appropriate records retention
+ series based on the type of asset you are creating.
+ If you need assistance, visit this website to view
+ the Retention Schedules for Agency and Marketing: </p>
+
+<a target="_blank" href="http://intranet.opr.statefarm.org/irp/schedules/schedules_agency_marketing.html">
+http://intranet.opr.statefarm.org/irp/schedules/schedules_agency_marketing.html</a>
+
+<br />
+#end

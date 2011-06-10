@@ -1,0 +1,4 @@
+#set( $q = $searchstring)
+#foreach ($res in $suggestions)
+$!res.get('firstName') $!res.get('lastName') $!res.get('email')|$res.get('id')
+#end

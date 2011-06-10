@@ -1,0 +1,8 @@
+
+<catalog id="index" name="Index">
+  <property id="categoryhome">/entermedia/browse/testcatalog/categories/</property>
+  <property id="sortfield">name_sortableUp</property>
+  <catalog id="newassets" name="Pending">
+    <catalog id="newassets_admin" name="The Administrator"/>
+  </catalog>
+</catalog>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Upload Image">
+    <value>Upload Image</value>
+    <value locale="es">Subir Imagen</value>
+  </property>
+</page>

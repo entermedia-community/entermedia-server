@@ -1,0 +1,46 @@
+<div class="em-tabs" style="margin-bottom: 10px;" >
+<ul  >
+			##if ($canmanageusers)
+			<li id="security">
+				<a href="$home$apphome/views/settings/settingsgroup/index.html">Security Groups</a>
+			</li>
+			<li id="users" >
+				<a  href="$home$apphome/views/usermanager/users/index.html">Users</a>
+			</li>
+			##end
+			<li id="metadata">
+				<a href="$home$apphome/views/settings/metadata/index.html">Asset Types</a>
+			</li>
+			<li id="publish">
+				<a href="$home$apphome/views/settings/publishing/index.html">Publish Destinations</a>
+			</li>
+			<li id="transcode">
+				<a href="$home$apphome/views/settings/transcoding/index.html">Transcode Profiles</a>
+			</li>
+			
+			
+			<li id="titles">
+				<a href="$home$apphome/views/settings/production/titles/index.html">Titles and Episodes</a>
+			</li>
+			
+			
+		</ul>
+		</div>
+		
+		
+	$pages.includeContent()
+	
+		
+		<script type="text/javascript">
+		jQuery(document).ready(function () { 
+			jQuery("#$content.tab").attr("class", "active");
+			
+			}
+		);
+		
+		</script>
+		
+		
+		
+		
+		

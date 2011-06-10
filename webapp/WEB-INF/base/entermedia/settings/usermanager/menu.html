@@ -1,0 +1,128 @@
+#set($settingshome = "/$currentcatalog/settings")
+<div>
+  <b class="spiffy">
+  <b class="spiffy1"><b></b></b>
+  <b class="spiffy2"><b></b></b>
+  <b class="spiffy3"></b>
+  <b class="spiffy4"></b>
+  <b class="spiffy5"></b></b>
+  <div class="spiffyfg">
+		#set($tab = $content.getProperty("tab"))
+		<div class="catalogs_menu_item">
+			#if($tab == "users")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+  			
+			<a href="$home$usermanagerhome/users/index.html"><img src="$home$themeprefix/entermedia/images/settings/usermanagersmall.png">[[Users]]</a>	
+			
+			#if($tab == "users")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+			
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "groups")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home$usermanagerhome/groups/index.html"><img src="$home$themeprefix/entermedia/images/settings/groupsmanager.png">[[Groups]]</a>
+			
+			#if($tab == "groups")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "usersecurity")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home$usermanagerhome/permissions/index.html"><img src="$home$themeprefix/entermedia/images/settings/security.png">[[User Permissions]]</a>
+			#if($tab == "usersecurity")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_item">
+			#if($tab == "admin")
+				<div>
+				  <b class="spiffythree">
+				  <b class="spiffythree1"><b></b></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree5"></b></b>
+
+  					<div class="spiffyfgthree">
+  			#end
+			<a href="$home$usermanagerhome/admin/index.html"><img src="$home$themeprefix/entermedia/images/settings/contentsync.png">[[Import/Export]]</a>			
+			#if($tab == "admin")
+					</div>
+				
+				  <b class="spiffythree">
+				  <b class="spiffythree5"></b>
+				  <b class="spiffythree4"></b>
+				  <b class="spiffythree3"></b>
+				  <b class="spiffythree2"><b></b></b>
+				  <b class="spiffythree1"><b></b></b></b>
+				</div>
+			#end
+		</div>
+		<div class="catalogs_menu_settings">
+	  		<a href="$home/$applicationid/settings/index.html" ><span>[[Settings]]</span></a>
+		</div>
+		
+  </div>
+
+  <b class="spiffy">
+  <b class="spiffy5"></b>
+  <b class="spiffy4"></b>
+  <b class="spiffy3"></b>
+  <b class="spiffy2"><b></b></b>
+  <b class="spiffy1"><b></b></b></b>
+</div>
+

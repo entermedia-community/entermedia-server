@@ -1,0 +1,115 @@
+#set ( $catalog = $storeeditor.getCurrentCatalog() )
+<!-- script src="$home/system/javascript/scriptaculous.js?load=effects,dragdrop" type="text/javascript"></script -->
+
+<script language="javascript">
+	
+	moveCatalogUp = function()
+	{
+		var sform = document.moveForm;
+		sform.categoryid.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/settings/categories/move/up.html";
+		sform.submit();
+	}
+	moveCatalogDown = function()
+	{
+		var sform = document.moveForm;
+		sform.categoryid.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/settings/categories/move/down.html";
+		sform.submit();
+	}
+	moveCatalog = function()
+	{
+		var sform = document.jumpform;
+		sform.categoryid2.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/settings/categories/move/aschild.html";
+		if( sform.categoryid2.value )
+		{
+			sform.submit();
+		}
+		else
+		{ 
+			alert("No Destination Selected.");
+		}
+	}
+	moveCatalogHere = function()
+	{
+		var sform = document.jumpform;
+		sform.categoryid2.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/settings/categories/move/asparent.html";
+		sform.submit();
+	}
+	sortCatalog = function()
+	{
+		var sform = document.moveForm;
+		sform.categoryid.value = moveCatalogTree.lastselected;
+		sform.action="$home$cataloghome/settings/categories/move/sort.html";
+		sform.submit();
+	}
+
+moveCatalogTree = new Object();
+moveCatalogTree.lastselected = "";
+moveCatalogTree.name = "moveCatalogTree";
+moveCatalogTree.jumpToNode = function(inUrl, inNodeId)
+{
+	this.selectRow( inNodeId );
+	jQuery("#"+this.name + "treerow"+inNodeId).load( '$home/$content.catalogid/settings/categories/move/select.html',{nodeID: inNodeId, path: inUrl, origURL: "$content.path" });	
+	//jQuery("#"+"hidden-category-id").load( '$home/$content.catalogid/settings/categories/move/updatecategoryid.html',{nodeID: inNodeId, path: inUrl, origURL: "$content.path" });
+	//document.location = "$home/$content.catalogid/settings/categories/move/assetcategories.html?cache=false&categoryid=" + inNodeId;
+	return false;
+}
+moveCatalogTree.toggleNode = function(inUrl,inTreeId, inNodeId)
+{
+	jQuery("#"+this.name + "treerow"+inNodeId).load( '$home/$content.catalogid/settings/categories/move/toggle.html',{nodeID: inNodeId, treeid: inTreeId, origURL: "$content.path", categoryid: inNodeId });
+	return false;
+}
+moveCatalogTree.jumpAndOpenNode = function(inUrl,inTreeId, inNodeId)
+{
+	this.jumpToNode( inUrl, inNodeId );
+	//this.toggleNode( inUrl, inTreeId, inNodeId );
+	return false;
+}
+moveCatalogTree.selectRow = function( inNodeId )
+{
+	if( this.lastselected.length > 0 )
+	{
+
+		jQuery("#jumpform div.dtree .dTreeNodeSel").removeClass("dTreeNodeSel");
+		jQuery("#jumpform #" + this.name + "treeitem" + inNodeId).addClass("dTreeNodeSel");
+	}
+	this.lastselected = inNodeId;
+}
+</script>
+
+<table><tr>
+	
+<td>
+<h2>[[	Move and Sort]]</h2>	
+<p>[[Move selected category into]]: </p>
+  <form name="jumpform" id="jumpform" method="post" >
+		<input type=hidden name="categoryid" id="categoryid" value="$category.id" />
+		<input type=hidden name="categoryid2" id="categoryid2" />
+		<div  style="padding: 4px 0px 4px 4px; border:1px solid #000; min-width: 140px;min-height:160px;">
+		$pages.include("/${catalogid}/settings/categories/move/tree.html" )
+		</div>
+		<table><tr><td>
+		<div class="embutton">
+			<a href="#" onclick="moveCatalog()" >[[Save]]</a>
+		</div>				
+		</td><td>
+		<div class="embutton">
+			<a href="#" onclick="sortCatalog()" >[[Sort Children Alphabetically]]</a>
+		</div>
+		</td></tr></table>
+</form>
+
+</td><td>
+<form name="moveForm" action="movecatalog.html" method="post">
+
+<input style="margin-left: 25px;" type="image" title="[[Move Up]] "  src="$home/system/images/toolbar/moveup.jpg"  onclick="javascript:moveCatalogUp();"/><br>
+<input style="margin-left: 25px;" type="image" title="[[Move Down]]" src="$home/system/images/toolbar/movedown.jpg"  onclick="javascript:moveCatalogDown();"/>
+
+
+	<input type=hidden name="categoryid" id="categoryid" value="$catalog.id" />
+</form>
+
+</td></tr></table>

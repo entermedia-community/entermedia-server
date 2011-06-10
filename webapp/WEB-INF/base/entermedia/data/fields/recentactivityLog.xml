@@ -1,0 +1,10 @@
+<properties>
+	<property id="user" index="true" stored="true" >User</property>
+	<property id="owner" index="true" stored="true" >Owner</property>
+	<property id="commenttext" index="true" stored="true" >Comment Text</property>
+	<property id="sourcepath" index="true" stored="true" >Source Path</property>
+	<property id="catalogid" index="true" stored="true" >Catalog Id</property>
+	<property id="operation" index="true" stored="true">Operation</property>
+	<property id="date" type="date" date="true" format="dd/MM/yyyy HH:mm"  index="true" stored="true" editable="true">Date</property>
+	<property id="albumid" index="true" stored="true">Album Id</property>
+</properties>

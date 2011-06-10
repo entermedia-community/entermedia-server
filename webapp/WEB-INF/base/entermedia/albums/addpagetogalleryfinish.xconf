@@ -1,0 +1,4 @@
+<page>
+	<path-action name="AlbumModule.addHitsToAlbum" />
+	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+</page>

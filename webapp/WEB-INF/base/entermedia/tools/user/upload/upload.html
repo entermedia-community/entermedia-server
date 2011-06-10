@@ -1,0 +1,44 @@
+
+<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" target="_top" action="$home/${applicationid}/users/$user.id/upload/uploadfile-finish.html?cache=false" >
+	<div id="uploadscreen">
+		<div id="alluploadfiles">
+			$pages.include("/${applicationid}/users/$user.id/upload/uploadfield.html")
+		</div>
+		<input type="hidden" id="delete" name="delete" value="${applicationid}/users/images/$user.id"/>
+		<input type="hidden" id="targetname" name="targetname" value="profile.jpg"/>
+		<input type="button" id="finishbutton" name="Finish" value="[[Upload]]" onclick="doUpload('uploadform');">
+
+		##This div is important. AJAX replaces it.
+		<div id="waiting">
+		</div>
+	</div>
+	
+<script type="text/javascript" >
+	
+ 	doUpload =  function( inForm )
+ 	{
+ 	 	file = document.getElementById("file.0");
+ 		form = document.getElementById(inForm);
+ 		if ( form == null )
+		{
+			alert("[[No form found]]");
+			alert( "[[see]]:" + form );
+		}
+		//form.target = "_self";
+		var finishButton = document.getElementById('finishbutton');
+		if (finishButton != null)
+		{
+			finishButton.disabled = true;
+		}
+		jQuery("#waiting").append("<div><img src='$home/system/images/toolbar/spinner.gif'/><br/>[[Uploading, please wait...]]</div>");
+		form.submit();
+ 	}
+
+	SetPath =  function( inUrl )
+	{
+		var input = document.getElementById("path");
+		alert(inUrl);
+		input.value = inUrl;
+	}
+</script>
+</form>

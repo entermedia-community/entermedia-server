@@ -1,0 +1,44 @@
+<link href="/$catalogid/results/types/series_view/style.css" rel="stylesheet" type="text/css">
+
+$pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
+<div id="resultscontent_$catalogid">
+	##$pages.include("${cataloghome}/results/navigate/navigate.html", $context)
+#foreach ($hit in $hits.getPageOfHits())
+
+$context.putPageValue("cell", $hit)
+$context.putPageValue("hit", $hit)
+#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+$context.putPageValue("type", $type)
+#set( $path = "$cataloghome/data/originals/$hit.sourcepath")
+#set( $assetlink = $mediaarchive.getLinkToAssetDetails($hit.sourcepath))
+$context.putPageValue("thumbsize", "medium" )
+$context.putPageValue("assetrootfolder", "/$catalogid/assets")
+
+
+#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+$context.putPageValue("thumbsize", "medium")
+$context.putPageValue("showhover", "false")
+
+<div class="sv_item">
+	<div class="sv_right">
+		$pages.include("$cataloghome/detailviewer/limitations/index.html", $context)
+		#set($historyresults = $searcherManager.getSearcher("$catalogid", "usagehistory").fieldSearch("assetid", "$hit.id"))
+		#set($downloadcount = $historyresults.size())
+		<br/>
+		<span style="text-decoration:underline;">Downloads ($downloadcount)</span>
+		<br/><br/>
+		$context.putPageValue("showdescription", "false")
+		##Need the asset for the categories
+		$context.putPageValue("hit", $mediaarchive.getAssetBySourcePath($hit.sourcepath))
+		$pages.include("$cataloghome/results/assetinfo.html", $context)
+	</div>
+	<div class="sv_left">
+		<div class="sv_asset">
+				$pages.include("${cataloghome}/results/thumbnails/types/${type}.html", $context)
+		</div>
+	</div>
+	<div class="clear"></div>
+</div>
+	
+#end
+</div>

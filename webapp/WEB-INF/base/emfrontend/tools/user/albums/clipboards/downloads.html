@@ -1,0 +1,14 @@
+#set( $base = "/$applicationid/users/$album.owner/albums")
+
+<h2>[[Downloads]]</h2>
+
+<div class="emcontentbox">
+ <div class="emalbumresults">
+ 
+ ##see the custom results view called "download"
+ 
+  $pages.include("$base/results/multiresults.html",$context)
+  #if( $album.details )<p class="emalbumdetails">$album.details</p>#end
+ </div>
+</div>
+

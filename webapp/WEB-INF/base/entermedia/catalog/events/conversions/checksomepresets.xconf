@@ -1,0 +1,7 @@
+<page>
+<property name="eventname">Verify Recent Asset Presets</property>	
+
+	<path-action name="Script.run" >
+		<script method="verifySomePresets" >./scripts/conversions/Converter.groovy</script>
+	</path-action>
+</page>

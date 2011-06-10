@@ -1,0 +1,9 @@
+<page>
+
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
+
+	<path-action name="MediaArchiveModule.getAsset"  />
+	
+	<property name="assetrootfolder">/${applicationid}/assets</property>
+	
+</page>

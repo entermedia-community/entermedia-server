@@ -1,0 +1,5 @@
+<page>
+	<path-action name="PathEventModule.getPathEventManager"/>
+		<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+	
+</page>

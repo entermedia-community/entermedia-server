@@ -1,0 +1,11 @@
+#
+#Thu Apr 08 15:23:40 EDT 2010
+Who\ has\ been\ visiting\ the\ site\ recently=Wer hat die Webseite besucht?
+What\ files\ have\ been\ recently\ downloaded.=welche Dateien wurden k\u00FCrzlich heruntergeladen.
+User\ Edits=Benutzer Bearbeitungen
+Media\ Usage\ Reports=Mediennutzung Berichte
+Choose\ the\ type\ of\ report\ you\ would\ like\ to\ view.=W\u00E4hlen Sie die Art des Berichts, den Sie sich ansehen m\u00F6chten.
+What\ people\ are\ seaching\ for.=Wonach die Leute suchen.
+What\ records\ have\ been\ edited\ recently=vor Kurzem bearbeitete Datens\u00E4tze
+User\ Searches=Nutzer Suchvorg\u00E4nge
+User\ Authentication=Benutzer-Authentifizierung

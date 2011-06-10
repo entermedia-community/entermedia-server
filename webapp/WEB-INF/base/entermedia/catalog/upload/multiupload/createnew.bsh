@@ -1,0 +1,46 @@
+import org.openedit.entermedia.modules.*;
+import org.openedit.entermedia.edit.*;
+import com.openedit.page.*;
+import org.openedit.entermedia.*;
+
+
+module = context.getPageValue("AssetEditModule");
+
+editor = module.getAssetEditor(context);
+
+categoryeditmodule = context.getPageValue("CategoryEditModule");
+categoryeditor = categoryeditmodule.getCategoryEditor(context);
+
+pageManager = module.pageManager;
+
+Asset asset = null;
+asset = editor.createAssetWithDefaults();
+asset.addCategory(categoryeditor.getRootCategory());
+
+String sourcepath = context.findValue("sourcepath");
+if (sourcepath == null) sourcepath = "users";
+sourcepath = sourcepath + "/" + asset.id ;
+
+// This is needed for attachments to work
+asset.setSourcePath(sourcepath);
+mediaarchive = context.getPageValue("mediaarchive");
+asset.setFolder(true);
+String xconfpath = mediaarchive.getAssetArchive().buildXconfPath(asset);
+
+asset.setProperty("owner", context.userName);
+asset.setProperty("datatype", "original");
+
+//Use FileUtils to copy from a network drive onto the originals folder
+String remotepath = context.getPage().get("remotepath");
+if( remotepath != null )
+{
+	String localpath = context.getRequestParameter("filepath");
+}
+
+editor.saveAsset(asset);
+editor.setCurrentAsset(asset);
+context.putPageValue("asset", asset);
+context.setRequestParameter("assetid", asset.id);
+context.setRequestParameter("sourcepath", asset.sourcePath);
+
+module.saveAssetProperties(context);

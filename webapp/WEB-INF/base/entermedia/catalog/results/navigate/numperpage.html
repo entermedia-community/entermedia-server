@@ -1,0 +1,18 @@
+#set($catalogid = $context.getRequestParameter("catalogid"))
+#set($resultsPage = "$home/${catalogid}/results/catresults.html")
+<form action="$resultsPage" style="margin-bottom:0;" class="ajaxform" targetdiv="oeresults_$!catalogid" id="changehits_$!catalogid" name="changehits_$!catalogid"  valign="middle">
+	<input type="hidden"  name="oemaxlevel" value="1" />
+	<input type="hidden" name="catalogid" value="$!catalogid" />
+	<input type="hidden" name="searchtype" value="asset" />
+	<input type="hidden" name="hitssessionid" value="$hits.sessionId" />
+	#if($album)
+		<input type="hidden" name="albumid" value="$album.id"/>
+	#end
+	<label>[[count]]</label> <select name="hitsperpage" onchange="jQuery(this.form).submit();">
+		
+		#foreach( $item in $searcherManager.getList($catalogid, "hitcount"))
+		
+		<option value="$item.id" #if( $item.id == "$hits.getHitsPerPage()" ) selected #end>$item</option>
+		#end
+	</select>
+</form>

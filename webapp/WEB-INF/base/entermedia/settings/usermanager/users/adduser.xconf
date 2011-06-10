@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<page>
+	<layout>${themeprefix}/entermedia/layouts/dialoglayout.html</layout>
+	<inner-layout></inner-layout>
+	<page-action name="User.loadUserProperties" />
+</page>

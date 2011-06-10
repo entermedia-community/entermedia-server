@@ -1,0 +1,105 @@
+#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+#set($owner = $userManager.getUser($order.userid))
+
+
+<h2>Customer: <a href="$home/$applicationid/settings/usermanager/users/modifyuser.html?username=$owner.id">$owner</a></h2>
+#set($usersearcher = $searcherManager.getSearcher("system", "user"))
+$context.putPageValue("searcher", $usersearcher)	 
+$context.putPageValue("view", "user/useredit")	
+$context.putPageValue("data", $owner)	
+$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
+
+<h2>Assets:</h2>
+
+<div >
+<form class="ajaxform" targetdiv="itemsave" name="itemform" method="POST" action="$home$cataloghome/settings/orders/saveitems.html" >
+<h2>Order Details</h2>
+<ul>
+ <li>Order Id: $order.id </li>
+ <li>Order Date: $context.getDateTime($order.date)</li>
+ <li>Order Status: 
+   
+   <input type="hidden" name="id" value="$order.id"/>
+   <input type="hidden" name="orderid" value="$order.id"/>
+   <input type="hidden" name="field" value="orderstatus"/>
+    #set($statuslist = $searcherManager.getList($catalogid, "orderstatus"))
+    
+         
+   
+ </li>
+ 
+
+  
+</ul> 
+
+
+#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderitems",$user) )
+#foreach( $detail in $details )
+ #if($detail.isEditable())
+	<input type="hidden" name="field" value="$detail.id" />
+  #end
+#end
+
+<table class="striped emdatatable"  width="90%">
+
+
+<tr><td colspan="3" align="right">
+Order Options: <select class="orderstatus" name="orderstatus.value">
+       <option></option>
+          #foreach($status in $statuslist)
+              <option #if($order.get("orderstatus") == $status.id) selected #end value="$status.id">$status</option>
+          #end
+         </select> <input type="button" id="approveall" value="Approve All"/>
+<input type="button" value="Reject All" id="rejectall">
+<input type="submit" name="Save" value="Save"/>
+
+<span id="itemsave"></span>
+
+
+</td></tr>
+
+<tr>
+<th>Asset</th>
+<th>Status</th>
+</tr>
+
+#foreach( $item in $orderassets )
+	
+	 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+	 
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("item", $item)
+			$context.putPageValue("order", $order)
+			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+			$pages.include("${cataloghome}/settings/orders/row.html", $context)
+#end
+
+</table>
+</form>
+</div>
+
+<form class="ajaxform" targetdiv="itemsent" name="emailform" action="$home$cataloghome/settings/orders/sendnotification.html">
+<input type="hidden" name="to" value="$owner.email"/>
+<input type="submit" name="Send Notificaiton Email" value="Send Notification"/>
+<input type="hidden" name="id" value="$order.id"/>
+
+<span id="itemsent"></span>
+
+</form>
+
+
+<script type="text/javascript">
+
+jQuery("#approveall").bind("click", function () {
+	jQuery(".statusfield").val("approved");
+	return false;
+} );
+
+
+jQuery("#rejectall").bind("click", function () {
+	jQuery(".statusfield").val("rejected");
+	return false;
+} );
+
+</script>

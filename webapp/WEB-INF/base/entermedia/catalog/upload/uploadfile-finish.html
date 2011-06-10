@@ -1,0 +1,30 @@
+#if(!$catalogid)
+#set($catalogid = "archive")
+#end
+
+
+<table width="100%">
+	<tr>
+		<td width="100%">	
+			<h3>
+Upload is complete
+			</h3>
+		</td>
+		<td style="padding-right: 50px" align="center" >
+			$pages.include("/${applicationid}/search/multicatsearch/resultmenu.html")	
+		</td>
+		<td style="padding-right: 50px" nowrap="true">
+			$pages.include("/${applicationid}/albums/selection/selections.html")			
+		</td>
+		<td align="center" nowrap="true">
+		<a class="emactionsheader" href="$home/${catalogid}/results/toggleview.html?origURL=/$applicationid/albums/view/index.html?albumid=$album.id" >view<br><img  title="Change View" alt="Change View" src="$home${themeprefix}/entermedia/images/icon_view.gif" alt="pageview"></a>				
+		</td>
+	</tr>
+</table>
+
+##<p>Please <a href="$home$mediaarchive.getLinkToAsset(${asset.sourcePath})">edit</a> your new asset</p>
+
+#set ($catalogid = $context.getRequestParameter('catalogid'))
+#set ($args = "catalogid=$catalogid&searchtype=asset")
+$pages.include("/${catalogid}/results/catresults.html?$args", $context)
+	

@@ -1,0 +1,8 @@
+<page>
+	<property name="delay">1</property>
+	<property name="runmultiple">true</property>
+	
+	<path-action name="Script.run">
+		<script>../scripts/ordering/orderitemfinished.groovy</script>
+	</path-action>
+</page>

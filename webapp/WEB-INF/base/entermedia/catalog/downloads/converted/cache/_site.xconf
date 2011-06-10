@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<property name="assetrootfolder">/${catalogid}/downloads/converted/cache</property>
+	<property name="sourcepathhasfilename">true</property>
+
+	<generator name="convertArchiveDocument"/>
+	<property name="virtual">true</property>
+	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
+	
+</page>
+
+

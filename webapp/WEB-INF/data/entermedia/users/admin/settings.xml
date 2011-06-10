@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root lastcatalog="media/catalogs/public">
+  <data id="category" view="thumbs" sort="" hitsperpage="20">New</data>
+  <data id="search" view="thumbs" sort="" hitsperpage="20">New</data>
+  <data id="album" view="thumbs" sort="" hitsperpage="20">New</data>
+  <data id="selection1" view="thumbs" sort="" hitsperpage="25">New</data>
+  <data id="selection2" view="categorize" sort="" hitsperpage="25">New</data>
+  <data id="selection3" view="download" sort="" hitsperpage="25">New</data>
+</root>

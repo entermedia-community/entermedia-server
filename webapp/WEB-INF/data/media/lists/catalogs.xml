@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="media/catalogs/photo" searchtype="asset">Photos</property>
+  <property id="media/catalogs/audio" searchtype="asset">Audio</property>
+  <property id="media/catalogs/documents" searchtype="asset">Documents</property>
+  <property id="media/catalogs/video" searchtype="asset">Videos</property>
+  <property id="media/catalogs/public" searchtype="asset">Public Assets</property>
+</properties>

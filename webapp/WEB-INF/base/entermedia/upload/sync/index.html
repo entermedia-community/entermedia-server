@@ -1,0 +1,44 @@
+#if( $syncassets.size() > 0 )
+<div id="syncstatus"><a class="thickbox" href="$home/${applicationid}/upload/sync/statusresults.html"><img src="$home${themeprefix}/entermedia/images/ajax-loader.gif" title="sync in progress. $syncassets.size() remaining" ></a></div>
+<div style="position:absolute;top:-100px;left:0px;z-index:-1;width: 1px;height:1px;background-color: red;">
+<APPLET  code="org.openedit.sync.SyncUploadApplet"
+	width="1" height="1" MAYSCRIPT
+	#set( $root = "$context.siteRoot$home/${applicationid}")
+	archive="$home/system/openedit-upload.jar?v=$context.findValue('appletserial')">
+	<PARAM name="listurl" value="$root/upload/sync/pendingfiles.xml" />
+	<PARAM name="uploadurl" value="$root/upload/sync/savefile.html" />
+	<PARAM name="cookies" value="$browser.getCookieListing()" />
+	<PARAM name="appletname" value="$context.getRequestParameter('appletname')" />
+</APPLET>
+</div>
+<script>
+
+filefinished = function(noarg)
+{
+	//tell all img links to reload
+	jQuery('img').each(
+		function(index)
+		{
+			var src = jQuery(this).attr("src");
+			jQuery(this).attr("src",src);
+		}
+	);
+}
+uploadsComplete = function(noarg)
+{
+	//set the link to be a check box
+	jQuery('#syncstatus').html("<a class='thickbox' href='$home/${applicationid}/upload/sync/statusresults.html'><img src='$home${themeprefix}/entermedia/images/new_16x16.png' title='Uploads are completed' /></a>");
+	
+	//tell all img links to reload?
+	jQuery('img').each(
+		function(index)
+		{
+			var src = jQuery(this).attr("src");
+			jQuery(this).attr("src",src);
+		}
+	);
+	//Does not seem to be working
+	//jQuery("#maincontent").load('$home/$usersettings.getLastCatalog().getId()/categories/index.html', {oemaxlevel: 2, cache: false }); //ID wont show if not in that area
+}
+</script>
+#end

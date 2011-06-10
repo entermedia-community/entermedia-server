@@ -1,0 +1,17 @@
+
+[[Please select an upload type:]]
+
+#set( $types = $searcherManager.getSearcher($content.applicationid, "uploadtype").getAllHits() )
+#set( $catalog = $context.getRequestParameter("uploadcatalog") )
+<select 
+  onchange="jQuery('#emuploadstep3').load('$home/$applicationid/upload/types/' + this.value + '.html', {uploadcatalog: '$catalog'});">
+	<option value=""></option>
+	#foreach ($type in $types)
+	#if( $type.id != "mount" || $canviewsettings )
+	<option value="$type.id">$context.getText($type.name)</option>
+	#end
+	#end
+</select>
+
+<div id="emuploadstep3">
+</div>

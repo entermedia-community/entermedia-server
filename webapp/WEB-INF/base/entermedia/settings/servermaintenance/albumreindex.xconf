@@ -1,0 +1,6 @@
+<page>
+	<property name="sectiontitle">
+		<value>Re-Index Albums</value>
+	</property>
+	<property name="tab">albumreindex</property>
+</page>

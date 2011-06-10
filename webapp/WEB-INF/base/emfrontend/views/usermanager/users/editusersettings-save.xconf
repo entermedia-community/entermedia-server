@@ -1,0 +1,5 @@
+<page>
+	<path-action name="DataEditModule.saveData"/>
+	
+	<property name="oemaxlevel">1</property>
+</page>

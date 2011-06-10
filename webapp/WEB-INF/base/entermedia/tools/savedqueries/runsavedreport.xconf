@@ -1,0 +1,8 @@
+<page>
+<path-action name="MediaSearchModule.runSavedQuery"/>
+<path-action name="MediaSearchModule.loadPageOfSearch"/>
+<path-action name="MediaSearchModule.loadHits"/>
+
+<inner-layout>/${catalogid}/savedqueries/reportinnerlayout.html</inner-layout>
+
+</page>

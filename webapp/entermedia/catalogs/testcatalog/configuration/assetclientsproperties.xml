@@ -1,0 +1,6 @@
+
+<properties index="true" stored="true">
+  <property id="id" type="id">Id</property>
+  <property id="clientid" type="list" listid="clients">State</property>
+  <property id="assetid">Asset ID</property>
+</properties>

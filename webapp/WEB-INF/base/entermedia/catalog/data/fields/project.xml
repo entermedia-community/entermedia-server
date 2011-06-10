@@ -1,0 +1,7 @@
+
+<properties>
+  <property id="id" index="true" stored="true">Id</property>
+  <property id="name" editable="true" index="true" stored="true">Name</property>
+  
+  //add Members type
+</properties>

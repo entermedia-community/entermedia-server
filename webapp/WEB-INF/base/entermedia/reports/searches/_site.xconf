@@ -1,0 +1,6 @@
+<page>
+	<property name="sectiontitle">
+    	<value>User Searches Report</value>
+  	</property>
+	<property name="tab">usersearches</property>
+</page>

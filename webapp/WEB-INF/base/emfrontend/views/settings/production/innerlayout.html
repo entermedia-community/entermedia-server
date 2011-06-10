@@ -1,0 +1,31 @@
+<div class="subcolumns">
+          <div class="c33l">
+            <div class="subcl">
+<div class="em-rounded" >
+<h1>Titles</h1>
+#set($titlesearcher = $searcherManager.getSearcher($catalogid, "title"))
+#set($titleid= $context.getRequestParameter("title.value"))
+#set($title = $titlesearcher.searchById($titleid))
+$context.putPageValue("title",$title)
+<ul class="vlist">
+#foreach($title in $titlesearcher.getAllHits())
+<li #if($titleid == $title.id) class="active" #end  ><a href="$home$apphome/views/settings/production/productionnumbers/fieldsearch.html?title.value=$title.id&field=title&operation=matches">$title</a></li>
+#end
+
+</ul>
+
+<ul class="embuttons">
+<li><a href="$home$apphome/views/settings/production/titles/edit/addnew.html"><span>Add New Title</span></a></li>
+#if( $title)
+<li><a class="confirm" href="$home${content.searchhome}/edit/delete.html?id=$title.id"><span>Delete Title</span></a></li>
+#end
+</ul>
+
+</div>
+
+           </div>
+          </div>
+          <div class="c66r">
+            <div class="subcr">
+$pages.includeContent()
+</div></div></div>

@@ -1,0 +1,19 @@
+#
+#Tue Apr 27 17:04:39 EDT 2010
+Settings=Einstellungen
+Edit\ Catalogs=Bearbeiten Katalogen
+Import/Export=Import / Export
+View\ Permissions=Berechtigungen anzuzeigen
+Field\ Setup=Feld Setup
+Data\ Search=Daten suchen
+Categories=Kategorien
+This\ is\ going\ to\ delete\ all\ your\ assets\ and\ their\ information.\ Are\ you\ sure\ you\ want\ to\ delete\ this\ catalog?=Das wird alle Ihre Verm\u00F6genswerte und deren Daten zu l\u00F6schen. 
+Create\ New=Schaffung neuer
+Welcome\ to\ the\ catalog\ manager.=Willkommen beim Katalogmanager.
+Views=Ansichten
+Please\ Select\ a\ Catalog\ to\ Edit=Bitte w\u00E4hlen Sie einen Katalog zu bearbeiten
+line2=To begin, click on one of the Catalog Manager areas on the top of the page.\=Um zu beginnen, klicken Sie auf den Katalogmanagerbereich oben
+Edit\ Permissions=Bearbeiten von Berechtigungen
+line1=From here you can edit information such as catalogs and assets within those catalogs.\=Von hier aus k\u00C3\u00B6nnen Sie Kataloge und Informationen zu Assets in Katalogen bearbeiten
+System\ Events=System-Ereignisse
+Delete=l\u00F6schen

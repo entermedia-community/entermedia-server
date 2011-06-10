@@ -1,0 +1,8 @@
+<properties>
+	<property id="id" index="true" stored="true">Sync ID</property>
+	<property id="name" index="true" stored="true">Sync Name</property>
+	<property id="accountname" index="true" stored="true" >User Name</property>
+	<property id="siteurl" index="true" stored="true">Site URL</property>
+	<property id="exclude" index="true" stored="true">Exclude</property>
+	<property id="syncpath" index="true" stored="true">Sync Path</property>
+</properties>

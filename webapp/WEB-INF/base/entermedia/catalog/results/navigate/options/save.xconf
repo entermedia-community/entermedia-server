@@ -1,0 +1,5 @@
+<page>
+	<path-action name="UserProfileModule.saveResultPreferences"/>
+	<path-action name="Admin.redirectToOriginal"/>
+	<property name="virtual">true</property>
+</page>

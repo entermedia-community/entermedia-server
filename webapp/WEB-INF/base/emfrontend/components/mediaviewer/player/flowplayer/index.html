@@ -1,0 +1,66 @@
+#set( $root = "$home$page.directory")
+#set( $catalogid = $asset.catalogId )
+#set( $source = "$home/$catalogid/downloads/converted/cache/${asset.sourcepath}/video.mp4" )
+#set( $thumb = "$home/$catalogid/downloads/preview/large/${asset.sourcepath}/thumb.jpg" )
+<a href="$context.siteRoot$source" style="background-image:url($context.siteRoot$thumb)" class="mediaplayer">
+	<img src="$context.siteRoot$root/play_large.png" alt="$asset"/> 
+</a> 
+
+<!--  Start Flowplayer Engine  -->		
+<script type="text/javascript" src="$context.siteRoot$root/flowplayer-3.2.6.min.js"></script>
+
+<style>
+
+a.mediaplayer{ 
+	display:block;
+	width:640px;
+	height:360px;
+	text-align:center;
+	margin:0 15px 15px 0;
+	float:left;
+	border:1px solid #999;
+}
+/* play button */
+a.mediaplayer img {
+	margin-top:130px;
+	border:0px;
+}
+
+/* when container is hovered we alter the border color */
+a.mediaplayer:hover {
+	border:1px solid #000;
+}
+
+
+</style>		
+		
+<script language='javascript'>
+			flowplayer('a.mediaplayer', {src: '$context.siteRoot$root/flowplayer-3.2.7.swf', wmode: 'transparent'},
+			{  
+			    // configure clip to use "lighthttpd" plugin for providing video data 
+			    clip: 
+			    { 
+			        url: '$context.siteRoot$source', 
+			        provider: 'lighttpd',
+			        scaling: 'fit' 
+		    	}, 
+			     // streaming plugins are configured normally under the plugins node 
+			    plugins: 
+			    { 
+			        lighttpd: 
+			        { 
+			            url: '$context.siteRoot$root/flowplayer.pseudostreaming-3.2.5.swf' 
+			        },
+			        controls: 
+			        {
+						url: '$context.siteRoot$root/flowplayer.controls-3.2.5.swf'
+					}		 
+    			 },
+    			 canvas: 
+    			 { 
+	    			 backgroundColor: '#2D2C2C',
+	    			 backgroundGradient: 'none'
+	    			
+    			 }
+			});		
+</script>

@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="$home/${applicationid}/settings/filemanager/folders/actionbar.css"/>
+
+#set ( $nodeID = $context.getRequestParameter("nodeID") )
+#set( $editNode = $pageTree.getModel().getChildById($nodeID))
+#set( $editPath = $editNode.getURL() )
+#set( $editPage = $pageManager.getPage( $editPath ) )
+
+#if( $editPage.isFolder() ) #set( $type = "folder" ) 
+#elseif ( $editPage.getMimeType().startsWith("image/")) #set ( $type = "image" )
+#else #set( $type = "file" )
+#end
+
+#if( $nodeID == "_")
+	#set ($rootsection = "true")
+#end
+
+$context.putPageValue("type", $type)
+$context.putPageValue("rootsection", $rootsection)
+$context.putPageValue("editPath", $editPath)
+$context.putPageValue("editPage", $editPage)
+
+<div id="show$nodeID"  >
+
+<div id="oeactions" style="background-color:#c0d2ec;" >
+<table cellpadding=0 cellspacing=0 class="oeactionbar" 	>
+	<tr>
+	<td style="font-size: 9pt;padding-right:5px;">
+	#if( $editNode.isLeaf() )
+	<a style="font-weight: bold;" href="#" onclick="javascript: window.open( '$home$editNode.getURL()' ); return false;">$editNode.getName()</a>
+	#end
+	</td>
+	
+	#if (!($canusenewmenu == false))
+		#if( $pages.canEdit($editPath) || $caneditallfiles)
+			<td>
+				$pages.include("${page.filerootpath}/layout/menuitem.html?id=1st&icon=$home/${applicationid}/tools/images/toolbar/new.gif&label=[[New]]&input=${page.filerootpath}/folders/newactions.html", $context)
+			</td>
+		#end
+	#end
+	
+	#if (!($canuseeditmenu == false))
+	<td>
+		$pages.include("${page.filerootpath}/layout/menuitem.html?id=2st&icon=$home/${applicationid}/tools/images/toolbar/modeediting.gif&label=[[Edit]]&input=${page.filerootpath}/folders/editactions.html", $context)
+	</td>
+	#end
+	#if (!($canuseloadmenu == false))
+	<td>
+		$pages.include("${page.filerootpath}/layout/menuitem.html?id=3rd&icon=$home/${applicationid}/tools/images/toolbar/uploadfile.gif&label=[[Upload/Download]]&input=${page.filerootpath}/folders/loadactions.html", $context)
+	</td>
+	#end
+	#if (!($canusetoolsmenu == false))
+		#if( $pages.canEdit($editPath))
+			<td>
+				$pages.include("${page.filerootpath}/layout/menuitem.html?id=4th&icon=$home/${applicationid}/tools/images/toolbar/text.gif&label=[[Tools]]&input=${page.filerootpath}/folders/toolmenu.html", $context)
+			</td>
+		#end	
+	#end
+	</tr>
+</table>	
+</div>
+
+</div>

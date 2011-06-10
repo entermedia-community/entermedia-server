@@ -1,0 +1,6 @@
+#
+#Tue Apr 27 17:04:40 EDT 2010
+Add\ Child\ Category=Add Child Kategorie
+Please\ select\ or\ add\ a\ category.\ FOO\ FOO\ FOO=Bitte w\u00E4hlen Sie oder f\u00FCgen Sie eine Kategorie aus. 
+Delete\ Selected=Ausgew\u00E4hlte l\u00F6schen
+Categories=Kategorien

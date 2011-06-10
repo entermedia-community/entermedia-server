@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.assets">
+    <value>assets</value>
+    <value locale="es">assetos</value>
+  </property>
+  <property name="text.Number of orders">
+    <value>Number of orders</value>
+    <value locale="es">Número de pedidos</value>
+  </property>
+  <property name="text.This catalog has">
+    <value>This catalog has</value>
+    <value locale="es">Este catálogo ha</value>
+  </property>
+</page>

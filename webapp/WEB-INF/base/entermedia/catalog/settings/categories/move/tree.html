@@ -1,0 +1,19 @@
+#set( $id = $context.getRequestParameter("categoryid") )
+
+#if( !$catalog )		
+	#set ( $catalog = $cart.lastVisitedCatalog )
+#end	
+#if( !$id && $catalog )
+	#set( $id = $catalog.id )
+#end
+
+#if( $id)
+	$!moveCatalogTree.getTreeRenderer().setSelectedNodeById($id)
+#end
+<script language="javascript">
+	var lastselected = "$moveCatalogTree.getTreeRenderer().getSelectedId()";
+	moveCatalogTree.selectRow(lastselected); 
+</script> 
+<div id="$moveCatalogTree.getName()render">      
+	$!moveCatalogTree.render()
+</div>

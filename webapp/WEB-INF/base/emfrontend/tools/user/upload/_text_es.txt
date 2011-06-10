@@ -1,0 +1,7 @@
+#
+#Tue Apr 27 09:31:51 CLT 2010
+Uploading,\ please\ wait...=Cargando, por favor espere...
+Upload=Subir
+see=ver
+No\ form\ found=No se encontró formularios
+

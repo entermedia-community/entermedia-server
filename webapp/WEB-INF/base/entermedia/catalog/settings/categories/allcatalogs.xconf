@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.ALL CATALOGS">
+    <value>ALL CATALOGS</value>
+    <value locale="es">TODOS LOS CATÁLOGOS</value>
+  </property>
+  <property name="text.Help">
+    <value>Help</value>
+    <value locale="es">Ayuda</value>
+  </property>
+  <property name="text.Below is a list of pre-defined catalogs">
+    <value>Below is a list of pre-defined catalogs</value>
+    <value locale="es">A continuación se muestra una lista de pre-definidos catálogos</value>
+  </property>
+  <property name="text.list all assets on server">
+    <value>list all assets on server</value>
+    <value locale="es">una lista de todos los assetos de servidor</value>
+  </property>
+</page>

@@ -1,0 +1,6 @@
+<page>
+	<property name="sectiontitle">
+    	<value>Downloads Report</value>
+  	</property>
+	<property name="tab">downloads</property>
+</page>

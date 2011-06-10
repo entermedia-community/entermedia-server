@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/WEB-INF/base/entermedia/catalog</property>
+  <property name="catalogid">media/catalogs/photo</property>
+  <permission name="viewasset">
+    <boolean value="true"/>
+  </permission>
+  <permission name="editasset">
+    <group id="photoeditors"/>
+  </permission>
+</page>

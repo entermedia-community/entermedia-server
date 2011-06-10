@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="sectiontitle">
+    <value>Geo Tag</value>
+  </property>
+  <property name="subtab">map</property>
+</page>

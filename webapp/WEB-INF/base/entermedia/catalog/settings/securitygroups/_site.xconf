@@ -1,0 +1,4 @@
+<page>
+	<inner-layout>/${catalogid}/settings/securitygroups/innerlayout.html</inner-layout>
+	<property name="tab">securitygroups</property>
+</page>

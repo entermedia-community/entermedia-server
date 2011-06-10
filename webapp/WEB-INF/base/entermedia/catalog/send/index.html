@@ -1,0 +1,67 @@
+<h2>Mail Selected Assets To...</h2>
+
+#set( $targetid = "assetselect_${catalogid}" )
+#set( $values = $context.getRequestParameters($targetid))
+
+<div style="width: 750px;">
+	<style>
+		th { font-size: 10pt; text-align: right; padding-right: 10px; }
+		#notificationform td { border-style:none; }
+	</style>
+	<form name="editForm" id="viewForm" method="post"  action="sendassets.html">
+	#set( $oemaxlevel = $context.getRequestParameter("oemaxlevel") )
+	<input type="hidden" name="oemaxlevel" value="$!oemaxlevel"/>
+		<table id="notificationform" >
+			$pages.include("/$applicationid/tools/album/share/grouplist.html")
+			<tr>
+				<td>
+					<strong>From:</strong>
+				</td>
+				<td>
+					$user.firstName $user.lastName &lt;$user.email&gt;
+				</td>
+			</tr>
+			<tr>
+				<td><strong>[[Subject]]</strong>:</td>
+				<td><input type="text" size="60" name="subject" value="$values.size() Asset(s) from $user.shortDescription"/></td>
+			</tr> 
+			<tr>
+				<td valign="top"><strong>[[Attach Asset]]:</strong> 
+				</td> 
+				<td>
+					#foreach($value in $values)
+						#set ($asset = $mediaarchive.getAsset($value))
+						<input type="hidden" name="sourcepath" value="$asset.sourcepath"/>
+						
+						#set ($folder = "/${catalogid}/data/originals/$asset.sourcepath")
+						#if($asset.isFolder())
+							#foreach ($childpath in $pages.getPageManager().getChildrenPaths("$folder"))
+								#set ($childpage = $pages.getPageManager().getPage("$childpath"))
+								#if (!$childpage.isFolder())
+									$childpage.name <input name="file" type="checkbox" value="$childpage.path" checked/><br/>
+								#end
+							#end
+						#end
+					#end
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<br>
+					<textarea id="content" rows="80"  name="body">
+					$context.putPageValue("count", $values.size())
+					$pages.include("sendemail.html", $context)
+					</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+			 		<input type="submit" name="Send" value="[[Send]]">
+				</td>
+				<td></td>
+			</tr>
+		</table>	
+		 
+	</form>
+	$pages.include("/system/tools/html/textarea.html?htmltextarea=content&true")
+</div>

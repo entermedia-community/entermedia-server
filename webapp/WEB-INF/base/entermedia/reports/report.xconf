@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <page-action bean="searcherManager" name="PageValue.loadPageVariable"/>
+  <page-action name="MultiSearchModule.multiSearch"/>
+  <property name="text.Total Items Identified">
+    <value locale="es">Total de Artículos Identificados</value>
+  </property>
+</page>

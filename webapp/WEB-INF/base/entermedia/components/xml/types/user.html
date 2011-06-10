@@ -1,0 +1,7 @@
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+<input name="${detail.getId()}.value" class="userautocomplete" id="${detail.id}${idcount}.value" value="#esc($!val)" size="30" type="text" />

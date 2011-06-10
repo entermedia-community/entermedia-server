@@ -1,0 +1,13 @@
+	 <form name="wizard" method="post" enctype="multipart/form-data" action="./catalogeditor.html?oe-action=CatalogEditModule.uploadCatalogImages">
+<table><tr>
+		<td>[[Upload Image]]:</td>
+		<td>
+			<select name="imagetype" > 
+					<option></option>
+				#foreach( $imagetype in $storeeditor.getImageList() )
+					<option value="$imagetype.count">$imagetype.description</option>
+				#end
+			</select><br><input type="file" size="20" name="file"> <input type=submit value=ok />			
+		</td>	 
+</tr>
+</table>

@@ -1,0 +1,3 @@
+<page>
+	<inner-layout>/${applicationid}/views/settings/innerlayout.html</inner-layout>
+</page>

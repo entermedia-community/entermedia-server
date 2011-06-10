@@ -1,0 +1,17 @@
+<h2>[[Authentication Report]]</h2>
+
+
+<p>
+	<div style="text-align: left; padding-left: 20px; padding-top: 5px;">
+	$pages.include("/$content.applicationid/settings/logs/search/index.html?foldername=system/userauthenticationLog")
+	</div>
+</p>
+
+<hr>
+<form method="post">
+	$context.putPageValue("view","authenticationlog/search")
+	#set( $searcher = $searcherManager.getSearcher("system", "userauthenticationLog") )
+	$context.putPageValue("searcher", $searcher)
+	$pages.include("/$content.applicationid/tools/data/search/fieldsearch.html",$context)
+	<input type="submit" value="[[Search]] &gt;&gt;"/>
+</form>

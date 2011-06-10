@@ -1,0 +1,13 @@
+#
+#Tue Apr 27 09:39:50 CLT 2010
+Subject=Tema
+Invite=Invitar
+Thanks\!=¡gracias\!
+To\ view\ my\ albums\ you\ need\ to\ register\ and\ login.=Para ver mis álbumes es necesario registrarse e ingresar.
+Enter\ their\ email\ addresses\ below,\ separated\ by\ commas=Ingrese sus direcciones de correo electr\u00F3nico a continuaci\u00F3n, separadas por comas
+Invite\ your\ friends,\ relatives,\ or\ colleagues\ to\ join\ you\ on\ EnterMedia.=Invite a sus amigos, familiares o colegas a unirse a usted en entermedia.
+Invite\ Friends=Invitar Amigos
+I\ am\ using\ EnterMedia\ to\ store\ my\ photos\ and\ videos.\ Once\ you\ log\ in\ you\ have\ been\ approved\ to\ view\ my\ albums,\ download,\ and\ create\ your\ own\ albums.=Estoy utilizando entermedia para guardar mis fotos y v\u00EDdeos. Una vez que ingreses estarás autorizado para ver mis álbumes, descargar y crear tus propios álbumes.
+Invite\ your\ friends,\ relatives,\ or\ colleagues\ to\ join\ you\ on\ EnterMedia.\nEnter\ their\ email\ addresses\ below,\ separated\ by\ commas=Invite a sus amigos, familiares o colegas a unirse a usted en entermedia. Ingrese sus direcciones de correo electrónico a continuación, separadas por comas
+To=A
+

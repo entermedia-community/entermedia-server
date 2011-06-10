@@ -1,0 +1,3 @@
+#set( $nodeId = $context.getRequestParameter("nodeID") )
+$!catalogTree.getTreeRenderer().setSelectedNodeById($nodeId)
+$catalogTree.render($nodeId)

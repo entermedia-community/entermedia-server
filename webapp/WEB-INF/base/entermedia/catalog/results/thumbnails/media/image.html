@@ -1,0 +1,20 @@
+#if (!$cell)
+	#set ($cell = $asset)
+#end
+
+#if (!$cell)
+	#set ($cell = $data)
+#end
+#set ($thumbsize = $context.getPageValue("thumbsize"))
+#if(!$thumbsize)
+	#set($thumbsize = "thumb")
+#end
+
+#set ($sourcepath = $cell.sourcepath)
+
+<div id="emthumbholder" class="thumbholder">
+<img class="emthumbnail" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$cell.id" alt="" 
+	title=#if($cell.caption)"${cell.caption}"#elseif($cell.assettitle )"$cell.assettitle" #else "$!{cell.name}" #end 
+	src="$home$cataloghome/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
+
+</div>

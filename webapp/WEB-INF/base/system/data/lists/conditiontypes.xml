@@ -1,0 +1,14 @@
+<property>
+	<property id="group">Group</property>	
+	<property id="user">User</property>
+	<property id="permission">User Permission</property>	
+	<property id="action">Action</property>	
+	<property id="pageproperty">Page Property</property>	
+	<property id="pagevalue">Page Value</property>	
+	<property id="and">And</property>
+	<property id="or">Or</property>
+	<property id="not">Not</property>
+	<property id="boolean">True/False</property>
+</property>
+
+	

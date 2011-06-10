@@ -1,0 +1,5 @@
+#
+#Thu Aug 12 21:37:34 EDT 2010
+Please\ select\ 1\ or\ more\ records\ before\ attempting\ to\ multi-record\ edit=Por favor, seleccione una o m\u00E1s registros antes de intentar modificar varios registros
+Please\ select\ the\ records\ you\ want\ to\ edit=Por favor, seleccione los registros que desea editar
+Choose\ a\ Catalog=Elegir un Cat\u00E1logo

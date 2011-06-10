@@ -1,0 +1,6 @@
+<page>
+	<property name="sectiontitle">
+		<value>Import Assets</value>
+	</property>
+<property name="tab">importassets</property>
+</page>

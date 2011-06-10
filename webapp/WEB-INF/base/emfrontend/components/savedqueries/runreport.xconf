@@ -1,0 +1,7 @@
+<page>
+<path-action name="MediaSearchModule.fieldSearch"/>
+<path-action name="MediaSearchModule.loadPageOfSearch"/>
+
+<inner-layout>/${catalogid}/savedqueries/reportinnerlayout.html</inner-layout>
+
+</page>

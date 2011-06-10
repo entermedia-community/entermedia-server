@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<page-action name="MultiSearchModule.loadSavedQueryList">
+		<property name="applicationid">${catalogid}</property>
+	</page-action>
+	
+	<property name="hitsname">querylist</property>
+	<property name="titleprefix">Manage</property>
+	<property name="titleplural">true</property>
+</page>

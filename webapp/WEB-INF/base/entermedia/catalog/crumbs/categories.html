@@ -1,0 +1,20 @@
+<div  class="crumb CRUMB">
+	<table style="border: 0px; display: inline;">
+		<tr>
+			<td>
+
+				#if ($applicationid)
+	#set ($catalogname = $searcherManager.getSearcher(${applicationid}, "catalogs").searchById($catalogid))
+#end
+#set ($numtotalhits = $hits.size())
+ 			<b>$catalogname #if($numtotalhits)($numtotalhits)#end</b>
+
+			    #foreach ( $parent in $archivemenu.findSelectedParents(0) )
+					#if( $parent.path )
+						&gt; <a href="$home${parent.path}#if( $asset )?assetid=$asset.id#end" >$parent.text</a>
+					#end
+				#end
+			</td>
+		</tr>
+	</table>
+</div>

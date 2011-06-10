@@ -1,0 +1,6 @@
+<page>
+	<path-action name="MultiSearchModule.multiAlbumSearch" />
+	<property name="customresultview">download</property>
+	<property name="sectiontitle">Download</property>
+	
+</page>

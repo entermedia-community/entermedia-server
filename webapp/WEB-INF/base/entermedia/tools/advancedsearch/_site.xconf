@@ -1,0 +1,3 @@
+<page>
+	<property name="dataroot">/${applicationid}/tools/data</property>
+</page>

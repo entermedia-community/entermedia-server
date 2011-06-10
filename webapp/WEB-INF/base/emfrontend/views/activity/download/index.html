@@ -1,0 +1,87 @@
+<div style="text-align: left;">
+#set($order = $data)
+
+	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	#set($owner = $userManager.getUser($order.userid))
+	
+<h2>Download </h2>
+
+<table>
+<tr>
+<td>
+	
+$context.putPageValue("searcher", $ordersearcher)	 
+$context.putPageValue("data", $order)	 
+$context.putPageValue("view", "order/vieworder")	
+$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
+
+</td>
+<td>
+#if( $order.orderstatus == "complete")
+	##to much work to support group downloads yet
+#else
+<p>Order still being processed. <a href="./index.html?orderid=$order.id">refresh</a>
+</p>
+#end
+</td>
+</tr>
+</table>
+
+<br>
+
+#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+$context.putPageValue("searcher", $orderitemsearcher)	 
+<table>	
+#foreach( $item in $orderassets )
+	#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))	
+	#set ($fileName = $asset.name)
+	<tr>
+	<td colspan="2">-----------------   ${fileName}  -------------------------------------------------------------------------------------------------------------</td>
+	</tr>
+	<tr>
+	<td style="">	
+<input type="hidden" name="itemid" value="$item.id"/>
+<input type="hidden" name="field" value="status"/>
+<input type="hidden" name="assetselect_${catalogid}" value="$asset.id"/>
+
+	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+		#set( $tsize = "$home$thumbend" )
+		
+		#if( $parenthits )
+			#set( $rootid = $parenthits.sessionId )
+		#else
+			#set( $rootid = $hits.sessionId )
+		#end
+		$context.putPageValue("asset",$asset)
+		$pages.include("${apphome}/components/mediaviewer/player/index.html", $context)
+	</td>
+	<td>
+#set( $allowdownload = false)
+#set( $publishdestinationid = $order.findValue($item,"publishdestination") )
+#if( $publishdestinationid )
+	#set($destination = $searcherManager.getData($catalogid, "publishdestination",$publishdestinationid))
+	#if( $item.status == "complete")
+	<h3>Publish Complete</h3>
+	#if( $destination.publishtype == "aspera"))
+	<ul class="embuttons">
+		<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>	
+	</ul>
+	#end
+<div >
+$context.putPageValue("data", $item)	 
+$context.putPageValue("view", "order/downloaditem")	
+$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
+	Export Path: $!{destination.server}$!{destination.url}$!item.filename<br>
+</div>
+	
+
+#end
+#else
+$!item.errordetails
+#end
+
+</td></tr>
+#end
+</table>
+</div>

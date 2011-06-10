@@ -1,0 +1,31 @@
+#set ( $sourcePath = $request.getParameter( "path" ) ) 
+#set ( $destinationPath = "$sourcePath" ) 
+#set( $ind = $destinationPath.indexOf(".") ) 
+#if ( $ind > 0 ) 
+	#set( $begin = $sourcePath.substring(0,$ind ) ) 
+	#set( $end = $sourcePath.substring($ind) ) 
+	#set ( $destinationPath = "${begin}-copy${end}" ) 
+#end
+
+<form class="ajaxform" targetdiv="em_fmdialog" onsubmit="if(typeof closeDialog == 'function') closeDialog();" method="post" 
+	action="$home${page.filerootpath}/copypage-leaf/copypage-finish.html">
+<input type="hidden" name="param-part" value="${page.filerootpath}/showfile.html?path="/>
+<input type="hidden" name="param-part" value="req.destinationPath"/>
+<input type="hidden" name="param-name" value="origURL"/>
+
+<h2>$context.getPageProperty('text.copypage')</h2>
+
+<input type="hidden" name="sourcePath" value="$sourcePath">
+
+<p>$context.getPageProperty('text.enterfullpath'):<br>
+<input type="text" size="40" name="destinationPath" value="$destinationPath">
+<br>
+<p>
+		<input type="submit" name="FINISH" value="[[Copy]]" />
+ <a
+	href="$home${page.filerootpath}/copypage/timecopy/index.html?path=$sourcePath"
+	class="oestandard-button">$context.getPageProperty('text.schedule')</a>
+<a href="$home${page.filerootpath}/copypage/timecopy/viewentries.html"
+	class="oestandard-button">$context.getPageProperty('text.entries')</a>
+</p>
+</form>

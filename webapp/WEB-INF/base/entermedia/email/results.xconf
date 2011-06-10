@@ -1,0 +1,5 @@
+<page>
+	<inner-layout>/${catalogid}/email/emailinnerlayout.html</inner-layout>
+	<path-action name="DataEditModule.loadPageOfHits"/>
+	<property name="searchtype">email</property>
+</page>

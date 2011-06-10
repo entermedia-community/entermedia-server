@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+	<property id="1">New Record</property>
+	<property id="2">Work In Progress</property>
+	<property id="3">Submitted for Approval</property>
+	<property id="4">Not Approved</property>
+	<property id="5">Needs Additional Edits</property>
+	<property id="6">Approved</property>	
+	<property id="7">Record Deleted</property>
+</properties>

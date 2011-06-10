@@ -1,0 +1,7 @@
+<page>
+	<property name="sectiontitle">
+		<value>Content Sync</value>
+	</property>
+	<inner-layout>/${applicationid}/settings/servermaintenance/inner-layout.html</inner-layout>
+	<property name="tab">sync</property>
+</page>

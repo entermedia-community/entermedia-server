@@ -1,0 +1,11 @@
+<properties>
+	
+	<property id="production">Additional Production Option</property>
+	<property id="language">Language</property>
+	<property id="platform">Platform</property>
+	<property id="segment">Segment</property>
+	<property id="size">Size</property>
+	<property id="state">State</property>
+	<property id="update">Update</property>
+	<property id="original">Original</property>
+</properties>

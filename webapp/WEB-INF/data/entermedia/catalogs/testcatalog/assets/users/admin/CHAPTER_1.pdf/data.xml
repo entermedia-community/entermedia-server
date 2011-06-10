@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<asset id="2009chapter1" name="CHAPTER_1.pdf">
+  <category id="newassets_admin"/>
+  <property name="datatype">original</property>
+  <property name="fileformat">pdf</property>
+  <property name="primaryfile">CHAPTER_1.pdf</property>
+  
+</asset>

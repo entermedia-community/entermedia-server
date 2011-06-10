@@ -1,0 +1,8 @@
+<page>
+	<path-action name="AssetSyncModule.createAssetFromLocalPaths"/>
+	<property name="virtual">true</property>
+	<permission name="view">
+		<pagevalue name="canviewaddmedia" equals="true"/>
+	</permission>
+	
+</page>

@@ -1,0 +1,18 @@
+<page>
+	<layout />
+	<inner-layout />
+	<page-action name="PageValue.loadPageVariable" bean="userManager" />
+	<property name="text.Groups (All members of selected groups will receive this notification)">
+		<value>Groups (All members of selected groups will receive this notification)</value>
+		<value locale="es">Grupos (Todos los miembros de los grupos seleccionados recibirán esta notificación)</value>
+	</property>
+	<property name="text.You can also send notifications to individual addresses">
+		<value>You can also send notifications to individual addresses</value>
+		<value locale="es">También puede enviar notificaciones a direcciones individuales</value>
+	</property>
+	<property name="text.Emails (Comma Separated)">
+		<value>Emails (Comma Separated)</value>
+		<value locale="es">Direcciones de correo (separadas por coma)</value>
+	</property>
+	
+</page>

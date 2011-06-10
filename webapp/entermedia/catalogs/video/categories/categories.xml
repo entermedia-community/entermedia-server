@@ -1,0 +1,8 @@
+
+<catalog id="index" name="Videos">
+  <property id="categoryhome">/media/browse/video/categories/</property>
+  <property id="sortfield">nameUp</property>
+  <catalog id="newassets" name="Pending">
+    <catalog id="newassets_admin" name="The Administrator"/>
+  </catalog>
+</catalog>

@@ -1,0 +1,3 @@
+<properties>
+  <preset id="preview" width="640" height="360" watermark="false">Preview</preset>
+</properties>

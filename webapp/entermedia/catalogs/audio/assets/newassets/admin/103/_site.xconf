@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <asset name="tmbm-co3433x.mp3" id="103">
+    <category id="newassets_admin"/>
+    <property name="datatype">original</property>
+    <property name="fileformat">mp3</property>
+    <property name="primaryimagename">tmbm-co3433x.mp3</property>
+    <property name="assetmodificationdate">2009-06-22 10:43:53</property>
+    <property name="filesize">657430</property>
+  </asset>
+</page>

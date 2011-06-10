@@ -1,0 +1,45 @@
+<div id="showfilterdata" class="sidecontent">
+<table name="filterslist" id="filterslist" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+		<td class="borderLeftRight SIDEBAR"  height="12" nowrap="nowrap" valign="top">
+			<table name="fav0" id="tableNav0" summary="fav0" border="0" cellpadding="2" cellspacing="2" height="12">
+				<tr>
+					<td>
+							&nbsp; [[Show records for which]]:
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td class="borderAll" height="25" valign="middle">
+
+<div id="filtereditordiv">
+<form id="filtereditor" name="filtereditor"	method="post" action="$home$cataloghome/side/filter.html">
+		<input name="save" type="hidden" value="true">
+		<table name="nav1" id="tableNav1" summary="nav1" border="0"	cellpadding="0" cellspacing="0" width="100%">
+		#foreach( $searchItem in $archive.getDataProperties("filterlist") )
+		<tr>
+			<td>
+				<div id="filterlist$searchItem.getId()" class="searchFilters clearFix">${searchItem.getText()} (<a href="javascript:selectAllFilters('$searchItem.getId()')">[[all]]</a> <a href="javascript:selectNoneFilters('$searchItem.getId()' )">[[none]]</a>)
+						#set( $fid = $searchItem.getId() )
+						#set( $types = $mediaarchive.getProperties($fid) ) 
+						#foreach( $key in $types.keys() )
+						<label for="${fid}.value" class="">
+							<input type="checkbox" value="$key" name="${fid}.value" #if( !$userfilter.hasUserFilter($fid,$key) ) checked #end onclick="updatefilters();"/>
+								<a class="filteritem" href="$home$cataloghome/search/field.html?field=$fid&${fid}.value=$key&operation=matches">$types.get($key)</a>
+						</label>
+						#end
+						<input name="field" value="$fid" type="hidden">
+				</div>
+			</td>
+		</tr>
+		#end
+	</table>
+</form>
+</div>
+
+	</td>
+</tr>
+</table>
+</div>

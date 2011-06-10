@@ -1,0 +1,8 @@
+
+<album id="2" selection="true" user="admin" name="2">
+  <property id="owner"><![CDATA[admin]]></property>
+  <participants>
+    <participant userid="admin"/>
+  </participants>
+  <emailparticipants/>
+</album>

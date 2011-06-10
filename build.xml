@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="default" name="entermedia-server">
+
+  <target name="default" depends="clean, update-dependencies, compile, jar, junit, javadoc, source, war"/>
+    <target name="dependency" depends="default"/>
+    
+	<property name="appname" value="${ant.project.name}"/>
+	<property name="org" value="EnterMediaSoftware.com"/>
+	<property name="src" location="${basedir}/src"/>
+	<property name="testsrc" location="${basedir}/tests"/>
+	<property name="lib" location="${basedir}/lib"/>
+	<property name="etc" location="${basedir}/etc"/>
+	<property name="build" location="${basedir}/build"/>
+	<property name="wardir" location="${build}/wartmp"/>
+	<property name="webapp" location="${basedir}/webapp"/>
+	<property name="webinf" location="${webapp}/WEB-INF"/>
+	<property name="catalogid" value="imagesdb"/>
+	
+	<!-- Properties for local projects -->
+	<property name="corehome" location="../entermedia"/>
+	<property name="editorhome" location="../entermedia-server"/>
+	
+	
+	<!-- 
+		========================================================================
+		Anthill build server properties.  These properties will be passed in
+		by anthill when this script is executed on the build server.
+		
+			- "version" is set by the version adapter
+			- "deployDir" is set by anthill.publish.dir
+		========================================================================
+	--> 
+	<property name="version"  value="dev"/>
+	<property name="deployDir" value="deploy"/>
+  	<property name="report" value="${deployDir}"/>
+	
+	<!-- A convenience variable for documentation output -->
+	<property name="versionedApp" value="${appname}-${version}"/>
+
+  <target name="clean">
+     <delete dir="${build}"/>
+     <delete dir="${wardir}"/>
+  </target>
+
+  <target name="update-dependencies" depends="clean">
+    <mkdir dir="${wardir}/WEB-INF/" />
+    	<copy todir="${wardir}"  preservelastmodified="true">
+    		<fileset dir="${webapp}">
+    			<include name="WEB-INF/base/**" />
+    			<include name="WEB-INF/bin/**" />
+    			<include name="WEB-INF/data/system/**" />
+    			<include name="WEB-INF/*.*" />
+    			<include name="media/**" />
+       			<include name="emtube/**" />
+       			<include name="stockem/**" />
+       			<include name="entermedia/_site.xconf" />
+        		<include name="*.*" />
+    		</fileset>
+    	</copy>
+
+  	<mkdir dir="${build}/tmp/" />
+	<get dest="${build}/tmp/oesite.war" src="http://dev.entermediasoftware.com/projects/entermedia/oesite.war"  usetimestamp="true" />
+	<unwar src="${build}/tmp/oesite.war" dest="${build}/tmp/" />
+	<copy todir="${wardir}/WEB-INF/lib" preservelastmodified="true">
+		<fileset dir="${build}/tmp/WEB-INF/lib"	>
+		    <include name="*.jar"/>
+		</fileset>
+	</copy>
+  </target>
+  
+  <target name="compile" >
+    <mkdir dir="${build}/compile"/>
+ 	<copy todir="${build}/compile">
+		<fileset dir="${src}">
+		  <include name="*.xml"/>
+		</fileset>
+	</copy>
+
+    <javac debug="true" destdir="${build}/compile" srcdir="${src}" source="1.5" target="1.5">
+      <classpath>
+      	  <!--      <fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar">
+      	 </fileset>
+      	 -->
+      	<fileset dir="${lib}">
+          <include name="*.jar"/>
+          <include name="compile/*.jar"/>
+        </fileset>
+        <fileset dir="${wardir}/WEB-INF/lib/">
+            <include name="*.jar"/>
+         </fileset>
+      </classpath>
+      <include name="**"/>
+    </javac>
+  </target>
+	
+  <target name="localcompile" >
+    <mkdir dir="${build}/compile"/>
+ 	<copy todir="${build}/compile">
+		<fileset dir="${src}">
+		  <include name="*.xml"/>
+		</fileset>
+	</copy>
+
+    <javac debug="true" destdir="${build}/compile" srcdir="${src}" source="1.5" target="1.5">
+      <classpath>
+		<fileset dir="${corehome}">
+			<include name="lib/*.jar"/>
+			<include name="lib/compile/*.jar"/>
+			<include name="deploy/builds/*.jar"/>
+		</fileset>
+      	<fileset dir="${editorhome}">
+			<include name="lib/*.jar"/>
+			<include name="lib/compile/*.jar"/>
+			<include name="deploy/builds/*.jar"/>
+		</fileset>
+      	<fileset dir="${lib}">
+          <include name="*.jar"/>
+          <include name="compile/*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+  
+  	<!-- 
+		========================================================================
+		Jar classes for the main app, excluding unit tests.
+		========================================================================
+	-->	  
+	<target name="jar">
+		<mkdir dir="${wardir}/WEB-INF/lib/" />
+		<mkdir dir="${deployDir}/builds/" />
+		<jar jarfile="${wardir}/WEB-INF/lib/${appname}-${version}.jar" basedir="${build}/compile" >
+			<!--
+			<exclude name="**/*Test*"/>
+			-->
+			<manifest>
+		    	<attribute name="Built-By" value="${user.name}"/>
+			    <attribute name="Implementation-Title" value="${appname}"/>
+			    <attribute name="Implementation-Version" value="${version}"/>
+			    <attribute name="Implementation-Vendor" value="${org}"/>
+		    </manifest>
+		</jar>
+		<copy file="${wardir}/WEB-INF/lib/${appname}-${version}.jar" todir="${deployDir}/builds/"/>
+  </target>
+    
+    
+  <target name="junit">
+  	
+    <javac debug="true" destdir="${build}/compile" srcdir="${testsrc}" source="1.5" target="1.5">
+      <classpath>
+<!--      	<fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar"/> -->
+        <fileset dir="${lib}" >
+            <include name="*.jar"/>
+            <include name="compile/*.jar"/>
+        </fileset>
+        <fileset dir="${wardir}/WEB-INF/lib/">
+            <include name="*.jar"/>
+         </fileset>
+      </classpath>
+      <include name="**"/>
+    </javac>
+
+    <mkdir dir="${report}"/> 
+  	<echo>JUnit report is located: ${report}/junit.xml</echo>
+	
+  	<junit haltonfailure="true" showoutput="true" printsummary="true" fork="true" maxmemory="256m">
+  		<env key="LD_LIBRARY_PATH" path="/home/cburkey/eiiprojects/anthill/libstdc++5:/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/lib" /> 
+  		<sysproperty key="oe.root.path" value="${basedir}/webapp"/>
+  	  <classpath>
+  <!--	  <fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar"/>
+  	  	<fileset dir="${lib}">
+        <include name="**/*.jar"/>
+      </fileset>
+   -->     
+  	  	<fileset dir="${wardir}/WEB-INF/lib/">
+        <include name="*.jar"/>
+     </fileset>
+      <dirset dir="${build}/compile">
+        <include name="**"/>
+      </dirset>
+      	<fileset dir="${lib}">
+          <include name="*.jar"/>
+          <include name="compile/*.jar"/>
+        </fileset>
+
+    </classpath>
+  		<test name="org.openedit.entermedia.AllTests" outfile="./junit" todir="${report}">
+  			<formatter type="xml"/>
+  		</test>
+  	</junit>
+  </target>
+  
+    <target name="javadoc">
+    	<delete dir="${deployDir}/javadoc"/>
+    	<mkdir dir="${deployDir}/javadoc" />
+    	<javadoc destdir="${deployDir}/javadoc"
+            access="public" notree="false" nonavbar="false"
+            noindex="false" splitindex="false" author="true" use="false" verbose="false"
+            version="true" nodeprecatedlist="false" nodeprecated="false"
+            doctitle="EnterMedia API">
+          
+              <packageset dir="${src}" defaultexcludes="yes">
+			      <exclude name="com/**/*Test*"/>
+			      <exclude name="org/**/*Test*"/>
+			 </packageset>
+			<classpath>
+		      <fileset dir="${lib}">
+		        <include name="**/*.jar"/>
+		      </fileset>
+		    </classpath>
+
+		</javadoc>
+    </target>
+
+    <target name="source" >
+		<mkdir dir="${build}/eclipse/entermedia" />
+	  	<copy todir="${build}/eclipse/entermedia" preservelastmodified="true" overwrite="true">
+	  		<fileset dir="${basedir}/" >
+	  			<include name="etc/**" />
+	  			<include name="lib/**" />
+	  			<include name="src/**" />
+	  			<include name="tests/**" />
+	  			<include name="webapp/**" />
+	  			<include name="build.xml" />
+	  			<include name=".classpathSRC" />
+				<include name=".project" />
+				<include name="version.txt" />
+	  		</fileset>
+	  	</copy>
+		<copy todir="${build}/eclipse/entermedia/lib" preservelastmodified="true" >
+			<fileset dir="${wardir}/WEB-INF/lib" >
+		  	</fileset>
+    	</copy>
+
+
+    	<!-- This generates a string with a list of jars -->
+    	<path id="alljars">
+	   	 <fileset dir="${build}/eclipse/entermedia/lib">
+              <include name="**/*.jar"/>
+         </fileset>
+    	</path>
+   		<pathconvert pathsep="" property="jarlist" refid="alljars">
+			 <mapper type="regexp" from="^.+/(lib/.+)$" 
+                      to="&lt;classpathentry kind=&quot;lib&quot; path=&quot;\1&quot;/&gt;${line.separator}  "></mapper>
+    	</pathconvert>
+		<copy file="${build}/eclipse/entermedia/.classpathSRC" tofile="${build}/eclipse/entermedia/.classpath" overwrite="true">
+	    	<filterset>
+	    		<filter token="INCLUDEDJARS" value="${jarlist}"/>
+	    	</filterset>
+		</copy>	
+    	
+		<!-- TODO: Move themes to another project -->
+    	<copy todir="${build}/eclipse/entermedia/webapp/WEB-INF/base" preservelastmodified="true" overwrite="true">
+	  		<fileset dir="${wardir}/WEB-INF/base" >
+	  			<include name="openedit/**" />
+	  		</fileset>
+	  	</copy>
+		<mkdir dir="${deployDir}/builds/" />
+    	<zip destfile="${deployDir}/${appname}-src.zip" excludes="deploy/**, build/**" basedir="${build}/eclipse/"/>
+	</target>
+
+	
+  	<!-- 
+		========================================================================
+		Create WAR
+		========================================================================
+	-->	
+  <target name="war" >
+	<mkdir dir="${deployDir}/builds" />
+	<war warfile="${deployDir}/builds/${versionedApp}.war" webxml="${webinf}/web.xml" basedir="${wardir}"
+		excludes="WEB-INF/base/archive/**,WEB-INF/base/store/**,WEB-INF/base/search/**,entermedia/catalogs/**">
+  		<manifest>
+	    	<attribute name="Built-By" value="${user.name}"/>
+		    <attribute name="Implementation-Title" value="${appname}"/>
+		    <attribute name="Implementation-Version" value="${version}"/>
+		    <attribute name="Implementation-Vendor" value="${org}"/>
+	    </manifest>
+		<lib dir="${lib}/">
+			<include name="*.jar"/>
+		</lib>
+	  </war>
+
+ 	<copy overwrite="true"  file="${etc}/install.xml" 
+    tofile="${deployDir}/install.xml"/>
+
+ 	<copy overwrite="true"  file="${etc}/install.js" 
+    tofile="${deployDir}/install.js"/>
+
+ 	<move overwrite="true" file="${deployDir}/builds/${versionedApp}.war" 
+        tofile="${deployDir}/ROOT.war"/>
+  	
+  </target>
+
+</project>

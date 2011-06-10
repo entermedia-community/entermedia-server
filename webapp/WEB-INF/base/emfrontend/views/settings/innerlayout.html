@@ -1,0 +1,43 @@
+<div class="jquerytabs ui-tabs ui-widget ui-widget-content ui-corner-all" style="margin-bottom: 10px;min-height:500px;" >
+<ul  class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+			##if ($canmanageusers)
+			<li id="security" class="ui-state-default ui-corner-top">
+				<a href="$home$apphome/views/settings/settingsgroup/index.html">Security Groups</a>
+			</li>
+			<li id="users" class="ui-state-default ui-corner-top">
+				<a  href="$home$apphome/views/usermanager/users/index.html">Users</a>
+			</li>
+			##end
+			<li id="metadata" class="ui-state-default ui-corner-top">
+				<a href="$home$apphome/views/settings/metadata/index.html">Metadata Set Up</a>
+			</li>
+			<li id="publish" class="ui-state-default ui-corner-top">
+				<a href="$home$apphome/views/settings/publishing/index.html">Publish Destinations</a>
+			</li>
+			<li id="transcode" class="ui-state-default ui-corner-top">
+				<a href="$home$apphome/views/settings/transcoding/index.html">Transcode Profiles</a>
+			</li>
+			<li id="titles" class="ui-state-default ui-corner-top">
+				<a href="$home$apphome/views/settings/production/titles/index.html">Titles and Episodes</a>
+			</li>
+		</ul>
+		
+<div class="em-tabs-content">		
+	$pages.includeContent()
+</div>
+	
+</div>
+		
+		<script type="text/javascript">
+		jQuery(document).ready(function () { 
+			jQuery("#$content.tab").attr("class", "ui-state-default ui-corner-top ui-tabs-selected ui-tabs-active");
+			
+			}
+		);
+		
+		</script>
+		
+		
+		
+		
+		

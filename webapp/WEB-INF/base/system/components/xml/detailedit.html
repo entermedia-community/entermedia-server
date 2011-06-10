@@ -1,0 +1,12 @@
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+
+#set ($viewtype = $detail.viewType)
+
+#if (!$viewtype)
+	#set ($viewtype = $detail.dataType)
+#end
+#if (!$viewtype || $viewtype== "text")
+	#set ($viewtype = "default")
+#end
+<input type="hidden" value="$detail.id" name="field"/>
+$pages.include("$xmledithome/types/${viewtype}.html", $context)

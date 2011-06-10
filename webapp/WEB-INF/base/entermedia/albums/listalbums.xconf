@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.$album.size($context) photos posted by $userManager.getScreenName($album.owner)">
+    <value locale="es">$album.size($context) fotos publicadas por $userManager.getScreenName($album.owner)</value>
+  </property>
+  <property name="text.new album created by $userManager.getScreenName($album.owner)">
+    <value locale="es">nuevo álbum creado por $userManager.getScreenName($album.owner)</value>
+  </property>
+</page>

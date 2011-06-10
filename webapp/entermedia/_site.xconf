@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/WEB-INF/base/entermedia</property>
+  <property name="applicationid">entermedia</property>
+  <property name="themeprefix">/themes/baseem</property>
+  <property name="title">EnterMedia</property>
+  <permission name="view">
+    <boolean value="true"/>
+  </permission>
+  
+  
+</page>

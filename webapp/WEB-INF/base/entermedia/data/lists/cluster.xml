@@ -1,0 +1,5 @@
+<servers>
+	<!-- After boot up the process should kick off. 1st check that we are in this file. Then sync to other servers -->
+	<!--  Another server might delete us from the list so we just need to re-add ourself -->
+	<property host="http://127.0.0.1:8080/test" status="active" /> <!-- If I cant reach him I will set him as inactive -->
+</servers>

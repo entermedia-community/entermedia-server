@@ -1,0 +1,6 @@
+#set($titlesearcher = $searcherManager.getSearcher($catalogid, "title"))
+#set($titleid= $context.getRequestParameter("title.value"))
+#set($title = $titlesearcher.searchById($titleid))
+	
+#set($resultsPage = "$home$content.searchhome/results.html")
+

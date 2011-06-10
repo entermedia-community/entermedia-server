@@ -1,0 +1,39 @@
+<page>
+	
+	
+	<property name="bidirectional">true</property>
+	<path-action name="RelatedAssetsModule.addRelatedAsset"/> 
+	
+	<page-action name="RelatedAssetsModule.loadAllRelatedAssets"/>	
+	<page-action name="RelatedAssetsModule.getAllTracker" />
+
+	<property name="text.Related Items">
+		<value>Related Items</value>
+		<value locale="es">Items Relacionados</value>
+	</property>
+	<property name="text.Copy and Create">
+		<value>Copy and Create</value>
+		<value locale="es">Copiar y Crear</value>
+	</property>
+	<property name="text.a new related item">
+		<value>a new related item</value>
+		<value locale="es">un nuevo item relacionado</value>
+	</property>
+	<property name="text.Create relationship">
+		<value>Create relationship</value>
+		<value locale="es">Crear relación</value>
+	</property>
+	<property name="text.to an existing item">
+		<value>to an existing item</value>
+		<value locale="es">con un item existente</value>
+	</property>
+	<property name="text.Remove Relationship">
+		<value>Remove Relationship</value>
+		<value locale="es">Quitar Relación</value>
+	</property>
+	<property name="text.Relation Type">
+		<value>Relation Type</value>
+		<value locale="es">Tipo de Relación</value>
+	</property>
+
+</page>

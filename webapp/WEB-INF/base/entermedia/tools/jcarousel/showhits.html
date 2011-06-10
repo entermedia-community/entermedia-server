@@ -1,0 +1,18 @@
+<div >        
+<ul id="autoscroll" >
+#foreach ($hit in $hits.getPageOfHits())
+
+	#set ($medend = "/${hit.catalogid}/downloads/preview/medium/${hit.sourcepath}/thumb.jpg")
+	
+    <li>
+		#if( $user )
+		<a href="$home/$hit.catalogid/detailviewer/viewer/index.html?sourcepath=${hit.sourcepath}&iframe=true&height=620&width=900&hitssessionid=$hits.sessionId">
+			<img height="150" src="$home$medend" />
+		</a>
+		#else
+			<img height="150"  src="$home$medend" />
+		#end
+	</li>
+#end
+</ul>
+</div>

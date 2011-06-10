@@ -1,0 +1,7 @@
+<page>
+	<inner-layout>/${themeprefix}/layouts/mediaviewer.html</inner-layout>
+	<page-action name="AssetEditModule.getAsset"  />
+	<page-action bean="commentArchive" name="PageValue.loadPageVariable"/>
+	<property name="assetrootfolder">/${applicationid}/views/assets</property>
+	<property name="commenttype">asset</property>
+</page>

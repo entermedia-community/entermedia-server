@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<user enabled="true">
+  <user-name>testuser</user-name>
+  <password>DES:rDpdaQNtmOQ47RMMVoR5Tg==</password>
+  <creation-date>1237057734887</creation-date>
+  <properties>
+    <property name="lastName" value="Mellow"/>
+    <property name="enabled" value="true"/>
+    <property name="searchtype" value="categories"/>
+    <property name="screenname" value="RachelM"/>
+    <property name="email" value=""/>
+    <property name="firstName" value="Rachel"/>
+  </properties>
+  <group id="guest"/>
+</user>

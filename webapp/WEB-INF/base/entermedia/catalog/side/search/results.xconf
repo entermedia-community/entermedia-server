@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/categoryresults.html</inner-layout>
+	<property name="virtual">true</property>
+	<path-action name="DataEditModule.search"/>   
+	<property name="hitsname">hits</property>
+</page>

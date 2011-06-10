@@ -1,0 +1,90 @@
+#set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
+
+#if (!$data)
+	#set($groupid = $context.getRequestParameter("settingsgroupid"))
+	#if($groupid)
+		#set ($data = $groupSearcher.searchById($groupid))
+	#end
+#end
+#if ($data)
+
+#set($current = $searcherManager.getData($catalogid, "settingsgroup", $context.getRequestParameter("settingsgroupid")))
+#if( $current )
+<h2>$!current.name Security Group Setup</h2>
+#end
+
+
+<form method="post" action="./save.html">
+	<input type="hidden" name="id" value="$data.id"/>
+	<input type="hidden" name="save" value="true"/>
+	<input type="hidden" name="view" value="settings/settinggroupedit" />
+	<input type="hidden" name="searchtype" value="$groupSearcher.getSearchType()"/>
+	<input type="hidden" name="settingsgroupid" value="$data.id" />
+	
+	
+	$context.putPageValue("searcher", $groupSearcher)	 
+	$context.putPageValue("view", "settings/settinggroupedit")
+	$context.putPageValue("data", $data)	
+
+	#set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permission"))
+	#set($childlistsearcher = $searcherManager.getSearcher($catalogid, "permissionchild"))
+	$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+	<input type="hidden" name="field" value="profilesearchfilters" />
+	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
+	
+	<table style="padding-left: 20px;" >
+	
+	#foreach($item in $permissionsearcher.getAllHits())
+	#set($val = $data.get($item.id))
+		
+		<input type="hidden" name="field" value="$item.id"/>
+		<tr><td valign="top">$item:</td>
+			<td valign="top"><input class="permission-radio" type="radio" name="${item.id}.value" value="true" #if($val == "true" || $val == "full") checked #end/> Full</td>
+			<td valign="top"><input class="permission-radio" type="radio" name="${item.id}.value" value=""  #if($val != "true" && $val != "full") checked #end/> None</td>
+		#set($children = $childlistsearcher.fieldSearch("permission", $item.id))
+		#if( $children.size() > 0)
+			<td valign="top"><input  class="permission-radio" type="radio" name="${item.id}.value" value="partial"  #if($val == "partial") checked #end/> Partial<br>
+
+			<ul class="sub-list" style="list-style:none; #if($val != "partial")display: none;#end" >
+			#foreach($child in $children)
+				<input type="hidden" name="field" value="${child.id}"/>
+				
+				<li><input type="checkbox" name="${child.id}.value" value="true" #if($data.get($child.id) == "true") checked #end />$child</li>
+			#end
+			</ul>
+		#else
+			<td></td>	
+		#end	
+			</td>
+		</tr>	
+	#end
+	</table>
+	<input type="submit" value="Save"/>
+	
+	
+	
+</form>
+
+<script type="text/javascript">
+
+jQuery(".permission-radio").bind("click", function () {
+	var val = jQuery(this).val();
+	
+	if(val == "partial"){
+		jQuery(this).parent().find(".sub-list").show();
+	}
+	else {
+		jQuery(this).parent().find(".sub-list").hide();
+	}
+		
+	
+});
+
+</script>
+
+
+
+#else
+Please select a Security Group
+#end

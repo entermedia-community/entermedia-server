@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Download Report">
+    <value locale="es">Reporte de Descargas</value>
+  </property>
+  <property name="text.Search">
+    <value locale="es">Buscar</value>
+  </property>
+</page>

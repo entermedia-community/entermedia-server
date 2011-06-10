@@ -1,0 +1,10 @@
+<page>
+	<property name="oemaxlevel">1</property>
+	<page-action bean="CategoryEditModule" name="PageValue.loadPageVariable"/>
+	<page-action bean="AssetEditModule" name="PageValue.loadPageVariable"/>
+	<page-action bean="pathUtils" class="com.openedit.util.PathUtilities" name="PageValue.loadPageVariable"/>
+	<page-action name="Script.run">
+		<script>./createnew.bsh</script>
+	</page-action>
+	<property name="createasfolder">true</property>
+</page>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <page-action name="MultiSearchModule.deleteCatalog"/>
+  
+  <property name="text.The catalog has been deleted.">
+    <value locale="es">El catálogo ha sido eliminado.</value>
+  </property>
+  <property name="text.Click here to go back to the settings area.">
+    <value locale="es">Haga clic aquí para volver a las preferencias.</value>
+  </property>
+</page>

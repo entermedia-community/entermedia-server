@@ -1,0 +1,5 @@
+<page>
+	<path-action name="MediaArchiveModule.uploadAsset"/>
+	<path-action name="AssetEditModule.createAssetFromUploads"/>
+	<inner-layout/>
+</page>

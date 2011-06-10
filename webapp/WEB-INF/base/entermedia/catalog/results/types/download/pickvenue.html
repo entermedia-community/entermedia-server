@@ -1,0 +1,31 @@
+#set( $venueSearcher = $searcherManager.getSearcher($catalogid, "venue") )
+<form id="venueform" action="$home$cataloghome/results/types/download/savevenues.html?$context.getRequestParamsAsList()">
+	#set($targetdiv = "${catalogid}_venueval")
+	#set($targetdiv = $targetdiv.replaceAll("\/", "\\/"))
+	
+	<select id="venuevalue" name="Venue.value">
+		<option value=""> </option>
+		#foreach( $venue in $venueSearcher.allHits )
+			<option value="$venue.id" #if($asset.Venue == $venue.id) selected="selected"#end>$venue.name</option>
+		#end
+	</select>
+	
+	
+	<button type="button" onclick="selectionVenue()">Save Venue</button>
+</form>
+
+<script type="text/javascript">
+#set($targetform = "#selectionForm${catalogid}")
+#set($targetform  = $targetdiv.replaceAll("\/", "\\/"))
+
+selectionVenue = function()
+{
+	var parentdoc = self.parent.document;
+	var venueselect = document.getElementById('venuevalue');
+	parentdoc.getElementById('${catalogid}_venueval').value = venueselect.options[venueselect.selectedIndex].value;
+	var form = parentdoc.getElementById('selectionForm${catalogid}');
+	form.action = '$home/${catalogid}/results/types/download/savevenues.html';
+	form.submit();
+}
+
+</script>

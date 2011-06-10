@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/categoryresults.html</inner-layout>
+	<property name="virtual">true</property>
+	<path-action name="MediaSearchModule.searchCategories"/>
+	<path-action name="CategoryModule.loadCrumbs" />
+
+	<property name="showsidemenu">true</property>
+	<property name="dataroot">/${catalogid}/side/search</property>
+ 	<property name="assetrootfolder">/${catalogid}/assets</property>
+
+	<path-action allowduplicates="true" name="CategoryModule.getCatalogTree">
+	    <tree-name>catalogTree</tree-name>
+	    <url-prefix>/${catalogid}/categories/</url-prefix>
+	    <url-postfix>.html?oemaxlevel=1&amp;</url-postfix>
+	</path-action>
+
+	<permission name="view" >
+		<pagevalue name="canbrowsecategories" equals="true"/>
+	</permission>	
+</page>
+

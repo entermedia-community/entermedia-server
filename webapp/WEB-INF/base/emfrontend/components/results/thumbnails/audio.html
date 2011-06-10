@@ -1,0 +1,20 @@
+#if($parenthits)
+	#set( $hitssessionid = $parenthits.sessionId )
+#else
+	#set( $hitssessionid = $hits.sessionId )
+#end
+#set( $clink = "$home$cataloghome/mediaviewer/${cell.sourcepath}.html?sourcepath=${cell.sourcepath}&hitssessionid=$hitssessionid" ) 
+
+#set($olink = $mediaarchive.asLinkToOriginal($cell.sourcepath, $cell.primaryfile))
+$context.putPageValue("olink", $olink)
+$context.putPageValue("clink", $clink)
+$context.putPageValue("cell", $cell)
+#if( $olink )
+
+#end
+##Make a URL to the generated location
+#set( $mp3 = "$home$cataloghome/downloads/mp3/${cell.sourcepath}/${cell.id}.mp3")
+$pages.include("/${applicationid}/components/audioplayer/minimal.html?id=$cell.id&width=80&path=$mp3")
+#if( !$showcaption )
+$pages.include("${cataloghome}/results/thumbnails/resultdetails.html", $context)
+#end

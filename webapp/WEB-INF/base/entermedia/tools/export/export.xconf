@@ -1,0 +1,13 @@
+<page>
+	<generator name="velocity"/>
+	<page-action name="Date.now" alltypes="true">
+		<format>M/dd/yyyy</format>
+	</page-action>
+	<page-action name="PageValue.loadPageVariable" bean="searcherManager" alltypes="true"/>
+	<page-action name="MultiSearchModule.multiSearch" alltypes="true"/>
+	<page-action name="Script.run" alltypes="true">
+		<script>./export.bsh</script>
+	</page-action>
+	<layout/>
+	<inner-layout/>
+</page>

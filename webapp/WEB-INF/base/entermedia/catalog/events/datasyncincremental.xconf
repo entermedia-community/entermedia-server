@@ -1,0 +1,6 @@
+<page>
+ 	<path-action name="Script.run">
+		<script>./scripts/cumulus/importassets.groovy</script>
+	</path-action>
+  <property name="forced">false</property>
+</page>

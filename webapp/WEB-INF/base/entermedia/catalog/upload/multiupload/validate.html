@@ -1,0 +1,37 @@
+#if( $errors )
+	<span>Missing Data or Invalid Date Format.</span>
+	<script type="text/javascript">
+	var element;
+	#foreach($input in $context.getRequestParameters("field"))
+	element = document.getElementById('label$input');
+	if(element != null)
+	{
+		element.style.color = '#616161';
+		element.style.fontWeight = 'normal';
+	}
+	#end
+	#foreach($error in $errors.keySet())
+	element = document.getElementById('label$error');
+	if(element != null)
+	{
+		element.style.color = 'red';
+		element.style.fontWeight = 'bold';
+	}
+	#end
+	</script>
+#else
+	<script type="text/javascript">
+	var files = jQuery("input[name='localFilePath']");
+	if( files.length == 0 || (files.length == 1 && files.attr("value") == "") )
+	{
+		alert("Please pick a file.");
+	}
+	else
+	{
+		if( typeof validationOk == "function" )
+		{
+			validationOk('$!context.getRequestParameter("nextstep")');
+		}
+	}	
+	</script>
+#end

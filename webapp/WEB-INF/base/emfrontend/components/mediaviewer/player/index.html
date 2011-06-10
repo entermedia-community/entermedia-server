@@ -1,0 +1,60 @@
+#set ($link = $mediaarchive.asLinkToPreview($asset.sourcepath))
+#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+
+<table class="emplayerbox" width="100%";>
+<tr>
+<td valign="top"  style="text-align: center;">
+	#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+
+	#if( $type != "video" )
+		<a class="slideshow emdialog" href="$home$link" target="_parent"
+		pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
+		title="[[Slideshow]]">
+		$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
+		</a>
+	#else	
+		$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
+	#end
+	<div class="emviewercaption">$!asset.caption</div>
+</td>
+<td style="text-align: left; width: 330px;">
+	<h2>$asset</h2>
+	<div  class="emviewercaption">$!asset.longcaption</div>
+
+#if( $hits )
+		#set($previous = $hits.previous($indexOf))
+		#set($next = $hits.next($indexOf))
+		<div class="emprevnext" >
+
+		#if( $type != "video" )
+<a class="slideshow emdialog" href="$home$link" target="_parent"
+	pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
+	title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
+	#end	
+			
+			#if($previous)
+				<a href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}">[[Previous]]</a>
+			#end
+
+			#if($next)
+				<a href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}">[[Next]]</a>
+			#end
+		</div>
+
+#end
+
+	#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
+	<br>
+	<h2>Related Tags</h2>
+		#foreach ($tag in $asset.keywords)
+			<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+		#end
+		#foreach ($category in $asset.categories) 
+			<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
+		#end
+		
+	#end
+
+</td>
+</tr>
+</table>

@@ -1,0 +1,39 @@
+<div style="padding: 20px 0px 0px 20px;">
+
+#set( $catalog = $context.getRequestParameter('uploadcatalog') )
+#set( $sourcepath = "users/$!{user.userName}/" )
+<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
+		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+		<br/><br/>
+		<h2>[[Add a Caption]]</h2>
+		<input type="hidden" name="field" value="caption"/>
+		<input type="text" name="caption.value" style="width: 320px;" />
+		<br/><br/>
+		$pages.include("$apphome/components/categories/picker.html",$context)
+		<h2>[[Extra Keywords]]</h2>
+		<input type="hidden" name="field" value="keywords"/>
+		<input type="text" name="keywords.value" style="width: 320px;" />
+		<br/><br/>
+				<input type="checkbox" name="unzip" value="true" checked > [[Unzip on server]]
+
+<table><tr><td>
+<div class="embutton" >
+		<input type="button" id="finishbutton"value="[[Upload]]" onclick="doUpload('uploadform');">
+</div>
+</tr></td></table>
+
+</form>
+
+<div id="waiting" style="display:none;">
+	<div><img src='$home/system/images/toolbar/spinner.gif'/><br/>[[Uploading, please wait...]]</div>
+</div>
+
+</div>
+<script type="text/javascript" >
+ 	doUpload =  function()
+ 	{
+ 	 	jQuery("#finishbutton").attr('disabled','disabled');
+		jQuery("#waiting").show();
+		jQuery("#uploadform").submit();
+ 	}
+</script>

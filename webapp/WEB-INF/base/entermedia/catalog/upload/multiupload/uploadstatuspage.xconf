@@ -1,0 +1,14 @@
+<page>
+	<property name="viewname">asset/photoupload2</property>
+	<inner-layout/>
+	<layout/>
+	<page-action name="ValidationModule.validateFields"/>
+	<page-action bean="CategoryEditModule" name="PageValue.loadPageVariable"/>
+	<page-action bean="AssetEditModule" name="PageValue.loadPageVariable"/>
+	
+	<!-- This script would need to handle a copy to the disk drive -->
+	<page-action name="Script.run">
+		<script>./createnew.bsh</script>
+	</page-action>
+	<page-action name="AssetEditModule.saveAssetProperties"/>
+</page>

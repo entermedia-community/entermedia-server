@@ -1,0 +1,11 @@
+#set( $catname = $context.getPageProperty("text.${catalog.id}") )
+#if( !$catname )
+	#set( $catname = $catalog.name )
+#end
+<h2>[[Your New Catalog Is Ready]]</h2>
+<p>
+<br/>
+<div class="embutton">
+<a target="_parent" href="$home/${catalog.id}/settings/metadata/index.html">[[Go to Catalog Settings]]</a>
+</div>
+</p>

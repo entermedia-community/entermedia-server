@@ -1,0 +1,27 @@
+#set( $album = $enterMedia.albumSearcher.getAlbum($albumhit.id, $albumhit.owner) )
+#set( $albumlink = "$home/${applicationid}/users/$album.owner/albums/$album.id/index.html" )
+
+<h2><a href="$albumlink"><b>[[$album.name]]</b></a> <span class="emh2sub">[[$album.size($context) photos]]</span> </h2>
+<p>[[$!album.details]] - [[Created by $userManager.getScreenName($album.owner)]]</p> 
+
+<div id="albumcontent">
+<ul class="thumbnails">
+#foreach( $hit in $album.getTop(10, $context) )	
+			#set( $mediaarchive =  $entermedia.getMediaArchive($hit.catalogid) )
+			#set( $cataloghome = "/${mediaarchive.getCatalogId()}")
+			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+			$context.putPageValue("type", $type)
+			$context.putPageValue("cell", $hit)			
+			$context.putPageValue("cataloghome", $cataloghome)
+			$context.putPageValue("catalogid", $mediaarchive.getCatalogId())
+			$context.putPageValue("mediaarchive", $mediaarchive)
+			<li  id="cell${catalogid}_${hit.id}">	##An album is now a hit tracker
+				<a href="$home$cataloghome/detailviewer/viewer/index.html?sourcepath=${hit.sourcePath}.html&sessionid=$album.getSessionId($context)">$pages.include("${cataloghome}/results/thumbnails/media/${type}.html", $context)</a>
+			</li>
+#end
+#if( $album.size($context) > 10)
+	<li><a href="$albumlink">[[more...]]</a></li>
+#end
+</ul>
+</div>
+<div style="clear: both"> </div>

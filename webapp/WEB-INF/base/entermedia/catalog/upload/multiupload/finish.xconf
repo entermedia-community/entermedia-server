@@ -1,0 +1,5 @@
+<page>
+	<property name="oemaxlevel">1</property>
+	<page-action name="AssetEditModule.saveAssetProperties"/>
+	<page-action name="AssetEditModule.selectPrimaryAsset"/>
+</page>

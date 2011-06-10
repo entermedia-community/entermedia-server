@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Run media conversions</property>	
+	<property name="delay">1</property>
+	<property name="period">5m</property>
+	<path-action name="Script.run">
+		<script>../scripts/conversions/runconversions.groovy</script>
+	</path-action>
+</page>

@@ -1,0 +1,39 @@
+#set( $originalpath = "/WEB-INF/data/$catalogid/originals/$asset.sourcePath/$treeNode.getName()" )
+#set( $versions = $pages.pageManager.getVersions($originalpath) )
+#set( $latest = $pages.pageManager.getLatestVersion($originalpath) )
+
+<tr #if($even) style="background-color:#EEEEEE;" #end>
+
+#if( $canchangeattachment )
+	<td nowrap="true" style="text-align: center;">
+		
+		<input type="radio" name="filename" value="$!treeNode.getName()" #if($asset.primaryfile && $asset.primaryfile == $treeNode.getName()) checked="checked" #end> 
+	</td>
+	<td nowrap="true" style="text-align: center;">
+		<input type="radio" name="imagefilename" value="$!treeNode.getName()" #if($asset.imagefile && $asset.imagefile == $treeNode.getName()) checked="checked" #end> 
+	</td>
+#end
+
+<td nowrap="true">
+	#if( $item.isFolder() )
+		<a href="?path=$item.path&sourcepath=${asset.sourcePath}">$treeNode.getName()/</a> 
+	#else
+		#set ($prefix = "/WEB-INF/data/$catalogid/originals/")
+		#set ($sourcepath = $item.path.substring($prefix.length()))
+		<img src="$home/$catalogid/downloads/preview/thumb/$sourcepath/thumb.jpg" border="0" height="30" width="30"/>
+		<a href="$home/$catalogid/downloads/originals/$sourcepath">$treeNode.getName()</a> 
+	#end
+</td>
+
+<td nowrap="true"> $sizer.inEnglish($item.getLength()) </td>
+<td>
+		#if( $latest.author )
+			<a href="$home/${applicationid}/settings/usermanager/users/modifyuser.html?username=$latest.author">$!userManager.getUser($latest.author)</a>
+		#end	
+ </td>
+<td nowrap="true"> $dateformat.format($item.lastModified()) </td>
+
+#set( $text = "History ($versions.size())")
+#set ($href = "$home$cataloghome/detailviewer/attachments/versions/index.html?assetid=$asset.getId()&editPath=$originalpath")
+<td nowrap="true"><a href="$href">$text</a></td>
+</tr>

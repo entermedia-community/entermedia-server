@@ -1,0 +1,82 @@
+<div>
+
+#set( $origurl = "${cataloghome}/detailviewer/edit/reloadimages.html" )
+#if($asset.isFolder())
+	#set( $editPath = "/WEB-INF/data/$mediaarchive.catalogId/originals/$asset.sourcePath/$asset.primaryFile" )
+#else
+	#set( $editPath = "/WEB-INF/data/$mediaarchive.catalogId/originals/$asset.sourcePath" )
+#end
+
+<table style="border-spacing: 10px; border-collapse: separate">
+<tr>
+<td>
+##<a href="#" onclick="resizeImage();return false;"><img src="$home${themeprefix}/entermedia/images/aspectratio_16x16.png" border="0" title="[[Resize Image]]" />
+##	[[Resize Image]]</a>
+</td>
+<td>
+<a href="#" onclick="cropImage(); return false;"><img src="$home${themeprefix}/entermedia/images/crop_16x16.png" border="0" title="[[Crop Image]]" />
+	[[Crop Image]]
+	</a>
+</td>
+<td>
+#set($currentOrientation = $asset.get("imageorientation"))
+#set ( $searcher = $searcherManager.getSearcher($catalogid ) )
+<form method="post" action="$home${cataloghome}/detailviewer/edit/reloadimages.html">
+	<input type="hidden" name="origUrl" value="$page.path"/>
+	<input type="hidden" name="saveasnew" value="false" />
+	<input type="hidden" name="save" value="true" />
+	<input type="hidden" name="catalogid" value="$!catalogid" />
+	<input type="hidden" name="searchtype" value="asset" />
+	<input type="hidden" name="field" value="imageorientation"/>
+	<input type="hidden" name="id" value="$asset.id" />
+	<input type="hidden" name="assetid" value="$asset.id"/>
+	<input type="hidden" name="sourcepath" value="$asset.sourcepath"/>
+	
+	[[Rotate Image]]: <select onchange="this.form.submit()" name="imageorientation.value">
+		<option value="1"#if($currentOrientation && $currentOrientation == 1) selected #end>Default</option>
+		<option value="6" #if($currentOrientation && $currentOrientation == 6) selected #end>Clockwise</option> 
+		<option value="8"#if($currentOrientation && $currentOrientation == 8) selected #end>Counter Clockwise</option>
+		<option value="3"#if($currentOrientation && $currentOrientation == 3) selected #end>Flip Top</option>
+	</select>
+</form>
+
+
+</td>
+<td>
+<a href="$home${cataloghome}/detailviewer/attachments/versions/index.html?editPath=${editPath}&assetid=${asset.id}">
+	<img src="$home${themeprefix}/entermedia/images/undo_16x16.png" border="0"/>Version Control
+</a>
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td>
+<div id="previewimage" >
+	<img src="$home$cataloghome/downloads/preview/cache/${asset.sourcePath}/preview.jpg?cache=false" alt="[[Preview Image]]"/>
+</div>
+</td>
+
+</tr>
+</table>
+<script>
+	resizeImage = function() {
+		var editPath = "${editPath}";
+		var sourcepath = "${asset.sourcePath}";
+		editPath = escape(editPath);
+		sourcepath = escape(sourcepath);
+		var url = "$home${cataloghome}/detailviewer/edit/imageresize/edit.html?editPath=" + editPath + "&origURL=$origurl&assetid=${asset.id}&sourcepath=" + sourcepath;
+		jQuery("#previewimage").load(url);
+	}
+	
+	cropImage = function() {
+		var editPath = "${editPath}";
+		var sourcepath = "${asset.sourcePath}";
+		editPath = escape(editPath);
+		sourcepath = escape(sourcepath);
+		var url = "$home${cataloghome}/detailviewer/edit/crop/edit.html?editPath=" + editPath + "&origURL=$origurl&assetid=${asset.id}&sourcepath=" + sourcepath;
+		jQuery("#previewimage").load(url);
+	}
+</script>
+</div>

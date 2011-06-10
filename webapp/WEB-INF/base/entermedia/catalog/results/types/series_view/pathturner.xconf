@@ -1,0 +1,12 @@
+<page>
+<inner-layout />
+<generator name="velocityGenerator" />
+<path-action name="MultiSearchModule.loadApplicationId"  alltypes="true"/>
+<path-action name="PageValue.loadPageVariable" bean="pageManager" alltypes="true"/>
+
+	<page-action name="WebTree.getTree" alltypes="true">
+		<tree-name>attachmentTree</tree-name>
+		<excludes>.*,CVS,*.db</excludes>	
+	</page-action>
+	
+</page>

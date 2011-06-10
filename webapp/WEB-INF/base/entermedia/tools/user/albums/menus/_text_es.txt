@@ -1,0 +1,13 @@
+#
+#Thu Apr 29 15:12:42 CLT 2010
+Settings=Ajustes
+This\ is\ going\ to\ remove\ all\ items\ from\ your\ $content.albumname.\ Are\ you\ sure?=Esto eliminar\u00E1 todos los elementos de su \u00E1lbum. \u00BFEst\u00E1 seguro? 
+Multi\ Edit=Multi-Editar
+Remove\ Page=Eliminar P\u00E1gina
+Upload\ into=Subir a
+Delete\ $content.albumname=Eliminar Anuncio
+Clipboard=Portapapeles
+This\ is\ going\ to\ delete\ this\ album.\ This\ can\\'t\ be\ undone.\ Are\ you\ sure?=Esto va a eliminar este \u00E1lbum. Esto no se puede deshacer \u00BFEst\u00E1 seguro? 
+Delete=Eliminar
+Edit\ $content.albumname=Editar Anuncio
+Remove\ All=Eliminar Todos

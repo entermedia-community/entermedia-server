@@ -1,0 +1,21 @@
+<form name="save" target="_parent" action="$home${cataloghome}/results/navigate/options/save.html">
+	<input type="hidden" name="hitssessionid" value="$hits.sessionId"/>
+	<input id="redirecturlinput" type="hidden" name="origURL" />
+	#set( $resulttype = $context.getRequestParameter("resulttype") )
+	#if( !$resulttype )
+		#set( $resulttype = "default")
+	#end
+	<input type="hidden" name="oldresulttype" value='$resulttype'/>
+	<input type="hidden" name="resulttype" value="default" />
+	
+	<div class="emcatalogheadericon">
+		change view<br/>
+		#set($currentsetting = false)
+		#set($currentsetting = $usersettings.getViewForResultType($resulttype))
+		<select name="newresultview" onchange="jQuery(this.form).submit();">
+			#foreach( $type in $searcherManager.getList($catalogid, "resulttype"))
+				<option value="$type.id" #if($type.id == $currentsetting ) selected #end>$type</option>
+			#end
+		</select>
+	</div>
+</form>

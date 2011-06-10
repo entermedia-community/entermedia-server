@@ -1,0 +1,18 @@
+#set($catalogid = $context.getRequestParameter("catalogid"))
+#set($hits = $context.getPageValue("hits"))
+#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+$context.putPageValue("catalogid", $catalogid)
+
+#if( !$showselections )
+	#set( $showselections = $context.getRequestParameter("showselections") )
+#end
+#if(!$caneditalbum)
+	$context.putPageValue("caneditalbum", $context.getRequestParameter("caneditalbum"))
+#end
+##This is slow. todo: Cache this for non admin users
+#set( $resultdetail = $mediaarchive.getPropertyDetailsArchive().getDataProperties("asset","asset/resultdetail", $user) )
+$context.putPageValue("resultdetail", $resultdetail )
+
+#set($mode = $usersettings.getViewForResultType($context.findValue("customresultview"), $hits.getResultType()))	
+$pages.include("${cataloghome}/results/types/${mode}.html", $context)
+$pages.include("${themeprefix}/entermedia/layouts/resultsfooter.html", $context)

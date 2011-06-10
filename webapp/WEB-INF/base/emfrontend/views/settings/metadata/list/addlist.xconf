@@ -1,0 +1,9 @@
+<page>
+	<path-action name="DataEditModule.createNew" />
+	<path-action name="DataEditModule.saveData" />
+	<property name="save">true</property>
+	<page-action name="DataEditModule.search" />
+	<property name="hitsname">datalist</property>
+	<path-action name="DataEditModule.loadPageOfSearch" />
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
+</page>

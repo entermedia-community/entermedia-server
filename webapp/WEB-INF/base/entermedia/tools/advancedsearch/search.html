@@ -1,0 +1,89 @@
+<div id="advancedsearchinput">
+
+<h1>Advanced Search Options</h1>
+
+<form name="advancedsearch" id="emadvanced" method="post" action="$home/${applicationid}/search/multicatsearch/multiresults.html">
+
+#set ($catalogs = $usersettings.getCatalogs())
+<table >
+<tr >
+#set( $foundone = false )
+#foreach ($catalog in $catalogs)
+	<td valign="top">
+		 <div  id="advsearch_$catalog.id" >
+		 	#if ($user.get("search_${catalog.id}") && !($user.get("search_${catalog.id}") == "false"))
+				$pages.include("/${applicationid}/tools/advancedsearch/catalog.html?catalogid=$catalog.id")
+				#set( $foundone = true )
+			#end
+		 </div>
+	</td>
+#end
+</tr>
+</table>
+
+<input type="hidden" name="searchtype" value="asset"/>
+#if( $foundone )
+<div id="searchbuttons">
+	<input type="submit" value="Search" />
+	<button type="button" onClick="javascript:resetfilters();">Reset Filters</button>
+</div>	
+#else
+<p>Please check one catalog</p>
+#end
+</form>
+
+<script type="text/javascript">
+
+//Setup an Ajax listener. This needs to run after the entermedia.js one
+jQuery(document).ready(function() 
+{ 
+	jQuery(".checkcategoryevent").unbind().bind('change', function()
+	{
+		//tell the server. This might already be called by the other listener in the main layout
+		var checked = this.checked;
+		var catalogid = this.value;
+		
+		new Ajax.Request('$home/${applicationid}/settings/usermanager/users/tools/setproperty.html?userpropertyname=search_' + catalogid + '&userpropertyvalue=' + checked);
+	
+		var checkbox = document.getElementById('checkbox_' + catalogid);
+		
+		var targetDiv = '#advsearch_' + catalogid;
+		targetDiv = targetDiv.replace(/\//g, "\\/");
+		
+		#if( $foundone )
+		
+		if (checkbox.checked)
+		{
+			jQuery(targetDiv).load( "$home/${applicationid}/tools/advancedsearch/catalog.html", { catalogid: catalogid } );
+		}
+		else
+		{
+			//one was removed. Reload entire page?
+			jQuery(targetDiv).load( "$home/${applicationid}/tools/advancedsearch/catalog.html", { catalogid: catalogid, removed: true } );
+		}
+		
+		#else
+			jQuery("#advancedsearchinput").load("$home/${applicationid}/tools/advancedsearch/search.html",{ oemaxlevel: 1 } );
+		#end
+	}
+	);
+}
+);
+
+resetfilters = function()
+{
+	tables = document.getElementsByName("filtertable");
+	for (var j = 0; j < tables.length; j++)
+	{
+		inputs = tables[j].getElementsByTagName("input");
+		for (var i = 0; i < inputs.length; i++)
+		{
+			if (inputs[i].type == "checkbox")
+				inputs[i].checked = false;
+		}
+	}	
+}
+
+</script>
+
+</div>

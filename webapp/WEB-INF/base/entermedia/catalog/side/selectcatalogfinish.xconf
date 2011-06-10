@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="MediaSearchModule.updateCategoryFilter"/>
+  <path-action name="Admin.redirectToOriginal"/>
+  <property name="virtual">true</property>
+  <property name="tree-name">catalogTree</property>
+</page>

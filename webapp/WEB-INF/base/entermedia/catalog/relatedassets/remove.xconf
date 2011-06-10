@@ -1,0 +1,10 @@
+<page>
+	<property name="redirect">true</property>
+	<property name="virtual">true</property>
+	<path-action name="RelatedAssetsModule.removeRelatedAsset"/>
+	<permission name="view">
+		<not>
+			<pagevalue name="canrelateassets" equals="false"/>
+		</not>
+	</permission>
+</page>

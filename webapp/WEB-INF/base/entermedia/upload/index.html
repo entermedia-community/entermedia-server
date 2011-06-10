@@ -1,0 +1,48 @@
+
+<style type="text/css">
+#emuploadcontainer select
+{
+	display: block;
+}
+
+#emuploadstep2, #emuploadstep3
+{
+	margin-top: 1em;
+}
+</style>
+
+<div id="emuploadcontainer">
+<h2>[[Add Media]]</h2>
+
+#set( $catalogs = $usersettings.getUploadCatalogs() )
+
+#if( $catalogs.size() == 0 )
+
+[[You are not allowed to upload assets to any catalogs.]]
+
+#elseif( $catalogs.size() == 1 )
+
+<script type="text/javascript">
+jQuery('document').ready( function() {
+	jQuery("#emuploadstep2").load('$home/$applicationid/upload/uploadtype.html', {uploadcatalog: '$catalogs.get(0).id'});
+});
+</script>
+
+#else
+
+[[Please choose a catalog:]]
+
+<select name="uploadcatalog" id="uploadcatalog"
+	onchange="jQuery('#emuploadstep2').load('$home/$applicationid/upload/uploadtype.html', {uploadcatalog: this.value});">
+	<option value=""></option>
+	#foreach ($catalog in $catalogs)
+	<option value="$catalog.id">$context.getText($catalog.name)</option>
+	#end
+</select>
+
+#end
+
+<div id="emuploadstep2">
+</div>
+
+</div>

@@ -1,0 +1,103 @@
+#set($index = $context.getRequestParameter("index"))
+#if(!$index)
+	#set($index = 1)
+#end
+#set($Integer = 0)
+#set($indexint = $Integer.parseInt($index))
+
+#set($attachmentsfolder = $context.getContentProperty("attachmentsFolder"))
+#if(!$attachmentsfolder)
+	#set($attachmentsfolder = "")
+#end
+
+#set($hitsourcepath = $context.getRequestParameter("hitsourcepath"))
+#set($hitid = $context.getRequestParameter("hitid"))
+#set( $path = "/WEB-INF/data${cataloghome}/originals/${hitsourcepath}$!{attachmentsfolder}")
+#set($fileSearcher = $searcherManager.getSearcher($catalogid, "file"))
+#set($files = $fileSearcher.searchFiles($path, "name", "*"))
+#set($seriesid = "sv_series_${hitid}_$catalogid")
+#set($seriesid = $seriesid.replace("/", "_"))
+$files.setHitsPerPage(3)
+$files.setPage($indexint)
+#set($maxindex = $files.getTotalPages())
+
+#if( $files && $files.size() > 0)
+	##get first real file for preview all link
+	#foreach ( $firstfile in $files)
+		#set ($first = $firstfile)
+		#if($first.getName().indexOf(".") != 0)
+			#set ($link = "$home$cataloghome/downloads/preview/cache/${hitsourcepath}$!{attachmentsfolder}/$first.getName()/preview.jpg")
+			#break
+		#end
+	#end
+#end
+
+<div  id="$seriesid">
+##preview all link
+<div class="sv_preview_link">
+	#if($link)
+	<a href="$link" 
+	  class="slideshow"
+	  pageturner="$home$cataloghome/results/types/series_view/pathturner.xml?path=$path&index=0&iframe=true">
+	  Preview all</a> ($files.size()) in this series
+	#end
+</div>
+
+<div>
+	<table>	
+	<tr>
+	<td width="20">
+		#if($indexint > 1)
+		<a href="#" onclick="return prevPage('$hitid','$hitsourcepath','$index');"title="Previous"><img src="$home/$catalogid/results/types/series_view/images/prev.png" border="0" title="Previous"/></a>
+		#end
+	</td>
+	#foreach ($file in $files.getPageOfHits())
+		##TODO hidden files shouldn't be in the hits
+		#if($file.getName().indexOf(".") != 0)
+			<td>
+			#set ($source = "${hitsourcepath}/${file.name}")
+			#set ($link = "$home$cataloghome/mediaviewerdialog/${source}.html?sourcepath=$source&iframe=true&height=650&width=900" )
+			<a class="thickbox" href="$link" title="$file.name"><img class="sv_image" src="$home/$catalogid/downloads/preview/thumb/$source/thumb.jpg" border="0" height="110px"  title="$file.getName()"/></a>
+			</td>
+		#end
+	#end
+	<td width="20">
+		#if($indexint < $maxindex)
+		<a href="#" onclick="return nextPage('$hitid','$hitsourcepath','$index','$maxindex');" title="Next"><img src="$home/$catalogid/results/types/series_view/images/next.png" border="0" title="Next"/></a>
+		#end
+	</td>
+	</tr>
+	</table>
+</div>
+</div>
+
+<script type="text/javascript">
+	nextPage = function(hitid, hitsourcepath, index, maxindex)
+	{
+		var divid = "#sv_series_" + hitid + "_$catalogid";
+		divid = divid.replace(/\//g, "_");
+		var intindex = parseInt(index);
+		var imaxindex = parseInt(maxindex);
+		if(intindex + 1 <= imaxindex)
+		{
+			intindex = intindex + 1;
+		}
+		var url = "$home$cataloghome/results/types/series_view/pageturner.html?index=" + intindex + "&oemaxlevel=1&hitid=" + hitid + "&hitsourcepath=" + escape(hitsourcepath);
+		jQuery(divid).load(url);
+		return false;
+	}
+	
+	prevPage = function(hitid, hitsourcepath, index)
+	{
+		var divid = "#sv_series_" + hitid + "_$catalogid";
+		divid = divid.replace(/\//g, "_");
+		var intindex = parseInt(index);
+		if(intindex - 1 > 0)
+		{
+			intindex = intindex - 1;
+		}
+		var url = "$home$cataloghome/results/types/series_view/pageturner.html?index=" + intindex + "&oemaxlevel=1&hitid=" + hitid + "&hitsourcepath=" + escape(hitsourcepath);
+		jQuery(divid).load(url);
+		return false;
+	}
+</script>

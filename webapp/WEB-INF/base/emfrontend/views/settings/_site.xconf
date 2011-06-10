@@ -1,0 +1,5 @@
+<page>
+	<property name="section">settings</property>
+
+	<inner-layout>/${applicationid}/views/settings/innerlayout.html</inner-layout>
+</page>

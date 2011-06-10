@@ -1,0 +1,9 @@
+#
+#Thu Aug 12 21:22:31 EDT 2010
+User\ Activity\ Log=Registro de actividad del usuario
+New=Nuevo
+View\ Friends=Ver los amigos
+Postings=Contabilizaciones
+Invite\ Friends=Invitar Amigos
+Edit\ my\ profile=Modificar mi perfil
+Your\ Friends=Sitio a un amigo

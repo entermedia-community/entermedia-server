@@ -1,0 +1,4 @@
+#
+#Thu Apr 08 15:24:06 EDT 2010
+Catalogs=Kataloge
+Browse\ Categories=Kategorien

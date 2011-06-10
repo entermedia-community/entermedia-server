@@ -1,0 +1,23 @@
+<page>
+	<property name="uploaderpath">/${catalogid}/upload/multiupload</property>
+	<property name="uploadtype">multi</property>
+	<property name="searchtype">asset</property>
+	<property name="appletserial">2010010601</property>
+	<property name="text_step1">
+		<value>(step 1 of 2)</value>
+	</property>
+	
+	<property name="text_complete_form">
+		<value>Complete the form below to continue the upload process.</value>
+	</property>
+	<property name="text_title">
+		<value>Upload Photos</value>
+		<value locale="es">Subir Fotos</value>
+	</property>
+	<property name="text_view_button">
+		<value>VIEW THE PHOTOS</value>
+	</property>
+	<property name="text_finish_text">
+		<value>Your photos have been added to the Enterprise Media Library.</value>
+	</property>
+</page>

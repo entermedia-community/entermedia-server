@@ -1,0 +1,30 @@
+<h2>Asset Uploaded</h2>
+
+#if( $hits && $hits.size() == 1 )
+[[Your asset has been uploaded.]]
+#set( $hit = $hits.get(0) )
+<div class="embutton">
+<a target="_top"
+  href="$home/$hit.catalogid/detailviewer/viewer/index.html?sourcepath=$hit.sourcepath">
+[[View]] $!hit.name
+</a>
+</div>
+<br>
+<div class="embutton">
+<a href="$home/$applicationid/upload/index.html?catalog=$hit.catalogid">Upload Another</a>
+</div>
+
+
+#elseif( $hits && $hits.size() > 0 )
+[[Multiple assets were created.]]
+<ul>
+#foreach( $hit in $hits )
+	<li><a target="_top"
+  href="$home/$hit.catalogid/detailviewer/viewer/index.html?sourcepath=$hit.sourcepath">
+  $hit.name</a></li>
+#end
+</ul>
+#else
+[[No assets were uploaded or there was an error uploading your files.]]
+[[Please try again or contact the site administrator.]]
+#end

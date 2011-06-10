@@ -1,0 +1,25 @@
+#set($catalogid = $context.getRequestParameter("catalogid"))
+#set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
+#set($resultsPage = "$home/${catalogid}/results/catresults.html")
+#set ($querychildren = $hits.getSearchQuery().getChildren())
+#if ($querychildren.size() > 0)
+	#set ($currentfilter = $querychildren.get(0).toQuery())
+	#set ($currentfilter = $currentfilter.replaceAll("\"", ""))
+#end
+
+#set ($filters = $searcherManager.getList($catalogid, "showonly"))
+#if ($filters.size() > 0)
+	<form  action="$resultsPage" class="ajaxform" targetdiv="oeresults_$!catalogid" style="margin-bottom:0;padding-right:15px;" target="_parent" name="showonly_$!catalogid" id="showonly_$!catalogid" valign="middle">
+	<input type="hidden"  name="oemaxlevel" value="1" />
+	<input type="hidden" name="catalogid" value="$!catalogid" />
+	<input type="hidden" name="searchtype" value="asset" />
+	<input type="hidden" name="hitssessionid" value="$hits.sessionId" />
+	[[Show only]]: <select name="childquery" onchange="jQuery(this.form).submit();">
+			<option value="none"></option>
+			#foreach ($filter in $filters)
+				<option value="$filter.query" #if( $currentfilter && $currentfilter == $filter.query ) selected #end >$filter</option>
+			#end
+			<option value="owner:$user.userName" #if( $currentfilter && $currentfilter == "owner:$user.userName") selected #end>[[My Uploads]]</option>
+		</select> 
+	</form>
+#end

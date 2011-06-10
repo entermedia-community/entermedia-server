@@ -1,0 +1,7 @@
+	#set($catalogs = $query.catalogs )
+	#foreach( $catalogid in $catalogs )
+		#if( $pages.canView("/$catalogid"))
+			$pages.include("/$applicationid/tools/searcheditor/catalogitem.html?catalogid=$catalogid")
+		#end
+	#end 
+

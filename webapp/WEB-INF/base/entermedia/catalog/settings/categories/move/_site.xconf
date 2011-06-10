@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="CategoryEditModule.loadCategory"/>
+  <page-action name="CategoryModule.getCatalogTree">
+    <tree-name>moveCatalogTree</tree-name>
+    <url-prefix>/${catalogid}/settings/categories/move/</url-prefix>
+    <url-postfix>.html?cache=false</url-postfix>
+    <root>index</root>
+  </page-action>
+  <property name="virtual">true</property>
+  <property name="title">
+    <value>Move Catalog</value>
+    <value locale="es">Mover Catálogo</value>
+  </property>
+  <property name="subtab">categorymove</property>
+</page>

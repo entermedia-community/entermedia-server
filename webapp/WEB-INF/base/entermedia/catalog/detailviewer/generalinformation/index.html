@@ -1,0 +1,16 @@
+#set ($print = $context.getRequestParameter("print"))
+
+#if( $print && $print == "true")
+  <h2 class="section">General Information</h2>
+#end  
+  #display("generic.html" "$asset.id" "asset/contains" $print)
+  #display("generic.html" "$asset.id" "asset/details" $print)
+  #display("approvals.html" "$asset.id" "approvals/details" $print)
+ 
+  #display("conversions.html" "$asset.id" "conversions/details" $print)
+ 
+  #display("publishqueue.html" "$asset.id" "publishqueue/details" $print)
+  
+ 
+ 
+ 

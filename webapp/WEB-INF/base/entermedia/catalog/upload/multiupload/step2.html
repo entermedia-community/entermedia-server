@@ -1,0 +1,64 @@
+#set($uploads = $context.getRequestParameters("localFilePath"))
+
+<script type="text/javascript">
+
+postAllUploadForms = function()
+{
+	#foreach($upload in $uploads)
+	postForm('hiddenuploadsection', 'finishform$velocityCount');
+	#set($uploadcount = $velocityCount)
+	#end
+	jQuery('#step2').load('$home$page.uploaderpath/finish.html' , {oemaxlevel: 1}); 
+	return false;
+}
+
+checkAllUploads = function()
+{
+	jQuery(document).ready(
+		function()
+		{
+			
+			var button = document.getElementById('uploadsavebutton');
+			var allFinished = true;
+			for(i = 1; i <= $uploadcount; i++)
+			{
+				var element = document.getElementById('filename' + i);
+				if (element == null || element.value == null || element.value == '')
+				{
+					allFinished = false;
+					break;
+				}
+			}
+			if (allFinished)
+			{
+				button.disabled = false;
+				button.style.background = '#c80817';
+			}
+			else
+			{
+				button.disabled = true;
+				button.style.background = '#616161';
+			}
+		});
+	return false;
+}
+
+</script>
+
+<div id="step2">
+
+	<h2>[[Upload Photos]]</h2> <span class="stepnumber">(step 2 of 2)</span>
+	<hr/>
+	<p>[[Add photo-specific meta data.]]</p>
+	
+	<div id="uploadarea">
+	#foreach($upload in $uploads)
+		$pages.include("./uploadstatuspage.html?filepath=$upload&count=$velocityCount", $context)
+	#end
+	</div>
+	
+	<div style="text-align:right; margin-top: 10px;">
+	<button type="button" id="uploadsavebutton" disabled="disabled" onclick="return postAllUploadForms();">Save</button>
+	</div>
+
+</div>

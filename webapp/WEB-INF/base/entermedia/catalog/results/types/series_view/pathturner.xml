@@ -1,0 +1,54 @@
+#set($path = $context.findValue("path"))
+#set($fileSearcher = $mediaarchive.getSearcherManager().getSearcher($catalogid, "file"))
+#set($hits = $fileSearcher.searchFiles($path, "name", "*"))
+#set($int = 0)
+#set($indexOf = $int.valueOf($context.getRequestParameter("index")) )
+#if( $indexOf < $hits.size() )
+	#set($hit = $hits.get($indexOf) )
+	#set($previous = $hits.previous($indexOf))
+	#set($next = $hits.next($indexOf))
+
+	#set( $pageturner = "${page.path}?path=$path" )
+	
+	#if($previous )
+		#set( $current = 1 )
+	#else
+		#set( $current = 0 )
+	#end
+	<links current="$current">
+		#if( $previous )
+			#set( $previouspage = $pageManager.getPage("$previous") )
+			#set( $index = $indexOf + -1)
+			$previouspage.setProperty("assetrootfolder", "/WEB-INF/data/$catalogid/originals")
+			#set($source = $mediaarchive.getSourcePathForPage($previouspage) )
+            #set ($link = "$home$cataloghome/downloads/preview/cache/$source/preview.jpg")
+		<link href="$link"
+			  name="$previous.name"
+			  pageturner="$home$pageturner&amp;index=$index"
+				/>
+		#end
+		<!-- this is the page we are on right now -->
+		#set( $thispage = $pageManager.getPage("$hit") )
+		$thispage.setProperty("assetrootfolder", "/WEB-INF/data/$catalogid/originals")
+		#set($source = $mediaarchive.getSourcePathForPage($thispage) )
+        #set ($link = "$home$cataloghome/downloads/preview/cache/$source/preview.jpg")
+		<link href="$link"
+			  name="$hit.name"
+			  pageturner="$home$pageturner&amp;index=$indexOf"
+				/>
+		#if( $next )
+			#set( $nextpage = $pageManager.getPage("$next") )
+			#set( $index = $indexOf + 1)
+			$nextpage.setProperty("assetrootfolder", "/WEB-INF/data/$catalogid/originals")
+			#set($source = $mediaarchive.getSourcePathForPage($nextpage) )
+            #set ($link = "$home$cataloghome/downloads/preview/cache/$source/preview.jpg")
+		<link href="$link"
+			  name="$next.name"
+			  pageturner="$home$pageturner&amp;index=$index"
+				/>
+		#end
+	</links>	
+#else
+	<links current="0" />
+
+#end

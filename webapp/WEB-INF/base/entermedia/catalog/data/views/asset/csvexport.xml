@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties usagelabel="Used on Settings / Catalog / Administration / Export / CSV Export" >
+  <property id="name"/>
+  <property id="assettitle" />
+  <property id="caption" />
+  <property id="mediatype" />
+  <property id="primarymarketsegment"/>
+  <property id="purpose"/>
+</properties>

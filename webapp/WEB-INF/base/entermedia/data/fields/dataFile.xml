@@ -1,0 +1,7 @@
+<properties>
+	<property id="id" index="true" stored="true" >Id</property>
+	<property id="folder" index="true" stored="true" >Folder</property>
+	<property id="path" index="true" stored="true" >Path</property>
+	<property id="lastmodified" type="date" index="true" stored="true" >Last Modified</property>
+	<property id="length" index="true" stored="true">Length</property>
+</properties>

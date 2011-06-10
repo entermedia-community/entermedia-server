@@ -1,0 +1,7 @@
+<page>
+	<inner-layout>/${applicationid}/catalog/settings/inner-layout.html</inner-layout>
+	<permission name="view" >
+		<pagevalue name="canviewcatalogsettings" equals="true"/>
+	</permission>	
+	<script id="jquery-validate"  src="/${applicationid}/javascript/jquery.validate.js"/>
+</page>

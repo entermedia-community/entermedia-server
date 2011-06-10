@@ -1,0 +1,16 @@
+<html>
+<head></head>
+<body>
+
+[[Email Notification]]
+#set ($path = $context.getRequestParameter("sourcepath"))
+
+   
+
+
+<a href="$context.siteRoot$home$cataloghome/assets/${path}.html">[[View Asset]]</a>
+#set ($body = $context.getRequestParameter("body"))
+
+$body
+</body>
+</html>

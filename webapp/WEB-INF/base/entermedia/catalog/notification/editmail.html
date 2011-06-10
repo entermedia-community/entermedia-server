@@ -1,0 +1,89 @@
+#macro (display $filename $assetid $view $print)
+	$context.putPageValue("view", $view)
+	#if ($print && $print == "true")
+		$pages.include("$cataloghome/detailviewer/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$cataloghome/detailviewer/$filename", $context)
+	#else
+  		$pages.include("$cataloghome/rollup/editor.html?pluginpath=$cataloghome/detailviewer/$filename&assetid=$assetid&view=$view",$context)
+  	#end
+#end
+
+#set ( $editPath = $context.getRequestParameter("editPath"))
+ 
+$context.putPageValue("fckheight","650" )
+$context.putPageValue("editPath","/archives/index.html" )
+
+#set ( $origURL = $context.getParam("origURL") )
+#if( !$origURL )
+	#set( $origURL = "$bloghome/admin/index.html")
+#end
+$context.putPageValue("origURL",$origURL )
+
+<div style="width: 750px;">
+	<style>
+		th { font-size: 10pt; text-align: right; padding-right: 10px; }
+		#notificationform td { border-style:none; }
+	</style>
+	<form name="editForm" id="viewForm" method="post"  action="$home$cataloghome/notification/sendnotification.html">
+		#if( $context.getRequestParameter("oemaxlevel") )
+			<input type="hidden" name="oemaxlevel" value='$context.getRequestParameter("oemaxlevel")'/>
+		#end
+		<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
+		<input type="hidden" name="specifydomain" value="entermediasoftware.org"/>
+		<table id="notificationform" >
+			$pages.include("/$catalogid/notification/grouplist.html")
+			<tr>
+				<td>
+					<strong>[[From]]:</strong>
+				</td>
+				<td>
+					$user.firstName $user.lastName $user.email
+				</td>
+			</tr>
+			<tr>
+				<td><strong>[[Subject]]</strong>:</td>
+				<td><input type="text" size="60" name="subject" value="[[$!asset.name details]]"/></td>
+			</tr> 
+			<tr>
+				<td><strong>[[Attachments]]:</strong> 
+				</td> 
+				<td>
+					#set ($folder = "/${catalogid}/data/originals/$asset.sourcePath")
+					#if( $asset.isFolder())
+						#foreach ($childpath in $pages.getPageManager().getChildrenPaths("$folder"))
+							#set ($childpage = $pages.getPageManager().getPage("$childpath"))
+							#if (!$childpage.isFolder())
+								$childpage.name <input name="file" type="checkbox" value="$childpage.path"/>
+							#end
+						#end
+					#else
+						#set($filename = $asset.getPrimaryFile())
+						#if(!$filename)
+							#set($filename = $asset.getSourcePath())
+						#end
+						#set ($file = "/${catalogid}/data/originals/$filename")
+						#set ($childpage = $pages.getPageManager().getPage($file))
+					
+					<input name="file" type="checkbox" value="$childpage.path"/> $filename
+					#end
+
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<br>
+					<textarea id="content" rows="80"  name="body">$pages.include("$cataloghome/detailviewer/actions/print.html?sourcepath=$filename&oemaxlevel=1&isnotification=true")</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+			 		<input type="submit" name="Send" value="[[Send]]">
+					<input onclick="history.go(-1)" value="[[Cancel]]" name="NO" type="button" />
+				</td>
+				<td></td>
+			</tr>
+		</table>	
+		 
+	</form>
+
+	$pages.include("/system/tools/html/textarea.html?htmltextarea=content&true")
+</div>	

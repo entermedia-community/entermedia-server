@@ -1,0 +1,47 @@
+<!-- Needs an asset passed in as $hit -->
+#set($showvotes = $context.getRequestParameter("showvotes"))	
+	#if($showvotes != "false")
+		<span id="assetVoteCount">
+			$pages.include("$cataloghome/detailviewer/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
+		</span>
+	#end
+	
+<ul style="list-style: none; line-height: 20px; text-align: left;">
+	#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat) )
+	#if( $hit.assettitle )
+	<li><b>[[Title]]:</b> $hit.assettitle
+	#end  
+	<li><b>[[Name]]:</b> $!hit.name  
+	</li>
+	#if($hit.caption)
+		<li><b>[[Caption]]:</b> $hit.caption</li>
+	#end
+	
+	#set($keywords = $hit.keywords)
+	#if($canviewquicksearch && $keywords.size() > 0)
+		<li><b>[[Tags]]:</b>
+		#foreach ($tag in $keywords)
+			<a href="$home/$applicationid/search/multicatsearch/multiresults.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+		#end
+		</li>
+	#end
+	<br><br>
+	#set($categories = $hit.categories)
+	#if($canbrowsecategories && $categories.size() >= 0)
+		<li><b>[[Categories]]:</b>
+		#foreach ($category in $categories) 
+			<a href="$home$cataloghome/categories/${category.id}.html">$category.name</a> 
+		#end
+	#end
+	</li>
+
+	#if( $hit.editstatus )
+		<li><b>Status:</b> $!searcherManager.getData($catalogid, "asset/editstatus",$hit.editstatus) </li>
+	#end
+
+	#if( $hit.importstatus )
+		<li><b>Status:</b> $!searcherManager.getData($catalogid, "asset/importstatus",$hit.importstatus) </li>
+	#end
+	
+
+</ul>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Add $col.size($context) items">
+    <value locale="es">Añadir $col.size($context) artículos</value>
+  </property>
+</page>

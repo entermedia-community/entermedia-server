@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<asset id="101" name="asf_to_mpeg-1.mpg">
+  <category id="users_admin"/>
+  <property name="datatype">original</property>
+  <property name="fileformat">mpg</property>
+  <property name="primaryfile">asf_to_mpeg-1.mpg</property>
+  <property name="assetmodificationdate">2009-07-02 12:18:11</property>
+  <property name="filesize">573444</property>
+</asset>

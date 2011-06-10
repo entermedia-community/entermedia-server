@@ -1,0 +1,7 @@
+<properties>
+	<property id="sharewithemail">Recipient Email</property>
+	<property id="sharesubject"   />
+	<property id="expireson"  />
+	<!-- property id="publishdestination" query="publishtype:aspera">Aspera Server</property  -->
+	
+</properties>

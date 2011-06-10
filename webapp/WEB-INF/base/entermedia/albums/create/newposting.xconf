@@ -1,0 +1,6 @@
+<page>
+	<property name="nopadding"></property>
+	<inner-layout>${themeprefix}/entermedia/layouts/userhomelayout.html</inner-layout>
+	<page-action name="UserProfileModule.loadOwner"/>
+	<page-action name="AlbumModule.addNewShare" />
+</page>

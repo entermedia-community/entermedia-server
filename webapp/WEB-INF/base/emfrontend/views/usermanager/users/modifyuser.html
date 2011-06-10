@@ -1,0 +1,87 @@
+#if (!$userName)
+	#set ($userName = $context.getRequestParameter("userid"))
+#end
+
+#if($userName)
+	#set($selectedUser = $userManager.getUser($userName))
+<style type="text/css">
+ 	#${userName}-edit-link {color: #FFFFFF;}
+  	#${userName}-table-cell {background: #CCCCF9;}
+</style>
+<div class="em-rounded">	 
+<div class="emsectionheader" style="margin: 0px 0px 0px 0px;"><div style="padding-left:15px;padding-top:6px;">[[User Editor]]</div></div>
+	
+	<br/>
+	
+	#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
+	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+	#set ($hits = $userProfileSearcher.fieldSearch("userid", $selectedUser.id))
+	
+	#if ($hits.size() == 1)
+		#set ($userprofile = $hits.get(0))
+	#end
+	
+	<div>
+		<form class="ajaxform validate" id="usereditform" name="usereditform" action="$home$usermanagerhome/users/modifyuser.html">
+			<input type="hidden" name="userid" value="$selectedUser.id"/>
+			<input type="hidden" name="save" value="true"/>
+			<input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
+			<input type="hidden" name="method" value="edituser"/>
+			
+			#if ($saved)
+				<div class="common-success">
+					Saved
+				</div>
+			#end
+	
+			$context.putPageValue("searcher", $userSearcher)	 
+			$context.putPageValue("view", "user/simpleuseredit")	
+			$context.putPageValue("data", $selectedUser)	
+			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			
+			$context.putPageValue("searcher", $userProfileSearcher)	 
+			$context.putPageValue("view", "userprofile/edit")	
+			$context.putPageValue("data", $userprofile)
+			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			
+		
+			<br/>
+			<div style="padding-left: 200px;">
+			<ul class="embuttons" >
+				<li><a href="#" onclick="javascript:saveUser()" ><span>[[Save Changes]]</span></a></li>
+				<li>
+					<a href="./removeuser.html?groupid=$content.mastergroup&removeUsernames=$selectedUser.id"><span>Delete User</span></a>
+				</li>
+			</ul>
+			</div>
+			
+		</form>
+	</div>
+</div>	
+<script language="JavaScript" type="text/javascript">
+<!--
+function saveUser()
+{
+	var form = document.getElementById("usereditform");
+  	form.submit();
+}
+
+mailingSameAsOffice = function()
+{
+	jQuery("#usereditform #mailingstreet\\.value")[0].value = jQuery("#usereditform #officestreet\\.value")[0].value;
+	jQuery("#usereditform #mailingcity\\.value")[0].value = jQuery("#usereditform #officecity\\.value")[0].value;
+	jQuery("#usereditform #mailingstate\\.value")[0].value = jQuery("#usereditform #officestate\\.value")[0].value;
+	jQuery("#usereditform #mailingzip\\.value")[0].value = jQuery("#usereditform #officezip\\.value")[0].value;
+	jQuery("#usereditform #mailingcountry\\.value")[0].value = jQuery("#usereditform #officecountry\\.value")[0].value;
+}
+
+jQuery("#usereditform #mailingsameasoffice\\.value")[0].onchange = mailingSameAsOffice;
+		
+
+-->
+</script>
+
+#else
+	<br/>
+	[[Select a user.]]
+#end

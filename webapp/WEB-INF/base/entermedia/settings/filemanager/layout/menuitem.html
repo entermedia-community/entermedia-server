@@ -1,0 +1,13 @@
+#set( $id = $context.getRequestParameter("id"))
+#set( $imagepath = $context.getRequestParameter("icon"))
+#set( $text = $context.getRequestParameter("label"))
+#set( $menupath = $context.getRequestParameter("input"))
+
+
+	<a href="#" class="oepluginheader" onmouseover="OEPopUp.showPopUp(this,'${id}menu');" onmouseout="OEPopUp.hide('${id}menu');"><img border="0" src="$imagepath" /> $text</a>
+	<div id="${id}menu" class="oepopupsection" onmouseover="OEPopUp.showPopUp(this,'${id}menu');" onmouseout="OEPopUp.hide('${id}menu');">
+		<ul class="oeglossymenu" >
+			$pages.include($menupath, $context)
+		</ul>
+	</div>
+

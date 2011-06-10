@@ -1,0 +1,29 @@
+#set($base = "$home/$applicationid/users")
+#if( $invitations.size() > 0 )
+<h2 style="padding-top: 20px;">[[Pending Invitations]]</h2>
+<table class="striped" width="700">
+<tr>
+<th>[[Invite]] Id</th><th>[[Email]]</th><th>[[Date Sent]]</th><th>[[Subject]]</th>
+</tr>
+	#foreach( $invite in $invitations ) ##member is an ElementData object
+		#set($friend = $invite.ownerid)
+		<tr>
+			<td>
+				$invite.id
+			</td>
+			<td>
+				$invite.email
+			</td>
+			<td style="padding:10px">
+				$invitations.toDate($invite.datesent)
+			</td>
+			<td style="padding:10px">
+				$invite.subject
+			</td>
+			##edit resend link? or delete link?
+		</tr>	
+	#end
+</table>
+#else
+	##No Friend Requests
+#end

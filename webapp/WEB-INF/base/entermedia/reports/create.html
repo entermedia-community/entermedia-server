@@ -1,0 +1,10 @@
+#set( $catalogid = $context.getRequestParameter("catalogid") )
+
+$context.putPageValue("searcher", $searcherManager.getSearcher($catalogid, "asset"))
+
+<input type="hidden" name="searchtype" value="asset"/>
+<div align="left" width="20%">
+	$pages.include("/system/data/search/fieldsearch.html", $context)
+</div>
+
+<input type="submit" />

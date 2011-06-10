@@ -1,0 +1,6 @@
+#
+#Tue Apr 27 09:32:13 CLT 2010
+Save=Guardar
+Settings=Ajustes
+Edit\ Profile=Editar Perfil
+

@@ -1,0 +1,23 @@
+<h2>Sync Status</h2>
+
+#if( $pendingassets.size() == 0 )
+
+<p>All files have been uploaded. To view the files sort by last modified</p>
+#else
+<table class="striped">
+<tr><th>File Name</th><th>Path</th><th>Progress</th></tr>
+#foreach( $asset in $pendingassets.getPageOfHits() )
+<tr><td>$asset.name</td><td>$asset.localpath</td><td>$!asset.uploadprogress of $asset.filesize</td></tr>
+#end
+</table>
+<style type="text/css">
+table tr { margin-top:5px; }
+table tr td {margin-right: 5px;}
+</style>
+#end
+
+#if( $syncassets.size() > $pendingassets.size() )
+
+<p>Processing $pendingassets.size() of $syncassets.size() uploads</p>
+
+#end

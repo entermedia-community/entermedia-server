@@ -1,0 +1,4 @@
+<page>
+	<page-action name="MediaSearchModule.searchCategories" />
+	<property name="categoryid">index</property>
+</page>

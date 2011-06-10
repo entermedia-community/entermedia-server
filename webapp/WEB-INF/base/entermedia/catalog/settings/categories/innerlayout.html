@@ -1,0 +1,62 @@
+#set ( $category = $storeeditor.getCurrentCatalog() )
+
+<table width="100%" cellspacing="10" >
+<tr>
+<td valign="top" width="270px;">
+	<h2>[[Categories]]</h2>
+<div class="emactions" style="border: 1px solid gray; padding: 10px;">	   
+		$pages.include("$cataloghome/settings/categories/tree.html")
+</div>
+
+<table><tr><td>
+	<div class="embutton">
+	<a href="$home$cataloghome/settings/categories/editor/addnew.html" target="_parent"  >[[Add Child Category]]</a>
+	</div>
+</td>
+<td>
+	<div class="embutton">
+	<a href="javascript:deleteCategory()" target="_parent"  >[[Delete Selected]]</a></li>	
+	</div>
+</td>
+</tr>
+</table>
+
+<div class="embutton">
+<div class="oeactionlistitem"><a href="javascript:refreshCatalogs()" target="_parent"  >[[Reload Tree]]</a></div>
+</div>
+
+</td>
+<td valign="top" style="padding-left: 20px;">
+$pages.includeContent()
+<td>
+</tr>
+</table>
+
+<form name="inputForm" method="post" >
+	<input type="hidden" name="oe-action" id="oe-action" />
+	<input type="hidden" name="treeid" />
+	<input type="hidden" name="categoryid" id="categoryid"  />
+</form>
+<script language="javascript">
+
+	refreshCatalogs = function()
+	{
+		var form = document.inputForm;
+		form.action = "$home$cataloghome/settings/categories/tree/refresh.html";
+		form.treeid.value = storeAdminCatalogTree.id;
+		form.categoryid.value = storeAdminCatalogTree.lastselected;
+		form.submit();
+	}
+	deleteCategory = function()
+	{
+		var respond = confirm("[[Are you sure you want to delete this category?]]");
+		if (respond)
+		{
+			var form = document.inputForm;
+			form.action = "$home$cataloghome/settings/categories/tree/delete.html";
+			form.treeid.value = storeAdminCatalogTree.id;
+			form.categoryid.value = storeAdminCatalogTree.lastselected;
+			form.submit();
+		}
+	}
+</script>

@@ -1,0 +1,9 @@
+<page>
+	<inner-layout>/${applicationid}/tools/user/layouts/userhomelayout.html</inner-layout>
+	<path-action name="UserProfileModule.createOwnerHome"/>
+	<path-action name="AlbumModule.listMyAlbums"/>
+	<property name="virtual">true</property>
+	<property name="matttabstabid">browse</property>
+	<property name="sectiontitle">Users</property>
+	
+</page>

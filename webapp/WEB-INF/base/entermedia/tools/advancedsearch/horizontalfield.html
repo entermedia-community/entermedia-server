@@ -1,0 +1,8 @@
+	<td align="right" valign="middle" class="searchfield" nowrap>
+		#set( $inputed = "$!hits.getInput($detail.getId())")
+		$!detail.getText($context)
+	</td>
+	<td id="detail_${detail.id}" align="left" valign="middle" nowrap>
+		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+		$pages.include("/system/data/search/detail.html", $context)
+	</td>

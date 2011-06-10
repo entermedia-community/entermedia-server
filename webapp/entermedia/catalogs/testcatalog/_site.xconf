@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/WEB-INF/base/entermedia/catalog</property>
+  <property name="catalogid">entermedia/catalogs/testcatalog</property>
+</page>

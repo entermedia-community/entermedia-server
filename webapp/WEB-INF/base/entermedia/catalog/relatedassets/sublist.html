@@ -1,0 +1,65 @@
+#set( $assetrootfolder = $context.getPageValue("assetrootfolder") )
+#set ($relation = $context.getPageValue("relation"))
+#set ($mediaarchive = $context.getPageValue("mediaarchive"))
+#set ($hit = $context.getPageValue("hit"))
+
+#set( $showremove = $context.getRequestParameter("showremove"))
+#set ($sourcepath = $relation.getSourcePath())
+#set ($clink = "$home$mediaarchive.getLinkToAssetDetails($sourcepath)") 
+#set ($mediumend = $mediaarchive.getLinkToMedium($sourcepath, $relation.fileformat))
+#set( $tsize = "$home$thumbend?assetid=$relation.id")
+#set( $msize = "$home$mediumend")
+
+
+#set($catalogid = $relation.getCatalogId())
+
+
+
+<tr>
+	<td style="text-align:center;padding:5px;">
+		<a href="$clink">
+			#if ("$!relation.name" == "")
+				[[New Item]]
+			#else
+				[[Details]]
+			#end
+		</a>
+	</td>
+	
+	<td style="text-align:center;padding:5px;">
+		<a href="$clink"  
+			#if ($mediumend && $mediumend.length() > 0 && (!$relation.datatype || $relation.datatype != "folder")) 
+				onmouseover="doTooltip(event,['$msize.replace("'", "\'")','${relation.name.replace("'", "\'")}']);" onmouseout="hideTip();"
+			#end
+		>
+			<img src="$home/$catalogid/downloads/preview/thumb/$sourcepath/thumb.jpg" width=40 border="0">
+		</a>
+	</td>
+				
+	<td>
+		&nbsp;&nbsp;$!relation.name
+	</td>
+
+	<td style="text-align:center;padding:5px;">
+		
+		 $!listsearcher.searchById($hit.type) 
+		 							
+	</td>
+
+	<td>
+		&nbsp;&nbsp;$!relation.title
+	</td>
+	
+	#if( $showremove.equals("true") && $canrelateassets )
+	<td style="text-align:center;padding:5px;">
+		#if( $hit.getAssetId() == $asset.id )
+		<a href="$home$cataloghome/relatedassets/remove.html?assetid=$asset.id&targetid=$relation.id&targetcatalogid=$relation.catalogid">
+			<img alt="[[Remove Relationship]]" src="$home/system/images/toolbar/delete.gif"/>
+		</a>
+			
+		#else
+		indirect
+		#end
+	</td>
+	#end
+</tr>
