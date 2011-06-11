@@ -82,7 +82,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	public Object searchByField(String inId, String inValue)
 	{
 		SearchQuery query = createSearchQuery();
-		query.addMatches(inId, inValue);
+		query.addExact(inId, inValue);
 		HitTracker hits = search(query);
 		Data first = (Data)hits.first();
 		if( first == null)
