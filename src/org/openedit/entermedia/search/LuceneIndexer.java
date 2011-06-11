@@ -180,7 +180,7 @@ public class LuceneIndexer
 	 */
 	public void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
 	{
-		doc.add(new Field("id", inData.getId(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+		doc.add(new Field("id", inData.getId(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
 		String name = inData.getName();
 		if (name == null || inData.getName().length() == 0)
 		{

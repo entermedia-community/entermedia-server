@@ -274,10 +274,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 	}
 
-	protected QueryParser getQueryParser()
+	public QueryParser getQueryParser()
 	{
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_30, "description", getAnalyzer())
+		QueryParser parser = new QueryParser(Version.LUCENE_31, "description", getAnalyzer())
 		{
 			protected Query getPrefixQuery(String field, String termStr) throws ParseException
 			{
@@ -322,7 +322,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 		};
 		parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-		parser.setLowercaseExpandedTerms(false);
+		parser.setLowercaseExpandedTerms(true);
 		parser.setAllowLeadingWildcard(true);
 		return parser;
 	}
@@ -507,6 +507,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			CompositeAnalyzer composite = new CompositeAnalyzer();
 			composite.setAnalyzer("description", new StemmerAnalyzer());
 			composite.setAnalyzer("id", new NullAnalyzer());
+			//composite.setAnalyzer("id", new RecordLookUpAnalyzer(true));
 			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
 			fieldAnalyzer = composite;
 		}
@@ -806,7 +807,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		SearchQuery query = createSearchQuery();
 		PropertyDetail detail = new PropertyDetail();
 		detail.setId(inField);
-		query.addExact(detail, inValue);
+		query.addMatches(detail, inValue);
 
 		HitTracker hits = search(query);
 		return hits.first();

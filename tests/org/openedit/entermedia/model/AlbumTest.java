@@ -1,7 +1,11 @@
 package org.openedit.entermedia.model;
 
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Query;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
+import org.openedit.data.XmlFileSearcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.EnterMedia;
@@ -17,6 +21,28 @@ import com.openedit.users.User;
 
 public class AlbumTest extends BaseEnterMediaTest
 {
+	
+	public void testLuceneIds() throws Exception
+	{
+		WebPageRequest req = getFixture().createPageRequest("/entermedia/index.html");
+		
+		XmlFileSearcher itemsearcher = (XmlFileSearcher)getMediaArchive().getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "assetalbums");
+		
+		QueryParser parser = itemsearcher.getQueryParser();
+		Query query1 = parser.parse("id:somejunk");
+		System.out.println(query1);
+		Data row = new BaseData();
+		row.setId("somejunk");
+		row.setSourcePath("junk");
+		itemsearcher.saveData(row,null);
+		
+		Data oldjunk = (Data)itemsearcher.searchById("somejunk");
+		assertNotNull(oldjunk);
+		itemsearcher.delete(oldjunk, null);
+		
+		oldjunk = (Data)itemsearcher.searchById("somejunk");
+		assertNull(oldjunk);
+	}
 
 	/*
 	 * These are new low-level test cases for new album stuff

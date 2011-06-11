@@ -202,7 +202,8 @@ public class LuceneAlbumSearcher extends BaseLuceneSearcher implements AlbumSear
 		item.setSourcePath(inAsset.getSourcePath());
 		item.setProperty("albumid", inAlbum.getUserName() + "_" + inAlbum.getId());
 		item.setProperty("assetid", inAsset.getId());
-		item.setId(item.get("albumid") + "_" + inAsset.getCatalogId() + "_" + inAsset.getId());
+		String id = item.get("albumid") + "_" + inAsset.getCatalogId() + "_" + inAsset.getId();
+		item.setId(id);
 		
 		assetalbums.saveData(item, null);
 		mediaArchive.getAssetSearcher().updateIndex(inAsset);
@@ -214,7 +215,8 @@ public class LuceneAlbumSearcher extends BaseLuceneSearcher implements AlbumSear
 		item.setSourcePath(inAsset.getSourcePath());
 		item.setProperty("albumid", inAlbum.getUserName() + "_" + inAlbum.getId());
 		item.setProperty("assetid", inAsset.getId());
-		item.setId(item.get("albumid") + "_" + inAsset.getCatalogId() + "_" + inAsset.getId());
+		String itemid = item.get("albumid") + "_" + inAsset.getCatalogId() + "_" + inAsset.getId();
+		item.setId(itemid);
 		Searcher assetalbums = getSearcherManager().getSearcher(inAsset.getCatalogId(), "assetalbums");
 		assetalbums.delete(item, null);
 		getEnterMedia().getMediaArchive(inAsset.getCatalogId()).getAssetSearcher().updateIndex(inAsset);

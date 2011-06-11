@@ -27,20 +27,27 @@ import com.openedit.OpenEditException;
 public class RecordLookUpAnalyzer extends Analyzer
 {
 	protected boolean fieldUseTokens = true;
-	
+	public RecordLookUpAnalyzer()
+	{
+		
+	}
+	public RecordLookUpAnalyzer( boolean inUseTokens )
+	{
+		setUseTokens(inUseTokens);
+	}
 	public TokenStream tokenStream(String fieldName, Reader reader) 
 	{
 		if( isUseTokens())
 		{
-			TokenStream result = new WhitespaceTokenizer(Version.LUCENE_30, reader);
-		    result = new LowerCaseFilter(Version.LUCENE_30, result);
+			TokenStream result = new WhitespaceTokenizer(Version.LUCENE_31, reader);
+		    result = new LowerCaseFilter(Version.LUCENE_31, result);
 	
 			//result = new NullFilter(result); //for debug
 		    return result;
 		}
 		else
 		{
-			return new LowerCaseFilter(Version.LUCENE_30, new OneToken(reader));
+			return new LowerCaseFilter(Version.LUCENE_31, new OneToken(reader));
 		}
 	}
 	
