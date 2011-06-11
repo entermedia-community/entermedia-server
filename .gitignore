@@ -1,0 +1,4 @@
+deploy/
+build/
+bin/
+webapp/WEB-INF/data/
