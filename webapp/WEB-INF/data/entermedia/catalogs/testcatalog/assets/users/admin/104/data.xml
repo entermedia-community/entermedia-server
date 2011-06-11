@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<asset id="104" name="im.tiff">
+  <category id="users_admin"/>
+  <property name="datatype">original</property>
+  <property name="fileformat">tiff</property>
+  <property name="primaryimagename">im.tiff</property>
+  <property name="assetmodificationdate">2009-07-02 12:27:37</property>
+  <property name="filesize">1409820</property>
+  <property name="colortype">2</property>
+  <property name="height">661</property>
+  <property name="width">529</property>
+</asset>

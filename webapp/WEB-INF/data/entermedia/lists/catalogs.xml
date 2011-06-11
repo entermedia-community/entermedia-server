@@ -1,0 +1,6 @@
+
+<properties>
+  <property id="entermedia/catalogs/testcatalog" searchtype="asset">Test Catalog</property>
+  <property id="entermedia/catalogs/audio" searchtype="asset">Audio</property>
+  <property id="entermedia/catalogs/video" searchtype="asset">Videos</property>
+</properties>

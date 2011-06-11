@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<asset id="testvideo" name="TestEpisodeVideo">
+  <category id="newassets_admin"/>
+  <property name="datatype">original</property>
+  <property name="fileformat">wmv</property>
+  <property name="temporiginalpath">\\mtsc2j6v.unitopr.unitint.test.statefarm.org\temp\test.mp4</property>
+</asset>
