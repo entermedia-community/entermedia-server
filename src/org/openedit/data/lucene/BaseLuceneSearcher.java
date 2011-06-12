@@ -322,7 +322,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 		};
 		parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-		parser.setLowercaseExpandedTerms(true);
+		parser.setLowercaseExpandedTerms(false);
 		parser.setAllowLeadingWildcard(true);
 		return parser;
 	}
@@ -575,16 +575,23 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			synchronized (this)
 			{
-				Directory indexDir = buildIndexDir(getCurrentIndexFolder());
-				try
+				if( fieldIndexWriter == null)
 				{
-					File lock = new File(getRootDirectory(), getIndexPath() + "/" + getCurrentIndexFolder() + "/" + "write.lock");
-					lock.delete();
-					fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),true, IndexWriter.MaxFieldLength.UNLIMITED);
-				}
-				catch (IOException ex)
-				{
-					throw new OpenEditException(ex);
+					String folder = getCurrentIndexFolder();
+					Directory indexDir = buildIndexDir(folder);
+					try
+					{
+						File lock = new File(getRootDirectory(), getIndexPath() + "/" + folder + "/" + "write.lock");
+						if(lock.exists() && !lock.delete() )
+						{
+							log.error("Could not delete lock");
+						}
+						fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),true, IndexWriter.MaxFieldLength.UNLIMITED);
+					}
+					catch (IOException ex)
+					{
+						throw new OpenEditException(ex);
+					}
 				}
 			}
 		}
@@ -721,7 +728,17 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	
 	public void updateIndex(Data inData) throws OpenEditException
 	{
-		updateIndex(getIndexWriter(), inData);
+		IndexWriter writer  = getIndexWriter();
+		updateIndex(writer, inData);
+		try 
+		{
+			writer.commit();
+		}
+		catch (Exception e) 
+		{
+			throw new OpenEditException(e);
+		}
+		
 	}
 
 	/** Call updateIndex with a list of data. It is much faster **/

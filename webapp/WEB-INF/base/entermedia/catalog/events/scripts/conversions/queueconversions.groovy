@@ -23,12 +23,11 @@ public void createTasksForUpload()
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	log.info("Queue conversions running on " + mediaArchive.getCatalogId() );
-	Searcher targetsearcher = mediaArchive.getAssetSearcher();
-	SearchQuery q = targetsearcher.createSearchQuery();
+	Searcher assetsearcher = mediaArchive.getAssetSearcher();
+	SearchQuery q = assetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
 	if( ids == null)
 	{
-		
 		//Do a search for importstatus of "added" -> "converted"
 		q.addExact( "importstatus", "imported" );
 	}
@@ -37,14 +36,16 @@ public void createTasksForUpload()
 		String assetids = ids.replace(","," ");
 		q.addOrsGroup( "id", assetids );
 	}
-	
-	List assets = new ArrayList(targetsearcher.search(q) );
+	//Did a search for assetids but I got back the wrong assets
+	List assets = new ArrayList(assetsearcher.search(q) );
 
 	boolean foundsome = false;
 	log.info("Found ${assets.size()} assets");
 	assets.each
 	{
 		Asset asset = mediaArchive.getAsset(it.id);
+
+		log.info("Adding conversions for " + it.id + " asset is " + asset.getName() + " from " + ids );
 		
 		String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 		//video?
@@ -59,7 +60,7 @@ public void createTasksForUpload()
 			Data hit = it;
 			Data newconversion = tasksearcher.createNewData();
 
-			Data preset = (Data) presetsearcher.searchById(it.id);
+			Data preset = (Data) presetsearcher.searchById(hit.id);
 			
 			SearchQuery presetquery = destinationsearcher.createSearchQuery();
 			presetquery.addMatches("onimport", "true");
@@ -67,13 +68,15 @@ public void createTasksForUpload()
 			
 			HitTracker dest = destinationsearcher.search(presetquery);
 						
-			dest.each{
+			dest.each
+			{
+				Data destination = it;
 				Data publishrequest = publishqueuesearcher.createNewData();
 				publishrequest.setSourcePath(asset.getSourcePath());
 				publishrequest.setProperty("status", "pending"); //pending on the convert to work
 				publishrequest.setProperty("assetid", asset.id);
 				publishrequest.setProperty("presetid", preset.id);
-				publishrequest.setProperty("publishdestination", it.id);
+				publishrequest.setProperty("publishdestination", destination.id);
 				String exportName=null;
 				if( preset.get("type") != "original")
 				{

@@ -154,6 +154,7 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 			composite.setAnalyzer("description", new StemmerAnalyzer());
 			composite.setAnalyzer("id", new NullAnalyzer());
 			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+			composite.setAnalyzer("sourcepath", new NullAnalyzer());
 			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
 			record.setUseTokens(false);
 			composite.setAnalyzer("cumulusid", record);

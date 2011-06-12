@@ -1,9 +1,0 @@
-
-<album id="113" selection="false" user="admin" name="new test album">
-  <property id="owner"><![CDATA[admin]]></property>
-  <participants>
-    <participant userid="admin"/>
-    <participant userid="testuser"/>
-  </participants>
-  <emailparticipants/>
-</album>

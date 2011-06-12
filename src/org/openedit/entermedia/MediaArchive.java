@@ -503,7 +503,8 @@ public class MediaArchive
 	
 	public Asset getAsset(String inId)
 	{
-		return (Asset) getAssetSearcher().searchById(inId);
+		Asset asset = (Asset) getAssetSearcher().searchById(inId);
+		return asset;
 	}
 
 	public String getSourcePathForPage(WebPageRequest inReq)

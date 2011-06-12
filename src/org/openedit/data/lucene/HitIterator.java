@@ -17,6 +17,7 @@ import java.util.Iterator;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 import com.openedit.OpenEditRuntimeException;
@@ -100,8 +101,10 @@ public class HitIterator implements Iterator
 	{
 		try
 		{
-			Document doc = getIndexSearcher().doc(startOffset + hitCount++);
+			ScoreDoc sdoc  = getHits().scoreDocs[startOffset + hitCount];
+			Document doc = getIndexSearcher().doc(sdoc.doc);
 			DocumentData data = new DocumentData(doc);
+			hitCount++;
 			return data;
 		}
 		catch (IOException ex)

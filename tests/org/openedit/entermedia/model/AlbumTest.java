@@ -1,5 +1,7 @@
 package org.openedit.entermedia.model;
 
+import java.util.Collection;
+
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.openedit.Data;
@@ -30,17 +32,32 @@ public class AlbumTest extends BaseEnterMediaTest
 		
 		QueryParser parser = itemsearcher.getQueryParser();
 		Query query1 = parser.parse("id:somejunk");
-		System.out.println(query1);
 		Data row = new BaseData();
-		row.setId("somejunk");
-		row.setSourcePath("junk");
+		row.setId("somejunk1");
+		row.setSourcePath("junk1");
 		itemsearcher.saveData(row,null);
+
 		
-		Data oldjunk = (Data)itemsearcher.searchById("somejunk");
+		row.setId("somejunk2");
+		row.setSourcePath("junk2");
+		itemsearcher.saveData(row,null);
+
+
+		Data oldjunk2 = (Data)itemsearcher.searchById("somejunk2");
+		assertEquals(oldjunk2.getId(),"somejunk2" );
+		assertNotNull(oldjunk2);
+
+		Data oldjunk = (Data)itemsearcher.searchById("somejunk1");
+		assertEquals(oldjunk.getId(),"somejunk1" );
 		assertNotNull(oldjunk);
+
+		SearchQuery q = itemsearcher.createSearchQuery();
+		q.addOrsGroup("id", "somejunk1 somejunk2 somejunk3" );
+		Collection three = itemsearcher.search(q);
+		assertEquals(three.size() , 2);
 		itemsearcher.delete(oldjunk, null);
 		
-		oldjunk = (Data)itemsearcher.searchById("somejunk");
+		oldjunk = (Data)itemsearcher.searchById("somejunk1");
 		assertNull(oldjunk);
 	}
 
