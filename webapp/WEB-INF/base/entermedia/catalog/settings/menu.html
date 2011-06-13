@@ -209,7 +209,7 @@
 
   					<div class="spiffyfgthree">
   			#end
-			<a href="$home$cataloghome/settings/data/list/index.html?catalogid=$catalogid&searchtype=asset"><img src="$home$themeprefix/entermedia/images/settings/datamanagementsmall.png">[[Data Search]]</a>
+			<a href="$home$cataloghome/settings/data/list/index.html?catalogid=$catalogid&searchtype=asset"><img src="$home$themeprefix/entermedia/images/settings/datamanagementsmall.png">[[Data Manager]]</a>
 			#if($tab == "searchdata")
 					</div>
 				
@@ -222,7 +222,31 @@
 				</div>
 			#end
 		</div>
+        <div class="catalogs_menu_item">
+                  #if($tab == "views")
+                          <div>
+                            <b class="spiffythree">
+                            <b class="spiffythree1"><b></b></b>
+                            <b class="spiffythree2"><b></b></b>
+                            <b class="spiffythree3"></b>
+                            <b class="spiffythree4"></b>
+                            <b class="spiffythree5"></b></b>
 
+                                  <div class="spiffyfgthree">
+                  #end
+                  <a href="$settingshome/data/views/index.html?searchtype=asset"><img src="$home$themeprefix/entermedia/images/settings/viewusagereports.png">[[View Manager]]</a>
+                  #if($tab == "views")
+                                  </div>
+
+                            <b class="spiffythree">
+                            <b class="spiffythree5"></b>
+                            <b class="spiffythree4"></b>
+                            <b class="spiffythree3"></b>
+                            <b class="spiffythree2"><b></b></b>
+                            <b class="spiffythree1"><b></b></b></b>
+                          </div>
+                  #end
+          </div>
 	<div class="catalogs_menu_item">
 			#if($tab == "permissionsassets")
 				<div>
@@ -235,7 +259,7 @@
 
   					<div class="spiffyfgthree">
   			#end
-			<a href="$settingshome/permissionsassets/index.html"><img src="$home$themeprefix/entermedia/images/settings/security.png">[[Asset Edit Rules]]</a>
+			<a href="$settingshome/permissionsassets/index.html"><img src="$home$themeprefix/entermedia/images/settings/security.png">[[Rules]]</a>
 			#if($tab == "permissionsassets")
 					</div>
 				

@@ -9,8 +9,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,8 +63,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	protected SimpleDateFormat fieldFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 	protected IndexWriter fieldIndexWriter;
 	protected String fieldBadSortField = null;
-	protected boolean fieldRunningReindex = false;
-	protected boolean fieldClearIndex;
+	protected boolean fieldPendingCommit;
+	protected boolean fieldReopenReader;
+	
 	protected LuceneIndexer fieldLuceneIndexer;
 	protected String fieldCurrentIndexFolder;
 	
@@ -105,12 +108,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			writer = new IndexWriter(indexDir, getAnalyzer(), true, IndexWriter.MaxFieldLength.UNLIMITED);
 			writer.setMergeFactor(50);
 			reIndexAll(writer);
-			writer.commit();
 			writer.optimize();
-			
+			writer.commit();
 			setCurrentIndexFolder(indexname);
-			clearIndex();
 			setIndexWriter(writer);
+			clearIndex();
 			completed = true;
 			
 			//delete the older indexes
@@ -145,22 +147,23 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			List sorted = new ArrayList(Arrays.asList(files));
 			Collections.sort(sorted);
 			Collections.reverse(sorted);
-			int goodcount = 0;
 			FileUtils utils = new FileUtils();
+			Set keepers = new HashSet();
 			for (int i = 0; i < sorted.size(); i++)
 			{
 				File folder = (File)sorted.get(i);
 				char firstchar = folder.getName().charAt(0);
-				if(  Character.isDigit(firstchar))
+				if( Character.isDigit(firstchar))
 				{
-					goodcount++;
-					if( goodcount > 2)
+					keepers.add(folder);
+					if( keepers.size() > 2)
 					{
 						utils.deleteAll(folder);
 					}
 				}
 			}
-			if( goodcount > 1)
+			//delete any A folders
+			if( keepers.size() > 1)
 			{
 				for (int i = 0; i < sorted.size(); i++)
 				{
@@ -209,7 +212,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			long start = System.currentTimeMillis();
 			QueryParser parser = getQueryParser();
 			Query query1 = parser.parse(inQuery);
-
 			IndexSearcher liveone = getLiveSearcher();
 			TopDocs hits = null;
 			if (inOrdering != null)
@@ -422,45 +424,42 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	protected IndexSearcher getLiveSearcher()
 	{
-		if (fieldClearIndex || fieldLiveSearcher == null)
+		if (fieldReopenReader || fieldLiveSearcher == null)
 		{
 			synchronized (this)
 			{
-				if (fieldClearIndex || fieldLiveSearcher == null)
+				if (fieldReopenReader || fieldLiveSearcher == null)
 				{
-					BooleanQuery.setMaxClauseCount(100000);
 					try
 					{
-						if (fieldClearIndex && fieldLiveSearcher != null)
+						String indexname = getCurrentIndexFolder();
+						Directory index = null;
+						if (indexname == null || !IndexReader.indexExists(buildIndexDir(indexname)))
 						{
-							fieldLiveSearcher.close();
-						}						
-						//Hack: We dont flush our writers very often in case we have a bunch of writes in a row
-						//So when we search again we needed to flush
-						if (fieldIndexWriter != null)
-						{
-							try
-							{
-								fieldIndexWriter.commit();
-							}
-							catch (Exception e)
-							{
-								throw new OpenEditRuntimeException(e);
-							}
-						}
-						Directory index = buildIndexDir(getCurrentIndexFolder());
-						if (!IndexReader.indexExists(index))
-						//if( !isValidIndex( getCurrentIndexFolder() )
-						{
-							log.error("No valid index found in A " + getSearchType());
+							log.error("No valid index found in " + getSearchType());
 							reIndexAll();
-							//index dir may have changed
-							index = buildIndexDir(getCurrentIndexFolder());
 						}
-						flushRecentChanges();
 						index = buildIndexDir(getCurrentIndexFolder());
-						fieldLiveSearcher = new IndexSearcher(index);
-						fieldClearIndex = false;
+						flushRecentChanges();
+						
+						IndexReader reader = null;
+						if( fieldLiveSearcher != null)
+						{
+							reader = fieldLiveSearcher.getIndexReader().reopen();
+//							//TODO the old one should be closed
+//							//Since we now use 
+							//fieldLiveSearcher.close();	
+							if( fieldPendingCommit)
+							{
+								flush();
+							}
+						}
+						else
+						{
+							reader = IndexReader.open(getIndexWriter(), true);
+						}
+						fieldLiveSearcher = new IndexSearcher(reader);
+						fieldReopenReader = false;
 					}
 					catch (Exception ex)
 					{
@@ -482,12 +481,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 		}
 		return fieldLiveSearcher;
-	}
-
-	private boolean isValidIndex(String inCurrentIndexFolder)
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	protected void flushRecentChanges() throws IOException
@@ -531,7 +524,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			return "-1";
 		}
 		String id = String.valueOf(getLiveSearcher().hashCode());
-		return id + fieldClearIndex; //In case we turned that on. Then this will trigger a search
+		return id + fieldPendingCommit; //In case we turned that on. Then this will trigger a search
 	}
 
 	public void flush()
@@ -546,8 +539,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			{
 				throw new OpenEditRuntimeException(e);
 			}
-			clearIndex();
 		}
+		fieldPendingCommit = false;
 	}
 
 	/**
@@ -566,27 +559,48 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//		{
 		//			throw new OpenEditRuntimeException(ex);
 		//		}
-		fieldClearIndex = true;
+		fieldPendingCommit = true;
+		fieldReopenReader = true;
 	}
 
 	public IndexWriter getIndexWriter() 
 	{
+		if( fieldPendingCommit )
+		{
+			flush();
+		}
+
 		if (fieldIndexWriter == null)
 		{
 			synchronized (this)
 			{
 				if( fieldIndexWriter == null)
 				{
+					BooleanQuery.setMaxClauseCount(100000);
+
 					String folder = getCurrentIndexFolder();
+					if( folder == null)
+					{
+						reIndexAll();
+						return fieldIndexWriter;
+					}
 					Directory indexDir = buildIndexDir(folder);
 					try
 					{
-						File lock = new File(getRootDirectory(), getIndexPath() + "/" + folder + "/" + "write.lock");
-						if(lock.exists() && !lock.delete() )
+						//Leaving a lock fils seems to help the writer pick up where it left off. Not sure what is going on
+//						File lock = new File(getRootDirectory(), getIndexPath() + "/" + folder + "/" + "write.lock");
+//						if(lock.exists() && !lock.delete() )
+//						{
+//							log.error("Could not delete lock");
+//						}
+//						IndexWriter.unlock(indexDir);
+						if( getSearchType().equals("asset"))
 						{
-							log.error("Could not delete lock");
+							log.info(getCatalogId() + " asset writer opened in " + folder);
 						}
-						fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),true, IndexWriter.MaxFieldLength.UNLIMITED);
+						//NOTE the false!!! Very important. Wasted 3 days on this!!!!
+						fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),false, IndexWriter.MaxFieldLength.UNLIMITED);
+//						log.info("Open Index writer for " + lock);
 					}
 					catch (IOException ex)
 					{
@@ -711,11 +725,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				Term term = new Term("id", data.getId());
 				inWriter.updateDocument(term, doc, getAnalyzer());
 				clearIndex();
-				if (inWriter.ramSizeInBytes() > (1024000 * 35)) // flush every 35 megs
-				{
-					log.info("Flush writer in reindex mem: " + inWriter.ramSizeInBytes());
-					inWriter.commit();
-				}
 			}
 			inWriter.commit();
 			inRecords.clear();
@@ -730,15 +739,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	{
 		IndexWriter writer  = getIndexWriter();
 		updateIndex(writer, inData);
-		try 
-		{
-			writer.commit();
-		}
-		catch (Exception e) 
-		{
-			throw new OpenEditException(e);
-		}
-		
+		clearIndex();
 	}
 
 	/** Call updateIndex with a list of data. It is much faster **/
@@ -757,8 +758,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			updateIndex(inData, doc, details);
 			Term term = new Term("id", inData.getId());
 			inWriter.updateDocument(term, doc, getAnalyzer());
-			flush(); //this should not be here is is very slow
-			clearIndex();
 		}
 		catch (Exception ex)
 		{
@@ -793,7 +792,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		try
 		{
 			getIndexWriter().deleteDocuments(term);
-			flush();
 			clearIndex();
 		}
 		catch (Exception e)
@@ -836,6 +834,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public void shutdown()
 	{
+		flush();
 		setIndexWriter(null);
 	}
 	
@@ -846,7 +845,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			//find the biggest file name 
 			File indexDir = new File(getRootDirectory(), getIndexPath() + "/");
 			File[] files = indexDir.listFiles();
-			if( files != null && files.length > 1)
+			if( files != null && files.length > 0)
 			{
 				List sorted = new ArrayList(Arrays.asList(files));
 				Collections.sort(sorted);
@@ -864,7 +863,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 			if ( fieldCurrentIndexFolder == null)
 			{
-				fieldCurrentIndexFolder = "A";
+				File a = new File(getRootDirectory(), getIndexPath() + "/A");
+				if( a.exists() )
+				{
+					fieldCurrentIndexFolder = "A";					
+				}
 			}	
 		}
 		return fieldCurrentIndexFolder;

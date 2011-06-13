@@ -335,25 +335,12 @@ public class LuceneHitTracker extends HitTracker
 		}
 		return list.toArray();
 	}
-	public Data get(String inId)
-	{
-		if(inId == null){
-			return null;
-		}
-		for (Iterator iterator = iterator(); iterator.hasNext();)
-		{
-			DocumentData doc = (DocumentData) iterator.next();
-			if (inId.equals(doc.get("id")))
-			{
-				return doc;
-			}
-
-		}
-		return null;
-	}
-	
 	public Object getById(String inId)
 	{
+		if(inId == null)
+		{
+			return null;
+		}
 		int size = size();
 		for (int i = 0; i < size; i++)
 		{

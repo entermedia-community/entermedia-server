@@ -1,6 +1,5 @@
 package org.openedit.entermedia.search;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.search.Query;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
@@ -42,7 +41,6 @@ import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
 import com.openedit.users.User;
-import com.openedit.util.FileUtils;
 
 
 public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSearcher, AssetPathFinder
@@ -210,11 +208,7 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 				log.info("Optimized");
 			}
 
-			if (inOptimize)
-			{
-				flush();
-			}
-			else if (inAssets.size() > 100)
+			if (inOptimize || inAssets.size() > 100)
 			{
 				flush();
 			}
@@ -263,11 +257,12 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 			}
 			
 			/* Search in the old place */
-			reindexer.setRootPath("/" + getCatalogId() + "/assets/");
-			reindexer.process();
+//			reindexer.setRootPath("/" + getCatalogId() + "/assets/");
+//			reindexer.process();
 			
-			log.info("Reindex started on with " + reindexer.getExecCount() + " assets");
+			log.info("Reindex completed on with " + reindexer.getExecCount() + " assets");
 			writer.optimize();
+			writer.commit();
 
 		}
 		catch(Exception ex)
@@ -323,13 +318,11 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 
 		try
 		{
-			String id = inId.toLowerCase(); // Since it is tokenized
-			Term term = new Term("id", id);
-
-			getIndexWriter().deleteDocuments(term);
+			Query q = getQueryParser().parse("id:" + inId);
+			getIndexWriter().deleteDocuments(q);
 			clearIndex();
 		}
-		catch (IOException ex)
+		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
