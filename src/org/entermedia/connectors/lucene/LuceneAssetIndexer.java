@@ -1,4 +1,4 @@
-package org.openedit.entermedia.search;
+package org.entermedia.connectors.lucene;
 
 import java.io.File;
 import java.io.FileReader;
@@ -26,10 +26,12 @@ import org.apache.lucene.index.Term;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.data.lucene.LuceneIndexer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.search.AssetSecurityArchive;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -38,9 +40,9 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.util.FileUtils;
 import com.openedit.util.OutputFiller;
 
-public class AssetLuceneIndexer extends LuceneIndexer
+public class LuceneAssetIndexer extends LuceneIndexer
 {
-	static final Log log = LogFactory.getLog(AssetLuceneIndexer.class);
+	static final Log log = LogFactory.getLog(LuceneAssetIndexer.class);
 	protected Analyzer fieldAnalyzer;
 	protected boolean usesSearchSecurity = false;
 	protected MediaArchive fieldMediaArchive;
@@ -207,7 +209,7 @@ public class AssetLuceneIndexer extends LuceneIndexer
 		}
 	}
 */
-	protected void populateAsset(IndexWriter writer, Asset asset, boolean add, PropertyDetails inDetails) throws OpenEditException
+	public void populateAsset(IndexWriter writer, Asset asset, boolean add, PropertyDetails inDetails) throws OpenEditException
 	{
 		Document doc = createAssetDoc(asset, inDetails);
 		writeDoc(writer, asset.getId().toLowerCase(), doc, add);
@@ -560,7 +562,7 @@ public class AssetLuceneIndexer extends LuceneIndexer
 		return cut;
 	}
 
-	protected void writeDoc(IndexWriter writer, String inId, Document doc, boolean add)
+	public void writeDoc(IndexWriter writer, String inId, Document doc, boolean add)
 	{
 		try
 		{

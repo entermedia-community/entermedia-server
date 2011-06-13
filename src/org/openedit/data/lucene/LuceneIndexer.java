@@ -1,4 +1,4 @@
-package org.openedit.entermedia.search;
+package org.openedit.data.lucene;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -18,7 +18,6 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.data.lucene.NumberUtils;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.hittracker.HitTracker;

@@ -558,21 +558,7 @@ public class MediaArchive
 	}
 	public void saveAssets(Collection inAssets, User inUser)
 	{
-		List toIndex = new ArrayList();
-		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
-			Asset asset = (Asset) iterator.next();
-			getAssetArchive().saveAsset(asset, inUser);
-			toIndex.add(asset);
-			if (toIndex.size() == 100)
-			{
-				getAssetSearcher().updateIndex(toIndex, false);
-				toIndex.clear();
-			}
-		}
-		if (toIndex.size() > 0)
-		{
-			getAssetSearcher().updateIndex(toIndex, true);
-		}
+		getAssetSearcher().saveAllData((List<Data>) inAssets, inUser);
 	}
 
 	public synchronized ConvertStatus convertCatalog(User inUser, boolean inForce) throws Exception

@@ -708,20 +708,17 @@
 		</property>
 	</bean>
 
-
-	<bean id="assetSearcher" class="org.openedit.entermedia.search.AssetLuceneSearcher"
+  <!-- This can be aliased using beans.xml to one with a nicer connector -->
+	<bean id="assetSearcher" class="org.openedit.entermedia.search.BaseAssetSearcher"
 		singleton="false">
+		<property name="dataConnector">
+			<ref bean="luceneAssetDataConnector" />
+		</property>
 		<property name="webEventListener">
 			<ref bean="mediaEventHandler" />
 		</property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
 		<property name="pageManager">
 			<ref bean="pageManager" />
-		</property>
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
 		</property>
 	</bean>
 
@@ -1233,6 +1230,21 @@
         class="org.entermedia.amazon.S3Repository" abstract="false"
         singleton="false" lazy-init="default" autowire="default"
         dependency-check="default">
-       
     </bean>
+    
+    <bean id="luceneAssetDataConnector" class="org.entermedia.connectors.lucene.LuceneAssetDataConnector"
+		singleton="false">
+		<property name="webEventListener">
+			<ref bean="mediaEventHandler" />
+		</property>
+		<property name="rootDirectory">
+			<ref bean="root" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
 </beans>

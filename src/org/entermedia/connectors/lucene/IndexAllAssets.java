@@ -1,4 +1,4 @@
-package org.openedit.entermedia.search;
+package org.entermedia.connectors.lucene;
 
 import java.util.Set;
 
@@ -10,27 +10,28 @@ import org.apache.lucene.index.IndexWriter;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.search.AssetProcessor;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.GenericsUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.users.User;
 
-public class AssetLuceneIndexAll extends AssetProcessor
+public class IndexAllAssets extends AssetProcessor
 {
-	static final Log log = LogFactory.getLog(AssetLuceneIndexAll.class);
+	static final Log log = LogFactory.getLog(IndexAllAssets.class);
 	protected IndexWriter fieldWriter;
-	protected AssetLuceneIndexer fieldIndexer;
+	protected LuceneAssetIndexer fieldIndexer;
 	protected Boolean fieldIndexFolders;
 	protected MediaArchive fieldMediaArchive;
 	protected Set<String> fieldSourcePaths = GenericsUtil.createSet();
 	
-	public AssetLuceneIndexer getIndexer()
+	public LuceneAssetIndexer getIndexer()
 	{
 		return fieldIndexer;
 	}
 
-	public void setIndexer(AssetLuceneIndexer inIndexer)
+	public void setIndexer(LuceneAssetIndexer inIndexer)
 	{
 		fieldIndexer = inIndexer;
 	}

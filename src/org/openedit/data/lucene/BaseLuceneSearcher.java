@@ -38,7 +38,6 @@ import org.openedit.Data;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
-import org.openedit.entermedia.search.LuceneIndexer;
 
 import com.openedit.OpenEditException;
 import com.openedit.OpenEditRuntimeException;
@@ -805,7 +804,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		log.info("DELETE NOT IMPLEMENTED");
 	}
 
-	public void saveAllData(List inAll, User inUser)
+	public void saveAllData(List<Data> inAll, User inUser)
 	{
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
 		{

@@ -29,7 +29,7 @@ public interface RelatedKeywordSearcher
 
 	public void reIndexAll() throws OpenEditException;
 
-	public void saveAllData(List inAll, User inUser);
+	public void saveAllData(List<Data> inAll, User inUser);
 
 	public void saveData(Object inData, User inUser);
 

@@ -36,7 +36,6 @@ public void createTasksForUpload()
 		String assetids = ids.replace(","," ");
 		q.addOrsGroup( "id", assetids );
 	}
-	//Did a search for assetids but I got back the wrong assets
 	List assets = new ArrayList(assetsearcher.search(q) );
 
 	boolean foundsome = false;

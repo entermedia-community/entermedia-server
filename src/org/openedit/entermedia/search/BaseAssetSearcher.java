@@ -1,6 +1,6 @@
 package org.openedit.entermedia.search;
 
-import java.io.IOException;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,18 +10,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Query;
 import org.openedit.Data;
+import org.openedit.data.BaseSearcher;
 import org.openedit.data.CompositeData;
-import org.openedit.data.PropertyDetails;
-import org.openedit.data.lucene.BaseLuceneSearcher;
-import org.openedit.data.lucene.CompositeAnalyzer;
-import org.openedit.data.lucene.NullAnalyzer;
-import org.openedit.data.lucene.RecordLookUpAnalyzer;
-import org.openedit.data.lucene.StemmerAnalyzer;
+import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
 import org.openedit.entermedia.AssetPathFinder;
@@ -36,37 +29,35 @@ import com.openedit.OpenEditRuntimeException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
 import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 
 
-public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSearcher, AssetPathFinder
+public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, AssetPathFinder
 {
-	static final Log log = LogFactory.getLog(AssetLuceneSearcher.class);
+	static final Log log = LogFactory.getLog(BaseAssetSearcher.class);
 	protected static final String CATALOGIDX = "catalogid";
 	protected static final String CATEGORYID = "categoryid";
+	protected DataConnector fieldDataConnector;
+
 	protected DecimalFormat fieldDecimalFormatter;
 	protected PageManager fieldPageManager;
 	protected Map fieldAssetPaths;
 	private Boolean fieldUsesSearchSecurity;
-	protected AssetLuceneIndexer fieldIndexer;
 	protected ModuleManager fieldModuleManager;
 	protected CategoryArchive fieldCategoryArchive;
 	protected MediaArchive fieldMediaArchive;
 	
-	public AssetLuceneSearcher()
+	public BaseAssetSearcher()
 	{
 		setFireEvents(true);
 	}
 	
 	public Data createNewData()
 	{
-		Asset temp = new Asset();
-		return temp;
-		
+		return getDataConnector().createNewData();
 	}
 
 	/**
@@ -134,142 +125,34 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 		}
 	}
 
-	public void updateIndex(Asset inAsset)
+	protected DataConnector getDataConnector()
 	{
-		List all = new ArrayList(1);
-		all.add(inAsset);
-		updateIndex(all, false);
-		clearIndex(); // Does not flush because it will flush if needed
-		// anyways on a search
-
+		return fieldDataConnector;
 	}
-
-	public Analyzer getAnalyzer()
+	public void setDataConnector(DataConnector inDataConnector)
 	{
-		if (fieldAnalyzer == null)
-		{
-			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("description", new StemmerAnalyzer());
-			composite.setAnalyzer("id", new NullAnalyzer());
-			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
-			composite.setAnalyzer("sourcepath", new NullAnalyzer());
-			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
-			record.setUseTokens(false);
-			composite.setAnalyzer("cumulusid", record);
-			composite.setAnalyzer("name_sortable", record);
-			fieldAnalyzer = composite;
-		}
-		return fieldAnalyzer;
+		this.fieldDataConnector = inDataConnector;
 	}
-
-	protected AssetLuceneIndexer getIndexer()
+	public synchronized void updateIndex(Data inAssets)
 	{
-		if (fieldIndexer == null)
-		{
-			fieldIndexer = new AssetLuceneIndexer();
-			fieldIndexer.setAnalyzer(getAnalyzer());
-			fieldIndexer.setSearcherManager(getSearcherManager());
-			fieldIndexer.setUsesSearchSecurity(doesIndexSecurely());
-			fieldIndexer.setNumberUtils(getNumberUtils());
-			fieldIndexer.setRootDirectory(getRootDirectory());
-			fieldIndexer.setMediaArchive(getMediaArchive());
-			if(getMediaArchive().getAssetSecurityArchive() == null)
-			{
-				log.error("Asset Security Archive Not Set");
-			}
-			fieldIndexer.setAssetSecurityArchive(getMediaArchive().getAssetSecurityArchive());
-		}
-		return fieldIndexer;
+		getDataConnector().updateIndex(inAssets);
 	}
-
 	public synchronized void updateIndex(List inAssets, boolean inOptimize)
 	{
-		if (log.isDebugEnabled())
-		{
-			log.debug("update index");
-		}
+		getDataConnector().updateIndex(inAssets, inOptimize);
 
-		try
-		{
-			PropertyDetails details = getPropertyDetails();
+		//TODO: Update ids path lookup? mem leak?
+//		if (asset.getId() != null)
+//		{
+//			getAssetPaths().put(asset.getId(), asset.getSourcePath()); // This
+//		}
 
-			for (Iterator iter = inAssets.iterator(); iter.hasNext();)
-			{
-				Asset asset = (Asset) iter.next();
-				getIndexer().populateAsset(getIndexWriter(), asset, false, details);
-				if (asset.getId() != null)
-				{
-					getAssetPaths().put(asset.getId(), asset.getSourcePath()); // This
-				}
-			}
-			if (inOptimize)
-			{
-				getIndexWriter().optimize();
-				log.info("Optimized");
-			}
-
-			if (inOptimize || inAssets.size() > 100)
-			{
-				flush();
-			}
-			else
-			{
-				clearIndex();
-			}
-			//else will be flushed next time someone searches. This is a key performance improvement for things like voting that need to be fast
-			//BaseLuceneSearcher implements Shutdownable
-		}
-		catch (Exception ex)
-		{
-			clearIndex(); //try to recover
-			if (ex instanceof OpenEditException)
-			{
-				throw (OpenEditException) ex;
-			}
-			throw new OpenEditException(ex);
-		}
 	}
 
-	protected void reIndexAll(IndexWriter writer)
+	public void reIndexAll()
 	{
-		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
-		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2
-		// writer.mergeFactor = 10;
-		writer.setMergeFactor(100);
-		writer.setMaxBufferedDocs(2000);
-
-		try
-		{
-			getAssetPaths().clear();
-			
-			AssetLuceneIndexAll reindexer = new AssetLuceneIndexAll();
-			reindexer.setWriter(writer);
-			reindexer.setPageManager(getPageManager());
-			reindexer.setIndexer(getIndexer());
-			reindexer.setMediaArchive(getMediaArchive());
-			
-			/* Search in the new path, if it exists */
-			Page root = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() + "/assets/");
-			if( root.exists())
-			{
-				reindexer.setRootPath(root.getPath());
-				reindexer.process();
-			}
-			
-			/* Search in the old place */
-//			reindexer.setRootPath("/" + getCatalogId() + "/assets/");
-//			reindexer.process();
-			
-			log.info("Reindex completed on with " + reindexer.getExecCount() + " assets");
-			writer.optimize();
-			writer.commit();
-
-		}
-		catch(Exception ex)
-		{
-			throw new OpenEditException(ex);
-		}
-		// HitCollector
+		getAssetPaths().clear();
+		getDataConnector().reIndexAll();
 	}
 
 	private boolean doesIndexSecurely()
@@ -313,44 +196,12 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 
 	public void deleteFromIndex(String inId)
 	{
-		// TODO Auto-generated method stub
-		log.info("delete from index " + inId);
-
-		try
-		{
-			Query q = getQueryParser().parse("id:" + inId);
-			getIndexWriter().deleteDocuments(q);
-			clearIndex();
-		}
-		catch (Exception ex)
-		{
-			throw new OpenEditException(ex);
-		}
+		getDataConnector().deleteFromIndex(inId);
 	}
 
 	public void deleteFromIndex(HitTracker inOld)
 	{
-		if (inOld.size() == 0)
-		{
-			return;
-		}
-		Term[] all = new Term[inOld.getTotal()];
-		for (int i = 0; i < all.length; i++)
-		{
-			Object hit = (Object) inOld.get(i);
-			String id = inOld.getValue(hit, "id");
-			Term term = new Term("id", id);
-			all[i] = term;
-		}
-		try
-		{
-			getIndexWriter().deleteDocuments(all);
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
-
+		getDataConnector().deleteFromIndex(inOld);
 	}
 
 	public HitTracker getAllHits(WebPageRequest inReq)
@@ -394,7 +245,7 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 		{
 			Asset asset = (Asset) inData;
 			getAssetArchive().saveAsset(asset);
-			updateIndex(asset);
+			getDataConnector().saveData(asset,inUser);
 		}
 		else if (inData instanceof CompositeData)
 		{
@@ -420,12 +271,12 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 			SearchQuery query = createSearchQuery();
 			query.addExact("id", inAssetId);
 
-			HitTracker hits = search(query.toQuery(), query.getSorts());
+			HitTracker hits = search(query);
 			if (hits.size() > 0)
 			{
 				Data hit = hits.get(0);
 				path = hit.getSourcePath();
-//				path = hits.getValue(hit,"sourcepath");
+				//mem leak? Will this hold the entire DB?
 				getAssetPaths().put(inAssetId, path);
 			}
 			else
@@ -483,31 +334,6 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 	{
 		return getMediaArchive().getAssetArchive();
 	}
-
-	public boolean checkHeights(HitTracker tracker)
-	{
-		if( tracker != null)
-		{
-			for (Iterator iterator = tracker.getPageOfHits().iterator(); iterator.hasNext();)
-			{
-				Data data = (Data) iterator.next();
-				String w = data.get("width");
-				if(w != null )
-				{
-					String h = data.get("height");
-					if( h != null && Integer.parseInt(h) > Integer.parseInt(w))
-					{
-						return true;
-					}
-				}
-				else
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 	
 	public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery inSearch) throws OpenEditException
 	{
@@ -563,4 +389,64 @@ public class AssetLuceneSearcher extends BaseLuceneSearcher implements AssetSear
 		return hits;
 	}
 
+	public SearchQuery createSearchQuery() 
+	{
+		return getDataConnector().createSearchQuery();
+	}
+
+	public String getIndexId() 
+	{
+		return getDataConnector().getIndexId();
+	}
+
+	public void clearIndex() 
+	{
+		getDataConnector().clearIndex();
+	}
+
+	public void deleteAll(User inUser) 
+	{
+		getDataConnector().deleteAll(inUser);		
+	}
+
+	public void delete(Data inData, User inUser) 
+	{
+		getDataConnector().delete(inData, inUser);
+	}
+
+	public void saveAllData(List<Data> inAll, User inUser) 
+	{
+		getDataConnector().saveAllData(inAll,inUser);
+	}
+
+	public HitTracker search(SearchQuery inQuery) 
+	{
+		return getDataConnector().search(inQuery);
+	}
+
+	public void flush() 
+	{
+		getDataConnector().flush();	
+	}
+
+	public void setCatalogId(String inCatalogId) 
+	{
+		super.setCatalogId(inCatalogId);
+		getDataConnector().setCatalogId(inCatalogId);
+	}
+	public void setSearchType(String inSearchType) 
+	{
+		super.setSearchType(inSearchType);
+		getDataConnector().setSearchType(inSearchType);
+	}
+	public void setPropertyDetailsArchive(PropertyDetailsArchive inArchive) 
+	{
+		super.setPropertyDetailsArchive(inArchive);
+		getDataConnector().setPropertyDetailsArchive(inArchive);
+	}
+	public void setSearcherManager(SearcherManager inManager) 
+	{
+		super.setSearcherManager(inManager);
+		getDataConnector().setSearcherManager(inManager);
+	}
 }

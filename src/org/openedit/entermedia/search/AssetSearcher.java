@@ -2,6 +2,7 @@ package org.openedit.entermedia.search;
 
 import java.util.List;
 
+import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
@@ -26,7 +27,7 @@ public interface AssetSearcher extends Searcher, AssetPathFinder
 	 */
 	public abstract void searchExactCategories(WebPageRequest inPageRequest, Category incategory) throws Exception;
 
-	public abstract void updateIndex(Asset inAsset);
+	public abstract void updateIndex(Data inAsset);
 
 	public abstract void updateIndex(List inAssets, boolean inOptimize);
 
