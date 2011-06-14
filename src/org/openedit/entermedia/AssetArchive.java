@@ -3,13 +3,15 @@
  */
 package org.openedit.entermedia;
 
+import org.openedit.data.DataArchive;
+
 import com.openedit.users.User;
 
 /**
  * @author cburkey
  * 
  */
-public interface AssetArchive
+public interface AssetArchive extends DataArchive
 {
 
 	public Asset getAssetBySourcePath(String inSourcePath, boolean inAutoCreate);

@@ -6,6 +6,7 @@ package org.openedit.entermedia.xmldb;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.entermedia.Asset;
@@ -29,6 +31,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.RelatedAsset;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.xml.XmlArchive;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -608,6 +611,59 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		}
 		return fieldMediaArchive;
+	}
+
+	@Override
+	public void setXmlArchive(XmlArchive inXmlArchive)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDataFileName(String inDataFileName)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setElementName(String inSearchType)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPathToData(String inPathToData)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public XmlArchive getXmlArchive()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void delete(Data inData, User inUser)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveAllData(Collection<Data> inAll, User inUser)
+	{
+		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			saveAsset(asset, inUser);
+		}
+		
 	}
 
 }

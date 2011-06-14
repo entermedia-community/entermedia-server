@@ -3,10 +3,9 @@ package org.openedit.data;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,7 +13,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.lucene.BaseLuceneSearcher;
@@ -102,7 +100,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		return searchByField("id",inId);
 	}
 	
-	public void saveAllData(List inAll, User inUser)
+	public void saveAllData(Collection inAll, User inUser)
 	{
 		//check that all have ids
 		for (Object object: inAll)

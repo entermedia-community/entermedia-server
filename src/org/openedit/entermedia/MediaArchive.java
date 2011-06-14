@@ -558,7 +558,7 @@ public class MediaArchive
 	}
 	public void saveAssets(Collection inAssets, User inUser)
 	{
-		getAssetSearcher().saveAllData((List<Data>) inAssets, inUser);
+		getAssetSearcher().saveAllData((Collection<Data>) inAssets, inUser);
 	}
 
 	public synchronized ConvertStatus convertCatalog(User inUser, boolean inForce) throws Exception

@@ -3,8 +3,8 @@
  */
 package org.openedit.users;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -118,7 +118,7 @@ public class BaseGroupSearcher extends BaseSearcher implements GroupSearcher
 	}
 	
 
-	public void saveAllData(List inList, User inUser)
+	public void saveAllData(Collection inList, User inUser)
 	{
 	}
 	

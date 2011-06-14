@@ -1,5 +1,6 @@
 package org.openedit.data;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +16,7 @@ import org.openedit.xml.XmlFile;
 import com.openedit.OpenEditException;
 import com.openedit.users.User;
 
-public class XmlDataArchive
+public class XmlDataArchive implements DataArchive
 {
 	protected XmlArchive fieldXmlArchive;
 	protected Map fieldIdCache;
@@ -111,7 +112,7 @@ public class XmlDataArchive
 		}
 	}
 	
-	public void saveAllData(List inAll, User inUser)
+	public void saveAllData(Collection inAll, User inUser)
 	{
 		XmlFile xml = null;//
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
@@ -137,8 +138,7 @@ public class XmlDataArchive
 
 	protected void populateElement(Element inElement, Data inData)
 	{
-		BaseData bd = (BaseData)inData;
-		for (Iterator iterator = bd.getProperties().keySet().iterator(); iterator.hasNext();)
+		for (Iterator iterator = inData.getProperties().keySet().iterator(); iterator.hasNext();)
 		{
 			String detail = (String) iterator.next();
 			if( !detail.equals("id") && !detail.equals("sourcepath"))
@@ -216,6 +216,10 @@ public class XmlDataArchive
 			xml.deleteElement(element);
 		}
 		getXmlArchive().saveXml(xml, inUser);
+	}
+	public XmlFile getXml(String inPath, String inSearchType)
+	{
+		return getXmlArchive().getXml(inPath,inSearchType);
 	}
 
 }

@@ -1,7 +1,7 @@
 package org.openedit.entermedia.util;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -93,7 +93,7 @@ public class LdapSearcher extends BaseSearcher
 		
 	}
 
-	public void saveAllData(List inAll, User inUser)
+	public void saveAllData(Collection inAll, User inUser)
 	{
 		// TODO Auto-generated method stub
 		

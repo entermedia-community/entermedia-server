@@ -3,6 +3,7 @@
  */
 package org.openedit.users;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -167,7 +168,7 @@ public class UserManagerSearcher extends BaseSearcher implements UserSearcher
 	}
 	
 
-	public void saveAllData(List inList, User inUser)
+	public void saveAllData(Collection inList, User inUser)
 	{
 	}
 	

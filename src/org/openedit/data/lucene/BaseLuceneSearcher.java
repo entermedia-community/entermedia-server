@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -587,12 +588,13 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					try
 					{
 						//Leaving a lock fils seems to help the writer pick up where it left off. Not sure what is going on
-//						File lock = new File(getRootDirectory(), getIndexPath() + "/" + folder + "/" + "write.lock");
-//						if(lock.exists() && !lock.delete() )
-//						{
-//							log.error("Could not delete lock");
-//						}
-//						IndexWriter.unlock(indexDir);
+						File lock = new File(getRootDirectory(), getIndexPath() + "/" + folder + "/" + "write.lock");
+						if(lock.exists() && !lock.delete() )
+						{
+							//Invalid lock errors are returned when the index has no valid files in it
+							log.error("Could not delete lock");
+							IndexWriter.unlock(indexDir);
+						}
 						if( getSearchType().equals("asset"))
 						{
 							log.info(getCatalogId() + " asset writer opened in " + folder);
@@ -618,6 +620,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			try
 			{
 				fieldIndexWriter.close();
+				fieldLiveSearcher = null;
 			}
 			catch (IOException ex)
 			{
@@ -693,16 +696,21 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		fieldNumberUtils = inNumberUtils;
 	}
 
+	public void updateIndex(Collection inList)
+	{
+		updateIndex(inList, false);
+	}
+
 	/**
 	 * This is much faster for bulk loading of index items
 	 * @param inRecords
 	 */
-	public void updateIndex(List inRecords) 
+	public void updateIndex(Collection inRecords, boolean optimize) 
 	{
 		updateIndex(getIndexWriter(), inRecords);
 		clearIndex();
 	}
-	public void updateIndex(IndexWriter inWriter,List inRecords)
+	public void updateIndex(IndexWriter inWriter,Collection inRecords)
 	{
 		if ( inRecords.size() == 0)
 		{
@@ -733,7 +741,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			throw new OpenEditException(e);
 		}
 	}
-	
+
 	public void updateIndex(Data inData) throws OpenEditException
 	{
 		IndexWriter writer  = getIndexWriter();
@@ -804,14 +812,22 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		log.info("DELETE NOT IMPLEMENTED");
 	}
 
-	public void saveAllData(List<Data> inAll, User inUser)
+	public void saveAllData(Collection inAll, User inUser)
 	{
-		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
+		//check that all have ids
+		for (Object object: inAll)
 		{
-			Data data = (Data) iterator.next();
-			saveData(data, inUser);
+			Data data = (Data)object;
+			if(data.getId() == null)
+			{
+				data.setId(nextId());
+			}			
 		}
+		//getXmlDataArchive().saveAllData(inAll, inUser);
+		updateIndex(inAll);
+		getLiveSearcher(); //should flush the index
 	}
+	
 	public Object searchByField(String inField, String inValue)
 	{
 		if (inField == null)

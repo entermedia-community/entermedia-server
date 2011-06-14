@@ -160,7 +160,6 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			doc.add(new Field("ordering", Integer.toString(asset.getOrdering()), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 		}
 		
-		
 		String tagString = getTagString(asset);
 		doc.add(new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
 
@@ -428,6 +427,8 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		fullDesc.append(inTagString);
 		populateKeywords(fullDesc, asset, inDetails);
 		// add a bunch of stuff to the full text field
+		//never need this anymore
+		/*
 		File descriptionFile = new File(getRootDirectory(), "/" + getCatalogId() + "/assets/" + htmlPath);
 		if (descriptionFile.exists() || descriptionFile.length() > 0)
 		{
@@ -448,6 +449,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 				FileUtils.safeClose(descread);
 			}
 		}
+		*/
 		fullDesc.append(' ');
 		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
 		{

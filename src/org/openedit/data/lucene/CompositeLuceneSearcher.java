@@ -1,6 +1,6 @@
 package org.openedit.data.lucene;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.openedit.Data;
 import org.openedit.data.CompositeSearcher;
@@ -48,7 +48,7 @@ public class CompositeLuceneSearcher extends CompositeSearcher
 		
 	}
 
-	public void saveAllData(List inAll, User inUser)
+	public void saveAllData(Collection inAll, User inUser)
 	{
 		
 	}

@@ -1,8 +1,7 @@
 package org.openedit.entermedia.search;
 
-import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -244,7 +243,6 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 		if (inData instanceof Asset)
 		{
 			Asset asset = (Asset) inData;
-			getAssetArchive().saveAsset(asset);
 			getDataConnector().saveData(asset,inUser);
 		}
 		else if (inData instanceof CompositeData)
@@ -414,7 +412,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 		getDataConnector().delete(inData, inUser);
 	}
 
-	public void saveAllData(List<Data> inAll, User inUser) 
+	public void saveAllData(Collection<Data> inAll, User inUser) 
 	{
 		getDataConnector().saveAllData(inAll,inUser);
 	}
