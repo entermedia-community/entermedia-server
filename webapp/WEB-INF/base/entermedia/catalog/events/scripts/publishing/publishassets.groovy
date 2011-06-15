@@ -123,7 +123,7 @@ protected firePublishEvent(String inOrderItemId)
 protected Publisher getPublisher(MediaArchive inArchive, String inType)
 {
 	GroovyClassLoader loader = engine.getGroovyClassLoader();
-	Class groovyClass = loader.loadClass("publishing.${inType}.publisher");
+	Class groovyClass = loader.loadClass("publishing.publishers.${inType}publisher");
 	Publisher publisher = (Publisher) groovyClass.newInstance();
 	return publisher;
 }

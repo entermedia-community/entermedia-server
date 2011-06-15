@@ -2,12 +2,12 @@
 #set( $catalogid = $asset.catalogId )
 #set( $source = "$home/$catalogid/downloads/converted/cache/${asset.sourcepath}/video.mp4" )
 #set( $thumb = "$home/$catalogid/downloads/preview/large/${asset.sourcepath}/thumb.jpg" )
-<a href="$context.siteRoot$source" style="background-image:url($context.siteRoot$thumb)" class="mediaplayer">
-	<img src="$context.siteRoot$root/play_large.png" alt="$asset"/> 
+<a href="$source" style="background-image:url($thumb)" class="mediaplayer">
+	<img src="$root/play_large.png" alt="$asset"/> 
 </a> 
 
 <!--  Start Flowplayer Engine  -->		
-<script type="text/javascript" src="$context.siteRoot$root/flowplayer-3.2.6.min.js"></script>
+<script type="text/javascript" src="$root/flowplayer-3.2.6.min.js"></script>
 
 <style>
 
@@ -35,12 +35,12 @@ a.mediaplayer:hover {
 </style>		
 		
 <script language='javascript'>
-			flowplayer('a.mediaplayer', {src: '$context.siteRoot$root/flowplayer-3.2.7.swf', wmode: 'transparent'},
+			flowplayer('a.mediaplayer', {src: '$root/flowplayer-3.2.7.swf', wmode: 'transparent'},
 			{  
 			    // configure clip to use "lighthttpd" plugin for providing video data 
 			    clip: 
 			    { 
-			        url: '$context.siteRoot$source', 
+			        url: '$source', 
 			        provider: 'lighttpd',
 			        scaling: 'fit' 
 		    	}, 
@@ -49,11 +49,11 @@ a.mediaplayer:hover {
 			    { 
 			        lighttpd: 
 			        { 
-			            url: '$context.siteRoot$root/flowplayer.pseudostreaming-3.2.5.swf' 
+			            url: '$root/flowplayer.pseudostreaming-3.2.5.swf' 
 			        },
 			        controls: 
 			        {
-						url: '$context.siteRoot$root/flowplayer.controls-3.2.5.swf'
+						url: '$root/flowplayer.controls-3.2.5.swf'
 					}		 
     			 },
     			 canvas: 
