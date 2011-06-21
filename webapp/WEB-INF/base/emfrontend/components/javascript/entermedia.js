@@ -1,3 +1,5 @@
+var ajaxtimerrunning = false;
+
 outlineSelectionCol = function(event, ui)
 {
 	jQuery(this).addClass("headerdraggableenabled");
@@ -539,7 +541,44 @@ onloadselectors = function()
 				 });
 			}
 		);	
+		jQuery(".ajaxstatus").livequery(
+				function()
+				{
+					if( ajaxtimerrunning == false) 
+					{
+						setTimeout("showajaxstatus();",1000);
+						ajaxtimerrunning = true;
+					}
+				}
+		);
 			
+}
+
+
+showajaxstatus = function()
+{
+	//for each asset on the page reload it's status
+	var foundone = false;
+	ajaxtimerrunning = false;
+	jQuery(".ajaxstatus").each(
+		function()
+		{
+			foundone = true;
+			var cell = jQuery(this);
+			var path = cell.attr("ajaxpath");
+			cell.load(path);
+		}
+	);
+	
+	if( foundone )
+	{
+		//make sure it is not running
+		if( ajaxtimerrunning == false) 
+		{
+			setTimeout("showajaxstatus();",1000);
+			ajaxtimerrunning = true;
+		}
+	}
 }
 
 

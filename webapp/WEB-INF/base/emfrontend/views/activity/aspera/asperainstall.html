@@ -20,13 +20,16 @@
 		var newone = '<object id="aspera-web2nd" type="application/x-aspera-web" width="1" height="1"><param name="AW_IMGSRV" value="" ></object>';
 		jQuery( "#objectholder").html(newone);
 		
-		window.location = "$home$apphome/views/activity/aspera/asperadownload.html?itemid=$itemid&orderid=$orderid&cache=false"
+		window.location = "$home$apphome/views/activity/aspera/asperadownload.html?itemid=$itemid&orderid=$orderid&cache=false&installed=true"    	
+		
 	}
  	function installProgressCallback(event) {
   	  var msg = ""; 
   	  if (event.state == "ERROR") 
   	  {
   	    msg += "Installation Error - " + event.description;
+  	    jQuery('#install_message').html( 'Your configuration cannot be auto installed. Please use <a href="http://www.asperasoft.com/en/products/client_software_2/aspera_client_2">this link</a> and download the installer ' );
+  	    
   	  }
   	  else if ((event.state == "DOWNLOAD")||(event.state == "START")||(event.state == "INSTALL"))
   	  {
@@ -50,7 +53,7 @@
 		var aspera = jQuery('#aspera-web');
 		aspera.remove();
 		
-		var newone = '<object id="aspera-web2nd" type="application/x-aspera-web" width="1" height="1"><param name="AW_IMGSRV" value="" ></object>Please wait...';
+		var newone = '<object id="aspera-web2nd" type="application/x-aspera-web" width="1" height="1"><param name="AW_IMGSRV" value="" ></object>Please wait 10 seconds...';
 		jQuery( "#objectholder").html(newone);
 		
 		setTimeout(goback, 10000);//refresh the page to run checks again and report to the user

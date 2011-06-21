@@ -1,7 +1,5 @@
 #if( $asset.getUploadPercentage() == 1)
-		#set ($mime = $mediaarchive.getMimeTypeIcon($asset.fileformat))
-		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-		<img class="smallthumb" style="height:64px;" src="$home$thumbpath" border="0" />
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/previewstatus.html?assetid=$asset.id" >Converting..</div>
 #else
 #set( $barsize=$asset.getUploadPercentage()*120)
 #set( $percentage=$asset.getUploadPercentage()*100)

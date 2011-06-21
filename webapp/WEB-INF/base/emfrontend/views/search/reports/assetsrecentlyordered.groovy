@@ -1,13 +1,22 @@
-import org.openedit.Data;
-import com.openedit.hittracker.HitTracker; 
-import org.openedit.data.*; 
-import org.openedit.entermedia.orders.OrderManager;
-import com.openedit.hittracker.SearchQuery;
-import java.util.*;
+import java.util.Calendar
+import java.util.GregorianCalendar
+
+import org.openedit.Data
+import org.openedit.data.Searcher
+
+import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
 
 
-OrderManager manager = moduleManager.getBean("orderManager");
-Collection hits = manager.findOrdersForUser(mediaarchive.getCatalogId(), user);
+Searcher ordersearcher = searcherManager.getSearcher(mediaarchive.getCatalogId(),"order");
+SearchQuery oquery = ordersearcher.createSearchQuery();
+oquery.addOrsGroup("orderstatus","ordered complete");
+oquery.addOrsGroup("ordertype", "email export download");
+GregorianCalendar cal = new GregorianCalendar();
+cal.add(Calendar.MONTH, -1);
+oquery.addAfter("date", cal.getTime());
+oquery.addSortBy("historydateDown");
+Collection hits = ordersearcher.search(oquery);
 
 if( hits.size() == 0)
 {

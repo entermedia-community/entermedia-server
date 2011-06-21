@@ -1,29 +1,49 @@
-import org.openedit.data.Searcher 
+import org.openedit.data.Searcher
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.View 
+import org.openedit.data.View
 import org.openedit.Data;
 import org.openedit.data.PropertyDetailsArchive;
 import java.util.*;
-import org.openedit.Data 
-import org.openedit.data.Searcher 
+import org.openedit.Data
+import org.openedit.data.Searcher
 import com.openedit.page.manage.*;
 
-Searcher searcher = searcherManager.getSearcher(mediaarchive.getCatalogId(), "assettype");
+
+Searcher typessearcher = searcherManager.getSearcher(mediaarchive.getCatalogId(), "assettype");
 
 PropertyDetailsArchive archive =  searcherManager.getPropertyDetailsArchive(mediaarchive.getCatalogId());
 PropertyDetails details = archive.getPropertyDetailsCached("asset");
 View toplevel = archive.getDetails(details,"asset/searchselect", null);
 toplevel.clear();
 
-Collection hits = searcher.fieldSearch("id","*","textUp");
-for(Data hit in hits)
+Set existingchildren = new HashSet();
+
+Collection views = searcherManager.getList(mediaarchive.getCatalogId(), "assettype/views");
+Collection types = typessearcher.getAllHits();
+
+for( Data view in views)
 {
-	String assettype = hit.getId();
-	View child = archive.getDetails(details,"asset/assettype/${assettype}/general", null);
-	if( child != null &&  child.hasChildren() )
+	View childview = new View();
+	childview.setTitle( view.getName() );
+	
+	for( Data assettype in types)
 	{
-		child.setTitle( hit.getName() );
-		toplevel.add(child);
+		View existingview = archive.getDetails(details,"asset/assettype/${assettype.getId()}/${view.getId()}", null);
+		if( existingview != null &&  existingview.hasChildren() )
+		{
+			for(Data detail in existingview)
+			{
+				if( !existingchildren.contains(detail.getId() ))
+				{
+					childview.add(detail);
+					existingchildren.add( detail.getId() );
+				}
+			}
+		}
 	}
+	Collections.sort(childview);
+	toplevel.add(childview);
 }
+
 archive.saveView(mediaarchive.getCatalogId(),toplevel,user);
+log.info("Saved pick list");

@@ -1,17 +1,15 @@
 <div id="assetVoteCount">
 
-<ul class="emdetailactions">
 
 #set($size = $voteshits.size() )
 
 #if( $canvote )
 #if($alreadyvoted)
-	<a class="ajax" targetdiv="assetVoteCount" href="$home$apphome/components/voting/removeVote.html?sourcepath=$asset.sourcepath&catalogid=$asset.catalogid')"><img title="Unlike" src="$home$themeprefix/images/buttons/starfull.png"/> Unlike</a>
+	<a class="ajax uibutton" targetdiv="assetVoteCount" href="$home$apphome/components/voting/removeVote.html?sourcepath=$asset.sourcepath&catalogid=$asset.catalogid')"><img title="Unlike" src="$home$themeprefix/images/buttons/starfull.png"/> Unlike</a>
 #else
-	<a class="ajax" targetdiv="assetVoteCount" href="$home$apphome/components/voting/addVote.html?sourcepath=$asset.sourcepath&catalogid=$asset.catalogid"><img title="Like" src="$home$themeprefix/images/buttons/starempty.png"/> Like</a> 
+	<a class="ajax uibutton" targetdiv="assetVoteCount" href="$home$apphome/components/voting/addVote.html?sourcepath=$asset.sourcepath&catalogid=$asset.catalogid"><img title="Like" src="$home$themeprefix/images/buttons/starempty.png"/> Like</a> 
 #end
 #end
-</div>
 
 #if($size > 0) 
 	#set( $first = $voteshits.get(0).username )

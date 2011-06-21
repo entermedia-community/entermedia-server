@@ -21,27 +21,31 @@ uiload = function() {
 		}
 	);
 	
-	jQuery(".uibutton").livequery(
-			function()
-			{
-				jQuery(this).button();
-			}
-	);
+	if( jQuery.fn.button )
+	{	
+		jQuery(".uibutton").livequery(
+				function()
+				{
+					jQuery(this).button();
+				}
+		);
+	}
 	
 	jQuery(".uipanel").livequery(
-		function()
-		{
-			jQuery(this).addClass("ui-widget");
-			var header = jQuery(this).attr("header");
-			jQuery(this).wrapInner('<div class="ui-widget-content"/>');
-			if(header !== undefined)
+			function()
 			{
-				jQuery(this).prepend('<div class="ui-widget-header">' + header + '</div>');
+				jQuery(this).addClass("ui-widget");
+				var header = jQuery(this).attr("header");
+				//http://dev.jquery.it/ticket/9134
+				jQuery(this).wrapInner('<div class="ui-widget-content"/>');
+				if(header != undefined)
+				{
+					jQuery(this).prepend('<div class="ui-widget-header">' + header + '</div>');
+					
+				}
 				
 			}
-			
-		}
-	);
+		);
 }
 
 jQuery(document).ready(function() 
