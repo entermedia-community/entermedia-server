@@ -1247,4 +1247,10 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
+	
+	<bean id="lockManager" class="org.entermedia.locks.LockManager" >
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
 </beans>

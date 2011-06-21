@@ -5,6 +5,7 @@ package org.openedit.users;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 			writer.setMergeFactor(50);
 		
 			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
-			List usernames = getUserManager().listUserNames();
+			Collection usernames = getUserManager().listUserNames();
 			if( usernames != null)
 			{
 				for (Iterator iterator = usernames.iterator(); iterator.hasNext();)
