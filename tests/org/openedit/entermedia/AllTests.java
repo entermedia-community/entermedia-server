@@ -32,7 +32,7 @@ public class AllTests {
 		suite.addTestSuite( ArchiveModuleTest.class );
 		suite.addTestSuite( MultiSearchModuleTest.class );
 		
-		suite.addTestSuite( AlbumTest.class );
+		//suite.addTestSuite( AlbumTest.class );
 		suite.addTestSuite( AssetEditTest.class );
 		suite.addTestSuite( CategoryEditTest.class );
 		suite.addTestSuite( ConvertionTest.class );
