@@ -33,6 +33,7 @@
 
 		<delete quiet="true">
 			<fileset dir="../WEB-INF/base/entermedia/" />
+			<fileset dir="../WEB-INF/base/system/" />
 			<fileset dir="../WEB-INF/base/emfrontend/" />
 			<fileset dir="../WEB-INF/base/sfentermedia/" />
 			<fileset dir="../WEB-INF/base/themes/baseem" />
@@ -47,6 +48,11 @@
 		<copy todir="../WEB-INF/base/emfrontend" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/emfrontend" />
 		</copy>
+
+		<copy todir="../WEB-INF/base/system" preservelastmodified="true" overwrite="true">
+			<fileset dir="${workdir}/WEB-INF/base/system" />
+		</copy>
+
 
 	  	<copy todir="../WEB-INF/base/themes" preservelastmodified="true" overwrite="true">
 	  		<fileset dir="${workdir}/WEB-INF/base/themes" />
