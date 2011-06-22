@@ -22,11 +22,11 @@
 
 	<target name="unwar" depends="update-dependencies">
 		<mkdir dir="${build}/unpacked"/>
-		<unwar dest="${build}/unpacked">
+		<unzip dest="${build}/unpacked">
 		<fileset dir="${build}">
 			<include name="ROOT.war"/>
 		</fileset>
-		</unwar>
+		</unzip>
 	</target>
 
 	<target name="baseupgrade" depends="unwar">
