@@ -1,5 +1,6 @@
 <servers>
-	<server id="1" listingurl="http://entermediasoftware.com/plugins/allplugins.xml">EnterMediaSoftware.com</server>	
+	<server id="0" listingurl="http://entermediasoftware.com/plugins/allplugins8.xml">EnterMediaSoftware.com Version 8</server>	
+	<server id="1" listingurl="http://entermediasoftware.com/plugins/allplugins.xml">EnterMediaSoftware.com Version 7</server>	
 	<server id="2" listingurl="http://entermediasoftware.com/plugins/ian.xml">Ian Miller</server>	
 
 </servers>
