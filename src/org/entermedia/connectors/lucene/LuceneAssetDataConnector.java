@@ -57,7 +57,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return temp;
 		
 	}
-
+	public String nextId()
+	{
+		return getAssetArchive().nextAssetNumber();
+	}
 	public void updateIndex(Asset inAsset)
 	{
 		List all = new ArrayList(1);
@@ -257,6 +260,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		if (inData instanceof Asset)
 		{
 			Asset asset = (Asset) inData;
+			if( asset.getId() == null)
+			{
+				asset.setId(getAssetArchive().nextAssetNumber());
+			}
 			getAssetArchive().saveAsset(asset);
 			updateIndex(asset);
 		}
