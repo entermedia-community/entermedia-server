@@ -31,13 +31,7 @@ if (input.exists())
             	log.info("Created new asset  for " + id);
             }
             
-            for( int i=0;i<file.getHeader().getSize();i++)
-            {
-				String name = file.getHeader().getColumn(i);
-				asset.setProperty(name,row.get(name));
-			}
-			
-			//need to populate metadata and set the category
+            //need to populate metadata and set the category
             original = mediaarchive.getOriginalDocument(asset);
             if(original != null && original.exists())
             {
@@ -50,6 +44,14 @@ if (input.exists())
             	category = mediaarchive.getCategoryArchive().getRootCategory();
             	asset.addCategory(category);
             }
+            
+            for( int i=0;i<file.getHeader().getSize();i++)
+            {
+				String name = file.getHeader().getColumn(i);
+				asset.setProperty(name,row.get(name));
+			}
+			
+			
             
             mediaarchive.getAssetArchive().saveAsset( asset );
 		}
