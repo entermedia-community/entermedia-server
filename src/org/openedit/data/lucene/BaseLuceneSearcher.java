@@ -824,9 +824,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			if(data.getId() == null)
 			{
 				data.setId(nextId());
-			}			
+			}
 		}
-		//getXmlDataArchive().saveAllData(inAll, inUser);
 		updateIndex(inAll);
 		getLiveSearcher(); //should flush the index
 	}

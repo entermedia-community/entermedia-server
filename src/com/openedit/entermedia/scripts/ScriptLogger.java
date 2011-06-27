@@ -126,7 +126,8 @@ public class ScriptLogger extends Handler
 	public List listLogs()
 	{
 		List text = new ArrayList();
-		for (Iterator iterator = getLogs().iterator(); iterator.hasNext();)
+		List all = new ArrayList(getLogs()); //in case another thread is appending to the list
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			LogEntry entry = (LogEntry) iterator.next();
 			if( entry.getName().equals(getClass().getName() ) )
