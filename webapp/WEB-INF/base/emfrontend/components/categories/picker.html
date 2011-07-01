@@ -93,6 +93,7 @@ postCategoryToAsset = function(inFormID)
 var checkedcategories = new Array();
 jQuery(document).ready(function() 
 { 
+	//ui-components causes http://dev.jquery.it/ticket/9134
 	$('#emcategorypicker .dtree .treerowtext' ).livequery(
 	function()
 	{

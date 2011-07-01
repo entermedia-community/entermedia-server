@@ -1,6 +1,7 @@
 package org.openedit.events;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -12,7 +13,6 @@ import org.openedit.event.WebEvent;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.util.PathUtilities;
-import com.openedit.util.RequestUtils;
 
 public class TaskRunner extends java.util.TimerTask
 {
@@ -137,7 +137,7 @@ public class TaskRunner extends java.util.TimerTask
 				}
 				if(event.getPeriod() > 0)
 				{
-					TaskRunner runner = new TaskRunner(getTask(), getTask().getPeriod(),getWebPageRequest().getParameterMap(),getEventManager().getRequestUtils().extractValueMap(getWebPageRequest() ), getEventManager());
+					TaskRunner runner = new TaskRunner(getTask(), getTask().getPeriod(),new HashMap() ,new HashMap(), getEventManager());
 					getEventManager().getRunningTasks().push(runner);
 					getEventManager().getTimer().schedule(runner, getTask().getPeriod());
 				}

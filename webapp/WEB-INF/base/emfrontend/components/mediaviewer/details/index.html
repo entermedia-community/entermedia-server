@@ -1,9 +1,24 @@
-<div class="emdetailsbox">
+<div id="emdataeditor" class="emdetailsbox" >
 
-<h2>Details</h2>
-[[Uploaded]]
+	<div  class="emviewercaption">$!asset.caption</div>
+
+	$asset
+
+	#if( $asset.getKeywords().size() > 0  )
+	has keywords of
+		#foreach ($tag in $asset.keywords)
+			<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+		#end
+	if( $asset.getCategories().size() > 0 )	
+	in folders	
+		#foreach ($category in $asset.categories) 
+			<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
+		#end
+	#end
+
 #if( $asset.assetaddeddate )
-[[on]]	<span class="emdetaildate">$!context.getDate($asset.assetaddeddate)</span>
+[[was uploaded on]]
+<span class="emdetaildate">$!context.getDate($asset.assetaddeddate)</span>
 #end
 
 #if( $asset.owner )
@@ -13,29 +28,35 @@
 #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
 <span class="emdetailviews">
 #if( $views > 0 )
-[[has]] <a class="emdialog" href="$home$apphome/components/mediaviewer/views/index.html?foldername=/${asset.catalogid}/assetpreviewLog&field=sourcepath&sourcepath.value=$asset.sourcepath&operation=exact">$views views</a>
+[[currently has]] <a class="emdialog" href="$home$apphome/components/mediaviewer/views/index.html?foldername=/${asset.catalogid}/assetpreviewLog&field=sourcepath&sourcepath.value=$asset.sourcepath&operation=exact">$views views</a>
 #end
 </span>
 
 	<ul class="emdetailactions">
 #if( $cansocialshare )
-		<li class="emdetailsecureshare"><a class="emdialog" href="$home$apphome/components/share/secureshare.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=800&height=550"><img src="$home$themeprefix/images/buttons/email.png" /> Send link</a></li>
-		<li class="emdetailfacebook"><a class="emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=850&height=600"><img src="$home$themeprefix/images/buttons/facebooksm.png" alt="Share with social media sites"> Social Media</a></li>
+		<li class="emdetailfacebook  uibutton"><a class="emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=850&height=600"><img src="$home$themeprefix/images/buttons/facebooksm.png" alt="Share with social media sites"> Social Media</a></li>
+#end
+#if( $canshareasset )
+		<li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/navigation/user-group.png" alt="Share Settings">  <a class="emdialog" href="$home$apphome/components/share/permissions.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=700&height=650"> Share</a></li>
+#end
+		<li class="emdetaileditasset  uibutton"><a class="ajax" targetdiv="emdataeditor" href="$home$home$apphome/components/mediaviewer/metadataedit.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId&edit=true&oemaxlevel=1"><img src="$home$themeprefix/images/navigation/link.png" /> [[Embed]]</a></li>
+#if( $canemaillink )
+		<li class="emdetailsecureshare uibutton"><a class="emdialog " href="$home$apphome/components/share/secureshare.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=800&height=550"><img src="$home$themeprefix/images/buttons/email.png" /> Email </a></li>
 #end
 #if( $candownload )
-		<li class="emdetaildownload"><a href="$home$mediaarchive.asLinkToOriginal($asset)"><img src="$home$themeprefix/images/buttons/download.png" /> Download</a></li>
+		<li class="emdetaildownload  uibutton"><a href="$home$mediaarchive.asLinkToOriginal($asset)"><img src="$home$themeprefix/images/buttons/download.png" /> Download</a></li>
 #end
 #if( $canviewsettings )		
-		<li class="emdetaileditasset"><a href="$home/${asset.catalogid}/detailviewer/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId"><img src="$home$themeprefix/images/buttons/editasset.png" />[[Edit Metadata]]</a></li>
+		<li class="emdetaileditasset  uibutton"><a class="ajax" targetdiv="emdataeditor" href="$home$home$apphome/components/mediaviewer/metadataedit.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId&edit=true&oemaxlevel=1"><img src="$home$themeprefix/images/navigation/info.png" /> [[Edit]]</a></li>
 #end		
-	</ul>
-
+<li>
 	<div class="emdetailvotes">
 	<span id="assetVoteCount">
 			$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
 	</span>
 	</div>
 
+</li>
+	</ul>
 
-$pages.include("$apphome/components/mediaviewer/comments/mini.html",$context)
 </div>

@@ -31,57 +31,18 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadon
 
 #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 $context.putPageValue("searcher", $orderitemsearcher)	 
-<table>	
-#foreach( $item in $orderassets )
-	#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))	
-	#set ($fileName = $asset.name)
-	<tr>
-	<td colspan="2">-----------------   ${fileName}  -------------------------------------------------------------------------------------------------------------</td>
-	</tr>
-	<tr>
-	<td style="">	
-<input type="hidden" name="itemid" value="$item.id"/>
-<input type="hidden" name="field" value="status"/>
-<input type="hidden" name="assetselect_${catalogid}" value="$asset.id"/>
 
-	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
-		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
-		#set( $tsize = "$home$thumbend" )
-		
-		#if( $parenthits )
-			#set( $rootid = $parenthits.sessionId )
-		#else
-			#set( $rootid = $hits.sessionId )
+<table>		
+		#foreach( $item in $orderassets )
+			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("item", $item)
+			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+			$pages.include("${apphome}/views/activity/row.html", $context)
 		#end
-		$context.putPageValue("asset",$asset)
-		$pages.include("${apphome}/components/mediaviewer/player/index.html", $context)
-	</td>
-	<td>
-#set( $allowdownload = false)
-#set( $publishdestinationid = $order.findValue($item,"publishdestination") )
-#if( $publishdestinationid )
-	#set($destination = $searcherManager.getData($catalogid, "publishdestination",$publishdestinationid))
-	#if( $item.status == "complete")
-	<h3>Publish Complete</h3>
-	#if( $destination.publishtype == "aspera"))
-	<ul class="embuttons">
-		<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>	
-	</ul>
-	#end
-<div >
-$context.putPageValue("data", $item)	 
-$context.putPageValue("view", "order/downloaditem")	
-$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
-	Export Path: $!{destination.server}$!{destination.url}$!item.filename<br>
-</div>
-	
-
-#end
-#else
-$!item.errordetails
-#end
-
-</td></tr>
-#end
 </table>
+
+
+
+
 </div>

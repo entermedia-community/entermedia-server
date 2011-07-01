@@ -33,7 +33,8 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.SimpleFSDirectory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.SimpleFSLockFactory;
 import org.apache.lucene.util.Version;
 import org.openedit.Data;
 import org.openedit.data.BaseSearcher;
@@ -392,7 +393,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 		try
 		{			
-			return new SimpleFSDirectory(indexDir);
+			Directory dir = FSDirectory.open(indexDir);
+			dir.setLockFactory( new SimpleFSLockFactory() );
+			return dir;
 		}
 		catch( IOException ex)
 		{
@@ -821,9 +824,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			if(data.getId() == null)
 			{
 				data.setId(nextId());
-			}			
+			}
 		}
-		//getXmlDataArchive().saveAllData(inAll, inUser);
 		updateIndex(inAll);
 		getLiveSearcher(); //should flush the index
 	}

@@ -41,7 +41,9 @@
 	#elseif( $cell.previewstatus && ($cell.previewstatus == "2" || $cell.previewstatus == "1"))
 		<img class="emdropshadow" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$cell.id" alt="" 	title=#if($cell.caption)"${cell.caption}"#elseif($cell.assettitle )"$cell.assettitle" #else "$!{cell.name}" #end
 		src="$home$cataloghome/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
-	#else
+	#elseif($cell.previewstatus && $cell.previewstatus == "previewconverting" )
+		$pages.include("$apphome/components/mediaviewer/queue/ministatus.html?assetid=${cell.id}")
+	#else	
 		#set ($mime = $mediaarchive.getMimeTypeIcon($cell.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<img class="mimethumb" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$cell.id" alt="" title=#if($cell.caption)"${cell.caption}"#elseif($cell.assettitle )"$cell.assettitle" #else "$!{cell.name}" #end 

@@ -76,10 +76,13 @@ public class AlbumTest extends BaseEnterMediaTest
 		
 		User user = getFixture().getUserManager().getUser( "testuser");
 		assertNotNull( user);
-		album.addParticipant(user);
+		int pbefore = album.getParticipants().size();
 		
-		assertEquals( album.getParticipants().size() , 2);
-		
+		if( pbefore == 0)
+		{
+			album.addParticipant(user);
+			assertEquals( album.getParticipants().size() , 1);
+		}
 		em.getAlbumSearcher().saveData(album, req.getUser());
 		
 		

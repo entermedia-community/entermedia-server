@@ -1,12 +1,11 @@
+
+<tr class="assetrow" id="assetrow_${assetid}" >
+	<td class="imagepad" valign="top"> 
 <input type="hidden" name="itemid" value="$item.id"/>
 <input type="hidden" name="field" value="status"/>
 <input type="hidden" name="assetselect_${catalogid}" value="$asset.id"/>
 
 
-<tr class="assetrow" id="assetrow_${assetid}" >
-	<td > <input type="checkbox"  checked /></td>
-
-	<td class="imagepad" valign="top"> 
 		#set( $catalogid = $asset.catalogId )
 	   	#set( $mediaarchive = $enterMedia.getMediaArchive($catalogid) )
 	   	#set( $sourcepath = $asset.sourcePath )
@@ -20,9 +19,9 @@
 		#else
 			#set( $rootid = $hits.sessionId )
 		#end
-			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
+			#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html?hitssessionid=$rootid" )
 		
-			<a href="$click" class="emdialog" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
+			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
@@ -32,40 +31,29 @@
 		<td>
 			$asset.name
 		</td>
-
-	      
-	      #set($selectedpreset = $searcherManager.getData($catalogid, "convertpreset", $item.presetid))
-	      #set ($status = $searcherManager.getData($catalogid, "orderstatus", $order.get("orderstatus")))
-		   	   	<td >	
-		   	   		#set ($orderstatus = $order.get("orderstatus")) 
-			   	   	#if ( $orderstatus == "preorder" || !$orderstatus)
-			   	   	    <select name="presetid.value">
-			   	    	#foreach ($preset in $presetsearcher.getAllHits())
-			   	    		<option #if($preset.id == $selectedpreset.id)selected #end value="$preset.id">$preset</option>
-			   	    	#end
-			   	    	</select>
-		   	   		#else 
-		   	   		$!selectedpreset
-		   	   	#end
-	</td>
 <td>
-   #if($item.status == "complete")
-     #set($selecteddestionation = $searcherManager.getData($catalogid, "publishdestination", $item.destinationid))
-	 #if( $selecteddestionation.type == "aspera")  	   	
-	   	   	##Download Options
-	   	   	
-	   	   	<a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id&sourcepath=$asset.sourcePath&presetpath=${selectedpreset.outputfile}">
-	   	   	  	DOWNLOAD NOW
-	   	   	 </a>
-  	   	  #else
-  	   	    Delivered
-  	   	  #end 
-  	#else
-		#set($status = $searcherManager.getData($catalogid, "orderitem/status", $item.status))
-		$status   	  
+
+	$context.putPageValue("data", $item)	 
+	$context.putPageValue("view", "order/downloaditem")	
+	$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
+
+#set( $publishdestinationid = $order.findValue($item,"publishdestination") )
+#if( $publishdestinationid )
+	#set($destination = $searcherManager.getData($catalogid, "publishdestination",$publishdestinationid))
+	#if( $order.ordertype == "download" && $destination.publishtype == "aspera")
+		#if( $item.status == "complete" || $item.status == "delivered" )
+		<ul class="embuttons">
+			<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>	
+		</ul>
+		#end
+	#end	
+	<div >
+		Export Path: $!{destination.server}$!{destination.url}$!{item.filename}<br>
+	</div>
+
+#end
 		$!item.errorcount
 		$!item.errordetails
-	#end	
  </td>
       
  </tr>	  

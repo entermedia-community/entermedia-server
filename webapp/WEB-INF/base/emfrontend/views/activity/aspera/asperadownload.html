@@ -39,7 +39,7 @@
  		var sourceURL = 'fasp://${username}:${password}@${publishdestination.get("server")}${publishdestination.get("url")}/$presetpath?v=2&bwcap=Unlimited&targetrate=20000';
 		aspera.startDownloadToPath(sourceURL, "$presetpath");
 		//aspera.displayTransferManager();
-		jQuery('#install_message').html( "Download progress in Aspera system tray" );
+		jQuery('#install_message').html( "Download in progress using Aspera software in system tray" );
 		return false;    
   	}	
   	var refreshPage = function() 
@@ -88,26 +88,26 @@
 
       	if (asperaWeb.isInstalled()) 
       	{
-      		// Wait a few seconds to give the aspera client a chance to start before downloading
-			setTimeout(downloadNow,2000);
+			downloadNow();
       	}
       	else
       	{
-      		if (navigator.platform.indexOf("Mac") != -1)
+      		var installed = '$context.getRequestParameter("installed")';
+      		if( installed == "true")
       		{
-      			jQuery('#install_message').html( "Please restart your browser to finish installing plugin." );
+   				jQuery('#install_message').html( "Please restart your browser to finish installing plugin." );
       		}
-      		else 
+      		else
       		{
-        		window.location = "$home$apphome/views/activity/aspera/asperainstall.html?itemid=$itemid&orderid=$order.id&cache=false"
-      		}
+	       		window.location = "$home$apphome/views/activity/aspera/asperainstall.html?itemid=$itemid&orderid=$order.id&cache=false";
+	       	}
       	}
     }
     
     jQuery(document).ready(
 		function()
 		{
-			checkInstall();
+			setTimeout(checkInstall,2000);
 		}
 	);
    

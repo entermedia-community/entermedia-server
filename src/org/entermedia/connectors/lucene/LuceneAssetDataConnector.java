@@ -2,6 +2,7 @@ package org.entermedia.connectors.lucene;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return temp;
 		
 	}
-
+	public String nextId()
+	{
+		return getAssetArchive().nextAssetNumber();
+	}
 	public void updateIndex(Asset inAsset)
 	{
 		List all = new ArrayList(1);
@@ -257,6 +261,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		if (inData instanceof Asset)
 		{
 			Asset asset = (Asset) inData;
+			if( asset.getId() == null)
+			{
+				asset.setId(getAssetArchive().nextAssetNumber());
+			}
 			getAssetArchive().saveAsset(asset);
 			updateIndex(asset);
 		}
@@ -304,6 +312,22 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	public AssetArchive getAssetArchive()
 	{
 		return getMediaArchive().getAssetArchive();
+	}
+
+	public void saveAllData(Collection inAll, User inUser)
+	{
+		//check that all have ids
+		for (Object object: inAll)
+		{
+			Data data = (Data)object;
+			if(data.getId() == null)
+			{
+				data.setId(nextId());
+			}
+		}
+		getAssetArchive().saveAllData(inAll, inUser);
+		updateIndex(inAll);
+		getLiveSearcher(); //should flush the index
 	}
 
 

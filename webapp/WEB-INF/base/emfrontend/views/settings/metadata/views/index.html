@@ -73,7 +73,7 @@
 
 			[[Add New Property]]:
 			<select name="newone" onchange="jQuery('#${target.id}addtoview').submit()">
-				#foreach( $detail in $searcher.getPropertyDetails())
+				#foreach( $detail in $searcher.getPropertyDetails().sort() )
  					<option value="$detail.id">$detail.text</option>
  				#end
 			</select>
