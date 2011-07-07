@@ -1,6 +1,6 @@
 <page>
 
 	<path-action name="Script.run">
-		<script>./scripts/editall.groovy</script>
+		<script>/${catalogid}/events/scripts/editall.groovy</script>
 	</path-action>
 </page>

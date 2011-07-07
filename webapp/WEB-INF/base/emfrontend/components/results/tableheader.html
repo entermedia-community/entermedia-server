@@ -50,12 +50,11 @@
 	
 	<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
 		<option>Add Column</option>
-	#foreach( $section in $alldetails)
-		<option value="">$section.title</option>
-		#foreach( $detail in $section)
+	
+		#foreach( $detail in $alldetails)
 			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
 		#end	
-	#end	
+		
 	</select> 
 
 	<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" src="$home$themeprefix/images/navigation/deletesm.png" /></a>

@@ -6,6 +6,8 @@
 $context.putPageValue("view", $view)
 $context.putPageValue("searcher", $searcher)
 
+<div class="emsectionheader"><h3>Search</h3></div>
+
 #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 $context.putPageValue("usestartswith",$usestartswith)
 
@@ -70,12 +72,9 @@ $context.putPageValue("usestartswith",$usestartswith)
 	
 	<select name="field" onChange="jQuery('#searchaddfield').submit();">
 		<option>Add Field</option>
-	#foreach( $section in $alldetails)
-		<option value="">$section.title</option>
-		#foreach( $detail in $section)
+		#foreach( $detail in $alldetails)
 			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
 		#end	
-	#end	
 
 	</select>
 	<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Done</a>

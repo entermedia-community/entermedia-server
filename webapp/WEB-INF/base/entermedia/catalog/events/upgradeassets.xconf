@@ -1,5 +1,5 @@
 <page>
 	<path-action name="Script.run">
-		<script>./scripts/upgradeassets.bsh</script>
+		<script>/${catalogid}/events/scripts/upgradeassets.bsh</script>
 	</path-action>
 </page>

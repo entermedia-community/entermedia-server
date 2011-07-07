@@ -31,7 +31,9 @@ public class amazonpublisher extends basepublisher implements Publisher {
 		}
 		log.info("Publish asset to Amazon ${asset} for preset: ${presetid} on server: ${publishdestination}" );
 		Searcher presetsearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "convertpreset");
-		if( publishdestination != null) {
+		Page inputpage = findInputPage(mediaArchive,asset,presetid);
+		
+		if( publishdestination != null && inputpage.exists()) {
 
 			Data destination = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "publishdestination", publishdestination);
 			repo.setBucket(destination.bucket);
@@ -39,7 +41,6 @@ public class amazonpublisher extends basepublisher implements Publisher {
 			repo.setSecretKey(destination.secretkey);
 
 			//open the file and send it
-			Page inputpage = findInputPage(mediaArchive,asset,presetid);
 			
 			String exportname= inOrderItem.get("filename");
 			
@@ -102,6 +103,13 @@ public class amazonpublisher extends basepublisher implements Publisher {
 		{
 			inputpage = mediaArchive.getOriginalDocument(asset);
 		}
+		
+		
+		if(!inputpage.exists()){
+			return;
+			//not ready to be published yet.
+		}
+		
 		exportname = mediaArchive.asExportFileName( asset, preset);
 		
 		if( !exportname.startsWith("/"))

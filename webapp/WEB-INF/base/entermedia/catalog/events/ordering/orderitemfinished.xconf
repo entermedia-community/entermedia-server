@@ -3,6 +3,6 @@
 	<property name="runmultiple">true</property>
 	
 	<path-action name="Script.run">
-		<script>../scripts/ordering/orderitemfinished.groovy</script>
+		<script>/${catalogid}/events/scripts/ordering/orderitemfinished.groovy</script>
 	</path-action>
 </page>

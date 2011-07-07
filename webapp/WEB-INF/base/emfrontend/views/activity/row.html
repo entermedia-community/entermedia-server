@@ -25,7 +25,12 @@
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
-			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+			#if( $type == "video")
+				$context.putPageValue("asset",$asset)
+				$pages.include("${apphome}/components/mediaviewer/player/index.html", $context)
+			#else
+				$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+			#end	
 			</a>
 		</td>
 		<td>

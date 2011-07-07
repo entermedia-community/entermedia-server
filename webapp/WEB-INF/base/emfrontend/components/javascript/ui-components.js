@@ -36,14 +36,12 @@ uiload = function() {
 			{
 				jQuery(this).addClass("ui-widget");
 				var header = jQuery(this).attr("header");
-				//http://dev.jquery.it/ticket/9134
-				jQuery(this).wrapInner('<div class="ui-widget-content"/>');
 				if(header != undefined)
 				{
-					jQuery(this).prepend('<div class="ui-widget-header">' + header + '</div>');
-					
+					//http://dev.jquery.it/ticket/9134
+					jQuery(this).wrapInner('<div class="ui-widget-content"/>');
+					jQuery(this).prepend('<div class="ui-widget-header">' + header + '</div>');					
 				}
-				
 			}
 		);
 }

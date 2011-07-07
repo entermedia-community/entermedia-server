@@ -159,12 +159,12 @@ public class PathEventManager
 				getRunningTasks().push(runner);
 				try
 				{
-					getTimer().schedule(runner,event.getDelay()); //once it is done it might re-add itself if there is a period
+					getTimer().schedule(runner,event.getDelay()); 
 				} 
 				catch (Exception e)
 				{
 					fieldTimer = null;
-					getTimer().schedule(runner,event.getDelay()); //once it is done it might re-add itself if there is a period
+					getTimer().schedule(runner,event.getDelay());
 					//to fix  java.lang.IllegalStateException: Timer already cancelled.
 				}
 			}
@@ -275,57 +275,15 @@ public class PathEventManager
 		fieldRunningTasks = null;
 	}
 
-	// public PathEvent getTaskById(String inActionName)
-	// {
-	// for (Iterator iterator = getPathActions().iterator();
-	// iterator.hasNext();)
-	// {
-	// PathEvent task = (PathEvent) iterator.next();
-	// if( task.getId().equals(inActionName))
-	// {
-	// return task;
-	// }
-	// }
-	// return null;
-	// }
-
 	public void removeTask(ScheduledTask inTask)
 	{
 		inTask.setEnabled(false);
 		getPathEvents().remove(inTask);
 	}
 
-/*	public void execute(PathEvent task)
+	public void loadTask(PathEvent inTask) throws OpenEditException
 	{
-		log.info("running task" + task.getPage());
-		if (!task.isEnabled())
-		{
-			log.debug("Scheduled task " + task.getPage() + " is disabled and is not being executed.");
-			return;
-		}
-		try
-		{
-
-			TaskRunner runner = new TaskRunner(task, this);
-			long delay = Math.max(task.getDelay(), 10000);
-			getTimer().schedule(runner, delay);
-			return;
-
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-
-	}
-	*/
-	public void addTask(PathEvent inTask) throws OpenEditException
-	{
-		addTask(inTask, true,  true);
-	}
-
-	public void addTask(PathEvent inTask, boolean inRun, boolean inAsync) throws OpenEditException
-	{
+		//, boolean inRun, boolean inAsync f t
 		if( log.isDebugEnabled() )
 		{
 			log.debug("Adding new Workflow Task: " + inTask.getPage());
@@ -333,31 +291,10 @@ public class PathEventManager
 		getPathEvents().add(inTask);
 		if (inTask.isEnabled())
 		{
-			if (inRun)
-			{
-				if (inAsync)
-				{
-					TaskRunner runner = new TaskRunner(inTask, inTask.getDelay(),  this);
-					getRunningTasks().push(runner);
-					getTimer().schedule(runner, inTask.getDelay());
-				}
-				else
-				{
-					TaskRunner runner = new TaskRunner(inTask, 0, this);
-					getRunningTasks().push(runner);
-					try
-					{
-						runner.run();
-					}
-					finally
-					{
-						getRunningTasks().remove(runner);
-					}
-				}
-			}
-			else if (inTask.getPeriod() > 0)
+			if (inTask.getPeriod() > 0)
 			{
 				TaskRunner runner = new TaskRunner(inTask, inTask.getDelay(), this);
+				runner.setRepeating(true);
 				getRunningTasks().push(runner);
 				getTimer().schedule(runner, inTask.getDelay());
 			}
@@ -397,13 +334,13 @@ public class PathEventManager
 			}
 			else
 			{
-				addPath(vpath, inRoot, inDuplicates);
+				loadByPath(vpath, inRoot, inDuplicates);
 			}
 		}
 		
 	}
 
-	protected void addPath(String path,String root, Set duplicates)
+	protected void loadByPath(String path,String root, Set duplicates)
 	{
 		path = PathUtilities.extractFileName(path);
 		if( path.endsWith("html"))
@@ -428,9 +365,6 @@ public class PathEventManager
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
 	
-		String multiple = eventpage.get("runmultiple");
-		event.setMultipleCopies(Boolean.parseBoolean(multiple));
-	
 		String username = eventpage.get("eventuser");
 		if( username == null)
 		{
@@ -439,7 +373,7 @@ public class PathEventManager
 		UserManager usermanager = (UserManager)getModuleManager().getBean("userManager");
 		User user = usermanager.getUser(username);
 		event.setUser(user);
-		addTask(event, false,true);
+		loadTask(event);
 	}
 	
 	public PathEvent getPathEvent(String inPath)

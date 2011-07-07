@@ -1,6 +1,6 @@
 <page>
 	<path-action name="Script.run">
-		<script>./scripts/conversions/queueconversions.groovy</script>
+		<script>/${catalogid}/events/scripts/conversions/queueconversions.groovy</script>
 	</path-action>
 <property name="virtual">true</property>
 </page>

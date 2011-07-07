@@ -57,9 +57,8 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 		#else
 			#set( $rootid = $hits.sessionId )
 		#end
-			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
-		
-			<a href="$click" class="emdialog" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
+			#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html" )
+			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")

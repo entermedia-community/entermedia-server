@@ -69,13 +69,6 @@ public void checkforTasks()
 							realtask.setProperty("externalid", result.get("externalid"));
 							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 							
-							//See if this was a onimport one, for now this means  the thumbs are probably done
-							String onimport = preset.get("onimport");
-							if( Boolean.parseBoolean( onimport) )
-							{
-								asset.setProperty("previewstatus", "2");
-								mediaarchive.saveAsset( asset, context.getUser() );
-							}
 							mediaarchive.fireMediaEvent("conversions/conversioncomplete",context.getUser(),asset);
 						} 
 						else
@@ -141,6 +134,8 @@ public void checkforTasks()
 		}
 		//tasksearcher.saveAllData( tosave, context.getUser() );
 	}
+	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time.
+	
 }
 private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, String inSourcepath)
 {
@@ -188,6 +183,10 @@ private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inP
 		else if("submitted".equals(status))
 		{
 			result = creator.updateStatus(inArchive, inTask);
+		}
+		else
+		{
+			log.info("${status} status not new or retry, is index out of date? ");
 		}
 	}
 	else

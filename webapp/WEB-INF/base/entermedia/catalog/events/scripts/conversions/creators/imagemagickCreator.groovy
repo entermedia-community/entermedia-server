@@ -324,6 +324,13 @@ public class imagemagickCreator extends BaseImageCreator
 			result.setComplete(true);
 			
 			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+			
+			//See if this was a onimport one, for now this means  the thumbs are probably done
+			if( inAsset.get("previewstatus") != "generated")
+			{
+				inAsset.setProperty("previewstatus", "generated");
+				inArchive.saveAsset( inAsset, null );
+			}
 			return result;
 		}
 		//problems

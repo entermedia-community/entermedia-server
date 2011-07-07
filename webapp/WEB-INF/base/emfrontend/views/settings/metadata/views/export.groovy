@@ -22,10 +22,7 @@ Collection views = searcherManager.getList(mediaarchive.getCatalogId(), "assetty
 Collection types = typessearcher.getAllHits();
 
 for( Data view in views)
-{
-	View childview = new View();
-	childview.setTitle( view.getName() );
-	
+{	
 	for( Data assettype in types)
 	{
 		View existingview = archive.getDetails(details,"asset/assettype/${assettype.getId()}/${view.getId()}", null);
@@ -35,15 +32,16 @@ for( Data view in views)
 			{
 				if( !existingchildren.contains(detail.getId() ))
 				{
-					childview.add(detail);
+					toplevel.add(detail);
 					existingchildren.add( detail.getId() );
 				}
 			}
 		}
 	}
-	Collections.sort(childview);
-	toplevel.add(childview);
 }
+
+Collections.sort(toplevel);
+
 
 archive.saveView(mediaarchive.getCatalogId(),toplevel,user);
 log.info("Saved pick list");
