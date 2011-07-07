@@ -47,7 +47,12 @@ public class GroovyScriptRunner implements ScriptRunner
 				//File parent = new File().getParentFile();
 				if( packageroot == null)
 				{
+					log.info("Could not find package root on " + page.getPageSettings().getPath());
 					packageroot = inScript.getPage().getDirectory();
+				}
+				else
+				{
+					//log.info("Found " + packageroot);					
 				}
 				Page proot = getPageManager().getPage(packageroot);
 				List folders = new ArrayList();
@@ -68,9 +73,6 @@ public class GroovyScriptRunner implements ScriptRunner
 				
 				GroovyScriptEngine engine = new GroovyScriptEngine((String[])folders.toArray(new String[folders.size()]));
 				variableMap.put("engine", engine);
-				
-				String filename = page.getPath();
-				filename = filename.substring(packageroot.length() + 1);
 				
 				GroovyClassLoader loader = engine.getGroovyClassLoader();
 
@@ -97,8 +99,10 @@ public class GroovyScriptRunner implements ScriptRunner
 						String key = (String) iterator.next();
 						binding.setProperty(key,variableMap.get(key));
 					}
-
-					returned = engine.run(filename, binding);
+					String filename = page.getPath();
+					filename = filename.substring(packageroot.length() + 1);
+					log.info("Running " + filename);
+					returned = engine.run(filename, binding); //Pass in only the script file name i.e. conversion/
 				}
 				return returned;
 			}

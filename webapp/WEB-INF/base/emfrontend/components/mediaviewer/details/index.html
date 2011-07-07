@@ -49,7 +49,7 @@
 #if( $canviewsettings )		
 		<li class="emdetaileditasset  uibutton"><a class="ajax" targetdiv="emdataeditor" href="$home$home$apphome/components/mediaviewer/metadataedit.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId&edit=true&oemaxlevel=1"><img src="$home$themeprefix/images/navigation/info.png" /> [[Edit]]</a></li>
 #end		
-<li>
+<li  class="emdetaileditasset">
 	<div class="emdetailvotes">
 	<span id="assetVoteCount">
 			$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)

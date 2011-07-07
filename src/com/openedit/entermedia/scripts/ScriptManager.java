@@ -3,6 +3,9 @@ package com.openedit.entermedia.scripts;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -14,6 +17,8 @@ import com.openedit.util.PathUtilities;
 
 public class ScriptManager
 {
+	private static final Log log = LogFactory.getLog(ScriptManager.class);
+	
 	protected Map fieldScriptRunners;
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
@@ -124,8 +129,11 @@ public class ScriptManager
 	public Script loadScript(WebPageRequest inContext, Configuration inScriptconfig, String inFilepath)
 	{
 		String code = inScriptconfig.getValue();
+		//log.info("Start value: " + code);
 		code = inContext.getPage().getPageSettings().replaceProperty(code);
+		//log.info("Replaced value: " + code);
 		code = PathUtilities.resolveRelativePath(code, inFilepath);
+		//log.info("Final script: " + code + " using " + inFilepath);
 		Script script = loadScript(code);
 		String method = inScriptconfig.getAttribute("method");
 		script.setMethod(method);

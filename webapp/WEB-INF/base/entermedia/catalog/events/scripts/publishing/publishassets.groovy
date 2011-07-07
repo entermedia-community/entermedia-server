@@ -9,6 +9,7 @@ import org.openedit.event.*
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
+import com.openedit.page.Page
 
 
 
@@ -65,8 +66,33 @@ public void init()
 				Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
 				try
 				{
+									
+					
+					Page inputpage = null;
+					if( preset.get("type") != "original")
+					{
+						String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${preset.outputfile}";
+						inputpage= mediaArchive.getPageManager().getPage(input);
+					}
+					else
+					{
+						inputpage = mediaArchive.getOriginalDocument(asset);
+					}
+					
+					
+					if(!inputpage.exists()){
+						log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
+						
+						continue;
+						
+						//not ready to be published yet.
+					}
+					
+					
 					Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
 					publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+					
+					
 					//log.info("Published " +  asset + " to " + destination);
 					//firePublishEvent(result.getId());
 
@@ -80,17 +106,8 @@ public void init()
 					{
 						counted = "0";
 					}
-					int num = Integer.parseInt( counted );
-					num++;
-					if( num > 5)
-					{
-						publishrequest.setProperty('status', 'error');
-					}
-					else
-					{
-						publishrequest.setProperty('status', 'retry');
-					}
-					publishrequest.setProperty('errorcount', String.valueOf(num));
+					publishrequest.setProperty('status', 'error');
+//					publishrequest.setProperty('errorcount', String.valueOf(num));
 					publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
 					queuesearcher.saveData(publishrequest, context.getUser());
 					continue;

@@ -10,6 +10,8 @@ import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery;
 import org.openedit.events.PathEventManager;
 import java.util.ArrayList;
+import java.util.Date;
+import org.openedit.util.DateStorageUtil;
 
 public void createTasksForUpload() 
 {
@@ -23,11 +25,12 @@ public void createTasksForUpload()
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	log.info("Queue conversions running on " + mediaArchive.getCatalogId() );
-	Searcher assetsearcher = mediaArchive.getAssetSearcher();
-	SearchQuery q = assetsearcher.createSearchQuery();
+	Searcher targetsearcher = mediaArchive.getAssetSearcher();
+	SearchQuery q = targetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
 	if( ids == null)
 	{
+		
 		//Do a search for importstatus of "added" -> "converted"
 		q.addExact( "importstatus", "imported" );
 	}
@@ -36,15 +39,14 @@ public void createTasksForUpload()
 		String assetids = ids.replace(","," ");
 		q.addOrsGroup( "id", assetids );
 	}
-	List assets = new ArrayList(assetsearcher.search(q) );
+	
+	List assets = new ArrayList(targetsearcher.search(q) );
 
 	boolean foundsome = false;
 	log.info("Found ${assets.size()} assets");
 	assets.each
 	{
 		Asset asset = mediaArchive.getAsset(it.id);
-
-		log.info("Adding conversions for " + it.id + " asset is " + asset.getName() + " from " + ids );
 		
 		String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 		//video?
@@ -59,23 +61,24 @@ public void createTasksForUpload()
 			Data hit = it;
 			Data newconversion = tasksearcher.createNewData();
 
-			Data preset = (Data) presetsearcher.searchById(hit.id);
+			Data preset = (Data) presetsearcher.searchById(it.id);
 			
 			SearchQuery presetquery = destinationsearcher.createSearchQuery();
 			presetquery.addMatches("onimport", "true");
-			presetquery.addMatches("presetid", preset.id); //video
+			presetquery.addMatches("convertpreset", preset.id); //video
 			
 			HitTracker dest = destinationsearcher.search(presetquery);
 						
-			dest.each
-			{
-				Data destination = it;
+			dest.each{
 				Data publishrequest = publishqueuesearcher.createNewData();
 				publishrequest.setSourcePath(asset.getSourcePath());
 				publishrequest.setProperty("status", "pending"); //pending on the convert to work
 				publishrequest.setProperty("assetid", asset.id);
 				publishrequest.setProperty("presetid", preset.id);
-				publishrequest.setProperty("publishdestination", destination.id);
+				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+				publishrequest.setProperty("date", nowdate);
+
+				publishrequest.setProperty("publishdestination", it.id);
 				String exportName=null;
 				if( preset.get("type") != "original")
 				{
@@ -101,11 +104,20 @@ public void createTasksForUpload()
 				newTask.setProperty("status", "new");
 				newTask.setProperty("assetid", asset.id);
 				newTask.setProperty("presetid", it.id);
+				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+				newTask.setProperty("submitted", nowdate);
 				tasksearcher.saveData(newTask, context.getUser());
 				foundsome = true;
 			}
 		}
-		asset.setProperty("importstatus","complete");
+		if( foundsome )
+		{
+			asset.setProperty("importstatus","imported");
+		}
+		else
+		{
+			asset.setProperty("importstatus","complete");
+		}
 		mediaarchive.saveAsset( asset, user );
 	}
 	if( foundsome )
@@ -113,11 +125,11 @@ public void createTasksForUpload()
 		log.info("Running runconversions");
 		PathEventManager pemanager = (PathEventManager)moduleManager.getBean(mediaarchive.getCatalogId(), "pathEventManager");
 		pemanager.runPathEvent("/${mediaarchive.getCatalogId()}/events/conversions/runconversions.html",context);
+	
 	}
 	else
 	{
-		log.info("Not running runconversions");
-		
+		log.info("No assets found");
 	}
 	
 }

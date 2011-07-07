@@ -53,7 +53,7 @@ public class ftppublisher extends basepublisher implements Publisher
 			String username = destination.get("username");
 			String url = destination.get("url");
 			
-			log.info("Publishing ${asset} to ftp server ${servername}, with username ${username}.");
+			log.info("Publishing ${asset.sourcepath} to ftp server ${servername}, with username ${username}.  Order ID was ${inOrder.id} and item id was ${inOrderItem.id}");
 			
 			FTPClient ftp = new FTPClient();
 			

@@ -1,5 +1,5 @@
 <page>
 	<path-action name="Script.run">
-		<script>./scripts/assets/assetsclear.groovy</script>
+		<script>/${catalogid}/events/scripts/assets/assetsclear.groovy</script>
 	</path-action>
 </page>

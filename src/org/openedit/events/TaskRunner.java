@@ -19,10 +19,10 @@ public class TaskRunner extends java.util.TimerTask
 	protected static final Log log = LogFactory.getLog(TaskRunner.class);
 	protected PathEvent fieldTask;
 	protected PathEventManager fieldEventManager;
-	protected int fieldExpectedRunCountId;
 	protected WebPageRequest fieldWebPageRequest;
 	protected Date fieldTimeToStart;
-
+	protected boolean fieldRepeating;
+	
 	public TaskRunner(PathEvent inTask,long inDelay, PathEventManager inManager)
 	{
 		this( inTask, inDelay, null,null,inManager);
@@ -31,7 +31,6 @@ public class TaskRunner extends java.util.TimerTask
 	{
 		fieldTask = inTask;
 		fieldEventManager = inManager;
-		fieldExpectedRunCountId = inTask.getRunCountId();
 		
 		WebPageRequest request =  inManager.getRequestUtils().createPageRequest(inTask.getPage().getPath(), inTask.getUser());
 		if( inParams != null)
@@ -77,10 +76,6 @@ public class TaskRunner extends java.util.TimerTask
 	{
 		return fieldWebPageRequest;
 	}
-	public int getExpectedRunCountId()
-	{
-		return fieldExpectedRunCountId;
-	}
 	protected void setWebPageRequest(WebPageRequest inWebPageRequest)
 	{
 		fieldWebPageRequest = inWebPageRequest;
@@ -107,11 +102,7 @@ public class TaskRunner extends java.util.TimerTask
 		fieldEventManager = inEventManager;
 	}
 
-	public boolean isCurrent()
-	{
-		PathEvent event = getEventManager().getPathEvent(getTask().getPage().getPath());
-		return event.getRunCountId() == getExpectedRunCountId();
-	}
+	
 	public void run()
 	{
 		try
@@ -121,36 +112,38 @@ public class TaskRunner extends java.util.TimerTask
 			PathEvent event = getEventManager().getPathEvent(getTask().getPage().getPath());
 	
 			//make sure nobody is running this
-			boolean oktorun = !event.isRunning() && isCurrent();
-			if(  event.isMultipleCopies() || oktorun )
+			try
 			{
-				try
+				if( event.isEnabled() )
 				{
-					if( event.isEnabled() )
-					{
-						executeNow(getWebPageRequest(),event);
-					}
-				}
-				finally
-				{
-					getEventManager().getRunningTasks().remove(this);
-				}
-				if(event.getPeriod() > 0)
-				{
-					TaskRunner runner = new TaskRunner(getTask(), getTask().getPeriod(),new HashMap() ,new HashMap(), getEventManager());
-					getEventManager().getRunningTasks().push(runner);
-					getEventManager().getTimer().schedule(runner, getTask().getPeriod());
+					executeNow(getWebPageRequest(),event);
 				}
 			}
-			else
+			finally
 			{
 				getEventManager().getRunningTasks().remove(this);
+			}
+			if( isRepeating() )
+			{
+				//make sure we just have one in the queue
+				TaskRunner runner = new TaskRunner(getTask(), getTask().getPeriod(),new HashMap() ,new HashMap(), getEventManager());
+				runner.setRepeating(true);
+				getEventManager().getRunningTasks().push(runner);
+				getEventManager().getTimer().schedule(runner, getTask().getPeriod());
 			}
 		}
 		catch ( Throwable ex)
 		{
 			log.error("Error from action ",ex);
 		}
+	}
+	public boolean isRepeating()
+	{
+		return fieldRepeating;
+	}
+	public void setRepeating(boolean inVal)
+	{
+		fieldRepeating = inVal;
 	}
 	protected void executeNow(WebPageRequest inReq, PathEvent event) 
 	{

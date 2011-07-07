@@ -34,6 +34,6 @@
 <td nowrap="true"> $dateformat.format($item.lastModified()) </td>
 
 #set( $text = "History ($versions.size())")
-#set ($href = "$home$cataloghome/detailviewer/attachments/versions/index.html?assetid=$asset.getId()&editPath=$originalpath")
+#set ($href = "$home$cataloghome/detailviewer/historyimageedit/index.html?assetid=$asset.getId()&editPath=$originalpath")
 <td nowrap="true"><a href="$href">$text</a></td>
 </tr>

@@ -33,15 +33,12 @@ public class PathEvent implements Comparable
 	protected Date fieldLastRun;
 	protected String fieldLastOutput;
 	protected WebServer fieldWebServer;
-	//protected ClassLoader fieldClassLoader;
 	protected String fieldFormattedPeriod;
 	protected long fieldDelay = 0;
 	protected long fieldPeriod = 0;
 	protected String fieldFormattedDelay;
 	protected boolean fieldEnabled = true;
 	protected boolean fieldRunning = false;
-	protected boolean fieldMultipleCopies = true;
-	protected int fieldRunCountId = 1;
 	protected RequestUtils fieldRequestUtils;
 	
 	public PathEvent()
@@ -55,26 +52,6 @@ public class PathEvent implements Comparable
 
 	public void setRunning(boolean inRunning) {
 		fieldRunning = inRunning;
-	}
-
-	public boolean isMultipleCopies()
-	{
-		return fieldMultipleCopies;
-	}
-
-	public void setMultipleCopies(boolean inSingleEvent)
-	{
-		fieldMultipleCopies = inSingleEvent;
-	}
-
-	protected int getRunCountId()
-	{
-		return fieldRunCountId;
-	}
-
-	protected void setRunCountId(int inRunCountId)
-	{
-		fieldRunCountId = inRunCountId;
 	}
 
 	public long getPeriod()
@@ -322,9 +299,7 @@ public class PathEvent implements Comparable
 	}
 
 	protected boolean runNow(WebPageRequest inReq) 
-	{
-		setRunCountId(getRunCountId() + 1); //Make sure we dont run it twice
-		
+	{		
 		WebPageRequest	request = inReq.copy(getPage());
 		request.putProtectedPageValue("content", getPage());
 		//		for (Iterator iterator = getProperties().keySet().iterator(); iterator.hasNext();) {
