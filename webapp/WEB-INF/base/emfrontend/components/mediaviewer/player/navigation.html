@@ -1,0 +1,49 @@
+<h2>
+#if( $asset.assettitle )
+	$asset.assettitle
+#elseif( $asset.caption )
+	$asset.caption
+#else
+	$asset
+#end
+</h2>
+
+#if( $hits )
+		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+		#set($previous = $hits.previous($indexOf))
+		#set($next = $hits.next($indexOf))
+		<div class="emprevnext" >
+
+			#if($previous)
+				<a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"><span>[[Previous]]</span></a>
+			#end
+
+			#if($next)
+				<a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"><span>[[Next]]</span></a>
+			#end
+		</div>
+
+#end
+
+	#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
+	<br>
+	<h2>Related Tags</h2>
+		#foreach ($tag in $asset.keywords)
+			<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+		#end
+		#foreach ($category in $asset.categories) 
+			<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
+		#end
+		
+	#end
+	#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+	#if( $type != "video" )
+		<div>	
+				<a class="slideshow emdialog" href="$home$link" target="_parent"
+					pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
+					title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
+		</div>
+	#end	
+
+			
+
