@@ -1,0 +1,26 @@
+#if ( !$hit )
+	#set( $hit = $asset )
+#end
+
+#if($conversionerrors.size() >0)
+	<span style="color:red;">Conversion Error</span>
+#elseif($publisherrors.size() >0)
+	<span style="color:red;">Publish Error</span>
+#elseif( $hit.importstatus && $hit.importstatus == "complete")
+	$context.putPageValue("hit",$hit)
+	#if( $hit.previewstatus && $hit.previewstatus == "mime")
+		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+		<img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
+	#else	
+		<img class="smallthumb" style="height:64px;" src="$home$cataloghome/downloads/preview/crop/$hit.sourcepath/thumb.jpg" border="0" />
+	#end
+#elseif( $conversionsremaining.size()  >0 )
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}</div>
+#elseif($publish.size() >0 )
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >Publishing Proxy $publish.size()</div>
+#elseif( $conversions.size() == 0 )
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >
+		Adding to Queue
+	</div>
+#end
