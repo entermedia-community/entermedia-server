@@ -1,6 +1,7 @@
 #set( $id=$context.getRequestParameter("id"))
 #set( $name=$context.getRequestParameter("name"))
 #set( $size=$context.getRequestParameter("size"))
+#set( $list = $searcherManager.getList($catalogid,"assettype"))
 <div id="row$id">
 
 <input size="40" value="$name" />
