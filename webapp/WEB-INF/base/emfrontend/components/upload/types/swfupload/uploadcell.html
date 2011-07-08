@@ -1,0 +1,12 @@
+#set( $id=$context.getRequestParameter("id"))
+#set( $name=$context.getRequestParameter("name"))
+#set( $size=$context.getRequestParameter("size"))
+<div id="row$id">
+
+<input size="40" value="$name" />
+
+<input type="hidden" name="${id}.sourcepath"  id="${id}sourcepath" value="$formatteddate/$list.first().id" />
+<input type="hidden" name="${id}.assettype.value" value="video" />
+<div id="temppathholder$id"> </div>
+
+</div>

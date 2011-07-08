@@ -65,8 +65,37 @@
 	color: black;
 	font-family: Segoe UI, Helvetica, Arial, sans-serif; font-size: 1em; 
 }
-.ui-widget-content { padding-left: 4px; background: #222222 url(images/ui-bg_highlight-soft_0_222222_1x100.png) 50% top repeat-x; color: #eeeeee; }
-.ui-widget-header { border: 1px solid #000000; background: #212121 url(images/ui-bg_glass_85_212121_1x400.png) 50% 50% repeat-x; color: #97e935; font-weight: bold; }
+.uipanel { 
+	-moz-border-radius: 8px 8px 8px 8px;
+    -moz-box-shadow: 0 0 20px #000000;
+    background: none repeat scroll 0 0 rgba(31, 31, 31, 0.898);
+    border: 1px solid #000000;
+    padding: 5px;
+}
+
+.ui-widget-header 
+{
+	background: url(./images/sliver.png) repeat-x;
+	height:26px;
+	
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	
+	box-shadow: 0px 0px 10px #000; 
+	-moz-box-shadow: 0px 0px 10px #000; 
+	-webkit-box-shadow: 0px 0px 10px #000; 
+	
+	margin:  -6px -5px 15px -5px;
+	
+	color: #97e935; font-weight: bold; 
+}
+.ui-widget-header  h3
+{
+	padding: 6px 5px 0 10px;
+}	
+
+
 .ui-widget-header a { color: #97e935; }
 
 /* Interaction states

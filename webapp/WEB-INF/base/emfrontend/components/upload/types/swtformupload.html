@@ -35,12 +35,12 @@
 
 				// Button settings
 				
-				button_image_url: "$home$themeprefix/images/buttons/assets/button93.png",
+				button_image_url: "$home$themeprefix/images/buttons/upload.gif",
 				button_width: "93",
 				button_height: "25",
 				button_placeholder_id: "spanButtonPlaceHolder",
-				button_text: '<span class="embuttonfont">Add Files</span>',
-				button_text_style: ".embuttonfont { color: #633108;font-size: 14px; font-family: Helvetica, sans-serif;}",
+				button_text: '<span class="embuttonfont">Browse</span>',
+				button_text_style: ".embuttonfont { color: #ffffff;font-size: 14px; font-weight: bold; font-family: tahoma, Helvetica, sans-serif;}",
 				button_text_left_padding: 12,
 				button_text_top_padding: 3,
 				
@@ -64,19 +64,27 @@
 			swfu = new SWFUpload(settings);
 	     }
 	     
+	     function queueComplete(numFilesUploaded) 
+	     {
+		    queuecompleted = true;
+		    if(oktosubmit )
+		    {
+				jQuery("#uploadqueueform").submit();
+			}
+		 }
+	     
 	    function fileQueued(file) 
 	    {
 		    queuecompleted = false;
 			try 
 			{
-				var link = "$root/uploadrow.html?id=" + file.id + "&name=" + file.name + "&size=" + file.size;
+				var link = "$root/uploadcell.html?id=" + file.id + "&name=" + file.name + "&size=" + file.size;
 				jQuery.get(link, 
 					function (data) 
 					{
-						jQuery("#emfilelist > tbody:last").append(data);
-						//swfu.startUpload(file.id);
-						//TODO: use java
-						jQuery(".enabledwithpick").css("visibility","visible");
+						jQuery("#pickedfile").html(data);
+						swfu.startUpload(file.id);
+						//jQuery(".enabledwithpick").css("visibility","visible");
 					});		
 			}
 			catch (ex) 
@@ -109,12 +117,35 @@
 	   	function showProgressAndSubmit()
 	    {
 	     		oktosubmit = true;
+
+	     		if(queuecompleted)
+		        {
+					jQuery("#uploadqueueform").submit();
+				}	
+				else
+				{
 					jQuery(".emshowupload").css("visibility","visible");
 	     			jQuery("#submitbutton").html("Uploading..."); //TODO: Replace with cancel link
-
-					jQuery("#uploadqueueform").submit();
+				}
 				     		
 	     }
+	     function uploadSuccess(file, serverData) 
+	     {
+				try {
+					##append serverData as a sourcepath
+					var html = '<input type="hidden" name="' + file.id + '.temppath" value="' + serverData + '"' + '/>'; 
+					//html = html + '\n<input type="hidden" name="assettype.value" value="' + serverData + '"' + '/>'; 
+					jQuery("#temppathholder" + file.id ).append(html);
+					jQuery("#progress" + file.id).parent().html('<img align="center" src="$home/system/images/toolbar/check.gif" />');
+					
+					//add .class for progress indicators
+				} 
+				catch (ex)
+				{
+					alert( ex);
+				}			
+		}
+			
 		jQuery(document).ready(
 			function() 
 			{ 
@@ -124,28 +155,57 @@
 	</script>
 
 	<form id="uploadqueueform" class="ajaxform" targetdiv="emuploadcontainer" action="$root/finish.html" method="post">
-		<table id="emfilelist" style="width: 600px;">
-				<tr class="enabledwithpick"><th></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th>Asset Type</th>
-				</tr>
-				<tbody>
-				</tbody>
-		</table>
+	
 		<table>
 		<tr>
 		<td>
 			<div id="flashHolder" >	
+				<table width="500">
+				<tr>
+				<td>
+				<div id="pickedfile"><input size="40" name="null" /></div>
+				</td>
+				<td>
 					<div id="spanButtonPlaceHolder" ></div>	
+				</td>
+				</tr></table>
 			</div>
-		</td>
-		<td style="padding-top: 2px;">
-			<div class="enabledwithpick" id="submitbutton" >
-				<ul class="embuttons">
-					<li><a href="#" onClick="showProgressAndSubmit(); return false;"><span>Next</span></a></li>
-				</ul>
-			</div>
+			<br/><br/>
+
+			<h2>[[Caption]]</h2>
+			<input type="hidden" name="field" value="caption"/>
+			<input type="text" name="caption.value" style="width: 320px;" />
+			<br/><br/>
+
+			<h2>[[Title]]</h2>
+			<input type="hidden" name="field" value="caption"/>
+			<input type="text" name="caption.value" style="width: 320px;" />
+			<br/><br/>
+
+			<h2>[[Add Tags]]</h2>
+			<input type="hidden" name="field" value="keywords"/>
+			<input type="text" name="keywords.value" style="width: 320px;" />
+			<br/><br/>
+
+			<h2>[[Choose team]]</h2>
+			<input type="hidden" name="field" value="team"/>
+			<select name="team.value" style="width:240px;" >
+				<option > </option>
+				<option >KFC Team 72</option>
+			</select>
+			<br/><br/>
+
 		</td>
 		</tr>
 		</table>
+		
+		
+			<div id="submitbutton" style="margin: auto; width: 200px;">
+				<ul class="embuttons">
+					<li><a href="#" onClick="showProgressAndSubmit(); return false;"><span>Upload</span></a></li>
+				</ul>
+			</div>
+		
 		<input type="hidden" name="hitsname" value="hits" />
 		<input type="hidden" name="field" value="assettitle" />
 		<input type="hidden" name="field" value="assettype" />
