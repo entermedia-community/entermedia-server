@@ -58,6 +58,14 @@
 				<userprofile property="editasset" equals="true" />
 			</or>	
 		</permission>
+
+	  	<permission name="shareasset">
+			<or>
+				<userprofile property="assetadmin" equals="true" />
+				<userprofile property="editasset" equals="true" />
+			</or>	
+		</permission>
+
 	<permission name="viewsettings">
 		<or>
 			<userprofile property="viewsettings" equals="true" />

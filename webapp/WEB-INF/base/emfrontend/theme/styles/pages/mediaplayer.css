@@ -52,8 +52,6 @@
 #emcontainer .emdetailactions a
 {
 	display:block;
-	padding: 4px 0px 0px 20px;
-	height: 22px;
 	text-decoration: none;
 }
 #emcontainer .emdetailactions a img
@@ -63,7 +61,6 @@
 #emcontainer .emdetailactions a:hover
 {
 	display:block;
-	background-color: #333333;
 	text-decoration: none;
 }
 
