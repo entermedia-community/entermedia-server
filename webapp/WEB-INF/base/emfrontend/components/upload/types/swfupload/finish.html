@@ -1,4 +1,8 @@
-<h2>[[Media Uploaded]]</h2>
+<div align="center">
+<div class="em-rounded"  style="margin-bottom: 20px;width: 500px;">
+	<div class="emsectionheader">
+	<h3>[[Media Uploaded]]</h3>
+	</div>
 
 #if( $hits && $hits.size() == 1 )
 [[Your asset has been uploaded]]<br><br>
@@ -16,6 +20,8 @@
 </div>
 	
 	$pages.include("$apphome/views/upload/results.html?hitssessionid=$hits.sessionId")
+	</div>
+	</div>
 #else
 [[No assets were uploaded or there was an error uploading your files.]]
 [[Please try again or contact the site administrator.]]
