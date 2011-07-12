@@ -107,4 +107,9 @@ public class AssetControlModule extends BaseMediaModule
 			throw new OpenDataException("You do not have viewasset permission " + path);
 		}
 	}
+	
+	public void listAssetViewPermissions(WebPageRequest inReq) throws Exception{
+		Asset asset = getAsset(inReq);
+		
+	}
 }
