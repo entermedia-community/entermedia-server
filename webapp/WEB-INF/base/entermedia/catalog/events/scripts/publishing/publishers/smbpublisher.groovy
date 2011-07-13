@@ -93,13 +93,5 @@ public class smbpublisher extends basepublisher implements Publisher
 			itemsearcher.saveData(inOrderItem, null);
 		}
 	}
-	private void publishFailure(MediaArchive mediaArchive, Data inOrderItem, String inError)
-	{
-		inOrderItem.setProperty("status", "publisherror");
-		inOrderItem.setProperty("errordetails", inError);
-		log.error(inError);
-		Searcher itemsearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "orderitem");
-		itemsearcher.saveData(inOrderItem, null);
-	}
 	
 }

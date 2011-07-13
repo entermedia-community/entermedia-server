@@ -2,6 +2,7 @@ package publishing.publishers
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
+import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.Publisher
@@ -12,6 +13,15 @@ public abstract class basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(basepublisher.class);
 
+	protected void publishFailure(MediaArchive mediaArchive, Data inOrderItem, String inError)
+	{
+		inOrderItem.setProperty("status", "publisherror");
+		inOrderItem.setProperty("errordetails", inError);
+		log.error(inError);
+		Searcher itemsearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "orderitem");
+		itemsearcher.saveData(inOrderItem, null);
+	}
+	
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
 	{
 		Page inputpage=null;
