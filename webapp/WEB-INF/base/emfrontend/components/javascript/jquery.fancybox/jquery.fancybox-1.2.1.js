@@ -66,7 +66,7 @@
 				//This is the entire page
 				var item = {href: elem.href, title: elem.title,pageturner: elem.getAttribute("pageturner")};
 				if (jQuery(elem).children("img:first").length) {
-					item.orig = jQuery(elem).children("img:first");
+					//item.orig = jQuery(elem).children("img:first");
 				}
 				opts.itemArray.push( item );
 //OLD				
@@ -164,7 +164,7 @@
 					});
 				}
 			}
-			else if (href.match(/#/)) 
+			if (href.match(/#/)) 
 			{
 				var target = window.location.href.split('#')[0]; target = href.replace(target, ''); target = target.substr(target.indexOf('#'));
 
