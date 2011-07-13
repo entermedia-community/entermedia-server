@@ -25,7 +25,6 @@
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
 		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
 		<property name="webServer"><ref bean="WebServer" /></property>
-		<property name="commentArchive"><ref bean="commentArchive"/></property>
 	</bean>
 
 
@@ -818,6 +817,7 @@
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
+		<property name="commentArchive"><ref bean="commentArchive"/></property>
 	</bean>
 
 	<bean id="categoryEditor" class="org.openedit.entermedia.edit.CategoryEditor" singleton="false">

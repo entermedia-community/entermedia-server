@@ -1,14 +1,20 @@
 package org.openedit.entermedia.edit;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.modules.CategoryEditModule;
 
 import com.openedit.OpenEditRuntimeException;
+import com.openedit.comments.CommentArchive;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
@@ -17,6 +23,9 @@ public class AssetEditor {
 	protected MediaArchive fieldMediaArchive;
 	protected Asset fieldCurrentAsset;
 	protected PageManager fieldPageManager;
+	protected CommentArchive fieldCommentArchive;
+	
+	private static final Log log = LogFactory.getLog(AssetEditor.class);
 	
 	public Asset createAsset()
 	 {
@@ -120,5 +129,68 @@ public class AssetEditor {
 
 	public void setPageManager(PageManager pageManager) {
 		fieldPageManager = pageManager;
+	}
+	
+	public CommentArchive getCommentArchive()
+	{
+		return fieldCommentArchive;
+	}
+	public void setCommentArchive(CommentArchive commentArchive)
+	{
+		fieldCommentArchive = commentArchive;
+	}
+	
+	public boolean makeFolderAsset(Asset inAsset, User inUser) {
+		String oldSourcePath = inAsset.getSourcePath();
+		PageManager pageManager = getPageManager();
+		// need to figure out newsourcepath
+		String newSourcePath = oldSourcePath + "/";
+		inAsset.setSourcePath(newSourcePath);
+		String dataRoot = "/WEB-INF/data/" + getMediaArchive().getCatalogId();
+
+		// Move Comments
+		// move comments from
+		// 1 - catalog/data/comments/oldsourcepath
+		// 2 - web-inf/data/comments/oldsourcepath
+		// to: web.inf/data/comments/newsourcepath
+		CommentArchive carchive = getCommentArchive();
+		Collection allcomments = carchive.loadComments("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/comments/" + oldSourcePath);
+		allcomments.addAll(carchive.loadComments("/" + getMediaArchive().getCatalogId() + "/data/comments/"	+ oldSourcePath));
+		carchive.saveComments("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/comments/" + newSourcePath, allcomments);
+
+		// Move Originals
+		Page oldAssets = pageManager.getPage(dataRoot + "/originals/" + oldSourcePath);
+		Page newAssets = pageManager.getPage(dataRoot + "/originals/" + newSourcePath + oldAssets.getName());
+		try {
+			if (oldAssets.exists()) {
+				Page tempLocation = pageManager.getPage(oldAssets.getPath() + ".tmp");
+				pageManager.movePage(oldAssets, tempLocation);
+				pageManager.movePage(tempLocation, newAssets);
+			}
+		} finally {
+			inAsset.setProperty("primaryfile", oldAssets.getName());
+		}
+		inAsset.setFolder(true);
+		getMediaArchive().saveAsset(inAsset, inUser);
+		getMediaArchive().getAssetArchive().clearAssets();
+
+		// Don't do this if no changes were made otherwise the product gets
+		// deleted!
+		if (!oldSourcePath.equals(newSourcePath)) {
+			// Remove old asset file
+			File oldFile = new File(getMediaArchive().getRootDirectory(), "assets/"
+					+ oldSourcePath + ".xconf");
+			if (oldFile.exists()) {
+				if (oldFile.delete()) {
+					return true;
+				} else {
+					log.error("Could not delete parent folder.");
+				}
+			} else {
+				log.error("Could not remove old product file: "
+						+ oldFile.getAbsolutePath());
+			}
+		}
+		return true;
 	}
 }

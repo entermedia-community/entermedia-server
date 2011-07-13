@@ -58,9 +58,8 @@ public class AssetEditModule extends BaseMediaModule
 	protected static final String CATEGORYID = "categoryid";
 	protected FileUpload fieldFileUpload;
 	protected AssetImporter fieldAssetAssetImporter;
-	protected CommentArchive fieldCommentArchive;
 	
-	private static final Log log = LogFactory.getLog(CategoryEditModule.class);
+	private static final Log log = LogFactory.getLog(AssetEditModule.class);
 	
 	public List getUploadedPages(WebPageRequest inReq)
 	{
@@ -104,68 +103,8 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		else
 		{
-			MediaArchive mediaArchive = getMediaArchive(inReq);
-			String oldSourcePath = asset.getSourcePath();
-			PageManager pageManager = getPageManager();
-			//need to figure out newsourcepath
-			String newSourcePath = oldSourcePath + "/";
-			asset.setSourcePath(newSourcePath);
-			String dataRoot = "/WEB-INF/data/" + mediaArchive.getCatalogId();
-			
-			//Move Comments
-				//move comments from
-				// 1 - catalog/data/comments/oldsourcepath
-				// 2 - web-inf/data/comments/oldsourcepath
-				// to: web.inf/data/comments/newsourcepath
-			CommentArchive carchive = getCommentArchive();
-			Collection allcomments = carchive.loadComments("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/comments/" + oldSourcePath);
-			allcomments.addAll(carchive.loadComments("/" + mediaArchive.getCatalogId() + "/data/comments/" + oldSourcePath));
-			carchive.saveComments("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/comments/" + newSourcePath, allcomments);
-			
-			//Move Originals
-			Page oldAssets = pageManager.getPage(dataRoot + "/originals/" + oldSourcePath);
-			Page newAssets = pageManager.getPage(dataRoot + "/originals/" + newSourcePath + oldAssets.getName());
-			try
-			{
-				if( oldAssets.exists() )
-				{
-					Page tempLocation = pageManager.getPage(oldAssets.getPath() + ".tmp");
-					pageManager.movePage(oldAssets, tempLocation);
-					pageManager.movePage(tempLocation, newAssets);
-				}
-			}
-			finally
-			{
-				asset.setProperty("primaryfile",oldAssets.getName());
-			}
-			asset.setFolder(true);
-			mediaArchive.saveAsset(asset, inReq.getUser());
-			mediaArchive.getAssetArchive().clearAssets();
-			
-			//Don't do this if no changes were made otherwise the product gets deleted!
-			if(!oldSourcePath.equals(newSourcePath))
-			{
-			
-				//Remove old asset file
-				File oldFile = new File(mediaArchive.getRootDirectory(), "assets/" + oldSourcePath + ".xconf");
-				if (oldFile.exists())
-				{
-						if(oldFile.delete())
-						{
-							return true;
-						}
-						else
-						{
-							log.error("Could not delete parent folder.");
-						}
-				}
-				else
-				{
-					log.error("Could not remove old product file: " + oldFile.getAbsolutePath());
-				}
-			}
+			return getAssetEditor(inReq).makeFolderAsset(asset, inReq.getUser());
 		}
-		return true;
 	}
 
 	public void writeXmpData(WebPageRequest inReq) throws Exception
@@ -1545,15 +1484,6 @@ public class AssetEditModule extends BaseMediaModule
 		searcher.saveData(row,inUser);
 		archive.fireMediaEvent("userlikes", inUser, asset);
 		//archive.getAssetSearcher().updateIndex(asset); //get the rank updated
-	}
-	
-	public CommentArchive getCommentArchive()
-	{
-		return fieldCommentArchive;
-	}
-	public void setCommentArchive(CommentArchive commentArchive)
-	{
-		fieldCommentArchive = commentArchive;
 	}
 	
 	public void saveAssetData(WebPageRequest inReq) throws Exception
