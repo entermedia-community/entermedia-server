@@ -2,7 +2,7 @@ package sql;
 /*
  * Created on Oct 2, 2005
  */
-package org.openedit.entermedia.model;
+//package org.openedit.entermedia.model;
 
 import java.sql.Connection;
 import java.sql.Driver;
