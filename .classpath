@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/catalog/events/scripts"/>
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/extras/jtds-1.2.jar"/>
@@ -16,7 +15,6 @@
 	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="lib/FontBox-0.1.0-dev.jar"/>
 	<classpathentry kind="con" path="GROOVY_SUPPORT"/>
-	<classpathentry kind="lib" path="lib/groovy-all-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.43.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-net-ftp-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/aws-java-sdk-1.1.9.jar"/>
