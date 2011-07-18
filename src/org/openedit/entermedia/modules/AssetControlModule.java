@@ -12,6 +12,7 @@ import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
+import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 
@@ -54,7 +55,7 @@ public class AssetControlModule extends BaseMediaModule {
 	 * 
 	 * if (asset != null) { return asset.getSourcePath(); } MediaArchive archive
 	 * = getMediaArchive(inReq); String sourcePath =
-	 * ²
+	 * ï¿½
 	 * archive.getSourcePathForPage(inReq);
 	 * 
 	 * if( sourcePath == null) { String assetid =
@@ -74,18 +75,43 @@ public class AssetControlModule extends BaseMediaModule {
 		List<User> users = findUsersByName(userNames);
 		
 		inReq.putPageValue("peoples", users);
+
+		
+		List groupids = mediaArchive.getAssetSecurityArchive().getAccessList(mediaArchive, asset);
+		List<Group> groups = findGroupByIds(groupids);
+		
+		inReq.putPageValue("groups", users);
+
 		return users;
 	}
 
-	public List<User> findUsersByName(List<String> inUserNames)
+	protected List<User> findUsersByName(List<String> inUserNames)
 	{
 		List<User> users = new ArrayList<User>();
 		UserManager mgr = getUserManager();
 		for (String name : inUserNames)
 		{
-			users.add(mgr.getUser(name));
+			User user = mgr.getUser(name);
+			if( user != null)
+			{
+				users.add(user);
+			}
 		}
 		return users;
+	}
+	protected List<Group> findGroupByIds(List<String> inIds)
+	{
+		List<Group> groups = new ArrayList<Group>();
+		UserManager mgr = getUserManager();
+		for (String id: inIds)
+		{
+			Group group = mgr.getGroup(id);
+			if( group != null)
+			{
+				groups.add(group);
+			}
+		}
+		return groups;
 	}
 
 	public boolean checkFolderMatchesUserName(WebPageRequest inReq) {

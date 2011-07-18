@@ -83,29 +83,15 @@
 
 		<table class="people_table" id="people_table">
 
+			#foreach($group in $groups)
 			<tr>
 				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
-					title="Team 1"></td>
-				<td class="user">Team 1</td>
-				<td class="userlevel"><a href="#" title="Remove User"><img
+					title="$group.name"></td>
+				<td class="user">$group.name</td>
+				<td class="userlevel"><a href="#" title="Remove Group"><img
 						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
 			</tr>
-
-			<tr>
-				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
-					title="Team 2"></td>
-				<td class="user">Team 2</td>
-				<td class="userlevel"><a href="#" title="Remove User"><img
-						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
-			</tr>
-
-			<tr>
-				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
-					title="Team 3"></td>
-				<td class="user">Team 3</td>
-				<td class="userlevel"><a href="#" title="Remove User"><img
-						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
-			</tr>
+			#end
 
 		</table>
 
