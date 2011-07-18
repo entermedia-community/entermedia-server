@@ -38,12 +38,12 @@
 
 	#if( $cell.importstatus && $cell.importstatus == "uploading" )
 		<div class="miniassetstatus" assetid="$cell.id">
-		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${hit.id}",$context)
+		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${cell.id}",$context)
 		</div>
 	
 	#elseif( !$cell.importstatus || $cell.importstatus != "complete" )
 	
-		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=${hit.id}",$context)
+		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=${cell.id}",$context)
 		
 	#elseif( $cell.previewstatus && $cell.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($cell.fileformat))
