@@ -134,7 +134,7 @@
 			<fileset dir="${workdir}/WEB-INF/lib"/>
 		</copy>
 
-		<touch file="web.xml"/>
+		
 		<delete dir="${build}"/>
 
 	</target>
