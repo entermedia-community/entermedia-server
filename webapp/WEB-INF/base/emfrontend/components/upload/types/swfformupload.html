@@ -57,8 +57,7 @@
 				upload_error_handler : uploadError,
 				upload_success_handler : uploadSuccess,
 				upload_complete_handler : uploadComplete,
-				queue_complete_handler : queueComplete	// Queue plugin event
-				*/
+				queue_complete_handler : queueComplete*/	// Queue plugin event
 			};
 
 			swfu = new SWFUpload(settings);
@@ -85,7 +84,8 @@
 						jQuery("#pickedfile").html(data);
 						swfu.startUpload(file.id);
 						//jQuery(".enabledwithpick").css("visibility","visible");
-					});		
+					});	
+				jQuery(".emshowuploadform").css("visibility","visible");
 			}
 			catch (ex) 
 			{
@@ -99,8 +99,8 @@
 		{
 			try 
 			{
-				var progress = Math.ceil((bytesLoaded / bytesTotal) * 150);
-				jQuery("#progress" + file.id + " .emuploadprogress").width(progress);
+				var progress = Math.ceil((bytesLoaded / bytesTotal) * 375);
+				jQuery(".emuploadprogressform").width(progress);
 			} 
 			catch (ex) 
 			{
@@ -124,8 +124,7 @@
 				}	
 				else
 				{
-					jQuery(".emshowupload").css("visibility","visible");
-	     			jQuery("#submitbutton").html("Uploading..."); //TODO: Replace with cancel link
+					jQuery("#submitbutton").html("Uploading..."); //TODO: Replace with cancel link
 				}
 				     		
 	     }
@@ -136,9 +135,7 @@
 					var html = '<input type="hidden" name="' + file.id + '.temppath" value="' + serverData + '"' + '/>'; 
 					//html = html + '\n<input type="hidden" name="assettype.value" value="' + serverData + '"' + '/>'; 
 					jQuery("#temppathholder" + file.id ).append(html);
-					jQuery("#progress" + file.id).parent().html('<img align="center" src="$home/system/images/toolbar/check.gif" />');
-					
-					//add .class for progress indicators
+					jQuery("#checkbox").css("visibility","visible");
 				} 
 				catch (ex)
 				{
@@ -163,19 +160,27 @@
 				<table width="500">
 				<tr>
 				<td>
-				<div id="pickedfile"><input size="50" name="null" /></div>
+				<div id="pickedfile"><input size="40" name="null" /></div>
 				</td>
 				<td>
 					<div id="spanButtonPlaceHolder" ></div>	
 				</td>
 				</tr></table>
 			</div>
-			<br/><br/>
-
+			
+			<div class="emshowuploadform" style="float:left;">
+				<div id="checkbox" style="float:right;width:14px;"><img align="center" src="$home/system/images/toolbar/check.gif" /></div>
+				<div class="emuploadprogresscontainerform" id="progress">
+					<div class="emuploadprogressform"></div>
+				</div>
+				
+			</div>
+			<br/>
+			
 			<h2>[[Caption]]</h2>
 			<input type="hidden" name="field" value="caption"/>
 			<input type="text" name="caption.value" style="width: 320px;" />
-			<br/><br/>
+			<br/>
 
 			<h2>[[Title]]</h2>
 			<input type="hidden" name="field" value="caption"/>
@@ -194,12 +199,12 @@
 				<option >KFC Team 72</option>
 			</select>
 			<br/><br/>
-
+			
 		</td>
 		</tr>
 		</table>
 		
-		
+			
 			<div id="submitbutton" style="margin: auto; width: 200px;">
 				<ul class="embuttons">
 					<li><a href="#" onClick="showProgressAndSubmit(); return false;"><span>Upload</span></a></li>
