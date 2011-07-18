@@ -5,16 +5,29 @@
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
 		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
 		<br/><br/>
-		<h2>[[Add a Caption]]</h2>
-		<input type="hidden" name="field" value="caption"/>
-		<input type="text" name="caption.value" style="width: 320px;" />
-		<br/><br/>
-		$pages.include("$apphome/components/categories/picker.html",$context)
-		<h2>[[Extra Keywords]]</h2>
-		<input type="hidden" name="field" value="keywords"/>
-		<input type="text" name="keywords.value" style="width: 320px;" />
-		<br/><br/>
-				<input type="checkbox" name="unzip" value="true" checked > [[Unzip on server]]
+		
+<h2>[[Caption]]</h2>
+			<input type="hidden" name="field" value="caption"/>
+			<input type="text" name="caption.value" style="width: 320px;" />
+			<br/><br/>
+
+			<h2>[[Title]]</h2>
+			<input type="hidden" name="field" value="caption"/>
+			<input type="text" name="caption.value" style="width: 320px;" />
+			<br/><br/>
+
+			<h2>[[Add Tags]]</h2>
+			<input type="hidden" name="field" value="keywords"/>
+			<input type="text" name="keywords.value" style="width: 320px;" />
+			<br/><br/>
+
+			<h2>[[Choose team]]</h2>
+			<input type="hidden" name="field" value="team"/>
+			<select name="team.value" style="width:240px;" >
+				<option > </option>
+				<option >KFC Team 72</option>
+			</select>
+			<br/><br/>
 
 <table><tr><td>
 <div class="embutton" >

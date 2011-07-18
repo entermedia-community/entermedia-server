@@ -45,16 +45,17 @@
 		<table class="people_table" id="people_table">
 
 			<tr>
+			#set( $owner = ${userManager.getUser($asset.owner)} )
 				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
-					title="Christopher Burkey"></td>
-				<td class="user">${userManager.getUser($asset.owner)} #if ($user.id == $asset.owner) (you)#end</td>
+					title="$owner"></td>
+				<td class="user"> #if ($user.id == $asset.owner) (you)#end</td>
 				<td class="userlevel">Is Owner</td>
 			</tr>
-			#foreach($person in $peeples)
+			#foreach($person in $peoples)
 			<tr>
 				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
-					title="Don Livanec"></td>
-				<td class="user">Don Livanec</td>
+					title="$person"></td>
+				<td class="user">$person</td>
 				<td class="userlevel"><a href="#" title="Remove User"><img
 						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
 			</tr>

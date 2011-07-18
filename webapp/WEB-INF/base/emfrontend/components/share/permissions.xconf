@@ -1,3 +1,4 @@
 <page>
 	<style id="assetpermissions" href="${themeprefix}/styles/pages/permissions.css" />
+	<path-action name="AssetControlModule.listAssetViewPermissions" />
 </page>

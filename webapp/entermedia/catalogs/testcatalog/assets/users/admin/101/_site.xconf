@@ -1,0 +1,9 @@
+<page>
+
+<permission name="viewasset">
+	<or>
+		<user name="admin" />
+	</or>
+</permission>
+
+</page>
