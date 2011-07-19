@@ -74,9 +74,6 @@ uiload = function() {
 		{
 			theinput.autocomplete({
 					source:  '$apphome/components/autocomplete/addmygroups.txt',
-					select: function(event, ui) {
-	                    alert(ui.item.value);
-					}
 			});
 		}
 	});
