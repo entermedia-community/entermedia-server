@@ -1,6 +1,7 @@
 package org.openedit.entermedia.modules;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -96,6 +97,56 @@ public class AutoCompleteModule extends BaseMediaModule
 		query.addStartsWith("email", searchString);
 		query.addStartsWith("lastname", searchString);
 		query.addStartsWith("firstname", searchString);
+		
+		HitTracker hits = userSearcher.cachedSearch(inReq, query);
+		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+		{
+			inReq.setCancelActions(true);
+		}
+		inReq.putPageValue("suggestions", hits);
+		return hits;
+	}
+	
+	public HitTracker myGroupUsersSuggestions(WebPageRequest inReq)
+	{
+		User currentUser = inReq.getUser();
+		Collection groups = currentUser.getGroups();
+		HashSet<String> ids = new HashSet<String>();
+		for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
+			Group group = (Group) iterator.next();
+			Collection users = getUserManager().getUsersInGroup(group);
+			for (Iterator iterator2 = users.iterator(); iterator2.hasNext();) {
+				User user = (User) iterator2.next();
+				ids.add(user.getId());
+			}
+		}
+		
+		StringBuffer groupuserids = new StringBuffer();
+		for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
+			String id = (String) iterator.next();
+			if(iterator.hasNext())
+			{
+				groupuserids.append(id + " ");
+			}
+			else
+			{
+				groupuserids.append(id);
+			}
+		}
+		
+		
+		Searcher userSearcher = getSearcherManager().getSearcher("system", "user");
+		SearchQuery innerquery = userSearcher.createSearchQuery();
+		innerquery.setAndTogether(false);
+		String searchString = inReq.getRequestParameter("term");
+		innerquery.addStartsWith("id", searchString);
+		innerquery.addStartsWith("email", searchString);
+		innerquery.addStartsWith("lastName", searchString);
+		innerquery.addStartsWith("firstName", searchString);
+		SearchQuery query = userSearcher.createSearchQuery();
+		query.setAndTogether(true);
+		query.addChildQuery(innerquery);
+		query.addOrsGroup("id", groupuserids.toString());
 		
 		HitTracker hits = userSearcher.cachedSearch(inReq, query);
 		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
