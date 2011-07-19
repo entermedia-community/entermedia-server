@@ -55,9 +55,8 @@ uiload = function() {
 				var theinput = jQuery(this);
 				if( theinput && theinput.autocomplete )
 				{
-					theinput.autocomplete('$apphome/components/autocomplete/addmygroupusers.txt', {
-						selectFirst: false,
-						formatResult:formatHitCountResult
+					theinput.autocomplete({
+						source: '$apphome/components/autocomplete/addmygroupusers.txt'
 					});
 				}
 			});
@@ -67,9 +66,8 @@ uiload = function() {
 		var theinput = jQuery(this);
 		if( theinput && theinput.autocomplete )
 		{
-			theinput.autocomplete('$apphome/components/autocomplete/addmygroups.txt', {
-				selectFirst: false,
-				formatResult:formatHitCountResult
+			theinput.autocomplete({
+					source:  '$apphome/components/autocomplete/addmygroups.txt', {
 			});
 		}
 	});

@@ -92,7 +92,7 @@ public class AutoCompleteModule extends BaseMediaModule
 		Searcher userSearcher = getSearcherManager().getSearcher("system", "user");
 		SearchQuery query = userSearcher.createSearchQuery();
 		query.setAndTogether(false);
-		String searchString = inReq.getRequestParameter("q");
+		String searchString = inReq.getRequestParameter("term");
 		query.addStartsWith("id", searchString);
 		query.addStartsWith("email", searchString);
 		query.addStartsWith("lastname", searchString);
