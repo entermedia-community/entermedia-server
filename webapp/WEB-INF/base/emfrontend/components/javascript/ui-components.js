@@ -64,10 +64,19 @@ uiload = function() {
 	jQuery(".addmygroups").livequery( function() 
 	{
 		var theinput = jQuery(this);
+		/*var valuesArray = [
+		                   {label: 'New York', value: 1},
+		                   {label: 'Warsaw', value: 2},
+		                   {label: 'Moscow', value: 3},
+		                   {label: 'London', value: 4}
+		               ];*/
 		if( theinput && theinput.autocomplete )
 		{
 			theinput.autocomplete({
-					source:  '$apphome/components/autocomplete/addmygroups.txt', {
+					source:  '$apphome/components/autocomplete/addmygroups.txt',
+					select: function(event, ui) {
+	                    alert(ui.item.value);
+					}
 			});
 		}
 	});

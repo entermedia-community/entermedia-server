@@ -1,8 +1,7 @@
 package org.openedit.entermedia.modules;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,7 +13,7 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.modules.BaseModule;
+import com.openedit.users.Group;
 import com.openedit.users.User;
 
 public class AutoCompleteModule extends BaseMediaModule
@@ -99,6 +98,40 @@ public class AutoCompleteModule extends BaseMediaModule
 		query.addStartsWith("firstname", searchString);
 		
 		HitTracker hits = userSearcher.cachedSearch(inReq, query);
+		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+		{
+			inReq.setCancelActions(true);
+		}
+		inReq.putPageValue("suggestions", hits);
+		return hits;
+	}
+	
+	public HitTracker myGroupSuggestions(WebPageRequest inReq)
+	{
+		User currentUser = inReq.getUser();
+		Collection groups = currentUser.getGroups();
+		StringBuffer groupids = new StringBuffer();
+		for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
+			Group group = (Group) iterator.next();
+			if(iterator.hasNext())
+			{
+				groupids.append(group.getId() + " ");
+			}
+			else
+			{
+				groupids.append(group.getId());
+			}
+		}
+		
+		Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
+		SearchQuery query = groupSearcher.createSearchQuery();
+		query.setAndTogether(false);
+		String searchString = inReq.getRequestParameter("term");
+		query.addStartsWith("name", searchString);
+		query.addOrsGroup("id", groupids.toString());
+		query.setAndTogether(true);
+		
+		HitTracker hits = groupSearcher.cachedSearch(inReq, query);
 		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
 		{
 			inReq.setCancelActions(true);
