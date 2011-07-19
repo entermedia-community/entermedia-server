@@ -1,6 +1,6 @@
 #set( $q = $searchstring)
 [
 #foreach ($res in $suggestions)
-{"label": "$res.get('lastName'), $res.get('firstName')", "value": "$res.get('id')"},
+{"label": "$res.get('lastName'), $res.get('firstName')", "value": "$res.get('id')", "display": "$res.get('firstName') $res.get('lastName')"},
 #end
 ]

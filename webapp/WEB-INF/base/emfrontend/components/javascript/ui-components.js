@@ -56,7 +56,14 @@ uiload = function() {
 				if( theinput && theinput.autocomplete )
 				{
 					theinput.autocomplete({
-						source: '$apphome/components/autocomplete/addmygroupusers.txt'
+						source: '$apphome/components/autocomplete/addmygroupusers.txt',
+						//select: function(event, ui) {
+							//set input that's just for display purposes
+						//	jQuery(".addmygroupusers").val(ui.item.display);
+							//set a hidden input that's actually used when the form is submitted
+						//	jQuery("#hiddenaddmygroupusers").val(ui.item.value);
+						//	return false;
+						//}
 					});
 				}
 			});
@@ -64,16 +71,17 @@ uiload = function() {
 	jQuery(".addmygroups").livequery( function() 
 	{
 		var theinput = jQuery(this);
-		/*var valuesArray = [
-		                   {label: 'New York', value: 1},
-		                   {label: 'Warsaw', value: 2},
-		                   {label: 'Moscow', value: 3},
-		                   {label: 'London', value: 4}
-		               ];*/
 		if( theinput && theinput.autocomplete )
 		{
 			theinput.autocomplete({
 					source:  '$apphome/components/autocomplete/addmygroups.txt',
+					//select: function(event, ui) {
+						//set input that's just for display purposes
+					//	jQuery(".addmygroups").val(ui.item.label);
+						//set a hidden input that's actually used when the form is submitted
+					//	jQuery("#hiddenaddmygroups").val(ui.item.value);
+					//	return false;
+					//}
 			});
 		}
 	});
