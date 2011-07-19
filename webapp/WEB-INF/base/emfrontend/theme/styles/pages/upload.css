@@ -192,6 +192,24 @@ a.progressCancel:hover {
 	
 }
 
+.emshowuploadform
+{
+	visibility: hidden;
+	width: 400px;
+	height: 20px;
+}
+.emuploadprogresscontainerform
+{
+	border: 1px solid #543432;
+	width: 375px;
+	height: 10px;
+}
+.emuploadprogressform
+{
+	width:0px;height: 10px;background-color:#666666;
+	
+}
+
 
 #emfilelist tr td
 {
