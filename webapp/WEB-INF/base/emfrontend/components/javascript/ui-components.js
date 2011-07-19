@@ -1,3 +1,8 @@
+formatHitCountResult = function(inRow)
+{
+	return inRow[1];
+}
+
 uiload = function() {
 	if( jQuery.fn.selectmenu )
 	{
@@ -44,6 +49,30 @@ uiload = function() {
 				}
 			}
 		);
+	
+	jQuery(".addmygroupusers").livequery( function() 
+			{
+				var theinput = jQuery(this);
+				if( theinput && theinput.autocomplete )
+				{
+					theinput.autocomplete('$apphome/components/autocomplete/addmygroupusers.txt', {
+						selectFirst: false,
+						formatResult:formatHitCountResult
+					});
+				}
+			});
+
+	jQuery(".addmygroups").livequery( function() 
+	{
+		var theinput = jQuery(this);
+		if( theinput && theinput.autocomplete )
+		{
+			theinput.autocomplete('$apphome/components/autocomplete/addmygroups.txt', {
+				selectFirst: false,
+				formatResult:formatHitCountResult
+			});
+		}
+	});
 }
 
 jQuery(document).ready(function() 
