@@ -57,13 +57,13 @@ uiload = function() {
 				{
 					theinput.autocomplete({
 						source: '$apphome/components/autocomplete/addmygroupusers.txt',
-						//select: function(event, ui) {
+						select: function(event, ui) {
 							//set input that's just for display purposes
-						//	jQuery(".addmygroupusers").val(ui.item.display);
+							jQuery(".addmygroupusers").val(ui.item.display);
 							//set a hidden input that's actually used when the form is submitted
-						//	jQuery("#hiddenaddmygroupusers").val(ui.item.value);
-						//	return false;
-						//}
+							jQuery("#hiddenaddmygroupusers").val(ui.item.value);
+							return false;
+						}
 					});
 				}
 			});
@@ -75,13 +75,13 @@ uiload = function() {
 		{
 			theinput.autocomplete({
 					source:  '$apphome/components/autocomplete/addmygroups.txt',
-					//select: function(event, ui) {
+					select: function(event, ui) {
 						//set input that's just for display purposes
-					//	jQuery(".addmygroups").val(ui.item.label);
+						jQuery(".addmygroups").val(ui.item.label);
 						//set a hidden input that's actually used when the form is submitted
-					//	jQuery("#hiddenaddmygroups").val(ui.item.value);
-					//	return false;
-					//}
+						jQuery("#hiddenaddmygroups").val(ui.item.value);
+						return false;
+					}
 			});
 		}
 	});
