@@ -58,7 +58,6 @@ public interface MediaCreator
 
 	ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOputputype, String inSourcePath);
 	
-	ConvertResult updateStatus(MediaArchive inArchive, Data inTask);
-
+	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions );
 	
 }

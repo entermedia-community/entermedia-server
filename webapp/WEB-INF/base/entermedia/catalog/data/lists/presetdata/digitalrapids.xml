@@ -1,0 +1,3 @@
+<properties>
+  <preset id="preview" inputfolderholding="/tmp/holding" outputfoldercomplete="/tmp/complete"  outputfilenamepostfix="LOW.mp4" >Preview</preset>
+</properties>

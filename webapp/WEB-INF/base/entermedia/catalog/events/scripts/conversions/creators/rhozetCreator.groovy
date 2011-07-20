@@ -121,8 +121,8 @@ class rhozetCreator extends BaseCreator {
 
 		return result;
 	}
-
-	public ConvertResult updateStatus(MediaArchive inArchive, Data inTask) {
+	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions )
+	{
 		ConvertResult result = new ConvertResult();
 
 		String jobGuid = inTask.get("externalid");

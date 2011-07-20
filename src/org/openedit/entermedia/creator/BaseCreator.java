@@ -300,8 +300,8 @@ public abstract class BaseCreator implements MediaCreator
 		getPageManager().clearCache(inXConf);
 	}
   
-	
-	public ConvertResult updateStatus(MediaArchive inArchive, Data inTask) {
+	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions )
+	{
 		ConvertResult status = new ConvertResult();
 		status.setComplete(true);
 		status.setOk(true);

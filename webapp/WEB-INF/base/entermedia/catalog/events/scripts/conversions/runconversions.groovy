@@ -149,40 +149,42 @@ private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inP
 	
 	if (creator != null)
 	{
+		Map props = new HashMap();
+		String guid = inPreset.guid;
+		if( guid != null)
+		{
+			Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(catalogid, "presetdata/${type}" );
+			Data presetdata = presetdatasearcher.searchById(guid);
+			//copy over the preset properties..
+			props.put("guid", guid); //needed?
+			if( presetdata != null && presetdata.getProperties() != null)
+			{
+				props.putAll(presetdata.getProperties());
+			}
+		}
+		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
+		
+		//inStructions.setOutputExtension(inPreset.get("extension"));
+		//log.info( inStructions.getProperty("guid") );
+		Asset asset = inArchive.getAssetBySourcePath(inSourcepath);
+		if(asset == null)
+		{
+			return new ConvertResult();
+		}
+		inStructions.setAssetSourcePath(asset.getSourcePath());
+		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
+		inStructions.setOutputExtension(extension);
+
 		if("new".equals(status) || "retry".equals(status))
 		{
-			Map props = new HashMap();
-			String guid = inPreset.guid;
-			if( guid != null)
-			{
-				Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(catalogid, "presetdata/${type}" );
-				Data presetdata = presetdatasearcher.searchById(guid);
-				//copy over the preset properties..
-				props.put("guid", guid); //needed?
-				if( presetdata != null && presetdata.getProperties() != null)
-				{
-					props.putAll(presetdata.getProperties());
-				}
-			}
-			ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
-			
-			//inStructions.setOutputExtension(inPreset.get("extension"));
-			//log.info( inStructions.getProperty("guid") );
-			Asset asset = inArchive.getAssetBySourcePath(inSourcepath);
-			if(asset == null){
-				return new ConvertResult();
-			}
-			inStructions.setAssetSourcePath(asset.getSourcePath());
 			String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
 			Page output = inArchive.getPageManager().getPage(outputpage);
-			String extension = PathUtilities.extractPageType(outputpage);
-			inStructions.setOutputExtension(extension);
 			log.info("Running Media type: ${type} on asset ${asset.getSourcePath()}" );
 			result = creator.convert(inArchive, asset, output, inStructions);
 		}
 		else if("submitted".equals(status))
 		{
-			result = creator.updateStatus(inArchive, inTask);
+			result = creator.updateStatus(inArchive, inTask, asset, inStructions);
 		}
 		else
 		{

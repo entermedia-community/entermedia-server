@@ -251,15 +251,5 @@ Here is a simple PCM audio format for low CPU devices
 		inStructions.setOutputPath(path.toString());
 		return path.toString();
 	}
-	public ConvertResult updateStatus(MediaArchive inArchive, Data inTask)
-	{
-		ConvertResult result = new ConvertResult();
-		result.setOk(true);
-		//result.setProperty("status", status);		
-		result.setComplete(false);
-		
-		return result;
-	}
-	
 	
 }
