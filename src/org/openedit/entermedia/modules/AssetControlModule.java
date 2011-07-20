@@ -85,7 +85,7 @@ public class AssetControlModule extends BaseMediaModule {
 		return users;
 	}
 
-	protected List<User> findUsersByName(List<String> inUserNames)
+	public List<User> findUsersByName(List<String> inUserNames)
 	{
 		List<User> users = new ArrayList<User>();
 		UserManager mgr = getUserManager();
