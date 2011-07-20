@@ -33,6 +33,12 @@
 					jQuery("#permissions").html(result);
 		});
 	}
+	addAll = function(userid){
+		jQuery.get("$home$apphome/components/share/addall.html?assetid=$asset.id", 
+				function(result) {
+					jQuery("#permissions").html(result);
+		});
+	}
 </script>
 
 <div id="permissions">
@@ -50,6 +56,9 @@
 		<img src="${themeprefix}/images/gfx/lock_icon.png" style="padding-right: 15px;">Private
 		- Only the people listed below can access
 
+	</div>
+	<div id="all_container">
+		<span class="all_text" style="float:left;">Allow All Teams</span><input type="checkbox" id="allowall" style="float:left;" onclick="addAll(); return false;"/>
 	</div>
 
 	<div id="people_container">

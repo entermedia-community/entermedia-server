@@ -1,6 +1,7 @@
 package org.openedit.entermedia.modules;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.management.openmbean.OpenDataException;
@@ -176,5 +177,31 @@ public class AssetControlModule extends BaseMediaModule {
 		Asset asset = getAsset(inReq);
 		String userid = inReq.getRequestParameter("userid");
 		archive.getAssetSecurityArchive().revokeViewAccess(archive, userid, asset);
+	}
+	
+	public void grantAllGroups(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		//get all of the user's groups
+		User user = inReq.getUser();
+		Collection<Group> groups = user.getGroups();
+		//groups = getUserManager().getGroups();
+		for (Group group : groups) {
+			archive.getAssetSecurityArchive().grantGroupViewAccess(archive, group.getId(), asset);
+		}
+	}
+	
+	public void revokeAllGroups(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		//get all of the user's groups
+		User user = inReq.getUser();
+		Collection<Group> groups = user.getGroups();
+		//groups = getUserManager().getGroups();
+		for (Group group : groups) {
+			archive.getAssetSecurityArchive().revokeGroupViewAccess(archive, group.getId(), asset);
+		}
 	}
 }
