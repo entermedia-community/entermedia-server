@@ -63,15 +63,5 @@ public class originalCreator extends BaseCreator implements MediaCreator
 		inStructions.setOutputPath(inputpage.getPath());
 		return inStructions.getOutputPath();
 	}
-	public ConvertResult updateStatus(MediaArchive inArchive, Data inTask)
-	{
-		ConvertResult result = new ConvertResult();
-		result.setOk(true);
-		//result.setProperty("status", status);		
-		result.setComplete(false);
-		
-		return result;
-	}
-	
 	
 }

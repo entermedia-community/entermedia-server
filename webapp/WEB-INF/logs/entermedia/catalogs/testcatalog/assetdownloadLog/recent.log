@@ -1,0 +1,2 @@
+<event operation="download" user="admin" result="success" sourcepath="users/admin/101asf_to_mpeg-1.mpg" filename="101asf_to_mpeg-1.mpg" catalogid="entermedia/catalogs/testcatalog" date="2011-07-14 16:10:01 -0400" indexed="false"/>
+<event operation="download" user="admin" result="success" sourcepath="users/admin/CHAPTER_1.pdfCHAPTER_1.pdf" filename="CHAPTER_1.pdfCHAPTER_1.pdf" catalogid="entermedia/catalogs/testcatalog" date="2011-07-14 16:10:02 -0400" indexed="false"/>
