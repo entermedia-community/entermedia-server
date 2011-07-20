@@ -158,6 +158,130 @@ public class AssetSecurityArchive
 			}
 
 	}
+	
+	private void revokeUserViewAccess(List toremove, Filter inRoot, String inUserName)
+	{
+			if (inRoot instanceof UserFilter)
+			{
+				UserFilter filter = (UserFilter)inRoot;
+				if(filter.getUsername().equals(inUserName))
+				{
+					toremove.add(filter);
+				}
+			}
+			else if(inRoot.getFilters() == null)
+			{
+				return;
+			}
+			else
+			{
+				Filter[] filters = inRoot.getFilters(); //top level is a container like a list of groups?
+				ArrayList<Filter> remove = new ArrayList<Filter>();
+				for (int i = 0; i < filters.length; i++)
+				{
+					Filter filter = filters[i];
+					revokeUserViewAccess(remove, filter, inUserName);
+				}
+				for (Filter filter : remove)
+				{
+					inRoot.removeFilter(filter);
+				}
+			}
+	}
+	
+	private void revokeGroupViewAccess(List toremove, Filter inRoot, String inGroupName)
+	{
+			if (inRoot instanceof GroupFilter)
+			{
+				GroupFilter filter = (GroupFilter)inRoot;
+				if(filter.getGroupId().equals(inGroupName))
+				{
+					toremove.add(filter);
+				}
+			}
+			else if(inRoot.getFilters() == null)
+			{
+				return;
+			}
+			else
+			{
+				Filter[] filters = inRoot.getFilters(); //top level is a container like a list of groups?
+				ArrayList<Filter> remove = new ArrayList<Filter>();
+				for (int i = 0; i < filters.length; i++)
+				{
+					Filter filter = filters[i];
+					revokeGroupViewAccess(remove, filter, inGroupName);
+				}
+				for (Filter filter : remove)
+				{
+					inRoot.removeFilter(filter);
+				}
+			}
+	}
+	
+	public void revokeViewAccess(MediaArchive inArchive, String username, Asset inAsset)
+	{
+		String path = inAsset.getSourcePath();
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/");
+		Permission permission = page.getPermission("viewasset");
+		
+		if (permission != null && permission.getRootFilter() != null)
+		{
+			ArrayList<Filter> remove = new ArrayList<Filter>();
+			revokeUserViewAccess(remove, permission.getRootFilter(), username);
+			for (Filter filter : remove)
+			{
+				permission.getRootFilter().removeFilter(filter);
+			}
+		}
+		getPageManager().getPageSettingsManager().saveSetting(page.getPageSettings());
+		inArchive.saveAsset(inAsset, null);
+	}
+	
+	public void revokeGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset)
+	{
+		String path = inAsset.getSourcePath();
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/");
+		Permission permission = page.getPermission("viewasset");
+		
+		if (permission != null && permission.getRootFilter() != null)
+		{
+			ArrayList<Filter> remove = new ArrayList<Filter>();
+			revokeGroupViewAccess(remove, permission.getRootFilter(), groupname);
+			for (Filter filter : remove)
+			{
+				permission.getRootFilter().removeFilter(filter);
+			}
+		}
+		getPageManager().getPageSettingsManager().saveSetting(page.getPageSettings());
+		inArchive.saveAsset(inAsset, null);
+	}
+	
+	public void grantViewAccess(MediaArchive inArchive, String username, Asset inAsset) throws OpenEditException
+	{
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/";
+
+		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
+		// )}.html
+		Page page = getPageManager().getPage(path);
+
+		grantAccess(inArchive, username, page, "viewasset");
+		// update the index
+		inArchive.saveAsset(inAsset, null);
+	}
+	
+	public void grantGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset) throws OpenEditException
+	{
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/";
+
+		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
+		// )}.html
+		Page page = getPageManager().getPage(path);
+
+		grantGroupAccess(inArchive, groupname, page, "viewasset");
+		// update the index
+		inArchive.saveAsset(inAsset, null);
+	}
 
 	public void grantAccess(MediaArchive inArchive, String username, Asset inAsset, String inView) throws OpenEditException
 	{
@@ -239,39 +363,68 @@ public class AssetSecurityArchive
 
 		getPageManager().getPageSettingsManager().saveSetting(inPage.getPageSettings());
 	}
+	
+	public void setupPermission(PageSettings inSettings, Permission inPermission, String inPermissionString)
+	{
+		Filter rootFilter = inPermission.getRootFilter();
+		if (rootFilter == null || rootFilter instanceof BooleanFilter)
+		{
+			rootFilter = new OrFilter();
+			inPermission.setRootFilter(rootFilter);
+		}
+		else if (!rootFilter.getType().equalsIgnoreCase("or"))
+		{
+			inPermission.setRootFilter(new OrFilter());
+			inPermission.getRootFilter().addFilter(rootFilter); //the old value to the OR list
+		}
+	}
+	
+	public Permission createPermission(PageSettings inSettings, String inPermissionString)
+	{
+		Permission per = new Permission();
+		per.setName(inPermissionString);
+		if( per != null && per.getRootFilter() != null)
+		{
+			per.setRootFilter(per.getRootFilter().copy(inPermissionString));
+		}
+		per.setPath(inSettings.getPath());
+		inSettings.addPermission(per);
+		return per;
+	}
 
 	
 	public void grantAccess(MediaArchive inArchive, String inUserName, Page inPage, String inPermission)
 	{
 		PageSettings settings = inPage.getPageSettings();
 		Permission permission = settings.getPermission(inPermission);
+		if( permission == null || !permission.getPath().equals(settings.getPath()))
+		{
+			permission = createPermission(settings, inPermission);
+		}
+		setupPermission(settings, permission, inPermission);
+		
+		UserFilter filter = new UserFilter();
+		filter.setUsername(inUserName);
+		permission.getRootFilter().addFilter(filter);
+		getPageManager().getPageSettingsManager().saveSetting(inPage.getPageSettings());
+		// update the index
+		// saveAsset(inAsset);
+
+	}
+	
+	public void grantGroupAccess(MediaArchive inArchive, String inGroupName, Page inPage, String inPermission)
+	{
+		PageSettings settings = inPage.getPageSettings();
+		Permission permission = settings.getPermission(inPermission);
 
 		if( permission == null || !permission.getPath().equals(settings.getPath()))
 		{
-			Permission per = new Permission();
-			per.setName(inPermission);
-			if( permission != null && permission.getRootFilter() != null)
-			{
-				per.setRootFilter(permission.getRootFilter().copy(inPermission));
-			}
-			per.setPath(settings.getPath());
-			permission = per;
-			settings.addPermission(per);
+			permission = createPermission(settings, inPermission);
 		}
-
-		Filter rootFilter = permission.getRootFilter();
-		if (rootFilter == null || rootFilter instanceof BooleanFilter)
-		{
-			rootFilter = new OrFilter();
-			permission.setRootFilter(rootFilter);
-		}
-		else if (!rootFilter.getType().equalsIgnoreCase("or"))
-		{
-			permission.setRootFilter(new OrFilter());
-			permission.getRootFilter().addFilter(rootFilter); //the old value to the OR list
-		}
-		UserFilter filter = new UserFilter();
-		filter.setUsername(inUserName);
+		setupPermission(settings, permission, inPermission);
+		
+		GroupFilter filter = new GroupFilter();
+		filter.setGroupId(inGroupName);
 		permission.getRootFilter().addFilter(filter);
 		getPageManager().getPageSettingsManager().saveSetting(inPage.getPageSettings());
 		// update the index

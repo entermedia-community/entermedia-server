@@ -80,7 +80,7 @@ public class AssetControlModule extends BaseMediaModule {
 		List groupids = mediaArchive.getAssetSecurityArchive().getAccessList(mediaArchive, asset);
 		List<Group> groups = findGroupByIds(groupids);
 		
-		inReq.putPageValue("groups", users);
+		inReq.putPageValue("groups", groups);
 
 		return users;
 	}
@@ -145,5 +145,36 @@ public class AssetControlModule extends BaseMediaModule {
 					+ path);
 		}
 	}
+	
+	public void grantGroupAccess(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		String groupid = inReq.getRequestParameter("groupid");
+		archive.getAssetSecurityArchive().grantGroupViewAccess(archive, groupid, asset);
+	}
+	
+	public void grantUserAccess(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		String userid = inReq.getRequestParameter("userid");
+		archive.getAssetSecurityArchive().grantViewAccess(archive, userid, asset);
+	}
 
+	public void revokeGroupAccess(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		String groupid = inReq.getRequestParameter("groupid");
+		archive.getAssetSecurityArchive().revokeGroupViewAccess(archive, groupid, asset);
+	}
+	
+	public void revokeUserAccess(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		String userid = inReq.getRequestParameter("userid");
+		archive.getAssetSecurityArchive().revokeViewAccess(archive, userid, asset);
+	}
 }

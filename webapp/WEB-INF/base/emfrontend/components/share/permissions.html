@@ -20,7 +20,22 @@
 
 <!-- </form> -->
 
+<script type="text/javascript" charset="utf-8">
+	removePerson = function(userid){
+		jQuery.get("$home$apphome/components/share/removeperson.html?assetid=$asset.id&userid=" + userid, 
+				function(result) {
+					jQuery("#permissions").html(result);
+		});
+	}
+	removeGroup = function(groupid){
+		jQuery.get("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid, 
+				function(result) {
+					jQuery("#permissions").html(result);
+		});
+	}
+</script>
 
+<div id="permissions">
 <div id="sharing-wrapper" style="padding: 15px;">
 
 
@@ -56,7 +71,7 @@
 				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
 					title="$person"></td>
 				<td class="user">$person</td>
-				<td class="userlevel"><a href="#" title="Remove User"><img
+				<td class="userlevel"><a href="#" title="Remove User" onclick="removePerson('$person');return false;"><img
 						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
 			</tr>
 			#end
@@ -64,10 +79,9 @@
 
 
 		<div class="add_person_box">
-
 			<span class="add_person_label">Add People:</span> <br /> 
 			<input class="addmygroupusers"	name="add_people" type="text" />
-			<input id="hiddenaddmygroupusers" name="hiddenaddmygroupusers" type="hidden" />
+			<input id="hiddenaddmygroupusers" name="hiddenaddmygroupusers" type="hidden" targetdiv="permissions" postpath="$home$apphome/components/share/addperson.html?assetid=$asset.id&userid="/>
 		</div>
 
 
@@ -85,7 +99,7 @@
 				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
 					title="$group.name"></td>
 				<td class="user">$group.name</td>
-				<td class="userlevel"><a href="#" title="Remove Group"><img
+				<td class="userlevel"><a href="#" title="Remove Group" onclick="removeGroup('$group.id');return false;"><img
 						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
 			</tr>
 			#end
@@ -97,7 +111,7 @@
 
 			<span>Add Team:</span> <br /> 
 			<input class="addmygroups" name="add_team" type="text">
-			<input id="hiddenaddmygroups" name="hiddenaddmygroups" type="hidden">
+			<input id="hiddenaddmygroups" name="hiddenaddmygroups" type="hidden" targetdiv="permissions" postpath="$home$apphome/components/share/addgroup.html?assetid=$asset.id&groupid=">
 		</div>
 		<div class="bottom_mod">
 			<!-- MODAL WINDOW CLOSE -->
@@ -111,4 +125,5 @@
 
 
 
+</div>
 </div>

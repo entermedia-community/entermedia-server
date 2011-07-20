@@ -62,6 +62,12 @@ uiload = function() {
 							jQuery(".addmygroupusers").val(ui.item.display);
 							//set a hidden input that's actually used when the form is submitted
 							jQuery("#hiddenaddmygroupusers").val(ui.item.value);
+							var targetdiv = jQuery("#hiddenaddmygroupusers").attr("targetdiv");
+							var targeturl = jQuery("#hiddenaddmygroupusers").attr("postpath");
+							jQuery.get(targeturl + ui.item.value, 
+									function(result) {
+										jQuery("#" + targetdiv).html(result);
+							});
 							return false;
 						}
 					});
@@ -80,6 +86,12 @@ uiload = function() {
 						jQuery(".addmygroups").val(ui.item.label);
 						//set a hidden input that's actually used when the form is submitted
 						jQuery("#hiddenaddmygroups").val(ui.item.value);
+						var targetdiv = jQuery("#hiddenaddmygroups").attr("targetdiv");
+						var targeturl = jQuery("#hiddenaddmygroups").attr("postpath");
+						jQuery.get(targeturl + ui.item.value, 
+								function(result) {
+									jQuery("#" + targetdiv).html(result);
+						});
 						return false;
 					}
 			});
