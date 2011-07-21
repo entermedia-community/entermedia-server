@@ -37,7 +37,7 @@ public void init()
 	if(assetid != null){
 		query.addExact("assetid", assetid);
 	}
-	query.addOrsGroup("status","pending retry");
+	query.addOrsGroup("status","new pending retry");
 	HitTracker tracker = queuesearcher.search(query);
 	log.info("publishing " + tracker.size() + " assets");
 	if( tracker.size() > 0)

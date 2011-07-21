@@ -76,6 +76,13 @@
 			<group name="uploaders"/>
 		</or>
 	</permission>
+	<permission name="converthistory">
+		<or>
+			<group name="administrators"/>
+			<group name="uploaders"/>
+		</or>
+	</permission>
+
 	<permission name="viewassetedit">
 		<or>
 			<group name="administrators"/>

@@ -19,7 +19,7 @@
 			<a href="/${catalogid}/detailviewer/historyedits/index.html"  id="viewassetedithistory" text="Data Edit History" />
 			<a href="/${catalogid}/detailviewer/historypreviews/index.html"  id="viewassetpreviewhistory" text="Preview History" />
 			<a href="/${catalogid}/detailviewer/historyorders/index.html"  id="viewassetorderhistory" text="Order History" />
-					    	
+			<a href="/${catalogid}/detailviewer/converthistory/index.html"  id="converthistory" text="Conversion History" />
 			<a href="/${catalogid}/detailviewer/delete/index.html"  id="deleteasset" userdata="multi" text="Remove Asset" />
 <!-- 
 			<a href="/${catalogid}/detailviewer/edithistory/index.html"  id="viewassetedithistory" text="Edit History" />	
