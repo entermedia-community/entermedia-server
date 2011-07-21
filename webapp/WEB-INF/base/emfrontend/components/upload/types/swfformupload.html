@@ -136,6 +136,7 @@
 					//html = html + '\n<input type="hidden" name="assettype.value" value="' + serverData + '"' + '/>'; 
 					jQuery("#temppathholder" + file.id ).append(html);
 					jQuery("#checkbox").css("visibility","visible");
+					jQuery("#submitbutton").css("visibility","visible");
 				} 
 				catch (ex)
 				{
@@ -205,7 +206,7 @@
 		</table>
 		
 			
-			<div id="submitbutton" style="margin: auto; width: 200px;">
+			<div id="submitbutton" style="margin: auto; width: 200px;visibility:hidden;">
 				<ul class="embuttons">
 					<li><a href="#" onClick="showProgressAndSubmit(); return false;"><span>Upload</span></a></li>
 				</ul>
