@@ -36,7 +36,7 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page converted, ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
-
+		http://uhfhdtvantenna.blogspot.com/
 		Page inputpage = inArchive.findOriginalMediaByType("video",inAsset);
 		if( inputpage == null || !inputpage.exists())
 		{
@@ -46,60 +46,63 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 			return result;
 		}
 		
-		if (!inStructions.isForce() && converted.exists() && converted.getContentItem().getLength() != 0)
-		{
-				result.setComplete(true);
-				result.setOk(true);
-				log.info("Generated file already existed: ${converted}");
-				return result;
-		}
-		
-		
-		String inputfolderholding = inStructions.getProperty("inputfolderholding");
-		if( inputfolderholding == null)
-		{
-			throw new OpenEditException("No inputfolderholding property set");
-		}
-		File folder = new File(inputfolderholding);
-		folder.mkdirs();
-		
-		String inputfile = inputfolderholding + "/" + inputpage.getName();
-		
-		FileOutputStream output = new FileOutputStream(inputfile);
-		InputStream inputstream  = inputpage.getInputStream();
-		try
-		{
-			getFileUtils().copyFiles(inputstream, output);
-		}
-		finally
-		{
-			getFileUtils().safeClose(inputstream);
-			getFileUtils().safeClose(output);
-		}
-		
-		//Now move the file from holding to input
-		String inputfolder = inStructions.getProperty("inputfolder");
-		if( inputfolder == null)
-		{
-			throw new OpenEditException("No inputfolder property set");
-		}
+            if (!inStructions.isForce() && converted.exists() && converted.getContentItem().getLength() != 0)
+            {
+                            result.setComplete(true);
+                            result.setOk(true);
+                            log.info("Generated file already existed: ${converted}");
+                            return result;
+            }
 
-		File infolder = new File(inputfolder);
-		infolder.mkdirs();
 
-		String finalinputfile = inputfolder + "/" +  inputpage.getName();
-		getFileUtils().move(inputfile, finalinputfile);
-		
-		result.setOk(true);
-		result.setComplete(false);
-		return result;
+            String inputfolderholding = inStructions.getProperty("inputfolderholding");
+            if( inputfolderholding == null)
+            {
+                    throw new OpenEditException("No inputfolderholding property set");
+            }
+            File folder = new File(inputfolderholding);
+            folder.mkdirs();
+
+            String outputholdingfile = inputfolderholding + "/" + inputpage.getName();
+
+            FileOutputStream output = new FileOutputStream(outputholdingfile);
+            InputStream inputstream  = inputpage.getInputStream();
+            try
+            {
+                    log.info("Copy file to : " +  outputholdingfile);
+                    getFileUtils().copyFiles(inputstream, output);
+            }
+            finally
+            {
+                    getFileUtils().safeClose(inputstream);
+                    getFileUtils().safeClose(output);
+            }
+
+            //Now move the file from holding to input
+            String inputfolder = inStructions.getProperty("inputfolder");
+            if( inputfolder == null)
+            {
+                    throw new OpenEditException("No inputfolder property set");
+            }
+
+            File infolder = new File(inputfolder);
+            infolder.mkdirs();
+
+            String finalinputfile = inputfolder + "/" +  inputpage.getName();
+            getFileUtils().move(outputholdingfile, finalinputfile);
+
+            result.setOk(true);
+            result.setComplete(false);
+            return result;
 	}
+	
+	
 	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions )
 	{
-		String completefolder = inStructions.getProperty("outputfoldercomplete");
+		String completefolder = inStructions.getProperty("outputfolder");
 		if( completefolder == null)
 		{
-			throw new OpenEditException("No outputfoldercomplete property set");
+			throw new OpenEditException("No outputfolder property set");
 		}
 		
 		String pagename = PathUtilities.extractPageName(inAsset.getName());
@@ -115,9 +118,22 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 			//TODO: use task variable for proxy filename
 			Page proxy = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated/" + inAsset.getSourcePath() + "/video.mp4");
 			log.info("moving proxy to " + proxy);
-			getFileUtils().move(tempname.getAbsolutePath(), proxy.getContentItem().getAbsolutePath() );
+			getFileUtils().move(new File( tempname.getAbsolutePath()), new File( proxy.getContentItem().getAbsolutePath() ) , true );
 			result.setComplete(true);
+			return result;
 		}
+		
+		//we got here so it's not complete, let's check if it's failed
+		String failfolder = inStructions.getProperty("outputfolderfailed");
+		File failedfile = new File(failfolder, inAsset.getName() );
+		if(failedfile.exists())
+		{
+			//uh, oh
+			result.setError("Digital Rapids put file in error folder: " + inAsset.getName());
+			result.setComplete(false);
+			result.setOk(false);
+		}
+		
 		return result;
 	}
 

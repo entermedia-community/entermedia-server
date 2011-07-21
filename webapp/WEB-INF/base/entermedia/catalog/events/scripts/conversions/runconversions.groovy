@@ -50,7 +50,18 @@ public void checkforTasks()
 			Data preset = presetsearcher.searchById(presetid);
 			if(preset != null)
 			{
-				ConvertResult result = doConversion(mediaarchive, realtask, preset, hit.get("sourcepath"));
+				ConvertResult result = null;
+				try
+				{
+					result = doConversion(mediaarchive, realtask, preset, hit.get("sourcepath"));
+				}
+				catch(Throwable e)
+				{
+					result = new ConvertResult();
+					result.setOk(false);
+					result.setError(e.toString());
+					log.error("Conversion Failed", e);
+				}
 				
 				if(result != null)
 				{

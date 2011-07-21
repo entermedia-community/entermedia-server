@@ -41,6 +41,11 @@ public class ScriptLogger extends Handler
 		log.error(inText);
 		//getLogs().add("error: " + inText);
 	}
+	public void error(Object inObject, Throwable inThrowable)
+	{
+		log.error(inObject, inThrowable);
+		//getLogs().add("error: " + inText);
+	}
 	public void add(Object inVal)
 	{
 		info(String.valueOf( inVal ) );
