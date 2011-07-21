@@ -716,6 +716,7 @@ public class AssetEditModule extends BaseMediaModule
 
 		archive.saveAssets(tracker, inReq.getUser());
 
+		
 		String hitsname = inReq.findValue("hitsname");
 		if (hitsname != null)
 		{
@@ -723,6 +724,12 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		inReq.putSessionValue(tracker.getSessionId(), tracker);
 		inReq.putPageValue(tracker.getHitsName(), tracker);
+		
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			archive.fireMediaEvent("assetuploaded",inReq.getUser(),asset);
+		}
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
@@ -753,6 +760,14 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		inReq.putSessionValue(tracker.getSessionId(), tracker);
 		inReq.putPageValue(tracker.getHitsName(), tracker);
+
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			archive.fireMediaEvent("assetuploaded",inReq.getUser(),asset);
+		}
+		
+		//This wont do anything for now since we already fire one for each asset
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
@@ -822,7 +837,6 @@ public class AssetEditModule extends BaseMediaModule
 		output.add(asset);
 		allids.add(asset.getId());
 		
-		archive.fireMediaEvent("assetuploaded",inReq.getUser(),asset);
 	}
 	
 	public void selectPrimaryAsset(WebPageRequest inReq)
