@@ -18,6 +18,8 @@
 	<permission id="viewassetdownloads" name="View Download Links" description="Show screen for custom links"/>
 	<permission id="viewassetedit" name="Media editor" description="Allow JPG crop and resize"/>
 	
+	<permission id="converthistory" name="Convert History" description="Show Convert History"/>
+	
 	<permission id="viewassetdownloadhistory" name="Download History" description="Show download history report"/>
 	<permission id="viewassetedithistory" name="Edit History" description="Show when edits where made"/>
 	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>

@@ -18,6 +18,7 @@ import com.openedit.OpenEditException
 import com.openedit.page.Page;
 import com.openedit.util.FileUtils;
 import org.openedit.Data;
+import com.openedit.util.PathUtilities;
 
 public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 {
@@ -45,6 +46,15 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 			return result;
 		}
 		
+		if (!inStructions.isForce() && converted.exists() && converted.getContentItem().getLength() != 0)
+		{
+				result.setComplete(true);
+				result.setOk(true);
+				log.info("Generated file already existed: ${converted}");
+				return result;
+		}
+		
+		
 		String inputfolderholding = inStructions.getProperty("inputfolderholding");
 		if( inputfolderholding == null)
 		{
@@ -53,7 +63,9 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 		File folder = new File(inputfolderholding);
 		folder.mkdirs();
 		
-		FileOutputStream output = new FileOutputStream(inputfolderholding + "/" + inputpage.getName() );
+		String inputfile = inputfolderholding + "/" + inputpage.getName();
+		
+		FileOutputStream output = new FileOutputStream(inputfile);
 		InputStream inputstream  = inputpage.getInputStream();
 		try
 		{
@@ -64,6 +76,20 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 			getFileUtils().safeClose(inputstream);
 			getFileUtils().safeClose(output);
 		}
+		
+		//Now move the file from holding to input
+		String inputfolder = inStructions.getProperty("inputfolder");
+		if( inputfolder == null)
+		{
+			throw new OpenEditException("No inputfolder property set");
+		}
+
+		File infolder = new File(inputfolder);
+		infolder.mkdirs();
+
+		String finalinputfile = inputfolder + "/" +  inputpage.getName();
+		getFileUtils().move(inputfile, finalinputfile);
+		
 		result.setOk(true);
 		result.setComplete(false);
 		return result;
@@ -76,8 +102,10 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 			throw new OpenEditException("No outputfoldercomplete property set");
 		}
 		
-		String postfix = inStructions.getProperty("outputfilenamepostfix");
-		File tempname = new File( completefolder, inAsset.getName() + postfix);
+		String pagename = PathUtilities.extractPageName(inAsset.getName());
+		String extension = inStructions.getProperty("outputextension");
+		
+		File tempname = new File( completefolder, pagename + "." + extension);
 		
 		ConvertResult result = new ConvertResult();
 		result.setOk(true);

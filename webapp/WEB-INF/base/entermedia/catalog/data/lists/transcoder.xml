@@ -4,6 +4,7 @@
 <transcoder id="FfmpegAudio">FFMPEG Audio</transcoder>
 <transcoder id="rhozet">Rhozet</transcoder>
 <transcoder id="telestream">Telestream</transcoder>
+<transcoder id="digitalrapids">Digital Rapids</transcoder>
 <transcoder id="finalcut">Final Cut</transcoder>
 <transcoder id="imagemagick">Image Magick</transcoder>
 <transcoder id="LameMp3">LAME MP3</transcoder>
