@@ -53,7 +53,7 @@
 	<div class="access_message">
 		<!-- Lock Icon MSG -->
 
-		<img src="${themeprefix}/images/gfx/lock_icon.png" style="padding-right: 15px;">Private
+		<img src="$home${themeprefix}/images/gfx/lock_icon.png" style="padding-right: 15px;">Private
 		- Only the people listed below can access
 
 	</div>
@@ -70,18 +70,18 @@
 
 			<tr>
 			#set( $owner = ${userManager.getUser($asset.owner)} )
-				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
+				<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
 					title="$owner"></td>
 				<td class="user"> #if ($user.id == $asset.owner) (you)#end</td>
 				<td class="userlevel">Is Owner</td>
 			</tr>
 			#foreach($person in $peoples)
 			<tr>
-				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
+				<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
 					title="$person"></td>
 				<td class="user">$person</td>
 				<td class="userlevel"><a href="#" title="Remove User" onclick="removePerson('$person');return false;"><img
-						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
+						src="$home${themeprefix}/images/gfx/close_icon.png"> </a></td>
 			</tr>
 			#end
 		</table>
@@ -105,11 +105,11 @@
 
 			#foreach($group in $groups)
 			<tr>
-				<td class="avatar"><img src="${themeprefix}/images/gfx/default_avatar.png"
+				<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
 					title="$group.name"></td>
 				<td class="user">$group.name</td>
 				<td class="userlevel"><a href="#" title="Remove Group" onclick="removeGroup('$group.id');return false;"><img
-						src="${themeprefix}/images/gfx/close_icon.png"> </a></td>
+						src="$home${themeprefix}/images/gfx/close_icon.png"> </a></td>
 			</tr>
 			#end
 

@@ -56,7 +56,7 @@ uiload = function() {
 				if( theinput && theinput.autocomplete )
 				{
 					theinput.autocomplete({
-						source: '$apphome/components/autocomplete/addmygroupusers.txt',
+						source: '$home$apphome/components/autocomplete/addmygroupusers.txt',
 						select: function(event, ui) {
 							//set input that's just for display purposes
 							jQuery(".addmygroupusers").val(ui.item.display);
@@ -80,7 +80,7 @@ uiload = function() {
 		if( theinput && theinput.autocomplete )
 		{
 			theinput.autocomplete({
-					source:  '$apphome/components/autocomplete/addmygroups.txt',
+					source:  '$home$apphome/components/autocomplete/addmygroups.txt',
 					select: function(event, ui) {
 						//set input that's just for display purposes
 						jQuery(".addmygroups").val(ui.item.label);
