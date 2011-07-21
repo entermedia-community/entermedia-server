@@ -217,7 +217,7 @@
     <target name="source" >
 		<mkdir dir="${build}/eclipse/entermedia" />
 	  	<copy todir="${build}/eclipse/entermedia" preservelastmodified="true" overwrite="true">
-	  		<fileset dir="${basedir}/" >
+	  		<fileset dir="${basedir}/" followsymlinks="false">
 	  			<include name="etc/**" />
 	  			<include name="lib/**" />
 	  			<include name="src/**" />
@@ -270,7 +270,7 @@
   <target name="war" >
 	<mkdir dir="${deployDir}/builds" />
 	<war warfile="${deployDir}/builds/${versionedApp}.war" webxml="${webinf}/web.xml" basedir="${wardir}"
-		excludes="WEB-INF/base/archive/**,WEB-INF/base/store/**,WEB-INF/base/search/**,entermedia/catalogs/**">
+		excludes="WEB-INF/base/archive/**,WEB-INF/base/store/**,WEB-INF/base/search/**,entermedia/catalogs/**,">
   		<manifest>
 	    	<attribute name="Built-By" value="${user.name}"/>
 		    <attribute name="Implementation-Title" value="${appname}"/>
