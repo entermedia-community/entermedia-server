@@ -193,11 +193,13 @@
 			<input type="text" name="keywords.value" style="width: 320px;" />
 			<br/><br/>
 
+			#set($groups = $user.getGroups())
 			<h2>[[Choose team]]</h2>
-			<input type="hidden" name="field" value="team"/>
-			<select name="team.value" style="width:240px;" >
-				<option > </option>
-				<option >KFC Team 72</option>
+			<select name="viewgroup" style="width:240px;" >
+				<option value=""> </option>
+				#foreach($group in $groups)
+				<option value="$group.id">$group</option>
+				#end
 			</select>
 			<br/><br/>
 			
