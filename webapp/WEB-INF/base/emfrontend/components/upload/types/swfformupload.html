@@ -120,7 +120,9 @@
 
 	     		if(queuecompleted)
 		        {
-					jQuery("#uploadqueueform").submit();
+	     			if(jQuery("#uploadqueueform").valid()) {
+						jQuery("#uploadqueueform").submit();
+	     			}
 				}	
 				else
 				{
@@ -152,7 +154,7 @@
 		); 
 	</script>
 
-	<form id="uploadqueueform" class="ajaxform" targetdiv="emuploadcontainer" action="$root/finish.html" method="post">
+	<form id="uploadqueueform" class="ajaxform validated" targetdiv="emuploadcontainer" action="$root/finish.html" method="post">
 	
 		<table>
 		<tr>
@@ -180,24 +182,26 @@
 			
 			<h2>[[Caption]]</h2>
 			<input type="hidden" name="field" value="caption"/>
-			<input type="text" name="caption.value" style="width: 320px;" />
+			<input type="text" class="required" name="caption.value" style="width: 320px;" />
 			<br/>
 
 			<h2>[[Title]]</h2>
-			<input type="hidden" name="field" value="caption"/>
-			<input type="text" name="caption.value" style="width: 320px;" />
+			<input type="hidden" name="field" value="title"/>
+			<input type="text" class="required" name="title.value" style="width: 320px;" />
 			<br/><br/>
 
 			<h2>[[Add Tags]]</h2>
 			<input type="hidden" name="field" value="keywords"/>
-			<input type="text" name="keywords.value" style="width: 320px;" />
+			<input type="text" class="required" name="keywords.value" style="width: 320px;" />
 			<br/><br/>
 
+			#set($groups = $user.getGroups())
 			<h2>[[Choose team]]</h2>
-			<input type="hidden" name="field" value="team"/>
-			<select name="team.value" style="width:240px;" >
-				<option > </option>
-				<option >KFC Team 72</option>
+			<select name="viewgroup" style="width:240px;" class="required" >
+				<option value=""> </option>
+				#foreach($group in $groups)
+				<option value="$group.id">$group</option>
+				#end
 			</select>
 			<br/><br/>
 			
