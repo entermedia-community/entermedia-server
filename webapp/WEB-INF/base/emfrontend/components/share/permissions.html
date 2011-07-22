@@ -20,28 +20,19 @@
 
 <!-- </form> -->
 
+<div id="permissions">
 <script type="text/javascript" charset="utf-8">
 	removePerson = function(userid){
-		jQuery.get("$home$apphome/components/share/removeperson.html?assetid=$asset.id&userid=" + userid, 
-				function(result) {
-					jQuery("#permissions").html(result);
-		});
+		jQuery("#permissions").load("$home$apphome/components/share/removeperson.html?assetid=$asset.id&userid=" + userid);
 	}
 	removeGroup = function(groupid){
-		jQuery.get("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid, 
-				function(result) {
-					jQuery("#permissions").html(result);
-		});
+		jQuery("#permissions").load("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid);
 	}
 	addAll = function(userid){
-		jQuery.get("$home$apphome/components/share/addall.html?assetid=$asset.id", 
-				function(result) {
-					jQuery("#permissions").html(result);
-		});
+		jQuery("#permissions").load("$home$apphome/components/share/addall.html?assetid=$asset.id");
 	}
 </script>
 
-<div id="permissions">
 <div id="sharing-wrapper" style="padding: 15px;">
 
 
