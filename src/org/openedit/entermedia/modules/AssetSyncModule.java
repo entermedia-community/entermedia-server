@@ -1,6 +1,5 @@
 package org.openedit.entermedia.modules;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -26,6 +25,7 @@ import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
+import com.openedit.util.PathUtilities;
 
 public class AssetSyncModule extends BaseMediaModule
 {
@@ -98,27 +98,33 @@ public class AssetSyncModule extends BaseMediaModule
 				{
 					continue;
 				}
-				//String filename = PathUtilities.extractFileName(localpaths[i]);
-				//String parent = parents[i];
-				Asset existing = archive.getAssetBySourcePath(sourcepath[i]);
-				if( existing == null)
+				
+				String currentSourcePath = sourcepath[i];
+				Asset existing = archive.getAssetBySourcePath(currentSourcePath);
+				Asset toadd = new Asset();
+				toadd.setId(archive.getAssetArchive().nextAssetNumber());
+				if (existing != null) 
 				{
-					existing = new Asset();
-					existing.setId(archive.getAssetArchive().nextAssetNumber() );
-					existing.setSourcePath(sourcepath[i]);
-					existing.setProperty("localpath",localpaths[i]);
-					existing.setProperty("importstatus", "uploading");
-					existing.setProperty("previewtatus", "0");
-					existing.setProperty("editstatus", "1");
-					existing.setProperty("filesize", sizes[i]);
-					existing.setProperty("owner", inReq.getUserName());
-					existing.setProperty("datatype", "original");
-					existing.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-					existing.setName(names[i]);
-					existing.addCategory(cat);
-					//NOOO. The file is not uploaded yet you dolt! 
-					//Whoops, sorry.
+					String startpart = PathUtilities.extractPagePath(currentSourcePath);
+					startpart = startpart + "_" + toadd.getId();
+					
+					currentSourcePath = startpart + "." + PathUtilities.extractPageType(currentSourcePath); 
 				}
+
+				toadd.setSourcePath(currentSourcePath);
+				toadd.setProperty("localpath", localpaths[i]);
+				toadd.setProperty("importstatus", "uploading");
+				toadd.setProperty("previewtatus", "0");
+				toadd.setProperty("editstatus", "1");
+				toadd.setProperty("filesize", sizes[i]);
+				toadd.setProperty("owner", inReq.getUserName());
+				toadd.setProperty("datatype", "original");
+				toadd.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				toadd.setName(names[i]);
+				toadd.addCategory(cat);
+				// NOOO. The file is not uploaded yet you dolt!
+				// Whoops, sorry.
+
 				String[] fields = inReq.getRequestParameters("field");
 				if( fields != null)
 				{
