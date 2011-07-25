@@ -1,14 +1,15 @@
 package org.openedit.entermedia.modules;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
+import org.openedit.data.lucene.LuceneHitTracker;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.autocomplete.AutoCompleteSearcher;
@@ -124,38 +125,49 @@ public class AutoCompleteModule extends BaseMediaModule
 			}
 		}
 		
-		StringBuffer groupuserids = new StringBuffer();
-		for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
-			String id = (String) iterator.next();
-			if(iterator.hasNext())
-			{
-				groupuserids.append(id + " ");
-			}
-			else
-			{
-				groupuserids.append(id);
-			}
-		}
+		//make sure we exclude users that are already in there
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		Collection<String> userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		ids.removeAll(userNames);
 		
-		
-		Searcher userSearcher = getSearcherManager().getSearcher("system", "user");
-		SearchQuery innerquery = userSearcher.createSearchQuery();
-		innerquery.setAndTogether(false);
-		String searchString = inReq.getRequestParameter("term");
-		innerquery.addStartsWith("id", searchString);
-		innerquery.addStartsWith("email", searchString);
-		innerquery.addStartsWith("lastName", searchString);
-		innerquery.addStartsWith("firstName", searchString);
-		SearchQuery query = userSearcher.createSearchQuery();
-		query.setAndTogether(true);
-		query.addChildQuery(innerquery);
-		query.addOrsGroup("id", groupuserids.toString());
-		
-		HitTracker hits = userSearcher.cachedSearch(inReq, query);
-		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+		HitTracker hits = null;
+		if(ids.size() > 0)
 		{
-			inReq.setCancelActions(true);
+			StringBuffer groupuserids = new StringBuffer();
+			for (Iterator iterator = ids.iterator(); iterator.hasNext();) {
+				String id = (String) iterator.next();
+				if(iterator.hasNext())
+				{
+					groupuserids.append(id + " ");
+				}
+				else
+				{
+					groupuserids.append(id);
+				}
+			}
+				
+			Searcher userSearcher = getSearcherManager().getSearcher("system", "user");
+			SearchQuery innerquery = userSearcher.createSearchQuery();
+			innerquery.setAndTogether(false);
+			String searchString = inReq.getRequestParameter("term");
+			innerquery.addStartsWith("id", searchString);
+			innerquery.addStartsWith("email", searchString);
+			innerquery.addStartsWith("lastName", searchString);
+			innerquery.addStartsWith("firstName", searchString);
+			
+			SearchQuery query = userSearcher.createSearchQuery();
+			query.setAndTogether(true);
+			query.addChildQuery(innerquery);
+			query.addOrsGroup("id", groupuserids.toString());
+			
+			hits = userSearcher.cachedSearch(inReq, query);
+			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+			{
+				inReq.setCancelActions(true);
+			}
 		}
+		
 		inReq.putPageValue("suggestions", hits);
 		return hits;
 	}
@@ -163,60 +175,56 @@ public class AutoCompleteModule extends BaseMediaModule
 	public HitTracker myGroupSuggestions(WebPageRequest inReq)
 	{
 		User currentUser = inReq.getUser();
-		Collection groups = currentUser.getGroups();
+		Collection<Group> groups = currentUser.getGroups();
+		Collection<String> groupidscol = new ArrayList<String>();
 		StringBuffer groupids = new StringBuffer();
 		for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
 			Group group = (Group) iterator.next();
-			if(iterator.hasNext())
-			{
-				groupids.append(group.getId() + " ");
-			}
-			else
-			{
-				groupids.append(group.getId());
-			}
+			groupidscol.add(group.getId());
 		}
 		
 		//make sure we exclude groups that are already in there
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		StringBuffer alreadyin = new StringBuffer();
-		List userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
-		for (Iterator iterator = userNames.iterator(); iterator.hasNext();) {
-			String name = (String) iterator.next();
-			if(iterator.hasNext())
-			{
-				alreadyin.append(name + " ");
-			}
-			else
-			{
-				alreadyin.append(name);
-			}
-		}
+		Collection<String> userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		groupidscol.removeAll(userNames);
 		
-		Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
-		SearchQuery query = groupSearcher.createSearchQuery();
-		query.setAndTogether(true);
-		String searchString = inReq.getRequestParameter("term");
-		
-		if(alreadyin.length() > 0)
+		HitTracker hits = null;
+		if(groupidscol.size() > 0)
 		{
-			query.addNots("id", alreadyin.toString());
-		}
-		query.addOrsGroup("id", groupids.toString());
-		query.setAndTogether(true);
-		
-		SearchQuery idquery = groupSearcher.createSearchQuery();
-		idquery.addStartsWith("id", searchString);
-		idquery.addStartsWith("name", searchString);
-		idquery.setAndTogether(false);
-		idquery.addChildQuery(query);
-		
-		
-		HitTracker hits = groupSearcher.cachedSearch(inReq, idquery);
-		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
-		{
-			inReq.setCancelActions(true);
+			//put them in something safe for a query
+			for (Iterator iterator = groupidscol.iterator(); iterator.hasNext();) {
+				String group = (String) iterator.next();
+				if(iterator.hasNext())
+				{
+					groupids.append(group + " ");
+				}
+				else
+				{
+					groupids.append(group);
+				}
+			}
+			Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
+			
+			
+			SearchQuery innerquery = groupSearcher.createSearchQuery();
+			String searchString = inReq.getRequestParameter("term");
+			innerquery.addStartsWith("id", searchString);
+			innerquery.addStartsWith("name", searchString);
+			innerquery.setAndTogether(false);
+			
+			SearchQuery query = groupSearcher.createSearchQuery();
+			query.addOrsGroup("id", groupids.toString());
+			query.setAndTogether(true);
+			
+			query.addChildQuery(innerquery);
+			
+			
+			hits = groupSearcher.cachedSearch(inReq, query);
+			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+			{
+				inReq.setCancelActions(true);
+			}
 		}
 		inReq.putPageValue("suggestions", hits);
 		return hits;
