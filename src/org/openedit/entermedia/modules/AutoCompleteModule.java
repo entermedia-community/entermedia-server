@@ -3,11 +3,14 @@ package org.openedit.entermedia.modules;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.autocomplete.AutoCompleteSearcher;
 
 import com.openedit.WebPageRequest;
@@ -174,15 +177,43 @@ public class AutoCompleteModule extends BaseMediaModule
 			}
 		}
 		
+		//make sure we exclude groups that are already in there
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		StringBuffer alreadyin = new StringBuffer();
+		List userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		for (Iterator iterator = userNames.iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			if(iterator.hasNext())
+			{
+				alreadyin.append(name + " ");
+			}
+			else
+			{
+				alreadyin.append(name);
+			}
+		}
+		
 		Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
 		SearchQuery query = groupSearcher.createSearchQuery();
-		query.setAndTogether(false);
+		query.setAndTogether(true);
 		String searchString = inReq.getRequestParameter("term");
-		query.addStartsWith("name", searchString);
+		
+		if(alreadyin.length() > 0)
+		{
+			query.addNots("id", alreadyin.toString());
+		}
 		query.addOrsGroup("id", groupids.toString());
 		query.setAndTogether(true);
 		
-		HitTracker hits = groupSearcher.cachedSearch(inReq, query);
+		SearchQuery idquery = groupSearcher.createSearchQuery();
+		idquery.addStartsWith("id", searchString);
+		idquery.addStartsWith("name", searchString);
+		idquery.setAndTogether(false);
+		idquery.addChildQuery(query);
+		
+		
+		HitTracker hits = groupSearcher.cachedSearch(inReq, idquery);
 		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
 		{
 			inReq.setCancelActions(true);
