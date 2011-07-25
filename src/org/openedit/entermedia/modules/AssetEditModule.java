@@ -787,11 +787,6 @@ public class AssetEditModule extends BaseMediaModule
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output, List<String> allids)
 	{
-		String sourcepath = inReq.findValue(prefix + "sourcepath");
-		if( sourcepath.endsWith("/"))
-		{
-			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
-		}
 		String[] fields = inReq.getRequestParameters("field");
 		Map vals = new HashMap();
 		if( fields != null)
@@ -819,8 +814,26 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 		}
+		String sourcepath = inReq.findValue(prefix + "sourcepath");
+		if( sourcepath.endsWith("/"))
+		{
+			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
+		}
 		String assetsourcepath = sourcepath + "/" + inPage.getName(); //TODO: Should we save like /a/allstuff.jpg
-		getPageManager().clearCache(inPage);
+		//getPageManager().clearCache(inPage);
+		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
+		Asset asset = new Asset();
+		asset.setId(archive.getAssetArchive().nextAssetNumber());
+		if (existing != null) 
+		{
+			String startpart = PathUtilities.extractPagePath(assetsourcepath);
+			startpart = startpart + "_" + asset.getId();
+			
+			assetsourcepath = startpart + "." + PathUtilities.extractPageType(assetsourcepath); 
+		}
+		asset.setSourcePath(assetsourcepath);
+
+		
 		Page dest = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath);
 		if(!inPage.exists()){
 			log.info("Could not find uploaded file: " + inPage.getPath());
@@ -830,7 +843,6 @@ public class AssetEditModule extends BaseMediaModule
 			getPageManager().movePage(inPage, dest);
 		}
 		
-		Asset asset = archive.getAssetBySourcePath(assetsourcepath);
 		asset = getAssetImporter().getAssetUtilities().populateAsset(asset, dest.getContentItem(), archive, assetsourcepath, inReq.getUser());
 		for (Iterator iterator = vals.keySet().iterator(); iterator.hasNext();)
 		{
@@ -844,6 +856,11 @@ public class AssetEditModule extends BaseMediaModule
 			asset.addCategory(cat);
 		}
 		asset.setProperty("editstatus","1");
+		asset.setProperty("importstatus", "uploading");
+		asset.setProperty("previewtatus", "0");
+		asset.setProperty("owner", inReq.getUserName());
+		asset.setProperty("datatype", "original");
+		asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				
 		output.add(asset);
 		allids.add(asset.getId());

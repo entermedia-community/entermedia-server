@@ -208,21 +208,30 @@ public class LuceneSearchQuery extends SearchQuery
 			public String toQuery()
 			{
 				StringBuffer orString = new StringBuffer();
-
 				String[] notwords = getValue().split("\\s");
 				if (notwords.length > 0)
 				{
-					for (int i = 0; i < notwords.length; i++)
+					orString.append("( NOT ");
+					for (int i = 0; i < notwords.length - 1; i++)
 					{
-						orString.append(" NOT " + notwords[i]);
+						if(notwords[i].length() > 0)
+						{
+							//orString.append(orwords[i]);
+							//orString.append(" OR ");
+							orString.append(notwords[i]);
+							orString.append(" NOT ");
+						}
 					}
+					orString.append(notwords[notwords.length - 1]);
+					orString.append(")");
 				}
-				return orString.toString();
+				return getDetail().getId() + ":" + orString.toString();
 			}
 		};
 		term.setOperation("notgroup");
 		term.setDetail(inField);
 		term.setValue(inNots);
+		term.setId(inField.getId());
 		getTerms().add(term);
 		return term;
 	}

@@ -124,7 +124,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 		}
 	}
 
-	protected DataConnector getDataConnector()
+	public DataConnector getDataConnector()
 	{
 		return fieldDataConnector;
 	}

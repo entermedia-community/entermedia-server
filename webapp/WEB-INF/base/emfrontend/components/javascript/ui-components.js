@@ -55,8 +55,9 @@ uiload = function() {
 				var theinput = jQuery(this);
 				if( theinput && theinput.autocomplete )
 				{
+					var assetid = theinput.attr("assetid");
 					theinput.autocomplete({
-						source: '$home$apphome/components/autocomplete/addmygroupusers.txt',
+						source: '$home$apphome/components/autocomplete/addmygroupusers.txt?assetid=' + assetid,
 						select: function(event, ui) {
 							//set input that's just for display purposes
 							jQuery(".addmygroupusers").val(ui.item.display);
@@ -79,8 +80,9 @@ uiload = function() {
 		var theinput = jQuery(this);
 		if( theinput && theinput.autocomplete )
 		{
+			var assetid = theinput.attr("assetid");
 			theinput.autocomplete({
-					source:  '$home$apphome/components/autocomplete/addmygroups.txt',
+					source:  '$home$apphome/components/autocomplete/addmygroups.txt?assetid=' + assetid,
 					select: function(event, ui) {
 						//set input that's just for display purposes
 						jQuery(".addmygroups").val(ui.item.label);
