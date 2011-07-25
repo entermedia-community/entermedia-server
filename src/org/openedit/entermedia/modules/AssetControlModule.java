@@ -128,6 +128,17 @@ public class AssetControlModule extends BaseMediaModule {
 		}
 		return false;
 	}
+	
+	public boolean checkAssetOwnership(WebPageRequest inReq) {
+		Asset asset = getAsset(inReq);
+		if (asset != null && inReq.getUser() != null) {
+			if(inReq.getUser().getId().equalsIgnoreCase(asset.get("owner")))
+			{
+				return true;
+			}
+		}
+		return true;
+	}
 
 	public void openAssetViewPermissions(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);

@@ -529,7 +529,7 @@ public class MediaArchive
 	{
 		String sourcePath = null;
 		String assetrootfolder = inPage.get("assetrootfolder");
-		if (assetrootfolder != null)
+		if (assetrootfolder != null && assetrootfolder.length() < inPage.getPath().length())
 		{
 			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
 

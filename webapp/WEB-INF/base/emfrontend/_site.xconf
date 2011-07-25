@@ -36,8 +36,16 @@
 
  	<property name="themeprefix">/${applicationid}/theme</property>
 
+	<permission name="viewasset">
+		<or>
+			<group name="administrators"/>
+			<action name="AssetControlModule.checkAssetOwnership"/>
+		</or>
+	</permission>
+
 	<permission name="view">
 		<user/>
+		<!--not><pagevalue name="canviewasset"  equals="false"/></not-->
 	</permission>
 
   	<permission name="viewupload">

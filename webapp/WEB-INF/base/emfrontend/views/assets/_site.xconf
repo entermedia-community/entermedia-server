@@ -5,14 +5,15 @@
 	<path-action name="MediaArchiveModule.getAsset"  />
 
 	<path-action name="Admin.loadPermissions"/>
-
-	<permission name="view">
-		<not><pagevalue name="viewasset"  equals="false"/></not>
-	</permission>
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
 
 	<path-action name="Admin.allowViewing">
 		<login-path>/${applicationid}/authentication/logon.html</login-path>
 	</path-action>
+	
+	<permission name="view">
+		<not><pagevalue name="canviewasset" equals="false"/></not>
+	</permission>
 	
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>

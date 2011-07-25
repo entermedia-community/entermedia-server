@@ -75,7 +75,7 @@ public class AssetSecurityArchive
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
 		//Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + ".html");
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
 
 		List users = getAccessList(inArchive, page, inAsset);
 		return users;
@@ -222,7 +222,7 @@ public class AssetSecurityArchive
 	public void revokeViewAccess(MediaArchive inArchive, String username, Asset inAsset)
 	{
 		String path = inAsset.getSourcePath();
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
 		Permission permission = page.getPermission("viewasset");
 		
 		if (permission != null && permission.getRootFilter() != null)
@@ -241,7 +241,7 @@ public class AssetSecurityArchive
 	public void revokeGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset)
 	{
 		String path = inAsset.getSourcePath();
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
 		Permission permission = page.getPermission("viewasset");
 		
 		if (permission != null && permission.getRootFilter() != null)
@@ -259,7 +259,7 @@ public class AssetSecurityArchive
 	
 	public void grantViewAccess(MediaArchive inArchive, String username, Asset inAsset) throws OpenEditException
 	{
-		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/";
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
 
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
@@ -272,7 +272,7 @@ public class AssetSecurityArchive
 	
 	public void grantGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset) throws OpenEditException
 	{
-		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/";
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
 
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
@@ -281,6 +281,7 @@ public class AssetSecurityArchive
 		grantGroupAccess(inArchive, groupname, page, "viewasset");
 		// update the index
 		inArchive.saveAsset(inAsset, null);
+		
 	}
 
 	public void grantAccess(MediaArchive inArchive, String username, Asset inAsset, String inView) throws OpenEditException
@@ -427,6 +428,7 @@ public class AssetSecurityArchive
 		filter.setGroupId(inGroupName);
 		permission.getRootFilter().addFilter(filter);
 		getPageManager().getPageSettingsManager().saveSetting(inPage.getPageSettings());
+		getPageManager().clearCache(inPage);
 		// update the index
 		// saveAsset(inAsset);
 
