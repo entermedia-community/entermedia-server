@@ -1,12 +1,12 @@
-#if (!$cell)
-	#set ($cell = $asset)
+#if (!$hit)
+	#set ($hit = $asset)
 #end
 
-#if (!$cell)
-	#set ($cell = $data)
+#if (!$hit)
+	#set ($hit = $data)
 #end
 
-#set ($sourcepath = $cell.sourcepath)
+#set ($sourcepath = $hit.sourcepath)
 
 #set ($mediumend = "/$catalogid/downloads/preview/medium/$sourcepath/thumb.jpg")
 #set( $msize = "$home$mediumend")
@@ -20,37 +20,37 @@
 	#set($usethumblink = "true")
 #end
 
-#if (!$cell)
-	#set ($cell = $asset)
+#if (!$hit)
+	#set ($hit = $asset)
 #end
 
-#if (!$cell)
-	#set ($cell = $data)
+#if (!$hit)
+	#set ($hit = $data)
 #end
 #set ($thumbsize = $context.getPageValue("thumbsize"))
 #if(!$thumbsize)
 	#set($thumbsize = "thumb")
 #end
 
-#set ($sourcepath = $cell.sourcepath)
+#set ($sourcepath = $hit.sourcepath)
 
 <div id="emthumbholder ">
 
-	#if( $cell.importstatus && $cell.importstatus == "uploading" )
-		<div class="miniassetstatus" assetid="$cell.id">
-		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${cell.id}",$context)
+	#if( $hit.importstatus && $hit.importstatus == "uploading" )
+		<div class="miniassetstatus" assetid="$hit.id">
+		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${hit.id}",$context)
 		</div>
 	
-	#elseif( !$cell.importstatus || $cell.importstatus != "complete" )
+	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
 	
-		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=${cell.id}",$context)
+		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=${hit.id}",$context)
 		
-	#elseif( $cell.previewstatus && $cell.previewstatus == "mime")
-		#set ($mime = $mediaarchive.getMimeTypeIcon($cell.fileformat))
+	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
+		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
 	#else	
-		<img class="emdropshadow" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$cell.id" alt="" 	title=#if($cell.caption)"${cell.caption}"#elseif($cell.assettitle )"$cell.assettitle" #else "$!{cell.name}" #end
+		<img class="emdropshadow" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" 	title=#if($hit.caption)"${cell.caption}"#elseif($hit.assettitle )"$hit.assettitle" #else "$!{cell.name}" #end
 		src="$home$cataloghome/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
 	#end
 
