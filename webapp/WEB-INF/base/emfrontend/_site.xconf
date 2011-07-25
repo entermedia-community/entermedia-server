@@ -72,6 +72,9 @@
 			<userprofile property="viewsettings" equals="partial" />
 		</or>
 	</permission>
+	<permission name="viewvoting">
+		<boolean value="true" />
+	</permission>
 
 	<permission name="comment">
 		<user />
