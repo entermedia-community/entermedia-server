@@ -40,7 +40,7 @@
 	<permission name="viewasset">
 		<or>
 			<group name="administrators"/>
-			<action name="AssetControlModule.checkAssetOwnership"/>
+			<action name="AssetControlModule.checkFolderMatchesUserName"/>
 		</or>
 	</permission>
 
