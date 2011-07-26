@@ -7,4 +7,6 @@
 -->
 	
 	<page-action name="AssetControlModule.listAssetViewPermissions" />
+	<page-action name="AssetControlModule.isAllGroups" />
+	<page-action name="AssetControlModule.isAll" />
 </page>
