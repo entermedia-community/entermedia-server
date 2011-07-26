@@ -283,6 +283,20 @@ public class AssetSecurityArchive
 		inArchive.saveAsset(inAsset, null);
 		
 	}
+	
+	public void grantAllAccess(MediaArchive inArchive, Asset inAsset)
+	{
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
+		Page page = getPageManager().getPage(path);
+		grantAccess(inArchive, page, "viewasset");
+	}
+	
+	public void revokeAllAccess(MediaArchive inArchive, Asset inAsset)
+	{
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
+		Page page = getPageManager().getPage(path);
+		clearAccess(inArchive, page, "viewasset");
+	}
 
 	public void grantAccess(MediaArchive inArchive, String username, Asset inAsset, String inView) throws OpenEditException
 	{

@@ -28,8 +28,20 @@
 	removeGroup = function(groupid){
 		jQuery("#permissions").load("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid);
 	}
+	addAllGroups = function(userid){
+		if(jQuery("#allowallgroups").is(':checked') == false) {
+			jQuery("#permissions").load("$home$apphome/components/share/removeallgroups.html?assetid=$asset.id");
+		} else {
+			jQuery("#permissions").load("$home$apphome/components/share/addallgroups.html?assetid=$asset.id");
+		}
+	}
 	addAll = function(userid){
-		jQuery("#permissions").load("$home$apphome/components/share/addall.html?assetid=$asset.id");
+		//alert(jQuery("#allowall").is(':checked'));
+		if(jQuery("#allowall").is(':checked') == false) {
+			jQuery("#permissions").load("$home$apphome/components/share/removeall.html?assetid=$asset.id");
+		} else {
+			jQuery("#permissions").load("$home$apphome/components/share/addall.html?assetid=$asset.id");
+		}
 	}
 </script>
 
@@ -49,7 +61,10 @@
 
 	</div>
 	<div id="all_container">
-		<span class="all_text" style="float:left;">Allow All Teams</span><input type="checkbox" id="allowall" style="float:left;" onclick="addAll(); return false;"/>
+		<span class="all_text" style="float:left;">Allow All Teams</span><input type="checkbox" id="allowallgroups" style="float:left;" onclick="addAllGroups(); return false;" #if($isallgroups) checked="checked" #end/>
+	</div>
+	<div id="all_container">
+		<span class="all_text" style="float:left;">Allow All</span><input type="checkbox" id="allowall" style="float:left;" onclick="addAll(); return false;" #if($isall) checked="checked" #end/>
 	</div>
 
 	<div id="people_container">

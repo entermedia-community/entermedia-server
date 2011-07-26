@@ -215,4 +215,58 @@ public class AssetControlModule extends BaseMediaModule {
 			archive.getAssetSecurityArchive().revokeGroupViewAccess(archive, group.getId(), asset);
 		}
 	}
+	
+	public void grantAll(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		archive.getAssetSecurityArchive().grantAllAccess(archive, asset);
+	}
+	
+	public void revokeAll(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		archive.getAssetSecurityArchive().revokeAllAccess(archive, asset);
+	}
+	
+	public void isAllGroups(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		//get all of the user's groups
+		User user = inReq.getUser();
+		Collection<Group> groups = user.getGroups();
+		List groupids = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		List<Group> allowedgroups = findGroupByIds(groupids);
+		
+		if(allowedgroups.size() >= groups.size())
+		{
+			allowedgroups.removeAll(groups);
+			if(allowedgroups.size() == 0)
+			{
+				inReq.putPageValue("isallgroups", true);
+			}
+			else
+			{
+				inReq.putPageValue("isallgroups", false);
+			}
+		}
+	}
+	
+	public void isAll(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		//get all of the user's groups
+		List userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		if(userNames.size() == 1 && "true".equals(userNames.get(0)))
+		{
+			inReq.putPageValue("isall", true);
+		}
+		else
+		{
+			inReq.putPageValue("isall", false);
+		}
+	}
 }
