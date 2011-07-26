@@ -761,6 +761,17 @@ public class AssetEditModule extends BaseMediaModule
 			Page page = (Page) iterator.next();
 			readMetaData(inReq, archive,"", page, tracker, allids);
 		}
+		
+		//set the group view permissions if something was passed in
+		String groupid = inReq.getRequestParameter("viewgroup");
+		if(groupid != null)
+		{
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				archive.getAssetSecurityArchive().grantGroupViewAccess(archive, groupid, asset);
+			}
+		}
 
 		archive.saveAssets(tracker, inReq.getUser());
 

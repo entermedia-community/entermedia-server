@@ -6,26 +6,28 @@
 		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
 		<br/><br/>
 		
-<h2>[[Caption]]</h2>
+			<h2>[[Caption]]</h2>
 			<input type="hidden" name="field" value="caption"/>
-			<input type="text" name="caption.value" style="width: 320px;" />
+			<input type="text" class="required" name="caption.value" style="width: 320px;" />
 			<br/><br/>
 
 			<h2>[[Title]]</h2>
-			<input type="hidden" name="field" value="caption"/>
-			<input type="text" name="caption.value" style="width: 320px;" />
+			<input type="hidden" name="field" value="title"/>
+			<input type="text" class="required" name="title.value" style="width: 320px;" />
 			<br/><br/>
 
 			<h2>[[Add Tags]]</h2>
 			<input type="hidden" name="field" value="keywords"/>
-			<input type="text" name="keywords.value" style="width: 320px;" />
+			<input type="text" class="required" name="keywords.value" style="width: 320px;" />
 			<br/><br/>
 
+			#set($groups = $user.getGroups())
 			<h2>[[Choose team]]</h2>
-			<input type="hidden" name="field" value="team"/>
-			<select name="team.value" style="width:240px;" >
-				<option > </option>
-				<option >KFC Team 72</option>
+			<select name="viewgroup" style="width:240px;" class="required" >
+				<option value=""> </option>
+				#foreach($group in $groups)
+				<option value="$group.id">$group</option>
+				#end
 			</select>
 			<br/><br/>
 
@@ -45,8 +47,10 @@
 <script type="text/javascript" >
  	doUpload =  function()
  	{
- 	 	jQuery("#finishbutton").attr('disabled','disabled');
-		jQuery("#waiting").show();
-		jQuery("#uploadform").submit();
+ 		if(jQuery("#uploadform").valid()) {
+ 	 		jQuery("#finishbutton").attr('disabled','disabled');
+			jQuery("#waiting").show();
+			jQuery("#uploadform").submit();
+ 		}
  	}
 </script>
