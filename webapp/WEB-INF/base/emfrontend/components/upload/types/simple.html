@@ -2,38 +2,64 @@
 
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = "users/$!{user.userName}/" )
-<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
-		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+<form id="uploadform"  name="wizard" method="post" enctype="multipart/form-data" action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
+	
+    <div style="width:320px; margin:auto;">
+    
+
+        <input type="text" id="fileName" class="file_input_textbox"  readonly="readonly">
+        
+         <div class="file_input_div">
+      	  <input type="button" value="Browse" class="file_input_button" />    
+          <input type="file" class="file_input_hidden" name="file.0" onchange="javascript: document.getElementById('fileName').value = this.value" />
+        </div>
 		<br/><br/>
+        
+        
+        <!--   HERE IS YOUR ORIGINAL FILE UPLOADER
+        
+        <div class="uploadformfield">
+        <input type="file" size="35" name="file.0" class="uploadformfield" >
+		</div>
+       -->
+      
+       
+
 		
 			<h2>[[Caption]]</h2>
 			<input type="hidden" name="field" value="caption"/>
-			<input type="text" class="required" name="caption.value" style="width: 320px;" />
+			<input type="text" class="required" name="caption.value" style="width: 278px;" />
+            <img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
 			<br/><br/>
 
 			<h2>[[Title]]</h2>
 			<input type="hidden" name="field" value="title"/>
-			<input type="text" class="required" name="title.value" style="width: 320px;" />
-			<br/><br/>
-
-			<h2>[[Add Tags]]</h2>
-			<input type="hidden" name="field" value="keywords"/>
-			<input type="text" class="required" name="keywords.value" style="width: 320px;" />
+			<input type="text" class="required" name="title.value" style="width: 278px;" />
+            <img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
 			<br/><br/>
 
 			#set($groups = $user.getGroups())
 			<h2>[[Choose team]]</h2>
-			<select name="viewgroup" style="width:240px;" class="required" >
+			<select name="viewgroup" style="width:278px;" class="required" >
 				<option value=""> </option>
 				#foreach($group in $groups)
 				<option value="$group.id">$group</option>
 				#end
-			</select>
+			</select><img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
 			<br/><br/>
-
+            
+			<h2>[[Add Tags]]</h2>
+			<input type="hidden" name="field" value="keywords"/>
+			<input type="text" class="required" name="keywords.value" style="width: 278px;" /><img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
+			<br/><br/>
+</div>
 <table><tr><td>
 <div class="embutton" >
-		<input type="button" id="finishbutton"value="[[Upload]]" onclick="doUpload('uploadform');">
+		<center>
+        <img src='$home/system/images/icons/required_form_field_label.png'/>
+        <p></p>
+		<input type="button" id="finishbutton" class="finishbutt" value="[[Upload]]" onclick="doUpload('uploadform');">
+		</center>
 </div>
 </tr></td></table>
 

@@ -49,13 +49,21 @@
 .emboxthumb
 {
 	width: 200px;
-	height: 250px;
+	height: 260px;
 	text-align: center;
+	border-bottom:1px solid #90002a;
+	padding-bottom:15px;
 }
 .emthumb
 {
 	height:200px;
 	width: 200px;
+	border:3px solid #fff;
+}
+
+.emthumb:hover
+{
+	border:3px solid #336699;	
 }
 
 .emboxthumblarge
