@@ -1,12 +1,12 @@
 <div id="advsearchpanel" >
-<div class="em-rounded" >
+<div class="tanmodule" >
 #set( $view = "asset/advancedsearch")
 #set( $searcher = $mediaarchive.getAssetSearcher())
 
 $context.putPageValue("view", $view)
 $context.putPageValue("searcher", $searcher)
 
-<div class="emsectionheader"><h3>Search</h3></div>
+<div class="emsectionheader"></div>
 
 #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 $context.putPageValue("usestartswith",$usestartswith)
@@ -48,7 +48,7 @@ $context.putPageValue("usestartswith",$usestartswith)
 		<tr>
 	<td>
 	</td>
-	<td><input type="submit" value="Search" class="ui-button ui-widget ui-state-default ui-corner-all"/>
+	<td><input type="submit" value="Search" />
 	</td>
 	</tr>
 	

@@ -3,7 +3,7 @@
 	#set( $rootIndex = "index")
 #end	
 #set( $children = $categoryPickerTree.getModel().getChildrenById($rootIndex) )
-
+<div class="tanmodule">
 <ul class="empickcategorychild"> 
 #foreach( $child in $children)
 	<li>
@@ -11,3 +11,4 @@
 	</li>
 #end
 </ul>
+</div>
