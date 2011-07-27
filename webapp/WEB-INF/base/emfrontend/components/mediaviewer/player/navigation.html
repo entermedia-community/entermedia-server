@@ -1,4 +1,4 @@
-<h2>
+<h2 style="color:#666;">
 #if( $asset.assettitle )
 	$asset.assettitle
 #elseif( $asset.caption )
@@ -27,7 +27,7 @@
 
 	#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
 	<br>
-	<h2>Related Tags</h2>
+	<h2 style="color:#666;">Related Tags</h2>
 		#foreach ($tag in $asset.keywords)
 			<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
 		#end
