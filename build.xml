@@ -218,6 +218,7 @@
 		<mkdir dir="${build}/eclipse/entermedia" />
 	  	<copy todir="${build}/eclipse/entermedia" preservelastmodified="true" overwrite="true">
 	  		<fileset dir="${basedir}/" followsymlinks="false">
+	  			<exclude name="webapp/WEB-INF/base/system/components/openedit" />
 	  			<include name="etc/**" />
 	  			<include name="lib/**" />
 	  			<include name="src/**" />
