@@ -9,7 +9,8 @@
 		#foreach ($tag in $asset.keywords)
 			<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
 		#end
-	if( $asset.getCategories().size() > 0 )	
+	#end
+	#if( $asset.getCategories().size() > 0 )	
 	in folders	
 		#foreach ($category in $asset.categories) 
 			<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
