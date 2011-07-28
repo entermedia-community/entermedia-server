@@ -261,7 +261,7 @@ onloadselectors = function()
 
 	jQuery('.commentresizer').livequery( function()
 	{	
-		var ta = jQuery(this).find(".commentinput");
+		var ta = jQuery(this).find("#commenttext");
 		ta.click(function() 
 		{
 			var initial = ta.attr("initialtext");
