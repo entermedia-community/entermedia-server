@@ -566,7 +566,11 @@ showajaxstatus = function()
 			foundone = true;
 			var cell = jQuery(this);
 			var path = cell.attr("ajaxpath");
-			cell.load(path);
+			//cell.load(path);
+			//cell.replaceWith(jQuery.ajax(path));
+			jQuery.get(path, {}, function(data) {
+				cell.replaceWith(data);
+			});
 		}
 	);
 	
