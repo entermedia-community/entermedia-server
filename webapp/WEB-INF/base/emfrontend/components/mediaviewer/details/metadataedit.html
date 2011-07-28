@@ -1,5 +1,7 @@
 #set($views = $searcherManager.getList("$catalogid", "assettype/views"))
 #set($searcher = $mediaarchive.getAssetSearcher())
+#set($sourcepath = $context.getRequestParameter("sourcepath"))
+#set($asset = $mediaarchive.getAssetBySourcePath($sourcepath))
 
 #set ($isediting = ($context.getRequestParameter("edit") == "true") )
 #if ($caneditasset && $isediting == true)
@@ -12,7 +14,7 @@
 #else
 	#set ($detaileditsuffix = "?detailsreadonly=true")
 #end
-      
+
 #foreach( $target in $views)
 <h3>$target</h3>
 $context.putPageValue("searcher", $searcher)  
