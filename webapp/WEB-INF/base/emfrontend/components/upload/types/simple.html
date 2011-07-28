@@ -40,12 +40,12 @@
 
 			#set($groups = $user.getGroups())
 			<h2>[[Choose team]]</h2>
-			<select name="viewgroup" style="width:278px;" class="required" >
+			<select name="viewgroup" style="width:278px;" >
 				<option value=""> </option>
 				#foreach($group in $groups)
 				<option value="$group.id">$group</option>
 				#end
-			</select><img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
+			</select>
 			<br/><br/>
             
 			<h2>[[Add Tags]]</h2>
@@ -58,7 +58,7 @@
 		<center>
         <img src='$home/system/images/icons/required_form_field_label.png'/>
         <p></p>
-		<input type="button" id="finishbutton" class="finishbutt" value="[[Upload]]" onclick="doUpload('uploadform');">
+		<input type="button" id="finishbutton" class="finishbutt" value="[[Submit]]" onclick="doUpload('uploadform');">
 		</center>
 </div>
 </tr></td></table>
