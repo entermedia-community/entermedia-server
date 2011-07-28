@@ -57,13 +57,13 @@
 	</permission>
 
 
-	<permission name="download">
+	<!--permission name="download">
 		<or>
 			<group name="administrators"/>
 			<group name="uploaders"/>
 			<group name="guest"/>
 		</or>
-	</permission>
+	</permission-->
 	<permission name="assetpermissions">
 		<or>
 			<group name="administrators"/>
