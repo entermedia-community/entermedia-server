@@ -78,7 +78,7 @@
 			#set( $owner = ${userManager.getUser($asset.owner)} )
 				<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
 					title="$owner"></td>
-				<td class="user"> #if ($user.id == $asset.owner) (you)#end</td>
+				<td class="user"> #if ($user.id == $asset.owner) (you) #else($owner) #end</td>
 				<td class="userlevel">Is Owner</td>
 			</tr>
 			#foreach($person in $peoples)
