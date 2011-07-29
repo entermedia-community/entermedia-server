@@ -26,7 +26,9 @@
 		jQuery("#permissions").load("$home$apphome/components/share/removeperson.html?assetid=$asset.id&userid=" + userid);
 	}
 	removeGroup = function(groupid){
-		jQuery("#permissions").load("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid);
+		//jQuery("#permissions").load("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid);
+		jQuery.get("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid, {}, function (data){ jQuery("#permissions").replaceWith(data); }); 
+		
 	}
 	addAllGroups = function(userid){
 		if(jQuery("#allowallgroups").is(':checked') == false) {
