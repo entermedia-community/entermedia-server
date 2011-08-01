@@ -15,12 +15,12 @@
 	#else	
 		<img class="smallthumb" src="$home$cataloghome/downloads/preview/${content.thumbsize}/$hit.sourcepath/thumb.jpg" border="0" />
 	#end
-#elseif( $conversionsremaining.size()  >0 )
-	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src='$home/system/images/toolbar/spinner.gif'/></div>
+#elseif($conversionsremaining.size()  > 0)
+	<div class="ajaxstatus"  linkid="$hit.id" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src='$home/system/images/toolbar/spinner.gif'/></div>
 #elseif($publish.size() >0 )
-	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Publishing Proxy $publish.size()" src='$home/system/images/toolbar/spinner.gif'/></div>
-#elseif( $conversions.size() == 0 )
-	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >
+	<div class="ajaxstatus"  linkid="$hit.id" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Publishing Proxy $publish.size()" src='$home/system/images/toolbar/spinner.gif'/></div>
+#elseif($conversions.size() == 0)
+	<div class="ajaxstatus"  linkid="$hit.id" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >
 		<img title="Adding to Queue" src='$home/system/images/toolbar/spinner.gif'/>
 	</div>
 #end

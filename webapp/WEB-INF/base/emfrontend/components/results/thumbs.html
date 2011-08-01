@@ -48,11 +48,15 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			#set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
 			$context.putPageValue("clink", $clink)
 
-			<a href="$click">
+			<a id="$hit.id" href="$click">
 
 			<div class="emthumbimage em$thumbsize" 
 				#if( $showcaption ) style="vertical-align:bottom;" #end 
-				#if($showhover != false) hover="true" #end >			
+				#if($showhover != false) hover="true" #end >
+				
+				#if($hit.id == $asset.id)
+				selected
+				#end			
 
 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
 
