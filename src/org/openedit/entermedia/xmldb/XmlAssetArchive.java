@@ -309,7 +309,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	{
 		saveAsset(inAsset, (User) null);
 	}
-
+	public void saveData(Data inData, User inUser)
+	{
+		saveAsset((Asset)inData, inUser);
+	}
 	public synchronized void saveAsset(Asset inAsset, User inUser)
 	{
 		if( inAsset.getId() == null)

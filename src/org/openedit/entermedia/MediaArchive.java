@@ -15,6 +15,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermedia.error.EmailErrorHandler;
+import org.entermedia.locks.Lock;
+import org.entermedia.locks.LockManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
@@ -71,6 +73,7 @@ public class MediaArchive
 	protected AssetStatsManager fieldAssetStatsManager;
 	protected Replacer fieldReplacer;
 	protected MimeTypeMap fieldMimeTypeMap;
+	protected LockManager fieldLockManager;
 	
 	public String getMimeTypeIcon(String inFormat)
 	{
@@ -1148,5 +1151,25 @@ public class MediaArchive
 		
 		String result = getReplacer().replace(format, tmp);
 		return result;
+	}
+	public LockManager getLockManager()
+	{
+		return fieldLockManager;
+	}
+	public void setLockManager(LockManager inLockManager)
+	{
+		fieldLockManager = inLockManager;
+	}
+	
+	public Lock lockAssetIfPossible(String inSourcePath, User inUser)
+	{
+		Lock lock = getLockManager().lockIfPossible(getCatalogId(), getCatalogHome() + inSourcePath, inUser.getId());
+		return lock;
+	}
+	
+	public boolean releaseLock(Lock inLock)
+	{
+		boolean ok = getLockManager().release(getCatalogId(), inLock);
+		return ok;
 	}
 }

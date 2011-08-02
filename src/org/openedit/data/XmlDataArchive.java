@@ -73,26 +73,6 @@ public class XmlDataArchive implements DataArchive
 		fieldXmlArchive = inXmlArchive;
 	}
 
-	protected void saveToXml(Data inData)
-	{
-//todo require an id
-//		if( inData.getId() == null )
-//		{
-//			inData.setId(nextId());
-//		}
-
-		
-		//Prepare data
-		if( inData == null || inData.getSourcePath() == null )
-		{
-			throw new OpenEditException("Cannot save null data.");
-		}
-		String path = getPathToXml(inData.getSourcePath());
-		XmlFile xml = getXmlArchive().getXml(path, getElementName());
-		addRow(inData, xml);
-		getXmlArchive().saveXml(xml, null);
-	}
-
 	private void addRow(Data inData, XmlFile xml)
 	{
 		Element element = xml.getElementById(inData.getId());
@@ -111,7 +91,17 @@ public class XmlDataArchive implements DataArchive
 			populateElement(element, inData);
 		}
 	}
-	
+	public void saveData(Data inData, User inUser)
+	{
+		if( inData == null || inData.getSourcePath() == null )
+		{
+			throw new OpenEditException("Cannot save null data.");
+		}
+		String path = getPathToXml(inData.getSourcePath());
+		XmlFile xml = getXmlArchive().getXml(path, getElementName());
+		addRow(inData, xml);
+		getXmlArchive().saveXml(xml, null);
+	}
 	public void saveAllData(Collection inAll, User inUser)
 	{
 		XmlFile xml = null;//
@@ -119,6 +109,7 @@ public class XmlDataArchive implements DataArchive
 		{
 			Data data = (Data) iterator.next();
 			String path = getPathToXml(data.getSourcePath());
+			//open the xml file. May reuse this file for other rows
 			if( xml == null || !xml.getPath().equals(path))
 			{
 				if( xml != null)
