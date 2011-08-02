@@ -17,7 +17,6 @@ public class CompositeHandler extends java.util.logging.Handler
 		{
 			fieldChildren = new ArrayList();
 		}
-
 		return fieldChildren;
 	}
 
@@ -33,7 +32,6 @@ public class CompositeHandler extends java.util.logging.Handler
 			Handler handler = (Handler) iterator.next();
 			handler.publish(inRecord);
 		}
-		
 	}
 
 	public void flush()
@@ -57,13 +55,23 @@ public class CompositeHandler extends java.util.logging.Handler
 
 	public void addChild(Handler inScriptLogger)
 	{
-		getChildren().remove(inScriptLogger);
-		getChildren().add(inScriptLogger);
+		synchronized (this)
+		{
+			List copy = new ArrayList(getChildren());
+			copy.remove(inScriptLogger);
+			copy.add(inScriptLogger);
+			setChildren(copy);
+		}
 	}
 
 	public void removeChild(Handler inScriptLogger)
 	{
-		getChildren().remove(inScriptLogger);
+		synchronized (this)
+		{
+			List copy = new ArrayList(getChildren());
+			copy.remove(inScriptLogger);
+			setChildren(copy);
+		}
 	}
 
 }

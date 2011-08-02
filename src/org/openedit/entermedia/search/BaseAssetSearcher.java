@@ -79,7 +79,6 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 			}
 
 			search.addMatches("category", actualid);
-			
 			search.setResultType("category");
 			
 			HitTracker res = cachedSearch(inPageRequest, search);	
