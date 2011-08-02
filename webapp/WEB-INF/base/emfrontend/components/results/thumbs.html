@@ -3,6 +3,11 @@
 #if( !$hideheader )
 $pages.include("$apphome/components/results/header.html",$context)
 #end
+
+<div style="float:right;">
+	$pages.include("$apphome/components/results/pages.html",$context)
+</div>
+
 #macro( showStars $incount) 
 	#if( $incount > 5 )
 		#set( $incount = 5 )
@@ -92,6 +97,11 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	</div>
 	</td></tr>
 </table>
+#if($hits.getPageOfHits().size() > 6)
+<div style="float:right;">
+	$pages.include("$apphome/components/results/pages.html",$context)
+</div>
+#end
 #if ( $hits.totalPages == 0 )
 <p>
 [[No results found.]]
