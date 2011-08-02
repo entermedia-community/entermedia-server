@@ -1,17 +1,8 @@
-#set ($link = $mediaarchive.asLinkToPreview($asset.sourcepath))
-#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
-
 <div  style="text-align: center;">
-	#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-
-	#if( $type != "video" )
-		<a class="slideshow emdialog" href="$home$link" target="_parent"
-		pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
-		title="[[Slideshow]]">
-		$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
-		</a>
-	#else	
-		$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
+	#if( !$asset.importstatus || $asset.importstatus != "complete" )
+		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${hit.id}",$context)
+	#else
+		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
 	#end
 	<div class="emviewercaption">$!asset.caption</div>
 </div>
