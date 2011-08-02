@@ -4,6 +4,7 @@
 
 #if($conversionerrors && $conversionerrors.size() >0)
 	<span style="color:red;">Conversion Error</span>
+	$pages.include("$apphome/components/convertqueue/conversions.html", $context)
 #elseif($publisherrors && $publisherrors.size() >0)
 	<span style="color:red;">Publish Error</span>
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
