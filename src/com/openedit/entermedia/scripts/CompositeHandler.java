@@ -55,6 +55,7 @@ public class CompositeHandler extends java.util.logging.Handler
 
 	public void addChild(Handler inScriptLogger)
 	{
+		//deal with Concurent Modification. Dont want getChildren() to fail mid way
 		synchronized (this)
 		{
 			List copy = new ArrayList(getChildren());

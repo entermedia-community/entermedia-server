@@ -17,6 +17,7 @@ import org.openedit.entermedia.episode.*;
 import conversions.*;
 import java.util.List;
 import java.util.ArrayList;
+import org.entermedia.locks.Lock;
 
 public void checkforTasks()
 {
