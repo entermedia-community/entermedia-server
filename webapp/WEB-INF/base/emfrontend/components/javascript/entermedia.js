@@ -567,9 +567,6 @@ showajaxstatus = function()
 			var cell = jQuery(this);
 			var path = cell.attr("ajaxpath");
 			var hitid = cell.attr("linkid");
-			jQuery("#" + hitid).attr("onclick", "return false;");
-			//cell.load(path);
-			//cell.replaceWith(jQuery.ajax(path));
 			jQuery.get(path, {}, function(data) {
 				cell.replaceWith(data);
 			});

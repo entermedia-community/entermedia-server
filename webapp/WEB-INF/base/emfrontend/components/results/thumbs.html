@@ -48,7 +48,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			#set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
 			$context.putPageValue("clink", $clink)
 
-			<a id="$hit.id" href="$click">
+			<a href="$click">
 
 			<div class="emthumbimage em$thumbsize" 
 				#if( $showcaption ) style="vertical-align:bottom;" #end 

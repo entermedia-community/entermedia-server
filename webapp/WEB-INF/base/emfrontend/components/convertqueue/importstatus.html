@@ -2,9 +2,9 @@
 	#set( $hit = $asset )
 #end
 
-#if($conversionerrors.size() >0)
+#if($conversionerrors && $conversionerrors.size() >0)
 	<span style="color:red;">Conversion Error</span>
-#elseif($publisherrors.size() >0)
+#elseif($publisherrors && $publisherrors.size() >0)
 	<span style="color:red;">Publish Error</span>
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
 	$context.putPageValue("hit",$hit)
@@ -15,12 +15,12 @@
 	#else	
 		<img class="smallthumb" src="$home$cataloghome/downloads/preview/${content.thumbsize}/$hit.sourcepath/thumb.jpg" border="0" />
 	#end
-#elseif($conversionsremaining.size()  > 0)
-	<div class="ajaxstatus"  linkid="$hit.id" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src='$home/system/images/toolbar/spinner.gif'/></div>
-#elseif($publish.size() >0 )
-	<div class="ajaxstatus"  linkid="$hit.id" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Publishing Proxy $publish.size()" src='$home/system/images/toolbar/spinner.gif'/></div>
-#elseif($conversions.size() == 0)
-	<div class="ajaxstatus"  linkid="$hit.id" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >
+#elseif($conversionsremaining && $conversionsremaining.size()  > 0)
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src='$home/system/images/toolbar/spinner.gif'/></div>
+#elseif($publish && $publish.size() >0 )
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Publishing Proxy $publish.size()" src='$home/system/images/toolbar/spinner.gif'/></div>
+#elseif($conversions && $conversions.size() == 0)
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >
 		<img title="Adding to Queue" src='$home/system/images/toolbar/spinner.gif'/>
 	</div>
 #end
