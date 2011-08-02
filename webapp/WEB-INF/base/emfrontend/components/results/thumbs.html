@@ -1,8 +1,13 @@
 <div id="emresultscontent">
-
+$hits.setHitsPerPage(1000)
 #if( !$hideheader )
 $pages.include("$apphome/components/results/header.html",$context)
 #end
+
+<div style="float:right;">
+	$pages.include("$apphome/components/results/pages.html",$context)
+</div>
+
 #macro( showStars $incount) 
 	#if( $incount > 5 )
 		#set( $incount = 5 )
@@ -52,7 +57,11 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 			<div class="emthumbimage em$thumbsize" 
 				#if( $showcaption ) style="vertical-align:bottom;" #end 
-				#if($showhover != false) hover="true" #end >			
+				#if($showhover != false) hover="true" #end >
+				
+				#if($hit.id == $asset.id)
+				selected
+				#end			
 
 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
 
@@ -88,6 +97,11 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	</div>
 	</td></tr>
 </table>
+#if($hits.getPageOfHits().size() > 6)
+<div style="float:right;">
+	$pages.include("$apphome/components/results/pages.html",$context)
+</div>
+#end
 #if ( $hits.totalPages == 0 )
 <p>
 [[No results found.]]

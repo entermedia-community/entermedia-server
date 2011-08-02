@@ -546,7 +546,7 @@ onloadselectors = function()
 				{
 					if( ajaxtimerrunning == false) 
 					{
-						setTimeout("showajaxstatus();",1000);
+						setTimeout("showajaxstatus();",10000);
 						ajaxtimerrunning = true;
 					}
 				}
@@ -559,30 +559,28 @@ showajaxstatus = function()
 {
 	//for each asset on the page reload it's status
 	var foundone = false;
-	ajaxtimerrunning = false;
 	jQuery(".ajaxstatus").each(
 		function()
 		{
 			foundone = true;
 			var cell = jQuery(this);
 			var path = cell.attr("ajaxpath");
-			//cell.load(path);
-			//cell.replaceWith(jQuery.ajax(path));
+			var hitid = cell.attr("linkid");
 			jQuery.get(path, {}, function(data) {
 				cell.replaceWith(data);
 			});
 		}
 	);
-	
-	if( foundone )
-	{
-		//make sure it is not running
-		if( ajaxtimerrunning == false) 
-		{
-			setTimeout("showajaxstatus();",1000);
-			ajaxtimerrunning = true;
-		}
-	}
+	ajaxtimerrunning = false;
+//	if( foundone )
+//	{
+//		//make sure it is not running
+//		if( ajaxtimerrunning == false) 
+//		{
+//			setTimeout("showajaxstatus();",1000);
+//			ajaxtimerrunning = true;
+//		}
+//	}
 }
 
 

@@ -18,6 +18,6 @@
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>
   	<path-action name="AssetStatsModule.addPreViewEvent" />
-	<property name="section">assets</property>
+	<property name="section">home</property>
 	
 </page>

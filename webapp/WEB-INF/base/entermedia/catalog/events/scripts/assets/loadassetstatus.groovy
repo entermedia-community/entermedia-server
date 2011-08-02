@@ -72,6 +72,10 @@ public boolean conversionsComplete(String assetid){
 	{
 		return false;
 	}
+	if(remaining.size() > 0)
+	{
+		return false;
+	}
 	return true;
 }
 
