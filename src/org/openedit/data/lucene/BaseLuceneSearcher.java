@@ -678,7 +678,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		fieldIndexPath = inIndexPath;
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		throw new OpenEditRuntimeException("saveData not implemented in this searcher. May need to create an archive");
 	}

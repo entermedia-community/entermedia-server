@@ -105,7 +105,7 @@ public class BaseGroupSearcher extends BaseSearcher implements GroupSearcher
 	{
 		return getUserManager().getGroup(inId);
 	}
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		getUserManager().saveGroup((Group)inData);
 	}

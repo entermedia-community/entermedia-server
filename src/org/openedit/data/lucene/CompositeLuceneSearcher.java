@@ -53,7 +53,7 @@ public class CompositeLuceneSearcher extends CompositeSearcher
 		
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		
 	}

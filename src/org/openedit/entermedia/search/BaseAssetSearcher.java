@@ -238,7 +238,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 		}
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		if (inData instanceof Asset)
 		{

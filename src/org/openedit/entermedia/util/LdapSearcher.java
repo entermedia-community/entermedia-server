@@ -99,7 +99,7 @@ public class LdapSearcher extends BaseSearcher
 		
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		// TODO Auto-generated method stub
 		
