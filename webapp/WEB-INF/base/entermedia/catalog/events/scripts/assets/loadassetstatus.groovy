@@ -98,6 +98,7 @@ public boolean loadPublishing(String assetid)
 	query = queuesearcher.createSearchQuery();
 	query.addMatches("status", "error");
 	query.addMatches("assetid", assetid);
+	query.setHitsName("publishstatuserrors");
 	HitTracker errors = queuesearcher.cachedSearch(context, query);
 	context.putPageValue("publisherrors", errors);
 

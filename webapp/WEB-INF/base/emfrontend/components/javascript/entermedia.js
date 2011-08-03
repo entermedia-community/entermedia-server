@@ -572,15 +572,6 @@ showajaxstatus = function()
 		}
 	);
 	ajaxtimerrunning = false;
-//	if( foundone )
-//	{
-//		//make sure it is not running
-//		if( ajaxtimerrunning == false) 
-//		{
-//			setTimeout("showajaxstatus();",1000);
-//			ajaxtimerrunning = true;
-//		}
-//	}
 }
 
 
