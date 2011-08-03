@@ -41,6 +41,7 @@ public boolean conversionsComplete(String assetid){
 	//query.addOrsGroup("status", "new submitted retry pending");
 	
 	query.addMatches("assetid", assetid);
+	query.setHitsName("convertstatus");
 	HitTracker newtasks = tasksearcher.cachedSearch(context, query);
 
 	List errors = new ArrayList();
@@ -89,6 +90,7 @@ public boolean loadPublishing(String assetid)
 	SearchQuery query = queuesearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry pending");
 	query.addMatches("assetid", assetid);
+	query.setHitsName("publishstatus");
 	HitTracker newtasks = queuesearcher.cachedSearch(context, query);
 	context.putPageValue("publish", newtasks);
 	

@@ -546,7 +546,7 @@ onloadselectors = function()
 				{
 					if( ajaxtimerrunning == false) 
 					{
-						setTimeout("showajaxstatus();",10000);
+						setTimeout("showajaxstatus();",30000);
 						ajaxtimerrunning = true;
 					}
 				}
