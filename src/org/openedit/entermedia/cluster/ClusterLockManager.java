@@ -59,6 +59,10 @@ public class ClusterLockManager implements LockManager
 
 	public boolean isOwner(Lock lock, String inOwnerId)
 	{
+		if( lock == null)
+		{
+			throw new OpenEditException("Lock should not be null");
+		}
 		return lock.isOwner(getNodeManager().getLocalNodeId(),inOwnerId);
 	}
 
@@ -71,6 +75,7 @@ public class ClusterLockManager implements LockManager
 		lockrequest.setNodeId(getNodeManager().getLocalNode().getId());
 		lockrequest.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		searcher.saveData(lockrequest, null);
+		log.info("locked " + inPath);
 		return lockrequest;
 	}
 	

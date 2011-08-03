@@ -1,6 +1,6 @@
 <div  style="text-align: center;">
 	#if( !$asset.importstatus || $asset.importstatus != "complete" )
-		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${hit.id}",$context)
+		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
 	#else
 		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
 	#end

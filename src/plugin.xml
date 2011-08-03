@@ -453,7 +453,9 @@
 		<property name="mimeTypeMap">
 			<ref bean="mimeTypeMap" />
 		</property>
-		
+		<property name="lockManager">
+			<ref bean="lockManager" />
+		</property>
 	</bean>
 
 	<bean id="albumArchive" class="org.openedit.entermedia.albums.AlbumArchive"

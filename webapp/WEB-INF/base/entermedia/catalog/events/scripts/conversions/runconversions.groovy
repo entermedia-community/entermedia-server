@@ -68,7 +68,7 @@ public void checkforTasks()
 					}
 					finally
 					{
-						mediaarchive.releaseLock(lock,user);
+						mediaarchive.releaseLock(lock);
 					}
 				}
 				catch(Throwable e)
