@@ -1,5 +1,5 @@
 <properties>
-	<property id="id" index="true" stored="true">Lock Id</property>
+	<property id="_id" index="true" stored="true">Lock Id</property>
 	<property id="nodeid"  index="true" stored="true">Node Id</property>
 	<property id="ownerid"  index="true" stored="true">Owner Id</property>
 	<property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>

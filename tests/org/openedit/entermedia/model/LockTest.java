@@ -18,7 +18,7 @@ public class LockTest extends BaseEnterMediaTest
 	
 	public void testLocks()
 	{
-		LockManager manager = (LockManager)getFixture().getModuleManager().getBean("lockManager");
+		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
 		
 		String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
 		manager.releaseAll("entermedia/catalogs/testcatalog",path);
@@ -38,7 +38,7 @@ public class LockTest extends BaseEnterMediaTest
 	
 	public void testAssetIsAlreadyLocked() throws Exception
 	{
-		LockManager manager = (LockManager)getFixture().getModuleManager().getBean("lockManager");
+		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
 		
 		String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
 		manager.releaseAll("entermedia/catalogs/testcatalog",path);
@@ -63,7 +63,7 @@ public class LockTest extends BaseEnterMediaTest
 
 	public void testWaitForLock() throws Exception
 	{
-		final LockManager manager = (LockManager)getFixture().getModuleManager().getBean("lockManager");
+		final LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
 		
 		final String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
 		manager.releaseAll("entermedia/catalogs/testcatalog",path);
