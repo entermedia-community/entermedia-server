@@ -134,7 +134,7 @@ public class ClusterLockManager implements LockManager
 		Lock lock = loadLock(inCatId,inPath);
 		if( isOwner(lock,inOwnerId))
 		{
-			return lockrequest;
+			return lock;
 		}
 		release(inCatId, lockrequest);
 		return null;
