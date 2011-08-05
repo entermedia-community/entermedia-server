@@ -190,7 +190,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 							//Date dateValue = externalFormat.parse(value);
 							//value = value + " -0000"; //added offset of 0 since that seems to be the default
 							Date creationdate = DateStorageUtil.getStorageUtil().parseFromStorage(value);
-							inAsset.setProperty(property.getId(), DateStorageUtil.getStorageUtil().formatForStorage(creationdate));
+							if (creationdate!=null)
+							{
+								inAsset.setProperty(property.getId(), DateStorageUtil.getStorageUtil().formatForStorage(creationdate));
+							}
 						}
 						else if(property.isList() || property.isDataType("number"))
 						{
