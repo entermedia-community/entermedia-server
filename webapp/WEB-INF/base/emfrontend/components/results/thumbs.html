@@ -81,7 +81,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 							$hit.name
 						#end
 						</div>
-					</td><td>#if(${hit.length})$!{hit.length}s#end</td> ##show smart time
+					</td><td>#if(${hit.length})$mediaarchive.formatLength($hit.length)#end</td> ##show smart time
 					</tr>
 					</table>
 					<div class="emgallerystars">
