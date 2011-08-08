@@ -160,17 +160,21 @@ public class AssetSyncModule extends BaseMediaModule
 	{
 		String applicationid = inReq.findValue("applicationid");
 
-		String searchcurrentcatalogonly=inReq.findValue("searchcurrentcatalogonly");
+//		String searchcurrentcatalogonly=inReq.findValue("searchcurrentcatalogonly");
 		Searcher searcher=null;
-		if (Boolean.parseBoolean(searchcurrentcatalogonly)) 
-		{
+//		if (Boolean.parseBoolean(searchcurrentcatalogonly)) 
+//		{
 			String catalogid = inReq.findValue("catalogid");
+			if( catalogid == null)
+			{
+				return;
+			}
 			searcher = getSearcherManager().getSearcher(catalogid, "asset"); 
-		} 
-		else 
-		{
-			searcher = (CompositeSearcher)getSearcherManager().getSearcher(applicationid, "compositeLucene");
-		}
+//		} 
+//		else 
+//		{
+//			searcher = (CompositeSearcher)getSearcherManager().getSearcher(applicationid, "compositeLucene");
+//		}
 		
 		SearchQuery query = searcher.createSearchQuery();
 		query.addMatches("importstatus", "uploading");
@@ -199,10 +203,10 @@ public class AssetSyncModule extends BaseMediaModule
 			for (Iterator iterator = inprogress.getPageOfHits().iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
-				String catalogid = data.get("catalogid");
+				String localcatalogid = data.get("catalogid");
 				String sourcepath = data.getSourcePath();	
-				Asset existing = entermedia.getAssetBySourcePath(catalogid, sourcepath);
-				updateUploadStatus(catalogid, existing);
+				Asset existing = entermedia.getAssetBySourcePath(localcatalogid, sourcepath);
+				updateUploadStatus(localcatalogid, existing);
 				assets.add(existing);
 			}
 		}

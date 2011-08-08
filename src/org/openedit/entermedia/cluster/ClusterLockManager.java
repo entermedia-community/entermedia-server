@@ -132,6 +132,10 @@ public class ClusterLockManager implements LockManager
 		Lock lockrequest = addLock(inPath, inOwnerId, searcher);
 
 		Lock lock = loadLock(inCatId,inPath);
+		if( lock.getId() == null)
+		{
+			throw new OpenEditException("Lock ID must not be null");
+		}
 		if( isOwner(lock,inOwnerId))
 		{
 			return lock;

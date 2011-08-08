@@ -1169,6 +1169,15 @@ public class MediaArchive
 	
 	public boolean releaseLock(Lock inLock)
 	{
+		if( inLock == null)
+		{
+			throw new OpenEditException("Previous lock was null");
+		}
+		if( inLock.getId() == null)
+		{
+			throw new OpenEditException("Previous lock id was null");
+		}
+
 		boolean ok = getLockManager().release(getCatalogId(), inLock);
 		return ok;
 	}

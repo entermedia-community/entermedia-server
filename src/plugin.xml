@@ -730,7 +730,7 @@
 		</property>
 		<property name="preProcessors">
 			<list>
-				<ref bean="ffMpegImageCreator" />
+				<!-- no longer needed since script already creates an 800x600  ref bean="ffMpegImageCreator" / -->
 				<ref bean="exifToolThumbCreator" />
 				<!--   ref bean="ghostScriptImageCreator" / -->
 			</list>
