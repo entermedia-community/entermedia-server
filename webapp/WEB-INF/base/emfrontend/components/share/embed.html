@@ -1,7 +1,10 @@
 #set($sourcepath = $context.getRequestParameter("sourcepath"))
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 <div id="embed-wrapper" style="padding: 15px;">
 <span class="embedlinktext" style="float:left;">Embed Link</span>
 <div class="embedlink">
-<textarea rows="10" cols="30" style="float:left;">$context.siteRoot$home$apphome/views/assets/$sourcepath/index.html</textarea>
+<textarea type=text onclick="this.select();" readonly="readonly" rows="7" cols="60">
+	$pages.include("$apphome/components/mediaviewer/player/types/${type}.html", $context)
+</textarea>
 </div>
 </div>
