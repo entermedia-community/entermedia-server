@@ -50,23 +50,22 @@ public class ffmpegimageCreator extends BaseImageCreator
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
-		result.setOk(false);
+		result.setOk(true);
 
 		// We are going to take frames from the converted flv video
-		ConvertInstructions ci = new ConvertInstructions();
-		ci.setAssetSourcePath(inAsset.getSourcePath());
-		ci.setOutputExtension("flv");
-		inArchive.getCreatorManager().getMediaCreatorByOutputFormat("flv").populateOutputPath(inArchive, ci);
-		Page input = getPageManager().getPage(ci.getOutputPath());
+//		ConvertInstructions ci = new ConvertInstructions();
+//		ci.setAssetSourcePath(inAsset.getSourcePath());
+//		ci.setOutputExtension("flv");
+//		inArchive.getCreatorManager().getMediaCreatorByOutputFormat("flv").populateOutputPath(inArchive, ci);
+		Page input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/video.mp4");
+		
+//		Page input = getPageManager().getPage(ci.getOutputPath());
 		
 		// Or the original file, if the flv does not exist
 		if( !input.exists() )
 		{
-			input = inArchive.findOriginalMediaByType("video",inAsset);
-		}
-		if( input == null || !input.exists())
-		{
-			//no such original
+			result.setOk(false);
+            log.info("Input not ready yet");
 			return result;
 		}
 
@@ -112,13 +111,15 @@ public class ffmpegimageCreator extends BaseImageCreator
 		if (runExec(getCommandName(), com))
 		{
 			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
-			result.setOk(true);
+			result.setComplete(true);
 			result.setOutputPath(inOutFile.getContentItem().getAbsolutePath());
 		}
 		
 		if(!inOutFile.exists() || inOutFile.length() == 0)
 		{
 			log.info("Thumnail creation failed " + result.getOutputPath());
+			result.setOk(false);
+			result.setError("creation failed" );
 		}
 
 		return result;
