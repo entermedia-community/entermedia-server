@@ -4,7 +4,8 @@
 <span class="embedlinktext" style="float:left;">Embed Link</span>
 <div class="embedlink">
 <textarea type=text onclick="this.select();" readonly="readonly" rows="7" cols="60">
-	$pages.include("$apphome/components/mediaviewer/player/types/${type}.html", $context)
+	<iframe src="$context.siteRoot$home$apphome/components/mediaviewer/player/types/${type}.html?oemaxlevel=1&sourcepath=$asset.sourcepath" width="580" height="300">
+	</iframe>
 </textarea>
 </div>
 </div>
