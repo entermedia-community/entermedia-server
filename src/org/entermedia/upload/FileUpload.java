@@ -122,7 +122,8 @@ public class FileUpload
 		
 		ServletFileUpload uploadreader = new ServletFileUpload(factory);
 		//upload.setSizeThreshold(BUFFER_SIZE);
-		
+		//uploadreader.setProgressListener(testProgressListener);
+
 		HttpServletRequest req = inContext.getRequest();
 		String encode = req.getCharacterEncoding();
 		if ( encode == null)

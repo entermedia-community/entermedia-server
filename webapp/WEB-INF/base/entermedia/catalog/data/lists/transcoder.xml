@@ -1,7 +1,8 @@
 <transcoders>
 <transcoder id="original">Original</transcoder>
 <transcoder id="ffmpeg">FFMPEG Video</transcoder>
-<transcoder id="FfmpegAudio">FFMPEG Audio</transcoder>
+<transcoder id="ffmpegAudio">FFMPEG Audio</transcoder>
+<transcoder id="ffmpegimage">FFMPEG Image</transcoder>
 <transcoder id="rhozet">Rhozet</transcoder>
 <transcoder id="telestream">Telestream</transcoder>
 <transcoder id="digitalrapids">Digital Rapids</transcoder>

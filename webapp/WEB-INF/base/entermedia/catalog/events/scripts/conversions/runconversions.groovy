@@ -120,7 +120,8 @@ public void checkforTasks()
 					}
 					else
 					{
-						realtask.setProperty("status", "failed");
+						log.error("ok with no error, continue");
+						continue;
 					}
 					//tosave.add( realtask);
 					tasksearcher.saveData(realtask, context.getUser());
