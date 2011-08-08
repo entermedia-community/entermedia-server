@@ -54,4 +54,6 @@ public interface DataConnector
 
 	void setRootDirectory(File inRoot);
 
+	boolean hasChanged(HitTracker inTracker);
+
 }

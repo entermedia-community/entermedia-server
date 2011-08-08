@@ -4,8 +4,10 @@
 #end
 
 <tr id="tableheader">
+#if( $showtoolbar )
 	<th class="firstheader" style="width: 20px;"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end onClick="togglehits();" /></th>
-	<th style="padding:2px;"> Thumbnail</th>
+#end	
+	<th style="text-align: center;"> Thumbnail</th>
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
 		<th  #if( $edit)class="editcolumnheader"#end>
@@ -13,22 +15,22 @@
 				<span>
 					#text( $detail.name )
 					#if( $edit)
-						<a class="baseemenableonhover ajax" targetdiv="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						<a class="baseemenableonhover ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 					#else
 						##if is  this is our sort by column show it, allow them to flip it
 						#if( $sortby.startsWith($detail.getId() ) )
 							#if( $sortby.endsWith("Up") )
-								<a class="ajax" targetdiv="resultsdiv" href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Down">
+								<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Down">
 									<img title="Sort Decreasing" src="$home$themeprefix/images/navigation/arrow-down.png" />
 								</a>	
 							#else
-								<a class="ajax" targetdiv="resultsdiv" href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Up">
+								<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Up">
 									<img title="Sort Increasing" src="$home$themeprefix/images/navigation/arrow-up.png" />
 								</a>	
 							#end
 						</a>
 						#else
-						<a class="baseemshowonhover ajax" targetdiv="resultsdiv"  href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Up">
+						<a class="baseemshowonhover ajax" targetdiv="emresultscontent"  href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Up">
 							<img title="Sort Increasing" src="$home$themeprefix/images/navigation/arrow-down.png" />
 						</a>
 						#end
@@ -37,12 +39,12 @@
 			</div>
 		</th>
 	#end
-	<th class="lastheader" style="width: 75px;" id="tableeditcontrol">
+	<th class="lastheader editcolumnheaderpicker"  id="tableeditcontrol">
 	#if( $edit)
 	<script type="text/javascript">
 	function addColumn(inId)
 	{
-		jQuery('#resultsdiv').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+		jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
 	}
 </script>
 	

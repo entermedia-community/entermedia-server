@@ -70,12 +70,17 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			#if( $showcaption )
 				<a href="$click">
 				<div class="emthumbboxtext emtitle">			
-	
 					<table width="100%"><tr>
 					<td>
 						<div >
-						#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
-					</div>
+						#if( $hit.assettitle ) 
+							$hit.assettitle 
+						#elseif( $hit.caption )
+							$hit.caption
+						#else 
+							$hit.name
+						#end
+						</div>
 					</td><td>#if(${hit.length})$!{hit.length}s#end</td> ##show smart time
 					</tr>
 					</table>

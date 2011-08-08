@@ -446,4 +446,9 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 		super.setSearcherManager(inManager);
 		getDataConnector().setSearcherManager(inManager);
 	}
+	
+	public boolean hasChanged(HitTracker inTracker)
+	{
+		return getDataConnector().hasChanged(inTracker);
+	}
 }

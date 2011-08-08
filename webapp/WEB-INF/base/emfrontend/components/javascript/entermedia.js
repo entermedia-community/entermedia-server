@@ -35,11 +35,20 @@ runajax = function(e)
 	var nextpage= jQuery(this).attr('href');
 	var targetDiv = jQuery(this).attr("targetdiv");
 	targetDiv = targetDiv.replace(/\//g, "\\/");
-	jQuery("#"+targetDiv).load(nextpage, {}, function()
-		{
-			// onloadselectors("#"+ targetDiv);
-		}
+
+
+	jQuery.get(nextpage, {}, function(data) 
+			{
+				var cell = jQuery("#" + targetDiv);
+				cell.replaceWith(data);
+			}
 	);
+
+//	jQuery("#"+targetDiv).load(nextpage, {}, function()
+//		{
+//			// onloadselectors("#"+ targetDiv);
+//		}
+//	);
 
 	return false;
 }

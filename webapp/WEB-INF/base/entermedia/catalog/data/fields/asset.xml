@@ -76,6 +76,7 @@
 	<property id="productionnumber" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Production Number</property>
 	
 	<property id="fatwireid" index="true" stored="true">FatWire ID</property>
+	<property id="uploadteam" index="true" stored="true" catalogid="system" type="list" listid="group">Upload Team</property>
 
 
 </properties>

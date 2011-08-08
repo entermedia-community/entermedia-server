@@ -1,15 +1,17 @@
 <tr rowid="$home$apphome/views/assets/$sourcepath/index.html">
+#if( $pickable )
 	<td class="borderedcell" noclick="true"> 
 		
 <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />
 
 	</td>
+#end	
 	<td style="text-align: center;">
 $pages.include("$apphome/components/results/thumbnails/small.html",$context)		
 	</td>
 
 #foreach( $detail in $details)
-	#set( $value = "")
+	#set( $value = false)
 	#if( $detail.id == "name")
 		#if( $hit.name )
       		#set( $value = $hit.name )
