@@ -4,8 +4,8 @@
 	<property name="assetrootfolder">/${catalogid}/downloads/preview/crop</property>
 	<generator name="convertArchiveDocument"/>
 	<property name="crop">true</property>
-	<property name="width">110</property>
-	<property name="height">62</property>
+	<property name="prefwidth">110</property>
+	<property name="prefheight">62</property>
 	<property name="x1">0</property>
 	<property name="y1">0</property>
 	<property name="gravity">center</property>

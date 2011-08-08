@@ -271,9 +271,9 @@ public class ImageMagickImageCreator extends BaseImageCreator
 			//resize then cut off edges so end up with a square image
 			com.add("-resize");
 			StringBuffer resizestring = new StringBuffer();
-			resizestring.append(inStructions.getProperty("width"));
+			resizestring.append(inStructions.getMaxScaledSize().width);
 			resizestring.append("x");
-			resizestring.append(inStructions.getProperty("height"));
+			resizestring.append(inStructions.getMaxScaledSize().height);
 			resizestring.append("^");
 			com.add(resizestring.toString());
 			//now let's crop
@@ -286,9 +286,9 @@ public class ImageMagickImageCreator extends BaseImageCreator
 			}
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
-			cropString.append(inStructions.getProperty("width"));
+			cropString.append(inStructions.getMaxScaledSize().width);
 			cropString.append("x");
-			cropString.append(inStructions.getProperty("height"));
+			cropString.append(inStructions.getMaxScaledSize().height);
 			
 			String x1 = inStructions.getProperty("x1");
 			String y1 = inStructions.getProperty("y1");
@@ -483,7 +483,7 @@ public class ImageMagickImageCreator extends BaseImageCreator
 		watermarked = new File(stub.getAbsolutePath());
 
 		if (watermarked.exists() && watermarked.length() > 0)
-		{
+		{	
 			return watermarked;
 		}
 		else
