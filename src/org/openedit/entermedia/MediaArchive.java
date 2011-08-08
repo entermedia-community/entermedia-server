@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1180,5 +1182,44 @@ public class MediaArchive
 
 		boolean ok = getLockManager().release(getCatalogId(), inLock);
 		return ok;
+	}
+	
+	public String formatLength(Object inValue)
+	{
+		String secondstr = String.valueOf(inValue);
+		if(secondstr.length() == 0)
+		{
+			return "00:00:00";
+		}
+		int seconds = Integer.parseInt(secondstr);
+		if(seconds == 0)
+		{
+			return "00:00:00";
+		}
+		
+		Calendar cal = new GregorianCalendar();
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.add(Calendar.SECOND, seconds);
+		
+		StringBuffer length = new StringBuffer();
+		if(cal.get(Calendar.HOUR) < 10)
+		{
+			length.append("0");
+		}
+		length.append(cal.get(Calendar.HOUR) + ":");
+		if(cal.get(Calendar.MINUTE) < 10)
+		{
+			length.append("0");
+		}
+		length.append(cal.get(Calendar.MINUTE) + ":");
+		if(cal.get(Calendar.SECOND) < 10)
+		{
+			length.append("0");
+		}
+		length.append(cal.get(Calendar.SECOND));
+		
+		return length.toString();
 	}
 }
