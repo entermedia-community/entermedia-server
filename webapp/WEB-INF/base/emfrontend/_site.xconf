@@ -37,13 +37,6 @@
 
  	<property name="themeprefix">/${applicationid}/theme</property>
  	
- 	<permission name="adminall">
-		<or>
-			<settingsgroup id="faculty"/>
-			<settingsgroup id="mbaadmin"/>
-		</or>
-	</permission>
- 	
 	<permission name="viewasset">
 		<or>
 			<group name="administrators"/>
