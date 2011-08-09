@@ -36,7 +36,14 @@
 	<!-- property name="contentsiteroot">http://s3.amazonaws.com/emtube</property -->
 
  	<property name="themeprefix">/${applicationid}/theme</property>
-
+ 	
+ 	<permission name="adminall">
+		<or>
+			<settingsgroup id="faculty"/>
+			<settingsgroup id="mbaadmin"/>
+		</or>
+	</permission>
+ 	
 	<permission name="viewasset">
 		<or>
 			<group name="administrators"/>
@@ -46,7 +53,6 @@
 
 	<permission name="view">
 		<user/>
-		<!--not><pagevalue name="canviewasset"  equals="false"/></not-->
 	</permission>
 
   	<permission name="viewupload">
