@@ -58,9 +58,9 @@ public class AssetSecurityArchive
 		fieldRequestUtils = inRequestUtils;
 	}
 
-	public List getAccessList(MediaArchive inArchive, Page inPage, Asset inAsset)
+	public List getAccessList(MediaArchive inArchive, Page inPage, Asset inAsset, String inPermission)
 	{
-		Permission permission = inPage.getPermission("viewasset");
+		Permission permission = inPage.getPermission(inPermission);
 		ArrayList users = new ArrayList();
 		if (permission != null && permission.getRootFilter() != null)
 		{
@@ -77,7 +77,9 @@ public class AssetSecurityArchive
 		//Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + ".html");
 		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
 
-		List users = getAccessList(inArchive, page, inAsset);
+		List users = getAccessList(inArchive, page, inAsset, "viewasset");
+		List adminallusers = getAccessList(inArchive, page, inAsset, "adminall");
+		users.addAll(adminallusers);
 		return users;
 	}
 
