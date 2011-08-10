@@ -56,6 +56,9 @@ uiload = function() {
 				if( theinput && theinput.autocomplete )
 				{
 					var assetid = theinput.attr("assetid");
+					/*theinput.autocomplete({
+					    source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+					});*/
 					theinput.autocomplete({
 						source: '$home$apphome/components/autocomplete/addmygroupusers.txt?assetid=' + assetid,
 						select: function(event, ui) {
