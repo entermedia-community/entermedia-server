@@ -1,3 +1,8 @@
 <properties>
+	<property id="assettitle"/>
+	<property id="caption" />
+	<property id="name"/>
 	<property id="filesize" />
+	<property id="uploadteam" />
+	<property id="assetaddeddate" />
 </properties>
