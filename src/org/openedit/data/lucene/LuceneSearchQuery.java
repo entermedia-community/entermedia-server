@@ -103,7 +103,7 @@ public class LuceneSearchQuery extends SearchQuery
 			public String toQuery()
 			{
 				StringBuffer orString = new StringBuffer();
-				String[] orwords = getValue().split("\\s");
+				String[] orwords = getValue().split("\\s+");
 				if (orwords.length > 0)
 				{
 					orString.append("(");

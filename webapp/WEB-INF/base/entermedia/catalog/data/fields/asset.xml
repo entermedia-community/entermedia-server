@@ -5,7 +5,7 @@
 	<property id="name" index="true" stored="true" keyword="true" editable="false">File Name</property>
 	<property id="name_sortable" >File Name</property>
 	<property id="catalogid" viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
-	<property id="description">Search Text</property>
+	<property id="description" index="true" keyword="true">Search Text</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>
 	<property id="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
@@ -76,7 +76,7 @@
 	<property id="productionnumber" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Production Number</property>
 	
 	<property id="fatwireid" index="true" stored="true">FatWire ID</property>
-	<property id="uploadteam" index="true" stored="true" catalogid="system" type="list" listid="group">Upload Team</property>
+	<property id="uploadteam" index="true"  keyword="true" stored="true" catalogid="system" type="list" listid="group">Upload Team</property>
 
 
 </properties>
