@@ -369,7 +369,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 				}
 				buffer.append(" " + currentUser.getUserName());
 			}
-			inSearch.addOrsGroup("viewasset", buffer.toString());
+			inSearch.addOrsGroup("viewasset", buffer.toString().toLowerCase());
 			inSearch.setSecurityAttached(true);
 		}
 		String filter = inPageRequest.findValue("enableprofilefilters");
