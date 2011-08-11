@@ -140,7 +140,7 @@ public class ClusterLockManager implements LockManager
 		{
 			return lock;
 		}
-		release(inCatId, lockrequest);
+		release(inCatId, lock);
 		return null;
 	}
 	
