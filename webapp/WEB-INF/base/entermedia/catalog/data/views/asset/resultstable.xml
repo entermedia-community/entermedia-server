@@ -7,4 +7,5 @@
 	<property id="filesize" />
 	<property id="assettype" />
 	<property id="assetaddeddate" />
+	
 </properties>
