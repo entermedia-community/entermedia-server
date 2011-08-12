@@ -2,6 +2,13 @@
 	#set( $hit = $asset )
 #end
 
+#if (!$thumbsize )
+	#set($thumbsize = $context.getRequestParameter("thumbsize") )
+#end
+#if(!$thumbsize)
+	#set( $thumbsize = $content.thumbsize )
+#end
+
 #if($conversionerrors && $conversionerrors.size() >0)
 	<span style="color:red;">Conversion Error</span>
 #elseif($publisherrors && $publisherrors.size() >0)
@@ -13,14 +20,19 @@
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<img class="mimethumb"  src="$home$thumbpath" border="0"/>
 	#else	
-		<img class="smallthumb" src="$home$cataloghome/downloads/preview/${content.thumbsize}/$hit.sourcepath/thumb.jpg" border="0" />
+		<img class="smallthumb" src="$home$cataloghome/downloads/preview/${thumbsize}/$hit.sourcepath/thumb.jpg" border="0" />
 	#end
 #elseif($conversionsremaining && $conversionsremaining.size()  > 0)
-	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src='$home$themeprefix/images/ajax-loader.gif'/></div>
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+		<div class="uiinfo">Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}</div> 
+		<img 	src='$home$themeprefix/images/ajax-loader.gif'/></div>
 #elseif($publish && $publish.size() >0 )
-	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" ><img title="Publishing Proxy $publish.size()" src='$home$themeprefix/images/ajax-loader.gif'/></div>
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+	<div class="uiinfo">Publishing Proxy $publish.size()</div>
+	<img src='$home$themeprefix/images/ajax-loader.gif'/></div>
 #elseif($conversions && $conversions.size() == 0)
-	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id" >
-		<img title="Adding to Queue" src='$home$themeprefix/images/ajax-loader.gif'/>
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+		<div  class="uiinfo">Adding to Queue</div> 
+		<img src='$home$themeprefix/images/ajax-loader.gif'/>
 	</div>
 #end
