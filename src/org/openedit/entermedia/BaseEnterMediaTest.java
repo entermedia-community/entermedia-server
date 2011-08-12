@@ -21,7 +21,7 @@ public class BaseEnterMediaTest extends BaseTestCase
 	
 	public EnterMedia getEnterMedia(String inApplicationId)
 	{
-		EnterMedia media = (EnterMedia)getStaticFixture().getModuleManager().getBean(inApplicationId, "enterMedia");
+		EnterMedia media = (EnterMedia)getFixture().getModuleManager().getBean(inApplicationId, "enterMedia");
 		media.setApplicationId(inApplicationId);
 		return media;
 	}
