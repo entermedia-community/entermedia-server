@@ -19,6 +19,8 @@ log.add("2. UNZIP WAR FILE");
 var unziper = new ZipUtil();
 unziper.unzip(  tmp + "/ROOT.war",  tmp );
 
+var files = new FileUtils();
+
 log.add("3. UPGRADE BASE DIR");
 files.deleteAll( root + "/WEB-INF/base/entermedia");
 files.deleteAll( root + "/WEB-INF/base/emfrontend");
@@ -32,7 +34,6 @@ files.copyFiles( tmp + "/WEB-INF/base/themes/baseem", root + "/WEB-INF/base/them
 files.copyFiles( tmp + "/WEB-INF/base/themes/rational", root + "/WEB-INF/base/themes/rational");
 
 log.add("4. REPLACE LIBS");
-var files = new FileUtils();
 files.deleteMatch( web + "/lib/entermedia-server*.jar");
 files.deleteMatch( web + "/lib/entermedia-5*.jar");
 files.deleteMatch( web + "/lib/groovy-*.jar");
