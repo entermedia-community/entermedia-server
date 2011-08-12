@@ -1,6 +1,0 @@
-<page>
-
-<permission name="editasset">
-	<action name="AssetControlModule.checkFolderMatchesUserName" />
-</permission>
-</page>
