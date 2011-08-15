@@ -2,30 +2,20 @@
 
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = "users/$!{user.userName}/" )
-<form id="uploadform"  name="wizard" method="post" enctype="multipart/form-data" action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
+<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
+	action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
 	<input type="hidden" name="categoryid" value="index"/>
     <div style="width:320px; margin:auto;">
-    
 
         <input type="text" id="fileName" class="file_input_textbox"  readonly="readonly">
         
          <div class="file_input_div">
       	  <input type="button" value="Browse" class="file_input_button" />    
-          <input type="file" class="file_input_hidden" name="file.0" onchange="javascript: document.getElementById('fileName').value = this.value" />
+          <input type="file" class="file_input_hidden" name="file.0" onchange="pickFile(this.value)" />
         </div>
+        <div id="uploadprogress"  > </div>
 		<br/><br/>
         
-        
-        <!--   HERE IS YOUR ORIGINAL FILE UPLOADER
-        
-        <div class="uploadformfield">
-        <input type="file" size="35" name="file.0" class="uploadformfield" >
-		</div>
-       -->
-      
-       
-
-		
 			<h2>[[Caption]]</h2>
 			<input type="hidden" name="field" value="caption"/>
 			<input type="text" class="required" name="caption.value" style="width: 278px;" />
@@ -66,18 +56,62 @@
 
 </form>
 
-<div id="waiting" style="display:none;">
-	<div><img src='$home/system/images/toolbar/spinner.gif'/><br/>[[Uploading, please wait...]]</div>
-</div>
 
 </div>
 <script type="text/javascript" >
+	var uploadid;
  	doUpload =  function()
  	{
  		if(jQuery("#uploadform").valid()) {
  	 		jQuery("#finishbutton").attr('disabled','disabled');
-			jQuery("#waiting").show();
 			jQuery("#uploadform").submit();
  		}
  	}
+ 	
+ 	getUploadId = function()
+ 	{
+ 		if( uploadid == undefined)
+ 		{
+ 			var d = new Date();
+ 			uploadid = "$user.getId()_" + d.getTime();
+ 		}
+ 		return uploadid;
+ 	}
+ 	
+ 	pickFile = function(filename)
+ 	{
+ 		jQuery("#uploadform #fileName").attr("value", filename );
+ 		var action = jQuery("#uploadform").attr("action");
+ 		jQuery("#uploadform").attr("action", action + "&uploadid=" + getUploadId() );
+ 	}
+ 	
+ 	checkProgress = function()
+ 	{
+ 		jQuery("#uploadprogress").load("$home$apphome/components/upload/types/simple/uploadprogress.html?uploadid="+ getUploadId());
+ 	}
+ 	
+ 	function showResponse(responseText, statusText, xhr, $form)  
+ 	{ 
+ 		jQuery("#embody").html(responseText);	
+ 	}
+    // wait for the DOM to be loaded 
+    $(document).ready(function() { 
+        // bind 'myForm' and provide a simple callback function 
+        
+        $('#uploadform').ajaxForm({ 
+        	        // target identifies the element(s) to update with the server response 
+        	       // target: '#emcontainer', 
+        	        // success identifies the function to invoke when the server response 
+        	        // has been received; here we apply a fade-in effect to the new content
+        	        beforeSubmit:function() 
+        	        { 
+        	            checkProgress(); 
+        	           // document.onclick = disable;
+        	            jQuery("#finishbutton").attr("value","Sending...");
+        	           
+        	        }, 
+        	        success: showResponse
+        	    }); 
+    }); 
+ 	
 </script>

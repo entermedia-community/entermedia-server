@@ -555,7 +555,12 @@ onloadselectors = function()
 				{
 					if( ajaxtimerrunning == false) 
 					{
-						setTimeout("showajaxstatus();",30000);
+						var timeout = $(this).attr("period")
+						if( !timeout)
+						{
+							timeout = "3000";
+						}
+						setTimeout("showajaxstatus();",parseInt(timeout));
 						ajaxtimerrunning = true;
 					}
 				}
@@ -574,7 +579,6 @@ showajaxstatus = function()
 			foundone = true;
 			var cell = jQuery(this);
 			var path = cell.attr("ajaxpath");
-			var hitid = cell.attr("linkid");
 			jQuery.get(path, {}, function(data) {
 				cell.replaceWith(data);
 			});

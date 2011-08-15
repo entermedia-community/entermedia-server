@@ -13,6 +13,7 @@ import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
+import com.amazonaws.services.simpleemail.model.GetSendQuotaRequest;
 import com.openedit.OpenEditException;
 import com.openedit.users.User;
 
@@ -93,9 +94,13 @@ public class XmlDataArchive implements DataArchive
 	}
 	public void saveData(Data inData, User inUser)
 	{
-		if( inData == null || inData.getSourcePath() == null )
+		if( inData == null )
 		{
 			throw new OpenEditException("Cannot save null data.");
+		}
+		if(  inData.getSourcePath() == null )
+		{
+			throw new OpenEditException("sourcepath is required ");
 		}
 		String path = getPathToXml(inData.getSourcePath());
 		XmlFile xml = getXmlArchive().getXml(path, getElementName());
