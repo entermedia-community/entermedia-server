@@ -558,7 +558,7 @@ onloadselectors = function()
 						var timeout = $(this).attr("period")
 						if( !timeout)
 						{
-							timeout = "3000";
+							timeout = "30000";
 						}
 						setTimeout("showajaxstatus();",parseInt(timeout));
 						ajaxtimerrunning = true;
