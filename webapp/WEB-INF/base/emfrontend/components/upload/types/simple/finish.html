@@ -1,5 +1,11 @@
 <h2>[[Media Uploaded]]</h2>
 
+$context.putPageValue("showhover", "false")
+$context.putPageValue("thumbsize", "crop")
+$context.putPageValue("showcaption", "true")
 $context.putPageValue("hideheader", "true")
+$context.putPageValue("pickable", false )
+$context.putPageValue("resultstype", "table" )
+$!hits.setHitsPerPage(12)
+
 $pages.include("$apphome/components/results/table.html",$context)
-##$pages.include("$home$apphome/views/categories/index.html",$context)
