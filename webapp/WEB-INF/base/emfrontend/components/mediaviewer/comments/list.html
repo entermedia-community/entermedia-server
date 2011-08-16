@@ -4,7 +4,7 @@
 	#foreach ($comment in $comments.getPageOfHits())
 		<div class="emcomment">
 		<span class="emcommentuser"><a href="$home$apphome/users/${user.getId()}/index.html">$comment.user.shortDescription</a> </span>	
-		<span class="emcommenttext">$comment.comment</span>
+		<span class="emcommenttext">#esc( $comment.comment )</span>
 		<span class="emcommentdate">$comment.getShortDate($context.locale)</span>
 			#if($caneditasset)
 				<div align="right">

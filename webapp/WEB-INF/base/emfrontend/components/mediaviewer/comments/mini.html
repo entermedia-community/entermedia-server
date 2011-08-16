@@ -9,7 +9,7 @@
 
 	#foreach ($comment in $comments.getLast(2))
 		<div class="emcomment">
-		<span class="emcommenttext">$comment.comment</span>
+		<span class="emcommenttext">#esc($comment.comment)</span>
 		<span class="emcommentuser"><br>&nbsp;&nbsp;&nbsp;<a href="$home$apphome/users/${user.getId()}/index.html">$comment.user.shortDescription</a> </span>	
 		<span class="emcommentdate">$comment.getShortDate($context.locale)</span>
 			#if($caneditasset)
