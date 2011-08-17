@@ -317,6 +317,10 @@ public class UploadRequest implements ProgressListener
 	}
 	public void update(long inBytesRead, long inContentLength, int inItemNumber)
 	{
+		if( getUploadQueueData() == null)
+		{
+			return;
+		}
 		String existing = getUploadQueueData().get("date");
 		boolean update = true;
 		if( existing != null && inBytesRead != inContentLength)

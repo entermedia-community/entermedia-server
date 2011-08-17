@@ -147,14 +147,14 @@ public class FileUpload
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
 		String catalogid = inContext.findValue("catalogid");
-		upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
-		Data queue = addRecentUpload(catalogid, uploadid);
-		queue.setSourcePath("users/" + inContext.getUserName());
-		
-		queue.setName(uploadid);
-		
-		upload.setUploadQueueData(queue);
-		
+		if( uploadid != null)
+		{
+			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
+			Data queue = addRecentUpload(catalogid, uploadid);
+			queue.setSourcePath("users/" + inContext.getUserName());
+			queue.setName(uploadid);		
+			upload.setUploadQueueData(queue);
+		}
 		FileItemFactory factory = (FileItemFactory)inContext.getPageValue("uploadfilefactory");
 		if( factory == null)
 		{
@@ -163,8 +163,10 @@ public class FileUpload
 		
 		ServletFileUpload uploadreader = new ServletFileUpload(factory);
 		//upload.setSizeThreshold(BUFFER_SIZE);
-		uploadreader.setProgressListener(upload);
-
+		if( uploadid != null)
+		{
+			uploadreader.setProgressListener(upload);
+		}
 		HttpServletRequest req = inContext.getRequest();
 		String encode = req.getCharacterEncoding();
 		if ( encode == null)
@@ -181,8 +183,10 @@ public class FileUpload
 		uploadreader.setSizeMax(-1);
 
 		readParameters(inContext, uploadreader, upload);
-		
-		expireOldUploads(catalogid);
+		if( uploadid != null)
+		{
+			expireOldUploads(catalogid);
+		}
 		
 		return upload;
 	}
