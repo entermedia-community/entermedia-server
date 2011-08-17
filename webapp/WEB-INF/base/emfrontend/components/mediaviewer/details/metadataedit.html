@@ -1,3 +1,4 @@
+<div id="emdataeditor">
 #set($views = $searcherManager.getList("$catalogid", "assettype/views"))
 #set($searcher = $mediaarchive.getAssetSearcher())
 #set($sourcepath = $context.getRequestParameter("sourcepath"))
@@ -6,6 +7,7 @@
 #set ($isediting = ($context.getRequestParameter("edit") == "true") )
 #if ($caneditasset && $isediting == true)
 	#set ($detaileditsuffix = "")
+<div class=metaform>
 <form method="post" action="$home$apphome/views/assets/save.html">
 	<input type="hidden" name="catalogid" value="$searcher.catalogId"/>
 	<input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
@@ -32,7 +34,7 @@ $pages.include("$apphome/components/xml/detaileditor.html$detaileditsuffix", $co
 
 #if ($isediting == true)
 <p>
-	<input type="submit" value="Save"/>
+	<input type="submit" value="Save"/> &nbsp; <a class="ajax" targetdiv="emdataeditor" href="$home$apphome/components/mediaviewer/details/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId&oemaxlevel=1">cancel</a>
 </p>
 
 </form>
@@ -48,3 +50,4 @@ $pages.include("$apphome/components/xml/detaileditor.html$detaileditsuffix", $co
 </li>	
 </ul>
 #end	
+</div></div>
