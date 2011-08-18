@@ -192,7 +192,7 @@ public class LuceneAlbumSearcher extends BaseLuceneSearcher implements AlbumSear
 		MediaArchive mediaArchive = getEnterMedia().getMediaArchive(inAsset.getCatalogId());
 		if( inAsset.getId()  == null)
 		{
-			String id = mediaArchive.getAssetArchive().nextAssetNumber();
+			String id = mediaArchive.getAssetSearcher().nextAssetNumber();
 			inAsset.setId(id);
 			mediaArchive.saveAsset(inAsset, inReq.getUser());
 		}

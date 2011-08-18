@@ -56,4 +56,6 @@ public interface DataConnector
 
 	boolean hasChanged(HitTracker inTracker);
 
+	String nextId();
+
 }

@@ -161,7 +161,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			sourceDirectory = sourceDirectory.substring(0, sourceDirectory.length() - 2);
 		}
-		String newId = editor.getMediaArchive().getAssetArchive()
+		String newId = editor.getMediaArchive().getAssetSearcher()
 		.nextAssetNumber();
 		
 		boolean createAsFolder = Boolean.parseBoolean(inContext.findValue("createasfolder"));
@@ -833,7 +833,7 @@ public class AssetEditModule extends BaseMediaModule
 		//getPageManager().clearCache(inPage);
 		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
 		Asset asset = new Asset();
-		asset.setId(archive.getAssetArchive().nextAssetNumber());
+		asset.setId(archive.getAssetSearcher().nextAssetNumber());
 		if (existing != null) 
 		{
 			String startpart = PathUtilities.extractPagePath(assetsourcepath);

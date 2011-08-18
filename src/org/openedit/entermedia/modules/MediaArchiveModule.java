@@ -101,7 +101,6 @@ public class MediaArchiveModule extends BaseMediaModule
 			{
 				defaultcat = archive.getCategoryArchive().getRootCategory();
 			}
-			archive.getAssetArchive().nextAssetNumber();
 			String[] fields = inReq.getRequestParameters("field");
 			PropertyDetails details = archive.getAssetPropertyDetails();
 			Asset asset = (Asset) inReq.getPageValue("asset");

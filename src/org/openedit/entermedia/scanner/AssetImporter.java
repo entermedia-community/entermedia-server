@@ -287,7 +287,7 @@ public class AssetImporter
 		
 		if(asset == null)
 		{
-			String id = inArchive.getAssetArchive().nextAssetNumber();
+			String id = inArchive.getAssetSearcher().nextAssetNumber();
 			asset = new Asset();
 			asset.setId(id);
 			asset.setSourcePath(sourcepath);

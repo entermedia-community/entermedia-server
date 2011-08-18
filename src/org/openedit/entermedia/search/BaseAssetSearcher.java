@@ -451,4 +451,9 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 	{
 		return getDataConnector().hasChanged(inTracker);
 	}
+
+	public String nextAssetNumber()
+	{
+		return getDataConnector().nextId();
+	}
 }

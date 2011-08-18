@@ -471,7 +471,7 @@ public class MediaArchive
 	{
 		Asset asset = new Asset();
 		asset.setCatalogId(getCatalogId());
-		String id = getAssetArchive().nextAssetNumber();
+		String id = getAssetSearcher().nextAssetNumber();
 		asset.setId(id);
 		asset.setSourcePath(inSourcePath);
 		String name = PathUtilities.extractFileName(inSourcePath);

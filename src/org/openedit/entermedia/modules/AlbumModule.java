@@ -183,7 +183,7 @@ public class AlbumModule extends BaseMediaModule {
 			if (asset.getId() != null) {
 				id = asset.getId();
 			} else {
-				id = archive.getAssetArchive().nextAssetNumber();
+				id = archive.getAssetSearcher().nextAssetNumber();
 			}
 			asset.setId(id);
 			archive.saveAsset(asset, inReq.getUser());

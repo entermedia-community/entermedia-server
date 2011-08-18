@@ -102,7 +102,7 @@ public class AssetSyncModule extends BaseMediaModule
 				String currentSourcePath = sourcepath[i];
 				Asset existing = archive.getAssetBySourcePath(currentSourcePath);
 				Asset toadd = new Asset();
-				toadd.setId(archive.getAssetArchive().nextAssetNumber());
+				toadd.setId(archive.getAssetSearcher().nextAssetNumber());
 				if (existing != null) 
 				{
 					String startpart = PathUtilities.extractPagePath(currentSourcePath);
