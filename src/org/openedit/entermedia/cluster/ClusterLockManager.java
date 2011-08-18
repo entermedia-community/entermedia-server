@@ -39,7 +39,7 @@ public class ClusterLockManager implements LockManager
 			log.info("Could not lock trying again  " + tries);
 			if( tries > 9)
 			{
-				searcher.delete(lockrequest, null);
+				searcher.delete(lock, null);
 				throw new OpenEditException("Could not lock file " + inPath + " locked by " + lock.getOwnerId() );
 			}
 			try
