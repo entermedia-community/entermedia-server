@@ -120,7 +120,7 @@ public void checkforTasks()
 					}
 					else
 					{
-						log.error("ok with no error, continue");
+						log.error("not ok but no errors, continue");
 						continue;
 					}
 					//tosave.add( realtask);
