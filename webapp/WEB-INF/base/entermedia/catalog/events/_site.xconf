@@ -7,5 +7,5 @@
 	<inner-layout />
 	
 	  <path-action name="LinkTree.setSelectedLinkByUrl" cancel="true" />
-	
+	<path-action name="AlbumModule.getAlbumList" cancel="true"/>
 </page>
