@@ -259,7 +259,7 @@ public class PermissionModule extends BaseMediaModule
 				}
 				GroupFilter gf = new GroupFilter();
 				String groupid = type.substring("group.".length());
-				gf.setGroupId(type);
+				gf.setGroupId(groupid);
 				root.addFilter(gf);
 			}
 			else if ( type.startsWith("settingsgroup."))
