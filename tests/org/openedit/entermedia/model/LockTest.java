@@ -21,14 +21,15 @@ public class LockTest extends BaseEnterMediaTest
 		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
 		
 		String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
-		manager.releaseAll("entermedia/catalogs/testcatalog",path);
+		String catid = "entermedia/catalogs/testcatalog";
+		manager.releaseAll(catid,path);
 		
-		Lock lock = manager.lock("entermedia/catalogs/testcatalog", path, "admin");
+		Lock lock = manager.lock(catid, path, "admin");
 		assertNotNull(lock);
-		assertTrue(manager.isOwner(lock,"admin"));
+		assertTrue(manager.isOwner(catid, lock));
 
-		manager.release("entermedia/catalogs/testcatalog",lock);
-		lock = manager.loadLock("entermedia/catalogs/testcatalog", path);
+		manager.release(catid,lock);
+		lock = manager.loadLock(catid, path);
 		assertNull(lock);
 
 		//clear
@@ -39,13 +40,15 @@ public class LockTest extends BaseEnterMediaTest
 	public void testAssetIsAlreadyLocked() throws Exception
 	{
 		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
+
+		String catid = "entermedia/catalogs/testcatalog";
 		
 		String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
 		manager.releaseAll("entermedia/catalogs/testcatalog",path);
 
 		Lock lock = manager.lock("entermedia/catalogs/testcatalog", path, "admin");
 		assertNotNull(lock);
-		assertTrue(manager.isOwner(lock,"admin"));
+		assertTrue(manager.isOwner(catid,lock));
 
 		//this should fail
 		boolean failed = false;
@@ -67,10 +70,11 @@ public class LockTest extends BaseEnterMediaTest
 		
 		final String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
 		manager.releaseAll("entermedia/catalogs/testcatalog",path);
-
+		String catid = "entermedia/catalogs/testcatalog";
+		
 		final Lock lock = manager.lock("entermedia/catalogs/testcatalog", path, "admin");
 		assertNotNull(lock);
-		assertTrue(manager.isOwner(lock,"admin"));
+		assertTrue(manager.isOwner(catid,lock));
 
 		//this should pass
 		boolean failed = false;

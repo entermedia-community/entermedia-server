@@ -29,11 +29,10 @@ public class ClusterLockManager implements LockManager
 	public Lock lock(String inCatId, String inPath, String inOwnerId)
 	{
 		Searcher searcher = getLockSearcher(inCatId);
-		Lock lockrequest = addLock(inPath, inOwnerId, searcher);
-
-		Lock lock = loadLock(inCatId,inPath);
+		Lock lock = addLock(inPath, inOwnerId, searcher);
+//		Lock lock = loadLock(inCatId,inPath);
 		int tries = 0;
-		while( !isOwner(lock, inOwnerId))
+		while( !isOwner(inCatId, lock))
 		{
 			tries++;
 			log.info("Could not lock trying again  " + tries);
@@ -51,20 +50,29 @@ public class ClusterLockManager implements LockManager
 				//does not happen
 				log.info(ex);
 			}
-			
-			lock = loadLock(inCatId,inPath);
 		}
 		return lock;
 	}
 
-	public boolean isOwner(Lock lock, String inOwnerId)
+	public boolean isOwner(String inCatId, Lock lock)
 	{
+		if( lock.getId() == null)
+		{
+			throw new OpenEditException("lock id is currently null");
+		}
+		
 		if( lock == null)
 		{
 			throw new OpenEditException("Lock should not be null");
 		}
-		return lock.isOwner(getNodeManager().getLocalNodeId(),inOwnerId);
+		Lock owner = loadLock(inCatId, lock.getPath());
+		if( owner == null)
+		{
+			throw new OpenEditException("Owner lock is currently null");
+		}
+		return lock.getId().equals(owner.getId());
 	}
+
 
 	protected Lock addLock(String inPath, String inOwnerId, Searcher searcher)
 	{
@@ -129,14 +137,13 @@ public class ClusterLockManager implements LockManager
 	{
 		Searcher searcher = getLockSearcher(inCatId);
 
-		Lock lockrequest = addLock(inPath, inOwnerId, searcher);
+		Lock lock = addLock(inPath, inOwnerId, searcher);
 
-		Lock lock = loadLock(inCatId,inPath);
 		if( lock.getId() == null)
 		{
 			throw new OpenEditException("Lock ID must not be null");
 		}
-		if( isOwner(lock,inOwnerId))
+		if( isOwner(inCatId, lock))
 		{
 			return lock;
 		}
