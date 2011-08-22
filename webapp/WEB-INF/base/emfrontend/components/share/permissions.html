@@ -26,7 +26,9 @@
 		jQuery("#permissions").load("$home$apphome/components/share/removeperson.html?assetid=$asset.id&userid=" + userid);
 	}
 	removeGroup = function(groupid){
-		jQuery("#permissions").load("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid);
+		//jQuery("#permissions").load("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid);
+		jQuery.get("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid, {}, function (data){ jQuery("#permissions").replaceWith(data); }); 
+		
 	}
 	addAllGroups = function(userid){
 		if(jQuery("#allowallgroups").is(':checked') == false) {
@@ -78,7 +80,7 @@
 			#set( $owner = ${userManager.getUser($asset.owner)} )
 				<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
 					title="$owner"></td>
-				<td class="user"> #if ($user.id == $asset.owner) (you)#end</td>
+				<td class="user"> #if ($user.id == $asset.owner) (you) #else($owner) #end</td>
 				<td class="userlevel">Is Owner</td>
 			</tr>
 			#foreach($person in $peoples)
@@ -128,13 +130,7 @@
 			<input class="addmygroups" name="add_team" type="text" assetid="$asset.id">
 			<input id="hiddenaddmygroups" name="hiddenaddmygroups" type="hidden" targetdiv="permissions" postpath="$home$apphome/components/share/addgroup.html?assetid=$asset.id&groupid=">
 		</div>
-		<div class="bottom_mod">
-			<!-- MODAL WINDOW CLOSE -->
-			<form name="close" method="post" action="">
-				<input type="submit" class="bottom_mod" name="button" id="button"
-					value="Close">
-			</form>
-		</div>
+		
 	</div>
 
 

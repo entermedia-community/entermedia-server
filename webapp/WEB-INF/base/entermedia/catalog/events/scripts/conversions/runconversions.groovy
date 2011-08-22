@@ -17,6 +17,7 @@ import org.openedit.entermedia.episode.*;
 import conversions.*;
 import java.util.List;
 import java.util.ArrayList;
+import org.entermedia.locks.Lock;
 
 public void checkforTasks()
 {
@@ -53,7 +54,22 @@ public void checkforTasks()
 				ConvertResult result = null;
 				try
 				{
-					result = doConversion(mediaarchive, realtask, preset, hit.get("sourcepath"));
+					String sourcepath = hit.get("sourcepath");
+					Lock lock = mediaarchive.lockAssetIfPossible(sourcepath, user);
+					if( lock == null)
+					{
+						log.info("asset already being processed ");
+						continue;
+					}
+					
+					try
+					{
+						result = doConversion(mediaarchive, realtask, preset,sourcepath);
+					}
+					finally
+					{
+						mediaarchive.releaseLock(lock);
+					}
 				}
 				catch(Throwable e)
 				{
@@ -90,30 +106,6 @@ public void checkforTasks()
 					} 
 					else if ( result.isError() )
 					{
-//						String counted =  realtask.get("errorcount");
-//						if( counted == null)
-//						{
-//							counted = "0";
-//						}
-//						int num = Integer.parseInt( counted );
-//						num++;
-//						if( num > 5)
-//						{
-//							realtask.setProperty('status', 'error');
-//						}
-//						else
-//						{
-//							String status = realtask.get("status");
-//							if("submitted".equals(status))
-//							{								
-//								realtask.setProperty('status', 'error');
-//							}
-//							else
-//							{
-//								realtask.setProperty('status', 'retry');
-//							}
-//						}
-//						realtask.setProperty('errorcount', String.valueOf(num));
 						realtask.setProperty('status', 'error');
 						realtask.setProperty("errordetails", result.getError() );
 						
@@ -128,7 +120,8 @@ public void checkforTasks()
 					}
 					else
 					{
-						realtask.setProperty("status", "failed");
+						log.error("not ok but no errors, continue");
+						continue;
 					}
 					//tosave.add( realtask);
 					tasksearcher.saveData(realtask, context.getUser());

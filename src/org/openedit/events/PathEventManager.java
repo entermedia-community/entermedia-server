@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
@@ -15,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.util.TimeCalculator;
+import org.openedit.util.SynchronizedLinkedList;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -74,7 +74,7 @@ public class PathEventManager
 	{
 		if (fieldRunningTasks == null)
 		{
-			fieldRunningTasks = new LinkedList<TaskRunner>();
+			fieldRunningTasks = new SynchronizedLinkedList<TaskRunner>();
 		}
 		return fieldRunningTasks;
 	}
@@ -144,14 +144,7 @@ public class PathEventManager
 			{
 				TaskRunner runner = new TaskRunner(event, 0, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
 				getRunningTasks().push(runner);
-				try
-				{
-					runner.run();
-				}
-				finally
-				{
-					getRunningTasks().remove(runner);
-				}
+				runner.run(); //this will remove it again
 			}
 			else
 			{

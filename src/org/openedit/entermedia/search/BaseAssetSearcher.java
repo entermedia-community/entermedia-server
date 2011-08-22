@@ -79,7 +79,6 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 			}
 
 			search.addMatches("category", actualid);
-			
 			search.setResultType("category");
 			
 			HitTracker res = cachedSearch(inPageRequest, search);	
@@ -238,7 +237,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 		}
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		if (inData instanceof Asset)
 		{
@@ -370,7 +369,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 				}
 				buffer.append(" " + currentUser.getUserName());
 			}
-			inSearch.addOrsGroup("viewasset", buffer.toString());
+			inSearch.addOrsGroup("viewasset", buffer.toString().toLowerCase());
 			inSearch.setSecurityAttached(true);
 		}
 		String filter = inPageRequest.findValue("enableprofilefilters");
@@ -446,5 +445,15 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 	{
 		super.setSearcherManager(inManager);
 		getDataConnector().setSearcherManager(inManager);
+	}
+	
+	public boolean hasChanged(HitTracker inTracker)
+	{
+		return getDataConnector().hasChanged(inTracker);
+	}
+
+	public String nextAssetNumber()
+	{
+		return getDataConnector().nextId();
 	}
 }

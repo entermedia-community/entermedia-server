@@ -9,12 +9,12 @@
 
 	#foreach ($comment in $comments.getLast(2))
 		<div class="emcomment">
-		<span class="emcommenttext">$comment.comment</span>
+		<span class="emcommenttext">#esc($comment.comment)</span>
 		<span class="emcommentuser"><br>&nbsp;&nbsp;&nbsp;<a href="$home$apphome/users/${user.getId()}/index.html">$comment.user.shortDescription</a> </span>	
 		<span class="emcommentdate">$comment.getShortDate($context.locale)</span>
 			#if($caneditasset)
 				<div align="right">
-				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}/${catalogid}/comments/removecomment.html">
+				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}${apphome}/components/mediaviewer/comments/removecomment.html">
 					<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 					<input type="hidden" name="commenttext" value="#esc($comment.comment)"/>
 					<input type="hidden" name="commentuser" value="$comment.user.userName"/>
@@ -38,7 +38,7 @@
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="catalogid" value="$catalogid"/>
 			<span id="commentsubmit" style="float:left; margin-top:5px;">
-			<input type="submit" value="[[Submit Comment]]" />
+			<input type="submit" value="[[Add Comment]]"/>
 			</span>
 		</form>
 	#end	

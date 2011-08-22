@@ -28,9 +28,7 @@ public interface AssetArchive extends DataArchive
 	void saveAsset(Asset inAsset);
 	
 	void deleteAsset(Asset inItem);
-	
-	String nextAssetNumber();
-	
+		
 	void setCatalogId(String inId);
 	String getCatalogId();
 	

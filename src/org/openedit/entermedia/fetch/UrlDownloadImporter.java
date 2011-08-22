@@ -26,7 +26,7 @@ public class UrlDownloadImporter implements UrlMetadataImporter
 		if( asset == null)
 		{
 			asset = inArchive.createAsset(sourcepath);
-			asset.setId(inArchive.getAssetArchive().nextAssetNumber());
+			asset.setId(inArchive.getAssetSearcher().nextAssetNumber());
 		}
 		asset.setName(filename);
 		asset.setProperty("downloadurl.file", inUrl);

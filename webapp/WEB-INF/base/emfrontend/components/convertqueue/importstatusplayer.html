@@ -1,0 +1,44 @@
+#if ( !$hit )
+	#set( $hit = $asset )
+#end
+
+#if($conversionerrors && $conversionerrors.size() >0)
+	<div style="padding-top:30px;">
+	#if($canviewsettings)
+		<span style="color:red;">Conversion Error</span><br/>
+		<a class="uibutton" href="$home$cataloghome/detailviewer/converthistory/index.html?assetid=$asset.id">Troubleshoot</a>
+		<a class="thickbox uibutton" href="$home$cataloghome/settings/events/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue Now</a>
+	#else
+		<span style="color:red;">Conversion Error</span><br/>
+		<span>Please contact your administrator.</span>
+	#end
+	</div>
+#elseif($publisherrors && $publisherrors.size() >0)
+	<span style="color:red;">Publish Error</span>
+#elseif( $hit.importstatus && $hit.importstatus == "complete")
+	$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
+#elseif($conversionsremaining && $conversionsremaining.size()  > 0)
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatusplayer.html?assetid=$hit.id" style="width:550px;height:350px;">
+		<div style="padding-top:150px;">
+			<img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src='$home$themeprefix/images/ajax-loader.gif'/>
+			<br/>
+			Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}
+		</div>
+	</div>
+#elseif($publish && $publish.size() >0 )
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatusplayer.html?assetid=$hit.id" style="width:550px;height:350px;">
+		<div style="padding-top:150px;">
+			<img title="Publishing Proxy $publish.size()" src='$home$themeprefix/images/ajax-loader.gif''/>
+			<br/>
+			Publishing Proxy $publish.size()
+		</div>
+	</div>
+#elseif($conversions && $conversions.size() == 0)
+	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatusplayer.html?assetid=$hit.id" style="width:550px;height:350px;">
+		<div style="padding-top:150px;">
+			<img title="Adding to Queue" src='$home$themeprefix/images/ajax-loader.gif''/>
+			<br/>
+			Adding to Queue
+		</div>
+	</div>
+#end

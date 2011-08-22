@@ -99,28 +99,42 @@ public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 	
 	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions )
 	{
-		String completefolder = inStructions.getProperty("outputfolder");
+		//check the completed folder
+		String completefolder = inStructions.getProperty("completefolder");
 		if( completefolder == null)
 		{
-			throw new OpenEditException("No outputfolder property set");
+			throw new OpenEditException("No completefolder property set");
 		}
-		
-		String pagename = PathUtilities.extractPageName(inAsset.getName());
-		String extension = inStructions.getProperty("outputextension");
-		
-		File tempname = new File( completefolder, pagename + "." + extension);
-		
 		ConvertResult result = new ConvertResult();
-		result.setOk(true);
-		if( tempname.exists() )
+		result.setOk(false);
+		
+		File completefile = new File(completefolder, inAsset.getName() );
+		if(completefile.exists())
 		{
-			String catalogid = inArchive.getCatalogId();
-			//TODO: use task variable for proxy filename
-			Page proxy = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated/" + inAsset.getSourcePath() + "/video.mp4");
-			log.info("moving proxy to " + proxy);
-			getFileUtils().move(new File( tempname.getAbsolutePath()), new File( proxy.getContentItem().getAbsolutePath() ) , true );
-			result.setComplete(true);
-			return result;
+			String outputfolder = inStructions.getProperty("outputfolder");
+			if( outputfolder == null)
+			{
+				throw new OpenEditException("No outputfolder property set");
+			}
+			
+			String pagename = PathUtilities.extractPageName(inAsset.getName());
+			String extension = inStructions.getProperty("outputextension");
+			
+			File tempname = new File( outputfolder, pagename + "." + extension);
+			
+			
+			
+			if( tempname.exists() )
+			{
+				String catalogid = inArchive.getCatalogId();
+				//TODO: use task variable for proxy filename
+				Page proxy = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated/" + inAsset.getSourcePath() + "/video.mp4");
+				log.info("moving proxy to " + proxy);
+				getFileUtils().move(new File( tempname.getAbsolutePath()), new File( proxy.getContentItem().getAbsolutePath() ) , true );
+				result.setComplete(true);
+				result.setOk(true);
+				return result;
+			}
 		}
 		
 		//we got here so it's not complete, let's check if it's failed

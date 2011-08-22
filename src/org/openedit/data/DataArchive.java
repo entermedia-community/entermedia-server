@@ -22,6 +22,9 @@ public interface DataArchive
 
 	void delete(Data inData, User inUser);
 
+	void saveData(Data inData, User inUser);
+
 	void saveAllData(Collection<Data> inAll, User inUser);
+
 
 }

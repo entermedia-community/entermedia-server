@@ -72,7 +72,7 @@ public class AssetEditor {
 	 public Asset createAssetWithDefaults() throws OpenEditRuntimeException
 	 {
 		 Asset asset = createAsset();
-		 String id = getMediaArchive().getAssetArchive().nextAssetNumber();
+		 String id = getMediaArchive().getAssetSearcher().nextAssetNumber();
 		 asset.setId(id);
 		 Category cat = getMediaArchive().getCategoryArchive().getCategory("index");
 		 if (cat != null)
@@ -86,7 +86,7 @@ public class AssetEditor {
 	 {
 
 		 Asset asset = createAsset();
-		 String id = getMediaArchive().getAssetArchive().nextAssetNumber();
+		 String id = getMediaArchive().getAssetSearcher().nextAssetNumber();
 		 asset.setId(id);
 		 asset.setName(inTemplateAsset.getName());
 		 return asset;

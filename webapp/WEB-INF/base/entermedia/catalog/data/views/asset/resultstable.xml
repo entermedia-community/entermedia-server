@@ -2,6 +2,7 @@
 	<property id="name"/>
 	<property id="assettitle"/>
 	<property id="episode" />
+	<property id="uploadteam" />
 	<property id="caption" />
 	<property id="filesize" />
 	<property id="assettype" />

@@ -35,7 +35,8 @@
 		<tr >
 		#foreach( $detail in $details )
 			<td style="padding:4px;">
-			#set( $val = "$!hit.get($detail.id)" )
+			#set( $val = false)
+			#set( $val = $hit.get($detail.id) )
 			#if( $detail.isList() )
 				#set( $val = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )
 			#end
@@ -50,8 +51,10 @@
 				#end
 			#elseif($detail.isDate() && $val.length()>0) 
 				$context.getDate($val)			
-			#else
+			#elseif($val)
 				$val
+			#else
+				
 			#end
 			#if( "$candelete" != "false" ) </a> #end
 			</td>

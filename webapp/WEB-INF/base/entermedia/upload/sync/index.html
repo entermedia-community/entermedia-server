@@ -1,4 +1,4 @@
-#if( $syncassets.size() > 0 )
+#if($syncassets && $syncassets.size() > 0 )
 <div id="syncstatus"><a class="thickbox" href="$home/${applicationid}/upload/sync/statusresults.html"><img src="$home${themeprefix}/entermedia/images/ajax-loader.gif" title="sync in progress. $syncassets.size() remaining" ></a></div>
 <div style="position:absolute;top:-100px;left:0px;z-index:-1;width: 1px;height:1px;background-color: red;">
 <APPLET  code="org.openedit.sync.SyncUploadApplet"

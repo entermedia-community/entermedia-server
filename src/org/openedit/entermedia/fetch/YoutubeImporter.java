@@ -32,7 +32,7 @@ public class YoutubeImporter implements UrlMetadataImporter
 		if( asset == null)
 		{
 			asset = inArchive.createAsset(sourcepath);
-			asset.setId(inArchive.getAssetArchive().nextAssetNumber());
+			asset.setId(inArchive.getAssetSearcher().nextAssetNumber());
 		}
 
 		//Page attachments = inArchive.getPageManager().getPage(inArchive.getCatalogHome() + "/data/originals/" + asset.getSourcePath() + "/");

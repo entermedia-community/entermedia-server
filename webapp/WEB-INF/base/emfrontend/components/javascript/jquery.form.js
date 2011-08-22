@@ -1,6 +1,6 @@
 /*!
  * jQuery Form Plugin
- * version: 2.78 (23-MAY-2011)
+ * version: 2.84 (12-AUG-2011)
  * @requires jQuery v1.3.2 or later
  *
  * Examples and documentation at: http://malsup.com/jquery/form/
@@ -49,13 +49,16 @@ $.fn.ajaxSubmit = function(options) {
 		log('ajaxSubmit: skipping submit process - no element selected');
 		return this;
 	}
+	
+	var method, action, url, $form = this;
 
 	if (typeof options == 'function') {
 		options = { success: options };
 	}
 
-	var action = this.attr('action');
-	var url = (typeof action === 'string') ? $.trim(action) : '';
+	method = this.attr('method');
+	action = this.attr('action');
+	url = (typeof action === 'string') ? $.trim(action) : '';
 	url = url || window.location.href || '';
 	if (url) {
 		// clean url (don't include hash vaue)
@@ -65,7 +68,7 @@ $.fn.ajaxSubmit = function(options) {
 	options = $.extend(true, {
 		url:  url,
 		success: $.ajaxSettings.success,
-		type: this[0].getAttribute('method') || 'GET', // IE7 massage (see issue 57)
+		type: method || 'GET',
 		iframeSrc: /^https/i.test(window.location.href || '') ? 'javascript:false' : 'about:blank'
 	}, options);
 
@@ -88,7 +91,7 @@ $.fn.ajaxSubmit = function(options) {
 	if (options.data) {
 		options.extraData = options.data;
 		for (n in options.data) {
-			if(options.data[n] instanceof Array) {
+			if( $.isArray(options.data[n]) ) {
 				for (var k in options.data[n]) {
 					a.push( { name: n, value: options.data[n][k] } );
 				}
@@ -124,7 +127,7 @@ $.fn.ajaxSubmit = function(options) {
 		options.data = q; // data is the query string for 'post'
 	}
 
-	var $form = this, callbacks = [];
+	var callbacks = [];
 	if (options.resetForm) {
 		callbacks.push(function() { $form.resetForm(); });
 	}
@@ -169,6 +172,12 @@ $.fn.ajaxSubmit = function(options) {
 		}
    }
    else {
+		// IE7 massage (see issue 57)
+		if ($.browser.msie && method == 'get') { 
+			var ieMeth = $form[0].getAttribute('method');
+			if (typeof ieMeth === 'string')
+				options.type = ieMeth;
+		}
 		$.ajax(options);
    }
 
@@ -179,12 +188,14 @@ $.fn.ajaxSubmit = function(options) {
 
 	// private function for handling file uploads (hat tip to YAHOO!)
 	function fileUpload(a) {
-		var form = $form[0], i, s, g, id, $io, io, xhr, sub, n, timedOut, timeoutHandle;
+		var form = $form[0], el, i, s, g, id, $io, io, xhr, sub, n, timedOut, timeoutHandle;
+        var useProp = !!$.fn.prop;
 
         if (a) {
         	// ensure that every serialized input is still enabled
           	for (i=0; i < a.length; i++) {
-            	$(form[a[i].name]).attr('disabled', false);
+                el = $(form[a[i].name]);
+                el[ useProp ? 'prop' : 'attr' ]('disabled', false);
           	}
         }
 
@@ -197,7 +208,7 @@ $.fn.ajaxSubmit = function(options) {
 		
 		s = $.extend(true, {}, $.ajaxSettings, options);
 		s.context = s.context || s;
-		$io, id = 'jqFormIO' + (new Date().getTime());
+		id = 'jqFormIO' + (new Date().getTime());
 		if (s.iframeTarget) {
 			$io = $(s.iframeTarget);
 			n = $io.attr('name');
@@ -228,7 +239,7 @@ $.fn.ajaxSubmit = function(options) {
 				this.aborted = 1;
 				$io.attr('src', s.iframeSrc); // abort op in progress
 				xhr.error = e;
-				s.error && s.error.call(s.context, xhr, e, e);
+				s.error && s.error.call(s.context, xhr, e, status);
 				g && $.event.trigger("ajaxError", [xhr, s, e]);
 				s.complete && s.complete.call(s.context, xhr, e);
 			}
@@ -266,7 +277,15 @@ $.fn.ajaxSubmit = function(options) {
 				}
 			}
 		}
+		
+		var CLIENT_TIMEOUT_ABORT = 1;
+		var SERVER_ABORT = 2;
 
+		function getDoc(frame) {
+			var doc = frame.contentWindow ? frame.contentWindow.document : frame.contentDocument ? frame.contentDocument : frame.document;
+			return doc;
+		}
+		
 		// take a breath so that pending repaints get some cpu time before the upload starts
 		function doSubmit() {
 			// make sure form attrs are set
@@ -274,15 +293,15 @@ $.fn.ajaxSubmit = function(options) {
 
 			// update form attrs in IE friendly way
 			form.setAttribute('target',id);
-			if (form.getAttribute('method') != 'POST') {
+			if (!method) {
 				form.setAttribute('method', 'POST');
 			}
-			if (form.getAttribute('action') != s.url) {
+			if (a != s.url) {
 				form.setAttribute('action', s.url);
 			}
 
 			// ie borks in some cases when setting encoding
-			if (! s.skipEncodingOverride) {
+			if (! s.skipEncodingOverride && (!method || /post/i.test(method))) {
 				$form.attr({
 					encoding: 'multipart/form-data',
 					enctype:  'multipart/form-data'
@@ -291,7 +310,23 @@ $.fn.ajaxSubmit = function(options) {
 
 			// support timout
 			if (s.timeout) {
-				timeoutHandle = setTimeout(function() { timedOut = true; cb(true); }, s.timeout);
+				timeoutHandle = setTimeout(function() { timedOut = true; cb(CLIENT_TIMEOUT_ABORT); }, s.timeout);
+			}
+			
+			// look for server aborts
+			function checkState() {
+				try {
+					var state = getDoc(io).readyState;
+					log('state = ' + state);
+					if (state.toLowerCase() == 'uninitialized')
+						setTimeout(checkState,50);
+				}
+				catch(e) {
+					log('Server abort: ' , e, ' (', e.name, ')');
+					cb(SERVER_ABORT);
+					timeoutHandle && clearTimeout(timeoutHandle);
+					timeoutHandle = undefined;
+				}
 			}
 
 			// add "extra" data to form if provided in options
@@ -300,7 +335,7 @@ $.fn.ajaxSubmit = function(options) {
 				if (s.extraData) {
 					for (var n in s.extraData) {
 						extraInputs.push(
-							$('<input type="hidden" name="'+n+'" value="'+s.extraData[n]+'" />')
+							$('<input type="hidden" name="'+n+'" />').attr('value',s.extraData[n])
 								.appendTo(form)[0]);
 					}
 				}
@@ -310,6 +345,7 @@ $.fn.ajaxSubmit = function(options) {
 					$io.appendTo('body');
 	                io.attachEvent ? io.attachEvent('onload', cb) : io.addEventListener('load', cb, false);
 				}
+				setTimeout(checkState,15);
 				form.submit();
 			}
 			finally {
@@ -337,12 +373,22 @@ $.fn.ajaxSubmit = function(options) {
 			if (xhr.aborted || callbackProcessed) {
 				return;
 			}
-			if (e === true && xhr) {
+			try {
+				doc = getDoc(io);
+			}
+			catch(ex) {
+				log('cannot access response document: ', ex);
+				e = SERVER_ABORT;
+			}
+			if (e === CLIENT_TIMEOUT_ABORT && xhr) {
 				xhr.abort('timeout');
 				return;
 			}
+			else if (e == SERVER_ABORT && xhr) {
+				xhr.abort('server abort');
+				return;
+			}
 
-			var doc = io.contentWindow ? io.contentWindow.document : io.contentDocument ? io.contentDocument : io.document;
 			if (!doc || doc.location.href == s.iframeSrc) {
 				// response not received yet
 				if (!timedOut)
@@ -387,7 +433,8 @@ $.fn.ajaxSubmit = function(options) {
                     xhr.statusText = docRoot.getAttribute('statusText') || xhr.statusText;
                 }
 
-				var scr = /(json|script|text)/.test(s.dataType.toLowerCase());
+				var dt = s.dataType || '';
+				var scr = /(json|script|text)/.test(dt.toLowerCase());
 				if (scr || s.textarea) {
 					// see if user embedded response in textarea
 					var ta = doc.getElementsByTagName('textarea')[0];
@@ -422,7 +469,7 @@ $.fn.ajaxSubmit = function(options) {
                 }
 			}
 			catch (e) {
-				log('error caught',e);
+				log('error caught: ',e);
 				status = 'error';
                 xhr.error = errMsg = (e || status);
 			}
@@ -786,9 +833,10 @@ $.fn.clearForm = function() {
  * Clears the selected form elements.
  */
 $.fn.clearFields = $.fn.clearInputs = function() {
+	var re = /^(?:color|date|datetime|email|month|number|password|range|search|tel|text|time|url|week)$/i; // 'hidden' is not in this list
 	return this.each(function() {
 		var t = this.type, tag = this.tagName.toLowerCase();
-		if (t == 'text' || t == 'password' || tag == 'textarea') {
+		if (re.test(t) || tag == 'textarea') {
 			this.value = '';
 		}
 		else if (t == 'checkbox' || t == 'radio') {
@@ -850,16 +898,13 @@ $.fn.selected = function(select) {
 };
 
 // helper fn for console logging
-// set $.fn.ajaxSubmit.debug to true to enable debug logging
 function log() {
-	if ($.fn.ajaxSubmit.debug) {
-		var msg = '[jquery.form] ' + Array.prototype.join.call(arguments,'');
-		if (window.console && window.console.log) {
-			window.console.log(msg);
-		}
-		else if (window.opera && window.opera.postError) {
-			window.opera.postError(msg);
-		}
+	var msg = '[jquery.form] ' + Array.prototype.join.call(arguments,'');
+	if (window.console && window.console.log) {
+		window.console.log(msg);
+	}
+	else if (window.opera && window.opera.postError) {
+		window.opera.postError(msg);
 	}
 };
 

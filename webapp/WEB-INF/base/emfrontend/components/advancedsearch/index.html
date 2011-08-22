@@ -13,7 +13,7 @@ $context.putPageValue("usestartswith",$usestartswith)
 
 #set( $edit = $context.getRequestParameter("editadvsearch"))
 
-<form  name="advancedsearch" action="$apphome/views/search/search.html" class="em-widget-content">
+<form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content">
 ##We need 2 things passed in: $searcher, $view or $searcher $details
 #if (!$details && $view)
 
@@ -72,6 +72,7 @@ $context.putPageValue("usestartswith",$usestartswith)
 	
 	<select name="field" onChange="jQuery('#searchaddfield').submit();">
 		<option>Add Field</option>
+			<option value="description">&nbsp;&nbsp;&nbsp;&nbsp;All Fields</option>
 		#foreach( $detail in $alldetails)
 			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
 		#end	
@@ -83,7 +84,7 @@ $context.putPageValue("usestartswith",$usestartswith)
 
 
 #else
-	<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><img align="right" src="$apphome/theme/images/navigation/write-note.png"/></a>
+	<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><img align="right" src="$home$themeprefix/images/navigation/write-note.png"/></a>
 	<br/>
 #end
 

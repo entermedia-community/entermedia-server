@@ -161,7 +161,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			sourceDirectory = sourceDirectory.substring(0, sourceDirectory.length() - 2);
 		}
-		String newId = editor.getMediaArchive().getAssetArchive()
+		String newId = editor.getMediaArchive().getAssetSearcher()
 		.nextAssetNumber();
 		
 		boolean createAsFolder = Boolean.parseBoolean(inContext.findValue("createasfolder"));
@@ -715,15 +715,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		
 		//set the group view permissions if something was passed in
-		String groupid = inReq.getRequestParameter("viewgroup");
-		if(groupid != null)
-		{
-			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-			{
-				Asset asset = (Asset) iterator.next();
-				archive.getAssetSecurityArchive().grantGroupViewAccess(archive, groupid, asset);
-			}
-		}
+		findUploadTeam(inReq, archive, tracker);
 
 		archive.saveAssets(tracker, inReq.getUser());
 
@@ -748,6 +740,20 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		
 	}
+	protected void findUploadTeam(WebPageRequest inReq, MediaArchive archive, ListHitTracker tracker)
+	{
+		String groupid = inReq.getRequestParameter("viewgroup");
+		if(groupid != null)
+		{
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				asset.setProperty("uploadteam", groupid);
+				archive.getAssetSecurityArchive().grantGroupViewAccess(archive, groupid, asset);
+			}
+			
+		}
+	}
 	protected void createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -763,15 +769,8 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		
 		//set the group view permissions if something was passed in
-		String groupid = inReq.getRequestParameter("viewgroup");
-		if(groupid != null)
-		{
-			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-			{
-				Asset asset = (Asset) iterator.next();
-				archive.getAssetSecurityArchive().grantGroupViewAccess(archive, groupid, asset);
-			}
-		}
+		findUploadTeam(inReq, archive, tracker);
+
 
 		archive.saveAssets(tracker, inReq.getUser());
 
@@ -834,7 +833,7 @@ public class AssetEditModule extends BaseMediaModule
 		//getPageManager().clearCache(inPage);
 		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
 		Asset asset = new Asset();
-		asset.setId(archive.getAssetArchive().nextAssetNumber());
+		asset.setId(archive.getAssetSearcher().nextAssetNumber());
 		if (existing != null) 
 		{
 			String startpart = PathUtilities.extractPagePath(assetsourcepath);

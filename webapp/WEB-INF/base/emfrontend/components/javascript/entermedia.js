@@ -35,11 +35,20 @@ runajax = function(e)
 	var nextpage= jQuery(this).attr('href');
 	var targetDiv = jQuery(this).attr("targetdiv");
 	targetDiv = targetDiv.replace(/\//g, "\\/");
-	jQuery("#"+targetDiv).load(nextpage, {}, function()
-		{
-			// onloadselectors("#"+ targetDiv);
-		}
+
+
+	jQuery.get(nextpage, {}, function(data) 
+			{
+				var cell = jQuery("#" + targetDiv);
+				cell.replaceWith(data);
+			}
 	);
+
+//	jQuery("#"+targetDiv).load(nextpage, {}, function()
+//		{
+//			// onloadselectors("#"+ targetDiv);
+//		}
+//	);
 
 	return false;
 }
@@ -261,7 +270,7 @@ onloadselectors = function()
 
 	jQuery('.commentresizer').livequery( function()
 	{	
-		var ta = jQuery(this).find(".commentinput");
+		var ta = jQuery(this).find("#commenttext");
 		ta.click(function() 
 		{
 			var initial = ta.attr("initialtext");
@@ -546,7 +555,12 @@ onloadselectors = function()
 				{
 					if( ajaxtimerrunning == false) 
 					{
-						setTimeout("showajaxstatus();",1000);
+						var timeout = $(this).attr("period")
+						if( !timeout)
+						{
+							timeout = "30000";
+						}
+						setTimeout("showajaxstatus();",parseInt(timeout));
 						ajaxtimerrunning = true;
 					}
 				}
@@ -559,26 +573,18 @@ showajaxstatus = function()
 {
 	//for each asset on the page reload it's status
 	var foundone = false;
-	ajaxtimerrunning = false;
 	jQuery(".ajaxstatus").each(
 		function()
 		{
 			foundone = true;
 			var cell = jQuery(this);
 			var path = cell.attr("ajaxpath");
-			cell.load(path);
+			jQuery.get(path, {}, function(data) {
+				cell.replaceWith(data);
+			});
 		}
 	);
-	
-	if( foundone )
-	{
-		//make sure it is not running
-		if( ajaxtimerrunning == false) 
-		{
-			setTimeout("showajaxstatus();",1000);
-			ajaxtimerrunning = true;
-		}
-	}
+	ajaxtimerrunning = false;
 }
 
 

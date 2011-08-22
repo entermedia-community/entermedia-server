@@ -4,40 +4,53 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
-import com.openedit.util.FileUtils;
 import com.openedit.util.OutputFiller;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.ZipUtil;
 
 
 
-public class UploadRequest
+public class UploadRequest implements ProgressListener
 {
 	private static final Log log = LogFactory.getLog(UploadRequest.class);
 	protected List fieldUploadItems;
-	protected Map fieldProperties;
+
 	protected PageManager fieldPageManager;
 	protected File fieldRoot;
 	protected ZipUtil fieldZipUtil;
 	protected OutputFiller fieldFiller;
+	protected Data fieldUploadQueueData;
+	protected Searcher fieldUploadQueueSearcher;
 	
+	public Searcher getUploadQueueSearcher()
+	{
+		return fieldUploadQueueSearcher;
+	}
+	public void setUploadQueueSearcher(Searcher inUploadQueueSearcher)
+	{
+		fieldUploadQueueSearcher = inUploadQueueSearcher;
+	}
 	public OutputFiller getFiller()
 	{
 		if (fieldFiller == null)
@@ -66,19 +79,6 @@ public class UploadRequest
 	{
 		fieldUploadItems = inUploadItems;
 	}
-//	public Map getProperties()
-//	{
-//		return fieldProperties;
-//	}
-//	public void setProperties(Map inProperties)
-//	{
-//		fieldProperties = inProperties;
-//	}
-//	public String get(String inString)
-//	{
-//		return (String)getProperties().get(inString);
-//	}
-	
 	
 	public String getPathFor(String home, FileUploadItem inItem, WebPageRequest inReq) throws OpenEditException
 	{
@@ -199,7 +199,7 @@ public class UploadRequest
 		//OutputStreamItem item = new OutputStreamItem(page.getPath());
 //		String offset = inItem.get("offset");
 //		if( offset != null)
-//		{
+//		{getUploadItems
 //			item.setSeek(Long.parseLong(offset));
 //		}
 		//page.setContentItem(item);
@@ -305,5 +305,56 @@ public class UploadRequest
 			}
 		}
 		return null;
+	}
+	
+	public Data getUploadQueueData()
+	{
+		return fieldUploadQueueData;
+	}
+	public void setUploadQueueData(Data inUploadQueueData)
+	{
+		fieldUploadQueueData = inUploadQueueData;
+	}
+	public void update(long inBytesRead, long inContentLength, int inItemNumber)
+	{
+		if( getUploadQueueData() == null)
+		{
+			return;
+		}
+		String existing = getUploadQueueData().get("date");
+		boolean update = true;
+		if( existing != null && inBytesRead != inContentLength)
+		{
+			Date saved = DateStorageUtil.getStorageUtil().parseFromStorage(existing);
+			Date recently = new Date(System.currentTimeMillis() - 2000);
+			if( saved.before(recently))
+			{
+				update = true;
+			}
+			else
+			{
+				update = false;
+			}
+		}
+		
+		getUploadQueueData().setProperty("filesize", String.valueOf( inContentLength));
+		getUploadQueueData().setProperty("filesizeuploaded", String.valueOf( inBytesRead));
+
+		if(update)
+		{
+			//PRO tip: Put breakpoint here to slow down uploads 
+			getUploadQueueData().setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			if( inBytesRead == inContentLength)
+			{
+				getUploadQueueData().setProperty("status", "complete");
+			}
+			getUploadQueueSearcher().saveData(getUploadQueueData(), null);
+//			try
+//			{
+//				Thread.sleep(1000);
+//			}
+//			catch(Exception ewx)
+//			{}
+		}
 	}
 }

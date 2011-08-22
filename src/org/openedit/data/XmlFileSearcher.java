@@ -160,7 +160,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		if( !(inData instanceof Data) )
 		{
@@ -177,7 +177,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		}
 		
 		updateIndex(data);
-		getXmlDataArchive().saveToXml(data);
+		getXmlDataArchive().saveData(data,inUser);
 	}
 
 	protected IntCounter getIntCounter()

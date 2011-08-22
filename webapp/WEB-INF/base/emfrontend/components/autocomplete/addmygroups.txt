@@ -1,6 +1,7 @@
 #set( $q = $searchstring)
 [
 #foreach ($res in $suggestions)
-{"label": "$res.get('name')", "value": "$res.get('id')"},
+#if( $velocityCount > 1 ),#end
+{"label": "$res.get('name')", "value": "$res.get('id')"}
 #end
 ]

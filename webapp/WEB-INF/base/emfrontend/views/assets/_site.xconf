@@ -12,12 +12,15 @@
 	</path-action>
 	
 	<permission name="view">
-		<not><pagevalue name="canviewasset" equals="false"/></not>
+		<or>
+			<not><pagevalue name="canadminall" equals="false"/></not>
+			<not><pagevalue name="canviewasset" equals="false"/></not>
+		</or>
 	</permission>
 	
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>
   	<path-action name="AssetStatsModule.addPreViewEvent" />
-	<property name="section">assets</property>
+	<property name="section">home</property>
 	
 </page>

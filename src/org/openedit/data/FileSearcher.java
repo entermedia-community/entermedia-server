@@ -113,13 +113,13 @@ public class FileSearcher extends BaseSearcher implements PageAccessListener {
 	public void saveAllData(Collection inAll, User inUser) {
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 
-			Object object = (Object) iterator.next();
+			Data object = (Data) iterator.next();
 			saveData(object, inUser);
 		}
 
 	}
 
-	public void saveData(Object inData, User inUser) {
+	public void saveData(Data inData, User inUser) {
 		if (inData instanceof Page) {
 			getPageManager().saveSettings((Page) inData);
 		}

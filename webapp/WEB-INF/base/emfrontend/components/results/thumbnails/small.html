@@ -1,15 +1,25 @@
-	#if( $hit.previewstatus && $hit.previewstatus == "2")
-		<img class="smallthumb" style="height:64px;" src="$home$cataloghome/downloads/preview/crop/$hit.sourcepath/thumb.jpg" border="0" />
-	#elseif( $hit.importstatus && $hit.importstatus == "uploading" )
+#set ($sourcepath = $hit.sourcepath)
+
+#set ($thumbsize = $context.getPageValue("thumbsize"))
+#if(!$thumbsize)
+	#set($thumbsize = "crop")
+#end
+
+	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		<div class="miniassetstatus" assetid="$hit.id">
 		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${hit.id}",$context)
 		</div>
-	#elseif($hit.previewstatus && $hit.previewstatus == "converting" )
-		$pages.include("$apphome/components/convertqueue/previewstatus.html?assetid=${hit.id}",$context)
-	#elseif($hit.importstatus && $hit.importstatus == "error" )
-		error on import
-	#else
+	
+	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
+	
+		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=${hit.id}",$context)
+		
+	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-		<img class="smallthumb" style="height:64px;" src="$home$thumbpath" border="0" />
+		<img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
+	#else	
+		<img class="smallthumb emdropshadow" src="$home$cataloghome/downloads/preview/${thumbsize}/${sourcepath}/thumb.jpg" border="0" />
+
 	#end
+	

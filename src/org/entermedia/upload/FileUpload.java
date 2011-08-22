@@ -18,6 +18,8 @@
 package org.entermedia.upload;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +32,14 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 
@@ -47,6 +54,17 @@ public class FileUpload
 	protected File fieldRoot;
 	/** Defaults to 1MB */
 	public static final int BUFFER_SIZE = 1000000;
+	protected SearcherManager fieldSearcherManager;
+	
+	public SearcherManager getSearcherManager()
+	{
+		return fieldSearcherManager;
+	}
+
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
+		fieldSearcherManager = inSearcherManager;
+	}
 
 	private static final Log log = LogFactory.getLog(FileUpload.class);
 
@@ -76,6 +94,18 @@ public class FileUpload
 		return props;
 	}
 
+	protected Data addRecentUpload(String inCatId, String inUploadId)
+	{
+		Searcher searcher = loadQueueSearcher(inCatId);
+		Data req = (Data)searcher.searchById(inUploadId);
+		if( req == null)
+		{
+			req= searcher.createNewData();
+			req.setId(inUploadId);
+		}
+		return req;
+	}
+
 	public void saveFiles(WebPageRequest inContext, UploadRequest props) throws OpenEditException
 	{
 		String home = (String)inContext.getPageValue("home");
@@ -102,6 +132,7 @@ public class FileUpload
 		UploadRequest upload = new UploadRequest();
 		upload.setPageManager(getPageManager());
 		upload.setRoot(getRoot());
+		
 		//upload.setProperties(inContext.getParameterMap());
 		if ( inContext.getRequest() == null) //used in unit tests
 		{
@@ -114,6 +145,16 @@ public class FileUpload
 			addAlreadyUploaded(inContext, upload);
 			return upload;
 		}
+		String uploadid = inContext.getRequestParameter("uploadid");
+		String catalogid = inContext.findValue("catalogid");
+		if( uploadid != null)
+		{
+			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
+			Data queue = addRecentUpload(catalogid, uploadid);
+			queue.setSourcePath("users/" + inContext.getUserName());
+			queue.setName(uploadid);		
+			upload.setUploadQueueData(queue);
+		}
 		FileItemFactory factory = (FileItemFactory)inContext.getPageValue("uploadfilefactory");
 		if( factory == null)
 		{
@@ -122,7 +163,10 @@ public class FileUpload
 		
 		ServletFileUpload uploadreader = new ServletFileUpload(factory);
 		//upload.setSizeThreshold(BUFFER_SIZE);
-		
+		if( uploadid != null)
+		{
+			uploadreader.setProgressListener(upload);
+		}
 		HttpServletRequest req = inContext.getRequest();
 		String encode = req.getCharacterEncoding();
 		if ( encode == null)
@@ -138,6 +182,40 @@ public class FileUpload
 		//upload.setRepositoryPath(repository.pathToFile("admin
 		uploadreader.setSizeMax(-1);
 
+		readParameters(inContext, uploadreader, upload);
+		if( uploadid != null)
+		{
+			expireOldUploads(catalogid);
+		}
+		
+		return upload;
+	}
+
+	protected Searcher loadQueueSearcher(String catalogid)
+	{
+		return getSearcherManager().getSearcher(catalogid, "uploadqueue");
+	}
+
+	protected void expireOldUploads(String inCatalogId)
+	{
+		Searcher searcher = loadQueueSearcher(inCatalogId);
+		SearchQuery q = searcher.createSearchQuery();
+		
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.HOUR, -1);
+		q.addBefore("date", cal.getTime());
+		q.addMatches("status", "completed");
+		HitTracker hits = searcher.search(q);
+		
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data queue = (Data) iterator.next();
+			searcher.delete(queue, null);
+		}
+	}
+
+	protected void readParameters(WebPageRequest inContext, ServletFileUpload uploadreader, UploadRequest upload)
+	{
 		List fileItems;
 		FileItemIterator itemIterator;
 		try 
@@ -225,7 +303,7 @@ public class FileUpload
 			}
 		}
 		addAlreadyUploaded(inContext, upload);
-		return upload;
+
 	}
 
 	private void addAlreadyUploaded(WebPageRequest inContext, UploadRequest upload)

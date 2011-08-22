@@ -3,9 +3,7 @@ package org.openedit.entermedia.scanner;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,9 +16,9 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.ConvertResult;
 import org.openedit.entermedia.creator.ExifToolThumbCreator;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.page.Page;
-import com.openedit.page.PageProperty;
 import com.openedit.util.Exec;
 import com.openedit.util.ExecResult;
 import com.openedit.util.PathUtilities;
@@ -67,7 +65,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			
 			comm.add("-S");
 			comm.add("-d");
-			comm.add("%Y-%m-%d %H:%M:%S"); //yyyy-MM-dd HH:mm:ss
+			comm.add("%Y-%m-%d %H:%M:%S"); //yyyy-MM-dd HH:mm:ss, yyyy-MM-dd HH:mm:ss Z
 			
 			comm.add(inputFile.getAbsolutePath());
 			comm.add("-n");
@@ -191,7 +189,11 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						{
 							//Date dateValue = externalFormat.parse(value);
 							//value = value + " -0000"; //added offset of 0 since that seems to be the default
-							inAsset.setProperty(property.getId(), value );
+							Date creationdate = DateStorageUtil.getStorageUtil().parseFromStorage(value);
+							if (creationdate!=null)
+							{
+								inAsset.setProperty(property.getId(), DateStorageUtil.getStorageUtil().formatForStorage(creationdate));
+							}
 						}
 						else if(property.isList() || property.isDataType("number"))
 						{

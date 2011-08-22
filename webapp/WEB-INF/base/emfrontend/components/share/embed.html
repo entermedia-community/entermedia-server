@@ -1,7 +1,11 @@
 #set($sourcepath = $context.getRequestParameter("sourcepath"))
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 <div id="embed-wrapper" style="padding: 15px;">
 <span class="embedlinktext" style="float:left;">Embed Link</span>
 <div class="embedlink">
-<textarea rows="10" cols="30" style="float:left;">$context.siteRoot$home$apphome/views/assets/$sourcepath/index.html</textarea>
+<textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="60">
+	<iframe src="$context.siteRoot$home$apphome/components/mediaviewer/player/types/${type}.html?oemaxlevel=1&sourcepath=$asset.sourcepath" width="50" height="900">
+	</iframe>
+</textarea>
 </div>
 </div>

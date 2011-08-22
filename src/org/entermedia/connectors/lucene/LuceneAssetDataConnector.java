@@ -1,5 +1,6 @@
 package org.entermedia.connectors.lucene;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
+import com.openedit.util.IntCounter;
 
 
 public class LuceneAssetDataConnector extends BaseLuceneSearcher implements DataConnector
@@ -46,7 +48,8 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	protected ModuleManager fieldModuleManager;
 	protected CategoryArchive fieldCategoryArchive;
 	protected MediaArchive fieldMediaArchive;
-	
+	protected IntCounter fieldIntCounter;
+
 	public LuceneAssetDataConnector()
 	{
 		setFireEvents(true);
@@ -60,7 +63,8 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	}
 	public String nextId()
 	{
-		return getAssetArchive().nextAssetNumber();
+		String countString = String.valueOf(getIntCounter().incrementCount());
+		return countString;
 	}
 	public void updateIndex(Asset inAsset)
 	{
@@ -263,7 +267,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			Asset asset = (Asset) inData;
 			if( asset.getId() == null)
 			{
-				asset.setId(getAssetArchive().nextAssetNumber());
+				asset.setId(nextId());
 			}
 			getAssetArchive().saveAsset(asset);
 			updateIndex(asset);
@@ -330,5 +334,22 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		getLiveSearcher(); //should flush the index
 	}
 
+	public IntCounter getIntCounter()
+	{
+		if (fieldIntCounter == null)
+		{
+			fieldIntCounter = new IntCounter();
+			fieldIntCounter.setLabelName("assetIdCount");
+			Page prop = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogHome()+ "/assets/idcounter.properties");
+			File file = new File(prop.getContentItem().getAbsolutePath());
+			fieldIntCounter.setCounterFile(file);
+		}
+		return fieldIntCounter;
+	}
+
+	public void setIntCounter(IntCounter inIntCounter)
+	{
+		fieldIntCounter = inIntCounter;
+	}
 
 }

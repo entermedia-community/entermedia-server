@@ -9,7 +9,8 @@
 		#foreach ($tag in $asset.keywords)
 			<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
 		#end
-	if( $asset.getCategories().size() > 0 )	
+	#end
+	#if( $asset.getCategories().size() > 0 )	
 	in folders	
 		#foreach ($category in $asset.categories) 
 			<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
@@ -39,15 +40,15 @@
 #if( $canshareasset )
 		<a class="emdialog" href="$home$apphome/components/share/permissions.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=700&height=650"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/navigation/user-group.png" alt="Share Settings">   Permissions</a></li>
 #end
-		<a class="emdialog" href="$home$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=300&height=200"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/navigation/link.png" /> [[Embed]]</li></a>
+		<a class="emdialog" href="$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=300&height=200"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/navigation/link.png" /> [[Embed]]</li></a>
 #if( $canemaillink )
 		<a class="emdialog " href="$home$apphome/components/share/secureshare.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=800&height=550"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/buttons/email.png" /> Email</li></a>
 #end
 #if( $candownload )
 		<a href="$home$mediaarchive.asLinkToOriginal($asset)"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/buttons/download.png" /> Download</li></a>
 #end
-#if( $canviewsettings )		
-		<a class="ajax" targetdiv="emdataeditor" href="$home$home$apphome/components/mediaviewer/metadataedit.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId&edit=true&oemaxlevel=1"><li class="emdetaileditasset  uibutton"> <img src="$home$themeprefix/images/navigation/info.png" />[[Edit]]</li></a>
+#if( $canviewsettings )
+		<a class="ajax" targetdiv="emdataeditor" href="$home$apphome/components/mediaviewer/details/metadataedit.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId&edit=true&oemaxlevel=1"><li class="emdetaileditasset  uibutton"> <img src="$home$themeprefix/images/navigation/info.png" />[[Edit]]</li></a>
 #end	
 #if( $canviewvoting )			
 <li class="emdetaileditasset  uibutton">

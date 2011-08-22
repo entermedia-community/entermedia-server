@@ -1,5 +1,5 @@
 #if( $hits && $hits.totalPages > 1 )
-#set($resultsPage = "$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&oemaxlevel=1")
+#set($resultsPage = "$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&oemaxlevel=1&resultstype=$!resultstype")
 #set($resultsPage = "$resultsPage&page")
 #set($thispage = $hits.getPage())
 
@@ -7,7 +7,7 @@
 		<tr>
 			<td nowrap >
 				#if( $hits.prevPage() )
-				<a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><img src="$home${themeprefix}/images/buttons/previous-button.png" align="absmiddle"  /></a>
+				<a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><img src="$home${themeprefix}/images/buttons/previous-button.png" align="absmiddle"  /></a>&nbsp;
 				#end
 			</td>
 		

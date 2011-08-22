@@ -35,12 +35,13 @@ public boolean conversionsComplete(String assetid){
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 	
 	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
-	log.info("checking for new and submitted conversions");
+	log.info("loadssetstatus is checking for new and submitted conversions");
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	//query.addOrsGroup("status", "new submitted retry pending");
 	
 	query.addMatches("assetid", assetid);
+	query.setHitsName("convertstatus");
 	HitTracker newtasks = tasksearcher.cachedSearch(context, query);
 
 	List errors = new ArrayList();
@@ -72,6 +73,10 @@ public boolean conversionsComplete(String assetid){
 	{
 		return false;
 	}
+	if(remaining.size() > 0)
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -85,6 +90,7 @@ public boolean loadPublishing(String assetid)
 	SearchQuery query = queuesearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry pending");
 	query.addMatches("assetid", assetid);
+	query.setHitsName("publishstatus");
 	HitTracker newtasks = queuesearcher.cachedSearch(context, query);
 	context.putPageValue("publish", newtasks);
 	
@@ -92,6 +98,7 @@ public boolean loadPublishing(String assetid)
 	query = queuesearcher.createSearchQuery();
 	query.addMatches("status", "error");
 	query.addMatches("assetid", assetid);
+	query.setHitsName("publishstatuserrors");
 	HitTracker errors = queuesearcher.cachedSearch(context, query);
 	context.putPageValue("publisherrors", errors);
 

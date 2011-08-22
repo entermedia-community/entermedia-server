@@ -318,6 +318,9 @@
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>		
 		<property name="root">
 			<ref bean="root" />
 		</property>
@@ -453,7 +456,9 @@
 		<property name="mimeTypeMap">
 			<ref bean="mimeTypeMap" />
 		</property>
-		
+		<property name="lockManager">
+			<ref bean="lockManager" />
+		</property>
 	</bean>
 
 	<bean id="albumArchive" class="org.openedit.entermedia.albums.AlbumArchive"
@@ -728,7 +733,7 @@
 		</property>
 		<property name="preProcessors">
 			<list>
-				<ref bean="ffMpegImageCreator" />
+				<!-- no longer needed since script already creates an 800x600  ref bean="ffMpegImageCreator" / -->
 				<ref bean="exifToolThumbCreator" />
 				<!--   ref bean="ghostScriptImageCreator" / -->
 			</list>
@@ -1247,10 +1252,10 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
-	
-	<bean id="lockManager" class="org.entermedia.locks.LockManager" >
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
+
+	<bean id="lockManager" class="org.entermedia.locks.MemoryLockManager" >
+		
 	</bean>
+	
+
 </beans>

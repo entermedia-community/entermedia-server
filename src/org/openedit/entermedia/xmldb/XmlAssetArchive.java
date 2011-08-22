@@ -59,8 +59,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	protected MediaArchive fieldMediaArchive;
 	protected XmlUtil fieldXmlUtil;
 	protected boolean fieldUpdateExistingRecord = true;
-	protected IntCounter fieldIntCounter;
-
+	
 	public XmlAssetArchive()
 	{
 		log.debug("Created archive");
@@ -309,7 +308,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	{
 		saveAsset(inAsset, (User) null);
 	}
-
+	public void saveData(Data inData, User inUser)
+	{
+		saveAsset((Asset)inData, inUser);
+	}
 	public synchronized void saveAsset(Asset inAsset, User inUser)
 	{
 		if( inAsset.getId() == null)
@@ -545,13 +547,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		return getMediaArchive().getCategoryArchive();
 	}
 
-	// gets the next asset ID if needed
-	public synchronized String nextAssetNumber()
-	{
-		String countString = String.valueOf(getIntCounter().incrementCount());
-		return countString;
-	}
-
 	public XmlUtil getXmlUtil()
 	{
 		if (fieldXmlUtil == null)
@@ -576,23 +571,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		fieldUpdateExistingRecord = inUpdateExistingRecord;
 	}
 
-	public IntCounter getIntCounter()
-	{
-		if (fieldIntCounter == null)
-		{
-			fieldIntCounter = new IntCounter();
-			fieldIntCounter.setLabelName("assetIdCount");
-			Page prop = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogHome()+ "/assets/idcounter.properties");
-			File file = new File(prop.getContentItem().getAbsolutePath());
-			fieldIntCounter.setCounterFile(file);
-		}
-		return fieldIntCounter;
-	}
-
-	public void setIntCounter(IntCounter inIntCounter)
-	{
-		fieldIntCounter = inIntCounter;
-	}
 
 	public ModuleManager getModuleManager()
 	{

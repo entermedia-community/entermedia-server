@@ -46,4 +46,7 @@ public interface AssetSearcher extends Searcher, AssetPathFinder
 	 */
 	public abstract void flush();
 
+	String nextAssetNumber();
+	
+
 }

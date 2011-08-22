@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +17,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermedia.error.EmailErrorHandler;
+import org.entermedia.locks.Lock;
+import org.entermedia.locks.LockManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
@@ -71,6 +75,7 @@ public class MediaArchive
 	protected AssetStatsManager fieldAssetStatsManager;
 	protected Replacer fieldReplacer;
 	protected MimeTypeMap fieldMimeTypeMap;
+	protected LockManager fieldLockManager;
 	
 	public String getMimeTypeIcon(String inFormat)
 	{
@@ -466,7 +471,7 @@ public class MediaArchive
 	{
 		Asset asset = new Asset();
 		asset.setCatalogId(getCatalogId());
-		String id = getAssetArchive().nextAssetNumber();
+		String id = getAssetSearcher().nextAssetNumber();
 		asset.setId(id);
 		asset.setSourcePath(inSourcePath);
 		String name = PathUtilities.extractFileName(inSourcePath);
@@ -1010,7 +1015,7 @@ public class MediaArchive
 	{
 		String path = "/" + getCatalogId() + "/assets/" + sourcepath + "/_site.xconf";
 		
-		List names = Arrays.asList(new String[]{"download","forcewatermark","editasset", "viewasset", "view"});
+		List<String> names = Arrays.asList(new String[]{"adminall","download","forcewatermark","editasset", "viewasset", "view"});
 		
 		Page page = getPageManager().getPage(path);
 		WebPageRequest req = inReq.copy(page);
@@ -1148,5 +1153,73 @@ public class MediaArchive
 		
 		String result = getReplacer().replace(format, tmp);
 		return result;
+	}
+	public LockManager getLockManager()
+	{
+		return fieldLockManager;
+	}
+	public void setLockManager(LockManager inLockManager)
+	{
+		fieldLockManager = inLockManager;
+	}
+	
+	public Lock lockAssetIfPossible(String inSourcePath, User inUser)
+	{
+		Lock lock = getLockManager().lockIfPossible(getCatalogId(), getCatalogHome() + "/" + inSourcePath, inUser.getId());
+		return lock;
+	}
+	
+	public boolean releaseLock(Lock inLock)
+	{
+		if( inLock == null)
+		{
+			throw new OpenEditException("Previous lock was null");
+		}
+		if( inLock.getId() == null)
+		{
+			throw new OpenEditException("Previous lock id was null");
+		}
+
+		boolean ok = getLockManager().release(getCatalogId(), inLock);
+		return ok;
+	}
+	
+	public String formatLength(Object inValue)
+	{
+		String secondstr = String.valueOf(inValue);
+		if(secondstr.length() == 0)
+		{
+			return "00:00:00";
+		}
+		int seconds = Integer.parseInt(secondstr);
+		if(seconds == 0)
+		{
+			return "00:00:00";
+		}
+		
+		Calendar cal = new GregorianCalendar();
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.add(Calendar.SECOND, seconds);
+		
+		StringBuffer length = new StringBuffer();
+		if(cal.get(Calendar.HOUR) < 10)
+		{
+			length.append("0");
+		}
+		length.append(cal.get(Calendar.HOUR) + ":");
+		if(cal.get(Calendar.MINUTE) < 10)
+		{
+			length.append("0");
+		}
+		length.append(cal.get(Calendar.MINUTE) + ":");
+		if(cal.get(Calendar.SECOND) < 10)
+		{
+			length.append("0");
+		}
+		length.append(cal.get(Calendar.SECOND));
+		
+		return length.toString();
 	}
 }

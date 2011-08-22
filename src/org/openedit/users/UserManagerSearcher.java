@@ -131,7 +131,7 @@ public class UserManagerSearcher extends BaseSearcher implements UserSearcher
 		return getUserManager().getUser(inId);
 	}
 
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		if( inData instanceof User)
 		{
