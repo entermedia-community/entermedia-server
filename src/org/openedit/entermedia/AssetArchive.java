@@ -16,7 +16,6 @@ public interface AssetArchive extends DataArchive
 
 	public Asset getAssetBySourcePath(String inSourcePath, boolean inAutoCreate);
 	public Asset getAssetBySourcePath(String inSourcePath);
-	public Asset getAsset(String inId);
 
 	/**
 	 * Clears the assets cache. Forces loading assets from persistent storage next time.

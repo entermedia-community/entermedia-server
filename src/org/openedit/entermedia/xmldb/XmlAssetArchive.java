@@ -3,7 +3,6 @@
  */
 package org.openedit.entermedia.xmldb;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -39,7 +38,6 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
-import com.openedit.util.IntCounter;
 import com.openedit.util.XmlUtil;
 
 /**
@@ -104,22 +102,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			getAssets().remove(inAsset.getSourcePath());
 			getPageManager().clearCache(buildXmlPath(inAsset));
 		}
-	}
-
-	//in AssetID
-	public Asset getAsset(String inId)
-	{
-		if (inId == null)
-		{
-			return null;
-		}
-		//Look up the source path based on the searcher results
-		String sourcePath = getMediaArchive().getAssetSearcher().idToPath(inId);
-		if (sourcePath == null)
-		{
-			return null;
-		}
-		return getAssetBySourcePath(sourcePath);
 	}
 	
 	public Asset getAssetBySourcePath(String inSourcePath)

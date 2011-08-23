@@ -147,7 +147,7 @@ public class Asset implements Data
 		{
 			return getName();
 		}
-		if ("id".equals(inAttribute))
+		if ("id".equals(inAttribute) || "_id".equals(inAttribute))
 		{
 			return getId();
 		}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.openedit.entermedia.search.DataConnector;
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
@@ -49,6 +51,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	protected CategoryArchive fieldCategoryArchive;
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
+	protected Map fieldAssetPaths;
 
 	public LuceneAssetDataConnector()
 	{
@@ -158,6 +161,12 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		}
 	}
 
+	public void reIndexAll() 
+	{
+		getAssetPaths().clear();
+		super.reIndexAll();
+		
+	};
 	protected void reIndexAll(IndexWriter writer)
 	{
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
@@ -350,6 +359,52 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	public void setIntCounter(IntCounter inIntCounter)
 	{
 		fieldIntCounter = inIntCounter;
+	}
+	public Object searchByField(String inField, String inValue)
+	{
+		if( inField.equals("id") || inField.equals("_id"))
+		{
+			Data generic = (Data)super.searchByField(inField, inValue);
+			if( generic == null)
+			{
+				return null;
+			}
+			return getAssetArchive().getAssetBySourcePath(generic.getSourcePath());
+		}
+		return super.searchByField(inField, inValue);
+	}
+
+	public String idToPath(String inAssetId)
+	{
+		String path = (String) getAssetPaths().get(inAssetId);
+		if (path == null && inAssetId != null)
+		{
+			SearchQuery query = createSearchQuery();
+			query.addExact("id", inAssetId);
+
+			HitTracker hits = search(query);
+			if (hits.size() > 0)
+			{
+				Data hit = hits.get(0);
+				path = hit.getSourcePath();
+				//mem leak? Will this hold the entire DB?
+				getAssetPaths().put(inAssetId, path);
+			}
+			else
+			{
+				log.info("No such asset in index: " + inAssetId);
+			}
+		}
+		return path;
+	}
+
+	public Map getAssetPaths()
+	{
+		if (fieldAssetPaths == null)
+		{
+			fieldAssetPaths = new HashMap();
+		}
+		return fieldAssetPaths;
 	}
 
 }
