@@ -13,7 +13,7 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 
-public interface AssetSearcher extends Searcher, AssetPathFinder
+public interface AssetSearcher extends Searcher
 {
 	public HitTracker search(SearchQuery inQuery);
 

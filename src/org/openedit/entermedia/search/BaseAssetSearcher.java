@@ -34,7 +34,7 @@ import com.openedit.users.Group;
 import com.openedit.users.User;
 
 
-public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, AssetPathFinder
+public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 {
 	static final Log log = LogFactory.getLog(BaseAssetSearcher.class);
 	protected static final String CATALOGIDX = "catalogid";
@@ -43,7 +43,6 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 
 	protected DecimalFormat fieldDecimalFormatter;
 	protected PageManager fieldPageManager;
-	protected Map fieldAssetPaths;
 	private Boolean fieldUsesSearchSecurity;
 	protected ModuleManager fieldModuleManager;
 	protected CategoryArchive fieldCategoryArchive;
@@ -149,7 +148,6 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 
 	public void reIndexAll()
 	{
-		getAssetPaths().clear();
 		getDataConnector().reIndexAll();
 	}
 
@@ -260,49 +258,10 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher, As
 		fieldPageManager = inPageManager;
 	}
 
-	public String idToPath(String inAssetId)
+	public Object searchByField(String inField, String inValue)
 	{
-		String path = (String) getAssetPaths().get(inAssetId);
-		if (path == null && inAssetId != null)
-		{
-			SearchQuery query = createSearchQuery();
-			query.addExact("id", inAssetId);
-
-			HitTracker hits = search(query);
-			if (hits.size() > 0)
-			{
-				Data hit = hits.get(0);
-				path = hit.getSourcePath();
-				//mem leak? Will this hold the entire DB?
-				getAssetPaths().put(inAssetId, path);
-			}
-			else
-			{
-				log.info("No such asset in index: " + inAssetId);
-			}
-		}
-		return path;
+		return getDataConnector().searchByField(inField,inValue);
 	}
-
-	public Map getAssetPaths()
-	{
-		if (fieldAssetPaths == null)
-		{
-			fieldAssetPaths = new HashMap();
-		}
-		return fieldAssetPaths;
-	}
-
-	public Object searchById(String inId)
-	{
-		String path = idToPath(inId);
-		if (path == null)
-		{
-			return null;
-		}
-		return getAssetArchive().getAssetBySourcePath(path);
-	}
-
 	public ModuleManager getModuleManager()
 	{
 		return getSearcherManager().getModuleManager();

@@ -474,10 +474,9 @@ public class AssetSecurityArchive
 	}
 
 	public void clearViewAccess(MediaArchive inArchive, Asset inJobfolder) {
-		String path = inArchive.getAssetSearcher().idToPath(inJobfolder.getId());
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + inJobfolder.getSourcePath() + "/");
 		clearViewAccess(inArchive, page);		
 	}
 	

@@ -20,6 +20,8 @@ public interface DataConnector
 
 	HitTracker search(SearchQuery inQuery);
 
+	Object searchByField(String inField, String inValue);
+	
 	void delete(Data inData, User inUser);
 
 	void deleteFromIndex(String inId);
