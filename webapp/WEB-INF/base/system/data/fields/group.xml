@@ -1,6 +1,9 @@
 <properties>		
 	<property id="id" index="true" stored="true"  keyword="true"  >id</property>
 	<property id="name" index="true" stored="true" editable="true" keyword="true"  >Name</property>
+	<property id="description" index="true" >All Fields</property>
+	<property id="enabled" stored="true" editable="true" datatype="boolean">Enabled</property>
+
 	<!-- 
 	<property id="contact" index="true" stored="true" editable="true">Contact</property>
 	<property id="phone"  index="true" stored="true" editable="true">Phone</property>
