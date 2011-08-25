@@ -201,18 +201,13 @@ public class AutoCompleteModule extends BaseMediaModule
 			}
 			
 			Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
-			
-			SearchQuery innerquery = groupSearcher.createSearchQuery();
 			String searchString = inReq.getRequestParameter("term");
-			innerquery.addStartsWith("description", searchString);
-			innerquery.setAndTogether(false);
 			
 			SearchQuery query = groupSearcher.createSearchQuery();
 			query.addOrsGroup("id", groupids.toString());
+			query.addStartsWith("description", searchString);
+			query.addExact("enabled", "true");
 			query.setAndTogether(true);
-			
-			query.addChildQuery(innerquery);
-			
 			
 			hits = groupSearcher.cachedSearch(inReq, query);
 			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
