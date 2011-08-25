@@ -125,10 +125,7 @@ public class AutoCompleteModule extends BaseMediaModule
 			}
 		}
 		
-		//make sure we exclude users that are already in there
-		MediaArchive archive = getMediaArchive(inReq);
-		Asset asset = getAsset(inReq);
-		Collection<String> userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		Collection<String> userNames = extractDuplicates(inReq);
 		ids.removeAll(userNames);
 		
 		HitTracker hits = null;
@@ -184,9 +181,7 @@ public class AutoCompleteModule extends BaseMediaModule
 		}
 		
 		//make sure we exclude groups that are already in there
-		MediaArchive archive = getMediaArchive(inReq);
-		Asset asset = getAsset(inReq);
-		Collection<String> userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		Collection<String> userNames = extractDuplicates(inReq);
 		groupidscol.removeAll(userNames);
 		
 		HitTracker hits = null;
@@ -204,13 +199,12 @@ public class AutoCompleteModule extends BaseMediaModule
 					groupids.append(group);
 				}
 			}
-			Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
 			
+			Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
 			
 			SearchQuery innerquery = groupSearcher.createSearchQuery();
 			String searchString = inReq.getRequestParameter("term");
-			innerquery.addStartsWith("id", searchString);
-			innerquery.addStartsWith("name", searchString);
+			innerquery.addStartsWith("description", searchString);
 			innerquery.setAndTogether(false);
 			
 			SearchQuery query = groupSearcher.createSearchQuery();
@@ -228,6 +222,14 @@ public class AutoCompleteModule extends BaseMediaModule
 		}
 		inReq.putPageValue("suggestions", hits);
 		return hits;
+	}
+
+	protected Collection<String> extractDuplicates(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		Collection<String> userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		return userNames;
 	}
 
 	public HitTracker searchUserEmails(WebPageRequest inReq) throws Exception
