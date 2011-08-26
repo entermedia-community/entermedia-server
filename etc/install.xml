@@ -126,7 +126,10 @@
 	  	<delete>
 	  	  	  <fileset dir="./lib" includes="activation**.jar"/>
 	  	</delete>
-	    
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="mp4parser**.jar"/>
+	  	</delete>
+		
 	  	<delete dir="../base/openedit"/>
 	  	<delete dir="../WEB-INF/base/openedit"/>
 

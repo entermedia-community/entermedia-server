@@ -209,8 +209,7 @@ public class AutoCompleteModule extends BaseMediaModule
 			
 			SearchQuery innerquery = groupSearcher.createSearchQuery();
 			String searchString = inReq.getRequestParameter("term");
-			innerquery.addStartsWith("id", searchString);
-			innerquery.addStartsWith("name", searchString);
+			innerquery.addStartsWith("description", searchString);
 			innerquery.setAndTogether(false);
 			
 			SearchQuery query = groupSearcher.createSearchQuery();
