@@ -1,7 +1,7 @@
 <page>
 	<!--path-action name="LogSearchModule.addEventLog"/-->
 	<path-action name="RecentActivityModule.addEventLog"/>
-	<path-action name="FriendModule.sendAssetCommentNotification" />
+	<!--<path-action name="FriendModule.sendAssetCommentNotification" />-->
 	<property name="subject">[EnterMedia] Comment added to Asset</property> 
 	<property name="emailbody">${themeprefix}/entermedia/layouts/assetcommentnotifylayout.html</property>
 		
