@@ -117,7 +117,7 @@ public class ffmpegimageCreator extends BaseImageCreator
 		
 		if(!inOutFile.exists() || inOutFile.length() == 0)
 		{
-			log.info("Thumnail creation failed " + result.getOutputPath());
+			log.info("Thumnail creation failed " + outputpath);
 			result.setOk(false);
 			result.setError("creation failed" );
 		}
