@@ -197,10 +197,15 @@ public class AssetControlModule extends BaseMediaModule {
 		//get all of the user's groups
 		User user = inReq.getUser();
 		Collection<Group> groups = user.getGroups();
-		//groups = getUserManager().getGroups();
-		for (Group group : groups) {
-			archive.getAssetSecurityArchive().grantGroupViewAccess(archive, group.getId(), asset);
+		List<String> groupNames = new ArrayList<String>();
+		for (Group group : groups)
+		{
+			if (group!=null&&group.getId()!=null)
+			{
+				groupNames.add(group.getId());
+			}
 		}
+		archive.getAssetSecurityArchive().grantGroupViewAccess(archive, groupNames, asset);
 	}
 	
 	public void revokeAllGroups(WebPageRequest inReq)
