@@ -19,6 +19,52 @@ import java.util.List;
 import java.util.ArrayList;
 import org.entermedia.locks.Lock;
 
+public void saveResults(String sourcepath, ConvertResult result, Data realtask, Searcher tasksearcher)
+{
+	if(result != null)
+	{
+		if(result.isOk())
+		{
+			if(result.isComplete())
+			{
+				realtask.setProperty("status", "complete");
+				String itemid = realtask.get("itemid")
+				if(itemid != null)
+				{
+					Data item = itemsearcher.searchById(itemid);
+					item.setProperty("status", "converted");
+					itemsearcher.saveData(item, null);
+				}
+				realtask.setProperty("externalid", result.get("externalid"));
+				Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
+				
+				mediaarchive.fireMediaEvent("conversions/conversioncomplete",context.getUser(),asset);
+			}
+			else
+			{
+				realtask.setProperty("status", "submitted");
+				realtask.setProperty("externalid", result.get("externalid"));
+			}
+		}
+		else if ( result.isError() )
+		{
+			realtask.setProperty('status', 'error');
+			realtask.setProperty("errordetails", result.getError() );
+			
+			String itemid = realtask.get("itemid")
+			if(itemid != null)
+			{
+				Data item = itemsearcher.searchById(itemid);
+				item.setProperty("status", "error");
+				item.setProperty("errordetails", result.getError() );
+				itemsearcher.saveData(item, null);
+			}
+		}
+		//tosave.add( realtask);
+		tasksearcher.saveData(realtask, context.getUser());
+	}
+}
+
 public void checkforTasks()
 {
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
@@ -51,80 +97,42 @@ public void checkforTasks()
 			Data preset = presetsearcher.searchById(presetid);
 			if(preset != null)
 			{
-				ConvertResult result = null;
+				Lock lock = null;
 				try
 				{
 					String sourcepath = hit.get("sourcepath");
-					Lock lock = mediaarchive.lockAssetIfPossible(sourcepath, user);
+					lock = mediaarchive.lockAssetIfPossible(sourcepath, user);
 					if( lock == null)
 					{
 						log.info("asset already being processed ");
 						continue;
 					}
 					
+					ConvertResult result = null;
 					try
 					{
 						result = doConversion(mediaarchive, realtask, preset,sourcepath);
 					}
-					finally
+					catch(Throwable e)
 					{
-						mediaarchive.releaseLock(lock);
+						result = new ConvertResult();
+						result.setOk(false);
+						result.setError(e.toString());
+						log.error("Conversion Failed", e);
 					}
-				}
-				catch(Throwable e)
-				{
-					result = new ConvertResult();
-					result.setOk(false);
-					result.setError(e.toString());
-					log.error("Conversion Failed", e);
-				}
-				
-				if(result != null)
-				{
-					if(result.isOk())
-					{
-						if(result.isComplete())
-						{
-							realtask.setProperty("status", "complete");
-							String itemid = realtask.get("itemid")
-							if(itemid != null)
-							{
-								Data item = itemsearcher.searchById(itemid);
-								item.setProperty("status", "converted");
-								itemsearcher.saveData(item, null);
-							}
-							realtask.setProperty("externalid", result.get("externalid"));
-							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
-							
-							mediaarchive.fireMediaEvent("conversions/conversioncomplete",context.getUser(),asset);
-						} 
-						else
-						{
-							realtask.setProperty("status", "submitted");
-							realtask.setProperty("externalid", result.get("externalid"));
-						}
-					} 
-					else if ( result.isError() )
-					{
-						realtask.setProperty('status', 'error');
-						realtask.setProperty("errordetails", result.getError() );
-						
-						String itemid = realtask.get("itemid")
-						if(itemid != null)
-						{
-							Data item = itemsearcher.searchById(itemid);
-							item.setProperty("status", "error");
-							item.setProperty("errordetails", result.getError() );
-							itemsearcher.saveData(item, null);
-						}
-					}
-					else
+					if(result != null && !result.isOk())
 					{
 						log.error("not ok but no errors, continue");
 						continue;
 					}
-					//tosave.add( realtask);
-					tasksearcher.saveData(realtask, context.getUser());
+					else
+					{
+						saveResults(hit.get("sourcepath"), result, realtask, tasksearcher);
+					}
+				}
+				finally
+				{
+					mediaarchive.releaseLock(lock);
 				}
 			}
 			else
@@ -141,6 +149,7 @@ public void checkforTasks()
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time.
 	
 }
+
 private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, String inSourcepath)
 {
 	ConvertResult result = null;
