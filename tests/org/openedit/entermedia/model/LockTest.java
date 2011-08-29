@@ -30,7 +30,7 @@ public class LockTest extends BaseEnterMediaTest
 
 		manager.release(catid,lock);
 		lock = manager.loadLock(catid, path);
-		assertNull(lock);
+		assertFalse(lock.isLocked());
 
 		//clear
 		//manager.lockIfPossible(inCatId, inPath, inOwnerId)
