@@ -13,6 +13,7 @@ import org.openedit.profile.UserProfileManager;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.users.User;
 
 public class ProfileModule extends MediaArchiveModule
 {
@@ -40,8 +41,8 @@ public class ProfileModule extends MediaArchiveModule
 	}
 	public UserProfile loadUserProfile(WebPageRequest inReq)
 	{
-		String userid = inReq.getUserName();
-		if( userid == null)
+		User user = inReq.getUser();
+		if( user == null)
 		{
 			return null;
 		}
@@ -50,7 +51,7 @@ public class ProfileModule extends MediaArchiveModule
 		{
 			profilelocation = inReq.findValue("catalogid");
 		}
-		return getUserProfileManager().loadUserProfile(inReq, profilelocation, inReq.getUserName());
+		return getUserProfileManager().loadUserProfile(inReq, profilelocation, user.getId());
 	}
 
 	public void moveColumn(WebPageRequest inReq) throws Exception
