@@ -168,8 +168,6 @@ public class ClusterLockManager implements LockManager
 	@Override
 	public Lock lockIfPossible(String inCatId, String inPath, String inOwnerId)
 	{
-		Searcher searcher = getLockSearcher(inCatId);
-
 		Lock lock = loadLock(inCatId, inPath);
 		
 		if( lock.isLocked() )

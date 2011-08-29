@@ -40,6 +40,11 @@ public class ProfileModule extends MediaArchiveModule
 	}
 	public UserProfile loadUserProfile(WebPageRequest inReq)
 	{
+		String userid = inReq.getUserName();
+		if( userid == null)
+		{
+			return null;
+		}
 		String profilelocation = inReq.findValue("profilemanagerid");// catalogid
 		if (profilelocation == null)
 		{
