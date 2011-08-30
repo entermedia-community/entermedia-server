@@ -42,7 +42,7 @@ public class ProfileModule extends MediaArchiveModule
 	public UserProfile loadUserProfile(WebPageRequest inReq)
 	{
 		User user = inReq.getUser();
-		if( user == null)
+		if( user == null || user.getId() == null || user.getId().equals("null"))
 		{
 			return null;
 		}
