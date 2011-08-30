@@ -137,7 +137,7 @@ public class XmlDataArchive implements DataArchive
 		for (Iterator iterator = inData.getProperties().keySet().iterator(); iterator.hasNext();)
 		{
 			String detail = (String) iterator.next();
-			if( !detail.equals("id") && !detail.equals("sourcepath"))
+			if( !detail.equals("id") && !detail.equals("sourcepath") && !detail.startsWith("_"))
 			{
 				String value = inData.get(detail);
 				if( value != null)
@@ -154,7 +154,8 @@ public class XmlDataArchive implements DataArchive
 		for(Iterator iterator = attributes.iterator(); iterator.hasNext();)
 		{
 			Attribute attr = (Attribute)iterator.next();
-			if(!attr.getName().equals("id"))
+			String id = attr.getName();
+			if(!id.equals("id") && !id.startsWith("_"))
 			{
 				inElement.addAttribute(attr.getName(), attr.getValue());
 			}

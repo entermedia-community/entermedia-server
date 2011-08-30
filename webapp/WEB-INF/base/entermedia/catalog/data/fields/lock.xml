@@ -1,4 +1,4 @@
-<properties>
+	<properties>
 	<property id="id"  editable="true"  index="true" stored="true">Lock Id</property>
 	<property id="nodeid"  editable="true"  index="true" stored="true">Node Id</property>
 	<property id="ownerid"  editable="true"  index="true" stored="true">Owner Id</property>

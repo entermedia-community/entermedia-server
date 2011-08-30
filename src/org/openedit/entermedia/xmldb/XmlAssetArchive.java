@@ -367,6 +367,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		for (Iterator iter = inAsset.getProperties().keySet().iterator(); iter.hasNext();)
 		{
 			String key = (String) iter.next();
+			if( key.startsWith("_"))
+			{
+				continue;
+			}
 			PropertyDetail detail = details.getDetail(key);
 			String value = inAsset.getProperty(key);
 
