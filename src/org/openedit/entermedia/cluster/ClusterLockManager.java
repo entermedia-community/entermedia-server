@@ -74,6 +74,10 @@ public class ClusterLockManager implements LockManager
 			lock.setLocked(true);
 			getLockSearcher(inCatId).saveData(lock, null);
 		}
+		catch( ConcurrentModificationException ex)
+		{
+			return false;
+		}
 		catch( OpenEditException ex)
 		{
 			if( ex.getCause() instanceof ConcurrentModificationException)
@@ -83,6 +87,7 @@ public class ClusterLockManager implements LockManager
 			throw ex;
 		}
 		return true;
+			
 	}
 
 
