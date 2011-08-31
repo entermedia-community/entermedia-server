@@ -283,7 +283,9 @@ public class MediaArchiveModule extends BaseMediaModule
 	{
 		UploadRequest map = getFileUpload().parseArguments(inReq);
 		MediaArchive archive = getMediaArchive(inReq);
-		String temppath = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/" + map.getFirstItem().getName();
+		
+		long utime = System.currentTimeMillis();
+		String temppath = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/tmp" + utime + "_" + map.getFirstItem().getName();
 		map.saveFirstFileAs(temppath, inReq.getUser());
 		
 		if ( map == null)

@@ -832,7 +832,12 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
 		}
-		String assetsourcepath = sourcepath + "/" + inPage.getName(); //TODO: Should we save like /a/allstuff.jpg
+		String filename = inPage.getName();
+		if(filename.startsWith("tmp") && filename.indexOf('_') > -1)
+		{
+			filename = filename.substring(filename.indexOf('_') + 1);
+		}
+		String assetsourcepath = sourcepath + "/" + filename; //TODO: Should we save like /a/allstuff.jpg
 		//getPageManager().clearCache(inPage);
 		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
 		Asset asset = new Asset();
