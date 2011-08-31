@@ -115,6 +115,7 @@ public class ClusterLockManager implements LockManager
 		if( first == null)
 		{
 			Lock lock = createLock(inPath, searcher);
+			searcher.saveData(lock, null);
 			return lock;
 		}
 		
@@ -232,5 +233,4 @@ public class ClusterLockManager implements LockManager
 	{
 		fieldNodeManager = inNodeManager;
 	}
-
 }
