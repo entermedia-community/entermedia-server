@@ -23,6 +23,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
@@ -111,11 +112,17 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			buildCategorySet(parent, inCatalogSet);
 		}
 	}
-
 	public Document createAssetDoc(Asset asset, PropertyDetails inDetails)
 	{
 		Document doc = new Document();
+		updateIndex(asset, doc, inDetails);
 
+		return doc;
+	}
+
+	public void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
+	{
+		Asset asset = (Asset)inData;
 		String datatype = asset.getProperty("datatype");
 		if (datatype == null)
 		{
@@ -190,8 +197,6 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		populateExactCategory(doc, asset);
 		
 		populateProperties(doc, asset, inDetails);
-
-		return doc;
 	}
 /*
 	protected void addAttachment(Document inDoc, Asset inAsset, String inType, String orig,String origtype)

@@ -20,6 +20,7 @@ import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.CompositeAnalyzer;
+import org.openedit.data.lucene.LuceneIndexer;
 import org.openedit.data.lucene.NullAnalyzer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.data.lucene.StemmerAnalyzer;
@@ -46,7 +47,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	protected static final String CATEGORYID = "categoryid";
 	protected DecimalFormat fieldDecimalFormatter;
 	protected PageManager fieldPageManager;
-	protected LuceneAssetIndexer fieldIndexer;
 	protected ModuleManager fieldModuleManager;
 	protected CategoryArchive fieldCategoryArchive;
 	protected MediaArchive fieldMediaArchive;
@@ -97,24 +97,25 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return fieldAnalyzer;
 	}
 
-	protected LuceneAssetIndexer getIndexer()
+	public LuceneIndexer getLuceneIndexer()
 	{
-		if (fieldIndexer == null)
+		if (fieldLuceneIndexer == null)
 		{
-			fieldIndexer = new LuceneAssetIndexer();
-			fieldIndexer.setAnalyzer(getAnalyzer());
-			fieldIndexer.setSearcherManager(getSearcherManager());
-			fieldIndexer.setUsesSearchSecurity(true);
-			fieldIndexer.setNumberUtils(getNumberUtils());
-			fieldIndexer.setRootDirectory(getRootDirectory());
-			fieldIndexer.setMediaArchive(getMediaArchive());
+			LuceneAssetIndexer luceneIndexer = new LuceneAssetIndexer();
+			luceneIndexer.setAnalyzer(getAnalyzer());
+			luceneIndexer.setSearcherManager(getSearcherManager());
+			luceneIndexer.setUsesSearchSecurity(true);
+			luceneIndexer.setNumberUtils(getNumberUtils());
+			luceneIndexer.setRootDirectory(getRootDirectory());
+			luceneIndexer.setMediaArchive(getMediaArchive());
 			if(getMediaArchive().getAssetSecurityArchive() == null)
 			{
 				log.error("Asset Security Archive Not Set");
 			}
-			fieldIndexer.setAssetSecurityArchive(getMediaArchive().getAssetSecurityArchive());
+			luceneIndexer.setAssetSecurityArchive(getMediaArchive().getAssetSecurityArchive());
+			fieldLuceneIndexer = luceneIndexer;
 		}
-		return fieldIndexer;
+		return fieldLuceneIndexer;
 	}
 
 	public synchronized void updateIndex(List<Data> inAssets, boolean inOptimize)
@@ -159,6 +160,11 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			}
 			throw new OpenEditException(ex);
 		}
+	}
+
+	protected LuceneAssetIndexer getIndexer()
+	{
+		return (LuceneAssetIndexer)getLuceneIndexer();
 	}
 
 	public void reIndexAll() 
