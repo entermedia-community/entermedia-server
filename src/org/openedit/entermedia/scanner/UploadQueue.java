@@ -203,6 +203,7 @@ public class UploadQueue
 				asset.setProperty("importstatus", "imported");
 				archive.saveAsset(asset, inReq.getUser());
 				archive.fireMediaEvent("assetuploaded", inReq.getUser(), asset);
+				archive.fireMediaEvent("assetsuploaded", inReq.getUser(), asset);
 			}
 			else
 			{
