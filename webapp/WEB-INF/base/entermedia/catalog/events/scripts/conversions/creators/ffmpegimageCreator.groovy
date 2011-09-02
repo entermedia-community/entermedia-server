@@ -62,7 +62,7 @@ public class ffmpegimageCreator extends BaseImageCreator
 //		Page input = getPageManager().getPage(ci.getOutputPath());
 		
 		// Or the original file, if the flv does not exist
-		if( !input.exists() )
+		if( !input.exists() || input.length() == 0)
 		{
 			result.setOk(false);
             log.info("Input not ready yet");
