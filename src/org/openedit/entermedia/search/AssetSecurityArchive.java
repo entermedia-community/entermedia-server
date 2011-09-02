@@ -98,7 +98,10 @@ public class AssetSecurityArchive
 			if (inRoot instanceof UserFilter)
 			{
 				String username = ((UserFilter) inRoot).getUsername();
-				add.add(username);
+				if( username != null)
+				{
+					add.add(username);
+				}
 			}
 			else if (inRoot instanceof GroupFilter)
 			{

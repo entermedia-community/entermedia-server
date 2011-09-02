@@ -3,8 +3,6 @@
  */
 package org.openedit.users;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
@@ -27,7 +24,6 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
-import com.openedit.util.FileUtils;
 
 /**
  *
@@ -117,7 +113,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 		super.updateIndex(inData, doc, inDetails);
 	}
 	
-	public void saveData(Object inData, User inUser)
+	public void saveData(Data inData, User inUser)
 	{
 		if( inData instanceof User)
 		{
