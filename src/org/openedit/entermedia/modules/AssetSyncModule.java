@@ -133,12 +133,12 @@ public class AssetSyncModule extends BaseMediaModule
 						String val = inReq.getRequestParameter(prefixs[i] + fields[f]+ ".value");
 						if( val != null)
 						{
-							existing.setProperty(fields[f],val);
+							toadd.setProperty(fields[f],val);
 						}
 					}
 				}
-				allids.add(existing.getId());
-				tracker.add(existing);
+				allids.add(toadd.getId());
+				tracker.add(toadd);
 			}
 			archive.saveAssets(tracker, inReq.getUser());
 			if(tracker.size() > 0)
