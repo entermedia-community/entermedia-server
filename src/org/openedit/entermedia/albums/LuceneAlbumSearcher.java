@@ -162,7 +162,7 @@ public class LuceneAlbumSearcher extends BaseLuceneSearcher implements AlbumSear
 //		populateItems((Album) inData, inDoc);
 //	}
 
-	public void saveData(Object inObject, User inUser)
+	public void saveData(Data inObject, User inUser)
 	{
 		Album album = (Album) inObject;
 		getAlbumArchive().save(album, inUser);

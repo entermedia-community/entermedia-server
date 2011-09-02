@@ -678,11 +678,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		fieldIndexPath = inIndexPath;
 	}
 
-	public void saveData(Data inData, User inUser)
-	{
-		throw new OpenEditRuntimeException("saveData not implemented in this searcher. May need to create an archive");
-	}
-
 	public NumberUtils getNumberUtils()
 	{
 		if (fieldNumberUtils == null)
