@@ -1,5 +1,5 @@
 <tr rowid="$home$apphome/views/assets/$sourcepath/index.html">
-#if( $pickable )
+#if( $showtoolbar )
 	<td class="borderedcell" noclick="true"> 
 		
 <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />
