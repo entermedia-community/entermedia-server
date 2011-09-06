@@ -31,14 +31,13 @@
   	//var connect  = new AsperaWeb('aspera-web');
   	function downloadNow()
   	{
-		var aspera = document.getElementById('aspera-web');
+		var aspera = new AsperaWeb('aspera-web');
 
  		#set( $username = $publishdestination.get("username") )
  		#set( $theuser = $userManager.getUser($username) )
  		#set( $password = $userManager.decryptPassword($theuser) )
  		var sourceURL = 'fasp://${username}:${password}@${publishdestination.get("server")}${publishdestination.get("url")}/$presetpath?v=2&bwcap=Unlimited&targetrate=20000';
-		aspera.startDownloadToPath(sourceURL, "$presetpath");
-		//aspera.displayTransferManager();
+ 		aspera.promptAndDownload(sourceURL, "$presetpath");
 		jQuery('#install_message').html( "Download in progress using Aspera software in system tray" );
 		return false;    
   	}	
