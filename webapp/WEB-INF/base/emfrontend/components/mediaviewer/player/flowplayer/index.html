@@ -41,26 +41,27 @@ a.mediaplayer:hover {
 </style>		
 		
 <script language='javascript'>
-			flowplayer('a.mediaplayer', {src: '$root/flowplayer-3.2.7.swf', wmode: 'transparent'},
+			flowplayer('a.mediaplayer', {src: '$root/flowplayer-3.2.7.swf'},
 			{  
 			    // configure clip to use "lighthttpd" plugin for providing video data 
 			    clip: 
 			    { 
 			        url: '$source', 
-			        provider: 'lighttpd',
+			        provider: 'h264streaming',
 			        scaling: 'fit' 
 		    	}, 
 			     // streaming plugins are configured normally under the plugins node 
 			    plugins: 
 			    { 
-			        lighttpd: 
-			        { 
-			            url: '$root/flowplayer.pseudostreaming-3.2.5.swf' 
-			        },
-			        controls: 
-			        {
-						url: '$root/flowplayer.controls-3.2.5.swf'
-					}		 
+			    	h264streaming: {
+			    	     url: '$root/flowplayer.pseudostreaming-3.2.7.swf'
+			    	    }
+    			 },
+    			 controls: {
+    			      url: '$root/flowplayer.controls-3.2.5.swf',
+    			      play:false,
+    			      fullscreen:true,
+    			      scrubber: true
     			 },
     			 canvas: 
     			 { 

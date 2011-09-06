@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.CompositeAnalyzer;
+import org.openedit.data.lucene.LuceneIndexer;
 import org.openedit.data.lucene.NullAnalyzer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.data.lucene.StemmerAnalyzer;
@@ -31,6 +33,7 @@ import org.openedit.entermedia.search.DataConnector;
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
@@ -44,11 +47,11 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	protected static final String CATEGORYID = "categoryid";
 	protected DecimalFormat fieldDecimalFormatter;
 	protected PageManager fieldPageManager;
-	protected LuceneAssetIndexer fieldIndexer;
 	protected ModuleManager fieldModuleManager;
 	protected CategoryArchive fieldCategoryArchive;
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
+	protected Map fieldAssetPaths;
 
 	public LuceneAssetDataConnector()
 	{
@@ -94,24 +97,25 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return fieldAnalyzer;
 	}
 
-	protected LuceneAssetIndexer getIndexer()
+	public LuceneIndexer getLuceneIndexer()
 	{
-		if (fieldIndexer == null)
+		if (fieldLuceneIndexer == null)
 		{
-			fieldIndexer = new LuceneAssetIndexer();
-			fieldIndexer.setAnalyzer(getAnalyzer());
-			fieldIndexer.setSearcherManager(getSearcherManager());
-			fieldIndexer.setUsesSearchSecurity(true);
-			fieldIndexer.setNumberUtils(getNumberUtils());
-			fieldIndexer.setRootDirectory(getRootDirectory());
-			fieldIndexer.setMediaArchive(getMediaArchive());
+			LuceneAssetIndexer luceneIndexer = new LuceneAssetIndexer();
+			luceneIndexer.setAnalyzer(getAnalyzer());
+			luceneIndexer.setSearcherManager(getSearcherManager());
+			luceneIndexer.setUsesSearchSecurity(true);
+			luceneIndexer.setNumberUtils(getNumberUtils());
+			luceneIndexer.setRootDirectory(getRootDirectory());
+			luceneIndexer.setMediaArchive(getMediaArchive());
 			if(getMediaArchive().getAssetSecurityArchive() == null)
 			{
 				log.error("Asset Security Archive Not Set");
 			}
-			fieldIndexer.setAssetSecurityArchive(getMediaArchive().getAssetSecurityArchive());
+			luceneIndexer.setAssetSecurityArchive(getMediaArchive().getAssetSecurityArchive());
+			fieldLuceneIndexer = luceneIndexer;
 		}
-		return fieldIndexer;
+		return fieldLuceneIndexer;
 	}
 
 	public synchronized void updateIndex(List<Data> inAssets, boolean inOptimize)
@@ -158,6 +162,17 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		}
 	}
 
+	protected LuceneAssetIndexer getIndexer()
+	{
+		return (LuceneAssetIndexer)getLuceneIndexer();
+	}
+
+	public void reIndexAll() 
+	{
+		getAssetPaths().clear();
+		super.reIndexAll();
+		
+	};
 	protected void reIndexAll(IndexWriter writer)
 	{
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
@@ -350,6 +365,52 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	public void setIntCounter(IntCounter inIntCounter)
 	{
 		fieldIntCounter = inIntCounter;
+	}
+	public Object searchByField(String inField, String inValue)
+	{
+		if( inField.equals("id") || inField.equals("_id"))
+		{
+			Data generic = (Data)super.searchByField(inField, inValue);
+			if( generic == null)
+			{
+				return null;
+			}
+			return getAssetArchive().getAssetBySourcePath(generic.getSourcePath());
+		}
+		return super.searchByField(inField, inValue);
+	}
+
+	public String idToPath(String inAssetId)
+	{
+		String path = (String) getAssetPaths().get(inAssetId);
+		if (path == null && inAssetId != null)
+		{
+			SearchQuery query = createSearchQuery();
+			query.addExact("id", inAssetId);
+
+			HitTracker hits = search(query);
+			if (hits.size() > 0)
+			{
+				Data hit = hits.get(0);
+				path = hit.getSourcePath();
+				//mem leak? Will this hold the entire DB?
+				getAssetPaths().put(inAssetId, path);
+			}
+			else
+			{
+				log.info("No such asset in index: " + inAssetId);
+			}
+		}
+		return path;
+	}
+
+	public Map getAssetPaths()
+	{
+		if (fieldAssetPaths == null)
+		{
+			fieldAssetPaths = new HashMap();
+		}
+		return fieldAssetPaths;
 	}
 
 }

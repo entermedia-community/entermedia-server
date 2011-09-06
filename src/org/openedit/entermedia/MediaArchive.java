@@ -1222,4 +1222,18 @@ public class MediaArchive
 		
 		return length.toString();
 	}
+	public String formatMinutesAndSeconds(String inSeconds)
+	{
+		if (inSeconds==null||inSeconds.trim().length()==0)
+			return ":00";
+		StringBuilder sb = new StringBuilder();
+		int allSeconds = Integer.parseInt(inSeconds);
+		int minutes = allSeconds>60?allSeconds/60:0;
+		int seconds = allSeconds%60;
+		String min = minutes>0?String.valueOf(minutes):"";
+		String sec = seconds>=10?String.valueOf(seconds):seconds>0?"0"+String.valueOf(seconds):"00";
+		sb.append(min + ":" + sec);
+		System.out.println(sb.toString());
+		return sb.toString();
+	}
 }

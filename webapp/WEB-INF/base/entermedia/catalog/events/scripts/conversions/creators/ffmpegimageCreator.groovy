@@ -62,7 +62,7 @@ public class ffmpegimageCreator extends BaseImageCreator
 //		Page input = getPageManager().getPage(ci.getOutputPath());
 		
 		// Or the original file, if the flv does not exist
-		if( !input.exists() )
+		if( !input.exists() || input.length() == 0)
 		{
 			result.setOk(false);
             log.info("Input not ready yet");
@@ -117,7 +117,7 @@ public class ffmpegimageCreator extends BaseImageCreator
 		
 		if(!inOutFile.exists() || inOutFile.length() == 0)
 		{
-			log.info("Thumnail creation failed " + result.getOutputPath());
+			log.info("Thumnail creation failed " + outputpath);
 			result.setOk(false);
 			result.setError("creation failed" );
 		}

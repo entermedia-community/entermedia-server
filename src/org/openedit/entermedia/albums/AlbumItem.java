@@ -11,7 +11,7 @@ import java.util.Map;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.openedit.Data;
 import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.AssetArchive;
+import org.openedit.entermedia.search.AssetSearcher;
 
 import com.openedit.comments.Comment;
 
@@ -21,13 +21,13 @@ public class AlbumItem implements Data
 	protected List fieldComments;
 	protected Map fieldProperties;
 	protected String fieldCatalogId;
-	protected AssetArchive fieldArchive;
+	protected AssetSearcher fieldAssetSearcher;
 	
 	public Asset getAsset()
 	{
 		if( fieldAsset == null)
 		{
-			fieldAsset = getArchive().getAsset(getAssetId());
+			fieldAsset = (Asset)getAssetSearcher().searchById(getAssetId());
 		}
 		return fieldAsset;
 	}
@@ -160,14 +160,14 @@ public class AlbumItem implements Data
 
 	}
 
-	public AssetArchive getArchive()
+	public AssetSearcher getAssetSearcher()
 	{
-		return fieldArchive;
+		return fieldAssetSearcher;
 	}
 
-	public void setArchive(AssetArchive inArchive)
+	public void setAssetSearcher(AssetSearcher inArchive)
 	{
-		fieldArchive = inArchive;
+		fieldAssetSearcher = inArchive;
 	}
 
 	public String get(String inId)

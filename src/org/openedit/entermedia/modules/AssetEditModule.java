@@ -696,7 +696,6 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		ListHitTracker tracker = new ListHitTracker();
 		tracker.getSearchQuery().setCatalogId(archive.getCatalogId());
-		List<String> allids = new ArrayList();
 		
 		String[] uploadprefixes = inReq.getRequestParameters("uploadprefix");
 
@@ -711,7 +710,7 @@ public class AssetEditModule extends BaseMediaModule
 			if(!page.exists()){
 				log.info("Page: " + page.getPath() + " does not exist");
 			}
-			readMetaData(inReq, archive,uploadprefixes[i], page, tracker, allids);
+			readMetaData(inReq, archive,uploadprefixes[i], page, tracker);
 		}
 		
 		//set the group view permissions if something was passed in
@@ -728,9 +727,11 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putSessionValue(tracker.getSessionId(), tracker);
 		inReq.putPageValue(tracker.getHitsName(), tracker);
 		
+		List allids = new ArrayList();
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
+			allids.add(asset.getId());
 			archive.fireMediaEvent("assetuploaded",inReq.getUser(),asset);
 		}
 		Asset sample = (Asset)tracker.first();
@@ -760,17 +761,16 @@ public class AssetEditModule extends BaseMediaModule
 		
 		ListHitTracker tracker = new ListHitTracker();
 		tracker.getSearchQuery().setCatalogId(archive.getCatalogId());
-		List<String> allids = new ArrayList();
+//		List<String> allids = new ArrayList();
 		
 		for (Iterator iterator = inPages.iterator(); iterator.hasNext();)
 		{
 			Page page = (Page) iterator.next();
-			readMetaData(inReq, archive,"", page, tracker, allids);
+			readMetaData(inReq, archive,"", page, tracker);
 		}
 		
 		//set the group view permissions if something was passed in
 		findUploadTeam(inReq, archive, tracker);
-
 
 		archive.saveAssets(tracker, inReq.getUser());
 
@@ -782,9 +782,12 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putSessionValue(tracker.getSessionId(), tracker);
 		inReq.putPageValue(tracker.getHitsName(), tracker);
 
+		List allids = new ArrayList();
+
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
+			allids.add(asset.getId());
 			archive.fireMediaEvent("assetuploaded",inReq.getUser(),asset);
 		}
 		
@@ -795,7 +798,7 @@ public class AssetEditModule extends BaseMediaModule
 			archive.fireMediaEvent("assetsuploaded",inReq.getUser(),sample,allids);
 		}
 	}
-	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output, List<String> allids)
+	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
 	{
 		String[] fields = inReq.getRequestParameters("field");
 		Map vals = new HashMap();
@@ -829,13 +832,19 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
 		}
-		String assetsourcepath = sourcepath + "/" + inPage.getName(); //TODO: Should we save like /a/allstuff.jpg
+		String filename = inPage.getName();
+		if(filename.startsWith("tmp") && filename.indexOf('_') > -1)
+		{
+			filename = filename.substring(filename.indexOf('_') + 1);
+		}
+		String assetsourcepath = sourcepath + "/" + filename; //TODO: Should we save like /a/allstuff.jpg
 		//getPageManager().clearCache(inPage);
 		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
 		Asset asset = new Asset();
-		asset.setId(archive.getAssetSearcher().nextAssetNumber());
+		
 		if (existing != null) 
 		{
+			asset.setId(archive.getAssetSearcher().nextAssetNumber());
 			String startpart = PathUtilities.extractPagePath(assetsourcepath);
 			startpart = startpart + "_" + asset.getId();
 			
@@ -873,7 +882,6 @@ public class AssetEditModule extends BaseMediaModule
 		asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				
 		output.add(asset);
-		allids.add(asset.getId());
 		
 	}
 	

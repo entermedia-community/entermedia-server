@@ -9,5 +9,6 @@
 	<property id="state" />
 	<property id="country" />
  	<property id="zipcode" />
+ 	<property id="enabled" />
 	
 </properties>

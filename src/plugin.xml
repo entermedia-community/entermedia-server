@@ -1256,6 +1256,18 @@
 	<bean id="lockManager" class="org.entermedia.locks.MemoryLockManager" >
 		
 	</bean>
-	
 
+	<bean id="videoEditor" class="org.entermedia.videoedit.VideoEditor" >
+		
+	</bean>
+	
+	<bean id="mp4Generator" class="org.openedit.entermedia.generators.Mp4Generator">
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="videoEditor">
+			<ref bean="videoEditor"/>
+		</property>
+	</bean>
 </beans>

@@ -147,7 +147,7 @@ public class Asset implements Data
 		{
 			return getName();
 		}
-		if ("id".equals(inAttribute))
+		if ("id".equals(inAttribute) || "_id".equals(inAttribute))
 		{
 			return getId();
 		}
@@ -166,19 +166,19 @@ public class Asset implements Data
 		// PageProperty prop = (PageProperty)value;
 		// return prop.getValue();
 		// }
-		if (value == null)
-		{
+//		if (value == null)
+//		{
 			// Loop over all the catalogs and look for hit
-			for (Iterator iter = getCategories().iterator(); iter.hasNext();)
-			{
-				Category cat = (Category) iter.next();
-				value = cat.get(inAttribute);
-				if (value != null)
-				{
-					return value;
-				}
-			}
-		}
+//			for (Iterator iter = getCategories().iterator(); iter.hasNext();)
+//			{
+//				Category cat = (Category) iter.next();
+//				value = cat.get(inAttribute);
+//				if (value != null)
+//				{
+//					return value;
+//				}
+//			}
+//		}
 		return value;
 	}
 

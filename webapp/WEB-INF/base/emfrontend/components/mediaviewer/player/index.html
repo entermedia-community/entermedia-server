@@ -4,5 +4,5 @@
 	#else
 		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
 	#end
-	<div class="emviewercaption">$!asset.caption</div>
+	<div class="emviewercaption">#esc($!asset.caption)</div>
 </div>

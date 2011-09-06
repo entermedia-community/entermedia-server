@@ -98,7 +98,10 @@ public class AssetSecurityArchive
 			if (inRoot instanceof UserFilter)
 			{
 				String username = ((UserFilter) inRoot).getUsername();
-				add.add(username);
+				if( username != null)
+				{
+					add.add(username);
+				}
 			}
 			else if (inRoot instanceof GroupFilter)
 			{
@@ -285,6 +288,19 @@ public class AssetSecurityArchive
 		inArchive.saveAsset(inAsset, null);
 		
 	}
+	public void grantGroupViewAccess(MediaArchive inArchive, List<String> groupnames, Asset inAsset) throws OpenEditException
+	{
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
+		
+		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
+		// )}.html
+		Page page = getPageManager().getPage(path);
+		
+		grantGroupAccess(inArchive, groupnames, page, "viewasset");
+		// update the index
+		inArchive.saveAsset(inAsset, null);
+		
+	}
 	
 	public void grantAllAccess(MediaArchive inArchive, Asset inAsset)
 	{
@@ -449,6 +465,29 @@ public class AssetSecurityArchive
 		// saveAsset(inAsset);
 
 	}
+	public void grantGroupAccess(MediaArchive inArchive, List<String> inGroups, Page inPage, String inPermission)
+	{
+		PageSettings settings = inPage.getPageSettings();
+		Permission permission = settings.getPermission(inPermission);
+		
+		if( permission == null || !permission.getPath().equals(settings.getPath()))
+		{
+			permission = createPermission(settings, inPermission);
+		}
+		setupPermission(settings, permission, inPermission);
+		
+		for (String groupName : inGroups)
+		{
+			GroupFilter filter = new GroupFilter();
+			filter.setGroupId(groupName);
+			permission.getRootFilter().addFilter(filter);
+		}
+		getPageManager().getPageSettingsManager().saveSetting(inPage.getPageSettings());
+		getPageManager().clearCache(inPage);
+		// update the index
+		// saveAsset(inAsset);
+		
+	}
 
 	public Map checkAssetPermissions(User inUser, String inCatalogId, String sourcePath)
 	{
@@ -474,10 +513,9 @@ public class AssetSecurityArchive
 	}
 
 	public void clearViewAccess(MediaArchive inArchive, Asset inJobfolder) {
-		String path = inArchive.getAssetSearcher().idToPath(inJobfolder.getId());
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + inJobfolder.getSourcePath() + "/");
 		clearViewAccess(inArchive, page);		
 	}
 	
