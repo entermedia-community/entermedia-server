@@ -6,8 +6,8 @@ import org.openedit.entermedia.MediaArchive;
 
 public interface Publisher
 {
-	public void publish(MediaArchive mediaArchive,Data inOrder, Data inDestination, Asset asset);
+	//public void publish(MediaArchive mediaArchive,Data inOrder, Data inDestination, Asset asset);
 
-	public void publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset);
+	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset);
 	
 }

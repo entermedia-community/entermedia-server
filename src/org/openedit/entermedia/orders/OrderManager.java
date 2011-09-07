@@ -2,6 +2,7 @@ package org.openedit.entermedia.orders;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -170,6 +171,70 @@ public class OrderManager
 		return order;
 	}
 
+	public Order createOrder(String catalogid, WebPageRequest inReq, boolean saveitems) 
+	{
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
+		Order order = (Order)searcher.createNewData();
+		String[] fields = inReq.getRequestParameters("field");
+		searcher.updateData(inReq, fields, order);
+		String newstatus = inReq.getRequestParameter("newuserstatus");
+		if( newstatus != null)
+		{
+			OrderHistory history = createNewHistory(catalogid, order, inReq.getUser(), newstatus);
+			
+			String note = inReq.getRequestParameter("newuserstatusnote");
+			history.setProperty("note", note);
+			if( saveitems)
+			{
+				if (fields != null)
+				{
+					String[] items = inReq.getRequestParameters("itemid");
+
+					Collection itemssaved = saveItems(catalogid,inReq,fields,items);
+					List assetids = new ArrayList();
+					for (Iterator iterator = itemssaved.iterator(); iterator.hasNext();)
+					{
+						Data item = (Data) iterator.next();
+						assetids.add(item.get("assetid"));
+					}
+					history.setAssetIds(assetids);
+				}
+			}
+			saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
+		}
+		else
+		{
+			saveOrder(catalogid, inReq.getUser(), order);
+		}
+		return order;
+	}
+	
+	
+	public ArrayList saveItems(String catalogid, WebPageRequest inReq, String[] fields, String[] items)
+	{
+		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
+		ArrayList toSave = new ArrayList();
+		Data order = loadOrder(catalogid,inReq.findValue("orderid"));
+		for (String itemid : items)
+		{
+			Data item = (Data) itemsearcher.searchById(itemid);
+			toSave.add(item);
+
+			item.setProperty("userid", order.get("userid"));
+			for (String field : fields)
+			{
+				String value = inReq.getRequestParameter(item.getId() + "." + field + ".value");
+				if (value != null)
+				{
+					item.setProperty(field, value);
+				}
+			}
+		}
+		itemsearcher.saveAllData(toSave, inReq.getUser());
+		return toSave;
+	}
+
+	
 	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
@@ -209,8 +274,8 @@ public class OrderManager
 
 	public void saveOrder(String inCatalogId, User inUser, Order inBasket)
 	{
-		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogId, "order");
-		itemsearcher.saveData(inBasket, inUser );
+		Searcher orderearcher = getSearcherManager().getSearcher(inCatalogId, "order");
+		orderearcher.saveData(inBasket, inUser );
 	}
 
 	public void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder)
@@ -278,5 +343,177 @@ public class OrderManager
 		return history;
 	}
 
+	public void addConversionAndPublishRequest(Order order, MediaArchive archive, Map<String,String> properties, User inUser)
+	{
+		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
+		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
+		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+
+		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
+
+		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data orderitemhit = (Data) iterator.next();
+			String assetid = orderitemhit.get("assetid");
+			Asset asset = archive.getAsset(assetid);
+			//item.getId() + "." + field + ".value"
+			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
+			if( presetid == null )
+			{
+				presetid = properties.get("presetid.value");
+			}
+
+			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
+
+			Data preset = (Data) presets.searchById(presetid);
+			String outputfile = preset.get("outputfile");
+
+			//Make sure preset does not already exists?
+			boolean needstobecreated = true;
+			if( archive.doesAttachmentExist(outputfile, asset) )
+			{
+				needstobecreated = false;
+			}
+			if( "original".equals( preset.get("type") ) )
+			{
+				needstobecreated = false;
+			}
+			if (needstobecreated)
+			{
+				Data newTask = taskSearcher.createNewData();
+				newTask.setSourcePath(asset.getSourcePath());
+				newTask.setProperty("status", "new");
+				newTask.setProperty("assetid", assetid);
+				newTask.setProperty("presetid", presetid);
+				
+				//newTask.setProperty("orderid", order.getId());
+				//newTask.setProperty("itemid", hit.getId());
+				taskSearcher.saveData(newTask, inUser);
+				orderItem.setProperty("conversiontaskid",newTask.getId());
+			}
+			
+			//Add a publish task to the publish queue
+			String destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
+			if( destination == null )
+			{
+				destination = properties.get("publishdestination.value");
+			}
+			if( destination != null)
+			{
+				Data publishqeuerow = publishQueueSearcher.createNewData();
+				publishqeuerow.setProperty("assetid", assetid);
+				publishqeuerow.setProperty("publishdestination", destination);
+				publishqeuerow.setProperty("presetid", presetid);
+				String exportname = archive.asExportFileName(asset, preset);
+				publishqeuerow.setProperty("exportname", exportname);
+				publishqeuerow.setProperty("status", "new");
+				publishqeuerow.setSourcePath(asset.getSourcePath());
+				publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				publishQueueSearcher.saveData(publishqeuerow, inUser);
+				
+				orderItem.setProperty("publishqueueid",publishqeuerow.getId());
+			}	
+			orderItemSearcher.saveData(orderItem, inUser);
+			if( !needstobecreated )
+			{
+				//Kick off the publish tasks
+				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
+			}
+		}
+	}
+	
+	public void updateStatus(MediaArchive archive, Order inOrder)
+	{
+		//look up all the tasks
+		//if all done then save order status
+		
+		Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+		SearchQuery query = itemsearcher.createSearchQuery();
+		query.addExact("orderid", inOrder.getId());
+		query.addNot("status", "complete");
+		HitTracker hits =  itemsearcher.search(query);
+		
+		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
+		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+
+		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
+
+		//Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+
+		int itemscomplted = 0;
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data orderitemhit = (Data) iterator.next();
+			boolean convertcomplete = false;
+			boolean publishcomplete = false;
+			String conversiontaskid = orderitemhit.get("conversiontaskid");
+			if( conversiontaskid == null)
+			{
+				convertcomplete = true;
+			}
+			else
+			{
+				Data convert = (Data)taskSearcher.searchById(conversiontaskid);
+				if( "complete".equals( convert.get("status") ) )
+				{
+					convertcomplete = true;
+				}
+			}
+			if( convertcomplete)
+			{
+				String publishqueueid = orderitemhit.get("publishqueueid");
+				if( publishqueueid == null)
+				{
+					convertcomplete = true;
+				}
+				else
+				{
+					Data publish = (Data)publishQueueSearcher.searchById(publishqueueid);
+					if( "complete".equals( publish.get("status") ) )
+					{
+						publishcomplete = true;
+					}
+				}
+				if( publishcomplete)
+				{
+					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
+					item.setProperty("status", "complete");
+					//set date?
+					itemsearcher.saveData(item, null);
+					itemscomplted++;
+					if( itemscomplted == hits.size() )
+					{
+						WebEvent event = new WebEvent();
+						event.setSearchType("order");
+						event.setCatalogId(archive.getCatalogId());
+						event.setOperation("ordering/finalizeorder");
+						event.setUser(null);
+						event.setSource(this);
+						event.setProperty("sourcepath", inOrder.getSourcePath());
+						event.setProperty("orderid", inOrder.getId());
+						//archive.getWebEventListener()
+						archive.getMediaEventHandler().eventFired(event);
+					}
+				}
+			}
+			
+		}
+	}
+
+	public void updatePendingOrders(MediaArchive archive)
+	{
+		Searcher ordersearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
+		SearchQuery query = ordersearcher.createSearchQuery();
+		query.addOrsGroup("orderstatus","pending");
+		Collection hits = ordersearcher.search(query);
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Order order = loadOrder(archive.getCatalogId(), hit.getId());
+			updateStatus(archive, order);			
+		}
+	}
 
 }
