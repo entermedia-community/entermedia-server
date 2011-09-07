@@ -3,6 +3,28 @@ package org.openedit.entermedia.publishing;
 public class PublishResult
 {
 	protected String fieldErrorMessage;
+	protected boolean fieldComplete;
+	protected boolean fieldPending;
+
+	public boolean isPending()
+	{
+		return fieldPending;
+	}
+
+	public void setPending(boolean inPending)
+	{
+		fieldPending = inPending;
+	}
+
+	public boolean isComplete()
+	{
+		return fieldComplete;
+	}
+
+	public void setComplete(boolean inComplete)
+	{
+		fieldComplete = inComplete;
+	}
 
 	public String getErrorMessage()
 	{
