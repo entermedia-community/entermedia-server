@@ -1,9 +1,13 @@
 package org.openedit.entermedia.scanner;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,15 +20,16 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.ConvertResult;
 import org.openedit.entermedia.creator.ExifToolThumbCreator;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.page.Page;
+import com.openedit.page.PageProperty;
 import com.openedit.util.Exec;
 import com.openedit.util.ExecResult;
 import com.openedit.util.PathUtilities;
 
 public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
+	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
 	protected ExifToolThumbCreator fieldExifToolThumbCreator;
 	protected Exec fieldExec;
@@ -65,7 +70,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			
 			comm.add("-S");
 			comm.add("-d");
-			comm.add("%Y-%m-%d %H:%M:%S"); //yyyy-MM-dd HH:mm:ss, yyyy-MM-dd HH:mm:ss Z
+			comm.add("%Y-%m-%d %H:%M:%S"); //yyyy-MM-dd HH:mm:ss
 			
 			comm.add(inputFile.getAbsolutePath());
 			comm.add("-n");
@@ -133,20 +138,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					{
 						try
 						{
-							if( value.contains("s") )
-							{
-								value = value.split("\\.")[0];
-							}
-							else
-							{
-								String[] parts = value.split(":");
-								long total = 0;
-								for(int j = 0; j < parts.length; j++)
-								{
-									total += Math.pow(60, parts.length - 1 - j) * Double.parseDouble(parts[j]);
-								}
-								value = String.valueOf(total);
-							}
+							value = processDuration(value);
 							inAsset.setProperty("length", value);
 						}
 						catch( Exception e )
@@ -177,6 +169,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 							inAsset.addKeyword(kword.trim());
 						}
 					}
+					else if("VideoFrameRate".equals(key))
+					{
+						inAsset.setProperty("framerate", roundFrameRate(value) );
+					}
 					else
 					{
 						PropertyDetail property = details.getDetailByExternalId(key);
@@ -189,11 +185,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						{
 							//Date dateValue = externalFormat.parse(value);
 							//value = value + " -0000"; //added offset of 0 since that seems to be the default
-							Date creationdate = DateStorageUtil.getStorageUtil().parseFromStorage(value);
-							if (creationdate!=null)
-							{
-								inAsset.setProperty(property.getId(), DateStorageUtil.getStorageUtil().formatForStorage(creationdate));
-							}
+							inAsset.setProperty(property.getId(), value );
 						}
 						else if(property.isList() || property.isDataType("number"))
 						{
@@ -221,6 +213,24 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		return true;
 	}
 
+	protected String processDuration(String value) {
+		if( value.contains("s") )
+		{
+			value = value.split("\\.")[0];
+		}
+		else
+		{
+			String[] parts = value.split(":");
+			long total = 0;
+			for(int j = 0; j < parts.length; j++)
+			{
+				total += Math.pow(60, parts.length - 1 - j) * Double.parseDouble(parts[j]);
+			}
+			value = String.valueOf(total);
+		}
+		return value;
+	}
+
 	protected void extractThumb(MediaArchive inArchive, File inInputFile, Asset inAsset)
 	{
 		Page def = inArchive.getPageManager().getPage( "/" + inArchive.getCatalogId() + "/downloads/preview/thumb/thumb.jpg");
@@ -232,7 +242,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			ConvertResult res = getExifToolThumbCreator().convert(inArchive, inAsset, thumb, ins);
 			if( res.isOk())
 			{
-				inAsset.setProperty("previewstatus", "1");
+				if( !"generated".equals( inAsset.get("previewstatus") ) )
+				{
+					inAsset.setProperty("previewstatus", "exif");
+				}
 			}
 		}
 	}
@@ -245,6 +258,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	public void setExec(Exec exec)
 	{
 		fieldExec = exec;
+	}
+
+	protected String roundFrameRate(String val) {
+		if (val==null||EMPTY_STRING.equals(val.trim()))
+			return EMPTY_STRING;
+		BigDecimal result = new BigDecimal(val);
+		result = result.setScale(2, RoundingMode.HALF_UP);
+		return result.toString();
 	}
 	
 }
