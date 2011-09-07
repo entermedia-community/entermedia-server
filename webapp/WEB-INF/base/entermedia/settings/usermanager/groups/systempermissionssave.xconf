@@ -1,0 +1,5 @@
+<page>
+<path-action name="User.saveLegacyPermissions"/>
+	<path-action name="User.loadGroup" />
+
+</page>

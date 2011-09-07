@@ -44,7 +44,7 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		}
 		if( inPublishRequest.get("status") == "pending")
 		{
-			updateStatus(mediaArchive,exportname, new Integer(Integer.parseInt(serverId)), result, inPublishRequest);			
+			updateStatus(mediaArchive,exportname, new Integer(Integer.parseInt(serverId)), inPublishRequest,result );			
 		}
 		else
 		{
@@ -98,7 +98,7 @@ public class smartjogpublisher extends basepublisher implements Publisher
 					+ " - status="+delivery.getStatus()+" >");
 				
 			publishtask.setProperty("trackingnumber","${delivery.getTrackingNumber()},${delivery.getDeliveryId()}" );
-			result.setPending(true);
+			inResult.setPending(true);
 		}
 		else
 		{
