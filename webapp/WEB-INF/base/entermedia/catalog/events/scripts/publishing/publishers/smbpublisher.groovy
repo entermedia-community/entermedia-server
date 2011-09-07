@@ -8,7 +8,8 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.Publisher
+import org.openedit.entermedia.publishing.*
+import org.openedit.entermedia.publishing.PublishResult;
 
 import com.openedit.OpenEditException
 import com.openedit.page.Page
@@ -21,77 +22,57 @@ public class smbpublisher extends basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(smbpublisher.class);
 	
-	public void publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset)
+	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data inPreset)
 	{
-		throw new OpenEditException("Not implemented");
-	}
-
-	public void publish(MediaArchive mediaArchive,Data inOrder, Data inOrderItem, Asset asset)
-	{
-		String publishdestination = inOrderItem.get("publishdestination");
-		if( publishdestination == null)
+		PublishResult result = new PublishResult();
+		
+		Page inputpage = findInputPage(mediaArchive,asset,inPreset);
+		String servername = destination.get("server");
+		String username = destination.get("username");
+		String url = destination.get("url");
+			
+		log.info("Publishing ${asset} to smb server ${servername}, with username ${username}.");
+			
+		//get password and login
+		UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
+		User user = userManager.getUser(username);
+		if(user == null)
 		{
-			publishdestination = inOrder.get("publishdestination");
-		}
-		String presetid = inOrderItem.get("presetid");
-		if( presetid == null)
-		{
-			presetid = inOrder.get("presetid");
+			publishFailure(mediaArchive, inOrderItem, "Unknown user, ${username}");
+			return;
 		}
 		
-		if(publishdestination != null)
+		String password = userManager.decryptPassword(user);
+			
+			
+		String exportname= inOrderItem.get("filename");
+		
+		OutputStream output = null;
+		InputStream input = null;
+		try
 		{
-			Data destination = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "publishdestination", publishdestination);
-			String servername = destination.get("server");
-			String username = destination.get("username");
-			String url = destination.get("url");
+			//smb://[[[domain;]username[:password]@]server[:port]/[[share/[dir/]file]]][?[param=value[param2=value2[...]]]
+			//http://jcifs.samba.org/src/docs/api/
 			
-			log.info("Publishing ${asset} to smb server ${servername}, with username ${username}.");
-			
-			//get password and login
-			UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
-			User user = userManager.getUser(username);
-			if(user == null)
+			if( !url.endsWith("/"))
 			{
-				publishFailure(mediaArchive, inOrderItem, "Unknown user, ${username}");
-				return;
+				url = url + "/";
 			}
+			String sambaurl = "smb://" + username + ":" + password + "@" + servername + url;
+			SmbFile export = new SmbFile( sambaurl + exportname);
 			
-			String password = userManager.decryptPassword(user);
-			
-			Page inputpage = findInputPage(mediaArchive,asset,presetid);
-			
-			String exportname= inOrderItem.get("filename");
-			
-			OutputStream output = null;
-			InputStream input = null;
-			try
-			{
-				//smb://[[[domain;]username[:password]@]server[:port]/[[share/[dir/]file]]][?[param=value[param2=value2[...]]]
-				//http://jcifs.samba.org/src/docs/api/
-				
-				if( !url.endsWith("/"))
-				{
-					url = url + "/";
-				}
-				String sambaurl = "smb://" + username + ":" + password + "@" + servername + url;
-				SmbFile export = new SmbFile( sambaurl + exportname);
-				
-				output = export.getOutputStream();
-				input = inputpage.getInputStream();
-				new OutputFiller().fill( input, output );
-			}
-			finally
-			{
-				FileUtils.safeClose(input);
-				FileUtils.safeClose(output);
-			}
-			
-			log.info("publishished  ${asset} to SMB server ${servername}");
-			inOrderItem.setProperty("status", "complete");
-			Searcher itemsearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "orderitem");
-			itemsearcher.saveData(inOrderItem, null);
+			output = export.getOutputStream();
+			input = inputpage.getInputStream();
+			new OutputFiller().fill( input, output );
 		}
-	}
-	
+		finally
+		{
+			FileUtils.safeClose(input);
+			FileUtils.safeClose(output);
+		}
+		
+		log.info("publishished  ${asset} to SMB server ${servername}");
+		result.setComplete(true);
+		return result;
+	}	
 }

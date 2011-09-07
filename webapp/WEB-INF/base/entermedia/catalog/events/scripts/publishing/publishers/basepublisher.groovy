@@ -5,7 +5,7 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.Publisher
+import org.openedit.entermedia.publishing.*
 
 import com.openedit.page.Page
 
@@ -13,31 +13,31 @@ public abstract class basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(basepublisher.class);
 
-	protected void publishFailure(MediaArchive mediaArchive, Data inOrderItem, String inError)
+	protected publishFailure(MediaArchive mediaArchive,Data inPublishRequest, String inMessage)
 	{
-		inOrderItem.setProperty("status", "publisherror");
-		inOrderItem.setProperty("errordetails", inError);
-		log.error(inError);
-		Searcher itemsearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "orderitem");
-		itemsearcher.saveData(inOrderItem, null);
-	}
+		inPublishRequest.setProperty("errormessage", inMessage);
+		inPublishRequest.setProperty("status", "error");
 	
+	}
+	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset)
+	{
+		if( inPreset.get("type") == "original")
+		{
+			return mediaArchive.getOriginalDocument(asset);
+			
+		}
+		String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
+		Page inputpage= mediaArchive.getPageManager().getPage(input);
+		return inputpage;
+
+	}
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
 	{
-		Page inputpage=null;
-		if(presetid != null )
+		if( presetid == null)
 		{
-			Data preset = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "convertpreset", presetid);
-			if( preset.get("type") != "original")
-			{
-				String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${preset.outputfile}";
-				inputpage= mediaArchive.getPageManager().getPage(input);
-			}
+			return mediaArchive.getOriginalDocument(asset);
 		}
-		if( inputpage == null)
-		{
-			inputpage = mediaArchive.getOriginalDocument(asset);
-		}
-		return inputpage;
+		Data preset = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "convertpreset", presetid);
+		return findInputPage(mediaArchive,asset,(Data)preset);
 	}
 }

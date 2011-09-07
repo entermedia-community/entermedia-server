@@ -5,6 +5,8 @@ import groovy.util.GroovyScriptEngine;
 
 import java.io.File;
 
+import org.openedit.entermedia.MediaArchive;
+
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -22,7 +24,11 @@ public class EnterMediaObject
 	protected UserManager userManager;
 	protected PageManager pageManager;
 	protected File root;
-	
+	public MediaArchive getMediaArchive()
+	{
+		return (MediaArchive)context.getPageValue("mediaarchive");
+	}
+
 	public WebPageRequest getContext()
 	{
 		return context;

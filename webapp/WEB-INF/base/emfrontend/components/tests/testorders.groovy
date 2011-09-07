@@ -13,48 +13,6 @@ import org.openedit.entermedia.orders.Order
 
 class Test extends EnterMediaObject
 {
-	public MediaArchive getMediaArchive()
-	{
-		return context.getPageValue("mediaarchive");
-	}
-	
-	public OpenEditEngine getOpenEditEngine()
-	{
-		return (OpenEditEngine)getModuleManager().getBean("OpenEditEngine");
-	}
-	public boolean assertNotNull(Object inObj, String inMessage)
-	{
-		if( inObj == null)
-		{
-			log.info(inMessage + " was null");
-			return false;
-		}
-		return true;
-	}
-	public boolean assertEquals(Object inWhat, Object inEquals)
-	{
-		if( !inWhat.equals(inEquals))
-		{
-			log.error(inWhat + " != " + inEquals);
-			return false;
-		}
-		return true;
-	}
-	public boolean assertTrue(Object inCheck)
-	{
-		if(!Boolean.parseBoolean(String.valueOf( inCheck ) ) )
-		{
-			log.error("Not true: ${inCheck}");
-			return false;
-		}
-		return true;
-	}
-	
-	public WebPageRequest createPageRequest(String inPath)
-	{
-		Page page = getPageManager().getPage(inPath);
-		return context.copy(page);
-	}
 
 	public void testEmailOrder() throws Exception
 	{
@@ -96,6 +54,9 @@ class Test extends EnterMediaObject
 		{
 			return;
 		}
+		
+		om.getOrderManager().updateStatus(order);
+		
 		log.info('Order status was: ' + order.get("orderstatus"));		
 		item = (Data)items.iterator().next();
 		log.info('Item status was: ' + item.get("status"));		
@@ -305,34 +266,35 @@ class Test extends EnterMediaObject
 		
 		Thread.sleep(12000);
 		
-	
+		om.getOrderManager().updatePendingOrders(getMediaArchive());
+		Thread.sleep(1000);
 		
-		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(), order.getId());
-		Collection items = om.getOrderManager().findOrderAssets(getMediaArchive().getCatalogId(), order.getId());
-		if (!assertEquals(1, items.size()))
-		{
-			return;
-		}
-		
-		item = (Data)items.iterator().next();
-				
-		String remotePath = item.get('remotePath');
-		if (!assertTrue(remotePath != null))
-		{
-			log.info("Remote path not set on item.");
-			return;
-		}
-		
-		Page inputpage = getMediaArchive().getOriginalDocument(asset);
-		
-		String publishFile = "/WEB-INF/publish/smartjog/" + remotePath;
-		Page publishPage = getMediaArchive().getPageManager().getPage(publishFile);
-		
-		if (!assertTrue(publishPage.exists()))
-		{
-			log.info("Could not find published file on remote server.");
-			return;
-		}
+		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
+//		Collection items = om.getOrderManager().findOrderAssets(getMediaArchive().getCatalogId(), order.getId());
+//		if (!assertEquals(1, items.size()))
+//		{
+//			return;
+//		}
+//		
+//		item = (Data)items.iterator().next();
+//				
+//		String remotePath = item.get('remotePath');
+//		if (!assertTrue(remotePath != null))
+//		{
+//			log.info("Remote path not set on item.");
+//			return;
+//		}
+//		
+//		Page inputpage = getMediaArchive().getOriginalDocument(asset);
+//		
+//		String publishFile = "/WEB-INF/publish/smartjog/" + remotePath;
+//		Page publishPage = getMediaArchive().getPageManager().getPage(publishFile);
+//		
+//		if (!assertTrue(publishPage.exists()))
+//		{
+//			log.info("Could not find published file on remote server.");
+//			return;
+//		}
 		
 		String emailsent = order.get("emailsent");
 		
@@ -353,7 +315,7 @@ try
 	test.setContext(context);
 	test.setModuleManager(moduleManager);
 	test.setPageManager(pageManager);
-	
+	/*
 	logs.info("<h2>testEmailOrder()</h2>")
 	test.testEmailOrder();
 
@@ -365,8 +327,7 @@ try
 	
 	logs.info("<h2>testPublishAmazon()</h2>")
 	test.testPublishAmazon();
-	
-	
+	*/
 	logs.info("<h2>testPublishSmartJog()</h2>")
 	test.testPublishSmartJog();
 

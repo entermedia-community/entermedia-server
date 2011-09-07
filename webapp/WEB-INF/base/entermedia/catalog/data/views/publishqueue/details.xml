@@ -1,8 +1,8 @@
 <properties usagelabel="Publishing">
-	<property id="publishdestination" type="list" index="true"  stored="true">Publish Destination</property>
-	<property id="presetid" index="true" type="list" listid="convertpreset" stored="true">Convert Preset</property>
-	<property id="status" index="true"  stored="true">Status</property>
-	<property id="errordetails" index="true"  stored="true">Error Details</property>
-	<property id="date" datatype="date" index="true" stored="true" >Time</property>
-	
+	<property id="publishdestination" />
+	<property id="presetid" />
+	<property id="status" />
+	<property id="errordetails" />
+	<property id="date" viewtype="time" />
+	<property id="exportname" />
 </properties>

@@ -6,8 +6,5 @@
 		<script>/${catalogid}/events/scripts/publishing/publishassets.groovy</script>
 	</path-action>
 	
-	<path-action name="Script.run"  allowduplicates="true">
-		<script>/${catalogid}/events/scripts/publishing/publishorders.groovy</script>
-	</path-action>
 	
 </page>

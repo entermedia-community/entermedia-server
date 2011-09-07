@@ -9,6 +9,7 @@ import java.io.Writer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -47,7 +48,18 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 			getWraps().generate(inContext, inPage, inOut);
 			return;
 		}
-		boolean showtoolbar = user.hasPermission("oe.administration.toolbar");
+		boolean showtoolbar = false;
+		
+		UserProfile profile = inContext.getUserProfile();
+		if( profile != null)
+		{
+			String show = profile.getValue("admintoolbar");
+			showtoolbar = Boolean.parseBoolean(show);
+		}
+		if( !showtoolbar)
+		{
+			showtoolbar = user.hasPermission("oe.administration.toolbar");
+		}
 		if( !showtoolbar)
 		{
 			String mode = (String)user.getProperty("oe.edit.mode");

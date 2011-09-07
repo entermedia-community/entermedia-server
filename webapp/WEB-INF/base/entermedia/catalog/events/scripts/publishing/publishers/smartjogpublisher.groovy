@@ -6,8 +6,10 @@ import org.openedit.Data
 import org.openedit.data.Searcher 
 import org.openedit.entermedia.Asset 
 import org.openedit.entermedia.MediaArchive 
+import org.openedit.entermedia.publishing.PublishResult;
 import org.openedit.entermedia.publishing.Publisher 
 import org.openedit.entermedia.smartjog.SmartJog 
+import org.openedit.entermedia.smartjog.Status;
 
 import com.openedit.page.Page;
 import com.openedit.util.PathUtilities;
@@ -19,64 +21,68 @@ public class smartjogpublisher extends basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(smartjogpublisher.class);
 	
-	public void publish(MediaArchive mediaArchive,Data inOrder, Data inOrderItem, Asset asset)
-	{	
-		String publishdestination = inOrderItem.get("publishdestination");
-		if( publishdestination == null)
+	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data inPreset)
+	{
+		PublishResult result = new PublishResult();
+
+		Page inputpage = findInputPage(mediaArchive,asset,inPreset);
+		String exportname = inPublishRequest.get("exportname");
+		String mountPath = "/WEB-INF/publish/smartjog";
+		if( !exportname.startsWith("/"))
 		{
-			publishdestination = inOrder.get("publishdestination");
+			mountPath = mountPath + "/";
 		}
-		
-		if( publishdestination != null)
+		String fullPath = mountPath + exportname;
+
+		Page publishPage = mediaArchive.getPageManager().getPage(fullPath);
+		mediaArchive.getPageManager().copyPage(inputpage, publishPage); //put the file on the ftp server for deliveryx
+		String serverId = destination.get("server");
+		if (serverId == null)
 		{
-			Data destination = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "publishdestination", publishdestination);
-			
-			Searcher presetsearcher = mediaArchive.getSearcherManager().getSearcher (mediaArchive.getCatalogId(), "convertpreset");
-			String presetid = inOrderItem.get("presetid");
-			
-			if(presetid != null)
-			{	
-				String exportname= inOrderItem.get("filename");
-				
-				String mountPath = "/WEB-INF/publish/smartjog";
-				String fullPath = mountPath + exportname;
-	
-				Page publishPage = mediaArchive.getPageManager().getPage(fullPath);
-				
-				String serverId = destination.get("server");
-							
-				try
-				{
-					Page inputpage = findInputPage(mediaArchive,asset,presetid);
-					mediaArchive.getPageManager().copyPage(inputpage, publishPage); //put the file on the ftp server for deliveryx
-					doSmartJogDelivery(mediaArchive,exportname, new Integer(Integer.parseInt(serverId)));
-				}
-				catch (Exception e)
-				{
-					inOrderItem.setProperty("status", "publisherror");
-					log.info "SMART JOG ERROR: Could not publish ${e} ${asset.sourcepath}";
-				}
-				
-				inOrderItem.setProperty("status", "complete");
-//				inOrderItem.setProperty("remotePath", remotePath);
-				
-				Searcher ordersearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "orderitem");
-				ordersearcher.saveData(inOrderItem, null);
-			}
+			result.setErrorMessage("SMART JOG ERROR: Must specify a server for delivery.");
+			return result;
 		}
+		if( inPublishRequest.get("status") == "pending")
+		{
+			updateStatus(mediaArchive,exportname, new Integer(Integer.parseInt(serverId)), result, inPublishRequest);			
+		}
+		else
+		{
+			startSmartJogDelivery(mediaArchive,exportname,inPublishRequest, new Integer(Integer.parseInt(serverId)), result);
+		}
+
+		return result;
 	}
+	public void updateStatus(MediaArchive mediaArchive, String inFilename, Integer serverId, Data publishtask, PublishResult inResult)
+	{
+		Page dir = mediaArchive.getPageManager().getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/smartjog/");
+		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
 		
-	public void doSmartJogDelivery(MediaArchive mediaArchive, String inFilename, Integer serverId)
+		String tracking = publishtask.get("trackingnumber");
+		String[] numbers = tracking.split(",");
+		int deliveryid = Integer.parseInt(numbers[1]);
+		//Get a file on the local server
+		Status status = ssc.updateStatus(numbers[0],serverId,deliveryid);
+		publishtask.setProperty("completionpercent", status.getPercent() );
+		if( status.getStatus().equals("Complete"))
+		{
+			inResult.setComplete(true);
+		}
+		else if( status.getStatus().equals("Error"))
+		{
+			inResult.setErrorMessage("SmartJob reported an status of Error");
+		}
+		else
+		{
+			inResult.setPending(true);
+		}
+		//ssc.
+	}
+	public void startSmartJogDelivery(MediaArchive mediaArchive, String inFilename, Data publishtask, Integer serverId, PublishResult inResult)
 	{
 		Page dir = mediaArchive.getPageManager().getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/smartjog/");
 		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
 			
-		if (serverId == null)
-		{
-			log.info ("SMART JOG ERROR: Must specify a server for delivery.");
-			return;
-		}
-		
 		//Get a file on the local server
 		ServerFile serverFile = ssc.getServerFile(null, inFilename);
 		
@@ -90,8 +96,14 @@ public class smartjogpublisher extends basepublisher implements Publisher
 					+ delivery.getTrackingNumber()+" - filename="
 					+ delivery.getFilename() +" - md5="+delivery.getMd5()
 					+ " - status="+delivery.getStatus()+" >");
+				
+			publishtask.setProperty("trackingnumber","${delivery.getTrackingNumber()},${delivery.getDeliveryId()}" );
+			result.setPending(true);
+		}
+		else
+		{
+			log.error("Delivery should no be null");
 		}
 	}
-	public void publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset){}
 }
 

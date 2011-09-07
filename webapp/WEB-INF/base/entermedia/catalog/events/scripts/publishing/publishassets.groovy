@@ -4,13 +4,12 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.Publisher
+import org.openedit.entermedia.publishing.*
 import org.openedit.event.*
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
-
 
 
 public void init()
@@ -66,8 +65,6 @@ public void init()
 				Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
 				try
 				{
-									
-					
 					Page inputpage = null;
 					if( preset.get("type") != "original")
 					{
@@ -79,48 +76,49 @@ public void init()
 						inputpage = mediaArchive.getOriginalDocument(asset);
 					}
 					
-					
-					if(!inputpage.exists()){
+					if(!inputpage.exists() || inputpage.length() == 0)
+					{
 						log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
-						
 						continue;
-						
-						//not ready to be published yet.
 					}
-					
 					
 					Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
-					publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
-					
-					
-					//log.info("Published " +  asset + " to " + destination);
-					//firePublishEvent(result.getId());
-
-				}
-				catch( Exception ex)
-				{
-					log.error("Problem publishing ${asset} to ${publishdestination} ${ex}");
-					
-					String counted =  publishrequest.get("errorcount");
-					if( counted == null)
+					PublishResult presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+					if( presult.isError() )
 					{
-						counted = "0";
+						publishrequest.setProperty('status', 'error');
+						publishrequest.setProperty("errordetails", presult.getErrorMessage());
+						queuesearcher.saveData(publishrequest, context.getUser());
+						continue;
 					}
+					if( presult.isComplete() )
+					{
+						log.info("Published " +  asset + " to " + destination);
+						publishrequest.setProperty('status', 'complete');
+						publishrequest.setProperty("errordetails", " ");
+						queuesearcher.saveData(publishrequest, context.getUser());
+						firePublishEvent(publishrequest.getId());
+					}
+					else if( presult.isPending() )
+					{
+						publishrequest.setProperty('status', 'pending');
+						publishrequest.setProperty("errordetails", " ");
+						queuesearcher.saveData(publishrequest, context.getUser());
+					}
+				}
+				catch( Throwable ex)
+				{
+					ex.printStackTrace();
+					log.error("Problem publishing ${asset} to ${publishdestination} ${ex}");
 					publishrequest.setProperty('status', 'error');
-//					publishrequest.setProperty('errorcount', String.valueOf(num));
 					publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
 					queuesearcher.saveData(publishrequest, context.getUser());
-					continue;
 				}
 			}
 			else
 			{
 				log.info("publish destination is null")
 			}
-			publishrequest.setProperty('status', 'complete');
-			publishrequest.setProperty("errordetails", " ");
-			queuesearcher.saveData(publishrequest, context.getUser());
-			firePublishEvent(publishrequest.getId());
 		}
 	}
 }

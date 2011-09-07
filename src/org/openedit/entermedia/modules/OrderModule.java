@@ -181,29 +181,12 @@ public class OrderModule extends BaseMediaModule
 		{
 			String[] items = inReq.getRequestParameters("itemid");
 			String catalogid = inReq.findValue("catalogid");
-			Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
-			ArrayList toSave = new ArrayList();
-			Data order = loadOrder(inReq);
-			for (String itemid : items)
-			{
-				Data item = (Data) itemsearcher.searchById(itemid);
-				toSave.add(item);
-
-				item.setProperty("userid", order.get("userid"));
-				for (String field : fields)
-				{
-					String value = inReq.getRequestParameter(item.getId() + "." + field + ".value");
-					if (value != null)
-					{
-						item.setProperty(field, value);
-					}
-				}
-			}
-			itemsearcher.saveAllData(toSave, inReq.getUser());
+			ArrayList toSave = getOrderManager().saveItems(catalogid, inReq, fields, items);
 			return toSave;
 		}
 		return null;
 	}
+
 	
 	public Order loadOrder(WebPageRequest inReq)
 	{
@@ -213,7 +196,10 @@ public class OrderModule extends BaseMediaModule
 		{
 			orderid = inReq.getRequestParameter("id");
 		}
-
+		if( orderid == null)
+		{
+			return null;
+		}
 		Order order = getOrderManager().loadOrder(catalogid, orderid);
 		inReq.putPageValue("order", order);
 		return order;
@@ -232,37 +218,12 @@ public class OrderModule extends BaseMediaModule
 		if (order != null)
 		{
 			String catalogid = inReq.findValue("catalogid");
-			Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
-			String[] fields = inReq.getRequestParameters("field");
-			searcher.updateData(inReq, fields, order);
-			String newstatus = inReq.getRequestParameter("newuserstatus");
-			if( newstatus != null)
-			{
-				OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), newstatus);
-				
-				String note = inReq.getRequestParameter("newuserstatusnote");
-				history.setProperty("note", note);
-				if( saveitems)
-				{
-					Collection items = saveItems(inReq);
-					List assetids = new ArrayList();
-					for (Iterator iterator = items.iterator(); iterator.hasNext();)
-					{
-						Data item = (Data) iterator.next();
-						assetids.add(item.get("assetid"));
-					}
-					history.setAssetIds(assetids);
-				}
-				getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
-			}
-			else
-			{
-				getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
-			}
+			order = getOrderManager().createOrder(catalogid, inReq, saveitems);
 			inReq.putPageValue("savedok","true");
 		}
 		return order;
 	}
+
 
 	public HitTracker findOrdersForUser(WebPageRequest req)
 	{
@@ -404,7 +365,7 @@ public class OrderModule extends BaseMediaModule
 
 			Data hit = (Data) iterator.next();
 			Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
-			getOrderManager().addItemToBasket(archive.getCatalogId(), basket, asset, null);
+			getOrderManager().addItemToBasket(archive.getCatalogId(), basket, asset, props);
 
 		}
 
@@ -435,51 +396,23 @@ public class OrderModule extends BaseMediaModule
 		return basket;
 	}
 
-	public void createConversionRequest(WebPageRequest inReq)
+	public void createConversionAndPublishRequest(WebPageRequest inReq)
 	{
-		Data order = loadOrder(inReq);
+		//Order and item should be created from previous step.
+		//now we get the items and update the destination information
+		Order order = loadOrder(inReq);
 		OrderManager manager = getOrderManager();
-		MediaArchive archive = getMediaArchive(inReq);
-		HitTracker hits = manager.findOrderAssets(archive.getCatalogId(), order.getId());
-		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
-		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
-
-		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		if( order == null)
 		{
-
-			Data hit = (Data) iterator.next();
-			String assetid = hit.get("assetid");
-			Asset asset = archive.getAsset(assetid);
-
-			String presetid = hit.get("presetid");
-			if (presetid == null)
-			{
-				Data orderItem = (Data) orderItemSearcher.searchById(hit.getId());
-				orderItem.setProperty("status", "converted");
-				orderItemSearcher.saveData(orderItem, inReq.getUser());
-
-				archive.fireMediaEvent("conversions/conversioncomplete", inReq.getUser(), asset);
-				continue;// nothing to do is a preset wasn't selected.
-			}
-			Data preset = (Data) presets.searchById(presetid);
-			String outputfile = preset.get("outputfile");
-
-			if (!archive.doesAttachmentExist(outputfile, asset))
-			{
-				Data newTask = taskSearcher.createNewData();
-				newTask.setSourcePath(asset.getSourcePath());
-				newTask.setProperty("status", "new");
-				newTask.setProperty("assetid", assetid);
-				newTask.setProperty("presetid", presetid);
-				newTask.setProperty("orderid", order.getId());
-				newTask.setProperty("itemid", hit.getId());
-				taskSearcher.saveData(newTask, inReq.getUser());
-			}
+			order = manager.createOrder(inReq.findValue("catalogid"), inReq, true);
 		}
-		log.info("Added conversion requests for " + order.getId());
+		MediaArchive archive = getMediaArchive(inReq);
+		Map params = inReq.getParameterMap();
+		manager.addConversionAndPublishRequest(order, archive,params, inReq.getUser());
+		log.info("Added conversion and publish requests for " + order.getId());
 	}
+
+
 
 	public Order placeOrderById(WebPageRequest inReq)
 	{
@@ -584,5 +517,11 @@ public class OrderModule extends BaseMediaModule
 
 		}
 		return order;
+	}
+	
+	public void updatePendingOrders(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		getOrderManager().updatePendingOrders(archive);
 	}
 }
