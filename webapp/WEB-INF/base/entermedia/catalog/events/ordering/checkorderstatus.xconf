@@ -3,5 +3,5 @@
 	<property name="delay">1</property>
 	<property name="period">5m</property>
 	
-	<path-action name="OrderModule.updateOrderStatus" />
+	<path-action name="OrderModule.updatePendingOrders" />
 </page>
