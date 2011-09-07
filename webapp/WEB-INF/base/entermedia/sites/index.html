@@ -40,10 +40,7 @@
 #set( $catalogs = $usersettings.getCatalogs() )
 #if( $catalogs.size() == 0 )
 [[You are not allowed to upload assets to any catalogs.]]
-#elseif( $catalogs.size() == 1 )
-<input name="catalogid" value="$catalogs.get(0).getId()" type="hidden" />
-#else
-
+#end
 <div style="text-align: right; width: 500px;">
 	#set( $searcher = $searcherManager.getSearcher($applicationid,"frontends") )
 	#set( $frontends = $searcher.getAllHits() )
@@ -69,7 +66,6 @@
 		#end
 	</select>
 	<br><br>
-	#end
 
 	
 	[[Website]]: $context.siteRoot/ <input name="newpath" value="foldername" /> 
