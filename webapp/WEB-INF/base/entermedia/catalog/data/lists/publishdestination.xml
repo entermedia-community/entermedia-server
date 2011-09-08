@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <publishlocations>
-  <location id="local" publishtype="filecopy" path="/tmp" administrativeemail="cburkey@entermediasoftware.com" presetid="0">Local File Copy</location>
+  <location id="local" publishtype="filecopy" url="/tmp" administrativeemail="cburkey@entermediasoftware.com" presetid="0">Local File Copy</location>
 
   <location id="1" publishtype="aspera" server="aspera.visualdatainc.com" username="aspera_vdms" url="/visualdata" administrativeemail="cburkey@entermediasoftware.com">Aspera VisualData</location>
   <location id="3" publishtype="smartjog" server="124">SmartJog (Paris)</location>
