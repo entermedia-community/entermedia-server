@@ -80,6 +80,8 @@ class Test extends EnterMediaObject
 		OrderModule om = (OrderModule)getModuleManager().getModule("OrderModule");
 		
 		String catalogid = getMediaArchive().getCatalogId();
+		req.setRequestParameter("publishdestination.value", (String)context.findValue("localpublishdestination"));
+		
 		Order order = om.getOrderManager().createNewOrder(appid, catalogid, "admin");
 		
 		om.getOrderManager().saveOrder(getMediaArchive().getCatalogId(), req.getUser(), order);
@@ -90,12 +92,11 @@ class Test extends EnterMediaObject
 		req.setRequestParameter("orderid", order.getId());
 
 		req.setRequestParameter("field", [ "publishdestination","presetid"] as String[]); //order stuff
-		req.setRequestParameter("publishdestination.value", "2");
 		req.setRequestParameter("searchtype", "order");
 
 		req.setRequestParameter("itemid", item.getId());
 		//req.setRequestParameter(item.getId() + ".presetid.value", "2"); //outputffmpeg.avi
-		req.setRequestParameter(item.getId() + ".presetid.value", "0"); //Original
+		req.setRequestParameter(item.getId() + ".presetid.value",  (String)context.findValue("originalpreset")); //Original
 		getOpenEditEngine().executePathActions(req);
 		getOpenEditEngine().executePageActions(req);
 		
@@ -253,11 +254,11 @@ class Test extends EnterMediaObject
 		req.setRequestParameter("orderid", order.getId());
 
 		req.setRequestParameter("field", [ "publishdestination","presetid"] as String[]); //order stuff
-		req.setRequestParameter("publishdestination.value", "3");
+		req.setRequestParameter("publishdestination.value",  (String)context.findValue("smartjogpreset"));
 		req.setRequestParameter("searchtype", "order");
 
 		req.setRequestParameter("itemid", item.getId());
-		req.setRequestParameter(item.getId() + ".presetid.value", "amazonpreview"); //outputffmpeg.avi
+		req.setRequestParameter(item.getId() + ".presetid.value", (String) context.findValue("exportpreset")); //outputffmpeg.avi
 		
 		getOpenEditEngine().executePathActions(req);
 		getOpenEditEngine().executePageActions(req);

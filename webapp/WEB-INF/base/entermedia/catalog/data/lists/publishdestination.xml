@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <publishlocations>
+  <location id="local" publishtype="filecopy" path="/tmp" administrativeemail="cburkey@entermediasoftware.com" presetid="0">Local File Copy</location>
+
   <location id="1" publishtype="aspera" server="aspera.visualdatainc.com" username="aspera_vdms" url="/visualdata" administrativeemail="cburkey@entermediasoftware.com">Aspera VisualData</location>
   <location id="3" publishtype="smartjog" server="124">SmartJog (Paris)</location>
   <location id="4" publishtype="amazon" bucket="testpublishing" accesskey="AKIAIHFKVZJBUPJOZKWA" secretkey="SECRETKEY" presetid="preview" server="" url="" username="" convertpreset="" company="" division="" technicalcontact="" technicalphone="" technicalemail="" administrativecontact="" administrativephone="" administrativeemail="" emergencycontact="" emergencyphone="" emergencyemail="">Test Amazon</location>
