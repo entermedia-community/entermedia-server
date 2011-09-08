@@ -89,7 +89,7 @@ public void createTasksForUpload()
 					inputpage = mediaArchive.getOriginalDocument(asset);
 					exportName = inputpage.getName();
 				}
-				publishrequest.setProperty ("filename", exportName);
+				publishrequest.setProperty ("exportname", exportName);
 				
 				publishqueuesearcher.saveData(publishrequest, context.getUser());
 				foundsome = true;

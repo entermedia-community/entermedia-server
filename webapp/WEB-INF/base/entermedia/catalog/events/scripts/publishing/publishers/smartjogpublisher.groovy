@@ -33,8 +33,6 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		}
 		String fullPath = mountPath + exportname;
 	
-	        log.info("EXPORTED FILE: ${exportname}");
-
 		Page publishPage = mediaArchive.getPageManager().getPage(fullPath);
 
 		String serverId = destination.get("server");
@@ -79,6 +77,7 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		{
 			inResult.setPending(true);
 		}
+		log.info("Smartjog status is updated to: " + status.getPercent());
 		//ssc.
 	}
 	public void startSmartJogDelivery(MediaArchive mediaArchive, String inFilename, Data publishtask, Integer serverId, PublishResult inResult)

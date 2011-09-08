@@ -42,10 +42,6 @@ protected void sendEmail(Order inOrder) {
 		return;
 	}
 
-	log.info("Starting to finalize order");
-	
-
-
 	try {
 		context.putPageValue("orderid", inOrder.getId());
 		context.putPageValue("order", inOrder);
@@ -100,6 +96,9 @@ protected void sendEmail(Order inOrder) {
 	OrderManager manager = moduleManager.getBean("orderManager");
 	OrderHistory history = manager.createNewHistory( mediaarchive.getCatalogId(), inOrder, context.getUser(), "ordercomplete" );
 	manager.saveOrderWithHistory( mediaarchive.getCatalogId(), context.getUser(), inOrder, history );
+	
+	log.info("order is complete ${inOrder.getId()}");
+	
 }
 
 
