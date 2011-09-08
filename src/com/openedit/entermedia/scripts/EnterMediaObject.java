@@ -108,6 +108,15 @@ public class EnterMediaObject
 		}
 		return true;
 	}
+	public boolean assertEquals(Object inWhat, Object inEquals, String inMessage)
+	{
+		boolean ok = assertEquals(inWhat, inEquals);
+		if( !ok )
+		{
+			log.info(inMessage);
+		}
+		return ok;
+	}
 	public boolean assertEquals(Object inWhat, Object inEquals)
 	{
 		if( inWhat == null || !inWhat.equals(inEquals))

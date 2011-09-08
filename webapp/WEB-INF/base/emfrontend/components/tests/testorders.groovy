@@ -64,7 +64,7 @@ class Test extends EnterMediaObject
 		String emailsent = order.get("emailsent");
 
 		if( !assertEquals("true",emailsent) )
-		{
+		{			
 			return;
 		}
 		//orders are save in the data directory and there is an order and orderitem searcher
@@ -259,7 +259,7 @@ class Test extends EnterMediaObject
 		req.setRequestParameter("searchtype", "order");
 
 		req.setRequestParameter("itemid", item.getId());
-		req.setRequestParameter(item.getId() + ".presetid.value", "rhozet-test"); //outputffmpeg.avi
+		req.setRequestParameter(item.getId() + ".presetid.value", "amazonpreview"); //outputffmpeg.avi
 		
 		getOpenEditEngine().executePathActions(req);
 		getOpenEditEngine().executePageActions(req);
@@ -298,7 +298,7 @@ class Test extends EnterMediaObject
 		
 		String emailsent = order.get("emailsent");
 		
-		if( !assertEquals("true",emailsent) )
+		if( !assertEquals("true",emailsent,"emailsent was not set to true") )
 		{
 			return;
 		}

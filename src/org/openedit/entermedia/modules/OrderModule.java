@@ -408,7 +408,15 @@ public class OrderModule extends BaseMediaModule
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
-		manager.addConversionAndPublishRequest(order, archive,params, inReq.getUser());
+		List assetids = manager.addConversionAndPublishRequest(order, archive,params, inReq.getUser());
+		//OrderHistory history = getOrderManager().createNewHistory(archive.getCatalogId(), order, inReq.getUser(), "pending");
+		//history.setAssetIds(assetids);
+		//manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(), order, history);
+		if( assetids.size() > 0)
+		{
+			order.setProperty("orderstatus", "pending");
+		}
+		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		log.info("Added conversion and publish requests for " + order.getId());
 	}
 

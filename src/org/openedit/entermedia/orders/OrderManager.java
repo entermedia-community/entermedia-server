@@ -343,7 +343,7 @@ public class OrderManager
 		return history;
 	}
 
-	public void addConversionAndPublishRequest(Order order, MediaArchive archive, Map<String,String> properties, User inUser)
+	public List<String> addConversionAndPublishRequest(Order order, MediaArchive archive, Map<String,String> properties, User inUser)
 	{
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
 		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
@@ -353,10 +353,12 @@ public class OrderManager
 
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
+		List<String> assetids = new ArrayList<String>();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data orderitemhit = (Data) iterator.next();
 			String assetid = orderitemhit.get("assetid");
+			assetids.add(assetid);
 			Asset asset = archive.getAsset(assetid);
 			//item.getId() + "." + field + ".value"
 			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
@@ -422,6 +424,7 @@ public class OrderManager
 				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
 			}
 		}
+		return assetids;
 	}
 	
 	public void updateStatus(MediaArchive archive, Order inOrder)
