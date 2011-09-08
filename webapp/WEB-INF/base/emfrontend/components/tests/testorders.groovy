@@ -56,7 +56,7 @@ class Test extends EnterMediaObject
 		}
 		
 		om.getOrderManager().updateStatus(order);
-		
+		Thread.sleep(10000);
 		log.info('Order status was: ' + order.get("orderstatus"));		
 		item = (Data)items.iterator().next();
 		log.info('Item status was: ' + item.get("status"));		
@@ -266,7 +266,7 @@ class Test extends EnterMediaObject
 		Thread.sleep(12000);
 		
 		om.getOrderManager().updatePendingOrders(getMediaArchive());
-		Thread.sleep(1000);
+		Thread.sleep(10000);
 		
 		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
 
