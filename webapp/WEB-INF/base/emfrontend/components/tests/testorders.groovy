@@ -100,9 +100,7 @@ class Test extends EnterMediaObject
 		getOpenEditEngine().executePathActions(req);
 		getOpenEditEngine().executePageActions(req);
 		
-		//Thread.sleep(24000);
-
-	
+		Thread.sleep(5000);
 		
 		om.getOrderManager().updatePendingOrders(getMediaArchive());
 		Thread.sleep(1000);
@@ -266,7 +264,7 @@ class Test extends EnterMediaObject
 		Thread.sleep(12000);
 		
 		om.getOrderManager().updatePendingOrders(getMediaArchive());
-		Thread.sleep(10000);
+		Thread.sleep(60000 * 5);
 		
 		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
 

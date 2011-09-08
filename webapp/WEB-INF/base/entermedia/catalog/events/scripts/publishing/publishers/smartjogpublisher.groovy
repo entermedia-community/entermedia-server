@@ -33,7 +33,6 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		}
 		String fullPath = mountPath + exportname;
 	
-		Page publishPage = mediaArchive.getPageManager().getPage(fullPath);
 
 		String serverId = destination.get("server");
 		if (serverId == null)
@@ -47,7 +46,11 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		}
 		else
 		{
-			mediaArchive.getPageManager().copyPage(inputpage, publishPage); //put the file on the ftp server for deliveryx
+			Page publishPage = mediaArchive.getPageManager().getPage(fullPath);
+			if( !publishPage.exists() )
+			{
+				mediaArchive.getPageManager().copyPage(inputpage, publishPage); //put the file on the ftp server for deliveryx
+			}
 			
 			startSmartJogDelivery(mediaArchive,exportname,inPublishRequest, new Integer(Integer.parseInt(serverId)), result);
 		}
@@ -83,23 +86,31 @@ public class smartjogpublisher extends basepublisher implements Publisher
 	public void startSmartJogDelivery(MediaArchive mediaArchive, String inFilename, Data publishtask, Integer serverId, PublishResult inResult)
 	{
 		Page dir = mediaArchive.getPageManager().getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/smartjog/");
-		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
-			
 		//Get a file on the local server
 		log.info("Filename was: " + inFilename);
-		ServerFile serverFile = ssc.getServerFile(null, inFilename);
 		int attempts = 0;
-		while(serverFile == null){
-			attempts++;
-			try{
-			Thread.sleep(1000);
-			} catch (Exception e){}
-			
-			serverFile = ssc.getServerFile(null, inFilename);
-			if(attempts == 20){
-				throw new OpenEditException("SmartJog File could not be found after 20 seconds: ${inFilename}");
+		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
+		
+		ServerFile serverFile = null;
+		while( true)
+		{
+			serverFile = ssc.getServerFile(new Integer(14573), inFilename);
+			if(serverFile != null)
+			{
+				break;
 			}
-		//	log.info("Attempt ${attempts}");
+			attempts++;
+			if(attempts == 20)
+			{
+				log.info("SmartJog has not noticed the file we put there. Trying again later");
+				return;
+			}
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch (Exception e)
+			{ }
 		}
 		Delivery delivery = ssc.deliverFileToServer(serverId.intValue(), serverFile.getServerFileId()); 
 		if (delivery != null)
