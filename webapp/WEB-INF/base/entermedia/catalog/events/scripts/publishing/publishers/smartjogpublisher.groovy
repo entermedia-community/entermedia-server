@@ -1,19 +1,18 @@
 package publishing.publishers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openedit.Data 
-import org.openedit.data.Searcher 
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive 
-import org.openedit.entermedia.publishing.PublishResult;
-import org.openedit.entermedia.publishing.Publisher 
-import org.openedit.entermedia.smartjog.SmartJog 
-import org.openedit.entermedia.smartjog.Status;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.openedit.Data
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.publishing.PublishResult
+import org.openedit.entermedia.publishing.Publisher
+import org.openedit.entermedia.smartjog.SmartJog
+import org.openedit.entermedia.smartjog.Status
 
-import com.openedit.page.Page;
-import com.openedit.util.PathUtilities;
-import com.smartjog.webservices.Delivery 
+import com.openedit.OpenEditException
+import com.openedit.page.Page
+import com.smartjog.webservices.Delivery
 import com.smartjog.webservices.ServerFile
  
 
@@ -33,9 +32,11 @@ public class smartjogpublisher extends basepublisher implements Publisher
 			mountPath = mountPath + "/";
 		}
 		String fullPath = mountPath + exportname;
+	
+	        log.info("EXPORTED FILE: ${exportname}");
 
 		Page publishPage = mediaArchive.getPageManager().getPage(fullPath);
-		mediaArchive.getPageManager().copyPage(inputpage, publishPage); //put the file on the ftp server for deliveryx
+
 		String serverId = destination.get("server");
 		if (serverId == null)
 		{
@@ -48,6 +49,8 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		}
 		else
 		{
+			mediaArchive.getPageManager().copyPage(inputpage, publishPage); //put the file on the ftp server for deliveryx
+			
 			startSmartJogDelivery(mediaArchive,exportname,inPublishRequest, new Integer(Integer.parseInt(serverId)), result);
 		}
 
@@ -84,8 +87,21 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
 			
 		//Get a file on the local server
+		log.info("Filename was: " + inFilename);
 		ServerFile serverFile = ssc.getServerFile(null, inFilename);
-		
+		int attempts = 0;
+		while(serverFile == null){
+			attempts++;
+			try{
+			Thread.sleep(1000);
+			} catch (Exception e){}
+			
+			serverFile = ssc.getServerFile(null, inFilename);
+			if(attempts == 20){
+				throw new OpenEditException("SmartJog File could not be found after 20 seconds: ${inFilename}");
+			}
+		//	log.info("Attempt ${attempts}");
+		}
 		Delivery delivery = ssc.deliverFileToServer(serverId.intValue(), serverFile.getServerFileId()); 
 		if (delivery != null)
 		{ 
