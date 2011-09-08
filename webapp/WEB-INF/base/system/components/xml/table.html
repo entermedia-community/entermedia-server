@@ -37,11 +37,16 @@
 		<tr >
 		#foreach( $detail in $details )
 			<td style="padding:4px;">
+			#if( "$candelete" != "false" )
+			<a href="#" class="oeactionlinkselect"  onclick="showpath('${view}editor', '$home$editpath?$editargs&edit=true',1);return false;">
+			#end
+			
 			#set( $val = "$!hit.get($detail.id)" )
 			$context.putPageValue("detail",$detail)
 			$context.putPageValue("val",$val)
 			$pages.include("$xmledithome/detailreadonly.html", $context)
 			#if( "$candelete" != "false" ) </a> #end
+			
 			</td>
 		#end
 		
