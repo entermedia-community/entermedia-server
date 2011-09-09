@@ -150,7 +150,8 @@ public class EnterMediaObject
 
 	public PathEventManager getPathEventManager()
 	{
-		return (PathEventManager)getModuleManager().getBean("pathEventManager");
+		String catalogid = context.findValue("catalogid");
+		return (PathEventManager)getModuleManager().getBean(catalogid,"pathEventManager");
 	}
 
 	

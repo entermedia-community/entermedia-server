@@ -1,14 +1,14 @@
-import com.openedit.WebPageRequest 
-import com.openedit.entermedia.scripts.EnterMediaObject 
-import com.openedit.entermedia.scripts.ScriptLogger;
-import com.openedit.page.Page 
-import com.openedit.servlet.OpenEditEngine 
-//import org.junit.Test 
-import org.openedit.Data 
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive 
-import org.openedit.entermedia.modules.OrderModule 
-import org.openedit.entermedia.orders.Order 
+import org.openedit.Data
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.modules.OrderModule
+import org.openedit.entermedia.orders.Order
+import org.openedit.events.PathEventManager
+
+import com.openedit.Test
+import com.openedit.WebPageRequest
+import com.openedit.entermedia.scripts.EnterMediaObject
+import com.openedit.entermedia.scripts.ScriptLogger
+import com.openedit.page.Page
 
 
 class Test extends EnterMediaObject
@@ -263,7 +263,7 @@ class Test extends EnterMediaObject
 		
 		req.setRequestParameter("assetid",asset.getId());
 		int loops = 0;
-		while( loops++ < 450) //wait up to 15 minutes
+		while( loops++ < 90) //wait up to 15 minutes
 		{
 			//The publish complete called checks the order status that looks over the orders
 			order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
@@ -278,8 +278,9 @@ class Test extends EnterMediaObject
 				break;
 			}
 			log.info("Check ${loops} on publish action for ${order.getId()}");
-			getPathEventManager().runPathEvent("/${catalogid}/events/publishing/publishassets.html",context);
-			Thread.sleep(2000);
+			PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
+			manager.runPathEvent("/${catalogid}/events/publishing/publishassets.html",context);
+			Thread.sleep(10000);
 		}
 		String emailsent = order.get("emailsent");		
 		if( !assertEquals("true",emailsent,"emailsent was not set to true on ${order.getId()} ") )

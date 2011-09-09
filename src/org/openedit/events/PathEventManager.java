@@ -173,7 +173,10 @@ public class PathEventManager
 			}
 			
 			//do nothingthrow new OpenEditException("Event not found " + runpath);
-			log.debug("No actions enabled for this event: " + runpath);
+			if( log.isDebugEnabled() )
+			{
+				log.debug("No actions enabled for this event: " + runpath);
+			}
 			return false;
 		}
 	}
