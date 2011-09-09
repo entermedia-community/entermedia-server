@@ -91,27 +91,13 @@ public class smartjogpublisher extends basepublisher implements Publisher
 		int attempts = 0;
 		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
 		
-		ServerFile serverFile = null;
-		while( true)
+		ServerFile serverFile = ssc.getServerFile(new Integer(14573), inFilename);
+		if(serverFile == null)
 		{
-			serverFile = ssc.getServerFile(new Integer(14573), inFilename);
-			if(serverFile != null)
-			{
-				break;
-			}
-			attempts++;
-			if(attempts == 20)
-			{
-				log.info("SmartJog has not noticed the file we put there. Trying again later");
-				return;
-			}
-			try
-			{
-				Thread.sleep(1000);
-			}
-			catch (Exception e)
-			{ }
+			log.info("SmartJog has not noticed the file we put there. Try again later");
+			return;
 		}
+
 		Delivery delivery = ssc.deliverFileToServer(serverId.intValue(), serverFile.getServerFileId()); 
 		if (delivery != null)
 		{ 
