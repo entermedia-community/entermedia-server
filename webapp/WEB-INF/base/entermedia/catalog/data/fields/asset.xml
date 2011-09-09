@@ -14,7 +14,7 @@
 	<property id="assetviews_sortable" datatype="number" >Views</property>
 	<property id="assetvotes"  datatype="number" index="true" stored="true" >Vote Rank</property>
 	<property id="assetvotes_sortable" datatype="number" >Vote Count</property>
-	<property id="length" index="true" stored="true" datatype="number">Length(seconds)</property> <!-- Videos -->
+	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Videos -->
 	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
 	<property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>

@@ -565,7 +565,7 @@ onloadselectors = function()
 					}
 				}
 		);
-		jQuery("#sortable").tablesorter();
+		jQuery("#tablesorter").tablesorter();
 			
 }
 
