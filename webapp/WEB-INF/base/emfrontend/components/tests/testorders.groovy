@@ -263,19 +263,21 @@ class Test extends EnterMediaObject
 		
 		req.setRequestParameter("assetid",asset.getId());
 		int loops = 0;
-		while( loops++ < 520) //wait up to 15 minutes
+		while( loops++ < 450) //wait up to 15 minutes
 		{
 			//The publish complete called checks the order status that looks over the orders
 			order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
 			if( order.getOrderStatus() == "complete" )
 			{
+				log.info("Order ${order.getId()} is now complete");
 				break;
 			}
+			log.info("Check on publish action for ${order.getId()}");
 			getPathEventManager().runPathEvent("/${catalogid}/events/publishing/publishassets.html",context);
 			Thread.sleep(2000);
 		}
 		String emailsent = order.get("emailsent");		
-		if( !assertEquals("true",emailsent,"emailsent was not set to true") )
+		if( !assertEquals("true",emailsent,"emailsent was not set to true on ${order.getId()} ") )
 		{
 			return;
 		}
