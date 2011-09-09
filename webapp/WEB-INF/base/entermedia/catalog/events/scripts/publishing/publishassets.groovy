@@ -87,6 +87,7 @@ public void init() {
 					publishrequest.setProperty('status', 'error');
 					publishrequest.setProperty("errordetails", presult.getErrorMessage());
 					queuesearcher.saveData(publishrequest, context.getUser());
+					firePublishEvent(publishrequest.getId());
 					continue;
 				}
 				if( presult.isComplete() )
@@ -123,7 +124,7 @@ protected firePublishEvent(String inOrderItemId)
 	WebEvent event = new WebEvent();
 	event.setSearchType("publishqueue");
 	event.setProperty("publishqueueid", inOrderItemId);
-	event.setOperation("publishing/publishfinished");
+	event.setOperation("publishing/publishcomplete");
 	event.setUser(context.getUser());
 	event.setCatalogId(mediaarchive.getCatalogId());
 	mediaarchive.getMediaEventHandler().eventFired(event);

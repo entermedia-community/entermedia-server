@@ -261,15 +261,20 @@ class Test extends EnterMediaObject
 		getOpenEditEngine().executePathActions(req);
 		getOpenEditEngine().executePageActions(req);
 		
-		Thread.sleep(12000);
-		
-		om.getOrderManager().updatePendingOrders(getMediaArchive());
-		Thread.sleep(60000 * 5);
-		
-		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
-
-		String emailsent = order.get("emailsent");
-		
+		req.setRequestParameter("assetid",asset.getId());
+		int loops = 0;
+		while( loops++ < 520) //wait up to 15 minutes
+		{
+			//The publish complete called checks the order status that looks over the orders
+			order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
+			if( order.getOrderStatus() == "complete" )
+			{
+				break;
+			}
+			getPathEventManager().runPathEvent("/${catalogid}/events/publishing/publishassets.html",context);
+			Thread.sleep(2000);
+		}
+		String emailsent = order.get("emailsent");		
 		if( !assertEquals("true",emailsent,"emailsent was not set to true") )
 		{
 			return;
@@ -277,6 +282,8 @@ class Test extends EnterMediaObject
 		//orders are save in the data directory and there is an order and orderitem searcher
 		log.info("test is green");
 	}
+	
+	
 }
 logs = new ScriptLogger();
 logs.startCapture();
