@@ -12,21 +12,20 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 
 
-public void init()
-{
+public void init() {
 
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
-	
+
 	Searcher queuesearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "publishqueue");
 
-		
+
 	SearchQuery query = queuesearcher.createSearchQuery();
 	WebEvent webevent = context.getPageValue("webevent");
 	Asset asset = null;
 	if( webevent != null)
 	{
 		String sourcepath = webevent.getSourcePath();
-		 asset = mediaArchive.getAssetBySourcePath(sourcepath);
+		asset = mediaArchive.getAssetBySourcePath(sourcepath);
 		if( asset != null)
 		{
 			query.addExact("assetid",asset.getId());
@@ -53,82 +52,79 @@ public void init()
 
 			if(asset == null)
 			{
-				 assetid = result.get("assetid");
+				assetid = result.get("assetid");
 				asset = mediaArchive.getAsset(assetid);
 			}
-			
+
 			String publishdestination = publishrequest.get("publishdestination");
 			Data preset = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "convertpreset", presetid);
-			
-			if( publishdestination != null)
+			Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
+
+			try
 			{
-				Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
-				try
+
+				Page inputpage = null;
+				if( preset.get("type") != "original")
 				{
-					Page inputpage = null;
-					if( preset.get("type") != "original")
-					{
-						String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${preset.outputfile}";
-						inputpage= mediaArchive.getPageManager().getPage(input);
-					}
-					else
-					{
-						inputpage = mediaArchive.getOriginalDocument(asset);
-					}
-					
-					if(!inputpage.exists() || inputpage.length() == 0)
-					{
-						log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
-						continue;
-					}
-					
-					Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
-					PublishResult presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
-					if( presult.isError() )
-					{
-						publishrequest.setProperty('status', 'error');
-						publishrequest.setProperty("errordetails", presult.getErrorMessage());
-						queuesearcher.saveData(publishrequest, context.getUser());
-						continue;
-					}
-					if( presult.isComplete() )
-					{
-						log.info("Published " +  asset + " to " + destination);
-						publishrequest.setProperty('status', 'complete');
-						publishrequest.setProperty("errordetails", " ");
-						queuesearcher.saveData(publishrequest, context.getUser());
-						firePublishEvent(publishrequest.getId());
-					}
-					else if( presult.isPending() )
-					{
-						publishrequest.setProperty('status', 'pending');
-						publishrequest.setProperty("errordetails", " ");
-						queuesearcher.saveData(publishrequest, context.getUser());
-					}
+					String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${preset.outputfile}";
+					inputpage= mediaArchive.getPageManager().getPage(input);
 				}
-				catch( Throwable ex)
+				else
 				{
-					ex.printStackTrace();
-					log.error("Problem publishing ${asset} to ${publishdestination} ${ex}");
+					inputpage = mediaArchive.getOriginalDocument(asset);
+				}
+
+				if(!inputpage.exists() || inputpage.length() == 0)
+				{
+					log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
+					continue;
+				}
+
+				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
+				PublishResult presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+				if( presult.isError() )
+				{
 					publishrequest.setProperty('status', 'error');
-					publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
+					publishrequest.setProperty("errordetails", presult.getErrorMessage());
+					queuesearcher.saveData(publishrequest, context.getUser());
+					firePublishEvent(publishrequest.getId());
+					continue;
+				}
+				if( presult.isComplete() )
+				{
+					log.info("Published " +  asset + " to " + destination);
+					publishrequest.setProperty('status', 'complete');
+					publishrequest.setProperty("errordetails", " ");
+					queuesearcher.saveData(publishrequest, context.getUser());
+					firePublishEvent(publishrequest.getId());
+				}
+				else if( presult.isPending() )
+				{
+					publishrequest.setProperty('status', 'pending');
+					publishrequest.setProperty("errordetails", " ");
 					queuesearcher.saveData(publishrequest, context.getUser());
 				}
 			}
-			else
+			catch( Throwable ex)
 			{
-				log.info("publish destination is null")
+				ex.printStackTrace();
+				log.error("Problem publishing ${asset} to ${publishdestination} ${ex}");
+				publishrequest.setProperty('status', 'error');
+				publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
+				queuesearcher.saveData(publishrequest, context.getUser());
 			}
 		}
+
 	}
 }
+
 
 protected firePublishEvent(String inOrderItemId)
 {
 	WebEvent event = new WebEvent();
 	event.setSearchType("publishqueue");
 	event.setProperty("publishqueueid", inOrderItemId);
-	event.setOperation("publishing/publishfinished");
+	event.setOperation("publishing/publishcomplete");
 	event.setUser(context.getUser());
 	event.setCatalogId(mediaarchive.getCatalogId());
 	mediaarchive.getMediaEventHandler().eventFired(event);

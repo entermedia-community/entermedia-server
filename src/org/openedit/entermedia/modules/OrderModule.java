@@ -21,6 +21,7 @@ import org.openedit.entermedia.orders.OrderHistory;
 import org.openedit.entermedia.orders.OrderManager;
 import org.openedit.util.DateStorageUtil;
 
+import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.ListHitTracker;
@@ -408,6 +409,14 @@ public class OrderModule extends BaseMediaModule
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
+		
+		String publishdestination = inReq.findValue("publishdestination.value");
+		if( publishdestination == null)
+		{
+			throw new OpenEditException("publishdestination.value is required");
+		}
+		order.setProperty("publishdestination", publishdestination);
+		
 		List assetids = manager.addConversionAndPublishRequest(order, archive,params, inReq.getUser());
 		//OrderHistory history = getOrderManager().createNewHistory(archive.getCatalogId(), order, inReq.getUser(), "pending");
 		//history.setAssetIds(assetids);

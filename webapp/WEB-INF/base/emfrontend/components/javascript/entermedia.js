@@ -565,6 +565,7 @@ onloadselectors = function()
 					}
 				}
 		);
+		jQuery("#sortable").tablesorter();
 			
 }
 

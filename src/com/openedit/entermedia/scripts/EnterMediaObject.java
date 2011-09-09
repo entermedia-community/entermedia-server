@@ -6,6 +6,7 @@ import groovy.util.GroovyScriptEngine;
 import java.io.File;
 
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.events.PathEventManager;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -147,7 +148,11 @@ public class EnterMediaObject
 		return (OpenEditEngine)getModuleManager().getBean("OpenEditEngine");
 	}
 
-
+	public PathEventManager getPathEventManager()
+	{
+		String catalogid = context.findValue("catalogid");
+		return (PathEventManager)getModuleManager().getBean(catalogid,"pathEventManager");
+	}
 
 	
 }

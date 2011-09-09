@@ -1,14 +1,13 @@
-import com.openedit.WebPageRequest 
-import com.openedit.entermedia.scripts.EnterMediaObject 
-import com.openedit.entermedia.scripts.ScriptLogger;
-import com.openedit.page.Page 
-import com.openedit.servlet.OpenEditEngine 
-//import org.junit.Test 
-import org.openedit.Data 
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive 
-import org.openedit.entermedia.modules.OrderModule 
-import org.openedit.entermedia.orders.Order 
+import org.openedit.Data
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.modules.OrderModule
+import org.openedit.entermedia.orders.Order
+import org.openedit.events.PathEventManager
+
+import com.openedit.WebPageRequest
+import com.openedit.entermedia.scripts.EnterMediaObject
+import com.openedit.entermedia.scripts.ScriptLogger
+import com.openedit.page.Page
 
 
 class Test extends EnterMediaObject
@@ -56,7 +55,7 @@ class Test extends EnterMediaObject
 		}
 		
 		om.getOrderManager().updateStatus(order);
-		
+		Thread.sleep(10000);
 		log.info('Order status was: ' + order.get("orderstatus"));		
 		item = (Data)items.iterator().next();
 		log.info('Item status was: ' + item.get("status"));		
@@ -80,6 +79,8 @@ class Test extends EnterMediaObject
 		OrderModule om = (OrderModule)getModuleManager().getModule("OrderModule");
 		
 		String catalogid = getMediaArchive().getCatalogId();
+		req.setRequestParameter("publishdestination.value", (String)context.findValue("localpublishdestination"));
+		
 		Order order = om.getOrderManager().createNewOrder(appid, catalogid, "admin");
 		
 		om.getOrderManager().saveOrder(getMediaArchive().getCatalogId(), req.getUser(), order);
@@ -90,35 +91,30 @@ class Test extends EnterMediaObject
 		req.setRequestParameter("orderid", order.getId());
 
 		req.setRequestParameter("field", [ "publishdestination","presetid"] as String[]); //order stuff
-		req.setRequestParameter("publishdestination.value", "1");
 		req.setRequestParameter("searchtype", "order");
 
 		req.setRequestParameter("itemid", item.getId());
-		req.setRequestParameter(item.getId() + ".presetid.value", "2"); //outputffmpeg.avi
-		
+		//req.setRequestParameter(item.getId() + ".presetid.value", "2"); //outputffmpeg.avi
+		req.setRequestParameter(item.getId() + ".presetid.value",  (String)context.findValue("originalpreset")); //Original
 		getOpenEditEngine().executePathActions(req);
 		getOpenEditEngine().executePageActions(req);
 		
-		Thread.sleep(24000);
-
-		Page page = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/outputffmpeg.avi");
-		if( !assertTrue(page.exists()) )
-		{
-			return;
-		}
+		Thread.sleep(5000);
 		
-		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(), order.getId());
-		Collection items = om.getOrderManager().findOrderAssets(getMediaArchive().getCatalogId(), order.getId());
-		assertEquals(1, items.size());
-		item = (Data)items.iterator().next();
+		om.getOrderManager().updatePendingOrders(getMediaArchive());
+		Thread.sleep(1000);
+		
+		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
+
 		String emailsent = order.get("emailsent");
 		
-		if( !assertEquals("true",emailsent) )
+		if( !assertEquals("true",emailsent,"emailsent was not set to true") )
 		{
 			return;
 		}
 		//orders are save in the data directory and there is an order and orderitem searcher
 		log.info("test is green");
+		
 	}
 
 	
@@ -255,56 +251,46 @@ class Test extends EnterMediaObject
 		req.setRequestParameter("orderid", order.getId());
 
 		req.setRequestParameter("field", [ "publishdestination","presetid"] as String[]); //order stuff
-		req.setRequestParameter("publishdestination.value", "3");
+		req.setRequestParameter("publishdestination.value",  (String)context.findValue("smartjogpreset"));
 		req.setRequestParameter("searchtype", "order");
 
 		req.setRequestParameter("itemid", item.getId());
-		req.setRequestParameter(item.getId() + ".presetid.value", "amazonpreview"); //outputffmpeg.avi
+		req.setRequestParameter(item.getId() + ".presetid.value", (String) context.findValue("exportpreset")); //outputffmpeg.avi
 		
 		getOpenEditEngine().executePathActions(req);
 		getOpenEditEngine().executePageActions(req);
 		
-		Thread.sleep(12000);
-		
-		om.getOrderManager().updatePendingOrders(getMediaArchive());
-		Thread.sleep(1000);
-		
-		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
-//		Collection items = om.getOrderManager().findOrderAssets(getMediaArchive().getCatalogId(), order.getId());
-//		if (!assertEquals(1, items.size()))
-//		{
-//			return;
-//		}
-//		
-//		item = (Data)items.iterator().next();
-//				
-//		String remotePath = item.get('remotePath');
-//		if (!assertTrue(remotePath != null))
-//		{
-//			log.info("Remote path not set on item.");
-//			return;
-//		}
-//		
-//		Page inputpage = getMediaArchive().getOriginalDocument(asset);
-//		
-//		String publishFile = "/WEB-INF/publish/smartjog/" + remotePath;
-//		Page publishPage = getMediaArchive().getPageManager().getPage(publishFile);
-//		
-//		if (!assertTrue(publishPage.exists()))
-//		{
-//			log.info("Could not find published file on remote server.");
-//			return;
-//		}
-		
-		String emailsent = order.get("emailsent");
-		
-		if( !assertEquals("true",emailsent,"emailsent was not set to true") )
+		req.setRequestParameter("assetid",asset.getId());
+		int loops = 0;
+		while( loops++ < 90) //wait up to 15 minutes
+		{
+			//The publish complete called checks the order status that looks over the orders
+			order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
+			if( order.getOrderStatus() == "complete" )
+			{
+				log.info("Order ${order.getId()} is now complete");
+				break;
+			}
+			if( order.getOrderStatus() == "error" )
+			{
+				log.error("Order ${order.getId()} had an error");
+				break;
+			}
+			log.info("Check ${loops} on publish action for ${order.getId()}");
+			PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
+			manager.runPathEvent("/${catalogid}/events/publishing/publishassets.html",context);
+			Thread.sleep(10000);
+		}
+		String emailsent = order.get("emailsent");		
+		if( !assertEquals("true",emailsent,"emailsent was not set to true on ${order.getId()} ") )
 		{
 			return;
 		}
 		//orders are save in the data directory and there is an order and orderitem searcher
 		log.info("test is green");
 	}
+	
+	
 }
 logs = new ScriptLogger();
 logs.startCapture();
@@ -319,15 +305,17 @@ try
 	logs.info("<h2>testEmailOrder()</h2>")
 	test.testEmailOrder();
 
-	logs.info("<h2>testPublishOrder()</h2>")
-	test.testPublishOrder();
-
+	
 	logs.info("<h2>testPublishRhozetOrder()</h2>")
 	test.testPublishRhozetOrder();
 	
 	logs.info("<h2>testPublishAmazon()</h2>")
 	test.testPublishAmazon();
 	*/
+	logs.info("<h2>testPublishOrder()</h2>")
+	test.testPublishOrder();
+
+	
 	logs.info("<h2>testPublishSmartJog()</h2>")
 	test.testPublishSmartJog();
 
