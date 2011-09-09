@@ -4,7 +4,6 @@ import org.openedit.entermedia.modules.OrderModule
 import org.openedit.entermedia.orders.Order
 import org.openedit.events.PathEventManager
 
-import com.openedit.Test
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
