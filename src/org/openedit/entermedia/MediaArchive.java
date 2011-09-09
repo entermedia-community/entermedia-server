@@ -1233,7 +1233,6 @@ public class MediaArchive
 		String min = minutes>0?String.valueOf(minutes):"";
 		String sec = seconds>=10?String.valueOf(seconds):seconds>0?"0"+String.valueOf(seconds):"00";
 		sb.append(min + ":" + sec);
-		System.out.println(sb.toString());
 		return sb.toString();
 	}
 }
