@@ -113,8 +113,6 @@ protected void sendEmail(WebPageRequest context, String email, String templatePa
 	//send e-mail
 	Page template = pageManager.getPage(templatePage);
 	WebPageRequest newcontext = context.copy(template);
-	log.info("order: " + newcontext.getPageValue("order"));
-	log.info("order: " + context.getPageValue("order"));
 	TemplateWebEmail mailer = getMail();
 	mailer.loadSettings(newcontext);
 	mailer.setMailTemplatePath(templatePage);

@@ -272,6 +272,11 @@ class Test extends EnterMediaObject
 				log.info("Order ${order.getId()} is now complete");
 				break;
 			}
+			if( order.getOrderStatus() == "error" )
+			{
+				log.error("Order ${order.getId()} had an error");
+				break;
+			}
 			log.info("Check ${loops} on publish action for ${order.getId()}");
 			getPathEventManager().runPathEvent("/${catalogid}/events/publishing/publishassets.html",context);
 			Thread.sleep(2000);
