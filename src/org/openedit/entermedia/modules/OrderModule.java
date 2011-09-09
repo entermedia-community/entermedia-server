@@ -402,11 +402,17 @@ public class OrderModule extends BaseMediaModule
 		//Order and item should be created from previous step.
 		//now we get the items and update the destination information
 		Order order = loadOrder(inReq);
+	
 		OrderManager manager = getOrderManager();
+		String catalogid = inReq.findValue("catalogid");
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 		if( order == null)
 		{
-			order = manager.createOrder(inReq.findValue("catalogid"), inReq, true);
+			order = (Order)searcher.createNewData();
 		}
+		String[] fields = inReq.getRequestParameters("field");
+		searcher.updateData(inReq, fields, order);
+
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
 		
