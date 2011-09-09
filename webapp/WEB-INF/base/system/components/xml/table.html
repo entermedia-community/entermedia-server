@@ -41,7 +41,6 @@
 	</thead>
 	<tbody>
 	#foreach ( $hit in $existingrecords )
-		#set( $editargs = "id=$hit.id&$args")
 		<tr #if($candelete != "false") rowid="$hit.id" #end #if($selectedid == $hit.id) class="emhighlight" #end>
 		#foreach( $detail in $details )
 			<td style="padding:4px;">
@@ -71,9 +70,14 @@
 #end
 
 #set($link = $context.getRequestParameter("selectlink"))
-<form name="editrow" action="$link">
-	<input type="hidden" id="emselectedrow" name="id" />
-</form>
+#if($link)
+	<form name="editrow" action="$link">
+		<input type="hidden" id="emselectedrow" name="id" />
+	</form>
+#else
+	<div id="editlink" targetdiv="${view}editor" link="$home$editpath?$args&edit=true&oemaxlevel=1"/>
+#end
+
 
 #if($candelete != "false")
 </div>

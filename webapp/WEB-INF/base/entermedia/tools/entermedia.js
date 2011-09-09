@@ -605,12 +605,25 @@ onloadselectors = function()
 								jQuery(this).removeAttr('disabled');
 							});	
 						//jQuery('#emselectable form').trigger('submit');
-						if( !jQuery('#emselectable form').attr("action") )
+						var form = jQuery('#emselectable').find("form");
+						if( form.length > 0 )
 						{
-							var path = jQuery('#emselectable form #emselectedrow').attr("value");
-							jQuery('#emselectable form').attr("action",path);
+							if( !jQuery('#emselectable form').attr("action") )
+							{
+								var path = jQuery('#emselectable form #emselectedrow').attr("value");
+								jQuery('#emselectable form').attr("action",path);
+							}
+							jQuery('#emselectable form').submit();
 						}
-						jQuery('#emselectable form').submit();
+						else if(jQuery('#emselectable #editlink'))
+						{
+							var link = jQuery('#emselectable #editlink').attr("link");
+							var targetdiv = jQuery('#emselectable #editlink').attr("targetdiv");
+							targetdiv = targetdiv.replace(/\//g, "\\/");
+							var id = jQuery(row).attr("rowid");
+							link = link + "&id=" + id;
+							jQuery("#" + targetdiv).load(link);
+						}
 					}
 				);		
 			}
