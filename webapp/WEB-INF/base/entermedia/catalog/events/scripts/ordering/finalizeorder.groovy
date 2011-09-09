@@ -56,6 +56,7 @@ protected void sendEmail(Order inOrder) {
 			String email = dest.get("administrativeemail");
 			if(email != null){
 				sendEmail(context, email, "/${appid}/views/activity/email/admintemplate.html");
+				//TODO: Save the fact that email was sent back to the publishtask?
 			}
 		}
 		String emailto = inOrder.get('sharewithemail');
