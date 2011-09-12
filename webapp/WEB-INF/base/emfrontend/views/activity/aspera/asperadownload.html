@@ -5,8 +5,10 @@
 
 #set($publishqueueid = $item.get("publishqueueid") )
 #set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$publishqueueid))
+#set( $destination = $searcherManager.getData($catalogid, "publishdestination",$publishqueue.publishdestination))  
+
 #set($presetpath = $publishqueue.exportname )
-  
+  $presetpath
 <p id="install_message">
   
 </p>
@@ -25,10 +27,14 @@
 		var aspera = new AsperaWeb('aspera-web');
 
  		#set( $username = $destination.get("username") )
- 		#set( $theuser = $userManager.getUser($username) )
- 		#set( $password = $userManager.decryptPassword($theuser) )
+ 		#if(!$username )
+ 			alert("Username not set");
+ 		#else	
+	 		#set( $theuser = $userManager.getUser($username) )
+	 		#set( $password = $userManager.decryptPassword($theuser) )
+ 		#end
  		var sourceURL = 'fasp://${username}:${password}@${destination.get("server")}${destination.get("url")}/$presetpath?v=2&bwcap=Unlimited&targetrate=20000';
- 		aspera.promptAndDownload(sourceURL, "$presetpath");
+ 		aspera.promptAndDownload(sourceURL, "$publishqueue.exportname");
 		jQuery('#install_message').html( "Download in progress using Aspera software in system tray" );
 		return false;    
   	}	
