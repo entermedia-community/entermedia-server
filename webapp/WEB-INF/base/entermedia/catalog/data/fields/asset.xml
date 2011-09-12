@@ -47,7 +47,12 @@
 	<property id="editstatus" index="true" stored="true" editable="true" viewtype="radioselect" listid="asset/editstatus" datatype="list">Edit Status</property>
 
 	<!-- Asset Contains -->
-	<property id="assettitle" index="true" stored="true" editable="true" datatype="text" keyword="true" listchild="productionnumber" externalid="By-lineTitle,Title,Headline" >Title</property>
+	<property id="assettitle" index="true" stored="true" editable="true" datatype="text" keyword="true" externalid="By-lineTitle,Title,Headline" >Asset Title</property>
+	
+	<!-- Also known as series -->
+	<property id="title" index="true" datatype="list" stored="true" editable="true" keyword="true" >Title</property>
+	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="title"   >Episode</property>
+
 	<property id="caption" index="true" stored="true" keyword="true" editable="true" externalid="ImageDescription,Caption/Abstract">Caption</property>
 	<property id="longcaption"  keyword="true" editable="true">Long Caption</property>
 	<!--  this is built in, Used for related searches property id="keywords" keyword="true" index="true" stored="true" editable="false" >Tags</property --> 
@@ -64,7 +69,6 @@
 	<property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp" >Language</property>
 	<property id="stocknumber" index="true" keyword="true" editable="true" stored="true">Stock Number</property>
 	<property id="jobnotes" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>
-	<property id="episode" keyword="true" editable="true" index="true" stored="true" >Episode</property>
 
 	<!-- Approvals -->	
 	<!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->
@@ -72,8 +76,6 @@
 	<property id="position" type="position" datatype="position" viewtype="map" index="true" stored="true">Position</property>
 
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Asset Type</property>
-	<property id="title" datatype="list" editable="true" index="true" stored="true" viewtype="list"  listchild="productionnumber">Title</property>
-	<property id="productionnumber" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Production Number</property>
 	
 	<property id="fatwireid" index="true" stored="true">FatWire ID</property>
 	<property id="uploadteam" index="true"  keyword="true" stored="true" catalogid="system" type="list" listid="group">Upload Team</property>

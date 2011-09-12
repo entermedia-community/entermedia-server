@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Handler;
-import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -25,16 +24,28 @@ public class ScriptLogger extends Handler
 	{
 		fieldPrefix = inPrefix;
 	}
+	public void debug(String inText, Throwable ex)
+	{
+		log.debug(inText,ex);
+	}
 	
 	public void debug(String inText)
 	{
 		log.debug(inText);
 		//getLogs().add("debug: " + inText);
 	}
+	public void info(String inText, Throwable ex)
+	{
+		log.info(inText,ex);
+	}
 	public void info(String inText)
 	{
 		log.info(inText);
 		//getLogs().add("info: " + inText);
+	}
+	public void error(String inText, Throwable ex)
+	{
+		log.error(inText,ex);
 	}
 	public void error(String inText)
 	{

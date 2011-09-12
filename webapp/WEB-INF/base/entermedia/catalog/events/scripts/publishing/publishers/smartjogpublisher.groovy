@@ -59,9 +59,8 @@ public class smartjogpublisher extends basepublisher implements Publisher
 	}
 	public void updateStatus(MediaArchive mediaArchive, String inFilename, Integer serverId, Data publishtask, PublishResult inResult)
 	{
-		Page dir = mediaArchive.getPageManager().getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/smartjog/");
-		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
 		
+SmartJog ssc = mediaArchive.getModuleManager().getBean("smartJog");		
 		String tracking = publishtask.get("trackingnumber");
 		String[] numbers = tracking.split(",");
 		int deliveryid = Integer.parseInt(numbers[1]);
@@ -85,11 +84,11 @@ public class smartjogpublisher extends basepublisher implements Publisher
 	}
 	public void startSmartJogDelivery(MediaArchive mediaArchive, String inFilename, Data publishtask, Integer serverId, PublishResult inResult)
 	{
-		Page dir = mediaArchive.getPageManager().getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/smartjog/");
+		SmartJog ssc = mediaArchive.getModuleManager().getBean("smartJog");
+			
 		//Get a file on the local server
 		log.info("Filename was: " + inFilename);
 		int attempts = 0;
-		SmartJog ssc = new SmartJog(dir.getContentItem().getAbsolutePath());
 		
 		ServerFile serverFile = ssc.getServerFile(new Integer(14573), inFilename);
 		if(serverFile == null)

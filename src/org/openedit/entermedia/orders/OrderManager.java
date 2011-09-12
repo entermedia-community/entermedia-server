@@ -323,7 +323,10 @@ public class OrderManager
 
 	public void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder, OrderHistory inHistory)
 	{
-		inHistory.setProperty("userid",inUser.getId() );
+		if( inUser != null)
+		{
+			inHistory.setProperty("userid",inUser.getId() );
+		}
 		inHistory.setProperty("orderid",inOrder.getId() );
 		Searcher historysearcher = getSearcherManager().getSearcher(inCatalogId, "orderhistory");
 		inOrder.setRecentOrderHistory(inHistory);
@@ -336,7 +339,10 @@ public class OrderManager
 		Searcher historysearcher = getSearcherManager().getSearcher(inCatId, "orderhistory");
 		OrderHistory history = (OrderHistory)historysearcher.createNewData();
 		history.setUserStatus(inStatus);
-		history.setProperty("userid", inUser.getId());
+		if( inUser != null)
+		{
+			history.setProperty("userid", inUser.getId());
+		}
 		history.setSourcePath(inOrder.getSourcePath());
 		history.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 
@@ -477,6 +483,18 @@ public class OrderManager
 					if( "complete".equals( publish.get("status") ) )
 					{
 						publishcomplete = true;
+					}
+					else if ("error".equals( publish.get("status") ) )
+					{
+						Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
+						item.setProperty("status", "error");
+						item.setProperty("errordetails", publish.get("errordetails"));
+						itemsearcher.saveData(item, null);
+						inOrder.setOrderStatus("error"); //orders are either open closed or error
+						OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
+						saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+						
+						return;
 					}
 				}
 				if( publishcomplete)

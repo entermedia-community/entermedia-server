@@ -1,5 +1,6 @@
 <page>
-		<property name="typespath">${dataroot}/types</property>
+		<property name="xmledithome">/${applicationid}/components/xml</property>
+
 		<property name="usestartswith">true</property>
 		
 </page>

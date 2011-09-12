@@ -29,7 +29,7 @@ public class asperapublisher extends basepublisher implements Publisher
 		
 		if( !exportname.startsWith("/"))
 		{
-			exportName ="/" + exportname;
+			exportname ="/" + exportname;
 		}
 		StringItem item = new StringItem();
 		item.setPath(exportname); //Aspera repo is mounted in a sub folder already. So we just need to append the name
