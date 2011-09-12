@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties> 
-	<property id="1">Pre-Approved</property>
+	<property id="1">Pending Approval</property>
 	<property id="6">Approved</property>	
 </properties>
