@@ -1,7 +1,7 @@
 #set($titlesearcher = $searcherManager.getSearcher($catalogid, "title"))
 #set($titleid= $context.getRequestParameter("title.value"))
 #set($title = $titlesearcher.searchById($titleid))
-
+$context.getParent().putPageValue("title",$title)
 <h2>$!title Episodes</h2>
 <div id="searchplugin"> 
 #if(!$hits)

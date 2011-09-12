@@ -1,13 +1,13 @@
 <page>
-	<property name="searchtype">productionnumber</property>
-	<property name="searchhome">/${applicationid}/views/settings/production/productionnumbers</property>
+	<property name="searchtype">episode</property>
+	<property name="searchhome">/${applicationid}/views/settings/production/episodes</property>
 	<property name="showsearch">false</property>
 	<property name="searchheader">Episodes</property>
 	<property name="showactions">true</property>
 	<property name="showselections">false</property>
 
 	<property name="resultspage">${searchhome}/search/results.html</property>
-	<inner-layout>/${applicationid}/views/settings/production/productionnumbers/resultsinnerlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/views/settings/production/episodes/resultsinnerlayout.html</inner-layout>
 	<property name="editable">false</property>
 	<property name="hitsname">hits</property>
 	<property name="showsearch">false</property>

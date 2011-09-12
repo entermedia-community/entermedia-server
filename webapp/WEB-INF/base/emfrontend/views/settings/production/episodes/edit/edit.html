@@ -9,6 +9,11 @@
 #end
 $context.putPageValue("view", $view)
 
+#set($titlesearcher = $searcherManager.getSearcher($catalogid, "title"))
+#set($titleid= $context.getRequestParameter("title.value"))
+#set($title = $titlesearcher.searchById($titleid))
+$context.putPageValue("title",$title)
+
 <form id="dataeditor" name="dataeditor" method="post" action="$home$content.searchhome/edit/save.html" >
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$!data.id" />
@@ -16,6 +21,9 @@ $context.putPageValue("view", $view)
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
+	<input name="field"  type="hidden" value="title" />
+	<input name="title.value"  type="hidden" value="$title.id" />
+	
 #set($titleid = $context.getRequestParameter("title.value"))	
 $data.setProperty("title",$titleid)
 $pages.include("/system/components/xml/detaileditor.html", $context)

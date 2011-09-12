@@ -1,12 +1,30 @@
-#set( $viewtype = $detail.viewType )
-#if (!$viewtype)
-	#set ($viewtype = $detail.dataType)
-#end
-#if (!$viewtype)
-	#set ($viewtype = "default")
-#end
-#if ($pages.doesExist("/${applicationid}/components/advancedsearch/types/${viewtype}.html"))
-	$pages.include("/${applicationid}/components/advancedsearch/types/${viewtype}.html", $context)
-#else
-	$pages.include("/${applicationid}/components/advancedsearch/types/default.html", $context)
-#end
+<tr class="emsearchfieldrow">
+	#if ($edit == "true")
+	<td>
+		<a href="#" onclick="javascript:deleteField('$detail.id'); return false;">
+		<img src="$home$apphome/theme/images/navigation/deletesm.png"/>
+		</a>
+	</td>
+	#end
+
+	<td valign="middle" class="emsearchfield" nowrap="true">
+		$!detail.getText($context) 
+		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+		<input name="operation" value="startswith" type="hidden" />
+	</td>
+	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
+		#set( $viewtype = $detail.viewType )
+		#if (!$viewtype)
+			#set ($viewtype = $detail.dataType)
+		#end
+		#if (!$viewtype)
+			#set ($viewtype = "default")
+		#end
+		#if( $hits.getSearchQuery() )
+			#set( $value = $hits.getSearchQuery().get($detail.id) )
+			$context.putPageValue("value",$value)
+		#end
+		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+	</td>
+</tr>
+
