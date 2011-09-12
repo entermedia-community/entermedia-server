@@ -107,9 +107,12 @@ public void init() {
 			}
 			catch( Throwable ex)
 			{
-				ex.printStackTrace();
-				log.error("Problem publishing ${asset} to ${publishdestination} ${ex}");
+				log.error("Problem publishing ${asset} to ${publishdestination}", ex);
 				publishrequest.setProperty('status', 'error');
+				if(ex.getCause() != null)
+				{
+					ex = ex.getCause();
+				}
 				publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
 				queuesearcher.saveData(publishrequest, context.getUser());
 			}

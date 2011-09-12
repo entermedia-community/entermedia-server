@@ -46,24 +46,20 @@
 			#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$publishqueueid))
 			#if( "complete" == $publishqueue.get("status") )
 				#if( $order.ordertype == "download" )
-				#set($destination = $searcherManager.getData($catalogid, "publishdestination",$publishqueue.publishdestination))
-				#if( $destination.publishtype == "aspera")
-					#if( $item.status == "complete" || $item.status == "delivered" )
-					<ul class="embuttons">
-						<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>	
-					</ul>
-					#end
+					#set($destination = $searcherManager.getData($catalogid, "publishdestination",$publishqueue.publishdestination))
+					#if( $destination.publishtype == "aspera")
+						#if( $item.status == "complete" || $item.status == "delivered" )
+						<ul class="embuttons">
+							<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>	
+						</ul>
+						#end
+					#end	
+					<div >
+						Export Path: $!{destination.server}$!{destination.url}$!{item.filename}<br>
+					</div>
 				#end	
-				<div >
-					Export Path: $!{destination.server}$!{destination.url}$!{item.filename}<br>
-				</div>
-			#elseif("error" == $publishqueue.get("status") )
-				$!publishqueue.get("errordetails")
 			#end
 		#end
-	#end	
-	$!item.errorcount
-	$!item.errordetails
  </td>
       
  </tr>	  

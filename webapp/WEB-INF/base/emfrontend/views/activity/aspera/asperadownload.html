@@ -1,20 +1,11 @@
 <h2>Aspera Download</h2>
 
-#set( $itemid = $context.getRequestParameter("itemid"))
+#set($itemid = $context.getRequestParameter("itemid"))
 #set($item = $searcherManager.getData($catalogid, "orderitem",$itemid) )
 
-#set($destinationid = $order.findValue($item,"publishdestination"))
-#set($publishdestination = $searcherManager.getData($catalogid,"publishdestination", $destinationid)) 
-   
-#set( $asset = $mediaarchive.getAssetBySourcePath( $item.get("assetsourcepath") ) )
- 
-#set($presetid = $order.findValue($item,"presetid"))
-#if( $presetid )
-	#set($preset = $searcherManager.getData($catalogid,"convertpreset", $presetid))
-	#set( $presetpath = $mediaarchive.asExportFileName($asset,$preset) )
-#else
-	No preset id set	
-#end
+#set($publishqueueid = $item.get("publishqueueid") )
+#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$publishqueueid))
+#set($presetpath = $publishqueue.exportname )
   
 <p id="install_message">
   
@@ -28,15 +19,15 @@
 <object id="aspera-web" type="application/x-aspera-web" width="1" height="1"><param name="AW_IMGSRV" value="" ></object>
 
   <script language="JavaScript">
-  	//var connect  = new AsperaWeb('aspera-web');
+
   	function downloadNow()
   	{
 		var aspera = new AsperaWeb('aspera-web');
 
- 		#set( $username = $publishdestination.get("username") )
+ 		#set( $username = $destination.get("username") )
  		#set( $theuser = $userManager.getUser($username) )
  		#set( $password = $userManager.decryptPassword($theuser) )
- 		var sourceURL = 'fasp://${username}:${password}@${publishdestination.get("server")}${publishdestination.get("url")}/$presetpath?v=2&bwcap=Unlimited&targetrate=20000';
+ 		var sourceURL = 'fasp://${username}:${password}@${destination.get("server")}${destination.get("url")}/$presetpath?v=2&bwcap=Unlimited&targetrate=20000';
  		aspera.promptAndDownload(sourceURL, "$presetpath");
 		jQuery('#install_message').html( "Download in progress using Aspera software in system tray" );
 		return false;    

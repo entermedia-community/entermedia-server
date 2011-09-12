@@ -545,6 +545,14 @@ public class OrderModule extends BaseMediaModule
 	public void updatePendingOrders(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		getOrderManager().updatePendingOrders(archive);
+		Order order = loadOrder(inReq);
+		if( order != null)
+		{
+			getOrderManager().updateStatus(archive, order);		
+		}
+		else
+		{
+			getOrderManager().updatePendingOrders(archive);
+		}
 	}
 }
