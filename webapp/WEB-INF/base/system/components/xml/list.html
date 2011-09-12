@@ -42,10 +42,10 @@
 #if ($detail.sort)
 	$query.setSortBy($detail.sort)
 #end
-
 #set ($types = $lsearcher.search($query))
-
-#set ($value = $context.getRequestParameter('value'))
+#if( !$value )
+	#set ($value = $context.getRequestParameter('value'))
+#end
 #if (!$value)
   #set ($value = $context.getRequestParameter("${fieldname}.value"))
 #end

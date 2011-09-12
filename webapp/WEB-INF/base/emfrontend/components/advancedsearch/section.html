@@ -6,7 +6,7 @@
 			#foreach( $child in $detail)
 				$context.putPageValue("detail", $child)
 				#if ($child.isLeaf())
-					$pages.include("/${applicationid}/components/advancedsearch/search/field.html", $context)
+					$pages.include("/${applicationid}/components/advancedsearch/search/detailedit.html", $context)
 				#else
 					$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
 				#end
