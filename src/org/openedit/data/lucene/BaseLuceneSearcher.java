@@ -524,7 +524,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	{
 		if (fieldLiveSearcher == null)
 		{
-			return "-1";
+			return null;
 		}
 		String id = String.valueOf(getLiveSearcher().hashCode());
 		return id + fieldPendingCommit; //In case we turned that on. Then this will trigger a search
