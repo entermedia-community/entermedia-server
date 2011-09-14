@@ -9,6 +9,7 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.EnterMedia;
 
+import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
@@ -61,40 +62,34 @@ public class MediaAdminModule extends BaseMediaModule
 		getPageManager().saveSettings(page);
 	}
 	
-	public void addSite(WebPageRequest inReq) throws Exception
+	public void deploySite(WebPageRequest inReq) throws Exception
 	{
-		String frontend = inReq.getRequestParameter("frontend.value");
-		
-		Page copyfrompage = getPageManager().getPage(frontend);
+		EnterMedia media = getEnterMedia(inReq);
+		Searcher searcher = getSearcherManager().getSearcher(media.getApplicationId(),"site");
 
-		String path = inReq.getRequestParameter("newpath");
-		if( !path.startsWith("/"))
+		String id = inReq.getRequestParameter("id");
+		if( id == null)
 		{
-			path = "/" + path;
+			throw new OpenEditException("Id was null");
 		}
-		Page topage = getPageManager().getPage(path);
+		Data site = (Data)searcher.searchById(id);
+		String frontendid = site.get("frontendid");
+		if( frontendid == null)
+		{
+			throw new OpenEditException("frontendid was null");
+		}
+		Data frontend = getSearcherManager().getData(media.getApplicationId(),"frontends",frontendid);
+		Page copyfrompage = getPageManager().getPage(frontend.get("path"));
+		Page topage = getPageManager().getPage("/" + site.get("appid"));
 		if( !topage.exists())
 		{
 			getPageManager().copyPage(copyfrompage,topage);
 		}
-		
-		EnterMedia media = getEnterMedia(inReq);
-		Searcher searcher = getSearcherManager().getSearcher(media.getApplicationId(),"sites");
-
-		Data child = searcher.createNewData();
-		String title = inReq.getRequestParameter("title.value");
-		child.setName(title);
-		child.setProperty("path",path);
-		child.setProperty("frontend",frontend);
-		//child.setName("created by " + inReq.getUser());
-		searcher.saveData(child,inReq.getUser());
-		
-		String catid = inReq.getRequestParameter("newcatalogid");
-		
 		//TODO: save catalog id
-		topage = getPageManager().getPage(path,true);
-		topage.getPageSettings().setProperty("catalogid",catid);
-		topage.getPageSettings().setProperty("applicationid",path.substring(1));
+		topage = getPageManager().getPage(topage.getPath(),true);
+		
+		topage.getPageSettings().setProperty("catalogid",site.get("appcatalogid"));
+		topage.getPageSettings().setProperty("applicationid",topage.getName());
 		
 		getPageManager().saveSettings(topage);
 		

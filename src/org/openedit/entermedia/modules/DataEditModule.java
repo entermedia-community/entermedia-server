@@ -448,9 +448,9 @@ public class DataEditModule extends BaseMediaModule
 						String sourcepath = inReq.getRequestParameter("sourcepath");
 						data.setSourcePath(sourcepath);
 					}
+					searcher.saveDetails(inReq, fields, data, id);
 					inReq.setRequestParameter("id", data.getId());
 					inReq.setRequestParameter("id.value", data.getId());
-					searcher.saveDetails(inReq, fields, data, id);
 				}
 			}
 
