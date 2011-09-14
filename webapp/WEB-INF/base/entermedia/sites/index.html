@@ -1,29 +1,37 @@
 <h2>[[Installed Apps]]</h2>
 
-
-#set( $searcher = $searcherManager.getSearcher($applicationid,"sites") )
+#set( $searcher = $searcherManager.getSearcher($applicationid,"site") )
 
 #set( $hits = $searcher.getAllHits() )
 #if( $hits.size() > 0 )
 
-<div >
-<table >
-#foreach( $rows in $hits.getPageInRows(4))
-<tr >
-	#foreach( $view in $rows )
-	<td align="center" style="padding:8px;" nowrap>
-		<a href="$home$view.path"><h3>$view.name</h3><img src="$home/$applicationid/sites/images/${view.frontend}.png"/><br>$context.siteRoot$view.path</a>
+<div id="emselectable" >
+<table width="90%">
+<tr>
+<th></th>
+<th>Name</th>
+<th>Path</th>
+<th>Catalog</th>
+</tr>
+
+#foreach( $view in $hits)
+<tr rowid="$view.id">
+	<td align="center"><img width="70" src="$home/$applicationid/sites/images/${view.frontendid}.png"/></td>
+	<td><h3>$view.name</h3></td>
+	<td>
+		<a href="$home/${view.appid}">$context.siteRoot/${view.appid}</a> 
 	</td>
-	#end
+	<td>$searcherManager.getData($applicationid,"catalogs",$view.appcatalogid)</h3></td>
 </tr>
 #end
 
 </table>
 
-#set( $searchtype = $context.getRequestParameter("searchtype") )
-<form name="editview" > 
-	<input type="hidden" name="link" id="emselectedrow" />
+#if( $canviewsettings )
+<form name="editrow" action="$home/$applicationid/sites/edit.html">
+		<input type="hidden" id="emselectedrow" name="id" />
 </form>
+#end
 
 </div>
 #end
@@ -31,48 +39,10 @@
 
 #if( $canviewsettings )
 
-<br><br>
+<ul class="embuttons">
+	<li><a href="$home$apphome/sites/edit.html"><span>Add App</span></a></li>
+</ul>
 
-<div class="emcalloutcontent" style="width: 600px">
-<h2>Install New Application</h2>
-<form name="addsite" action="addnew.html">
 
-#set( $catalogs = $usersettings.getCatalogs() )
-#if( $catalogs.size() == 0 )
-[[You are not allowed to upload assets to any catalogs.]]
-#end
-<div style="text-align: right; width: 500px;">
-	#set( $searcher = $searcherManager.getSearcher($applicationid,"frontends") )
-	#set( $frontends = $searcher.getAllHits() )
-	[[Application:]]
-	<select name="frontend.value" >
-		<option value=""></option>
-		#foreach ($front in $frontends)
-		<option value="$front.path">$front.name</option>
-		#end
-	</select>
-	<br><br>
 
-	[[Title]]:  <input name="title.value" value="" /> 
-	
-	<br><br>
-	
-	[[Catalog:]]
-	
-	<select name="newcatalogid" >
-		<option value=""></option>
-		#foreach ($catalog in $catalogs)
-		<option value="$catalog.id">$context.getText($catalog.name)</option>
-		#end
-	</select>
-	<br><br>
-
-	
-	[[Website]]: $context.siteRoot/ <input name="newpath" value="foldername" /> 
-	<input  type="submit" value="[[Add]]"/>
-</div>
-</form>
-
-</div>
-</div>
 #end

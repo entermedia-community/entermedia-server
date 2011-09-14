@@ -1,0 +1,9 @@
+
+<properties>
+  <property id="id" type="number" index="true" stored="true">Id</property>
+  <property id="name" editable="true" index="true" stored="true">Name</property>
+  <property id="appcatalogid" editable="true" index="true" stored="true">Catalog</property>
+  <property id="appid" editable="true" index="true" stored="true">Application ID</property>
+  <property id="frontendid" listid="frontends" type="list" editable="true" index="true" stored="true">Front End</property>
+  
+</properties>

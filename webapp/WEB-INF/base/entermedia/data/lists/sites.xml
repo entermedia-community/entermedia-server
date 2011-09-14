@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property id="1" path="/medialab" frontend="medialab">MediaLab</property>
-  <property id="2" path="/eml" frontend="eml" >Enterprise Media Library</property>
-  <property id="3" path="/emtube" frontend="emtube">EMTube</property>
-</properties>

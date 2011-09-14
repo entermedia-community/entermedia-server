@@ -1373,3 +1373,11 @@ margin: 0 20px 20px 0px;
 
 }	
 
+ul.embuttons li a span {
+    background: url("../images/buttons/embuttons.png") no-repeat scroll left top transparent;
+    float: left;
+    margin: 0 10px 0 -10px;
+    padding: 0 8px 0 18px;
+    position: relative;
+    white-space: nowrap;
+}
