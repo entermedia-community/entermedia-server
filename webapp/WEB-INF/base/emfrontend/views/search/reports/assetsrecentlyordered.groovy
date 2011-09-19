@@ -16,7 +16,12 @@ GregorianCalendar cal = new GregorianCalendar();
 cal.add(Calendar.MONTH, -1);
 oquery.addAfter("date", cal.getTime());
 oquery.addSortBy("historydateDown");
+//find out current user
+String name = context.getUserName()
+//filter by user
+oquery.addExact("user", name)
 Collection hits = ordersearcher.search(oquery);
+
 
 if( hits.size() == 0)
 {
