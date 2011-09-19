@@ -17,7 +17,7 @@
 	<target name="update-dependencies" depends="clean">
 		<delete dir="${build}"/>
 		<mkdir dir="${build}"/>
-		<get src="http://dev.entermediasoftware.com/jenkins/job/entermedia-server/lastSuccessfulBuild/artifact/deploy/ROOT.war" dest="${build}/ROOT.war" />	
+		<get src="http://dev.entermediasoftware.com/jenkins/job/entermedia-server%20visual_data/lastSuccessfulBuild/artifact/deploy/ROOT.war" dest="${build}/ROOT.war" />	
 	</target>
 
 	<target name="unwar" depends="update-dependencies">
