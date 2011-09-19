@@ -5,24 +5,37 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 
 import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery
+import org.openedit.entermedia.util.AssetSorter
 
 // Find all asset ids viewed in the last month
-Searcher orderitemssearcher = searcherManager.getSearcher(mediaarchive.getCatalogId(),"assetpreviewLog");
-SearchQuery iquery = orderitemssearcher.createSearchQuery();
+Searcher assetpreviewsearcher = searcherManager.getSearcher(mediaarchive.getCatalogId(),"assetpreviewLog");
+SearchQuery iquery = assetpreviewsearcher.createSearchQuery();
 GregorianCalendar cal = new GregorianCalendar();
 cal.add(Calendar.MONTH, -1);
 iquery.addAfter("date", cal.getTime());
+iquery.addSortBy("dateDown");
+//find out current user
+String name = context.getUserName()
+//filter by user
+iquery.addExact("user", name)
+//sort desc (recent viewed on top)
 
-HitTracker items = orderitemssearcher.search(iquery);
+HitTracker items = assetpreviewsearcher.search(iquery);
 
-Set assetids=new HashSet();
+List assetids=new ArrayList();
+//Map<String, String> assetids = new HashMap();
 for (Data hit : items)
 {
 	String assetid=hit.get("assetid");
+	String lastViewed=hit.get("date");
 	if (assetid!=null) 
 	{
-		assetids.add(assetid);
+		if (!assetids.contains(assetid))
+		{
+			assetids.add(assetid);
+		}
 	}
 }
 
@@ -43,4 +56,12 @@ for (String assetid: assetids) {
 
 query.addOrsGroup("id",assetidsbuffer.toString());
 
-mediaarchive.getAssetSearcher().cachedSearch(context,query);
+HitTracker hits = mediaarchive.getAssetSearcher().cachedSearch(context,query);
+List hitList = new ArrayList(hits);
+//use custom asset sorter to sort by last viewed data desc
+Collections.sort(hitList, new AssetSorter(assetids));
+ListHitTracker hitTracker = new ListHitTracker(hitList)
+context.putPageValue(hits.getHitsName(), hitTracker);
+context.putSessionValue(hits.getSessionId(), hitTracker);
+
+
