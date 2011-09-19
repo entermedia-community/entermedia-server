@@ -19,7 +19,7 @@ oquery.addSortBy("historydateDown");
 //find out current user
 String name = context.getUserName()
 //filter by user
-oquery.addExact("user", name)
+oquery.addExact("userid", name)
 Collection hits = ordersearcher.search(oquery);
 
 
