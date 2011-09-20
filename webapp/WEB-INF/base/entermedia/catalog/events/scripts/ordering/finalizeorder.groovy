@@ -12,6 +12,7 @@ import org.entermedia.email.TemplateWebEmail;
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.modules.OrderModule;
 import org.openedit.entermedia.orders.Order;
 import org.openedit.entermedia.orders.OrderHistory;
 import org.openedit.entermedia.orders.OrderManager;
@@ -28,6 +29,10 @@ protected Order getOrder(String inOrderId) {
 	return order;
 }
 
+protected HitTracker getOrderItems(String inOrderId){
+	Searcher orderitemssearcher = mediaarchive.getSearcherManager().getSearcher(mediaarchive.getCatalogId(), "orderitem");
+	return orderitemssearcher.fieldSearch("orderid", inOrderId)
+}
 
 
 protected TemplateWebEmail getMail() {
@@ -75,11 +80,20 @@ protected void sendEmail(Order inOrder) {
 		String userid = inOrder.get("userid");
 		if(userid != null){
 			User user = userManager.getUser(userid);
+
 			if(user != null){
 
 				String owneremail =user.getEmail();
 				if(owneremail != null){
 					context.putPageValue("sharewithemail", emailto);
+					//get order contents and data
+					HitTracker itemTracker = getOrderItems(inOrder.getId());
+					context.putPageValue("orderitems", itemTracker);
+					//					OrderModule module = new OrderModule();
+					//					context.putPageValue("orderassets", module.findOrderAssets(context));
+					//orderitemsearcher
+					//field search based on orderid
+					context.putPageValue("user", user)
 					sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
 				}
 			}
@@ -97,9 +111,8 @@ protected void sendEmail(Order inOrder) {
 	OrderManager manager = moduleManager.getBean("orderManager");
 	OrderHistory history = manager.createNewHistory( mediaarchive.getCatalogId(), inOrder, context.getUser(), "ordercomplete" );
 	manager.saveOrderWithHistory( mediaarchive.getCatalogId(), context.getUser(), inOrder, history );
-	
+
 	log.info("order is complete ${inOrder.getId()}");
-	
 }
 
 
