@@ -1,6 +1,0 @@
-#
-#Thu Apr 29 15:12:41 CLT 2010
-remove=quitar
-Write\ a\ comment=Escribir un comentario
-comment=comentar
-Comments=Comentarios

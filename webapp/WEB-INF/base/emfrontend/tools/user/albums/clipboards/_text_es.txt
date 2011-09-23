@@ -1,5 +1,0 @@
-#
-#Tue Apr 27 09:57:27 CLT 2010
-Downloads=Descargas
-Categorize=Categorizar
-

@@ -1,4 +1,0 @@
-<page>
-	<page-action name="FriendModule.toggleCommentNotification"/>
-	<page-action name="FriendModule.getFriends"/>
-</page>

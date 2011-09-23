@@ -1,8 +1,0 @@
-#
-#Thu Apr 08 15:59:13 EDT 2010
-Upload\ into=Hochladen nach
-Remove\ All=Alle entfernen
-Clipboard=Zwischenablage
-This\ is\ going\ to\ remove\ all\ items\ from\ your\ $content.albumname.\ Are\ you\ sure?=Das wird alle Elemente aus Ihrem $ content.albumname entfernen. Sind Sie sicher?
-Remove\ Page=Seite entfernen
-Multi\ Edit=Mehrfachbearbeitung

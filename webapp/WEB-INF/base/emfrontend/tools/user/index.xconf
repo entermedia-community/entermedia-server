@@ -1,9 +1,0 @@
-<page>
-<path-action name="RecentActivityModule.searchRecentActivity">
-		<property name="applicationid">${parentapplicationid}</property>
-	
-		
-	</path-action>
-	<path-action name="PageValue.loadPageVariable" bean="AlbumModule"/>
-	
-</page>

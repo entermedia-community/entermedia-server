@@ -1,5 +1,0 @@
-<page>
-	<property name="emailbody">./inviteemail.html</property>
-	<property name="subject">has sent you an invitation</property>
-	<page-action name="FriendModule.sentInvites"/>
-</page>

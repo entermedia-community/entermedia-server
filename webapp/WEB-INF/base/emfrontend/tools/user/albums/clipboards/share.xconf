@@ -1,7 +1,0 @@
-<page>
-	<!--
-	<inner-layout>${themeprefix}/entermedia/layouts/userhomelayout.html</inner-layout>
-	-->
-   	<property name="sectiontitle">Share</property>
-   
-</page>

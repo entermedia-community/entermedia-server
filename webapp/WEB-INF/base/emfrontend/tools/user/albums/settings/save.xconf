@@ -1,4 +1,0 @@
-<page>
-	<path-action name="AlbumModule.saveAlbumSettings" />
-	<path-action name="MediaAdminModule.changeTheme"/>
-</page>

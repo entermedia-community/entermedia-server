@@ -1,4 +1,0 @@
-<page>
-	<inner-layout>${themeprefix}/entermedia/layouts/userhomelayout.html</inner-layout>
-	<page-action name="FriendModule.listInvitations"/>
-</page>

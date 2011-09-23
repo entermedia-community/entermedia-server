@@ -1,4 +1,0 @@
-#
-#Tue Apr 27 09:32:24 CLT 2010
-No\ results\ found=No hay resultados
-
