@@ -1,4 +1,0 @@
-<page>
-<inner-layout/>
-<page-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
-</page>

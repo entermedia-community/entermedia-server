@@ -1,8 +1,0 @@
-<page>
-	<path-action name="OrderModule.placeOrder" />
-	<path-action name="OrderModule.findOrderAssets"/>
-	<path-action name="Email.sendEmail"/>
-	<property name="emaillayout">/${applicationid}/views/albums/basket/orderemail.html</property>
-	
-	
-</page>
