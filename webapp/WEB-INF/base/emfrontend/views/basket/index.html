@@ -1,0 +1,13 @@
+<div id="collectionbasket">
+
+#if($orderitems.size() >0 )
+
+$context.putPageValue("hits",$orderassets)
+$pages.include("$apphome/components/results/table.html",$context)
+
+#else
+
+[[No Items in Basket]]
+
+#end
+</div>

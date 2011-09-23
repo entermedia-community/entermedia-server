@@ -1,0 +1,6 @@
+<page>
+	<property name="themename">Base EM</property>
+	<property name="oetextfilter">translation</property>
+	<property name="editable">false</property>
+	<inner-layout>${themeprefix}/entermedia/layouts/layout.html</inner-layout>
+</page>

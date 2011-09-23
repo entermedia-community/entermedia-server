@@ -1,0 +1,7 @@
+<page>
+	<path-action name="OrderModule.loadOrderBasket" />
+	<path-action name="OrderModule.loadAssets" />
+	<property name="showaddselections">false</property>
+  	<property name="showremoveselections">true</property>
+  	<property name="section">basket</property>
+</page>
