@@ -9,10 +9,10 @@
 
  <path-action allowduplicates="true" bean="searcherManager" name="PageValue.loadPageVariable"/>
  <permission name="delete">
- 	<permission name="oe.administration"/>
+ 	<group name="administrators"/>
  </permission>
  <permission name="editdata">
- 	<permission name="oe.administration"/>
+ 	<group name="administrators"/>
  </permission>
  
 </page>

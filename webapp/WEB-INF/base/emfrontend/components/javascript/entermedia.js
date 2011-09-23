@@ -21,15 +21,6 @@ unoutlineSelectionRow = function(event, ui)
 }
 
 
-formatHitCountResult = function(inRow)
-{
-	return inRow[1];
-}
-
-formatHitCount = function(inRow)
-{jQuery('select#speedC').selectmenu({style:'dropdown'});
-	return inRow[0];
-}
 runajax = function(e)
 {
 	var nextpage= jQuery(this).attr('href');
@@ -151,6 +142,18 @@ pageload = function(hash)
 	} 
 }
 
+/*
+formatHitCountResult = function(inRow)
+{
+	return inRow[1];
+}
+
+formatHitCount = function(inRow)
+{jQuery('select#speedC').selectmenu({style:'dropdown'});
+	return inRow[0];
+}
+*/
+
 // Everyone put your onload stuff in here:
 onloadselectors = function()
 {
@@ -219,7 +222,8 @@ onloadselectors = function()
 				}
 			); 
 		});
-	
+
+	/*
 	// Live query not needed since Ajax does not normally replease the header
 	// part of a page
 	var theinput = jQuery("#assetsearchinput");
@@ -257,7 +261,84 @@ onloadselectors = function()
 			});
 		}
 	});
+	*/
+	
+	
 
+	jQuery("#assetsearchinput").livequery( function() 
+			{
+				var theinput = jQuery(this);
+				if( theinput && theinput.autocomplete )
+				{
+					theinput.autocomplete({
+						source: '$home$apphome/components/autocomplete/assetsuggestions.txt',
+						select: function(event, ui) {
+							//set input that's just for display purposes
+							theinput.val(ui.item.value);
+							theinput.submit();
+							return false;
+						}
+					});
+				}
+			});
+
+	
+	jQuery(".addmygroupusers").livequery( function() 
+			{
+				var theinput = jQuery(this);
+				if( theinput && theinput.autocomplete )
+				{
+					var assetid = theinput.attr("assetid");
+					/*theinput.autocomplete({
+					    source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+					});*/
+					theinput.autocomplete({
+						source: '$home$apphome/components/autocomplete/addmygroupusers.txt?assetid=' + assetid,
+						select: function(event, ui) {
+							//set input that's just for display purposes
+							jQuery(".addmygroupusers").val(ui.item.display);
+							//set a hidden input that's actually used when the form is submitted
+							jQuery("#hiddenaddmygroupusers").val(ui.item.value);
+							var targetdiv = jQuery("#hiddenaddmygroupusers").attr("targetdiv");
+							var targeturl = jQuery("#hiddenaddmygroupusers").attr("postpath");
+							jQuery.get(targeturl + ui.item.value, 
+									function(result) {
+										jQuery("#" + targetdiv).html(result);
+							});
+							return false;
+						}
+					});
+				}
+			});
+
+	
+	
+	jQuery(".addmygroups").livequery( function() 
+	{
+		var theinput = jQuery(this);
+		if( theinput && theinput.autocomplete )
+		{
+			var assetid = theinput.attr("assetid");
+			theinput.autocomplete({
+					source:  '$home$apphome/components/autocomplete/addmygroups.txt?assetid=' + assetid,
+					select: function(event, ui) {
+						//set input that's just for display purposes
+						jQuery(".addmygroups").val(ui.item.label);
+						//set a hidden input that's actually used when the form is submitted
+						jQuery("#hiddenaddmygroups").val(ui.item.value);
+						var targetdiv = jQuery("#hiddenaddmygroups").attr("targetdiv");
+						var targeturl = jQuery("#hiddenaddmygroups").attr("postpath");
+						jQuery.get(targeturl + ui.item.value, 
+								function(result) {
+									jQuery("#" + targetdiv).html(result);
+						});
+						return false;
+					}
+			});
+		}
+	});
+	
+	
 	jQuery("table.striped tr:nth-child(even)").livequery( function()
 		{
 			jQuery(this).addClass("odd");
@@ -285,6 +366,20 @@ onloadselectors = function()
 		ta.prettyComments();
 		// ta.focus();
 	});
+	
+
+	var ta = jQuery(".initialtext");
+	ta.click(function() 
+	{
+		var initial = ta.attr("initialtext");
+		if( ta.val() == "Write a comment" ||  ta.val() == initial) 
+		{
+			ta.val('');
+			ta.unbind('click');
+		}
+	});
+
+	
 	if( !window.name || window.name == "")
 	{
 		window.name = "uploader" + new Date().getTime();	
@@ -565,8 +660,6 @@ onloadselectors = function()
 					}
 				}
 		);
-		jQuery("#tablesorter").tablesorter();
-			
 }
 
 

@@ -61,7 +61,6 @@ $context.putPageValue("thumbsize", $thumbsize)
 </table>
 
 
-
 	#end
 <br/><br/><br/>
 #if ( $hits.totalPages == 0 )
@@ -71,6 +70,43 @@ $context.putPageValue("thumbsize", $thumbsize)
 #end
 </form>
 <div id="messagearea"></div>
+
+#set( $edit = $context.getRequestParameter("editheader"))
+#if( !$edit || $edit == "false")
+#set( $edit = false)
+#end
+<div  id="tableeditcontrol" style="text-align: right;" >
+
+#if( $edit )
+
+
+	<script type="text/javascript">
+	function addColumn(inId)
+	{
+		jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+	}
+	</script>
+	
+	#set ($alldetails = $searcher.getDetailsForView("asset/searchselect", $user))
+	
+	<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
+		<option>Add Column</option>
+	
+		#foreach( $detail in $alldetails)
+			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
+		#end	
+		
+	</select> 
+	<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+
+#else
+	<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
+	<img  title="Edit Columns" src="$home$themeprefix/images/navigation/write-note.png" /></a></th>
+
+#end
+</div>
+
+
 
 <script type="text/javascript">
 

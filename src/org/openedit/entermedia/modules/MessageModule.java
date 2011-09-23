@@ -13,7 +13,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
 
-public class MessageModule extends UserProfileModule 
+public class MessageModule extends BaseMediaModule 
 {
 	
 	protected WebEventListener fieldWebEventListener;

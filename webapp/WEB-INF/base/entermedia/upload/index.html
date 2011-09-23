@@ -14,7 +14,7 @@
 <div id="emuploadcontainer">
 <h2>[[Add Media]]</h2>
 
-#set( $catalogs = $usersettings.getUploadCatalogs() )
+#set( $catalogs = $userprofile.getUploadCatalogs() )
 
 #if( $catalogs.size() == 0 )
 

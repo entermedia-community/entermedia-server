@@ -3,7 +3,7 @@
 #else
 	#set($catalogs = $query.catalogs )	
 #end
-#set ($allcatalogs = $usersettings.getCatalogs())
+#set ($allcatalogs = $userprofile.getCatalogs())
 #set( $show = true)
 
 #if( $catalogs.size() == $allcatalogs.size() )

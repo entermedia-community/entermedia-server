@@ -880,7 +880,13 @@ public class AssetEditModule extends BaseMediaModule
 		asset.setProperty("owner", inReq.getUserName());
 		asset.setProperty("datatype", "original");
 		asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-				
+		
+		if( asset.get("assettype") == null)
+		{
+			Data type = archive.getDefaultAssetTypeForFile(asset.getName());
+			asset.setProperty("assettype", type.getId());
+		}
+		
 		output.add(asset);
 		
 	}

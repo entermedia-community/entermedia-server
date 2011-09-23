@@ -9,9 +9,9 @@
 	    	<a href="$home/${applicationid}/sites/index.html" class="menulink">[[Apps]]</a>
 	    </span>
 	    #end
-	    #if( $canbrowsecategories && $usersettings.getLastCatalog())
+	    #if( $canbrowsecategories && $userprofile.getLastCatalog())
 	    <span>
-	    	<a href="$home/$usersettings.getLastCatalog().getId()/categories/index.html" class="menulink">[[Assets]]</a>
+	    	<a href="$home/$userprofile.getLastCatalog().getId()/categories/index.html" class="menulink">[[Assets]]</a>
 	    </span>
 	    #end
 	   	#if( $canviewaddmedia )

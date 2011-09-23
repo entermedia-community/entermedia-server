@@ -136,26 +136,6 @@ nextFrame = function(inId, inPath)
 	img.attr("src", inPath+"?frame="+frame);
 }
 
-toggleAlbumItem = function(inCatalogId, inId, inAlbum, inEven, inView)
-{
-	var targetDiv = "#collection" + inCatalogId + inId;
-	targetDiv = targetDiv.replace(/\//g, "\\/");
-	var elem = jQuery(targetDiv);
-	if(elem.length==0)
-	{
-		elem = self.parent.jQuery(targetDiv);
-	}
-	elem.load('$home/${applicationid}/albums/selection/toggleitem.html', {catalogid: inCatalogId, assetid: inId, albumid: inAlbum, evenid: inEven, viewtype: inView});
-	return false;
-}
-
-addItemToSelection = function(inCatalogId, inId, inAlbum)
-{
-	var targetDiv = "#emselectionshead";
-	var elem = jQuery(targetDiv);
-	elem.load('$home/${applicationid}/albums/selection/addtoselection.html', {catalogid: inCatalogId, assetid: inId, albumid: inAlbum});
-	return false;
-}
 
 outlineSelection = function(event, ui)
 {

@@ -437,7 +437,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					{
 						String indexname = getCurrentIndexFolder();
 						Directory index = null;
-						if (indexname == null || !IndexReader.indexExists(buildIndexDir(indexname)))
+						if (indexname == null || !checkExists(indexname))
 						{
 							log.error("No valid index found in " + getSearchType());
 							reIndexAll();
@@ -485,6 +485,26 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 		return fieldLiveSearcher;
 	}
+
+	protected boolean checkExists(String indexname) throws IOException
+	{
+		boolean exists = false;
+		try
+		{
+			if( IndexReader.indexExists(buildIndexDir(indexname)) )
+			{
+				exists = true;
+			}
+		}
+		catch ( org.apache.lucene.index.IndexNotFoundException ex)
+		{
+			exists = false;
+			File indexDir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
+			new FileUtils().deleteAll(indexDir);
+		}
+		return exists;
+	}
+	
 
 	protected void flushRecentChanges() throws IOException
 	{
@@ -584,7 +604,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					String folder = getCurrentIndexFolder();
 					if( folder == null)
 					{
-						reIndexAll();
+						reIndexAll();  //infinite loop?
 						return fieldIndexWriter;
 					}
 					Directory indexDir = buildIndexDir(folder);
@@ -603,7 +623,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 							log.info(getCatalogId() + " asset writer opened in " + folder);
 						}
 						//NOTE the false!!! Very important. Wasted 3 days on this!!!!
-						fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),false, IndexWriter.MaxFieldLength.UNLIMITED);
+							fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),false, IndexWriter.MaxFieldLength.UNLIMITED);
 //						log.info("Open Index writer for " + lock);
 					}
 					catch (IOException ex)

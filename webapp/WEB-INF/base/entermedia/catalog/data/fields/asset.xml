@@ -47,7 +47,7 @@
 	<property id="editstatus" index="true" stored="true" editable="true" viewtype="radioselect" listid="asset/editstatus" datatype="list">Edit Status</property>
 
 	<!-- Asset Contains -->
-	<property id="assettitle" index="true" stored="true" editable="true" datatype="text" keyword="true" externalid="By-lineTitle,Title,Headline" >Asset Title</property>
+	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" externalid="By-lineTitle,Title,Headline" >Asset Title</property>
 	
 	<!-- Also known as series -->
 	<property id="title" index="true" datatype="list" stored="true" editable="true" keyword="true" >Title</property>

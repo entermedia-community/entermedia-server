@@ -20,13 +20,6 @@
 	#set($usethumblink = "true")
 #end
 
-#if (!$hit)
-	#set ($hit = $asset)
-#end
-
-#if (!$hit)
-	#set ($hit = $data)
-#end
 #set ($thumbsize = $context.getPageValue("thumbsize"))
 #if(!$thumbsize)
 	#set($thumbsize = "thumb")
@@ -35,7 +28,6 @@
 #set ($sourcepath = $hit.sourcepath)
 
 <div id="emthumbholder ">
-
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		<div class="miniassetstatus" assetid="$hit.id">
 		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${hit.id}",$context)
@@ -43,7 +35,7 @@
 	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
 	
-		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=${hit.id}",$context)
+		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
 		
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))

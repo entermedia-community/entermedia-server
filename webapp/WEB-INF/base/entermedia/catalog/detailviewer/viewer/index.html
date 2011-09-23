@@ -14,11 +14,6 @@
 						$context.putPageValue("hit",$asset)
 						$pages.include("$cataloghome/results/assetinfo.html", $context)
 						
-						#if( $canviewclipboards )
-<p style="text-align: left;">[[Copy To Clipboard]]:</p>
-<div style="padding: 4px 0 0 20px;">$pages.include("/$applicationid/albums/selection/toggleitem.html?assetid=$asset.getId()&catalogid=$asset.getCatalogId()&viewtype=thumbs")
-</div>
-#end
 					</td>
 				</tr>
 			</table>	

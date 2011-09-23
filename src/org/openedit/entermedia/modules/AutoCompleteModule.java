@@ -320,6 +320,11 @@ public class AutoCompleteModule extends BaseMediaModule
 		{
 			searchString = inReq.getRequestParameter("q");
 		}
+		if (searchString == null)
+		{
+			searchString = inReq.getRequestParameter("term");
+		}
+		
 		query.addStartsWith("synonymsenc", searchString);
 		query.setSortBy("hitsDown");
 

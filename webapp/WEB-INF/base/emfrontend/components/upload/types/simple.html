@@ -81,7 +81,10 @@
  	
  	function showResponse(responseText, statusText, xhr, $form)  
  	{ 
- 		jQuery("#embody").html(responseText);	
+ 		//jQuery.fn.livequery.stopped = true;
+ 		//jQuery("#embody").html(responseText);	
+ 		//jQuery.fn.livequery.stopped = false;
+		document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
  	}
     // wait for the DOM to be loaded 
     $(document).ready(function() { 
@@ -100,6 +103,7 @@
         	           
         	        }, 
         	        success: showResponse
+        	        
         	    }); 
     }); 
  	

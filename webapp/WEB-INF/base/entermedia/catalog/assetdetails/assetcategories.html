@@ -17,11 +17,3 @@
 
 #end
 
-#if( $canviewclipboards )
-<h4>[[Selection]]</h4>
-
-<div id="collection$asset.catalogId$asset.getId()">
-$pages.include("/$applicationid/albums/selection/toggleitem.html?assetid=$asset.getId()&catalogid=$asset.getCatalogId()&viewtype=thumbs")
-</div>
-#end
-

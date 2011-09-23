@@ -35,7 +35,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 	<div >
 	<br><br>
 	<table class="striped" >
-	#foreach( $item in $orderassets )
+	#foreach( $item in $orderitems )
 	<tr>
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 
@@ -68,7 +68,6 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 </td>
 <td>
 	<div class="presetselector" itemid="$item.id">
-		##$pages.include("presetselector.html?itemid=$item.id", $context)
 	</div>
 	</td>
 	</tr>	
@@ -95,7 +94,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 					function()
 					{
 						var itemid = jQuery(this).attr('itemid');
-						jQuery(this).load("presetselector.html?publishdestid=" + pdestid[0].value + "&itemid=" + itemid);
+						jQuery(this).load("presetselector.html?publishdestid=" + pdestid[0].value + "&itemid=" + itemid + "&fileformat=$asset.fileformat");
 					}
 					);
 		}

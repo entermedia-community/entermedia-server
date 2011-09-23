@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<page-action name="UserProfileModule.loadUserPreferences" alltypes="true" />
+	<page-action name="ProfileModule.loadUserPreferences" alltypes="true" />
 	<page-action name="DataEditModule.loadData" alltypes="true"/>   
 	<property name="searchtype">asset</property>
 	<property name="pageval">asset</property>

@@ -14,6 +14,7 @@ import org.openedit.data.SearchQueryArchive;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -68,7 +69,7 @@ public class MediaSearchModule extends BaseMediaModule
 //					//TODO: Seems like this could be done within the searcher or something
 				tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
 		}
-		UserPreferences prefs = (UserPreferences)inPageRequest.getPageValue("usersettings");
+		UserProfile prefs = (UserProfile)inPageRequest.getUserProfile();
 		if( prefs != null)
 		{
 			prefs.setProperty("lastcatalog", archive.getCatalogId());

@@ -1,7 +1,7 @@
 <div id="showmulticatalogs" class="sidecontent">
 <div style="padding: 10px 0px 5px 10px">
 	<select  onChange="window.location.assign(this.options[ this.selectedIndex ].value);" >
-	#foreach ($catalog in $usersettings.getCatalogs())
+	#foreach ($catalog in $userprofile.getCatalogs())
 		<option value="$home/$catalog.id/categories/index.html" #if( $mediaarchive.getCatalogId().endsWith($catalog.id) ) selected #end>
 		  $context.getText($catalog.name)
 		</option>

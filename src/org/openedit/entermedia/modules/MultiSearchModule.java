@@ -18,6 +18,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.EnterMedia;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -26,7 +27,6 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
-import com.openedit.users.UserPreferences;
 
 public class MultiSearchModule extends BaseMediaModule
 {
@@ -139,7 +139,7 @@ public class MultiSearchModule extends BaseMediaModule
 			if( "addall".equals(addcatalog))
 			{
 				//loop all catalogs
-				UserPreferences settings = (UserPreferences)inReq.getPageValue("usersettings");
+				UserProfile settings = inReq.getUserProfile();
 				query.setCatalogs(new ArrayList());
 				for (Iterator iterator = settings.getCatalogs().iterator(); iterator.hasNext();) 
 				{
@@ -346,23 +346,7 @@ public class MultiSearchModule extends BaseMediaModule
 		return hittracker;
 
 	}
-	public void multiAlbumSearch(WebPageRequest inReq) throws Exception
-	{
-			String applicationid = inReq.findValue("applicationid");
-			String albumid= inReq.findValue("albumid");
-			String userid= inReq.findValue("username");
 
-			String hitsname = inReq.findValue("hitsname");
-			EnterMedia media = getEnterMedia(inReq);
-			
-			//This does a cached search
-			HitTracker tracker = media.getAlbumSearcher().getAlbumItems(albumid, userid, hitsname, inReq);
-			if( tracker != null)
-			{
-				tracker.setDataSource( applicationid + "/users/" + userid + "/albums/" + albumid + "/index");
-			}
-
-	}
 	public void showAll(WebPageRequest inReq) throws Exception
 	{
 		String applicationid = inReq.findValue("applicationid");
@@ -370,7 +354,7 @@ public class MultiSearchModule extends BaseMediaModule
 		SearchQuery q = searcher.createSearchQuery();
 		q.addMatches("description","*");
 		
-		UserPreferences settings = (UserPreferences)inReq.getPageValue("usersettings");
+		UserProfile settings = inReq.getUserProfile();
 		if( settings != null )
 		{
 			String catid = null;

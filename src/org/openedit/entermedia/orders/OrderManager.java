@@ -5,9 +5,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.dom4j.DocumentHelper;
 import org.openedit.Data;
@@ -50,7 +52,7 @@ public class OrderManager
 	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inCatlogId, "order");
-		Data order = createNewOrder(frontendappid, inCatlogId,inUser.getUserName());
+		Data order = createNewOrderWithId(frontendappid, inCatlogId,inUser.getUserName());
 		
 		for (Iterator iterator = inProperties.keySet().iterator(); iterator.hasNext();) 
 		{
@@ -121,6 +123,23 @@ public class OrderManager
 		}
 		return order.getRecentOrderHistory();
 	}
+	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, Order inOrder) 
+	{
+		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
+		SearchQuery query = itemsearcher.createSearchQuery();
+		query.addExact("orderid", inOrder.getId());
+		query.setHitsName("orderitems");
+
+		HitTracker items =  itemsearcher.cachedSearch(inReq, query);
+		return items;
+		
+	}
+	/**
+	 * @deprecated Use {@link WebPageRequest}
+	 * @param inCatalogid
+	 * @param inOrderId
+	 * @return
+	 */
 	public HitTracker findOrderAssets(String inCatalogid, String inOrderId) 
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
@@ -129,6 +148,34 @@ public class OrderManager
 		HitTracker items =  itemsearcher.search(query);
 		return items;
 	}
+	public HitTracker findAssets(WebPageRequest inReq, String inCatalogid, Order inOrder) 
+	{		
+		HitTracker items =  findOrderItems(inReq, inCatalogid, inOrder);
+		if( items.size() == 0)
+		{
+			//log.info("No items");
+			return null;
+		}
+		StringBuffer ids = new StringBuffer();
+		for (Iterator iterator = items.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			ids.append(hit.getId());
+			if( iterator.hasNext() )
+			{
+				ids.append(" ");
+			}
+		}
+		Searcher assetsearcher = getSearcherManager().getSearcher(inCatalogid, "asset");
+		SearchQuery query = assetsearcher.createSearchQuery();
+		query.setHitsName("orderassets");
+		query.addOrsGroup("id", ids.toString());
+		inReq.setRequestParameter("hitssessionid", "none");
+		HitTracker hits = assetsearcher.cachedSearch(inReq, query);
+		return hits;
+	}
+
+	
 	public HitTracker findOrderHistory(String inCatalogid, Order inOrder) 
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderhistory");
@@ -234,13 +281,22 @@ public class OrderManager
 		return toSave;
 	}
 
-	
+	public Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername)
+	{
+		Order order = createNewOrder(inAppId, inCatalogId, inUsername);
+		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
+		if( order.getId() == null)
+		{
+			order.setId(searcher.nextId());
+		}
+		return order;
+	}
 	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
 		Order order  = (Order)searcher.createNewData();
 		order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
-		order.setId(searcher.nextId());
+		//order.setId(searcher.nextId());
 		order.setProperty("orderstatus", "ordered");
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		order.setSourcePath(inUsername + "/" + order.getId());
@@ -249,11 +305,16 @@ public class OrderManager
 		return order;
 	}
 
-	public Data addItemToBasket(String inCatId, Order order, Asset inAsset, Map inProps)
+	public void removeItemFromOrder(String inCatId, Order order, Asset inAsset)
+	{
+		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
+		
+	}
+	public Data addItemToOrder(String inCatId, Order order, Asset inAsset, Map inProps)
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		Data item = itemsearcher.createNewData();
-
+		item.setId(itemsearcher.nextId());
 		item.setProperty("orderid", order.getId());
 		item.setProperty("userid", order.get("userid"));
 		
@@ -535,6 +596,33 @@ public class OrderManager
 			Order order = loadOrder(archive.getCatalogId(), hit.getId());
 			updateStatus(archive, order);			
 		}
+	}
+
+	public int addItemsToBasket(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, Collection inSelectedHits, Map inProps)
+	{
+		HitTracker items =  findOrderItems(inReq, inArchive.getCatalogId(), inOrder);
+		Set existing = new HashSet();
+		for (Iterator iterator = items.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			existing.add(hit.get("assetid"));
+		}
+		int count = 0;
+		for (Iterator iterator = inSelectedHits.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			String assetid = hit.getId();
+			if( !existing.contains(assetid))
+			{
+				Asset asset = inArchive.getAsset(assetid);
+				if( asset != null)
+				{
+					addItemToOrder(inArchive.getCatalogId(), inOrder, asset, inProps);
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 
 }

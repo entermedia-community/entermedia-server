@@ -7,11 +7,9 @@ import junit.framework.TestSuite;
 
 import org.openedit.entermedia.controller.ArchiveModuleTest;
 import org.openedit.entermedia.controller.MultiSearchModuleTest;
-import org.openedit.entermedia.model.AlbumTest;
 import org.openedit.entermedia.model.AssetEditTest;
 import org.openedit.entermedia.model.CategoryEditTest;
 import org.openedit.entermedia.model.ConvertionTest;
-import org.openedit.entermedia.model.FriendTest;
 import org.openedit.entermedia.model.MetaDataReaderTest;
 import org.openedit.entermedia.model.RelatedAssetsTest;
 import org.openedit.entermedia.model.SourcePathTest;
@@ -58,7 +56,6 @@ public class AllTests {
 		suite.addTestSuite( SourcePathTest.class );
 		suite.addTestSuite( ThesaurusTest.class );
 		suite.addTestSuite( ZipTest.class );
-		suite.addTestSuite( FriendTest.class );
 		
 		suite.addTestSuite( ConvertDocumentGeneratorTest.class );
 		suite.addTestSuite( OriginalDocumentGeneratorTest.class );

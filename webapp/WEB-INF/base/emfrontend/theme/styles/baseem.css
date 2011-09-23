@@ -24,57 +24,6 @@
 	margin-left: 2px;
 }
 
-ul.embuttons 
-{
-	padding: 5px;
-	margin: 10px;
-	list-style: none;
-	clear: left;
-	height: 22px;
-}
-
-ul.embuttons li {
-	float: left;
-	display: inline; /*For ignore double margin in IE6*/
-	margin: 0 10px;
-}
-
-ul.embuttons li a {
-	text-decoration: none;
-	float:left;
- 	color: #633108;
-	cursor: pointer;
-	font: 12px/22px "Arial", Helvetica, sans-serif;
-	padding-bottom: 6px;
-	background: url(../images/buttons/embuttons.png) no-repeat top right;
-}
-
-ul.embuttons li a span {
-	white-space: nowrap;
-
-	margin: 0 10px 0 -10px;
-	padding: 0px 8px 0px 18px;
-	position: relative; /*To fix IE6 problem (not displaying)*/
-	float:left;
-	background: url(../images/buttons/embuttons.png) no-repeat top left;
-}
-
-ul.embuttons li a.current,ul.embuttons  li a:hover  
-{
- 	color: #633108;
-	background: url(../images/buttons/embuttonshover.png) no-repeat top right;
-}
-
-ul.embuttons li a.current span, ul.embuttons li a:hover span 
-{
-	background: url(../images/buttons/embuttonshover.png) no-repeat top left;
-}
-
-ul.embuttonsvert li {
-	float: none;
-	display: block; 
-}
-
 
 #emcontainer #emselectable table { border: 0px }
 #emcontainer #emselectable table th 

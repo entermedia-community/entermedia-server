@@ -6,7 +6,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.soap.Detail;
+
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
 import org.openedit.profile.UserProfileManager;
@@ -50,6 +53,10 @@ public class ProfileModule extends MediaArchiveModule
 		if (profilelocation == null)
 		{
 			profilelocation = inReq.findValue("catalogid");
+		}
+		if( profilelocation == null)
+		{
+			profilelocation  = inReq.findValue("applicationid");
 		}
 		return getUserProfileManager().loadUserProfile(inReq, profilelocation, user.getId());
 	}
@@ -170,12 +177,31 @@ public class ProfileModule extends MediaArchiveModule
 		
 		String viewkey = "view_" + view.replace('/', '_');
 		
+		initList(inReq, view, userProfile, viewkey);
+		
+		
 		for (int i = 0; i < fields.length; i++)
 		{
 			userProfile.addValue(viewkey, fields[i]);	
 		}
 		
 		userProfile.save(inReq.getUser());
+	}
+
+	protected void initList(WebPageRequest inReq, String view, UserProfile userProfile, String viewkey)
+	{
+		String value = userProfile.getValue(viewkey);
+		if( value == null)
+		{
+			String type = inReq.findValue("searchtype");
+			if( type == null)
+			{
+				type = "asset";
+			}
+			Searcher searcher = getSearcherManager().getSearcher(inReq.findValue("catalogid"), type);
+			List<PropertyDetail> details = searcher.getDetailsForView(view,userProfile);
+			userProfile.setValuesFromDetails(viewkey, details);
+		}
 	}
 	
 	public void removeFieldsFromView(WebPageRequest inReq) throws Exception
@@ -187,6 +213,8 @@ public class ProfileModule extends MediaArchiveModule
 		
 		String viewkey = "view_" + view.replace('/', '_');
 		
+		initList(inReq, view, userProfile, viewkey);
+
 		for (int i = 0; i < fields.length; i++)
 		{
 			userProfile.removeValue(viewkey, fields[i]);	
@@ -234,5 +262,51 @@ public class ProfileModule extends MediaArchiveModule
 			profile.save(inReq.getUser());
 		}
 
+	}
+	
+	public void saveResultPreferences(WebPageRequest inReq) throws Exception
+	{
+		UserProfile pref = loadUserProfile(inReq);
+
+		String[] resulttypes = inReq.getRequestParameters("resulttype");
+		String[] newsettings = inReq.getRequestParameters("newresultview");
+		String[] sortbys = inReq.getRequestParameters("sortby");
+		String[] hitsperpage = inReq.getRequestParameters("hitsperpage");
+		//View
+		String oldresulttype = inReq.getRequestParameter("oldresulttype");
+		
+		for(int i =0; i<resulttypes.length;i++)
+		{
+			if(newsettings != null)
+			{
+				pref.setResultViewPreference(resulttypes[i], newsettings[i]);
+			}
+			if(sortbys != null)
+			{
+				pref.setSortForSearchType(resulttypes[i], sortbys[i]);
+			}
+			if(hitsperpage != null)
+			{
+				int hpp = Integer.parseInt(hitsperpage[i]);
+				pref.setHitsPerPageForSearchType(resulttypes[i], hpp);
+			}
+		}
+		
+		String sid = inReq.getRequestParameter("hitssessionid");
+		if( sid != null)
+		{
+			HitTracker hits = (HitTracker)inReq.getSessionValue(sid);
+			
+			if( hits != null)
+			{
+				String currentview = hits.getResultType();
+				//TODO: maybe these should all be re-loaded in velocity?
+				hits.getSearchQuery().setSortBy(pref.getSortForSearchType(currentview));
+				hits.setHitsPerPage(pref.getHitsPerPageForSearchType(currentview));
+				hits.setIndexId(String.valueOf(System.currentTimeMillis()));
+				Searcher searcher = getSearcherManager().getSearcher(hits.getCatalogId(), "asset");
+				searcher.cachedSearch(inReq, hits.getSearchQuery());
+			}
+		}
 	}
 }

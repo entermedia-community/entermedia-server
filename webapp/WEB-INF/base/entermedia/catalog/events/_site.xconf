@@ -6,12 +6,7 @@
 	<property name="enableeventlogs">false</property>
 	<inner-layout />
 	
-	  <path-action name="LinkTree.setSelectedLinkByUrl" cancel="true" />
-	<path-action name="AlbumModule.getAlbumList" cancel="true"/>
-
-  <path-action name="ProfileModule.loadUserProfile" cancel="true"/>	 
-
-  <path-action name="LinkTree.setSelectedLinkByUrl" cancel="true" />
+	<path-action name="LinkTree.setSelectedLinkByUrl" cancel="true" />
 
 
 </page>

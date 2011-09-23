@@ -11,7 +11,7 @@
 
 <input type="hidden" name="save" value="true" />
 
-#set( $catalogs = $usersettings.getCatalogs() )
+#set( $catalogs = $userprofile.getCatalogs() )
 #if( $catalogs.size() == 0 )
 [[You are not allowed to upload assets to any catalogs.]]
 #end

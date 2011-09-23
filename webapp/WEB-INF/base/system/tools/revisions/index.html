@@ -47,7 +47,7 @@
         #end
      </table>
         </div>
-#if( $user.hasPermission("oe.administration") )
+#if( $candeleteall )
 <input onclick="deleteAll()" value="$context.getPageProperty('text.deleteAll')" name="Delete" type="button" class="oestandard-button">
 #end
 	
