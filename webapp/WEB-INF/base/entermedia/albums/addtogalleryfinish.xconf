@@ -1,7 +1,0 @@
-<page>
-	<path-action name="MediaArchiveModule.getAsset"/>
-
-	<path-action name="AlbumModule.addItem"/>
-	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
-	
-</page>

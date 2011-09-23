@@ -1,7 +1,0 @@
-#foreach( $col in $albumlist.getSelectionAlbums() )
-	#if ($col.size($context) > 0 && $col.id != $album.id)
-	<li>
-		<a href="$base/actions/addselection.html?selectionid=$col.id" ><img border="0"  title="${col.size($context)} items" align="absmiddle" src="$home${themeprefix}/entermedia/images/selection${col.getId()}on.png" /> Add from $context.getText("selection$col.getId()") ($col.size($context))</a>
-	</li>
-	#end
-#end

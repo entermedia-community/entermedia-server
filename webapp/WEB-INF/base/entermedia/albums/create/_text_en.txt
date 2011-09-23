@@ -1,5 +1,0 @@
-#
-#Thu Apr 08 15:24:06 EDT 2010
-selection1=Send
-selection2=Categorize
-selection3=Downloads

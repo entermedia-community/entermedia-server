@@ -1,6 +1,0 @@
-<page>
-	<path-action name="AlbumModule.addNewAlbum" />
-	<path-action name="AlbumModule.addHitsToAlbum" />
-	<path-action name="MediaAdminModule.changeTheme"/>
-	<path-action name="FriendModule.isFriend"/>
-</page>

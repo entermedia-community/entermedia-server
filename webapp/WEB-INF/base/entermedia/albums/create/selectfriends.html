@@ -1,9 +1,0 @@
-<div style="width:175px;height:50px;overflow:auto;border:1px solid;">
-#foreach($friend in $friends)
-	#set($friendid = $friend.get("friendid"))
-	#set($frienduser = $userManager.getUser($friendid))
-	<input name="selectedfriends" id="postingfriendchecked${friendid}" type="checkbox" value="${friendid}"/> $frienduser<br/>
-#end
-</div>
-<a href="#" onclick="selectNoneFriendsPosting(); return false;">select none</a> |
-<a href="#" onclick="selectAllFriendsPosting(); return false;">select all</a>

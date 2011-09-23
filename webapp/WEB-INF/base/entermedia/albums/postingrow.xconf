@@ -1,4 +1,0 @@
-<page>
-	<page-action name="AlbumModule.loadAlbum"/>
-	<property name="hitsname">hits</property>
-</page>
