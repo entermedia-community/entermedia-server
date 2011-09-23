@@ -1,9 +1,0 @@
-#
-#Fri Apr 02 18:18:18 EDT 2010
-remove=eliminar
-Friends\ of=Amigos de
-Invite\ Friends\ Now=Invitar Amigos Ahora
-Track\ Comments=Seguir Comentarios
-No\ friends\ have\ yet\ to\ confirm.=No hay amigos que confirmar.
-Actions=Acciones
-

@@ -1,9 +1,0 @@
-#set($groupid = $context.getRequestParameter("groupid"))
-#set($group = $userManager.getGroup($groupid))
-#set($groupname = $group.name)
-
-<div id="selected_$groupid">
-	$group <a href="javascript:removegroup('$groupid', '$groupname');">
-	<img alt="Remove group" title="Remove group" src="$home${themeprefix}/entermedia/images/remove.png"/></a>
-	<input type="hidden" name="groupid" value="$context.getRequestParameter("groupid")"/>
-</div>

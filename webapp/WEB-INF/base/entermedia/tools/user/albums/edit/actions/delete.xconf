@@ -1,4 +1,0 @@
-<page>
-	<inner-layout>${themeprefix}/entermedia/layouts/userhomelayout.html</inner-layout>
-	<path-action name="AlbumModule.deleteAlbum" />
-</page>

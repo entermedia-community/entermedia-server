@@ -1,8 +1,0 @@
-<page>
-	<path-action name="CommentModule.addComment"/>
-	<permission name="view">
-		<not>
-			<pagevalue name="cancomment" equals="false"/>
-		</not>
-	</permission>
-</page>

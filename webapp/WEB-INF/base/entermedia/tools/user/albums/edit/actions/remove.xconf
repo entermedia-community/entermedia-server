@@ -1,4 +1,0 @@
-<page>
-	<path-action name="AlbumModule.removeItem"/>
-	<inner-layout />
-</page>

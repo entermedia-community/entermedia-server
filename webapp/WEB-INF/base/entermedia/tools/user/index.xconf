@@ -1,5 +1,0 @@
-<page>
-	<path-action name="RecentActivityModule.searchRecentActivity"/>
-	<path-action name="PageValue.loadPageVariable" bean="AlbumModule"/>
-	
-</page>

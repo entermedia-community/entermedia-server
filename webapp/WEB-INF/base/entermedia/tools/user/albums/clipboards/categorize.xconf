@@ -1,6 +1,0 @@
-<page>
-	<path-action name="MultiSearchModule.multiAlbumSearch" />
-	<property name="customresultview">categorize</property>
-	<property name="sectiontitle">Categorize</property>
-	
-</page>

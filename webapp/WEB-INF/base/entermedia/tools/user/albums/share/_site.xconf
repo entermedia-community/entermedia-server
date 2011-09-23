@@ -1,4 +1,0 @@
-<page>
-	<path-action name="AlbumModule.loadAlbum"/>
-	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
-</page>
