@@ -21,7 +21,7 @@ public  class ZipTest extends BaseEnterMediaTest
 
 	public void testZipCategory() throws Exception
 	{
-		Page testFile = getPage("/themes/baseem/entermedia/images/about_16x16.png");
+		Page testFile = getPage("/entermedia/theme/entermedia/images/about_16x16.png");
 		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream("testme.zip")); 
 
 		ZipEntry entry = new ZipEntry("testme/testfile.html");
