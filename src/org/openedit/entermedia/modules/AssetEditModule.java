@@ -29,6 +29,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.MediaCreator;
 import org.openedit.entermedia.edit.AssetEditor;
+import org.openedit.entermedia.orders.Order;
 import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.xmp.MetadataWriter;
 import org.openedit.entermedia.xmp.XmpWriter;
@@ -53,6 +54,8 @@ import com.openedit.util.PathUtilities;
 
 public class AssetEditModule extends BaseMediaModule
 {
+	private static final String DELETED = "7";
+	private static final String PENDING_APPROVAL = "1";
 	protected WebServer fieldWebServer;
 	protected WebEventListener fieldWebEventListener;
 	protected static final String CATEGORYID = "categoryid";
@@ -874,7 +877,7 @@ public class AssetEditModule extends BaseMediaModule
 			Category cat = (Category) iterator.next();
 			asset.addCategory(cat);
 		}
-		asset.setProperty("editstatus","1");
+		asset.setProperty("editstatus",PENDING_APPROVAL);
 		asset.setProperty("importstatus", "uploading");
 		asset.setProperty("previewtatus", "0");
 		asset.setProperty("owner", inReq.getUserName());
@@ -1558,16 +1561,8 @@ public class AssetEditModule extends BaseMediaModule
 		if( sourcepath != null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
-			List assets = new ArrayList();
-			for (int i = 0; i < sourcepath.length; i++)
-			{
-				Asset asset = archive.getAssetBySourcePath(sourcepath[i]);
-				if( asset != null)
-				{
-					asset.setProperty("editstatus","7");
-					assets.add(asset);
-				}
-			}
+			List assets = fetchAndSetAssetStatus(sourcepath, archive, DELETED);
+			inReq.putPageValue("deletedlist", assets.size());
 			String deleterecord = inReq.getRequestParameter("deleterecord");
 			if( Boolean.parseBoolean(deleterecord))
 			{
@@ -1582,7 +1577,70 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				archive.saveAssets(assets, inReq.getUser());
 			}
-			inReq.putPageValue("deletedlist",assets);
+			
 		}
+	}
+	public void markMultipleAssetsRestored(WebPageRequest inReq) throws OpenEditException{
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		HitTracker assets = null;
+		if (hitssessionid != null)
+		{
+			assets = (HitTracker) inReq.getSessionValue(hitssessionid);
+		}
+		int assetSize = assets.getSelectedHits().size();
+		String catalogid = inReq.findValue("catalogid");
+		if (assetSize > 0 && catalogid!=null)
+		{
+			List<Asset> restoredAssets = new ArrayList<Asset>();
+			for (Iterator iterator = assets.getSelectedHits().iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				Asset asset = getMediaArchive(catalogid).getAssetBySourcePath(hit.getSourcePath());
+				asset.setProperty("editstatus",PENDING_APPROVAL);
+				restoredAssets.add(asset);
+			}
+			MediaArchive archive = getMediaArchive(inReq);
+			archive.saveAssets(restoredAssets, inReq.getUser());
+		}
+		else
+		{
+			inReq.setCancelActions(true);
+		}
+		inReq.putPageValue("restoredlist", assetSize);
+
+	}
+	
+	public void markAssetsRestored(WebPageRequest inReq) throws OpenEditException{
+		if (isMultipleSelectedForRestore(inReq))
+		{
+			markMultipleAssetsRestored(inReq);
+			return;
+		}
+		String[] sourcepath = inReq.getRequestParameters("sourcepath");
+		if( sourcepath != null)
+		{
+			MediaArchive archive = getMediaArchive(inReq);
+			List restoredAssets = fetchAndSetAssetStatus(sourcepath, archive, PENDING_APPROVAL);
+			inReq.putPageValue("restoredlist", restoredAssets.size());
+			archive.saveAssets(restoredAssets, inReq.getUser());
+		}
+	}
+	private boolean isMultipleSelectedForRestore(WebPageRequest inReq)
+	{
+		return inReq.getRequestParameter("hitssessionid")!=null;
+	}
+	protected List fetchAndSetAssetStatus(String[] sourcepath, MediaArchive archive, String status)
+	{
+		List assets = new ArrayList();
+		for (int i = 0; i < sourcepath.length; i++)
+		{
+			Asset asset = archive.getAssetBySourcePath(sourcepath[i]);
+			if( asset != null)
+			{
+				asset.setProperty("editstatus",status);
+				assets.add(asset);
+			}
+		}
+		return assets;
 	}
 }
