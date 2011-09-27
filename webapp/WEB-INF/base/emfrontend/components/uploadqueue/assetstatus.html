@@ -1,3 +1,4 @@
+
 #if( $asset.getUploadPercentage() == 1)
 	<div class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$asset.id" >Converting..</div>
 #else
@@ -5,7 +6,9 @@
 #set( $percentage=$asset.getUploadPercentage()*100)
 #set( $percentageString=$percentage.toString())
 #set( $percentageString=$percentageString.substring(0, $percentageString.indexOf(".")) )
+<div class="ajaxstatus" period="1000" ajaxpath="$home$apphome/components/uploadqueue/assetstatus.html?assetid=${hit.id}">
 <div style="border:1px solid #000000;width:120px;text-align: left;">
 	<div style="background-color:#6fa45e;width:${barsize}px;height:12px;">$percentageString%</div>
+</div>
 </div>
 #end

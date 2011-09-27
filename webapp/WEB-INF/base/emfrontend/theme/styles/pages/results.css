@@ -56,14 +56,12 @@
 }
 .emthumb
 {
-	height:200px;
+	height:180px;
 	width: 200px;
-	border:3px solid #fff;
 }
 
 .emthumb:hover
 {
-	border:3px solid #336699;	
 }
 
 .emboxthumblarge
