@@ -11,9 +11,9 @@
 	#if ($dest.convertpreset)
 		#set ($defaultpreset = $presetsearcher.searchById($dest.convertpreset))
 	#end
-	$defaultpreset
 #end
 
+</script>
 	<select name="${item.id}.presetid.value">
   	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
   	   	    $presetquery.setAndTogether(false)
@@ -26,7 +26,7 @@
   	   	    $presetquery.sortBy("name");
   	   	    
   	   	    #set( $results = $presetsearcher.search($presetquery) )
-  	   	    $defaultpreset
+  	   	    
   	    	#foreach ($preset in $results)
   	    		<option value="$preset.id" #if( $defaultpreset && $defaultpreset.getId() == $preset.id) selected #end>$preset</option>
   	    	#end
