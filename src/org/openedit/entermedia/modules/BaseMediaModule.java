@@ -68,7 +68,7 @@ public class BaseMediaModule extends BaseModule
 		return archive;
 	}
 
-	public MediaArchive getMediaArchive(WebPageRequest inReq)
+	 public MediaArchive getMediaArchive(WebPageRequest inReq)
 	{
 		MediaArchive archive = (MediaArchive)inReq.getPageValue("mediaarchive");
 		if( archive != null)

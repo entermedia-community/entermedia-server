@@ -26,11 +26,10 @@ $context.putPageValue("view", "order/downloadform")
 
 <input type="hidden" name="field" value="ordertype" />
 <input type="hidden" name="ordertype.value" value="download" />
-
 <div >
 	<br><br>
 	<table class="striped" >
-	#foreach( $item in $orderassets )
+	#foreach( $item in $orderitems )
 	<tr>
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 

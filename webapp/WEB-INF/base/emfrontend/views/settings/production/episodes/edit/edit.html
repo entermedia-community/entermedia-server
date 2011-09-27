@@ -11,6 +11,7 @@ $context.putPageValue("view", $view)
 
 #set($titlesearcher = $searcherManager.getSearcher($catalogid, "title"))
 #set($titleid= $context.getRequestParameter("title.value"))
+#set($action= $context.getRequestParameter("action"))
 #set($title = $titlesearcher.searchById($titleid))
 $context.putPageValue("title",$title)
 
@@ -34,12 +35,13 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
 </li>
 <li><a href='$home$content.searchhome/index.html'><span>Cancel</span></a></li>
+#if($action!='add')
 <li><a href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
 		Delete
 	</span></a>
 </li>
-
+#end
 </ul>
 <div id="messagearea">$!message
 </div>

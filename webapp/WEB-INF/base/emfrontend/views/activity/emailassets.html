@@ -44,7 +44,7 @@ $pages.include("/system/tools/html/textarea.html?htmltextarea=sharenote.value&fc
 	<div >
 	<br><br>
 	<table class="striped" >
-	#foreach( $item in $orderassets )
+	#foreach( $item in $orderitems )
 		<input type="hidden" name="itemid" value="$item.id"/>
 	<tr>
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
@@ -80,25 +80,25 @@ $pages.include("/system/tools/html/textarea.html?htmltextarea=sharenote.value&fc
 <td>
 	      #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
 	      <input type="hidden" name="field" value="presetid"/>
-  	   	    <select name="${item.id}.presetid.value">
-  	   	    	<option value="">Preview Only</option>
-  	    	
-  	    	<!-- this filters options based on asset type -->
-  	    	#set( $presetquery = $presetsearcher.createSearchQuery() )
- Ê Ê Ê Ê  Ê Ê Ê Ê$presetquery.setAndTogether(false)
- Ê Ê Ê Ê  Ê Ê Ê Ê#set( $rendertype = false)
- Ê Ê Ê Ê  Ê Ê Ê Ê#set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat) )
- Ê Ê Ê Ê  Ê Ê Ê Ê#if( $rendertype )
- Ê Ê Ê Ê Ê Ê  Ê Ê Ê Ê$presetquery.addExact("inputtype",$rendertype);
- Ê Ê Ê Ê  Ê Ê Ê Ê#end
- Ê Ê Ê Ê  Ê Ê Ê Ê$presetquery.addExact("inputtype","all");
- Ê Ê Ê Ê  Ê Ê Ê Ê$presetquery.sortBy("name");
- Ê Ê Ê Ê  Ê Ê Ê Ê#set( $results = $presetsearcher.search($presetquery) )
- Ê Ê Ê Ê Ê Ê Ê#foreach ($preset in $results)
- Ê Ê Ê Ê Ê Ê Ê Ê Ê<option value="$preset.id">$preset</option>
- Ê Ê Ê Ê Ê Ê Ê#end
- 
+
+
+  			<select name="${item.id}.presetid.value">
+  	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
+  	   	    $presetquery.setAndTogether(false)
+  	   	    #set( $rendertype = false)
+  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat) )
+  	   	    #if( $rendertype )
+	  	   	    $presetquery.addExact("inputtype",$rendertype);
+  	   	    #end
+  	   	    $presetquery.addExact("inputtype","all");
+  	   	    $presetquery.sortBy("name");
+  	   	    #set( $results = $presetsearcher.search($presetquery) )
+  	   	    <option value="">Preview Only</option>
+  	    	#foreach ($preset in $results)
+  	    		<option value="$preset.id">$preset</option>
+  	    	#end
   	    	</select>
+
 	</td>
 	</tr>	
 	#end
