@@ -11,7 +11,8 @@
 #end	
 <ul class="vlist">
 #foreach($title in $titlesearcher.getAllHits())
-<li #if($titleid == $title.id) class="active" #end  ><a href="$home$apphome/views/settings/production/episodes/fieldsearch.html?title.value=$title.id&field=title&operation=matches">$title</a></li>
+$title.id
+<li #if($titleid == $title.id) class="active" #end  ><a href="$home$apphome/views/settings/production/episodes/fieldsearch.html?title.value=$title.id&field=title&operation=matches&sortby=name">$title</a></li>
 #end
 
 </ul>
