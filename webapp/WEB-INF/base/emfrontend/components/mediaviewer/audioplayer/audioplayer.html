@@ -3,9 +3,10 @@
 
 #if(!$path)
 	#set ($path = $context.getRequestParameter("path"))
-	#set ($id = "$!context.getRequestParameter('id')")
-	#set ($width = $context.getRequestParameter("width"))
-	#set ($autostart = $context.getRequestParameter("autostart"))
+#end
+
+#if( !$path)
+	#set ($path = "$home$mediaarchive.getCatalogHome()/downloads/mp3/$asset.sourcepath/audio.mp3")
 #end
 
 #set( $name = $asset.name )
