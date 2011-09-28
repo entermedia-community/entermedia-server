@@ -169,3 +169,42 @@
 	text-decoration: none;
 }
 
+
+#player_container
+{
+	position: relative;
+	background-color:#eee;
+	width:120px;
+	height:41px;
+	border:1px solid #009be3;
+	overflow: hidden;
+	margin: 0 auto 0 auto;
+}
+
+#player_container  ul#player_controls
+{
+	list-style-type:none;
+	padding: 0;
+	margin: 0;
+}
+#player_container  ul#player_controls li
+{
+	overflow:hidden;
+	text-indent:-9999px;
+}
+
+#player_play
+{
+	position: absolute;
+	left:0px;
+	top:0px;
+	width:40px;
+	height:40px;
+	cursor: pointer;
+	display: inline;
+	background: url("../../images/audioplayer/spirites.jpg") 0 0 no-repeat;
+}
+#player_play.em_hover
+{
+	background: url("../../images/audioplayer/spirites.jpg") -41px 0 no-repeat;
+}

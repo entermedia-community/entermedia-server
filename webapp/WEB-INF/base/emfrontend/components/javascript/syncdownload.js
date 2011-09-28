@@ -27,25 +27,3 @@ uploadsComplete = function(noarg)
 	//Does not seem to be working
 	//##jQuery("#maincontent").load('$home/$usersettings.getLastCatalog().getId()/categories/index.html', {oemaxlevel: 2, cache: false }); //ID wont show if not in that area
 }
-
-showstatus = function()
-{
-	//for each asset on the page reload it's status
-	jQuery(".miniassetstatus").each(
-			function()
-			{
-				var cell = jQuery(this);
-				var assetid = cell.attr("assetid");
-				cell.load("$home$apphome/components/uploadqueue/assetstatus.html?assetid=" + assetid);
-			}
-	);
-	if( runtimer )
-	{
-		setTimeout("showstatus();",1000);
-	}
-}
-
-jQuery(document).ready(function() 
-{ 
-	showstatus();
-}); 
