@@ -1,0 +1,155 @@
+## Required: path, id
+## Optional: width, autostart, hit or asset
+
+##Make a URL to the generated location
+#set( $path = "$home$cataloghome/downloads/mp3/${asset.sourcepath}/${asset.id}.mp3")
+
+
+#set( $id = $asset.id )
+#set( $name = $asset.name )
+
+<div id="playerwindow${id}">
+
+<script type="text/javascript" src="$home$apphome/components/javascript/jquery.jplayer.js">  </script>
+
+<style>
+<!--
+
+#container_${id}
+{
+	margin: 0 20px 10px 10px;
+}
+
+#player_container_${id}
+{
+	position: relative;
+	background-color:#eee;
+	width:120px;
+	height:41px;
+	border:1px solid #009be3;
+	overflow: hidden;
+	margin: 0 auto 0 auto;
+}
+
+#player_container_${id}  ul#player_controls_${id}
+{
+	list-style-type:none;
+	padding: 0;
+	margin: 0;
+}
+#player_container_${id}  ul#player_controls_${id} li
+{
+	overflow:hidden;
+	text-indent:-9999px;
+}
+#player_play_${id},
+#player_pause_${id}
+{
+	display: block;
+	position: absolute;
+	left:0px;
+	top:0px;
+	width:40px;
+	height:40px;
+	cursor: pointer;
+}
+#player_play_${id}
+{
+	display: inline;
+	background: url("$home$themeprefix/images/audioplayer/spirites.jpg") 0 0 no-repeat;
+}
+#player_play_${id}.em_hover
+{
+	background: url("$home$themeprefix/images/audioplayer/spirites.jpg") -41px 0 no-repeat;
+}
+#player_pause_${id}
+{
+	display: inline;
+	background: url("$home$themeprefix/images/audioplayer/spirites.jpg") 0 -42px no-repeat;
+}
+#player_pause_${id}.em_hover
+{
+	background: url("$home$themeprefix/images/audioplayer/spirites.jpg") -41px -42px no-repeat;
+}
+#player_progress_${id}
+{
+	position: absolute;
+	left:42px;
+	top:8px;
+	background-color: #eee;
+	width:60px;
+	height:10px;
+	border:1px solid black;
+	overflow: hidden;
+}
+
+#song_title_${id}
+{
+	position: absolute;
+	left:40px;
+	top:20px;
+	width:70px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.5em;
+	overflow: hidden;
+}
+
+#player_progress_load_bar_${id}
+{
+	background: url("$home$themeprefix/images/audioplayer/bar_load.gif")  top left repeat-x;
+	width:0px;
+	height:10px;
+	cursor: pointer;
+}
+#player_progress_load_bar_${id}.em_buffer
+{
+	background: url("$home$themeprefix/images/audioplayer/bar_buffer.gif")  top left repeat-x;
+}
+#player_progress_play_bar_${id}
+{
+	background: url("$home$themeprefix/images/audioplayer/bar_play.gif") top left repeat-x ;
+	width:0px;
+	height:10px;
+}
+
+-->
+</style>
+
+
+<div id="audioplayer_$id"></div>
+
+	<div id="player_container_$id">
+		<ul id="player_controls_$id">
+			<li id="player_play_$id">play</li>
+			<li id="player_pause_$id">pause</li>
+		</ul>
+	
+		<div id="player_progress_$id">
+			<div id="player_progress_load_bar_$id">
+				<div id="player_progress_play_bar_$id"></div>
+			</div>
+		</div>
+	</div>
+
+<script type="text/javascript">
+
+	jQuery("#audioplayer_${id}").jPlayer({
+		ready: function () {
+			jQuery(this).setFile("$path");
+			jQuery(this).play();
+			//jQuery("#audioplayer_${id}").play();
+		},
+		cssPrefix: "em",
+		volume: 70,
+		oggSupport: false,
+		swfPath: '$home$apphome/components/javascript/'
+	})
+	.jPlayerId("play", "player_play_$id")
+	.jPlayerId("pause", "player_pause_$id")
+	.jPlayerId("stop", "player_stop_$id")
+	.jPlayerId("loadBar", "player_progress_load_bar_$id")
+	.jPlayerId("playBar", "player_progress_play_bar_$id");
+	
+
+</script>
+</div>
