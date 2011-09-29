@@ -67,7 +67,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			</a>
 </td>
 <td>
-	<div class="presetselector" itemid="$item.id">
+	<div class="presetselector" itemid="$item.id" format="$asset.fileformat">
 	</div>
 	</td>
 	</tr>	
@@ -94,7 +94,8 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 					function()
 					{
 						var itemid = jQuery(this).attr('itemid');
-						jQuery(this).load("presetselector.html?publishdestid=" + pdestid[0].value + "&itemid=" + itemid + "&fileformat=$asset.fileformat");
+						var format = jQuery(this).attr('format');
+						jQuery(this).load("presetselector.html?publishdestid=" + pdestid[0].value + "&itemid=" + itemid + "&fileformat=" + format);
 					}
 					);
 		}
