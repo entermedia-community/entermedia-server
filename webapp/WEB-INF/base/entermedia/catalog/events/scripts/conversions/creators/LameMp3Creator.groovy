@@ -37,7 +37,9 @@ public class LameMp3Creator extends BaseCreator
 		// If both are MP3 the just make virtual file
 		String inputExt = PathUtilities.extractPageType(input.getContentItem().getAbsolutePath());
 		String outputExt = inStructions.getOutputExtension();
-		if( outputExt != null && outputExt.equals(inputExt))
+		
+		String allways = inStructions.getProperty("alwayscreate");
+		if( outputExt != null && outputExt.equals(inputExt) && allways != "false")
 		{
 			createFallBackContent(input, converted);
 			result.setOk(true);
@@ -65,6 +67,16 @@ public class LameMp3Creator extends BaseCreator
 				}
 				args.add("--resample");
 				args.add(resample);
+				
+				if( inputExt == "mp2" )
+				{
+					args.add("--mp2input");
+				}
+						
+				if( inputExt == "mp3" )
+				{
+					args.add("--mp3input");
+				}
 				args.add("-");
 				if( isOnWindows())
 				{
