@@ -4,22 +4,24 @@
 #if(!$thumbsize)
 	#set($thumbsize = "crop")
 #end
-
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
-		<div class="miniassetstatus" assetid="$hit.id">
-		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${hit.id}",$context)
-		</div>
+		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=$!{hit.id}",$context)
 	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
 	
-		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=${hit.id}",$context)
+		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
 		
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
 	#else	
-		<img class="smallthumb emdropshadow" src="$home$cataloghome/downloads/preview/${thumbsize}/${sourcepath}/thumb.jpg" border="0" />
 
+		#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+		#if( $type == "audio")
+			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
+		#else
+			<img class="smallthumb emdropshadow" src="$home$cataloghome/downloads/preview/${thumbsize}/${sourcepath}/thumb.jpg" border="0" />
+		#end
 	#end
 	
