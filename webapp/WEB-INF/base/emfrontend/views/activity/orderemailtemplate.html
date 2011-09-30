@@ -10,7 +10,7 @@
 		#end
 		
 	</tr>
-		#foreach( $item in $orderassets )
+		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 			$context.putPageValue("asset", $asset)
 			$context.putPageValue("item", $item)

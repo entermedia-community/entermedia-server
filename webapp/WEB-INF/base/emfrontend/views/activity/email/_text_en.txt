@@ -1,0 +1,8 @@
+#
+#Fri Sep 30 16:27:47 EDT 2011
+File\ Name=File Name
+Episode=Episode
+File\ Size=File Size
+Length=Length
+Asset\ Title=Asset Title
+Asset\ Type=Asset Type

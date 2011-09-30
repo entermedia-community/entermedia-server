@@ -428,27 +428,39 @@ public class OrderManager
 			assetids.add(assetid);
 			Asset asset = archive.getAsset(assetid);
 			//item.getId() + "." + field + ".value"
+			boolean needstobecreated = true;
+
 			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
-			if( presetid == null )
+			if( presetid == null || presetid.trim().length() == 0 )
 			{
 				presetid = properties.get("presetid.value");
+			}
+			if(presetid != null && presetid.trim().length() == 0 )
+			{
+				presetid = null;
+			}
+			if (presetid==null)
+			{
+				needstobecreated = false;				
+			}
+			else
+			{
+				Data preset = (Data) presets.searchById(presetid);
+				String outputfile = preset.get("outputfile");
+				//Make sure preset does not already exists?
+				if( archive.doesAttachmentExist(outputfile, asset) )
+				{
+					needstobecreated = false;
+				}
+				else if( "original".equals( preset.get("type") ) )
+				{
+					needstobecreated = false;
+				}
 			}
 
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
 
-			Data preset = (Data) presets.searchById(presetid);
-			String outputfile = preset.get("outputfile");
-
-			//Make sure preset does not already exists?
-			boolean needstobecreated = true;
-			if( archive.doesAttachmentExist(outputfile, asset) )
-			{
-				needstobecreated = false;
-			}
-			if( "original".equals( preset.get("type") ) )
-			{
-				needstobecreated = false;
-			}
+			
 			if (needstobecreated)
 			{
 				Data newTask = taskSearcher.createNewData();
@@ -469,12 +481,13 @@ public class OrderManager
 			{
 				destination = properties.get("publishdestination.value");
 			}
-			if( destination != null)
+			if( destination != null && presetid != null)
 			{
 				Data publishqeuerow = publishQueueSearcher.createNewData();
 				publishqeuerow.setProperty("assetid", assetid);
 				publishqeuerow.setProperty("publishdestination", destination);
 				publishqeuerow.setProperty("presetid", presetid);
+				Data preset = (Data) presets.searchById(presetid);
 				String exportname = archive.asExportFileName(asset, preset);
 				publishqeuerow.setProperty("exportname", exportname);
 				publishqeuerow.setProperty("status", "new");
