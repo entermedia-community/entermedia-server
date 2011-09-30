@@ -2,4 +2,5 @@
   <preset id="thumb" prefwidth="200" prefheight="200"  watermark="false">Small Thumbnail</preset>
   <preset id="medium" prefwidth="300" prefheight="300"  watermark="false">Medium</preset>
   <preset id="preview" prefwidth="800" prefheight="600"  watermark="false">Preview</preset>
+  <preset id="crop" crop="true" prefwidth="300" prefheight="400"  watermark="false">Crop</preset>
 </properties>
