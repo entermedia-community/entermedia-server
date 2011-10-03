@@ -1,0 +1,24 @@
+#set ($print = $context.getRequestParameter("print"))
+
+#if( $print && $print == "true")
+  <h2 class="section">General Information</h2>
+#end  
+
+#set($views = $searcherManager.getList("$catalogid", "assettype/views"))
+
+#set( $archive = $searcherManager.getPropertyDetailsArchive("asset") )
+#foreach( $target in $views)
+#if( $asset.assettype && $asset.assettype.length() > 0 && $archive.viewExists("asset/assettype/$asset.assettype/$target.id") )
+  #display("generic.html" $target.name "$asset.id" "asset/assettype/$asset.assettype/$target.id" $print)
+#else
+  #display("generic.html" $target.name "$asset.id" "assettype/default/$target.id" $print)
+#end
+#end
+
+ ##display("generic.html" "$asset.id" "asset/details" $print)
+  ##display("approvals.html" "$asset.id" "approvals/details" $print)
+ 
+ 
+ #if( $asset.assettype )
+ <a href="$home$apphome/views/settings/metadata/views/index.html?assettype=${asset.assettype}"><img src="$home$themeprefix/images/navigation/write-note.png" /></a>
+ #end

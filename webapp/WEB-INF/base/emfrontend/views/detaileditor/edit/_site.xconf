@@ -1,0 +1,17 @@
+<page>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
+	<path-action name="Admin.allowViewing"/>
+	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
+	<property name="assetrootfolder">/${catalogid}/assets</property>
+	<property name="subtab">viewassetedit</property>
+	
+	
+	
+	<permission name="view">
+		<not>
+			<pagevalue name="canviewasset" equals="false" />
+		</not>
+	</permission>
+
+</page>

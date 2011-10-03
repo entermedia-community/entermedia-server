@@ -1,0 +1,87 @@
+#set( $view = $context.getRequestParameter("view"))
+#set ($searchtype = $context.getRequestParameter("searchtype"))
+#set ($catalogid = $context.getRequestParameter("catalogid"))
+#set ($assetid = $context.getRequestParameter("assetid"))
+#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+#set ($editpath = $context.getRequestParameter("editorpath"))
+#if(!$editpath)
+	#set( $editpath = "${page.directory}/generictablesave.html" )
+#end
+
+#set( $args = "editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&view=$view&assetid=$assetid&permissionname=$!permissionname")
+#set ($passalong = "assetid=$assetid")
+#set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
+
+#set ($id = $context.getRequestParameter("id"))
+
+#set( $edit  = $context.getRequestParameter("edit"))
+
+#set( $print = $context.getRequestParameter("print") )
+#set( $showit = true )
+#if ( $print && $print == "true" )
+
+			#set( $joinsearcher = $searcherManager.getSearcher($catalogid, $view))
+			#set ($existingrecords = $joinsearcher.fieldSearch("assetid",$asset.id))
+			$context.putPageValue("existingrecords", $existingrecords)
+			#if( !$existingrecords || $existingrecords.size() == 0 )
+				#set ($showit = false)
+			#end			
+			#set ($pluginpath = $context.getRequestParameter("pluginpath"))
+			#set( $plugin = $pages.getPage("$pluginpath"))
+			<h2>$plugin.getProperty("text.${view}", $context.getLocale() )</h2>
+#end
+
+#if($errors)
+<span style="color:red;">Your entry is invalid.  Please check your values and try again.</span>
+#set($edit = "true")
+#end
+#if( $showit )
+	<div id="${view}editor">
+	#if( !$edit || $edit == "false")
+	
+	$pages.include("/$applicationid/components/xml/table.html?$args&candelete=$!caneditasset&passalong=$passalong",$context)
+	
+	#if( !$parser.parseBoolean($edit) &&  $caneditasset && !$print.equals("true"))
+	<p align="right"><a href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=true',1);return false;">[[Add New]] >></a></p>
+	#end
+	
+	#else
+	
+	<form name="edit${view}" id="edit${view}" action="$home$editpath?oemaxlevel=1" onsubmit="return postForm('${view}editor','edit${view}');" >
+	
+		$context.putPageValue("view", $view)
+		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+		$context.putPageValue("searcher", $searcher)
+	
+		$pages.include("/$applicationid/components/xml/detaileditor.html",$context)
+		
+		<p align="right">
+		<a href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=false',1);return false;">[[cancel]]</a>
+		&nbsp;&nbsp; <input  type="submit" value="Save values"/>
+		</p>
+		<input name="field" type="hidden" value="assetid" />
+		<input name="assetid.value" type="hidden" value="$assetid" />
+		<input name="catalogid" type="hidden" value="$!catalogid" />
+		<input name="assetid" type="hidden" value="$assetid" />
+		<input name="view" type="hidden" value="$view" />
+		<input name="fieldexternalid" type="hidden" value="$fieldexternalid" />
+		<input name="fieldexternalvalue" type="hidden" value="$fieldexternalvalue" />
+		<input name="sourcepath" type="hidden" value="$asset.sourcePath" />
+		<input name="save" type="hidden" value="true" />
+		<input name="permissionname" type="hidden" value="$!permissionname" />
+		
+		<input name="searchtype" type="hidden" value="$searchtype" />
+		#if ($id)
+			<input name="id" type="hidden" value="$id"/>
+		#end
+	
+	</form>
+			
+	
+	#end
+	</div>
+#else ##showit
+	No data has been entered.
+#end
+
