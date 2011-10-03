@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties usagelabel="Contents">
-<property id="assettype" />
-
+<properties usagelabel="Status">
+  <property id="importstatus"/>
+  <property id="editstatus"/>
+ 
 </properties>

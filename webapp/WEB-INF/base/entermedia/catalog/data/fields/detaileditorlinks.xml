@@ -1,0 +1,7 @@
+
+<properties>
+  <property id="id" index="true" stored="true">Id</property>
+  <property id="name" editable="true" index="true" stored="true">Name</property>
+  <property id="folder" editable="true" index="true" stored="true">Folder</property>
+  <property id="multiedit" editable="true" type="boolean" index="true" stored="true">Multi-Edit</property>
+</properties>
