@@ -35,7 +35,7 @@ public void init() {
 	if(assetid != null){
 		query.addExact("assetid", assetid);
 	}
-	query.addOrsGroup("status","new pending retry");
+	query.addOrsGroup("status","new transcoding pending retry");
 	HitTracker tracker = queuesearcher.search(query);
 	log.info("publishing " + tracker.size() + " assets");
 	if( tracker.size() > 0)
@@ -77,6 +77,11 @@ public void init() {
 				if(!inputpage.exists() || inputpage.length() == 0)
 				{
 					log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
+					if( !"transcoding".equals( publishrequest.get("status") ) 
+					{
+						publishrequest.setProperty('status', 'transcoding');
+						queuesearcher.saveData(publishrequest, context.getUser());
+					}
 					continue;
 				}
 

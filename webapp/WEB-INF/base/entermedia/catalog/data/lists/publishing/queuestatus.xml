@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties> 
-	<property id="new">New</property>
-	<property id="pending">Pending</property>
+	<property id="new">Ordered</property>
+	<property id="transcoding">Transcoding</property>
+	<property id="pending">Publish In Progress</property>
 	<property id="complete">Complete</property>
 	<property id="retry">Retry</property>
 	<property id="error">Error</property>
