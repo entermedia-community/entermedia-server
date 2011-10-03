@@ -77,7 +77,7 @@ public void init() {
 				if(!inputpage.exists() || inputpage.length() == 0)
 				{
 					log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
-					if( !"transcoding".equals( publishrequest.get("status") ) 
+					if( !"transcoding".equals( publishrequest.get("status") ) )
 					{
 						publishrequest.setProperty('status', 'transcoding');
 						queuesearcher.saveData(publishrequest, context.getUser());
