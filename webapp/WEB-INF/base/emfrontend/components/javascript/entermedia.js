@@ -222,7 +222,17 @@ onloadselectors = function()
 				}
 			); 
 		});
-
+	jQuery("input.datepicker").livequery(
+			function() 
+			{
+				jQuery(this).datepicker(
+				{
+					dateFormat: 'mm/dd/yy', showOn: 'button',
+					buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
+					buttonImageOnly: true
+				});
+			}
+		);
 	/*
 	// Live query not needed since Ajax does not normally replease the header
 	// part of a page
