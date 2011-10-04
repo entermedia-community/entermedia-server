@@ -1,0 +1,99 @@
+
+<!--
+NEEDS:
+
+<script type="text/javascript" src="$home/util/common/jstree/lib/jquery.cookie.js"></script>
+<script type="text/javascript" src="$home/util/common/jstree/jquery.tree.js"></script>
+<script type="text/javascript" src="$home/util/common/jstree/plugins/jquery.tree.checkbox.js"></script>
+<script type="text/javascript" src="$home/util/common/jstree/plugins/jquery.tree.contextmenu.js"></script>
+<script type="text/javascript" src="$home/util/common/jstree/plugins/jquery.tree.cookie.js"></script>
+	
+  -->
+
+
+#set($rootcategory = $mediaarchive.getCategoryArchive().getRootCategory())
+#set($children = $rootcategory.children)
+#set($f = $context.getRequestParameter("folder.value"))
+#set($category = $resource.getCategory($f))
+
+
+<div class="dynamictree" style="overflow:auto; height: 400px; border-width: 1px; border-style: dotted; " >
+
+	<ul>
+	<li id="$rootcategory.id" >    <ins>&nbsp;&nbsp;</ins> <a href="$rootcategory.id">$rootcategory.name</a>
+		<ul>
+			#showtree($children)
+		</ul>
+	</li>
+	</ul>
+	
+</div>
+
+
+#macro(showtree $categories)
+	
+		#foreach($cat in $categories)
+			<li id="$cat.id" #if($category && $category.id == $cat.id) class="jstree-selected clicked" #end>    <ins>&nbsp;&nbsp;</ins><a href="cat.id">$cat.name</a>
+		#if($cat.hasChildren())
+		   <ul>
+			  #showtree($cat.children)
+		   </ul>
+		#end
+		</li>
+	
+#end		
+
+
+#end
+<div id="log"></div>
+<script type="text/javascript">
+$j(document).ready(function() {
+	var first = false;
+	$j(".dynamictree").tree({
+		callback : {
+			onload : function (TREE_OBJ) {
+				first=true;
+			
+			},
+			onselect : function (NODE, REF_NODE, TYPE, TREE_OBJ, RB) { 
+				var id = $j(NODE).attr('id');
+		
+				jQuery("#categoryactions").load("$home$resourcehome/folderactions.html", {oemaxlevel:1, categoryid:id});
+					if(!first) {
+				   first = true;
+				   return;
+				 }
+			
+				jQuery("#filesearchresults").load("$home$resourcehome/files/folder.html", {oemaxlevel:2, field:"category" ,operation: "exact" ,"category.value" :id});
+			
+				return false;			
+			},
+			onmove : function (NODE,REF_NODE,TYPE,TREE_OBJ,RB) {
+				
+				var target = $j(NODE).attr('id');
+				
+				var refnode = $j(REF_NODE).attr('id');
+				
+				jQuery("#log").load("$home$resourcehome/actions/movecategory.html", {oemaxlevel:2, cat1:target ,cat2:refnode, operation: TYPE});
+			}
+		},
+	
+		plugins : { 
+			cookie : { prefix : "jstree_" }
+		},
+
+		ui : {
+			theme_name : "classic"
+		}
+
+	
+	}
+	
+	);
+
+});
+	
+
+
+
+</script>
