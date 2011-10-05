@@ -349,14 +349,22 @@ public class Asset implements Data
 		}
 		else
 		{
-			String[] keywords = inString.split("\\s+");
-			for(int i = 0; i < keywords.length; i++)
+			if( inString.startsWith("\""))
 			{
-				if (!getKeywords().contains(keywords[i]))
+				inString = inString.substring(1,inString.length() -1 );
+				getKeywords().add(inString);
+			}
+			else
+			{
+				String[] keywords = inString.split("\\s+");
+				for(int i = 0; i < keywords.length; i++)
 				{
-					if( keywords[i].length() > 0)
+					if (!getKeywords().contains(keywords[i]))
 					{
-						getKeywords().add(keywords[i]);
+						if( keywords[i].length() > 0)
+						{
+							getKeywords().add(keywords[i]);
+						}
 					}
 				}
 			}
@@ -408,7 +416,7 @@ public class Asset implements Data
 		return false;
 	}
 
-	public void setKeywords(List inKeywords)
+	public void setKeywords(List<String> inKeywords)
 	{
 		fieldKeywords = inKeywords;
 	}

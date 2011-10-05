@@ -36,13 +36,7 @@
 	<!-- property name="contentsiteroot">http://s3.amazonaws.com/emtube</property -->
 
  	<property name="themeprefix">/${applicationid}/theme</property>
- 	
-	<permission name="viewasset">
-		<or>
-			<group name="administrators"/>
-			<action name="AssetControlModule.checkFolderMatchesUserName"/>
-		</or>
-	</permission>
+
 
 	<permission name="view">
 		<user/>
@@ -60,12 +54,7 @@
 			<userprofile property="viewassets" equals="true" />
 		</or>
 	</permission>
-	  	<permission name="editasset">
-			<or>
-				<userprofile property="assetadmin" equals="true" />
-				<userprofile property="editasset" equals="true" />
-			</or>	
-		</permission>
+	  
 		
 	  	<permission name="viewbasket">
 			<or>

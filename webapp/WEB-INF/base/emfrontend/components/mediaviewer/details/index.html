@@ -24,19 +24,23 @@
 #end
 
 #if( $asset.owner )
-[[by]]($asset.owner)
+[[by]] ($asset.owner)
 #end
 
-##set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-##<span class="emdetailviews">
-##if( $views > 0 )
-##[[currently has]] $views views
-##end
-##</span>
+#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+<span class="emdetailviews">
+#if( $views > 0 )
+[[and has]] $views views
+#end
+</span>
 
 </div>
 
 	<ul class="emdetailactions">
+#if( $canviewsettings )
+		<a href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId"><li class="emdetaileditasset  uibutton"> <img src="$home$themeprefix/images/navigation/info.png" />  Metadata</li></a>
+#end	
+
 #if( $candownload )
 		<a  href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id"><li class="uibutton"><img src="$home$themeprefix/images/buttons/forwd_16x16.png" /> Publish</li></a>
 #end
@@ -46,9 +50,6 @@
 #if( $candownload )
 		<a href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id"><li class="uibutton"><img src="$home$themeprefix/images/buttons/download.png" /> Download</li></a>
 #end
-#if( $canviewsettings )
-		<a href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId"><li class="emdetaileditasset  uibutton"> <img src="$home$themeprefix/images/navigation/info.png" />  Metadata</li></a>
-#end	
 
 #if( $cansocialshare )
 		<a class="emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=640&height=480"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/buttons/facebooksm.png" alt="Share with social media sites"> Social Media</li></a>

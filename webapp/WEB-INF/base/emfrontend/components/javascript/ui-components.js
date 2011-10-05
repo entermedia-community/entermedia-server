@@ -14,17 +14,17 @@ uiload = function() {
 		);
 	}
 	
-	jQuery("input.uicalendar").livequery(
-		function() 
-		{
-			jQuery(this).datepicker(
+	jQuery("input.datepicker").livequery(
+			function() 
 			{
-				dateFormat: 'mm/dd/yy', showOn: 'button',
-				buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
-				buttonImageOnly: true
-			});
-		}
-	);
+				jQuery(this).datepicker(
+				{
+					dateFormat: 'mm/dd/yy', showOn: 'button',
+					buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
+					buttonImageOnly: true
+				});
+			}
+		);
 	
 	jQuery(".uibutton").livequery(
 			function()

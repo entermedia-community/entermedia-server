@@ -5,6 +5,7 @@ package org.openedit.entermedia.xmldb;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -221,24 +222,25 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 
 		loadCategories(inAsset, inAssetElement);
 		List children = inAssetElement.elements("keyword");
-		inAsset.clearKeywords();
+		
+		List<String> keywords = new ArrayList<String>();
 		if (children == null || children.size() > 0)
 		{
 			for (Object o: children)
 			{
 				Element keyword = (Element)o;
-				inAsset.addKeyword(keyword.getTextTrim());
+				keywords.add(keyword.getTextTrim());
 			}
 		}
 		else
 		{
-			Element keywords = inAssetElement.element("keywords");
-			if (keywords != null)
+			Element keywordslist = inAssetElement.element("keywords");
+			if (keywordslist != null)
 			{
-				inAsset.addKeyword(keywords.getTextTrim());
+				keywords.add(keywordslist.getTextTrim());
 			}
 		}
-
+		inAsset.setKeywords(keywords);
 
 		for (Object o: inAssetElement.elements("property"))
 		{
