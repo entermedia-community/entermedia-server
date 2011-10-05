@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.RelatedAsset;
@@ -14,6 +15,7 @@ import org.openedit.entermedia.RelatedAssetTracker;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.CompositeHitTracker;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.users.User;
 
 public class RelatedAssetsModule extends BaseMediaModule
@@ -104,12 +106,12 @@ public class RelatedAssetsModule extends BaseMediaModule
 	public void loadRelatedAssets( WebPageRequest inRequest ) throws OpenEditException
 	{
 
-		Asset Asset = getAsset(inRequest);
-		RelatedAssetTracker tracker = new RelatedAssetTracker();
+		Asset asset = getAsset(inRequest);
+		MediaArchive archive = getMediaArchive(inRequest);
+		Searcher searcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "relatedasset");
+		HitTracker related = searcher.fieldSearch("assetid", asset.getId());
 
-			tracker.addAll(Asset.getRelatedAssets());
-
-		inRequest.putPageValue("relatedhits", tracker);
+		inRequest.putPageValue("relatedhits", related);
 	}
 	
 	/*

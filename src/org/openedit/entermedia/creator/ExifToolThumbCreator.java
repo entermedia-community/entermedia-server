@@ -19,7 +19,11 @@ public class ExifToolThumbCreator extends BaseImageCreator
 {
 	public boolean canReadIn(MediaArchive inArchive, String inInputType)
 	{
+		if(inInputType != null){
 		return inInputType.endsWith("indd");
+		} else{
+			return false;
+		}
 	}
 
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOut, ConvertInstructions inStructions)
