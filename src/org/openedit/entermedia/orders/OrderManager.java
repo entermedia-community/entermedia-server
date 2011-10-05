@@ -549,7 +549,7 @@ public class OrderManager
 				String publishqueueid = orderitemhit.get("publishqueueid");
 				if( publishqueueid == null)
 				{
-					convertcomplete = true;
+					publishcomplete = true;
 				}
 				else
 				{
