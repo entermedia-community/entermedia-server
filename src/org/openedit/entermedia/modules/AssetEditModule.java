@@ -22,6 +22,7 @@ import org.openedit.data.FilteredTracker;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.data.lucene.DocumentData;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CompositeAsset;
@@ -253,6 +254,8 @@ public class AssetEditModule extends BaseMediaModule
 		inContext.setRequestParameter("assetid", asset.getId());
 		inContext.setRequestParameter("targetsourcepath", newasset.getSourcePath());
 		inContext.setRequestParameter("newassetid", newasset.getId());
+		inContext.putPageValue("target", newasset);
+
 		copyJoinData(asset, newasset);
 	}
 
@@ -291,8 +294,19 @@ public class AssetEditModule extends BaseMediaModule
 				List data = new ArrayList();
 				for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
 				{
-					ElementData item = (ElementData) iterator2.next();
+					Data sourcedata = (Data)iterator2.next();
+					ElementData item = null;
+					if(sourcedata instanceof DocumentData){
+						item = (ElementData) targetSearcher.searchById(sourcedata.getId());
+					} else{
+						item = (ElementData) sourcedata;
+					}
+					if(item == null){
+						continue;
+					}
+					
 					Data newItem = targetSearcher.createNewData();
+					newItem.setSourcePath(target.getSourcePath());
 					for (Iterator iterator3 = item.getElement().attributes().iterator(); iterator3.hasNext();)
 					{
 						Attribute property = (Attribute) iterator3.next();
@@ -304,7 +318,9 @@ public class AssetEditModule extends BaseMediaModule
 						{
 							newItem.setProperty(property.getName(), property.getValue());
 						}
+						
 					}
+					
 					data.add(newItem);
 				}
 				targetSearcher.saveAllData(data, null);
@@ -890,6 +906,32 @@ public class AssetEditModule extends BaseMediaModule
 		output.add(asset);
 		
 	}
+	public void checkHasPrimary(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset target = getAsset(inReq);
+		if(target.getPrimaryFile() == null){
+			String destination = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + target.getSourcePath();
+			List paths = getPageManager().getChildrenPaths(destination);
+			if(paths.size() > 0){
+				for (Iterator iterator = paths.iterator(); iterator.hasNext();) {
+					String path = (String) iterator.next();
+					if(!path.contains(".versions")){
+						Page page = getPageManager().getPage(path);
+						target.setPrimaryFile(page.getName());
+						removeAssetImages(inReq);
+						archive.saveAsset(target, null);
+						
+						break;
+					}
+					
+					
+				}
+			}
+			
+		}
+		
+	}
+	
 	
 	public void selectPrimaryAsset(WebPageRequest inReq)
 	{
