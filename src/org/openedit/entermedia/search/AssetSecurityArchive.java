@@ -2,6 +2,7 @@ package org.openedit.entermedia.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.util.Replacer;
 
 import com.openedit.BaseWebPageRequest;
 import com.openedit.OpenEditException;
@@ -36,6 +38,7 @@ public class AssetSecurityArchive
 	protected PageManager fieldPageManager;
 	protected RequestUtils fieldRequestUtils;
 	protected UserManager fieldUserManager;
+	protected Replacer fieldReplacer;
 	
 	
 	public UserManager getUserManager()
@@ -78,8 +81,8 @@ public class AssetSecurityArchive
 		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
 
 		List users = getAccessList(inArchive, page, inAsset, "viewasset");
-		List adminallusers = getAccessList(inArchive, page, inAsset, "adminall");
-		users.addAll(adminallusers);
+		List assetadminusers = getAccessList(inArchive, page, inAsset, "viewassetadmin");
+		users.addAll(assetadminusers);
 		return users;
 	}
 
@@ -92,14 +95,27 @@ public class AssetSecurityArchive
 	{
 		fieldPageManager = inPageManager;
 	}
+	
+	public Replacer getReplacer()
+	{
+		if( fieldReplacer == null)
+		{
+			fieldReplacer = new Replacer();
+		}
+		return fieldReplacer;
+	}
 
 	private void collectUsers(List add, Filter inRoot, Asset inAsset)
 	{
 			if (inRoot instanceof UserFilter)
 			{
+				
 				String username = ((UserFilter) inRoot).getUsername();
 				if( username != null)
 				{
+					Map tmp = new HashMap();
+					tmp.put("asset.owner", inAsset.get("owner"));
+					username = getReplacer().replace(username, tmp);
 					add.add(username);
 				}
 			}

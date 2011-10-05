@@ -2,7 +2,10 @@ package org.openedit.entermedia.modules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.management.openmbean.OpenDataException;
 
@@ -263,15 +266,15 @@ public class AssetControlModule extends BaseMediaModule {
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		//get all of the user's groups
-		List userNames = archive.getAssetSecurityArchive().getAccessList(archive, asset);
-		if(userNames.size() == 1 && "true".equals(userNames.get(0)))
+		List<String> users = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		for( String permission : users)
 		{
-			inReq.putPageValue("isall", true);
+			if("true".equals(permission))
+			{
+				inReq.putPageValue("isall", true);
+				return;
+			}
 		}
-		else
-		{
-			inReq.putPageValue("isall", false);
-		}
+		inReq.putPageValue("isall", false);
 	}
 }
