@@ -1,6 +1,10 @@
 package org.openedit.entermedia.orders;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.openedit.Data;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.ElementData;
 
 public class Order extends ElementData
@@ -39,6 +43,18 @@ public class Order extends ElementData
 	public String toString()
 	{
 		return getId();
+	}
+	
+	public boolean isExpired(){
+		String expStorageDate = getStoredExpirationDate();
+		Date expDate = DateStorageUtil.getStorageUtil().parseFromStorage(expStorageDate);
+		Date today = Calendar.getInstance().getTime();
+		return expDate.before(today);
+	}
+
+	protected String getStoredExpirationDate()
+	{
+		return get("expireson");
 	}
 	
 	@Override
