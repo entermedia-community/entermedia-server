@@ -251,6 +251,11 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			return;
 		}
 		List add = getAssetSecurityArchive().getAccessList(getMediaArchive(), inAsset);
+		//add the zone if the asset has one, this is necessary for matt
+		if(inAsset.get("zone") != null)
+		{
+			add.add("zone" + inAsset.get("zone"));
+		}
 		populatePermission(inDoc, add, inPermission);
 	}
 
