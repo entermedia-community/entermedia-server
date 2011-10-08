@@ -7,9 +7,6 @@
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="AssetControlModule.loadAssetPermissions"/>
 
-	<path-action name="Admin.allowViewing">
-		<login-path>/${applicationid}/authentication/logon.html</login-path>
-	</path-action>
 	
 	<permission name="view">
 		<or>
@@ -17,6 +14,10 @@
 			<not><pagevalue name="canviewasset" equals="false"/></not>
 		</or>
 	</permission>
+	
+	<path-action name="Admin.allowViewing">
+		<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
+	</path-action>
 	
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>

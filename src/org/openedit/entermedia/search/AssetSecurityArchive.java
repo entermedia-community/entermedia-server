@@ -10,7 +10,6 @@ import java.util.Map;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.util.Replacer;
 
 import com.openedit.BaseWebPageRequest;
 import com.openedit.OpenEditException;
@@ -21,6 +20,7 @@ import com.openedit.page.Permission;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
+import com.openedit.util.Replacer;
 import com.openedit.util.RequestUtils;
 import com.openedit.util.strainer.ActionFilter;
 import com.openedit.util.strainer.BlankFilter;

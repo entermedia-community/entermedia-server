@@ -16,7 +16,7 @@
 			<group name="administrators"/>
 			<userprofile property="assetadmin" equals="true" />
 			<userprofile property="editasset" equals="true" />
-			<action name="AssetControlModule.checkFolderMatchesUserName" />
+			<user name="${asset.owner}"/>
 		</or>
 	</permission> 
 	<permission name="changeattachment">
@@ -24,6 +24,7 @@
 			<group name="administrators"/>
 			<userprofile property="assetadmin" equals="true" />
 			<userprofile property="editasset" equals="true" />
+			<user name="${asset.owner}"/>
 		</or>
 	</permission>
 	<permission name="deleteasset">

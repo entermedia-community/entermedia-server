@@ -31,7 +31,6 @@ import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.search.AssetSecurityArchive;
 import org.openedit.entermedia.search.SearchFilterArchive;
-import org.openedit.entermedia.util.Replacer;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 
@@ -46,6 +45,7 @@ import com.openedit.page.manage.MimeTypeMap;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
+import com.openedit.util.Replacer;
 
 public class MediaArchive
 {
@@ -1018,6 +1018,11 @@ public class MediaArchive
 		List<String> names = Arrays.asList(new String[]{"viewassetadmin","download","forcewatermark","editasset", "viewasset", "view"});
 		
 		Page page = getPageManager().getPage(path);
+		Asset asset = (Asset)inReq.getPageValue("asset");
+		if( asset == null)
+		{
+			inReq.putPageValue("asset", getAssetBySourcePath(sourcepath));
+		}
 		WebPageRequest req = inReq.copy(page);
 		for (Iterator iterator = names.iterator(); iterator.hasNext();)
 		{
