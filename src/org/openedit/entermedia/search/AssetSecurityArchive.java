@@ -2,6 +2,7 @@ package org.openedit.entermedia.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -275,6 +276,13 @@ public class AssetSecurityArchive
 				permission.getRootFilter().removeFilter(filter);
 			}
 		}
+		if( permission.getRootFilter() instanceof OrFilter )
+		{
+			if( permission.getRootFilter().getFilters().length == 0 )
+			{
+				page.getPageSettings().removePermission(permission);
+			}
+		}
 		getPageManager().getPageSettingsManager().saveSetting(page.getPageSettings());
 		inArchive.getAssetSearcher().updateIndex(inAsset);
 
@@ -308,7 +316,7 @@ public class AssetSecurityArchive
 
 		
 	}
-	public void grantGroupViewAccess(MediaArchive inArchive, List<String> groupnames, Asset inAsset) throws OpenEditException
+	public void grantGroupViewAccess(MediaArchive inArchive, Collection<String> groupnames, Asset inAsset) throws OpenEditException
 	{
 		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
 		
@@ -489,7 +497,7 @@ public class AssetSecurityArchive
 		// saveAsset(inAsset);
 
 	}
-	public void grantGroupAccess(MediaArchive inArchive, List<String> inGroups, Page inPage, String inPermission)
+	public void grantGroupAccess(MediaArchive inArchive, Collection<String> inGroups, Page inPage, String inPermission)
 	{
 		PageSettings settings = inPage.getPageSettings();
 		Permission permission = settings.getPermission(inPermission);
