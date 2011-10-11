@@ -1,32 +1,30 @@
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
-<div class="em-rounded" >
-<h2>Asset Types</h2>
+<br>
+<div class="ui-widget" style="overflow: hidden;">
+<div class="ui-widget-header">Asset Types</div>
 #set($current = $context.getRequestParameter("assettype")) 
 #set($searcher = $searcherManager.getSearcher($catalogid, "assettype"))
-
+<div  class="ui-widget-content">
 <ul class="vlist">
 #foreach($item in $searcher.fieldSearch("id","*","textUp"))
  <li #if($current == $item.id) class="active" #end ><a href="$home$apphome/views/settings/metadata/views/index.html?assettype=$item.id">$item</a></li>
 #end
 </ul>
-
-
+<br>
 <ul class="embuttons">
 	<li><a href='$home$apphome/views/settings/assettypes/edit/addnew.html'><span>Add New Asset Type</span></a></li>
 </ul>
+<br><br><br>
+</div>
 </div>
 
-           </div>
+</div>
           </div>
           <div class="c66r">
             <div class="subcr">
             
-#set($current = $searcherManager.getData($catalogid, "assettype", $context.getRequestParameter("assettype")))
-#if( $current )
-<h2>$!current.name Metadata Type Setup</h2>
-#end
 $pages.includeContent()
 
 

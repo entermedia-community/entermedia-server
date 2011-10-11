@@ -321,6 +321,10 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 						buffer.append(" profileviewassets");
 					}
 				}
+				if(currentUser.getProperty("zone") != null)
+				{
+					buffer.append(" zone" + currentUser.getProperty("zone"));
+				}
 				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
 				{
 					String allow = ((Group)iterator.next()).getId();

@@ -1,0 +1,69 @@
+<br><br><br>
+<h2>[[Add Attachment or Thumbnail]]</h2>
+
+<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home$apphome${page.uploadroot}/uploadfile-finish.html" >
+#set( $path = $context.getRequestParameter('editPath') )	
+#if( !$path)
+	#set( $path = $context.getRequestParameter('path') )
+#end
+#set( $target = $pageManager.getPage($path))
+#if( !$target.isFolder() )	
+#set ($path = $target.getParentPath())
+#end
+<input type="hidden" name="origURL" value="$apphome/views/detaileditor/attachments/index.html?path=$path&sourcepath=${asset.sourcePath}" />	
+
+<div id="uploadscreen">
+<div id="alluploadfiles">
+$pages.include("$apphome${page.uploadroot}/uploadfield.html")
+</div>
+
+<input type="hidden" id="path" name="path" value="$path/" size="35" />
+<input type="hidden" id="assetid" name="assetid" value="$!asset.id"/>
+<p>
+<input type="button" id="finishbutton" name="Finish" value="Upload" onclick="doUpload('uploadform');">
+
+##This div is important. AJAX replaces it.
+<div id="waiting">
+</div>
+</p>
+
+#if( $canadvancedupload)
+<p><a href="#" onclick="usedragdrop(); return false;" >Use Advanced Upload</a>(Warning:  Requires Java)</p>
+#end
+</div>
+<script type="text/javascript" >
+	
+ 	doUpload =  function( inForm )
+ 	{
+ 	 	file = document.getElementById("file.0");
+ 		form = document.getElementById(inForm);
+ 		if ( form == null )
+		{
+			alert("[[No form found]]");
+			alert( "[[see]]:" + form );
+		}
+		form.target = "_self";
+		var finishButton = document.getElementById('finishbutton');
+		if (finishButton != null)
+		{
+			finishButton.disabled = true;
+		}
+		new jQuery('#waiting').html("<div><img src='$home/system/images/toolbar/spinner.gif'/><br/>[[Uploading, please wait...]]</div>");
+		form.submit();
+ 	}
+
+	SetPath =  function( inUrl )
+	{
+		var input = document.getElementById("path");
+		alert(inUrl);
+		input.value = inUrl;
+	}
+
+	usedragdrop = function()
+	{	
+		jQuery('#uploadscreen').load('$home/${applicationid}/settings/filemanager/upload/dragdrop.html?path=$path/', {});
+	}
+	
+	
+</script>
+</form>

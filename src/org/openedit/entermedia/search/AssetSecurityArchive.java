@@ -2,6 +2,8 @@ package org.openedit.entermedia.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import com.openedit.page.Permission;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
+import com.openedit.util.Replacer;
 import com.openedit.util.RequestUtils;
 import com.openedit.util.strainer.ActionFilter;
 import com.openedit.util.strainer.BlankFilter;
@@ -36,6 +39,7 @@ public class AssetSecurityArchive
 	protected PageManager fieldPageManager;
 	protected RequestUtils fieldRequestUtils;
 	protected UserManager fieldUserManager;
+	protected Replacer fieldReplacer;
 	
 	
 	public UserManager getUserManager()
@@ -78,8 +82,8 @@ public class AssetSecurityArchive
 		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
 
 		List users = getAccessList(inArchive, page, inAsset, "viewasset");
-		List adminallusers = getAccessList(inArchive, page, inAsset, "adminall");
-		users.addAll(adminallusers);
+		List assetadminusers = getAccessList(inArchive, page, inAsset, "viewassetadmin");
+		users.addAll(assetadminusers);
 		return users;
 	}
 
@@ -92,14 +96,27 @@ public class AssetSecurityArchive
 	{
 		fieldPageManager = inPageManager;
 	}
+	
+	public Replacer getReplacer()
+	{
+		if( fieldReplacer == null)
+		{
+			fieldReplacer = new Replacer();
+		}
+		return fieldReplacer;
+	}
 
 	private void collectUsers(List add, Filter inRoot, Asset inAsset)
 	{
 			if (inRoot instanceof UserFilter)
 			{
+				
 				String username = ((UserFilter) inRoot).getUsername();
 				if( username != null)
 				{
+					Map tmp = new HashMap();
+					tmp.put("asset.owner", inAsset.get("owner"));
+					username = getReplacer().replace(username, tmp);
 					add.add(username);
 				}
 			}
@@ -240,7 +257,8 @@ public class AssetSecurityArchive
 			}
 		}
 		getPageManager().getPageSettingsManager().saveSetting(page.getPageSettings());
-		inArchive.saveAsset(inAsset, null);
+		inArchive.getAssetSearcher().updateIndex(inAsset);
+
 	}
 	
 	public void revokeGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset)
@@ -258,8 +276,16 @@ public class AssetSecurityArchive
 				permission.getRootFilter().removeFilter(filter);
 			}
 		}
+		if( permission.getRootFilter() instanceof OrFilter )
+		{
+			if( permission.getRootFilter().getFilters().length == 0 )
+			{
+				page.getPageSettings().removePermission(permission);
+			}
+		}
 		getPageManager().getPageSettingsManager().saveSetting(page.getPageSettings());
-		inArchive.saveAsset(inAsset, null);
+		inArchive.getAssetSearcher().updateIndex(inAsset);
+
 	}
 	
 	public void grantViewAccess(MediaArchive inArchive, String username, Asset inAsset) throws OpenEditException
@@ -272,7 +298,8 @@ public class AssetSecurityArchive
 
 		grantAccess(inArchive, username, page, "viewasset");
 		// update the index
-		inArchive.saveAsset(inAsset, null);
+		inArchive.getAssetSearcher().updateIndex(inAsset);
+
 	}
 	
 	public void grantGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset) throws OpenEditException
@@ -285,10 +312,11 @@ public class AssetSecurityArchive
 
 		grantGroupAccess(inArchive, groupname, page, "viewasset");
 		// update the index
-		inArchive.saveAsset(inAsset, null);
+		inArchive.getAssetSearcher().updateIndex(inAsset);
+
 		
 	}
-	public void grantGroupViewAccess(MediaArchive inArchive, List<String> groupnames, Asset inAsset) throws OpenEditException
+	public void grantGroupViewAccess(MediaArchive inArchive, Collection<String> groupnames, Asset inAsset) throws OpenEditException
 	{
 		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
 		
@@ -298,7 +326,7 @@ public class AssetSecurityArchive
 		
 		grantGroupAccess(inArchive, groupnames, page, "viewasset");
 		// update the index
-		inArchive.saveAsset(inAsset, null);
+		inArchive.getAssetSearcher().updateIndex(inAsset);
 		
 	}
 	
@@ -307,6 +335,7 @@ public class AssetSecurityArchive
 		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
 		Page page = getPageManager().getPage(path);
 		grantAccess(inArchive, page, "viewasset");
+		inArchive.getAssetSearcher().updateIndex(inAsset);
 	}
 	
 	public void revokeAllAccess(MediaArchive inArchive, Asset inAsset)
@@ -314,11 +343,13 @@ public class AssetSecurityArchive
 		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
 		Page page = getPageManager().getPage(path);
 		clearAccess(inArchive, page, "viewasset");
+		inArchive.getAssetSearcher().updateIndex(inAsset);
+
 	}
 
 	public void grantAccess(MediaArchive inArchive, String username, Asset inAsset, String inView) throws OpenEditException
 	{
-		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/";
+		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
 
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
@@ -326,7 +357,8 @@ public class AssetSecurityArchive
 
 		grantAccess(inArchive, username, page, inView);
 		// update the index
-		inArchive.saveAsset(inAsset, null);
+		inArchive.getAssetSearcher().updateIndex(inAsset);
+
 	}
 
 	public void grantViewAccess(MediaArchive inArchive, User inUser, Category inCat) throws OpenEditException
@@ -465,7 +497,7 @@ public class AssetSecurityArchive
 		// saveAsset(inAsset);
 
 	}
-	public void grantGroupAccess(MediaArchive inArchive, List<String> inGroups, Page inPage, String inPermission)
+	public void grantGroupAccess(MediaArchive inArchive, Collection<String> inGroups, Page inPage, String inPermission)
 	{
 		PageSettings settings = inPage.getPageSettings();
 		Permission permission = settings.getPermission(inPermission);
@@ -491,7 +523,7 @@ public class AssetSecurityArchive
 
 	public Map checkAssetPermissions(User inUser, String inCatalogId, String sourcePath)
 	{
-		String path = "/" + inCatalogId + "/assets/" + sourcePath + "/";
+		String path = "/" + inCatalogId + "/assets/" + sourcePath + "/_site.xconf";
 		List names = Arrays.asList(new String[]{"customdownload","download","forcewatermark","editasset","viewasset","view"});
 		Page page = getPageManager().getPage(path,true);
 
@@ -515,7 +547,7 @@ public class AssetSecurityArchive
 	public void clearViewAccess(MediaArchive inArchive, Asset inJobfolder) {
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + inJobfolder.getSourcePath() + "/");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + inJobfolder.getSourcePath() + "/_site.xconf");
 		clearViewAccess(inArchive, page);		
 	}
 	

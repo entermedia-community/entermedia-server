@@ -14,25 +14,31 @@
 	<permission name="editasset">
 		<or>
 			<group name="administrators"/>
-			<action name="AssetControlModule.checkFolderMatchesUserName" />
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
+			<user name="${asset.owner}"/>
 		</or>
 	</permission> 
 	<permission name="changeattachment">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
+			<user name="${asset.owner}"/>
 		</or>
 	</permission>
 	<permission name="deleteasset">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 	<permission name="editassetcategories">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 
@@ -52,7 +58,8 @@
 	<permission name="viewattachments">		
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 
@@ -67,50 +74,52 @@
 	<permission name="assetpermissions">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
-	<permission name="assetpermissions">
-		<or>
-			<group name="administrators"/>
-			<group name="uploaders"/>
-		</or>
-	</permission>
+
 	<permission name="converthistory">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 
 	<permission name="viewassetedit">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 	<permission name="viewassetdownloadhistory">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 	<permission name="viewassetedithistory">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 	<permission name="viewassetpreviewhistory">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 	<permission name="viewassetorderhistory">
 		<or>
 			<group name="administrators"/>
-			<group name="uploaders"/>
+			<userprofile property="assetadmin" equals="true" />
+			<userprofile property="editasset" equals="true" />
 		</or>
 	</permission>
 	

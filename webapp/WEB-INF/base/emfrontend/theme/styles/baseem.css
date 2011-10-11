@@ -109,3 +109,28 @@ a.baseemenableonhover:hover
 {
 	opacity: 1;
 }	
+
+/*********************************
+	CSS tables Does not work in IE7
+*********************************/
+div.emtable
+{
+	display: table;
+}
+
+div.emtable div.row
+{
+	display: table-row;
+}
+
+div.emtable div.row span,
+div.emtable div.row div
+{
+	display: table-cell;
+	padding: 3px;
+}
+
+div.emtable div.row div div
+{
+	display: block;
+}

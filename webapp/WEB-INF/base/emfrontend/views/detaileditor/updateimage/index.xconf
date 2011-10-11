@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<page-action bean="pathUtils" class="com.openedit.util.PathUtilities" name="PageValue.loadPageVariable"/>
+
+	<property name="text.Attach File">
+		<value>Attach File</value>
+		<value locale="es">Adjuntar archivo</value>
+	</property>
+	<property name="text.No form found">
+		<value>No form found</value>
+		<value locale="es">No se encontró formulario</value>
+	</property>
+	<property name="text.see">
+		<value>see</value>
+		<value locale="es">vea</value>
+	</property>
+	<property name="text.Uploading, please wait...">
+		<value>Uploading, please wait...</value>
+		<value locale="es">Subiendo archivos, por favor espere...</value>
+	</property>
+</page>

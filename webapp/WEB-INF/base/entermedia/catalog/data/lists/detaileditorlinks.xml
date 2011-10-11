@@ -1,0 +1,24 @@
+<linktree>
+	<a folder="generalinformation" id="metadatadetails" name="Edit Metadata" multiedit="true" />
+	<a folder="categorize"  id="editassetcategories" name="Categories / Tags" multiedit="true"/>		    	
+	<a folder="share" id="sharepermissions" name="Permissions"/>
+	<a folder="permissions" id="assetpermissions" name="Rules"/>
+	<a folder="attachments" id="viewattachments" name="Attachments" />
+	<a folder="edit"  id="viewassetedit" name="Media Editor" />
+	<a folder="fatwire"  id="fatwireexport" name="Fatwire"/>
+	<a folder="downloads"  id="viewassetdownloads" name="Download Links" />		    	
+	<a folder="comments"  id="comment" name="View Comments" />
+	<a folder="map"  id="map" multiedit="true" name="Geo Location Info" />		    	
+	<a folder="historydownloads"  id="viewassetdownloadhistory" name="Download History" />
+	<a folder="historyedits"  id="viewassetedithistory" name="Data Edit History" />
+	<a folder="historypreviews"  id="viewassetpreviewhistory" name="Preview History" />
+	<a folder="historyorders"  id="viewassetorderhistory" name="Order History" />
+	<a folder="converthistory"  id="converthistory" name="Conversion History" />
+	<a folder="delete"  id="deleteasset" multiedit="true" name="Remove Asset" />
+<!-- 
+			<a folder="edithistory"  id="viewassetedithistory" name="Edit History" />	
+			<a folder="approvals"  id="viewassetdownloads2" name="Approvals" />    	
+			<a folder="voting/showvotes.html"  id="assetviewvotes" name="View Likes" />	
+			HQ printing?
+ -->
+</linktree>

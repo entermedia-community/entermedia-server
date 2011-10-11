@@ -193,4 +193,39 @@ public class AssetEditor {
 		}
 		return true;
 	}
+	
+	public void fullyRemoveAsset(Asset inAsset, User inUser, boolean inKeepReleases)
+	{
+		//remove the releases if necessary
+		if (!inKeepReleases)
+		{
+			Page releases = getPageManager().getPage("/WEB-INF/data/" + inAsset.getCatalogId() + "/releases/" + inAsset.getSourcePath());
+			if (releases.exists())
+			{
+				getPageManager().removePage(releases);
+			}
+		}
+		//remove the originals folder
+		Page originals = getPageManager().getPage("/WEB-INF/data/" + inAsset.getCatalogId() + "/originals/" + inAsset.getSourcePath());
+		if(originals.exists())
+		{
+			getPageManager().removePage(originals);
+		}
+		getMediaArchive().removeGeneratedImages(inAsset);
+		
+		//remove record
+		deleteAsset(inAsset);
+		
+		//now let's get rid of everything
+		Page data = getPageManager().getPage("/WEB-INF/data/" + inAsset.getCatalogId() + "/assets/" + inAsset.getSourcePath());
+		if(data.exists())
+		{
+			getPageManager().removePage(data);
+		}
+		Page xconf = getPageManager().getPage(inAsset.getCatalogId() + "/assets/" + inAsset.getSourcePath());
+		if(xconf.exists())
+		{
+			getPageManager().removePage(xconf);
+		}
+	}
 }

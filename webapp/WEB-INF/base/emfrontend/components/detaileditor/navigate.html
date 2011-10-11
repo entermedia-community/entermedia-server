@@ -1,0 +1,32 @@
+		#set($hitssessionid = $context.findValue("hitssessionid"))
+		#if($hitssessionid)
+			#set($hits = $context.getSessionValue($hitssessionid))
+		#end
+		#if( $hits )
+		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+		#set($showIndex = $indexOf + 1)
+		#set($previous = $hits.previous($indexOf))
+		#set($next = $hits.next($indexOf))
+		<div class="emdetaileditorheader">
+				
+			#if( $hits )
+				<span class="emphotocount">
+					#set( $backurl = "$home$apphome/views/search/index.html" )
+				  $showIndex [[of]] <a href="$backurl?hitssessionid=$hits.sessionId">$hits.size()</a>
+				</span>
+			
+			#set( $thispage = $content.getDirectoryName() )
+				<span class="emprevnext" >
+					#if( $previous || $next) | #end
+					#if($previous)
+						 <a href="${home}$apphome/views/detaileditor/$thispage/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits">[[Previous]]</a>
+					#end
+					#if($next)
+						$context.putPageValue("hits", $hits)
+						<a href="${home}$apphome/views/detaileditor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">[[Next]]</a>
+					#end
+				</span>
+			#end	
+		</div>
+		#end
+

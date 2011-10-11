@@ -1,0 +1,22 @@
+#if($asset.get("fatwireid"))
+<p>Asset has been exported to Fatwire.</p>
+<br/>
+<p>Fatwire ID: $!asset.get("fatwireid")</p>
+<p>Exported By: $!asset.get("fatwireexportedby")</p>
+<p>Date Exported: $!asset.get("fatwireexportdate")</p>
+#else
+<p>Asset hasn't been exported to Fatwire.</p>
+<br/>
+<form name="fatwireexportform" id="fatwireexportform" action="/${catalogid}/components/detaileditor/fatwire/index.html">
+	<input name="export" type="hidden" value="true"/>
+	<input name="catalogid" type="hidden" value="$catalogid"/>
+	<input name="sourcepath" type="hidden" value="$asset.getSourcePath()"/>
+	
+	<select name="usage">
+		<option value="Free Reuse">Free Reuse</option>
+  		<option value="One Time Use">One Time Use</option>
+	</select>
+	
+	<input name="submit" type="submit" value="[[Export to Fatwire]]" class="embutton"/>
+</form>
+#end

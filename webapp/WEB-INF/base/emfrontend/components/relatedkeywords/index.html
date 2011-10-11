@@ -2,23 +2,31 @@
 
 #set( $suggestions = $query.suggestedSearches )
 #if( $suggestions )
-<div class="emsidecontent">
-<div class="emsidecontentbody">
-<div class="emsidecontentbodyinner">
-<ul id="emactions" style="padding: 6px;">
-#foreach( $term in $suggestions.keySet() )
-	#if( $hits.dataSource )
-		#set( $resultspage = "/${hits.dataSource}.html" )
-	#else
-		#set( $resultspage = "$content.path" )
+
+<div class="ui-widget  uipanel" >
+	<div  class="ui-widget-header">Related Terms</div>
+	<div  class="ui-widget-content">
+
+	<div class="emsidecontent">
+	<div class="emsidecontentbody">
+	<div class="emsidecontentbodyinner">
+	<ul id="emactions" style="padding: 6px;">
+	#foreach( $term in $suggestions.keySet() )
+		#if( $hits.dataSource )
+			#set( $resultspage = "/${hits.dataSource}.html" )
+		#else
+			#set( $resultspage = "$content.path" )
+		#end
+		<li><a href="$home${resultspage}?field=description&operation=matches&description.value=$term&hitsname=$hits.hitsName&searchtype=$searchtype">
+			$suggestions.get($term)
+		</a>
+		</li>
 	#end
-	<li><a href="$home${resultspage}?field=description&operation=matches&description.value=$term&hitsname=$hits.hitsName&searchtype=$searchtype">
-		$suggestions.get($term)
-	</a>
-	</li>
-#end
-</ul>
-</div>
-</div>
+	</ul>
+	</div>
+	</div>
+	</div>
+
+	</div>
 </div>
 #end

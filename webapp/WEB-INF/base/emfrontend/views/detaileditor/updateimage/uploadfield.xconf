@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+  	<layout/>
+  	<inner-layout/>
+<property name='text.uploadfile'>
+        <value>UPLOAD FILE</value>
+    </property>
+<property name='text.unziponserver'>
+        <value>Unzip On Server (replacing existing files)</value>
+    </property>
+<property name='text.finish'>
+        <value>Finish</value>
+    </property>
+<property name='text.pickadir'>
+        <value>Pick A Dir</value>
+    </property>
+<property name='text.filetoupload'>
+        <value>File to upload</value>
+    </property>
+<property name='text.howtoprocess'>
+        <value>How to process .zip files after uploading?</value>
+    </property>
+<property name='text.filehandling'>
+        <value>File Handling</value>
+    </property>
+<property name='text.selectdestination'>
+        <value>Select the destination directory or path</value>
+    </property>
+</page>
