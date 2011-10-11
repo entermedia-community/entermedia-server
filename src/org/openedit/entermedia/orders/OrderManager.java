@@ -160,7 +160,7 @@ public class OrderManager
 		for (Iterator iterator = items.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
-			ids.append(hit.getId());
+			ids.append(hit.get("assetid"));
 			if( iterator.hasNext() )
 			{
 				ids.append(" ");
