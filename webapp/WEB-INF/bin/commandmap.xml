@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <commandmaps>
+	<commandmap os="MAC OS X">
+		<commandbase>./WEB-INF/bin/mac</commandbase>
+		<exiftoolthumb>./exiftoolthumb.sh</exiftoolthumb>
+		<asperaupload>./aspera/upload.sh</asperaupload>
+		<convert>/usr/local/Cellar/imagemagick/6.6.9-4/bin/convert</convert>
+		<ffmpeg>/usr/local/Cellar/ffmpeg/0.8/bin/ffmpeg</ffmpeg>
+	</commandmap>
 	<commandmap os="LINUX">
 		<commandbase>./WEB-INF/bin/linux</commandbase>
 		<exiftoolthumb>./exiftoolthumb.sh</exiftoolthumb>
