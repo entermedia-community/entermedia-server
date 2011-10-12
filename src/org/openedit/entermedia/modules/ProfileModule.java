@@ -264,6 +264,40 @@ public class ProfileModule extends MediaArchiveModule
 
 	}
 	
+	public void saveProperties(WebPageRequest inReq)
+	{
+		UserProfile prof = loadUserProfile(inReq);
+		
+		Searcher profilesearcher = getSearcherManager().getSearcher(prof.getCatalogId(), "userprofile");
+		String[] fields = inReq.getRequestParameters("field");
+		if(fields == null)
+		{
+			return;
+		}
+		profilesearcher.updateData(inReq, fields, prof);
+		profilesearcher.saveData(prof, inReq.getUser());
+	}
+	
+	public void toggleUserPreference(WebPageRequest inReq)
+	{
+		UserProfile prof = loadUserProfile(inReq);
+		String field = inReq.getRequestParameter("field");
+		if(field == null)
+		{
+			return;
+		}
+		Boolean val = Boolean.parseBoolean(prof.get(field));
+		if(val)
+		{
+			prof.setProperty(field, "false");
+		}
+		else
+		{
+			prof.setProperty(field, "true");
+		}
+		getUserProfileManager().saveUserProfile(prof);
+	}
+	
 	public void saveResultPreferences(WebPageRequest inReq) throws Exception
 	{
 		UserProfile pref = loadUserProfile(inReq);

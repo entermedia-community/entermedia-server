@@ -1,5 +1,22 @@
 var ajaxtimerrunning = false;
 
+toggleUserProperty = function(property, onsuccess) {
+	jQuery.ajax(
+			{
+				url: "${apphome}/components/userprofile/toggleprofileproperty.html?field=" + property,
+				success: onsuccess
+			}
+		);
+}
+
+setUserProperty = function(property, value, onsuccess) {
+	/*jQuery.get(
+			url: "${apphome}/components/userprofile.html",
+			{field: property, property + ".value": value},
+			success: onsuccess
+		);*/
+}
+
 outlineSelectionCol = function(event, ui)
 {
 	jQuery(this).addClass("headerdraggableenabled");
