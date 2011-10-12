@@ -1,0 +1,78 @@
+#set($sourcepath =$context.getRequestParameter("sourcepath") )
+#set($asset = $mediaarchive.getAssetBySourcePath($sourcepath))
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+$context.putPageValue("asset", $asset)
+<h3>$asset.name</h3>
+
+<form>
+
+
+Choose Format:
+<select id="sizepicker" name="size">
+<option value=""></option>
+	<option value="small">Small Thumbnail</option>
+	<option value="medium">Medium Thumbnail</option>
+	<!-- 
+	#if($type == "video")
+	<option value="video">Video Player</option>
+	
+	#end
+	#if($type == "document")
+	<option value="video">Document Viewer</option>
+	
+	#end
+	 -->
+</select>	
+
+<input id="selectbutton" type="button" value="Ok" onclick="insertCode()" />
+
+</form>
+
+<script type="text/javascript">        
+
+
+	jQuery(document).ready(function () {
+		var id = jQuery(this).val();
+		//if(id)
+		//jQuery("#preview").load("$home/${catalogid}/components/openedit/browse/types/" + id +".html?sourcepath=$sourcepath");
+
+		jQuery("#sizepicker").bind("change", function () {
+			
+			var id = jQuery(this).val();
+			
+			jQuery("#preview").load("$home$oehome/html/browse/types/" + id +".html?sourcepath=$sourcepath");
+		}
+		);
+		
+		jQuery("#selectbutton").bind("click", function () {
+			var html = jQuery("#preview").html();
+			
+			parent.CKEDITOR.instances.content.insertHtml(html);
+			//jQuery("a.openeditdialog").fancybox.close();
+			//	jQuery(this).first().fancybox.close();
+			//var fancybox = jQuery(document).fancybox;
+			
+			//jQuery(document).fancybox.close();
+			parent.jQuery("#fancy_close").trigger("click");
+		}
+		);
+
+
+		
+
+	} );
+
+	
+
+</script>
+<h3>Preview</h3>
+<div id="preview" style="min-height: 400px;" >
+	
+</div>
+
+<div id="testembedcode">
+##$pages.include("$linkedcatalog/detailviewer/downloads/index.html?assetid=$asset.id", $context)
+
+
+</div>
+

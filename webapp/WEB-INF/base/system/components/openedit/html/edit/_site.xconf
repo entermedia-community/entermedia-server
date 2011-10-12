@@ -1,0 +1,17 @@
+<page>
+
+<inner-layout>/system/components/openedit/html/edit/layout.html</inner-layout>
+	<path-action name="EditModule.claimEditLock" />
+	<path-action name="HtmlEditor.loadView" />
+
+<property name="htmledit">Visual Editor</property>
+<property name="text">Source</property>
+<property name="preview">Preview</property>
+<property name="seo">SEO</property>
+<property name="versions">Versions</property>
+<property name="properties">Properties</property>
+<property name="styles">Styles</property>
+<property name="scripts">Scripts</property>
+<property name="preview">Preview</property>
+
+</page>

@@ -1,0 +1,15 @@
+<link rel="stylesheet" type="text/css" href="$home/system/components/openedit/styles/tools.css"/>
+<link rel="stylesheet" type="text/css" href="$home/system/components/openedit/toolbar/toolbar.css"/>
+<script language="javascript" src="$home/system/components/openedit/javascript/oepopup.js">     </script>
+#if ($browser.browserType == 1)
+	<link rel="stylesheet" type="text/css" href="$home/openedit/styles/iefixes.css"/>
+#end
+
+#if( $user.getBoolean('openadmintoolbar') )
+	$pages.include("/system/components/openedit/toolbar/plugintoolbar.html?showminimize=true")
+#else
+#set ( $origURL=$url_util.getOriginalUrl() )
+	<div id="oeminimaladmintoolbar" class="oeminimaladmintoolbar">		
+		<a href="$home/system/components/openedit/toolbar/toogle.html?origURL=$origURL" title="[[Show Admin Toolbar]]" ><img alt="show toolbar" src="$home/openedit/images/toolbarlogomin.png" border="0" /></a>
+	</div>
+#end
