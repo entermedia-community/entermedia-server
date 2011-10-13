@@ -1,0 +1,6 @@
+<page>
+ <layout />
+  <inner-layout />
+	<path-action name="MediaArchiveModule.getAsset"  />
+
+</page>

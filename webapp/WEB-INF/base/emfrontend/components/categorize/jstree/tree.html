@@ -1,0 +1,30 @@
+#set( $rootpath = "${apphome}/components/categorize")
+
+<div class="dynamictree" style="overflow:auto; height: 300px;" >
+
+</div>
+
+<div id="log"></div>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	var first = false;
+	
+	$(".dynamictree").jstree({ 
+		"plugins" : [ "themes", "html_data", "checkbox", "ui" ],
+		checkbox: {
+      	  "real_checkboxes": true,
+      	  "real_checkboxes_names": function (n) { return ["categoryid", n.attr("id")]; }
+        },
+        "html_data" : {
+           "ajax" : {
+                "url" : "$rootpath/jstree/categories_data.html?assetid=$asset.id",
+                "data" : function (n) {
+                    return { id : n.attr ? n.attr("id") : 0 };
+                }
+            }
+		}
+	});
+	
+});
+
+</script>

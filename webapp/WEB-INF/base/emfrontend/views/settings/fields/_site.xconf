@@ -1,0 +1,4 @@
+<page>
+	<inner-layout>/${applicationid}/views/settings/fields/innerlayout.html</inner-layout>
+<property name="tab">fields</property>
+</page>

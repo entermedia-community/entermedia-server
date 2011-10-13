@@ -1,0 +1,53 @@
+#set($searcher = $mediaarchive.getAssetSearcher())
+#set($detailid = $context.getRequestParameter("id"))
+
+<div class="subcolumns">
+          <div class="c33l">
+            <div class="subcl">
+<br>
+<div class="ui-widget" style="overflow: hidden;">
+<div class="ui-widget-header">All Fields</div>
+<div  class="ui-widget-content emselectmenu">
+
+<select style="margin-left: 20px;" name="proptomodify" onchange="loadPropertyEdit();">
+		<option value="" ></option>
+			#foreach( $detail in $searcher.getPropertyDetails())
+				<option value="$detail.id" #if($detailid == $detail.id)selected="selected"#end>$detail.text</option>
+			#end
+		</select>
+<br><br>
+<ul style="margin-left: 7px;" class="embuttons">
+	<li><a href='$home$apphome/views/settings/fields/addnew.html'><span>Add New</span></a></li>
+</ul>
+<br><br><br>
+
+</div>
+</div>
+
+</div>
+          </div>
+          <div class="c66r">
+            <div class="subcr" >
+            
+$pages.includeContent()
+
+
+<script type="text/javascript">
+	loadPropertyEdit = function() {
+		var selected = jQuery("select option:selected");
+		var selectedid = selected.val();
+		jQuery("#propertyedit").load("$apphome/views/settings/fields/index.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+	}
+	
+	removeProperty = function() {
+		var selected = jQuery("select option:selected");
+		var selectedid = selected.val();
+		jQuery("#modifyproperties").load("removeproperty.html?id=" + selectedid + "&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+	}
+	
+	createProperty = function() {
+		jQuery("#modifyproperties").load("addproperty.html?catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+	}
+</script>
+
+</div></div></div>
