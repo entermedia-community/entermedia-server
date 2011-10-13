@@ -2,9 +2,5 @@
 	<property id="name"/>
 	<property id="title"/>
 	<property id="episode"/>
-	<property id="productionnumber" />
-	<property id="assettype" />
-	<property id="length" />
-	<property id="filesize" />
-	
+	<property id="assettitle">Description</property>
 </properties>

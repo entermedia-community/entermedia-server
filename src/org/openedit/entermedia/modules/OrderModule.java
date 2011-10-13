@@ -101,8 +101,9 @@ public class OrderModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
+		String ordertype = inReq.findValue("ordertype");
 
-		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
+		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName(), ordertype);
 		inReq.putPageValue("order", order);
 		
 		OrderHistory history = getOrderManager().createNewHistory(catalogid,order, inReq.getUser(),"newrecord");
@@ -142,13 +143,14 @@ public class OrderModule extends BaseMediaModule
 
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
+		String ordertype = inReq.findValue("ordertype");
 
 		if (assets.getSelectedHits().size() > 0)
 		{
 			Map props = new HashMap();
 
 			String applicationid = inReq.findValue("applicationid");
-			Order order = (Order) getOrderManager().createNewOrderWithId(applicationid, catalogid, inReq.getUserName());
+			Order order = (Order) getOrderManager().createNewOrderWithId(applicationid, catalogid, inReq.getUserName(), ordertype);
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
@@ -416,11 +418,13 @@ public class OrderModule extends BaseMediaModule
 		{
 			String id = inReq.getUserName() + "_orderbasket";
 			String appid = inReq.findValue("applicationid");
+
 			Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
 			basket = (Order) searcher.searchById(id);
 			if (basket == null)
 			{
-				basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
+				String BASKET = "basket";
+				basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName(), BASKET);
 				basket.setId(id);
 				getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
 			}
@@ -532,7 +536,8 @@ public class OrderModule extends BaseMediaModule
 		String catalogId = inReq.findValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] assetids = inReq.getRequestParameters("assetid");
-		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+		String ordertype = inReq.findValue("ordertype");
+		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName(), ordertype);
 
 		for (int i = 0; i < assetids.length; i++)
 		{
@@ -551,8 +556,10 @@ public class OrderModule extends BaseMediaModule
 		String catalogId = inReq.findValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
+		String ordertype = inReq.findValue("ordertype");
+		
 
-		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName(), ordertype);
 		//order.setProperty("orderstatus", "newupload");
 		List assetids = new ArrayList();
 		for (Iterator iter = assets.iterator(); iter.hasNext();)

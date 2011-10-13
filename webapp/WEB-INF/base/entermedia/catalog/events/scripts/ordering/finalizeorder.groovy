@@ -77,29 +77,34 @@ protected void sendEmail(Order inOrder) {
 
 			sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
 		}
-		String userid = inOrder.get("userid");
-		if(userid != null){
-			User user = userManager.getUser(userid);
-
-			if(user != null){
-
-				String owneremail =user.getEmail();
-				if(owneremail != null){
-					context.putPageValue("sharewithemail", emailto);
-					//get order contents and data
-					HitTracker itemTracker = getOrderItems(inOrder.getId());
-					context.putPageValue("orderitems", itemTracker);
-					//					OrderModule module = new OrderModule();
-					//					context.putPageValue("orderassets", module.findOrderAssets(context));
-					//orderitemsearcher
-					//field search based on orderid
-					context.putPageValue("user", user)
-					sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+		// if (type is download) {}
+		if (inOrder.getOrderType()=="download")
+		{
+			String userid = inOrder.get("userid");
+			if(userid != null){
+				User user = userManager.getUser(userid);
+	
+				if(user != null){
+	
+					String owneremail =user.getEmail();
+					if(owneremail != null){
+						context.putPageValue("sharewithemail", emailto);
+						//get order contents and data
+						HitTracker itemTracker = getOrderItems(inOrder.getId());
+						context.putPageValue("orderitems", itemTracker);
+						//					OrderModule module = new OrderModule();
+						//					context.putPageValue("orderassets", module.findOrderAssets(context));
+						//orderitemsearcher
+						//field search based on orderid
+						context.putPageValue("user", user)
+						sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+					}
 				}
 			}
 		}
 		inOrder.setProperty('orderstatus', 'complete');
 		inOrder.setProperty('emailsent', 'true');
+		
 	}
 	catch (Exception ex) {
 		inOrder.setProperty('orderstatus', 'error');

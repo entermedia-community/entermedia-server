@@ -28,6 +28,7 @@ import com.openedit.users.User;
 
 public class OrderManager 
 {
+	private static final String EMAIL = "email";
 	protected SearcherManager fieldSearcherManager;
 	protected WebEventHandler fieldWebEventHandler;
 	
@@ -49,10 +50,10 @@ public class OrderManager
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties)
+	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map<String, String> inProperties)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inCatlogId, "order");
-		Data order = createNewOrderWithId(frontendappid, inCatlogId,inUser.getUserName());
+		Data order = createNewOrderWithId(frontendappid, inCatlogId,inUser.getUserName(), inProperties.get("ordertype"));
 		
 		for (Iterator iterator = inProperties.keySet().iterator(); iterator.hasNext();) 
 		{
@@ -281,9 +282,10 @@ public class OrderManager
 		return toSave;
 	}
 
-	public Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername)
+	public Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername, String orderType)
 	{
-		Order order = createNewOrder(inAppId, inCatalogId, inUsername);
+
+		Order order = createNewOrder(inAppId, inCatalogId, inUsername, orderType);
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
 		if( order.getId() == null)
 		{
@@ -291,7 +293,7 @@ public class OrderManager
 		}
 		return order;
 	}
-	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername)
+	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername, String orderType)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
 		Order order  = (Order)searcher.createNewData();
@@ -299,6 +301,12 @@ public class OrderManager
 		//order.setId(searcher.nextId());
 		order.setProperty("orderstatus", "ordered");
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		if (EMAIL.equals(orderType))
+		{
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.MONTH, 1);
+			order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(c.getTime()));
+		}
 		order.setSourcePath(inUsername + "/" + order.getId());
 		order.setProperty("userid", inUsername);
 		order.setProperty("applicationid",inAppId);
@@ -636,6 +644,13 @@ public class OrderManager
 			}
 		}
 		return count;
+	}
+
+	protected Calendar getOrderDefaultDate()
+	{
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MONTH, 1);
+		return c;
 	}
 
 }

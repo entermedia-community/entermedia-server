@@ -1,9 +1,10 @@
 #
-#Wed Oct 12 11:30:10 EDT 2011
+#Thu Oct 13 14:05:02 EDT 2011
 File\ Name=File Name
 Episode=Episode
 Title=Title
 File\ Size=File Size
 Length=Length
+Description=Description
 Asset\ Title=Asset Title
 Asset\ Type=Asset Type

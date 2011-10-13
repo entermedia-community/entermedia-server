@@ -68,4 +68,8 @@ public class Order extends ElementData
 		return super.get(inId);
 	}
 	
+	public String getOrderType(){
+		return get("ordertype");
+	}
+	
 }
