@@ -5,8 +5,11 @@
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
-<div class="em-rounded" >
-<h1>Transcode Profiles</h1>
+<br>
+<div class="ui-widget" style="overflow: hidden;">
+<div class="ui-widget-header">Transcode Profiles</div>
+<div  class="ui-widget-content emselectmenu">
+
 <ul class="vlist">
 #set($searcher = $searcherManager.getSearcher($catalogid, "convertpreset"))
 #foreach($title in $searcher.getAllHits())
@@ -17,10 +20,11 @@
 </ul>
 
 
-<ul class="embuttons">
+<ul class="embuttons" style="margin: 20px 0px 70px 20px">
 <li><a href="$home$apphome/views/settings/transcoding/edit/addnew.html"><span>Add New Transcoding Preset</span></a></li>
 </ul>
 
+</div>
 </div>
 
            </div>

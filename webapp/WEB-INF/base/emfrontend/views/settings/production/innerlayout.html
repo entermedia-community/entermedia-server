@@ -1,8 +1,11 @@
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
-<div class="em-rounded" >
-<h1>Titles</h1>
+<br>
+<div class="ui-widget" style="overflow: hidden;">
+<div class="ui-widget-header">[[Title]]</div>
+<div  class="ui-widget-content emselectmenu" > 
+
 #set($titlesearcher = $searcherManager.getSearcher($catalogid, "title"))
 #set($titleid= $context.getRequestParameter("title.value"))
 #if( $titleid )
@@ -16,13 +19,14 @@
 
 </ul>
 
-<ul class="embuttons">
+<ul class="embuttons" style="margin: 20px 0px 60px 20px">
 <li><a href="$home$apphome/views/settings/production/titles/edit/addnew.html"><span>Add New Title</span></a></li>
 #if( $title)
 <li><a class="confirm" href="$home$apphome/views/settings/production/titles/edit/edit.html?id=$title.id&title.value=$title.id"><span>Edit Title</span></a></li>
 #end
 </ul>
 
+</div>
 </div>
 
            </div>

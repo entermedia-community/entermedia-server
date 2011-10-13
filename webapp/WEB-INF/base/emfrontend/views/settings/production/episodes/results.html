@@ -1,5 +1,6 @@
 #set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("$content.searchtype/resultdetail", $user))
 #set( $resultdetail = $translations.filter($resultdetail, $context) )
+
    <div id="navigationrow">
 
 $pages.stream("/${content.searchhome}/navigate.html", $context)		
@@ -69,3 +70,5 @@ $pages.stream("/${content.searchhome}/navigate.html", $context)
 
 
 $pages.include("/${content.searchhome}/actions.html", $context)
+
+</div>

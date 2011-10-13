@@ -2,7 +2,12 @@
 #set($titleid= $context.getRequestParameter("title.value"))
 #set($title = $titlesearcher.searchById($titleid))
 $context.getParent().putPageValue("title",$title)
-<h2>$!title Episodes</h2>
+<br>
+<div class="ui-widget commentbox" style="overflow: hidden;">
+<div class="ui-widget-header">$!title</div>
+<div  class="ui-widget-content emselectmenu">
+
+
 <div id="searchplugin"> 
 #if(!$hits)
         #set($hitsname = $context.getRequestParameter('hitsname'))
@@ -24,20 +29,15 @@ $context.putPageValue("hits", $hits)
 $pages.include("/${content.searchhome}/searchform.html")
 #end
 	<div id="resultsarea" style="padding-right:  40px;">
-	
 	<div id="resultslist">
-	
-	
 	$pages.includeContent()
-	
-	
 	</div>
 	</div>
-
-
 
 </div>
 
+</div>
+</div>
 <script type="text/javascript" >
 
     toggleHit =  function(div, count, sessionid)
