@@ -7,9 +7,6 @@
 #set ($view = $context.getRequestParameter('view')) 
 #set($checked = $data.getValues($detail.id))
 
-<div id="allnone">
-(<a href="javascript:oecheckall('${searchtype}',true)">#text("all")</a> <a href="javascript:oecheckall('${searchtype}',false)">[[none]]</a>)
-</div>
 
 ##we need to load up the existing detail object
 
@@ -71,9 +68,8 @@
 		#set( $key = $type.id)
 			<td>
 			
-	
-	  <input type="checkbox" name="${detail.id}.value" id="${searchtype}.${item.id}" value="$key"
-	    #if ($checked.contains($key)) checked #end >
+	 
+	    #if ($checked.contains($key)) <img src="/system/images/check.gif"/> #else <img src="/system/images/x.gif"/>  #end
 		$type
 	 
 

@@ -14,6 +14,7 @@ import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.orders.Order;
 import org.openedit.entermedia.orders.OrderHistory;
@@ -607,6 +608,41 @@ public class OrderModule extends BaseMediaModule
 		{
 			getOrderManager().updatePendingOrders(archive);
 		}
+	}
+	
+	
+	public Data createMultiEditData(WebPageRequest inReq) throws Exception
+	{
+		Order order = loadOrder(inReq);
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker hits = getOrderManager().findAssets(inReq, archive.getCatalogId(), order);
+		CompositeAsset composite = new CompositeAsset();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data target = (Data) iterator.next();
+			Asset p = null;
+			if( target instanceof Asset)
+			{
+				p = (Asset)target;
+			}
+			else
+			{
+				String sourcepath = target.getSourcePath();
+				p = archive.getAssetBySourcePath(sourcepath);
+			}
+			if( p != null)
+			{
+				composite.addData(p);
+			}
+		}
+		composite.setId("multiedit:"+hits.getHitsName());
+		//set request param?
+		inReq.setRequestParameter("assetid",composite.getId());
+		inReq.putPageValue("data", composite);
+		inReq.putPageValue("asset", composite);
+		inReq.putSessionValue(composite.getId(), composite);
+		
+		return composite;
 	}
 	
 }

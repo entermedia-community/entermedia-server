@@ -100,8 +100,13 @@ public class HitIterator implements Iterator
 	public Object next()
 	{
 		try
+		
 		{
+			
+			
 			ScoreDoc sdoc  = getHits().scoreDocs[startOffset + hitCount];
+			
+			
 			Document doc = getIndexSearcher().doc(sdoc.doc);
 			DocumentData data = new DocumentData(doc);
 			hitCount++;
