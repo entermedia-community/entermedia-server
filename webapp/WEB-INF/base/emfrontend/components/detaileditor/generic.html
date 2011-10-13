@@ -40,6 +40,8 @@ $context.putPageValue("searcher", $searcher)
 #set($edit = "true")
 #end
 
+
+
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 
 	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="${view}editor" method="post" action="$home$editpath?oemaxlevel=1" >

@@ -4,14 +4,12 @@
 
 #if($userName)
 	#set($selectedUser = $userManager.getUser($userName))
-<style type="text/css">
- 	#${userName}-edit-link {color: #FFFFFF;}
-  	#${userName}-table-cell {background: #CCCCF9;}
-</style>
-<div class="em-rounded">	 
-<div class="emsectionheader" style="margin: 0px 0px 0px 0px;"><div style="padding-left:15px;padding-top:6px;">[[User Editor]]</div></div>
-	
 	<br/>
+
+<div class="ui-widget commentbox" style="overflow: hidden;">
+<div class="ui-widget-header">[[$selectedUser]]</div>
+<div  class="ui-widget-content" > 
+	
 	
 	#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
 	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
@@ -20,8 +18,6 @@
 	#if ($hits.size() == 1)
 		#set ($userprofile = $hits.get(0))
 	#end
-	
-	<div>
 		<form class="ajaxform validate" id="usereditform" name="usereditform" action="$home$usermanagerhome/users/modifyuser.html">
 			<input type="hidden" name="userid" value="$selectedUser.id"/>
 			<input type="hidden" name="save" value="true"/>
@@ -35,7 +31,7 @@
 			#end
 	
 			$context.putPageValue("searcher", $userSearcher)	 
-			$context.putPageValue("view", "user/simpleuseredit")	
+			$context.putPageValue("view", "user/useredit")	
 			$context.putPageValue("data", $selectedUser)	
 			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			
@@ -56,8 +52,9 @@
 			</div>
 			
 		</form>
-	</div>
+
 </div>	
+</div>
 <script language="JavaScript" type="text/javascript">
 <!--
 function saveUser()

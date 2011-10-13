@@ -6,24 +6,27 @@
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
-<div class="em-rounded" >
-<h1>Broadcast Destinations</h1>
+            <br>
+<div class="ui-widget" style="overflow: hidden;">
+<div class="ui-widget-header">[[Publish Destinations]]</div>
+<div  class="ui-widget-content emselectmenu" > 
+
 <ul class="vlist">
 #set($searcher = $searcherManager.getSearcher($catalogid, "publishdestination"))
 #foreach($title in $searcher.getAllHits())
 #set($current = $context.getRequestParameter("id")) 
-<li #if($current == $title.id) class="active" #end><a  href="$home$apphome/views/settings/publishing/edit/edit.html?id=$title.id">$title</a></li>
+<li #if($current == $title.id) class="active" #end><a  href="$home$apphome/views/settings/publishing/edit/edit.html?id=$title.id"><span>$title</span></a></li>
 #end
 
 </ul>
 
-<ul class="embuttons">
-<li><a href="$home$apphome/views/settings/publishing/edit/addnew.html"><span>Add Other Location</span></a></li>
-<li><a class="emdialog" href="$home$apphome/views/settings/publishing/edit/addsmartjog.html"><span>Add New SmartJog Location</span></a></li>
+<ul class="embuttons" style="margin:20px 0 70px 20px">
+<li><a href="$home$apphome/views/settings/publishing/edit/addnew.html"><span>Add New</span></a></li>
+<li><a class="emdialog" href="$home$apphome/views/settings/publishing/edit/addsmartjog.html"><span>Add SmartJog</span></a></li>
 </ul>
 
 </div>
-
+</div>
            </div>
           </div>
           <div class="c66r">
@@ -51,7 +54,7 @@ $context.putPageValue("hits", $hits)
 $pages.include("/${content.searchhome}/searchform.html")
 #end
 
-<div id="resultsarea" style="padding-right:  40px;">
+<div id="resultsarea" >
 
 <div id="resultslist">
 

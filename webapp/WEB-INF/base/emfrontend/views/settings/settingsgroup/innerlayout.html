@@ -1,19 +1,23 @@
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
-<div class="em-rounded" >
-<h2>Security Groups</h2>
+<br>
+<div style="overflow: hidden;" class="ui-widget">
+<div class="ui-widget-header">Roles</div>
+<div class="ui-widget-content emselectmenu">
+
 #set($current = $context.getRequestParameter("settingsgroupid")) 
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
 
-<ul class="vlist">
+<ul >
 #foreach($settingsgroup in $groupSearcher.fieldSearch("id", "*", "textUp"))
  <li #if($current == $settingsgroup.id) class="active" #end><a href="$home$apphome/views/settings/settingsgroup/views/index.html?settingsgroupid=$settingsgroup.id">$settingsgroup</a></li>
 #end
 </ul>
 
+<br>
 
-<ul style="padding-left: 200px;" class="embuttons">
+<ul style="padding: 10px 0px 50px 60px;" class="embuttons">
 <li><a href='$home$apphome/views/settings/settingsgroup/views/addnew.html?groupname=New'><span>Add New</span></a>
 #if( $current)
 <li><a href="./delete.html?id=$current" onclick="return confirm('Are you sure you want to delete the security group $data.name')"><span>Delete</span></a></li>
@@ -22,6 +26,8 @@
 </ul>
 
 </div>
+</div>
+
 #if( $currentgroup)
 	#set($currentgroup = $context.getRequestParameter("settingsgroupid"))
 	

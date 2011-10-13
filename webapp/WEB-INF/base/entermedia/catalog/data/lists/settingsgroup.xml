@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <settingsgroups>
-  <settingsgroup id="administrator" name="Administrators" admintoolbar="true" upload="true" 
+  <settingsgroup id="administrator" name="Administrators" admintoolbar="true" upload="true" multiupload="true"
   	viewupload="true" assetadmin="true"  vieworders="true" 
   	viewsettings="true" profilesearchfilters="hideassettype" category="table"
   	>Administrators</settingsgroup>

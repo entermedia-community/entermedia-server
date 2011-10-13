@@ -237,7 +237,7 @@ public class MultiSearchModule extends BaseMediaModule
 				val = values[index];
 			}
 			// term.setValue(val);
-			query.putInput(term.getId(), val);
+			query.setProperty(term.getId(), val);
 			term.addParameter("op", operation[i]);
 			counters.put(detail.getId(), new Integer(index));
 
@@ -252,7 +252,7 @@ public class MultiSearchModule extends BaseMediaModule
 						String paramid = detail.getId() + "." + additionalInputs[j];
 						String inputid = term.getId() + "." + additionalInputs[j];
 						String additional = inReq.getRequestParameters(paramid)[index];
-						query.putInput(inputid, additional);
+						query.setProperty(inputid, additional);
 					}
 				}
 			}
@@ -392,7 +392,7 @@ public class MultiSearchModule extends BaseMediaModule
 			if( term != null && "*".equals(term.getValue()))
 			{
 				inQuery.removeTerm(term); //will be ignored by the search query
-				inQuery.putInput("description", "*");
+				inQuery.setProperty("description", "*");
 				inQuery.addMatches("category", "index");
 			}
 			

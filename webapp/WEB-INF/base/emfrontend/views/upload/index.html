@@ -1,16 +1,24 @@
-<div id="emuploadcontainer">
+#if( $canviewuploadmulti)
 
-<div id="emuploadstep3" align="center">
-	<div class="em-rounded"  style="margin-bottom: 20px;width: 500px;">
-	<div class="emsectionheader">
-	<h3>Upload Files</h3>
+<div class="uipanel" id="emuploadstep3" align="center">
+	<div class="ui-widget-header">Multi File Upload</div>
+	<div class="ui-widget-content uploadform">
+		<div id="emuploadstep3">
+			$pages.include("$apphome/components/upload/types/draganddrop.html")</div>
+		<div id="emuploadstep2"></div>
 	</div>
-	$pages.include("$apphome/components/upload/types/simple.html")
+</div>
+
+#else
+
+<div id="emuploadcontainer" class="uipanel ">
+	<div class="ui-widget-header">Upload a File</div>
+	<div class="ui-widget-content uploadform">
+		<div id="emuploadstep3" style="max-width: 500px;">
+			$pages.include("$apphome/components/upload/types/simple.html")
+		</div>
 	</div>
+	<div id="emuploadstep2"></div>
 </div>
 
-
-<div id="emuploadstep2">
-</div>
-
-</div>
+#end

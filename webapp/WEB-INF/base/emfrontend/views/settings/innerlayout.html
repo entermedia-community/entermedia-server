@@ -2,15 +2,20 @@
 <ul  class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 			##if ($canmanageusers)
 			<li id="security" class="ui-state-default ui-corner-top">
-				<a href="$home$apphome/views/settings/settingsgroup/index.html">Security Groups</a>
+				<a href="$home$apphome/views/settings/settingsgroup/index.html">Roles</a>
 			</li>
 			<li id="users" class="ui-state-default ui-corner-top">
 				<a  href="$home$apphome/views/usermanager/users/index.html">Users</a>
 			</li>
 			##end
 			<li id="metadata" class="ui-state-default ui-corner-top">
-				<a href="$home$apphome/views/settings/metadata/index.html">Metadata Set Up</a>
+				<a href="$home$apphome/views/settings/metadata/index.html">Asset Metadata</a>
 			</li>
+			<li id="fields" class="ui-state-default ui-corner-top">
+				<a href="$home$apphome/views/settings/fields/index.html">Fields</a>
+			</li>
+			
+			
 			<li id="publish" class="ui-state-default ui-corner-top">
 				<a href="$home$apphome/views/settings/publishing/index.html">Publish Destinations</a>
 			</li>

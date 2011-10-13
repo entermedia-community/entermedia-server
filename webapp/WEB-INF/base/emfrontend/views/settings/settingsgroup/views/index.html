@@ -6,16 +6,16 @@
 		#set ($data = $groupSearcher.searchById($groupid))
 	#end
 #end
+
+
 #if ($data)
-
-#set($current = $searcherManager.getData($catalogid, "settingsgroup", $context.getRequestParameter("settingsgroupid")))
-#if( $current )
-<h2>$!current.name Security Group Setup</h2>
-#end
-
+<br>
+<div class="ui-widget commentbox" style="overflow: hidden;">
+<div class="ui-widget-header">Role</div>
+<div  class="ui-widget-content "> 
 
 <form method="post" action="./save.html">
-	<input type="hidden" name="id" value="$data.id"/>
+	<input type="hidden" name="id" value="$!data.id"/>
 	<input type="hidden" name="save" value="true"/>
 	<input type="hidden" name="view" value="settings/settinggroupedit" />
 	<input type="hidden" name="searchtype" value="$groupSearcher.getSearchType()"/>
@@ -36,8 +36,8 @@
 	<table style="padding-left: 20px;" >
 	
 	#foreach($item in $permissionsearcher.getAllHits())
-	#set($val = $data.get($item.id))
-		
+		#set($val = false )
+		#set($val = $data.get($item.id))
 		<input type="hidden" name="field" value="$item.id"/>
 		<tr><td valign="top">$item:</td>
 			<td valign="top"><input class="permission-radio" type="radio" name="${item.id}.value" value="true" #if($val == "true" || $val == "full") checked #end/> Full</td>
@@ -62,7 +62,8 @@
 	</table>
 	<input type="submit" value="Save"/>
 	
-	
+</div>
+</div>	
 	
 </form>
 

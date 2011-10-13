@@ -5,7 +5,7 @@
 	#set($typesearcher = $searcherManager.getSearcher("$catalogid", "assettype"))
 	#set($type = $typesearcher.searchById($assettype))
 
-	<div class="ui-widget emdetaileditorbox">
+	<div class="ui-widget emdetaileditorbox commentbox">
 	<div class="ui-widget-header">Asset Type
 	</div>	
 	<div class="ui-widget-content" id="editlayout" style="padding: 10px;">
@@ -42,6 +42,21 @@
 	</div>	
 		<div class="ui-widget-content" id="editlayout" style="padding: 10px;">
 
+		<form name="${target.id}addtoview" id="${target.id}addtoview" action="addtoview.html">
+			<input type="hidden" name="catalogid" value="$!catalogid"/>
+			<input type="hidden" name="searchtype" value="asset"/>
+			<input type="hidden" name="assettype" value="$assettype"/>
+			<input type="hidden" name="view" value="assettype/${assettype}/$target.id"/>
+
+			[[Add Field]]:
+			<select name="newone" onchange="jQuery('#${target.id}addtoview').submit()">
+				<option value=""> </option>
+				#foreach( $detail in $searcher.getPropertyDetails() )
+ 					<option value="$detail.id">$detail.text</option>
+ 				#end
+			</select>
+		</form>
+
 		<table >
 			#set($details = "")
 			#set($details =  $searcher.getDetailsForView("asset/assettype/${assettype}/$target.id", $user))
@@ -51,7 +66,7 @@
 				<tr>
 				 <td class="rowdraggable metadatadroppable" id="$pid" catalogid=$catalogid" searchtype="asset" assettype="$assettype" view="assettype/${assettype}/$target.id"> 
 				 <img src="$home$themeprefix/images/navigation/moveupdown.png" />
-				 $!element.text - <b>$pid</b></td> 
+				 <a href="$home$apphome/views/settings/fields/index.html?id=$element.id&&searchtype=asset">$element.text</a></td> 
 				 <td>
 				 <form style="float:left;" name="editrow"  method="post" action="removefromview.html?catalogid=$catalogid&searchtype=asset&view=assettype/${assettype}/$target.id">
 				 <input type="hidden" name="toremove"  value="$pid" />
@@ -59,31 +74,10 @@
 				 <input type="submit" name="remove" value="remove"/>
 				 </form>
 				 </td> 
-				 <td>
-				 #if($element.isList())
-				 	<a id="${element.id}editlist"  class="thickbox" href="$home$apphome/views/settings/metadata/list/modifylist.html?catalogid=$element.getListCatalogId()&searchtype=$element.getListId()&iframe=true&width=500&height=400">edit list</a>
-				 #end
-				 </td>
 				</tr>
 			#end
 		</table>
  
-		<form name="${target.id}addtoview" id="${target.id}addtoview" action="addtoview.html">
-			<input type="hidden" name="catalogid" value="$!catalogid"/>
-			<input type="hidden" name="searchtype" value="asset"/>
-			<input type="hidden" name="assettype" value="$assettype"/>
-			<input type="hidden" name="view" value="assettype/${assettype}/$target.id"/>
-
-			[[Add New Property]]:
-			<select name="newone" onchange="jQuery('#${target.id}addtoview').submit()">
-				#foreach( $detail in $searcher.getPropertyDetails() )
- 					<option value="$detail.id">$detail.text</option>
- 				#end
-			</select>
-			<a class="thickbox" href="$home$apphome/views/settings/metadata/properties/modifyproperties.html">
-				<img src="${apphome}/theme/images/navigation/write-note.png" title="create, delete, modify properties">
-			</a>
-		</form>
 		</div>
 		</div>
 		#set($details = "")

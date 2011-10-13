@@ -6,9 +6,11 @@
 
 #set($views = $searcherManager.getList("$catalogid", "assettype/views"))
 
-#set( $archive = $searcherManager.getPropertyDetailsArchive("asset") )
+#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
+
 #foreach( $target in $views)
-#if( $asset.assettype && $asset.assettype.length() > 0 && $archive.viewExists("asset/assettype/$asset.assettype/$target.id") )
+
+#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/$target.id") )
   #display("generic.html" $target.name "$asset.id" "asset/assettype/$asset.assettype/$target.id" $print)
 #else
   #display("generic.html" $target.name "$asset.id" "assettype/default/$target.id" $print)

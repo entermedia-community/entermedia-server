@@ -1096,7 +1096,8 @@ public class DataEditModule extends BaseMediaModule
 		
 		int sindex = file.getElements().indexOf(sourceelement);
 		int dindex = file.getElements().indexOf(destinationelement);
-		file.getElements().remove(sourceelement);
+		file.getElements().remove(sindex);
+		sourceelement.setParent(null);
 		if( dindex > sindex)
 		{
 			dindex--;

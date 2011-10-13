@@ -316,6 +316,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		if( add == null)
 		{	
+			log.info("No categoryid specified");
 			return;
 		}
 		String message = "Added to category ";

@@ -1,4 +1,7 @@
-<h2>Edit $!data</h2>
+<br>
+<div class="ui-widget commentbox" style="overflow: hidden;">
+<div class="ui-widget-header">$!data</div>
+<div  class="ui-widget-content emselectmenu" > 
 
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )
@@ -41,4 +44,6 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 #end
 
 
+</div>
+</div>
 </div>

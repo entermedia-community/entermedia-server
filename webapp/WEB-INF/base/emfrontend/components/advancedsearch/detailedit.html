@@ -20,7 +20,7 @@
 		#end
 		#if( $hits.getSearchQuery() )
 			#set( $value = $hits.getSearchQuery().getInput($detail.id) )
-			$context.putPageValue("value",$value)
+			$context.putPageValue("val",$value)
 		#end
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
 	</td>

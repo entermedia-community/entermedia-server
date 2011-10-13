@@ -39,6 +39,7 @@ public class ProfileModule extends MediaArchiveModule
 
 	public void reLoadUserProfile(WebPageRequest inReq)
 	{
+		inReq.removePageValue("userprofile");
 		inReq.removeSessionValue("userprofile");
 		loadUserProfile(inReq);
 	}

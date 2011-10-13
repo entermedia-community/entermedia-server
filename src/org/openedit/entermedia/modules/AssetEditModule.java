@@ -900,7 +900,10 @@ public class AssetEditModule extends BaseMediaModule
 		if( asset.get("assettype") == null)
 		{
 			Data type = archive.getDefaultAssetTypeForFile(asset.getName());
-			asset.setProperty("assettype", type.getId());
+			if( type != null)
+			{
+				asset.setProperty("assettype", type.getId());
+			}
 		}
 		
 		output.add(asset);
