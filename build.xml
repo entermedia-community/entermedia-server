@@ -19,7 +19,7 @@
 	<property environment="env" />
 
 	<!-- Properties for local projects -->
-	<property name="corehome" location="../entermedia visual_data"/>
+	<property name="corehome" location="../entermedia"/>
 	<property name="editorhome" location="../entermedia-server"/>
 	
 	
