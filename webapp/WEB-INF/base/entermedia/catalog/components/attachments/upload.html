@@ -1,0 +1,100 @@
+
+$context.getRequestParameter('assetid')
+
+<div style="padding: 20px 0px 0px 20px; float: right;">
+
+#set($uploadtype = $context.getRequestParameter("CKEditorFuncNum"))
+	#set($detailid = $context.getRequestParameter("detailid"))
+
+#set( $sourcepath = $content.get('uploadsourcepath') )
+<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home/${catalogid}/components/attachments/upload-finish.html">
+		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+		<input type="hidden" name="unzip" value="false" />
+		<input type="hidden" name="catalogid" value="$catalogid" /> 
+				<input type="hidden" name="catalogid" value="$detailid" /> 
+		
+		<input type="hidden" name="applicationid" value="media" />
+		<input type="hidden" name="sourcepath" value="$sourcepath" />
+		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+
+		<input type="hidden" name="uploadtype" value="$uploadtype" />
+		<input type="button" id="finishbutton"value="[[Upload]]" onclick="doUpload('uploadform');">
+
+
+</form>
+
+<div id="waiting" style="display:none;">
+	<div><img src='$home/system/images/toolbar/spinner.gif'/><br/>[[Uploading, please wait...]]</div>
+</div>
+
+</div>
+<div id="detail-resultsarea"></div>
+
+<script type="text/javascript" >
+
+
+doUpload =  function()
+ 	{
+ 	 	jQuery("#finishbutton").attr('disabled','disabled');
+		jQuery("#waiting").show();
+		 var options = { 
+			        target:        '#detail-resultsarea',   // target element(s) to be updated with server response 
+			       success: jQuery("#waiting").hide()
+			   
+			        // other available options: 
+			        //url:       url         // override for form's 'action' attribute 
+			        //type:      type        // 'get' or 'post', override for form's 'method' attribute 
+			        //dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+			        //clearForm: true        // clear all form fields after successful submit 
+			        //resetForm: true        // reset the form after successful submit 
+			 
+			        // $.ajax options can be used here too, for example: 
+			        //timeout:   3000 
+			    }; 
+		
+		 jQuery("#uploadform").ajaxSubmit(options);
+		 jQuery("#finishbutton").attr('disabled','disabled');
+		return false;
+ 	}
+</script>
+
+
+
+
+<script type="text/javascript">
+	#set($detailid = $context.getRequestParameter("detailid"))
+	jQuery(document).ready(function() 
+			{ 
+				
+				
+			jQuery(".selectandclose").live("click", selectandclose());;
+
+
+
+
+			}
+
+			);
+	 
+	selectandclose = function(){
+		 
+		 		
+				var id = jQuery(this).attr("id");
+				var sp = jQuery(this).attr("href");
+				jQuery(".${detailid}-field").data("sourcepath", sp);
+			
+				
+				parent.jQuery(".${detailid}-field").val(id).trigger("change");
+				parent.jQuery(".${detailid}-field").trigger("change");
+				parent.jQuery("#${detailid}-previewimage").html('<img src="$home/${catalogid}/downloads/preview/thumb/' + sp + '/image.jpg"/>');
+				
+				
+				parent.jQuery('#fancybox-overlay').css('display', 'none');
+				parent.jQuery('#fancybox-wrap').css('display', 'none');
+
+				
+				return false;
+ 
+		 
+	 }
+	</script>
