@@ -357,6 +357,26 @@ public class OrderModule extends BaseMediaModule
 		}
 	}
 	
+	public Data toggleItemInOrderBasket(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Order basket = loadOrderBasket(inReq);
+		String assetid = inReq.getRequestParameter("assetid");
+		
+		Asset asset = archive.getAsset(assetid);
+		
+		boolean inorder = getOrderManager().isAssetInOrder(archive.getCatalogId(), basket, asset);
+		if(inorder)
+		{
+			getOrderManager().removeItemFromOrder(archive.getCatalogId(), basket, asset);
+		}
+		else
+		{
+			addItemToOrderBasket(inReq);
+		}
+		return basket;
+	}
+	
 	public Data addItemToOrderBasket(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -435,11 +455,11 @@ public class OrderModule extends BaseMediaModule
 		return basket;
 	}
 	
-	public void loadAssets(WebPageRequest inReq)
+	public HitTracker loadAssets(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
 		Order order = loadOrder(inReq);
-		getOrderManager().findAssets(inReq, catalogid, order);
+		return getOrderManager().findAssets(inReq, catalogid, order);
 	}
 
 	public void createConversionAndPublishRequest(WebPageRequest inReq)
