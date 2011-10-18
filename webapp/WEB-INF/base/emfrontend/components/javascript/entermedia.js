@@ -489,6 +489,23 @@ onloadselectors = function()
 	{
 		jQuery("#assetsearchinput").removeClass("defaulttext");
 	}
+	
+	jQuery(".baskettoggle").live('click', function(event) {
+		//if (!event) var event = window.event;
+	    //event.cancelBubble = true;
+	    //if (event.stopPropagation) event.stopPropagation();
+	    //event.stopPropagation();
+	    //event.stopImmediatePropagation();
+        //event.preventDefault();
+        
+	    //alert(jQuery(this).attr('data-href'));
+	    var cbox = jQuery(this);
+	    var url = cbox.attr('data-href');
+	    var assetid = cbox.attr('data-assetid');
+	    
+		jQuery("#assettoggle" + assetid).load(url);
+		return false;
+	});
 
 		jQuery('#emselectable table td' ).livequery(	
 			function()
@@ -498,7 +515,7 @@ onloadselectors = function()
 				}
 				
 				jQuery(this).click(
-					function() 
+					function(event) 
 					{
 						jQuery('#emselectable table tr' ).each(function(index) 
 						{ 
@@ -677,6 +694,9 @@ onloadselectors = function()
 					}
 				}
 		);
+		
+		
+		
 }
 
 

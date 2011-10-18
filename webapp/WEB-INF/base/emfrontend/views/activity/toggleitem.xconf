@@ -1,7 +1,5 @@
 <page>
-<path-action name="OrderModule.loadOrderBasket"/>
-	
-<path-action name="OrderModule.addItemToOrderBasket"/>
+<path-action name="OrderModule.toggleItemInOrderBasket"/>
 <inner-layout/>
 
 </page>
