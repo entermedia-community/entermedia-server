@@ -25,6 +25,7 @@
 
 #if ($foreignkeyid && $foreignkeyvalue)
 	#set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
+	
 	#if( $foreigndetail && $foreigndetail.listid )
 		#set( $foreignfield = $foreigndetail.listid )
 	#else
@@ -33,7 +34,6 @@
 	#set ($query = $lsearcher.createSearchQuery())
 	#set ($o = $query.setAndTogether(false))
 	#set ($o = $query.addMatches("$foreignfield", "$foreignkeyvalue"))
-	#set ($o = $query.addMatches("$foreignfield", "all"))
 #elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
 	#set ($query = $lsearcher.parse($squery))
 #else
