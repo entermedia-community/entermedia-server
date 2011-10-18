@@ -631,6 +631,18 @@ public class OrderModule extends BaseMediaModule
 	}
 	
 	
+	public void clearOrderItems(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker items = findOrderItems(inReq);
+		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+			Data item = (Data) iterator.next();
+			searcher.delete(item, inReq.getUser());
+		}
+		
+		
+	}
+	
 	public Data createMultiEditData(WebPageRequest inReq) throws Exception
 	{
 		Order order = loadOrder(inReq);
