@@ -632,12 +632,12 @@ public class OrderManager
 		return count;
 	}
 	
-	public boolean isAssetInOrder(String inCatId, Order inOrder, Asset inAsset)
+	public boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId)
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addMatches("orderid", inOrder.getId());
-		query.addMatches("assetid", inAsset.getId());
+		query.addMatches("assetid", inAssetId);
 		HitTracker results = itemsearcher.search(query);
 		if(results.size() > 0)
 		{

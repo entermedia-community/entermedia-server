@@ -365,7 +365,7 @@ public class OrderModule extends BaseMediaModule
 		
 		Asset asset = archive.getAsset(assetid);
 		
-		boolean inorder = getOrderManager().isAssetInOrder(archive.getCatalogId(), basket, asset);
+		boolean inorder = getOrderManager().isAssetInOrder(archive.getCatalogId(), basket, asset.getId());
 		if(inorder)
 		{
 			getOrderManager().removeItemFromOrder(archive.getCatalogId(), basket, asset);

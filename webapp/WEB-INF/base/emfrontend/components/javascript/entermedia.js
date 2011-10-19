@@ -491,14 +491,6 @@ onloadselectors = function()
 	}
 	
 	jQuery(".baskettoggle").live('click', function(event) {
-		//if (!event) var event = window.event;
-	    //event.cancelBubble = true;
-	    //if (event.stopPropagation) event.stopPropagation();
-	    //event.stopPropagation();
-	    //event.stopImmediatePropagation();
-        //event.preventDefault();
-        
-	    //alert(jQuery(this).attr('data-href'));
 	    var cbox = jQuery(this);
 	    var url = cbox.attr('data-href');
 	    var assetid = cbox.attr('data-assetid');
@@ -506,6 +498,14 @@ onloadselectors = function()
 		jQuery("#assettoggle" + assetid).load(url);
 		return false;
 	});
+	
+	jQuery('#mattresulttable table tr').live('click',
+			function(event) {
+				//find the rowid go there
+				var id = jQuery(this).attr("rowid");
+				window.location = id;
+			}
+	);
 
 		jQuery('#emselectable table td' ).livequery(	
 			function()
