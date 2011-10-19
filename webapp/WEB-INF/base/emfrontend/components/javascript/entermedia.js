@@ -1,5 +1,17 @@
 var ajaxtimerrunning = false;
 
+repaint = function(divid) {
+	var div = jQuery("#" + divid);
+	var href = div.data('href');
+	var args = div.data('args');
+	jQuery.get(href + "?" + args, {}, function(data) 
+			{
+				//var toreplace = jQuery("#" + targetDiv);
+				div.replaceWith(data);
+			}
+	);
+}
+
 toggleUserProperty = function(property, onsuccess) {
 	jQuery.ajax(
 			{
