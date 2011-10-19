@@ -1,6 +1,6 @@
 <page>
 <path-action name="OrderModule.toggleItemInOrderBasket"/>
-<path-action name="OrderModule.loadOrderManager"/>
+<page-action name="OrderModule.loadOrderBasket"/>
 <inner-layout/>
 
 </page>
