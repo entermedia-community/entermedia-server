@@ -37,9 +37,9 @@
 </ul>
 
 		<table id="emfilelist" style="width: 700px;" class="emresultscontent">
-				<tr id="tableheader">
+				<!-- <tr id="tableheader">
 					<th class="firstheader" ></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th  class="lastheader" > Asset Type</th>
-				</tr>
+				</tr> -->
 				<tbody>
 				</tbody>
 		</table>
@@ -52,6 +52,8 @@
 		<input type="hidden" name="field" value="assettitle" />
 		<input type="hidden" name="field" value="assettype" />
 		<input type="hidden" name="field" value="editstatus" />
+		<input type="hidden" name="field" value="episode" />
+		<input type="hidden" name="field" value="title" />
 </form>
 </td>
 </tr>
@@ -87,7 +89,7 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 		try 
 		{
 			var link = "$root/uploadrow.html";
-			
+			//alert( "$root/uploadrow.html?id=" + idcounter + "&name=" + names[i] + "&localpath=" + localpaths[i] + "&parentpath=" + parentpaths[i] + "&size=" + sizes[i]);
 			jQuery.ajax(
 			{
 			   type: "POST",
@@ -115,5 +117,10 @@ function removeUpload(inId)
 			jQuery("#emfilelist #row" + inId).html("");			
 		}	   
 
+function updateEpisodes(inId)
+{
+	var title = jQuery("#" + inId + "titleselect").val();
+	jQuery("#" + inId + "episodeselect").load("$apphome/components/upload/types/dragsync/episodes.html?title=" + title + "&id=" + inId);
+}
 </script>
 

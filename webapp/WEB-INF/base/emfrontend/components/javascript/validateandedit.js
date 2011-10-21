@@ -83,7 +83,7 @@ addListListener = function( inParentFieldName, inFieldName )
 //When a field is changed we want to validate it and update any listeners
 //Find all the lists in this form. Update all of them that are marked as a listener
 //parent = businesscategory, child = lob, field = product
-updatelisteners = function(catalogid, searchtype,view , fieldname)
+updatelisteners = function(catalogid, searchtype,view , fieldname, detailprefix)
 {
 	var val = document.getElementById( fieldname + '.value').value;
 	//alert( "found "  + val );
@@ -104,7 +104,7 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 			//we are missing the data element of the children
 			//required: catalogid, searchtype, fieldname, value
 			//optional: query, foreignkeyid and foreignkeyvalue
-			jQuery("#" + div).load('$home${apphome}/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+			jQuery("#" + div).load('$home${apphome}/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1, detailprefix:detailprefix});
 		}
 	}
 }

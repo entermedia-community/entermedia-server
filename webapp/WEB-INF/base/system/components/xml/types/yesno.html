@@ -1,5 +1,5 @@
 
-<select name="${detail.getId()}.value">
+<select name="$!detailprefix${detail.getId()}.value">
 <option name="[[Yes]]" value="true"  #if( "true" == $val ) selected #end >[[Yes]]</option>						
 <option name="[[No]]" value="false" #if( !("true" == $val )) selected #end  >[[No]]</option>
 </select>			
