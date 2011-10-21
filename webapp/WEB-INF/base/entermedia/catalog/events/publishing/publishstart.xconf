@@ -1,0 +1,4 @@
+<page>
+	<property name="eventname">Publish Start</property>	
+	<path-action name="LogSearchModule.addEventLog"/>
+</page>

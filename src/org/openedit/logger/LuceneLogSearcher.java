@@ -79,7 +79,18 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 		}
 		return search(inReq, search);
 	}
-	
+	public synchronized void reIndexAll() throws OpenEditException
+	{
+		super.reIndexAll();
+		try
+		{
+			flushRecentChanges(true);
+		}
+		catch( IOException ex)
+		{
+			throw new OpenEditException(ex); 
+		}
+	}
 	public void reIndexAll(final IndexWriter writer) 
 	{
 		try 
@@ -106,8 +117,8 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 			process.setRecursive(false);
 			process.setRootPath("/WEB-INF/logs/"+getFolderName()+"/");
 			process.process();
-			writer.optimize();
-			flushRecentChanges(true);
+			//writer.optimize();
+			//flushRecentChanges(true);
 		}
 		catch (Exception ex) 
 		{
@@ -658,3 +669,5 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 	
 	
 }
+
+	

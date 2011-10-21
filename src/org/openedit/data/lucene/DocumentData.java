@@ -30,7 +30,8 @@ public class DocumentData implements Data
 	}
 	public String get(String inId)
 	{
-		return getDocument().get(inId);
+		String value = getDocument().get(inId);
+		return value;
 	}
 
 	public String getId()

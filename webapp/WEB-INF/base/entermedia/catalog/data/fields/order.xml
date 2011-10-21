@@ -5,6 +5,7 @@
 	<property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>
 	<property id="orderstatus" editable="true"  datatype="list" index="true" stored="true">Status</property>
 	<property id="project" editable="true"  datatype="list" listid="order/projects" index="true" stored="true">Project</property>
+	<property id="itemcount" editable="false" stored="true" index="true"  >Item Count</property>
 
 	<property id="applicationid"  index="true" stored="true">Application Ordered</property>
 	<property id="sharedby"  index="true" stored="true">Shared By</property>
@@ -16,10 +17,9 @@
 	<property id="emailsent"  type="boolean" editable="true" index="true" stored="true">Email Sent</property>
 
 	<property id="historyuserstatus" stored="true" index="true" type="list" listid="order/userstatus" >Last Status</property>
-	<property id="historyuserid" editable="false" stored="true" index="true">Last User ID</property>
+	<property id="historyuserid" editable="false" stored="true" index="true" type="list" listid="user" listcatalogid="system">Last User ID</property>
 	<property id="historynote" editable="false" stored="true" index="true">Last Note</property>
 	<property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" >Last Changed</property>
-	<property id="historyassetids" editable="false" stored="true" index="true"  >Last Attachments</property>
 
 
 </properties>

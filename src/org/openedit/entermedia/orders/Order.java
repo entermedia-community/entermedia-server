@@ -1,6 +1,7 @@
 package org.openedit.entermedia.orders;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 
 import org.openedit.Data;
@@ -10,6 +11,7 @@ import org.openedit.xml.ElementData;
 public class Order extends ElementData
 {
 	protected OrderHistory fieldRecentOrderHistory;
+	protected Collection<Data> fieldOrderItems;
 
 	public OrderHistory getRecentOrderHistory()
 	{
@@ -71,5 +73,17 @@ public class Order extends ElementData
 	public String getOrderType(){
 		return get("ordertype");
 	}
+
+	public Collection<Data> getOrderItems()
+	{
+		return fieldOrderItems;
+	}
+
+	public void setOrderItems(Collection<Data> inOrderItems)
+	{
+		this.fieldOrderItems = inOrderItems;
+	}
+	
+	
 	
 }

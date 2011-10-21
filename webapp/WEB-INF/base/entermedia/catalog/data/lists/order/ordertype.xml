@@ -1,8 +1,8 @@
 <properties>
 	
 	<property id="collaborate" >Collaborate</property>
-	<property id="email" >Email</property>
-	<property id="export" >Export</property>
+	<property id="email" >Preview</property>
+	<property id="export" >Publish</property>
 	<property id="download" >Download</property>
 	<property id="upload" >Upload</property>
 

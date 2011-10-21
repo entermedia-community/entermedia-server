@@ -41,6 +41,12 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 			result.setOk(false);
 			return result;
 		}
+		String taskid = inStructions.getProperty("conversiontaskid");
+		if( taskid != null)
+		{
+			inArchive.fireMediaEvent("conversions/conversionstart","conversioneventLog",null,inAsset,"conversiontaskid",taskid);
+		}
+
 		String abspath = inputpage.getContentItem().getAbsolutePath();
 		
 		if (inStructions.isForce() || !converted.exists() || converted.getContentItem().getLength() == 0)

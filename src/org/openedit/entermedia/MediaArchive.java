@@ -921,8 +921,12 @@ public class MediaArchive
 	}
 	public void fireMediaEvent(String operation, User inUser, Asset asset)
 	{
+		fireMediaEvent(operation,"asset",inUser,asset, null,null);
+	}
+	public void fireMediaEvent(String operation, String inSearchType, User inUser, Asset asset, String inParamName, String inParamValue)
+	{
 			WebEvent event = new WebEvent();
-			event.setSearchType("asset");
+			event.setSearchType(inSearchType);
 			event.setCatalogId(getCatalogId());
 			event.setOperation(operation);
 			event.setUser(inUser);
@@ -930,8 +934,10 @@ public class MediaArchive
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
 			event.setProperty("assetids", asset.getId() );
-
-			//archive.getWebEventListener()
+			if( inParamName != null)
+			{
+				event.setProperty(inParamName, inParamValue);
+			}
 			getMediaEventHandler().eventFired(event);
 	}
 

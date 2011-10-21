@@ -91,15 +91,21 @@ public class OrderManager
 		return order;
 	}
 
+	/**
+	 * find all orders for a given user, sorted by most recently ordered.
+	 * @param inCatlogId
+	 * @param inUser
+	 * @return
+	 */
 	public HitTracker findOrdersForUser(String inCatlogId, User inUser) 
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		SearchQuery query = ordersearcher.createSearchQuery();
-		query.addOrsGroup("orderstatus","ordered complete");
-		GregorianCalendar cal = new GregorianCalendar();
-		cal.add(Calendar.MONTH, -1);
-		query.addAfter("date", cal.getTime());
-		query.addSortBy("historydateDown");
+//		GregorianCalendar cal = new GregorianCalendar();
+//		cal.add(Calendar.MONTH, -1);
+//		query.addAfter("date", cal.getTime());
+		query.addExact("userid", inUser.getId());
+		query.addSortBy("dateDown");
 		return ordersearcher.search(query);
 	}
 	public void loadOrderHistoryForPage(HitTracker inPage)
@@ -239,13 +245,7 @@ public class OrderManager
 					String[] items = inReq.getRequestParameters("itemid");
 
 					Collection itemssaved = saveItems(catalogid,inReq,fields,items);
-					List assetids = new ArrayList();
-					for (Iterator iterator = itemssaved.iterator(); iterator.hasNext();)
-					{
-						Data item = (Data) iterator.next();
-						assetids.add(item.get("assetid"));
-					}
-					history.setAssetIds(assetids);
+					order.setProperty("itemcount", String.valueOf(items.length));
 				}
 			}
 			saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
@@ -515,6 +515,12 @@ public class OrderManager
 		return assetids;
 	}
 	
+
+	/**
+	 * runs on a timer
+	 * @param archive
+	 * @param inOrder
+	 */
 	public void updateStatus(MediaArchive archive, Order inOrder)
 	{
 		//look up all the tasks
@@ -534,11 +540,16 @@ public class OrderManager
 		//Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
 		int itemscomplted = 0;
+		boolean foundpublishing = false;
+		boolean founderror = false;
+		boolean foundtranscoding = false;
+		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data orderitemhit = (Data) iterator.next();
 			boolean convertcomplete = false;
 			boolean publishcomplete = false;
+			
 			String conversiontaskid = orderitemhit.get("conversiontaskid");
 			if( conversiontaskid == null)
 			{
@@ -551,8 +562,17 @@ public class OrderManager
 				{
 					convertcomplete = true;
 				}
+				else if ("error".equals( convert.get("status") ) )
+				{
+					founderror = true;
+				}
 			}
-			if( convertcomplete)
+			if( !convertcomplete )
+			{
+				foundtranscoding = true;
+				updateOrderItemStatusIfRequired(archive,orderitemhit,"transcoding");
+			}
+			else
 			{
 				String publishqueueid = orderitemhit.get("publishqueueid");
 				if( publishqueueid == null)
@@ -568,18 +588,20 @@ public class OrderManager
 					}
 					else if ("error".equals( publish.get("status") ) )
 					{
+						founderror = true;
 						Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
 						item.setProperty("status", "error");
 						item.setProperty("errordetails", publish.get("errordetails"));
 						itemsearcher.saveData(item, null);
 						inOrder.setOrderStatus("error"); //orders are either open closed or error
-						OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
-						saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
-						
-						return;
 					}
 				}
-				if( publishcomplete)
+				if( !publishcomplete)
+				{
+					foundpublishing = true;
+					updateOrderItemStatusIfRequired(archive,orderitemhit,"publishing");
+				}
+				else
 				{
 					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
 					item.setProperty("status", "complete");
@@ -601,10 +623,48 @@ public class OrderManager
 					}
 				}
 			}
-			
+		}
+		if( founderror)
+		{
+			updateStatusIfRequired(archive, inOrder, "error");
+		}
+		else if( foundtranscoding)
+		{
+			updateStatusIfRequired(archive, inOrder, "transcoding");
+		}
+		else if( foundpublishing)
+		{
+			updateStatusIfRequired(archive, inOrder, "publishing");
 		}
 	}
+	
+	public void updateStatusIfRequired(MediaArchive archive, Order inOrder, String inStatus)
+	{
+		String status = inOrder.get("historyuserstatus");
+		if (inStatus.equals(status))
+		{
+			return;
+		}
+		
+		OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null,inStatus);
+		saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
 
+	}
+	
+	public void updateOrderItemStatusIfRequired(MediaArchive archive, Data inItem, String inStatus)
+	{
+		String status = inItem.get("status");
+		if (inStatus.equals(status))
+		{
+			return;
+		}
+		Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+		Data item = (Data)itemsearcher.searchById(inItem.getId());
+		item.setProperty("status",inStatus);
+		itemsearcher.saveData(item, null);
+
+	}
+	
 	public void updatePendingOrders(MediaArchive archive)
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");

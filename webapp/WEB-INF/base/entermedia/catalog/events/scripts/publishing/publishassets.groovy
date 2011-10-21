@@ -81,18 +81,25 @@ public void init() {
 					{
 						publishrequest.setProperty('status', 'transcoding');
 						queuesearcher.saveData(publishrequest, context.getUser());
+						//TODO: fire log event for transcoding
 					}
 					continue;
 				}
 
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
+				
+				//TODO: add starting event, only if status is NEW (status == 'new')
+				if (publishrequest.get("status")==null||publishrequest.get("status")=="new")
+				{
+					firePublishEvent(publishrequest.getId(), "publishing/publishstart");
+				}
 				PublishResult presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
 				if( presult.isError() )
 				{
 					publishrequest.setProperty('status', 'error');
 					publishrequest.setProperty("errordetails", presult.getErrorMessage());
 					queuesearcher.saveData(publishrequest, context.getUser());
-					firePublishEvent(publishrequest.getId());
+					firePublishEvent(publishrequest.getId(), "publishing/publisherror");
 					continue;
 				}
 				if( presult.isComplete() )
@@ -101,7 +108,8 @@ public void init() {
 					publishrequest.setProperty('status', 'complete');
 					publishrequest.setProperty("errordetails", " ");
 					queuesearcher.saveData(publishrequest, context.getUser());
-					firePublishEvent(publishrequest.getId());
+					firePublishEvent(publishrequest.getId(), "publishing/publishcomplete");
+					
 				}
 				else if( presult.isPending() )
 				{
@@ -113,7 +121,8 @@ public void init() {
 			catch( Throwable ex)
 			{
 				log.error("Problem publishing ${asset} to ${publishdestination}", ex);
-				publishrequest.setProperty('status', 'error');
+				publishrequest.setProperty('status', 'exportrequested');
+//				publishrequest.setProperty('status', 'error');
 				if(ex.getCause() != null)
 				{
 					ex = ex.getCause();
@@ -125,19 +134,18 @@ public void init() {
 
 	}
 }
-
-
-protected firePublishEvent(String inOrderItemId)
+protected firePublishEvent(String inOrderItemId, String operation)
 {
 	WebEvent event = new WebEvent();
-	event.setSearchType("publishqueue");
+	event.setSearchType("publisheventLog");
 	event.setProperty("publishqueueid", inOrderItemId);
-	event.setOperation("publishing/publishcomplete");
+	event.setOperation( operation );
 	event.setUser(context.getUser());
 	event.setCatalogId(mediaarchive.getCatalogId());
 	mediaarchive.getMediaEventHandler().eventFired(event);
-
 }
+
+
 
 protected Publisher getPublisher(MediaArchive inArchive, String inType)
 {

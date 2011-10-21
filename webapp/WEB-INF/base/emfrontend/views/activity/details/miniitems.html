@@ -1,0 +1,46 @@
+#if( $orderitems.size() > 0) #set( $assetdetails =
+$searcherManager.getSearcher($catalogid,"asset").getDetailsForView("asset/orderassetresults",$context.getUserProfile()
+) )
+
+<div align="right">
+	<table >
+		<tr id="">
+			<th></th> #foreach( $detail in $assetdetails) #if( $velocityCount ==
+			3)
+			<th>Status</th> #end
+			<th>$detail.text</th> #end
+
+		</tr>
+		#foreach( $item in $orderitems ) #set( $asset =
+		$mediaarchive.getAsset($item.assetid))
+		$context.putPageValue("data",$asset)
+		
+	
+		
+		<tr rowid="$order.id">
+			<td><a class="emdialog"
+				href="$home$apphome/views/activity/details/itemprocessingstatus.html?orderid=$order.id&orderitemid=$item.id"><img
+					src="$home$themeprefix/images/orders/plus.png" /> </a></td> #foreach(
+			$detail in $assetdetails) $!context.putPageValue("detail",$detail)
+			
+			#if( $velocityCount == 3) #set( $status = false ) 
+				#set( $status = $searcherManager.getData($catalogid,"orderitem/status",$item.status ))
+				<td>
+					#if ($status) $status 
+					#else
+						$context.getRequestParameter("orderstatus")
+					#end
+				</td> 
+			#end
+			
+			<td>#set( $value = false) #set( $value = $asset.get($detail.id)
+				) #if( $value) $!context.putPageValue("val",$value)
+				$!context.putPageValue("value",$value)
+				$pages.include("$apphome/components/xml/detailreadonly.html",
+				$context) #end</td> #end
+		</tr>
+		#end
+	</table>
+
+	
+	#end

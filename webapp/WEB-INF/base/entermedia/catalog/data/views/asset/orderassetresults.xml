@@ -1,0 +1,8 @@
+<properties>
+	<property id="title" />
+	<property id="episode" />
+	<property id="name" />
+	<property id="length" />
+	<property id="filesize" />
+	<property id="framerate" />
+</properties>

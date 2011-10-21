@@ -1,0 +1,10 @@
+<page>
+	<path-action name="Date.loadFormat" />
+	<path-action name="OrderModule.loadOrder" />
+
+	<path-action name="Script.run" >
+		<script>./itemprocessingstatus.groovy</script>
+	</path-action>
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
+	<layout />
+</page>

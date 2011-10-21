@@ -64,6 +64,12 @@ public class imagemagickCreator extends BaseImageCreator
 			return applyWaterMark(inArchive, fullInputPath, outputpath, inStructions);
 		}
 		
+		String taskid = inStructions.getProperty("conversiontaskid");
+		if( taskid != null)
+		{
+			inArchive.fireMediaEvent("conversions/conversionstart","conversioneventLog",null,inAsset,"conversiontaskid",taskid);
+		}
+
 		Page input = null;
 		boolean autorotate = true; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");

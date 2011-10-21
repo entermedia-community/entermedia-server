@@ -1,0 +1,6 @@
+<properties>
+<property id="user"  keyword="true" viewtype="user" index="true" stored="true">User</property>
+<property id="date" datatype="date" date="true" viewtype="time" index="true" stored="true">Date</property>
+<property id="conversiontaskid" index="true" stored="true">Conversion Task ID</property>
+<property id="operation" index="true" stored="true">Operation</property>
+</properties>

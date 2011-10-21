@@ -132,7 +132,14 @@ public class LogSearchModule extends BaseModule implements Shutdownable
 			return;
 		}
 		Searcher found = null;
+		if( inEvent.getSearchType().endsWith("Log"))
+		{
+			found = getSearcherManager().getSearcher(inEvent.getCatalogId(), inEvent.getSearchType() );			
+		}
+		else
+		{
 			found = getSearcherManager().getSearcher(inEvent.getCatalogId(), inEvent.getSearchType() + inEvent.getOperation() + "Log");
+		}
 		if( found instanceof WebEventListener)
 		{
 			WebEventListener lucenelogsearcher= (WebEventListener)found;

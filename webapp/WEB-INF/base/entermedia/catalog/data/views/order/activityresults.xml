@@ -1,8 +1,10 @@
 <properties>
-	<property id="historyuserstatus" />
-	<property id="historydate" />
-	<property id="id" />
-	<property id="project" />
-	<property id="historyuserid" />
-	<property id="historynote" />
+	<property id="id">Order ID</property>
+	<property id="ordertype" />
+	<property id="historyuserstatus">Status</property>
+	<property id="publishdestination">Destination</property>
+	<property id="itemcount"># Assets</property>
+	<property id="userid">Ordered By</property>
+	<property id="historydate">Order Date</property>
+	<!-- <property id="historynote" /> -->
 </properties>

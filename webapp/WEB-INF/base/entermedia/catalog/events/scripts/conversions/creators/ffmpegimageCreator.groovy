@@ -68,7 +68,13 @@ public class ffmpegimageCreator extends BaseImageCreator
             log.info("Input not ready yet");
 			return result;
 		}
-
+		
+		String taskid = inStructions.getProperty("conversiontaskid");
+		if( taskid != null)
+		{
+			inArchive.fireMediaEvent("conversions/conversionstart","conversioneventLog",null,inAsset,"conversiontaskid",taskid);
+		}
+		
 		String offset = inStructions.getProperty("timeoffset");
 		if( offset == null)
 		{

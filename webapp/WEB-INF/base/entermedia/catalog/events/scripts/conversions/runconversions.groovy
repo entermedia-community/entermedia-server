@@ -96,7 +96,7 @@ public void checkforTasks()
 							realtask.setProperty("externalid", result.get("externalid"));
 							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 							
-							mediaarchive.fireMediaEvent("conversions/conversioncomplete",context.getUser(),asset);
+							mediaarchive.fireMediaEvent("conversions/conversioncomplete","conversioneventLog",context.getUser(),asset,"conversiontaskid",realtask.getId());
 						} 
 						else
 						{
@@ -117,6 +117,9 @@ public void checkforTasks()
 							item.setProperty("errordetails", result.getError() );
 							itemsearcher.saveData(item, null);
 						}
+						Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
+						mediaarchive.fireMediaEvent("conversions/conversionerror","conversioneventLog",context.getUser(),asset,"conversiontaskid",realtask.getId());
+						
 					}
 					else
 					{
@@ -167,6 +170,8 @@ private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inP
 			}
 		}
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
+		inStructions.addProperty("conversiontaskid",inTask.getId() );
+		
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );

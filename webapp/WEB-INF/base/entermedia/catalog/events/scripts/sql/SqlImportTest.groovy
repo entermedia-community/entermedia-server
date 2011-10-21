@@ -12,7 +12,7 @@ import java.sql.Statement;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.ConvertStatus;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.scanner.SqlImportConverter;
+//import org.openedit.entermedia.scanner.SqlImportConverter;
 
 public class SqlImportTest extends BaseEnterMediaTest
 {

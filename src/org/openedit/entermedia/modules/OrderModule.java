@@ -145,7 +145,8 @@ public class OrderModule extends BaseMediaModule
 		List orderitems = new ArrayList();
 		String ordertype = inReq.findValue("ordertype");
 
-		if (assets.getSelectedHits().size() > 0)
+		List selectedHits = assets.getSelectedHits();
+		if (selectedHits.size() > 0)
 		{
 			Map props = new HashMap();
 
@@ -154,12 +155,14 @@ public class OrderModule extends BaseMediaModule
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
-			for (Iterator iterator = assets.getSelectedHits().iterator(); iterator.hasNext();)
+			for (Iterator iterator = selectedHits.iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();
 				Asset asset = getMediaArchive(catalogid).getAssetBySourcePath(hit.getSourcePath());
 				getOrderManager().addItemToOrder(catalogid, order, asset, null);
 			}
+			order.setProperty("itemcount", String.valueOf(selectedHits.size()));
+
 			if (order.get("expireson") == null)
 			{
 				order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
@@ -381,7 +384,8 @@ public class OrderModule extends BaseMediaModule
 			Asset asset = archive.getAsset(assetid);
 			getOrderManager().addItemToOrder(archive.getCatalogId(), basket, asset, props);
 		}
-
+		Collection items = getOrderManager().findOrderItems(inReq, archive.getCatalogId(), basket);
+		basket.setProperty("itemcount", String.valueOf(items.size()));
 		return basket;
 	}
 
@@ -472,14 +476,13 @@ public class OrderModule extends BaseMediaModule
 		order.setProperty("publishdestination", publishdestination);
 		
 		List assetids = manager.addConversionAndPublishRequest(order, archive,params, inReq.getUser());
-		//OrderHistory history = getOrderManager().createNewHistory(archive.getCatalogId(), order, inReq.getUser(), "pending");
-		//history.setAssetIds(assetids);
-		//manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(), order, history);
+		OrderHistory history = getOrderManager().createNewHistory(archive.getCatalogId(), order, inReq.getUser(), "placed");
 		if( assetids.size() > 0)
 		{
 			order.setProperty("orderstatus", "pending");
 		}
-		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+		history.setAssetIds(assetids);
+		manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(), order, history);
 		log.info("Added conversion and publish requests for " + order.getId());
 	}
 
@@ -544,7 +547,7 @@ public class OrderModule extends BaseMediaModule
 			Asset asset = archive.getAsset(assetids[i]);
 			getOrderManager().addItemToOrder(catalogId, order, asset, null);
 		}
-
+		order.setProperty("itemcount", String.valueOf(assetids.length));
 		getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
 		inReq.putPageValue("order", order);
 
@@ -568,6 +571,7 @@ public class OrderModule extends BaseMediaModule
 			assetids.add(asset.getId());
 			getOrderManager().addItemToOrder(catalogId, order, asset, null);
 		}
+		order.setProperty("itemcount", String.valueOf(assets.size()));
 		//Order history needs to be updated
 		OrderHistory history = getOrderManager().createNewHistory(catalogId, order, inReq.getUser(), "newupload");
 		history.setAssetIds(assetids);

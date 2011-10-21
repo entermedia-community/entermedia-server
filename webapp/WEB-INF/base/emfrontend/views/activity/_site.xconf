@@ -1,4 +1,5 @@
 <page>
 	<script id="jquery-autosave" src="/${applicationid}/components/javascript/jquery.autosave.min.js" />
+	<script id="ordermanager" src="/${applicationid}/components/javascript/ordermanager.js" />
 	
 </page>
