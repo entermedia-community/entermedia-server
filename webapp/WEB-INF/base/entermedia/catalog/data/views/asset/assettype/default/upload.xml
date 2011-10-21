@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties usagelabel="Upload Screen">
+  <property id="name" editable="false" />
+  <property id="assettype" />
+  <property id="filesize" />
+  <property id="title"/>
+  <property id="episode"/>
+</properties>
