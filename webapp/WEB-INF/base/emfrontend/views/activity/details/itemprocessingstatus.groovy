@@ -43,14 +43,14 @@ if( conversiontaskid != null)
 		}
 	}
 }
-if (isConversionComplete)
+String publishqueueid = orderitem.get("publishqueueid");
+if( publishqueueid != null)
 {
-	String publishqueueid = orderitem.get("publishqueueid");
-	if( publishqueueid != null)
-	{
-		Data publishqueue = searcherManager.getData(catalogid, "publishqueue", publishqueueid);
-		context.putPageValue("publishqueue", publishqueue);
-		
+	Data publishqueue = searcherManager.getData(catalogid, "publishqueue", publishqueueid);
+	context.putPageValue("publishqueue", publishqueue);
+
+	if (isConversionComplete)
+	{				
 		Searcher eventsearcher = searcherManager.getSearcher(catalogId,"publisheventLog");
 		SearchQuery iquery = eventsearcher.createSearchQuery();
 		iquery.addExact("publishqueueid", publishqueueid);
