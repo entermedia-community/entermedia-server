@@ -71,8 +71,9 @@
 			<input type="hidden" name="assettype" value="$assettype"/>
 			<input type="hidden" name="view" value="assettype/${assettype}/$target.id"/>
 
-			[[Add New Property]]:
+			
 			<select name="newone" onchange="jQuery('#${target.id}addtoview').submit()">
+				<option value="">[[Add New Property]]</option>
 				#foreach( $detail in $searcher.getPropertyDetails() )
  					<option value="$detail.id">$detail.text</option>
  				#end
