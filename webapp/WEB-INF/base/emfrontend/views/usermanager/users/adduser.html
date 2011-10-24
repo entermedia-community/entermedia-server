@@ -13,9 +13,9 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 
 <hr/>
 
-#set ($usersettingsSearcher = $searcherManager.getSearcher($catalogid, "usersettings"))
-$context.putPageValue("searcher", $usersettingsSearcher)	 
-$context.putPageValue("view", "usersettings/edit")	
+#set ($userprofileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+$context.putPageValue("searcher", $userprofileSearcher)	 
+$context.putPageValue("view", "userprofile/edit")	
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 
 <input type="button" value="Create" onclick="jQuery('#adduser').submit();">
