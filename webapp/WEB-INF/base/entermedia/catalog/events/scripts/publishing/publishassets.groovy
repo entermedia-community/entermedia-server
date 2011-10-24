@@ -86,13 +86,14 @@ public void init() {
 					continue;
 				}
 
-				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
 				
-				//TODO: add starting event, only if status is NEW (status == 'new')
-				if (publishrequest.get("status")==null||publishrequest.get("status")=="new")
+				String existingstatus = publishrequest.get("status");				
+				if (existingstatus==null || existingstatus=="new" || existingstatus=="transcoding")
 				{
 					firePublishEvent(publishrequest.getId(), "publishing/publishstart");
 				}
+				
+				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
 				PublishResult presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
 				if( presult.isError() )
 				{
