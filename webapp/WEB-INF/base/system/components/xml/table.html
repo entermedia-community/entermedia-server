@@ -3,15 +3,12 @@
 #set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
 #set( $candelete = $context.getRequestParameter("candelete")) 
 
-<div id="${searchtype}_table">
-#if($candelete != "false")
-<div id="emselectable">
-#end
-
-#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))##productid
-#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))##4322
 #set( $view = $context.getRequestParameter("view"))
 #set( $editpath = $context.getRequestParameter("editpath"))
+#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))##productid
+#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))##4322
+
+
 
 #set ($catalogId = $context.getRequestParameter("catalogid") )
 			
@@ -25,6 +22,13 @@
 #set( $passalong = $url_util.encode($passalongdec) )
 
 #set( $args = "catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&view=$view&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
+
+<div id="${searchtype}_table">
+#if($candelete != "false")
+<div id="emselectable" class="emselectable" data-view="$view" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${view}editor">
+#end
+
+
 
 #set($selectedid = $context.getRequestParameter("selectedid"))
 
@@ -75,7 +79,7 @@
 		<input type="hidden" id="emselectedrow" name="id" />
 	</form>
 #else
-	<div id="editlink" targetdiv="${view}editor" link="$home$editpath?$args&edit=true&oemaxlevel=1"/>
+	<div id="$editlink" targetdiv="${view}editor" link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
 #end
 
 

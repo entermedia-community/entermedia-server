@@ -548,6 +548,16 @@ onloadselectors = function()
 								});	
 							form.submit();
 						}
+						else if(jQuery('#emselectable #editlink'))
+						{
+							var tablediv = jQuery(this).parents('.emselectable').filter(':first');
+							var targetdiv = tablediv.data('targetdiv');
+							var editpath = tablediv.data('editpath');
+							targetdiv = targetdiv.replace(/\//g, "\\/");
+							var id = jQuery(row).attr("rowid");
+							editpath = editpath + "&id=" + id;
+							jQuery("#" + targetdiv).load(editpath);
+						}
 						else
 						{
 							window.location = id;
