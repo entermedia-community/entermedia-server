@@ -1,8 +1,8 @@
 <properties>
 	
-	<property id="fileproperties">File Properties</property>
-	<property id="general">General Metadata</property>
-	<property id="assetdetails">Asset Details</property>
+	<property id="fileproperties" showonedit="true">File Properties</property>
+	<property id="general" showonedit="true">General Metadata</property>
+	<property id="assetdetails" showonedit="true">Asset Details</property>
 	<property id="upload">Show on Ingest</property>
 	
 </properties>
