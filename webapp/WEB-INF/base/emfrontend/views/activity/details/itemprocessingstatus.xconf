@@ -7,4 +7,5 @@
 	</path-action>
 	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
 	<layout />
+	<path-action name="MediaArchiveModule.getAsset"  />
 </page>
