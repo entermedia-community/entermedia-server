@@ -6,7 +6,7 @@
 #set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 #set ($detailprefix = $context.getRequestParameter('detailprefix')) ##detailprefix
 #set ($view = $context.getRequestParameter('view')) 
-<div id="listdetail_$fieldname" class="listdetailpicker">
+<div id="$!{detailprefix}listdetail_$fieldname" class="listdetailpicker">
 ##we need to load up the existing detail object
 
 #set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
@@ -51,15 +51,10 @@
   #set ($value = $context.getRequestParameter("${fieldname}.value"))
 #end
 
-#set( $valueid = "$fieldname" )
-
 #if($types)
-	#if( $foreignkeyid)
-		<script type="text/javascript">
-			addListListener("$foreignkeyid", "${fieldname}");
-		</script>
-	#end
-	<select name="$!detailprefix${valueid}.value" class="autosubmited" listid="$listid" id="${valueid}.value" onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname','$!detailprefix');" >
+	<select name="$!detailprefix${fieldname}.value" class="autosubmited #if($foreignkeyid)ajaxlistreload #end" id="$!detailprefix${fieldname}.value"  
+		detailprefix='$!detailprefix' targetdiv="$!{detailprefix}listdetail_$fieldname"	parentforeignkeyid="$!foreignkeyid" 
+		catalogid="$catalogid" listid="$listid"  searchtype='$searchtype' view='$!view' fieldname='$fieldname'  >
 	#if ($detail.blankoption != false)
 	<option value=""></option>
 	#end

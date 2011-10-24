@@ -17,11 +17,15 @@ SetPath = function( inUrl )
 }
 	
 
-validate = function(inCatalogId, inDataType, inView , inFieldName)
+validate = function(inCatalogId, inDataType, inView , inFieldName, detailprefix)
 {
-	var field = inFieldName + '.value';
+	if( !detailprefix)
+		{
+		detailprefix = "";
+		}
+	var field = detailprefix + inFieldName + '.value';
 	var val = document.getElementById(field).value;
-	var div = '#error_' + inFieldName;
+	var div = '#error_' +detailprefix +  inFieldName;
 	var params = {
 			catalogid: inCatalogId,
 			searchtype: inDataType,
@@ -52,62 +56,6 @@ validateall = function()
 	jQuery("#"+'allerrors').load( '$home${apphome}/components/xml/validateallfields.html', { parameters: params });
 }
 
-var listchangelisteners = []; //list nodes
-
-findOrAddNode = function(inParentId)
-{
-	//alert("Looking now: " + inParentId + listchangelisteners.length );
-	for (var i=0; i<listchangelisteners.length; i++) 
-	{
-		var node = listchangelisteners[i];
-		if( node.parentid == inParentId )
-		{
-			return node;
-		}
-	}
-	var node = new Object();
-	node.parentid = inParentId;
-	node.children = [];
-	listchangelisteners.push(node);
-	
-	return node;
-}
-
-addListListener = function( inParentFieldName, inFieldName )
-{
-	//an array of array
-	var node = findOrAddNode(inParentFieldName);
-	node.children.push(inFieldName); //append the child
-}
-
-//When a field is changed we want to validate it and update any listeners
-//Find all the lists in this form. Update all of them that are marked as a listener
-//parent = businesscategory, child = lob, field = product
-updatelisteners = function(catalogid, searchtype,view , fieldname, detailprefix)
-{
-	var val = document.getElementById( fieldname + '.value').value;
-	//alert( "found "  + val );
-	validate(catalogid, searchtype, view , fieldname);
-	
-	var node = findOrAddNode(fieldname);
-	
-	if( node.children )
-	{
-		for( var i=0;i< node.children.length;i++)
-		{
-			var childfieldname = node.children[i];
-			var element = document.getElementById(childfieldname + '.value');
-			if(element.options !== undefined) {
-				var valueselection = element.options[element.selectedIndex].value;
-			}
-			var div="listdetail_" + childfieldname;
-			//we are missing the data element of the children
-			//required: catalogid, searchtype, fieldname, value
-			//optional: query, foreignkeyid and foreignkeyvalue
-			jQuery("#" + div).load('$home${apphome}/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1, detailprefix:detailprefix});
-		}
-	}
-}
 
 //Don't use any form inputs named 'name'!
 postForm = function(inDiv, inFormId)
@@ -154,3 +102,37 @@ toggleBox = function(inId, togglePath, inPath)
 {
 	jQuery("#"+inId).load( '$home' + togglePath,{ pluginpath: inPath, propertyid: inId });
 }	
+
+jQuery(document).ready(function() 
+{ 
+		jQuery(".ajaxlistreload").livequery(
+			function()
+			{
+				var f = jQuery(this);
+				var detailprefix = f.attr("detailprefix");
+				var foreignkeyid = f.attr("parentforeignkeyid");
+				var parent = document.getElementById( detailprefix + foreignkeyid + '.value');		
+				jQuery(parent).change(
+					function()
+					{
+						var catalogid = f.attr("catalogid");			
+						var searchtype = f.attr("searchtype");			
+						var view = f.attr("view");			
+						var fieldname = f.attr("fieldname");			
+						var div = f.attr("targetdiv");			
+						var val = jQuery(this).val();
+						
+						//value:valueselection,
+									
+						//required: catalogid, searchtype, fieldname, value
+						//optional: query, foreignkeyid and foreignkeyvalue
+						//alert({catalogid:catalogid, searchtype:searchtype, view:view, fieldname:fieldname, foreignkeyid:foreignkeyid, foreignkeyvalue:val, detailprefix:detailprefix});
+						//alert( "#" + div + "=" + "$home${apphome}/components/xml/list.html?catalogid=" + catalogid + "&searchtype=" + searchtype + "&view=" + view + "&fieldname=" + fieldname + "&foreignkeyid=" + foreignkeyid + "&foreignkeyvalue="+ val + "&detailprefix=" + detailprefix);
+						var target = document.getElementById( div); //must escape .
+						jQuery(target).load('$home${apphome}/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:fieldname, foreignkeyid:foreignkeyid, foreignkeyvalue:val, detailprefix:detailprefix});
+					}
+				);	
+			}
+		);
+	
+}); 
