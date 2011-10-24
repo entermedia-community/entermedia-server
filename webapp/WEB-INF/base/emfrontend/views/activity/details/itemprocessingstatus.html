@@ -1,3 +1,14 @@
+#set( $title = $searcherManager.getData($catalogid,"title",$asset.title ))
+#set( $destination = $searcherManager.getData($catalogid,"publishdestination",$order.publishdestination ))
+#if (!$destination)
+	#set( $destination = "Visual Data" )
+#end
+<div style="text-align: left; padding: 10px 0 10px 10px; font-size: 14px">
+	<span style="font-weight: bold;">
+		$!title
+	</span> 
+	$!asset.name | Order #$order >> $destination
+</div>
 <table class="emresultscontent" width="100%"> 
 <tr id="tableheader">
 	<th >Step</th>

@@ -19,7 +19,7 @@ $searcherManager.getSearcher($catalogid,"asset").getDetailsForView("asset/ordera
 		
 		<tr rowid="$order.id">
 			<td><a class="emdialog"
-				href="$home$apphome/views/activity/details/itemprocessingstatus.html?orderid=$order.id&orderitemid=$item.id&height=250"><img
+				href="$home$apphome/views/activity/details/itemprocessingstatus.html?assetid=$asset.id&orderid=$order.id&orderitemid=$item.id&height=250"><img
 					src="$home$themeprefix/images/orders/plus.png" /> </a></td> #foreach(
 			$detail in $assetdetails) $!context.putPageValue("detail",$detail)
 			
