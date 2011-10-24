@@ -85,7 +85,24 @@ public class UserProfileModule extends BaseMediaModule
 		return user;
 	}
 	
-	
+	public void changeUserTemplate(WebPageRequest inReq){
+		String templateid = inReq.getRequestParameter("template.value");
+		String applicationid = inReq.getContentProperty("applicationid");
+		String folderPath = "/" + applicationid + "/users/" + inReq.getUserName();
+		PageSettings home = getPageManager().getPageSettingsManager().getPageSettings(folderPath + "/_site.xconf");
+		
+		PageProperty template = new PageProperty("usertheme");
+		
+		
+		template.setValue(templateid);
+		home.putProperty(template);
+
+		getPageManager().getPageSettingsManager().saveSetting(home);
+		getPageManager().getPageSettingsManager().clearCache(home.getPath());
+		getPageManager().clearCache(folderPath);
+		
+		
+	}
 
 
 	public void receivePortraitUpload(WebPageRequest inReq)
