@@ -1,6 +1,7 @@
+<div style="padding: 5px 0 0 10px">
 <p>$user.getFirstName() $user.getLastName() has shared the following files with you:</p>
-<table border="1">
-	<tr>
+<table border="1" style="border-color: #767676; border-collapse: collapse; width: 50%; text-align: center; font-weight: normal;">
+	<tr style="color: #ffffff; background-color: #3e7188; margin: 100px;">
 		#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderemail",$context.getUserProfile()) )
 		$context.putPageValue("details",$details)
 		#foreach( $detail in $details)
@@ -17,7 +18,7 @@
 			$context.setRequestParameter("sourcepath", $asset.sourcepath)
 			$context.setRequestParameter("hidethumbnail", cepath)
 			
-			<tr class="assetrow" id="assetrow_${assetid}" >
+			<tr class="assetrow" id="assetrow_${assetid}">
 			#foreach( $detail in $details)
 				#set( $value = "")
 				#if( $detail.id == "name")
@@ -42,9 +43,6 @@
 		</table>
 <br/>
 
-<p>
-To download or view these files, please click on the link below. 
-</p>
-
-<a href="$context.siteRoot$home/visualdata/views/activity/preview/index.html?orderid=$order.id">PREVIEW</a><br/><br/>
+<a href="$context.siteRoot$home/visualdata/views/activity/preview/index.html?orderid=$order.id" style="font-size: 18px; color: #3e7188;">PREVIEW</a><br/><br/>
+</div>
 

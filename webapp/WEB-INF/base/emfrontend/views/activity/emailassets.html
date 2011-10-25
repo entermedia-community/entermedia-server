@@ -14,7 +14,8 @@ No assets have been selected.
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 
-$context.putPageValue("view", "order/emailform")	
+$context.putPageValue("view", "order/emailform")
+
 <input type="hidden" name="view" value="order/emailform"/>
 <input type="hidden" name="searchtype" value="order"/>
 <input type="hidden" name="catalogid" value="$catalogid"/>
@@ -28,11 +29,18 @@ $context.putPageValue("view", "order/emailform")
 <input type="hidden" name="ordertype.value" value="email" />
 
 <br/>
+<div id="previewform">
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+</div>
+<div id="previewemail">
 <input type="hidden" name="field" value="sharenote" />
+
 <textarea name="sharenote.value" rows="25" >
+
 $pages.include("$apphome/views/activity/orderemailtemplate.html", $context)
+
 </textarea>
+</div>
 $pages.include("/system/tools/html/textarea.html?htmltextarea=sharenote.value&fckheight=200&fckwidth=700")
 
 <br/>
