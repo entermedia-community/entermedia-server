@@ -5,6 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.entermedia.upload.FileUpload;
 import org.entermedia.upload.FileUploadItem;
 import org.entermedia.upload.UploadRequest;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.EnterMedia;
 import org.openedit.entermedia.MediaArchive;
@@ -47,6 +49,18 @@ public class UserProfileModule extends BaseMediaModule
 		inReq.putPageValue("owner", user);
 		return user;
 	}
+	
+	
+	public User loadOwnerProfile(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		User user = loadOwner(inReq);
+		Searcher profilesearcher =getSearcherManager().getSearcher(archive.getCatalogId(), "profile");
+		Data profile = (Data) profilesearcher.searchById(user.getUserName());
+		inReq.putPageValue("profile", profile);
+		return user;
+	}
+	
 	
 	public User createOwnerHome(WebPageRequest inReq)
 	{
