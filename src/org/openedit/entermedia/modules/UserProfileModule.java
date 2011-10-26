@@ -10,6 +10,7 @@ import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.EnterMedia;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.xml.XmlArchive;
 
 import com.openedit.OpenEditException;
@@ -175,5 +176,13 @@ public class UserProfileModule extends BaseMediaModule
 			inReq.getUser().put("oe.edit.mode","preview");
 		}
 		//redirectBack(inReq);		
+	}
+	
+	
+	public void searchOwnerAssets(WebPageRequest inReq){
+		User owner = loadOwner(inReq);
+		MediaArchive archive =getMediaArchive(inReq);
+		AssetSearcher searcher = archive.getAssetSearcher();
+		
 	}
 }
