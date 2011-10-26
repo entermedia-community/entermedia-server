@@ -1299,4 +1299,16 @@
 		
 	</bean>
 	
+	<!-- Catalog based user details (not like preferences) -->
+	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="prefix"><value>profiles</value></property>
+	</bean>
+	
+	
+	
+	
 </beans>

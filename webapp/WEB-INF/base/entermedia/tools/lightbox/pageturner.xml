@@ -1,7 +1,14 @@
 #set($hitssessionid = $context.findValue("hitssessionid"))
 #set($hits = $context.getSessionValue($hitssessionid))
 #set($int = 0)
-#set($indexOf = $int.valueOf($context.getRequestParameter("index")) )
+#set($indexrequest = $context.getRequestParameter("index"))
+#if($indexrequest)
+#set($indexOf = $int.valueOf($indexrequest))
+#else
+#set($indexOf = 1)
+#end
+
+
 #if( $indexOf < $hits.size() )
 	#set($hit = $hits.get($indexOf) )
 	#set($previous = $hits.previous($indexOf))
