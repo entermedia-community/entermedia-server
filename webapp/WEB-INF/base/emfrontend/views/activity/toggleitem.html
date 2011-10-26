@@ -4,5 +4,5 @@
 <div id="assettoggle$assetid" class="assettoggle$assetid">
 
 ##<input class="baskettoggle" type="checkbox" name="addtobasket" data-assetid="$assetid" #if($orderitems.findRow("assetid", $assetid)) checked #end data-href="$apphome/views/activity/toggleitem.html?assetid=$assetid"/>
-<input class="baskettoggle" type="checkbox" name="addtobasket" data-assetid="$assetid" #if($orderManager.isAssetInOrder($catalogid, $order, $assetid)) checked #end data-href="$apphome/views/activity/toggleitem.html?assetid=$assetid"/>
+<input class="baskettoggle" type="checkbox" name="addtobasket" data-assetid="$assetid" #if($orderManager.isAssetInOrder($catalogid, $order, $assetid)) checked #end data-href="$home$apphome/views/activity/toggleitem.html?assetid=$assetid"/>
 </div>
