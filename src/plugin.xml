@@ -997,6 +997,7 @@
 		class="org.openedit.modules.validation.Validator" />
 		
   	<bean id="LinkTree" class="org.openedit.links.LinkModule" init-method="init" >
+  		  		<property name="workFlow"><ref bean="workFlowBean"/></property>
   		
 	  </bean>
   	<bean id="htmlLinkLoader" class="org.openedit.links.HtmlLinkLoader">

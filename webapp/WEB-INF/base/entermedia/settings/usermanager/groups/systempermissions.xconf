@@ -11,5 +11,6 @@
 <property name='text.savepermissions'>
         <value>Save Permissions</value>
     </property>
+	<path-action name="User.loadGroup" />
 
 </page>

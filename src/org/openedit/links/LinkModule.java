@@ -16,6 +16,7 @@ import com.openedit.OpenEditException;
 import com.openedit.PageAccessListener;
 import com.openedit.WebPageRequest;
 import com.openedit.modules.BaseModule;
+import com.openedit.modules.workflow.WorkFlow;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
@@ -34,7 +35,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 	protected FileSize fieldFileSize;
 	private static final Log log = LogFactory.getLog(LinkModule.class);
 	protected boolean fieldForceReload;
-	
+	protected WorkFlow fieldWorkFlow;
 	
 	public FileSize getFileSize()
 	{
@@ -585,6 +586,22 @@ public class LinkModule extends BaseModule implements PageAccessListener
 
 		inRequest.putPageValue(name, webTree);
 		return webTree;
+	}
+	public void approveDraft(WebPageRequest inReq) throws OpenEditException
+	{
+		LinkTree tree = loadLinks(inReq);
+		if( tree.isDraft() )
+		{
+			getWorkFlow().approve(tree.getPage().getPath(), inReq.getUser() );
+		}
+	}
+	public WorkFlow getWorkFlow()
+	{
+		return fieldWorkFlow;
+	}
+	public void setWorkFlow(WorkFlow inWorkFlow)
+	{
+		fieldWorkFlow = inWorkFlow;
 	}
 
 }

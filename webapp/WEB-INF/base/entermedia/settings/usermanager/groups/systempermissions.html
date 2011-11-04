@@ -14,16 +14,18 @@ div#tipDiv {
 
 <table class="oedivided-box" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="oedivided-box-title" colspan="2">[[Custom Permissions]]</td>
-	</tr>
-	<tr>
 		<td class="oedivided-box-white" height="100%" valign="top">
 			<description>
 			[[Check the custom permissions for this group]]:</description>
 			<br /><br />
 			<p>[[Permissions can also be changed on a directory by directory basis.]]</p>
 		</td>
+	
+	</tr>
+	<tr>
 		<td  class="oeblue-list-box">
+					<form method="post" id="systempermissions" action="systempermissionssave.html">
+					<input name="groupid" type="hidden" value="$group.id"/>
 						#foreach ( $permissionGroup in $UserManager.systemPermissionGroups )
 								<br><b>$permissionGroup.name</b>
 								<table cellspacing=0 cellpadding=0 >	
@@ -44,8 +46,10 @@ div#tipDiv {
 						#end                                                            
 <p style="padding: 10px;">
 
-						<a id="savepermissions" href="javascript: runAction('User.saveGroupPermissions','wizard');"  name="Save Permissions" class="oelink-button">[[Save Permissions]]</a>
+						<a id="savepermissions" onClick="jQuery('#systempermissions').submit();"  name="Save Permissions" class="oelink-button">[[Save Permissions]]</a>
+						
 						<b><span id="savepermissionsalert" ></span></b>
+						</form>
 </p>
 
 		</td>
