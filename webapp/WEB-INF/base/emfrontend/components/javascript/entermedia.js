@@ -15,7 +15,7 @@ repaint = function(divid) {
 toggleUserProperty = function(property, onsuccess) {
 	jQuery.ajax(
 			{
-				url: "${apphome}/components/userprofile/toggleprofileproperty.html?field=" + property,
+				url: "${home}${apphome}/components/userprofile/toggleprofileproperty.html?field=" + property,
 				success: onsuccess
 			}
 		);

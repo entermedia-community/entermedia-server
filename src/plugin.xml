@@ -997,6 +997,7 @@
 		class="org.openedit.modules.validation.Validator" />
 		
   	<bean id="LinkTree" class="org.openedit.links.LinkModule" init-method="init" >
+  		  		<property name="workFlow"><ref bean="workFlowBean"/></property>
   		
 	  </bean>
   	<bean id="htmlLinkLoader" class="org.openedit.links.HtmlLinkLoader">
@@ -1335,5 +1336,17 @@
 		
 		
 	</bean>
+	
+	<!-- Catalog based user details (not like preferences) -->
+	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="prefix"><value>profiles</value></property>
+	</bean>
+	
+	
+	
 	
 </beans>

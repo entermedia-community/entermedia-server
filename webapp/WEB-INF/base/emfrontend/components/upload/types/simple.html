@@ -7,7 +7,7 @@
 	<input type="hidden" name="categoryid" value="index"/>
     <div style="width:320px; margin:auto;">
 
-        <input type="text" id="fileName" class="file_input_textbox"  readonly="readonly">
+        <input type="text" id="fileName" name="fileName" class="file_input_textbox required"  readonly="readonly">
         
          <div class="file_input_div">
       	  <input type="button" value="Browse" class="file_input_button" />    
@@ -86,10 +86,25 @@
  		//jQuery.fn.livequery.stopped = false;
 		document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
  	}
+ 	
+ 	//special validator for file name
+ 	jQuery.validator.addMethod("filename",
+ 			function(value) {
+ 				var characterReg = /^\s*[a-zA-Z0-9\._,\s]+\s*$/;
+ 	   			return characterReg.test(value);
+ 			}, 
+ 			'Invalid file name.'
+ 	);
+ 	
     // wait for the DOM to be loaded 
     $(document).ready(function() { 
+    	jQuery("#uploadform").validate({
+    		rules: {
+    			fileName: "filename"
+    		}
+    	});
+    	
         // bind 'myForm' and provide a simple callback function 
-        
         $('#uploadform').ajaxForm({ 
         	        // target identifies the element(s) to update with the server response 
         	       // target: '#emcontainer', 
