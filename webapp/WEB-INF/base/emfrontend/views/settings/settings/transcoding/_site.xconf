@@ -1,8 +1,0 @@
-<page>
-	<property name="fallbackdirectory">/${applicationid}/components/search</property>
-	<property name="searchtype">convertpreset</property>
-	<property name="searchhome">/${applicationid}/views/settings/transcoding</property>
-	<property name="showsearch">false</property>
-	<property name="showactions">true</property>
-	<property name="tab">transcode</property>
-</page>

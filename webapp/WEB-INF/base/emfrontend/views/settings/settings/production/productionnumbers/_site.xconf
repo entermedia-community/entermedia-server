@@ -1,9 +1,0 @@
-<page>
-	<property name="fallbackdirectory">/${applicationid}/components/search</property>
-	<property name="searchtype">productionnumber</property>
-	<property name="searchhome">/${applicationid}/views/settings/production/productionnumbers</property>
-	<property name="showsearch">false</property>
-	<property name="searchheader">Episodes</property>
-		<property name="showactions">true</property>
-			<property name="showselections">false</property>
-</page>
