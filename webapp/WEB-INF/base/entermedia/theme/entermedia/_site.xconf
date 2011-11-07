@@ -1,8 +1,9 @@
 <page>
-	<inner-layout>${themeprefix}/entermedia/layouts/mediaapplication.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/layout.html</inner-layout>
 
 	<property name="themename">Base EM</property>
 	<property name="oetextfilter">translation</property>
 	<property name="editable">false</property>
 	
+
 </page>

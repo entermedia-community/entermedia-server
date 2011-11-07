@@ -1,6 +1,6 @@
 <page>
 	<page-action name="UpdateModule.loadSync"/>
-	<layout>${themeprefix}/entermedia/layouts/dialoglayout.html</layout>
+	<layout>${themeprefix}/layouts/dialoglayout.html</layout>
 	<inner-layout></inner-layout>
 	<property name='text.Edit Scheduled Task'>
         	<value>Edit Sync</value>

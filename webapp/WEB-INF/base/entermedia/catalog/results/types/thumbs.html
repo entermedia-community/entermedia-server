@@ -1,4 +1,4 @@
-$pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
+$pages.include("${themeprefix}/layouts/resultsheader.html", $context)
 <div id="resultscontent_$catalogid">
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
@@ -36,7 +36,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 				<div class="emtitle">
 				
 				#if($caneditalbum && $album)		
-					<a href="#" onclick="removeAlbumItem('$album.getUserName()','$album.id', '$hit.get('catalogid')', '$hit.get('id')');return false;"><img src="$home$themeprefix/entermedia/images/close-white_16x16.png"  title="[[Remove from album]]"/></a>
+					<a href="#" onclick="removeAlbumItem('$album.getUserName()','$album.id', '$hit.get('catalogid')', '$hit.get('id')');return false;"><img src="$home$themeprefix/images/close-white_16x16.png"  title="[[Remove from album]]"/></a>
 				#end
 				
 				#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end</div>

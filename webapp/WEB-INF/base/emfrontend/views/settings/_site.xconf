@@ -1,5 +1,6 @@
 <page>
 	<property name="section">settings</property>
+	<style id="settings" href="${themeprefix}/styles/pages/settings.css" />
 
 	<inner-layout>/${applicationid}/views/settings/innerlayout.html</inner-layout>
 </page>

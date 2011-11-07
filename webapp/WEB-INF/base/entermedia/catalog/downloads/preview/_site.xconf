@@ -12,5 +12,5 @@
 		<value locale="es">Vista Previa</value>
 	</property>
 	<property name="encoding">UTF-8</property>
-	<inner-layout>${themeprefix}/entermedia/layouts/preview.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/preview.html</inner-layout>
 </page>

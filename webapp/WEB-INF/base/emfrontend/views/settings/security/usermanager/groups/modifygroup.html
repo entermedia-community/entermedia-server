@@ -1,0 +1,68 @@
+#if($group)
+$context.putSessionValue( "propertycontainer", $group )
+$context.putPageValue( "groupName", $group.name )
+$context.putPageValue( "groupid", $group.id)
+#set( $groupName = $group.name )
+
+<h2>$groupName</h2>
+
+<div class="embutton" >
+	<a href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>
+</div>	
+
+
+<div id="groupeditarea">
+<div id="groupeditareasaved"></div>
+<br>
+#set( $groupsearcher = $searcherManager.getSearcher("system","group") )
+<form class="ajaxform" id="groupeditform" targetdiv="groupeditareasaved" action="$home$usermanagerhome/groups/savegroup.html?">
+<input type="hidden" name="id" value="$group.id"/>
+<input type="hidden" name="save" value="true"/>
+<input type="hidden" name="searchtype" value="group"/>
+<input type="hidden" name="catalogid" value="system"/>
+
+$context.putPageValue("searcher", $groupsearcher)	 
+$context.putPageValue("view", "group/groupedit")	
+$context.putPageValue("data", $group)	
+
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+<!-- VisualData Permission Configuration -->
+<br/>
+<ul>
+<li>Upload <select><option>Access</option></select></li>
+<li>Orders <select><option>Access</option></select></li>
+<li>Assets <select><option>Access</option></select></li>
+<li>Messages <select><option>Access</option></select></li>
+<li>Basket <select><option>Access</option></select></li>
+<li>Settings <select><option>Access</option></select>
+	<ul>
+		<li>Asset Type Setup <select><option>Access</option></select></li>
+		<li>Metadata Setup <select><option>Access</option></select>
+			<ul>
+			#set ($atSearcher = $mediaarchive.getSearcherManager().getSearcher($catalogid, "assettype"))
+			#foreach ($detail in $atSearcher.getAllHits())
+				<li>
+				$detail.id <select><option>Read Only</option><option>Read/Write</option></select>
+				</li>
+			#end
+			</ul>
+			
+		</li>
+		<li>Security Group Setup <select><option>Access</option></select></li>
+		<li>User Setup <select><option>Access</option></select></li>
+	</ul>
+</li>
+</ul>
+<br/>
+
+
+<div class="embutton" style="padding-left: 60px;">
+<a href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
+</div>
+</form>
+</div>
+<br><br>
+<br/>
+
+#end

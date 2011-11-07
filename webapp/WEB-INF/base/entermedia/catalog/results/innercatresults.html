@@ -15,4 +15,4 @@ $context.putPageValue("resultdetail", $resultdetail )
 
 #set($mode = $userprofile.getViewForResultType($context.findValue("customresultview"), $hits.getResultType()))	
 $pages.include("${cataloghome}/results/types/${mode}.html", $context)
-$pages.include("${themeprefix}/entermedia/layouts/resultsfooter.html", $context)
+$pages.include("${themeprefix}/layouts/resultsfooter.html", $context)

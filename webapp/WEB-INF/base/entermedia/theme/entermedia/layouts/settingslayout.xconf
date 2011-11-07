@@ -16,5 +16,5 @@
   <property name="text.Security">
     <value locale="es">Seguridad</value>
   </property>
-  <inner-layout>${themeprefix}/entermedia/layouts/adminlayout.html</inner-layout>
+  <inner-layout>${themeprefix}//layouts/adminlayout.html</inner-layout>
 </page>

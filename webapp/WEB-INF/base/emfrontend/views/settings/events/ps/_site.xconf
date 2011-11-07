@@ -1,0 +1,4 @@
+<page>
+	<path-action name="PathEventModule.getPathEvents" />
+	<property name="subtab">ps</property>
+</page>

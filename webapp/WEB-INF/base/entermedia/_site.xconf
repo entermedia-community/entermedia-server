@@ -3,9 +3,9 @@
 <page>
   
 	<path-action name="Admin.autoLogin" />
-	<property name="themeprefix">/${applicationid}/theme</property>
+	<property name="themeprefix">/${applicationid}/theme/entermedia</property>
 
-	<inner-layout>${themeprefix}/entermedia/layouts/mediaapplication.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/mediaapplication.html</inner-layout>
 	<!-- Actions -->
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true"/>
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
@@ -68,7 +68,8 @@
 <script id="em-entermedia" src="/${applicationid}/tools/entermedia.js" />
 
 
-<style id="em-style" href="${themeprefix}/entermedia/styles/style.css" />
+<style id="em-style" href="${themeprefix}/styles/style.css" />
+<style id="em-layout" href="${themeprefix}/styles/layout.css" />
 
 	<permission name="viewaddmedia">
 		<user/>

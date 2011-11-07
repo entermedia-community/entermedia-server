@@ -1,0 +1,7 @@
+<page>
+	<property name="eventroot">/${applicationid}/views/settings/events/triggers</property>
+
+	<inner-layout>/${applicationid}/views/settings/events/settingseventslayout.html</inner-layout>
+	
+	<property name="tab">events</property>
+</page>

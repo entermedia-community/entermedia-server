@@ -1,0 +1,23 @@
+<script type="text/javascript">
+	removeAllMembers = function(inGroupId)
+	{
+		if(confirm("Are you sure you want to remove all members from group: " + inGroupId + "?"))
+		{
+			jQuery("#usersearchresultspanel").load("$home$usermanagerhome/groups/removeallmembers.html", {groupid: inGroupId, oemaxlevel: '1'});
+		}
+	}
+</script>
+<table cellpadding="0" cellspacing="0" width="100%" height="90%">
+	<tr>
+		<td valign="top" width="350" >
+			<div id="groupsearchpanel" class="usermanagercontentpanel" style="padding:15px;min-height:430px;">
+				$pages.include("./searchgroups.html")
+			</div>	
+		</td>
+		<td valign="top" class="usermanagercontentpanel" style="padding-left: 10px;padding-right: 10px;">
+			<div id="groupmanagerpanel" style="padding:15px;min-height:430px;">
+				$pages.streamContent()
+			</div>
+		</td>
+	</tr>
+</table>

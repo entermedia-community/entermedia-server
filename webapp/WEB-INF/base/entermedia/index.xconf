@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
+  <path-action name="DataEditModule.loadSearcherManager" />
+  <inner-layout>${themeprefix}/layouts/homepage.html</inner-layout>
   
 </page>

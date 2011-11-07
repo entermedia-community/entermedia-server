@@ -114,12 +114,14 @@ public class ffmpegimageCreator extends BaseImageCreator
 			result.setComplete(true);
 			result.setOutputPath(inOutFile.getContentItem().getAbsolutePath());
 		}
-		
-		if(!inOutFile.exists() || inOutFile.length() == 0)
+		else
 		{
-			log.info("Thumnail creation failed " + outputpath);
-			result.setOk(false);
-			result.setError("creation failed" );
+			if(!inOutFile.exists() || inOutFile.length() == 0)
+			{
+				log.info("Thumnail creation failed " + outputpath);
+				result.setOk(false);
+				result.setError("creation failed" );
+			}
 		}
 
 		return result;

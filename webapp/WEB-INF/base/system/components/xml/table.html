@@ -40,7 +40,9 @@
 	#foreach( $detail in $details )
 	<th>$detail.text</th>
 	#end
+	#if($candelete && $candelete == true && $showdelete == "true")
 	<th></th>
+	#end
 	</tr>
 	</thead>
 	<tbody>
@@ -75,8 +77,10 @@
 
 #set($link = $context.getRequestParameter("selectlink"))
 #if($link)
-	<form name="editrow" action="$link">
+	<form name="editrow" action="$home$link">
 		<input type="hidden" id="emselectedrow" name="id" />
+		<input type="hidden" name="searchtype" value="${searchtype}" />
+		
 	</form>
 #else
 	<div id="$editlink" targetdiv="${view}editor" link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>

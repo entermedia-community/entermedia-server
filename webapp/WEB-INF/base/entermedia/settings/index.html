@@ -1,5 +1,5 @@
-<link href="$home${themeprefix}/entermedia/styles/pages/settings.css" rel="stylesheet" type="text/css">
-<h2><img src="$home$themeprefix/entermedia/images/settings/settingsicon.png" align="center"> [[Server Setup]]</h2> 
+<link href="$home${themeprefix}/styles/pages/settings.css" rel="stylesheet" type="text/css">
+<h2><img src="$home$themeprefix/images/settings/settingsicon.png" align="center"> [[Server Setup]]</h2> 
 
 <table>
 <tr>
@@ -7,31 +7,31 @@
 		#set($lastcat = $userprofile.getLastCatalog().getId())
 		#if($lastcat)
 		<a href="$home/$lastcat/settings/metadata/index.html">
-			<img src="$home$themeprefix/entermedia/images/settings/catalogs.png">
+			<img src="$home$themeprefix/images/settings/catalogs.png">
 			<p>[[Catalogs]]</p>
 		</a>
 		#else
 		<a href="$home/$applicationid/catalog/settings/index.html">
-			<img src="$home$themeprefix/entermedia/images/settings/catalogs.png">
+			<img src="$home$themeprefix/images/settings/catalogs.png">
 			<p>[[Add Catalog]]</p>
 		</a>
 		#end
 	</td>
 	<td class="settings_index_link">
 		<a href="$home/$applicationid/settings/usermanager/users/index.html">
-			<img src="$home$themeprefix/entermedia/images/settings/UserManager.png">
+			<img src="$home$themeprefix/images/settings/UserManager.png">
 			<p>[[User Manager]]</p>
 		</a>
 	</td>
 	<td class="settings_index_link">
 		<a href="$home/$applicationid/settings/filemanager/index.html">
-			<img src="$home$themeprefix/entermedia/images/settings/servermaitenance.png">
+			<img src="$home$themeprefix/images/settings/servermaitenance.png">
 			<p>[[Server Maintenance]]</p>
 		</a>
 	</td>
 	<td class="settings_index_link">
 		<a href="$home/$applicationid/reports/downloads/index.html">
-			<img src="$home$themeprefix/entermedia/images/settings/reports.png">
+			<img src="$home$themeprefix/images/settings/reports.png">
 			<p>[[Reports]]</p>
 		</a>
 	</td>

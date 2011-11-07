@@ -6,5 +6,5 @@
 	<permission name="view">
 		<pagevalue name="canviewreports" equals="true"/>
 	</permission>
-	<inner-layout>${themeprefix}/entermedia/layouts/reportslayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/reportslayout.html</inner-layout>
 </page>

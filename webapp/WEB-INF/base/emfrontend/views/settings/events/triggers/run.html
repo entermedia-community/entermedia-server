@@ -1,0 +1,12 @@
+<h2>Complete</h2>
+
+
+#if( $ranevent.getLastRunTime() && $ranevent.getLastRunTime() > 0 )
+Ran in $ranevent.getLastRunTime() seconds.<br>
+#end 
+
+$!ranevent.getLastOutputHtml()
+
+<div class="embutton">
+<a target="_top" href="$home${content.eventroot}/edit/edit.html?eventpath=$ranevent.getPage().getPath()">View Event</a>
+</div>

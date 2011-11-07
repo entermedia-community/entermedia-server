@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>/${themeprefix}/entermedia/layouts/asseteditor.html</inner-layout>
+	<inner-layout>/${themeprefix}/layouts/asseteditor.html</inner-layout>
 	<page-action name="AssetEditModule.getAsset"  />
 	<page-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<property name="assetrootfolder">/${catalogid}/assets</property>

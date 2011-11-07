@@ -1,6 +1,6 @@
 <properties>
 	<property id="id" index="true" stored="true">Destination ID</property>
-	<property id="name" editable="true" index="true" stored="true">Name</property>
+	<property id="name" editable="true" index="true" stored="true">Destination</property>
 	
 	<property id="publishtype"  index="true" stored="true" editable="true" viewtype="list" type="list">Publish Type</property>
 	<property id="notifyadmin" index="true" stored="true" editable="true" type="boolean" >Notify Administator</property>

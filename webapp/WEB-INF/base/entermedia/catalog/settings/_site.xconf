@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>/${applicationid}/catalog/settings/inner-layout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/catalogsettings.html</inner-layout>
 	<permission name="view" >
 		<pagevalue name="canviewcatalogsettings" equals="true"/>
 	</permission>	

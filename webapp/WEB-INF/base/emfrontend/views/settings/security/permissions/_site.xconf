@@ -1,0 +1,4 @@
+<page>
+	<inner-layout>/${applicationid}/views/settings/security/permissions/innerlayout.html</inner-layout>
+	<property name="subtab">permissions</property>
+</page>

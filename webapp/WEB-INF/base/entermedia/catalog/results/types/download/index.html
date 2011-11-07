@@ -1,7 +1,7 @@
 <script type="text/javascript" src="$home/${applicationid}/tools/album/download/download.js"></script>
 $context.putPageValue("showactions", true)
 $context.putPageValue("showselections", false)
-$pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
+$pages.include("${themeprefix}/layouts/resultsheader.html", $context)
 <div id="resultscontent_$catalogid">
 	$pages.include("$cataloghome/results/actionsmenu.html", $context)
 	#if(!$album)

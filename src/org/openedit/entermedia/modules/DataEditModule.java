@@ -1105,6 +1105,12 @@ public class DataEditModule extends BaseMediaModule
 		file.getElements().add(dindex,sourceelement);
 		getXmlArchive().saveXml(file, inReq.getUser());
 	}
-
+	
+	public SearcherManager loadSearcherManager(WebPageRequest inReq)
+	{
+		SearcherManager searcherManager = getSearcherManager();
+		inReq.putPageValue("searcherManager",searcherManager );
+		return searcherManager;
+	}
 	
 }

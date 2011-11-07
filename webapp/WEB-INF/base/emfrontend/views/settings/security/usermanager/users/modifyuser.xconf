@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<page>
+	<page-action name="User.loadUserProperties" />
+	<path-action name="ValidationModule.validateFields">
+		<property name="catalogid">system</property>
+		<property name="searchtype">user</property>
+		<property name="view">user/simpleuseredit</property>
+	</path-action>
+	<path-action name="Script.run" >
+		<script>./scripts/addmember.groovy</script>
+	</path-action>
+</page>

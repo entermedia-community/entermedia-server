@@ -8,7 +8,7 @@
 	#set($catalogid = "$applicationid")
 #end
 #set( $id = "actions")
-<div class="emcatalogheadericon"><a  href="#"   onmouseover="OEPopUp.showPopUp(this,'${id}menu',0,22);" onmouseout="OEPopUp.hide('${id}menu');">[[albums]]<br><img src="$home${themeprefix}/entermedia/images/photoalbum_16x16.png" border="0" title="Album" /></a>
+<div class="emcatalogheadericon"><a  href="#"   onmouseover="OEPopUp.showPopUp(this,'${id}menu',0,22);" onmouseout="OEPopUp.hide('${id}menu');">[[albums]]<br><img src="$home${themeprefix}/images/photoalbum_16x16.png" border="0" title="Album" /></a>
 <div id="${id}menu" class="empopupsection" style="visibility:hidden;" onmouseover="OEPopUp.showPopUp(this,'${id}menu',0,22);" onmouseout="OEPopUp.hide('${id}menu');">
 <ul class="emactionsheadermenu">
     <li><a class="thickbox" href="$home/${applicationid}/albums/create.html?hitssessionid=$hits.sessionId&catalogid=$catalogid" target="_parent"><img border="0"  align="absmiddle"  src="$home/system/images/icons/photoalbum_16x16.png"  /> [[Create Album]]</a></li>

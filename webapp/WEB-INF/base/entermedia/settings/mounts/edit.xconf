@@ -9,5 +9,5 @@
   <property name="text.Save">
     <value locale="es">Guardar</value>
   </property>
-	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
 </page>

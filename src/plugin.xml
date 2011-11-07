@@ -1290,6 +1290,43 @@
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>assets</value></property>
 	</bean>
+
+	<bean id="databaseSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
+
+<!--  TODO: Use beans.xml alias -->
+	<bean id="appsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
+	<bean id="extensionsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
+	<bean id="settingssecuritySearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
+	<bean id="settingsmetadataSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
+	<bean id="settingslistsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+	<bean id="settingseventsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
 	
 	<bean id="AttachmentModule" class="org.openedit.entermedia.modules.AttachmentModule" >
 		<property name="attachmentManager">

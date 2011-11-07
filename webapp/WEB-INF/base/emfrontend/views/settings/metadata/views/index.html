@@ -1,88 +1,46 @@
-#set($assettype = $context.getRequestParameter("assettype"))
-<br>
-<div id="metadataeditarea">
-#if($assettype)
-	#set($typesearcher = $searcherManager.getSearcher("$catalogid", "assettype"))
-	#set($type = $typesearcher.searchById($assettype))
+#set($current = $context.findValue("searchtype"))
 
-	<div class="ui-widget emdetaileditorbox commentbox">
-	<div class="ui-widget-header">Asset Type
-	</div>	
-	<div class="ui-widget-content" id="editlayout" style="padding: 10px;">
-
-		<form id="assettypeeditform" name="assettypeeditform" action="$home$apphome/views/settings/metadata/views/modifytype.html">
-			<input type="hidden" name="assettype" value="$type.id"/>
-			<input type="hidden" name="id" value="$type.id"/>
-			<input type="hidden" name="searchtype" value="assettype"/>
-			
-			$context.putPageValue("searcher", $typesearcher)	 
-			$context.putPageValue("view", "assettype/edit")
-			$context.putPageValue("data", $type)	
-			#set($details =  $typesearcher.getDetailsForView("assettype/edit", $user))
-			$context.putPageValue("details", $details)
-			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-			
-			<ul class="embuttons">
-				<li><a href="#" onclick="jQuery('#assettypeeditform').submit();" ><span>[[Save Changes]]</span></a></li>
-			</ul>
-#if( $savedok )			
-<div class="common-success">Saved</div>
-#end			
-		</form>
-	</div>	
-	</div>
-
-<br>
-	#set($views = $searcherManager.getList("$catalogid", "assettype/views"))
-	#set($searcher = $mediaarchive.getAssetSearcher()) 
-	#foreach( $target in $views)
-		<div class="ui-widget emdetaileditorbox commentbox">
-<div class="ui-widget-header">
-		$target
-	</div>	
-		<div class="ui-widget-content" id="editlayout" style="padding: 10px;">
-
-		<form name="${target.id}addtoview" id="${target.id}addtoview" action="addtoview.html">
-			<input type="hidden" name="catalogid" value="$!catalogid"/>
-			<input type="hidden" name="searchtype" value="asset"/>
-			<input type="hidden" name="assettype" value="$assettype"/>
-			<input type="hidden" name="view" value="assettype/${assettype}/$target.id"/>
-
-			[[Add Field]]:
-			<select name="newone" onchange="jQuery('#${target.id}addtoview').submit()">
-				<option value=""> </option>
-				#foreach( $detail in $searcher.getPropertyDetails() )
- 					<option value="$detail.id">$detail.text</option>
- 				#end
-			</select>
-		</form>
-
-		<table >
-			#set($details = "")
-			#set($details =  $searcher.getDetailsForView("asset/assettype/${assettype}/$target.id", $user))
-			
-			#foreach( $element in $details)
-				#set( $pid = $element.id)
-				<tr>
-				 <td class="rowdraggable metadatadroppable" id="$pid" catalogid=$catalogid" searchtype="asset" assettype="$assettype" view="assettype/${assettype}/$target.id"> 
-				 <img src="$home$themeprefix/images/navigation/moveupdown.png" />
-				 <a href="$home$apphome/views/settings/fields/index.html?id=$element.id&&searchtype=asset">$element.text</a></td> 
-				 <td>
-				 <form style="float:left;" name="editrow"  method="post" action="removefromview.html?catalogid=$catalogid&searchtype=asset&view=assettype/${assettype}/$target.id">
-				 <input type="hidden" name="toremove"  value="$pid" />
-				 <input type="hidden" name="assettype" value="$assettype"/>
-				 <input type="submit" name="remove" value="remove"/>
-				 </form>
-				 </td> 
-				</tr>
-			#end
-		</table>
- 
-		</div>
-		</div>
-		#set($details = "")
+<!-- 
+<form action="$home$apphome/views/settings/metadata/views/index.html">
+	<input type="hidden" name="catalogid" value="$catalogid"/>
+	[[Type]]: <select name="searchtype" onchange="submit();">
+		<option value=""></option>
+	#foreach( $type in $viewtypes)
+		<option id="$type.name" #if($type == $current) selected #end>$type</option>
 	#end
-#else
-	Please select an Asset Type
+	</select>
+	
+</form>
+<br>
+ -->
+#if( $views && $views.size() > 0)
+
+<div id="emselectable">
+
+<table >
+<thead>
+<tr>
+<th>Screen</th>
+<th>Usage</th>
+<th>Items</th>
+</tr>
+</thead>
+<tbody>
+#foreach( $view in $views)
+<tr rowid="$view.name">
+	<td>$view.name</td>
+	<td>$context.getText("$!view.usagelabel")</td>
+	<td>$view.size()</td>
+</tr>
 #end
+</tbody>
+</table>
+<form name="editview" action="edit.html"> 
+	<input type="hidden" name="view" id="emselectedrow" />
+	<input type="hidden" name="searchtype" value="$current" />
+</form>
+
 </div>
+
+#end
+

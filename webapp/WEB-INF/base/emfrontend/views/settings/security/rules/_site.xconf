@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="oeuseradmintabid">securitytab</property>
+  <property name="permissiontype">permissionsassets</property>
+  <property name="permissionrootpath">/${applicationid}/views/settings/security/rules/xml</property>
+  <property name="editPath">/${catalogid}/assets</property>
+  <property name="subtab">rules</property>
+    
+</page>

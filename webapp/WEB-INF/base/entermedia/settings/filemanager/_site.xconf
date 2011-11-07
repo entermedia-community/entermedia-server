@@ -169,7 +169,7 @@
 		<value locale="es">Enviar Directorio</value> 
    	</property>
     
-     <property name="iconhome">${themeprefix}/entermedia/images/tree/</property>
+     <property name="iconhome">${themeprefix}/images/tree/</property>
      
     	<generator name="velocityGenerator" mimetypes="text/html"/>
     

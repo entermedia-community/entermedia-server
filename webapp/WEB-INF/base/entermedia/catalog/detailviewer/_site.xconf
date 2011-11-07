@@ -14,7 +14,7 @@
 	</path-action>
 	
 	
-	<inner-layout>${themeprefix}/entermedia/layouts/asseteditor.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/asseteditor.html</inner-layout>
 	
 	<permission name="view">
 		<not>

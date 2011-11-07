@@ -1,5 +1,5 @@
 <page>
 	<path-action name="DataEditModule.loadHits"/>
-	<property name="dialogicon">${themeprefix}/entermedia/images/navigation/clipboard.png</property>
-	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+	<property name="dialogicon">${themeprefix}/images/navigation/clipboard.png</property>
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
 </page>

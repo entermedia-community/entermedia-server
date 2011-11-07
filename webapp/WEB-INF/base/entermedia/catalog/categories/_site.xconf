@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<inner-layout>${themeprefix}/entermedia/layouts/categoryresults.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/categoryresults.html</inner-layout>
 	<property name="virtual">true</property>
 	<path-action name="MediaSearchModule.searchCategories"/>
 	<path-action name="CategoryModule.loadCrumbs" />

@@ -5,5 +5,5 @@
 	<property name="sorttabs">true</property>
 	<property name="maxtabcount">20</property>
 	<layout/>
-	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
 </page>

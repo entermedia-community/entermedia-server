@@ -1,5 +1,5 @@
 <page>
 
 	<property name="matttabstabid">search</property>
-	<inner-layout>/${themeprefix}/entermedia/layouts/savedqueries.html</inner-layout>
+	<inner-layout>/${themeprefix}/layouts/savedqueries.html</inner-layout>
 </page>

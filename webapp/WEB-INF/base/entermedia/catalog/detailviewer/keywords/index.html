@@ -5,11 +5,11 @@
 #foreach($keyword in $asset.getKeywords())
 <div class="row">
 <span>
-  <a style="display:inline;" href="$home/$applicationid/search/multicatsearch/multiresults.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$keyword"><img border=0 src="$home${themeprefix}/entermedia/images/keyword.png"> $keyword</a>
+  <a style="display:inline;" href="$home/$applicationid/search/multicatsearch/multiresults.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$keyword"><img border=0 src="$home${themeprefix}/images/keyword.png"> $keyword</a>
 </span>
 #if($caneditasset)
 <span>
-  <a style="display:inline;" class="ajax" targetdiv="emkeywordeditor" href="$home/$catalogid/detailviewer/keywords/removekeyword.html?assetid=${asset.id}&keyword=$keyword"><img src="$home${themeprefix}/entermedia/images/close_16x16.png" title="delete tag"/></a>
+  <a style="display:inline;" class="ajax" targetdiv="emkeywordeditor" href="$home/$catalogid/detailviewer/keywords/removekeyword.html?assetid=${asset.id}&keyword=$keyword"><img src="$home${themeprefix}/images/close_16x16.png" title="delete tag"/></a>
 </span>
 #end
 </div>
