@@ -1,8 +1,10 @@
-#if($hits.size() > 0)
-	#set( $hit = $hits.first() )
-	#set( $asset = $mediaarchive.getAssetBySourcePath($hit.sourcepath) )
-	$context.putPageValue("asset",$asset)
-	$pages.include("$themeprefix/layouts/mediaviewer.html",$context)
-#else
-	Please upload a video.
-#end
+<div class="ui-widget uipanel" >
+	<div  class="ui-widget-header">Search</div>
+	<div  class="ui-widget-content">
+
+$pages.include("$apphome/components/advancedsearch/index.html")
+
+<a href="index.html" class="emdialog">Test</a>
+
+	</div>
+</div>
