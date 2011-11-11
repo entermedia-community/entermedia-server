@@ -1,0 +1,6 @@
+<page>
+	<path-action name="Admin.loadPermissions"  />
+	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
+	<property name="commentpath">/${applicationid}/users/${username}/albums/${albumid}/comments.xml</property>
+	<property name="commenttype">album</property>
+</page>

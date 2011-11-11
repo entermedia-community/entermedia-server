@@ -1,13 +1,54 @@
-<tr id="tableheader">
-#if( $showtoolbar )
-	<th class="firstheader" style="width: 20px;"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end onClick="togglehits();" /></th>
-#end	
-
 #set( $edit = $context.getRequestParameter("editheader"))
 #if( !$edit || $edit == "false")
 #set( $edit = false)
 #end
-	<th style="text-align: center;"> Thumbnail</th>
+#if( $edit )
+<tr>
+#if( $showtoolbar ) <th></th> #end
+		<th></th>
+ 	<th class="lastheader editcolumnheaderpicker"  id="tableeditcontrol" colspan="$details.size()" style="text-align: right;" >
+
+	<script type="text/javascript">
+	function addColumn(inId)
+	{
+		jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+	}
+	</script>
+	
+	#set ($alldetails = $searcher.getDetailsForView("asset/searchselect", $user))
+	
+	<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
+		<option>Add Column</option>
+	
+		#foreach( $detail in $alldetails)
+			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
+		#end	
+		
+	</select> 
+
+	<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+	</th>
+		<th></th>
+</tr>
+#end
+#if( !$edit)
+		<tr><th class="editcolumnsicon">
+		<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
+		<img align="right" title="Edit Columns" src="$home$themeprefix/images/navigation/write-note.png" /></a></th>
+		#else
+			<th></th><tr>
+		#end	
+<tr id="tableheader">
+
+
+    
+#if( $showtoolbar )
+	<th class="firstheader"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end onClick="togglehits();" /></th>
+#end	
+	
+    
+    
+    <th style="text-align: center;"> Thumbnail</th>
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
 		<th  #if( $edit)class="editcolumnheader"#end>
@@ -39,5 +80,6 @@
 			</div>
 		 </th>
 	#end
+		
 </tr>
 

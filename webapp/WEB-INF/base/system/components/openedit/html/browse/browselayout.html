@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+#foreach( $script in $content.getScriptPaths() )
+	<script type="text/javascript" src="$home$script">  </script>
+#end
+#foreach( $style in $content.getStylePaths() )
+	<link rel="stylesheet" type="text/css" href="$home$style" />
+#end
+</head>
+
+<body class="embody">
+<div id="openedit">
+<table>
+	<tbody>
+	<tr>
+	<td colspan="2" style="width:150px;" width="150">$pages.include("./upload.html")</td>
+	</tr>
+	
+	<tr>
+	<td style="vertical-align: top;">
+		<b class="spiffy">
+  <b class="spiffy1"><b></b></b>
+  <b class="spiffy2"><b></b></b>
+
+  <b class="spiffy3"></b>
+  <b class="spiffy4"></b>
+  <b class="spiffy5"></b></b>
+		<div class="spiffyfg">
+		
+		<div id="oesidebar">
+	$pages.include("./search.html")
+	
+	$pages.include("./inline.html")
+		</div>
+		</div>
+	</td>
+	<td>
+	
+	<b class="spiffytwo">
+	  <b class="spiffytwo1"><b></b></b>
+	  <b class="spiffytwo2"><b></b></b>
+
+	  <b class="spiffytwo3"></b>
+	  <b class="spiffytwo4"></b>
+	  <b class="spiffytwo5"></b></b>
+	  <div class="spiffyfgtwo">
+	
+	
+	
+	<div id="oeresults_$catalogid" style="background-color: white; padding-left: 10px; padding-right: 10px; padding-top: 2px;min-height:550px;">
+	
+	<h1 style="padding-top: 5px;">Media Organizer</h1>
+		<div id="resultsarea">
+			$pages.includeContent()
+		</div>
+	</div>
+	</div>
+	<b class="spiffytwo">
+	  <b class="spiffytwo5"></b>
+	  <b class="spiffytwo4"></b>
+	  <b class="spiffytwo3"></b>
+	  <b class="spiffytwo2"><b></b></b>
+	  <b class="spiffytwo1"><b></b></b></b>
+	</td>
+	</tr>
+	</tbody>
+	</table>
+	</div>
+</body>
+</html>

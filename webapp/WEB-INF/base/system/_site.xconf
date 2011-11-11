@@ -8,8 +8,8 @@
 
 	<permission name="view">
 		<or>
-			<group name="administrators"/>
-			<group name="users"/>
+			<permission name="oe.edit"/>
+			<permission name="oe.administration"/>
 		</or>
 	</permission>
 

@@ -1,5 +1,5 @@
 <properties>
 	<property id="status" />
-	<property id="errordetails" />
+	<property id="presetid" />
 	
 </properties>

@@ -1,0 +1,12 @@
+<div id="emalbumcontent">
+
+#foreach( $albumhit in $albums )
+	$context.putPageValue("posting", $albumhit)
+	$context.setRequestParameter("albumid", $albumhit.get("id"))
+	$context.putPageValue("username", $albumhit.get("owner"))
+	$pages.include("/${applicationid}/albums/postingrow.html", $context)
+
+	
+#end
+</div>
+<div style="clear: both"> </div>

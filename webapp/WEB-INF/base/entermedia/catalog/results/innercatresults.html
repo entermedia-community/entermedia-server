@@ -13,6 +13,6 @@ $context.putPageValue("catalogid", $catalogid)
 #set( $resultdetail = $mediaarchive.getPropertyDetailsArchive().getDataProperties("asset","asset/resultdetail", $user) )
 $context.putPageValue("resultdetail", $resultdetail )
 
-#set($mode = $userprofile.getViewForResultType($context.findValue("customresultview"), $hits.getResultType()))	
+#set($mode = $usersettings.getViewForResultType($context.findValue("customresultview"), $hits.getResultType()))	
 $pages.include("${cataloghome}/results/types/${mode}.html", $context)
 $pages.include("${themeprefix}/entermedia/layouts/resultsfooter.html", $context)

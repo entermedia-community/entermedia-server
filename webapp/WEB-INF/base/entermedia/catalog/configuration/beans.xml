@@ -1,7 +1,6 @@
 <beans>
 
-	<bean id="photooptionavailableSearcher" bean="xmlFileSearcher"/>
-	<bean id="photooptionunavailableSearcher" bean="xmlFileSearcher"/>
+
 <bean id="relatedassetSearcher" bean="xmlFileSearcher" /> 
 	<bean id="publishqueueSearcher" bean="xmlFileSearcher"/>
 

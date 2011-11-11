@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <page-action name="MediaAdminModule.listThemes"/>
+  	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+  
+  
+  <property name="text.Cancel">
+    <value locale="es">Cancelar</value>
+  </property>
+  <property name="actiontitle">
+    <value>Create New Album</value>
+    <value locale="es">Crear Nuevo Álbum</value>
+  </property>
+</page>

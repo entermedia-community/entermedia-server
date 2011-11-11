@@ -11,7 +11,7 @@
 	<div class="emcatalogheadericon">
 		change view<br/>
 		#set($currentsetting = false)
-		#set($currentsetting = $userprofile.getViewForResultType($resulttype))
+		#set($currentsetting = $usersettings.getViewForResultType($resulttype))
 		<select name="newresultview" onchange="jQuery(this.form).submit();">
 			#foreach( $type in $searcherManager.getList($catalogid, "resulttype"))
 				<option value="$type.id" #if($type.id == $currentsetting ) selected #end>$type</option>

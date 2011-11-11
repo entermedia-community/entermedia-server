@@ -35,7 +35,7 @@ $context.putPageValue("currentcatalog", $currentcatalog)
 <table>
 <tr>
 <td style="padding-right: 10px;">
-	#set ($catalogs = $userprofile.getCatalogs())
+	#set ($catalogs = $usersettings.getCatalogs())
 	#set($selected = $currentcatalog)
 		
 	<form id="catalogselect" action="">	

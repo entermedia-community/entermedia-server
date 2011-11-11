@@ -1,12 +1,11 @@
 #set($sourcepath = $context.getRequestParameter("sourcepath"))
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 <div id="embed-wrapper" style="padding: 15px;">
-<h2 class="embedlinktext" style="float:left;">[[Embed Link]]</h2>
+<span class="embedlinktext" style="float:left;">Embed Link</span>
 <div class="embedlink">
 <textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="60">
-<iframe src="$context.siteRoot$home$apphome/components/mediaviewer/player/types/${type}.html?oemaxlevel=1&sourcepath=$asset.sourcepath" width="50" height="900">
-</iframe>
+	<iframe src="$context.siteRoot$home$apphome/components/mediaviewer/player/types/${type}.html?oemaxlevel=1&sourcepath=$asset.sourcepath" width="50" height="900">
+	</iframe>
 </textarea>
-<p>[[Select code then right click to copy]]</p>
 </div>
 </div>

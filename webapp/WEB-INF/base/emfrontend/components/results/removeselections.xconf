@@ -1,5 +1,6 @@
 <page>
-	<path-action name="OrderModule.addSelectionsToOrderBasket"/>
+	<path-action name="AlbumModule.removeSelections"/>
+	<property name="albumid">4</property>
 	<inner-layout/>
 	<layout/>
 </page>

@@ -1,4 +1,5 @@
 <page>
 	<!--path-action name="LogSearchModule.addEventLog"/-->
 	<property name="emailbody">../albums/create/postingmail.html</property>
+	<path-action name="AlbumModule.sendNewPostNotification" />
 </page>

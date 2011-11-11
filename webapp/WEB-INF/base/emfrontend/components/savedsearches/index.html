@@ -1,8 +1,12 @@
+<div class="emsectionheader">
+	<h3>Folders</h3>
+</div>	
+
 #if ($querylist && $querylist.size() > 0)
 #set ($rows = $querylist.getPageInRows(2))
 
 #set( $reporttype = $context.getRequestParameter("reporttype"))
-<div class="subcolumns" style=" overflow: hidden; white-space:nowrap;">   
+<div class="subcolumns" style="white-space:nowrap;">   
 
 #foreach($row in $rows )
 

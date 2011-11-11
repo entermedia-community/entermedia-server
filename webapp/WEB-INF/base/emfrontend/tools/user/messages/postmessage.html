@@ -1,0 +1,17 @@
+<h1>Post a New Message</h1>
+<form name="postmessageform" action="postmessage-finish.html">
+
+			 	#set ( $searcher = $entermedia.searcherManager.getSearcher("media", "message" ))
+			 
+			 	$context.putPageValue("searcher", $searcher )	
+			 	$context.putPageValue("view", "message/post")	
+			 	$context.putPageValue("searchtype","message")	
+				$context.putPageValue("data", $data)	
+				
+				$context.putPageValue("catalogid","media")	
+				
+		 
+				 	$pages.include("/media/components/xml/detaileditor.html", $context)
+		<input type="submit"/>
+
+</form>

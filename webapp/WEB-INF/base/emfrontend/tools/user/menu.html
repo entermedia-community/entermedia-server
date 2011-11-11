@@ -1,0 +1,43 @@
+#set( $base = "$home/$applicationid/users/$owner.id")
+
+			<ul class="emactions"> 
+				 <li>
+				<a href="$base/index.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/home.png"/> [[Home]]</a>
+				</li>
+			
+				#if($user.id == $owner.id)
+				<li>
+				<a class="thickbox" href="$base/settings/profile.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/pencil.png"/> [[Edit my profile]]</a>
+				</li>
+    <li>
+    <a class="thickbox" href="$base/setuserpassword.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/pencil.png"/> [[Change password]]</a>
+    </li>
+				#end
+			<!-- 
+				<li>
+				<a href="$base/postings/index.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/entermedia/images/navigation/comment.png"/> [[Postings]]</a>
+				</li>
+				 -->
+				<li>
+				<a href="$base/messages/index.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/comment.png"/> [[Messages]]</a>
+				</li>
+
+				#if($user.id == $owner.id)
+			<!-- 
+				<li>
+		  			<a href="$base/albums/clipboards/share.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/comment-add.png"/> [[New]] $content.albumname</a>
+				</li>
+				 -->
+				#end
+				#if($user.id == $owner.id)
+				<li>
+		  			<a href="$base/friends/index.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/user-group.png"/> [[Your Friends]]</a>
+				</li>
+				<li>
+					<a class="thickbox" href="$base/friends/invite/index.html"><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/user-add.png"/> [[Invite Friends]]</a></li>
+				#else
+				<li>
+		  			<a href="$base/friends/index.html" ><img border="0" align="absmiddle" src="$home${themeprefix}/images/navigation/user-group.png"/> [[View Friends]]</a>
+				</li>				
+				#end
+		    </ul>

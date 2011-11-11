@@ -1,0 +1,12 @@
+<page>
+
+	<inner-layout>/${applicationid}/theme/layouts/userviewer.html</inner-layout>
+
+	<path-action name="UserProfileModule.createOwnerHome"/>
+	<page-action name="FriendModule.checkInvitation"/>
+	<path-action name="FriendModule.isFriend"/>
+	<property name="virtual">true</property>
+	<property name="matttabstabid">browse</property>
+	<property name="sectiontitle">Postings</property>
+	<property name="albumname">album</property>
+</page>

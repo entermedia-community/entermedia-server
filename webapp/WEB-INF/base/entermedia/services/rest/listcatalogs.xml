@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="ok">
-#foreach( $catalog in $userprofile.getCatalogs() )
+#foreach( $catalog in $usersettings.getCatalogs() )
 <catalog id="$catalog.id">$catalog.name</catalog>
 #end
 </rsp>

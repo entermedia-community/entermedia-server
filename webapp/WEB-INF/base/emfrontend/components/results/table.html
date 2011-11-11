@@ -31,7 +31,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 	$context.putPageValue("details",$details)
 	
 <div id="emselectable">	
-	<table cellpadding=0 cellspacing=0 border=0 width="100%" class="emdownloadlisting emresultscontent">
+	<table cellpadding=0 cellspacing=0 border=0>
 			$pages.include("$apphome/components/results/tableheader.html",$context)
 			#set($count = 0)
 			#foreach( $hit in $hits.getPageOfHits() )
@@ -51,14 +51,15 @@ $context.putPageValue("thumbsize", $thumbsize)
 ##<h2>$category</h2>
 ##end
 </td>
-<td width="100%" align="right" valign="top" style="padding-top:4px;">
+<td align="right" valign="top" class="assetcount">
 #if( $hits ) $hits.size() [[assets]]#end
 </td>
-<td valign="top">
+<td align="right" valign="top">
 	$pages.include("$apphome/components/results/pages.html",$context)
 </td>
 </tr>
 </table>
+
 
 
 	#end
@@ -70,43 +71,6 @@ $context.putPageValue("thumbsize", $thumbsize)
 #end
 </form>
 <div id="messagearea"></div>
-
-#set( $edit = $context.getRequestParameter("editheader"))
-#if( !$edit || $edit == "false")
-#set( $edit = false)
-#end
-<div  id="tableeditcontrol" style="text-align: right;" >
-
-#if( $edit )
-
-
-	<script type="text/javascript">
-	function addColumn(inId)
-	{
-		jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
-	}
-	</script>
-	
-	#set ($alldetails = $searcher.getDetailsForView("asset/searchselect", $user))
-	
-	<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
-		<option>Add Column</option>
-	
-		#foreach( $detail in $alldetails)
-			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
-		#end	
-		
-	</select> 
-	<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
-
-#else
-	<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
-	<img  title="Edit Columns" src="$home$themeprefix/images/navigation/write-note.png" /></a></th>
-
-#end
-</div>
-
-
 
 <script type="text/javascript">
 

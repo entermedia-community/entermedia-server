@@ -1,0 +1,4 @@
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/album.html</inner-layout>
+	<path-action name="MultiSearchModule.multiAlbumSearch" />
+</page>

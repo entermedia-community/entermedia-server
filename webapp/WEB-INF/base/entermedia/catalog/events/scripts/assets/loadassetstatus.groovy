@@ -12,10 +12,6 @@ import com.openedit.page.manage.*
 public void init()
 {
 	String assetid = context.getRequestParameter("assetid");
-	if( assetid == null)
-	{
-		return;
-	}
 	boolean complete = conversionsComplete(assetid);
 	if( complete )
 	{

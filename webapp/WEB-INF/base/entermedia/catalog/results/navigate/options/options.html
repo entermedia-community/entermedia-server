@@ -14,7 +14,7 @@
 		<td>[[View]]</td>
 		<td>
 			#set($currentsetting = false)
-			#set($currentsetting = $userprofile.getViewForResultType($resulttype))
+			#set($currentsetting = $usersettings.getViewForResultType($resulttype))
 			<select name="newresultview" >
 				#foreach( $type in $searcherManager.getList($catalogid, "resulttype"))
 					<option value="$type.id" #if($type.id == $currentsetting ) selected #end>$type</option>
@@ -28,7 +28,7 @@
 			<select name="sortby">
 				<option value=""></option>
 				#set($assetsearcher = $searcherManager.getSearcher($catalogid, "asset"))
-				#set( $ordering = $userprofile.getSortForSearchType($resulttype))
+				#set( $ordering = $usersettings.getSortForSearchType($resulttype))
 				#foreach( $searchItem in $assetsearcher.getDetailsForView("asset/orderby", $user) )
 					#if( $searchItem.isDate() )
 						<option value="${searchItem.getId()}Down" #if(  $ordering == "${searchItem.getId()}Down" ) selected #end >${searchItem.getText($context)} [[[Newer First]]]</option>
@@ -45,7 +45,7 @@
 	<tr>	
 		<td>[[Hits Per Page]]</td>
 		<td>
-			#set($hitsperpage = $userprofile.getHitsPerPageForSearchType($resulttype))
+			#set($hitsperpage = $usersettings.getHitsPerPageForSearchType($resulttype))
 			<select name="hitsperpage">
 				#foreach( $item in $searcherManager.getList($catalogid, "hitcount"))
 					<option value="$item.id" #if( $item.id == "$hitsperpage" ) selected #end>$item</option>

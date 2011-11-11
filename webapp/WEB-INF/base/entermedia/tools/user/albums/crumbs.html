@@ -1,0 +1,8 @@
+<div  class="crumblocation">[[You are here]]:
+	<a href="$home$cataloghome/index.html" >Home</a>
+
+    #foreach ( $parent in $archivemenu.findSelectedParents(1) )
+		&gt; <a href="$home${parent.path}" >#esc($parent.text)</a> 
+	#end
+&gt; #esc($usercollections.getSelectedCollection().getName()) #if( $usercollections.isRemote($usercollections.getSelectedCollection()) )( $usercollections.getSelectedCollection().getUser() )#end
+</div>

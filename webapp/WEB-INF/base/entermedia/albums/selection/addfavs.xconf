@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <page-action name="AlbumModule.getAlbumList"/>
+  <inner-layout>/WEB-INF/base/entermedia/albums/selection/NOLAYOUT</inner-layout>
+  
+  <property name="text.Add to Favorites">
+    <value locale="es">Añadir a Favoritos</value>
+  </property>
+  <property name="text.Remove from Favorites">
+    <value locale="es">Eliminar de Favoritos</value>
+  </property>
+  
+</page>

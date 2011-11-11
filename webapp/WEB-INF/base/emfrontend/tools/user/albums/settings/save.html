@@ -1,0 +1,7 @@
+#if($ownerchanged == "true")
+	<p>${page.albumname} has changed owners</p>
+	<p>Back <a target="_parent" href="$home/${applicationid}/index.html">Home</a>
+#else
+	<p>${page.albumname} has been saved.</p>
+	<p>Back to <a target="_parent" href="$home/${applicationid}/users/$album.owner/albums/view/index.html?albumid=$album.id">${page.albumname}</a>
+#end

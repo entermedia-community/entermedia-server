@@ -19,7 +19,12 @@
 	<table class="emtable" width="100%">
 	<tr class="row" >
 		<td valign="top" width="100%"><a href="$link">$title</td>
-
+		#if( $canviewclipboards )
+		<td valign="top" nowrap="true" ><div id="selectionholder">
+			$pages.include("/$applicationid/albums/selection/toggleitem.html?assetid=$assetid&catalogid=$catalogid&viewtype=thumbs")
+			</div>
+		</td>
+		#end
 	</tr>
 	</table>
 </div>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.$album.size($context) photos">
+    <value locale="es">$album.size($context) fotos</value>
+  </property>
+  <property name="text.Created by $userManager.getScreenName($album.owner)">
+    <value locale="es">Creado por $userManager.getScreenName($album.owner)</value>
+  </property>
+  <property name="text.more...">
+    <value locale="es">más ...</value>
+  </property>
+</page>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <path-action name="MediaArchiveModule.getAsset"/>
+  <path-action name="MultiSearchModule.loadApplicationId"/>
+  <page-action name="AlbumModule.listMyAlbums"/>
+  <inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+  
+  <property name="text.Add To Album">
+    <value locale="es">Agregar al álbum</value>
+  </property>
+  <property name="text.No album available to add to.  You can create one using the link below.">
+    <value locale="es">Ningún álbum disponible para añadir. Puede crear uno usando el siguiente enlace.</value>
+  </property>
+  <property name="text.$!col.details (contains $col.size($context) items)">
+    <value locale="es">$!col.details (contiene $col.size($context) artículos)</value>
+  </property>
+  <property name="text.$addedtoalbum.name has been updated.">
+    <value locale="es">$addedtoalbum.name ha sido actualizado.</value>
+  </property>
+  <property name="text.view">
+    <value locale="es">ver</value>
+  </property>
+  <property name="text.Create New Album">
+    <value locale="es">Crear nuevo álbum</value>
+  </property>
+  <property name="text.Click an album below to add this record.">
+    <value locale="es">Haga clic en un álbum a continuación para agregar este registro.</value>
+  </property>
+</page>

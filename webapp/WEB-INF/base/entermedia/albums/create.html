@@ -1,0 +1,18 @@
+
+<h2>Create New Album</h2>
+
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
+#if ($hitssessionid)
+	#set( $hits = $context.getSessionValue($hitssessionid) )
+#end
+
+<form name="savealbum" action="$home/${applicationid}/albums/create-finish.html">
+<input type="hidden" name="ownerid" value="$user.id"/>
+$pages.include("/${applicationid}/tools/album/settings/edit.html")	
+
+</form>
+<a href="$home/${applicationid}/albums">[[Cancel]]</a>
+
+#if ($hits)
+<p>Contains $hits.size() assets</p>
+#end

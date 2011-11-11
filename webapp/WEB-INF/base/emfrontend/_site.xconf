@@ -4,7 +4,7 @@
   
 	<path-action name="Admin.autoLogin" />
     <path-action name="MediaArchiveModule.loadApplicationId" />
-	<path-action name="ProfileModule.loadUserProfile" />
+	<path-action name="ProfileModule.loadUserProfile"></path-action>
     <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
@@ -12,8 +12,8 @@
 
 	<property name="profilemanagerid">${catalogid}</property>
 
-	<path-action name="ProfileModule.loadUserProfile"  />	
 	<path-action name="Admin.loadPermissions"/>
+	<path-action name="UserProfileModule.loadUserPreferences"  />	
 	<path-action name="Admin.allowViewing">
 		<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
 	</path-action>
@@ -36,7 +36,13 @@
 	<!-- property name="contentsiteroot">http://s3.amazonaws.com/emtube</property -->
 
  	<property name="themeprefix">/${applicationid}/theme</property>
-
+ 	
+	<permission name="viewasset">
+		<or>
+			<group name="administrators"/>
+			<action name="AssetControlModule.checkFolderMatchesUserName"/>
+		</or>
+	</permission>
 
 	<permission name="view">
 		<user/>
@@ -54,14 +60,13 @@
 			<userprofile property="viewassets" equals="true" />
 		</or>
 	</permission>
-	  
-		
-	  	<permission name="viewbasket">
+	  	<permission name="editasset">
 			<or>
 				<userprofile property="assetadmin" equals="true" />
 				<userprofile property="editasset" equals="true" />
 			</or>	
 		</permission>
+
 	  	<permission name="shareasset">
 			<or>
 				<userprofile property="assetadmin" equals="true" />

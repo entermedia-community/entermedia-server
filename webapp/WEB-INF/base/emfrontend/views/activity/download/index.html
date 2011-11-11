@@ -33,7 +33,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadon
 $context.putPageValue("searcher", $orderitemsearcher)	 
 
 <table>		
-		#foreach( $item in $orderitems )
+		#foreach( $item in $orderassets )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 			$context.putPageValue("asset", $asset)
 			$context.putPageValue("item", $item)

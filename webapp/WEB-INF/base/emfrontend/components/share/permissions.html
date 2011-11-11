@@ -63,7 +63,7 @@
 
 	</div>
 	<div id="all_container">
-		<span class="all_text" style="float:left;">Allow All Groups</span><input type="checkbox" id="allowallgroups" style="float:left;" onclick="addAllGroups(); return false;" #if($isallgroups) checked="checked" #end/>
+		<span class="all_text" style="float:left;">Allow All Teams</span><input type="checkbox" id="allowallgroups" style="float:left;" onclick="addAllGroups(); return false;" #if($isallgroups) checked="checked" #end/>
 	</div>
 	<div id="all_container">
 		<span class="all_text" style="float:left;">Allow All</span><input type="checkbox" id="allowall" style="float:left;" onclick="addAll(); return false;" #if($isall) checked="checked" #end/>
@@ -106,7 +106,7 @@
 
 	<div id="people_container">
 
-		<span class="field_title">Groups</span>
+		<span class="field_title">Teams</span>
 
 
 		<table class="people_table" id="people_table">
@@ -126,7 +126,7 @@
 
 		<div class="add_person_box">
 
-			<span>Add Group:</span> <br /> 
+			<span>Add Team:</span> <br /> 
 			<input class="addmygroups" name="add_team" type="text" assetid="$asset.id">
 			<input id="hiddenaddmygroups" name="hiddenaddmygroups" type="hidden" targetdiv="permissions" postpath="$home$apphome/components/share/addgroup.html?assetid=$asset.id&groupid=">
 		</div>

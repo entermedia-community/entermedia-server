@@ -10,6 +10,13 @@
 	<!-- $user.setProperty("searchtype", "categories") -->
 #end
 
+#if ($canviewclipboards)
+<tr>
+<td>
+$pages.include("$cataloghome/rollup/header.html?pluginpath=/$applicationid/albums/selection/listselections.html")
+</td>
+</tr>
+#end
 	#if ($canbrowsecategories)
 	<tr>
 	<td>

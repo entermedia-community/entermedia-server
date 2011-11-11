@@ -1,0 +1,8 @@
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/album.html</inner-layout>
+	<property name="usefolder">false</property>
+	<page-action name="MultiSearchModule.multiAlbumSearch" />
+	<property name="hitsname">hits</property>
+	<page-action name="FriendModule.checkInvitation"/>
+	<page-action name="AlbumModule.checkParticipants"/>
+</page>

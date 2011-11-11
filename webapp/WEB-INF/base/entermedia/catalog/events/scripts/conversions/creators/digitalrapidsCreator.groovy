@@ -20,7 +20,7 @@ import com.openedit.util.FileUtils;
 import org.openedit.Data;
 import com.openedit.util.PathUtilities;
 
-public class digitalrapidsCreator extends BaseCreator
+public class digitalrapidsCreator extends BaseCreator implements MediaCreator
 {
 	private static final Log log = LogFactory.getLog(this.class);
 

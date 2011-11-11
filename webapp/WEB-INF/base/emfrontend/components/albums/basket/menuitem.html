@@ -1,0 +1,2 @@
+#set($colSize = ${album.size($catalogid,$context)})
+<a href="$home$apphome/views/albums/basket/index.html?albumid=$album.getId()"><span>[[Basket]] #if($colSize > 0)($colSize)#end</span></a>

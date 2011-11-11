@@ -1,0 +1,23 @@
+#set ( $origURL=$url_util.getOriginalUrl() )
+#set ( $path = $context.getRequestParameter( "path" ) )
+#if ( !$path )
+	#set( $path = $content.path )
+#end
+#set( $path = $url_util.encode($path) )
+<!-- OE Toolbar Start -->
+<div id="oeadmintoolbarlocation" class="oeadmintoolbarlocation">
+<table  id="oeadmintop-menu-container"  cellspacing="0" cellpadding="0" >
+<tr >
+<td id="oeadmintop-menu-containerfirst" width="10"></td>
+<td id="oeadmintop-menu-containermiddle" valign='top' >
+			$pages.include("/system/components/openedit/toolbar/editor.html",$context)
+		
+	</td>
+<td id="oeadmintop-menu-containermiddle" valign='top' >
+$pages.include("/system/components/openedit/toolbar/admin.html",$context)
+</td>	
+<td id="oeadmintop-menu-containerlast"></td>
+</tr>
+</table>
+</div>
+<!-- OE Toolbar END -->

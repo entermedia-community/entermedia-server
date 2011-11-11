@@ -3,9 +3,6 @@
     <preset id="largeimage" guid="preview" 	outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Preview</preset>
     <preset id="mediumimage" guid="medium" 	outputfile="image300x300.jpg" fileexportformat="${filename}300x300.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Medium</preset>
     <preset id="thumbimage" guid="thumb" 	outputfile="image200x200.jpg" fileexportformat="${filename}200x200.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Thumbnail</preset>
-    
-    <preset id="portraitcrop" guid="crop" outputfile="image-portraitcropped.jpg" fileexportformat="${filename}portraitcropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Portrait Crop</preset>
-    
     <preset id="largedocument" guid="preview" outputfile="image800x600.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true">Document Preview</preset>
     <preset id="previewffmpegthumb" guid="preview" outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="ffmpegimage" extension="mp4" inputtype="video" onimport="true">Video Thumb</preset>
     <preset id="previewffmpeg" guid="preview" outputfile="video.mp4" fileexportformat="${filename}preview.mp4" type="ffmpeg" extension="mp4" inputtype="video" onimport="true">Video MP4 Preview</preset>

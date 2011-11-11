@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="AlbumModule.getSelectedAssets" alltypes="true"/>
+	<inner-layout>./recent.html</inner-layout>
+	<layout/>
+	<view-permissions>
+		<boolean value="true"/>
+	</view-permissions>
+	<property name="forcelayout">true</property>	
+	<property name="virtual">true</property>
+	<generator name="velocity" />
+</page>

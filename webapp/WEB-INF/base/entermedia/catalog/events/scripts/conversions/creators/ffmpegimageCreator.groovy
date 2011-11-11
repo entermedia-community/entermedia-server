@@ -114,12 +114,29 @@ public class ffmpegimageCreator extends BaseImageCreator
 			result.setComplete(true);
 			result.setOutputPath(inOutFile.getContentItem().getAbsolutePath());
 		}
-		
-		if(!inOutFile.exists() || inOutFile.length() == 0)
+		else
 		{
-			log.info("Thumnail creation failed " + outputpath);
-			result.setOk(false);
-			result.setError("creation failed" );
+		 	result.setOk(false);
+		 	InputStream inputstream = null;
+			try
+			{
+				inputstream = input.getInputStream();
+				inputstream.read();
+				//we can read the input from NFS, so fail	
+				log.info("Thumbnail creation failed " + outputpath);
+				result.setError("creation failed, could not read from file system" );
+			}
+			catch( Exception ex )
+			{
+				log.info("Could not read input file. will try again later");
+			}
+			finally
+			{
+				if( inputstream != null )
+				{
+					inputstream.close();
+				}
+			}
 		}
 
 		return result;
@@ -138,4 +155,5 @@ public class ffmpegimageCreator extends BaseImageCreator
 
 	
 }
+
 

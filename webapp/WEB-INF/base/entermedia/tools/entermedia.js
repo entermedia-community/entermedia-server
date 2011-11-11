@@ -136,6 +136,26 @@ nextFrame = function(inId, inPath)
 	img.attr("src", inPath+"?frame="+frame);
 }
 
+toggleAlbumItem = function(inCatalogId, inId, inAlbum, inEven, inView)
+{
+	var targetDiv = "#collection" + inCatalogId + inId;
+	targetDiv = targetDiv.replace(/\//g, "\\/");
+	var elem = jQuery(targetDiv);
+	if(elem.length==0)
+	{
+		elem = self.parent.jQuery(targetDiv);
+	}
+	elem.load('$home/${applicationid}/albums/selection/toggleitem.html', {catalogid: inCatalogId, assetid: inId, albumid: inAlbum, evenid: inEven, viewtype: inView});
+	return false;
+}
+
+addItemToSelection = function(inCatalogId, inId, inAlbum)
+{
+	var targetDiv = "#emselectionshead";
+	var elem = jQuery(targetDiv);
+	elem.load('$home/${applicationid}/albums/selection/addtoselection.html', {catalogid: inCatalogId, assetid: inId, albumid: inAlbum});
+	return false;
+}
 
 outlineSelection = function(event, ui)
 {
@@ -585,25 +605,12 @@ onloadselectors = function()
 								jQuery(this).removeAttr('disabled');
 							});	
 						//jQuery('#emselectable form').trigger('submit');
-						var form = jQuery('#emselectable').find("form");
-						if( form.length > 0 )
+						if( !jQuery('#emselectable form').attr("action") )
 						{
-							if( !jQuery('#emselectable form').attr("action") )
-							{
-								var path = jQuery('#emselectable form #emselectedrow').attr("value");
-								jQuery('#emselectable form').attr("action",path);
-							}
-							jQuery('#emselectable form').submit();
+							var path = jQuery('#emselectable form #emselectedrow').attr("value");
+							jQuery('#emselectable form').attr("action",path);
 						}
-						else if(jQuery('#emselectable #editlink'))
-						{
-							var link = jQuery('#emselectable #editlink').attr("link");
-							var targetdiv = jQuery('#emselectable #editlink').attr("targetdiv");
-							targetdiv = targetdiv.replace(/\//g, "\\/");
-							var id = jQuery(row).attr("rowid");
-							link = link + "&id=" + id;
-							jQuery("#" + targetdiv).load(link);
-						}
+						jQuery('#emselectable form').submit();
 					}
 				);		
 			}

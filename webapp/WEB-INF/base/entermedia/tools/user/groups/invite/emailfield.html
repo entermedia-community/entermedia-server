@@ -1,0 +1,49 @@
+<td> </td>	<td >
+		<div id="extraemailslink">
+				Emails:
+		</div>
+		<div id="extraemailsbox">
+			<textarea id="extraemails" name="email" style="width:90%;"></textarea><br>
+				Paste in extra e-mail addresses that are separated by commas.
+		</div>
+		<div id="emuserarea"></div>
+	</td>
+</tr>
+
+
+
+
+<script type="text/javascript">
+//<![CDATA[
+
+function updateField(text, li) 
+{
+  var inputvalue = document.getElementById("${fieldname}_input");
+  inputvalue.style.borderColor	 = "#AAFFAA"; 
+  var value = document.getElementById("${fieldname}.value");
+  if(value)
+  {
+  	value.value = li.id;
+  }
+}
+removeuser = function(email)
+{
+	Element.remove("selected_"+email);
+}
+
+showid = function(inId)
+{
+	document.getElementById(inId).style.display = 'block';
+}
+
+hideid = function(inId)
+{
+	document.getElementById(inId).style.display = 'none';
+}
+//]]>
+</script>
+
+
+
+
+

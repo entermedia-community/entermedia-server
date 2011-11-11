@@ -1,0 +1,10 @@
+<page>
+	<property name="linkedcatalog">media/catalogs/public</property>
+	<property name="openeditid">system/components/openedit</property>
+	<path-action name="HtmlEditor.loadEditor" alltypes="true"/>
+	<path-action name="HtmlEditor.loadCatalogPermissions"/>
+	
+	<style id="openedit" href="/system/components/openedit/html/theme/style.css" />
+	
+	
+</page>

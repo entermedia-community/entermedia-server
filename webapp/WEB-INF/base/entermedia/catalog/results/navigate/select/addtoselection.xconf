@@ -1,5 +1,6 @@
 <page>
 	<path-action name="DataEditModule.loadHits"/>
+	<path-action name="AlbumModule.getAlbumList"/>
 	<property name="dialogicon">${themeprefix}/entermedia/images/navigation/clipboard.png</property>
 	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
 </page>

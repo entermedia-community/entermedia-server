@@ -1,4 +1,5 @@
 <page>
+	<page-action alltypes="true" name="AlbumModule.loadAlbum"/>
 	<page-action name="DataEditModule.loadPageOfSearch" />
 	<page-action name="DataEditModule.changeSort" />
 	<page-action name="DataEditModule.addChildQuery" />

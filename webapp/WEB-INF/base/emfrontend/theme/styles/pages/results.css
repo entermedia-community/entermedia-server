@@ -51,17 +51,19 @@
 	width: 200px;
 	height: 260px;
 	text-align: center;
-	border-bottom:1px solid #666;
+	border-bottom:1px solid #90002a;
 	padding-bottom:15px;
 }
 .emthumb
 {
-	height:180px;
+	height:200px;
 	width: 200px;
+	border:3px solid #fff;
 }
 
 .emthumb:hover
 {
+	border:3px solid #336699;	
 }
 
 .emboxthumblarge
@@ -169,42 +171,3 @@
 	text-decoration: none;
 }
 
-
-#player_container
-{
-	position: relative;
-	background-color:#eee;
-	width:120px;
-	height:41px;
-	border:1px solid #009be3;
-	overflow: hidden;
-	margin: 0 auto 0 auto;
-}
-
-#player_container  ul#player_controls
-{
-	list-style-type:none;
-	padding: 0;
-	margin: 0;
-}
-#player_container  ul#player_controls li
-{
-	overflow:hidden;
-	text-indent:-9999px;
-}
-
-#player_play
-{
-	position: absolute;
-	left:4px;
-	top:0px;
-	width:40px;
-	height:40px;
-	cursor: pointer;
-	display: inline;
-	background: url("../../images/audioplayer/spirites.jpg") 0 0 no-repeat;
-}
-#player_play.em_hover
-{
-	background: url("../../images/audioplayer/spirites.jpg") -41px 0 no-repeat;
-}

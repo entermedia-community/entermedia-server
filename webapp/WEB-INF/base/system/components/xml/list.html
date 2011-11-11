@@ -31,9 +31,7 @@
 		#set( $foreignfield = $foreignkeyid )
 	#end
 	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.setAndTogether(false))
-	#set ($o = $query.addMatches("$foreignfield", "$foreignkeyvalue"))
-	#set ($o = $query.addMatches("$foreignfield", "all"))
+	#set ($o = $query.addMatches($foreignfield, $foreignkeyvalue))
 #elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
 	#set ($query = $lsearcher.parse($squery))
 #else
@@ -44,10 +42,10 @@
 #if ($detail.sort)
 	$query.setSortBy($detail.sort)
 #end
+
 #set ($types = $lsearcher.search($query))
-#if( !$value )
-	#set ($value = $context.getRequestParameter('value'))
-#end
+
+#set ($value = $context.getRequestParameter('value'))
 #if (!$value)
   #set ($value = $context.getRequestParameter("${fieldname}.value"))
 #end

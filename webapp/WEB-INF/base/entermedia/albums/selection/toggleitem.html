@@ -1,0 +1,36 @@
+#set( $assetid = $context.getRequestParameter("assetid") )
+#if( !$assetid )
+	#set( $assetid = $asset.id )
+#end
+#set( $catalogid = $context.getRequestParameter("catalogid") )
+#if( !$catalogid )
+	#set( $catalogid = $asset.catalogid )
+#end
+#set( $evenid = $context.getRequestParameter("evenid"))
+#set( $viewtype = $context.getRequestParameter("viewtype"))
+
+##loop over three collections
+<div   class="emselectionlist" id="collection$catalogid$assetid">
+	#foreach( $col in $albumlist.getSelectionAlbums() )
+			#set($colSize = ${col.size($context)})
+			<div class="oeselectionlinkon$col.getId()" style="padding-bottom:3px;" >
+			<input type="checkbox" name="" onchange="toggleAlbumItem('$catalogid','$assetid', '$col.getId()', '$evenid', '$viewtype');" #if ( $col.containsAsset($catalogid, $assetid, $context) )checked #end />
+
+			#if( $colSize > 0 )
+				#set( $size = "($colSize)")
+			#else
+				#set( $size = "")
+			#end
+			#if( $col.id == "1" )
+				#set( $type = "share")			
+			#elseif( $col.id == "2" )
+				#set( $type = "categorize")			
+			#elseif( $col.id == "3" )
+				#set( $type = "downloads")			
+			#end
+
+			<a href="$home/$applicationid/users/$user.id/albums/clipboards/${type}.html?albumid=$col.getId()"><img title="[[View Clipboard]]"  style="vertical-align:bottom;" src="$home${themeprefix}/entermedia/images/navigation/selection${col.getId()}on.png" /> $context.getText("selection$col.getId()") $size</a>
+
+			</div>
+	#end
+</div>

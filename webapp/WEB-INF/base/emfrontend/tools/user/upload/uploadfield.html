@@ -1,0 +1,6 @@
+<br>
+#set( $rowcount = $context.getRequestParameter("rowcount"))
+#if( !$rowcount)
+	#set( $rowcount = "0")
+#end
+<input type="file" size="50"  name="file.${rowcount}">

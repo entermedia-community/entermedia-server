@@ -58,7 +58,6 @@
 		
 	<input type="hidden" name="childquery" value="none" /> ## causes the search to re-run even when no types are selected	 
 </form>
-<input id="select_all" type="button" value="[[Select All]]" />
 
 <script type="text/javascript">
 
@@ -79,16 +78,7 @@ applyDontShow = function()
 	
 	jQuery('#dontshow').attr('action', "$apphome/components/results/table.html?" + query);
 	jQuery('#dontshow').submit();
-
-
 }
-
-jQuery('#select_all').click(function(){
-	jQuery('.assettypeselect').each(function(){this.checked = true;});
-	applyDontShow();
-	return false;
-});
-
 
 jQuery('.assettypeselect').bind('click',applyDontShow);
 

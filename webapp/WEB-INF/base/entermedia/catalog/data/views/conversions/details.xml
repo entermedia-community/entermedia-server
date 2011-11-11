@@ -1,8 +1,8 @@
 <properties usagelabel="Active and completed conversions">
 	
-	<property id="submitted"/>
 	<property id="status"/>
 	<property id="errordetails"/>
+	<property id="submitted"/>
 	<property id="presetid"  />
 	<property id="externalid"  />
 	<property id="orderid"  />

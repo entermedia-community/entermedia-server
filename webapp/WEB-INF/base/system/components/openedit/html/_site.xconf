@@ -1,0 +1,16 @@
+<page>
+	<view-requirements>
+		<blank />
+	</view-requirements>
+	  <property name="editable">false</property>
+	<layout/>
+	<inner-layout />
+	<!--
+	<generator mimetypes="text/html" name="velocityGenerator"/>
+	-->
+	<style id="openedit" href="/system/components/openedit/html/theme/style.css" />
+	<!-- This could be a bit of a problem - we kind of need to load it remotely.  -->
+	
+	
+
+</page>

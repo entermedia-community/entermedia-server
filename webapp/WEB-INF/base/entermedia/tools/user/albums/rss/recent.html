@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+  <channel>
+   <title>[[RSS feed for $album.name album]]</title>
+    <link>$context.siteRoot</link>
+    <description>[[Recent Items]]</description>
+
+#foreach ( $cell in $album.getAlbumItems($context).getPageOfHits() )
+   <item>
+		#set( $catalogid = $cell.catalogid )
+		#set( $sourcepath = $cell.sourcepath )
+		
+		#set( $mediumend = "/$catalogid/downloads/preview/medium/$sourcepath/thumb.jpg")
+		#set( $msize = "$context.siteRoot$home$mediumend")
+		#set( $tsize = "$context.siteRoot$home/$catalogid/downloads/preview/large/$sourcepath/thumb.jpg" )
+		#set( $clink = "$context.siteRoot$home/$catalogid/detailviewer/viewer/index.html?sourcepath=${sourcepath}.html" )
+		
+      <link>$tsize</link>
+		<description><![CDATA[<a href="$clink"><img src="$msize" border="" alt="" /></a>]]></description>
+      <title>$cell.name</title>
+      
+      <pubDate>$cell.modificationDate</pubDate>
+      <guid>$msize</guid>
+      <dc:creator>[[Author]]</dc:creator>
+    </item>
+#end
+</channel>
+</rss>

@@ -1,37 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<property name="showToolbar">false</property>
 	<property name="encoding">UTF-8</property>
-	<!--
-	<generator name="webDavGenerator" alltypes="true"/>
-	-->
-	
-	<generator  name="velocity" mimetypes="text/html"/>
-	
-	<property name="auto_translate">true</property>
-	<property name="auto_translate_en">false</property>
-	
-	<generator name="file" />
-	
-	<permission name="view">
-		<boolean value="true"/>
-	</permission>
-	
 	<property name="autologingroup">guest</property>
 	<property name="referredgroup">media</property>
-	  
-	<path-action name="Admin.checkExist" alltypes="true" />
-	<path-action name="Admin.getTheme"  />
-
+	<property name="systemfromemail">noreply@entermediasoftware.com</property>
+	<property name="systemfromemailname">EnterMedia</property>
   	<property name="allopathrequestactions">true</property>
-
+	<property name="mapkey">ABQIAAAA-oYCrYbNUWI5rRekgN0uIBSf5ajCD9kU1QqLoKCXsTvheLOpohQin4XIQYd2PHqAV7QC02lbSsjcvQ</property>
   	<!-- property name="siteRoot">http://localhost:8080</property -->
   	
   	<!-- Allows uses to create their own accounts in the guest group -->
 	<property name="allowguestregistration">false</property>
 
 	<!-- Defines what languages can be selected for this site -->
+	<property name="auto_translate">true</property>
+	<property name="auto_translate_en">false</property>
 	<property name="languages">
 		<value>English</value>
 		<value locale="es">Español</value>
@@ -43,11 +27,16 @@
 	</property>
 	<property name="oetextfilter">translation</property>
 
-	<!-- Forces the editor to create draft version of files it edits-->
-	<property name="oe.edit.draftedits">false</property>
-	<property name="encoding">UTF-8</property>
-
-  	
+	<generator  name="velocity" mimetypes="text/html"/>
+	<generator name="file" />
+	  
+	<path-action name="HtmlEditor.check404" alltypes="true" />
+	<path-action name="Admin.getTheme"  />
+	<path-action name="Admin.loadPermissions"/>
+	
+	<permission name="view">
+		<boolean value="true"/>
+	</permission>
 	<!-- Default group permissions required to edit pages -->
 	<permission name="edit">
     	<and>
@@ -66,14 +55,12 @@
 	<!-- Enables editing and checks for missing pages -->
 	<page-action name="Admin.allowEditing"/>
 
-	<property name="systemfromemail">noreply@entermediasoftware.com</property>
-	<property name="systemfromemailname">EnterMedia</property>
-	  	<script src="/system/components/javascript/jquery-1.4.2.js" id="jquery" />
+  <property name="oe.edit.draftedits">false</property>
+    <script src="/system/components/javascript/jquery-1.4.2.js" id="jquery" />
 	<script src="/system/components/javascript/jquery-ui-1.8.4.custom.min.js" id="jquery-ui"/>
 	<script src="/system/components/javascript/jquery.form.js" id="jquery-form"/>
 	<script src="/system/components/javascript/jquery.livequery.js" id="jquery-livequery"/>
 	<script src="/system/components/javascript/jquery.fancybox/jquery.fancybox-1.2.1.js" id="jquery-fancybox"/>
 	<style href="/system/components/javascript/jquery.fancybox/jquery.fancybox.css" id="jquery-fancybox-css"/>
-	  	
-  	
+  
 </page>

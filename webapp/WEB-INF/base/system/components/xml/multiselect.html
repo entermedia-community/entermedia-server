@@ -10,22 +10,11 @@
 #if(!$listid)
 	#set($listid = $detail.get("listid"))
 #end
-## get big list of all
-#set( $lsearcher = $searcherManager.getSearcher( $catalogid, $listid ))	
-
-#if ($foreignkeyid && $foreignkeyvalue)
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.setAndTogether(false))
-	#set ($o = $query.addMatches("$foreignkeyid", "$!foreignkeyvalue"))
-	#set ($o = $query.addMatches("$foreignkeyid", "all"))
-#else
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.addMatches("id", "*"))
-#end
-#set ($types = $lsearcher.search($query))
-
+## get big list of all 
+#set( $allsearcher = $searcherManager.getSearcher($catalogid,$listid))	
+#set ($types = $allsearcher.allHits)
 $context.putPageValue("all", $types)
-
+			
 #set( $joinsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 #set ($filteredtracker = $searcherManager.makeFilteredTracker())
 $filteredtracker.setSearcher($joinsearcher)

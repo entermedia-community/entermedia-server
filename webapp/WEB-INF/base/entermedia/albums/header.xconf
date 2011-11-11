@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="text.Create New Album">
+    <value>Create New Album</value>
+    <value locale="es">Crear un nuevo álbum</value>
+  </property>
+</page>

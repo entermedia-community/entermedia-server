@@ -6,13 +6,13 @@
 $context.putPageValue("view", $view)
 $context.putPageValue("searcher", $searcher)
 
+<div class="emsectionheader"></div>
+
 #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 $context.putPageValue("usestartswith",$usestartswith)
 
 #set( $edit = $context.getRequestParameter("editadvsearch"))
-#if( $edit)
-$context.putPageValue("edit",$edit)
-#end
+
 <form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content">
 ##We need 2 things passed in: $searcher, $view or $searcher $details
 #if (!$details && $view)
@@ -21,14 +21,33 @@ $context.putPageValue("edit",$edit)
 #end
 
 <table 	 width="100%">
+	<tr class="emsearchfieldrow">
 	#foreach( $detail in $details)
 		$context.putPageValue("detail", $detail)
 		#if ($detail.isLeaf())
-			$pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
+			<tr class="emsearchfieldrow">
+				#if ($edit == "true")
+				<td>
+					<a href="#" onclick="javascript:deleteField('$detail.id'); return false;">
+					<img src="$home$apphome/theme/images/navigation/deletesm.png"/>
+					</a>
+				</td>
+				#end
+				<td valign="middle" class="emsearchfield" nowrap="true">
+					$!detail.getText($context) 
+				</td>
+				<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue  ui-widget" nowrap >
+					<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+					$pages.include("/${applicationid}/components/advancedsearch/detail.html", $context)
+				</td>
+			</tr>
 		#else
 			$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
 		#end
 	#end
+		<tr>
+	<td>
+	</td>
 	<td><input type="submit" value="Search" />
 	</td>
 	</tr>

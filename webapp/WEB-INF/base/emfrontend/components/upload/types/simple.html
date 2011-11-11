@@ -7,12 +7,14 @@
 	<input type="hidden" name="categoryid" value="index"/>
     <div style="width:320px; margin:auto;">
 
-        <input type="text" id="fileName" class="file_input_textbox"  readonly="readonly">
+	<input type="text" id="fileName" name="fileName" class="file_input_textbox required"  readonly="readonly">
         
          <div class="file_input_div">
       	  <input type="button" value="Browse" class="file_input_button" />    
-          <input type="file" class="file_input_hidden" name="file.0" onchange="pickFile(this.value)" />
+          <input type="file" class="file_input_hidden" name="file.0" onChange="pickFile(this.value)" size="36"/>
         </div>
+        
+		
         <div id="uploadprogress"  > </div>
 		<br/><br/>
         
@@ -27,6 +29,16 @@
 			<input type="text" class="required" name="assettitle.value" style="width: 278px;" />
             <img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
 			<br/><br/>
+
+			#set($groups = $user.getEnabledOrderedGroups())
+			<h2>[[Choose team]]</h2>
+			<select name="viewgroup" style="width:278px;" >
+				<option value=""> </option>
+				#foreach($group in $groups)
+				<option value="$group.id">$group</option>
+				#end
+			</select>
+			<br/><br/>
             
 			<h2>[[Add Tags]]</h2>
 			<input type="hidden" name="field" value="keywords"/>
@@ -38,7 +50,7 @@
 		<center>
         <img src='$home/system/images/icons/required_form_field_label.png'/>
         <p></p>
-		<input type="button" id="finishbutton" class="finishbutt" value="[[Submit]]" onclick="doUpload('uploadform');">
+		<input type="button" id="finishbutton" class="finishbutt" value="[[Submit]]" onClick="doUpload('uploadform');">
 		</center>
 </div>
 </tr></td></table>
@@ -81,13 +93,26 @@
  	
  	function showResponse(responseText, statusText, xhr, $form)  
  	{ 
- 		//jQuery.fn.livequery.stopped = true;
- 		//jQuery("#embody").html(responseText);	
- 		//jQuery.fn.livequery.stopped = false;
-		document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+ 		jQuery("#embody").html(responseText);	
  	}
+
+	//special validator for file name
+ 	jQuery.validator.addMethod("filename",
+ 		function(value) {
+ 			var characterReg = /^\s*[a-zA-Z0-9\._,\s]+\s*$/;
+ 	   		return characterReg.test(value);
+ 		}, 
+ 		'Invalid file name.'
+ 	);
+
     // wait for the DOM to be loaded 
     $(document).ready(function() { 
+	jQuery("#uploadform").validate({
+    		rules: {
+    			fileName: "filename"
+    		}
+    	});
+
         // bind 'myForm' and provide a simple callback function 
         
         $('#uploadform').ajaxForm({ 
@@ -103,7 +128,6 @@
         	           
         	        }, 
         	        success: showResponse
-        	        
         	    }); 
     }); 
  	

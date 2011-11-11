@@ -1,57 +1,21 @@
-<table border="0" class="emactionheader">
+<table class="emresultsheader">
 <tr>
-<td valign="top" width="100%" >
-<ul class="embuttons">
-#set ($classname="enabled")
-
-<li >
-	<a  class="uibutton" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a>
-</li>
-<li  >
-	<a  class="uibutton" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()">Email</a>
-</li>
-<li >
-	<a  class="uibutton" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()">Export</a>
-</li>
-
-#if($content.isPropertyTrue("showaddselections"))
-<li  >
-	<a class="uibutton toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a>
-</li>
-#end
-#if($content.isPropertyTrue("showremoveselections"))
-
-<li  >
-	<a class="uibutton toggleitem  ajax"  targetdiv="basketmenu" href="$home$apphome/components/basket/removeselections.html?hitssessionid=$hits.getSessionId()">Remove</a>
-</li>
-#end
-</ul>
-		#set( $edit = $context.getRequestParameter("editheader") )
-		#if($edit && $edit == "true"  )
-				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-				[[Drag columns to move them]]</p>
-		#end
-
+#if( $category )
+<td>[[Show only]]:</td>
+<td> 
+<div id="emdropdown" >
+	<div class="emvalue" >$!category</div>
+	<div class="emdropdowncontent" id="catpicker">$pages.include("$apphome/components/categories/popup.html")</div>
+</div>
 </td>
-
-<td align="right" width="100%" >
-	<ul class="embuttons">
-		<li>
-			<a class="ajax uibutton" targetdiv="emresultscontent" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=$searcher.getSearchType()">
-			
-				#set ($resultview = $userprofile.get('resultview'))
-				
-				#if (!$resultview || $resultview == 'table')
-					View Gallery
-				#else
-					View Table
-				#end
-			</a>
-		</li>
-	</ul>
+<td><a href="$home$apphome/views/search/category.html?categoryid=index&hitsperpage=20">Show all</a></td>
+#end
+<td width="100%" align="right">
+#if( $hits ) $hits.size() [[assets]]#end
 </td>
-	<td >
-		<img id="spinner" style="visibility:hidden;" src="$home$themeprefix/images/spinner.gif"/>
-	</td>
+<td>
+	$pages.include("$apphome/components/results/pages.html",$context)
+	
+</td>
 </tr>
 </table>

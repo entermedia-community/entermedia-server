@@ -1,0 +1,6 @@
+<page>
+	<inner-layout>${themeprefix}/entermedia/layouts/albumeditlayout.html</inner-layout>
+	<property name="usefolder">false</property>
+	<property name="hitsname">hits</property>
+	<property name="customresultview">album</property>
+</page>
