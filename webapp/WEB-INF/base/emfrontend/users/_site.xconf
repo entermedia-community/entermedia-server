@@ -1,7 +1,0 @@
-<page>
-	<inner-layout>/${applicationid}/tools/user/layouts/userhomelayout.html</inner-layout>
-	<property name="virtual">true</property>
-	<property name="matttabstabid">browse</property>
-	<property name="sectiontitle">Users</property>
-	
-</page>

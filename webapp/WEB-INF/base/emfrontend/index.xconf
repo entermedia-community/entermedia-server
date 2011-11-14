@@ -2,5 +2,4 @@
 
 <page>  
 	<property name="sectiontitle">Home</property>
-	<inner-layout>/${themeprefix}/layouts/searchlayout.html</inner-layout>
 </page>
