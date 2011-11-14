@@ -73,7 +73,7 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 		cal.add(GregorianCalendar.MONTH, -1 );
 		search.addAfter("date", cal.getTime());
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		search.putInput("date", format.format(cal.getTime()));
+		search.setProperty("date", format.format(cal.getTime()));
 		if (search == null) {
 			return null; // Noop
 		}

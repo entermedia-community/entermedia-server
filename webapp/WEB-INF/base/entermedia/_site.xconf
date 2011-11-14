@@ -12,8 +12,6 @@
 
 	<path-action name="MultiSearchModule.loadApplicationId"  />
 	<path-action name="Admin.loadPermissions"/>
-	<path-action name="UserProfileModule.loadUserPreferences"  />	 <!-- needs to be after permissions? -->
-	<path-action name="AlbumModule.getAlbumList" />
 	<path-action name="Admin.allowViewing" />
 	<property name="login-path">/${applicationid}/authentication/logon.html</property>
   	

@@ -1,0 +1,12 @@
+<page>
+	<property name="editable">false</property>
+	<inner-layout/>
+	<layout/>
+	<path-action name="Script.run" >
+		<script>./recentuploads.groovy</script>
+	</path-action>
+
+	<generator name="velocity" />
+
+	
+</page>
