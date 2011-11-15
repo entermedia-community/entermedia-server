@@ -2,5 +2,11 @@
 
 <page>  
 	<property name="sectiontitle">Home</property>
-	<inner-layout>/${themeprefix}/layouts/searchlayout.html</inner-layout>
+	<path-action name="MediaSearchModule.searchCategories"/>
+	<property name="categoryid">index</property>
+	<property name="sortby">assetaddeddateDown</property>
+	<property name="showsidemenu">true</property>
+	<property name="dataroot">/${catalogid}/side/search</property>
+ 	<property name="assetrootfolder">/${catalogid}/assets</property>
+	
 </page>

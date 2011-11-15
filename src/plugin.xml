@@ -147,13 +147,6 @@
 
 	</bean>
 
-	<bean id="RecentActivityModule" class="org.openedit.entermedia.modules.RecentActivityModule">
-		<property name="recentActivityManager">
-			<ref bean="recentActivityManager" />
-		</property>
-	</bean>
-
-
 	<bean id="RelatedAssetsModule" class="org.openedit.entermedia.modules.RelatedAssetsModule" />
 
 	<bean id="Script" class="com.openedit.modules.scriptrunner.ScriptModule"/>
@@ -622,7 +615,7 @@
 		</property>
 	</bean>
 
-	<bean id="assetImporter" class="org.openedit.entermedia.scanner.AssetImporter">
+	<bean id="assetImporter" class="org.openedit.entermedia.scanner.AssetImporter"  singleton="false">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>

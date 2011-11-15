@@ -13,6 +13,5 @@
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/makethumbs.html" allowduplicates="true"/>
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/makethumbscompact.html" allowduplicates="true"/>
 	-->
-	<path-action name="RecentActivityModule.addEventLog"/>
 	
 </page>

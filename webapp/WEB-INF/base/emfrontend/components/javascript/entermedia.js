@@ -548,6 +548,7 @@ onloadselectors = function()
 								});	
 							form.submit();
 						}
+						/*
 						else if(jQuery('#emselectable #editlink'))
 						{
 							var tablediv = jQuery(this).parents('.emselectable').filter(':first');
@@ -558,6 +559,7 @@ onloadselectors = function()
 							editpath = editpath + "&id=" + id;
 							jQuery("#" + targetdiv).load(editpath);
 						}
+						*/
 						else
 						{
 							window.location = id;
