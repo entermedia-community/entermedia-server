@@ -1,0 +1,6 @@
+<page>
+	<property name="eventname">Import INDD Folders</property>	
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/importing/importindd.groovy</script>
+	</path-action>
+</page>
