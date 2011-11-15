@@ -226,7 +226,16 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	
 	public void deleteData(Data inData)
 	{
-		getAssetArchive().deleteAsset((Asset)inData);
+		if(inData instanceof Asset){
+			getAssetArchive().deleteAsset((Asset)inData);
+		} else{
+			
+			Asset asset = (Asset) searchById(inData.getId());
+			if(asset != null){
+				getAssetArchive().deleteAsset(asset);
+
+			}
+		}
 	}
 	
 	public void deleteFromIndex(Asset inAsset)

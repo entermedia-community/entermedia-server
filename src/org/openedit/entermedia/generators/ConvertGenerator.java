@@ -73,7 +73,7 @@ public class ConvertGenerator extends FileGenerator
 			if(missingImage == null)
 			{
 				String themeprefix = (String) inReq.findValue("themeprefix");
-				missingImage = themeprefix + "/entermedia/images/missing150.jpg";
+				missingImage = themeprefix + "/images/missing150.jpg";
 			}
 			Page missing = archive.getPageManager().getPage(missingImage);			//File temp = new File(missing.getContentItem().getAbsolutePath());
 			super.generate(inReq, missing, inOut);

@@ -17,5 +17,5 @@
   <property name="show">assetkeywords</property>
   <layout />
   <inner-layout />
-
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
 </page>

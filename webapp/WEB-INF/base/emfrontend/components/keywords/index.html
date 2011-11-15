@@ -1,27 +1,26 @@
 <div id="emkeywordeditor">
 
 #if( "$canviewassetkeywords" != "false" )
-<div id="keywordlist" class="emtable">
-#foreach($keyword in $asset.getKeywords())
-<div class="row">
-<span>
-  <a style="display:inline;" href="$home$apphome/views/search/search.html?field=description&operation=matches&description.value=$keyword"><img border=0 src="$home${themeprefix}/images/detaileditor/keyword.png"> $keyword</a>
-</span>
+	<div id="keywordlist" class="emtable">
+	#foreach($keyword in $asset.getKeywords())
+		<div class="row">
+		<span>
+		  <a style="display:inline;" href="$home$apphome/views/search/search.html?field=description&operation=matches&description.value=$keyword"><img border=0 src="$home${themeprefix}/images/detaileditor/keyword.png"> $keyword</a>
+		</span>
+		#if($caneditasset)
+			<span>
+			  <a style="display:inline;" class="ajax" targetdiv="emkeywordeditor" href="$home$apphome/components/keywords/removekeyword.html?assetid=${asset.id}&keyword=$keyword"><img src="$home${themeprefix}/images/detaileditor/close_16x16.png" title="delete tag"/></a>
+			</span>
+		#end
+		</div>
+	#end
+	</div>
 #if($caneditasset)
-<span>
-  <a style="display:inline;" class="ajax" targetdiv="emkeywordeditor" href="$home$apphome/components/keywords/removekeyword.html?assetid=${asset.id}&keyword=$keyword"><img src="$home${themeprefix}/images/detaileditor/close_16x16.png" title="delete tag"/></a>
-</span>
+	<div id="keywordadd">
+	<a class="ajax" targetdiv="keywordadd" href="$home$apphome/components/keywords/keywordinput.html?oemaxlevel=1&assetid=${asset.id}&sourcepath=${asset.sourcepath}">[[Add Tags]]</a>
+	</div>
 #end
-</div>
-#end
-</div>
 
-#if($caneditasset)
-<div id="keywordadd">
-<a class="ajax" targetdiv="keywordadd" href="$home$apphome/components/keywords/keywordinput.html?oemaxlevel=1&assetid=${asset.id}">[[Add Tags]]</a>
-</div>
-#end
-</div>
 #end
 
 </div>
