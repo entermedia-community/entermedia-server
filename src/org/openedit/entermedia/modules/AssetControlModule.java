@@ -3,6 +3,7 @@ package org.openedit.entermedia.modules;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -248,24 +249,53 @@ public class AssetControlModule extends BaseMediaModule {
 		Asset asset = getAsset(inReq);
 		//get all of the user's groups
 		User user = inReq.getUser();
-		Collection<Group> groups = user.getGroups();
-		List groupids = archive.getAssetSecurityArchive().getAccessList(archive, asset);
-		List<Group> allowedgroups = findGroupByIds(groupids);
 		
-		if(allowedgroups.size() >= groups.size())
+		
+//		Collection<Group> groups = user.getGroups();
+//		List groupids = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+//		List<Group> allowedgroups = findGroupByIds(groupids);
+//		
+////		if(allowedgroups.size() >= groups.size())
+////		{
+//			allowedgroups.removeAll(groups);
+//			if(allowedgroups.size() == 0)
+//			{
+//				inReq.putPageValue("isallgroups", true);
+//			}
+//			else
+//			{
+//				inReq.putPageValue("isallgroups", false);
+//			}
+////		}
+		//If we have two groups on the asset
+		List<String> mygroups = findGroupIds(user.getGroups());
+		List existinggroups = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		mygroups.removeAll(existinggroups); //make sure the list is the same
+		if(mygroups.size() == 0)
 		{
-			allowedgroups.removeAll(groups);
-			if(allowedgroups.size() == 0)
-			{
-				inReq.putPageValue("isallgroups", true);
-			}
-			else
-			{
-				inReq.putPageValue("isallgroups", false);
-			}
+			inReq.putPageValue("isallgroups", true);
+		}
+		else
+		{
+			inReq.putPageValue("isallgroups", false);
 		}
 	}
-	
+	/**
+	 * Added on Nov 16 for HBS
+	 * @param inGroups
+	 * @return
+	 */
+	protected List<String> findGroupIds(Collection inGroups) 
+	{
+		List<String> groups = new ArrayList<String>(inGroups.size());
+		for (Iterator iterator = inGroups.iterator(); iterator.hasNext();) 
+		{
+			Group group = (Group) iterator.next();
+			groups.add(group.getId());
+		}
+		return groups;
+	}
+
 	public void isAll(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

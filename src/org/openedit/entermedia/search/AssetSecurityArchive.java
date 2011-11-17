@@ -79,7 +79,7 @@ public class AssetSecurityArchive
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
 		//Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + ".html");
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf", true);
 
 		List users = getAccessList(inArchive, page, inAsset, "viewasset");
 		List assetadminusers = getAccessList(inArchive, page, inAsset, "viewassetadmin");
@@ -244,7 +244,7 @@ public class AssetSecurityArchive
 	public void revokeViewAccess(MediaArchive inArchive, String username, Asset inAsset)
 	{
 		String path = inAsset.getSourcePath();
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf",true);
 		Permission permission = page.getPermission("viewasset");
 		
 		if (permission != null && permission.getRootFilter() != null)
@@ -264,7 +264,7 @@ public class AssetSecurityArchive
 	public void revokeGroupViewAccess(MediaArchive inArchive, String groupname, Asset inAsset)
 	{
 		String path = inAsset.getSourcePath();
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + path + "/_site.xconf",true);
 		Permission permission = page.getPermission("viewasset");
 		
 		if (permission != null && permission.getRootFilter() != null)
@@ -294,7 +294,7 @@ public class AssetSecurityArchive
 
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(path);
+		Page page = getPageManager().getPage(path,true);
 
 		grantAccess(inArchive, username, page, "viewasset");
 		// update the index
@@ -308,7 +308,7 @@ public class AssetSecurityArchive
 
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(path);
+		Page page = getPageManager().getPage(path,true);
 
 		grantGroupAccess(inArchive, groupname, page, "viewasset");
 		// update the index
@@ -322,7 +322,7 @@ public class AssetSecurityArchive
 		
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(path);
+		Page page = getPageManager().getPage(path,true);
 		
 		grantGroupAccess(inArchive, groupnames, page, "viewasset");
 		// update the index
@@ -333,7 +333,7 @@ public class AssetSecurityArchive
 	public void grantAllAccess(MediaArchive inArchive, Asset inAsset)
 	{
 		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
-		Page page = getPageManager().getPage(path);
+		Page page = getPageManager().getPage(path, true);
 		grantAccess(inArchive, page, "viewasset");
 		inArchive.getAssetSearcher().updateIndex(inAsset);
 	}
@@ -341,7 +341,7 @@ public class AssetSecurityArchive
 	public void revokeAllAccess(MediaArchive inArchive, Asset inAsset)
 	{
 		String path = inArchive.getCatalogHome() + "/assets/" + inAsset.getSourcePath() + "/_site.xconf";
-		Page page = getPageManager().getPage(path);
+		Page page = getPageManager().getPage(path,true);
 		clearAccess(inArchive, page, "viewasset");
 		inArchive.getAssetSearcher().updateIndex(inAsset);
 
@@ -353,7 +353,7 @@ public class AssetSecurityArchive
 
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(path);
+		Page page = getPageManager().getPage(path,true);
 
 		grantAccess(inArchive, username, page, inView);
 		// update the index
@@ -365,7 +365,7 @@ public class AssetSecurityArchive
 	{
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/categories/" + inCat.getId() + ".html");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/categories/" + inCat.getId() + ".html",true);
 		
 		grantViewAccess(inArchive, inUser.getUserName(), page);
 	}
@@ -547,7 +547,7 @@ public class AssetSecurityArchive
 	public void clearViewAccess(MediaArchive inArchive, Asset inJobfolder) {
 		// $home$cataloghome/assets/${store.assetPathFinder.idToPath($cell.id
 		// )}.html
-		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + inJobfolder.getSourcePath() + "/_site.xconf");
+		Page page = getPageManager().getPage(inArchive.getCatalogHome() + "/assets/" + inJobfolder.getSourcePath() + "/_site.xconf",true);
 		clearViewAccess(inArchive, page);		
 	}
 	
