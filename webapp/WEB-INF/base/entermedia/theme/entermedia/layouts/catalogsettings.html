@@ -1,7 +1,4 @@
-<div class="ui-widget ui-panel">
 
-	<div class="ui-widget-header">Setup Catalogs</div>
-	<div class="ui-widget-content">
 
 #set($currentcatalog = $context.getRequestParameter("currentcat"))
 #if(!$currentcatalog)
@@ -95,6 +92,3 @@ $context.putPageValue("currentcatalog", $currentcatalog)
 	</tr>
 </table>
 #end
-
-</div>
-</div>

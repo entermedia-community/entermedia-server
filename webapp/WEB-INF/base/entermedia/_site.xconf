@@ -69,7 +69,6 @@
 
 
 <style id="em-style" href="${themeprefix}/styles/style.css" />
-<style id="em-layout" href="${themeprefix}/styles/layout.css" />
 
 	<permission name="viewaddmedia">
 		<user/>

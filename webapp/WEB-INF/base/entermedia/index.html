@@ -1,59 +1,6 @@
-<div class="welcomepage">
+#if($canviewsettings )
 
-<div class="ui-widget ui-panel">
+$pages.include("/${applicationid}/settings/index.html")
+#else
 
-	<div class="ui-widget-header">Setup Tools</div>
-	<div class="ui-widget-content">
-
-#set( $cells = $searcherManager.getList($applicationid,"database") )
-
-<div  id="emslidesheet" >
-	#foreach($hit in $cells)
-		<div class="emslidesmall" id="cell_${hit.id}" >
-		<a href="$home/${applicationid}${hit.path}"><img src="$home$themeprefix/images/appstore/${hit.id}.png"> </a>
-		</div>
-	#end	
-</div>
-
-</div>
-</div>
-
-
-<div class="ui-widget ui-panel">
-
-	<div class="ui-widget-header">Sites</div>
-	<div class="ui-widget-content">
-
-#set( $cells = $searcherManager.getList($applicationid,"apps") )
-
-<div  id="emslidesheet" >
-	#foreach($hit in $cells)
-		<div class="emslidesmall" id="cell_${hit.id}" >
-		<a href="$home$applicationid${hit.path}"><img src="$home$themeprefix/images/appstore/${hit.id}.png"> </a>
-		</div>
-	#end	
-</div>
-
-</div>
-</div>
-
-
-<div class="ui-widget ui-panel">
-
-	<div class="ui-widget-header">Components</div>
-	<div class="ui-widget-content">
-
-#set( $cells = $searcherManager.getList($applicationid,"extensions") )
-
-<div  id="emslidesheet" >
-	#foreach($hit in $cells)
-		<div class="emslidesmall" id="cell_${hit.id}" >
-		<a href="$home$applicationid${hit.path}"><img src="$home$themeprefix/images/appstore/${hit.id}.png"> </a>
-		</div>
-	#end	
-</div>
-
-</div>
-</div>
-
-</div>
+#end
