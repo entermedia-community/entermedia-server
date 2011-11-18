@@ -853,6 +853,9 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 		String sourcepath = inReq.findValue(prefix + "sourcepath");
+		if(sourcepath == null){
+			sourcepath = "";
+		}
 		if( sourcepath.endsWith("/"))
 		{
 			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
