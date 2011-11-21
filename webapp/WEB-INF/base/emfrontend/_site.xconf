@@ -12,7 +12,6 @@
 
 	<property name="profilemanagerid">${catalogid}</property>
 
-	<path-action name="ProfileModule.loadUserProfile"  />	
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing">
 		<login-path>/${applicationid}/authentication/logon.html</login-path>
