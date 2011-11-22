@@ -223,11 +223,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					//log.info("XXX Search now" + query1 + " " + fieldLiveSearcher);
 					if( sort.getSort() == null || sort.getSort().length == 0)
 					{
-						hits = liveone.search(query1, 10000);
+						hits = liveone.search(query1, 100000);
 					}
 					else
 					{
-						hits = liveone.search(query1,10000, sort);
+						hits = liveone.search(query1,100000, sort);
 					}
 					fieldBadSortField = null;
 				}
@@ -253,7 +253,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 			else
 			{
-				hits = liveone.search(query1,10000);
+				hits = liveone.search(query1,100000);
 			}
 			long end = System.currentTimeMillis() - start;
 
