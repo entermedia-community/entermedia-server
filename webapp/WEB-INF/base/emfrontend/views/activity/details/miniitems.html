@@ -1,14 +1,18 @@
-#if( $orderitems.size() > 0) #set( $assetdetails =
-$searcherManager.getSearcher($catalogid,"asset").getDetailsForView("asset/orderassetresults",$context.getUserProfile()
+#if( $orderitems.size() > 0) 
+#set( $assetdetails = $searcherManager.getSearcher($catalogid,"asset").getDetailsForView("asset/orderassetresults",$context.getUserProfile()
 ) )
 
 <div align="right">
 	<table >
 		<tr id="">
-			<th></th> #foreach( $detail in $assetdetails) #if( $velocityCount ==
-			3)
-			<th>Status</th> #end
-			<th>$detail.text</th> #end
+			<th></th> 
+			#foreach( $detail in $assetdetails) 
+				#if( $velocityCount == 3)
+					<th>Status</th> 
+					<th>Transcode Profile</th>
+				#end
+				<th>$detail.text</th> 
+			#end
 
 		</tr>
 		#foreach( $item in $orderitems ) #set( $asset =
@@ -31,6 +35,8 @@ $searcherManager.getSearcher($catalogid,"asset").getDetailsForView("asset/ordera
 						$context.getRequestParameter("orderstatus")
 					#end
 				</td> 
+				
+				<td>$!orderManager.loadTranscodeProfile($mediaarchive, $item)</td>
 			#end
 			
 			<td>#set( $value = false) #set( $value = $asset.get($detail.id)

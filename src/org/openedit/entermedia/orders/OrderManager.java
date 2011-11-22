@@ -421,8 +421,8 @@ public class OrderManager
 	public List<String> addConversionAndPublishRequest(Order order, MediaArchive archive, Map<String,String> properties, User inUser)
 	{
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
-		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
-		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+		Searcher taskSearcher = getConverstionTaskSearcher(archive);
+		Searcher presets = getConvertPresetSearcher(archive);
 
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
 
@@ -532,8 +532,8 @@ public class OrderManager
 		query.addNot("status", "complete");
 		HitTracker hits =  itemsearcher.search(query);
 		
-		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
-		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+		Searcher taskSearcher = getConverstionTaskSearcher(archive);
+		Searcher presets = getConvertPresetSearcher(archive);
 
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
 
@@ -713,4 +713,25 @@ public class OrderManager
 		return c;
 	}
 
+	public Data loadTranscodeProfile(MediaArchive archive, Data inOrderItem)
+	{
+		Searcher convertpresetSearcher = getConvertPresetSearcher(archive);
+		Searcher conversionSearcher = getConverstionTaskSearcher(archive);
+		String taskId = inOrderItem.get("conversiontaskid");
+		if (taskId==null) 
+			return null;
+		Data hit = (Data) conversionSearcher.searchById(taskId);
+		if (hit==null)
+			return null;
+		String presetId = hit.get("presetid");
+		return presetId != null ?(Data) convertpresetSearcher.searchById(presetId):null;
+	}
+
+	protected Searcher getConverstionTaskSearcher(MediaArchive archive) {
+		return getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
+	}
+
+	protected Searcher getConvertPresetSearcher(MediaArchive archive) {
+		return getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+	}
 }
