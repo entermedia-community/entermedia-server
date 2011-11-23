@@ -1292,6 +1292,12 @@
 
 
 <!--  TODO: Use beans.xml alias -->
+	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
+<!-- 
 	<bean id="appsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1320,7 +1326,7 @@
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 	</bean>
-
+ -->
 	
 	<bean id="AttachmentModule" class="org.openedit.entermedia.modules.AttachmentModule" >
 		<property name="attachmentManager">

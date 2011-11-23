@@ -556,8 +556,8 @@ public class MultiSearchModule extends BaseMediaModule
 		searcher.saveData(row, inReq.getUser());
 		inReq.putPageValue("catalog", row);
 
-		String id = appid + "usersettings" + inReq.getUserName();
-		inReq.removeSessionValue(id);
+//		String id = appid + "usersettings" + inReq.getUserName();
+//		inReq.removeSessionValue(id);
 	}
 
 	public Map loadMultiViews(WebPageRequest inReq)
