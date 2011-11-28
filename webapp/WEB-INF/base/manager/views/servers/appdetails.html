@@ -1,0 +1,23 @@
+#set( $appcatalogid = $context.getRequestParameter("appcatalogid"))
+	<div class="wizard clearfix">
+			<div class="wizard-top">
+				<h1>App Wizard</h1>
+			</div>
+			<div class="wizard-body clearfix">
+				<div class="app-info">
+					<img class="app-store-icon" src="$home$themeprefix/images/apps/${data.id}-icon.png" width="60" height="60" alt="$data.name" />
+					<div class="app-nameplate">
+						<div class="app-title">$data.name</div>
+						<div class="app-subtitle">$data.caption</div>
+					</div>
+					<a class="btn learn-more" href="$home$apphome/views/servers/addapppath.html?frontendid=${data.id}&appcatalogid=$appcatalogid">Install</a>
+				</div>
+				<div class="app-info-content">
+					<p>
+$data.longdescription						
+					</p>
+				</div>
+			</div>
+			<div class="wizard-bottom">
+			</div>
+		</div>
