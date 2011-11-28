@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.EnterMedia;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -62,30 +61,46 @@ public class MediaAdminModule extends BaseMediaModule
 		getPageManager().saveSettings(page);
 	}
 	
-	public void deploySite(WebPageRequest inReq) throws Exception
+	public void deployApp(WebPageRequest inReq) throws Exception
 	{
-		EnterMedia media = getEnterMedia(inReq);
-		Searcher searcher = getSearcherManager().getSearcher(media.getApplicationId(),"site");
+		String applicationid = inReq.findValue("applicationid");
+		Searcher searcher = getSearcherManager().getSearcher(applicationid,"site");
 
+		Data site = null;
 		String id = inReq.getRequestParameter("id");
 		if( id == null)
 		{
-			throw new OpenEditException("Id was null");
+			site = searcher.createNewData();
 		}
-		Data site = (Data)searcher.searchById(id);
-		String frontendid = site.get("frontendid");
+		else
+		{
+			site = (Data)searcher.searchById(id);
+		}
+		String frontendid = inReq.findValue("frontendid");
 		if( frontendid == null)
 		{
 			throw new OpenEditException("frontendid was null");
 		}
-		Data frontend = getSearcherManager().getData(media.getApplicationId(),"frontends",frontendid);
+		String deploypath = inReq.findValue("deploypath");
+		site.setProperty("deploypath",deploypath);
+		
+		String appcatalogid = inReq.findValue("appcatalogid");
+		site.setProperty("appcatalogid",appcatalogid);
+
+		String name = inReq.findValue("sitename");
+		site.setProperty("name",name);
+
+		site.setProperty("frontendid",frontendid);
+
+		searcher.saveData(site, inReq.getUser());
+		Data frontend = getSearcherManager().getData(applicationid,"frontend",frontendid);
 		Page copyfrompage = getPageManager().getPage(frontend.get("path"));
-		Page topage = getPageManager().getPage("/" + site.get("appid"));
+		
+		Page topage = getPageManager().getPage("/" + site.get("deploypath"));
 		if( !topage.exists())
 		{
 			getPageManager().copyPage(copyfrompage,topage);
 		}
-		//TODO: save catalog id
 		topage = getPageManager().getPage(topage.getPath(),true);
 		
 		topage.getPageSettings().setProperty("catalogid",site.get("appcatalogid"));
