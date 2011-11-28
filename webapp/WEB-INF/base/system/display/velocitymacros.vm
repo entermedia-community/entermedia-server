@@ -4,7 +4,7 @@
 #macro(text $t)$!context.getText($t)#end
 #macro( translate $text )
 	#if($translations)
-	$translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
+	$!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
 	#else
 	$text
 	#end
