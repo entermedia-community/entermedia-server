@@ -53,22 +53,24 @@ unoutlineSelectionRow = function(event, ui)
 runajax = function(e)
 {
 	var nextpage= jQuery(this).attr('href');
+	
 	var targetDiv = jQuery(this).attr("targetdiv");
-	targetDiv = targetDiv.replace(/\//g, "\\/");
-
-
-	jQuery.get(nextpage, {}, function(data) 
+	if( targetDiv)
+	{
+		targetDiv = targetDiv.replace(/\//g, "\\/");
+		jQuery.get(nextpage, {}, function(data) 
 			{
 				var cell = jQuery("#" + targetDiv);
 				cell.replaceWith(data);
 			}
-	);
-
-//	jQuery("#"+targetDiv).load(nextpage, {}, function()
-//		{
-//			// onloadselectors("#"+ targetDiv);
-//		}
-//	);
+		);
+	}
+	else
+	{
+		var loaddiv = jQuery(this).attr("targetdivinner");
+		loaddiv = loaddiv.replace(/\//g, "\\/");
+		jQuery("#"+loaddiv).load(nextpage);
+	}
 
 	return false;
 }
