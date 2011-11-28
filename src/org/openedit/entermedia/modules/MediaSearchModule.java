@@ -3,14 +3,12 @@
  */
 package org.openedit.entermedia.modules;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import org.entermedia.location.GeoCoder;
 import org.entermedia.location.Position;
 import org.openedit.Data;
-import org.openedit.data.SearchQueryArchive;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
@@ -19,13 +17,11 @@ import org.openedit.profile.UserProfile;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.users.UserPreferences;
 
 
 //Use DataEditModule for searching asset data
 public class MediaSearchModule extends BaseMediaModule
 {
-	protected SearchQueryArchive fieldSearchQueryArchive;
 	protected GeoCoder fieldGeoCoder;
 	
 
@@ -42,15 +38,6 @@ public class MediaSearchModule extends BaseMediaModule
 		this.fieldGeoCoder = fieldGeoCoder;
 	}
 
-	public SearchQueryArchive getSearchQueryArchive()
-	{
-		return fieldSearchQueryArchive;
-	}
-
-	public void setSearchQueryArchive(SearchQueryArchive inSearchQueryArchive)
-	{
-		fieldSearchQueryArchive = inSearchQueryArchive;
-	}
 
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
@@ -83,16 +70,6 @@ public class MediaSearchModule extends BaseMediaModule
 		Category category = archive.getCategory(inPageRequest);
 
 		archive.getAssetSearcher().searchExactCategories(inPageRequest, category);
-	}
-	
-	//why is this here?
-	public void deleteSearchQuery(WebPageRequest inReq) throws Exception 
-	{
-		String id=inReq.getRequestParameter("id");
-		if(id != null){
-			String catid=inReq.getRequestParameter("catalogid");
-			getSearchQueryArchive().deleteQuery(catid,  id, inReq.getUser());
-		}
 	}
 	
 	public void searchFavories(WebPageRequest inPageRequest) throws Exception

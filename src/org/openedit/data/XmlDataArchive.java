@@ -160,6 +160,10 @@ public class XmlDataArchive implements DataArchive
 				inElement.addAttribute(attr.getName(), attr.getValue());
 			}
 		}
+		if( inData.getName() != null)
+		{
+			inElement.setText(inData.getName());
+		}
 	}
 
 	public String getPathToXml( String inSourcePath )

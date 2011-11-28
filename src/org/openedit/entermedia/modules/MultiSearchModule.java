@@ -28,6 +28,13 @@ import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
 
+
+/**
+ * @deprecated API has been moved to SavedQueryModule
+ * @author cburkey
+ *
+ */
+
 public class MultiSearchModule extends BaseMediaModule
 {
 	protected SearcherManager fieldSearcherManager;

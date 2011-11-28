@@ -1,0 +1,6 @@
+<page>
+	 <path-action name="MultiSearchModule.createNewCatalog">
+	 	<property name="applicationid">media</property>
+	 </path-action>
+	 <path-action name="ProfileModule.reLoadUserProfile" />
+</page>
