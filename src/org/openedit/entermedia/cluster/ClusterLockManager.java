@@ -197,7 +197,7 @@ public class ClusterLockManager implements LockManager
 		{
 			Searcher searcher = getLockSearcher(inCatId);
 			inLock.setLocked(false);
-			inLock.setProperty("version", null);
+			inLock.setProperty("version", (String)null);
 			searcher.saveData(inLock, null);
 			return true;
 		}

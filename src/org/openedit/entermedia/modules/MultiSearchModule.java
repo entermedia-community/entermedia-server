@@ -28,6 +28,13 @@ import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
 
+
+/**
+ * @deprecated API has been moved to SavedQueryModule
+ * @author cburkey
+ *
+ */
+
 public class MultiSearchModule extends BaseMediaModule
 {
 	protected SearcherManager fieldSearcherManager;
@@ -556,8 +563,8 @@ public class MultiSearchModule extends BaseMediaModule
 		searcher.saveData(row, inReq.getUser());
 		inReq.putPageValue("catalog", row);
 
-		String id = appid + "usersettings" + inReq.getUserName();
-		inReq.removeSessionValue(id);
+//		String id = appid + "usersettings" + inReq.getUserName();
+//		inReq.removeSessionValue(id);
 	}
 
 	public Map loadMultiViews(WebPageRequest inReq)

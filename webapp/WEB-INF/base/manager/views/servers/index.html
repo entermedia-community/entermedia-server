@@ -1,0 +1,52 @@
+#set ($catalogs = $userprofile.getCatalogs())
+
+#if( $catalogs.size() == 0 )
+
+				<h1 class="page-title">Welcome to the EnterMedia Manager!</h1>
+		<h2 class="page-subtitle">Click below to add a new server to get started.</h2>
+
+#else
+
+		<h1 class="page-title">Your EnterMedia Servers</h1>
+		<h2 class="page-subtitle">Tip of the day: To add a new app, click the green plus next to the server in which you wish to add the app.</h2>
+
+#set( $sitesearcher = $searcherManager.getSearcher("media","site") )
+
+#foreach ($catalog in $catalogs)
+
+	<div class="server-set clearfix #if( $velocityCount == 1) server-set-first #end">
+		<a href="$home$apphome/views/data/index.html?catalogid=$catalog.getId()">
+		<div class="server">
+			<div class="ir">$catalog</div>
+			<h3>$catalog</h3>
+		</div>
+		</a>
+
+		#set( $sites = $sitesearcher.fieldSearch("appcatalogid",$catalog.getId()) )
+		#foreach( $site in $sites)
+			<div class="app">
+				<a href="$home/${site.deploypath}"><img src="$home$themeprefix/images/apps/${site.frontendid}-icon.png" width="60" height="60" alt="$site" title="$context.siteRoot/${site.appid}" /></a>
+				<h4>$site</h4>
+			</div>
+		#end	
+		<a href="$home$apphome/views/servers/addapp.html?appcatalogid=$catalog.getId()">
+		<div class="app add-app">
+			<h5>Add<br />New App</h5>
+		</div>
+		</a>
+	</div>
+#end		
+		<div class="server-set clearfix">
+			<a href="$home$apphome/views/servers/addserver.html">
+				<div class="server add-server">
+					<a href="$home$apphome/views/servers/addserver.html" class="ir">Server Name</a>
+					<a href="$home$apphome/views/servers/addserver.html" ><h6>Add<br />New Server</h6></a>
+				</div>
+			</a>	
+		</div>
+
+
+#end
+
+		
+	

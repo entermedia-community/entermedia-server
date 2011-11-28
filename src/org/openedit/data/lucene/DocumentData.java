@@ -72,6 +72,12 @@ public class DocumentData implements Data
 	public Map getProperties() {
 		return null;
 	}
+	@Override
+	public void setProperties(Map<String, String> inProperties)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 	public String toString()
 	{
 		if(getName() != null){

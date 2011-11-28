@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-  <property id="1" appid="medialab" appcatalogid="media/catalogs/public" frontendid="1">MediaLab</property>
-  <property id="2" appid="eml" appcatalogid="media/catalogs/public" frontendid="3" >Enterprise Media Library</property>
-  <property id="3" appid="emtube" appcatalogid="media/catalogs/public" frontendid="2">EMTube</property>
 </properties>

@@ -1,0 +1,19 @@
+		<div class="wizard clearfix">
+			<div class="wizard-top">
+				<h1>Add Server Wizard</h1>
+			</div>
+			<form id="catalog" name="savecatalog" method="post" action="$home$apphome/views/servers/saveserver.html">
+
+			<div class="wizard-body">
+				<h2>Server Name</h2>
+					<center><input class="field" type="text" name="appfolder" id="catalog-name" /></center>
+				<input name="appfolderprefix" value="/media/catalogs/" type="hidden">
+				<input name="fallbackfolder" value="/media/catalog" type="hidden">
+				<input name="reloadprofile" value="true" type="hidden">
+			</div>
+			<div class="wizard-bottom">
+				<input class="btn-blue build-your-own-app" value="[[Save]]" type="submit"/>	
+			</div>
+				</form>
+		</div>
+

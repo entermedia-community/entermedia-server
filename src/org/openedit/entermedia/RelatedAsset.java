@@ -125,4 +125,9 @@ public class RelatedAsset implements Data
 	{
 		setProperty("sourcepath", inSourcepath);
 	}
+	public void setProperties(Map<String,String> inProperties)
+	{
+		getProperties().putAll(inProperties);
+	}
+
 }

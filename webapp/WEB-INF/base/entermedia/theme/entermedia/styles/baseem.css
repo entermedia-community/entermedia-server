@@ -8,6 +8,12 @@
 	border-style:none;
 }
 
+#emcontainer #emcontentwithside {
+	padding: 0px 10px 0px 0px;
+	background: #FFFFFF;
+	min-height:566px; /*ff*/
+	height: auto !important; /*ie7 */
+}
 
 //Used in various menus
 #emcontainer .empopupsection
@@ -152,6 +158,23 @@
 	padding: 3px;
 }
 
+/*********************************
+	Navigation Menu
+*********************************/
+.embody #nav .emtable .row .menulink
+{
+	text-decoration: none;
+	text-transform:uppercase;
+	color: white;
+	font-weight: bold;
+	padding-right: 8px;
+	font-size: 8pt;
+}
+
+.embody #nav .emtable .row .menulink:hover
+{
+	color: #CC0717;
+}
 
 /*------------*/
 /* pages.html */

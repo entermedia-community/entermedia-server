@@ -38,7 +38,17 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	protected IntCounter fieldIntCounter;
 	protected PageManager fieldPageManager;
 	protected String fieldPrefix;
-
+	protected String fieldIndexRootFolder;
+	
+	
+	public String getIndexRootFolder()
+	{
+		return fieldIndexRootFolder;
+	}
+	public void setIndexRootFolder(String inIndexRootFolder)
+	{
+		fieldIndexRootFolder = inIndexRootFolder;
+	}
 	protected XmlDataArchive getXmlDataArchive()
 	{
 		if (fieldXmlDataArchive == null)
@@ -186,7 +196,18 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		{
 			fieldIntCounter = new IntCounter();
 			fieldIntCounter.setLabelName("idCount");
-			Page prop = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() +"/"+ getSearchType() + "s/idcounter.properties");
+			
+			String path = null;
+				
+			if( fieldIndexRootFolder != null)
+			{
+				path = "/WEB-INF/data/" + getCatalogId() +"/"+ getIndexRootFolder() + "/" + getSearchType() + "/idcounter.properties";
+			}
+			else
+			{
+				path = "/WEB-INF/data/" + getCatalogId() +"/"+ getSearchType() + "s/idcounter.properties";
+			}
+			Page prop = getPageManager().getPage(path);
 			File file = new File(prop.getContentItem().getAbsolutePath());
 			file.getParentFile().mkdirs();
 			fieldIntCounter.setCounterFile(file);
@@ -260,7 +281,17 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	
 	public String getIndexPath()
 	{
-		return "/WEB-INF/data/" + getCatalogId() +"/" + getSearchType() + "s/index";
+		if( fieldIndexRootFolder != null)
+		{
+			return "/WEB-INF/data/" + getCatalogId() +"/" + getIndexRootFolder() + "/" + getSearchType();
+		}
+		
+		String folder = getSearchType();
+		if( !folder.endsWith("s"))
+		{
+			folder = folder + "s";
+		}
+		return "/WEB-INF/data/" + getCatalogId() +"/" + folder + "/index";
 	}
 
 	public void delete(Data inData, User inUser)

@@ -1,0 +1,23 @@
+#set( $appcatalogid = $context.getRequestParameter("appcatalogid"))
+#set( $frontendid = $context.getRequestParameter("frontendid"))
+#set( $data = $searcherManager.getData("media","frontend",$frontendid))
+		<div class="wizard clearfix">
+			<div class="wizard-top">
+				<h1>App Wizard</h1>
+			</div>
+			<form id="catalog" name="savecatalog" method="post" action="$home$apphome/views/servers/addappfinish.html">
+
+			<div class="wizard-body">			
+				<h2>Title</h2>
+					<center><input class="field" type="text" name="sitename" id="catalog-name" value="$data.name" /></center>
+				<h2>Path</h2>
+					<center>$context.siteRoot/<input class="field" type="text" name="deploypath" id="catalog-name" /></center>
+				<input name="appcatalogid" value="$appcatalogid" type="hidden">
+				<input name="frontendid" value="$frontendid" type="hidden">
+			</div>
+			<div class="wizard-bottom">
+				<input class="btn-blue build-your-own-app" value="[[Save]]" type="submit"/>	
+			</div>
+				</form>
+		</div>
+
