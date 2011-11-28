@@ -3,5 +3,9 @@
 #macro(escwrap $invalue $inwrap)$!url_util.xmlEscapeWithWrap($invalue, $inwrap)#end
 #macro(text $t)$!context.getText($t)#end
 #macro( translate $text )
-	$!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
+	#if($translations)
+	$translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
+	#else
+	$text
+	#end
 #end

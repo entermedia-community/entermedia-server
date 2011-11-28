@@ -1092,6 +1092,9 @@
 		<property name="orderManager">
 			<ref bean="orderManager" />
 		</property>
+		<property name="postMail">
+			<ref bean="postMail" />
+		</property>
 	</bean>
 
 	<bean id="orderManager" class="org.openedit.entermedia.orders.OrderManager" >
