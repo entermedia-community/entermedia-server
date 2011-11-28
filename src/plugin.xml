@@ -99,17 +99,14 @@
 
 
 	<bean id="MediaSearchModule" class="org.openedit.entermedia.modules.MediaSearchModule">
-		<property name="searchQueryArchive">
-			<ref bean="searchQueryArchive" />
-		</property>
+	
 	</bean>
 
 	<bean id="MediaAdminModule" class="org.openedit.entermedia.modules.MediaAdminModule">
 	</bean>
 
 
-	<bean id="MultiSearchModule" class="org.openedit.entermedia.modules.MultiSearchModule"
-		singleton="true">
+	<bean id="MultiSearchModule" class="org.openedit.entermedia.modules.MultiSearchModule">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -1219,12 +1216,10 @@
 		<property name="userProfileManager"><ref bean="userProfileManager"/></property>
 	</bean>
 
-<bean id="BannerModule" name="BannerModule"
+	<bean id="BannerModule" name="BannerModule"
 		class="org.openedit.images.BannerModule" abstract="false"
 		singleton="true" lazy-init="default" autowire="default"
 		dependency-check="default">
-	
-	
 	</bean>
  	<bean id="S3Repository" name="S3Repository"
         class="org.entermedia.amazon.S3Repository" abstract="false"
@@ -1285,11 +1280,32 @@
 		<property name="prefix"><value>assets</value></property>
 	</bean>
 
-	<bean id="databaseSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	<bean id="SavedQueryModule" class="org.openedit.entermedia.modules.SavedQueryModule">
+		<property name="savedQueryManager"><ref bean="savedQueryManager" /></property>
 	</bean>
 
+
+	<bean id="savedQueryManager" class="org.openedit.entermedia.savedqueries.SavedQueryManager"	singleton="false">
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+	</bean>
+
+	<bean id="savedquerySearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="prefix"><value>users</value></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+	</bean>
+
+	<bean id="savedquerytermSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="prefix"><value>users</value></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+	</bean>
 
 <!--  TODO: Use beans.xml alias -->
 	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
@@ -1298,6 +1314,12 @@
 	</bean>
 
 <!-- 
+	<bean id="databaseSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+
+
 	<bean id="appsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
