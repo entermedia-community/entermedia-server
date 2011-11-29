@@ -1,5 +1,7 @@
 <page>
-	<inner-layout>/${applicationid}/views/settings/security/settingssecuritylayout.html</inner-layout>
+
+	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<property name="subsettinglist">settingssecurity</property>
 	
 	<property name="tab">security</property>
 	

@@ -43,8 +43,9 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			<a href="$click">
 
 			<div class="emthumbimage em$thumbsize" 
-				#if( $showcaption ) style="vertical-align:bottom;" #end 
-				#if($showhover != false) hover="true" #end >			
+				##if( $showcaption ) style="vertical-align:bottom;" #end 
+				#if($showhover != false) hover="true" #end 
+				>			
 
 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
 

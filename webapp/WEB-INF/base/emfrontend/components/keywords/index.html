@@ -5,7 +5,7 @@
 	#foreach($keyword in $asset.getKeywords())
 		<div class="row">
 		<span>
-		  <a style="display:inline;" href="$home$apphome/views/search/search.html?field=description&operation=matches&description.value=$keyword"><img border=0 src="$home${themeprefix}/images/detaileditor/keyword.png"> $keyword</a>
+		  <a style="display:inline;" href="$home$apphome/views/files/fieldsearch.html?field=description&operation=matches&description.value=$keyword"><img border=0 src="$home${themeprefix}/images/detaileditor/keyword.png"> $keyword</a>
 		</span>
 		#if($caneditasset)
 			<span>

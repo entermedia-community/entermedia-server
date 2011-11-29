@@ -155,13 +155,12 @@
 }
 #emcontainer #navboxselected A
 {
-	border: 1px solid #666666;
+	border: 2px solid #666666;
 	text-decoration: none;
 	display:block;
 	width: 28px;
 	color:           #666666;
 	background-color: #FFFFFF;
-	height: 17px;
 	
 }
 #emcontainer #navboxselected A:visited

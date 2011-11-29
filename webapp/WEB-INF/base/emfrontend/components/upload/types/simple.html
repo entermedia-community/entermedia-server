@@ -1,52 +1,46 @@
-<div style="padding: 20px 0px 0px 20px;">
+
 
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = "users/$!{user.userName}/" )
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
 	action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
 	<input type="hidden" name="categoryid" value="index"/>
-    <div style="width:320px; margin:auto;">
+    <div style="width:320px; margin: 20px auto;">
 
+	<h2>[[Upload]]</h2> <img src='$home/system/images/icons/required_form_field_19px.png' class="required" />
+	<div style="clear: both"></div>
         <input type="text" id="fileName" name="fileName" class="file_input_textbox required"  readonly="readonly">
-        
          <div class="file_input_div">
-      	  <input type="button" value="Browse" class="file_input_button" />    
-          <input type="file" class="file_input_hidden" name="file.0" onchange="pickFile(this.value)" />
+      	  <input type="button" value="Browse" class="file_input_button finishbutt" id="browsebutton" />    
+          <input type="file" class="file_input_hidden" name="file.0" onchange="pickFile(this.value)" omouseover="$('#browsebutton').css({'background-color' : 'black', 'color' : '#fff'})" />
         </div>
         <div id="uploadprogress"  > </div>
 		<br/><br/>
         
-			<h2>[[Caption]]</h2>
+			
+			<h2>[[Caption]]</h2> <img src='$home/system/images/icons/required_form_field_19px.png' class="required" />
 			<input type="hidden" name="field" value="caption"/>
 			<input type="text" class="required" name="caption.value" style="width: 278px;" />
-            <img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
-			<br/><br/>
 
-			<h2>[[Title]]</h2>
+			<h2>[[Title]]</h2><img src='$home/system/images/icons/required_form_field_19px.png' class="required" />
 			<input type="hidden" name="field" value="assettitle"/>
 			<input type="text" class="required" name="assettitle.value" style="width: 278px;" />
-            <img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
-			<br/><br/>
             
-			<h2>[[Add Tags]]</h2>
+            
+			<h2>[[Add Tags]]</h2><img src='$home/system/images/icons/required_form_field_19px.png' class="required" />
 			<input type="hidden" name="field" value="keywords"/>
-			<input type="text" class="required" name="keywords.value" style="width: 278px;" /><img src='$home/system/images/icons/required_form_field_19px.png' style="float:right;"/>
-			<br/><br/>
-</div>
-<table><tr><td>
-<div class="embutton" >
-		<center>
-        <img src='$home/system/images/icons/required_form_field_label.png'/>
-        <p></p>
-		<input type="button" id="finishbutton" class="finishbutt" value="[[Submit]]" onclick="doUpload('uploadform');">
-		</center>
-</div>
-</tr></td></table>
+			<input type="text" class="required" name="keywords.value" style="width: 278px;" />
+			
+			<div style="clear: both;"></div>
 
+<div class="embutton" >
+        <img src='$home/system/images/icons/required_form_field_label.png'/>
+	<input type="button" id="finishbutton" class="finishbutt" value="[[Submit]]" onclick="doUpload('uploadform');">
+</div>
+</div>
 </form>
 
 
-</div>
 <script type="text/javascript" >
 	var uploadid;
  	doUpload =  function()

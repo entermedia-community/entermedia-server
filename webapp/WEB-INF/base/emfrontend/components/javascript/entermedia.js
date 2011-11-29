@@ -723,7 +723,10 @@ onloadselectors = function()
 		
 		
 		
+		
 }
+
+
 
 
 showajaxstatus = function()
@@ -745,7 +748,9 @@ showajaxstatus = function()
 }
 
 
+
 jQuery(document).ready(function() 
 { 
 	onloadselectors();
+	
 }); 
