@@ -62,6 +62,7 @@ runajax = function(e)
 			{
 				var cell = jQuery("#" + targetDiv);
 				cell.replaceWith(data);
+				doResize();
 			}
 		);
 	}
