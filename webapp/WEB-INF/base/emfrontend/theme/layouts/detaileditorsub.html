@@ -1,4 +1,4 @@
-#set ($listid =	$content.subsettinglist )
+#set ($listid =	$content.tab )
 <div id="eml-tab-subnav">
 	<ul>
 		#set( $screens = $searcherManager.getList($catalogid,$listid) )
@@ -13,9 +13,12 @@
 <div id="eml-tab-green-container" class="clearfix">
 	<div id="eml-tab-options-container">
 		<div class="eml-tab-option">
-			
-			$pages.includeContent()
-			
+
+
+
+			$pages.includeContent()			
+
+
 		</div>
 	</div>
 </div>
