@@ -1,0 +1,48 @@
+<div id="eml-tabs-view">
+	<h2>Settings</h2>
+	<div id="eml-tabs">
+		<ul>
+			##if ($canmanageusers)
+			<li id="security" class="">
+				<a class="ajax" targetdivinner="eml-tab-content" href="$home$apphome/views/settings/security/usermanager/users/index.html?oemaxlevel=3">Security</a>
+			</li>
+			##end
+			<li id="metadata" class="">
+				<a  class="ajax" targetdivinner="eml-tab-content" href="$home$apphome/views/settings/metadata/fields/index.html?oemaxlevel=3">Metadata</a>
+			</li>
+			<li id="lists" class="">
+				<a class="ajax" targetdivinner="eml-tab-content" href="$home$apphome/views/settings/lists/transcoding/index.html?oemaxlevel=3">Lists</a>
+			</li>
+			<li id="events" class="">
+				<a class="ajax" targetdivinner="eml-tab-content" href="$home$apphome/views/settings/events/ps/index.html?oemaxlevel=2">Events</a>
+			</li>
+			<!-- 
+			<li id="triggers" class="ui-state-default ui-corner-top">
+				<a href="$home$apphome/views/settings/events/index.html">Analytics</a>
+			</li>
+			 -->
+		</ul>
+	</div>
+	<div id="eml-tab-content">
+	
+	$pages.includeContent()
+	
+	</div>
+
+</div>
+		<script type="text/javascript">
+		jQuery(document).ready(function () { 
+			jQuery("#$content.tab").attr("class", "current");
+			
+			jQuery("#eml-tabs a").click(function(){
+				jQuery("#eml-tabs li").removeClass("current")
+				jQuery(this).parent().addClass("current");
+			});
+		});
+		
+		</script>
+		
+		
+		
+		
+		

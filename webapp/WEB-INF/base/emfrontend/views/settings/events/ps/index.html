@@ -1,77 +1,52 @@
-
 #set( $sorted = $patheventmanager.getRunningTasksSorted() )
 #if( $sorted.size() > 0 )
-
 <div id="emselectable">
-<table width="100%" >
-<thead>
-<tr>
-<th>Next Run</th>
-<th>Name</th>
-<th colspan="4">Status</th>
-</tr>
-</thead>
-<tbody>
-#foreach( $runner in $sorted )
+	<table class="striped">
+		<thead>
+			<tr>
+				<th>Next Run</th>
+				<th>Name</th>
+				<th colspan="4">Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			#foreach( $runner in $sorted )
 
-#set( $event = $runner.getTask() )
-
-<tr rowid="$event.getPage().getPath()">
-<td>
-$patheventmanager.getTimeCalculator().findTimeFrom($runner.getTimeToStart())
-</td>
-
-<td>
-<b>$event.getPage().getName()</b>
-</td>
-
-<td>
-#if( $event.isRunning() )[[event is running]]#end
-</td>
-
-<td>
-#if($event.getPage().getProperty("eventname"))
-	$context.getText($event.getPage().getProperty("eventname"))
-	<div class="emselectabledetails">$!context.getText($event.getPage().getProperty("description"))</div>
-#else
-#end
-#if( $event.getLastRun() )
-<div>[[last run]]:
- $context.getDateTime($event.getLastRun() )
+			#set( $event = $runner.getTask() )
+			<tr rowid="$event.getPage().getPath()">
+				<td> $patheventmanager.getTimeCalculator().findTimeFrom($runner.getTimeToStart()) </td>
+				<td><b>$event.getPage().getName()</b></td>
+				<td> #if( $event.isRunning() )[[event is running]]#end </td>
+				<td> #if($event.getPage().getProperty("eventname"))
+				$context.getText($event.getPage().getProperty("eventname"))
+				<div class="emselectabledetails">
+					$!context.getText($event.getPage().getProperty("description"))
+				</div> #else
+				#end
+				#if( $event.getLastRun() )
+				<div>
+					[[last run]]:
+					$context.getDateTime($event.getLastRun() )
+				</div> #end </td>
+				<td> #if( $event.isRunning() )
+				[[running]]
+				#end </td>
+				<td> #if( $event.getPeriod() > 0 )
+				[[repeats every]] $event.getFormattedPeriod()
+				#end </td>
+			</tr>
+			#end
+		</tbody>
+	</table>
+	<form name="showevent" target="_top" method="post" action="../triggers/edit/edit.html">
+		<input name="eventpath" type="hidden" id="emselectedrow" />
+	</form>
+	<ul class="embuttons">
+		<li>
+			<a class="emdialog btn small" href="./index.html">[[Reload Events]]</a>
+		</li>
+	</ul>
 </div>
-#end
-</td>
-
-
-<td>
-#if( $event.isRunning() )
-[[running]]
-#end
-</td>
-
-<td>
-
-#if( $event.getPeriod() > 0 )
-[[repeats every]] $event.getFormattedPeriod()
-#end
-</td>
-
-</tr>
-
-#end
-</tbody>
-</table>
-
-<form name="showevent" target="_top" method="post" action="../triggers/edit/edit.html">
-	<input name="eventpath" type="hidden" id="emselectedrow" />
-</form>
-
-<a href="./index.html">refresh</a>
-
-</div>
-	
 #else
-	[[No events in queue]]
-#end
-
-
+[[No events in queue]]
+#end 

@@ -2,11 +2,17 @@
 
 	<bean id="photooptionavailableSearcher" bean="xmlFileSearcher"/>
 	<bean id="photooptionunavailableSearcher" bean="xmlFileSearcher"/>
-<bean id="relatedassetSearcher" bean="xmlFileSearcher" /> 
-<bean id="relatedassethistorySearcher" bean="xmlFileSearcher" /> 
+	<bean id="relatedassetSearcher" bean="xmlFileSearcher" /> 
+	<bean id="relatedassethistorySearcher" bean="xmlFileSearcher" /> 
 
 	<bean id="publishqueueSearcher" bean="xmlFileSearcher"/>
 
+	<bean id="settingssecuritySearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingsmetadataSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingslistsSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingseventsSearcher" bean="xmlFolderSearcher"/>
+	<bean id="asseteditorSearcher" bean="xmlFolderSearcher"/>
+	<bean id="asseteditorhistorySearcher" bean="xmlFolderSearcher"/>
 
 <!--  Old? -->
 	<bean id="assetThesaurusSearcher" bean="thesaurusSearcher"/>
@@ -32,10 +38,6 @@
   	<bean id="timingtableSearcher" bean="xmlFileSearcher" /> 
     <bean id="assetvotesSearcher" bean="xmlFileSearcher" />
 
-	<bean id="settingssecuritySearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingsmetadataSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingslistsSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingseventsSearcher" bean="xmlFolderSearcher"/>
 	    
     <!-- Not Needed -->
     <!--  

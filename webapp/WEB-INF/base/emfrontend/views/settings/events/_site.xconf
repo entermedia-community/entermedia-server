@@ -1,7 +1,10 @@
 <page>
 	<property name="eventroot">/${applicationid}/views/settings/events/triggers</property>
 
-	<inner-layout>/${applicationid}/views/settings/events/settingseventslayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<property name="subsettinglist">settingsevents</property>
 	
 	<property name="tab">events</property>
+	<property name="subsettinglist">settingsevents</property>
+	
 </page>

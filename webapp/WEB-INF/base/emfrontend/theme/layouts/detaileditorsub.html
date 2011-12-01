@@ -1,0 +1,24 @@
+#set ($listid =	$content.tab )
+<div id="eml-tab-subnav">
+	<ul>
+		#set( $screens = $searcherManager.getList($catalogid,$listid) )
+		#foreach($screen in $screens)
+		<li #if( $content.subtab == "$screen.id" ) class="current" #end>
+			<a  href="$home$apphome${screen.path}"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$screen </a>
+		</li>
+		#end
+	</ul>
+</div>
+
+<div id="eml-tab-green-container" class="clearfix">
+	<div id="eml-tab-options-container">
+		<div class="eml-tab-option">
+
+
+
+			$pages.includeContent()			
+
+
+		</div>
+	</div>
+</div>

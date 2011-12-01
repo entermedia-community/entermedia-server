@@ -6,7 +6,7 @@
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
 	
-	<table width="100%">
+	<table width="100%" class="field-editor">
 	<tr> <td>ID:</td> <td><input name="newid" value="$property.id" /></td> </tr>
 	<tr> <td>[[Label]]:</td> <td><input name="name" value="$!property.name" /></td> </tr>
 	<tr> <td>[[External ID]]:</td> <td><input name="externalid" value="$!property.externalId" /></td> </tr>
@@ -69,7 +69,7 @@
 		
 	</table>
 	<br/><br/>
-	<div class="embutton" style="float:left;margin-left:50px;">
-		<input type="submit" value="Save"/>
-	</div>
+	<ul class="embuttons">
+		<li><input class="btn small" type="submit" value="Save"/></li>
+	</ul>
 </form>
