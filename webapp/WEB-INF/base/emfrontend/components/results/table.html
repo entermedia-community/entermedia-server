@@ -26,7 +26,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 		#set( $catid = "index" )
 	#end
 
-	#if ( $hits && $hits.size() > 0 )
+#if ( $hits && $hits.size() > 0 )
 	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
 	$context.putPageValue("details",$details)
 	
@@ -50,25 +50,6 @@ $context.putPageValue("thumbsize", $thumbsize)
 
 
 $pages.include("$apphome/components/results/pages.html",$context)
-
-
-
-
-
-
-
-
-	<script type="text/javascript">
-	function addColumn(inId)
-	{
-		jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
-	}
-	</script>
-	
-
-#else
-	<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
-	<img  title="Edit Columns" src="$home$themeprefix/images/navigation/write-note.png" /></a></th>
 
 #end
 </div>
