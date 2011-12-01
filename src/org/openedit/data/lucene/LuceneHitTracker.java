@@ -47,6 +47,7 @@ public class LuceneHitTracker extends HitTracker
 
 	public void setIndexSearcher(IndexSearcher inIndexSearcher)
 	{
+		inIndexSearcher.getIndexReader().incRef();
 		fieldIndexSearcher = inIndexSearcher;
 	}
 
@@ -352,5 +353,16 @@ public class LuceneHitTracker extends HitTracker
 			}
 		}
 		return null;
+	}
+	
+	
+	protected void finalize() throws Throwable {
+		try{
+			getIndexSearcher().getIndexReader().decRef();	
+		} catch (Exception e){
+			log.info("Error closing index");
+		}
+		
+		super.finalize();
 	}
 }

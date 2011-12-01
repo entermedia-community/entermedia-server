@@ -223,11 +223,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					//log.info("XXX Search now" + query1 + " " + fieldLiveSearcher);
 					if( sort.getSort() == null || sort.getSort().length == 0)
 					{
-						hits = liveone.search(query1, 100000);
+						hits = liveone.search(query1, 1000000);
 					}
 					else
 					{
-						hits = liveone.search(query1,100000, sort);
+						hits = liveone.search(query1,1000000, sort);
 					}
 					fieldBadSortField = null;
 				}
@@ -239,7 +239,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 						log.error(ex);
 						log.info(inOrdering);
 						liveone = getLiveSearcher();
-						hits = liveone.search(query1,10000);
+						hits = liveone.search(query1,100000);
 					}
 					else
 					{
@@ -253,7 +253,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 			else
 			{
-				hits = liveone.search(query1,100000);
+				hits = liveone.search(query1,1000000);
 			}
 			long end = System.currentTimeMillis() - start;
 
@@ -449,9 +449,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 						if( fieldLiveSearcher != null)
 						{
 							reader = fieldLiveSearcher.getIndexReader().reopen();
-//							//TODO the old one should be closed
+//							
+							//TODO the old one should be closed
 //							//Since we now use 
-							//fieldLiveSearcher.close();	
+							//fieldLiveSearcher.close();
+							fieldLiveSearcher.getIndexReader().decRef();
 							if( fieldPendingCommit)
 							{
 								flush();
