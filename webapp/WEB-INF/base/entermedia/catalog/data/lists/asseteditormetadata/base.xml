@@ -2,7 +2,8 @@
 
 <properties>
 
-  <property id="metadatageneral" path="/views/detaileditor/generalinformation/index.html" >General Information</property>
+  <property id="metadatageneral" path="/views/detaileditor/generalinformation/index.html" >General</property>
   <property id="editassetcategories" path="/views/detaileditor/categorize/index.html" >Categories</property>
+  <property id="editassetgeolocation" path="/views/detaileditor/map/index.html" >Geolocation</property>
 
 </properties>
