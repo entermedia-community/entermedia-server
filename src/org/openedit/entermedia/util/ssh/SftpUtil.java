@@ -2,6 +2,7 @@ package org.openedit.entermedia.util.ssh;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,7 +88,11 @@ public class SftpUtil  {
 					channel.put(localFile.getAbsolutePath(), remotePath);
 		
 	}
+	
 
+	
+	
+	
 	
 	
 	 protected Channel openSftpChannel() throws JSchException {
@@ -151,6 +156,13 @@ public class SftpUtil  {
 		fieldKnownHosts = inKnownHosts;
 	}
 
+	public boolean isConnected(){
+		return getSession().isConnected();
+	}
 
+	public InputStream retrieveFileStream(String remotePath) throws SftpException, JSchException {
+		ChannelSftp channel = (ChannelSftp) openSftpChannel();
+		return	channel.get(remotePath);
+	}
 
 }
