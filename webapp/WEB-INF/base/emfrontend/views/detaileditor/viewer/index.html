@@ -7,13 +7,8 @@
 					<td width="100%" valign="top">
 
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-			$pages.include("${cataloghome}/components/detaileditor/viewer/types/${type}.html",$context)
+			$pages.include("${apphome}/views/detaileditor/viewer/types/${type}.html",$context)
 
-					</td>
-					<td align="left" valign="top" width=200" style="padding: 10px;">		
-						$context.putPageValue("hit",$asset)
-						$pages.include("$apphome/results/assetinfo.html", $context)
-						
 					</td>
 				</tr>
 			</table>	

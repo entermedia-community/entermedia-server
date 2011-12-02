@@ -1,15 +1,11 @@
 <br><br><br>
 <h2>[[Add Attachment or Thumbnail]]</h2>
-
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home$apphome${page.uploadroot}/uploadfile-finish.html" >
-#set( $path = $context.getRequestParameter('editPath') )	
-#if( !$path)
-	#set( $path = $context.getRequestParameter('path') )
-#end
-#set( $target = $pageManager.getPage($path))
-#if( !$target.isFolder() )	
-#set ($path = $target.getParentPath())
-#end
+
+	#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
+
+
+
 <input type="hidden" name="origURL" value="$apphome/views/detaileditor/attachments/index.html?path=$path&sourcepath=${asset.sourcePath}" />	
 
 <div id="uploadscreen">
@@ -17,7 +13,7 @@
 $pages.include("$apphome${page.uploadroot}/uploadfield.html")
 </div>
 
-<input type="hidden" id="path" name="path" value="$path/" size="35" />
+<input type="hidden" id="path" name="path" value="$path" size="35" /> 
 <input type="hidden" id="assetid" name="assetid" value="$!asset.id"/>
 <p>
 <input type="button" id="finishbutton" name="Finish" value="Upload" onclick="doUpload('uploadform');">

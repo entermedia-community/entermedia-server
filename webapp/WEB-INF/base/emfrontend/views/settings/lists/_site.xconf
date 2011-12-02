@@ -1,6 +1,6 @@
 <page>
-	<inner-layout>/${applicationid}/views/settings/lists/settingslistslayout.html</inner-layout>
-	
 	<property name="tab">lists</property>
+	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<property name="subsettinglist">settingslists</property>
 	
 </page>

@@ -33,7 +33,7 @@
 	<input type="hidden" name="field" value="profilesearchfilters" />
 	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
 	
-	<table style="padding-left: 20px;" >
+	<table style="padding-left: 20px;" class="striped">
 	
 	#foreach($item in $permissionsearcher.getAllHits())
 		#set($val = false )
@@ -60,7 +60,7 @@
 		</tr>	
 	#end
 	</table>
-	<input type="submit" value="Save"/>
+	<input style="margin: 20px 0 20px 20px;" class="btn small" type="submit" value="Save"/>
 	
 </div>
 </div>	

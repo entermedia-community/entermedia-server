@@ -13,6 +13,7 @@ import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.modules.CategoryEditModule;
 
+import com.openedit.OpenEditException;
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.comments.CommentArchive;
 import com.openedit.page.Page;
@@ -144,7 +145,11 @@ public class AssetEditor {
 		String oldSourcePath = inAsset.getSourcePath();
 		PageManager pageManager = getPageManager();
 		// need to figure out newsourcepath
-		String newSourcePath = oldSourcePath + "/";
+		String newSourcePath = oldSourcePath;
+		if( !newSourcePath.endsWith("/"))
+		{
+			newSourcePath = newSourcePath + "/";
+		}
 		inAsset.setSourcePath(newSourcePath);
 		String dataRoot = "/WEB-INF/data/" + getMediaArchive().getCatalogId();
 
@@ -166,6 +171,17 @@ public class AssetEditor {
 				Page tempLocation = pageManager.getPage(oldAssets.getPath() + ".tmp");
 				pageManager.movePage(oldAssets, tempLocation);
 				pageManager.movePage(tempLocation, newAssets);
+			}
+			else
+			{
+				Page folder = pageManager.getPage(dataRoot + "/originals/" + newSourcePath );
+				String path = folder.getContentItem().getAbsolutePath();
+				new File(path).mkdirs();
+			}
+			Page folder = pageManager.getPage(dataRoot + "/originals/" + newSourcePath );
+			if( !folder.exists() )
+			{
+				throw new OpenEditException("Could not attach, originals folder may be read only");
 			}
 		} finally {
 			inAsset.setProperty("primaryfile", oldAssets.getName());

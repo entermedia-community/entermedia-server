@@ -38,6 +38,13 @@ public class SavedQueryManager
 		}
 		query.addExact("userid", userid);
 		
+		String showsaved = inReq.findValue("showsaved");
+		if( showsaved != null)
+		{
+			//filter by show saved
+			query.addExact("usersaved", showsaved);
+		}
+		
 		return savedsearcher.cachedSearch(inReq,query);
 	}
 	public Data saveQuery(String inCatalogId, SearchQuery inQuery, User inUser) throws Exception

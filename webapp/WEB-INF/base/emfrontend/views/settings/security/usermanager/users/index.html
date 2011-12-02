@@ -4,7 +4,7 @@ $context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", 
 <div id="usersearchresultspanel">
 $pages.include("./results.html?sortby=enabledDown,lastNameUp&field=groups&operation=matches&groups.value=$content.mastergroup", $context)
 </div>
-<div style="text-align:right;float:right;margin-top:20px;">
-<input type=button onClick="location.href='$home$usermanagerhome/users/adduser.html?iframe=true&height=200&width=300'" value='Create User'>
+<div style="text-align:right;float:right;margin-top:20px;margin-right:18px;">
+<input class="btn small" type=button onClick="location.href='$home$usermanagerhome/users/adduser.html?iframe=true&height=200&width=300'" value='Create User'>
 </div>
 

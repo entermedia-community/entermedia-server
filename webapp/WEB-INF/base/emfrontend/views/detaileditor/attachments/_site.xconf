@@ -3,11 +3,7 @@
 	<path-action name="AssetControlModule.loadAssetPermissions"/>
 	<path-action name="Admin.allowViewing"/>
 	
-	<permission name="view">
-		<not>
-			<pagevalue name="canviewasset" equals="false" />
-		</not>
-	</permission>
+	
 	
 	
 	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
@@ -17,5 +13,5 @@
 		<tree-name>pageTree</tree-name>	
 	</path-action>
 	<page-action name="PageValue.loadPageVariable" bean="userManager"  />
-		<property name="subtab">viewattachments</property>
+		<property name="tab">viewattachments</property>
 </page>

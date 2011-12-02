@@ -1,27 +1,15 @@
-
 #if($asset.isFolder())
 
-	#set( $path = $context.getRequestParameter("path"))
-	#set( $changepath = "$apphome/views/detaileditor/attachments/changeattachment.html" )
+	#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
 	
-	#if( $path )
-		##Implement the following method to support this.
-		#set( $editNode = $pageTree.getTreeRenderer().setSelectedNodeByUrl($path))
-	#end	
-	
-	#if( $editNode )
-		#set( $nodeID = $pageTree.getModel().getId($editNode))
-		#set ($children = $pageTree.getModel().getHitTracker($nodeID))
-	#end
-	
-	#if( $canchangeattachment && $children && $children.size() > 0)
-	<form name="attachmentform" id="attachmentform" action="$home$changepath">
+	#if( $canchangeattachment && $attachments && $attachments.size() > 0)
+	<form name="attachmentform" id="attachmentform" action="$home$apphome/views/detaileditor/attachments/changeattachment.html">
 	<input type="hidden" name="path" value="$path"/>
 	<input type="hidden" name="assetid" value="$asset.id"/>
 	#end
 	
 	<table width="100%">
-	#if( $children && $children.size() > 0)
+	#if( $attachments && $attachments.size() > 0)
 	<tr>
 		#if( $canchangeattachment )
 		<th>Primary<br/>asset</th>
@@ -36,32 +24,20 @@
 	#end
 		
 	#set($even = true)
-	#foreach( $treeNode in $children )
-		#if( $treeNode.contentItem.name.indexOf(".") > 0 )
-		#if($even)
-		    $context.putPageValue("even", false)
-		#else
-			$context.putPageValue("even", true)
-		 #end
-		$context.putPageValue("item", $treeNode.getContentItem())
-		$context.putPageValue("treeNode", $treeNode)
-		$pages.include("./filternode.html", $context)
+	#foreach( $attachment in $attachments )
+			$context.putPageValue("attachment", $attachment)
+			$pages.include("$apphome/views/detaileditor/attachments/displaynode.html", $context)
 		#end
-	#end
+	
 	</table>
 	
 	
-	#if( $canchangeattachment && $children && $children.size() > 0)
+	#if( $canchangeattachment && $attachments && $attachments.size() > 0)
 		<br/><input type="submit" value="Save"/><br/>
 		</form>
 	#end
 	 
-	#if( $canchangeattachment && !$asset.primaryfile && $children && $children.size() > 0 )
-		<script type="text/javascript">
-		jQuery('input[name=filename]:first').attr("checked", "checked");;
-		jQuery('#attachmentform').submit();
-		</script>
-	#end
+	
 	
 	#if($canupload && $caneditasset)
 		<p>

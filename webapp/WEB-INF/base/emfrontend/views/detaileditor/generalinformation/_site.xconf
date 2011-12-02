@@ -1,3 +1,4 @@
 <page>
-	<property name="subtab">metadatadetails</property>
+	<property name="tab">asseteditormetadata</property>
+	<property name="subtab">metadatageneral</property>
 </page>

@@ -17,10 +17,10 @@
 
 <br>
 
-<ul style="padding: 10px 0px 50px 60px;" class="embuttons">
+<ul class="embuttons">
 <li><a href='$home$apphome/views/settings/security/roles/views/addnew.html?groupname=New'><span>Add New</span></a>
 #if( $current)
-<li><a href="./delete.html?id=$current" onclick="return confirm('Are you sure you want to delete the security group $data.name')"><span>Delete</span></a></li>
+<li style="margin-top: 20px"><a href="./delete.html?id=$current" onclick="return confirm('Are you sure you want to delete the security group $data.name')"><span>Delete</span></a></li>
 #end
 </li>
 </ul>

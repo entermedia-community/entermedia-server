@@ -62,6 +62,7 @@ runajax = function(e)
 			{
 				var cell = jQuery("#" + targetDiv);
 				cell.replaceWith(data);
+				doResize();
 			}
 		);
 	}
@@ -723,7 +724,10 @@ onloadselectors = function()
 		
 		
 		
+		
 }
+
+
 
 
 showajaxstatus = function()
@@ -745,7 +749,9 @@ showajaxstatus = function()
 }
 
 
+
 jQuery(document).ready(function() 
 { 
 	onloadselectors();
+	
 }); 
