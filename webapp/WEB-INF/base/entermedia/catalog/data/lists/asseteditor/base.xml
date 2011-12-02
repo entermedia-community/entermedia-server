@@ -3,7 +3,7 @@
 <properties>
 
   <property id="viewmediaviewer" icon="clock" path="/views/detaileditor/viewer/index.html" >Preview</property>
-  <property id="metadatadetails" icon="lab" path="/views/detaileditor/generalinformation/index.html" >Metadata</property>
+  <property id="asseteditormetadata" icon="lab" path="/views/detaileditor/generalinformation/index.html" >Metadata</property>
   <property id="viewattachments" icon="clock" path="/views/detaileditor/attachments/index.html" >Attachments</property>
   <property id="asseteditorhistory" icon="clock" path="/views/detaileditor/historypreviews/index.html" >Asset History</property>
 

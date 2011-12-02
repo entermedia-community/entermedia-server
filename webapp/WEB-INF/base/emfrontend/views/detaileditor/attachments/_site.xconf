@@ -13,5 +13,5 @@
 		<tree-name>pageTree</tree-name>	
 	</path-action>
 	<page-action name="PageValue.loadPageVariable" bean="userManager"  />
-		<property name="subtab">viewattachments</property>
+		<property name="tab">viewattachments</property>
 </page>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+
+  <property id="metadatageneral" path="/views/detaileditor/generalinformation/index.html" >General Information</property>
+  <property id="editassetcategories" path="/views/detaileditor/categorize/index.html" >Categories</property>
+
+</properties>

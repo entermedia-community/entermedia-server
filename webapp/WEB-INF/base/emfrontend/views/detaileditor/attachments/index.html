@@ -1,11 +1,6 @@
-
 #if($asset.isFolder())
 
 	#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
-	
-	
-	
-	
 	
 	#if( $canchangeattachment && $attachments && $attachments.size() > 0)
 	<form name="attachmentform" id="attachmentform" action="$home$apphome/views/detaileditor/attachments/changeattachment.html">
