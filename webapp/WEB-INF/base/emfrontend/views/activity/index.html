@@ -1,6 +1,11 @@
-	<a class="btn small" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()">Publish to Server</a>
-	<a class="btn small" href="$home$apphome/views/activity/index.html">Email</a>
-##if( $asset )
-	<a class="btn small" href="$home$apphome/views/activity/index.html">Embed</a>
-	<a class="btn small" href="$home$apphome/views/activity/index.html">Social Media</a>
-##end
+
+
+<ul id="stacked">
+	<li><a class="btn" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()">Publish to Server</a> Choose FTP or Windows servers.</li>
+	<li><a class="btn" href="$home$apphome/views/activity/index.html">Email</a> This is a description.</li>
+	##if( $asset )
+	<li><a class="btn" href="$home$apphome/views/activity/index.html">Embed</a> This is a description.</li>
+	<li><a class="btn" href="$home$apphome/views/activity/index.html">Social Media</a> This is a description.</li>
+	##end
+
+</ul>
