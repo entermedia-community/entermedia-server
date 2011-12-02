@@ -14,6 +14,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -37,12 +38,17 @@ public class SavedQueryManager
 			userid = "guest";
 		}
 		query.addExact("userid", userid);
-		
 		String showsaved = inReq.findValue("showsaved");
 		if( showsaved != null)
 		{
 			//filter by show saved
 			query.addExact("usersaved", showsaved);
+			query.addSortBy("saveddateDown");
+		}
+		else
+		{
+			query.addSortBy("name");
+			
 		}
 		
 		return savedsearcher.cachedSearch(inReq,query);
@@ -66,6 +72,7 @@ public class SavedQueryManager
 		data.setProperty("andtogether", String.valueOf( inQuery.isAndTogether() ) );
 		data.setSourcePath(inUser.getId()); 
 		data.setProperty("userid", inUser.getId());
+		data.setProperty("saveddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		savedsearcher.saveData(data, inUser);
 		
 		//now save the terms

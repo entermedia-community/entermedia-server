@@ -1,37 +1,15 @@
-<ul id="saved-searches" class="search-list">
-	<li>
-		<div class="search-save"><a class="ir" href="#save">Save</a></div>
-		<a class="search-href" href="#link">Approved Files</a>
-		<div class="search-delete"><a class="ir" href="#delete">delete</a></div>
+<ul id="previous-searches" class="search-list">
+
+#set( $current = $hits.getSearchQuery().getId() )
+#foreach($query in $querylist)
+
+	<li #if( $current == $query.id) class="current" #end >
+		<div class="search-save"><a class="ir" href="$home$apphome/views/search/edit/index.html?queryid=$query.id">Save</a></div>
+		<a class="search-href" href="$home$apphome/components/savedqueries/runsavedquery.html?queryid=$query.id&searchtype=asset">$query.getName()</a>
+		<div class="search-delete" ><a class="ir ajax" targetdivinner="previous-searches" href="$home$apphome/components/previoussearches/delete.html?queryid=${query.id}&oemaxlevel=1">delete</a></div>
 	</li>
-	<li>
-		<div class="search-save"><a class="ir" href="#save">Save</a></div>
-		<a class="search-href" href="#link">Pending Files</a>
-		<div class="search-delete"><a class="ir" href="#delete">delete</a></div>
-	</li>
-	<li>
-		<div class="search-save"><a class="ir" href="#save">Save</a></div>
-		<a class="search-href" href="#link">Your Files</a>
-		<div class="search-delete"><a class="ir" href="#delete">delete</a></div>
-	</li>
-	<li>
-		<div class="search-save"><a class="ir" href="#save">Save</a></div>
-		<a class="search-href" href="#link">Your Files</a>
-		<div class="search-delete"><a class="ir" href="#delete">delete</a></div>
-	</li>
-	<li>
-		<div class="search-save"><a class="ir" href="#save">Save</a></div>
-		<a class="search-href" href="#link">Your Files</a>
-		<div class="search-delete"><a class="ir" href="#delete">delete</a></div>
-	</li>
-	<li>
-		<div class="search-save"><a class="ir" href="#save">Save</a></div>
-		<a class="search-href" href="#link">Your Files</a>
-		<div class="search-delete"><a class="ir" href="#delete">delete</a></div>
-	</li>
-	<li>
-		<div class="search-save"><a class="ir" href="#save">Save</a></div>
-		<a class="search-href" href="#link">Your Files</a>
-		<div class="search-delete"><a class="ir" href="#delete">delete</a></div>
-	</li>
+#end
 </ul>
+
+##if($caneditsavedquery)
+

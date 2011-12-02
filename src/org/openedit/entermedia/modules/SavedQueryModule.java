@@ -49,7 +49,19 @@ public class SavedQueryModule extends BaseMediaModule
 //		}
 //		inReq.putPageValue(hitsname, hits);
 	}
-
+	public Data loadSavedQuery(WebPageRequest inReq) throws Exception
+	{
+		String queryid = inReq.getRequestParameter("queryid");
+		if (queryid == null)
+		{
+			queryid = inReq.findValue("queryid"); // "mostrecent" ?
+		}
+		String catalogid = inReq.findValue("catalogid");
+		Data query = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
+		inReq.putPageValue("savedquery", query);
+		return query;
+	}
+	
 	public SearchQuery loadSearchQuery(WebPageRequest inReq) throws Exception
 	{
 		String queryid = inReq.getRequestParameter("queryid");
@@ -77,6 +89,22 @@ public class SavedQueryModule extends BaseMediaModule
 		SearchQuery query = loadCurrentQuery(inReq);
 		query.setName(name);
 		query.setProperty("caption", description);
+		query.setProperty("usersaved", "false");
+
+		String catalogid = inReq.findValue("catalogid");
+		getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
+
+		inReq.putSessionValue("currentquery", query);
+		inReq.putPageValue("query", query);
+
+		return query;
+	}
+
+	public Data addPreviousSearch(WebPageRequest inReq) throws Exception
+	{
+		SearchQuery query = loadCurrentQuery(inReq);
+		query.setProperty("caption", query.getName() );
+		query.setProperty("usersaved", "false");
 
 		String catalogid = inReq.findValue("catalogid");
 		getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
@@ -107,11 +135,19 @@ public class SavedQueryModule extends BaseMediaModule
 
 		if (query == null)
 		{
+			HitTracker hits = (HitTracker)inReq.getPageValue("hits");
+			if( hits != null)
+			{
+				query = hits.getSearchQuery();
+			}
+		}
+
+		if (query == null)
+		{
 			query = (SearchQuery) inReq.getSessionValue("currentquery");
 		}
 
-//		if (query == null)
-//		{
+		
 //			query = getSearcherManager().getSearcher(applicationid, "luceneComposite").createSearchQuery();
 //			query.setDescription("Last edited query for user " + inReq.getUserName());
 //			query.setId(inReq.getUserName() + "-mostrecent");
@@ -125,6 +161,12 @@ public class SavedQueryModule extends BaseMediaModule
 		return query;
 	}
 
+	public void deletedSavedQuery(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		String queryid = inReq.findValue("queryid");
+		getSavedQueryManager().deleteQuery(catalogid, queryid, inReq.getUser());
+	}
 	public HitTracker runSavedQuery(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");

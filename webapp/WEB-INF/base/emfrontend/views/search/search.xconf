@@ -4,4 +4,6 @@
 		<property name="searchtype">asset</property>
 	</path-action>
 	<property name="hitsperpage">25</property>
+	<path-action name="SavedQueryModule.addPreviousSearch"/>
+
 </page>
