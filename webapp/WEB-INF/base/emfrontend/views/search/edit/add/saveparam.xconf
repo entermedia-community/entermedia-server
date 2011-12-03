@@ -2,6 +2,5 @@
 
 <page>
 	<page-action name="SavedQueryModule.loadSearchQuery"/>
-	<property name="hitsname">querylist</property>
 	
 </page>

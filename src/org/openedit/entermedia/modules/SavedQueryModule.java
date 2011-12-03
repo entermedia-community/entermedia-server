@@ -73,6 +73,11 @@ public class SavedQueryModule extends BaseMediaModule
 		Data query = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
 		//String sessionid = catalogid + "_" + queryid + "_query";
 		// inReq.putSessionValue(queryid + "_query", query);
+		if( query == null)
+		{
+			log.error("No such query " + queryid);
+			return null;
+		}
 		SearchQuery searchquery = getSavedQueryManager().loadSearchQuery(catalogid,query,inReq.getUser());
 		
 		inReq.putSessionValue("currentquery", searchquery);
@@ -81,15 +86,17 @@ public class SavedQueryModule extends BaseMediaModule
 		return searchquery;
 	}
 
-	public Data createNewSavedQuery(WebPageRequest inReq) throws Exception
+	public Data saveFromQuery(WebPageRequest inReq) throws Exception
 	{
 		//String id = inReq.getRequestParameter("queryid");
 		String name = inReq.getRequestParameter("name");
 		String description = inReq.getRequestParameter("description");
+		
 		SearchQuery query = loadCurrentQuery(inReq);
 		query.setName(name);
 		query.setProperty("caption", description);
-		query.setProperty("usersaved", "false");
+		boolean usersaved = Boolean.valueOf( inReq.findValue("usersaved") );
+		query.setProperty("usersaved", String.valueOf(usersaved));
 
 		String catalogid = inReq.findValue("catalogid");
 		getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());

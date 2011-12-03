@@ -1,0 +1,22 @@
+#set( $searcher = $mediaarchive.getAssetSearcher())
+#set( $detailid = $context.getRequestParameter("detailid") )
+#set( $detail = $searcher.getDetailForView("asset/searchselect", $detailid, $user) )
+
+<form name="saveform" action="$home$apphome/views/search/edit/add/save.html">
+	<input name="queryid" value="$query.id" type="hidden" />
+	
+	<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+	<input name="operation" value="matches" type="hidden" />
+	#set( $viewtype = $detail.viewType )
+	#if (!$viewtype)
+		#set ($viewtype = $detail.dataType)
+	#end
+	#if (!$viewtype)
+		#set ($viewtype = "default")
+	#end
+	$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+
+	<input type="submit" class="btn small" value="Save" onclick="change link" />
+	<a class="btn small" href="">Cancel</a> 
+	
+</form>

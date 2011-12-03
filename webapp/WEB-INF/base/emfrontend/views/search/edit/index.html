@@ -1,27 +1,30 @@
 
 
-	<div id="eml-tab-content" >
-		
-		<h2 id="search-title">You are editing: <input type="text" value="Search Title" /></h2>
+	<div id="eml-tab-content" style="position: relative;" >
+		<form name="queryname" action="$home$apphome/views/search/edit/save.html">		
+			<h2 id="search-title">You are editing: <input type="text" value="$query.name" onchange="$('savebtn').show()"/></h2>
+			<input name="queryid" value="$query.id" type="hidden" />
+			<input id="savebtn" type="submit" class="btn small" value="Save">
+		</form>
 		<h6 class="helper-text">To edit the current search title, simply click the name, type your perferred name it will save automatically.</h6>
 		
-		<p class="friendly-search">
-			Currently searching for: <span>Logic logic <a href="#">Parameter</a> logic logic logic <a href="#">Parameter</a> logic <a href="#">Parameter</a> logic logic logic <a href="#">Parameter</a> logic <a href="#">Parameter</a>, <a href="#">Parameter</a>.</span>
+		<p id="savedquerylist" class="friendly-search">
+			Currently searching for: 
+				<span>
+				#foreach( $term in $query.getTerms() )
+					#if($velocityCount == 1 )
+						All assets that include 
+					#end
+					#if( $term.getDetail().getId() != "description" )
+						the $term.getDetail().getName() 
+					#end
+						<a  href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
+				#end
+				</span>
 		</p>
-		
-		<div id="eml-tab-green-container" class="clearfix">
-			<div id="eml-tab-options-container">
-				<div class="eml-tab-option">
-					<h3 class="instructions">Choose the type of search parameter you would like to add.</h3>
-			
-						<ul id="stacked">
-	<li><a class="btn" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()">Asset Type</a></li>
-	<li><a class="btn" href="$home$apphome/views/activity/index.html">File Details</a></li>
-	##if( $asset )
-	<li><a class="btn" href="$home$apphome/views/activity/index.html">Metadata</a></li>
-	<li><a class="btn" href="$home$apphome/views/activity/index.html">Category</a></li>
-	##end
-
+		<div id="searcheditor">
+			<a id="addterm" class="btn" href="$home$apphome/views/search/edit/addterm.html?queryid=$query.id&oemaxlevel=1">Add Search Parameter</a>
+		</div>
 </ul>
 			
 				</div>

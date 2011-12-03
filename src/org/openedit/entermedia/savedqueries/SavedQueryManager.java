@@ -161,7 +161,11 @@ public class SavedQueryManager
 	{
 		Searcher savedsearcher = getSearcherManager().getSearcher(inCatalogId, "savedquery");
 		Data data = loadSavedQuery(inCatalogId, inId, inUser);
-		savedsearcher.delete(data, inUser);
+		if( data != null)
+		{
+			savedsearcher.delete(data, inUser);
+		}
+		//TODO: Delete the terms
 	}
 
 	public SearchQuery loadSearchQuery(String inCatalogId, Data inSavedQuery, User inUser) throws Exception

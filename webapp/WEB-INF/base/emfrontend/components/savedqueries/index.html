@@ -1,33 +1,25 @@
+<ul id="saved-searches" class="search-list">
 
-<br/>
-#if ($querylist && $querylist.size() > 0)
-<table cellpadding=0 cellspacing=0 border=0  class="striped" width="100%">
-#foreach($query in $querylist)
-	<tr>
-      <td>
-     $query.getName()
-	  </td>
-      	<td align="center">
-				<a href="$home/${applicationid}/components/savedqueries/runsavedquery.html?queryid=$query.id&searchtype=asset">[[run this query]]</a>	
-      		#if( $canrssfeed)	
-      			| <a href="$home/${applicationid}/components/savedqueries/rss/${query.id}.rss"><img src="$home${themeprefix}/entermedia/images/rss.gif" alt="RSS"/></a> 
+#if( $hits)
+	#set( $current = $hits.getSearchQuery().getId() )
+#end
+#if( !$current )
+	#set($current = $query.id )
+#end
+	
+#foreach($hit in $querylist)
+	#set( $selected = false )
+	#if( $current == $hit.id) #set( $selected = true) #end 
+	<li #if( $selected )class="current" #end>
+		<div class="search-edit"><a class="ir" href="$home$apphome/views/search/edit/index.html?queryid=$hit.id" title="Edit">Edit</a></div>
+		<a class="search-href" href="$home$apphome/components/savedqueries/runsavedquery.html?queryid=$hit.id&searchtype=asset" title="Execute">$hit.getName()</a>
+		<div class="search-delete">
+			#if( $selected)
+				<a class="ir" href="$home$apphome/views/search/edit/deletefinish.html?queryid=${query.id}" title="Delete">Delete</a>
+			#else
+				<a class="ir ajax" targetdivinner="saved-searches" href="$home$apphome/components/savedqueries/delete.html?queryid=${query.id}&oemaxlevel=1" title="Delete">Delete</a>
 			#end
-				#if($caneditsavedquery)
-					 | <a	href="$home/${applicationid}/components/savedqueries/delete.html?id=${query.id}&catalogid=${applicationid}">[[Delete Query]]</a>			
-				#end
-      	</td>
-
-      	#end
-    
-</tr>
-</table>
-
-<br>
-#else
-<p>No saved queries found.</p>
-#end
-#if($hits)
-<div align="right">
-<a href="$home/${applicationid}/components/savedqueries/savequery.html?hitssessionid=$hits.sessionId&catalogid=${catalogid}">Save current search</a>
-</div>
-#end
+		</div>
+	</li>
+#end    
+</ul>
