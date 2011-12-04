@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.savedqueries.SavedQueryManager;
 
@@ -12,6 +13,7 @@ import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.hittracker.Term;
 
 public class SavedQueryModule extends BaseMediaModule
 {
@@ -196,6 +198,69 @@ public class SavedQueryModule extends BaseMediaModule
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "asset");
 		HitTracker hittracker = searcher.cachedSearch(inReq, query);
 		return hittracker;
+	}
+	
+	public void saveTerm(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		String queryid = inReq.findValue("queryid");
+		Data data = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
+		if(data == null)
+		{
+			throw new OpenEditException("saved query not found " + queryid);
+		}
+		
+		//Construct it
+		SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,inReq.getUser());
+
+		//Edit it
+		
+		//TODO: Use this to create a new term:	
+		//SearchQuery tmpquery = getMediaArchive(inReq).getAssetSearcher().addStandardSearchTerms(inReq);
+
+		String termid = inReq.getRequestParameter("termid");
+		Term term = query.getTermByTermId(termid);
+		String value = inReq.getRequestParameter(term.getDetail().getId() + ".value");
+		term.setValue(value);
+		
+		//Save it back
+		Data saved = getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
+
+		//TODO: Add any other properties
+	}
+
+	
+	public void addTerm(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		SearchQuery tmpquery = getMediaArchive(inReq).getAssetSearcher().addStandardSearchTerms(inReq);
+		//Edit it
+		String detailid = inReq.getRequestParameter("detailid");
+		String queryid = inReq.findValue("queryid");
+
+		Term term = tmpquery.getTermByDetailId(detailid);
+		
+		Data data = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
+		if(data == null)
+		{
+			throw new OpenEditException("saved query not found " + queryid);
+		}
+		
+		//Construct it
+		SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,inReq.getUser());
+
+		query.addTerm(term);
+		//Save it back
+		Data saved = getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
+
+	}
+
+	public void removeTerm(WebPageRequest inReq) throws Exception
+	{
+		SearchQuery query = loadCurrentQuery(inReq);
+
+		String termid = inReq.getRequestParameter("termid");
+		query.removeTerm(termid);
 	}
 
 }

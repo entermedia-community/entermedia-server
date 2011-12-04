@@ -2,8 +2,9 @@
 #set( $detailid = $context.getRequestParameter("detailid") )
 #set( $detail = $searcher.getDetailForView("asset/searchselect", $detailid, $user) )
 
-<form name="saveform" action="$home$apphome/views/search/edit/add/save.html">
+<form name="saveform" action="$home$apphome/views/search/edit/addparamfinish.html">
 	<input name="queryid" value="$query.id" type="hidden" />
+	<input name="detailid" value="$detail.id" type="hidden" />
 	
 	<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 	<input name="operation" value="matches" type="hidden" />
@@ -14,6 +15,7 @@
 	#if (!$viewtype)
 		#set ($viewtype = "default")
 	#end
+	$context.putPageValue("detail",$detail)
 	$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
 
 	<input type="submit" class="btn small" value="Save" onclick="change link" />

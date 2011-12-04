@@ -7,7 +7,7 @@
 	#set($current = $query.id )
 #end
 	
-#foreach($hit in $querylist)
+#foreach($hit in $filderedquerylist)
 	#set( $selected = false )
 	#if( $current == $hit.id) #set( $selected = true) #end 
 	<li #if( $selected )class="current" #end>
@@ -15,9 +15,9 @@
 		<a class="search-href" href="$home$apphome/components/savedqueries/runsavedquery.html?queryid=$hit.id&searchtype=asset" title="Execute">$hit.getName()</a>
 		<div class="search-delete">
 			#if( $selected)
-				<a class="ir" href="$home$apphome/views/search/edit/deletefinish.html?queryid=${query.id}" title="Delete">Delete</a>
+				<a class="ir" href="$home$apphome/views/search/edit/deletefinish.html?queryid=${hit.id}" title="Delete">Delete</a>
 			#else
-				<a class="ir ajax" targetdivinner="saved-searches" href="$home$apphome/components/savedqueries/delete.html?queryid=${query.id}&oemaxlevel=1" title="Delete">Delete</a>
+				<a class="ir ajax" targetdivinner="saved-searches" href="$home$apphome/components/savedqueries/delete.html?queryid=${hit.id}&oemaxlevel=1" title="Delete">Delete</a>
 			#end
 		</div>
 	</li>

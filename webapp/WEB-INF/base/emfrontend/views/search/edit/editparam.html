@@ -30,7 +30,8 @@
 		#end
 		#set( $value = $query.getInput($detail.id) )
 		$context.putPageValue("val",$value)
-		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+		$context.putPageValue("detail",$detail)
+		$pages.include("$apphome/components/xml/types/${viewtype}.html", $context)
 
 	<input type="submit" class="btn small" value="Save" />
 <a class="btn small" href="">Delete</a> 

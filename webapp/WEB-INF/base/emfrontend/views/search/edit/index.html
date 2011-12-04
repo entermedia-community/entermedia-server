@@ -2,7 +2,7 @@
 
 	<div id="eml-tab-content" style="position: relative;" >
 		<form name="queryname" action="$home$apphome/views/search/edit/save.html">		
-			<h2 id="search-title">You are editing: <input type="text" value="$query.name" onfocus="$(this).addClass('green');$('#savebtn').show()" /></h2>
+			<h2 id="search-title">You are editing: <input type="text" name="name" value="$query.name" onfocus="$(this).addClass('green');$('#savebtn').show()" /></h2>
 			<input name="queryid" value="$query.id" type="hidden" />
 			<input id="savebtn" type="submit" class="btn small" value="Save">
 		</form>
@@ -15,8 +15,10 @@
 					#if($velocityCount == 1 )
 						All assets that include 
 					#end
-					#if( $term.getDetail().getId() != "description" )
-						the $term.getDetail().getName() 
+					#if( $term.getDetail().getId() == "description" )
+						##the $term.getDetail().getName() 
+					#else
+						and the $term.getDetail().getName() is
 					#end
 						<a  href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
 				#end

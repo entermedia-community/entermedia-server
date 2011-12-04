@@ -39,19 +39,35 @@ public class SavedQueryManager
 		}
 		query.addExact("userid", userid);
 		String showsaved = inReq.findValue("showsaved");
-		if( showsaved != null)
+//		if( showsaved != null)
+//		{
+//			//filter by show saved
+//			query.addExact("usersaved", showsaved);
+//			query.addSortBy("saveddateDown");
+//		}
+//		else
+//		{
+//			query.addSortBy("name");
+//			
+//		}
+
+		//This filter allows the cachedSearch to be cached for this user.
+		//Otherwise the two searches would be run each time the page loads per user
+		Collection hits = savedsearcher.cachedSearch(inReq,query);
+
+		Collection copy = new ArrayList(hits.size());
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
-			//filter by show saved
-			query.addExact("usersaved", showsaved);
-			query.addSortBy("saveddateDown");
+			Data row = (Data) iterator.next();
+			if( showsaved.equals(row.get("usersaved")) )
+			{
+				copy.add(row);
+			}
 		}
-		else
-		{
-			query.addSortBy("name");
-			
-		}
+		inReq.putPageValue("filderedquerylist",copy);
 		
-		return savedsearcher.cachedSearch(inReq,query);
+		
+		return hits;
 	}
 	public Data saveQuery(String inCatalogId, SearchQuery inQuery, User inUser) throws Exception
 	{
