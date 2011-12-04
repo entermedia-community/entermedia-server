@@ -1,0 +1,47 @@
+<script type="text/javascript" src="$home$apphome/components/javascript/jstree/jquery.jstree.js"></script>
+<script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.cookie.js"></script>
+<script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.hotkeys.js"></script>
+
+
+#set( $view = "asset/advancedsearch")
+#set( $searcher = $mediaarchive.getAssetSearcher())
+
+#set ($alldetails = $searcher.getDetailsForView("asset/searchselect", $user))
+
+<form id="searchaddfield" name="editform"  class="ajaxform" targetdiv="newtermedit" action="$home$apphome/views/search/edit/add/newtermedit.html">
+
+	<input type="hidden" name="oemaxlevel" value="1"/>
+	<input name="queryid" value="$query.id" type="hidden" />
+	
+	<select name="detailid" onChange="jQuery('#searchaddfield').submit();">
+		<option value=""></option>
+			<option value="description">&nbsp;&nbsp;&nbsp;&nbsp;All Fields</option>
+		#foreach( $detail in $alldetails)
+			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
+		#end	
+	</select>
+	
+	
+	
+#set( $rootpath = "${apphome}/components/categorize")
+
+<div id="assetdetailscategorylist$asset.id">
+
+<div id="emcategorypicker" >
+<div id="empickerbody">
+	<form class="ajaxform" targetdiv="assetdetailscategorylist$asset.id" name="pickeritems" action="$home$rootpath/save.html">
+		$pages.include("$rootpath/jstree/tree.html" )
+		<input type="hidden" name="save" value="true" />
+		<input type="hidden" name="assetid" value="$asset.id" />
+		<input type="submit" value="Save" /> <a class="ajax" targetdiv="assetdetailscategorylist$asset.id" href="$home$rootpath/index.html?assetid=$asset.id" >cancel</a>
+	</form>	
+</div>
+</div>
+</div>
+
+	
+</form>
+
+	<div id="newtermedit">
+	</div>
+

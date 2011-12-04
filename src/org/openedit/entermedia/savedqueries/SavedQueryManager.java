@@ -38,7 +38,6 @@ public class SavedQueryManager
 			userid = "guest";
 		}
 		query.addExact("userid", userid);
-		String showsaved = inReq.findValue("showsaved");
 //		if( showsaved != null)
 //		{
 //			//filter by show saved
@@ -56,10 +55,11 @@ public class SavedQueryManager
 		Collection hits = savedsearcher.cachedSearch(inReq,query);
 
 		Collection copy = new ArrayList(hits.size());
+		String showsaved = inReq.findValue("showsaved");
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data row = (Data) iterator.next();
-			if( showsaved.equals(row.get("usersaved")) )
+			if( showsaved == null || showsaved.equals(row.get("usersaved")) )
 			{
 				copy.add(row);
 			}

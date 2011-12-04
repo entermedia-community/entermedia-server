@@ -257,10 +257,23 @@ public class SavedQueryModule extends BaseMediaModule
 
 	public void removeTerm(WebPageRequest inReq) throws Exception
 	{
-		SearchQuery query = loadCurrentQuery(inReq);
+		String catalogid = inReq.findValue("catalogid");
+		String queryid = inReq.findValue("queryid");
+		
+		Data data = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
+		if(data == null)
+		{
+			throw new OpenEditException("saved query not found " + queryid);
+		}
+		
+		//Construct it
+		SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,inReq.getUser());
 
 		String termid = inReq.getRequestParameter("termid");
 		query.removeTerm(termid);
+		//Save it back
+		Data saved = getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
+
 	}
 
 }
