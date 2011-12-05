@@ -1,7 +1,5 @@
 <div id="emresultscontent" >
 
-<form id="emresultstableform">
-
 #if( $hideheader &&  $hideheader == "false")
 $pages.include("$apphome/components/results/header.html",$context) 
 #end
@@ -93,7 +91,6 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 [[No results found.]]
 </p>
 #end
-</form>
 <div id="messagearea"></div>
 
 <script type="text/javascript">

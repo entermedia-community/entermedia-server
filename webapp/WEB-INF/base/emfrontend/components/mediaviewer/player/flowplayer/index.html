@@ -1,4 +1,4 @@
-#set( $root = "$context.siteRoot$home$page.directory")
+#set( $root = "$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
 #if(!$asset.sourcepath)
@@ -27,13 +27,13 @@ a.mediaplayer{
 	border:1px solid #999;
 }
 /* play button */
-a.mediaplayer img {
-	margin-top:130px;
+#eml-media a.mediaplayer img {
+	margin-top:100px;
 	border:0px;
 }
 
 /* when container is hovered we alter the border color */
-a.mediaplayer:hover {
+#eml-media a.mediaplayer:hover {
 	border:1px solid #000;
 }
 
