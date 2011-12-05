@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.net.ftp.FTPFile;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -163,6 +164,11 @@ public class SftpUtil  {
 	public InputStream retrieveFileStream(String remotePath) throws SftpException, JSchException {
 		ChannelSftp channel = (ChannelSftp) openSftpChannel();
 		return	channel.get(remotePath);
+	}
+
+	public FTPFile[] listFiles(String inPath) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
