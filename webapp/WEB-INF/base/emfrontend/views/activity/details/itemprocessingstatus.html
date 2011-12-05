@@ -44,53 +44,53 @@
 
 
 </tr>
-#if ($conversiontask)
 <tr>
 <td>Transcoding</td>
-<td>$!datestorageutil.formatDate($conversionstart, $dateformat)</td>
-<td>$!datestorageutil.formatDate($conversioncomplete, $dateformat)</td>
-<td>
-#if ($conversionerror)
-	Error
-#else
-	#if ($conversionstart)
-
-	#if($conversioncomplete)
-		Complete
+#if ($conversiontask)
+	<td>$!datestorageutil.formatDate($conversionstart, $dateformat)</td>
+	<td>$!datestorageutil.formatDate($conversioncomplete, $dateformat)</td>
+	<td>
+	#if ($conversionerror)
+		Error
 	#else
-		Processing
+		#if ($conversionstart)
+			#if($conversioncomplete)
+				Complete
+			#else
+				Processing
+			#end
+		#else
+			Waiting
+		#end
 	#end
-	#else
-		Waiting
-	#end
-#end
+	</td></tr>
+#else <td>n/a</td><td>n/a</td><td>n/a</td></tr> #end
 
-</td>
+
+
+
+<tr>	
+	<td>Publishing</td>
+	#if ($publishqueue)
+	<td>$!datestorageutil.formatDate($publishstart, $dateformat)</td>
+	<td>$!datestorageutil.formatDate($publishcomplete, $dateformat)</td>
+	<td>
+		#if ($publishqueue.status == "error")
+			Error 
+			##$publishqueue.errordetails
+		#else
+			#if ($publishstart)
+			#if($publishcomplete)
+				Complete
+			#else
+				Processing
+			#end
+			#elseif ($conversiontask && $conversionstart)
+				Waiting
+			#end
+		#end
+	</td>
+	#else <td>n/a</td><td>n/a</td><td>n/a</td></tr> #end
 </tr>
-#end
-#if ($publishqueue)
-<tr>
-	
-<td>Publishing</td>
-<td>$!datestorageutil.formatDate($publishstart, $dateformat)</td>
-<td>$!datestorageutil.formatDate($publishcomplete, $dateformat)</td>
-<td>
-#if ($publishqueue.status == "error")
-	Error 
-	##$publishqueue.errordetails
-#else
-	#if ($publishstart)
-	#if($publishcomplete)
-		Complete
-	#else
-		Processing
-	#end
-	#elseif ($conversiontask && $conversionstart)
-		Waiting
-	#end
-#end
 
-</td>
-</tr>
-#end
 </table>
