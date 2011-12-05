@@ -114,7 +114,7 @@ public class SavedQueryModule extends BaseMediaModule
 		SearchQuery query = loadCurrentQuery(inReq);
 		query.setProperty("caption", query.getName() );
 		query.setProperty("usersaved", "false");
-
+		
 		String catalogid = inReq.findValue("catalogid");
 		getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());
 
@@ -166,6 +166,9 @@ public class SavedQueryModule extends BaseMediaModule
 		{
 			inReq.putSessionValue("currentquery", query);
 			inReq.putPageValue("query", query);
+		}
+		if(query.getName() == null){
+			query.setName("currentquery");
 		}
 		return query;
 	}
