@@ -15,7 +15,7 @@
 				<span>
 					#text( $detail.name )
 					#if( $edit)
-						<a class="baseemenableonhover ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						<a class="baseemenableonhover ajax edit-table-header" targetdiv="emresultscontent" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 					#else
 						##if is  this is our sort by column show it, allow them to flip it
 						#if( $sortby.startsWith($detail.getId() ) )
@@ -37,13 +37,15 @@
 					#end
 				</span>
 			</div>
-			#if( $velocityCount == $details.size() )
 			
+			#if( $velocityCount == $details.size() )
+			<div id="table-edit-outside">
 			#if( !$edit )
-				<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
+				<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
 					<img  title="Edit Columns" src="$home$themeprefix/images/navigation/write-note.png" />
 				</a>
 			#else
+				<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 				<div id="column-editor">	
 					<div id="column-editor-content">										
 					#set ($alldetails = $searcher.getDetailsForView("asset/searchselect", $user))
@@ -55,7 +57,6 @@
 						#end	
 						
 					</select> 
-					<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 					<script type="text/javascript">
 					function addColumn(inId)
 					{
@@ -65,6 +66,7 @@
 				   </div>
 			   </div>
 			#end
+			</div>
 			#end
 		 </th>
 	#end
