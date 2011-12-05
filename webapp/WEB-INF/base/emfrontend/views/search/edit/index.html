@@ -11,7 +11,7 @@
 			<input name="queryid" value="$query.id" type="hidden" />
 			<input id="savebtn" type="submit" class="btn small" value="Save">
 		</form>
-		<h6 class="helper-text">To edit the current search title, simply click the name, type your perferred name and hit save.</h6>
+		<h6 class="helper-text">Click on the search title above to edit.</h6>
 		
 		<p id="savedquerylist" class="friendly-search">
 			Currently searching for: 
@@ -30,7 +30,8 @@
 				</span>
 		</p>
 		<div id="searcheditor">
-			<center><a id="addterm" class="btn" href="$home$apphome/views/search/edit/addterm.html?queryid=$query.id&oemaxlevel=1">Add Search Parameter</a></center>
+			<center><h6 style="margin-top: 20px;" class="helper-text">Click on a term above to edit that term.</h6>
+			<a id="addterm" class="btn" href="$home$apphome/views/search/edit/addterm.html?queryid=$query.id&oemaxlevel=1">Add Search Term</a></center>
 		</div>
 	</div>
 </div>
