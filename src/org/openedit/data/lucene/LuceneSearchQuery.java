@@ -125,7 +125,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setDetail(inField);
 		term.setId(inField.getId());
 		term.setValue(inValue);
-		term.setOperation("orsGroup");
+		term.setOperation("orgroup");
 		getTerms().add(term);
 		return term;
 	}

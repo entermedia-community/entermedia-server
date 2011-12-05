@@ -9,15 +9,12 @@
 
 	<h2>[[Upload]]</h2> <img src='$home/system/images/icons/required_form_field_19px.png' class="required" />
 	<div style="clear: both"></div>
-        <input type="text" id="fileName" name="fileName" class="file_input_textbox required"  readonly="readonly">
-         <div class="file_input_div">
-      	  <input type="button" value="Browse" class="file_input_button finishbutt" id="browsebutton" />    
-          <input type="file" class="file_input_hidden" name="file.0" onchange="pickFile(this.value)" omouseover="$('#browsebutton').css({'background-color' : 'black', 'color' : '#fff'})" />
+         <div class="file_input_divX">
+          <input type="file"  length="20" value="Browse" name="file.0"  />
         </div>
         <div id="uploadprogress"  > </div>
 		<br/><br/>
-        
-			
+        			
 			<h2>[[Caption]]</h2> <img src='$home/system/images/icons/required_form_field_19px.png' class="required" />
 			<input type="hidden" name="field" value="caption"/>
 			<input type="text" class="required" name="caption.value" style="width: 278px;" />

@@ -7,7 +7,7 @@
 	<property id="catalogid" viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
 	<property id="description">All Fields</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>
-	<property id="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
+	<property id="category" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	<property id="fulltext" keyword="true">Full Text</property> 	<!-- This is for PDFs -->
 	<property id="assetviews" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
@@ -80,6 +80,7 @@
 	<property id="fatwireid" index="true" stored="true">FatWire ID</property>
 	<property id="uploadteam" index="true"  keyword="true" stored="true" catalogid="system" type="list" listid="group">Upload Team</property>
 	
-		
+	<property id="viewasset" filter="true">Readable</property>	
+	<property id="editasset" filter="true">Writable</property>	
 
 </properties>

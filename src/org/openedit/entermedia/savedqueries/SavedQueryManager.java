@@ -42,7 +42,7 @@ public class SavedQueryManager
 //		{
 //			//filter by show saved
 //			query.addExact("usersaved", showsaved);
-//			query.addSortBy("saveddateDown");
+			query.addSortBy("saveddateDown");
 //		}
 //		else
 //		{

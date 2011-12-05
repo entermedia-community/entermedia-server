@@ -70,7 +70,15 @@ runajax = function(e)
 	{
 		var loaddiv = jQuery(this).attr("targetdivinner");
 		loaddiv = loaddiv.replace(/\//g, "\\/");
-		jQuery("#"+loaddiv).load(nextpage);
+		//jQuery("#"+loaddiv).load(nextpage);
+		jQuery.get(nextpage, {}, function(data) 
+				{
+					var cell = jQuery("#" + loaddiv);
+					cell.html(data);
+					doResize();
+				}
+			);
+
 	}
 
 	return false;

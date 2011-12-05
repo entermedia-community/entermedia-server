@@ -2,7 +2,9 @@
 #set( $searcher = $mediaarchive.getAssetSearcher())
 
 #set ($alldetails = $searcher.getDetailsForView("asset/searchselect", $user))
-
+	<div class="ui-widget" style="overflow: hidden;">
+		<div class="ui-widget-header">Add New Term</div>
+		<div  class="ui-widget-content emselectmenu">
 <form id="searchaddfield" name="editform"  class="ajaxform" targetdiv="newtermedit" action="$home$apphome/views/search/edit/add/newtermedit.html">
 
 	<input type="hidden" name="oemaxlevel" value="1"/>
@@ -20,4 +22,8 @@
 
 	<div id="newtermedit">
 	</div>
-
+	
+	</div></div>
+	
+	<input type="submit" class="btn small" value="Save" onclick="change link" />
+	<a class="btn small" href="">Cancel</a> 

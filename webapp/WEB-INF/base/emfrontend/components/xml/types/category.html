@@ -1,0 +1,5 @@
+
+#set( $param = $val.replace(" ","&selected="))
+#set( $param = "selected=$param")
+
+$pages.include("${apphome}/components/categorize/jstree/tree_selectedcategories.html?$param" )

@@ -214,14 +214,23 @@ public class SavedQueryModule extends BaseMediaModule
 		SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,inReq.getUser());
 
 		//Edit it
+		String detailid = inReq.findValue("detailid");
 		
 		//TODO: Use this to create a new term:	
-		//SearchQuery tmpquery = getMediaArchive(inReq).getAssetSearcher().addStandardSearchTerms(inReq);
-
+		SearchQuery tmpquery = getMediaArchive(inReq).getAssetSearcher().addStandardSearchTerms(inReq);
+		Term newterm = tmpquery.getTermByDetailId(detailid);
+		if( newterm == null)
+		{
+			log.info("Could not replace term");
+			return;
+		}
 		String termid = inReq.getRequestParameter("termid");
-		Term term = query.getTermByTermId(termid);
-		String value = inReq.getRequestParameter(term.getDetail().getId() + ".value");
-		term.setValue(value);
+		query.removeTerm(termid);
+		query.addTerm(newterm);
+		//query.getT
+		//Term term = query.getTermByTermId(termid);
+//		String value = inReq.getRequestParameter(term.getDetail().getId() + ".value");
+//		term.setValue(value);
 		
 		//Save it back
 		Data saved = getSavedQueryManager().saveQuery(catalogid, query,inReq.getUser());

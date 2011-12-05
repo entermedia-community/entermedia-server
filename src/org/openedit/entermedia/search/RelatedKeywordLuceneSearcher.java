@@ -189,7 +189,7 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 				}
 				String catalogid = inResults.getValue(o, "catalogid");
 				String categoryid = inResults.getValue(o, "category");
-				if( catalogid != null && categoryid != null )
+				if( catalogid != null && categoryid != null && !"index".equals(categoryid ) )
 				{
 					CategoryArchive archive = getMediaArchive(catalogid).getCategoryArchive();
 					for( String keyword: categoryid.split(" ") )
