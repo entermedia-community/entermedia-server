@@ -1,4 +1,5 @@
 <page>
 	<property name="subtab">editassetcategories</property>
+	<property name="scrollable">true</property>
 
 </page>

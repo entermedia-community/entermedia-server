@@ -328,7 +328,7 @@
 				// the scrollbar on the left or right set it's left or right property in CSS)
 				try {
 					if (verticalBar.position().left === 0) {
-						pane.css('margin-left', scrollbarWidth + 'px');
+						//pane.css('margin-left', scrollbarWidth + 'px');
 					}
 				} catch (err) {
 				}

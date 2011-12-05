@@ -76,6 +76,7 @@ runajax = function(e)
 					var cell = jQuery("#" + loaddiv);
 					cell.html(data);
 					doResize();
+					setTimeout("doResize()",200);
 				}
 			);
 
