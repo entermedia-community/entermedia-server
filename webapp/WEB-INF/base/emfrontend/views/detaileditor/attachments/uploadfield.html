@@ -3,6 +3,8 @@
 #if( !$rowcount)
 	#set( $rowcount = "0")
 #end
+<div class="upload-file">
 <input type="file" size="50"  name="file.${rowcount}">
+</div>
 #set( $destination = $context.getRequestParameter("destination"))
 

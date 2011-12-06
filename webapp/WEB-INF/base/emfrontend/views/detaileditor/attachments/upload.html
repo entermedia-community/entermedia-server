@@ -1,5 +1,5 @@
-<br><br><br>
-<h2>[[Add Attachment or Thumbnail]]</h2>
+
+
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home$apphome${page.uploadroot}/uploadfile-finish.html" >
 
 	#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
@@ -15,8 +15,8 @@ $pages.include("$apphome${page.uploadroot}/uploadfield.html")
 
 <input type="hidden" id="path" name="path" value="$path" size="35" /> 
 <input type="hidden" id="assetid" name="assetid" value="$!asset.id"/>
-<p>
-<input type="button" id="finishbutton" name="Finish" value="Upload" onclick="doUpload('uploadform');">
+<p><h3>[[Add Attachment or Thumbnail]]</h3>
+<input class="btn small" style="float: right; margin-top: -43px;" type="button" id="finishbutton" name="Finish" value="Upload" onclick="doUpload('uploadform');">
 
 ##This div is important. AJAX replaces it.
 <div id="waiting">
