@@ -6,4 +6,5 @@
   </property>
   <property name="tab">metadatageneral</property>
   <property name="subtab">editassetgeolocation</property>
+    <inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
 </page>

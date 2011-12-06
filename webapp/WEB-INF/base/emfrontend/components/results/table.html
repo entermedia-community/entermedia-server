@@ -5,7 +5,6 @@ $context.putPageValue("thumbsize", $page.isPropertyTrue("thumbsize"))
 $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
 $context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
 
-<form id="emresultstableform">
 
 #if( $page.isPropertyTrue("showtoolbar") )
 $pages.include("$apphome/components/results/header.html",$context)
