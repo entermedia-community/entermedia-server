@@ -71,7 +71,7 @@
 	#end
 #end
 </table>
-<form name="pickorder" action="$home$apphome/views/activity/details/vieworder.html">
+<form id="pickorder" name="pickorder" action="#">
 <input name="orderid" id="emselectedrow" type="hidden" />
 </form>
 
@@ -79,3 +79,8 @@
 #else
 <p>No Activity Found</p>
 #end
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	jQuery('form#pickorder').submit(function(){return false;});
+});
+</script>
