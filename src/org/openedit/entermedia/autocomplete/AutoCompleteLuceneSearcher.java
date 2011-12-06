@@ -92,7 +92,7 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 	{
 		if (getSearchType().startsWith("asset"))
 		{
-			return "/" + getCatalogId() + "/assets/search/autocomplete/index";
+			return "/WEB-INF/data/" + getCatalogId() + "/assets/search/autocomplete/index";
 		}
 		else
 		{
