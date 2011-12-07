@@ -15,12 +15,12 @@
 #foreach ($catalog in $catalogs)
 
 	<div class="server-set clearfix #if( $velocityCount == 1) server-set-first #end">
-		<a href="$home$apphome/views/data/index.html?catalogid=$catalog.getId()">
+		<axx href="$home$apphome/views/data/index.html?catalogid=$catalog.getId()">
 		<div class="server">
 			<div class="ir">$catalog</div>
 			<h3>$catalog</h3>
 		</div>
-		</a>
+		</axx>
 
 		#set( $sites = $sitesearcher.fieldSearch("appcatalogid",$catalog.getId()) )
 		#foreach( $site in $sites)
