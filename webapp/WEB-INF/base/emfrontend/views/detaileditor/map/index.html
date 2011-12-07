@@ -36,7 +36,8 @@ $context.putPageValue("searcher", $searcher)
 #end
 	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="${view}editor" method="post" action="$home$apphome/views/detaileditor/map/save.html?oemaxlevel=1" >
 
-[[Search for a location, drag the icon to the correct place and click the save button]].	
+<p style="text-align: center">[[Search for a location, drag the icon to the correct place and click the save button]].</p>	
+<p style="text-align: center">[[Double left-click to zoom in, double right-click to zoom out]].</p>	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input type="hidden" name="save" value="true" />
 		<input type="hidden" name="catalogid" value="$!catalogid" />
@@ -55,9 +56,10 @@ $context.putPageValue("searcher", $searcher)
 		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
 		<br/>
 		<p align="right" style="padding-right: 200px;">
-			<input  type="button" 
+			<input class="btn small" type="button" 
 				onclick="jQuery(this.form).submit();"
 			value="[[Save values]]"/>
 		</p>
 	</form>
 
+</div>
