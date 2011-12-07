@@ -174,7 +174,7 @@ public class DataEditModule extends BaseMediaModule
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
 		String viewid = inReq.getRequestParameter("view");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + type + "/" + viewid + ".xml";
+		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewid + ".xml";
 		file.setPath(path);
 		file.setElementName("property");
 
@@ -185,6 +185,9 @@ public class DataEditModule extends BaseMediaModule
 		element.clearContent();
 
 		getXmlArchive().saveXml(file, inReq.getUser());
+		//reload the archive
+		Searcher searcher = loadSearcher(inReq);
+		searcher.getPropertyDetailsArchive().getPropertyDetails(searcher.getSearchType());
 	}
 //TODO: Allow disable of views
 	public void removeFromView(WebPageRequest inReq) throws Exception
@@ -193,7 +196,7 @@ public class DataEditModule extends BaseMediaModule
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
 		String viewid = inReq.getRequestParameter("view");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + type + "/" + viewid + ".xml";
+		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewid + ".xml";
 		file.setPath(path);
 		String toremove = inReq.getRequestParameter("toremove");
 

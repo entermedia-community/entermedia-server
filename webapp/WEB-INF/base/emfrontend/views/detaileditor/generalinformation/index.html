@@ -13,7 +13,7 @@
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/$target.id") )
   #display("generic.html" $target.name "$asset.id" "asset/assettype/$asset.assettype/$target.id" $print)
 #else
-  #display("generic.html" $target.name "$asset.id" "assettype/default/$target.id" $print)
+  #display("generic.html" $target.name "$asset.id" "asset/assettype/default/$target.id" $print)
 #end
 #end
 
