@@ -188,7 +188,7 @@ public class SavedQueryModule extends BaseMediaModule
 		{
 			throw new OpenEditException("saved query not found " + queryid);
 		}
-		SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,inReq.getUser());
+		SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,true,inReq.getUser());
 //		String searchType = inReq.getRequestParameter("searchtype");
 //		String[] catalogs = new String[query.getCatalogs().size()];
 //		for (int i = 0; i < catalogs.length; i++)

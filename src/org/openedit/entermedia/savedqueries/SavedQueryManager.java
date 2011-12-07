@@ -73,15 +73,47 @@ public class SavedQueryManager
 	{
 		Searcher savedsearcher = getSearcherManager().getSearcher(inCatalogId, "savedquery");
 		Data data = (Data)savedsearcher.createNewData();
-		return saveQuery(inCatalogId,inQuery,data,inUser);
+		saveQuery(inCatalogId,inQuery,null,data,inUser);
+		
+		for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();)
+		{
+			SearchQuery searchq = (SearchQuery) iterator.next();
+			Data child = (Data)savedsearcher.createNewData();
+			child.setProperty("parentid", data.getId());
+			saveQuery(inCatalogId,searchq,data.getId(),child,inUser);
+		}
+
+		return data;
 	}
-	public Data saveQuery(String inCatalogId, SearchQuery inQuery, Data data, User inUser) throws Exception
+	public Data saveQuery(String inCatalogId, SearchQuery inQuery,String parentid, Data data, User inUser) throws Exception
 	{
 		if( inQuery.getName() == null)
 		{
 			throw new OpenEditException("Name is required");
 		}
 		Searcher savedsearcher = getSearcherManager().getSearcher(inCatalogId, "savedquery");
+		Searcher termssearcher = getSearcherManager().getSearcher(inCatalogId, "savedqueryterm");
+
+		saveData(inQuery, data, inUser, savedsearcher);
+		
+		//now save the terms
+		saveTerms(inQuery, data, termssearcher, inUser);
+
+		if( parentid != null )
+		{
+			//save the children!
+			Collection oldqueries = savedsearcher.fieldSearch("parentid", data.getId());
+			for (Iterator iterator = oldqueries.iterator(); iterator.hasNext();)
+			{
+				Data row = (Data) iterator.next();
+				deleteOldTerms(row, inUser, termssearcher);
+				savedsearcher.delete(row, inUser);
+			}
+		}
+		return data;
+	}
+	protected void saveData(SearchQuery inQuery, Data data, User inUser, Searcher savedsearcher)
+	{
 		data.setProperties(inQuery.getProperties());
 		data.setId(inQuery.getId());
 		data.setName(inQuery.getName());
@@ -90,19 +122,11 @@ public class SavedQueryManager
 		data.setProperty("userid", inUser.getId());
 		data.setProperty("saveddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		savedsearcher.saveData(data, inUser);
-		
-		//now save the terms
-		Searcher termssearcher = getSearcherManager().getSearcher(inCatalogId, "savedqueryterm");
+	}
+	protected void saveTerms(SearchQuery inQuery, Data data, Searcher termssearcher, User inUser)
+	{
 		//delete old ones
-		if( data.getId() != null )
-		{
-			Collection oldterms = termssearcher.fieldSearch("queryid", data.getId());
-			for (Iterator iterator = oldterms.iterator(); iterator.hasNext();)
-			{
-				Data row = (Data) iterator.next();
-				termssearcher.delete(row, inUser);
-			}
-		}
+		deleteOldTerms(data, inUser, termssearcher);
 		//save terms
 		List newterms = new ArrayList();
 		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
@@ -125,7 +149,18 @@ public class SavedQueryManager
 			newterms.add(row);
 		}
 		termssearcher.saveAllData(newterms, inUser);
-		return data;
+	}
+	protected void deleteOldTerms(Data data, User inUser, Searcher termssearcher)
+	{
+		if( data.getId() != null )
+		{
+			Collection oldterms = termssearcher.fieldSearch("queryid", data.getId());
+			for (Iterator iterator = oldterms.iterator(); iterator.hasNext();)
+			{
+				Data row = (Data) iterator.next();
+				termssearcher.delete(row, inUser);
+			}
+		}
 	}
 
 	public SearcherManager getSearcherManager()
@@ -138,14 +173,14 @@ public class SavedQueryManager
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public Data loadSavedQuery(String inCatalogId, String inId, User inUser) throws Exception
+	public Data loadSavedQuery(String inCatalogId, String inId, User inUser)
 	{
 		Searcher savedsearcher = getSearcherManager().getSearcher(inCatalogId, "savedquery");
 		Data saveddata = (Data)savedsearcher.searchById(inId);
 		return saveddata;
 	}
 
-	public Collection loadSavedQueryTerms(String inCatalogId, String inId) throws Exception
+	public Collection loadSavedQueryTerms(String inCatalogId, String inId)
 	{
 		Searcher savedsearcher = getSearcherManager().getSearcher(inCatalogId, "savedqueryterm");
 		Collection terms = savedsearcher.fieldSearch("queryid", inId);
@@ -173,7 +208,7 @@ public class SavedQueryManager
 //		}
 //	}
 
-	public void deleteQuery(String inCatalogId, String inId, User inUser) throws Exception
+	public void deleteQuery(String inCatalogId, String inId, User inUser) 
 	{
 		Searcher savedsearcher = getSearcherManager().getSearcher(inCatalogId, "savedquery");
 		Data data = loadSavedQuery(inCatalogId, inId, inUser);
@@ -183,10 +218,15 @@ public class SavedQueryManager
 		}
 		//TODO: Delete the terms
 	}
+	public SearchQuery loadSearchQuery(String inCatalogid, Data inQuery, User inUser) 
+	{
+		return loadSearchQuery(inCatalogid,inQuery,true,inUser);
+	}
 
-	public SearchQuery loadSearchQuery(String inCatalogId, Data inSavedQuery, User inUser) throws Exception
+	public SearchQuery loadSearchQuery(String inCatalogId, Data inSavedQuery,boolean inWithChildren, User inUser) 
 	{
 		Searcher assetsearcher = getSearcherManager().getSearcher(inCatalogId, "asset");
+
 		SearchQuery query = assetsearcher.createSearchQuery();
 		String description = inSavedQuery.get("caption");
 		query.setDescription(description);
@@ -211,6 +251,18 @@ public class SavedQueryManager
 			Data term = (Data) iterator.next();
 			addTerm(query, term, inCatalogId, inUser);
 		}
+		if( inWithChildren )
+		{
+			Searcher savedsearcher = getSearcherManager().getSearcher(inCatalogId, "savedquery");
+			Collection children = savedsearcher.fieldSearch("parentid",inSavedQuery.getId());
+			for (Iterator iterator = children.iterator(); iterator.hasNext();)
+			{
+				Data child = (Data) iterator.next();
+				SearchQuery subquery = loadSearchQuery(inCatalogId,child,false,inUser);
+				query.addChildQuery(subquery);
+			}
+		}
+		
 //		int count = 0;
 //		for (Iterator iterator = root.elementIterator("query"); iterator.hasNext();)
 //		{
@@ -350,7 +402,7 @@ public class SavedQueryManager
 		{
 			t.addParameter("op", realop);
 		}
+		t.setId(term.getId());
 	}
-
 
 }

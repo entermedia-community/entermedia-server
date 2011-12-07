@@ -1,9 +1,11 @@
 package org.openedit.data.lucene;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.openedit.Data;
 
 import com.openedit.OpenEditException;
@@ -69,8 +71,16 @@ public class DocumentData implements Data
 	{
 		throw new OpenEditException("Search results are not editable");
 	}
-	public Map getProperties() {
-		return null;
+	public Map getProperties() 
+	{
+		Map fields = new HashMap(getDocument().getFields().size());
+		for (Iterator iterator = getDocument().getFields().iterator(); iterator.hasNext();)
+		{
+			Field	key = (Field)iterator.next();
+			String value = get(key.name());
+			fields.put(key.name(),value);
+		}
+		return fields;
 	}
 	@Override
 	public void setProperties(Map<String, String> inProperties)

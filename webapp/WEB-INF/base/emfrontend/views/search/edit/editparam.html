@@ -34,7 +34,7 @@
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 		<input name="operation" value="$term.getOperation()" type="hidden" />
 #end
-		#set( $value = $query.getInput($detail.id) )
+		#set( $value = $term.value )
 		$context.putPageValue("val",$value)
 		$context.putPageValue("detail",$detail)
 		$pages.include("$apphome/components/xml/types/${viewtype}.html", $context)

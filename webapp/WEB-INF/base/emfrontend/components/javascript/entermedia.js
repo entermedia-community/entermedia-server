@@ -198,6 +198,22 @@ formatHitCount = function(inRow)
 // Everyone put your onload stuff in here:
 onloadselectors = function()
 {
+	
+	$("document").ajaxError(function(e, jqxhr, settings, exception) 
+	{
+		var errordiv = jQuery("#errorinfoarea")
+		if( errordiv.lenght > 0)
+		{
+		    $(errordiv).html("Error " + settings.url + " returned " + exception);
+
+		}
+		else
+		{
+			  alert("Error " + settings.url + " returned " + exception);
+
+		}
+	});
+	
 	jQuery("a.ajax").livequery('click', runajax);
 	
 	

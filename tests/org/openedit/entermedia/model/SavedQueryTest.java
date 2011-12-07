@@ -46,8 +46,32 @@ public class SavedQueryTest extends BaseEnterMediaTest
 		Collection newhits = manager.loadSavedQueryList(req);
 		assertTrue(newhits.size() ==  hits.size() + 1);
 		
-		SearchQuery newone = manager.loadSearchQuery(catalogId, data, req.getUser());
+		SearchQuery newone = manager.loadSearchQuery(catalogId, data,false, req.getUser());
 		assertTrue(newone.getTerms().size() > 0);
 	}	
 	
+	public void testSaveSubQuery() throws Exception
+	{
+		SavedQueryManager manager = (SavedQueryManager)getStaticFixture().getModuleManager().getBean("savedQueryManager");
+
+		String catalogId = "entermedia/catalogs/testcatalog";
+		Searcher assetsearcher = manager.getSearcherManager().getSearcher(catalogId, "asset");
+		SearchQuery query = assetsearcher.createSearchQuery();
+		
+		query.setName("tester");
+		query.addMatches("caption","sales");
+		query.addMatches("caption","support");
+
+		WebPageRequest req = getStaticFixture().createPageRequest("/entermedia/catalogs/testcatalog/index.html");
+		Data data = manager.saveQuery(catalogId, query, req.getUser());
+		
+		SearchQuery newone = manager.loadSearchQuery(catalogId, data,true,req.getUser());
+		assertTrue(newone.getChildren().size() == 1);
+		
+		SearchQuery subquery = (SearchQuery)newone.getChildren().get(0);
+		assertEquals(2, subquery.getTerms().size());
+
+		
+		
+	}
 }
