@@ -361,6 +361,8 @@
 	<bean id="urlRepository" class="org.openedit.entermedia.util.UrlRepository"
 		singleton="false" />
 
+	<bean id="sftpRepository" class="org.openedit.entermedia.util.ssh.SftpRepository"
+		singleton="false" />
 	<bean id="pathEventManager" class="org.openedit.events.PathEventManager"
 		singleton="false">
 		<property name="pageManager">

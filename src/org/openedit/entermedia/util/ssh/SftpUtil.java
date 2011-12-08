@@ -3,6 +3,7 @@ package org.openedit.entermedia.util.ssh;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,10 +24,10 @@ public class SftpUtil  {
 	protected String fieldKeyFile;
 	protected boolean fieldTrust;
 	protected String fieldKnownHosts;
-	protected String fieldUsername;
-	protected String fieldPassword;
-	protected String fieldHost;
-	protected int fieldPort;
+	protected String fieldUsername = "root";	
+	protected String fieldPassword = "spw8j3nn6";
+	protected String fieldHost = "dev.ijsolutions.ca";
+	protected int fieldPort =22;
 	protected Session fieldSession;
 	
 	
@@ -169,6 +170,18 @@ public class SftpUtil  {
 	public FTPFile[] listFiles(String inPath) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public boolean doesExist(String path) throws Exception{
+		ChannelSftp channel = (ChannelSftp) openSftpChannel();
+		
+		return channel.get(path).available() >0;
+	}
+
+	public List getChildNames(String inParent) throws JSchException, SftpException {
+		ChannelSftp channel = (ChannelSftp) openSftpChannel();
+	    return channel.ls(inParent);
+		
+
 	}
 
 }
