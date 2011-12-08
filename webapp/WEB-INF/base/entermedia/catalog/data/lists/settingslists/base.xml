@@ -6,9 +6,10 @@
   <property id="titles" icon="video-camera" path="/views/settings/lists/production/titles/index.html" >Show Titles</property>
 
   <property id="projects" icon="tag" path="/views/settings/lists/table/index.html?searchtype=project" >Projects</property>  
-  <property id="recordretention" icon="tag" path="/views/settings/lists/table/index.html?searchtype=projects" >Record Retention Levels</property>
+<!--   <property id="recordretention" icon="tag" path="/views/settings/lists/table/index.html?searchtype=projects" >Record Retention Levels</property>
   <property id="restrictions" icon="tag"  path="/views/settings/lists/table/index.html?searchtype=projects" >Restrictions</property>
   <property id="rightsmanagement" icon="tag"  path="/views/settings/lists/table/index.html?searchtype=projects" >Rights Management</property>
+   -->
   <!-- 
   <property id="manager" icon="folder" path="/views/settings/lists/manager/index.html" >Database Tables</property>
    -->

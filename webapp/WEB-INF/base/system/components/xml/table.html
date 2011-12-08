@@ -20,7 +20,6 @@
 #set( $passalong = $context.getRequestParameter("passalong"))
 #set( $passalongdec = $url_util.decode($passalong) )
 #set( $passalong = $url_util.encode($passalongdec) )
-
 #set( $args = "catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&view=$view&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
 
 <div id="${searchtype}_table">
@@ -77,8 +76,11 @@
 
 #set($link = $context.getRequestParameter("selectlink"))
 #if($link)
-	<form name="editrow" action="$home$link">
-		<input type="hidden" id="emselectedrow" name="id" />
+	<form name="editrow" method="post" action="$home$link?$passalongdec">
+	#set($fieldname = "id" )
+	#set($fieldname = $context.getRequestParameter("fieldname"))
+		<input type="hidden" id="emselectedrow" name="$fieldname" />	
+		<input type="hidden"  name="edit" value="true" />
 		<input type="hidden" name="searchtype" value="${searchtype}" />
 		
 	</form>

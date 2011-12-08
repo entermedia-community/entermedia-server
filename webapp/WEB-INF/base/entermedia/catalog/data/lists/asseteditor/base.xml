@@ -7,6 +7,6 @@
   <property id="asseteditorpermissions"  path="/views/detaileditor/share/index.html" >Permissions</property>
   <property id="asseteditorcomments"  path="/views/detaileditor/comments/index.html" >Comments</property>
   <property id="viewattachments" icon="clock" path="/views/detaileditor/attachments/index.html" >Attachments</property>
-  <!--  property id="asseteditorhistory" icon="clock" path="/views/detaileditor/historypreviews/index.html" >Asset History</property -->
+  <property id="asseteditorhistory" icon="clock" path="/views/detaileditor/historypreviews/index.html" >History</property>
 
 </properties>
