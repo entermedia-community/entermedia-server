@@ -95,6 +95,7 @@ h4 {
 h5, h6 {
 	color: #26821d;
 	text-align: center;
+	text-decoration: none;
 }
 h5 {
 	font-size: 10px;
@@ -359,6 +360,35 @@ small {
 	background: url('../images/big-plus.png') center top no-repeat;
 }
 
+
+/* ==|== table ================================================= */
+
+table th {
+	background: #A28562;
+	color: #fff;
+	font-weight: bold;
+	padding: 10px 0;
+}
+table {
+	border: 1px solid #A28562;
+	background: #fff;
+	margin: 20px 0;
+}
+table td {
+	font-size: 12px;
+	padding: 8px 10px;
+	color: #A28562;
+}
+table td a {
+	color: #594028;
+	text-decoration: none;
+}
+table tr.odd {
+	background: #f7f7f7;
+}
+table tr:hover {
+	background: #eee;
+}
 
 /* ==|== wizard ================================================= */
 

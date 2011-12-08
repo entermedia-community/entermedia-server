@@ -5,28 +5,28 @@
 #set ($classname="enabled")
 
 <li >
-	<a  class="uibutton" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a>
+	<a  class="btn small" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a>
 </li>
 <li  >
-	<a  class="uibutton" href="#">Share</a>
+	<a  class="btn small" href="#">Share</a>
 </li>
 <!--
 <li  >
-	<a  class="uibutton" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()">Email</a>
+	<a  class="btn small" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()">Email</a>
 </li>
 <li >
-	<a  class="uibutton" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()">Export</a>
+	<a  class="btn small" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()">Export</a>
 </li>
 -->
 #if($content.isPropertyTrue("showaddselections"))
 <li  >
-	<a class="uibutton toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a>
+	<a class="btn small toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a>
 </li>
 #end
 #if($content.isPropertyTrue("showremoveselections"))
 
 <li  >
-	<a class="uibutton toggleitem  ajax"  targetdiv="basketmenu" href="$home$apphome/components/basket/removeselections.html?hitssessionid=$hits.getSessionId()">Remove</a>
+	<a class="btn small toggleitem  ajax"  targetdiv="basketmenu" href="$home$apphome/components/basket/removeselections.html?hitssessionid=$hits.getSessionId()">Remove</a>
 </li>
 #end
 </ul>
@@ -41,7 +41,7 @@
 <td align="right" width="100%" >
 	<ul class="embuttons">
 		<li>
-			<a class="ajax uibutton" targetdiv="emresultscontent" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=$searcher.getSearchType()">
+			<a style="width: 100px;"class="ajax btn small" targetdiv="emresultscontent" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=$searcher.getSearchType()">
 			
 				#set ($resultview = $userprofile.get('resultview'))
 				

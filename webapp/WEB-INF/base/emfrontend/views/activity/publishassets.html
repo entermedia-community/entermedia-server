@@ -8,7 +8,7 @@ Invalid order
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-	<h2>Export</h2>
+	<h3>Export</h3>
 	
 <form class="validate" id="usereditform" method="post" action="processorder.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
@@ -34,12 +34,12 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 	
 	<div >
 	<br><br>
-	<table class="striped" >
+	<table id="shared-asset-table" class="striped" >
 	#foreach( $item in $orderitems )
 	<tr>
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 
-	<td colspan="2">-----------------   ${asset.name}  -------------------------------------------------------------------------------------------------------------</td>
+	<td colspan="2" class="asset-name">${asset.name}</td>
 	</tr>
 	<tr>
 	<td>		
@@ -66,7 +66,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 			</a>
 </td>
-<td>
+<td align="right">
 	<div class="presetselector" itemid="$item.id" format="$asset.fileformat">
 	</div>
 	</td>
