@@ -167,11 +167,10 @@ public class SftpUtil  {
 		return	channel.get(remotePath);
 	}
 
-<<<<<<< Updated upstream
 	public FTPFile[] listFiles(String inPath) {
 		// TODO Auto-generated method stub
 		return null;
-=======
+	}
 	public boolean doesExist(String path) throws Exception{
 		ChannelSftp channel = (ChannelSftp) openSftpChannel();
 		
@@ -182,7 +181,7 @@ public class SftpUtil  {
 		ChannelSftp channel = (ChannelSftp) openSftpChannel();
 	    return channel.ls(inParent);
 		
->>>>>>> Stashed changes
+
 	}
 
 }
