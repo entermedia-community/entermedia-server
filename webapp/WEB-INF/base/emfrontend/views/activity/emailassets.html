@@ -8,7 +8,7 @@ No assets have been selected.
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-	<h2>Email</h2>
+	<h3>Email</h3>
 	
 <form class="validate" id="usereditform" method="post" action="processorder.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
@@ -29,27 +29,31 @@ $context.putPageValue("view", "order/emailform")
 
 <br/>
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-<input type="hidden" name="field" value="sharenote" />
-<textarea name="sharenote.value" rows="25" >
+
+<!--<input type="hidden" name="field" value="sharenote" />
+
+ <textarea name="sharenote.value" rows="25" >
 $pages.include("$apphome/views/activity/orderemailtemplate.html", $context)
 </textarea>
+
 $pages.include("/system/tools/html/textarea.html?htmltextarea=sharenote.value&fckheight=200&fckwidth=700")
+-->
 
 <br/>
-
+ 
 
 <input style="margin-left: 300px;" type="submit" name="submit" value="Send"/> 
 ##	<a href="submitorder.html?orderid=$order.getId()">Resubmit Order</a>
 	
 	<div >
 	<br><br>
-	<table class="striped" >
+	<table id="shared-asset-table" class="striped" >
 	#foreach( $item in $orderitems )
 		<input type="hidden" name="itemid" value="$item.id"/>
 	<tr>
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 
-	<td colspan="2">-----------------   ${asset.name}  -------------------------------------------------------------------------------------------------------------</td>
+	<td class="asset-name" colspan="2">${asset.name}</td>
 	</tr>
 	<tr>
 	<td>		
@@ -69,15 +73,13 @@ $pages.include("/system/tools/html/textarea.html?htmltextarea=sharenote.value&fc
 		#end
 			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
 		
-			<a href="$click" class="emdialog" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
 		   	#set( $sourcepath = $asset.sourcePath )
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
-			</a>
 </td>
-<td>
+<td align="right">
 	      #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
 	      <input type="hidden" name="field" value="presetid"/>
 
@@ -104,7 +106,6 @@ $pages.include("/system/tools/html/textarea.html?htmltextarea=sharenote.value&fc
 	#end
 	
 </table>
-	
 	<div id="itemsave"></div>
 	
 	
