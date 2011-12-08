@@ -16,6 +16,8 @@ import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
 import com.openedit.OpenEditException;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
@@ -130,10 +132,15 @@ public class SftpRepository extends BaseRepository {
 		return null;
 	}
 
-	@Override
+	
 	public List getChildrenNames(String inParent) throws RepositoryException {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return getSftpUtil().getChildNames(inParent);
+		} catch (JSchException e) {
+			throw new RepositoryException(e);
+		} catch (SftpException e) {
+			throw new RepositoryException(e);
+		}
 	}
 
 	@Override
@@ -236,13 +243,8 @@ public class SftpRepository extends BaseRepository {
 			{
 				checkConnection();
 				String path = getAbsolutePath().substring(1);
-				FTPFile[] files = getSftpUtil().listFiles(path);
+				return   getSftpUtil().doesExist(path);
 	
-				if (files == null || files.length == 0)
-				{
-					return false;
-				}
-				return true;
 			} catch (Exception e)
 			{
 				throw new RepositoryException(e);
