@@ -1,3 +1,30 @@
+#macro( renderterms $inquery )
+	#foreach( $term in $inquery.getTerms() )
+		#if( $term.getDetail().getId() == "description" )
+			##the $term.getDetail().getName() 
+			All assets that include 
+			<a  href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
+		#else
+			#if( $velocityCount > 1)		
+				#if( $inquery.isAndTogether() )
+				and
+				#else
+				or
+				#end 
+			#end
+			the
+			 $term.getDetail().getName() of
+			<a  href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
+		#end
+	#end
+	#if( $inquery.hasChildren() )
+		and
+		#foreach( $child in $inquery.getChildren() )
+			#renderterms( $child )
+		#end	
+	#end
+#end
+
 <div id="querybigeditarea">
 <div id="eml-tabs-view">
 	
@@ -16,17 +43,7 @@
 		<p id="savedquerylist" class="friendly-search">
 			Currently searching for: 
 				<span>
-				#foreach( $term in $query.getTerms() )
-					#if($velocityCount == 1 )
-						All assets that include 
-					#end
-					#if( $term.getDetail().getId() == "description" )
-						##the $term.getDetail().getName() 
-					#else
-						and the $term.getDetail().getName() is
-					#end
-						<a  href="$home$apphome/views/search/edit/editparam.html?termid=$term.id&queryid=$query.id&oemaxlevel=1">$query.getFriendlyValue($term.getValue(),$term.getDetail())</a>
-				#end
+				#renderterms( $query )
 				</span>
 		</p>
 		<div id="searcheditor">

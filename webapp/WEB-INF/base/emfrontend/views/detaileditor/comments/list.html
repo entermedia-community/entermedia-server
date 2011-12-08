@@ -5,7 +5,7 @@
 		<span class="emcommentdate">$comment.getShortDate($context.locale)</span>
 			#if($caneditasset)
 				<div align="right">
-				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}/${catalogid}/components/detaileditor/comments/removecomment.html">
+				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}$apphome/views/detaileditor/comments/removecomment.html">
 					<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 					<input type="hidden" name="commenttext" value="$comment.comment"/>
 					<input type="hidden" name="commentuser" value="$comment.user.userName"/>

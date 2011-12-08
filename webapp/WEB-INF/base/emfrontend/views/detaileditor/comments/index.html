@@ -14,8 +14,8 @@ $pages.include("$apphome/views/detaileditor/comments/list.html", $context)
 
 	#set($incrsize = $comments.size() + 1)
 	#if( $cancomment )
-		<form name="addcomment" class="ajaxform" targetdiv="emcommentarea" action="${home}/${catalogid}/components/detaileditor/comments/addcomment.html" method="post">
-			<textarea id="commenttext" class="resizer" name="comment" cols="54" rows="2">[[Write a comment]]</textarea> <br/>
+		<form name="addcomment" class="ajaxform" targetdiv="emcommentarea" action="${home}$apphome/views/detaileditor/comments/addcomment.html" method="post">
+			<textarea id="commenttext" class="initialtext resizer" initialtext="[[Write a comment]]" name="comment" cols="54" rows="2">[[Write a comment]]</textarea> <br/>
 			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="catalogid" value="$catalogid"/>

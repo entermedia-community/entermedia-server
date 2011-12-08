@@ -88,7 +88,7 @@ public class MediaAdminModule extends BaseMediaModule
 		site.setProperty("appcatalogid",appcatalogid);
 
 		String name = inReq.findValue("sitename");
-		site.setProperty("name",name);
+		site.setName(name);
 
 		site.setProperty("frontendid",frontendid);
 

@@ -1,46 +1,6 @@
-#set($current = $context.findValue("searchtype"))
+#set( $screenid = $context.getRequestParameter("screenid"))
+#set($current = $context.getRequestParameter("assettype")) 
 
-<!-- 
-<form action="$home$apphome/views/settings/metadata/views/index.html">
-	<input type="hidden" name="catalogid" value="$catalogid"/>
-	[[Type]]: <select name="searchtype" onchange="submit();">
-		<option value=""></option>
-	#foreach( $type in $viewtypes)
-		<option id="$type.name" #if($type == $current) selected #end>$type</option>
-	#end
-	</select>
-	
-</form>
-<br>
- -->
-#if( $views && $views.size() > 0)
-
-<div id="emselectable">
-
-<table class="striped">
-<thead>
-<tr>
-<th>Screen</th>
-<th>Usage</th>
-<th>Items</th>
-</tr>
-</thead>
-<tbody>
-#foreach( $view in $views)
-<tr rowid="$view.name">
-	<td>$view.name</td>
-	<td>$context.getText("$!view.usagelabel")</td>
-	<td>$view.size()</td>
-</tr>
+#if($screenid && $current )
+$pages.include("edit.html")
 #end
-</tbody>
-</table>
-<form name="editview" action="edit.html"> 
-	<input type="hidden" name="view" id="emselectedrow" />
-	<input type="hidden" name="searchtype" value="$current" />
-</form>
-
-</div>
-
-#end
-

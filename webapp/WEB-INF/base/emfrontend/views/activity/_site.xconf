@@ -1,5 +1,6 @@
 <page>
 	<script id="jquery-autosave" src="/${applicationid}/components/javascript/jquery.autosave.min.js" />
 	<inner-layout>${themeprefix}/layouts/share.html</inner-layout>
+	<path-action name="MediaArchiveModule.getAsset"  />
 	
 </page>
