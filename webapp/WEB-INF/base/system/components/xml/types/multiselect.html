@@ -8,7 +8,7 @@
 #set($checked = $data.getValues($detail.id))
 
 <div id="allnone">
-(<a href="javascript:oecheckall('${searchtype}',true)">#text("all")</a> <a href="javascript:oecheckall('${searchtype}',false)">[[none]]</a>)
+(<a href="javascript:selectall('${searchtype}checkbox')">#text("all")</a> <a href="javascript:selectnone('${searchtype}checkbox')">[[none]]</a>)
 </div>
 
 ##we need to load up the existing detail object
@@ -72,7 +72,7 @@
 			<td>
 			
 	
-	  <input type="checkbox" name="${detail.id}.value" id="${searchtype}.${item.id}" value="$key"
+	  <input type="checkbox" class="${searchtype}checkbox" name="${detail.id}.value" id="${searchtype}.${item.id}" value="$key"
 	    #if ($checked.contains($key)) checked #end >
 		$type
 	 
