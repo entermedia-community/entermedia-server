@@ -66,19 +66,19 @@ protected void sendEmail(Order inOrder) {
 		}
 		String emailto = inOrder.get('sharewithemail');
 		String notes = inOrder.get('sharenote');
+		
+		boolean isDownload = inOrder.getOrderType()=="download"
 
-		if(emailto != null) {
+		if(emailto != null && !isDownload) {
 			String expireson=inOrder.get("expireson");
 			if ((expireson!=null) && (expireson.trim().length()>0)) {
 				Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
 				context.putPageValue("expiresondate", date);
 				context.putPageValue("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 			}
-
 			sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
 		}
-		// if (type is download) {}
-		if (inOrder.getOrderType()=="download")
+		if (isDownload)
 		{
 			String userid = inOrder.get("userid");
 			if(userid != null){
@@ -96,6 +96,8 @@ protected void sendEmail(Order inOrder) {
 						//					context.putPageValue("orderassets", module.findOrderAssets(context));
 						//orderitemsearcher
 						//field search based on orderid
+						if (emailto != null)
+							sendEmail(context, emailto, "/${appid}/views/activity/email/usertemplate.html");
 						context.putPageValue("user", user)
 						sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
 					}
