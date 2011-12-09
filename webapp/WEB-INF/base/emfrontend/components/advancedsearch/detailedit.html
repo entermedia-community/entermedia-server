@@ -10,7 +10,7 @@
 	<td valign="middle" class="emsearchfield" nowrap="true">
 		$!detail.getText($context) 
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
-		<input name="operation" value="startswith" type="hidden" />
+		<input name="operation" value="matches" type="hidden" />
 	</td>
 	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
 		#set( $viewtype = $detail.viewType )
