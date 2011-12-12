@@ -184,4 +184,14 @@ public class SftpUtil  {
 
 	}
 
+	public boolean deleteFile(String inPath) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void disconnect() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

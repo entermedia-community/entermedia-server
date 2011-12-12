@@ -142,7 +142,7 @@ public class MountModule extends BaseModule
 		repo.setPath(path);
 		repo.setExternalPath(inReq.getRequestParameter("externalpath"));
 		
-		repo.setDefaultRemoteDirectory(inReq.getRequestParameter("defaultremotepath"));
+	//	repo.setDefaultRemoteDirectory(inReq.getRequestParameter("defaultremotepath"));
 		
 		
 		String filterin = inReq.getRequestParameter("filterin");

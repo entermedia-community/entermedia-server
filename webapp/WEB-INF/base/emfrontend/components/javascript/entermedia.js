@@ -62,7 +62,10 @@ runajax = function(e)
 			{
 				var cell = jQuery("#" + targetDiv);
 				cell.replaceWith(data);
-				doResize();
+				if( typeof doResize === 'function' )
+				{
+					doResize();
+				}
 			}
 		);
 	}
@@ -75,8 +78,11 @@ runajax = function(e)
 				{
 					var cell = jQuery("#" + loaddiv);
 					cell.html(data);
-					doResize();
-					setTimeout("doResize()",200);
+					if( typeof doResize === 'function' )
+					{
+						doResize();
+						setTimeout("doResize()",200);
+					}
 				}
 			);
 
