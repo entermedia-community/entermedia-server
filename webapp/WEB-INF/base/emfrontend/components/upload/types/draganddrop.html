@@ -60,6 +60,9 @@
 </table>
 
 <script type="text/javascript">
+
+
+
 		var oktosubmit = false;
 		var queuecompleted = false;
 		var idcounter = 0;
@@ -110,7 +113,23 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 			alert( ex);
 		}
 	}
+	jQuery('table#emfilelist tr#row0 select').live("change", 
+		function(){
+			if ($(this).siblings('a').length == 0){
+				var field = $(this).attr("fieldname");
+				var link = $(document.createElement('a'));
+				$(link).text("Apply to All").click(
+						function(){
+							var value = $('table#emfilelist tr select[fieldname="' + field +'"]').val();
+							$('table#emfilelist tr select[fieldname="' + field +'"]').val(value);
+						}
+				); 
+				$(this).after(link);
+			}
+		});
 }
+
+
 
 function removeUpload(inId) 
 		{
