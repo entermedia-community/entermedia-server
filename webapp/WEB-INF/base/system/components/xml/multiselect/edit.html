@@ -1,5 +1,6 @@
+asdf
 <div id="allnone">
-(<a href="javascript:oecheckall('${searchtype}',true)">#text("all")</a> <a href="javascript:oecheckall('${searchtype}',false)">[[none]]</a>)
+(<a href="javascript:jQuery('.${searchtype}checkbox').each(function(){this.checked = true;});">#text("all")</a> <a href="javascript:oecheckall('${searchtype}',false)">[[none]]</a>)
 </div>
 
 <table>
@@ -15,7 +16,7 @@
 	<label for="${searchtype}.value" class="">
 	
 	
-	  <input type="checkbox" name="${searchtype}.value" id="${searchtype}.${item.id}" value="$item.get('id')"
+	  <input class="${searchtype}checkbox" type="checkbox" name="${searchtype}.value" id="${searchtype}.${item.id}" value="$item.get('id')"
 	    #if ($checked.contains($item.id)) checked #end >
 		$item
 	 </label>
@@ -27,20 +28,3 @@
 	</tr>
 </table>
 
-<script type="text/javascript" >
-		oecheckall = function(insearchtype,inValue)
-		{
-		
-			var boxes = document.getElementsByTagName("input");
-			var boxcount = boxes.length;
-			// set the check value for all check boxes
-			for(var i = 0; i < boxcount; i++)
-			{
-				if( boxes[i].id.startsWith(insearchtype + ".") )
-				{
-					boxes[i].checked = inValue;
-				}
-			}
-			
-		}
-</script>

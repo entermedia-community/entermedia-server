@@ -2,15 +2,17 @@
 #set ($searchtype = $context.getRequestParameter("searchtype"))
 #set ($catalogid = $context.getRequestParameter("catalogid"))
 #set ($assetid = $context.getRequestParameter("assetid"))
+#set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
 	#set( $editpath = "${page.directory}/generictablesave.html" )
 #end
+#set($link = $context.getRequestParameter("selectlink"))
 
-#set( $args = "editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&view=$view&assetid=$assetid&permissionname=$!permissionname")
-#set ($passalong = "assetid=$assetid")
+#set( $args = "editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&view=$view&assetid=$assetid&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
+#set ($passalong = "assetid=$assetid&hitssessionid=$!hitssessionid&selectlink=$!link")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
 
 #set ($id = $context.getRequestParameter("id"))
@@ -43,7 +45,7 @@
 	$pages.include("/$applicationid/components/xml/table.html?$args&candelete=$!caneditasset&passalong=$passalong",$context)
 	
 	#if( !$parser.parseBoolean($edit) &&  $caneditasset && !$print.equals("true"))
-	<p align="right"><a href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=true',1);return false;">[[Add New]] >></a></p>
+	<p align="right" style="margin: -5px 19px 20px 0;"><a class="btn small" href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=true',1);return false;">[[Add New]]</a></p>
 	#end
 	
 	#else
@@ -53,11 +55,12 @@
 		$context.putPageValue("view", $view)
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 		$context.putPageValue("searcher", $searcher)
-	
+		#set( $data = $searcher.searchById($id) )
+		$context.putPageValue("data", $data)
 		$pages.include("/$applicationid/components/xml/detaileditor.html",$context)
 		
 		<p align="right">
-		<a href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=false',1);return false;">[[cancel]]</a>
+		<a class="btn small" href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=false',1);return false;">[[cancel]]</a>
 		&nbsp;&nbsp; <input  type="submit" value="Save values"/>
 		</p>
 		<input name="field" type="hidden" value="assetid" />

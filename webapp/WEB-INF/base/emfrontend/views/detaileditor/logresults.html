@@ -1,13 +1,13 @@
 #set( $foldername = $context.getRequestParameter("foldername") )
 <div id="logresults">
 
-$context.putPageValue("hits",$loghits)
-$pages.include("$apphome/components/results/pages.html",$context)
+##$context.putPageValue("hits",$loghits)
+##$pages.include("$apphome/components/results/pages.html",$context)
 
 #if( $loghits.size() > 0)
-$pages.include("${cataloghome}/components/detaileditor/logresulttable.html", $context)
+$pages.include("${apphome}/views/detaileditor/logresulttable.html", $context)
 
- <table style="width: 80%">
+ <table style="width: 80%" class="striped emdata">
 <tr>
 	<td> $loghits.size() [[records found]]</td>
 	<td  >[[Searched By]]: $!loghits.searchQuery.toFriendly()

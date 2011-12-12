@@ -18,5 +18,6 @@
   <script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
   <script id="jquery-livequery" src="/${applicationid}/components/javascript/jquery.livequery.js"/>
   <script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validate.js"/>
+  <script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
   <inner-layout>${themeprefix}/layouts/application.html</inner-layout>
 </page>
