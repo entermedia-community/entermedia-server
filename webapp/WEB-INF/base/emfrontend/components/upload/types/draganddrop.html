@@ -113,20 +113,32 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 			alert( ex);
 		}
 	}
-	jQuery('table#emfilelist tr#row0 select').live("change", 
-		function(){
-			if ($(this).siblings('a').length == 0){
-				var field = $(this).attr("fieldname");
-				var link = $(document.createElement('a'));
-				$(link).text("Apply to All").click(
-						function(){
-							var value = $('table#emfilelist tr select[fieldname="' + field +'"]').val();
-							$('table#emfilelist tr select[fieldname="' + field +'"]').val(value);
-						}
-				); 
-				$(this).after(link);
-			}
-		});
+	if (jQuery('table#emfilelist tr[id^=row]').length>1){
+		jQuery('table#emfilelist tr#row0 select').live("change", 
+			function(){
+				if ($(this).siblings('a').length == 0){
+					var field = $(this).attr("fieldname");
+					var link = $(document.createElement('a'));
+					$(link).text("Apply to All").click(
+							function(){
+								var value = $('table#emfilelist tr select[fieldname="' + field +'"]').val();
+								$('table#emfilelist tr select[fieldname="' + field +'"]').val(value);
+								if (field == 'title'){
+									var episodes = $('table#emfilelist tr select[fieldname="episode"]');
+									jQuery.each(episodes, function(index, items){ 
+										if(index>0){
+											$(this).find('option').remove();
+											var options = $('table#emfilelist tr select[fieldname="episode"]:first').children().clone();
+											$(this).append(options)
+										}
+									});
+								}
+							}
+					); 
+					$(this).after(link);
+				}
+			});
+	}
 }
 
 
@@ -138,8 +150,8 @@ function removeUpload(inId)
 
 function updateEpisodes(inId)
 {
-	var title = jQuery("#" + inId + "titleselect").val();
-	jQuery("#" + inId + "episodeselect").load("$apphome/components/upload/types/dragsync/episodes.html?title=" + title + "&id=" + inId);
+	//var title = jQuery("#" + inId + "titleselect").val();
+	//jQuery("#" + inId + "episodeselect").load("$apphome/components/upload/types/dragsync/episodes.html?title=" + title + "&id=" + inId);
 }
 </script>
 
