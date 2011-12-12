@@ -128,6 +128,9 @@ public class MountModule extends BaseModule
 			else if( "urlRepository".equals(repotype) )
 			{
 				repo = new UrlRepository();
+			}else if("sftpRepository".equals(repotype))
+			{
+				repo = new UrlRepository();
 			}
 			else
 			{
@@ -138,6 +141,10 @@ public class MountModule extends BaseModule
 		
 		repo.setPath(path);
 		repo.setExternalPath(inReq.getRequestParameter("externalpath"));
+		
+		repo.setDefaultRemoteDirectory(inReq.getRequestParameter("defaultremotepath"));
+		
+		
 		String filterin = inReq.getRequestParameter("filterin");
 		repo.setFilterIn(filterin);
 		repo.setFilterOut(inReq.getRequestParameter("filterout"));

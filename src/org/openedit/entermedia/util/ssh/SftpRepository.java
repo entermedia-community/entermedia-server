@@ -3,7 +3,9 @@ package org.openedit.entermedia.util.ssh;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,14 +17,17 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
+import org.openedit.repository.filesystem.FileRepository;
 
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import com.openedit.OpenEditException;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 
-public class SftpRepository extends BaseRepository {
+//public class SftpRepository extends BaseRepository {
+  public class SftpRepository extends FileRepository {
 
 	protected SftpUtil fieldSftpUtil;
 
@@ -62,6 +67,7 @@ public class SftpRepository extends BaseRepository {
 			path = "/";
 		}
 		String url = getExternalPath() + path;
+		//String path =this.getDefaultRemoteDirectory() +  inContent.getName();
 		SFtpContentItem item = new SFtpContentItem();
 		item.setPath(inPath);
 		item.setAbsolutePath(path);
@@ -83,15 +89,43 @@ public class SftpRepository extends BaseRepository {
 
 	
 	public void put(ContentItem inContent) throws RepositoryException {
-		String path = inContent.getPath();
+		//need to write the file to the webserver folder first
+		super.put(inContent);
+		String path =this.getDefaultRemoteDirectory() +  inContent.getName();
+		//File file = new File(inContent.getAbsolutePath());
 		File file = new File(inContent.getAbsolutePath());
 		try {
 			getSftpUtil().sendFileToRemote(file, path);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
-
 	}
+	
+	
+	
+	public List<ContentItem> listFiles(String inPath) throws RepositoryException  {
+		List<String> childNames;
+		try {
+			childNames = getSftpUtil().getChildNames(inPath);
+		} catch (Exception e) {
+			throw new RepositoryException("Couldn't list file in: " + inPath);
+		} 
+		String path = inPath.substring(getPath().length());
+		if (path.length() == 0)
+		{
+			path = "/";
+		}
+		List<ContentItem> contentItems = new ArrayList<ContentItem>();
+	    for(int i=0; i < childNames.size(); i++){
+			String url = getExternalPath() + childNames.get(i);
+			SFtpContentItem item = new SFtpContentItem();
+			item.setPath(inPath);
+			item.setAbsolutePath(path);
+			contentItems.add((ContentItem)item);
+	    }
+	    return contentItems;
+	}
+	
 
 	@Override
 	public void copy(ContentItem inSource, ContentItem inDestination)
@@ -116,7 +150,20 @@ public class SftpRepository extends BaseRepository {
 
 	@Override
 	public void remove(ContentItem inPath) throws RepositoryException {
-		// TODO Auto-generated method stub
+		try
+		{
+			checkConnection();
+			String path = inPath.getAbsolutePath().substring(1);
+			boolean success = getSftpUtil().deleteFile(path);
+			if (!success)
+			{
+				throw new RepositoryException("Couldn't put file: " + inPath.getPath());
+			}
+		} 
+		catch (Exception e)
+		{
+			throw new RepositoryException(e);
+		}
 
 	}
 
@@ -152,7 +199,7 @@ public class SftpRepository extends BaseRepository {
 	public boolean isConnected() {
 		return getSftpUtil().isConnected();
 	}
-
+ 
 	public boolean connect() throws Exception
 	{
 		
@@ -176,9 +223,6 @@ public class SftpRepository extends BaseRepository {
 					subdir = parts[1];
 				}
 			}
-
-			
-
 			
 			String ftpuser = getUserName();
 			User user = getUserManager().getUser(ftpuser);
@@ -187,16 +231,19 @@ public class SftpRepository extends BaseRepository {
 
 			log.info("trying to connect to : " + serverName);
 			
-				getSftpUtil().openSession();
-				
-				
-				
-			
-						return getSftpUtil().isConnected();
-		
-
-		
+			getSftpUtil().openSession();
+			return getSftpUtil().isConnected();
+	
 	}
+	public void disconnect() throws IOException
+	{
+		if (isConnected())
+		{
+			getSftpUtil().disconnect();
+		}
+	}
+
+	
 
 	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
