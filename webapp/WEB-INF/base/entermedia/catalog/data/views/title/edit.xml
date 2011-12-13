@@ -1,5 +1,5 @@
 
 <properties>
  
-  <property id="name" editable="true" index="true" stored="true">Name</property>
+  <property id="name" editable="true" index="true" stored="true" required="true">Name</property>
 </properties>

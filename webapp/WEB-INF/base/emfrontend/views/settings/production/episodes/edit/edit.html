@@ -1,4 +1,4 @@
-<h3>Edit $!data</h3>
+<h3>Edit $!data sdaf</h3>
 
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )
@@ -24,6 +24,7 @@ $context.putPageValue("title",$title)
 	<input name="origURL"  type="hidden" value="$!origURL" />
 	<input name="field"  type="hidden" value="title" />
 	<input name="title.value"  type="hidden" value="$title.id" />
+		<input name="view"  type="hidden" value="$view" />
 	
 #set($titleid = $context.getRequestParameter("title.value"))	
 $data.setProperty("title",$titleid)

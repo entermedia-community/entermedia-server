@@ -1,5 +1,21 @@
 <page>
 	
+	<path-action name="ValidationModule.validateFields">
+    
+    
+ 	 </path-action>
+ 		<!--
+ 	<path-action name="Script.run">
+	
+		<script>./checkunique.groovy</script>
+	</path-action>
+	-->
+  <property name="redirect">true</property>
+  <property name="type">title</property>
+  
+  <property name="errorURL">/${applicationid}/views/settings/production/titles/edit/edit.html</property>
+	
+	
 	<path-action name="DataEditModule.saveData" />
 	
 	<path-action name="DataEditModule.search" />

@@ -1,4 +1,20 @@
 <page>
+  <path-action name="DataEditModule.loadPageOfSearch"/>
+
+	<path-action name="ValidationModule.validateFields">
+    
+    
+ 	 </path-action>
+ 	
+ 	<path-action name="Script.run">
+	
+		<script>./checkunique.groovy</script>
+	</path-action>
+	
+  <property name="redirect">true</property>
+  <property name="type">episode</property>
+  
+  <property name="errorURL">/${applicationid}/views/settings/production/episodes/edit/addnew.html</property>
 	
 	<path-action name="DataEditModule.saveData" />
 	

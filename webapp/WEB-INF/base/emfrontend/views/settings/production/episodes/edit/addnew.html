@@ -1,2 +1,8 @@
-$pages.include("./edit.html?action=add")
+#if($notunique)
+<div class="common-warning">This entry already exists</div>
+
+#end
+
+$context.getRequestParameter('title.value')
+$pages.include("./edit.html?action=add", $context)
 $pages.include("../results.html",$context)
