@@ -5,21 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.net.ftp.FTPFile;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.FtpRepository;
-import org.openedit.repository.BaseRepository;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
 
-import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import com.openedit.OpenEditException;
@@ -103,6 +99,11 @@ import com.openedit.users.UserManager;
 	
 	
 	
+	private String getDefaultRemoteDirectory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public List<ContentItem> listFiles(String inPath) throws RepositoryException  {
 		List<String> childNames;
 		try {
