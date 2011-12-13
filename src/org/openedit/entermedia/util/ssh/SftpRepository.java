@@ -86,12 +86,12 @@ import com.openedit.users.UserManager;
 	
 	public void put(ContentItem inContent) throws RepositoryException {
 		//need to write the file to the webserver folder first
-		super.put(inContent);
-		String path =this.getDefaultRemoteDirectory() +  inContent.getName();
+		
+		String path =getProperty("defaultremotepath") +"/"+  inContent.getName();
 		//File file = new File(inContent.getAbsolutePath());
-		File file = new File(inContent.getAbsolutePath());
+		
 		try {
-			getSftpUtil().sendFileToRemote(file, path);
+			getSftpUtil().sendFileToRemote(inContent.getInputStream(), path);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
@@ -183,7 +183,9 @@ import com.openedit.users.UserManager;
 	
 	public List getChildrenNames(String inParent) throws RepositoryException {
 		try {
-			return getSftpUtil().getChildNames(inParent);
+			String path =getProperty("defaultremotepath")+  inParent.substring(getPath().length(), inParent.length());
+			
+			return getSftpUtil().getChildNames(path);
 		} catch (JSchException e) {
 			throw new RepositoryException(e);
 		} catch (SftpException e) {
@@ -278,7 +280,9 @@ import com.openedit.users.UserManager;
 
 			try
 			{
-				return getSftpUtil().retrieveFileStream(getAbsolutePath().substring(1));
+				String path = getAbsolutePath().substring(1);
+				path =getProperty("defaultremotepath")+ "/" + path;
+				return getSftpUtil().retrieveFileStream(path);
 			} catch (Exception e)
 			{
 				throw new RepositoryException(e);
@@ -291,6 +295,8 @@ import com.openedit.users.UserManager;
 			{
 				checkConnection();
 				String path = getAbsolutePath().substring(1);
+				path =getProperty("defaultremotepath")+ "/" + path;
+
 				return   getSftpUtil().doesExist(path);
 	
 			} catch (Exception e)

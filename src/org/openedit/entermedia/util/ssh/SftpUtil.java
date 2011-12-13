@@ -3,11 +3,13 @@ package org.openedit.entermedia.util.ssh;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.net.ftp.FTPFile;
+import org.openedit.repository.ContentItem;
+import org.openedit.repository.RepositoryException;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -29,7 +31,7 @@ public class SftpUtil  {
 	protected String fieldHost = "dev.ijsolutions.ca";
 	protected int fieldPort =22;
 	protected Session fieldSession;
-	
+	protected  Channel channel;
 	
 	
 	public Session getSession() {
@@ -51,26 +53,28 @@ public class SftpUtil  {
 			log.info("Using known hosts: " + getKnownHosts());
 			jsch.setKnownHosts(getKnownHosts());
 		} 
-		
-		
 
-		Session session = jsch.getSession(getUsername(), getHost(), getPort());
+		fieldSession = jsch.getSession(getUsername(), getHost(), getPort());
 		//session.setUserInfo(this);
-		session.setPassword(getPassword());
-		session.setConfig("StrictHostKeyChecking", "no");  // 
-		session.setConfig("PreferredAuthentications",
+		fieldSession.setPassword(getPassword());
+		fieldSession.setConfig("StrictHostKeyChecking", "no");  // 
+		fieldSession.setConfig("PreferredAuthentications",
         "password,gssapi-with-mic,publickey");
 		log.info("Connecting to " + getHost() + ":" + getPort());
-		session.connect();
+		fieldSession.connect();
 		log.info("connected");
 		
-		return session;
+		return fieldSession;
 	}
 
+	protected void closeSession(){
+		//this.se
+	}
+	
 	public String getPassword() {
 		return fieldPassword;
 	}
-
+	
 	public void sendFileToRemote(File localFile,
 			String remotePath) throws IOException, SftpException, JSchException {
 	
@@ -91,20 +95,15 @@ public class SftpUtil  {
 		
 	}
 	
-
-	
-	
-	
-	
 	
 	 protected Channel openSftpChannel() throws JSchException {
-		 Channel channel=openSession().openChannel("sftp");
-	      channel.connect();
-	      ChannelSftp c=(ChannelSftp)channel;
-	        return channel;
-	    }
-	
-	
+		 if(this.channel == null) {
+			 this.channel=openSession().openChannel("sftp");
+		     channel.connect();
+		     ChannelSftp c=(ChannelSftp)channel;
+		 }
+	     return this.channel;
+	 }
 	
 	public String getUsername() {
 		return fieldUsername;
@@ -159,6 +158,9 @@ public class SftpUtil  {
 	}
 
 	public boolean isConnected(){
+		if(getSession() == null){
+			return false;
+		}
 		return getSession().isConnected();
 	}
 
@@ -167,31 +169,113 @@ public class SftpUtil  {
 		return	channel.get(remotePath);
 	}
 
-	public FTPFile[] listFiles(String inPath) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	
+	
+	protected void makeDirs(String inPath) throws SftpException, JSchException 
+	{
+		if (inPath.contains("/"))
+		{
+			String[] components = inPath.split("/");
+			String path = components[0];
+			ChannelSftp channel = (ChannelSftp) openSftpChannel();
+			for (int i = 1; i < components.length; i++)
+			{
+				channel.mkdir(path);
+				path += "/" + components[i];
+			}	
+		}
+		
 	}
+
+	public void remove(ContentItem inPath) throws RepositoryException
+	{
+			String path = inPath.getAbsolutePath().substring(1);
+			try {
+				ChannelSftp channel = (ChannelSftp) openSftpChannel();
+				channel.rm(path);
+			} catch (Exception e) {
+				throw new RepositoryException("Couldn't remove file: " + inPath.getPath());
+			}
+	}
+	
+
 	public boolean doesExist(String path) throws Exception{
 		ChannelSftp channel = (ChannelSftp) openSftpChannel();
+		InputStream is;
+		//channel.lstat(path);
+		try {
+			return channel.stat(path) != null;
 		
-		return channel.get(path).available() >0;
+			
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public List getChildNames(String inParent) throws JSchException, SftpException {
+		List<String> childNames = new ArrayList<String>();
 		ChannelSftp channel = (ChannelSftp) openSftpChannel();
-	    return channel.ls(inParent);
+		 
+		List v = channel.ls(inParent);
 		
-
+		ChannelSftp.LsEntry entry= null;
+		 for(int i=0; i < v.size(); i++){
+			 entry = (ChannelSftp.LsEntry)v.get(i);
+			 childNames.add(entry.getFilename());
+		 }
+		 return childNames;
 	}
 
-	public boolean deleteFile(String inPath) {
-		// TODO Auto-generated method stub
-		return false;
+	public static void main(String args[]) throws Exception{
+		SftpUtil sftp = new SftpUtil();
+		sftp.setUsername("tuan");
+		sftp.setPassword("entermedia");
+		File localFile =new File("f:/test.txt");
+		String remotePath="/home/tuan";
+		sftp.sendFileToRemote(localFile, remotePath);
+		
+		//InputStream is = sftp.retrieveFileStream("/home/tuan/test.txt");
+		sftp.disconnect();
 	}
 
 	public void disconnect() {
-		// TODO Auto-generated method stub
+		if(this.fieldSession != null)
+			this.fieldSession.disconnect();
+		if(this.channel != null)
+			this.channel.disconnect();
+		this.channel = null;
+		this.fieldSession = null;
 		
 	}
 
+	public boolean deleteFile(String path) throws JSchException, SftpException {
+		ChannelSftp channel = (ChannelSftp) openSftpChannel();
+		try {
+			channel.cd(path);
+		} catch (SftpException e) {
+			channel.rm(path);
+			return true;
+		}
+	    channel.rmdir(path);
+	    return true;
+	}
+	public void sendFileToRemote(InputStream inStream,
+			String remotePath) throws IOException, SftpException, JSchException {
+	
+		ChannelSftp channel = (ChannelSftp) openSftpChannel();
+		
+		
+	
+
+		
+
+		
+	
+
+			
+					channel.put(inStream, remotePath);
+		
+	}
+	
 }
