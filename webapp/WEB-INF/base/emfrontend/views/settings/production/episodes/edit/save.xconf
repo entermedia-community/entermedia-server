@@ -1,13 +1,9 @@
 <page>
   <path-action name="DataEditModule.loadPageOfSearch"/>
 
-	<path-action name="ValidationModule.validateFields">
-    
-    
- 	 </path-action>
+	<path-action name="ValidationModule.validateFields" />
  	
  	<path-action name="Script.run">
-	
 		<script>./checkunique.groovy</script>
 	</path-action>
 	
