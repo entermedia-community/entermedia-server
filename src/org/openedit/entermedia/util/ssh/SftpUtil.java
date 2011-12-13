@@ -203,7 +203,7 @@ public class SftpUtil  {
 	public boolean doesExist(String path) throws Exception{
 		ChannelSftp channel = (ChannelSftp) openSftpChannel();
 		InputStream is;
-		channel.lstat(path);
+		//channel.lstat(path);
 		try {
 			return channel.stat(path) != null;
 		
@@ -270,7 +270,7 @@ public class SftpUtil  {
 
 		
 
-		long startTime = System.currentTimeMillis();
+		
 	
 
 			
