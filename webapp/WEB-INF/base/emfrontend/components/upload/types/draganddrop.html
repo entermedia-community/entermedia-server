@@ -114,6 +114,21 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 		}
 	}
 	if (jQuery('table#emfilelist tr[id^=row]').length>1){
+		jQuery('table#emfilelist tr#row0 input').click(function(){
+			if ($(this).siblings('a').length == 0){
+				var field = $(this).attr("name");	
+				var name = field.slice(field.indexOf(".")+1);
+				//alert(name);
+				var link = $(document.createElement('a'));
+				$(link).text("Apply to All").click(function(){
+					var value = $('table#emfilelist tr input[name="' + field +'"]').val();
+					var inputs = $('table#emfilelist tr input[name$="' + name +'"]');
+					inputs.val(value);
+				});
+				$(this).after(link);
+			}
+					
+		});
 		jQuery('table#emfilelist tr#row0 select').live("change", 
 			function(){
 				if ($(this).siblings('a').length == 0){
