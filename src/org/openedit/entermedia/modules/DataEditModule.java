@@ -166,6 +166,7 @@ public class DataEditModule extends BaseMediaModule
 		detail.setProperty("viewtype", val);
 
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		inReq.setRequestParameter("saved", "true");
 	}
 
 	public void addToView(WebPageRequest inReq) throws Exception
@@ -248,6 +249,7 @@ public class DataEditModule extends BaseMediaModule
 		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(fieldName);
 		details.removeDetail(id);
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		inReq.setRequestParameter("deleted", "true");
 	}
 
 	public void saveMultiJoinData(WebPageRequest inReq) throws Exception

@@ -1,5 +1,7 @@
 #set($searcher = $mediaarchive.getAssetSearcher())
 #set($detailid = $context.getRequestParameter("id"))
+#set($saved = $context.getRequestParameter("saved"))
+#set($deleted = $context.getRequestParameter("deleted"))
 #if(!$detailid)
 	#set($detailid = "id")
 #end
@@ -22,6 +24,15 @@
 		$pages.include("./modifyproperty.html", $context)
 	</div>
 </div>
+#if($saved||$deleted)
+<div class="common-success">
+#if($saved)
+Saved
+#else
+Deleted
+#end
+</div>
+#end
 
 <script type="text/javascript">
 	loadPropertyEdit = function() {
