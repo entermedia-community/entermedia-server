@@ -179,10 +179,10 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		populateJoinData("category", doc, catalogs, "id", true);
 		
 		
-		Searcher searcher = getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
-		SearchQuery query = searcher.createSearchQuery();
-		query.addMatches("assetid", asset.getId());
-		HitTracker tracker = searcher.search(query);
+//		Searcher searcher = getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
+//		SearchQuery query = searcher.createSearchQuery();
+//		query.addMatches("assetid", asset.getId());
+//		HitTracker tracker = searcher.search(query);
 		//populateJoinData("album", doc, tracker, "albumid", true);
 		
 		// populateSecurity(doc, asset, catalogs);
