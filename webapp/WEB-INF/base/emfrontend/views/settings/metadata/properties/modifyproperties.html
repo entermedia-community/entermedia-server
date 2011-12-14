@@ -27,6 +27,8 @@
 	loadPropertyEdit = function() {
 		var selected = jQuery("select option:selected");
 		var selectedid = selected.val();
+		var url = "&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}";
+		alert(url);
 		jQuery("#propertyedit").load("modifyproperty.html?id=" + selectedid + "&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
 	}
 	
