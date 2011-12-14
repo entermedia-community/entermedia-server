@@ -11,11 +11,11 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.FtpRepository;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
 
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import com.openedit.OpenEditException;
@@ -62,15 +62,38 @@ import com.openedit.users.UserManager;
 		{
 			path = "/";
 		}
-		String url = getExternalPath() + path;
-		//String path =this.getDefaultRemoteDirectory() +  inContent.getName();
+		String url = getProperty("defaultremotepath") + path;
+//		if(path.startsWith("/"))
+//			url = getProperty("defaultremotepath") + path;
+//		else
+//			url = getProperty("defaultremotepath") + "/" + path;
+	
 		SFtpContentItem item = new SFtpContentItem();
+		item.setRepository(this);
 		item.setPath(inPath);
 		item.setAbsolutePath(path);
 
 		return item;
 	}
 
+	public InputStream getInputStream(String inPath) throws RepositoryException {
+		String path = inPath.substring(getPath().length());
+		if (path.length() == 0)
+		{
+			//path = "/";
+			return null;
+		}
+		String url = getProperty("defaultremotepath") + "/" + path;
+		//String path =this.getDefaultRemoteDirectory() +  inContent.getName();
+		SFtpContentItem item = new SFtpContentItem();
+		InputStream is = null;
+		try {
+			is =getSftpUtil().getFileFromRemote(path);
+		} catch (Exception e) {
+			throw new OpenEditException(e);
+		}
+		return is;
+	}
 	@Override
 	public ContentItem getStub(String inPath) throws RepositoryException {
 		// TODO Auto-generated method stub
@@ -79,15 +102,36 @@ import com.openedit.users.UserManager;
 
 	@Override
 	public boolean doesExist(String inPath) throws RepositoryException {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			return getSftpUtil().doesExist(inPath);
+		} catch (Exception e) {
+			throw new RepositoryException(e);
+		}
+	}
+	public ChannelSftp.LsEntry getAttribute(String inPath) throws RepositoryException {
+		try {
+			List l = getSftpUtil().getChildNames(inPath);
+			if (l== null) return null;
+			return (ChannelSftp.LsEntry)l.get(0);
+		} catch (Exception e) {
+			throw new RepositoryException(e);
+		}
+	}
+	
+	
+	public boolean isFolder(String inPath) throws RepositoryException {
+		try {
+			return getSftpUtil().isFolder(inPath);
+		} catch (Exception e) {
+			throw new OpenEditException(e);
+		}
 	}
 
 	
 	public void put(ContentItem inContent) throws RepositoryException {
 		//need to write the file to the webserver folder first
 		super.put(inContent);
-		String path =this.getDefaultRemoteDirectory() +  inContent.getName();
+		String path =getProperty("defaultremotepath") +"/"+  inContent.getName();
 		//File file = new File(inContent.getAbsolutePath());
 		File file = new File(inContent.getAbsolutePath());
 		try {
@@ -97,15 +141,8 @@ import com.openedit.users.UserManager;
 		}
 	}
 	
-	
-	
-	private String getDefaultRemoteDirectory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public List<ContentItem> listFiles(String inPath) throws RepositoryException  {
-		List<String> childNames;
+		List<ChannelSftp.LsEntry> childNames;
 		try {
 			childNames = getSftpUtil().getChildNames(inPath);
 		} catch (Exception e) {
@@ -119,13 +156,37 @@ import com.openedit.users.UserManager;
 		List<ContentItem> contentItems = new ArrayList<ContentItem>();
 	    for(int i=0; i < childNames.size(); i++){
 			String url = getExternalPath() + childNames.get(i);
-			SFtpContentItem item = new SFtpContentItem();
+			SFtpContentItem item = new SFtpContentItem(childNames.get(i));
 			item.setPath(inPath);
 			item.setAbsolutePath(path);
+			item.setRepository(this);
 			contentItems.add((ContentItem)item);
 	    }
 	    return contentItems;
 	}
+	
+//	public List<ContentItem> listFiles(String inPath) throws RepositoryException  {
+//		List<String> childNames;
+//		try {
+//			childNames = getSftpUtil().getChildNames(inPath);
+//		} catch (Exception e) {
+//			throw new RepositoryException("Couldn't list file in: " + inPath);
+//		} 
+//		String path = inPath.substring(getPath().length());
+//		if (path.length() == 0)
+//		{
+//			path = "/";
+//		}
+//		List<ContentItem> contentItems = new ArrayList<ContentItem>();
+//	    for(int i=0; i < childNames.size(); i++){
+//			String url = getExternalPath() + childNames.get(i);
+//			SFtpContentItem item = new SFtpContentItem();
+//			item.setPath(inPath);
+//			item.setAbsolutePath(path);
+//			contentItems.add((ContentItem)item);
+//	    }
+//	    return contentItems;
+//	}
 	
 
 	@Override
@@ -183,7 +244,15 @@ import com.openedit.users.UserManager;
 	
 	public List getChildrenNames(String inParent) throws RepositoryException {
 		try {
-			return getSftpUtil().getChildNames(inParent);
+			
+			String path = inParent.substring(getPath().length());
+			if (path.length() == 0)
+			{
+					path =getProperty("defaultremotepath");
+			}else{
+					path =getProperty("defaultremotepath")+  inParent.substring(getPath().length(), inParent.length());	
+			}
+			return getSftpUtil().getStrChildNames(path);
 		} catch (JSchException e) {
 			throw new RepositoryException(e);
 		} catch (SftpException e) {
@@ -210,6 +279,9 @@ import com.openedit.users.UserManager;
 			}
 			
 			String serverName = getExternalPath();
+			if(serverName== null || serverName.trim().equals(""))
+				serverName = getProperty("externalpath");
+			if(serverName == null) return false;
 			String subdir = null;
 			if (serverName.indexOf(':') > -1)
 			{
@@ -231,6 +303,9 @@ import com.openedit.users.UserManager;
 			String password = getUserManager().decryptPassword(user);
 
 			log.info("trying to connect to : " + serverName);
+			getSftpUtil().setUsername(user.getName());
+			getSftpUtil().setPassword(password);
+			getSftpUtil().setHost(serverName);
 			
 			getSftpUtil().openSession();
 			return getSftpUtil().isConnected();
@@ -269,45 +344,61 @@ import com.openedit.users.UserManager;
 	public void setUserName(String userName) {
 		setProperty("username", userName);
 	}
-	class SFtpContentItem extends InputStreamItem
-	{
-		protected Boolean existed;
-
-		public InputStream getInputStream() throws RepositoryException
-		{
-
-			try
-			{
-				return getSftpUtil().retrieveFileStream(getAbsolutePath().substring(1));
-			} catch (Exception e)
-			{
-				throw new RepositoryException(e);
-			}
-		}
-
-		public boolean exists()
-		{
-			try
-			{
-				checkConnection();
-				String path = getAbsolutePath().substring(1);
-				return   getSftpUtil().doesExist(path);
 	
-			} catch (Exception e)
-			{
-				throw new RepositoryException(e);
-			}
-		}
-
-		public boolean isFolder()
-		{
-			if (getAbsolutePath().endsWith("/"))
-			{
-				return true;
-			}
-			return false;
-		}
-
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	class SFtpContentItem extends InputStreamItem
+//	{
+//		protected Boolean existed;
+//
+//		public InputStream getInputStream() throws RepositoryException
+//		{
+//
+//			try
+//			{
+//				return getSftpUtil().retrieveFileStream(getAbsolutePath().substring(1));
+//			} catch (Exception e)
+//			{
+//				throw new RepositoryException(e);
+//			}
+//		}
+//
+//		public boolean exists()
+//		{
+//			try
+//			{
+//				checkConnection();
+//				String path = getAbsolutePath().substring(1);
+//				return   getSftpUtil().doesExist(path);
+//	
+//			} catch (Exception e)
+//			{
+//				throw new RepositoryException(e);
+//			}
+//		}
+//
+//		public boolean isFolder()
+//		{
+//			if (getAbsolutePath().endsWith("/"))
+//			{
+//				return true;
+//			}
+//			return false;
+//		}
+//
+//	}
 
 }
