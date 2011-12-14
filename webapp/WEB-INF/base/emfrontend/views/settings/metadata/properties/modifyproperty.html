@@ -68,8 +68,11 @@
 	</table>
 	<br/><br/>
 	<div class="embutton" style="float:left;margin-left:50px;">
-		<input type="submit" value="Save"/>
 		<input id="deleteAttribute" type="submit" value="Delete"/>
+	</div>
+	<div class="embutton" style="float:right;margin-left:50px;">
+		<input id="cancel" type="submit" value="Cancel"/>
+		<input type="submit" value="Save"/>
 	</div>
 </form>
 
@@ -88,7 +91,9 @@ jQuery(document).ready(function(){
 		if (userResponse){
 			jQuery('form').attr('action', 'deleteproperty.html').submit();
 		}
-		//	parent.jQuery("#fancy_close").trigger("click");
+	});
+	jQuery('input#cancel').click(function(){
+		parent.jQuery("#fancy_close").trigger("click");
 	});
 })
 </script>
