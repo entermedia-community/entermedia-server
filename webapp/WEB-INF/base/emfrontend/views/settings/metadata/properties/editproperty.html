@@ -9,7 +9,7 @@
  				#end
 			</select>
 			<ul class="embuttons">
-				<li><a id="createAttribute" class="thickbox" href="$home$apphome/views/settings/metadata/properties/addproperty.html?catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}"><span>[[Create New Attribute]]</span></a></li>
+				<li><a id="createAttribute" class="thickbox" href="$home$apphome/views/settings/metadata/properties/addproperty.html?id=&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}"><span>[[Create New Attribute]]</span></a></li>
 			</ul>
 			
 			
@@ -18,6 +18,7 @@
 jQuery(document).ready(function(){
 	jQuery('select#editAttribute').change(function(){
 		jQuery('a#createAttribute').attr('href', '$home$apphome/views/settings/metadata/properties/modifyproperty.html?id=' + jQuery("select#editAttribute option:selected").val() +'&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}').click();
+	jQuery('a#createAttribute').attr('href', '$home$apphome/views/settings/metadata/properties/addproperty.html?catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}');
 	});
 });
 </script>

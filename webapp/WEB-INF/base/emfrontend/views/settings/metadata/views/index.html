@@ -51,10 +51,7 @@
 				 <input type="hidden" name="assettype" value="$assettype"/>
 				 <input type="submit" name="remove" value="remove"/>
 				 </form>
-				 #if($element.isList())
-				 	<a id="${element.id}editlist" style="display:none;" class="thickbox" href="$home$apphome/views/settings/metadata/list/modifylist.html?catalogid=$element.getListCatalogId()&searchtype=$element.getListId()&iframe=true&width=500&height=400">edit list</a>
-				 	<input type="button" onclick="jQuery('#${element.id}editlist').click();" value="edit list"/>
-				 #end
+				 
 				 </td> 
 				</tr>
 			#end

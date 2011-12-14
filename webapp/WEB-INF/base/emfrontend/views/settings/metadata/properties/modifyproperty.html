@@ -1,4 +1,6 @@
 <div id="editlayout">	
+
+<h1 id="attributeEditorTitle"></h1>
 		
 <form id="dataeditor" name="dataeditor" method="post" action="saveproperty.html" >
 	<input name="save" type="hidden" value="true" />
@@ -7,15 +9,15 @@
 	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
 	
 	<table width="100%">
-	<tr> <td>ID:</td> <td><input name="newid" value="$!property.id" /></td> </tr>
-	<tr> <td>[[Label]]:</td> <td><input name="name" value="$!property.name" /></td> </tr>
+	<tr> <td>[[Attribute Name]]:</td> <td><input name="newid" value="$!property.id" /></td> </tr>
+	<tr> <td>[[UI Label]]:</td> <td><input name="name" id="label" value="$!property.name" /></td> </tr>
 	<tr> <td>[[External ID]]:</td> <td><input name="externalid" value="$!property.externalId" /></td> </tr>
 
 	
 	<tr> <td>Editable:</td> <td><input name="editable" type="checkbox" #if ($property.editable == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Index]]:</td> <td><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Stored]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
 	
 	
@@ -52,6 +54,8 @@
 		<option value="file" #if ($property.datatype == "file") selected #end >[[File]]</option>
 		<option value="image" #if ($property.datatype == "image") selected #end >[[Image]]</option>
 	</select>
+	<a id="${property.id}editlist" style="display:none;" class="thickbox" href="$home$apphome/views/settings/metadata/list/modifylist.html?catalogid=$property.getListCatalogId()&searchtype=$property.getListId()&iframe=true&width=500&height=400">edit list</a>
+	<input type="button" onclick="jQuery('#${property.id}editlist').click();" value="edit list"/>
 	</td>
 	</tr>
 
@@ -65,5 +69,26 @@
 	<br/><br/>
 	<div class="embutton" style="float:left;margin-left:50px;">
 		<input type="submit" value="Save"/>
+		<input id="deleteAttribute" type="submit" value="Delete"/>
 	</div>
 </form>
+
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	var label = jQuery('input#label').val();
+	if (label.length>0){
+		jQuery('h1#attributeEditorTitle').text("Edit Attribute Properties > " + label);
+	}else{
+		jQuery('h1#attributeEditorTitle').text("Edit Attribute Properties > New");
+	}
+	jQuery('input#deleteAttribute').click(function(){
+		var userResponse = confirm("Are you sure you want to delete this attribute?  Any data associated with this attribute will be lost.");
+		//delete
+		//display deleted
+		if (userResponse){
+			jQuery('form').attr('action', 'deleteproperty.html').submit();
+		}
+		//	parent.jQuery("#fancy_close").trigger("click");
+	});
+})
+</script>

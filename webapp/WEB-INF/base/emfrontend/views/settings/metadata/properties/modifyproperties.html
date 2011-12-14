@@ -5,7 +5,7 @@
 #end
 
 <div id="modifyproperties" class="em-rounded" style="margin-bottom: 10px;">
-	<h1>Property Editor</h1>
+	<!-- <h1>Property Editor</h1>
 	<div>
 		<select name="proptomodify" onchange="loadPropertyEdit();">
 			#foreach( $detail in $searcher.getPropertyDetails())
@@ -14,7 +14,7 @@
 		</select>
 		<input type="button" value="Create" onclick="createProperty();"/>
 		<input type="button" value="Delete" onclick="removeProperty();"/>
-	</div>
+	</div> -->
 	<div id="propertyedit">
 		$context.setRequestParameter("catalogid", $mediaarchive.getCatalogId())
 		$context.setRequestParameter("searchtype", $searcher.getSearchType())
@@ -39,6 +39,6 @@
 	}
 	
 	createProperty = function() {
-		jQuery("#modifyproperties").load("addproperty.html?catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+		jQuery("#modifyproperties").load("addproperty.html?id=&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
 	}
 </script>
