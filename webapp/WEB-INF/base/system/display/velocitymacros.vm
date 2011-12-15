@@ -8,3 +8,10 @@
 	
 	
 #end
+
+#macro(debug $invalue)
+	#set ($mode = $user.get("showdebug"))
+	#if($mode && $mode == "true")
+		$invalue
+	#end
+#end
