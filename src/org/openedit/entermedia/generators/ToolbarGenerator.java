@@ -46,6 +46,14 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 			return false;
 		}
 		Page requestedPage  = inPageRequest.getPage();
+		if( requestedPage.getPath().equals(getHeaderPath()))
+		{
+			return false;
+		}
+		if( requestedPage.getPath().equals(getFooterPath()))
+		{
+			return false;
+		}
 		boolean edit = Boolean.parseBoolean(user.get("showeditor"));
 		if (edit && !requestedPage.isBinary() && inPageRequest.isEditable() )
 		{
@@ -56,6 +64,11 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 
 		if( debug && requestedPage.isHtml())
 		{
+			String show = inPageRequest.getContentProperty("showdebug");
+			if( show != null)
+			{
+				return Boolean.parseBoolean(show);
+			}
 			return true; //we probably don't need to check for the header
 		}
 		

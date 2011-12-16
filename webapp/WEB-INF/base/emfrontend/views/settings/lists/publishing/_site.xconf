@@ -5,7 +5,6 @@
 	<property name="showactions">true</property>
 	
 	<property name="resultspage">${searchhome}/search/results.html</property>
-	<inner-layout>${searchhome}/resultsinnerlayout.html</inner-layout>
 	<property name="editable">false</property>
 	<property name="hitsname">hits</property>
 	<property name="showsearch">false</property>

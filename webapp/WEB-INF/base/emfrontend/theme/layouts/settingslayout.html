@@ -35,7 +35,9 @@
 </div>
 		<script type="text/javascript">
 		jQuery(document).ready(function () { 
-			jQuery("#$content.tab").attr("class", "current");
+			#set( $tab = $context.findValue("tab") )
+
+			jQuery("#$tab").attr("class", "current");
 			
 			jQuery("#eml-tabs a").click(function(){
 				jQuery("#eml-tabs li").removeClass("current")

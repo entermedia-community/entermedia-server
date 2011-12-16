@@ -5,7 +5,7 @@
   <property id="publishing" icon="earth" path="/views/settings/lists/publishing/index.html" >Publishing</property>
   <property id="titles" icon="video-camera" path="/views/settings/lists/production/titles/index.html" >Show Titles</property>
 
-  <property id="projects" icon="tag" path="/views/settings/lists/table/index.html?searchtype=project" >Projects</property>  
+  <property id="projects" icon="tag" path="/views/settings/lists/table/index.html?searchtype=project&amp;subtab=projects" >Projects</property>  
 <!--   <property id="recordretention" icon="tag" path="/views/settings/lists/table/index.html?searchtype=projects" >Record Retention Levels</property>
   <property id="restrictions" icon="tag"  path="/views/settings/lists/table/index.html?searchtype=projects" >Restrictions</property>
   <property id="rightsmanagement" icon="tag"  path="/views/settings/lists/table/index.html?searchtype=projects" >Rights Management</property>

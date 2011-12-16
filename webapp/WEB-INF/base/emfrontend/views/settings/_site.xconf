@@ -1,6 +1,7 @@
 <page>
 	<property name="section">settings</property>
 	<style id="settings" href="${themeprefix}/styles/pages/settings.css" />
+    <script id="jssettings" src="/${applicationid}/components/javascript/pages/settings.js"/>
 
 	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
 </page>

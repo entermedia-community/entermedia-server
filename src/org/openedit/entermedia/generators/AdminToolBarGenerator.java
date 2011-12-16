@@ -58,27 +58,31 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 		}
 		if( !showtoolbar)
 		{
-			showtoolbar = user.hasPermission("oe.administration.toolbar");
+			showtoolbar = user.hasPermission("oe.administration");
 		}
-		if( !showtoolbar)
-		{
-			String mode = (String)user.getProperty("oe.edit.mode");
-			if( "edit".equals( mode) || "debug".equals(mode) )
-			{
-				showtoolbar = true;
-			}
-			else
-			{
-				String toolbar = inContext.getContentProperty("showadmintoolbar");
-				showtoolbar = Boolean.parseBoolean(toolbar);
-			}
-		}
+//		if( !showtoolbar)
+//		{
+//			String mode = (String)user.getProperty("oe.edit.mode");
+//			if( "edit".equals( mode) || "debug".equals(mode) )
+//			{
+//				showtoolbar = true;
+//			}
+//		}
+//		if( showtoolbar )
+//		{
+//			String mode = inContext.getRequestParameter("oe.edit.mode");
+//			if( "preview".equals(mode) )
+//			{
+//				showtoolbar = false;
+//			}
+//		}
+		
 		if( showtoolbar )
 		{
-			String mode = inContext.getRequestParameter("oe.edit.mode");
-			if( "preview".equals(mode) )
+			String toolbar = inContext.getContentProperty("showadmintoolbar");
+			if( toolbar != null)
 			{
-				showtoolbar = false;
+				showtoolbar = Boolean.parseBoolean(toolbar);
 			}
 		}
 		

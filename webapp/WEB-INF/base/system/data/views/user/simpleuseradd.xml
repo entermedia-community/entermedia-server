@@ -1,8 +1,7 @@
 <properties>
-
 	<property id="firstName" required="true"/>
 	<property id="lastName" required="true"/>
-	<property id="email" header="blank"/>
+	<property id="email" viewtype="matched" header="blank"/>
 	
 	<property id="enabled" header="blank"/>
 	<property id="officephone" header="blank"/>
@@ -24,5 +23,4 @@
 	
 	<property id="notes" viewtype="textarea" header="blank"/>
 	<property id="assistant" />
-
 </properties> 
