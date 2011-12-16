@@ -510,7 +510,7 @@ public class OrderModule extends BaseMediaModule {
 			return loadOrder(inReq);
 		}
 		String[] assetids = inReq.getRequestParameters("assetid");
-		if (assetids != null) {
+		if (assetids != null && assetids.length > 0) {
 			return createOrderFromAssets(inReq);
 		}
 		return createOrderFromSelections(inReq);
