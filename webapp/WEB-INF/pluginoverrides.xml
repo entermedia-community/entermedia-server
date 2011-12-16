@@ -2,7 +2,30 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-<bean id="postMail" class="org.entermedia.email.ElasticPostMail" >
+
+	<bean id="postMail" class="org.entermedia.email.PostMail">
+		<!-- property name="smtpUsername">
+			<value>username</value>
+		</property>
+		<property name="smtpPassword">
+			<value></value>
+		</property -->
+		<property name="smtpSecured">
+			<value>false</value>
+		</property>
+		<property name="smtpServer">
+			<value>localhost</value>
+		</property>
+		<property name="port">
+			<value>2525</value>
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+
+	</bean>
+<!-- 
+	<bean id="postMail" class="org.entermedia.email.ElasticPostMail" >
       <property name="smtpUsername"><value>ian@ijsolutions.ca</value></property>
       <property name="smtpPassword"><value>ASK IAN</value></property>
       <property name="smtpSecured"><value>true</value></property>
@@ -13,5 +36,6 @@
           <property name="pageManager"><ref bean="pageManager"/></property>
       
         </bean>
+ -->        
 </beans>
         

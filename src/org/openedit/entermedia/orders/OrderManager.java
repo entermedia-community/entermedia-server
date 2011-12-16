@@ -436,23 +436,34 @@ public class OrderManager
 			Asset asset = archive.getAsset(assetid);
 			//item.getId() + "." + field + ".value"
 			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
+			
 			if( presetid == null )
 			{
 				presetid = properties.get("presetid.value");
 			}
 
+			if( presetid == null)
+			{
+				continue; //preview only
+			}
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
 
+			boolean needstobecreated = true;
+			if( orderItem.get("conversiontaskid") != null )
+			{
+				needstobecreated = false;
+			}
+			
 			Data preset = (Data) presets.searchById(presetid);
 			String outputfile = preset.get("outputfile");
 
 			//Make sure preset does not already exists?
-			boolean needstobecreated = true;
-			if( archive.doesAttachmentExist(outputfile, asset) )
+			
+			if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
 			{
 				needstobecreated = false;
 			}
-			if( "original".equals( preset.get("type") ) )
+			if( needstobecreated && "original".equals( preset.get("type") ) )
 			{
 				needstobecreated = false;
 			}
@@ -644,6 +655,14 @@ public class OrderManager
 			return true;
 		}
 		return false;
+	}
+
+	public void delete(String inCatId, Order inOrder)
+	{
+		// TODO Auto-generated method stub
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "orderitems");
+		//Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
+		
 	}
 
 }

@@ -1,15 +1,58 @@
+
+<p>Hello,</p>
+
+<p>$userManager.getScreenName( $order.userid ) has shared some assets with you.</p>
+
 #if($order.sharenote)
 $order.sharenote
-
-Access to these files will expire on $expiresformat.format($expiresondate)
-#else
-
-Assets were shared with you.  Review below:
-<br/>
-<a href="$context.siteRoot$home/visualdata/views/activity/download/index.html?orderid=$order.id">View</a><br/><br/>
-
-
-<br/>
-
-
 #end
+#if( $expiresondate)
+Access to these files will expire on $expiresformat.format($expiresondate)
+#end
+
+<p>Please review the assets at the link below:</p>
+
+<p>
+<a href="$context.siteRoot$home$apphome/views/activity/download/index.html?orderid=$order.id">View</a><br/><br/>
+</p>
+<p>Below is a list of assets available at this link</p>
+<table>		
+	<tr>
+	<th>Title</th>
+	<th>File Name</th>
+	<th>Asset Type</th>
+	<th>Format</th>
+	</tr>
+
+	#foreach( $item in $orderitems )
+		#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+		$context.putPageValue("asset", $asset)
+		$context.putPageValue("item", $item)
+		$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+		<tr>
+		<td>
+			$!asset.assettitle
+		</td>
+		<td>
+			$!asset.name
+		</td>
+		<td>
+			$searcherManager.getData($catalogid,"assettype",$asset.assettype)
+		</td>
+		<td>
+		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
+			#if( $val )
+				#set($preset = $searcherManager.getData($catalogid, "convertpreset",$val ))
+				$preset
+			#else
+				#if( $item.conversiontaskid )
+					#set($conversiontask = $searcherManager.getData($catalogid, "conversiontask",$item.conversiontaskid))
+					#set($preset = $searcherManager.getData($catalogid, "convertpreset",$conversiontask.presetid ))
+					$preset
+				#else
+					Online Preview
+				#end	
+			#end	
+		</tr>
+	#end
+</table>

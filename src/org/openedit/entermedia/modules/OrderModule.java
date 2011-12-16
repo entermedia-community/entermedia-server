@@ -199,6 +199,17 @@ public class OrderModule extends BaseMediaModule {
 		return saveOrder(inReq, true);
 	}
 
+	public Order updateOrder(WebPageRequest inReq)	throws Exception 
+	{
+		Order order = loadOrder(inReq);
+		String[] fields = inReq.getRequestParameters("field");
+		String catalogid = inReq.findValue("catalogid");
+		Searcher searcher = getSearcherManager().getSearcher(
+				catalogid, "order");
+
+		searcher.updateData(inReq, fields, order);
+		return order;
+	}
 	public Order saveOrder(WebPageRequest inReq, boolean saveitems)
 			throws Exception {
 		Order order = loadOrder(inReq);
@@ -440,7 +451,7 @@ public class OrderModule extends BaseMediaModule {
 
 		String publishdestination = inReq.findValue("publishdestination.value");
 		if (publishdestination == null) {
-			throw new OpenEditException("publishdestination.value is required");
+//			throw new OpenEditException("publishdestination.value is required");
 		}
 		order.setProperty("publishdestination", publishdestination);
 
@@ -493,6 +504,11 @@ public class OrderModule extends BaseMediaModule {
 	}
 
 	public Order createOrderWithItems(WebPageRequest inReq) {
+		String orderid = inReq.findValue("orderid");
+		if( orderid != null)
+		{
+			return loadOrder(inReq);
+		}
 		String[] assetids = inReq.getRequestParameters("assetid");
 		if (assetids != null) {
 			return createOrderFromAssets(inReq);
@@ -663,7 +679,12 @@ public class OrderModule extends BaseMediaModule {
 
 	}
 
-	
+	public void deleteOrder(WebPageRequest inReq) throws Exception
+	{
+		Order order = loadOrder(inReq);
+		String catalogid = inReq.findValue("catalogid");
+		getOrderManager().delete( catalogid,order );
+	}
 	
 	
 }

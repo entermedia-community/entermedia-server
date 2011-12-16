@@ -12,7 +12,8 @@
 
 	<property id="expireson" editable="true" type="date"  index="true" stored="true">Expires On</property>
 	<property id="sharewithemail"  editable="true" note="separated by commas" index="true" stored="true">Email</property>
-	<property id="sharenote"  editable="true"  stored="true">Notes</property>
+	<property id="sharenote"  viewtype="html" editable="true"  stored="true">Notes</property>
+	<property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true"  stored="true">Share Type</property>
 	<property id="emailsent"  type="boolean" editable="true" index="true" stored="true">Email Sent</property>
 
 	<property id="historyuserstatus" stored="true" index="true" type="list" listid="order/userstatus" >Last Status</property>

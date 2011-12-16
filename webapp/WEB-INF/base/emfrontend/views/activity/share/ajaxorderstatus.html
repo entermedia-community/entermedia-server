@@ -1,0 +1,32 @@
+
+#if( $order.orderstatus == "complete" )
+
+	#if( $order.ordertype == "email")
+	
+	Sent!
+	
+	#else
+	
+	Published!
+	
+	#end
+#elseif( $order.orderstatus == "error" )
+
+Error
+
+$!order.orderstatusdetail
+
+#else
+
+<div class="ajaxstatus" ajaxpath="$apphome/views/activity/share/ajaxorderstatus.html?orderid=$order.id" period="1000">
+
+Your Order is processing
+
+
+<img src="$home$themeprefix/images/ajax-loader.gif" />
+
+Count up timer
+
+</div>
+
+#end

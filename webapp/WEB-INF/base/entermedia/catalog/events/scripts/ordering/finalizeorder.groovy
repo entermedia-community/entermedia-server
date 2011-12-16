@@ -87,8 +87,9 @@ protected void sendEmail(Order inOrder) {
 		inOrder.setProperty('orderstatus', 'complete');
 		inOrder.setProperty('emailsent', 'true');
 	}
-	catch (Exception ex) {
-		inOrder.setProperty('orderstatus', 'error');
+	catch (Exception ex) 
+	{
+		inOrder.setOrderStatus( 'error');
 		inOrder.setProperty('orderstatusdetail', "Could not email " + ex);
 		ex.printStackTrace();
 		log.error("Could not email " + ex);

@@ -33,12 +33,17 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadon
 $context.putPageValue("searcher", $orderitemsearcher)	 
 
 <table>		
+	<tr>
+	<th>Title</th>
+	<th>File Name</th>
+	<th></th>
+	</tr>
 		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 			$context.putPageValue("asset", $asset)
 			$context.putPageValue("item", $item)
 			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
-			$pages.include("${apphome}/views/activity/row.html", $context)
+			$pages.include("${apphome}/views/activity/download/row.html", $context)
 		#end
 </table>
 
