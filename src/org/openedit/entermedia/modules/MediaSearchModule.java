@@ -64,7 +64,7 @@ public class MediaSearchModule extends BaseMediaModule
 		}
 	}
 
-	public void searchExactCatalogs(WebPageRequest inPageRequest) throws Exception
+	public void searchExactCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);

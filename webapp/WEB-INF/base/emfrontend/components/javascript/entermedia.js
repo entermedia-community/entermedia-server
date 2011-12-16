@@ -62,7 +62,12 @@ runajax = function(e)
 			{
 				var cell = jQuery("#" + targetDiv);
 				cell.replaceWith(data);
-				doResize();
+				/*
+				if( typeof doResize === 'function' )
+				{
+					doResize();
+				}
+				*/
 			}
 		);
 	}
@@ -75,8 +80,13 @@ runajax = function(e)
 				{
 					var cell = jQuery("#" + loaddiv);
 					cell.html(data);
-					doResize();
-					setTimeout("doResize()",200);
+					/*
+					if( typeof doResize === 'function' )
+					{
+						doResize();
+						setTimeout("doResize()",200);
+					}
+					*/
 				}
 			);
 
@@ -198,21 +208,6 @@ formatHitCount = function(inRow)
 // Everyone put your onload stuff in here:
 onloadselectors = function()
 {
-	
-	$("document").ajaxError(function(e, jqxhr, settings, exception) 
-	{
-		var errordiv = jQuery("#errorinfoarea")
-		if( errordiv.lenght > 0)
-		{
-		    $(errordiv).html("Error " + settings.url + " returned " + exception);
-
-		}
-		else
-		{
-			  alert("Error " + settings.url + " returned " + exception);
-
-		}
-	});
 	
 	jQuery("a.ajax").livequery('click', runajax);
 	
@@ -749,6 +744,25 @@ showajaxstatus = function()
 
 jQuery(document).ready(function() 
 { 
+	jQuery.ajaxSetup({
+	    cache: false
+	});
+
+	$("document").ajaxError(function(e, jqxhr, settings, exception) 
+			{
+				var errordiv = jQuery("#errorinfoarea")
+				if( errordiv.lenght > 0)
+				{
+				    $(errordiv).html("Error " + settings.url + " returned " + exception);
+
+				}
+				else
+				{
+					  alert("Error " + settings.url + " returned " + exception);
+
+				}
+			});
+
 	onloadselectors();
 	
 }); 

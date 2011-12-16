@@ -1,12 +1,12 @@
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
-<br>
 <div class="ui-widget" style="overflow: hidden;">
 <div class="ui-widget-header">Asset Types</div>
 #set($current = $context.getRequestParameter("assettype")) 
 #set($searcher = $searcherManager.getSearcher($catalogid, "assettype"))
 <div  class="ui-widget-content emselectmenu">
+<h4>[[Select an Asset Type]]</h4>
 <ul class="vlist">
 #foreach($item in $searcher.fieldSearch("id","*","textUp"))
  <li #if($current == $item.id) class="active" #end ><a href="$home$apphome/views/settings/metadata/assettypes/views/index.html?assettype=$item.id">$item</a></li>

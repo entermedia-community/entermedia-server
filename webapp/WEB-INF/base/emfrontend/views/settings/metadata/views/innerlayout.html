@@ -3,27 +3,25 @@
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
-<br>
 <div class="ui-widget" style="overflow: hidden;">
 <div class="ui-widget-header">Views</div>
 <div  class="ui-widget-content emselectmenu">
 
 #set($views = $searcherManager.getList("$catalogid", "assettype/views"))
 
-Screen Name <br>
-<select style="margin-left: 20px;" id="screenid" name="screenid" onchange="loadViews();">
+<h4>[[Select a View]]</h4>
+<select style="margin: 0 0 20px 0;" id="screenid" name="screenid" onchange="loadViews();">
 		<option value="" ></option>
 			#foreach( $target in $views)
 				<option value="$target.id" #if($screenid == $target.id)selected="selected"#end>$target</option>
 			#end
 		</select>
-<br><br>
 #if( $screenid )
-For Asset Type<br>
+<h4>[[Select an Asset Type]]</h4>
 #set($current = $context.getRequestParameter("assettype")) 
 #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
 
-<select style="margin-left: 20px;" id="assettype" name="assettype" onchange="loadViews()">
+<select style="margin: 0 0 20px 0;" id="assettype" name="assettype" onchange="loadViews()">
 		<option value="default" >Default</option>
 			#foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
 				<option #if($current == $item.id) selected #end value="$item.id">$item</option>

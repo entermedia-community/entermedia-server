@@ -1,18 +1,18 @@
 <div id="editlayout">	
 		
 <form id="dataeditor" name="dataeditor" method="post" action="saveproperty.html" >
-	<input name="save" type="hidden" value="true" />
-	<input name="id" type="hidden" value="$!property.id" />
+	<input  name="save" type="hidden" value="true" />
+	<input  name="id" type="hidden" value="$!property.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
-	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
+	<input  name="searchtype" type="hidden" value="$searcher.getSearchType()" />
 	
 	<table width="100%" class="field-editor">
-	<tr> <td>ID:</td> <td><input name="newid" value="$property.id" /></td> </tr>
-	<tr> <td>[[Label]]:</td> <td><input name="name" value="$!property.name" /></td> </tr>
-	<tr> <td>[[External ID]]:</td> <td><input name="externalid" value="$!property.externalId" /></td> </tr>
+	<tr> <td>ID:</td> <td><input type="text" name="newid" value="$property.id" /></td> </tr>
+	<tr> <td>[[Label]]:</td> <td><input type="text" name="name" value="$!property.name" /></td> </tr>
+	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
 
 	
-	<tr> <td>Editable:</td> <td><input name="editable" type="checkbox" #if ($property.editable == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Editable]]:</td> <td><input name="editable" type="checkbox" #if ($property.editable == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Index]]:</td> <td><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Stored]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
@@ -61,11 +61,11 @@
 		
 	</tr>
 
-	<tr> <td>[[List Id]]:</td> <td><input name="listid" value="$!property.listid"/> </td> </tr>
-	<tr> <td>[[List Catalog Id]]:</td> <td><input name="listcatalogid" value="$!property.listcatalogid"/> </td> </tr>
-	<tr> <td>[[List Sort Field]]:</td> <td><input name="sort" value="$!property.sort"/> </td> </tr>
-	<tr> <td>[[List Query]]:</td> <td><input name="query" value="$!property.query"/> </td> </tr>
-	<tr> <td>[[Foreign Key ID]]:</td> <td><input name="foreignkeyid" value="$!property.foreignkeyid"/> </td> </tr>
+	<tr> <td>[[List Id]]:</td> <td><input type="text" name="listid" value="$!property.listid"/> </td> </tr>
+	<tr> <td>[[List Catalog Id]]:</td> <td><input type="text" name="listcatalogid" value="$!property.listcatalogid"/> </td> </tr>
+	<tr> <td>[[List Sort Field]]:</td> <td><input type="text" name="sort" value="$!property.sort"/> </td> </tr>
+	<tr> <td>[[List Query]]:</td> <td><input type="text" name="query" value="$!property.query"/> </td> </tr>
+	<tr> <td>[[Foreign Key ID]]:</td> <td><input type="text" name="foreignkeyid" value="$!property.foreignkeyid"/> </td> </tr>
 		
 	</table>
 	<br/><br/>

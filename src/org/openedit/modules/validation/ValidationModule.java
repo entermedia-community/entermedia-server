@@ -55,6 +55,9 @@ public class ValidationModule extends BaseModule
 		}
 	}
 
+
+	
+	
 	public void validateFields(WebPageRequest inReq) throws Exception
 	{
 		String[] fields = inReq.getRequestParameters("field");
@@ -138,6 +141,8 @@ public class ValidationModule extends BaseModule
 				getValidator().validateDetail(errors, successes, infos, value, detail);
 			}
 			
+			
+			
 			if (errors.size() > 0)
 			{
 
@@ -155,6 +160,9 @@ public class ValidationModule extends BaseModule
 		}
 
 	}
+	
+	
+	
 
 	public void validate(WebPageRequest inReq) throws Exception
 	{

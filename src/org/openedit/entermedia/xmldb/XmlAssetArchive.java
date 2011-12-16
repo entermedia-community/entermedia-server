@@ -330,6 +330,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			// the
 			// output
 			// stream
+			
 			OutputStream out = getPageManager().saveToStream(output);
 			try
 			{

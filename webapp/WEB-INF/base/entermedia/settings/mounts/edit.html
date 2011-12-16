@@ -16,6 +16,8 @@
 <option value="" #if( $mount.getRepositoryType() == "fileRepository") selected #end>File</option>
 <option value="versionRepository" #if( $mount.getRepositoryType() == "versionRepository") selected #end>Version Control</option>
 <option value="urlRepository" #if( $mount.getRepositoryType() == "urlRepository") selected #end>External HTTP Server</option>
+<option value="sftpRepository" #if( $mount.getRepositoryType() == "sftpRepository") selected #end>SFTP Server</option>
+
 </select>
 <br>
 <br>
@@ -35,6 +37,13 @@
 <p> <label>[[Exclude Some Files]]:</label> <textarea name="filterout" cols="25" rows="3" >$!mount.getFilterOut()</textarea>
 <br><i>[[Space or new line delimited]]: [[*.old */.* *.ini]]</i> 
 </p>
+
+#set($searcher = $searcherManager.getSearcher("system", "mount"))
+#set($details = $searcher.getPropertyDetails())
+$context.putPageValue("details", $details)
+$context.putPageValue("data", $mount)
+$pages.include("/system/components/xml/detaileditor.html", $context)
+
 
 
 <div> <label> </label> <input type="submit" value="[[Save]]" />
