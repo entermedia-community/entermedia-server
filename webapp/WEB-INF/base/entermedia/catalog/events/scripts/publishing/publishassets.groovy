@@ -88,7 +88,7 @@ public void init() {
 
 				
 				String existingstatus = publishrequest.get("status");				
-				if (existingstatus==null || existingstatus=="new" || existingstatus=="transcoding")
+				if ( existingstatus == null || "new".equals( existingstatus ) || "transcoding".equals( existingstatus ) )
 				{
 					firePublishEvent(publishrequest.getId(), "publishing/publishstart");
 				}
@@ -112,9 +112,15 @@ public void init() {
 					firePublishEvent(publishrequest.getId(), "publishing/publishcomplete");
 					
 				}
-				else if( presult.isPending() )
+				else if( presult.isPending() ) //smartjog is working on it
 				{
 					publishrequest.setProperty('status', 'pending');
+					publishrequest.setProperty("errordetails", " ");
+					queuesearcher.saveData(publishrequest, context.getUser());
+				}
+				else  //smartjog was not ready to publish yet
+				{
+					publishrequest.setProperty('status', 'retry');
 					publishrequest.setProperty("errordetails", " ");
 					queuesearcher.saveData(publishrequest, context.getUser());
 				}

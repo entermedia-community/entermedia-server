@@ -560,7 +560,10 @@ public class OrderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(catalogId);
 		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
 		String ordertype = inReq.findValue("ordertype");
-		
+		if( ordertype == null)
+		{
+			ordertype = "upload";
+		}
 
 		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName(), ordertype);
 		//order.setProperty("orderstatus", "newupload");

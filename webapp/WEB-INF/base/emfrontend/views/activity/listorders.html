@@ -25,7 +25,7 @@
 
 #set( $userstatus = false )
 #set( $userstatus = $searcherManager.getData($catalogid,"order/userstatus",$order.historyuserstatus ))
-	#if( $order.ordertype && $order.ordertype != "upload")
+	#if( $order)
 	<tr rowid="$order.id">
 		<td noclick="true" class="expandorder" href="$home$apphome/views/activity/details/miniitems.html?orderid=$order.id&orderstatus=$userstatus"><img src="$home$themeprefix/images/orders/plus.png"/></td>
 	#foreach( $detail in $details)

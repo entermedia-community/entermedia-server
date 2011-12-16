@@ -49,7 +49,7 @@ if( publishqueueid != null)
 	Data publishqueue = searcherManager.getData(catalogid, "publishqueue", publishqueueid);
 	context.putPageValue("publishqueue", publishqueue);
 
-	if (isConversionComplete)
+	if (conversiontaskid == null || isConversionComplete)
 	{				
 		Searcher eventsearcher = searcherManager.getSearcher(catalogId,"publisheventLog");
 		SearchQuery iquery = eventsearcher.createSearchQuery();
