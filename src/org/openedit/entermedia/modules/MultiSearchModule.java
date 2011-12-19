@@ -27,6 +27,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
+import com.openedit.util.PathUtilities;
 
 
 /**
@@ -510,8 +511,7 @@ public class MultiSearchModule extends BaseMediaModule
 		{
 			appfolder= catname;
 	
-			appfolder = appfolder.replace('\\', '/');
-			appfolder = appfolder.replaceAll(" ", "");
+			appfolder = PathUtilities.extractId(appfolder, true);
 	
 			if (!appfolder.startsWith("/"))
 			{
@@ -546,7 +546,6 @@ public class MultiSearchModule extends BaseMediaModule
 		PageProperty catid = new PageProperty("catalogid");
 		String catalogid = appfolder;
 		catalogid = catalogid.replace("/", "");
-		catalogid = catalogid.toLowerCase();
 		String appid = inReq.findValue("applicationid");
 		catalogid = appid + "/catalogs/" + catalogid;
 		catid.setValue(catalogid);
