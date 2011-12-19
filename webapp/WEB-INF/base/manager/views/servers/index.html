@@ -3,12 +3,12 @@
 #if( $catalogs.size() == 0 )
 
 				<h1 class="page-title">Welcome to the EnterMedia Manager!</h1>
-		<h2 class="page-subtitle">Click below to add a new server and get started.</h2>
+		<h2 class="page-subtitle">Click below to add a new catalog and get started.</h2>
 
 #else
 
-		<h1 class="page-title">Your EnterMedia Servers</h1>
-		<h2 class="page-subtitle">Tip of the day: To add a new app, click the green plus next to the server in which you wish to add the app.</h2>
+		<h1 class="page-title">Your EnterMedia Catalogs</h1>
+		<h2 class="page-subtitle">Tip of the day: To add a new app, click the green plus next to the catalog in which you wish to add the app.</h2>
 
 #set( $sitesearcher = $searcherManager.getSearcher("media","site") )
 
@@ -40,8 +40,8 @@
 		<div class="server-set clearfix">
 			<a href="$home$apphome/views/servers/addserver.html">
 				<div class="server add-server">
-					<a href="$home$apphome/views/servers/addserver.html" class="ir">Server Name</a>
-					<a href="$home$apphome/views/servers/addserver.html" ><h6>Add<br />New Server</h6></a>
+					<a href="$home$apphome/views/servers/addserver.html" class="ir">Catalog Name</a>
+					<a href="$home$apphome/views/servers/addserver.html" ><h6>Add<br />New Catalog</h6></a>
 				</div>
 			</a>	
 		</div>
