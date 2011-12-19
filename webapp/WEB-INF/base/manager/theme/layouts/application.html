@@ -2,8 +2,10 @@
 		<div id="header">
 			<div id="logo"><a class="ir" href="$home$apphome/index.html">EnterMedia Manager</a></div>
 			<div id="user-status">
-				<p class="welcome">Welcome, <span class="user">User!</span></p>
-				<a href="#">Logout</a>
+				#if( $user )
+				<p class="welcome">Welcome, <span class="user">$user</span></p>
+				<a href="$home$apphome/authentication/logout.html">Logout</a>
+				#end
 			</div>
 		</div>
 		$pages.includeContent()
