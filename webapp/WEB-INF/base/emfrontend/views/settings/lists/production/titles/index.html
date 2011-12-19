@@ -8,7 +8,7 @@ $query.addSortBy("inputtype")
 <p>Titles and Episodes help you organize your media into smaller groups</p>
 #set( $details = $searcher.getDetailsForView("title/results",$userprofile) )
 <div  id="emselectable">
-<table width="700">
+<table class="striped greytxt">
 <thead><tr>
 #foreach( $detail in $details)
 <th>$detail.getText($context)</th>

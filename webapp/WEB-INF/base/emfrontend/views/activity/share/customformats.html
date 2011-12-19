@@ -8,7 +8,6 @@
 <h3>Email Step 2</h3>
 
 	<div >
-	<br><br>
 	<table id="shared-asset-table" class="striped" >
 	#foreach( $item in $orderitems )
 		<input type="hidden" name="itemid" value="$item.id"/>
@@ -69,6 +68,6 @@
 	
 </table>
 	<div id="itemsave"></div>
-	<input type="submit" value="Next" />
+	<input class="btn small" style="float: right" type="submit" value="Next" />
 </div>
 </form>

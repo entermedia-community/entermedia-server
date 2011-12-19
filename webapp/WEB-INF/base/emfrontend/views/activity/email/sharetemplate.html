@@ -16,7 +16,7 @@ Access to these files will expire on $expiresformat.format($expiresondate)
 <a href="$context.siteRoot$home$apphome/views/activity/download/index.html?orderid=$order.id">View</a><br/><br/>
 </p>
 <p>Below is a list of assets available at this link</p>
-<table>		
+<table cellspacing="0" cellpadding="0">		
 	<tr>
 	<th>Title</th>
 	<th>File Name</th>
@@ -37,7 +37,7 @@ Access to these files will expire on $expiresformat.format($expiresondate)
 			$!asset.name
 		</td>
 		<td>
-			$searcherManager.getData($catalogid,"assettype",$asset.assettype)
+			$!searcherManager.getData($catalogid,"assettype",$asset.assettype)
 		</td>
 		<td>
 		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
