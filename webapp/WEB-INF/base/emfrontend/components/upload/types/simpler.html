@@ -13,11 +13,10 @@
 
 	<h4>[[Upload]]</h4> 
 	<div style="clear: both"></div>
-         <div class="file_input_divX">
+         <div style="margin-bottom: 20px;" class="file_input_divX">
           <input type="file"  length="20" value="Browse" name="file.0" onChange="pickedFile(this.value)" />
         </div>
-        <div id="uploadprogress"  > </div>
-		<br/><br/>
+        <div style="margin-bottom: 20px; margin-top: -10px;" id="uploadprogress"  > </div>
 
 		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 		$context.putPageValue("view","asset/simpleupload")	
