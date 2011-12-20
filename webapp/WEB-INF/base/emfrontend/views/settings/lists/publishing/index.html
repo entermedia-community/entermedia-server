@@ -8,7 +8,7 @@ $query.addSortBy("name")
 
 #set( $details = $searcher.getDetailsForView("publishdestination/results",$userprofile) )
 <div id="emselectable">
-<table class="striped">
+<table class="striped greytxt">
 <thead><tr >
 #foreach( $detail in $details)
 <th>$detail.getText($context)</th>

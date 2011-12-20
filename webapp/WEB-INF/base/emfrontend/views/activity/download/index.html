@@ -4,7 +4,7 @@
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-<h2>Download </h2>
+<h3>Download </h3>
 
 <table>
 <tr>
@@ -32,12 +32,14 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadon
 #set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 $context.putPageValue("searcher", $orderitemsearcher)	 
 
-<table>		
-	<tr>
-	<th>Title</th>
-	<th>File Name</th>
-	<th></th>
-	</tr>
+<div id="emselectable">
+<table class="striped greytxt">		
+	<thead>
+	<th style="text-align: center">Title</th>
+	<th style="text-align: center">&nbsp;</th>
+	<th style="text-align: center">File Name</th>
+	<th style="text-align: center">Status</th>
+	</thead>
 		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 			$context.putPageValue("asset", $asset)
@@ -46,6 +48,7 @@ $context.putPageValue("searcher", $orderitemsearcher)
 			$pages.include("${apphome}/views/activity/download/row.html", $context)
 		#end
 </table>
+</div>
 
 
 

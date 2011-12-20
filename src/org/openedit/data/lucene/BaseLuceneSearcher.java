@@ -842,6 +842,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			{
 				data.setId(nextId());
 			}
+			saveData(data, inUser);//Actually save the darn thing.
 		}
 		updateIndex(inAll);
 		getLiveSearcher(); //should flush the index

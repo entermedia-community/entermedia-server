@@ -2,11 +2,11 @@
 
 <h3>Email Preview 3</h3>
 
-From: $userManager.getScreenName( $order.userid )
+<p>From: $userManager.getScreenName( $order.userid )
 <br>
-To: $order.sharewithemail
+To: $order.sharewithemail</p>
 
-<div style="border: 1px solid black;" >
+<div id="email-preview">
 	$pages.include("$apphome/views/activity/email/sharetemplate.html",$context)
 </div>
 
@@ -31,6 +31,6 @@ To: $order.sharewithemail
 <input type="hidden" name="catalogid" value="$catalogid"/>
 <input type="hidden" name="orderid" value="$order.id"/>
 	
-	<input type="submit" value="Send" />
+	<input class="btn small" style="float:right;" type="submit" value="Send" />
 </div>
 </form>

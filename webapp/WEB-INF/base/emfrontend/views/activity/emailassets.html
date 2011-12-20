@@ -29,12 +29,13 @@ $context.putPageValue("view", "order/emailform")
 
 
 <br/>
+<div id="shares">
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-
+</div>
 <br/>
  
 
-<input style="margin-left: 300px;" type="submit" name="submit" value="Next"/> 
+<input id="share-submit" class="btn small"  type="submit" name="submit" value="Next"/> 
 	
 	
 </form>

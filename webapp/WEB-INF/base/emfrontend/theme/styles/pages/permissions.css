@@ -1,13 +1,5 @@
 @charset "UTF-8";
 /* SHARING SCREEN CSS TEMP */
-body,td,th {
-	font-family: Verdana, sans-serif;
-}
-
-body {
-	background-color: #F6F1EB;
-}
-
 a img {
 	border: none;
 }
