@@ -5,9 +5,9 @@
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
 	action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
 	<input type="hidden" name="categoryid" value="index"/>
-    <div style="width:320px; margin: 20px auto;">
+    <div id="single-uploader" style="width:320px; margin: 20px auto;">
 
-	<h2>[[Upload]]</h2> 
+	<h3>[[Upload]]</h3> 
 	<div style="clear: both"></div>
          <div class="file_input_divX">
           <input type="file"  length="20" value="Browse" name="file.0"  />
@@ -21,16 +21,16 @@
 
 		
         			
-			<h2>[[Caption]]</h2> 
+			<h4>[[Caption]]</h4> 
 			<input type="hidden" name="field" value="caption"/>
 			<input type="text" class="required" name="caption.value" style="width: 278px;" />
 
-			<h2>[[Title]]</h2>
+			<h4>[[Title]]</h4>
 			<input type="hidden" name="field" value="assettitle"/>
 			<input type="text" class="required" name="assettitle.value" style="width: 278px;" />
             
             
-			<h2>[[Asset Type]]</h2>
+			<h4>[[Asset Type]]</h4>
 			<input type="hidden" name="field" value="keywords"/>
 			<input type="text" class="required" name="keywords.value" style="width: 278px;" />
 			
