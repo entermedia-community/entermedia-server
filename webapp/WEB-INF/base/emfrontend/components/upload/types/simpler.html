@@ -5,43 +5,47 @@
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
 	action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
 	<input type="hidden" name="categoryid" value="index"/>
-    <div id="single-uploader" style="width:320px; margin: 20px auto;">
+	
+<div id="eml-tab-green-container" style="width: 400px; margin: 0 auto;" class="clearfix">
+	<div style="width: 100%; background: #fff; border: 1px solid #5FA83E;">
+	
+    <div id="single-uploader" style="width:320px; margin: 20px auto; color: #595959;">
 
-	<h3>[[Upload]]</h3> 
+	<h4>[[Upload]]</h4> 
 	<div style="clear: both"></div>
          <div class="file_input_divX">
-          <input type="file"  length="20" value="Browse" name="file.0"  />
+          <input type="file"  length="20" value="Browse" name="file.0" onChange="pickedFile(this.value)" />
         </div>
         <div id="uploadprogress"  > </div>
 		<br/><br/>
 
 		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-		$context.putPageValue("view","")	
-		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+		$context.putPageValue("view","asset/simpleupload")	
 
-		
-        			
+
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+<!-- 
 			<h4>[[Caption]]</h4> 
 			<input type="hidden" name="field" value="caption"/>
-			<input type="text" class="required" name="caption.value" style="width: 278px;" />
+			<input type="text" name="caption.value" style="width: 278px;" />
 
 			<h4>[[Title]]</h4>
 			<input type="hidden" name="field" value="assettitle"/>
-			<input type="text" class="required" name="assettitle.value" style="width: 278px;" />
+			<input type="text" name="assettitle.value" style="width: 278px;" />
             
             
 			<h4>[[Asset Type]]</h4>
 			<input type="hidden" name="field" value="keywords"/>
-			<input type="text" class="required" name="keywords.value" style="width: 278px;" />
-			
-			<div style="clear: both;"></div>
+			<input type="text" name="keywords.value" style="width: 278px;" />
+	 -->		
 
-<div class="embutton" >
-	<input class="btn small" style="float: right; margin-bottom: 20px; margin-right: 15px;" type="button" id="finishbutton" class="finishbutt" value="[[Submit]]" onclick="doUpload('uploadform');">
-</div>
+	<input class="btn small" style="float: right; margin-right: 15px;" type="button" id="finishbutton" value="[[Submit]]" onclick="doUpload('uploadform');">
+	
+				<div style="clear: both;"></div>
 </div>
 </form>
-
+</div>
+</div>
 
 <script type="text/javascript" >
 	var uploadid;
@@ -63,11 +67,12 @@
  		return uploadid;
  	}
  	
- 	pickFile = function(filename)
+ 	pickedFile = function(filename)
  	{
- 		jQuery("#uploadform #fileName").attr("value", filename );
- 		var action = jQuery("#uploadform").attr("action");
- 		jQuery("#uploadform").attr("action", action + "&uploadid=" + getUploadId() );
+ 		//alert( filename );
+// 		jQuery("#uploadform #fileName").attr("value", filename );
+// 		var action = jQuery("#uploadform").attr("action");
+// 		jQuery("#uploadform").attr("action", action + "&uploadid=" + getUploadId() );
  	}
  	
  	checkProgress = function()
