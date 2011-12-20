@@ -1,4 +1,4 @@
 <properties>
+  <property id="assettitle"/>
   <property id="caption" />
-  <property id="extrakeywords"/>
 </properties>
