@@ -7,17 +7,16 @@
 	<input type="hidden" name="categoryid" value="index"/>
 	
 <div id="eml-tab-green-container" style="width: 400px; margin: 0 auto;" class="clearfix">
-	<div style="width: 100%; background: #fff; border: 1px solid #5FA83E;">
+	<div class="inner-content">
 	
     <div id="single-uploader" style="width:320px; margin: 20px auto; color: #595959;">
 
 	<h4>[[Upload]]</h4> 
 	<div style="clear: both"></div>
-         <div class="file_input_divX">
+         <div style="margin-bottom: 20px;" class="file_input_divX">
           <input type="file"  length="20" value="Browse" name="file.0" onChange="pickedFile(this.value)" />
         </div>
-        <div id="uploadprogress"  > </div>
-		<br/><br/>
+        <div style="margin-bottom: 20px; margin-top: -10px;" id="uploadprogress"  > </div>
 
 		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 		$context.putPageValue("view","asset/simpleupload")	

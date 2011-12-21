@@ -22,7 +22,6 @@ a img {
 	border-bottom: 1px solid #FFFFFF;
 	color: #FFFFFF;
 	display: block;
-	font-family: Verdana, sans-serif;
 	font-size: 11px;
 	font-weight: bold;
 	padding: 4px 4px 4px 6px;
@@ -60,7 +59,6 @@ a img {
 
 table.people_table {
 	border: 1px solid #D6C4C4;
-	font-family: Verdana, sans-serif;
 	font-size: 13px;
 	width: 100%;
 	border-collapse: collapse;
@@ -68,7 +66,6 @@ table.people_table {
 
 .people_table td {
 	border: 1px solid #D6C4C4;
-	font-family: Verdana, sans-serif;
 	font-size: 13px;
 }
 
@@ -127,7 +124,6 @@ td.userlevel img {
 .bottom_mod input[type="submit"] {
 	padding: 6px 9px;
 	text-decoration: none;
-	font-family: Verdana, sans-serif;
 	font-size: 12px;
 	text-align: center;
 	display: inline-block;
