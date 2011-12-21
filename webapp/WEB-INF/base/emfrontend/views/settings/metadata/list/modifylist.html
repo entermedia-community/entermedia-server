@@ -1,25 +1,35 @@
 #set($details = $searcher.getSearchProperties($user))
 #set($idtoedit = $context.getRequestParameter("idtoedit"))
+#set($name = $context.getRequestParameter("name"))
+$datalist.setHitsPerPage(25)
 
 <div id="listedit" class="em-rounded" style="margin-bottom: 10px;">
+	<h1 id="attributeEditorTitle">Edit Value List > $!name</h1>
+	<div class="embutton">
+		<input type="text" id="addValueName">
+		<a id="addvalue" href="#">Add Value</a>
+	</div>
 	<div id="emselectable">
 		<form name="editrow" id="editrow" action="$home$page.path">
 		
-    		<table class="standard-table">
+    		<table class="standard-table" width="100%">
     			<tr>
-    				<th></th>
-					#foreach( $detail in $details )
-						<th align="left" nowrap >$detail.getText($context)</th>
-					#end
-    			</tr>		
-    			
+					<th align="left" nowrap colspan="2">Value List</th>
+    			</tr>	
+    			#if($context.getRequestParameter("addItem"))	
+    				$datalist.setPage($datalist.totalPages)
+    			#elseif($context.getRequestParameter("removepage"))
+    				#set($Integer = 0)
+    				#set($deletedFromPage = $Integer.parseInt($context.getRequestParameter("removepage")))
+    				#if($deletedFromPage<=$datalist.totalPages)
+    					$datalist.setPage($deletedFromPage)
+    				#else
+    					$datalist.setPage($datalist.totalPages)
+    				#end
+    			#end
     			#foreach ( $hit in $datalist.getPageOfHits() )
         			<tr rowid="$hit.id">
-        				<td>
-							<a href="deletelist.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&id=$hit.id">
-								<img src="${apphome}/theme/images/navigation/deletesm.png" title="Remove">
-							</a>
-						</td>
+        				
 						#foreach( $detail in $details )
 							#set( $newval = "$!hit.get($detail.getId())")
 							#if($newval && $newval != "" && $detail.isList())
@@ -30,10 +40,18 @@
 									<input name="field" type="hidden" value="$detail" />
 									<input name="${detail}.value" id="${detail}.id" type="text" value="$newval" />
 								</td>
-							#else		
-								<td nowrap>$newval</td>
+							#else	
+								#if($detail.getText($context)!="Id")
+									<td nowrap>$newval</td>
+								#end	
+								
 							#end
 						#end
+						<td>
+							<a href="deletelist.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&id=$hit.id&name=$name&removepage=$datalist.getPage()">
+								<img src="${apphome}/theme/images/navigation/deletesm.png" title="Remove">
+							</a>
+						</td>
         			</tr>
     			#end
     		</table>
@@ -47,38 +65,62 @@
 		</form>
 	</div>
 	
+	
 	<div style="text-align: left; padding-left: 20px; padding-top: 5px;">
-		
+			#set($totalItems = $datalist.size())
+			#set($thispage = $datalist.getPage())
+			
+			
 			#if ( $datalist.totalPages == 0 )
+				
 			#elseif( $datalist.totalPages == 1 )
+				#if ($datalist.size()>0)
+					1 - $datalist.size() of $datalist.size()
+				#end
 			#elseif( $datalist )
-				#set($thispage = $datalist.getPage())
-				[[Page]] <b>$thispage</b> [[of]] $datalist.totalPages  
+				##[[Page]] <b>$thispage</b> [[of]] $datalist.totalPages 
+				#if($thispage==1)
+					#set($upper = 25)
+					#set($lower = 1)
+				#else
+					#set($upper = 25*$thispage)
+					#if($upper>$datalist.size()) #set($upper = $datalist.size()) #end
+					#set($lower = 25*$thispage - 24)
+				#end
+				$lower - $upper of $datalist.size()
 				&nbsp;&nbsp;
 				
 				#if( $datalist.prevPage() )
 				
-				<a href="" onclick="jQuery('#listedit').load('$home$page.path?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&catalogid=$searcher.catalogId&searchtype=$searcher.searchType'); return false;">
+				<a href="" onclick="jQuery('#listedit').load('$home$page.path?page=$datalist.prevPage()&name=$name&hitssessionid=$datalist.sessionId&catalogid=$searcher.catalogId&searchtype=$searcher.searchType'); return false;">
 					<b>&lt;&lt;  [[Back]]</b>
 				</a>
 				#end
 				
 				#if ( $datalist.nextPage() )
-				<a href="" onclick="jQuery('#listedit').load('$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&catalogid=$searcher.catalogId&searchtype=$searcher.searchType'); return false;">
+				<a href="" onclick="jQuery('#listedit').load('$home$page.path?page=$datalist.nextPage()&name=$name&hitssessionid=$datalist.sessionId&catalogid=$searcher.catalogId&searchtype=$searcher.searchType'); return false;">
 					<b> [[Forward]] &gt;&gt;</b>
 				</a>
 				#end
 			#end
 	</div>
-	<h3>[[Found]] $datalist.size() [[Records]]</h3>
 			
 	#set( $thispage = $datalist.getPage()+-1)
 	#set( $start = $datalist.getHitsPerPage() * $thispage )
 	#set( $end = $start + $datalist.getPageOfHits().size() )
 	#set( $start = $start + 1)
 		
-	<div class="embutton">
-		<a href="addlist.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&field=id">[[Add New Record]]</a>
-	</div>
+	<div><input id="done" type="button" value="Done"/>
 </div>
-	
+<script type="text/javascript">
+<!--
+jQuery(document).ready(function(){
+	jQuery('a#addvalue').click(function(){
+		window.location="addlist.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&field=id&name=$name&addItem=true&field=name&name.value=" + jQuery("input#addValueName").val();
+	});
+	jQuery('input#done').click(function(){
+		parent.jQuery("#fancy_close").trigger("click");
+	});
+});
+//-->
+</script>

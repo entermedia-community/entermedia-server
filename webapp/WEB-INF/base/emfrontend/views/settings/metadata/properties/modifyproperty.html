@@ -54,7 +54,7 @@
 		<option value="file" #if ($property.datatype == "file") selected #end >[[File]]</option>
 		<option value="image" #if ($property.datatype == "image") selected #end >[[Image]]</option>
 	</select>
-	<a id="${property.id}editlist" style="display:none;" class="thickbox" href="$home$apphome/views/settings/metadata/list/modifylist.html?catalogid=$property.getListCatalogId()&searchtype=$property.getListId()&iframe=true&width=500&height=400">edit list</a>
+	<a id="${property.id}editlist" style="display:none;" class="thickbox" href="$home$apphome/views/settings/metadata/list/modifylist.html?catalogid=$property.getListCatalogId()&searchtype=$property.getListId()&name=$property.name&iframe=true&width=500&height=400">edit list</a>
 	<input type="button" onclick="jQuery('#${property.id}editlist').click();" value="edit list"/>
 	</td>
 	</tr>
