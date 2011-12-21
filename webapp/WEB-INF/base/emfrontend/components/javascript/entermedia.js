@@ -732,7 +732,7 @@ showajaxstatus = function()
 			var cell = jQuery(this);
 			var path = cell.attr("ajaxpath");
 			jQuery.get(path, {}, function(data) {
-				cell.replaceWith(data);
+				cell.html(data);
 			});
 		}
 	);
