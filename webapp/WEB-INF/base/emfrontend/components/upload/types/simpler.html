@@ -50,7 +50,9 @@
 	var uploadid;
  	doUpload =  function()
  	{
- 		if(jQuery("#uploadform").valid()) {
+
+ 		if(jQuery("#uploadform").valid()) 
+ 		{
  	 		jQuery("#finishbutton").attr('disabled','disabled');
 			jQuery("#uploadform").submit();
  		}
@@ -68,6 +70,9 @@
  	
  	pickedFile = function(filename)
  	{
+ 		var action = jQuery("#uploadform").attr("action");
+ 		jQuery("#uploadform").attr("action", action + "&uploadid=" + getUploadId() );
+
  		//alert( filename );
 // 		jQuery("#uploadform #fileName").attr("value", filename );
 // 		var action = jQuery("#uploadform").attr("action");
@@ -112,6 +117,7 @@
         	        // has been received; here we apply a fade-in effect to the new content
         	        beforeSubmit:function() 
         	        { 
+
         	            checkProgress(); 
         	           // document.onclick = disable;
         	            jQuery("#finishbutton").attr("value","Sending...");
