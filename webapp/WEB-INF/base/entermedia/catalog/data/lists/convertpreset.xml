@@ -1,19 +1,16 @@
 <presets>
     <preset id="0"  type="original"  inputtype="all">Original Format</preset>
-    <preset id="largeimage" guid="preview" 	outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Preview</preset>
-    <preset id="mediumimage" guid="medium" 	outputfile="image300x300.jpg" fileexportformat="${filename}300x300.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Medium</preset>
-    <preset id="thumbimage" guid="thumb" 	outputfile="image200x200.jpg" fileexportformat="${filename}200x200.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Thumbnail</preset>
-    
-    <preset id="portraitcrop" guid="crop" outputfile="image-portraitcropped.jpg" fileexportformat="${filename}portraitcropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Portrait Crop</preset>
-    
-    <preset id="largedocument" guid="preview" outputfile="image800x600.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true">Document Preview</preset>
-    <preset id="previewffmpegthumb" guid="preview" outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="ffmpegimage" extension="mp4" inputtype="video" onimport="true">Video Thumb</preset>
-    <preset id="previewffmpeg" guid="preview" outputfile="video.mp4" fileexportformat="${filename}preview.mp4" type="ffmpeg" extension="mp4" inputtype="video" onimport="true">Video MP4 Preview</preset>
-    <preset id="amazonpreview" guid="preview" outputfile="preview.mp4" fileexportformat="/${catalogid}/${sourcepath}/preview.mp4" type="ffmpeg" extension="mp4" inputtype="video" onimport="true">Amazon Preview</preset>
-    <preset id="previewflv" guid="preview" outputfile="preview.flv" fileexportformat="${filename}.flv" type="ffmpeg" extension="mp4" inputtype="video" >Video FLV YouTube</preset>
+    <preset id="largeimage" guid="imagepreview" 	outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Preview</preset>
+    <preset id="mediumimage" guid="imagemedium" 	outputfile="image300x300.jpg" fileexportformat="${filename}300x300.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Medium</preset>
+    <preset id="thumbimage" guid="imagethumb" 	outputfile="image200x200.jpg" fileexportformat="${filename}200x200.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Image Thumbnail</preset>
+    <preset id="portraitcrop" guid="imagecrop" outputfile="image-portraitcropped.jpg" fileexportformat="${filename}portraitcropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" >Portrait Crop</preset>
+    <preset id="largedocument" guid="imagepreview" outputfile="image800x600.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true">Document Preview</preset>
+    <preset id="previewffmpegthumb" outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="ffmpegimage" extension="mp4" inputtype="video" onimport="true">Video Thumb</preset>
+    <preset id="previewffmpeg" guid="ffmpegpreviewmp4" outputfile="video.mp4"  fileexportformat="/${catalogid}/${sourcepath}/preview.mp4" type="ffmpeg" extension="mp4" guid="ffmpegpreviewmp4" inputtype="video" onimport="true">Video MP4 Preview</preset>
+    <preset id="previewflv" guid="ffmpegpreviewflv" outputfile="preview.flv" fileexportformat="${filename}.flv" type="ffmpeg" extension="mp4" inputtype="video" >Video FLV</preset>
     <preset id="1" outputfile="outputffmpeg.mp4" fileexportformat="${filename}HQ.mp4" type="ffmpeg" inputtype="video"  extension="mp4">Video HQ MP4</preset>
     <preset id="2" outputfile="outputffmpeg.avi" fileexportformat="${filename}HQ.avi" type="ffmpeg" inputtype="video" extension="avi">Video HQ AVI</preset>
-    <preset id="preview" outputfile="preview-rhozet.mp4" fileexportformat="${filename}LQ.mp4" type="rhozet" extension="mp4" guid="{21F5E3B8-FD4D-452A-A351-173FCC26FA0E}" inputtype="video" onimport="false">Video Rhozet LQ MP4</preset>
-    <preset id="rhozet-test" outputfile="h264rhozet.mp4" fileexportformat="${filename}HQ.mp4" type="rhozet" extension="mp4"  inputtype="video" guid="{4247D9B0-5E89-4397-B2C3-6B2E4771BC4C}">Video Rhozet HQ MP4</preset>      
-    <preset id="digitalrapidspreview" guid="preview" outputfile="video.mp4" fileexportformat="${filename}preview.mp4" type="digitalrapids" extension="mp4" inputtype="video" onimport="true">Digital Rapids Preview</preset>
+    <preset id="preview" outputfile="preview-rhozet.mp4" fileexportformat="${filename}LQ.mp4" type="rhozet" extension="mp4" guid="21F5E3B8-FD4D-452A-A351-173FCC26FA0E" inputtype="video" >Video Rhozet LQ MP4</preset>
+    <preset id="rhozet-test" outputfile="h264rhozet.mp4" fileexportformat="${filename}HQ.mp4" type="rhozet" extension="mp4"  inputtype="video" guid="4247D9B0-5E89-4397-B2C3-6B2E4771BC4C">Video Rhozet HQ MP4</preset>      
+    <preset id="digitalrapidspreview" guid="rapidspreview" outputfile="video.mp4" fileexportformat="${filename}preview.mp4" type="digitalrapids" extension="mp4" inputtype="video" >Digital Rapids Preview</preset>
 </presets>                                                                                                                                                                                                    

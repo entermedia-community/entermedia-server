@@ -53,70 +53,64 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 				comm.add(abspath);
 				comm.add("-y");
 
-				//comm.add("-ar");
-				//comm.add("44100");
-				boolean h264 = outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v");
-				if(h264)
+				//audio
+				comm.add("-acodec");
+				if( inStructions.get("acodec") == null )
 				{
-					//audio
-					comm.add("-acodec");
-					//comm.add("libmp3lame"); 
-					
-					
 					comm.add("libfaac"); //libfaac  libmp3lame
+				}
+				else
+				{
+					comm.add(inStructions.get("acodec") );
+				}
+
+				//general settings?
+				if( inStructions.get("fpre") == null )
+				{
 					comm.add("-ab");
 					comm.add("96k");
 					comm.add("-ar");
 					comm.add("44100"); 
 					comm.add("-ac");
-					
 					comm.add("1"); //mono
-
-					//video
-					//TODO: Setup multiple URL paths with multiple arguments for video sizes and bitrates
-					//comm.add("-f");
-					//comm.add("ipod");
-					//comm.add("-s");
-					//comm.add("640x480"); 
-					comm.add("-vcodec");
-					
-					comm.add("libx264");
-					//comm.add("mpeg4"); //this is less quality
-
-					//advanced video
-					comm.add("-vpre");
-					comm.add("normal");
-//					comm.add("-b");
-//					comm.add("550k");
-//					comm.add("-bt");
-//					comm.add("700k");
-					comm.add("-crf");
-					comm.add("28");  
-					//One-pass CRF (Constant Rate Factor) using the slow preset. One-pass CRF is good for general encoding and is what I use most often. Adjust -crf to change the quality. Lower numbers mean higher quality and a larger output file size. A sane range is 18 to 28.
-					//ffmpeg -i input.avi -acodec libfaac -ab 128k -ac 2 -vcodec libx264 -vpre slow -crf 22 -threads 0 output.mp4
-					
-					//comm.add("-aspect");
-					//comm.add("640:480");
-					comm.add("-threads");
-					comm.add("0");
 				}
 				else
 				{
-					//comm.add("-acodec");
-					//comm.add("libmp3lame"); //libfaac  libmp3lame
-//					comm.add("-ab");
-//					comm.add("96k");
-//					comm.add("-ar");
-//					comm.add("44100"); 
-//					comm.add("-s"); 
-//					comm.add("-ac");
-//					comm.add("1"); //mono
-//
-//					comm.add("-g");
-//					comm.add("250"); 
-//					comm.add("-b");
-//					comm.add("2000k");
-				}		
+					comm.add("-fpre");
+					comm.add(inStructions.get("fpre"));				
+				}
+				
+				//video
+				comm.add("-vcodec");
+				if( inStructions.get("vcodec") == null )
+				{
+					comm.add("libx264");
+				}
+				else
+				{
+					comm.add(inStructions.get("vcodec") );
+				}
+
+				if( inStructions.get("vpre") == null )
+				{	
+					comm.add("-vpre");
+					comm.add("normal");
+				}
+				else
+				{
+					comm.add("-vpre");
+					comm.add(inStructions.get("vpre"));
+				}
+				comm.add("-crf");
+				comm.add("28");  
+				//One-pass CRF (Constant Rate Factor) using the slow preset. One-pass CRF is good for general encoding and is what I use most often. Adjust -crf to change the quality. Lower numbers mean higher quality and a larger output file size. A sane range is 18 to 28.
+				//ffmpeg -i input.avi -acodec libfaac -ab 128k -ac 2 -vcodec libx264 -vpre slow -crf 22 -threads 0 output.mp4
+				
+				//comm.add("-aspect");
+				//comm.add("640:480");
+				comm.add("-threads");
+				comm.add("0");
+
 				//add calculations to fix letterbox problems
 				//http://howto-pages.org/ffmpeg/
 				int width = 640; //this is the player size. Now we need to change aspect
@@ -175,6 +169,8 @@ Here is a simple PCM audio format for low CPU devices
 //				ffmpeg -i smb_m48020080421.mov  -vcodec mpeg4   -vtag xvid -r 25 -b 2000k -acodec pcm_s16le -s vga  -ar 44100  -ac 1   pcmmono2k960output2p.avi
 */
 				String outpath = null;
+				boolean h264 = outputExt.equalsIgnoreCase("mp4") || outputExt.equalsIgnoreCase("m4v");
+				
 				if( h264)
 				{
 					outpath = converted.getContentItem().getAbsolutePath() + "tmp.mp4";
@@ -213,8 +209,10 @@ Here is a simple PCM audio format for low CPU devices
 				}				
 
 			
-		} else{
-		log.info("FFMPEG Conversion not required, already complete. ");
+		}
+		else
+		{
+			log.info("FFMPEG Conversion not required, already complete. ");
 			result.setOk(true);
 			result.setComplete(true);
 		}

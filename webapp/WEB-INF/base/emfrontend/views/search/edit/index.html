@@ -37,7 +37,7 @@
 	<div id="eml-tab-content" style="position: relative;" >
 		<form name="queryname" action="$home$apphome/views/search/edit/save.html">		
 			<h2 id="search-title">You are editing: <input type="text" name="name" value="$query.name" onfocus="$(this).addClass('green');$('#savebtn').show()" /></h2>
-			<input name="queryid" value="$query.id" type="hidden" />
+			<input name="queryid" value="$!query.id" type="hidden" />
 			<input id="savebtn" type="submit" class="btn small" value="Save">
 		</form>
 		<h6 class="helper-text">Click on the search title above to edit.</h6>

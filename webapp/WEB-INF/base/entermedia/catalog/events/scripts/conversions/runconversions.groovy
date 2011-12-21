@@ -157,7 +157,7 @@ private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inP
 		String guid = inPreset.guid;
 		if( guid != null)
 		{
-			Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(catalogid, "presetdata/${type}" );
+			Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(catalogid, "presetdata" );
 			Data presetdata = presetdatasearcher.searchById(guid);
 			//copy over the preset properties..
 			props.put("guid", guid); //needed?

@@ -1,6 +1,0 @@
-<transcodeprofiles>
-    <transcodeprofile extension="flv" id="flash384"   framerate="24" settingspath="/Templates/SFMLS/flash384.setting">Flash 384</transcodeprofile>
-    <transcodeprofile extension="wmv" id="wmv384"     framerate="24" settingspath="/Templates/SFMLS/wmv384.setting">WMV 384</transcodeprofile>
-    <transcodeprofile extension="mp4" id="mp424"    framerate="24" settingspath="/Templates/SFMLS/vmaster.setting">H.264 at 24fps</transcodeprofile>
-    <transcodeprofile extension="mp4" id="mp430"    framerate="30" settingspath="/Templates/SFMLS/vmaster.setting">H.264 at 30fps</transcodeprofile>
-</transcodeprofiles>                                                                                                                                                                                                    

@@ -71,6 +71,10 @@ public class SavedQueryModule extends BaseMediaModule
 		{
 			queryid = inReq.findValue("queryid"); // "mostrecent" ?
 		}
+		if (queryid == null)
+		{
+			return null;
+		}
 		String catalogid = inReq.findValue("catalogid");
 		Data query = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
 		//String sessionid = catalogid + "_" + queryid + "_query";
@@ -88,6 +92,13 @@ public class SavedQueryModule extends BaseMediaModule
 		return searchquery;
 	}
 
+	public void saveNew(WebPageRequest inReq) throws Exception
+	{
+		SearchQuery query = new SearchQuery();
+		query.setName("New");
+		inReq.putSessionValue("currentquery",query);
+		inReq.putPageValue("query", query);
+	}
 	public Data saveFromQuery(WebPageRequest inReq) throws Exception
 	{
 		//String id = inReq.getRequestParameter("queryid");

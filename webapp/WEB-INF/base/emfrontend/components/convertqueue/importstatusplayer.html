@@ -6,8 +6,7 @@
 	<div style="padding-top:30px;">
 	#if($canviewsettings)
 		<span style="color:red;">Conversion Error</span><br/>
-		<a class="uibutton" href="$home$cataloghome/detailviewer/converthistory/index.html?assetid=$asset.id">Troubleshoot</a>
-		<a class="thickbox uibutton" href="$home$cataloghome/settings/events/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue Now</a>
+		<a class="btn small" href="$home$apphome/views/detaileditor/converthistory/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
 	#else
 		<span style="color:red;">Conversion Error</span><br/>
 		<span>Please contact your administrator.</span>
@@ -15,6 +14,8 @@
 	</div>
 #elseif($publisherrors && $publisherrors.size() >0)
 	<span style="color:red;">Publish Error</span>
+	<a class="btn small" href="$home$apphome/views/detaileditor/historyexports/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
+	
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
 	$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
 #elseif($conversionsremaining && $conversionsremaining.size()  > 0)

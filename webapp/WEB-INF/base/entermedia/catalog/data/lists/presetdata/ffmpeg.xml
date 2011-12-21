@@ -1,3 +1,4 @@
 <properties>
-  <preset id="preview" width="640" height="360" watermark="false">Preview</preset>
+  <preset id="ffmpegpreviewmp4" acodec="libfaac" vcodec="libx264" vpre="normal" >FFMMPEG MP4</preset>
+  <preset id="ffmpegpreviewflv" acodec="libfaac" vcodec="libx264" vpre="normal" >FFMMPEG FLV</preset>
 </properties>
