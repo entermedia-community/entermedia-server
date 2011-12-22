@@ -1,11 +1,2 @@
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-
-#if( $type != "video" )
-	#set( $link = "$cataloghome/downloads/preview/large/$asset.sourcepath/preview.jpg")
-	<a class="emdialog" href="$home$link" target="_parent"	
-	title="[[$asset]]">
-	$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
-	</a>
-#else	
-	$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
-#end
+$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
