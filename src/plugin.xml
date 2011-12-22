@@ -400,6 +400,10 @@
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+		
 	</bean>
 
 
