@@ -28,7 +28,7 @@ $pages.include("/${applicationid}/views/settings/metadata/properties/editpropert
             
 #set($current = $searcherManager.getData($catalogid, "assettype", $context.getRequestParameter("assettype")))
 #if( $current )
-<h2>$!current.name Metadata Type Setup</h2>
+<!-- <h2>$!current.name Metadata Type Setup</h2> -->
 #end
 $pages.includeContent()
 

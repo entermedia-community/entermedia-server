@@ -1,4 +1,4 @@
-<div id="editlayout">	
+<div id="editlayout" class="modify-property">	
 
 <h1 id="attributeEditorTitle"></h1>
 		
@@ -9,20 +9,20 @@
 	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
 	
 	<table width="100%">
-	<tr> <td>[[Attribute Name]]:</td> <td><input name="newid" value="$!property.id" /></td> </tr>
-	<tr> <td>[[UI Label]]:</td> <td><input name="name" id="label" value="$!property.name" /></td> </tr>
-	<tr> <td>[[External ID]]:</td> <td><input name="externalid" value="$!property.externalId" /></td> </tr>
+	<tr> <td class="td-right">[[Attribute Name]]:</td> <td class="td-left"><input name="newid" value="$!property.id" /></td> </tr>
+	<tr> <td class="td-right">[[UI Label]]:</td> <td class="td-left"><input name="name" id="label" value="$!property.name" /></td> </tr>
+	<tr> <td class="td-right">[[External ID]]:</td> <td class="td-left"><input name="externalid" value="$!property.externalId" /></td> </tr>
 
 	
-	<tr> <td>Editable:</td> <td><input name="editable" type="checkbox" #if ($property.editable == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Index]]:</td> <td><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Stored]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
+	<tr> <td class="td-right">Editable:</td> <td class="td-left"><input name="editable" type="checkbox" #if ($property.editable == true) checked #end value="true"/> </td> </tr>
+	<tr> <td class="td-right">[[Is Keyword]]:</td> <td class="td-left"><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
+	<tr> <td class="td-right">[[Index]]:</td> <td class="td-left"><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
+	<tr> <td class="td-right">[[Stored]]:</td> <td class="td-left"><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
+	<tr> <td class="td-right">[[In Filters]]:</td> <td class="td-left"><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
 	
 	
-	<tr> <td>[[View Type]]:</td>
-	<td>
+	<tr> <td class="td-right">[[View Type]]:</td>
+	<td class="td-left">
 	<select name="viewtype">
 		<option value="" >Text</option>
 		<option value="boolean" #if ($property.viewtype == "boolean") selected #end >[[Boolean]]</option>
@@ -41,8 +41,8 @@
 	</td>
 	</tr>
 
-	<tr> <td>[[Data Type]]:</td>
-	<td>
+	<tr> <td class="td-right">[[Data Type]]:</td>
+	<td class="td-left">
 	<select name="datatype">
 		<option value="" >Text</option>
 		<option value="boolean" #if ($property.datatype == "boolean") selected #end >[[Boolean]]</option>
@@ -59,18 +59,17 @@
 	</td>
 	</tr>
 
-	<tr> <td>[[List Id]]:</td> <td><input name="listid" value="$!property.listid"/> </td> </tr>
-	<tr> <td>[[List Catalog Id]]:</td> <td><input name="listcatalogid" value="$!property.listcatalogid"/> </td> </tr>
-	<tr> <td>[[List Sort Field]]:</td> <td><input name="sort" value="$!property.sort"/> </td> </tr>
-	<tr> <td>[[List Query]]:</td> <td><input name="query" value="$!property.query"/> </td> </tr>
-	<tr> <td>[[Foreign Key ID]]:</td> <td><input name="foreignkeyid" value="$!property.foreignkeyid"/> </td> </tr>
+	<tr> <td class="td-right">[[List Id]]:</td> <td class="td-left"><input name="listid" value="$!property.listid"/> </td> </tr>
+	<tr> <td class="td-right">[[List Catalog Id]]:</td> <td class="td-left"><input name="listcatalogid" value="$!property.listcatalogid"/> </td> </tr>
+	<tr> <td class="td-right">[[List Sort Field]]:</td> <td class="td-left"><input name="sort" value="$!property.sort"/> </td> </tr>
+	<tr> <td class="td-right">[[List Query]]:</td> <td class="td-left"><input name="query" value="$!property.query"/> </td> </tr>
+	<tr> <td class="td-right">[[Foreign Key ID]]:</td> <td class="td-left"><input name="foreignkeyid" value="$!property.foreignkeyid"/> </td> </tr>
 		
 	</table>
-	<br/><br/>
-	<div class="embutton" style="float:left;margin-left:50px;">
+	<div class="embutton" style="float:left;">
 		<input id="deleteAttribute" type="submit" value="Delete"/>
 	</div>
-	<div class="embutton" style="float:right;margin-left:50px;">
+	<div class="embutton" style="float:right;">
 		<input id="cancel" type="submit" value="Cancel"/>
 		<input type="submit" value="Save"/>
 	</div>

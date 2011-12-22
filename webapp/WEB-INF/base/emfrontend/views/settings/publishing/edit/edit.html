@@ -1,3 +1,4 @@
+<div class="em-rounded">
 <h2>Edit $!data</h2>
 
 <div id="editlayout">
@@ -16,8 +17,9 @@ $context.putPageValue("view", $view)
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
+<div class="edit-property">
 $pages.include("/system/components/xml/detaileditor.html", $context)
-
+</div>
 
 <ul class="embuttons">
 <li>
@@ -41,4 +43,5 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 #end
 
 
+</div>
 </div>

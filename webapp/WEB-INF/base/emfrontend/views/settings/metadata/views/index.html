@@ -6,6 +6,7 @@
 	#set($typesearcher = $searcherManager.getSearcher("$catalogid", "assettype"))
 	#set($type = $typesearcher.searchById($assettype))
 	<div class="em-rounded" style="margin-bottom: 10px;">
+		<h2>Name/Extensions</h2>
 		<form id="assettypeeditform" name="assettypeeditform" action="$home$apphome/views/settings/metadata/views/modifytype.html">
 			<input type="hidden" name="assettype" value="$type.id"/>
 			<input type="hidden" name="id" value="$type.id"/>
@@ -35,7 +36,7 @@
 		<h2>$target</h2>
 		<div id="editlayout">
 
-		<table >
+		<table class="attribute-editor">
 			#set($details = "")
 			#set($details =  $searcher.getDetailsForView("asset/assettype/${assettype}/$target.id", $user))
 			
@@ -44,9 +45,9 @@
 				<tr>
 				 <td class="rowdraggable metadatadroppable" id="$pid" catalogid=$catalogid" searchtype="asset" assettype="$assettype" view="assettype/${assettype}/$target.id"> 
 				 <img src="$home$themeprefix/images/navigation/moveupdown.png" />
-				 $!element.text - <b>$pid</b></td> 
+				 $!element.text</td> 
 				 <td>
-				 <form style="float:left;" name="editrow"  method="post" action="removefromview.html?catalogid=$catalogid&searchtype=asset&view=assettype/${assettype}/$target.id">
+				 <form style="float:right;" name="editrow"  method="post" action="removefromview.html?catalogid=$catalogid&searchtype=asset&view=assettype/${assettype}/$target.id">
 				 <input type="hidden" name="toremove"  value="$pid" />
 				 <input type="hidden" name="assettype" value="$assettype"/>
 				 <input type="submit" name="remove" value="remove"/>
@@ -58,9 +59,6 @@
 		</table>
  
 		</div>
-
-
-		<br><br><br>
 
 		<form name="${target.id}addtoview" id="${target.id}addtoview" action="addtoview.html">
 			<input type="hidden" name="catalogid" value="$!catalogid"/>
