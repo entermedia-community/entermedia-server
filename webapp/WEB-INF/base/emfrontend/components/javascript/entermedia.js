@@ -62,12 +62,13 @@ runajax = function(e)
 			{
 				var cell = jQuery("#" + targetDiv);
 				cell.replaceWith(data);
-				/*
-				if( typeof doResize === 'function' )
+				
+				
+				if (typeof(doResize) == "function")
 				{
 					doResize();
 				}
-				*/
+				
 			}
 		);
 	}
@@ -80,13 +81,11 @@ runajax = function(e)
 				{
 					var cell = jQuery("#" + loaddiv);
 					cell.html(data);
-					/*
-					if( typeof doResize === 'function' )
+					
+					if (typeof(doResize) == "function")
 					{
 						doResize();
-						setTimeout("doResize()",200);
 					}
-					*/
 				}
 			);
 
@@ -733,7 +732,7 @@ showajaxstatus = function()
 			var cell = jQuery(this);
 			var path = cell.attr("ajaxpath");
 			jQuery.get(path, {}, function(data) {
-				cell.replaceWith(data);
+				cell.html(data);
 			});
 		}
 	);

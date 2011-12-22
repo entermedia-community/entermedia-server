@@ -4,7 +4,7 @@
   <property name="sectiontitle">
     <value>Geo Tag</value>
   </property>
-  <property name="tab">metadatageneral</property>
+	<property name="tab">asseteditormetadata</property>
   <property name="subtab">editassetgeolocation</property>
     <inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
 </page>

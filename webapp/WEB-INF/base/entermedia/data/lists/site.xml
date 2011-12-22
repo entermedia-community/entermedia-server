@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
+  <site deploypath="emshare" appcatalogid="media/catalogs/public" frontendid="emshare" id="1324393295876">Share Media</site>
+  <site deploypath="eml" appcatalogid="media/catalogs/public" frontendid="emlibrary" id="1324393338976">Admin Area</site>
 </properties>

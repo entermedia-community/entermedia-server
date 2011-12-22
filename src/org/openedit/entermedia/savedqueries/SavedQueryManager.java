@@ -122,6 +122,7 @@ public class SavedQueryManager
 		data.setProperty("userid", inUser.getId());
 		data.setProperty("saveddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		savedsearcher.saveData(data, inUser);
+		inQuery.setId(data.getId());
 	}
 	protected void saveTerms(SearchQuery inQuery, Data data, Searcher termssearcher, User inUser)
 	{

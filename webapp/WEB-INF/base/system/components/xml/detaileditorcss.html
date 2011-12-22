@@ -22,7 +22,6 @@
 <div class="oeinputform">
 <div id="allerrors">
 </div>
-<table class="emdataeditor">
  #foreach( $detail in $details )
 	#set($val = false)
 	#set($target = "${detail.id}.value")
@@ -36,33 +35,30 @@
 	$!context.putPageValue("detail",$detail)
 	
 	#if ($detail.header)
-		<tr><td colspan="2">&nbsp;</td></tr>
 		#if ($detail.header != "blank")
-			<tr><td colspan="2" style="text-align:center;"><h4>$detail.header</h4></td></tr>
+			<div class="header"><h4>$detail.header</h4></div>
 		#end
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true") 
 	#if( $editrow || $val  || !$detail.isEditable()) 
 		#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)
-		<tr>
-			<td width="40px" class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
-				#if( $detail.hidelabel == true )
-				#else
-					$!detail.getText($context)
-				#end
-			</td>
-			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
-			#if( $editrow )	
-				$pages.include("$xmledithome/detailedit.html", $context)
-			#else  ##NOT EDITABLE
-				$pages.include("$xmledithome/detailreadonly.html", $context) 
+			#if( $detail.hidelabel == true )
+			#else
+				<h4 class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+						$!detail.getText($context)
+				</h4>
 			#end
-			#if ( $detail.note )
-				<span style="color:gray;font-style:italic;font-size:.9em;">$detail.note<span>
-			#end
-			</td>
-		</tr>
+		<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
+		#if( $editrow )	
+			$pages.include("$xmledithome/detailedit.html", $context)
+		#else  ##NOT EDITABLE
+			$pages.include("$xmledithome/detailreadonly.html", $context) 
+		#end
+		#if ( $detail.note )
+			<span style="color:gray;font-style:italic;font-size:.9em;">$detail.note<span>
+		#end
+		</div>
 	#end
 	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
 		#if($usedhtml)
@@ -72,7 +68,6 @@
 		#end
 	#end
 #end
-</table>
 </div>
 
 ##needed for fast loading HTML edit boxes

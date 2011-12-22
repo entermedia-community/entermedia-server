@@ -1,5 +1,4 @@
 #set($assettype = $context.getRequestParameter("assettype"))
-<br>
 <div id="metadataeditarea">
 #if($assettype)
 	#set($typesearcher = $searcherManager.getSearcher("$catalogid", "assettype"))

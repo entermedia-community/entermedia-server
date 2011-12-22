@@ -35,11 +35,13 @@
  $pages.include("$apphome/components/results/pages.html",$context)
 </div>
 		<script type="text/javascript">
-		jQuery(document).ready(function () { 
+		jQuery(document).ready(function () 
+		{ 
 			#set( $tab = $context.findValue("tab") )
-
-			jQuery("#$tab").attr("class", "current");
-			
+			#if( $tab )
+				jQuery("#$tab").attr("class", "current");
+			#end	
+//			jQuery("#eml-tabs a").live('click',function()
 			jQuery("#eml-tabs a").click(function(){
 				jQuery("#eml-tabs li").removeClass("current")
 				jQuery(this).parent().addClass("current");

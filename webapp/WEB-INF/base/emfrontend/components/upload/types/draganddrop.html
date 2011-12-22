@@ -4,7 +4,7 @@
 
 <table>
 <tr>
-<td width="190" style="padding-top: 10px;">
+<td width="190" style="padding-top: 53px;">
 <div class="em-rounded"  >
 <div class="emsectionheader"  ><h3>[[Drag Files Below]]</h3></div>
 <APPLET code="org.openedit.sync.DropBoxFilePickerApplet"
@@ -32,18 +32,17 @@
 <input type="hidden" name="searchtype" value="$page.searchtype"/>
 
 <div class="enabledwithpick">
-<br><br>
-		<table id="emfilelist" style="width: 700px;" class="emresultscontent">
-				<tr id="tableheader">
-					<th class="firstheader" ></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th  class="lastheader" > Asset Type</th>
-				</tr>
-				<tbody>
-				</tbody>
-		</table>
-<br>
 <ul class="embuttons">
 <li><a href="#" onclick="document.uploadwizard.submit()"><span>Upload</span></a></li>
 </ul>
+
+		<table id="emfilelist" style="width: 700px;" class="emresultscontent">
+				<!-- <tr id="tableheader">
+					<th class="firstheader" ></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th  class="lastheader" > Asset Type</th>
+				</tr> -->
+				<tbody>
+				</tbody>
+		</table>
 
 </div>
 
@@ -53,12 +52,17 @@
 		<input type="hidden" name="field" value="assettitle" />
 		<input type="hidden" name="field" value="assettype" />
 		<input type="hidden" name="field" value="editstatus" />
+		<input type="hidden" name="field" value="episode" />
+		<input type="hidden" name="field" value="title" />
 </form>
 </td>
 </tr>
 </table>
 
 <script type="text/javascript">
+
+
+
 		var oktosubmit = false;
 		var queuecompleted = false;
 		var idcounter = 0;
@@ -88,7 +92,7 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 		try 
 		{
 			var link = "$root/uploadrow.html";
-			
+			//alert( "$root/uploadrow.html?id=" + idcounter + "&name=" + names[i] + "&localpath=" + localpaths[i] + "&parentpath=" + parentpaths[i] + "&size=" + sizes[i]);
 			jQuery.ajax(
 			{
 			   type: "POST",
@@ -109,12 +113,60 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 			alert( ex);
 		}
 	}
+	if (jQuery('table#emfilelist tr[id^=row]').length>1){
+		jQuery('table#emfilelist tr#row0 input').click(function(){
+			if ($(this).siblings('a').length == 0){
+				var field = $(this).attr("name");	
+				var name = field.slice(field.indexOf(".")+1);
+				//alert(name);
+				var link = $(document.createElement('a'));
+				$(link).text("Apply to All").click(function(){
+					var value = $('table#emfilelist tr input[name="' + field +'"]').val();
+					var inputs = $('table#emfilelist tr input[name$="' + name +'"]');
+					inputs.val(value);
+				});
+				$(this).after(link);
+			}
+					
+		});
+		jQuery('table#emfilelist tr#row0 select').live("change", 
+			function(){
+				if ($(this).siblings('a').length == 0){
+					var field = $(this).attr("fieldname");
+					var link = $(document.createElement('a'));
+					$(link).text("Apply to All").click(
+							function(){
+								var value = $('table#emfilelist tr select[fieldname="' + field +'"]').val();
+								$('table#emfilelist tr select[fieldname="' + field +'"]').val(value);
+								if (field == 'title'){
+									var episodes = $('table#emfilelist tr select[fieldname="episode"]');
+									jQuery.each(episodes, function(index, items){ 
+										if(index>0){
+											$(this).find('option').remove();
+											var options = $('table#emfilelist tr select[fieldname="episode"]:first').children().clone();
+											$(this).append(options)
+										}
+									});
+								}
+							}
+					); 
+					$(this).after(link);
+				}
+			});
+	}
 }
+
+
 
 function removeUpload(inId) 
 		{
 			jQuery("#emfilelist #row" + inId).html("");			
 		}	   
 
+function updateEpisodes(inId)
+{
+	//var title = jQuery("#" + inId + "titleselect").val();
+	//jQuery("#" + inId + "episodeselect").load("$apphome/components/upload/types/dragsync/episodes.html?title=" + title + "&id=" + inId);
+}
 </script>
 

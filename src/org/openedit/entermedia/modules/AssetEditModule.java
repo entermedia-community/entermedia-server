@@ -793,7 +793,11 @@ public class AssetEditModule extends BaseMediaModule
 			Page page = (Page) iterator.next();
 			readMetaData(inReq, archive,"", page, tracker);
 		}
-		
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			
+		}		
 		//set the group view permissions if something was passed in
 		findUploadTeam(inReq, archive, tracker);
 
@@ -903,7 +907,8 @@ public class AssetEditModule extends BaseMediaModule
 			asset.addCategory(cat);
 		}
 		asset.setProperty("editstatus","1");
-		asset.setProperty("importstatus", "uploading");
+		//asset.setProperty("importstatus", "uploading");
+		asset.setProperty("importstatus", "imported");
 		asset.setProperty("previewtatus", "0");
 		asset.setProperty("owner", inReq.getUserName());
 		asset.setProperty("datatype", "original");

@@ -39,7 +39,11 @@ public class ConvertInstructions
 	{
 		addProperty(inName, inValue);
 	}
-	
+
+	public String get(String inName)
+	{
+		return getProperty(inName);
+	}
 	public String getProperty(String inName)
 	{
 		if( fieldProperties == null)

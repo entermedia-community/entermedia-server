@@ -1,27 +1,23 @@
-#if( $canviewuploadmulti)
 
-<div class="uipanel" id="emuploadstep3" align="center">
-	<div class="ui-widget-header">Multi File Upload</div>
-	<div class="ui-widget-content uploadform">
-		<div id="emuploadstep3">
-			$pages.include("$apphome/components/upload/types/draganddrop.html")</div>
-		<div id="emuploadstep2"></div>
-	</div>
-</div>
+	
+$pages.include("$apphome/components/upload/types/simpler.html")	
+			#if( $canviewuploadmulti)
+				<div align="right" style="  width: 600px; padding-top:10px;">
+				<a  class="ajax btn small" targetdivinner="eml-tab-content" href="$apphome/components/upload/types/draganddrop.html?oemaxlevel=3">Multiple File Uploader</a>
+				</div>
+			#end
 
-#else
+		<script type="text/javascript">
+		jQuery(document).ready(function () { 
+			#set( $tab = $context.findValue("tab") )
 
-<div id="eml-tab-content">
-<div id="eml-green-dialog" style="margin: 0px auto; width: 500px">
-<div id="eml-upload-container" class="uipanel " style="width: 500px; margin-top: 0;">
-	<div class="ui-widget-header">Upload a File</div>
-	<div class="ui-widget-content uploadform">
-		<div id="emuploadstep3" style="max-width: 500px;">
-			$pages.include("$apphome/components/upload/types/simple.html")
-		</div>
-	</div>
-	<div id="emuploadstep2"></div>
-</div>
-</div>
-</div>
-#end
+			jQuery("#$tab").attr("class", "current");
+			
+			jQuery("#eml-tabs a").click(function(){
+				jQuery("#eml-tabs li").removeClass("current")
+				jQuery(this).parent().addClass("current");
+			});
+		});
+		
+		</script>
+		
