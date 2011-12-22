@@ -336,7 +336,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		{
 			if( inSearch.getTermByDetailId("album") == null )
 			{
-				addUserProfileSearchFilters( inPageRequest,inSearch);
+				//addUserProfileSearchFilters( inPageRequest,inSearch);
 			}
 		}
 

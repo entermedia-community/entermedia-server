@@ -1,0 +1,50 @@
+
+<tr class="assetrow" id="assetrow_${assetid}" >
+	<td class="imagepad activityrow" valign="top"> 
+	<br/>
+	<h2>$asset.name</h2>
+<input type="hidden" name="itemid" value="$item.id"/>
+<input type="hidden" name="field" value="status"/>
+<input type="hidden" name="assetselect_${catalogid}" value="$asset.id"/>
+
+		#set( $catalogid = $asset.catalogId )
+	   	#set( $mediaarchive = $enterMedia.getMediaArchive($catalogid) )
+	   	#set( $sourcepath = $asset.sourcePath )
+	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+		#set( $tsize = "$home$thumbend" )
+		#set ($presetsearcher = $searcherManager.getList($catalogid, "convertpreset"))
+		
+		#if( $parenthits )
+			#set( $rootid = $parenthits.sessionId )
+		#else
+			#set( $rootid = $hits.sessionId )
+		#end
+			#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html?hitssessionid=$rootid" )
+		
+			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
+				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+				$context.putPageValue("cell", $asset)
+				$context.putPageValue("showdetails", "false")
+				#if( $type == "video")
+					$context.putPageValue("asset",$asset)
+					$pages.include("${apphome}/components/mediaviewer/player/index.html", $context)
+				#else
+					$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+				#end	
+			</a>
+		</td>
+		<td class="activityrow">
+
+	$context.putPageValue("data", $asset)	 
+	$context.putPageValue("view", "asset/previewlink")	
+	$context.putPageValue("searcher", $mediaarchive.getAssetSearcher())	
+	$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
+			
+ </td>
+      
+ </tr>	  
+
+  
+ 
+   
