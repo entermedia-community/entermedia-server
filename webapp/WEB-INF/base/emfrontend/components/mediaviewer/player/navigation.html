@@ -8,6 +8,8 @@
 #end
 </h2>
 
+#set( $link = "$cataloghome/downloads/preview/large/$asset.sourcepath/preview.jpg")
+
 #if( $hits )
 		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
 		#set($previous = $hits.previous($indexOf))
