@@ -3,56 +3,39 @@
 #set($resultsPage = "$resultsPage&page")
 #set($thispage = $hits.getPage())
 
-<table class="emnavigateboxes" cellspacing=0 cellpadding=0 align="right">
-		<tr>
-			<td nowrap >
-				#if( $hits.prevPage() )
-				<a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><img src="$home${themeprefix}/images/buttons/previous-button.png" align="absmiddle"  /></a>&nbsp;
-				#end
-			</td>
-		
-			<td >
-				<table>
-					<tr>
-						#set( $befores = $hits.linksBefore() )					
+#set($targetdiv = "emresultscontent")
+
+			<div id="pages">
+				<ul>
+					#if( $hits.prevPage() )
+					<li class="previous"><a class="ir ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" >Previous</a></li>
+					#end
+					#set( $befores = $hits.linksBefore() )					
 						#if($befores.size()!=0)
 						  #if($befores.get(0)>1)
-							<td  id="navbox"><a class="ajax" targetdiv="emresultscontent" href="$resultsPage=1'" >1</a></td>	
-						    <td>...</td>
+							<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=1'" >1</a></li>	
+						    <li class="ellipsis">...</li>
 						   #end
 						#end
-						#set( $afters = $hits.linksAfter() )					
-						
-						#foreach( $before in $befores )
-						<td  id="navbox"><a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$before" >$before</a></td>		
+						#set( $afters = $hits.linksAfter() )
+					#foreach( $before in $befores )
+						<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$before" >$before</a></li>		
+					#end
+						<li class="current"><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$thispage" >$!thispage</a></li>
+					#foreach( $after in $afters )
+						<li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$after">$after</a></li>		
+					#end
+					#set($size=${afters.size()})
+					#set( $size = $size - 1 )
+					#if($size>0)
+						#if ($afters.get($size)< $hits.getTotalPages() )
+							<li class="ellipsis">...</li>
+							<li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
 						#end
-						<td  id="navboxselected"><a  class="ajax" targetdiv="emresultscontent" href="$resultsPage=$thispage" >$!thispage</a></div></td>
-						#foreach( $after in $afters )
-						<td  id="navbox"><a  class="ajax" targetdiv="emresultscontent" href="$resultsPage=$after">$after</a></td>		
-						#end
-						#set($size=${afters.size()})
-						#set( $size = $size - 1 )
-						
-						
-						#if($size>0)
-							#if ($afters.get($size)< $hits.getTotalPages() )
-								<td>...</td>
-								<td  id="navbox"><a  class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></td>	
-							#end
-						#end
-					
-					</tr>
-				</table>
-			</td>
-			
-			<td nowrap valign="center">
-				#if ( $hits.nextPage() )
-				&nbsp;<a class="ajax" targetdiv="emresultscontent" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n"><img src="$home${themeprefix}/images/buttons/next-button.png" align="absmiddle"  /></a>
-				#end
-				
-				
-			</td>
-		</tr>
-	</table>
-	
-#end	
+					#end
+					#if ( $hits.nextPage() )
+					<li class="next"><a class="ir ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n">Next</a>
+					#end
+				</ul>
+			</div>
+	#end
