@@ -1,0 +1,7 @@
+<page>
+	<path-action name="OrderModule.findOrderAssets"/>
+	<path-action name="OrderModule.updatePendingOrders"/>
+	<path-action name="Date.loadFormat" />
+	<page-action bean="pathUtils" class="com.openedit.util.PathUtilities" name="PageValue.loadPageVariable"/>
+
+</page>

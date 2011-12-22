@@ -1,0 +1,45 @@
+<div style="text-align: left;">
+#set($order = $data)
+
+	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	#set($owner = $userManager.getUser($order.userid))
+	
+<h2>Preview Assets Order #$order.id </h2>
+<p>Sent by: $owner on $datestorageutil.formatDate($order.date,"MMMMM dd, yyyy")
+<table>
+<tr>
+<td>
+	
+
+
+</td>
+<td>
+#if( $order.orderstatus == "complete")
+	##to much work to support group downloads yet
+#else
+<p>Order still being processed. <a href="./index.html?orderid=$order.id">refresh</a>
+</p>
+#end
+</td>
+</tr>
+</table>
+
+<br>
+
+#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+$context.putPageValue("searcher", $orderitemsearcher)	 
+
+<table>		
+		#foreach( $item in $orderitems )
+			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("item", $item)
+			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+			$pages.include("${apphome}/views/activity/preview/row.html", $context)
+		#end
+</table>
+
+
+
+
+</div>
