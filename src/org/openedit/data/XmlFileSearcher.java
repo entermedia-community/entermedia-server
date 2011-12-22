@@ -106,6 +106,9 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	public Object searchById(String inId)
 	{
+		if(inId ==  null){
+			return null;
+		}
 //		return super.searchById(inId);
 		return searchByField("id",inId);
 	}
