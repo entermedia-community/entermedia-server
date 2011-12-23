@@ -78,16 +78,6 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 	
 	for( var i=0;i<names.length;i++)
 	{
-		/*
-		var newField = "<input type='hidden' name='localfilepath' value='" + pathsa[i] +"' />";
-		inserthere.append(newField);
-
-		var newFieldP = "<input type='hidden' name='parentpath' value='" + parentsa[i] +"' />";
-		inserthere.append(newFieldP);
-
-		var newFieldSize = "<input type='hidden' name='filesize' value='" + sizea[i] +"' />";
-		inserthere.append(newFieldSize);
-		*/
 	    queuecompleted = false;
 		try 
 		{
@@ -104,7 +94,8 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 			   		idcounter++;
 					jQuery("#emfilelist > tbody:last").append(html);
 					//swfu.startUpload(file.id);
-					jQuery(".enabledwithpick").css("visibility","visible");			   
+					jQuery(".enabledwithpick").css("visibility","visible");	
+					jQuery('ul.embuttons').css('visibility', 'visible');
 			   }
 			 });
 		}
@@ -160,7 +151,15 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 
 function removeUpload(inId) 
 		{
-			jQuery("#emfilelist #row" + inId).html("");			
+			var assetToRemove = jQuery("#emfilelist #row" + inId); 
+			assetToRemove.next().remove();
+			assetToRemove.remove();
+			
+			jQuery("#emfilelist #row" + inId).remove();	
+			if (jQuery('table#emfilelist tr#[id^=row]').length == 0){
+				//jQuery('ul.embuttons').remove();
+				jQuery('ul.embuttons').css('visibility', 'hidden');
+			}
 		}	   
 
 function updateEpisodes(inId)
