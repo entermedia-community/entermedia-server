@@ -35,7 +35,7 @@
 	$!context.putPageValue("detail",$detail)
 	
 	#if ($detail.header)
-		#if
+		#if ($detail.header != "blank")
 			<div class="header"><h4>$detail.header</h4></div>
 		#end
 	#end
