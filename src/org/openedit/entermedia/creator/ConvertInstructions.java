@@ -13,7 +13,7 @@ import com.openedit.util.PathUtilities;
 public class ConvertInstructions
 {
 	protected Dimension fieldMaxScaledSize;//new Dimension( 150, Integer.MAX_VALUE );
-	protected int fieldPageNumber = 1;
+	protected int fieldPageNumber = 1;  //This is 1 based
 	protected boolean fieldWatermark;
 	//protected String fieldOutputExtension;
 	//protected String fieldInputType;
@@ -71,7 +71,10 @@ public class ConvertInstructions
 	{
 		fieldMaxScaledSize = new Dimension(width, height);
 	}
-
+	/**
+	 * This starts at 1
+	 * @return
+	 */
 	public int getPageNumber() {
 		return fieldPageNumber;
 	}
