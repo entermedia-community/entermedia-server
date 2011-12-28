@@ -1,3 +1,5 @@
 <page>
 	<property name="section">upload</property>
+	<inner-layout>${themeprefix}/layouts/uploadlayout.html</inner-layout>
+
 </page>
