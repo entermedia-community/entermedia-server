@@ -1,4 +1,6 @@
 <page>
-	<path-action name="UserProfileModule.loadUserPreferences" alltypes="true" />	
+	<page-action name="DataEditModule.loadData" alltypes="true"/>   
+	<property name="searchtype">assettype</property>
+	<property name="hitsname">hits</property>
 </page>
 

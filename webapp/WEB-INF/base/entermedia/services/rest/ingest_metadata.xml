@@ -1,44 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
+
+#set($searcher = $searcherManager.getSearcher($catalogid, "assettype"))
 <rsp stat="ok">
 	<assets>
-		<asset name="Audio">
+		#foreach($item in $searcher.fieldSearch("id","*","textUp"))
+		<asset id="$item.id" name="$item">
+			#set( $mediaarchive = $entermedia.getMediaArchive($catalogid) )
+			#set($searcher = $mediaarchive.getAssetSearcher())
+			#set($details = $searcher.getDetailsForView("asset/assettype/$item.id/upload", $user))
+			
 			<attributes>
-				<attribute>
-					<name>description</name>
-					<type>text</type>
-				</attribute>
-				<attribute>
-					<name>episode</name>
-					<type>list</type>
-				</attribute>
-				<attribute>
-					<name>assettype</name>
-					<type>list</type>
-				</attribute>
-				<attribute>
-					<name>extrakeywords</name>
-					<type>text</type>
-				</attribute>
-				<attribute>
-					<name>name</name>
-					<type>text</type>
-				</attribute>
-				<attribute>
-					<name>title</name>
-					<type>list</type>
-				</attribute>
+			#foreach( $element in $details)
+				<attribute>$!element.text</attribute>
+				<attribute>#if("$!element.type" == "")text#else$!element.type#end</attribute>
+			#end
 			</attributes>
 		</asset>
+		#end
 	</assets>
-	<lists>
-		<list name="episode">
-			<value id=""></value>
-		</list>
-		<list name="assettype">
-			<value id=""></value>
-		</list>
-		<list name="title">
-			<value id=""></value>
-		</list>
-	</lists>
 </rsp>
+
+
+
+
