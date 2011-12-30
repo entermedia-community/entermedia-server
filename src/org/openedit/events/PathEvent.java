@@ -441,17 +441,20 @@ public class PathEvent implements Comparable
 		setEnabled(Boolean.parseBoolean(inPage.getProperty("enabled")));
 		setPeriod(inPage.getProperty("period"));
 	}
-
+	public String toString()
+	{
+		if( getPage() != null)
+		{
+			return getPage().getDirectoryName() + "/" + getPage().getName();
+		}
+		return super.toString();
+	}
 	public int compareTo(Object inO)
 	{
 		PathEvent event = (PathEvent) inO;
-//		if( getLastRunTime() > event.getLastRunTime() )
-//		{
-//			return 1;
-//		}
-		String name = event.getName();
+		String name = event.toString();
 		
-		return getName().compareTo(name);
+		return toString().compareTo(name);
 	}
 
 }

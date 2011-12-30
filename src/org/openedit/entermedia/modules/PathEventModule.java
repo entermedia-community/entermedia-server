@@ -21,7 +21,7 @@ public class PathEventModule extends BaseModule
 	public boolean runEvent(WebPageRequest inReq)
 	{
 		String runpath = inReq.findValue("runpath");
-		Page page  = getPageManager().getPage(runpath);
+		Page page  = getPageManager().getPage(runpath,true);
 		
 		//WebPageRequest child = inReq.copy(page);
 		
