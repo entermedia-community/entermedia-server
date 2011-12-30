@@ -159,8 +159,8 @@ public class AssetEditor {
 		// 2 - web-inf/data/comments/oldsourcepath
 		// to: web.inf/data/comments/newsourcepath
 		CommentArchive carchive = getCommentArchive();
-		Collection allcomments = carchive.loadComments("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/comments/" + oldSourcePath);
-		allcomments.addAll(carchive.loadComments("/" + getMediaArchive().getCatalogId() + "/data/comments/"	+ oldSourcePath));
+		Collection allcomments = carchive.loadComments(getMediaArchive().getCatalogId(),  oldSourcePath);
+		allcomments.addAll(carchive.loadComments( getMediaArchive().getCatalogId() , oldSourcePath));
 		carchive.saveComments("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/comments/" + newSourcePath, allcomments);
 
 		// Move Originals
