@@ -206,6 +206,9 @@ public class LuceneIndexer
 			updateProperty(inData, doc, keywords, detail);
 		}
 		doc.add(new Field("description", keywords.toString(), Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
+		if(inData.getSourcePath() != null){
+			doc.add(new Field("sourcepath",inData.getSourcePath(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
+		}
 	}
 
 	public void updateProperty(Data inData, Document doc, StringBuffer keywords, PropertyDetail detail)

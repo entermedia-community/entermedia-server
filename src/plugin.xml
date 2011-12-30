@@ -1032,7 +1032,7 @@
 		<property name="root"><ref bean="root"/></property>	
 	</bean>
 	
-	<bean id="emailSearcher" class="org.entermedia.email.LuceneEmailSearcher" singleton="false">
+	<bean id="emailSearcher" class="org.entermedia.email.EmailSearcher" singleton="false">
 		<property name="emailArchive"><ref bean="emailArchive"/></property>	
 		<property name="rootDirectory"><ref bean="root"/></property>	
 	</bean>
@@ -1378,7 +1378,11 @@
 		<property name="prefix"><value>profiles</value></property>
 	</bean>
 	
-	
+	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
+				<property name="searcherManager"><ref bean="searcherManager" /></property>
+		
+		
+	</bean>
 	
 	
 </beans>

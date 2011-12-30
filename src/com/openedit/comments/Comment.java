@@ -61,7 +61,7 @@ public class Comment extends BaseData
 			//throw new OpenEditException(e);
 		}
 	}
-
+   //
 	public Date getDate() {
 		if (fieldDate == null)
 			fieldDate = new Date();

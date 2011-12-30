@@ -6,8 +6,6 @@ package org.entermedia.email;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -44,6 +42,8 @@ public class TemplateWebEmail extends WebEmail implements Data
 	protected PageManager fieldPageManager;
 	protected List fieldFileAttachments;
 	protected Date fieldSendDate;
+	protected String fieldSourcePath;
+	
 	public String getProperty(String inKey) {
 		if("from".equals(inKey)){
 			return getFrom();
@@ -390,16 +390,15 @@ public class TemplateWebEmail extends WebEmail implements Data
 	{
 		
 	}
-	public String getSourcePath()
-	{
-		// TODO Auto-generated method stub
-		return null;
+	
+	public String getSourcePath() {
+		return fieldSourcePath;
 	}
-	public void setSourcePath(String inSourcepath)
-	{
-		// TODO Auto-generated method stub
-		
+
+	public void setSourcePath(String sourcePath) {
+		fieldSourcePath = sourcePath;
 	}
+
 	public void configureAndSend(WebPageRequest inReq, String inTemplate,Recipient inRecipient) throws OpenEditException, MessagingException
 	{
 		List one = new ArrayList();

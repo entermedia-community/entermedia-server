@@ -42,8 +42,8 @@ public class EmailSearchModule extends BaseModule{
 	}
 	public void loadEmail(WebPageRequest inReq) throws Exception
 	{
-		String id = inReq.findValue("id");
-		TemplateWebEmail email =  getEmailArchive(inReq).loadEmail(id);
+		String id = inReq.getRequestParameter("id");
+		TemplateWebEmail email =  (TemplateWebEmail) getEmailArchive(inReq).getEmailSearcher().searchById(id);
 		
 		inReq.putPageValue("email", email);
 	}

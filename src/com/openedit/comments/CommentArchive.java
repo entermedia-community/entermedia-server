@@ -100,10 +100,10 @@ public class CommentArchive
 
 		return comment;
 	}
-	public Set<User> loadUsersWhoCommented(String inPath)
+	public Set<User> loadUsersWhoCommented(String inCatalogId, String inPath)
 	{
 		Set<User> usernames = GenericsUtil.createSet();
-		for (Iterator iterator = loadComments(inPath).iterator(); iterator.hasNext();)
+		for (Iterator iterator = loadComments(inCatalogId, inPath).iterator(); iterator.hasNext();)
 		{
 			Comment c = (Comment) iterator.next();
 
@@ -116,20 +116,23 @@ public class CommentArchive
 	{
 		String path = "/WEB-INF/data/" +  inAsset.getCatalogId() + "/comments/" + inAsset.getSourcePath() + ".xml";
 		Page page = getPageManager().getPage(path);
+		if(!page.exists()){
+			 path = "/WEB-INF/data/" +  inAsset.getCatalogId() + "/comments/" + inAsset.getSourcePath() + "/folder.xml";
+			 page = getPageManager().getPage(path);
+		}
+		
 		return loadComments(page);
 		
 	}
-	public Collection loadComments(String inPath)
+	public Collection loadComments(String inCatalogId, String inPath)
 	{
-		if(inPath.endsWith("/"))
-		{
-			inPath = inPath + "folder.xml";
+		String path = "/WEB-INF/data/"+inCatalogId + "/comments/" + inPath + ".xml";
+		Page page = getPageManager().getPage(path);
+		if(!page.exists()){
+			 path = "/WEB-INF/data/" +  inCatalogId + "/comments/" + inPath + "/folder.xml";
+			 page = getPageManager().getPage(path);
 		}
-		if (!inPath.endsWith(".xml"))
-		{
-			inPath = inPath + ".xml";
-		}
-		Page page = getPageManager().getPage(inPath);
+		
 		return loadComments(page);
 	}
 
@@ -203,9 +206,9 @@ public class CommentArchive
 		saveComments(inPage, comments);
 	}
 	
-	public Comment getLastComment(String inSourcePath)
+	public Comment getLastComment(String inCatalogId,String inSourcePath)
 	{
-		Collection comments = loadComments(inSourcePath);
+		Collection comments = loadComments(inCatalogId, inSourcePath);
 		if(comments.size() > 0)
 		{
 			return (Comment)comments.toArray()[comments.size() - 1];
