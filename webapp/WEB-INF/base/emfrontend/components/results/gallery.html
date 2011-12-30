@@ -23,6 +23,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			#set($count = 0)
 			
 			<div  id="emslidesheet" >
+			#set( $rootid = $hits.sessionId )
 			
 			#foreach ($hit in $hits.getPageOfHits())
 		<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
