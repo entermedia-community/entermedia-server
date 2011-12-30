@@ -1,25 +1,13 @@
 package org.entermedia.email;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
 import org.openedit.Data;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.repository.ContentItem;
-import org.openedit.users.LuceneUserSearcher;
-import org.openedit.xml.ElementData;
 
-import com.openedit.OpenEditException;
-import com.openedit.OpenEditRuntimeException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.page.manage.PageManager;
@@ -94,6 +82,7 @@ public class EmailSearcher extends BaseLuceneSearcher implements Searcher {
 	private void populateEmail(IndexWriter inWriter, TemplateWebEmail inEmail, boolean add)  {
 		
 		super.updateIndex(inWriter,  inEmail);
+		
 //		try {
 //			if (add) {
 //				inWriter.addDocument(doc, getAnalyzer());
@@ -123,6 +112,11 @@ public class EmailSearcher extends BaseLuceneSearcher implements Searcher {
 	}
 	
 	
+	public Object searchById(String inId) {
+		Data hit =(Data) super.searchById(inId);
+		String sourcepath = hit.getSourcePath();
+		return getEmailArchive().loadEmail(sourcepath);
+	}
 	
 	
 }

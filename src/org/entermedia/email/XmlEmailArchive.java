@@ -119,6 +119,7 @@ public class XmlEmailArchive implements EmailArchive {
 	}
 
 	
+	//This is a sourcepath now.
 	
 	public TemplateWebEmail loadEmail(String inId) throws OpenEditException {
 
@@ -179,8 +180,8 @@ public class XmlEmailArchive implements EmailArchive {
 			User user = getUserManager().getUser(userId);
 			email.setUser(user);
 		}
-		
-		
+		email.setSourcePath(inId);
+		email.setProperty("sourcepath", inId);
 		return email;
 
 	}
