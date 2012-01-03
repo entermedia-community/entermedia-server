@@ -1,0 +1,5 @@
+<page>
+	<page-action name="DataEditModule.loadData" alltypes="true"/>
+	<path-action name="DataEditModule.search" alltypes="true"/>
+	<property name="hitsname">datalist</property>
+</page>

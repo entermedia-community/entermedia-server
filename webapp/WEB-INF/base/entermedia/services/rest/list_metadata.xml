@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+	#set( $mediaarchive = $entermedia.getMediaArchive($catalogid) )
+	#set($searcher = $mediaarchive.getAssetSearcher())
+	
+	#foreach( $detail in $searcher.getPropertyDetails() )
+	<list id="$detail.id" type="#if("$!detail.datatype" == "")text#else$!detail.datatype#end" #if("$!detail.foreignkeyid" != "")foreignkey="$!detail.foreignkeyid"#end
+		name="$detail.text" /> 
+	#end
+
+</rsp>

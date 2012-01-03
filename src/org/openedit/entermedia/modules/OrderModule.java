@@ -168,6 +168,8 @@ public class OrderModule extends BaseMediaModule
 				order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			}
 
+
+			order.setProperty("hash_key", order.hashCode()+"");
 			getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 
 			return order;
@@ -527,13 +529,19 @@ public class OrderModule extends BaseMediaModule
 	public Order createOrderWithItems(WebPageRequest inReq)
 	{
 		String[] assetids = inReq.getRequestParameters("assetid");
+		Order order = null;
 		if( assetids != null)
 		{
-			return createOrderFromAssets(inReq);
+			order = createOrderFromAssets(inReq);
 		}
-		return createOrderFromSelections(inReq);
+		else
+		{
+			order = createOrderFromSelections(inReq);
+		}
+		return order;
 	}
 	
+
 	public Order createOrderFromAssets(WebPageRequest inReq)
 	{
 		String catalogId = inReq.findValue("catalogid");

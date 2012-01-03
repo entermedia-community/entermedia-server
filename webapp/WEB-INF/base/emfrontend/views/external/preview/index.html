@@ -1,5 +1,12 @@
 <div style="text-align: left;">
 #set($order = $data)
+#set($key = $order.hash_key)
+#set($hash = $context.getRequestParameter("key"))
+
+#if($key == $hash && "$!key" != "")
+
+	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	#set($owner = $userManager.getUser($order.userid))
 
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
@@ -38,8 +45,9 @@ $context.putPageValue("searcher", $orderitemsearcher)
 			$pages.include("${apphome}/views/activity/preview/row.html", $context)
 		#end
 </table>
-
-
+#else
+<h2>We apologize, but were unable to display the asset preview at this time.</h2>
+#end
 
 
 </div>

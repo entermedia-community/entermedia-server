@@ -1,8 +1,7 @@
-<div style="text-align: left;">
+`<div style="text-align: left;">
 #set($order = $data)
 
-	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
-	#set($owner = $userManager.getUser($order.userid))
+
 	
 <h2>Download </h2>
 
@@ -41,7 +40,6 @@ $context.putPageValue("searcher", $orderitemsearcher)
 			$pages.include("${apphome}/views/activity/row.html", $context)
 		#end
 </table>
-
 
 
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+	#set( $mediaarchive = $entermedia.getMediaArchive($catalogid) )
+	#set( $searchtype = $context.getRequestParameter("searchtype") )
+	#set( $parent = $context.getRequestParameter("field") )
+	#set( $parentid = $context.getRequestParameter("title.value") )
+	<list id="$searchtype" foreignkey="$!parent" foreignkeyid="$!parentid">
+		#foreach($hit in $datalist)
+			<value 
+			#foreach( $detail in $searcher.getPropertyDetails() )
+				$detail="$!hit.get("$detail")" 
+			#end
+			></value>
+		#end
+	</list>
+</rsp>

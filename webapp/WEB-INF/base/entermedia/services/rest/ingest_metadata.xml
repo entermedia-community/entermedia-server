@@ -11,8 +11,7 @@
 			
 			<attributes>
 			#foreach( $element in $details)
-				<attribute>$!element.text</attribute>
-				<attribute>#if("$!element.type" == "")text#else$!element.type#end</attribute>
+				<attribute id="$!element.id" type="#if("$!element.type" == "")text#else$!element.type#end">$!element.text</attribute>
 			#end
 			</attributes>
 		</asset>
