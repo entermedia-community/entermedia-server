@@ -28,9 +28,9 @@ public class SftpUtil  {
 	protected String fieldKeyFile;
 	protected boolean fieldTrust;
 	protected String fieldKnownHosts;
-	protected String fieldUsername = "root";	
-	protected String fieldPassword = "spw8j3nn6";
-	protected String fieldHost = "dev.ijsolutions.ca";
+	protected String fieldUsername;	
+	protected String fieldPassword;
+	protected String fieldHost;
 	protected int fieldPort =22;
 	protected Session fieldSession;
 	protected  Channel channel;

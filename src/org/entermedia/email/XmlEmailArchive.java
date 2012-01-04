@@ -118,6 +118,9 @@ public class XmlEmailArchive implements EmailArchive {
 		return count;
 	}
 
+	
+	//This is a sourcepath now.
+	
 	public TemplateWebEmail loadEmail(String inId) throws OpenEditException {
 
 		Page page = getPageManager().getPage(getEmailPath() + inId + ".xml");
@@ -126,9 +129,9 @@ public class XmlEmailArchive implements EmailArchive {
 			return null;
 		}
 		TemplateWebEmail email = getPostMail().getTemplateWebEmail();
-		email.setId(inId);
+		
 		Element root = getXmlUtil().getXml(page.getReader(), "UTF-8");
-
+		email.setId(root.attributeValue("id"));
 		email.setFrom(root.elementText("from"));
 		ArrayList to = new ArrayList();
 		for (Iterator iterator = root.elementIterator("to"); iterator.hasNext();) {
@@ -177,14 +180,16 @@ public class XmlEmailArchive implements EmailArchive {
 			User user = getUserManager().getUser(userId);
 			email.setUser(user);
 		}
-
+		email.setSourcePath(inId);
+		email.setProperty("sourcepath", inId);
 		return email;
 
 	}
 
-	private String getEmailPath() {
+	
+	public String getEmailPath() {
 
-		return "/WEB-INF/data/" + getCatalogId() + "/emails/";
+		return "/WEB-INF/data/" + getCatalogId() + "/email/";
 	}
 
 	public void saveEmail(TemplateWebEmail inEmail, User inUser) {
@@ -194,6 +199,7 @@ public class XmlEmailArchive implements EmailArchive {
 			inEmail.setId(String.valueOf(id));
 		}
 		Element root = DocumentHelper.createElement("email");
+		root.addAttribute("id", inEmail.getId());
 		if (inEmail.getFrom() != null) {
 			root.addElement("from").setText(inEmail.getFrom());
 		}

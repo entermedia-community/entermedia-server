@@ -95,7 +95,7 @@ public class ImageMagickImageCreator extends BaseImageCreator {
 									// just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 
-		if (inStructions.getMaxScaledSize() != null && offset == null) {
+		if (inStructions.getMaxScaledSize() != null && offset == null && inStructions.getPageNumber() == 1 ) {
 			if (input == null
 					&& inStructions.getMaxScaledSize().getWidth() < 300) {
 				input = getPageManager().getPage(
@@ -248,27 +248,30 @@ public class ImageMagickImageCreator extends BaseImageCreator {
 				}
 			}
 			// end of probably wrong section
-			com.add("-resize");
-
-			String prefix = null;
-			String postfix = null;
-
-			// We need to flip the width and height if we have a rotated image.
-			// This allows us to crop first to speed up the rotation on a
-			// smaller image
-			if (inStructions.getRotation() == 90
-					|| inStructions.getRotation() == 270) {
-				prefix = String.valueOf(inStructions.getMaxScaledSize().height);
-				postfix = String.valueOf(inStructions.getMaxScaledSize().width);
-			} else {
-				prefix = String.valueOf(inStructions.getMaxScaledSize().width);
-				postfix = String
-						.valueOf(inStructions.getMaxScaledSize().height);
-			}
-			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-				com.add("\"" + prefix + "x" + postfix + "\"");
-			} else {
-				com.add(prefix + "x" + postfix);
+			if (!inStructions.isCrop()) 
+			{
+				com.add("-resize");
+	
+				String prefix = null;
+				String postfix = null;
+	
+				// We need to flip the width and height if we have a rotated image.
+				// This allows us to crop first to speed up the rotation on a
+				// smaller image
+				if (inStructions.getRotation() == 90
+						|| inStructions.getRotation() == 270) {
+					prefix = String.valueOf(inStructions.getMaxScaledSize().height);
+					postfix = String.valueOf(inStructions.getMaxScaledSize().width);
+				} else {
+					prefix = String.valueOf(inStructions.getMaxScaledSize().width);
+					postfix = String
+							.valueOf(inStructions.getMaxScaledSize().height);
+				}
+				if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+					com.add("\"" + prefix + "x" + postfix + "\"");
+				} else {
+					com.add(prefix + "x" + postfix);
+				}
 			}
 		}
 

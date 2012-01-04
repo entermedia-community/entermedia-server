@@ -35,21 +35,21 @@ public class MetadataPdfExtractor extends MetadataExtractor
 			{
 				PdfParser parser = new PdfParser();
 
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				InputStream in;
+//				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				InputStream in = null;
 				try
 				{
 					in = new FileInputStream(inFile);
-					try
-					{
-						new OutputFiller().fill(in, out);
-					}
-					finally
-					{
-						FileUtils.safeClose(in);
-					}
-					byte[] bytes = out.toByteArray();
-					Parse results = parser.parse(bytes); //Do we deal with encoding?
+//					try
+//					{
+//						new OutputFiller().fill(in, out);
+//					}
+//					finally
+//					{
+//						FileUtils.safeClose(in);
+//					}
+//					byte[] bytes = out.toByteArray();
+					Parse results = parser.parse(in); //Do we deal with encoding?
 					//We need to limit this size
 					inAsset.setProperty("fulltext", results.getText());
 					if( inAsset.getInt("width") == 0)
@@ -82,6 +82,10 @@ public class MetadataPdfExtractor extends MetadataExtractor
 				{
 					e.printStackTrace();
 					return false;
+				}
+				finally
+				{
+					FileUtils.safeClose(in);
 				}
 
 				return true;

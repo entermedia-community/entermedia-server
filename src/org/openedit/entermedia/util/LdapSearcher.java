@@ -17,6 +17,7 @@ import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.users.User;
+import com.openedit.users.UserManager;
 import com.openedit.util.LDAP;
 
 public class LdapSearcher extends BaseSearcher 
@@ -25,7 +26,19 @@ public class LdapSearcher extends BaseSearcher
 	protected XmlArchive fieldXmlArchive;
 	protected String fieldDomain;
 	protected Map fieldServers;
+	protected UserManager fieldUserManager;
 	
+	
+	public UserManager getUserManager()
+	{
+		return fieldUserManager;
+	}
+
+	public void setUserManager(UserManager inUserManager)
+	{
+		fieldUserManager = inUserManager;
+	}
+
 	protected Map getServers()
 	{
 		if (fieldServers == null)
@@ -46,6 +59,19 @@ public class LdapSearcher extends BaseSearcher
 			server.setDomain(ldapconfig.get("domain"));
 			server.setMaxLdapResults(Integer.parseInt(ldapconfig.get("maxldapresults")));
 			server.setServerName(ldapconfig.get("servername"));
+			
+			String username = ldapconfig.get("username");
+			if( username != null)
+			{
+				User user = getUserManager().getUser(username);
+				String password = getUserManager().decryptPassword(user);
+				server.authenticate(user,password);
+				if( !server.connect() )
+				{
+					throw new OpenEditException("Could not connect as user " + username);
+				}
+			}			
+			
 			getServers().put("default", server);
 		}
 		return server;

@@ -1,15 +1,30 @@
 $!request.getAttribute( "oe-exception")
-
+<div class="col4 login-form">
 	#if($user)
 		<p>[[You are logged in as]] $user</p>		
 	#end
-<h1>[[Login As]]</h1>
-
 		#set($loginok = $context.getRequestParameter("loginokpage"))
 		##if( !$loginok )
 		 ##set( $loginok = $apphome )
 		##end 
-		<form name="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
+			<input type="hidden" name="loginokpage" value="$!loginok"/>
+			<label for="login-email">[[Email]]</label>
+			<input class="field" type="text" id="accountname" name="accountname" />
+			
+			<label for="login-password">[[Password]]</label>
+			<input class="field" name="password" type="password" />
+			
+			<input class="btn float-right" name="submit" type="submit" id="login-submit" value="[[Login]]" />
+			#if ( $context.getPageValue("oe-exception") )
+				<div style="border: 1px solid black; width: 60%; text-align: center">$context.getPageValue("oe-exception")</div>
+				$context.removePageValue("oe-exception")
+			#end
+		</form>
+		
+		<p class="password-helper"><a href="$home$content.loginroot/sendpassword.html">[[password helper]]</a></p>
+</div>	
+<!--		<form name="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<input type="hidden" name="loginokpage" value="$!loginok"/>
 			<table class="oepropertiestable">
 			<tr><td class="emdatafield">[[Email]]:</td><td class="emdatafieldvalue"><INPUT id="accountname" name="accountname"  /> </td>
@@ -31,7 +46,7 @@ $!request.getAttribute( "oe-exception")
 			
 		</form>
 <br>
-		<p><a href="$home$content.loginroot/sendpassword.html">[[password helper]]</a></p>
+		<p><a href="$home$content.loginroot/sendpassword.html">[[password helper]]</a></p> -->
 
 	<script language="JavaScript" >
 
