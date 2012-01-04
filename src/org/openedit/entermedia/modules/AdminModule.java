@@ -15,6 +15,8 @@ package org.openedit.entermedia.modules;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +31,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.users.AllowViewing;
 import org.openedit.users.PasswordHelper;
 import org.openedit.users.UserSearcher;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -387,6 +390,26 @@ public class AdminModule extends BaseModule
 				getUserManager().saveUser(inUser);
 				return false;
 			}
+			
+			// check validation
+			String lastTime= inUser.getLastLoginTime(); 
+			if(lastTime != null){
+				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
+				if(duration >-1){
+					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
+					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
+					if( eslapsedPeriod > duration){
+						inReq.putPageValue("inactive", true);
+						inReq.putSessionValue("inactive", true);
+						inReq.putPageValue("inactiveuser", inUser);
+						inReq.putSessionValue("active-duration", String.valueOf(duration));
+						return false;
+					}
+					
+				}
+			}
+			
+			
 			inReq.removeSessionValue("userprofile");
 			inReq.putSessionValue("user", inUser);
 			// user is now logged in
