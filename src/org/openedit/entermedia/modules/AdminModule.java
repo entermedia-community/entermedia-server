@@ -400,23 +400,23 @@ public class AdminModule extends BaseModule
 				
 			}
 			
-			// check validation
-			String lastTime= inUser.getLastLoginTime(); 
-			if(lastTime != null){
-				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
-				if(duration >-1){
-					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
-					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
-					if( eslapsedPeriod > duration){
-						inReq.putPageValue("inactive", true);
-						inReq.putSessionValue("inactive", true);
-						inReq.putPageValue("inactiveuser", inUser);
-						inReq.putSessionValue("active-duration", String.valueOf(duration));
-						return false;
-					}
-					
-				}
-			}
+//			// check validation
+//			String lastTime= inUser.getLastLoginTime(); 
+//			if(lastTime != null){
+//				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
+//				if(duration >-1){
+//					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
+//					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
+//					if( eslapsedPeriod > duration){
+//						inReq.putPageValue("inactive", true);
+//						inReq.putSessionValue("inactive", true);
+//						inReq.putPageValue("inactiveuser", inUser);
+//						inReq.putSessionValue("active-duration", String.valueOf(duration));
+//						return false;
+//					}
+//					
+//				}
+//			}
 			
 			
 			inReq.removeSessionValue("userprofile");
