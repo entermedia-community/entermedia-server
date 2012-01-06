@@ -1379,10 +1379,26 @@
 	</bean>
 	
 	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
-				<property name="searcherManager"><ref bean="searcherManager" /></property>
-		
-		
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
+
+	<bean id="ffMpegVideoCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager">
+			<ref bean="scriptManager" />
+		</property>
+
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+		<property name="exec">
+			<ref bean="exec" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="scriptName"><value>ffmpeg</value></property>
+	</bean>
+
 	
 	
 </beans>

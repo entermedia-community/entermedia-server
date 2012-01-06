@@ -8,7 +8,7 @@
 #end
 #set( $source = "$home/$catalogid/downloads/converted/cache/${sourcepath}/video.mp4" )
 #set( $thumb = "$home/$catalogid/downloads/preview/large/${sourcepath}/thumb.jpg" )
-<a href="$source" style="background-image:url($thumb)" class="mediaplayer">
+<a href="$source" style="background-image:url('$thumb')" class="mediaplayer">
 	<img src="$root/play_large.png" alt="$asset"/> 
 </a> 
 
@@ -25,6 +25,8 @@ a.mediaplayer{
   	margin-left: auto;
     margin-right: auto;
 	border:1px solid #999;
+	background-repeat:no-repeat;
+	background-position:center; 
 }
 /* play button */
 a.mediaplayer img {
