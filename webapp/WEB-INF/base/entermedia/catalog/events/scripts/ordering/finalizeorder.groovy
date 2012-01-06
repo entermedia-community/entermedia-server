@@ -56,18 +56,22 @@ protected void sendEmail(Order inOrder) {
 		String appid = inOrder.get("applicationid");
 
 
+		String adminEmailAddress = null
+		boolean isDownload = inOrder.getOrderType()=="download"
+		boolean isPreview = inOrder.getOrderType()=="email"
+		
 		if(publishid != null){
 			Data dest = mediaarchive.getSearcherManager().getData(mediaarchive.getCatalogId(), "publishdestination", publishid);
-			String email = dest.get("administrativeemail");
-			if(email != null){
-				sendEmail(context, email, "/${appid}/views/activity/email/admintemplate.html");
-				//TODO: Save the fact that email was sent back to the publishtask?
+			adminEmailAddress = dest.get("administrativeemail");
+			if(adminEmailAddress != null && !isPreview && !isDownload){
+				context.setRequestParameter("ordertype", inOrder.getOrderType());
+				sendEmail(context, adminEmailAddress, "/${appid}/views/activity/email/admintemplate.html");
 			}
 		}
 		String emailto = inOrder.get('sharewithemail');
 		String notes = inOrder.get('sharenote');
 		
-		boolean isDownload = inOrder.getOrderType()=="download"
+		
 
 		if(emailto != null && !isDownload) {
 			String expireson=inOrder.get("expireson");
@@ -76,7 +80,10 @@ protected void sendEmail(Order inOrder) {
 				context.putPageValue("expiresondate", date);
 				context.putPageValue("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 			}
+			//email to person specified
 			sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
+			//email to admin
+			sendEmail(context, adminEmailAddress, "/${appid}/views/activity/email/sharetemplate.html");
 		}
 		if (isDownload)
 		{
@@ -100,6 +107,7 @@ protected void sendEmail(Order inOrder) {
 							sendEmail(context, emailto, "/${appid}/views/activity/email/usertemplate.html");
 						context.putPageValue("user", user)
 						sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+						sendEmail(context, adminEmailAddress, "/${appid}/views/activity/email/usertemplate.html");
 					}
 				}
 			}
