@@ -1,5 +1,6 @@
 package org.openedit.entermedia.creator;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,18 +9,45 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.ModuleManager;
+import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.GroovyScriptRunner;
 import com.openedit.entermedia.scripts.Script;
 import com.openedit.entermedia.scripts.ScriptManager;
 import com.openedit.page.Page;
+import com.openedit.page.manage.PageManager;
+import com.openedit.util.Exec;
 
-public class GroovyScriptedCreator extends BaseImageCreator
+public class GroovyScriptedCreator implements MediaCreator
 {
 	protected ScriptManager fieldScriptManager;
 	protected String fieldScriptName;
 	protected ModuleManager fieldModuleManager;
     protected ThreadLocal perThreadCache = new ThreadLocal();
+    protected PageManager fieldPageManager;
+    protected Collection fieldPreProcessors;
+    
+    public Collection getPreProcessors()
+	{
+		return fieldPreProcessors;
+	}
 
+	public void setPreProcessors(Collection inPreProcessors)
+	{
+		fieldPreProcessors = inPreProcessors;
+	}
+
+	public PageManager getPageManager()
+	{
+		return fieldPageManager;
+	}
+
+	public Exec getExec()
+	{
+		return fieldExec;
+	}
+
+	protected Exec fieldExec;
+    
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -73,6 +101,7 @@ public class GroovyScriptedCreator extends BaseImageCreator
 			creator = (MediaCreator)runner.newInstance(script);
 			creator.setPageManager(getPageManager());
 			creator.setExec(getExec());
+			creator.setPreProcessors(getPreProcessors());
 		    ref.put(inCatalogId,creator);
 		}
 	     
@@ -100,6 +129,29 @@ public class GroovyScriptedCreator extends BaseImageCreator
 	{
 		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
 		return creator.updateStatus(inArchive, inTask, inAsset, inStructions);
+	}
+
+	public ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOputputype, String inSourcePath)
+	{
+		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
+		return creator.createInstructions(inReq, inArchive, inOputputype, inSourcePath);
+	}
+
+	public Page createOutput(MediaArchive inArchive, ConvertInstructions inStructions)
+	{
+		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
+		return creator.createOutput(inArchive, inStructions);
+	}
+
+	public void setPageManager(PageManager inPageManager)
+	{
+		fieldPageManager = inPageManager;
+		
+	}
+
+	public void setExec(Exec inExec)
+	{
+		fieldExec = inExec;
 	}
 
 }

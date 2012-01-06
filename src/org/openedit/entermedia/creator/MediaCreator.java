@@ -1,5 +1,6 @@
 package org.openedit.entermedia.creator;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.openedit.Data;
@@ -74,4 +75,5 @@ public interface MediaCreator
 
 	void setExec(Exec inExec);
 	
+	void setPreProcessors(Collection inList);
 }

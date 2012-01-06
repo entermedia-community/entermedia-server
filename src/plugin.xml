@@ -1357,18 +1357,13 @@
 	    </constructor-arg>
 	</bean>
 	
-	<bean id="imagemagickImageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+	<bean id="imagemagickCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>imagemagickImage</value></property>
-		<property name="preProcessors">
-			<list>
-				<ref bean="ffmpegimageCreator" />
-				<ref bean="exiftoolthumbCreator" />
-			</list>
-		</property>
+		<property name="scriptName"><value>imagemagick</value></property>
+		<property name="preProcessors"><ref bean="imagePreProcessors" /></property>
 	</bean>
 	<bean id="LameMp3Creator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>

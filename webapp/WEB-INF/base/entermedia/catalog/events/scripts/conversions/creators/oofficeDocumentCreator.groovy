@@ -1,4 +1,4 @@
-package org.entermedia.creator;
+package conversions.creator;
 
 import java.io.File;
 
@@ -21,13 +21,13 @@ public class oofficeDocumentCreator extends BaseCreator
 {
 	protected final def formats = ["doc","docx","rtf","ppt","wps","odt","html","xml","csv", "xls", "xlsx"];
 	protected OfficeManager fieldOfficeManager;
-	private static final Log log = LogFactory.getLog(OofficeDocumentCreator.class);
+	private static final Log log = LogFactory.getLog(this.class);
 	
 	public boolean canReadIn(MediaArchive inArchive, String inInputType)
 	{
-		for (int i = 0; i < formats.length; i++)
+		for (int i = 0; i < formats.size(); i++)
 		{
-			if( inInputType.equals(formats[i]))
+			if( inInputType.equals(formats.get(i)))
 			{
 				return true;
 			}
@@ -47,6 +47,7 @@ public class oofficeDocumentCreator extends BaseCreator
 					throw new OpenEditException("Could not find path to open office");
 				}
 			}
+
 			OfficeManager temp = new DefaultOfficeManagerConfiguration()
 		      .setOfficeHome(path)
 //		      .setConnectionProtocol(OfficeConnectionProtocol.PIPE)
