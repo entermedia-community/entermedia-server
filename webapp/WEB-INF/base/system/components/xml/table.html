@@ -47,6 +47,7 @@
 				#set( $val = "$!hit.get($detail.id)" )
 				$context.putPageValue("detail",$detail)
 				$context.putPageValue("val",$val)
+				$context.putPageValue("data",$hit)
 				$pages.include("$xmledithome/detailreadonly.html", $context)
 			</td>
 		#end

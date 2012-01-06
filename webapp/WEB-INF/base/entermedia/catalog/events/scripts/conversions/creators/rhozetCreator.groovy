@@ -201,6 +201,9 @@ class rhozetCreator extends BaseCreator {
 					}
 					else 
 					{
+						
+						String percentage = reply.@Progress.DWD;
+						inTask.setProperty("percentage", percentage);
 						result.setComplete(false);
 					}
 					if(status.equalsIgnoreCase("Error") ||  status.equalsIgnoreCase("Invalid"))
