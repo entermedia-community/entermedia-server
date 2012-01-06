@@ -71,7 +71,8 @@ public class GroovyScriptedCreator extends BaseImageCreator
 			Script script = getScriptManager().loadScript("/" + inCatalogId + "/events/scripts/conversions/creators/" + getScriptName() + "Creator.groovy");
 			GroovyScriptRunner runner = (GroovyScriptRunner)getModuleManager().getBean("groovyScriptRunner");
 			creator = (MediaCreator)runner.newInstance(script);
-			
+			creator.setPageManager(getPageManager());
+			creator.setExec(getExec());
 		    ref.put(inCatalogId,creator);
 		}
 	     

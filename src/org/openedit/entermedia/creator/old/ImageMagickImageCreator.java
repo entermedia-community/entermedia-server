@@ -1,7 +1,7 @@
 /*
  * Created on Sep 20, 2005
  */
-package org.openedit.entermedia.creator;
+package org.openedit.entermedia.creator.old;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,6 +15,10 @@ import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetUtilities;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.creator.BaseImageCreator;
+import org.openedit.entermedia.creator.ConvertInstructions;
+import org.openedit.entermedia.creator.ConvertResult;
+import org.openedit.entermedia.creator.MediaCreator;
 import org.openedit.entermedia.scanner.MetaDataReader;
 
 import com.openedit.OpenEditException;

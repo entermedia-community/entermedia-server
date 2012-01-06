@@ -524,13 +524,14 @@
 	</bean>
 
 	<bean id="pdfExtractor" class="org.openedit.entermedia.scanner.MetadataPdfExtractor" />
+
 	<bean id="exiftoolMetadataExtractor"
 		class="org.openedit.entermedia.scanner.ExiftoolMetadataExtractor">
 		<property name="exec">
 			<ref bean="exec" />
 		</property>
 		<property name="exifToolThumbCreator">
-			<ref bean="exifToolThumbCreator" />
+			<ref bean="exiftoolthumbCreator" />
 		</property>
 	</bean>
 	<bean id="creatorManager" class="org.openedit.entermedia.creator.CreatorManager"
@@ -722,84 +723,6 @@
 		</property>
 	</bean>
 
-	<!--  Converters -->
-	<bean id="imageMagickImageCreator" class="org.openedit.entermedia.creator.ImageMagickImageCreator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="preProcessors">
-			<list>
-				<!-- no longer needed since script already creates an 800x600  ref bean="ffMpegImageCreator" / -->
-				<ref bean="exifToolThumbCreator" />
-				<!--   ref bean="ghostScriptImageCreator" / -->
-			</list>
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-	</bean>
-
-	<bean id="fFMpegVideoCreator" class="org.openedit.entermedia.creator.FfMpegVideoCreator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-	</bean>
-	
-	
-	<bean id="fFMpegAudioCreator" class="org.openedit.entermedia.creator.FfMpegAudioCreator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-	</bean>
-	
-	
-	<bean id="ffMpegImageCreator" class="org.openedit.entermedia.creator.FfMpegImageCreator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-	</bean>
-
-	<bean id="exifToolThumbCreator" class="org.openedit.entermedia.creator.ExifToolThumbCreator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-	</bean>
-
-	<!--   bean id="indesignImageCreator" class="org.openedit.entermedia.creator.IndesignImageCreator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-	</bean -->
-
-	<bean id="ghostScriptImageCreator" class="org.openedit.entermedia.creator.GhostScriptImageCreator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-	</bean>
-
-	<bean id="lameMp3Creator" class="org.openedit.entermedia.creator.LameMp3Creator">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-	</bean>
 
 	<bean id="ConvertGenerator" class="org.openedit.entermedia.generators.ConvertGenerator">
 		<property name="pageManager">
@@ -1382,23 +1305,84 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 
-	<bean id="ffMpegVideoCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager">
-			<ref bean="scriptManager" />
-		</property>
 
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="exec">
-			<ref bean="exec" />
-		</property>
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
+	<bean id="digitalrapidsCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>digitalrapids</value></property>
+	</bean>
+	<bean id="exiftoolthumbCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>exiftoolthumb</value></property>
+	</bean>
+	<bean id="FfMpegAudioCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>FfMpegAudio</value></property>
+	</bean>
+	<bean id="ffmpegCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="scriptName"><value>ffmpeg</value></property>
 	</bean>
-
+	<bean id="ffmpegimageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>ffmpegimage</value></property>
+	</bean>
+	<bean id="GhostScriptImageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>GhostScriptImage</value></property>
+	</bean>
+	<bean id="imagePreProcessors" class="java.util.ArrayList">
+	    <constructor-arg>
+		<list>
+			<ref bean="ffmpegimageCreator" />
+			<ref bean="exiftoolthumbCreator" />
+		</list>
+	    </constructor-arg>
+	</bean>
 	
+	<bean id="imagemagickImageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>imagemagickImage</value></property>
+		<property name="preProcessors">
+			<list>
+				<ref bean="ffmpegimageCreator" />
+				<ref bean="exiftoolthumbCreator" />
+			</list>
+		</property>
+	</bean>
+	<bean id="LameMp3Creator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>LameMp3</value></property>
+	</bean>		
+	<bean id="originalCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>original</value></property>
+	</bean>			
 	
 </beans>

@@ -99,6 +99,7 @@ public abstract class BaseCreator implements MediaCreator
 		
 		return createInstructions(all, inArchive, inOutputType, inSourcePath);
 	}
+	/**
 	public ConvertInstructions createInstructions(Page inDef, MediaArchive inArchive, String inOutputType, String inSourcePath)
 	{
 		Map all = new HashMap();
@@ -109,6 +110,7 @@ public abstract class BaseCreator implements MediaCreator
 		}
 		return createInstructions(all, inArchive, inOutputType, inSourcePath);
 	}
+	*/
 
 	/**
 	 * Returns an object that has the output path set on it
