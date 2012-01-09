@@ -8,7 +8,7 @@
 			<div id="pages">
 				<ul>
 					#if( $hits.prevPage() )
-					<li class="previous"><a class="ir ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" >Previous</a></li>
+					<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" >Previous</a></li>
 					#end
 					#set( $befores = $hits.linksBefore() )					
 						#if($befores.size()!=0)
@@ -34,7 +34,7 @@
 						#end
 					#end
 					#if ( $hits.nextPage() )
-					<li class="next"><a class="ir ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n">Next</a>
+					<li><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.nextPage()"   title="Next (alt n enter)" accesskey="n">Next</a>
 					#end
 				</ul>
 			</div>
