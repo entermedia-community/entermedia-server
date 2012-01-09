@@ -700,43 +700,48 @@ onloadselectors = function()
 		jQuery(".ajaxstatus").livequery(
 				function()
 				{
-					if( ajaxtimerrunning == false) 
+	
+					var uid = $(this).attr("id");
+					
+					var running = runningstatus[uid];
+					if( !running)
 					{
+						runningstatus[uid] = true;
 						var timeout = $(this).attr("period")
 						if( !timeout)
 						{
-							timeout = "20000";
+							timeout = "5000";
 						}
-						setTimeout("showajaxstatus();",parseInt(timeout));
-						ajaxtimerrunning = true;
+						timeout = parseInt(timeout);
+						setTimeout('showajaxstatus("' + uid +'",' + timeout + ');',timeout);
 					}
 				}
 		);
-		
-		
-		
-		
 }
 
+var runningstatus = {};
 
-
-
-showajaxstatus = function()
+showajaxstatus = function(uid, timeout)
 {
 	//for each asset on the page reload it's status
 	var foundone = false;
-	jQuery(".ajaxstatus").each(
-		function()
-		{
-			foundone = true;
-			var cell = jQuery(this);
-			var path = cell.attr("ajaxpath");
-			jQuery.get(path, {}, function(data) {
-				cell.html(data);
-			});
-		}
-	);
-	ajaxtimerrunning = false;
+	var cell = jQuery("#" + uid);
+	if( cell )
+	{
+		var path = cell.attr("ajaxpath");
+		jQuery.get(path, {}, function(data) {
+			cell.replaceWith(data);
+			cell = jQuery("#" + uid);
+			if( cell.length > 0 )
+			{
+				setTimeout('showajaxstatus("' + uid +'",' + timeout + ');',timeout);
+			}
+			else
+			{
+				delete runningstatus[uid];
+			}
+		});
+	}
 }
 
 
