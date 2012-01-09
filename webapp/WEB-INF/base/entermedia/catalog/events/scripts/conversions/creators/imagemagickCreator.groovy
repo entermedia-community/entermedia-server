@@ -219,30 +219,33 @@ public class imagemagickCreator extends BaseImageCreator
 					}
 				}
 			}
-			//end of probably wrong section
-			com.add("-resize");
-
-			String prefix = null;
-			String postfix = null;
-
-			//We need to flip the width and height if we have a rotated image. This allows us to crop first to speed up the rotation on a smaller image
-			if( inStructions.getRotation() == 90 || inStructions.getRotation() == 270)
+			if (!inStructions.isCrop()) 
 			{
-				prefix =  String.valueOf( inStructions.getMaxScaledSize().height );
-				postfix =  String.valueOf( inStructions.getMaxScaledSize().width );
-			}
-			else
-			{
-				prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
-				postfix =  String.valueOf( inStructions.getMaxScaledSize().height );				
-			}
-			if (System.getProperty("os.name").toLowerCase().contains("windows"))
-			{
-				com.add("\"" + prefix + "x" + postfix + "\"");
-			}
-			else
-			{
-				com.add(prefix + "x" + postfix);
+				//end of probably wrong section
+				com.add("-resize");
+	
+				String prefix = null;
+				String postfix = null;
+	
+				//We need to flip the width and height if we have a rotated image. This allows us to crop first to speed up the rotation on a smaller image
+				if( inStructions.getRotation() == 90 || inStructions.getRotation() == 270)
+				{
+					prefix =  String.valueOf( inStructions.getMaxScaledSize().height );
+					postfix =  String.valueOf( inStructions.getMaxScaledSize().width );
+				}
+				else
+				{
+					prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
+					postfix =  String.valueOf( inStructions.getMaxScaledSize().height );				
+				}
+				if (isOnWindows())
+				{
+					com.add("\"" + prefix + "x" + postfix + "\"");
+				}
+				else
+				{
+					com.add(prefix + "x" + postfix);
+				}
 			}
 		}
 		
