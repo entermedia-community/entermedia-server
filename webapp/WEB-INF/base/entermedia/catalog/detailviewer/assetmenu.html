@@ -24,7 +24,7 @@
 		 #set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 		#if($link.id =="comment")
 			#set( $img = "${themeprefix}/images/comments.png")	
-			#set ($comments = $commentArchive.loadComments("/WEB-INF/data/$catalogid/comments/$asset.sourcePath"))
+			#set ($comments = $commentArchive.loadComments($catalogid, $asset.sourcePath))
 			#set( $addtext = "(<span id='assetcommentscount'>$comments.size()</span>)")
 			#set ($args = "assetid=$asset.getId()&sourcepath=$asset.sourcePath&hitssessionid=$!{hitssessionid}")
 		#elseif( $link.id == "viewattachments")

@@ -9,14 +9,13 @@
 	#set($comments = $commentArchive.loadComments($asset))
 	$context.putPageValue("comments",$comments)
 #end
-
 $pages.include("$cataloghome/detailviewer/comments/list.html", $context)
-
 	#set($incrsize = $comments.size() + 1)
 	#if( $cancomment )
 		<form name="addcomment" class="ajaxform" targetdiv="emcommentarea" action="${home}/${catalogid}/detailviewer/comments/addcomment.html" method="post">
 			<textarea id="commenttext" class="resizer" name="comment" cols="54" rows="2">[[Write a comment]]</textarea> <br/>
 			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
+			<input type="hidden" name="commentpath" value="/WEB-INF/data/$catalogid/comments/$asset.sourcePath"/>
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="catalogid" value="$catalogid"/>
 			<input type="submit" value="comment" />

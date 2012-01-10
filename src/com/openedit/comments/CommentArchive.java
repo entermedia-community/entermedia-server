@@ -132,7 +132,19 @@ public class CommentArchive
 		Page page = getPageManager().getPage(inPath);
 		return loadComments(page);
 	}
+	
+	public Collection loadComments(String inCatalogId, String inPath)
+	{
+		String path = "/WEB-INF/data/"+inCatalogId + "/comments/" + inPath + ".xml";
+		Page page = getPageManager().getPage(path);
+		if(!page.exists()){
+			 path = "/WEB-INF/data/" +  inCatalogId + "/comments/" + inPath + "/folder.xml";
+			 page = getPageManager().getPage(path);
+		}
+		return loadComments(page);
+	}
 
+	
 	protected Collection loadComments(Page inPage) throws OpenEditException
 	{
 		List<Comment> comments = GenericsUtil.createList();
@@ -201,6 +213,9 @@ public class CommentArchive
 		Collection comments = loadComments(inPage);
 		comments.add(inComment);
 		saveComments(inPage, comments);
+		//inPage.get.pu setProperty("comments", comments);
+		//getPageManager().
+		//inPage.getp
 	}
 	
 	public Comment getLastComment(String inSourcePath)
