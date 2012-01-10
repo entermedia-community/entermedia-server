@@ -16,7 +16,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 	{
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
-		instructions.setAssetSourcePath("newassets/admin/101");
+		instructions.setAssetSourcePath("users/admin/101");
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
@@ -33,7 +33,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 	{
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
-		instructions.setAssetSourcePath("newassets/admin/103");
+		instructions.setAssetSourcePath("users/admin/103");
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
@@ -50,7 +50,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 	{
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
-		instructions.setAssetSourcePath("newassets/admin/102");
+		instructions.setAssetSourcePath("users/admin/102");
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
@@ -67,7 +67,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 	{
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
-		instructions.setAssetSourcePath("newassets/admin/101");
+		instructions.setAssetSourcePath("users/admin/101");
 		instructions.setOutputExtension("jpg");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
@@ -80,36 +80,38 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		assertEquals("jpg", PathUtilities.extractPageType(converted.getPath()));
 	}
 
+	/* We dont do this any more
 	public void testCreateAllFlash() throws Exception
 	{
 		PathEventManager manager = (PathEventManager) getFixture().getModuleManager().getBean("entermedia/catalogs/testcatalog", "pathEventManager");
 		WebPageRequest req = getFixture().createPageRequest("/entermedia/catalogs/testcatalog/index.html");
 
 		//TODO: Check for flash video before and after running this event
-		Page flash = getPage("/entermedia/catalogs/testcatalog/assets/newassets/admin/101/video.flv");
+		Page flash = getPage("/entermedia/catalogs/testcatalog/assets/users/admin/101/video.flv");
 		getFixture().getPageManager().removePage(flash);
 		assertTrue(!flash.exists());
 		manager.runPathEvent("/entermedia/catalogs/testcatalog/events/makeflashpreviews.html", req);
 		req.getPageValue("mediaArchive");
-		flash = getPage("/entermedia/catalogs/testcatalog/assets/newassets/admin/101/video.flv");
+		flash = getPage("/entermedia/catalogs/testcatalog/assets/users/admin/101/video.mp4");
 		assertTrue(flash.exists());
-
 	}
+	*/
 
 	public void xtestCreateAllWatermarks() throws Exception
 	{
 		PathEventManager manager = (PathEventManager) getFixture().getModuleManager().getBean("entermedia/catalogs/testcatalog", "pathEventManager");
 		WebPageRequest req = getFixture().createPageRequest("/entermedia/catalogs/testcatalog/index.html");
 
-		Page watermark = getPage("/entermedia/catalogs/testcatalog/assets/newassets/admin/101/image150x150wm.jpg");
+		Page watermark = getPage("/entermedia/catalogs/testcatalog/assets/users/admin/101/image150x150wm.jpg");
 		getFixture().getPageManager().removePage(watermark);
 		manager.runPathEvent("/entermedia/catalogs/testcatalog/events/makewatermarks.html", req);
 		req.getPageValue("mediaArchive");
-		watermark = getPage("/entermedia/catalogs/testcatalog/assets/newassets/admin/101/image150x150wm.jpg");
+		watermark = getPage("/entermedia/catalogs/testcatalog/assets/users/admin/101/image150x150wm.jpg");
 		assertTrue(watermark.exists());
 
 	}
 
+	/** We dont do this any more
 	public void testPublishOneLocation() throws Exception
 	{
 
@@ -118,12 +120,12 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 
 		Page watermark = getPage("/entermedia/catalogs/testcatalog/publishing/akamia/" + 101 + ".flv");
 		getFixture().getPageManager().removePage(watermark);
-		req.setRequestParameter("sourcepath", "newassets/admin/101/");
+		req.setRequestParameter("sourcepath", "users/admin/101/");
 		req.setRequestParameter("locationid", "akamia");
 		req.setRequestParameter("forced", "true");
 		manager.runPathEvent("/entermedia/catalogs/testcatalog/events/publishasset.html", req);
 		watermark = getPage("/entermedia/catalogs/testcatalog/publishing/akamia/" + 101 + ".flv");
 		assertTrue(watermark.exists());
 	}
-
+	*/
 }

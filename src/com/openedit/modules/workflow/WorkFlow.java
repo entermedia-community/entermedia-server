@@ -153,7 +153,7 @@ public class WorkFlow
 	}
 	protected void loadLevelCount() throws OpenEditException
 	{
-		Page level = getPageManager().getPage("/system/components/openedit/html/workflow/settings.xml");
+		Page level = getPageManager().getPage("/openedit/html/workflow/settings.xml");
 		if( level.getLastModified().getTime() != fieldLastModified)
 		{
 			fieldLastModified = level.getLastModified().getTime();

@@ -1,7 +1,7 @@
 package org.openedit.entermedia.scanner;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,15 +21,15 @@ public class PdfParser
 {
 	private static final Log log = LogFactory.getLog(PdfParser.class);
 
-	public Parse parse(byte[] inContent)
+	public Parse parse(InputStream inContent)
 	{
 		Parse results = new Parse();
 		PDDocument pdf = null;
 		try
 		{
 
-			PDFParser parser = new PDFParser(
-					new ByteArrayInputStream(inContent));
+			PDFParser parser = new PDFParser(inContent);
+//					new ByteArrayInputStream(inContent));
 			parser.parse();
 
 			pdf = parser.getPDDocument();
@@ -124,7 +124,7 @@ public class PdfParser
 		}
 		return done.toString();
 	}
-
+/*
 	public Parse getParse(Content content) throws OpenEditException
 	{
 		log.info("Parse " + content.getUrl());
@@ -146,4 +146,5 @@ public class PdfParser
 		}
 		return results;
 	}
+*/	
 }

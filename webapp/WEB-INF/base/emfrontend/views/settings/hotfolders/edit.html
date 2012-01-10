@@ -1,0 +1,49 @@
+<form id="eml-tab-green-container" name="savemount" action="save.html" target="_top">
+#set($oldPath = $mount.getPath())
+	
+<div style="width:600px;" >	
+<h3>[[Hot Folder]]</h3>
+
+<input type="hidden" name="mountid" value="$!mount.path" />
+
+#set( $path = $mount.path )
+#if( !$path)
+	#set( $path = "/WEB-INF/data/$catalogid/originals/hotfolder1" )
+#end
+
+<p><label>[[Path]]</label> <br><input name="path" value="$path" size="50" /> 
+</p>
+<p> <label>[[Repository Type]]</label> <br><select name="repositorytype" >
+<option value="" #if( $mount.getRepositoryType() == "fileRepository") selected #end>File</option>
+<option value="versionRepository" #if( $mount.getRepositoryType() == "versionRepository") selected #end>Version Control</option>
+<option value="urlRepository" #if( $mount.getRepositoryType() == "urlRepository") selected #end>External HTTP Server</option>
+<option value="sftpRepository" #if( $mount.getRepositoryType() == "sftpRepository") selected #end>SFTP Server</option>
+
+</select>
+<br>
+
+<p> <label>[[File System]]</label> <br><input name="externalpath" value="$!mount.getExternalPath()" size="50"/>
+<br><i>[[Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</i> 
+</p>
+
+
+<p> <label>[[Include Only]]</label> <br><textarea name="filterin" cols="25" rows="3" >$!mount.getFilterIn()</textarea>
+<br><i>[[Space or new line delimited]] [[*.jpg *.pdf *.mp4]]</i> 
+</p>
+<br>
+<p> <label>[[Exclude Some Files]]</label><br> <textarea name="filterout" cols="25" rows="3" >$!mount.getFilterOut()</textarea>
+<br><i>[[Space or new line delimited]] [[*.old */.* *.ini]]</i> 
+</p>
+<!-- 
+#set($searcher = $searcherManager.getSearcher("system", "mount"))
+#set($details = $searcher.getPropertyDetails())
+$context.putPageValue("details", $details)
+$context.putPageValue("data", $mount)
+##$pages.include("/system/components/xml/detaileditor.html", $context)
+ -->
+
+
+<div> <label> </label> <input type="submit" value="[[Save]]" />
+</div>
+</div>
+</form>

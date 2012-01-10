@@ -1,5 +1,6 @@
 package org.openedit.entermedia.creator;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.openedit.Data;
@@ -8,6 +9,8 @@ import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
+import com.openedit.page.manage.PageManager;
+import com.openedit.util.Exec;
 
 public interface MediaCreator
 {
@@ -27,6 +30,16 @@ public interface MediaCreator
 	 * @return
 	 */
 	public ConvertInstructions createInstructions(Map inProperties, MediaArchive inArchive, String inOutputType, String inSourcePath);
+
+	/**
+	 * Is this used?
+	 * @param inReq
+	 * @param inArchive
+	 * @param inOputputype
+	 * @param inSourcePath
+	 * @return
+	 */
+	ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOputputype, String inSourcePath);
 
 	
 	/**
@@ -56,8 +69,11 @@ public interface MediaCreator
 	 */
 	ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOut, ConvertInstructions inStructions);
 
-	ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOputputype, String inSourcePath);
-	
 	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions );
+
+	void setPageManager(PageManager inPageManager);
+
+	void setExec(Exec inExec);
 	
+	void setPreProcessors(Collection inList);
 }

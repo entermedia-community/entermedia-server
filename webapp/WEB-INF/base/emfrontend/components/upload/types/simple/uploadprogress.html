@@ -1,5 +1,5 @@
 #set($uploadid = $context.getRequestParameter("uploadid"))
-<div class="ajaxstatus" period="500" 
+<div id="status$uploadid" class="ajaxstatus" period="500" 
   ajaxpath="$home$apphome/components/upload/types/simple/uploadprogress.html?uploadid=$uploadid">
 
 #set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$uploadid) )

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 
@@ -14,7 +15,7 @@ import com.openedit.comments.CommentArchive;
 import com.openedit.modules.BaseModule;
 import com.openedit.users.User;
 
-public class CommentModule extends BaseModule 
+public class CommentModule extends BaseMediaModule 
 {
 	protected CommentArchive fieldCommentArchive;
 	protected WebEventListener fieldWebEventListener;
@@ -29,9 +30,10 @@ public class CommentModule extends BaseModule
 	
 	public void loadComments(WebPageRequest inReq)
 	{
+		MediaArchive archive = getMediaArchive(inReq);
 		String commentPath = findPath(inReq);
 		
-		Collection comments = getCommentArchive().loadComments(commentPath);
+		Collection comments = getCommentArchive().loadComments(archive.getCatalogId(), commentPath);
 		inReq.putPageValue("comments", comments);
 	}
 
@@ -55,8 +57,8 @@ public class CommentModule extends BaseModule
 		if (commentPath == null)
 		{
 			String sourcePath = inReq.getRequestParameter("sourcepath");
-			String catalogid = inReq.getRequestParameter("catalogid");
-			commentPath = "/WEB-INF/data/" + catalogid + "/comments/" + sourcePath;	
+		//	String catalogid = inReq.findValue("catalogid");
+			commentPath =  sourcePath;	
 		}
 		else if(commentPath.contains("${albumid}"))
 		{

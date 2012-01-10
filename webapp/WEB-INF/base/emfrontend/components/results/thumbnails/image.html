@@ -29,7 +29,7 @@
 
 <div id="emthumbholder ">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
-		$pages.include("$apphome/components/uploadqueue/assetstatus.html?assetid=${hit.id}",$context)	
+		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
 	
 		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)

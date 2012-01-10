@@ -359,7 +359,15 @@ public class AdminModule extends BaseModule
 		User inUser = inAReq.getUser();
 		boolean userok = false;
 		String sendTo = inReq.getRequestParameter("loginokpage");
-
+		String maxcounts = inReq.findValue("maxfailedloginattemps");
+		int maxattemps = 5;
+		if(maxcounts != null){
+			try{
+				maxattemps = Integer.parseInt(maxcounts);
+			} catch(Exception e){
+				
+			}
+		}
 		boolean disable = Boolean.parseBoolean(inReq.getContentProperty("autodisableusers"));
 		if (inUser != null)
 		{
@@ -386,28 +394,29 @@ public class AdminModule extends BaseModule
 		{
 			if (disable)
 			{
+				//This resets the "failed attemps" to 0.
 				inUser.setProperty("failedlogincount", "0");
 				getUserManager().saveUser(inUser);
-				return false;
+				
 			}
 			
-			// check validation
-			String lastTime= inUser.getLastLoginTime(); 
-			if(lastTime != null){
-				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
-				if(duration >-1){
-					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
-					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
-					if( eslapsedPeriod > duration){
-						inReq.putPageValue("inactive", true);
-						inReq.putSessionValue("inactive", true);
-						inReq.putPageValue("inactiveuser", inUser);
-						inReq.putSessionValue("active-duration", String.valueOf(duration));
-						return false;
-					}
-					
-				}
-			}
+//			// check validation
+//			String lastTime= inUser.getLastLoginTime(); 
+//			if(lastTime != null){
+//				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
+//				if(duration >-1){
+//					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
+//					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
+//					if( eslapsedPeriod > duration){
+//						inReq.putPageValue("inactive", true);
+//						inReq.putSessionValue("inactive", true);
+//						inReq.putPageValue("inactiveuser", inUser);
+//						inReq.putSessionValue("active-duration", String.valueOf(duration));
+//						return false;
+//					}
+//					
+//				}
+//			}
 			
 			
 			inReq.removeSessionValue("userprofile");
@@ -461,7 +470,7 @@ public class AdminModule extends BaseModule
 				}
 				fails++;
 				inUser.setProperty("failedlogincount", String.valueOf(fails));
-				if (fails >= 5)
+				if (fails >= maxattemps)
 				{
 					{
 						User user = inReq.getUser();

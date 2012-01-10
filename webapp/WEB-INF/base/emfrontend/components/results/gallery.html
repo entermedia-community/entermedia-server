@@ -23,6 +23,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			#set($count = 0)
 			
 			<div  id="emslidesheet" >
+			#set( $rootid = $hits.sessionId )
 			
 			#foreach ($hit in $hits.getPageOfHits())
 		<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
@@ -66,21 +67,9 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	</table>
 	
 </div>
-<table border="0" class="emresultsheader">
-<tr>
-<td valign="top">
-##if( $category )
-##<h2>$category</h2>
-##end
-</td>
-<td width="100%" align="right" valign="top" style="padding-top:4px;">
-#if( $hits ) $hits.size() [[assets]]#end
-</td>
-<td valign="top">
+
 	$pages.include("$apphome/components/results/pages.html",$context)
-</td>
-</tr>
-</table>
+
 
 
 

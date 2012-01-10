@@ -46,12 +46,7 @@ $context.putPageValue("view","asset/assettype/${defaultassettype.id}/upload")
 			#if( $detail.id == "name" )
 				#set( $value = $name )
 			#elseif( $detail.id == "assettype" )
-				#set( $value = $defaultassettype )
-				#if( $defaultassettype)
-					$detail.setEditable(false)
-					<input type="hidden" name="${id}.assettype.value" value="$defaultassettype.id" />
-					$defaultassettype
-				#end	
+				#set( $value = $defaultassettype.id )
 			#elseif( $detail.id == "filesize" )
 				#set( $value = $size )
 			#end
@@ -68,9 +63,7 @@ $context.putPageValue("view","asset/assettype/${defaultassettype.id}/upload")
 	</tr>
 	#end
 	</table>
+	<hr />
 </td>	
-</tr>
-<tr>
-	<td colspan="2"><hr /></td>
 </tr>
 

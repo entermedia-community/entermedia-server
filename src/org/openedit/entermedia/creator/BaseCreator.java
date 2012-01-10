@@ -2,6 +2,7 @@ package org.openedit.entermedia.creator;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +31,7 @@ public abstract class BaseCreator implements MediaCreator
 	protected PageManager fieldPageManager;
 	protected String fieldWaterMarkPath;
 	protected Exec fieldExec;
-    protected List fieldPreProcessors;
+    protected Collection fieldPreProcessors;
 
 	protected Boolean fieldOnWindows;
 
@@ -99,6 +100,7 @@ public abstract class BaseCreator implements MediaCreator
 		
 		return createInstructions(all, inArchive, inOutputType, inSourcePath);
 	}
+	/**
 	public ConvertInstructions createInstructions(Page inDef, MediaArchive inArchive, String inOutputType, String inSourcePath)
 	{
 		Map all = new HashMap();
@@ -109,6 +111,7 @@ public abstract class BaseCreator implements MediaCreator
 		}
 		return createInstructions(all, inArchive, inOutputType, inSourcePath);
 	}
+	*/
 
 	/**
 	 * Returns an object that has the output path set on it
@@ -180,7 +183,7 @@ public abstract class BaseCreator implements MediaCreator
 	{
 		return fieldPreProcessors != null && fieldPreProcessors.size() > 0;
 	}
-	public List getPreProcessors()
+	public Collection getPreProcessors()
 	{
 		if (fieldPreProcessors == null)
 		{
@@ -193,7 +196,7 @@ public abstract class BaseCreator implements MediaCreator
 	{
 		getPreProcessors().add(inCreator);
 	}
-	public void setPreProcessors(List inPreProcessors)
+	public void setPreProcessors(Collection inPreProcessors)
 	{
 		fieldPreProcessors = inPreProcessors;
 	}

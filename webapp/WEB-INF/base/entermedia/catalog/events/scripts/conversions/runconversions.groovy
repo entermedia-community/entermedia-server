@@ -206,7 +206,9 @@ private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inP
 //TODO: Cache in map
 private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
 {
-	GroovyClassLoader loader = engine.getGroovyClassLoader();
+	MediaCreator creator = moduleManager.getBean(inType + "Creator");
+
+/*	GroovyClassLoader loader = engine.getGroovyClassLoader();
 	Class groovyClass = loader.loadClass("conversions.creators.${inType}Creator");
 	
 	MediaCreator creator = (MediaCreator) groovyClass.newInstance();
@@ -224,7 +226,7 @@ private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
 		creator.addPreProcessor(child);
 
 	}
-		
+	*/
 	return creator;
 }
 

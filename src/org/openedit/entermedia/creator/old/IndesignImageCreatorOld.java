@@ -1,4 +1,4 @@
-package org.openedit.entermedia.creator;
+package org.openedit.entermedia.creator.old;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -16,6 +16,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.creator.BaseImageCreator;
+import org.openedit.entermedia.creator.ConvertInstructions;
+import org.openedit.entermedia.creator.ConvertResult;
 
 import com.openedit.OpenEditException;
 import com.openedit.page.Page;

@@ -7,7 +7,7 @@ import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.CreatorManager;
-import org.openedit.entermedia.creator.ImageMagickImageCreator;
+import org.openedit.entermedia.creator.old.ImageMagickImageCreator;
 
 import com.openedit.page.Page;
 import com.openedit.users.User;

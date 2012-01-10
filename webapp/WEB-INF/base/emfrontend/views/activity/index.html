@@ -1,10 +1,10 @@
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid") )
 <ul id="stacked">
-	<li><a class="btn" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$hitssessionid&assetid=$!asset.id">Publish to Server</a> Choose FTP or Windows servers</li>
-	<li><a class="btn" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$hitssessionid&assetid=$!asset.id">Email</a> Send links to others</li>
+	<li><a class="btn" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$hitssessionid&assetid=$!asset.id">Publish to Server</a></li>
+	<li><a class="btn" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$hitssessionid&assetid=$!asset.id">Email</a></li>
 	##if( $asset )
-<!-- 	<li><a class="btn" href="$home$apphome/views/activity/index.html?hitssessionid=$hitssessionid">Embed</a> Copy videos and thumbnails for your web site</li>
-	<li><a class="btn" href="$home$apphome/views/activity/index.html?hitssessionid=$hitssessionid">Social Media</a> Share with Facebook or other web sites</li>
+<!-- 	<li><a class="btn" href="$home$apphome/views/activity/index.html?hitssessionid=$hitssessionid">Embed</a></li>
+	<li><a class="btn" href="$home$apphome/views/activity/index.html?hitssessionid=$hitssessionid">Social Media</a></li>
  -->	
 	##end
 </ul>

@@ -1,3 +1,26 @@
+<div id="eventlist">
+#set( $seltype = $context.getRequestParameter("type"))
+#if( !$seltype)
+	#set( $seltype  ="events")
+#end
+<select class="jump">
+	#foreach( $event in $pathevents )
+			#if( $type != $event.getPage().getDirectoryName() )
+				#set( $type = $event.getPage().getDirectoryName())
+				<option #if( $seltype == $type) selected #end value="$type">$type</option>
+			#end
+		#end
+</select>
+
+<script>
+    $("select.jump").change(function () 
+   		{
+        	var val = $(this).val();
+	        $("#eventlist").load("./list.html?oemaxlevel=1&type=" + val);
+        });
+</script>
+
+
 <div id="emselectable">
 	<table class="striped greytxt">
 		<thead>
@@ -8,11 +31,10 @@
 			</tr>
 		</thead>
 		#foreach( $event in $pathevents )
+		#if( $seltype == $event.getPage().getDirectoryName() )
 		<tr rowid="$event.getPage().getPath()">
 			<td><b>$context.getText($event.getName())</b></td>
-			<td> #if( !$event.getPage().getName().equals( $event.getName() ) )
-			$event.getPage().getName()
-			#end
+			<td> $event
 			<div class="emselectabledetails">
 				$!event.getPage().getProperty("eventdescription")
 			</div></td>
@@ -29,8 +51,10 @@
 			#end </td>
 		</tr>
 		#end
+		#end
 	</table>
 	<form name="showevent" method="post" action="edit/edit.html">
 		<input name="eventpath" type="hidden" id="emselectedrow" />
 	</form>
+</div>
 </div>

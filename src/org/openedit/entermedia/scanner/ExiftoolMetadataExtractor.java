@@ -19,7 +19,8 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.ConvertResult;
-import org.openedit.entermedia.creator.ExifToolThumbCreator;
+import org.openedit.entermedia.creator.MediaCreator;
+import org.openedit.entermedia.creator.old.ExifToolThumbCreator;
 
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
@@ -31,15 +32,15 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
 	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
-	protected ExifToolThumbCreator fieldExifToolThumbCreator;
+	protected MediaCreator fieldExifToolThumbCreator;
 	protected Exec fieldExec;
 
-	public ExifToolThumbCreator getExifToolThumbCreator()
+	public MediaCreator getExifToolThumbCreator()
 	{
 		return fieldExifToolThumbCreator;
 	}
 
-	public void setExifToolThumbCreator(ExifToolThumbCreator inExifToolThumbCreator)
+	public void setExifToolThumbCreator(MediaCreator inExifToolThumbCreator)
 	{
 		fieldExifToolThumbCreator = inExifToolThumbCreator;
 	}
@@ -234,7 +235,16 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	protected void extractThumb(MediaArchive inArchive, File inInputFile, Asset inAsset)
 	{
 		Page def = inArchive.getPageManager().getPage( "/" + inArchive.getCatalogId() + "/downloads/preview/thumb/thumb.jpg");
-		ConvertInstructions ins = getExifToolThumbCreator().createInstructions(def, inArchive, "jpg", inAsset.getSourcePath());
+		
+		Map all = new HashMap();
+		for (Iterator iterator = def.getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
+		{
+			PageProperty type = (PageProperty) iterator.next();
+			all.put(type.getName(), type.getValue());
+		}
+
+		
+		ConvertInstructions ins = getExifToolThumbCreator().createInstructions(all, inArchive, "jpg", inAsset.getSourcePath());
 		String path = ins.getOutputPath();
 		Page thumb = inArchive.getPageManager().getPage(path);
 		if( !thumb.exists() || thumb.length() == 0 )

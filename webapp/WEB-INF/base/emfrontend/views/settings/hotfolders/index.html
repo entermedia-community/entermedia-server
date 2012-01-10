@@ -1,0 +1,52 @@
+
+<div id="eml-tab-green-container">
+
+<h3>[[Hot Folders]]</h3>
+
+#if( $mounts.size() == 0)
+
+No Hot Folders defined
+
+#else
+
+<table class="striped">
+<tr>
+	<th>[[Path]]</th>
+	<th style="padding-left:10px;">[[External Path]]</th>
+	<th style="padding-left:10px;">[[Actions]]</th>
+</tr>
+#foreach( $mount in $mounts )
+	<tr>
+		<td>
+			$mount.getPath()
+		</td>
+		<td valign="top" style="padding-left:10px;">
+					<b>$mount.getExternalPath()</b>
+		</td>
+		<td><div id="action$velocityCount"><a href="remove.html?mountid=$mount.getPath()" onclick="return confirm('[[Remove this entry?]]');">[[Remove]]</a>	
+						&nbsp;&nbsp;&nbsp;
+					<a  href="$home$apphome/views/settings/hotfolders/edit.html?mountid=$mount.getPath()">[[Edit]]</a>	
+						&nbsp;&nbsp;&nbsp;
+			</div>
+		</td>
+	</tr>
+#end
+</table>
+<br><br>
+#end
+
+<br><br>
+<a class="btn small" href="$home$apphome/views/settings/hotfolders/addnew.html">[[Add]]</a>
+<br><br><br>
+<a href="reload.html">[[Reload Mounts]]</a>
+
+
+</p>
+
+<br><br><br>
+
+	<a class="btn small" href="$home$apphome/views/settings/events/triggers/index.html?type=importing" >[[Import Schedule]]</a>
+
+</div>
+
+

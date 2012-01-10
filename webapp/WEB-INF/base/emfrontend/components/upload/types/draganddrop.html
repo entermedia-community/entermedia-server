@@ -2,9 +2,16 @@
 #set($catalogid = $context.getRequestParameter("uploadcatalog"))
 #set($path = "/${catalogid}/temp/uploading/${user.getUserName()}")
 
+#set( $action = $context.getRequestParameter("action"))
+#if( !$action )
+#set( $action =	"/$applicationid/views/upload/finish.html" )
+#end
+
+<form name="uploadwizard" id="uploadwizard"  method="post" target="_top" action="$home$action" >
+
 <table>
 <tr>
-<td width="190" style="padding-top: 53px;">
+<td width="190" >
 <div class="em-rounded"  >
 <div class="emsectionheader"  ><h3>[[Drag Files Below]]</h3></div>
 <APPLET code="org.openedit.sync.DropBoxFilePickerApplet"
@@ -21,15 +28,10 @@
 </td>
 <td style="padding-left: 10px;">
 
-#set( $action = $context.getRequestParameter("action"))
-#if( !$action )
-#set( $action =	"/$applicationid/views/upload/finish.html" )
-#end
 
-<form name="uploadwizard" id="uploadwizard"  method="post" target="_top" action="$home$action" >
 
 <input type="hidden" name="catalogid" value="$!catalogid"/>
-<input type="hidden" name="searchtype" value="$page.searchtype"/>
+<input type="hidden" name="searchtype" value="asset"/>
 
 <div class="enabledwithpick">
 <ul class="embuttons">
@@ -54,10 +56,10 @@
 		<input type="hidden" name="field" value="editstatus" />
 		<input type="hidden" name="field" value="episode" />
 		<input type="hidden" name="field" value="title" />
-</form>
 </td>
 </tr>
 </table>
+</form>
 
 <script type="text/javascript">
 
