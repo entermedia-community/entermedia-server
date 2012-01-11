@@ -1,0 +1,28 @@
+#if(!$val || $val.length() == 0)
+	#if($data.status == "complete")
+		#set($val = "100")
+	#else
+		#set($val = "0")
+	#end
+#end
+
+	
+
+	<script>
+	jQuery(function() {
+		jQuery( "#${detail.id}-progressbar-${data.id}" ).progressbar({
+			
+			value: #esc($val)
+		});
+	});
+	</script>
+
+
+
+<div class="demo">
+
+<div id="${detail.id}-progressbar-${data.id}"></div>
+
+</div><!-- End demo -->
+
+
