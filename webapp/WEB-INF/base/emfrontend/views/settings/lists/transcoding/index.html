@@ -4,7 +4,7 @@ $!context.putPageValue("searcher",$searcher)
 #set( $query = $searcher.createSearchQuery() )
 #set( $null = $query.addMatches("id","*") )
 $query.addSortBy("inputtype")
-$query.addSortBy("name")
+$query.addSortBy("ordering")
 
 #set( $details = $searcher.getDetailsForView("convertpreset/results",$userprofile) )
 <div  id="emselectable">
@@ -41,6 +41,6 @@ $query.addSortBy("name")
 </div>
 
 <ul class="embuttons">
-<li><a href="$home$apphome/views/settings/transcoding/edit/addnew.html"><span>Add New Conversion</span></a></li>
+<li><a href="$home$apphome/views/settings/lists/transcoding/edit/addnew.html"><span>Add New Conversion</span></a></li>
 </ul>
 

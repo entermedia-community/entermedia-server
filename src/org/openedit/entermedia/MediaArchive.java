@@ -934,6 +934,17 @@ public class MediaArchive
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
 	}
+	public void fireMediaEvent(String operation, User inUser)
+	{
+			WebEvent event = new WebEvent();
+			event.setSearchType("asset");
+			event.setCatalogId(getCatalogId());
+			event.setOperation(operation);
+			event.setUser(inUser);
+			event.setSource(this);
+			//event.setSourcePath("/"); //TODO: This should not be needed any more
+			getMediaEventHandler().eventFired(event);
+	}
 
 	public void fireMediaEvent(String operation, String inMetadataType, String inSourcePath,  User inUser)
 	{

@@ -112,14 +112,14 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 
 				//add calculations to fix letterbox problems
 				//http://howto-pages.org/ffmpeg/
-				int width = 640; //this is the player size. Now we need to change aspect
-				int height = 360;
+				int width = inStructions.intValue("prefwidth",640); 
+				int height = inStructions.intValue("prefheight",360);
 				
-				if( inStructions.getMaxScaledSize() != null )
-				{
-					width = inStructions.getMaxScaledSize().width;
-					height = inStructions.getMaxScaledSize().height;
-				}
+//				if( inStructions.getMaxScaledSize() != null )
+//				{
+//					width = inStructions.getMaxScaledSize().width;
+//					height = inStructions.getMaxScaledSize().height;
+//				}
 				int aw = inAsset.getInt("width");
 				int ah = inAsset.getInt("height");
 				if( aw > width || ah > height)
@@ -156,7 +156,7 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 				comm.add(width + "x"  + height);					
 				
 				
-				//640x360 853x480
+				//640x360 853x480 704x480 = 480p
 /*
  Here is a two pass mp4 convertion with mp3 audio
  The second pass lets the bit rate be more constant for buffering downloads
