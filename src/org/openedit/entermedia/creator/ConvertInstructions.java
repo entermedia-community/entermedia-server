@@ -12,7 +12,6 @@ import com.openedit.util.PathUtilities;
 
 public class ConvertInstructions
 {
-	protected Dimension fieldMaxScaledSize;//new Dimension( 150, Integer.MAX_VALUE );
 	protected int fieldPageNumber = 1;  //This is 1 based
 	protected boolean fieldWatermark;
 	//protected String fieldOutputExtension;
@@ -39,7 +38,15 @@ public class ConvertInstructions
 	{
 		addProperty(inName, inValue);
 	}
-
+	public int intValue(String inName, int inDefault)
+	{
+		String val = get(inName);
+		if( val == null)
+		{
+			return inDefault;
+		}
+		return Integer.parseInt(val);
+	}
 	public String get(String inName)
 	{
 		return getProperty(inName);
@@ -59,17 +66,32 @@ public class ConvertInstructions
 
 	public Dimension getMaxScaledSize()
 	{
-		return fieldMaxScaledSize;
+		String w = getProperty("prefwidth");
+		String h = getProperty("prefheight");
+
+		if (w != null && h != null) //both must be set
+		{
+			return new Dimension(Integer.parseInt(w), Integer.parseInt(h));
+		}		
+		return null;
 	}
 
 	public void setMaxScaledSize(Dimension inMaxScaledSize)
 	{
-		fieldMaxScaledSize = inMaxScaledSize;
+		setProperty("prefwidth", inMaxScaledSize.width);
+		setProperty("prefheight", inMaxScaledSize.height);
 	}
 	
+	private void setProperty(String inName, int inVal)
+	{
+		setProperty(inName, String.valueOf(inVal));
+		
+	}
+
 	public void setMaxScaledSize(int width, int height)
 	{
-		fieldMaxScaledSize = new Dimension(width, height);
+		setProperty("prefwidth", width);
+		setProperty("prefheight", height);
 	}
 	/**
 	 * This starts at 1

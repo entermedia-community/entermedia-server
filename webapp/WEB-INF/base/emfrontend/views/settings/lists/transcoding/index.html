@@ -4,7 +4,7 @@ $!context.putPageValue("searcher",$searcher)
 #set( $query = $searcher.createSearchQuery() )
 #set( $null = $query.addMatches("id","*") )
 $query.addSortBy("inputtype")
-$query.addSortBy("name")
+$query.addSortBy("ordering")
 
 #set( $details = $searcher.getDetailsForView("convertpreset/results",$userprofile) )
 <div  id="emselectable">

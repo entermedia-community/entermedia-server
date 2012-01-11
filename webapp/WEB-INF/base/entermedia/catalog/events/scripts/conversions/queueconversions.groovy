@@ -104,6 +104,8 @@ public void createTasksForUpload()
 				newTask.setProperty("status", "new");
 				newTask.setProperty("assetid", asset.id);
 				newTask.setProperty("presetid", it.id);
+				newTask.setProperty("ordering", it.get("ordering") );
+				
 				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
 				newTask.setProperty("submitted", nowdate);
 				tasksearcher.saveData(newTask, context.getUser());

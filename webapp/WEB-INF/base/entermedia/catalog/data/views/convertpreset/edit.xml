@@ -6,6 +6,7 @@
 	<property id="type" />
 	<property id="guid" />
 	<property id="onimport" />
+	<property id="ordering" />
 	
 </properties>
 
