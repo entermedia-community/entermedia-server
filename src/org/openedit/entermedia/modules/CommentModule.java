@@ -37,6 +37,20 @@ public class CommentModule extends BaseMediaModule
 		inReq.putPageValue("comments", comments);
 	}
 
+	
+	public void loadComments(WebPageRequest inReq, String commentPath)
+	{
+		//MediaArchive arch/ive = getMediaArchive(inReq);
+		if (!commentPath.endsWith(".xml"))
+		{
+			commentPath = commentPath + ".xml";
+		}
+		
+		Collection comments = getCommentArchive().loadComments(commentPath);
+		inReq.putPageValue("comments", comments);
+	}
+
+	
 	private String findPath(WebPageRequest inReq) {
 		String commentPath = inReq.findValue("commentpath");
 		//old system was not safe
@@ -123,6 +137,8 @@ public class CommentModule extends BaseMediaModule
 
 		String commentPath = findPath(inReq);
 		getCommentArchive().addComment(commentPath, comment);
+		//?????? Tuan check again
+		loadComments(inReq, commentPath);
 	}
 	
 	
@@ -143,6 +159,9 @@ public class CommentModule extends BaseMediaModule
 		comment.setDate(date);
 		
 		getCommentArchive().removeComment(commentPath, comment);
+		//?????? Tuan check again
+		loadComments(inReq, commentPath);
+		
 	}
 
 	public WebEventListener getWebEventListener()

@@ -13,7 +13,6 @@
 	    <url-postfix>.html?oemaxlevel=1&amp;</url-postfix>
 	</path-action>
 	
-	
 	<inner-layout>${themeprefix}/layouts/asseteditor.html</inner-layout>
 	
 	<permission name="view">

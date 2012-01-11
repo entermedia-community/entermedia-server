@@ -74,6 +74,4 @@
 	<script src="/system/components/javascript/jquery.livequery.js" id="jquery-livequery"/>
 	<script src="/system/components/javascript/jquery.fancybox/jquery.fancybox-1.2.1.js" id="jquery-fancybox"/>
 	<style href="/system/components/javascript/jquery.fancybox/jquery.fancybox.css" id="jquery-fancybox-css"/>
-	  	
-  	
 </page>
