@@ -1,8 +1,7 @@
-<div  style="text-align: center;">
+<div id="media-player">
 	#if( !$asset.importstatus || $asset.importstatus != "complete" )
 		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
 	#else
 		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
 	#end
-	<div class="emviewercaption">#esc($!asset.caption)</div>
 </div>
