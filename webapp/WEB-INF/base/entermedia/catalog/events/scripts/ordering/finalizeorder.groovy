@@ -1,12 +1,11 @@
 package ordering;
 
+import com.openedit.users.User;
 import java.text.SimpleDateFormat;
-
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page;
 import com.openedit.users.User;
-
 import org.entermedia.email.PostMail;
 import org.entermedia.email.TemplateWebEmail;
 import org.openedit.Data
@@ -72,15 +71,20 @@ protected void sendEmail(Order inOrder) {
 
 			sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
 		}
-		String userid = inOrder.get("userid");
-		if(userid != null){
-			User user = userManager.getUser(userid);
-			if(user != null){
-
-				String owneremail =user.getEmail();
-				if(owneremail != null){
-					context.putPageValue("sharewithemail", emailto);
-					sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+		if( "download" != inOrder.get("ordertype") )
+		{ 
+			String userid = inOrder.get("userid");
+			if(userid != null)
+			{
+				User muser = userManager.getUser(userid);
+				if(muser != null)
+				{
+					String owneremail =muser.getEmail();
+					if(owneremail != null)
+					{
+						context.putPageValue("sharewithemail", emailto);
+						sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+					}
 				}
 			}
 		}
