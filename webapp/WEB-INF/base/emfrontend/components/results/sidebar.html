@@ -5,9 +5,7 @@ $pages.include("$apphome/components/results/header.html",$context)
 #end
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
-#if( !$thumbsize )
-	#set( $thumbsize  = "thumb" )
-#end
+#set( $thumbsize  = $context.findValue("thumbsize") )
 
 	#if( $category )
 		#set( $catid = $category.id )
@@ -24,7 +22,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			#set( $rootid = $hits.sessionId )
 			
 			#foreach ($hit in $hits.getPageOfHits())
-		<li class="emthumbbox embox$thumbsize sidebar-list-item" id="cell${catalogid}_${hit.id}" >
+		<li class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
 			#set( $count = $hits.getPage()+-1 )
 			#set( $count = $count*$hits.getHitsPerPage() )	
 			#set( $count = $velocityCount + $count )
@@ -36,29 +34,17 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			$context.putPageValue("type", $type)
 			#set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
 			$context.putPageValue("clink", $clink)
-
+			$context.putPageValue("thumbsize",$thumbsize)
 			<a href="$click">
+		
 
-			<div class="emthumbimage em$thumbsize" 
-				##if( $showcaption ) style="vertical-align:bottom;" #end 
-				#if($showhover != false) hover="true" #end 
-				>			
+				$pages.include("$apphome/components/results/thumbnails/small.html",$context)				
 
-				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
-
-			</div>
-			</a>			
-			#if( $showcaption )
-				<a class="eml-thumbnail-caption" href="$click">
-				
-			
+			</a>	
+			<a class="sidebar-caption" style="display: none;" href="$click">		
+				<span href="$click">
 						#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
-				
-			
-				
-				
-				</a>
-			#end
+				</span>
 		</li>
 			  
 			#end
@@ -66,13 +52,12 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	
 </div>
 
-	$pages.include("$apphome/components/results/pages.html",$context)
 
+<a href="$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId">More Results</a>
 
 
 
 	#end
-<br/><br/><br/>
 #if ( $hits.totalPages == 0 )
 <p>
 [[No results found.]]
@@ -80,36 +65,13 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 #end
 <div id="messagearea"></div>
 
-<script type="text/javascript">
-
-toggleHit =  function(div, count, sessionid)
-{
-	if (!e) var e = window.event;
-	e.cancelBubble = true;
-	if (e.stopPropagation) e.stopPropagation();
-	jQuery(this).load("$home$apphome/components/results/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
-    jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
-    return false;
-}
-
-jQuery("input[name=pagetoggle]").click(function () {
-      
-    	   var status = jQuery('input[name=pagetoggle]').is(':checked');
-    	   if(status){
-    		   jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
-    		   jQuery('.selectionbox').attr('checked','checked');
-           	   }
-        	   else{
-        	       jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
-        	       jQuery('.selectionbox').removeAttr('checked');  
-        	   }
-    	  
-       });
-     
-      
-
-
-
-</script>	
 </div>
 </div>
+
+<script>
+	
+	$('.sidebar-media li').hover(function() {
+		$(this).find('a.sidebar-caption').fadeToggle('fast');
+	});
+	
+</script>
