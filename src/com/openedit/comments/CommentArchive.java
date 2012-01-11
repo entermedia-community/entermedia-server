@@ -124,15 +124,9 @@ public class CommentArchive
 		return loadComments(page);
 		
 	}
-	public Collection loadComments(String inCatalogId, String inPath)
+	public Collection loadComments(String path)
 	{
-		String path = "/WEB-INF/data/"+inCatalogId + "/comments/" + inPath + ".xml";
 		Page page = getPageManager().getPage(path);
-		if(!page.exists()){
-			 path = "/WEB-INF/data/" +  inCatalogId + "/comments/" + inPath + "/folder.xml";
-			 page = getPageManager().getPage(path);
-		}
-		
 		return loadComments(page);
 	}
 	
