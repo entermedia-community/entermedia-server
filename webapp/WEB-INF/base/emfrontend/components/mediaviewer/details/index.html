@@ -1,7 +1,8 @@
-<div id="emdataeditor" class="emdetailsbox" >
 
-	<div  class="emviewercaption">#esc($!asset.caption)</div>
-
+	
+	
+	<!-- div  class="emviewercaption">#esc($!asset.caption)</div>
+	
 	<div  class="emviewerinfo">
 	$asset
 
@@ -34,36 +35,37 @@
 #end
 </span>
 
-</div>
 
-	<ul class="emdetailactions">
-#if( $canviewsettings )
-		<a href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId"><li class="emdetaileditasset  uibutton"> <img src="$home$themeprefix/images/navigation/info.png" />  Metadata</li></a>
-#end	
+</div -->
 
-#if( $candownload )
-		<a  href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id"><li class="uibutton"><img src="$home$themeprefix/images/buttons/forwd_16x16.png" /> Publish</li></a>
+	<ul class="emdetailactions clearfix">
+
+##if( $canviewsettings )
+		##<li class="emdetaileditasset"><a  class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId">[[Metadata]]</a></li>
+##end	
+
+#if( $canpublish )
+		<li><a class="btn"  href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id">[[Publish]]</a></li>
 #end
 #if( $canemaillink )
-		<a  href="$home$apphome/views/activity/emailassets.html?assetid=$asset.id"><li class="uibutton"><img src="$home$themeprefix/images/buttons/email.png" /> Email</li></a>
+		<li><a class="btn" href="$home$apphome/views/activity/emailassets.html?assetid=$asset.id">[[Email]]</a></li>
 #end
 #if( $candownload )
-		<a href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id"><li class="uibutton"><img src="$home$themeprefix/images/buttons/download.png" /> Download</li></a>
+		<li><a class="btn" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
 #end
 
 #if( $cansocialshare )
-		<a class="emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=640&height=480"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/buttons/facebooksm.png" alt="Share with social media sites"> Social Media</li></a>
+		<li class="emdetailfacebook"><a class="btn" class="emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=640&height=480">[[Social Media]]</a></li>
 #end
 #if( $canshareasset )
-		<a class="emdialog" href="$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=700&height=200"><li class="emdetailfacebook  uibutton"><img src="$home$themeprefix/images/navigation/link.png" /> [[Embed]]</li></a>
+		<li class="emdetailfacebook"><a  class="btn" class="emdialog" href="$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=700&height=200">[[Embed]]</a></li>
 #end
 
 
 #if( $canviewvoting )			
-<li class="emdetaileditasset  uibutton">
+<li class="emdetaileditasset" style="float: right;">
 		$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
 </li>
 #end
 	</ul>
 
-</div>

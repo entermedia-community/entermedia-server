@@ -346,7 +346,7 @@ public class Asset implements Data
 		}
 		else
 		{
-			if (inValue != null)
+			if (inValue != null && inValue.length() > 0)
 			{
 				getProperties().put(inKey, inValue);
 			}

@@ -21,7 +21,7 @@
 #elseif($conversionsremaining && $conversionsremaining.size()  > 0)
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatusplayer.html?assetid=$hit.id" style="width:550px;height:350px;">
 		<div style="padding-top:150px;">
-			<img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src='$home$themeprefix/images/ajax-loader.gif'/>
+			<img title="Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}" src="$home$themeprefix/images/ajax-loader.gif" />
 			<br/>
 			Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}
 		</div>
@@ -29,7 +29,7 @@
 #elseif($publish && $publish.size() >0 )
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatusplayer.html?assetid=$hit.id" style="width:550px;height:350px;">
 		<div style="padding-top:150px;">
-			<img title="Publishing Proxy $publish.size()" src='$home$themeprefix/images/ajax-loader.gif''/>
+			<img title="Publishing Proxy $publish.size()" src=$"home$themeprefix/images/ajax-loader.gif" />
 			<br/>
 			Publishing Proxy $publish.size()
 		</div>
@@ -37,7 +37,7 @@
 #elseif($conversions && $conversions.size() == 0)
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatusplayer.html?assetid=$hit.id" style="width:550px;height:350px;">
 		<div style="padding-top:150px;">
-			<img title="Adding to Queue" src='$home$themeprefix/images/ajax-loader.gif''/>
+			<img title="Adding to Queue" src="$home$themeprefix/images/ajax-loader.gif" />
 			<br/>
 			Adding to Queue
 		</div>

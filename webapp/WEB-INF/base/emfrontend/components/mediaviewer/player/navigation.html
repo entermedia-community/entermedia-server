@@ -1,51 +1,94 @@
-<h2 style="color:#666;">
-#if( $asset.assettitle )
-	$asset.assettitle
-#elseif( $asset.caption )
-	$asset.caption
-#else
-	$asset
-#end
-</h2>
 
 #set( $link = "$cataloghome/downloads/preview/large/$asset.sourcepath/preview.jpg")
-
+<div class="emprevnext clearfix">
+	
+	
 #if( $hits )
 		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
 		#set($previous = $hits.previous($indexOf))
 		#set($next = $hits.next($indexOf))
-		<div class="emprevnext" >
+		
 
 			#if($previous)
-				<a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"><span>[[Previous]]</span></a>
+				<a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
 			#end
-
+				
 			#if($next)
-				<a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"><span>[[Next]]</span></a>
+				<a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
 			#end
-		</div>
-
+			
+		
 #end
 
+<p style="margin: 2px 0 0 0; padding: 0 16px 0 0; font-weight: bold; text-align: center;">$asset</p>
+
+</div>
+
+
+ $pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
+ 
+<div style="margin: -10px 0 15px 0; padding: 0; border-top: 1px solid #eee;"></div>
+ 
+ <div style="padding: 0 10px 10px 10px; margin: -10px 0 0 0;">
+ 
+<div class="asset-details">
+
+#if ($asset.caption)
+<h3>$asset</h3>
+<p>#esc($!asset.caption)</p>
+<small>#esc($!asset.longcaption)</small>
+
+#end
+</div>
+
+
+
+	
 	#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
+
+
+
+
+<div class="asset-details-more" style="display: none;">
+	
 	<br>
-	<h2 style="color:#666;">Related Tags</h2>
-		#foreach ($tag in $asset.keywords)
-			<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
-		#end
+	<h3>Related Tags</h3>
+		<p>
+			#foreach ($tag in $asset.keywords)
+				<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+			#end
+		</p>
+	<h3>Asset Type</h3>
 		#foreach ($category in $asset.categories) 
 			<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
 		#end
 		
 	#end
+	
+	#if ($canviewslideshow)
+	
 	#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 	#if( $type != "video" )
 		<div>	
 				<a class="slideshow emdialog" href="$home$link" target="_parent"
 					pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
 					title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
-		</div>
+		</di>
 	#end	
+	
+	#end
+	</div>		
+	
+<div style="margin: 20px 0 0 0; padding: 0; border-top: 1px solid #eee;"></div>
+<center><a class="btn showhide" style="border-top: none; margin: 0 0 15px 0; border-radius: 0 0 5px 5px; font-size: 10px;" id="showmore"><span>Show More</span><span style="display: none;">Show Less</span></a></center>
 
-			
+<script>
+	
+	$('#showmore').click(function() {
+		$('.asset-details-more').toggle('fast');
+		$('.showhide span').toggle();
+	});
+	
+</script>
 
+</div>
