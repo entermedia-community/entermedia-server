@@ -31,6 +31,8 @@ public void checkforTasks()
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry");
+	query.addSortBy("ordering");
+	
 	String assetid = context.getRequestParameter("assetid");
 	if(assetid != null)
 	{

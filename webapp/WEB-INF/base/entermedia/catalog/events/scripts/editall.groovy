@@ -41,7 +41,9 @@ public void init()
 						if( asset != null && asset.get("previewstatus") != 0)
 						{
 								edited++;
-								asset.setProperty("previewstatus", "0");
+								//q.addExact( "importstatus", "imported" );
+								asset.setProperty("importstatus", "imported");
+								//asset.setProperty("previewstatus", "0");
 								assetsToSave.add(asset)
 								if(assetsToSave.size() == 100)
 								{

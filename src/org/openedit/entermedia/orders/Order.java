@@ -31,6 +31,13 @@ public class Order extends ElementData
 	{
 		return get("orderstatus");  //open/closed/error
 	}
+	
+	public void setOrderStatus(String inStatus, String inDetails)
+	{
+		setProperty("orderstatus", inStatus);
+		setProperty("orderstatusdetails", inDetails);
+	}
+
 	public void setOrderStatus(String inStatus)
 	{
 		setProperty("orderstatus", inStatus);
@@ -51,5 +58,6 @@ public class Order extends ElementData
 		}
 		return super.get(inId);
 	}
+
 	
 }

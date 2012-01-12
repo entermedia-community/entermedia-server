@@ -22,18 +22,12 @@ $context.putPageValue("view", $view)
 $pages.include("/system/components/xml/detaileditor.html", $context)
 
 
-<ul class="embuttons" style="margin:20px 0px 60px 10px">
-<li>
-	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
-</li>
-<li><a href='$home$content.searchhome/index.html'><span>Cancel</span></a></li>
-<li><a href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
+	<a class="btn small" href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
+<a class="btn small"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
+<a class="btn small" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
 		Delete
 	</span></a>
-</li>
-
-</ul>
 <div id="messagearea">$!message
 </div>
 </form>

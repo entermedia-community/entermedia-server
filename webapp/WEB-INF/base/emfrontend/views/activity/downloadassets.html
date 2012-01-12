@@ -10,7 +10,7 @@ Invalid order
 	
 <h2>Download</h2>
 	
-<form class="validate" id="usereditform"  method="post" action="processorder.html">
+<form class="validate" id="usereditform"  method="post" action="$home$apphome/views/activity/download/processorder.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 
@@ -22,19 +22,15 @@ $context.putPageValue("view", "order/downloadform")
 <input type="hidden" name="newuserstatus" value="downloadrequested"/>
 
 <input type="hidden" name="field" value="publishdestination" />
-<input type="hidden" name="publishdestination.value" value="1" /> ## this should be aspera
+<input type="hidden" name="publishdestination.value" value="0" /> ## 0 is http 1 is aspera
 
 <input type="hidden" name="field" value="ordertype" />
 <input type="hidden" name="ordertype.value" value="download" />
 <div >
 	<br><br>
-	<table class="striped" >
+	<table class="striped" width="100%" >
 	#foreach( $item in $orderitems )
-	<tr>
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
-
-	<td colspan="2">-----------------   ${asset.name}  -------------------------------------------------------------------------------------------------------------</td>
-	</tr>
 	<tr>
 	<td>		
 		<input type="hidden" name="itemid" value="$item.id"/>
@@ -46,25 +42,26 @@ $context.putPageValue("view", "order/downloadform")
 		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
 		#set( $tsize = "$home$thumbend" )
 		
-		#if( $parenthits )
-			#set( $rootid = $parenthits.sessionId )
-		#else
-			#set( $rootid = $hits.sessionId )
-		#end
-			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
+		#set( $rootid = $context.getRequestParameter("hitssessionid") )
+		#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html?hitssessionid=$rootid" )
 		
-			<a href="$click" class="emdialog" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
+			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
+			$context.putPageValue("thumbsize", "crop")
 		   	#set( $sourcepath = $asset.sourcePath )
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 			</a>
 </td>
 <td>
+$asset
+</td>
+
+<td>
 	      #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
 	      	<input type="hidden" name="field" value="presetid"/>
-  	   	    <select name="${item.id}.presetid.value">
+<!-- 
   	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
   	   	    $presetquery.setAndTogether(false)
   	   	    #set( $rendertype = false)
@@ -75,6 +72,9 @@ $context.putPageValue("view", "order/downloadform")
   	   	    $presetquery.addExact("inputtype","all");
   	   	    $presetquery.sortBy("name");
   	   	    #set( $results = $presetsearcher.search($presetquery) )
+ -->
+
+  	   	    <select name="${item.id}.presetid.value">
   	    	#foreach ($preset in $results)
   	    		<option value="$preset.id">$preset</option>
   	    	#end

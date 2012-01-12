@@ -27,10 +27,10 @@
 
  $pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
  
-<div style="margin: -10px 0 15px 0; padding: 0; border-top: 1px solid #eee;"></div>
+
  
  <div style="padding: 0 10px 10px 10px; margin: -10px 0 0 0;">
- 
+ <div style="margin: -10px 0 15px 0; padding: 0; border-top: 1px solid #eee;"></div>
 <div class="asset-details">
 
 #if ($asset.caption)
@@ -40,8 +40,6 @@
 
 #end
 </div>
-
-
 
 	
 	#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
@@ -77,7 +75,13 @@
 	#end	
 	
 	#end
+	#if($caneditasset)
+<div style="text-align: right">
+<a href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath"><img src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /></a>
+</div>
+	#end
 	</div>		
+
 	
 <div style="margin: 20px 0 0 0; padding: 0; border-top: 1px solid #eee;"></div>
 <center><a class="btn showhide" style="border-top: none; margin: 0 0 15px 0; border-radius: 0 0 5px 5px; font-size: 10px;" id="showmore"><span>Show More</span><span style="display: none;">Show Less</span></a></center>

@@ -233,12 +233,15 @@ public class OrderModule extends BaseMediaModule {
 		return orders;
 	}
 
-	public HitTracker findOrderItems(WebPageRequest req) {
+	public HitTracker findOrderItems(WebPageRequest req) 
+	{
 		Order order = loadOrder(req);
-		if (order != null) {
+		if (order != null) 
+		{
 			String catalogid = req.findValue("catalogid");
 			String orderid = order.getId();
-			if (orderid == null) {
+			if (orderid == null) 
+			{
 				orderid = req.getRequestParameter("orderid");
 			}
 			HitTracker items = getOrderManager().findOrderItems(req, catalogid,

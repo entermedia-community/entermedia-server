@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.util.SPENGOAuthenticator;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.util.DateStorageUtil;
@@ -28,6 +31,7 @@ import com.openedit.users.User;
 
 public class OrderManager 
 {
+	private static final Log log = LogFactory.getLog(OrderManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected WebEventHandler fieldWebEventHandler;
 	
@@ -518,11 +522,19 @@ public class OrderManager
 		//if all done then save order status
 		
 		Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+		
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrder.getId());
-		query.addNot("status", "complete");
+		query.setHitsName("orderitems");
+		//query.addNot("status", "complete");
 		HitTracker hits =  itemsearcher.search(query);
 		
+		if( hits.size() == 0)
+		{
+			log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
+			//error?
+			return;
+		}
 		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
 
@@ -548,6 +560,18 @@ public class OrderManager
 				{
 					convertcomplete = true;
 				}
+				else if ("error".equals( convert.get("status") ) )
+				{
+					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
+					item.setProperty("status", "error");
+					item.setProperty("errordetails", convert.get("errordetails"));
+					itemsearcher.saveData(item, null);
+					inOrder.setOrderStatus("error",convert.get("errordetails")); //orders are either open closed or error
+					OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
+					saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+					return;
+				}
+
 			}
 			if( convertcomplete)
 			{
@@ -569,7 +593,7 @@ public class OrderManager
 						item.setProperty("status", "error");
 						item.setProperty("errordetails", publish.get("errordetails"));
 						itemsearcher.saveData(item, null);
-						inOrder.setOrderStatus("error"); //orders are either open closed or error
+						inOrder.setOrderStatus("error",publish.get("errordetails")); //orders are either open closed or error
 						OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
 						saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
 						

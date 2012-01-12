@@ -1,4 +1,6 @@
 <properties>
-  <preset id="ffmpegpreviewmp4" acodec="libfaac" vcodec="libx264" vpre="normal" >FFMMPEG MP4</preset>
-  <preset id="ffmpegpreviewflv" acodec="libfaac" vcodec="libx264" vpre="normal" >FFMMPEG FLV</preset>
+  <preset id="ffmpegpreviewmp4" prefwidth="640" prefheight="360"  acodec="libfaac" vcodec="libx264" vpre="normal" >FFMMPEG 640x360 MP4</preset>
+  <preset id="ffmpeg480p" prefwidth="704" prefheight="480"  acodec="libfaac" vcodec="libx264" vpre="normal" >FFMMPEG 480p MP4</preset>
+  <preset id="ffmpeg720p" prefwidth="1280" prefheight="720"  acodec="libfaac" vcodec="libx264" vpre="normal" >FFMMPEG 720p MP4</preset>
+  <preset id="ffmpeg1080p" prefwidth="1920" prefheight="1080" acodec="libfaac" vcodec="libx264" vpre="libx264-hq" >FFMMPEG 1080p MP4</preset>
 </properties>

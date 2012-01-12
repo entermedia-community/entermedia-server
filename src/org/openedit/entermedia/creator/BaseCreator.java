@@ -141,14 +141,6 @@ public abstract class BaseCreator implements MediaCreator
 		}
 		populateOutputPath(inArchive,inStructions);
 		
-		String w = inStructions.getProperty("prefwidth");
-		String h = inStructions.getProperty("prefheight");
-
-		if (w != null && h != null) //both must be set
-		{
-			inStructions.setMaxScaledSize(new Dimension(Integer.parseInt(w), Integer.parseInt(h)));
-		}		
-		
 		return inStructions;
 	}
 

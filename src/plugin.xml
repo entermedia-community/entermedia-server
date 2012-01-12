@@ -577,6 +577,17 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
+
+	<bean id="generatedMediaGenerator" class="org.openedit.entermedia.generators.GeneratedMediaGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>
+
+
 	<bean id="resultsDownloadGenerator"
 		class="org.openedit.entermedia.generators.ResultsDownloadGenerator" />
 	<bean id="categoryDownloadGenerator"
