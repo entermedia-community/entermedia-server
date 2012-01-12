@@ -7,5 +7,5 @@
 	<property id="externalid"  />
 	<property id="orderid"  />
 	<property id="itemid"  />
-	
+	<property id="percentage" viewtype="percentage"  />
 </properties>
