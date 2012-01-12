@@ -13,7 +13,7 @@
     <property name="searchtype" value="categories"/>
     <property name="productavailability" value="false"/>
     <property name="resultstype" value="thumbs"/>
-    <property name="oe.edit.mode" value="preview"/>
+    <property name="oe.edit.mode" value="debug"/>
     <property name="datalevel" value="advanced"/>
     <property name="productexpirations" value="false"/>
     <property name="productzones" value="false"/>
@@ -22,15 +22,15 @@
     <property name="productlegal" value="false"/>
     <property name="productreviewers" value="false"/>
     <property name="resulttype" value="thumbs"/>
+    <property name="showdebug" value="true"/>
     <property name="email" value="support@openedit.org"/>
-    <property name="showdebug" value="false"/>
-    <property name="showfilter" value="false"/>
     <property name="retention" value="false"/>
+    <property name="showfilter" value="false"/>
     <property name="photooptions" value="false"/>
-    <property name="productorderingoptions" value="false"/>
     <property name="firstName" value="The"/>
+    <property name="productorderingoptions" value="false"/>
   </properties>
-  <group id="developers"/>
-  <group id="administrators"/>
   <group id="photoeditors"/>
+  <group id="administrators"/>
+  <group id="developers"/>
 </user>
