@@ -29,10 +29,10 @@
  
 
  
- <div style="padding: 0 10px 10px 10px; margin: -10px 0 0 0;">
- <div style="margin: -10px 0 15px 0; padding: 0; border-top: 1px solid #eee;"></div>
+ <div style="padding: 0 3px 10px 3px; margin: -10px 0 0 0;">
+ <div style="padding: 0; border-top: 1px solid #eee;"></div>
 
-
+<div id="asset-data" class="clearfix">
 #set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
 
 			$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
@@ -56,8 +56,10 @@
 			$context.putPageValue("view",$view)	
 			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 	
+</div>
+	
 #if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
-<div class="asset-details-more" style="display: none;">
+<div class="asset-details-more" style="display: none; padding: 0 10px;">
 	
 	<br>
 	#if( $asset.hasKeywords() )
