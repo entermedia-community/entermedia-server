@@ -8,8 +8,6 @@ Invalid order
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-<h2>Download</h2>
-	
 <form class="validate" id="usereditform"  method="post" action="$home$apphome/views/activity/download/processorder.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 

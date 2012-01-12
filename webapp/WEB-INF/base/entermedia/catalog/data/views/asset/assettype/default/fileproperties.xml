@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties usagelabel="File Details">
-<property id="name" />
-<property id="fileformat" />
-<property id="filesize" />
+<property id="owner" />
+<property id="assetaddeddate" />
+<property id="term" />
+<property id="length" />
+
 </properties>

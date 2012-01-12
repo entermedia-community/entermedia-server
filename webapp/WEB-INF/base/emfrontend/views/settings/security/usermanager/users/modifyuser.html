@@ -33,25 +33,23 @@
 			$context.putPageValue("searcher", $userSearcher)	 
 			$context.putPageValue("view", "user/useredit")	
 			$context.putPageValue("data", $selectedUser)	
-			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 			
 			$context.putPageValue("searcher", $userProfileSearcher)	 
 			$context.putPageValue("view", "userprofile/edit")	
 			$context.putPageValue("data", $userprofile)
-			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 			
 		
 			<br/>
-			<div style="padding-left: 200px;">
-			<ul class="embuttons" >
-				<li><a href="#" onclick="javascript:saveUser()" ><span>[[Save Changes]]</span></a></li>
-				<li>
-					<a href="./removeuser.html?groupid=$content.mastergroup&removeUsernames=$selectedUser.id"><span>Delete User</span></a>
-				</li>
-			</ul>
+			<div style="padding-left: 100px;">
+			<a href="#" class="btn small" onclick="javascript:saveUser()" ><span>[[Save Changes]]</span></a>
+			<a class="btn small" href="./removeuser.html?groupid=$content.mastergroup&removeUsernames=$selectedUser.id"><span>Delete User</span></a>
 			</div>
 			
 		</form>
+<br>
+$pages.include("$apphome/views/settings/security/usermanager/users/grouplist.html")
 
 </div>	
 </div>

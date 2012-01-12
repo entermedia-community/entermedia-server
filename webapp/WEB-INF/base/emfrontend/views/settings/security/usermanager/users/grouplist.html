@@ -18,19 +18,7 @@ addgroup = function()
 	}
 }
 </script>
-#if( $selectedUser.getGroups().size() < $UserManager.getGroups().size() ) 
-<select name="group" id="groupselect">
-	<option value=""></option>
-	#foreach ( $group in $UserManager.getGroups() )
-		#if( !$selectedUser.isInGroup($group) )  
-	    	<option value="$group.getId()">$group.getName()</option>
-		#end
-	#end     
-</select>  
 
-<input type=button onclick="addgroup()" value="[[Add]]">
-
-#end
 <br/>
 <br/>
 
@@ -49,3 +37,17 @@ addgroup = function()
 <div class="embutton">
 		<a href="#" onclick="viewgroup()">[[View Group]]</a>
 </div>
+
+#if( $selectedUser.getGroups().size() < $UserManager.getGroups().size() ) 
+<select name="group" id="groupselect">
+	<option value=""></option>
+	#foreach ( $group in $UserManager.getGroups() )
+		#if( !$selectedUser.isInGroup($group) )  
+	    	<option value="$group.getId()">$group.getName()</option>
+		#end
+	#end     
+</select>  
+
+<input type=button onclick="addgroup()" value="[[Add]]">
+
+#end

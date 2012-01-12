@@ -18,7 +18,7 @@
 	#end
 #end	
 
-<ul class="emdataviewer">
+<ul id="${view.replace('/','-')}" class="emdataviewer">
  #foreach( $detail in $details )
 	$!context.putPageValue("detail",$detail)
 	
@@ -32,11 +32,11 @@
 	#set($val = false)
 	#set( $val = $data.get($detail.getId()) )
 	#if(  $val && $val.length() > 0 ) 
-		<li>
-			<span>
+		<li id="$detail.id">
+			<span class="field">
 					$!detail.getText($context)
 			</span>
-			<span>
+			<span class="data">
 				$!context.putPageValue("val",$val)
 				$pages.include("$xmledithome/detailreadonly.html", $context) 
 			</span>

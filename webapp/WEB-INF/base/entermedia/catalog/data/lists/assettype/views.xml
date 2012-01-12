@@ -1,7 +1,6 @@
 <properties>
 	
-	<property id="assetdetails">Status</property>
-	<property id="general">Contents</property>
+	<property id="general">General</property>
 	<property id="fileproperties">File Properties</property>
 	
 </properties>

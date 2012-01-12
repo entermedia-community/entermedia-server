@@ -8,8 +8,6 @@ No assets have been selected.
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-	<h3>Email</h3>
-	
 <form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/share/step2.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 

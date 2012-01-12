@@ -3,6 +3,7 @@
 <properties>
   <property id="users" icon="user" path="/views/settings/security/usermanager/users/index.html" >Users</property>
   <property id="groups" icon="lgicn_16x16" path="/views/settings/security/usermanager/groups/index.html" >Groups</property>
-  <property id="permissions" icon="unlock" path="/views/settings/security/permissions/index.html" >Permissions</property>
-  <property id="rules" icon="lock" path="/views/settings/security/rules/index.html" >Rules</property>
+  <property id="permissions" icon="unlock" path="/views/settings/security/permissions/index.html" >Roles</property>
+  <property id="rules" icon="lock" path="/views/settings/security/rules/index.html" >Asset Rules</property>
+  <property id="apprules" icon="lock" path="/views/settings/security/apprules/index.html" >Application Rules</property>
 </properties>

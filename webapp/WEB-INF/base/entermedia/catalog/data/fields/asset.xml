@@ -39,7 +39,7 @@
 	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  externalid="Create Date,MediaCreateDate,CreateDate">Created On</property>
 	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date" viewtype="time" >Last Modified</property>
 	<property id="recordmodificationdate" index="true" type="date" stored="true" editable="false">Record Date</property> <!--  should be a date -->
-	<property id="assetaddeddate" editable="true" index="true" stored="true" datatype="date" viewtype="time" externalid="Record Creation Date">Uploaded Date</property>
+	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" externalid="Record Creation Date">Uploaded Date</property>
 	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" query="groups:developers">Owner</property>
 	<property id="primaryfile" index="true" stored="true">Primary File Name</property>
 	<property id="cumulusid" index="true" stored="true">Cumulus ID</property>
@@ -56,7 +56,7 @@
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="title"   >Episode</property>
 
 	<property id="caption" index="true" stored="true" keyword="true" editable="true" externalid="ImageDescription,Caption/Abstract">Caption</property>
-	<property id="longcaption"  keyword="true" editable="true">Long Caption</property>
+	<property id="longcaption"  keyword="true" editable="true" viewtype="textarea" >Description</property>
 	<!--  this is built in, Used for related searches property id="keywords" keyword="true" index="true" stored="true" editable="false" >Tags</property --> 
 	<property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords">Extra Keywords</property> 
 	<property id="purpose" index="true" stored="true" editable="true" viewtype="list" datatype="list">Purpose</property>
@@ -70,6 +70,7 @@
 	<property id="publisheds3" datatype="boolean" index="true" stored="true" editable="true">Published S3</property>
 	<property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp" >Language</property>
 	<property id="stocknumber" index="true" keyword="true" editable="true" stored="true">Stock Number</property>
+	<property id="term" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>
 	<property id="jobnotes" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>
 
 	<!-- Approvals -->	
