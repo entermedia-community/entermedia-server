@@ -693,6 +693,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		inReq.setRequestParameter("id", asset.getId());
 		inReq.putPageValue("asset", asset);
+		getMediaArchive(inReq).fireMediaEvent("assetsuploaded", inReq.getUser(), (Asset)asset);
 	}
 	public void createAssetsFromTemp(WebPageRequest inReq)
 	{
