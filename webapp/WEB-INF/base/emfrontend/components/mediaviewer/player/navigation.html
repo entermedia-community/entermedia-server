@@ -33,7 +33,7 @@
  <div style="margin: -10px 0 15px 0; padding: 0; border-top: 1px solid #eee;"></div>
 <div class="asset-details">
 
-#if ($asset.caption)
+#if ($asset.caption || $asset.longcaption)
 <h3>$asset</h3>
 <p>#esc($!asset.caption)</p>
 <small>#esc($!asset.longcaption)</small>
