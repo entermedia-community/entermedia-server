@@ -34,7 +34,7 @@
 	#if( !$origURL )
 	#set( $origURL = $content.path )
 	#end
-	<div class="ui-widget-content">
+	<div class="ui-widget-content  metadata-editor">
 	
 	$context.putPageValue("finished",$finished)
 	$pages.include("$plugin?origURL=$origURL", $context)
