@@ -7,23 +7,18 @@
 #set( $rootpath = "${apphome}/components/categorize")
 
 #set ($categories = $asset.getCategories())
-<div class="emtable" >
+<div class="emtable clearfix" >
 	#foreach($category in $categories)
-		<div class="row">
-			<span>
-				<a href="$home$apphome/components/categories/${category.id}.html" ><img border=0 src="$home${themeprefix}/images/detaileditor/folder.png"> $category.name</a>
-			</span>
+		<a class="row category" href="$home$apphome/components/categories/${category.id}.html">
+			$category.name
 			#if($caneditasset)
-			<span style="padding-left: 5px;">
-				<a class="ajax" targetdiv="assetdetailscategorylist$asset.id" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id">
-				<img title="Remove this Category"  alt="Remove this Category" src="$home${themeprefix}/images/detaileditor/close_16x16.png"></a>
-			</span>
+				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$asset.id" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id">
 			#end
-		</div>
+		</a>
 	#end
 </div>
 #if($caneditasset)
-	<div id="addcategory$asset.id">
+	<div id="addcategory$asset.id" style="margin: 20px 0 10px 0;">
 		<a class="ajax btn small" targetdiv="assetdetailscategorylist$asset.id"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
 	</div>
 #end

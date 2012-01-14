@@ -54,11 +54,19 @@
 		<li><a class="btn" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
 #end
 
+
+
 #if( $cansocialshare )
-		<li class="emdetailfacebook"><a class="btn" class="emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=640&height=480">[[Social Media]]</a></li>
+		<li class="emdetailfacebook"><a class="btn emdialog" href="$home$apphome/components/share/social.html?sourcepath=$asset.sourcepath&categoryid=$!category.id&width=640&height=480">[[Social Media]]</a></li>
 #end
 #if( $canshareasset )
-		<li class="emdetailfacebook"><a  class="btn" class="emdialog" href="$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=700&height=200">[[Embed]]</a></li>
+		<li class="emdetailfacebook"><a  class="btn emdialog" href="$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=700&height=200">[[Embed]]</a></li>
+#end
+
+#if($caneditasset)
+<li style="float: right;">
+<a class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /> Edit</a>
+</li>
 #end
 
 
@@ -67,5 +75,8 @@
 		$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
 </li>
 #end
+
+
+
 	</ul>
 

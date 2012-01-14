@@ -2,12 +2,11 @@
           <div class="c33l">
             <div class="subcl">
 <div style="overflow: hidden;" class="ui-widget">
-<div class="ui-widget-header">[[Access Level]]</div>
+<div class="ui-widget-header">[[Roles]]</div>
 <div class="ui-widget-content emselectmenu">
 
 #set($current = $context.getRequestParameter("settingsgroupid")) 
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
-<h4>[[Select a Group]]</h4>
 <ul class="vlist">
 #foreach($settingsgroup in $groupSearcher.fieldSearch("id", "*", "textUp"))
  <li #if($current == $settingsgroup.id) class="active" #end><a href="$home$apphome/views/settings/security/permissions/views/index.html?settingsgroupid=$settingsgroup.id">$settingsgroup</a></li>

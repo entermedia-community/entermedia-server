@@ -1,8 +1,6 @@
 <div id="emresultscontent">
 
-#if( $hideheader &&  $hideheader == "false")
-$pages.include("$apphome/components/results/header.html",$context) 
-#end
+#set( $hits = $orderassets)
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 #set( $thumbsize  = $context.findValue("thumbsize") )
@@ -21,7 +19,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			
 			#set( $rootid = $hits.sessionId )
 			
-			#foreach ($hit in $hits.getPageOfHits())
+			#foreach ($hit in $hits)
 		<li class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
 			#set( $count = $hits.getPage()+-1 )
 			#set( $count = $count*$hits.getHitsPerPage() )	
@@ -51,11 +49,6 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	</ul>
 	
 </div>
-
-<center>
-<a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId">More Results</a>
-</center>
-
 
 	#end
 #if ( $hits.totalPages == 0 )

@@ -54,13 +54,15 @@ public class RelatedKeywordModule extends BaseModule
 
 	public Map<String, String> getSuggestions(WebPageRequest inReq) throws Exception
 	{
+		String searchType = inReq.findValue("searchtype");
+		if( !"asset".equals(searchType))
+		{
+			return null;
+		}
+
+		
 		String catalogid = inReq.findValue("catalogid");
 		//searcher = (Searcher) inReq.getPageValue("searcher");
-		String searchType = inReq.findValue("searchtype");
-		if( searchType == null)
-		{
-			searchType = "asset";
-		}
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, searchType);
 		
 		HitTracker tracker = searcher.loadHits(inReq);

@@ -20,7 +20,7 @@
 		
 #end
 
-<p style="margin: 2px 0 0 0; padding: 0 16px 0 0; font-weight: bold; text-align: center;">$asset</p>
+<p style="margin: 2px 0 0 0; padding: 0 16px 0 0; font-weight: bold; text-align: center;">#if($asset.caption) $asset.caption #else $asset #end</p>
 
 </div>
 
@@ -29,34 +29,48 @@
  
 
  
- <div style="padding: 0 10px 10px 10px; margin: -10px 0 0 0;">
- <div style="margin: -10px 0 15px 0; padding: 0; border-top: 1px solid #eee;"></div>
-<div class="asset-details">
+ <div style="padding: 0 3px 10px 3px; margin: -10px 0 0 0;">
+ <div style="padding: 0; border-top: 1px solid #eee;"></div>
 
-#if ($asset.caption)
-<h3>$asset</h3>
-<p>#esc($!asset.caption)</p>
-<small>#esc($!asset.longcaption)</small>
+<div id="asset-data" class="clearfix">
+#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
 
-#end
-</div>
+			$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+			$context.putPageValue("data",$asset)	
+			$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+			
+			#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/general") )
+			  #set ($view = "asset/assettype/$asset.assettype/general")
+			#else
+			  #set ($view = "asset/assettype/default/general")
+			#end
+			$context.putPageValue("view",$view)	
+			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 
+
+			#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
+			  #set ($view = "asset/assettype/$asset.assettype/fileproperties")
+			#else
+			  #set ($view = "asset/assettype/default/fileproperties")
+			#end
+			$context.putPageValue("view",$view)	
+			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 	
-	#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
-
-
-
-
-<div class="asset-details-more" style="display: none;">
+</div>
+	
+#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
+<div class="asset-details-more" style="display: none; padding: 0 10px;">
 	
 	<br>
+	#if( $asset.hasKeywords() )
 	<h3>Related Tags</h3>
 		<p>
 			#foreach ($tag in $asset.keywords)
 				<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
 			#end
 		</p>
-	<h3>Asset Type</h3>
+	#end	
+	<h3>Categories</h3>
 		#foreach ($category in $asset.categories) 
 			<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
 		#end
@@ -74,11 +88,6 @@
 		</di>
 	#end	
 	
-	#end
-	#if($caneditasset)
-<div style="text-align: right">
-<a href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath"><img src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /></a>
-</div>
 	#end
 	</div>		
 
