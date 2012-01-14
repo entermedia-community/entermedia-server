@@ -195,23 +195,15 @@ public class SavedQueryModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 		String queryid = inReq.findValue("queryid");
 		Data data = getSavedQueryManager().loadSavedQuery(catalogid, queryid, inReq.getUser());
-		if(data == null)
+		if(data != null)
 		{
-			throw new OpenEditException("saved query not found " + queryid);
+			//throw new OpenEditException("saved query not found " + queryid);
+			SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,true,inReq.getUser());
+			Searcher searcher = getSearcherManager().getSearcher(catalogid, "asset");
+			HitTracker hittracker = searcher.cachedSearch(inReq, query);
+			return hittracker;
 		}
-		SearchQuery query = getSavedQueryManager().loadSearchQuery(catalogid, data,true,inReq.getUser());
-//		String searchType = inReq.getRequestParameter("searchtype");
-//		String[] catalogs = new String[query.getCatalogs().size()];
-//		for (int i = 0; i < catalogs.length; i++)
-//		{
-//			catalogs[i] = String.valueOf(query.getCatalogs().get(i));
-//		}
-//		inReq.setRequestParameter("catalogid", catalogs);
-				
-				
-		Searcher searcher = getSearcherManager().getSearcher(catalogid, "asset");
-		HitTracker hittracker = searcher.cachedSearch(inReq, query);
-		return hittracker;
+		return null;
 	}
 	
 	public void saveTerm(WebPageRequest inReq) throws Exception
