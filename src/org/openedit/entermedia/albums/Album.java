@@ -316,7 +316,7 @@ public class Album implements Data
 	public int size(String inCatalogId, WebPageRequest inReq)
 	{
 		HitTracker tracker = getAssets(inCatalogId, inReq);
-		return tracker.size();
+		return tracker != null ? tracker.size():0;
 	}
 
 	public String loadThumbData(WebPageRequest inReq)
