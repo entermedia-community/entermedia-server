@@ -24,7 +24,7 @@ $context.putPageValue("view", "order/downloadform")
 
 <input type="hidden" name="field" value="ordertype" />
 <input type="hidden" name="ordertype.value" value="download" />
-	<table class="striped" width="100%" >
+	<table class="striped download-table" width="100%" >
 	#foreach( $item in $orderitems )
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 	<tr>
@@ -80,7 +80,7 @@ $asset
 	#end
 	
 </table>
-<input style="margin-left: 300px;" type="submit" name="submit" value="Next >>"/> 
+<input class="btn" style="float: right; margin: 15px 0;" type="submit" name="submit" value="Next >>"/> 
 	
 	<div id="itemsave"></div>
 	
