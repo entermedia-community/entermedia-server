@@ -583,6 +583,10 @@ public class OrderManager
 				else
 				{
 					Data publish = (Data)publishQueueSearcher.searchById(publishqueueid);
+					if( publish == null )
+					{
+						log.error("Publish was null");
+					}
 					if( "complete".equals( publish.get("status") ) )
 					{
 						publishcomplete = true;

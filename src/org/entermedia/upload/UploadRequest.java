@@ -315,6 +315,11 @@ public class UploadRequest implements ProgressListener
 	{
 		fieldUploadQueueData = inUploadQueueData;
 	}
+	
+	/**   
+	 * Put breakpoints here to slow down the upload
+	 * 
+	 */
 	public void update(long inBytesRead, long inContentLength, int inItemNumber)
 	{
 		if( getUploadQueueData() == null)
