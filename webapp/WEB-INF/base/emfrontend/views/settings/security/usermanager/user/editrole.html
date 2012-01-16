@@ -1,0 +1,39 @@
+<div id="roleeditor">
+
+<div class="ui-widget commentbox">
+<div class="ui-widget-header">Role ($searcherManager.getData("media","catalogs", $catalogid) Catalog)</div>
+<div class="ui-widget-content" > 
+
+	<p style="color:#444;font-weight:normal;font-size:14px;">Users are assigned a unique role within a catalog. This feature is often used for within enterprise deployments with numerous and complex catalog permissions.</p>
+
+<form class="ajaxform ajaxautosubmit" name="addform" id="groupAddForm" targetdiv="roleeditor" action="$home$usermanagerhome/user/editrole.html" method="post">
+
+			<input type="hidden" name="userid" value="$selectedUser.id"/>
+
+	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+	#set ($userprofile = $userProfileSearcher.searchByField("userid", $selectedUser.id))
+			<input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
+			<input type="hidden" name="searchtype" value="userprofile" />
+			<input type="hidden" name="save" value="true" />
+			<input type="hidden" name="sourcepath" value="users/$selectedUser.id" />
+			<input type="hidden" name="id" value="$!userprofile.id" />
+	
+	$context.putPageValue("searcher", $userProfileSearcher)	 
+	$context.putPageValue("view", "userprofile/edit")	
+	$context.putPageValue("data", $userprofile)
+	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
+
+			#if ($savedok)
+				<div class="common-success">
+					Saved
+				</div>
+			#end
+	
+
+</form>
+
+
+</div>
+</div>
+
+</div>

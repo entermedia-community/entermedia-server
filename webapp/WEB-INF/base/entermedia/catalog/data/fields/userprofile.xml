@@ -1,7 +1,7 @@
 <properties>
 	<property id="id" index="true" stored="true"  keyword="true" >ID</property>
 	<property id="userid" index="true" stored="true" >User Id</property>
-	<property id="settingsgroup" editable="true" index="true" stored="true" datatype="list">Settings Group</property>
+	<property id="settingsgroup" editable="true" index="true" stored="true" datatype="list">Role</property>
 	<property id="view_asset_resultstable" index="true" stored="true" >View Table Results</property>
 	<property id="profilesearchfilters" index="true" stored="true" >Filters Used By Search</property>
 	<property id="hideassettype" index="true" stored="true" >Hide Asset Types</property>

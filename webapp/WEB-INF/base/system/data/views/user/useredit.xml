@@ -6,7 +6,8 @@
 	
 	<property id="enabled" header="blank"/>
 	<property id="showeditor" stored="true" editable="true" datatype="boolean">Enable HTML editing</property>
-	
+
+<!-- 	
 	<property id="officephone" header="blank"/>
 	<property id="mobilephone" />
 	
@@ -23,8 +24,8 @@
 	<property id="mailingstate" >State</property>
 	<property id="mailingzip" >Zipcode</property>
 	<property id="mailingcountry" blankoption="false" >Country</property>
-	
-	<property id="notes" viewtype="textarea" header="blank"/>
 	<property id="assistant" />
+ -->	
+	<property id="notes" viewtype="textarea" header="blank"/>
 
 </properties> 

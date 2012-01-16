@@ -86,7 +86,8 @@ runajax = function(e)
 					{
 						doResize();
 					}
-				}
+				}	$!message
+
 			);
 
 	}
@@ -118,7 +119,8 @@ toggleitem = function(e)
 				
 				jQuery("."+targetDiv, window.parent.document).html(html);
 			    jQuery("#basketmenu").load("$home/$applicationid/components/albums/basket/menuitem.html");
-				jQuery("#basketmenu", window.parent.document).load("$home/$applicationid/components/albums/basket/menuitem.html");
+				jQuery("#basketmenu",	$!message
+ window.parent.document).load("$home/$applicationid/components/albums/basket/menuitem.html");
 				jQuery("#collectionbasket", window.parent.document).load("$home/$applicationid/views/albums/basket/index.html?oemaxlevel=1");
 						
 				
@@ -156,7 +158,8 @@ toggleorderitem = function(e)
 
 }
 
-getConfirmation = function(inText)
+getConfirmation = function(inText)	$!message
+
 {
 	if(!confirm(inText))
 	{
@@ -231,9 +234,14 @@ onloadselectors = function()
 			return false;
 		}
 	);
-	
-	//used? jQuery(".validateform").validate();
-	
+	jQuery("form.ajaxautosubmit").livequery( function() 
+			{
+				var theform = jQuery(this); 
+				theform.find("select").change( function()
+						{
+							theform.submit();
+						});
+			});
 	jQuery("a.thickbox, a.emdialog").livequery(
 		function() 
 		{

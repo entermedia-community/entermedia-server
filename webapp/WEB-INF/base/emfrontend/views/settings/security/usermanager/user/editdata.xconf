@@ -1,0 +1,5 @@
+<page>
+	<path-action name="User.updateUserProperties" />
+		<layout />
+	<inner-layout />
+</page>

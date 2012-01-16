@@ -1,0 +1,14 @@
+#if (!$userName)
+	#set ($userName = $context.getRequestParameter("userid"))
+#end
+
+#if($userName)
+
+$pages.include("$apphome/views/settings/security/usermanager/user/editdata.html")
+$pages.include("$apphome/views/settings/security/usermanager/user/editgroups.html")
+$pages.include("$apphome/views/settings/security/usermanager/user/editrole.html")
+
+#else
+	<br/>
+	[[Select a user]].
+#end

@@ -859,6 +859,8 @@ public class UserManagerModule extends BaseModule
 		}
 		getPropertyContainerManipulator().updateProperties( inReq.getParameterMap(),
 		user.getProperties() );
+
+		//TODO: Why is this needed? Simplify
 		Map params = inReq.getParameterMap();
 		if (params.containsKey("field"))
 		{
@@ -873,6 +875,7 @@ public class UserManagerModule extends BaseModule
 			}
 		}
 		inReq.putPageValue("status","Saved");
+		inReq.putPageValue("saved","saved");
 		getUserSearcher().saveData( user ,inReq.getUser());
 	}
 
