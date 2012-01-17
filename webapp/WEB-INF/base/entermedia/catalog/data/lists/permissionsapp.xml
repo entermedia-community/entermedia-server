@@ -1,5 +1,6 @@
 <permissions name="Application Permissions">
 
+
 	<permission id="view" name="View App" description="Who can view the application"/>
 	<permission id="viewupload" name="Upload" description="Upload" />
 	<permission id="viewassets" name="View Assets" description="Allows viewing of asset details" />
@@ -7,12 +8,15 @@
   	<permission id="shareasset" name="Share Asset" description="Share Assets" />
   	<permission id="viewsettings" name="View Settings" description="View Settings" />
 
-	<permission id="viewuploadmulti" name="Upload" description="Upload" />
-	<permission id="viewvoting" name="Upload" description="Upload" />
-	<permission id="emaillink" name="Upload" description="Upload" />
-	<permission id="socialshare" name="Upload" description="Upload" />
-	<permission id="publish" name="Upload" description="Upload" />
+	<permission id="viewuploadmulti" name="Multiple File Upload" description="Multiple File Upload" />
+	<permission id="viewvoting" name="Like" description="Ability to like an asset" />
+	<permission id="emaillink" name="Email Link" description="Able to email links" />
+	<permission id="socialshare" name="Social Share" description="Social Share" />
+	<permission id="publish" name="Publish" description="Publish" />
 	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
+
+	<permission id="quicksearch" name="Quick Search" description="Ability to search from the top of the site"/>
+	<permission id="viewpasswordhelper" name="Password Helper" description="Allow lookup of passwords"/>
 	
 	<permission id="editasset" name="Edit Metadata" description="Enable asset metadata edits"/>
 	<permission id="metadatadetails" name="Show Metadata" description="Show asset metadata"/>
