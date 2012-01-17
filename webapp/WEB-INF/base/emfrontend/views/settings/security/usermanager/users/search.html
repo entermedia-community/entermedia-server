@@ -18,11 +18,9 @@ $context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", 
 		<div style="float: left; padding: 5px;">
 	$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
 		</div>
-<ul class="embuttons" style="padding-top: 12px;">
-<li>
-	<a style="margin-top: 4px;" href="#" onclick='jQuery("#usersearchform").submit();'><span>[[Search]]</span></a>
-</li>
-</ul>
+
+<a class="btn" style="margin-top: 4px;" href="#" onclick='jQuery("#usersearchform").submit();'>[[Search]]</a>
+
 	</form>
 
 </div>

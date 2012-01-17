@@ -34,18 +34,16 @@
 <p>	<b>Run Path: </b> 
  $pathevent.getPage().getPath()
 </p>
-<ul class="embuttons">
-<li>
-	<a class="thickbox" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()"><span>[[Run Now]]</span></a>
-</li>
-</ul>
+	<a class="thickbox btn" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()">[[Run Now]]</a>
 
 
+<p>
 <b>$!pathevent.getFormattedLastRun()
 #if( $pathevent.getLastRunTime() > 0 )
 [[Ran in]] $pathevent.getLastRunTime() [[seconds.]]<br>
 #end 
 </b>
+</p>
 <div style="padding: 10px; max-width: 600px;">
 $!pathevent.getLastOutputHtml()
 </div>
