@@ -1,29 +1,9 @@
 <permissions name="EnterMedia">
-	<permission id="viewasset" name="View Asset" description="Show asset in search results and show details page"/>
-	<permission id="editasset" name="Edit Metadata" description="Enable asset metadata edits"/>
-	<permission id="metadatadetails" name="Show Metadata" description="Show asset metadata"/>
 
 	<permission id="download" name="Download Original" description="Allows users to download the original high rez version"/>
-	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
-	<permission id="convert" name="Show Download Size Options" description="Shows conversion options"/>
+	<permission id="viewasset" name="View Asset" description="Show asset in search results and show details page"/>
+	<permission id="editasset" name="Edit Metadata" description="Enable asset metadata edits"/>
 	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
-	<permission id="comment" name="Add Comments" description="Add Comments" />
-	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
-	<permission id="changeattachment" name="Edit Attachments" description="Edit Attachments" />
-	<permission id="editassetcategories" name="Edit Categories" description="Edit Asset Categories"/>
-	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
-
-	<permission id="viewattachments" name="Edit Attachments" description="View and edit attachments"/>
-	<permission id="assetpermissions" name="Change Permissions" description="Create custom asset permissions"/>
-	<permission id="viewassetdownloads" name="View Download Links" description="Show screen for custom links"/>
-	<permission id="viewassetedit" name="Media editor" description="Allow JPG crop and resize"/>
-	
-	<permission id="converthistory" name="Convert History" description="Show Convert History"/>
-	
-	<permission id="viewassetdownloadhistory" name="Download History" description="Show download history report"/>
-	<permission id="viewassetedithistory" name="Edit History" description="Show when edits where made"/>
-	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>
-	<permission id="viewassetorderhistory" name="Order History" description="Show order history report"/>
 	
 </permissions>
 
