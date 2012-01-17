@@ -1,91 +1,43 @@
 <div class="em-rounded">
 #set($order = $data)
 #if( $order.userid != $user.getId() )
-Invalid order
+No assets have been selected.
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-<form class="validate" id="usereditform"  method="post" action="$home$apphome/views/activity/download/processorder.html">
+<form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/share/step2.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 
-$context.putPageValue("view", "order/downloadform")	
-<input type="hidden" name="view" value="order/downloadform"/>
+$context.putPageValue("view", "order/emailform")	
+<input type="hidden" name="view" value="order/emailform"/>
 <input type="hidden" name="searchtype" value="order"/>
 <input type="hidden" name="catalogid" value="$catalogid"/>
 <input type="hidden" name="orderid" value="$order.id"/>
-<input type="hidden" name="newuserstatus" value="downloadrequested"/>
+<input type="hidden" name="newuserstatus" value="emailrequested"/>
 
 <input type="hidden" name="field" value="publishdestination" />
-<input type="hidden" name="publishdestination.value" value="0" /> ## 0 is http 1 is aspera
+<input type="hidden" name="publishdestination.value" value="1" /> ## this should be aspera
 
 <input type="hidden" name="field" value="ordertype" />
-<input type="hidden" name="ordertype.value" value="download" />
-	<table class="striped download-table" width="100%" >
-	#foreach( $item in $orderitems )
-		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
-	<tr>
-	<td>		
-		<input type="hidden" name="itemid" value="$item.id"/>
-		$context.putPageValue("asset", $asset)
-		$context.putPageValue("item", $item)
-		$context.setRequestParameter("sourcepath", $asset.sourcepath)					
-	
-	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
-		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
-		#set( $tsize = "$home$thumbend" )
-		
-		#set( $rootid = $context.getRequestParameter("hitssessionid") )
-		#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html?hitssessionid=$rootid" )
-		
-			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
-			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-			$context.putPageValue("cell", $asset)
-			$context.putPageValue("showdetails", "false")
-			$context.putPageValue("thumbsize", "crop")
-		   	#set( $sourcepath = $asset.sourcePath )
-			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
-			</a>
-</td>
-<td>
-$asset
-</td>
+<input type="hidden" name="ordertype.value" value="email" />
 
-<td>
-	      #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
-	      	<input type="hidden" name="field" value="presetid"/>
-<!-- 
-  	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
-  	   	    $presetquery.setAndTogether(false)
-  	   	    #set( $rendertype = false)
-  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat) )
-  	   	    #if( $rendertype )
-	  	   	    $presetquery.addExact("inputtype",$rendertype);
-  	   	    #end
-  	   	    $presetquery.addExact("inputtype","all");
-  	   	    $presetquery.sortBy("name");
-  	   	    #set( $results = $presetsearcher.search($presetquery) )
- -->
 
-  	   	    <select name="${item.id}.presetid.value">
-  	    	#foreach ($preset in $results)
-  	    		<option value="$preset.id">$preset</option>
-  	    	#end
-  	    	</select>
-	</td>
-	</tr>	
-	#end
-	
-</table>
-<input class="btn" style="float: right; margin: 15px 0;" type="submit" name="submit" value="Next >>"/> 
-	
-	<div id="itemsave"></div>
+<br/>
+<div id="shares">
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+</div>
+<br/>
+ 
+
+<input id="share-submit" class="btn small"  type="submit" name="submit" value="Next"/> 
 	
 	
 </form>
+<br><br>
 #end
 
 
