@@ -3,13 +3,14 @@
 
 #macro(showtree $categories)	
 		#foreach($cat in $categories)
-		#set( $leaf = $cat.hasChildren())
-		#set( $open = $cat.hasChildren())
+		#set( $isleaf = $cat.hasChildren())
+		#set( $open = $isleaf)
+		#set( $checked = false )
 		#set( $checked = $asset.isInCategory($cat))
-		<li id="$cat.id" class="#if( $leaf ) jstree-leaf #end #if( $open )   #end #if( $checked ) jstree-checked #end " ><a href="$cat.id"> $cat.name</a>
-		#if(!$leaf)
+		<li id="$cat.id" class="#if( $isleaf ) jstree-leaf #end #if( $open )   #end #if( $checked ) jstree-checked #end " ><a href="$cat.id"> $cat.name</a>
+		#if($isleaf)
 		   <ul>
-			  #showtree($cat.children)
+			  #showtree($cat.getChildren())
 		   </ul>
 		#end
 		</li>

@@ -3,7 +3,6 @@
 
 <div id="croparea">
 
-<style type="text/css" media="all">@import url("${themeprefix}/entermedia/styles/jquery/jquery.imgareaselect-default-0.9.1.css" );</style>
 
 <script language="JavaScript">
 	function save()
@@ -46,7 +45,7 @@
 	
 </script>
 	
-<form id="contentForm"  name="contentForm" method="post" action="$home${cataloghome}/components/detaileditor/edit/crop/cropfinish.html" style="margin-bottom:0;">
+<form id="contentForm"  name="contentForm" method="post" action="$home${apphome}/views/detaileditor/edit/crop/cropfinish.html" style="margin-bottom:0;">
 <input type="hidden" name="editPath" value="$imageeditsession.editPath" />
 <input type="hidden" name="origURL" value="$imageeditsession.originalUrl" />
 <input type="hidden" name="assetid" value="$assetid"/>
@@ -71,10 +70,10 @@
 		    </tr>
 		    <tr>
 		    	<td>
-		    		<a href="javascript:save();"><img border=0 class="imageinput" src="$home${themeprefix}/entermedia/images/save_16x16.png" title="Save" ></a>
+		    		<a href="javascript:save();"><img border=0 class="imageinput" src="$home${themeprefix}/images/buttons/save_16x16.png" title="Save" ></a>
 				</td>
 		    	<td>
-		    		<a href="$home${cataloghome}/components/detaileditor/edit/index.html?assetid=$assetid"><img border=0 class="imageinput" src="$home${themeprefix}/entermedia/images/close_16x16.png" title="Close" ></a>
+		    		<a href="$home${cataloghome}/views/detaileditor/edit/index.html?assetid=$assetid"><img border=0 class="imageinput" src="$home${themeprefix}/images/buttons/close_16x16.png" title="Close" ></a>
 		    	</td>
     		</tr>
 		</table>
@@ -83,7 +82,7 @@
 		<tr>
 			<td valign="top" width="50%">
 	   		<div id="testWrap">
-				<img src="$home$apphome/downloads/preview/cache/${sourcepath}/preview.jpg?cache=false" alt="test image" id="testImage" />
+				<img src="$home$cataloghome/downloads/preview/cache/${sourcepath}/preview.jpg?cache=false" alt="image" id="testImage" />
 	   		</div>	
 			</td>
 		</tr>
