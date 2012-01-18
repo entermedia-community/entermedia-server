@@ -1,5 +1,10 @@
-
+#if( $val && $val.length() > 0)
 #set( $param = $val.replace(" ","&selected="))
 #set( $param = "selected=$param")
+#end
 
-$pages.include("${apphome}/components/categorize/jstree/tree_selectedcategories.html?$param" )
+<div id="categoriespicker">
+<a class="btn small ajax" targetdiv="categoriespicker" href="${apphome}/components/categorize/jstree/tree.html?field=category.value&$param">Pick Categories</a>
+</div>
+
+##$pages.include("${apphome}/components/categorize/jstree/tree_selectedcategories.html?$param" )

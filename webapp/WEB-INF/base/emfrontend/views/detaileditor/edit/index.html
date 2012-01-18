@@ -11,7 +11,7 @@
 #if( "jpg" == $asset.fileformat || "png" == $asset.fileformat || "jpeg" == $asset.fileformat )
 
 #if( $asset.isFolder() )
-	$pages.include("${apphome}/components/detaileditor/edit/types/jpgpng.html")
+	$pages.include("${apphome}/views/detaileditor/edit/types/jpgpng.html")
 
 #else 
 	<p>This is currently a file-based record, which does not allow for attachments.  

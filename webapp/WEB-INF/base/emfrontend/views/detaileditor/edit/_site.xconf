@@ -7,6 +7,9 @@
 	<property name="subtab">viewassetedit</property>
 	
 	
+	<script id="imgareaselect" src="/${applicationid}/components/javascript/jquery.imgareaselect.js"/>
+    <style id="imgareaselect-css" href="${themeprefix}/styles/jquery/imgareaselect-default.css"/>
+
 	
 	<permission name="view">
 		<not>
