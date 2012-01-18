@@ -921,6 +921,7 @@ public class AdminModule extends BaseModule
 		if (!host.equals(server))
 		{
 			String redirectPath = host + ending;
+			//log.info("Redirecting " + host + " AND " + server);
 			inReq.redirectPermanently(redirectPath);
 		}
 		else
