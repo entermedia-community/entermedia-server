@@ -21,9 +21,7 @@
 			$context.putPageValue("details", $details)
 			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			
-			<ul class="embuttons">
-				<li><a href="#" onclick="jQuery('#assettypeeditform').submit();" ><span>[[Save Changes]]</span></a></li>
-			</ul>
+			<a class="btn" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
 #if( $savedok )			
 <div class="common-success">Saved</div>
 #end			

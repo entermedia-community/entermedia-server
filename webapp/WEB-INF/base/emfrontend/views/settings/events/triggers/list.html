@@ -3,6 +3,7 @@
 #if( !$seltype)
 	#set( $seltype  ="events")
 #end
+<p>
 <select class="jump">
 	#foreach( $event in $pathevents )
 			#if( $type != $event.getPage().getDirectoryName() )
@@ -11,6 +12,8 @@
 			#end
 		#end
 </select>
+ Select a group of triggers to display
+</p>
 
 <script>
     $("select.jump").change(function () 

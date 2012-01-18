@@ -26,7 +26,5 @@ $context.putPageValue("existingrecords",$searcher.search($query))
 $pages.include("$xmledithome/table.html?searchtype=$searchtype&catalogid=$catalogid&selectlink=$selectlink", $context)
 
 
-<ul class="embuttons" style="margin: 20px 0px 60px 20px">
-<li><a href="$home$apphome/views/settings/lists/table/edit/addnew.html?searchtype=$searchtype"><span>Add New</span></a></li>
-</ul>
+<a class="btn" href="$home$apphome/views/settings/lists/table/edit/addnew.html?searchtype=$searchtype">Add New</a>
 
