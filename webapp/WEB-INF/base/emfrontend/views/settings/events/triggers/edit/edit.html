@@ -4,22 +4,15 @@
  
 <form action="save.html">
 <input type="hidden" name="eventpath" value="$pathevent.getPage().getPath()"/>
-<table cellpadding="5">
-<tr><td>Name:</td><td><input size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
-<tr><td>Period:</td><td><input size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
-<tr><td>Delay:</td><td><input size="4" name="delay" value="$!pathevent.getFormattedDelay()"/></td></tr>
+<table class="settings-table" cellpadding="5">
+<tr><td>Name:</td><td><input type="text" size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
+<tr><td>Period:</td><td><input type="text" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
+<tr><td>Delay:</td><td><input type="text" size="4" name="delay" value="$!pathevent.getFormattedDelay()"/></td></tr>
 <tr><td>Enabled:</td><td><input name="enabled"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/></td></tr>
-<tr><td></td>
-<td>
-
-
-</td></tr>
 </table>
-<ul class="embuttons">
-<li>
-	<input type="submit" value="[[Save]]"/>
-</li>
-</ul>
+
+<input class="btn" type="submit" value="[[Save]]"/>
+
 
 </form>
 

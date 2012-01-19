@@ -32,7 +32,7 @@
 	<input type="hidden" name="field" value="profilesearchfilters" />
 	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
 	
-	<table class="striped emdata">
+	<table class="striped emdata settings-table">
 	
 	#foreach($item in $permissionsearcher.getAllHits())
 		#set($val = false )
@@ -59,7 +59,7 @@
 		</tr>	
 	#end
 	</table>
-	<input style="margin: 20px 0 20px 20px;" class="btn small" type="submit" value="Save"/>
+	<input class="btn small" type="submit" value="Save"/>
 	
 </div>
 </div>	

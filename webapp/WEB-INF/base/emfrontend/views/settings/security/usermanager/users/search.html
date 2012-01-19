@@ -15,11 +15,11 @@ $context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", 
 	#if( $user.id != "admin")	
 		<input type="hidden" name="groups.value" value="$content.mastergroup"/>
 	#end	
-		<div style="float: left; padding: 5px;">
-	$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
-		</div>
 
-<a class="btn" style="margin-top: 4px;" href="#" onclick='jQuery("#usersearchform").submit();'>[[Search]]</a>
+	$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
+
+
+<a class="btn" href="#" onclick='jQuery("#usersearchform").submit();'>[[Search]]</a>
 
 	</form>
 

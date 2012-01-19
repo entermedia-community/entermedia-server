@@ -6,7 +6,7 @@
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input  name="searchtype" type="hidden" value="$searcher.getSearchType()" />
 	
-	<table width="100%" class="field-editor">
+	<table width="100%" class="field-editor settings-table">
 	<tr> <td>ID:</td> <td><input type="text" name="newid" value="$property.id" /></td> </tr>
 	<tr> <td>[[Label]]:</td> <td><input type="text" name="name" value="$!property.name" /></td> </tr>
 	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
@@ -55,8 +55,10 @@
 	</td>
 	<td>
 	#if($property.isList())
-		<a id="${element.id}editlist"  class="thickbox" href="$home$apphome/views/settings/metadata/list/modifylist.html?catalogid=$element.getListCatalogId()&searchtype=$element.getListId()&iframe=true&width=500&height=400">edit values</a>
-	 #end
+		<a id="${element.id}editlist"  class="thickbox btn" href="$home$apphome/views/settings/metadata/list/modifylist.html?catalogid=$element.getListCatalogId()&searchtype=$element.getListId()&iframe=true&width=500&height=400">edit values</a>
+	#else
+		<p>&nbsp;</p> 
+	#end
 	</td>
 		
 	</tr>
@@ -68,8 +70,5 @@
 	<tr> <td>[[Foreign Key ID]]:</td> <td><input type="text" name="foreignkeyid" value="$!property.foreignkeyid"/> </td> </tr>
 		
 	</table>
-	<br/><br/>
-	<ul class="embuttons">
-		<li><input class="btn small" type="submit" value="Save"/></li>
-	</ul>
+	<input class="btn" type="submit" value="Save"/>
 </form>

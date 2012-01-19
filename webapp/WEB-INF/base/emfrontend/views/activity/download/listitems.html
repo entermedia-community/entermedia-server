@@ -7,7 +7,7 @@
 	#foreach( $item in $orderitems )
 	<tr>
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
-	<td class="asset-name">		
+	<td class="asset-thumb">		
 				$context.putPageValue("asset", $asset)
 				$context.putPageValue("item", $item)
 				$context.setRequestParameter("sourcepath", $asset.sourcepath)					

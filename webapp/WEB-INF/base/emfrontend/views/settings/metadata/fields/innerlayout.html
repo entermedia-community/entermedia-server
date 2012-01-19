@@ -8,15 +8,15 @@
 <div class="ui-widget-header">All Fields</div>
 <div  class="ui-widget-content emselectmenu">
 <h4>Select Field To Edit</h4>
-<select style="margin-left: 20px;" name="proptomodify" onchange="loadPropertyEdit();">
+<select name="proptomodify" onchange="loadPropertyEdit();">
 		<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
 				<option value="$detail.id" #if($detailid == $detail.id)selected="selected"#end>$detail.text</option>
 			#end
 		</select>
-
+<div style="margin-top: 15px;">
 <a class="btn" href='$home$apphome/views/settings/fields/addnew.html'>Add New</a>
-
+</div>
 
 </div>
 </div>

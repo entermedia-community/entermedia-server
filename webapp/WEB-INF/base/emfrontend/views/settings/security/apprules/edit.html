@@ -1,8 +1,6 @@
-<div id="permissionedit">
-
-<div style="margin-left: 10px; padding: 20px; background: #eeeeee; min-height: 200px;">
-
-<h2>[[Permission Editor]]</h2>
+<div class="ui-widget">
+	<div class="ui-widget-header">Permissions Editor</div>
+	<div class="ui-widget-content" style="padding-top: 20px; ">
 
 <p>$permdata.name - $!permdata.description</p>
 <br>
@@ -39,7 +37,7 @@
 <p><b>Allowed Groups:</b></p>
 <div style="padding: 10px;">
 #if( $selgroups.size() > 0 )	
-	<table style="width: auto !important;">
+	<table >
 	#set( $count = 0 )
 	#foreach( $group in $selgroups )
 		<tr>
