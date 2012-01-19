@@ -31,7 +31,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 <div class="autoresize-inner">	
 <div id="emselectable">	
 
-	<table cellpadding=0 cellspacing=0 border=0 width="100%" class="emdownloadlisting emresultscontent striped">
+	<table id="main-asset-table" class="emdownloadlisting emresultscontent striped">
 			$pages.include("$apphome/components/results/tableheader.html",$context)
 			#set($count = 0)
 			#foreach( $hit in $hits.getPageOfHits() )

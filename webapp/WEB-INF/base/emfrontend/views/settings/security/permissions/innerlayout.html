@@ -17,7 +17,7 @@
 
 <a class="btn" href='$home$apphome/views/settings/security/roles/views/addnew.html?groupname=New'>Add New</a>
 #if( $current)
-<a class="btn" href="./delete.html?id=$current" onclick="return confirm('Are you sure you want to delete the security group $data.name')">Delete</a>
+<a class="btn red" style="float: right;" href="./delete.html?id=$current" onclick="return confirm('Are you sure you want to delete the security group $data.name')">Delete</a>
 #end
 
 </div>

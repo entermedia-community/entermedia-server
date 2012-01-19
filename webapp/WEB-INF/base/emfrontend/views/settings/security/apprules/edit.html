@@ -26,7 +26,7 @@
 #end	
 <!-- 		<option value="">Security Group Property</option>  -->
 
-	</select>	<input type="submit" value="Add" />
+	</select>	<input class="btn" type="submit" value="Add" />
 	
 </form>
 
@@ -66,9 +66,11 @@ $pages.include("./xml/edit.html")
 
 	<br>
 
+<a class="ajax btn" targetdiv="permissionedit" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
+
 </div>
 
-	<a class="ajax" targetdiv="permissionedit" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
+	
 
 
 </div>

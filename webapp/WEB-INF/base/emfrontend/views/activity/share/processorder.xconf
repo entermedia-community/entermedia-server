@@ -4,4 +4,5 @@
        <runpath>/${catalogid}/events/conversions/runconversions.html</runpath>
    </path-action>
    <path-action name="OrderModule.updatePendingOrders"/>
+   <property name="sectiontitle">Sending Email...</property>
 </page>
