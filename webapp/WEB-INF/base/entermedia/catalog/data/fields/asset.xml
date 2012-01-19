@@ -7,7 +7,7 @@
 	<property id="catalogid" viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
 	<property id="description">All Fields</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>
-	<property id="category" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
+	<property id="category" editable="true" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	

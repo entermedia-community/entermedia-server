@@ -18,7 +18,7 @@
         <div style="margin-bottom: 20px; margin-top: -10px;" id="uploadprogress"  > </div>
 
 		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-		$context.putPageValue("view","asset/simpleupload")	
+		$context.putPageValue("view","asset/assettype/default/singleupload")	
 
 
 		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
@@ -37,7 +37,7 @@
 			<input type="text" name="keywords.value" style="width: 278px;" />
 	 -->		
 
-	<input class="btn small" style="float: right; margin-right: 15px;" type="button" id="finishbutton" value="[[Submit]]" onclick="doUpload('uploadform');">
+	<input class="btn small" style="float: right; margin-right: 15px;" type="button" id="finishbutton" value="[[Next >>]]" onclick="doUpload('uploadform');">
 	
 				<div style="clear: both;"></div>
 </div>

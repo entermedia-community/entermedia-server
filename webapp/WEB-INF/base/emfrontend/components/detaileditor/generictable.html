@@ -60,7 +60,8 @@
 		$pages.include("/$applicationid/components/xml/detaileditor.html",$context)
 		
 		<p align="right">
-		<a class="btn small" href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=false',1);return false;">[[cancel]]</a>
+		<a class="btn small ajax" targetdiv='${view}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[cancel]]</a>
+		
 		&nbsp;&nbsp; <input  type="submit" value="Save values"/>
 		</p>
 		<input name="field" type="hidden" value="assetid" />

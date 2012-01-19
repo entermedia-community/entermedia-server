@@ -146,7 +146,7 @@ public class CommentArchive
 	{
 		List<Comment> comments = GenericsUtil.createList();
 
-		if ( inPage.exists() )
+		if ( inPage.exists() && !inPage.isFolder() )
 		{
 			log.debug( "Loading comments for page " + inPage.getPath() );
 			Reader reader = inPage.getReader();

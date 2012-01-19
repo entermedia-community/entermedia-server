@@ -207,7 +207,8 @@ public class Category implements Data
 	 */
 	public boolean hasChildren()
 	{
-		return fieldChildren != null && fieldChildren.size() > 0;
+		boolean has =  fieldChildren != null && fieldChildren.size() > 0;
+		return has;
 	}
 
 	public boolean hasCatalog(String inId)

@@ -76,8 +76,8 @@ applyDontShow = function()
 			query += "&hideassettype=" + input.value;
 		} 
 	}
-	
-	jQuery('#dontshow').attr('action', "$apphome/components/results/table.html?" + query);
+	//TODO: Why not update the results with new data like VD does?
+	jQuery('#dontshow').attr('action', "$home$apphome/components/results/table.html?" + query);
 	jQuery('#dontshow').submit();
 
 

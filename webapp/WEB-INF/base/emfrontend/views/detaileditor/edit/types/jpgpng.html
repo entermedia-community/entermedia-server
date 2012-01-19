@@ -7,21 +7,28 @@
 	#set( $editPath = "/WEB-INF/data/$mediaarchive.catalogId/originals/$asset.sourcePath" )
 #end
 
+<table>
+<tr>
+
+
+<td>
+
+<div id="previewimage" >
+	<img src="$home$cataloghome/downloads/preview/cache/${asset.sourcePath}/preview.jpg?cache=false" alt="[[Preview Image]]"/>
+</div>
+</td>
+
+
+<td>
+
 <table style="border-spacing: 10px; border-collapse: separate">
 <tr>
 <td>
-##<a href="#" onclick="resizeImage();return false;"><img src="$home${themeprefix}/entermedia/images/aspectratio_16x16.png" border="0" title="[[Resize Image]]" />
+##<a href="#" onclick="resizeImage();return false;"><img src="$home${themeprefix}/images/buttons/aspectratio_16x16.png" border="0" title="[[Resize Image]]" />
 ##	[[Resize Image]]</a>
-</td>
-<td>
-<a href="#" onclick="cropImage(); return false;"><img src="$home${themeprefix}/entermedia/images/crop_16x16.png" border="0" title="[[Crop Image]]" />
-	[[Crop Image]]
-	</a>
-</td>
-<td>
 #set($currentOrientation = $asset.get("imageorientation"))
 #set ( $searcher = $searcherManager.getSearcher($catalogid ) )
-<form method="post" action="$home${cataloghome}/components/detaileditor/edit/reloadimages.html">
+<form method="post" action="$home${apphome}/views/detaileditor/edit/reloadimages.html">
 	<input type="hidden" name="origUrl" value="$page.path"/>
 	<input type="hidden" name="saveasnew" value="false" />
 	<input type="hidden" name="save" value="true" />
@@ -32,30 +39,30 @@
 	<input type="hidden" name="assetid" value="$asset.id"/>
 	<input type="hidden" name="sourcepath" value="$asset.sourcepath"/>
 	
-	[[Rotate Image]]: <select onchange="this.form.submit()" name="imageorientation.value">
-		<option value="1"#if($currentOrientation && $currentOrientation == 1) selected #end>Default</option>
+	<select onchange="this.form.submit()" name="imageorientation.value">
+		<option value="1"#if($currentOrientation && $currentOrientation == 1) selected #end>Default Rotation</option>
 		<option value="6" #if($currentOrientation && $currentOrientation == 6) selected #end>Clockwise</option> 
 		<option value="8"#if($currentOrientation && $currentOrientation == 8) selected #end>Counter Clockwise</option>
 		<option value="3"#if($currentOrientation && $currentOrientation == 3) selected #end>Flip Top</option>
 	</select>
 </form>
+<br>
+<a href="#" onclick="cropImage(); return false;"><img src="$home${themeprefix}/images/buttons/crop_16x16.png" border="0" title="[[Crop Image]]" />
+	[[Crop Editor]]
+	</a>
 
-
-</td>
-<td>
-<a href="$home${cataloghome}/components/detaileditor/historyimageedit/index.html?editPath=${editPath}&assetid=${asset.id}">
-	<img src="$home${themeprefix}/entermedia/images/undo_16x16.png" border="0"/>Version Control
+<br>
+<br>
+<a href="$home${cataloghome}/views/detaileditor/historyimageedit/index.html?editPath=${editPath}&assetid=${asset.id}">
+	<img src="$home${themeprefix}/images/buttons/undo_16x16.png" border="0"/> Versions
 </a>
+
+<br>
+
+
 </td>
 </tr>
 </table>
-
-<table>
-<tr>
-<td>
-<div id="previewimage" >
-	<img src="$home$cataloghome/downloads/preview/cache/${asset.sourcePath}/preview.jpg?cache=false" alt="[[Preview Image]]"/>
-</div>
 </td>
 
 </tr>
@@ -66,7 +73,7 @@
 		var sourcepath = "${asset.sourcePath}";
 		editPath = escape(editPath);
 		sourcepath = escape(sourcepath);
-		var url = "$home${cataloghome}/components/detaileditor/edit/imageresize/edit.html?editPath=" + editPath + "&origURL=$origurl&assetid=${asset.id}&sourcepath=" + sourcepath;
+		var url = "$home${apphome}/views/detaileditor/edit/imageresize/edit.html?editPath=" + editPath + "&origURL=$origurl&assetid=${asset.id}&sourcepath=" + sourcepath;
 		jQuery("#previewimage").load(url);
 	}
 	
@@ -75,7 +82,7 @@
 		var sourcepath = "${asset.sourcePath}";
 		editPath = escape(editPath);
 		sourcepath = escape(sourcepath);
-		var url = "$home${cataloghome}/components/detaileditor/edit/crop/edit.html?editPath=" + editPath + "&origURL=$origurl&assetid=${asset.id}&sourcepath=" + sourcepath;
+		var url = "$home${apphome}/views/detaileditor/edit/crop/edit.html?editPath=" + editPath + "&origURL=$origurl&assetid=${asset.id}&sourcepath=" + sourcepath;
 		jQuery("#previewimage").load(url);
 	}
 </script>

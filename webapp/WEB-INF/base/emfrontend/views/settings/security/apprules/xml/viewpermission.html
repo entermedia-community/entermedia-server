@@ -27,7 +27,7 @@
 		#elseif($filter.type == "Not" )
 			Not: 
 		#elseif($filter.type == "UserProfile" )
-			Permission  $filter.getPropertyName() = $filter.getValue()
+			  $filter.toString()
 		#elseif($filter.type == "Boolean" )
 			<select name="condition.${traverse}.value">
 				<option value="true" #if($!filter.isTrue()) selected #end>[[True]]</option>
@@ -43,8 +43,8 @@
 		
 		<span id="add${permission.name}$traverse">	 
 		#if( $filter.isContainer())
-		 	<a href="javascript: showpath('add${permission.name}$traverse','$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse',1)">[[add child]]</a>
+		 	<a class="ajax" targetdiv='add${permission.name}$traverse' href="$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse">[[add child]]</a>
 		#elseif( $filter.isDelegator() && !$filter.filter )
-		 	<a href="javascript: showpath('add${permission.name}$traverse', '$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse',1)">[[set child]]</a>
+		 	<a class="ajax" targetdiv='add${permission.name}$traverse' href='$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse'>[[set child]]</a>
 		#end
 		</span>
