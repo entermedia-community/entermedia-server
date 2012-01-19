@@ -1,8 +1,6 @@
-<div id="permissionedit">
-
-<div style="margin-left: 10px; padding: 20px; background: #eeeeee; min-height: 200px;">
-
-<h2>[[Permission Editor]]</h2>
+<div class="ui-widget">
+	<div class="ui-widget-header">Permissions Editor</div>
+	<div class="ui-widget-content" style="padding-top: 20px; ">
 
 <p>$permdata.name - $!permdata.description</p>
 <br>
@@ -42,7 +40,7 @@ $pages.include("./xml/edit.html")
 #end
 
 	<br>
-	<a class="ajax" targetdiv="allpermissions" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
+	<a class="ajax btn" targetdiv="allpermissions" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
 	<hr>
 	<label><b>[[Allow:]]</b></label>
 
@@ -66,7 +64,7 @@ $pages.include("./xml/edit.html")
 #end	
 <!-- 		<option value="">Security Group Property</option>  -->
 
-	</select>	<input type="submit" value="Add" />
+	</select>	<input class="btn" type="submit" value="Add" />
 	
 </form>
 	<br><br>

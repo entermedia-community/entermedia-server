@@ -1,7 +1,7 @@
 ##requires $details  //List of Detail
 ##requires $hits //Gets input from that
 ##requires $searcher //used to get the catalogid and searcherManager
-<table>
+<table class="settings-table">
 #foreach( $searchItem in $details)
 	#set($inputed = false)
 	#set( $inputed = $hits.getInput($hits.searchQuery.getTerm($searchItem.id).id) )
@@ -9,7 +9,7 @@
 		#set( $inputed = "$!hits.getInput($searchItem.getId())")
 	#end
 <tr>		
-	<td><label>${searchItem.getText($context)}</label></td> 
+	<td width="100"><label>${searchItem.getText($context)}</label></td> 
 	<td>
 		<input name="field" value="${searchItem.getId()}" type="hidden">
 		#if( $searchItem.isList() )

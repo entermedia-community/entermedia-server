@@ -6,7 +6,7 @@
 
 <div class="ui-widget emdetaileditorbox commentbox">
 <div class="ui-widget-header">Fields</div>	
-		<div class="ui-widget-content" id="editlayout" style="padding: 10px;">
+		<div class="ui-widget-content" id="editlayout">
 
 		<form name="addtoview" id="addtoview" action="addtoview.html">
 			<input type="hidden" name="catalogid" value="$!catalogid"/>
@@ -23,7 +23,7 @@
  				#end
 			</select>
 		</form>
-		<table class="striped emdata">
+		<table class="emdata settings-table striped">
 
 			#set($details = "")
 			#set($details =  $searcher.getDetailsForView($view, $user))

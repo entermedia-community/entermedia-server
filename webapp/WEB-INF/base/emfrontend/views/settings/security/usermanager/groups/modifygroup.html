@@ -9,14 +9,11 @@ $context.putPageValue( "groupid", $group.id)
 <div class="ui-widget-header">$groupName</div>
 <div  class="ui-widget-content emselectmenu">
 
-<div class="embutton" >
-	<a href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>
-</div>	
+	<a class="btn red" href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
 
 
-<div id="groupeditarea">
+<div id="groupeditarea" style="margin: 15px 0;">
 <div id="groupeditareasaved"></div>
-<br>
 #set( $groupsearcher = $searcherManager.getSearcher("system","group") )
 <form class="ajaxform" id="groupeditform" targetdiv="groupeditareasaved" action="$home$usermanagerhome/groups/savegroup.html?">
 <input type="hidden" name="id" value="$group.id"/>
@@ -32,9 +29,9 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 
 
 
-<div class="embutton" style="padding-left: 60px;">
-<a href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
-</div>
+
+<a class="btn" style="margin-top: 15px;" href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
+
 </form>
 </div>
 <br><br>
