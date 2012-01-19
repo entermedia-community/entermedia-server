@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
@@ -586,6 +587,9 @@ public class OrderManager
 					if( publish == null )
 					{
 						log.error("Publish was null");
+						publish = new BaseData();
+						 publish.setProperty("status","error");
+						 publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
 					}
 					if( "complete".equals( publish.get("status") ) )
 					{

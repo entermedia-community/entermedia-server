@@ -28,8 +28,8 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
 	$context.putPageValue("details",$details)
 	
-<div class="autoresize-inner">	
 <div id="emselectable">	
+<div class="autoresize-inner">	
 
 	<table cellpadding=0 cellspacing=0 border=0 width="100%" class="emdownloadlisting emresultscontent striped">
 			$pages.include("$apphome/components/results/tableheader.html",$context)

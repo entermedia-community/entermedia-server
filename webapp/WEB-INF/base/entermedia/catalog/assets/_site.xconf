@@ -45,6 +45,7 @@
 	<permission name="comment"><boolean value="true" /></permission>	
 	<permission name="viewasset">
 		<or>
+			<group name="guest"/>
 			<userprofile property="assetadmin" equals="true" />
 			<userprofile property="viewassets" equals="true" />
 		</or>
