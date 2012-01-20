@@ -41,7 +41,7 @@
 	#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
 	#set( $addtext = "" )
 	#if( $permission != "false")
-	<div>
+	<div style="margin-top: 3px;">
 		 #set( $text = $link.name)
 		 #set ($href = "$apphome/views/detaileditor/${link.folder}/index.html")
 		 #set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
@@ -88,17 +88,12 @@
 			#set ($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 		#end
 		#if( !$asset.id.startsWith("multiedit:") || $inmultiok )
-		<div class="catalogs_menu_item">
-			#if($tab == "$link.id")
-				<div class="emdetaileditorbuttonwrapper">
-  				  <div class="emdetaileditorbutton">
-  			#end
-			
+		<div class="catalogs_menu_item #if($tab == "$link.id") current #end">
 			<a href="$home$href?$args" #if($target) target="$target" #end ><img border=0 src="$home$img">$context.getText($text) $!addtext</a>
 			
 			#if($tab == "$link.id")
-				  </div>
-				</div>
+		  </div>
+
 			#end
 		</div> ##end catalog item
 		#end ##end multi edit check
