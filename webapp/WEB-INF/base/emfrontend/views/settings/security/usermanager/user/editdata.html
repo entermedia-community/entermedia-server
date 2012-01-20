@@ -1,7 +1,7 @@
 <div id="usereditproperties">
 	#set($selectedUser = $userManager.getUser($userName))
 
-<div class="ui-widget commentbox" style="overflow: hidden;">
+<div class="ui-widget commentbox three-up">
 <div class="ui-widget-header">[[Profile]]</div>
 <div  class="ui-widget-content" > 
 	
@@ -15,13 +15,12 @@
 			$context.putPageValue("searcher", $userSearcher)	 
 			$context.putPageValue("view", "user/useredit")	
 			$context.putPageValue("data", $selectedUser)	
+			<div class="clearfix">
 			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
-			
-			<br/>
-			<div style="padding-left: 100px;">
-			<a href="#" class="btn small" onclick="$('#usereditform').submit();" ><span>[[Save Changes]]</span></a>
-			<a class="btn small" href="./removeuser.html?groupid=$content.mastergroup&removeUsernames=$selectedUser.id"><span>Delete User</span></a>
 			</div>
+
+			<a href="#" class="btn" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
+			<a class="btn red" style="float: right;" href="./removeuser.html?groupid=$content.mastergroup&removeUsernames=$selectedUser.id">[[Delete User]]</a>
 			#if ($saved)
 				<div class="common-success">
 					Saved
