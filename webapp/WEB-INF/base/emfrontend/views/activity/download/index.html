@@ -9,6 +9,8 @@
 <tr>
 <td>
 	
+
+#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $ordersearcher)	 
 $context.putPageValue("data", $order)	 
 $context.putPageValue("view", "order/vieworder")	
