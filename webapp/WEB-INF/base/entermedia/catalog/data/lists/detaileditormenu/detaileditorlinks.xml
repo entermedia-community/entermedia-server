@@ -1,0 +1,27 @@
+<linktree>
+
+	<a folder="generalinformation" id="metadatageneral" name="Edit Metadata" multiedit="true" />
+	<a folder="categorize"  id="editassetcategories" name="Categories / Tags" multiedit="true"/>		    	
+	<a folder="map"  id="map" multiedit="true" name="Geo Location Info" />		    	
+	<a folder="edit"  id="viewassetedit" name="Media Editor" />
+	<a folder="attachments" id="viewattachments" name="Attachments" />
+	<a folder="permissions" id="assetpermissions" name="Permissions"/>
+
+	<a folder="historypreviews"  id="viewassetpreviewhistory" name="History" />
+
+	<a folder="delete"  id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" />
+<!-- 
+	<a folder="historydownloads"  id="viewassetdownloadhistory" name="Download History" />
+	<a folder="historyedits"  id="viewassetedithistory" name="Data Edit History" />
+	<a folder="historyorders"  id="viewassetorderhistory" name="Order History" />
+	<a folder="converthistory"  id="converthistory" name="Conversion History" />
+
+
+
+	<a folder="downloads"  id="viewassetdownloads" name="Download Links" />		    	
+			<a folder="edithistory"  id="viewassetedithistory" name="Edit History" />	
+			<a folder="approvals"  id="viewassetdownloads2" name="Approvals" />    	
+			<a folder="voting/showvotes.html"  id="assetviewvotes" name="View Likes" />	
+			HQ printing?
+ -->
+</linktree>

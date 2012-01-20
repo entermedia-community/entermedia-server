@@ -1,0 +1,46 @@
+$pages.include("$apphome/components/results/thumbnails/medium.html")
+
+#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set( $sourcepath = $asset.sourcePath )
+
+#if( $parenthits )
+	#set( $rootid = $parenthits.sessionId )
+#else
+	#set( $rootid = $hits.sessionId )
+#end
+
+#set( $tab = $context.findValue("assettab") )
+#set( $links = $searcherManager.getList($catalogid,"detaileditormenu") )
+
+<ul id="assetmenu">
+#foreach( $link in $links)
+	#set( $pname = "can${link.id}")
+	#set( $permission = "$!context.getPageValue($pname)")
+	#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
+	#set( $text = $link.name)
+	#if( $permission != "false")
+	
+		##Check for custom links, arguments and labels
+		#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
+		#if($link.id =="comment")
+			#set ($comments = $commentArchive.loadComments("/WEB-INF/data/$catalogid/comments/$sourcepath"))
+			#set( $text = "$text (<span id='assetcommentscount'>$comments.size()</span>)")
+			#set ($args = "assetid=$asset.getId()&sourcepath=$sourcepath&hitssessionid=$!{hitssessionid}")
+		#elseif( $link.id == "viewattachments")
+			#set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
+			#set ($args = "path=$path&${args}")		
+		#elseif ($link.id == "viewassetedit")
+			#set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
+			#set ($args = "path=$path&${args}")		
+		#elseif ($link.id == "assetpermissions")
+			 #set($args = "editPath=$apphome/assets/$sourcepath/_site.xconf&$args")
+		#end
+		#if( !$asset.id.startsWith("multiedit:") || $inmultiok )			
+			#set ($href = "$apphome/views/detaileditor/${link.folder}/index.html")
+			<li id="detaileditor-${link.id}" class="catalogs_menu_item #if($tab == "$link.id") current #end">
+				<a href="$home$href?$args" #if($target) target="$target" #end > $context.getText($text)</a>
+		     </li>
+		#end
+	#end 
+#end
+</ul>

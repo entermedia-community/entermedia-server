@@ -1,38 +1,37 @@
-
 <div>
 	#set( $tab = $context.findValue("subtab") )
 	#set($hitssessionid = $context.getRequestParameter("hitssessionid"))
 	
 	#set( $links = $searcherManager.getList($catalogid,"detaileditorlinks") )
 	
-			#set( $catalogid = $asset.catalogId )
-	   	#set( $mediaarchive = $enterMedia.getMediaArchive($catalogid) )
-	   	#set( $sourcepath = $asset.sourcePath )
-	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
-		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
-		#set( $medend = $mediaarchive.getLinkToSize($sourcepath, "medium") )
-		#set( $tsize = "$home$thumbend" )
-		#set( $msize = "$home$medend" )
+	#set( $catalogid = $asset.catalogId )
+   	#set( $mediaarchive = $enterMedia.getMediaArchive($catalogid) )
+   	#set( $sourcepath = $asset.sourcePath )
+   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+	#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+	#set( $medend = $mediaarchive.getLinkToSize($sourcepath, "medium") )
+	#set( $tsize = "$home$thumbend" )
+	#set( $msize = "$home$medend" )
 		
-		#if( $asset.name )
-      		#set( $name = $asset.name )
-      	#elseif ( $asset.title )
-      		#set( $name = $asset.title )
-      	#else
-      		#set( $name = "(No name)" )
-      	#end
+	#if( $asset.name )
+   		#set( $name = $asset.name )
+   	#elseif ( $asset.title )
+   		#set( $name = $asset.title )
+   	#else
+   		#set( $name = "(No name)" )
+   	#end
 		
-		#if( $parenthits )
-			#set( $rootid = $parenthits.sessionId )
-		#else
-			#set( $rootid = $hits.sessionId )
-		#end
-		#if( $thumbend )
+	#if( $parenthits )
+		#set( $rootid = $parenthits.sessionId )
+	#else
+		#set( $rootid = $hits.sessionId )
+	#end
+	#if( $thumbend )
 		<a href="$home$apphome/views/assets/$asset.sourcepath/index.html">
 		<img src="$tsize" class="emdropshadow" align="middle" border="0" title="${name}" style="margin-right: 5px;"/>
 		</a>
 		#end
-	
+<ul id="assetmenu">
 #foreach( $link in $links)
 	#set( $pname = "can${link.id}")
 	#set( $permission = "$!context.getPageValue($pname)")

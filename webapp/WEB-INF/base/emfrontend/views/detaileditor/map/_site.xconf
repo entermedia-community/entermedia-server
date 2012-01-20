@@ -5,6 +5,7 @@
     <value>Geo Tag</value>
   </property>
 	<property name="tab">asseteditormetadata</property>
-  <property name="subtab">editassetgeolocation</property>
+  	<property name="subtab">editassetgeolocation</property>
+  	<property name="assettab">editassetgeolocation</property>
     <inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
 </page>

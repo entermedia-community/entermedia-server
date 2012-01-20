@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  <property name="sectiontitle">
-    <value>Asset Permissions</value>
-  </property>
+  <property name="sectiontitle"><value>Asset Permissions</value></property>
   <property name="subtab">assetpermissions</property>
+  <property name="assettab">assetpermissions</property>
   <property name="fallbackdirectory">/WEB-INF/base/entermedia/tools/permissions</property>
   <property name="permissionrootpath">/${catalogid}/components/detaileditor/permissions/xml</property>
-  <property name="permissiontype">permissionsassets</property>
+  <property name="permissiontype">permissionsassets</property>  
+  
 </page>

@@ -1,5 +1,4 @@
 <page>
-<property name="subtab">sharepermissions</property>
 <!--
 	<style id="jquery-autocompletecss" href="${themeprefix}/styles/jquery/jquery.autocomplete.css" />
 	<script id="jquery-autocomplete" src="/${applicationid}/components/javascript/jquery.autocomplete.js" />

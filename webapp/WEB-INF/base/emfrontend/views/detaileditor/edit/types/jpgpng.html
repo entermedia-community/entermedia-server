@@ -7,19 +7,7 @@
 	#set( $editPath = "/WEB-INF/data/$mediaarchive.catalogId/originals/$asset.sourcePath" )
 #end
 
-<table>
-<tr>
 
-
-<td>
-
-<div id="previewimage" >
-	<img src="$home$cataloghome/downloads/preview/cache/${asset.sourcePath}/preview.jpg?cache=false" alt="[[Preview Image]]"/>
-</div>
-</td>
-
-
-<td>
 
 <table style="border-spacing: 10px; border-collapse: separate">
 <tr>
@@ -53,20 +41,21 @@
 
 <br>
 <br>
-<a href="$home${cataloghome}/views/detaileditor/historyimageedit/index.html?editPath=${editPath}&assetid=${asset.id}">
+<a href="$home${apphome}/views/detaileditor/historyimageedit/index.html?editPath=${editPath}&assetid=${asset.id}">
 	<img src="$home${themeprefix}/images/buttons/undo_16x16.png" border="0"/> Versions
 </a>
 
-<br>
-
-
 </td>
 </tr>
 </table>
-</td>
 
-</tr>
-</table>
+
+<div id="previewimage" >
+	<img src="$home$cataloghome/downloads/preview/cache/${asset.sourcePath}/preview.jpg?cache=false" alt="[[Preview Image]]"/>
+</div>
+
+
+
 <script>
 	resizeImage = function() {
 		var editPath = "${editPath}";

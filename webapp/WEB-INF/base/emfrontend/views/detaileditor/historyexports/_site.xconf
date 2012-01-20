@@ -2,5 +2,6 @@
    <page-action name="PageValue.loadPageVariable"  bean="searcherManager" />
 	<property name="tab">asseteditorhistory</property>
 	<property name="subtab">exporthistory</property>
+	<property name="assettab">viewassetpreviewhistory</property>
 	<inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
 </page>

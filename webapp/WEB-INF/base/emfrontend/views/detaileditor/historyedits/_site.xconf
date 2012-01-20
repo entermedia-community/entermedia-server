@@ -4,6 +4,7 @@
   	</property>
   	<property name="tab">asseteditorhistory</property>
 	<property name="subtab">viewassetedithistory</property>
+	<property name="assettab">viewassetpreviewhistory</property>
 	<property name="hitsname">loghits</property>
 	<property name="foldername">${catalogid}/asseteditLog</property>
 	<property name="sortby">dateDown</property>

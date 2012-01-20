@@ -11,21 +11,12 @@
 <div id="emmediaviewer">
 
 #if( $asset )
-#set( $olink = $mediaarchive.asLinkToOriginal($asset))
-#set ($mediumend = $mediaarchive.getLinkToMedium($asset.sourcePath, $asset.fileformat))
-#set ($thumbend = $mediaarchive.getLinkToThumb($asset.sourcePath, $asset.fileformat))
-$context.putPageValue("olink",$olink)
-$context.putPageValue("mediumend",$mediumend)
-$context.putPageValue("thumbend",$thumbend)
-
-#set( $tsize = "$home$thumbend?assetid=$asset.id")
-#set( $msize = "$home$mediumend")
 
 <table>
 	<tr>
 	<td style="vertical-align:top;padding: 0px;">
 
-	$pages.include("$apphome/components/detaileditor/assetmenu.html",$context)
+	$pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
 	</td>
 	<td style="vertical-align:top;padding: 0px;width:100%;">
 	  <div class="emasseteditorareawrapper">
