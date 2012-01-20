@@ -47,6 +47,9 @@ public boolean conversionsComplete(String assetid){
 	query.addMatches("assetid", assetid);
 	query.setHitsName("convertstatus");
 	HitTracker newtasks = tasksearcher.cachedSearch(context, query);
+	
+	if (newtasks == null)
+		return false;
 
 	List errors = new ArrayList();
 	List complete = new ArrayList();
