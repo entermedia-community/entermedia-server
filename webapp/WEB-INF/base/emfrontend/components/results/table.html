@@ -25,7 +25,6 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#end
 
 #if ( $hits && $hits.size() > 0 )
-what is: $hits
 	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
 	$context.putPageValue("details",$details)
 	
