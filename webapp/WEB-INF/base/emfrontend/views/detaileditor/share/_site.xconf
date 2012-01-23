@@ -1,5 +1,0 @@
-<page>
-	<property name="tab">asseteditorpermissions</property>
-		<inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
-	
-</page>

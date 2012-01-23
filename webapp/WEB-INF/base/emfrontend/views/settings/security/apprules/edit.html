@@ -1,4 +1,4 @@
-<div class="ui-widget">
+<div id="permissionedit" class="ui-widget">
 	<div class="ui-widget-header">Permissions Editor</div>
 	<div class="ui-widget-content" style="padding-top: 20px; ">
 
@@ -30,10 +30,10 @@
 	
 </form>
 
+<div class="edit-permissions">
 #if( $issimple == "true" )
 
 <div id="editsimple" >
-
 <p><b>Allowed Groups:</b></p>
 <div style="padding: 10px;">
 #if( $selgroups.size() > 0 )	
@@ -64,9 +64,9 @@ $pages.include("./xml/edit.html")
 
 #end
 
-	<br>
+</div>
 
-<a class="ajax btn" targetdiv="permissionedit" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
+<a class="ajax btn"  targetdiv="permissionedit" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
 
 </div>
 

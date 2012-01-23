@@ -151,7 +151,7 @@ public class PermissionModule extends BaseMediaModule
 		Page page = getPageManager().getPage(path,true);
 		page.getPageSettings().addPermission(permission);
 		getPageManager().saveSettings(page);
-		getPageManager().clearCache(page);
+		getPageManager().clearCache();
 	}
 	
 	public void removeCondition(WebPageRequest inReq) throws Exception

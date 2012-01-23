@@ -2,8 +2,8 @@
 
 	<a folder="generalinformation" id="metadatageneral" name="Edit Metadata" multiedit="true" />
 	<a folder="categorize"  id="editassetcategories" name="Categories / Tags" multiedit="true"/>		    	
-	<a folder="map"  id="map" multiedit="true" name="Geo Location Info" />		    	
-	<a folder="edit"  id="viewassetedit" name="Media Editor" />
+	<a folder="map"  id="viewmap" multiedit="true" name="Geo Location Info" />		    	
+	<a folder="edit"  id="viewmediaedit" name="Media Editor" />
 	<a folder="attachments" id="viewattachments" name="Attachments" />
 	<a folder="permissions" id="assetpermissions" name="Permissions"/>
 

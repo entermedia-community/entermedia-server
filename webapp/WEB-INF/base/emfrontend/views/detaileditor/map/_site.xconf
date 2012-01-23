@@ -6,6 +6,6 @@
   </property>
 	<property name="tab">asseteditormetadata</property>
   	<property name="subtab">editassetgeolocation</property>
-  	<property name="assettab">editassetgeolocation</property>
+  	<property name="assettab">viewmap</property>
     <inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
 </page>

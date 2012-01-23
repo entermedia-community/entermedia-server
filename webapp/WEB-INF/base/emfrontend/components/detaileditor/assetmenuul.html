@@ -15,11 +15,11 @@ $pages.include("$apphome/components/results/thumbnails/medium.html")
 <ul id="assetmenu">
 #foreach( $link in $links)
 	#set( $pname = "can${link.id}")
+	#set( $permission = false)
 	#set( $permission = "$!context.getPageValue($pname)")
 	#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
 	#set( $text = $link.name)
-	#if( $permission != "false")
-	
+	#if( $permission == "true")
 		##Check for custom links, arguments and labels
 		#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 		#if($link.id =="comment")

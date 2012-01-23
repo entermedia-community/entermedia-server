@@ -1,6 +1,5 @@
 <permissions name="Application Permissions">
 
-
 	<permission id="view" name="View App" description="Who can view the application"/>
 	<permission id="viewupload" name="Upload" description="Upload" />
 	<permission id="viewhomelink" name="View Home Link" description="The button to the home page is shown" />
@@ -14,13 +13,17 @@
 	<permission id="emaillink" name="Email Link" description="Able to email links" />
 	<permission id="socialshare" name="Social Share" description="Social Share" />
 	<permission id="publish" name="Publish" description="Publish" />
-	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
 
 	<permission id="quicksearch" name="Quick Search" description="Ability to search from the top of the site"/>
 	<permission id="viewpasswordhelper" name="Password Helper" description="Allow lookup of passwords"/>
 	
-	<permission id="editasset" name="Edit Metadata" description="Enable asset metadata edits"/>
+	<permission id="metadatageneral" name="General Metadata" description="Enable general metadata edits"/>
+	<permission id="editassetcategories" name="Categorize" description="Edit Categories"/>
+
 	<permission id="metadatadetails" name="Show Metadata" description="Show asset metadata"/>
+
+	<permission id="viewmap" category="metadata" name="View Map/Geo-location" description="Ability to edit geoloctaiton metadata" />
+	<permission id="viewmediaedit" name="View Media Editor" description="Crop and Rotate Tool"/>
 
 	<permission id="download" name="Download Original" description="Allows users to download the original high rez version"/>
 	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
@@ -28,10 +31,16 @@
 	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
 	<permission id="comment" name="Add Comments" description="Add Comments" />
 
-	<permission id="viewattachments" name="Edit Attachments" description="View and edit attachments"/>
+	<permission id="viewattachments" name="View Attachments" description="View attachments"/>
 	<permission id="changeattachment" name="Edit Attachments" description="Edit Attachments" />
 	<permission id="assetpermissions" name="Change Permissions" description="Create custom asset permissions"/>
+
+
+
+	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>
+
 	<permission id="converthistory" name="Convert History" description="Show Convert History"/>
+
 	
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
@@ -42,7 +51,6 @@
 		
 	<permission id="viewassetdownloadhistory" name="Download History" description="Show download history report"/>
 	<permission id="viewassetedithistory" name="Edit History" description="Show when edits where made"/>
-	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>
 	<permission id="viewassetorderhistory" name="Order History" description="Show order history report"/>
 	 -->
 	

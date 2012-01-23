@@ -2,7 +2,7 @@
 
 <page>
 	<path-action name="MediaArchiveModule.getAsset"  />
-	<path-action name="AssetControlModule.loadAllAssetPermissions"/>
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
 	<path-action name="Admin.allowViewing">
 		<login-path>/${applicationid}/authentication/logon.html</login-path>
 	</path-action>
