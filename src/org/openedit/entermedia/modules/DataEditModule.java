@@ -241,6 +241,9 @@ public class DataEditModule extends BaseMediaModule
 		details.addDetail(detail);
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
 		loadProperties(inReq);
+		//tuan
+		inReq.putPageValue("property", detail);
+		inReq.putPageValue("detail", detail);
 	}
 
 	public void deleteProperty(WebPageRequest inReq) throws Exception

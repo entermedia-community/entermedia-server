@@ -1,6 +1,6 @@
 <tr id="tableheader">
 #if( $showtoolbar )
-	<th class="firstheader" style="width: 18px;"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end onClick="togglehits();" /></th>
+	<th class="firstheader" style="width: 18px;"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end /></th>
 #end	
 
 #set( $edit = $context.getRequestParameter("editheader"))
