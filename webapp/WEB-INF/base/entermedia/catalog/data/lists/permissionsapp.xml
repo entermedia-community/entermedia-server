@@ -35,12 +35,16 @@
 	<permission id="changeattachment" name="Edit Attachments" description="Edit Attachments" />
 	<permission id="assetpermissions" name="Change Permissions" description="Create custom asset permissions"/>
 
+	<permission id="editadvancedsearch" name="Edit Advanced Search" description="Be able to customize the search screen"/>
+
+	<permission id="edittablecolumns" name="Edit Table Columns" description="Be able to edit the table columns"/>
 
 
 	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>
 
 	<permission id="converthistory" name="Convert History" description="Show Convert History"/>
 
+	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
 	
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	

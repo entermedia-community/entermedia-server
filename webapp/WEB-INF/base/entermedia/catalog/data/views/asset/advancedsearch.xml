@@ -1,6 +1,8 @@
 <properties>
 	<property id="description">All Fields</property>
-	<property id="assettitle">Title</property>
-	<property id="caption">Caption</property>
-	<property id="uploadteam">Team</property>
+<!-- 	<property id="assetaddeddate" />
+	<property id="editstatus" /> 
+	<property id="owner" /> 
+	 -->
+	<property id="assettype" />
 </properties>

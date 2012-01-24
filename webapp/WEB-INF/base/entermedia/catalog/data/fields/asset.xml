@@ -39,7 +39,7 @@
 	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  externalid="Create Date,MediaCreateDate,CreateDate">Created On</property>
 	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date" viewtype="time" >Last Modified</property>
 	<property id="recordmodificationdate" index="true" type="date" stored="true" editable="false">Record Date</property> <!--  should be a date -->
-	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" externalid="Record Creation Date">Uploaded Date</property>
+	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
 	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" query="groups:developers">Owner</property>
 	<property id="primaryfile" index="true" stored="true">Primary File Name</property>
 	<property id="cumulusid" index="true" stored="true">Cumulus ID</property>

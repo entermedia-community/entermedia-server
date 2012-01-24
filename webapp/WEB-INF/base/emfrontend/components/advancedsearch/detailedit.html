@@ -11,7 +11,10 @@
 		</div>
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 		<input name="operation" value="startswith" type="hidden" />
-		#set( $viewtype = $detail.viewType )
+		#set( $viewtype = $detail.searchcomponent )
+		#if (!$viewtype)
+			#set( $viewtype = $detail.viewType )
+		#end
 		#if (!$viewtype)
 			#set ($viewtype = $detail.dataType)
 		#end

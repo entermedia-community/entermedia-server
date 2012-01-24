@@ -19,13 +19,7 @@
 			<user name="${asset.owner}"/>
 		</or>
 	</permission> 
-	<permission name="deleteasset">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
+
 	<permission name="viewasset">
 		<or>
 			<group name="guest"/>

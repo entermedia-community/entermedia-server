@@ -49,6 +49,8 @@
 	</ul>
 </td>
 <td style="position: relative;">
+
+#if( $canedittablecolumns )
 	<div id="table-edit-outside">
 			#if( !$edit )
 				<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true">
@@ -76,7 +78,8 @@
 				   </div>
 			   </div>
 			#end
-			</div>
+	</div>
+#end
 </td>
 	<td >
 		<img id="spinner" style="visibility:hidden;" src="$home$themeprefix/images/spinner.gif"/>

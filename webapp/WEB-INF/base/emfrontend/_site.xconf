@@ -212,6 +212,20 @@
   <permission name="viewassets">
     <boolean value="false"/>
   </permission>
+  <permission name="deleteasset">
+		<or>
+			<group name="administrators"/>
+			<userprofile property="assetadmin" equals="true" />
+			<user name="${asset.owner}"/>
+		</or>
+	</permission>
 	
+  <permission name="editadvancedsearch">
+		<user />
+  </permission>
+	
+  <permission name="edittablecolumns">
+		<user />
+  </permission>
 	
 </page>

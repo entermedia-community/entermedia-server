@@ -15,10 +15,13 @@ $context.putPageValue("edit",$edit)
 #end
 <form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content">
 ##We need 2 things passed in: $searcher, $view or $searcher $details
-#if (!$details && $view)
+#if (!$details && $userprofile)
 
 	#set ($details = $searcher.getDetailsForView($view, $userprofile))
+#else
+	#set ($details = $searcher.getDetailsForView($view))
 #end
+
 
 <table 	 width="100%">
 	#foreach( $detail in $details)
@@ -72,8 +75,10 @@ $context.putPageValue("edit",$edit)
 
 
 #else
+#if( $caneditadvancedsearch )
 	<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><img align="right" src="$home$themeprefix/images/navigation/write-note.png"/></a>
 	<br/>
+#end	
 #end
 
 <script type="text/javascript">
