@@ -561,6 +561,7 @@ public class AdminModule extends BaseModule
 		}
 
 		inReq.removePageValue("user");
+		inReq.removePageValue("userprofile");
 		removeCookie(inReq);
 
 		String referrer = inReq.getRequestParameter("editingPath");

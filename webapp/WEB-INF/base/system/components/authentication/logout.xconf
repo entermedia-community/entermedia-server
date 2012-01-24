@@ -2,6 +2,8 @@
 
 <page>
   <path-action name="Admin.logout"/>
+  <path-action name="Admin.loadPermissions"/>
+  
   <property name="title">
     <value>Log Out</value>
     <value locale="es">Salida</value>
