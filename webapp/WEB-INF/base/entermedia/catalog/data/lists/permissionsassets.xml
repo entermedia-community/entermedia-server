@@ -1,10 +1,8 @@
 <permissions name="EnterMedia">
 
-	<permission id="download" name="Download Original" description="Allows users to download the original high rez version"/>
 	<permission id="viewasset" name="View Asset" description="Show asset in search results and show details page"/>
 	<permission id="editasset" name="Edit Metadata" description="Enable asset metadata edits"/>
 
-	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
 	
 </permissions>
 

@@ -26,6 +26,7 @@
 	<permission id="viewmediaedit" name="View Media Editor" description="Crop and Rotate Tool"/>
 
 	<permission id="download" name="Download Original" description="Allows users to download the original high rez version"/>
+	<permission id="embedasset" name="Embed" description="Embed HTML"/>
 	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
 	<permission id="convert" name="Show Download Size Options" description="Shows conversion options"/>
 	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>

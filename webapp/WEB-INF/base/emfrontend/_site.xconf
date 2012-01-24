@@ -227,5 +227,10 @@
   <permission name="edittablecolumns">
 		<user />
   </permission>
+
+  <permission name="embedasset">
+		 <boolean value="true"/>
+  </permission>
+
 	
 </page>

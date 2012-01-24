@@ -1026,7 +1026,7 @@ public class MediaArchive
 	{
 		String path = "/" + getCatalogId() + "/assets/" + sourcepath + "/_site.xconf";
 		
-		List<String> names = Arrays.asList(new String[]{"viewassetadmin","download","forcewatermark","editasset", "viewasset", "view"});
+		List<String> names = Arrays.asList(new String[]{"viewassetadmin","editasset", "viewasset", "view"});
 		
 		Page page = getPageManager().getPage(path);
 		Asset asset = (Asset)inReq.getPageValue("asset");
