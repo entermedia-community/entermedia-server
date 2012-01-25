@@ -1666,4 +1666,46 @@ public class AssetEditModule extends BaseMediaModule
 			inReq.putPageValue("deletedlist",assets);
 		}
 	}
+	public Data createMultiEditDataFromSelections(WebPageRequest inReq) throws Exception
+	{
+		String hitsname = inReq.getRequestParameter("hitssessionid");//expects session id
+		if( hitsname == null)
+		{
+			return null;
+		}
+		MediaArchive store = getMediaArchive(inReq);
+		HitTracker hits = (HitTracker) inReq.getSessionValue(hitsname);
+		if( hits == null)
+		{
+			log.error("Could not find " + hitsname);
+			return null;
+		}
+		CompositeAsset composite = new CompositeAsset();
+		for (Iterator iterator = hits.getSelectedHits().iterator(); iterator.hasNext();)
+		{
+			Object target = (Object) iterator.next();
+			Asset p = null;
+			if( target instanceof Asset)
+			{
+				p = (Asset)target;
+			}
+			else
+			{
+				String id = hits.getValue(target, "id");
+				p = store.getAsset(id);
+			}
+			if( p != null)
+			{
+				composite.addData(p);
+			}
+		}
+		composite.setId("multiedit:"+hitsname);
+		//set request param?
+		inReq.setRequestParameter("assetid",composite.getId());
+		inReq.putPageValue("data", composite);
+		inReq.putPageValue("asset", composite);
+		inReq.putSessionValue(composite.getId(), composite);
+		
+		return composite;
+	}
 }
