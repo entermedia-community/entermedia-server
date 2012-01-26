@@ -25,6 +25,7 @@ import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.util.DateStorageUtil;
 
+import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
@@ -507,6 +508,10 @@ public class OrderManager
 				
 				orderItem.setProperty("publishqueueid",publishqeuerow.getId());
 			}	
+			else
+			{
+				throw new OpenEditException("publishdestination.value is missing");
+			}
 			orderItemSearcher.saveData(orderItem, inUser);
 			if( !needstobecreated )
 			{
