@@ -61,16 +61,29 @@
 		Error
 	#else
 		#if ($conversionstart)
+			<div id="conversionbar"></div>
 			#if($conversioncomplete)
-				Complete
+			#set($percent = 100)
+			
 			#else
-				Processing
+			#set($percent = $conversiontask.percentage)
+				
 			#end
 		#else
 			Waiting
 		#end
 	#end
 	</td></tr>
+	
+	<script type="text/javascript">
+	jQuery(function() {
+		jQuery( "#conversionbar" ).progressbar({
+			
+			value: $percent
+		});
+	});
+	</script>
+	
 #else <td>n/a</td><td>n/a</td><td>n/a</td></tr> #end
 
 
@@ -88,14 +101,23 @@
 			##$publishqueue.errordetails
 		#else 
 			#if ($publishstart)
+				<div id="publishbar"></div>
 			#if($publishcomplete)
-				Complete
+			#set($percent = 100)
 			#else
-				Processing
+			#set($percent = $publishqueue.percentage)
 			#end
 			#elseif ($conversiontask && $conversionstart)
 				Waiting
 			#end
+			<script type="text/javascript">
+	jQuery(function() {
+		jQuery( "#publishbar" ).progressbar({
+			
+			value: $percent
+		});
+	});
+	</script>
 		#end
 		</a>
 	</td>
@@ -103,3 +125,5 @@
 </tr>
 
 </table>
+
+
