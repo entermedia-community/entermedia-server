@@ -236,7 +236,7 @@ public class FileUpload
 				org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
 				int count = 0;				
 				
-				if (tmp.getFieldName().toLowerCase().startsWith("file") && tmp.getName() != null && !tmp.getName().equals(""))
+				if ((tmp.getFieldName().toLowerCase().startsWith("file") || tmp.getFieldName().toLowerCase().startsWith("upload"))  && tmp.getName() != null && !tmp.getName().equals(""))
 				{
 					FileUploadItem foundUpload = new FileUploadItem();
 					foundUpload.setFileItem(tmp);
