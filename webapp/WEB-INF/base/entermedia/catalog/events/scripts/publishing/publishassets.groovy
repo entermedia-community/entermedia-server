@@ -94,16 +94,22 @@ public void init() {
 				}
 				
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
-				PublishResult presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
-				if( presult.isError() )
+				PublishResult presult = null
+				boolean isPublishError = false
+				try{
+					publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+				}catch(Exception e){
+					isPublishError = true
+				}
+				if( isPublishError || presult.isError() )
 				{
 					publishrequest.setProperty('status', 'error');
-					publishrequest.setProperty("errordetails", presult.getErrorMessage());
+					publishrequest.setProperty("errordetails", presult?.getErrorMessage());
 					queuesearcher.saveData(publishrequest, context.getUser());
 					firePublishEvent(publishrequest.getId(), "publishing/publisherror");
 					continue;
 				}
-				if( presult.isComplete() )
+				else if( presult.isComplete() )
 				{
 					log.info("Published " +  asset + " to " + destination);
 					publishrequest.setProperty('status', 'complete');
