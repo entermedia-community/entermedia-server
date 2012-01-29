@@ -97,7 +97,7 @@ public void init() {
 				PublishResult presult = null
 				boolean isPublishError = false
 				try{
-					publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
 				}catch(Exception e){
 					isPublishError = true
 				}
