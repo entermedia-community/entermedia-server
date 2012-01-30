@@ -4,8 +4,8 @@
 	<!-- Need to check for invites, may tweak the viewasset permission -->
 	<path-action name="MediaArchiveModule.getAsset"  />
 
-	<path-action name="Admin.loadPermissions"/>
 	<path-action name="AssetControlModule.loadAssetPermissions"/>
+	<path-action name="Admin.loadPermissions"/>
 
 	<path-action name="Admin.allowViewing">
 		<login-path>/${applicationid}/authentication/logon.html</login-path>
