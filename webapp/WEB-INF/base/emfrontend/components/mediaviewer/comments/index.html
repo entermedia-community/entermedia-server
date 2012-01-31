@@ -4,7 +4,7 @@
 	$context.putPageValue("comments",$comments)
 #end
 
-$pages.include("${apphome}/components/mediaviewer/comments/list.html", $context)
+
 
 	#set($incrsize = $comments.size() + 1)
 	#if( $cancomment )
@@ -21,9 +21,11 @@ $pages.include("${apphome}/components/mediaviewer/comments/list.html", $context)
 	#end	
 </div>
 #if(!$user)
+
 <p>[[You must be]] <a href="$home/$applicationid/authentication/login.html">[[logged in]]</a> [[to leave a comment]]</p>
 
-<br/>
 #end
+
+$pages.include("${apphome}/components/mediaviewer/comments/list.html", $context)
 
 
