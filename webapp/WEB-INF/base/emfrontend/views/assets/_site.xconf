@@ -7,7 +7,7 @@
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="AssetControlModule.loadAssetPermissions"/>
 
-	
+	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<permission name="view">
 		<or>
 			<not><pagevalue name="canviewassetadmin" equals="false"/></not>

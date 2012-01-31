@@ -74,7 +74,7 @@
 		#if ( $canaddtocollection )
 			<li id="add-to-collection"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Collection]]</a></li>
 		#end
-		#if ( $canshare )
+		#if ( $cansharetosocialmedia )
 		
 		#set ( $sharelink = "$context.siteRoot$home$apphome/components/mediaviewer/player/types/${type}.html?oemaxlevel=1&sourcepath=$asset.sourcepath&embed=true" )
 		
@@ -122,7 +122,7 @@
  
 #if ($cancomment)
 			
-				##$pages.include("$apphome/components/mediaviewer/comments/mini.html",$context)
+				$pages.include("$apphome/components/mediaviewer/comments/mini.html?sourcepath=$asset.sourcepath",$context)
 
 			#end
 

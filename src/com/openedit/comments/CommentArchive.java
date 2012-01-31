@@ -114,7 +114,7 @@ public class CommentArchive
 
 	public Collection loadComments(Asset inAsset)
 	{
-		String path = "/WEB-INF/data/" +  inAsset.getCatalogId() + "/comments/" + inAsset.getSourcePath() + ".xml";
+		String path = findPath( inAsset.getCatalogId(), inAsset.getSourcePath() );
 		Page page = getPageManager().getPage(path);
 		if(!page.exists()){
 			 path = "/WEB-INF/data/" +  inAsset.getCatalogId() + "/comments/" + inAsset.getSourcePath() + "/folder.xml";
@@ -132,13 +132,18 @@ public class CommentArchive
 	
 	public Collection loadComments(String inCatalogId, String inPath)
 	{
-		String path = "/WEB-INF/data/"+inCatalogId + "/comments/" + inPath + ".xml";
+		String path = findPath(inCatalogId, inPath);
 		Page page = getPageManager().getPage(path);
 		if(!page.exists()){
 			 path = "/WEB-INF/data/" +  inCatalogId + "/comments/" + inPath + "/folder.xml";
 			 page = getPageManager().getPage(path);
 		}
 		return loadComments(page);
+	}
+
+	public String findPath(String inCatalogId, String inPath) {
+		String path = "/WEB-INF/data/"+inCatalogId + "/comments/" + inPath + ".xml";
+		return path;
 	}
 
 	
