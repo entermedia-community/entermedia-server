@@ -312,7 +312,9 @@ public class TemplateWebEmail extends WebEmail implements Data
 		String done = replaceText( content, inReq, "input");
 		done = replaceText( done, inReq, "textarea");
 		done = replaceText( done, inReq, "select");
+		done = done.replace("<label","<br><label");
 		//inReq.getPage().generate(inReq, inOut)
+		
 		
 		setMessage(done);
 	}
@@ -330,6 +332,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 				done.append(chunk);
 				continue;
 			}
+//			done.append("<");
 			int start = chunk.indexOf("name");
 			if( start > -1)
 			{
@@ -344,12 +347,18 @@ public class TemplateWebEmail extends WebEmail implements Data
 						String value = inReq.getRequestParameter(name);
 						if( value != null)
 						{
+//							done.append(">");
 							done.append(value);
 						}
 					}
 				}
 
 				int end = chunk.indexOf("</" + inType);
+				if( end == -1)
+				{
+					end = chunk.indexOf("/>")+2;
+				}
+
 				if( end == -1)
 				{
 					end = chunk.indexOf(">")+1;
