@@ -1,5 +1,6 @@
 <page>
+<path-action name="Date.loadFormat" />
 <path-action name="OrderModule.createOrderWithItems"/>
 <path-action name="OrderModule.findOrderItems"/>
-
+<property name="ordertype">download</property>
 </page>

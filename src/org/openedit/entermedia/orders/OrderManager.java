@@ -28,6 +28,7 @@ import com.openedit.users.User;
 
 public class OrderManager 
 {
+	private static final String DOWNLOAD = "download";
 	private static final String EMAIL = "email";
 	protected SearcherManager fieldSearcherManager;
 	protected WebEventHandler fieldWebEventHandler;
@@ -301,7 +302,7 @@ public class OrderManager
 		//order.setId(searcher.nextId());
 		order.setProperty("orderstatus", "ordered");
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		if (EMAIL.equals(orderType))
+		if (EMAIL.equals(orderType) || DOWNLOAD.equals(orderType))
 		{
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.MONTH, 1);
