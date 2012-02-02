@@ -15,30 +15,48 @@
 <!--  Start Flowplayer Engine  -->		
 <script type="text/javascript" src="$root/flowplayer-3.2.6.min.js"></script>
 
+#set( $embed = $context.getRequestParameter("embed") )
+
+
+
 <style>
 
-a.mediaplayer{ 
+#if( $embed == "true")
+
+a.mediaplayer
+{ 
+	padding: 0px;
+	display:block;
+	width:100%;
+	height:100%;
+	text-align:center;
+  	margin-left: auto;
+    margin-right: auto;
+	background-repeat:no-repeat;
+	background-position:center; 
+}
+
+#else
+
+a.mediaplayer
+{ 
 	display:block;
 	width:528px;
 	height:360px;
 	text-align:center;
   	margin-left: auto;
     margin-right: auto;
-	border:1px solid #999;
 	background-repeat:no-repeat;
 	background-position:center; 
 }
+
+#end
+
 /* play button */
 a.mediaplayer img {
 	margin-top:150px;
 	border:0px;
 }
-
-/* when container is hovered we alter the border color */
-a.mediaplayer:hover {
-	border:1px solid #000;
-}
-
 
 </style>		
 		

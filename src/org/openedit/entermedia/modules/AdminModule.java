@@ -901,6 +901,10 @@ public class AdminModule extends BaseModule
 	 */
 	public void redirectHost(WebPageRequest inReq) throws OpenEditException
 	{
+		if( inReq.getRequest() == null)
+		{
+			return;
+		}
 		String host = inReq.getCurrentAction().getChildValue("redirecthost");
 		URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 		if (utils == null)

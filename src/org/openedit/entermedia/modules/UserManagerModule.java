@@ -765,11 +765,10 @@ public class UserManagerModule extends BaseModule
 	public void setUserPassword( WebPageRequest inReq ) throws UserManagerException,
 			OpenEditException
 	{
-		
-
 		String password = inReq.getRequestParameter( "password" );
 		String retypedPassword = inReq.getRequestParameter( "retypedPassword" );
-		if(password == null || retypedPassword == null){
+		if(password == null || retypedPassword == null)
+		{
 			inReq.putPageValue("errors", "novalues");
 			return;
 		}
@@ -782,6 +781,8 @@ public class UserManagerModule extends BaseModule
 			}
 			user.setPassword( password );
 			getUserSearcher().saveData( user ,inReq.getUser());
+			inReq.putPageValue("message", "passwordchanged");
+			
 		}
 		else
 		{
@@ -1020,7 +1021,7 @@ public class UserManagerModule extends BaseModule
 	}
 		
 	/**
-	 * @deprecated
+	 * @deprecated use loadData
 	 */
 	public void loadUserProperties(WebPageRequest inReq) throws Exception
 	{		
