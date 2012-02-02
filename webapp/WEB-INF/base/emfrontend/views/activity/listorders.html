@@ -30,8 +30,8 @@
 		<td noclick="true" class="expandorder" href="$home$apphome/views/activity/details/miniitems.html?orderid=$order.id&orderstatus=$userstatus"><img src="$home$themeprefix/images/orders/plus.png"/></td>
 	#foreach( $detail in $details)
 		$!context.putPageValue("detail",$detail) 
-		#if ($detail.id == "publishdestination") 
-			#if( $order.ordertype == "email")  
+		#if ($detail.id == "publishdestination")
+			#if( $order.ordertype == "email" || $order.ordertype == "download")  
 			  	<td>$order.sharewithemail</td><td>Email</td>
 			 #elseif( $order.ordertype == "upload" || !$order.ordertype)  
 			  <td> AMS</td>	<td></td>
