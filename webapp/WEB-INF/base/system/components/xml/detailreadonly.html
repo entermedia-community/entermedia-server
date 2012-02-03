@@ -8,4 +8,5 @@
 #if (!$viewtype || $viewtype== "text")
 	#set ($viewtype = "default")
 #end
+${viewtype}
 $pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)
