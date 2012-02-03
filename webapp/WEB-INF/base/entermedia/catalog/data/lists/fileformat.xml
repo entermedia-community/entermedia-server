@@ -1,3 +1,7 @@
+<!-- Mime types are only really used for thumbnail generation -->
+<!-- The render type is a simple way to build a family of includes to render the HTML -->
+<!-- Creators are used to pre-process media formats such as DOC > PDF > JPG -->
+
 <properties>
 	<property id="ai" rendertype="document" creator="imagemagick" scanner="iptc">AI</property>
 	<property id="asf" rendertype="video" creator="ffmpeg">ASF</property>
@@ -17,6 +21,8 @@
 	<property id="moov" rendertype="video" creator="ffmpeg">MooV</property>
 	<property id="mp3" rendertype="audio" creator="FfMpegAudio" >MP3</property>
 	<property id="aiff" rendertype="audio" creator="FfMpegAudio" >AIFF</property>
+	<property id="mts" rendertype="video" creator="ffmpeg">MTS</property>
+	<property id="m2ts" rendertype="video" creator="ffmpeg">M2TS</property>
 	
 	<property id="mp4" rendertype="video" creator="ffmpeg" >MPEG 4 mp4</property>
 	<property id="m4v" rendertype="video" creator="ffmpeg" >MPEG 4 m4v</property>
@@ -51,4 +57,5 @@
 	<property id="html" rendertype="document" >HTML</property>
 	<property id="xml" rendertype="document" >XML</property>
 	<property id="csv" rendertype="document" >CSV</property>
+	<property id="default" rendertype="default" >Default</property>
 </properties>

@@ -192,9 +192,6 @@
   <permission name="viewmap">
     <boolean value="false"/>
   </permission>
-  <permission name="editassetcategories">
-    <boolean value="false"/>
-  </permission>
   <permission name="viewsettings">
     <or>
       <userprofile value="true" name="viewsettings"/>

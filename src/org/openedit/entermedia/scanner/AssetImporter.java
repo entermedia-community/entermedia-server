@@ -212,7 +212,7 @@ public class AssetImporter
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);
 		finder.setExcludeFilter(getExcludeFolders()); //The rest should be filtered by the mount itself
-		//finder.setIncludeFileFilter(getIncludeFiles());
+		finder.setIncludeFileFilter(getIncludeFiles());
 		finder.process(inStartingPoint, inUser);
 
 		// Windows, for instance, has an absolute file system path limit of 256

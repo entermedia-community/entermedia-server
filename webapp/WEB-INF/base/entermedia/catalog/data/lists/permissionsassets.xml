@@ -1,8 +1,8 @@
 <permissions name="EnterMedia">
 
-	<permission id="viewasset" name="View Asset" description="Show asset in search results and show details page"/>
+	<permission id="viewasset" name="Default Privacy" description="Who can view assets on the site"/>
+	<permission id="viewassetadmin" name="Admin Privacy" description="System wide control of viewing of an asset"/>
 	<permission id="editasset" name="Edit Metadata" description="Enable asset metadata edits"/>
-
 	
 </permissions>
 
