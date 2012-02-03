@@ -21,10 +21,14 @@
 	</permission> 
 
 	<permission name="viewasset">
+		<user />
+	</permission> 
+
+
+	<permission name="viewassetadmin">
 		<or>
-			<group name="guest"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="viewassets" equals="true" />
+			<group name="administrators"/>
+			<user name="${asset.owner}"/>
 		</or>
 	</permission>
 
