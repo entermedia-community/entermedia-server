@@ -18,7 +18,7 @@
 	#else	
 
 		#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-		#if( $type == "audio")
+		#if( $type == "audio" || $type == "default")
 			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
 		#else
 			<img class="smallthumb emdropshadow" src="$home$cataloghome/downloads/preview/${thumbsize}/${sourcepath}/thumb.jpg" border="0" />

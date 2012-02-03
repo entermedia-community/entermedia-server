@@ -46,10 +46,10 @@ public void createTasksForUpload()
 	log.info("Found ${assets.size()} assets");
 	assets.each
 	{
+		foundsome = false;
 		Asset asset = mediaArchive.getAsset(it.id);
 		
 		String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
-		//video?
 		SearchQuery query = presetsearcher.createSearchQuery();
 		query.addMatches("onimport", "true");
 		query.addMatches("inputtype", rendertype); //video
@@ -118,6 +118,7 @@ public void createTasksForUpload()
 		}
 		else
 		{
+			asset.setProperty("previewstatus","mime");
 			asset.setProperty("importstatus","complete");
 		}
 		mediaarchive.saveAsset( asset, user );

@@ -7,15 +7,20 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.util.FileUtils;
 import com.openedit.util.OutputFiller;
+import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 
 public class MetadataPdfExtractor extends MetadataExtractor
 {
+	private static final Log log = LogFactory.getLog(MetadataPdfExtractor.class);
+
 	public boolean extractData(MediaArchive inArchive, File inFile, Asset inAsset)
 	{
 		String type = PathUtilities.extractPageType(inFile.getPath());
@@ -75,13 +80,17 @@ public class MetadataPdfExtractor extends MetadataExtractor
 				}
 				catch (FileNotFoundException e)
 				{
-					e.printStackTrace();
+					log.error("cant process" , e);
 					return false;
 				}
 				catch (IOException e)
 				{
-					e.printStackTrace();
+					log.error("cant process" , e);
 					return false;
+				}
+				catch( Exception ex)
+				{
+					log.error("cant process" , ex);
 				}
 				finally
 				{
