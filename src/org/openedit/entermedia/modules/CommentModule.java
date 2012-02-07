@@ -51,16 +51,19 @@ public class CommentModule extends BaseMediaModule
 	}
 
 	
-	private String findPath(WebPageRequest inReq) {
-		String commentPath = inReq.findValue("commentpath");
-		//old system was not safe
-		if (commentPath == null)
-		{
-			String sourcePath = inReq.getRequestParameter("sourcepath");
-		//	String catalogid = inReq.findValue("catalogid");
-			commentPath =  sourcePath;	
-		}
-		else if(commentPath.contains("${albumid}"))
+	protected String findPath(WebPageRequest inReq) 
+	{
+		String sourcePath = inReq.getRequestParameter("sourcepath");
+		String catalogid = inReq.findValue("catalogid");
+		String commentPath = getCommentArchive().findPath(catalogid, sourcePath);
+
+//		//old system was not safe
+//		if (commentPath == null)
+//		{
+//			//commentPath =  sourcePath;	
+//			commentPath = inReq.findValue("commentpath");
+//		}
+		if(commentPath.contains("${albumid}"))
 		{
 			String albumid = inReq.getRequestParameter("albumid");
 			if(albumid != null)

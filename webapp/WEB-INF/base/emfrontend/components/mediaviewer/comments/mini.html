@@ -1,21 +1,48 @@
-<div id="emcommentarea">
+<div id="emcommentarea" class="clearfix">
 #if(!$comments)
 	#set($comments = $commentArchive.loadComments($asset))
 	$context.putPageValue("comments",$comments)
 #end
 
+
+	#if( $cancomment )
+		<form id="addcomment" name="addcomment" class="ajaxform commentresizer clearfix" targetdiv="emcommentarea" action="${home}${apphome}/components/mediaviewer/comments/mini.html" method="post">
+			<h3>Add Comment</h3>
+			<textarea id="commenttext" name="comment" initialtext="[[Add a comment]]">[[Add a comment]]</textarea> 
+			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
+			<input type="hidden" name="oemaxlevel" value="1"/>
+			<input type="hidden" name="catalogid" value="$catalogid"/>
+			<input class="btn right" type="submit" value="[[Save Comment]]"/>
+		</form>
+		<div class="hr"></div>
+	#end	
+
+
+
+</div>
+#if(!$user)
+<p>[[You must be]] <a href="$home/$applicationid/authentication/login.html">[[logged in]]</a> [[to leave a comment]]</p>
+#end
+
+
 <div id="emcomments">
-	#foreach ($comment in $comments.getLast(2))
-		<div class="emcomment">
-		<span class="emcommentuser">$comment.user.getScreenName() :</span>	
-		<span class="emcommenttext">#esc($comment.comment)</span><br>
-		<span class="emcommentdate">Posted on $comment.getShortDate($context.locale)</span>
+	##foreach ($comment in $comments.getLast(2))
+	#foreach ($comment in $comments.getLast(15))
+		<div class="emcomment">	
+			<div class="emcommenttext">
+				#esc($comment.comment)
+			</div>
+			<div class="comment-bottom">
+				<span class="emcommentuser">$comment.user.getScreenName()</span>
+				<span class="emcommentdate">Posted on $comment.getShortDate($context.locale)</span>
+			</div>
+		
 			#if($caneditasset)
 			
 				#if($asset.owner == $user.getId())
 					<span class="emcommentremove"><a href="#" onclick="jQuery('#removeComment${velocityCount}').submit();return false;">remove</a></span>
 				#end
-				<div align="right">
+				<div>
 				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}${apphome}/components/mediaviewer/comments/removecomment.html">
 					<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 					<input type="hidden" name="commenttext" value="#esc($comment.comment)"/>
@@ -27,27 +54,8 @@
 			#end
 		</div>
 	#end
-	#if( $comments.size() > 2 )
+	#if( $comments.size() > 15 )
 	<a class="emdialog" href="$home$apphome/components/mediaviewer/comments/index.html?sourcepath=$asset.sourcepath">View all $comments.size() comments</a>
 	#end
 </div>
-
-	#if( $cancomment )
-		<form name="addcomment" class="ajaxform commentresizer" targetdiv="emcommentarea" action="${home}${apphome}/components/mediaviewer/comments/mini.html" method="post">
-			<textarea id="commenttext" name="comment" cols="100" initialtext="[[Add a comment]]">[[Add a comment]]</textarea> 
-			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
-			<input type="hidden" name="oemaxlevel" value="1"/>
-			<input type="hidden" name="catalogid" value="$catalogid"/>
-			<div id="commentsubmit" style="display: none;">
-			<input type="submit" value="[[Save Comment]]"/>
-			</div>
-		</form>
-	#end	
-
-
-
-</div>
-#if(!$user)
-<p>[[You must be]] <a href="$home/$applicationid/authentication/login.html">[[logged in]]</a> [[to leave a comment]]</p>
-#end
 </div>

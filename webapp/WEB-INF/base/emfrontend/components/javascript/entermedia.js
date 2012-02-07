@@ -91,8 +91,8 @@ runajax = function(e)
 			);
 
 	}
-
-	return false;
+     e.preventDefault();
+	//return false;
 }
 
 showHoverMenu = function(inDivId)
