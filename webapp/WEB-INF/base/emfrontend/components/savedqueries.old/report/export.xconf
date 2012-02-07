@@ -1,7 +1,0 @@
-<page>
-	<generator name="velocity" />
-	<path-action name="MediaSearchModule.loadHits" alltypes="true"/>
-	<inner-layout/>
-	<layout/>
-	<property name="editable">false</property>
-</page>
