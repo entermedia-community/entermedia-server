@@ -3,8 +3,9 @@
 #if( $print && $print == "true")
   <h2 class="section">General Information</h2>
 #end  
-
-#set($views = $searcherManager.getList("$catalogid", "assettype/views"))
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "assetview"))
+#set($views = $viewsearcher.fieldSearch("userdefined","true","ordering" ) )
+##set($views = $searcherManager.getList("$catalogid", "assettype/views"))
 
 #set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
 

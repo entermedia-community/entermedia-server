@@ -1,5 +1,8 @@
 <div id="emdataeditor">
-#set($views = $searcherManager.getList("$catalogid", "assettype/views"))
+#set($viewsearch = $searcherManager.getSearcher("$catalogid", "assetviews"))
+
+#set($views = $viewsearch.fieldSearch("userdefined","true","ordering" )
+
 #set($searcher = $mediaarchive.getAssetSearcher())
 #set($sourcepath = $context.getRequestParameter("sourcepath"))
 #set($asset = $mediaarchive.getAssetBySourcePath($sourcepath))
