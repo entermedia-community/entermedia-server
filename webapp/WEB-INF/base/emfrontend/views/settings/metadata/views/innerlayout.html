@@ -1,5 +1,5 @@
 #set($searcher = $mediaarchive.getAssetSearcher())
-#set($screenid = $context.getRequestParameter("screenid"))
+#set($viewid = $context.getRequestParameter("viewid"))
 <div class="subcolumns">
           <div class="c33l">
             <div class="subcl">
@@ -7,16 +7,21 @@
 <div class="ui-widget-header">Views</div>
 <div  class="ui-widget-content emselectmenu">
 
-#set($views = $searcherManager.getList("$catalogid", "assettype/views"))
+#set($views = $searcherManager.getList("$catalogid", "assetview"))
 
 <h4>[[Select a View]]</h4>
-<select style="margin: 0 0 20px 0;" id="screenid" name="screenid" onchange="loadViews();">
+<select style="margin: 0 0 20px 0;" id="viewid" name="viewid" onchange="loadViews();">
 		<option value="" ></option>
 			#foreach( $target in $views)
-				<option value="$target.id" #if($screenid == $target.id)selected="selected"#end>$target</option>
-			#end
+				<option value="$target.id" #if($viewid == $target.id)selected="selected"#end byassettype="$!target.byassettype">$target</option>
+			#end			
 		</select>
-#if( $screenid )
+
+#if( $viewid )
+
+#set($view = $searcherManager.getData("$catalogid", "assetview", $viewid))
+#if($view.byassettype == "true" )
+
 <h4>[[Select an Asset Type]]</h4>
 #set($current = $context.getRequestParameter("assettype")) 
 #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
@@ -27,6 +32,8 @@
 				<option #if($current == $item.id) selected #end value="$item.id">$item</option>
 			#end
 		</select>
+#end
+	
 #end
 </div>
 </div>
@@ -45,22 +52,31 @@ $pages.includeContent()
 <script type="text/javascript">
 
 	loadViews = function() {
-		var selected = jQuery("#screenid option:selected");
+		var selected = jQuery("#viewid option:selected");
+		
 		var selectedid = selected.val();
 
-		var assettype = jQuery("#assettype option:selected");
-		var assettypeid = assettype.val();
-
 		var view = "";
-		if( assettypeid == 'default' || assettypeid == undefined)
+
+		var byassettype = selected.attr("byassettype");
+		if( byassettype == 'true')		
 		{
-			view = "asset/assettype/default/" + selectedid;
+			var assettype = jQuery("#assettype option:selected");
+			var assettypeid = assettype.val();
+			if( assettypeid == 'default' || typeof(assettypeid) == 'undefined')
+			{
+				view = "asset/assettype/default/" + selectedid;
+			}
+			else
+			{
+				view = "asset/assettype/" + assettypeid + "/" + selectedid;
+			}
 		}
 		else
 		{
-			view = "asset/assettype/" + assettypeid + "/" + selectedid;
+			view = 	selectedid;
 		}
-		document.location.href = "$home$apphome/views/settings/metadata/views/index.html?view=" + view + "&screenid=" + selectedid + "&assettype=" +  assettypeid +"&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}";
+		document.location.href = "$home$apphome/views/settings/metadata/views/index.html?viewpath=" + view + "&viewid=" + selectedid + "&assettype=" +  assettypeid +"&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}";
 	}
 
 	removeProperty = function() {

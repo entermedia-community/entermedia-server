@@ -173,8 +173,8 @@ public class DataEditModule extends BaseMediaModule
 		XmlFile file = (XmlFile)loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
-		String viewid = inReq.getRequestParameter("view");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewid + ".xml";
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		file.setElementName("property");
 
@@ -195,8 +195,8 @@ public class DataEditModule extends BaseMediaModule
 		XmlFile file = (XmlFile)loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
-		String viewid = inReq.getRequestParameter("view");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewid + ".xml";
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		String toremove = inReq.getRequestParameter("toremove");
 
@@ -643,7 +643,7 @@ public class DataEditModule extends BaseMediaModule
 	public Data loadView(WebPageRequest inReq) throws Exception
 	{
 		String catid = resolveCatalogId(inReq);
-		String viewid = inReq.getRequestParameter("view");
+		String viewid = inReq.getRequestParameter("viewpath");
 		String type = resolveSearchType(inReq);
 
 		PropertyDetailsArchive archive =  getSearcherManager().getPropertyDetailsArchive(catid);
@@ -672,25 +672,29 @@ public class DataEditModule extends BaseMediaModule
 	public void deleteView(WebPageRequest inReq)
 	{
 		String catid = resolveCatalogId(inReq);
-		String view = inReq.getRequestParameter("view");
-		String type = resolveSearchType(inReq);
-		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + view + ".xml";
+		String view = inReq.getRequestParameter("viewpath");
+		//String type = resolveSearchType(inReq);
+		String path = "/WEB-INF/data/" + catid + "/views/" + view + ".xml";
 		Page viewPage = getPageManager().getPage(path);
 		if (viewPage.exists())
 		{
 			getPageManager().removePage(viewPage);
 		}
 	}
-
+/**
+ * @deprecated Not useful
+ * @param inReq
+ */
 	public void changeViewName(WebPageRequest inReq)
 	{
 		String catid = resolveCatalogId(inReq);
-		String view = inReq.getRequestParameter("view");
+		String viewpath = inReq.getRequestParameter("viewpath");
 		String newname = inReq.getRequestParameter("newname");
 		String type = resolveSearchType(inReq);
-		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + view + ".xml";
+		String path = "/WEB-INF/data/" + catid + "/views/" + viewpath + ".xml";
 
-		String newpath = "/WEB-INF/data/" + catid + "/views/" + type + "/" + newname + ".xml";
+		//This does not seem right. Do we really need this code
+		String newpath = "/WEB-INF/data/" + catid + "/views/" + newname + ".xml";
 
 		Page oldpage = getPageManager().getPage(path);
 		Page newpage = getPageManager().getPage(newpath);
@@ -1089,8 +1093,8 @@ public class DataEditModule extends BaseMediaModule
 		XmlFile file = (XmlFile)loadView(inReq);
 		String catalogid = resolveCatalogId(inReq);
 		String type = resolveSearchType(inReq);
-		String viewid = inReq.getRequestParameter("view");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + type + "/" + viewid + ".xml";
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		file.setElementName("property");
 
