@@ -13,7 +13,7 @@
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
 	#set( $selecteduser = $context.getRequestParameter("username" ) )
 	<thead>
-	<tr>
+	<tr class="tableheader">
 		#foreach( $detail in $details )
 		<th style="padding:4px;text-align:left;">
 			$detail.text

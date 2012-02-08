@@ -9,7 +9,7 @@ $query.addSortBy("ordering")
 #set( $details = $searcher.getDetailsForView("convertpreset/results",$userprofile) )
 <div  id="emselectable">
 <table class="striped greytxt">
-<thead><tr >
+<thead><tr class="tableheader">
 #foreach( $detail in $details)
 <th>$detail.getText($context)</th>
 #end
