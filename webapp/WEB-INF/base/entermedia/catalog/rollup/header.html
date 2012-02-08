@@ -15,7 +15,7 @@
 #if( $closable && $closable == "false")
 $plugin.getText("$menulabel", $context.getLocale())
 #else
-<a href="javascript:toggleSideMenu('$show','${cataloghome}/side/toggle.html?assetid=$asset.id','$pluginpath');" ><img border="0" src="$home${themeprefix}/entermedia/images/triangle${open}.gif" />$plugin.getText("$menulabel", $context.getLocale())</a>
+<a href="javascript:toggleSideMenu('$show','${cataloghome}/side/toggle.html?assetid=$asset.id','$pluginpath');" ><img border="0" src="$home${themeprefix}/images/triangle${open}.gif" />$plugin.getText("$menulabel", $context.getLocale())</a>
 #end
 </div>
 #if( $open == "down" || ($closable && $closable == "false"))

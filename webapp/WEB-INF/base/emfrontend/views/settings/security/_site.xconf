@@ -1,0 +1,6 @@
+<page>
+	<inner-layout>/${applicationid}/views/settings/security/settingssecuritylayout.html</inner-layout>
+	
+	<property name="tab">security</property>
+	
+</page>

@@ -3,6 +3,6 @@
 	<path-action name="RecentActivityModule.addEventLog"/>
 	<path-action name="FriendModule.sendAlbumCommentNotification" />
 	<property name="subject">[EnterMedia] Comment added to album</property> 
-	<property name="emailbody">${themeprefix}/entermedia/layouts/albumcommentnotifylayout.html</property>
+	<property name="emailbody">${themeprefix}/layouts/albumcommentnotifylayout.html</property>
 		
 </page>

@@ -1,7 +1,3 @@
 <page>
 	<path-action name="DataEditModule.addToView" />
-		<path-action name="Script.run" >
-		<script>./export.groovy</script>
-	</path-action>
-	
 </page>

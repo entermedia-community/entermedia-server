@@ -1,4 +1,4 @@
 <page>
-	<layout>${themeprefix}/entermedia/layouts/dialoglayout.html</layout>
+	<layout>${themeprefix}/layouts/dialoglayout.html</layout>
 	<inner-layout></inner-layout>
 </page>

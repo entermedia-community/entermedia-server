@@ -4,7 +4,7 @@
 	
   <path-action name="User.getUserManager"/>
   <property name="usermanagerhome">/${applicationid}/settings/usermanager</property>
-  <inner-layout>${themeprefix}/entermedia/layouts/usersecurity.html</inner-layout>
+  <inner-layout>${themeprefix}/layouts/usersecurity.html</inner-layout>
 	<property name="allowpathrequestactions">true</property>
 
 

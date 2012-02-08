@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="metadata" path="/catalogs/public/settings/metadata/index.html" >Metadata</property>
+  <property id="permissions" path="/catalogs/public/settings/metadata/index.html" >Security</property>
+  <property id="lists" path="/reports/downloads/index.html" >Lists</property>
+  <property id="upgrader" path="/catalogs/public/settings/metadata/index.html" >Update Manager</property>
+  <property id="upgrader" path="/catalogs/public/settings/metadata/index.html" >Site Manager</property>
+  
+</properties>

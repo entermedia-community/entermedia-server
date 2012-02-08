@@ -43,14 +43,14 @@
 				#set( $pid = $element.id)
 				<tr>
 				 <td class="rowdraggable metadatadroppable" id="$pid" catalogid=$catalogid" searchtype="asset" assettype="$assettype" view="assettype/${assettype}/$target.id"> 
-				 <img src="$home$themeprefix/entermedia/images/navigation/moveupdown.png" />
+				 <img src="$home$themeprefix/images/navigation/moveupdown.png" />
 				 $!element.text - <b>$pid</b>
 				 </td> 
 				 <td style="padding-left: 10px;">
 				 <form style="float:left;" name="editrow"  method="post" action="removefromview.html?catalogid=$catalogid&searchtype=asset&view=assettype/${assettype}/$target.id">
 				 <input type="hidden" name="toremove"  value="$pid" />
 				 <input type="hidden" name="assettype" value="$assettype"/>
-				 <INPUT TYPE="image"  src="$home$themeprefix/entermedia/images/remove.png" name="remove" value="remove"/>
+				 <INPUT TYPE="image"  src="$home$themeprefix/images/remove.png" name="remove" value="remove"/>
 				 </form>
 				 #if($element.isList())
 				 	<a id="${element.id}editlist" style="display:none;" class="thickbox" href="$home$cataloghome/settings/metadata/list/modifylist.html?catalogid=$element.getListCatalogId()&searchtype=$element.getListId()&iframe=true&width=500&height=400">edit list</a>
@@ -79,7 +79,7 @@
  				#end
 			</select>
 			<a class="thickbox" href="$home$cataloghome/settings/metadata/properties/modifyproperties.html">
-				<img src="${themeprefix}/entermedia/images/navigation/write-note.png" title="create, delete, modify properties">
+				<img src="${themeprefix}/images/navigation/write-note.png" title="create, delete, modify properties">
 			</a>
 		</form>
 		</div>

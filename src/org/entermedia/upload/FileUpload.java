@@ -18,6 +18,7 @@
 package org.entermedia.upload;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -182,7 +183,11 @@ public class FileUpload
 		//upload.setRepositoryPath(repository.pathToFile("admin
 		uploadreader.setSizeMax(-1);
 
-		readParameters(inContext, uploadreader, upload);
+		try {
+			readParameters(inContext, uploadreader, upload, encode);
+		} catch (UnsupportedEncodingException e) {
+			throw new OpenEditException(e);
+		}
 		if( uploadid != null)
 		{
 			expireOldUploads(catalogid);
@@ -214,7 +219,7 @@ public class FileUpload
 		}
 	}
 
-	protected void readParameters(WebPageRequest inContext, ServletFileUpload uploadreader, UploadRequest upload)
+	protected void readParameters(WebPageRequest inContext, ServletFileUpload uploadreader, UploadRequest upload, String encoding) throws UnsupportedEncodingException
 	{
 		List fileItems;
 		FileItemIterator itemIterator;
@@ -269,7 +274,9 @@ public class FileUpload
 
 				if( vals instanceof String)
 				{
+					
 					values = new String[1];
+					
 					values[0] = (String)vals; //the old value?
 				}
 				else if ( vals != null)
@@ -288,8 +295,9 @@ public class FileUpload
 					System.arraycopy(values,0, newvalues,0, values.length);
 					values = newvalues;
 				}
-				//append value
-				values[values.length -1] = tmp.getString();
+				
+				values[values.length -1] = tmp.getString(encoding).trim();
+				
 				arguments.put(tmp.getFieldName(), values);
 			}
 		}

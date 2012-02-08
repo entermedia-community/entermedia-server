@@ -1,0 +1,12 @@
+<page>
+	<path-action name="DataEditModule.loadSearcherForEdit" />
+	<permission name="view">
+			<or>
+			<group name="administrators"/>
+			<or>
+  				<groupproperty name="settingspermission" value="full"/>
+  			</or>
+		</or>
+	</permission>
+	<property name="xmledithome">/${applicationid}/components/xml</property>
+</page>

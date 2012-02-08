@@ -74,25 +74,25 @@
 		<span class="field_title">People</span>
 
 
-		<table class="people_table" id="people_table">
+	<table class="people_table" id="people_table">
 
-			<tr>
-			#set( $owner = ${userManager.getUser($asset.owner)} )
-				<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
-					title="$owner"></td>
-				<td class="user"> #if ($user.id == $asset.owner) (you) #else($owner) #end</td>
-				<td class="userlevel">Is Owner</td>
-			</tr>
 			#foreach($person in $peoples)
 			<tr>
+				#set( $screenname = $userManager.getScreenName($person.getId()) ) 
 				<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
-					title="$person"></td>
-				<td class="user">$person</td>
+					title="$screenname"></td>
+				#if ($person.getId() == $asset.owner)
+				<td class="user"> #if( $context.userName == $person.getId()) (you) #else $screenname #end </td>
+				<td class="userlevel">Is Owner</td>
+				#else
+				<td class="user">$screenname</td>
 				<td class="userlevel"><a href="#" title="Remove User" onclick="removePerson('$person.id');return false;"><img
 						src="$home${themeprefix}/images/gfx/close_icon.png"> </a></td>
+				#end		
 			</tr>
 			#end
 		</table>
+
 
 
 		<div class="add_person_box">

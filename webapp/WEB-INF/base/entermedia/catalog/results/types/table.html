@@ -1,4 +1,4 @@
-$pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
+$pages.include("${themeprefix}/layouts/resultsheader.html", $context)
 <div id="resultscontent_$catalogid">
 	$pages.include("${cataloghome}/results/navigate/navigate.html", $context)
 #set($searcher = $searcherManager.getSearcher(${catalogid}, "asset"))
@@ -19,7 +19,7 @@ $pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
 <a href="$home/${applicationid}/tools/edit/index.html?hitssessionid=$hits.sessionId&catalogid=$catalogid"><img border="0"  align="top" src="$home/system/images/icons/edit_16x16.png"  /> [[Multi Edit]]</a>
 #end
 <a href="$home/system/data/index.html" target="_parent"><img border="0"  align="top" src="$home/system/images/toolbar/data.gif"  /> [[Print]]</a>
-<a href="$home/${applicationid}/tools/exportresults/results.csv?hitssessionid=$hits.sessionId#if( $store )&catalogid=$store.catalogId#end"><img title="Export to CSV" alt="Export to CSV" src="$home${themeprefix}/entermedia/images/icon_download.gif" border="0"> [[Export to CSV]]</a>
+<a href="$home/${applicationid}/tools/exportresults/results.csv?hitssessionid=$hits.sessionId#if( $store )&catalogid=$store.catalogId#end"><img title="Export to CSV" alt="Export to CSV" src="$home${themeprefix}/images/icon_download.gif" border="0"> [[Export to CSV]]</a>
 </div>
 
 <table class="emdarktable striped" cellspacing="0" cellpadding="0" width="100%">

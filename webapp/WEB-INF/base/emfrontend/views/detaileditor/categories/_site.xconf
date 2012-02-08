@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<page>
-	<inner-layout>${themeprefix}/layout/assetcategories.html</inner-layout>
-	<property name="subtab">assetcategories</property>  	 
-	<property name="virtual">true</property> 
-
-</page>

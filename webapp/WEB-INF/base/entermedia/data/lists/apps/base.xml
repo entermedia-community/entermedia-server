@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="medialab" path="/catalogs/public/settings/metadata/index.html" >Users</property>
+  <property id="enterprisemedialibrary" path="/catalogs/public/settings/metadata/index.html" >EML</property>
+  <property id="emtube" path="/catalogs/public/settings/metadata/index.html" >EmTube</property>
+</properties>

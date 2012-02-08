@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>/${themeprefix}/entermedia/layouts/asseteditor.html</inner-layout>
+	<inner-layout>/${themeprefix}/layouts/asseteditor.html</inner-layout>
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<!-- in case it looks for the $asset variable -->
 	<path-action name="AssetControlModule.loadAssetPermissions"  />

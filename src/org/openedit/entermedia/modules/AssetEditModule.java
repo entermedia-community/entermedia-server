@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Attribute;
+import org.entermedia.attachments.AttachmentManager;
 import org.entermedia.upload.FileUpload;
 import org.entermedia.upload.FileUploadItem;
 import org.entermedia.upload.UploadRequest;
@@ -43,12 +44,10 @@ import org.openedit.xml.ElementData;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.WebServer;
-import com.openedit.comments.CommentArchive;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
 
@@ -58,7 +57,15 @@ public class AssetEditModule extends BaseMediaModule
 	protected WebEventListener fieldWebEventListener;
 	protected static final String CATEGORYID = "categoryid";
 	protected FileUpload fieldFileUpload;
+	public AttachmentManager getAttachmentManager() {
+		return fieldAttachmentManager;
+	}
+	public void setAttachmentManager(AttachmentManager fieldAttachmentManager) {
+		this.fieldAttachmentManager = fieldAttachmentManager;
+	}
+
 	protected AssetImporter fieldAssetAssetImporter;
+	protected AttachmentManager fieldAttachmentManager;
 	
 	private static final Log log = LogFactory.getLog(AssetEditModule.class);
 	
@@ -677,6 +684,8 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			getPageManager().movePage(page, dest);
 		}
+		getAttachmentManager().processAttachments(archive, asset, false);//don't reprocess everything else
+		
 		inReq.putPageValue("asset", asset);
 	}
 	
@@ -900,7 +909,10 @@ public class AssetEditModule extends BaseMediaModule
 		if( asset.get("assettype") == null)
 		{
 			Data type = archive.getDefaultAssetTypeForFile(asset.getName());
-			asset.setProperty("assettype", type.getId());
+			if( type != null)
+			{
+				asset.setProperty("assettype", type.getId());
+			}
 		}
 		
 		output.add(asset);

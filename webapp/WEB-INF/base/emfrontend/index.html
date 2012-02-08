@@ -1,8 +1,4 @@
-#if($hits.size() > 0)
-	#set( $hit = $hits.first() )
-	#set( $asset = $mediaarchive.getAssetBySourcePath($hit.sourcepath) )
-	$context.putPageValue("asset",$asset)
-	$pages.include("$themeprefix/layouts/mediaviewer.html",$context)
-#else
-	Please upload a video.
-#end
+#set( $hit = $hits.first() )
+#set( $asset = $mediaarchive.getAssetBySourcePath($hit.sourcepath) )
+$context.putPageValue("asset",$asset)
+$pages.include("$themeprefix/layouts/mediaviewer.html",$context)

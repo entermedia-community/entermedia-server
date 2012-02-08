@@ -64,7 +64,7 @@
 			</td>
 		</tr>
 	#end
-	#if ($detail.viewType && $detail.viewType == "html")
+	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
 		#if($usedhtml)
 			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
 		#else

@@ -160,7 +160,7 @@ public class OrderManager
 		for (Iterator iterator = items.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
-			ids.append(hit.getId());
+			ids.append(hit.get("assetid"));
 			if( iterator.hasNext() )
 			{
 				ids.append(" ");
@@ -305,11 +305,18 @@ public class OrderManager
 		return order;
 	}
 
-	public void removeItemFromOrder(String inCatId, Order order, Asset inAsset)
+	public void removeItemFromOrder(String inCatId, Order inOrder, Asset inAsset)
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
-		
+		SearchQuery query = itemsearcher.createSearchQuery();
+		query.addMatches("orderid", inOrder.getId());
+		query.addMatches("assetid", inAsset.getId());
+		HitTracker results = itemsearcher.search(query);
+		for (Object result : results) {
+			itemsearcher.delete((Data)result, null);
+		}
 	}
+	
 	public Data addItemToOrder(String inCatId, Order order, Asset inAsset, Map inProps)
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
@@ -536,7 +543,7 @@ public class OrderManager
 				String publishqueueid = orderitemhit.get("publishqueueid");
 				if( publishqueueid == null)
 				{
-					convertcomplete = true;
+					publishcomplete = true;
 				}
 				else
 				{
@@ -623,6 +630,20 @@ public class OrderManager
 			}
 		}
 		return count;
+	}
+	
+	public boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId)
+	{
+		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
+		SearchQuery query = itemsearcher.createSearchQuery();
+		query.addMatches("orderid", inOrder.getId());
+		query.addMatches("assetid", inAssetId);
+		HitTracker results = itemsearcher.search(query);
+		if(results.size() > 0)
+		{
+			return true;
+		}
+		return false;
 	}
 
 }

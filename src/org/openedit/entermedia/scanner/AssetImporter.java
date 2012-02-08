@@ -41,7 +41,41 @@ public class AssetImporter
 	protected Boolean fieldLimitSize;
 	protected AssetUtilities fieldAssetUtilities;
     protected List<UrlMetadataImporter> fieldUrlMetadataImporters;
+    protected boolean fieldUseFolders = false;
+    protected String fieldExcludeFolders;
+    protected String fieldIncludeFiles;
     
+    
+	public String getExcludeFolders()
+	{
+		return fieldExcludeFolders;
+	}
+
+	public void setExcludeFolders(String inExcludeFolders)
+	{
+		fieldExcludeFolders = inExcludeFolders;
+	}
+
+	public String getIncludeFiles()
+	{
+		return fieldIncludeFiles;
+	}
+
+	public void setIncludeFiles(String inIncludeFiles)
+	{
+		fieldIncludeFiles = inIncludeFiles;
+	}
+
+	public boolean isUseFolders()
+	{
+		return fieldUseFolders;
+	}
+
+	public void setUseFolders(boolean inUseFolders)
+	{
+		fieldUseFolders = inUseFolders;
+	}
+
 	public AssetUtilities getAssetUtilities()
 	{
 			return fieldAssetUtilities;
@@ -98,13 +132,55 @@ public class AssetImporter
 						{
 							//look deeper for assets
 							List paths = getPageManager().getChildrenPaths(inInput.getPath());
-							for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+							
+							boolean processchildren = true;
+							if( isUseFolders() )
 							{
-								String path = (String) iterator.next();
-								ContentItem item = getPageManager().getRepository().getStub(path);
-								if( isRecursive() )
+								String foundprimary = null;
+								for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 								{
-									process(item, inUser);
+									String path = (String) iterator.next();
+									ContentItem item = getPageManager().getRepository().getStub(path);
+									if( !item.isFolder() && acceptFile(item))
+									{
+										foundprimary = PathUtilities.extractFileName(path);
+										String soucepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
+
+										asset = inArchive.createAsset(soucepath);
+										asset.setFolder(true);
+										asset.setProperty("datatype", "original");
+										asset.setProperty("owner", inUser.getUserName());
+										asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+										asset.setProperty("assetviews", "1");
+										asset.setProperty("importstatus", "imported");
+										asset.setPrimaryFile(foundprimary);
+										getAssetUtilities().readMetadata(asset, item, inArchive);
+										getAssetUtilities().populateCategory(asset, inInput, inArchive, inUser);
+										//asset = getAssetUtilities().createAssetIfNeeded(item, inArchive, inUser);
+										//set the primary file
+										assets.add(asset);
+										allAssets.add(asset.getId());
+
+										
+										processchildren = false;
+										break;
+									}
+								}
+							}
+							else
+							{
+								processchildren = true;
+							}
+							if( processchildren)
+							{
+								for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+								{
+									String path = (String) iterator.next();
+									ContentItem item = getPageManager().getRepository().getStub(path);
+									if( isRecursive() )
+									{
+										process(item, inUser);
+									}
 								}
 							}
 						}
@@ -117,14 +193,17 @@ public class AssetImporter
 			}
 			public void processFile(ContentItem inContent, User inUser)
 			{
-				Asset asset = getAssetUtilities().createAssetIfNeeded(inContent, inArchive, inUser);
-				if( asset != null)
+				if( !isUseFolders() ) 
 				{
-					assets.add(asset);
-					allAssets.add(asset.getId());
-					if (assets.size() > 100)
+					Asset asset = getAssetUtilities().createAssetIfNeeded(inContent, inArchive, inUser);
+					if( asset != null)
 					{
-						saveAssets(assets, inArchive, inUser);
+						assets.add(asset);
+						allAssets.add(asset.getId());
+						if (assets.size() > 100)
+						{
+							saveAssets(assets, inArchive, inUser);
+						}
 					}
 				}
 			}
@@ -132,8 +211,8 @@ public class AssetImporter
 		};
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);
-		finder.setExcludeFilter("xconf"); //The rest should be filtered by the mount itself
-
+		finder.setExcludeFilter(getExcludeFolders()); //The rest should be filtered by the mount itself
+		finder.setIncludeFileFilter(getIncludeFiles());
 		finder.process(inStartingPoint, inUser);
 
 		// Windows, for instance, has an absolute file system path limit of 256

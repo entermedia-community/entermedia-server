@@ -1096,7 +1096,8 @@ public class DataEditModule extends BaseMediaModule
 		
 		int sindex = file.getElements().indexOf(sourceelement);
 		int dindex = file.getElements().indexOf(destinationelement);
-		file.getElements().remove(sourceelement);
+		file.getElements().remove(sindex);
+		sourceelement.setParent(null);
 		if( dindex > sindex)
 		{
 			dindex--;
@@ -1104,6 +1105,12 @@ public class DataEditModule extends BaseMediaModule
 		file.getElements().add(dindex,sourceelement);
 		getXmlArchive().saveXml(file, inReq.getUser());
 	}
-
+	
+	public SearcherManager loadSearcherManager(WebPageRequest inReq)
+	{
+		SearcherManager searcherManager = getSearcherManager();
+		inReq.putPageValue("searcherManager",searcherManager );
+		return searcherManager;
+	}
 	
 }

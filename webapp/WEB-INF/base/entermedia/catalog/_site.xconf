@@ -24,7 +24,7 @@
   <property name="tree-name">catalogTree</property>
   
   <property name="catalogTreeroot">index</property>
-  <property name="iconhome">${themeprefix}/entermedia/images/tree/</property>
+  <property name="iconhome">${themeprefix}/images/tree/</property>
   <property name="hitsname">hits</property>
   <property name="defaultresultsview">table</property>
   <property name="usefilters">true</property>

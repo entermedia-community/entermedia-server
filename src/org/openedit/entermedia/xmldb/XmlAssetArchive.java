@@ -192,6 +192,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		else
 		{
 			asset = getXmlUtil().getXml(assetPage.getInputStream(), "UTF-8");
+			if(asset.getName().equals("page")){
+				asset = asset.element("product");
+				
+			}
 		}
 
 		if (asset == null)

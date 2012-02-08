@@ -2,6 +2,6 @@
 <page>
 	<path-action name="MediaArchiveModule.uploadAsset"/>
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
-	<inner-layout >${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+	<inner-layout >${themeprefix}/layouts/dialoglayout.html</inner-layout>
 	
 </page>

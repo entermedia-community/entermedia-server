@@ -1396,5 +1396,44 @@ public class UserManagerModule extends BaseModule
 		getUserManager().saveUser(inReq.getUser());
 	}
 
-	
+	public void saveLegacyPermissions( WebPageRequest inReq )
+			throws UserManagerException, OpenEditException
+	{
+		checkAdminPermission(inReq);
+
+		String[] savePermissions = inReq.getRequestParameters( "savePermissions" );
+		String[] permissions = savePermissions;
+
+		Set permissionsToRetain = new HashSet();
+		if (permissions != null)
+		{
+			for ( int i = 0; i < permissions.length; i++ )
+			{
+				permissionsToRetain.add( permissions[i] );
+			}
+		}
+
+		for ( Iterator iter = getUserManager().getPermissions().iterator(); iter.hasNext(); )
+		{
+			Group group = getGroup( inReq );
+			com.openedit.users.Permission element = (com.openedit.users.Permission) iter.next();
+			boolean dirty = false;
+			if (!permissionsToRetain.contains( element.getName() )
+					&& group.hasPermission( element.getName() ))
+			{
+				group.removePermission( element.getName() );
+				dirty = true;
+			}
+			else if (permissionsToRetain.contains( element.getName() )
+					&& !group.hasPermission( element.getName() ))
+			{
+				group.addPermission( element.getName() );
+				dirty = true;
+			}
+			if ( dirty)
+			{
+				getUserManager().saveGroup(group);
+			}
+		}
+	}
 }

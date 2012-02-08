@@ -8,6 +8,7 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +43,36 @@ public class Asset implements Data
 	protected int fieldOrdering = -1; // the order that these asset should
 	protected boolean fieldIsFolder;
 
+	public Collection getValues(String inPreference)
+	{
+		String val = get(inPreference);
+		
+		if (val == null)
+			return null;
+		
+		String[] vals = val.split("\\s+");
+
+		Collection collection = Arrays.asList(vals);
+		//if null check parent
+		return collection;
+	}
+	
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		StringBuffer values = new StringBuffer();
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			values.append(detail);
+			if( iterator.hasNext())
+			{
+				values.append(" ");
+			}
+		}
+		setProperty(inKey,values.toString());
+	}
+	
+	
 	public boolean isFolder()
 	{
 		return fieldIsFolder;

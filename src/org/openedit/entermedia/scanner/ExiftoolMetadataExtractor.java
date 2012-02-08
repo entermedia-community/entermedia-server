@@ -237,7 +237,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		ConvertInstructions ins = getExifToolThumbCreator().createInstructions(def, inArchive, "jpg", inAsset.getSourcePath());
 		String path = ins.getOutputPath();
 		Page thumb = inArchive.getPageManager().getPage(path);
-		if( !thumb.exists() )
+		if( !thumb.exists() || thumb.length() == 0 )
 		{
 			ConvertResult res = getExifToolThumbCreator().convert(inArchive, inAsset, thumb, ins);
 			if( res.isOk())

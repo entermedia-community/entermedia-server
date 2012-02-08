@@ -1,0 +1,24 @@
+#set($rootcategory = $mediaarchive.getCategoryArchive().getRootCategory())
+#set($children = $rootcategory.children)
+
+#macro(showtree $categories)	
+		#foreach($cat in $categories)
+		#set( $leaf = $cat.hasChildren())
+		#set( $open = $cat.hasChildren())
+		#set( $checked = $asset.isInCategory($cat))
+		<li id="$cat.id" class="#if( $leaf ) jstree-leaf #end #if( $open )   #end #if( $checked ) jstree-checked #end " ><a href="$cat.id"> $cat.name</a>
+		#if(!$leaf)
+		   <ul>
+			  #showtree($cat.children)
+		   </ul>
+		#end
+		</li>
+		#end
+#end		
+<ul  class="ltr">
+	<li id="$rootcategory.id" class="jstree-open" ><a href="$rootcategory.id">$rootcategory.name</a>
+		<ul>
+			#showtree($children)
+		</ul>
+	</li>
+</ul>

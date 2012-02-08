@@ -107,7 +107,7 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 			process.setRootPath("/WEB-INF/logs/"+getFolderName()+"/");
 			process.process();
 			writer.optimize();
-			flushRecentChanges(true);
+			//flushRecentChanges(true);
 		}
 		catch (Exception ex) 
 		{

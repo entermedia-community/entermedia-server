@@ -1,0 +1,15 @@
+#set( $rootpath = "${apphome}/components/categorize")
+
+<div id="assetdetailscategorylist$asset.id">
+
+<div id="emcategorypicker" >
+<div id="empickerbody">
+	<form class="ajaxform" targetdiv="assetdetailscategorylist$asset.id" name="pickeritems" action="$home$rootpath/save.html">
+		$pages.include("$rootpath/jstree/tree.html" )
+		<input type="hidden" name="save" value="true" />
+		<input type="hidden" name="assetid" value="$asset.id" />
+		<input type="submit" value="Save" /> <a class="ajax" targetdiv="assetdetailscategorylist$asset.id" href="$home$rootpath/index.html?assetid=$asset.id" >cancel</a>
+	</form>	
+</div>
+</div>
+</div>

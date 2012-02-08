@@ -1,6 +1,6 @@
 <properties>
 	<property id="id" index="true" stored="true">Destination ID</property>
-	<property id="name" editable="true" index="true" stored="true">Name</property>
+	<property id="name" editable="true" index="true" stored="true">Destination</property>
 	
 	<property id="publishtype"  index="true" stored="true" editable="true" viewtype="list" type="list">Publish Type</property>
 	<property id="notifyadmin" index="true" stored="true" editable="true" type="boolean" >Notify Administator</property>
@@ -19,7 +19,7 @@
 
 
 	<property id="username" listid="publishtypes" index="true" stored="true" editable="true">User Name</property>
-	<property id="convertpreset" index="true" stored="true" editable="true" type="list" >Default Preset</property>
+	<property id="convertpreset" index="true" stored="true" editable="true" type="list" >Default Profile</property>
 	
 	<property id="company" index="true" stored="true" editable="true" >Company Name</property>
 	<property id="division" index="true" stored="true" editable="true" >Division</property>

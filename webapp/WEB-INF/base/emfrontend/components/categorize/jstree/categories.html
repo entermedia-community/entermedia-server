@@ -1,0 +1,14 @@
+	<p style="clear:both; padding-top:1.385em;">By setting <code>async : true</code> we are telling jsTree to request its data from the server everytime a closed node is opened (unless of course it is already loaded). If you want to modify the data sent to the server with each request take a look at the <a href="../documentation.html#callback.beforedata">beforedata callback</a>.</p>
+	<script type="text/javascript" class="source">
+	$(function () { 
+		$("#async_html_2").tree({
+			data : { 
+				async : true,
+				opts : {
+					url : "categories_data.html"
+				}
+			}
+		});
+	});
+	</script>
+	<div class="demo" id="async_html_2"></div>

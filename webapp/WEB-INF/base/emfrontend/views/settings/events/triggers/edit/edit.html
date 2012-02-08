@@ -1,0 +1,51 @@
+<div class="ui-widget" style="overflow: hidden;">
+<div class="ui-widget-header">Properties</div>
+<div  class="ui-widget-content" > 
+ 
+<form action="save.html">
+<input type="hidden" name="eventpath" value="$pathevent.getPage().getPath()"/>
+<table cellpadding="5">
+<tr><td>Name:</td><td><input size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
+<tr><td>Period:</td><td><input size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
+<tr><td>Delay:</td><td><input size="4" name="delay" value="$!pathevent.getFormattedDelay()"/></td></tr>
+<tr><td>Enabled:</td><td><input name="enabled"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/></td></tr>
+<tr><td></td>
+<td>
+
+
+</td></tr>
+</table>
+<ul class="embuttons">
+<li>
+	<input type="submit" value="[[Save]]"/>
+</li>
+</ul>
+
+</form>
+
+</div>
+</div>
+
+#if( $pathevent.isRunning() )<b>[[event is running]]<b>#end
+
+<br>
+
+<hr>
+<p>	<b>Run Path: </b> 
+ $pathevent.getPage().getPath()
+</p>
+<ul class="embuttons">
+<li>
+	<a class="thickbox" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()"><span>[[Run Now]]</span></a>
+</li>
+</ul>
+
+
+<b>$!pathevent.getFormattedLastRun()
+#if( $pathevent.getLastRunTime() > 0 )
+[[Ran in]] $pathevent.getLastRunTime() [[seconds.]]<br>
+#end 
+</b>
+<div style="padding: 10px; max-width: 600px;">
+$!pathevent.getLastOutputHtml()
+</div>

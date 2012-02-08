@@ -1,4 +1,6 @@
 <page>
-	<inner-layout>/${applicationid}/views/settings/metadata/innerlayout.html</inner-layout>
-<property name="tab">metadata</property>
+	<inner-layout>/${applicationid}/views/settings/metadata/settingsmetadatalayout.html</inner-layout>
+	
+	<property name="tab">metadata</property>
+	
 </page>

@@ -14,6 +14,7 @@ import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.orders.Order;
 import org.openedit.entermedia.orders.OrderHistory;
@@ -356,6 +357,26 @@ public class OrderModule extends BaseMediaModule
 		}
 	}
 	
+	public Data toggleItemInOrderBasket(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Order basket = loadOrderBasket(inReq);
+		String assetid = inReq.getRequestParameter("assetid");
+		
+		Asset asset = archive.getAsset(assetid);
+		
+		boolean inorder = getOrderManager().isAssetInOrder(archive.getCatalogId(), basket, asset.getId());
+		if(inorder)
+		{
+			getOrderManager().removeItemFromOrder(archive.getCatalogId(), basket, asset);
+		}
+		else
+		{
+			addItemToOrderBasket(inReq);
+		}
+		return basket;
+	}
+	
 	public Data addItemToOrderBasket(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -434,11 +455,11 @@ public class OrderModule extends BaseMediaModule
 		return basket;
 	}
 	
-	public void loadAssets(WebPageRequest inReq)
+	public HitTracker loadAssets(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
 		Order order = loadOrder(inReq);
-		getOrderManager().findAssets(inReq, catalogid, order);
+		return getOrderManager().findAssets(inReq, catalogid, order);
 	}
 
 	public void createConversionAndPublishRequest(WebPageRequest inReq)
@@ -607,6 +628,53 @@ public class OrderModule extends BaseMediaModule
 		{
 			getOrderManager().updatePendingOrders(archive);
 		}
+	}
+	
+	
+	public void clearOrderItems(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker items = findOrderItems(inReq);
+		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
+			Data item = (Data) iterator.next();
+			searcher.delete(item, inReq.getUser());
+		}
+		
+		
+	}
+	
+	public Data createMultiEditData(WebPageRequest inReq) throws Exception
+	{
+		Order order = loadOrder(inReq);
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker hits = getOrderManager().findAssets(inReq, archive.getCatalogId(), order);
+		CompositeAsset composite = new CompositeAsset();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data target = (Data) iterator.next();
+			Asset p = null;
+			if( target instanceof Asset)
+			{
+				p = (Asset)target;
+			}
+			else
+			{
+				String sourcepath = target.getSourcePath();
+				p = archive.getAssetBySourcePath(sourcepath);
+			}
+			if( p != null)
+			{
+				composite.addData(p);
+			}
+		}
+		composite.setId("multiedit:"+hits.getHitsName());
+		//set request param?
+		inReq.setRequestParameter("assetid",composite.getId());
+		inReq.putPageValue("data", composite);
+		inReq.putPageValue("asset", composite);
+		inReq.putSessionValue(composite.getId(), composite);
+		
+		return composite;
 	}
 	
 }

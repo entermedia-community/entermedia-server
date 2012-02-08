@@ -1,0 +1,4 @@
+<page>
+
+	<inner-layout>/${catalogid}/components/attachments/browselayout.html</inner-layout>
+</page>
