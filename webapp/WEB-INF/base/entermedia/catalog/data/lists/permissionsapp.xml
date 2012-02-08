@@ -46,6 +46,8 @@
 	<permission id="converthistory" name="Convert History" description="Show Convert History"/>
 
 	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
+
+	<permission id="sharetosocialmedia" name="Share To Social Media" description="Share to sites such as Facebook"/>
 	
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
