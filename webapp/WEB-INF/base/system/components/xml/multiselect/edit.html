@@ -1,3 +1,7 @@
+
+#if(!$searchtype)
+  #set($searchtype = $detail.id)
+#end
 <div id="allnone">
 (<a href="javascript:oecheckall('${searchtype}',true)">#text("all")</a> <a href="javascript:oecheckall('${searchtype}',false)">[[none]]</a>)
 </div>

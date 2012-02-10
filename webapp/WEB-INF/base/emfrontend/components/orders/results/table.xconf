@@ -1,0 +1,6 @@
+<page>
+<path-action name="DataEditModule.search">
+<property name="hitsname">orders</property>
+</path-action>
+
+</page>

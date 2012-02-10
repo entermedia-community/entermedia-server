@@ -1,9 +1,10 @@
 <properties>
-	<property id="id" index="true" stored="true">Order Id</property>
-	<property id="ordertype"  editable="true" index="true" stored="true" type="list" listid="order/ordertype">Order Type</property>
-	<property id="userid" viewtype="user" index="true" stored="true">User Id</property>
+	<property id="ordertype" viewtype="multiselect"  editable="true" index="true" stored="true" type="list" listid="order/ordertype">Order Type</property>
+	<property id="orderstatus" viewtype="multiselect" editable="true"  datatype="list" index="true" stored="true">Order Status</property>
+	<property id="userid" viewtype="user" index="true" stored="true">Owner</property>
+	
+	<!-- <property id="id" index="true" stored="true">Order Id</property>
 	<property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>
-	<property id="orderstatus" editable="true" type="list" listid="orderstatus"  datatype="list" index="true" stored="true">Status</property>
 	<property id="project" editable="true"  datatype="list" listid="order/projects" index="true" stored="true">Project</property>
 	<property id="itemcount" editable="false" stored="true" index="true"  >Item Count</property>
 
@@ -19,7 +20,7 @@
 	<property id="historyuserstatus" stored="true" index="true" type="list" listid="order/userstatus" >Last Status</property>
 	<property id="historyuserid" editable="false" stored="true" index="true" type="list" listid="user" listcatalogid="system">Last User ID</property>
 	<property id="historynote" editable="false" stored="true" index="true">Last Note</property>
-	<property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" >Last Changed</property>
+	<property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" >Last Changed</property> -->
 
 
 </properties>

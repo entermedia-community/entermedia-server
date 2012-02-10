@@ -1,0 +1,86 @@
+#if( $orders.size() > 0 )
+
+#set( $details = $searcherManager.getSearcher($catalogid,"order").getDetailsForView("order/activityresults",$context.getUserProfile() ) )
+#set( $destinationcount = 0)
+<div id="emselectable" >
+<table class="emresultscontent" > 
+<thead id="vd" style="background: blue">
+<tr id="vd" ><th></th>
+
+#foreach( $detail in $details)  
+	
+		#if ($detail.id == "publishdestination")
+			<th>$detail.text</th>
+			<th>Publish Type</th>
+		#else
+			<th>$detail.text</th>
+		#end
+	
+	
+#end
+
+</thead>
+#foreach( $order in $orders ) 
+
+
+#set( $userstatus = false )
+#set( $userstatus = $searcherManager.getData($catalogid,"order/userstatus",$order.historyuserstatus ))
+	#if( $order)
+	<tr rowid="$order.id">
+		<td noclick="true" class="expandorder" href="$home$apphome/views/activity/details/miniitems.html?orderid=$order.id&orderstatus=$userstatus"><img src="$home$themeprefix/images/orders/plus.png"/></td>
+	#foreach( $detail in $details)
+		$!context.putPageValue("detail",$detail) 
+		#if ($detail.id == "publishdestination")
+			#if( $order.ordertype == "email" || $order.ordertype == "download")  
+			  	<td>$order.sharewithemail</td><td>Email</td>
+			 #elseif( $order.ordertype == "upload" || !$order.ordertype)  
+			  <td> AMS</td>	<td></td>
+			#else
+			 	#set( $destination = false )
+				#set( $destination = $searcherManager.getData($catalogid,"publishdestination",$order.publishdestination ))
+				#if (!$destination)
+					#set( $destination = "Visual Data" )
+				#end
+			<td>$!destination</td>
+			<!-- <td>$searcherManager.getData($catalogid,"publishtype",$destination.publishtype )</td> -->
+			<td>$searcherManager.getData($catalogid,"publishtype",$destination.publishtype )</td>
+			#end
+		#elseif( $detail.id == "historyuserstatus" && $userstatus)
+		<td class="statuscolumn"> <span style="color:$userstatus.color;">$!userstatus</span></td>
+		#elseif($detail.id == "historyassetids")
+		 <td> <span>$!order.get("historyassetids")</span></td>
+		#elseif($detail.id == "ordertype")
+		<td>
+			#set( $value = false)
+			#set( $value = $order.get($detail.id) )
+			$!context.putPageValue("val",$value)		
+			$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+			</td>
+		#else
+		<td>		
+			#set( $value = false)
+			#set( $value = $order.get($detail.id) )
+			#if( $value)
+			$!context.putPageValue("val",$value)		
+			$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+			#end
+		</td>
+		#end
+	#end
+	</tr>
+	#end
+#end
+</table>
+<form id="pickorder" name="pickorder" action="#">
+<input name="orderid" id="emselectedrow" type="hidden" />
+</form>
+
+
+#else
+<p>No Activity Found</p>
+#end
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	jQuery('form#pickorder').submit(function(){return false;});
+});
+</script>
