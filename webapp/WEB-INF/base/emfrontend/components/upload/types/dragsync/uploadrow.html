@@ -46,7 +46,7 @@ $context.putPageValue("view","asset/assettype/${defaultassettype.id}/upload")
 			#if( $detail.id == "name" )
 				#set( $value = $name )
 			#elseif( $detail.id == "assettype" )
-				#set( $value = $defaultassettype.id )
+				#set( $value = "$!{defaultassettype.id}" )
 			#elseif( $detail.id == "filesize" )
 				#set( $value = $size )
 			#end

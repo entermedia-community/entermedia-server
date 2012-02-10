@@ -54,13 +54,15 @@
 
 #set( $valueid = "$fieldname" )
 
+
+
 #if($types)
 	#if( $foreignkeyid)
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");
 		</script>
 	#end
-	<select name="${valueid}.value" class="autosubmited" listid="$listid" id="${valueid}.value" onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" >
+	<select name="$!detailprefix${valueid}.value" class="autosubmited" listid="$listid" id="${valueid}.value" onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" >
 	#if ($detail.blankoption != false)
 	<option value=""></option>
 	#end
