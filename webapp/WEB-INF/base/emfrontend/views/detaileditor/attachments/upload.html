@@ -1,4 +1,7 @@
 
+<div id="attach-file" class="user-input-area clearfix">
+
+<h3 class="attachmentsh3">[[Add Attachment or Thumbnail]]</h3>
 
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home$apphome${page.uploadroot}/uploadfile-finish.html" >
 
@@ -13,18 +16,22 @@
 $pages.include("$apphome${page.uploadroot}/uploadfield.html")
 </div>
 
+
+
 <input type="hidden" id="path" name="path" value="$path" size="35" /> 
 <input type="hidden" id="assetid" name="assetid" value="$!asset.id"/>
-<p><h3>[[Add Attachment or Thumbnail]]</h3>
+
 <input class="btn small" style="float: right; margin-top: -43px;" type="button" id="finishbutton" name="Finish" value="Upload" onclick="doUpload('uploadform');">
+
 
 ##This div is important. AJAX replaces it.
 <div id="waiting">
 </div>
-</p>
+
+</div>
 
 #if( $canadvancedupload)
-<p><a href="#" onclick="usedragdrop(); return false;" >Use Advanced Upload</a>(Warning:  Requires Java)</p>
+<p><a class="btn" href="#" onclick="usedragdrop(); return false;" >Use Advanced Upload</a>(Warning:  Requires Java)</p>
 #end
 </div>
 <script type="text/javascript" >
