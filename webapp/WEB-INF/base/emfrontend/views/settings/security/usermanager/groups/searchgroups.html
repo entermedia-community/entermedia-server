@@ -1,3 +1,4 @@
+<div id="groupsearchpanel">
 #set( $datalist = $grouphits)
 
 $context.putPageValue("hits",$datalist)	
@@ -12,3 +13,5 @@ $pages.include("$usermanagerhome/groups/addgroup.html", $context)
 <p>
 <a class="btn" href="#" onclick="jQuery('#groupsearchpanel').load('$home$usermanagerhome/groups/reindex.html');">[[Reload Search Index]]</a>
 </p>
+
+</div>
