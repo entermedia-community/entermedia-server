@@ -46,6 +46,8 @@
 	<permission id="converthistory" name="Convert History" description="Show Convert History"/>
 
 	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
+
+	<permission id="sharetosocialmedia" name="Share To Social Media" description="Share to sites such as Facebook"/>
 	
 	
 	<permission id="viewsearcheditor" name="View Search Editor" description="View search editor in sidebar"/>

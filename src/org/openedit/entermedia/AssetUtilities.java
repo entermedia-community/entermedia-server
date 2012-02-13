@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.openedit.Data;
 import org.openedit.entermedia.scanner.MetaDataReader;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
@@ -91,6 +92,11 @@ public class AssetUtilities
 			asset.setProperty("assetviews", "1");
 			asset.setProperty("importstatus", "imported");
 			//asset.setProperty("primaryfile", name);
+			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
+			if( assettype != null)
+			{
+				asset.setProperty("assettype",assettype.getId());
+			}
 		}
 		if (newasset)
 		{

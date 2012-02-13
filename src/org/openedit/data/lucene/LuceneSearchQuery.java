@@ -462,7 +462,7 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			op = " OR ";
 		}
-		if( getTerms().size() > 0)
+		if( fieldTerms != null && getTerms().size() > 0)
 		{
 			
 			for (int i = 0; i < fieldTerms.size(); i++)
@@ -487,10 +487,6 @@ public class LuceneSearchQuery extends SearchQuery
 		}
 		if( fieldChildren != null && fieldChildren.size() > 0)
 		{
-			if( getTerms().size() > 0 )
-			{
-				
-			}
 			for (int j = 0; j < getChildren().size(); j++)
 			{
 				SearchQuery child = (SearchQuery) getChildren().get(j);
