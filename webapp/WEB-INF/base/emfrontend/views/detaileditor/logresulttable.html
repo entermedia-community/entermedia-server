@@ -1,12 +1,14 @@
-<table style="width: 100%" class="striped">
-	<tr>
-	#foreach( $searchItem in $details)
-	#set( $inputed = "$!loghits.getInput($searchItem.getId())")
-	<th>
-	${searchItem.getText($context)}
-	</th>
-	#end
-	</tr>
+<table style="width: 100%" class="emdata greytxt striped">
+	<thead>
+		<tr class="tableheader">
+			#foreach( $searchItem in $details)
+			#set( $inputed = "$!loghits.getInput($searchItem.getId())")
+			<th>
+			${searchItem.getText($context)}
+			</th>
+			#end
+		</tr>
+	</thead>
 	#foreach ($hit in $loghits.getPageOfHits())
 		<tr>
 		#foreach( $searchItem in $details)
