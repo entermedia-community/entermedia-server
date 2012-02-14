@@ -55,7 +55,7 @@
 	</td>
 	<td>
 	#if($property.isList())
-		<a id="${element.id}editlist"  class="thickbox btn" href="$home$apphome/views/settings/lists/manager/list/index.html?catalogid=$element.getListCatalogId()&searchtype=$element.getListId()&iframe=true&width=500&height=400">edit values</a>
+		<a id="${element.id}editlist"  class="btn" href="$home$apphome/views/settings/lists/manager/list/index.html?catalogid=$property.getListCatalogId()&searchtype=$property.getListId()&iframe=true&width=500&height=400">edit values</a>
 	#else
 		<p>&nbsp;</p> 
 	#end
