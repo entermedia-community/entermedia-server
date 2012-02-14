@@ -304,6 +304,11 @@ public class imagemagickCreator extends BaseImageCreator
 //		com.add("-quality"); 
 //		com.add("90"); I think the default is about 80
 		
+		com.add("-background");
+		com.add("white");
+
+		com.add("-flatten");
+		   		
 		com.add("-strip");
 	
 		if (System.getProperty("os.name").toLowerCase().contains("windows"))
