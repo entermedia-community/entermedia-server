@@ -1,9 +1,9 @@
 <presets>
     <preset id="0"  type="original"  inputtype="all" ordering="00">Original Format</preset>
     <preset id="largeimage" guid="imagepreview" outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="01">Image Large</preset>
-    <preset id="mediumimage" guid="imagemedium" outputfile="image300x300.jpg" fileexportformat="${filename}300x300.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="02">Image Medium</preset>
+    <preset id="mediumimage" guid="imagemedium" outputfile="image640x480.jpg" fileexportformat="${filename}640x480.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="02">Image Medium</preset>
     <preset id="thumbimage" guid="imagethumb" 	outputfile="image200x200.jpg" fileexportformat="${filename}200x200.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="03">Image Thumbnail</preset>
-    <preset id="portraitcrop" guid="imagecrop"  outputfile="image-portraitcropped.jpg" fileexportformat="${filename}portraitcropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="04" >Portrait Crop</preset>
+    <preset id="portraitcrop" guid="imagecrop"  outputfile="image-portraitcropped.jpg" fileexportformat="${filename}portraitcropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="04" >Portrait Crop</preset>
     <preset id="largedocument" guid="imagepreview" outputfile="image1024x768.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="05">Document Preview</preset>
 <!--gui= ffmpeg480p or ffmpegpreviewmp4 -->
     <preset id="previewffmpeg" guid="ffmpeg480p" outputfile="video.mp4"  fileexportformat="${filename}proxy.mp4" type="ffmpeg" extension="mp4"  inputtype="video" onimport="true" ordering="06">Video MP4 Preview</preset>

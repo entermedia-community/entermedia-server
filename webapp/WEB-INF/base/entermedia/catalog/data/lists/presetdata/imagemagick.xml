@@ -1,6 +1,6 @@
 <properties>
   <preset id="imagethumb" prefwidth="200" prefheight="200"  watermark="false">Small Thumbnail</preset>
-  <preset id="imagemedium" prefwidth="300" prefheight="300"  watermark="false">Medium</preset>
-  <preset id="imagepreview" prefwidth="800" prefheight="600"  watermark="false">Preview</preset>
+  <preset id="imagemedium" prefwidth="640" prefheight="480"  watermark="false">Medium</preset>
+  <preset id="imagepreview" prefwidth="1024" prefheight="768"  watermark="false">Preview</preset>
   <preset id="imagecrop" crop="true" prefwidth="300" prefheight="400"  watermark="false">Crop</preset>
 </properties>

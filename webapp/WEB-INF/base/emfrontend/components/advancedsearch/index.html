@@ -47,7 +47,7 @@ $context.putPageValue("edit",$edit)
 ##TODO: Pass this view name in
 #set($views = $searcherManager.getList("$catalogid", "assetview"))
 
-#set ($alldetails = $searcher.getPropertyDetails() )
+#set ($alldetails = $searcher.getUserPropertyDetails() )
 
 <form id="searchaddfield" class="ajaxform" targetdiv="advsearchpanel" action="$home$apphome/components/advancedsearch/addfield.html" method="post">
 	<input type="hidden" name="oemaxlevel" value="1"/>
@@ -58,20 +58,15 @@ $context.putPageValue("edit",$edit)
 	
 	<select name="field" onChange="jQuery('#searchaddfield').submit();">
 		<option>Add Field</option>
-			<option value="description">&nbsp;&nbsp;&nbsp;&nbsp;All Fields</option>
 		#foreach( $detail in $alldetails)
 			#set( $internal = false )
 			#set($internal = $detail.get("internalfield") )
-			#if( $internal && $internal == "true" )
-
-			#else
-				#if($detail.isLeaf())
-				<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
-				#else							
-					<optgroup label="$detail.title"/>
-					#foreach($child in $detail)
-					<option value="$child.id">&nbsp;&nbsp;&nbsp;&nbsp;$child.getText($context)</option>
-					#end
+			#if($detail.isLeaf())
+			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
+			#else							
+				<optgroup label="$detail.title"/>
+				#foreach($child in $detail)
+				<option value="$child.id">&nbsp;&nbsp;&nbsp;&nbsp;$child.getText($context)</option>
 				#end
 			#end
 		#end	

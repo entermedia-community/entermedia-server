@@ -28,7 +28,7 @@ No Hot Folders defined
 					<b>$mount.getExternalPath()</b>
 		</td>
 		<td><div id="action$velocityCount" style="float: right;"><a class="btn"  href="$home$apphome/views/settings/hotfolders/edit.html?mountid=$mount.getPath()">[[Edit]]</a>
-			<a class=" btn red"href="remove.html?mountid=$mount.getPath()" onclick="return confirm('[[Remove this entry?]]');">[[Remove]]</a>	
+			<a class=" btn red"href="$home$apphome/views/settings/hotfolders/remove.html?mountid=$mount.getPath()" onclick="return confirm('[[Remove this entry?]]');">[[Remove]]</a>	
 			</div>
 		</td>
 	</tr>
@@ -36,7 +36,7 @@ No Hot Folders defined
 </table>
 #end
 
-<a class="btn" href="reload.html">[[Reload Mounts]]</a>
+<a class="btn" href="$home$apphome/views/settings/hotfolders/reload.html">[[Reload Mounts]]</a>
 <a class="btn"  href="$home$apphome/views/settings/events/triggers/index.html?type=importing" >[[Import Schedule]]</a>
 
 <a class="btn" style="float: right;" href="$home$apphome/views/settings/hotfolders/addnew.html">[[Add]]</a>

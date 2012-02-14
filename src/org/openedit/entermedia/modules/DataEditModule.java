@@ -148,6 +148,9 @@ public class DataEditModule extends BaseMediaModule
 		String filter = inReq.getRequestParameter("filter");
 		detail.setFilter(Boolean.parseBoolean(filter));
 
+		String internalfield = inReq.getRequestParameter("internalfield");
+		detail.setProperty("internalfield", String.valueOf(Boolean.parseBoolean(internalfield)));
+		
 		String type = inReq.getRequestParameter("datatype");
 		detail.setDataType(type);
 
