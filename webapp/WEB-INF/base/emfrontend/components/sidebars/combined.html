@@ -1,0 +1,13 @@
+
+
+
+			$pages.include("$apphome/components/sidebars/standard.html")
+
+
+			#if ($canviewsearcheditor)
+			$pages.include("$apphome/components/sidebars/savedsearches.html")
+			#end
+
+			#if($hits )
+				$pages.include("$apphome/components/relatedkeywords/index.html")
+			#end

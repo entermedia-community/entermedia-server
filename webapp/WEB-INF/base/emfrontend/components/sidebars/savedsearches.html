@@ -1,0 +1,18 @@
+
+		<div class="ui-widget  uipanel" >
+			<div  class="ui-widget-header">Favorites</div>
+			<div  class="ui-widget-content">
+			$pages.include("$apphome/components/savedqueries/index.html", $context)
+			</div>
+		</div>
+		
+		#if ($canviewrecentsearches)
+		<div class="ui-widget  uipanel" >
+			<div  class="ui-widget-header">Previous Searches</div>
+			<div  class="ui-widget-content">
+			$pages.include("$apphome/components/previoussearches/index.html", $context)
+			</div>
+		</div>
+		#end
+	
+	

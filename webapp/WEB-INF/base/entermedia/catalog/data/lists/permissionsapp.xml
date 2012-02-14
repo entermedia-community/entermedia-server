@@ -49,6 +49,13 @@
 
 	<permission id="sharetosocialmedia" name="Share To Social Media" description="Share to sites such as Facebook"/>
 	
+	
+	<permission id="viewsearcheditor" name="View Search Editor" description="View search editor in sidebar"/>
+	<permission id="viewrecentsearches" name="View Previous Searches" description="View previous search module in sidebar"/>
+	<permission id="savesearch" name="Save Searches" description="Save previous searches"/>
+	<permission id="editsearch" name="Edit Searches" description="Edit previously saved searches"/>
+	<permission id="deletesearch" name="Delete Searches" description="Delete previously saved searches"/>
+	
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
 	<permission id="editassetcategories" name="Edit Categories" description="Edit Asset Categories"/>

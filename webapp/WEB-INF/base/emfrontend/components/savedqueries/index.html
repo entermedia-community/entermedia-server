@@ -11,8 +11,11 @@
 	#set( $selected = false )
 	#if( $current == $hit.id) #set( $selected = true) #end 
 	<li #if( $selected )class="current" #end>
+		#if  ($caneditsearch)
 		<div class="search-edit"><a class="ir" href="$home$apphome/views/search/edit/index.html?queryid=$hit.id" title="Edit">Edit</a></div>
+		#end
 		<a class="search-href" href="$home$apphome/views/search/runsavedquery.html?queryid=$hit.id&searchtype=asset" title="Execute">$hit.getName()</a>
+		#if ($candeletesearch)
 		<div class="search-delete">
 			#if( $selected)
 				<a class="ir" href="$home$apphome/views/search/edit/deletefinish.html?queryid=${hit.id}" title="Delete">Delete</a>
@@ -20,6 +23,7 @@
 				<a class="ir ajax" targetdivinner="saved-searches" href="$home$apphome/components/savedqueries/delete.html?queryid=${hit.id}&oemaxlevel=1" title="Delete">Delete</a>
 			#end
 		</div>
+		#end
 	</li>
 #end    
 </ul>

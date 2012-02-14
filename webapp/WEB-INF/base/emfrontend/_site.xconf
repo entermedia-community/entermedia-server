@@ -183,9 +183,6 @@
 			<user name="${asset.owner}"/>
 		</or>
 	</permission>
-  <permission name="viewattachments">
-    <boolean value="false"/>
-  </permission>
   <permission name="viewmediaedit">
     <boolean value="false"/>
   </permission>
@@ -228,6 +225,26 @@
   <permission name="embedasset">
 		 <boolean value="true"/>
   </permission>
-
-	
+  
+  <permission name="viewsearcheditor">
+    <user />
+  </permission>
+  
+  <permission name="viewrecentsearches">
+    <user />
+  </permission>
+  
+  <permission name="savesearch">
+    <user />
+  </permission>
+  
+  <permission name="editsearch">
+   	<user />
+  </permission>
+  
+  <permission name="deletesearch">
+	<user />
+  </permission>
+  
+  
 </page>

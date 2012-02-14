@@ -43,7 +43,7 @@ public class UploadDiskFileItem extends DiskFileItem
 				{
 					public void write(byte[] bytes, int one, int two) throws IOException
 					{
-						//Put breakpoint here to slow down progress
+						//Put breakpoint here to slow down progress SLOWDOWN
 //						try
 //						{
 //							Thread.sleep(100);
