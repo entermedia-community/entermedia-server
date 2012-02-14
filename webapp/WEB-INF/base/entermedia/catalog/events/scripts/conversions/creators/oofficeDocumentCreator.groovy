@@ -1,26 +1,21 @@
 package conversions.creator;
 
-import java.io.File;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.creator.BaseCreator
+import org.openedit.entermedia.creator.ConvertInstructions
+import org.openedit.entermedia.creator.ConvertResult
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.artofsolving.jodconverter.OfficeDocumentConverter;
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
-import org.artofsolving.jodconverter.office.OfficeManager;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.BaseCreator;
-import org.openedit.entermedia.creator.ConvertInstructions;
-import org.openedit.entermedia.creator.ConvertResult;
-
-import com.openedit.OpenEditException;
-
-import com.openedit.page.Page;
+import com.openedit.OpenEditException
+import com.openedit.page.Page
+import com.openedit.util.ExecResult
+import com.openedit.util.PathUtilities
 
 public class oofficeDocumentCreator extends BaseCreator
 {
 	protected final def formats = ["doc","docx","rtf","ppt","wps","odt","html","xml","csv", "xls", "xlsx"];
-	protected OfficeManager fieldOfficeManager;
 	private static final Log log = LogFactory.getLog(this.class);
 	
 	public boolean canReadIn(MediaArchive inArchive, String inInputType)
@@ -34,35 +29,7 @@ public class oofficeDocumentCreator extends BaseCreator
 		}
 		return false;
 	}
-	protected OfficeManager getOfficeManager()
-	{
-		if (fieldOfficeManager == null)
-		{
-			String path = "/usr/lib/libreoffice";
-			if(new File(path).exists() == false )
-			{
-				path = "/usr/lib/openoffice";
-				if(new File(path).exists() == false )
-				{
-					throw new OpenEditException("Could not find path to open office");
-				}
-			}
-
-			OfficeManager temp = new DefaultOfficeManagerConfiguration()
-		      .setOfficeHome(path)
-//		      .setConnectionProtocol(OfficeConnectionProtocol.PIPE)
-//		      .setPipeNames("office1", "office2")
-		      .setTaskExecutionTimeout(30000L)
-		      .buildOfficeManager();
-
-			//make sure any old sooffice.bin are off
-			temp.start();
-
-			fieldOfficeManager = temp;
-		}
-
-		return fieldOfficeManager;
-	}
+	
 	public synchronized ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOut, ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
@@ -73,12 +40,39 @@ public class oofficeDocumentCreator extends BaseCreator
 		{
 			return result;
 		}
-		OfficeDocumentConverter converter = new OfficeDocumentConverter(getOfficeManager());
-	    
-	    File inputfile = new File(input.getContentItem().getAbsolutePath());
-	    File outfile = new File(inOut.getContentItem().getAbsolutePath());
-	    outfile.getParentFile().mkdirs();
-	    converter.convert(inputfile, outfile);
+
+		List command = new ArrayList();
+		
+		command.add("-headless");
+		command.add("-nologo");
+		//command.add("-invisible");
+		command.add("-norestore");		
+		
+		command.add("-convert-to");		
+		command.add("pdf:writer_pdf_Export");
+
+		command.add("-outdir");
+		String dir = inOut.getDirectory();
+		log.info("{$inOut} turns into ${dir}");
+		dir = getPageManager().getPage(dir).getContentItem().getAbsolutePath();
+		new File( dir ).mkdirs();
+		command.add(dir);
+		
+		command.add(input.getContentItem().getAbsolutePath());
+		
+		ExecResult done = getExec().runExec("soffice",command);
+		
+		result.setOk(done.isRunOk());
+		if( done.isRunOk() )
+		{
+			String newname = PathUtilities.extractPageName(input.getName()) + ".pdf";
+			Page tmpfile = getPageManager().getPage(inOut.getDirectory() + "/" + newname);
+			if( !tmpfile.exists())
+			{
+				throw new OpenEditException("OpenOffice did not create output file " + tmpfile);
+			}
+			getPageManager().movePage(tmpfile, inOut);
+		}
 	    result.setOk(true);
 	    return result;
 	}
