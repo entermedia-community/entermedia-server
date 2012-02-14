@@ -8,7 +8,7 @@
 <div class="ui-widget-header">All Fields</div>
 <div  class="ui-widget-content emselectmenu">
 <h4>Select Field To Edit</h4>
-<select name="proptomodify" onchange="loadPropertyEdit();">
+<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit();">
 		<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
 				<option value="$detail.id" #if($detailid == $detail.id)selected="selected"#end>$detail.text</option>
@@ -33,8 +33,9 @@ $pages.includeContent()
 
 <script type="text/javascript">
 	loadPropertyEdit = function() {
-		var selected = jQuery("select option:selected");
-		var selectedid = selected.val();
+
+		var selectedid = jQuery("#proptomodify").val();
+
 		jQuery("#propertyedit").load("$home$apphome/views/settings/metadata/fields/index.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
 	}
 	
