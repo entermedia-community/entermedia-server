@@ -17,6 +17,7 @@
 	<tr> <td>[[Stored]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Internal Use]]:</td> <td><input name="internalfield" type="checkbox" #if ($property.internalfield == "true") checked #end value="true"/> </td> </tr>
 	
 	
 	<tr> <td>[[View Type]]:</td>
@@ -55,7 +56,7 @@
 	</td>
 	<td>
 	#if($property.isList())
-		<a id="${element.id}editlist"  class="thickbox btn" href="$home$apphome/views/settings/lists/manager/list/index.html?catalogid=$element.getListCatalogId()&searchtype=$element.getListId()&iframe=true&width=500&height=400">edit values</a>
+		<a id="${element.id}editlist"  class="btn" href="$home$apphome/views/settings/lists/manager/list/index.html?catalogid=$property.getListCatalogId()&searchtype=$property.getListId()&iframe=true&width=500&height=400">edit values</a>
 	#else
 		<p>&nbsp;</p> 
 	#end

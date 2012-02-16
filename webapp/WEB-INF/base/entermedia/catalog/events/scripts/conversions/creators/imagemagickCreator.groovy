@@ -82,9 +82,9 @@ public class imagemagickCreator extends BaseImageCreator
 					autorotate = false;
 				}
 			}
-			if( input == null && inStructions.getMaxScaledSize().getWidth() < 800 )
+			if( input == null && inStructions.getMaxScaledSize().getWidth() < 1024 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image800x600.jpg");				
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg");				
 				if( !input.exists() )
 				{
 					input = null;
@@ -196,6 +196,7 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 			
+/** We dont need this any more?
 			//we need to rotate this before we start otherwise the width and heights might be flipped. This is only 5% slower
 			//since we now strip all metadata from resulting images the orientation will be lost
 			if( autorotate )
@@ -219,6 +220,7 @@ public class imagemagickCreator extends BaseImageCreator
 					}
 				}
 			}
+*/			
 			if (!inStructions.isCrop()) 
 			{
 				//end of probably wrong section
@@ -227,17 +229,18 @@ public class imagemagickCreator extends BaseImageCreator
 				String prefix = null;
 				String postfix = null;
 	
+	
 				//We need to flip the width and height if we have a rotated image. This allows us to crop first to speed up the rotation on a smaller image
-				if( inStructions.getRotation() == 90 || inStructions.getRotation() == 270)
-				{
-					prefix =  String.valueOf( inStructions.getMaxScaledSize().height );
-					postfix =  String.valueOf( inStructions.getMaxScaledSize().width );
-				}
-				else
-				{
+//				if( inStructions.getRotation() == 90 || inStructions.getRotation() == 270)
+//				{
+//					prefix =  String.valueOf( inStructions.getMaxScaledSize().height );
+//					postfix =  String.valueOf( inStructions.getMaxScaledSize().width );
+//				}
+//				else
+//				{
 					prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
 					postfix =  String.valueOf( inStructions.getMaxScaledSize().height );				
-				}
+//				}
 				if (isOnWindows())
 				{
 					com.add("\"" + prefix + "x" + postfix + "\"");
@@ -251,11 +254,13 @@ public class imagemagickCreator extends BaseImageCreator
 		
 		//faster to do it after sizing
 		//TODO: Is this needed any more? Seems that ImageMagik will use the orientation flag that is built in
+/** Dont need this
 		if (autorotate && inStructions.getRotation() != 0 && inStructions.getRotation() != 360)
 		{
 			com.add("-rotate");
 			com.add(String.valueOf(360 - inStructions.getRotation()));
 		}
+*/		
 
 		if(inStructions.isCrop())
 		{
@@ -304,6 +309,13 @@ public class imagemagickCreator extends BaseImageCreator
 //		com.add("-quality"); 
 //		com.add("90"); I think the default is about 80
 		
+		if( "pdf".equals(ext) ) 
+		{
+			com.add("-background");
+			com.add("white");
+			com.add("-flatten");
+		}
+		   		
 		com.add("-strip");
 	
 		if (System.getProperty("os.name").toLowerCase().contains("windows"))
