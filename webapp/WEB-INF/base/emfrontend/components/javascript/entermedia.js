@@ -407,7 +407,9 @@ onloadselectors = function()
 		{
 			jQuery(this).addClass("odd");
 		});
-
+	jQuery("#tree div:even").livequery( function(){
+		jQuery(this).addClass("odd");
+	});
 	jQuery('.commentresizer').livequery( function()
 	{	
 		var ta = jQuery(this).find("#commenttext");

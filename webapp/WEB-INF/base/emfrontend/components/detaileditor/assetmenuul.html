@@ -1,4 +1,6 @@
-$pages.include("$apphome/components/results/thumbnails/medium.html")
+<div id="single-thumb">
+	$pages.include("$apphome/components/results/thumbnails/medium.html")
+</div>
 
 #set($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $sourcepath = $asset.sourcePath )
@@ -11,8 +13,10 @@ $pages.include("$apphome/components/results/thumbnails/medium.html")
 
 #set( $tab = $context.findValue("assettab") )
 #set( $links = $searcherManager.getList($catalogid,"detaileditormenu") )
-
-<ul id="assetmenu">
+<div class="ui-widget  uipanel" >
+			<div  class="ui-widget-header">Edit Asset</div>
+			<div  class="ui-widget-content">
+<ul id="assetmenu" class="sidebar-list">
 #foreach( $link in $links)
 	#set( $pname = "can${link.id}")
 	#set( $permission = false)
@@ -38,10 +42,13 @@ $pages.include("$apphome/components/results/thumbnails/medium.html")
 		#end
 		#if( !$asset.id.startsWith("multiedit:") || $inmultiok )			
 			#set ($href = "$apphome/views/detaileditor/${link.folder}/index.html")
-			<li id="detaileditor-${link.id}" class="catalogs_menu_item #if($tab == "$link.id") current #end">
+			<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end">
 				<a href="$home$href?$args" #if($target) target="$target" #end > $context.getText($text)</a>
 		     </li>
 		#end
 	#end 
 #end
 </ul>
+
+</div>
+</div>

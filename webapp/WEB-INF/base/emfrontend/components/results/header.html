@@ -1,41 +1,103 @@
-<table border="0" class="emactionheader">
-<tr>
-<td valign="top" width="100%" >
-<ul class="embuttons">
+
+<div>
+	<ul id="sub-nav" class="search-views">
+		
+		#set ($classname="enabled")
+			<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a></li>
+		##Email and publish should be under share
+		
+			<li><a>Share</a>
+				<ul>
+					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >Email Assets</a></li>
+					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >Publish Assets to Server</a></li>
+				</ul>
+			</li>
+			
+		#if($content.isPropertyTrue("showaddselections"))
+			<li><a class="toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a></li>
+		#end
+		
+		#if ($canmultiedit)
+			<li><a href="#">Multi-Edit</a></li>
+		#end
+		
+		#set( $edit = $context.getRequestParameter("editheader") )
+		#if($edit && $edit == "true"  )
+			<li>
+				<a class="drag-columns-text"><span class="ui-icon ui-icon-info" style="float: left; margin-top: 14px; margin-right: 5px;"></span>
+				[[Drag columns to move them]]</a>
+			</li>
+		#end
+		
+		#set ($resultview = $userprofile.get('resultview'))
+		#if (!$resultview || $resultview == 'table')
+			<li style="float: right;" class="edit-columns">	
+				<div style="position: relative;">
+					#if( $canedittablecolumns )
+					<div id="table-edit-outside">
+						#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img  title="Edit Columns" src="$home$themeprefix/images/navigation/write-note.png" /></a>
+						#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						<div id="column-editor">
+							<div id="column-editor-content">
+								#set ($alldetails = $searcher.getDetailsForView("asset/searchselect", $user))
+								<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
+									<option>Add Column</option>
+									#foreach( $detail in $alldetails) <option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
+									#end
+								</select>
+								<script type="text/javascript">
+									function addColumn(inId) {
+										jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+									}
+								</script>
+							</div>
+						</div>
+						#end
+					</div>
+					#end
+				</div>
+			</li>
+		#end
+		
+			<li style="float: right;">	
+				<a class="ajax" targetdivinner="view-picker-content" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=$searcher.getSearchType()">
+				
+					#if (!$resultview || $resultview == 'table')
+						View Gallery
+					#else
+						View Table
+					#end
+					
+				</a>
+			</li>
+	</ul>
+</div>
+
+<!--
+	
+<div style="margin: 0px 10px 10px 10px;">
+	
 #set ($classname="enabled")
-
-<li >
-	<a  class="btn small" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a>
-</li>
-
+	<a  class="btn" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a>
 ##Email and publish should be under share
-<li  >
-	<a  class="btn small" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >Email</a>
-</li>
+	<a  class="btn" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >Email</a>
 #if($content.isPropertyTrue("showaddselections"))
-<li  >
-	<a class="btn small toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a>
-</li>
+	<a class="btn toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a>
 #end
 #if($content.isPropertyTrue("showremoveselections"))
-
-<li  >
-	<a class="btn small toggleitem  ajax"  targetdiv="basketmenu" href="$home$apphome/components/basket/removeselections.html?hitssessionid=$hits.getSessionId()">Remove</a>
-</li>
+	<a class="btn toggleitem  ajax"  targetdiv="basketmenu" href="$home$apphome/components/basket/removeselections.html?hitssessionid=$hits.getSessionId()">Remove</a>
 #end
-</ul>
+#if ($canmultiedit)
+	<a class="btn" href="#">Multi-Edit</a>
+#end
 		#set( $edit = $context.getRequestParameter("editheader") )
 		#if($edit && $edit == "true"  )
 				<p class="drag-columns-text"><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
 				[[Drag columns to move them]]</p>
 		#end
 
-</td>
 
-<td align="right" width="100%" >
-	<ul class="embuttons">
-		<li>
-			<a style="width: 100px;"class="ajax btn small" targetdiv="emresultscontent" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=$searcher.getSearchType()">
+			<a class="ajax btn right" targetdivinner="view-picker" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=$searcher.getSearchType()">
 			
 				#set ($resultview = $userprofile.get('resultview'))
 				
@@ -45,10 +107,8 @@
 					View Table
 				#end
 			</a>
-		</li>
-	</ul>
-</td>
-<td style="position: relative;">
+			
+<div style="position: relative; float: right;">
 
 #if( $canedittablecolumns )
 	<div id="table-edit-outside">
@@ -80,9 +140,8 @@
 			#end
 	</div>
 #end
-</td>
-	<td >
-		<img id="spinner" style="visibility:hidden;" src="$home$themeprefix/images/spinner.gif"/>
-	</td>
-</tr>
-</table>
+</div>
+<img id="spinner" style="visibility:hidden;" src="$home$themeprefix/images/spinner.gif"/>
+</div>
+
+-->

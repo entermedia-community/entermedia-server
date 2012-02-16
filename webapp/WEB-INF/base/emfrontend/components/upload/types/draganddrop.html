@@ -7,58 +7,84 @@
 #set( $action =	"/$applicationid/views/upload/finish.html" )
 #end
 
+
 <form name="uploadwizard" id="uploadwizard"  method="post" target="_top" action="$home$action" >
 
-<table>
-<tr>
-<td width="240" style="text-align: center;" >
-<div class="em-rounded"  >
-<div class="emsectionheader"  ><h3>[[Drag Files Below]]</h3></div>
-<APPLET code="org.openedit.sync.DropBoxFilePickerApplet"
-	width="190" height="280" MAYSCRIPT
-	archive="$home/system/openedit-upload.jar?v=$context.findValue('appletserial')">
-	<PARAM name="showdialog" value="false"/>
-	<PARAM name="dropimagepath" value="$home$themeprefix/images/dragdropbox.jpg"/>
-	<PARAM name="draglabel" value=""/>
-	<PARAM name="pickerlabel" value="[[Pick Files]]"/>
-	<PARAM name="bgcolor" value="$page.bgcolor"/>
-</APPLET>
+<div class="subcolumns">
+	
+	<div id="right-sidebar" style="padding: 0 20px 0 0">
+		
+		<div class="detailsbox ui-widget">
+			<div class="ui-widget-header">Drag and Drop Below</div>
+			<div class="ui-widget-content emrounded">
+				
+				<APPLET code="org.openedit.sync.DropBoxFilePickerApplet"
+					width="190" height="280" MAYSCRIPT
+					archive="$home/system/openedit-upload.jar?v=$context.findValue('appletserial')">
+					<PARAM name="showdialog" value="false"/>
+					<PARAM name="dropimagepath" value="$home$themeprefix/images/dragdropbox.jpg"/>
+					<PARAM name="draglabel" value=""/>
+					<PARAM name="pickerlabel" value="[[Pick Files]]"/>
+					<PARAM name="bgcolor" value="$page.bgcolor"/>
+				</APPLET>
+				
+			</div>
+		</div>
+		
+	</div>
+	<div id="main-area">
+		
+			
+		<div class="ui-widget uipanel">
+			<div  class="ui-widget-header">Upload Media</div>
+			<div  class="ui-widget-content no-padding">
+			 
+			 <p class="hints" style="text-align: left; padding: 0 20px;" id="drag-and-drop-instructions">
+			 	To upload multiple files, drag and drop from your computer's hard drive to the area on the left.  You can also click on <strong>Pick Files</strong> and then select multiple files by using the <strong>Shift</strong> key on your keyboard while clicking on the files you wish to uplaod.
+			 </p>
+			 
+			 
+				<input type="hidden" name="catalogid" value="$!catalogid"/>
+				<input type="hidden" name="searchtype" value="asset"/>
+				
+				<div id="enabledwithpick" style="display: none;">
+					<a class="btn" href="#" onclick="document.uploadwizard.submit()">Upload</a>		
+					<table id="emfilelist" class="emresultscontent">
+							<!-- <tr id="tableheader">
+								<th class="firstheader" ></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th  class="lastheader" > Asset Type</th>
+							</tr> -->
+							<tbody>
+							</tbody>
+					</table>	
+				</div>
+				
+				<!-- Fields pointing to files go here -->
+				<div id="uploadforminsertionpoint" > </div>
+				<input type="hidden" name="hitsname" value="hits" />
+				<input type="hidden" name="field" value="assettitle" />
+				<input type="hidden" name="field" value="assettype" />
+				<input type="hidden" name="field" value="editstatus" />
+				<input type="hidden" name="field" value="episode" />
+				<input type="hidden" name="field" value="title" />
+			 
+			</div> 
+		</div>
+
+	</div>
 </div>
 
-</td>
-<td style="padding-left: 10px;">
-
-
-
-<input type="hidden" name="catalogid" value="$!catalogid"/>
-<input type="hidden" name="searchtype" value="asset"/>
-
-<div class="enabledwithpick">
-<a class="btn" href="#" onclick="document.uploadwizard.submit()">Upload</a>
-
-
-		<table id="emfilelist" style="width: 700px;" class="emresultscontent">
-				<!-- <tr id="tableheader">
-					<th class="firstheader" ></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th  class="lastheader" > Asset Type</th>
-				</tr> -->
-				<tbody>
-				</tbody>
-		</table>
-
-</div>
-
-<!-- Fields pointing to files go here -->
-<div id="uploadforminsertionpoint" > </div>
-		<input type="hidden" name="hitsname" value="hits" />
-		<input type="hidden" name="field" value="assettitle" />
-		<input type="hidden" name="field" value="assettype" />
-		<input type="hidden" name="field" value="editstatus" />
-		<input type="hidden" name="field" value="episode" />
-		<input type="hidden" name="field" value="title" />
-</td>
-</tr>
-</table>
 </form>
+
+
+
+
+
+
+
+
+
+
+
 
 <script type="text/javascript">
 
@@ -105,7 +131,8 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 			   		idcounter++;
 					jQuery("#emfilelist > tbody:last").append(html);
 					//swfu.startUpload(file.id);
-					jQuery(".enabledwithpick").css("visibility","visible");			   
+					jQuery("#drag-and-drop-instructions").hide();
+					jQuery("#enabledwithpick").show('fast');			   
 			   }
 			 });
 		}

@@ -58,12 +58,11 @@
 		#set( $data = $searcher.searchById($id) )
 		$context.putPageValue("data", $data)
 		$pages.include("/$applicationid/components/xml/detaileditor.html",$context)
+
 		
-		<p align="right">
-		<a class="btn small ajax" targetdiv='${view}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[cancel]]</a>
-		
-		&nbsp;&nbsp; <input  type="submit" value="Save values"/>
-		</p>
+		<a class="btn ajax right" targetdiv='${view}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+		<input class="btn" type="submit" value="Save values"/>
+
 		<input name="field" type="hidden" value="assetid" />
 		<input name="assetid.value" type="hidden" value="$assetid" />
 		<input name="catalogid" type="hidden" value="$!catalogid" />
