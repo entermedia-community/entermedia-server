@@ -21,7 +21,7 @@ public void init()
 			assetsToSave.add(asset);
 			if(assetsToSave.size() == 100)
 			{
-				mediaArchive.saveAssets( assetsToSave );
+				archive.saveAssets( assetsToSave );
 				assetsToSave.clear();
 			}
 		}

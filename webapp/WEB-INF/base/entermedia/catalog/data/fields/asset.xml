@@ -3,19 +3,19 @@
 	<!-- asset details -->
 	<property id="id" index="true" keyword="true" stored="true">Id</property>
 	<property id="name" index="true" stored="true" keyword="true" editable="false">File Name</property>
-	<property id="name_sortable" >File Name</property>
-	<property id="catalogid" viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
+	<property id="name_sortable" internalfield="true" >File Name</property>
+	<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
 	<property id="description">All Fields</property>
-	<property id="sourcepath" index="true" stored="true">Source Path</property>
+	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" editable="true" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	
-	<property id="fulltext" keyword="true">Full Text</property> 	<!-- This is for PDFs -->
-	<property id="assetviews" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
-	<property id="assetviews_sortable" datatype="number" >Views</property>
-	<property id="assetvotes"  datatype="number" index="true" stored="true" >Vote Rank</property>
-	<property id="assetvotes_sortable" datatype="number" >Vote Count</property>
+	<property id="fulltext" internalfield="true" keyword="true">Full Text</property> 	<!-- This is for PDFs -->
+	<property id="assetviews" internalfield="true" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
+	<property id="assetviews_sortable" internalfield="true" datatype="number" >Views</property>
+	<property id="assetvotes" internalfield="true" datatype="number" index="true" stored="true" >Vote Rank</property>
+	<property id="assetvotes_sortable" internalfield="true" datatype="number" >Vote Count</property>
 	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Videos -->
 	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
 	<property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
@@ -30,7 +30,7 @@
 	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text">ISO</property>
 	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="Orientation">Image Rotation</property>
 	<property id="author" externalid="Author" index="true" stored="true" datatype="text">Author</property>
-	<property id="localpath" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
+	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
 	<property id="fileformat" index="true" stored="true" viewtype="list" editable="true" externalid="FileType">File Format</property>
 	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" externalid="FileSize">File Size</property>
 	<property id="colortype" index="true" stored="true" viewtype="list" datatype="list">Color</property>
@@ -41,8 +41,7 @@
 	<property id="recordmodificationdate" index="true" type="date" stored="true" editable="false">Record Date</property> <!--  should be a date -->
 	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
 	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" query="groups:developers">Owner</property>
-	<property id="primaryfile" index="true" stored="true">Primary File Name</property>
-	<property id="cumulusid" index="true" stored="true">Cumulus ID</property>
+	<property id="primaryfile" internalfield="true" index="true" stored="true">Primary File Name</property>
 	
 	<property id="importstatus" index="true" stored="true" datatype="list" listid="asset/importstatus" editable="true">Import Status</property>
 	<property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" listid="asset/previewstatus" datatype="list">Preview Status</property>
@@ -51,10 +50,11 @@
 	<!-- Asset Contains -->
 	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" externalid="By-lineTitle,Title,Headline" >Asset Title</property>
 	
-	<!-- Also known as series -->
+	<!-- Also known as series 
 	<property id="title" index="true" datatype="list" stored="true" editable="true" keyword="true" >Title</property>
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="title"   >Episode</property>
-
+	-->
+	
 	<property id="caption" index="true" stored="true" keyword="true" editable="true" externalid="ImageDescription,Caption/Abstract">Caption</property>
 	<property id="longcaption"  keyword="true" editable="true" viewtype="textarea" >Description</property>
 	<!--  this is built in, Used for related searches property id="keywords" keyword="true" index="true" stored="true" editable="false" >Tags</property --> 
@@ -67,23 +67,24 @@
 	<property id="country" foreignkeyid="region" datatype="list" index="true" stored="true" editable="true" viewtype="list" listchild="state" >Country</property>
 	<property id="state" foreignkeyid="country" datatype="list" index="true" stored="true" editable="true" viewtype="list" >State</property>
 	<property id="royaltyfree" datatype="boolean" index="true" stored="true" editable="true">Royalty Free</property>
-	<property id="publisheds3" datatype="boolean" index="true" stored="true" editable="true">Published S3</property>
+	<property id="publisheds3" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Published S3</property>
 	<property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp" >Language</property>
 	<property id="stocknumber" index="true" keyword="true" editable="true" stored="true">Stock Number</property>
-	<property id="term" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>
-	<property id="jobnotes" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>
 
 	<!-- Approvals -->	
 	<!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->
 	<!-- Geo Location -->
-	<property id="position" type="position" datatype="position" viewtype="map" index="true" stored="true">Position</property>
-
+	<property id="position" internalfield="true" type="position" datatype="position" viewtype="map" index="true" stored="true">Position</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Asset Type</property>
+
+	<!--  Client specific -->
+	<property id="term" internalfield="true" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>
+	<property id="fatwireid"  internalfield="true"  index="true" stored="true">FatWire ID</property>
+	<property id="uploadteam" internalfield="true" index="true"  keyword="true" stored="true" catalogid="system" type="list" listid="group">Upload Team</property>
+	<property id="jobnotes" internalfield="true" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>	
+	<property id="cumulusid" internalfield="true" index="true" stored="true">Cumulus ID</property>
 	
-	<property id="fatwireid" index="true" stored="true">FatWire ID</property>
-	<property id="uploadteam" index="true"  keyword="true" stored="true" catalogid="system" type="list" listid="group">Upload Team</property>
-	
-	<property id="viewasset" filter="true">Readable</property>	
-	<property id="editasset" filter="true">Writable</property>	
+	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
+	<property id="editasset" internalfield="true" filter="true">Writable</property>	
 
 </properties>

@@ -810,6 +810,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		inReq.putSessionValue(tracker.getSessionId(), tracker);
 		inReq.putPageValue(tracker.getHitsName(), tracker);
+		inReq.putPageValue("uploadedassets",tracker); 
 
 		List allids = new ArrayList();
 

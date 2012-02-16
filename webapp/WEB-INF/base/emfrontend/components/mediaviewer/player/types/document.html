@@ -1,5 +1,15 @@
+
+
 <div style="text-align: center;">
-	<img id="pdfpreview" src="$home$cataloghome/downloads/preview/mediumplus/${asset.sourcepath}/preview.jpg" alt="[[Preview Image]]"/>
+
+#set( $link = "$cataloghome/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
+<a class="emdialog" href="$home$link" target="_parent"	
+	title="[[$asset]]">
+
+	<img id="pdfpreview" class="emdropshadow" src="$home$cataloghome/downloads/preview/large/${asset.sourcepath}/preview.jpg" alt="[[Preview Image]]"/>
+
+</a>
+
 </div>
 #set($pdfpages = $numberutils.toInt($asset.pages))
 #if( $pdfpages > 1 )
