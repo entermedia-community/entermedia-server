@@ -50,10 +50,6 @@
 	<!-- Asset Contains -->
 	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" externalid="By-lineTitle,Title,Headline" >Asset Title</property>
 	
-	<!-- Also known as series 
-	<property id="title" index="true" datatype="list" stored="true" editable="true" keyword="true" >Title</property>
-	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="title"   >Episode</property>
-	-->
 	
 	<property id="caption" index="true" stored="true" keyword="true" editable="true" externalid="ImageDescription,Caption/Abstract">Caption</property>
 	<property id="longcaption"  keyword="true" editable="true" viewtype="textarea" >Description</property>
@@ -86,5 +82,11 @@
 	
 	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
 	<property id="editasset" internalfield="true" filter="true">Writable</property>	
+
+	<property id="division" index="true" datatype="list" stored="true" editable="true" keyword="true" >Division</property>
+	<property id="initiative" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="division">Initiative</property>
+	
+	<property id="showtitle" index="true" datatype="list" stored="true" editable="true" keyword="true" >Show Title</property>
+	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>
 
 </properties>

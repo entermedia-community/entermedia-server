@@ -2,5 +2,4 @@
 
 <page>
 	<path-action name="DataEditModule.deleteProperty" />
-	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
 </page>
