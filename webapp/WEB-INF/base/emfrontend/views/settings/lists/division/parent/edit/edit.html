@@ -1,0 +1,60 @@
+#set( $parent = "$content.parenttype")
+#set( $child = "$content.childtype")
+
+
+<div class="ui-widget" >
+<div class="ui-widget-header">$content.parentlabel</div>
+<div  class="ui-widget-content" > 
+
+<div id="editlayout">
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+
+#if( !$view )				
+	#set( $view = "default/edit" )
+#end
+$context.putPageValue("view", $view)
+<form id="dataeditor" name="dataeditor" method="post" action="$home$content.searchhome/edit/save.html" >
+	<input name="save" type="hidden" value="true" />
+	<input name="id" type="hidden" value="$!data.id" />
+	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+	<input name="origURL"  type="hidden" value="$!origURL" />
+	<input name="title.value"  type="hidden" value="$data.id" />
+$pages.include("/system/components/xml/detaileditor.html", $context)
+
+
+<ul class="embuttons">
+<li>
+	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
+</li>
+<li><a href='$home$content.searchhome/index.html'><span>Cancel</span></a></li>
+<li><a href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>
+	<span>
+		Delete
+	</span></a>
+</li>
+
+</ul>
+#if( $savedok)
+<div class="common-success">Saved</div>
+#end
+
+</form>
+
+
+#if( $savedok && $origURL )
+	<a href="$origURL">[[Go Back]]</a>	
+#end
+
+
+</div>
+
+</div>
+</div>
+
+##set( $candelete = $context.getRequestParameter("candelete")) 
+##set( $view = $context.getRequestParameter("view"))
+
+#if( $data.id )
+$pages.include("./children.html", $context)
+#end

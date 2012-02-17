@@ -1,0 +1,7 @@
+<page>
+	<property name="subtab">division</property>	
+	<property name="parenttype">division</property>	
+	<property name="parentlabel">Division</property>	
+	<property name="childtype">initiative</property>	
+	<property name="childlabel">Initiative</property>	
+</page>

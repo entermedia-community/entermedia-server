@@ -1,0 +1,30 @@
+#set($currentsearch = $context.getRequestParameter("searchtype"))
+#set( $action = "$home$content.dataroot/list/index.html" )
+
+#set( $showfields = $context.getRequestParameter("showfields"))
+#if( $showfields )
+<h2>[[Data Search]]</h2>
+
+<form action="$action">
+	<input type="hidden" name="catalogid" value="$catalogid"/>
+	[[Data Type]]: <select name="searchtype" onchange="submit();">
+		#foreach( $type in $searchtypes )
+			#if($type != "CVS")
+				<option id="$type" #if($type == $currentsearch) selected #end>$type</option>
+			#end
+		#end
+	</select>
+</form>
+#else
+<h2>$currentsearch</h2>
+#end
+
+<div id="propertyEditPanel">
+	$pages.streamContent()
+</div>
+
+#if( $showfields )
+
+<a href="$home${content.dataroot}/list/reindex.html?catalogid=$catalogid&searchtype=$currentsearch">Reindex</a>
+
+#end

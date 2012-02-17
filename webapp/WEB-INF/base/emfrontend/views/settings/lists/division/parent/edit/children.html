@@ -1,0 +1,27 @@
+#set( $parent = "$content.parenttype")
+#set( $child = "$content.childtype")
+
+<div class="ui-widget" >
+<div class="ui-widget-header">${content.childlabel}s</div>
+<div  class="ui-widget-content" > 
+
+
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+
+#set( $selectlink = "$apphome/views/settings/lists/production/$parent/edit/edit.html" )
+
+
+#set( $joinsearcher = $searcherManager.getSearcher($catalogid, $child))
+#set( $query = $joinsearcher.createSearchQuery() )
+#set( $null = $query.addExact($parent,$data.id))
+#set( $null = $query.addSortBy("name") )
+
+$context.putPageValue("existingrecords",$joinsearcher.search($query))
+$pages.include("$xmledithome/table.html?searchtype=${child}&fieldexternalid=${parent}&catalogid=$catalogid&fieldexternalvalue=$data.id&view=default/results&selectlink=$selectlink", $context)
+
+
+<ul class="embuttons" style="margin: 20px 0px 60px 20px">
+<li><a href="$home$apphome/views/settings/lists/$parent/child/edit/addnew.html?${parent}.value=$data.id"><span>Add New $content.childlabel</span></a></li>
+</ul>
+
+</div>
