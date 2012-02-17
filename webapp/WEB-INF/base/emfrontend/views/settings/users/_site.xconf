@@ -1,0 +1,7 @@
+<page>
+		<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<property name="subsettinglist">settingsusers</property>
+	
+	<property name="tab">users</property>
+	
+</page>

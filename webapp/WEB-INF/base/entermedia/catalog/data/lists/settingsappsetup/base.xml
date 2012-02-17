@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="rules" icon="lock" path="/views/settings/applicationsetup/rules/index.html" >Asset Rules</property>
+  <property id="apprules" icon="lock" path="/views/settings/applicationsetup/apprules/index.html" >Application Rules</property>
+  <property id="transcoding" icon="write-note" path="/views/settings/applicationsetup/lists/transcoding/index.html" >Conversions</property>
+  <property id="publishing" icon="earth" path="/views/settings/applicationsetup/lists/publishing/index.html" >Publishing</property>
+</properties>

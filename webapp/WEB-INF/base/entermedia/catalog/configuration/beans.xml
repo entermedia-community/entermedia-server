@@ -15,6 +15,9 @@
 	<bean id="asseteditorhistorySearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditormetadataSearcher" bean="xmlFolderSearcher"/>
 	<bean id="assetviewSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingsmenuSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingsappsetupSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingsusersSearcher" bean="xmlFolderSearcher"/>
 
 	<bean id="detaileditormenuSearcher" bean="xmlFolderSearcher"/>
 

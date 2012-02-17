@@ -1,4 +1,6 @@
 
+#set( $tab = $context.findValue("tab") )
+#set ( $listid = "settingsmenu" )
 
 <div class="subcolumns">
           <div class="c25l" id="left-col">
@@ -7,28 +9,12 @@
 				<div  class="ui-widget-header">Settings</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
-						##if ($canmanageusers)
-						<li id="security" class="">
-							<a class="ajax" targetdivinner="right-col" href="$home$apphome/views/settings/security/usermanager/users/index.html?oemaxlevel=3">Security</a>
+						#set( $screens = $searcherManager.getList($catalogid,$listid) )
+						#foreach($screen in $screens)
+						<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
+							<a href="$home$apphome${screen.path}">$screen</a>
 						</li>
-						##end
-						<li id="metadata" class="">
-							<a  class="ajax" targetdivinner="right-col" href="$home$apphome/views/settings/metadata/fields/index.html?oemaxlevel=3">Metadata</a>
-						</li>
-						<li id="hotfolders" class="">
-							<a  class="ajax" targetdivinner="right-col" href="$home$apphome/views/settings/hotfolders/index.html?oemaxlevel=1">Hot Folders</a>
-						</li>
-						<li id="lists" class="">
-							<a class="ajax" targetdivinner="right-col" href="$home$apphome/views/settings/lists/transcoding/index.html?oemaxlevel=3">Lists</a>
-						</li>
-						<li id="events" class="">
-							<a class="ajax" targetdivinner="right-col" href="$home$apphome/views/settings/events/ps/index.html?oemaxlevel=2">Events</a>
-						</li>
-						<!-- 
-						<li id="triggers" class="ui-state-default ui-corner-top">
-							<a href="$home$apphome/views/settings/events/index.html">Analytics</a>
-						</li>
-						 -->
+						#end
 					</ul>
 				</div>
 			</div>

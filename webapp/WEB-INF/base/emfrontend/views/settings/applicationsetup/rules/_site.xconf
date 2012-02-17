@@ -6,5 +6,5 @@
   <property name="permissionrootpath">/${applicationid}/views/settings/security/rules/xml</property>
   <property name="editPath">/${catalogid}/assets</property>
   <property name="subtab">rules</property>
-    
+
 </page>

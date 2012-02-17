@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="setup" path="/views/settings/applicationsetup/apprules/index.html">Application Setup</property>
+  <property id="users" path="/views/settings/users/usermanager/users/index.html">Users</property>
+  <property id="metadata" path="/views/settings/metadata/fields/index.html">Metadata</property>
+  <property id="events" path="/views/settings/events/ps/index.html">Events</property>
+  <!--
+  <property id="lists" path="/views/settings/events/ps/index.html">Events</property>
+  <property id="analytics" path="#">Analytics</property>
+  -->
+</properties>

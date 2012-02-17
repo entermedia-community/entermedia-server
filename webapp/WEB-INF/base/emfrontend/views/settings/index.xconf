@@ -1,0 +1,4 @@
+<page>
+	<property name="tab">events</property>
+	<property name="subsettingslist">settingsmenu</property>
+</page>

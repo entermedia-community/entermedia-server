@@ -1,8 +1,0 @@
-<page>
-
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
-	<property name="subsettinglist">settingssecurity</property>
-	
-	<property name="tab">security</property>
-	
-</page>

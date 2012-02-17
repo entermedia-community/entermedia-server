@@ -2,7 +2,7 @@
 
 <page>
 	
-	<property name="usermanagerhome">/${applicationid}/views/settings/security/usermanager</property>
+	<property name="usermanagerhome">/${applicationid}/views/settings/users/usermanager</property>
 	
   	<path-action name="User.getUserManager"/>
 
