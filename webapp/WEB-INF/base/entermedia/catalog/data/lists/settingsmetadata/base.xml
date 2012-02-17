@@ -5,5 +5,6 @@
   <property id="fields" icon="write-note" path="/views/settings/metadata/fields/index.html" >Fields</property>
   <property id="assettypes" icon="video-film" path="/views/settings/metadata/assettypes/index.html" >Asset Types</property>
   <property id="views" icon="tool" path="/views/settings/metadata/views/index.html" >Views</property>
+  <property id="division" icon="video-camera" path="/views/settings/lists/division/parent/index.html" >Divisions</property>
 
 </properties>

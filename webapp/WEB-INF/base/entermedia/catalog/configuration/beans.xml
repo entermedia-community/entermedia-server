@@ -9,7 +9,6 @@
 
 	<bean id="settingssecuritySearcher" bean="xmlFolderSearcher"/>
 	<bean id="settingsmetadataSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingslistsSearcher" bean="xmlFolderSearcher"/>
 	<bean id="settingseventsSearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditorSearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditorhistorySearcher" bean="xmlFolderSearcher"/>
