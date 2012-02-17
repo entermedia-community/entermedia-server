@@ -56,7 +56,11 @@
 	</td>
 	<td>
 	#if($property.isList())
-		<a id="${element.id}editlist"  class="btn" href="$home$apphome/views/settings/lists/manager/list/index.html?catalogid=$property.getListCatalogId()&searchtype=$property.getListId()&iframe=true&width=500&height=400">edit values</a>
+		#if( $pages.doesExist("$apphome/views/settings/lists/$property.id/parent/index.html") )
+			<a id="${element.id}editlist"  class="btn" href="$home$apphome/views/settings/lists/$property.id/parent/index.html">edit values</a>
+		#else
+			<a id="${element.id}editlist"  class="btn" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$property.getListCatalogId()&searchtype=$property.getListId()&iframe=true&width=500&height=400">edit values</a>
+		#end
 	#else
 		<p>&nbsp;</p> 
 	#end
