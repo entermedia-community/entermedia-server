@@ -272,6 +272,15 @@ public class imagemagickCreator extends BaseImageCreator
 			resizestring.append(inStructions.getMaxScaledSize().height);
 			resizestring.append("^");
 			com.add(resizestring.toString());
+
+
+			if( "pdf".equals(ext) ) 
+			{
+				com.add("-background");
+				com.add("white");
+				com.add("-flatten");
+			}
+			   		
 			//now let's crop
 			com.add("+repage");
 			String gravity = inStructions.getProperty("gravity");
@@ -300,7 +309,12 @@ public class imagemagickCreator extends BaseImageCreator
 				cropString.append(y1);
 			}
 			com.add(cropString.toString());
-			
+		}
+		else if( "pdf".equals(ext) ) 
+		{
+			com.add("-background");
+			com.add("white");
+			com.add("-flatten");
 		}
 		
 		com.add("-colorspace");
@@ -309,13 +323,6 @@ public class imagemagickCreator extends BaseImageCreator
 //		com.add("-quality"); 
 //		com.add("90"); I think the default is about 80
 		
-		if( "pdf".equals(ext) ) 
-		{
-			com.add("-background");
-			com.add("white");
-			com.add("-flatten");
-		}
-		   		
 		com.add("-strip");
 	
 		if (System.getProperty("os.name").toLowerCase().contains("windows"))
