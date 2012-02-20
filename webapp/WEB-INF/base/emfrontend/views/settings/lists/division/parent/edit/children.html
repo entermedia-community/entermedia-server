@@ -20,8 +20,7 @@ $context.putPageValue("existingrecords",$joinsearcher.search($query))
 $pages.include("$xmledithome/table.html?searchtype=${child}&fieldexternalid=${parent}&catalogid=$catalogid&fieldexternalvalue=$data.id&view=default/results&selectlink=$selectlink", $context)
 
 
-<ul class="embuttons" style="margin: 20px 0px 60px 20px">
-<li><a href="$home$apphome/views/settings/lists/$parent/child/edit/addnew.html?${parent}.value=$data.id"><span>Add New $content.childlabel</span></a></li>
-</ul>
+<a class="btn" href="$home$apphome/views/settings/lists/$parent/child/edit/addnew.html?${parent}.value=$data.id"><span>Add New $content.childlabel</span></a>
+
 
 </div>

@@ -23,18 +23,10 @@ $context.putPageValue("view", $view)
 $pages.include("/system/components/xml/detaileditor.html", $context)
 
 
-<ul class="embuttons">
-<li>
-	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
-</li>
-<li><a href='$home$content.searchhome/index.html'><span>Cancel</span></a></li>
-<li><a href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>
-	<span>
-		Delete
-	</span></a>
-</li>
+	<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
+<a class="btn"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
+<a class="btn" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>Delete</a>
 
-</ul>
 #if( $savedok)
 <div class="common-success">Saved</div>
 #end

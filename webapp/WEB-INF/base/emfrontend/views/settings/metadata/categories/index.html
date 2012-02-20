@@ -1,0 +1,75 @@
+
+<div class="ui-widget" >
+	<div  class="ui-widget-header">Categories</div>
+	<div  class="ui-widget-content categories-widget no-padding-for-real">
+		<div id="attachments-container">
+			<div id="tree" class="attachments">
+				<ul class="open">
+					<li><div><span class="name add">New Top Level Category</span></div></li>
+					<li><div><span class="arrow down"></span><span class="name folder">bus.jpg</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
+						<ul class="open">
+							<li><div><span class="name folder">Empty Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+							<li><div><span class="arrow"></span><span class="name folder">Folder 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
+								<ul>
+									<li><div><span class="arrow"></span><span class="name folder">Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
+										<ul>
+											<li><div><span class="arrow"></span><span class="name folder">Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
+												<ul>
+													<li><div><span class="arrow"></span><span class="name folder">Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+													<li><div><span class="name png">PNG 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+													<li><div><span class="name jpg">JPG 1 </span><span class="date-uploaded">(12/24/2011 12:24:01)</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+													<li><div><span class="name pdf">PDF 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+													<li><div><span class="name pdf">PDF 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+												</ul>
+											</li>
+											<li><div><span class="name png">PNG 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+											<li><div><span class="name jpg">JPG 1 </span><span class="date-uploaded">(12/24/2011 12:24:01)</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+											<li><div><span class="name pdf">PDF 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+											<li><div><span class="name pdf">PDF 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+										</ul>
+									</li>
+									<li><div><span class="name png">PNG 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+									<li><div><span class="name jpg">JPG 1 </span><span class="date-uploaded">(12/24/2011 12:24:01)</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+									<li><div><span class="name pdf">PDF 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+									<li><div><span class="name pdf">PDF 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+								</ul>
+							</li>
+							<li><div><span class="name folder">Folder 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+							<li><div><span class="name folder">Folder 3</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+							<li><div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" /><a class="btn">Save</a><a class="btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	$('#tree ul li div').click( function(){
+		
+		$(this).parent().find('> ul').toggle('fast');
+		
+		if ( $(this).find('.arrow').hasClass('down') )
+			$(this).find('.arrow').removeClass('down');
+		else 
+			$(this).find('.arrow').addClass('down');
+			
+		
+	});
+	
+	$('#tree .field').focusin( function(){
+		if ($(this).val() == this.defaultValue ) { 
+			$(this).val(''); 
+		}
+			
+	});
+	$('#tree .field').focusout( function(){
+		if ($(this).val() == "") { 
+			$(this).val(this.defaultValue); 
+		}
+	});
+	
+	
+</script>

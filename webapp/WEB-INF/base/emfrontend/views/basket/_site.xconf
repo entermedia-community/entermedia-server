@@ -4,4 +4,5 @@
 	<property name="showaddselections">false</property>
   	<property name="showremoveselections">true</property>
   	<property name="section">basket</property>
+  	<inner-layout>/${themeprefix}/layouts/searchlayout.html</inner-layout>
 </page>
