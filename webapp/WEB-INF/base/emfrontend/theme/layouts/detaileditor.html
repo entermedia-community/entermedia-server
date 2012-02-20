@@ -17,7 +17,6 @@
          </div>
          <div id="right-col">	
 
-			$pages.include("$apphome/components/detaileditor/navigate.html")
 				#set( $inpreviewpage = false )
 				#if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
 					#set( $inpreviewpage = true )
@@ -35,7 +34,13 @@
 					#end
 					$pages.includeContent()
 				#end
+#set( $ismultifine = $asset.id.startsWith("multiedit:") )
+#if($ismultifine )
 
+#else
+				$pages.include("$apphome/components/detaileditor/navigate.html")
+					
+#end
          </div>
 </div>
 

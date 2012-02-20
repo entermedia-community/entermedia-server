@@ -1,6 +1,6 @@
 <page>
 	<property name="searchtype">publishdestination</property>
-	<property name="searchhome">/${applicationid}/views/settings/lists/publishing</property>
+	<property name="searchhome">/${applicationid}/views/settings/applicationsetup/lists/publishing</property>
 	<property name="showsearch">false</property>
 	<property name="showactions">true</property>
 	

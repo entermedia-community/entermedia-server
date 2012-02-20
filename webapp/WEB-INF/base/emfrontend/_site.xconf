@@ -36,44 +36,130 @@
 
  	<property name="themeprefix">/${applicationid}/theme</property>
 
-
-	<permission name="view">
-		<user/>
-	</permission>
+<!-- ROLE BASED PERMISSIONS -->
 
   	<permission name="viewupload">
-		<userprofile property="viewupload" equals="true" />
+			<userprofile property="viewupload" equals="true" />
 	</permission>
+	
   	<permission name="vieworders">
 		<userprofile property="vieworders" equals="true" />
 	</permission>
+	
   	<permission name="viewassets">
-		<or>
-			<userprofile property="assetadmin" equals="true" />
 			<userprofile property="viewassets" equals="true" />
-		</or>
 	</permission>
+	
   	<permission name="viewbasket">
-		<or>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>	
+			<userprofile property="viewbasket" equals="true" />
 	</permission>
+	
   	<permission name="shareasset">
-		<or>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>	
+			<userprofile property="shareasset" equals="true" />
 	</permission>
+	
 	<permission name="viewsettings">
-		<or>
 			<userprofile property="viewsettings" equals="true" />
-			<userprofile property="viewsettings" equals="partial" />
-		</or>
 	</permission>
+	
+	<permission name="multiedit">
+			<userprofile property="multiedit" equals="true" />
+	</permission>
+	
 	<permission name="viewuploadmulti">
 		<userprofile property="viewuploadmulti" equals="true" />
 	</permission>
+	
+	<permission name="editassetcategories">
+		<userprofile property="editassetcategories" equals="true" />
+	</permission>
+
+	<permission name="comment">
+		<userprofile property="comment" equals="true" />
+	</permission>	
+
+	<permission name="convert">
+		<userprofile property="convert" equals="true" />
+	</permission>
+	
+	<permission name="viewassetdownloads">
+		<userprofile property="viewassetdownloads" equals="true" />
+	</permission>
+	
+	<permission name="viewmediaviewer">
+		<userprofile property="viewmediaviewer" equals="true" />
+	</permission>
+	
+	<permission name="viewattachments">		
+			<userprofile property="viewattachments" equals="true" />
+	</permission>
+	
+	<permission name="assetpermissions">
+			<userprofile property="assetpermissions" equals="true" />
+	</permission>
+
+	<permission name="converthistory">
+			<userprofile property="converthistory" equals="true" />
+	</permission>
+
+	<permission name="viewassetedit">
+			<userprofile property="viewassetedit" equals="true" />
+	</permission>
+	
+	<permission name="viewassetdownloadhistory">
+			<userprofile property="viewassetdownloadhistory" equals="true" />
+	</permission>
+	
+	<permission name="viewassetedithistory">
+			<userprofile property="viewassetedithistory" equals="true" />
+	</permission>
+	
+	<permission name="viewassetpreviewhistory">
+			<userprofile property="viewassetpreviewhistory" equals="true" />
+	</permission>
+	
+	<permission name="viewassetorderhistory">
+			<userprofile property="viewassetorderhistory" equals="true" />
+	</permission>
+	
+	<permission name="changeattachment">
+			<userprofile property="changeattachment" equals="true" />
+	</permission>
+	
+  <permission name="viewmediaedit">
+  	 <userprofile property="viewmediaedit" equals="true" />
+  </permission>
+  
+  <permission name="viewmap">
+    <userprofile property="viewmap" equals="true" />
+  </permission>
+  
+  <permission name="viewsettings">
+		<userprofile property="viewsettings" equals="true" />
+  </permission>
+  
+  <permission name="shareasset">
+     <userprofile property="shareasset" equals="true" />
+  </permission>
+  
+  <permission name="viewassets">
+    <userprofile property="viewassets" equals="true" />
+  </permission>
+  
+  <permission name="deleteasset">
+	<userprofile property="deleteasset" equals="true" />
+  </permission>
+
+  <permission name="embedasset">
+ 	 <userprofile property="embedasset" equals="true" />
+  </permission>
+  
+  <!-- USER DEFUALTS -->
+  
+  <permission name="view">
+		<user/>
+	</permission>
+	
 	<permission name="viewvoting">
 		<user />
 	</permission>
@@ -84,146 +170,38 @@
 
 	<permission name="comment">
 		<user />
-	</permission>		
+	</permission>
+			
 	<permission name="vote">
 		<user />
-	</permission>	
+	</permission>
+		
 	<permission name="upload">
 		<user />
 	</permission>
+	
 	<permission name="download">
 		<user />
 	</permission>
+	
 	<permission name="emaillink">
 		<user />
 	</permission>
+	
 	<permission name="socialshare">
 		<user />
 	</permission>
-	
-		<permission name="editassetcategories">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-
-	<permission name="comment"><boolean value="true" /></permission>	
-
-	<permission name="convert"><boolean value="true"/></permission>
-	<permission name="viewassetdownloads"><boolean value="true"/></permission>
-	<permission name="viewmediaviewer"><boolean value="true"/></permission>
-	
-	<permission name="metadatadetails"><user /></permission>
-	
-	<permission name="viewattachments">		
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-	<permission name="assetpermissions">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-
-	<permission name="converthistory">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-
-	<permission name="viewassetedit">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-	<permission name="viewassetdownloadhistory">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-	<permission name="viewassetedithistory">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-	<permission name="viewassetpreviewhistory">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-	<permission name="viewassetorderhistory">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-		</or>
-	</permission>
-		<permission name="changeattachment">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
-			<user name="${asset.owner}"/>
-		</or>
-	</permission>
-  <permission name="viewmediaedit">
-    <boolean value="false"/>
+  
+  <permission name="metadatadetails">
+		<user />
   </permission>
-  <permission name="viewmap">
-    <boolean value="false"/>
-  </permission>
-  <permission name="viewsettings">
-    <or>
-      <userprofile value="true" name="viewsettings"/>
-      <userprofile value="partial" name="viewsettings"/>
-      <group id="catalogsadmins"/>
-      <group id="catalogsadmins"/>
-    </or>
-  </permission>
-  <permission name="shareasset">
-    <or>
-      <group id="administrators"/>
-      <group id="uploaders"/>
-    </or>
-  </permission>
-  <permission name="viewassets">
-    <boolean value="false"/>
-  </permission>
-  <permission name="deleteasset">
-		<or>
-			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<user name="${asset.owner}"/>
-		</or>
-	</permission>
-	
+  
   <permission name="editadvancedsearch">
 		<user />
   </permission>
 	
   <permission name="edittablecolumns">
-		<user />
-  </permission>
-
-  <permission name="embedasset">
-		 <boolean value="true"/>
+	<user />
   </permission>
   
   <permission name="viewsearcheditor">

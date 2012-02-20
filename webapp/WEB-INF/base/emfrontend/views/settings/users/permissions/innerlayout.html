@@ -9,13 +9,13 @@
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
 <ul class="vlist">
 #foreach($settingsgroup in $groupSearcher.fieldSearch("id", "*", "textUp"))
- <li #if($current == $settingsgroup.id) class="active" #end><a href="$home$apphome/views/settings/security/permissions/views/index.html?settingsgroupid=$settingsgroup.id">$settingsgroup</a></li>
+ <li #if($current == $settingsgroup.id) class="active" #end><a href="$home$apphome/views/settings/users/permissions/views/index.html?settingsgroupid=$settingsgroup.id">$settingsgroup</a></li>
 #end
 </ul>
 
 <br>
 
-<a class="btn" href='$home$apphome/views/settings/security/permissions/views/addnew.html?groupname=New'>Add New</a>
+<a class="btn" href='$home$apphome/views/settings/users/permissions/views/addnew.html?groupname=New'>Add New</a>
 
 </div>
 </div>
@@ -35,7 +35,7 @@
 	#foreach($hit in $users)
 	#set($target = $userManager.getUser($hit.userid))
 	
-	 <li><a target="_blank" href="$home$apphome/views/usermanager/users/modifyuser.html?userid=${target.id}">$target</a></li>
+	 <li><a target="_blank" href="$home$apphome/views/users/usermanager/user/index.html?userid=${target.id}">$target</a></li>
 	#end
 	</ul>
 	

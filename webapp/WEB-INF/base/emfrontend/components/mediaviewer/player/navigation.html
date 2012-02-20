@@ -4,11 +4,10 @@
 	
 	
 #if( $hits )
+		#set($hitssessionid = $hits.sessionId )
 		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
 		#set($previous = $hits.previous($indexOf))
 		#set($next = $hits.next($indexOf))
-		
-
 			#if($previous)
 				<a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
 			#end
@@ -16,8 +15,6 @@
 			#if($next)
 				<a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
 			#end
-			
-		
 #end
 
 <p class="asset-caption">#if($asset.caption) $asset.caption #else $asset #end</p>
@@ -28,7 +25,7 @@
 	<ul class="emdetailactions clearfix">
 
 ##if( $canviewsettings )
-		##<li class="emdetaileditasset"><a  class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$hits.sessionId">[[Metadata]]</a></li>
+		##<li class="emdetaileditasset"><a  class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hitssessionid">[[Metadata]]</a></li>
 ##end	
 #if( $candownload )
 		<li><a class="btn" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
@@ -39,7 +36,7 @@
 
 #if($caneditasset)
 <li style="float: right;">
-<a class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /> Edit</a>
+<a class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /> Edit</a>
 </li>
 #end
 
@@ -50,9 +47,7 @@
 </li>
 #end
 
-
-
-	</ul>
+</ul>
 	
 	<div id="share-container" style="display: none;">
 			<ul class="emdetailactions clearfix">

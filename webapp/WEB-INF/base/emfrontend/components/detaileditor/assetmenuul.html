@@ -1,6 +1,9 @@
+#set( $ismultifine = $asset.id.startsWith("multiedit:") )
+#if( !$ismultifine )
 <div id="single-thumb">
 	$pages.include("$apphome/components/results/thumbnails/medium.html")
 </div>
+#end
 
 #set($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $sourcepath = $asset.sourcePath )
@@ -40,7 +43,7 @@
 		#elseif ($link.id == "assetpermissions")
 			 #set($args = "editPath=$apphome/assets/$sourcepath/_site.xconf&$args")
 		#end
-		#if( !$asset.id.startsWith("multiedit:") || $inmultiok )			
+		#if( $ismultifine || $inmultiok )			
 			#set ($href = "$apphome/views/detaileditor/${link.folder}/index.html")
 			<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end">
 				<a href="$home$href?$args" #if($target) target="$target" #end > $context.getText($text)</a>

@@ -47,6 +47,8 @@
 
 	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
 
+	<permission id="multiedit" name="Multi Edit" category="asset" description="Multi edit several assets at once"/>
+
 	<permission id="sharetosocialmedia" name="Share To Social Media" description="Share to sites such as Facebook"/>
 	
 	
