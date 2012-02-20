@@ -1,0 +1,14 @@
+<page>
+	<property name="tab">asseteditormetadata</property>
+	<property name="subtab">metadatageneral</property>
+	<property name="assettab">metadatageneral</property>
+	<property name="scrollable">true</property>
+
+	<property name="hideactions">true</property> 	
+	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
+	
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
+	<path-action name="Admin.loadPermissions"/>
+	
+	
+</page>

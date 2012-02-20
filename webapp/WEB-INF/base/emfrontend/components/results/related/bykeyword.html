@@ -1,0 +1,10 @@
+#if( $asset.getCategories().size() > 0 )
+	#set($hits = $mediaarchive.getAssetSearcher().searchCategories($context, $asset.getCategories().get(0) ) )
+	$!hits.setHitsPerPage(7)
+	$context.putPageValue("showhover", "false")
+	$context.putPageValue("thumbsize", "thumb")
+	$context.putPageValue("showcaption", "true")
+	$pages.include("$apphome/components/results/sidebar.html",$context)
+#else	
+
+#end
