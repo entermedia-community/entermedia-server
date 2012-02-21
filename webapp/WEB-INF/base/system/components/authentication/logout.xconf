@@ -8,7 +8,7 @@
     <value>Log Out</value>
     <value locale="es">Salida</value>
   </property>
-  <layout/>
+  <layout />
   <permission name="view">
     <boolean value="true"/>
   </permission>

@@ -1,4 +1,4 @@
 <page>
 	<property name="tab">hotfolders</property>
-	
+	<inner-layout>${themeprefix}/layouts/uploadlayout.html</inner-layout>
 </page>

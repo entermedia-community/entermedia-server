@@ -1,0 +1,8 @@
+<page>
+	<page-action name="CategoryModule.getCatalogTree">
+	
+		<tree-name>categoryPickerTree</tree-name>
+		<url-prefix>/${applicationid}/components/categorize/categories/picker.html?cache=false&amp;categoryid=</url-prefix>
+		
+	</page-action>
+</page>
