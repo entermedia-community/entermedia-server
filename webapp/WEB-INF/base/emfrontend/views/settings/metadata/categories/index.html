@@ -1,75 +1,126 @@
-
+#set($rootcategory = $mediaarchive.getCategoryArchive().getRootCategory())
+#set($children = $rootcategory.children)
+#macro(showtree $categories)	
+	
+		#foreach($cat in $categories)
+		#set( $isleaf = $cat.hasChildren())
+		#set( $open = $isleaf)
+		#set( $checked = false )
+		#set( $checked = $asset.isInCategory($cat))
+		<li id="${cat.id}_row"><div>#if($isleaf)<span class="arrow"></span>#end <span class="name folder">$cat.name</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir">Delete</a></span></div>
+		#if($isleaf)
+		   <ul>
+			  #showtree($cat.getChildren())
+		   </ul>
+		#end
+		</li>
+		<li id="${cat.id}_add" style="display: none;"><div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a data-parent="${cat.id}"class="cancel btn">Cancel</a></span></div></li>		 	
+		<div id="${cat.id}_newarea" style="display:none;"></div>
+		
+		#end
+#end
 <div class="ui-widget" >
 	<div  class="ui-widget-header">Categories</div>
 	<div  class="ui-widget-content categories-widget no-padding-for-real">
 		<div id="attachments-container">
 			<div id="tree" class="attachments">
-				<ul class="open">
-					<li><div><span class="name add">New Top Level Category</span></div></li>
-					<li><div><span class="arrow down"></span><span class="name folder">bus.jpg</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
-						<ul class="open">
-							<li><div><span class="name folder">Empty Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-							<li><div><span class="arrow"></span><span class="name folder">Folder 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
-								<ul>
-									<li><div><span class="arrow"></span><span class="name folder">Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
-										<ul>
-											<li><div><span class="arrow"></span><span class="name folder">Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
-												<ul>
-													<li><div><span class="arrow"></span><span class="name folder">Inner Folder</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-													<li><div><span class="name png">PNG 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-													<li><div><span class="name jpg">JPG 1 </span><span class="date-uploaded">(12/24/2011 12:24:01)</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-													<li><div><span class="name pdf">PDF 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-													<li><div><span class="name pdf">PDF 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-												</ul>
-											</li>
-											<li><div><span class="name png">PNG 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-											<li><div><span class="name jpg">JPG 1 </span><span class="date-uploaded">(12/24/2011 12:24:01)</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-											<li><div><span class="name pdf">PDF 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-											<li><div><span class="name pdf">PDF 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-										</ul>
-									</li>
-									<li><div><span class="name png">PNG 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-									<li><div><span class="name jpg">JPG 1 </span><span class="date-uploaded">(12/24/2011 12:24:01)</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-									<li><div><span class="name pdf">PDF 1</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-									<li><div><span class="name pdf">PDF 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-								</ul>
-							</li>
-							<li><div><span class="name folder">Folder 2</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-							<li><div><span class="name folder">Folder 3</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-							<li><div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" /><a class="btn">Save</a><a class="btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
-</div>
 
+<ul  class="open">
+	<li><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div>
+		<ul class="open">
+			#showtree($children)
+		</ul>
+	</li>
+	<li id="${rootcategory.id}_add" style="display: none;"> <div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" /><a class="btn">Save</a><a class="btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir">Add New</a><a class="delete ir">Delete</a></span></div></li>
+</ul>
+
+
+</div></div></div></div>
+ 
+
+   
 <script>
 
-	$('#tree ul li div').click( function(){
+	$('#tree ul li div').on({
+		click :  function(){
 		
-		$(this).parent().find('> ul').toggle('fast');
-		
-		if ( $(this).find('.arrow').hasClass('down') )
-			$(this).find('.arrow').removeClass('down');
-		else 
-			$(this).find('.arrow').addClass('down');
+			$(this).parent().find('> ul').toggle('fast');
 			
-		
-	});
-	
-	$('#tree .field').focusin( function(){
-		if ($(this).val() == this.defaultValue ) { 
-			$(this).val(''); 
-		}
-			
-	});
-	$('#tree .field').focusout( function(){
-		if ($(this).val() == "") { 
-			$(this).val(this.defaultValue); 
+			if ( $(this).find('.arrow').hasClass('down') )
+				$(this).find('.arrow').removeClass('down');
+			else 
+				$(this).find('.arrow').addClass('down');
+				
 		}
 	});
 	
+	$('#tree .field').on( {
+		focusin: function(){
+			if ($(this).val() == this.defaultValue ) { 
+				$(this).val(''); 
+			}
+		}, 
+		focusout: function(){
+			if ($(this).val() == "") { 
+				$(this).val(this.defaultValue); 
+			}
+		}
+			
+	});
 	
+	
+	$("#tree .add").on({
+			click: function () {
+				var id = $(this).attr("id");	
+				$("#" + id + "_add").show("fast");
+			}
+		
+	} );
+	
+	$("#tree .delete").on({
+		click: function () {
+			var id = $(this).data('parent');
+			
+			var agree=confirm("Are you sure you want to delete?");
+			if (agree){
+				jQuery.get("$apphome/views/settings/metadata/categories/deletecategory.html", {
+					categoryid: id,
+				
+				
+					} ,function () {
+						$("#" + id + "_row").hide();
+					});
+				
+			
+			}
+			else{
+				return false;
+			}
+		}
+	
+} );
+			
+	$("#tree .save").on({
+			click: function () {
+			
+					var id = $(this).data("parent");
+					alert("parent category was: " + id);
+					var newname = $("#" + id + "_new").attr("value");
+					alert("New name: " + newname);
+					jQuery.get("$apphome/views/settings/metadata/categories/addcategory.html", {
+						categoryid: id,
+						'newname': newname
+					
+						} , function () {
+							$("#" + id + "_add").hide("fast");
+							$("#" + id + "newarea").load("$apphome/views/settings/metadata/categories/singlerow.html?categoryid=" + id)
+							$("#" + id + "newarea").show();
+						}
+					
+					);
+			}
+		
+	} );
 </script>
+
+ 
