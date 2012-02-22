@@ -208,4 +208,9 @@ public class WebTree implements Serializable
 		return node;
 	}
 	
+	
+	public boolean isExpanded(Object inNode){
+		return getTreeRenderer().hasBeenExpanded(inNode);
+	}
+	
 }

@@ -1,30 +1,154 @@
-#set( $rootpath = "${apphome}/components/categorize")
+#set($rootcategory = $categoryPickerTree.getModel().getRoot())
 
-<div class="dynamictree edit-permissions" style="overflow:auto; padding-bottom: 20px;" >
+#set($children = $rootcategory.children)
+#macro(showtree $categories)	
+		
+		#foreach($cat in $categories)
+		#set( $isleaf = $cat.hasChildren())
+		#set( $open = $isleaf)
+		#set( $checked = false )
+		#set( $checked = $asset.isInCategory($cat))
+		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id"><div>#if($isleaf)<span class="arrow #if($categoryPickerTree.isExpanded($cat))down #end "></span>#end <span class="name folder">$cat.name</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir">Delete</a></span></div>
+		#if($isleaf)
+		   <ul #if($categoryPickerTree.isExpanded($cat)) class="open" #end >
+			  #showtree($cat.getChildren())
+		   </ul>
+		#end
 
-</div>
+		</li>
+				<li id="${cat.id}_add" style="display: none; padding-left: 20px;"><div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div></li>		 	
+		
+		#end
+#end
+<div class="ui-widget" >
+	<div  class="ui-widget-header">Categories</div>
+	<div  class="ui-widget-content categories-widget no-padding-for-real">
+		<div id="attachments-container">
+			<div id="tree" class="attachments">
 
-<div id="log"></div>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	var first = false;
-	
-	$(".dynamictree").jstree({ 
-		"plugins" : [ "themes", "html_data", "checkbox", "ui" ],
-		checkbox: {
-      	  "real_checkboxes": true,
-      	  "real_checkboxes_names": function (n) { return ["categoryid", n.attr("id")]; }
-        },
-        "html_data" : {
-           "ajax" : {
-                "url" : "$rootpath/jstree/categories_data.html?assetid=$asset.id",
-                "data" : function (n) {
-                    return { id : n.attr ? n.attr("id") : 0 };
-                }
-            }
+<ul  class="open">
+	<li class="noderow" id="${rootcategory.id}_row"><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a class="delete ir" data-parent="${cat.id}">Delete</a></span></div>
+		<ul class="open">
+			#showtree($children)
+		</ul>
+	</li>
+	<li id="${rootcategory.id}_add" > <div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" id="${rootcategory.id}_new"/><a class="save btn" data-parent="$rootcategory.id" >Save</a><a class="btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$rootcategorycat.id">Add New</a></span></div></li>
+</ul>
+
+
+</div></div></div></div>
+
+
+
+
+<script>
+
+	$('#tree ul li div').on({
+		click :  function(){
+		
+			$(this).parent().find('> ul').toggle('fast');
+			var node = $(this).parents('.noderow:first').data('nodeid');
+
+			if ( $(this).find('.arrow').hasClass('down') ){
+				$(this).find('.arrow').removeClass('down');
+				
+				jQuery.get("$apphome/views/settings/metadata/categories/collapsenode.html?nodeID=" + node);
+			}
+			else { 
+				$(this).find('.arrow').addClass('down');
+				
+				jQuery.get("$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+
+			}
+				
 		}
 	});
 	
-});
+	$('#tree .field').on( {
+		focusin: function(){
+			if ($(this).val() == this.defaultValue ) { 
+				$(this).val(''); 
+			}
+		}, 
+		focusout: function(){
+			if ($(this).val() == "") { 
+				$(this).val(this.defaultValue); 
+			}
+		}
+			
+	});
+	
+	
+	$("#tree .add").on({
+			click: function (event) {
+				event.preventDefault();
+				var id = $(this).attr("id");	
+				$("#" + id + "_add").show("fast");
+			}
+		
+	} );
+	
+	
+	$("#tree .cancel").on({
+		click: function (event) {
+			event.preventDefault();
+			var id = $(this).attr("id");	
+			$("#" + id + "_add").hide("fast");
+		}
+	
+} );
+	
+	$("#tree .delete").on({
+		click: function (event) {
+			event.preventDefault();
 
+			var id = $(this).data('parent');
+			
+			var agree=confirm("Are you sure you want to delete?");
+			if (agree){
+				jQuery.get("$apphome/views/settings/metadata/categories/deletecategory.html", {
+					categoryid: id,
+				
+				
+					} ,function () {
+						$("#" + id + "_row").hide();
+					});
+				
+			
+			}
+			else{
+				return false;
+			}
+		}
+	
+} );
+			
+	$("#tree .save").on({
+			click: function (event) {
+					event.preventDefault();
+					var id = $(this).data("parent");
+					//alert("parent category was: " + id);
+					var newname = $("#" + id + "_new").attr("value");
+					//alert("New name: " + newname);
+					jQuery.get("$apphome/views/settings/metadata/categories/addcategory.html", {
+						categoryid: id,
+						'newname': newname
+					
+						} , function () {
+							$("#" + id + "_add").hide("fast");
+							repaint();
+						}
+					
+					);
+					
+			}
+		
+	} );
+	
+	
+	repaint = function () {
+		jQuery("#category-tree").load("$apphome/views/settings/metadata/categories/tree.html");
+		
+		
+	}
 </script>

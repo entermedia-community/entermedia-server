@@ -37,7 +37,11 @@ public class CategoryEditModule extends BaseMediaModule {
 	
 	public void addCategory(WebPageRequest inContext) throws OpenEditException {
 		CategoryEditor categoryeditor = getCategoryEditor(inContext);
-		Category newcategory = categoryeditor.addNewCategory(new Date().getTime()+ "", "New Category");
+		String newname = inContext.getRequestParameter("newname");
+		if(newname == null){
+			newname = "New Category";
+		}
+		Category newcategory = categoryeditor.addNewCategory(new Date().getTime()+ "", newname);
 		categoryeditor.setCurrentCategory(newcategory);
 		categoryeditor.saveCategory(newcategory);
 		inContext.putPageValue("category", newcategory);

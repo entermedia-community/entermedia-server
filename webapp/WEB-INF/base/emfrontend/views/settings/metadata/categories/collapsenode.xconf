@@ -1,0 +1,8 @@
+<page>
+	<page-action name="CategoryModule.collapseNode">
+	
+		<tree-name>categoryPickerTree</tree-name>
+		
+	</page-action>
+	<property name="virtual">true</property>
+</page>

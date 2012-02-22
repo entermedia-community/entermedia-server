@@ -18,6 +18,8 @@ import org.openedit.entermedia.search.SearchFilter;
 import org.openedit.links.Link;
 import org.openedit.links.LinkTree;
 
+import sun.reflect.generics.tree.Tree;
+
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -138,6 +140,23 @@ public class CategoryModule extends BaseMediaModule
 		}
 		return webTree;
 	}
+	
+	public void expandNode(WebPageRequest inReq){
+		WebTree tree =  getCatalogTree(inReq);
+		String catid = inReq.getRequestParameter("nodeID");
+		Object target = tree.getModel().getChildById(catid);
+		tree.getTreeRenderer().expandNode(target);
+
+	}
+	
+	public void collapseNode(WebPageRequest inReq){
+		WebTree tree =  getCatalogTree(inReq);
+		String catid = inReq.getRequestParameter("nodeID");
+		Object target = tree.getModel().getChildById(catid);
+		tree.getTreeRenderer().collapseNode(target);
+
+	}
+	
 	
 	public void reloadTree(WebPageRequest inReq) throws OpenEditException
 	{

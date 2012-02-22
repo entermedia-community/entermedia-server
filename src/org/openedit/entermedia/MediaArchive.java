@@ -1251,4 +1251,8 @@ public class MediaArchive
 		sb.append(min + ":" + sec);
 		return sb.toString();
 	}
+	
+	public Searcher getSearcher(String inSearchType){
+		return getSearcherManager().getSearcher(getCatalogId(), inSearchType);
+	}
 }
