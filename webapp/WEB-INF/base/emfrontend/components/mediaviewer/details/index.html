@@ -74,10 +74,9 @@
 #if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
 <div class="asset-details-more" style="display: none; padding: 0 10px;">
 	
-	<br>
 	#if( $asset.hasKeywords() )
 	<h3>Related Tags</h3>
-		<p>
+		<p style="line-height: 25px;">
 			#foreach ($tag in $asset.keywords)
 				<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
 			#end
