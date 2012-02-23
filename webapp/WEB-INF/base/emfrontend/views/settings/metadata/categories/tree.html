@@ -8,7 +8,7 @@
 		#set( $open = $isleaf)
 		#set( $checked = false )
 		#set( $checked = $asset.isInCategory($cat))
-		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id"><div>#if($isleaf)<span class="arrow #if($categoryPickerTree.isExpanded($cat))down #end "></span>#end <span class="name folder">$cat.name</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir">Delete</a></span></div>
+		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id"><div>#if($isleaf)<span class="arrow #if($categoryPickerTree.isExpanded($cat))down #end "></span>#end <span id="${cat.id}_display" class="name folder">$cat.name</span><span id="${cat.id}_edit" style="display:none;padding-left: 20px;"><input class="field" type="text" value="$cat.name" id="${cat.id}_edit_field" /><a class="editsave btn">Save</a><a id="${cat.id}" class="editcancel btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir">Delete</a></span></div>
 		#if($isleaf)
 		   <ul #if($categoryPickerTree.isExpanded($cat)) class="open" #end >
 			  #showtree($cat.getChildren())
@@ -16,7 +16,7 @@
 		#end
 
 		</li>
-				<li id="${cat.id}_add" style="display: none; padding-left: 20px;"><div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div></li>		 	
+		<li id="${cat.id}_add" style="display: none; padding-left: 20px;"><div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div></li>		 	
 		
 		#end
 #end
@@ -144,6 +144,63 @@
 			}
 		
 	} );
+	
+	
+	$("#tree .edit").on({
+		click: function (event) {
+				event.preventDefault();
+				var id = $(this).parents('.noderow:first').data('nodeid');
+
+				
+				jQuery("#" + id +"_display").hide("fast");
+				jQuery("#" + id +"_edit").show("fast");		
+				
+				return false;
+		}
+	
+} );
+	
+
+	$("#tree .editcancel").on({
+		click: function (event) {
+				event.preventDefault();
+				var id = $(this).parents('.noderow:first').data('nodeid');
+
+				
+				jQuery("#" + id +"_display").show("fast");
+				jQuery("#" + id +"_edit").hide("fast");		
+				
+				return false;
+		}
+	
+} );
+
+	$("#tree .editsave").on({
+		click: function (event) {
+				event.preventDefault();
+				var id = $(this).parents('.noderow:first').data('nodeid');
+
+				
+				
+				var newname = $("#" + id + "_edit_field").attr("value");
+				jQuery.get("$apphome/views/settings/metadata/categories/savecategory.html", {
+					'id': id,
+					categoryid: id,
+					'name': newname
+				
+					} , function () {						
+						jQuery("#" + id +"_display").show("fast");
+						jQuery("#" + id +"_edit").hide("fast");		
+						jQuery("#" + id + "_display").html(newname);
+					}
+				
+				);
+				return false;
+		}
+	
+} );
+	
+	
 	
 	
 	repaint = function () {
