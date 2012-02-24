@@ -30,6 +30,7 @@
 	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
 	<permission id="convert" name="Show Download Size Options" description="Shows conversion options"/>
 	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
+	<permission id="viewcomments" name="View Comments" description="View Comments" />
 	<permission id="comment" name="Add Comments" description="Add Comments" />
 
 	<permission id="viewattachments" name="View Attachments" description="View attachments"/>
