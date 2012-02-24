@@ -94,18 +94,20 @@
 				padding = padding.replace('px', '');
 				padding = parseInt(padding);
 				padding += 20;
+				var node = $(this).parents('.noderow:first').data('nodeid');
 				
 				if ( $("#" + id + "_row > div .arrow").length > 0 ) {
 					if ( $("#" + id + "_row > div .arrow").hasClass('down') ) {	
 						
 					} else {
 					   $("#" + id + "_row").find('> ul').toggle('fast');
-					   $("#" + id + "_row > div .arrow").addClass('down')
+					   $("#" + id + "_row > div .arrow").addClass('down');
+					   jQuery.get("$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
 					}
 				} else {
 					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
 					$("#" + id + "_row").find('> ul').toggle('fast');
-					$("#" + id + "_row > div .arrow").addClass('down')
+					$("#" + id + "_row > div .arrow").addClass('down');
 				}
 				
 				$("#" + id + "_add").show("fast");
