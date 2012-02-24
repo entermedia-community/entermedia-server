@@ -74,6 +74,10 @@
 		<userprofile property="editassetcategories" equals="true" />
 	</permission>
 
+	<permission name="viewcomments">
+		<userprofile property="viewcomments" equals="true" />
+	</permission>	
+
 	<permission name="comment">
 		<userprofile property="comment" equals="true" />
 	</permission>	
@@ -168,9 +172,6 @@
 		<user />
 	</permission>		
 
-	<permission name="comment">
-		<user />
-	</permission>
 			
 	<permission name="vote">
 		<user />
