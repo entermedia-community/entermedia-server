@@ -583,10 +583,11 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			CompositeAsset composite = (CompositeAsset) inReq.getSessionValue(id);
 			composite.addKeyword(key);
-			editor.getMediaArchive().saveAssets(composite.getItems(),inReq.getUser());
 			for(Data data: composite.getItems())
 			{
 				writer.addAssetForWriting((Asset) data);
+				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
+
 				getMediaArchive(inReq).fireMediaEvent("keywordsmodified", inReq.getUser(), (Asset)data);
 			}
 			return;
@@ -620,9 +621,10 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			CompositeAsset composite = (CompositeAsset) inReq.getSessionValue(id);
 			composite.removeKeyword(key);
-			editor.getMediaArchive().saveAssets(composite.getItems(),inReq.getUser());
+			
 			for(Data data: composite.getItems())
 			{
+				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
 				writer.addAssetForWriting((Asset) data);
 				getMediaArchive(inReq).fireMediaEvent("keywordsmodified", inReq.getUser(), (Asset)data);
 			}

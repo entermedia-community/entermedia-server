@@ -2,8 +2,13 @@
 <script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.cookie.js"></script>
 <script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.hotkeys.js"></script>
 
+#if($asset.getId().startsWith("multiedit"))
+	#set($postfix = 'multi')
+#else
+	#set($postfix = '$asset.id')
 
-<div id="assetdetailscategorylist$asset.id">
+#end
+<div id="assetdetailscategorylist$postfix">
 #set( $rootpath = "${apphome}/components/categorize")
 
 #set ($categories = $asset.getCategories())
@@ -12,14 +17,14 @@
 		<a class="row category" href="$home$apphome/components/categories/${category.id}.html">
 			$category.name
 			#if($caneditasset)
-				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$asset.id" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id">
+				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id">
 			#end
 		</a>
 	#end
 </div>
 #if($caneditasset)
-	<div id="addcategory$asset.id" style="margin: 20px 0 10px 0;">
-		<a class="ajax btn small" targetdiv="assetdetailscategorylist$asset.id"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
+	<div id="addcategory$postfix" style="margin: 20px 0 10px 0;">
+		<a class="ajax btn small" targetdiv="assetdetailscategorylist$postfix"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
 	</div>
 #end
 

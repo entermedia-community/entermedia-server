@@ -119,7 +119,9 @@ public class BaseMediaModule extends BaseModule
 				Data data = (Data)inReq.getSessionValue(assetid);
 				inReq.putPageValue("asset", data);
 				inReq.putPageValue("data", data);
-				return null;
+				return (Asset) data;
+				//return null; //Why null?
+				
 			}
 
 		}
