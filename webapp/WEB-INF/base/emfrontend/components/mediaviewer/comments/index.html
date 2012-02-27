@@ -8,13 +8,13 @@
 
 	#set($incrsize = $comments.size() + 1)
 	#if( $cancomment )
-		<form name="addcomment" class="ajaxform commentresizer" targetdiv="emcommentarea" action="${home}${apphome}/components/mediaviewer/comments/mini.html" method="post">
+		<form name="addcomment" id="addcomment" class="ajaxform commentresizer" targetdiv="emcommentarea" action="${home}${apphome}/components/mediaviewer/comments/mini.html" method="post">
 			<textarea id="commenttext" name="comment" cols="100" initialtext="[[Add a comment]]">[[Add a comment]]</textarea> 
 			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="catalogid" value="$catalogid"/>
 	<div id="commentsubmit" style="display: none;">
-			<input type="submit" value="[[Add Comment]]"/>
+			<input type="button" onclick='jQuery("#addcomment").submit();' value="[[Add Comment]]"/>
 			</div>
 		</form>
 
