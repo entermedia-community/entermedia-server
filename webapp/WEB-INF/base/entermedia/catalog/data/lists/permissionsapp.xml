@@ -4,7 +4,7 @@
 	<permission id="viewupload" name="Upload" description="Upload" />
 	<permission id="viewhomelink" name="View Home Link" description="The button to the home page is shown" />
 	<permission id="viewassets" name="View Assets" description="Allows viewing of asset details" />
-	<permission id="viewbasket" name="View Basket" description="Allows use of the collection basket" />
+	<permission id="viewbasket" name="View Basket" description="Allows use of the collection basket as well as the ability to see the Add to Basket button" />
   	<permission id="shareasset" name="Share Asset" description="Share Assets" />
   	<permission id="viewsettings" name="View Settings" description="View Settings" />
 

@@ -13,7 +13,7 @@
 				</ul>
 			</li>
 			
-		#if($content.isPropertyTrue("showaddselections"))
+		#if($content.isPropertyTrue("showaddselections") && $canviewbasket)
 			<li><a class="toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a></li>
 		#end
 		
