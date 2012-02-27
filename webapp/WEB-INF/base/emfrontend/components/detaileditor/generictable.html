@@ -44,8 +44,8 @@
 	
 	$pages.include("/$applicationid/components/xml/table.html?$args&candelete=$!caneditasset&passalong=$passalong",$context)
 	
-	#if( !$parser.parseBoolean($edit) &&  $caneditasset && !$print.equals("true"))
-	<p align="right" style="margin: -5px 19px 20px 0;"><a class="btn small" href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=true',1);return false;">[[Add New]]</a></p>
+	#if( !$parser.parseBoolean($edit) && $caneditasset && !$print.equals("true"))
+	<a class="btn right" href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=true',1);return false;">[[Add New]]</a>
 	#end
 	
 	#else
@@ -59,9 +59,9 @@
 		$context.putPageValue("data", $data)
 		$pages.include("/$applicationid/components/xml/detaileditor.html",$context)
 
-		
+		<input class="btn right" style="margin-left: 5px;" type="submit" value="Save values"/>
 		<a class="btn ajax right" targetdiv='${view}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
-		<input class="btn" type="submit" value="Save values"/>
+		
 
 		<input name="field" type="hidden" value="assetid" />
 		<input name="assetid.value" type="hidden" value="$assetid" />
