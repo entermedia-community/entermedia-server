@@ -4,7 +4,7 @@
 	<permission id="viewupload" name="Upload" description="Upload" />
 	<permission id="viewhomelink" name="View Home Link" description="The button to the home page is shown" />
 	<permission id="viewassets" name="View Assets" description="Allows viewing of asset details" />
-	<permission id="viewbasket" name="View Basket" description="Allows use of the collection basket" />
+	<permission id="viewbasket" name="View Basket" description="Allows use of the collection basket as well as the ability to see the Add to Basket button" />
   	<permission id="shareasset" name="Share Asset" description="Share Assets" />
   	<permission id="viewsettings" name="View Settings" description="View Settings" />
 
@@ -30,6 +30,7 @@
 	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
 	<permission id="convert" name="Show Download Size Options" description="Shows conversion options"/>
 	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
+	<permission id="viewcomments" name="View Comments" description="View Comments" />
 	<permission id="comment" name="Add Comments" description="Add Comments" />
 
 	<permission id="viewattachments" name="View Attachments" description="View attachments"/>
@@ -59,6 +60,8 @@
 	<permission id="deletesearch" name="Delete Searches" description="Delete previously saved searches"/>
 	
 	<permission id="maximize" name="Maximize Application" description="Be able to maximize the application to fullscreen mode"/>
+	
+	<permission id="createnewrecord" name="Create a New Record" description="Be able to create new records with metadata that do not have assets associated with them"/>
 	
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	

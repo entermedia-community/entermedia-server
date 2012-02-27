@@ -1,27 +1,31 @@
-
 #set( $tab = $context.findValue("tab") )
 #set ( $listid = "uploadmenu" )
-
 <div class="subcolumns">
-          <div id="left-col">
-          	
-				<div class="ui-widget uipanel">
-					<div  class="ui-widget-header">Upload</div>
-					<div  class="ui-widget-content no-padding-for-real">
-						<ul class="sidebar-list" style="margin: 0 -14px;">
-							<li><a href="$apphome/views/upload/index.html">Single Asset</a></li>
-							#if( $canviewuploadmulti)
-							<li><a href="$apphome/components/upload/types/draganddrop.html">Multiple Assets</a></li>
-							#end
-							<li><a href="$apphome/views/settings/hotfolders/index.html">Add New HotFolder</a></li>
-							<li><a href="">Create New Record</a></li>
-						</ul>
-					</div>
-				</div>
-      	 </div>
-         <div id="right-col">
-       	 	
-			$pages.includeContent()
-
-        </div>
+	<div id="left-col">
+		<div class="ui-widget uipanel">
+			<div  class="ui-widget-header">
+				Upload
+			</div>
+			<div  class="ui-widget-content no-padding-for-real">
+				<ul class="sidebar-list" style="margin: 0 -14px;">
+					<li>
+						<a href="$apphome/views/upload/index.html">Single Asset</a>
+					</li>
+					#if( $canviewuploadmulti)
+					<li>
+						<a href="$apphome/components/upload/types/draganddrop.html">Multiple Assets</a>
+					</li>
+					#end
+					#if ($cancreatenewrecord)
+					<li>
+						<a href="">Create New Record</a>
+					</li>
+					#end
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div id="right-col">
+		$pages.includeContent()
+	</div>
 </div>

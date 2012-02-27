@@ -1,22 +1,24 @@
 #set($rootcategory = $categoryPickerTree.getModel().getRoot())
 
 #set($children = $rootcategory.children)
-#macro(showtree $categories)	
-		
+
+#macro(showtree $categories $depth) 
+		#set ( $depth = $depth + 1)
+		#set ( $padding = (20 * $depth) )
 		#foreach($cat in $categories)
 		#set( $isleaf = $cat.hasChildren())
 		#set( $open = $isleaf)
 		#set( $checked = false )
 		#set( $checked = $asset.isInCategory($cat))
-		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id"><div>#if($isleaf)<span class="arrow #if($categoryPickerTree.isExpanded($cat))down #end "></span>#end <span id="${cat.id}_display" class="name folder">$cat.name</span><span id="${cat.id}_edit" style="display:none;padding-left: 20px;"><input class="field" type="text" value="$cat.name" id="${cat.id}_edit_field" /><a class="editsave btn">Save</a><a id="${cat.id}" class="editcancel btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir">Delete</a></span></div>
+		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id"><div style="padding-left: ${padding}px">#if($isleaf)<span class="arrow #if($categoryPickerTree.isExpanded($cat))down #end "></span>#end <span id="${cat.id}_display" class="name folder #if($isleaf) leaf #end">$cat.name</span><span id="${cat.id}_edit" class="name folder" style="display:none;"><input class="field" type="text" value="$cat.name" id="${cat.id}_edit_field" /><a class="editsave btn">Save</a><a id="${cat.id}" class="editcancel btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir">Delete</a></span></div>
 		#if($isleaf)
 		   <ul #if($categoryPickerTree.isExpanded($cat)) class="open" #end >
-			  #showtree($cat.getChildren())
+			  #showtree($cat.getChildren(), $depth)
 		   </ul>
 		#end
 
 		</li>
-		<li id="${cat.id}_add" style="display: none; padding-left: 20px;"><div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div></li>		 	
+		<li id="${cat.id}_add" style="display: none;"><div class="selected new"><span class="name folder"><input class="field" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div></li>		 	
 		
 		#end
 #end
@@ -27,12 +29,12 @@
 			<div id="tree" class="attachments">
 
 <ul  class="open">
-	<li class="noderow" id="${rootcategory.id}_row"><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a class="delete ir" data-parent="${cat.id}">Delete</a></span></div>
+	<li class="noderow" id="${rootcategory.id}_row"><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir nope">Edit</a><a class="add ir" id="${rootcategory.id}">Add New</a><a class="delete ir nope" data-parent="${rootcategory.id}">Delete</a></span></div>
 		<ul class="open">
-			#showtree($children)
+			#showtree($children, 1)
 		</ul>
 	</li>
-	<li id="${rootcategory.id}_add" > <div class="selected"><span class="name folder"><input class="field" type="text" value="New Category" id="${rootcategory.id}_new"/><a class="save btn" data-parent="$rootcategory.id" >Save</a><a class="btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$rootcategorycat.id">Add New</a></span></div></li>
+	<li id="${rootcategory.id}_add" style="display: none;"><div class="selected new"><span class="name folder"><input class="field" type="text" value="New Category" id="${rootcategory.id}_new" /><a data-parent="${rootcategory.id}" class="save btn">Save</a><a id="${rootcategory.id}" class="cancel btn">Cancel</a></span></div></li>		 	
 </ul>
 
 
@@ -65,6 +67,9 @@
 	});
 	
 	$('#tree .field').on( {
+		click: function () {
+			event.stopPropagation();
+		},
 		focusin: function(){
 			if ($(this).val() == this.defaultValue ) { 
 				$(this).val(''); 
@@ -81,26 +86,56 @@
 	
 	$("#tree .add").on({
 			click: function (event) {
-				event.preventDefault();
-				var id = $(this).attr("id");	
+				
+				event.stopPropagation();
+				
+				var id = $(this).attr("id");
+				padding = $("#" + id + "_row div").css('padding-left');
+				padding = padding.replace('px', '');
+				padding = parseInt(padding);
+				padding += 20;
+				var node = $(this).parents('.noderow:first').data('nodeid');
+				
+				if ( $("#" + id + "_row > div .arrow").length > 0 ) {
+					if ( $("#" + id + "_row > div .arrow").hasClass('down') ) {	
+						
+					} else {
+					   $("#" + id + "_row").find('> ul').toggle('fast');
+					   $("#" + id + "_row > div .arrow").addClass('down');
+					   jQuery.get("$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+					}
+				} else {
+					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
+					$("#" + id + "_row").find('> ul').toggle('fast');
+					$("#" + id + "_row > div .arrow").addClass('down');
+				}
+				
 				$("#" + id + "_add").show("fast");
+				$("#" + id + "_add div").css('padding-left', padding )
+				$("#" + id + "_row > div").addClass('selected');
+				$("#" + id + "_add input").focus();
 			}
-		
 	} );
 	
 	
 	$("#tree .cancel").on({
 		click: function (event) {
-			event.preventDefault();
+			
+			event.stopPropagation();
+			
+
+			$("#newarrow").remove();
+	
 			var id = $(this).attr("id");	
 			$("#" + id + "_add").hide("fast");
+			$("#" + id + "_row > div").removeClass('selected');
 		}
 	
 } );
 	
 	$("#tree .delete").on({
 		click: function (event) {
-			event.preventDefault();
+			event.stopPropagation();
 
 			var id = $(this).data('parent');
 			
@@ -111,7 +146,10 @@
 				
 				
 					} ,function () {
-						$("#" + id + "_row").hide();
+						$("#" + id + "_row").hide( 'fast', function(){
+							repaint(); 
+						} );
+						
 					});
 				
 			
@@ -125,7 +163,7 @@
 			
 	$("#tree .save").on({
 			click: function (event) {
-					event.preventDefault();
+					event.stopPropagation();
 					var id = $(this).data("parent");
 					//alert("parent category was: " + id);
 					var newname = $("#" + id + "_new").attr("value");
@@ -135,8 +173,9 @@
 						'newname': newname
 					
 						} , function () {
-							$("#" + id + "_add").hide("fast");
-							repaint();
+							$("#" + id + "_add").hide("fast", function(){
+							repaint(); 
+							});
 						}
 					
 					);
@@ -148,7 +187,7 @@
 	
 	$("#tree .edit").on({
 		click: function (event) {
-				event.preventDefault();
+				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
 				
@@ -163,13 +202,12 @@
 
 	$("#tree .editcancel").on({
 		click: function (event) {
-				event.preventDefault();
+				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
 				
 				jQuery("#" + id +"_display").show("fast");
 				jQuery("#" + id +"_edit").hide("fast");		
-				
 				return false;
 		}
 	
@@ -177,7 +215,7 @@
 
 	$("#tree .editsave").on({
 		click: function (event) {
-				event.preventDefault();
+				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
 				
@@ -195,6 +233,7 @@
 					}
 				
 				);
+				repaint();
 				return false;
 		}
 	
