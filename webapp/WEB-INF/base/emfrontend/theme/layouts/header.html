@@ -10,7 +10,7 @@ $pages.include("$apphome/views/content/logo.html")
 #if( $user )
 <a href="$home$apphome/users/$!{user.getId()}/index.html">$!user.getScreenName()</a> | <a href="$home$apphome/authentication/logout.html">Logout</a>
 #if( $canviewsettings )
- | <a href="$home/$catalogid/settings/index.html">Settings</a>
+ | <a href="$home$apphome/views/settings/applicationsetup/apprules/index.html">Settings</a>
 #end
 #else
 	<a href="$home$apphome/authentication/login.html">Login</a>
