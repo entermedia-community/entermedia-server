@@ -5,6 +5,7 @@
   <property id="users" path="/views/settings/users/usermanager/users/index.html">Users</property>
   <property id="metadata" path="/views/settings/metadata/fields/index.html">Metadata</property>
   <property id="events" path="/views/settings/events/ps/index.html">Events</property>
+  <property id="hotfolders" path="/views/settings/hotfolders/index.html">Hot Folders</property>
   <!--
   <property id="lists" path="/views/settings/events/ps/index.html">Events</property>
   <property id="analytics" path="#">Analytics</property>

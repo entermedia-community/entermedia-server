@@ -61,6 +61,8 @@
 	
 	<permission id="maximize" name="Maximize Application" description="Be able to maximize the application to fullscreen mode"/>
 	
+	<permission id="createnewrecord" name="Create a New Record" description="Be able to create new records with metadata that do not have assets associated with them"/>
+	
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
 	<permission id="editassetcategories" name="Edit Categories" description="Edit Asset Categories"/>
