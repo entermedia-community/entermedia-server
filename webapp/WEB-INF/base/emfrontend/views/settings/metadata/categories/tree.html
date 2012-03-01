@@ -22,23 +22,26 @@
 		
 		#end
 #end
+
 <div class="ui-widget" >
 	<div  class="ui-widget-header">Categories</div>
 	<div  class="ui-widget-content categories-widget no-padding-for-real">
 		<div id="attachments-container">
 			<div id="tree" class="attachments">
+				
+				<ul  class="open">
+					<li class="noderow" id="${rootcategory.id}_row"><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir nope">Edit</a><a class="add ir" id="${rootcategory.id}">Add New</a><a class="delete ir nope" data-parent="${rootcategory.id}">Delete</a></span></div>
+						<ul class="open">
+							#showtree($children, 1)
+						</ul>
+					</li>
+					<li id="${rootcategory.id}_add" style="display: none;"><div class="selected new"><span class="name folder"><input class="field" type="text" value="New Category" id="${rootcategory.id}_new" /><a data-parent="${rootcategory.id}" class="save btn">Save</a><a id="${rootcategory.id}" class="cancel btn">Cancel</a></span></div></li>		 	
+				</ul>
 
-<ul  class="open">
-	<li class="noderow" id="${rootcategory.id}_row"><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir nope">Edit</a><a class="add ir" id="${rootcategory.id}">Add New</a><a class="delete ir nope" data-parent="${rootcategory.id}">Delete</a></span></div>
-		<ul class="open">
-			#showtree($children, 1)
-		</ul>
-	</li>
-	<li id="${rootcategory.id}_add" style="display: none;"><div class="selected new"><span class="name folder"><input class="field" type="text" value="New Category" id="${rootcategory.id}_new" /><a data-parent="${rootcategory.id}" class="save btn">Save</a><a id="${rootcategory.id}" class="cancel btn">Cancel</a></span></div></li>		 	
-</ul>
-
-
-</div></div></div></div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 
@@ -54,12 +57,12 @@
 			if ( $(this).find('.arrow').hasClass('down') ){
 				$(this).find('.arrow').removeClass('down');
 				
-				jQuery.get("$apphome/views/settings/metadata/categories/collapsenode.html?nodeID=" + node);
+				jQuery.get("$home$apphome/views/settings/metadata/categories/collapsenode.html?nodeID=" + node);
 			}
 			else { 
 				$(this).find('.arrow').addClass('down');
 				
-				jQuery.get("$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+				jQuery.get("$home$home$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
 
 			}
 				
@@ -102,7 +105,7 @@
 					} else {
 					   $("#" + id + "_row").find('> ul').toggle('fast');
 					   $("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get("$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+					   jQuery.get("$home$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
 					}
 				} else {
 					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
