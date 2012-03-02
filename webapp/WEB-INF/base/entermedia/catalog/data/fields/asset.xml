@@ -8,6 +8,8 @@
 	<property id="description">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" editable="true" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
+	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Asset Type</property>
+
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	
@@ -27,7 +29,18 @@
 	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text">Contributor</property>
 	<property id="creator" externalid="Creator" index="true" stored="true" datatype="text">Creator</property>
 	<property id="source" externalid="Source" index="true" stored="true" datatype="text">Source</property>
+	
+	<!-- Camera stuff -->
+	<property id="lenstype" externalid="LensID" index="true" stored="true" datatype="text">Lens Type</property>
+	<property id="focallength" externalid="FocalLength" index="true" stored="true" datatype="text">Focal Length</property>
+	<property id="cameramodel" externalid="CameraModel,CameraModelName" index="true" stored="true" datatype="text">Camera Model</property>
 	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text">ISO</property>
+	<property id="colorspace"  externalid="ColorSpace,ColorMode"  index="true" stored="true" viewtype="list" datatype="list">Color Space</property>
+	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list">Color Type</property>
+	<property id="shutterspeed" externalid="ShutterSpeed" index="true" stored="true" datatype="text">Shutter Speed</property>
+	<property id="aperture" externalid="Aperture" index="true" stored="true" >Aperture</property>
+	
+	
 	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="Orientation">Image Rotation</property>
 	<property id="author" externalid="Author" index="true" stored="true" datatype="text">Author</property>
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
@@ -71,7 +84,6 @@
 	<!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->
 	<!-- Geo Location -->
 	<property id="position" internalfield="true" type="position" datatype="position" viewtype="map" index="true" stored="true">Position</property>
-	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Asset Type</property>
 
 	<!--  Client specific -->
 	<property id="term" internalfield="true" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>

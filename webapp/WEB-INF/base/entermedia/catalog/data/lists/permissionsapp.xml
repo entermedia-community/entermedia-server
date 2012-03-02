@@ -25,7 +25,7 @@
 	<permission id="viewmap" category="metadata" name="View Map/Geo-location" description="Ability to edit geoloctaiton metadata" />
 	<permission id="viewmediaedit" name="View Media Editor" description="Crop and Rotate Tool"/>
 
-	<permission id="download" name="Download Original" description="Allows users to download the original high rez version"/>
+	<permission id="download" name="Download" description="Allows users to download"/>
 	<permission id="embedasset" name="Embed" description="Embed HTML"/>
 	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
 	<permission id="convert" name="Show Download Size Options" description="Shows conversion options"/>

@@ -221,17 +221,17 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 			synonym = synonym.replace("(", "").replace(")", "").replace("-", "");
 			typeQuery.addStartsWith("description", synonym);
 			int hits = inTypeSearcher.search(typeQuery).getTotal();
-			if (hits > 0)
+			if (hits > 1)
 			{
 				saved.append(synonym);
 				saved.append(" (");
 				saved.append(hits);
 				saved.append(")");
 				saved.append(";");
+				synonym = synonym.replace(' ', '_').replace(";", " ");
+				savedenc.append(synonym);
+				savedenc.append(" ");
 			}
-			synonym = synonym.replace(' ', '_').replace(";", " ");
-			savedenc.append(synonym);
-			savedenc.append(" ");
 		}
 		// Need to make sure that the terms they actually searched for got
 		// into the index
