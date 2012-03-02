@@ -69,7 +69,7 @@ public boolean conversionsComplete(String assetid){
 	context.putPageValue("conversionsremaining", remaining);
 	context.putPageValue("conversions", newtasks);
 	context.putPageValue("conversionerrors", errors);
-	if( newtasks.size() == 0)
+	if( newtasks && newtasks.size() == 0)
 	{
 		return false;
 	}

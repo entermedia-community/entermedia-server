@@ -3,15 +3,22 @@
 	<ul id="sub-nav" class="search-views">
 		
 		#set ($classname="enabled")
+		#if( $candownload )
 			<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a></li>
+		#end	
 		##Email and publish should be under share
-		
+		#if($canpublish || $canemaillink )
 			<li><a>Share</a>
 				<ul>
+					#if( $canemaillink )
 					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >Email Assets</a></li>
+					#end
+					#if( $canpublish)
 					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >Publish Assets to Server</a></li>
+					#end
 				</ul>
 			</li>
+		#end
 			
 		#if($content.isPropertyTrue("showaddselections") && $canviewbasket)
 			<li><a class="toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a></li>

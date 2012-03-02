@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties usagelabel="Single Upload">
-  <property id="assettitle" />
-  <property id="caption" />
-  <property id="term" />
-  <property id="category" />
+  <property id="assettitle"/>
+  <property id="jobnotes"/>
+  <property id="caption"/>
+  <property id="category"/>
+  <property id="division"/>
 </properties>

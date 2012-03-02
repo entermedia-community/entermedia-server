@@ -159,7 +159,10 @@
   </permission>
   
   <permission name="deleteasset">
-	<userprofile property="deleteasset" equals="true" />
+  	<and>
+		<userprofile property="deleteasset" equals="true" />
+		<pagevalue name="caneditasset" equals="true" />
+	</and>
   </permission>
 
   <permission name="embedasset">
@@ -173,64 +176,64 @@
 	</permission>
 	
 	<permission name="viewvoting">
-		<user />
+		 <userprofile property="viewvoting" equals="true" />
 	</permission>
 
 	<permission name="metadatageneral">
-		<user />
+		 <userprofile property="metadatageneral" equals="true" />
 	</permission>		
 
 			
 	<permission name="vote">
-		<user />
+		 <userprofile property="vote" equals="true" />
 	</permission>
 		
 	<permission name="upload">
-		<user />
+		   <userprofile property="upload" equals="true" />
 	</permission>
 	
 	<permission name="download">
-		<user />
+		   <userprofile property="download" equals="true" />
 	</permission>
 	
 	<permission name="emaillink">
-		<user />
+		 <userprofile property="emaillink" equals="true" />
 	</permission>
 	
 	<permission name="socialshare">
-		<user />
+		 <userprofile property="socialshare" equals="true" />
 	</permission>
   
   <permission name="metadatadetails">
-		<user />
+		 <userprofile property="metadatadetails" equals="true" />
   </permission>
   
   <permission name="editadvancedsearch">
-		<user />
+		 <userprofile property="editadvancedsearch" equals="true" />
   </permission>
 	
   <permission name="edittablecolumns">
-	<user />
+	 <userprofile property="edittablecolumns" equals="true" />	
   </permission>
   
   <permission name="viewsearcheditor">
-    <user />
+    <userprofile property="viewsearcheditor" equals="true" />
   </permission>
   
   <permission name="viewrecentsearches">
-    <user />
+     <userprofile property="viewrecentsearches" equals="true" />
   </permission>
   
   <permission name="savesearch">
-    <user />
+     <userprofile property="savesearch" equals="true" />
   </permission>
   
   <permission name="editsearch">
-   	<user />
+   	 <userprofile property="editsearch" equals="true" />
   </permission>
   
   <permission name="deletesearch">
-	<user />
+	 <userprofile property="deletesearch" equals="true" />
   </permission>
   
   
