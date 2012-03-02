@@ -1,6 +1,7 @@
 #set($pluginpath = $context.getRequestParameter('pluginpath') )
 #set($assetid = $context.getRequestParameter('assetid'))
-#set($view = $context.getRequestParameter('view'))
+#set($viewpath = $context.getRequestParameter('view'))
+#set($viewid = $url_util.getPathUtilities().extractFileName($viewpath) )
 #set($label = $context.getRequestParameter('label'))
 
 #set( $plugin = $pages.getPage($pluginpath))
@@ -10,22 +11,35 @@
 #set ($finishedname = "${view}complete")
 #set ($finished = $asset.get($finishedname))
 
-#if( !$user.hasProperty($view) || $user.isPropertyTrue($view) )
+#if( !$user.hasProperty($viewpath) || $user.isPropertyTrue($viewpath) )
 	#set( $open = "down")
 #else
 	#set( $open = "up")
 #end
-<div id="$!view">
+
+<div id="$!viewpath">
 
 <div class="ui-widget emdetaileditorbox commentbox" >
 	<div class="ui-widget-header">
 	<span>
-	<a href="#" onclick="toggleEditSection('$view','$pluginpath', '$asset.id', '$view', '$label');return false;" ><img border="0" src="$home${themeprefix}/images/detaileditor/triangle${open}.png" />
+	<a href="#" onclick="toggleEditSection('$viewpath','$pluginpath', '$asset.id', '$viewpath', '$label');return false;" ><img border="0" src="$home${themeprefix}/images/detaileditor/triangle${open}.png" />
 	$context.getText($label)</a>
 	</span>
+	#if( $caneditmetadatasetup )
+
 	
+	#if ( $viewpath.contains("$asset.assettype") )
+		#set ( $type = $asset.assettype )
+	#else
+		#set ( $type = 'undefined' )
+	#end
+	
+	<span class="widget-header-edit">
+		 <a class="ir" href="$home$apphome/views/settings/metadata/views/index.html?viewpath=${viewpath}&viewid=${viewid}&assettype=$type&searchtype=asset">Edit</a>
+	</span>
+	#end
 	</div>
-	#if ($openview && $openview == $view)
+	#if ($openview && $openview == $viewpath)
 		#set ($open = "down")
 	#end
 	
