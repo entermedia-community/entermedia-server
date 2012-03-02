@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties usagelabel="General">
-   <property id="assettitle" />
-  <property id="caption" />
-  <property id="longcaption" />
-  <property id="editstatus" />
-
+  <property id="assettitle"/>
+  <property id="caption"/>
+  <property id="longcaption"/>
+  <property id="editstatus"/>
+  <property id="importstatus"/>
+  <property id="editstatus"/>
+  <property id="division"/>
+  <property id="initiative"/>
+  <property id="owner"/>
 </properties>

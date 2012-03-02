@@ -22,15 +22,13 @@
 	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
 	<property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>
-	<property id="cammaker" externalid="Make" index="true" stored="true" datatype="text">Camera Maker</property>
-	<property id="cammodel" externalid="Model" index="true" stored="true" datatype="text">Camera Model</property>
 	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text">Artist</property>
 	<property id="comment" externalid="Comment,UserComment" index="true" stored="true" datatype="text">Comment</property>
 	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text">Contributor</property>
 	<property id="creator" externalid="Creator" index="true" stored="true" datatype="text">Creator</property>
 	<property id="source" externalid="Source" index="true" stored="true" datatype="text">Source</property>
 	
-	<!-- Camera stuff -->
+	<!-- Camera stuff --> 
 	<property id="lenstype" externalid="LensID" index="true" stored="true" datatype="text">Lens Type</property>
 	<property id="focallength" externalid="FocalLength" index="true" stored="true" datatype="text">Focal Length</property>
 	<property id="cameramodel" externalid="CameraModel,CameraModelName" index="true" stored="true" datatype="text">Camera Model</property>
