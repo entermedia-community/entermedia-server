@@ -1,12 +1,24 @@
 			<div class="ui-widget uipanel" id="left-col-search" >
-				<div  class="ui-widget-header">Search</div>
+				<div  class="ui-widget-header">Search
+					#if( $caneditadvancedsearch )
+						<span class="widget-header-edit">
+						<a class="ajax ir" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Edit</a>
+						</span>
+					#end
+				</div>
 				<div  class="ui-widget-content">
 					$pages.include("$apphome/components/advancedsearch/index.html", $context)
 				</div>
 			</div>
 
 			<div class="ui-widget  uipanel" id="left-col-categories" >
-				<div  class="ui-widget-header">Categories</div>
+				<div  class="ui-widget-header">Categories
+				#if( $caneditcategories )
+					<span class="widget-header-edit">
+					<a class="ajax ir" href="$home$apphome/views/settings/metadata/categories/index.html">Edit</a>
+					</span>
+				#end	
+				</div>
 				<div  class="ui-widget-content categories-widget">
 					$pages.include("$apphome/components/categories/inline.html")
 				</div>
