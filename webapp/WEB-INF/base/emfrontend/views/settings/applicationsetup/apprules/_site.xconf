@@ -3,7 +3,7 @@
 <page>
   <property name="oeuseradmintabid">securitytab</property>
   <property name="permissiontype">permissionsapp</property>
-  <property name="permissionrootpath">/${applicationid}/views/settings/security/apprules/xml</property>
+  <property name="permissionrootpath">/${applicationid}/views/settings/applicationsetup/apprules/xml</property>
   <property name="editPath">/${applicationid}</property>
   <property name="subtab">apprules</property>
 </page>
