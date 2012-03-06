@@ -61,7 +61,8 @@
 				<!-- Fields pointing to files go here -->
 				<div id="uploadforminsertionpoint" > </div>
 				<input type="hidden" name="hitsname" value="hits" />
-				
+			#set( $searcher = $mediaarchive.getAssetSearcher() )
+	
 #set($details =  $searcher.getDetailsForView("asset/assettype/default/singleupload", $user))
 #foreach($detail in $details)
 				<input type="hidden" name="field" value="$detail.id" />
