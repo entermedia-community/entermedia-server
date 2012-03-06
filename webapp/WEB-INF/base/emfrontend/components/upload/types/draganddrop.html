@@ -61,11 +61,11 @@
 				<!-- Fields pointing to files go here -->
 				<div id="uploadforminsertionpoint" > </div>
 				<input type="hidden" name="hitsname" value="hits" />
-				<input type="hidden" name="field" value="assettitle" />
-				<input type="hidden" name="field" value="assettype" />
-				<input type="hidden" name="field" value="editstatus" />
-				<input type="hidden" name="field" value="episode" />
-				<input type="hidden" name="field" value="title" />
+				
+#set($details =  $searcher.getDetailsForView("asset/assettype/default/singleupload", $user))
+#foreach($detail in $details)
+				<input type="hidden" name="field" value="$detail.id" />
+#end				
 			 
 			</div> 
 		</div>
@@ -148,6 +148,8 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 				var name = field.slice(field.indexOf(".")+1);
 				//alert(name);
 				var link = $(document.createElement('a'));
+				$(link).addClass('btn');
+				$(link).css('margin-left', '10px' );
 				$(link).text("Apply to All").click(function(){
 					var value = $('table#emfilelist tr input[name="' + field +'"]').val();
 					var inputs = $('table#emfilelist tr input[name$="' + name +'"]');
@@ -162,6 +164,8 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 				if ($(this).siblings('a').length == 0){
 					var field = $(this).attr("fieldname");
 					var link = $(document.createElement('a'));
+					$(link).addClass('btn');
+					$(link).css('margin-left', '10px' );
 					$(link).text("Apply to All").click(
 							function(){
 								var value = $('table#emfilelist tr select[fieldname="' + field +'"]').val();
