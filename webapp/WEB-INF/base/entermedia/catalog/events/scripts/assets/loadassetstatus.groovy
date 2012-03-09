@@ -27,8 +27,11 @@ public void init()
 		log.info("import complete, saving asset");
 		mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Asset asset = mediaArchive.getAsset(assetid);
-		asset.setProperty("importstatus","complete");
-		mediaArchive.saveAsset(asset,null);
+		if( asset != null)
+		{
+			asset.setProperty("importstatus","complete");
+			mediaArchive.saveAsset(asset,null);
+		}
 	}
 }
 
