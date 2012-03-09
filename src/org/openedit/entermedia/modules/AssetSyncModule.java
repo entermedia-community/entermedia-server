@@ -90,6 +90,8 @@ public class AssetSyncModule extends BaseMediaModule
 			//call the add new asset for this user based on the path they gave us
 			//redirect to the catalog userpage to track status on these assets
 			//TODO: deal with folders
+			String[] fields = inReq.getRequestParameters("field");
+
 			List<String> allids = new ArrayList();
 			ListHitTracker tracker = new ListHitTracker();
 			for (int i = 0; i < localpaths.length; i++) 
@@ -125,7 +127,6 @@ public class AssetSyncModule extends BaseMediaModule
 				// NOOO. The file is not uploaded yet you dolt!
 				// Whoops, sorry.
 
-				String[] fields = inReq.getRequestParameters("field");
 				if( fields != null)
 				{
 					for (int f = 0; f < fields.length; f++)

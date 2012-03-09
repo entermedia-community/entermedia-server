@@ -657,10 +657,12 @@ public class OrderManager
 	{
 		HitTracker items =  findOrderItems(inReq, inArchive.getCatalogId(), inOrder);
 		Set existing = new HashSet();
-		for (Iterator iterator = items.iterator(); iterator.hasNext();)
-		{
-			Data hit = (Data) iterator.next();
-			existing.add(hit.get("assetid"));
+		if(items != null){
+			for (Iterator iterator = items.iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				existing.add(hit.get("assetid"));
+			}
 		}
 		int count = 0;
 		for (Iterator iterator = inSelectedHits.iterator(); iterator.hasNext();)
