@@ -113,7 +113,7 @@ toggleitem = function(e)
 		var targetDiv = jQuery(this).attr("targetdiv");
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 		
-		jQuery("."+targetDiv).load(nextpage, {}, function()
+		jQuery("#"+targetDiv).load(nextpage, {}, function()
 			{
 				var html = jQuery(this).html();
 				
@@ -131,6 +131,35 @@ toggleitem = function(e)
 		return false;
 
 }
+
+
+
+updatebasket = function(e)
+{
+		
+		var nextpage= jQuery(this).attr('href');
+		var targetDiv = jQuery(this).attr("targetdiv");
+		targetDiv = targetDiv.replace(/\//g, "\\/");
+		var action= jQuery(this).data('action');
+		jQuery("#"+targetDiv).load(nextpage, {}, function()
+			{
+				
+				
+			    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
+				if(action == 'remove'){
+					jQuery(".selectionbox:checked").closest("tr").hide("slow");
+				}
+						
+				
+
+			}
+		);
+
+		return false;
+
+}
+
+
 
 toggleorderitem = function(e)
 {
@@ -212,6 +241,9 @@ onloadselectors = function()
 {
 	
 	jQuery("a.ajax").livequery('click', runajax);
+	
+	
+	jQuery("a.updatebasket").livequery('click', updatebasket);
 	
 	
 	jQuery("form.ajaxform").livequery('submit',	

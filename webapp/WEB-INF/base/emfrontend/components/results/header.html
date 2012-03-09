@@ -21,8 +21,13 @@
 		#end
 			
 		#if($content.isPropertyTrue("showaddselections") && $canviewbasket)
-			<li><a class="toggleitem ajax" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a></li>
+			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">Add to Basket</a></li>
 		#end
+		
+		#if($content.isPropertyTrue("showremoveselections") && $canviewbasket)
+			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">Remove</a></li>
+		#end
+		
 		
 		#if ($canmultiedit && $hits)
 			<li><a href="$home$apphome/views/detaileditor/multiedit/index.html?hitssessionid=$!hits.getSessionId()">Multi-Edit</a></li>

@@ -329,10 +329,8 @@ public class OrderModule extends BaseMediaModule {
 				.hasNext();) {
 
 			Data hit = (Data) iterator.next();
-			// Asset asset =
-			// getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
-			// getOrderManager().removeItemFromOrder(archive.getCatalogId(),
-			// basket, asset);
+			 Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
+			 getOrderManager().removeItemFromOrder(archive.getCatalogId(), basket, asset);
 		}
 	}
 
