@@ -243,6 +243,10 @@ public class LuceneSearchQuery extends SearchQuery
 			public String toQuery()
 			{
 				String val = getValue();
+				if( val == null)
+				{
+					return null;
+				}
 				if(val.startsWith("\""))
 				{
 					val = val.substring(1);

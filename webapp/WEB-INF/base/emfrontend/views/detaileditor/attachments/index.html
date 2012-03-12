@@ -1,56 +1,5 @@
-
-<div class="ui-widget" >
-				<div  class="ui-widget-header">Attachments</div>
-				<div  class="ui-widget-content categories-widget">
 #if($asset.isFolder())
-
-	#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
-	
-	#if( $canchangeattachment && $attachments && $attachments.size() > 0)
-	<form name="attachmentform" id="attachmentform" action="$home$apphome/views/detaileditor/attachments/changeattachment.html">
-	<input type="hidden" name="path" value="$path"/>
-	<input type="hidden" name="assetid" value="$asset.id"/>
-	#end
-	
-	<div class="emselectable">
-	<table width="100%" id="shared-asset-table" class="greytxt striped">
-	#if( $attachments && $attachments.size() > 0)
-	<thead>
-		<tr id="tableheader">
-			#if( $canchangeattachment )
-			<th>Primary<br/>asset</th>
-			<th>Thumbnail</th>
-			#end
-			<th>File Name</th>
-			<th>Size</th>
-			<th>User</th>
-			<th>Date</th>
-			<!-- th>Version History</th -->
-		</tr>
-	</thead>
-	#end
-		
-	#set($even = true)
-	#foreach( $attachment in $attachments )
-			$context.putPageValue("attachment", $attachment)
-			$pages.include("$apphome/views/detaileditor/attachments/displaynode.html", $context)
-		#end
-	
-	</table>
-	</div>
-	
-	#if( $canchangeattachment && $attachments && $attachments.size() > 0)
-		<br/><input class="btn float-right" type="submit" value="Save"/><br/>
-		</form>
-	#end
-	 
-	
-	
-	#if($canupload && $caneditasset)
-		<p>
-		$pages.include("$apphome/views/detaileditor/attachments/upload.html", $context)
-		</p>
-	#end
+	$pages.include("files.html",$context)
 #else ##end isfolder check
 	<p style="margin-top: 25px; text-align: center;">This is currently a file-based record, which does not allow for attachments.  
 	#if($caneditasset)

@@ -1,8 +1,10 @@
 package org.entermedia.attachments;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.Searcher;
@@ -13,7 +15,6 @@ import org.openedit.entermedia.scanner.MetaDataReader;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
@@ -50,61 +51,85 @@ public class AttachmentManager {
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public HitTracker processAttachments(MediaArchive inArchive, Asset inAsset, boolean reprocess) {
-		HitTracker hittracker = new ListHitTracker();
+	public void processAttachments(MediaArchive inArchive, Asset inAsset, boolean reprocess) 
+	{
+		//HitTracker hittracker = new ListHitTracker();
 		String inCatalogId = inArchive.getCatalogId();
 		Searcher attachmentSearcher = getAttachmentSearcher(inCatalogId);
-//		if(reprocess){
-//			deleteEntries(inAsset, attachmentSearcher);
-//		}
-		String destination = "/WEB-INF/data/" + inCatalogId + "/originals/" + inAsset.getSourcePath();
-		List files = getPageManager().getChildrenPaths(destination);
-		for (Iterator iterator = files.iterator(); iterator.hasNext();) {
-			String file = (String) iterator.next();
-			String fullpath = file;
-			
-			file = file.substring(file.lastIndexOf("/")+1, file.length());
-			SearchQuery query = attachmentSearcher.createSearchQuery();
-			query.addMatches("assetid", inAsset.getId());
-			query.addMatches("name", file);
-			HitTracker hits = attachmentSearcher.search(query);
-			if(hits.size() == 0){
-				//need a new entry
-				Data attachment = attachmentSearcher.createNewData();
-				
-				attachment.setSourcePath(inAsset.getSourcePath());
-				
-				attachment.setProperty("name", file);
-				attachment.setProperty("assetid", inAsset.getId());
-				Asset asset = new Asset();
-				Page target = getPageManager().getPage(fullpath);
-				File input = new File(target.getContentItem().getAbsolutePath());
-				getMetaDataReader().populateAsset(inArchive, input, asset);
-				for (Iterator iterator2 = asset.getProperties().keySet().iterator(); iterator2.hasNext();) {
-					String key = (String) iterator2.next();
-					String value = inAsset.get(key);
-					attachment.setProperty(key, value);
-					
-				}
-				attachmentSearcher.saveData(attachment, null);
-				hittracker.add(attachment);
-				
-			}
-			
-		}
-		return hittracker;
+
+		String root = "/WEB-INF/data/" + inCatalogId + "/originals/";
 		
+		syncFolder(attachmentSearcher, inArchive, inAsset.getId(), root, inAsset.getSourcePath(),inAsset.getSourcePath(), reprocess);
+	}
+	public HitTracker listChildren(WebPageRequest inReq, MediaArchive inArchive, String inFolderSourcePath)
+	{
+		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" ;
+		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
+		SearchQuery query = attachmentSearcher.createSearchQuery();
+		query.addExact("parentsourcepath", inFolderSourcePath);
+		HitTracker hits = attachmentSearcher.cachedSearch(inReq,query);
+		return hits;
+	}
+	protected void syncFolder(Searcher attachmentSearcher, MediaArchive inArchive, String inAssetId, String inRootFolder, String inFolderSourcePath, String inAssetSourcePath, boolean inReprocess)
+	{
+		List files = getPageManager().getChildrenPaths(inRootFolder + inFolderSourcePath);
+		for (Iterator iterator = files.iterator(); iterator.hasNext();) 
+		{
+			String file = (String) iterator.next();
+			Page page = getPageManager().getPage(file);
+			
+			//file = file.substring(file.lastIndexOf("/")+1, file.length());
+			SearchQuery query = attachmentSearcher.createSearchQuery();
+			query.addMatches("assetid", inAssetId );
+			query.addMatches("parentsourcepath", inFolderSourcePath);
+			HitTracker hits = attachmentSearcher.search(query);
+			Set alreadyhave  = new HashSet();
+			if( hits.size() > 0 && inReprocess )
+			{
+				for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
+				{
+					Data  data = (Data ) iterator2.next();
+					alreadyhave.add(data.get("name"));
+				}
+			}
+			if(inReprocess || hits.size() == 0)
+			{
+				if( !alreadyhave.contains( page.getName() ) )
+				{
+					//need a new entry
+					Data attachment = attachmentSearcher.createNewData();
+					attachment.setSourcePath(inAssetSourcePath );
+					attachment.setProperty("name", page.getName() );
+					attachment.setProperty("assetid", inAssetId);
+					attachment.setProperty("folder", String.valueOf( page.isFolder() ) );
+					attachment.setProperty("parentsourcepath", inFolderSourcePath);
+					
+					Asset asset = new Asset();
+					File input = new File(page.getContentItem().getAbsolutePath());
+					getMetaDataReader().populateAsset(inArchive, input, asset);
+					for (Iterator iterator2 = asset.getProperties().keySet().iterator(); iterator2.hasNext();) 
+					{
+						String key = (String) iterator2.next();
+						String value = asset.get(key);
+						attachment.setProperty(key, value);
+					}
+					attachmentSearcher.saveData(attachment, null);					
+				}
+			}
+			if( page.isFolder())
+			{
+				syncFolder(attachmentSearcher, inArchive, inAssetId, inRootFolder, inFolderSourcePath + "/" + page.getName(), inAssetSourcePath, inReprocess);
+			}
+		}
 	}
 
 	private void deleteEntries(Asset inAsset, Searcher inAttachmentSearcher) {
 		HitTracker hits = inAttachmentSearcher.fieldSearch("assetid", inAsset.getId());
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
+		{
 			Data hit = (Data) iterator.next();
 			inAttachmentSearcher.delete(hit, null);
-			
 		}
-		
-		
 	}
 
 	public Searcher getAttachmentSearcher(String inCatalogId) {
@@ -112,15 +137,23 @@ public class AttachmentManager {
 		return attachmentSearcher;
 	}
 
-	public HitTracker findAssetAttachments(WebPageRequest inReq,
-			MediaArchive inArchive, Asset inAsset) {
-		HitTracker hits = getAttachmentSearcher(inArchive.getCatalogId()).fieldSearch("assetid", inAsset.getId());
-		if(hits.size() == 0){
-			processAttachments(inArchive, inAsset, true);		
+	public void syncAttachments(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, boolean inReload) 
+	{
+		if( inReload )
+		{
+			processAttachments(inArchive, inAsset, inReload);		
 		}
-		processAttachments(inArchive, inAsset, true);		
-		hits = getAttachmentSearcher(inArchive.getCatalogId()).fieldSearch("assetid", inAsset.getId());
-		return hits;
+		else
+		{
+			HitTracker hits = listChildren(inReq, inArchive, inAsset.getSourcePath());
+			if(hits.size() == 0)
+			{
+				processAttachments(inArchive, inAsset, inReload);		
+			}
+		}
+//		processAttachments(inArchive, inAsset, true);		
+//		hits = getAttachmentSearcher(inArchive.getCatalogId()).fieldSearch("assetid", inAsset.getId());
+//		return hits;
 		
 	}
 	
