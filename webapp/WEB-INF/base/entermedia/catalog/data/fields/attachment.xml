@@ -6,6 +6,8 @@
   <property id="assetid" editable="true" index="true" stored="true">Asset ID</property>
  	<property id="fulltext" keyword="true" index="true">Full Text</property> 	<!-- This is for PDFs -->
  	<property id="sourcepath" index="true" stored="true">Source Path</property>
+ 	<property id="foldersourcepath" index="true" stored="true">Folder Source Path</property>
+ 	<property id="folder" index="true" type="boolean" stored="true">Is Folder</property>
  
     <property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>
