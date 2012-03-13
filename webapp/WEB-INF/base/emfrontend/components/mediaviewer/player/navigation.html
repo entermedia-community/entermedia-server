@@ -39,8 +39,17 @@
 
 
 #if($caneditasset)
+
+<li style="float: right;">
+<a class="btn" href="$home$apphome/views/detaileditor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="Edit Metadata" /> Delete</a>
+
+</li>
 <li style="float: right;">
 <a class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /> Edit</a>
+
+
+
+
 </li>
 #end
 
