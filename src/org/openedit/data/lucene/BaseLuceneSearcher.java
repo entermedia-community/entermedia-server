@@ -476,9 +476,14 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 								log.error(ex);
 								setLiveSearcher(null);
 								setIndexWriter(null);
-
 							}
 							throw (OpenEditException) ex;
+						}
+						if(ex instanceof IOException)
+						{
+							log.error("Trying to recover corrupt index " + getSearchType());
+							setLiveSearcher(null);
+							setIndexWriter(null);
 						}
 						throw new OpenEditException(ex);
 					}

@@ -13,50 +13,59 @@ import org.openedit.entermedia.edit.AssetEditor;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 
-public class AttachmentModule extends BaseMediaModule {
+public class AttachmentModule extends BaseMediaModule 
+{
 	
 	protected AttachmentManager fieldAttachmentManager;
 	
-
-
-	public AttachmentManager getAttachmentManager() {
+	public AttachmentManager getAttachmentManager() 
+	{
 		return fieldAttachmentManager;
 	}
 
-	public void setAttachmentManager(AttachmentManager inAttachmentManager) {
+	public void setAttachmentManager(AttachmentManager inAttachmentManager) 
+	{
 		fieldAttachmentManager = inAttachmentManager;
 	}
 
-	
-	
-	public void findAssetAttachments(WebPageRequest inReq){
+	public void syncAttachments(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		if(asset != null){
-			HitTracker attachments = getAttachmentManager().findAssetAttachments(inReq, archive, asset);
-			inReq.putPageValue("attachments", attachments);
+		if(asset != null)
+		{
+			getAttachmentManager().syncAttachments(inReq, archive, asset, false);
 		}
-		
+	}
+	public void reSyncAttachments(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		if(asset != null)
+		{
+			getAttachmentManager().syncAttachments(inReq, archive, asset,true);
+		}
 	}
 	
-	
-	public void uploadAttachments(WebPageRequest inReq) throws Exception {
-		
+	public void uploadAttachments(WebPageRequest inReq) throws Exception 
+	{
 		MediaArchive archive = getMediaArchive(inReq);
-		
 		
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
 		Asset asset = getAsset(inReq);
-		if (properties == null) {
+		if (properties == null) 
+		{
 			return;
 		}
 		String firstfile= null;
 		
 		for (Iterator iterator = properties.getUploadItems().iterator(); iterator
-				.hasNext();) {
-			if(!asset.isFolder()) {
+				.hasNext();) 
+		{
+			if(!asset.isFolder()) 
+			{
 				AssetEditor editor = (AssetEditor) getModuleManager().getBean("assetEditor");
 				editor.setMediaArchive(archive);
 				editor.makeFolderAsset (asset, inReq.getUser());
@@ -79,9 +88,9 @@ public class AttachmentModule extends BaseMediaModule {
 			String finalpath = folder + name;
 			properties.saveFileAs(item, finalpath, inReq.getUser());			
 		}
-		HitTracker newattachments = getAttachmentManager().processAttachments(archive, asset, false);
+		getAttachmentManager().processAttachments(archive, asset, false);
 		
-		inReq.putPageValue("newattachments", newattachments);
+		//inReq.putPageValue("newattachments", newattachments);
 		inReq.putPageValue("first", firstfile);
 		// inIn.delete();
 
