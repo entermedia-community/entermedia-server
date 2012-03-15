@@ -1,44 +1,45 @@
 <tr id="tableheader">
 #if( $showtoolbar )
-	<th class="firstheader"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end /></th>
+	<th class="firstheader" id="th-checkbox"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end /></th>
 #end	
 
 #set( $edit = $context.getRequestParameter("editheader"))
 #if( !$edit || $edit == "false")
 #set( $edit = false)
 #end
-	<th style="text-align: center;"> Thumbnail</th>
+	<th id="th-thumbnail"> Thumbnail</th>
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
-		<th  #if( $edit)class="editcolumnheader"#end>
+	
+		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
+					
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
-				<span>
 					#text( $detail.name )
 					#if( $edit)
-						<a class="baseemenableonhover ajax edit-table-header" targetdiv="emresultscontent" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
-					#else
-						##if is  this is our sort by column show it, allow them to flip it
-						#if( $sortby.startsWith($detail.getId() ) )
-							#if( $sortby.endsWith("Up") )
-								<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Down">
-									<img title="Sort Decreasing" src="$home$themeprefix/images/navigation/arrow-down.png" />
-								</a>	
-							#else
-								<a class="ajax" targetdiv="emresultscontent" href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Up">
-									<img title="Sort Increasing" src="$home$themeprefix/images/navigation/arrow-up.png" />
-								</a>	
-							#end
-						</a>
-						#else
-						<a class="baseemshowonhover ajax" targetdiv="emresultscontent"  href="$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=${detail.id}Up">
-							<img title="Sort Increasing" src="$home$themeprefix/images/navigation/arrow-down.png" />
-						</a>
-						#end
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+					
 					#end
-				</span>
 			</div>
 		 </th>
 	#end
 	
 </tr>
 
+<script>
+	$('th.sortable').on({
+		click: function(){
+			var id = $(this).attr('id');
+			if ( $(this).hasClass('currentsort') ) {
+				if ( $(this).hasClass('up') ) {
+					jQuery('#resultsdiv').load( '$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+				} else {
+					jQuery('#resultsdiv').load( '$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
+				}
+			} else {
+				$('th.sortable').removeClass('currentsort');
+				$(this).addClass('currentsort');
+				jQuery('#resultsdiv').load( '$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+			}
+		}
+	});
+</script>

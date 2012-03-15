@@ -682,6 +682,7 @@ onloadselectors = function()
 			}
 		);
 	
+	
 	jQuery(".headerdroppable").livequery(
 			function()
 			{
@@ -700,7 +701,7 @@ onloadselectors = function()
 							{
 								editing = false;
 							}
-							jQuery("#emresultscontent").load("$home$apphome/components/results/savecolumns.html",
+							jQuery("#resultsdiv").load("$home$apphome/components/results/savecolumns.html",
 								{
 								"source":source,
 								"destination":destination,
@@ -872,3 +873,4 @@ emcomponents = function() {
 		}
 	);
 }
+
