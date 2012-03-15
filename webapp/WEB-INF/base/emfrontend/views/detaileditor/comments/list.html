@@ -13,7 +13,9 @@
 					<input type="hidden" name="commentdate" value="$comment.date.time"/>
 					<input type="hidden" name="catalogid" value="$catalogid"/>
 				</form>
+				#if($comment.user.id == $user.id || $asset.owner == $user.id ) ##only comment owners and video ownsers can delete comments
 				<a class="btn small" href="#" onclick="jQuery('#removeComment${velocityCount}').submit();return false;">remove</a>
+				#end
 				</div>
 			#end
 			</div>
