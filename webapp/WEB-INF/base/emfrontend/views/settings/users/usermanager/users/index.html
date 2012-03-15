@@ -2,7 +2,8 @@
 #set( $searcher = $searcherManager.getSearcher("system","user"))
 $context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", $user))	
 <div id="usersearchresultspanel">
-$pages.include("./results.html?sortby=enabledDown,lastNameUp&field=groups&operation=matches&groups.value=$content.mastergroup", $context)
+
+$pages.include("./results.html")
 </div>
 <div style="text-align:right;float:right;margin-top:10px;">
 <a class="btn" href='$home$usermanagerhome/users/adduser.html?iframe=true&height=200&width=300'>Create User</a>
