@@ -9,17 +9,17 @@
 #set( $oeview = "user/results")
 #set( $details = $userSearcher.getDetailsForView($oeview,$user))
 
-<table width="100%" class="striped greytxt" style="margin-top: 15px;">
+<table width="100%" class="striped emdata" style="margin-top: 15px;">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
 	#set( $selecteduser = $context.getRequestParameter("username" ) )
 	<thead>
 	<tr class="tableheader">
 		#foreach( $detail in $details )
-		<th style="padding:4px;text-align:left;">
+		<th>
 			$detail.text
 		</th>
 		#end
-		<th style="padding:4px;text-align:left;">
+		<th>
 			Security Group
 		</th>
 	</tr>
@@ -34,7 +34,7 @@
 			#set( $newval = "$!searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$newval)" )
 	
 		#end		
-		<td nowrap style="padding:4px;text-align:left;">
+		<td nowrap>
 			$newval
 		</td>
 	#end

@@ -13,7 +13,7 @@ $query.addSortBy("name")
 
 #set( $results = $searcher.search($query) )
 #if($results.size() > 0 )
-<table class="striped greytxt">
+<table class="striped emdata">
 <thead><tr class="tableheader">
 #foreach( $detail in $details)
 <th>$detail.getText($context)</th>
