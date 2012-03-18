@@ -32,6 +32,7 @@
 	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
 	<permission id="viewcomments" name="View Comments" description="View Comments" />
 	<permission id="comment" name="Add Comments" description="Add Comments" />
+	<permission id="removecomments" name="Remove Comments" description="Remove Comments" />
 
 	<permission id="viewattachments" name="View Attachments" description="View attachments"/>
 	<permission id="changeattachment" name="Edit Attachments" description="Edit Attachments" />
