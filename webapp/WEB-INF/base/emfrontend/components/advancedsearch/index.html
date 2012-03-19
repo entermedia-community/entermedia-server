@@ -59,8 +59,6 @@ $context.putPageValue("edit",$edit)
 	<select name="field" onChange="jQuery('#searchaddfield').submit();">
 		<option>Add Field</option>
 		#foreach( $detail in $alldetails)
-			#set( $internal = false )
-			#set($internal = $detail.get("internalfield") )
 			#if($detail.isLeaf())
 			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
 			#else							

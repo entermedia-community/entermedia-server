@@ -123,7 +123,7 @@ public class SavedQueryModule extends BaseMediaModule
 	public Data addPreviousSearch(WebPageRequest inReq) throws Exception
 	{
 		SearchQuery query = loadCurrentQuery(inReq);
-		query.setProperty("caption", query.getName() );
+		//query.setProperty("caption", query.getName() );
 		query.setProperty("usersaved", "false");
 		
 		String catalogid = inReq.findValue("catalogid");
