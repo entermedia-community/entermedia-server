@@ -141,7 +141,7 @@ public class CommentModule extends BaseMediaModule
 		String commentPath = findPath(inReq);
 		getCommentArchive().addComment(commentPath, comment);
 		//?????? Tuan check again
-		loadComments(inReq, commentPath);
+		//loadComments(inReq, commentPath);
 	}
 	
 	

@@ -174,6 +174,7 @@ public class CommentArchive
 				FileUtils.safeClose(reader);
 			}
 		}
+		log.info("Found " + comments.size());
 		return new ListHitTracker(comments);
 	}
 

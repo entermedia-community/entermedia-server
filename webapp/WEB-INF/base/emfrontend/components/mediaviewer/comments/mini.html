@@ -1,9 +1,7 @@
 <div id="emcommentarea" class="clearfix">
-#if(!$comments)
-	#set($comments = $commentArchive.loadComments($asset))
-	$context.putPageValue("comments",$comments)
-#end
-
+			
+#set($comments = $commentArchive.loadComments($asset))
+$context.putPageValue("comments",$comments)
 
 	#if( $cancomment )
 		<form id="addcomment" name="addcomment" class="user-input-area ajaxform commentresizer clearfix" targetdiv="emcommentarea" action="${home}${apphome}/components/mediaviewer/comments/mini.html" method="post">
@@ -13,17 +11,13 @@
 			<input type="hidden" name="catalogid" value="$catalogid"/>
 			<input class="btn right" type="submit" value="[[Save Comment]]"/>
 		</form>
+	#else
+		#if(!$user)
+		<p>[[You must be]] <a href="$home/$applicationid/authentication/login.html">[[logged in]]</a> [[to leave a comment]]</p>
+		#end
 	#end	
 
-
-
-</div>
-#if(!$user)
-<p>[[You must be]] <a href="$home/$applicationid/authentication/login.html">[[logged in]]</a> [[to leave a comment]]</p>
-#end
-
-
-<div id="emcomments">
+ <div id="emcomments">
 	##foreach ($comment in $comments.getLast(2))
 	#foreach ($comment in $comments.getLast(15))
 		<div class="emcomment">	
@@ -53,4 +47,5 @@
 	#if( $comments.size() > 15 )
 	<a class="emdialog" href="$home$apphome/components/mediaviewer/comments/index.html?sourcepath=$asset.sourcepath">View all $comments.size() comments</a>
 	#end
+ </div>	
 </div>

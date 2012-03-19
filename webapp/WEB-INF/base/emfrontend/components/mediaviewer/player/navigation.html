@@ -128,11 +128,9 @@
 	
  $pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
  
-#if ($cancomment)
-			
-				$pages.include("$apphome/components/mediaviewer/comments/mini.html?sourcepath=$asset.sourcepath",$context)
-
-			#end
+#if ($canviewcomments)
+		$pages.include("$apphome/components/mediaviewer/comments/mini.html?sourcepath=$asset.sourcepath",$context)
+#end
 
  
 </div>

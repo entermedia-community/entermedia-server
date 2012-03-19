@@ -20,13 +20,18 @@
 	</div>	
 </td></tr></table>
 #end
+#if ($canviewcomments)
 <div id="emplayerresults" >
 	<div class="emrounded"><h4><br></h4>
 	<div class="emroundedbody">
 	<div class="embox">
+			<div id="emcommentarea" class="clearfix">
+	
 	$pages.include("/${applicationid}/components/results/mini.html",$context)
+	</div>	
 	</div>	
 	</div>	
 	</div>	
 
 </div>
+#end
