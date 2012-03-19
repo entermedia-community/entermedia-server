@@ -53,9 +53,17 @@
   	<permission name="viewbasket">
 			<userprofile property="viewbasket" equals="true" />
 	</permission>
-	
+		
   	<permission name="shareasset">
 			<userprofile property="shareasset" equals="true" />
+	</permission>
+	
+  	<permission name="sharetosocialmedia">
+			<userprofile property="sharetosocialmedia" equals="true" />
+	</permission>
+	
+  	<permission name="createnewrecord">
+			<userprofile property="createnewrecord" equals="true" />
 	</permission>
 	
 	<permission name="viewsettings">
@@ -80,6 +88,10 @@
 
 	<permission name="comment">
 		<userprofile property="comment" equals="true" />
+	</permission>	
+
+	<permission name="removecomments">
+		<userprofile property="removecomments" equals="true" />
 	</permission>	
 
 	<permission name="convert">
