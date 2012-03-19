@@ -30,10 +30,9 @@ a img {
 
 .access_message {
 	color: #333;
-	font-size: 12px;
-	font-weight: 100;
-	padding-left: 15px;
-	padding-top: 23px;
+	padding-left: 0px;
+	padding-top: 12px;
+	padding-bottom: 12px;
 }
 
 .field_title {

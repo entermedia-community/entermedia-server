@@ -1,6 +1,15 @@
 #set($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $sourcepath = $asset.sourcePath )
 
+
+#if( $parenthits )
+#set( $rootid = $parenthits.sessionId )
+#else
+#set( $rootid = $hits.sessionId )
+#end
+
+
+
 #set( $ismulti = $asset.id.startsWith("multiedit:") )
 #if( !$ismulti )
 <div id="single-thumb">
@@ -18,21 +27,14 @@
 				##if( $showcaption ) style="vertical-align:bottom;" #end 
 				#if($showhover != false) hover="true" #end 
 				>			
-
+<a href="$home$apphome/views/assets/${sourcepath}/index.html?hitssessionid=$rootid">
 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
-
+</a>
 			</div>
 		</div>
 </div>
 #end
 
-
-
-#if( $parenthits )
-#set( $rootid = $parenthits.sessionId )
-#else
-#set( $rootid = $hits.sessionId )
-#end
 
 #set( $tab = $context.findValue("assettab") )
 #set( $links = $searcherManager.getList($catalogid,"detaileditormenu") )

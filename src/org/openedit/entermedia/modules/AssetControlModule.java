@@ -2,6 +2,7 @@ package org.openedit.entermedia.modules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -113,6 +114,7 @@ public class AssetControlModule extends BaseMediaModule {
 					groups.add(group);
 			}
 		}
+		Collections.sort(groups);
 		return groups;
 	}
 

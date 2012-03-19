@@ -1,27 +1,4 @@
-<!-- <h2>[[Edit Permissions]]</h2> -->
-<!-- <br> -->
-<!-- <form name="shareform" action="./socialfinish.html" style="padding-left: 10px;"> -->
-<!-- 	<input type="hidden" name="sourcepath" value="$asset.sourcepath" /> -->
-<!-- 	<input type="hidden" name="categoryid" value="$!context.getRequestParameter("categoryid")" /> -->
-
-<!-- 	[[Private - Only the people listed below can access]] -->
-
-
-<!-- #set( $title = "$!asset.assettitle" )  -->
-<!-- #set( $title = "$title $!asset.caption" ) -->
-<!-- #if( $title.length() < 4 ) -->
-<!-- #set( $title = "$!asset.toString()" ) -->
-<!-- #end -->
-<!-- <input  name="sharecaption" type="hidden" value="$title"  /> -->
-<!-- <br> -->
-
-
-
-
-<!-- </form> -->
-	
-	
-	<div id="permissions">
+<div id="permissions">
 	<script type="text/javascript" charset="utf-8">
 		removePerson = function(userid){
 			jQuery("#permissions").load("$home$apphome/components/share/removeperson.html?assetid=$asset.id&userid=" + userid);
@@ -48,14 +25,8 @@
 		}
 	</script>
 	
-		<div class="header_element">
-			<!-- TITLE BAR -->
-			Edit Permissions
-		</div>
-	
 		<div class="access_message">
 			<!-- Lock Icon MSG -->
-	
 			<img src="$home${themeprefix}/images/gfx/lock_icon.png" style="padding-right: 5px;"><span class="access_span">Private
 			- Only the people listed below can access</span>
 	
@@ -80,14 +51,12 @@
 				</tr>
 				#foreach($person in $peoples)
 				<tr>
-					<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
-						title="$person"></td>
+					<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"	title="$person" /></td>
 					<td class="user">$person</td>
 					<td class="userlevel"><a class="delete" href="#" title="Remove User" onclick="removePerson('$person.id');return false;"></a></td>
 				</tr>
 				#end
 			</table>
-	
 	
 			<div class="add_person_box">
 				<span class="add_person_label">Add People:</span> <br /> 
@@ -107,8 +76,7 @@
 	
 				#foreach($group in $groups)
 				<tr>
-					<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"
-						title="$group.name"></td>
+					<td class="avatar"><img src="$home${themeprefix}/images/gfx/default_avatar.png"	title="$group.name" /></td>
 					<td class="user">$group.name</td>
 					<td class="userlevel"><a class="delete-row" href="#" title="Remove Group" onclick="removeGroup('$group.id');return false;"></a></td>
 				</tr>
