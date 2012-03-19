@@ -68,7 +68,7 @@ public void init()
 		{
 			removed.add(asset.getSourcePath());
 			archive.removeGeneratedImages(asset);
-			archive.getAssetSearcher().delete(asset, inUser);
+			archive.getAssetSearcher().delete(asset, user);
 		}
 		else
 		{

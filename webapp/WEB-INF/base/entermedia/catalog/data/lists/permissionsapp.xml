@@ -2,7 +2,6 @@
 
 	<permission id="view" name="View App" description="Who can view the application"/>
 	<permission id="viewupload" name="Upload" description="Upload" />
-	<permission id="viewhomelink" name="View Home Link" description="The button to the home page is shown" />
 	<permission id="viewassets" name="View Assets" description="Allows viewing of asset details" />
 	<permission id="viewbasket" name="View Basket" description="Allows use of the collection basket as well as the ability to see the Add to Basket button" />
   	<permission id="shareasset" name="Share Asset" description="Share Assets" />
@@ -15,7 +14,6 @@
 	<permission id="publish" name="Publish" description="Publish" />
 
 	<permission id="quicksearch" name="Quick Search" description="Ability to search from the top of the site"/>
-	<permission id="viewpasswordhelper" name="Password Helper" description="Allow lookup of passwords"/>
 	
 	<permission id="metadatageneral" name="General Metadata" description="Enable general metadata edits"/>
 	<permission id="editassetcategories" name="Categorize" description="Edit Categories"/>
@@ -27,9 +25,10 @@
 
 	<permission id="download" name="Download" description="Allows users to download"/>
 	<permission id="embedasset" name="Embed" description="Embed HTML"/>
-	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
 	<permission id="convert" name="Show Download Size Options" description="Shows conversion options"/>
+<!-- 
 	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
+ -->
 	<permission id="viewcomments" name="View Comments" description="View Comments" />
 	<permission id="comment" name="Add Comments" description="Add Comments" />
 	<permission id="removecomments" name="Remove Comments" description="Remove Comments" />
@@ -51,7 +50,7 @@
 
 	<permission id="multiedit" name="Multi Edit" category="asset" description="Multi edit several assets at once"/>
 
-	<permission id="sharetosocialmedia" name="Share To Social Media" description="Share to sites such as Facebook"/>
+	<permission id="sharetosocialmedia" name="Share To Facebook" description="Share to sites such as Facebook"/>
 	
 	
 	<permission id="viewsearcheditor" name="View Search Editor" description="View search editor in sidebar"/>
