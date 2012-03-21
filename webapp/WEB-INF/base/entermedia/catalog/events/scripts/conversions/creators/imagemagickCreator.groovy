@@ -19,6 +19,7 @@ import org.openedit.entermedia.creator.MediaCreator
 import com.openedit.OpenEditException
 import com.openedit.page.Page
 import com.openedit.util.PathUtilities
+import java.awt.Dimension;
 
 public class imagemagickCreator extends BaseImageCreator 
 {
@@ -35,7 +36,7 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			inStructions.setWatermark(false);
 			String outputPath = populateOutputPath(inArchive, inStructions); //now does not contain wm
-			Page outputPage = getPageManager().getPage(outputPath);
+			Page ogetCatalogHomeutputPage = getPageManager().getPage(outputPath);
 			if(!outputPage.exists())
 			{
 				createOutput(inArchive, inAsset, outputPage, inStructions); //this will create smaller version
@@ -70,7 +71,8 @@ public class imagemagickCreator extends BaseImageCreator
 
 		if( inStructions.getMaxScaledSize() != null && offset == null)
 		{
-			if( input == null &&  inStructions.getMaxScaledSize().getWidth() < 300 )
+			Dimension box = inStructions.getMaxScaledSize();
+			if( input == null &&  box.getWidth() < 300 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image300x300.jpg");
 				if( !input.exists() )
@@ -82,7 +84,7 @@ public class imagemagickCreator extends BaseImageCreator
 					autorotate = false;
 				}
 			}
-			if( input == null && inStructions.getMaxScaledSize().getWidth() < 1024 )
+			if( input == null && box.getWidth() < 1024 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg");				
 				if( !input.exists() )
