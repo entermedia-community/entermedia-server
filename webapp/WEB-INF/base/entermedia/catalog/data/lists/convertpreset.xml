@@ -14,7 +14,7 @@
     <preset id="2" guid="ffmpeg720p" outputfile="video720p.avi" fileexportformat="${filename}HQ.avi" type="ffmpeg" inputtype="video" extension="avi" ordering="08">Video HQ AVI</preset>
     <preset id="1" guid="ffmpeg1080p" outputfile="video1080p.mp4" fileexportformat="${filename}1080p.mp4" type="ffmpeg" inputtype="video"  extension="mp4" ordering="09">Video HQ MP4</preset>
 
-    <preset id="previewffmpegthumb" outputfile="image800x600.jpg" fileexportformat="${filename}800x600.jpg" type="ffmpegimage" extension="mp4" inputtype="video" onimport="true" ordering="10">Video Thumb</preset>
+    <preset id="previewffmpegthumb" outputfile="image1024x768.jpg" fileexportformat="${filename}1024x768.jpg" type="ffmpegimage" extension="mp4" inputtype="video" onimport="true" ordering="10">Video Thumb</preset>
 
     <!-- 
     <preset id="preview" outputfile="preview-rhozet.mp4" fileexportformat="${filename}LQ.mp4" type="rhozet" extension="mp4" guid="21F5E3B8-FD4D-452A-A351-173FCC26FA0E" inputtype="video" ordering="01">Video Rhozet LQ MP4</preset>

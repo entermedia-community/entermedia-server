@@ -74,7 +74,7 @@ public class imagemagickCreator extends BaseImageCreator
 			Dimension box = inStructions.getMaxScaledSize();
 			if( input == null &&  box.getWidth() < 300 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image300x300.jpg");
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480.jpg");
 				if( !input.exists() )
 				{
 					input = null;
