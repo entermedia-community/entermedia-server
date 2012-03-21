@@ -66,7 +66,7 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		
 		Page input = null;
-		boolean autorotate = true; //If we already have a smaller version we just need to make a copy of that
+		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 
 		if( inStructions.getMaxScaledSize() != null && offset == null)
@@ -81,7 +81,7 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 				else
 				{
-					autorotate = false;
+					autocreated = true;
 				}
 			}
 			if( input == null && box.getWidth() < 1024 )
@@ -93,7 +93,7 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 				else
 				{
-					autorotate = false;
+					autocreated = true;
 				}
 			}
 		}
@@ -201,7 +201,7 @@ public class imagemagickCreator extends BaseImageCreator
 /** We dont need this any more?
 			//we need to rotate this before we start otherwise the width and heights might be flipped. This is only 5% slower
 			//since we now strip all metadata from resulting images the orientation will be lost
-			if( autorotate )
+			if( autocreated )
 			{
 				String rotation = inAsset.getProperty("imageorientation");
 				if(rotation != null)
@@ -257,7 +257,7 @@ public class imagemagickCreator extends BaseImageCreator
 		//faster to do it after sizing
 		//TODO: Is this needed any more? Seems that ImageMagik will use the orientation flag that is built in
 /** Dont need this
-		if (autorotate && inStructions.getRotation() != 0 && inStructions.getRotation() != 360)
+		if (autocreated && inStructions.getRotation() != 0 && inStructions.getRotation() != 360)
 		{
 			com.add("-rotate");
 			com.add(String.valueOf(360 - inStructions.getRotation()));
@@ -318,15 +318,16 @@ public class imagemagickCreator extends BaseImageCreator
 			com.add("white");
 			com.add("-flatten");
 		}
+
+		if( !autocreated )
+		{
+			com.add("-colorspace");
+			com.add("rgb");
 		
-		com.add("-colorspace");
-		com.add("rgb");
-	
-//		com.add("-quality"); 
-//		com.add("90"); I think the default is about 80
-		
-		com.add("-strip");
-	
+	//		com.add("-quality"); 
+	//		com.add("90"); I think the default is about 80
+			com.add("-strip");
+		}
 		if (System.getProperty("os.name").toLowerCase().contains("windows"))
 		{
 			// windows needs quotes if paths have a space
