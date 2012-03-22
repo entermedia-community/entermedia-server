@@ -156,6 +156,39 @@ public class AttachmentManager {
 //		return hits;
 		
 	}
+
+	public void createFolder(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inParentid, String inName)
+	{
+		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
+		String sourcepath = null;
+		if( inParentid != null)
+		{
+			Data parent = (Data)attachmentSearcher.searchById(inParentid);
+			sourcepath = parent.get("parentsourcepath") + "/" + parent.getName();
+		}
+		else
+		{
+			sourcepath = inAsset.getSourcePath();
+		}
+		//parentsourcepath
+		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
+		Page folder = getPageManager().getPage(root + sourcepath + "/" + inName + "/");
+		getPageManager().putPage(folder);
+	}
+
+	public void delete(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inFileid)
+	{
+		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
+		Data file = (Data)attachmentSearcher.searchById(inFileid);
+
+		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
+		String 	sourcepath = file.get("parentsourcepath") + "/" + file.getName();
+
+		Page page = getPageManager().getPage(root + sourcepath);
+		getPageManager().removePage(page);
+		
+		attachmentSearcher.delete(file, inReq.getUser());
+	}
 	
 	
 	

@@ -3,12 +3,9 @@
 	<path-action name="AssetControlModule.loadAssetPermissions"/>
 	<path-action name="Admin.allowViewing"/>
 	
-	
-	
-	
 	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<property name="assetrootfolder">/${catalogid}/assets</property>
-	<property name="uploadroot">/views/detaileditor/attachments</property>
+	<property name="attachmentroot">/${applicationid}/views/detaileditor/attachments</property>
 	<path-action name="WebTree.getTree" allowduplicates="true" >
 		<tree-name>pageTree</tree-name>	
 	</path-action>

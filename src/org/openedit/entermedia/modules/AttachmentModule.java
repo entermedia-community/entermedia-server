@@ -96,4 +96,27 @@ public class AttachmentModule extends BaseMediaModule
 
 	}
 	
+	public void createFolder(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		if(asset != null)
+		{
+			String parentid = inReq.getRequestParameter("fileid");
+			String foldername = inReq.getRequestParameter("foldername");
+			getAttachmentManager().createFolder(inReq, archive, asset,parentid, foldername);
+		}
+		reSyncAttachments(inReq);
+	}
+	public void delete(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		if(asset != null)
+		{
+			String fileid = inReq.getRequestParameter("fileid");
+			getAttachmentManager().delete(inReq, archive, asset,fileid);
+		}
+		reSyncAttachments(inReq);
+	}
 }

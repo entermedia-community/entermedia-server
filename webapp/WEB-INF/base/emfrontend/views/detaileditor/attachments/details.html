@@ -1,0 +1,32 @@
+#set( $attachmentroot = $content.attachmentroot )
+#set( $fileid = $context.getRequestParameter("fileid") )
+
+#if($fileid)
+	#set( $data = $searcherManager.getData($catalogid,"attachment",$fileid))
+#end
+#if( $data )	
+	#set( $parentsourcepath = "${data.parentsourcepath}/${data.name}" )
+	#set( $name = $data.name)
+#else
+	#set( $parentsourcepath = $asset.sourcepath )
+	#set( $name = "")
+#end
+
+#set( $path = "/WEB-INF/data/$catalogid/originals/$parentsourcepath/" )
+
+<p class="name">$name</p>
+<ul id="stacked">
+	##<li><a class="btn" href="#">View Preview</a></li>
+	<li><a  class="btn ajaxappender"  href="$home$attachmentroot/upload.html?assetid=$asset.id&parentsourcepath=$parentsourcepath">Upload Files</a></li>
+#if(!$data || $data.folder == "true" )
+	<li><a  id="downloadlink" class="btn" href="$home$attachmentroot/zip/${name}-attachments.zip?path=$path&stripfolders=$path">Download Folder</a></li>
+#else
+	<li><a  id="downloadlink" class="btn" href="$home/$catalogid/downloads/originals/$parentsourcepath/$name">Download</a></li>
+#end
+	<li><a class="btn" href="$home$attachmentroot/createfolder.html?sourcepath=$asset.sourcepath&fileid=$!fileid">Create Folder</a></li>
+#if( $data )
+	<li><a class="btn" href="$home$attachmentroot/delete.html?sourcepath=$asset.sourcepath&fileid=$!fileid">
+		Delete 	
+		#if( $data.folder == "true") Folder #else Asset #end</a></li>
+#end
+</ul>

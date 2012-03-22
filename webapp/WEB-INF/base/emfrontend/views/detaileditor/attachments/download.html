@@ -1,4 +1,4 @@
-#set( $filesource = $context.getRequestParameter("parentsourcepath") )
+#set( $filesource = $context.getRequestParameter("filesource") )
 
 #set( $attachmentroot = $content.attachmentroot )
 
@@ -8,7 +8,13 @@
 
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home${attachmentroot}/uploadfile-finish.html" >
 
-#set( $path = "/WEB-INF/data/$catalogid/originals/$filesource/" )
+#if($fileid)
+	#set( $data = $searcherManager.getData($catalogid,"attachment",$fileid))
+	#set( $parentsourcepath = "${data.parentsourcepath}/${data.name}" )
+	#set( $path = "/WEB-INF/data/$catalogid/originals/$parentsourcepath/" )
+#else
+	#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
+#end
 
 <input type="file" multiple name="file" size="35" /> 
 <input type="hidden" id="path" name="path" value="$path" size="35" /> 

@@ -1,3 +1,5 @@
+#set( $attachmentroot = $content.attachmentroot )
+
 #set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
 
 #set($rootcategory = $categoryPickerTree.getModel().getRoot())
@@ -10,14 +12,15 @@
 		
 		#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
 		#foreach($file in $files)
+			#set( $filesource  = "${file.parentsourcepath}/${file.name}")
 			#if($file.folder == "true")
-			   <li><div><span class="arrow"></span><span class="name folder">$file.name</span><span class="actions"><a>+</a></span></div>
+			   <li><div><span class="arrow"></span><span class="name folder" fileid="${file.id}" sourcepath="$filesource" >$file.name</span><span class="actions"><a>+</a></span></div>
 				   <ul class="open" > ##use cookies to open/close them?
-					  #showattachments("${file.parentsourcepath}/${file.name}" , $depth)
+					  #showattachments($filesource , $depth)
 				   </ul>
 			   </li>
 			#else
-				 <li><div><span class="name $!file.fileformat">$file.name</span><span class="actions"><a>+</a></span></div></li>
+				 <li><div><span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name</span><span class="actions"><a>+</a></span></div></li>
 			#end		
 		#end
 #end
@@ -68,36 +71,36 @@
 				</ul>
 -->	
 			</div>
-	
-			<div id="preview-pane">
-				<p class="name"></p>
-				<ul id="stacked">
-					<li><a class="btn" href="#">View Preview</a></li>
-					<li><a class="btn" href="#">Upload File</a></li>
-					<li><a class="btn" href="#">Dowload Asset/Zipped Folder</a></li>
-					<li><a class="btn" href="#">Delete Folder/Asset</a></li>
-				</ul>
-			</div>
+		<div id="preview-pane">
+		$pages.include("$attachmentroot/details.html")	
+		</div>
 		</div>
 	</div>
 </div>
 
+##$sizer.inEnglish($attachment.size)
+
 <a  class="btn" href="reload.html?sourcepath=$asset.sourcePath	">Reload Files</a>
 
-<script>
+<script type="	text/javascript">
 
-	$('#tree ul li div').click( function(){
+	$('#tree ul li div').click( function()
+		{
 		
 		$(this).parent().find('> ul').toggle('fast');
 		
 		if ( $(this).find('.arrow').hasClass('down') )
+		{
 			$(this).find('.arrow').removeClass('down');
+		}
 		else 
+		{
 			$(this).find('.arrow').addClass('down');
-			
-		content = $(this).find('.name').html();
-		
-		$('#preview-pane p.name').html( content );
+		}
+		var file = $(this).find('.name');
+		file = $(file);
+		var fileid = file.attr("fileid");
+		$("#preview-pane").load("$home$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
 	});
 	
 </script>

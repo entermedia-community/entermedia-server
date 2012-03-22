@@ -150,7 +150,7 @@ public class AssetEditor {
 		{
 			newSourcePath = newSourcePath + "/";
 		}
-		inAsset.setSourcePath(newSourcePath);
+//		inAsset.setSourcePath(newSourcePath);
 		String dataRoot = "/WEB-INF/data/" + getMediaArchive().getCatalogId();
 
 		// Move Comments

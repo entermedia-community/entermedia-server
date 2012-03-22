@@ -41,6 +41,11 @@ public class ZipGenerator extends BaseGenerator
 		{
 			log.info("Zip up:" + path);
 			PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
+			String strip = inReq.getRequestParameter("stripfolders");
+			if( strip != null)
+			{
+				pageZipUtil.setFolderToStripOnZip(strip);
+			}
 			pageZipUtil.setRoot(getRoot());
 			pageZipUtil.zipFile(path, inOut.getStream());
 		}
