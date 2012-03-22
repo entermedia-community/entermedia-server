@@ -13,15 +13,16 @@
 		#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
 		#foreach($file in $files)
 			#set( $filesource  = "${file.parentsourcepath}/${file.name}")
-			#if($file.folder == "true")
-			   <li><div><span class="arrow"></span><span class="name folder" fileid="${file.id}" sourcepath="$filesource" >$file.name</span><span class="actions"><a>+</a></span></div>
-				   <ul class="open" > ##use cookies to open/close them?
-					  #showattachments($filesource , $depth)
-				   </ul>
+			   <li><div style="padding-left: ${padding}px"><span class="#if ( $file.folder == 'true' )arrow down #end"></span><span class="name #if ( $file.folder == 'true' ) folder #else #if( $file.fileformat ) $file.fileformat #else default #end #end" fileid="${file.id}" sourcepath="$filesource" >$file.name</span><span class="actions">#if ( $file.folder == "true" )<a class="edit ir">Edit</a><a class="add ir" id="${rootcategory.id}">Add New</a>#end<a class="delete ir" data-parent="${rootcategory.id}">Delete</a></span></div>
+					#if($file.folder == "true")  
+						<ul class="open" > ##use cookies to open/close them?
+						  #showattachments($filesource , $depth)
+					   </ul>
+					#end
 			   </li>
-			#else
-				 <li><div><span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name</span><span class="actions"><a>+</a></span></div></li>
-			#end		
+			   	<li id="${cat.id}_add" style="display: none;"><div class="selected new"><span class="name folder"><input class="field" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div></li>		 	
+		
+			   		
 		#end
 #end
 
@@ -31,8 +32,13 @@
 	<div  class="ui-widget-content categories-widget no-padding-for-real">
 		<div id="attachments-container">
 			<div id="tree" class="attachments">
-					<ul  class="open" >
-						#showattachments($asset.sourcePath, 1)
+					<ul class="open" >
+						<li><div><span class="arrow down"></span><span class="name folder" fileid="${file.id}" sourcepath="$filesource" >Attachments</span><span class="actions"><a class="edit ir nope">Edit</a><a class="add ir" id="${rootcategory.id}">Add New</a><a class="delete ir nope" data-parent="${rootcategory.id}">Delete</a></span></div>
+							<ul class="open" >							
+								#showattachments($asset.sourcePath, 1)
+							</ul>
+						</li>
+					  	<li id="${rootcategory}_add" style="display: none;"><div class="selected new"><span class="name folder"><input class="field" type="text" value="New Category" id="${rootcategory}_new" /><a data-parent="${rootcategory.id}" class="save btn">Save</a><a id="${rootcategory.id}" class="cancel btn">Cancel</a></span></div></li>		 
 					</ul>	
 <!-- 				
 					<li><div><span class="arrow down"></span><span class="name folder">bus.jpg</span><span class="actions"><a>+</a></span></div>
