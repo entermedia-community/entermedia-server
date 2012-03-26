@@ -322,7 +322,7 @@ public class imagemagickCreator extends BaseImageCreator
 		if( !autocreated )
 		{
 			com.add("-colorspace");
-			com.add("rgb");
+			com.add("sRGB");
 		
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
