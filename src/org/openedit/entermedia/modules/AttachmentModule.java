@@ -41,8 +41,9 @@ public class AttachmentModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		if(asset != null)
+		if(asset != null)			
 		{
+			getAttachmentManager().clearAttachmentData(inReq, archive, asset,true);
 			getAttachmentManager().syncAttachments(inReq, archive, asset,true);
 		}
 	}
@@ -119,4 +120,20 @@ public class AttachmentModule extends BaseMediaModule
 		}
 		reSyncAttachments(inReq);
 	}
+	
+	
+	public void renameFolder(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		if(asset != null)
+		{
+			String parentid = inReq.getRequestParameter("fileid");
+			String foldername = inReq.getRequestParameter("foldername");
+			getAttachmentManager().renameFilder(inReq, archive, asset, parentid, foldername);
+		}
+		reSyncAttachments(inReq);
+	}
+	
+	
 }

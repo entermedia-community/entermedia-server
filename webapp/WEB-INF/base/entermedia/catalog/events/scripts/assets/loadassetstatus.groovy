@@ -108,8 +108,8 @@ public boolean loadPublishing(String assetid)
 	query.setHitsName("publishstatuserrors");
 	HitTracker errors = queuesearcher.cachedSearch(context, query);
 	context.putPageValue("publisherrors", errors);
-
-	if( newtasks.size() > 0 || errors.size() > 0)
+	
+	if( newtasks == null || newtasks.size() > 0 || errors.size() > 0)
 	{
 		return false;
 	}	
