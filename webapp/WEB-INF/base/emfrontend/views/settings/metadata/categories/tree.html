@@ -11,7 +11,7 @@
 		#set( $open = $isleaf)
 		#set( $checked = false )
 		#set( $checked = $asset.isInCategory($cat))
-		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id"><div style="padding-left: ${padding}px">#if($isleaf)<span class="arrow #if($categoryPickerTree.isExpanded($cat))down #end "></span>#end <span id="${cat.id}_display" class="name folder #if($isleaf) leaf #end">$cat.name</span><span id="${cat.id}_edit" class="name folder" style="display:none;"><input class="field" type="text" value="$cat.name" id="${cat.id}_edit_field" /><a class="editsave btn">Save</a><a id="${cat.id}" class="editcancel btn">Cancel</a></span><span class="actions"><a class="edit ir">Edit</a><a class="add ir" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir">Delete</a></span></div>
+		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id"><div style="padding-left: ${padding}px">#if($isleaf)<span class="arrow #if($categoryPickerTree.isExpanded($cat))down #end "></span>#end <span id="${cat.id}_display" class="name folder #if($isleaf) leaf #end">$cat.name</span><span id="${cat.id}_edit" class="name folder" style="display:none;"><input class="field" type="text" value="$cat.name" id="${cat.id}_edit_field" /><a class="editsave btn">Save</a><a id="${cat.id}" class="editcancel btn">Cancel</a></span><span class="actions"><a class="edit ir tooltip" title="Edit Category Name">Edit</a><a class="add ir tooltip" title="Add a new Category" id="$cat.id">Add New</a><a data-parent="${cat.id}" class="delete ir tooltip" title="Delete Category">Delete</a></span></div>
 		#if($isleaf)
 		   <ul #if($categoryPickerTree.isExpanded($cat)) class="open" #end >
 			  #showtreecategories($cat.getChildren(), $depth)
@@ -26,12 +26,12 @@
 
 <div class="ui-widget" >
 	<div  class="ui-widget-header">Categories</div>
-	<div  class="ui-widget-content categories-widget no-padding-for-real">
+	<div  class="ui-widget-content categories-widget no-padding-for-real of-visible">
 		<div id="attachments-container">
 			<div id="tree" class="attachments">
 				
 				<ul  class="open">
-					<li class="noderow" id="${rootcategory.id}_row"><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir nope">Edit</a><a class="add ir" id="${rootcategory.id}">Add New</a><a class="delete ir nope" data-parent="${rootcategory.id}">Delete</a></span></div>
+					<li class="noderow" id="${rootcategory.id}_row"><div><span class="arrow down"></span><span class="name folder">$rootcategory.name</span><span class="actions"><a class="edit ir nope">Edit</a><a class="add ir tooltip" title="Add a new Category" id="${rootcategory.id}">Add New</a><a class="delete ir nope" data-parent="${rootcategory.id}">Delete</a></span></div>
 						<ul class="open">
 							#showtreecategories($children, 1)
 						</ul>
