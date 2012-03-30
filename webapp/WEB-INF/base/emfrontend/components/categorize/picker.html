@@ -1,11 +1,9 @@
 #set( $rootpath = "${apphome}/components/categorize")
 
-
 #if($asset.getId().startsWith("multiedit"))
 	#set($postfix = 'multi')
 #else
-	#set($postfix = '$asset.id')
-
+	#set($postfix = $asset.id )
 #end
 
 
