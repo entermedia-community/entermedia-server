@@ -1,12 +1,10 @@
 <script type="text/javascript" src="$home$apphome/components/javascript/jstree/jquery.jstree.js"></script>
 <script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.cookie.js"></script>
 <script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.hotkeys.js"></script>
-
 #if($asset.getId().startsWith("multiedit"))
 	#set($postfix = 'multi')
 #else
-	#set($postfix = '$asset.id')
-
+	#set($postfix = $asset.id )
 #end
 <div id="assetdetailscategorylist$postfix">
 #set( $rootpath = "${apphome}/components/categorize")

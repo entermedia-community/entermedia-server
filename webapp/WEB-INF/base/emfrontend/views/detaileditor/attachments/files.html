@@ -54,7 +54,7 @@
 <a  class="btn" href="reload.html?sourcepath=$asset.sourcePath	">Reload Files</a>
 
 <script type="	text/javascript">
-
+$(document).ready(function () {
 	$('#tree ul li div').on ({
 		
 		click: function(){
@@ -230,7 +230,7 @@
 		click: function (event) {
 				event.stopPropagation();
 				var id = $(this).data('parent');
-				alert("adding new folder under: " + id);
+				
 
 
 				var newname = $("#" + id + "_new").attr("value");
@@ -293,11 +293,12 @@
 
 
 	repaint = function () {
-		jQuery("#attachments-tree").load("$apphome/views/detaileditor/attachments/files.html?assetid=$asset.id");
+		jQuery("#attachments-tree").load("$apphome/views/detaileditor/attachments/files.html?assetid=$asset.id&oemaxlevel=1");
 		
 		
 	}
 	
+});
 </script>
 
 
