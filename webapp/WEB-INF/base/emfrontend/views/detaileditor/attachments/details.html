@@ -1,21 +1,43 @@
 #set( $attachmentroot = $content.attachmentroot )
-#set( $fileid = $context.getRequestParameter("fileid") )
-
-#if($fileid)
-	#set( $data = $searcherManager.getData($catalogid,"attachment",$fileid))
+#if( $file )	
+	#set( $parentsourcepath = "${file.parentsourcepath}/${file.name}" )
+	#set( $name = $file.name)
 #end
-#if( $data )	
-	#set( $parentsourcepath = "${data.parentsourcepath}/${data.name}" )
-	#set( $name = $data.name)
+
+	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/image1024x768.jpg" )
+	<a class="emdialog" href="$home/${catalogid}/downloads/preview/extralarge/${parentsourcepath}/preview.jpg">
+	#if( $pages.doesExist($generated) )
+			<img src="$home/${catalogid}/downloads/preview/thumb/${parentsourcepath}/thumb.jpg" />
+			<p class="name">$name </p>
+		</a>
+	#else	
+	<div id="generatedimage"> ##TODO: Only do for images and documents
+		<div class="preview #if ( $file.folder == 'true' ) folder #else $!file.fileformat #end"></div>
+		<p class="name">#if ( $name ) $name #else Click on a file name to view details about that file #end</p>
+		</a>
+	</div>
+	#end
+	</a>
+$context.putPageValue("data",$file)	
+$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+	
+			#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/general") )
+			  #set ($view = "asset/assettype/$asset.assettype/general")
+			#else
+			  #set ($view = "asset/assettype/default/general")
+			#end
+			$context.putPageValue("view",$view)	
+			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+	
+	
+#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
+  #set ($view = "asset/assettype/$asset.assettype/fileproperties")
 #else
-	#set( $parentsourcepath = $asset.sourcepath )
-	#set( $name = "")
+  #set ($view = "asset/assettype/default/fileproperties")
 #end
+$context.putPageValue("view",$view)	
 
-#set( $path = "/WEB-INF/data/$catalogid/originals/$parentsourcepath/" )
-
-<div class="preview #if ( $data.folder == 'true' ) folder #else $!data.fileformat #end"></div>
-<p class="name">#if ( $name != "" ) $name #else Click on a file name to view details about that file #end</p>
+$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 
 <!--
 <ul id="stacked" style="margin-top: 15px;">

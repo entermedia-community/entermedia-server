@@ -3,6 +3,7 @@ $context.putPageValue("showcaption", "true")
 $context.putPageValue("hideheader", "true")
 
 #set($resultstype = $context.getRequestParameter("resultstype"))
+
 #if($resultstype)
 $pages.include("$apphome/components/results/${resultstype}.html",$context)
 #else
