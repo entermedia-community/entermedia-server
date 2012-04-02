@@ -194,7 +194,8 @@
 	
 				
 				jQuery("#" + id +"_display").show("fast");
-				jQuery("#" + id +"_edit").hide("fast");		
+				jQuery("#" + id +"_edit").hide("fast");	
+				repaint();	
 				return false;
 		}
 	});
@@ -230,7 +231,7 @@
 		click: function (event) {
 				event.stopPropagation();
 				var id = $(this).data('parent');
-				alert("adding new folder under: " + id);
+				//alert("adding new folder under: " + id);
 
 
 				var newname = $("#" + id + "_new").attr("value");
