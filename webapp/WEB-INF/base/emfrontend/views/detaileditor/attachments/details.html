@@ -18,14 +18,24 @@
 	</div>
 	#end
 	</a>
+$context.putPageValue("data",$file)	
+$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+	
+			#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/general") )
+			  #set ($view = "asset/assettype/$asset.assettype/general")
+			#else
+			  #set ($view = "asset/assettype/default/general")
+			#end
+			$context.putPageValue("view",$view)	
+			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+	
+	
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
   #set ($view = "asset/assettype/$asset.assettype/fileproperties")
 #else
   #set ($view = "asset/assettype/default/fileproperties")
 #end
 $context.putPageValue("view",$view)	
-$context.putPageValue("data",$file)	
-$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 
 $pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 
