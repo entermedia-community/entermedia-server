@@ -239,8 +239,8 @@ public class ProfileModule extends MediaArchiveModule
 		if( hits == null)
 		{
 			hits = (HitTracker)inReq.getPageValue("albumitems");
-			inReq.putPageValue("hits", hits);
 		}
+		inReq.putPageValue("hits", hits);
 
 	}
 	public void saveValues( WebPageRequest inReq) throws Exception

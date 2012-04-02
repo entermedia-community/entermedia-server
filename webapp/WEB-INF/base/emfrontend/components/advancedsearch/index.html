@@ -38,7 +38,11 @@ $context.putPageValue("edit",$edit)
 	
 </table>
 
+#set ($resultview = $userprofile.get('resultview'))
+
+#if( !$resultview )
 <input type="hidden" name="resultstype" value="table" />
+#end
 
 </form>
 
