@@ -60,7 +60,6 @@
 			$context.putPageValue("view",$view)	
 			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 
-
 			#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
 			  #set ($view = "asset/assettype/$asset.assettype/fileproperties")
 			#else
