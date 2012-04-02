@@ -13,18 +13,18 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 		#set( $catid = "index" )
 	#end
 
-	#if ( $hits && $hits.size() > 0 )
+	#if ( $related && $related.size() > 0 )
 	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
 	$context.putPageValue("details",$details)
 	<ul class="sidebar-media">
 			#set($count = 0)
 			
-			#set( $rootid = $hits.sessionId )
+			#set( $rootid = $related.sessionId )
 			
-			#foreach ($hit in $hits.getPageOfHits())
+			#foreach ($hit in $related.getPageOfHits())
 		<li class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
-			#set( $count = $hits.getPage()+-1 )
-			#set( $count = $count*$hits.getHitsPerPage() )	
+			#set( $count = $related.getPage()+-1 )
+			#set( $count = $count*$related.getHitsPerPage() )	
 			#set( $count = $velocityCount + $count )
 			$context.putPageValue("hitindex",$count )
 			#set ($sourcepath = $hit.sourcepath)
@@ -46,16 +46,18 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			  
 			#end
 	</ul>
+	#if( $related.size() > 7 )
+<center>
+<a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$related.sessionId">All Related</a>
+</center>
+#end
 	
 </div>
 
-<center>
-<a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId">More Results</a>
-</center>
-
 
 	#end
-#if ( $hits.totalPages == 0 )
+
+#if ( $related.totalPages == 0 )
 <p>
 [[No results found.]]
 </p>
@@ -63,7 +65,14 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 <div id="messagearea"></div>
 
 </div>
+<center>
+<a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId">Back To Results</a>
+</center>
+
 </div>
+
+
+
 
 <script>
 	

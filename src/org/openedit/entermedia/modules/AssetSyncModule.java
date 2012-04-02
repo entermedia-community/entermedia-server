@@ -195,6 +195,8 @@ public class AssetSyncModule extends BaseMediaModule
 		//log.info(inReq.getUser());
 		query.setFireSearchEvent(false);
 		query.setResultType("search");
+		query.setHitsName("pendingassets");
+		
 		HitTracker assets = new ListHitTracker();
 		HitTracker inprogress = searcher.cachedSearch(inReq, query);
 
