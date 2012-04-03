@@ -28,7 +28,7 @@
 		##<li class="emdetaileditasset"><a  class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hitssessionid">[[Metadata]]</a></li>
 ##end	
 #if( $candownload )
-		<li><a class="btn" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
+		<li><a class="btn" title="[[Download Asset]]" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">Download</a></li>
 #end
 		#if ($content.isPropertyTrue("showaddselections") && $canviewbasket)
 		<li><a class="toggleitem ajax btn" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a></li>
@@ -41,11 +41,11 @@
 #if($caneditasset)
 
 <li style="float: right;">
-<a class="btn" href="$home$apphome/views/detaileditor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="Edit Metadata" /> Delete</a>
+<a class="btn tooltip delete" title="Delete Asset" href="$home$apphome/views/detaileditor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="Delete Asset" /></a>
 
 </li>
 <li style="float: right;">
-<a class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /> Edit</a>
+<a class="btn tooltip" title="Edit Asset Metadata" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /></a>
 
 
 

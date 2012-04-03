@@ -168,7 +168,7 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 				for( String keyword: keywords.split(" ") )
 				{
 					keyword = keyword.trim();
-					if( keyword.length() > 0 && !keyword.equals(inWord) )
+					if( keyword.length() > 1 && !keyword.equals(inWord) )
 					{
 						terms.add(keyword);
 					}
@@ -220,17 +220,25 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 			synonym = synonym.replaceAll("\\(.*?\\)", "");
 			synonym = synonym.replace("(", "").replace(")", "").replace("-", "");
 			typeQuery.addStartsWith("description", synonym);
-			int hits = inTypeSearcher.search(typeQuery).getTotal();
-			if (hits > 1)
+			typeQuery.setHitsName("relatedkeywords");
+			try
 			{
-				saved.append(synonym);
-				saved.append(" (");
-				saved.append(hits);
-				saved.append(")");
-				saved.append(";");
-				synonym = synonym.replace(' ', '_').replace(";", " ");
-				savedenc.append(synonym);
-				savedenc.append(" ");
+				int hits = inTypeSearcher.search(typeQuery).getTotal();
+				if (hits > 1)
+				{
+					saved.append(synonym);
+					saved.append(" (");
+					saved.append(hits);
+					saved.append(")");
+					saved.append(";");
+					synonym = synonym.replace(' ', '_').replace(";", " ");
+					savedenc.append(synonym);
+					savedenc.append(" ");
+				}
+			}
+			catch (Exception ex)
+			{
+				log.error(ex);
 			}
 		}
 		// Need to make sure that the terms they actually searched for got

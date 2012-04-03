@@ -1,5 +1,6 @@
 <div id="resultsdiv">
 #set ($resultview = $userprofile.get('resultview'))
+
 #if (!$resultview || $resultview == 'table')
 $!hits.setHitsPerPage(15)
 $context.putPageValue("showhover", "false")
