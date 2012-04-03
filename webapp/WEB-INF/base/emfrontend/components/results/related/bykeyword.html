@@ -12,7 +12,7 @@
 	$context.putPageValue("thumbsize", "thumb")
 	$context.putPageValue("showcaption", "true")
 	$context.putPageValue("related", $related)
-	#$context.putSessionValue($related.sessionId, $related)
+	$context.putSessionValue($related.sessionId, $related)
 	$pages.include("$apphome/components/results/sidebar.html",$context)
 #else	
 
