@@ -122,6 +122,10 @@ public class SavedQueryModule extends BaseMediaModule
 
 	public Data addPreviousSearch(WebPageRequest inReq) throws Exception
 	{
+		if( inReq.getUser() == null)
+		{
+			return null;
+		}
 		SearchQuery query = loadCurrentQuery(inReq);
 		//query.setProperty("caption", query.getName() );
 		query.setProperty("usersaved", "false");
