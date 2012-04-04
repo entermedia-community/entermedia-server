@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+
+  <property id="roles" icon="unlock" path="/views/settings/users/permissions/index.html" >User Roles</property>
+  <property id="rules" icon="lock" path="/views/settings/applicationsetup/rules/index.html" >Asset Privileges</property>
+  <property id="apprules" icon="lock" path="/views/settings/applicationsetup/apprules/index.html" >Advanced Privileges</property>
+
+</properties>

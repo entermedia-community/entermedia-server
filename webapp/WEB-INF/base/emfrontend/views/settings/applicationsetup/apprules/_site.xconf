@@ -6,4 +6,8 @@
   <property name="permissionrootpath">/${applicationid}/views/settings/applicationsetup/apprules/xml</property>
   <property name="editPath">/${applicationid}</property>
   <property name="subtab">apprules</property>
+  
+  <property name="tab">permissions</property>
+  <property name="subsettinglist">settingspermissions</property>
+  
 </page>
