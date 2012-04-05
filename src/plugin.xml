@@ -490,6 +490,9 @@
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="root"><ref bean="root"/></property>
 	</bean>
+	<bean id="wikiGenerator" class="org.openedit.entermedia.generators.WikiGenerator">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+	</bean>
 	<bean id="xmlRpcGenerator" class="org.openedit.entermedia.generators.XmlRpcGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
