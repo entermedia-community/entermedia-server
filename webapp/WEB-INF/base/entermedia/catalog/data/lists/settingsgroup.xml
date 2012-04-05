@@ -9,5 +9,7 @@
   viewrecentsearches="true" savesearch="true" editsearch="true" deletesearch="true" maximize="true" viewcomments="true" viewassetpreviewhistory="true" converthistory="true" removecomments="true" 
   createnewrecord="true" editcategories="true" editmetadatasetup="true">Administrators</settingsgroup>
 
-  <settingsgroup id="guest" name="Guests" viewassets="true"  profilesearchfilters="hideassettype">Guests</settingsgroup>
+  <settingsgroup id="guest" name="Anonymous" viewassets="true"  profilesearchfilters="hideassettype">Anonymous</settingsgroup>
+  <settingsgroup id="users" name="Users" viewassets="true" profilesearchfilters="hideassettype" viewcomments="true" comment="true" removecomments="true" emaillink="true" embedasset="true" viewvoting="true" shareasset="true" sharetosocialmedia="true" socialshare="true" editadvancedsearch="true" changeattachment="true" editassetcategories="true" metadatageneral="true" assetpermissions="true" savesearch="true" editsearch="true" edittablecolumns="true" converthistory="true" createnewrecord="true" convert="true true" download="true" viewupload="true" view="true" viewattachments="true" viewbasket="true" viewhomelink="true" viewmap="true" maximize="true" metadatadetails="true" viewpasswordhelper="true" viewrecentsearches="true" viewsearcheditor="true">Users</settingsgroup>
+
 </settingsgroups>

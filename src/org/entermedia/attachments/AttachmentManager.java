@@ -262,7 +262,15 @@ public class AttachmentManager
 				attachmentSearcher.deleteRecord(data);
 			}
 		}
-
+	}
+	public String parseFileSubPath(String inAssetSourcePath, String inParentSourcePath, String inFilename)
+	{
+		String folder = inParentSourcePath.substring(inAssetSourcePath.length());
+		if( folder.length() > 0)
+		{
+			folder = folder + "/";
+		}
+		return folder + inFilename;
 	}
 
 }
