@@ -1,0 +1,7 @@
+<types>
+	<type id="asset">Assets</type> 
+	<type id="edit">Editing</type> 
+	<type id="history">History</type> 
+	<type id="filetransfers">Uploading Downloading</type> 
+	<type id="view">Views</type> 
+</types>
