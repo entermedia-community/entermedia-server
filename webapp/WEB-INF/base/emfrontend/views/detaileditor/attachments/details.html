@@ -3,7 +3,7 @@
 	#set( $parentsourcepath = "${file.parentsourcepath}/${file.name}" )
 	#set( $name = $file.name)
 #end
-
+	
 	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/image1024x768.jpg" )
 	<a class="emdialog" href="$home/${catalogid}/downloads/preview/extralarge/${parentsourcepath}/preview.jpg">
 	#if( $pages.doesExist($generated) )
@@ -12,8 +12,8 @@
 		</a>
 	#else	
 	<div id="generatedimage"> ##TODO: Only do for images and documents
-		<div class="preview #if ( $file.folder == 'true' ) folder #else $!file.fileformat #end"></div>
-		<p class="name">#if ( $name ) $name #else Click on a file name to view details about that file #end</p>
+		<div class="preview #if ( $file.folder != "false" ) folder #else $!file.fileformat #end"></div>
+		<p class="name">#if ( $name ) $name #else  Click on a file name to view details about that file #end</p>
 		</a>
 	</div>
 	#end

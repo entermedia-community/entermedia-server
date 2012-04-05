@@ -12,7 +12,7 @@
 			#set( $filesource  = "${file.parentsourcepath}/${file.name}")
 			   <li class="noderow" id="${file.id}_row" data-nodeid="$file.id"><div style="padding-left: ${padding}px"><span class="#if ( $file.folder == 'true' )arrow down #end"></span>
 			   #if ( $file.folder == "true" ) 
-			   	<span id="${file.id}_display" class="name folder #if($isleaf) leaf #end">$file.name</span><span id="${file.id}_edit" class="name folder" style="display:none;">
+			   	<span id="${file.id}_display" class="name folder #if($isleaf) leaf #end" fileid="${file.id}">$file.name</span><span id="${file.id}_edit" class="name folder" style="display:none;">
 			   	<input class="field" type="text" value="$file.name" id="${file.id}_edit_field" /><a class="editsave btn">Save</a><a id="${file.id}" class="editcancel btn">Cancel</a></span>
 			   #else
 			    <span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name</span>
@@ -52,7 +52,7 @@
 		<div id="attachments-container">
 			<div id="tree" class="attachments">
 					<ul class="open" >
-						<li class="noderow" id="toplevel_row" data-nodeid="toplevel">
+						<li class="noderow" id="toplevel_row" data-nodeid="toplevel" >
 							<div style="padding-left: 20px"><span class="arrow down"></span><span class="name folder" fileid="toplevel" sourcepath="$filesource" >Attachments</span>
 								<span class="actions">
 			   						<a class="download-folder click-link ir tooltip" title="Download Folder" id="toplevel" href="$home$attachmentroot/zip/${asset.name}-attachments.zip?path=$path&stripfolders=$path">Download Folder</a>
@@ -87,7 +87,7 @@
 	{ 
 	  $(this).on({
 		click: function(){
-		
+			
 			$(this).parent().find('> ul').toggle('fast');
 			
 			if ( $(this).find('.arrow').hasClass('down') )
@@ -102,6 +102,8 @@
 			file = $(file);
 			var fileid = file.attr("fileid");
 			$("#preview-pane").load("$home$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
+			$('#tree ul li div').removeClass('selected');
+			$(this).addClass('selected');
 		}
 	 });
 	});
@@ -155,7 +157,7 @@
 				}
 				
 				$("#" + id + "_add-folder").show("fast");
-				$("#" + id + "_add-folder div").css('padding-left', padding )
+				$("#" + id + "_add-folder div").css('padding-left', padding );
 				$("#" + id + "_row > div").addClass('selected');
 				$("#" + id + "_add input").focus();
 			}
@@ -191,7 +193,7 @@
 				
 				$("#" + id + "_upload-file").load('$apphome/views/detaileditor/attachments/upload.html?assetid=${asset.id}&fileid=' + id);
 				$("#" + id + "_upload-file").show("fast");
-				$("#" + id + "_upload-file div").css('padding-left', padding )
+				$("#" + id + "_upload-file div").css('padding-left', padding );
 				$("#" + id + "_row > div").addClass('selected');
 				$("#" + id + "_add input").focus();
 			}
