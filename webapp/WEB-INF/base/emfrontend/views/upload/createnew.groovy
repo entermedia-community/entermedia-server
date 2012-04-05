@@ -51,7 +51,7 @@ String tosourcepath = context.findValue("redirecttosourcepath");
 
 if (Boolean.parseBoolean(tosourcepath))
 {
-	String path = "/${context.applicationid}/views/productdetails/index.html?assetid=${asset.getId()}";
+	String path = "$apphome/views/detaileditor/generalinformation/index.html?assetid=${asset.id}&edit=true";
 	
 	context.redirect(path);
 }

@@ -25,7 +25,7 @@
 	#end
 </td>
 
-<td nowrap="true"> $sizer.inEnglish($attachment.size) </td>
+<td nowrap="true"> $!sizer.inEnglish($attachment.size) </td>
 <td>
 		#if( $latest.author )
 			<a href="$home/${applicationid}/settings/usermanager/users/modifyuser.html?username=$latest.author">$!userManager.getUser($latest.author)</a>
