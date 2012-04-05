@@ -3,5 +3,5 @@
 <properties>
 	<property id="users" icon="user" path="/views/settings/users/usermanager/users/index.html" >Users</property>
 	<property id="groups" icon="lgicn_16x16" path="/views/settings/users/usermanager/groups/index.html" >Groups</property>
-	<property id="permissions" icon="unlock" path="/views/settings/users/permissions/index.html" >Roles</property>
+
 </properties>
