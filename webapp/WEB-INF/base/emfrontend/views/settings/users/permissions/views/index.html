@@ -9,9 +9,9 @@
 
 
 #if ($data)
-<div class="ui-widget commentbox no-top-margin" style="overflow: hidden;">
+<div class="ui-widget commentbox no-top-margin of-visible">
 <div class="ui-widget-header">[[Permissions]]</div>
-<div  class="ui-widget-content "> 
+<div  class="ui-widget-content of-visible"> 
 
 <form method="post" action="./save.html">
 	<input type="hidden" name="id" value="$!data.id"/>
@@ -32,14 +32,22 @@
 	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
 	
 	<table class="striped emdata settings-table">	
+	#set( $section = "none")
 	#foreach($item in $permissionsearcher.getAllHits())
 		#set($val = false )
 		#set($val = $data.get($item.id))
+		#if( $section != $item.permissiontype )
+			<tr class="sectionlevel">
+			<td colspan="2">
+				$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)
+			</td>
+			</tr>
+		#set( $section = $item.permissiontype)
+		#end
 		<input type="hidden" name="field" value="$item.id"/>
 		<tr>
-			<td valign="top">$item:</td>
-			<td valign="top"><input class="permission-radio" type="checkbox" name="${item.id}.value" value="true" #if($val == "true" || $val == "full") checked #end/></td>
-		</td>
+			<td valign="middle" title="$item.description">$item</td>
+			<td valign="middle" style="text-align: center;"><input class="permission-radio" type="checkbox" name="${item.id}.value" value="true" #if($val == "true" || $val == "full") checked #end/></td>
 		</tr>	
 	#end
 	</table>

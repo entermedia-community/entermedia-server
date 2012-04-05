@@ -13,7 +13,7 @@
 	#set( $section = "none")
 	#foreach($perm in $permissions)
 	#if( $section != $perm.permissiontype )
-		<tr classs="sectionlevel">
+		<tr class="sectionlevel">
 		<td colspan="2">
 			$searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
 		</td>
