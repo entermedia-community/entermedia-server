@@ -1,72 +1,56 @@
 <permissions name="Application Permissions">
 
-	<permission id="view" name="View App" description="Who can view the application"/>
-	<permission id="viewupload" name="Upload" description="Upload" />
-	<permission id="viewhomelink" name="View Home Link" description="The button to the home page is shown" />
-	<permission id="viewassets" name="View Assets" description="Allows viewing of asset details" />
-	<permission id="viewbasket" name="View Basket" description="Allows use of the collection basket as well as the ability to see the Add to Basket button" />
-  	<permission id="shareasset" name="Share Asset" description="Share Assets" />
-  	<permission id="viewsettings" name="View Settings" description="View Settings" />
-
-	<permission id="viewuploadmulti" name="Multiple File Upload" description="Multiple File Upload" />
-	<permission id="viewvoting" name="Like" description="Ability to like an asset" />
-	<permission id="emaillink" name="Email Link" description="Able to email links" />
-	<permission id="socialshare" name="Social Share" description="Social Share" />
-	<permission id="publish" name="Publish" description="Publish" />
-
-	<permission id="quicksearch" name="Quick Search" description="Ability to search from the top of the site"/>
-	<permission id="viewpasswordhelper" name="Password Helper" description="Allow lookup of passwords"/>
+	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original."/>
+	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." />
+	<permission id="embedasset" permissiontype="asset" name="Embed" description="Enables and embed button that provides HTML code for an asset."/>
+	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." />
+	<permission id="publish" permissiontype="asset" name="Publish" description="NEEDS DESCRIPTION." />
+	<permission id="shareasset" permissiontype="asset" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share." />
+	<permission id="sharetosocialmedia" permissiontype="asset" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook."/>
+	<permission id="socialshare" permissiontype="asset" name="Social Share" description="NEEDS DESCRIPTION, IS THIS DIFFERENT FROM SOCIAL MEDIA SHARE?" />
+	<permission id="forcewatermark" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset."/>
+		
+	<permission id="editadvancedsearch" permissiontype="edit" name="Advanced Search" description="Enables the customization of initial search criteria."/>
+	<permission id="changeattachment" permissiontype="edit" name="Attachments" description="Enables the creation and customization of attachments." />
+	<permission id="editassetcategories" permissiontype="edit" name="Categories" description="Edit Categories"/>
+	<permission id="comment" permissiontype="edit" name="(add) Comments" description="Enables commenting on media assets." />
+	<permission id="deletecomments" permissiontype="edit" name="(delete) Comments" description="Enables the removal of comments." />
+	<permission id="metadatageneral" permissiontype="edit" name="General Metadata" description="Enable general metadata edits"/>
+	<permission id="multiedit" permissiontype="edit" name="Multiple Files" description="Enables various actions across multiple assets simultaneously."/>
+	<permission id="assetpermissions" permissiontype="edit" name="Permissions" description="Enables permission alteration for media assets."/>
+	<permission id="savesearch" permissiontype="edit" name="Saved Searches" description="Enables saving, customization and deletion of previous searches."/>
+	<permission id="editsearch" permissiontype="edit" name="Saved Searches" description="COMBINE WITH SAVED SEARCHES"/>
+	<permission id="deletesearch" permissiontype="edit" name="Delete Searches" description="COMBINE WITH SAVED SEARCHES"/>
+	<permission id="edittablecolumns" permissiontype="edit" name="Table Columns" description="Enables the customization of search result columns in table view."/>
 	
-	<permission id="metadatageneral" name="General Metadata" description="Enable general metadata edits"/>
-	<permission id="editassetcategories" name="Categorize" description="Edit Categories"/>
-
-	<permission id="metadatadetails" name="Show Metadata" description="Show asset metadata"/>
-
-	<permission id="viewmap" category="metadata" name="View Map/Geo-location" description="Ability to edit geoloctaiton metadata" />
-	<permission id="viewmediaedit" name="View Media Editor" description="Crop and Rotate Tool"/>
-
-	<permission id="download" name="Download Original" description="Allows users to download the original high rez version"/>
-	<permission id="embedasset" name="Embed" description="Embed HTML"/>
-	<preference id="capturehistory" name="Save Usage History" description="When a user downloads original asset save details to a log"/>
-	<permission id="convert" name="Show Download Size Options" description="Shows conversion options"/>
-	<permission id="forcewatermark" name="Watermark Image Previews" description="Watermark Image"/>
-	<permission id="viewcomments" name="View Comments" description="View Comments" />
-	<permission id="comment" name="Add Comments" description="Add Comments" />
-	<permission id="deletecomments" name="Delete Comments" description="Delete Comments" />
+	<permission id="converthistory" permissiontype="history" name="Conversion" description="Logs the conversion history of an asset."/>
+	<permission id="viewassetpreviewhistory" permissiontype="history" name="Preview" description="Logs the preview history of an asset."/>
+	<preference id="capturehistory" permissiontype="history" name="Save Usage" description="Logs the download history of an asset."/>
+		
+	<permission id="createnewrecord" permissiontype="filetransfers" name="Create a New Record" description="Enables the creation of new records with metadata that do not have assets associated with them"/>
+	<permission id="convert" permissiontype="filetransfers" name="Download Additional Formats" description="Enables downloading of alternate media asset file types. THIS IS NOT CREATED YET"/>
+	<permission id="convert" permissiontype="filetransfers" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions."/>
+	<permission id="download" permissiontype="filetransfers" name="Download Original" description="Enables downloading of the original (highest resolution) asset."/>
+	<permission id="viewuploadmulti" permissiontype="filetransfers" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." />
+	<permission id="viewupload" permissiontype="filetransfers" name="Upload Single File" description="Enables the upload of a single asset." />
 	
+	<permission id="view" permissiontype="view" name="Application" description="Enables access to the EnterMedia application."/>
+	<permission id="viewassets" permissiontype="view" name="Assets Details" description="Enables access to asset metadata." />
+	<permission id="viewattachments" permissiontype="view" name="Attachments" description="Enables access to attachments associated with an asset."/>
+	<permission id="viewbasket" permissiontype="view" name="Basket" description="Enables the collection basket and related buttons." />
+	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." />
+	<permission id="viewhomelink" permissiontype="view" name="Home" description="Enables the home button." />
+	<permission id="viewmap" permissiontype="view" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." />
+	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window."/>
+	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool."/>
+	<permission id="metadatadetails" permissiontype="view" name="Metadata" description="Enables view-only access to asset metadata."/>
+	<permission id="viewpasswordhelper" permissiontype="view" name="Password Helper" description="Allow lookup of passwords"/>
+	<permission id="viewrecentsearches" permissiontype="view" name="Previous Searches" description="Enables view-only access to past searches."/>
+	<permission id="quicksearch" permissiontype="view" name="Quick Search" description="Enables a general search bar in the top navigation bar."/>
+	<permission id="viewsearcheditor" permissiontype="view" name="Search Editor" description="THIS SHOULD BE REMOVED Combine with Edit/ Saved Searches"/>
+  	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />
 	
-	
 
-	<permission id="viewattachments" name="View Attachments" description="View attachments"/>
-	<permission id="changeattachment" name="Edit Attachments" description="Edit Attachments" />
-	<permission id="assetpermissions" name="Change Permissions" description="Create custom asset permissions"/>
-
-	<permission id="editadvancedsearch" name="Edit Advanced Search" description="Be able to customize the search screen"/>
-
-	<permission id="edittablecolumns" name="Edit Table Columns" description="Be able to edit the table columns"/>
-
-
-	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>
-
-	<permission id="converthistory" name="Convert History" description="Show Convert History"/>
-
-	<permission id="deleteasset" name="Deleting Asset" description="Deleting Asset"/>
-
-	<permission id="multiedit" name="Multi Edit" category="asset" description="Multi edit several assets at once"/>
-
-	<permission id="sharetosocialmedia" name="Share To Social Media" description="Share to sites such as Facebook"/>
-	
-	
-	<permission id="viewsearcheditor" name="View Search Editor" description="View search editor in sidebar"/>
-	<permission id="viewrecentsearches" name="View Previous Searches" description="View previous search module in sidebar"/>
-	<permission id="savesearch" name="Save Searches" description="Save previous searches"/>
-	<permission id="editsearch" name="Edit Searches" description="Edit previously saved searches"/>
-	<permission id="deletesearch" name="Delete Searches" description="Delete previously saved searches"/>
-	
-	<permission id="maximize" name="Maximize Application" description="Be able to maximize the application to fullscreen mode"/>
-	
-	<permission id="createnewrecord" name="Create a New Record" description="Be able to create new records with metadata that do not have assets associated with them"/>
-	
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
 	<permission id="editassetcategories" name="Edit Categories" description="Edit Asset Categories"/>

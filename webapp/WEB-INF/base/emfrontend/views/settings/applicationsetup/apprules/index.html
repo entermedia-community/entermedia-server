@@ -7,14 +7,22 @@
 <table  style="width:100%;" class="striped emdata">		
 	<thead>
 	<tr class="tableheader"><th>Name</th>
-	<th>Notes</th>
 	<th>Rule</th>
 	</thead>
 	<tbody>
+	#set( $section = "none")
 	#foreach($perm in $permissions)
+	#if( $section != $perm.permissiontype )
+		<tr classs="sectionlevel">
+		<td colspan="2">
+			$searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
+		</td>
+		</tr>
+	#set( $section = $perm.permissiontype)
+		
+	#end
 	<tr rowid="$perm.id">
-		<td >$context.getText($perm.name)
-		<td>$context.getText($perm.description)</td>
+		<td title="$perm.description">$context.getText($perm.name)
 		<td> 
 		#set( $permission = false )
 		#set( $permission = $settingspage.getPermission($perm.id) )
