@@ -9,12 +9,15 @@
 #set( $searcher = $mediaarchive.getAssetSearcher() )
 $context.putPageValue("searcher",$searcher)
 
-$context.putPageValue("view","asset/assettype/default/singleupload")
-#set($details =  $searcher.getDetailsForView("asset/assettype/default/singleupload", $user))
-#if( !$details || $details.size() == 0 )
-	#set($details = $searcher.getDetailsForView("asset/assettype/default/upload", $user))
-	$context.putPageValue("view","asset/assettype/default/upload")
+
+#if( $asset.assettype && $archive.viewExists("asset/assettype/$defaultassettype}/multipleupload") )
+	#set( $view = "asset/assettype/$defaultassettype}/multipleupload")
+#else
+	#set( $view = "asset/assettype/default/multipleupload")
 #end
+$context.putPageValue("view",$view)
+
+#set($details =  $searcher.getDetailsForView($view, $user))
 <td>
 	<a href="#" onclick='removeUpload("$id")'><img	align="top" src="$home$themeprefix/images/navigation/deletesm.png" />
 			<input type="hidden" name="sourcepath"  id="${id}sourcepath" value="$formatteddate/$defaultassettype.id/$name" />

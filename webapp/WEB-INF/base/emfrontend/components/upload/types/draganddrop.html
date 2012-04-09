@@ -63,7 +63,7 @@
 				<input type="hidden" name="hitsname" value="hits" />
 			#set( $searcher = $mediaarchive.getAssetSearcher() )
 	
-#set($details =  $searcher.getDetailsForView("asset/assettype/default/singleupload", $user))
+#set($details =  $searcher.getDetailsForView("asset/assettype/default/multipleupload", $user))
 #foreach($detail in $details)
 				<input type="hidden" name="field" value="$detail.id" />
 #end				
