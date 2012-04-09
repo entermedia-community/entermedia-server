@@ -322,11 +322,15 @@ public class MediaArchiveModule extends BaseMediaModule
 	{
 		if( inReq.getResponse() != null)
 		{
-			Page content = inReq.getContentPage();
-			String filename = content.getName(); 
-			//filename = URLEncoder.encode(filename,content.getCharacterEncoding());
-			filename = filename.replace(";", "");
-			inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+			String embedded = inReq.findValue("embedded");
+			if( !Boolean.parseBoolean(embedded))
+			{
+				Page content = inReq.getContentPage();
+				String filename = content.getName(); 
+				//filename = URLEncoder.encode(filename,content.getCharacterEncoding());
+				filename = filename.replace(";", "");
+				inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+			}
 		}
 	}
 

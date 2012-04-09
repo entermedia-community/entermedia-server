@@ -39,7 +39,7 @@
 	<property id="ppm" rendertype="image" creator="imagemagick">PPM</property>
 	<property id="psd" rendertype="document" creator="imagemagick">PSD</property>
 	<property id="rm" rendertype="video" creator="ffmpeg">RM</property>
-	<property id="swf" rendertype="video" creator="ffmpeg">SWF</property>
+	<property id="swf" rendertype="embedded" >SWF</property>
 	<property id="tga" rendertype="image" creator="imagemagick">TGA</property>
 	<property id="tif" rendertype="image" creator="imagemagick">TIFF (.tif)</property>
 	<property id="tiff" rendertype="image" creator="imagemagick">TIFF</property>
