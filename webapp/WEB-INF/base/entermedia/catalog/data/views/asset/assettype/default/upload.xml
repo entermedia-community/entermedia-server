@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties usagelabel="Contents">
-  <property id="name" />
-  <property id="assettitle" />
-  <property id="caption" />
-  <property id="assettype" />
-  <property id="filesize" />
-
+  <property id="assettitle"/>
+  <property id="caption"/>
+  <property id="assettype"/>
 </properties>
