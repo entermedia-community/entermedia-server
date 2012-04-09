@@ -6,7 +6,7 @@
 	$context.putPageValue("category", category) 
 	$query.setHitsName("bykeyword")
 	##set($related = $mediaarchive.getAssetSearcher().searchCategories($context, $asset.getCategories().get(0) ) )
-	#set($related = $mediaarchive.getAssetSearcher().search($query) )
+	#set($related = $mediaarchive.getAssetSearcher().cachedSearch($context,$query) )
 	$!related.setHitsPerPage(7)
 	$context.putPageValue("showhover", "false")
 	$context.putPageValue("thumbsize", "thumb")

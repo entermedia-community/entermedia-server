@@ -8,6 +8,7 @@
 	
 	<path-action name="LinkTree.setSelectedLinkByUrl" cancel="true" />
 	<path-action name="Admin.redirectHost" cancel="true" />
+	<path-action name="ProfileModule.loadUserProfile" cancel="true" />
 
 
 </page>

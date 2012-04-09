@@ -20,7 +20,7 @@ public class exiftoolthumbCreator extends BaseImageCreator
 {
 	public boolean canReadIn(MediaArchive inArchive, String inInputType)
 	{
-		return inInputType.endsWith("indd");
+		return inInputType != null && inInputType.endsWith("indd");
 	}
 
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOut, ConvertInstructions inStructions)
