@@ -62,7 +62,7 @@ $context.putPageValue("searcher", $searcher)
 		<input type="hidden" name="id" value="$!data.id" />
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
-		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 		<br/>
 		<p align="right">
 			<a class="ajax" targetdiv="${view}editor" href="$home$apphome/components/detaileditor/generic.html?searchtype=$searcher.searchType&view=$view&id=$!data.id&assetid=$asset.id$label=$label&oemaxlevel=1">[[Cancel]]</a>

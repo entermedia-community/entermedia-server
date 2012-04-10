@@ -4,6 +4,15 @@ formatHitCountResult = function(inRow)
 }
 
 uiload = function() {
+	
+	jQuery(".validate-inputs").livequery(
+			function() 
+			{
+					jQuery(this).closest("form").validate();
+			}
+		);
+	
+	
 	if( jQuery.fn.selectmenu )
 	{
 		jQuery('.uidropdown select').livequery(
