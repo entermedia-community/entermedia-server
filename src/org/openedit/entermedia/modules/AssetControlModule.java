@@ -250,21 +250,18 @@ public class AssetControlModule extends BaseMediaModule {
 		Asset asset = getAsset(inReq);
 		//get all of the user's groups
 		User user = inReq.getUser();
-		Collection<Group> groups = user.getGroups();
+		Collection<Group> groups = new ArrayList<Group>(user.getGroups());
 		List groupids = archive.getAssetSecurityArchive().getAccessList(archive, asset);
 		List<Group> allowedgroups = findGroupByIds(groupids);
 		
-		if(allowedgroups.size() >= groups.size())
+		groups.removeAll(allowedgroups);
+		if(groups.size() == 0)
 		{
-			allowedgroups.removeAll(groups);
-			if(allowedgroups.size() == 0)
-			{
-				inReq.putPageValue("isallgroups", true);
-			}
-			else
-			{
-				inReq.putPageValue("isallgroups", false);
-			}
+			inReq.putPageValue("isallgroups", true);
+		}
+		else
+		{
+			inReq.putPageValue("isallgroups", false);
 		}
 	}
 	
