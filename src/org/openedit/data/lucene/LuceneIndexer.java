@@ -304,7 +304,7 @@ public class LuceneIndexer
 			{
 				doc.add(new Field(detail.getId(), value, Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
 			}
-			if (detail.isKeyword())
+			if (detail.isKeyword() && keywords != null)
 			{
 				keywords.append(" ");
 				keywords.append(value);
