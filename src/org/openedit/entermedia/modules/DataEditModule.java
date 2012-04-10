@@ -34,7 +34,6 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
-import com.openedit.modules.BaseModule;
 import com.openedit.page.Page;
 import com.openedit.users.User;
 
@@ -154,20 +153,31 @@ public class DataEditModule extends BaseMediaModule
 		String type = inReq.getRequestParameter("datatype");
 		detail.setDataType(type);
 
-		String val = inReq.getRequestParameter("listid");
-		detail.setProperty("listid", val);
-		val = inReq.getRequestParameter("listcatalogid");
-		detail.setProperty("listcatalogid", val);
+//		String val = inReq.getRequestParameter("listid");
+//		detail.setProperty("listid", val);
+//		val = inReq.getRequestParameter("listcatalogid");
+//		detail.setProperty("listcatalogid", val);
+//
+//		val = inReq.getRequestParameter("sort");
+//		detail.setProperty("sort", val);
+//		val = inReq.getRequestParameter("query");
+//		detail.setProperty("query", val);
+//		val = inReq.getRequestParameter("foreignkeyid");
+//		detail.setProperty("foreignkeyid", val);
+//		val = inReq.getRequestParameter("viewtype");
+//		detail.setProperty("viewtype", val);
 
-		val = inReq.getRequestParameter("sort");
-		detail.setProperty("sort", val);
-		val = inReq.getRequestParameter("query");
-		detail.setProperty("query", val);
-		val = inReq.getRequestParameter("foreignkeyid");
-		detail.setProperty("foreignkeyid", val);
-		val = inReq.getRequestParameter("viewtype");
-		detail.setProperty("viewtype", val);
-
+		
+		String [] fields = inReq.getRequestParameters("field");
+		for (int i = 0; i < fields.length; i++) 
+		{
+			
+			String field = fields[i];
+			String value = inReq.getRequestParameter(field + ".value");
+			detail.setProperty(field, value);
+			
+		}
+		
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
 	}
 
