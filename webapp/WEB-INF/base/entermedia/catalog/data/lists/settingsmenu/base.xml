@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-  <property id="users" path="/views/settings/users/usermanager/users/index.html">Users</property>
+  <property id="users" path="/views/settings/users/usermanager/users/index.html">Users and Groups</property>
   <property id="permissions" path="/views/settings/users/permissions/index.html">Permissions</property>
   <property id="metadata" path="/views/settings/metadata/fields/index.html">Metadata</property>
   <property id="hotfolders" path="/views/settings/hotfolders/index.html">Hot Folders</property>

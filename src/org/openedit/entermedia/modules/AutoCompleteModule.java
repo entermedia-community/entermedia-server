@@ -160,7 +160,8 @@ public class AutoCompleteModule extends BaseMediaModule
 			query.setAndTogether(true);
 			query.addChildQuery(innerquery);
 			query.addOrsGroup("id", groupuserids.toString());
-			
+			query.addSortBy("lastName");
+
 			hits = userSearcher.cachedSearch(inReq, query);
 			if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
 			{
@@ -171,14 +172,19 @@ public class AutoCompleteModule extends BaseMediaModule
 		inReq.putPageValue("suggestions", hits);
 		return hits;
 	}
-	
+	/**
+	 * @deprecated groupSuggestions is nicer to use
+	 * @param inReq
+	 * @return
+	 */
 	public HitTracker myGroupSuggestions(WebPageRequest inReq)
 	{
 		User currentUser = inReq.getUser();
 		Collection<Group> groups = currentUser.getGroups();
 		Collection<String> groupidscol = new ArrayList<String>();
 		StringBuffer groupids = new StringBuffer();
-		for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = groups.iterator(); iterator.hasNext();) 
+		{
 			Group group = (Group) iterator.next();
 			groupidscol.add(group.getId());
 		}
@@ -226,6 +232,44 @@ public class AutoCompleteModule extends BaseMediaModule
 			}
 		}
 		inReq.putPageValue("suggestions", hits);
+		return hits;
+	}
+	public HitTracker groupSuggestions(WebPageRequest inReq)
+	{
+		//make sure we exclude groups that are already in there
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		
+		HitTracker hits = null;
+
+		Searcher groupSearcher = getSearcherManager().getSearcher("system", "group");
+		
+		SearchQuery query = groupSearcher.createSearchQuery();
+		String searchString = inReq.getRequestParameter("term");
+		query.addStartsWith("description", searchString);
+		query.addSortBy("namesorted");
+		
+		Collection<String> alreadyhave = archive.getAssetSecurityArchive().getAccessList(archive, asset);
+		for (Iterator iterator = alreadyhave.iterator(); iterator.hasNext();)
+		{
+			String existinggroup = (String) iterator.next();
+			query.addNot("id", existinggroup);
+		}
+		query.addNot("enabled","false");
+		
+		hits = groupSearcher.cachedSearch(inReq, query);
+		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))
+		{
+			inReq.setCancelActions(true);
+		}
+		inReq.putPageValue("suggestions", hits);
+
+//		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+//		{
+//			Data hit = (Data) iterator.next();
+//			log.info(hit.getName());
+//		}
+
 		return hits;
 	}
 
