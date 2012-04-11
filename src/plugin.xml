@@ -537,6 +537,14 @@
 			<ref bean="exiftoolthumbCreator" />
 		</property>
 	</bean>
+
+	<bean id="ffmpegMetadataExtractor"
+		class="org.openedit.entermedia.scanner.FfmpegMetadataExtractor">
+		<property name="exec">
+			<ref bean="exec" />
+		</property>
+	</bean>
+
 	<bean id="creatorManager" class="org.openedit.entermedia.creator.CreatorManager"
 		singleton="false">
 		<property name="searcherManager">
@@ -555,6 +563,7 @@
 			<list>
 				<ref bean="pdfExtractor" />
 				<ref bean="exiftoolMetadataExtractor" />
+				<ref bean="ffmpegMetadataExtractor" />
 			</list>
 		</property>
 	</bean>

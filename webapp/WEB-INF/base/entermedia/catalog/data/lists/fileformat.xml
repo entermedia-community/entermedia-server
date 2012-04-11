@@ -28,6 +28,7 @@
 	<property id="m4v" rendertype="video" creator="ffmpeg" >MPEG 4 m4v</property>
 	<property id="mpg" rendertype="video" creator="ffmpeg" >MPEG 2</property>
 	<property id="mpeg" rendertype="video" creator="ffmpeg" >MPEG 2</property>
+	<property id="mkv" rendertype="video" creator="ffmpeg" >MKV</property>
 	<property id="nef" rendertype="image" creator="imagemagick">NEF</property>
 	<property id="ogg" rendertype="audio" >OGG</property>
 	<property id="pbm" rendertype="image" creator="imagemagick">PBM</property>

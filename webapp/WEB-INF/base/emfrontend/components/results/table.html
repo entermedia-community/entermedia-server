@@ -74,7 +74,7 @@ jQuery("input[name=pagetoggle]").click(function () {
     	   var status = jQuery('input[name=pagetoggle]').is(':checked');
     	   if(status){
     		   //jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
-    		   jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});
+    		   jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"page"});
     		   jQuery('.selectionbox').attr('checked','checked');
            	   }
         	   else{
