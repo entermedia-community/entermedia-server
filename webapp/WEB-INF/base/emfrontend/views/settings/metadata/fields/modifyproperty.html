@@ -13,6 +13,9 @@
 
 	
 	<tr> <td>[[Editable]]:</td> <td><input name="editable" type="checkbox" #if ($property.editable == true) checked #end value="true"/> </td> </tr>
+	<input type="hidden" name="field" value="required"/>
+	<tr> <td>[[Required]]:</td> <td><input name="required.value" type="checkbox" #if ($property.required == true) checked #end value="true"/> </td> </tr>
+
 	<tr> <td>[[Index]]:</td> <td><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Stored]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
@@ -67,12 +70,18 @@
 	</td>
 		
 	</tr>
+	
+	<input type="hidden" name="field" value="listid"/>
+	<input type="hidden" name="field" value="listcatalogid"/>
+	<input type="hidden" name="field" value="sort"/>
+	<input type="hidden" name="field" value="query"/>
+	<input type="hidden" name="field" value="foreignkeyid"/>
 
-	<tr> <td>[[List Id]]:</td> <td><input type="text" name="listid" value="$!property.listid"/> </td> </tr>
-	<tr> <td>[[List Catalog Id]]:</td> <td><input type="text" name="listcatalogid" value="$!property.listcatalogid"/> </td> </tr>
-	<tr> <td>[[List Sort Field]]:</td> <td><input type="text" name="sort" value="$!property.sort"/> </td> </tr>
-	<tr> <td>[[List Query]]:</td> <td><input type="text" name="query" value="$!property.query"/> </td> </tr>
-	<tr> <td>[[Foreign Key ID]]:</td> <td><input type="text" name="foreignkeyid" value="$!property.foreignkeyid"/> </td> </tr>
+	<tr> <td>[[List Id]]:</td> <td><input type="text" name="listid.value" value="$!property.listid"/> </td> </tr>
+	<tr> <td>[[List Catalog Id]]:</td> <td><input type="text" name="listcatalogid.value" value="$!property.listcatalogid"/> </td> </tr>
+	<tr> <td>[[List Sort Field]]:</td> <td><input type="text" name="sort.value" value="$!property.sort"/> </td> </tr>
+	<tr> <td>[[List Query]]:</td> <td><input type="text" name="query.value" value="$!property.query"/> </td> </tr>
+	<tr> <td>[[Foreign Key ID]]:</td> <td><input type="text" name="foreignkeyid.value" value="$!property.foreignkeyid"/> </td> </tr>
 		
 	</table>
 	<input class="btn" type="submit" value="Save"/>

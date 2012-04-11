@@ -23,4 +23,6 @@
 	
 	<property id="notes" viewtype="textarea" header="blank"/>
 	<property id="assistant" />
+	<property id="password" viewtype="password" editable="true" />
+	
 </properties> 

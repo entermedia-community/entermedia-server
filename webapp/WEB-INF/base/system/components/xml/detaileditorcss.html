@@ -19,7 +19,7 @@
 	#end
 #end	
 
-<div class="oeinputform">
+<div class="oeinputform validate-inputs">
 <div id="allerrors">
 </div>
  #foreach( $detail in $details )
@@ -49,7 +49,7 @@
 						$!detail.getText($context)
 				</span>
 			#end
-		<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
+		<div id="detail_$detail.id" class="emdatafieldvalue #if ($detail.isRequired()) required #end">
 		#if( $editrow )	
 			$pages.include("$xmledithome/detailedit.html", $context)
 		#else  ##NOT EDITABLE

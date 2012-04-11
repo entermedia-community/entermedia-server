@@ -1314,7 +1314,15 @@
 		
 		
 	</bean>
-	
+		<bean id="RegistrationModule" class="org.openedit.entermedia.modules.RegistrationModule" >
+		<property name="userManager">
+			<ref bean="userManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		
+	</bean>
 	<!-- Catalog based user details (not like preferences) -->
 	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
