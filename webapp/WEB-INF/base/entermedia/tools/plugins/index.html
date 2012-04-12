@@ -63,6 +63,13 @@ onclick="javascript:togglePlugins( '$plugin.id'
 </table>
 </form>
 
+<p>You can also upgrade from a ZIP or WAR file directly</p>
+<form action="upload.html" enctype="multipart/form-data" method="post" >
+
+<input type="file" name="file.0">
+<input type="submit"/>
+</form>
+
 <script> 
 
  function togglePlugins(callerid) //this is a magical function. don't try to understand it.

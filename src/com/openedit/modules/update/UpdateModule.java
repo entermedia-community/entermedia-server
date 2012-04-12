@@ -39,6 +39,7 @@ import org.entermedia.email.PostMail;
 import org.entermedia.email.Recipient;
 import org.entermedia.email.TemplateWebEmail;
 import org.entermedia.upload.FileUpload;
+import org.entermedia.upload.FileUploadItem;
 import org.entermedia.upload.UploadRequest;
 import org.openedit.Data;
 import org.openedit.PlugIn;
@@ -49,6 +50,9 @@ import org.openedit.util.WindowsUtil;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.config.Configuration;
+import com.openedit.entermedia.scripts.Script;
+import com.openedit.entermedia.scripts.ScriptLogger;
+import com.openedit.entermedia.scripts.ScriptManager;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.modules.BaseModule;
 import com.openedit.modules.scriptrunner.ScriptModule;
@@ -71,6 +75,20 @@ import com.openedit.util.ZipUtil;
 public class UpdateModule extends BaseModule {
 	protected Map fieldPlugInFinders;
 	protected PostMail fieldPostMail;
+	protected ScriptManager fieldScriptManager;
+	public ScriptManager getScriptManager()
+	{
+		if( fieldScriptManager == null)
+		{
+			fieldScriptManager = (ScriptManager)getModuleManager().getBean("scriptManager");
+		}
+		return fieldScriptManager;
+	}
+
+	public void setScriptManager(ScriptManager inScriptManager)
+	{
+		fieldScriptManager = inScriptManager;
+	}
 
 	private static final Log log = LogFactory.getLog(UpdateModule.class);
 	protected WindowsUtil fieldWindowsUtil;
@@ -83,34 +101,34 @@ public class UpdateModule extends BaseModule {
 		fieldWindowsUtil = inWindowsUtil;
 	}
 
-//	public void listPageValues(WebPageRequest inReq) throws Exception {
-//		List allModules = new ArrayList();
-//
-//		List sortedNames = new ArrayList(inReq.getPageMap().keySet());
-//		Collections.sort(sortedNames);
-//
-//		for (int i = 0; i < sortedNames.size(); i++) {
-//
-//			String name = (String) sortedNames.get(i);
-//			Bean bean = new Bean();
-//			bean.setName(name);
-//			Object obj = inReq.getPageValue(name);
-//
-//			if (obj instanceof String) {
-//				bean.setValue((String) obj);
-//			}
-//
-//			bean.setBeanDefinition(obj.getClass());
-//			allModules.add(bean);
-//		}
-//
-//		inReq.putPageValue("allPageValues", allModules);
-//	}
-
+	// public void listPageValues(WebPageRequest inReq) throws Exception {
+	// List allModules = new ArrayList();
+	//
+	// List sortedNames = new ArrayList(inReq.getPageMap().keySet());
+	// Collections.sort(sortedNames);
+	//
+	// for (int i = 0; i < sortedNames.size(); i++) {
+	//
+	// String name = (String) sortedNames.get(i);
+	// Bean bean = new Bean();
+	// bean.setName(name);
+	// Object obj = inReq.getPageValue(name);
+	//
+	// if (obj instanceof String) {
+	// bean.setValue((String) obj);
+	// }
+	//
+	// bean.setBeanDefinition(obj.getClass());
+	// allModules.add(bean);
+	// }
+	//
+	// inReq.putPageValue("allPageValues", allModules);
+	// }
 
 	public List loadSiteList(WebPageRequest inReq) throws Exception {
 		Page sites = getPageManager().getPage("/openedit/update/sites.xml");
-		Element root = new XmlUtil().getXml(sites.getReader(), sites.getCharacterEncoding());
+		Element root = new XmlUtil().getXml(sites.getReader(),
+				sites.getCharacterEncoding());
 		List all = new ArrayList();
 		for (Iterator iter = root.elementIterator("site"); iter.hasNext();) {
 			Element child = (Element) iter.next();
@@ -138,7 +156,7 @@ public class UpdateModule extends BaseModule {
 	}
 
 	public Site selectSite(WebPageRequest inReq, Data inSync) throws Exception {
-		
+
 		String url = inSync.get("siteurl");
 		if (url == null) {
 			return null;
@@ -156,45 +174,49 @@ public class UpdateModule extends BaseModule {
 		inReq.putPageValue("sitetopush", selected);
 		return selected;
 	}
-	
 
-//	public void pushDirectory(WebPageRequest inReq) throws Exception {
-//		Site toUpgrade = selectSite(inReq);
-//		inReq.setRequestParameter("name", "pushed to " + toUpgrade.getId());
-//		File backup = backUpDirectory(inReq);
-//
-//		String url = toUpgrade.getHref();
-//		if (!url.startsWith("http://")) {
-//			url = "http://" + url;
-//		}
-//
-//		if (!url.endsWith("/")) {
-//			url += "/";
-//		}
-//		url += "openedit/update/receivepush.html";
-//		log.info("posting here:" + url);
-//
-//		PostMethod postMethod = new PostMethod(url);
-//
-//		Part[] parts = { new StringPart("username", toUpgrade.getUsername()), new StringPart("password", toUpgrade.getPassword()), new StringPart("savedas", backup.getName()),
-//				new FilePart("file", backup) };
-//
-//		postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
-//
-//		HttpClient client = new HttpClient();
-//		// client.getHttpConnectionManager().getParams().setConnectionTimeout(0);
-//		int statusCode1 = client.executeMethod(postMethod);
-//		postMethod.releaseConnection();
-//		if (statusCode1 == 200) {
-//			inReq.putPageValue("message", "Push is completed.");
-//		} else {
-//			inReq.putPageValue("message", "Status code: <b>" + statusCode1 + "</b><br>" + postMethod.getResponseBodyAsString());
-//		}
-//	}
+	// public void pushDirectory(WebPageRequest inReq) throws Exception {
+	// Site toUpgrade = selectSite(inReq);
+	// inReq.setRequestParameter("name", "pushed to " + toUpgrade.getId());
+	// File backup = backUpDirectory(inReq);
+	//
+	// String url = toUpgrade.getHref();
+	// if (!url.startsWith("http://")) {
+	// url = "http://" + url;
+	// }
+	//
+	// if (!url.endsWith("/")) {
+	// url += "/";
+	// }
+	// url += "openedit/update/receivepush.html";
+	// log.info("posting here:" + url);
+	//
+	// PostMethod postMethod = new PostMethod(url);
+	//
+	// Part[] parts = { new StringPart("username", toUpgrade.getUsername()), new
+	// StringPart("password", toUpgrade.getPassword()), new
+	// StringPart("savedas", backup.getName()),
+	// new FilePart("file", backup) };
+	//
+	// postMethod.setRequestEntity(new MultipartRequestEntity(parts,
+	// postMethod.getParams()));
+	//
+	// HttpClient client = new HttpClient();
+	// // client.getHttpConnectionManager().getParams().setConnectionTimeout(0);
+	// int statusCode1 = client.executeMethod(postMethod);
+	// postMethod.releaseConnection();
+	// if (statusCode1 == 200) {
+	// inReq.putPageValue("message", "Push is completed.");
+	// } else {
+	// inReq.putPageValue("message", "Status code: <b>" + statusCode1 +
+	// "</b><br>" + postMethod.getResponseBodyAsString());
+	// }
+	// }
 
 	public File backUpDirectory(WebPageRequest inReq) throws Exception {
 		Backup backup = new Backup();
-		for (Iterator iter = inReq.getCurrentAction().getConfig().getChildIterator("exclude"); iter.hasNext();) {
+		for (Iterator iter = inReq.getCurrentAction().getConfig()
+				.getChildIterator("exclude"); iter.hasNext();) {
 			Configuration exclude = (Configuration) iter.next();
 			backup.addExclude(exclude.getValue());
 		}
@@ -313,14 +335,16 @@ public class UpdateModule extends BaseModule {
 		// getPageManager().getPageSettingsManager().saveSetting(settings);
 		// }
 		// CHANGE LAYOUT
-		PageSettings topsettings = getPageManager().getPageSettingsManager().getPageSettings("/_site.xconf");
+		PageSettings topsettings = getPageManager().getPageSettingsManager()
+				.getPageSettings("/_site.xconf");
 
 		topsettings.setInnerLayout("/layouts/" + name + "/layout.html");
 		getPageManager().getPageSettingsManager().saveSetting(topsettings);
 		inReq.putPageValue("layoutname", name);
 
-		//reload the content page settings
-		Page content = getPageManager().getPage(inReq.getContentPage().getPath(),true);
+		// reload the content page settings
+		Page content = getPageManager().getPage(
+				inReq.getContentPage().getPath(), true);
 		inReq.getContentPage().setPageSettings(content.getPageSettings());
 		getPageManager().clearCache();
 		// TODO: Create the directory structure for them to change stuff
@@ -352,46 +376,46 @@ public class UpdateModule extends BaseModule {
 		ziputil.unzip(tmp, destination);
 
 		// CHANGE LAYOUT
-		PageSettings topsettings = getPageManager().getPageSettingsManager().getPageSettings("/_site.xconf");
-		//topsettings.
+		PageSettings topsettings = getPageManager().getPageSettingsManager()
+				.getPageSettings("/_site.xconf");
+		// topsettings.
 		topsettings.removeProperty("themeprefix");
 		PageProperty skin = new PageProperty("themeprefix");
 		skin.setValue("/themes/" + name);
 		topsettings.putProperty(skin);
-		
+
 		topsettings.setInnerLayout("${themeprefix}/layouts/layout.html");
 		getPageManager().getPageSettingsManager().saveSetting(topsettings);
 		inReq.putPageValue("layoutname", name);
 
-		//reload the content page settings
+		// reload the content page settings
 		getPageManager().clearCache();
-//		Page content = getPageManager().getPage(inReq.getContentPage().getPath(),true);
-//		inReq.getContentPage().setPageSettings(content.getPageSettings());
-		
+		// Page content =
+		// getPageManager().getPage(inReq.getContentPage().getPath(),true);
+		// inReq.getContentPage().setPageSettings(content.getPageSettings());
+
 		new FileUtils().deleteAll(tmp);
 		// TODO: Create the directory structure for them to change stuff
 		inReq.redirect("/openedit/editors/themes/finished.html");
 	}
 
-	
 	public void listFilesInDirectory(WebPageRequest inReq) throws Exception {
 		checkLogin(inReq);
-		boolean relative = Boolean.parseBoolean(inReq.getRequestParameter("relative"));
+		boolean relative = Boolean.parseBoolean(inReq
+				.getRequestParameter("relative"));
 
 		SyncToServer server = new SyncToServer();
 		server.setPageManager(getPageManager());
 		server.setRoot(getRoot());
-//		server.setRelativeSync(relative);
+		// server.setRelativeSync(relative);
 		String path = inReq.getRequestParameter("syncpath");
 		if (path == null) {
 			throw new OpenEditException("syncpath is required");
 		}
-		String[] excludes = inReq.getRequestParameters( "exclude" );
-		if ( excludes != null && excludes.length > 0 )
-		{
-			for ( int i = 0; i < excludes.length; i++ )
-			{
-				server.addExclude( excludes[i] );
+		String[] excludes = inReq.getRequestParameters("exclude");
+		if (excludes != null && excludes.length > 0) {
+			for (int i = 0; i < excludes.length; i++) {
+				server.addExclude(excludes[i]);
 			}
 		}
 		Map f = server.buildLocalFileMap(path);
@@ -400,15 +424,15 @@ public class UpdateModule extends BaseModule {
 		inReq.putPageValue("fileitemlist", files);
 	}
 
-	
 	public void downloadFiles(WebPageRequest inReq) throws Exception {
 		checkLogin(inReq);
 		// User passes a list of files to download and we make a zip file
 		SyncToServer server = new SyncToServer();
 		server.setPageManager(getPageManager());
 		server.setRoot(getRoot());
-//		boolean relative = Boolean.parseBoolean(inReq.getRequestParameter("relative"));
-//		server.setRelativeSync(relative);
+		// boolean relative =
+		// Boolean.parseBoolean(inReq.getRequestParameter("relative"));
+		// server.setRelativeSync(relative);
 		// Make list of files
 		String[] paths = inReq.getRequestParameters("file");
 		if (paths == null) {
@@ -418,14 +442,13 @@ public class UpdateModule extends BaseModule {
 		server.getZipUtils().zipFiles(files, inReq.getOutputStream(), false);
 	}
 
-	public void saveSync(WebPageRequest inReq)
-	{
+	public void saveSync(WebPageRequest inReq) {
 		String applicationid = inReq.getRequestParameter("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
+				"sync");
 		String syncid = inReq.getRequestParameter("syncid");
 		Data existingsync = (Data) syncSearcher.searchById(syncid);
-		if(existingsync == null)
-		{
+		if (existingsync == null) {
 			existingsync = syncSearcher.createNewData();
 		}
 		String username = inReq.getRequestParameter("accountname");
@@ -433,7 +456,7 @@ public class UpdateModule extends BaseModule {
 		String exclude = inReq.getRequestParameter("exclude");
 		String syncpath = inReq.getRequestParameter("syncpath");
 		String name = inReq.getRequestParameter("name");
-		
+
 		existingsync.setProperty("accountname", username);
 		existingsync.setProperty("siteurl", siteurl);
 		existingsync.setProperty("exclude", exclude);
@@ -442,101 +465,101 @@ public class UpdateModule extends BaseModule {
 		syncSearcher.saveData(existingsync, inReq.getUser());
 		saveSyncEvents(inReq);
 	}
-	
-	public void saveSyncEvents(WebPageRequest inReq)
-	{
+
+	public void saveSyncEvents(WebPageRequest inReq) {
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
-		for (Iterator iterator = syncSearcher.getAllHits().iterator(); iterator.hasNext();)
-		{
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
+				"sync");
+		for (Iterator iterator = syncSearcher.getAllHits().iterator(); iterator
+				.hasNext();) {
 			Data inSync = (Data) iterator.next();
-			String path = "/" + applicationid + "/events/" + inSync.get("id") + ".xconf";
+			String path = "/" + applicationid + "/events/" + inSync.get("id")
+					+ ".xconf";
 			Page page = getPageManager().getPage(path);
-			if(!page.exists())
-			{
+			if (!page.exists()) {
 				String temppath = "/WEB-INF/base/entermedia/tools/sync/template.xconf";
 				Page template = getPageManager().getPage(temppath);
 				List bar = template.getPageSettings().getFieldPathActions();
 				page.getPageSettings().setPathActions(bar);
 			}
 			List actions = page.getPageSettings().getFieldPathActions();
-			//PageSettings eventpage = null;
-			//PageSettings eventpage = getPageManager().getPageSettingsManager().getPageSettings(path);
+			// PageSettings eventpage = null;
+			// PageSettings eventpage =
+			// getPageManager().getPageSettingsManager().getPageSettings(path);
 			String nameval = page.getProperty("eventname");
-			if(nameval == null || !nameval.equals(inSync.get("name")))
-			{
+			if (nameval == null || !nameval.equals(inSync.get("name"))) {
 				PageProperty nameprop = new PageProperty("eventname");
 				nameprop.setValue(inSync.get("name"));
 				page.getPageSettings().putProperty(nameprop);
 			}
-			
+
 			String syncidval = page.getProperty("syncid");
-			if(syncidval == null || !syncidval.equals(inSync.get("syncid")))
-			{
+			if (syncidval == null || !syncidval.equals(inSync.get("syncid"))) {
 				PageProperty syncprop = new PageProperty("syncid");
 				syncprop.setValue(inSync.get("id"));
 				page.getPageSettings().putProperty(syncprop);
 			}
-			
-			/*List pathactions = eventpage.getPathActions();
-			if(pathactions.size() != 1)
-			{
-				PageAction action = new PageAction("UpdateModule.syncToServer");
-				pathactions.add(action);
-				eventpage.setPathActions(pathactions);
-			}*/
+
+			/*
+			 * List pathactions = eventpage.getPathActions();
+			 * if(pathactions.size() != 1) { PageAction action = new
+			 * PageAction("UpdateModule.syncToServer"); pathactions.add(action);
+			 * eventpage.setPathActions(pathactions); }
+			 */
 			getPageManager().saveSettings(page);
 			getPageManager().clearCache(page);
-		}		
+		}
 	}
-	
-	public void deleteSync(WebPageRequest inReq)
-	{
+
+	public void deleteSync(WebPageRequest inReq) {
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
+				"sync");
 		String syncid = inReq.getRequestParameter("syncid");
-		if(syncid == null)
-		{
+		if (syncid == null) {
 			return;
 		}
 		Data sync = (Data) syncSearcher.searchById(syncid);
-		String path = "/" + applicationid + "/events/" + sync.get("id") + ".xconf";
-		if(sync != null)
-		{
+		String path = "/" + applicationid + "/events/" + sync.get("id")
+				+ ".xconf";
+		if (sync != null) {
 			syncSearcher.delete(sync, inReq.getUser());
 		}
-		//delete event
+		// delete event
 		Page page = getPageManager().getPage(path);
 		getPageManager().removePage(page);
 	}
-	public void loadSync(WebPageRequest inReq)
-	{
+
+	public void loadSync(WebPageRequest inReq) {
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
+				"sync");
 		String syncid = inReq.findValue("syncid");
-		Data sync = (Data)syncSearcher.searchById(syncid);
+		Data sync = (Data) syncSearcher.searchById(syncid);
 		inReq.putPageValue("sync", sync);
 	}
-	public void loadSyncs(WebPageRequest inReq)
-	{
+
+	public void loadSyncs(WebPageRequest inReq) {
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
+				"sync");
 		HitTracker synchits = syncSearcher.getAllHits();
 		inReq.putPageValue("synclist", synchits);
 	}
-	public void syncToServer(WebPageRequest inReq) throws Exception 
-	{
-	
+
+	public void syncToServer(WebPageRequest inReq) throws Exception {
+
 		// get list for one directory at a time
 		// process list recursively
 		log.info("Starting syncronization");
-		
-		boolean usenotification = Boolean.parseBoolean(inReq.findValue("sendnotifications"));
+
+		boolean usenotification = Boolean.parseBoolean(inReq
+				.findValue("sendnotifications"));
 		try {
 			SyncToServer server = new SyncToServer();
-			configureSync( inReq, server );
+			configureSync(inReq, server);
 			server.syncFromServer();
-			
+
 		} catch (Exception e) {
 			if (usenotification) {
 				notify(e.toString(), inReq);
@@ -544,63 +567,64 @@ public class UpdateModule extends BaseModule {
 			throw (e);
 		}
 		if (usenotification) {
-			notify("Sync completed successfully at: " + new Date().toString(), inReq);
+			notify("Sync completed successfully at: " + new Date().toString(),
+					inReq);
 		}
 
 	}
 
-	protected void configureSync( WebPageRequest inReq, SyncFileDownloader server ) throws Exception
-	{
+	protected void configureSync(WebPageRequest inReq, SyncFileDownloader server)
+			throws Exception {
 		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid, "sync");
+		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
+				"sync");
 		String syncid = inReq.getPage().get("syncid");
 		Data sync = (Data) syncSearcher.searchById(syncid);
 		log.info(sync.get("syncpath"));
 		server.setRoot(getRoot());
-		
-		
-		for (Iterator iter = inReq.getCurrentAction().getConfig().getChildIterator("exclude"); iter.hasNext();) {
+
+		for (Iterator iter = inReq.getCurrentAction().getConfig()
+				.getChildIterator("exclude"); iter.hasNext();) {
 			Configuration exclude = (Configuration) iter.next();
 			server.addExclude(exclude.getValue());
 		}
 		String exlist = sync.get("exclude");
-		if( exlist != null)
-		{
+		if (exlist != null) {
 			String[] list = exlist.split(",");
-			for (int i = 0; i < list.length; i++) 
-			{
+			for (int i = 0; i < list.length; i++) {
 				server.addExclude(list[i]);
 			}
 		}
 		server.setPageManager(getPageManager());
-		
+
 		Site toUpgrade = selectSite(inReq, sync);
 		server.setUsername(toUpgrade.getUsername());
 		server.setPassword(toUpgrade.getPassword());
 		server.setServerUrl(toUpgrade.getHref());
 		// Backwards compatability
 		String localPath = sync.get("syncpath");
-		server.setSyncPath( localPath );
+		server.setSyncPath(localPath);
 	}
 
-//	public void resetTimeStamps(WebPageRequest inReq) throws Exception {
-//		// get list for one directory at a time
-//		// process list recursively
-//			SyncToServer server = new SyncToServer();
-//			configureSync( inReq, server );
-//			server.resetStamps();
-//		 
-//	}
-	
+	// public void resetTimeStamps(WebPageRequest inReq) throws Exception {
+	// // get list for one directory at a time
+	// // process list recursively
+	// SyncToServer server = new SyncToServer();
+	// configureSync( inReq, server );
+	// server.resetStamps();
+	//
+	// }
+
 	public void downloadMissing(WebPageRequest inReq) throws Exception {
 		log.info("Starting download...");
 		log.info(inReq.getPath());
-		boolean usenotification = Boolean.parseBoolean(inReq.findValue("sendnotifications"));
+		boolean usenotification = Boolean.parseBoolean(inReq
+				.findValue("sendnotifications"));
 		try {
 			DownloadMissingFromServer server = new DownloadMissingFromServer();
-			configureSync( inReq, server );
+			configureSync(inReq, server);
 			server.syncFromServer();
-			
+
 		} catch (Exception e) {
 			if (usenotification) {
 				notify(e.toString(), inReq);
@@ -608,13 +632,12 @@ public class UpdateModule extends BaseModule {
 			throw (e);
 		}
 		if (usenotification) {
-			notify("Download completed successfully at: " + new Date().toString(), inReq);
+			notify("Download completed successfully at: "
+					+ new Date().toString(), inReq);
 		}
-		 
+
 	}
-	
-	
-	
+
 	protected void checkLogin(WebPageRequest inReq) throws Exception {
 		if (inReq.getUser() == null) {
 			String username = inReq.getRequestParameter("accountname");
@@ -628,9 +651,11 @@ public class UpdateModule extends BaseModule {
 			}
 		}
 	}
-	
-	/** 
-	 * This method should be removed. The normall email error handling should send these out
+
+	/**
+	 * This method should be removed. The normall email error handling should
+	 * send these out
+	 * 
 	 * @param message
 	 * @param inReq
 	 * @throws Exception
@@ -639,15 +664,16 @@ public class UpdateModule extends BaseModule {
 	public void notify(String message, WebPageRequest inReq) throws Exception {
 		log.info("sending notifications: " + message);
 		TemplateWebEmail mailer = getPostMail().getTemplateWebEmail();
-		Page template = getPageManager().getPage("/openedit/update/sync/syncnotification.html");
+		Page template = getPageManager().getPage(
+				"/openedit/update/sync/syncnotification.html");
 		mailer.loadSettings(inReq.copy(template));
 		mailer.setMailTemplatePage(template);
-		
+
 		String subject = mailer.getWebPageContext().findValue("subject");
-		if(subject == null){
+		if (subject == null) {
 			subject = "Sync notification";
 		}
-		if(!template.exists()){
+		if (!template.exists()) {
 			mailer.setAlternativeMessage("Sync Report \n" + message);
 		}
 		mailer.setSubject(subject);
@@ -685,203 +711,234 @@ public class UpdateModule extends BaseModule {
 		fieldPostMail = inPostMail;
 	}
 
-	public void listPlugins(WebPageRequest inReq) throws Exception 
-	{
+	public void listPlugins(WebPageRequest inReq) throws Exception {
 		List installed = getPlugInFinder(inReq).getInstalledPlugIns();
 		inReq.putPageValue("installed", installed);
 
 		List notinstalled = getPlugInFinder(inReq).getNotInstalledPlugIns();
 		inReq.putPageValue("notinstalled", notinstalled);
-		
+
 		List sorted = new ArrayList();
 		sorted.addAll(installed);
 		sorted.addAll(notinstalled);
-		inReq.putPageValue("sortedlist",sorted);
+		inReq.putPageValue("sortedlist", sorted);
 	}
-	public PlugIn loadPlugIn(WebPageRequest inReq) throws Exception 
-	{
+
+	public PlugIn loadPlugIn(WebPageRequest inReq) throws Exception {
 		String pluginid = inReq.findValue("pluginid");
-		if( pluginid != null)
-		{
+		if (pluginid != null) {
 			PlugIn found = getPlugInFinder(inReq).getPlugIn(pluginid);
 			inReq.putPageValue("plugin", found);
 			return found;
 		}
 		return null;
 	}
-	public void createNewApp(WebPageRequest inReq) throws Exception 
-	{
+
+	public void createNewApp(WebPageRequest inReq) throws Exception {
 		String appfolder = inReq.findValue("appfolder");
-		
+
 		appfolder = appfolder.replace('\\', '/');
-		
-		if( !appfolder.startsWith("/"))
-		{
+
+		if (!appfolder.startsWith("/")) {
 			appfolder = "/" + appfolder;
 		}
-		if( !appfolder.endsWith("/"))
-		{
-			appfolder =  appfolder + "/";
+		if (!appfolder.endsWith("/")) {
+			appfolder = appfolder + "/";
 		}
 		String prefix = inReq.findValue("appfolderprefix");
-		if( prefix == null)
-		{
+		if (prefix == null) {
 			prefix = "";
 		}
 		Page app = getPageManager().getPage(prefix + appfolder + "_site.xconf");
 		PageProperty prop = new PageProperty("fallbackdirectory");
 
 		PlugIn plugin = loadPlugIn(inReq);
-		if( plugin != null )
-		{
+		if (plugin != null) {
 			prop.setValue(plugin.getBasePath().getPath());
-		}
-		else
-		{
+		} else {
 			prop.setValue(inReq.findValue("fallbackfolder"));
 		}
-		
+
 		app.getPageSettings().putProperty(prop);
-		
+
 		PageProperty catid = new PageProperty("catalogid");
 		String catalogid = appfolder;
 		catalogid = catalogid.replace("/", "");
 		catid.setValue(catalogid);
 		app.getPageSettings().putProperty(catid);
-		
+
 		getPageManager().saveSettings(app);
-		inReq.putPageValue("newpath",appfolder);
-		
+		inReq.putPageValue("newpath", appfolder);
+
 	}
 
-//	public void updateProject(WebPageRequest inContext) throws Exception {
-//		checkLogin(inContext);
-//		String strUrl = inContext.getRequestParameter("installscripturl");
-//		if (strUrl != null) {
-//			// *** configure file path variable
-//			String strOutputFile = "/WEB-INF/install.js";
-//
-//			// *** get root path of this object
-//			String root = getRoot().getAbsolutePath();
-//			if (root.endsWith("/")) {
-//				root = root.substring(0, root.length() - 1);
-//			}
-//
-//			// *** connect to configured web site
-//			File out = new File(root, strOutputFile);
-//			new Downloader().download(strUrl, out);
-//
-//			ScriptModule module = (ScriptModule) getModule("Script");
-//			Map variables = new HashMap();
-//			variables.put("context", inContext);
-//			List logs = new ArrayList();
-//			logs.add("Downloading latest upgrade script...");
-//			inContext.putPageValue("log", logs);
-//			variables.put("log", logs);
-//			try {
-//				log.info("Upgrading " + strUrl);
-//				module.execScript(variables, strOutputFile);
-//			} catch (OpenEditException ex) {
-//				inContext.putPageValue("exception", ex);
-//				log.error(ex);
-//			}
-//		}
-//		// Read in the output file?
-//		// redirect the user to a blank page
-//	}
+	// public void updateProject(WebPageRequest inContext) throws Exception {
+	// checkLogin(inContext);
+	// String strUrl = inContext.getRequestParameter("installscripturl");
+	// if (strUrl != null) {
+	// // *** configure file path variable
+	// String strOutputFile = "/WEB-INF/install.js";
+	//
+	// // *** get root path of this object
+	// String root = getRoot().getAbsolutePath();
+	// if (root.endsWith("/")) {
+	// root = root.substring(0, root.length() - 1);
+	// }
+	//
+	// // *** connect to configured web site
+	// File out = new File(root, strOutputFile);
+	// new Downloader().download(strUrl, out);
+	//
+	// ScriptModule module = (ScriptModule) getModule("Script");
+	// Map variables = new HashMap();
+	// variables.put("context", inContext);
+	// List logs = new ArrayList();
+	// logs.add("Downloading latest upgrade script...");
+	// inContext.putPageValue("log", logs);
+	// variables.put("log", logs);
+	// try {
+	// log.info("Upgrading " + strUrl);
+	// module.execScript(variables, strOutputFile);
+	// } catch (OpenEditException ex) {
+	// inContext.putPageValue("exception", ex);
+	// log.error(ex);
+	// }
+	// }
+	// // Read in the output file?
+	// // redirect the user to a blank page
+	// }
 
-	public void updateProjects(WebPageRequest inReq) throws Exception 
-	{
+	public void updateProjects(WebPageRequest inReq) throws Exception {
 		checkLogin(inReq);
-		if( inReq.getSessionValue("status" ) != null && !Boolean.parseBoolean(inReq.getRequestParameter("forceupgrade")))
-		{
+		if (inReq.getSessionValue("status") != null
+				&& !Boolean.parseBoolean(inReq
+						.getRequestParameter("forceupgrade"))) {
 			inReq.putPageValue("error", "Upgrade already in progress");
 			return;
 		}
 		Upgrader upgrader = getUpgrader(inReq);
-		String[] toupdate = inReq.getRequestParameters("toupdate");			
+		String[] toupdate = inReq.getRequestParameters("toupdate");
 		// *** get root path of this object
-		if( upgrader == null || ( (upgrader.isCanceled() || upgrader.isComplete()) && toupdate != null))
-		{
+		if (upgrader == null
+				|| ((upgrader.isCanceled() || upgrader.isComplete()) && toupdate != null)) {
 			String root = getRoot().getAbsolutePath();
 			if (root.endsWith("/")) {
 				root = root.substring(0, root.length() - 1);
 			}
-			//loop over each project. Keep a log
+			// loop over each project. Keep a log
 			upgrader = new Upgrader();
 			upgrader.setPlugInFinder(getPlugInFinder(inReq));
 			upgrader.setRoot(getRoot());
-			if (toupdate == null)
-			{
+			if (toupdate == null) {
 				inReq.putPageValue("error", "No upgrades specified");
 				return;
 			}
 			upgrader.setToUpgrade(toupdate);
-			upgrader.setScriptModule((ScriptModule)getModule("Script"));
+			upgrader.setScriptModule((ScriptModule) getModule("Script"));
 			String serverid = inReq.findValue("serverid");
 			inReq.putSessionValue("upgrader" + serverid, upgrader);
 			inReq.putPageValue("upgrader", upgrader);
 		}
 	}
-	public void cancelUpdate(WebPageRequest inReq)
-	{
-	
+
+	public void cancelUpdate(WebPageRequest inReq) {
+
 		Upgrader up = getUpgrader(inReq);
-		if( up != null)
-		{
+		if (up != null) {
 			up.cancel();
 			inReq.putPageValue("upgrader", up);
 		}
-		 String serverid = inReq.getRequestParameter("serverid");
-		 if( serverid == null)
-		 {
-			 serverid = "1";
-		 }
+		String serverid = inReq.getRequestParameter("serverid");
+		if (serverid == null) {
+			serverid = "1";
+		}
 		inReq.removeSessionValue("upgrader" + serverid);
-		
+
 	}
 
 	private Upgrader getUpgrader(WebPageRequest inReq) {
-		 String serverid = inReq.getRequestParameter("serverid");
-		 if( serverid == null)
-		 {
-			 serverid = "1";
-		 }
-		Upgrader upgrader = (Upgrader)inReq.getSessionValue("upgrader" + serverid);
-		
+		String serverid = inReq.getRequestParameter("serverid");
+		if (serverid == null) {
+			serverid = "1";
+		}
+		Upgrader upgrader = (Upgrader) inReq.getSessionValue("upgrader"
+				+ serverid);
+
 		return upgrader;
 	}
 
-	public PlugInFinder getPlugInFinder(WebPageRequest inReq)
-	{
-		 Searcher searcher = getSearcherManager().getSearcher("system","extensionservers");
-		 String serverid = inReq.getRequestParameter("serverid");
-		 if( serverid == null)
-		 {
-			 serverid = "1";
-		 }
-		PlugInFinder finder = (PlugInFinder)getPluginFinders().get(serverid);
+	public PlugInFinder getPlugInFinder(WebPageRequest inReq) {
+		Searcher searcher = getSearcherManager().getSearcher("system",
+				"extensionservers");
+		String serverid = inReq.getRequestParameter("serverid");
+		if (serverid == null) {
+			serverid = "1";
+		}
+		PlugInFinder finder = (PlugInFinder) getPluginFinders().get(serverid);
 
-		if( finder == null)
-		{
-			Data data = (Data)searcher.searchById(serverid);
+		if (finder == null) {
+			Data data = (Data) searcher.searchById(serverid);
 			String path = data.get("listingurl");
-			finder = (PlugInFinder)getModuleManager().getBean("plugInFinder");
+			finder = (PlugInFinder) getModuleManager().getBean("plugInFinder");
 			finder.setAppServerPath(path);
 			finder.setId(serverid);
-			getPluginFinders().put(serverid,finder);
+			getPluginFinders().put(serverid, finder);
 		}
 		inReq.putPageValue("pluginfinder", finder);
 		return finder;
 	}
-	protected Map getPluginFinders()
-	{
-		if (fieldPlugInFinders == null)
-		{
+
+	protected Map getPluginFinders() {
+		if (fieldPlugInFinders == null) {
 			fieldPlugInFinders = new HashMap();
 		}
 
 		return fieldPlugInFinders;
 	}
-	
+
+	public void upgradeFromZip(WebPageRequest inReq) {
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties.getFirstItem() == null) {
+			return;
+		}
+		FileUploadItem item = (FileUploadItem) properties.getFirstItem();
+		String name = item.getFieldName();
+		String path = "/WEB-INF/temp/" + item.getName();
+		properties.saveFileAs(item, path, inReq.getUser());
+		Page outputfolder = getPageManager().getPage("/WEB-INF/temp/upgrade/");
+		Page inputfile = getPageManager().getPage(path);
+		
+		try {
+			ZipUtil util = new ZipUtil();
+
+			File in = new File(inputfile.getContentItem().getAbsolutePath());
+			File out = new File(outputfolder.getContentItem().getAbsolutePath());
+
+			util.unzip(in, out);
+
+			Page scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/install.js");
+
+			if (scriptpage.exists()) {
+				Map variables = new HashMap();
+				variables.put("context", inReq);
+				ScriptLogger logger = new ScriptLogger();
+				logger.startCapture();
+				variables.put("log", logger);
+				Script script = getScriptManager().loadScript("/WEB-INF/temp/upgrade/etc/install.js");
+				getScriptManager().execScript(variables, script);
+			}
+
+		} catch (Exception e) {
+				throw new OpenEditException(e);
+		}
+
+		finally {
+			getPageManager().removePage(outputfolder);
+			getPageManager().removePage(inputfile);
+		}
+
+	}
+
 }
