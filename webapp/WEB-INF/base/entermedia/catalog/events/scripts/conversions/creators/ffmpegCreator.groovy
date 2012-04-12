@@ -24,6 +24,7 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 
 	public boolean canReadIn(MediaArchive inArchive, String inInput)
 	{
+		//reads all video formats
 		return true;//"flv".equals(inOutput) || mpeg; //This has a bunch of types
 	}
 	
@@ -40,6 +41,26 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 			result.setOk(false);
 			return result;
 		}
+		
+		//deal with custom codec
+		String videocodec = inAsset.get("videocodec");
+		if( videocodec != null && videocodec.contains("G2M") )
+		{
+			//need to make an alternative input file?
+			List comm = new ArrayList();
+			comm.add(inputpage.getContentItem().getAbsolutePath());
+			Page tmp = getPageManager().getPage(converted.getContentItem().getPath() + ".mkv");
+			if( !tmp.exists() )
+			{
+				comm.add(tmp.getContentItem().getAbsolutePath());
+				boolean ok =  runExec("mencodermkv", comm);
+				if( ok )
+				{
+					inputpage = tmp;
+				}
+			}
+		}
+		
 		String abspath = inputpage.getContentItem().getAbsolutePath();
 		
 		if (inStructions.isForce() || !converted.exists() || converted.getContentItem().getLength() == 0)
