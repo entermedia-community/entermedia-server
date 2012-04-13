@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.SearcherManager;
@@ -32,7 +34,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 			return permission; //Nothing else matters
 		}
 		
-		List<String> permissions = loadBasePermissions(inArchive);
+		Set<String> permissions = new HashSet( loadBasePermissions(inArchive) );
 
 		String users = inAsset.get("viewusers");
 		if (users != null) {
@@ -53,15 +55,16 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 		// clean up variables? add a bunch, then they can resolve in index time
 		// tmp.put("asset.owner", inAsset.get("owner"));
 		Map tmp = new HashMap();
+		
+		List  values = new ArrayList();
 		tmp.put("asset.owner", inAsset.get("owner"));
-		for (int i = 0; i < permissions.size(); i++) {
-			String value = permissions.get(i);
-			String value2 = getReplacer().replace(value, tmp);
-			if (value != value2) {
-				permissions.set(i, value2);
-			}
+		for (Iterator iterator = permissions.iterator(); iterator.hasNext();) 
+		{
+			String value = (String)iterator.next();
+			value = getReplacer().replace(value, tmp);
+			values.add(value);
 		}
-		return permissions;
+		return values;
 	}
 
 	protected Collection asList(String inPrefix, String[] inSplit) {
@@ -99,6 +102,13 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 	public void revokeViewAccess(MediaArchive inArchive, String inUsername,
 			Asset inAsset) {
 		Collection users = inAsset.getValues("viewusers");
+		if (users == null) {
+			users = new ArrayList<String>();
+		}
+		else
+		{
+			users = new ArrayList<String>(users);
+		}
 		users.remove(inUsername);
 		inAsset.setValues("viewusers", users);
 		inArchive.saveAsset(inAsset, null);
@@ -108,6 +118,13 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 	public void revokeGroupViewAccess(MediaArchive inArchive,
 			String inGroupname, Asset inAsset) {
 		Collection<String> users = inAsset.getValues("viewgroups");
+		if (users == null) {
+			users = new ArrayList<String>();
+		}
+		else
+		{
+			users = new ArrayList<String>(users);
+		}
 		users.remove(inGroupname);
 		inAsset.setValues("viewgroups", users);
 		inArchive.saveAsset(inAsset, null);
@@ -122,6 +139,11 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 		if (users == null) {
 			users = new ArrayList<String>();
 		}
+		else
+		{
+			users = new ArrayList<String>(users);
+		}
+
 		users.add(inUsername);
 		inAsset.setValues("viewusers", users);
 		inArchive.saveAsset(inAsset, null);
@@ -135,6 +157,10 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 		if (users == null) {
 			users = new ArrayList<String>();
 		}
+		else
+		{
+			users = new ArrayList<String>(users);
+		}
 		users.add(inGroupname);
 		inAsset.setValues("viewgroups", users);
 		inArchive.saveAsset(inAsset, null);
@@ -147,6 +173,10 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 		Collection<String> users = inAsset.getValues("viewgroups");
 		if (users == null) {
 			users = new ArrayList<String>();
+		}
+		else
+		{
+			users = new ArrayList<String>(users);
 		}
 		users.addAll(inGroupnames);
 		inAsset.setValues("viewgroups", users);
