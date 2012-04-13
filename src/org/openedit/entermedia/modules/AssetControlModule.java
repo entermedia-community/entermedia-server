@@ -82,7 +82,8 @@ public class AssetControlModule extends BaseMediaModule {
 
 		
 		List<Group> groups = findGroupByIds(userNames);
-		
+		Collections.sort(groups);
+
 		inReq.putPageValue("groups", groups);
 
 		return users;
@@ -108,13 +109,16 @@ public class AssetControlModule extends BaseMediaModule {
 		UserManager mgr = getUserManager();
 		for (String id: inIds)
 		{
-			Group group = mgr.getGroup(id);
-			if( group != null)
+			if( id.startsWith("group_" ))
 			{
+				id = id.substring(6);
+				Group group = mgr.getGroup(id);
+				if( group != null)
+				{
 					groups.add(group);
+				}
 			}
 		}
-		Collections.sort(groups);
 		return groups;
 	}
 
@@ -146,19 +150,18 @@ public class AssetControlModule extends BaseMediaModule {
 	public void openAssetViewPermissions(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		String path = "/" + asset.getCatalogId() + "/assets/"
-				+ asset.getSourcePath() + "/";
-		archive.loadAllAssetPermissions(asset.getSourcePath(), inReq);
-		Boolean viewasset = (Boolean) inReq.getPageValue("canviewasset");
-		if (viewasset != null && viewasset.booleanValue()) {
-			Page page = getPageManager().getPage(path);
-			archive.getAssetSecurityArchive().grantAccess(archive, page,
-					"viewasset");
+//		String path = "/" + asset.getCatalogId() + "/assets/"
+//				+ asset.getSourcePath() + "/";
+//		archive.loadAllAssetPermissions(asset.getSourcePath(), inReq);
+//		Boolean viewasset = (Boolean) inReq.getPageValue("canviewasset");
+//		if (viewasset != null && viewasset.booleanValue()) {
+//			//Page page = getPageManager().getPage(path);
+			archive.getAssetSecurityArchive().grantAllAccess(archive, asset);
 			archive.getAssetSearcher().updateIndex(asset);
-		} else {
-			throw new OpenDataException("You do not have viewasset permission "
-					+ path);
-		}
+//		} else {
+//			throw new OpenDataException("You do not have viewasset permission "
+//					+ path);
+//		}
 	}
 	
 	public void grantGroupAccess(WebPageRequest inReq)
@@ -241,7 +244,7 @@ public class AssetControlModule extends BaseMediaModule {
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		archive.getAssetSecurityArchive().revokeAllAccess(archive, asset);
+		archive.getAssetSecurityArchive().clearAssetPermissions(archive, asset);
 	}
 	
 	public void isAllGroups(WebPageRequest inReq)
@@ -269,6 +272,7 @@ public class AssetControlModule extends BaseMediaModule {
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
+		//TODO: Make this simpler:  inAsset.isPropertyTrue("public")
 		List<String> users = archive.getAssetSecurityArchive().getAccessList(archive, asset);
 		for( String permission : users)
 		{

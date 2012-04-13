@@ -43,7 +43,7 @@ public class Asset implements Data
 	protected int fieldOrdering = -1; // the order that these asset should
 	protected boolean fieldIsFolder;
 
-	public Collection getValues(String inPreference)
+	public Collection<String> getValues(String inPreference)
 	{
 		String val = get(inPreference);
 		
@@ -52,13 +52,17 @@ public class Asset implements Data
 		
 		String[] vals = val.split("\\s+");
 
-		Collection collection = Arrays.asList(vals);
+		Collection<String> collection = Arrays.asList(vals);
 		//if null check parent
 		return collection;
 	}
 	
 	public void setValues(String inKey, Collection<String> inValues)
 	{
+		if( inValues == null || inValues.size() == 0)
+		{
+			removeProperty(inKey);
+		}
 		StringBuffer values = new StringBuffer();
 		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
 		{
@@ -739,6 +743,13 @@ public class Asset implements Data
 			return percentage.floatValue();
 		}
 		return 0;
+	}
+
+	public boolean isPropertyTrue(String inKey) 
+	{
+		String val = getProperty(inKey);
+		
+		return Boolean.parseBoolean(val);
 	}
 
 //	public String getOriginalAttachment()

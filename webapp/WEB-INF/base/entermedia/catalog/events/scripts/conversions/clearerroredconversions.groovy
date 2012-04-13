@@ -36,7 +36,7 @@ public void clearerrors()
 	for (Data hit in errors)
 	{
 		def submitted = newtasks.getDateValue(hit, "submitted");
-		def grace_period = 2
+		def grace_period = context.findValue("grace_period");
 		if (submitted_days_ago(grace_period, submitted)){
 			tasksearcher.delete(hit, user);
 			notifyUploader(hit, mediaarchive)
@@ -59,9 +59,11 @@ public void notifyUploader(Data hit, def mediaarchive){
 	def admin = usersearcher.getUser("admin");
 	if(user.email != null)
 	{
-		context.putPageValue("asset_name", asset.getName());
+		context.putPageValue("asset", asset);
 		def url = "${mediaarchive.getCatalogHome()}/components/notification/userclearedtaskerror.html"
+		context.putPageValue("toemail", user);
 		sendEmail(context, user.email, url);
+		context.putPageValue("toemail", admin);
 		sendEmail(context, admin.email, url);
 	}
 	
