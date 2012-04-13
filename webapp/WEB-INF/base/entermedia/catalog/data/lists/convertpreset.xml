@@ -6,7 +6,7 @@
     <preset id="portraitcrop" guid="imagecrop"  outputfile="image-portraitcropped.jpg" fileexportformat="${filename}portraitcropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="04" >Portrait Crop</preset>
     <preset id="largedocument" guid="imagepreview" outputfile="image1024x768.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="05">Document Preview</preset>
 
-    <preset id="mp3audio" guid="lamemp3" outputfile="audio.mp3"  fileexportformat="${filename}.mp3" type="LameMp3" extension="mp4"  inputtype="audio" onimport="true" ordering="06">Mp3 Audio</preset>
+    <preset id="mp3audio" guid="lamemp3" outputfile="audio.mp3"  fileexportformat="${filename}.mp3" type="LameMp3" extension="mp3"  inputtype="audio" onimport="true" ordering="06">Mp3 Audio</preset>
 
 <!--gui= ffmpeg480p or ffmpegpreviewmp4 -->
     <preset id="previewffmpeg" guid="ffmpeg480p" outputfile="video.mp4"  fileexportformat="${filename}proxy.mp4" type="ffmpeg" extension="mp4"  inputtype="video" onimport="true" ordering="06">Video MP4 Preview</preset>

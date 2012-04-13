@@ -681,7 +681,18 @@ onloadselectors = function()
 				);
 			}
 		);
-	
+	jQuery(".assetdraggable").livequery( 
+			function()
+			{	
+				jQuery(this).draggable( 
+					{ 
+						helper: 'clone',
+						revert: 'invalid',
+						opacity: '.3'
+					}
+				);
+			}
+		);
 	
 	jQuery(".headerdroppable").livequery(
 			function()
@@ -710,6 +721,41 @@ onloadselectors = function()
 								"hitssessionid":sessionid
 								});
 							//ui.helper.effect("transfer", { to: jQuery(this).children("a") }, 200);
+						},
+						tolerance: 'pointer',
+						over: outlineSelectionCol,
+						out: unoutlineSelectionCol
+					}
+				);
+			}
+		);
+	jQuery(".assetdropcategory .treerowtext").livequery(
+			function()
+			{
+				jQuery(this).droppable(
+					{
+						drop: function(event, ui) {
+							var assetid = ui.draggable.attr("assetid");
+							var node = $(this);
+							var categoryid = node.attr("nodeid");
+							
+							
+//							var tree = this.nearest(".categorytree");
+//							var treeid = tree.data("")
+							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
+							//this is a category
+							jQuery.get("$home$apphome/components/categorize/addassetcategory.html", 
+									{
+										assetid:assetid,
+										categoryid:categoryid
+									},
+									function(data) 
+									{
+										node.find("div").append("<scan id='fadder'>&nbsp;+1</span>");
+										node.find("#fadder").fadeOut(3000);
+									}
+							);
+
 						},
 						tolerance: 'pointer',
 						over: outlineSelectionCol,

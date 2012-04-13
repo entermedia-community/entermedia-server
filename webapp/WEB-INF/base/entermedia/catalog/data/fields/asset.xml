@@ -18,9 +18,6 @@
 	<property id="assetviews_sortable" internalfield="true" datatype="number" >Views</property>
 	<property id="assetvotes" internalfield="true" datatype="number" index="true" stored="true" >Vote Rank</property>
 	<property id="assetvotes_sortable" internalfield="true" datatype="number" >Vote Count</property>
-	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Videos -->
-	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
-	<property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>
 	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text">Artist</property>
 	<property id="comment" externalid="Comment,UserComment" index="true" stored="true" datatype="text">Comment</property>
@@ -37,8 +34,14 @@
 	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list">Color Type</property>
 	<property id="shutterspeed" externalid="ShutterSpeed" index="true" stored="true" datatype="text">Shutter Speed</property>
 	<property id="aperture" externalid="Aperture" index="true" stored="true" >Aperture</property>
-	
-	
+
+	<!--  Video stuff -->
+	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Videos -->
+	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
+	<property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
+	<property id="videocodec"  index="true" stored="true" >Video Codec</property>
+	<property id="audiocodec" externalid="AudioCodecName,AudioFormat" index="true" stored="true" >Audio Codec</property>
+
 	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="Orientation">Image Rotation</property>
 	<property id="author" externalid="Author" index="true" stored="true" datatype="text">Author</property>
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
