@@ -16,11 +16,14 @@
 #set( $null = $query.addExact($parent,$data.id))
 #set( $null = $query.addSortBy("name") )
 
+<div id="addnew">
+<a class="btn ajax" targetdivinner="addnew" href="$home$apphome/views/settings/lists/$parent/child/edit/addnew.html?${parent}.value=$data.id&oemaxlevel=1"><span>Add New</span></a>
+</div>
+
+<div style="margin-top: 10px;">
 $context.putPageValue("existingrecords",$joinsearcher.search($query))
 $pages.include("$xmledithome/table.html?searchtype=${child}&fieldexternalid=${parent}&catalogid=$catalogid&fieldexternalvalue=$data.id&view=default/results&selectlink=$selectlink", $context)
-
-
-<a class="btn" href="$home$apphome/views/settings/lists/$parent/child/edit/addnew.html?${parent}.value=$data.id"><span>Add New</span></a>
+</div>
 
 
 </div>

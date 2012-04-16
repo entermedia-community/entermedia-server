@@ -2,7 +2,7 @@
 #set( $child = "$content.childtype")
 
 <div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">$content.childlabel</div>
+<div class="ui-widget-header">Add New</div>
 <div  class="ui-widget-content" > 
 
 <div id="editlayout">
@@ -26,18 +26,10 @@ $context.putPageValue("view", $view)
 #end
 $pages.include("/system/components/xml/detaileditor.html", $context)
 
-<ul class="embuttons">
-<li>
-	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
-</li>
-<li><a href='$home$content.searchhome/index.html'><span>Cancel</span></a></li>
-<li><a href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
-	<span>
-		Delete
-	</span></a>
-</li>
+<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
+<a class="btn" href="$home$apphome/views/settings/lists/$parent/parent/edit/edit.html?id=$parentid">Cancel</a>
 
-</ul>
+
 <div id="messagearea">$!message
 </div>
 </form>
@@ -52,5 +44,3 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 
 </div>
 </div>
-
-<a href="$home$apphome/views/settings/lists/$parent/parent/edit/edit.html?id=$parentid">Back to $content.parentlabel</a>
