@@ -1,7 +1,13 @@
 <page>
-	<property name="subtab">division</property>	
+	<property name="subsettinglist">settingslibraries</property>
+
+	<property name="section">settings</property>
+
+	<property name="subtab">libraries</property>	
 	<property name="parenttype">division</property>	
-	<property name="parentlabel">Division</property>	
-	<property name="childtype">initiative</property>	
-	<property name="childlabel">Initiative</property>	
+	<property name="parentlabel">Divisions</property>	
+	<property name="childtype">library</property>	
+	<property name="childlabel">Library</property>	
+	<property name="childlableplural">Libraries</property>	
+	
 </page>
