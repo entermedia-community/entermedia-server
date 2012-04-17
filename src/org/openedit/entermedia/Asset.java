@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ public class Asset implements Data
 	protected Page fieldSourcePage;
 	protected String fieldDescription;
 	protected List fieldCategories;
+	protected Collection<String> fieldLibraries;
 	protected Map fieldProperties;
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
@@ -74,6 +76,10 @@ public class Asset implements Data
 			}
 		}
 		setProperty(inKey,values.toString());
+		if( "libraries".equals(inKey ) ) 
+		{
+			fieldLibraries = null;
+		}
 	}
 	
 	
@@ -294,7 +300,21 @@ public class Asset implements Data
 		}
 		return false;
 	}
+	public Collection<String> getLibraries()
+	{
+		if( fieldLibraries == null)
+		{
+			fieldLibraries = getValues("libraries");
+			if( fieldLibraries == null)
+			{
+				fieldLibraries = Collections.EMPTY_LIST;
+			}
+		}
+		return fieldLibraries;
+				
+	}
 
+	
 	public Map getProperties()
 	{
 		if (fieldProperties == null)

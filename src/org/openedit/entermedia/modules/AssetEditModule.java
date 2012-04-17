@@ -562,7 +562,45 @@ public class AssetEditModule extends BaseMediaModule
 		String catalogid = inRequest.findValue("catalogid");
 		return (MetadataWriter)getModuleManager().getBean(catalogid, "keywordWriter");
 	}
-	
+	public void addAssetValues(WebPageRequest inReq) throws OpenEditException 
+	{
+		Asset asset = getAsset(inReq);
+		String inFieldName = inReq.getRequestParameter("fieldname");
+		Collection existing = asset.getValues(inFieldName);
+		String value = inReq.getRequestParameter(inFieldName + ".value");
+		if( existing == null)
+		{
+			existing = new ArrayList();
+		}
+		else
+		{
+			existing = new ArrayList(existing);
+		}
+		if( !existing.contains(value))
+		{
+			existing.add(value);
+			asset.setValues(inFieldName, existing);
+			getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
+		}
+	}	
+	public void removeAssetValues(WebPageRequest inReq) throws OpenEditException 
+	{
+		Asset asset = getAsset(inReq);
+		String inFieldName = inReq.getRequestParameter("fieldname");
+		Collection existing = asset.getValues(inFieldName);
+		String value = inReq.getRequestParameter(inFieldName + ".value");
+		if( existing == null)
+		{
+			existing = new ArrayList();
+		}
+		else
+		{
+			existing = new ArrayList(existing);
+		}
+		existing.remove(value);
+		asset.setValues(inFieldName, existing);
+		getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
+	}
 	public void addAssetKeyword(WebPageRequest inReq) throws OpenEditException 
 	{
 		AssetEditor editor = getAssetEditor(inReq);

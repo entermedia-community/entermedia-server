@@ -39,6 +39,7 @@
 	<permission id="viewattachments" permissiontype="view" name="Attachments" description="Enables access to attachments associated with an asset."/>
 	<permission id="viewbasket" permissiontype="view" name="Basket" description="Enables the collection basket and related buttons." />
 	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." />
+  	<permission id="asseteditorlibraries" permissiontype="view" name="Edit Asset Libraries" description="Enables access to asset library editor." />
 	<permission id="viewhomelink" permissiontype="view" name="Home" description="Enables the home button." />
 	<permission id="viewmap" permissiontype="view" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." />
 	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window."/>
