@@ -109,6 +109,13 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 	}
 }
 
+
+//searchtype parentname 
+
+loadlist = function(indiv, catalogid, searchtype, inlabel, childfieldname, foreignkeyid, foreignkeyvalue, value )
+{
+	jQuery(indiv).load('$home${apphome}/components/xml/types/simplelist.html', {catalogid:catalogid, searchtype:searchtype, fieldname:childfieldname, label:inlabel, foreignkeyid:foreignkeyid, foreignkeyvalue:foreignkeyvalue, value:value, oemaxlevel:1});
+}
 //Don't use any form inputs named 'name'!
 postForm = function(inDiv, inFormId)
 {

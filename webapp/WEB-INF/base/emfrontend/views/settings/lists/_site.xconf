@@ -1,7 +1,6 @@
 <page>
-	<property name="subsettinglist">settingsmetadata</property>
 
-	<property name="tab">metadata</property>
+	<property name="tab">libraries</property>
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
 
 </page>
