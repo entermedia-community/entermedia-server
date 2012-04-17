@@ -82,6 +82,10 @@
 		<userprofile property="editassetcategories" equals="true" />
 	</permission>
 
+	<permission name="asseteditorlibraries">
+		<userprofile property="asseteditorlibraries" equals="true" />
+	</permission>
+
 	<permission name="viewcomments">
 		<userprofile property="viewcomments" equals="true" />
 	</permission>	

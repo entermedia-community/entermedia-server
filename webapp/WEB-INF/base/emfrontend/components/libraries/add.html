@@ -1,0 +1,18 @@
+
+<h4>[[Add Library]]:</h4> 
+<form name="adder" class="ajaxform" targetdiv="emvalueeditor" action="$home$apphome/components/libraries/addfinish.html">
+
+<input type="hidden" name="fieldname" value="libraries" /><br>
+
+<select name="libraries.value">
+#foreach( $library in $searcherManager.getList($catalogid,"library"))
+	<option value="$library.id">$library</option>
+#end
+</select>
+
+<input type="hidden" name="assetid" value="$context.getRequestParameter('assetid')" /><br>
+
+
+<input class="btn small" type="submit" value="[[Add]]" />
+</form>
+

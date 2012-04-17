@@ -8,6 +8,8 @@
 	<property id="description">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" editable="true" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
+	<!-- Allow searching -->
+	<property id="libraries"  viewtype="libraries"  editable="true" index="true" >Libraries</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Asset Type</property>
 
 	<!--  
@@ -95,9 +97,6 @@
 	
 	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
 	<property id="editasset" internalfield="true" filter="true">Writable</property>	
-
-	<property id="division" index="true" datatype="list" stored="true" editable="true" keyword="true" >Division</property>
-	<property id="initiative" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="division">Initiative</property>
 	
 	<property id="showtitle" index="true" datatype="list" stored="true" editable="true" keyword="true" >Show Title</property>
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>

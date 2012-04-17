@@ -7,7 +7,5 @@
   <property id="editstatus"/>
   <property id="importstatus"/>
   <property id="editstatus"/>
-  <property id="division"/>
-  <property id="initiative"/>
   <property id="owner"/>
 </properties>
