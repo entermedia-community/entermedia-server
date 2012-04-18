@@ -1,44 +1,4 @@
-
-	
-	
-	<!-- div  class="emviewercaption">#esc($!asset.caption)</div>
-	
-	<div  class="emviewerinfo">
-	$asset
-
-	#if( $asset.getKeywords().size() > 0  )
-	has keywords of
-		#foreach ($tag in $asset.keywords)
-			$tag
-		#end
-	#end
-	#if( $asset.getCategories().size() > 0 )	
-	in folders	
-		#foreach ($category in $asset.categories) 
-			$category.name
-		#end
-	#end
-
-#if( $asset.assetaddeddate )
-[[was uploaded on]]
-<span class="emdetaildate">$!context.getDate($asset.assetaddeddate)</span>
-#end
-
-#if( $asset.owner )
-[[by]] ($asset.owner)
-#end
-
-#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-<span class="emdetailviews">
-#if( $views > 0 )
-[[and has]] $views views
-#end
-</span>
-
-
-</div -->
-
-
+#set($hitssessionid = $hits.sessionId )
 
 <div id="asset-info">
  
@@ -60,6 +20,16 @@
 			$context.putPageValue("view",$view)	
 			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 
+<div >
+#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+<span class="emdetailviews">
+#if( $views > 0 )
+$views views
+#end
+</span>
+#if( $asset.isFolder() )
+<a href="$home$apphome/views/detaileditor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}">Attachments</a>
+#end
 			#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
 			  #set ($view = "asset/assettype/$asset.assettype/fileproperties")
 			#else
@@ -67,11 +37,27 @@
 			#end
 			$context.putPageValue("view",$view)	
 			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+</div>
 	
 </div>
 	
 #if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
 <div class="asset-details-more" style="display: none; padding: 0 10px;">
+	#set( $libraries = $asset.getLibraries())
+	#if( $libraries.size() > 0)
+	<h3>Libraries</h3>
+		<p style="line-height: 25px;">
+	#foreach($library in $libraries)
+		  
+		 #set( $ldata = $searcherManager.getData($catalogid,"library",$library) )
+		 #set( $division = $searcherManager.getData($catalogid,"division",$ldata.division ) )
+		 
+		<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="">$division / $ldata</a>
+
+	#end
+	</p>
+	#end
+	
 	
 	#if( $asset.hasKeywords() )
 	<h3>Related Tags</h3>
