@@ -286,7 +286,11 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 
 	public void saveData(Data inData, User inUser)
 	{
-		if (inData instanceof Asset)
+		if (inData instanceof CompositeData)
+		{
+			saveCompositeData((CompositeData) inData, inUser);
+		}
+		else if (inData instanceof Asset)
 		{
 			Asset asset = (Asset) inData;
 			if( asset.getId() == null)
@@ -295,10 +299,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			}
 			getAssetArchive().saveAsset(asset);
 			updateIndex(asset);
-		}
-		else if (inData instanceof CompositeData)
-		{
-			saveCompositeData((CompositeData) inData, inUser);
 		}
 	}
 

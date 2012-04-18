@@ -237,14 +237,18 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 
 	public void saveData(Data inData, User inUser)
 	{
-		if (inData instanceof Asset)
+		if (inData instanceof CompositeData)
+		{
+			saveCompositeData((CompositeData) inData, inUser);
+		}
+		else if (inData instanceof Asset)
 		{
 			Asset asset = (Asset) inData;
 			getDataConnector().saveData(asset,inUser);
 		}
-		else if (inData instanceof CompositeData)
+		else
 		{
-			saveCompositeData((CompositeData) inData, inUser);
+			throw new OpenEditException("Not an asset");
 		}
 	}
 
