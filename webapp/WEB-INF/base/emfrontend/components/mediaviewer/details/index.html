@@ -28,7 +28,7 @@ $views views
 #end
 </span>
 #if( $asset.isFolder() )
-<a href="$home$apphome/views/detaileditor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}">Attachments</a>
+<a class="btn" href="$home$apphome/views/detaileditor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}">Attachments</a>
 #end
 			#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
 			  #set ($view = "asset/assettype/$asset.assettype/fileproperties")
