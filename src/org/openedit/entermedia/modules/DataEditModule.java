@@ -47,11 +47,19 @@ public class DataEditModule extends BaseMediaModule
 	public Searcher loadSearcherForEdit(WebPageRequest inReq) throws Exception
 	{
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
-		String id = inReq.getRequestParameter("id");
+		String paramname = inReq.getRequestParameter("paramname");
+		if( paramname == null)
+		{
+			paramname = "id";
+		}
+		String id = inReq.getRequestParameter(paramname);
 		if (id != null)
 		{
 			Object data = searcher.searchById(id);
-			inReq.putPageValue("data", data);
+			if( data != null)
+			{
+				inReq.putPageValue("data", data);
+			}
 		}
 		inReq.putPageValue("searcher", searcher);
 		if (searcher == null)
@@ -497,7 +505,7 @@ public class DataEditModule extends BaseMediaModule
 
 	public void deleteData(WebPageRequest inReq) throws Exception
 	{
-		Searcher searcher = loadSearcherForEdit(inReq);
+		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
 			String id = inReq.getRequestParameter("id");
