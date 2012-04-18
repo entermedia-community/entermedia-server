@@ -3,4 +3,6 @@
 	<property name="hitsname">datalist</property>
 	<property name="dataroot">/${applicationid}/views/settings/lists/datamanager</property>
 	<property name="subtab">manager</property>
+	<property name="tab">datamanager</property>
+	<inner-layout>/${applicationid}/views/settings/lists/datamanager/innerlayout.html</inner-layout>
 </page>

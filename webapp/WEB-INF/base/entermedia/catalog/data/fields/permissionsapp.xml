@@ -1,5 +1,6 @@
 <properties>
 	<property id="id">ID</property>
 	<property id="permissiontype" type="list" >Section</property>	
+	<property id="description">Description</property>	
 	<property id="name">Name</property>	
 </properties>

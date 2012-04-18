@@ -1,4 +1,3 @@
-	<!-- 
 	<form name="search" method="post" action="$home$content.dataroot/list/index.html">
 	$context.putPageValue("hits",$datalist)	
 	#set( $details = $searcher.getSearchProperties($user) )
@@ -11,11 +10,11 @@
 	</div>
 	
 	</form>
-	-->
+
 	<br>
 	
 	<div id="emselectable">
-	<table width="85%" class="standard-table">
+	<table width="85%" class="emdata striped">
 	<tr>
 	#foreach( $detail in $details )
 	<th align="left" nowrap >$detail.getText($context)</th>
@@ -68,8 +67,8 @@
 	#set( $end = $start + $datalist.getPageOfHits().size() )
 	#set( $start = $start + 1)
 	
-	<div class="embutton">
-	<a href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Add New Record]]</a>
-	</div>
+	<a class="btn" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Add New Record]]</a>
+	<a class="btn" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
+	
 <br><br><br>
 	

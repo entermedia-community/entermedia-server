@@ -1,7 +1,6 @@
 <div id="childrenlist">
 #set( $parent = "$content.parenttype")
 #set( $child = "$content.childtype")
-$data
 #if( $data )
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
 
@@ -15,7 +14,9 @@ $data
 
 <div style="margin-top: 10px;">
 #set( $existingrecords = $joinsearcher.search($query)) 
-
+#if( $existingrecords.size() == 0)
+None found
+#end
 	<div id="valuelist" class="emtable clearfix">
 	#foreach($library in $existingrecords)
 		  

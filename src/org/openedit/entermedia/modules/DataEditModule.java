@@ -177,13 +177,15 @@ public class DataEditModule extends BaseMediaModule
 
 		
 		String [] fields = inReq.getRequestParameters("field");
-		for (int i = 0; i < fields.length; i++) 
+		if( fields != null)
 		{
-			
-			String field = fields[i];
-			String value = inReq.getRequestParameter(field + ".value");
-			detail.setProperty(field, value);
-			
+			for (int i = 0; i < fields.length; i++) 
+			{
+				
+				String field = fields[i];
+				String value = inReq.getRequestParameter(field + ".value");
+				detail.setProperty(field, value);
+			}
 		}
 		
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
