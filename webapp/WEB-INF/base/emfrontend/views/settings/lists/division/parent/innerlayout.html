@@ -18,10 +18,11 @@ $query.addSortBy("name")
 <div  class="ui-widget-content emselectmenu">
 
 <ul class="vlist">
-#set($current = $context.getRequestParameter("id")) 
+#set($current = $context.getRequestParameter("${parent}.value")) 
+##set($current = $context.getRequestParameter("id")) 
 #set( $results = $searcher.search($query) )
 #foreach($row in $results )
- <li #if($current == $row.id) class="active" #end ><a href="$home$apphome/views/settings/lists/$parent/parent/edit/edit.html?id=$row.id">$row</a></li>
+ <li #if($current == $row.id) class="active" #end ><a href="$home$apphome/views/settings/lists/$parent/parent/edit/edit.html?paramname=${parent}.value&${parent}.value=$row.id">$row</a></li>
 #end
 </ul>
 

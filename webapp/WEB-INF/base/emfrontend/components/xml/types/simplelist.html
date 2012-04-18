@@ -10,7 +10,6 @@
 #else
 	#set( $hits = $searcherManager.getList($catalogid,$searchtype) )
 #end
-
 <select name="${fieldname}.value">
 <option value=""></option>
 #foreach( $hit in $hits)
