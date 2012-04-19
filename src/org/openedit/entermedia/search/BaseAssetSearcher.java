@@ -237,14 +237,18 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 
 	public void saveData(Data inData, User inUser)
 	{
-		if (inData instanceof Asset)
+		if (inData instanceof CompositeData)
+		{
+			saveCompositeData((CompositeData) inData, inUser);
+		}
+		else if (inData instanceof Asset)
 		{
 			Asset asset = (Asset) inData;
 			getDataConnector().saveData(asset,inUser);
 		}
-		else if (inData instanceof CompositeData)
+		else
 		{
-			saveCompositeData((CompositeData) inData, inUser);
+			throw new OpenEditException("Not an asset");
 		}
 	}
 
@@ -306,31 +310,41 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 				UserProfile profile = inPageRequest.getUserProfile();
 				if( profile != null)
 				{
-					if(profile.getSettingsGroup() != null)
+					//Get the libraries
+					Collection libraries = profile.getValues("libraries");
+					if( libraries != null)
 					{
-						buffer.append( " sgroup" + profile.getSettingsGroup().getId() );
+						for (Iterator iterator = libraries.iterator(); iterator	.hasNext();) 
+						{
+							String library = (String) iterator.next();
+							buffer.append( " library_" + library);
+						}
 					}
-					String value = profile.getValue("assetadmin");
-					if( Boolean.parseBoolean(value) )
-					{
-						buffer.append(" profileassetadmin");
-					}
-					value = profile.getValue("viewassets");
-					if( Boolean.parseBoolean(value) )
-					{
-						buffer.append(" profileviewassets");
-					}
+//					if(profile.getSettingsGroup() != null)
+//					{
+//						buffer.append( " sgroup" + profile.getSettingsGroup().getId() );
+//					}
+//					String value = profile.getValue("assetadmin");
+//					if( Boolean.parseBoolean(value) )
+//					{
+//						buffer.append(" profileassetadmin");
+//					}
+//					value = profile.getValue("viewassets");
+//					if( Boolean.parseBoolean(value) )
+//					{
+//						buffer.append(" profileviewassets");
+//					}
 				}
-				if(currentUser.getProperty("zone") != null)
-				{
-					buffer.append(" zone" + currentUser.getProperty("zone"));
-				}
+//				if(currentUser.getProperty("zone") != null)
+//				{
+//					buffer.append(" zone" + currentUser.getProperty("zone"));
+//				}
 				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
 				{
 					String allow = ((Group)iterator.next()).getId();
-					buffer.append(" " + allow);
+					buffer.append(" group_" + allow);
 				}
-				buffer.append(" " + currentUser.getUserName());
+				buffer.append(" user_" + currentUser.getUserName());
 			}
 			inSearch.addOrsGroup("viewasset", buffer.toString().toLowerCase());
 			inSearch.setSecurityAttached(true);

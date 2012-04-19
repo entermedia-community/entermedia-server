@@ -1,0 +1,8 @@
+<properties>
+	
+	<!--  An asset can be viewed by the owner and the administrators-->
+	<property id="catalogassetviewusers" value="${asset.owner}">Catalog Asset View Users</property>
+	<property id="catalogassetviewgroups" value="administrators">Catalog Asset View Groups</property>
+	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
+	-->
+</properties>

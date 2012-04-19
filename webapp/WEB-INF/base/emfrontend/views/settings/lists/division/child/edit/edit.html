@@ -1,9 +1,7 @@
 #set( $parent = "$content.parenttype")
 #set( $child = "$content.childtype")
 
-<div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">$content.childlabel</div>
-<div  class="ui-widget-content" > 
+<div>Add New</div>
 
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )
@@ -13,7 +11,9 @@
 #end
 $context.putPageValue("view", $view)
 
-<form id="dataeditor" name="dataeditor" method="post" action="$home$content.searchhome/edit/save.html" >
+
+
+<form id="dataeditor" name="dataeditor" class="ajaxform" targetdiv="childrenlist" method="post" action="$home$content.searchhome/edit/save.html" >
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$!data.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
@@ -24,20 +24,13 @@ $context.putPageValue("view", $view)
 	<input name="field"  type="hidden" value="$parent" />
 	<input name="${parent}.value"  type="hidden" value="$parentid" />
 #end
+
 $pages.include("/system/components/xml/detaileditor.html", $context)
 
-<ul class="embuttons">
-<li>
-	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
-</li>
-<li><a href='$home$content.searchhome/index.html'><span>Cancel</span></a></li>
-<li><a href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
-	<span>
-		Delete
-	</span></a>
-</li>
+<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
+<a class="btn" href="$home$apphome/views/settings/lists/$parent/parent/edit/edit.html?id=$parentid">Cancel</a>
 
-</ul>
+
 <div id="messagearea">$!message
 </div>
 </form>
@@ -50,7 +43,3 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 
 </div>
 
-</div>
-</div>
-
-<a href="$home$apphome/views/settings/lists/$parent/parent/edit/edit.html?id=$parentid">Back to $content.parentlabel</a>

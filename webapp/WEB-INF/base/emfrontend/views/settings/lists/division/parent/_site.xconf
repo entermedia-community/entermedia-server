@@ -10,6 +10,9 @@
 	<property name="showsearch">false</property>
 	<property name="searchfields">advancedsearch</property>
 	
+	<inner-layout>/${applicationid}/views/settings/lists/division/parent/innerlayout.html</inner-layout>
+
+	
 	 <path-action allowduplicates="true" bean="searcherManager" name="PageValue.loadPageVariable"/>
 	
 	 <permission name="delete">

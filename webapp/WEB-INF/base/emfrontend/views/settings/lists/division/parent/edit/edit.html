@@ -1,7 +1,6 @@
 #set( $parent = "$content.parenttype")
 #set( $child = "$content.childtype")
 
-
 <div class="ui-widget" >
 <div class="ui-widget-header">$content.parentlabel</div>
 <div  class="ui-widget-content" > 
@@ -13,20 +12,22 @@
 	#set( $view = "default/edit" )
 #end
 $context.putPageValue("view", $view)
+
 <form id="dataeditor" name="dataeditor" method="post" action="$home$content.searchhome/edit/save.html" >
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$!data.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
-	<input name="title.value"  type="hidden" value="$data.id" />
+	<input name="${parent}.value"  type="hidden" value="$data.id" />
+<table>
+<tr><td>
 $pages.include("/system/components/xml/detaileditor.html", $context)
-
-
-	<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
-<a class="btn"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
-<a class="btn" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>Delete</a>
-
+</td><td>
+<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
+##<a class="btn"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
+<a class="btn red right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>Delete</a>
+</td></tr></table>
 #if( $savedok)
 <div class="common-success">Saved</div>
 #end
@@ -41,8 +42,6 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 
 </div>
 
-</div>
-</div>
 
 ##set( $candelete = $context.getRequestParameter("candelete")) 
 ##set( $view = $context.getRequestParameter("view"))
@@ -50,3 +49,6 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 #if( $data.id )
 $pages.include("./children.html", $context)
 #end
+
+</div>
+</div>

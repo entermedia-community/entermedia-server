@@ -47,11 +47,19 @@ public class DataEditModule extends BaseMediaModule
 	public Searcher loadSearcherForEdit(WebPageRequest inReq) throws Exception
 	{
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
-		String id = inReq.getRequestParameter("id");
+		String paramname = inReq.getRequestParameter("paramname");
+		if( paramname == null)
+		{
+			paramname = "id";
+		}
+		String id = inReq.getRequestParameter(paramname);
 		if (id != null)
 		{
 			Object data = searcher.searchById(id);
-			inReq.putPageValue("data", data);
+			if( data != null)
+			{
+				inReq.putPageValue("data", data);
+			}
 		}
 		inReq.putPageValue("searcher", searcher);
 		if (searcher == null)
@@ -169,13 +177,15 @@ public class DataEditModule extends BaseMediaModule
 
 		
 		String [] fields = inReq.getRequestParameters("field");
-		for (int i = 0; i < fields.length; i++) 
+		if( fields != null)
 		{
-			
-			String field = fields[i];
-			String value = inReq.getRequestParameter(field + ".value");
-			detail.setProperty(field, value);
-			
+			for (int i = 0; i < fields.length; i++) 
+			{
+				
+				String field = fields[i];
+				String value = inReq.getRequestParameter(field + ".value");
+				detail.setProperty(field, value);
+			}
 		}
 		
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
@@ -497,7 +507,7 @@ public class DataEditModule extends BaseMediaModule
 
 	public void deleteData(WebPageRequest inReq) throws Exception
 	{
-		Searcher searcher = loadSearcherForEdit(inReq);
+		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
 			String id = inReq.getRequestParameter("id");

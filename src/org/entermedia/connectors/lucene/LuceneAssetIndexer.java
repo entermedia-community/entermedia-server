@@ -221,6 +221,8 @@ public class LuceneAssetIndexer extends LuceneIndexer
 
 	protected void populatePermission(Document inDoc, List inAccessList, String inPermission)
 	{
+		
+		//TODO Not needed any more
 		if (inAccessList.size() == 0)
 		{
 			inAccessList.add("true");
@@ -235,7 +237,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			buffer.append(" ");
 			buffer.append(allow);
 		}
-		inDoc.add(new Field(inPermission, buffer.toString(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
+		inDoc.add(new Field(inPermission, buffer.toString(), Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
 	}
 
 //	protected void populatePermission(Document inDoc, Page inPage, String inPermission, Asset inAsset) throws OpenEditException
@@ -251,11 +253,11 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			return;
 		}
 		List add = getAssetSecurityArchive().getAccessList(getMediaArchive(), inAsset);
-		//add the zone if the asset has one, this is necessary for matt
-		if(inAsset.get("zone") != null)
-		{
-			add.add("zone" + inAsset.get("zone"));
-		}
+//add the zone if the asset has one, this is necessary for matt
+//		if(inAsset.get("zone") != null)
+//		{
+//			add.add("zone" + inAsset.get("zone"));
+//		}
 		populatePermission(inDoc, add, inPermission);
 	}
 

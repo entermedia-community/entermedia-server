@@ -4,6 +4,6 @@
 	<inner-layout />
 	<path-action name="PageValue.loadPageVariable" bean="sizer" />
 	<path-action name="Date.now"  >
-	<format>yyMM</format>
+	<format>yyyy/MM</format>
 	</path-action>
 </page>

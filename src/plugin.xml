@@ -420,8 +420,7 @@
 		</property>
 	</bean>
 
-	<bean id="mediaArchive" class="org.openedit.entermedia.MediaArchive"
-		singleton="false">
+	<bean id="mediaArchive" class="org.openedit.entermedia.MediaArchive" singleton="false">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -438,7 +437,7 @@
 			<ref bean="searcherManager" />
 		</property>
 		<property name="assetSecurityArchive">
-			<ref bean="assetSecurityArchive" />
+			<ref bean="assetSecurityDataArchive" />
 		</property>
 		<property name="catalogImportConverter">
 			<ref bean="assetCompositeConverter" />
@@ -786,7 +785,13 @@
 		</property>
 	</bean>
 
-	<bean id="assetSecurityArchive" class="org.openedit.entermedia.search.AssetSecurityArchive">
+	<bean id="assetSecurityDataArchive" class="org.openedit.entermedia.search.AssetSecurityDataArchive">
+			<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	
+</bean>
+	<bean id="assetSecurityPageArchive" class="org.openedit.entermedia.search.AssetSecurityPageArchive">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>

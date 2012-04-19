@@ -22,10 +22,18 @@
 			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			
 			<a class="btn" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
+#if( $type )
+<a class="btn red" onclick="return confirm('Are you sure you want to delete $type?')" href='$home$apphome/views/settings/metadata/assettypes/edit/delete.html?id=$type.id'>Delete</a>
+#end
+
+
 #if( $savedok )			
 <div class="common-success">Saved</div>
 #end			
 		</form>
+		
+		
+		
 	</div>	
 	</div>
 

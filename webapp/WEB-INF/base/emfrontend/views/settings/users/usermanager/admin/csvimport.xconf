@@ -1,0 +1,8 @@
+<page>
+	<path-action name="Page.uploadFile" />
+	<path-action name="User.loadUserSearcher" />
+
+	<path-action name="Script.run">
+		<script>./csvimport.bsh</script>
+	</path-action>
+</page>

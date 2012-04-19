@@ -4,6 +4,6 @@
 	
 	<path-action name="DataEditModule.search" />
 	<property name="save">true</property>
-
+	<inner-layout />
 			
 </page>
