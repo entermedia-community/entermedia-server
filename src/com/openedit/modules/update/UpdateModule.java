@@ -919,7 +919,10 @@ public class UpdateModule extends BaseModule {
 			util.unzip(in, out);
 
 			Page scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/install.js");
+			if(!scriptpage.exists()){
+				 scriptpage = getPageManager().getPage("/WEB-INF/temp/upgrade/etc/zipinstall.js");
 
+			}
 			if (scriptpage.exists()) {
 				Map variables = new HashMap();
 				variables.put("context", inReq);
