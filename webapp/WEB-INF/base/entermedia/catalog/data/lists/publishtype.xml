@@ -3,6 +3,8 @@
 <!-- 
 	<location id="java">Applet Download</location>
 -->	 
+	<location id="entermedia">Remote Entermedia</location> 
+
 	<location id="aspera">Aspera</location> 
 	<location id="smartjog">Smart Jog</location>
 	<location id="ftp" >FTP</location>

@@ -9,13 +9,13 @@
 	<property id="onimport" />
 	
 	<property id="username" />
-	<property id="convertpreset" />
+	<property id="convertpreset" viewtype="multiselect"/>
 	
 	<property id="bucket" />
 	<property id="accesskey"/>
 	<property id="secretkey" />
 	
-	
+	<!-- This stuff is dumb
 	
 	<property id="company" />
 	<property id="division" />
@@ -31,6 +31,6 @@
 	<property id="emergencycontact" />
 	<property id="emergencyphone" />
 	<property id="emergencyemail" />
-
+ -->
 	
 </properties>

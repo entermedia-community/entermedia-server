@@ -65,7 +65,7 @@ public void createTasksForUpload()
 			
 			SearchQuery presetquery = destinationsearcher.createSearchQuery();
 			presetquery.addMatches("onimport", "true");
-			presetquery.addMatches("convertpreset", preset.id); //video
+		//	presetquery.addMatches("convertpreset", preset.id); //video
 			
 			HitTracker dest = destinationsearcher.search(presetquery);
 						
