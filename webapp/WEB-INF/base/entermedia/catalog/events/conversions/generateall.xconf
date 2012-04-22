@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Re-Generate Media</property>	
+	<property name="eventname">Clear Generated + re-Import</property>	
 
 	<path-action name="Script.run">
 		<script>/${catalogid}/events/scripts/conversions/generateall.groovy</script>

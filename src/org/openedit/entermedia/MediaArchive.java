@@ -467,12 +467,15 @@ public class MediaArchive
 		fieldOriginalFileManager = inOriginalFileManager;
 	}
 
-	public Asset createAsset(String inSourcePath)
+	public Asset createAsset(String inId, String inSourcePath)
 	{
 		Asset asset = new Asset();
 		asset.setCatalogId(getCatalogId());
-		String id = getAssetSearcher().nextAssetNumber();
-		asset.setId(id);
+		if( inId == null)
+		{
+			inId = getAssetSearcher().nextAssetNumber();
+		}
+		asset.setId(inId);
 		asset.setSourcePath(inSourcePath);
 		String name = PathUtilities.extractFileName(inSourcePath);
 		asset.setName(name);
@@ -484,6 +487,12 @@ public class MediaArchive
 		asset.setProperty("fileformat", ext);
 
 		return asset;
+	}
+
+	
+	public Asset createAsset(String inSourcePath)
+	{
+		return createAsset(null,inSourcePath);
 	}
 
 	public CategoryArchive getCategoryArchive()

@@ -71,7 +71,7 @@ public class OriginalDocumentGenerator extends BaseGenerator
 			asset = archive.getAssetBySourcePath(sourcePath);
 			if (asset == null)
 			{
-				asset = archive.createAsset(sourcePath);
+				asset = archive.createAsset("tmp",sourcePath);
 				//throw new OpenEditException("No asset with source path " + sourcePath);
 			}
 		}
@@ -126,7 +126,7 @@ public class OriginalDocumentGenerator extends BaseGenerator
 
 	public boolean canGenerate(WebPageRequest inReq)
 	{
-		return inReq.getPage().isBinary();
+		return true;
 	}
 
 }
