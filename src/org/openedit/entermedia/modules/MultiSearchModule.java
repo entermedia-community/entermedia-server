@@ -90,7 +90,7 @@ public class MultiSearchModule extends BaseMediaModule
 		{
 			applicationid = inReq.findValue("catalogid");
 		}
-		SearchQuery query = getSearchQueryArchive().loadQuery(applicationid, "compositeLucene", queryid, inReq.getUser());
+		SearchQuery query = getSearchQueryArchive().loadQuery(applicationid, "asset", queryid, inReq.getUser());
 		if (query != null)
 		{
 			String sessionid = applicationid + "_" + queryid + "_query";
@@ -288,7 +288,7 @@ public class MultiSearchModule extends BaseMediaModule
 			if (query == null)
 			{
 				log.info("No query in session - loading most recent");
-				query = getSearchQueryArchive().loadQuery(applicationid, "luceneComposite", inReq.getUserName() + "-mostrecent", inReq.getUser());
+				query = getSearchQueryArchive().loadQuery(applicationid, "asset", inReq.getUserName() + "-mostrecent", inReq.getUser());
 			}
 		}
 		catch (Exception e)
@@ -297,7 +297,7 @@ public class MultiSearchModule extends BaseMediaModule
 		}
 		if (query == null)
 		{
-			query = getSearcherManager().getSearcher(applicationid, "luceneComposite").createSearchQuery();
+			query = getSearcherManager().getSearcher(applicationid, "asset").createSearchQuery();
 			query.setDescription("Last edited query for user " + inReq.getUserName());
 			query.setId(inReq.getUserName() + "-mostrecent");
 			query.setName("Current query");

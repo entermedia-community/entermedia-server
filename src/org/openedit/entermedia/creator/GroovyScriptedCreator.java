@@ -26,6 +26,10 @@ public class GroovyScriptedCreator implements MediaCreator
     protected PageManager fieldPageManager;
     protected Collection fieldPreProcessors;
     
+    public GroovyScriptedCreator()
+    {
+    	
+    }
     public Collection getPreProcessors()
 	{
 		return fieldPreProcessors;

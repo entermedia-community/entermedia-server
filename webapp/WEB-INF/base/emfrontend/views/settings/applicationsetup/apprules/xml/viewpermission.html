@@ -18,6 +18,20 @@
 			 Permission = <input name="condition.${traverse}.value" value="$!filter.permission" />
 		#elseif($filter.type == "PageProperty"  || $filter.type == "PageValue" )
 			$filter.type  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.getEquals()" />
+		#elseif($filter.type == "UserProfile"  )
+			Role  
+			#set( $types = $searcherManager.getList($catalogid,"permissionsapp") )
+			<select name="condition.${traverse}.value">
+				<option value="">[[select a role]]</option>
+				#foreach( $type in $types )
+					#if ($filter.value && $type.id == $filter.value)
+						<option selected value="$type.id">$type</option>
+					#else
+						<option value="$type.id">$type</option>
+					#end
+				#end
+			</select>	
+			 = true <input type="hidden" name="condition.${traverse}.value" value="true" />
 		#elseif($filter.type == "And" )
 			And:
 		#elseif($filter.type == "Action" )

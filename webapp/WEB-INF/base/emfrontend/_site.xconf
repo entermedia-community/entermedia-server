@@ -115,7 +115,13 @@
 	</permission>
 	
 	<permission name="assetpermissions">
-			<userprofile property="assetpermissions" equals="true" />
+		<or>
+			<group name="administrators"/>
+			<and>
+				<userprofile property="assetpermissions" equals="true" />
+				<user name="${asset.owner}"/>
+			</and>	
+		</or>
 	</permission>
 
 	<permission name="converthistory">
@@ -175,10 +181,13 @@
   </permission>
   
   <permission name="deleteasset">
-  	<and>
-		<userprofile property="deleteasset" equals="true" />
-		<pagevalue name="caneditasset" equals="true" />
-	</and>
+	<or>
+		<group name="administrators"/>
+		<and>
+			<userprofile property="deleteasset" equals="true" />
+			<user name="${asset.owner}"/>
+		</and>	
+	</or>
   </permission>
 
   <permission name="embedasset">

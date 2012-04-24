@@ -38,18 +38,16 @@
 
 
 
-#if($caneditasset)
 
+
+#if($candeleteasset)
 <li style="float: right;">
 <a class="btn tooltip delete" title="Delete Asset" href="$home$apphome/views/detaileditor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="Delete Asset" /></a>
-
+#end
 </li>
+#if($canmetadatadetails)
 <li style="float: right;">
 <a class="btn tooltip" title="Edit Asset Metadata" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /></a>
-
-
-
-
 </li>
 #end
 

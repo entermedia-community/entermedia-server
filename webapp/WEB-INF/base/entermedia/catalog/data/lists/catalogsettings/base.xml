@@ -5,4 +5,7 @@
 	<property id="catalogassetviewgroups" value="administrators">Catalog Asset View Groups</property>
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
 	-->
+	<property id="events_notify_app" value="emshare">Email Notify App</property>
+	<property id="events_conversion_error_grace_period" value="2h">Email Notify Grace Period</property>
+
 </properties>
