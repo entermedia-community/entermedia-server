@@ -22,6 +22,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.ConvertResult;
 import org.openedit.entermedia.creator.MediaCreator;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
@@ -250,6 +251,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					{
 						//Date dateValue = externalFormat.parse(value);
 						//value = value + " -0000"; //added offset of 0 since that seems to be the default
+						//TODO: Should we clean up dates on their way in? Right now it uses a close format but not the perfect format
+						value = DateStorageUtil.getStorageUtil().checkFormat(value);
 						inAsset.setProperty(property.getId(), value );
 					}
 					else if(property.isList() || property.isDataType("number"))

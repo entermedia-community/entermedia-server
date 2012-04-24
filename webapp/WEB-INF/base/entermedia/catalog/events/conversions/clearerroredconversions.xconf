@@ -1,9 +1,0 @@
-<page>
-	<property name="eventname">Clear conversion errors</property>	
-	<property name="delay">1</property>
-	<property name="period">1m</property>
-	<property name="grace_period">2</property>
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/conversions/clearerroredconversions.groovy</script>
-	</path-action>
-</page>

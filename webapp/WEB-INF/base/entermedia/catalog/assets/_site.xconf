@@ -14,8 +14,6 @@
 	<permission name="editasset">
 		<or>
 			<group name="administrators"/>
-			<userprofile property="assetadmin" equals="true" />
-			<userprofile property="editasset" equals="true" />
 			<user name="${asset.owner}"/>
 		</or>
 	</permission> 

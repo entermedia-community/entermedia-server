@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Delete error assets</property>	
+	<property name="delay">1</property>
+	<property name="period">1m</property>
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/conversions/deleteerrorassets.groovy</script>
+	</path-action>
+</page>
