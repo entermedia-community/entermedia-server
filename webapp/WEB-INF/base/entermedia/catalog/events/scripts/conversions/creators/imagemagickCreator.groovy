@@ -129,11 +129,11 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			//This will output a native format. First one wins. it is not a loop.
 			String tmppath = preprocessor.populateOutputPath(inArchive, inStructions);
-			Page out = getPageManager().getPage(tmppath);
-			if( !out.exists() || out.getContentItem().getLength()==0)
+			Page tmpout = getPageManager().getPage(tmppath);
+			if( !tmpout.exists() || tmpout.getContentItem().getLength()==0)
 			{
 				//Create 
-				ConvertResult tmpresult = preprocessor.convert(inArchive, inAsset, out, inStructions);
+				ConvertResult tmpresult = preprocessor.convert(inArchive, inAsset, tmpout, inStructions);
 				if( !tmpresult.isOk() )
 				{
 					return tmpresult;
@@ -142,7 +142,23 @@ public class imagemagickCreator extends BaseImageCreator
 //					{
 //						//return tmpresult;
 //					}
-				input = out;
+				if( tmpout.getContentItem().getLength() > 0)
+				{
+					input = tmpout;
+					if( input.getPath().equals(inOutFile.getPath()))
+					{
+						//preprosessor took care of the entire file. such as exiftol
+						result.setOk(true);
+						return result;
+					}
+				}
+				else
+				{
+					//exifthumbtool probably did not work due to permissions
+					result.setError("Prepropessor could not create tmp file");
+					result.setOk(false);
+					return result;
+				}
 			}
 			else if( input == null)
 			{
