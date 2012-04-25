@@ -9,6 +9,7 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.ModuleManager;
+import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.GroovyScriptRunner;
 import com.openedit.entermedia.scripts.Script;
@@ -100,6 +101,10 @@ public class GroovyScriptedCreator implements MediaCreator
 		MediaCreator creator = (MediaCreator)ref.get(inCatalogId); 
 		if( creator == null)
 		{
+			if( getScriptManager() == null)
+			{
+				throw new OpenEditException("creater requires a script manager");
+			}
 			Script script = getScriptManager().loadScript("/" + inCatalogId + "/events/scripts/conversions/creators/" + getScriptName() + "Creator.groovy");
 			GroovyScriptRunner runner = (GroovyScriptRunner)getModuleManager().getBean("groovyScriptRunner");
 			creator = (MediaCreator)runner.newInstance(script);

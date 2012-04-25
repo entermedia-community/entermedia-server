@@ -28,6 +28,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -279,6 +280,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public QueryParser getQueryParser()
 	{
+		//TODO: use a threadgroup
+		
 		// Parsers are not thread safe.
 		QueryParser parser = new QueryParser(Version.LUCENE_31, "description", getAnalyzer())
 		{
@@ -919,6 +922,5 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//TODO: Delete the last two older indexes
 
 	}
-
 
 }
