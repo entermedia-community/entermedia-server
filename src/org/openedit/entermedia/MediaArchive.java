@@ -968,6 +968,23 @@ public class MediaArchive
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
 	}
+	
+	//conversionfailed  conversiontask assetsourcepath, params[id=102], admin
+	public void fireMediaEvent(String operation, String inMetadataType, String inSourcePath, Map inParams, User inUser)
+	{
+			WebEvent event = new WebEvent();
+			event.setProperties(inParams);
+			event.setSearchType(inMetadataType);
+			
+			event.setCatalogId(getCatalogId());
+			event.setOperation(operation);
+			event.setUser(inUser);
+			event.setSource(this);
+			
+			event.setProperty("sourcepath", inSourcePath);
+			//archive.getWebEventListener()
+			getMediaEventHandler().eventFired(event);
+	}
 
 	public Category getCategory(WebPageRequest inReq)
 	{
@@ -1031,11 +1048,12 @@ public class MediaArchive
 		fieldAssetImporter = inAssetImporter;
 	}
 
+	/*
 	public void loadAssetPermissions(String sourcepath, WebPageRequest inReq)
 	{
 		String path = "/" + getCatalogId() + "/assets/" + sourcepath + "/_site.xconf";
 		
-		List<String> names = Arrays.asList(new String[]{"viewassetadmin","viewasset", "view"});
+		List<String> names = Arrays.asList(new String[]{"viewassetadmin","viewasset","editasset", "view"});
 		
 		Page page = getPageManager().getPage(path);
 		Asset asset = (Asset)inReq.getPageValue("asset");
@@ -1075,7 +1093,7 @@ public class MediaArchive
 			}
 		}
 	}
-
+	*/
 	public Data getCatalogSetting(String inId)
 	{
 		Data setting = getSearcherManager().getData(getCatalogId(), "catalogsettings", inId);

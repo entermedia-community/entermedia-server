@@ -78,9 +78,12 @@ public class SavedQueryManager
 		for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();)
 		{
 			SearchQuery searchq = (SearchQuery) iterator.next();
-			Data child = (Data)savedsearcher.createNewData();
-			child.setProperty("parentid", data.getId());
-			saveQuery(inCatalogId,searchq,data.getId(),child,inUser);
+			if( !searchq.isFilter() )
+			{
+				Data child = (Data)savedsearcher.createNewData();
+				child.setProperty("parentid", data.getId());
+				saveQuery(inCatalogId,searchq,data.getId(),child,inUser);
+			}
 		}
 
 		return data;

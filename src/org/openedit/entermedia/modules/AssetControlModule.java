@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
@@ -20,7 +21,9 @@ import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 
-public class AssetControlModule extends BaseMediaModule {
+public class AssetControlModule extends BaseMediaModule 
+{
+	
 	private static final Log log = LogFactory.getLog(AssetControlModule.class);
 
 	/**
@@ -31,18 +34,47 @@ public class AssetControlModule extends BaseMediaModule {
 	 * @return
 	 * @throws Exception
 	 */
-	public void loadAssetPermissions(WebPageRequest inReq) throws Exception {
+	/*
+	public void loadAssetPermissions(WebPageRequest inReq) throws Exception 
+	{
 		// look in the assets xconf and check those permissions
 		MediaArchive archive = getMediaArchive(inReq);
 		String sourcepath = archive.getSourcePathForPage(inReq);
 
-		if (sourcepath != null) {
+		if (sourcepath != null) 
+		{
 			archive.loadAssetPermissions(sourcepath, inReq);
-		} else {
+		}
+		else
+		{
 			log.error("No sourcepath passed in " + inReq);
 		}
 	}
-
+	*/
+	public Boolean canViewAsset(WebPageRequest inReq)
+	{
+		Asset asset = (Asset)inReq.getPageValue("asset"); 
+		if(asset == null)
+		{
+			return false;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		//MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset
+		Boolean cando = archive.getAssetSecurityArchive().canDo(archive,inReq.getUser(),inReq.getUserProfile(),"view",asset);
+		return cando;
+	}
+	public Boolean canEditAsset(WebPageRequest inReq)
+	{
+		Asset asset = (Asset)inReq.getPageValue("asset"); 
+		if(asset == null)
+		{
+			return false;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		Boolean cando = archive.getAssetSecurityArchive().canDo(archive,inReq.getUser(),inReq.getUserProfile(),"edit",asset);
+		return cando;
+	}
+	/*
 	public void loadAllAssetPermissions(WebPageRequest inReq) throws Exception {
 		MediaArchive archive = getMediaArchive(inReq);
 		String sourcepath = archive.getSourcePathForPage(inReq);
@@ -51,7 +83,7 @@ public class AssetControlModule extends BaseMediaModule {
 		}
 		archive.loadAllAssetPermissions(sourcepath, inReq);
 	}
-
+	*/
 	/*
 	 * protected String findSourcePath(WebPageRequest inReq) throws Exception {
 	 * if(!(inReq.getPageValue("asset") instanceof Asset)) { return null; }

@@ -1,8 +1,12 @@
 <properties>
 	
 	<!--  An asset can be viewed by the owner and the administrators-->
-	<property id="catalogassetviewusers" value="${asset.owner}">Catalog Asset View Users</property>
+	<property id="catalogassetviewusers" value="true">Catalog Asset View Users</property>
 	<property id="catalogassetviewgroups" value="administrators">Catalog Asset View Groups</property>
+
+	<property id="catalogasseteditusers" value="${asset.owner}">Catalog Asset Edit Users</property>
+	<property id="catalogasseteditgroups" value="administrators">Catalog Asset Edit Groups</property>
+
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
 	-->
 	<property id="events_notify_app" value="emshare">Email Notify App</property>

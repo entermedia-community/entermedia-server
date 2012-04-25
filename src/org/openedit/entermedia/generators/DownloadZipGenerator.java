@@ -4,7 +4,6 @@
 package org.openedit.entermedia.generators;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -23,7 +22,6 @@ import com.openedit.generators.BaseGenerator;
 import com.openedit.generators.Output;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
-import com.openedit.page.PageProperty;
 
 public class DownloadZipGenerator extends BaseGenerator
 {
@@ -90,7 +88,7 @@ public class DownloadZipGenerator extends BaseGenerator
 				}
 				ConvertInstructions ins = new ConvertInstructions();
 				inReq.putPageValue("asset",asset);
-				archive.loadAssetPermissions(asset.getSourcePath(), inReq);
+				//archive.loadAssetPermissions(asset.getSourcePath(), inReq);
 				
 				ins.addPageProperties(inReq.getPage());
 				ins.addPageValues(inReq.getPageMap());
@@ -119,8 +117,9 @@ public class DownloadZipGenerator extends BaseGenerator
 				{
 					ins.setOutputExtension(extension);
 				}
-				String watermark = ins.getProperty("canforcewatermark");
-				if (Boolean.parseBoolean(watermark))
+				/*
+				Boolean watermark = (Boolean)inReq.getPageValue("canforcewatermark");
+				if (watermark)
 				{
 					ins.setWatermark(Boolean.valueOf(watermark));
 					ins.setOutputExtension("jpg");
@@ -138,7 +137,7 @@ public class DownloadZipGenerator extends BaseGenerator
 //				if(Boolean.parseBoolean(watermark)){
 //					ins.setWatermark(true);
 //				}
-				
+				*/
 				assets.put(asset, ins);
 			}
 		}

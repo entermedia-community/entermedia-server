@@ -36,8 +36,18 @@
 
  	<property name="themeprefix">/${applicationid}/theme</property>
 
-<!-- ROLE BASED PERMISSIONS -->
+	<!-- ROLE BASED PERMISSIONS -->
+	<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>
 
+	<permission name="view">
+		<user/>
+	</permission>
+		
   	<permission name="viewupload">
 			<userprofile property="viewupload" equals="true" />
 	</permission>
@@ -83,7 +93,10 @@
 	</permission>
 
 	<permission name="asseteditorlibraries">
-		<userprofile property="asseteditorlibraries" equals="true" />
+		<and>
+			<userprofile property="asseteditorlibraries" equals="true" />
+			<pagevalue name="caneditasset" equals="true"/>
+		</and>		
 	</permission>
 
 	<permission name="viewcomments">
@@ -115,23 +128,16 @@
 	</permission>
 	
 	<permission name="assetpermissions">
-		<or>
-			<group name="administrators"/>
-			<and>
-				<userprofile property="assetpermissions" equals="true" />
-				<user name="${asset.owner}"/>
-			</and>	
-		</or>
+		<and>
+			<userprofile property="assetpermissions" equals="true" />
+			<pagevalue name="caneditasset" equals="true"/>
+		</and>		
 	</permission>
 
 	<permission name="converthistory">
 			<userprofile property="converthistory" equals="true" />
 	</permission>
 
-	<permission name="viewassetedit">
-			<userprofile property="viewassetedit" equals="true" />
-	</permission>
-	
 	<permission name="viewassetdownloadhistory">
 			<userprofile property="viewassetdownloadhistory" equals="true" />
 	</permission>
@@ -181,13 +187,10 @@
   </permission>
   
   <permission name="deleteasset">
-	<or>
-		<group name="administrators"/>
-		<and>
-			<userprofile property="deleteasset" equals="true" />
-			<user name="${asset.owner}"/>
-		</and>	
-	</or>
+	<and>
+		<userprofile property="deleteasset" equals="true" />
+		<pagevalue name="caneditasset" equals="true"/>
+	</and>	
   </permission>
 
   <permission name="embedasset">
@@ -196,10 +199,6 @@
   
   <!-- USER DEFUALTS -->
   
-  <permission name="view">
-		<user/>
-	</permission>
-	
 	<permission name="viewvoting">
 		 <userprofile property="viewvoting" equals="true" />
 	</permission>

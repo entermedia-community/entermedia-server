@@ -4,20 +4,15 @@
 	<!-- Need to check for invites, may tweak the viewasset permission -->
 	<path-action name="MediaArchiveModule.getAsset"  />
 
-	<path-action name="AssetControlModule.loadAssetPermissions"/>
-	<path-action name="Admin.loadPermissions"/>
+<!--	<path-action name="AssetControlModule.loadAssetPermissions"/> -->
 
 	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<permission name="view">
 		<or>
-			<not><pagevalue name="canviewassetadmin" equals="false"/></not>
-			<not><pagevalue name="canviewasset" equals="false"/></not>
+			<group name="administrators" />
+			<asset-permission name="view" />
 		</or>
 	</permission>
-	
-	<path-action name="Admin.allowViewing">
-		<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
-	</path-action>
 	
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>

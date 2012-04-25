@@ -15,7 +15,7 @@ import com.openedit.util.*;
 import org.openedit.xml.*;
 import org.openedit.entermedia.episode.*;
 import conversions.*;
-import java.util.List;
+import java.util.*;
 import java.util.ArrayList;
 import org.entermedia.locks.Lock;
 
@@ -111,6 +111,7 @@ public void checkforTasks()
 						realtask.setProperty('status', 'error');
 						realtask.setProperty("errordetails", result.getError() );
 						
+						//TODO: Remove this one day
 						String itemid = realtask.get("itemid")
 						if(itemid != null)
 						{
@@ -119,6 +120,11 @@ public void checkforTasks()
 							item.setProperty("errordetails", result.getError() );
 							itemsearcher.saveData(item, null);
 						}
+						//	conversionfailed  conversiontask assetsourcepath, params[id=102], admin
+						Map params = new HashMap();
+						params.put("taskid",realtask.getId());
+						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask. realtask.getSourcePath(), context.getUser());
+						
 					}
 					else
 					{
