@@ -11,29 +11,46 @@
 	#set( $path = "/WEB-INF/data/$catalogid/originals/hotfolder1" )
 #end
 
-<p><label>[[Path]]</label> <br><input name="path" value="$path" size="50" /> 
-</p>
-<p> <label>[[Repository Type]]</label> <br><select name="repositorytype" >
-<option value="" #if( $mount.getRepositoryType() == "fileRepository") selected #end>File</option>
-<option value="versionRepository" #if( $mount.getRepositoryType() == "versionRepository") selected #end>Version Control</option>
-<option value="urlRepository" #if( $mount.getRepositoryType() == "urlRepository") selected #end>External HTTP Server</option>
-<option value="sftpRepository" #if( $mount.getRepositoryType() == "sftpRepository") selected #end>SFTP Server</option>
+<label>[[Folder Alias]]</label>
+<input class="field short" name="alias" value ="$alias" />
+<div class="note">[[Folder nickname.]]</div>
 
+<label>[[Sync Type]]</label>
+<select name="synctype">
+	<option value=""></option>
+	<option value="automatic">Automatic</option>
+	<option value="manual">Manual</option>
 </select>
-<br>
+<div class="note">[[Choose whether you want the folder to sync automatically or manually.]]</div>
 
-<p> <label>[[File System]]</label> <br><input name="externalpath" value="$!mount.getExternalPath()" size="50"/>
-<br><i>[[Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</i> 
-</p>
+<label>[[Path]]</label>
+<input class="field" name="path" value="$path" /> 
+<div class="note">[[EnterMedia file system folder path.]]</div> 
+
+<label>[[Repository Type]]</label>
+<select name="repositorytype" >
+	<option value="" #if( $mount.getRepositoryType() == "fileRepository") selected #end>File</option>
+	<option value="versionRepository" #if( $mount.getRepositoryType() == "versionRepository") selected #end>Version Control</option>
+	<option value="urlRepository" #if( $mount.getRepositoryType() == "urlRepository") selected #end>External HTTP Server</option>
+	<option value="sftpRepository" #if( $mount.getRepositoryType() == "sftpRepository") selected #end>SFTP Server</option>
+</select>
 
 
-<p> <label>[[Include Only]]</label> <br><textarea name="filterin" cols="25" rows="3" >$!mount.getFilterIn()</textarea>
-<br><i>[[Space or new line delimited]] [[*.jpg *.pdf *.mp4]]</i> 
-</p>
-<br>
-<p> <label>[[Exclude Some Files]]</label><br> <textarea name="filterout" cols="25" rows="3" >$!mount.getFilterOut()</textarea>
-<br><i>[[Space or new line delimited]] [[*.old */.* *.ini]]</i> 
-</p>
+<label>[[File System]]</label>
+<input class="field" name="externalpath" value="$!mount.getExternalPath()" />
+<div class="note">[[Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</div> 
+
+
+
+<label>[[Include Only]]</label>
+<textarea class="field" name="filterin" cols="45" rows="3" >$!mount.getFilterIn()</textarea>
+<div class="note">[[Space or new line delimited]] [[*.jpg *.pdf *.mp4]]</div> 
+
+
+<label>[[Exclude Some Files]]</label>
+<textarea class="field" name="filterout" cols="45" rows="3" >$!mount.getFilterOut()</textarea>
+<div class="note">[[Space or new line delimited]] [[*.old */.* *.ini]]</div> 
+
 <!-- 
 #set($searcher = $searcherManager.getSearcher("system", "mount"))
 #set($details = $searcher.getPropertyDetails())
@@ -43,7 +60,7 @@ $context.putPageValue("data", $mount)
  -->
 
 
-<div> <label> </label> <input type="submit" value="[[Save]]" />
+<div> <label> </label> <input class="btn" type="submit" value="[[Save]]" />
 </div>
 </div>
 </form>

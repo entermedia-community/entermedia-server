@@ -252,13 +252,4 @@
      <userprofile property="savesearch" equals="true" />
   </permission>
   
-  <permission name="editsearch">
-   	 <userprofile property="editsearch" equals="true" />
-  </permission>
-  
-  <permission name="deletesearch">
-	 <userprofile property="deletesearch" equals="true" />
-  </permission>
-  
-  
 </page>
