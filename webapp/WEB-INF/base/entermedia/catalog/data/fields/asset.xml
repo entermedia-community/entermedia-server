@@ -61,7 +61,7 @@
 	
 	<property id="importstatus" index="true" stored="true" datatype="list" listid="asset/importstatus" editable="true">Import Status</property>
 	<property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" listid="asset/previewstatus" datatype="list">Preview Status</property>
-	<property id="editstatus" index="true" stored="true" editable="true" viewtype="radioselect" listid="asset/editstatus" datatype="list">Edit Status</property>
+	<property id="editstatus" index="true" stored="true" editable="true" listid="asset/editstatus" datatype="list">Edit Status</property>
 
 	<!-- Asset Contains -->
 	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" externalid="By-lineTitle,Title,Headline" >Asset Title</property>

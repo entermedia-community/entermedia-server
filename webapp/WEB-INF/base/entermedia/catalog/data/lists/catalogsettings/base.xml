@@ -10,6 +10,6 @@
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
 	-->
 	<property id="events_notify_app" value="emshare">Email Notify App</property>
-	<property id="events_conversion_error_grace_period" value="2h">Email Notify Grace Period</property>
+	<property id="events_conversion_error_grace_period" value="1h">Conversion Error Asset Delete</property>
 
 </properties>
