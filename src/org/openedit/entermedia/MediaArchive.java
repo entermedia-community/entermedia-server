@@ -1035,7 +1035,7 @@ public class MediaArchive
 	{
 		String path = "/" + getCatalogId() + "/assets/" + sourcepath + "/_site.xconf";
 		
-		List<String> names = Arrays.asList(new String[]{"viewassetadmin","editasset", "viewasset", "view"});
+		List<String> names = Arrays.asList(new String[]{"viewassetadmin","viewasset", "view"});
 		
 		Page page = getPageManager().getPage(path);
 		Asset asset = (Asset)inReq.getPageValue("asset");
@@ -1076,6 +1076,21 @@ public class MediaArchive
 		}
 	}
 
+	public Data getCatalogSetting(String inId)
+	{
+		Data setting = getSearcherManager().getData(getCatalogId(), "catalogsettings", inId);
+			
+		return setting;
+	}
+	public String getCatalogSettingValue(String inId)
+	{
+		Data setting = getSearcherManager().getData(getCatalogId(), "catalogsettings", inId);
+		if( setting ==  null)
+		{
+			return null;
+		}
+		return setting.get("value");
+	}
 	
 	public void loadCategoryPermissions(WebPageRequest inReq)
 	{

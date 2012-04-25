@@ -14,6 +14,7 @@ import org.openedit.entermedia.creator.ConvertResult
 import org.openedit.entermedia.creator.MediaCreator 
 
 import com.openedit.page.Page;
+import com.openedit.util.ExecResult;
 import com.openedit.util.PathUtilities;
 import org.openedit.Data;
 
@@ -215,7 +216,13 @@ Here is a simple PCM audio format for low CPU devices
 				
 				boolean ok =  runExec("ffmpeg", comm);
 				result.setOk(ok);
-				result.setComplete(true);
+				if( !ok )
+				{
+					ExecResult execresult = getExec().runExec("ffmpeg", comm, true);
+					String output = execresult.getStandardError();
+					result.setError(output); 
+					return result;
+				}
 				if(ok && h264)
 				{
 					comm = new ArrayList();
@@ -227,7 +234,8 @@ Here is a simple PCM audio format for low CPU devices
 					old.getContentItem().setMakeVersion(false);
 					getPageManager().removePage(old);
 				}				
-
+				result.setComplete(true);
+				
 			
 		}
 		else

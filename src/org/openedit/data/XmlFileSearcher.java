@@ -61,6 +61,10 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		}
 		return fieldXmlDataArchive;
 	}
+	public void setXmlDataArchive(XmlDataArchive inArchive)
+	{
+		fieldXmlDataArchive = inArchive;
+	}
 	public XmlArchive getXmlArchive()
 	{
 		return fieldXmlArchive;

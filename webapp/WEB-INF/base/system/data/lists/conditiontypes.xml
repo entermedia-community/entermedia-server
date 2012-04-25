@@ -4,7 +4,9 @@
 	<property id="permission">User Permission</property>	
 	<property id="action">Action</property>	
 	<property id="pageproperty">Page Property</property>	
-	<property id="pagevalue">Page Value</property>	
+	<property id="pagevalue">xconf Value</property>	
+	<property id="settingsgroup">Role</property>	
+	<property id="userprofile">Role Value</property>	
 	<property id="and">And</property>
 	<property id="or">Or</property>
 	<property id="not">Not</property>

@@ -5,21 +5,21 @@
 <div class="ui-widget-content" > 
 
 
-<form class="ajaxform ajaxautosubmit" name="addform" id="groupAddForm" targetdiv="roleeditor" action="$home$usermanagerhome/user/editrole.html" method="post">
+<form class="ajaxform ajaxautosubmit" name="roleform" id="groupAddForm" targetdiv="roleeditor" action="$home$usermanagerhome/user/editrole.html" method="post">
 
 			<input type="hidden" name="userid" value="$selectedUser.id"/>
-
 	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
-	#set ($userprofile = $userProfileSearcher.searchByField("userid", $selectedUser.id))
+	#set ($selectedprofile = $userProfileSearcher.searchByField("userid", $selectedUser.id))
+	
 			<input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
 			<input type="hidden" name="searchtype" value="userprofile" />
 			<input type="hidden" name="save" value="true" />
 			<input type="hidden" name="sourcepath" value="users/$selectedUser.id" />
-			<input type="hidden" name="id" value="$!userprofile.id" />
+			<input type="hidden" name="id" value="$!selectedprofile.id" />
 	
 	$context.putPageValue("searcher", $userProfileSearcher)	 
 	$context.putPageValue("view", "userprofile/edit")	
-	$context.putPageValue("data", $userprofile)
+	$context.putPageValue("data", $selectedprofile)
 	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 
 			#if ($savedok)

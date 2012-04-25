@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.entermedia.util.TimeParser;
 import org.openedit.event.WebEvent;
 
 import com.openedit.OpenEditException;
@@ -112,38 +113,7 @@ public class PathEvent implements Comparable
 		{
 			return 0;
 		}
-
-		inPeriodString = inPeriodString.trim().toLowerCase();
-
-		if (inPeriodString.endsWith("d"))
-		{
-			long days = Long.parseLong(inPeriodString.substring(0, inPeriodString.length() - 1));
-			long period = days * 24 * 60L * 60L * 1000L;
-			return period;
-		}
-		else if (inPeriodString.endsWith("h"))
-		{
-			long hours = Long.parseLong(inPeriodString.substring(0, inPeriodString.length() - 1));
-			long period = hours * 60L * 60L * 1000L;
-			return period;
-		}
-		else if (inPeriodString.endsWith("m"))
-		{
-			long min = Long.parseLong(inPeriodString.substring(0, inPeriodString.length() - 1));
-			long period = min * 60L * 1000L;
-			return period;
-		}
-		else if (inPeriodString.endsWith("s"))
-		{
-			long sec = Long.parseLong(inPeriodString.substring(0, inPeriodString.length() - 1));
-			long period = sec * 1000L;
-			return period;
-		}
-		else
-		{
-			long period = Long.parseLong(inPeriodString);
-			return period;
-		}
+		return new TimeParser().parse(inPeriodString);
 	}
 
 	public void putProperty(String key, String value)

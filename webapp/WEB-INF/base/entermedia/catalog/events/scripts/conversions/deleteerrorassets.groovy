@@ -16,13 +16,13 @@ import com.openedit.util.*;
 
 import org.openedit.xml.*;
 import org.openedit.entermedia.episode.*;
-import conversions.*;
 
 import java.util.List;
 import java.util.ArrayList;
 
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
+import org.openedit.entermedia.util.*
 
 public void clearerrors()
 {
@@ -33,20 +33,35 @@ public void clearerrors()
 	HitTracker newtasks = tasksearcher.search(query);
 	List errors = new ArrayList(newtasks);
 	
+	//Email already went out on the event
+	
+	def grace_period = mediaarchive.getCatalogSettingValue("events_conversion_error_grace_period");
+	def grace_periodmills = new TimeParser().parse(grace_period);
+	
 	for (Data hit in errors)
 	{
 		def submitted = newtasks.getDateValue(hit, "submitted");
-		def grace_period = context.findValue("grace_period");
-		if (submitted_days_ago(grace_period, submitted)){
+		if (submittedby(grace_periodmills, submitted))
+		{
 			tasksearcher.delete(hit, user);
-			notifyUploader(hit, mediaarchive)
+			Asset asset = mediaarchive.getAsset(hit.get("assetid"));
+			if( asset != null)
+			{
+				mediaarchive.removeGeneratedImages(asset);
+				mediaarchive.getAssetSearcher().delete(asset,null);
+			}
+			else
+			{
+				log.error("asset already removed");
+			}
+			//notifyUploader(hit, mediaarchive)
 		}
 	}
 	
 }
 
-public boolean submitted_days_ago(def num, def submitted){
-	def grace_period_in_milli = num * 1000*60*60*24
+public boolean submittedby(def num, def grace_period_in_milli)
+{
 	//preset time - grace period is be greater than the conversion task submission date, return true for deletion
 	def is_ready_for_deletion = new Date().time - grace_period_in_milli > submitted.getTime()
 	return is_ready_for_deletion
@@ -57,10 +72,14 @@ public void notifyUploader(Data hit, def mediaarchive){
 	Searcher usersearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "user");
 	def user = usersearcher.getUser(asset.owner);
 	def admin = usersearcher.getUser("admin");
+	
+	Data setting = mediaarchive.getCatalogSetting("events_notify_app");
+	
 	if(user.email != null)
 	{
 		context.putPageValue("asset", asset);
-		def url = "${mediaarchive.getCatalogHome()}/components/notification/userclearedtaskerror.html"
+		String appid = setting.get("value");
+		def url = "/${appid}/components/notification/userclearedtaskerror.html"
 		context.putPageValue("toemail", user);
 		sendEmail(context, user.email, url);
 		context.putPageValue("toemail", admin);

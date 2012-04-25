@@ -565,7 +565,7 @@ public class AssetSecurityPageArchive implements AssetSecurityArchive
 	public Map checkAssetPermissions(User inUser, String inCatalogId, String sourcePath)
 	{
 		String path = "/" + inCatalogId + "/assets/" + sourcePath + "/_site.xconf";
-		List names = Arrays.asList(new String[]{"customdownload","download","forcewatermark","editasset","viewasset","view"});
+		List names = Arrays.asList(new String[]{"customdownload","download","forcewatermark","viewasset","view"});
 		Page page = getPageManager().getPage(path,true);
 
 		WebPageRequest req = new BaseWebPageRequest();
