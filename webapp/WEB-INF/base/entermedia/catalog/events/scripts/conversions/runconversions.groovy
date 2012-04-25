@@ -10,13 +10,14 @@ import org.openedit.data.Searcher;
 import com.openedit.hittracker.*;
 import org.openedit.entermedia.creator.*;
 
+import com.openedit.users.User;
 import com.openedit.util.*;
 
 import org.openedit.xml.*;
 import org.openedit.entermedia.episode.*;
 import conversions.*;
 import java.util.*;
-import java.util.ArrayList;
+
 import org.entermedia.locks.Lock;
 
 public void checkforTasks()
@@ -123,7 +124,8 @@ public void checkforTasks()
 						//	conversionfailed  conversiontask assetsourcepath, params[id=102], admin
 						Map params = new HashMap();
 						params.put("taskid",realtask.getId());
-						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask. realtask.getSourcePath(), context.getUser());
+						//String operation, String inMetadataType, String inSourcePath, Map inParams, User inUser)
+						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask.getSourcePath(), params, context.getUser());
 						
 					}
 					else

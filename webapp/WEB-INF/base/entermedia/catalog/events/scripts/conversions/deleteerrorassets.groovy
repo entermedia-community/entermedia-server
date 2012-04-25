@@ -48,56 +48,24 @@ public void clearerrors()
 			if( asset != null)
 			{
 				mediaarchive.removeGeneratedImages(asset);
-				mediaarchive.getAssetSearcher().delete(asset,null);
+				//mediaarchive.getAssetSearcher().delete(asset,null);
+				asset.setProperty("editstatus","7");
+				mediaarchive.saveAsset(asset,null);
 			}
 			else
 			{
 				log.error("asset already removed");
 			}
-			//notifyUploader(hit, mediaarchive)
 		}
 	}
 	
 }
 
-public boolean submittedby(def num, def grace_period_in_milli)
+public boolean submittedby(def grace_period_in_milli, def submitted)
 {
 	//preset time - grace period is be greater than the conversion task submission date, return true for deletion
-	def is_ready_for_deletion = new Date().time - grace_period_in_milli > submitted.getTime()
+	def is_ready_for_deletion = new Date().getTime() > (submitted.getTime() + grace_period_in_milli.longValue());
 	return is_ready_for_deletion
-}
-
-public void notifyUploader(Data hit, def mediaarchive){
-	Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
-	Searcher usersearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "user");
-	def user = usersearcher.getUser(asset.owner);
-	def admin = usersearcher.getUser("admin");
-	
-	Data setting = mediaarchive.getCatalogSetting("events_notify_app");
-	
-	if(user.email != null)
-	{
-		context.putPageValue("asset", asset);
-		String appid = setting.get("value");
-		def url = "/${appid}/components/notification/userclearedtaskerror.html"
-		context.putPageValue("toemail", user);
-		sendEmail(context, user.email, url);
-		context.putPageValue("toemail", admin);
-		sendEmail(context, admin.email, url);
-	}
-	
-}
-
-protected void sendEmail(WebPageRequest context, String email, String templatePage){
-	Page template = pageManager.getPage(templatePage);
-	WebPageRequest newcontext = context.copy(template);
-	TemplateWebEmail mailer = getMail();
-	mailer.loadSettings(newcontext);
-	mailer.setMailTemplatePath(templatePage);
-	mailer.setRecipientsFromCommas(email);
-	mailer.setSubject("Conversion Error Notice");
-	mailer.send();
-	log.info("conversion error email sent to ${email}");
 }
 
 protected TemplateWebEmail getMail() {

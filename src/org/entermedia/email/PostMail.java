@@ -233,7 +233,7 @@ public class PostMail
 		// msg.setContent(msg, "text/plain");
 		
 		Transport.send(msg);
-		log.info("sent email to " + addressTo);
+		log.info("sent email " + subject);
 	}
 
 	public int getPort() 

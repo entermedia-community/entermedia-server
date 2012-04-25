@@ -34,7 +34,7 @@ public class AssetControlModule extends BaseMediaModule
 	 * @return
 	 * @throws Exception
 	 */
-	/*
+	
 	public void loadAssetPermissions(WebPageRequest inReq) throws Exception 
 	{
 		// look in the assets xconf and check those permissions
@@ -50,7 +50,7 @@ public class AssetControlModule extends BaseMediaModule
 			log.error("No sourcepath passed in " + inReq);
 		}
 	}
-	*/
+	
 	public Boolean canViewAsset(WebPageRequest inReq)
 	{
 		Asset asset = (Asset)inReq.getPageValue("asset"); 

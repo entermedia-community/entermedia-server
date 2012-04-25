@@ -29,8 +29,8 @@ public void sendNotify()
 {
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 	//Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher(mediaarchive.getCatalogId(), "conversiontask");
-	
-	def taskid = event.get("taskid");
+	def event = context.getPageValue("ranevent");
+	def taskid = context.getRequestParameter("taskid");
 	def task = mediaarchive.getSearcherManager().getData(mediaarchive.getCatalogId(), "conversiontask", taskid);
 
 	Asset asset = mediaarchive.getAsset(task.get("assetid"));
@@ -44,9 +44,8 @@ public void sendNotify()
 	}
 }
 
-public void notifyUploader(Data hit, def mediaarchive)
+public void notifyUploader(Data inTask, Asset asset, def mediaarchive)
 {
-	Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 	Searcher usersearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "user");
 	def user = usersearcher.getUser(asset.owner);
 	def admin = usersearcher.getUser("admin");
@@ -55,12 +54,13 @@ public void notifyUploader(Data hit, def mediaarchive)
 	
 	if(user.email != null)
 	{
+		context.putPageValue("task",inTask);
 		context.putPageValue("asset", asset);
 		String appid = setting.get("value");
 		def url = "/${appid}/components/notification/userclearedtaskerror.html"
-		context.putPageValue("toemail", user);
+		context.putPageValue("uploaduser", user);
 		sendEmail(context, user.email, url);
-		context.putPageValue("toemail", admin);
+		//context.putPageValue("toemail", admin);
 		sendEmail(context, admin.email, url);
 	}
 	
