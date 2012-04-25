@@ -273,7 +273,7 @@ public class RegistrationModule extends BaseMediaModule {
 		String userid = inReq.getRequestParameter("id");
 		String code = inReq.getRequestParameter("validationcode");
 		Boolean autoenable = Boolean.parseBoolean(inReq
-				.getRequestParameter("autoenable"));
+				.findValue("autoenable"));
 		User target = getUserManager().getUser(userid);
 		if (target != null) {
 			String validationcode = target.get("validationcode");
