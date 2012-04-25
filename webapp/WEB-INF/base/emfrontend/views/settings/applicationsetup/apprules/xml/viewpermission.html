@@ -20,11 +20,11 @@
 			$filter.type  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.getEquals()" />
 		#elseif($filter.type == "UserProfile"  )
 			Role  
-			#set( $types = $searcherManager.getList($catalogid,"permissionsapp") )
-			<select name="condition.${traverse}.value">
+			#set( $types = $searcherManager.getList($catalogid,"permissionsapp") ) 
+			<select name="condition.${traverse}.name">
 				<option value="">[[select a role]]</option>
 				#foreach( $type in $types )
-					#if ($filter.value && $type.id == $filter.value)
+					#if ($type.id == $filter.getPropertyName())
 						<option selected value="$type.id">$type</option>
 					#else
 						<option value="$type.id">$type</option>

@@ -134,6 +134,10 @@ public class PermissionModule extends BaseMediaModule
 				{
 					target.setValue(value);
 				}
+				else if( key.endsWith(".name"))
+				{
+					target.setProperty("name", value);
+				}
 				else if( key.endsWith(".property"))
 				{
 					target.setProperty("property",value);
