@@ -1,0 +1,8 @@
+<page>
+	
+	<property name="eventname">Conversion Error Event</property>	
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/conversions/conversionerror.groovy</script>
+	</path-action>
+	
+</page>

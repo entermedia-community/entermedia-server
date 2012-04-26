@@ -968,6 +968,23 @@ public class MediaArchive
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
 	}
+	
+	//conversionfailed  conversiontask assetsourcepath, params[id=102], admin
+	public void fireMediaEvent(String operation, String inMetadataType, String inSourcePath, Map inParams, User inUser)
+	{
+			WebEvent event = new WebEvent();
+			event.setProperties(inParams);
+			event.setSearchType(inMetadataType);
+			
+			event.setCatalogId(getCatalogId());
+			event.setOperation(operation);
+			event.setUser(inUser);
+			event.setSource(this);
+			
+			event.setProperty("sourcepath", inSourcePath);
+			//archive.getWebEventListener()
+			getMediaEventHandler().eventFired(event);
+	}
 
 	public Category getCategory(WebPageRequest inReq)
 	{
@@ -1031,32 +1048,30 @@ public class MediaArchive
 		fieldAssetImporter = inAssetImporter;
 	}
 
+	/**
+	 * Do not use this any more. Instead use xconf settings <action name="AssetControlModule.canViewAsset" />
+	 * @deprecated
+	 * @param sourcepath
+	 * @param inReq
+	 */
 	public void loadAssetPermissions(String sourcepath, WebPageRequest inReq)
 	{
-		String path = "/" + getCatalogId() + "/assets/" + sourcepath + "/_site.xconf";
-		
-		List<String> names = Arrays.asList(new String[]{"viewassetadmin","viewasset", "view"});
-		
-		Page page = getPageManager().getPage(path);
 		Asset asset = (Asset)inReq.getPageValue("asset");
 		if( asset == null)
 		{
-			inReq.putPageValue("asset", getAssetBySourcePath(sourcepath));
+			asset = getAssetBySourcePath(sourcepath);
+			inReq.putPageValue("asset", asset);
 		}
-		WebPageRequest req = inReq.copy(page);
-		for (Iterator iterator = names.iterator(); iterator.hasNext();)
+		List<String> types = Arrays.asList(new String[]{"edit", "view"});
+		
+		for (Iterator iterator = types.iterator(); iterator.hasNext();)
 		{
-			String pername = (String) iterator.next();
-			Permission per = page.getPermission(pername);
-			if (per != null)
-			{
-				boolean value = per.passes(req);
-				//log.info(getCatalogId() + " " + pername + " = " + value + " " + per.getPath());
-				inReq.putPageValue("can" + per.getName(), Boolean.valueOf(value) );
-			}
+			String type = (String) iterator.next();
+			Boolean cando = getAssetSecurityArchive().canDo(this,inReq.getUser(),inReq.getUserProfile(),"view",asset);
+			inReq.putPageValue("can" + type + "asset", cando);
 		}
 	}
-	
+	/*
 	public void loadAllAssetPermissions(String inSourcepath, WebPageRequest inReq) 
 	{
 		String path = "/" + getCatalogId() + "/assets/" + inSourcepath + "/_site.xconf";
@@ -1075,7 +1090,7 @@ public class MediaArchive
 			}
 		}
 	}
-
+	*/
 	public Data getCatalogSetting(String inId)
 	{
 		Data setting = getSearcherManager().getData(getCatalogId(), "catalogsettings", inId);

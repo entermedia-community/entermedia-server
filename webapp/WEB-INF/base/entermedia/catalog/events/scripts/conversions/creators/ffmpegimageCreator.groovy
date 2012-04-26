@@ -65,7 +65,7 @@ public class ffmpegimageCreator extends BaseImageCreator
 		if( !input.exists() || input.length() == 0)
 		{
 			result.setOk(false);
-            log.info("Input not ready yet");
+            log.info("Input not ready yet" + input.getPath() );
 			return result;
 		}
 

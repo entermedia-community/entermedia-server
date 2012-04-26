@@ -90,7 +90,7 @@ public class GroovyScriptRunner implements ScriptRunner
 			} 
 			catch (Exception e) 
 			{
-				throw new OpenEditException(e);
+				throw new OpenEditException(e, inScript.getPage().getPath() );
 			}
 		
 	}

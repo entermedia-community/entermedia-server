@@ -11,6 +11,7 @@ import java.util.Map;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.BaseWebPageRequest;
 import com.openedit.OpenEditException;
@@ -619,6 +620,12 @@ public class AssetSecurityPageArchive implements AssetSecurityArchive
 			fieldReplacer = new Replacer();
 		}
 		return fieldReplacer;
+	}
+
+	@Override
+	public Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset)
+	{
+		throw new OpenEditException("Not implemented");
 	}
 
 }

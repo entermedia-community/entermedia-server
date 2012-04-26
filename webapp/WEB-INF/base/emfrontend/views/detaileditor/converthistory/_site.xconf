@@ -2,6 +2,7 @@
 	<property name="tab">asseteditorhistory</property>
 	<property name="subtab">converthistory</property>
 	<property name="assettab">viewassetpreviewhistory</property>
+	<property name="searchtype">conversiontask</property>
 	
 	<inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
 </page>

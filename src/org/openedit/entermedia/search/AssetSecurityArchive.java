@@ -7,6 +7,7 @@ import java.util.Map;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.OpenEditException;
 import com.openedit.page.Page;
@@ -38,6 +39,8 @@ public interface AssetSecurityArchive {
 
 	//This is for users?
 	public abstract void clearAssetPermissions(MediaArchive inArchive, Asset inAsset);
+
+	public abstract Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset);
 
 	//public abstract void grantAccess(MediaArchive inArchive, String username, Asset inAsset, String inView) throws OpenEditException;
 

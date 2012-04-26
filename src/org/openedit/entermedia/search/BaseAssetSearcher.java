@@ -301,6 +301,8 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		addShowOnly(inPageRequest, inSearch);
 		if(doesIndexSecurely() && !inSearch.isSecurityAttached())
 		{
+			//TODO: This should be in a child query with 	child.setFilter(true);
+			
 			//viewasset = "admin adminstrators guest designers"
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();

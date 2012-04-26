@@ -2,11 +2,11 @@
 
 <page>
 	<path-action name="MediaArchiveModule.getAsset"  />
-	<path-action name="AssetControlModule.loadAssetPermissions"/>
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing">
 		<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
 	</path-action>
+	
 	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<property name="saveokpage">/tools/edit/saveok.html</property>
 	
@@ -20,13 +20,20 @@
 	<inner-layout>${themeprefix}/layouts/detaileditor.html</inner-layout>
 	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
 	
+	<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>		
+
 
 	<permission name="view">
 		<or>
-			<not><pagevalue name="canviewassetadmin" equals="false"/></not>
-			<not><pagevalue name="canviewasset" equals="false"/></not>
+			<group name="administrators" />
+			<action name="AssetControlModule.canViewAsset" />
 		</or>
 	</permission>	
-		
+
 	<property name="section">details</property>
 </page>
