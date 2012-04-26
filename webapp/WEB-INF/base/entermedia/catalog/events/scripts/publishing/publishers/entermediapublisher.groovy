@@ -69,7 +69,7 @@ public class entermediapublisher extends basepublisher implements Publisher
 	
 	public Map<String, String> upload(String server, String inCatalogId, String inSourcePath, File inFile)
 	{
-		String url =server + "/media/services/" + "/upload.xml?catalogid=" + inCatalogId;
+		String url =server + "/media/services/" + "/uploadfile.xml?catalogid=" + inCatalogId;
 		PostMethod method = new PostMethod(url);
 
 		try
@@ -97,6 +97,8 @@ public class entermediapublisher extends basepublisher implements Publisher
 	
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset)
 	{
+		
+		
 		if( inPreset.get("type") == "original")
 		{
 			return mediaArchive.getOriginalDocument(asset);
