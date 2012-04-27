@@ -3,18 +3,18 @@
 
 <beans>
 
-	<bean id="postMail" class="org.entermedia.email.PostMail">
-		<!-- property name="smtpUsername">
-			<value>username</value>
+<bean id="postMail" class="org.entermedia.email.PostMail">
+		<property name="smtpUsername">
+			<value>cburkey@openedit.org</value>
 		</property>
 		<property name="smtpPassword">
-			<value></value>
-		</property -->
+			<value>8be05f16-f8ef-44eb-9b47-cf2ef6f6ab57</value>
+		</property>
 		<property name="smtpSecured">
-			<value>false</value>
+			<value>true</value>
 		</property>
 		<property name="smtpServer">
-			<value>localhost</value>
+			<value>smtp.elasticemail.com</value>
 		</property>
 		<property name="port">
 			<value>2525</value>
@@ -22,20 +22,8 @@
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
-
 	</bean>
-<!-- 
-	<bean id="postMail" class="org.entermedia.email.ElasticPostMail" >
-      <property name="smtpUsername"><value>ian@ijsolutions.ca</value></property>
-      <property name="smtpPassword"><value>ASK IAN</value></property>
-      <property name="smtpSecured"><value>true</value></property>
-      <property name="smtpServer"><value>smtp.gmail.com</value></property>
-      <property name="port"><value>465</value></property>
-      <property name="sslEnabled"><value>true</value></property>
-      
-          <property name="pageManager"><ref bean="pageManager"/></property>
-      
-        </bean>
- -->        
+ 
+    
 </beans>
         

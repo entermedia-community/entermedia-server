@@ -1,0 +1,6 @@
+<page>
+	<property name="eventname">Queue Assets</property>	
+	<path-action name="SyncModule.addAssetToQueue"  allowduplicates="true" />
+	
+	
+</page>

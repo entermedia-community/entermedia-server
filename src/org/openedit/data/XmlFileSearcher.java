@@ -22,6 +22,7 @@ import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
 import com.openedit.OpenEditException;
+import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
@@ -337,4 +338,27 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		getXmlDataArchive().clearCache();
 	}
 
+	public HitTracker getAllHits(WebPageRequest inReq)
+	{
+		SearchQuery q = createSearchQuery();
+		q.addMatches("id","*");  //Had to do this since description is not always fully populated. TODO: use Lucene API to get All
+		if (inReq != null)
+		{
+			String sort = inReq.getRequestParameter("sortby");
+			if (sort == null)
+			{
+				sort = inReq.findValue("sortby");
+			}
+			if (sort != null)
+			{
+				q.setSortBy(sort);
+			}
+			return cachedSearch(inReq, q);
+		} else{
+			return search(q);
+		}
+		
+	}
+
+	
 }

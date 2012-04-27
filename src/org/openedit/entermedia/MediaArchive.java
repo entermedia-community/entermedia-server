@@ -1294,4 +1294,16 @@ public class MediaArchive
 	public Searcher getSearcher(String inSearchType){
 		return getSearcherManager().getSearcher(getCatalogId(), inSearchType);
 	}
+	public Collection getCatalogSettingValues(String inKey)
+	{
+		String value = getCatalogSettingValue(inKey);
+		if( value == null)
+		{
+			return null;
+		}
+		String[] vals = value.split("\\s+");
+		Collection presets = Arrays.asList(vals);
+
+		return presets;
+	}
 }
