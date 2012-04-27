@@ -3,8 +3,8 @@
 	<property id="user">User</property>
 	<property id="permission">User Permission</property>	
 	<property id="action">Action</property>	
-	<property id="pageproperty">Page Property</property>	
-	<property id="pagevalue">xconf Value</property>	
+	<property id="pageproperty">xconf Property</property>	
+	<property id="pagevalue">Page Value</property>	
 	<property id="settingsgroup">Role</property>	
 	<property id="userprofile">Role Value</property>	
 	<property id="and">And</property>
