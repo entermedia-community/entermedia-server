@@ -1,0 +1,21 @@
+
+<properties>
+  <property id="id" index="true" stored="true">Id</property>
+  <property id="name" editable="true" index="true" stored="true">Name</property>
+  <property id="path" editable="true" index="true" stored="true">Path</property>
+  <property id="externalpath" editable="true" index="true" stored="true">Path</property>
+  <property id="includes" editable="true" index="true" stored="true">Path</property>
+  <property id="excludes" editable="true" index="true" stored="true">Path</property>
+  <property id="auto" editable="true" index="true" stored="true" type="boolean">Automatic</property>
+  <property id="convertpreset" index="true" stored="true" editable="true" type="multiselect">Presets to Send</property>
+
+   
+  <property id="dayofweek" editable="true" index="true" stored="true" type="list" viewtype="multiselect">Days to run</property>
+  <property id="allowablestart" editable="true" index="true" stored="true" >Friday</property>
+  <property id="allowableend" editable="true" index="true" stored="true" >Daily?</property>
+ 
+   
+
+
+
+</properties>
