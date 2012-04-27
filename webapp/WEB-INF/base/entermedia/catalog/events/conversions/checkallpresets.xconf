@@ -1,7 +1,0 @@
-<page>
-	<property name="eventname">Verify All Assets Presets</property>	
-
-	<path-action name="Script.run" >
-		<script method="verifyAllPresets" >/${catalogid}/events/scripts/conversions/Converter.groovy</script>
-	</path-action>
-</page>
