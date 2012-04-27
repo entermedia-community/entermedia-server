@@ -1415,5 +1415,11 @@
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="scriptName"><value>original</value></property>
 	</bean>			
-	
+	<bean id="HotFolderModule" class="org.openedit.entermedia.modules.HotFolderModule">
+	</bean>			
+	<bean id="hotFolderManager" class="org.openedit.entermedia.scanner.HotFolderManager">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="webServer"><ref bean="WebServer" /></property>
+	</bean>			
 </beans>
