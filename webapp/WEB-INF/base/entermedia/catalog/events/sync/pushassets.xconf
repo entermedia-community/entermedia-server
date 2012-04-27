@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Push Hot Folders</property>	
+	<property name="delay">50</property>
+	<property name="period">5m</property>
+	<path-action name="SyncModule.processPushQueue"  allowduplicates="true">
+	</path-action>
+	
+	
+</page>

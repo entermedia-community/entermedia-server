@@ -1,0 +1,6 @@
+<page>
+	
+	<path-action name="Page.uploadFile"/>
+	
+	<property name="hitsname">assets</property>
+</page>
