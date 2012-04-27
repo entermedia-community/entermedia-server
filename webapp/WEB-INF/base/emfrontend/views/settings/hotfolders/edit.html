@@ -1,7 +1,6 @@
 <form id="eml-tab-green-container" name="savemount" action="save.html" target="_top">
 #set($oldPath = $mount.getPath())
 	
-<div style="width:600px;" >	
 <h3>[[Hot Folder]]</h3>
 
 <input type="hidden" name="mountid" value="$!mount.path" />
@@ -11,41 +10,24 @@
 	#set( $path = "/WEB-INF/data/$catalogid/originals/hotfolder1" )
 #end
 
-<label>[[Folder Alias]]</label>
-<input class="field short" name="alias" value ="$alias" />
-<div class="note">[[Folder nickname.]]</div>
-
-<label>[[Sync Type]]</label>
-<select name="synctype">
-	<option value=""></option>
-	<option value="automatic">Automatic</option>
-	<option value="manual">Manual</option>
-</select>
-<div class="note">[[Choose whether you want the folder to sync automatically or manually.]]</div>
-
-<label>[[Path]]</label>
-<input class="field" name="path" value="$path" /> 
-<div class="note">[[EnterMedia file system folder path.]]</div> 
-
-<label>[[Repository Type]]</label>
-<select name="repositorytype" >
-	<option value="" #if( $mount.getRepositoryType() == "fileRepository") selected #end>File</option>
-	<option value="versionRepository" #if( $mount.getRepositoryType() == "versionRepository") selected #end>Version Control</option>
-	<option value="urlRepository" #if( $mount.getRepositoryType() == "urlRepository") selected #end>External HTTP Server</option>
-	<option value="sftpRepository" #if( $mount.getRepositoryType() == "sftpRepository") selected #end>SFTP Server</option>
-</select>
-
-
-<label>[[File System]]</label>
+<label>[[Local Path]]</label>
 <input class="field" name="externalpath" value="$!mount.getExternalPath()" />
 <div class="note">[[Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</div> 
 
 
+<label>[[Folder Alias]]</label>
+<input class="field short" name="alias" value ="$alias" />
+<div class="note">[[Folder nickname.]]</div>
+
+<label>[[Automatic Syncronization]]</label>
+
+<div class="switch on"></div>
+
+<div class="note">[[Choose whether you want the folder to sync automatically or manually.]]</div>
 
 <label>[[Include Only]]</label>
 <textarea class="field" name="filterin" cols="45" rows="3" >$!mount.getFilterIn()</textarea>
 <div class="note">[[Space or new line delimited]] [[*.jpg *.pdf *.mp4]]</div> 
-
 
 <label>[[Exclude Some Files]]</label>
 <textarea class="field" name="filterout" cols="45" rows="3" >$!mount.getFilterOut()</textarea>
@@ -60,7 +42,7 @@ $context.putPageValue("data", $mount)
  -->
 
 
-<div> <label> </label> <input class="btn" type="submit" value="[[Save]]" />
-</div>
-</div>
+<input class="btn" type="submit" value="[[Save]]" />
+
+
 </form>
