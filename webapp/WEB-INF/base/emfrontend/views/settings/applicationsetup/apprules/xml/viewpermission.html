@@ -12,22 +12,40 @@
 				#end
 			</select>	
 		#elseif($filter.type == "User" )
-			#if( !$filter.value ) Any User #else Username = #end
+			Username = 
 		    <input name="condition.${traverse}.value" value="$!filter.value" />
+		    #if( !$filter.value ) Any Authenticated User #end
 		#elseif($filter.type == "Permission" )
 			 Permission = <input name="condition.${traverse}.value" value="$!filter.permission" />
 		#elseif($filter.type == "PageProperty"  || $filter.type == "PageValue" )
-			$filter.type  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.getEquals()" />
-		#elseif($filter.type == "UserProfile"  )
-			Role  
-			#set( $types = $searcherManager.getList($catalogid,"permissionsapp") ) 
-			<select name="condition.${traverse}.name">
+			Page Value  <input name="condition.${traverse}.property" value="$!filter.property" />=<input name="condition.${traverse}.value" value="$!filter.getEquals()" />
+		#elseif($filter.type == "SettingsGroup"  )
+			#set( $roles = $searcherManager.getList($catalogid,"settingsgroup") ) 
+			Role <select name="condition.${traverse}.value">
 				<option value="">[[select a role]]</option>
-				#foreach( $type in $types )
-					#if ($type.id == $filter.getPropertyName())
+				#foreach( $type in $roles )
+					#if ($type.id == $filter.getValue())
 						<option selected value="$type.id">$type</option>
 					#else
 						<option value="$type.id">$type</option>
+					#end
+				#end
+			</select>				
+		#elseif($filter.type == "UserProfile"  )
+			Role Permission  
+			#set( $types = $searcherManager.getList($catalogid,"permissionsapp") )
+			#set( $section = "sdf" )
+			<select name="condition.${traverse}.name">
+				<option value="">[[select a role]]</option>
+				#foreach( $type in $types )
+					#if($section !=  $type.get("permissiontype") )
+							#set( $section = $type.get("permissiontype") )
+							<option value="">$searcherManager.getData($catalogid,"permissiontype",$section)</option>
+					#end
+					#if ($type.id == $filter.getPropertyName())
+						<option selected value="$type.id" style="margin-left: 10px;">$type </option>
+					#else
+						<option value="$type.id" style="margin-left: 10px;">$type</option>
 					#end
 				#end
 			</select>	

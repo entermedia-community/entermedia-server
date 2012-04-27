@@ -3,6 +3,8 @@
 	<!--  An asset can be viewed by the owner and the administrators-->
 	<property id="push_server_url" value="http://localhost:8080">URL</property>
 	<property id="push_server_username" value="admin" >Username</property>
+	<property id="push_masterswitch" value="rue" >Push Enabled</property>
+	<property id="push_convertpresets" value="largeimage" >Presets</property>
 
 	
 </properties>
