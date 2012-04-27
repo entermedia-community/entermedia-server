@@ -20,7 +20,7 @@ None found
 	<div id="valuelist" class="emtable clearfix">
 	#foreach($library in $existingrecords)
 		  
-		<a class="row tag"> $library</a>
+		<a class="row tag" title="ID# $library.id"> $library</a>
 		
 		<a style="display:inline;" class="ajax delete-row" targetdiv="childrenlist" href="$home$apphome/views/settings/lists/$parent/parent/edit/deletechild.html?id=$library.id&paramname=${parent}.value&${parent}.value=$data.id"></a>
 		
