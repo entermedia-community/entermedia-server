@@ -108,7 +108,10 @@
 	</permission>	
 
 	<permission name="removecomments">
-		<userprofile property="removecomments" equals="true" />
+		<and>
+			<userprofile property="removecomments" equals="true" />
+			<pagevalue name="caneditasset" equals="true"/>
+		</and>		
 	</permission>	
 
 	<permission name="convert">
@@ -250,6 +253,10 @@
   
   <permission name="savesearch">
      <userprofile property="savesearch" equals="true" />
+  </permission>
+
+  <permission name="editlibraryaccess">
+     <userprofile property="editlibraryaccess" equals="true" />
   </permission>
   
 </page>

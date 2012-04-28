@@ -617,6 +617,7 @@ public class UserManagerModule extends BaseModule
 		checkAdminPermission(inReq);
 		String user = inReq.getRequestParameter("usertodelete");
 		getUserManager().deleteUser(getUserManager().getUser(user));
+		getUserSearcher().reIndexAll();
 	}
 
 	public void deleteGroupProperties( WebPageRequest inReq ) throws OpenEditException,
