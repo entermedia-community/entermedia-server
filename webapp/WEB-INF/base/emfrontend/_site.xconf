@@ -254,5 +254,9 @@
   <permission name="savesearch">
      <userprofile property="savesearch" equals="true" />
   </permission>
+
+  <permission name="editlibraryaccess">
+     <userprofile property="editlibraryaccess" equals="true" />
+  </permission>
   
 </page>

@@ -12,6 +12,7 @@
 		
 	<permission id="editadvancedsearch" permissiontype="edit" name="Advanced Search" description="Enables the customization of initial search criteria."/>
 	<permission id="asseteditorlibraries" permissiontype="edit" name="Asset Libraries" description="Enables access to asset library editor." />
+	<permission id="editlibraryaccess" permissiontype="edit" name="Libraries Access" description="Enables editing of library acesss on groups or users." />
 	<permission id="changeattachment" permissiontype="edit" name="Attachments" description="Enables the creation and customization of attachments." />
 	<permission id="editassetcategories" permissiontype="edit" name="Categories" description="Edit Categories"/>
 	<permission id="comment" permissiontype="edit" name="(add) Comments" description="Enables commenting on media assets." />

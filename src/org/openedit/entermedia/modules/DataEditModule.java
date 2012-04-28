@@ -2,6 +2,7 @@ package org.openedit.entermedia.modules;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +18,7 @@ import org.entermedia.upload.FileUpload;
 import org.entermedia.upload.FileUploadItem;
 import org.entermedia.upload.UploadRequest;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.CompositeFilteredTracker;
 import org.openedit.data.FilteredTracker;
@@ -25,6 +27,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
@@ -1145,5 +1148,79 @@ public class DataEditModule extends BaseMediaModule
 		inReq.putPageValue("searcherManager",searcherManager );
 		return searcherManager;
 	}
+
+	public void addValues(WebPageRequest inReq) throws Exception 
+	{
+		Data data = (Data)loadData(inReq);
+		String inFieldName = inReq.getRequestParameter("fieldname");
+		Collection existing = getValues(data,inFieldName);
+		String value = inReq.getRequestParameter(inFieldName + ".value");
+		if( existing == null)
+		{
+			existing = new ArrayList();
+		}
+		else
+		{
+			existing = new ArrayList(existing);
+		}
+		if( !existing.contains(value))
+		{
+			existing.add(value);
+			setValues(data, inFieldName, existing);
+			//getMediaArchive(inReq).saveAsset(data, inReq.getUser());
+			Searcher searcher = loadSearcher(inReq);
+			searcher.saveData(data, inReq.getUser());
+		}
+	}	
+	public void removeValues(WebPageRequest inReq) throws Exception 
+	{
+		Data data = (Data)loadData(inReq);
+		String inFieldName = inReq.getRequestParameter("fieldname");
+		Collection existing = getValues(data,inFieldName);
+		String value = inReq.getRequestParameter(inFieldName + ".value");
+		if( existing == null)
+		{
+			existing = new ArrayList();
+		}
+		else
+		{
+			existing = new ArrayList(existing);
+		}
+		existing.remove(value);
+		setValues(data, inFieldName, existing);
+		Searcher searcher = loadSearcher(inReq);
+		searcher.saveData(data, inReq.getUser());
+	}
+
+	//TODO: Move this to Data interface
+	public Collection getValues(Data inData, String inPreference)
+	{
+		String val = inData.get(inPreference);
+		
+		if (val == null)
+			return null;
+		
+		String[] vals = val.split("\\s+");
+
+		Collection collection = Arrays.asList(vals);
+		//if null check parent
+		return collection;
+	}
+	
+	public void setValues(Data inData, String inKey, Collection<String> inValues)
+	{
+		StringBuffer values = new StringBuffer();
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			values.append(detail);
+			if( iterator.hasNext())
+			{
+				values.append(" ");
+			}
+		}
+		inData.setProperty(inKey,values.toString());
+	}
+	
 	
 }
