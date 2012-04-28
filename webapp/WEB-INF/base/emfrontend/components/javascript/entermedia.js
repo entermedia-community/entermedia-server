@@ -841,17 +841,17 @@ jQuery(document).ready(function()
 	    cache: false
 	});
 
-	$("document").ajaxError(function(e, jqxhr, settings, exception) 
+	$(document).ajaxError(function(e, jqxhr, settings, exception) 
 			{
 				var errordiv = jQuery("#errorinfoarea")
-				if( errordiv.lenght > 0)
+				if( errordiv.length > 0)
 				{
 				    $(errordiv).html("Error " + settings.url + " returned " + exception);
 
 				}
 				else
 				{
-					  alert("Error " + settings.url + " returned " + exception);
+					  alert("Error \n" + settings.url + " \nreturned " + exception);
 
 				}
 			});
