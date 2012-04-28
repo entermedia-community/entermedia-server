@@ -64,11 +64,11 @@ $context.putPageValue("edit",$edit)
 		<option>Add Field</option>
 		#foreach( $detail in $alldetails)
 			#if($detail.isLeaf())
-			<option value="$detail.id">&nbsp;&nbsp;&nbsp;&nbsp;$detail.getText($context)</option>
+			<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
 			#else							
 				<optgroup label="$detail.title"/>
 				#foreach($child in $detail)
-				<option value="$child.id">&nbsp;&nbsp;&nbsp;&nbsp;$child.getText($context)</option>
+				<option value="$child.id" style="margin-left: 10px;">$child.getText($context)</option>
 				#end
 			#end
 		#end	

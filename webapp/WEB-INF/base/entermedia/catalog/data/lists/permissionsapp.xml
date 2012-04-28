@@ -4,20 +4,18 @@
 	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." />
 	<permission id="embedasset" permissiontype="asset" name="Embed" description="Enables and embed button that provides HTML code for an asset."/>
 	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." />
-	<permission id="publish" permissiontype="asset" name="Publish" description="NEEDS DESCRIPTION." />
+	<permission id="publish" permissiontype="asset" name="Publish" description="Enables the publishing of an asset to a specified set of servers." />
 	<permission id="shareasset" permissiontype="asset" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share." />
 	<permission id="sharetosocialmedia" permissiontype="asset" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook."/>
-	<permission id="socialshare" permissiontype="asset" name="Social Share" description="NEEDS DESCRIPTION, IS THIS DIFFERENT FROM SOCIAL MEDIA SHARE?" />
 	<permission id="forcewatermark" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset."/>
 		
 	<permission id="editadvancedsearch" permissiontype="edit" name="Advanced Search" description="Enables the customization of initial search criteria."/>
-	<permission id="asseteditorlibraries" permissiontype="edit" name="Asset Libraries" description="Enables access to asset library editor." />
-	<permission id="editlibraryaccess" permissiontype="edit" name="Libraries Access" description="Enables editing of library acesss on groups or users." />
+	<permission id="asseteditorlibraries" permissiontype="edit" name="Asset Libraries" description="Enables access to the asset library editor." />
 	<permission id="changeattachment" permissiontype="edit" name="Attachments" description="Enables the creation and customization of attachments." />
-	<permission id="editassetcategories" permissiontype="edit" name="Categories" description="Edit Categories"/>
-	<permission id="comment" permissiontype="edit" name="(add) Comments" description="Enables commenting on media assets." />
-	<permission id="deletecomments" permissiontype="edit" name="(delete) Comments" description="Enables the removal of comments." />
-	<permission id="metadatageneral" permissiontype="edit" name="General Metadata" description="Enable general metadata edits"/>
+	<permission id="editassetcategories" permissiontype="edit" name="Categories" description="Enables editing of an assets assigned categories"/>
+	<permission id="comment" permissiontype="edit" name="Add Comments" description="Enables commenting on media assets." />
+	<permission id="deletecomments" permissiontype="edit" name="Delete Comments" description="Enables the removal of comments." />
+	<permission id="metadatageneral" permissiontype="edit" name="General Metadata" description="Enable general metadata edits."/>
 	<permission id="multiedit" permissiontype="edit" name="Multiple Files" description="Enables various actions across multiple assets simultaneously."/>
 	<permission id="assetpermissions" permissiontype="edit" name="Permissions" description="Enables permission alteration for media assets."/>
 	<permission id="savesearch" permissiontype="edit" name="Saved Searches" description="Enables saving, customization and deletion of previous searches."/>
@@ -27,10 +25,9 @@
 	<permission id="viewassetpreviewhistory" permissiontype="history" name="Preview" description="Logs the preview history of an asset."/>
 	<preference id="capturehistory" permissiontype="history" name="Save Usage" description="Logs the download history of an asset."/>
 		
-	<permission id="createnewrecord" permissiontype="filetransfers" name="Create a New Record" description="Enables the creation of new records with metadata that do not have assets associated with them"/>
-	<permission id="convert" permissiontype="filetransfers" name="Download Additional Formats" description="Enables downloading of alternate media asset file types. THIS IS NOT CREATED YET"/>
+	<permission id="createnewrecord" permissiontype="filetransfers" name="Create a New Record" description="Enables the creation of a new record."/>
 	<permission id="convert" permissiontype="filetransfers" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions."/>
-	<permission id="download" permissiontype="filetransfers" name="Download Original" description="Enables downloading of the original (highest resolution) asset."/>
+	<permission id="download" permissiontype="filetransfers" name="Download Original" description="Enables downloading of the original asset."/>
 	<permission id="viewuploadmulti" permissiontype="filetransfers" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." />
 	<permission id="viewupload" permissiontype="filetransfers" name="Upload Single File" description="Enables the upload of a single asset." />
 	
@@ -44,10 +41,9 @@
 	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window."/>
 	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool."/>
 	<permission id="metadatadetails" permissiontype="view" name="Metadata" description="Enables view-only access to asset metadata."/>
-	<permission id="viewpasswordhelper" permissiontype="view" name="Password Helper" description="Allow lookup of passwords"/>
+	<permission id="viewpasswordhelper" permissiontype="view" name="Password Helper" description="Enables a tool that sends a user a lost or forgotten password."/>
 	<permission id="viewrecentsearches" permissiontype="view" name="Previous Searches" description="Enables access to past searches."/>
 	<permission id="quicksearch" permissiontype="view" name="Quick Search" description="Enables a general search bar in the top navigation bar."/>
-	<permission id="viewsearcheditor" permissiontype="view" name="Search Editor" description="THIS SHOULD BE REMOVED Combine with Edit/ Saved Searches"/>
   	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />
 	
 

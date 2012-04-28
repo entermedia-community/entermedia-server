@@ -2407,11 +2407,11 @@ table.emdata th {
 	font-style: italic;
 	color: #999;
 }
-.jpg, .gif, .png, .tif, .bmp, .raw, .indd {
-	background: url('../images/attachments-image.png') 11px -1px no-repeat;
-}
 .exe, .rar, .zip, .default {
 	background: url('../images/attachments-archive.png') 11px -1px no-repeat;
+}
+.jpg, .gif, .png, .tif, .bmp, .raw, .indd {
+	background: url('../images/attachments-image.png') 11px -1px no-repeat;
 }
 .mp3, .wav, .ogg, .m4a, .aac, .aiff {
    	background: url('../images/attachments-audio.png') 11px -1px no-repeat;
