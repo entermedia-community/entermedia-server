@@ -232,6 +232,7 @@ public class SyncModule extends BaseMediaModule
 			}
 //			parts.add(new StringPart("username", account));
 //			parts.add(new StringPart("password", password));
+<<<<<<< HEAD
 
 			for (Iterator iterator = inAsset.getProperties().keySet().iterator(); iterator.hasNext();)
 			{
@@ -239,6 +240,8 @@ public class SyncModule extends BaseMediaModule
 				parts.add(new StringPart("field", key));
 				parts.add(new StringPart(key+ ".value", inAsset.get(key)));
 			}
+=======
+>>>>>>> origin/master
 			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
 			parts.add(new StringPart("original", inAsset.getName()));
 			parts.add(new StringPart("id", prefix + inAsset.getId()));
