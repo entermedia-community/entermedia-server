@@ -232,7 +232,6 @@ public class SyncModule extends BaseMediaModule
 			}
 //			parts.add(new StringPart("username", account));
 //			parts.add(new StringPart("password", password));
-
 			for (Iterator iterator = inAsset.getProperties().keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
