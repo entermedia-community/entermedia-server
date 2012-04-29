@@ -15,6 +15,8 @@ import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.entermedia.upload.FileUpload;
@@ -25,6 +27,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.xml.XmlSearcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -36,6 +39,7 @@ import com.openedit.users.UserManager;
 
 public class SyncModule extends BaseMediaModule
 {
+	private static final Log log = LogFactory.getLog(XmlSearcher.class);
 
 	protected SearcherManager fieldSearcherManager;
 	protected UserManager fieldUserManager;
@@ -67,16 +71,23 @@ public class SyncModule extends BaseMediaModule
 		if (fieldClient == null)
 		{
 			fieldClient = new HttpClient();
-			String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
-			String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
-			String password = getUserManager().decryptPassword(getUserManager().getUser(account));
-			PostMethod method = new PostMethod(server + "/media/services/rest/login.xml");
-
-			method.addParameter("accountname", account);
-			method.addParameter("password", password);
-			execute(inCatalogId, method);
+			login(inCatalogId);
 		}
 		return fieldClient;
+	}
+
+	public boolean login(String inCatalogId)
+	{
+		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
+		String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
+		String password = getUserManager().decryptPassword(getUserManager().getUser(account));
+		PostMethod method = new PostMethod(server + "/media/services/rest/login.xml");
+
+		//TODO: Support a session key and ssl
+		method.addParameter("accountname", account);
+		method.addParameter("password", password);
+		execute(inCatalogId, method);
+		return true;
 	}
 
 	public void acceptPush(WebPageRequest inReq)
@@ -128,8 +139,8 @@ public class SyncModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Searcher pushsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "pushrequest");
-		Searcher hot = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "hotfolder");
-		HitTracker hits = pushsearcher.fieldSearch("status", "pending");
+		//Searcher hot = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "hotfolder");
+		HitTracker hits = pushsearcher.fieldSearch("status", "3readyforpush");
 		Collection presets = archive.getCatalogSettingValues("push_convertpresets");
 
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
@@ -156,17 +167,19 @@ public class SyncModule extends BaseMediaModule
 			}
 			try
 			{
+				real.setProperty("status", "4beingpushed");
+				pushsearcher.saveData(hit, inReq.getUser());
 				upload(target, archive, filestosend);
-				real.setProperty("status", "complete");
+				real.setProperty("status", "1pushcomplete");
 			}
 			catch (Exception e)
 			{
-				real.setProperty("status", "error");
+				real.setProperty("status", "5uploaderror");
 
 				real.setProperty("errordetails", e.toString());
 			}
 
-			pushsearcher.saveData(hit, inReq.getUser());
+			pushsearcher.saveData(real, inReq.getUser());
 
 			//	}
 		}
@@ -181,11 +194,12 @@ public class SyncModule extends BaseMediaModule
 
 	public Map<String, String> upload(Asset inAsset, MediaArchive inArchive, List inFiles)
 	{
-		String server = getSearcherManager().getData(inArchive.getCatalogId(), "catalogsettings", "push_server_url").get("value");
-		String account = getSearcherManager().getData(inArchive.getCatalogId(), "catalogsettings", "push_server_username").get("value");
-		String password = getUserManager().decryptPassword(getUserManager().getUser(account));
+		String server = inArchive.getCatalogSettingValue("push_server_url");
+		//String account = inArchive.getCatalogSettingValue("push_server_username");
+		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
+		//String password = getUserManager().decryptPassword(getUserManager().getUser(account));
 
-		String url = server + "/media/services/rest/" + "handlesync.xml?catalogid=" + inArchive.getCatalogId();
+		String url = server + "/media/services/rest/" + "handlesync.xml?catalogid=" + targetcatalogid;
 		PostMethod method = new PostMethod(url);
 
 		try
@@ -199,13 +213,15 @@ public class SyncModule extends BaseMediaModule
 				parts.add(part);
 				count++;
 			}
+//			parts.add(new StringPart("username", account));
+//			parts.add(new StringPart("password", password));
 			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
 			parts.add(new StringPart("original", inAsset.getName()));
 
 			Part[] arrayOfparts = parts.toArray(new Part[] {});
 
 			method.setRequestEntity(new MultipartRequestEntity(arrayOfparts, method.getParams()));
-
+			
 			Element root = execute(inArchive.getCatalogId(), method);
 			Map<String, String> result = new HashMap<String, String>();
 			for (Object o : root.elements("asset"))
@@ -213,6 +229,7 @@ public class SyncModule extends BaseMediaModule
 				Element asset = (Element) o;
 				result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
 			}
+			log.info("Sent " + server + "/" + inAsset.getSourcePath());
 			return result;
 		}
 		catch (Exception e)
@@ -237,7 +254,7 @@ public class SyncModule extends BaseMediaModule
 
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
 	{
-		if (presetid == null || presetid.equals("original"))
+		if (presetid == null || presetid.equals("original") ||  presetid.equals("0"))
 		{
 			return mediaArchive.getOriginalDocument(asset);
 		}
@@ -284,7 +301,12 @@ public class SyncModule extends BaseMediaModule
 		searcher.saveData(setting, inReq.getUser());
 		
 	}
-	
+	public void clearQueue(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher pushsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "pushrequest");
+		pushsearcher.deleteAll(inReq.getUser());
+	}	
 	public void addAssetToQueue(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);

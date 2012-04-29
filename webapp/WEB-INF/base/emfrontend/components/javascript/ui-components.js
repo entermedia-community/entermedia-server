@@ -41,6 +41,12 @@ uiload = function() {
 				jQuery(this).button();
 			}
 	);
+	jQuery(".fader").livequery(
+			function()
+			{
+				jQuery(this).fadeOut(3000);
+			}
+	);
 	
 	jQuery(".uipanel").livequery(
 			function()

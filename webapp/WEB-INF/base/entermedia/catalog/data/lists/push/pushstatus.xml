@@ -1,4 +1,5 @@
 <properties>
+  <property id="5uploaderror">Upload Error</property>
   <property id="4beingpushed">Being Pushed</property>
   <property id="3readyforpush">Ready For Push</property>
   <property id="2converting">Waiting on Conversion</property>
