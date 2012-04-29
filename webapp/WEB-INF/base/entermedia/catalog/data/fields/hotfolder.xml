@@ -6,7 +6,9 @@
   <property id="externalpath" editable="true" index="true" stored="true">External Path</property>
   <property id="includes" editable="true" index="true" stored="true">Includes</property>
   <property id="excludes" editable="true" index="true" stored="true">Excludes</property>
+  <property id="attachmenttrigger" editable="true" index="true" stored="true">Attachment Trigger</property>
   <property id="enabled" editable="true" index="true" stored="true" type="boolean">Enabled</property>
+  <property id="lastscanstart" index="true" stored="true" type="time">Last Scan Start</property>
 
 <!-- Move to system settings -->
 <!--    

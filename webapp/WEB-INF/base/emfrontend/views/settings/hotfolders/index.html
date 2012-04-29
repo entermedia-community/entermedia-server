@@ -1,47 +1,50 @@
-
-<div id="eml-tab-green-container">
-
-<div class="ui-widget">
-	<div class="ui-widget-header">Hot Folders</div>
-	<div class="ui-widget-content" style="padding-top: 20px; ">
-
-#if( $mounts.size() == 0)
-
-No Hot Folders defined
-
-#else
-
-<table class="striped emdata settings-table">
-<thead>
-	<tr class="tableheader">
-		<th>[[Path]]</th>
-		<th>[[External Path]]</th>
-		<th>[[Actions]]</th>
-	</tr>
-</thead>
-#foreach( $mount in $folders )
-	<tr>
-		<td>
-			$mount.getPath()
-		</td>
-		<td valign="top" style="padding-left:10px;">
-					<b>$mount.getExternalPath()</b>
-		</td>
-		<td><div id="action$velocityCount" style="float: right;"><a class="btn"  href="$home$apphome/views/settings/hotfolders/edit.html?mountid=$mount.getPath()">[[Edit]]</a>
-			<a class=" btn red"href="$home$apphome/views/settings/hotfolders/remove.html?mountid=$mount.getPath()" onclick="return confirm('[[Remove this entry?]]');">[[Remove]]</a>	
+<ul id="folders" class="fwlist">
+	
+	#foreach($folder in $folders )
+	<li class="auto">
+		<a href="$home$apphome/views/settings/hotfolders/folder-setup.html?id=$folder.id" class="folder">
+			<div class="name">
+				<div class="alias" title="Alias">$folder.name</div>
+				<div class="path" title="$folder.externalpath">$folder.externalpath</div>
+				<div class="last-activity">Last Scanned: $!context.getDateTime($folder.lastscanstart)</div>
 			</div>
-		</td>
-	</tr>
-#end
-</table>
-#end
+		</a>
+		<div class="scan">
+			<a class="btn">Scan</a>
+		</div>
+	</li>
+	#end
+	
+	<li class="add">
+			<div class="folder"></div>
+			<a class="btn right" href="$home$apphome/views/settings/hotfolders/add-new-folder.html">Add New Folder</a>
+	</li>
+	
+	<!-- 
+	<li class="auto">
+		<a href="$home$apphome/views/folders/folder-setup.html" class="folder">
+			<div class="name">
+				<div class="alias" title="Really Long Alias that is dumb and really long">Really Long Alias that is dumb and really long</div>
+				<div class="path" title="C:/Path/To/The/Files/Goes/Here">C:/Path/To/The/Files/Goes/Here</div>
+				<div class="last-activity">Last Scanned: 3:14 PM May 9, 2012</div>
+			</div>
+		</a>
+		<div class="scan">
+			<a class="btn">Scan</a>
+		</div>
+	</li>
+	<li class="manual">
+		<a href="$home$apphome/views/folders/folder-setup.html" class="folder">
+			<div class="name">
+				<div class="alias" title="Really Long Alias that is dumb and really long">Really Long Alias that is dumb and really long</div>
+				<div class="path" title="C:/Path/To/The/Files/Goes/Here">C:/Path/To/The/Files/Goes/Here</div>
+				<div class="last-activity">Last Scanned: 3:14 PM May 9, 2012</div>
+			</div>
+		</a>
+		<div class="scan">
+			<a class="btn">Scan</a>
+		</div>
+	</li>
+	 -->
+</ul>				
 
-<a class="btn" href="$home$apphome/views/settings/hotfolders/reload.html">[[Reload Mounts]]</a>
-<a class="btn"  href="$home$apphome/views/settings/events/triggers/index.html?type=importing" >[[Import Schedule]]</a>
-
-<a class="btn" style="float: right;" href="$home$apphome/views/settings/hotfolders/addnew.html">[[Add]]</a>
-
-</div>
-
-</div>
-</div>

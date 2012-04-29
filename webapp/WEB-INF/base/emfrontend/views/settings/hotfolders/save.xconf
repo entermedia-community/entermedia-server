@@ -2,6 +2,6 @@
 
 <page>
   <property name="editable">false</property>
-  <path-action name="MountModule.saveMount" />
+  <path-action name="HotFolderModule.saveFolder" />
   
 </page>

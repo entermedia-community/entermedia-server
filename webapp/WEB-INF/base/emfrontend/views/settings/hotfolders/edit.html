@@ -1,37 +1,39 @@
-<form id="eml-tab-green-container" name="savemount" action="save.html" target="_top">
-#set($oldPath = $mount.getPath())
+<form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="save.html" target="_top">
 	
 <h3>[[Hot Folder]]</h3>
+#set( $id = $context.getRequestParameter("id") )
 
-<input type="hidden" name="mountid" value="$!mount.path" />
+<input type="hidden" name="id" value="$id" />
 
 #set( $path = $mount.path )
 #if( !$path)
 	#set( $path = "/WEB-INF/data/$catalogid/originals/hotfolder1" )
 #end
-
+##TODO: Use a detail editor here
 <label>[[Local Path]]</label>
-<input class="field" name="externalpath" value="$!mount.getExternalPath()" />
+<input type="hidden" name="field" value="externalpath" />
+<input class="field required" name="externalpath.value" value="$!data.externalpath" />
 <div class="note">[[Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</div> 
 
-
 <label>[[Folder Alias]]</label>
-<input class="field short" name="alias" value ="$alias" />
+<input type="hidden" name="field" value="name" />
+<input class="field short required" name="name.value" value ="$!data.name" />
 <div class="note">[[Folder nickname.]]</div>
 
-<label>[[Automatic Syncronization]]</label>
-
-<div class="switch on"></div>
-
-<div class="note">[[Choose whether you want the folder to sync automatically or manually.]]</div>
-
 <label>[[Include Only]]</label>
-<textarea class="field" name="filterin" cols="45" rows="3" >$!mount.getFilterIn()</textarea>
+<input type="hidden" name="field" value="includes" />
+<textarea class="field" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
 <div class="note">[[Space or new line delimited]] [[*.jpg *.pdf *.mp4]]</div> 
 
 <label>[[Exclude Some Files]]</label>
-<textarea class="field" name="filterout" cols="45" rows="3" >$!mount.getFilterOut()</textarea>
+<input type="hidden" name="field" value="excludes" />
+<textarea class="field" name="excludes.value" cols="45" rows="3" >$!data.excludes</textarea>
 <div class="note">[[Space or new line delimited]] [[*.old */.* *.ini]]</div> 
+
+<label>[[Attachment Filter]]</label>
+<input type="hidden" name="field" value="attachmenttrigger" />
+<textarea class="field" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
+<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. ]] attachments.txt</div> 
 
 <!-- 
 #set($searcher = $searcherManager.getSearcher("system", "mount"))
