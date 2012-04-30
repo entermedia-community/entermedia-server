@@ -1,6 +1,7 @@
 package org.openedit.entermedia.scanner;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,8 +10,10 @@ import java.util.Map;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebServer;
 import com.openedit.page.manage.PageManager;
@@ -153,6 +156,23 @@ public class HotFolderManager
 	{
 		getFolderSearcher(inCatalogId).saveData(inNewrow, null);		
 		saveMounts(inCatalogId);
+	}
+
+	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
+	{
+		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
+		String name = inFolder.get("subfolder");
+		String path = base + "/" + name;
+		
+		AssetImporter importer = (AssetImporter)getWebServer().getModuleManager().getBean("assetImporter");
+		importer.setExcludeFolders(inFolder.get("excludes"));
+		importer.setIncludeFiles(inFolder.get("includes"));
+		//importer.
+		
+		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
+		List<String> paths = importer.processOn(base, path, inArchive, null);
+		return paths;
 	}
 	
 }

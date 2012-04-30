@@ -15,14 +15,11 @@
 			#set( $event = $runner.getTask() )
 			<tr rowid="$event.getPage().getPath()">
 				<td> $patheventmanager.getTimeCalculator().findTimeFrom($runner.getTimeToStart()) </td>
-				<td><b>$event.getPage().getName()</b></td>
-				<td> #if( $event.isRunning() )[[event is running]]#end </td>
-				<td> #if($event.getPage().getProperty("eventname"))
-				$context.getText($event.getPage().getProperty("eventname"))
+				<td><b>$context.getText($event.getName())</b></td>
+				<td> $event.getPage().getName()
 				<div class="emselectabledetails">
-					$!context.getText($event.getPage().getProperty("description"))
-				</div> #else
-				#end
+					$!context.getText($event.getPage().getProperty("eventdescription"))
+				</div> 
 				#if( $event.getLastRun() )
 				<div>
 					[[last run]]:

@@ -87,7 +87,10 @@ public class AssetUtilities
 			asset = inArchive.createAsset(sourcePath);
 			asset.setFolder(inContent.isFolder());
 			asset.setProperty("datatype", "original");
-			asset.setProperty("owner", inUser.getUserName());
+			if( inUser != null ) 
+			{
+				asset.setProperty("owner", inUser.getUserName());
+			}
 			asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			asset.setProperty("assetviews", "1");
 			asset.setProperty("importstatus", "imported");
@@ -131,7 +134,7 @@ public class AssetUtilities
 		{
 			category = inArchive.getCategoryArchive().getRootCategory();
 		}
-		if (category.getId().equals(inUser.getId())) //See if we are in the users home folder
+		if (inUser != null && category.getId().equals(inUser.getId())) //See if we are in the users home folder
 		{
 			if (!category.getId().equals(inUser.getShortDescription()))
 			{

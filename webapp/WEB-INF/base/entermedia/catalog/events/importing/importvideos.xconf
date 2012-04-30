@@ -1,6 +1,0 @@
-<page>
-	<property name="eventname">Import Audio</property>	
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/importing/importaudio.groovy</script>
-	</path-action>
-</page>

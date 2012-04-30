@@ -973,6 +973,7 @@
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="rootDirectory"><ref bean="root"/></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
 	</bean>
 	
 	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" singleton="false">

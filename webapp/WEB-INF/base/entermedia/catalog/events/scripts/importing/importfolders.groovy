@@ -44,6 +44,17 @@ import org.openedit.entermedia.scanner.AssetImporter;
 public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");
+	
+	HotFolderManager manager = (HotFolderManager)moduleManager.getBean("hotFolderManager");
+
+	Collection hits = manager.loadFolders( archive.getCatalogId() );
+	for(Iterator iterator = hits.iterator(); iterator.hasNext();)
+	{
+		Data folder = (Data)iterator.next();
+		manager.importHotFolder(archive,folder);
+	}
+	
+	/*
 	AssetImporter importer = (AssetImporter)moduleManager.getBean("assetImporter");
 	importer.setExcludeFolders("Fonts,Links");
 	//importer.setIncludeFiles("psd,tif,pdf,eps");
@@ -53,7 +64,8 @@ public void init()
 		
 	List created = importer.processOn(assetRoot, assetRoot, archive, context.getUser());
 	log.info("created images " + created.size() );
-		
+	*/
+	
 }
 
 init();

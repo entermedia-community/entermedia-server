@@ -1,6 +1,7 @@
 package org.openedit.entermedia.modules;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openedit.Data;
 import org.openedit.data.Searcher;
@@ -8,6 +9,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.scanner.HotFolderManager;
 
 import com.openedit.WebPageRequest;
+import com.openedit.util.PathUtilities;
 
 public class HotFolderModule extends BaseMediaModule
 {
@@ -29,6 +31,7 @@ public class HotFolderModule extends BaseMediaModule
 		}
 		Searcher searcher = getHotFolderManager().getFolderSearcher(archive.getCatalogId());
 		Data data = (Data)searcher.searchById(id);
+		inReq.putPageValue("data", data);
 		return data;
 	}	
 	public void saveHotFolders(WebPageRequest inReq) throws Exception
@@ -66,6 +69,11 @@ public class HotFolderModule extends BaseMediaModule
 		}
 		searcher.updateData(inReq, fields, data);			
 		
+		//save subfolder with the value of the end of externalpath
+		String epath = data.get("externalpath");
+		epath = epath.replace('\\', '/');
+		String subfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
+		data.setProperty("subfolder", subfolder);
 		getHotFolderManager().saveFolder(archive.getCatalogId(),data);
 		
 	}
@@ -74,5 +82,14 @@ public class HotFolderModule extends BaseMediaModule
 		return (HotFolderManager)getModuleManager().getBean("hotFolderManager");
 	}
 
+	public void importFolder(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Data folder = loadHotFolder(inReq);
+		List found = getHotFolderManager().importHotFolder(archive,folder);
+		inReq.putPageValue("found", found);
+		
+	}
 	
 }

@@ -70,7 +70,18 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	
 	protected LuceneIndexer fieldLuceneIndexer;
 	protected String fieldCurrentIndexFolder;
+	protected String fieldIndexRootFolder;
 	
+	
+	public String getIndexRootFolder()
+	{
+		return fieldIndexRootFolder;
+	}
+	public void setIndexRootFolder(String inIndexRootFolder)
+	{
+		fieldIndexRootFolder = inIndexRootFolder;
+	}
+
 	public BaseLuceneSearcher() 
 	{
 	}
@@ -691,16 +702,17 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public String getIndexPath()
 	{
-		if (fieldIndexPath == null)
+		if( fieldIndexRootFolder != null)
 		{
-			String type = getSearchType();
-			if( !type.endsWith("s"))
-			{
-				type = type + "s";   //user -> users
-			}
-			fieldIndexPath = "/WEB-INF/data/" + getCatalogId() + "/" + type + "/index";
+			return "/WEB-INF/data/" + getCatalogId() +"/" + getIndexRootFolder() + "/" + getSearchType();
 		}
-		return fieldIndexPath;
+		
+		String folder = getSearchType();
+		if( !folder.endsWith("s"))
+		{
+			folder = folder + "s";
+		}
+		return "/WEB-INF/data/" + getCatalogId() +"/" + folder + "/index";
 	}
 
 	public void setIndexPath(String inIndexPath)

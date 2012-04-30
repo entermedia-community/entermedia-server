@@ -1,6 +1,0 @@
-<page>
-	<property name="eventname">Import All Media Files</property>	
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/importing/importallmediafiles.groovy</script>
-	</path-action>
-</page>

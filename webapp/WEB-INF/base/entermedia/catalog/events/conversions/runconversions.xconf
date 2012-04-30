@@ -1,5 +1,6 @@
 <page>
 	<property name="eventname">Run media conversions</property>	
+	<property name="eventdescription">Check for conversions that need to be run</property>	
 	<property name="delay">1</property>
 	<property name="period">1m</property>
 	<path-action name="Script.run">

@@ -1,6 +1,0 @@
-<page>
-	<property name="eventname">Import Images</property>	
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/importing/importimages.groovy</script>
-	</path-action>
-</page>
