@@ -751,8 +751,8 @@ onloadselectors = function()
 									},
 									function(data) 
 									{
-										node.find("div").append("<scan id='fadder'>&nbsp;+1</span>");
-										node.find("#fadder").fadeOut(3000);
+										node.find("div").append("<span class='fader'>&nbsp;+1</span>");
+										node.find(".fader").fadeOut(3000);
 									}
 							);
 
