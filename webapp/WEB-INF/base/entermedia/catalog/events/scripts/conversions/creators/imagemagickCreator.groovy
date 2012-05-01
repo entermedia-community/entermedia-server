@@ -145,12 +145,13 @@ public class imagemagickCreator extends BaseImageCreator
 				if( tmpout.getContentItem().getLength() > 0)
 				{
 					input = tmpout;
-					if( input.getPath().equals(inOutFile.getPath()))
-					{
-						//preprosessor took care of the entire file. such as exiftol
-						result.setOk(true);
-						return result;
-					}
+//					This is only useful for INDD at 1024. to complex to try and optimize					
+//					if( input.getPath().equals(inOutFile.getPath()))
+//					{
+//						//preprosessor took care of the entire file. such as exiftol
+//						result.setOk(true);
+//						return result;
+//					}
 				}
 				else
 				{
