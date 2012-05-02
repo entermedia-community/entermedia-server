@@ -186,7 +186,7 @@
   </permission>
   
   <permission name="viewassets">
-    <userprofile property="viewassets" equals="true" />
+    <userprofile propertyviewcategorynav="viewassets" equals="true" />
   </permission>
   
   <permission name="deleteasset">
@@ -234,7 +234,7 @@
   <permission name="metadatadetails">
 		 <userprofile property="metadatadetails" equals="true" />
   </permission>
-  
+  viewcategorynav
   <permission name="editadvancedsearch">
 		 <userprofile property="editadvancedsearch" equals="true" />
   </permission>
@@ -258,5 +258,11 @@
   <permission name="editlibraryaccess">
      <userprofile property="editlibraryaccess" equals="true" />
   </permission>
+
+  <permission name="viewcategorynav">
+     <userprofile property="viewcategorynav" equals="true" />
+  </permission>
+  
+  
   
 </page>

@@ -10,7 +10,7 @@
 					$pages.include("$apphome/components/advancedsearch/index.html", $context)
 				</div>
 			</div>
-
+ #if( $canviewcategorynav )
 			<div class="ui-widget  uipanel" id="left-col-categories" >
 				<div  class="ui-widget-header">Categories
 				#if( $caneditcategories )
@@ -23,3 +23,4 @@
 					$pages.include("$apphome/components/categories/inline.html")
 				</div>
 			</div>
+#end
