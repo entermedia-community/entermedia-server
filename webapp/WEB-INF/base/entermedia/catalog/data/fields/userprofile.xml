@@ -5,5 +5,6 @@
 	<property id="view_asset_resultstable" index="true" stored="true" >View Table Results</property>
 	<property id="profilesearchfilters" index="true" stored="true" >Filters Used By Search</property>
 	<property id="hideassettype" index="true" stored="true" >Hide Asset Types</property>
+	<property id="maximize_screen" index="true" stored="true" >Maximize</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>	
 </properties>

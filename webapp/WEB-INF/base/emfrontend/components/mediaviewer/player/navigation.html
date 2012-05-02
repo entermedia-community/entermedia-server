@@ -1,138 +1,92 @@
-
 #set( $link = "$cataloghome/downloads/preview/large/$asset.sourcepath/preview.jpg")
 <div class="emprevnext clearfix">
-	
-	
-#if( $hits )
-		#set($hitssessionid = $hits.sessionId )
-		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
-		#set($previous = $hits.previous($indexOf))
-		#set($next = $hits.next($indexOf))
-			#if($previous)
-				<a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
-			#end
-				
-			#if($next)
-				<a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
-			#end
-#end
+	#if( $hits )
+	#set($hitssessionid = $hits.sessionId )
+	#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+	#set($previous = $hits.previous($indexOf))
+	#set($next = $hits.next($indexOf))
+	#if($previous) <a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
+	#end
 
-<p class="asset-caption">#if($asset.caption) $asset.caption #else $asset #end</p>
+	#if($next) <a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
+	#end
+	#end
+	<p class="asset-caption">
+		#if($asset.caption) $asset.caption #else $asset #end
+	</p>
+</div>
+<ul class="emdetailactions">
+	##if( $canviewsettings )
+	##
+	##<li class="emdetaileditasset">
+	##	<a  class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hitssessionid">[[Metadata]]</a>
+	##</li>
+	##end
 
+	#if( $candownload )
+	<li>
+		<a class="btn" title="[[Download Asset]]" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">Download</a>
+	</li>
+	#end
+	#if ($content.isPropertyTrue("showaddselections") && $canviewbasket)
+	<li>
+		<a class="toggleitem ajax btn" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a>
+	</li>
+	#end
+
+	#if ( $canshareasset )
+	<li>
+		<a class="btn toggleajax" targetdivinner="share-container" href="$home$apphome/components/shareasset/index.html?assetid=$asset.id&oemaxlevel=1" id="share-button">[[Share]]</a>
+	</li>
+	#end
+	
+
+	#if($candeleteasset)
+	<li style="float: right;">
+		<a class="btn tooltip delete" title="Delete Asset" href="$home$apphome/views/detaileditor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="Delete Asset" /></a>
+	</li>
+	#end
+	
+	#if( $asset.isFolder() )
+	<li style="float: right;">
+		<a class="btn tooltip attachments" title="View Attachments" href="$home$apphome/views/detaileditor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="14" src="$home$themeprefix/images/navigation/attachments-icon.png" title="View Attachments" /></a>
+	</li>
+	#end
+	
+	#if($canmetadatadetails)
+	<li style="float: right;">
+		<a class="btn tooltip edit" title="Edit Asset Metadata" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /></a>
+	</li>
+	#end
+
+	#if( $canviewvoting )
+	<li class="emdetaileditasset" style="float: right;">
+		$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
+	</li>
+	#end
+	
+</ul>
+
+<div id="share-container" style="display: none;">
+	
 </div>
 
 
-	<ul class="emdetailactions">
-
-##if( $canviewsettings )
-		##<li class="emdetaileditasset"><a  class="btn" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hitssessionid">[[Metadata]]</a></li>
-##end
-
-	
-#if( $candownload )
-		<li><a class="btn" title="[[Download Asset]]" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">Download</a></li>
-#end
-		#if ($content.isPropertyTrue("showaddselections") && $canviewbasket)
-		<li><a class="toggleitem ajax btn" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a></li>
-		#end
-
-		#if ( $canshareasset )
-		<li><a class="btn" id="share-button">[[Share]]</a></li>
-		#end
-
-
-
-
-
-#if($candeleteasset)
-<li style="float: right;">
-<a class="btn tooltip delete" title="Delete Asset" href="$home$apphome/views/detaileditor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="Delete Asset" /></a>
-#end
-</li>
-#if($canmetadatadetails)
-<li style="float: right;">
-<a class="btn tooltip" title="Edit Asset Metadata" href="$home$apphome/views/detaileditor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /></a>
-</li>
-#end
-
-
-#if( $canviewvoting )			
-<li class="emdetaileditasset" style="float: right;">
-		$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
-</li>
-#end
-
-</ul>
-	
-	<div id="share-container" style="display: none;">
-			<ul class="emdetailactions clearfix">
-		#if( $canpublish )
-		##$home$apphome/views/activity/publishassets.html?assetid=$asset.id
-				<li id="publish"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id">[[Publish]]</a></li>
-		#end
-		#if( $canemaillink )
-		##$home$apphome/views/activity/emailassets.html?assetid=$asset.id
-				<li id="email"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="$home$apphome/views/activity/emailassets.html?assetid=$asset.id&oemaxlevel=1">[[Email]]</a></li>
-		#end
-		#if( $canembedasset )
-		##$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=700&height=200
-				<li id="embed"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&oemaxlevel=1">[[Embed]]</a></li>
-		#end
-				<!-- li  id="facebook"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="$home$apphome/components/share/facebook.html?sourcepath=$asset.sourcepath&oemaxlevel=1">Facebook</a></li>
-				<li  id="twitter"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="">Twitter</a></li>
-				<li id="google-plus"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="">Google +</a></li -->
-		#if ( $canaddtoproject )
-			<li id="add-to-collection"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a></li>
-		#end
-		#if ( $cansharetosocialmedia )
-		
-		#set ( $sharelink = "$context.siteRoot$home$apphome/views/share/viewer.html?sourcepath=$asset.sourcepath&embed=true" )
-		
-			<li id="share">
-				<!-- AddThis Button BEGIN -->
-					<div class="addthis_toolbox addthis_default_style"
-					addthis:url="$sharelink" 
-					addthis:title="$asset" 
-					addthis:description="#if ( $asset.longcaption ) $asset.longcaption #else Check this out! #end">
-					
-						<a class="addthis_button_facebook"></a>
-						<a class="addthis_button_twitter"></a>
-						<a class="addthis_button_google"></a>
-						<a class="addthis_button_compact"></a>
-						<a class="addthis_counter addthis_bubble_style"></a>
-					</div>
-				
-					<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f28119b5b332dce"></script>
-				<!-- AddThis Button END -->
-			</li>
-		#end
-			</ul>
-		
-			<div id="shareOptionsContainer">
-				
-			</div>
-			
-
-	</div>
-	
-	<script>
-	$('#share-button').click(function(){
+<script>
+	$('#share-button').click(function() {
 		$('#share-container').toggle('fast');
 	});
-	
-	$('#share-container ul li').click(function(){
-		
+
+	$('#share-container ul li').click(function() {
+
 		$('#share-container ul li.current').removeClass('current');
 		$(this).addClass('current');
-		
-	});
-</script>
-	
- $pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
- 
-#if ($canviewcomments)
-		$pages.include("$apphome/components/mediaviewer/comments/mini.html?sourcepath=$asset.sourcepath",$context)
-#end
 
- 
-</div>
+	});
+
+</script>
+$pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
+
+#if ($canviewcomments)
+$pages.include("$apphome/components/mediaviewer/comments/mini.html?sourcepath=$asset.sourcepath",$context)
+#end 
