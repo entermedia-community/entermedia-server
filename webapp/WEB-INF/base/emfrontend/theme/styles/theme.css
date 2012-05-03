@@ -131,7 +131,8 @@ table td {
 	list-style: none;
 	margin: 0;
 	height: 50px;
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #ddd;
+	background: #f7f7f7;
 }
 .embuttons {
 	list-style: none;
@@ -278,10 +279,6 @@ ul.emheaderbuttons li.navselected a {
 	color: #666;
 	font-weight: normal;
 }
-.detailsbox {
-	height: 510px;
-}
-
 .emdetailactions img {
 	border: 0px;
 }
@@ -1233,8 +1230,9 @@ small {
 }
 #asset-data {
 	display: table;
-	padding: 0 20px;
+	padding: 10px 20px;
 	width: 100%;
+	background: url('../images/top-shadow.png') top center repeat-x;
 }
 #asset-data ul, #preview-pane ul {
 	padding: 0;
@@ -1263,9 +1261,11 @@ small {
 }
 #data {
 	max-height: 250px;
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #ddd;
 	overflow: hidden;
 	width: 100%;
+	background: url('../images/bottom-shadow.png') bottom center repeat-x;
+	position: relative;
 }
 #asset-assettype-default-general {
 	margin-right: 20px;
@@ -1778,7 +1778,7 @@ width: inherit;
 	background: #f7f7f7;
 	padding: 10px 15px;
 	margin: 0 20px 0 20px;
-	border: 1px solid #eee;
+	border: 1px solid #ddd;
 	border-top: none;
 }
 #share-container ul {
