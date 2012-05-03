@@ -1253,6 +1253,7 @@ small {
 #asset-data .col1 {
 	display: table-cell;
 	vertical-align: top;
+	padding-right: 20px;
 }
 #asset-data .col2 {
 	display: table-cell;
@@ -3241,9 +3242,8 @@ td[title]:hover:before {
 /* FULL WIDTH LIST STYLES */
 
 .fwlist, .fw {
-	margin: -20px 0 0 -20px;
+	margin: -20px -20px 0 -20px;
 	padding: 0;
-	width: 857px;
 }
 .fwlist li {
 	margin: 0;
@@ -3286,7 +3286,7 @@ td[title]:hover:before {
 .folder .name {
 	position: relative;
 	top: 35px;
-	left: 125px;
+	left: 135px;
 	width: 600px;
 }
 .folder:hover .alias, .folder:hover .path {
@@ -3396,10 +3396,10 @@ li.add {
 	margin: 38px 20px 0 0;
 }
 div#folders .folder {
-	width: 857px;
 	background-color: #f7f7f7;
 	border-bottom: 1px solid #ccc;
 	margin: -30px 0 20px 0;
+	width: 100%;
 }
 div#folders .path, div#folders .alias {
 	width: 100%;

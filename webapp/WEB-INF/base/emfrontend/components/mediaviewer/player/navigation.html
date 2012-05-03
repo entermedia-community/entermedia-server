@@ -53,11 +53,11 @@
 	</li>
 	#end
 
-	#if( $canviewvoting )
-	<li class="emdetaileditasset" style="float: right;">
-		$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
-	</li>
-	#end
+	##if( $canviewvoting )
+	##<li class="emdetaileditasset" style="float: right;">
+	##	$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
+	##</li>
+	##end
 	
 </ul>
 
