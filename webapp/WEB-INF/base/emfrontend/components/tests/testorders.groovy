@@ -70,6 +70,7 @@ class Test extends EnterMediaObject
 		log.info("test is green");
 	}
 	
+	//Local file copy
 	public boolean testPublishOrder() throws Exception
 	{
 		String appid = context.findValue("applicationid");
@@ -316,8 +317,8 @@ try
 	test.testPublishOrder();
 
 	
-	logs.info("<h2>testPublishSmartJog()</h2>")
-	test.testPublishSmartJog();
+	//logs.info("<h2>testPublishSmartJog()</h2>")
+	//test.testPublishSmartJog();
 
 	//logs.info("<h2>testPublishRhozetOrderToAspera()</h2>")
 	//test.testPublishRhozetOrderToAspera();

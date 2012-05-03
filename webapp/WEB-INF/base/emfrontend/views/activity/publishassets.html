@@ -8,9 +8,9 @@ Invalid order
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-	<h3>Export</h3>
+	<h3>Publish To Server</h3>
 	
-<form class="validate" id="usereditform" method="post" action="processorder.html">
+<form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/publish/step2.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 
@@ -29,75 +29,7 @@ $context.putPageValue("view", "order/publishform")
 <br/>
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
  
-<input style="margin-left: 300px;" type="submit" name="submit" value="Send"/> 
-##	<a href="submitorder.html?orderid=$order.getId()">Resubmit Order</a>
-	
-	<div >
-	<br><br>
-	<table id="shared-asset-table" class="striped" >
-	#foreach( $item in $orderitems )
-	<tr>
-		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+<input style="margin-left: 300px;" type="submit" name="submit" value="Next"/> 
 
-	<td colspan="2" class="asset-name">${asset.name}</td>
-	</tr>
-	<tr>
-	<td>		
-		 <input type="hidden" name="itemid" value="$item.getId()" />
-				$context.putPageValue("asset", $asset)
-				$context.putPageValue("item", $item)
-				$context.setRequestParameter("sourcepath", $asset.sourcepath)					
-	
-	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
-		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
-		#set( $tsize = "$home$thumbend" )
-		
-		#if( $parenthits )
-			#set( $rootid = $parenthits.sessionId )
-		#else
-			#set( $rootid = $hits.sessionId )
-		#end
-			#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html" )
-			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
-			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-			$context.putPageValue("cell", $asset)
-			$context.putPageValue("showdetails", "false")
-		   	#set( $sourcepath = $asset.sourcePath )
-			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
-			</a>
-</td>
-<td align="right">
-	<div class="presetselector" itemid="$item.id" format="$asset.fileformat">
-	</div>
-	</td>
-	</tr>	
-	#end
-	
-</table>
-	
-	<div id="itemsave"></div>
-	
-	
 </form>
-<br><br>
 #end
-
-
-</div>
-
-<script type="text/javascript">
-	var pdestid = jQuery('#publishdestination\\.value');
-		pdestid.bind('change', 
-		function() 
-		{
-			jQuery('.presetselector').each(
-					function()
-					{
-						var itemid = jQuery(this).attr('itemid');
-						var format = jQuery(this).attr('format');
-						jQuery(this).load("presetselector.html?publishdestid=" + pdestid[0].value + "&itemid=" + itemid + "&fileformat=" + format);
-					}
-					);
-		}
-		);
-</script>

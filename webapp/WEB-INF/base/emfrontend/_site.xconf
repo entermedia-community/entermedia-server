@@ -230,6 +230,10 @@
 	<permission name="socialshare">
 		 <userprofile property="socialshare" equals="true" />
 	</permission>
+
+	<permission name="publish">
+		 <userprofile property="publish" equals="true" />
+	</permission>
   
   <permission name="metadatadetails">
 		 <userprofile property="metadatadetails" equals="true" />

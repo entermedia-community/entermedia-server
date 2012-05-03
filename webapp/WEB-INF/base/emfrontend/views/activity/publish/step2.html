@@ -1,0 +1,36 @@
+<form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/publish/processorder.html">
+<div class="emrounded">
+<input type="hidden" name="searchtype" value="order"/>
+<input type="hidden" name="catalogid" value="$catalogid"/>
+<input type="hidden" name="orderid" value="$order.id"/>
+	<div>
+		<h4>Publishing to $!searcherManager.getData($catalogid,"publishdestination",$order.publishdestination)</h4>
+
+	<table id="shared-asset-table" class="striped download-table" width="100%" >
+	#foreach( $item in $orderitems )
+		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+		 #set( $queue = $searcherManager.getData($catalogid,"publishqueue",$item.publishqueueid) )
+		<tr>
+		<td>
+			$context.putPageValue("hit",$asset)
+			$pages.include("$apphome/components/results/thumbnails/small.html",$context)		
+			
+		</td>
+		<td>
+			$!asset.name #if( $asset.assettitle ) - $asset.assettitle #end
+		</td>
+		<td>
+			$!searcherManager.getData($catalogid,"assettype",$asset.assettype)
+		</td>	
+		<td>
+			$pages.include("./presetselector.html?fileformat=$asset.fileformat&itemid=$item.id&publishdestid=$!queue.publishdestination")
+		</td>
+		</tr>
+	#end
+	</table>
+	</div>
+</div>
+
+	<input class="btn small" style="float: right" type="submit" value="Next" />
+
+</form>	      

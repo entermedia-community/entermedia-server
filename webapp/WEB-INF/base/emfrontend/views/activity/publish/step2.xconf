@@ -1,0 +1,6 @@
+<page>
+	<path-action name="OrderModule.updateOrder"/>
+	<path-action name="OrderModule.findOrderItems"/>
+	<property name="sectiontitle">Publish - Verify Publish Formats</property>
+	
+</page>
