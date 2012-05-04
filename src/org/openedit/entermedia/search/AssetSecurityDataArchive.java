@@ -92,6 +92,11 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 	{
 		List<String> permissions = new ArrayList();
 
+		String ispublic = inArchive.getCatalogSettingValue("catalogassetviewispublic");
+		if( Boolean.parseBoolean( ispublic ) )
+		{
+			permissions.add("true");
+		}
 		collectUsers(inArchive, "catalogasset" + inType + "users", "user_", permissions);
 		collectUsers(inArchive, "catalogasset" + inType + "groups", "group_", permissions);
 
