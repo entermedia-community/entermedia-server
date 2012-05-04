@@ -612,7 +612,7 @@ public class UserManagerModule extends BaseModule
 		inReq.removeSessionValue( USERNAMES );
 	}
 	
-	public void deleteUser(WebPageRequest inReq)
+	public void deleteUser(WebPageRequest inReq) throws OpenEditException
 	{
 		checkAdminPermission(inReq);
 		String user = inReq.getRequestParameter("usertodelete");
