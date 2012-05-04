@@ -49,6 +49,41 @@ unoutlineSelectionRow = function(event, ui)
 	jQuery(this).removeClass("rowdraggableenabled");
 }
 
+toggleajax = function(e) 
+{
+	e.preventDefault();
+	var nextpage= jQuery(this).attr('href');
+	var loaddiv = jQuery(this).attr("targetdivinner");
+	loaddiv = loaddiv.replace(/\//g, "\\/");
+	var cell = jQuery("#" + loaddiv);
+
+	if ( cell.hasClass("toggle_on") || cell.hasClass("toggle_off") ) 
+	{
+		var off = cell.hasClass("toggle_off");
+		if (off) 
+		{
+			cell.removeClass("toggle_off");
+			cell.addClass("toggle_on");
+			cell.show('fast');
+		}
+		else
+		{	
+			cell.removeClass("toggle_on");
+			cell.addClass("toggle_off");
+			cell.hide('fast');
+		}
+	}
+	else
+	{
+		jQuery.get(nextpage, {}, function(data) 
+			{
+				cell.html(data);
+				cell.addClass("toggle_on");
+				cell.show('fast');
+			}
+		);
+	}
+}
 
 runajax = function(e)
 {
@@ -81,12 +116,11 @@ runajax = function(e)
 				{
 					var cell = jQuery("#" + loaddiv);
 					cell.html(data);
-					
 					if (typeof(doResize) == "function")
 					{
 						doResize();
 					}
-				}	$!message
+				}
 
 			);
 
@@ -241,7 +275,7 @@ onloadselectors = function()
 {
 	
 	jQuery("a.ajax").livequery('click', runajax);
-	
+	jQuery("a.toggleajax").livequery('click', toggleajax);
 	
 	jQuery("a.updatebasket").livequery('click', updatebasket);
 	

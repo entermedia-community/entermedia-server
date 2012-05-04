@@ -157,18 +157,25 @@ public class SyncModule extends BaseMediaModule
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
-			Data real = (Data) pushsearcher.searchById(hit.getId());
-
+			Data pushqueue = (Data) pushsearcher.searchById(hit.getId());
 			Asset target = archive.getAssetBySourcePath(hit.getSourcePath());
-			//			ElementData hotfolderx = (ElementData) hot.searchById(hit
-			//					.get("hotfolder"));
-			//			boolean oktosend = isOkToSend(hotfolder);
-			//			if (oktosend) {
-			//List presets = (List) hotfolder.getValues("convertpreset");
+
+			String mediatype = archive.getMediaRenderType(target.getFileFormat());
+
 			ArrayList filestosend = new ArrayList();
 			for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
 			{
 				String presetid = (String) iterator2.next();
+				Data preset = getSearcherManager().getData(archive.getCatalogId(), "convertpreset", presetid);
+				String requiredtype = preset.get("inputtype");
+				if( requiredtype != null && requiredtype.length() > 0)
+				{
+					if( !requiredtype.equals(mediatype))
+					{
+						continue;
+					}
+				}
+						
 				Page tosend = findInputPage(archive, target, presetid);
 				if (tosend.exists())
 				{
@@ -178,19 +185,19 @@ public class SyncModule extends BaseMediaModule
 			}
 			try
 			{
-				real.setProperty("status", "4beingpushed");
+				pushqueue.setProperty("status", "4beingpushed");
 				pushsearcher.saveData(hit, inReq.getUser());
 				upload(target, archive, filestosend);
-				real.setProperty("status", "1pushcomplete");
+				pushqueue.setProperty("status", "1pushcomplete");
 			}
 			catch (Exception e)
 			{
-				real.setProperty("status", "5uploaderror");
+				pushqueue.setProperty("status", "5uploaderror");
 
-				real.setProperty("errordetails", e.toString());
+				pushqueue.setProperty("errordetails", e.toString());
 			}
 
-			pushsearcher.saveData(real, inReq.getUser());
+			pushsearcher.saveData(pushqueue, inReq.getUser());
 
 			//	}
 		}
