@@ -1,17 +1,11 @@
 package org.openedit.entermedia.model;
 
-import java.io.File;
-
-import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.CreatorManager;
-import org.openedit.entermedia.creator.old.ImageMagickImageCreator;
 
 import com.openedit.page.Page;
-import com.openedit.users.User;
-import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
 
 public class ConvertionTest extends BaseEnterMediaTest
@@ -50,7 +44,7 @@ public class ConvertionTest extends BaseEnterMediaTest
 		assertTrue(converted.length() > 0);
 		assertEquals("eps", PathUtilities.extractPageType(converted.getPath()));
 	}
-	
+	/**
 	public void xtestConvertInddFile() throws Exception
 	{
 		Asset asset = createAsset();
@@ -88,4 +82,5 @@ public class ConvertionTest extends BaseEnterMediaTest
 		assertTrue(junk.length() > 0);
 
 	}
+	**/
 }
