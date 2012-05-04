@@ -1,6 +1,48 @@
- <div class="ui-widget commentbox three-up">
+<div id="grouppermissioneditor">
+<div id="groups" class="ui-widget commentbox three-up">
 <div class="ui-widget-header">[[Groups]]</div>
 <div  class="ui-widget-content "> 
-$context.putPageValue("data",$group)
-$pages.include("$apphome/components/datalibraries/index.html?id=$selectedUser.id&searchtype=group&catalogid=system",$context)
+
+#set( $libraryid = $context.getRequestParameter("libraryid") )
+#set($librarygroupsSearcher = $searcherManager.getSearcher($catalogid,"librarygroups") )
+#set( $librarygroups = $librarygroupsSearcher.fieldSearch("libraryid",$libraryid) )
+
+<form class="ajaxform" targetdiv="grouppermissioneditor" name="addgroupform" action="$home$apphome/views/settings/libraries/permissions/groupadd.html">
+<div class="add_group_box">
+	<span class="add_person_label" title="Search * for everyone in your groups">Add Group:</span> <br />
+	
+	<select name="groupid.value" id="groupselect">
+		<option value="null"></option>
+		#foreach ( $hit in $grouphits)
+		<option value="$hit.id" #if( $group && $group.id == $hit.id ) selected #end>$hit</option>
+		#end
+	</select>
+
+	<input name="searchtype" type="hidden"  value="librarygroups" />
+
+	<input name="field" type="hidden"  value="groupid" />
+
+	<input name="field" type="hidden"  value="libraryid" />
+	<input name="libraryid.value" type="hidden"  value="$libraryid" />
+
+	<input name="save" type="hidden"  value="true" />
+
+	<input type="submit" value="Add" />
+</div>
+</form>
+
+
+<div id="emvalueeditor">
+	<div id="valuelist" class="emtable clearfix">
+	#foreach($librarygroup in $librarygroups) 
+		 #set( $thegroup = $searcherManager.getData("system","group",$librarygroup.groupid) )
+		<a class="row tag">$thegroup</a>
+		<a style="display:inline;" class="ajax delete-row" targetdiv="grouppermissioneditor" href="$home$apphome/views/settings/libraries/permissions/groupremove.html?searchtype=librarygroups&id=$librarygroup.id"></a>
+		</a>
+	#end
+	</div>
+</div>
+
+
 </div></div>
+</div>
