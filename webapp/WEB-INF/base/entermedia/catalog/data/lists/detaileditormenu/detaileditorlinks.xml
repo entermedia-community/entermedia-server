@@ -6,7 +6,7 @@
 	<a folder="map"  id="viewmap" multiedit="true" name="Geo Location Info" />		    	
 	<a folder="edit"  id="viewmediaedit" name="Media Editor" />
 	<a folder="attachments" id="viewattachments" name="Attachments" />
-	<a folder="permissions" id="assetpermissions" name="Permissions"/>
+	<a folder="permissions" id="assetpermissions" multiedit="true" name="Permissions" />
 
 	<a folder="historypreviews"  id="viewassetpreviewhistory" name="History" />
 	<a folder="delete"  id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" />
