@@ -27,8 +27,9 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.FieldComparator;
+import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -351,13 +352,24 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			String inOrdering = (String) iterator.next();
 			SortField sort = null;
-//			if (inOrdering.equals("random"))
-//			{
-//				// SortComparator custom = SampleComparable.getComparator();
-//				SortComparator custom = getRandomComparator();
-//				sort = new SortField("id", custom);
-//			}
-//			else
+			if (inOrdering.equals("random"))
+			{
+				 Sort randomsort = new Sort(
+			                new SortField(
+			                        "",
+			                        new FieldComparatorSource() {
+
+			                            @Override
+			                            public FieldComparator<Integer> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
+			                                return new RandomOrderFieldComparator();
+			                            }
+
+			                        }
+			                    )
+			            );
+				 return randomsort;
+			}
+			else
 			{
 				boolean direction = false;
 				if (inOrdering.endsWith("Down"))

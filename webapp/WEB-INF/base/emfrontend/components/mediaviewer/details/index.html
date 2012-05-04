@@ -71,16 +71,14 @@
 		</div>
 		
 		<div class="col2">
-			
+			#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+			#if( $views > 0 )
 			<div class="attachments-views">
-	
-				#if( $views > 0 )
 				<span class="emdetailviews">
 					$views views
 				</span>
-				#end
-				
 			</div>
+			#end
 			
 			<div class="grey-box clearfix">
 			

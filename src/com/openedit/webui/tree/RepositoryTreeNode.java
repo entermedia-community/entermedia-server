@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.repository.CompoundRepository;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
@@ -63,7 +62,6 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 //		String  id = PathUtilities.makeId(inUserPath);
 //		id = id.replace('/', '_');
 		setId( inUserPath );
-		//Tuan commemnt this line
 		fieldRepository = inRepository;
 		fieldContentItem = inContentItem;
 		setLeaf(!getContentItem().isFolder());
@@ -202,7 +200,6 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 
 		if (getContentItem().isFolder())
 		{
-			Repository repository= null;
 			Collection childItems = getChildPaths();
 			//TODO: Clean up this class with an archive class or some other class
 			Page thisdir = null;
@@ -211,11 +208,6 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 			{
 				thisdirpath = thisdirpath + "/";
 			}
-			repository = getPageManager().getRepository().getRealRepository(thisdirpath);
-//			if(this.getRepository() instanceof CompoundRepository)
-//				repository = this.getRepository().getRealRepository(thisdirpath);
-//			else
-//				repository = this.getRepository();
 			thisdir = getPageManager().getPage(thisdirpath);
 			boolean checkpermissions = Boolean.parseBoolean( thisdir.getProperty("oecheckfilepermissions") );
 			boolean loadfallback = true;
@@ -234,7 +226,7 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 //				childItem = (ContentItem) obj;
 				
 				String npath = (String)iterator.next();
-				RepositoryTreeNode child = createNode( npath, repository);
+				RepositoryTreeNode child = createNode( npath );
 
 				boolean okToAdd = true;
 				if( getFilter() != null && (checkpermissions || !child.isLeaf() ) )
@@ -355,51 +347,6 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		return Collections.EMPTY_LIST;
 	}
 
-	
-	/**
-	 * Method createPageTreeNode.
-	 *
-	 * @param childFile
-	 * @param path
-	 *
-	 * @return PageTreeNode
-	 */
-	protected RepositoryTreeNode createNode(String inPath, Repository repository) 
-	{
-		//inPath may be the name of the fallback file. Rebuild the path 
-		String path = null;
-		if( getParent() == null)
-		{
-			path = "/" + PathUtilities.extractFileName(inPath);
-		}
-		else
-		{
-			path = getURL() + "/" + PathUtilities.extractFileName(inPath);
-		}
-		ContentItem childItem = null;
-		try
-		{
-			//Tuan modify here
-			//childItem = getRepository().get(inPath);
-			childItem = repository.get(path);
-		}
-		catch (RepositoryException e)
-		{
-			throw new OpenEditRuntimeException(e);
-		}
-		if( childItem.getActualPath() != null && !path.equals(childItem.getActualPath()))
-		{
-			path = path + "_" + childItem.getActualPath(); //To make sure it is unique use virtual path + actual path on disk drive
-		}
-		String  id = PathUtilities.makeId(path);
-		id = id.replace('/', '_');
-		
-		RepositoryTreeNode node = new RepositoryTreeNode(repository , childItem, id);
-		node.setFilter(getFilter());
-		node.setPageManager(getPageManager());
-		return node;
-	}
-	
 	/**
 	 * Method createPageTreeNode.
 	 *
@@ -411,7 +358,7 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	protected RepositoryTreeNode createNode(String inPath) 
 	{
 		//inPath may be the name of the fallback file. Rebuild the path 
-		Repository repository = null; 
+		
 		String path = null;
 		if( getParent() == null)
 		{
@@ -424,12 +371,7 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		ContentItem childItem = null;
 		try
 		{
-			//Tuan modify here
-			//childItem = getRepository().get(inPath);
-			//this.getParent()
-			repository =getRepository().getRealRepository(path);
-			if(repository == null) repository = getRepository();
-			childItem = repository.get(inPath);
+			childItem = getRepository().get(inPath);
 		}
 		catch (RepositoryException e)
 		{
@@ -441,8 +383,8 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		}
 		String  id = PathUtilities.makeId(path);
 		id = id.replace('/', '_');
-		
-		RepositoryTreeNode node = new RepositoryTreeNode(repository , childItem, id);
+	
+		RepositoryTreeNode node = new RepositoryTreeNode( getRepository(), childItem, id);
 		node.setFilter(getFilter());
 		node.setPageManager(getPageManager());
 		return node;
