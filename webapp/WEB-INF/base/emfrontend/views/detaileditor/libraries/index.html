@@ -1,5 +1,6 @@
- <div class="ui-widget commentbox columns-2">
+<div class="ui-widget commentbox three-up">
 <div class="ui-widget-header">[[Libraries]]</div>
 <div  class="ui-widget-content "> 
-$pages.include("$apphome/components/libraries/index.html",$context)
+$context.putPageValue("data",$asset)
+$pages.include("$apphome/components/libraries/index.html?assetid=$asset.id&searchtype=asset",$context)
 </div></div>
