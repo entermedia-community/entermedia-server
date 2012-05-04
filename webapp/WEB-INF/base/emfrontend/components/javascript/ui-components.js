@@ -67,6 +67,24 @@ uiload = function() {
 		jQuery("#tablesorter").tablesorter();
 	}
 
+	jQuery(".ajaxchange select").livequery(
+			function()
+			{	
+				var select = jQuery(this);
+				var div = select.parent(".ajaxchange")
+				var url = div.attr("targetpath");
+				var divid = div.attr("targetdiv");
+				
+				select.change( function()
+					{
+					   url = url + $(this).val();						
+					   $("#" + divid).load(url);
+					}
+				);	
+			}
+		);
+
+	
 }
 
 jQuery(document).ready(function() 

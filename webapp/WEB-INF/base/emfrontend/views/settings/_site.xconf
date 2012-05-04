@@ -4,4 +4,8 @@
     <script id="jssettings" src="/${applicationid}/components/javascript/pages/settings.js"/>
 
 	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
+	<permission name="view">
+		<userprofile property="viewsettings" equals="true" />
+	</permission>
+	
 </page>

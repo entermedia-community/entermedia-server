@@ -1,0 +1,33 @@
+
+<h4>[[Select Library]]:</h4> 
+
+
+#set( $divisions = $searcherManager.getList($catalogid,"division") )
+
+<form name="adder" class="ajaxform" targetdiv="emvalueeditor" action="$home$apphome/components/libraries/addfinish.html">
+
+<input type="hidden" name="fieldname" value="libraries" /><br>
+
+
+		<select name="division.value"  id="parent${inputid}" onchange='loadlist("#detail_library", "$catalogid", "library", "Library", "libraries", "division", $(this).val(),"$!val" )'>
+		<option value="">-- Choose Division --</option>
+		#foreach( $division in $divisions)
+			<option value="$division.id">$division</option>
+		#end
+		</select>
+
+
+		<div id="detail_library" class="ajaxchange" targetdiv="librarypermissions" targetpath="$home$apphome/views/settings/libraries/permissions/permissions.html?library=">
+			$pages.include("${apphome}/components/xml/types/simplelist.html?searchtype=library&fieldname=libraries&label=Library",$context)
+		</div>		
+
+
+<input type="hidden" name="assetid" value="$context.getRequestParameter('assetid')" /><br>
+
+
+</form>
+
+<div id="librarypermissions" >
+
+</div>
+

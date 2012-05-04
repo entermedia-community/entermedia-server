@@ -1,0 +1,8 @@
+<page>
+	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<property name="subsettinglist">settingslibraries</property>
+	
+	<property name="tab">libraries</property>
+	<property name="subtab">librarypermissions</property>
+	
+</page>

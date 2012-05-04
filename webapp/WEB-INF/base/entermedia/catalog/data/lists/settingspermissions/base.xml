@@ -2,7 +2,6 @@
 
 <properties>
 
-  <property id="roles" icon="unlock" path="/views/settings/users/permissions/index.html" >User Roles</property>
-  <property id="apprules" icon="lock" path="/views/settings/applicationsetup/apprules/index.html" >Advanced Privileges</property>
+  <property id="roles" icon="unlock" path="/views/settings/users/permissions/index.html" >Edit Roles</property>
 
 </properties>

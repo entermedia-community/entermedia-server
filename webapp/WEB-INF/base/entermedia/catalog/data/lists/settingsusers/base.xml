@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-	<property id="users" icon="user" path="/views/settings/users/usermanager/users/index.html" >Users</property>
-	<property id="groups" icon="lgicn_16x16" path="/views/settings/users/usermanager/groups/index.html" >Groups</property>
-	<property id="admin"  path="/views/settings/users/usermanager/admin/index.html" >Import / Export</property>
+	<property id="users" icon="user" path="/views/settings/users/usermanager/users/index.html" >Edit Users</property>
 </properties>

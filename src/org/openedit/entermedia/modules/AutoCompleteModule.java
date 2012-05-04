@@ -97,10 +97,7 @@ public class AutoCompleteModule extends BaseMediaModule
 		SearchQuery query = userSearcher.createSearchQuery();
 		query.setAndTogether(false);
 		String searchString = inReq.getRequestParameter("term");
-		query.addStartsWith("id", searchString);
-		query.addStartsWith("email", searchString);
-		query.addStartsWith("lastname", searchString);
-		query.addStartsWith("firstname", searchString);
+		query.addStartsWith("description", searchString);
 		
 		HitTracker hits = userSearcher.cachedSearch(inReq, query);
 		if (Boolean.parseBoolean(inReq.findValue("cancelactions")))

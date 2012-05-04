@@ -8,6 +8,9 @@
   <path-action name="User.loadGroupHits" />
   <property name="hitsname">grouphits</property>
   <property name="oeuseradmintabid">groupstab</property>
-  <property name="subtab">groups</property>
+
+  <property name="subsettinglist">settingsgroupmenu</property>
+  <property name="subtab">groupmenu</property>
+  <property name="tab">groupmenu</property>
 	
 </page>

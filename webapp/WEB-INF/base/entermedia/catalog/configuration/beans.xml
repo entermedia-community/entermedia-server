@@ -11,6 +11,8 @@
 	<bean id="settingspermissionsSearcher" bean="xmlFolderSearcher"/>
 	<bean id="settingssecuritySearcher" bean="xmlFolderSearcher"/>
 	<bean id="settingsmetadataSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingsgroupmenuSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingslibrariesSearcher" bean="xmlFolderSearcher"/>
 	<bean id="settingseventsSearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditorSearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditorhistorySearcher" bean="xmlFolderSearcher"/>

@@ -1,0 +1,34 @@
+<div id="userpermissioneditor">
+<div id="users" class="ui-widget commentbox three-up">
+<div class="ui-widget-header">[[Users]]</div>
+<div  class="ui-widget-content "> 
+
+#set( $libraryid = $context.getRequestParameter("libraryid") )
+#set($libraryusersSearcher = $searcherManager.getSearcher($catalogid,"libraryusers") )
+#set( $libraryusers = $libraryusersSearcher.fieldSearch("libraryid",$libraryid) )
+
+<form class="ajaxform" targetdiv="userpermissioneditor" postpath="$home$apphome/views/settings/libraries/permissions/adduser.html">
+<div class="add_person_box">
+	<span class="add_person_label" title="Search * for everyone in your groups">Add User:</span> <br />
+	<input id="useradd" class="userautocomplete" name="addinput" type="text" />
+	<input id="useraddhidden" name="userid" type="hidden" />
+	<input name="libraryid" type="hidden"  value="$libraryid" />
+	<input type="submit" value="Add" />
+</div>
+</form>
+
+
+<div id="emvalueeditor">
+	<div id="valuelist" class="emtable clearfix">
+	#foreach($libraryuser in $libraryusers))		  
+		 #set( $theuser = $searcherManager.getData("system","user",$libraryuser.userid) )
+		<a class="row tag">$theuser</a>
+		<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/libraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$library"></a>
+		</a>
+	#end
+	</div>
+</div>
+
+
+</div></div>
+</div>

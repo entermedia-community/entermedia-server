@@ -435,6 +435,24 @@ onloadselectors = function()
 					});
 				}
 			});
+	jQuery(".userautocomplete").livequery( function() 
+			{
+				var theinput = jQuery(this);
+				if( theinput && theinput.autocomplete )
+				{
+					var theinputhidden = theinput.attr("id") + "hidden";
+					theinput.autocomplete({
+						source: '$home$apphome/components/autocomplete/usersuggestions.txt',
+						select: function(event, ui) {
+							//set input that's just for display purposes
+							theinput.val(ui.item.display);
+							//set a hidden input that's actually used when the form is submitted
+							jQuery("#" + theinputhidden).val(ui.item.value);
+							return false;
+						}
+					});
+				}
+			});
 
 	
 	
