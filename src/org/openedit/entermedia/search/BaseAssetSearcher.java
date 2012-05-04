@@ -313,7 +313,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 				if( profile != null)
 				{
 					//Get the libraries
-					Collection libraries = profile.getValues("libraries");
+					Collection libraries = profile.getCombinedLibraries();
 					if( libraries != null)
 					{
 						for (Iterator iterator = libraries.iterator(); iterator	.hasNext();) 

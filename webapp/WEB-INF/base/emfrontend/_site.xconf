@@ -259,9 +259,13 @@
      <userprofile property="savesearch" equals="true" />
   </permission>
 
-  <permission name="editlibraryaccess">
-     <userprofile property="editlibraryaccess" equals="true" />
+  <permission name="asseteditorlibraries">
+	  	<and>
+    		 <userprofile property="asseteditorlibraries" equals="true" />
+			<pagevalue name="caneditasset" equals="true"/>
+		</and>		
   </permission>
+
 
   <permission name="viewcategorynav">
      <userprofile property="viewcategorynav" equals="true" />
