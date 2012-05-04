@@ -7,12 +7,21 @@
 #set($libraryusersSearcher = $searcherManager.getSearcher($catalogid,"libraryusers") )
 #set( $libraryusers = $libraryusersSearcher.fieldSearch("libraryid",$libraryid) )
 
-<form class="ajaxform" targetdiv="userpermissioneditor" postpath="$home$apphome/views/settings/libraries/permissions/adduser.html">
+<form class="ajaxform" targetdiv="userpermissioneditor" name="adduserform" action="$home$apphome/views/settings/libraries/permissions/adduser.html">
 <div class="add_person_box">
 	<span class="add_person_label" title="Search * for everyone in your groups">Add User:</span> <br />
 	<input id="useradd" class="userautocomplete" name="addinput" type="text" />
-	<input id="useraddhidden" name="userid" type="hidden" />
-	<input name="libraryid" type="hidden"  value="$libraryid" />
+
+	<input name="searchtype" type="hidden"  value="libraryusers" />
+
+	<input name="field" type="hidden"  value="userid" />
+	<input name="userid.value" type="hidden" id="useraddhidden" />
+
+	<input name="field" type="hidden"  value="libraryid" />
+	<input name="libraryid.value" type="hidden"  value="$libraryid" />
+
+	<input name="save" type="hidden"  value="true" />
+
 	<input type="submit" value="Add" />
 </div>
 </form>
@@ -20,7 +29,7 @@
 
 <div id="emvalueeditor">
 	<div id="valuelist" class="emtable clearfix">
-	#foreach($libraryuser in $libraryusers))		  
+	#foreach($libraryuser in $libraryusers) 
 		 #set( $theuser = $searcherManager.getData("system","user",$libraryuser.userid) )
 		<a class="row tag">$theuser</a>
 		<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/libraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$library"></a>

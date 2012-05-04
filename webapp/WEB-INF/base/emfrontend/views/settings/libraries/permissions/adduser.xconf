@@ -1,4 +1,4 @@
 <page>
 	<inner-layout />
-	
+	<path-action name="DataEditModule.saveData" />
 </page>
