@@ -2375,6 +2375,8 @@ table.emdata th {
 #tree ul li div .actions a.delete {
 	background: url('../images/delete.gif') 0 11px no-repeat;
 	width: 15px;
+	margin-right: 0;
+	margin-top: 0;
 }
 #tree ul li div .actions a.add-folder {
 	background: url('../images/add-folder.gif') 0 11px no-repeat;
