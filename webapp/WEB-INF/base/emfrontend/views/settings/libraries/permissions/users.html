@@ -7,31 +7,31 @@
 #set($libraryusersSearcher = $searcherManager.getSearcher($catalogid,"libraryusers") )
 #set( $libraryusers = $libraryusersSearcher.fieldSearch("libraryid",$libraryid) )
 
-<form class="ajaxform" targetdiv="userpermissioneditor" name="adduserform" action="$home$apphome/views/settings/libraries/permissions/useradd.html">
-<div class="add_person_box">
-	<span class="add_person_label" title="Search * for everyone in your groups">Add User:</span> <br />
-	<input id="useradd" class="userautocomplete" name="addinput" type="text" />
-
-	<input name="searchtype" type="hidden"  value="libraryusers" />
-
-	<input name="field" type="hidden"  value="userid" />
-	<input name="userid.value" type="hidden" id="useraddhidden" />
-
-	<input name="field" type="hidden"  value="libraryid" />
-	<input name="libraryid.value" type="hidden"  value="$libraryid" />
-
-	<input name="save" type="hidden"  value="true" />
-
-	<input type="submit" value="Add" />
+<div class="list-adder" style="padding: 13px 20px;">
+	<form class="ajaxform" targetdiv="userpermissioneditor" name="adduserform" action="$home$apphome/views/settings/libraries/permissions/useradd.html">
+	<div class="add_person_box" style="border: none;">
+		<input id="useradd" class="userautocomplete" name="addinput" type="text" />
+	
+		<input name="searchtype" type="hidden"  value="libraryusers" />
+	
+		<input name="field" type="hidden"  value="userid" />
+		<input name="userid.value" type="hidden" id="useraddhidden" />
+	
+		<input name="field" type="hidden"  value="libraryid" />
+		<input name="libraryid.value" type="hidden"  value="$libraryid" />
+	
+		<input name="save" type="hidden"  value="true" />
+	
+		<input class="btn right field-btn" type="submit" value="Add" />
+	</div>
+	</form>
 </div>
-</form>
-
 
 <div id="emvalueeditor">
 	<div id="valuelist" class="emtable clearfix">
 	#foreach($libraryuser in $libraryusers) 
 		 #set( $theuser = $searcherManager.getData("system","user",$libraryuser.userid) )
-		<a class="row tag">$theuser</a>
+		<a class="row">$theuser</a>
 		<a style="display:inline;" class="ajax delete-row" targetdiv="userpermissioneditor" href="$home$apphome/views/settings/libraries/permissions/userremove.html?searchtype=libraryusers&id=$libraryuser.id"></a>
 		</a>
 	#end
