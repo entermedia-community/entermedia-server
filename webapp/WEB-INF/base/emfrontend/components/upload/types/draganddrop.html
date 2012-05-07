@@ -162,34 +162,23 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 		});
 		jQuery('table#emfilelist tr#row0 select').live("change", 
 			function(){
-				if ($(this).siblings('a').length == 0){
-					var field = $(this).attr("fieldname");
-					var link = $(document.createElement('a'));
-					$(link).addClass('btn');
-					$(link).css('margin-left', '10px' );
-					$(link).text("Apply to All").click(
-							function(){
-								var value = $('table#emfilelist tr select[fieldname="' + field +'"]').val();
-								$('table#emfilelist tr select[fieldname="' + field +'"]').val(value);
-								if (field == 'title'){
-									var episodes = $('table#emfilelist tr select[fieldname="episode"]');
-									jQuery.each(episodes, function(index, items){ 
-										if(index>0){
-											$(this).find('option').remove();
-											var options = $('table#emfilelist tr select[fieldname="episode"]:first').children().clone();
-											$(this).append(options)
-										}
-									});
-								}
+				var newclass = $(this).val();
+				$("a.btn").remove();
+				var link = $(document.createElement('a'));
+				$(link).addClass('btn');
+				$(link).css('margin-left', '10px' );
+				$(link).text("Apply to All").click(
+						function(){
+						$("select.autosubmited").each( function(){
+							$(this).val(newclass);
 							}
-					); 
-					$(this).after(link);
+						)}
+				);
+				$(this).after(link);
 				}
-			});
+		);
+			}
 	}
-}
-
-
 
 function removeUpload(inId) 
 		{
