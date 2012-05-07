@@ -1722,7 +1722,7 @@ ul#sub-nav li:hover ul {
 /* USER PROFILE PAGE */
 
 .three-up {
-	 width: 335px; 
+	 width: 258px; 
 	 float: left; 
 	 margin-right: 20px;
 }
@@ -1730,17 +1730,20 @@ ul#sub-nav li:hover ul {
 	margin-right: 0;
 }
 .three-up .emtable {
-	margin: 15px 0;
+	margin: 0 -20px;
+	padding: 0;
 }
 .three-up .emtable a.row {
-	padding: 7px 4px;
+	padding: 7px 20px;
 	height: 16px;
 	line-height: 16px;
 	display: block;
-	width: 284px;
 	border-bottom: 1px solid #CCC;
 	text-decoration: none;
 	font-size: 14px;
+	width: 216px;
+	color: #666;
+	font-size: 12px;
 }
 
 /* METADATA EDIT SCREENS 
@@ -2375,6 +2378,8 @@ table.emdata th {
 #tree ul li div .actions a.delete {
 	background: url('../images/delete.gif') 0 11px no-repeat;
 	width: 15px;
+	margin-right: 0;
+	margin-top: 0;
 }
 #tree ul li div .actions a.add-folder {
 	background: url('../images/add-folder.gif') 0 11px no-repeat;
@@ -3470,6 +3475,33 @@ div#folders.add .folder {
 	float: right;
 }
 
+/* THREE UP LISTS */
+
+.three-up .delete-row {
+	background: url('../images/iconset-10x10.png') 20px 10px;
+	width: 10px;
+	height: 10px;
+	float: right;
+	position: relative;
+	z-index: 3;
+	margin-top: -21px;
+	margin-right: 10px;
+}
+.list-adder {
+	background: #002531 url('../images/asset-bg.png');
+	box-shadow: inset 0px 0px 15px 3px rgba(0, 0, 0, .8);
+	margin: -20px -20px 0 -20px;
+	padding: 20px;
+}
+.three-up .select-field {
+	width: 160px;
+}
+.three-up .select-btn {
+	margin-top: -4px;
+}
+.three-up .field-btn {
+	margin-top: 3px;
+}
 /* MAXIMIZED APPLICATION CSS */
 
 #maximizer a {
