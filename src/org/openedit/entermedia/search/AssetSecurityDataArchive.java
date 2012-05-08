@@ -255,23 +255,29 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		Collection allowed = getAccessList(inArchive,inType, inAsset);
 		if( allowed.size() == 0 )
 		{
-			return false;
+			return Boolean.FALSE;
 		}
-		for (Iterator iterator = inUser.getGroups().iterator(); iterator.hasNext();)
+		if( allowed.contains("true") )
 		{
-			Group group = (Group) iterator.next();
-			if( allowed.contains( "group_" + group.getId() ) )
+			return Boolean.TRUE;
+		}		
+		if( inUser != null )
+		{
+			for (Iterator iterator = inUser.getGroups().iterator(); iterator.hasNext();)
+			{
+				Group group = (Group) iterator.next();
+				if( allowed.contains( "group_" + group.getId() ) )
+				{
+					return Boolean.TRUE;
+				}
+			}
+			//TODO: Add libraries from user , profile and each group
+			
+			if( allowed.contains("user_" + inUser.getUserName()))
 			{
 				return Boolean.TRUE;
 			}
 		}
-		//TODO: Add libraries from user , profile and each group
-		
-		if( allowed.contains("user_" + inUser.getUserName()))
-		{
-			return Boolean.TRUE;
-		}
-		
 		return false;
 	}
 
