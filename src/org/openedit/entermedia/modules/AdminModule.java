@@ -480,7 +480,8 @@ public class AdminModule extends BaseModule
 							String value = user.getUserName() + "md542" + md5;
 							inReq.putPageValue("entermediakey", value);
 						}
-					}		inUser.setEnabled(false);
+					}		inUser.setProperty("enabled", "false");
+							inUser.setEnabled(false);
 				}
 				getUserManager().saveUser(inUser);
 
