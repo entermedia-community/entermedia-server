@@ -393,6 +393,9 @@ public class SyncModule extends BaseMediaModule
 		}
 
 		Asset asset = archive.getAsset(assetid);
+		if(asset == null){
+			return;
+		}
 		hit.setSourcePath(asset.getSourcePath());
 		hit.setProperty("assetname", asset.getName());
 		hit.setProperty("assetfilesize", asset.get("filesize"));
