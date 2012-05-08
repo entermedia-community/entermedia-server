@@ -255,8 +255,12 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		Collection allowed = getAccessList(inArchive,inType, inAsset);
 		if( allowed.size() == 0 )
 		{
-			return false;
+			return Boolean.FALSE;
 		}
+		if( allowed.contains("true") )
+		{
+			return Boolean.TRUE;
+		}		
 		if( inUser != null )
 		{
 			for (Iterator iterator = inUser.getGroups().iterator(); iterator.hasNext();)
@@ -274,7 +278,6 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 				return Boolean.TRUE;
 			}
 		}
-		
 		return false;
 	}
 

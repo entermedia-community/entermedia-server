@@ -188,7 +188,7 @@ public class AssetSyncModule extends BaseMediaModule
 		}
 		else
 		{
-			log.error("No user");
+			log.debug("No user");
 			return;
 		}
 		query.setName("syncassets");
