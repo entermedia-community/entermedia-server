@@ -28,7 +28,15 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 			#end
 			$context.putPageValue("view",$view)	
 			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
-	
+			
+#if ( $file.folder != "false" )
+
+#else
+<div id="primary-options" style="margin-top: -5px;">
+<a class="btn flatright tooltip" title="Set this asset as the primary download." style="width: 60px; text-align: center;">Primary</a>
+<a class="btn flatleft tooltip" title="Set this asset as the primary thumbnail." style="width: 60px; text-align: center;">Thumbnail</a>
+</div>
+#end
 	
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
   #set ($view = "asset/assettype/$asset.assettype/fileproperties")
@@ -39,20 +47,16 @@ $context.putPageValue("view",$view)
 
 $pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 
-<!--
-<ul id="stacked" style="margin-top: 15px;">
-	##<li><a class="btn" href="#">View Preview</a></li>
-	<li><a  class="btn ajaxappender"  href="$home$attachmentroot/upload.html?assetid=$asset.id&parentsourcepath=$parentsourcepath">Upload Files</a></li>
-#if(!$data || $data.folder == "true" )
-	<li><a  id="downloadlink" class="btn" href="$home$attachmentroot/zip/${name}-attachments.zip?path=$path&stripfolders=$path">Download Folder</a></li>
-#else
-	<li><a  id="downloadlink" class="btn" href="$home/$catalogid/downloads/originals/$parentsourcepath/$name">Download</a></li>
-#end
-	<li><a class="btn" href="$home$attachmentroot/createfolder.html?sourcepath=$asset.sourcepath&fileid=$!fileid">Create Folder</a></li>
-#if( $data )
-	<li><a class="btn" href="$home$attachmentroot/delete.html?sourcepath=$asset.sourcepath&fileid=$!fileid">
-		Delete 	
-		#if( $data.folder == "true") Folder #else Asset #end</a></li>
-#end
-</ul>
--->
+<script>
+	$('#primary-options .btn').click(function(){
+		if ( $(this).hasClass('selected') ) 
+		{
+			$(this).removeClass('selected')
+		}
+		else
+		{
+			$(this).addClass('selected')
+		}
+	})
+</script>
+

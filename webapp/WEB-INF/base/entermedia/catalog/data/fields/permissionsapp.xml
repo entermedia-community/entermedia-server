@@ -1,6 +1,6 @@
 <properties>
-	<property id="id">ID</property>
-	<property id="permissiontype" type="list" store="true" index="true">Section</property>	
-	<property id="description">Description</property>	
-	<property id="name">Name</property>	
+	<property id="id" editable="true">ID</property>
+	<property id="permissiontype" editable="true" type="list" store="true" index="true">Section</property>	
+	<property id="description" editable="true">Description</property>	
+	<property id="name" editable="true">Name</property>	
 </properties>

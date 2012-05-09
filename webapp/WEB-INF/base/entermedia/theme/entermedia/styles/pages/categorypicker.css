@@ -65,6 +65,7 @@ padding-bottom: 14px;
 #empickerbody .dtree img {
 	border: 0px;
 	vertical-align: top;
+	margin-top: -4px;
 }
 #empickerbody .dtree a {
 	text-decoration: none;
