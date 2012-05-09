@@ -52,7 +52,8 @@ public User getUser(Group inGroup)
 			throw new OpenEditException("passwords don't match");
 		}
 			
-		newuser = userManager.createGuestUser( null, password, inGroup.getId());
+		String username = context.getRequestParameter("userName.value");
+		newuser = userManager.createUser( username, password);
 		newuser.setVirtual(false);
 	}
 	
