@@ -324,7 +324,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected void extractThumb(MediaArchive inArchive, File inInputFile, Asset inAsset)
 	{
-		Page def = inArchive.getPageManager().getPage( "/" + inArchive.getCatalogId() + "/downloads/preview/thumb/thumb.jpg");
+		Page def = inArchive.getPageManager().getPage( "/" + inArchive.getCatalogId() + "/downloads/preview/large/image.jpg");
 		
 		Map all = new HashMap();
 		for (Iterator iterator = def.getPageSettings().getAllProperties().iterator(); iterator.hasNext();)

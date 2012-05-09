@@ -28,6 +28,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.util.NaiveTrustManager;
 import org.openedit.xml.XmlSearcher;
 
 import com.openedit.OpenEditException;
@@ -72,6 +73,8 @@ public class SyncModule extends BaseMediaModule
 	{
 		if (fieldClient == null)
 		{
+			//http://stackoverflow.com/questions/2290570/pkix-path-building-failed-while-making-ssl-connection
+			NaiveTrustManager.disableHttps();
 			fieldClient = new HttpClient();
 			login(inCatalogId);
 		}
@@ -195,6 +198,7 @@ public class SyncModule extends BaseMediaModule
 				pushqueue.setProperty("status", "5uploaderror");
 
 				pushqueue.setProperty("errordetails", e.toString());
+				log.error(e);
 			}
 
 			pushsearcher.saveData(pushqueue, inReq.getUser());
