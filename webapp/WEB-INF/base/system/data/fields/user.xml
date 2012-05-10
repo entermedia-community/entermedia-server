@@ -14,7 +14,7 @@
 
 <!--  Custom fields -->
 	<property id="companyname" header="Office Address">Company Name</property>
-
+	<property id="jobtitle" editable="true" stored="true" index="true">Job Title</property>
 	<property id="officephone" stored="true" index="true" editable="true">Office Phone</property>
 	<property id="mobilephone" stored="true" index="true" editable="true">Mobile Phone</property>
 	
