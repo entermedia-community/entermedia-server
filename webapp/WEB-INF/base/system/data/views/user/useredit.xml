@@ -6,8 +6,9 @@
 	
 	<property id="enabled" header="blank"/>
 	<property id="showeditor" stored="true" editable="true" datatype="boolean">Enable HTML editing</property>
+	<property id="companyname" header="Office Address" editable="true">Company Name</property>
 
- 	
+ 		<property id="jobtitle" >Job Title</property>
 	<property id="officephone" header="blank"/>
 	<property id="mobilephone" />
 	
