@@ -1,6 +1,7 @@
 package publishing.publishers;
 
 import java.io.File;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
@@ -17,6 +18,9 @@ public class filecopypublisher extends basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(filecopypublisher.class);
 	
+	
+	
+	
 	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset)
 	{
 		PublishResult result = new PublishResult();
@@ -27,6 +31,8 @@ public class filecopypublisher extends basepublisher implements Publisher
 		{
 			destinationpath = destinationpath + "/";
 		}
+		String exportname = inPublishRequest.get("exportname");
+		String guid = inPreset.get("guid");
 		
 		FileUtils utils = new FileUtils();
 		File destination = new File(destinationpath);

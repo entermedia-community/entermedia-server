@@ -24,6 +24,8 @@
 	<property id="mts" rendertype="video" creator="ffmpeg">MTS</property>
 	<property id="m2ts" rendertype="video" creator="ffmpeg">M2TS</property>
 	
+	<property id="3gp" rendertype="video" creator="ffmpeg">3GP</property>
+	
 	<property id="mp4" rendertype="video" creator="ffmpeg" >MPEG 4 mp4</property>
 	<property id="m4v" rendertype="video" creator="ffmpeg" >MPEG 4 m4v</property>
 	<property id="mpg" rendertype="video" creator="ffmpeg" >MPEG 2</property>
@@ -58,5 +60,6 @@
 	<property id="html" rendertype="document" >HTML</property>
 	<property id="xml" rendertype="document" >XML</property>
 	<property id="csv" rendertype="document" >CSV</property>
+	
 	<property id="default" rendertype="default" >Default</property>
 </properties>

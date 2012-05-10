@@ -36,7 +36,7 @@ public class OrderModule extends BaseMediaModule {
 	private static final Log log = LogFactory.getLog(OrderModule.class);
 	protected OrderManager fieldOrderManager;
 	protected PostMail fieldPostMail;
-	
+
 	public PostMail getPostMail() {
 		return fieldPostMail;
 	}
@@ -199,17 +199,17 @@ public class OrderModule extends BaseMediaModule {
 		return saveOrder(inReq, true);
 	}
 
-	public Order updateOrder(WebPageRequest inReq)	throws Exception 
-	{
+	public Order updateOrder(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
 		String[] fields = inReq.getRequestParameters("field");
 		String catalogid = inReq.findValue("catalogid");
-		Searcher searcher = getSearcherManager().getSearcher(
-				catalogid, "order");
+		Searcher searcher = getSearcherManager()
+				.getSearcher(catalogid, "order");
 
 		searcher.updateData(inReq, fields, order);
 		return order;
 	}
+
 	public Order saveOrder(WebPageRequest inReq, boolean saveitems)
 			throws Exception {
 		Order order = loadOrder(inReq);
@@ -233,15 +233,12 @@ public class OrderModule extends BaseMediaModule {
 		return orders;
 	}
 
-	public HitTracker findOrderItems(WebPageRequest req) 
-	{
+	public HitTracker findOrderItems(WebPageRequest req) {
 		Order order = loadOrder(req);
-		if (order != null) 
-		{
+		if (order != null) {
 			String catalogid = req.findValue("catalogid");
 			String orderid = order.getId();
-			if (orderid == null) 
-			{
+			if (orderid == null) {
 				orderid = req.getRequestParameter("orderid");
 			}
 			HitTracker items = getOrderManager().findOrderItems(req, catalogid,
@@ -329,8 +326,10 @@ public class OrderModule extends BaseMediaModule {
 				.hasNext();) {
 
 			Data hit = (Data) iterator.next();
-			 Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
-			 getOrderManager().removeItemFromOrder(archive.getCatalogId(), basket, asset);
+			Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(
+					hit.getId());
+			getOrderManager().removeItemFromOrder(archive.getCatalogId(),
+					basket, asset);
 		}
 	}
 
@@ -450,12 +449,15 @@ public class OrderModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
 
-		String publishdestination = inReq.findValue("publishdestination.value");
-		if (publishdestination == null) {
-//			throw new OpenEditException("publishdestination.value is required");
+		if (order.get("publishdestination") == null) {
+			String publishdestination = inReq
+					.findValue("publishdestination.value");
+			if (publishdestination == null) {
+				// throw new
+				// OpenEditException("publishdestination.value is required");
+			}
+			order.setProperty("publishdestination", publishdestination);
 		}
-		order.setProperty("publishdestination", publishdestination);
-
 		List assetids = manager.addConversionAndPublishRequest(order, archive,
 				params, inReq.getUser());
 		// OrderHistory history =
@@ -506,13 +508,11 @@ public class OrderModule extends BaseMediaModule {
 
 	public Order createOrderWithItems(WebPageRequest inReq) {
 		String orderid = inReq.findValue("orderid");
-		if( orderid != null)
-		{
+		if (orderid != null) {
 			return loadOrder(inReq);
 		}
 		String[] assetids = inReq.getRequestParameters("assetid");
-		if (assetids != null && assetids.length > 0 && assetids[0].length() > 0) 
-		{
+		if (assetids != null && assetids.length > 0 && assetids[0].length() > 0) {
 			return createOrderFromAssets(inReq);
 		}
 		return createOrderFromSelections(inReq);
@@ -646,11 +646,13 @@ public class OrderModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inReq);
 		String catalogid = archive.getCatalogId();
 		String[] emails = inReq.getRequestParameters("sharewithemail.value");
-		String[] organizations = inReq.getRequestParameters("organization.value");
-		HitTracker orderItems = getOrderManager().findOrderItems(inReq, archive.getCatalogId(), order);
+		String[] organizations = inReq
+				.getRequestParameters("organization.value");
+		HitTracker orderItems = getOrderManager().findOrderItems(inReq,
+				archive.getCatalogId(), order);
 		inReq.putPageValue("orderitems", orderItems);
 		inReq.putPageValue("order", order);
-		
+
 		try {
 
 			OrderHistory history = getOrderManager().createNewHistory(
@@ -662,18 +664,16 @@ public class OrderModule extends BaseMediaModule {
 			mailer.loadSettings(inReq.copy(template));
 			mailer.setMailTemplatePage(template);
 			String subject = mailer.getWebPageContext().findValue("subject");
-			if(subject == null){
+			if (subject == null) {
 				subject = "Share notification";
 			}
-		
+
 			mailer.setSubject(subject);
 			mailer.setRecipientsFromStrings(Arrays.asList(emails));
 			mailer.send();
-					
-			
+
 			getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(),
 					order, history);
-			
 
 		} catch (Exception e) {
 			throw new OpenEditException(e);
@@ -681,12 +681,10 @@ public class OrderModule extends BaseMediaModule {
 
 	}
 
-	public void deleteOrder(WebPageRequest inReq) throws Exception
-	{
+	public void deleteOrder(WebPageRequest inReq) throws Exception {
 		Order order = loadOrder(inReq);
 		String catalogid = inReq.findValue("catalogid");
-		getOrderManager().delete( catalogid,order );
+		getOrderManager().delete(catalogid, order);
 	}
-	
-	
+
 }
