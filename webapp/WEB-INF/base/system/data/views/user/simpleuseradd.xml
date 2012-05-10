@@ -4,6 +4,8 @@
 	<property id="email" viewtype="matched" header="blank"/>
 	
 	<property id="enabled" header="blank"/>
+		<property id="companyname" header="Office Address" editable="true">Company Name</property>
+	
 	<property id="officephone" header="blank"/>
 	<property id="mobilephone" />
 	
