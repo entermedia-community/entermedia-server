@@ -1,11 +1,20 @@
 	<form name="search" method="post" action="$home$content.dataroot/list/index.html">
+	
+	#set( $view = $context.getRequestParameter("view") )
+
 	$context.putPageValue("hits",$datalist)	
+	#if( $view )
+		#set( $details = $searcher.getDetailsForView($view, $userprofile) )	
+	#else
 	#set( $details = $searcher.getSearchProperties($user) )
+	
+	#end
 	$context.putPageValue("details",$details)	
 	<div class="oesearchformflat">
 		$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
 		<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
 		<input type="hidden" name="searchtype" value="$!searcher.searchType" />
+		<input type="hidden" name="view" value="$!view" />
 		<input style="margin-left: 100px;" type="submit" value="Search" />
 	</div>
 	
@@ -14,8 +23,8 @@
 	<br>
 	
 	<div id="emselectable">
-	<table width="85%" class="emdata striped">
-	<tr>
+	<table width="85%" class="striped">
+	<tr style="background-color: #666;">
 	#foreach( $detail in $details )
 	<th align="left" nowrap >$detail.getText($context)</th>
 	#end

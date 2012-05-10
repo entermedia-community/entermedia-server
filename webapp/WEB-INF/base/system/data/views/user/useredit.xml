@@ -17,6 +17,8 @@
 	<property id="officezip" >Zipcode</property>
 	<property id="officecountry"  blankoption="false">Country</property>
 	
+
+<!--	
 	<property id="mailingsameasoffice" header="Mailing Address">Same as Office Address</property>
 	
 	<property id="mailingstreet">Street</property>
@@ -25,7 +27,7 @@
 	<property id="mailingzip" >Zipcode</property>
 	<property id="mailingcountry" blankoption="false" >Country</property>
 	<property id="assistant" />
-	
+-->	
 	<property id="notes" viewtype="textarea" header="blank"/>
 
 </properties> 

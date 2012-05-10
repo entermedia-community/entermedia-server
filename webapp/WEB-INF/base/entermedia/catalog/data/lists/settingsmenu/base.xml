@@ -9,6 +9,7 @@
   <property id="hotfolders" path="/views/settings/hotfolders/index.html" ordering="50">Hot Folders</property>
   <property id="events" path="/views/settings/events/ps/index.html" ordering="60">Scheduler</property>
   <property id="datamanager" path="/views/settings/lists/datamanager/index.html" ordering="70">Data Manager</property>
+  <property id="status" path="/views/settings/status/transcoding/index.html" ordering="75">Status</property>
   <property id="setup" path="/views/settings/applicationsetup/lists/transcoding/index.html" ordering="80">Preferences</property>
   <!--
   <property id="lists" path="/views/settings/events/ps/index.html">Events</property>

@@ -1,14 +1,14 @@
 <properties>
 	<property id="description" index="true">User Search</property>
-	<property id="id" index="true" stored="true"  keyword="true" >ID</property>
-	<property id="userName" index="true" stored="true"  keyword="true" >Username</property>
+	<property id="id" index="true" stored="true"  keyword="true" >Internal ID</property>
+	<property id="userName" index="true" stored="true"  keyword="true" >User ID</property>
 	<property id="screenname" index="true" stored="true" keyword="true" editable="true">Screen Name</property>
 	<property id="firstName" index="true" stored="true" keyword="true" editable="true" required="true">First Name</property>
 	<property id="lastName" index="true" stored="true" keyword="true" editable="true" required="true">Last Name</property>
 	<property id="email" index="true" stored="true" keyword="true" editable="true" required="true">Email</property>
 	<property id="enabled" stored="true" editable="true" datatype="boolean">Enabled</property>
 	<property id="password">Password</property>
-	<property id="failedlogincount">Failed login attempts</property>
+	<property id="failedlogincount" editable="true" type="number">Failed login attempts</property>
  	
 	<property id="showeditor" stored="true" editable="true" datatype="boolean">Enable HTML editing</property>
 
@@ -24,15 +24,15 @@
 	<property id="officezip" stored="true" index="true" editable="true">Office Zip</property>
 	<property id="officecountry" stored="true" index="true" editable="true" datatype="list" listid="country" listcatalogid="media/catalogs/public">Office Country</property>
 	
-	<property id="mailingsameasoffice" stored="true" index="true" editable="true" datatype="boolean">Mailing Address Same as Office Address</property>
+<!-- 	<property id="mailingsameasoffice" stored="true" index="true" editable="true" datatype="boolean">Mailing Address Same as Office Address</property>
 	
 	<property id="mailingstreet" stored="true" index="true" editable="true">Mailing Address</property>
 	<property id="mailingcity" stored="true" index="true" editable="true">Mailing City</property>
 	<property id="mailingstate" stored="true" index="true" editable="true" datatype="list" listid="state" listcatalogid="media/catalogs/public">Mailing State</property>
 	<property id="mailingzip" stored="true" index="true" editable="true">Mailing Zip</property>
 	<property id="mailingcountry" stored="true" index="true" editable="true" datatype="list" listid="country" listcatalogid="media/catalogs/public">Mailing Country</property>
-	
-	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 	<property id="assistant" stored="true" index="true" editable="true">Assistant Name</property>
 	<property id="birthdate" stored="true" index="true" editable="true" datatype="date" format="mm/dd/yyyy">Birthdate</property>
+ -->	
+	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 </properties>
