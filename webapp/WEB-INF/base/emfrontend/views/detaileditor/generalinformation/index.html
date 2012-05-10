@@ -10,12 +10,18 @@
 #set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
 
 #foreach( $target in $views)
+#set( $permissionvalue = "true" )
+#set( $permissionvalue = $!context.getPageValue("can${target.id}") )
+#set( $permissionvalue = "$permissionvalue" ) ##use strings
+#if($permissionvalue == "true")
 
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/$target.id") )
   #display("generic.html" $target.name "$asset.id" "asset/assettype/$asset.assettype/$target.id" $print)
 #else
   #display("generic.html" $target.name "$asset.id" "asset/assettype/default/$target.id" $print)
 #end
+#end
+
 #end
 
  ##display("generic.html" "$asset.id" "asset/details" $print)

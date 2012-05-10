@@ -271,7 +271,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		processor.setRecursive(true);
 		processor.setRootPath(getPathToData());
 		processor.setPageManager(getPageManager());
-		processor.setFilter("xml");
+		processor.setIncludeExtensions("xml");
 		processor.process();
 		updateIndex(inWriter, buffer);
 	}

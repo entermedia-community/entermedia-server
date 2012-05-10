@@ -355,7 +355,6 @@ public class AdminModule extends BaseModule
 	 */
 	protected boolean loginAndRedirect(AuthenticationRequest inAReq, WebPageRequest inReq) throws Exception
 	{
-
 		User inUser = inAReq.getUser();
 		boolean userok = false;
 		String sendTo = inReq.getRequestParameter("loginokpage");
@@ -480,8 +479,8 @@ public class AdminModule extends BaseModule
 							String value = user.getUserName() + "md542" + md5;
 							inReq.putPageValue("entermediakey", value);
 						}
-					}		inUser.setProperty("enabled", "false");
-							inUser.setEnabled(false);
+					}	
+					inUser.setEnabled(false);
 				}
 				getUserManager().saveUser(inUser);
 

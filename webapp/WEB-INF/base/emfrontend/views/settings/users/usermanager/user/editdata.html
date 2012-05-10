@@ -1,10 +1,15 @@
 <div id="usereditproperties">
 	#set($selectedUser = $userManager.getUser($userName))
 
+				#if ($saved)
+				<div class="common-success fader">
+					Saved 
+				</div>
+			#end
+
 <div class="ui-widget commentbox columns-2">
 <div class="ui-widget-header">[[Profile]]</div>
 <div  class="ui-widget-content" > 
-	
 	#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
 		<form class="ajaxform validate" id="usereditform" targetdiv="usereditproperties" name="usereditform" action="$home$usermanagerhome/user/editdata.html">
 			<input type="hidden" name="userid" value="$selectedUser.id"/>
@@ -19,11 +24,7 @@
 			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 			</div>
 
-			#if ($saved)
-				<div class="common-success">
-					Saved 
-				</div>
-			#end
+
 			#if( $message || $errors)
 				<div class="common-success">
 					$context.getText($message)  $!errors

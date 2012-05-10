@@ -75,7 +75,7 @@ class Test extends EnterMediaObject
 	{
 		String appid = context.findValue("applicationid");
 		
-		WebPageRequest req = createPageRequest("/${appid}/views/activity/processorder.html");
+		WebPageRequest req = createPageRequest("/${appid}/views/activity/publish/processorder.html");
 		
 		OrderModule om = (OrderModule)getModuleManager().getModule("OrderModule");
 		
@@ -87,7 +87,8 @@ class Test extends EnterMediaObject
 		om.getOrderManager().saveOrder(getMediaArchive().getCatalogId(), req.getUser(), order);
 
 		Asset asset = getMediaArchive().getAsset(context.findValue("testassetid"));
-		Data item = om.getOrderManager().addItemToBasket(getMediaArchive().getCatalogId(), order, asset, null);	
+		//Data item = om.getOrderManager().addItemToBasket(getMediaArchive().getCatalogId(), order, asset, null);	
+		Data item = om.getOrderManager().addItemToOrder(catalogid, order, asset, null);	
 		
 		req.setRequestParameter("orderid", order.getId());
 

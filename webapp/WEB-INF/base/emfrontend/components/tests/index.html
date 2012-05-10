@@ -4,16 +4,37 @@
 <form name="orders" action="testorders.html">
 	<p>Please enter a test asset id: <input  name="testassetid" value="101" />	
 	
-	<input type="submit" value="Order Tests" /></p>
+	Preset:</p>
+	#set($presets = $searcherManager.getList($catalogid, "convertpreset"))
+	<select name="originalpreset">
+	#foreach($preset in $presets)
+	<option value="$preset.id">$preset</option>
+	#end
+	</select>
+
+	Destination: #set($destinations = $searcherManager.getList($catalogid, "publishdestination"))
+	<select name="localpublishdestination">
+	#foreach($preset in $destinations)
+	<option value="$preset.id">$preset</option>
+	#end
+	</select>
+
+ <input type="submit" value="Run Publish Tests" />
+
 </form>
 <hr>
+<!-- 
 <form name="upload" action="testactivity.html">
 	
 	<input type="submit" value="Activity Tests" />
 </form>
+
+
+
 
 <form name="drtest" action="testdigitalrapids.html">
 	<p>Please enter a test asset id: <input  name="testassetid" value="101" />	
 
 	<input type="submit" value="Test Digital Rapids" />
 </form>
+ -->

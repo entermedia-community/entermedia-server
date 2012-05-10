@@ -5,6 +5,7 @@ package org.openedit.entermedia.scanner;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +29,6 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
-import com.openedit.util.FileUtils;
 import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.ZipUtil;
@@ -42,28 +42,44 @@ public class AssetImporter
 	protected AssetUtilities fieldAssetUtilities;
     protected List<UrlMetadataImporter> fieldUrlMetadataImporters;
     protected boolean fieldUseFolders = false;
-    protected String fieldExcludeFolders;
-    protected String fieldIncludeFiles;
+//    
+//	protected List fieldIncludeExtensions;
+//	protected List fieldExcludeExtensions;
+//	protected List fieldExcludeFolderMatch;
     
+    protected String fieldExcludeMatches;
+    protected String fieldIncludeExtensions;
+    protected Collection fieldAttachmentFilters;
+    protected Boolean fieldOnWindows;
     
-	public String getExcludeFolders()
+	public Collection getAttachmentFilters()
 	{
-		return fieldExcludeFolders;
+		return fieldAttachmentFilters;
 	}
 
-	public void setExcludeFolders(String inExcludeFolders)
+	public void setAttachmentFilters(Collection inAttachmentFilters)
 	{
-		fieldExcludeFolders = inExcludeFolders;
+		fieldAttachmentFilters = inAttachmentFilters;
 	}
 
-	public String getIncludeFiles()
+	public String getExcludeMatches()
 	{
-		return fieldIncludeFiles;
+		return fieldExcludeMatches;
 	}
 
-	public void setIncludeFiles(String inIncludeFiles)
+	public void setExcludeMatches(String inExcludeFolders)
 	{
-		fieldIncludeFiles = inIncludeFiles;
+		fieldExcludeMatches = inExcludeFolders;
+	}
+
+	public String getIncludeExtensions()
+	{
+		return fieldIncludeExtensions;
+	}
+
+	public void setIncludeExtensions(String inIncludeFiles)
+	{
+		fieldIncludeExtensions = inIncludeFiles;
 	}
 
 	public boolean isUseFolders()
@@ -111,85 +127,105 @@ public class AssetImporter
 				{
 					if (acceptDir(inInput))
 					{
-						String sourcepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
-						Asset asset = inArchive.getAssetArchive().getAssetBySourcePath(sourcepath);
-						if( asset != null)
-						{
-							//check this one primary asset to see if it changed
-							if( asset.getPrimaryFile() != null)
-							{
-								inInput = getPageManager().getRepository().getStub(inInput.getPath() + "/" + asset.getPrimaryFile());
-								asset = getAssetUtilities().populateAsset(asset, inInput, inArchive, sourcepath, inUser);
-								if( asset != null)
-								{
-									assets.add(asset);
-									allAssets.add(asset.getId());
-								}
-							}
-							//dont process sub-folders
-						}
-						else
-						{
-							//look deeper for assets
-							List paths = getPageManager().getChildrenPaths(inInput.getPath());
-							
-							boolean processchildren = true;
-							if( isUseFolders() )
-							{
-								String foundprimary = null;
-								for (Iterator iterator = paths.iterator(); iterator.hasNext();)
-								{
-									String path = (String) iterator.next();
-									ContentItem item = getPageManager().getRepository().getStub(path);
-									if( !item.isFolder() && acceptFile(item))
-									{
-										foundprimary = PathUtilities.extractFileName(path);
-										String soucepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
-
-										asset = inArchive.createAsset(soucepath);
-										asset.setFolder(true);
-										asset.setProperty("datatype", "original");
-										asset.setProperty("owner", inUser.getUserName());
-										asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-										asset.setProperty("assetviews", "1");
-										asset.setProperty("importstatus", "imported");
-										asset.setPrimaryFile(foundprimary);
-										getAssetUtilities().readMetadata(asset, item, inArchive);
-										getAssetUtilities().populateCategory(asset, inInput, inArchive, inUser);
-										//asset = getAssetUtilities().createAssetIfNeeded(item, inArchive, inUser);
-										//set the primary file
-										assets.add(asset);
-										allAssets.add(asset.getId());
-
-										
-										processchildren = false;
-										break;
-									}
-								}
-							}
-							else
-							{
-								processchildren = true;
-							}
-							if( processchildren)
-							{
-								for (Iterator iterator = paths.iterator(); iterator.hasNext();)
-								{
-									String path = (String) iterator.next();
-									ContentItem item = getPageManager().getRepository().getStub(path);
-									if( isRecursive() )
-									{
-										process(item, inUser);
-									}
-								}
-							}
-						}
+						processAssetFolder(inArchive, assets, allAssets, inInput, inUser);
 					}
 				}
 				else
 				{
-					processFile(inInput, inUser);
+					if (acceptFile(inInput))
+					{
+						processFile(inInput, inUser);
+					}
 				}
+			}
+			protected void processAssetFolder(final MediaArchive inArchive, final List assets, final List<String> allAssets, ContentItem inInput, User inUser)
+			{
+				String sourcepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
+				Asset asset = inArchive.getAssetArchive().getAssetBySourcePath(sourcepath);
+				if( asset != null)
+				{
+					//check this one primary asset to see if it changed
+					if( asset.getPrimaryFile() != null)
+					{
+						inInput = getPageManager().getRepository().getStub(inInput.getPath() + "/" + asset.getPrimaryFile());
+						asset = getAssetUtilities().populateAsset(asset, inInput, inArchive, sourcepath, inUser);
+						if( asset != null)
+						{
+							assets.add(asset);
+							allAssets.add(asset.getId());
+						}
+					}
+					//dont process sub-folders
+				}
+				else
+				{
+					//look deeper for assets
+					List paths = getPageManager().getChildrenPaths(inInput.getPath());
+					if( paths.size() == 0 )
+					{
+						return;
+					}
+					boolean processchildren = true;
+					if( isUseFolders() || createAttachments(paths) )
+					{
+						//Use the first file that is not a folder
+						ContentItem found = findPrimary(paths);
+						if( found == null )
+						{
+							found = inInput;
+						}
+						String foundprimary = PathUtilities.extractFileName(found.getPath());
+						String soucepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
+
+						asset = inArchive.createAsset(soucepath);
+						asset.setFolder(true);
+						asset.setProperty("datatype", "original");
+						if( inUser != null )
+						{
+							asset.setProperty("owner", inUser.getUserName());
+						}
+						asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+						asset.setProperty("assetviews", "1");
+						asset.setProperty("importstatus", "imported");
+						asset.setPrimaryFile(foundprimary);
+						getAssetUtilities().readMetadata(asset, found, inArchive);
+						getAssetUtilities().populateCategory(asset, inInput, inArchive, inUser);
+						//asset = getAssetUtilities().createAssetIfNeeded(item, inArchive, inUser);
+						//set the primary file
+						assets.add(asset);
+						allAssets.add(asset.getId());
+						processchildren = false;
+					}
+					else
+					{
+						processchildren = true;
+					}
+					if( processchildren)
+					{
+						for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+						{
+							String path = (String) iterator.next();
+							ContentItem item = getPageManager().getRepository().getStub(path);
+							if( isRecursive() )
+							{
+								process(item, inUser);
+							}
+						}
+					}
+				}
+			}
+			protected ContentItem findPrimary(List inPaths)
+			{
+				for (Iterator iterator = inPaths.iterator(); iterator.hasNext();)
+				{
+					String path = (String) iterator.next();
+					ContentItem item = getPageManager().getRepository().getStub(path);
+					if( !item.isFolder() && acceptFile(item))
+					{
+						return item;
+					}
+				}
+				return null;
 			}
 			public void processFile(ContentItem inContent, User inUser)
 			{
@@ -207,17 +243,19 @@ public class AssetImporter
 					}
 				}
 			}
-
 		};
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);
-		finder.setExcludeFilter(getExcludeFolders()); //The rest should be filtered by the mount itself
-		finder.setIncludeFileFilter(getIncludeFiles());
+		finder.setExcludeMatches(getExcludeMatches()); //The rest should be filtered by the mount itself
+		finder.setIncludeExtensions(getIncludeExtensions());
 		finder.process(inStartingPoint, inUser);
 
 		// Windows, for instance, has an absolute file system path limit of 256
 		// characters
-		checkPathLengths(inArchive, assets);
+		if( isOnWindows() )
+		{
+			checkPathLengths(inArchive, assets);
+		}
 		Asset eventasset = null;
 		if( assets.size() > 0)
 		{
@@ -229,6 +267,27 @@ public class AssetImporter
 			inArchive.fireMediaEvent("assetsimported", inUser, eventasset, allAssets);
 		}
 		return allAssets;
+	}
+	protected boolean createAttachments(List inPaths)
+	{
+		if( fieldAttachmentFilters == null )
+		{
+			return false;
+		}
+		for (Iterator iterator = getAttachmentFilters().iterator(); iterator.hasNext();)
+		{
+			String check = (String) iterator.next();
+			for (Iterator iterator2 = inPaths.iterator(); iterator2.hasNext();)
+			{
+				String path = (String) iterator2.next();
+				if( PathUtilities.match(path, check) )
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -480,6 +539,21 @@ public class AssetImporter
 				importer.fetchMediaForAsset(inArchive, inAsset,inUser);
 			}
 	}
-	
+	public Boolean isOnWindows()
+	{
+		if (fieldOnWindows == null)
+		{
+			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS"))
+			{
+				fieldOnWindows = Boolean.TRUE;
+			}
+			else
+			{
+				fieldOnWindows = Boolean.FALSE;
+			}
+			
+		}
+		return fieldOnWindows;
+	}
 	
 }
