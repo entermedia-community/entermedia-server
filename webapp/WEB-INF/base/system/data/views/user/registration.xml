@@ -4,7 +4,7 @@
 	<property id="email" viewtype="matched" header="blank"/>
 		
 	<property id="companyname" header="Office Address" editable="true">Company Name</property>
-	
-	<property id="password" viewtype="password" editable="true" />
+		<property id="jobtitle" >Job Title</property>
+	<property id="password" viewtype="password" editable="true" required="true"/>
 	
 </properties> 
