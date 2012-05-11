@@ -19,8 +19,24 @@
 					</span>
 				#end	
 				</div>
-				<div  class="ui-widget-content categories-widget">
+				<div  class="ui-widget-content categories-widget categories-navigation">
 					$pages.include("$apphome/components/categories/inline.html")
 				</div>
 			</div>
 #end
+
+<script>
+	$(document).ready(function() { 
+		var width = $('#emcategoryinlineinner').width();
+		$('#emcategoryinline .dTreeNodeSel').css('width', width);
+		$('.emtreehover').css('width', width);
+	});
+	
+	$('.treerowinside a').click(function(){
+		var width = $('#emcategoryinlineinner').width();
+		$('#emcategoryinline .dTreeNodeSel').css('width', width);
+		$('.emtreehover').css('width', width);
+	});
+	
+	
+</script>

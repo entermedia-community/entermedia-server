@@ -3560,6 +3560,27 @@ div#folders.add .folder {
 	margin-bottom: -1px;
 }
 
+/* SIDEBAR CATEGORIES NAVIGATION */
+
+.emtreehover {
+	min-width: 219px;
+	display: inline-block;
+}
+.categories-navigation {
+	overflow: visible;
+	overflow-x: auto;
+	padding: 0 !important;
+}
+#emcategoryinlineinner {
+	
+	white-space: nowrap;
+	display: inline-block;
+}
+#emcategoryinline .dTreeNodeSel {
+	display: inline-block;
+	min-width: 219px;
+}
+
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .ir br { display: none; }
