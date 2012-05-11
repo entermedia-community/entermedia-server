@@ -45,8 +45,8 @@ public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	AssetImporter importer = (AssetImporter)moduleManager.getBean("assetImporter");
-	importer.setExcludeFolders("Fonts,Links");
-	importer.setIncludeFiles("INDD,indd");
+	importer.setExcludeFolderMatch("Fonts,Links");
+	importer.setIncludeExtensions("INDD,indd");
 	importer.setUseFolders(true);
 	
 	String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";

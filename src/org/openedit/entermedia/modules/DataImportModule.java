@@ -71,8 +71,8 @@ public class DataImportModule extends DataEditModule {
 				if (idCell != null) {
 					if (question == null || !question.getId().equals(idCell)) {
 						
-						//Data target = (Data) searcher.searchById(idCell);
-						Data target = null;
+						Data target = (Data) searcher.searchById(idCell);
+						//Data target = null;
 						if(target == null){
 							for (Iterator iterator = data.iterator(); iterator.hasNext();) {
 								Data one = (Data) iterator.next();

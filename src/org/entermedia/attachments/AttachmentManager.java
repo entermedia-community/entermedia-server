@@ -252,7 +252,7 @@ public class AttachmentManager
 
 		SearchQuery query = attachmentSearcher.createSearchQuery();
 		query.addMatches("assetid", inAsset.getId());
-		query.addMatches("parentsourcepath", inAsset.getSourcePath());
+		//query.addMatches("parentsourcepath", inAsset.getSourcePath());
 		HitTracker hits = attachmentSearcher.search(query);
 		if (hits.size() > 0)
 		{

@@ -191,10 +191,19 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		}
 		else
 		{
-			asset = getXmlUtil().getXml(assetPage.getInputStream(), "UTF-8");
-			if(asset.getName().equals("page")){
-				asset = asset.element("product");
+			try
+			{
+				asset = getXmlUtil().getXml(assetPage.getInputStream(), "UTF-8");
+//				if(asset.getName().equals("page"))
+//				{
+//					asset = asset.element("product");
+//				}
+			}
+			catch ( Exception ex )
+			{
+				log.error("Could not load: " + assetPage.getPath(), ex );
 				
+				return false;
 			}
 		}
 

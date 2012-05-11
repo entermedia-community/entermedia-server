@@ -163,9 +163,9 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 		jQuery('table#emfilelist tr#row0 select').live("change", 
 			function(){
 				var newclass = $(this).val();
-				$("a.btn").remove();
+				$(".apply-all").remove();
 				var link = $(document.createElement('a'));
-				$(link).addClass('btn');
+				$(link).addClass('btn').addClass("apply-all");
 				$(link).css('margin-left', '10px' );
 				$(link).text("Apply to All").click(
 						function(){

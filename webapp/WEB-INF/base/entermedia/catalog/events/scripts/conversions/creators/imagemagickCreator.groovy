@@ -163,7 +163,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			else if( input == null)
 			{
-				input = out; //we are looking for a working format to use as input
+				input = tmpout; //we are looking for a working format to use as input
 			}
 		}
 		if( input == null)

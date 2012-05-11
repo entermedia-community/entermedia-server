@@ -36,13 +36,19 @@ public class MetaDataReader
 				inAsset.setName(inputFile.getName());
 			}
 			long start = System.currentTimeMillis();
+			boolean foundone = false;
 			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
 			{
 				MetadataExtractor extrac = (MetadataExtractor) iterator.next();
-				extrac.extractData(inArchive, inputFile, inAsset);
+				if( extrac.extractData(inArchive, inputFile, inAsset) )
+				{
+					foundone = true;
+				}
 			}
-			log.info("Got metadata in " + (System.currentTimeMillis() - start) + " mili seconds.");
-
+			if( foundone )
+			{
+				log.info("Got metadata in " + (System.currentTimeMillis() - start) + " mili seconds.");
+			}
 		}
 		catch (Exception e)
 		{

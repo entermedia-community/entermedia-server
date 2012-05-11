@@ -50,9 +50,9 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 				String val = textinfo.substring(start,end);
 				inAsset.setProperty("audiocodec", val);
 			}
-
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public Exec getExec()

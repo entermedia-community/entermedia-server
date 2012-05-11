@@ -1,5 +1,6 @@
 package org.openedit.entermedia.scanner;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebServer;
 import com.openedit.page.manage.PageManager;
+import com.openedit.util.EmStringUtils;
 
 public class HotFolderManager
 {
@@ -96,8 +98,8 @@ public class HotFolderManager
 			//save data to repo
 			repo.setPath(fullpath);
 			repo.setExternalPath(folder.get("externalpath"));
-			repo.setFilterIn(folder.get("includes"));
-			repo.setFilterOut(folder.get("excludes"));
+			//repo.setFilterIn(folder.get("includes"));
+			//repo.setFilterOut(folder.get("excludes"));
 		}
 		
 		//TODO: Clean out any old mounts
@@ -156,7 +158,7 @@ public class HotFolderManager
 	{
 		getFolderSearcher(inCatalogId).saveData(inNewrow, null);		
 		saveMounts(inCatalogId);
-	}
+	}	
 
 	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
 	{
@@ -165,8 +167,15 @@ public class HotFolderManager
 		String path = base + "/" + name;
 		
 		AssetImporter importer = (AssetImporter)getWebServer().getModuleManager().getBean("assetImporter");
-		importer.setExcludeFolders(inFolder.get("excludes"));
-		importer.setIncludeFiles(inFolder.get("includes"));
+		importer.setExcludeMatches(inFolder.get("excludes"));
+		importer.setIncludeExtensions(inFolder.get("includes"));
+		String attachments = inFolder.get("attachmenttrigger");
+		if( attachments != null )
+		{
+			Collection attachmentslist = EmStringUtils.split(attachments);
+			importer.setAttachmentFilters(attachmentslist);
+		}
+		
 		//importer.
 		
 		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));

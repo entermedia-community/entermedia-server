@@ -69,7 +69,7 @@ public class EmailSearcher extends BaseLuceneSearcher implements Searcher {
 		processor.setRecursive(true);
 		processor.setRootPath(getEmailArchive().getEmailPath());
 		processor.setPageManager(getEmailArchive().getPageManager());
-		processor.setFilter("xml");
+		processor.setIncludeExtensions("xml");
 		processor.process();
 		
 		
