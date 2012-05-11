@@ -324,6 +324,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected void extractThumb(MediaArchive inArchive, File inInputFile, Asset inAsset)
 	{
+		if( !getExifToolThumbCreator().canReadIn(inArchive, inAsset.getFileFormat()) )
+		{
+			return;
+		}
 		Page def = inArchive.getPageManager().getPage( "/" + inArchive.getCatalogId() + "/downloads/preview/large/image.jpg");
 		
 		Map all = new HashMap();

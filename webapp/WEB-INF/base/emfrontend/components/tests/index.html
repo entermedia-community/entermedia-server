@@ -3,15 +3,15 @@
 <hr>
 <form name="orders" action="testorders.html">
 	<p>Please enter a test asset id: <input  name="testassetid" value="101" />	
-	
+	<!--
 	Preset:</p>
 	#set($presets = $searcherManager.getList($catalogid, "convertpreset"))
-	<select name="originalpreset">
+	<select name="">
 	#foreach($preset in $presets)
 	<option value="$preset.id">$preset</option>
 	#end
 	</select>
-
+	-->
 	Destination: #set($destinations = $searcherManager.getList($catalogid, "publishdestination"))
 	<select name="localpublishdestination">
 	#foreach($preset in $destinations)

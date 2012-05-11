@@ -832,8 +832,13 @@ public class MediaArchive
 	public void removeGeneratedImages(Asset inAsset)
 	{
 		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
+		if(inAsset.isFolder() && !path.endsWith("/")){
+			path = path + "/"; 
+				
+		}
 		Page dir = getPageManager().getPage(path);
 		getPageManager().removePage(dir);
+		getPageManager().clearCache(dir);
 		
 	}
 	
@@ -1062,6 +1067,10 @@ public class MediaArchive
 			asset = getAssetBySourcePath(sourcepath);
 			inReq.putPageValue("asset", asset);
 		}
+		if(asset == null){
+			asset = findAsset(sourcepath);
+		}
+		
 		List<String> types = Arrays.asList(new String[]{"edit", "view"});
 		
 		for (Iterator iterator = types.iterator(); iterator.hasNext();)
@@ -1071,6 +1080,22 @@ public class MediaArchive
 			inReq.putPageValue("can" + type + "asset", cando);
 		}
 	}
+	
+	public Asset findAsset(String inSourcepath) {
+		Asset asset = getAssetBySourcePath(inSourcepath);
+		if(asset == null && inSourcepath.contains("/")){
+			inSourcepath = inSourcepath.substring(0, inSourcepath.lastIndexOf("/"));
+			asset = getAssetBySourcePath(inSourcepath);
+			if(asset == null){
+				return findAsset(inSourcepath);
+			} else{
+				return asset;
+			}
+		}
+		return null;
+	}
+	
+	
 	/*
 	public void loadAllAssetPermissions(String inSourcepath, WebPageRequest inReq) 
 	{

@@ -43,6 +43,11 @@ public class exiftoolthumbCreator extends BaseImageCreator
 			ExecResult done = getExec().runExec("exiftoolthumb",command);
 			
 			result.setOk(done.isRunOk());
+			
+		}
+		if(inOut.length() == 0){
+			inArchive.getPageManager().removePage(inOut);
+			result.setOk(false);
 		}
 		return result;
 	}

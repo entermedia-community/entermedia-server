@@ -75,7 +75,7 @@ public class imagemagickCreator extends BaseImageCreator
 			if( input == null &&  box.getWidth() < 300 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480.jpg");
-				if( !input.exists() )
+				if( !input.exists()  || input.length() == 0)
 				{
 					input = null;
 				}

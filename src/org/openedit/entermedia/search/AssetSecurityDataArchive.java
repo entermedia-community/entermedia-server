@@ -35,6 +35,9 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 	public List getAccessList(MediaArchive inArchive, String inType, Asset inAsset) throws OpenEditException
 	{
 
+		if(inAsset == null){
+			return null;
+		}
 		if (inAsset.isPropertyTrue("public"))
 		{
 			List permission = new ArrayList();
@@ -253,6 +256,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 	public Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset)
 	{
 		Collection allowed = getAccessList(inArchive,inType, inAsset);
+		
 		if( allowed.size() == 0 )
 		{
 			return Boolean.FALSE;

@@ -57,7 +57,9 @@ public void init() {
 			}
 
 			String publishdestination = publishrequest.get("publishdestination");
+			
 			Data preset = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "convertpreset", presetid);
+					
 			Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
 
 			try

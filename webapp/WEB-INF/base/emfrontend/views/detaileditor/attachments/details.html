@@ -5,6 +5,7 @@
 #end
 	
 	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/image1024x768.jpg" )
+	
 	<a class="emdialog" href="$home/${catalogid}/downloads/preview/extralarge/${parentsourcepath}/preview.jpg">
 	#if( $pages.doesExist($generated) )
 			<img src="$home/${catalogid}/downloads/preview/thumb/${parentsourcepath}/thumb.jpg" />
@@ -12,6 +13,9 @@
 		</a>
 	#else	
 	<div id="generatedimage"> ##TODO: Only do for images and documents
+					#if ( $file.folder == "false" )
+					<img src="$home/${catalogid}/downloads/preview/thumb/${parentsourcepath}/thumb.jpg" />
+		#end
 		<div class="preview #if ( $file.folder != "false" ) folder #else $!file.fileformat #end"></div>
 		<p class="name">#if ( $name ) $name #else  Click on a file name to view details about that file #end</p>
 		</a>
@@ -33,8 +37,8 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 
 #else
 <div id="primary-options" style="margin-top: -5px;">
-<a class="btn flatright tooltip" title="Set this asset as the primary download." style="width: 60px; text-align: center;">Primary</a>
-<a class="btn flatleft tooltip" title="Set this asset as the primary thumbnail." style="width: 60px; text-align: center;">Thumbnail</a>
+<a class="btn flatright tooltip" title="Set this asset as the primary download." style="width: 60px; text-align: center;" data-param="filename" data-filename="$parentsourcepath" data-assetid="$asset.id" >Primary</a>
+<a class="btn flatleft tooltip" title="Set this asset as the primary thumbnail." style="width: 60px; text-align: center;" data-param="imagefilename" data-filename="$parentsourcepath" data-assetid="$asset.id">Thumbnail</a>
 </div>
 #end
 	
@@ -51,12 +55,33 @@ $pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 	$('#primary-options .btn').click(function(){
 		if ( $(this).hasClass('selected') ) 
 		{
-			$(this).removeClass('selected')
+			
+		
+		
 		}
 		else
-		{
+		{	
+			var name = $(this).data("filename");
+			var assetid = $(this).data("assetid");
+			var param = $(this).data("param");
+			
+			
+		
+
+			jQuery.get("$apphome/views/detaileditor/attachments/changeattachment.html?" + param + "=" + name, {
+			param: name,
+			assetid: assetid
+		
+		
+		} ,function () {
+					
 			$(this).addClass('selected')
+			var image =	jQuery("#emthumbholder img:first")
+			image.attr('src', $(image).attr('src')+'?'+Math.random());;
+
+			});
+		
 		}
-	})
+	});
 </script>
 
