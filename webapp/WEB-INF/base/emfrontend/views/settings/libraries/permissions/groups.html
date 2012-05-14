@@ -4,6 +4,12 @@
 <div  class="ui-widget-content "> 
 
 #set( $libraryid = $context.getRequestParameter("libraryid") )
+
+#if( !$libraryid)
+	#set( $libraryid = $context.getRequestParameter("libraryid.value") )
+#end
+
+
 #set($librarygroupsSearcher = $searcherManager.getSearcher($catalogid,"librarygroups") )
 #set( $librarygroups = $librarygroupsSearcher.fieldSearch("libraryid",$libraryid) )
 
@@ -37,7 +43,7 @@
 	#foreach($librarygroup in $librarygroups) 
 		 #set( $thegroup = $searcherManager.getData("system","group",$librarygroup.groupid) )
 		<a class="row">$thegroup</a>
-		<a style="display:inline;" class="ajax delete-row" targetdiv="grouppermissioneditor" href="$home$apphome/views/settings/libraries/permissions/groupremove.html?searchtype=librarygroups&id=$librarygroup.id"></a>
+		<a style="display:inline;" class="ajax delete-row" targetdiv="grouppermissioneditor" href="$home$apphome/views/settings/libraries/permissions/groupremove.html?searchtype=librarygroups&id=$librarygroup.id&libraryid=$libraryid"></a>
 		</a>
 	#end
 	</div>

@@ -60,7 +60,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		}
 
 		// What Libraries is this asset part of?
-		String libraries = inAsset.get(inType + "libraries");
+		String libraries = inAsset.get("libraries");
 		if (libraries != null)
 		{
 			permissions.addAll(asList("library_", libraries.split("\\s+")));
@@ -114,7 +114,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		if (value != null)
 		{
 			String groups = value.get("value");
-			if (groups != null)
+			if (groups != null & groups.length() > 0)
 			{
 				permissions.addAll(asList(inPrefix, groups.split("\\s+")));
 			}
