@@ -4,6 +4,11 @@
 <div  class="ui-widget-content "> 
 
 #set( $libraryid = $context.getRequestParameter("libraryid") )
+#if( !$libraryid)
+	#set( $libraryid = $context.getRequestParameter("libraryid.value") )
+#end
+
+
 #set($libraryusersSearcher = $searcherManager.getSearcher($catalogid,"libraryusers") )
 #set( $libraryusers = $libraryusersSearcher.fieldSearch("libraryid",$libraryid) )
 
@@ -21,7 +26,6 @@
 		<input name="libraryid.value" type="hidden"  value="$libraryid" />
 	
 		<input name="save" type="hidden"  value="true" />
-	
 		<input class="btn right field-btn" type="submit" value="Add" />
 	</div>
 	</form>
@@ -32,7 +36,7 @@
 	#foreach($libraryuser in $libraryusers) 
 		 #set( $theuser = $searcherManager.getData("system","user",$libraryuser.userid) )
 		<a class="row">$theuser</a>
-		<a style="display:inline;" class="ajax delete-row" targetdiv="userpermissioneditor" href="$home$apphome/views/settings/libraries/permissions/userremove.html?searchtype=libraryusers&id=$libraryuser.id"></a>
+		<a style="display:inline;" class="ajax delete-row" targetdiv="userpermissioneditor" href="$home$apphome/views/settings/libraries/permissions/userremove.html?searchtype=libraryusers&id=$libraryuser.id&libraryid=$libraryid"></a>
 		</a>
 	#end
 	</div>

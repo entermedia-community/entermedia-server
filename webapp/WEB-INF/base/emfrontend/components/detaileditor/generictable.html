@@ -45,7 +45,7 @@
 	$pages.include("/$applicationid/components/xml/table.html?$args&candelete=$!caneditasset&passalong=$passalong",$context)
 	
 	#if( !$parser.parseBoolean($edit) && $caneditasset && !$print.equals("true"))
-	<a class="btn right" href="#" onclick="showpath('${view}editor', '$home$editpath?$args&edit=true',1);return false;">[[Add New]]</a>
+	<a class="btn right ajax" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${view}editor">[[Add New]]</a>
 	#end
 	
 	#else

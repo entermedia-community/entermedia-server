@@ -17,12 +17,10 @@
 		</select>
 
 
-		<div id="detail_library" class="ajaxchange" targetdiv="librarypermissions" targetpath="$home$apphome/views/settings/libraries/permissions/permissions.html?library=">
-			$pages.include("${apphome}/components/xml/types/simplelist.html?searchtype=library&fieldname=libraries&label=Library",$context)
+		<div id="detail_library" class="ajaxchange" targetdiv="librarypermissions" targetpath="$home$apphome/views/settings/libraries/permissions/permissions.html?libraryid=">
+			$pages.include("${apphome}/components/xml/types/simplelist.html?searchtype=library&fieldname=libraryid&label=Library",$context)
 		</div>		
 
-
-<input type="hidden" name="assetid" value="$context.getRequestParameter('assetid')" /><br>
 
 
 </form>
