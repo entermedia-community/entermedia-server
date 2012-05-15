@@ -16,7 +16,7 @@
 			   	<input class="field" type="text" value="$file.name" id="${file.id}_edit_field" /><a class="editsave btn">Save</a><a id="${file.id}" class="editcancel btn">Cancel</a></span>
 			   #else
 			   	#set( $subpath = $attachmentManager.parseFileSubPath($asset.sourcepath, ${file.parentsourcepath}, $file.name) )
-			    <span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name #if ( $asset.primaryFile == $subpath )<span class="green">(Primary File)</span>#end</span>
+			    <span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name #if ( $asset.primaryFile == $subpath )<span class="small">(Primary File)</span>#end #if ( $asset.primaryThumb == $subpath )<span class="small">(Primary Thumbnail)</span>#end</span>
 			   #end
 			   <span class="actions">
 			    #set( $downloadpath = "/WEB-INF/data/$catalogid/originals/$filesource/" )
@@ -192,7 +192,7 @@
 					$("#" + id + "_row > div .arrow").addClass('down');
 				}
 				
-				$("#" + id + "_upload-file").load('$apphome/views/detaileditor/attachments/upload.html?assetid=${asset.id}&fileid=' + id);
+				$("#" + id + "_upload-file").load('$apphome/views/detaileditor/attachments/upload.html?assetid=${asset.id}&fileid=$file.id' + id);
 				$("#" + id + "_upload-file").show("fast");
 				$("#" + id + "_upload-file div").css('padding-left', padding );
 				$("#" + id + "_row > div").addClass('selected');

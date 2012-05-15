@@ -1231,7 +1231,6 @@ small {
 #asset-data {
 	display: table;
 	padding: 10px 20px;
-	width: 100%;
 	background: url('../images/top-shadow.png') top center repeat-x;
 }
 #asset-data ul, #preview-pane ul {
@@ -2459,6 +2458,9 @@ table.emdata th {
 .pages, .doc, .docx, .pdf, .odt {
 	background: url('../images/attachments-document.png') 11px -1px no-repeat;
 }
+.new form {
+	display: inline;
+}
 
 /* PREVIEW PANE */
 
@@ -3515,6 +3517,9 @@ div#folders.add .folder {
 	box-shadow: inset 0px 0px 15px 3px rgba(0, 0, 0, .8);
 	margin: -20px -20px 0 -20px;
 	padding: 20px;
+}
+.list-adder #useradd {
+	width: 140px;
 }
 .three-up .select-field {
 	width: 160px;

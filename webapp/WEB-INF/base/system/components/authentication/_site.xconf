@@ -1,8 +1,11 @@
 <page>
-  <permission name="view">
-    <boolean value="true"/>
-  </permission>
-  <property name="sectiontitle">Authentication</property>
+
   <property name="loginroot">/system/components/authentication</property>
   
+  <inner-layout>/theme/layouts/homepage.html</inner-layout>
+	
+	<permission name="view">
+		<boolean value="true" />
+	</permission>
+	
 </page>

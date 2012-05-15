@@ -7,9 +7,11 @@ $!request.getAttribute( "oe-exception")
 		##if( !$loginok )
 		 ##set( $loginok = $apphome )
 		##end 
+		<p class="note">Please enter your email address and password to log in, or <a href="#">register here.</a></p>
+		<div class="hr"></div>
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<input type="hidden" name="loginokpage" value="$!loginok"/>
-			<label for="login-email">[[Email or ID]]</label>
+			<label for="login-email">[[Email]]</label>
 			<input class="field" type="text" id="accountname" name="accountname" />
 			
 			<label for="login-password">[[Password]]</label>
@@ -21,8 +23,7 @@ $!request.getAttribute( "oe-exception")
 				$context.removePageValue("oe-exception")
 			#end
 		</form>
-		
-		<p class="password-helper"><a href="$home$content.loginroot/sendpassword.html">[[Password Helper]]</a></p>
+		<p class="note" style="margin-top: 26px; margin-bottom: 10px;"><a href="$home$content.loginroot/sendpassword.html">[[Forgotten your password?]]</a></p>
 </div>	
 <!--		<form name="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<input type="hidden" name="loginokpage" value="$!loginok"/>
