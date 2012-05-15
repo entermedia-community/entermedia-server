@@ -77,8 +77,8 @@ uiload = function() {
 				
 				select.change( function()
 					{
-					   url = url + $(this).val();						
-					   $("#" + divid).load(url);
+					   var url2 = url + $(this).val();						
+					   $("#" + divid).load(url2);
 					}
 				);	
 			}
