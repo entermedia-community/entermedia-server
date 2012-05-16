@@ -222,6 +222,8 @@
 	  			<exclude name="webapp/WEB-INF/base/empush" />
 	  			<exclude name="webapp/WEB-INF/base/entermedia/catalog/events/push" />
 	  			<exclude name="webapp/WEB-INF/data/entermedia/catalogs/testcatalog" />
+	  			<exclude name="webapp/WEB-INF/base/empush" />
+	  			<exclude name="webapp/WEB-INF/data/entermedia/catalog/events/push" />
 	  			<include name="etc/**" />
 	  			<include name="lib/**" />
 	  			<include name="src/**" />
