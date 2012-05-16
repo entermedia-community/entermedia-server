@@ -1,12 +1,16 @@
 package conversions;
 
+import org.entermedia.locks.Lock;
+import org.openedit.Data;
 import org.openedit.data.Searcher 
-import org.openedit.Data 
 import org.openedit.entermedia.modules.*;
 import org.openedit.entermedia.edit.*;
+
+import com.openedit.ModuleManager;
 import com.openedit.page.*;
 import org.openedit.entermedia.*;
-import org.openedit.data.Searcher;
+
+import com.openedit.entermedia.scripts.ScriptLogger;
 import com.openedit.hittracker.*;
 import org.openedit.entermedia.creator.*;
 
@@ -14,36 +18,38 @@ import com.openedit.users.User;
 import com.openedit.util.*;
 
 import org.openedit.xml.*;
-import org.openedit.entermedia.episode.*;
 import conversions.*;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import org.entermedia.locks.Lock;
 
-public void checkforTasks()
+
+class ConvertRunner implements Runnable
 {
-	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
+	MediaArchive mediaarchive;
+	Searcher tasksearcher;
+	Searcher presetsearcher;
+	Searcher itemsearcher;
+	Data hit;
+	ScriptLogger log;
+	User user;
+	ModuleManager moduleManager;
 	
-	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
-	Searcher itemsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "orderitem");
-	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
-	
-	log.info("checking for new and submitted conversions");
-	
-	SearchQuery query = tasksearcher.createSearchQuery();
-	query.addOrsGroup("status", "new submitted retry");
-	query.addSortBy("ordering");
-	
-	String assetid = context.getRequestParameter("assetid");
-	if(assetid != null)
+	public void run()
 	{
-		query.addMatches("assetid", assetid);
+		try
+		{
+			convert();
+		}
+		catch (Throwable ex )
+		{
+			log.error(ex);
+		}
 	}
-	HitTracker newtasks = tasksearcher.search(query);
-	List all = new ArrayList(newtasks);
-	
-	for (Data hit in all)
-	{	
+	public void convert()
+	{
 		Data realtask = tasksearcher.searchById(hit.getId());
 		//log.info("should be ${hit.status} but was ${realtask.status}");
 		
@@ -62,7 +68,7 @@ public void checkforTasks()
 					if( lock == null)
 					{
 						log.info("asset already being processed ");
-						continue;
+						return;
 					}
 					
 					try
@@ -92,6 +98,7 @@ public void checkforTasks()
 							String itemid = realtask.get("itemid")
 							if(itemid != null)
 							{
+								//The item should have a pointer to the conversion, not the other way around
 								Data item = itemsearcher.searchById(itemid);
 								item.setProperty("status", "converted");
 								itemsearcher.saveData(item, null);
@@ -99,14 +106,14 @@ public void checkforTasks()
 							realtask.setProperty("externalid", result.get("externalid"));
 							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 							
-							mediaarchive.fireMediaEvent("conversions/conversioncomplete",context.getUser(),asset);
-						} 
+							mediaarchive.fireMediaEvent("conversions/conversioncomplete",user,asset);
+						}
 						else
 						{
 							realtask.setProperty("status", "submitted");
 							realtask.setProperty("externalid", result.get("externalid"));
 						}
-					} 
+					}
 					else if ( result.isError() )
 					{
 						realtask.setProperty('status', 'error');
@@ -125,16 +132,15 @@ public void checkforTasks()
 						Map params = new HashMap();
 						params.put("taskid",realtask.getId());
 						//String operation, String inMetadataType, String inSourcePath, Map inParams, User inUser)
-						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask.getSourcePath(), params, context.getUser());
+						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask.getSourcePath(), params, user);
 						
 					}
 					else
 					{
-						log.info("not ok but no errors, continue");
-						continue;
+						log.info("conversion had no error and will try again");
+						return;
 					}
-					//tosave.add( realtask);
-					tasksearcher.saveData(realtask, context.getUser());
+					tasksearcher.saveData(realtask, user);
 				}
 			}
 			else
@@ -146,13 +152,10 @@ public void checkforTasks()
 		{
 			log.info("Can't find task object with id '${hit.getId()}'. Index out of date?")
 		}
-		//tasksearcher.saveAllData( tosave, context.getUser() );
 	}
-	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time.
 	
-}
-private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, String inSourcepath)
-{
+	protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, String inSourcepath)
+	{
 	ConvertResult result = null;
 	
 	String status = inTask.get("status");
@@ -167,7 +170,7 @@ private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inP
 		String guid = inPreset.guid;
 		if( guid != null)
 		{
-			Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(catalogid, "presetdata" );
+			Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "presetdata" );
 			Data presetdata = presetdatasearcher.searchById(guid);
 			//copy over the preset properties..
 			props.put("guid", guid); //needed?
@@ -210,9 +213,7 @@ private ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inP
 		log.info("Can't find media creator for type '${type}'");
 	}
 	return result;
-}
-
-
+  }
 //TODO: Cache in map
 private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
 {
@@ -238,8 +239,66 @@ private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
 	}
 	*/
 	return creator;
-}
+ }
+} //End Runnable methods
 
+protected Runnable createRunnable(MediaArchive mediaarchive, Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
+{
+	   ConvertRunner runner = new ConvertRunner();
+	   runner.mediaarchive = mediaarchive;
+	   runner.tasksearcher = tasksearcher;
+	   runner.presetsearcher = presetsearcher;
+	   runner.itemsearcher = itemsearcher;
+	   runner.hit = hit;
+	   runner.log = log;
+	   runner.user = user;
+	   runner.moduleManager= moduleManager;
+	   return runner;
+}
+   
+		
+public void checkforTasks()
+{
+	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
+	
+	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
+	Searcher itemsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "orderitem");
+	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
+	
+	log.info("checking for new and submitted conversions");
+	
+	SearchQuery query = tasksearcher.createSearchQuery();
+	query.addOrsGroup("status", "new submitted retry");
+	query.addSortBy("ordering");
+	
+	String assetid = context.getRequestParameter("assetid");
+	if(assetid != null)
+	{
+		query.addMatches("assetid", assetid);
+	}
+	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
+	HitTracker newtasks = tasksearcher.search(query);
+	
+	if( newtasks.size() == 1 )
+	{
+		Runnable runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, newtasks.first() );
+		runner.run();
+	}
+	else
+	{
+		List all = new ArrayList(newtasks);
+		
+		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
+		ExecutorService  executor = executorManager.createExecutor();
+		for (Data hit in all)
+		{	
+			Runnable runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
+			executor.execute(runner);
+		}
+		executorManager.waitForIt(executor);
+		
+	}
+}
 
 
 checkforTasks();

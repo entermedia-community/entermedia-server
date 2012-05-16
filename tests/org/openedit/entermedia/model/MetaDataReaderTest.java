@@ -11,6 +11,16 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 	public MetaDataReaderTest(String inName) {
 		super(inName);
 	}
+	public void xxxtestSpeed() throws Exception 
+	{
+		
+		MetaDataReader reader = (MetaDataReader) getBean("metaDataReader");
+		Asset asset = new Asset();
+		File file = new File("/media/D603-EA1D/Sample EM/Content Archive/Highlights/2011/HL_12_11/HL_DEC_2011_PRESS_PDFS/HL_12_11_05_VERSE.pdf");		
+		reader.populateAsset(getMediaArchive(), file, asset);
+		reader.populateAsset(getMediaArchive(), file, asset);
+		reader.populateAsset(getMediaArchive(), file, asset);
+	}
 	
 	public void testEpsXmp()
 	{

@@ -507,7 +507,14 @@ public class DataEditModule extends BaseMediaModule
 			inReq.redirect("/" + appid + saveokpage);
 		}
 	}
-
+	public void deleteAll(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		if (searcher != null && inReq.getUser() != null)
+		{
+			searcher.deleteAll(inReq.getUser());
+		}		
+	}
 	public void deleteData(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);

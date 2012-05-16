@@ -35,6 +35,21 @@ uiload = function() {
 			}
 		);
 	
+	jQuery(".confirm").livequery('click',
+			function(e)
+			{
+				var inText = jQuery(this).attr("confirm");
+				if(confirm(inText) )
+				{
+					return;
+				}
+				else
+				{	
+					e.preventDefault();
+				}
+			}
+		);
+	
 	jQuery(".uibutton").livequery(
 			function()
 			{
