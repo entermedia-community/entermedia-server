@@ -159,6 +159,14 @@ public class SyncModule extends BaseMediaModule
 
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
+			
+			String enabled = archive.getCatalogSettingValue("push_masterswitch");
+			if( "false".equals(enabled) )
+			{
+				log.info("Push is paused");
+				break;
+			}
+			
 			Data hit = (Data) iterator.next();
 			Data pushqueue = (Data) pushsearcher.searchById(hit.getId());
 			Asset target = archive.getAssetBySourcePath(hit.getSourcePath());
@@ -346,6 +354,10 @@ public class SyncModule extends BaseMediaModule
 		}
 		setting.setProperty("value",switchvalue);
 		searcher.saveData(setting, inReq.getUser());
+		if( "true".equals(switchvalue)) 
+		{
+			archive.fireMediaEvent("push/pushassets", inReq.getUser() );
+		}
 		
 	}
 	public void clearQueue(WebPageRequest inReq) throws Exception
@@ -357,6 +369,10 @@ public class SyncModule extends BaseMediaModule
 	public void addAssetToQueue(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		
+	//	String enabled = archive.getCatalogSettingValue("push_convertpresets");
+
+		
 		Searcher pushsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "pushrequest");
 		//Searcher hot = archive.getSearcherManager().getSearcher( archive.getCatalogId(), "hotfolder");
 

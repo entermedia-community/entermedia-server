@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/extras/jtds-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/PDFBox-0.7.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsf.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsh-bsf-2.0b4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsh-core-2.0b4.jar"/>
@@ -26,5 +25,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-3.3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/mp4parser-0826.jar"/>
+	<classpathentry kind="lib" path="lib/PDFBox-1.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
