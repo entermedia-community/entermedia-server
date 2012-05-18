@@ -3757,6 +3757,9 @@ span.drag-and-drop {
 	top: 5px;
 	left 4px;
 }
+#module-dropdown.active span {
+	background: url('../images/sort-asc.png') 0 0 no-repeat;
+}
 #module-list {
 	position: absolute;
 	background: #fff;
