@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="permissions"  parentid="ps" type="toplevel" module="system" path="/views/settings/users/permissions/index.html" ordering="20">Permissions</property>
+    <property id="apprules"  parentid="permissions" type="sublevel" module="system" path="/views/settings/applicationsetup/apprules/index.html" >Advanced Privileges</property>
+  
+</properties>
+

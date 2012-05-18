@@ -1,6 +1,5 @@
 <page>
 	<property name="tab">lists</property>
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
-	<property name="subsettinglist">settingsappsetup</property>
-		<property name="tab">setup</property>
+	<property name="subsettinglist">system</property>
 </page>

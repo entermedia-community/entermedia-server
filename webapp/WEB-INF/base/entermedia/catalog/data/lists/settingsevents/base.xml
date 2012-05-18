@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-
-  <property id="ps" icon="clock" path="/views/settings/events/ps/index.html" >Scheduled</property>
-  <property id="triggers" icon="lab" path="/views/settings/events/triggers/index.html" >Events</property>
-
-</properties>

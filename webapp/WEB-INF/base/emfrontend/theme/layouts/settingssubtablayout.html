@@ -1,9 +1,13 @@
 #set( $subtab = $context.findValue("subtab") )
-#set ($listid =	$content.subsettinglist )
+#set ($module =	$content.moduleid )
 <div id="eml-tab-subnav">
 	<ul>
-		#set( $screens = $searcherManager.getList($catalogid,$listid) )
-		#foreach($screen in $screens)
+		#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
+		#set( $query = $searcher.createSearchQuery() )
+		#set( $null = $query.addExact("module",$module) )
+		#set( $null = $query.addExact("type","sublevel") )
+		$!query.addSort("ordering")
+		#foreach($screen in $searcher.cachedSearch($context,$query) )
 		<li #if( $subtab == "$screen.id" ) class="current" #end>
 			<a  href="$home$apphome${screen.path}"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$screen </a>
 		</li>

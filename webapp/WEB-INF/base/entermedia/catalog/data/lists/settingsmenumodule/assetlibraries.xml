@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property tab="libraries" id="libraries" type="toplevel" module="asset" path="/views/settings/modules/asset/division/parent/index.html" ordering="50" sublabel="Edit Libraries">Libraries</property>
+  <property id="librarypermissions" type="sublevel" parentid="libraries" module="asset" path="/views/settings/modules/asset/libraries/permissions/index.html" ordering="30">Permissions</property>
+</properties>
+  	

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-	<property id="users" icon="user" path="/views/settings/users/usermanager/users/index.html" >Edit Users</property>
-</properties>

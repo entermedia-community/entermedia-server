@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="editing"  type="toplevel" module="asset" path="/views/settings/datatypes/default/index.html" ordering="10">Views</property>
+  <property id="fields"  type="sublevel" module="asset" path="/views/settings/metadata/fields/index.html" >Fields</property>
+  <property id="assettypes" type="sublevel" module="asset" path="/views/settings/metadata/assettypes/index.html" >Asset Types</property>
+ 
+</properties>

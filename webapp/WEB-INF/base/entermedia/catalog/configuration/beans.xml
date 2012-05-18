@@ -8,21 +8,14 @@
     <bean id="assetvotesSearcher" bean="xmlFileSearcher" />
 
 <!--  menus -->
-	<bean id="settingspermissionsSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingssecuritySearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingsmetadataSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingsgroupmenuSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingslibrariesSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingseventsSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingsdatatypesSearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditorSearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditorhistorySearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditormetadataSearcher" bean="xmlFolderSearcher"/>
 	<bean id="assetviewSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingsmenuSearcher" bean="xmlFolderSearcher"/>
-	<bean id="datatypesmenuSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingsappsetupSearcher" bean="xmlFolderSearcher"/>
-	<bean id="settingsusersSearcher" bean="xmlFolderSearcher"/>
+
+
+	<bean id="settingsmenumoduleSearcher" bean="xmlFolderSearcher"/>
+
 
 <!--  Old? -->
 	<bean id="photooptionavailableSearcher" bean="xmlFileSearcher"/>

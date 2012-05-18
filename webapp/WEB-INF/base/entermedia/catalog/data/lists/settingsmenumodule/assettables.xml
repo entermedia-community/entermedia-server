@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="tables" module="asset"  type="toplevel" path="/views/settings/metadata/fields/index.html" ordering="30">Tables</property>
+ 
+</properties>

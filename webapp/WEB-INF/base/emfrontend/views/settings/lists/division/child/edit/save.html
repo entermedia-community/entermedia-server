@@ -1,7 +1,0 @@
-#set( $parent = "$content.parenttype")
-#set( $id = $context.getRequestParameter("${parent}.value") )
-#set($data = $searcherManager.getData($catalogid, "division", $id) )
-$context.putPageValue("data",$data)
-$pages.include("$apphome/views/settings/lists/division/parent/edit/children.html", $context)
-
-<div class="common-success">Saved</div>

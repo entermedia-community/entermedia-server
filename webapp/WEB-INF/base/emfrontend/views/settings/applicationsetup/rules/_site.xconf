@@ -7,6 +7,6 @@
   <property name="editPath">/${catalogid}/assets</property>
   <property name="tab">permissions</property>
   <property name="subtab">rules</property>
-  <property name="subsettinglist">settingspermissions</property>
+  <property name="subsettinglist">system</property>
 
 </page>

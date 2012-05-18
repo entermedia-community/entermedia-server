@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+	
+  <property id="tables"  type="toplevel" module="contact" ordering="200" path="/views/settings/datatypes/tables/index.html" >Tables</property>
+
+</properties>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property id="libraries" path="/views/settings/lists/division/parent/index.html" ordering="30">Edit Libraries</property>
-  <property id="librarypermissions" path="/views/settings/libraries/permissions/index.html" ordering="30">Permissions</property>
-</properties>

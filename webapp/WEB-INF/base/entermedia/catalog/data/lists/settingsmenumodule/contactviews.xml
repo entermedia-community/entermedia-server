@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+	
+  <property id="editing"  type="toplevel" module="contact" ordering="100" path="/views/settings/datatypes/editing/index.html" >Views</property>
+
+</properties>
