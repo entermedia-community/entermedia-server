@@ -4,12 +4,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.ModuleManager;
-import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.GroovyScriptRunner;
 import com.openedit.entermedia.scripts.Script;
@@ -20,6 +21,8 @@ import com.openedit.util.Exec;
 
 public class GroovyScriptedCreator implements MediaCreator
 {
+	private static final Log log = LogFactory.getLog(GroovyScriptedCreator.class);
+
 	protected ScriptManager fieldScriptManager;
 	protected String fieldScriptName;
 	protected ModuleManager fieldModuleManager;
@@ -103,7 +106,8 @@ public class GroovyScriptedCreator implements MediaCreator
 		{
 			if( getScriptManager() == null)
 			{
-				throw new OpenEditException("creater requires a script manager");
+				log.info("creater requires a script manager");
+				return null;
 			}
 			Script script = getScriptManager().loadScript("/" + inCatalogId + "/events/scripts/conversions/creators/" + getScriptName() + "Creator.groovy");
 			GroovyScriptRunner runner = (GroovyScriptRunner)getModuleManager().getBean("groovyScriptRunner");

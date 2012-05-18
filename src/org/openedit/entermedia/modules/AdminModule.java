@@ -42,6 +42,7 @@ import com.openedit.page.PageRequestKeys;
 import com.openedit.page.PageStreamer;
 import com.openedit.page.Permission;
 import com.openedit.page.manage.PageManager;
+import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.authenticate.AuthenticationRequest;
 import com.openedit.users.authenticate.PasswordGenerator;
@@ -1198,5 +1199,18 @@ public class AdminModule extends BaseModule
 			
 		}
 	}
+	public void createGuestUser(WebPageRequest inReq) {
+		User user = inReq.getUser();
+		if (user == null) {
+			Group guest = getUserManager().getGroup("guest");
+			if (guest == null) {
+				getUserManager().createGroup("guest");
+			}
 
+			user = getUserManager().createGuestUser(null, null, "guest");
+			inReq.putPageValue("user", user);
+			inReq.putSessionValue("user", user);
+		}
+
+	}
 }

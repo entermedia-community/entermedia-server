@@ -52,7 +52,7 @@ public void notifyUploader(Data inTask, Asset asset, def mediaarchive)
 	
 	Data setting = mediaarchive.getCatalogSetting("events_notify_app");
 	
-	if(user.email != null)
+	if(user != null && user.email != null)
 	{
 		context.putPageValue("task",inTask);
 		context.putPageValue("asset", asset);

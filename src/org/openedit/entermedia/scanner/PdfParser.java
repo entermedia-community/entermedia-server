@@ -5,15 +5,15 @@ import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.pdfbox.encryption.DocumentEncryption;
-import org.pdfbox.exceptions.CryptographyException;
-import org.pdfbox.exceptions.InvalidPasswordException;
-import org.pdfbox.pdfparser.PDFParser;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.pdmodel.PDDocumentInformation;
-import org.pdfbox.pdmodel.PDPage;
-import org.pdfbox.pdmodel.common.PDRectangle;
-import org.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.encryption.DocumentEncryption;
+import org.apache.pdfbox.exceptions.CryptographyException;
+import org.apache.pdfbox.exceptions.InvalidPasswordException;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.util.PDFTextStripper;
 
 import com.openedit.OpenEditException;
 
@@ -43,6 +43,9 @@ public class PdfParser
 
 			// collect text
 			PDFTextStripper stripper = new PDFTextStripper();
+			
+			//TODO: Write this out to a temp file that will be indexed seperately
+			
 			String text = null;
 			String title = null;
 			

@@ -57,6 +57,10 @@ public class ScriptLogger extends Handler
 		log.error(inObject, inThrowable);
 		//getLogs().add("error: " + inText);
 	}
+	public void error(Object inObject)
+	{
+		log.error(inObject);
+	}
 	public void add(Object inVal)
 	{
 		info(String.valueOf( inVal ) );
@@ -146,13 +150,16 @@ public class ScriptLogger extends Handler
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			LogEntry entry = (LogEntry) iterator.next();
-			if( entry.getName().equals(getClass().getName() ) )
+			if( entry != null )
 			{
-				text.add(entry.getMessage());
-			}
-			else
-			{
-				text.add(entry.toString());
+				if( entry.getName().equals(getClass().getName() ) )
+				{
+					text.add(entry.getMessage());
+				}
+				else
+				{
+					text.add(entry.toString());
+				}
 			}
 		}
 		

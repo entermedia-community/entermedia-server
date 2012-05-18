@@ -51,7 +51,10 @@ public class ConvertGenerator extends FileGenerator
 		outputype = outputype.toLowerCase();
 		//We use the output extension so that we don't have look up the original input file to find the actual type
 		MediaCreator creator = archive.getCreatorManager().getMediaCreatorByOutputFormat(outputype);
-
+		if( creator == null )
+		{
+			return;
+		}
 		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
 		ConvertInstructions inStructions = creator.createInstructions(inReq, archive, outputype, sourcePath);
 
@@ -73,7 +76,7 @@ public class ConvertGenerator extends FileGenerator
 			if(missingImage == null)
 			{
 				String themeprefix = (String) inReq.findValue("themeprefix");
-				missingImage = themeprefix + "/images/missing150.jpg";
+				missingImage = themeprefix + "/images/missing150.jpg"; //would a 404 be better?
 			}
 			Page missing = archive.getPageManager().getPage(missingImage);			//File temp = new File(missing.getContentItem().getAbsolutePath());
 			super.generate(inReq, missing, inOut);
