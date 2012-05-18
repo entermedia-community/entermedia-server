@@ -1,3 +1,4 @@
 <page>
-	<property name="subtab">categories</property>
+	<property name="tab">categories</property>
+	<property name="subsettinglist"></property>
 </page>
