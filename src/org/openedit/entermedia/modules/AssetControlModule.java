@@ -127,6 +127,11 @@ public class AssetControlModule extends BaseMediaModule
 		UserManager mgr = getUserManager();
 		for (String name : inUserNames)
 		{
+			if(name.contains("user_")){
+				name = name.substring(5, name.length());
+			}
+			
+					
 			User user = mgr.getUser(name);
 			if( user != null)
 			{
