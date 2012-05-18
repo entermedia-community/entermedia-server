@@ -2,6 +2,6 @@
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
 	<property name="subsettinglist">settingsmetadata</property>
 	
-	<property name="tab">metadata</property>
+	<property name="tab">assets</property>
 	
 </page>
