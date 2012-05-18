@@ -172,6 +172,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 
 		users.add(inUsername);
 		inAsset.removeProperty("public");
+		users.remove("true");
 		inAsset.setValues("viewusers", users);
 		inArchive.saveAsset(inAsset, null);
 
