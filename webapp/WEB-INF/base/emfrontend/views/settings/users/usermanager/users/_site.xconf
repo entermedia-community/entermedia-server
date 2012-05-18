@@ -9,6 +9,8 @@
     <property name="searchtype">member</property>
   </path-action>
   <property name="hitsname">members</property>
+  <property name="module">System</property>
+  <property name="tab">users</property>
   <property name="subtab">users</property>
   <property name="oeuseradmintabid">userstab</property>
 </page>

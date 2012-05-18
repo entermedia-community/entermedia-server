@@ -2,7 +2,8 @@
 	<property name="eventroot">/${applicationid}/views/settings/events/triggers</property>
 
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
-	<property name="tab">events</property>
-	<property name="subsettinglist">system</property>
+	<property name="tab">scheduler</property>
+	<property name="subtab">scheduler</property>
+	<property name="module">system</property>
 	
 </page>

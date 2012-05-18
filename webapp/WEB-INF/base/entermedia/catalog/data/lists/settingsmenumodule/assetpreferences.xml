@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-  <property id="transcoding" type="toplevel" module="asset" path="/views/settings/modules/asset/transcoding/index.html" sublabel="Conversions" >Preferences</property>
-  <property id="publishing" type="sublevel"  module="asset" path="/views/settings/modules/asset/lists/publishing/index.html" >Publishing</property>
+  <property id="preferences" type="toplevel" parentid="preferences" module="asset" path="/views/settings/modules/asset/transcoding/index.html" sublabel="Transcoding" >Preferences</property>
+  <property id="publishing" type="sublevel" parentid="preferences" module="asset" path="/views/settings/modules/asset/publishing/index.html" >Publishing</property>
 </properties>
   

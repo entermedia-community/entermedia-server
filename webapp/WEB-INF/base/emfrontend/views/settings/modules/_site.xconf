@@ -1,5 +1,4 @@
 <page>
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
-	<property name="tab">addnew</property>
-	<property name="subsettinglist">settingsdatatypes</property>
+	<property name="module">asset</property>
 </page>

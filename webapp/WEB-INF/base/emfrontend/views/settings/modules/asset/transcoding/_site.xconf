@@ -19,6 +19,8 @@
 	 <permission name="editdata">
 	 	<group name="administrators"/>
 	 </permission>
- 
-	<property name="subtab">transcoding</property>
+	 
+ 	<property name="tab">preferences</property>
+	<property name="subtab">preferences</property>
+	
 </page>

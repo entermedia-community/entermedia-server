@@ -2,7 +2,7 @@
 	<path-action name="DataEditModule.loadViewTypes" />
 	<inner-layout>${dataroot}/innerlayout.html</inner-layout>
 
-	<property name="dataroot">/${applicationid}/views/settings/metadata/views</property>
+	<property name="dataroot">/${applicationid}/views/settings/modules/asset/views</property>
 		<property name="subtab">views</property>
-	
+	<property name="tab">views</property>
 </page>

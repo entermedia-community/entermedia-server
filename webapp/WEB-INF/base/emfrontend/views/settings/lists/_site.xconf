@@ -1,6 +1,6 @@
 <page>
 
-	<property name="tab">libraries</property>
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
-
+	<property name="tab">datamanager</property>
+	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
+	
 </page>

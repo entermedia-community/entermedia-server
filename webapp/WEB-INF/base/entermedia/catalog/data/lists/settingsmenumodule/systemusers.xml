@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-  <property id="users" type="toplevel" module="system" path="/views/settings/users/usermanager/users/index.html" ordering="10">Users</property>
-  <property id="admin" type="sublevel" parentid="users" module="system" path="/views/settings/users/usermanager/admin/index.html" >Import / Export</property>
+  <property id="users" type="toplevel" parentid="users" module="system" path="/views/settings/users/usermanager/users/index.html" ordering="10">Users</property>
+  <property id="admin" parentid="users" module="system" path="/views/settings/users/usermanager/admin/index.html" >Import / Export</property>
 
 </properties>
 

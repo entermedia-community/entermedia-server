@@ -20,5 +20,6 @@
 	 </permission>
  
  	<property name="subtab">publishing</property>
+ 	<property name="tab">preferences</property>
 	
 </page>
