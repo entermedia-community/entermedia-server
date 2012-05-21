@@ -434,6 +434,10 @@ public class SyncModule extends BaseMediaModule
 			Page tosend = findInputPage(archive, asset, presetid);
 			if (!tosend.exists())
 			{
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Convert not ready for push " + tosend.getPath());
+				}
 				readyforpush = false;
 				break;
 			}
