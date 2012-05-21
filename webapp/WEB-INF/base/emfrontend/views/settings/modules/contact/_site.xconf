@@ -1,0 +1,5 @@
+<page>
+	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<property name="module">contact</property>
+	<property name="fallbackdirectory">/${applicationid}/views/settings/modules/default</property>
+</page>
