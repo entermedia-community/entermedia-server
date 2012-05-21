@@ -13,16 +13,16 @@
 
 $context.putPageValue("searcher", $userSearcher)
 $context.putPageValue("view", "user/simpleuseradd")
-$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 
 	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
 
 			$context.putPageValue("searcher", $userProfileSearcher)	 
 			$context.putPageValue("view", "userprofile/edit")	
 			$context.putPageValue("data", $userprofile)
-			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 
-
+<div class="hr" style="margin: 20px 0; padding: 0;"></div>
 <input class="btn small" type="submit" value="Create" >
 </form>
 

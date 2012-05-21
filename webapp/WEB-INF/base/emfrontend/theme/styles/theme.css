@@ -1239,7 +1239,7 @@ small {
 	display: table;
 	padding: 5px 20px;
 	/* background: url('../images/top-shadow.png') top center repeat-x; */
-	width: 100%;
+	width: 594px;
 }
 #asset-data ul, #preview-pane ul {
 	padding: 0;
@@ -3806,7 +3806,41 @@ span.drag-and-drop {
 	background: none;
 }
 
+/* ADD USER FORM */
 
+#adduser input {
+	width: 200px;
+}
+#adduser .emdatafield {
+	font-weight: bold;
+	padding-bottom: 3px;
+	padding-top: 12px;
+	display: block;
+	text-align: left;
+	margin: 0 0 -5px 0;
+	font-size: 12px;
+}
+#adduser .field-label {
+	display: block;
+	font-size: 12px;
+	margin: 5px 0 3px 0;
+	color: #666;
+}
+#adduser .detail-note {
+	font-size: 11px;
+	color: #666;
+	display: block;
+	padding-top: 3px;
+	font-style: italic;
+}
+#adduser #passwordmatch, #adduser #password {
+	display: block;
+	width: 200px;
+	text-align: left;
+}
+#adduser #listdetail_settingsgroup {
+	clear: both;
+}
 
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
