@@ -1,0 +1,12 @@
+<h2>Long paths: </h2>
+#foreach( $path in $longpaths)
+	$path<br>
+#end
+
+<h2>Bad paths: </h2>
+<pre>
+	? *	\n	< > : |  \\ / # 		% 
+</pre>
+#foreach( $path in $badpaths)
+	$path<br>
+#end
