@@ -203,13 +203,18 @@ public class SyncModule extends BaseMediaModule
 			}
 			catch (Exception e)
 			{
-				pushqueue.setProperty("status", "5uploaderror");
-
-				pushqueue.setProperty("errordetails", e.toString());
+				if( pushqueue != null )
+				{
+					pushqueue.setProperty("status", "5uploaderror");
+	
+					pushqueue.setProperty("errordetails", e.toString());
+				}
 				log.error(e);
 			}
-
-			pushsearcher.saveData(pushqueue, inReq.getUser());
+			if( pushqueue != null )
+			{
+				pushsearcher.saveData(pushqueue, inReq.getUser());
+			}
 
 			//	}
 		}
@@ -382,6 +387,7 @@ public class SyncModule extends BaseMediaModule
 		if( assetid == null)
 		{
 			//TODO: Remove bad assets?
+			log.info("Warning: Checking all assets");
 			Collection hits = archive.getAssetSearcher().getAllHits();
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
@@ -391,6 +397,7 @@ public class SyncModule extends BaseMediaModule
 		}
 		else
 		{
+			
 			checkPublish(archive, pushsearcher, assetid, inReq.getUser());
 		}
 		
@@ -427,6 +434,10 @@ public class SyncModule extends BaseMediaModule
 			Page tosend = findInputPage(archive, asset, presetid);
 			if (!tosend.exists())
 			{
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Convert not ready for push " + tosend.getPath());
+				}
 				readyforpush = false;
 				break;
 			}
