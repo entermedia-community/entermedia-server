@@ -1,30 +1,50 @@
-	<form name="search" method="post" action="$home$content.dataroot/list/index.html">
-	
-	#set( $view = $context.getRequestParameter("view") )
+#set( $view = $context.getRequestParameter("view") )
 
 	$context.putPageValue("hits",$datalist)	
 	#if( $view )
 		#set( $details = $searcher.getDetailsForView($view, $userprofile) )	
 	#else
 	#set( $details = $searcher.getSearchProperties($user) )
-	
 	#end
 	$context.putPageValue("details",$details)	
-	<div class="oesearchformflat">
-		$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
-		<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
-		<input type="hidden" name="searchtype" value="$!searcher.searchType" />
-		<input type="hidden" name="view" value="$!view" />
-		<input style="margin-left: 100px;" type="submit" value="Search" />
-	</div>
+
+
+
+<div class="tab" id="data-tab">
+	
+<div class="tab-actions">
+	<a class="btn" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Add New Record]]</a>
+	<a class="btn" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
+	<a class="btn" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Import]]</a>
+	<a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export to CSV]]</a>
+	<a class="btn confirm red" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete All]]</a>
+	
+	<form style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
+
+	<select>
+		<option value="value1">Value 1</option>
+		<option value="value2">Value 2</option>
+		<option value="value3">Value 3</option>
+	</select>
+	
+	<input type="text" class="field" style="width: 170px; padding: 5px 5px 4px 5px; border-radius: 5px; font-size: 12px;" />
+	
+	<a class="btn">Search</a>
+
+	##<div class="oesearchformflat">
+	##	$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
+	##	<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
+	##	<input type="hidden" name="searchtype" value="$!searcher.searchType" />
+	##	<input type="hidden" name="view" value="$!view" />
+	##	<input class="btn" style="margin-left: 100px;" type="submit" value="Search" />
+	##</div>
 	
 	</form>
+</div>
 
-	<br>
-	
 	<div id="emselectable">
-	<table width="85%" class="striped">
-	<tr style="background-color: #666;">
+	<table class="striped emdata">
+	<tr class="tableheader">
 	#foreach( $detail in $details )
 	<th align="left" nowrap >$detail.getText($context)</th>
 	#end
@@ -50,7 +70,8 @@
 		</form>
 	</div>
 	
-	<div style="text-align: left; padding-left: 20px; padding-top: 5px;">
+	
+	<div id="pages" style="text-align: left; padding-left: 20px;">
 	
 		#if ( $datalist.totalPages == 0 )
 		#elseif( $datalist.totalPages == 1 )
@@ -64,11 +85,11 @@
 			#end
 			
 			#if ( $datalist.nextPage() )
-			<a href="$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt; </a>
+			<a style="margin-left: 10px;" href="$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt; </a>
 			#end
 		#end
 	</div>
-		<p>[[Found]] $datalist.size() [[Records]]</p>
+		<p style="padding-left: 20px; padding-top: 5px;">[[Found]] $datalist.size() [[Records]]</p>
 	
 	
 	#set( $thispage = $datalist.getPage()+-1)
@@ -76,10 +97,8 @@
 	#set( $end = $start + $datalist.getPageOfHits().size() )
 	#set( $start = $start + 1)
 	
-	<a class="btn" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Add New Record]]</a>
-	<a class="btn" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
-	<a class="btn" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Import]]</a>
-	<a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export to CSV]]</a>
-	<a class="btn confirm" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete All]]</a>
-<br><br><br>
-	
+</div>
+
+
+
+

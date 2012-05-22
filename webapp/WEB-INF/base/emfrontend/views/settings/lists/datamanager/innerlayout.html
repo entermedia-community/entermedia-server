@@ -1,9 +1,9 @@
 #set(  $currentsearch = $context.getRequestParameter("searchtype") ) 
 
 #set( $action = "$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid" )
-<form action="$action">
+<form style="float: right; margin-top: 4px;" action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
-	[[Data Type]]: <select name="searchtype" onchange="submit();">
+	[[Choose Table]]: <select name="searchtype" onchange="submit();">
 			<option value=""></option>
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")

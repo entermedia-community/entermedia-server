@@ -19,7 +19,19 @@
 <h2>$currentsearch</h2>
 #end
 
-<a class="btn" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">Customize Fields</a>
+<div class="tabnav">
+	<a class="current ajax" targetdivinner="propertyEditPanel" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Data</a>
+	<a class="ajax" targetdivinner="propertyEditPanel" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Customize Fields</a>
+</div>
+
+<script>
+	$('.tabnav a').click(function(){
+		$('.tabnav a').removeClass('current');
+		$(this).addClass('current');
+	})
+</script>
+
+## <a class="btn" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">Customize Fields</a>
 
 <div id="propertyEditPanel">
 	$pages.streamContent()
