@@ -406,20 +406,25 @@ public class SyncModule extends BaseMediaModule
 	protected void checkPublish(MediaArchive archive, Searcher pushsearcher, String assetid, User inUser)
 	{
 		Data hit = (Data) pushsearcher.searchByField("assetid", assetid);
+		String oldstatus = null;
+		Asset asset = null;
 		if (hit == null)
 		{
 			hit = pushsearcher.createNewData();
 			hit.setProperty("assetid", assetid);
+			oldstatus = "none";
+			asset = archive.getAsset(assetid);
 		}
 		else
 		{
-			if( "1pushcomplete".equals( hit.get("status") ) )
+			oldstatus = hit.get("status");
+			if( "1pushcomplete".equals( oldstatus ) )
 			{
 				return;
 			}
+			asset = archive.getAssetBySourcePath(hit.getSourcePath());
 		}
 
-		Asset asset = archive.getAsset(assetid);
 		if(asset == null){
 			return;
 		}
@@ -442,16 +447,20 @@ public class SyncModule extends BaseMediaModule
 				break;
 			}
 		}
-
+		String newstatus = null;
 		if( readyforpush )
 		{
-			hit.setProperty("status", "3readyforpush");
+			newstatus = "3readyforpush";
 			hit.setProperty("percentage","0");
 		}
 		else
 		{
-			hit.setProperty("status", "2converting");			
+			newstatus = "2converting";			
 		}
-		pushsearcher.saveData(hit, inUser);
+		if( !newstatus.equals(oldstatus) )
+		{
+			hit.setProperty("status", newstatus);
+			pushsearcher.saveData(hit, inUser);
+		}
 	}
 }
