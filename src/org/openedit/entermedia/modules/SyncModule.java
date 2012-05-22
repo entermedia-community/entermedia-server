@@ -424,8 +424,13 @@ public class SyncModule extends BaseMediaModule
 			}
 			asset = archive.getAssetBySourcePath(hit.getSourcePath());
 		}
-
-		if(asset == null){
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Checking asset: " + asset);
+		}
+		
+		if(asset == null)
+		{
 			return;
 		}
 		hit.setSourcePath(asset.getSourcePath());

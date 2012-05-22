@@ -42,7 +42,7 @@
 	#if( $permission != "false")
 	<div style="margin-top: 3px;">
 		 #set( $text = $link.name)
-		 #set ($href = "$apphome/views/detaileditor/${link.folder}/index.html")
+		 #set ($href = "$apphome/views/modules/assets/editor/${link.folder}/index.html")
 		 #set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 		#if($link.id =="comment")
 			#set( $img = "${themeprefix}/images/detaileditor/comments.png")	
