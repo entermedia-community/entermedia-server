@@ -169,7 +169,7 @@ addFiles = function(innames, inlocalpaths, inparentpaths, insizes)
 				$(link).css('margin-left', '10px' );
 				$(link).text("Apply to All").click(
 						function(){
-						$("select.autosubmited").each( function(){
+						$("table#emfilelist tr#row0 select").each( function(){
 							$(this).val(newclass);
 							}
 						)}
