@@ -62,7 +62,7 @@ public class GroovyScriptRunner implements ScriptRunner
 				GroovyClassLoader loader = engine.getGroovyClassLoader();
 
 				Object returned = null;
-				
+				log.info(variableMap.keySet());
 				if( inScript.getMethod() != null )
 				{
 					File file = new File(page.getContentItem().getAbsolutePath());
@@ -91,7 +91,7 @@ public class GroovyScriptRunner implements ScriptRunner
 						
 						}
 					 
-					returned = object.invokeMethod(inScript.getMethod(), null);
+					returned = object.invokeMethod(inScript.getMethod(), variableMap.get("context"));
 										  
 				}
 				else
