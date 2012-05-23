@@ -16,7 +16,6 @@
 			}
 		}
 		addAll = function(userid){
-			alert(jQuery("#allowall").is(':checked'));
 			if(jQuery("#allowall").is(':checked') == false) {
 				jQuery("#permissions").load("$home$apphome/components/share/removeall.html?assetid=$asset.id");
 			} else {
