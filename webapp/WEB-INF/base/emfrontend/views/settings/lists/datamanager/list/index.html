@@ -13,9 +13,9 @@
 <div class="tab" id="data-tab">
 	
 <div class="tab-actions">
-	<a class="btn" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Add New Record]]</a>
+	<a class="btn ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Add New Record]]</a>
 	<a class="btn" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
-	<a class="btn" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Import]]</a>
+	<a class="btn ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Import]]</a>
 	<a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export to CSV]]</a>
 	<a class="btn confirm red" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete All]]</a>
 	
@@ -27,7 +27,7 @@
 		<option value="value3">Value 3</option>
 	</select>
 	
-	<input type="text" class="field" style="width: 170px; padding: 5px 5px 4px 5px; border-radius: 5px; font-size: 12px;" />
+	<input type="text" class="field" />
 	
 	<a class="btn">Search</a>
 

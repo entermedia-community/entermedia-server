@@ -1,54 +1,32 @@
-<div class="tab-actions">
-	<a class="btn" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Add New Record]]</a>
-	<a class="btn" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
-	<a class="btn" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Import]]</a>
-	<a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export to CSV]]</a>
-	<a class="btn confirm red" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete All]]</a>
-	
-	<form style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
 
-	<select>
-		<option value="value1">Value 1</option>
-		<option value="value2">Value 2</option>
-		<option value="value3">Value 3</option>
-	</select>
-	
-	<input type="text" class="field" />
-	
-	<a class="btn">Search</a>
-
-	##<div class="oesearchformflat">
-	##	$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
-	##	<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
-	##	<input type="hidden" name="searchtype" value="$!searcher.searchType" />
-	##	<input type="hidden" name="view" value="$!view" />
-	##	<input class="btn" style="margin-left: 100px;" type="submit" value="Search" />
-	##</div>
-	
-	</form>
-</div>
-<div id="editlayout">
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set( $view = $context.findValue("editview") )
-$context.putPageValue("view", $view)
-
-<form id="dataeditor" name="dataeditor" method="post" action="$home$content.dataroot/edit/save.html" >
-	<input name="save" type="hidden" value="true" />
-	<input name="id" type="hidden" value="$!data.id" />
-	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
-	<input name="searchtype" type="hidden" value="$searcher.searchType" />
-	<input name="origURL"  type="hidden" value="$!origURL" />
-$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-
-<input type="submit" value="Save" />
-<div id="messagearea">$!message
-</div>
-</form>
-<br><br>
-<a href="./delete.html?searchtype=$searcher.searchType&id=$data.id">delete</a>
-#if( $savedok && $origURL )
-	<a href="$origURL">[[Go Back]]</a>	
-#end
-
-
+<div class="tab">
+	<div class="tab-actions">
+		<a class="btn" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">Delete</a>
+		#if( $savedok && $origURL )
+			<a class="btn" href="$origURL">[[Go Back]]</a>	
+		#end
+	</div>
+	<div id="datamanager-workarea">
+		<div id="editlayout">
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $view = $context.findValue("editview") )
+		$context.putPageValue("view", $view)
+		
+		<form id="dataeditor" name="dataeditor" method="post" action="$home$content.dataroot/edit/save.html" >
+			<input name="save" type="hidden" value="true" />
+			<input name="id" type="hidden" value="$!data.id" />
+			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+			<input name="searchtype" type="hidden" value="$searcher.searchType" />
+			<input name="origURL"  type="hidden" value="$!origURL" />
+		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		
+		<input type="submit" value="Save" />
+		<div id="messagearea">$!message
+		</div>
+		</form>
+		
+		
+		
+		</div>
+	</div>
 </div>

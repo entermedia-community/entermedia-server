@@ -20,8 +20,8 @@
 #end
 
 <div class="tabnav">
-	<a class="current ajax" targetdivinner="propertyEditPanel" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Data</a>
-	<a class="ajax" targetdivinner="propertyEditPanel" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Customize Fields</a>
+	<a class="current ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Data</a>
+	<a class="ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Customize Fields</a>
 </div>
 
 <script>
@@ -33,8 +33,10 @@
 
 ## <a class="btn" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch">Customize Fields</a>
 
-<div id="propertyEditPanel">
-	$pages.streamContent()
+<div id="datamanager-workarea">
+	<div id="propertyEditPanel">
+		$pages.streamContent()
+	</div>
 </div>
 
 #if( $showfields )
