@@ -4,5 +4,7 @@
 <!-- 
   <property tab="modules" id="modules" module="system" path="/views/settings/datatypes/default/index.html" ordering="40">Modules</property>
   --> 
+   <property id="extensions"  type="toplevel" parentid="extensions" module="system" path="/views/settings/plugins/index.html" ordering="60" sublabel="Extensions">Extensions</property>
+  
 </properties>
 
