@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 
+import com.openedit.config.Configuration;
 import com.openedit.page.Page;
 import com.openedit.util.FileUtils;
 import com.openedit.util.OutputFiller;
@@ -36,7 +37,18 @@ public class Script
 	protected Page fieldPage;
 	protected String fieldType;
 	protected String fieldMethod;
+	protected Configuration fieldConfiguration;
+	protected String fieldCatalogId;
 	
+	
+	public void setConfiguration(Configuration inConfiguration) {
+		fieldConfiguration = inConfiguration;
+	}
+
+	public Configuration getConfiguration() {
+		return fieldConfiguration;
+	}
+
 	public String getMethod()
 	{
 		return fieldMethod;
@@ -193,4 +205,6 @@ public class Script
 	{
 		return fieldStartLineNumber;
 	}
+
+	
 }
