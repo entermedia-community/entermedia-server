@@ -1,0 +1,6 @@
+<properties>
+	<property id="id" index="true" stored="true"  keyword="true" >ID</property>
+	<property id="firstname" index="true" stored="true" editable="true">First Name</property>
+	<property id="lastname" editable="true" index="true" stored="true" >Last Name</property>
+	
+</properties>
