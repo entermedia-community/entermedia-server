@@ -31,7 +31,6 @@
 	<property name="homelink">http://entermediasoftware.com/</property>
 	<property name="section">home</property>
 	<property name="thumbsize">thumb</property>
-
 	<!-- property name="contentsiteroot">http://s3.amazonaws.com/emtube</property -->
 
  	<property name="themeprefix">/${applicationid}/theme</property>

@@ -1,0 +1,5 @@
+<page>
+    <path-action name="Script.run">
+    	<script method="batchSave">${searchhome}/scripts/editor.groovy</script>
+    </path-action>
+</page>
