@@ -1237,7 +1237,7 @@ small {
 }
 #asset-data {
 	display: table;
-	padding: 5px 20px;
+	padding: 5px 20px 20px 20px;
 	/* background: url('../images/top-shadow.png') top center repeat-x; */
 	width: 594px;
 }
