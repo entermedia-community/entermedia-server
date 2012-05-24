@@ -2,6 +2,6 @@
 
 <properties>
 	
-  <property id="editing"  type="toplevel" module="contact" ordering="100" path="/views/settings/datatypes/editing/index.html" >Views</property>
+  <property id="editing"  type="toplevel" module="contact" ordering="100" path="/views/settings/modules/contact/views/index.html" >Views</property>
 
 </properties>

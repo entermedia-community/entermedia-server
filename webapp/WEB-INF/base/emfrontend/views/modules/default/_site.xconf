@@ -1,0 +1,4 @@
+<page>
+<inner-layout>/${applicationid}/views/modules/${module}/innerlayout.html</property>
+
+</page>
