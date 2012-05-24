@@ -137,6 +137,9 @@ public class ScriptManager
 		Script script = loadScript(code);
 		String method = inScriptconfig.getAttribute("method");
 		script.setMethod(method);
+		script.setConfiguration(inScriptconfig);
+		
+		
 		return script;
 	}
 

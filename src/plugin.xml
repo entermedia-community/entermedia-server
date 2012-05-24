@@ -1157,6 +1157,9 @@
 	</bean>
     <bean id="groovyScriptRunner" class="com.openedit.entermedia.scripts.GroovyScriptRunner" >
 	    <property name="pageManager"><ref bean="pageManager"/></property>
+	    	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
     </bean>
     <bean id="bshScriptRunner" class="com.openedit.entermedia.scripts.BshScriptRunner" />
     <bean id="rhinoScriptRunner" class="com.openedit.entermedia.scripts.RhinoScriptRunner" />
