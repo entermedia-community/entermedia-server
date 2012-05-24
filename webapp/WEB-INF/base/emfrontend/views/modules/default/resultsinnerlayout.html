@@ -1,0 +1,94 @@
+#if(!$hits)
+        #set($hitsname = $context.getRequestParameter('hitsname'))
+        #set($hits = $context.getPageValue($hitsname))
+#end
+
+
+#if(!$hits)
+        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
+        #if($hitssessionid)
+            #set($hits = $context.getSessionValue($hitssessionid))
+        #end
+#end
+#if(!$hits)
+#set($hits = $context.getPageValue($content.hitsname))
+#end
+$context.putPageValue("hits", $hits)
+
+<div id="searchplugin">
+<div class="subcolumns">
+          <div class="c25l" id="left-col">
+          	
+
+#if($content.isPropertyTrue("showsearch"))
+$pages.include("/${content.searchhome}/searchform.html")
+#end
+
+			
+      	 </div>
+         <div id="right-col">
+       	 	
+			<div class="ui-widget uipanel" id="view-picker">
+			<div class="ui-widget-header">Your Search for: $!hits.getSearchQuery().getName() ($!hits.size()) <a style="color:#fff; float: right; margin-right: 15px;" href="$home$apphome/views/search/edit/save.html?queryid=$hits.getSearchQuery().id&name=$hits.getSearchQuery().getName()">Add Search to Favorites</a></div>
+			<div id="view-picker-content" class="ui-widget-content search-view">
+				<div id="resultsarea" style="padding-right:  40px;">
+
+
+
+<div id="resultslist">
+					$pages.includeContent()
+					</div>
+					</div>
+			</div></div>
+
+        </div>
+</div>
+
+
+ </div>
+  
+
+
+
+<script type="text/javascript" >
+
+    toggleHit =  function(div, count, sessionid)
+    {
+    	jQuery.get("$home${content.searchhome}/selections/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
+    	jQuery('#messagearea').load("$home${content.searchhome}/selections/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
+    }
+
+
+    togglehits =  function(action)
+    {
+        
+    	jQuery('#messagearea').load("$home${content.searchhome}/selections/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:action});         
+           if(action == 'all' || action== 'page'){
+        	   jQuery('.selectionbox').attr('checked','checked');
+            }else{
+            	jQuery('.selectionbox').removeAttr('checked');  
+            }
+           return false;       
+
+    }
+
+    
+    
+            
+            hide_spinner = function(){$j('#spinner').css('visibility', 'hidden');};
+            show_spinner = function(){$j('#spinner').css('visibility','visible');};
+
+            jQuery('.navlink').livequery('click', function(e){  
+                show_spinner(); 
+                
+               nextpage = $j(this).attr('href');
+             
+               jQuery('#resultsarea').load(nextpage, {oemaxlevel:1}, hide_spinner);       
+                return false;      
+            });
+            
+            
+                            
+</script>    
+
+    
