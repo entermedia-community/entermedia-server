@@ -36,7 +36,7 @@ public class ArchiveModuleTest extends BaseEnterMediaTest
 		//assertTrue( "Did not have permission" , has );
 		getFixture().getEngine().executePathActions(req);
 				
-		HitTracker hits = (HitTracker)req.getSessionValue("hitsentermedia/catalogs/testcatalog");
+		HitTracker hits = (HitTracker)req.getSessionValue("hitsassetentermedia/catalogs/testcatalog");
 		assertNotNull(hits);
 		assertTrue( hits.getQuery().contains("category:(index)") );
 		
