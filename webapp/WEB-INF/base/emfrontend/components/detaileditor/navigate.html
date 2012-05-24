@@ -16,12 +16,12 @@
 			#set( $thispage = $content.getDirectoryName() )
 			
 					#if($previous)
-						 <li><a href="${home}$apphome/views/detaileditor/$thispage/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
+						 <li><a href="${home}$apphome/views/modules/assets/editor/$thispage/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
 					#end
 						<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span>
 					#if($next)
 						$context.putPageValue("hits", $hits)
-						<li style="float: right;"><a href="${home}$apphome/views/detaileditor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">>></a></li>
+						<li style="float: right;"><a href="${home}$apphome/views/modules/assets/editor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">>></a></li>
 					#end
 					
 			#end	

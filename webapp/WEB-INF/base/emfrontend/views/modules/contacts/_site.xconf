@@ -1,0 +1,5 @@
+<page>
+	<property name="module">contact</property>
+	<property name="fallbackdirectory">/${applicationid}/views/modules/contacts/default</property>
+	
+</page>

@@ -7,6 +7,9 @@
 	<bean id="presetdataSearcher" bean="xmlFolderSearcher"/>
     <bean id="assetvotesSearcher" bean="xmlFileSearcher" />
 
+
+
+
 <!--  menus -->
 	<bean id="asseteditorSearcher" bean="xmlFolderSearcher"/>
 	<bean id="asseteditorhistorySearcher" bean="xmlFolderSearcher"/>
@@ -16,6 +19,7 @@
 
 	<bean id="settingsmenumoduleSearcher" bean="xmlFolderSearcher"/>
 
+	<bean id="moduleSearcher" bean="xmlFolderSearcher"/>
 
 <!--  Old? -->
 	<bean id="photooptionavailableSearcher" bean="xmlFileSearcher"/>

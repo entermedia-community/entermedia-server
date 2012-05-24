@@ -3842,6 +3842,82 @@ span.drag-and-drop {
 	clear: both;
 }
 
+/* DATA MANAGER CSS */
+
+.tabnav {
+	margin: 30px -20px 0 -20px;
+	border-bottom: 1px solid #ddd;
+	padding: 0 20px;
+	height: 21px;
+}
+.tabnav a {
+	padding: 5px 10px;
+	background: #f9f9f9;
+	color: #999;
+	font-size: 14px;
+	border: 1px solid #eee;
+	border-bottom: none;
+	margin-right: 10px;
+}
+.tabnav a:hover {
+	background: #fff;
+	color: #3DAACD;
+	border-color: #ddd;	
+	cursor: pointer;
+	box-shadow: 0 0 4px 1px rgba(0,0,0,0.05);
+}
+.tabnav a.current {
+	border-color: #ddd;
+	background: #fff;
+	color: #3DAACD;
+	padding-bottom: 6px;
+	box-shadow: 0 0 8px 1px rgba(0,0,0,0.1);
+}
+.tab {
+	margin: 0 -24px 0 -20px;
+}
+.tab-actions {
+	position: relative;
+	z-index: 999;
+	border-bottom: 1px solid #ddd;
+	padding: 8px 20px;
+	background: rgb(255,255,255); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(239,239,239,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(239,239,239,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* IE10+ */
+	background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#efefef',GradientType=0 ); /* IE6-9 */
+}
+.tab table {
+	width: 100%;
+}
+.tab table tr:nth-child(even) {
+	background: #F7FDFF;
+}
+.tab table tr td:first-child {
+	padding-left: 20px !important;
+}
+.tab-actions .field {
+	width: 170px;
+	padding: 5px 5px 4px 5px;
+	border-radius: 5px; 
+	font-size: 12px;
+	margin: 0 5px;
+}
+.emselectabledetails {
+	font-size: 12px;
+	color: #666;
+}
+.tab .delete-row {
+	margin-top: 5px;
+	margin-right: 10px;
+}
+h2 {
+	margin-top: 0;
+}
+
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .ir br { display: none; }
