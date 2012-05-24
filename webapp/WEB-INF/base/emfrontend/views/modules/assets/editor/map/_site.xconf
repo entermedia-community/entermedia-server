@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  <property name="sectiontitle">
-    <value>Geo Tag</value>
-  </property>
-	<property name="tab">asseteditormetadata</property>
-  	<property name="subtab">editassetgeolocation</property>
-  	<property name="assettab">viewmap</property>
-    <inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
+
 </page>
