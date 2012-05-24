@@ -98,7 +98,8 @@
 				padding = parseInt(padding);
 				padding += 20;
 				var node = $(this).parents('.noderow:first').data('nodeid');
-				
+				if(node){
+
 				if ( $("#" + id + "_row > div .arrow").length > 0 ) {
 					if ( $("#" + id + "_row > div .arrow").hasClass('down') ) {	
 						
@@ -118,6 +119,7 @@
 				$("#" + id + "_row > div").addClass('selected');
 				$("#" + id + "_add input").focus();
 			}
+		}
 	} );
 	
 	
