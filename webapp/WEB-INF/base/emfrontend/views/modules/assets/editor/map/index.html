@@ -33,11 +33,12 @@ $context.putPageValue("searcher", $searcher)
 #if($errors)
 <span style="color:red;">Your entry is invalid.  Please check your values and try again.</span>
 #set($edit = "true")
+#else 
+<p style="font-size: 12px;color: #666; background: #eee; border: 1px solid #ddd; padding: 10px; text-align: center;">[[Search for a location, drag the icon to the correct place and click the save button. Double left-click to zoom in, double right-click to zoom out]].</p>	
+
 #end
 	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="${view}editor" method="post" action="$home$apphome/views/modules/assets/editor/map/save.html?oemaxlevel=1" >
 
-<p style="text-align: center">[[Search for a location, drag the icon to the correct place and click the save button]].</p>	
-<p style="text-align: center">[[Double left-click to zoom in, double right-click to zoom out]].</p>	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input type="hidden" name="save" value="true" />
 		<input type="hidden" name="catalogid" value="$!catalogid" />
@@ -53,13 +54,12 @@ $context.putPageValue("searcher", $searcher)
 		<input type="hidden" name="id" value="$!data.id" />
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
-		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
-		<br/>
-		<p align="right" style="padding-right: 200px;">
-			<input class="btn small" type="button" 
+		<div id="geomap">
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+		</div>
+			<input class="btn right" style="margin-top: -37px;" type="button" 
 				onclick="jQuery(this.form).submit();"
 			value="[[Save values]]"/>
-		</p>
 	</form>
-
+	
 </div>

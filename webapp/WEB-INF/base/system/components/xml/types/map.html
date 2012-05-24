@@ -4,19 +4,19 @@
 #set ($view = $context.getRequestParameter('view')) 
 <!--  This would have the point details in it -->
 
-      <p>
+      <p style="text-align: right; margin-top: -5px; margin-bottom: 15px;">
         <input type="text" size="60" id="${detail.id}_address"  />
         <input class="btn small" type="button" id="${detail.id}_search" value="Search"  />
       </p>
      
+
+<div id="${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
+   
     <input type="hidden" name="field" value="${detail.id}_lat"/>
    Latitude: <input type="text" id="${detail.id}_lat" name="${detail.id}_lat.value" value="$!data.get("${detail.id}_lat")"/>
     <input type="hidden" name="field" value="${detail.id}_lng"/>
     Longitude: <input type="text" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!data.get("${detail.id}_lng")"/>
 
-
-<div id="${detail.id}_map" align style="width: 500px; height: 300px"></div>
-   
 
 <script
 	src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=$content.getProperty('mapkey')"
