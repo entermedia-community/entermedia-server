@@ -233,6 +233,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						continue;
 					}
 					inAsset.setProperty("colorspace", value );
+				} 
+				else if( "GPSLatitude".equals(key) )
+				{
+					inAsset.setProperty("position_lat", value );					
+				}
+				else if( "GPSLongitude".equals(key) )
+				{
+					inAsset.setProperty("position_lng", value );
 				}
 				
 				else if( getTextFields().contains(key))
