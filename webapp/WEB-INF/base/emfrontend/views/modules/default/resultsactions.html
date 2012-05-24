@@ -1,0 +1,20 @@
+#set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
+
+	<ul id="sub-nav" class="search-views">
+
+## <li><a href="$home${content.searchhome}/actions/reindex.html">Reindex</a></li>
+## <li><a href="$home${content.searchhome}/import/index.html">Import Data</a></li>
+<li><a href="$home${content.searchhome}/edit/addnew.html">Add New $module</a></li>
+## <li><a href="$home${content.searchhome}/edit/batchedit.html?hitssessionid=$hits.sessionId">Batch Edit</a></li>
+
+     
+			
+			## <li><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId">[[Export results CSV]]</a></li>
+			## <li ><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId&friendly=true">[[Export results with Friendly values]]</a></li>
+	
+			#if($candelete)
+		## <li><a href="$home${content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId">[[Delete Selected Items]]</a></li>
+			#end
+			
+	
+	</ul>

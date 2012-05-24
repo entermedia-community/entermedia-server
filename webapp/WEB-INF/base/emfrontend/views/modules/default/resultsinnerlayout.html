@@ -14,39 +14,37 @@
 #set($hits = $context.getPageValue($content.hitsname))
 #end
 $context.putPageValue("hits", $hits)
+#set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
 
 <div id="searchplugin">
-<div class="subcolumns">
-          <div class="c25l" id="left-col">
-          	
-
-#if($content.isPropertyTrue("showsearch"))
-$pages.include("/${content.searchhome}/searchform.html")
-#end
-
-			
-      	 </div>
-         <div id="right-col">
-       	 	
+	<div class="subcolumns">
+		<div class="c25l" id="left-col">
+				$pages.include("/$applicationid/views/modules/$module/sidebar/standard.html")
+		</div>
+		<div id="right-col">
 			<div class="ui-widget uipanel" id="view-picker">
-			<div class="ui-widget-header">Your Search for: $!hits.getSearchQuery().getName() ($!hits.size()) <a style="color:#fff; float: right; margin-right: 15px;" href="$home$apphome/views/search/edit/save.html?queryid=$hits.getSearchQuery().id&name=$hits.getSearchQuery().getName()">Add Search to Favorites</a></div>
-			<div id="view-picker-content" class="ui-widget-content search-view">
-				<div id="resultsarea" style="padding-right:  40px;">
-
-
-
-<div id="resultslist">
-					$pages.includeContent()
+				<div class="ui-widget-header"></div>
+				<div id="view-picker-content" class="ui-widget-content search-view">
+					<div id="resultsdiv">
+						<div id="emresultscontent">
+							
+							$pages.include("/$applicationid/views/modules/$module/resultsactions.html")
+							
+							<div id="resultsarea">
+								<div id="resultslist">
+									<div id="emselectable">
+										$pages.includeContent()
+									</div>
+								</div>
+							</div>
+							
+						</div>
 					</div>
-					</div>
-			</div></div>
-
-        </div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
-
- </div>
-  
 
 
 

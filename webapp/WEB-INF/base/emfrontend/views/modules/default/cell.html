@@ -25,5 +25,5 @@ $context.putPageValue('val', $val )
 	#set ($viewtype = "default")
 #end
 
-$pages.include("/util/editors/xml/types/${viewtype}.html?viewonly=true", $context)
+$pages.include("$apphome/components/xml/detailreadonly.html", $context)
 

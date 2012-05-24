@@ -23,9 +23,10 @@
 		#end
 	</td>
 	
+
     <td>&nbsp;</td> 
- <td>       <b>Selections</b> ($!hits.getSelections().size()):  <a class="actionlink" href="#page" onclick="togglehits('page');return false;">  This Page  </a>|  <a class="actionlink" href="#all" onclick="togglehits('all');">  All $!hits.size()  </a> | <a  class="actionlink" href="#none" onclick="togglehits('none');return false;">Clear</a></td>
- <td>$pages.include("/${content.searchhome}/selectionactions.html", $context)</td>
- 
+   <td>       <b>Selections</b> ($!hits.getSelections().size()):  <a class="actionlink" href="#page" onclick="togglehits('page');return false;">  This Page  </a>|  <a class="actionlink" href="#all" onclick="togglehits('all');">  All $!hits.size()  </a> | <a  class="actionlink" href="#none" onclick="togglehits('none');return false;">Clear</a></td>
+## <td>$pages.include("/${content.searchhome}/selectionactions.html", $context)</td>
+
     </tr>
     </table>

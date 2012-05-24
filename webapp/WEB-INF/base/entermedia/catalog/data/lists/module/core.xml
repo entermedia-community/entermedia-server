@@ -1,7 +1,6 @@
 <properties>
-  <property id="system" >System</property>
-  <property id="asset" >Asset</property>
-  <property id="contact" >Contact</property>
+  <property id="asset"  href="/index.html">Asset</property>
+  <property id="contact" href="/views/modules/contact/index.html">Contact</property>
     
   
 </properties>

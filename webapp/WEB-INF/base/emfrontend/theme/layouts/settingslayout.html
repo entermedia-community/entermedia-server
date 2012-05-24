@@ -6,7 +6,7 @@
 			#set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
 			#if($module && $module.id != 'system')
 			<div class="ui-widget" >
-				<div  class="ui-widget-header">$module Settings $content.module</div>
+				<div  class="ui-widget-header">$module Settings</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
 						#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )

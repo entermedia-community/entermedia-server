@@ -1,3 +1,9 @@
+#if ( $hits.getSelectedHits().size() == 0 )
+
+<p>You must select at least once asset to use this feature.</p>
+	
+#else
+
 <h2>Batch Edit</h2>
 <p>Be careful with this feature. There is no UNDO!  If in doubt, consult your adminstrator.</p>
 <div id="editlayout">
@@ -15,11 +21,11 @@ $context.putPageValue("showcheckbox", true)
 	<input name="id" type="hidden" value="$!data.id" />
 	<input name="categoryid" type="hidden" value="$!categoryid" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
-	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+	<input name="searchtype" type="hidden" value="$searcherÿ.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
 	<input name="hitssessionid"  type="hidden" value="$context.getRequestParameter('hitssessionid')" />
 	
-$pages.include("/util/editors/xml/detaileditor.html", $context)
+$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 
 <input type="submit" value="Save" />
 <div id="messagearea">$!message
@@ -32,3 +38,5 @@ $pages.include("/util/editors/xml/detaileditor.html", $context)
 
 
 </div>
+
+#end

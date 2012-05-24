@@ -1,0 +1,14 @@
+<div class="ui-widget uipanel" id="left-col-search" >
+	<div  class="ui-widget-header">Search
+		#if( $caneditadvancedsearch )
+			<span class="widget-header-edit">
+			<a class="ajax ir" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Edit</a>
+			</span>
+		#end
+	</div>
+	<div  class="ui-widget-content">
+		#if($content.isPropertyTrue("showsearch"))
+			$pages.include("/${content.searchhome}/searchform.html")
+		#end
+	</div>
+</div>
