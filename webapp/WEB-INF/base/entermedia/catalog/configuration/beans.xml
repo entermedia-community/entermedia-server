@@ -32,7 +32,6 @@
 	<bean id="assetalbumsSearcher" bean="xmlFileSearcher"/>
 	<bean id="conversionSearcher" bean="xmlFileSearcher"/>
 	<bean id="publishSearcher" bean="xmlFileSearcher"/>
-	<bean id="productArchive" bean="assetXmlProductArchive" /> 
     <bean id="catalogImportConverter" bean="assetCompositeConverter" /> 
     <bean id="productThesaurusSearcher" bean="thesaurusSearcher" /> 
 
