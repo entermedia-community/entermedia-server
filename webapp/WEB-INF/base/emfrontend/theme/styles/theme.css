@@ -2212,7 +2212,7 @@ tr.odd {
 }
 /* ATTACHMENTS STYLES */
 
-#right-col.detail-editor > #eml-tab-subnav {
+#right-col.detail-editor > #eml-tab-subnav, #right-col.module-inner #resultsdiv {
 	margin: 0 -20px;
 }
 #category-tree {
