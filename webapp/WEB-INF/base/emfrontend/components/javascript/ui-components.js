@@ -5,6 +5,44 @@ formatHitCountResult = function(inRow)
 
 uiload = function() {
 	
+	$('#module-dropdown').click(function(e){
+		e.stopPropagation();
+		if ( $(this).hasClass('active') ) {
+			$(this).removeClass('active');
+			$('#module-list').hide();
+		} else {
+			$(this).addClass('active');
+			$('#module-list').show();
+		}
+	});
+	
+	$('#maximize').click( function(){
+		
+		html = $('#maximize').html()
+		if ( (html == ' Maximize ') || (html == 'Maximize') ) {
+			$('#embody').addClass('max');
+			$('#maximize').html('Minimize');
+			$('#maximize').attr('title', 'Minimize the application.');
+		var w = $('#data').width() - 35;
+		$('#asset-data').width(w);
+		var w = ( $('#main').width() - 261 );
+		$('#right-col .liquid-sizer').width(w)
+		
+		} else {
+			
+			$('#embody').removeClass('max');
+			$('#maximize').html('Maximize');
+			$('#maximize').attr('title', 'Maximize the application.')
+			var w = 594;
+			$('#asset-data').width('594');
+			var w = ( $('#main').width() - 261 );
+			$('#right-col .liquid-sizer').width(w)
+		}
+		
+		toggleUserProperty("maximize_screen");
+		
+	});		
+	
 	jQuery(".validate-inputs").livequery(
 			function() 
 			{
@@ -106,3 +144,19 @@ jQuery(document).ready(function()
 { 
 	uiload();
 }); 
+
+$(document).ready(function(){
+	var w = $('#data').width() - 35;
+	$('#asset-data').width(w);
+	var w = ( $('#main').width() - 261 );
+	$('#right-col .liquid-sizer').width(w)
+});
+
+$(window).resize(function(){
+	if ( $('#embody').hasClass('max') ) {
+		var w = $('#data').width() - 35;
+	$('#asset-data').width(w);
+	var w = ( $('#main').width() - 261 );
+	$('#right-col .liquid-sizer').width(w)
+	}
+});

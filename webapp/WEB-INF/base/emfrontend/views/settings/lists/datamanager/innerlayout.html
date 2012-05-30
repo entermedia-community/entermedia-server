@@ -1,7 +1,10 @@
 #set(  $currentsearch = $context.getRequestParameter("searchtype") ) 
 
 #set( $action = "$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid" )
-<form style="float: right; margin-top: 4px;" action="$action">
+
+
+
+<form style="float: right; margin-top: 4px; margin-right: 20px;" action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
 	[[Choose Table]]: <select name="searchtype" onchange="submit();">
 			<option value=""></option>
@@ -12,5 +15,6 @@
 		#end
 	</select>
 </form>
+
 
 $pages.includeContent()

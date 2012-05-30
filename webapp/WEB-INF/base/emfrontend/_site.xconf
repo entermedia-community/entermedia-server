@@ -9,6 +9,7 @@
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
     <property name="recentactivityid">${parentapplicationid}</property>
+    <property name="module">asset</property>
 
 	<property name="profilemanagerid">${catalogid}</property>
 

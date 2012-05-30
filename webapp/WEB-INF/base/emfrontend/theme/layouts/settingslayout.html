@@ -3,7 +3,7 @@
 
 <div class="subcolumns">
           <div class="c25l" id="left-col">
-			#set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
+			#set($module = $searcherManager.getData($catalogid, "module", $content.module ))
 			#if($module && $module.id != 'system')
 			<div class="ui-widget" >
 				<div  class="ui-widget-header">$module Settings</div>
@@ -47,9 +47,9 @@
 
          </div>
          <div id="right-col">	
-
-			$pages.includeContent()
-
+			<div class="liquid-sizer">
+				$pages.includeContent()
+			</div>
          </div>
 </div>
 
