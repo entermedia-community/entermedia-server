@@ -97,7 +97,7 @@ uiload = function() {
 	jQuery(".fader").livequery(
 			function()
 			{
-				jQuery(this).fadeOut(3000);
+				jQuery(this).fadeOut(1600, "linear");
 			}
 	);
 	
@@ -137,26 +137,22 @@ uiload = function() {
 			}
 		);
 
-	
+}
+
+resize = function() {
+	var w = $('#data').width() - 35;
+	$('#asset-data').width(w);
+	var w = ( $('#main').width() - 261 );
+	$('#right-col .liquid-sizer').width(w);
 }
 
 jQuery(document).ready(function() 
 { 
 	uiload();
+	resize();
+	
 }); 
 
-$(document).ready(function(){
-	var w = $('#data').width() - 35;
-	$('#asset-data').width(w);
-	var w = ( $('#main').width() - 261 );
-	$('#right-col .liquid-sizer').width(w)
-});
-
 $(window).resize(function(){
-	if ( $('#embody').hasClass('max') ) {
-		var w = $('#data').width() - 35;
-	$('#asset-data').width(w);
-	var w = ( $('#main').width() - 261 );
-	$('#right-col .liquid-sizer').width(w)
-	}
+	resize();
 });

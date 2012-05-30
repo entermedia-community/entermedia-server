@@ -1,12 +1,12 @@
 
 <div class="tab">
 	<div class="tab-actions">
-		<a class="btn" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">Delete</a>
+		<strong> Add New Record: </strong>
+		
 		#if( $savedok && $origURL )
 			<a class="btn" href="$origURL">[[Go Back]]</a>	
 		#end
 	</div>
-	<div id="datamanager-workarea">
 		<div id="editlayout">
 		#set( $origURL = $context.getRequestParameter("origURL" ) )
 		#set( $view = $context.findValue("editview") )
@@ -18,15 +18,13 @@
 			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 			<input name="searchtype" type="hidden" value="$searcher.searchType" />
 			<input name="origURL"  type="hidden" value="$!origURL" />
+		<div id="edit-data">	
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-		
-		<input type="submit" value="Save" />
+		</div>
+		<a class="btn red" style="margin-left: 20px;" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">Delete</a>
+		<input class="btn right" style="margin-right: 20px;" type="submit" value="Save" />
 		<div id="messagearea">$!message
 		</div>
 		</form>
-		
-		
-		
-		</div>
 	</div>
 </div>

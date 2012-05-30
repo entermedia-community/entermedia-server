@@ -4,6 +4,6 @@
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
 	<property name="tab">scheduler</property>
 	<property name="subtab">scheduler</property>
-	<property name="module">system</property>
+	
 	
 </page>

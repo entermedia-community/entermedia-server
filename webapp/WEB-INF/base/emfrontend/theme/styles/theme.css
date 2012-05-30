@@ -2106,12 +2106,6 @@ tr.odd {
 .right {
 	float: right;
 }
-.hints {
-	color: #595959;
-	line-height: 24px;
-	font-size: 18px;
-	text-align: center;
-}
 .hints h3 {
 	color: #84CA30;
 }
@@ -2212,6 +2206,9 @@ tr.odd {
 }
 /* ATTACHMENTS STYLES */
 
+.emdropshadow.attachments {
+	border-color: red;
+}
 #right-col.detail-editor > #eml-tab-subnav, #right-col.module-inner #resultsdiv {
 	margin: 0 -20px;
 }
@@ -3087,14 +3084,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 ); /* IE6-9 */
 }
 .btn.red:hover {
-	background: #cf0404; /* Old browsers */
-	background: -moz-linear-gradient(top, #cf0404 0%, #ff3019 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cf0404), color-stop(100%,#ff3019)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #cf0404 0%,#ff3019 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #cf0404 0%,#ff3019 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #cf0404 0%,#ff3019 100%); /* IE10+ */
-	background: linear-gradient(top, #cf0404 0%,#ff3019 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cf0404', endColorstr='#ff3019',GradientType=0 ); /* IE6-9 */
+	background: rgb(255,66,45);
+	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmNDIyZCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlOTA1MDUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+	background: -moz-linear-gradient(top, rgba(255,66,45,1) 0%, rgba(233,5,5,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,66,45,1)), color-stop(100%,rgba(233,5,5,1)));
+	background: -webkit-linear-gradient(top, rgba(255,66,45,1) 0%,rgba(233,5,5,1) 100%);
+	background: -o-linear-gradient(top, rgba(255,66,45,1) 0%,rgba(233,5,5,1) 100%);
+	background: -ms-linear-gradient(top, rgba(255,66,45,1) 0%,rgba(233,5,5,1) 100%);
+	background: linear-gradient(top, rgba(255,66,45,1) 0%,rgba(233,5,5,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff422d', endColorstr='#e90505',GradientType=0 );
 }
 .btn.red:active {
 	background: #c00404; /* Old browsers */
@@ -3897,16 +3895,22 @@ h2 {
 	border: 2px solid #ddd !important;
 	width: inherit;
 }
-#advanced-dm-search .settings-table tr {
+#advanced-dm-search .settings-table tr, #edit-data .settings-table tr {
 	padding: 2px 0;
 }
-#advanced-dm-search .settings-table tr td {
+#advanced-dm-search .settings-table tr:nth-child(even) {
+	background: #fff;
+}
+#advanced-dm-search .settings-table tr td, #edit-data .settings-table tr td {
 	padding: 6px 10px;
 }
-#advanced-dm-search .settings-table tr td:first-child {
+#advanced-dm-search .settings-table tr td:first-child, #edit-data .settings-table tr td:first-child {
 	border-right: 1px dashed #ddd;
 	width: 100px;
 	text-align: right;
+}
+#advanced-dm-search .settings-table select, #edit-data .settings-table select {
+	margin: 9px 0;
 }
 #dm-container {
 	overflow-x: scroll;
@@ -3922,6 +3926,9 @@ h2 {
 }
 #embody #emcontainer table tr.tableheader th:last-child {
 	padding-right: 20px;
+}
+.tab-actions strong {
+	line-height: 32px;
 }
 /* ADD USER FORM */
 
@@ -3958,7 +3965,14 @@ h2 {
 #adduser #listdetail_settingsgroup {
 	clear: both;
 }
-
+.fader.save {
+	font-size: 12px;
+	color: #268026;
+	background: #E4FFD7;
+	border: 1px solid #3AAF30;
+	padding: 10px; 
+	text-align: center;
+}
 
 
 /* ==|== non-semantic helper classes ======================================== */

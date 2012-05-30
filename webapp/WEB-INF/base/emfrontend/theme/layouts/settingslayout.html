@@ -3,8 +3,13 @@
 
 <div class="subcolumns">
           <div class="c25l" id="left-col">
-			#set($module = $searcherManager.getData($catalogid, "module", $content.module ))
-			#if($module && $module.id != 'system')
+          	
+     		#set ($lastselected = $content.module )
+ 			#if(!$lastselected)
+ 				#set($lastselected = $userprofile.last_selected_module )
+ 			#end
+			#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+			#if($module)
 			<div class="ui-widget" >
 				<div  class="ui-widget-header">$module Settings</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">

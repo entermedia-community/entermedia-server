@@ -4,7 +4,7 @@
 	<a folder="categorize"  id="editassetcategories" name="Categories / Tags" multiedit="true"/>		    	
 	<a folder="libraries" id="asseteditorlibraries"  multiedit="true" name="Libraries"/>
 	<a folder="map"  id="viewmap" multiedit="true" name="Geo Location Info" />		    	
-	<a folder="edit"  id="viewmediaedit" name="Media Editor" />
+	<!-- <a folder="edit"  id="viewmediaedit" name="Media Editor" /> -->
 	<a folder="attachments" id="viewattachments" name="Attachments" />
 	<a folder="permissions" id="assetpermissions" multiedit="true" name="Permissions" />
 
