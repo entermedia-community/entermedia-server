@@ -2,10 +2,10 @@
 
 <properties>
 
-  <property id="viewassetpreviewhistory" path="/views/detaileditor/historypreviews/index.html" >Views</property>
-  <!-- property id="viewassetpreviewhistory" path="/views/detaileditor/historypreviews/index.html" >Orders</property -->
-  <property id="converthistory" path="/views/detaileditor/converthistory/index.html" >Conversions</property>
-  <property id="exporthistory" path="/views/detaileditor/historyexports/index.html" >Transfers</property>
-  <property id="viewassetedithistory" path="/views/detaileditor/historyedits/index.html" >Edits</property>
+  <property id="viewassetpreviewhistory" path="/views/modules/assets/editor/historypreviews/index.html" >Views</property>
+  <!-- property id="viewassetpreviewhistory" path="/views/modules/assets/editor/historypreviews/index.html" >Orders</property -->
+  <property id="converthistory" path="/views/modules/assets/editor/converthistory/index.html" >Conversions</property>
+  <property id="exporthistory" path="/views/modules/assets/editor/historyexports/index.html" >Transfers</property>
+  <property id="viewassetedithistory" path="/views/modules/assets/editor/historyedits/index.html" >Edits</property>
 
 </properties>

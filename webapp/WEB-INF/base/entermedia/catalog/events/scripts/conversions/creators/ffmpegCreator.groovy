@@ -33,6 +33,14 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page converted, ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
+		
+		if(!inStructions.isForce() && converted.length() > 0 )
+		{
+			result.setOk(true);
+			result.setComplete(true);
+			return result;
+		}
+		
 		Page inputpage = inArchive.findOriginalMediaByType("video",inAsset);
 		
 		if( inputpage == null || !inputpage.exists())

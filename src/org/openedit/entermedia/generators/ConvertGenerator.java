@@ -49,6 +49,8 @@ public class ConvertGenerator extends FileGenerator
 		
 		String outputype = PathUtilities.extractPageType(inPage.getPath());
 		outputype = outputype.toLowerCase();
+		//TODO: Use hard coded path lookups for these based on media type?
+		
 		//We use the output extension so that we don't have look up the original input file to find the actual type
 		MediaCreator creator = archive.getCreatorManager().getMediaCreatorByOutputFormat(outputype);
 		if( creator == null )

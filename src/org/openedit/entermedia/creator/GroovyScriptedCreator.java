@@ -104,20 +104,27 @@ public class GroovyScriptedCreator implements MediaCreator
 		MediaCreator creator = (MediaCreator)ref.get(inCatalogId); 
 		if( creator == null)
 		{
-			if( getScriptManager() == null)
+			synchronized (this)
 			{
-				log.info("creater requires a script manager");
-				return null;
+				creator = (MediaCreator)ref.get(inCatalogId);
+				if( creator != null)
+				{
+					return creator;
+				}				
+				if( getScriptManager() == null)
+				{
+					log.info("creater requires a script manager");
+					return null;
+				}
+				Script script = getScriptManager().loadScript("/" + inCatalogId + "/events/scripts/conversions/creators/" + getScriptName() + "Creator.groovy");
+				GroovyScriptRunner runner = (GroovyScriptRunner)getModuleManager().getBean("groovyScriptRunner");
+				creator = (MediaCreator)runner.newInstance(script);
+				creator.setPageManager(getPageManager());
+				creator.setExec(getExec());
+				creator.setPreProcessors(getPreProcessors());
+			    ref.put(inCatalogId,creator);
 			}
-			Script script = getScriptManager().loadScript("/" + inCatalogId + "/events/scripts/conversions/creators/" + getScriptName() + "Creator.groovy");
-			GroovyScriptRunner runner = (GroovyScriptRunner)getModuleManager().getBean("groovyScriptRunner");
-			creator = (MediaCreator)runner.newInstance(script);
-			creator.setPageManager(getPageManager());
-			creator.setExec(getExec());
-			creator.setPreProcessors(getPreProcessors());
-		    ref.put(inCatalogId,creator);
 		}
-	     
 		return creator;
 	}
 

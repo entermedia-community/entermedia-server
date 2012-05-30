@@ -32,6 +32,14 @@ public class imagemagickCreator extends BaseImageCreator
 
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions) throws OpenEditException
 	{
+		if(!inStructions.isForce() && inOutFile.length() > 0 )
+		{
+			ConvertResult result = new ConvertResult();
+			result.setOk(true);
+			result.setComplete(true);
+			return result;
+		}
+		
 		if(inStructions.isWatermark())
 		{
 			inStructions.setWatermark(false);

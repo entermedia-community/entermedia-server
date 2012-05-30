@@ -59,7 +59,7 @@ public void createTasksForUpload()
 		hits.each
 		{
 			Data hit = it;
-			Data newconversion = tasksearcher.createNewData();
+		//	Data newconversion = tasksearcher.createNewData();
 
 			Data preset = (Data) presetsearcher.searchById(it.id);
 			

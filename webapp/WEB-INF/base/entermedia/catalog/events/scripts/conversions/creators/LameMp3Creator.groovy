@@ -97,6 +97,7 @@ public class LameMp3Creator extends BaseCreator
 				StringWriter out = new StringWriter();
 				ex.printStackTrace(new PrintWriter(out));
 				log.error(out.toString());
+				result.setError(out.toString());
 				result.setOk(false);
 				return result;
 			}
