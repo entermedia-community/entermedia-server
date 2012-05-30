@@ -256,6 +256,9 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 
 	public Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset)
 	{
+		if(inAsset == null){
+			return true;
+		}
 		Collection allowed = getAccessList(inArchive,inType, inAsset);
 		
 		if( allowed.size() == 0 )
