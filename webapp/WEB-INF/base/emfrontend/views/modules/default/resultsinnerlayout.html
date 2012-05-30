@@ -19,7 +19,7 @@ $context.putPageValue("hits", $hits)
 <div id="searchplugin">
 	<div class="subcolumns">
 		<div class="c25l" id="left-col">
-				$pages.include("/$applicationid/views/modules/$module/sidebar/standard.html")
+				$pages.include("/$applicationid/views/modules/${module.id}/sidebar/standard.html")
 		</div>
 		<div id="right-col">
 			<div class="ui-widget uipanel" id="view-picker">
@@ -28,7 +28,7 @@ $context.putPageValue("hits", $hits)
 					<div id="resultsdiv">
 						<div id="emresultscontent">
 							
-							$pages.include("/$applicationid/views/modules/$module/resultsactions.html")
+							$pages.include("/$applicationid/views/modules/${module.id}/resultsactions.html")
 							
 							<div id="resultsarea">
 								<div id="resultslist">
