@@ -15,7 +15,7 @@
 			$pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
 
          </div>
-         <div id="right-col">	
+         <div id="right-col" class="detail-editor">	
          	#set( $ismultifine = $asset.id.startsWith("multiedit:") )
 			#if($ismultifine )
 			
@@ -41,7 +41,6 @@
 					#end
 					$pages.includeContent()
 				#end
-
          </div>
 </div>
 

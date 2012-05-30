@@ -1,5 +1,7 @@
 #set( $view = $context.getRequestParameter("view") )
-
+#if( !$view )
+	#set( $view = "${searcher.searchType}/${searcher.searchType}search.xml")
+#end
 	$context.putPageValue("hits",$datalist)	
 	#if( $view )
 		#set( $details = $searcher.getDetailsForView($view, $userprofile) )	
@@ -12,62 +14,85 @@
 
 <div class="tab" id="data-tab">
 	
-<div class="tab-actions">
+<div class="tab-actions clearfix">
 	<a class="btn ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Add New Record]]</a>
 	<a class="btn" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
 	<a class="btn ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Import]]</a>
 	<a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export to CSV]]</a>
 	<a class="btn confirm red" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete All]]</a>
-	
-	<form style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
-
-	<select>
-		<option value="value1">Value 1</option>
-		<option value="value2">Value 2</option>
-		<option value="value3">Value 3</option>
-	</select>
+	<a class="btn right flat-left up" id="advanced-dm-search-btn">\/</a>
+	<form id="simple-dm-search" style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
 	
 	<input type="text" class="field" />
 	
-	<a class="btn">Search</a>
-
-	##<div class="oesearchformflat">
-	##	$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
-	##	<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
-	##	<input type="hidden" name="searchtype" value="$!searcher.searchType" />
-	##	<input type="hidden" name="view" value="$!view" />
-	##	<input class="btn" style="margin-left: 100px;" type="submit" value="Search" />
-	##</div>
+	<a class="btn flat-right">Search</a>
+	</form>
+	
+	
+	
+	<script>
+		$('#advanced-dm-search-btn').click(function(){
+			if ( $('#advanced-dm-search-btn').hasClass('flat-left') ) {
+				$('#simple-dm-search').hide();
+				$('#advanced-dm-search').show();
+				$('#advanced-dm-search-btn').removeClass('flat-left');
+				$('#advanced-dm-search-btn').html('/\\');
+			} else {
+				$('#simple-dm-search').show();
+				$('#advanced-dm-search').hide();
+				$('#advanced-dm-search-btn').addClass('flat-left');
+				$('#advanced-dm-search-btn').html('\\/');
+			}
+		})
+	</script>
+	#set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
+	#set( $details = $searcher.getDetailsForView($view, $userprofile) )	
+	#if(!$details)
+	#set( $details = $searcher.getStoredProperties() )
+	#end
+	$context.putPageValue("details",$details)	
+	<div id="advanced-dm-search" style="display: none;">
+			$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
+			<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
+			<input type="hidden" name="searchtype" value="$!searcher.searchType" />
+			<input type="hidden" name="view" value="$!view" />
+			<input class="btn right" type="submit" value="Search" />
+	</div>
 	
 	</form>
 </div>
 
-	<div id="emselectable">
-	<table class="striped emdata">
-	<tr class="tableheader">
-	#foreach( $detail in $details )
-	<th align="left" nowrap >$detail.getText($context)</th>
-	#end
-	</tr>	
-	#set( $origURL = $context.getRequestParameter("origURL" ) )				
-		
-	#foreach ( $hit in $datalist.getPageOfHits() )
-		<tr rowid="$hit.id">
+	
+
+	<div id="dm-container">
+		<div id="emselectable">
+		<table class="striped emdata">
+		<tr class="tableheader">
 		#foreach( $detail in $details )
-			#set( $newval = "$!hit.get($detail.getId())")
-			#if($newval && $newval != "" && $detail.isList())
-				#set( $newval = $searcherManager.getListData($detail,$newval) )
-			#end			
-			<td nowrap>$newval</td>
+		<th align="left" nowrap >$detail.getText($context)</th>
 		#end
-		</tr>
-	#end
-	</table>
-		<form name="editrow" action="$home$content.dataroot/edit/edit.html">
-			<input type="hidden" name="id" id="emselectedrow" />
-			<input type="hidden" name="origURL" id="$!origURL" />
-			<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
-		</form>
+		</tr>	
+		#set( $origURL = $context.getRequestParameter("origURL" ) )				
+			
+		#foreach ( $hit in $datalist.getPageOfHits() )
+			<tr rowid="$hit.id">
+			#foreach( $detail in $details )
+				#set( $newval = "$!hit.get($detail.getId())")
+				#if($newval && $newval != "" && $detail.isList())
+					#set( $newval = $searcherManager.getListData($detail,$newval) )
+				#end			
+				<td nowrap>$newval</td>
+			#end
+			</tr>
+		#end
+		</table>
+			<form name="editrow" action="$home$content.dataroot/edit/edit.html">
+				<input type="hidden" name="id" id="emselectedrow" />
+				<input type="hidden" name="origURL" id="$!origURL" />
+				<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
+			</form>
+		</div>
+	
 	</div>
 	
 	
