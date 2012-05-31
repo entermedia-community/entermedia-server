@@ -6,16 +6,15 @@
 
 #set( $selectlink = "$apphome/views/settings/modules/asset/production/$parent/edit/edit.html" )
 
-<h4>Libraries</h4>
+<h6>Libraries</h6>
 #set( $joinsearcher = $searcherManager.getSearcher($catalogid, $child))
 #set( $query = $joinsearcher.createSearchQuery() )
 #set( $null = $query.addExact($parent,$data.id))
 #set( $null = $query.addSortBy("name") )
 
-<div style="margin-top: 10px;">
 #set( $existingrecords = $joinsearcher.search($query)) 
 #if( $existingrecords.size() == 0)
-None found
+<p class="info">No Libraries Found.</p>
 #end
 	<div id="valuelist" class="emtable clearfix">
 	#foreach($library in $existingrecords)
@@ -27,11 +26,12 @@ None found
 		
 	#end
 
-</div>
 #end
 
-<div id="addnew">
-<a class="btn ajax" targetdivinner="addnew" href="$home$apphome/views/settings/modules/asset/$parent/child/edit/addnew.html?${parent}.value=$data.id&oemaxlevel=1"><span>Add New</span></a>
+<div id="addnew-library">
+	<div class="buttons">
+		<a class="btn ajax" targetdivinner="addnew-library" href="$home$apphome/views/settings/modules/asset/$parent/child/edit/addnew.html?${parent}.value=$data.id&oemaxlevel=1"><span>Add New</span></a>
+	</div>
 </div>
 
 </div>

@@ -2935,9 +2935,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', end
 #main-asset-table #tableheader th:first-child, #main-asset-table #tableheader th:last-child {
 	border: none;
 }
-#main-asset-table #tableheader th.sortable {
-	
-}
 #main-asset-table #tableheader th.sortable:hover {
 	background: rgba(0,0,0,0.05);
 	cursor: pointer;
@@ -3733,6 +3730,28 @@ h2 {
 #division.list-adder input[type="text"] {
 	width: 368px;
 	padding: 5px 10px;
+}
+#childrenlist #valuelist {
+	margin: -10px -20px 0 -20px;
+	width: 100%;
+}
+#childrenlist #valuelist a.row {
+	width: 100%;
+	padding-left: 45px;
+	background-position: 20px center;
+}
+#childrenlist #valuelist .delete-row {
+	margin-right: -20px;
+}
+#childrenlist h6 {
+	font-size: 14px;
+	background: #eee; 
+	border-bottom: 1px solid #ccc; 
+    margin: 0 -20px; 
+    padding: 8px 20px;
+}
+#childrenlist .buttons {
+	margin: 10px 20px -20px 25px;
 }
 
 /* ADD USER FORM */

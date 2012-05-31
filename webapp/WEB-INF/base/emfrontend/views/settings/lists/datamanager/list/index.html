@@ -44,7 +44,7 @@
 		<input type="hidden" name="operation" value="startswith" />
 		<input type="hidden" name="view" value="$!view" />
 		
-		<a class="btn flat-right">Search</a>
+		<input class="btn flat-right" type="submit" value="Search" />
 		</form>
 		
 		
@@ -56,7 +56,7 @@
 		#end
 		$context.putPageValue("details",$details)	
 		<div id="advanced-dm-search" style="display: none;">
-			<form id="simple-dm-search" style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
+			<form id="simple-dm-search" style="width: 100%" name="search" method="post" action="$home$content.dataroot/list/index.html">
 					$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
 					<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
 					<input type="hidden" name="searchtype" value="$!searcher.searchType" />
@@ -74,7 +74,7 @@
 		<table class="striped emdata">
 		<tr class="tableheader">
 		#foreach( $detail in $details )
-		<th align="left" nowrap >$detail.getText($context)</th>
+		<th align="left" nowrap class="sortable">$detail.getText($context)</th>
 		#end
 		</tr>	
 		#set( $origURL = $context.getRequestParameter("origURL" ) )				
