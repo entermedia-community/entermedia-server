@@ -894,14 +894,30 @@ jQuery(document).ready(function()
 				var errordiv = jQuery("#errordiv")
 				if( errordiv.length > 0)
 				{
-					$('#errordiv').html('<p class="error"><strong>Error: </strong>' + '<span class="url">' + settings.url + '</span>' + " returned " + '<span class="report">' + exception + '</span></p>');
-					$('#errordiv').addClass('fader').delay(1600).empty().removeClass('fader');
 					
-
+					function fade(elem){
+						$(elem).delay(300).fadeOut(3000, "linear");
+					}
+					
+					$('#errordiv').stop(true, true).show().css('opacity', 1);
+					
+					errors = '<p class="error"><strong>Error: </strong>' + settings.url  + '<br/><strong> Returned: </strong>' + '' + exception + '</p>'
+					
+					$('#errordiv').html(errors);
+					
+					fade($('#errordiv'));
+					
+					$('#errordiv').mouseover(function(){
+						$(this).stop(true, true).show().css('opacity', 1);
+					});
+					
+					$('#errordiv p').mouseout(function(){
+						fade($('#errordiv'));
+					});
 				}
 				else
 				{
-					  alert("Error \n" + settings.url + " \nreturned " + exception);
+					//  alert("Error \n" + settings.url + " \nreturned " + exception);
 
 				}
 			});

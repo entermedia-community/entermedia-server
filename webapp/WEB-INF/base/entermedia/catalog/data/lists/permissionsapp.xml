@@ -46,8 +46,8 @@
 	<permission id="viewrecentsearches" permissiontype="view" name="Previous Searches" description="Enables access to past searches."/>
 	<permission id="quicksearch" permissiontype="view" name="Quick Search" description="Enables a general search bar in the top navigation bar."/>
   	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />
-  	<permission id="viewcategorynav" permissiontype="view" name="View Category Navigation" description="Enables the Category Navigation in the sidebar" />
-	
+  	<permission id="viewcategorynav" permissiontype="view" name="View Category Navigation" description="Enables the Category Navigation in the sidebar." />
+	<permission id="viewerrors" permissiontype="view" name="View Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." />
 
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	

@@ -21,5 +21,6 @@
  
  	<property name="subtab">publishing</property>
  	<property name="tab">preferences</property>
+ 	<inner-layout>${themeprefix}/layouts/settingssubtablayoutnomargin.html</inner-layout>
 	
 </page>

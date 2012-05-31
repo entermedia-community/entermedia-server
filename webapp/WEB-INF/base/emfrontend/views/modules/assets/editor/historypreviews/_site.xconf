@@ -9,5 +9,5 @@
 	<property name="foldername">${catalogid}/assetpreviewLog</property>
 	<property name="sortby">dateDown</property>
 	<path-action name="LogSearchModule.loadPageOfSearch" />
-	<inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/detaileditorsubnomargin.html</inner-layout>
 </page>

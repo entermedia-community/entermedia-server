@@ -3,5 +3,5 @@
 	<property name="tab">asseteditorhistory</property>
 	<property name="subtab">exporthistory</property>
 	<property name="assettab">viewassetpreviewhistory</property>
-	<inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/detaileditorsubnomargin.html</inner-layout>
 </page>

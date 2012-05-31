@@ -3700,8 +3700,8 @@ h2 {
 .liquid-sizer h2 {
 	margin: 0 20px 20px 20px;
 }
-#embody #emcontainer .settings table tr td:first-child {
-	padding: 0 0 0 20px !important;
+#embody #emcontainer .settings table tr td:first-child, #meta-no-margin table tr td:first-child  {
+	padding: 4px 10px 4px 20px !important;
 }
 .tab-actions strong {
 	line-height: 32px;
@@ -3709,7 +3709,31 @@ h2 {
 #settings-no-margin .tab-actions {
 	margin-top: -20px;
 }
+#meta-no-margin {
+	margin: -20px;
+}
+#meta-no-margin .buttons {
+	margin: 0 20px;
+}
+#meta-no-margin .info {
+	margin: 20px;
+}
 
+/* DIVISIONS */
+
+#division.list-adder {
+	padding: 10px 20px;
+}
+#division.list-adder .emdatafield {
+	display: none;
+}
+#division.list-adder #detail_name {
+	float: left;
+}
+#division.list-adder input[type="text"] {
+	width: 368px;
+	padding: 5px 10px;
+}
 
 /* ADD USER FORM */
 
@@ -3754,16 +3778,29 @@ p.save {
 	padding: 10px; 
 	text-align: center;
 }
+#errordiv {
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	z-index: 999;
+}
 p.error {
 	font-size: 12px;
 	font-weight: normal;
-	color: #268026;
-	background: #E4FFD7;
-	border: 1px solid #3AAF30;
-	border-top: none;
+	color: #CA8C52;
+	background: #FFF2E5;
+	border-top: 1px solid #DFA45A;
 	padding: 10px; 
 	text-align: center;
 	margin: 0;
+}
+p.info {
+	font-size: 12px;
+	color: #666; 
+	background: #eee; 
+	border: 1px solid #ddd; 
+	padding: 10px; text-align: center;
 }
 #usersearchresultspanel .tab-actions {
 	height: 31px;

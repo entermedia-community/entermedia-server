@@ -20,16 +20,17 @@ $context.putPageValue("view", $view)
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
 	<input name="${parent}.value"  type="hidden" value="$data.id" />
-<table>
-<tr><td>
-$pages.include("/system/components/xml/detaileditor.html", $context)
-</td><td>
-<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
-##<a class="btn"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
-<a class="btn red right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>Delete</a>
-</td></tr></table>
+
+<div id="division" class="list-adder">
+	$pages.include("/system/components/xml/detaileditorcss.html", $context)
+	
+	<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
+	##<a class="btn"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
+	<a class="btn red" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>Delete</a>
+</div>
+
 #if( $savedok)
-<div class="common-success">Saved</div>
+<div class="fader save">Saved</div>
 #end
 
 </form>

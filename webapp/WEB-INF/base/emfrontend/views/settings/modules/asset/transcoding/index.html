@@ -7,6 +7,9 @@ $query.addSortBy("inputtype")
 $query.addSortBy("ordering")
 
 #set( $details = $searcher.getDetailsForView("convertpreset/results",$userprofile) )
+<div class="tab-actions">
+	<a class="btn" href="$home$content.searchhome/edit/addnew.html">Add New Conversion</a>
+</div>
 <div  id="emselectable">
 <table class="striped emdata">
 <thead><tr class="tableheader">
@@ -40,5 +43,4 @@ $query.addSortBy("ordering")
 </form>
 </div>
 
-<a class="btn" href="$home$content.searchhome/edit/addnew.html">Add New Conversion</a>
 
