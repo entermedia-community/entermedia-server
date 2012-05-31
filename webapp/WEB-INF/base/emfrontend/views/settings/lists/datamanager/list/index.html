@@ -37,7 +37,12 @@
 		</script>
 		<form id="simple-dm-search" style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
 		
-		<input type="text" class="field" />
+		<input type="text" class="field" name="description.value" value='$!datalist.getInput("description")'/>
+		<input type="hidden" name="field" value="description"/>
+		<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
+		<input type="hidden" name="searchtype" value="$!searcher.searchType" />
+		<input type="hidden" name="operation" value="startswith" />
+		<input type="hidden" name="view" value="$!view" />
 		
 		<a class="btn flat-right">Search</a>
 		</form>
@@ -51,14 +56,15 @@
 		#end
 		$context.putPageValue("details",$details)	
 		<div id="advanced-dm-search" style="display: none;">
-				$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
-				<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
-				<input type="hidden" name="searchtype" value="$!searcher.searchType" />
-				<input type="hidden" name="view" value="$!view" />
-				<input class="btn right" type="submit" value="Search" />
+			<form id="simple-dm-search" style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
+					$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
+					<input type="hidden" name="catalogid" value="$!searcher.catalogId" />
+					<input type="hidden" name="searchtype" value="$!searcher.searchType" />
+					<input type="hidden" name="view" value="$!view" />
+					<input class="btn right" type="submit" value="Search" />
+			</form>
 		</div>
 		
-		</form>
 	</div>
 
 	
