@@ -891,10 +891,12 @@ jQuery(document).ready(function()
 
 	$(document).ajaxError(function(e, jqxhr, settings, exception) 
 			{
-				var errordiv = jQuery("#errorinfoarea")
+				var errordiv = jQuery("#errordiv")
 				if( errordiv.length > 0)
 				{
-				    $(errordiv).html("Error " + settings.url + " returned " + exception);
+					$('#errordiv').html('<p class="error"><strong>Error: </strong>' + '<span class="url">' + settings.url + '</span>' + " returned " + '<span class="report">' + exception + '</span></p>');
+					$('#errordiv').addClass('fader').delay(1600).empty().removeClass('fader');
+					
 
 				}
 				else

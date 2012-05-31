@@ -4,7 +4,7 @@
 	<property name="sectiontitle">
     	<value>User Manager</value>
   	</property>
-  <inner-layout>${usermanagerhome}/users/innerlayout.html</inner-layout>
+  <inner-layout>${themeprefix}/layouts/settingssubtablayoutnomargin.html</inner-layout>
   <path-action name="DataEditModule.loadPageOfSearch" >
     <property name="searchtype">member</property>
   </path-action>

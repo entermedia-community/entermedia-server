@@ -10,22 +10,6 @@
 	#end
 	$context.putPageValue("details",$details)	
 
-<script>
-		$('#advanced-dm-search-btn').click(function(){
-		if ( $('#advanced-dm-search-btn').hasClass('flat-left') ) {
-			$('#simple-dm-search').hide();
-			$('#advanced-dm-search').show();
-			$('#advanced-dm-search-btn').removeClass('flat-left');
-			$('#advanced-dm-search-btn').html('/\\');
-		} else {
-			$('#simple-dm-search').show();
-			$('#advanced-dm-search').hide();
-			$('#advanced-dm-search-btn').addClass('flat-left');
-			$('#advanced-dm-search-btn').html('\\/');
-		}
-	});
-</script>
-
 
 <div class="tab" id="data-tab">
 	
@@ -36,6 +20,21 @@
 		<a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export to CSV]]</a>
 		<a class="btn confirm red" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete All]]</a>
 		<a class="btn right flat-left up" id="advanced-dm-search-btn">\/</a>
+		<script>
+			$('#advanced-dm-search-btn').click(function(){
+				if ( $('#advanced-dm-search-btn').hasClass('flat-left') ) {
+					$('#simple-dm-search').hide();
+					$('#advanced-dm-search').show();
+					$('#advanced-dm-search-btn').removeClass('flat-left');
+					$('#advanced-dm-search-btn').html('/\\');
+				} else {
+					$('#simple-dm-search').show();
+					$('#advanced-dm-search').hide();
+					$('#advanced-dm-search-btn').addClass('flat-left');
+					$('#advanced-dm-search-btn').html('\\/');
+				}
+			});
+		</script>
 		<form id="simple-dm-search" style="float: right;" name="search" method="post" action="$home$content.dataroot/list/index.html">
 		
 		<input type="text" class="field" />
