@@ -288,6 +288,16 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		// Remove from Index
 		deleteRecord(inData);
 	}
+	public void deleteAll(User inUser)
+	{
+		HitTracker all = getAllHits();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data object = (Data)iterator.next();
+			getXmlDataArchive().delete(object,inUser);
+		}
+		reIndexAll();
+	}
 	
 	public String getPrefix()
 	{
