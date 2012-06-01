@@ -5,6 +5,7 @@ formatHitCountResult = function(inRow)
 
 uiload = function() {
 
+	
 	$('#module-dropdown').click(function(e){
 		e.stopPropagation();
 		if ( $(this).hasClass('active') ) {
