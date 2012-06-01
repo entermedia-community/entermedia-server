@@ -48,9 +48,11 @@
 					</p>
 				#end	
 				<h3>Categories</h3>
-					#foreach ($category in $asset.categories) 
+					<p style="line-height: 25px;">
+					#foreach ($category in $asset.categories)
 						<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
 					#end
+					</p>
 					
 				#end
 				
