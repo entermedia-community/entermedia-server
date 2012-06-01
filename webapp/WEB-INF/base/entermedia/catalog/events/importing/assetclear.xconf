@@ -1,6 +1,6 @@
 <page>
 	<property name="eventname">Clear Missing Originals</property>	
-	<path-action name="Script.run">
+	<path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/importing/assetsclear.groovy</script>
 	</path-action>
 </page>

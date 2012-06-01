@@ -36,6 +36,7 @@ class ConvertRunner implements Runnable
 	ScriptLogger log;
 	User user;
 	ModuleManager moduleManager;
+	ConvertResult result = null;
 	
 	public void run()
 	{
@@ -56,18 +57,17 @@ class ConvertRunner implements Runnable
 		if (realtask != null)
 		{
 			String presetid = hit.get("presetid");
-			log.info("starting preset ${presetid} on ${hit}");
+			//log.debug("starting preset ${presetid}");
 			Data preset = presetsearcher.searchById(presetid);
 			if(preset != null)
 			{
-				ConvertResult result = null;
 				try
 				{
 					String sourcepath = hit.get("sourcepath");
 					Lock lock = mediaarchive.lockAssetIfPossible(sourcepath, user);
 					if( lock == null)
 					{
-						log.info("asset already being processed ");
+						log.info("asset already being processed ${sourcepath}");
 						return;
 					}
 					
@@ -137,7 +137,8 @@ class ConvertRunner implements Runnable
 					}
 					else
 					{
-						log.info("conversion had no error and will try again");
+						String sourcepath = hit.get("sourcepath");
+						log.info("conversion had no error and will try again later for ${sourcepath}");
 						return;
 					}
 					tasksearcher.saveData(realtask, user);
@@ -156,13 +157,11 @@ class ConvertRunner implements Runnable
 	
 	protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, String inSourcepath)
 	{
-	ConvertResult result = null;
-	
 	String status = inTask.get("status");
 	
 	String type = inPreset.get("type"); //rhozet, ffmpeg, etc
 	MediaCreator creator = getMediaCreator(inArchive, type);
-	log.info("Converting with type: ${type} using ${creator.class} with status: ${status}");
+	log.debug("Converting with type: ${type} using ${creator.class} with status: ${status}");
 	
 	if (creator != null)
 	{
@@ -196,7 +195,7 @@ class ConvertRunner implements Runnable
 		{
 			String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
 			Page output = inArchive.getPageManager().getPage(outputpage);
-			log.info("Running Media type: ${type} on asset ${asset.getSourcePath()}" );
+			log.debug("Running Media type: ${type} on asset ${asset.getSourcePath()}" );
 			result = creator.convert(inArchive, asset, output, inStructions);
 		}
 		else if("submitted".equals(status))
@@ -279,10 +278,15 @@ public void checkforTasks()
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
 	HitTracker newtasks = tasksearcher.search(query);
 	
+	boolean foundone = false;
 	if( newtasks.size() == 1 )
 	{
-		Runnable runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, newtasks.first() );
+		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, newtasks.first() );
 		runner.run();
+		if( !foundone && runner.result != null)
+		{
+			foundone = runner.result.isComplete();
+		}
 	}
 	else
 	{
@@ -290,14 +294,32 @@ public void checkforTasks()
 		
 		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
 		ExecutorService  executor = executorManager.createExecutor();
+		List completed = new ArrayList();
 		for (Data hit in all)
 		{	
-			Runnable runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
+			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
+			completed.add(runner);
 			executor.execute(runner);
 		}
 		executorManager.waitForIt(executor);
-		
+		for( ConvertRunner runner in completed )
+		{
+			if( !foundone && runner.result != null)
+			{
+				foundone = runner.result.isComplete();
+			}
+			else
+			{
+				break;
+			}
+		}
 	}
+	
+	if( newtasks.size() > 0 )
+	{
+		mediaarchive.fireMediaEvent("conversions/conversionscomplete",user);
+	}
+	
 }
 
 

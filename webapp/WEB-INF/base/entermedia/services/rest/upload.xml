@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-#if( $assets.size() > 0 )
+#if( $uploadedassets.size() > 0 )
 <rsp stat="ok">
-#foreach( $asset in $assets )
+#foreach( $asset in $uploadedassets )
 	<asset id="$asset.id" sourcepath="$!asset.sourcePath"/>
 #end
 #else
 <rsp stat="fail">
-Login failed
+No assets found
 #end
 </rsp>

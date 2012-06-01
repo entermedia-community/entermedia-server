@@ -21,16 +21,27 @@ public class TaskRunner extends java.util.TimerTask
 	protected PathEventManager fieldEventManager;
 	protected WebPageRequest fieldWebPageRequest;
 	protected Date fieldTimeToStart;
-	protected boolean fieldRepeating;
+	//protected boolean fieldRepeating;
+	protected boolean fieldWithParameters;
 	
+	public boolean isWithParameters()
+	{
+		return fieldWithParameters;
+	}
+	public void setWithParameters(boolean inWithParameters)
+	{
+		fieldWithParameters = inWithParameters;
+	}
 	public TaskRunner(PathEvent inTask,long inDelay, PathEventManager inManager)
 	{
 		this( inTask, inDelay, null,null,inManager);
+		setWithParameters(false);
 	}
 	public TaskRunner(PathEvent inTask,long inDelay, Map inParams, Map inPageValues, PathEventManager inManager)
 	{
 		fieldTask = inTask;
 		fieldEventManager = inManager;
+		setWithParameters(true);
 		
 		WebPageRequest request =  inManager.getRequestUtils().createPageRequest(inTask.getPage().getPath(), inTask.getUser());
 		if( inParams != null)
@@ -126,8 +137,7 @@ public class TaskRunner extends java.util.TimerTask
 			if( isRepeating() )
 			{
 				//make sure we just have one in the queue
-				TaskRunner runner = new TaskRunner(getTask(), getTask().getPeriod(),new HashMap() ,new HashMap(), getEventManager());
-				runner.setRepeating(true);
+				TaskRunner runner = new TaskRunner(getTask(), getTask().getPeriod(),getEventManager());
 				getEventManager().getRunningTasks().push(runner);
 				getEventManager().getTimer().schedule(runner, getTask().getPeriod());
 			}
@@ -139,11 +149,7 @@ public class TaskRunner extends java.util.TimerTask
 	}
 	public boolean isRepeating()
 	{
-		return fieldRepeating;
-	}
-	public void setRepeating(boolean inVal)
-	{
-		fieldRepeating = inVal;
+		return !isWithParameters() && getTask().getPeriod() > 0 && getTask().isEnabled();
 	}
 	protected void executeNow(WebPageRequest inReq, PathEvent event) 
 	{

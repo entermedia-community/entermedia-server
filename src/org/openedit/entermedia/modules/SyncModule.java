@@ -187,7 +187,7 @@ public class SyncModule extends BaseMediaModule
 					}
 				}
 						
-				Page tosend = findInputPage(archive, target, presetid);
+				Page tosend = findInputPage(archive, target, preset);
 				if (tosend.exists())
 				{
 					File file = new File(tosend.getContentItem().getAbsolutePath());
@@ -312,16 +312,6 @@ public class SyncModule extends BaseMediaModule
 
 	}
 
-	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
-	{
-		if (presetid == null || presetid.equals("original") ||  presetid.equals("0"))
-		{
-			return mediaArchive.getOriginalDocument(asset);
-		}
-		Data preset = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "convertpreset", presetid);
-		return findInputPage(mediaArchive, asset, (Data) preset);
-	}
-
 	protected Element execute(String inCatalogId, HttpMethod inMethod)
 	{
 		try
@@ -361,7 +351,7 @@ public class SyncModule extends BaseMediaModule
 		searcher.saveData(setting, inReq.getUser());
 		if( "true".equals(switchvalue)) 
 		{
-			archive.fireMediaEvent("push/pushassets", inReq.getUser() );
+			archive.fireSharedMediaEvent("push/pushassets");
 		}
 		
 	}
@@ -375,14 +365,14 @@ public class SyncModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
-	//	String enabled = archive.getCatalogSettingValue("push_convertpresets");
-
+		//String enabled = archive.getCatalogSettingValue("push_convertpresets");
 		
 		Searcher pushsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "pushrequest");
 		//Searcher hot = archive.getSearcherManager().getSearcher( archive.getCatalogId(), "hotfolder");
 
-		SearchQuery query = pushsearcher.createSearchQuery();
+		//SearchQuery query = pushsearcher.createSearchQuery();
 
+		boolean foundone = false;
 		String assetid = inReq.getRequestParameter("assetid");
 		if( assetid == null)
 		{
@@ -392,18 +382,25 @@ public class SyncModule extends BaseMediaModule
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
 				Data row = (Data)iterator.next();
-				checkPublish(archive, pushsearcher, row.getId(), inReq.getUser());
+				boolean found = checkPublish(archive, pushsearcher, row.getId(), inReq.getUser());
+				if( found )
+				{
+					foundone = true;
+				}
 			}
 		}
 		else
 		{
-			
-			checkPublish(archive, pushsearcher, assetid, inReq.getUser());
+			foundone = checkPublish(archive, pushsearcher, assetid, inReq.getUser());
+		}
+		if( foundone )
+		{
+			archive.fireSharedMediaEvent("push/pushassets");
 		}
 		
 	}
 
-	protected void checkPublish(MediaArchive archive, Searcher pushsearcher, String assetid, User inUser)
+	protected boolean checkPublish(MediaArchive archive, Searcher pushsearcher, String assetid, User inUser)
 	{
 		Data hit = (Data) pushsearcher.searchByField("assetid", assetid);
 		String oldstatus = null;
@@ -414,13 +411,16 @@ public class SyncModule extends BaseMediaModule
 			hit.setProperty("assetid", assetid);
 			oldstatus = "none";
 			asset = archive.getAsset(assetid);
+			hit.setSourcePath(asset.getSourcePath());
+			hit.setProperty("assetname", asset.getName());
+			hit.setProperty("assetfilesize", asset.get("filesize"));
 		}
 		else
 		{
 			oldstatus = hit.get("status");
 			if( "1pushcomplete".equals( oldstatus ) )
 			{
-				return;
+				return false;
 			}
 			asset = archive.getAssetBySourcePath(hit.getSourcePath());
 		}
@@ -431,25 +431,31 @@ public class SyncModule extends BaseMediaModule
 		
 		if(asset == null)
 		{
-			return;
+			return false;
 		}
-		hit.setSourcePath(asset.getSourcePath());
-		hit.setProperty("assetname", asset.getName());
-		hit.setProperty("assetfilesize", asset.get("filesize"));
+		String rendertype = archive.getMediaRenderType(asset.getFileFormat());
+		if( rendertype == null )
+		{
+			rendertype = "document";
+		}
 		boolean readyforpush = true;
 		Collection presets = archive.getCatalogSettingValues("push_convertpresets");
 		for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
 		{
 			String presetid = (String) iterator2.next();
-			Page tosend = findInputPage(archive, asset, presetid);
-			if (!tosend.exists())
+			Data preset = archive.getSearcherManager().getData(archive.getCatalogId(), "convertpreset", presetid);
+			if( rendertype.equals(preset.get("inputtype") ) )
 			{
-				if( log.isDebugEnabled() )
+				Page tosend = findInputPage(archive, asset, preset);
+				if (!tosend.exists())
 				{
-					log.debug("Convert not ready for push " + tosend.getPath());
+					if( log.isDebugEnabled() )
+					{
+						log.debug("Convert not ready for push " + tosend.getPath());
+					}
+					readyforpush = false;
+					break;
 				}
-				readyforpush = false;
-				break;
 			}
 		}
 		String newstatus = null;
@@ -467,5 +473,6 @@ public class SyncModule extends BaseMediaModule
 			hit.setProperty("status", newstatus);
 			pushsearcher.saveData(hit, inUser);
 		}
+		return readyforpush;
 	}
 }

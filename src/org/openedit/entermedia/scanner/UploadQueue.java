@@ -202,8 +202,8 @@ public class UploadQueue
 				asset = getAssetImporter().getAssetUtilities().populateAsset(asset, destination.getContentItem(), archive, sourcepath, inReq.getUser());
 				asset.setProperty("importstatus", "imported");
 				archive.saveAsset(asset, inReq.getUser());
-				archive.fireMediaEvent("assetuploaded", inReq.getUser(), asset);
-				archive.fireMediaEvent("assetsuploaded", inReq.getUser(), asset);
+				//archive.fireMediaEvent("importing/assetuploaded", inReq.getUser(), asset);
+				archive.fireMediaEvent("importing/assetsuploaded", inReq.getUser(), asset);
 			}
 			else
 			{

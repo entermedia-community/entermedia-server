@@ -264,7 +264,7 @@ public class AssetImporter
 		saveAssets(assets, inArchive,  inUser);
 		if( eventasset != null)
 		{
-			inArchive.fireMediaEvent("assetsimported", inUser, eventasset, allAssets);
+			inArchive.fireMediaEvent("importing/assetsimported", inUser, eventasset, allAssets);
 		}
 		return allAssets;
 	}

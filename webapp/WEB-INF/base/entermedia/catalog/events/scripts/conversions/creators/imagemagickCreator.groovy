@@ -18,6 +18,7 @@ import org.openedit.entermedia.creator.MediaCreator
 
 import com.openedit.OpenEditException
 import com.openedit.page.Page
+import com.openedit.util.ExecResult;
 import com.openedit.util.PathUtilities
 import java.awt.Dimension;
 
@@ -346,8 +347,9 @@ public class imagemagickCreator extends BaseImageCreator
 
 		if( !autocreated )
 		{
-			com.add("-colorspace");
-			com.add("sRGB");
+//			TODO: use parameters to specify the color space			
+//			com.add("-colorspace");
+//			com.add("sRGB");
 		
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
@@ -365,8 +367,9 @@ public class imagemagickCreator extends BaseImageCreator
 		
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
-		boolean ok =  runExec("convert", com);
+		ExecResult execresult = getExec().runExec("convert", com, true);
 		
+		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
 		
 		if (ok)
@@ -384,15 +387,8 @@ public class imagemagickCreator extends BaseImageCreator
 			return result;
 		}
 		//problems
-		StringBuffer out = new StringBuffer();
-		for (Iterator iterator = com.iterator(); iterator.hasNext();)
-		{
-			String chunk = (String) iterator.next();
-			out.append(chunk);
-			out.append(" ");
-		}
-
-		log.info("Could not exec: " + out);
+		log.info("Could not exec: " + execresult.getStandardError() );
+		result.setError(execresult.getStandardError());
 		return result;
 	}
 

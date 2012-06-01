@@ -1,4 +1,4 @@
-package conversions;
+package importing;
 
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -125,10 +125,9 @@ public void createTasksForUpload()
 	}
 	if( foundsome )
 	{
-		log.info("Running runconversions");
-		PathEventManager pemanager = (PathEventManager)moduleManager.getBean(mediaarchive.getCatalogId(), "pathEventManager");
-		pemanager.runPathEvent("/${mediaarchive.getCatalogId()}/events/conversions/runconversions.html",context);
-	
+		//PathEventManager pemanager = (PathEventManager)moduleManager.getBean(mediaarchive.getCatalogId(), "pathEventManager");
+		//pemanager.runPathEvent("/${mediaarchive.getCatalogId()}/events/conversions/runconversions.html",context);
+		mediaarchive.fireSharedMediaEvent("importing/importcomplete");
 	}
 	else
 	{
