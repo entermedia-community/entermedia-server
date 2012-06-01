@@ -119,7 +119,63 @@ public class PathEventManager
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
+	/**
+	 * This will only add the event if it is not already queued up. There is no reason to queue up multiple copies. Kind of like mouse events. 
+	 * @param runpath
+	 * @return
+	 */
+	public boolean runSharedPathEvent(String runpath )
+	{
+		if (runpath == null)
+		{
+			return false;
+		}
+		PathEvent event = getPathEvent(runpath);
+		if (event != null)
+		{ 
+			String name = event.getName();
+			List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
+			for (Iterator iterator = copy.iterator(); iterator.hasNext();)
+			{
+				TaskRunner task = (TaskRunner) iterator.next();
+				if( name.equals( task.getTask().getName() ) && !task.isWithParameters() )
+				{
+					//We already have one in the timmer without parameters. Just return
+					//TODO: If it is far in the future then add it back into the scheduler for now
+					return false;
+				}
+			}
+			TaskRunner runner = new TaskRunner(event, event.getDelay(), this);
+			if( event.getDelay() == 0 )
+			{
+				getRunningTasks().push(runner);
+				runner.run(); //this will remove it again
+			}
+			else
+			{
+				schedule(event, runner);
+			}
+			return true;
+		}
+		else
+		{
+			//I guess sometimes events fire that are not actually configured
+			if( !runpath.endsWith(".html"))
+			{
+				throw new OpenEditException("Event path must end with .html " + runpath);
+				
+			}
+			
+			if( log.isDebugEnabled() )
+			{
+				log.debug("No actions enabled for this event: " + runpath);
+			}
+			return false;
+		}
 
+		
+	}
+	
 	/**
 	 * This is the public API that event listeners need to run to exec
 	 * /catalogid/events/* actions
@@ -137,29 +193,18 @@ public class PathEventManager
 		PathEvent event = getPathEvent(runpath);
 		inReq.putPageValue("ranevent", event);
 		String force = inReq.getRequestParameter("forcerun");
+				
 		if (event != null)
 		{ 
-			//check for delay
+			TaskRunner runner = new TaskRunner(event, event.getDelay(), inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
 			if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
 			{
-				TaskRunner runner = new TaskRunner(event, 0, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
 				getRunningTasks().push(runner);
 				runner.run(); //this will remove it again
 			}
 			else
 			{
-				TaskRunner runner = new TaskRunner(event,event.getDelay(), inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
-				getRunningTasks().push(runner);
-				try
-				{
-					getTimer().schedule(runner,event.getDelay()); 
-				} 
-				catch (Exception e)
-				{
-					fieldTimer = null;
-					getTimer().schedule(runner,event.getDelay());
-					//to fix  java.lang.IllegalStateException: Timer already cancelled.
-				}
+				schedule(event, runner);
 			}
 			return true;
 		}
@@ -178,6 +223,23 @@ public class PathEventManager
 				log.debug("No actions enabled for this event: " + runpath);
 			}
 			return false;
+		}
+	}
+
+	protected void schedule(PathEvent event, TaskRunner runner)
+	{
+		getRunningTasks().push(runner);
+		try
+		{
+			getTimer().schedule(runner,event.getDelay()); 
+		} 
+		catch (Exception e)
+		{
+			fieldTimer = null;
+			getRunningTasks().clear();
+			getRunningTasks().push(runner);
+			getTimer().schedule(runner,event.getDelay());
+			//to fix  java.lang.IllegalStateException: Timer already cancelled.
 		}
 	}
 
@@ -290,7 +352,7 @@ public class PathEventManager
 			if (inTask.getPeriod() > 0)
 			{
 				TaskRunner runner = new TaskRunner(inTask, inTask.getDelay(), this);
-				runner.setRepeating(true);
+				//runner.setRepeating(true);
 				getRunningTasks().push(runner);
 				getTimer().schedule(runner, inTask.getDelay());
 			}

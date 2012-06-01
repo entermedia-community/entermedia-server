@@ -662,6 +662,10 @@ public class AdminModule extends BaseModule
 		{
 			return;
 		}
+		if (inRequest.getUser() != null)
+		{
+			return;
+		}
 		User user = getUserSearcher().getUser(username);
 
 		if (user == null)

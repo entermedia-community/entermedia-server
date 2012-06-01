@@ -50,6 +50,13 @@ public class ffmpegimageCreator extends BaseImageCreator
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
+		
+		if(!inStructions.isForce() && inOutFile.length() > 0 )
+		{
+			result.setOk(true);
+			result.setComplete(true);
+			return result;
+		}
 		result.setOk(true);
 
 		// We are going to take frames from the converted flv video

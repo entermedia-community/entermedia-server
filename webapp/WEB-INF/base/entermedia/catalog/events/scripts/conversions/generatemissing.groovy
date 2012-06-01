@@ -15,36 +15,51 @@ public void init()
 		Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 		
-		Collection assets = assetsearcher.getAllHits();
+		HitTracker assets = assetsearcher.getAllHits();
+		context.putSessionValue(assets.getSessionId(),assets);
+		context.setRequestParameter("hitssessionid",assets.getSessionId() );
 		List assetsToSave = new ArrayList();
 		long added = 0;
-		for (Data hit in assets)
+		long checked  = 0;
+		
+		int numPages = assets.getTotalPages();
+		log.info("Pages: " + numPages);
+		for(int i = 0; i < numPages; i++)
 		{
-			Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
-			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
-			SearchQuery query = presetsearcher.createSearchQuery();
-			query.addMatches("onimport", "true");
-			query.addMatches("inputtype", rendertype);
-
-			HitTracker hits = presetsearcher.search(query);
-			hits.each
+			context.setRequestParameter("page", String.valueOf(i + 1));
+			HitTracker assetpage = assetsearcher.loadPageOfSearch(context);
+			log.info("checked thumbs for ${checked} assets. ${added} tasks queued" );
+			for (Data hit in assetpage)
 			{
-				Data preset = (Data) presetsearcher.searchById(it.id);
-				String outputfile = preset.get("outputfile");
-
-				if (!mediaarchive.doesAttachmentExist(outputfile, asset))
+				checked++;
+				Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
+				
+				//TODO: use a hash map for this?
+				String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
+				SearchQuery query = presetsearcher.createSearchQuery();
+				query.addMatches("onimport", "true");
+				query.addMatches("inputtype", rendertype);
+	
+				HitTracker hits = presetsearcher.search(context,query);
+				hits.each
 				{
-					added++;
-					Data newTask = tasksearcher.createNewData();
-					newTask.setSourcePath(asset.getSourcePath());
-					newTask.setProperty("status", "new");
-					newTask.setProperty("assetid", asset.id);
-					newTask.setProperty("presetid", it.id);
-					newTask.setProperty("ordering", it.get("ordering") );
-					
-					String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-					newTask.setProperty("submitted", nowdate);
-					tasksearcher.saveData(newTask, context.getUser());
+					Data preset = (Data) presetsearcher.searchById(it.id);
+					String outputfile = preset.get("outputfile");
+	
+					if (!mediaarchive.doesAttachmentExist(outputfile, asset))
+					{
+						added++;
+						Data newTask = tasksearcher.createNewData();
+						newTask.setSourcePath(asset.getSourcePath());
+						newTask.setProperty("status", "new");
+						newTask.setProperty("assetid", asset.id);
+						newTask.setProperty("presetid", it.id);
+						newTask.setProperty("ordering", it.get("ordering") );
+						
+						String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+						newTask.setProperty("submitted", nowdate);
+						tasksearcher.saveData(newTask, context.getUser());
+					}
 				}
 			}
 		}
