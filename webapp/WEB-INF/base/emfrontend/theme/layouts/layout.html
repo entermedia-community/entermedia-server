@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
 #if( $asset )
 	<title>$asset - $content.title</title>
 #elseif( $category.name )
@@ -13,7 +14,7 @@
 #end
 
 #if( $asset.caption )
-<meta name=”description” content=”$asset.caption” />
+<meta name=‚Äùdescription‚Äù content=‚Äù$asset.caption‚Äù />
 #end
 
 $pages.include("${themeprefix}/layout/includes.html")

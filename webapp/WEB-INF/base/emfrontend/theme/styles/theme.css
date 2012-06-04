@@ -2848,6 +2848,7 @@ body #emcontainer .emasseteditorarea {
 
 .table {
 	display: table;
+	width: 100%;
 }
 .cell {
 	display: table-cell;
