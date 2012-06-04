@@ -30,10 +30,12 @@ uiload = function() {
 			$('#embody').removeClass('max');
 			$('#maximize').html('Maximize');
 			$('#maximize').attr('title', 'Maximize the application.')
-			var w = 594;
-			$('#asset-data').width('574');
-			var w = ( $('#main').width() - 261 );
-			$('#right-col .liquid-sizer').width(w)
+			var w1 = 574;
+			$('#asset-data').width(w1);
+			var w2 = ( $('#main').width() - 261 );
+			$('#right-col .liquid-sizer').width(w2);
+			var w3 = ( 551 );
+			$('#commenttext').width(w3);
 		}
 		
 		toggleUserProperty("maximize_screen");
@@ -136,12 +138,15 @@ uiload = function() {
 
 }
 
-resize = function() {
-	var w = $('#data').width() - 40;
-	$('#asset-data').width(w);
-	var w = ( $('#main').width() - 261 );
-	$('#right-col .liquid-sizer').width(w);
-}
+function resize() {
+		w1 = ( $('#main').width() - 261 );
+		$('#right-col .liquid-sizer').width(w1);
+		w2 = ( $('#data').width() - 40 );
+		$('#asset-data').width(w2);
+		w3 = ( w2 - 23);
+		$('#commenttext').width(w3);
+	}
+
 
 jQuery(document).ready(function() 
 { 

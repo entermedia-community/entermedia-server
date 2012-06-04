@@ -431,6 +431,7 @@ input[type=submit], button, a.btn {
 	padding: 5px 10px;
 	text-align: center;
 	text-decoration: none;
+	line-height: 12px;
 }
 
 
@@ -771,6 +772,9 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	margin: 20px;
 	padding: 0;
 }
+#emslidesheet .emdropshadow {
+    height: 100px;
+}
 .emthumbbox {
 	margin-bottom: 4px;
 	float: none;
@@ -780,7 +784,7 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 .emboxthumb
 {
 	width: 200px;
-	height: 260px;
+	height: 175px;
 	text-align: center;
 	border-bottom: none;
 	padding-bottom: 0;
@@ -1817,7 +1821,6 @@ width: inherit;
 	margin-top: 0;  
 }
 #addcomment textarea {
-	width: 96%;
 	height: 80px;
 	font-size: 14px;
 	color: #444;
@@ -2222,7 +2225,7 @@ tr.odd {
 	margin: 0 20px;
 }
 .user-input-area {
-    padding: 0px 20px 8px 20px;
+    padding: 20px 20px 8px 20px;
     margin-top: -10px;
     background: #f7f7f7;
     border-bottom: 1px solid #ccc;
@@ -2257,6 +2260,7 @@ body .user-input-area input[type="text"], body .user-input-area textarea, #tree 
 	border-radius: 5px;
 	box-shadow: 0 1px 0 0 #fff;
 	color: #999;
+	line-height: 18px;
 }
 body .user-input-area input[type="text"]:focus, body .user-input-area textarea:focus, #tree input[type="text"]:focus {
 	color: #444;
@@ -4076,6 +4080,33 @@ td[title]:hover:before {
 .ui-widget-header span a {
     color: #fff;
 }
+
+/* GALLERY STYLES */
+
+.emboxthumb {
+    position: relative;
+}
+.gallery-hover {
+    display: none;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 4px 2px rgba(0,0,0,0.1);
+    position: absolute;
+    z-index: 999999;
+    top: -40px;
+    left: 0;
+    width: 220px;
+}
+.hover + .gallery-hover {
+    display: block;
+}
+#emslidesheet .gallery-hover .emdropshadow {
+    border: none;
+    box-shadow: none;
+    height: inherit;
+    max-width: 200px;
+}
+
 
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
