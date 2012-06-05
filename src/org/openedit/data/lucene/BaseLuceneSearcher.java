@@ -834,7 +834,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public void shutdown()
 	{
-		flush();
+		
 		//setIndexWriter(null);
 		if (fieldIndexWriter != null)
 		{
