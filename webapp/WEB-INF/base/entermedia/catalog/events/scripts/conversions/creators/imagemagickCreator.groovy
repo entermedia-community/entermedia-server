@@ -78,7 +78,7 @@ public class imagemagickCreator extends BaseImageCreator
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 
-		if( inStructions.getMaxScaledSize() != null && offset == null)
+		if( inStructions.getMaxScaledSize() != null && offset == null && inStructions.getPageNumber() == 0)
 		{
 			Dimension box = inStructions.getMaxScaledSize();
 			if( input == null &&  box.getWidth() < 300 )
