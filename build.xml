@@ -17,6 +17,7 @@
 	<property name="catalogid" value="imagesdb"/>
 	
 	<property environment="env" />
+	<property name="majorversion" value="7" />
 
 	<!-- Properties for local projects -->
 	<property name="corehome" location="../entermedia"/>
@@ -32,7 +33,7 @@
 			- "deployDir" is set by anthill.publish.dir
 		========================================================================
 	--> 
-	<property name="version"  value="7.${env.BUILD_NUMBER}"/>
+	<property name="version"  value="${majorversion}.${env.BUILD_NUMBER}"/>
 	<property name="deployDir" value="deploy"/>
   	<property name="report" value="${deployDir}"/>
 	<property name="branch" value="" />
