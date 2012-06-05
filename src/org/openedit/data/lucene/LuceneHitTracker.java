@@ -88,7 +88,6 @@ public class LuceneHitTracker extends HitTracker
 			IndexSearcher searcher = getLuceneSearcherManager().acquire();
 			try
 			{
-				
 				int start = getHitsPerPage() * inPageNumberZeroBased;
 				int max = start + getHitsPerPage();
 				TopDocs docs = null;
@@ -108,7 +107,10 @@ public class LuceneHitTracker extends HitTracker
 					Document doc = searcher.doc( docs.scoreDocs[offset].doc );
 					page.add(new DocumentData(doc) );
 				}
-				log.info(size() + " total, loaded " + start + " to " + (start+page.size()) + " from:" + getLuceneQuery() );
+				if( log.isDebugEnabled() )
+				{
+					log.debug(size() + " total, loaded " + start + " to " + (start+page.size()) + " from:" + getLuceneQuery() );
+				}
 				getPages().put(inPageNumberZeroBased,page);
 			}
 			catch( Exception ex )

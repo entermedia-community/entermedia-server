@@ -63,7 +63,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 {
 	private static final Log log = LogFactory.getLog(BaseLuceneSearcher.class);
 	protected Analyzer fieldAnalyzer;
-	protected IndexSearcher fieldLiveSearcher;
 	protected File fieldRootDirectory;
 	protected String fieldIndexPath;
 	protected SimpleDateFormat fieldFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -406,27 +405,27 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 	}
 
-	protected synchronized void setLiveSearcher(IndexSearcher inSearch)
-	{
-
-		if (fieldLiveSearcher != null)
-		{
-			try
-			{
-				fieldLiveSearcher.close();
-			}
-			catch (IOException ex)
-			{
-				fieldLiveSearcher = null;
-				// lets assume its invalid and just set it null so it tries
-				// to reload.
-				// throw new OpenEditRuntimeException(ex);
-			}
-		}
-		//log.info("XXX Null Now" + inSearch	);
-
-		fieldLiveSearcher = inSearch;
-	}
+//	protected synchronized void setLiveSearcher(IndexSearcher inSearch)
+//	{
+//
+//		if (fieldLiveSearcher != null)
+//		{
+//			try
+//			{
+//				fieldLiveSearcher.close();
+//			}
+//			catch (IOException ex)
+//			{
+//				fieldLiveSearcher = null;
+//				// lets assume its invalid and just set it null so it tries
+//				// to reload.
+//				// throw new OpenEditRuntimeException(ex);
+//			}
+//		}
+//		//log.info("XXX Null Now" + inSearch	);
+//
+//		fieldLiveSearcher = inSearch;
+//	}
 
 	
 
@@ -490,10 +489,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	 */
 	public String getIndexId()
 	{
-		if (fieldLiveSearcher == null)
-		{
-			return null;
-		}
+//		if (fieldLiveSearcher == null)
+//		{
+//			return null;
+//		}
 		String id = String.valueOf(getIndexWriter().hashCode());
 		return id + fieldPendingCommit; //In case we turned that on. Then this will trigger a search
 	}
@@ -584,6 +583,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		return fieldIndexWriter;
 	}
 
+	/**
+	 * Used after a reindex
+	 * @param inIndexWriter
+	 */
 	public void setIndexWriter(IndexWriter inIndexWriter)
 	{
 		if (fieldIndexWriter != null)
@@ -591,7 +594,12 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			try
 			{
 				fieldIndexWriter.close();
-				fieldLiveSearcher = null;
+				//fieldLiveSearcher = null;
+				if( fieldLuceneSearcherManager != null )
+				{
+					getLuceneSearcherManager();
+					fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(),true, new SearcherFactory());
+				}
 			}
 			catch (IOException ex)
 			{
