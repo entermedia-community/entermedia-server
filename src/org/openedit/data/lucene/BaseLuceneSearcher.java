@@ -593,6 +593,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			try
 			{
+				getLuceneSearcherManager();
 				fieldIndexWriter.close();
 				//fieldLiveSearcher = null;
 			}
@@ -607,7 +608,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			if( fieldLuceneSearcherManager != null )
 			{
-				getLuceneSearcherManager();
 				fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(),true, new SearcherFactory());
 			}
 		}

@@ -264,7 +264,6 @@ public void checkforTasks()
 	Searcher itemsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "orderitem");
 	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 	
-	log.info("checking for new and submitted conversions");
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry");
@@ -277,6 +276,8 @@ public void checkforTasks()
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
 	HitTracker newtasks = tasksearcher.search(query);
+
+	log.info("processing ${newtasks.size()} conversions");
 	
 	if( newtasks.size() == 1 )
 	{

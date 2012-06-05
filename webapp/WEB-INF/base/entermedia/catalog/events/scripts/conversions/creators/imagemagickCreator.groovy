@@ -185,6 +185,9 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			//no such original
 			result.setOk(false);
+			//This sucks,if the orignal is not available or we are waiting for a proxy
+			//The fix is to do conversions by the asset like we do for push
+			log.debug("input not yet available " + inAsset.getSourcePath() );
 			return result;
 		}
 
