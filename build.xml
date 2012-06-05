@@ -35,6 +35,7 @@
 	<property name="version"  value="7.${env.BUILD_NUMBER}"/>
 	<property name="deployDir" value="deploy"/>
   	<property name="report" value="${deployDir}"/>
+	<property name="branch" value="" />
 	
 	<!-- A convenience variable for documentation output -->
 	<property name="versionedApp" value="${appname}-${version}"/>
@@ -61,7 +62,7 @@
     	</copy>
 
   	<mkdir dir="${build}/tmp/" />
-	<get dest="${build}/tmp/oesite.war" src="http://dev.entermediasoftware.com/jenkins/job/entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
+	<get dest="${build}/tmp/oesite.war" src="http://dev.entermediasoftware.com/jenkins/job/${branch}entermedia/lastSuccessfulBuild/artifact/deploy/oesite.war"  usetimestamp="true" />
 	<unwar src="${build}/tmp/oesite.war" dest="${build}/tmp/" />
 	<copy todir="${wardir}/WEB-INF/lib" preservelastmodified="true">
 		<fileset dir="${build}/tmp/WEB-INF/lib"	>
