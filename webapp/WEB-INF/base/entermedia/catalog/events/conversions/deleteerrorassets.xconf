@@ -2,7 +2,9 @@
 	<property name="eventname">Delete error assets</property>	
 	<property name="delay">10m</property>
 	<property name="period">30m</property>
-	<path-action name="Script.run">
+	<property name="enabled">false</property>
+	
+	<path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/conversions/deleteerrorassets.groovy</script>
 	</path-action>
 </page>

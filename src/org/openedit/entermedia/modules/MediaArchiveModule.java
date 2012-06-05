@@ -285,7 +285,7 @@ public class MediaArchiveModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		if ( map == null || map.getUploadItems().size() == 0)
 		{
-			log.info("reloading page");
+			log.info("no assets found, reloading page");
 			return;
 		}
 		long utime = System.currentTimeMillis();

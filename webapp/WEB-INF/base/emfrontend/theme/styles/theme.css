@@ -431,6 +431,7 @@ input[type=submit], button, a.btn {
 	padding: 5px 10px;
 	text-align: center;
 	text-decoration: none;
+	line-height: 12px;
 }
 
 
@@ -771,6 +772,9 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	margin: 20px;
 	padding: 0;
 }
+#emslidesheet .emdropshadow {
+    height: 100px;
+}
 .emthumbbox {
 	margin-bottom: 4px;
 	float: none;
@@ -780,7 +784,7 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 .emboxthumb
 {
 	width: 200px;
-	height: 260px;
+	height: 175px;
 	text-align: center;
 	border-bottom: none;
 	padding-bottom: 0;
@@ -1265,7 +1269,7 @@ small {
 }
 #data {
 	max-height: 250px;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #ccc;
 	overflow: hidden;
 	width: 100%;
 	background: url('../images/bottom-shadow.png') bottom center repeat-x;
@@ -1422,15 +1426,21 @@ padding: 10px;
 
 /* SHARED EML SETTINGS STYLES -- TO BE CHANGED */
 
-.vlist li {
-	border-bottom: 1px solid #eee;
-	padding: 5px;
+#emcontainer .vlist {
+    margin: 0 0 10px 0;
+    padding: 0;
 }
-.vlist li:last-child {
+#emcontainer .vlist li {
+	border-bottom: 1px solid #eee;
+	padding: 5px 0;
+	margin: 0;
+}
+#emcontainer .vlist li:last-child {
 	border: none;
 }
-.vlist a {
+#emcontainer .emselectmenu .vlist a {
 	font-size: 14px;
+	padding: 0;
 }
 #eml-search-results {
 	position: relative;
@@ -1811,7 +1821,6 @@ width: inherit;
 	margin-top: 0;  
 }
 #addcomment textarea {
-	width: 96%;
 	height: 80px;
 	font-size: 14px;
 	color: #444;
@@ -2216,18 +2225,18 @@ tr.odd {
 	margin: 0 20px;
 }
 .user-input-area {
-	border-radius: 5px;
-	border: 1px solid #8bcbdf;
-	padding: 20px;
-	background: #e8f6fa; /* Old browsers */
-	background: #f4f8f9; /* Old browsers */
-	background: -moz-linear-gradient(top, #f4f8f9 0%, #d5edf5 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f4f8f9), color-stop(100%,#d5edf5)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, #f4f8f9 0%,#d5edf5 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #f4f8f9 0%,#d5edf5 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #f4f8f9 0%,#d5edf5 100%); /* IE10+ */
-	background: linear-gradient(top, #f4f8f9 0%,#d5edf5 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4f8f9', endColorstr='#d5edf5',GradientType=0 ); /* IE6-9 */
+    padding: 20px 20px 8px 20px;
+    margin-top: -10px;
+    background: #f7f7f7;
+    border-bottom: 1px solid #ccc;
+    background: rgb(255,255,255); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(239,239,239,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(239,239,239,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* IE10+ */
+    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#efefef',GradientType=0 ); /* IE6-9 */
 }
 #attach-file {
 	margin-top: 33px;    
@@ -2247,10 +2256,11 @@ body .user-input-area input[type="text"], body .user-input-area textarea, #tree 
 	background: -ms-linear-gradient(top, #f7f7f7 0%,#ffffff 42%); /* IE10+ */
 	background: linear-gradient(top, #f7f7f7 0%,#ffffff 42%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
-	border: 1px solid #8bcbdf;
+	border: 1px solid #ccc;
 	border-radius: 5px;
 	box-shadow: 0 1px 0 0 #fff;
 	color: #999;
+	line-height: 18px;
 }
 body .user-input-area input[type="text"]:focus, body .user-input-area textarea:focus, #tree input[type="text"]:focus {
 	color: #444;
@@ -2838,6 +2848,7 @@ body #emcontainer .emasseteditorarea {
 
 .table {
 	display: table;
+	width: 100%;
 }
 .cell {
 	display: table-cell;
@@ -3753,6 +3764,16 @@ h2 {
 #childrenlist .buttons {
 	margin: 10px 20px -20px 25px;
 }
+#addnew-library table {
+	margin: 5px -22px;
+}
+#addnew-library table tr {
+	border: none;
+}
+#addnew-library table tr input[type="text"] {
+    width: 250px;
+}
+
 
 /* ADD USER FORM */
 
@@ -4051,6 +4072,42 @@ td[title]:hover:before {
 	color: #fff;
 	font-weight: bold;
 }
+
+/* METADATA PAGE */
+
+.ui-widget-header span a img {
+    margin: -3px 0 0 -5px;
+}
+.ui-widget-header span a {
+    color: #fff;
+}
+
+/* GALLERY STYLES */
+
+.emboxthumb {
+    position: relative;
+}
+.gallery-hover {
+    display: none;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 4px 2px rgba(0,0,0,0.1);
+    position: absolute;
+    z-index: 999999;
+    top: -40px;
+    left: 0;
+    width: 220px;
+}
+.hover + .gallery-hover {
+    display: block;
+}
+#emslidesheet .gallery-hover .emdropshadow {
+    border: none;
+    box-shadow: none;
+    height: inherit;
+    max-width: 200px;
+}
+
 
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }

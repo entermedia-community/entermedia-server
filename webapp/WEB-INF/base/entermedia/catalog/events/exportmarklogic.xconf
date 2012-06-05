@@ -1,8 +1,0 @@
-<page>
-  <property name="eventname">Export To MarkLogic</property>	
-
-	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/exportmarklogic.groovy</script>
-	</path-action>  
-
-</page>

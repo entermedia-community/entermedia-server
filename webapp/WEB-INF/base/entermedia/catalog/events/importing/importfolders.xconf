@@ -1,6 +1,6 @@
 <page>
 	<property name="eventname">Import Folders</property>	
-	<path-action name="Script.run">
+	<path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/importing/importfolders.groovy</script>
 	</path-action>
 	

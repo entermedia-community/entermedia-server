@@ -52,7 +52,7 @@ public class AssetStatsManager
 	public void logAssetDownload(String inCatalogId, String inSourcePath, String inResult, User inUser)
 	{
 		WebEvent change = new WebEvent();
-		change.setOperation("download");
+		change.setOperation("asset/download");
 		change.setSearchType("asset");
 		change.setProperty("filename", PathUtilities.extractFileName(inSourcePath ));
 		change.setSourcePath(inSourcePath);
@@ -64,7 +64,7 @@ public class AssetStatsManager
 	public void logAssetPreview(String inCatalogId, String inSourcePath,String inAssetId, User inUser)
 	{
 		WebEvent change = new WebEvent();
-		change.setOperation("preview");
+		change.setOperation("asset/preview");
 		change.setSearchType("asset");
 		change.setSourcePath(inSourcePath);
 		change.setUser(inUser);
@@ -115,7 +115,7 @@ public class AssetStatsManager
 		if( newcount - 10 >  oldcount)
 		{
 			WebEvent change = new WebEvent();
-			change.setOperation("assetsave");
+			change.setOperation("asset/assetsave");
 			change.setSearchType("asset");
 			change.setSourcePath(inAsset.getSourcePath());
 			change.setCatalogId(inAsset.getCatalogId());

@@ -48,9 +48,11 @@
 					</p>
 				#end	
 				<h3>Categories</h3>
-					#foreach ($category in $asset.categories) 
+					<p style="line-height: 25px;">
+					#foreach ($category in $asset.categories)
 						<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
 					#end
+					</p>
 					
 				#end
 				
@@ -97,7 +99,7 @@
 		
 	</div>		
 </div>
-			<center><a class="btn showhide" style="border-top: none; margin: 0 0 15px 0; border-radius: 0 0 5px 5px; font-size: 10px;" id="showmore">Show More</a></center>
+			<center><a class="btn showhide" style="border-top: none; margin: 0 0 -5px 0; border-radius: 0 0 5px 5px; font-size: 10px;" id="showmore">Show More</a></center>
 
 <script>
 	

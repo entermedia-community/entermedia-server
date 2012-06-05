@@ -18,7 +18,6 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
 	$context.putPageValue("details",$details)
 <div  class="emgallery"  >	
-	<table cellpadding=0 cellspacing=0 border=0 width="100%" class="emdownloadlisting">
 			#set($count = 0)
 			
 			<div  id="emslidesheet" >
@@ -38,7 +37,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			#set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
 			$context.putPageValue("clink", $clink)
 
-			<a href="$click">
+			<a class="hovering" href="$click">
 
 			<div class="emthumbimage em$thumbsize" 
 				##if( $showcaption ) style="vertical-align:bottom;" #end 
@@ -48,22 +47,37 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
 
 			</div>
-			</a>			
+			</a>
+		#if ( $canviewhovergalery )
+			<div class="gallery-hover">
+			    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+			    <div class="hover-toolbox">
+			        <input type="checkbox" />
+			        <a href="#" class="basket ir">Basket</a>
+			        <a href="#" class="download ir">Download</a>
+			        <a href="#" class="email ir">Email</a>
+			    </div> 
+			    <div class="hover-details">
+			        <h6>#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end</h6>
+			    </div>
+			</div>	
+			<script>
+                 $('.emdropshadow').mouseover(function(){
+                      $(this).parent().parent().parent().addClass('hover');
+                 });
+                 $('.gallery-hover').mouseout(function(){
+                      $('.hovering').removeClass('hover');
+                 });
+            </script>	
+	   #end
 			#if( $showcaption )
 				<a class="eml-thumbnail-caption" href="$click">
-				
-			
-						#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
-				
-			
-				
-				
+					#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
 				</a>
 			#end
 		</div>
 			  
 			#end
-	</table>
 	
 </div>
 
