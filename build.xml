@@ -35,7 +35,7 @@
 	<property name="version"  value="7.${env.BUILD_NUMBER}"/>
 	<property name="deployDir" value="deploy"/>
   	<property name="report" value="${deployDir}"/>
-	<property name="branch" />
+	<property name="branch" value="" />
 	
 	<!-- A convenience variable for documentation output -->
 	<property name="versionedApp" value="${appname}-${version}"/>
