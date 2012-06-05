@@ -111,6 +111,7 @@ public class ScriptManager
 		if( logger == null)
 		{
 			logger = new ScriptLogger();
+			logger.setPrefix(inScript.getPage().getName());
 		}
 		variableMap.put("log", logger);
 		variableMap.put("userManager", getModuleManager().getBean( "userManager" ) ); 

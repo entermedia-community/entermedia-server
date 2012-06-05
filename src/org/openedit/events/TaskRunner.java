@@ -32,12 +32,12 @@ public class TaskRunner extends java.util.TimerTask
 	{
 		fieldWithParameters = inWithParameters;
 	}
-	public TaskRunner(PathEvent inTask,long inDelay, PathEventManager inManager)
+	public TaskRunner(PathEvent inTask,PathEventManager inManager)
 	{
-		this( inTask, inDelay, null,null,inManager);
+		this( inTask,  null,null,inManager);
 		setWithParameters(false);
 	}
-	public TaskRunner(PathEvent inTask,long inDelay, Map inParams, Map inPageValues, PathEventManager inManager)
+	public TaskRunner(PathEvent inTask, Map inParams, Map inPageValues, PathEventManager inManager)
 	{
 		fieldTask = inTask;
 		fieldEventManager = inManager;
@@ -71,7 +71,7 @@ public class TaskRunner extends java.util.TimerTask
 			}
 		}
 		fieldWebPageRequest = request; 
-		setTimeToStart(new Date(System.currentTimeMillis() + inDelay));
+		setTimeToStart(new Date(System.currentTimeMillis() + inTask.getPeriod() ));
 	}
 
 	public Date getTimeToStart()
@@ -137,7 +137,7 @@ public class TaskRunner extends java.util.TimerTask
 			if( isRepeating() )
 			{
 				//make sure we just have one in the queue
-				TaskRunner runner = new TaskRunner(getTask(), getTask().getPeriod(),getEventManager());
+				TaskRunner runner = new TaskRunner(getTask(), getEventManager());
 				getEventManager().getRunningTasks().push(runner);
 				getEventManager().getTimer().schedule(runner, getTask().getPeriod());
 			}

@@ -24,7 +24,6 @@ public void createTasksForUpload()
 	Searcher publishqueuesearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishqueue");
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
-	log.info("Queue conversions running on " + mediaArchive.getCatalogId() );
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
 	SearchQuery q = targetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
@@ -43,7 +42,7 @@ public void createTasksForUpload()
 	List assets = new ArrayList(targetsearcher.search(q) );
 
 	boolean foundsome = false;
-	log.info("Found ${assets.size()} assets");
+	log.debug("Found ${assets.size()} assets");
 	assets.each
 	{
 		foundsome = false;
@@ -55,7 +54,7 @@ public void createTasksForUpload()
 		query.addMatches("inputtype", rendertype); //video
 
 		HitTracker hits = presetsearcher.search(query);
-		log.info("Found ${hits.size()} automatic presets");
+		log.debug("Found ${hits.size()} automatic presets");
 		hits.each
 		{
 			Data hit = it;

@@ -14,7 +14,7 @@ public class ScriptLogger extends Handler
 {
 	private static final Log log = LogFactory.getLog(ScriptLogger.class);
 	protected List fieldLogs;
-	protected String fieldPrefix;
+	protected String fieldPrefix = "";
 	
 	public String getPrefix()
 	{
@@ -22,34 +22,34 @@ public class ScriptLogger extends Handler
 	}
 	public void setPrefix(String inPrefix)
 	{
-		fieldPrefix = inPrefix;
+		fieldPrefix = inPrefix + " ";
 	}
 	public void debug(String inText, Throwable ex)
 	{
-		log.debug(inText,ex);
+		log.debug(getPrefix() + inText,ex);
 	}
 	
 	public void debug(String inText)
 	{
-		log.debug(inText);
+		log.debug(getPrefix() + inText);
 		//getLogs().add("debug: " + inText);
 	}
 	public void info(String inText, Throwable ex)
 	{
-		log.info(inText,ex);
+		log.info(getPrefix() + inText,ex);
 	}
 	public void info(String inText)
 	{
-		log.info(inText);
+		log.info(getPrefix() + inText);
 		//getLogs().add("info: " + inText);
 	}
 	public void error(String inText, Throwable ex)
 	{
-		log.error(inText,ex);
+		log.error(getPrefix() + inText,ex);
 	}
 	public void error(String inText)
 	{
-		log.error(inText);
+		log.error(getPrefix() + inText);
 		//getLogs().add("error: " + inText);
 	}
 	public void error(Object inObject, Throwable inThrowable)
@@ -63,7 +63,7 @@ public class ScriptLogger extends Handler
 	}
 	public void add(Object inVal)
 	{
-		info(String.valueOf( inVal ) );
+		info(getPrefix() + String.valueOf( inVal ) );
 	}
 	public List<LogEntry> getLogs()
 	{
