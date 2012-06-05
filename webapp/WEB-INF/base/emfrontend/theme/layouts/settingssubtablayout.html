@@ -6,7 +6,6 @@
 	<ul>
 		#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
 		#set( $query = $searcher.createSearchQuery() )
-		#set( $null = $query.addExact("module",$module) )
 		#set( $null = $query.addExact("parentid", $parentid ))
 		$!query.addSort("ordering")
 		#foreach($screen in $searcher.cachedSearch($context,$query) )
@@ -18,11 +17,7 @@
 </div>
 
 <div id="eml-tab-green-container" class="clearfix">
-	<div id="eml-tab-options-container">
-		<div class="eml-tab-option">
 			
 			$pages.includeContent()
 			
-		</div>
-	</div>
 </div>

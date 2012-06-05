@@ -4,5 +4,5 @@
 	<property name="assettab">viewassetpreviewhistory</property>
 	<property name="searchtype">conversiontask</property>
 	
-	<inner-layout>${themeprefix}/layouts/detaileditorsub.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/detaileditorsubnomargin.html</inner-layout>
 </page>

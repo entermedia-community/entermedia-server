@@ -10,6 +10,5 @@
   <property name="oeuseradmintabid">groupstab</property>
 <property name="subtab">groups</property>
   <property name="tab">groups</property>
-  <inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
-	<property name="module">system</property>
+  
 </page>

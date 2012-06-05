@@ -35,6 +35,7 @@ import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.xmp.MetadataWriter;
 import org.openedit.entermedia.xmp.XmpWriter;
 import org.openedit.event.WebEventListener;
+import org.openedit.events.PathEventManager;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
@@ -626,7 +627,7 @@ public class AssetEditModule extends BaseMediaModule
 				writer.addAssetForWriting((Asset) data);
 				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
 
-				getMediaArchive(inReq).fireMediaEvent("keywordsmodified", inReq.getUser(), (Asset)data);
+				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), (Asset)data);
 			}
 			return;
 		}
@@ -637,7 +638,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		asset.addKeyword(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
-		getMediaArchive(inReq).fireMediaEvent("keywordsmodified", inReq.getUser(), asset);
+		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
 	}
 
 	public void removeAssetKeyword(WebPageRequest inReq) throws OpenEditException 
@@ -664,7 +665,7 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
 				writer.addAssetForWriting((Asset) data);
-				getMediaArchive(inReq).fireMediaEvent("keywordsmodified", inReq.getUser(), (Asset)data);
+				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), (Asset)data);
 			}
 			return;
 		}
@@ -676,7 +677,7 @@ public class AssetEditModule extends BaseMediaModule
 		asset.removeKeyword(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 
-		getMediaArchive(inReq).fireMediaEvent("keywordsmodified", inReq.getUser(), asset);
+		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
 	}
 	
 	public void writeAssetKeywords( WebPageRequest inRequest )
@@ -780,7 +781,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 		//set the group view permissions if something was passed in
 		findUploadTeam(inReq, archive, tracker);
-
+		//TODO: Move into the loop
 		archive.saveAssets(tracker, inReq.getUser());
 
 		
@@ -797,12 +798,12 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			Asset asset = (Asset) iterator.next();
 			allids.add(asset.getId());
-			archive.fireMediaEvent("assetuploaded",inReq.getUser(),asset);
+			archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),asset);
 		}
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
-			archive.fireMediaEvent("assetsuploaded",inReq.getUser(),sample,allids);
+			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,allids);
 		}
 		
 	}
@@ -833,11 +834,11 @@ public class AssetEditModule extends BaseMediaModule
 			Page page = (Page) iterator.next();
 			readMetaData(inReq, archive,"", page, tracker);
 		}
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			
-		}		
+//		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+//		{
+//			Asset asset = (Asset) iterator.next();
+//			
+//		}		
 		//set the group view permissions if something was passed in
 		findUploadTeam(inReq, archive, tracker);
 
@@ -853,19 +854,18 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putPageValue("uploadedassets",tracker); 
 
 		List allids = new ArrayList();
-
+		//Events are not dependable. We should probably just run the event directly
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
 			allids.add(asset.getId());
-			archive.fireMediaEvent("assetuploaded",inReq.getUser(),asset);
+			inReq.setRequestParameter("assetid", asset.getId() );
+			//archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),asset);
 		}
-		
-		//This wont do anything for now since we already fire one for each asset
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
-			archive.fireMediaEvent("assetsuploaded",inReq.getUser(),sample,allids);
+			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,allids);
 		}
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
@@ -1533,7 +1533,7 @@ public class AssetEditModule extends BaseMediaModule
 		String type  = inReq.getPageProperty("asseteventtype");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		archive.fireMediaEvent(type, inReq.getUser(), asset);
+		archive.fireMediaEvent("asset/" + type, inReq.getUser(), asset);
 		
 	}
 	public WebServer getWebServer()
@@ -1613,7 +1613,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset.setProperty("assetvotes", String.valueOf( hits.size()) );
 			MediaArchive archive = getMediaArchive(inReq);
-			archive.fireMediaEvent("assetsave", inReq.getUser(), asset);
+			archive.fireMediaEvent("asset/assetsave", inReq.getUser(), asset);
 		}
 		
 	}
@@ -1664,7 +1664,7 @@ public class AssetEditModule extends BaseMediaModule
 		row.setProperty("username", inUser.getUserName());
 		row.setSourcePath(asset.getSourcePath());
 		searcher.saveData(row,inUser);
-		archive.fireMediaEvent("userlikes", inUser, asset);
+		archive.fireMediaEvent("asset/userlikes", inUser, asset);
 		//archive.getAssetSearcher().updateIndex(asset); //get the rank updated
 	}
 	

@@ -891,15 +891,33 @@ jQuery(document).ready(function()
 
 	$(document).ajaxError(function(e, jqxhr, settings, exception) 
 			{
-				var errordiv = jQuery("#errorinfoarea")
+				var errordiv = jQuery("#errordiv")
 				if( errordiv.length > 0)
 				{
-				    $(errordiv).html("Error " + settings.url + " returned " + exception);
-
+					
+					function fade(elem){
+						$(elem).delay(300).fadeOut(3000, "linear");
+					}
+					
+					$('#errordiv').stop(true, true).show().css('opacity', 1);
+					
+					errors = '<p class="error"><strong>Error: </strong>' + settings.url  + '<br/><strong> Returned: </strong>' + '' + exception + '</p>'
+					
+					$('#errordiv').html(errors);
+					
+					fade($('#errordiv'));
+					
+					$('#errordiv').mouseover(function(){
+						$(this).stop(true, true).show().css('opacity', 1);
+					});
+					
+					$('#errordiv p').mouseout(function(){
+						fade($('#errordiv'));
+					});
 				}
 				else
 				{
-					  alert("Error \n" + settings.url + " \nreturned " + exception);
+					//  alert("Error \n" + settings.url + " \nreturned " + exception);
 
 				}
 			});
@@ -967,4 +985,3 @@ emcomponents = function() {
 		}
 	);
 }
-

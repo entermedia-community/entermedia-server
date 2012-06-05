@@ -8,6 +8,9 @@
 
 #set( $args = "assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$listid&listexternalid=$listexternalid&permissionname=$permissionname&view=$view")
 #set( $args = "$args&selectlink=index.html")
+
+<div class="tab-actions">
+	<a class="btn thickbox"  href="$home$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue now</a>
+</div>
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
   
-<a class="btn thickbox"  href="$home$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue now</a>

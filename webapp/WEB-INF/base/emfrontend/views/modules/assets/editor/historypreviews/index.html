@@ -1,8 +1,9 @@
 <div id="historypreviews">
-
-<h3>[[Preview History]]</h3>
-<p>[[Shows users who are viewing a larger version or playing this media file]]</p>
-
+	
+<div class="tab-actions">
+<span><strong>[[Preview History]]</strong>
+[[Shows users who are viewing a larger version or playing this media file]]</span>
+</div>
 
 #set( $details = $searcher.getDetailsForView("assetpreviewlog/historypreviews",$user) ) 
 $context.putPageValue("details",$details)

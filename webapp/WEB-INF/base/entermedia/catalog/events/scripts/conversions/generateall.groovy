@@ -27,7 +27,7 @@ public void init()
 		}
 		archive.saveAssets assetsToSave;
 		log.info("now kick off import event");
-		archive.fireMediaEvent("assetsimported", user);
+		archive.fireMediaEvent("importing/assetsimported", user);
 }
 
 init();

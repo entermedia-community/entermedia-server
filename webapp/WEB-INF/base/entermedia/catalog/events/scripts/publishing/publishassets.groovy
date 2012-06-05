@@ -25,10 +25,13 @@ public void init() {
 	if( webevent != null)
 	{
 		String sourcepath = webevent.getSourcePath();
-		asset = mediaArchive.getAssetBySourcePath(sourcepath);
-		if( asset != null)
+		if( sourcepath != null )
 		{
-			query.addExact("assetid",asset.getId());
+			asset = mediaArchive.getAssetBySourcePath(sourcepath);
+			if( asset != null)
+			{
+				query.addExact("assetid",asset.getId());
+			}
 		}
 	}
 	String assetid = context.getRequestParameter("assetid");

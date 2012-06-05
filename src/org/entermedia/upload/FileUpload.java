@@ -172,7 +172,7 @@ public class FileUpload
 		String encode = req.getCharacterEncoding();
 		if ( encode == null)
 		{
-			log.info("Encoding not set.");
+			//log.info("Encoding not set.");
 			encode = "UTF-8";
 		}
 		//log.info("Encoding is set to " + encode);

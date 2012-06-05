@@ -35,7 +35,7 @@
 #end
 
 #if($errors)
-<span style="color:red;">Your entry is invalid.  Please check your values and try again.</span>
+<p class="info">Your entry is invalid.  Please check your values and try again.</p>
 #set($edit = "true")
 #end
 #if( $showit )
@@ -45,7 +45,20 @@
 	$pages.include("/$applicationid/components/xml/table.html?$args&candelete=$!caneditasset&passalong=$passalong",$context)
 	
 	#if( !$parser.parseBoolean($edit) && $caneditasset && !$print.equals("true"))
-	<a class="btn right ajax" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${view}editor">[[Add New]]</a>
+	<script>
+	$(document).ready(function(){
+		
+		addnew = '<a class="btn ajax" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${view}editor">Add New</a>';
+		
+		if ( $('.tab-actions').length > 0  ) {
+			$('.tab-actions').prepend(addnew);
+		}
+		else {
+			$('.addnew-generic').append(addnew);
+		}
+	});
+	</script>
+	<div class="addnew-generic"></div>
 	#end
 	
 	#else
@@ -58,10 +71,11 @@
 		#set( $data = $searcher.searchById($id) )
 		$context.putPageValue("data", $data)
 		$pages.include("/$applicationid/components/xml/detaileditor.html",$context)
-
-		<input class="btn right" style="margin-left: 5px;" type="submit" value="Save values"/>
-		<a class="btn ajax right" targetdiv='${view}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
 		
+		<div class="buttons">
+			<input class="btn" style="margin-left: 5px;" type="submit" value="Save Values"/>
+			<a class="btn ajax right red" targetdiv='${view}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+		</div>
 
 		<input name="field" type="hidden" value="assetid" />
 		<input name="assetid.value" type="hidden" value="$assetid" />
@@ -85,6 +99,6 @@
 	#end
 	</div>
 #else ##showit
-	No data has been entered.
+	<p class="info">No data has been entered.</p>
 #end
 

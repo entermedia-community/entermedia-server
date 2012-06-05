@@ -3,5 +3,4 @@
 	<property name="subsettinglist">settingspermissions</property>
 	<property name="subtab">permissions</property>
 	<property name="tab">permissions</property>
-	<property name="module">system</property>
 </page>

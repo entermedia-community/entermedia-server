@@ -139,7 +139,9 @@ FCKConfig.ToolbarSets["Small"] = [
 
 
 FCKConfig.ToolbarSets["Basic"] = [
-	['Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink','-','About']
+	['Source','-','Cut','Copy','Paste','PasteText','-','SpellCheck'],
+	['Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink','-','About'],
+	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull']
 ] ;
 
 FCKConfig.EnterMode = 'p' ;			// p | div | br

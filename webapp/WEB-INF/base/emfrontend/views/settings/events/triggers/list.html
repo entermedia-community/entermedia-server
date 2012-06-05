@@ -3,17 +3,18 @@
 #if( !$seltype)
 	#set( $seltype  ="events")
 #end
-<p>
-<select class="jump">
-	#foreach( $event in $pathevents )
-			#if( $type != $event.getPage().getDirectoryName() )
-				#set( $type = $event.getPage().getDirectoryName())
-				<option #if( $seltype == $type) selected #end value="$type">$type</option>
+<div class="tab-actions clearfix">
+	<select class="jump">
+		#foreach( $event in $pathevents )
+				#if( $type != $event.getPage().getDirectoryName() )
+					#set( $type = $event.getPage().getDirectoryName())
+					<option #if( $seltype == $type) selected #end value="$type">$type</option>
+				#end
 			#end
-		#end
-</select>
- Select a group of triggers to display
-</p>
+	</select>
+	<strong style="margin-left: 5px;">Select a group of triggers to display</strong>
+	 <a class="btn right" href="./reload.html">[[Reload Events]]</a>
+</div>
 
 <script>
     $("select.jump").change(function () 

@@ -266,14 +266,15 @@ public class ProfileModule extends MediaArchiveModule
 	
 	public void saveProperties(WebPageRequest inReq)
 	{
-		UserProfile prof = loadUserProfile(inReq);
-		
-		Searcher profilesearcher = getSearcherManager().getSearcher(prof.getCatalogId(), "userprofile");
 		String[] fields = inReq.getRequestParameters("field");
 		if(fields == null)
 		{
 			return;
 		}
+		UserProfile prof = loadUserProfile(inReq);
+		
+		Searcher profilesearcher = getSearcherManager().getSearcher(prof.getCatalogId(), "userprofile");
+	
 		profilesearcher.updateData(inReq, fields, prof);
 		profilesearcher.saveData(prof, inReq.getUser());
 	}

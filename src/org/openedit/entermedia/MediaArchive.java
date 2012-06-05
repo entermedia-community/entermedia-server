@@ -33,6 +33,7 @@ import org.openedit.entermedia.search.AssetSecurityArchive;
 import org.openedit.entermedia.search.SearchFilterArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
+import org.openedit.events.PathEventManager;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -1330,5 +1331,11 @@ public class MediaArchive
 		Collection presets = Arrays.asList(vals);
 
 		return presets;
+	}
+	//force runs now instead of on a delay in the scheduler
+	public boolean fireSharedMediaEvent( String inName )
+	{
+		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(), "pathEventManager");
+		return manager.runSharedPathEvent(getCatalogHome() + "/events/" + inName + ".html");
 	}
 }

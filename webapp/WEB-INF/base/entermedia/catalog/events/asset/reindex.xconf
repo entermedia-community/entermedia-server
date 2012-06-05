@@ -3,5 +3,5 @@
 <page>
 	<property name="eventname">Reindex Asset Searches</property>	
 
-  <page-action name="MediaArchiveModule.reindex"/>
+  <page-action name="MediaArchiveModule.reindex" />
 </page>
