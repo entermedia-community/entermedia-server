@@ -110,7 +110,10 @@ public class GroovyScriptRunner implements ScriptRunner
 						packageroot = page.getDirectory();
 					}
 					filename = filename.substring(packageroot.length() + 1);
-					log.info("Running " + filename);
+					if( log.isDebugEnabled() )
+					{
+						log.debug("Running " + filename);
+					}
 					returned = engine.run(filename, binding); //Pass in only the script file name i.e. conversion/
 				}
 				return returned;

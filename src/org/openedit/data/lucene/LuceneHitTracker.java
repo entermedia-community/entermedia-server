@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
@@ -76,6 +77,8 @@ public class LuceneHitTracker extends HitTracker
 		if (fieldPages == null)
 		{
 			fieldPages = new HashMap<Integer,List<Data>>();
+			//Does this compile?
+			//fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
 		}
 		return fieldPages;
 	}

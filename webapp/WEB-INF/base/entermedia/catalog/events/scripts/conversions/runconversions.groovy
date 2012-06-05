@@ -138,7 +138,7 @@ class ConvertRunner implements Runnable
 					else
 					{
 						String sourcepath = hit.get("sourcepath");
-						log.info("conversion had no error and will try again later for ${sourcepath}");
+						log.debug("conversion had no error and will try again later for ${sourcepath}");
 						return;
 					}
 					tasksearcher.saveData(realtask, user);
@@ -297,7 +297,7 @@ public void checkforTasks()
 	
 	if( newtasks.size() > 0 )
 	{
-		mediaarchive.fireMediaEvent("conversions/conversionscomplete",user);
+		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
 	}
 	
 }

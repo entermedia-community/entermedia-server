@@ -595,11 +595,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			{
 				fieldIndexWriter.close();
 				//fieldLiveSearcher = null;
-				if( fieldLuceneSearcherManager != null )
-				{
-					getLuceneSearcherManager();
-					fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(),true, new SearcherFactory());
-				}
 			}
 			catch (IOException ex)
 			{
@@ -607,6 +602,20 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 		}
 		fieldIndexWriter = inIndexWriter;
+
+		try
+		{
+			if( fieldLuceneSearcherManager != null )
+			{
+				getLuceneSearcherManager();
+				fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(),true, new SearcherFactory());
+			}
+		}
+		catch (IOException ex)
+		{
+			log.error(ex);
+		}
+
 	}
 
 	public SearchQuery createSearchQuery()
@@ -826,7 +835,19 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	public void shutdown()
 	{
 		flush();
-		setIndexWriter(null);
+		//setIndexWriter(null);
+		if (fieldIndexWriter != null)
+		{
+			try
+			{
+				fieldIndexWriter.close();
+			}
+			catch (IOException ex)
+			{
+				log.error(ex);
+			}
+		}
+				
 	}
 	
 	public String getCurrentIndexFolder()

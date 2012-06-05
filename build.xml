@@ -289,11 +289,19 @@
 		</lib>
 	  </war>
 
- 	<copy overwrite="true"  file="${etc}/install.xml" 
-    tofile="${deployDir}/install.xml"/>
+ 	<copy overwrite="true"  file="${etc}/install.xml" tofile="${deployDir}/install.xml">
+	 <filterset>
+	      <filter token="BRANCH" value="${branch}"/>
+	    </filterset>
+	</copy>	
+
 
  	<copy overwrite="true"  file="${etc}/install.js" 
-    tofile="${deployDir}/install.js"/>
+    tofile="${deployDir}/install.js">
+ 		 <filterset>
+ 		      <filter token="BRANCH" value="${branch}"/>
+ 		    </filterset>
+ 	</copy>	
 
  	<move overwrite="true" file="${deployDir}/builds/${versionedApp}.war" 
         tofile="${deployDir}/ROOT.war"/>
