@@ -1,13 +1,14 @@
 package org.openedit.entermedia.model;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.openedit.Data;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.search.AssetSearcher;
 
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 
 public class AssetSearchTest extends BaseEnterMediaTest
@@ -38,7 +39,7 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		
 		SearchQuery q = searcher.createSearchQuery();
 		q.addOrsGroup("id", "search101 search102 search103" );
-		Collection three = searcher.search(q);
+		HitTracker three = searcher.search(q);
 		assertEquals(three.size() , 3);
 		
 		asset.setProperty("caption", "caption" + System.currentTimeMillis());
@@ -56,6 +57,9 @@ public class AssetSearchTest extends BaseEnterMediaTest
 				found = true;
 			}
 		}
+		List hits = three.getPageOfHits();
+		assertNotNull(hits);
+		
 		assertTrue(found);
 	}
 	

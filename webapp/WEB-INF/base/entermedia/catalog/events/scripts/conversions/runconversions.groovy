@@ -241,7 +241,7 @@ private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
  }
 } //End Runnable methods
 
-protected Runnable createRunnable(MediaArchive mediaarchive, Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
+protected ConvertRunner createRunnable(MediaArchive mediaarchive, Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
 {
 	   ConvertRunner runner = new ConvertRunner();
 	   runner.mediaarchive = mediaarchive;
@@ -278,41 +278,21 @@ public void checkforTasks()
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
 	HitTracker newtasks = tasksearcher.search(query);
 	
-	boolean foundone = false;
 	if( newtasks.size() == 1 )
 	{
 		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, newtasks.first() );
 		runner.run();
-		if( !foundone && runner.result != null)
-		{
-			foundone = runner.result.isComplete();
-		}
 	}
 	else
 	{
-		List all = new ArrayList(newtasks);
-		
 		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
 		ExecutorService  executor = executorManager.createExecutor();
-		List completed = new ArrayList();
-		for (Data hit in all)
-		{	
+		for(Object hit: newtasks)
+		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
-			completed.add(runner);
 			executor.execute(runner);
 		}
 		executorManager.waitForIt(executor);
-		for( ConvertRunner runner in completed )
-		{
-			if( !foundone && runner.result != null)
-			{
-				foundone = runner.result.isComplete();
-			}
-			else
-			{
-				break;
-			}
-		}
 	}
 	
 	if( newtasks.size() > 0 )

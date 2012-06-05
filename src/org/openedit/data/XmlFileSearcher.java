@@ -120,7 +120,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		}
 		getXmlDataArchive().saveAllData(inAll, inUser);
 		updateIndex(inAll);
-		getLiveSearcher(); //should flush the index
+		//getLiveSearcher(); //should flush the index
 	}
 
 	public void updateIndex(IndexWriter inWriter, Data inData) throws OpenEditException
