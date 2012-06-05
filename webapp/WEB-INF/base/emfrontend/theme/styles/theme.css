@@ -3335,6 +3335,10 @@ div#folders.add .folder {
 .max #maximizer a {
 	background-image: url('../images/minimize.png');
 }
+#maximizer a:hover {
+    background-color: #f7f7f7;
+    border-color: #888;
+}
 #maximizer a:active {
 	height: 11px;
 }
@@ -3621,7 +3625,7 @@ span.drag-and-drop {
 }
 .tab-actions {
 	position: relative;
-	z-index: 999;
+	z-index: 150;
 	border-bottom: 1px solid #ddd;
 	padding: 8px 20px;
 	background: rgb(255,255,255); /* Old browsers */
