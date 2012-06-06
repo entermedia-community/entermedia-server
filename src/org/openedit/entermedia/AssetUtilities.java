@@ -22,7 +22,18 @@ public class AssetUtilities
 {
 	protected MetaDataReader fieldMetaDataReader;
 	protected DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");// TODO: use it8l
+	protected boolean fieldIncludeCategories = true;
 	
+	public boolean isIncludeCategories()
+	{
+		return fieldIncludeCategories;
+	}
+
+	public void setIncludeCategories(boolean inIncludeCategories)
+	{
+		fieldIncludeCategories = inIncludeCategories;
+	}
+
 	public MetaDataReader getMetaDataReader()
 	{
 		return fieldMetaDataReader;
@@ -53,8 +64,11 @@ public class AssetUtilities
 		}
 		return sourcePath;
 	}
-
 	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, String sourcePath, User inUser)
+	{
+		return populateAsset(asset, inContent, inArchive, isIncludeCategories(), sourcePath, inUser);
+	}
+	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, boolean inCludeCategories, String sourcePath, User inUser)
 	{
 		/**
 		String absolutepath = dest.getContentItem().getAbsolutePath();
@@ -107,7 +121,10 @@ public class AssetUtilities
 
 			// Makes a mirror of the inputfilepath within the assets
 			// directory
-			//populateCategory(asset, inContent, inArchive, inUser);
+			if( inCludeCategories )
+			{
+				populateCategory(asset, inContent, inArchive, inUser);
+			}
 			return asset;
 		}
 		return null;

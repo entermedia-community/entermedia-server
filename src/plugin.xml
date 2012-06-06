@@ -639,6 +639,7 @@
 		<property name="metaDataReader">
 			<ref bean="metaDataReader" />
 		</property>
+		<property name="includeCategories" value="true"/>
 	</bean>
 
 	<bean id="assetImporter" class="org.openedit.entermedia.scanner.AssetImporter"  singleton="false">

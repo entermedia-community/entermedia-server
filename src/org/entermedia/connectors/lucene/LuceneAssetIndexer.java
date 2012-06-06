@@ -89,11 +89,18 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	{
 		HashSet allCatalogs = new HashSet();
 		Collection catalogs = inAsset.getCategories();
-		allCatalogs.addAll(catalogs);
-		for (Iterator iter = catalogs.iterator(); iter.hasNext();)
+		if( catalogs.size() > 0 )
 		{
-			Category catalog = (Category) iter.next();
-			buildCategorySet(catalog, allCatalogs);
+			allCatalogs.addAll(catalogs);
+			for (Iterator iter = catalogs.iterator(); iter.hasNext();)
+			{
+				Category catalog = (Category) iter.next();
+				buildCategorySet(catalog, allCatalogs);
+			}
+		}
+		else
+		{
+			allCatalogs.add(getMediaArchive().getCategoryArchive().getRootCategory());
 		}
 		return allCatalogs;
 	}
