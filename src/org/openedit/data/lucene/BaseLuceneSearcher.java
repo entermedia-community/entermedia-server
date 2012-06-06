@@ -69,7 +69,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	protected IndexWriter fieldIndexWriter;
 	protected String fieldBadSortField = null;
 	protected boolean fieldPendingCommit;
-	protected boolean fieldReopenReader;
+	protected String fieldIndexId;
 	
 	protected LuceneIndexer fieldLuceneIndexer;
 	protected String fieldCurrentIndexFolder;
@@ -493,8 +493,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 //		{
 //			return null;
 //		}
-		String id = String.valueOf(getIndexWriter().hashCode());
-		return id + fieldPendingCommit; //In case we turned that on. Then this will trigger a search
+		if( fieldIndexId == null ) 
+		{
+			fieldIndexId = String.valueOf(System.currentTimeMillis()) + getIndexWriter().hashCode();
+		}
+		return fieldIndexId;
 	}
 
 	public void flush()
@@ -530,7 +533,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//			throw new OpenEditRuntimeException(ex);
 		//		}
 		fieldPendingCommit = true;
-		fieldReopenReader = true;
+		fieldIndexId = null;
 	}
 
 	public IndexWriter getIndexWriter() 
@@ -594,7 +597,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			try
 			{
 				getLuceneSearcherManager();
-				fieldIndexWriter.close();
+				fieldIndexWriter.close(); //This should flush if needed
 				//fieldLiveSearcher = null;
 			}
 			catch (IOException ex)

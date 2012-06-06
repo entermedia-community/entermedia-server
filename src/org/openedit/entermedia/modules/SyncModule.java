@@ -312,7 +312,8 @@ public class SyncModule extends BaseMediaModule
 
 	}
 
-	protected Element execute(String inCatalogId, HttpMethod inMethod)
+	//The client can only be used by one thread at a time
+	protected synchronized Element execute(String inCatalogId, HttpMethod inMethod)
 	{
 		try
 		{

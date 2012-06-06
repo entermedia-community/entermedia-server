@@ -134,36 +134,48 @@ public class PathEventManager
 		PathEvent event = getPathEvent(runpath);
 		if (event != null)
 		{ 
-			String name = event.getName();
-			Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
-			List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
-			for (Iterator iterator = copy.iterator(); iterator.hasNext();)
+			TaskRunner runner = null;
+			synchronized (event)
 			{
-				TaskRunner task = (TaskRunner) iterator.next();
-				if( name.equals( task.getTask().getName() ) && !task.isWithParameters() )
+				String name = event.getName();
+				Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
+				List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
+				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 				{
-					if( !task.getTask().isRunning() ) //Keep only one not running at a time
+					TaskRunner task = (TaskRunner) iterator.next();
+					if( name.equals( task.getTask().getName() ) )
 					{
-						if( task.getTimeToStart().before(soon))
+						if( task.getTask().isRunning() ) //Keep only one not running at a time
 						{
-							return true;
+							//We will add a duplicate below
+						}
+						else
+						{
+							if( task.getTimeToStart().before(soon))
+							{
+								return true;
+							}
 						}
 					}
 				}
+				
+				runner = new TaskRunner(event, this);
+				runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
+				runner.setTimeToStart(new Date());
+	//			if( event.getDelay() == 0 )
+	//			{
+	//				getRunningTasks().push(runner);
+	//				runner.run(); //this will remove it again
+	//			}
+	//			else
+	//			{
+					//schedule(event, runner);
+				getRunningTasks().push(runner);
 			}
-			
-			TaskRunner runner = new TaskRunner(event, this);
-			runner.setTimeToStart(new Date());
-//			if( event.getDelay() == 0 )
-//			{
-//				getRunningTasks().push(runner);
-//				runner.run(); //this will remove it again
-//			}
-//			else
-//			{
-				//schedule(event, runner);
-			getRunningTasks().push(runner);
-			getTimer().schedule(runner,0); 
+			if( runner != null )
+			{
+				getTimer().schedule(runner,0);
+			}
 //			}
 
 
