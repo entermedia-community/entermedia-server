@@ -253,7 +253,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 		}
 	}
 
-	public void reloadCategories()
+	public synchronized void reloadCategories()
 	{
 		getCatalogMap().clear();
 
