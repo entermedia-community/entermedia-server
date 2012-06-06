@@ -62,8 +62,6 @@ public class AssetUtilities
 		getAssetUtilities().getMetaDataReader().populateAsset(archive,itemFile, asset);
 		archive.saveAsset(asset, inUser);
 		 */
-		
-
 		boolean newasset = true;
 		if (asset != null)
 		{
@@ -103,13 +101,13 @@ public class AssetUtilities
 		}
 		if (newasset)
 		{
-			inArchive.removeGeneratedImages(asset); //Just in case?
+			//inArchive.removeGeneratedImages(asset); //Just in case?
 			readMetadata(asset, inContent, inArchive);
 			// TODO: clear out old cached thumbnails and conversions
 
 			// Makes a mirror of the inputfilepath within the assets
 			// directory
-			populateCategory(asset, inContent, inArchive, inUser);
+			//populateCategory(asset, inContent, inArchive, inUser);
 			return asset;
 		}
 		return null;
