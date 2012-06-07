@@ -72,11 +72,14 @@ public abstract class BaseImageCreator extends BaseCreator
 			inStructions.setCrop(Boolean.parseBoolean(crop));
 		}
 		
-		String watermark = inStructions.getProperty("canforcewatermark");
+		String watermark = inStructions.getProperty("canforcewatermarkasset");
 		if (watermark != null)
 		{
 			inStructions.setWatermark(Boolean.valueOf(watermark));
+		
 		}
+		
+
 		inStructions.setAssetSourcePath(inSourcePath);
 
 //		String subfolder = (String)inProperties.get("subfolder");

@@ -8,6 +8,12 @@
 	<property id="catalogasseteditusers" value="${asset.owner}">Catalog Asset Edit Users</property>
 	<property id="catalogasseteditgroups" value="administrators">Catalog Asset Edit Groups</property>
 
+
+	<property id="catalogassetforcewatermarkusers" value="">Admin Catalog Asset View Users</property>
+	<property id="catalogassetforcewatermarkgroups" value="">Admin Catalog Asset View Groups</property>
+
+
+
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
 	-->
 	<property id="events_notify_app" value="emshare">Email Notify App</property>
