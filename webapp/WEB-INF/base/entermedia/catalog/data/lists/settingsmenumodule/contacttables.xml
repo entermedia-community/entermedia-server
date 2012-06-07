@@ -2,6 +2,6 @@
 
 <properties>
 	
-  <property id="tables"  type="toplevel" module="contact" ordering="200" path="/views/settings/datatypes/tables/index.html" >Tables</property>
+  <property id="contacttables"  type="toplevel" module="contact" ordering="200" path="/views/settings/modules/contact/tables/index.html" >Tables</property>
 
 </properties>

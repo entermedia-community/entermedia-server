@@ -2,6 +2,6 @@
 
 <properties>
 	
-  <property id="permissions" type="toplevel" module="contact" ordering="300" path="/views/settings/datatypes/permissions/index.html" >Permissions</property>
+  <property id="contactpermissions" type="toplevel" module="contact" ordering="300" path="/views/settings/modules/contact/permissions/index.html" >Permissions</property>
 
 </properties>

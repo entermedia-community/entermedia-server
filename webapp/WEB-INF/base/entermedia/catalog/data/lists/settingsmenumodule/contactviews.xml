@@ -2,6 +2,8 @@
 
 <properties>
 	
-  <property id="editing"  type="toplevel" module="contact" ordering="100" path="/views/settings/modules/contact/views/index.html" >Views</property>
-
+  <property id="contactviews"  type="toplevel" parentid="contactviews" module="contact" ordering="100" path="/views/settings/modules/contact/views/index.html" sublabel="Editing">Views</property>
+  <property id="contactsearching" module="asset" parentid="contactviews" path="/views/settings/modules/contact/views/searching/index.html" >Searching</property>
+  <property id="contactresults" module="asset" parentid="contactviews" path="/views/settings/modules/contact/views/results/index.html" >Results</property>
+  <property id="contactuploading" module="asset" parentid="contactviews" path="/views/settings/modules/contact/views/uploading/index.html" >Uploading</property>
 </properties>
