@@ -1,44 +1,58 @@
-<div id="usereditproperties">
+#set($selectedUser = $user)
 
+#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
+$context.putPageValue("searcher", $userSearcher)     
+$context.putPageValue("view", "user/useredit")  
+$context.putPageValue("data", $selectedUser) 
+
+<div id="default-top" class="clearfix">
+    
+    <div class="thumbnail">
+        <img src="" style="width: 91px; height: 91px;" />
+    </div>
+    
+    <div class="main-info">
+        <div class="primary">
+            $firstName $lastname
+        </div>
+        <div class="secondary">
+            $position, <a href="#">$company</a>
+        </div>
+    </div>
+    
+    
 </div>
-	#set($selectedUser = $user)
 
-				#if ($saved)
-				<div class="common-success fader">
-					Saved 
-				</div>
-			#end
+<div id="default-fields" style="margin-top: -20px">
+        
+  
+        <form class="ajaxform validate" id="usereditform" targetdiv="usereditproperties" name="usereditform" action="$home$apphome/views/myaccount/profilesave.html">
+            <input type="hidden" name="userid" value="$selectedUser.id"/>
+        
+            <input type="hidden" name="save" value="true"/>
+            <input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
+            <input type="hidden" name="method" value="edituser"/>
+                        <input type="hidden" name="oemaxlevel" value="1"/>
+            
+              
+            <div class="clearfix">
+                    #if ($saved)
+                    <div class="saved fader">
+                    Saved 
+                    </div>
+                    #end
+            $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+            </div>
+            
+            #if( $message || $errors)
+                <div class="common-success">
+                    $context.getText($message)  $!errors
+                </div>
+            #end
 
-<div class="ui-widget commentbox columns-2">
-<div class="ui-widget-header">[[Profile]]</div>
-<div  class="ui-widget-content" > 
-	#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
-		<form class="ajaxform validate" id="usereditform" targetdiv="usereditproperties" name="usereditform" action="$home$apphome/views/myaccount/profilesave.html">
-			<input type="hidden" name="userid" value="$selectedUser.id"/>
-		
-			<input type="hidden" name="save" value="true"/>
-			<input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
-			<input type="hidden" name="method" value="edituser"/>
-						<input type="hidden" name="oemaxlevel" value="1"/>
-			
-			$context.putPageValue("searcher", $userSearcher)	 
-			$context.putPageValue("view", "user/useredit")	
-			$context.putPageValue("data", $selectedUser)	
-			<div class="clearfix">
-			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
-			</div>
-
-
-			#if( $message || $errors)
-				<div class="common-success">
-					$context.getText($message)  $!errors
-				</div>
-			#end
-
-
-			<a href="#" class="btn" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
-		
-		</form>
-</div>	
+            <a href="#" class="btn right" style="margin: 20px 20px 0 0" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
+        </form>
+    
+    </div>
 </div>
 

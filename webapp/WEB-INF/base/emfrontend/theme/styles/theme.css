@@ -4184,9 +4184,13 @@ td[title]:hover:before {
     color: #444;
     font-weight: bold;
     background: url('../images/ds-rightedge.png') top right repeat-y;
+    vertical-align: top;
 }
 #emcontainer #emselectable  #default-fields .settings-table tr td:nth-child(2) {
     border-left: 1px solid #ddd;   
+}
+#emcontainer #emselectable  #default-fields .settings-table tr td[colspan="2"] {
+    display: none;   
 }
 
 /* ==|== non-semantic helper classes ======================================== */
