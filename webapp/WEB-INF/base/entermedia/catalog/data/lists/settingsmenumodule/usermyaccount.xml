@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="profile"  type="toplevel" module="user" path="/views/myaccount/index.html" ordering="60" sublabel="Scheduled">Profile</property>
+  <property id="setpassword" type="toplevel" module="user" path="/views/myaccount/setuserpassword.html" >Change Password</property>
+</properties>
+

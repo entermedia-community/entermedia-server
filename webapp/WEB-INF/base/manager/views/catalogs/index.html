@@ -1,0 +1,26 @@
+#set ($catalogs = $userprofile.getCatalogs())
+#set( $sitesearcher = $searcherManager.getSearcher("media","site") )
+
+        <ul id="folders" class="fwlist">
+            <li class="section-title">
+                <span style="margin-left: 20px;">Catalogs</span>
+            </li>
+#foreach ($catalog in $catalogs)
+
+          <li class="auto">
+        <a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id" class="folder">
+            <div class="name">
+                <div class="alias">$catalog</div>
+
+            </div>
+        </a>
+    </li>
+#end
+
+            <li class="add">
+            <div class="folder"></div>
+             <div class="scan" style="margin-right: 0;">
+                 <a class="btn" href="$home$apphome/views/servers/addserver.html">Add New Catalog</a>
+             </div> 
+        </li>
+        </ul>

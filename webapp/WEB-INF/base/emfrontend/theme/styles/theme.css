@@ -4185,6 +4185,7 @@ td[title]:hover:before {
     font-weight: bold;
     background: url('../images/ds-rightedge.png') top right repeat-y;
     vertical-align: top;
+    line-height: 28px;
 }
 #emcontainer #emselectable  #default-fields .settings-table tr td:nth-child(2) {
     border-left: 1px solid #ddd;   
