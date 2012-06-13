@@ -1,8 +1,7 @@
 #set( $dataroot = $context.findValue("dataroot"))
 
-<div class="tab-actions">
-<strong>[[Upload your data]].</strong>
-</div>
+   $pages.include("../list/actions.html")
+
 
 <fieldset style="margin: 20px;">
 	<form name="excelimport" method="post" enctype="multipart/form-data" action="$dataroot/import/importfinish.html">

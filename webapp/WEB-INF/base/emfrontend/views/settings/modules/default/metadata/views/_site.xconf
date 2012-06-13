@@ -5,4 +5,5 @@
 
 		<property name="subtab">views</property>
 	<property name="tab">views</property>
+	
 </page>
