@@ -3491,8 +3491,9 @@ span.drag-and-drop {
 	border-left: 1px solid #15566b;
 	padding: 10px 8px;
 }
-#workarea li.header:hover {
+#workarea li.header, #workarea li.header:hover  {
 	background: #3DAACD;
+	border-right: 1px solid #15566b;
 }
 #side-nav-inner ul li.header {
 	background: #3DAACD  url('../images/sidebar-shadow.png') top right repeat-y;	

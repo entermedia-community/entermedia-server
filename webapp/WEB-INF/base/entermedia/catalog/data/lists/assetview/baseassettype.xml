@@ -1,6 +1,6 @@
 <properties>
 	
-	<property id="general" byassettype="true" userdefined="true" ordering="01">General</property>
-	<property id="fileproperties" byassettype="true" userdefined="true" ordering="02">File Properties</property>
+	<property id="general" byassettype="true" ordering="01">General</property>
+	<property id="fileproperties" byassettype="true"  ordering="02">File Properties</property>
 	
 </properties>

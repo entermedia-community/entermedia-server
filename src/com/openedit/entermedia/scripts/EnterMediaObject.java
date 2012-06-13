@@ -23,7 +23,7 @@ public class EnterMediaObject
 	protected ScriptLogger log;
 	protected GroovyScriptEngine engine;
 	protected UserManager userManager;
-	protected PageManager pageManager;
+	//protected PageManager pageManager;
 	protected File root;
 	public MediaArchive getMediaArchive()
 	{
@@ -72,11 +72,11 @@ public class EnterMediaObject
 	}
 	public PageManager getPageManager()
 	{
-		return pageManager;
+		return (PageManager)getModuleManager().getBean("pageManager");
 	}
 	public void setPageManager(PageManager inPageManager)
 	{
-		pageManager = inPageManager;
+		//pageManager = inPageManager;
 	}
 	public File getRoot()
 	{

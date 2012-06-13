@@ -1,0 +1,75 @@
+#set($searcher = $mediaarchive.getAssetSearcher())
+#set($viewid = $context.getRequestParameter("viewid"))
+
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "assetview"))
+#set($views = $viewsearcher.fieldSearch("userdefined","true","ordering" ) )
+
+
+	<div id="table-container">
+		<div id="side-nav-inner">
+			<ul class="sortable">
+		
+				<li class="header no-sort">Editing Boxes</li>
+				<li class="no-sort"><a href="#">Add New</a></li>
+
+			#foreach( $target in $views)
+				<li  #if($viewid == $target.id)class="current" #end byassettype="$!target.byassettype"><a href="$home$apphome/views//settings/modules/asset/metadata/views/index.html?viewid=$target.id&viewpath=asset/assettype/default/$target.id"><span class="drag-and-drop"></span>$target</a></li>
+			#end			
+				<!-- 
+								<li  class="current"><a href="#"><span class="drag-and-drop"></span>General</a></li>
+								<li><a href="#"><span class="drag-and-drop"></span>Address</a></li>
+								<li><a href="#"><span class="drag-and-drop"></span>Company</a></li>
+								<li><a href="#"><span class="drag-and-drop"></span>Relations</a></li>
+				 -->				
+			</ul>		
+		</div>
+		<div id="workarea">
+			$pages.includeContent()
+		</div>
+	</div>
+
+
+<script type="text/javascript">
+$('.sortable').sortable({
+	items: "li:not(.no-sort)"
+});
+
+	loadViews = function() {
+		var selected = jQuery("#viewid option:selected");
+		
+		var selectedid = selected.val();
+
+		var view = "";
+
+		var byassettype = selected.attr("byassettype");
+		if( byassettype == 'true')		
+		{
+			var assettype = jQuery("#assettype option:selected");
+			var assettypeid = assettype.val();
+			if( assettypeid == 'default' || typeof(assettypeid) == 'undefined')
+			{
+				view = "asset/assettype/default/" + selectedid;
+			}
+			else
+			{
+				view = "asset/assettype/" + assettypeid + "/" + selectedid;
+			}
+		}
+		else
+		{
+			view = 	selectedid;
+		}
+		document.location.href = "$home$apphome/views//settings/modules/asset/metadata/views/editing.html?viewpath=" + view + "&viewid=" + selectedid + "&assettype=" +  assettypeid +"&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}";
+	}
+
+	removeProperty = function() {
+		var selected = jQuery("select option:selected");
+		var selectedid = selected.val();
+		jQuery("#modifyproperties").load("$home$apphome/views/settings/metadata/fields/removeproperty.html?id=" + selectedid + "&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+	}
+	
+	createProperty = function() {
+		jQuery("#modifyproperties").load("$home$apphome/views/settings/metadata/fields/addproperty.html?catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+	}
+</script>
+

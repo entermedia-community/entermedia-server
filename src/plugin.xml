@@ -1138,9 +1138,7 @@
 	</bean>
 	  
 	  <bean id="DataImportModule" class="org.openedit.entermedia.modules.DataImportModule">
-			<property name="pageManager"><ref bean="pageManager" /></property>
-		
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
 	</bean>
 	
 	

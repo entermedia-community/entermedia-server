@@ -21,7 +21,7 @@
 		#if ($detail.getExternalId )
 			<td><br>$!detail.getExternalId()</td>
 		#end
-		<td><b>$detail.id</b><span class="emselectabledetails">$!detail.getText($context)</span><a class="ajax delete-row" targetdiv="" href=""></a></td>
+		<td><b>$!detail.getText($context)</b><span class="emselectabledetails">$detail.id</span><a class="ajax delete-row" targetdiv="" href=""></a></td>
 		
 			
 	</tr>
