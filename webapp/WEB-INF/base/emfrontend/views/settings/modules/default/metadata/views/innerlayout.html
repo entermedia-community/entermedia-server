@@ -2,7 +2,9 @@
 #set($viewid = $context.getRequestParameter("viewid"))
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "assetview"))
-#set($views = $viewsearcher.fieldSearch("userdefined","true","ordering" ) )
+#set ( $systemdefined = "false" )
+#set ( $systemdefined = $context.findValue("systemdefined") )
+#set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
 
 
 	<div id="table-container">
@@ -10,17 +12,18 @@
 			<ul class="sortable">
 		
 				<li class="header no-sort">Editing Boxes</li>
-				<li class="no-sort"><a href="#">Add New</a></li>
+				<li class="no-sort add-to">Add New</li>
+			
 
 			#foreach( $target in $views)
-				<li  #if($viewid == $target.id)class="current" #end byassettype="$!target.byassettype"><a href="$home$apphome/views//settings/modules/asset/metadata/views/index.html?viewid=$target.id&viewpath=asset/assettype/default/$target.id"><span class="drag-and-drop"></span>$target</a></li>
+			     #set ( $typepath = "" )
+			     #if ( $target.byassettype == "true" )
+			         #set ( $typepath = "assettype/default/")
+			     #end
+				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype"><a href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=$target.id&viewpath=asset/${typepath}$target.id"><span class="drag-and-drop"></span>$target</a></li>
+			 
 			#end			
-				<!-- 
-								<li  class="current"><a href="#"><span class="drag-and-drop"></span>General</a></li>
-								<li><a href="#"><span class="drag-and-drop"></span>Address</a></li>
-								<li><a href="#"><span class="drag-and-drop"></span>Company</a></li>
-								<li><a href="#"><span class="drag-and-drop"></span>Relations</a></li>
-				 -->				
+								
 			</ul>		
 		</div>
 		<div id="workarea">

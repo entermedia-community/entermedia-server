@@ -1,10 +1,10 @@
 <properties>
 	
-	<property id="asset/advancedsearch" system="true" byassettype="false">Advanced Search</property>
-	<property id="asset/assettype/default/singleupload" system="true" byassettype="false">Single Upload</property>
-	<property id="multipleupload" system="true" byassettype="true">Multiple Upload</property>
-	<property id="asset/resultstable" system="true" byassettype="false">Results Table</property>
-	<property id="asset/restassetdetails" system="true" byassettype="false">REST API Asset Details</property>
-	<property id="asset/restsearchresults" system="true" byassettype="false">REST API Results</property>
+	<property id="advancedsearch" systemdefined="true" byassettype="false">Advanced Search</property>
+	<property id="singleupload" systemdefined="true" byassettype="true">Single Upload</property>
+	<property id="multipleupload" systemdefined="true" byassettype="true">Multiple Upload</property>
+	<property id="resultstable" systemdefined="true" byassettype="false">Results Table</property>
+	<property id="restassetdetails" systemdefined="true" byassettype="false">REST API Asset Details</property>
+	<property id="restsearchresults" systemdefined="true" byassettype="false">REST API Results</property>
 	
 </properties>

@@ -3398,11 +3398,12 @@ div#folders.add .folder {
 #side-nav-inner ul li:first-child {
 	border-top: 1px solid #aaa;
 }
-#side-nav-inner ul li a {
+#side-nav-inner ul li a, #side-nav-inner ul li.add-to {
 	padding: 8px 0 8px 5px;
 	color: #666;
 	display: block;
 }
+
 #side-nav-inner ul li a:hover {
 	color: #444;
 	background: #ededed url('../images/sidebar-shadow.png') top right repeat-y;	
@@ -3644,6 +3645,8 @@ span.drag-and-drop {
 	border-radius: 5px; 
 	font-size: 12px;
 	margin: 0 5px;
+	position: relative;
+    top: 2px;
 }
 .emselectabledetails {
 	font-size: 12px;
