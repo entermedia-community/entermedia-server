@@ -7,7 +7,8 @@
 	##loop over scripts
 		<option value="none">- Choose Import Script -</option>
 		#foreach( $script in $scripts)
-			<option >$script.getName()</option>
+			<option value="$script.getName()">$script.getName()</option>
+			
 		#end
 		<option value="new">Add New</option>
 	</select> 
