@@ -22,7 +22,7 @@ public class Header
 	{
 		for (int i = 0; i < inHeaders.length; i++)
 		{
-			Integer integer = new Integer(i);
+			//Integer integer = new Integer(i);
 			getHeaderNames().add(inHeaders[i]);
 		}
 	}

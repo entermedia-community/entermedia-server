@@ -86,7 +86,7 @@ public class ImportFile
 	public Row getNextRow() throws IOException
 	{
 		String[] cells = getParser().readNext();
-		if ( cells == null)
+		if ( cells == null || cells.length == 0)
 		{
 			close();
 			return null;

@@ -83,7 +83,10 @@ public class CSVReader implements Parser {
     public CSVReader(Reader reader, char separator) {
         this(reader, separator, DEFAULT_QUOTE_CHARACTER);
     }
-    
+    //Used for Groovy since it treats '' as strings
+    public CSVReader(Reader reader, String separator, String quotechar) {
+        this(reader, separator.charAt(0), quotechar.charAt(0), DEFAULT_SKIP_LINES);
+    }
     
 
     /**
@@ -158,7 +161,11 @@ public class CSVReader implements Parser {
     	try
     	{
 	        String nextLine = getNextLine();
-	        return hasNext ? parseLine(nextLine) : null;
+	        if( nextLine == null || nextLine.length() == 0 )
+	        {
+	        	return null;
+	        }
+	        return parseLine(nextLine);
     	}
     	catch ( Exception ex)
     	{
