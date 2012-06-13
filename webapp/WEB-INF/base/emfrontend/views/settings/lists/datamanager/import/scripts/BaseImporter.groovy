@@ -76,6 +76,7 @@ public class BaseImporter extends EnterMediaObject
 		finally 
 		{
 			FileUtils.safeClose(reader);
+			getPageManager().removePage(upload);
 		}
 		searcher.saveAllData(data, context.getUser());
 		//searcher.reIndexAll();

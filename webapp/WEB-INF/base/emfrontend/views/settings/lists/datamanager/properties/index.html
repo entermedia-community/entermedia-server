@@ -1,5 +1,6 @@
+#set( $dataroot = $context.findValue("dataroot"))
 
-<div class="tab">
+<div class="tab" id="field-tab">
 	<div class="tab-actions">
 		#if( $catalogid && $searchtype)
 			<form action="addnew.html" name="addnewprop">
@@ -21,14 +22,14 @@
 		#if ($detail.getExternalId )
 			<td><br>$!detail.getExternalId()</td>
 		#end
-		<td><b>$!detail.getText($context)</b><span class="emselectabledetails">$detail.id</span><a class="ajax delete-row" targetdiv="" href=""></a></td>
+		<td><b>$!detail.getText($context)</b><span class="emselectabledetails">#if( $detail.getDataType() ) $detail.getDataType() #else textbox #end</span></td>
 		
 			
 	</tr>
 	#end
 	</table>
 	##this will auto submit when they click
-	<form name="editlink" action="edit.html">
+	<form name="editlink" action="$dataroot/properties/edit.html?oemaxlevel=1">
 		<input type="hidden" name="id" id="emselectedrow" value="" />
 		<input type="hidden" name="catalogid" value="$catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />

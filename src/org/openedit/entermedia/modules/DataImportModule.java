@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
+import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.util.CSVReader;
 
@@ -206,4 +208,16 @@ public class DataImportModule extends DataEditModule
 		getPageManager().saveContent(page, inReq.getUser(), code, "web edit");
 
 	}
+	public void createTable(WebPageRequest inReq) throws Exception
+	{
+		String tablename = inReq.findValue("searchtype");
+		String catalogid = inReq.findValue("catalogid");
+		
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+		PropertyDetails details = archive.getPropertyDetails(tablename);
+		//will default to defaults
+		archive.savePropertyDetails(details, tablename, inReq.getUser());
+		
+
+	}	
 }

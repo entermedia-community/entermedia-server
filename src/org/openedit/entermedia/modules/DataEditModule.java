@@ -42,7 +42,6 @@ import com.openedit.users.User;
 
 public class DataEditModule extends BaseMediaModule
 {
-	protected SearcherManager fieldSearcherManager;
 	protected XmlArchive fieldXmlArchive;
 	//	protected WebEventListener fieldWebEventListener;
 	private static final Log log = LogFactory.getLog(DataEditModule.class);
@@ -566,15 +565,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 	}
 
-	public SearcherManager getSearcherManager()
-	{
-		return fieldSearcherManager;
-	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager)
-	{
-		fieldSearcherManager = inSearcherManager;
-	}
 
 	public List loadSearchTypes(WebPageRequest inReq)
 	{

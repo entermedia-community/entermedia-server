@@ -67,9 +67,6 @@
 		</property>
 	</bean>
 	<bean id="DataEditModule" class="org.openedit.entermedia.modules.DataEditModule">
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
