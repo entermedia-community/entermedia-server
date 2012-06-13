@@ -3443,7 +3443,7 @@ div#folders.add .folder {
 	background: #ededed; 
 }
 #workarea ul li .delete-row {
-	margin: 3px 0 0 0;
+	margin: 3px 2px 0 0;
 	padding: 0;
 }
 #workarea ul li a {
