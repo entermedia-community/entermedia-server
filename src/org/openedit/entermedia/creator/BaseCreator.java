@@ -148,7 +148,7 @@ public abstract class BaseCreator implements MediaCreator
 	{
 		if (fieldWaterMarkPath == null)
 		{
-			Page water = getPageManager().getPage(inThemePrefix + "/entermedia/images/watermark.png");
+			Page water = getPageManager().getPage(inThemePrefix + "/images/watermark.png");
 			fieldWaterMarkPath = water.getContentItem().getAbsolutePath(); // Strings for performance
 		}
 		return fieldWaterMarkPath;

@@ -102,7 +102,7 @@
 			var file = $(this).find('.name');
 			file = $(file);
 			var fileid = file.attr("fileid");
-			$("#preview-pane").load("$home$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
+			$("#preview-pane").load("$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
 			$('#tree ul li div').removeClass('selected');
 			$(this).addClass('selected');
 		}
@@ -149,7 +149,7 @@
 					} else {
 					   $("#" + id + "_row").find('> ul').toggle('fast');
 					   $("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get("$home$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+					   jQuery.get("$home$apphome/views/settings/modules/asset/metadata/categories/expandnode.html?nodeID=" + node);
 					}
 				} else {
 					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
@@ -184,7 +184,7 @@
 					} else {
 					   $("#" + id + "_row").find('> ul').toggle('fast');
 					   $("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get("$home$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+					   jQuery.get("$home$apphome/views/settings/modules/asset/metadata/categories/expandnode.html?nodeID=" + node);
 					}
 				} else {
 					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
@@ -192,7 +192,7 @@
 					$("#" + id + "_row > div .arrow").addClass('down');
 				}
 				
-				$("#" + id + "_upload-file").load('$apphome/views/modules/assets/editor/attachments/upload.html?assetid=${asset.id}&fileid=$file.id' + id);
+				$("#" + id + "_upload-file").load('$attachmentroot/upload.html?assetid=${asset.id}&fileid=$file.id' + id);
 				$("#" + id + "_upload-file").show("fast");
 				$("#" + id + "_upload-file div").css('padding-left', padding );
 				$("#" + id + "_row > div").addClass('selected');
@@ -271,7 +271,7 @@
 				
 				
 				var newname = $("#" + id + "_edit_field").attr("value");
-				jQuery.get("$apphome/views/modules/assets/editor/attachments/renamefolder.html", {
+				jQuery.get("$attachmentroot/renamefolder.html", {
 					'id': id,
 					fileid: id,
 					'foldername': newname,
@@ -301,7 +301,7 @@
 				var newname = $("#" + id + "_new").attr("value");
 				var parentid = $("#" + id + "_new").data("parent");
 
-				jQuery.get("$apphome/views/modules/assets/editor/attachments/createfolder-finish.html", {
+				jQuery.get("$attachmentroot/createfolder-finish.html", {
 					//'id': id,
 					fileid: id,
 					'foldername': newname,
@@ -331,7 +331,7 @@
 				}
 
 				var id = $(this).attr('fileid');
-				jQuery.get("$apphome/views/modules/assets/editor/attachments/delete.html", {
+				jQuery.get("$attachmentroot/delete.html", {
 					fileid: id,					
 					'assetid': $asset.id
 					} , function () {						
@@ -361,7 +361,7 @@
 */
 
 	repaint = function () {
-		jQuery("#attachments-tree").load("$apphome/views/modules/assets/editor/attachments/files.html?assetid=$asset.id&oemaxlevel=1");
+		jQuery("#attachments-tree").load("$apphome$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1");
 		
 		
 	}

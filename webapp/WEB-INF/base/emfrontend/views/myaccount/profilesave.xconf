@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+<path-action name="User.updateUserProperties" />
+	<path-action name="User.loadUserProperties" /> 
+  
+  <path-action name="ValidationModule.validateFields">
+    <catalogid>${membershipid}</catalogid>
+    
+  </path-action>
+  <property name="redirect">true</property>
+  <property name="type">member</property>
+ 
+  <property name="configpath">/${membershipid}/configuration/</property>
+  <property name="errorURL">/${membershipid}/profile/index.html</property>
+ 
+ 
+ 
+	
+</page>

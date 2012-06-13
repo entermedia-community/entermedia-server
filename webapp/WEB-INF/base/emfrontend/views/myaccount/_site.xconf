@@ -1,0 +1,4 @@
+<page>
+<inner-layout>/${applicationid}/views/myaccount/innerlayout.html</inner-layout>
+
+</page>

@@ -45,7 +45,7 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			inStructions.setWatermark(false);
 			String outputPath = populateOutputPath(inArchive, inStructions); //now does not contain wm
-			Page ogetCatalogHomeutputPage = getPageManager().getPage(outputPath);
+			Page outputPage = getPageManager().getPage(outputPath);
 			if(!outputPage.exists())
 			{
 				createOutput(inArchive, inAsset, outputPage, inStructions); //this will create smaller version
