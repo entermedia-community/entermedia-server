@@ -694,6 +694,7 @@ public class DataEditModule extends BaseMediaModule
 		Searcher searcher = getSearcherManager().getSearcher(catid, "view");
 		Data data = searcher.createNewData();
 		String id = PathUtilities.makeId(name);
+		id = id.toLowerCase();
 		data.setId(id);
 		data.setName(name);
 		
