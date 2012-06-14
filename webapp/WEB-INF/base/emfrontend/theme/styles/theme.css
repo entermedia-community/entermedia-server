@@ -4146,7 +4146,7 @@ td[title]:hover:before {
 #default-tabs {
     box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.04);
     margin: 40px 0 0 0;
-    height: 15px;
+    height: 20px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     background: rgb(255,255,255);
@@ -4192,22 +4192,22 @@ td[title]:hover:before {
     position: relative;
     z-index: 150;
 }
-#emcontainer #emselectable  #default-fields .settings-table {
+#emcontainer #resultslist  #default-fields .settings-table {
     margin: 0;
     padding: 0;
 }
-#emcontainer #emselectable  #default-fields .settings-table tr {
+#emcontainer #resultslist  #default-fields .settings-table tr {
     margin: 0;
     padding: 0;
     border-color: #ddd;
 }
-#emcontainer #emselectable  #default-fields .settings-table tr:nth-child(even) {
+#emcontainer #resultslist  #default-fields .settings-table tr:nth-child(even) {
     background: #f7f7f7;  
 }
-#emcontainer #emselectable  #default-fields .settings-table tr td {
+#emcontainer #resultslist  #default-fields .settings-table tr td {
     padding: 12px 20px;
 }
-#emcontainer #emselectable  #default-fields .settings-table tr td:first-child {
+#emcontainer #resultslist  #default-fields .settings-table tr td:first-child {
     text-align: right;
     width: 150px;
     color: #444;
@@ -4216,11 +4216,26 @@ td[title]:hover:before {
     vertical-align: top;
     line-height: 28px;
 }
-#emcontainer #emselectable  #default-fields .settings-table tr td:nth-child(2) {
+#emcontainer #resultslist  #default-fields .settings-table tr td:nth-child(2) {
     border-left: 1px solid #ddd;   
 }
-#emcontainer #emselectable  #default-fields .settings-table tr td[colspan="2"] {
+#emcontainer #resultslist  #default-fields .settings-table tr td[colspan="2"] {
     display: none;   
+}
+#default-tabs ul li #editboxlink {
+    background: url('../images/iconset-10x10.png') 10px 20px !important;
+    width: 10px;
+    height: 10px;
+    display: block;
+    opacity: 0.8;
+    padding: 0;
+    margin: 0;    
+    border: none;
+    float: right;
+    margin: 30px 20px 0 0;
+}
+#default-tabs ul li #editboxlink:hover {
+    opacity: 1; 
 }
 
 /* DRAG AND DROP */
