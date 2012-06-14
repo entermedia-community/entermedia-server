@@ -7,7 +7,12 @@
 
 #set( $viewpath = $context.getRequestParameter("viewpath") )
 #set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
-<ul>
+
+#set( $viewsroot = $content.viewsroot )
+
+
+<ul  viewid="$viewid" catalogid="$catalogid" searchtype="asset" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
+
 	<li class="header no-sort">Fields
 #if( $viewid )
 
@@ -39,7 +44,7 @@
 
             <select name="newone" style="float: right; margin-top: -17px;" onchange="jQuery('#addtoview').submit()">
                 <option value=""> </option>
-                #foreach( $detail in $searcher.getPropertyDetails() )
+                #foreach( $detail in $searcher.getUserPropertyDetails() )
                     <option value="$detail.id">$detail.text</option>
                 #end
             </select>
@@ -51,8 +56,8 @@
 			#set($details =  $searcher.getDetailsForView($viewpath, $user))
 			#foreach( $element in $details)
 				#set( $pid = $element.id)
-				<li><span class="drag-and-drop rowdraggable metadatadroppable" id="$pid" viewid="$viewid" catalogid="$catalogid" searchtype="asset" assettype="$assettype" viewpath="$viewpath"></span>
-					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$assettype">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+				<li class="rowdraggable metadatadroppable" id="$pid" ><span class="drag-and-drop"></span>
+					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=asset">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					
 					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=asset&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
 				</li>

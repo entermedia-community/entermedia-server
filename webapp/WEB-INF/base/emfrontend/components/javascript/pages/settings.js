@@ -6,14 +6,19 @@
 				{
 					jQuery(this).droppable(
 						{
-							drop: function(event, ui) {
+							drop: function(event, ui) 
+							{
 								var source = ui.draggable.attr("id");
-								var viewpath = ui.draggable.attr("viewpath");
-								var seachtype = ui.draggable.attr("searchtype");
-								var assettype = ui.draggable.attr("assettype");
-								var viewid = ui.draggable.attr("viewid");
 								var destination = this.id;
-								jQuery("#metadataeditarea").load("$home$apphome/views/settings/metadata/views/movefields.html",
+
+								var ul = ui.draggable.closest("ul");
+								var viewpath = ul.attr("viewpath");
+								var seachtype = ul.attr("searchtype");
+								var assettype = ul.attr("assettype");
+								var viewid = ul.attr("viewid");
+								var path = ul.attr("path");
+								
+								jQuery("#workarea").load(path,
 									{
 									"source":source,
 									"destination":destination,

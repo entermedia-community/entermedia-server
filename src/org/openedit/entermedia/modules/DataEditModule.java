@@ -694,6 +694,11 @@ public class DataEditModule extends BaseMediaModule
 		String id = PathUtilities.makeId(name);
 		data.setId(id);
 		data.setName(name);
+		
+		
+		
+		data.setProperty("systemdefined", "false" );
+		
 		searcher.saveData(data, inReq.getUser());
 //		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";
 //		XmlFile file = getXmlArchive().getXml(path, "property");
