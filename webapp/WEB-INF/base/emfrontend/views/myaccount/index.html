@@ -41,7 +41,11 @@ $context.putPageValue("data", $selectedUser)
                     Saved 
                     </div>
                     #end
-            $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		<div id="resultslist">
+			<div id="default-fields">
+ 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			</div>
+		</div>
             </div>
             
             #if( $message || $errors)
