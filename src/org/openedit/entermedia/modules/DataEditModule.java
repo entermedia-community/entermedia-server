@@ -39,6 +39,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.users.User;
+import com.openedit.util.PathUtilities;
 
 public class DataEditModule extends BaseMediaModule
 {
@@ -686,11 +687,18 @@ public class DataEditModule extends BaseMediaModule
 	{
 		String catid = resolveCatalogId(inReq);
 		String name = inReq.getRequestParameter("newname");
-		String type = resolveSearchType(inReq);
-		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";
-		XmlFile file = getXmlArchive().getXml(path, "property");
-
-		getXmlArchive().saveXml(file, inReq.getUser());
+		//String type = resolveSearchType(inReq);
+		
+		Searcher searcher = getSearcherManager().getSearcher(catid, "assetview");
+		Data data = searcher.createNewData();
+		String id = PathUtilities.makeId(name);
+		data.setId(id);
+		data.setName(name);
+		searcher.saveData(data, inReq.getUser());
+//		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";
+//		XmlFile file = getXmlArchive().getXml(path, "property");
+//
+//		getXmlArchive().saveXml(file, inReq.getUser());
 	}
 
 	public void deleteView(WebPageRequest inReq)
