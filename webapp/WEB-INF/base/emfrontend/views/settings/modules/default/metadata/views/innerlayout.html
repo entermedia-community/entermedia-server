@@ -4,9 +4,9 @@
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set ( $systemdefined = "false" )
 #set ( $systemdefined = $context.findValue("systemdefined") )
-#set ( $module = $context.findValue("module") )		
+#set ( $moduleid = $context.findValue("module") )		
 
-#set($query = $viewsearcher.createSearchQuery().append("module",$module).append("systemdefined",$systemdefined) )
+#set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined",$systemdefined) )
 $!query.addSortBy("ordering")
 		
 ##set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
@@ -16,18 +16,14 @@ $!query.addSortBy("ordering")
 #set( $viewsroot = $content.viewsroot )
 	<div id="table-container">
 		<div id="side-nav-inner">
-			<ul>
+			<ul class="sortable">
 		
 				<li class="header no-sort">Editing Boxes</li>
 				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
 
 			#foreach( $target in $views)
-			     #set ( $typepath = "" )
-			     #if ( $target.byassettype == "true" )
-			         #set ( $typepath = "assettype/default/")
-			     #end
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
-					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=asset/${typepath}$target.id">
+					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=${moduleid}/$target.id">
 					<span class="XXXdrag-and-drop"></span>$target</a></li>
 			 
 			#end			
@@ -41,7 +37,9 @@ $!query.addSortBy("ordering")
 
 
 <script type="text/javascript">
-
+$('.sortable').sortable({
+	items: "li:not(.no-sort)"
+});
 
 	loadViewsByAssetType = function(assettypeid, viewid) {
 	

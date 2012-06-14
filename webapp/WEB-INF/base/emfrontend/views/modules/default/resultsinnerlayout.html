@@ -14,25 +14,23 @@
 #set($hits = $context.getPageValue($content.hitsname))
 #end
 $context.putPageValue("hits", $hits)
-#set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
+#set( $moduleid = $context.findValue("module") )
 
 <div id="searchplugin">
 	<div class="subcolumns">
 		<div class="c25l" id="left-col">
-				$pages.include("/$applicationid/views/modules/${module.id}/sidebar/standard.html")
+				$pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html")
 		</div>
 		<div id="right-col" class="module-inner">
 				
 					<div id="resultsdiv">
 						<div id="emresultscontent">
 							
-							$pages.include("/$applicationid/views/modules/$module/resultsactions.html")
+							$pages.include("/$applicationid/views/modules/${moduleid}/resultsactions.html")
 							
 							<div id="resultsarea">
 								<div id="resultslist">
-									<div id="emselectable">
 										$pages.includeContent()
-									</div>
 								</div>
 							</div>
 							
