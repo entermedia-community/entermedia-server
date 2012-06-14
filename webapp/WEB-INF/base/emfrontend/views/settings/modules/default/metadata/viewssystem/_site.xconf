@@ -2,4 +2,6 @@
 	<property name="fallbackdirectory">/emfrontend/views/settings/modules/default/metadata/views</property>
 	<property name="systemdefined">true</property>
 	<property name="subtab">systemviews</property>
+	<property name="viewsroot">/${applicationid}/views/settings/modules/asset/metadata/viewssystem</property>
+	
 </page>

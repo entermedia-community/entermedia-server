@@ -6,21 +6,21 @@
 #set ( $systemdefined = $context.findValue("systemdefined") )
 #set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
 
-
+#set( $viewsroot = $content.viewsroot )
 	<div id="table-container">
 		<div id="side-nav-inner">
 			<ul class="sortable">
 		
 				<li class="header no-sort">Editing Boxes</li>
-				<li class="no-sort"><a href="#">Add New</a></li>
-			
+				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
 
 			#foreach( $target in $views)
 			     #set ( $typepath = "" )
 			     #if ( $target.byassettype == "true" )
 			         #set ( $typepath = "assettype/default/")
 			     #end
-				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype"><a href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=$target.id&viewpath=asset/${typepath}$target.id"><span class="drag-and-drop"></span>$target</a></li>
+				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
+					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=asset/${typepath}$target.id"><span class="drag-and-drop"></span>$target</a></li>
 			 
 			#end			
 								
@@ -37,34 +37,21 @@ $('.sortable').sortable({
 	items: "li:not(.no-sort)"
 });
 
-	loadViews = function() {
-		var selected = jQuery("#viewid option:selected");
-		
-		var selectedid = selected.val();
-
+	loadViewsByAssetType = function(assettypeid, viewid) {
+	
 		var view = "";
 
-		var byassettype = selected.attr("byassettype");
-		if( byassettype == 'true')		
+		if( assettypeid == 'default' || typeof(assettypeid) == 'undefined')
 		{
-			var assettype = jQuery("#assettype option:selected");
-			var assettypeid = assettype.val();
-			if( assettypeid == 'default' || typeof(assettypeid) == 'undefined')
-			{
-				view = "asset/assettype/default/" + selectedid;
-			}
-			else
-			{
-				view = "asset/assettype/" + assettypeid + "/" + selectedid;
-			}
+			view = "asset/assettype/default/" + viewid;
 		}
 		else
 		{
-			view = 	selectedid;
+			view = "asset/assettype/" + assettypeid + "/" + viewid;
 		}
-		document.location.href = "$home$apphome/views//settings/modules/asset/metadata/views/editing.html?viewpath=" + view + "&viewid=" + selectedid + "&assettype=" +  assettypeid +"&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}";
+		document.location.href = "$home$viewsroot/index.html?viewid=" + viewid + "&viewpath=" + view + "&assettype=" +  assettypeid +"&searchtype=${searcher.getSearchType()}";
 	}
-
+/*
 	removeProperty = function() {
 		var selected = jQuery("select option:selected");
 		var selectedid = selected.val();
@@ -74,5 +61,6 @@ $('.sortable').sortable({
 	createProperty = function() {
 		jQuery("#modifyproperties").load("$home$apphome/views/settings/metadata/fields/addproperty.html?catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
 	}
+*/	
 </script>
 
