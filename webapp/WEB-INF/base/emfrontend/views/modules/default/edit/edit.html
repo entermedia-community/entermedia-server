@@ -40,11 +40,9 @@ $context.putPageValue("view", $viewpath)
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
 					<a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id">
 					$target</a>
-					    #foreach( $target in $views)
 
-         <a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$module">Edit</a>
 
-    #end
+
 					</li>
 		#end			
     </ul>
@@ -66,7 +64,7 @@ $context.putPageValue("view", $viewpath)
     	<input name="viewpath" type="hidden" value="$viewpath" />
     	<input name="origURL"  type="hidden" value="$!origURL" />
     	
-    		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+    		$pages.include("./editarea.html", $context)
     
     <input class="btn right" style="margin: 20px 20px 0 0;" type="submit" value="Save" />
     </form>

@@ -4222,7 +4222,7 @@ td[title]:hover:before {
 #emcontainer #resultslist  #default-fields .settings-table tr td[colspan="2"] {
     display: none;   
 }
-#default-tabs ul li #editboxlink {
+#editboxlink {
     background: url('../images/iconset-10x10.png') 10px 20px !important;
     width: 10px;
     height: 10px;
@@ -4232,9 +4232,9 @@ td[title]:hover:before {
     margin: 0;    
     border: none;
     float: right;
-    margin: 30px 20px 0 0;
+    margin: -17px 20px 0 0;
 }
-#default-tabs ul li #editboxlink:hover {
+#editboxlink:hover {
     opacity: 1; 
 }
 
