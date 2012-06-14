@@ -4,6 +4,19 @@
 		jQuery(".metadatadroppable").livequery(
 				function()
 				{
+					jQuery(this).draggable({
+						start: function(){
+							var width = jQuery(this).width();
+							var id = jQuery(this).attr('id');
+							
+					        jQuery(this).hide();
+					        jQuery(this).attr('id', 'old-' + id);
+					        jQuery('#' + id).width(width);
+					        jQuery(this).attr('id', id);
+					        
+						}
+							
+					});
 					jQuery(this).droppable(
 						{
 							drop: function(event, ui) 

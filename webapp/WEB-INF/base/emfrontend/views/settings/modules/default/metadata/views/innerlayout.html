@@ -9,7 +9,7 @@
 #set( $viewsroot = $content.viewsroot )
 	<div id="table-container">
 		<div id="side-nav-inner">
-			<ul class="sortable">
+			<ul>
 		
 				<li class="header no-sort">Editing Boxes</li>
 				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
@@ -34,9 +34,7 @@
 
 
 <script type="text/javascript">
-$('.sortable').sortable({
-	items: "li:not(.no-sort)"
-});
+
 
 	loadViewsByAssetType = function(assettypeid, viewid) {
 	
