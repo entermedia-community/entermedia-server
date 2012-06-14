@@ -7,50 +7,44 @@
 
 #else
 
-		<h1 class="page-title">Your EnterMedia Catalogs</h1>
-		<h2 class="page-subtitle">Tip of the day: To add a new app, click the green plus next to the catalog in which you wish to add the app.</h2>
-
+<ul id="folders" class="fwlist">
 #set( $sitesearcher = $searcherManager.getSearcher("media","site") )
 
 #foreach ($catalog in $catalogs)
 
-	<div class="server-set clearfix #if( $velocityCount == 1) server-set-first #end">
-		<axx href="$home$apphome/views/data/index.html?catalogid=$catalog.getId()">
-		<div class="server">
-			<div class="ir">$catalog</div>
-			<h3>$catalog</h3>
-		</div>
-		</axx>
+           <li class="section-title">
+             <span style="margin-left: 20px;">$catalog</span>
+           </li>
 
 		#set( $sites = $sitesearcher.fieldSearch("appcatalogid",$catalog.getId()) )
 		#foreach( $site in $sites)
-			<div class="app">
-				<a href="$home/${site.deploypath}"><img src="$home$themeprefix/images/apps/${site.frontendid}-icon.png" width="60" height="60" alt="$site" title="$context.siteRoot/${site.deploypath}" /></a>
-				<h4>$site</h4>
-			</div>
+			<li class="auto">
+        <a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id" class="folder">
+            <div class="name">
+                <div class="alias">$site</div>
+                <div class="path">$context.siteRoot/${site.deploypath}</div>
+                <div class="last-activity">$catalog.getId()</div>
+            </div>
+        </a>
+        <div class="scan">
+            <a class="btn" style="margin-top: 15px;" href="$home/${site.deploypath}">View Project</a>
+        </div>
+    </li>
 		#end	
-		<a style="text-decoration: none;"  href="$home$apphome/views/servers/addapp.html?appcatalogid=$catalog.getId()">
-		<div class="app add-app">
-			<h5>Add<br />New App</h5>
-		</div>
-		</a>
-	</div>
+		
+		<li class="add">
+            <div class="folder"></div>
+             <div class="scan" style="margin-right: 0;">
+                 <a class="btn" href="$home$apphome/views/servers/addapp.html?appcatalogid=$catalog.getId()">Add New Project</a>
+             </div> 
+        </li>
+		
+	
 #end		
 #end
-		<div class="server-set clearfix">
-			<a href="$home$apphome/views/servers/addserver.html">
-				<div class="server add-server">
-					<a href="$home$apphome/views/servers/addserver.html" class="ir">Catalog Name</a>
-					<a style="text-decoration: none;" href="$home$apphome/views/servers/addserver.html" ><h6>Add<br />New Catalog</h6></a>
-				</div>
-			</a>	
-		</div>
+</ul>
+		
+					<a style="text-decoration: none;" href="$home$apphome/views/servers/addserver.html" >Add New Catalog</a>
 
-
-
-		<p>
-					<a href="$home$apphome/views/update/index.html" class="btn">Update Manager</a>
-			##		<a href="$home$apphome/views/servers/addserver.html" class="ir">Mount Points</a>
-		</p>
 		
 	

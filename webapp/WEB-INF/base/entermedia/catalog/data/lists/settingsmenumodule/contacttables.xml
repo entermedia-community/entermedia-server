@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-	
-  <property id="contacttables"  type="toplevel" module="contact" ordering="200" path="/views/settings/modules/contact/tables/index.html" >Tables</property>
-
+  <property id="tables" module="contact"   type="toplevel" parentid="tables" path="/views/settings/modules/contact/metadata/index.html" ordering="30">Tables</property>
+  <property id="fields" module="contact"   parentid="tables" path="/views/settings/modules/contact/metadata/fields/index.html" ordering="30">Fields</property>
 </properties>

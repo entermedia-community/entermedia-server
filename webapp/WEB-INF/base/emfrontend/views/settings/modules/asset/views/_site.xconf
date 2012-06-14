@@ -1,8 +1,0 @@
-<page>
-	<path-action name="DataEditModule.loadViewTypes" />
-	<inner-layout>${dataroot}/innerlayout.html</inner-layout>
-
-	<property name="dataroot">/${applicationid}/views/settings/modules/asset/views</property>
-	<property name="subtab">assetviews</property>
-	<property name="tab">assetviews</property>
-</page>

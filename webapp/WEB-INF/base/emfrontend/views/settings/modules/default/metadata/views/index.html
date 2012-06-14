@@ -1,0 +1,60 @@
+#set($viewid = $context.getRequestParameter("viewid"))
+#set( $assettype = $context.getRequestParameter("assettype") )
+
+#if( !$assettype )
+	#set( $assettype = "default" )
+#end
+
+#set( $viewpath = $context.getRequestParameter("viewpath") )
+#set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
+<ul>
+	<li class="header no-sort">Fields
+	#if( $viewid )
+
+	#set($view = $searcherManager.getData("$catalogid", "assetview", $viewid))
+	#if($view.byassettype == "true" )
+	
+	<span style="float: right;">[[Asset Type]]: 
+	#set($current = $context.getRequestParameter("assettype")) 
+	#set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
+	
+	<select style="margin: 0 0 20px 0;" id="assettype" name="assettype">
+			<option value="default" >Default</option>
+				#foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
+					<option #if($current == $item.id) selected #end value="$item.id">$item</option>
+				#end
+			</select>
+	#end	
+	</span>
+#end
+	</li>
+				
+	<li class="no-sort add-to">
+	    Add New
+	    <form name="addtoview" id="addtoview" action="addtoview.html">
+            <input type="hidden" name="catalogid" value="$!catalogid"/>
+            <input type="hidden" name="searchtype" value="asset"/>
+            <input type="hidden" name="assettype" value="$assettype"/>
+            <input type="hidden" name="viewid" value="$viewid"/>
+            <input type="hidden" name="viewpath" value="$viewpath"/>
+
+            <select name="newone" style="float: right; margin-top: -17px;" onchange="jQuery('#addtoview').submit()">
+                <option value=""> </option>
+                #foreach( $detail in $searcher.getPropertyDetails() )
+                    <option value="$detail.id">$detail.text</option>
+                #end
+            </select>
+        </form>
+	</li>
+			#set($details = false)
+			#set($details =  $searcher.getDetailsForView($viewpath, $user))
+			#foreach( $element in $details)
+				#set( $pid = $element.id)
+				<li><span class="drag-and-drop rowdraggable metadatadroppable" id="$pid" viewid="$viewid" catalogid="$catalogid" searchtype="asset" assettype="$assettype" viewpath="$viewpath"></span>
+					<a href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					
+					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=asset&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
+				</li>
+			#end		
+		
+</ul>

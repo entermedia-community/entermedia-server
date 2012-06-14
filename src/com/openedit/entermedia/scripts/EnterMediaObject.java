@@ -5,6 +5,8 @@ import groovy.util.GroovyScriptEngine;
 
 import java.io.File;
 
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.events.PathEventManager;
 
@@ -23,7 +25,7 @@ public class EnterMediaObject
 	protected ScriptLogger log;
 	protected GroovyScriptEngine engine;
 	protected UserManager userManager;
-	protected PageManager pageManager;
+	//protected PageManager pageManager;
 	protected File root;
 	public MediaArchive getMediaArchive()
 	{
@@ -72,11 +74,11 @@ public class EnterMediaObject
 	}
 	public PageManager getPageManager()
 	{
-		return pageManager;
+		return (PageManager)getModuleManager().getBean("pageManager");
 	}
 	public void setPageManager(PageManager inPageManager)
 	{
-		pageManager = inPageManager;
+		//pageManager = inPageManager;
 	}
 	public File getRoot()
 	{
@@ -148,10 +150,28 @@ public class EnterMediaObject
 		return (OpenEditEngine)getModuleManager().getBean("OpenEditEngine");
 	}
 
+	public SearcherManager getSearcherManager()
+	{
+		return (SearcherManager)getModuleManager().getBean("searcherManager");
+	}
+
 	public PathEventManager getPathEventManager()
 	{
 		String catalogid = context.findValue("catalogid");
 		return (PathEventManager)getModuleManager().getBean(catalogid,"pathEventManager");
+	}
+
+	public Searcher loadSearcher(WebPageRequest inReq) throws Exception
+	{
+		String fieldname = inReq.findValue("searchtype");
+		if (fieldname == null)
+		{
+			return null;
+		}
+		String catalogId = inReq.findValue("catalogid");
+
+		org.openedit.data.Searcher searcher = getSearcherManager().getSearcher(catalogId, fieldname);
+		return searcher;
 	}
 
 	

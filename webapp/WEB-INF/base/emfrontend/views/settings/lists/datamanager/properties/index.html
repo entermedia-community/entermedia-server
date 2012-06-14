@@ -1,5 +1,6 @@
+#set( $dataroot = $context.findValue("dataroot"))
 
-<div class="tab">
+<div class="tab" id="field-tab">
 	<div class="tab-actions">
 		#if( $catalogid && $searchtype)
 			<form action="addnew.html" name="addnewprop">
@@ -13,7 +14,8 @@
 	<div id="emselectable">
 	<table class="striped emdata">
 		<tr class="tableheader">
-			<th #if ($detail.getExternalId ) colspan="2" #end>Fields</th>
+			<th #if ($detail.getExternalId ) colspan="2" #end>Field Name</th>
+			<th style="width:200px;">Field Type</th>
 		</tr>	
 	#foreach( $detail in $properties)
 	<tr rowid="$detail.id">
@@ -21,14 +23,15 @@
 		#if ($detail.getExternalId )
 			<td><br>$!detail.getExternalId()</td>
 		#end
-		<td><b>$detail.id</b><span class="emselectabledetails">$!detail.getText($context)</span><a class="ajax delete-row" targetdiv="" href=""></a></td>
+		<td><b>$!detail.getText($context)</b></td>
+		<td><span class="emselectabledetails">#if( $detail.getDataType() ) $detail.getDataType() #else textbox #end</span></td>
 		
 			
 	</tr>
 	#end
 	</table>
 	##this will auto submit when they click
-	<form name="editlink" action="edit.html">
+	<form name="editlink" action="$dataroot/properties/edit.html?oemaxlevel=1">
 		<input type="hidden" name="id" id="emselectedrow" value="" />
 		<input type="hidden" name="catalogid" value="$catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />

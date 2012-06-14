@@ -3,6 +3,6 @@
   <property id="id" index="true" editable="true" stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
   <property id="byassettype" type="boolean" editable="true" index="true" stored="true">By Asset Type</property>
-  <property id="userdefined" type="boolean" editable="true" index="true" stored="true">User Defined</property>
+  <property id="systemdefined" type="boolean" editable="true" index="true" stored="true">System Defined</property>
   <property id="ordering" editable="true" index="true" stored="true">Ordering</property>
 </properties>
