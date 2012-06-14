@@ -4240,6 +4240,17 @@ td[title]:hover:before {
     background: #fff !important;
 }
 
+/* NEW EDIT BOX */
+
+#addeditbox .field {
+    padding: 5px;
+    font-size: 12px;
+    margin: 5px;
+    width: 104px;
+    border-radius: 5px;
+    float: left;
+}
+
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .ir br { display: none; }
