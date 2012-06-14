@@ -1382,6 +1382,10 @@
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="scriptName"><value>ffmpegimage</value></property>
 	</bean>
+	
+	
+	
+	
 	<bean id="GhostScriptImageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1394,6 +1398,8 @@
 		<list>
 			<ref bean="ffmpegimageCreator" />
 			<ref bean="exiftoolthumbCreator" />
+			<ref bean="oofficeDocumentCreator" />
+			
 		</list>
 	    </constructor-arg>
 	</bean>
@@ -1406,6 +1412,17 @@
 		<property name="scriptName"><value>imagemagick</value></property>
 		<property name="preProcessors"><ref bean="imagePreProcessors" /></property>
 	</bean>
+	
+	<bean id="oofficeDocumentCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>oofficeDocument</value></property>
+	</bean>
+	
+	
+	
 	<bean id="LameMp3Creator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
