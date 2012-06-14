@@ -1,4 +1,4 @@
-package conversions.creator;
+package conversions.creators;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory

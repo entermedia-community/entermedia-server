@@ -2879,6 +2879,31 @@ body #emcontainer .emasseteditorarea {
 	position: relative; 
 	top: 15px;
 }
+#edit-data tr.tableheader th {
+    white-space: nowrap;
+    padding: 4px 0;
+    text-align: center;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    background: rgb(187,232,132); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(187,232,132,1) 0%, rgba(126,170,75,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(187,232,132,1)), color-stop(100%,rgba(126,170,75,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%); /* IE10+ */
+    background: linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 ); /* IE6-9 */    
+}
+#edit-data .field {
+    padding: 5px 5px 4px 5px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+#edit-data input[type="checkbox"] {
+    margin: 13px 0;
+}
 
 /* TABLE CELL SETUP */
 #main-asset-table #tableheader th, table tr.tableheader th {

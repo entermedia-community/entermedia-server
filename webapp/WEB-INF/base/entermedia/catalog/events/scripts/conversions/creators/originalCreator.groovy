@@ -10,7 +10,6 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.BaseCreator 
 import org.openedit.entermedia.creator.ConvertInstructions 
 import org.openedit.entermedia.creator.ConvertResult 
-import org.openedit.entermedia.creator.FfMpegVideoCreator 
 import org.openedit.entermedia.creator.MediaCreator 
 
 import com.openedit.page.Page;

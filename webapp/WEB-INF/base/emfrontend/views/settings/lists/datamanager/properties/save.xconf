@@ -2,4 +2,5 @@
 
 	<path-action name="DataEditModule.saveProperty" />
 	<path-action name="DataEditModule.loadProperties" />
+	<inner-layout>${dataroot}/list/innerlayout.html</inner-layout>
 </page>
