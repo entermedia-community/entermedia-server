@@ -4223,6 +4223,23 @@ td[title]:hover:before {
     display: none;   
 }
 
+/* DRAG AND DROP */
+
+.ui-draggable-dragging {
+    width: inherit;
+    border-top: 1px solid #aaa !important;
+    background: #fff !important;
+    box-shadow: 0 0 4px 1px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+.placeholder {
+    border: 1px dashed #81CEE0 !important;
+    height: 15px;
+    margin: 0;
+    padding: 0;
+    background: #fff !important;
+}
+
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .ir br { display: none; }
