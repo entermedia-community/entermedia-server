@@ -4,19 +4,19 @@
 #if( !$assettype )
 	#set( $assettype = "default" )
 #end
-
+#set( $module = $context.findValue("module") )
 #set( $viewpath = $context.getRequestParameter("viewpath") )
-#set($searcher = $searcherManager.getSearcher($catalogid, "asset"))
+#set($searcher = $searcherManager.getSearcher($catalogid, $module))
 
 #set( $viewsroot = $content.viewsroot )
 
 
-<ul  viewid="$viewid" catalogid="$catalogid" searchtype="asset" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
+<ul  viewid="$viewid" catalogid="$catalogid" searchtype="$module" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
 
 	<li class="header no-sort">Fields
 #if( $viewid )
 
-	#set($view = $searcherManager.getData("$catalogid", "assetview", $viewid))
+	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
 	#if($view.byassettype == "true" )
 	
 	<span style="float: right;">[[Asset Type]]: 
@@ -37,7 +37,7 @@
 	    Add New
 	    <form name="addtoview" id="addtoview" action="addtoview.html">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
-            <input type="hidden" name="searchtype" value="asset"/>
+            <input type="hidden" name="searchtype" value="$module"/>
             <input type="hidden" name="assettype" value="$assettype"/>
             <input type="hidden" name="viewid" value="$viewid"/>
             <input type="hidden" name="viewpath" value="$viewpath"/>
@@ -57,9 +57,9 @@
 			#foreach( $element in $details)
 				#set( $pid = $element.id)
 				<li class="rowdraggable metadatadroppable" id="$pid" ><span class="drag-and-drop"></span>
-					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=asset">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$module">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					
-					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=asset&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
+					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=$module&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
 				</li>
 			#end		
 		

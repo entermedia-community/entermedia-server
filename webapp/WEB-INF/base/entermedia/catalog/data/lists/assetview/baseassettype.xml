@@ -1,6 +1,0 @@
-<properties>
-	
-	<property id="general" systemdefined="false" byassettype="true" ordering="01">General</property>
-	<property id="fileproperties" systemdefined="false" byassettype="true"  ordering="02">File Properties</property>
-	
-</properties>

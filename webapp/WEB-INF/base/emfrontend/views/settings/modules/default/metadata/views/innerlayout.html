@@ -1,10 +1,17 @@
 #set($searcher = $mediaarchive.getAssetSearcher())
 #set($viewid = $context.getRequestParameter("viewid"))
 
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "assetview"))
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set ( $systemdefined = "false" )
 #set ( $systemdefined = $context.findValue("systemdefined") )
-#set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
+#set ( $module = $context.findValue("module") )		
+
+#set($query = $viewsearcher.createSearchQuery().append("module",$module).append("systemdefined",$systemdefined) )
+$!query.addSortBy("ordering")
+		
+##set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
+#set($views = $viewsearcher.search($query))
+
 
 #set( $viewsroot = $content.viewsroot )
 	<div id="table-container">

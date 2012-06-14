@@ -10,7 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -689,14 +691,14 @@ public class DataEditModule extends BaseMediaModule
 		String name = inReq.getRequestParameter("newname");
 		//String type = resolveSearchType(inReq);
 		
-		Searcher searcher = getSearcherManager().getSearcher(catid, "assetview");
+		Searcher searcher = getSearcherManager().getSearcher(catid, "view");
 		Data data = searcher.createNewData();
 		String id = PathUtilities.makeId(name);
 		data.setId(id);
 		data.setName(name);
 		
-		
-		
+		String module = inReq.findValue("module");
+		data.setProperty("module", module);
 		data.setProperty("systemdefined", "false" );
 		
 		searcher.saveData(data, inReq.getUser());
@@ -1233,5 +1235,49 @@ public class DataEditModule extends BaseMediaModule
 		inData.setProperty(inKey,values.toString());
 	}
 	
-	
+	public void loadCorrectViewForUser(WebPageRequest inReq ) throws Exception 
+	{
+		String catalogid = resolveCatalogId(inReq);
+		Searcher viewsearcher = getSearcherManager().getSearcher(catalogid, "view");
+		
+		SearchQuery query = viewsearcher.createSearchQuery();
+		
+		String module = inReq.findValue("module");		
+		if( module == null )
+		{
+			throw new OpenEditException("Module not defined");
+		}
+		query.addMatches("module",module);
+		query.addMatches("systemdefined","false");
+		query.addSortBy("ordering");
+
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+
+		Data currentdata = (Data)inReq.getPageValue("data");
+		if( currentdata == null )
+		{
+			currentdata = (Data)inReq.getPageValue("asset");
+		}
+		Map views = new ListOrderedMap();
+		for (Iterator iterator = viewsearcher.search(query).iterator(); iterator.hasNext();)
+		{
+			Data view = (Data) iterator.next();
+			String permissionvalue = (String)inReq.getPageValue("can" + view.getId() );
+			if( permissionvalue == null || Boolean.parseBoolean(permissionvalue) )
+			{
+				String type = null;
+				if( currentdata != null )
+				{
+					type = currentdata.get("assettype");
+				}
+				String path = module + "/assettype/" + type + "/" + view.getId();
+				if(type == null || !archive.viewExists( path ) )
+				{
+					path =	module + "/assettype/default/" + view.getId();
+				}
+				views.put(path,view);
+			}
+		}
+		inReq.putPageValue("views", views);
+	}
 }
