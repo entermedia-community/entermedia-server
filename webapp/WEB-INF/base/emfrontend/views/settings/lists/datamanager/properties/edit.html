@@ -6,7 +6,7 @@
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )		
 		
-<form id="dataeditor" name="dataeditor" method="get" action="$home$content.dataroot/properties/save.html" >
+<form id="dataeditor" name="dataeditor" method="post" action="$home$content.dataroot/properties/save.html" >
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$!property.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
