@@ -12,9 +12,16 @@
 
 #foreach ($catalog in $catalogs)
 
+            #if( $catalogs.size() == 1 )
+                <li class="section-title">
+                 <span style="margin-left: 20px;">Workspaces</span>
+               </li>
+            #else 
            <li class="section-title">
              <span style="margin-left: 20px;">$catalog</span>
            </li>
+           
+           #end
 
 		#set( $sites = $sitesearcher.fieldSearch("appcatalogid",$catalog.getId()) )
 		#foreach( $site in $sites)
@@ -27,7 +34,7 @@
             </div>
         </a>
         <div class="scan">
-            <a class="btn" style="margin-top: 15px;" href="$home/${site.deploypath}">View Project</a>
+            <a class="btn" style="margin-top: 15px;" href="$home/${site.deploypath}">View Workspace</a>
         </div>
     </li>
 		#end	
@@ -35,7 +42,7 @@
 		<li class="add">
             <div class="folder"></div>
              <div class="scan" style="margin-right: 0;">
-                 <a class="btn" href="$home$apphome/views/servers/addapp.html?appcatalogid=$catalog.getId()">Add New Project</a>
+                 <a class="btn" href="$home$apphome/views/servers/addapp.html?appcatalogid=$catalog.getId()">Create New Media Workspace</a>
              </div> 
         </li>
 		
@@ -43,8 +50,6 @@
 #end		
 #end
 </ul>
-		
-					<a style="text-decoration: none;" href="$home$apphome/views/servers/addserver.html" >Add New Catalog</a>
 
 		
 	
