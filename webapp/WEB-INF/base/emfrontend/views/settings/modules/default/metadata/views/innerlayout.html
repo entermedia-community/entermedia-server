@@ -23,7 +23,12 @@ $!query.addSortBy("ordering")
 
 			#foreach( $target in $views)
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
-					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=${moduleid}/$target.id">
+					#if( $systemdefined == "true" )
+						#set( $viewpath = "${moduleid}/$target.id")
+					#else
+						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
+					#end
+					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath">
 					<span class="XXXdrag-and-drop"></span>$target</a></li>
 			 
 			#end			

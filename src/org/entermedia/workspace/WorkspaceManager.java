@@ -1,8 +1,14 @@
 package org.entermedia.workspace;
 
+import org.openedit.data.SearcherManager;
+
+import com.openedit.page.manage.PageManager;
+
 public class WorkspaceManager
 {
 	protected SearcherManager fieldSearcherManager;
+	protected PageManager fieldPageManager;
+	
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -19,6 +25,5 @@ public class WorkspaceManager
 	{
 		fieldPageManager = inPageManager;
 	}
-	protected PageManager fieldPageManager;
 	
 }
