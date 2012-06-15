@@ -4,4 +4,5 @@
 
 <h2>$data.getName()</h2>
 
-<a class="btn" href="exports/${data}.zip?projectid=$appid">Export Project File</a>
+#set( $path = $data.deploypath )
+<a class="btn" href="./exports/${data}.zip?apppath=/$path">Export Project File</a>

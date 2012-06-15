@@ -7,6 +7,7 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermedia.workspace.WorkspaceManager;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -17,26 +18,29 @@ import com.openedit.page.manage.PageManager;
 import com.openedit.util.PageZipUtil;
 import com.openedit.util.PathUtilities;
 
-public class AppGenerator extends BaseGenerator
+public class WorkspaceExportGenerator extends BaseGenerator
 {
 	protected File fieldRoot;
 	protected PageManager pageManager;
-	private static final Log log = LogFactory.getLog(AppGenerator.class);
+	protected WorkspaceManager fieldWorkspaceManager;
+	
+	public WorkspaceManager getWorkspaceManager()
+	{
+		return fieldWorkspaceManager;
+	}
+
+	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager)
+	{
+		fieldWorkspaceManager = inWorkspaceManager;
+	}
+
+	private static final Log log = LogFactory.getLog(WorkspaceExportGenerator.class);
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
 		try
 		{
-			PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
-			String strip = inReq.getRequestParameter("stripfolders");
-			if( strip != null)
-			{
-				pageZipUtil.setFolderToStripOnZip(strip);
-			}
-			pageZipUtil.setRoot(getRoot());
-			
-			
-			
-			pageZipUtil.zipFile(path, inOut.getStream());
+			String apppath = inReq.getRequestParameter("apppath");
+			getWorkspaceManager().exportWorkspace(apppath, inOut.getStream());
 		}
 		catch ( Exception ex)
 		{

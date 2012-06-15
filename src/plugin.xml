@@ -1451,5 +1451,15 @@
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>assets</value></property>
 	</bean>
+	<bean id="workspaceManager" class="org.entermedia.workspace.WorkspaceManager">
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+	</bean>
+	
+	<bean id="workspaceExportGenerator" class="org.openedit.entermedia.generators.WorkspaceExportGenerator">
+		<property name="workspaceManager"><ref bean="workspaceManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+	</bean>
+
 	
 </beans>

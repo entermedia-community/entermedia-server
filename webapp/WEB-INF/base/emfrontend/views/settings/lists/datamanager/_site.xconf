@@ -5,6 +5,6 @@
 	<property name="searchhome">/${applicationid}/views/settings/lists/datamanager</property>
 	<property name="tab">datamanager</property>
 	<property name="subtab">manager</property>
-	<property name="tab">datamanager</property>
+	<property name="datatab">data</property>
 	<inner-layout>/${applicationid}/views/settings/lists/datamanager/innerlayout.html</inner-layout>
 </page>
