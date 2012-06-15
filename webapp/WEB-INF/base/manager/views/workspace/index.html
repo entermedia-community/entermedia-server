@@ -1,0 +1,8 @@
+#set( $appid = $context.getRequestParameter("appid"))
+
+#set( $data = $searcherManager.getData("media","site",$appid ) )
+
+<h2>$data.getName()</h2>
+
+#set( $path = $data.deploypath )
+<a class="btn" href="./exports/${data}.zip?apppath=/$path">Export Project File</a>

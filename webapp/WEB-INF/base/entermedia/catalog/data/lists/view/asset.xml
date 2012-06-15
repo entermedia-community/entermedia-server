@@ -1,0 +1,13 @@
+<properties>
+	
+	<property id="general" module="asset" systemdefined="false" byassettype="true" ordering="01">General</property>
+	<property id="fileproperties" module="asset"  systemdefined="false" byassettype="true"  ordering="02">File Properties</property>
+	
+	<property id="advancedsearch" module="asset"  systemdefined="true" byassettype="false">Advanced Search</property>
+	<property id="singleupload" module="asset"  systemdefined="true" byassettype="true">Single Upload</property>
+	<property id="multipleupload" module="asset"  systemdefined="true" byassettype="true">Multiple Upload</property>
+	<property id="resultstable" module="asset"  systemdefined="true" byassettype="false">Results Table</property>
+	<property id="restassetdetails" module="asset"  systemdefined="true" byassettype="false">REST API Asset Details</property>
+	<property id="restsearchresults" module="asset"  systemdefined="true" byassettype="false">REST API Results</property>
+	
+</properties>

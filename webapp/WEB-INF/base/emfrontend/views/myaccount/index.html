@@ -7,6 +7,7 @@ $context.putPageValue("data", $selectedUser)
 
 <div id="default-top" class="clearfix">
     
+<!--  
     <div class="thumbnail">
         <img src="" style="width: 91px; height: 91px;" />
     </div>
@@ -19,7 +20,16 @@ $context.putPageValue("data", $selectedUser)
             $role
         </div>
     </div>
-    
+-->
+
+     <div class="main-info" style="padding-bottom: 30px;">
+        <div class="primary">
+           User Profile
+        </div>
+        <div class="secondary">
+            Update your user profile information
+        </div>
+    </div>
     
 </div>
 <div id="emselectable" style="margin-top: -20px;">
@@ -41,7 +51,11 @@ $context.putPageValue("data", $selectedUser)
                     Saved 
                     </div>
                     #end
-            $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		<div id="resultslist">
+			<div id="default-fields">
+ 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			</div>
+		</div>
             </div>
             
             #if( $message || $errors)

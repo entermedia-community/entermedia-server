@@ -1,3 +1,5 @@
+
+
     
 #if ( $hits.totalPages == 0 )
 $pages.stream("/${content.searchhome}/empty.html", $context)	
@@ -19,8 +21,6 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 <thead>
 <tr class="tableheader" >
-<th></th>
-
 <th>
 </th>
 
@@ -53,6 +53,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
     #set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}")
     
 #if($content.isPropertyTrue("showactions"))
+<!--
 <td align="center">
 
 
@@ -61,11 +62,12 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <div id="check_${count}">
 </div>
 
-<!--
+
 <input type="checkbox" name="count" value="$!hits.indexOf(${count})" #if($hits.isSelectedOnPage(${count})) checked #end />
 <input type="hidden" name="origURL" value="$url_util.requestPathWithArgumentsNoContext()" />
--->
+
 </td>
+-->
 #end
 <td>$pages.include("/${content.searchhome}/link.html", $context)</td>
 
@@ -93,12 +95,12 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 </table>
 
 #if($content.isPropertyTrue("showactions"))
-<div align="left" id="messagearea">$pages.include("/${content.searchhome}/selections/togglepage.html")</div>
+## <div align="left" id="messagearea">$pages.include("/${content.searchhome}/selections/togglepage.html")</div>
 #end
 
    <div id="navigationrow">
 
-$pages.stream("/${content.searchhome}/navigate.html", $context)		
+## $pages.stream("/${content.searchhome}/navigate.html", $context)		
 </div>
 
 </div></div>
@@ -111,4 +113,4 @@ $pages.stream("/${content.searchhome}/navigate.html", $context)
 
 #end
 
-$pages.include("/${content.searchhome}/actions.html", $context)
+## $pages.include("/${content.searchhome}/actions.html", $context)

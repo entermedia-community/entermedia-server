@@ -1,26 +1,35 @@
 #set($searcher = $mediaarchive.getAssetSearcher())
 #set($viewid = $context.getRequestParameter("viewid"))
 
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "assetview"))
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set ( $systemdefined = "false" )
 #set ( $systemdefined = $context.findValue("systemdefined") )
-#set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
+#set ( $moduleid = $context.findValue("module") )		
+
+#set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined",$systemdefined) )
+$!query.addSortBy("ordering")
+		
+##set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
+#set($views = $viewsearcher.search($query))
+
 
 #set( $viewsroot = $content.viewsroot )
 	<div id="table-container">
 		<div id="side-nav-inner">
-			<ul class="sortable">
+			<ul>
 		
 				<li class="header no-sort">Editing Boxes</li>
 				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
 
 			#foreach( $target in $views)
-			     #set ( $typepath = "" )
-			     #if ( $target.byassettype == "true" )
-			         #set ( $typepath = "assettype/default/")
-			     #end
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
-					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=asset/${typepath}$target.id"><span class="drag-and-drop"></span>$target</a></li>
+					#if( $systemdefined == "true" )
+						#set( $viewpath = "${moduleid}/$target.id")
+					#else
+						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
+					#end
+					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath">
+					<span class="XXXdrag-and-drop"></span>$target</a></li>
 			 
 			#end			
 								

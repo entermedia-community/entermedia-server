@@ -2,7 +2,7 @@
 <div class="subcolumns">
           <div class="c25l" id="left-col">
 			
-			#set( $module = $content.findValue("module") )
+			#set( $module = $context.findValue("module") )
 			#if( !$module )
 				#set( $module = "asset" )
 			#end

@@ -1,6 +1,4 @@
 <page>
 	<property name="module">contact</property>
 	<property name="fallbackdirectory">/emfrontend/views/settings/modules/default</property>
-	<property name="tab">contactviews</property>
-	<property name="subtab">contactviews</property>
 </page>

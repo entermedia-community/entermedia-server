@@ -3,29 +3,12 @@
 #if( $print && $print == "true")
   <h2 class="section">General Information</h2>
 #end  
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "assetview"))
-#set($views = $viewsearcher.fieldSearch("userdefined","true","ordering" ) )
-##set($views = $searcherManager.getList("$catalogid", "assettype/views"))
 
-#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
 
-#foreach( $target in $views)
-#set( $permissionvalue = "true" )
-#set( $permissionvalue = $!context.getPageValue("can${target.id}") )
-#set( $permissionvalue = "$permissionvalue" ) ##use strings
-#if($permissionvalue == "true")
-
-#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/$target.id") )
-  #display("generic.html" $target.name "$asset.id" "asset/assettype/$asset.assettype/$target.id" $print)
-#else
-  #display("generic.html" $target.name "$asset.id" "asset/assettype/default/$target.id" $print)
+#foreach( $viewpath in $views.keySet() )
+	#set( $target = $views.get($viewpath) )
+	#display("generic.html" $target.name "$asset.id" $viewpath $print)
 #end
-#end
-
-#end
-
- ##display("generic.html" "$asset.id" "asset/details" $print)
-  ##display("approvals.html" "$asset.id" "approvals/details" $print)
  
  
  #if( $asset.assettype )

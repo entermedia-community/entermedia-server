@@ -19,9 +19,10 @@
 <h2>$currentsearch</h2>
 #end
 
+#set( $datatab = $content.datatab )
 <div class="tabnav">
-	<a class="current ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Data</a>
-	<a class="ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Customize Fields</a>
+	<a class="#if( $datatab == "data") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Data</a>
+	<a class="#if( $datatab == "properties") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Customize Fields</a>
 </div>
 
 <script>

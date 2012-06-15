@@ -41,12 +41,14 @@ unoutlineSelectionCol = function(event, ui)
 
 outlineSelectionRow = function(event, ui)
 {
-	jQuery(this).addClass("rowdraggableenabled");
+	jQuery(this).addClass("rowdraggableenabled");  
+	$(this).before('<li class="placeholder"></li>');
 }
 	
 unoutlineSelectionRow = function(event, ui)
 {
 	jQuery(this).removeClass("rowdraggableenabled");
+	$('.placeholder').remove();
 }
 
 toggleajax = function(e) 
@@ -711,8 +713,7 @@ onloadselectors = function()
 				jQuery(this).draggable( 
 					{ 
 						helper: 'clone',
-						revert: 'invalid',
-						opacity: '.9'
+						revert: 'invalid'
 					}
 				);
 			}
@@ -723,8 +724,7 @@ onloadselectors = function()
 				jQuery(this).draggable( 
 					{ 
 						helper: 'clone',
-						revert: 'invalid',
-						opacity: '.9'
+						revert: 'invalid'
 					}
 				);
 			}
@@ -735,8 +735,7 @@ onloadselectors = function()
 				jQuery(this).draggable( 
 					{ 
 						helper: 'clone',
-						revert: 'invalid',
-						opacity: '.3'
+						revert: 'invalid'
 					}
 				);
 			}

@@ -22,6 +22,7 @@ import com.openedit.entermedia.scripts.ScriptLogger;
 import com.openedit.entermedia.scripts.ScriptManager;
 import com.openedit.page.Page;
 import com.openedit.util.FileUtils;
+import com.openedit.util.PathUtilities;
 import com.openedit.util.URLUtilities;
 
 public class DataImportModule extends DataEditModule
@@ -210,14 +211,16 @@ public class DataImportModule extends DataEditModule
 	}
 	public void createTable(WebPageRequest inReq) throws Exception
 	{
-		String tablename = inReq.findValue("searchtype");
+		String tablename = inReq.findValue("tablename");
 		String catalogid = inReq.findValue("catalogid");
 		
+		String searchtype = PathUtilities.makeId(tablename);
+		searchtype = searchtype.toLowerCase();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		PropertyDetails details = archive.getPropertyDetails(tablename);
+		PropertyDetails details = archive.getPropertyDetails(searchtype);
 		//will default to defaults
-		archive.savePropertyDetails(details, tablename, inReq.getUser());
-		
+		archive.savePropertyDetails(details, searchtype, inReq.getUser());
+		inReq.setRequestParameter("searchtype", searchtype);
 
 	}	
 }
