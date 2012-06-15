@@ -1,15 +1,13 @@
 #set($searcher = $mediaarchive.getAssetSearcher())
-#set($viewid = $context.getRequestParameter("viewid"))
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set ( $systemdefined = "false" )
 #set ( $systemdefined = $context.findValue("systemdefined") )
+
 #set ( $moduleid = $context.findValue("module") )		
 
 #set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined",$systemdefined) )
 $!query.addSortBy("ordering")
-		
-##set($views = $viewsearcher.fieldSearch("systemdefined", $systemdefined,"ordering" ) )
 #set($views = $viewsearcher.search($query))
 
 
@@ -22,6 +20,7 @@ $!query.addSortBy("ordering")
 				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
 
 			#foreach( $target in $views)
+
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
 					#if( $systemdefined == "true" )
 						#set( $viewpath = "${moduleid}/$target.id")
@@ -42,9 +41,7 @@ $!query.addSortBy("ordering")
 
 
 <script type="text/javascript">
-$('.sortable').sortable({
-	items: "li:not(.no-sort)"
-});
+
 
 	loadViewsByAssetType = function(assettypeid, viewid) {
 	
