@@ -1,6 +1,7 @@
 <div id="advsearchpanel" >
 <div class="tanmodule" >
-#set( $view = "asset/advancedsearch")
+#set( $moduleid = )
+#set( $view = "${moduleid}/advancedsearch")
 #set( $searcher = $mediaarchive.getAssetSearcher())
 
 $context.putPageValue("view", $view)

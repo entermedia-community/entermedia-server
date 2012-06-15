@@ -697,12 +697,17 @@ public class DataEditModule extends BaseMediaModule
 		
 		Searcher searcher = getSearcherManager().getSearcher(catid, "view");
 		Data data = searcher.createNewData();
+		String module = inReq.findValue("module");
+
 		String id = PathUtilities.makeId(name);
 		id = id.toLowerCase();
+		if( module != null )
+		{
+			id = module + id; //To mak sure they are unique
+		}
 		data.setId(id);
 		data.setName(name);
 		
-		String module = inReq.findValue("module");
 		data.setProperty("module", module);
 		data.setProperty("systemdefined", "false" );
 		data.setProperty("ordering", System.currentTimeMillis() + "" );
