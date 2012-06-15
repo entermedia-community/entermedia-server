@@ -80,11 +80,11 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			site = (Data)searcher.searchById(id);
 		}
-		String frontendid = inReq.findValue("frontendid");
-		if( frontendid == null)
-		{
-			throw new OpenEditException("frontendid was null");
-		}
+//		String frontendid = inReq.findValue("frontendid");
+//		if( frontendid == null)
+//		{
+//			throw new OpenEditException("frontendid was null");
+//		}
 		String deploypath = inReq.findValue("deploypath");
 		site.setProperty("deploypath",deploypath);
 		
@@ -94,11 +94,12 @@ public class MediaAdminModule extends BaseMediaModule
 		String name = inReq.findValue("sitename");
 		site.setName(name);
 
-		site.setProperty("frontendid",frontendid);
+//		site.setProperty("frontendid",frontendid);
 
 		searcher.saveData(site, inReq.getUser());
-		Data frontend = getSearcherManager().getData(applicationid,"frontend",frontendid);
-		Page copyfrompage = getPageManager().getPage(frontend.get("path"));
+		//Data frontend = getSearcherManager().getData(applicationid,"frontend",frontendid);
+		//Page copyfrompage = getPageManager().getPage(frontend.get("path"));
+		Page copyfrompage = getPageManager().getPage("/WEB-INF/base/manager/components/newworkspace");
 		
 		Page topage = getPageManager().getPage("/" + site.get("deploypath"));
 		if( !topage.exists())

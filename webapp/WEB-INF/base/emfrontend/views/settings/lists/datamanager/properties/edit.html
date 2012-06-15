@@ -11,7 +11,6 @@
 	<input name="id" type="hidden" value="$!property.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
-	<input name="origURL"  type="hidden" value="$origURL" />
 <div id="edit-data">	
 	<table class="settings-table">
 	<tr> <td>ID:</td> <td><input class="field" name="newid" value="$property.id" /></td> </tr>
@@ -30,6 +29,7 @@
 	
 	<tr> <td>[[View Type]]:</td>
 	<td>
+	$property.viewtype
 	<select name="viewtype">
 		<option value="" >Text</option>
 		<option value="boolean" #if ($property.viewtype == "boolean") selected #end >[[Boolean]]</option>

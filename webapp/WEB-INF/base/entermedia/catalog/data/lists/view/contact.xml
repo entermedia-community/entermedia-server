@@ -1,0 +1,7 @@
+<properties>
+	
+	<property id="edit" module="contact" systemdefined="false" byassettype="false" ordering="01">General</property>
+	<property id="advancedsearch" module="contact" systemdefined="true" byassettype="false" ordering="01">Advanced Search</property>
+	<property id="resultsdetail" module="contact" systemdefined="true" byassettype="false" ordering="01">Result Columns</property>
+	
+</properties>

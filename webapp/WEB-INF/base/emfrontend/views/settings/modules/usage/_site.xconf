@@ -1,4 +1,4 @@
 <page>
-	<property name="module">contact</property>
+	<property name="module">usage</property>
 	<property name="fallbackdirectory">/emfrontend/views/settings/modules/default</property>
 </page>

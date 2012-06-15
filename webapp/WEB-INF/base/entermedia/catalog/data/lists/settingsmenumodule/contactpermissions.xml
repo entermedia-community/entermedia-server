@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-	
+	<!-- 
   <property id="contactpermissions" type="toplevel" module="contact" ordering="300" path="/views/settings/modules/contact/permissions/index.html" >Permissions</property>
-
+ -->
 </properties>

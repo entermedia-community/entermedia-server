@@ -166,6 +166,9 @@ public class DataEditModule extends BaseMediaModule
 		String type = inReq.getRequestParameter("datatype");
 		detail.setDataType(type);
 
+		type = inReq.getRequestParameter("viewtype");
+		detail.setViewType(type);
+
 //		String val = inReq.getRequestParameter("listid");
 //		detail.setProperty("listid", val);
 //		val = inReq.getRequestParameter("listcatalogid");
@@ -701,6 +704,7 @@ public class DataEditModule extends BaseMediaModule
 		String module = inReq.findValue("module");
 		data.setProperty("module", module);
 		data.setProperty("systemdefined", "false" );
+		data.setProperty("ordering", System.currentTimeMillis() + "" );
 		
 		searcher.saveData(data, inReq.getUser());
 //		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";

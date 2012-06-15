@@ -1,0 +1,7 @@
+<page>
+	<property name="module">usage</property>
+	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
+	
+	<property name="searchtype">usage</property>
+	<property name="showactions">true</property>
+</page>
