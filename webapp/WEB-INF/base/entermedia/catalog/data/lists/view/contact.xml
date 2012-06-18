@@ -1,6 +1,6 @@
 <properties>
 	
-	<property id="contactgeneral" module="contact" systemdefined="false" byassettype="false">General</property>
+	<!-- <property id="contactgeneral" module="contact" systemdefined="false" byassettype="false">General</property> -->
 	
 	<property id="contactadvancedsearch" module="contact" systemdefined="true" byassettype="false">Advanced Search</property>
 	<property id="contactresultstable" module="contact" systemdefined="true" byassettype="false">Results Table</property>

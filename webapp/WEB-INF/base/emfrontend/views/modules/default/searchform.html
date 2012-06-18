@@ -5,7 +5,7 @@
 <form action="$home${content.searchhome}/fieldsearch.html" method="PUT">
        #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 <table>
-		#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("$content.searchtype/normalsearch", $user))
+		#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${module}/${module}advancedsearch", $user))
 		
 				#foreach( $searchItem in $resultdetail)
 					#set( $inputed = "$!hits.getInput($searchItem.getId())")

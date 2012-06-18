@@ -1,55 +1,22 @@
 #set($viewid = $context.getRequestParameter("viewid"))
 #set($viewpath = $context.getRequestParameter("viewpath"))
-
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-    
-<!-- 
-<div id="default-top" class="clearfix">
-    
-    <div class="thumbnail">
-        <img src="" style="width: 91px; height: 91px;" />
-    </div>
-    
-    <div class="main-info">
-        <div class="primary">
-            $firstname $lastname
-        </div>
-        <div class="secondary">
-            $position, <a href="#">$company</a>
-        </div>
-    </div>
-    
-    
-</div>
- -->
-#set ( $moduleid = $context.findValue("module") )		
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined","false") )
-$!query.addSortBy("ordering")	
-#set($views = $viewsearcher.search($query))
-
-#if( !$viewid && $views.size() > 0)               
-    #set( $viewid = $views.first().getId() )
-    #set( $viewpath = "${moduleid}/$viewid" )
+#if(!$hits)
+        #set($hitsname = $context.getRequestParameter('hitsname'))
+        #set($hits = $context.getPageValue($hitsname))
 #end
-$context.putPageValue("view", $viewpath)
-
-<div id="default-tabs">
-    <ul>
-		#foreach( $target in $views)
-				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
-					<a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id">
-					$target</a>
 
 
-
-					</li>
-		#end			
-    </ul>
-
-</div>
-
-
+#if(!$hits)
+        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
+        #if($hitssessionid)
+            #set($hits = $context.getSessionValue($hitssessionid))
+        #end
+#end
+#if(!$hits)
+#set($hits = $context.getPageValue($content.hitsname))
+#end
+$context.putPageValue("hits", $hits)
+#set( $moduleid = $context.findValue("module") )
 
 <div id="default-fields">
         

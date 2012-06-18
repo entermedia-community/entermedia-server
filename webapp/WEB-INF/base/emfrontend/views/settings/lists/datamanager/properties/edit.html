@@ -3,7 +3,7 @@
 <div class="tab-actions">
 	<strong>Editing $!property.name</strong>
 	<div style="float:right;">
-	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());">
+	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px;">
 		<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
 				<option value="$detail.id" #if($property.id == $detail.id)selected="selected"#end>$detail.text</option>

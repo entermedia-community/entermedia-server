@@ -3,4 +3,5 @@
 	<permission name="view">
 		<permission name="oe.administration"/>
 	</permission>
+	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
 </page>
