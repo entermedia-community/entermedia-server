@@ -394,6 +394,7 @@ public class PathEventManager
 	protected void loadPathEvents()
 	{
 		clear();
+		//getPageManager().clearCache();
 		String root = "/" + getCatalogId() + "/events";
 		Set duplicates = new HashSet();
 		loadPathEvents(root, duplicates);

@@ -1,0 +1,15 @@
+#set( $editroot = $context.findValue("editroot"))
+#set( $scriptpath = $context.getRequestParameter("scriptpath"))
+#set( $script = $pages.getPage("$scriptpath") )
+
+<div style="background: #f7f7f7; border: 1px solid #ddd; padding: 20px 30px 10px 30px; border-radius: 5px; margin-bottom: 20px;">
+
+<form name="save" class="ajaxform" targetdiv="scriptlist" method="post" action="$home$editroot/scriptsave.html?oemaxlevel=1">
+	<input class="field" name="scriptpath" value="$script.getPath()"/> <span style="margin-left: 10px; font-weight: bold;">Script File Name</span>
+	<textarea style="width: 97%; height: 450px; overflow-y: auto;" name="scriptcode">$script.getContent()</textarea>
+	<p>
+		<input type="submit" class="btn small" value="Save">
+		<a href="$home$editroot/scriptdelete.html?filename=$script.getName()" class="btn small right">Delete</a>
+	</p>
+</form>	
+</div>

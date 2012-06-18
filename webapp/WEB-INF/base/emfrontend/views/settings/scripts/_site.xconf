@@ -1,0 +1,4 @@
+<page>
+	<property name="scriptroot">/${catalogid}/events/scripts</property> 
+	<property name="editroot">/${applicationid}/views/settings/scripts</property>
+</page>

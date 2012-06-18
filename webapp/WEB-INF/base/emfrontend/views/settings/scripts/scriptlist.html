@@ -1,0 +1,32 @@
+#set( $editroot = $context.findValue("editroot"))
+
+#set( $selected = $context.getRequestParameter("scriptpath") )
+
+<div id="scriptlist">
+<h3 style="margin: 20px 0 5px 0;">Script Editor</h3>
+<div>
+	<select style="margin: 8px 5px 20px 0;" name="scriptname" onchange='loadscript(this.value)'>
+	##loop over scripts
+		<option value="none">- Choose Script -</option>
+		#foreach( $script in $scripts)
+			<option #if( $selected && $selected == $script.getPath() )selected #end value="$script.getPath()">$script.getPath()</option>
+		#end
+	</select> 
+</div>
+<div id="scriptarea">
+	#if( $selected )
+		$pages.include("$editroot/scripteditor.html?scriptpath=$selected")
+	#end
+</div>
+
+
+<script>
+
+loadscript = function(inValue) 
+{	
+	$("#scriptarea").load("$home$editroot/scripteditor.html?oemaxlevel=1&scriptpath=" + inValue);
+}
+
+</script>
+
+</div>
