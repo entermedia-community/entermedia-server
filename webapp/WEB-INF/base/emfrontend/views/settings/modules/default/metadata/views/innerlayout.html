@@ -1,8 +1,9 @@
 #set($searcher = $mediaarchive.getAssetSearcher())
-
+#set($viewid = $context.getRequestParameter("viewid"))
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set ( $systemdefined = "false" )
 #set ( $systemdefined = $context.findValue("systemdefined") )
+
 
 #set ( $moduleid = $context.findValue("module") )		
 
@@ -20,16 +21,17 @@ $!query.addSortBy("ordering")
 				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
 
 			#foreach( $target in $views)
-
+                
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
-					#if( $systemdefined == "true" )
-						#set( $viewpath = "${moduleid}/$target.id")
-					#else
+				   
+					#if( $target.byassettype && $target.byassettype == "true" )
 						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
+					#else
+						#set( $viewpath = "${moduleid}/$target.id")
 					#end
 					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath">
 					<span class="XXXdrag-and-drop"></span>$target</a></li>
-			 
+			
 			#end			
 								
 			</ul>		
