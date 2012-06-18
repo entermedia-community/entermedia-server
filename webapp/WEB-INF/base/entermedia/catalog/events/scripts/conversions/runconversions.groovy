@@ -279,9 +279,12 @@ public void checkforTasks()
 
 	log.info("processing ${newtasks.size()} conversions");
 	
+	List runners = new ArrayList();
+	
 	if( newtasks.size() == 1 )
 	{
 		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, newtasks.first() );
+		runners.add(runner);
 		runner.run();
 	}
 	else
@@ -291,6 +294,7 @@ public void checkforTasks()
 		for(Object hit: newtasks)
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
+			runners.add(runner);
 			executor.execute(runner);
 		}
 		executorManager.waitForIt(executor);
@@ -298,8 +302,15 @@ public void checkforTasks()
 	
 	if( newtasks.size() > 0 )
 	{
-		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
-		mediaarchive.fireSharedMediaEvent("conversions/runconversions");
+		for(ConvertRunner runner: runners)
+		{
+			if( runner.result != null && runner.result.isComplete() )
+			{
+				mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
+				mediaarchive.fireSharedMediaEvent("conversions/runconversions");
+				break;
+			}
+		}
 	}
 	
 }
