@@ -1,0 +1,4 @@
+<page>
+	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
+	<property name="tab">modules</property>
+</page>

@@ -3105,6 +3105,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', end
 	float: left;
 	position: relative;
 }
+#folders .folder.module {
+    background: url('../images/module.png') 20px 8px no-repeat;
+}
 .folder:after {
 	content: '';
 	width: 46px;
