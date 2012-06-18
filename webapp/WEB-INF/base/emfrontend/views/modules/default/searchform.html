@@ -1,3 +1,5 @@
+#set( $module = $context.findValue("module") )
+
 <div class="navigationsearchform common-info">
 
 <form action="$home${content.searchhome}/fieldsearch.html" method="PUT">
@@ -88,13 +90,12 @@
 			</td>	</tr>
 				#end
 
-			<tr><td>
-				<input type="submit" value="Go" />
+			<tr><td colspan="2">
+				<input class="btn right" type="submit" value="Search" />
 				</td>
 				</tr>
           </table>
          </form>
-<a class="notificationtoggle" href="#">[[Show Advanced Search]]</a>
 </div>
 
 
