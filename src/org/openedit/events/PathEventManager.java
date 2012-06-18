@@ -158,7 +158,7 @@ public class PathEventManager
 						}
 					}
 				}
-				
+			//	log.info("added " + event.getPage() );
 				runner = new TaskRunner(event, this);
 				runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
 				runner.setTimeToStart(new Date());

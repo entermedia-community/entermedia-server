@@ -4,6 +4,8 @@
 #if(!$thumbsize)
 	#set($thumbsize = "crop")
 #end
+$context.putPageValue("thumbsize",$thumbsize)
+
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=$!{hit.id}",$context)
 	

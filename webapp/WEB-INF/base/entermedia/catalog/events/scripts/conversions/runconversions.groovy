@@ -299,6 +299,7 @@ public void checkforTasks()
 	if( newtasks.size() > 0 )
 	{
 		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
+		mediaarchive.fireSharedMediaEvent("conversions/runconversions");
 	}
 	
 }
