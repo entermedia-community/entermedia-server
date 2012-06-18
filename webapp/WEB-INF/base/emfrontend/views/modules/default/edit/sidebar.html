@@ -1,0 +1,38 @@
+#set( $moduleid = $context.findValue("module") )
+#set($viewid = $context.getRequestParameter("viewid"))
+#set($viewpath = $context.getRequestParameter("viewpath"))
+
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+    
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined","false") )
+$!query.addSortBy("ordering")   
+#set($views = $viewsearcher.search($query))
+
+#if( !$viewid && $views.size() > 0)               
+    #set( $viewid = $views.first().getId() )
+    #set( $viewpath = "${moduleid}/$viewid" )
+#end
+$context.putPageValue("view", $viewpath)
+
+
+<div class="ui-widget  uipanel">
+    <div class="ui-widget-header">
+            #set ($lastselected = $content.module )
+            #if(!$lastselected)
+                #set($lastselected = $userprofile.last_selected_module )
+            #end
+        #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+        Edit $module
+    </div>
+    <div class="ui-widget-content">
+        <ul id="assetmenu" class="sidebar-list">       
+              #foreach( $target in $views)            
+                  <li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
+                      <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id">
+                        $target</a>
+                  </li>
+              #end
+         </ul>
+    </div>
+</div>

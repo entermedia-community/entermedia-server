@@ -1,0 +1,33 @@
+#set( $moduleid = $context.findValue("module") )
+#set($viewid = $context.getRequestParameter("viewid"))
+#set($viewpath = $context.getRequestParameter("viewpath"))
+
+
+<div id="searchplugin">
+    <div class="subcolumns">
+        <div class="c25l" id="left-col">
+                $pages.include("/$applicationid/views/modules/${moduleid}/edit/sidebar.html", $context)
+        </div>
+        <div id="right-col" class="module-inner">
+                
+            <div id="resultsdiv">
+                <div id="emresultscontent">
+                    
+                    <div id="resultsarea">
+                        <div id="resultslist">
+  
+                              ##  $pages.include("/$applicationid/views/modules/${moduleid}/edit/header.html", $context)
+                                $pages.includeContent()
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+    

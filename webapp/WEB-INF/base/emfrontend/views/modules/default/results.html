@@ -1,4 +1,4 @@
-
+#set( $module = $context.findValue("module") )
 
     
 #if ( $hits.totalPages == 0 )
@@ -8,7 +8,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 
 
-#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("$content.searchtype/resultdetail", $user))
+#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${module}/${module}resultstable", $user))
 #set( $resultdetail = $translations.filter($resultdetail, $context) )
 
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
@@ -16,8 +16,11 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 <div class="tablecontainer">
 
-
-<table class="emdata striped" id="main-asset-table">
+<div class="editholder" style="margin-top: 0;">
+<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$module/metadata/views/index.html?viewid=${module}&viewpath=${module}/${module}resultstable">Edit</a>
+</div>
+<div id="emselectable">
+<table class="emdata striped" id="module-results-table">
 
 <thead>
 <tr class="tableheader" >
@@ -69,7 +72,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 </td>
 -->
 #end
-<td>$pages.include("/${content.searchhome}/link.html", $context)</td>
+<td style="width:30px; text-align: center;">$pages.include("/${content.searchhome}/link.html", $context)</td>
 
 #foreach( $detail in $resultdetail )
 
@@ -93,14 +96,14 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 #end
 </tbody>
 </table>
-
+</div>
 #if($content.isPropertyTrue("showactions"))
 ## <div align="left" id="messagearea">$pages.include("/${content.searchhome}/selections/togglepage.html")</div>
 #end
 
    <div id="navigationrow">
 
-## $pages.stream("/${content.searchhome}/navigate.html", $context)		
+ $pages.stream("/${content.searchhome}/navigate.html", $context)		
 </div>
 
 </div></div>
