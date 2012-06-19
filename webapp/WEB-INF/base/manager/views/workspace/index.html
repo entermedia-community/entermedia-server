@@ -20,8 +20,8 @@
         </div>
     </div>
     <div class="fields" id="workspaceform">
-        
-        $pages.include("$home$apphome/views/workspace/workspacedetails.html?appcatalogid=$catalog.getId()")
+        $context.putPageValue("data",$data)
+        $pages.include("$home$apphome/views/workspace/workspacedetails.html",$context)
         
         
     </div>
