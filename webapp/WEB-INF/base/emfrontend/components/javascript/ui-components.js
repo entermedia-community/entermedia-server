@@ -65,7 +65,9 @@ uiload = function() {
 				{
 					dateFormat: 'mm/dd/yy', showOn: 'button',
 					buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
-					buttonImageOnly: true
+					buttonImageOnly: true,
+					changeMonth: true,
+					changeYear: true
 				});
 			}
 		);

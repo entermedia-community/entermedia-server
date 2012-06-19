@@ -7,7 +7,7 @@
 #set($targetdivinner = "emresultscontent")
         #if ( $hits )
 
-        <p style="float: left; margin: 7px 0 0 20px">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
+        <p class="resultsnumber">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
     #end
 			<div id="pages">
 				<ul>

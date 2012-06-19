@@ -9,7 +9,14 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 
 #set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${module}/${module}resultstable", $user))
-#set( $resultdetail = $translations.filter($resultdetail, $context) )
+
+
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set( $query = $viewsearcher.createSearchQuery().append("module",$module) )
+$!query.addSortBy("ordering")
+#set($views = $viewsearcher.search($query))
+
+#set ( $viewpath = $views.first() )
 
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 <input type="hidden" name="hitsname" value="hits"/>
@@ -24,8 +31,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 <thead>
 <tr class="tableheader" >
-<th>
-</th>
+##<th></th>
 
 #foreach( $detail in $resultdetail )
 		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
@@ -44,16 +50,24 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 </tr>
 </thead>
 <tbody>
+    
+    
+  
+    
     #set( $even = true )
 #set($count = 0)
 #foreach ( $cell in $hits.getPageOfHits() )
    $context.putPageValue('data', $cell)
     $context.putPageValue('cell', $cell)
     
-        <tr >
+     #set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}")
+     
+     
+     
+        <tr #if($caneditdata)  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$viewpath.id&viewpath=$module/$viewpath.id" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}" #end >
   
     
-    #set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}")
+   
     
 #if($content.isPropertyTrue("showactions"))
 <!--
@@ -72,7 +86,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 </td>
 -->
 #end
-<td style="width:30px; text-align: center;">$pages.include("/${content.searchhome}/link.html", $context)</td>
+##<td style="width:30px; text-align: center;">$pages.include("/${content.searchhome}/link.html", $context)</td>
 
 #foreach( $detail in $resultdetail )
 
