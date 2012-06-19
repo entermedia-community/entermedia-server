@@ -16,6 +16,7 @@ import org.apache.lucene.index.Term;
 import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.lucene.BaseLuceneSearcher;
+import org.openedit.entermedia.SourcePathCreator;
 import org.openedit.repository.ContentItem;
 import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
@@ -39,6 +40,16 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	protected IntCounter fieldIntCounter;
 	protected PageManager fieldPageManager;
 	protected String fieldPrefix;
+	protected SourcePathCreator fieldSourcePathCreator;
+	
+	public SourcePathCreator getSourcePathCreator()
+	{
+		return fieldSourcePathCreator;
+	}
+	public void setSourcePathCreator(SourcePathCreator inSourcePathCreator)
+	{
+		fieldSourcePathCreator = inSourcePathCreator;
+	}
 	protected XmlDataArchive getXmlDataArchive()
 	{
 		if (fieldXmlDataArchive == null)
@@ -174,13 +185,15 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			return;
 		}
 		Data data = (Data) inData;
-		if( data.getSourcePath() == null )
-		{
-			throw new OpenEditException("Cant save data without a sourcepath parameter");
-		}
 		if(data.getId() == null)
 		{
 			data.setId(nextId());
+		}
+		if( data.getSourcePath() == null )
+		{
+			//throw new OpenEditException("Cant save data without a sourcepath parameter");
+			String sourcepath = getSourcePathCreator().createSourcePath(inData, inData.getId() );
+			data.setSourcePath(sourcepath);
 		}
 		
 		updateIndex(data);
