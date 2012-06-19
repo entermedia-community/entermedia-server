@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
@@ -100,18 +101,60 @@ public class BaseImporter extends EnterMediaObject
 		}
 		return fieldLookUps;
 	}
-	
+	protected void createMultiSelect(String inCatalogId, BaseData inRow, String inField, String inTable)
+	{
+		String value = inRow.get(inField);
+		if( value != null )
+		{			
+			Map datavalues = loadValueList(inField)
+			String[] values = value.split(",");
+			List valueids = new ArrayList();
+			for (int i = 0; i < values.length; i++)
+			{
+				String val = values[i].trim();
+				String id = PathUtilities.makeId(val).toLowerCase();
+				Data data = datavalues.get(id);
+				if( data == null )
+				{
+					//create it
+					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, inTable);
+					data = searcher.searchById(id);
+					if( data == null )
+					{
+						data = searcher.createNewData();
+						data.setId(id);
+						data.setName(val);
+						searcher.saveData(data, null);
+					}
+					datavalues.put(id,  data);
+				}
+				valueids.add(id); //save it
+			}
+			inRow.setValues(inField, valueids);
+		}
+
+	}
+
+	private HashMap loadValueList(String inField) {
+		Map datavalues = getLookUps().get(inField);
+		if( datavalues == null )
+		{
+			datavalues = new HashMap();
+			getLookUps().put( inField, datavalues);
+		}
+		return datavalues
+	}
 	protected void createLookUp(String inCatalogId, Data inRow, String inField, String inTable)
 	{
 		String value = inRow.get(inField);
 		if( value != null )
 		{
-			Map datavalues = getLookUps().get(inField);
-			if( datavalues == null )
+			int comma = value.indexOf(",");
+			if( comma > 0 )
 			{
-				datavalues = new HashMap();
-				getLookUps().put( inField, datavalues);
+				value = value.substring(comma);
 			}
+			Map datavalues = loadValueList(inField)
 			Data data = datavalues.get(value);
 			if( data == null )
 			{
