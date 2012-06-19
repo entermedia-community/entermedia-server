@@ -3,7 +3,7 @@
 <div class="tab" id="field-tab">
 	<div class="tab-actions">
 		#if( $catalogid && $searchtype)
-			<form action="addnew.html" name="addnewprop">
+			<form action="$dataroot/properties/addnew.html" name="addnewprop">
 				<input type="hidden" name="catalogid" value="$!catalogid" />
 				<input type="hidden" name="searchtype" value="$searchtype" />
 				<strong>[[Add New Field]]: </strong><input class="field" type="text" name="newproperty"  /><input class="btn" style="margin-top: -2px;" type="submit" value="[[Save]]" />

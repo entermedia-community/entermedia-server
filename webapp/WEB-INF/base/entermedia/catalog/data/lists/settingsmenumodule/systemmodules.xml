@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-<!-- 
-  <property tab="modules" id="modules" module="system" path="/views/settings/datatypes/default/index.html" ordering="40">Modules</property>
-  --> 
+
+  <property id="modules" type="toplevel" parentid="modules" module="system" path="/views/settings/modules/setup/index.html" ordering="10">Modules</property>
 </properties>
 
