@@ -220,11 +220,20 @@ public class DataImportModule extends DataEditModule
 		searchtype = searchtype.toLowerCase();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		PropertyDetails details = archive.getPropertyDetails(searchtype);
+		if( details == null)
+		{
+			PropertyDetails defaultdetails = archive.getPropertyDetails("default");
+			details = new PropertyDetails();
+			details.setDetails(defaultdetails.getDetails());
+		}
+		String prefix = inReq.findValue("prefix");
+		details.setPrefix(prefix);
 		//will default to defaults
 		if( details.getDetail("sourcepath") == null )
 		{
 			PropertyDetail sourcepath = new PropertyDetail();
 			sourcepath.setId("sourcepath");
+			sourcepath.setName("SourcePath");
 			details.addDetail(sourcepath);
 		}
 		archive.savePropertyDetails(details, searchtype, inReq.getUser());
@@ -236,8 +245,8 @@ public class DataImportModule extends DataEditModule
 		if( element == null)
 		{
 			element = file.addNewElement();
-			element.attributeValue("id",searchtype + "Searcher" );
-			element.attributeValue("bean","xmlFileSearcher");
+			element.addAttribute("id",searchtype + "Searcher" );
+			element.addAttribute("bean","xmlFileSearcher");
 			getXmlArchive().saveXml(file, null);
 			getSearcherManager().clear();
 		}

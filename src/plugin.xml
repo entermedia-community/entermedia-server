@@ -1138,6 +1138,10 @@
 	  
 	  <bean id="DataImportModule" class="org.openedit.entermedia.modules.DataImportModule">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>
+		
 	</bean>
 	
 	

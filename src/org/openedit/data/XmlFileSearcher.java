@@ -127,7 +127,12 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			if(data.getId() == null)
 			{
 				data.setId(nextId());
-			}			
+			}
+			if( data.getSourcePath() == null)
+			{
+				String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
+				data.setSourcePath(sourcepath);
+			}
 		}
 		getXmlDataArchive().saveAllData(inAll, inUser);
 		updateIndex(inAll);
@@ -169,11 +174,12 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	protected void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
 	{
-		super.updateIndex(inData, doc, inDetails);
-		if( inData.getSourcePath() == null)
+		if( inData.getSourcePath() == null )
 		{
-			throw new OpenEditException("XmlFile searcher requires sourcepath be set " + inData.getProperties());
+			throw new OpenEditException("Cant save data without a sourcepath parameter");
 		}
+
+		super.updateIndex(inData, doc, inDetails);
 		doc.add(new Field("sourcepath", inData.getSourcePath(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 	}
 
@@ -189,15 +195,13 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		{
 			data.setId(nextId());
 		}
-		if( data.getSourcePath() == null )
+		if( data.getSourcePath() == null)
 		{
-			//throw new OpenEditException("Cant save data without a sourcepath parameter");
-			String sourcepath = getSourcePathCreator().createSourcePath(inData, inData.getId() );
+			String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
 			data.setSourcePath(sourcepath);
 		}
-		
-		updateIndex(data);
 		getXmlDataArchive().saveData(data,inUser);
+		updateIndex(data);
 	}
 
 	protected IntCounter getIntCounter()
@@ -303,12 +307,21 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	public void deleteAll(User inUser)
 	{
-		HitTracker all = getAllHits();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		PathProcessor processor = new PathProcessor()
 		{
-			Data object = (Data)iterator.next();
-			getXmlDataArchive().delete(object,inUser);
-		}
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				if (inContent.getName().equals(getDataFileName()))
+				{
+					getPageManager().getRepository().remove(inContent);
+				}
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(getPathToData());
+		processor.setPageManager(getPageManager());
+		processor.setIncludeExtensions("xml");
+		processor.process();
 		reIndexAll();
 	}
 	
@@ -316,7 +329,12 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		if(fieldPrefix == null)
 		{
-			fieldPrefix = getPageManager().getPage("/" + getCatalogId()).get("defaultdatafolder");
+			fieldPrefix = getPropertyDetails().getPrefix();
+			if( fieldPrefix == null )
+			{
+				//TODO: Remove this
+				fieldPrefix = getPageManager().getPage("/" + getCatalogId()).get("defaultdatafolder");
+			}
 			if( fieldPrefix == null)
 			{
 				fieldPrefix = getSearchType();

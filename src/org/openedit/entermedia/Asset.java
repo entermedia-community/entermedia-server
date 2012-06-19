@@ -21,6 +21,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.Page;
@@ -30,7 +31,7 @@ import com.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class Asset implements Data
+public class Asset implements MultiValued
 {
 	protected String fieldId;
 	protected String fieldName;

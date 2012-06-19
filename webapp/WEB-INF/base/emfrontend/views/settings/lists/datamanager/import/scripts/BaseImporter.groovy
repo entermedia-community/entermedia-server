@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.zip.Inflater;
 
-import org.openedit.Data;
+import org.openedit.*;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -17,9 +17,7 @@ import org.openedit.entermedia.util.Row;
 import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.EnterMediaObject;
 import com.openedit.page.Page;
-import com.openedit.util.FileUtils;
-import com.openedit.util.PathUtilities;
-import com.openedit.util.URLUtilities;
+import com.openedit.util.*;
 
 public class BaseImporter extends EnterMediaObject 
 {
@@ -101,17 +99,16 @@ public class BaseImporter extends EnterMediaObject
 		}
 		return fieldLookUps;
 	}
-	protected void createMultiSelect(String inCatalogId, BaseData inRow, String inField, String inTable)
+	protected void createMultiSelect(String inCatalogId, MultiValued inRow, String inField, String inTable)
 	{
 		String value = inRow.get(inField);
 		if( value != null )
 		{			
 			Map datavalues = loadValueList(inField)
-			String[] values = value.split(",");
+			Collection values = EmStringUtils.split(value);
 			List valueids = new ArrayList();
-			for (int i = 0; i < values.length; i++)
+			for (String val: values)
 			{
-				String val = values[i].trim();
 				String id = PathUtilities.makeId(val).toLowerCase();
 				Data data = datavalues.get(id);
 				if( data == null )
@@ -152,7 +149,7 @@ public class BaseImporter extends EnterMediaObject
 			int comma = value.indexOf(",");
 			if( comma > 0 )
 			{
-				value = value.substring(comma);
+				value = value.substring(0,comma);
 			}
 			Map datavalues = loadValueList(inField)
 			Data data = datavalues.get(value);
@@ -182,11 +179,12 @@ public class BaseImporter extends EnterMediaObject
 		{
 			String header = (String)iterator.next();
 			//String header = inHeaders[i];
-			PropertyDetail detail = details.getDetail(header);
+			String id = PathUtilities.makeId(header);
+			PropertyDetail detail = details.getDetail(id);
 			if( detail == null )
 			{
 				detail = new PropertyDetail();
-				detail.setId(header);
+				detail.setId(id);
 				detail.setText(header);
 				detail.setEditable(true);
 				details.addDetail(detail);
@@ -202,24 +200,17 @@ public class BaseImporter extends EnterMediaObject
 		{
 			String val = inRow.getData(i);
 			String header = inRow.getHeader().getColumn(i);
-			PropertyDetail detail = inSearcher.getPropertyDetails().getDetail(
-					header);
+			String headerid = PathUtilities.makeId(header);
 
 			val = URLUtilities.xmlEscape(val);
-			if("sourcepath".equals(header)){
+			if("sourcepath".equals(header))
+			{
 				inData.setSourcePath(val);
 			}
-			if (detail != null && val != null && val.length() > 0) {
-
-				inData.setProperty(detail.getId(), val);
-			} else if(val != null && val.length() >0){
-				inData.setProperty(header, val);
+			else if (val != null && val.length() > 0) 
+			{
+				inData.setProperty(headerid, val);
 			}
 		}
-		if(inData.getSourcePath() == null)
-		{
-			inData.setSourcePath(inData.getId());
-		}
-
 	}
 }
