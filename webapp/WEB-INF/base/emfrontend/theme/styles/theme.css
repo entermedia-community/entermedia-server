@@ -3874,6 +3874,66 @@ p.info {
 	padding-top: 13px;
 	margin-bottom: -15px;
 }
+#module-results-table tr td:first-child div {
+    margin-left: 10px;
+}
+#advsearchpanel select {
+    margin: 5px 0;
+}
+#advsearchpanel .submit input {
+    float: right;
+    position: relative;
+    top: 5px;
+}
+#advsearchpanel span {
+    display: block;
+    width: 1px;
+}
+
+/* DATE PICKER UI THEME */
+
+#ui-datepicker-div {
+    padding: 4px 4px 0 4px;
+    border-radius: 5px;
+    border-top: 1px solid #ccc;
+    box-shadow: 0 0 12px 2px rgba(0,0,0,0.3);
+}
+#ui-datepicker-div .ui-state-default {
+    background: none;
+    border: 1px solid #ddd;
+    color: #666;
+    font-weight: normal;
+}
+#ui-datepicker-div .ui-state-default:hover {
+    background: #ddd;
+    border: 1px solid #aaa;
+    color: #444;
+}
+#ui-datepicker-div th span {
+    height: 10px;
+    display: block;
+    line-height: 10px;
+    font-weight: normal;
+}
+#ui-datepicker-div .ui-datepicker-header {
+    padding: 3px 0 4px 0;
+}
+#ui-datepicker-div .ui-datepicker-prev {
+    left: 5px;
+    top: 4px;
+}
+#ui-datepicker-div .ui-datepicker-next {
+    right: 5px;
+    top: 4px;
+}
+#advsearchpanel .emsearchfield {
+    color: #aaa;
+}
+p.resultsnumber {
+    float: left; 
+    margin: 7px 0 0 20px;
+    color: #999;
+}
 
 /* BUTTONS */
 

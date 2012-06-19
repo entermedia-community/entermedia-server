@@ -16,7 +16,7 @@
 	
 #else
 	#set( $op = $term.getParameter("op") )
-	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);">
+	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" style="display: block;">
 		<option value="equals" >[[Equals]]</option>
 		<option value="after" #if( $op && $op == "after" )selected #end>[[After Date]]</option>
 		<option value="before" #if( $op && $op == "before" )selected #end >[[Before Date]]</option>
@@ -26,8 +26,7 @@
 		<option value="before30" #if( $op && $op == "before30" )selected #end>[[Past month]]</option>
 		<option value="before365" #if( $op && $op == "before365" )selected #end>[[Past year]]</option>
 	</select>
-	<br>
-	<span id="datevalue${inputid}" style="display: none;">
+	<span id="datevalue${inputid}" style="display: none; width: 1px;">
 	<input name="${inputname}.value" class="datepicker" id="datebox${inputid}" value="$!inputed" size="8" type="text">	
 	</span>
 	
@@ -42,9 +41,8 @@
 		#set($after = $context.getRequestParameter("${inputname}.after"))
 		#set($before = $context.getRequestParameter("${inputname}.before"))
 	#end
-	<br>
-	<input name="${inputname}.after" id="dateafter${inputid}" value="$!after" size="8" type="text">
-	<br>
+	<input name="${inputname}.after" class="datepicker" id="dateafter${inputid}" value="$!after" size="8" type="text">
+	<br />
 	<input name="${inputname}.before" class="datepicker" id="datebefore${inputid}" value="$!before" size="8" type="text">
 	</span>
 	
@@ -55,13 +53,13 @@
 			var rangeblock = document.getElementById('daterange${inputid}');
 			if( value < 3 )
 			{
-				valueblock.style.display='inline';
+				valueblock.style.display='block';
 				rangeblock.style.display='none';
 			}
 			else if ( value == 3 )
 			{
 				valueblock.style.display='none';
-				rangeblock.style.display='inline';
+				rangeblock.style.display='block';
 			}
 			else
 			{
