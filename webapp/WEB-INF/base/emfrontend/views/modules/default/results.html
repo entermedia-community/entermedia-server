@@ -18,6 +18,8 @@ $!query.addSortBy("ordering")
 
 #set ( $viewpath = $views.first() )
 
+##set ( $canedit = $context.getPageValue("${module}edit") )
+
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 <input type="hidden" name="hitsname" value="hits"/>
 
@@ -52,7 +54,6 @@ $!query.addSortBy("ordering")
 <tbody>
     
     
-  
     
     #set( $even = true )
 #set($count = 0)
@@ -62,9 +63,9 @@ $!query.addSortBy("ordering")
     
      #set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}")
      
-     
-     
-        <tr #if($caneditdata)  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$viewpath.id&viewpath=$module/$viewpath.id" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}" #end >
+      
+        
+        <tr #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$viewpath.id&viewpath=$module/$viewpath.id&hitssessionid=${hits.sessionId}" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}" #end >
   
     
    

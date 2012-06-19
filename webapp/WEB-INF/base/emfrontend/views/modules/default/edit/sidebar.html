@@ -15,6 +15,8 @@ $!query.addSortBy("ordering")
 #end
 $context.putPageValue("view", $viewpath)
 
+#set($hitssessionid = $context.findValue("hitssessionid"))
+
 
 <div class="ui-widget  uipanel">
     <div class="ui-widget-header">
@@ -29,7 +31,7 @@ $context.putPageValue("view", $viewpath)
         <ul id="assetmenu" class="sidebar-list">       
               #foreach( $target in $views)            
                   <li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
-                      <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id">
+                      <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
                         $target</a>
                   </li>
               #end

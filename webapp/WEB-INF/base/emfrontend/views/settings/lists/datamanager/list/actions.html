@@ -5,8 +5,9 @@
         <a class="btn ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/edit/addnew.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Add New Record]]</a>
         <a class="btn" href="$home$content.dataroot/list/reindex.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL">[[Reindex]]</a>
         <a class="btn ajax" targetdivinner="datamanager-workarea" href="$home$content.dataroot/import/index.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&oemaxlevel=1">[[Import]]</a>
-        <a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export to CSV]]</a>
-        <a class="btn confirm red" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete All]]</a>
+        <a class="btn" href="$home$content.dataroot/export/export.csv?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL&hitssessionid=${datalist.getSessionId()}">[[Export]]</a>
+        <a class="btn confirm" href="$home$content.dataroot/list/deleteall.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete All Records?" >[[Delete Records]]</a>
+	<a class="btn confirm" href="$home$content.dataroot/list/deletetable.html?catalogid=$searcher.catalogId&searchtype=$searcher.searchType&origURL=$!origURL" confirm="Delete Table?" >[[Delete Table]]</a>
         <a class="btn right flat-left up" id="advanced-dm-search-btn">\/</a>
         <script>
             $('#advanced-dm-search-btn').click(function(){

@@ -1,5 +1,5 @@
 
-<div id="default-top" class="clearfix" style="margin: -20px 0 0 0;">
+<div id="default-top" class="clearfix" style="margin: -20px 0 20px 0;">
     <!--  
         <div class="thumbnail">
             <img src="" style="width: 91px; height: 91px;" />
@@ -17,10 +17,12 @@
 
      <div class="main-info" style="padding-bottom: 30px;">
         <div class="primary">
-           Edit $module
+           $data.firstname $data.lastname
         </div>
         <div class="secondary">
-            Update your user profile information
+           #if ($data.company)
+             $searcherManager.getData($catalogid, "company", $data.company)
+           #end
         </div>
     </div>
     
