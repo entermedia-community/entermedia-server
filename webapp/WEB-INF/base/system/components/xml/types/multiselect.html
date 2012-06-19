@@ -7,10 +7,6 @@
 #set ($view = $context.getRequestParameter('view')) 
 #set($checked = $data.getValues($detail.id))
 
-<div id="allnone">
-(<a href="javascript:selectall('${searchtype}checkbox')">#text("all")</a> <a href="javascript:selectnone('${searchtype}checkbox')">[[none]]</a>)
-</div>
-
 ##we need to load up the existing detail object
 
 #set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
@@ -59,6 +55,21 @@
 #set( $valueid = "$fieldname" )
 
 #if($types)
+
+    <div id="allnone" style="padding-bottom: 8px; margin-bottom: 5px; border-bottom: 1px solid #ddd;">
+        <a id="all" style="cursor: pointer">[[Select All]]</a>
+        <a id="none" style="cursor: pointer; margin-left: 10px;">[[Select None]]</a>
+    </div>
+
+    <script>
+        $('#all').click(function(){
+            $('.${searchtype}checkbox').attr('checked','checked');
+        })
+         $('#none').click(function(){
+            $('.${searchtype}checkbox').removeAttr('checked');
+        })
+    </script>
+
 	#if( $foreignkeyid)
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");
@@ -70,7 +81,6 @@
 	#foreach( $type in $types )
 		#set( $key = $type.id)
 			<td>
-			
 	
 	  <input type="checkbox" class="${searchtype}checkbox" name="${detail.id}.value" id="${searchtype}.${item.id}" value="$key"
 	    #if ($checked.contains($key)) checked #end >
@@ -84,9 +94,11 @@
 </tr>
 </table>
 	
+
+   
    
 #else
-	No properties found in ../configuration/lists/#esc(${listid}).xml 
+	<p class="info">No properties found in ../configuration/lists/#esc(${listid}).xml</p>
 #end
 
 
