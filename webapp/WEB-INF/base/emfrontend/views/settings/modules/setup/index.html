@@ -3,7 +3,7 @@
     #set ( $modules = $searcherManager.getList($catalogid, "module") )
         #foreach ( $module in $modules )
     <li>
-        <a href="$home$apphome/views/settings/modules/setup/module-setup.html?id=$module" class="folder module">
+        <a href="$home$apphome/views/settings/modules/setup/module-setup.html?id=$module.id" class="folder module">
             <div class="name">
                 <div style="margin-top: 8px" class="alias" title="Alias">$module</div>
                ## <div class="path" title="$folder.externalpath">$folder.externalpath</div>
