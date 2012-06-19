@@ -221,6 +221,12 @@ public class DataImportModule extends DataEditModule
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		PropertyDetails details = archive.getPropertyDetails(searchtype);
 		//will default to defaults
+		if( details.getDetail("sourcepath") == null )
+		{
+			PropertyDetail sourcepath = new PropertyDetail();
+			sourcepath.setId("sourcepath");
+			details.addDetail(sourcepath);
+		}
 		archive.savePropertyDetails(details, searchtype, inReq.getUser());
 		inReq.setRequestParameter("searchtype", searchtype);
 

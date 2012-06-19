@@ -971,8 +971,10 @@
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="rootDirectory"><ref bean="root"/></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
 	</bean>
+	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
 	
 	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" singleton="false">
 		<property name="userManager"><ref bean="userManager"/></property>
@@ -1444,7 +1446,7 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="userManager"><ref bean="userManager" /></property>
 	</bean>
-		<bean id="pushrequestSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="pushrequestSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
