@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.util.CSVReader;
+import org.openedit.xml.XmlFile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.Script;
@@ -222,5 +224,23 @@ public class DataImportModule extends DataEditModule
 		archive.savePropertyDetails(details, searchtype, inReq.getUser());
 		inReq.setRequestParameter("searchtype", searchtype);
 
+		//edit beans.xml
+		XmlFile file = getXmlArchive().getXml("/" + catalogid + "/configuration/beans.xml");
+		Element element = file.getElementById(searchtype + "Searcher");
+		if( element == null)
+		{
+			element = file.addNewElement();
+			element.attributeValue("id",searchtype + "Searcher" );
+			element.attributeValue("bean","xmlFileSearcher");
+			getXmlArchive().saveXml(file, null);
+			getSearcherManager().clear();
+		}
 	}	
+	public void deleteTable(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		String searchtype = inReq.findValue("searchtype");
+		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +".xml" );
+		getPageManager().removePage(xml);
+	}
 }

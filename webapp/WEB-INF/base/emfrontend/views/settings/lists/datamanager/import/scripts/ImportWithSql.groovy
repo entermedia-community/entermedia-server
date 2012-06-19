@@ -19,32 +19,60 @@ class ImportWithSqlHelper extends BaseImporter
 	{
 		String catalogId = context.findValue("catalogid");
 		ConnectionPool pool = (ConnectionPool)getModuleManager().getBean("connectionPool");
+	log.info("Connecting");
 		Connection con = pool.instance(catalogId);
-
+    log.info("Connected");
 		DatabaseMetaData allmd = con.getMetaData();
 		ResultSet rs = allmd.getTables(null, null, "%", null);
 		while (rs.next()) 
 		{
 			String table = rs.getString(3);
 			try{
+				Page page = getPageManager().getPage("/WEB-INF/tmp/exports/" + table + ".csv");
+				if( page.exists() )
+				{
+					log.info("already completed " + table );
+					continue;
+				}
 				Statement st = con.createStatement();
-				ResultSet rows = st.executeQuery("SELECT * FROM " + table);
+				
+				if( 
+					table.endsWith("SearchResult") ||
+					table.contains("Picker") ||
+					table.startsWith("Asset") ||
+					table.equals("Contact")  || 
+					table.equals("Contact 2")  ||
+					table.equals("Contact 3")  ||
+					table.startsWith("Publication")  ||
+					table.startsWith("Usage")  ||  
+					table.startsWith("Index") ||
+					table.startsWith("Tag") ||
+					
+					table.startsWith("Submission") 
+				  )
+				{
+					log.info("skip " + table);
+					continue;
+				}
+				log.info("search " + table);
+				ResultSet rows = st.executeQuery("SELECT * FROM \"" + table + "\"");
 				ResultSetMetaData md = rs.getMetaData();
 				int col = md.getColumnCount();
-				System.out.println("Number of Column : "+ col);
-				System.out.println("Columns Name: ");
+				log.info( table + "Number of Column : "+ col);
 				
-				Page page = getPageManager().getPage("/WEB-INF/tmp/exports/" + table + ".csv");
 				OutputStream out = getPageManager().saveToStream(page);
 				CSVWriter writer = new CSVWriter(new OutputStreamWriter(out,"UTF-8") );
 				writer.writeAll(rows,true);
+				log.info("saved " + table);
+				
 				writer.close();
 			}
 			catch (SQLException s)
 			{
-				System.out.println("SQL statement is not executed!");
+				log.info(table + " SQL statement is not executed!" + s);
 			}
 		}
+		log.info("Closing");
 		pool.close(con);
 	}
 	
@@ -64,5 +92,6 @@ class ImportWithSqlHelper extends BaseImporter
 ImportWithSqlHelper importer = new ImportWithSqlHelper();
 importer.setModuleManager(moduleManager);
 importer.setContext(context);
+importer.setLog(log);
 importer.importTables();
-importer.importData();
+//importer.importData();

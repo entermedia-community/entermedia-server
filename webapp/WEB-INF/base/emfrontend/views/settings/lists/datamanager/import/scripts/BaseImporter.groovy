@@ -106,7 +106,7 @@ public class BaseImporter extends EnterMediaObject
 		String value = inRow.get(inField);
 		if( value != null )
 		{
-			String datavalues = getLookUps().get(inField);
+			Map datavalues = getLookUps().get(inField);
 			if( datavalues == null )
 			{
 				datavalues = new HashMap();
