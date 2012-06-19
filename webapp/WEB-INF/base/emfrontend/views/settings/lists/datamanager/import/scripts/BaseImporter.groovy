@@ -2,6 +2,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
@@ -16,10 +17,13 @@ import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.EnterMediaObject;
 import com.openedit.page.Page;
 import com.openedit.util.FileUtils;
+import com.openedit.util.PathUtilities;
 import com.openedit.util.URLUtilities;
 
 public class BaseImporter extends EnterMediaObject 
 {
+	protected Map<String,String> fieldLookUps;
+	 
 	public void importData() throws Exception 
 	{
 		Searcher searcher = loadSearcher(context);
@@ -87,7 +91,47 @@ public class BaseImporter extends EnterMediaObject
 	{
 		return (Data) inSearcher.searchById(inId);
 	}
-
+	protected Map<String,Map> getLookUps()
+	{
+		if( fieldLookUps == null )
+		{
+			fieldLookUps = new HashMap<String,Map>();
+			//fieldLookUps.put("Division", "val_Archive_Division");
+		}
+		return fieldLookUps;
+	}
+	
+	protected void createLookUp(String inCatalogId, Data inRow, String inField, String inTable)
+	{
+		String value = inRow.get(inField);
+		if( value != null )
+		{
+			String datavalues = getLookUps().get(inField);
+			if( datavalues == null )
+			{
+				datavalues = new HashMap();
+				getLookUps().put( inField, datavalues);
+			}
+			Data data = datavalues.get(value);
+			if( data == null )
+			{
+				//create it
+				String id = PathUtilities.makeId(value);
+				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, inTable);
+				data = searcher.searchById(id);
+				if( data == null )
+				{
+					data = searcher.createNewData();
+					data.setId(id);
+					data.setName(value);
+					searcher.saveData(data, null);
+				}
+				datavalues.put(value,  data);
+			}
+			inRow.setProperty(inField, data.id);
+		} 
+	}
+	
 	protected void createMetadata(Searcher inSearcher, Header inHeader)
 	{
 		PropertyDetails details = inSearcher.getPropertyDetails();
