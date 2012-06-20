@@ -1,6 +1,7 @@
 <page>
 	
 	<path-action name="DataEditModule.saveData" />
+	<path-action name="MediaAdminModule.saveModule" />
 	
 	<property name="save">true</property>
 

@@ -52,6 +52,10 @@ public class DataEditModule extends BaseMediaModule
 	public Searcher loadSearcherForEdit(WebPageRequest inReq) throws Exception
 	{
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
+		if (searcher == null)
+		{
+			throw new OpenEditException("No searcher found");
+		}
 		String paramname = inReq.getRequestParameter("paramname");
 		if( paramname == null)
 		{
@@ -67,10 +71,6 @@ public class DataEditModule extends BaseMediaModule
 			}
 		}
 		inReq.putPageValue("searcher", searcher);
-		if (searcher == null)
-		{
-			throw new OpenEditException("No searcher found");
-		}
 		inReq.putPageValue("detailsarchive", searcher.getPropertyDetailsArchive());
 		inReq.putPageValue("searcherManager", getSearcherManager());
 
@@ -491,6 +491,7 @@ public class DataEditModule extends BaseMediaModule
 					
 				}
 			}
+			inReq.putPageValue("data", data);
 
 			inReq.putPageValue("savedok", Boolean.TRUE);
 

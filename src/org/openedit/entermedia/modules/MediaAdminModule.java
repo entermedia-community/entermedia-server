@@ -7,18 +7,32 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
+import org.entermedia.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.xml.XmlFolderSearcher;
+import org.openedit.xml.XmlArchive;
+import org.openedit.xml.XmlFile;
 
-import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
+import com.openedit.page.PageSettings;
 
 public class MediaAdminModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(MediaAdminModule.class);
+	protected WorkspaceManager fieldWorkspaceManager;
+	
+	public WorkspaceManager getWorkspaceManager()
+	{
+		return fieldWorkspaceManager;
+	}
+
+	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager)
+	{
+		fieldWorkspaceManager = inWorkspaceManager;
+	}
 
 	public void listThemes(WebPageRequest inReq)
 	{
@@ -169,9 +183,14 @@ public class MediaAdminModule extends BaseMediaModule
 				searcher.saveData(existing, inReq.getUser());
 			}
 		}
-		
-		
-		
 	}
 
+	public void saveModule(WebPageRequest inReq) throws Exception
+	{
+		Data module = (Data)inReq.getPageValue("data");
+		
+		String appid = inReq.findValue("applicationid");
+		String catalogid = inReq.findValue("catalogid");
+		getWorkspaceManager().saveModule(catalogid, appid, module);
+	}
 }

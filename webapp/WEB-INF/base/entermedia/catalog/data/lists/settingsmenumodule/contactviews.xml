@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-	
-  <property id="contactviews"  type="toplevel" module="contact" parentid="contactviews" ordering="100" path="/views/settings/modules/contact/metadata/views/index.html" sublabel="Editing" >Views</property>
-  <property id="contactsystemviews"  module="contact" parentid="contactviews" path="/views/settings/modules/contact/metadata/viewssystem/index.html" ordering="10">System</property>
-
-</properties>

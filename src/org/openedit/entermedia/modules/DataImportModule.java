@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Element;
+import org.entermedia.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -30,6 +31,16 @@ import com.openedit.util.URLUtilities;
 public class DataImportModule extends DataEditModule
 {
 	protected ScriptManager fieldScriptManager;
+	protected WorkspaceManager fieldWorkspaceManager;
+	public WorkspaceManager getWorkspaceManager()
+	{
+		return fieldWorkspaceManager;
+	}
+
+	public void setWorkspaceManager(WorkspaceManager inWorkspaceManager)
+	{
+		fieldWorkspaceManager = inWorkspaceManager;
+	}
 
 	public ScriptManager getScriptManager()
 	{
@@ -215,41 +226,10 @@ public class DataImportModule extends DataEditModule
 	{
 		String tablename = inReq.findValue("tablename");
 		String catalogid = inReq.findValue("catalogid");
-		
-		String searchtype = PathUtilities.makeId(tablename);
-		searchtype = searchtype.toLowerCase();
-		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		PropertyDetails details = archive.getPropertyDetails(searchtype);
-		if( details == null)
-		{
-			PropertyDetails defaultdetails = archive.getPropertyDetails("default");
-			details = new PropertyDetails();
-			details.setDetails(defaultdetails.getDetails());
-		}
-		String prefix = inReq.findValue("prefix");
-		details.setPrefix(prefix);
-		//will default to defaults
-		if( details.getDetail("sourcepath") == null )
-		{
-			PropertyDetail sourcepath = new PropertyDetail();
-			sourcepath.setId("sourcepath");
-			sourcepath.setName("SourcePath");
-			details.addDetail(sourcepath);
-		}
-		archive.savePropertyDetails(details, searchtype, inReq.getUser());
-		inReq.setRequestParameter("searchtype", searchtype);
 
-		//edit beans.xml
-		XmlFile file = getXmlArchive().getXml("/" + catalogid + "/configuration/beans.xml");
-		Element element = file.getElementById(searchtype + "Searcher");
-		if( element == null)
-		{
-			element = file.addNewElement();
-			element.addAttribute("id",searchtype + "Searcher" );
-			element.addAttribute("bean","xmlFileSearcher");
-			getXmlArchive().saveXml(file, null);
-			getSearcherManager().clear();
-		}
+		String prefix = inReq.findValue("prefix");
+		String searchtype = getWorkspaceManager().createTable(catalogid, tablename, prefix);
+		inReq.setRequestParameter("searchtype", searchtype);
 	}	
 	public void deleteTable(WebPageRequest inReq) throws Exception
 	{
