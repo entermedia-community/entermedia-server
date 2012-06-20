@@ -1,4 +1,3 @@
-#set($searcher = $mediaarchive.getAssetSearcher())
 #set($viewid = $context.getRequestParameter("viewid"))
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set ( $systemdefined = "false" )
@@ -10,7 +9,6 @@
 #set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined",$systemdefined) )
 $!query.addSortBy("ordering")
 #set($views = $viewsearcher.search($query))
-
 
 #set( $viewsroot = $content.viewsroot )
 	<div id="table-container">
@@ -31,7 +29,7 @@ $!query.addSortBy("ordering")
 					#end
 					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath">
 					<span class="XXXdrag-and-drop"></span>$target</a>
-					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=$module&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
+					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${$moduleid}&id=${target.id}&viewpath=$viewpath"></a>
 
                 </li>
 			

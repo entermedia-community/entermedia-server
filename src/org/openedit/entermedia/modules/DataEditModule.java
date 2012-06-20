@@ -723,6 +723,12 @@ public class DataEditModule extends BaseMediaModule
 	public void deleteView(WebPageRequest inReq)
 	{
 		String catid = resolveCatalogId(inReq);
+		
+		String id = inReq.getRequestParameter("id");
+		Searcher searcher = getSearcherManager().getSearcher(catid, "view");
+		Data data = (Data)searcher.searchById(id);
+		searcher.delete(data, null);
+		
 		String view = inReq.getRequestParameter("viewpath");
 		//String type = resolveSearchType(inReq);
 		String path = "/WEB-INF/data/" + catid + "/views/" + view + ".xml";

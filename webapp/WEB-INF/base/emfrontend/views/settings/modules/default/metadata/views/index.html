@@ -27,8 +27,9 @@
 	    #if ( $systemdefined == "false" )
 	    <a id="editname" style="color: #fff; opacity: 0.75; font-size: 10px; margin-left: 5px; cursor: pointer;">Edit Name</a>
 	
-	    <form style="display: none; float: left; margin-top: -1px;" id="changename" name="newgroup" action="$home$viewsroot/changeviewname.html">
-            <input class="field" style="margin:-6px 0; padding: 4px 5px; border-radius: 3px; border: 1px solid #15566B; width: 200px; font-size: 12px;" name="newname" value="$view" >
+	    <form style="display: none; float: left; margin-top: -1px;" id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewpath=$viewpath&save=true&searchtype=view">
+	    	<input type="hidden" name="field" value="name" />
+             <input class="field" style="margin:-6px 0; padding: 4px 5px; border-radius: 3px; border: 1px solid #15566B; width: 200px; font-size: 12px;" name="name.value" value="$view" >
             <input class="btn" style="margin: -6px 0 -6px 3px; position: relative; top: -1px; padding: 4px 8px 5px 8px" type="submit" value="Save" />
         </form>
         

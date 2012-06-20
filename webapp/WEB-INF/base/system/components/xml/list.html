@@ -55,7 +55,6 @@
 #set( $valueid = "$fieldname" )
 
 
-
 #if($types)
 	#if( $foreignkeyid)
 		<script type="text/javascript">
@@ -72,16 +71,15 @@
 			#esc($type.name)
 		</option>
 	#end
+		##<option value="">
    </select>
 #else
 	No properties found in ../configuration/lists/#esc(${listid}).xml 
 #end
 <div class="editfield" id="listeditor-$listid" style="display: none;">
-    <form>
-        <input type="text" />
-        <input class="btn" type="submit" value="Save" />
+        <input  type="text" />
+        <input  class="btn save" type="button" value="Save" />
         <a class="btn cancel" style="margin: -5px 0; top: 0px;" style="cursor: pointer;">Cancel</a>
-    </form>
 </div>
 
 <a id="listeditorbtn-$listid" style="margin: -5px 0" class="btn right">Add New Value</a>
@@ -91,12 +89,23 @@
         $('#list-$listid').hide();
         $('#listeditor-$listid').show();
         $('#listeditorbtn-$listid').hide();
+        
     })
     $('#listeditor-$listid .cancel').click(function(){
         $('#list-$listid').show();
         $('#listeditor-$listid').hide();
         $('#listeditorbtn-$listid').show();
     })
-</script>
+    $('#listeditor-$listid .save').click(function()
+    {
+    	##required: catalogid, searchtype, view, fieldname
+    	##optional: value, foreignkeyid and foreignkeyvalue
+    	#set( $xmledithome = $context.getPageProperty("xmledithome"))
+		var val = $('#listeditor-$listid input[type="text"]').val();
+       	$("#listdetail_$fieldname").load("$xmledithome/listsave.html?catalogid=$catalogid&listid=${listid}&searchtype=$searchtype&view=$!view&fieldname=$fieldname&foreignkeyid=$!foreignkeyid&foreignkeyvalue=$!foreignkeyvalue&newrow=" + val)  	
+    	
+    })
+
+    </script>
 
 </div>
