@@ -3470,9 +3470,25 @@ div#folders.add .folder {
 #workarea ul li:hover {
 	background: #ededed; 
 }
-#workarea ul li .delete-row {
+#workarea ul li .delete-row, #side-nav-inner ul li .delete-row {
 	margin: 3px 2px 0 0;
 	padding: 0;
+}
+#side-nav-inner ul li .delete-row {
+    margin-top: -21px;
+    margin-right: 10px;
+}
+#side-nav-inner ul li.current .delete-row {
+    background: url('../images/iconset-10x10.png') 20px 0px;
+    opacity: 0.7;
+}
+#side-nav-inner ul li.current .delete-row:hover {
+    background: url('../images/iconset-10x10.png') 20px 0px;
+    opacity: 1;
+}
+#side-nav-inner ul li .delete-row:hover {
+    background: url('../images/iconset-10x10.png') 20px 10px; 
+    opacity: 1;  
 }
 #workarea ul li a {
 	color: #666;
@@ -3933,6 +3949,28 @@ p.resultsnumber {
     float: left; 
     margin: 7px 0 0 20px;
     color: #999;
+}
+
+/* MODULE EDIT CHECKBOX EDIT LIST */
+
+#emcontainer #resultslist  #default-fields .settings-table tr td table {
+    width: 100%;
+}
+#emcontainer #resultslist  #default-fields .settings-table tr td table tr {
+    border: none;
+}
+#emcontainer #resultslist  #default-fields .settings-table tr td table tr td {
+    padding: 5px 5px;
+    line-height: 16px;
+    width: auto !important;
+}
+#emcontainer #resultslist  #default-fields .settings-table tr td table tr td:first-child {
+    background: none;
+    text-align: left;
+    font-weight: normal;
+}
+#emcontainer #resultslist  #default-fields .settings-table table tr td:nth-child(2) {
+    border-left: none;
 }
 
 /* BUTTONS */
