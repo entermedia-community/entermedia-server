@@ -76,13 +76,16 @@
 #else
 	No properties found in ../configuration/lists/#esc(${listid}).xml 
 #end
+
+#if( $caneditlists && "$caneditlists" == "true")
 <div class="editfield" id="listeditor-$listid" style="display: none;">
         <input  type="text" />
         <input  class="btn save" type="button" value="Save" />
         <a class="btn cancel" style="margin: -5px 0; top: 0px;" style="cursor: pointer;">Cancel</a>
 </div>
-
 <a id="listeditorbtn-$listid" style="margin: -5px 0" class="btn right">Add New Value</a>
+#end
+
 
 <script>
     $('#listeditorbtn-$listid').click(function(){

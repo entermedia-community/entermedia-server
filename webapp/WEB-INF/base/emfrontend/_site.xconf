@@ -274,5 +274,13 @@
   <permission name="viewerrors">
      <userprofile property="viewerrors" equals="true" />
   </permission>
+
+  <permission name="editlists">
+	<or>
+		<group name="administrators" />
+  		<userprofile property="editlists" equals="true" />
+  	</or>  
+  </permission>
+  
   
 </page>

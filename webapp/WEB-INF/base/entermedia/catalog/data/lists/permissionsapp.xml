@@ -20,6 +20,7 @@
 	<permission id="assetpermissions" permissiontype="edit" name="Permissions" description="Enables permission alteration for media assets."/>
 	<permission id="savesearch" permissiontype="edit" name="Saved Searches" description="Enables saving, customization and deletion of previous searches."/>
 	<permission id="edittablecolumns" permissiontype="edit" name="Table Columns" description="Enables the customization of search result columns in table view."/>
+	<permission id="editlists" permissiontype="edit" name="Inline List Editing" description="Allows users to add values to lists." />
 	
 	
 	<permission id="converthistory" permissiontype="history" name="Conversion" description="Logs the conversion history of an asset."/>
