@@ -11,11 +11,11 @@
 
 #set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 #if( !$detail) ##this is new. To reduce complexity we want to just load up the detail all the time
-	#set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
+    #set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
 #end
 
 #set( $listid = $detail.getListId())
-#set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
+#set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid )) 
 ##optional things to filter the list
 #set ($foreignkeyid = $detail.get("foreignkeyid") )
 
@@ -24,29 +24,29 @@
 #set ($squery = $detail.query )
 
 #if ($foreignkeyid && $foreignkeyvalue)
-	#set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
-	
-	#if( $foreigndetail && $foreigndetail.listid )
-		#set( $foreignfield = $foreigndetail.listid )
-	#else
-		#set( $foreignfield = $foreignkeyid )
-	#end
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.setAndTogether(false))
-	#set ($o = $query.addMatches("$foreignfield", "$foreignkeyvalue"))
+    #set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
+    
+    #if( $foreigndetail && $foreigndetail.listid )
+        #set( $foreignfield = $foreigndetail.listid )
+    #else
+        #set( $foreignfield = $foreignkeyid )
+    #end
+    #set ($query = $lsearcher.createSearchQuery())
+    #set ($o = $query.setAndTogether(false))
+    #set ($o = $query.addMatches("$foreignfield", "$foreignkeyvalue"))
 #elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
-	#set ($query = $lsearcher.parse($squery))
+    #set ($query = $lsearcher.parse($squery))
 #else
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.addMatches("id", "*"))
+    #set ($query = $lsearcher.createSearchQuery())
+    #set ($o = $query.addMatches("id", "*"))
 #end
 
 #if ($detail.sort)
-	$query.setSortBy($detail.sort)
+    $query.setSortBy($detail.sort)
 #end
 #set ($types = $lsearcher.search($query))
 #if( !$value )
-	#set ($value = $context.getRequestParameter('value'))
+    #set ($value = $context.getRequestParameter('value'))
 #end
 #if (!$value)
   #set ($value = $context.getRequestParameter("${fieldname}.value"))
@@ -57,25 +57,26 @@
 
 
 #if($types)
-	#if( $foreignkeyid)
-		<script type="text/javascript">
-			addListListener("$foreignkeyid", "${fieldname}");
-		</script>
-	#end
-	<select id="list-$listid" name="$!detailprefix${valueid}.value" class="autosubmited #if($detail.isRequired()) required #end" listid="$listid" id="${valueid}.value" onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" >
-	#if ($detail.blankoption != false)
-	<option value=""></option>
-	#end
-	#foreach( $type in $types )
-		#set( $key = $type.id)
-		<option value="$key" #if( $value && $key == $value ) selected #end>
-			#esc($type.name)
-		</option>
-	#end
+    #if( $foreignkeyid)
+        <script type="text/javascript">
+            addListListener("$foreignkeyid", "${fieldname}");
+        </script>
+    #end
+    <select id="list-$listid" name="$!detailprefix${valueid}.value" class="autosubmited #if($detail.isRequired()) required #end" listid="$listid" id="${valueid}.value" onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" >
+    #if ($detail.blankoption != false)
+    <option value=""></option>
+    #end
+    #foreach( $type in $types )
+        #set( $key = $type.id)
+        <option value="$key" #if( $value && $key == $value ) selected #end>
+            #esc($type.name)
+        </option>
+    #end
    </select>
 #else
-	No properties found in ../configuration/lists/#esc(${listid}).xml 
+    No properties found in ../configuration/lists/#esc(${listid}).xml 
 #end
+
 <div class="editfield" id="listeditor-$listid" style="display: none;">
     <form>
         <input type="text" />
@@ -84,7 +85,9 @@
     </form>
 </div>
 
-<a id="listeditorbtn-$listid" style="margin: -5px 0" class="btn right">Add New Value</a>
+<div class="hidden right">
+    <a id="listeditorbtn-$listid" style="margin: -5px 0" class="btn right">Add New Value</a>
+</div>
 
 <script>
     $('#listeditorbtn-$listid').click(function(){
