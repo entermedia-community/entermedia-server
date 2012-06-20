@@ -3972,6 +3972,12 @@ p.resultsnumber {
 #emcontainer #resultslist  #default-fields .settings-table table tr td:nth-child(2) {
     border-left: none;
 }
+#default-fields .editfield .btn {
+    position: relative;
+    line-height: 15px;
+    top: -1px;
+    margin-left: 3px;
+}
 
 /* BUTTONS */
 

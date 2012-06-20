@@ -62,7 +62,7 @@
 			addListListener("$foreignkeyid", "${fieldname}");
 		</script>
 	#end
-	<select name="$!detailprefix${valueid}.value" class="autosubmited #if($detail.isRequired()) required #end" listid="$listid" id="${valueid}.value" onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" >
+	<select id="list-$listid" name="$!detailprefix${valueid}.value" class="autosubmited #if($detail.isRequired()) required #end" listid="$listid" id="${valueid}.value" onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" >
 	#if ($detail.blankoption != false)
 	<option value=""></option>
 	#end
@@ -76,5 +76,27 @@
 #else
 	No properties found in ../configuration/lists/#esc(${listid}).xml 
 #end
+<div class="editfield" id="listeditor-$listid" style="display: none;">
+    <form>
+        <input type="text" />
+        <input class="btn" type="submit" value="Save" />
+        <a class="btn cancel" style="margin: -5px 0; top: 0px;" style="cursor: pointer;">Cancel</a>
+    </form>
+</div>
+
+<a id="listeditorbtn-$listid" style="margin: -5px 0" class="btn right">Add New Value</a>
+
+<script>
+    $('#listeditorbtn-$listid').click(function(){
+        $('#list-$listid').hide();
+        $('#listeditor-$listid').show();
+        $('#listeditorbtn-$listid').hide();
+    })
+    $('#listeditor-$listid .cancel').click(function(){
+        $('#list-$listid').show();
+        $('#listeditor-$listid').hide();
+        $('#listeditorbtn-$listid').show();
+    })
+</script>
 
 </div>

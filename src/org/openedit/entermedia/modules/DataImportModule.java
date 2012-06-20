@@ -254,7 +254,7 @@ public class DataImportModule extends DataEditModule
 	public void deleteTable(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");
-		String searchtype = inReq.findValue("searchtype");
+		String searchtype = inReq.getRequestParameter("searchtype");
 		Page xml = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/" + searchtype +".xml" );
 		getPageManager().removePage(xml);
 	}

@@ -12,9 +12,13 @@
 ##TODO: Use a detail editor here
 
 <label>[[Import EnterMedia Workspace File]]</label>
-<input type="hidden" name="field" value="name" />
-<input class="field short required" name="name.value" value ="$!data.name" />
-<div class="note">[[Make sure the file is a valid EnterMedia Workspace file.]]</div>
+<div style="clear: both; margin-top: 15px;"></div>
+    <div style="margin-bottom: 20px;" class="file_input_divX">
+    <input type="file"  length="20" value="Browse" name="file.0" onChange="pickedFile(this.value)" />
+</div>
+<div style="margin-bottom: 20px; margin-top: -10px;" id="uploadprogress"  > </div>
+
+
 
 
 
