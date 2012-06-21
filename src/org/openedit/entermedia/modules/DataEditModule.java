@@ -271,7 +271,11 @@ public class DataEditModule extends BaseMediaModule
 		detail.setText(label);
 		String catid = inReq.findValue("catalogid");
 		detail.setCatalogId(catid);
+		detail.setEditable(true);
+		detail.setIndex(true);
+		detail.setStored(true);
 		details.addDetail(detail);
+		
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
 		loadProperties(inReq);
 		//tuan

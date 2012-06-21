@@ -187,6 +187,9 @@ public class BaseImporter extends EnterMediaObject
 				detail.setId(id);
 				detail.setText(header);
 				detail.setEditable(true);
+				detail.setIndex(true);
+				detail.setStored(true);
+		
 				details.addDetail(detail);
 				inSearcher.getPropertyDetailsArchive().savePropertyDetails(details, inSearcher.getSearchType(), context.getUser());
 			}
