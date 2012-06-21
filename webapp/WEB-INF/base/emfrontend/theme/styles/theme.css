@@ -3250,6 +3250,9 @@ div#folders .path, div#folders .alias {
 .fields {
     margin: 30px 30px;
 }
+.fields .note + input.btn {
+    margin-top: 20px;
+}
 #right-col > .fields {
     margin: 10px;
 }
@@ -3273,7 +3276,7 @@ div#folders .path, div#folders .alias {
     margin-top: 5px;
 }
 .fields .field {
-    width: 500px;
+    width: 300px;
     color: #444;
     font-size: 12px;
 }
