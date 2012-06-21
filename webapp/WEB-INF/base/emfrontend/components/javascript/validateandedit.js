@@ -19,8 +19,7 @@ SetPath = function( inUrl )
 
 validate = function(inCatalogId, inDataType, inView , inFieldName)
 {
-	var field = inFieldName + '.value';
-	var val = document.getElementById(field).value;
+	var val = $("#list-" + inFieldName).val();
 	var div = '#error_' + inFieldName;
 	var params = {
 			catalogid: inCatalogId,
@@ -85,7 +84,7 @@ addListListener = function( inParentFieldName, inFieldName )
 //parent = businesscategory, child = lob, field = product
 updatelisteners = function(catalogid, searchtype,view , fieldname)
 {
-	var val = document.getElementById( fieldname + '.value').value;
+	var val = $("#list-" + fieldname).val();
 	//alert( "found "  + val );
 	validate(catalogid, searchtype, view , fieldname);
 	
@@ -96,7 +95,7 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 		for( var i=0;i< node.children.length;i++)
 		{
 			var childfieldname = node.children[i];
-			var element = document.getElementById(childfieldname + '.value');
+			var element = $("#list-" + childfieldname);
 			if(element.options !== undefined) {
 				var valueselection = element.options[element.selectedIndex].value;
 			}
