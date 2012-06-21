@@ -269,6 +269,8 @@ public class DataEditModule extends BaseMediaModule
 		}
 		detail.setId(label.toLowerCase().replace(" ", ""));
 		detail.setText(label);
+		String catid = inReq.findValue("catalogid");
+		detail.setCatalogId(catid);
 		details.addDetail(detail);
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
 		loadProperties(inReq);
