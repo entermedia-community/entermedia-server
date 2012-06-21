@@ -14,6 +14,8 @@ import org.openedit.entermedia.util.Header
 import org.openedit.entermedia.util.ImportFile;
 import org.openedit.entermedia.util.Row;
 
+import sun.net.www.protocol.http.InMemoryCookieStore;
+
 import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.EnterMediaObject;
 import com.openedit.page.Page;
@@ -22,11 +24,27 @@ import com.openedit.util.*;
 public class BaseImporter extends EnterMediaObject 
 {
 	protected Map<String,String> fieldLookUps;
-	 
+	protected Searcher fieldSearcher;
+	protected Map<String,PropertyDetail> fieldLists;
+	
+	protected Map<String,PropertyDetail> getLists()
+	{
+		if( fieldLists == null )
+		{
+			fieldLists = new HashMap<String,PropertyDetail>();
+		}
+		return fieldLists
+	}
+	
+	public Searcher getSearcher()
+	{
+		return fieldSearcher;
+	}
+	
 	public void importData() throws Exception 
 	{
-		Searcher searcher = loadSearcher(context);
-
+		fieldSearcher = loadSearcher(context);
+		
 		String path = context.getRequestParameter("path");
 		Page upload = getPageManager().getPage(path);
 		Reader reader = upload.getReader();
@@ -38,7 +56,7 @@ public class BaseImporter extends EnterMediaObject
 			file.setParser(new CSVReader(reader, ',', '\"'));
 			file.read(reader);
 						
-			createMetadata(searcher,file.getHeader());
+			createMetadata(file.getHeader());
 
 			Row trow = null;
 			int rowNum = 0;
@@ -50,7 +68,7 @@ public class BaseImporter extends EnterMediaObject
 
 				if (idCell != null) 
 				{
-					Data target = findExistingData(searcher,idCell);
+					Data target = findExistingData(idCell);
 					for (Iterator iterator = data.iterator(); iterator.hasNext();) 
 					{
 						Data one = (Data) iterator.next();
@@ -62,16 +80,16 @@ public class BaseImporter extends EnterMediaObject
 					if (target == null) 
 					{
 
-						target = searcher.createNewData();
+						target = getSearcher().createNewData();
 						target.setId(idCell);
 
 					}
-					addProperties(searcher, trow, target);
+					addProperties( trow, target);
 					data.add(target);
 				}
 				if ( data.size() == 100 )
 				{
-					searcher.saveAllData(data, context.getUser());
+					getSearcher().saveAllData(data, context.getUser());
 					data.clear();
 				}
 			}
@@ -81,14 +99,14 @@ public class BaseImporter extends EnterMediaObject
 			FileUtils.safeClose(reader);
 			getPageManager().removePage(upload);
 		}
-		searcher.saveAllData(data, context.getUser());
+		getSearcher().saveAllData(data, context.getUser());
 		//searcher.reIndexAll();
 	}
 	
 	/** Might be overriden by scripts */
-	protected Data findExistingData(Searcher inSearcher, String inId )
+	protected Data findExistingData(String inId )
 	{
-		return (Data) inSearcher.searchById(inId);
+		return (Data) getSearcher().searchById(inId);
 	}
 	protected Map<String,Map> getLookUps()
 	{
@@ -104,7 +122,7 @@ public class BaseImporter extends EnterMediaObject
 		String value = inRow.get(inField);
 		if( value != null )
 		{			
-			Map datavalues = loadValueList(inField)
+			Map datavalues = loadValueList(inField,inTable,true)
 			Collection values = EmStringUtils.split(value);
 			List valueids = new ArrayList();
 			for (String val: values)
@@ -132,12 +150,30 @@ public class BaseImporter extends EnterMediaObject
 
 	}
 
-	private HashMap loadValueList(String inField) {
+	private HashMap loadValueList(String inField, String inTableName, boolean inMulti) {
 		Map datavalues = getLookUps().get(inField);
 		if( datavalues == null )
 		{
 			datavalues = new HashMap();
 			getLookUps().put( inField, datavalues);
+			PropertyDetail detail = getLists().get(inField); 
+			if( detail == null )
+			{
+				//TODO: Support multi?
+				String id = PathUtilities.makeId(inField);
+				PropertyDetails details = getSearcher().getPropertyDetails()
+				detail = details.getDetail(id);
+				detail.setDataType("list");
+				detail.setListId(inTableName);
+				if( inMulti )
+				{
+					detail.setViewType("multiselect");
+				}
+				getLists().put(inField, detail);
+				getSearcher().getPropertyDetailsArchive().savePropertyDetails(details, getSearcher().getSearchType(), context.getUser());
+				
+			}
+
 		}
 		return datavalues
 	}
@@ -151,7 +187,7 @@ public class BaseImporter extends EnterMediaObject
 			{
 				value = value.substring(0,comma);
 			}
-			Map datavalues = loadValueList(inField)
+			Map datavalues = loadValueList(inField,inTable,false)
 			Data data = datavalues.get(value);
 			if( data == null )
 			{
@@ -172,9 +208,10 @@ public class BaseImporter extends EnterMediaObject
 		} 
 	}
 	
-	protected void createMetadata(Searcher inSearcher, Header inHeader)
+	protected void createMetadata(Header inHeader)
 	{
-		PropertyDetails details = inSearcher.getPropertyDetails();
+		PropertyDetails details = getSearcher().getPropertyDetails();
+		
 		for (Iterator iterator = inHeader.getHeaderNames().iterator(); iterator.hasNext();)
 		{
 			String header = (String)iterator.next();
@@ -191,13 +228,23 @@ public class BaseImporter extends EnterMediaObject
 				detail.setStored(true);
 		
 				details.addDetail(detail);
-				inSearcher.getPropertyDetailsArchive().savePropertyDetails(details, inSearcher.getSearchType(), context.getUser());
+				getSearcher().getPropertyDetailsArchive().savePropertyDetails(details, getSearcher().getSearchType(), context.getUser());
 			}
 		}
+		for (Iterator iterator = details.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			if( detail.isList() )
+			{
+				getLists().put(detail.getId(),detail);
+			}
+			
+		}
+		
 
 	}
 
-	protected void addProperties(Searcher inSearcher, Row inRow, Data inData) 
+	protected void addProperties(Row inRow, Data inData) 
 	{
 		for (int i = 0; i < inRow.getData().length; i++)
 		{
