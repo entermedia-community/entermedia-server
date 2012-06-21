@@ -9,7 +9,15 @@
 	<textarea spellcheck="false" style="width: 97%; height: 450px; overflow: scroll; white-space: pre;" name="scriptcode">$script.getContent()</textarea>
 	<p>
 		<input type="submit" class="btn small" value="Save">
-		<a href="$home$editroot/scriptdelete.html?filename=$script.getName()" class="btn small right">Delete</a>
-	</p>
+		<a href="$home$dataroot/import/scriptdelete.html?filename=$script.getName()" class="btn small right">Delete</a>
+        <a id="cancel-edit" style="cursor: pointer; margin-right: 5px;" class="btn small right">Cancel</a>
+    </p>
 </form>	
 </div>
+
+<script>
+    $('#cancel-edit').click(function(){
+        $('#scriptarea').hide();
+        $('#submit').show();
+    })
+</script>

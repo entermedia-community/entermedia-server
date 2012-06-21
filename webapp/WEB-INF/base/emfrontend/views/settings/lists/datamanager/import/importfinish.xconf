@@ -6,5 +6,6 @@
 <!--
 <path-action name="DataImportModule.geocode"/>
 -->
+	<inner-layout>${dataroot}/list/innerlayout.html</inner-layout>
 
 </page>
