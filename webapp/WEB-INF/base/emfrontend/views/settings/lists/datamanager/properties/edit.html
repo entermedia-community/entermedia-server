@@ -60,21 +60,10 @@
 	</td>
 		
 	</tr>
-
-</table>
-
-<table id="advanced" class="settings-table" style="margin-top: -20px; display: none;">
-
-	<tr class="tableheader"> <th colspan="2">Advanced</th> </td>
-
-	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
-	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Internal Use]]:</td> <td><input name="internalfield" type="checkbox" #if ($property.internalfield == "true") checked #end value="true"/> </td> </tr>	
 	<tr> <td>[[Render Type]]:</td>
 	<td>
 	<select name="viewtype">
-		<option value="" >Text</option>
+		<option value="" >Default</option>
 		<option value="boolean" #if ($property.viewtype == "boolean") selected #end >[[Boolean]]</option>
 		<option value="number" #if ($property.viewtype == "number") selected #end >[[Number]]</option>
 		<option value="long" #if ($property.viewtype == "long") selected #end >Long</option>
@@ -91,6 +80,17 @@
 
 	</td>
 	</tr>
+
+</table>
+
+<table id="advanced" class="settings-table" style="margin-top: -20px; display: none;">
+
+	<tr class="tableheader"> <th colspan="2">Advanced</th> </td>
+
+	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
+	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Internal Use]]:</td> <td><input name="internalfield" type="checkbox" #if ($property.internalfield == "true") checked #end value="true"/> </td> </tr>	
 	<input type="hidden" name="field" value="listid"/>
 	<input type="hidden" name="field" value="listcatalogid"/>
 	<input type="hidden" name="field" value="sort"/>
