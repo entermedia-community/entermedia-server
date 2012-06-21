@@ -3,16 +3,23 @@
 <strong>Create New Table</strong>
 </div>
 
-<form style="margin-top: 80px; margin-left: 20px;" name="Add" action="./addfinish.html">
-    <h3 style="margin-bottom: 5px;">Table Name</h3>
+<div class="fields">
+        
+    <form style="margin-top: 80px; margin-left: 20px;" name="Add" action="./addfinish.html">
+        <h3 style="margin-bottom: 5px;">Table Name</h3>
+    
+    <label>[[Table Name]]</label>
+    <input class="field" name="tablename" />
+    <div class="note">[[Spaces are not valid.]]</div> 
+    
+    
+    <label>[[Table Prefix]]</label>
+    <input class="field" name="prefix" />
+    <div class="note">[[Plural Module name: Contacts.]]</div>
+    
+    
+    <input class="btn" type="submit" value="Create Table" />
+    
+    </form>
 
-<input class="field" name="tablename" />
-
-Prefix:
-<input class="field" name="prefix" />
-<i>plural module name: contacts</i>
-
-<br />
-<input class="btn" type="submit" value="Create Table" />
-
-</form>
+</div>
