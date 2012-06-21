@@ -222,6 +222,17 @@ public class DataImportModule extends DataEditModule
 		getPageManager().saveContent(page, inReq.getUser(), code, "web edit");
 
 	}
+	public void deleteScript(WebPageRequest inReq) throws Exception
+	{
+		String dataroot = inReq.findValue("dataroot");
+		String filename = inReq.findValue("filename");
+		String code = inReq.findValue("scriptcode");
+
+		Page page = getPageManager().getPage(dataroot + "/import/scripts/" + filename);
+		getPageManager().removePage(page);
+
+	}
+
 	public void createTable(WebPageRequest inReq) throws Exception
 	{
 		String tablename = inReq.findValue("tablename");
