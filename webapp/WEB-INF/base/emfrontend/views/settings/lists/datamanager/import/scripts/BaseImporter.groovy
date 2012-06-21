@@ -14,7 +14,6 @@ import org.openedit.entermedia.util.Header
 import org.openedit.entermedia.util.ImportFile;
 import org.openedit.entermedia.util.Row;
 
-import sun.net.www.protocol.http.InMemoryCookieStore;
 
 import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.EnterMediaObject;
@@ -25,16 +24,6 @@ public class BaseImporter extends EnterMediaObject
 {
 	protected Map<String,String> fieldLookUps;
 	protected Searcher fieldSearcher;
-	protected Map<String,PropertyDetail> fieldLists;
-	
-	protected Map<String,PropertyDetail> getLists()
-	{
-		if( fieldLists == null )
-		{
-			fieldLists = new HashMap<String,PropertyDetail>();
-		}
-		return fieldLists
-	}
 	
 	public Searcher getSearcher()
 	{
@@ -117,7 +106,7 @@ public class BaseImporter extends EnterMediaObject
 		}
 		return fieldLookUps;
 	}
-	protected void createMultiSelect(String inCatalogId, MultiValued inRow, String inField, String inTable)
+	protected void createMultiSelect(MultiValued inRow, String inField, String inTable)
 	{
 		String value = inRow.get(inField);
 		if( value != null )
@@ -132,7 +121,7 @@ public class BaseImporter extends EnterMediaObject
 				if( data == null )
 				{
 					//create it
-					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, inTable);
+					Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
 					data = searcher.searchById(id);
 					if( data == null )
 					{
@@ -150,34 +139,32 @@ public class BaseImporter extends EnterMediaObject
 
 	}
 
-	private HashMap loadValueList(String inField, String inTableName, boolean inMulti) {
+	protected HashMap loadValueList(String inField, String inTableName, boolean inMulti) {
 		Map datavalues = getLookUps().get(inField);
 		if( datavalues == null )
 		{
 			datavalues = new HashMap();
 			getLookUps().put( inField, datavalues);
-			PropertyDetail detail = getLists().get(inField); 
-			if( detail == null )
+			String id = PathUtilities.makeId(inField);
+			PropertyDetails details = getSearcher().getPropertyDetails()
+			PropertyDetail	detail = details.getDetail(id);
+			//if( detail.getL
+			if( detail.getDataType() != "list")
 			{
-				//TODO: Support multi?
-				String id = PathUtilities.makeId(inField);
-				PropertyDetails details = getSearcher().getPropertyDetails()
-				detail = details.getDetail(id);
 				detail.setDataType("list");
 				detail.setListId(inTableName);
 				if( inMulti )
 				{
 					detail.setViewType("multiselect");
 				}
-				getLists().put(inField, detail);
 				getSearcher().getPropertyDetailsArchive().savePropertyDetails(details, getSearcher().getSearchType(), context.getUser());
-				
 			}
+				
 
 		}
 		return datavalues
 	}
-	protected void createLookUp(String inCatalogId, Data inRow, String inField, String inTable)
+	protected void createLookUp(Data inRow, String inField, String inTable)
 	{
 		String value = inRow.get(inField);
 		if( value != null )
@@ -193,7 +180,7 @@ public class BaseImporter extends EnterMediaObject
 			{
 				//create it
 				String id = PathUtilities.makeId(value);
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, inTable);
+				Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
 				data = searcher.searchById(id);
 				if( data == null )
 				{
@@ -231,17 +218,6 @@ public class BaseImporter extends EnterMediaObject
 				getSearcher().getPropertyDetailsArchive().savePropertyDetails(details, getSearcher().getSearchType(), context.getUser());
 			}
 		}
-		for (Iterator iterator = details.iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if( detail.isList() )
-			{
-				getLists().put(detail.getId(),detail);
-			}
-			
-		}
-		
-
 	}
 
 	protected void addProperties(Row inRow, Data inData) 
