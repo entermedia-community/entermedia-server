@@ -350,9 +350,11 @@ public class imagemagickCreator extends BaseImageCreator
 
 		if( !autocreated )
 		{
-//			TODO: use parameters to specify the color space			
-//			com.add("-colorspace");
-//			com.add("sRGB");
+//			TODO: use parameters to specify the color space		
+			//Make sure we use 8 bit output and 	
+			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
+			com.add("-colorspace");
+			com.add("sRGB");
 		
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80

@@ -15,6 +15,5 @@
  <permission name="editdata">
  	<permission name="oe.administration"/>
  </permission>
- <property name="oetextfilter">xmltranslation</property>
  
 </page>
