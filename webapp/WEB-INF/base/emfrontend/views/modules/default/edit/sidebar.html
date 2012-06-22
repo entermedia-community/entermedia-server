@@ -31,8 +31,14 @@ $context.putPageValue("view", $viewpath)
         <ul id="assetmenu" class="sidebar-list">       
               #foreach( $target in $views)            
                   <li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
+                  		
+                  		#if( $target.rendertype &&  $target.rendertype == "table")
+                      <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/table.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
+                        $target</a>
+                  		#else
                       <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
                         $target</a>
+                        #end
                   </li>
               #end
          </ul>

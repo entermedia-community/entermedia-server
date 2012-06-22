@@ -2,7 +2,7 @@
 	
 	<path-action name="DataEditModule.saveData" />
 	
-	<path-action name="DataEditModule.search" />
+	<path-action name="DataEditModule.loadPageOfSearch" />
 	<property name="save">true</property>
 
 			
