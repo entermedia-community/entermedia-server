@@ -27,7 +27,7 @@
 				##if( $showcaption ) style="vertical-align:bottom;" #end 
 				#if($showhover != false) hover="true" #end 
 				>			
-<a href="$home$apphome/views/assets/${sourcepath}/index.html?hitssessionid=$rootid">
+<a href="$home$apphome/views/asset/${sourcepath}/index.html?hitssessionid=$rootid">
 				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
 </a>
 			</div>
@@ -63,7 +63,7 @@
 			#set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
 			#set ($args = "path=$path&${args}")
 			#elseif ($link.id == "assetpermissions")
-			#set($args = "editPath=$apphome/assets/$sourcepath/_site.xconf&$args")
+			#set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
 			#end
 			
 			#if( !$ismulti || $inmultiok )

@@ -1,0 +1,15 @@
+#set ( $editPath = $context.findValue("editPath") )
+
+
+
+#if ( $revisions.getRevisions().size() > 1 )
+    <p style="margin: 0; padding: 0; text-align: center;">
+        <a id="viewrevisions" class="btn small" style="cursor: pointer;">View Revisions</a>
+    </p>
+#end
+
+<script>
+    $('#viewrevisions').click(function(){
+        $('#tree').load("$home$apphome/views/modules/asset/editor/historyimageedit/index.html?editPath=$editPath&oemaxlevel=1");
+    })
+</script>

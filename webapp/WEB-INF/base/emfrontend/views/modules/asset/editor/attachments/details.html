@@ -38,7 +38,11 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 <a class="btn flatleft tooltip" title="Set this asset as the primary thumbnail." style="width: 60px; text-align: center;" data-param="imagefilename" data-filename="$parentsourcepath" data-assetid="$asset.id">Thumbnail</a>
 </div>
 #end
-	
+
+#set( $editPath = "/WEB-INF/data/$catalogid/originals/$parentsourcepath" )
+
+$pages.include("./revisionslink.html?editPath=$editPath", $context)
+
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
   #set ($view = "asset/assettype/$asset.assettype/fileproperties")
 #else
