@@ -1,13 +1,14 @@
 
+#set ( $parentsourcepath = $context.getRequestParameter("parentsourcepath") )
+
 #set ( $editPath = $context.getRequestParameter("editPath") )
 
-$editPath
 <div class="oelist-box">
 #set($current = $revisions.revisions.get(0).getVersion())
 
 <table width="100%" class="striped emdata">
 	<tr class="tableheader">
-		<th class="white-on-grey">[[Version]]</th>
+		<th class="white-on-grey">[[Download]]</th>
 		<th class="white-on-grey">[[Size]]</th>
 		<th class="white-on-grey">[[Author]]</th>
 		<th class="white-on-grey">[[Date]]</th>
@@ -21,14 +22,10 @@ $editPath
 	<tr>
 		<td>
 		    <span style="margin-left: 20px">
-    			#if($revisionNumber)
-    				<a href="$editPath/.versions/$revisionNumber~$revision.getName()/$revision.getName()">[[View]] $revisionNumber</a>
-    			#else
-    				<a href="$editPath/$revision.getName()">[[Original]]</a>
-    			#end
+   				<a href="$home/$catalogid/downloads/originals/$parentsourcepath/.versions/$revisionNumber~$revision.getName()/$revision.getName()">[[Version]] $revisionNumber</a>
     		</span>
 		</td>
-		<td>$revision.getLength()k</td>
+		<td class="tooltip" title="$revision.getLength() bytes" >$sizer.inEnglish($revision.getLength())	</td>
 		
 		<td>
 		#if( $revision.author )

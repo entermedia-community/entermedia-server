@@ -1,12 +1,10 @@
 package org.openedit.entermedia.scanner;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.openedit.Data;
 import org.openedit.data.Searcher;
@@ -14,6 +12,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
+import org.openedit.repository.filesystem.XmlVersionRepository;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebServer;
@@ -65,56 +64,53 @@ public class HotFolderManager
 	public void saveMounts(String inCatalogId)
 	{
 		//remove any old hot folders for this catalog
-		Map<String,Repository> mounts = new HashMap<String,Repository>();
-		List configs = getPageManager().getRepositoryManager().getRepositories();
+		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		String path = "/WEB-INF/data/" + inCatalogId + "/originals";
 		
+		//remove all the mounts
 		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
 		{
 			Repository config = (Repository) iterator.next();
 			if (config.getPath().startsWith(path)) 
 			{
-				mounts.put(config.getPath(),config);
+				getPageManager().getRepositoryManager().removeRepository(config.getPath());
 			}
 		}
 		
+		List<Repository> mounts = new ArrayList<Repository>();
 		Collection folders = loadFolders(inCatalogId);
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
 		{
 			Data folder = (Data) iterator.next();
 			String folderpath = folder.get("subfolder");
 			String fullpath = path + "/" + folderpath;
-			Repository repo = mounts.get(fullpath);
-			
-			if( repo == null)
+			Repository repo = null;
+			String versioncontrol = folder.get("versioncontrol");
+			if( Boolean.valueOf(versioncontrol) )
 			{
-				repo = new FileRepository();
-				configs.add(repo);
+				repo = new XmlVersionRepository();
+				repo.setRepositoryType("versionRepository");
 			}
 			else
 			{
-				mounts.remove(fullpath);
+				repo = new FileRepository();
 			}
 			//save data to repo
 			repo.setPath(fullpath);
 			repo.setExternalPath(folder.get("externalpath"));
+			mounts.add(repo);
 			//repo.setFilterIn(folder.get("includes"));
 			//repo.setFilterOut(folder.get("excludes"));
 		}
 		
-		//TODO: Clean out any old mounts
 		if( mounts.size() > 0)
 		{
-			for (Iterator iterator = mounts.keySet().iterator(); iterator.hasNext();)
-			{
-				String key = (String) iterator.next();
-				Repository repo = mounts.get(key);
-				configs.remove(repo);
-			}
+			configs = getPageManager().getRepositoryManager().getRepositories();
+			configs.addAll(mounts);
+			getWebServer().saveMounts(configs);
 		}
 		//getPageManager().getRepositoryManager().setRepositories(configs);
 		//save the file
-		getWebServer().saveMounts(configs);
 	}
 
 
