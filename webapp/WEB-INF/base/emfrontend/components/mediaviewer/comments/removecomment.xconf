@@ -2,7 +2,7 @@
 	<path-action name="CommentModule.removeComment"/>
 	<permission name="view">
 		<not>
-			<pagevalue name="caneditasset" equals="false"/>
+			<pagevalue name="deletecomments" equals="false"/>
 		</not>
 	</permission>
 	<property name="oemaxlevel">1</property>
