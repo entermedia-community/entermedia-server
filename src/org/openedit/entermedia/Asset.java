@@ -40,7 +40,7 @@ public class Asset implements MultiValued
 	protected Page fieldSourcePage;
 	protected String fieldDescription;
 	protected List fieldCategories;
-	protected Collection<String> fieldLibraries;
+	//protected Collection<String> fieldLibraries;
 	protected Map fieldProperties;
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
@@ -59,7 +59,23 @@ public class Asset implements MultiValued
 		//if null check parent
 		return collection;
 	}
-	
+	public void addValue(String inKey, String inNewValue)
+	{
+		String val = get(inKey);
+		if( val == null )
+		{
+			setProperty(inKey, inNewValue);
+		}
+		else if( inKey.contains(inNewValue) )
+		{
+			return;
+		}
+		else
+		{
+			val = val + " " + inNewValue;
+			setProperty(inKey, val);
+		}
+	}
 	public void setValues(String inKey, Collection<String> inValues)
 	{
 		if( inValues == null || inValues.size() == 0)
@@ -77,10 +93,6 @@ public class Asset implements MultiValued
 			}
 		}
 		setProperty(inKey,values.toString());
-		if( "libraries".equals(inKey ) ) 
-		{
-			fieldLibraries = null;
-		}
 	}
 	
 	
@@ -303,15 +315,12 @@ public class Asset implements MultiValued
 	}
 	public Collection<String> getLibraries()
 	{
-		if( fieldLibraries == null)
+		Collection<String> libraries = getValues("libraries");
+		if( libraries == null)
 		{
-			fieldLibraries = getValues("libraries");
-			if( fieldLibraries == null)
-			{
-				fieldLibraries = Collections.EMPTY_LIST;
-			}
+			libraries = Collections.EMPTY_LIST;
 		}
-		return fieldLibraries;
+		return libraries;
 				
 	}
 

@@ -10,13 +10,12 @@
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
     <property name="recentactivityid">${parentapplicationid}</property>
  
+	<property name="login-path">/${applicationid}/authentication/nopermissions.html</property>
 
 	<property name="profilemanagerid">${catalogid}</property>
 
 	<path-action name="Admin.loadPermissions"/>
-	<path-action name="Admin.allowViewing">
-		<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
-	</path-action>
+	<path-action name="Admin.allowViewing" />
 
 	<inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
   	
@@ -107,9 +106,9 @@
 		<userprofile property="comment" equals="true" />
 	</permission>	
 
-	<permission name="removecomments">
+	<permission name="deletecomments">
 		<and>
-			<userprofile property="removecomments" equals="true" />
+			<userprofile property="deletecomments" equals="true" />
 			<pagevalue name="caneditasset" equals="true"/>
 		</and>		
 	</permission>	
