@@ -61,6 +61,7 @@ public void init()
 
 	MediaCreator creator = mediaArchive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
 	
+	//TODO: Use preset settings instead of paths
 	WebPageRequest previewcontext = makeContext( mediaArchive.getCatalogHome() + "/downloads/preview/cache/preview.jpg", context);
 	WebPageRequest mediumpluscontext = makeContext(mediaArchive.getCatalogHome() + "/downloads/preview/mediumplus/medium.jpg", context);
 	WebPageRequest mediumcontext = makeContext(mediaArchive.getCatalogHome() + "/downloads/preview/medium/medium.jpg", context);

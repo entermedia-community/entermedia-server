@@ -15,6 +15,7 @@ package org.openedit.entermedia.modules;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -197,7 +198,25 @@ public class AdminModule extends BaseModule
 	}
 	public void loadPermissions(WebPageRequest inReq) throws Exception
 	{
-		List permissions = inReq.getContentPage().getPermissions();
+		String limited = inReq.getCurrentAction().getChildValue("permissions");
+		List permissions = null;
+		if( limited == null )
+		{
+			permissions = inReq.getContentPage().getPermissions();
+		}
+		else
+		{
+			permissions = new ArrayList();
+			String[] array = limited.split("\\s+");
+			for (int i = 0; i < array.length; i++)
+			{
+				Permission permission = inReq.getContentPage().getPermission( array[i] );
+				if( permission != null )
+				{
+					permissions.add(permission);
+				}
+			}
+		}
 		if (permissions != null)
 		{
 			for (Iterator iterator = permissions.iterator(); iterator.hasNext();)

@@ -16,9 +16,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.amazonaws.http.HttpResponse;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.config.Configuration;
@@ -55,7 +58,18 @@ public class AllowViewing
 	protected String fieldLoginPath;
 	protected List fieldExcludes;
 	protected PageManager fieldPageManager;
+	protected boolean fieldForbid;
+	
 
+	public boolean isForbid()
+	{
+		return fieldForbid;
+	}
+
+	public void setForbid(boolean inForbid)
+	{
+		fieldForbid = inForbid;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.openedit.action.Command#execute(java.util.Map, java.util.Map)
@@ -73,17 +87,28 @@ public class AllowViewing
 			{
 				if ( !filter.passes( inReq ))
 				{
-					log.error("No permission for " + page.getPath() + " sending redirect");
-					inReq.putPageValue("oe-exception", "You do not have permission to view "+ page.getPath()  );
-
-					 //this is the original page someone might have been on. Used in login
-					 inReq.putSessionValue("originalEntryPage",inReq.getContentPage().getPath() );
-					 String fullOriginalEntryPage = (String)inReq.getSessionValue("fullOriginalEntryPage");
-					 if( fullOriginalEntryPage == null)
+					 if( isForbid() )
 					 {
-						 inReq.putSessionValue("fullOriginalEntryPage",inReq.getPathUrlWithoutContext() );
+						if( inReq.getResponse() != null )
+						{
+							inReq.getResponse().setStatus(HttpServletResponse.SC_FORBIDDEN);
+							inReq.setHasRedirected(true);
+						}
 					 }
-					 inReq.redirect( getLoginPath() );
+					 else
+					 {
+						log.error("No permission for " + page.getPath() + " sending redirect");
+						inReq.putPageValue("oe-exception", "You do not have permission to view "+ page.getPath()  );
+	
+						 //this is the original page someone might have been on. Used in login
+						 inReq.putSessionValue("originalEntryPage",inReq.getContentPage().getPath() );
+						 String fullOriginalEntryPage = (String)inReq.getSessionValue("fullOriginalEntryPage");
+						 if( fullOriginalEntryPage == null)
+						 {
+							 inReq.putSessionValue("fullOriginalEntryPage",inReq.getPathUrlWithoutContext() );
+						 }
+						 inReq.redirect( getLoginPath() );
+					 }
 				}
 			}
 			else
@@ -143,6 +168,8 @@ public class AllowViewing
 			path = settings.replaceProperty(path);
 			getExcludes().add( path );
 		}
+		String forbid = element.getAttribute("forbid");
+		setForbid(Boolean.valueOf(forbid));
 	}
 	
 	protected String getLoginPath()

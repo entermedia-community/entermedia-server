@@ -20,8 +20,8 @@
 	#else
 		#set ($prefix = "/WEB-INF/data/$catalogid/originals/")
 		#set ($sourcepath = $item.path.substring($prefix.length()))
-		<!-- <img src="$home/$catalogid/downloads/preview/thumb/$sourcepath/thumb.jpg" border="0" height="30" width="30"/> -->
-		<a href="$home/$catalogid/downloads/originals/$sourcepath/$item.getName()">$item.getName()</a> 
+		<!-- <img src="$home/${applicationid}/views/modules/asset/downloads/preview/thumb/$sourcepath/thumb.jpg" border="0" height="30" width="30"/> -->
+		<a href="$home/${applicationid}/views/modules/asset/downloads/originals/$sourcepath/$item.getName()">$item.getName()</a> 
 	#end
 </td>
 

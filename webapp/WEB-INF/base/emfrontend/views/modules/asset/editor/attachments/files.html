@@ -27,7 +27,7 @@
 			   		<a class="edit ir tooltip" title="Edit Folder Name">Edit</a>
 				   	<a class="delete ir tooltip" title="Delete Folder" fileid="${file.id}" >Delete</a></span></div>
 			   	#else 
-			   		<a class="download-file click-link ir tooltip" title="Download File" id="${file.id}" href="$home/$catalogid/downloads/originals/$filesource/${file.name}">Download File</a> 
+			   		<a class="download-file click-link ir tooltip" title="Download File" id="${file.id}" href="$home/${applicationid}/views/modules/asset/downloads/originals/$filesource/${file.name}">Download File</a> 
 				   	<a class="delete ir tooltip" title="Delete File" fileid="${file.id}" >Delete</a></span></div>
 			   	#end
 					#if($file.folder == "true")  
