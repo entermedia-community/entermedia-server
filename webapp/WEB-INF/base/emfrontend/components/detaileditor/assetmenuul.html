@@ -63,7 +63,7 @@
 			#set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
 			#set ($args = "path=$path&${args}")
 			#elseif ($link.id == "assetpermissions")
-			#set($args = "editPath=$apphome/assets/$sourcepath/_site.xconf&$args")
+			#set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
 			#end
 			
 			#if( !$ismulti || $inmultiok )

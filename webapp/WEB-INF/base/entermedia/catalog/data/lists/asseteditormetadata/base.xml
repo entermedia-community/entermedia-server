@@ -2,8 +2,8 @@
 
 <properties>
 
-  <property id="metadatageneral" path="/views/modules/assets/editor/generalinformation/index.html" >General</property>
-  <property id="editassetcategories" path="/views/modules/assets/editor/categorize/index.html" >Categories</property>
-  <property id="editassetgeolocation" path="/views/modules/assets/editor/map/index.html" >Geolocation</property>
+  <property id="metadatageneral" path="/views/modules/asset/editor/generalinformation/index.html" >General</property>
+  <property id="editassetcategories" path="/views/modules/asset/editor/categorize/index.html" >Categories</property>
+  <property id="editassetgeolocation" path="/views/modules/asset/editor/map/index.html" >Geolocation</property>
 
 </properties>

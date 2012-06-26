@@ -1,13 +1,13 @@
 #set( $attachmentroot = $content.attachmentroot )
 #if( $file )	
-	#set( $parentsourcepath = "${file.parentsourcepath}/${file.name}" )
+	#set( $parentsourcepath = "${file.parentsourcepath}" )
 	#set( $name = $file.name)
 #end
 	
-	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/200x200.jpg" )
+	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/${file.name}200x200.jpg" )
 		#if ( $file.folder == "false" )
-		<a class="emdialog" href="$home/${catalogid}/downloads/preview/extralarge/${parentsourcepath}/preview.jpg">
-			<img src="$home/${catalogid}/downloads/preview/thumb/${parentsourcepath}/thumb.jpg" />
+		<a class="emdialog" href="$home/${catalogid}/downloads/preview/extralarge/${parentsourcepath}/${file.name}/preview.jpg">
+			<img src="$home/${catalogid}/downloads/preview/thumb/${parentsourcepath}/${file.name}/thumb.jpg" />
 		#else
 			<div class="preview folder"></div>
 		#end
@@ -38,7 +38,11 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 <a class="btn flatleft tooltip" title="Set this asset as the primary thumbnail." style="width: 60px; text-align: center;" data-param="imagefilename" data-filename="$parentsourcepath" data-assetid="$asset.id">Thumbnail</a>
 </div>
 #end
-	
+
+#set( $editPath = "/WEB-INF/data/$catalogid/originals/$parentsourcepath/${file.name}" )
+
+$pages.include("./revisionslink.html?editPath=$editPath&parentsourcepath=$parentsourcepath", $context)
+
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
   #set ($view = "asset/assettype/$asset.assettype/fileproperties")
 #else

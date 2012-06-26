@@ -2930,7 +2930,7 @@ body #emcontainer .emasseteditorarea {
     text-align: right;
 }
 #emcontainer #emselectable #main-asset-table tr td.thumbnail {
-    width: 120px;
+    height: 62px;
     text-align: center;
     padding: 0 10px;
 }
