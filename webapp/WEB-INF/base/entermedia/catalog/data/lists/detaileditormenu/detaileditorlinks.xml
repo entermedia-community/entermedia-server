@@ -9,7 +9,8 @@
 	<a folder="permissions" id="assetpermissions" multiedit="true" name="Permissions" />
 
 	<a folder="historypreviews"  id="viewassetpreviewhistory" name="History" />
-	<a folder="delete"  id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" />
+	<!-- <a folder="downloads" id="download" name="Download Options" /> -->
+	<a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" />
 <!-- 
 	<a folder="historydownloads"  id="viewassetdownloadhistory" name="Download History" />
 	<a folder="historyedits"  id="viewassetedithistory" name="Data Edit History" />

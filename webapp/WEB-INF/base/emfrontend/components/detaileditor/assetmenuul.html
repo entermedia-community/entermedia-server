@@ -46,6 +46,7 @@
 		<ul id="assetmenu" class="sidebar-list">
 			#foreach( $link in $links)
 			#set( $pname = "can${link.id}")
+			
 			#set( $permission = false)
 			#set( $permission = "$!context.getPageValue($pname)")
 			#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )

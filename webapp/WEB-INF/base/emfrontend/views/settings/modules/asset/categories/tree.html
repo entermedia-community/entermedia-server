@@ -57,12 +57,12 @@
 			if ( $(this).find('.arrow').hasClass('down') ){
 				$(this).find('.arrow').removeClass('down');
 				
-				jQuery.get("$home$apphome/views/settings/metadata/categories/collapsenode.html?nodeID=" + node);
+				jQuery.get("$home$apphome/views/settings/modules/asset/categories/collapsenode.html?nodeID=" + node);
 			}
 			else { 
 				$(this).find('.arrow').addClass('down');
 				
-				jQuery.get("$home$home$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+				jQuery.get("$home$apphome/views/settings/modules/asset/categories/expandnode.html?nodeID=" + node);
 
 			}
 				
@@ -105,7 +105,7 @@
 					} else {
 					   $("#" + id + "_row").find('> ul').toggle('fast');
 					   $("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get("$home$apphome/views/settings/metadata/categories/expandnode.html?nodeID=" + node);
+					   jQuery.get("$home$apphome/views/settings/modules/asset/categories/expandnode.html?nodeID=" + node);
 					}
 				} else {
 					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
@@ -144,7 +144,7 @@
 			
 			var agree=confirm("Are you sure you want to delete?");
 			if (agree){
-				jQuery.get("$apphome/views/settings/metadata/categories/deletecategory.html", {
+				jQuery.get("$home$apphome/views/settings/modules/asset/categories/deletecategory.html", {
 					categoryid: id,
 				
 				
@@ -171,7 +171,7 @@
 					//alert("parent category was: " + id);
 					var newname = $("#" + id + "_new").attr("value");
 					//alert("New name: " + newname);
-					jQuery.get("$apphome/views/settings/metadata/categories/addcategory.html", {
+					jQuery.get("$home$apphome/views/settings/modules/asset/categories/addcategory.html", {
 						categoryid: id,
 						'newname': newname
 					
@@ -224,7 +224,7 @@
 				
 				
 				var newname = $("#" + id + "_edit_field").attr("value");
-				jQuery.get("$apphome/views/settings/metadata/categories/savecategory.html", {
+				jQuery.get("$home$apphome/views/settings/modules/asset/categories/savecategory.html", {
 					'id': id,
 					categoryid: id,
 					'name': newname
@@ -246,7 +246,7 @@
 	
 	
 	repaint = function () {
-		jQuery("#category-tree").load("$apphome/views/settings/metadata/categories/tree.html");
+		jQuery("#category-tree").load("$home$apphome/views/settings/modules/asset/categories/tree.html");
 		
 		
 	}

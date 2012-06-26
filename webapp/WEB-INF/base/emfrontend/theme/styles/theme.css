@@ -448,7 +448,9 @@ tr.emsearchfieldrow td input {
 #emcontainer .emcommentdate
 {
     display: inline;
-    margin: 0 10px 0 30px;
+    margin: 5px 10px 0 30px;
+    font-size: 10px;
+    float: right;
 }
 
 #commentprompt textarea {
@@ -1419,6 +1421,23 @@ padding: 10px;
     width: 15%;
     padding: 0 10px;
 }
+#downloadoptions .emtable .row  {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    padding: 0;
+}
+#downloadoptions .emtable .row span:first-child {
+    width: 105px;
+    border-right: 1px dashed #eee;
+    padding: 8px 10px;
+    font-size: 12px;
+}
+#downloadoptions .emtable .row span:nth-child(2) {
+    padding: 0 10px;
+}
+#downloadoptions .emtable .row span:nth-child(2) input {
+    width: 80%;
+}
 
 /* SHARED EML SETTINGS STYLES -- TO BE CHANGED */
 
@@ -1812,6 +1831,12 @@ width: inherit;
 
 /* COMMENT STYLES */
 
+#addcomment {
+    padding-top: 20px;
+}
+center #addcoment {
+   padding-top: 0;
+}
 #addcomment h3 {
     padding-top: 0;
     margin-top: 0;  
@@ -2930,7 +2955,7 @@ body #emcontainer .emasseteditorarea {
     text-align: right;
 }
 #emcontainer #emselectable #main-asset-table tr td.thumbnail {
-    height: 62px;
+   width: 130px;
     text-align: center;
     padding: 0 10px;
 }
