@@ -448,7 +448,9 @@ tr.emsearchfieldrow td input {
 #emcontainer .emcommentdate
 {
     display: inline;
-    margin: 0 10px 0 30px;
+    margin: 5px 10px 0 30px;
+    font-size: 10px;
+    float: right;
 }
 
 #commentprompt textarea {
@@ -1812,6 +1814,12 @@ width: inherit;
 
 /* COMMENT STYLES */
 
+#addcomment {
+    padding-top: 20px;
+}
+center #addcoment {
+   padding-top: 0;
+}
 #addcomment h3 {
     padding-top: 0;
     margin-top: 0;  
@@ -2930,7 +2938,7 @@ body #emcontainer .emasseteditorarea {
     text-align: right;
 }
 #emcontainer #emselectable #main-asset-table tr td.thumbnail {
-    height: 62px;
+   width: 130px;
     text-align: center;
     padding: 0 10px;
 }
