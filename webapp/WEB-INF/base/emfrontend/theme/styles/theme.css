@@ -1421,6 +1421,23 @@ padding: 10px;
     width: 15%;
     padding: 0 10px;
 }
+#downloadoptions .emtable .row  {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    padding: 0;
+}
+#downloadoptions .emtable .row span:first-child {
+    width: 105px;
+    border-right: 1px dashed #eee;
+    padding: 8px 10px;
+    font-size: 12px;
+}
+#downloadoptions .emtable .row span:nth-child(2) {
+    padding: 0 10px;
+}
+#downloadoptions .emtable .row span:nth-child(2) input {
+    width: 80%;
+}
 
 /* SHARED EML SETTINGS STYLES -- TO BE CHANGED */
 
