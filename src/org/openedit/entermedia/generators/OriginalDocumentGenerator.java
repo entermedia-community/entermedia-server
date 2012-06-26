@@ -46,7 +46,6 @@ public class OriginalDocumentGenerator extends BaseGenerator
 		// way we support weird source paths
 
 		String catalogid = inReq.findValue("catalogid");
-		String applicationid = inReq.findValue("applicationid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 
 		String assetrootfolder = inPage.get("assetrootfolder");
@@ -58,7 +57,7 @@ public class OriginalDocumentGenerator extends BaseGenerator
 //			generator.generate(inReq, inPage, inOut);
 			//send them to the jpg version
 			String name = PathUtilities.extractFileName(sourcePath);
-			inReq.redirect("/" + applicationid + "/views/modules/asset/downloads/converted/cache/" +sourcePath + "/" + name + "wm.jpg");
+			inReq.redirect("/" + catalogid + "/downloads/converted/cache/" +sourcePath + "/" + name + "wm.jpg");
 			return;
 		}
 		// source path cut off the beginning
