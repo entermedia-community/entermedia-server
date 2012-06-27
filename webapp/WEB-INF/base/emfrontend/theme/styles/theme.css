@@ -3481,8 +3481,8 @@ div#folders.add .folder {
     min-width: 635px;
 }
 .settings-icon {
-    width: 10px; 
-    height: 10px;
+    width: 11px; 
+    height: 11px;
     background: url('../images/settings-icon.png') no-repeat;
     margin-right: 0;
     float: right;
