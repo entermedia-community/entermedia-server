@@ -1,9 +1,11 @@
 package org.openedit.entermedia;
 
+import org.openedit.Data;
+
 
 public class AssetSourcePathCreator implements SourcePathCreator
 {
-	public String createSourcePath(Asset inAsset, String inUrl)
+	public String createSourcePath(Data inAsset, String inUrl)
 	{
 		
 		String sourcepath = inUrl.trim();

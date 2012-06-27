@@ -45,7 +45,7 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			inStructions.setWatermark(false);
 			String outputPath = populateOutputPath(inArchive, inStructions); //now does not contain wm
-			Page ogetCatalogHomeutputPage = getPageManager().getPage(outputPath);
+			Page outputPage = getPageManager().getPage(outputPath);
 			if(!outputPage.exists())
 			{
 				createOutput(inArchive, inAsset, outputPage, inStructions); //this will create smaller version
@@ -185,6 +185,9 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			//no such original
 			result.setOk(false);
+			//This sucks,if the orignal is not available or we are waiting for a proxy
+			//The fix is to do conversions by the asset like we do for push
+			log.debug("input not yet available " + inAsset.getSourcePath() );
 			return result;
 		}
 
@@ -347,9 +350,11 @@ public class imagemagickCreator extends BaseImageCreator
 
 		if( !autocreated )
 		{
-//			TODO: use parameters to specify the color space			
-//			com.add("-colorspace");
-//			com.add("sRGB");
+//			TODO: use parameters to specify the color space		
+			//Make sure we use 8 bit output and 	
+			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
+			com.add("-colorspace");
+			com.add("sRGB");
 		
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80

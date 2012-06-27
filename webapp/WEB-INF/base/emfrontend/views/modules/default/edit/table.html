@@ -1,0 +1,14 @@
+#set($viewid = $context.getRequestParameter("viewid"))
+#set($viewpath = $context.getRequestParameter("viewpath"))
+
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set( $viewdata = $viewsearcher.searchById($viewid))
+
+#set( $searchtype = $viewdata.rendertable )
+#set( $fieldexternalid = $viewdata.renderexternalid)
+#set( $fieldexternalvalue = $data.getId())
+#set( $permissionname = "canedit${module}")
+#set ($view = $viewpath)
+
+#set( $args = "id=$data.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$listid&listexternalid=$listexternalid&permissionname=$permissionname&view=$view")
+$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)

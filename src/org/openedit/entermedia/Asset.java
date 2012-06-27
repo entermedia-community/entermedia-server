@@ -21,6 +21,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.Page;
@@ -30,7 +31,7 @@ import com.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class Asset implements Data
+public class Asset implements MultiValued
 {
 	protected String fieldId;
 	protected String fieldName;
@@ -39,7 +40,7 @@ public class Asset implements Data
 	protected Page fieldSourcePage;
 	protected String fieldDescription;
 	protected List fieldCategories;
-	protected Collection<String> fieldLibraries;
+	//protected Collection<String> fieldLibraries;
 	protected Map fieldProperties;
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
@@ -58,7 +59,23 @@ public class Asset implements Data
 		//if null check parent
 		return collection;
 	}
-	
+	public void addValue(String inKey, String inNewValue)
+	{
+		String val = get(inKey);
+		if( val == null )
+		{
+			setProperty(inKey, inNewValue);
+		}
+		else if( inKey.contains(inNewValue) )
+		{
+			return;
+		}
+		else
+		{
+			val = val + " " + inNewValue;
+			setProperty(inKey, val);
+		}
+	}
 	public void setValues(String inKey, Collection<String> inValues)
 	{
 		if( inValues == null || inValues.size() == 0)
@@ -76,10 +93,6 @@ public class Asset implements Data
 			}
 		}
 		setProperty(inKey,values.toString());
-		if( "libraries".equals(inKey ) ) 
-		{
-			fieldLibraries = null;
-		}
 	}
 	
 	
@@ -302,15 +315,12 @@ public class Asset implements Data
 	}
 	public Collection<String> getLibraries()
 	{
-		if( fieldLibraries == null)
+		Collection<String> libraries = getValues("libraries");
+		if( libraries == null)
 		{
-			fieldLibraries = getValues("libraries");
-			if( fieldLibraries == null)
-			{
-				fieldLibraries = Collections.EMPTY_LIST;
-			}
+			libraries = Collections.EMPTY_LIST;
 		}
-		return fieldLibraries;
+		return libraries;
 				
 	}
 

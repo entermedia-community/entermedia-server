@@ -42,7 +42,7 @@ public boolean conversionsComplete(String assetid){
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 	
 	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
-	log.info("loadssetstatus is checking for new and submitted conversions");
+	log.debug("loadssetstatus is checking for new and submitted conversions");
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	//query.addOrsGroup("status", "new submitted retry pending");
@@ -93,7 +93,7 @@ public boolean loadPublishing(String assetid)
 {
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 	Searcher queuesearcher = mediaarchive.getSearcherManager().getSearcher(mediaarchive.getCatalogId(), "publishqueue");
-	log.info("checking for new and submitted publish tasks");
+	log.debug("checking for new and submitted publish tasks");
 	SearchQuery query = queuesearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry pending");
 	query.addMatches("assetid", assetid);

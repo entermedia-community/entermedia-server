@@ -30,7 +30,10 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.NRTManager;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.SearcherFactory;
+import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
@@ -60,20 +63,37 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 {
 	private static final Log log = LogFactory.getLog(BaseLuceneSearcher.class);
 	protected Analyzer fieldAnalyzer;
-	protected IndexSearcher fieldLiveSearcher;
 	protected File fieldRootDirectory;
 	protected String fieldIndexPath;
 	protected SimpleDateFormat fieldFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 	protected IndexWriter fieldIndexWriter;
 	protected String fieldBadSortField = null;
 	protected boolean fieldPendingCommit;
-	protected boolean fieldReopenReader;
+	protected String fieldIndexId;
 	
 	protected LuceneIndexer fieldLuceneIndexer;
 	protected String fieldCurrentIndexFolder;
 	protected String fieldIndexRootFolder;
 	
+	protected SearcherManager fieldLuceneSearcherManager;
 	
+	public SearcherManager getLuceneSearcherManager() 
+	{
+		try
+		{
+			if (fieldLuceneSearcherManager == null)
+			{
+				fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(),true, new SearcherFactory());
+			}
+			fieldLuceneSearcherManager.maybeRefresh();
+		}
+		catch (IOException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return fieldLuceneSearcherManager;
+	}
+
 	public String getIndexRootFolder()
 	{
 		return fieldIndexRootFolder;
@@ -223,58 +243,14 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	{
 		try
 		{
-			long start = System.currentTimeMillis();
 			QueryParser parser = getQueryParser();
 			Query query1 = parser.parse(inQuery);
-			IndexSearcher liveone = getLiveSearcher();
-			TopDocs hits = null;
-			if (inOrdering != null)
+			Sort sort = null;
+			if( inOrdering != null && inOrdering.size() > 0 )
 			{
-				Sort sort = buildSort(inOrdering);
-				try
-				{
-					//log.info("XXX Search now" + query1 + " " + fieldLiveSearcher);
-					if( sort.getSort() == null || sort.getSort().length == 0)
-					{
-						hits = liveone.search(query1, 1000000);
-					}
-					else
-					{
-						hits = liveone.search(query1,1000000, sort);
-					}
-					fieldBadSortField = null;
-				}
-				catch (RuntimeException ex)
-				{
-					if (ex.toString().contains("cannot determine sort type") || ex.toString().contains(" does not appear to be indexed") || ex.toString().contains("there are more terms than documents in field"))
-					{
-						log.error("Skipping bad sort: " + inOrdering);
-						log.error(ex);
-						log.info(inOrdering);
-						liveone = getLiveSearcher();
-						hits = liveone.search(query1,100000);
-					}
-					else
-					{
-						if (ex instanceof OpenEditRuntimeException)
-						{
-							throw (OpenEditRuntimeException) ex;
-						}
-						throw new OpenEditException(ex);
-					}
-				}
+				sort = buildSort(inOrdering);
 			}
-			else
-			{
-				hits = liveone.search(query1,1000000);
-			}
-			long end = System.currentTimeMillis() - start;
-
-			log.info(hits.totalHits + " hits query: " + query1 + " sort by " + inOrdering + " in " + (double) end / 1000D + " seconds] on " + getCatalogId() + "/" + getSearchType() );
-
-			LuceneHitTracker tracker = new LuceneHitTracker(liveone,hits);
-			// tracker.setQuery(inQuery);
-			// tracker.setOrdering(inOrdering);
+			LuceneHitTracker tracker = new LuceneHitTracker(getLuceneSearcherManager(),query1,sort);
 			tracker.setIndexId(getIndexId());
 
 			return tracker;
@@ -429,95 +405,29 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 	}
 
-	protected synchronized void setLiveSearcher(IndexSearcher inSearch)
-	{
+//	protected synchronized void setLiveSearcher(IndexSearcher inSearch)
+//	{
+//
+//		if (fieldLiveSearcher != null)
+//		{
+//			try
+//			{
+//				fieldLiveSearcher.close();
+//			}
+//			catch (IOException ex)
+//			{
+//				fieldLiveSearcher = null;
+//				// lets assume its invalid and just set it null so it tries
+//				// to reload.
+//				// throw new OpenEditRuntimeException(ex);
+//			}
+//		}
+//		//log.info("XXX Null Now" + inSearch	);
+//
+//		fieldLiveSearcher = inSearch;
+//	}
 
-		if (fieldLiveSearcher != null)
-		{
-			try
-			{
-				fieldLiveSearcher.close();
-			}
-			catch (IOException ex)
-			{
-				fieldLiveSearcher = null;
-				// lets assume its invalid and just set it null so it tries
-				// to reload.
-				// throw new OpenEditRuntimeException(ex);
-			}
-		}
-		//log.info("XXX Null Now" + inSearch	);
-
-		fieldLiveSearcher = inSearch;
-	}
-
-	protected IndexSearcher getLiveSearcher()
-	{
-		if (fieldReopenReader || fieldLiveSearcher == null)
-		{
-			synchronized (this)
-			{
-				if (fieldReopenReader || fieldLiveSearcher == null)
-				{
-					try
-					{
-						String indexname = getCurrentIndexFolder();
-						Directory index = null;
-						if (indexname == null || !checkExists(indexname))
-						{
-							log.error("No valid index found in " + getSearchType());
-							reIndexAll();
-						}
-						index = buildIndexDir(getCurrentIndexFolder());
-						flushRecentChanges();
-						
-						IndexReader reader = null;
-						if( fieldLiveSearcher != null)
-						{
-							reader = fieldLiveSearcher.getIndexReader().reopen();
-//							
-							//TODO the old one should be closed
-//							//Since we now use 
-							//fieldLiveSearcher.close();
-							fieldLiveSearcher.getIndexReader().decRef();
-							if( fieldPendingCommit)
-							{
-								flush();
-							}
-						}
-						else
-						{
-							reader = IndexReader.open(getIndexWriter(), true);
-						}
-						fieldLiveSearcher = new IndexSearcher(reader);
-						fieldReopenReader = false;
-					}
-					catch (Exception ex)
-					{
-						if (ex instanceof OpenEditException)
-						{
-							if (ex.toString().contains("handle"))
-							{
-								log.error("Trying to recover unlocked index");
-								log.error(ex);
-								setLiveSearcher(null);
-								setIndexWriter(null);
-							}
-							throw (OpenEditException) ex;
-						}
-						if(ex instanceof IOException)
-						{
-							log.error("Trying to recover corrupt index " + getSearchType());
-							setLiveSearcher(null);
-							setIndexWriter(null);
-						}
-						throw new OpenEditException(ex);
-					}
-				}
-			}
-		}
-		return fieldLiveSearcher;
-	}
+	
 
 	protected boolean checkExists(String indexname) throws IOException
 	{
@@ -572,15 +482,22 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	{
 		fieldRootDirectory = inSearchDirectory;
 	}
-
+	
+	/** Not needed any more? 
+	 * TODO: use a last modification time?
+	 *
+	 */
 	public String getIndexId()
 	{
-		if (fieldLiveSearcher == null)
+//		if (fieldLiveSearcher == null)
+//		{
+//			return null;
+//		}
+		if( fieldIndexId == null ) 
 		{
-			return null;
+			fieldIndexId = String.valueOf(System.currentTimeMillis()) + getIndexWriter().hashCode();
 		}
-		String id = String.valueOf(getLiveSearcher().hashCode());
-		return id + fieldPendingCommit; //In case we turned that on. Then this will trigger a search
+		return fieldIndexId;
 	}
 
 	public void flush()
@@ -616,7 +533,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//			throw new OpenEditRuntimeException(ex);
 		//		}
 		fieldPendingCommit = true;
-		fieldReopenReader = true;
+		fieldIndexId = null;
 	}
 
 	public IndexWriter getIndexWriter() 
@@ -669,14 +586,19 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		return fieldIndexWriter;
 	}
 
+	/**
+	 * Used after a reindex
+	 * @param inIndexWriter
+	 */
 	public void setIndexWriter(IndexWriter inIndexWriter)
 	{
 		if (fieldIndexWriter != null)
 		{
 			try
 			{
-				fieldIndexWriter.close();
-				fieldLiveSearcher = null;
+				getLuceneSearcherManager();
+				fieldIndexWriter.close(); //This should flush if needed
+				//fieldLiveSearcher = null;
 			}
 			catch (IOException ex)
 			{
@@ -684,6 +606,19 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			}
 		}
 		fieldIndexWriter = inIndexWriter;
+
+		try
+		{
+			if( fieldLuceneSearcherManager != null )
+			{
+				fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(),true, new SearcherFactory());
+			}
+		}
+		catch (IOException ex)
+		{
+			log.error(ex);
+		}
+
 	}
 
 	public SearchQuery createSearchQuery()
@@ -877,7 +812,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			saveData(data, inUser);//Actually save the darn thing.
 		}
 		updateIndex(inAll);
-		getLiveSearcher(); //should flush the index
+		//getLiveSearcher(); //should flush the index
 	}
 	
 	public Object searchByField(String inField, String inValue)
@@ -892,6 +827,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		query.addMatches(detail, inValue);
 
 		HitTracker hits = search(query);
+		hits.setHitsPerPage(1);
 		return hits.first();
 	}
 	public Object searchById(String inId)
@@ -901,8 +837,20 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public void shutdown()
 	{
-		flush();
-		setIndexWriter(null);
+		
+		//setIndexWriter(null);
+		if (fieldIndexWriter != null)
+		{
+			try
+			{
+				fieldIndexWriter.close();
+			}
+			catch (IOException ex)
+			{
+				log.error(ex);
+			}
+		}
+				
 	}
 	
 	public String getCurrentIndexFolder()

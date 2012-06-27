@@ -106,7 +106,12 @@ public class AttachmentManager
 			{
 				String file = (String) iterator.next();
 				Page page = getPageManager().getPage(file);
-	
+				if( page.getName().startsWith(".") )
+				{
+					continue;
+				}
+
+				
 				if (!alreadyhave.containsKey(page.getName()))
 				{
 					// need a new entry

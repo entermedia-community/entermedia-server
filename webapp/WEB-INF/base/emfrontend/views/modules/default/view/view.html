@@ -1,12 +1,3 @@
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set( $categoryid = $context.getRequestParameter("categoryid" ) )
+#set( $moduleid = $context.findValue("module") )
 
-#if( !$view )				
-	#set( $view = "${searcher.searchType}/view" )
-#end
-$context.putPageValue("view", $view)
-$context.putPageValue("applyfilter", true)
-
-	
-$pages.include("/util/editors/xml/detaileditor.html?viewonly=true", $context)
-
+$pages.include("/$applicationid/views/modules/${moduleid}/edit/edit.html?viewonly=true", $context)

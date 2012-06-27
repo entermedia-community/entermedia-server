@@ -1072,12 +1072,12 @@ public class MediaArchive
 			asset = findAsset(sourcepath);
 		}
 		
-		List<String> types = Arrays.asList(new String[]{"edit", "view"});
+		List<String> types = Arrays.asList(new String[]{"edit", "view", "forcewatermark"});
 		
 		for (Iterator iterator = types.iterator(); iterator.hasNext();)
 		{
 			String type = (String) iterator.next();
-			Boolean cando = getAssetSecurityArchive().canDo(this,inReq.getUser(),inReq.getUserProfile(),"view",asset);
+			Boolean cando = getAssetSecurityArchive().canDo(this,inReq.getUser(),inReq.getUserProfile(),type,asset);
 			inReq.putPageValue("can" + type + "asset", cando);
 		}
 	}

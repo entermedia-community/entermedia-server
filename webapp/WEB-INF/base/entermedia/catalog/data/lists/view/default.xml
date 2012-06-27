@@ -1,0 +1,6 @@
+<properties>
+	
+	<property id="defaultadvancedsearch" module="default" systemdefined="true" byassettype="false">Advanced Search</property>
+	<property id="defaultresultstable" module="default" systemdefined="true" byassettype="false">Results Table</property>
+	
+</properties>

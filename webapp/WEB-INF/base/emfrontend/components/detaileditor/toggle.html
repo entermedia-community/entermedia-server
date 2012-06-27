@@ -16,6 +16,7 @@
 #else
 	#set( $open = "up")
 #end
+#set ( $module = $context.findValue("module"))
 
 <div id="$!viewpath">
 
@@ -33,12 +34,12 @@
 	#if ( $viewpath.contains("$asset.assettype") )
 		#set ( $type = $asset.assettype )
 	#else
-		#set ( $type = 'undefined' )
+		##set ( $type = false )
 	#end
 	
 	<span class="widget-header-edit">
-		 <a class="ir" href="$home$apphome/views/settings/metadata/views/index.html?viewpath=${viewpath}&viewid=${viewid}&assettype=$type&searchtype=asset">Edit</a>
-
+	   
+		 <a class="ir" href="$home$apphome/views/settings/modules/$module/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$module">Edit</a>
 	</span>
 	#end
 	</div>

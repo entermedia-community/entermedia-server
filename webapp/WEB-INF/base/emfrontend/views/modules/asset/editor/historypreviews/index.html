@@ -1,0 +1,14 @@
+<div id="historypreviews">
+	
+<div class="tab-actions">
+<span><strong>[[Preview History]]</strong></span>
+</div>
+
+#set( $details = $searcher.getDetailsForView("assetpreviewlog/historypreviews",$user) ) 
+$context.putPageValue("details",$details)
+$context.putPageValue("resultsPage","$page.path?oemaxlevel=1&assetid=$asset.id")
+$context.putPageValue("targetdiv","historypreviews")
+$pages.include("./results.html?foldername=${catalogid}/assetpreviewLog&field=sourcepath&sourcepath.value=$asset.sourcepath&operation=exact", $context)
+
+</div>
+	

@@ -136,7 +136,7 @@ public class DataFileSearcher extends BaseLuceneSearcher
 		tosave.addAll(inToAdd);
 		tosave.addAll(inToEdit);
 		clearIndex();
-		getLiveSearcher();
+		//getLiveSearcher();
 		updateIndex(tosave);
 	}
 

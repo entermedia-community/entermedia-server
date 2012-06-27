@@ -519,6 +519,7 @@ public class OrderManager
 				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
 			}
 		}
+		archive.fireSharedMediaEvent("publishing/publishassets");
 		return assetids;
 	}
 	

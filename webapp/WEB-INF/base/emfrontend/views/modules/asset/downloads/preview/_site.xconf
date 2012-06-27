@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<permission name="view">
+		<or>
+			<group name="administrators" />
+			<action name="AssetControlModule.canViewAsset" />
+		</or>
+	</permission>	
+
+	<property name="sourcepathhasfilename">true</property>
+</page>

@@ -7,20 +7,25 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.SearcherManager;
+import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.openedit.Data;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
-import com.openedit.OpenEditRuntimeException;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.Term;
 
@@ -32,67 +37,107 @@ public class LuceneHitTracker extends HitTracker
 {
 	private static final Log log = LogFactory.getLog(LuceneHitTracker.class);
 	
-	protected transient TopDocs fieldHits;
-	protected transient IndexSearcher fieldIndexSearcher;
-
-	public LuceneHitTracker() {
-
-	}
-
-
-	public IndexSearcher getIndexSearcher()
+	//protected transient TopDocs fieldHits;
+	protected transient SearcherManager fieldLuceneSearcherManager;
+	protected transient Query fieldLuceneQuery;
+	protected transient Sort fieldLuceneSort;
+	protected Map fieldPages;
+	protected Integer fieldSize;
+	
+	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort)
 	{
-		return fieldIndexSearcher;
+		setLuceneSearcherManager(inManager);
+		setLuceneQuery(inQuery);
+		setLuceneSort(inSort);
 	}
 
-	public void setIndexSearcher(IndexSearcher inIndexSearcher)
+	public int size() 
 	{
-		inIndexSearcher.getIndexReader().incRef();
-		fieldIndexSearcher = inIndexSearcher;
-	}
-
-	public LuceneHitTracker(IndexSearcher inSearcher, TopDocs inHits) {
-		setIndexSearcher(inSearcher);
-		setHits(inHits);
-		
-	}
-
-	public TopDocs getHits() {
-		return fieldHits;
-	}
-
-	public void setHits(TopDocs inHits) 
-	{
-		fieldHits = inHits;
-		setPage(1);
-	}
-
-	public int size() {
-		if (getHits() == null) {
-			return 0;
-		} else {
-			return getHits().totalHits;
-		}
-	}
-	public Document getDoc(int count) 
-	{
-		try 
+		if( fieldSize == null )
 		{
-			Document doc = getIndexSearcher().doc(getHits().scoreDocs[count].doc);
-			return doc;
-		} catch (IOException ex) {
-			throw new OpenEditRuntimeException(ex);
+			getPage(0);
 		}
+		return fieldSize;
 	}
 
-	public Data get(int count) {
-			Document doc = getDoc(count);
-			DocumentData data = new DocumentData(doc);
-			return data;
+	public Data get(int inCount)
+	{
+		int page = inCount / getHitsPerPage();
+		
+		//get the chunk 1
+		List<Data> row = getPage(page);
+
+		// 50 - (1 * 40) = 10 relative
+		int indexlocation = inCount - ( page * getHitsPerPage() );
+
+		return row.get(indexlocation);
 	}
+	protected Map<Integer,List<Data>> getPages()
+	{
+		if (fieldPages == null)
+		{
+			fieldPages = new HashMap<Integer,List<Data>>();
+			//Does this compile?
+			//fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+		}
+		return fieldPages;
+	}
+	
+	protected List<Data> getPage(int inPageNumberZeroBased)
+	{
+		List<Data> page = getPages().get(inPageNumberZeroBased);
+		if( page == null )
+		{
+			IndexSearcher searcher = getLuceneSearcherManager().acquire();
+			try
+			{
+				int start = getHitsPerPage() * inPageNumberZeroBased;
+				int max = start + getHitsPerPage();
+				TopDocs docs = null;
+				if( getLuceneSort() != null )
+				{
+					docs = searcher.search( getLuceneQuery(),max ,getLuceneSort() );
+				}
+				else
+				{
+					docs = searcher.search( getLuceneQuery(),max);
+				}
+				fieldSize = docs.totalHits;
+				page = new ArrayList<Data>(getHitsPerPage());
+				for (int i = 0; start + i < size() && i < getHitsPerPage(); i++)
+				{
+					int offset = start + i;
+					Document doc = searcher.doc( docs.scoreDocs[offset].doc );
+					page.add(new DocumentData(doc) );
+				}
+				if( log.isDebugEnabled() )
+				{
+					log.debug(size() + " total, loaded " + start + " to " + (start+page.size()) + " from:" + getLuceneQuery() );
+				}
+				getPages().put(inPageNumberZeroBased,page);
+			}
+			catch( Exception ex )
+			{
+				throw new OpenEditException(ex);
+			}
+			finally
+			{
+				try
+				{
+					getLuceneSearcherManager().release(searcher);
+				}
+				catch (IOException e)
+				{
+					//nada
+				}
+			}
+		}
+		return page;
+	}
+	
 
 	public Iterator iterator() {
-		return new HitIterator(getIndexSearcher(),getHits());
+		return new HitIterator(this);
 	}
 
 	public String toDate(String inValue) 
@@ -135,14 +180,18 @@ public class LuceneHitTracker extends HitTracker
 		return toDate(inValue);
 	}
 	
-	
+	//Only look for data within the current page
 	public Integer findSelf(String inId) throws Exception {
 		if (inId == null) {
 			return null;
 		}
-		for (int i = 0; i < getTotal(); i++) {
-			Document hit = (Document) getDoc(i);
-			if (inId.equals(hit.get("id"))) {
+		int i = getPage() * getHitsPerPage();
+		for (Iterator iterator = getPageOfHits().iterator(); iterator.hasNext();)
+		{
+			i++;
+			Data type = (Data) iterator.next();
+			if (inId.equals(type.getId() ) )
+			{
 				return new Integer(i);
 			}
 		}
@@ -151,7 +200,7 @@ public class LuceneHitTracker extends HitTracker
 
 	public String previousId(String inId) throws Exception 
 	{
-		Document previous = previous(inId);
+		Data previous = previous(inId);
 		if (previous != null)
 		{
 			return previous.get("id");
@@ -161,7 +210,7 @@ public class LuceneHitTracker extends HitTracker
 
 	public String nextId(String inId) throws Exception 
 	{
-		Document next = next(inId);
+		Data next = next(inId);
 		if (next != null)
 		{
 			return next.get("id");
@@ -169,31 +218,34 @@ public class LuceneHitTracker extends HitTracker
 		return null;
 	}
 	
-	public Document previous(String inId) throws Exception
+	public Data previous(String inId) throws Exception
 	{
 		Integer row = findSelf(inId);
 		if (row != null && row.intValue() - 1 >= 0) {
-			Document hit = (Document) getDoc(row.intValue() - 1);
+			Data hit = (Data) get(row.intValue() - 1);
 			return hit;
 		}
 		return null;
 	}
 	
-	public Document next(String inId) throws Exception
+	public Data next(String inId) throws Exception
 	{
 		Integer row = findSelf(inId);
 		if (row != null && row.intValue() + 1 < getTotal()) {
-			Document hit = (Document) getDoc(row.intValue() + 1);
+			Data hit =  get(row.intValue() + 1);
 			return hit;
 		}
 		return null;
 	}
-	
-	public boolean contains(Object inHit) {
-		for (int i = 0; i < getTotal(); i++) {
-			Document hit = (Document) getDoc(i);
-			String id = getValue(inHit, "id");
-			if (id != null && id.equals(  hit.get("id") ) ) {
+	//Never call this!!!
+	public boolean contains(Object inHit) 
+	{
+		Data contains = (Data)inHit;
+		for (Iterator iterator = iterator(); iterator.hasNext();)
+		{
+			Data type = (Data) iterator.next();
+			String id = type.getId();
+			if (id != null && id.equals( contains.getId() ) ) {
 				return true;
 			}
 		}
@@ -336,33 +388,61 @@ public class LuceneHitTracker extends HitTracker
 		}
 		return list.toArray();
 	}
-	public Object getById(String inId)
-	{
-		if(inId == null)
-		{
-			return null;
-		}
-		int size = size();
-		for (int i = 0; i < size; i++)
-		{
-			Document doc = getDoc(i);
-			String id = doc.get("id");
-			if( inId.equals(id))
-			{
-				return toData(doc);
-			}
-		}
-		return null;
-	}
-	
-	
-	protected void finalize() throws Throwable {
-		try{
-			getIndexSearcher().getIndexReader().decRef();	
-		} catch (Exception e){
-			log.info("Error closing index");
-		}
+//	public Object getById(String inId)
+//	{
+//		if(inId == null)
+//		{
+//			return null;
+//		}
+//		int size = size();
+//		for (int i = 0; i < size; i++)
+//		{
+//			Document doc = getDoc(i);
+//			String id = doc.get("id");
+//			if( inId.equals(id))
+//			{
+//				return toData(doc);
+//			}
+//		}
+//		return null;
 		
-		super.finalize();
+//	}
+	
+	public SearcherManager getLuceneSearcherManager()
+	{
+		return fieldLuceneSearcherManager;
 	}
+
+
+	public void setLuceneSearcherManager(SearcherManager inLuceneSearcherManager)
+	{
+		fieldLuceneSearcherManager = inLuceneSearcherManager;
+	}
+
+
+
+	public Query getLuceneQuery()
+	{
+		return fieldLuceneQuery;
+	}
+
+
+	public void setLuceneQuery(Query inLuceneQuery)
+	{
+		fieldLuceneQuery = inLuceneQuery;
+	}
+
+
+	public Sort getLuceneSort()
+	{
+		return fieldLuceneSort;
+	}
+
+
+	public void setLuceneSort(Sort inLuceneSort)
+	{
+		fieldLuceneSort = inLuceneSort;
+	}
+
+
 }

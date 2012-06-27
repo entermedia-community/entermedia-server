@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="webapp/WEB-INF/base/emfrontend/views/settings/lists/datamanager/import/scripts"/>
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/catalog/events/scripts"/>
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -22,9 +23,9 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/entermedia-core"/>
 	<classpathentry exported="true" kind="lib" path="lib/gson-1.7.1.jar"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-3.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/mp4parser-0826.jar"/>
 	<classpathentry kind="lib" path="lib/PDFBox-1.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-3.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

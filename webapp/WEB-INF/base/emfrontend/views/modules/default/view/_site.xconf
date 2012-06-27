@@ -1,4 +1,4 @@
 <page>
 	<path-action name="DataEditModule.loadData" />
-	
+	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
 </page>

@@ -6,6 +6,7 @@
 <property name="hitsname">hits</property>
 <property name="showsearch">true</property>
 <property name="searchfields">advancedsearch</property>
+<property name="searchtype">${module}</property>
 
  <path-action allowduplicates="true" bean="searcherManager" name="PageValue.loadPageVariable"/>
  <permission name="delete">
@@ -14,6 +15,5 @@
  <permission name="editdata">
  	<permission name="oe.administration"/>
  </permission>
- <property name="oetextfilter">xmltranslation</property>
  
 </page>

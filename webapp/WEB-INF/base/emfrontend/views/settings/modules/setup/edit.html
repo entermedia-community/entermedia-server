@@ -1,0 +1,25 @@
+<form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="save.html" target="_top">
+	
+<h3>[[Hot Folder]]</h3>
+#set( $id = $context.getRequestParameter("id") )
+
+
+<label>[[Module Name]]</label>
+<input type="hidden" name="field" value="name" />
+<input class="field short required" name="name.value" value ="$!data.name" />
+<div class="note">[[Module nickname.]]</div>
+
+#if( !$id )
+<label>[[Module Id]]</label>
+<input class="field short required" name="id" value ="$!data.id" />
+<div class="note">[[Used in path.]]</div>
+#else
+<input type="hidden" name="id" value="$!id" />
+
+#end
+
+
+<input style="margin-top: 40px;" class="btn" type="submit" value="[[Save]]" />
+
+
+</form>

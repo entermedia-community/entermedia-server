@@ -10,7 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 
+import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -39,10 +41,10 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.users.User;
+import com.openedit.util.PathUtilities;
 
 public class DataEditModule extends BaseMediaModule
 {
-	protected SearcherManager fieldSearcherManager;
 	protected XmlArchive fieldXmlArchive;
 	//	protected WebEventListener fieldWebEventListener;
 	private static final Log log = LogFactory.getLog(DataEditModule.class);
@@ -50,6 +52,10 @@ public class DataEditModule extends BaseMediaModule
 	public Searcher loadSearcherForEdit(WebPageRequest inReq) throws Exception
 	{
 		org.openedit.data.Searcher searcher = loadSearcher(inReq);
+		if (searcher == null)
+		{
+			throw new OpenEditException("No searcher found");
+		}
 		String paramname = inReq.getRequestParameter("paramname");
 		if( paramname == null)
 		{
@@ -65,10 +71,6 @@ public class DataEditModule extends BaseMediaModule
 			}
 		}
 		inReq.putPageValue("searcher", searcher);
-		if (searcher == null)
-		{
-			throw new OpenEditException("No searcher found");
-		}
 		inReq.putPageValue("detailsarchive", searcher.getPropertyDetailsArchive());
 		inReq.putPageValue("searcherManager", getSearcherManager());
 
@@ -163,6 +165,9 @@ public class DataEditModule extends BaseMediaModule
 		
 		String type = inReq.getRequestParameter("datatype");
 		detail.setDataType(type);
+
+		type = inReq.getRequestParameter("viewtype");
+		detail.setViewType(type);
 
 //		String val = inReq.getRequestParameter("listid");
 //		detail.setProperty("listid", val);
@@ -264,7 +269,13 @@ public class DataEditModule extends BaseMediaModule
 		}
 		detail.setId(label.toLowerCase().replace(" ", ""));
 		detail.setText(label);
+		String catid = inReq.findValue("catalogid");
+		detail.setCatalogId(catid);
+		detail.setEditable(true);
+		detail.setIndex(true);
+		detail.setStored(true);
 		details.addDetail(detail);
+		
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
 		loadProperties(inReq);
 		//tuan
@@ -486,6 +497,7 @@ public class DataEditModule extends BaseMediaModule
 					
 				}
 			}
+			inReq.putPageValue("data", data);
 
 			inReq.putPageValue("savedok", Boolean.TRUE);
 
@@ -567,15 +579,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 	}
 
-	public SearcherManager getSearcherManager()
-	{
-		return fieldSearcherManager;
-	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager)
-	{
-		fieldSearcherManager = inSearcherManager;
-	}
 
 	public List loadSearchTypes(WebPageRequest inReq)
 	{
@@ -696,16 +700,41 @@ public class DataEditModule extends BaseMediaModule
 	{
 		String catid = resolveCatalogId(inReq);
 		String name = inReq.getRequestParameter("newname");
-		String type = resolveSearchType(inReq);
-		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";
-		XmlFile file = getXmlArchive().getXml(path, "property");
+		//String type = resolveSearchType(inReq);
+		
+		Searcher searcher = getSearcherManager().getSearcher(catid, "view");
+		Data data = searcher.createNewData();
+		String module = inReq.findValue("module");
 
-		getXmlArchive().saveXml(file, inReq.getUser());
+		String id = PathUtilities.makeId(name);
+		id = id.toLowerCase();
+		if( module != null )
+		{
+			id = module + id; //To mak sure they are unique
+		}
+		data.setId(id);
+		data.setName(name);
+		
+		data.setProperty("module", module);
+		data.setProperty("systemdefined", "false" );
+		data.setProperty("ordering", System.currentTimeMillis() + "" );
+		
+		searcher.saveData(data, inReq.getUser());
+//		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";
+//		XmlFile file = getXmlArchive().getXml(path, "property");
+//
+//		getXmlArchive().saveXml(file, inReq.getUser());
 	}
 
 	public void deleteView(WebPageRequest inReq)
 	{
 		String catid = resolveCatalogId(inReq);
+		
+		String id = inReq.getRequestParameter("id");
+		Searcher searcher = getSearcherManager().getSearcher(catid, "view");
+		Data data = (Data)searcher.searchById(id);
+		searcher.delete(data, null);
+		
 		String view = inReq.getRequestParameter("viewpath");
 		//String type = resolveSearchType(inReq);
 		String path = "/WEB-INF/data/" + catid + "/views/" + view + ".xml";
@@ -1230,5 +1259,49 @@ public class DataEditModule extends BaseMediaModule
 		inData.setProperty(inKey,values.toString());
 	}
 	
-	
+	public void loadCorrectViewForUser(WebPageRequest inReq ) throws Exception 
+	{
+		String catalogid = resolveCatalogId(inReq);
+		Searcher viewsearcher = getSearcherManager().getSearcher(catalogid, "view");
+		
+		SearchQuery query = viewsearcher.createSearchQuery();
+		
+		String module = inReq.findValue("module");		
+		if( module == null )
+		{
+			throw new OpenEditException("Module not defined");
+		}
+		query.addMatches("module",module);
+		query.addMatches("systemdefined","false");
+		query.addSortBy("ordering");
+
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
+
+		Data currentdata = (Data)inReq.getPageValue("data");
+		if( currentdata == null )
+		{
+			currentdata = (Data)inReq.getPageValue("asset");
+		}
+		Map views = new ListOrderedMap();
+		for (Iterator iterator = viewsearcher.search(query).iterator(); iterator.hasNext();)
+		{
+			Data view = (Data) iterator.next();
+			String permissionvalue = (String)inReq.getPageValue("can" + view.getId() );
+			if( permissionvalue == null || Boolean.parseBoolean(permissionvalue) )
+			{
+				String type = null;
+				if( currentdata != null )
+				{
+					type = currentdata.get("assettype");
+				}
+				String path = module + "/assettype/" + type + "/" + view.getId();
+				if(type == null || !archive.viewExists( path ) )
+				{
+					path =	module + "/assettype/default/" + view.getId();
+				}
+				views.put(path,view);
+			}
+		}
+		inReq.putPageValue("views", views);
+	}
 }

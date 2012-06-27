@@ -53,7 +53,7 @@
 			</td>
 			<td align="right">
 					#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="$home$cataloghome/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
+					<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
 			</td>
 		#end
 	#elseif( $publishqueue.publishdestination == "1") )

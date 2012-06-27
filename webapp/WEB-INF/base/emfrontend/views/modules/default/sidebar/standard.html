@@ -1,8 +1,11 @@
+
+#set( $module = $context.findValue("module") )
+
 <div class="ui-widget uipanel" id="left-col-search" >
 	<div  class="ui-widget-header">Search
 		#if( $caneditadvancedsearch )
 			<span class="widget-header-edit">
-			<a class="ajax ir" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Edit</a>
+			<a class="ir" href="$home$apphome/views/settings/modules/$module/metadata/viewssystem/index.html?viewid=${module}advancedsearch&viewpath=${module}/${module}advancedsearch">Edit</a>
 			</span>
 		#end
 	</div>

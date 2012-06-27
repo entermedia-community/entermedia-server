@@ -138,7 +138,7 @@ class ConvertRunner implements Runnable
 					else
 					{
 						String sourcepath = hit.get("sourcepath");
-						log.info("conversion had no error and will try again later for ${sourcepath}");
+						log.debug("conversion had no error and will try again later for ${sourcepath}");
 						return;
 					}
 					tasksearcher.saveData(realtask, user);
@@ -241,7 +241,7 @@ private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
  }
 } //End Runnable methods
 
-protected Runnable createRunnable(MediaArchive mediaarchive, Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
+protected ConvertRunner createRunnable(MediaArchive mediaarchive, Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
 {
 	   ConvertRunner runner = new ConvertRunner();
 	   runner.mediaarchive = mediaarchive;
@@ -264,7 +264,6 @@ public void checkforTasks()
 	Searcher itemsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "orderitem");
 	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 	
-	log.info("checking for new and submitted conversions");
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry");
@@ -277,47 +276,41 @@ public void checkforTasks()
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
 	HitTracker newtasks = tasksearcher.search(query);
+
+	log.info("processing ${newtasks.size()} conversions");
 	
-	boolean foundone = false;
+	List runners = new ArrayList();
+	
 	if( newtasks.size() == 1 )
 	{
 		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, newtasks.first() );
+		runners.add(runner);
 		runner.run();
-		if( !foundone && runner.result != null)
-		{
-			foundone = runner.result.isComplete();
-		}
 	}
 	else
 	{
-		List all = new ArrayList(newtasks);
-		
 		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
 		ExecutorService  executor = executorManager.createExecutor();
-		List completed = new ArrayList();
-		for (Data hit in all)
-		{	
+		for(Object hit: newtasks)
+		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
-			completed.add(runner);
+			runners.add(runner);
 			executor.execute(runner);
 		}
 		executorManager.waitForIt(executor);
-		for( ConvertRunner runner in completed )
-		{
-			if( !foundone && runner.result != null)
-			{
-				foundone = runner.result.isComplete();
-			}
-			else
-			{
-				break;
-			}
-		}
 	}
 	
 	if( newtasks.size() > 0 )
 	{
-		mediaarchive.fireMediaEvent("conversions/conversionscomplete",user);
+		for(ConvertRunner runner: runners)
+		{
+			if( runner.result != null && runner.result.isComplete() )
+			{
+				mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
+				mediaarchive.fireSharedMediaEvent("conversions/runconversions");
+				break;
+			}
+		}
 	}
 	
 }

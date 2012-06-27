@@ -170,7 +170,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 	 * 
 	 * @see com.openedit.store.CatalogArchive#saveCatalogs()
 	 */
-	public void saveAll()
+	public synchronized void saveAll()
 	{
 		try
 		{
@@ -178,6 +178,8 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 			Element root = createElement(getRootCategory());
 			// lets write to a stream
+			//TODO: Lock the path
+			
 			OutputStream out = getPageManager().saveToStream(catalogFile);
 			getXmlUtil().saveXml(root, out, catalogFile.getCharacterEncoding());
 		}
@@ -251,7 +253,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 		}
 	}
 
-	public void reloadCategories()
+	public synchronized void reloadCategories()
 	{
 		getCatalogMap().clear();
 

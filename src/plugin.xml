@@ -67,9 +67,6 @@
 		</property>
 	</bean>
 	<bean id="DataEditModule" class="org.openedit.entermedia.modules.DataEditModule">
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -103,6 +100,8 @@
 	</bean>
 
 	<bean id="MediaAdminModule" class="org.openedit.entermedia.modules.MediaAdminModule">
+			<property name="workspaceManager"><ref bean="workspaceManager" /></property>
+	
 	</bean>
 
 
@@ -639,6 +638,7 @@
 		<property name="metaDataReader">
 			<ref bean="metaDataReader" />
 		</property>
+		<property name="includeCategories" value="true"/>
 	</bean>
 
 	<bean id="assetImporter" class="org.openedit.entermedia.scanner.AssetImporter"  singleton="false">
@@ -973,8 +973,10 @@
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="rootDirectory"><ref bean="root"/></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
 	</bean>
+	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
 	
 	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" singleton="false">
 		<property name="userManager"><ref bean="userManager"/></property>
@@ -1137,9 +1139,12 @@
 	</bean>
 	  
 	  <bean id="DataImportModule" class="org.openedit.entermedia.modules.DataImportModule">
-			<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>
+		<property name="workspaceManager"><ref bean="workspaceManager" /></property>
 		
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 	
 	
@@ -1381,6 +1386,10 @@
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="scriptName"><value>ffmpegimage</value></property>
 	</bean>
+	
+	
+	
+	
 	<bean id="GhostScriptImageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1393,6 +1402,8 @@
 		<list>
 			<ref bean="ffmpegimageCreator" />
 			<ref bean="exiftoolthumbCreator" />
+			<ref bean="oofficeDocumentCreator" />
+			
 		</list>
 	    </constructor-arg>
 	</bean>
@@ -1405,6 +1416,17 @@
 		<property name="scriptName"><value>imagemagick</value></property>
 		<property name="preProcessors"><ref bean="imagePreProcessors" /></property>
 	</bean>
+	
+	<bean id="oofficeDocumentCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+		<property name="scriptManager"><ref bean="scriptManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="scriptName"><value>oofficeDocument</value></property>
+	</bean>
+	
+	
+	
 	<bean id="LameMp3Creator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1431,12 +1453,23 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="userManager"><ref bean="userManager" /></property>
 	</bean>
-		<bean id="pushrequestSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="pushrequestSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>assets</value></property>
 	</bean>
+	<bean id="workspaceManager" class="org.entermedia.workspace.WorkspaceManager">
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+	
+	<bean id="workspaceExportGenerator" class="org.openedit.entermedia.generators.WorkspaceExportGenerator">
+		<property name="workspaceManager"><ref bean="workspaceManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+	</bean>
+
 	
 </beans>

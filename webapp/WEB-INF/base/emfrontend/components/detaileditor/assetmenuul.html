@@ -46,6 +46,7 @@
 		<ul id="assetmenu" class="sidebar-list">
 			#foreach( $link in $links)
 			#set( $pname = "can${link.id}")
+			
 			#set( $permission = false)
 			#set( $permission = "$!context.getPageValue($pname)")
 			#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
@@ -63,11 +64,11 @@
 			#set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
 			#set ($args = "path=$path&${args}")
 			#elseif ($link.id == "assetpermissions")
-			#set($args = "editPath=$apphome/assets/$sourcepath/_site.xconf&$args")
+			#set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
 			#end
 			
 			#if( !$ismulti || $inmultiok )
-			#set ($href = "$apphome/views/modules/assets/editor/${link.folder}/index.html")
+			#set ($href = "$apphome/views/modules/asset/editor/${link.folder}/index.html")
 			<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end">
 				<a href="$home$href?$args" #if($target) target="$target" #end > $context.getText($text)</a>
 			</li>

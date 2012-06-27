@@ -3,6 +3,7 @@ package org.openedit.events;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -133,28 +134,51 @@ public class PathEventManager
 		PathEvent event = getPathEvent(runpath);
 		if (event != null)
 		{ 
-			String name = event.getName();
-			List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
-			for (Iterator iterator = copy.iterator(); iterator.hasNext();)
+			TaskRunner runner = null;
+			synchronized (event)
 			{
-				TaskRunner task = (TaskRunner) iterator.next();
-				if( name.equals( task.getTask().getName() ) && !task.isWithParameters() )
+				String name = event.getName();
+				Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
+				List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
+				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 				{
-					//We already have one in the timmer without parameters. Just return
-					//TODO: If it is far in the future then add it back into the scheduler for now
-					return false;
+					TaskRunner task = (TaskRunner) iterator.next();
+					if( name.equals( task.getTask().getName() ) )
+					{
+						if( task.getTask().isRunning() ) //Keep only one not running at a time
+						{
+							//We will add a duplicate below
+						}
+						else
+						{
+							if( task.getTimeToStart().before(soon))
+							{
+								return true;
+							}
+						}
+					}
 				}
-			}
-			TaskRunner runner = new TaskRunner(event, event.getDelay(), this);
-			if( event.getDelay() == 0 )
-			{
+			//	log.info("added " + event.getPage() );
+				runner = new TaskRunner(event, this);
+				runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
+				runner.setTimeToStart(new Date());
+	//			if( event.getDelay() == 0 )
+	//			{
+	//				getRunningTasks().push(runner);
+	//				runner.run(); //this will remove it again
+	//			}
+	//			else
+	//			{
+					//schedule(event, runner);
 				getRunningTasks().push(runner);
-				runner.run(); //this will remove it again
 			}
-			else
+			if( runner != null )
 			{
-				schedule(event, runner);
+				getTimer().schedule(runner,0);
 			}
+//			}
+
+
 			return true;
 		}
 		else
@@ -192,20 +216,20 @@ public class PathEventManager
 		}
 		PathEvent event = getPathEvent(runpath);
 		inReq.putPageValue("ranevent", event);
-		String force = inReq.getRequestParameter("forcerun");
+//		String force = inReq.getRequestParameter("forcerun");
 				
 		if (event != null)
 		{ 
-			TaskRunner runner = new TaskRunner(event, event.getDelay(), inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
-			if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
-			{
+//			if( Boolean.parseBoolean(force) || event.getDelay() == 0 )
+			TaskRunner runner = new TaskRunner(event, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
+//			{
 				getRunningTasks().push(runner);
 				runner.run(); //this will remove it again
-			}
-			else
-			{
-				schedule(event, runner);
-			}
+//			}
+//			else
+//			{
+//				schedule(event, runner);
+//			}
 			return true;
 		}
 		else
@@ -231,14 +255,14 @@ public class PathEventManager
 		getRunningTasks().push(runner);
 		try
 		{
-			getTimer().schedule(runner,event.getDelay()); 
+			getTimer().schedule(runner,event.getPeriod()); 
 		} 
 		catch (Exception e)
 		{
 			fieldTimer = null;
 			getRunningTasks().clear();
 			getRunningTasks().push(runner);
-			getTimer().schedule(runner,event.getDelay());
+			getTimer().schedule(runner,event.getPeriod() );
 			//to fix  java.lang.IllegalStateException: Timer already cancelled.
 		}
 	}
@@ -351,10 +375,10 @@ public class PathEventManager
 		{
 			if (inTask.getPeriod() > 0)
 			{
-				TaskRunner runner = new TaskRunner(inTask, inTask.getDelay(), this);
+				TaskRunner runner = new TaskRunner(inTask, this);
 				//runner.setRepeating(true);
 				getRunningTasks().push(runner);
-				getTimer().schedule(runner, inTask.getDelay());
+				getTimer().schedule(runner, inTask.getPeriod());
 			}
 		}
 	}
@@ -370,6 +394,7 @@ public class PathEventManager
 	protected void loadPathEvents()
 	{
 		clear();
+		//getPageManager().clearCache();
 		String root = "/" + getCatalogId() + "/events";
 		Set duplicates = new HashSet();
 		loadPathEvents(root, duplicates);

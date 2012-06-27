@@ -1,6 +1,5 @@
 package org.openedit.entermedia.scanner;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,8 +12,6 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.util.FileUtils;
-import com.openedit.util.OutputFiller;
-import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 
 public class MetadataPdfExtractor extends MetadataExtractor

@@ -6,7 +6,7 @@
 	<div style="padding-top:30px;">
 	#if($canviewsettings)
 		<span style="color:red;">Conversion Error</span><br/>
-		<a class="btn small" href="$home$apphome/views/modules/assets/editor/converthistory/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
+		<a class="btn small" href="$home$apphome/views/modules/asset/editor/converthistory/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
 	#else
 		<span style="color:red;">Conversion Error</span><br/>
 		<span>Please contact your administrator.</span>
@@ -14,7 +14,7 @@
 	</div>
 #elseif($publisherrors && $publisherrors.size() >0)
 	<span style="color:red;">Publish Error</span>
-	<a class="btn small" href="$home$apphome/views/modules/assets/editor/historyexports/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
+	<a class="btn small" href="$home$apphome/views/modules/asset/editor/historyexports/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
 	
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
 	$pages.include("$apphome/components/mediaviewer/player/player.html",$context)

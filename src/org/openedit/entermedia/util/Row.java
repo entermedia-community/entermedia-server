@@ -52,4 +52,14 @@ public class Row
 		}
 		return rem;
 	}
+	public void set(String inName, String inValue)
+	{
+		int index = getHeader().getIndex(inName);
+		if ( index == -1)
+		{
+			return;
+		}
+		getData()[index] = inValue;
+
+	}
 }

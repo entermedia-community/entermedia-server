@@ -1,4 +1,5 @@
 <page>
 <path-action name="DataEditModule.search"/>
 <page-action name="ProfileModule.saveProperties"/>
+<property name="tab">profile</property>
 </page>

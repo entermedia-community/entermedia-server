@@ -1,3 +1,5 @@
+#set( $module = $context.findValue("module") )
+
     
 #if ( $hits.totalPages == 0 )
 $pages.stream("/${content.searchhome}/empty.html", $context)	
@@ -6,23 +8,32 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 
 
-#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("$content.searchtype/resultdetail", $user))
-#set( $resultdetail = $translations.filter($resultdetail, $context) )
+#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${module}/${module}resultstable", $user))
+
+
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set( $query = $viewsearcher.createSearchQuery().append("module",$module) )
+$!query.addSortBy("ordering")
+#set($views = $viewsearcher.search($query))
+
+#set ( $viewpath = $views.first() )
+
+##set ( $canedit = $context.getPageValue("${module}edit") )
 
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 <input type="hidden" name="hitsname" value="hits"/>
 
 <div class="tablecontainer">
 
-
-<table class="emdata striped" id="main-asset-table">
+<div class="editholder" style="margin-top: 0;">
+<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$module/metadata/viewssystem/index.html?viewid=${module}resultstable&viewpath=${module}/${module}resultstable">Edit</a>
+</div>
+<div id="emselectable">
+<table class="emdata striped" id="module-results-table">
 
 <thead>
 <tr class="tableheader" >
-<th></th>
-
-<th>
-</th>
+##<th></th>
 
 #foreach( $detail in $resultdetail )
 		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
@@ -41,18 +52,26 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 </tr>
 </thead>
 <tbody>
+    
+    
+    
     #set( $even = true )
 #set($count = 0)
 #foreach ( $cell in $hits.getPageOfHits() )
    $context.putPageValue('data', $cell)
     $context.putPageValue('cell', $cell)
     
-        <tr >
+     #set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}")
+     
+      
+        
+        <tr #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$viewpath.id&viewpath=$module/$viewpath.id&hitssessionid=${hits.sessionId}" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}" #end >
   
     
-    #set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}")
+   
     
 #if($content.isPropertyTrue("showactions"))
+<!--
 <td align="center">
 
 
@@ -61,13 +80,14 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <div id="check_${count}">
 </div>
 
-<!--
+
 <input type="checkbox" name="count" value="$!hits.indexOf(${count})" #if($hits.isSelectedOnPage(${count})) checked #end />
 <input type="hidden" name="origURL" value="$url_util.requestPathWithArgumentsNoContext()" />
--->
+
 </td>
+-->
 #end
-<td>$pages.include("/${content.searchhome}/link.html", $context)</td>
+##<td style="width:30px; text-align: center;">$pages.include("/${content.searchhome}/link.html", $context)</td>
 
 #foreach( $detail in $resultdetail )
 
@@ -91,14 +111,14 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 #end
 </tbody>
 </table>
-
+</div>
 #if($content.isPropertyTrue("showactions"))
-<div align="left" id="messagearea">$pages.include("/${content.searchhome}/selections/togglepage.html")</div>
+## <div align="left" id="messagearea">$pages.include("/${content.searchhome}/selections/togglepage.html")</div>
 #end
 
    <div id="navigationrow">
 
-$pages.stream("/${content.searchhome}/navigate.html", $context)		
+ $pages.stream("/${content.searchhome}/navigate.html", $context)		
 </div>
 
 </div></div>
@@ -111,4 +131,4 @@ $pages.stream("/${content.searchhome}/navigate.html", $context)
 
 #end
 
-$pages.include("/${content.searchhome}/actions.html", $context)
+## $pages.include("/${content.searchhome}/actions.html", $context)

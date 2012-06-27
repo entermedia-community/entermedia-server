@@ -15,10 +15,7 @@ package org.openedit.data.lucene;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.openedit.Data;
 
 import com.openedit.OpenEditRuntimeException;
 
@@ -30,61 +27,27 @@ import com.openedit.OpenEditRuntimeException;
  */
 public class HitIterator implements Iterator
 {
-	protected TopDocs fieldHits;
-	protected IndexSearcher fieldIndexSearcher;
+	LuceneHitTracker fieldLuceneHitTracker;
+	int hitCount = 0;
 	
-	public IndexSearcher getIndexSearcher()
+	public LuceneHitTracker getLuceneHitTracker()
 	{
-		return fieldIndexSearcher;
+		return fieldLuceneHitTracker;
 	}
 
-	public void setIndexSearcher(IndexSearcher inIndexSearcher)
+	public void setLuceneHitTracker(LuceneHitTracker inLuceneHitTracker)
 	{
-		fieldIndexSearcher = inIndexSearcher;
+		fieldLuceneHitTracker = inLuceneHitTracker;
 	}
 
-	protected int hitCount = 0;
-	protected int startOffset = 0;
-
-	public HitIterator(IndexSearcher inSearcher, TopDocs inHits)
+	public HitIterator(LuceneHitTracker inTracker)
 	{
-		setIndexSearcher(inSearcher);
-		setHits(inHits);
+		setLuceneHitTracker(inTracker);
 	}
-
-	public HitIterator()
-	{
-	}
-	public void setStartOffset( int inStart)
-	{
-		startOffset = inStart;
-	}
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param inHits
-	 */
-	public void setHits(TopDocs inHits)
-	{
-		fieldHits = inHits;
-	}
-
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @return
-	 */
-	public TopDocs getHits()
-	{
-		return fieldHits;
-	}
-
-	/**
-	 * @see java.util.Iterator#hasNext()
-	 */
+	
 	public boolean hasNext()
 	{
-		if (hitCount < getHits().totalHits)
+		if (hitCount < getLuceneHitTracker().size() )
 		{
 			return true;
 		}
@@ -99,23 +62,9 @@ public class HitIterator implements Iterator
 	 */
 	public Object next()
 	{
-		try
-		
-		{
-			
-			
-			ScoreDoc sdoc  = getHits().scoreDocs[startOffset + hitCount];
-			
-			
-			Document doc = getIndexSearcher().doc(sdoc.doc);
-			DocumentData data = new DocumentData(doc);
-			hitCount++;
-			return data;
-		}
-		catch (IOException ex)
-		{
-			throw new OpenEditRuntimeException(ex);
-		}
+		Data data = getLuceneHitTracker().get(hitCount);
+		hitCount++;
+		return data;
 	}
 
 	/**

@@ -16,6 +16,7 @@ import org.apache.lucene.index.Term;
 import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.lucene.BaseLuceneSearcher;
+import org.openedit.entermedia.SourcePathCreator;
 import org.openedit.repository.ContentItem;
 import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
@@ -39,6 +40,16 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	protected IntCounter fieldIntCounter;
 	protected PageManager fieldPageManager;
 	protected String fieldPrefix;
+	protected SourcePathCreator fieldSourcePathCreator;
+	
+	public SourcePathCreator getSourcePathCreator()
+	{
+		return fieldSourcePathCreator;
+	}
+	public void setSourcePathCreator(SourcePathCreator inSourcePathCreator)
+	{
+		fieldSourcePathCreator = inSourcePathCreator;
+	}
 	protected XmlDataArchive getXmlDataArchive()
 	{
 		if (fieldXmlDataArchive == null)
@@ -116,11 +127,16 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			if(data.getId() == null)
 			{
 				data.setId(nextId());
-			}			
+			}
+			if( data.getSourcePath() == null)
+			{
+				String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
+				data.setSourcePath(sourcepath);
+			}
 		}
 		getXmlDataArchive().saveAllData(inAll, inUser);
 		updateIndex(inAll);
-		getLiveSearcher(); //should flush the index
+		//getLiveSearcher(); //should flush the index
 	}
 
 	public void updateIndex(IndexWriter inWriter, Data inData) throws OpenEditException
@@ -158,11 +174,12 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	protected void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
 	{
-		super.updateIndex(inData, doc, inDetails);
-		if( inData.getSourcePath() == null)
+		if( inData.getSourcePath() == null )
 		{
-			throw new OpenEditException("XmlFile searcher requires sourcepath be set " + inData.getProperties());
+			throw new OpenEditException("Cant save data without a sourcepath parameter");
 		}
+
+		super.updateIndex(inData, doc, inDetails);
 		doc.add(new Field("sourcepath", inData.getSourcePath(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 	}
 
@@ -174,17 +191,17 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			return;
 		}
 		Data data = (Data) inData;
-		if( data.getSourcePath() == null )
-		{
-			throw new OpenEditException("Cant save data without a sourcepath parameter");
-		}
 		if(data.getId() == null)
 		{
 			data.setId(nextId());
 		}
-		
-		updateIndex(data);
+		if( data.getSourcePath() == null)
+		{
+			String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
+			data.setSourcePath(sourcepath);
+		}
 		getXmlDataArchive().saveData(data,inUser);
+		updateIndex(data);
 	}
 
 	protected IntCounter getIntCounter()
@@ -290,12 +307,21 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	public void deleteAll(User inUser)
 	{
-		HitTracker all = getAllHits();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		PathProcessor processor = new PathProcessor()
 		{
-			Data object = (Data)iterator.next();
-			getXmlDataArchive().delete(object,inUser);
-		}
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				if (inContent.getName().equals(getDataFileName()))
+				{
+					getPageManager().getRepository().remove(inContent);
+				}
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(getPathToData());
+		processor.setPageManager(getPageManager());
+		processor.setIncludeExtensions("xml");
+		processor.process();
 		reIndexAll();
 	}
 	
@@ -303,7 +329,12 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		if(fieldPrefix == null)
 		{
-			fieldPrefix = getPageManager().getPage("/" + getCatalogId()).get("defaultdatafolder");
+			fieldPrefix = getPropertyDetails().getPrefix();
+			if( fieldPrefix == null )
+			{
+				//TODO: Remove this
+				fieldPrefix = getPageManager().getPage("/" + getCatalogId()).get("defaultdatafolder");
+			}
 			if( fieldPrefix == null)
 			{
 				fieldPrefix = getSearchType();

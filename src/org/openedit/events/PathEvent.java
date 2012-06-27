@@ -288,12 +288,16 @@ public class PathEvent implements Comparable
 		try
 		{
 			logs = new ScriptLogger();
-			logs.startCapture();
 			//thread.setContextClassLoader(getClassLoader());
 			Page page = request.getPage();
+			logs.setPrefix(page.getName());
+			logs.startCapture();
 			try
 			{
-				log.info("running " + page.getPath());
+				if( log.isDebugEnabled() )
+				{
+					log.info("running " + page.getPath());
+				}
 
 				WebEvent event = (WebEvent)request.getPageValue("webevent");
 				request.setWriter(output);

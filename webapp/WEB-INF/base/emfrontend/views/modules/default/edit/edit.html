@@ -1,32 +1,46 @@
-<h2>Edit</h2>
-
-<div id="editlayout">
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set( $categoryid = $context.getRequestParameter("categoryid" ) )
-
-#if( !$view )				
-	#set( $view = "${searcher.searchType}/edit" )
-#end
-$context.putPageValue("view", $view)
-
-<form id="dataeditor" name="dataeditor" method="post"  action="$home$content.searchhome/edit/save.html" >
-	<input name="save" type="hidden" value="true" />
-	<input name="id" type="hidden" value="$!data.id" />
-	<input name="categoryid" type="hidden" value="$!categoryid" />
-	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
-	<input name="searchtype" type="hidden" value="$searcher.searchType" />
-	<input name="origURL"  type="hidden" value="$!origURL" />
-	
-		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-
-<input type="submit" value="Save" />
-<div id="messagearea">$!message
-</div>
-</form>
-
-#if( $savedok && $origURL )
-	<a href="$origURL">[[Go Back]]</a>	
+#set($viewid = $context.getRequestParameter("viewid"))
+#set($viewpath = $context.getRequestParameter("viewpath"))
+#if(!$hits)
+        #set($hitsname = $context.getRequestParameter('hitsname'))
+        #set($hits = $context.getPageValue($hitsname))
 #end
 
 
+#if(!$hits)
+        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
+        #if($hitssessionid)
+            #set($hits = $context.getSessionValue($hitssessionid))
+        #end
+#end
+#if(!$hits)
+#set($hits = $context.getPageValue($content.hitsname))
+#end
+
+$context.putPageValue("hits", $hits)
+#set( $moduleid = $context.findValue("module") )
+
+$pages.include("/$applicationid/views/modules/${moduleid}/edit/actions.html", $context)
+$pages.include("/$applicationid/views/modules/${moduleid}/edit/header.html", $context)
+
+<div id="default-fields">
+        
+    <div id="editlayout">
+    <form id="dataeditor" name="dataeditor" method="post"  action="$home$content.searchhome/edit/save.html" >
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!data.id" />
+    	<input name="categoryid" type="hidden" value="$!categoryid" />
+    	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+    	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+    	<input name="viewid" type="hidden" value="$viewid" />
+    	<input name="viewpath" type="hidden" value="$viewpath" />
+    	<input name="origURL"  type="hidden" value="$!origURL" />
+    	
+    		$pages.include("/$applicationid/views/modules/${moduleid}/edit/editarea.html", $context)
+    <a class="btn red" style="margin: 20px 0 0 20px; color: #fff;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath" style="margin: 20px 20px 0 0;">Delete</a>
+    <input class="btn right" style="margin: 20px 20px 0 0;" type="submit" value="Save" />
+    </form>
+    
+    
+    
+    </div>
 </div>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="asset" modules="asset contact">Asset</property>
+  <property id="approvals" modules="asset contact">Approvals</property>
+  <property id="assettype" modules="asset contact">Approvals</property>
+  <property id="attachment" modules="asset contact">Approvals</property>
+  <property id="category" modules="asset contact">Approvals</property>
+  <property id="conversiontask" modules="asset contact">Approvals</property>
+  <property id="convertpreset" modules="asset contact">Approvals</property>
+  <property id="email" modules="asset contact">Approvals</property>
+  <property id="hotfolder" modules="asset contact">Approvals</property>
+  <property id="ffmpeg" modules="asset contact">Approvals</property>
+  <property id="imagemagick" modules="asset contact">Approvals</property>
+  <property id="library" modules="asset contact">Approvals</property>
+  <property id="librarygroups" modules="asset contact">Approvals</property>
+  <property id="libraryroles" modules="asset contact">Approvals</property>
+  <property id="libraryusers" modules="asset contact">Approvals</property>
+  <property id="lock" modules="asset contact">Approvals</property>
+  <property id="mediatype" modules="asset contact">Approvals</property>
+  <property id="message" modules="asset contact">Approvals</property>
+  <property id="module" modules="asset contact">Approvals</property>
+  <property id="order" modules="asset contact">Approvals</property>
+  <property id="orderhistory" modules="asset contact">Approvals</property>
+  <property id="orderitem" modules="asset contact">Approvals</property>
+  <property id="permission" modules="asset contact">Approvals</property>
+  <property id="permissionchild" modules="asset contact">Approvals</property>
+  <property id="ffmpeg" modules="asset contact">Approvals</property>
+ 
+</properties>

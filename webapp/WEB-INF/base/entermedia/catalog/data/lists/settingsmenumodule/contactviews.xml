@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-	
-  <property id="editing"  type="toplevel" module="contact" ordering="100" path="/views/settings/modules/contact/views/index.html" >Views</property>
-
-</properties>

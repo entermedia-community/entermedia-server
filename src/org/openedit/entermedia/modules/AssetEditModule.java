@@ -933,8 +933,16 @@ public class AssetEditModule extends BaseMediaModule
 			asset.setId(archive.getAssetSearcher().nextAssetNumber());
 			String startpart = PathUtilities.extractPagePath(assetsourcepath);
 			startpart = startpart + "_" + asset.getId();
+			String type = PathUtilities.extractPageType(assetsourcepath);
+			if( type == null )
+			{
+				assetsourcepath = startpart;
+			}
+			else
+			{
+				assetsourcepath = startpart + "." + type;
+			}
 			
-			assetsourcepath = startpart + "." + PathUtilities.extractPageType(assetsourcepath); 
 		}
 		asset.setSourcePath(assetsourcepath);
 

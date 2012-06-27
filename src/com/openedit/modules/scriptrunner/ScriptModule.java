@@ -18,7 +18,13 @@ See the GNU Lesser General Public License for more details.
  */
 package com.openedit.modules.scriptrunner;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -175,6 +181,54 @@ public class ScriptModule extends BaseModule implements PageRequestKeys
 	}
 
 
+	public List listScripts(WebPageRequest inReq) throws Exception
+	{
+		String scriptroot = inReq.findValue("scriptroot");
+		List pages = new ArrayList();
+		Set dups = new HashSet();
+		findScripts(scriptroot,scriptroot, pages, dups);
+		Collections.sort(pages);
+		inReq.putPageValue("scripts", pages);
+		return pages;
+	}
+
+	protected void findScripts(String scriptroot, String inPath,  List pages, Set dups)
+	{
+		List scripts = getPageManager().getChildrenPaths(inPath + "/", true);
+		for (Iterator iterator = scripts.iterator(); iterator.hasNext();)
+		{
+			String path = (String) iterator.next();
+			if (!path.endsWith(".xconf"))
+			{
+				Page page = getPageManager().getPage(inPath + "/" + PathUtilities.extractFileName(path),true);
+				if( page.isFolder() || !page.exists()  )
+				{
+					findScripts( scriptroot,page.getPath(),pages, dups);
+				}
+				else
+				{
+					//findScripts(scriptroot, pages, dups, path, page);
+					if( !dups.contains( page.getPath() ) )
+					{
+						pages.add(page);
+						dups.add(page.getPath());
+					}
+					
+					
+				}
+			}
+		}
+	}
+
+	public void saveScript(WebPageRequest inReq) throws Exception
+	{
+		String scriptpath = inReq.findValue("scriptpath");
+		String code = inReq.findValue("scriptcode");
+
+		Page page = getPageManager().getPage(scriptpath);
+		getPageManager().saveContent(page, inReq.getUser(), code, "web edit");
+
+	}
 
 
 

@@ -151,16 +151,21 @@ public class XmlDataArchive implements DataArchive
 	protected void populateElementData(Element inElement, ElementData inData)
 	{
 		List attributes = inData.getAttributes();
+		boolean foundname = false;
 		for(Iterator iterator = attributes.iterator(); iterator.hasNext();)
 		{
 			Attribute attr = (Attribute)iterator.next();
 			String id = attr.getName();
 			if(!id.equals("id") && !id.startsWith("_"))
 			{
+				if( id.equals("name"))
+				{
+					foundname = true;
+				}
 				inElement.addAttribute(attr.getName(), attr.getValue());
 			}
 		}
-		if( inData.getName() != null)
+		if( !foundname && inData.getName() != null)
 		{
 			inElement.setText(inData.getName());
 		}

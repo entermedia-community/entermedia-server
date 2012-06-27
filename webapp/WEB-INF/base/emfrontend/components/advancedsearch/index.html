@@ -1,5 +1,6 @@
 <div id="advsearchpanel" >
 <div class="tanmodule" >
+
 #set( $view = "asset/advancedsearch")
 #set( $searcher = $mediaarchive.getAssetSearcher())
 
@@ -8,6 +9,8 @@ $context.putPageValue("searcher", $searcher)
 
 #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 $context.putPageValue("usestartswith",$usestartswith)
+$context.putPageValue("caneditlists","false")
+			
 
 #set( $edit = $context.getRequestParameter("editadvsearch"))
 #if( $edit)
@@ -32,7 +35,7 @@ $context.putPageValue("edit",$edit)
 			$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
 		#end
 	#end
-	<td><input class="btn small" type="submit" value="Search" />
+	<td class="submit"><input class="btn small" type="submit" value="Search" />
 	</td>
 	</tr>
 	
@@ -49,8 +52,6 @@ $context.putPageValue("edit",$edit)
 #if ($edit == "true")
 <br/><br/>
 ##TODO: Pass this view name in
-#set($views = $searcherManager.getList("$catalogid", "assetview"))
-
 #set ($alldetails = $searcher.getUserPropertyDetails() )
 
 <form id="searchaddfield" class="ajaxform" targetdiv="advsearchpanel" action="$home$apphome/components/advancedsearch/addfield.html" method="post">

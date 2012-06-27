@@ -1,0 +1,17 @@
+
+#set($viewid = $context.getRequestParameter("viewid"))
+#set($viewpath = $context.getRequestParameter("viewpath"))
+
+$context.putPageValue("view", $viewpath)
+
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+#set ( $moduleid = $context.findValue("module") )
+
+
+
+<div class="editholder">
+<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$module">Edit</a>
+</div>
+
+
+$pages.include("/$applicationid/components/xml/detaileditor.html", $context)

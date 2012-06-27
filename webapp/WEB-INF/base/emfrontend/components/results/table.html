@@ -1,5 +1,5 @@
 <div id="emresultscontent" >
-
+#set( $moduleid = $context.findValue("module") )
 $context.putPageValue("showtoolbar", $page.isPropertyTrue("showtoolbar") )
 $context.putPageValue("thumbsize", $page.isPropertyTrue("thumbsize"))
 $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
@@ -25,11 +25,18 @@ $context.putPageValue("thumbsize", $thumbsize)
 	#end
 
 #if ( $hits && $hits.size() > 0 )
-	#if($userprofile) 
-		#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$userprofile) )
+	
+	$context.putPageValue("details",$details)
+	
+	#if ($moduleid == "asset")
+	   #if($userprofile) 
+           #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$userprofile) )
+       #else
+           #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable") ) 
+       #end    
 	#else
-		#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable") )	
-	#end	
+	#set( $details = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${moduleid}/${moduleid}resultstable", $user))
+	#end
 	$context.putPageValue("details",$details)
 	
 <div id="emselectable">	
