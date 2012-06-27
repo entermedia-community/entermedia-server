@@ -43,7 +43,7 @@
 	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window."/>
 	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool."/>
 	<permission id="metadatadetails" permissiontype="view" name="Metadata" description="Enables view-only access to asset metadata."/>
-	<permission id="viewpasswordhelper" permissiontype="view" name="Password Helper" description="Enables a tool that sends a user a lost or forgotten password."/>
+	<permission id="viewmyaccount" permissiontype="view" name="My Account Area" description="Enables a page that edit user data and updates passwords."/>
 	<permission id="viewrecentsearches" permissiontype="view" name="Previous Searches" description="Enables access to past searches."/>
 	<permission id="quicksearch" permissiontype="view" name="Quick Search" description="Enables a general search bar in the top navigation bar."/>
   	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />

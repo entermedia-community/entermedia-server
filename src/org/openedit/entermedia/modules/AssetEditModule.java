@@ -1178,7 +1178,10 @@ public class AssetEditModule extends BaseMediaModule
 		Page page = getPageManager().getPage(path);
 		return page;
 	}
-
+	/**
+	 * @deprecated use Import Hot Folder script?
+	 * @param inReq
+	 */
 	public void importFromOriginals(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

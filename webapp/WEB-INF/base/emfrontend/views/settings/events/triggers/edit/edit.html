@@ -9,6 +9,8 @@
 <tr><td>Period:</td><td><input type="text" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
 <tr><td>Delay:</td><td><input type="text" size="4" name="delay" value="$!pathevent.getFormattedDelay()"/></td></tr>
 <tr><td>Enabled:</td><td><input name="enabled"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/></td></tr>
+<tr><td>Event URL:</td><td>$pathevent.getPage().getPath()</td></tr>
+ 	
 </table>
 
 <input class="btn" type="submit" value="[[Save]]"/>
@@ -23,19 +25,16 @@
 
 <br>
 
-<p>	<b>Run Path: </b> 
- $pathevent.getPage().getPath()
+<p> 
+ <a class="btn ajax" targetdivinner="status" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
 </p>
-	<a class="thickbox btn" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()">[[Run Now]]</a>
 
 
+<a class="btn" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=$pathevent.getPage().getPath()">Refresh</a>
+<div  id="status" class="edit-permissions">
 
-<div class="edit-permissions">
-
-#if ( $pathevent.getLastRunTime() > 0 )
-<b>$!pathevent.getFormattedLastRun()
-[[Ran in]] $pathevent.getLastRunTime() [[seconds.]]
-</b>
+#if ( $pathevent.getFormattedLastRun()  )
+<b>Started on: </b> $pathevent.getFormattedLastRun()
 #end 
 
 <p>

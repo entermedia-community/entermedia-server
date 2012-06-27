@@ -20,8 +20,8 @@
 	
 	<li class="header no-sort" id="views-header" style="height: 16px;">
 	    <span id="name">$view</span>
-	    #if ( $renderastable )
-	    <span class="type">Table: stats</span>
+	    #if ( $view.rendertable )
+	    <span class="type">Table: $view.rendertable</span>
 	    #end
 	    
 	    #set ( $systemdefined = "false" )
@@ -52,19 +52,22 @@
 	    
 	    <div class="inner clearfix">
 	    
-        <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewpath=$viewpath&save=true&searchtype=view">
+        <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
             <input type="hidden" name="field" value="name" />
             <div>View Name</div>
-            <input class="field" name="name.value" value="$view" >
+            <input class="field" name="name.value" value="$view.name" >
             <div class="checkbox"><input id="renderastable" type="checkbox" />
                 Render as Table?
             </div>
-            <div id="rendertableoptions" #if ($!renderastable) style="display: none;" #end>
+            <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
                 <div>Render Table</div>
-                <input class="field" name="rendertable.value" value="$rendertable" >
+            	<input type="hidden" value="rendertable" name="field" />
+                <input class="field" name="rendertable.value" value="$!view.rendertable" >
                 <div>Render Table External ID</div>
-                <input class="field" name="rendertableexternalid.value" value="$rendertableexternalid" >
+            	<input type="hidden" value="renderexternalid" name="field" />
+                <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
             </div>
+            
             <div class="hr" style="margin: 5px 0 0 0"></div>
             <input class="btn right" style="margin-top: 10px;" type="submit" value="Save" />
         </form>
