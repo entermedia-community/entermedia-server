@@ -18,48 +18,86 @@
 
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
 	
-	<li class="header no-sort" style="height: 16px;">
-	    <span id="name">$view</span> 
+	<li class="header no-sort" id="views-header" style="height: 16px;">
+	    <span id="name">$view</span>
+	    #if ( $renderastable )
+	    <span class="type">Table: stats</span>
+	    #end
 	    
 	    #set ( $systemdefined = "false" )
         #set ( $systemdefined = $context.findValue("systemdefined") )
-	    
-	    #if ( $systemdefined == "false" )
-	    <a id="editname" style="color: #fff; opacity: 0.75; font-size: 10px; margin-left: 5px; cursor: pointer;">Edit Name</a>
+	#if ( $systemdefined == "false" )
+	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view Settings</a>
+	   #if($view.byassettype == "true" )
+    
+    
+            
+            <span style="float: right; margin: 0 8px 0 0">[[Asset Type]]: 
+            #set($current = $context.getRequestParameter("assettype")) 
+            #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
+            
+            <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
+                    <option value="default" >Default</option>
+                        #foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
+                            <option #if($current == $item.id) selected #end value="$item.id">$item</option>
+                        #end
+                    </select> 
+            </span>
+         #end
 	
-	    <form style="display: none; float: left; margin-top: -1px;" id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewpath=$viewpath&save=true&searchtype=view">
-	    	<input type="hidden" name="field" value="name" />
-             <input class="field" style="margin:-6px 0; padding: 4px 5px; border-radius: 3px; border: 1px solid #15566B; width: 200px; font-size: 12px;" name="name.value" value="$view" >
-            <input class="btn" style="margin: -6px 0 -6px 3px; position: relative; top: -1px; padding: 4px 8px 5px 8px" type="submit" value="Save" />
+    #end
+	</span>
+	#if ( $systemdefined == "false" )
+	<div id="views-settings" style="display: none;">
+	    
+	    <div class="inner clearfix">
+	    
+        <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewpath=$viewpath&save=true&searchtype=view">
+            <input type="hidden" name="field" value="name" />
+            <div>View Name</div>
+            <input class="field" name="name.value" value="$view" >
+            <div class="checkbox"><input id="renderastable" type="checkbox" />
+                Render as Table?
+            </div>
+            <div id="rendertableoptions" #if ($!renderastable) style="display: none;" #end>
+                <div>Render Table</div>
+                <input class="field" name="rendertable.value" value="$rendertable" >
+                <div>Render Table External ID</div>
+                <input class="field" name="rendertableexternalid.value" value="$rendertableexternalid" >
+            </div>
+            <div class="hr" style="margin: 5px 0 0 0"></div>
+            <input class="btn right" style="margin-top: 10px;" type="submit" value="Save" />
         </form>
         
-       
+	   
+	    </div>
+    </div>
+    #end
+    <script>
+        $('#setup-view').click(function(){
+            if ( $('#setup-view').hasClass('open') ) {
+                $('#views-header').height(16)
+                $('#views-settings').hide();
+                $('#setup-view').removeClass('open');
+            }
+            else {
+                $('#views-header').height('auto')
+                $('#views-settings').show();
+                $('#setup-view').addClass('open'); 
+            }
+        })
+        $('#renderastable').click(function(){
+            if ( $('#renderastable').is(':checked') ) {
+                $('#rendertableoptions').show();
+            }
+            else {
+                $('#rendertableoptions').hide();
+            }
+        })
         
-        <script>
-            $('#editname').click(function(){
-                $('#name').hide();
-                $('#changename').show();
-                $('#editname').hide();
-            })
-            
-        </script>
-	     #end
-	#if($view.byassettype == "true" )
+    </script>
 	
 	
-	
-	<span style="float: right;">[[Asset Type]]: 
-	#set($current = $context.getRequestParameter("assettype")) 
-	#set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
-	
-	<select style="margin: 0 0 20px 0;" id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
-			<option value="default" >Default</option>
-				#foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
-					<option #if($current == $item.id) selected #end value="$item.id">$item</option>
-				#end
-			</select>
-	#end	
-	</span>
 	</li>
 				
 	<li class="no-sort add-to">
