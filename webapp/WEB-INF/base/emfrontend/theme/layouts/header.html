@@ -6,7 +6,9 @@ $pages.include("$apphome/views/content/logo.html")
 </td>
 <td>
 <div id="emtopmenu">
+#if( $canviewhomelink )
 	<a href="$home$apphome/index.html">Home</a> |
+#end	
 #if( $user )
 <a href="$home$apphome/users/$!{user.getId()}/index.html">$!user.getScreenName()</a> | <a href="$home$apphome/authentication/logout.html">Logout</a>
 #if( $canviewsettings )

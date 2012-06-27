@@ -46,6 +46,11 @@
 	<permission name="view">
 		<user/>
 	</permission>
+
+	<permission name="viewhomelink">
+		<userprofile property="viewhomelink" equals="true" />
+	</permission>
+
 		
   	<permission name="viewupload">
 			<userprofile property="viewupload" equals="true" />
@@ -252,6 +257,9 @@
   
   <permission name="viewrecentsearches">
      <userprofile property="viewrecentsearches" equals="true" />
+  </permission>
+  <permission name="viewmyaccount">
+     <userprofile property="viewmyaccount" equals="true" />
   </permission>
   
   <permission name="savesearch">

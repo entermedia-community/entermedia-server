@@ -78,7 +78,7 @@ public class imagemagickCreator extends BaseImageCreator
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 
-		if( inStructions.getMaxScaledSize() != null && offset == null && inStructions.getPageNumber() == 0)
+		if( inStructions.getMaxScaledSize() != null && offset == null && inStructions.getPageNumber() < 2) //page numbers are 1 based
 		{
 			Dimension box = inStructions.getMaxScaledSize();
 			if( input == null &&  box.getWidth() < 300 )
@@ -384,7 +384,8 @@ public class imagemagickCreator extends BaseImageCreator
 			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 			
 			//See if this was a onimport one, for now this means  the thumbs are probably done
-			if( inAsset.get("previewstatus") != "generated")
+			//Dont save virtual assets
+			if( inAsset.getId() != null &&  inAsset.get("previewstatus") != "generated")
 			{
 				inAsset.setProperty("previewstatus", "generated");
 				inArchive.saveAsset( inAsset, null );

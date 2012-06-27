@@ -17,10 +17,13 @@
 	$context.putPageValue("hit",$hit)
 	$pages.include("$apphome/components/results/thumbnails/small.html",$context)		
 
+
 #elseif($conversionsremaining && $conversionsremaining.size()  > 0)
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-		<div class="uiinfo">Creating Proxy Step ${conversionsremaining.size()}/${conversions.size()}</div> 
-		<img 	src='$home$themeprefix/images/ajax-loader.gif'/>
+		#set( $remaining = $conversions.size() - $conversionsremaining.size() )
+		#set( $totalcount = $conversions.size() + 2 )
+		#set( $total = 110 * $mathutil.getPercentage($remaining , $totalcount))
+		<div class="uiinfo  tooltip" title="Converting"><div style="height:5px; width:${total}px; background-color: #433321;" ></div></div> 
 	</div>
 #elseif($publish && $publish.size() >0 )
 	<div id="status$hit.id"  class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
@@ -28,12 +31,17 @@
 	<img src='$home$themeprefix/images/ajax-loader.gif'/></div>
 #elseif($conversions && $conversions.size() == 0)
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-		<div  class="uiinfo">Adding to Queue</div> 
+		#set( $remaining = $conversions.size() - $conversionsremaining.size() + 1 )
+		#set( $totalcount = $conversions.size() + 2 )
+		#set( $total = 110 * $mathutil.getPercentage($remaining , $totalcount))
+		<div class="uiinfo tooltip" title="Adding to Queue" ><div style="height:5px; width:${total}px; background-color: #433321;" ></div></div> 
 		<img src='$home$themeprefix/images/ajax-loader.gif'/>
 	</div>
 #else
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-		<div class="uiinfo">Completing</div> 
-		<img 	src='$home$themeprefix/images/ajax-loader.gif'/>
+		#set( $remaining = $conversions.size() - $conversionsremaining.size() +  2 )
+		#set( $totalcount = $conversions.size() + 2 )
+		#set( $total = 110 * $mathutil.getPercentage($remaining , $totalcount))
+		<div class="uiinfo tooltip" title="Completing" ><div style="height:5px; width:${total}px; background-color: #433321;" ></div></div> 
 	</div>
 #end

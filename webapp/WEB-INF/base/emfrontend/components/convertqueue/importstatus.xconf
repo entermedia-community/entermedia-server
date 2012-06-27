@@ -3,6 +3,7 @@
 	<page-action name="Script.run">
 		<script>/${catalogid}/events/scripts/assets/loadassetstatus.groovy</script>
 	</page-action>
+	<page-action name="PageValue.loadPageVariable" bean="mathutil" class="org.openedit.entermedia.util.MathUtils" />	
 	
 	<inner-layout />
 </page>
