@@ -1,54 +1,49 @@
-#set( $view = $context.getRequestParameter("view"))
+
 #set ($searchtype = $context.getRequestParameter("searchtype"))
 #set ($catalogid = $context.getRequestParameter("catalogid"))
-#set ($assetid = $context.getRequestParameter("assetid"))
+#set ($parentid = $context.getRequestParameter("parentid"))
 #set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+#set( $edit  = $context.getRequestParameter("edit"))
+#set( $candelete = "true")
+
+#set($viewid = $context.getRequestParameter("viewid"))
+#set($viewpath = $context.getRequestParameter("viewpath"))
+
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
 	#set( $editpath = "${page.directory}/generictablesave.html" )
 #end
 #set($link = $context.getRequestParameter("selectlink"))
-
-#set( $args = "editpath=$editpath&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&view=$view&assetid=$assetid&permissionname=$!permissionname&hitssessionid=$!hitssessionid")
-#set ($passalong = "assetid=$assetid&hitssessionid=$!hitssessionid&selectlink=$!link")
+#if( !$link )
+	#set( $link = "${page.directory}/generictablesave.html" )
+#end
+#set( $args = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set ($passalong = "candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
 
 #set ($id = $context.getRequestParameter("id"))
 
-#set( $edit  = $context.getRequestParameter("edit"))
 
-#set( $print = $context.getRequestParameter("print") )
 #set( $showit = true )
-#if ( $print && $print == "true" )
-
-			#set( $joinsearcher = $searcherManager.getSearcher($catalogid, $view))
-			#set ($existingrecords = $joinsearcher.fieldSearch("assetid",$asset.id))
-			$context.putPageValue("existingrecords", $existingrecords)
-			#if( !$existingrecords || $existingrecords.size() == 0 )
-				#set ($showit = false)
-			#end			
-			#set ($pluginpath = $context.getRequestParameter("pluginpath"))
-			#set( $plugin = $pages.getPage("$pluginpath"))
-			<h2>$plugin.getProperty("text.${view}", $context.getLocale() )</h2>
-#end
 
 #if($errors)
 <p class="info">Your entry is invalid.  Please check your values and try again.</p>
 #set($edit = "true")
 #end
+
 #if( $showit )
-	<div id="${view}editor">
+	<div id="${viewid}editor">
 	#if( !$edit || $edit == "false")
 	
-	$pages.include("/$applicationid/components/xml/table.html?$args&candelete=$!caneditasset&passalong=$passalong",$context)
+	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 	
 	#if( !$parser.parseBoolean($edit) && $caneditasset && !$print.equals("true"))
 	<script>
 	$(document).ready(function(){
 		
-		addnew = '<a class="btn ajax" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${view}editor">Add New</a>';
+		addnew = '<a class="btn ajax" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>';
 		
 		if ( $('.tab-actions').length > 0  ) {
 			$('.tab-actions').prepend(addnew);
@@ -63,9 +58,9 @@
 	
 	#else
 	
-	<form name="edit${view}" id="edit${view}" action="$home$editpath?oemaxlevel=1" onsubmit="return postForm('${view}editor','edit${view}');" >
+	<form name="edit${viewid}" class="ajaxform" targetdiv="${viewid}editor" method="post" id="edit${viewid}" action="$home$editpath" >
 	
-		$context.putPageValue("view", $view)
+		$context.putPageValue("view", $viewpath)
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
 		$context.putPageValue("searcher", $searcher)
 		#set( $data = $searcher.searchById($id) )
@@ -74,17 +69,20 @@
 		
 		<div class="buttons">
 			<input class="btn" style="margin-left: 5px;" type="submit" value="Save Values"/>
-			<a class="btn ajax right red" targetdiv='${view}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+			<a class="btn ajax right red" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+			<a class="btn ajax right" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
 		</div>
 
-		<input name="field" type="hidden" value="assetid" />
-		<input name="assetid.value" type="hidden" value="$assetid" />
-		<input name="catalogid" type="hidden" value="$!catalogid" />
-		<input name="assetid" type="hidden" value="$assetid" />
-		<input name="view" type="hidden" value="$view" />
+		<input name="field" type="hidden" value="$fieldexternalid" />
+		<input name="${fieldexternalid}.value" type="hidden" value="$parentid" />
+		<input name="parentid" type="hidden" value="$parentid" />
+
+		<input name="oemaxlevel" type="hidden" value="1" />
+		<input name="viewpath" type="hidden" value="$viewpath" />
+		<input name="viewid" type="hidden" value="$viewid" />
+
 		<input name="fieldexternalid" type="hidden" value="$fieldexternalid" />
 		<input name="fieldexternalvalue" type="hidden" value="$fieldexternalvalue" />
-		<input name="sourcepath" type="hidden" value="$asset.sourcePath" />
 		<input name="save" type="hidden" value="true" />
 		<input name="permissionname" type="hidden" value="$!permissionname" />
 		

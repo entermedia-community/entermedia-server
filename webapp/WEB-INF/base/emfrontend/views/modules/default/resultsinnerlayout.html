@@ -3,13 +3,20 @@
         #set($hits = $context.getPageValue($hitsname))
 #end
 
-
 #if(!$hits)
         #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
         #if($hitssessionid)
             #set($hits = $context.getSessionValue($hitssessionid))
         #end
 #end
+#set( $moduleid = $context.findValue("module") )
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set( $query = $viewsearcher.createSearchQuery().append("module",$moduleid) )
+$!query.addSortBy("ordering")
+#set($views = $viewsearcher.search($query))
+#set ( $defaultview = $views.first() )
+$pages.getWebPageRequest().putPageValue("defaultview",$defaultview)
+
 #if(!$hits)
 #set($hits = $context.getPageValue($content.hitsname))
 #end
@@ -19,14 +26,14 @@ $context.putPageValue("hits", $hits)
 <div id="searchplugin">
 	<div class="subcolumns">
 		<div class="c25l" id="left-col">
-				$pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html")
+				$pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html",$context)
 		</div>
 		<div id="right-col" class="module-inner">
 				
 					<div id="resultsdiv">
 						<div id="emresultscontent">
 							
-							$pages.include("/$applicationid/views/modules/${moduleid}/resultsactions.html")
+							$pages.include("/$applicationid/views/modules/${moduleid}/resultsactions.html",$context)
 							
 							<div id="resultsarea">
 								<div id="resultslist">

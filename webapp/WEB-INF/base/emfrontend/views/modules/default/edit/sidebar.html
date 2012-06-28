@@ -17,7 +17,6 @@ $context.putPageValue("view", $viewpath)
 
 #set($hitssessionid = $context.findValue("hitssessionid"))
 
-
 <div class="ui-widget  uipanel">
     <div class="ui-widget-header">
             #set ($lastselected = $content.module )
@@ -36,7 +35,7 @@ $context.putPageValue("view", $viewpath)
                       <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/table.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
                         $target</a>
                   		#else
-                      <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
+                      <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
                         $target</a>
                         #end
                   </li>
