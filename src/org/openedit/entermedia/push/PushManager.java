@@ -28,7 +28,6 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.util.NaiveTrustManager;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.xml.XmlSearcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
@@ -101,7 +100,12 @@ public class PushManager
 		query.addNot("pushstatus","error");
 		query.addSortBy("assetmodificationdate");
 		HitTracker hits = searcher.search(query);
-
+		if( hits.size() == 0 )
+		{
+			log.info("No new assets to push");
+			return;
+		}
+			
 		Collection presets = archive.getCatalogSettingValues("push_convertpresets");
 		List savequeue = new ArrayList();
 
