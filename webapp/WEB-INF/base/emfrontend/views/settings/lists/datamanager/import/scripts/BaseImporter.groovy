@@ -233,7 +233,7 @@ public class BaseImporter extends EnterMediaObject
 			String header = inRow.getHeader().getColumn(i);
 			String headerid = PathUtilities.extractId(header,true);
 
-			val = URLUtilities.xmlEscape(val);
+			//val = URLUtilities.xmlEscape(val);
 			if("sourcepath".equals(header))
 			{
 				inData.setSourcePath(val);
