@@ -12,6 +12,12 @@
 	<property id="libraries"  viewtype="libraries"  editable="true" index="true" >Libraries</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Asset Type</property>
 
+	<!-- Push items -->
+	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
+	<property id="pushpercentage" internalfield="true"  index="true"  stored="true">Push Percentage</property>
+	<property id="pusherrordetails" internalfield="true"  index="true"  stored="true">Push Error Details</property>
+	<property id="pusheddate" internalfield="true" editable="true"  index="true"  type="date" stored="true" >Pushed Date</property>
+	
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	

@@ -8,7 +8,7 @@
 
 #set ($sourcepath = $hit.sourcepath)
 
-#set ($mediumend = "/$catalogid/downloads/preview/medium/$sourcepath/thumb.jpg")
+#set ($mediumend = "/${applicationid}/views/modules/asset/downloads/preview/medium/$sourcepath/thumb.jpg")
 #set( $msize = "$home$mediumend")
 #set ($thumbsize = $context.getPageValue("thumbsize"))
 #if(!$thumbsize)
@@ -41,7 +41,7 @@
 	#else	
 		<img class="emdropshadow" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" 	
 		title=" #if($hit.caption) ${hit.caption} #elseif($hit.assettitle ) $hit.assettitle #else $!{hit.name} #end "
-		src="$home$cataloghome/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
+		src="$home/${applicationid}/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
 	#end
 
 </div>

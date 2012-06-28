@@ -9,13 +9,13 @@
                <title>Picture A</title>
                <media:description> This one's my favorite.</media:description>
                <link>pl_images/A.jpg</link>
-               <media:thumbnail url="http://localhost:8080/media/catalogs/public/downloads/preview/thumb/users/admin/IMG_0170.JPG/thumb.jpg"/>
-               <media:content url="http://localhost:8080/media/catalogs/public/downloads/preview/medium/users/admin/IMG_0170.JPG/medium.jpg"/>
+               <media:thumbnail url="$siteRoot$home$applicationsid/views/modules/asset/downloads/preview/thumb/users/admin/IMG_0170.JPG/thumb.jpg"/>
+               <media:content url="$siteRoot$home$applicationsid/views/modules/asset/downloads/preview/medium/users/admin/IMG_0170.JPG/medium.jpg"/>
           </item>
           <item>
               <title>Video B</title>
               <link>http://example.com/pl_images/B.jpg</link>
-               <media:thumbnail url="http://localhost:8080/media/catalogs/public/downloads/preview/thumb/users/admin/IMG_0170.JPG/thumb.jpg"/>
+               <media:thumbnail url="$siteRoot$home$applicationsid/views/modules/asset/downloads/preview/thumb/users/admin/IMG_0170.JPG/thumb.jpg"/>
               <media:content type="video/x-flv"
               url="http://example.com/pl_images/B.flv"/>
           </item>

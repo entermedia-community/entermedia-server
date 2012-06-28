@@ -1,0 +1,6 @@
+<page>
+	<property name="enabled">false</property>
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${catalogid}/events/scripts/importing/assetsimportedcustom.groovy</script>
+	</path-action>
+</page>

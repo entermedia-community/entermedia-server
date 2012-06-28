@@ -16,6 +16,7 @@ import org.openedit.entermedia.creator.*;
 
 import com.openedit.users.User;
 import com.openedit.util.*;
+import com.openedit.*;
 
 import org.openedit.xml.*;
 import conversions.*;
@@ -24,7 +25,21 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-
+class CompositeConvertRunner implements Runnable
+{
+	List runners = new ArrayList();
+	public void run()
+	{
+		for( Runnable runner: runners )
+		{
+			runner.run();
+		}
+	}
+	public void add(Runnable runner )
+	{
+		runners.add(runner);
+	}
+}
 
 class ConvertRunner implements Runnable
 {
@@ -42,7 +57,7 @@ class ConvertRunner implements Runnable
 	{
 		try
 		{
-			convert();
+			convert();Runnable
 		}
 		catch (Throwable ex )
 		{
@@ -267,6 +282,7 @@ public void checkforTasks()
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry");
+	query.addSortBy("assetid");
 	query.addSortBy("ordering");
 	
 	String assetid = context.getRequestParameter("assetid");
@@ -291,11 +307,31 @@ public void checkforTasks()
 	{
 		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
 		ExecutorService  executor = executorManager.createExecutor();
-		for(Object hit: newtasks)
+		CompositeConvertRunner byassetid = null;
+		String lastassetid = null;
+		for(Data hit: newtasks)
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
 			runners.add(runner);
-			executor.execute(runner);
+			String id = hit.get("assetid");
+			if( id == null )
+			{
+				throw new OpenEditException("asset id was null on " + hit );
+			}
+			if( id != lastassetid )
+			{
+				if( byassetid != null )
+				{
+					executor.execute(byassetid);
+				}
+				byassetid = new CompositeConvertRunner();
+				lastassetid = hit.get("assetid");
+			}
+			byassetid.add(runner);
+		}
+		if( byassetid != null )
+		{
+			executor.execute(byassetid);
 		}
 		executorManager.waitForIt(executor);
 	}

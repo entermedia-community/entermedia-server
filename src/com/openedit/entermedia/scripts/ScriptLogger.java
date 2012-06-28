@@ -15,7 +15,23 @@ public class ScriptLogger extends Handler
 	private static final Log log = LogFactory.getLog(ScriptLogger.class);
 	protected List fieldLogs;
 	protected String fieldPrefix = "";
+	protected TextAppender fieldTextAppender;
 	
+	public TextAppender getTextAppender()
+	{
+		return fieldTextAppender;
+	}
+
+	public void setTextAppender(TextAppender inTextAppender)
+	{
+		fieldTextAppender = inTextAppender;
+	}
+
+	public ScriptLogger()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getPrefix()
 	{
 		return fieldPrefix;
@@ -78,12 +94,19 @@ public class ScriptLogger extends Handler
 	public void publish(LogRecord inRecord)
 	{
 		//getRealHandler().publish(inRecord);
-	
-		getLogs().add(new LogEntry(inRecord));
-		
-		if( getLogs().size() > 10000)
+		LogEntry entry = new LogEntry(inRecord);
+		if( fieldTextAppender != null )
 		{
-			getLogs().remove(0);
+			fieldTextAppender.appendText(toString(entry));
+		}
+		else
+		{
+			getLogs().add(entry);
+			
+			if( getLogs().size() > 10000)
+			{
+				getLogs().remove(0);
+			}
 		}
 		//System.out.println(inRecord.getMessage()); 
 	}
@@ -152,18 +175,23 @@ public class ScriptLogger extends Handler
 			LogEntry entry = (LogEntry) iterator.next();
 			if( entry != null )
 			{
-				if( entry.getName().equals(getClass().getName() ) )
-				{
-					text.add(entry.getMessage());
-				}
-				else
-				{
-					text.add(entry.toString());
-				}
+				text.add(toString(entry) );
 			}
 		}
 		
 		return text;
+	}
+
+	protected String toString(LogEntry inEntry)
+	{
+		if( inEntry.getName().equals(getClass().getName() ) )
+		{
+			return inEntry.getMessage();
+		}
+		else
+		{
+			return inEntry.toString();
+		}
 	}
 
 }

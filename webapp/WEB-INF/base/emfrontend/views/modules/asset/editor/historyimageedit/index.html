@@ -22,7 +22,7 @@
 	<tr>
 		<td>
 		    <span style="margin-left: 20px">
-   				<a href="$home/$catalogid/downloads/originals/$parentsourcepath/.versions/$revisionNumber~$revision.getName()/$revision.getName()">[[Version]] $revisionNumber</a>
+   				<a href="$home/${applicationid}/views/modules/asset/downloads/originals/$parentsourcepath/.versions/$revisionNumber~$revision.getName()/$revision.getName()">[[Version]] $revisionNumber</a>
     		</span>
 		</td>
 		<td class="tooltip" title="$revision.getLength() bytes" >$sizer.inEnglish($revision.getLength())	</td>
@@ -39,16 +39,14 @@
 		</td>
 	    <td>
             #if($revisionNumber != $current)
-                #set($origurl = $context.getRequestParameter("origURL"))
-                #if(!$origurl)
-                    #set($origurl = "${cataloghome}/components/detaileditor/reloadimages.html")
-                #end
-                #set($origurl = $origurl + "?assetid=${asset.id}&editPath=${revisions.getEditPage()}")
-                <form id="backtorev_$revisionNumber" method="post" action="$home${cataloghome}/components/detaileditor/attachments/versions/revert.html">
+                
+                <form id="backtorev_$revisionNumber" method="post" action="$home$apphome/views/modules/asset/editor/historyimageedit/revert.html">
                     <input type="hidden" name="version" value="$revisionNumber"/>
                     <input type="hidden" name="assetid" value="$asset.id"/>
                     <input type="hidden" name="editPath" value="${revisions.getEditPage()}"/>
-                    <input type="hidden" name="origURL" value="$origurl"/>
+                     <input type="hidden" name="origURL" value="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id"/>
+                    
+                    
                 </form>
                 <p style="margin: 0;padding: 0;text-align: center;">
                     <a class="btn" style="margin: 0;" href="#" onclick="jQuery('#backtorev_$revisionNumber').submit(); return false;">
@@ -63,7 +61,8 @@
 </div>
 #if( $candeleteasset )
 <br>
-<input class="btn" style="margin-left: 20px;" onclick="deleteAll()" value="[[Delete Old Versions]]" name="Delete" type="button" class="oestandard-button">
+<a class="btn confirm ajax" targetdivinner="tree" confirm="Delete All Previous Revisions?" style="margin-left: 20px; margin-bottom: 20px;" href="$home$apphome/views/modules/asset/editor/historyimageedit/deleteall.html?oemaxlevel=1&editPath=${revisions.getEditPage()}">Delete Old Versions</a>
 #end
 	
+
     

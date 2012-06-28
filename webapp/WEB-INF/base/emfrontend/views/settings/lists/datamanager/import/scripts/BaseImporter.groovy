@@ -24,6 +24,7 @@ public class BaseImporter extends EnterMediaObject
 {
 	protected Map<String,String> fieldLookUps;
 	protected Searcher fieldSearcher;
+	protected boolean fieldMakeId;
 	
 	public Searcher getSearcher()
 	{
@@ -54,7 +55,11 @@ public class BaseImporter extends EnterMediaObject
 				rowNum++;
 
 				String idCell = trow.get("id");
-
+				if( idCell == null && isMakeId() )
+				{
+					idCell = String.valueOf(rowNum);
+				}
+				
 				if (idCell != null) 
 				{
 					Data target = findExistingData(idCell);
@@ -116,7 +121,7 @@ public class BaseImporter extends EnterMediaObject
 			List valueids = new ArrayList();
 			for (String val: values)
 			{
-				String id = PathUtilities.makeId(val).toLowerCase();
+				String id = PathUtilities.extractId(val,true);
 				Data data = datavalues.get(id);
 				if( data == null )
 				{
@@ -145,7 +150,7 @@ public class BaseImporter extends EnterMediaObject
 		{
 			datavalues = new HashMap();
 			getLookUps().put( inField, datavalues);
-			String id = PathUtilities.makeId(inField);
+			String id = PathUtilities.extractId(inField,true);
 			PropertyDetails details = getSearcher().getPropertyDetails()
 			PropertyDetail	detail = details.getDetail(id);
 			//if( detail.getL
@@ -179,7 +184,7 @@ public class BaseImporter extends EnterMediaObject
 			if( data == null )
 			{
 				//create it
-				String id = PathUtilities.makeId(value);
+				String id = PathUtilities.extractId(value,true);
 				Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
 				data = searcher.searchById(id);
 				if( data == null )
@@ -203,7 +208,7 @@ public class BaseImporter extends EnterMediaObject
 		{
 			String header = (String)iterator.next();
 			//String header = inHeaders[i];
-			String id = PathUtilities.makeId(header);
+			String id = PathUtilities.extractId(header,true);
 			PropertyDetail detail = details.getDetail(id);
 			if( detail == null )
 			{
@@ -226,9 +231,9 @@ public class BaseImporter extends EnterMediaObject
 		{
 			String val = inRow.getData(i);
 			String header = inRow.getHeader().getColumn(i);
-			String headerid = PathUtilities.makeId(header);
+			String headerid = PathUtilities.extractId(header,true);
 
-			val = URLUtilities.xmlEscape(val);
+			//val = URLUtilities.xmlEscape(val);
 			if("sourcepath".equals(header))
 			{
 				inData.setSourcePath(val);
@@ -238,5 +243,14 @@ public class BaseImporter extends EnterMediaObject
 				inData.setProperty(headerid, val);
 			}
 		}
+	}
+	
+	public boolean isMakeId()
+	{
+		return fieldMakeId;
+	}
+	public void setMakeId(boolean inVal)
+	{
+		fieldMakeId = inVal;
 	}
 }

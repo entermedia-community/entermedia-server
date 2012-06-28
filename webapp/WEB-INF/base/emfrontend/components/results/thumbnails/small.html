@@ -23,7 +23,7 @@ $context.putPageValue("thumbsize",$thumbsize)
 		#if( $type == "audio" || $type == "default")
 			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
 		#else
-			<img class="smallthumb emdropshadow" src="$home$cataloghome/downloads/preview/${thumbsize}/${sourcepath}/thumb.jpg" border="0" />
+			<img class="smallthumb emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${sourcepath}/thumb.jpg" border="0" />
 		#end
 	#end
 	

@@ -4,73 +4,117 @@
 #if( !$assettype )
 	#set( $assettype = "default" )
 #end
-#set( $module = $context.findValue("module") )
+#set( $moduleid = $context.findValue("module") )
 #set( $viewpath = $context.getRequestParameter("viewpath") )
-#set($searcher = $searcherManager.getSearcher($catalogid, $module))
 
 #set( $viewsroot = $content.viewsroot )
 
 
-<ul  viewid="$viewid" catalogid="$catalogid" searchtype="$module" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
+<ul  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
 
 	
 #if( $viewid )
 
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
 	
-	<li class="header no-sort" style="height: 16px;">
-	    <span id="name">$view</span> 
+	<li class="header no-sort" id="views-header" style="height: 16px;">
+	    <span id="name">$view</span>
+	    #if ( $view.rendertable )
+	    <span class="type">Table: $view.rendertable</span>
+	    #end
 	    
 	    #set ( $systemdefined = "false" )
         #set ( $systemdefined = $context.findValue("systemdefined") )
-	    
-	    #if ( $systemdefined == "false" )
-	    <a id="editname" style="color: #fff; opacity: 0.75; font-size: 10px; margin-left: 5px; cursor: pointer;">Edit Name</a>
+	#if ( $systemdefined == "false" )
+	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view Settings</a>
+	   #if($view.byassettype == "true" )
+    
+    
+            
+            <span style="float: right; margin: 0 8px 0 0">[[Asset Type]]: 
+            #set($current = $context.getRequestParameter("assettype")) 
+            #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
+            
+            <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
+                    <option value="default" >Default</option>
+                        #foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
+                            <option #if($current == $item.id) selected #end value="$item.id">$item</option>
+                        #end
+                    </select> 
+            </span>
+         #end
 	
-	    <form style="display: none; float: left; margin-top: -1px;" id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewpath=$viewpath&save=true&searchtype=view">
-	    	<input type="hidden" name="field" value="name" />
-             <input class="field" style="margin:-6px 0; padding: 4px 5px; border-radius: 3px; border: 1px solid #15566B; width: 200px; font-size: 12px;" name="name.value" value="$view" >
-            <input class="btn" style="margin: -6px 0 -6px 3px; position: relative; top: -1px; padding: 4px 8px 5px 8px" type="submit" value="Save" />
+    #end
+	</span>
+	#if ( $systemdefined == "false" )
+	<div id="views-settings" style="display: none;">
+	    
+	    <div class="inner clearfix">
+	    
+        <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
+            <input class="field" name="name.value" value="$view.name" >
+            <input type="hidden" name="field" value="name" />
+            <div>View Name</div>
+            <input class="field" name="field" value="rendertype" >
+            <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
+                Render as Table?
+            </div>
+            <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
+                <div>Render Table</div>
+            	<input type="hidden" value="rendertable" name="field" />
+                <input class="field" name="rendertable.value" value="$!view.rendertable" >
+                <div>Render Table External ID</div>
+            	<input type="hidden" value="renderexternalid" name="field" />
+                <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
+            </div>
+            
+            <div class="hr" style="margin: 5px 0 0 0"></div>
+            <input class="btn right" style="margin-top: 10px;" type="submit" value="Save" />
         </form>
         
-       
+	   
+	    </div>
+    </div>
+    #end
+    <script>
+        $('#setup-view').click(function(){
+            if ( $('#setup-view').hasClass('open') ) {
+                $('#views-header').height(16)
+                $('#views-settings').hide();
+                $('#setup-view').removeClass('open');
+            }
+            else {
+                $('#views-header').height('auto')
+                $('#views-settings').show();
+                $('#setup-view').addClass('open'); 
+            }
+        })
+        $('#renderastable').click(function(){
+            if ( $('#renderastable').is(':checked') ) {
+                $('#rendertableoptions').show();
+            }
+            else {
+                $('#rendertableoptions').hide();
+            }
+        })
         
-        <script>
-            $('#editname').click(function(){
-                $('#name').hide();
-                $('#changename').show();
-                $('#editname').hide();
-            })
-            
-        </script>
-	     #end
-	#if($view.byassettype == "true" )
+    </script>
 	
-	
-	
-	<span style="float: right;">[[Asset Type]]: 
-	#set($current = $context.getRequestParameter("assettype")) 
-	#set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
-	
-	<select style="margin: 0 0 20px 0;" id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
-			<option value="default" >Default</option>
-				#foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
-					<option #if($current == $item.id) selected #end value="$item.id">$item</option>
-				#end
-			</select>
-	#end	
-	</span>
 	</li>
 				
 	<li class="no-sort add-to">
-	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$module">Add New</a>
+	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$moduleid">Add New</a>
 	    <form name="addtoview" id="addtoview" action="addtoview.html">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
-            <input type="hidden" name="searchtype" value="$module"/>
+            <input type="hidden" name="searchtype" value="$moduleid"/>
             <input type="hidden" name="assettype" value="$assettype"/>
             <input type="hidden" name="viewid" value="$viewid"/>
             <input type="hidden" name="viewpath" value="$viewpath"/>
-
+			#if( $view.rendertable)
+				#set($searcher = $searcherManager.getSearcher($catalogid, $view.rendertable))
+			#else
+				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
+			#end	
             <select name="newone" style="float: right; margin-top: -17px;" onchange="jQuery('#addtoview').submit()">
                 <option value=""> </option>
                 #foreach( $detail in $searcher.getUserPropertyDetails() )
@@ -86,9 +130,9 @@
 			#foreach( $element in $details)
 				#set( $pid = $element.id)
 				<li class="rowdraggable metadatadroppable" id="$pid" ><span class="drag-and-drop"></span>
-					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$module">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$moduleid">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					
-					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=$module&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
+					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
 				</li>
 			#end		
 		

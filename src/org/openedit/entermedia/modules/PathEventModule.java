@@ -29,7 +29,7 @@ public class PathEventModule extends BaseModule
 		PathEventManager manager = getPathEventManager(inReq);
 		return manager.runPathEvent(runpath, inReq);
 	}
-	public boolean runSharedEvent(WebPageRequest inReq)
+	public void runSharedEvent(WebPageRequest inReq)
 	{
 		String runpath = inReq.findValue("runpath");
 		Page page  = getPageManager().getPage(runpath,true);
@@ -38,7 +38,10 @@ public class PathEventModule extends BaseModule
 		
 		//TODO: First check with the 	PathEventManager and run that one instead
 		PathEventManager manager = getPathEventManager(inReq);
-		return manager.runSharedPathEvent(runpath);
+	    manager.runSharedPathEvent(runpath);
+	    PathEvent event = manager.getPathEvent(runpath);
+	    inReq.putPageValue("ranevent", event);
+	    
 	}
 
 	public PathEventManager getPathEventManager(WebPageRequest inReq)

@@ -7,8 +7,8 @@
 				#set( $click = "$home$apphome/users/${hit.owner}/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid&assetid=$hit.id" )
 			#end
           #set ($sourcepath = $hit.sourcepath)
-		#set ($large = "/$catalogid/downloads/preview/large/$sourcepath/thumb.jpg")
-		#set ($thumb = "/$catalogid/downloads/preview/thumbsmall/$sourcepath/thumb.jpg")
+		#set ($large = "/${applicationid}/views/modules/asset/downloads/preview/large/$sourcepath/thumb.jpg")
+		#set ($thumb = "/${applicationid}/views/modules/asset/downloads/preview/thumbsmall/$sourcepath/thumb.jpg")
            <a href="$large">
             	<img title="$hit"
             	     alt="$hit.caption"

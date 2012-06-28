@@ -3,7 +3,11 @@
 #set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
 #set( $candelete = $context.getRequestParameter("candelete")) 
 
-#set( $view = $context.getRequestParameter("view"))
+#set( $viewid = $context.getRequestParameter("viewid"))
+#set( $viewpath = $context.getRequestParameter("viewpath"))
+#if( !$viewpath )
+	#set( $viewpath = $context.getRequestParameter("view"))
+#end
 #set( $editpath = $context.getRequestParameter("editpath"))
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))##productid
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))##4322
@@ -16,15 +20,15 @@
 #if(!$existingrecords)
 	#set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
 #end
-#set( $details = $joinsearcher.getDataProperties($view,$user) )
+#set( $details = $joinsearcher.getDataProperties($viewpath,$user) )
 #set( $passalong = $context.getRequestParameter("passalong"))
 #set( $passalongdec = $url_util.decode($passalong) )
 #set( $passalong = $url_util.encode($passalongdec) )
-#set( $args = "catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&view=$view&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
+#set( $args = "catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
 
 <div id="${searchtype}_table">
 #if($candelete != "false")
-<div id="emselectable" class="emselectable" data-view="$view" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${view}editor">
+<div id="emselectable" class="emselectable" data-view="$viewpath" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
 #end
 
 
@@ -76,16 +80,17 @@
 
 #set($link = $context.getRequestParameter("selectlink"))
 #if($link)
-	<form name="editrow" method="post" action="$home$link?$passalongdec">
+	<form name="editrow" method="post" class="ajaxform" targetdiv="${viewid}editor" action="$home$link?$passalongdec">
 	#set($fieldname = "id" )
 	#set($fieldname = $context.getRequestParameter("fieldname"))
 		<input type="hidden" id="emselectedrow" name="$fieldname" />	
 		<input type="hidden"  name="edit" value="true" />
+		<input type="hidden"  name="oemaxlevel" value="1" />
 		<input type="hidden" name="searchtype" value="${searchtype}" />
 		
 	</form>
 #else
-	<div id="$editlink" targetdiv="${view}editor" link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
+	<div id="$editlink" targetdiv="${viewid}editor" link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
 #end
 
 

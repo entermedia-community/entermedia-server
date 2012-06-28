@@ -1,24 +1,17 @@
-#set( $module = $context.findValue("module") )
+#set( $moduleid = $context.findValue("module") )
 
     
-#if ( $hits.totalPages == 0 )
+#if ( $hits.size() == 0 )
 $pages.stream("/${content.searchhome}/empty.html", $context)	
                                                                                                                                                                                                               
 #else
 
 
 
-#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${module}/${module}resultstable", $user))
+#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${moduleid}/${moduleid}resultstable", $user))
 
 
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set( $query = $viewsearcher.createSearchQuery().append("module",$module) )
-$!query.addSortBy("ordering")
-#set($views = $viewsearcher.search($query))
-
-#set ( $viewpath = $views.first() )
-
-##set ( $canedit = $context.getPageValue("${module}edit") )
+##set ( $canedit = $context.getPageValue("${moduleid}edit") )
 
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 <input type="hidden" name="hitsname" value="hits"/>
@@ -26,7 +19,7 @@ $!query.addSortBy("ordering")
 <div class="tablecontainer">
 
 <div class="editholder" style="margin-top: 0;">
-<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$module/metadata/viewssystem/index.html?viewid=${module}resultstable&viewpath=${module}/${module}resultstable">Edit</a>
+<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/index.html?viewid=${moduleid}resultstable&viewpath=${moduleid}/${moduleid}resultstable">Edit</a>
 </div>
 <div id="emselectable">
 <table class="emdata striped" id="module-results-table">
@@ -65,7 +58,7 @@ $!query.addSortBy("ordering")
      
       
         
-        <tr #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$viewpath.id&viewpath=$module/$viewpath.id&hitssessionid=${hits.sessionId}" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}" #end >
+        <tr #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #end >
   
     
    
