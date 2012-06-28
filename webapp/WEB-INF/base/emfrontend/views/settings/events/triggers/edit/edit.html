@@ -10,6 +10,9 @@
 <tr><td>Delay:</td><td><input type="text" size="4" name="delay" value="$!pathevent.getFormattedDelay()"/></td></tr>
 <tr><td>Enabled:</td><td><input name="enabled"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/></td></tr>
 <tr><td>Event URL:</td><td>$pathevent.getPage().getPath()</td></tr>
+#if ( $pathevent.getFormattedLastRun()  )
+<tr><td>Last ran on: </td><td> $pathevent.getFormattedLastRun()</td></tr>
+#end 
  	
 </table>
 
@@ -33,11 +36,8 @@
 <a class="btn" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=$pathevent.getPage().getPath()">Refresh</a>
 <div  id="status" class="edit-permissions">
 
-#if ( $pathevent.getFormattedLastRun()  )
-<b>Started on: </b> $pathevent.getFormattedLastRun()
-#end 
-
 <p>
+most recent logs are at the bottom of the page<br>
 $!pathevent.getLastOutputHtml()
 </p>
 
