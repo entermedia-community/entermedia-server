@@ -24,6 +24,7 @@ public class BaseImporter extends EnterMediaObject
 {
 	protected Map<String,String> fieldLookUps;
 	protected Searcher fieldSearcher;
+	protected boolean fieldMakeId;
 	
 	public Searcher getSearcher()
 	{
@@ -54,7 +55,11 @@ public class BaseImporter extends EnterMediaObject
 				rowNum++;
 
 				String idCell = trow.get("id");
-
+				if( idCell == null && isMakeId() )
+				{
+					idCell = String.valueOf(rowNum);
+				}
+				
 				if (idCell != null) 
 				{
 					Data target = findExistingData(idCell);
@@ -238,5 +243,14 @@ public class BaseImporter extends EnterMediaObject
 				inData.setProperty(headerid, val);
 			}
 		}
+	}
+	
+	public boolean isMakeId()
+	{
+		return fieldMakeId;
+	}
+	public void setMakeId(boolean inVal)
+	{
+		fieldMakeId = inVal;
 	}
 }

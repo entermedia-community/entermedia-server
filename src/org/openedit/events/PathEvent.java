@@ -19,11 +19,12 @@ import com.openedit.WebPageRequest;
 import com.openedit.WebServer;
 import com.openedit.entermedia.scripts.LogEntry;
 import com.openedit.entermedia.scripts.ScriptLogger;
+import com.openedit.entermedia.scripts.TextAppender;
 import com.openedit.page.Page;
 import com.openedit.users.User;
 import com.openedit.util.RequestUtils;
 
-public class PathEvent implements Comparable
+public class PathEvent implements Comparable, TextAppender
 {
 	private static final Log log = LogFactory.getLog(PathEvent.class);
 	protected User fieldUser;
@@ -32,7 +33,7 @@ public class PathEvent implements Comparable
 	protected boolean fieldHasFailed;
 	protected long fieldExpirationTime;
 	protected Date fieldLastRun;
-	protected String fieldLastOutput;
+	protected StringBuffer fieldLastOutput;
 	protected WebServer fieldWebServer;
 	protected String fieldFormattedPeriod;
 	protected long fieldDelay = 0;
@@ -214,10 +215,18 @@ public class PathEvent implements Comparable
 	public void setLastRun(Date inLastRun)
 	{
 		fieldLastRun = inLastRun;
+		getLastOutput().append("ran on: ");
+		getLastOutput().append(DateFormat.getDateTimeInstance().format(fieldLastRun));
+		getLastOutput().append('\n');
+
 	}
 
-	public String getLastOutput()
+	public StringBuffer getLastOutput()
 	{
+		if( fieldLastOutput == null )
+		{
+			fieldLastOutput = new StringBuffer();
+		}
 		return fieldLastOutput;
 	}
 	public String getLastOutputHtml()
@@ -229,14 +238,23 @@ public class PathEvent implements Comparable
 		StringBuffer out = new StringBuffer();
 		out.append("<div class='emoutput'>");
 		out.append("<div>");
-		out.append(	getLastOutput().replace("\n", "</div><div>" ));
+		out.append(	getLastOutput().toString().replace("\n", "</div><div>" ));
 		out.append("</div></div>");
 		return out.toString();
 	}
 
-	public void setLastOutput(String inLastOutput)
+	public void appendText(String inLastOutput)
 	{
-		fieldLastOutput = inLastOutput;
+//		getLastOutput().append("ran on: ");
+//		getLastOutput().append(DateFormat.getDateTimeInstance().format(getLastRun()));
+//		getLastOutput().append('\n');
+		getLastOutput().append(inLastOutput);
+		getLastOutput().append('\n');
+		if( getLastOutput().length() > 3000 )
+		{
+			String cut = getLastOutput().substring(getLastOutput().length() - 2000, getLastOutput().length());
+			fieldLastOutput = new StringBuffer(cut);
+		}
 	}
 
 	public RequestUtils getRequestUtils()
@@ -283,7 +301,6 @@ public class PathEvent implements Comparable
 
 		//Thread thread = Thread.currentThread();
 		//ClassLoader oldLoader = thread.getContextClassLoader();
-		StringWriter output = new StringWriter();
 		ScriptLogger logs = null;
 		try
 		{
@@ -291,7 +308,9 @@ public class PathEvent implements Comparable
 			//thread.setContextClassLoader(getClassLoader());
 			Page page = request.getPage();
 			logs.setPrefix(page.getName());
+			logs.setTextAppender(this);
 			logs.startCapture();
+			StringWriter output = new StringWriter();
 			try
 			{
 				if( log.isDebugEnabled() )
@@ -302,7 +321,8 @@ public class PathEvent implements Comparable
 				WebEvent event = (WebEvent)request.getPageValue("webevent");
 				request.setWriter(output);
 				getWebServer().getOpenEditEngine().createPageStreamer(page, request);
-				
+				setLastRun(new Date());
+
 				if (getPage().getContentItem().exists())
 				{
 					getWebServer().getOpenEditEngine().beginRender(request);
@@ -330,16 +350,16 @@ public class PathEvent implements Comparable
 				}
 				log.error("\n" + ow.toString() + "\n");
 			}
-			finally
-			{
-				for (Iterator iterator = logs.listLogs().iterator(); iterator.hasNext();)
-				{
-					String log = (String) iterator.next();
-					output.append(log.toString());
-					output.append("\n");
-				}
-				setLastOutput(output.toString());
-			}
+//			finally
+//			{
+//				for (Iterator iterator = logs.listLogs().iterator(); iterator.hasNext();)
+//				{
+//					String log = (String) iterator.next();
+//					output.append(log.toString());
+//					output.append("\n");
+//				}
+//				appendText(output.toString());
+//			}
 		}
 		finally
 		{
@@ -349,20 +369,18 @@ public class PathEvent implements Comparable
 
 		if (request.hasCancelActions())
 		{
-			output.append("Action may have failed to run. Check permissions.");
+			appendText("Action may have failed to run. Check permissions.");
 		}
-		List oldlogs = (List)request.getPageValue("logs");
-		if( oldlogs != null)
-		{
-			for (Iterator iterator = oldlogs.iterator(); iterator.hasNext();)
-			{
-				Object object = (Object) iterator.next();
-				output.append(object.toString());			
-				output.append("<br/>\n");
-			}
-		}
-		setLastOutput(output.toString());
-		setLastRun(new Date());
+//		List oldlogs = (List)request.getPageValue("logs");
+//		if( oldlogs != null)
+//		{
+//			for (Iterator iterator = oldlogs.iterator(); iterator.hasNext();)
+//			{
+//				Object object = (Object) iterator.next();
+//				output.append(object.toString());			
+//				output.append("<br/>\n");
+//			}
+//		}
 //		long end = System.currentTimeMillis();
 //		setLastRunTime((end - start) / 1000L); //minutes
 		//log.info(output);

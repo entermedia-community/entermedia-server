@@ -162,7 +162,8 @@ public class TaskRunner extends java.util.TimerTask
 		inReq.setRequestParameter("runpath", event.getPage().getPath());
 		
 		event.execute(inReq);
-		
+
+		/*
 		if( getEventManager().isLogEvents())
 		{
 			//TODO: Capture error logs
@@ -190,6 +191,7 @@ public class TaskRunner extends java.util.TimerTask
 			runevent.setProperty("details", stdout.toString());
 			Searcher patheventseacher = getEventManager().getSearcherManager().getSearcher(getEventManager().getCatalogId(), "patheventLog");
 			patheventseacher.saveData(runevent,inReq.getUser());
-		}		
+		}
+		*/		
 	}
 }

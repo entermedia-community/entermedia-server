@@ -1,8 +1,8 @@
 <properties>
-  <property id="5uploaderror">Upload Error</property>
-  <property id="4beingpushed">Being Pushed</property>
-  <property id="3readyforpush">Ready For Push</property>
-  <property id="2converting">Waiting on Conversion</property>
-  <property id="1pushcomplete">Push Complete</property>
+  <property id="completed">Push Complete</property>
+  <property id="error">Upload Error</property>
+  <property id="retry">Retry</property>
+  <property id="resend">Resend</property>
+  <property id="notallconverted">Waiting on Conversion</property>
   
 </properties>

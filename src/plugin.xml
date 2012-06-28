@@ -1450,9 +1450,14 @@
 	</bean>		
 
 	<bean id="SyncModule" class="org.openedit.entermedia.modules.SyncModule" >
+		<property name="pushManager"><ref bean="pushManager" /></property>
+	</bean>
+
+	<bean id="pushManager" class="org.openedit.entermedia.push.PushManager" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="userManager"><ref bean="userManager" /></property>
 	</bean>
+	
 	<bean id="pushrequestSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
