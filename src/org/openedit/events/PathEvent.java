@@ -250,9 +250,9 @@ public class PathEvent implements Comparable, TextAppender
 //		getLastOutput().append('\n');
 		getLastOutput().append(inLastOutput);
 		getLastOutput().append('\n');
-		if( getLastOutput().length() > 3000 )
+		if( getLastOutput().length() > 10000 )
 		{
-			String cut = getLastOutput().substring(getLastOutput().length() - 2000, getLastOutput().length());
+			String cut = getLastOutput().substring(getLastOutput().length() - 7000, getLastOutput().length());
 			fieldLastOutput = new StringBuffer(cut);
 		}
 	}
