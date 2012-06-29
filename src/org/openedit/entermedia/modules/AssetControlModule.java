@@ -46,7 +46,7 @@ public class AssetControlModule extends BaseMediaModule
 			archive.loadAssetPermissions(sourcepath, inReq);
 		}
 		else
-		{
+		{	
 			log.error("No sourcepath passed in " + inReq);
 		}
 	}
@@ -56,9 +56,18 @@ public class AssetControlModule extends BaseMediaModule
 		Asset asset = (Asset)inReq.getPageValue("asset"); 
 		if(asset == null)
 		{
-			return false;
+			MediaArchive archive = getMediaArchive(inReq);
+			String ispublic = archive.getCatalogSettingValue("catalogassetviewispublic");
+			if( Boolean.parseBoolean(ispublic) )
+			{
+				return true;
+			}
 		}
 		MediaArchive archive = getMediaArchive(inReq);
+		if( asset == null )
+		{
+			asset = archive.getAssetBySourcePath(inReq.getPage());
+		}
 		//MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset
 		Boolean cando = archive.getAssetSecurityArchive().canDo(archive,inReq.getUser(),inReq.getUserProfile(),"view",asset);
 		return cando;

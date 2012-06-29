@@ -1,9 +1,14 @@
 <div id="uploadarea">
 
+##if ($canhtml5upload)
+
+##$pages.include("$apphome/components/upload/types/html5.html") 
+
+##else
 	
 $pages.include("$apphome/components/upload/types/draganddrop.html")	
 
-			
+##end		
 
 </div>
 

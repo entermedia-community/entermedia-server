@@ -35,7 +35,6 @@
 		#set( $totalcount = $conversions.size() + 2 )
 		#set( $total = 110 * $mathutil.getPercentage($remaining , $totalcount))
 		<div class="uiinfo tooltip" title="Adding to Queue" ><div style="height:5px; width:${total}px; background-color: #433321;" ></div></div> 
-		<img src='$home$themeprefix/images/ajax-loader.gif'/>
 	</div>
 #else
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >

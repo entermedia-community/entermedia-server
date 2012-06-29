@@ -19,4 +19,5 @@ class CsvImporter extends BaseImporter
 CsvImporter csvimporter = new CsvImporter();
 csvimporter.setModuleManager(moduleManager);
 csvimporter.setContext(context);
+csvimporter.setMakeId(false);
 csvimporter.importData();

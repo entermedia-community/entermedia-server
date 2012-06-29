@@ -102,6 +102,8 @@
 	<tr> <td>[[List Sort Field]]:</td> <td><input type="text" name="sort.value" value="$!property.sort"/> </td> </tr>
 	<tr> <td>[[List Query]]:</td> <td><input type="text" name="query.value" value="$!property.query"/> </td> </tr>
 	<tr> <td>[[Foreign Key ID]]:</td> <td><input type="text" name="foreignkeyid.value" value="$!property.foreignkeyid"/> </td> </tr>
+</table>
+
 </div>
 <input class="btn right" style="margin-right: 20px;" type="submit" value="Save" />
 
@@ -115,10 +117,9 @@
 #end
 
 
-<a class="btn red" style="margin-left: 20px;" href="remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
+<a class="btn red" style="margin-left: 20px; margin-right: 5px;" href="remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
 <a class="btn" style="margin-top: 3px;" id="viewadvanced">View Advanced Options</a>
 
-</div>
 
 
 <script>

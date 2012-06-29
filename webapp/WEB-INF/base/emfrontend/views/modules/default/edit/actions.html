@@ -1,4 +1,4 @@
-        #set( $module = $context.findValue("module") )
+        #set( $moduleid = $context.findValue("module") )
         
         #set($viewid = $context.getRequestParameter("viewid"))
         #set($viewpath = $context.getRequestParameter("viewpath"))
@@ -22,12 +22,12 @@
             #set( $thispage = $content.getDirectoryName() )
             
                     #if($previous)
-                         <li><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${previous.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$module" #else href="$home$content.searchhome/view/view.html?id=${previous.id}&hitssessionid=${hitssessionid}&$viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$module" #end><<</a></li>
+                         <li><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${previous.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #else href="$home$content.searchhome/view/view.html?id=${previous.id}&hitssessionid=${hitssessionid}&$viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #end><<</a></li>
                     #end
                       
                     #if($next)
                         $context.putPageValue("hits", $hits)
-                        <li style="float: right;"><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$module" #else href="$home$content.searchhome/view/view.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$module" #end>>></a></li>
+                        <li style="float: right;"><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #else href="$home$content.searchhome/view/view.html?id=${next.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #end>>></a></li>
                     #end
                     
             #end    

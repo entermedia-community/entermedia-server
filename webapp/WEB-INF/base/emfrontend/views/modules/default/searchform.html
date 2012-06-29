@@ -1,11 +1,11 @@
-#set( $module = $context.findValue("module") )
+#set( $moduleid = $context.findValue("module") )
 $context.putPageValue("caneditlists","false")
 
 <div id="advsearchpanel" >
 <div class="tanmodule" >
 
-#set( $view = "${module}/${module}advancedsearch")
-#set( $searcher = $searcherManager.getSearcher("$content.catalogid", "${module}") )
+#set( $view = "${moduleid}/${moduleid}advancedsearch")
+#set( $searcher = $searcherManager.getSearcher("$content.catalogid", "${moduleid}") )
 
 $context.putPageValue("view", $view)
 $context.putPageValue("searcher", $searcher)

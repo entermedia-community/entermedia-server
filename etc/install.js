@@ -42,12 +42,16 @@ files.deleteMatch( web + "/lib/groovy-*.jar");
 files.deleteMatch( web + "/lib/aws-*.jar");
 files.deleteMatch( web + "/lib/gson-*.jar");
 files.deleteMatch( web + "/lib/mp4parser*.jar");
+files.deleteMatch( web + "/lib/PDFBox*.jar");
+
+
 
 files.copyFileByMatch( tmp + "/WEB-INF/lib/entermedia*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/groovy-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/aws-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/gson-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/mp4parser-*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/PDFBox*.jar", web + "/lib/");
 
 
 log.add("5. CLEAN UP");

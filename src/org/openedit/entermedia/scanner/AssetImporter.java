@@ -47,7 +47,7 @@ public class AssetImporter
 //	protected List fieldExcludeExtensions;
 //	protected List fieldExcludeFolderMatch;
     
-    protected String fieldExcludeMatches;
+    protected List<String> fieldExcludeMatches;
     protected String fieldIncludeExtensions;
     protected Collection fieldAttachmentFilters;
     protected Boolean fieldOnWindows;
@@ -62,12 +62,12 @@ public class AssetImporter
 		fieldAttachmentFilters = inAttachmentFilters;
 	}
 
-	public String getExcludeMatches()
+	public List<String> getExcludeMatches()
 	{
 		return fieldExcludeMatches;
 	}
 
-	public void setExcludeMatches(String inExcludeFolders)
+	public void setExcludeMatches(List<String> inExcludeFolders)
 	{
 		fieldExcludeMatches = inExcludeFolders;
 	}
@@ -118,7 +118,7 @@ public class AssetImporter
 	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, User inUser)
 	{
 		final List assets = new ArrayList();
-		final List<String> allAssets = new ArrayList();
+		final List<String> assetsids = new ArrayList<String>();
 		PathProcessor finder = new PathProcessor()
 		{
 			public void process(ContentItem inInput, User inUser)
@@ -127,7 +127,7 @@ public class AssetImporter
 				{
 					if (acceptDir(inInput))
 					{
-						processAssetFolder(inArchive, assets, allAssets, inInput, inUser);
+						processAssetFolder(inArchive, inInput, inUser);
 					}
 				}
 				else
@@ -138,7 +138,7 @@ public class AssetImporter
 					}
 				}
 			}
-			protected void processAssetFolder(final MediaArchive inArchive, final List assets, final List<String> allAssets, ContentItem inInput, User inUser)
+			protected void processAssetFolder(final MediaArchive inArchive, ContentItem inInput, User inUser)
 			{
 				String sourcepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
 				Asset asset = inArchive.getAssetArchive().getAssetBySourcePath(sourcepath);
@@ -152,7 +152,10 @@ public class AssetImporter
 						if( asset != null)
 						{
 							assets.add(asset);
-							allAssets.add(asset.getId());
+							if (assets.size() > 100)
+							{
+								saveImportedAssets(assets, assetsids, inArchive, inUser);
+							}
 						}
 					}
 					//dont process sub-folders
@@ -193,7 +196,11 @@ public class AssetImporter
 						//asset = getAssetUtilities().createAssetIfNeeded(item, inArchive, inUser);
 						//set the primary file
 						assets.add(asset);
-						allAssets.add(asset.getId());
+						if (assets.size() > 100)
+						{
+							saveImportedAssets(assets, assetsids, inArchive, inUser);
+						}
+
 						processchildren = false;
 					}
 					else
@@ -235,10 +242,9 @@ public class AssetImporter
 					if( asset != null)
 					{
 						assets.add(asset);
-						allAssets.add(asset.getId());
 						if (assets.size() > 100)
 						{
-							saveAssets(assets, inArchive, inUser);
+							saveImportedAssets(assets,assetsids, inArchive, inUser);
 						}
 					}
 				}
@@ -256,17 +262,8 @@ public class AssetImporter
 		{
 			checkPathLengths(inArchive, assets);
 		}
-		Asset eventasset = null;
-		if( assets.size() > 0)
-		{
-			eventasset = (Asset)assets.get(0);			
-		}
-		saveAssets(assets, inArchive,  inUser);
-		if( eventasset != null)
-		{
-			inArchive.fireMediaEvent("importing/assetsimported", inUser, eventasset, allAssets);
-		}
-		return allAssets;
+		saveImportedAssets(assets, assetsids, inArchive,  inUser);
+		return assetsids;
 	}
 	protected boolean createAttachments(List inPaths)
 	{
@@ -317,18 +314,25 @@ public class AssetImporter
 		}
 	}
 
-	private void saveAssets(List inAssets, MediaArchive inArchive, User inUser) throws OpenEditException
+	protected void saveImportedAssets(List inAssets, List allassetids, MediaArchive inArchive, User inUser) throws OpenEditException
 	{
 		if (inAssets.size() == 0)
 		{
 			return;
 		}
+		Asset	eventasset = (Asset)inAssets.get(0);	
+		List<String> someids = new ArrayList();
+
 		for (Iterator iter = inAssets.iterator(); iter.hasNext();)
 		{
 			Asset asset = (Asset) iter.next();
 			inArchive.getAssetArchive().saveAsset(asset);
 			inArchive.fireMediaEvent("assetcreated",inUser, asset);
+			someids.add(asset.getId());
 		}
+		allassetids.addAll(someids);
+		inArchive.fireMediaEvent("importing/assetsimported", inUser, eventasset, someids);
+
 		inArchive.getAssetSearcher().updateIndex(inAssets, false);
 		inArchive.getAssetArchive().clearAssets();
 

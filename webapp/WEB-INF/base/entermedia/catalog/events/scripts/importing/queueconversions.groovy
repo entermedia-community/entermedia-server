@@ -62,37 +62,38 @@ public void createTasksForUpload()
 
 			Data preset = (Data) presetsearcher.searchById(it.id);
 			
-			SearchQuery presetquery = destinationsearcher.createSearchQuery();
-			presetquery.addMatches("onimport", "true");
-		//	presetquery.addMatches("convertpreset", preset.id); //video
-			
-			HitTracker dest = destinationsearcher.search(presetquery);
-						
-			dest.each{
-				Data publishrequest = publishqueuesearcher.createNewData();
-				publishrequest.setSourcePath(asset.getSourcePath());
-				publishrequest.setProperty("status", "pending"); //pending on the convert to work
-				publishrequest.setProperty("assetid", asset.id);
-				publishrequest.setProperty("presetid", preset.id);
-				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-				publishrequest.setProperty("date", nowdate);
-
-				publishrequest.setProperty("publishdestination", it.id);
-				String exportName=null;
-				if( preset.get("type") != "original")
-				{
-					exportName = mediaArchive.asExportFileName( asset, preset);
-				}
-				if( exportName == null)
-				{
-					inputpage = mediaArchive.getOriginalDocument(asset);
-					exportName = inputpage.getName();
-				}
-				publishrequest.setProperty ("exportname", exportName);
-				
-				publishqueuesearcher.saveData(publishrequest, context.getUser());
-				foundsome = true;
-			}
+			//TODO: Move this to a new script just for auto publishing
+//			SearchQuery presetquery = destinationsearcher.createSearchQuery();
+//			presetquery.addMatches("onimport", "true");
+//		//	presetquery.addMatches("convertpreset", preset.id); //video
+//			
+//			HitTracker dest = destinationsearcher.search(presetquery);
+//						
+//			dest.each{
+//				Data publishrequest = publishqueuesearcher.createNewData();
+//				publishrequest.setSourcePath(asset.getSourcePath());
+//				publishrequest.setProperty("status", "pending"); //pending on the convert to work
+//				publishrequest.setProperty("assetid", asset.id);
+//				publishrequest.setProperty("presetid", preset.id);
+//				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+//				publishrequest.setProperty("date", nowdate);
+//
+//				publishrequest.setProperty("publishdestination", it.id);
+//				String exportName=null;
+//				if( preset.get("type") != "original")
+//				{
+//					exportName = mediaArchive.asExportFileName( asset, preset);
+//				}
+//				if( exportName == null)
+//				{
+//					inputpage = mediaArchive.getOriginalDocument(asset);
+//					exportName = inputpage.getName();
+//				}
+//				publishrequest.setProperty ("exportname", exportName);
+//				
+//				publishqueuesearcher.saveData(publishrequest, context.getUser());
+//				foundsome = true;
+//			}
 			
 			String outputfile = preset.get("outputfile");
 

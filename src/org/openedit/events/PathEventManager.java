@@ -158,27 +158,15 @@ public class PathEventManager
 						}
 					}
 				}
-			//	log.info("added " + event.getPage() );
 				runner = new TaskRunner(event, this);
 				runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
 				runner.setTimeToStart(new Date());
-	//			if( event.getDelay() == 0 )
-	//			{
-	//				getRunningTasks().push(runner);
-	//				runner.run(); //this will remove it again
-	//			}
-	//			else
-	//			{
-					//schedule(event, runner);
 				getRunningTasks().push(runner);
 			}
 			if( runner != null )
 			{
 				getTimer().schedule(runner,0);
 			}
-//			}
-
-
 			return true;
 		}
 		else
