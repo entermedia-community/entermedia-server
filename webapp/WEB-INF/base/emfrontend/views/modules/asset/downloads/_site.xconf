@@ -3,9 +3,11 @@
 <page>
 	<path-action name="Admin.autoLogin" alltypes="true" />	
 	<path-action name="ProfileModule.loadUserProfile" alltypes="true"/>
+	
 	<path-action name="Admin.loadPermissions"  alltypes="true">
-		<permissions>view download forcewatermark</permissions>
+		<permissions>view viewasset download forcewatermark</permissions>
 	</path-action>
+	
 	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
 
 	<property name="oe.enableautologinparam">true</property>

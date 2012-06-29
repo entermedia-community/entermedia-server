@@ -2,10 +2,7 @@
 
 <page>
 	<permission name="view">
-		<or>
-			<group name="administrators" />
-			<action name="AssetControlModule.canViewAsset" />
-		</or>
+		<pagevalue name="canviewasset" equals="true"/>
 	</permission>	
 
 	<property name="sourcepathhasfilename">true</property>
