@@ -113,6 +113,8 @@ public class BaseImporter extends EnterMediaObject
 	}
 	protected void createMultiSelect(MultiValued inRow, String inField, String inTable)
 	{
+		inField = PathUtilities.extractId(inField,true);
+		
 		String value = inRow.get(inField);
 		if( value != null )
 		{			
@@ -171,6 +173,7 @@ public class BaseImporter extends EnterMediaObject
 	}
 	protected void createLookUp(Data inRow, String inField, String inTable)
 	{
+		inField = PathUtilities.extractId(inField,true);
 		String value = inRow.get(inField);
 		if( value != null )
 		{
@@ -233,7 +236,7 @@ public class BaseImporter extends EnterMediaObject
 			String header = inRow.getHeader().getColumn(i);
 			String headerid = PathUtilities.extractId(header,true);
 
-			//val = URLUtilities.xmlEscape(val);
+			val = URLUtilities.escapeUtf8(val);  //The XML parser will clean up the & and stuff when it saves it
 			if("sourcepath".equals(header))
 			{
 				inData.setSourcePath(val);

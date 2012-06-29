@@ -163,7 +163,23 @@ public class HotFolderManager
 		String path = base + "/" + name;
 		
 		AssetImporter importer = (AssetImporter)getWebServer().getModuleManager().getBean("assetImporter");
-		importer.setExcludeMatches(inFolder.get("excludes"));
+		
+		String excludes = inFolder.get("excludes");
+		if( excludes != null )
+		{
+			List<String> list = EmStringUtils.split(excludes);
+			for (int i = 0; i < list.size(); i++)
+			{
+				String row = list.get(i).trim();
+				if( row.startsWith("/") &&  !row.startsWith(path))
+				{
+					row = path + row;
+				}
+				list.set(i, row);
+			}
+			importer.setExcludeMatches(list);
+		}
+		
 		importer.setIncludeExtensions(inFolder.get("includes"));
 		String attachments = inFolder.get("attachmenttrigger");
 		if( attachments != null )

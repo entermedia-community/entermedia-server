@@ -62,6 +62,7 @@ public void createTasksForUpload()
 
 			Data preset = (Data) presetsearcher.searchById(it.id);
 			
+			//TODO: Move this to a new script just for auto publishing
 //			SearchQuery presetquery = destinationsearcher.createSearchQuery();
 //			presetquery.addMatches("onimport", "true");
 //		//	presetquery.addMatches("convertpreset", preset.id); //video

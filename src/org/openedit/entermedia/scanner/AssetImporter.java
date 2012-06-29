@@ -47,7 +47,7 @@ public class AssetImporter
 //	protected List fieldExcludeExtensions;
 //	protected List fieldExcludeFolderMatch;
     
-    protected String fieldExcludeMatches;
+    protected List<String> fieldExcludeMatches;
     protected String fieldIncludeExtensions;
     protected Collection fieldAttachmentFilters;
     protected Boolean fieldOnWindows;
@@ -62,12 +62,12 @@ public class AssetImporter
 		fieldAttachmentFilters = inAttachmentFilters;
 	}
 
-	public String getExcludeMatches()
+	public List<String> getExcludeMatches()
 	{
 		return fieldExcludeMatches;
 	}
 
-	public void setExcludeMatches(String inExcludeFolders)
+	public void setExcludeMatches(List<String> inExcludeFolders)
 	{
 		fieldExcludeMatches = inExcludeFolders;
 	}
