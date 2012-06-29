@@ -48,7 +48,7 @@
 	<script>
 	$(document).ready(function(){
 		
-		addnew = '<a class="btn ajax" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>';
+		addnew = '<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>';
 		
 		if ( $('.tab-actions').length > 0  ) {
 			$('.tab-actions').prepend(addnew);
@@ -70,12 +70,15 @@
 		$context.putPageValue("searcher", $searcher)
 		#set( $data = $searcher.searchById($id) )
 		$context.putPageValue("data", $data)
-		$pages.include("/$applicationid/components/xml/detaileditor.html",$context)
 		
-		<div class="buttons">
-			<input class="btn" style="margin-left: 5px;" type="submit" value="Save Values"/>
-			<a class="btn ajax right red" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
-			<a class="btn ajax right" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+		<div id="default-fields">
+		  $pages.include("/$applicationid/components/xml/detaileditor.html",$context)
+		</div>
+		
+		<div style="margin: 20px 20px 0 20px;">
+			<input class="btn right"  type="submit" value="Save Values"/>
+			<a class="btn ajax red" style="color: #fff;" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+			<a class="btn ajax" style="margin-left: 5px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
 		</div>
 
 		<input name="field" type="hidden" value="$fieldexternalid" />

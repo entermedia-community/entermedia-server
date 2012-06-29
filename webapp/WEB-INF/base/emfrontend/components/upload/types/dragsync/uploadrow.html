@@ -4,6 +4,7 @@
 #set( $parentpath=$context.getRequestParameter("parentpath")) 
 #set( $size=$context.getRequestParameter("size"))
 <tr id="row$id">
+   
 #set( $defaultassettype = $mediaarchive.getDefaultAssetTypeForFile($name))
 
 #set( $searcher = $mediaarchive.getAssetSearcher() )
@@ -20,7 +21,7 @@ $context.putPageValue("view",$view)
 #set($details =  $searcher.getDetailsForView($view, $user))
 <td>
 	<a href="#" onclick='removeUpload("$id")'><img	align="top" src="$home$themeprefix/images/navigation/deletesm.png" />
-			<input type="hidden" name="sourcepath"  id="${id}sourcepath" value="$formatteddate/$name" />
+			<input type="hidden" name="sourcepath"  id="${id}sourcepath" value="users/$!{user.userName}/$formatteddate/$name" />
 			<input type="hidden" name="name" value="$name" />
 			<input type="hidden" name="uploadprefix" value="${id}." />
 			<input type="hidden" name="localfilepath" value="$localpath" />
@@ -33,7 +34,7 @@ $context.putPageValue("view",$view)
 	<table>
 	<tr class="emsearchfieldrow">
 		<td valign="middle" class="emsearchfield" nowrap="true">
-			[[File Name]] 
+			[[File Name]]
 		</td>
 		<td>$name</td>
     </tr>		
