@@ -3,15 +3,19 @@
 #set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
 #set( $candelete = $context.getRequestParameter("candelete")) 
 
+
 #set( $viewid = $context.getRequestParameter("viewid"))
 #set( $viewpath = $context.getRequestParameter("viewpath"))
 #if( !$viewpath )
 	#set( $viewpath = $context.getRequestParameter("view"))
 #end
+#if( !$viewpath )
+	#set( $viewpath = $view)
+#end
+
 #set( $editpath = $context.getRequestParameter("editpath"))
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))##productid
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))##4322
-
 
 
 #set ($catalogId = $context.getRequestParameter("catalogid") )
@@ -30,8 +34,6 @@
 #if($candelete != "false")
 <div id="emselectable" class="emselectable" data-view="$viewpath" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
 #end
-
-
 
 #set($selectedid = $context.getRequestParameter("selectedid"))
 

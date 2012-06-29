@@ -11,6 +11,11 @@
 #set($viewid = $context.getRequestParameter("viewid"))
 #set($viewpath = $context.getRequestParameter("viewpath"))
 
+#if( !$viewpath )
+	#set( $viewpath = $context.getRequestParameter("view"))
+#end
+
+
 #set ($editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
 	#set( $editpath = "${page.directory}/generictablesave.html" )
