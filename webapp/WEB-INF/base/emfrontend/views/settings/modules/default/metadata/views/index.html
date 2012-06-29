@@ -103,7 +103,12 @@
 	</li>
 				
 	<li class="no-sort add-to">
-	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$moduleid">Add New</a>
+	    #if( $view.rendertable)
+            #set($searchtype = $view.rendertable)
+        #else
+            #set($searchtype = $moduleid)
+        #end
+	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype">Add New</a>
 	    <form name="addtoview" id="addtoview" action="addtoview.html">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
             <input type="hidden" name="searchtype" value="$moduleid"/>
