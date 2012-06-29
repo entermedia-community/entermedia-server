@@ -1,4 +1,6 @@
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
+#set ($permissiontype = $context.findValue("permissiontype"))
+
 
 #if (!$data)
 	#set($groupid = $context.getRequestParameter("settingsgroupid"))
@@ -9,11 +11,8 @@
 
 
 #if ($data)
-<div class="ui-widget commentbox no-top-margin of-visible">
-<div class="ui-widget-header">[[Permissions]]</div>
-<div  class="ui-widget-content of-visible"> 
 
-<form method="post" action="./save.html">
+<form method="post" action="$home$apphome/views/settings/users/permissions/views/save.html">
 	<input type="hidden" name="id" value="$!data.id"/>
 	<input type="hidden" name="save" value="true"/>
 	<input type="hidden" name="view" value="settings/settinggroupedit" />
@@ -26,36 +25,45 @@
 	$context.putPageValue("data", $data)	
 
 	#set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permissionsapp"))
+	<div class="list-adder" id="permission-role">
 	$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-
+	</div>
+    
 	<input type="hidden" name="field" value="profilesearchfilters" />
 	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
-	
-	<table class="striped emdata settings-table">	
-	#set( $section = "none")
-	#foreach($item in $permissionsearcher.getAllHits())
-		#set($val = false )
-		#set($val = $data.get($item.id))
-		#if( $section != $item.permissiontype )
-			<tr class="sectionlevel">
-			<td colspan="2">
-				$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)
-			</td>
-			</tr>
-		#set( $section = $item.permissiontype)
-		#end
-		<input type="hidden" name="field" value="$item.id"/>
-		<tr>
-			<td valign="middle" title="$item.description">$item</td>
-			<td valign="middle" style="text-align: center;"><input class="permission-radio" type="checkbox" name="${item.id}.value" value="true" #if($val == "true" || $val == "full") checked #end/></td>
-		</tr>	
-	#end
-	</table>
+	<div style="margin: 0 -20px;">
+    	<table class="striped emdata settings-table">	
+        #if ( !$permissiontype )
+           #set ( $permissiontype = "*" )
+        #end
+	    #set( $query = $permissionsearcher.createSearchQuery().append("permissiontype",$permissiontype) )
+	    $!query.addSortBy("permissiontype")
+	    $!query.addSortBy("name")
+	    #set($hits = $permissionsearcher.search($query))
+	    
+	    #set( $section = "none")
+    	#foreach($item in $hits )
+        		#set($val = false )
+        		#set($val = $data.get($item.id))
+        		#if( $section != $item.permissiontype )
+        			<tr class="sectionlevel">
+        			<td colspan="2" style="height: 35px; line-height: 35px;">
+        				$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)
+        			</td>
+        			</tr>
+        		#set( $section = $item.permissiontype)
+        		#end
+        		<input type="hidden" name="field" value="$item.id"/>
+        		<tr>
+        			<td valign="middle" title="$item.description">$item</td>
+        			<td valign="middle" style="text-align: center; width: 35px; background: #f7f7f7;"><input class="permission-radio" type="checkbox" name="${item.id}.value" value="true" #if($val == "true" || $val == "full") checked #end/></td>
+        		</tr>
+    	#end
+    	</table>
+    </div>
 	<input class="btn small" type="submit" value="Save"/>
-<a class="btn red" style="float: right;" href="./delete.html?id=$groupid" onclick="return confirm('Are you sure you want to delete the security group $data.name')">Delete</a>
+<a class="btn red" style="float: right;" href="$home$apphome/views/settings/users/permissions/views/delete.html?id=$groupid" onclick="return confirm('Are you sure you want to delete the security group $data.name')">Delete</a>
 	
-</div>
-</div>	
 	
 </form>
 
