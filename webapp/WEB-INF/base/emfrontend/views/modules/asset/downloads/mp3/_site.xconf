@@ -5,6 +5,11 @@
 	<property name="sourcepathhasfilename">true</property>
 	<generator name="convertArchiveDocument"/>
 	<property name="bitrate">64</property>
+	
+	<permission name="view">
+		<pagevalue name="canviewasset" equals="true"/>
+	</permission>	
+	
 </page>
 
 
