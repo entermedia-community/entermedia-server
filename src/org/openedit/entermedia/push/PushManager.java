@@ -150,19 +150,21 @@ public class PushManager
 					break;
 				}
 			}
-
-			try
+			if( filestosend.size() > 0 )
 			{
-				upload(target, archive, filestosend);
-				target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
-
-			}
-			catch (Exception e)
-			{
-				target.setProperty("pusherrordetails", e.toString());
-				saveAssetStatus(searcher, savequeue, target, "error", inUser);
-				log.error("Could not push",e);
+				try
+				{
+					upload(target, archive, filestosend);
+					target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+					saveAssetStatus(searcher, savequeue, target, "complete", inUser);
+	
+				}
+				catch (Exception e)
+				{
+					target.setProperty("pusherrordetails", e.toString());
+					saveAssetStatus(searcher, savequeue, target, "error", inUser);
+					log.error("Could not push",e);
+				}
 			}
 		}
 		searcher.saveAllData(savequeue, inUser);
