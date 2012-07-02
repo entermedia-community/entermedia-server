@@ -24,11 +24,14 @@
 #if( !$link )
 	#set( $link = "${page.directory}/generictablesave.html" )
 #end
-#set( $args = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+
+#set ($id = $context.getRequestParameter("id"))
+
+
+#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 #set ($passalong = "candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
 
-#set ($id = $context.getRequestParameter("id"))
 
 
 #set( $showit = true )
@@ -41,7 +44,6 @@
 #if( $showit )
 	<div id="${viewid}editor">
 	#if( !$edit || $edit == "false")
-	
 	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 	
 	#if( !$parser.parseBoolean($edit) && $caneditasset && !$print.equals("true"))

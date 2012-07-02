@@ -26,12 +26,35 @@
 
 	<div id="dm-container">
 		<div id="emselectable">
-		<table class="striped emdata">
-		<tr class="tableheader">
+		<table class="striped emdata" id="main-results-table">
+		<tr id="tableheader">
+		#set( $sortby = $datalist.getSearchQuery().getSortBy() )
 		#foreach( $detail in $details )
-		<th align="left" nowrap class="sortable">$detail.getText($context)</th>
+		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.getText($context)</th>
 		#end
 		</tr>	
+		
+		
+    <script>
+        $('th.sortable').on({
+            click: function(){
+                var id = $(this).attr('id');
+                if ( $(this).hasClass('currentsort') ) {
+                    if ( $(this).hasClass('up') ) {
+                        jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html?oemaxlevel=1&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
+                    } else {
+                        jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Up');
+                    }
+                } else {
+                    $('th.sortable').removeClass('currentsort');
+                    $(this).addClass('currentsort');
+                    jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
+                }
+            }
+        });
+    </script>
+		
+		
 		#set( $origURL = $context.getRequestParameter("origURL" ) )				
 			
 		#foreach ( $hit in $datalist.getPageOfHits() )

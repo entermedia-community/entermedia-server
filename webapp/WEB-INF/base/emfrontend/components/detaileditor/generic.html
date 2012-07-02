@@ -100,7 +100,7 @@ $context.putPageValue("searcher", $searcher)
 	
 			#set( $foundone = false)
 			#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
-			<div class="table">
+			<div class="table" id="default-fields">
 			#foreach( $detail in $assetdetails )
 				#set( $value = false)
 				#set( $value = $data.get($detail.getId()))

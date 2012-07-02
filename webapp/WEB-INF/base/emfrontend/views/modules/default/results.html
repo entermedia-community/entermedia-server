@@ -22,12 +22,12 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/index.html?viewid=${moduleid}resultstable&viewpath=${moduleid}/${moduleid}resultstable">Edit</a>
 </div>
 <div id="emselectable">
-<table class="emdata striped" id="module-results-table">
+<table class="emdata striped" id="main-results-table">
 
 <thead>
-<tr class="tableheader" >
+<tr id="tableheader" >
 ##<th></th>
-
+#set( $sortby = $hits.getSearchQuery().getSortBy() )
 #foreach( $detail in $resultdetail )
 		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
 					
@@ -41,6 +41,26 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 		 </th>  
 	
 #end
+
+<script>
+    $('th.sortable').on({
+        click: function(){
+            var id = $(this).attr('id');
+            if ( $(this).hasClass('currentsort') ) {
+                if ( $(this).hasClass('up') ) {
+                    jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+                } else {
+                    jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
+                }
+            } else {
+                $('th.sortable').removeClass('currentsort');
+                $(this).addClass('currentsort');
+                jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+            }
+        }
+    });
+</script>
+
 
 </tr>
 </thead>

@@ -1,7 +1,7 @@
 
 
 #set($currentrole = $context.getRequestParameter("settingsgroupid")) 
-#set($currentmodule = $context.getRequestParameter("permissiontype")) 
+#set($permissiontype = $context.getRequestParameter("permissiontype")) 
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
 
 
@@ -23,14 +23,14 @@
               $('#module-picker').hide();
            }
            else {
-              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/index.html?oemaxlevel=1&settingsgroupid=" + val);
+              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/index.html?oemaxlevel=1&permissiontype=$!permissiontype&settingsgroupid=" + val);
               $('#module-picker').show();
            }
         });
     </script>
     
     <span id="module-picker" style="margin-left: 5px; display: none;">
-            <strong>Choose View:</strong>
+            <strong>Choose View: </strong>
             
             #set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permissionsapp"))
             
@@ -39,7 +39,7 @@
            
                 #foreach($item in $permissionsearcher.getAllHits())
                      #if( $section != $item.permissiontype )
-                         <option #if($currentmodule == $item.permissiontype) selected #end value="$item.permissiontype">$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)</option>
+                         <option #if($permissiontype == $item.permissiontype) selected #end value="$item.permissiontype">$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)</option>
                      #set( $section = $item.permissiontype)
                      #end   
                  #end
