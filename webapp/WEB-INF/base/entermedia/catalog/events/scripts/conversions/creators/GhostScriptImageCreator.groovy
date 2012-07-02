@@ -13,7 +13,7 @@ import org.openedit.entermedia.creator.*
 import com.openedit.OpenEditException;
 import com.openedit.page.Page;
 
-public class GhostScriptImageCreator extends ImageMagickImageCreator
+public class GhostScriptImageCreator extends imagemagickCreator
 {
 	private static final Log log = LogFactory.getLog(GhostScriptImageCreator.class);
 	public boolean canReadIn(MediaArchive inArchive, String inInput)
