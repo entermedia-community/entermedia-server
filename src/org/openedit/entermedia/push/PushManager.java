@@ -145,6 +145,8 @@ public class PushManager
 				}
 				else
 				{
+					//TODO: Go ahead and queue this asset and create the thumbnail?
+					
 					//flag this as waiting
 					saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
 					break;

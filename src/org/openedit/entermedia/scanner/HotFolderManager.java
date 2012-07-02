@@ -188,11 +188,16 @@ public class HotFolderManager
 			importer.setAttachmentFilters(attachmentslist);
 		}
 		
-		//importer.
-		
-		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
-		List<String> paths = importer.processOn(base, path, inArchive, null);
+		Date started = new Date();
+		long sincedate = 0;
+		String since = inFolder.get("lastscanstart");
+		if( since != null )
+		{
+			sincedate = DateStorageUtil.getStorageUtil().parseFromStorage(since).getTime();
+		}
+		List<String> paths = importer.processOn(base, path, inArchive, sincedate, null);
+		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 		return paths;
 	}
 	

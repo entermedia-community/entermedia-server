@@ -313,7 +313,7 @@ public void checkforTasks()
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
 			runners.add(runner);
-			String id = hit.get("assetid");
+			String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
 			if( id == null )
 			{
 				throw new OpenEditException("asset id was null on " + hit );
