@@ -1125,7 +1125,7 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				continue;
 			}
-			getAssetImporter().processOn(assetRoot, path,archive, inReq.getUser());
+			getAssetImporter().processOn(assetRoot, path,archive, 0,inReq.getUser());
 		}
 
 		if (unzipped != null)
@@ -1133,7 +1133,7 @@ public class AssetEditModule extends BaseMediaModule
 			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
 			{
 				Page page = (Page) iterator.next();
-				getAssetImporter().processOn(assetRoot, page.getPath(), archive, inReq.getUser());
+				getAssetImporter().processOn(assetRoot, page.getPath(), archive, 0,inReq.getUser());
 			}
 		}
 	}
@@ -1156,7 +1156,7 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				continue;
 			}
-			getAssetImporter().processOn(assetRoot, path, archive, inReq.getUser());
+			getAssetImporter().processOn(assetRoot, path, archive,0, inReq.getUser());
 		}
 
 		if (unzipped != null)
@@ -1164,7 +1164,7 @@ public class AssetEditModule extends BaseMediaModule
 			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
 			{
 				Page page = (Page) iterator.next();
-				getAssetImporter().processOn(assetRoot, page.getPath(), archive, inReq.getUser());
+				getAssetImporter().processOn(assetRoot, page.getPath(), archive,0,inReq.getUser());
 			}
 		}
 	}
@@ -1236,7 +1236,7 @@ public class AssetEditModule extends BaseMediaModule
 	}
 	protected void importAndSearch(WebPageRequest inReq, MediaArchive inArchive, String mountpath, String assetRoot)
 	{
-		List<String> created = getAssetImporter().processOn(assetRoot, assetRoot, inArchive, inReq.getUser());
+		List<String> created = getAssetImporter().processOn(assetRoot, assetRoot, inArchive,0,inReq.getUser());
 		
 		SearchQuery search = inArchive.getAssetSearcher().createSearchQuery();
 		int max = Math.min(10000, created.size());

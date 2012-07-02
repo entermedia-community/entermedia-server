@@ -1,24 +1,66 @@
-<div class="subcolumns">
-          <div class="c33l">
-            <div class="subcl">
-<div style="overflow: hidden;" class="ui-widget">
-<div class="ui-widget-header">[[Roles]]</div>
-<div class="ui-widget-content emselectmenu">
 
-#set($current = $context.getRequestParameter("settingsgroupid")) 
+
+#set($currentrole = $context.getRequestParameter("settingsgroupid")) 
+#set($currentmodule = $context.getRequestParameter("permissiontype")) 
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
-<ul class="vlist">
-#foreach($settingsgroup in $groupSearcher.fieldSearch("id", "*", "textUp"))
- <li #if($current == $settingsgroup.id) class="active" #end><a href="$home$apphome/views/settings/users/permissions/views/index.html?settingsgroupid=$settingsgroup.id">$settingsgroup</a></li>
-#end
-</ul>
 
-<br>
 
-<a class="btn" href='$home$apphome/views/settings/users/permissions/views/addnew.html?groupname=New'>Add New</a>
-
+<div class="tab-actions" style="margin: -20px -20px 10px -20px;">
+    <strong> Choose Role:</strong>
+        <select id="roles" style="position: relative; top: 2px; margin-left: 5px;">
+            <option value=""></option>
+       #foreach($settingsgroup in $groupSearcher.fieldSearch("id", "*", "textUp"))
+           <option #if($currentrole == $settingsgroup.id) selected #end value="$settingsgroup.id">$settingsgroup</option>
+       #end
+           <option value="new">-- Add New Role --</option>
+    </select>
+    
+    <script>
+        $("select#roles").change(function () {
+           var val = $(this).val();
+           if ( val == "new" ) {
+              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/addnew.html?oemaxlevel=1&groupname=New");
+              $('#module-picker').hide();
+           }
+           else {
+              $("#permissions-div").load("$home$apphome/views/settings/users/permissions/views/index.html?oemaxlevel=1&settingsgroupid=" + val);
+              $('#module-picker').show();
+           }
+        });
+    </script>
+    
+    <span id="module-picker" style="margin-left: 5px; display: none;">
+            <strong>Choose View:</strong>
+            
+            #set($permissionsearcher = $searcherManager.getSearcher($catalogid, "permissionsapp"))
+            
+            <select style="position: relative; top: 2px; margin-left: 5px;">
+                <option value="all">Show All</option>
+           
+                #foreach($item in $permissionsearcher.getAllHits())
+                     #if( $section != $item.permissiontype )
+                         <option #if($currentmodule == $item.permissiontype) selected #end value="$item.permissiontype">$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)</option>
+                     #set( $section = $item.permissiontype)
+                     #end   
+                 #end
+        </select>
+        
+        <script>
+            $("#module-picker select").change(function () {
+               var rolesval = $('select#roles').val();
+               var val = $(this).val();
+               if ( val == "all" ) {
+                  $("#permissions-div").load("./views/index.html?oemaxlevel=1&settingsgroupid=" + rolesval);
+               }
+               else {
+                  $("#permissions-div").load("./views/index.html?oemaxlevel=1&settingsgroupid=" + rolesval + "&permissiontype=" + val);
+               }
+            });
+        </script>   
+    </span>
+     
 </div>
-</div>
+
 
 #if( $currentgroup)
 	#set($currentgroup = $context.getRequestParameter("settingsgroupid"))
@@ -31,6 +73,8 @@
 	<div class="em-rounded" >
 	
 	<h2>Users in the group</h2>
+	
+	
 	<ul class="vlist">
 	#foreach($hit in $users)
 	#set($target = $userManager.getUser($hit.userid))
@@ -39,16 +83,12 @@
 	#end
 	</ul>
 	
-	</div>
+
 	#end
 #end
 
-           </div>
-          </div>
-          <div class="c66r">
-            <div class="subcr">
+            <div id="permissions-div">
             
 $pages.includeContent()
 
-
-</div></div></div>
+</div>

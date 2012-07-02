@@ -110,12 +110,12 @@ public class AssetImporter
 			Page topLevelPage = getPageManager().getPage(path);
 			if (topLevelPage.isFolder() && !topLevelPage.getPath().endsWith("/CVS") && !topLevelPage.getPath().endsWith(".versions"))
 			{
-				processOn(inRootPath, path,inArchive, inUser);
+				processOn(inRootPath, path,inArchive, 0, inUser);
 			}
 		}
 	}
 	
-	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, User inUser)
+	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, final long inLackCheckedTime, User inUser)
 	{
 		final List assets = new ArrayList();
 		final List<String> assetsids = new ArrayList<String>();
@@ -209,13 +209,21 @@ public class AssetImporter
 					}
 					if( processchildren)
 					{
+						boolean checkfiles = true;
+						if( inLackCheckedTime > 0 && isOnWindows() && inLackCheckedTime < inInput.getLastModified() )  //On Windows the folder times stamp matches the most recently modified file
+						{
+							checkfiles = false;
+						}
 						for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 						{
 							String path = (String) iterator.next();
 							ContentItem item = getPageManager().getRepository().getStub(path);
 							if( isRecursive() )
 							{
-								process(item, inUser);
+								if( checkfiles ||  item.isFolder())
+								{
+									process(item, inUser);
+								}
 							}
 						}
 					}
