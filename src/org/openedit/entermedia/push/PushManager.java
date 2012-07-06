@@ -90,6 +90,11 @@ public class PushManager
 		return fieldClient;
 	}
 
+	/**
+	 * This will just mark assets as error?
+	 * @param archive
+	 * @param inUser
+	 */
 	public void processPushQueue(MediaArchive archive, User inUser)
 	{
 		//Searcher hot = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "hotfolder");
@@ -119,58 +124,64 @@ public class PushManager
 			}
 			
 			Data hit = (Data) iterator.next();
-			Asset target = (Asset) archive.getAssetBySourcePath(hit.getSourcePath());
-
-			String mediatype = archive.getMediaRenderType(target.getFileFormat());
-
-			List filestosend = new ArrayList();
-			for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
-			{
-				String presetid = (String) iterator2.next();
-				Data preset = getSearcherManager().getData(archive.getCatalogId(), "convertpreset", presetid);
-				String requiredtype = preset.get("inputtype");
-				if( requiredtype != null && requiredtype.length() > 0)
-				{
-					if( !requiredtype.equals(mediatype))
-					{
-						continue;
-					}
-				}
-						
-				Page tosend = findInputPage(archive, target, preset);
-				if (tosend.exists())
-				{
-					File file = new File(tosend.getContentItem().getAbsolutePath());
-					filestosend.add(file);
-				}
-				else
-				{
-					//TODO: Go ahead and queue this asset and create the thumbnail?
-					
-					//flag this as waiting
-					saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
-					break;
-				}
-			}
-			if( filestosend.size() > 0 )
-			{
-				try
-				{
-					upload(target, archive, filestosend);
-					target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-					saveAssetStatus(searcher, savequeue, target, "complete", inUser);
-	
-				}
-				catch (Exception e)
-				{
-					target.setProperty("pusherrordetails", e.toString());
-					saveAssetStatus(searcher, savequeue, target, "error", inUser);
-					log.error("Could not push",e);
-				}
-			}
+			Asset asset = (Asset) archive.getAssetBySourcePath(hit.getSourcePath());
+			uploadPresets(archive, presets, inUser, asset, savequeue);
 		}
 		searcher.saveAllData(savequeue, inUser);
 
+	}
+
+
+	public void uploadPresets(MediaArchive archive, Collection presets, User inUser, Asset target, List savequeue)
+	{
+		Searcher searcher = archive.getAssetSearcher();
+
+		String mediatype = archive.getMediaRenderType(target.getFileFormat());
+
+		List filestosend = new ArrayList();
+		for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
+		{
+			String presetid = (String) iterator2.next();
+			Data preset = getSearcherManager().getData(archive.getCatalogId(), "convertpreset", presetid);
+			String requiredtype = preset.get("inputtype");
+			if( requiredtype != null && requiredtype.length() > 0)
+			{
+				if( !requiredtype.equals(mediatype))
+				{
+					continue;
+				}
+			}
+					
+			Page tosend = findInputPage(archive, target, preset);
+			if (tosend.exists())
+			{
+				File file = new File(tosend.getContentItem().getAbsolutePath());
+				filestosend.add(file);
+			}
+			else
+			{
+				//TODO: Go ahead and queue this asset and create the thumbnail?
+				//flag this as waiting
+				saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
+				break;
+			}
+		}
+		if( filestosend.size() > 0 )
+		{
+			try
+			{
+				upload(target, archive, filestosend);
+				target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
+
+			}
+			catch (Exception e)
+			{
+				target.setProperty("pusherrordetails", e.toString());
+				saveAssetStatus(searcher, savequeue, target, "error", inUser);
+				log.error("Could not push",e);
+			}
+		}
 	}
 
 

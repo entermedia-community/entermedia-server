@@ -50,7 +50,6 @@ public class AssetImporter
     protected List<String> fieldExcludeMatches;
     protected String fieldIncludeExtensions;
     protected Collection fieldAttachmentFilters;
-    protected Boolean fieldOnWindows;
     
 	public Collection getAttachmentFilters()
 	{
@@ -82,15 +81,6 @@ public class AssetImporter
 		fieldIncludeExtensions = inIncludeFiles;
 	}
 
-	public boolean isUseFolders()
-	{
-		return fieldUseFolders;
-	}
-
-	public void setUseFolders(boolean inUseFolders)
-	{
-		fieldUseFolders = inUseFolders;
-	}
 
 	public AssetUtilities getAssetUtilities()
 	{
@@ -114,237 +104,36 @@ public class AssetImporter
 			}
 		}
 	}
-	
+	protected void assetsImported( MediaArchive inArchive, java.util.List<Asset> inAssetsSaved)
+	{
+		//this might be overriden to push
+	}
 	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, final long inLackCheckedTime, User inUser)
 	{
-		final List assets = new ArrayList();
-		final List<String> assetsids = new ArrayList<String>();
-		PathProcessor finder = new PathProcessor()
+		AssetPathProcessor finder = new AssetPathProcessor()
 		{
-			public void process(ContentItem inInput, User inUser)
+			protected void assetsImported(java.util.List<Asset> inAssetsSaved)
 			{
-				if (inInput.isFolder())
-				{
-					if (acceptDir(inInput))
-					{
-						processAssetFolder(inArchive, inInput, inUser);
-					}
-				}
-				else
-				{
-					if (acceptFile(inInput))
-					{
-						processFile(inInput, inUser);
-					}
-				}
-			}
-			protected void processAssetFolder(final MediaArchive inArchive, ContentItem inInput, User inUser)
-			{
-				String sourcepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
-				Asset asset = inArchive.getAssetArchive().getAssetBySourcePath(sourcepath);
-				if( asset != null)
-				{
-					//check this one primary asset to see if it changed
-					if( asset.getPrimaryFile() != null)
-					{
-						inInput = getPageManager().getRepository().getStub(inInput.getPath() + "/" + asset.getPrimaryFile());
-						asset = getAssetUtilities().populateAsset(asset, inInput, inArchive, sourcepath, inUser);
-						if( asset != null)
-						{
-							assets.add(asset);
-							if (assets.size() > 100)
-							{
-								saveImportedAssets(assets, assetsids, inArchive, inUser);
-							}
-						}
-					}
-					//dont process sub-folders
-				}
-				else
-				{
-					//look deeper for assets
-					List paths = getPageManager().getChildrenPaths(inInput.getPath());
-					if( paths.size() == 0 )
-					{
-						return;
-					}
-					boolean processchildren = true;
-					if( isUseFolders() || createAttachments(paths) )
-					{
-						//Use the first file that is not a folder
-						ContentItem found = findPrimary(paths);
-						if( found == null )
-						{
-							found = inInput;
-						}
-						String foundprimary = PathUtilities.extractFileName(found.getPath());
-						String soucepath = getAssetUtilities().extractSourcePath(inInput, inArchive);
-
-						asset = inArchive.createAsset(soucepath);
-						asset.setFolder(true);
-						asset.setProperty("datatype", "original");
-						if( inUser != null )
-						{
-							asset.setProperty("owner", inUser.getUserName());
-						}
-						asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-						asset.setProperty("assetviews", "1");
-						asset.setProperty("importstatus", "imported");
-						asset.setPrimaryFile(foundprimary);
-						getAssetUtilities().readMetadata(asset, found, inArchive);
-						getAssetUtilities().populateCategory(asset, inInput, inArchive, inUser);
-						//asset = getAssetUtilities().createAssetIfNeeded(item, inArchive, inUser);
-						//set the primary file
-						assets.add(asset);
-						if (assets.size() > 100)
-						{
-							saveImportedAssets(assets, assetsids, inArchive, inUser);
-						}
-
-						processchildren = false;
-					}
-					else
-					{
-						processchildren = true;
-					}
-					if( processchildren)
-					{
-						boolean checkfiles = true;
-						if( inLackCheckedTime > 0 && isOnWindows() && inLackCheckedTime < inInput.getLastModified() )  //On Windows the folder times stamp matches the most recently modified file
-						{
-							checkfiles = false;
-						}
-						for (Iterator iterator = paths.iterator(); iterator.hasNext();)
-						{
-							String path = (String) iterator.next();
-							ContentItem item = getPageManager().getRepository().getStub(path);
-							if( isRecursive() )
-							{
-								if( checkfiles ||  item.isFolder())
-								{
-									process(item, inUser);
-								}
-							}
-						}
-					}
-				}
-			}
-			protected ContentItem findPrimary(List inPaths)
-			{
-				for (Iterator iterator = inPaths.iterator(); iterator.hasNext();)
-				{
-					String path = (String) iterator.next();
-					ContentItem item = getPageManager().getRepository().getStub(path);
-					if( !item.isFolder() && acceptFile(item))
-					{
-						return item;
-					}
-				}
-				return null;
-			}
-			public void processFile(ContentItem inContent, User inUser)
-			{
-				if( !isUseFolders() ) 
-				{
-					Asset asset = getAssetUtilities().createAssetIfNeeded(inContent, inArchive, inUser);
-					if( asset != null)
-					{
-						assets.add(asset);
-						if (assets.size() > 100)
-						{
-							saveImportedAssets(assets,assetsids, inArchive, inUser);
-						}
-					}
-				}
-			}
+				AssetImporter.this.assetsImported(inArchive, inAssetsSaved);
+			};
 		};
+		finder.setMediaArchive(inArchive);
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);
+		finder.setAssetUtilities(getAssetUtilities());
 		finder.setExcludeMatches(getExcludeMatches()); //The rest should be filtered by the mount itself
 		finder.setIncludeExtensions(getIncludeExtensions());
-		finder.process(inStartingPoint, inUser);
-
+		finder.setAttachmentFilters(getAttachmentFilters());
+		finder.setLastCheckedTime(inLackCheckedTime);
+		finder.processAssets(inStartingPoint, inUser);
+		
 		// Windows, for instance, has an absolute file system path limit of 256
 		// characters
-		if( isOnWindows() )
-		{
-			checkPathLengths(inArchive, assets);
-		}
-		saveImportedAssets(assets, assetsids, inArchive,  inUser);
-		return assetsids;
-	}
-	protected boolean createAttachments(List inPaths)
-	{
-		if( fieldAttachmentFilters == null )
-		{
-			return false;
-		}
-		for (Iterator iterator = getAttachmentFilters().iterator(); iterator.hasNext();)
-		{
-			String check = (String) iterator.next();
-			for (Iterator iterator2 = inPaths.iterator(); iterator2.hasNext();)
-			{
-				String path = (String) iterator2.next();
-				if( PathUtilities.match(path, check) )
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * This method removes any assets from the list that have absolute file
-	 * paths which are too long. Should be used on windows servers that can't
-	 * handle more than 256 characters in file names.
-	 * 
-	 * @param inArchive
-	 * @param inAssets
-	 */
-	private void checkPathLengths(MediaArchive inArchive, List inAssets)
-	{
-		if (isSizeLimited().booleanValue())
-		{
-			int absolutepathlimit = 260;
-			for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
-			{
-				Asset asset = (Asset) iterator.next();
-				String path = inArchive.getAssetArchive().buildXmlPath(asset);
-				ContentItem item = getPageManager().getPageSettingsManager().getRepository().get(path);
-				if (item.getAbsolutePath().length() > absolutepathlimit)
-				{
-					log.info("Path too long. Couldn't save " + item.getPath());
-					iterator.remove();
-				}
-			}
-		}
-	}
-
-	protected void saveImportedAssets(List inAssets, List allassetids, MediaArchive inArchive, User inUser) throws OpenEditException
-	{
-		if (inAssets.size() == 0)
-		{
-			return;
-		}
-		Asset	eventasset = (Asset)inAssets.get(0);	
-		List<String> someids = new ArrayList();
-
-		for (Iterator iter = inAssets.iterator(); iter.hasNext();)
-		{
-			Asset asset = (Asset) iter.next();
-			inArchive.getAssetArchive().saveAsset(asset);
-			inArchive.fireMediaEvent("assetcreated",inUser, asset);
-			someids.add(asset.getId());
-		}
-		allassetids.addAll(someids);
-		inArchive.fireMediaEvent("importing/assetsimported", inUser, eventasset, someids);
-
-		inArchive.getAssetSearcher().updateIndex(inAssets, false);
-		inArchive.getAssetArchive().clearAssets();
-
-		inAssets.clear();
+//		if( isOnWindows() )
+//		{
+//			checkPathLengths(inArchive, assets);
+//		}
+		return finder.assetsids;
 	}
 
 	public PageManager getPageManager()
@@ -356,24 +145,6 @@ public class AssetImporter
 	{
 		fieldPageManager = inPageManager;
 	}
-
-	public Boolean isSizeLimited()
-	{
-		if (fieldLimitSize == null)
-		{
-			if (System.getProperty("os.name").toLowerCase().contains("windows"))
-			{
-				fieldLimitSize = Boolean.TRUE;
-			}
-			else
-			{
-				fieldLimitSize = Boolean.FALSE;
-			}
-		}
-		return fieldLimitSize;
-	}
-
-	//TODO: Reconcile this code with AssetUtilities.pupulateAsset
 
 
 	public Data createAssetFromExistingFile( MediaArchive inArchive, User inUser, boolean unzip,  String inSourcepath)
@@ -551,21 +322,4 @@ public class AssetImporter
 				importer.fetchMediaForAsset(inArchive, inAsset,inUser);
 			}
 	}
-	public Boolean isOnWindows()
-	{
-		if (fieldOnWindows == null)
-		{
-			if (System.getProperty("os.name").toUpperCase().contains("WINDOWS"))
-			{
-				fieldOnWindows = Boolean.TRUE;
-			}
-			else
-			{
-				fieldOnWindows = Boolean.FALSE;
-			}
-			
-		}
-		return fieldOnWindows;
-	}
-	
 }
