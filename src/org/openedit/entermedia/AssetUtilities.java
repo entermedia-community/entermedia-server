@@ -44,7 +44,6 @@ public class AssetUtilities
 		fieldMetaDataReader = inMetaDataReader;
 	}
 	//Main API
-	
 	public Asset createAssetIfNeeded(ContentItem inContent, final MediaArchive inArchive, User inUser)
 	{
 		String sourcepath = extractSourcePath(inContent,inArchive);

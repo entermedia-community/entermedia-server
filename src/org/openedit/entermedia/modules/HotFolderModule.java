@@ -81,7 +81,6 @@ public class HotFolderModule extends BaseMediaModule
 	{
 		return (HotFolderManager)getModuleManager().getBean("hotFolderManager");
 	}
-
 	public void importFolder(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -91,5 +90,4 @@ public class HotFolderModule extends BaseMediaModule
 		inReq.putPageValue("found", found);
 		
 	}
-	
 }

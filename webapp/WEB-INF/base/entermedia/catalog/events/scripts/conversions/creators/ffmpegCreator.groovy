@@ -139,7 +139,10 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 				//comm.add("640:480");
 				comm.add("-threads");
 				comm.add("0");
-
+				if( inStructions.get("setpts") != null )
+				{
+					comm.add("setpts=" + inStructions.get("setpts") + "*PTS");
+				}
 				//add calculations to fix letterbox problems
 				//http://howto-pages.org/ffmpeg/
 				int width = inStructions.intValue("prefwidth",640); 

@@ -188,7 +188,6 @@ public class HotFolderManager
 			importer.setAttachmentFilters(attachmentslist);
 		}
 		
-		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
 		Date started = new Date();
 		long sincedate = 0;
 		String since = inFolder.get("lastscanstart");
@@ -198,6 +197,7 @@ public class HotFolderManager
 		}
 		List<String> paths = importer.processOn(base, path, inArchive, sincedate, null);
 		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
+		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
 		return paths;
 	}
 	

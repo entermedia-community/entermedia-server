@@ -1460,13 +1460,6 @@
 		<property name="userManager"><ref bean="userManager" /></property>
 	</bean>
 	
-	<bean id="pushrequestSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>assets</value></property>
-	</bean>
 	<bean id="workspaceManager" class="org.entermedia.workspace.WorkspaceManager">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>

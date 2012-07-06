@@ -349,6 +349,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			{
 				FileUtils.safeClose(out);
 			}
+			if( getAssets().size() > 1000)
+			{
+				clearAssets();
+			}
 			getAssets().put(inAsset.getSourcePath(), inAsset);
 
 		}

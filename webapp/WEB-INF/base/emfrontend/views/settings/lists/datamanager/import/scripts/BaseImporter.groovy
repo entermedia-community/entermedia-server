@@ -63,14 +63,14 @@ public class BaseImporter extends EnterMediaObject
 				if (idCell != null) 
 				{
 					Data target = findExistingData(idCell);
-					for (Iterator iterator = data.iterator(); iterator.hasNext();) 
-					{
-						Data one = (Data) iterator.next();
-						if(idCell.equals(one.getId()))
-						{
-							target = one;
-						}
-					}
+//					for (Iterator iterator = data.iterator(); iterator.hasNext();) 
+//					{
+//						Data one = (Data) iterator.next();
+//						if(idCell.equals(one.getId()))
+//						{
+//							target = one;
+//						}
+//					}
 					if (target == null) 
 					{
 
