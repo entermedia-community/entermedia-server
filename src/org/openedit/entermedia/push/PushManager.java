@@ -116,6 +116,7 @@ public class PushManager
 		}
 		query.addSortBy("assetmodificationdate");
 		HitTracker hits = searcher.search(query);
+		hits.setHitsPerPage(100);
 		if( hits.size() == 0 )
 		{
 			log.info("No new assets to push");
