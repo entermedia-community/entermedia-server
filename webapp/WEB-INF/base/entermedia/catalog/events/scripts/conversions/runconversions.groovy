@@ -291,7 +291,7 @@ public void checkforTasks()
 		query.addMatches("assetid", assetid);
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
-	HitTracker newtasks = tasksearcher.search(query);
+	ArrayList newtasks = new ArrayList(tasksearcher.search(query));
 
 	log.info("processing ${newtasks.size()} conversions");
 	

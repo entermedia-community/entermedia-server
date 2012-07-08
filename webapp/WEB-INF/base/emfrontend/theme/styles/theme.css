@@ -448,7 +448,7 @@ tr.emsearchfieldrow td input {
 #emcontainer .emcommentdate
 {
     display: inline;
-    margin: 5px 10px 0 30px;
+    margin: -5px 0 0 0;
     font-size: 10px;
     float: right;
 }
@@ -1728,19 +1728,19 @@ ul#sub-nav li:hover ul {
 .no-padding-for-real {
     padding: 0;
 }
-#main-asset-table {
+#main-results-table {
     font-size: 11px;
     width: 100%;
     overflow-x: auto;
 }
-#main-asset-table tr td:first-child, #emcontainer #main-asset-table .firstheader {
+#emcontainer #main-results-table .firstheader {
     width: 28px;
     text-align: right;
 }
 .firstheader input {
     float: right;
 }
-#main-asset-table tr td:last-child {
+#main-results-table tr td:last-child {
     padding-right: 5px;
 }
 .emdatafieldvalue {
@@ -1848,17 +1848,19 @@ center #addcoment {
     color: #444;
     padding: 10px;
 }
-#emcomments {
+#emcontainer #emcomments {
     margin: 10px 0;
+    padding: 0;
 }
 #emcomments .emcomment:first-child {
     margin-top: 0;
 }
-.emcomment {
-    margin: 10px;
-    padding: 20px;
+#emcontainer .emcomment {
+    margin: 10px 20px;
+    padding: 10px 0;
     border: 1px solid #fff;
     border-bottom: 1px solid #f7f7f7;
+    display: block;
 }
 .emcomment .emcommenttext {
     margin: 0 0 10px 0;
@@ -1975,7 +1977,7 @@ center #addcoment {
     border: 1px solid #63bfdd;
     box-shadow: none;
 }
-#emcontainer #emselectable table tr.emborderhover, #module-results-table tr:hover {
+#emcontainer #emselectable table tr.emborderhover, #main-results-table tr:hover {
     background: #c9e8f2;
     padding: 0;
     margin: 0;
@@ -2931,30 +2933,30 @@ body #emcontainer .emasseteditorarea {
 }
 
 /* TABLE CELL SETUP */
-#main-asset-table #tableheader th, table tr.tableheader th {
+#main-results-table #tableheader th, table tr.tableheader th {
     text-align: center;
     padding: 5px 20px;
 }
-#main-asset-table #tableheader th, table tr.tableheader th:first-child {
+#main-results-table #tableheader th, table tr.tableheader th:first-child {
     padding: 5px 0;
 }
-#emcontainer #emselectable #main-asset-table tr td:first-child {
+#emcontainer #emselectable #main-results-table tr .checkbox {
     padding: 0;
     width: 30px;
     text-align: center;
 }
-#emcontainer #emselectable  #main-asset-table tr td {
+#emcontainer #emselectable  #main-results-table tr td {
     text-align: left;
     border-left: 1px dashed #E2EFF4;
     padding: 0 10px;    
 }
-#emcontainer #emselectable #main-asset-table tr td:first-child, #emcontainer #emselectable #main-asset-table tr td:nth-child(2) {
+#emcontainer #emselectable #main-results-table tr td:first-child, #emcontainer #emselectable #main-results-table tr td:nth-child(2) {
     border-left: none;
 } 
-#emcontainer #emselectable #main-asset-table tr td.checkbox {
+#emcontainer #emselectable #main-results-table tr td.checkbox {
     text-align: right;
 }
-#emcontainer #emselectable #main-asset-table tr td.thumbnail {
+#emcontainer #emselectable #main-results-table tr td.thumbnail {
    width: 130px;
     text-align: center;
     padding: 0 10px;
@@ -2969,7 +2971,7 @@ background: -ms-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 1
 background: linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 ); /* IE6-9 */
 }
-#main-asset-table #tableheader th {
+#main-results-table #tableheader th {
     color: #fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.2);
     background: rgba(0,0,0,0);
@@ -2988,22 +2990,22 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', end
     padding: 6px 10px !important;
     vertical-align: middle;
 }
-#main-asset-table #tableheader th:first-child, #main-asset-table #tableheader th:last-child {
+#main-results-table #tableheader th:first-child, #main-results-table #tableheader th:last-child {
     border: none;
 }
-#main-asset-table #tableheader th.sortable:hover {
+#main-results-table #tableheader th.sortable:hover {
     background: rgba(0,0,0,0.05);
     cursor: pointer;
 }
-#main-asset-table #tableheader th.sortable.currentsort {
+#main-results-table #tableheader th.sortable.currentsort {
     box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
     border-right: none;
     padding: 0 28px 0 10px;
 }
-#main-asset-table #tableheader th.sortable.currentsort.up {
+#main-results-table #tableheader th.sortable.currentsort.up {
     background: rgba(0,0,0,0.1) url('../images/sort-asc.png') right 12px no-repeat;
 }
-#main-asset-table #tableheader th.sortable.currentsort.down {
+#main-results-table #tableheader th.sortable.currentsort.down {
     background: rgba(50,79,16,0.1) url('../images/sort-desc.png') right 12px no-repeat;
 }
 .settings-table {
@@ -4001,9 +4003,6 @@ p.info {
     height: 31px;
     padding-top: 13px;
     margin-bottom: -15px;
-}
-#module-results-table tr td:first-child div {
-    margin-left: 10px;
 }
 #advsearchpanel select {
     margin: 5px 0;

@@ -26,11 +26,11 @@
 	##foreach ($comment in $comments.getLast(2))
 	#foreach ($comment in $comments.getLast(15))
 		<div class="emcomment">	
+				<span class="emcommentuser">$comment.user.getScreenName()</span>
 			<div class="emcommenttext">
 				#esc($comment.comment)
 			</div>
 			<div class="comment-bottom">
-				<span class="emcommentuser">$comment.user.getScreenName()</span>
 				<span class="emcommentdate">Posted on $comment.getShortDate($context.locale)</span>
 			</div>
 		

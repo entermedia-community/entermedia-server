@@ -86,16 +86,10 @@ public class AssetPathProcessor extends PathProcessor
 		}
 
 		getMediaArchive().fireMediaEvent("importing/assetsimported", inUser, eventasset, someids);
-		assetsImported(getAssetsToSave());
 		
 		getAssetsToSave().clear();
 	}
 
-	protected void assetsImported(List<Asset> inAssetsToSave)
-	{
-		// TODO Auto-generated method stub
-		
-	}
 	public void setMediaArchive(MediaArchive inMediaArchive)
 	{
 		fieldMediaArchive = inMediaArchive;

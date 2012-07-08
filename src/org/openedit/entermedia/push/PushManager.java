@@ -89,45 +89,59 @@ public class PushManager
 		}
 		return fieldClient;
 	}
-
+	public void processPushQueue(MediaArchive archive, User inUser)
+	{
+		processPushQueue(archive,null,inUser);
+	}
 	/**
 	 * This will just mark assets as error?
 	 * @param archive
 	 * @param inUser
 	 */
-	public void processPushQueue(MediaArchive archive, User inUser)
+	public void processPushQueue(MediaArchive archive, String inAssetIds, User inUser)
 	{
 		//Searcher hot = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "hotfolder");
 		Searcher searcher = archive.getAssetSearcher();
 		SearchQuery query = searcher.createSearchQuery();
-		query.addMatches("category","index");
-		query.addNot("pushstatus","complete");
-		query.addNot("pushstatus","error");
+		if( inAssetIds == null )
+		{
+			query.addMatches("category","index");
+			query.addNot("pushstatus","complete");
+			query.addNot("pushstatus","error");
+		}
+		else
+		{
+			String assetids = inAssetIds.replace(","," ");
+			query.addOrsGroup( "id", assetids );
+		}
 		query.addSortBy("assetmodificationdate");
 		HitTracker hits = searcher.search(query);
+		hits.setHitsPerPage(100);
 		if( hits.size() == 0 )
 		{
 			log.info("No new assets to push");
 			return;
 		}
 			
-		Collection presets = archive.getCatalogSettingValues("push_convertpresets");
 		List savequeue = new ArrayList();
 
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{			
-			String enabled = archive.getCatalogSettingValue("push_masterswitch");
-			if( "false".equals(enabled) )
-			{
-				log.info("Push is paused");
-				break;
-			}
-			
 			Data hit = (Data) iterator.next();
 			Asset asset = (Asset) archive.getAssetBySourcePath(hit.getSourcePath());
-			uploadPresets(archive, presets, inUser, asset, savequeue);
+			savequeue.add(asset);
+			if( savequeue.size() > 100 )
+			{
+				pushAssets(archive, savequeue);
+				savequeue.clear();
+			}
 		}
-		searcher.saveAllData(savequeue, inUser);
+		if( savequeue.size() > 0 )
+		{
+			pushAssets(archive, savequeue);
+			savequeue.clear();
+		}
+		//searcher.saveAllData(savequeue, inUser);
 
 	}
 
@@ -160,10 +174,20 @@ public class PushManager
 			}
 			else
 			{
-				//TODO: Go ahead and queue this asset and create the thumbnail?
-				//flag this as waiting
-				saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
-				break;
+				//Try again to run the tasks
+				archive.fireMediaEvent("importing/queueconversions", null, target);	//This will run right now, conflict?			
+				archive.fireMediaEvent("conversions/runconversion", null, target);	//This will run right now, conflict?			
+				tosend = findInputPage(archive, target, preset);
+				if (tosend.exists())
+				{
+					File file = new File(tosend.getContentItem().getAbsolutePath());
+					filestosend.add(file);
+				}
+				else
+				{
+					saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
+					break;
+				}
 			}
 		}
 		if( filestosend.size() > 0 )
@@ -185,7 +209,7 @@ public class PushManager
 	}
 
 
-	protected void saveAssetStatus(Searcher searcher, List savequeue, Asset target, String inNewStatus, User inUser)
+	protected void 	saveAssetStatus(Searcher searcher, List savequeue, Asset target, String inNewStatus, User inUser)
 	{
 		String oldstatus = target.get("pushstatus");
 		if( oldstatus == null || !oldstatus.equals(inNewStatus))
@@ -423,6 +447,33 @@ public class PushManager
 	{
 		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("pushstatus", "notallconverted");
 		return hits;
+	}
+
+
+	public void pushAssets(MediaArchive inArchive, List<Asset> inAssetsSaved)
+	{
+		String enabled = inArchive.getCatalogSettingValue("push_masterswitch");
+		if( "false".equals(enabled) )
+		{
+			log.info("Push is paused");
+			return;
+		}
+
+		Collection presets = inArchive.getCatalogSettingValues("push_convertpresets");
+
+		List tosave = new ArrayList();
+		//convert then save
+		for (Iterator iterator = inAssetsSaved.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			//TODO Dont push locked assets?
+			
+			asset.setProperty("pushstatus", "notallconverted");
+			uploadPresets(inArchive, presets, null, asset, tosave);
+		}
+		inArchive.getAssetSearcher().saveAllData(tosave, null);
+
+		
 	}
 
 

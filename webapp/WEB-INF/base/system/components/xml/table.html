@@ -14,21 +14,33 @@
 #end
 
 #set( $editpath = $context.getRequestParameter("editpath"))
-#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))##productid
-#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))##4322
-
+#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+#set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set( $moduleid = $context.findValue("module") )
 
 #set ($catalogId = $context.getRequestParameter("catalogid") )
 			
 #set( $joinsearcher = $searcherManager.getSearcher($catalogId, $searchtype))
 #if(!$existingrecords)
-	#set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
+
+	##set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
+	
+	#set ($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
+	#set ( $sortby = $context.findValue("sortby"))
+	$!query.addSortBy($sortby)
+	#set( $existingrecords = $joinsearcher.search($query) )
+     
+	
 #end
+
+#set ($id = $context.getRequestParameter("id"))
+
 #set( $details = $joinsearcher.getDataProperties($viewpath,$user) )
 #set( $passalong = $context.getRequestParameter("passalong"))
 #set( $passalongdec = $url_util.decode($passalong) )
 #set( $passalong = $url_util.encode($passalongdec) )
-#set( $args = "catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
+#set( $args = "id=$id&module=$moduleid&hitssessionid=$hitssessionid&catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
 
 <div id="${searchtype}_table">
 #if($candelete != "false")
@@ -38,17 +50,39 @@
 #set($selectedid = $context.getRequestParameter("selectedid"))
 
 #if( $existingrecords && $existingrecords.size() > 0 )
-
-<table id="tablesorter" class="emdata striped greytxt">
+<table id="main-results-table" class="emdata striped greytxt">
 	<thead>
-	<tr class="tableheader">
+	<tr id="tableheader">
 	#foreach( $detail in $details )
-	<th>$detail.text</th>
+	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
 	#end
 	#if($candelete && $candelete == true && $showdelete == "true")
 	<th></th>
 	#end
 	</tr>
+    	
+    <script>
+        $('th.sortable').on({
+            click: function(){
+                var id = $(this).attr('id');
+                var path = "$home$apphome/components/xml/columnsort.html?oemaxlevel=1&$args&sortby="
+                if ( $(this).hasClass('currentsort') ) {
+                    if ( $(this).hasClass('up') ) {
+                        jQuery('#resultsdiv').load( path + id + 'Down');
+                    } else {
+                        jQuery('#resultsdiv').load( path + id + 'Up');
+                    }
+                } else {
+                    $('th.sortable').removeClass('currentsort');
+                    $(this).addClass('currentsort');
+                    jQuery('#resultsdiv').load( path + id + 'Down');
+                }
+            }
+        });
+    </script>
+    	
+	
+	
 	</thead>
 	<tbody>
 	#foreach ( $hit in $existingrecords )

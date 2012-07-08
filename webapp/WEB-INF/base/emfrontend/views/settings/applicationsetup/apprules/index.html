@@ -3,7 +3,7 @@
 
 <div id="emselectable" >
 
-<form name="permissionsform" class="ajaxform" targetdiv="allpermissions" action="edit.html">
+<form name="permissionsform" class="ajaxform" targetdiv="allpermissions" action="edit.html" style="margin: -20px">
 <table  style="width:100%;" class="striped emdata">		
 	<thead>
 	<tr class="tableheader"><th>Name</th>
@@ -14,7 +14,7 @@
 	#foreach($perm in $permissions)
 	#if( $section != $perm.permissiontype )
 		<tr class="sectionlevel">
-		<td colspan="2">
+		<td colspan="2" style="height: 35px; line-height: 35px;">
 			$searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
 		</td>
 		</tr>

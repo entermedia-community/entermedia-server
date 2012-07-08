@@ -236,7 +236,7 @@ public class FileUpload
 				org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
 				int count = 0;				
 				
-				if ((tmp.getFieldName().toLowerCase().startsWith("file") || tmp.getFieldName().toLowerCase().startsWith("upload"))  && tmp.getName() != null && !tmp.getName().equals(""))
+				if (!tmp.isFormField())
 				{
 					FileUploadItem foundUpload = new FileUploadItem();
 					foundUpload.setFileItem(tmp);
@@ -263,11 +263,12 @@ public class FileUpload
 		{
 			throw new OpenEditException(e);
 		}
+		//TODO: Find out why Apache creates tmp files for each parameter attached to the body of the upload
 		Map arguments = inContext.getParameterMap();
 		for (int i = 0; i < fileItems.size(); i++)
 		{
 			org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
-			if (!tmp.getFieldName().toLowerCase().startsWith("file") )
+			if (tmp.isFormField() )
 			{
 				Object vals = arguments.get(tmp.getFieldName());
 				String[] values = null;//(String[])

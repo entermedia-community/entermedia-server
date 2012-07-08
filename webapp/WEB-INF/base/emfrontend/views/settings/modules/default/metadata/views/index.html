@@ -52,10 +52,9 @@
 	    <div class="inner clearfix">
 	    
         <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
-            <input class="field" name="name.value" value="$view.name" >
             <input type="hidden" name="field" value="name" />
             <div>View Name</div>
-            <input class="field" name="field" value="rendertype" >
+            <input class="field" name="name.value" value="$view.name" >
             <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
                 Render as Table?
             </div>
@@ -142,4 +141,3 @@
 			#end		
 		
 </ul>
-
