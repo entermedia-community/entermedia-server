@@ -1,5 +1,11 @@
 <page>
 	<property name="eventname">Assets Imported</property>	
+	
+		<!--	
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/queueconversions.html"  allowduplicates="true"/>
+	-->
 	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/assetsimportedcustom.html"  allowduplicates="true"/>
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/push/pushassets.html"  allowduplicates="true"/>
+	
+	
 </page>

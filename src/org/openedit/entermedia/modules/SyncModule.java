@@ -1,5 +1,6 @@
 package org.openedit.entermedia.modules;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -101,8 +102,8 @@ public class SyncModule extends BaseMediaModule
 	public void processPushQueue(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-
-		getPushManager().processPushQueue(archive, inReq.getUser());
+		String ids = inReq.getRequestParameter("assetids");
+		getPushManager().processPushQueue(archive, ids, inReq.getUser());
 	}
 
 

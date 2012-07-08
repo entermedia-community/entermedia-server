@@ -6,10 +6,13 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.modules.PathEventModule;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.XmlVersionRepository;
@@ -21,6 +24,8 @@ import com.openedit.util.EmStringUtils;
 
 public class HotFolderManager
 {
+	private static final Log log = LogFactory.getLog(HotFolderManager.class);
+
 	protected PageManager fieldPageManager;
 	protected SearcherManager fieldSearcherManager;
 	protected WebServer fieldWebServer;
@@ -191,6 +196,7 @@ public class HotFolderManager
 		Date started = new Date();
 		long sincedate = 0;
 		String since = inFolder.get("lastscanstart");
+		log.info(inFolder + " filtered by date " + since );
 		if( since != null )
 		{
 			sincedate = DateStorageUtil.getStorageUtil().parseFromStorage(since).getTime();
@@ -198,6 +204,8 @@ public class HotFolderManager
 		List<String> paths = importer.processOn(base, path, inArchive, sincedate, null);
 		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
+		log.info(inFolder + " Imported " + paths.size() );
+		
 		return paths;
 	}
 	

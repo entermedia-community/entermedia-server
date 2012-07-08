@@ -97,20 +97,26 @@ public void createTasksForUpload()
 			
 			String outputfile = preset.get("outputfile");
 
-			if (!mediaarchive.doesAttachmentExist(outputfile, asset))
-			{
-				Data newTask = tasksearcher.createNewData();
-				newTask.setSourcePath(asset.getSourcePath());
-				newTask.setProperty("status", "new");
-				newTask.setProperty("assetid", asset.id);
-				newTask.setProperty("presetid", it.id);
-				newTask.setProperty("ordering", it.get("ordering") );
-				
-				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-				newTask.setProperty("submitted", nowdate);
-				tasksearcher.saveData(newTask, context.getUser());
-				foundsome = true;
+			SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.id).append("presetid", it.id);
+			Data found = tasksearcher.search(taskq).first();
+			if( found != null )
+			{	
+				//If it is complete then the converter will mark it complete again
+				found.setProperty("status", "new");
 			}
+			else
+			{
+				found = tasksearcher.createNewData();
+				found.setSourcePath(asset.getSourcePath());
+				found.setProperty("status", "new");
+				found.setProperty("assetid", asset.id);
+				found.setProperty("presetid", it.id);
+				found.setProperty("ordering", it.get("ordering") );
+				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+				found.setProperty("submitted", nowdate);
+			}
+			tasksearcher.saveData(found, context.getUser());
+			foundsome = true;
 		}
 		if( foundsome )
 		{

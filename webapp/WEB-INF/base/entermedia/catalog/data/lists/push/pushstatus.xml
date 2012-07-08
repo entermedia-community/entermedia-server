@@ -1,5 +1,5 @@
 <properties>
-  <property id="completed">Push Complete</property>
+  <property id="complete">Push Complete</property>
   <property id="error">Upload Error</property>
   <property id="retry">Retry</property>
   <property id="resend">Resend</property>
