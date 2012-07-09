@@ -102,7 +102,13 @@ public void createTasksForUpload()
 			if( found != null )
 			{	
 				//If it is complete then the converter will mark it complete again
-				found.setProperty("status", "new");
+				if( found.get("status") != "new")
+				{
+					found = (Data)tasksearcher.searchById(found.getId());
+					found.setProperty("status", "new");
+					tasksearcher.saveData(found, context.getUser());
+					
+				}
 			}
 			else
 			{
@@ -114,8 +120,8 @@ public void createTasksForUpload()
 				found.setProperty("ordering", it.get("ordering") );
 				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
 				found.setProperty("submitted", nowdate);
+				tasksearcher.saveData(found, context.getUser());
 			}
-			tasksearcher.saveData(found, context.getUser());
 			foundsome = true;
 		}
 		if( foundsome )

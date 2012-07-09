@@ -285,10 +285,19 @@ public void checkforTasks()
 	query.addSortBy("assetid");
 	query.addSortBy("ordering");
 	
-	String assetid = context.getRequestParameter("assetid");
-	if(assetid != null)
+	String assetids = context.getRequestParameter("assetids");
+	if(assetids != null)
 	{
-		query.addMatches("assetid", assetid);
+		assetids = assetids.replace(","," ");
+		query.addOrsGroup( "id", assetids );
+	}
+	else
+	{	
+		String assetid = context.getRequestParameter("assetid");
+		if(assetid != null)
+		{
+			query.addMatches("assetid", assetid);
+		}
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
 	ArrayList newtasks = new ArrayList(tasksearcher.search(query));

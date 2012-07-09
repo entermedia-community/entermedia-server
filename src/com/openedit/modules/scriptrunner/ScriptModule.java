@@ -38,6 +38,7 @@ import com.openedit.entermedia.scripts.Script;
 import com.openedit.entermedia.scripts.ScriptLogger;
 import com.openedit.entermedia.scripts.ScriptManager;
 import com.openedit.entermedia.scripts.ScriptRunner;
+import com.openedit.entermedia.scripts.TextAppender;
 import com.openedit.modules.BaseModule;
 import com.openedit.page.Page;
 import com.openedit.page.PageRequestKeys;
@@ -109,10 +110,11 @@ public class ScriptModule extends BaseModule implements PageRequestKeys
 	public Object run( WebPageRequest context) throws OpenEditException
 	{
 		String filepath = context.getPath();
-		 
-		Configuration scriptconfig = context.getCurrentAction().getConfig().getChild("script");
 		
-		Script script = getScriptManager().loadScript(context, scriptconfig, filepath);
+		Script script = null;
+		
+		Configuration scriptconfig = context.getCurrentAction().getConfig().getChild("script");
+			script = getScriptManager().loadScript(context, scriptconfig, filepath);			
 
 		Map variableMap = context.getPageMap();
 		variableMap.put("context", context );
@@ -124,8 +126,46 @@ public class ScriptModule extends BaseModule implements PageRequestKeys
 		
 //		context.putPageValue("logs", logs.getLogs());
 		return returned;
-		
 	}
+	
+	public void debugScript(WebPageRequest inReq ) throws Exception
+	{
+		String path = inReq.findValue("scriptpath");
+		Script script = getScriptManager().loadScript(path);
+
+		final StringBuffer output = new StringBuffer();
+		TextAppender appender = new TextAppender()
+		{
+			public void appendText(String inText)
+			{
+				output.append(inText);
+				output.append("<br>");
+			}
+		};
+		
+		ScriptLogger logs = new ScriptLogger();
+		logs.setPrefix(script.getType());
+		logs.setTextAppender(appender);
+		try
+		{
+			logs.startCapture();
+			Map variableMap = inReq.getPageMap();
+			variableMap.put("context", inReq );
+			variableMap.put("log", logs );
+			
+			Object returned = getScriptManager().execScript(variableMap, script);
+			if( returned != null)
+			{
+				output.append("returned: " + returned);
+			}
+		}
+		finally
+		{
+			logs.stopCapture();
+		}
+		inReq.putPageValue("output",output);
+	}
+	
 //		
 //		if (path.endsWith(".bsh"))
 //		{
