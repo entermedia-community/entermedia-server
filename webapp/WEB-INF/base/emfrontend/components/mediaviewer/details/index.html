@@ -25,17 +25,17 @@
 			<div class="asset-details-more" style="width: 100%; padding: 0 0 20px 0">
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
-				<h3>Libraries</h3>
-					<p style="line-height: 25px;">
-				#foreach($library in $libraries)
-					  
-					 #set( $ldata = $searcherManager.getData($catalogid,"library",$library) )
-					 #set( $division = $searcherManager.getData($catalogid,"division",$ldata.division ) )
-					 
-					<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="">$division / $ldata</a>
-			
-				#end
-				</p>
+    				<h3>Libraries</h3>
+    					<p style="line-height: 25px;">
+            				#foreach($library in $libraries)
+            					  
+            					 #set( $ldata = $searcherManager.getData($catalogid,"library",$library) )
+            					 #set( $division = $searcherManager.getData($catalogid,"division",$ldata.division ) )
+            					 
+            					<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="">$division / $ldata</a>
+            			
+            				#end
+    				</p>
 				#end
 				
 				
@@ -53,23 +53,23 @@
 						<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
 					#end
 					</p>
-					
-				#end
+			</div>	
+			#end
 				
 				#if ($canviewslideshow)
 				
-				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-				#if( $type != "video" )
-					<div>	
-							<a class="slideshow emdialog" href="$home$link" target="_parent"
-								pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
-								title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
-					</div>
-				#end	
+    				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+    				#if( $type != "video" )
+    					<div>	
+    							<a class="slideshow emdialog" href="$home$link" target="_parent"
+    								pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
+    								title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
+    					</div>
+    				#end
+					
 				
 				#end		
-			
-			</div>
+
 		</div>
 		
 		<div class="col2">
