@@ -1307,13 +1307,20 @@ padding: 10px;
 
 .asset-caption {
     height: 25px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-weight: bold;
     text-align: center;
     padding: 0 15px;
     margin: 0;
+}
+.max .asset-caption {
+    text-align: left;
+}
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 500px;
+    display: block;
 }
 .attachments-views {
     padding: 12px 0 3px 0;
@@ -4125,7 +4132,11 @@ p.resultsnumber {
    margin-top: 0px;
    background: url('../images/loadingbar.gif');  
 }
-
+.proxythumb .emdropshadow {
+    margin: -27px -12px;
+    top: -4px;
+    position: relative;
+}
 
 
 /* BUTTONS */
