@@ -31,7 +31,7 @@ $context.putPageValue("view", $viewpath)
               #foreach( $target in $views)            
                   <li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
                   		
-                  		#if( $target.rendertype &&  $target.rendertype == "table")
+                  		#if( $target.rendertable )
                       <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/table.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
                         $target</a>
                   		#else
