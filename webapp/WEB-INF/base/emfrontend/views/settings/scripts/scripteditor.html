@@ -11,9 +11,15 @@
 		<input type="submit" class="btn small" value="Save">
 		<a href="$home$dataroot/import/scriptdelete.html?filename=$script.getName()" class="btn small right">Delete</a>
         <a id="cancel-edit" style="cursor: pointer; margin-right: 5px;" class="btn small right">Cancel</a>
+		<a class="btn" target="_new" href="$home$editroot/run.html?oemaxlevel=1&scriptpath=$scriptpath">Debug</a>
     </p>
 </form>	
 </div>
+
+<div id="runarea">
+
+</div>
+
 
 <script>
     $('#cancel-edit').click(function(){
