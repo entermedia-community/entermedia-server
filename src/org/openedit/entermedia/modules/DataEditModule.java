@@ -1272,7 +1272,7 @@ public class DataEditModule extends BaseMediaModule
 			throw new OpenEditException("Module not defined");
 		}
 		query.addMatches("module",module);
-		query.addMatches("systemdefined","false");
+		query.addNot("systemdefined","true");
 		query.addSortBy("ordering");
 
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
