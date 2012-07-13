@@ -16,7 +16,7 @@ $context.putPageValue("caneditlists","false")
 #if( $edit)
 $context.putPageValue("edit",$edit)
 #end
-<form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content">
+<form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content" method="POST">
 ##We need 2 things passed in: $searcher, $view or $searcher $details
 #if (!$details && $userprofile)
 
@@ -67,7 +67,7 @@ $context.putPageValue("edit",$edit)
 			#if($detail.isLeaf())
 			<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
 			#else							
-				<optgroup label="$detail.title"/>
+				<optgroup label="$detail.title"></optgroup>
 				#foreach($child in $detail)
 				<option value="$child.id" style="margin-left: 10px;">$child.getText($context)</option>
 				#end

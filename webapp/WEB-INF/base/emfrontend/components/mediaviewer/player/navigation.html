@@ -2,7 +2,7 @@
 <div class="emprevnext clearfix">
 	#if( $hits )
 	#set($hitssessionid = $hits.sessionId )
-	#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+	#set($indexOf = $hits.indexOfId($asset.id))
 	#set($previous = $hits.previous($indexOf))
 	#set($next = $hits.next($indexOf))
 	#if($previous) <a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>

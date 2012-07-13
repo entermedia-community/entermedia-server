@@ -29,14 +29,11 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.NRTManager;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SearcherFactory;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.SimpleFSLockFactory;
@@ -52,6 +49,8 @@ import com.openedit.Shutdownable;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.page.Page;
+import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
 
@@ -63,7 +62,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 {
 	private static final Log log = LogFactory.getLog(BaseLuceneSearcher.class);
 	protected Analyzer fieldAnalyzer;
-	protected File fieldRootDirectory;
+	protected PageManager fieldPageManager;
 	protected String fieldIndexPath;
 	protected SimpleDateFormat fieldFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 	protected IndexWriter fieldIndexWriter;
@@ -93,6 +92,16 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 		return fieldLuceneSearcherManager;
 	}
+	public PageManager getPageManager()
+	{
+		return fieldPageManager;
+	}
+
+	public void setPageManager(PageManager inPageManager)
+	{
+		fieldPageManager = inPageManager;
+	}
+
 
 	public String getIndexRootFolder()
 	{
@@ -129,9 +138,13 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public synchronized void reIndexAll() throws OpenEditException
 	{
+		//At this time move the old index if you find it.
+		//Have the counter file do the same thing
+		
 		String indexname = String.valueOf(System.currentTimeMillis());
 		log.info(getSearchType() + " reindexing in " + "(" + getCatalogId() + ") as " + indexname);
-		File dir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
+		Page path = getPageManager().getPage(getIndexPath() + "/" + indexname);
+		File dir = new File(path.getContentItem().getAbsolutePath());
 		dir.mkdirs();
 		
 		Directory indexDir = buildIndexDir(indexname);
@@ -174,7 +187,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	protected void deleteOlderIndexes()
 	{
-		File indexDir = new File(getRootDirectory(), getIndexPath() + "/");
+		Page toppath = getPageManager().getPage(getIndexPath() + "/");
+		File indexDir = new File(toppath.getContentItem().getAbsolutePath());
 		File[] files = indexDir.listFiles();
 		if( files != null && files.length > 2)
 		{
@@ -209,7 +223,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					}
 				}
 			}
-		}
+		}		
+
 
 	}
 
@@ -388,7 +403,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	public Directory buildIndexDir(String inName)
 	{
 		// TODO: Remove the extra search folder
-		File indexDir = new File(getRootDirectory(), getIndexPath() + "/" + inName);
+		Page path = getPageManager().getPage(getIndexPath() + "/" + inName);
+		File indexDir = new File(path.getContentItem().getAbsolutePath());
 		if (!indexDir.exists())
 		{
 			indexDir.mkdirs();
@@ -442,8 +458,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		catch ( org.apache.lucene.index.IndexNotFoundException ex)
 		{
 			exists = false;
-			File indexDir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
-			new FileUtils().deleteAll(indexDir);
+			
+			Page indexDir = getPageManager().getPage( getIndexPath() + "/" + indexname);
+			getPageManager().removePage(indexDir);
 		}
 		return exists;
 	}
@@ -472,16 +489,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 		return fieldAnalyzer;
 	}
-
-	public File getRootDirectory()
-	{
-		return fieldRootDirectory;
-	}
-
-	public void setRootDirectory(File inSearchDirectory)
-	{
-		fieldRootDirectory = inSearchDirectory;
-	}
+	
 	
 	/** Not needed any more? 
 	 * TODO: use a last modification time?
@@ -561,7 +569,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					try
 					{
 						//Leaving a lock fils seems to help the writer pick up where it left off. Not sure what is going on
-						File lock = new File(getRootDirectory(), getIndexPath() + "/" + folder + "/" + "write.lock");
+						Page lockpage = getPageManager().getPage(getIndexPath() + "/" + folder + "/" + "write.lock");
+						File lock = new File(lockpage.getContentItem().getAbsolutePath());
 						if(lock.exists() && !lock.delete() )
 						{
 							//Invalid lock errors are returned when the index has no valid files in it
