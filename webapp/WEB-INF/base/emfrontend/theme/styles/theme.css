@@ -1122,6 +1122,7 @@ small {
 }
 #pages .ellipsis {
     color: #797979;
+    width: auto !important;
 }
 #pages ul {
     margin: 0; 
@@ -1307,13 +1308,20 @@ padding: 10px;
 
 .asset-caption {
     height: 25px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-weight: bold;
     text-align: center;
     padding: 0 15px;
     margin: 0;
+}
+.max .asset-caption {
+    text-align: left;
+}
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 500px;
+    display: block;
 }
 .attachments-views {
     padding: 12px 0 3px 0;
@@ -3555,6 +3563,15 @@ border: none;
     top: -7px !important;
     left: 0 !important;
 }
+.uiinfo:hover:after {
+    top: -38px !important;
+    left: 0;
+}
+.uiinfo:hover:before {
+    top: -10px !important;
+    left: 10px !important;
+}
+
 #views-settings {
     margin: 11px 0 0 0;
     padding: 10px 0 0 0;
@@ -4097,7 +4114,63 @@ p.resultsnumber {
     visibility: visible;
 }
 
+/* CONVERSION PROCESS STYLES */
 
+.proxythumb {
+    padding-top: 27px;
+    padding-bottom: 27px;
+    width: 110px;
+    margin-left: 6px;
+    background: #ffffff; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #f7f7f7 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f7f7f7)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#f7f7f7 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#f7f7f7 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#f7f7f7 100%); /* IE10+ */
+    background: linear-gradient(top, #ffffff 0%,#f7f7f7 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7',GradientType=0 ); /* IE6-9 */  
+}
+.proxythumb .loadingborder {
+  padding: 2px;
+  height: 8px;
+  margin: 0 5px;
+  border: 1px solid #eee;
+  background: #fff;  
+}
+.proxythumb .loadingbar {
+   height: 8px;
+   margin-top: 0px;
+   background: url('../images/loadingbar.gif');  
+}
+.proxythumb .emdropshadow {
+    margin: -27px -12px;
+    top: -4px;
+    position: relative;
+}
+
+/* PRINT PREVIEW */
+
+#printpreview-top {
+    margin: 0 -20px;
+}
+#printpreview-top #media-player {
+    background: #f7f7f7;
+    border-bottom: 1px solid #ddd;
+    box-shadow: none;
+}
+#printpreview-metadata {
+    margin: 0 -20px;
+}
+#printpreview-metadata h2 {
+    padding: 10px 20px;
+    margin: 0;
+    color: #444;
+    background: #ddd;
+}
+#printpreview-metadata .table {
+    width: 100%;
+}
+#printpreview-metadata .table .
 
 /* BUTTONS */
 

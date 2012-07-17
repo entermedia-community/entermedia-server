@@ -2,7 +2,7 @@
 <div class="emprevnext clearfix">
 	#if( $hits )
 	#set($hitssessionid = $hits.sessionId )
-	#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+	#set($indexOf = $hits.indexOfId($asset.id))
 	#set($previous = $hits.previous($indexOf))
 	#set($next = $hits.next($indexOf))
 	#if($previous) <a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
@@ -11,7 +11,7 @@
 	#if($next) <a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
 	#end
 	#end
-	<p class="asset-caption">
+	<p class="asset-caption ellipsis">
 		#if($asset.caption) $asset.caption #else $asset #end
 	</p>
 </div>
@@ -45,6 +45,12 @@
 	#if( $asset.isFolder() )
 	<li style="float: right;">
 		<a class="btn tooltip attachments" title="View Attachments" href="$home$apphome/views/modules/asset/editor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="14" src="$home$themeprefix/images/navigation/attachments-icon.png" title="View Attachments" /></a>
+	</li>
+	#end
+
+	#if($canprintpreview)
+	<li style="float: right;">
+		<a class="btn tooltip print" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="Print Preview"><img width="12" src="$home$themeprefix/images/navigation/print-icon.png" /></a>
 	</li>
 	#end
 	

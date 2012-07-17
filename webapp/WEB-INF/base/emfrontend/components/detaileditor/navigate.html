@@ -3,7 +3,7 @@
 			#set($hits = $context.getSessionValue($hitssessionid))
 		#end
 		#if( $hits )
-		#set($indexOf = $hits.indexOf($asset.catalogid, $asset.id))
+		#set($indexOf = $hits.indexOfId( $asset.id))
 		#set($showIndex = $indexOf + 1)
 		#set($previous = $hits.previous($indexOf))
 		#set($next = $hits.next($indexOf))

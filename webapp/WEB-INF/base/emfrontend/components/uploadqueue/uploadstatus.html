@@ -7,9 +7,11 @@
 #set( $percentage=$asset.getUploadPercentage()*100)
 #set( $percentageString=$percentage.toString())
 #set( $percentageString=$percentageString.substring(0, $percentageString.indexOf(".")) )
-<div id="upload$assetid" class="ajaxstatus" style="width:120px;" period="1000" ajaxpath="$home$apphome/components/uploadqueue/uploadstatus.html?assetid=$assetid">
-<div style="border:1px solid #000000;width:120px;text-align: left;">
-	<div style="background-color:#6fa45e;width:${barsize}px;height:12px;">${percentageString}%</div>
+<div id="upload$assetid" class="ajaxstatus" style="width:100px;" period="1000" ajaxpath="$home$apphome/components/uploadqueue/uploadstatus.html?assetid=$assetid">
+<div style="width:100px;text-align: left;">
+	<div class="loadingbar">
+	    ##${percentageString}%
+	    </div>
 </div>
 </div>
 #end

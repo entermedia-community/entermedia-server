@@ -1,4 +1,8 @@
 #set( $moduleid = $context.findValue("module") )
+#set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
+
+
+
 
     
 #if ( $hits.size() == 0 )
@@ -89,13 +93,13 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 
 
-<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />
+##<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />
 <div id="check_${count}">
 </div>
 
 
-<input type="checkbox" name="count" value="$!hits.indexOf(${count})" #if($hits.isSelectedOnPage(${count})) checked #end />
-<input type="hidden" name="origURL" value="$url_util.requestPathWithArgumentsNoContext()" />
+##<input type="checkbox" name="count" value="$!hits.indexOf(${count})" #if($hits.isSelectedOnPage(${count})) checked #end />
+##<input type="hidden" name="origURL" value="$url_util.requestPathWithArgumentsNoContext()" />
 
 </td>
 -->
