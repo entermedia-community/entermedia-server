@@ -1,4 +1,8 @@
 #set( $moduleid = $context.findValue("module") )
+#set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
+
+
+
 
     
 #if ( $hits.size() == 0 )

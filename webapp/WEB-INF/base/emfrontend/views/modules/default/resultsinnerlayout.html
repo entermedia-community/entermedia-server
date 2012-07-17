@@ -10,12 +10,7 @@
         #end
 #end
 #set( $moduleid = $context.findValue("module") )
-#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set( $query = $viewsearcher.createSearchQuery().append("module",$moduleid) )
-$!query.addSortBy("ordering")
-#set($views = $viewsearcher.search($query))
-#set ( $defaultview = $views.first() )
-$pages.getWebPageRequest().putPageValue("defaultview",$defaultview)
+
 
 #if(!$hits)
 #set($hits = $context.getPageValue($content.hitsname))

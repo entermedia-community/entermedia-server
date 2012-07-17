@@ -14,7 +14,16 @@
 	
 	<li class="add">
 			<div class="folder"></div>
+
 			<a class="btn right" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">Add Hot Folder</a>
+			
+			#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
+			#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
+			#if( $event.isRunning() )
+				<a class="btn right">Scan in Progress</a>
+			#else
+				<a class="btn right" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">Schedule Importing</a>
+			#end
 	</li>
 	
 	<!-- 
@@ -45,15 +54,6 @@
 	 -->
 </ul>				
 
-
-#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
-
-#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
-#if( $event.isRunning() )
-<h2 class="red">Hot Folder Scan In Progress</h2>
-#else
-		<a class="btn" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">Schedule Importing</a>
-#end
 
 
 

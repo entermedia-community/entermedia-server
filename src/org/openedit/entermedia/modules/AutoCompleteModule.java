@@ -21,7 +21,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 
-public class AutoCompleteModule extends BaseMediaModule
+public class AutoCompleteModule extends DataEditModule
 {
 
 	private static final Log log = LogFactory.getLog(AutoCompleteModule.class);
@@ -379,4 +379,29 @@ public class AutoCompleteModule extends BaseMediaModule
 		inReq.putPageValue("searchstring", searchString);
 		return wordsHits;
 	}
+	
+	
+	public void autocomplete(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		String field = inReq.getRequestParameter("field");
+		if (searcher != null)
+		{
+			SearchQuery query = searcher.createSearchQuery();
+			String term = inReq.getRequestParameter("term");
+			query.addStartsWith(field, term);
+			HitTracker hits = searcher.cachedSearch(inReq, query);
+			
+
+			if (hits != null)
+			{
+				String name = inReq.findValue("hitsname");
+				inReq.putPageValue(name, hits);
+				inReq.putSessionValue(hits.getSessionId(), hits);
+			}
+		}
+		inReq.putPageValue("searcher", searcher);
+	}
+	
+	
 }

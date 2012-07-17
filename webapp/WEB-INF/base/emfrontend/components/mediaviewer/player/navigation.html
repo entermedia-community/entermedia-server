@@ -47,6 +47,12 @@
 		<a class="btn tooltip attachments" title="View Attachments" href="$home$apphome/views/modules/asset/editor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="14" src="$home$themeprefix/images/navigation/attachments-icon.png" title="View Attachments" /></a>
 	</li>
 	#end
+
+	#if($canprintpreview)
+	<li style="float: right;">
+		<a class="btn tooltip print" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="Print Preview"><img width="12" src="$home$themeprefix/images/navigation/print-icon.png" /></a>
+	</li>
+	#end
 	
 	#if($canmetadatadetails)
 	<li style="float: right;">
