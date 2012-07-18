@@ -5,8 +5,12 @@
 	<path-action name="ProfileModule.loadUserProfile" alltypes="true"/>
 	
 	<path-action name="Admin.loadPermissions"  alltypes="true">
-		<permissions>view viewasset download forcewatermark</permissions>
+		<permissions>view viewasset download forcewatermarkasset</permissions>
 	</path-action>
+	
+	
+	
+	
 	
 	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
 

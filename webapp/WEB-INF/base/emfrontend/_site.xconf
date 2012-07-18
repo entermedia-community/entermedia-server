@@ -294,4 +294,10 @@
   </permission>
   
   
+  	<permission name="forcewatermarkasset">
+		<userprofile property="forcewatermarkasset" equals="true" />
+	</permission>
+  
+  
+  
 </page>
