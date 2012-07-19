@@ -48,6 +48,8 @@ public abstract class BaseImageCreator extends BaseCreator
 			}
 		}
 
+
+		
 		
 		// Create temporary location for previews
 		String w = inStructions.getProperty("prefwidth");
@@ -146,6 +148,11 @@ public abstract class BaseImageCreator extends BaseCreator
 		if(inStructions.isWatermark())
 		{
 			path.append("wm");
+		}
+		
+		if(inStructions.getProperty("colorspace") != null){
+			path.append(inStructions.get("colorspace"));
+			
 		}
 		if(inStructions.isCrop())
 		{

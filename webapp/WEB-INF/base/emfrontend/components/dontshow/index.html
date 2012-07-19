@@ -1,3 +1,6 @@
+<div class="ui-widget uipanel" id="left-col-search" >
+				<div  class="ui-widget-header">[[Filters]]</div>
+<div  class="ui-widget-content">
 #set ($assetTypeSearcher = $searcherManager.getSearcher($catalogid, "assettype"))
 
 #set ($types = $assetTypeSearcher.fieldSearch(id, "*", "name"))
@@ -49,6 +52,7 @@
 #end
 
 </div>
+</div></div>
 	
 <form  action="$apphome/components/results/table.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
 	##<input type="hidden"  name="oemaxlevel" value="1" />
