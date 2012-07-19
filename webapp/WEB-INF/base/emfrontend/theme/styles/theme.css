@@ -4155,22 +4155,39 @@ p.resultsnumber {
 }
 #printpreview-top #media-player {
     background: #f7f7f7;
-    border-bottom: 1px solid #ddd;
     box-shadow: none;
 }
 #printpreview-metadata {
     margin: 0 -20px;
 }
 #printpreview-metadata h2 {
-    padding: 10px 20px;
+    padding: 10px 20px 10px 40px;
     margin: 0;
     color: #444;
-    background: #ddd;
+    border-bottom: 3px solid #ccc;
+    border-top: 3px solid #ccc;
 }
 #printpreview-metadata .table {
     width: 100%;
 }
-#printpreview-metadata .table .
+#printpreview-metadata .table .cellrow {
+    border-bottom: 1px solid #ddd;
+}
+#printpreview-metadata .table .cellrow:last-child {
+    border-bottom: none;
+}
+#printpreview-metadata .table .cellrow span {
+    display: table-cell;
+    padding: 12px;
+}
+#printpreview-metadata .table .cellrow span:first-child {
+    display: table-cell;
+    padding: 10px;
+    width: 100px;
+    text-align: right;
+    border-right: 1px solid #ddd;
+}
+
 
 /* BUTTONS */
 
