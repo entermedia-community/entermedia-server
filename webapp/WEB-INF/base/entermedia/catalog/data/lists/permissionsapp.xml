@@ -9,6 +9,10 @@
 	<permission id="sharetosocialmedia" permissiontype="asset" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook."/>
 	<permission id="forcewatermarkasset" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset."/>
 	<permission id="printpreview" permissiontype="asset" name="Print" description="Allows printing of asset and asset metadata."/>
+	<permission id="assetfilters" permissiontype="asset" name="Asset Type Filters" description="Allows users to filter search results by asset types"/>
+		
+		
+		
 		
 	<permission id="editadvancedsearch" permissiontype="edit" name="Advanced Search" description="Enables the customization of initial search criteria."/>
 	<permission id="asseteditorlibraries" permissiontype="edit" name="Asset Libraries" description="Enables access to the asset library editor." />
