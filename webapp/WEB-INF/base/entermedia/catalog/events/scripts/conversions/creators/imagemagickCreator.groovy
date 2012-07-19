@@ -200,6 +200,19 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		List<String> com = createCommand(inputFile, inStructions);
 
+		
+		String colorspace = inStructions.get("colorspace");
+		if(colorspace != null){
+			
+			com.add("-colorspace");
+			com.add(colorspace);
+		} else{
+		
+		com.add("-colorspace");
+		com.add("sRGB");
+		}
+		
+		
 		if (inStructions.getMaxScaledSize() != null)
 		{
 			//be aware ImageMagick writes to a tmp file with a larger version of the file before it is finished
@@ -281,6 +294,7 @@ public class imagemagickCreator extends BaseImageCreator
 					com.add(prefix + "x" + postfix);
 				}
 			}
+		
 		}
 		
 		//faster to do it after sizing
@@ -353,9 +367,8 @@ public class imagemagickCreator extends BaseImageCreator
 //			TODO: use parameters to specify the color space		
 			//Make sure we use 8 bit output and 	
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
-			com.add("-colorspace");
-			com.add("sRGB");
-		
+			
+			
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
 			com.add("-strip");
@@ -369,6 +382,9 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			com.add(outputpath);
 		}
+		
+		
+		
 		
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
