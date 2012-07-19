@@ -1,0 +1,9 @@
+#set ( $origURL=$url_util.getOriginalPath() )
+#set ( $editPath = $url_util.getPathWithoutContext( $home, $request.requestURI ) )
+#set( $ipaddress = $request.getRemoteAddr() )
+#set( $referer = $request.getHeader("REFERER") )
+#set( $exception = $context.getPageValue( "oe-exception") )
+
+##<b>$!url_util.xmlEscape( $exception.getMessage() )</b>
+
+An error has happened.
