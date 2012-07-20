@@ -4,6 +4,15 @@
 #set( $referer = $request.getHeader("REFERER") )
 #set( $exception = $context.getPageValue( "oe-exception") )
 
-##<b>$!url_util.xmlEscape( $exception.getMessage() )</b>
+<p>
+[[There was a problem completing this request]]
+</p>
+#if( $user )
+		<b>#esc( $exception.getMessage() )</b>
+#if( $canviewerrors )
+<pre>
+#esc($exception.toStackTrace() )
+</pre>
+#end
 
-An error has happened.
+#end
