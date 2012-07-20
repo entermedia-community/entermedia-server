@@ -7,6 +7,7 @@
 
 #set( $notselected = $userprofile.getValues("hideassettype") ) 
 
+
 <div class="subcolumns" style="white-space:nowrap;"> 
     <ul style="margin: 0; padding: 5px 0 5px 0;">  
 #foreach($type in $types )
@@ -17,9 +18,9 @@
     #else
     #set( $selected = true)
     #end
-
+	
 			
-	<li style="list-style-type:none; border-bottom: 1px solid #eee; margin: 5px 0 8px 0; padding: 0 0 5px 10px;"><input class="assettypeselect" type="checkbox" name="childquery" value="$item1.getId()" #if( $selected )checked #end/> $type.name</li> 			
+	<li style="list-style-type:none; border-bottom: 1px solid #eee; margin: 5px 0 8px 0; padding: 0 0 5px 10px;"><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/> $type.name</li> 			
 				
 			
 
@@ -33,8 +34,9 @@
     <input type="hidden" name="catalogid" value="$!catalogid" />
     <input type="hidden" name="searchtype" value="asset" />
     <input type="hidden" name="hitssessionid" value="$hits.sessionId" />
-        
+       <!-- 
     <input type="hidden" name="childquery" value="none" /> ## causes the search to re-run even when no types are selected    
+     -->
 </form>
 <input class="btn" id="select_all" type="button" value="[[Select All]]" />
 
