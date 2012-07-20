@@ -97,9 +97,16 @@ public class GroovyScriptedCreator implements MediaCreator
 		Map ref = (Map) perThreadCache.get(); //one per thread please
 		if( ref == null)
 		{
-		 	ref = new HashMap();
-		  	// use weak reference to prevent cyclic reference during GC
-		   perThreadCache.set(ref);
+			synchronized (this)
+			{
+				ref = (Map) perThreadCache.get(); //one per thread please
+				if( ref == null)
+				{				
+					ref = new HashMap();
+					// use weak reference to prevent cyclic reference during GC
+					perThreadCache.set(ref);
+				}
+			}
 		}
 		MediaCreator creator = (MediaCreator)ref.get(inCatalogId); 
 		if( creator == null)

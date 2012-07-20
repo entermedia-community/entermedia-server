@@ -85,7 +85,7 @@ public class PushManager
 			//http://stackoverflow.com/questions/2290570/pkix-path-building-failed-while-making-ssl-connection
 			NaiveTrustManager.disableHttps();
 			fieldClient = new HttpClient();
-			login(inCatalogId);
+			login(inCatalogId); //TODO: Track the server we last logged into in case they edit the server
 		}
 		return fieldClient;
 	}

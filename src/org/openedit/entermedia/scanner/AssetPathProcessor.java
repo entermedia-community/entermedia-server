@@ -144,13 +144,13 @@ public class AssetPathProcessor extends PathProcessor
 				boolean processchildren = true;
 				if( createAttachments(paths) )
 				{
-					//Use the first file that is not a folder
 					ContentItem found = findPrimary(paths);
 					if( found == null )
 					{
-						found = inInput;
+						return; //no good files in here
 					}
-					String foundprimary = PathUtilities.extractFileName(found.getPath());
+
+					//Use the first file that is not a folder
 					String soucepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 
 					asset = getMediaArchive().createAsset(soucepath);
@@ -163,6 +163,9 @@ public class AssetPathProcessor extends PathProcessor
 					asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 					asset.setProperty("assetviews", "1");
 					asset.setProperty("importstatus", "imported");
+
+
+					String foundprimary = PathUtilities.extractFileName(found.getPath());
 					asset.setPrimaryFile(foundprimary);
 					getAssetUtilities().readMetadata(asset, found, getMediaArchive());
 					getAssetUtilities().populateCategory(asset, inInput, getMediaArchive(), inUser);
