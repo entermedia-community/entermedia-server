@@ -15,11 +15,13 @@
 	<input name="${inputname}end.value" class="datepicker" id="datevalue${inputid}" value="$!inputed" size="8" type="text">
 	
 #else
-	#set( $op = $term.getParameter("op") )
+
+	#set( $op = $term.getOperation() )
+	
 	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" style="display: block;">
 		<option value="equals" >[[Equals]]</option>
 		<option value="after" #if( $op && $op == "after" )selected #end>[[After Date]]</option>
-		<option value="before" #if( $op && $op == "before" )selected #end >[[Before Date]]</option>
+		<option value="before" #if( $op && $op == "beforedate" )selected #end >[[Before Date]]</option>
 		<option value="betweendates" #if( $op && $op == "betweendates" )selected #end >[[Between]]</option>
 		<option value="before1" #if( $op && $op == "before1" )selected #end>[[Past 24 hours]]</option>
 		<option value="before7" #if( $op && $op == "before7" )selected #end>[[Past week]]</option>
