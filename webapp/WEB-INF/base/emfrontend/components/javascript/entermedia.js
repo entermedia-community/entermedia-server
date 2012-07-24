@@ -388,7 +388,7 @@ onloadselectors = function()
 	
 	
 
-	jQuery("#assetsearchinput").livequery( function() 
+	jQuery(".suggestsearchinput").livequery( function() 
 			{
 				var theinput = jQuery(this);
 				if( theinput && theinput.autocomplete )
@@ -398,7 +398,7 @@ onloadselectors = function()
 						select: function(event, ui) {
 							//set input that's just for display purposes
 							theinput.val(ui.item.value);
-							theinput.submit();
+							//theinput.submit();
 							return false;
 						}
 					});
