@@ -2,8 +2,10 @@ import org.openedit.Data
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.modules.OrderModule
 import org.openedit.entermedia.orders.Order
+import org.openedit.entermedia.push.PushManager
 import org.openedit.events.PathEventManager
 
+import com.openedit.Test
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.entermedia.scripts.ScriptLogger
@@ -249,7 +251,7 @@ class Test extends EnterMediaObject
 
 		Asset asset = getMediaArchive().getAsset(context.findValue("testassetid"));
 		Data item = om.getOrderManager().addItemToBasket(getMediaArchive().getCatalogId(), order, asset, null);
-		
+		status
 		req.setRequestParameter("orderid", order.getId());
 
 		req.setRequestParameter("field", [ "publishdestination","presetid"] as String[]); //order stuff
@@ -292,6 +294,60 @@ class Test extends EnterMediaObject
 		log.info("test is green");
 	}
 	
+
+	//Local file copy
+	public boolean testRemotePoll() throws Exception
+	{
+		String appid = context.findValue("applicationid");
+		
+		WebPageRequest req = createPageRequest("/${appid}/views/activity/publish/processorder.html");
+		
+		OrderModule om = (OrderModule)getModuleManager().getModule("OrderModule");
+		
+		String catalogid = getMediaArchive().getCatalogId();
+		req.setRequestParameter("publishdestination.value", (String)context.findValue("localpublishdestination"));
+		
+		Order order = om.getOrderManager().createNewOrder(appid, catalogid, "admin");
+		
+		om.getOrderManager().saveOrder(getMediaArchive().getCatalogId(), req.getUser(), order);
+
+		Asset asset = getMediaArchive().getAsset(context.findValue("testassetid"));
+		//Data item = om.getOrderManager().addItemToBasket(getMediaArchive().getCatalogId(), order, asset, null);
+		Data item = om.getOrderManager().addItemToOrder(catalogid, order, asset, null);
+		
+		req.setRequestParameter("orderid", order.getId());
+
+		req.setRequestParameter("field", [ "publishdestination","presetid"] as String[]); //order stuff
+		req.setRequestParameter("searchtype", "order");
+
+		req.setRequestParameter("itemid", item.getId());
+		//req.setRequestParameter(item.getId() + ".presetid.value", "2"); //outputffmpeg.avi
+		req.setRequestParameter(item.getId() + ".presetid.value",  (String)context.findValue("originalpreset")); //Original
+		getOpenEditEngine().executePathActions(req);
+		getOpenEditEngine().executePageActions(req);
+	
+		PushManager pushmanager = (PushManager)getModuleManager().getBean("pushManager");
+		pushmanager.pollRemotePublish(getMediaArchive());
+		
+//		Thread.sleep(5000);
+		
+//		om.getOrderManager().updatePendingOrders(getMediaArchive());
+//		Thread.sleep(1000);
+//		
+//		order = om.getOrderManager().loadOrder(getMediaArchive().getCatalogId(),order.getId());
+//
+//		String emailsent = order.get("emailsent");
+//		
+//		if( !assertEquals("true",emailsent,"emailsent was not set to true") )
+//		{
+//			return;
+//		}
+//		//orders are save in the data directory and there is an order and orderitem searcher
+//		log.info("test is green");
+		
+	}
+
+
 	
 }
 logs = new ScriptLogger();
@@ -314,9 +370,11 @@ try
 	logs.info("<h2>testPublishAmazon()</h2>")
 	test.testPublishAmazon();
 	*/
-	logs.info("<h2>testPublishOrder()</h2>")
-	test.testPublishOrder();
+	//logs.info("<h2>testPublishOrder()</h2>")
+	//test.testPublishOrder();
 
+	
+	test.testRemotePoll();
 	
 	//logs.info("<h2>testPublishSmartJog()</h2>")
 	//test.testPublishSmartJog();
