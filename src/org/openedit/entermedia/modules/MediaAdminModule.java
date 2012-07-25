@@ -81,8 +81,9 @@ public class MediaAdminModule extends BaseMediaModule
 	
 	public void deployUploadedApp(WebPageRequest inReq ) throws Exception
 	{
-		String zipfile = inReq.findValue("path");
-		getWorkspaceManager().deployUploadedApp(zipfile);
+		List zipfiles =(List)inReq.getPageValue("uploadedfiles");
+		Page uploaded = (Page)zipfiles.get(0);
+		getWorkspaceManager().deployUploadedApp(uploaded);
 	}
 	
 	public void deployApp(WebPageRequest inReq) throws Exception
