@@ -89,7 +89,8 @@ public class EnterMediaObject
 		root = inRoot;
 	}
 
-	private Object getBean(String inName)
+	//not needed just call new sdfdsfds()
+	protected Object getBean(String inName)
 	{
 		try {
 			GroovyClassLoader loader = getEngine().getGroovyClassLoader();

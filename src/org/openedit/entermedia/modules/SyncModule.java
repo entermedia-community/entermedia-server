@@ -200,4 +200,12 @@ public class SyncModule extends BaseMediaModule
 		Collection noteconverted = getPushManager().getNotConvertedAssets(archive);
 		inReq.putPageValue("notconverted", noteconverted);
 	}
+	
+	public void pollRemotePublish(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+	
+		getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
+	}
+	
 }
