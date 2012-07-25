@@ -131,8 +131,10 @@ public class LogSearchModule extends BaseModule implements Shutdownable
 			log.error("No actual webevent found " + inReq.getPath());
 			return;
 		}
+		String type = inEvent.getOperation().replace("/","");
+		
 		Searcher found = null;
-			found = getSearcherManager().getSearcher(inEvent.getCatalogId(), inEvent.getSearchType() + inEvent.getOperation() + "Log");
+			found = getSearcherManager().getSearcher(inEvent.getCatalogId(), type + "Log");
 		if( found instanceof WebEventListener)
 		{
 			WebEventListener lucenelogsearcher= (WebEventListener)found;

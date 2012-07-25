@@ -449,11 +449,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	}
 	
 
-	protected void flushRecentChanges() throws IOException
-	{
-
-	}
-
 	public void setAnalyzer(Analyzer inAnalyzer)
 	{
 		fieldAnalyzer = inAnalyzer;

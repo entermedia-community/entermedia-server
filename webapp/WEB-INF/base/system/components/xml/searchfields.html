@@ -6,10 +6,12 @@
 #foreach( $detail in $details)
 
 <tr class="emsearchfieldrow">
-	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
+	<td>
 		<div class="emsearchfield"> 
 		$!detail.getText($context) 
 		</div>
+	</td>
+	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 		#if(!$detail.isDate())
 					<input name="operation" value="startswith" type="hidden" />

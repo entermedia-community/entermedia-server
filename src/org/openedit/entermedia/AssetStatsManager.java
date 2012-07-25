@@ -1,8 +1,5 @@
 package org.openedit.entermedia;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
@@ -16,18 +13,18 @@ public class AssetStatsManager
 {
 	protected WebEventHandler fieldMediaEventHandler;
 	protected SearcherManager fieldSearcherManager;
-	protected Map fieldViewCache;
-	protected long fieldViewExpireTime;
-	
-	public long getViewExpireTime()
-	{
-		return fieldViewExpireTime;
-	}
-
-	public void setViewExpireTime(long inViewExpireTime)
-	{
-		fieldViewExpireTime = inViewExpireTime;
-	}
+//	protected Map fieldViewCache;
+//	protected long fieldViewExpireTime;
+//	
+//	public long getViewExpireTime()
+//	{
+//		return fieldViewExpireTime;
+//	}
+//
+//	public void setViewExpireTime(long inViewExpireTime)
+//	{
+//		fieldViewExpireTime = inViewExpireTime;
+//	}
 
 	public SearcherManager getSearcherManager()
 	{
@@ -52,7 +49,7 @@ public class AssetStatsManager
 	public void logAssetDownload(String inCatalogId, String inSourcePath, String inResult, User inUser)
 	{
 		WebEvent change = new WebEvent();
-		change.setOperation("download");
+		change.setOperation("asset/download");
 		change.setSearchType("asset");
 		change.setProperty("filename", PathUtilities.extractFileName(inSourcePath ));
 		change.setSourcePath(inSourcePath);
@@ -61,16 +58,23 @@ public class AssetStatsManager
 		change.setCatalogId(inCatalogId);
 		getMediaEventHandler().eventFired(change);
 	}
-	public void logAssetPreview(String inCatalogId, String inSourcePath,String inAssetId, User inUser)
+	public void logAssetPreview(Asset inAsset, User inUser)
 	{
 		WebEvent change = new WebEvent();
-		change.setOperation("preview");
+		change.setOperation("asset/preview");
 		change.setSearchType("asset");
-		change.setSourcePath(inSourcePath);
+		change.setSourcePath(inAsset.getSourcePath());
 		change.setUser(inUser);
-		change.setCatalogId(inCatalogId);
+		change.setCatalogId(inAsset.getCatalogId());
 
-		change.setProperty("assetid",inAssetId);
+		change.setProperty("assetid",inAsset.getId());
+		String views = inAsset.getProperty("assetviews");
+		if( views != null )
+		{
+			long assetviews = Long.parseLong(views);
+			assetviews++;
+			inAsset.setProperty("assetviews",String.valueOf(assetviews)); //this will be overridden 
+		}
 
 		getMediaEventHandler().eventFired(change);
 	}
@@ -82,23 +86,32 @@ public class AssetStatsManager
 		{
 			return 0L;
 		}
-		if( System.currentTimeMillis() > getViewExpireTime())
+		long assetexpire = 0L;
+		String expires = inAsset.getProperty("assetviewsexpires");
+		if( expires != null )
 		{
-			getViewCache().clear(); //TODO: cache by asset
-			setViewExpireTime(System.currentTimeMillis() + 1000*60*60); //once an hour
+			assetexpire = Long.parseLong(expires);
 		}
-		String key = inAsset.getCatalogId() + inAsset.getId();
-		Long views = (Long)getViewCache().get(key);
-		if( views == null)
+		long now = System.currentTimeMillis();
+		if( assetexpire == 0 || assetexpire > now)
 		{
+			assetexpire = now + 1000*60*60; //once an hour
 			Searcher logsearcher = getSearcherManager().getSearcher(inAsset.getCatalogId(), "assetpreviewLog");
 			HitTracker all = logsearcher.fieldSearch("sourcepath", inAsset.getSourcePath());
-			views = Long.valueOf(all.size());
-			getViewCache().put(key, views); 
-			checkAssetSave(inAsset, views);
+			Long views = Long.valueOf(all.size());
+			inAsset.setProperty("assetviews",String.valueOf(views));
+			inAsset.setProperty("assetviewsexpires",String.valueOf(assetexpire));
+			return views.longValue();
 		}
-		inAsset.setProperty("assetviews",String.valueOf(views));
-		return views.longValue();
+		else
+		{
+			String views = inAsset.getProperty("assetviews");
+			if( views != null )
+			{
+				return Long.parseLong(views);
+			}
+			return -1;
+		}
 	}
 
 	protected void checkAssetSave(Asset inAsset, long newcount)
@@ -121,15 +134,5 @@ public class AssetStatsManager
 			change.setCatalogId(inAsset.getCatalogId());
 			getMediaEventHandler().eventFired(change);
 		}
-	}
-
-	protected Map getViewCache()
-	{
-		if (fieldViewCache == null)
-		{
-			fieldViewCache = new HashMap();
-		}
-
-		return fieldViewCache;
 	}
 }
