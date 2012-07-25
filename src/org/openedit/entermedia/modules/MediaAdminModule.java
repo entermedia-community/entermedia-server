@@ -79,6 +79,12 @@ public class MediaAdminModule extends BaseMediaModule
 		getPageManager().saveSettings(page);
 	}
 	
+	public void deployUploadedApp(WebPageRequest inReq ) throws Exception
+	{
+		String zipfile = inReq.findValue("path");
+		getWorkspaceManager().deployUploadedApp(zipfile);
+	}
+	
 	public void deployApp(WebPageRequest inReq) throws Exception
 	{
 		String applicationid = inReq.findValue("applicationid");
