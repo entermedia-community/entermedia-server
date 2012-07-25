@@ -3866,7 +3866,7 @@ h2 {
 #edit-data .settings-table tr td:first-child {
     border-right: 1px dashed #ddd;
     width: 100px;
-   /* text-align: right; */
+    text-align: right; 
 }
 #advanced-dm-search .settings-table select, #edit-data .settings-table select {
     margin: 9px 0;

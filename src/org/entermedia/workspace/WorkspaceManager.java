@@ -6,21 +6,26 @@ import java.util.Iterator;
 import java.util.zip.ZipOutputStream;
 
 import org.dom4j.Attribute;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
+import com.openedit.OpenEditException;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
 import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
 import com.openedit.util.PageZipUtil;
 import com.openedit.util.PathUtilities;
+import com.openedit.util.XmlUtil;
+import com.openedit.util.ZipUtil;
 
 public class WorkspaceManager
 {
@@ -57,6 +62,7 @@ public class WorkspaceManager
 	{
 		Page apppage = getPageManager().getPage(apppath);
 		String catalogid = apppage.get("catalogid"); 
+		String appid = apppage.get("applicationid"); 
 		
 		
 		PageZipUtil pageZipUtil = new PageZipUtil(getPageManager());
@@ -71,6 +77,16 @@ public class WorkspaceManager
 			path = apppage.replaceProperty(path);
 			pageZipUtil.zip(path, finalZip);
 		}
+		Element root = DocumentHelper.createElement("application");
+		root.addElement("applicationid").addAttribute("id",appid);
+		root.addElement("catalogid").addAttribute("id",catalogid);
+		
+		Data app = getSearcherManager().getData("media", "site", appid);
+		root.addElement("name").setText( app.getName());
+		
+		//root.addElement("deploypath").addAttribute("id",catalogid);
+		pageZipUtil.addTozip(root.asXML(),".emapp.xml",finalZip	);
+		
 		finalZip.close();
 	}
 	
@@ -175,5 +191,49 @@ public class WorkspaceManager
 			file.setPath(inEndingPath);
 			getXmlArchive().saveXml(file, null);
 		}
+	}
+	public void deployUploadedApp(Page zip)
+	{
+		Page dest = getPageManager().getPage("/");
+		try
+		{
+			new ZipUtil().unzip(zip.getContentItem().getAbsolutePath(), dest.getContentItem().getAbsolutePath());
+			Page def = getPageManager().getPage("/.emapp.xml");
+			Element root = new XmlUtil().getXml(def.getReader(), "UTF-8");
+			String applicationid = root.element("application").attributeValue("id");
+			String catalogid = root.element("catalogid").attributeValue("id");
+			
+			Searcher searcher = getSearcherManager().getSearcher(applicationid,"site");
+			
+			Data site = (Data)searcher.searchByField("deploypath",applicationid);
+			if( site == null)
+			{
+				site = searcher.createNewData();
+			}
+//			String frontendid = inReq.findValue("frontendid");
+//			if( frontendid == null)
+//			{
+//				throw new OpenEditException("frontendid was null");
+//			}
+			site.setProperty("deploypath",applicationid);
+			site.setProperty("appcatalogid",catalogid);
+			site.setName(root.elementText("name"));
+
+			searcher.saveData(site, null);
+
+			Searcher catsearcher = getSearcherManager().getSearcher("media","catalogs");
+			Data cat = (Data)catsearcher.searchById(catalogid);
+			if( cat == null )
+			{
+				cat = catsearcher.createNewData();
+				cat.setId(catalogid);
+				catsearcher.saveData(cat, null);
+			}
+		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+		
 	}
 }

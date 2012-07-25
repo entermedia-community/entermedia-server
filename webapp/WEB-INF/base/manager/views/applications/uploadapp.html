@@ -1,0 +1,14 @@
+#set( $appcatalogid = $context.getRequestParameter("appcatalogid"))
+		<div class="wizard clearfix">
+			<div class="wizard-top">
+				<h1>Upload Application</h1>
+			</div>
+			<div class="wizard-body">
+				<form name="uploader" action="./uploadappfinish.html" >
+					<label>EnterMedia Application File</label>
+					<input type="file" name="file.1" />
+					<input type="hidden" name="path" value="/WEB-INF/temp/importapp/" />
+					<input type="submit" />
+				</form>
+			</div>
+		</div>

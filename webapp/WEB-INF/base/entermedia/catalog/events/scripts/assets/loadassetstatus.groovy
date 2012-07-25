@@ -72,10 +72,6 @@ public boolean conversionsComplete(String assetid){
 	context.putPageValue("conversionsremaining", remaining);
 	context.putPageValue("conversions", newtasks);
 	context.putPageValue("conversionerrors", errors);
-	if( newtasks && newtasks.size() == 0)
-	{
-		return false;
-	}
 	if( errors.size() > 0)
 	{
 		return false;
@@ -84,6 +80,8 @@ public boolean conversionsComplete(String assetid){
 	{
 		return false;
 	}
+	//	if( newtasks && newtasks.size() == 0) //We will assume true since these should have been loaded on import
+	
 	return true;
 }
 
