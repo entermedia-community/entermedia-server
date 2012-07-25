@@ -7,23 +7,29 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Element;
 import org.entermedia.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.xml.XmlArchive;
-import org.openedit.xml.XmlFile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
-import com.openedit.page.PageSettings;
+import com.openedit.page.manage.PageManager;
 
 public class MediaAdminModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(MediaAdminModule.class);
 	protected WorkspaceManager fieldWorkspaceManager;
+	protected PageManager fieldPageManager;
 	
+	public PageManager getPageManager() {
+		return fieldPageManager;
+	}
+
+	public void setPageManager(PageManager inPageManager) {
+		fieldPageManager = inPageManager;
+	}
+
 	public WorkspaceManager getWorkspaceManager()
 	{
 		return fieldWorkspaceManager;
@@ -81,8 +87,8 @@ public class MediaAdminModule extends BaseMediaModule
 	
 	public void deployUploadedApp(WebPageRequest inReq ) throws Exception
 	{
-		List zipfiles =(List)inReq.getPageValue("uploadedfiles");
-		Page uploaded = (Page)zipfiles.get(0);
+		
+		Page uploaded = getPageManager().getPage("/WEB-INF/temp/importapp.zip");
 		getWorkspaceManager().deployUploadedApp(uploaded);
 	}
 	
