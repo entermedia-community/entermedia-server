@@ -300,6 +300,9 @@
 		<userprofile property="forcewatermarkasset" equals="true" />
 	</permission>
   
+   <permission name="filterbyassettype">
+		<userprofile property="filterbyassettype" equals="true" />
+	</permission>
   
   
 </page>
