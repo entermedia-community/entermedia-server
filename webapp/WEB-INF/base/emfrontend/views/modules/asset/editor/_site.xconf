@@ -15,7 +15,7 @@
 	</path-action>
 	
 	
-	<inner-layout>${themeprefix}/layouts/detaileditor.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/mediaviewer.html</inner-layout>
 	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
 	
 	<permission name="view">

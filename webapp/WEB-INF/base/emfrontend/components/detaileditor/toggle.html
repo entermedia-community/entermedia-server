@@ -25,7 +25,10 @@
 	
 	
 	<span>
-	<a href="#" onclick="toggleEditSection('$viewpath','$pluginpath', '$asset.id', '$viewpath', '$label'); return false;"><img border="0" src="$home${themeprefix}/images/detaileditor/triangle${open}.png" />
+	<a href="#" onclick="toggleEditSection('$viewpath','$pluginpath', '$asset.id', '$viewpath', '$label'); return false;">
+	    <div class="toggler">
+	        <img border="0" src="$home${themeprefix}/images/detaileditor/triangle${open}.png" />
+	    </div>
 	$context.getText($label)</a>
 	</span>
 	#if( $caneditmetadatasetup )

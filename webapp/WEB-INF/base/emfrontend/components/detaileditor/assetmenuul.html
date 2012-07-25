@@ -8,41 +8,8 @@
 #set( $rootid = $hits.sessionId )
 #end
 
-
-
-#set( $ismulti = $asset.id.startsWith("multiedit:") )
-#if( !$ismulti )
-<div id="single-thumb">
-		<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
-			#set( $count = $hits.getPage()+-1 )
-			#set( $count = $count*$hits.getHitsPerPage() )	
-			#set( $count = $velocityCount + $count )
-			$context.putPageValue("hitindex",$count )
-			#set ($sourcepath = $asset.sourcepath)
-		
-			$context.putPageValue("hit", $asset)
-			#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
-			$context.putPageValue("type", $type)
-			<div class="emthumbimage em$thumbsize" 
-				##if( $showcaption ) style="vertical-align:bottom;" #end 
-				#if($showhover != false) hover="true" #end 
-				>			
-<a href="$home$apphome/views/assets/${sourcepath}/index.html?hitssessionid=$rootid">
-				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
-</a>
-			</div>
-		</div>
-</div>
-#end
-
-
 #set( $tab = $context.findValue("assettab") )
 #set( $links = $searcherManager.getList($catalogid,"detaileditormenu") )
-<div class="ui-widget  uipanel" >
-	<div  class="ui-widget-header">
-		Edit Asset
-	</div>
-	<div  class="ui-widget-content">
 		<ul id="assetmenu" class="sidebar-list">
 			#foreach( $link in $links)
 			#set( $pname = "can${link.id}")
@@ -75,6 +42,6 @@
 			#end
 			#end
 			#end
+			<li id="opener" class="open"><a>Collapse</a></a>
 		</ul>
-	</div>
-</div>
+		

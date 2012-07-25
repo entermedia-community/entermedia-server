@@ -174,7 +174,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 
 
-
 .tanmodule {
     padding: 8px;
 }
@@ -413,7 +412,7 @@ input:focus, a:focus, button:focus {
     outline: none !important;
 }
 
-input[type=submit], button, a.btn {
+input[type=submit], input[type=button], button, a.btn {
     /* GENERAL */
 
     -webkit-border-radius: 5px;
@@ -833,9 +832,6 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 .detailsbox {
     background: none;
 }
-.commentbox {
-    margin-top: 15px;
-}
 td.player {
     padding-right: 15px;
 }
@@ -1192,9 +1188,12 @@ small {
 
 /* SIDE BAR STYLES */
 
+.sidebar-media {
+    padding-top: 10px;
+}
 .sidebar-media li {
-    width: 138px;
-    margin: 5px 0;
+    width: 155px;
+    margin: 8px 0;
     padding: 0;
     position: relative;
     text-align: center;
@@ -1204,7 +1203,7 @@ small {
     position: absolute;
     z-index: 999;
     top: 20px;
-    width: 138px;
+    width: 155px;
     display: block;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -4189,6 +4188,138 @@ p.resultsnumber {
 }
 
 
+/* NEW MEDIA VIEW */
+
+#mediaviewer {
+    margin: 0 -20px;
+}
+#sub-nav.mediaview {
+    margin-bottom: 20;
+}
+#detaileditor {
+    margin: 0 -20px -20px;
+}
+#de-table {
+    display: table;
+    width: 100%;
+}
+#de-side-nav {
+    width: 48px;
+    display: table-cell;
+    background:#f7f7f7;
+    border-right: 1px solid #ddd;
+}
+#details {
+    display: table-cell;
+    vertical-align: top;
+}
+#de-side-nav.open {
+    width: 155px;
+    display: table-cell;
+}
+#related-media {
+   width: 155px; 
+   display: table-cell;
+   vertical-align: top;
+   background: #f7f7f7;
+   border-left: 1px solid #ddd;
+}
+#de-side-nav ul {
+    margin: 0;
+    padding: 0;
+}
+#de-side-nav ul li {
+    margin: 0;
+    padding: 0;
+}
+#de-side-nav ul li a {
+    margin: 0;
+    padding: 8px 20px;
+    font-weight: normal;
+    font-style: italic;
+}
+.title-bar {
+    background: #3bb0d2; /* Old browsers */
+    background: -moz-linear-gradient(top, #3bb0d2 0%, #63bdd9 4%, #63bdd9 7%, #5ebcd9 19%, #55bcda 28%, #4cb9d9 33%, #4bb8d8 41%, #46b3d3 48%, #48b3d3 50%, #42b1d1 54%, #44b0cf 57%, #3eaecc 61%, #33a2c1 81%, #329dbd 91%, #2d9cbb 93%, #329bbc 94%, #2b9bba 96%, #309aba 98%, #2b99ba 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3bb0d2), color-stop(4%,#63bdd9), color-stop(7%,#63bdd9), color-stop(19%,#5ebcd9), color-stop(28%,#55bcda), color-stop(33%,#4cb9d9), color-stop(41%,#4bb8d8), color-stop(48%,#46b3d3), color-stop(50%,#48b3d3), color-stop(54%,#42b1d1), color-stop(57%,#44b0cf), color-stop(61%,#3eaecc), color-stop(81%,#33a2c1), color-stop(91%,#329dbd), color-stop(93%,#2d9cbb), color-stop(94%,#329bbc), color-stop(96%,#2b9bba), color-stop(98%,#309aba), color-stop(100%,#2b99ba)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #3bb0d2 0%,#63bdd9 4%,#63bdd9 7%,#5ebcd9 19%,#55bcda 28%,#4cb9d9 33%,#4bb8d8 41%,#46b3d3 48%,#48b3d3 50%,#42b1d1 54%,#44b0cf 57%,#3eaecc 61%,#33a2c1 81%,#329dbd 91%,#2d9cbb 93%,#329bbc 94%,#2b9bba 96%,#309aba 98%,#2b99ba 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #3bb0d2 0%,#63bdd9 4%,#63bdd9 7%,#5ebcd9 19%,#55bcda 28%,#4cb9d9 33%,#4bb8d8 41%,#46b3d3 48%,#48b3d3 50%,#42b1d1 54%,#44b0cf 57%,#3eaecc 61%,#33a2c1 81%,#329dbd 91%,#2d9cbb 93%,#329bbc 94%,#2b9bba 96%,#309aba 98%,#2b99ba 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #3bb0d2 0%,#63bdd9 4%,#63bdd9 7%,#5ebcd9 19%,#55bcda 28%,#4cb9d9 33%,#4bb8d8 41%,#46b3d3 48%,#48b3d3 50%,#42b1d1 54%,#44b0cf 57%,#3eaecc 61%,#33a2c1 81%,#329dbd 91%,#2d9cbb 93%,#329bbc 94%,#2b9bba 96%,#309aba 98%,#2b99ba 100%); /* IE10+ */
+    background: linear-gradient(top, #3bb0d2 0%,#63bdd9 4%,#63bdd9 7%,#5ebcd9 19%,#55bcda 28%,#4cb9d9 33%,#4bb8d8 41%,#46b3d3 48%,#48b3d3 50%,#42b1d1 54%,#44b0cf 57%,#3eaecc 61%,#33a2c1 81%,#329dbd 91%,#2d9cbb 93%,#329bbc 94%,#2b9bba 96%,#309aba 98%,#2b99ba 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bb0d2', endColorstr='#2b99ba',GradientType=0 ); /* IE6-9 */
+    color: #fff;
+    height: 25px;
+    width: 100%;
+    line-height: 25px;
+    font-weight: bold;
+    border-bottom: 1px solid #164e66;
+    border-right: 1px solid #164e66;
+    border-left: 1px solid #89cde9;
+}
+.title-bar span {
+   padding: 0 20px;
+}
+
+    /* METADATA EDITING SECTION */
+   
+   #de-metadata .ui-widget-header {
+       background: #fff;
+       color: #444;
+       font-size: 18px;
+       font-weight: bold;
+       padding: 10px 20px;
+       border-bottom: 1px solid #ddd;
+   }
+   #de-metadata .ui-widget-header span a {
+       color: #3490b2;
+   }
+   #de-metadata .ui-widget-content {
+       border: none;
+       border-bottom: 1px solid #ddd;
+       box-shadow: none;
+       border-radius: 0;
+       padding: 0;
+       margin: 0;
+   }
+   #de-metadata .ui-widget-header .toggler { 
+        background: rgb(255,255,255); /* Old browsers */
+        background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(239,239,239,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(239,239,239,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* IE10+ */
+        background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#efefef',GradientType=0 ); /* IE6-9 */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b9b9b9', endColorstr='#d3d3d3',GradientType=0 );
+        border-right: 1px solid #ddd;
+        float: left;
+        padding: 10px 15px 10px 20px;
+        margin: -10px 10px 0 -20px;
+   }
+   #de-metadata .ui-widget-header .widget-header-edit a {
+        background: url('../images/iconset-10x10.png') 10px 20px !important;
+        opacity: 0.8;
+        margin-top: 4px;
+        margin-right: -7px;
+   }
+   #de-metadata .ui-widget-header .widget-header-edit a:hover {
+       opacity: 1;
+   }
+   #de-metadata .btns {
+       background: #eee;
+       margin: 0; 
+       padding: 3px 20px;
+       border-top: 1px solid #ddd;
+       background: #f2f2f2;
+   }
+   #details input[type="text"], #details textarea {
+       font-size: 14px;
+       line-height: 18px;
+       color: #444;
+   }
+
+
+
 /* BUTTONS */
 
 ul.embuttons li a span {
@@ -4518,22 +4649,39 @@ td[title]:hover:before {
     padding: 0;
     border-color: #ddd;
 }
-#emcontainer #resultslist  #default-fields .settings-table tr:nth-child(even) {
-    background: #f7f7f7;  
+#de-metadata #default-fields {
+    display: block;
 }
-#emcontainer #resultslist  #default-fields .settings-table tr td {
+#de-metadata #default-fields .cellrow {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+#de-metadata #default-fields .cellrow {
+    background: #fff;
+}
+#emcontainer #resultslist  #default-fields .settings-table tr:nth-child(even), #de-metadata #default-fields .cellrow:nth-child(even) {
+    background: #f7f7f7;  
+    padding: 0;
+}
+#emcontainer #resultslist  #default-fields .settings-table tr td, #de-metadata #default-fields .cellrow span {
     padding: 12px 20px;
 }
-#emcontainer #resultslist  #default-fields .settings-table tr td:first-child {
+#de-metadata #default-fields .cellrow span {
+    display: table-cell;
+    vertical-align: middle;
+}
+#emcontainer #resultslist  #default-fields .settings-table tr td:first-child, #de-metadata #default-fields .cellrow span.bodylabel {
     text-align: right;
-    width: 150px;
+    width: 110px;
     color: #444;
     font-weight: bold;
     background: url('../images/ds-rightedge.png') top right repeat-y;
     vertical-align: top;
     line-height: 28px;
 }
-#emcontainer #resultslist  #default-fields .settings-table tr td:nth-child(2) {
+#emcontainer #resultslist  #default-fields .settings-table tr td:nth-child(2), #de-metadata #default-fields .cellrow span:nth-child(2) {
     border-left: 1px solid #ddd;   
 }
 #emcontainer #resultslist  #default-fields .settings-table tr td[colspan="2"] {

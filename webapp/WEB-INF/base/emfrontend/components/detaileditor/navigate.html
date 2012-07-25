@@ -8,24 +8,41 @@
 		#set($previous = $hits.previous($indexOf))
 		#set($next = $hits.next($indexOf))
 		<div id="eml-tab-subnav">
-	
-		<ul style="text-align: center;">
-				
-			#if( $hits )
-			
-			#set( $thispage = $content.getDirectoryName() )
-			
-					#if($previous)
-						 <li><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
-					#end
-						<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span>
-					#if($next)
-						$context.putPageValue("hits", $hits)
-						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">>></a></li>
-					#end
-					
-			#end	
-		</ul>
+    		<ul style="text-align: center;" id="sub-nav" class="mediaview">
+    				
+    			#if( $hits )
+    			
+    			#set( $thispage = $content.getDirectoryName() )
+    			
+    					#if($previous)
+    						 <li><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
+    					#end
+    					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
+    				    <li><a href="#">File</a>
+    				        <ul>
+    				            <li><a href="#">Print</a></li>
+    				            <li><a href="#">Download</a></li>
+    				            <li><a href="#">Delete</a></li>
+    				        </ul>
+    				    </li>
+    					<li><a href="#">Share</a>
+    					   <ul> 
+                               <li><a href="#">Share to Facebook</a></li>
+                               <li><a href="#">Share to Twitter</a></li>
+                               <li><a href="#">Share to Pinterest</a></li>
+                               <li><a href="#">Share via Email</a></li>
+                           </ul>
+    					</li>
+    					
+    					
+    					#if($next)
+    						$context.putPageValue("hits", $hits)
+    						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">>></a></li>
+    					#end
+    					<li style="float: right"><a href="#">Add to Basket</a>
+    					
+    			#end	
+    		</ul>
 		</div>
 		#end
 
