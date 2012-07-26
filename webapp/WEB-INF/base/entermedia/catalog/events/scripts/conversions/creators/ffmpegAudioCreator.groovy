@@ -13,13 +13,13 @@ import org.openedit.entermedia.creator.*
 import com.openedit.page.Page;
 import com.openedit.util.PathUtilities;
 
-public class FfMpegAudioCreator extends BaseCreator implements MediaCreator
+public class ffmpegAudioCreator extends BaseCreator implements MediaCreator
 {
-	private static final Log log = LogFactory.getLog(FfMpegAudioCreator.class);
+	private static final Log log = LogFactory.getLog(ffmpegAudioCreator.class);
 
-	public boolean canReadIn(MediaArchive inArchive, String inInput)
+	public boolean canReadIn(MediaArchive inArchive, String inPut)
 	{
-		return true;//"flv".equals(inOutput) || mpeg; //This has a bunch of types
+		return "wma".equalsIgnoreCase(inPut) || "acc".equalsIgnoreCase(inPut);//"flv".equals(inOutput) || mpeg; //This has a bunch of types
 	}
 	
 
@@ -56,7 +56,8 @@ public class FfMpegAudioCreator extends BaseCreator implements MediaCreator
 					//audio
 					comm.add("-acodec");
 					//comm.add("libmp3lame"); 
-					comm.add("libfaac"); //libfaac  libmp3lame
+					//comm.add("libfaac"); //libfaac  libmp3lame
+					comm.add("libmp3lame");
 					comm.add("-ab");
 					comm.add("96k");
 //					comm.add("-ar");

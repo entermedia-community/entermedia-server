@@ -454,9 +454,16 @@ public class OrderManager
 
 			if( presetid == null)
 			{
-				continue; //preview only
+				presetid = "preview";
 			}
+			
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
+			orderItem.setProperty("presetid", presetid);
+			if( "preview".equals(presetid) )
+			{
+				orderItemSearcher.saveData(orderItem, inUser);
+				continue;
+			}
 
 			boolean needstobecreated = true;
 			if( orderItem.get("conversiontaskid") != null )
@@ -478,7 +485,12 @@ public class OrderManager
 			}
 			if (needstobecreated)
 			{
-				Data newTask = taskSearcher.createNewData();
+				SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid",presetid);
+				Data newTask = taskSearcher.searchByQuery(q);
+				if( newTask != null )
+				{
+					newTask = taskSearcher.createNewData();	
+				}
 				newTask.setSourcePath(asset.getSourcePath());
 				newTask.setProperty("status", "new");
 				newTask.setProperty("assetid", assetid);
@@ -528,12 +540,21 @@ public class OrderManager
 	
 	public String getPresetForOrderItem(String inCataId, Data inOrderItem)
 	{
-		Data task = getSearcherManager().getData(inCataId,"conversiontask", inOrderItem.get("conversiontaskid"));
-		return task.get("presetid");
+		String presetid = inOrderItem.get("presetid");
+		if( presetid == null )
+		{
+			return "preview"; //preview? or could be original... I am going to save presetid
+		}
+		return presetid;
 	}
 	public String getPublishDestinationForOrderItem(String inCataId, Data inOrderItem)
 	{
-		Data task = getSearcherManager().getData(inCataId,"publishqueue", inOrderItem.get("publishqueueid"));
+		String pubqueid = inOrderItem.get("publishqueueid");
+		if( pubqueid == null )
+		{
+			return null;
+		}
+		Data task = getSearcherManager().getData(inCataId,"publishqueue", pubqueid);
 		return task.get("publishdestination");
 	}
 

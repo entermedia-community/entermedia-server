@@ -48,6 +48,7 @@
 	<property id="tiff" rendertype="image" creator="imagemagick">TIFF</property>
 	<property id="ttf" rendertype="image" creator="imagemagick" >TTF</property>
 	<property id="wav" rendertype="audio" creator="FfMpegAudio" synctags="false">WAV</property>
+	<property id="wma" rendertype="audio"  synctags="false">WMA</property>
 	<property id="wmv" rendertype="video" creator="ffmpeg">WMV</property>
 	<property id="doc" rendertype="document"  creator="oofficeDocument">DOC</property>
 	<property id="docx" rendertype="document" >DOCx</property>
@@ -55,6 +56,7 @@
 	<property id="xls" rendertype="document" >XLS</property>
 	<property id="xlsx" rendertype="document" >XLS</property>
 	<property id="ppt" rendertype="document" >PPT</property>
+	<property id="pptx" rendertype="document" >PPTX</property>
 	<property id="wps" rendertype="document" >WPS</property>
 	<property id="odt" rendertype="document" >ODT</property>
 	<property id="html" rendertype="document" >HTML</property>
