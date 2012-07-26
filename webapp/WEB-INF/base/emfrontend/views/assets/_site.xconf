@@ -16,6 +16,10 @@
 	</permission>
 	
 	
+	<property name="module">asset</property>
+	
+	
+	<property name="assettab">metadatageneral</property>
 	
 	
 	<property name="virtual">true</property>

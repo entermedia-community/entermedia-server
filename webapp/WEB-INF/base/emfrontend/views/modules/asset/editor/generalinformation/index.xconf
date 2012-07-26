@@ -1,5 +1,5 @@
 <page>
 
-	<path-action name="DataEditModule.loadCorrectViewForUser" />
+	<page-action name="DataEditModule.loadCorrectViewForUser" />
 
 </page>
