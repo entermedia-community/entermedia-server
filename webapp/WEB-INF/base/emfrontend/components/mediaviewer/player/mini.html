@@ -1,10 +1,11 @@
 
 
-<div id="media-player" class="clearfix">
-    <a id="mp-minmax" class="min ajax ir" targetdivinner="mediaviewer" href="$home$apphome/components/mediaviewer/player/index.html?assetid=$asset.id&oemaxlevel=1"></a>
+<div id="media-player" class="clearfix" style="padding: 0;">
+    <a id="mp-minmax" class="min ajax ir" style="margin-top: 15px" targetdivinner="mediaviewer" href="$home$apphome/components/mediaviewer/player/index.html?assetid=$asset.id&oemaxlevel=1"></a>
     
         <div id="default-top" style="border-bottom: none;">
             <div class="thumbnail">
+                #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
                 #if( !$thumbsize )
                     #set( $thumbsize  = "thumb" )
                 #end
@@ -18,6 +19,14 @@
                 <div class="secondary">
                     <div id="mp-asset-info"><a href="#" class="views">345321<span class="">&nbsp;</span></a><a href="#" class="comments">7<span>&nbsp;</span></a><a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a></div>
                 </div>
+                <div class="asset-details-more">
+                    <p style="line-height: 25px; text-align: left; color: #fff;">
+                        <strong>Categories</strong><br/>
+                        #foreach ($category in $asset.categories)
+                            <a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
+                        #end
+                    </p>
+                </p>
             </div>
         </div>
 </div>
