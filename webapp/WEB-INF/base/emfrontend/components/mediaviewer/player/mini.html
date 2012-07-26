@@ -1,0 +1,32 @@
+
+
+<div id="media-player" class="clearfix">
+    <a id="mp-minmax" class="min ajax ir" targetdivinner="mediaviewer" href="$home$apphome/components/mediaviewer/player/index.html?assetid=$asset.id&oemaxlevel=1"></a>
+    
+        <div id="default-top" style="border-bottom: none;">
+            <div class="thumbnail">
+                #if( !$thumbsize )
+                    #set( $thumbsize  = "thumb" )
+                #end
+                $pages.include("$home$apphome/components/results/thumbnails/${type}.html", $context) 
+            </div>
+            
+            <div class="main-info">
+                <div class="primary">
+                    $asset
+                </div>
+                <div class="secondary">
+                    <div id="mp-asset-info"><a href="#" class="views">345321<span class="">&nbsp;</span></a><a href="#" class="comments">7<span>&nbsp;</span></a><a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a></div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<script>
+    $('#mp-player img').load(function(){
+        var $wimg = $('#mp-player img').width();
+        $('#mp-player').width($wimg);
+        $('#mp-asset-title').show();
+        $('#mp-asset-info').show();
+    });
+</script>

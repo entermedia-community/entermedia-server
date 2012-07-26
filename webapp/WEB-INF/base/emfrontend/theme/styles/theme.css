@@ -2006,7 +2006,7 @@ tr.odd {
     box-shadow: inset 0px 0px 60px 15px rgba(0, 0, 0, .8);
     position: relative;
     margin: -20px 0 0;
-    padding: 30px 0;
+    padding: 20px 0;
 }
 #media-player .emdropshadow {
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .8);
@@ -4204,18 +4204,18 @@ p.resultsnumber {
     width: 100%;
 }
 #de-side-nav {
-    width: 48px;
     display: table-cell;
     background:#f7f7f7;
     border-right: 1px solid #ddd;
-}
-#details {
-    display: table-cell;
-    vertical-align: top;
+    width: 48px;
 }
 #de-side-nav.open {
     width: 155px;
     display: table-cell;
+}
+#details {
+    display: table-cell;
+    vertical-align: top;
 }
 #related-media {
    width: 155px; 
@@ -4249,26 +4249,107 @@ p.resultsnumber {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3bb0d2', endColorstr='#2b99ba',GradientType=0 ); /* IE6-9 */
     color: #fff;
     height: 25px;
-    width: 100%;
     line-height: 25px;
     font-weight: bold;
     border-bottom: 1px solid #164e66;
     border-right: 1px solid #164e66;
     border-left: 1px solid #89cde9;
+    display: table-cell;
 }
 .title-bar span {
    padding: 0 20px;
 }
+    /* MEDIA VIEWER */
+   
+   #mp-minmax {
+       width: 24px;
+       height: 21px;
+       cursor: pointer;
+       opacity: 0.6;
+       float: right;
+       margin: -5px 15px 0 0;
+   }
+   #mp-minmax:hover {
+       opacity: 1;
+   }
+   #mp-minmax.max {
+        background: url('../images/mp-minmax.png') 24px 0;
+   }
+    #mp-minmax.min {
+        background: url('../images/mp-minmax.png') 0 0;
+   }
+   #mp-player {
+       margin: 0 auto;
+   }
+   #mp-asset-title {
+       color: #fff;
+       font-weight: bold;
+       font-size: 16px;
+       text-align: left;
+       margin-left: 5px;
+       margin-bottom: 5px;
+   }
+   #mp-asset-info {
+       text-align: right;
+       margin-right: -23px; 
+       margin-top: 5px;
+   }
+   #mp-asset-info a {
+       color: #fff;
+       margin: 0 10px 0 0;
+       opacity: 0.8;
+   }
+   #mp-asset-info a:hover {
+       opacity: 1;
+   }
+   #mp-asset-info .views span {
+       background: url('../images/mp-icons.png');
+       width: 17px;
+       height: 10px;
+       display: inline-block;
+       margin: 0 8px 0 3px;
+       position: relative;
+       top: 1px;
+   }
+   #mp-asset-info .comments span {
+       background: url('../images/mp-icons.png') 24px 0;
+       width: 11px;
+       height: 10px;
+       display: inline-block;
+       margin: 0 8px 0 3px;
+       position: relative;
+       top: 1px;
+   }
+   #mp-asset-info .attachments span {
+       background: url('../images/mp-icons.png') 12px 0;
+       width: 11px;
+       height: 10px;
+       display: inline-block;
+       margin: 0 8px 0 3px;
+       position: relative;
+       top: 1px;
+   }
 
     /* METADATA EDITING SECTION */
    
+   .tr {
+       display: table-row;
+   }
    #de-metadata .ui-widget-header {
        background: #fff;
        color: #444;
        font-size: 18px;
        font-weight: bold;
        padding: 10px 20px;
-       border-bottom: 1px solid #ddd;
+       border-bottom: 1px solid #d5d5d5;
+       box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
+       position: relative;
+       z-index: 3;
+   }
+   #de-metadata #default-fields {
+        box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
+        position: relative;
+        z-index: 2;
    }
    #de-metadata .ui-widget-header span a {
        color: #3490b2;
@@ -4309,7 +4390,6 @@ p.resultsnumber {
        background: #eee;
        margin: 0; 
        padding: 3px 20px;
-       border-top: 1px solid #ddd;
        background: #f2f2f2;
    }
    #details input[type="text"], #details textarea {
@@ -4661,9 +4741,12 @@ td[title]:hover:before {
 #de-metadata #default-fields .cellrow {
     background: #fff;
 }
-#emcontainer #resultslist  #default-fields .settings-table tr:nth-child(even), #de-metadata #default-fields .cellrow:nth-child(even) {
+#emcontainer #resultslist  #default-fields .settings-table tr:nth-child(even), #de-metadata#default-fields .cellrow:nth-child(even) {
     background: #f7f7f7;  
     padding: 0;
+}
+#de-metadata #default-fields .cellrow:last-child, #emcontainer #resultslist #de-metadata .settings-table tr:last-child  {
+    border-bottom-color: #ccc;
 }
 #emcontainer #resultslist  #default-fields .settings-table tr td, #de-metadata #default-fields .cellrow span {
     padding: 12px 20px;
