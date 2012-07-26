@@ -553,7 +553,8 @@ asset: " + asset);
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 
-		String url = server + "/media/services/rest/pollremotepublish.xml?catalogid=" + targetcatalogid;
+		String url = server + "/media/services/rest/searchpendingorders.xml?catalogid=" + targetcatalogid;
+		url = url + "&field=orderstatus&orderstatus.value=ordered&operation=exact";
 		PostMethod method = new PostMethod(url);
 
 		try

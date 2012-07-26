@@ -1,7 +1,8 @@
 <properties>
 	<property id="preorder">Pre-Ordered</property>
 	<property id="ordered">Ordered</property>
-	<property id="closed">Closed</property> <!-- This means our server has finished it's job -->
+	<property id="complete">Complete</property> <!-- This means our server has finished it's job -->
+	<property id="closed">Closed</property> 
 <!-- 
 	<property id="0">Pending</property>
 	<property id="1">Processed</property>

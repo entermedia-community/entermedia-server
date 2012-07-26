@@ -1,5 +1,8 @@
 <page>
 	<path-action name="DataEditModule.search" alltypes="true"/>   
 	<path-action name="DataEditModule.loadPageOfSearch" alltypes="true" />	
+	<path-action name="OrderModule.loadOrderManager" alltypes="true" />	
 	<property name="hitsname">orders</property>
+	<property name="searchtype">order</property>
+	
 </page>
