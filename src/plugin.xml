@@ -101,6 +101,7 @@
 
 	<bean id="MediaAdminModule" class="org.openedit.entermedia.modules.MediaAdminModule">
 			<property name="workspaceManager"><ref bean="workspaceManager" /></property>
+				<property name="pageManager"><ref bean="pageManager" /></property>
 	
 	</bean>
 

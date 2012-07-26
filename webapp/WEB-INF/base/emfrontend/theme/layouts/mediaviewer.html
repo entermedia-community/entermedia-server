@@ -1,37 +1,37 @@
-#if( $asset )
-<table width="100%">
-<tr>
-<td id="emplayerplayer" >
-	<div class="emrounded"><h4><br></h4>
-	<div class="emroundedbody">
-	<div class="embox">
-		$pages.include("/${applicationid}/components/mediaviewer/player/index.html",$context)
-	</div>	
-	</div>	
-	</div>	
-</td>
-<td id="emviewerdetails" >
-	<div class="emrounded"><h4><br></h4>
-	<div class="emroundedbody">
-	<div class="embox">
-	$pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
-	</div>	
-	</div>	
-	</div>	
-</td></tr></table>
-#end
-#if ($canviewcomments)
-<div id="emplayerresults" >
-	<div class="emrounded"><h4><br></h4>
-	<div class="emroundedbody">
-	<div class="embox">
-			<div id="emcommentarea" class="clearfix">
-	
-	$pages.include("/${applicationid}/components/results/mini.html",$context)
-	</div>	
-	</div>	
-	</div>	
-	</div>	
 
+$pages.include("$home$apphome/theme/layouts/detaileditor.html", $context)
+
+
+<!--
+
+$context.putPageValue("showhover", "false")
+$context.putPageValue("thumbsize", "thumb")
+$context.putPageValue("showcaption", "true")
+$context.putPageValue("hideheader", "true")
+
+<div class="subcolumns">
+    <div id="main-area">
+        <div class="ui-widget uipanel">
+            <div  class="ui-widget-header">
+                <span class="ellipsis">$asset</span>
+                </div>
+            <div  class="ui-widget-content no-padding">
+             
+              $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+             
+              $pages.include("$apphome/components/mediaviewer/player/navigation.html",$context)
+             
+            </div> 
+        </div>
+    </div>
+    <div id="right-sidebar">
+        
+        <div class="detailsbox ui-widget">
+            <div class="ui-widget-header">Related Media</div>
+            <div class="ui-widget-content" style="padding-top: 20px; ">
+        
+        $pages.include("$apphome/components/results/related/bykeyword.html",$context)
+    </div>
 </div>
-#end
+
+-->

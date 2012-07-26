@@ -1,3 +1,5 @@
+#set( $moduleid = $context.findValue("module") )
+
 #macro (display $filename $label $assetid $view $print)
 	$context.putPageValue("view", $view)
 	#if ($print && $print == "true")
@@ -7,42 +9,72 @@
   	#end
 #end
 
+
+
 #if( $asset )
 
-<div class="subcolumns">
-          <div class="c25l" id="left-col">
-			
-			$pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
-
-         </div>
-         <div id="right-col" class="detail-editor">	
-         	#set( $ismultifine = $asset.id.startsWith("multiedit:") )
-			#if($ismultifine )
-			
-			#else
-					$pages.include("$apphome/components/detaileditor/navigate.html")
-								
-			#end
-
-				#set( $inpreviewpage = false )
-				#if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-					#set( $inpreviewpage = true )
-				#elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-					#set( $inpreviewpage = true )
-				#elseif( $content.path.endsWith("detailviewer/index.html") )
-					#set( $inpreviewpage = true )
-				#end
-			
-				#if( $inpreviewpage )
-					$pages.include("$apphome/components/detaileditor/index.html?assetid=$asset.id")
-				#else
-					#if( $asset.getId().startsWith("multiedit:") )
-					<h2>[[Editing across $asset.size() records]]</h2>
-					#end
-					$pages.includeContent()
-				#end
-         </div>
+<div id="mediaviewer" class="max">
+    
+    #set( $ismultifine = $asset.id.startsWith("multiedit:") )
+        #if($ismultifine )
+            
+    #else
+        $pages.include("$apphome/components/detaileditor/navigate.html")
+                        
+    #end
+    
+    $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+             
+    ## $pages.include("$apphome/components/mediaviewer/player/navigation.html",$context)
+    
 </div>
+
+<div id="detaileditor">
+    <div id="de-table">
+        <div class="tr">
+            <div class="title-bar" style="border-left: none;"></div>
+            <div class="title-bar"><span>$section</span></div>
+            <div class="title-bar" style="border-right: none;"><span style="text-align: center;">Related Media</span></div>
+        </div>
+        <div class="tr">
+            <div id="de-side-nav" class="open">
+        
+                
+                $pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
+                
+                
+            </div>
+            <div id="details">
+                 
+                 <div id="resultslist">
+                     #set( $inpreviewpage = false )
+                        #if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
+                            #set( $inpreviewpage = true )
+                        #elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
+                            #set( $inpreviewpage = true )
+                        #elseif( $content.path.endsWith("detailviewer/index.html") )
+                            #set( $inpreviewpage = true )
+                        #end
+                    
+                        #if( $inpreviewpage )
+                            $pages.include("$home$apphome/modules/$moduleid/editor/generalinformation/index.html?assetid=$asset.id")
+                        #else
+                            #if( $asset.getId().startsWith("multiedit:") )
+                            <h2>[[Editing across $asset.size() records]]</h2>
+                            #end
+                            $pages.includeContent()
+                    #end
+                </div>
+            </div>
+            <div id="related-media">
+                 
+                 $pages.include("$apphome/components/results/related/bykeyword.html",$context)
+            </div>
+        </div>
+    </div>
+        
+</div>
+
 
 <script type="text/javascript" >
 	toggleEditSection = function(inId, inPath, inAssetID, inView, inLabel)

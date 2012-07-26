@@ -1,78 +1,57 @@
 <div id="emresultscontent">
 
 #if( $hideheader &&  $hideheader == "false")
-$pages.include("$apphome/components/results/header.html",$context) 
-#end
-
-$context.putPageValue("assetrootfolder", "/$catalogid/assets")
-#set( $thumbsize  = $context.findValue("thumbsize") )
-
-	#if( $category )
-		#set( $catid = $category.id )
-	#else
-		#set( $catid = "index" )
-	#end
-
-	#if ( $related && $related.size() > 0 )
-	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
-	$context.putPageValue("details",$details)
-	<ul class="sidebar-media">
-			#set($count = 0)
-			
-			#set( $rootid = $related.sessionId )
-			
-			#foreach ($hit in $related.getPageOfHits())
-		<li class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
-			#set( $count = $related.getPage()+-1 )
-			#set( $count = $count*$related.getHitsPerPage() )	
-			#set( $count = $velocityCount + $count )
-			$context.putPageValue("hitindex",$count )
-			#set ($sourcepath = $hit.sourcepath)
-		
-			$context.putPageValue("hit", $hit)
-			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-			$context.putPageValue("type", $type)
-			#set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
-			$context.putPageValue("clink", $clink)
-			$context.putPageValue("thumbsize",$thumbsize)
-			<a href="$click">
-				$pages.include("$apphome/components/results/thumbnails/small.html",$context)				
-			</a>	
-			<a class="sidebar-caption" style="display: none;" href="$click">		
-				<span href="$click">
-						#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
-				</span>
-		</li>
-			  
-			#end
-	</ul>
-	#if( $related.size() > 7 )
-<center>
-<a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$related.sessionId">All Related</a>
-</center>
-#end
-	
-</div>
-
-
-	#end
-
-#if ( $related.totalPages == 0 )
-<p>
-[[No results found.]]
-</p>
-#end
-<div id="messagearea"></div>
-</div>
-
-<center>
-<a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId">Back To Results</a>
-</center>
-
-
-</div>
-
-
+    $pages.include("$apphome/components/results/header.html",$context) 
+    #end
+    
+    $context.putPageValue("assetrootfolder", "/$catalogid/assets")
+    #set( $thumbsize  = $context.findValue("thumbsize") )
+    
+    	#if( $category )
+    		#set( $catid = $category.id )
+    	#else
+    		#set( $catid = "index" )
+    	#end
+    
+    	#if ( $related && $related.size() > 0 )
+        	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
+        	$context.putPageValue("details",$details)
+        	<ul class="sidebar-media">
+        			#set($count = 0)
+        			
+        			#set( $rootid = $related.sessionId )
+        			
+        			#foreach ($hit in $related.getPageOfHits())
+        		<li class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
+        			#set( $count = $related.getPage()+-1 )
+        			#set( $count = $count*$related.getHitsPerPage() )	
+        			#set( $count = $velocityCount + $count )
+        			$context.putPageValue("hitindex",$count )
+        			#set ($sourcepath = $hit.sourcepath)
+        		
+        			$context.putPageValue("hit", $hit)
+        			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+        			$context.putPageValue("type", $type)
+        			#set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
+        			$context.putPageValue("clink", $clink)
+        			$context.putPageValue("thumbsize",$thumbsize)
+        			<a href="$click">
+        				$pages.include("$apphome/components/results/thumbnails/small.html",$context)				
+        			</a>	
+        			<a class="sidebar-caption" style="display: none;" href="$click">		
+        				<span href="$click">
+        						#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
+        				</span>
+        		</li>
+        			  
+        			#end
+        	</ul>
+        	#if( $related.size() > 7 )
+                <center>
+                    <a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$related.sessionId">All Related</a>
+                </center>
+            #end
+        #end
 
 <script>
 	
