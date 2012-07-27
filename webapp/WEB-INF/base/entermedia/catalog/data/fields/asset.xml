@@ -59,8 +59,8 @@
 	<property id="colortype" index="true" stored="true" viewtype="list" datatype="list">Color</property>
 	<property id="width" index="true" stored="true" datatype="number" >Width</property>
 	<property id="height" index="true" stored="true" datatype="number" >Height</property>
-	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  externalid="Create Date,MediaCreateDate,CreateDate">Created On</property>
-	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date" viewtype="time" >Last Modified</property>
+	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  viewtype="time" searchcomponent="datesearch" externalid="Create Date,MediaCreateDate,CreateDate">Created On</property>
+	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date"  searchcomponent="datesearch"  viewtype="time" >Last Modified</property>
 	<property id="recordmodificationdate" index="true" type="date" stored="true" editable="false">Record Date</property> <!--  should be a date -->
 	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
 	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" query="groups:developers">Owner</property>
