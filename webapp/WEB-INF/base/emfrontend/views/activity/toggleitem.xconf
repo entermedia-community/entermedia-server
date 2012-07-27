@@ -1,6 +1,0 @@
-<page>
-<path-action name="OrderModule.toggleItemInOrderBasket"/>
-<page-action name="OrderModule.loadOrderBasket"/>
-<inner-layout/>
-
-</page>

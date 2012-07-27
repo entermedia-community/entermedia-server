@@ -62,7 +62,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 				</a>
 			#end
 			#if( $showbasket ) 
-				$pages.include("$apphome/views/activity/toggleitem.html?assetid=$hit.id")
+				$pages.include("$apphome/components/basket/toggleitem.html?assetid=$hit.id",$context)
 			#end
 			
 			
