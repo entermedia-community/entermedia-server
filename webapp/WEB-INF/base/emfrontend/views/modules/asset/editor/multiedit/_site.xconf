@@ -6,9 +6,9 @@
 
 	<property name="hideactions">true</property> 	
 	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
-	
-	<path-action name="AssetControlModule.loadAssetPermissions"/>
-	<path-action name="Admin.loadPermissions"/>
-	
+		
+	<permission name="viewasset">
+		<boolean value="true" />
+	</permission>	
 	
 </page>

@@ -82,7 +82,7 @@ public class AssetStatsManager
 	public long getViewsForAsset(Asset inAsset)
 	{
 		//check with the log files and cache the results?
-		if( inAsset == null)
+		if( inAsset == null || inAsset.getCatalogId() == null)
 		{
 			return 0L;
 		}
