@@ -46,10 +46,10 @@
 			   		
 		#end
 #end
-
-<div class="ui-widget" >
-	<div  class="ui-widget-header">Attachments<a style="float: right; color: #fff; font-size: 11px; margin-right: 20px; margin-top: 1px;" href="reload.html?sourcepath=$asset.sourcePath">Reload Files</a></div>
-	<div  class="ui-widget-content categories-widget no-padding-for-real of-visible">
+<div class="tab-actions" style="text-align: right;">
+    <a class="btn ajax" targetdivinner="right-col" href="reload.html?sourcepath=$asset.sourcePath&oemaxlevel=2">Reload Files</a>
+</div>
+	<div  class="ui-widget-content categories-widget no-padding-for-real of-visible" style="border: none; box-shadow: none;">
 		<div id="attachments-container">
 			<div id="tree" class="attachments">
 					<ul class="open" >
@@ -75,13 +75,11 @@
 		</div>
 		</div>
 	</div>
-</div> <!-- -->
-
 ##$sizer.inEnglish($attachment.size)
 
 
+<script type="text/javascript">
 
-<script type="	text/javascript">
 
 
 	$('#tree ul li div').livequery(function()
@@ -344,21 +342,6 @@
 	
 	});
 	});
-/**
-	$("#tree .uploadfile").on({
-		change: function (event) {
-			//alert("changed");
-			var field = $(this);
-			//var copy = $(this)
-			var cloned = field.clone(true);
-			cloned.insertAfter(real);
-			//field.hide();
-			field.appendTo("#here");
-			
-			
-		}
-	});
-*/
 
 	repaint = function () {
 		jQuery("#attachments-tree").load("$apphome$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1");

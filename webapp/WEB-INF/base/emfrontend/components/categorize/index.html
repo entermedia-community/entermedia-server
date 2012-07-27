@@ -11,8 +11,14 @@
 
 #set ($categories = $asset.getCategories())
 <div class="emtable clearfix" >
+    #if($caneditasset)
+    
+        <div id="addcategory$postfix" style="margin: 20px 0 10px 0;">
+            <a class="ajax btn small" targetdiv="assetdetailscategorylist$postfix"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
+        </div>
+    #end
 	#foreach($category in $categories)
-		<a class="row category" href="$home$apphome/components/categories/${category.id}.html">
+		<a class="row category" href="$home$apphome/views/categories/${category.id}.html">
 			$category.name
 			#if($caneditasset)
 				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id">
@@ -20,11 +26,8 @@
 		</a>
 	#end
 </div>
-#if($caneditasset)
-	<div id="addcategory$postfix" style="margin: 20px 0 10px 0;">
-		<a class="ajax btn small" targetdiv="assetdetailscategorylist$postfix"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
-	</div>
-#end
+
 
 </div>
+
 

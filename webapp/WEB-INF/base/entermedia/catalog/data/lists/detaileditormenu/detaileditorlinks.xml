@@ -1,7 +1,7 @@
 <linktree>
 
 	<a folder="generalinformation" id="metadatageneral" name="Edit Metadata" multiedit="true" />
-	<a folder="comments" id="comments" name="Comments" />
+	<a folder="comment" id="comment" name="Comments" />
 	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->
 	<a folder="categorize"  id="editassetcategories" name="Categories / Tags" multiedit="true"/>		    	
 	<a folder="libraries" id="asseteditorlibraries"  multiedit="true" name="Libraries"/>
