@@ -68,6 +68,7 @@ public class AssetStatsManager
 		change.setCatalogId(inAsset.getCatalogId());
 
 		change.setProperty("assetid",inAsset.getId());
+	
 		String views = inAsset.getProperty("assetviews");
 		if( views != null )
 		{
@@ -86,6 +87,10 @@ public class AssetStatsManager
 		{
 			return 0L;
 		}
+		if(inAsset.getId().startsWith("multi")){
+			return 0L;
+		}
+		
 		long assetexpire = 0L;
 		String expires = inAsset.getProperty("assetviewsexpires");
 		if( expires != null )
@@ -96,6 +101,7 @@ public class AssetStatsManager
 		if( assetexpire == 0 || assetexpire > now)
 		{
 			assetexpire = now + 1000*60*60; //once an hour
+			
 			Searcher logsearcher = getSearcherManager().getSearcher(inAsset.getCatalogId(), "assetpreviewLog");
 			HitTracker all = logsearcher.fieldSearch("sourcepath", inAsset.getSourcePath());
 			Long views = Long.valueOf(all.size());
