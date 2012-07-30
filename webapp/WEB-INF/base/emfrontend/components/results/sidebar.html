@@ -42,17 +42,18 @@
         				<span href="$click">
         						#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
         				</span>
+        			</a>
         		</li>
         			  
         			#end
         	</ul>
         	#if( $related.size() > 7 )
                 <center>
-                    <a class="btn" style="margin-top: 15px;" href="$home$apphome/views/search/index.html?hitssessionid=$related.sessionId">All Related</a>
+                    <a class="btn" style="margin-top: 15px; margin-bottom: 30px;" href="$home$apphome/views/search/index.html?hitssessionid=$related.sessionId">All Related</a>
                 </center>
             #end
         #end
-
+</div>
 <script>
 	
 	$('.sidebar-media li').hover(function() {

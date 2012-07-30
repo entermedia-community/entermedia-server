@@ -1,14 +1,22 @@
 
 
-<div class="ui-widget commentbox columns-2">
-<div class="ui-widget-header">[[Categories]]</div>
-<div  class="ui-widget-content "> 
-$pages.include("$apphome/components/categorize/index.html",$context)
-</div></div>
 
 
- <div class="ui-widget commentbox columns-2">
-<div class="ui-widget-header">[[Tags]]</div>
-<div  class="ui-widget-content "> 
-$pages.include("$apphome/components/keywords/index.html",$context)
-</div></div>
+<div class="de-table">
+    <div class="cell" style="width: 50%;">
+        <div class="ui-widget uipanel" id="left-col-search">
+            <div class="ui-widget-header">Categories</div>
+            <div class="ui-widget-content">
+                $pages.include("$apphome/components/categorize/index.html",$context)
+            </div>
+        </div>
+    </div>
+    <div class="cell">
+        <div class="ui-widget uipanel" id="left-col-search">
+            <div class="ui-widget-header">Tags</div>
+            <div class="ui-widget-content">
+                $pages.include("$apphome/components/keywords/index.html",$context)
+            </div>
+        </div>
+    </div>
+</div>

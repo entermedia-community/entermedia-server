@@ -6,7 +6,7 @@
 			
 			#if($caneditasset)
 				<div align="right" style="margin-top: 15px;">
-				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}$apphome/views/modules/asset/editor/comments/removecomment.html">
+				<form id="removeComment${velocityCount}" class="ajaxform" targetdiv="emcommentarea" action="${home}$apphome/views/modules/asset/editor/comment/removecomment.html">
 					<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 					<input type="hidden" name="commenttext" value="$comment.comment"/>
 					<input type="hidden" name="commentuser" value="$comment.user.userName"/>

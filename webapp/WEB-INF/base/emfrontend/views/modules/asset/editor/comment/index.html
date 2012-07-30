@@ -1,5 +1,4 @@
 <div id="emcommentarea">
-<h3>[[Comments]]</h3>
 #if(!$user)
 <p style="color:darkred;">[[You must be logged in to leave your own comments.]]  [[If you don't have an account, please]]
 <a href="$home/$applicationid/authentication/register.html">[[register here.]]</a></p>
@@ -10,11 +9,11 @@
 	$context.putPageValue("comments",$comments)
 #end
 
-$pages.include("$apphome/views/modules/asset/editor/comments/list.html", $context)
+$pages.include("$apphome/views/modules/asset/editor/comment/list.html", $context)
 
 	#set($incrsize = $comments.size() + 1)
 	#if( $cancomment )
-		<form name="addcomment" class="ajaxform" targetdiv="emcommentarea" action="${home}$apphome/views/modules/asset/editor/comments/addcomment.html" method="post">
+		<form name="addcomment" class="ajaxform" targetdiv="emcommentarea" action="${home}$apphome/views/modules/asset/editor/comment/addcomment.html" method="post">
 			<textarea id="commenttext" class="initialtext resizer" initialtext="[[Write a comment]]" name="comment" cols="54" rows="2">[[Write a comment]]</textarea> <br/>
 			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 			<input type="hidden" name="oemaxlevel" value="1"/>

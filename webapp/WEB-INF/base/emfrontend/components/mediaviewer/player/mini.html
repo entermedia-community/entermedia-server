@@ -17,7 +17,17 @@
                     $asset
                 </div>
                 <div class="secondary">
-                    <div id="mp-asset-info"><a href="#" class="views">345321<span class="">&nbsp;</span></a><a href="#" class="comments">7<span>&nbsp;</span></a><a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a></div>
+                    <div id="mp-asset-info">
+                        
+                        #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+                        <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
+                        
+                        #set ($comments = $commentArchive.loadComments("/WEB-INF/data/$catalogid/comments/$sourcepath"))
+                        <a style="margin-right: 0;" href="#" class="comments">$comments.size()<span>&nbsp;</span></a>
+                        
+                        <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a -->
+                   
+                    </div>
                 </div>
                 <div class="asset-details-more">
                     <p style="line-height: 25px; text-align: left; color: #fff;">
