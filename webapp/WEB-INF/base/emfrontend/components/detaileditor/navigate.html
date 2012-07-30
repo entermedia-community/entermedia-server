@@ -20,7 +20,11 @@
     					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
     				    <li><a href="#">File</a>
     				        <ul>
-    				            <li><a href="#">Print</a></li>
+    				        	#if($canprintpreview)
+								<li >
+									<a class="tooltip print" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="Print Preview">Print</a>
+								</li>
+								#end
     				            <li><a href="#">Download</a></li>
     				            <li><a href="#">Delete</a></li>
     				        </ul>
