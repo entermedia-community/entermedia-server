@@ -117,7 +117,7 @@ public class LameMp3Creator extends BaseCreator
 
 	public boolean canReadIn(MediaArchive inArchive, String inOutputType)
 	{
-		return "wav".equalsIgnoreCase(inOutputType) | "mp3".equalsIgnoreCase(inOutputType);
+		return "wav".equalsIgnoreCase(inOutputType) || "mp3".equalsIgnoreCase(inOutputType);
 	}
 
 	

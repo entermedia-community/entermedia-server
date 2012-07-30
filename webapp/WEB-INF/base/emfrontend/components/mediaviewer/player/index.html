@@ -1,7 +1,31 @@
 <div id="media-player">
-	#if( !$asset.importstatus || $asset.importstatus != "complete" )
-		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
-	#else
-		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
-	#end
+    <a id="mp-minmax" class="max ajax ir propertyset" propertyname="maximize_player" propertyvalue="true" targetdivinner="mediaviewer" href="$home$apphome/components/mediaviewer/player/mini.html?assetid=$asset.id&oemaxlevel=1"></a>
+    <div id="mp-player">
+        <div id="mp-asset-title" style="display: none;">$asset</div>
+    	#if( !$asset.importstatus || $asset.importstatus != "complete" )
+    		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
+    	#else
+    		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
+    	#end
+    	<div id="mp-asset-info" style="display: none;">
+    	    
+    	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+            <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
+            
+            #set ($comments = $commentArchive.loadComments("/WEB-INF/data/$catalogid/comments/$sourcepath"))
+            <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitsessionsid" class="comments">$comments.size()<span>&nbsp;</span></a>
+            
+            <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a -->
+       
+        </div>
+    </div>
 </div>
+
+<script>
+    $('#mp-player img').load(function(){
+        var $wimg = $('#mp-player img').width();
+        $('#mp-player').width($wimg);
+        $('#mp-asset-title').show();
+        $('#mp-asset-info').show();
+    }); 
+</script>

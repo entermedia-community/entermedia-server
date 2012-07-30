@@ -16,55 +16,66 @@
 <div id="mediaviewer" class="max">
     
     #set( $ismultifine = $asset.id.startsWith("multiedit:") )
-            #if($ismultifine )
+    #if($ismultifine )
             
     #else
-            $pages.include("$apphome/components/detaileditor/navigate.html")
-                        
+        $pages.include("$apphome/components/detaileditor/navigate.html")
     #end
-    
-    $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
-             
-    ## $pages.include("$apphome/components/mediaviewer/player/navigation.html",$context)
+    #if( $userprofile.maximize_player == "false")
+    	$pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
+    #else
+    	$pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+    #end
     
 </div>
 
+#set( $assettab = $context.findValue("assettab") )
 <div id="detaileditor">
     <div id="de-table">
-        <div id="de-side-nav" class="open">
+        <div class="tr">
             <div class="title-bar" style="border-left: none;"></div>
+            #set( $section = $searcherManager.getData($catalogid,"detaileditormenu",$assettab) )
             
-            $pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
-            
-            
+            <div class="title-bar"><span>$section</span></div>
+            <div class="title-bar" style="border-right: none;"><span style="text-align: center;">Related Media</span></div>
         </div>
-        <div id="details">
-             <div class="title-bar"><span>$section</span></div>
-             <div id="resultslist">
-                 #set( $inpreviewpage = false )
-                    #if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-                        #set( $inpreviewpage = true )
-                    #elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-                        #set( $inpreviewpage = true )
-                    #elseif( $content.path.endsWith("detailviewer/index.html") )
-                        #set( $inpreviewpage = true )
-                    #end
+        <div class="tr">
+            <div id="de-side-nav" class="open">
+        
                 
-                    #if( $inpreviewpage )
-                        $pages.include("$home$apphome/modules/$moduleid/editor/generalinformation/index.html?assetid=$asset.id")
-                    #else
-                        #if( $asset.getId().startsWith("multiedit:") )
-                        <h2>[[Editing across $asset.size() records]]</h2>
+                $pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
+                
+                
+            </div>
+            <div id="details">
+                 
+                 <div id="resultslist">
+                     #set( $inpreviewpage = false )
+                        #if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
+                            #set( $inpreviewpage = true )
+                        #elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
+                            #set( $inpreviewpage = true )
+                        #elseif( $content.path.endsWith("detailviewer/index.html") )
+                            #set( $inpreviewpage = true )
                         #end
-                        $pages.includeContent()
-                #end
+                    
+                        #if( $inpreviewpage )
+                            $pages.include("$home$apphome/views/modules/$moduleid/editor/generalinformation/index.html", $context)
+                        #else
+                            #if( $asset.getId().startsWith("multiedit:") )
+                            <h2>[[Editing across $asset.size() records]]</h2>
+                            #end
+                            $pages.includeContent()
+                    #end
+                </div>
+            </div>
+            <div id="related-media">
+                 
+                 $pages.include("$apphome/components/results/related/bykeyword.html",$context)
             </div>
         </div>
-        <div id="related-media">
-             <div class="title-bar" style="border-right: none;"><span style="text-align: center;">Related Media</span></div>
-             $pages.include("$apphome/components/results/related/bykeyword.html",$context)
-        </div>
     </div>
+        
 </div>
 
 

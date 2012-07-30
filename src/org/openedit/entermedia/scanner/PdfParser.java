@@ -54,7 +54,7 @@ public class PdfParser
 			}
 			catch(Throwable e)
 			{
-				log.error(e);
+				log.error("Could not parse" , e);
 				text = "";
 			}
 			text = scrubChars(text);

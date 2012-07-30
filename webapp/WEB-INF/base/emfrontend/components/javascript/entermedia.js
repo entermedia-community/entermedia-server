@@ -21,13 +21,6 @@ toggleUserProperty = function(property, onsuccess) {
 		);
 }
 
-setUserProperty = function(property, value, onsuccess) {
-	/*jQuery.get(
-			url: "${apphome}/components/userprofile.html",
-			{field: property, property + ".value": value},
-			success: onsuccess
-		);*/
-}
 
 outlineSelectionCol = function(event, ui)
 {
@@ -141,7 +134,7 @@ showHoverMenu = function(inDivId)
 }
 
 
-
+/*
 toggleitem = function(e)
 {
 		
@@ -164,36 +157,42 @@ toggleitem = function(e)
 		return false;
 
 }
-
-
+*/
 
 updatebasket = function(e)
 {
-		
 		var nextpage= jQuery(this).attr('href');
 		var targetDiv = jQuery(this).attr("targetdiv");
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 		var action= jQuery(this).data('action');
 		jQuery("#"+targetDiv).load(nextpage, {}, function()
 			{
-				
-				
 			    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
 				if(action == 'remove'){
 					jQuery(".selectionbox:checked").closest("tr").hide("slow");
 				}
-						
-				
-
 			}
 		);
-
+		 e.preventDefault();
 		return false;
-
 }
+/*
+updatebasketonasset = function(e)
+{
+	var nextpage= jQuery(this).attr('href');
+	var targetDiv = jQuery(this).attr("targetdiv");
+	targetDiv = targetDiv.replace(/\//g, "\\/");
+	jQuery("#"+targetDiv).load(nextpage, {}, function()
+	{
+	    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
+	});
+	 e.preventDefault();
+	return false;
+}
+*/
 
-
-
+//Not needed?
+/*
 toggleorderitem = function(e)
 {
 		
@@ -204,21 +203,18 @@ toggleorderitem = function(e)
 		jQuery("."+targetDiv).load(nextpage, {}, function()
 			{
 				var html = jQuery(this).html();
-				
 				jQuery("."+targetDiv, window.parent.document).html(html);
 			    jQuery("#basketmenu").load("$home/$applicationid/views/activity/menuitem.html");
 				jQuery("#basketmenu", window.parent.document).load("$home/$applicationid/views/activity/menuitem.html");
 				// jQuery("#collectionbasket",
 				// window.parent.document).load("$home/$applicationid/views/albums/basket/index.html?oemaxlevel=1");
-						
-				
-
 			}
 		);
 
 		return false;
 
 }
+*/
 
 getConfirmation = function(inText)	
 {
@@ -276,6 +272,7 @@ onloadselectors = function()
 	jQuery("a.toggleajax").livequery('click', toggleajax);
 	
 	jQuery("a.updatebasket").livequery('click', updatebasket);
+//	jQuery("a.updatebasketonasset").livequery('click', updatebasketonasset);
 	
 	
 	jQuery("form.ajaxform").livequery('submit',	
@@ -645,15 +642,6 @@ onloadselectors = function()
 		jQuery("#assetsearchinput").removeClass("defaulttext");
 	}
 	
-	jQuery(".baskettoggle").live('click', function(event) {
-	    var cbox = jQuery(this);
-	    var url = cbox.attr('data-href');
-	    var assetid = cbox.attr('data-assetid');
-	    
-		jQuery("#assettoggle" + assetid).load(url);
-		return false;
-	});
-	
 	jQuery('#mattresulttable table tr').live('click',
 			function(event) {
 				//find the rowid go there
@@ -732,9 +720,9 @@ onloadselectors = function()
 	});
 		
 	
-	jQuery(".toggleitem").livequery('click', toggleitem);
+//	jQuery(".toggleitem").livequery('click', toggleitem);
 	
-	jQuery(".toggleorderitem").livequery('click', toggleorderitem);
+//	jQuery(".toggleorderitem").livequery('click', toggleorderitem);
 
 	jQuery(".headerdraggable").livequery( 
 			function()

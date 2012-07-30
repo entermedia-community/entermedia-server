@@ -36,12 +36,35 @@
 			
 			#if( !$ismulti || $inmultiok )
 			#set ($href = "$apphome/views/modules/asset/editor/${link.folder}/index.html")
-			<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end">
-				<a href="$home$href?$args" #if($target) target="$target" #end > $context.getText($text)</a>
+			<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end $link.id">
+				<a title="$context.getText($text)" href="$home$href?$args&oemaxlevel=2" class="ajax tooltip" targetdivinner="right-col" #if($target) target="$target" #end ><span class="icon"></span><span class="text">$context.getText($text)</span></a>
 			</li>
 			#end
 			#end
 			#end
-			<li id="opener" class="open"><a>Collapse</a></a>
+			<li class="divider"></li>
+			<li id="opener" class="open"><a class="tooltip" title="Expand"><span class="icon"></span><span class="text">Collapse</span></a></a>
 		</ul>
 		
+		<script>
+		    $('#opener').click(function(){
+		        if ( $(this).hasClass('open') && $('#de-side-nav').hasClass('open') ) {
+		            $('#de-side-nav').removeClass('open');
+                    $('#de-side-nav').addClass('closed');
+		            $(this).removeClass('open');
+		            $(this).addClass('closed');
+		        } else {
+		            $('#de-side-nav').removeClass('closed');
+                    $('#de-side-nav').addClass('open');
+                    $(this).removeClass('closed');
+                    $(this).addClass('open');
+		        }
+		    })
+		    $('#de-side-nav li').click(function(){
+		        if ( $(this).attr('id') != 'opener' ) {
+		            $('#de-side-nav li').removeClass('current');
+                    $(this).addClass('current');
+		        }
+		       
+		    })
+		</script>

@@ -20,9 +20,21 @@
 	
 	<permission name="view">
 		<or>
-			<group name="administrators" />
-			<action name="AssetControlModule.canViewAsset" />
+			<pagevalue name="canviewasset" equals="true"/>
 		</or>
+	</permission>	
+
+
+	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
+	<permission name="viewasset">
+		<action name="AssetControlModule.canViewAsset" />
+	</permission>	
+
+	<permission name="download">
+		<and>
+			<userprofile property="download" equals="true" />
+			<pagevalue name="canviewasset" equals="true"/>
+		</and>
 	</permission>	
 
 	<property name="section">details</property>

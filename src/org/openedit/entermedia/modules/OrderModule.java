@@ -342,10 +342,12 @@ public class OrderModule extends BaseMediaModule {
 
 		boolean inorder = getOrderManager().isAssetInOrder(
 				archive.getCatalogId(), basket, asset.getId());
-		if (inorder) {
-			getOrderManager().removeItemFromOrder(archive.getCatalogId(),
-					basket, asset);
-		} else {
+		if (inorder)
+		{
+			getOrderManager().removeItemFromOrder(archive.getCatalogId(),basket, asset);
+		} 
+		else 
+		{
 			addItemToOrderBasket(inReq);
 		}
 		return basket;
@@ -397,17 +399,20 @@ public class OrderModule extends BaseMediaModule {
 		return basket;
 	}
 
-	public Order loadOrderBasket(WebPageRequest inReq) {
+	public Order loadOrderBasket(WebPageRequest inReq) 
+	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = (Order) inReq.getPageValue("orderbasket");
 
-		if (basket == null) {
+		if (basket == null) 
+		{
 			String id = inReq.getUserName() + "_orderbasket";
 			String appid = inReq.findValue("applicationid");
 			Searcher searcher = getSearcherManager().getSearcher(
 					archive.getCatalogId(), "order");
 			basket = (Order) searcher.searchById(id);
-			if (basket == null) {
+			if (basket == null) 
+			{
 				basket = getOrderManager().createNewOrder(appid,
 						archive.getCatalogId(), inReq.getUserName());
 				basket.setId(id);
@@ -418,7 +423,7 @@ public class OrderModule extends BaseMediaModule {
 		}
 		inReq.putPageValue("order", basket);
 
-		HitTracker items = getOrderManager().findOrderItems(inReq,
+		HitTracker items = loadOrderManager(inReq).findOrderItems(inReq,
 				archive.getCatalogId(), basket);
 		inReq.putPageValue("orderitems", items);
 
@@ -565,8 +570,9 @@ public class OrderModule extends BaseMediaModule {
 		return order;
 	}
 
-	public void loadOrderManager(WebPageRequest inReq) {
+	public OrderManager loadOrderManager(WebPageRequest inReq) {
 		inReq.putPageValue("orderManager", getOrderManager());
+		return getOrderManager();
 	}
 
 	public Data addUserStatus(WebPageRequest inReq) throws Exception {

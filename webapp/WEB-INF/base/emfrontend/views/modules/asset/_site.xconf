@@ -1,19 +1,4 @@
 <page>
 	<property name="module">asset</property>
 
-	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
-	<permission name="viewasset">
-		<or>
-			<user />
-			<action name="AssetControlModule.canViewAsset" />
-		</or>
-	</permission>	
-
-	<permission name="download">
-		<and>
-			<userprofile property="download" equals="true" />
-			<pagevalue name="canviewasset" equals="true"/>
-		</and>
-	</permission>	
-
 </page>

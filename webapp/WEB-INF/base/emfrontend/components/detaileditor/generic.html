@@ -97,41 +97,47 @@ $context.putPageValue("searcher", $searcher)
 	
 	#if ($showit)
 	
-			#set( $foundone = false)
-			#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
-			<div class="table" id="default-fields">
-			#foreach( $detail in $assetdetails )
-				#set( $value = false)
-				#set( $value = $data.get($detail.getId()))
-				#if( $value && $value != "") 
-					#set( $foundone = true)
-					<div class="cellrow">
-						<span class="bodylabel" valign="top">
-							$detail.getText($context)
-						</span>
-						<span class="bodycontent" valign="top" width="100%">
-							#if( $detail.isList() )
-								#set( $foundrow = false )
-								#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$value) )  
-								$!foundrow.name
-							#elseif($detail.isFile())
-								<a href = "$home/$value">$!value</a>
-							#elseif($detail.isBoolean())
-								#if ("true" == $value)
-									[[Yes]]
-								#else
-									[[No]]
-								#end
+		#set( $foundone = false)
+		#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
+		<div class="table" id="default-fields">
+		#foreach( $detail in $assetdetails )
+			#set( $value = false)
+			#set( $value = $data.get($detail.getId()))
+			#if( $value && $value != "") 
+				#set( $foundone = true)
+				<div class="cellrow">
+					<span class="bodylabel" valign="top">
+						$detail.getText($context)
+					</span>
+					<span class="bodycontent" valign="top" width="100%">
+						#if( $detail.isList() )
+							#set( $foundrow = false )
+							#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$value) )  
+							$!foundrow.name
+						#elseif($detail.isFile())
+							<a href = "$home/$value">$!value</a>
+						#elseif($detail.isBoolean())
+							#if ("true" == $value)
+								[[Yes]]
 							#else
-								#esc( $value )
-						   	#end
-						</span>
-					</div>
-				#end
-			#end ##foreach loop
-			</div>
+								[[No]]
+							#end
+						#else
+							#esc( $value )
+					   	#end
+					</span>
+				</div>
+			#end
+		#end ##foreach loop
+		</div>
 		#if( !$foundone )
-			<p>[[No Data has yet been entered.]]</p>
+    		<div class="table" id="default-fields">
+        		<div class="cellrow">
+                    <div style="padding: 15px 0; text-align: center; color: #aaa;">
+    			        [[No Data has yet been entered.]]
+    			   </div>
+    			</div>
+    		</div>
 		#end
 		#if($caneditasset && !$print.equals("true"))
 			<p class="btns" align="right"><a class="ajax btn" targetdiv="${view}editor" 
@@ -139,7 +145,7 @@ $context.putPageValue("searcher", $searcher)
 			</p>
 		#end
 	#else ##showit
-		[[No data has been entered.]]
+         [[No data has been entered.]]
 	#end
 
 #end ##edit

@@ -232,26 +232,6 @@ class ConvertRunner implements Runnable
 private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
 {
 	MediaCreator creator = moduleManager.getBean(inType + "Creator");
-
-/*	GroovyClassLoader loader = engine.getGroovyClassLoader();
-	Class groovyClass = loader.loadClass("conversions.creators.${inType}Creator");
-	
-	MediaCreator creator = (MediaCreator) groovyClass.newInstance();
-	
-	creator.setPageManager(mediaarchive.getPageManager());
-	creator.setExec(mediaarchive.getModuleManager().getBean("exec"));
-
-	//				<ref bean="ffMpegImageCreator" />
-	//			<ref bean="exifToolThumbCreator" />
-	if( inType == "imagemagick") //TODO:Use Spring
-	{
-		MediaCreator child = getMediaCreator(inArchive,"ffmpegimage");
-		creator.addPreProcessor(child);
-		child = getMediaCreator(inArchive,"exiftoolthumb");
-		creator.addPreProcessor(child);
-
-	}
-	*/
 	return creator;
  }
 } //End Runnable methods
