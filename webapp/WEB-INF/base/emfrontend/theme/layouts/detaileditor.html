@@ -1,4 +1,6 @@
 #set( $moduleid = $context.findValue("module") )
+#set ( $hitssessionid = $context.findValue("hitssessionid") )
+
 
 #macro (display $filename $label $assetid $view $print)
 	$context.putPageValue("view", $view)
@@ -15,12 +17,14 @@
 
 <div id="mediaviewer" class="max">
     
-    #set( $ismultifine = $asset.id.startsWith("multiedit:") )
-    #if($ismultifine )
+   ## #set( $ismultifine = $asset.id.startsWith("multiedit:") )
+   ## #if($ismultifine )
             
-    #else
-        $pages.include("$apphome/components/detaileditor/navigate.html")
-    #end
+   ## #else
+   
+        $pages.include("$apphome/components/detaileditor/navigate.html", $context)
+        
+   ## #end
     #if( $userprofile.maximize_player == "false")
     	$pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
     #else
