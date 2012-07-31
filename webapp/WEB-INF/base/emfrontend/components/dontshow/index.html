@@ -33,12 +33,13 @@
     ##<input type="hidden"  name="oemaxlevel" value="1" />
     <input type="hidden" name="catalogid" value="$!catalogid" />
     <input type="hidden" name="searchtype" value="asset" />
+        <input type="hidden" name="cache" value="false" />
+    
     <input type="hidden" name="hitssessionid" value="$hits.sessionId" />
-       <!-- 
-    <input type="hidden" name="childquery" value="none" /> ## causes the search to re-run even when no types are selected    
-     -->
+     
 </form>
-<input class="btn" id="select_all" type="button" value="[[Select All]]" />
+<input class="btn" id="select_all" type="button" value="[[All]]" />
+<input class="btn" id="select_none" type="button" value="[[None]]" />
 
 
 </div>
@@ -54,14 +55,17 @@ applyDontShow = function()
 	
 	var inputs = jQuery('input[name="childquery"]');
 	var query = "hitssessionid=$hits.getSessionId()&cache=false&profilesearchfilters=hideassettype";
+	var found = false;
 	for (var i = 0; i < inputs.size(); i++)
 	{
 		input = inputs[i];
 		if (!input.checked)
 		{
 			query += "&hideassettype=" + input.value;
+			found=true;
 		} 
 	}
+	
 	//TODO: Why not update the results with new data like VD does?
 	jQuery('#dontshow').attr('action', "$home$apphome/components/results/table.html?" + query);
 	jQuery('#dontshow').submit();
@@ -71,6 +75,12 @@ applyDontShow = function()
 
 jQuery('#select_all').click(function(){
 	jQuery('.assettypeselect').each(function(){this.checked = true;});
+	applyDontShow();
+	return false;
+});
+
+jQuery('#select_none').click(function(){
+	jQuery('.assettypeselect').each(function(){this.checked = false;});
 	applyDontShow();
 	return false;
 });

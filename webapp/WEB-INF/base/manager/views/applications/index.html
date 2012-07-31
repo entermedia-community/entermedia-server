@@ -14,7 +14,6 @@
         </div>
         <div class="delete" style="margin-top: 15px; position: relative; z-index: 100;">
             #set( $path = $data.deploypath )
-            <a class="btn ajax" targetdivinner="workspaceform" href="./imports/index.html?oemaxlevel=1" confirm="Are you sure?">Import</a>
             <a class="btn"  href="./exports/${data}.zip?apppath=/$path" confirm="Are you sure?">Export</a>
             <a class="btn blue" href="./remove.html?id=$app" confirm="Are you sure?">Delete</a>
         </div>
