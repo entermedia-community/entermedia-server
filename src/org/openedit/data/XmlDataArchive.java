@@ -156,7 +156,7 @@ public class XmlDataArchive implements DataArchive
 		{
 			Attribute attr = (Attribute)iterator.next();
 			String id = attr.getName();
-			if(!id.equals("id") && !id.startsWith("_"))
+			if(!id.equals("id") && !id.startsWith("."))
 			{
 				if( id.equals("name"))
 				{
