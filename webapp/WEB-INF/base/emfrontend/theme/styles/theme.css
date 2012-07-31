@@ -1824,11 +1824,16 @@ width: inherit;
 
 #share-container {
     border-radius: 0 0 5px 5px;
-    background: #f7f7f7;
+    background: #f7f7f7 url('../images/top-shadow.png') center -1px repeat-x;
     padding: 10px 15px;
     margin: 0 20px 0 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #bbb;
     border-top: none;
+    position: absolute;
+    z-index: 20;
+    width: auto;
+    top: 46px;
+    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
 }
 #share-container ul {
     margin:0;
@@ -1876,7 +1881,7 @@ center #addcoment {
     margin: 10px 20px;
     padding: 10px 0;
     border: 1px solid #fff;
-    border-bottom: 1px solid #f7f7f7;
+    border-bottom: 1px solid #ddd;
     display: block;
 }
 .emcomment .emcommenttext {
@@ -4190,6 +4195,7 @@ p.resultsnumber {
 
 #mediaviewer {
     margin: 0 -20px;
+    position: relative;
 }
 #sub-nav.mediaview {
     margin-bottom: 20;

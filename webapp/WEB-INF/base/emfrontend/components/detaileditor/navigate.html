@@ -3,54 +3,67 @@
 			#set($hits = $context.getSessionValue($hitssessionid))
 		#end
 		#if( $hits )
-		#set($indexOf = $hits.indexOfId( $asset.id))
-		#set($showIndex = $indexOf + 1)
-		#set($previous = $hits.previous($indexOf))
-		#set($next = $hits.next($indexOf))
+    		#set($indexOf = $hits.indexOfId( $asset.id))
+    		#set($showIndex = $indexOf + 1)
+    		#set($previous = $hits.previous($indexOf))
+    		#set($next = $hits.next($indexOf))
+		#end
 		<div id="eml-tab-subnav">
     		<ul style="text-align: center;" id="sub-nav" class="mediaview">
-    				
     			#if( $hits )
     			
+
     			#set( $thispage = $content.getDirectoryName() )
-    			
+                    #if ( $thispage.contains(".") )
+                        #set ($thispage = "generalinformation")
+                    #end
+                    
     					#if($previous)
     						 <li><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
     					#end
+    			#end
     					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
     				    <li><a href="#">File</a>
     				        <ul style="width: 100px; text-align: left;">
     				        	#if($canprintpreview)
 								<li >
-									<a href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="Print Preview">Print</a>
+									<a class="print emdialog" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="Print Preview">Print</a>
 								</li>
 								#end
-    				            <li><a href="#">Download</a></li>
-    				            <li><a href="#">Delete</a></li>
+								#if($candownload)
+    				            <li class="emdialog"><a href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">Download</a></li>
+    				            #end
+    				            #if($candeleteasset)
+                                <li>
+                                    <a href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}">Delete</a>
+                                </li>
+                                #end
     				        </ul>
     				    </li>
-    					<li><a href="#">Share</a>
-    					   <ul style="width: 140px; text-align: left;"> 
-                               <li><a href="#">Share to Facebook</a></li>
-                               <li><a href="#">Share to Twitter</a></li>
-                               <li><a href="#">Share to Pinterest</a></li>
-                               <li><a href="#">Share via Email</a></li>
-                           </ul>
-    					</li>
+    					#if ( $canshareasset )
+                        <li>
+                            <a class="toggleajax" targetdivinner="share-container" href="$home$apphome/components/shareasset/index.html?assetid=$asset.id&oemaxlevel=1" id="share-button">[[Share]]</a>
+                        </li>
+                        #end
     					
-    					
+    			#if( $hits )
+
     					#if($next)
     						$context.putPageValue("hits", $hits)
     						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">>></a></li>
     					#end
+    			#end
     					#if ($canviewbasket)
     					<li style="float: right">
 							$pages.include("$apphome/components/basket/toggleitem.html?assetid=$asset.id",$context)    					
     					</li>
 						#end
-    					
-    			#end	
+    						
     		</ul>
+    		
 		</div>
-		#end
+		<div id="share-container" style="display: none;">
+    
+        </div>
+
 

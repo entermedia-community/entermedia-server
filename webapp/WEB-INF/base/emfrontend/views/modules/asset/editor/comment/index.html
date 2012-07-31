@@ -9,18 +9,22 @@
 	$context.putPageValue("comments",$comments)
 #end
 
-$pages.include("$apphome/views/modules/asset/editor/comment/list.html", $context)
+
 
 	#set($incrsize = $comments.size() + 1)
 	#if( $cancomment )
-		<form name="addcomment" class="ajaxform" targetdiv="emcommentarea" action="${home}$apphome/views/modules/asset/editor/comment/addcomment.html" method="post">
-			<textarea id="commenttext" class="initialtext resizer" initialtext="[[Write a comment]]" name="comment" cols="54" rows="2">[[Write a comment]]</textarea> <br/>
+		<form name="addcomment" class="ajaxform user-input-area clearfix" style="margin-bottom: 20px;" targetdiv="emcommentarea" action="${home}$apphome/views/modules/asset/editor/comment/addcomment.html" method="post">
+			<textarea id="commenttext" class="initialtext" style="width: 100%; box-sizing: border-box; margin-top: 20px; height: 80px;" initialtext="" name="comment" cols="54" rows="2"></textarea> <br/>
 			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="catalogid" value="$catalogid"/>
-			<input class="btn small" type="submit" value="Add Comment" />
+			<input class="btn right" type="submit" value="Save Comment" />
 		</form>
 	#end
 </div>
 
-
+#if( $comments.size() == 0)
+    <p class="info" style="margin: 20px;">There are no comments on this asset.</p>
+#else
+    $pages.include("$apphome/views/modules/asset/editor/comment/list.html", $context)
+#end
