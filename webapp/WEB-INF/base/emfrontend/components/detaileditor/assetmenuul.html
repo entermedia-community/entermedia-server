@@ -12,6 +12,12 @@
 #set( $links = $searcherManager.getList($catalogid,"detaileditormenu") )
 		<ul id="assetmenu" class="sidebar-list">
 			#foreach( $link in $links)
+			
+			#if( $velocityCount == 2)
+			
+				##render editing boxes
+				$pages.include("$apphome/components/detaileditor/assetdatatables.html",$context)
+			#end
 			#set( $pname = "can${link.id}")
 			
 			#set( $permission = false)

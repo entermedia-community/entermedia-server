@@ -10,23 +10,23 @@
 #end
 
 <input name="completefield" class="listautocomplete" id="${detail.id}${idcount}value" value="#esc($!foundrow.name)" size="30" type="text" data-searchtype="$detail.listid" data-listcatalogid="$detail.listCatalogId" />
-<input name="${detail.getId()}.value"  id="${detail.id}${idcount}valuehidden"   value="$val" type="hidden"/>
+<input name="${detail.getId()}.value"  id="${detail.id}${idcount}valuehidden"   value="$!val" type="hidden"/>
 
-
-
-#set($module = $searcherManager.getData($catalogid, "module", $detail.listid ) )
-#if($val && $val != "")
-
-
-#if($module)
-#set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
-#set($link = "$home$content.searchhome/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$module.id")
-#else
-#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listid")
+#if( $foundrow )
+	#set($module = $searcherManager.getData($catalogid, "module", $detail.listid ) )
+	#if($module)
+	
+		#if($module.id == "asset")
+		    #set($link = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$val" )
+		#else
+			#set ( $defaultview = $userprofile.getDefaultViewForModule($module.id) )
+			#set($link = "$home$apphome/views/modules/${module.id}/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$module.id")
+		#end
+	
+	#else
+	
+		#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listid")
+	
+	#end
+ 	<a class="btn" href="$link">View</a>
 #end
-#if($module.id == "asset")
-
-#set($link = "$home$apphome/views/assets/asset.html?assetid=$val" )
-#end
- <a class="btn" href="$link">View</a>
- #end
