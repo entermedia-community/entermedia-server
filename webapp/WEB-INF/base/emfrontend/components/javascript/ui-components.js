@@ -40,7 +40,8 @@ uiload = function() {
 		
 		toggleUserProperty("maximize_screen");
 		
-	});		
+	});
+	
 	
 	jQuery(".validate-inputs").livequery(
 			function() 
