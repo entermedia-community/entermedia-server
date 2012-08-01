@@ -12,119 +12,90 @@
 
 <div id="${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
    
+   #set( $lat = $!data.get("${detail.id}_lat") )
+   #set( $lng = $!data.get("${detail.id}_lng") )
     <input type="hidden" name="field" value="${detail.id}_lat"/>
-   Latitude: <input type="text" id="${detail.id}_lat" name="${detail.id}_lat.value" value="$!data.get("${detail.id}_lat")"/>
+   Latitude: <input type="text" id="${detail.id}_lat" name="${detail.id}_lat.value" value="$!lat"/>
     <input type="hidden" name="field" value="${detail.id}_lng"/>
-    Longitude: <input type="text" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!data.get("${detail.id}_lng")"/>
+    Longitude: <input type="text" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!lng"/>
 
 
-<script
-	src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=$content.getProperty('mapkey')"
-	type="text/javascript">
-	
-</script>
 <script type="text/javascript">
 
-    var geocoder = null;
-    var map = null;
+$('#${detail.id}_map').gmap({
+	 'center':'39.025818619038375,-95.03089171562499',
+}).bind('init', function(ev, map) {
+	#if( $lat )
+	$('#${detail.id}_map').gmap('addMarker', 
+			{
+			'position': '$lat,$lng',
+			'draggable': true, 
+		    'bounds': true
+		    })
+		    .dragend(function(event) 
+	    	  		{
+	    		 	
+	    		  jQuery('#${detail.id}_lat').val(event.latLng.lat());
+	              jQuery('#${detail.id}_lng').val(event.latLng.lng());
+	    	  	}       
+	    	).click(function() {
+		//$('#${detail.id}_map').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
+	});
+	    $('#${detail.id}_map').gmap('option', 'zoom', 7);
+	#else
+	    $('#${detail.id}_map').gmap('option', 'zoom', 2);
+	#end
+
+});
 
 
-    function mark(detailid, point) 
-    {
-        map = new GMap3(document.getElementById(detailid + "_map"));
-       
-        map.setCenter(point, 13);
-        
-       
-        #if($detail.icon && $pages.doesExist($detail.icon))
-            
-        var blueIcon = new GIcon(G_DEFAULT_ICON);
-        
-        blueIcon.image = "$home/location/configuration/images/${detail.icon}.png";
-        
-        var marker = new GMarker(point, {draggable: true,  icon:blueIcon});
+dosearch = function () 
+{
+	var address = jQuery('#${detail.id}_address').val();
 
-        #else
-            var marker = new GMarker(point, {draggable: true});
-        #end
+	$('#${detail.id}_map').gmap('search', { 'address': address }, function(results, status) 
+	{
+	    if ( status === 'OK' ) 
+	    {
+	    	$('#${detail.id}_map').gmap('clear', 'markers');
+	    	
+	    	$('#${detail.id}_map').gmap('addMarker', 
+	          {
+	    		'position': results[0].geometry.location, 
+	    		'draggable': true, 
+	    		'bounds': true
+	    	  }).dragend(function(event) 
+	    	  		{
+	    		 	
+	    		  jQuery('#${detail.id}_lat').val(event.latLng.lat());
+	              jQuery('#${detail.id}_lng').val(event.latLng.lng());
+	                
+	    	  		}
+	    	  ).click(function() 
+	    	   {
+	    		//$('#${detail.id}_map').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
+	    	});
 
-        GEvent.addListener(marker, "dragstart", function() {
-          map.closeInfoWindow();
-        });
+	    	$('#${detail.id}_map').gmap('get', 'map').panTo(results[0].geometry.location);
+	       $('#${detail.id}_map').gmap('option', 'zoom', 7);
 
-        GEvent.addListener(marker, "dragend", function(marker) {
-      	jQuery('#${detail.id}_lat').val(marker.lat());
-            jQuery('#${detail.id}_lng').val(marker.lng());
-        });
+ 		  jQuery('#${detail.id}_lat').val(results[0].geometry.location.lat());
+          jQuery('#${detail.id}_lng').val(results[0].geometry.location.lng());
 
-        map.addOverlay(marker);
-      }
-
-    var iterations = 0;
-    function check_compat() {
-        if (iterations === 75) {
-            alert('Failed to load Google Maps API. Clear your browser cache, open Google Maps then try again.');
-            return;
-        }
-        if (typeof GBrowserIsCompatible === 'undefined') {
-            setTimeout(check_compat, 200);
-            iterations++;
-        } else {
-            if (GBrowserIsCompatible()) {
-            	mapReadyFn();
-            } else {
-                alert('Sorry, your browser is not supported.');
-            }
-        }
-    }
-
-    
-    jQuery(document).ready(function() 
-    {
-    	check_compat();
-    });
-    
-    mapReadyFn = function()
-    {
-        map = new GMap3(document.getElementById("${detail.id}_map"));
-        map.addControl(new GSmallZoomControl());
-		map.addControl(new GMapTypeControl());
-
-	     map.setCenter(new GLatLng(50, -115,8)); 
+	    }
+	});
+	
+}
 
 
-     	
-     	geocoder = new GClientGeocoder();
-        #if($data.get("${detail.id}_lat") && $data.get("${detail.id}_lng"))
-        	 mark("$detail.id", new GLatLng($data.get("${detail.id}_lat"), $data.get("${detail.id}_lng")));
-   	    #end
+jQuery('#${detail.id}_search').click(dosearch);
+jQuery('#${detail.id}_address').keypress(function(e)
+{
+	if (e.keyCode == 13) 
+	{
+		dosearch()
+	}
+});
+		
 
-        GEvent.addListener(map, "click", function(marker, point) {
-            
-        	   jQuery('#${detail.id}_lat').val(point.lat());
-               jQuery('#${detail.id}_lng').val(point.lng());
-        });
-    }
-  
-	jQuery('#${detail.id}_search').click(function () {
-	  
-	  var address = jQuery('#${detail.id}_address').val();
-      if (geocoder) {
-        geocoder.getLatLng(
-          address,
-          function(point) {
-            if (!point) {
-              alert(address + " not found");
-            } else {
-             mark("$detail.id", point);
-             
-            }
-          }
-        );
-      }
-      return false;
-    }
-
-    );
-    
-    </script>
+</script>
