@@ -9,7 +9,6 @@
                     <input type="hidden" name="commenttext" value="$comment.comment"/>
                     <input type="hidden" name="commentuser" value="$comment.user.userName"/>
                     <input type="hidden" name="commentdate" value="$comment.date.time"/>
-                    <input type="hidden" name="catalogid" value="$catalogid"/>
                 </form>
                 #if($comment.user.id == $user.id || $asset.owner == $user.id ) ##only comment owners and video ownsers can delete comments
                 <a style="background: #efefef; border-radius: 3px; border: 1px solid #ddd; display: block; margin: -10px 0 3px 0; color: #3490B2; font-size: 10px; font-weight: normal; padding: 3px 10px;" href="#" onclick="jQuery('#removeComment${velocityCount}').submit();return false;">Remove</a>

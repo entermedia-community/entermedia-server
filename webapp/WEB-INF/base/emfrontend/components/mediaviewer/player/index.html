@@ -1,5 +1,7 @@
 <div id="media-player">
-    <a id="mp-minmax" class="max ajax ir propertyset" propertyname="maximize_player" propertyvalue="true" targetdivinner="media-player" href="$home$apphome/components/mediaviewer/player/mini.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=1"></a>
+
+    <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
+
     <div id="mp-player">
         <div id="mp-asset-title" style="display: none;">$asset</div>
     	#if( !$asset.importstatus || $asset.importstatus != "complete" )
@@ -12,7 +14,6 @@
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
             <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
             
-            #set ($comments = $commentArchive.loadComments("/WEB-INF/data/$catalogid/comments/$sourcepath"))
             <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitsessionsid" class="comments">$comments.size()<span>&nbsp;</span></a>
             
             <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a -->

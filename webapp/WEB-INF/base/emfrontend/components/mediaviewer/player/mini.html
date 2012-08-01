@@ -1,7 +1,7 @@
 
 
 <div id="media-player" class="clearfix" style="padding: 0;">
-    <a id="mp-minmax" class="min ajax ir" style="margin-top: 15px" targetdivinner="media-player" href="$home$apphome/components/mediaviewer/player/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=1"></a>
+    <a id="mp-minmax" class="min ir propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
     
         <div id="default-top" style="border-bottom: none;">
             <div class="thumbnail">
@@ -22,7 +22,6 @@
                         #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
                         <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
                         
-                        #set ($comments = $commentArchive.loadComments("/WEB-INF/data/$catalogid/comments/$sourcepath"))
                         <a style="margin-right: 0;" href="#" class="comments">$comments.size()<span>&nbsp;</span></a>
                         
                         <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a -->

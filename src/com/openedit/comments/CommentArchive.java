@@ -134,10 +134,10 @@ public class CommentArchive
 	{
 		String path = findPath(inCatalogId, inPath);
 		Page page = getPageManager().getPage(path);
-		if(!page.exists()){
-			 path = "/WEB-INF/data/" +  inCatalogId + "/comments/" + inPath + "/folder.xml";
-			 page = getPageManager().getPage(path);
-		}
+//		if(!page.exists()){
+//			 path = "/WEB-INF/data/" +  inCatalogId + "/comments/" + inPath + "/folder.xml";
+//			 page = getPageManager().getPage(path);
+//		}
 		return loadComments(page);
 	}
 
@@ -151,7 +151,7 @@ public class CommentArchive
 	{
 		List<Comment> comments = GenericsUtil.createList();
 
-		if ( inPage.exists() && !inPage.isFolder() )
+		if ( inPage.exists() )
 		{
 			log.debug( "Loading comments for page " + inPage.getPath() );
 			Reader reader = inPage.getReader();
@@ -183,38 +183,32 @@ public class CommentArchive
 		fieldUserManager = inUserManager;
 	}
 	
-	public void addComment(String inPath, Comment inComment)
+	public void addComment(String inCatalogId, String inSourcePath, Comment inComment)
 	{
-		if(inPath.endsWith("/"))
-		{
-			inPath = inPath + "folder.xml";
-		}
-		if (!inPath.endsWith(".xml"))
-		{
-			inPath = inPath + ".xml";
-		}
-		Page page = getPageManager().getPage(inPath);
+		String path = findPath(inCatalogId, inSourcePath);
+		Page page = getPageManager().getPage(path);
 		addComment(page, inComment);
 	}
 	
-	public void removeComment(String inPath, Comment inComment)
+	public void removeComment(String inCatalogId, String inSourcePath, Comment inComment)
 	{
-		if(inPath.endsWith("/"))
-		{
-			inPath = inPath + "data.xml";
-		}
-		if (!inPath.endsWith(".xml"))
-		{
-			inPath = inPath + ".xml";
-		}
-		Page page = getPageManager().getPage(inPath);
+		String path = findPath(inCatalogId, inSourcePath);
+		Page page = getPageManager().getPage(path);
 		removeComment(page, inComment);
 	}
 	
 	protected void addComment(Page inPage, Comment inComment)
 	{
-		Collection comments = loadComments(inPage);
-		comments.add(inComment);
+		List comments = new ArrayList(loadComments(inPage));
+		
+		if( comments.isEmpty() )
+		{
+			comments.add(inComment);
+		}
+		else
+		{
+			comments.add(0, inComment);
+		}
 		saveComments(inPage, comments);
 		//inPage.get.pu setProperty("comments", comments);
 		//getPageManager().

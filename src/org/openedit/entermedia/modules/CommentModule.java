@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.openedit.Data;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
@@ -12,7 +13,6 @@ import org.openedit.event.WebEventListener;
 import com.openedit.WebPageRequest;
 import com.openedit.comments.Comment;
 import com.openedit.comments.CommentArchive;
-import com.openedit.modules.BaseModule;
 import com.openedit.users.User;
 
 public class CommentModule extends BaseMediaModule 
@@ -31,7 +31,7 @@ public class CommentModule extends BaseMediaModule
 	public void loadComments(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String commentPath = findPath(inReq);
+		String commentPath = findSourcePath(inReq);
 		
 		Collection comments = getCommentArchive().loadComments(archive.getCatalogId(), commentPath);
 		inReq.putPageValue("comments", comments);
@@ -51,27 +51,24 @@ public class CommentModule extends BaseMediaModule
 	}
 
 	
-	protected String findPath(WebPageRequest inReq) 
+	protected String findSourcePath(WebPageRequest inReq) 
 	{
-		String sourcePath = inReq.getRequestParameter("sourcepath");
-		String catalogid = inReq.findValue("catalogid");
-		String commentPath = getCommentArchive().findPath(catalogid, sourcePath);
-
-//		//old system was not safe
-//		if (commentPath == null)
-//		{
-//			//commentPath =  sourcePath;	
-//			commentPath = inReq.findValue("commentpath");
-//		}
-		if(commentPath.contains("${albumid}"))
+		Data data = (Data)inReq.getPageValue("asset");
+		if( data == null )
 		{
-			String albumid = inReq.getRequestParameter("albumid");
-			if(albumid != null)
-			{
-				commentPath = commentPath.replace("${albumid}", albumid);
-			}
+			data = (Data)inReq.getPageValue("data");
 		}
-		return commentPath;
+		String sourcePath = null;
+		if( data != null )
+		{
+			sourcePath = data.getSourcePath();
+		}
+		else
+		{
+			sourcePath = inReq.getRequestParameter("sourcepath");
+		}
+		
+		return sourcePath;
 	}
 	
 	private WebEvent createEvent(Comment inComment, String inOperation, WebPageRequest inReq)
@@ -83,7 +80,7 @@ public class CommentModule extends BaseMediaModule
 			catalogid = inReq.findValue("applicationid");
 		}
 		event.setCatalogId(catalogid);
-		String commentpath = findPath(inReq);
+		String commentpath = findSourcePath(inReq);
 		
 		String sourcePath = inReq.getRequestParameter("sourcepath");
 		event.setProperty("sourcepath", sourcePath); //deprecated
@@ -137,17 +134,16 @@ public class CommentModule extends BaseMediaModule
 		
 		WebEvent event = createEvent(comment, type + "commentadded", inReq);
 		getWebEventListener().eventFired(event);
-
-		String commentPath = findPath(inReq);
-		getCommentArchive().addComment(commentPath, comment);
-		//?????? Tuan check again
-		//loadComments(inReq, commentPath);
+		String catalogid = inReq.findValue("catalogid");
+		String sourcepath = findSourcePath(inReq);
+		getCommentArchive().addComment(catalogid, sourcepath, comment);
+		loadComments(inReq);
 	}
 	
 	
 	public void removeComment(WebPageRequest inReq)
 	{
-		String commentPath = findPath(inReq);
+		String sourcepath = findSourcePath(inReq);
 		String text = inReq.getRequestParameter("commenttext");
 		//This is going to be the number from Date.getTime()
 		String datestring = inReq.getRequestParameter("commentdate");
@@ -161,9 +157,9 @@ public class CommentModule extends BaseMediaModule
 		comment.setUser(u);
 		comment.setDate(date);
 		
-		getCommentArchive().removeComment(commentPath, comment);
-		//?????? Tuan check again
-		loadComments(inReq, commentPath);
+		String catalogid = inReq.findValue("catalogid");
+		getCommentArchive().removeComment(catalogid, sourcepath, comment);
+		loadComments(inReq);
 		
 	}
 

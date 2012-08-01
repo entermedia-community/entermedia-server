@@ -4,8 +4,9 @@
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
+	<path-action name="CommentModule.loadComments" />
 	
-	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
+
 	<property name="saveokpage">/tools/edit/saveok.html</property>
 	
 	<path-action allowduplicates="true" name="CategoryModule.getCatalogTree">

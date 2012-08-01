@@ -1,3 +1,4 @@
+<div id="detaileditor">
 #set( $moduleid = $context.findValue("module") )
 #set ( $hitssessionid = $context.findValue("hitssessionid") )
 
@@ -5,9 +6,9 @@
 #macro (display $filename $label $assetid $view $print)
 	$context.putPageValue("view", $view)
 	#if ($print && $print == "true")
-		$pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename", $context)
+		$pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=asset", $context)
 	#else
-  		$pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view",$context)
+  		$pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=asset",$context)
   	#end
 #end
 
@@ -34,7 +35,6 @@
 </div>
 
 #set( $assettab = $context.findValue("assettab") )
-<div id="detaileditor">
     <div id="de-table">
         <div class="tr">
             <div class="title-bar" style="border-left: none;"></div>
@@ -48,7 +48,6 @@
         
                 
                 $pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
-                
                 
             </div>
             <div id="details">
@@ -80,7 +79,6 @@
         </div>
     </div>
         
-</div>
 
 
 <script type="text/javascript" >
@@ -88,15 +86,16 @@
 	{
 		var targetDiv = "#" + inId;
 		targetDiv = targetDiv.replace(/\//g, "\\/");
-		jQuery(targetDiv).load('$home$apphome/components/detaileditor/toggle.html', {id: inId, pluginpath: inPath, origURL: "$content.path", assetid:inAssetID, view:inView , label:inLabel});
+		jQuery(targetDiv).load('$home$apphome/components/detaileditor/toggle.html', {id: inId, pluginpath: inPath, origURL: "$content.path", module:"${moduleid}",assetid:inAssetID, view:inView , label:inLabel});
 	}	
 </script>
 
 
 #else
 
-$pages.stream("${cataloghome}/crumbs/categories.html")
 
 [[Asset is missing]]
 
 #end
+
+</div>

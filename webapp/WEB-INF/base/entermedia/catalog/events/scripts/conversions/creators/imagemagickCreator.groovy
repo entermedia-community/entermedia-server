@@ -319,7 +319,7 @@ public class imagemagickCreator extends BaseImageCreator
 			com.add(resizestring.toString());
 
 
-			if( "pdf".equals(ext) ) 
+			if( "pdf".equals(ext) || "png".equals(ext)) 
 			{
 				com.add("-background");
 				com.add("white");
@@ -355,7 +355,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			com.add(cropString.toString());
 		}
-		else if( "pdf".equals(ext) ) 
+		else if( "pdf".equals(ext) ||  "png".equals(ext)) 
 		{
 			com.add("-background");
 			com.add("white");

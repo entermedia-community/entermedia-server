@@ -1,5 +1,5 @@
 #set($hitssessionid = $context.getRequestParameter("hitssessionid"))
-#set( $sourcepath = $asset.sourcePath )
+#set( $sourcepath = $asset.getSourcePath() )
 
 
 #if( $parenthits )
@@ -30,7 +30,6 @@
 			##Check for custom links, arguments and labels
 			#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 			#if($link.id =="comment")
-			#set ($comments = $commentArchive.loadComments("/WEB-INF/data/$catalogid/comments/$sourcepath"))
 			#set( $text = "$text (<span id='assetcommentscount'>$comments.size()</span>)")
 			#set ($args = "assetid=$asset.getId()&sourcepath=$sourcepath&hitssessionid=$!{hitssessionid}")
 			#elseif ($link.id == "viewassetedit")

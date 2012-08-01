@@ -19,6 +19,7 @@ toggleUserProperty = function(property, onsuccess) {
 				success: onsuccess
 			}
 		);
+	
 }
 
 
@@ -79,12 +80,10 @@ toggleajax = function(e)
 		);
 	}
 }
-
-runajax = function(e)
+runajaxonthis = function(inlink)
 {
-	var nextpage= jQuery(this).attr('href');
-	
-	var targetDiv = jQuery(this).attr("targetdiv");
+	var nextpage= inlink.attr('href');
+	var targetDiv = inlink.attr("targetdiv");
 	if( targetDiv)
 	{
 		targetDiv = targetDiv.replace(/\//g, "\\/");
@@ -101,10 +100,10 @@ runajax = function(e)
 				
 			}
 		);
-	}
+	}	
 	else
 	{
-		var loaddiv = jQuery(this).attr("targetdivinner");
+		var loaddiv = inlink.attr("targetdivinner");
 		loaddiv = loaddiv.replace(/\//g, "\\/");
 		//jQuery("#"+loaddiv).load(nextpage);
 		jQuery.get(nextpage, {}, function(data) 
@@ -118,8 +117,11 @@ runajax = function(e)
 				}
 
 			);
-
 	}
+}
+runajax = function(e)
+{
+	runajaxonthis($(this));
      e.preventDefault();
 	//return false;
 }
@@ -128,7 +130,7 @@ showHoverMenu = function(inDivId)
 {
 	el = jQuery("#" + inDivId);
 	if( el.attr("status") == "show")
-	{
+	{	
 		el.show();
 	}
 }
@@ -156,7 +158,7 @@ toggleitem = function(e)
 
 		return false;
 
-}
+}	
 */
 
 updatebasket = function(e)
@@ -343,6 +345,25 @@ onloadselectors = function()
 			); 
 		});
 
+	jQuery("a.propertyset").livequery('click', 
+			function(e)
+			{
+				var propertyname = jQuery(this).attr("propertyname");
+				var propertyvalue = jQuery(this).attr("propertyvalue");
+				var thelink = $(this);
+				jQuery.ajax(
+					{
+						url: "${home}${apphome}/components/userprofile/saveprofileproperty.html?field=" + propertyname + "&" + propertyname + ".value="  + propertyvalue,
+						success: function()
+						{
+							runajaxonthis(thelink);
+						}
+					}
+				);
+			     e.preventDefault();
+			});
+	
+	
 	/*
 	// Live query not needed since Ajax does not normally replease the header
 	// part of a page
