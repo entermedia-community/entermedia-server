@@ -4,6 +4,5 @@
 	<property name="attachmentroot">/${applicationid}/views/modules/asset/editor/attachments</property>
 	
 	<page-action name="PageValue.loadPageVariable" bean="userManager"  />
-		<property name="subtab">viewattachments</property>
 		<property name="assettab">viewattachments</property>
 </page>

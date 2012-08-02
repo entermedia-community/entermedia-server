@@ -9,6 +9,11 @@
 #set( $candelete = "true")
 
 #set($viewid = $context.getRequestParameter("viewid"))
+
+#if( !$viewid )
+    #set( $viewid = $context.getRequestParameter("view"))
+#end
+
 #set($viewpath = $context.getRequestParameter("viewpath"))
 
 #if( !$viewpath )

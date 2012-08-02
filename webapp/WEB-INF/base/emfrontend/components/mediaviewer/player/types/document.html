@@ -1,20 +1,45 @@
 #set($pagenum = $context.getRequestParamater('pagenum'))
-
-<div style="text-align: center;">
-#if($pagenum)
-	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg?pagenum=$pagenum")
-#else
-	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
-#end
-<a class="emdialog" href="$home$link" target="_parent"	
-	title="[[$asset]]">
-	
-	<img id="pdfpreview" class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" alt="[[Preview Image]]"/>
-
-</a>
-
-</div>
 #set($pdfpages = $numberutils.toInt($asset.pages))
+
+#if( $pdfpages > 1 )
+    <div id="pdf-thumbnail-sidebar">
+        <ul>
+            <li>
+                <img class="emdropshadow" />
+                <span>Page 1</span>
+            </li>
+            <li>
+                <img class="emdropshadow" />
+                <span>Page 2</span>
+            </li>
+            <li>
+                <img class="emdropshadow" />
+                <span>Page 3</span>
+            </li>
+            <li>
+                <img class="emdropshadow" />
+                <span>Page 4</span>
+            </li>
+        </ul>
+    </div>
+#end
+
+    <div id="pdf-viewer-container">
+    
+        #if($pagenum)
+        	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg?pagenum=$pagenum")
+        #else
+        	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
+        #end
+        <a class="emdialog" href="$home$link" target="_parent"	
+        	title="[[$asset]]">
+        	
+        	<img id="pdfpreview" class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" alt="[[Preview Image]]"/>
+        
+        </a>
+    
+    </div>
+
 #if( $pdfpages > 1 )
 	<input type="hidden" name="field" value="currentpage"/>
 	Jump To Page:

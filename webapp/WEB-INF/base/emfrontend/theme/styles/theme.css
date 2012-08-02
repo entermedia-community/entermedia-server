@@ -1530,6 +1530,9 @@ padding: 10px;
 #eml-tab-subnav {
     margin: 0;
 }
+#details #eml-tab-subnav {
+    margin: 20px 0 -20px 0;
+}
 #eml-tab-subnav ul, #sub-nav {
     background: rgb(255,255,255); /* Old browsers */
 background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(212,245,252,1) 100%); /* FF3.6+ */

@@ -43,6 +43,7 @@
 #set( $args = "id=$id&module=$moduleid&hitssessionid=$hitssessionid&catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
 
 <div id="${searchtype}_table">
+    
 #if($candelete != "false")
 <div id="emselectable" class="emselectable" data-view="$viewpath" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
 #end
@@ -133,4 +134,5 @@
 #if($candelete != "false")
 </div>
 #end
+
 </div>

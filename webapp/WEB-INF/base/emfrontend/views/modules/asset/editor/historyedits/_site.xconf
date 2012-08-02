@@ -10,5 +10,4 @@
 	<property name="sortby">dateDown</property>
 	<property name="searchtype">asseteditLog</property>
 	<path-action name="DataEditModule.loadPageOfSearch" />
-	<inner-layout>${themeprefix}/layouts/detaileditorsubnomargin.html</inner-layout>
 </page>
