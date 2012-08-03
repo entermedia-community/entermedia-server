@@ -1,6 +1,65 @@
-<div id="media-player">
+    #set($currentpreview = $context.findValue('currentpreview'))
+    #set($pagenum = $context.findValue('pagenum'))
+    #set($totalpages = $numberutils.toInt($asset.pages))
+    
+    #if( !$currentpreview )
+      #if ( !$pagenum )
+        #set($currentpreview = 0)
+      #else   
+        #set($pagenumnum = $numberutils.toInt($pagenum) )
+        #set( $currentpreview = $pagenumnum - 1 )
+      #end
+    #end
+
+    #set($currentpreview = $numberutils.toInt($currentpreview) )
+    
+    #if( $totalpages > 1 )
+        <div id="pdf-thumbnail-sidebar">
+            #set($thepages = $totalpages / 5)
+
+            #if( $currentpreview > 5)
+                #set( $page = $currentpreview / 5)
+
+            #else
+                #set( $page = 0)
+            #end
+            
+            #if ($page > 0 )
+                #set( $prevthumb = $thepages * 5  - 1)
+                <a href="index.html?sourcepath=$asset.sourcepath&currentpreview=$prevthumb"> Previous </a>
+            #end
+                <ul>
+                    
+                #set( $start = $page*5)
+                #set($end = $start + 4)
+               
+                #if( $end > $totalpages - 1 )
+                  #set( $end = $totalpages - 1 )
+                #end
+                #foreach( $page in [$start..$end])
+                    <li class="#if ( $page == $currentpreview ) current #end">
+                        <a href="index.html?sourcepath=$asset.sourcepath&currentpreview=$page">
+                            #set( $page = $page + 1)
+                            <img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/preview.jpg?pagenum=$page" />
+                            <p><span>$page</span></p>
+                        </a>
+                    </li>
+                #end
+            </ul>
+            #set ($pageholder = $page + 1)
+            #if ( $pageholder * 5 < $totalpages)
+                #set( $nextthumb = $thepages * 5  + 1)
+                <a href="index.html?sourcepath=$asset.sourcepath&currentpreview=$nextthumb"> Next </a>
+            #end
+            $context.putPageValue("currentpreview",$currentpreview)
+            $context.putPageValue("totalpages",$totalpages)
+         </div>
+    #end
+
+<div id="media-player" class="#if( $totalpages > 1 ) document #end">
 
     <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
+   
 
     <div id="mp-player">
         <div id="mp-asset-title" style="display: none;">$asset</div>
@@ -23,8 +82,8 @@
 </div>
 
 <script>
-    $('#mp-player img').load(function(){
-        var $wimg = $('#mp-player img').width();
+    $('#main-media').load(function(){
+        var $wimg = $('#main-media').width();
         $('#mp-player').width($wimg);
         $('#mp-asset-title').show();
         $('#mp-asset-info').show();

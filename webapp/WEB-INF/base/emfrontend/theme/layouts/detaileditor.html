@@ -14,26 +14,28 @@
     #if( $asset )
 
     <div id="mediaviewer" class="max">
-
-        #set( $ismultifine = $asset.id.startsWith("multiedit:") )
-        #if($ismultifine )
-
-            <div id="media-player">
-                <h2 style="color: #fff; margin: 20px 0;">[[Editing across $asset.size() records]]</h2>
-            </div>
-
-        #else
-
-            $pages.include("$apphome/components/detaileditor/navigate.html", $context)
+        
+            #set( $ismultifine = $asset.id.startsWith("multiedit:") )
+            #if($ismultifine )
     
-            #if( $userprofile.maximize_player == "false")
-                $pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
+                <div id="media-player">
+                    <h2 style="color: #fff; margin: 20px 0;">[[Editing across $asset.size() records]]</h2>
+                </div>
+    
             #else
-                $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+
+                $pages.include("$apphome/components/detaileditor/navigate.html", $context)
+          
+                #if( $userprofile.maximize_player == "false")
+                    $pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
+                #else
+                    <div class="table" style="margin: -20px 0 0 0;">
+                        $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+                    </div>
+                #end
+           
             #end
-
-        #end
-
+        
     </div>
 
     #set( $assettab = $context.findValue("assettab") )

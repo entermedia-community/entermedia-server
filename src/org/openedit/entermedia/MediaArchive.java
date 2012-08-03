@@ -39,6 +39,7 @@ import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.Permission;
@@ -1337,5 +1338,16 @@ public class MediaArchive
 	{
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(), "pathEventManager");
 		return manager.runSharedPathEvent(getCatalogHome() + "/events/" + inName + ".html");
+	}
+	
+	public HitTracker getTracker(int total)
+	{
+		List all = new ArrayList(total);
+		for (int i = 0; i < total; i++)
+		{
+			all.add(new Integer(i+1));
+		}
+		HitTracker tracker = new ListHitTracker(all);
+		return tracker;
 	}
 }

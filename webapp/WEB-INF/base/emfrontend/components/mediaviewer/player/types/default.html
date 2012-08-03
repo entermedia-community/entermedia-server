@@ -13,6 +13,6 @@
 #if (!$pages.doesExist($thumbpath))
 	#set ($thumbpath =  "$themeprefix/images/mimetypes/missing.png")
 #end
-<img 
+<img id="main-media"
 	#if($cell.caption) alt = "${cell.caption}" #else alt="${cell.name}" #end 
 	src="$home$thumbpath" border="0">
