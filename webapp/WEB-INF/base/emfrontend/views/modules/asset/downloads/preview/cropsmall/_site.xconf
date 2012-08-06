@@ -8,7 +8,6 @@
 	<property name="height">75</property>
 	<property name="x1">0</property>
 	<property name="y1">0</property>
-	<property name="gravity">center</property>
 	<property name="uselegacythumbimages">false</property>
 	<property name="sourcefile">image</property>
 </page>

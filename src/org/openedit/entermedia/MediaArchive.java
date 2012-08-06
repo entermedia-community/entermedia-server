@@ -34,6 +34,7 @@ import org.openedit.entermedia.search.SearchFilterArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -1203,9 +1204,21 @@ public class MediaArchive
 		}
 		return contentsiteroot;
 	}
-
+	public boolean doesAttachmentExist(Asset asset, Data inPreset, int inPageNumber) 
+	{
+		String outputfile = inPreset.get("outputfile");
+		if( inPageNumber > 1 )
+		{
+			String name = PathUtilities.extractPageName(outputfile);
+			String ext = PathUtilities.extractPageType(outputfile);
+			outputfile = name + "page" + inPageNumber + "." + ext;
+		}
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		return page.exists();
+		
+	}
 	public boolean doesAttachmentExist(String outputfile, Asset asset) {
-		Page page = getPageManager().getPage("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.exists();
 	}
 

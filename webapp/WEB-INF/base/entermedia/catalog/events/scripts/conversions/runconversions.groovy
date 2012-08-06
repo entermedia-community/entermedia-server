@@ -193,6 +193,12 @@ class ConvertRunner implements Runnable
 				props.putAll(presetdata.getProperties());
 			}
 		}
+		String pagenumber = inTask.get("pagenumber");
+		if( pagenumber != null )
+		{
+			props.put("pagenum",pagenumber);
+		}
+
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
@@ -208,7 +214,8 @@ class ConvertRunner implements Runnable
 
 		if("new".equals(status) || "retry".equals(status))
 		{
-			String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
+			//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
+			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
 			Page output = inArchive.getPageManager().getPage(outputpage);
 			log.debug("Running Media type: ${type} on asset ${asset.getSourcePath()}" );
 			result = creator.convert(inArchive, asset, output, inStructions);
