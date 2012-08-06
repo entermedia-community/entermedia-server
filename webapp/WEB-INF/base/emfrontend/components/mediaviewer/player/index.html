@@ -5,13 +5,15 @@
     #if( !$currentpreview )
       #if ( !$pagenum )
         #set($currentpreview = 0)
+        #set ($pagenum = 1)
       #else   
         #set($pagenumnum = $numberutils.toInt($pagenum) )
         #set( $currentpreview = $pagenumnum - 1 )
       #end
+    #else
+        #set( $currentpreview = $numberutils.toInt($currentpreview) )
+        #set( $pagenum = $currentpreview + 1  )
     #end
-
-    #set($currentpreview = $numberutils.toInt($currentpreview) )
     
     #if( $totalpages > 1 )
         <div id="pdf-thumbnail-sidebar">
@@ -31,7 +33,7 @@
                          #set ($pageholder = $page + 1)
                          #set( $prevthumb = $pageholder - 1)
                          #set( $prevthumb = $prevthumb * 5 - 4)
-                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb"> << Previous Page </a>
+                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb"> << Previous Five </a>
                 #end
                 </li>
                     
@@ -56,7 +58,7 @@
                     #set( $nextthumb = $pageholder + 1)
                     #set( $nextthumb = $nextthumb * 5 - 4)
                     
-                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb"> Next Page >> </a>
+                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb"> Next Five >> </a>
                 #end
                 </li>
             </ul>
@@ -72,7 +74,7 @@
    
 
     <div id="mp-player">
-        <div id="mp-asset-title" style="display: none;">$asset #if( $totalpages > 1 ) <span>($totalpages pages)</span> #end</div>
+        <div id="mp-asset-title" style="display: none;">$asset #if( $totalpages > 1 ) <span>(Page $pagenum of $totalpages)</span> #end</div>
     	#if( !$asset.importstatus || $asset.importstatus != "complete" )
     		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
     	#else

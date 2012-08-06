@@ -58,7 +58,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 			        <a href="#" class="email ir">Email</a>
 			    </div> 
 			    <div class="hover-details">
-			        <h6>#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end</h6>
+			        <h6>#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</h6>
 			    </div>
 			</div>	
 			<script>
@@ -69,7 +69,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
                       $('.hovering').removeClass('hover');
                  });
             </script>	
-	   #end
+	        #end
 			#if( $showcaption )
 				<a class="eml-thumbnail-caption" href="$click">
 					#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
