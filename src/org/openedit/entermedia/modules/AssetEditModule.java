@@ -1065,7 +1065,10 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			archive.saveAsset(target, inReq.getUser());
 			
+			//TODO: run queueconversions.grooovy
+			
 			//generate mediums for videos if necessary
+			/*
 			String rendertype = archive.getMediaRenderType(target.get("fileformat"));
 			if( "video".equals(rendertype) )
 			{
@@ -1103,6 +1106,7 @@ public class AssetEditModule extends BaseMediaModule
 					}
 				}
 			}
+			*/
 		}
 	}
 

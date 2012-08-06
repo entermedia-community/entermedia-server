@@ -22,7 +22,7 @@
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	
 	<property id="fulltext" internalfield="true" keyword="true">Full Text</property> 	<!-- This is for PDFs -->
-	<property id="pages" internalfield="true" datatype="number" viewtype="number" index="true" stored="true" >Pages</property> 	<!--  These are writen to by outside API -->
+	<property id="pages" datatype="number" viewtype="number" index="true" stored="true" >Total Pages</property> 	<!--  These are writen to by outside API -->
 	<property id="assetviews" internalfield="true" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
 	<property id="assetviews_sortable" internalfield="true" datatype="number" >Views</property>
 	<property id="assetvotes" internalfield="true" datatype="number" index="true" stored="true" >Vote Rank</property>

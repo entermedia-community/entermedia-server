@@ -10,6 +10,7 @@
 	<property id="errordetails"  index="true"  stored="true">Error Details</property>
 	<property id="errorcount"  index="true"  stored="true">Error Count</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>	
+	<property id="pagenumber" index="true" stored="true">Page Number</property>	
 	<property id="ordering" index="true" stored="true" editable="true">Ordering</property>
 
 </properties>

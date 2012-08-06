@@ -139,7 +139,7 @@ public abstract class BaseCreator implements MediaCreator
 				inStructions.addProperty(key, String.valueOf(value));
 			}
 		}
-		populateOutputPath(inArchive,inStructions);
+		//populateOutputPath(inArchive,inStructions);
 		
 		return inStructions;
 	}
@@ -302,5 +302,26 @@ public abstract class BaseCreator implements MediaCreator
 		status.setOk(true);
 		return status;
 	}
-	
+	@Override
+	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions, Data inPreset)
+	{
+		StringBuffer outputpage = new StringBuffer();
+		outputpage.append("/WEB-INF/data/" );
+		outputpage.append(inArchive.getCatalogId());
+		outputpage.append("/generated/" );
+		outputpage.append(inStructions.getAssetSourcePath() );
+		outputpage.append("/" );
+		String output = inPreset.get("outputfile");
+		int pagenumber = inStructions.getPageNumber();
+		if( pagenumber > 1 )
+		{
+			String name = PathUtilities.extractPageName(output);
+			String ext = PathUtilities.extractPageType(output);
+			output = name + "page" + pagenumber + "." + ext;
+		}
+		outputpage.append(output);
+		
+		return outputpage.toString();
+	}
+
 }

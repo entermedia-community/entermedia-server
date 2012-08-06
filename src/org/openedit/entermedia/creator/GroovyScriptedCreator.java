@@ -146,12 +146,19 @@ public class GroovyScriptedCreator implements MediaCreator
 		return creator.createInstructions(inProperties, inArchive, inOutputType, inSourcePath);
 	}
 
+	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions, Data inPreset)
+	{
+		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
+		return creator.populateOutputPath(inArchive, inStructions, inPreset);
+	}
+
 	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
 	{
 		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
 		return creator.populateOutputPath(inArchive, inStructions);
 	}
 	
+
 	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions )
 	{
 		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());

@@ -38,7 +38,7 @@ public class CreatorManager
 		MediaCreator creator = getMediaCreatorByOutputFormat(inStructions.getOutputExtension());
 		
 		//Just in case they did not set it
-		creator.populateOutputPath(getMediaArchive(),inStructions);
+	//	creator.populateOutputPath(getMediaArchive(),inStructions);
 
 		return creator.createOutput(getMediaArchive(),inStructions);
 	}
@@ -128,7 +128,7 @@ public class CreatorManager
 	{
 		fieldPageManager = inPageManager;
 	}
-
+/*
 	public Page getThumbImageFile(String inSourcePath)
 	{
 		return getImageFile(inSourcePath, 150, 150);
@@ -151,7 +151,7 @@ public class CreatorManager
 		String convertPath = instructions.getOutputPath();
 		return getPageManager().getPage(convertPath);
 	}
-
+*/
 	public MediaArchive getMediaArchive()
 	{
 		return fieldMediaArchive;

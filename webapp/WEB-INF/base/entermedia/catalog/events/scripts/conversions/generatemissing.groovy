@@ -42,17 +42,33 @@ public void init()
 
 				if (!mediaarchive.doesAttachmentExist(outputfile, asset))
 				{
-					added++;
-					Data newTask = tasksearcher.createNewData();
-					newTask.setSourcePath(asset.getSourcePath());
-					newTask.setProperty("status", "new");
-					newTask.setProperty("assetid", asset.id);
-					newTask.setProperty("presetid", it.id);
-					newTask.setProperty("ordering", it.get("ordering") );
 					
-					String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-					newTask.setProperty("submitted", nowdate);
-					tasksearcher.saveData(newTask, context.getUser());
+					SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.id).append("presetid", it.id);
+					Data found = tasksearcher.search(taskq).first();
+					if( found != null )
+					{
+						//If it is complete then the converter will mark it complete again
+						if( found.get("status") != "new")
+						{
+							found = (Data)tasksearcher.searchById(found.getId());
+							found.setProperty("status", "retry");
+							added++;
+							tasksearcher.saveData(found, context.getUser());
+						}
+					}
+					else
+					{
+						added++;
+						Data newTask = tasksearcher.createNewData();
+						newTask.setSourcePath(asset.getSourcePath());
+						newTask.setProperty("status", "new");
+						newTask.setProperty("assetid", asset.id);
+						newTask.setProperty("presetid", it.id);
+						newTask.setProperty("ordering", it.get("ordering") );
+						String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+						newTask.setProperty("submitted", nowdate);
+						tasksearcher.saveData(newTask, context.getUser());
+					}
 				}
 			}
 		}

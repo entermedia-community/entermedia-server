@@ -41,13 +41,14 @@ public interface MediaCreator
 	 */
 	ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOputputype, String inSourcePath);
 
+	String populateOutputPath(MediaArchive inArchive,ConvertInstructions inStructions);
 	
 	/**
 	 * This is the standard path that creators put their output
 	 * @param inArchive
 	 * @param inStructions
 	 */
-	String populateOutputPath(MediaArchive inArchive,ConvertInstructions inStructions);
+	String populateOutputPath(MediaArchive inArchive,ConvertInstructions inStructions, Data inPreset);
 
 	
 	/**File
