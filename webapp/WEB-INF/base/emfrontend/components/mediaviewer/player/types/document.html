@@ -1,6 +1,11 @@
 #set ($pagenum = $context.findValue("pagenum") )
+#if ( !$pagenum ) 
+    #set ( $pagenum = $currentpreview + 1)
+#end
+#if ( !$pagenum ) 
+    #set ( $pagenum = 1)
+#end
 #set ( $gotopage = $currentpreview + 1)
-    
     <div id="pdf-viewer-container">
         #if ($gotopage > 1)
              #set( $prevthumb = $gotopage - 1)

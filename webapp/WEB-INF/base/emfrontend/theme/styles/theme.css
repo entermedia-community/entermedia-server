@@ -4704,7 +4704,7 @@ p.resultsnumber {
     display: table-cell;
     width: 154px;
     text-align: center;
-    vertical-align: middle;
+    vertical-align: top;
 
 }
 #pdf-thumbnail-sidebar ul {
