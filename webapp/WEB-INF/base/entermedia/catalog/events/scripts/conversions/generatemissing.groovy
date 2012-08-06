@@ -3,7 +3,7 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.*;
-
+import assets.model.PresetCreator;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.*;
 import org.openedit.util.DateStorageUtil;
@@ -14,6 +14,7 @@ public void init()
 		Searcher assetsearcher = mediaarchive.getAssetSearcher();
 		Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
+		PresetCreator presets = new PresetCreator();
 		
 		HitTracker assets = assetsearcher.getAllHits();
 		long added = 0;
@@ -38,38 +39,54 @@ public void init()
 			hits.each
 			{
 				Data preset = (Data) presetsearcher.searchById(it.id);
-				String outputfile = preset.get("outputfile");
 
-				if (!mediaarchive.doesAttachmentExist(outputfile, asset))
+				if (!mediaarchive.doesAttachmentExist(asset,preset,0) )
 				{
-					
-					SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.id).append("presetid", it.id);
-					Data found = tasksearcher.search(taskq).first();
-					if( found != null )
+					presets.createPresetsForPage(tasksearcher, preset, asset,0);
+				}
+				String pages = asset.get("pages");
+				if( pages != null )
+				{
+					int npages = Integer.parseInt(pages);
+					if( npages > 1 )
 					{
-						//If it is complete then the converter will mark it complete again
-						if( found.get("status") != "new")
+						for (int i = 1; i < npages; i++)
 						{
-							found = (Data)tasksearcher.searchById(found.getId());
-							found.setProperty("status", "retry");
-							added++;
-							tasksearcher.saveData(found, context.getUser());
+							int pagenum = i + 1;
+							if (!mediaarchive.doesAttachmentExist(asset,preset,pagenum) )
+							{
+								presets.createPresetsForPage(tasksearcher, preset, asset, pagenum);
+							}
 						}
 					}
-					else
-					{
-						added++;
-						Data newTask = tasksearcher.createNewData();
-						newTask.setSourcePath(asset.getSourcePath());
-						newTask.setProperty("status", "new");
-						newTask.setProperty("assetid", asset.id);
-						newTask.setProperty("presetid", it.id);
-						newTask.setProperty("ordering", it.get("ordering") );
-						String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-						newTask.setProperty("submitted", nowdate);
-						tasksearcher.saveData(newTask, context.getUser());
-					}
 				}
+		
+					
+//					Data found = tasksearcher.search(taskq).first();
+//					if( found != null )
+//					{
+//						//If it is complete then the converter will mark it complete again
+//						if( found.get("status") != "new")
+//						{
+//							found = (Data)tasksearcher.searchById(found.getId());
+//							found.setProperty("status", "retry");
+//							added++;
+//							tasksearcher.saveData(found, context.getUser());
+//						}
+//					}
+//					else
+//					{
+//						added++;
+//						Data newTask = tasksearcher.createNewData();
+//						newTask.setSourcePath(asset.getSourcePath());
+//						newTask.setProperty("status", "new");
+//						newTask.setProperty("assetid", asset.id);
+//						newTask.setProperty("presetid", it.id);
+//						newTask.setProperty("ordering", it.get("ordering") );
+//						String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+//						newTask.setProperty("submitted", nowdate);
+//						tasksearcher.saveData(newTask, context.getUser());
+//					}
 			}
 		}
 		log.info("checked ${checked} assets. ${added} tasks queued" );

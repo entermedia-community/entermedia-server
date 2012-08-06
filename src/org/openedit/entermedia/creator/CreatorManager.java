@@ -38,7 +38,7 @@ public class CreatorManager
 		MediaCreator creator = getMediaCreatorByOutputFormat(inStructions.getOutputExtension());
 		
 		//Just in case they did not set it
-	//	creator.populateOutputPath(getMediaArchive(),inStructions);
+		creator.populateOutputPath(getMediaArchive(),inStructions);
 
 		return creator.createOutput(getMediaArchive(),inStructions);
 	}

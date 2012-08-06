@@ -99,8 +99,6 @@ public void createTasksForUpload() throws Exception
 //				foundsome = true;
 //			}
 			
-			String outputfile = preset.get("outputfile");
-
 			presets.createPresetsForPage(tasksearcher, preset, asset,0);
 			
 			String pages = asset.get("pages");
@@ -109,7 +107,7 @@ public void createTasksForUpload() throws Exception
 				int npages = Integer.parseInt(pages);
 				if( npages > 1 )
 				{
-					for (int i = 0; i < npages; i++)
+					for (int i = 1; i < npages; i++)
 					{
 						presets.createPresetsForPage(tasksearcher, preset, asset, i + 1);
 					}
