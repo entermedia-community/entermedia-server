@@ -2025,6 +2025,14 @@ tr.odd {
     position: relative;
     padding: 20px 0;
 }
+#media-player-table {
+    background: #002531 url('../images/asset-bg.png');
+    box-shadow: inset 0px 0px 60px 15px rgba(0, 0, 0, .8);
+}
+#media-player-table #media-player { 
+    background: url('../images/sidebar-shadow-left.png') left top repeat-y;
+    box-shadow: none;
+}
 #media-player.document {
     padding: 33px 0;
     margin-bottom: 0;
@@ -4497,6 +4505,14 @@ p.resultsnumber {
        margin-left: 5px;
        margin-bottom: 5px;
    }
+   #mp-asset-title span {
+       opacity: 0.8;
+       font-weight: normal;
+       font-size: 11px;
+       position: relative;
+       top: -1px;
+       margin-left: 5px;
+   }
    #mp-asset-info {
        text-align: right;
        margin-right: -23px; 
@@ -4688,6 +4704,8 @@ p.resultsnumber {
     display: table-cell;
     width: 154px;
     text-align: center;
+    vertical-align: middle;
+
 }
 #pdf-thumbnail-sidebar ul {
     padding: 0;
@@ -4753,6 +4771,69 @@ p.resultsnumber {
     margin: 0;
     padding: 0;
 }
+#jumpto {
+    float: left;
+    color: #fff;
+    font-size: 10px;
+    margin-left: 5px;
+    position: relative; top: -2px;
+    text-align: left;
+}
+#jumpto #pagejumper {
+    width: 20px; 
+    padding: 4px 6px; 
+    border-radius: 3px; 
+    border: 1px solid #444; 
+    position: relative; top: 1px; 
+    margin-right: 1px;
+    text-align: center;
+}
+#jumpto .btn {
+    padding: 4px 6px; 
+}
+#jumpto span {
+    position: relative;
+    top: -2px;
+}
+#pdf-viewier-container {
+    position: realtive;
+}
+#pdf-viewer-container #prevpage {
+    position: absolute;
+    left: 30px;
+    bottom: 44%;
+    background: url('../images/pdf-prev-page.png');
+    opacity: 0.2;
+    display: block;
+    width: 50px;
+    height: 100px;
+}
+#pdf-viewer-container #nextpage {
+    position: absolute;
+    right: 30px;
+    bottom: 44%;
+    background: url('../images/pdf-next-page.png');
+    opacity: 0.2;
+    display: block;
+    width: 50px;
+    height: 100px;
+}
+#pdf-viewer-container #prevpage:hover, #pdf-viewer-container #nextpage:hover {
+    opacity: 0.3;    
+}
+#prevfive, #nextfive {
+    height: 25px;
+}
+#prevfive a, #nextfive a {
+    color: #666;
+}
+#prevfive {
+    border-bottom: 1px solid #eee;
+}
+#nextfive {
+    border-top: 1px solid #eee;
+}
+
 
 /* BUTTONS */
 

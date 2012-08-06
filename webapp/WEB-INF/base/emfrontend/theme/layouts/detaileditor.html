@@ -29,7 +29,7 @@
                 #if( $userprofile.maximize_player == "false")
                     $pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
                 #else
-                    <div class="table" style="margin: -20px 0 0 0;">
+                    <div id="media-player-table" class="table" style="margin: -20px 0 0 0;">
                         $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
                     </div>
                 #end
