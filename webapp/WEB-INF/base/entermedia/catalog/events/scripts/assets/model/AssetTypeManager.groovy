@@ -20,7 +20,7 @@ import conversions.*
 
 public class AssetTypeManager extends EnterMediaObject 
 {
-	public void resetTypes() 
+	public void saveAssetTypes(HitTracker inAssets) 
 	{
 		MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
@@ -40,27 +40,78 @@ public class AssetTypeManager extends EnterMediaObject
 				}
 			}
 		}
-		HitTracker allassets  = searcher.getAllHits();
 		List tosave = new ArrayList();
-		for (Data hit in allassets)
+		for (Data hit in inAssets)
 		{
-			String fileformat = hit.fileformat;
-			String currentassettype = hit.assettype;
-			String assettype = typemap.get(fileformat);
-			if(assettype == null){
-				assettype="none";
+			Asset real = checkForEdits(typemap, hit);
+			if( real == null )
+			{
+				real = checkLibrary(mediaarchive,hit);
 			}
-			if(!assettype.equals(currentassettype)){
-				Asset real = mediaarchive.getAsset(hit.id);
-				real.setProperty("assettype", assettype);
+			else
+			{
+				checkLibrary(mediaarchive,real);
+			}
+			if(real != null)
+			{
 				tosave.add(real);
 			}
-			if(tosave.size() == 100){
-				searcher.saveAllData(tosave, context.getUser());
+			if(tosave.size() == 100)
+			{
+				saveAssets(searcher, tosave);
 				tosave.clear();
 			}
-
 		}
-		searcher.saveAllData(tosave, context.getUser());
+		saveAssets(searcher, tosave);
 	}
+	
+	public Asset checkForEdits(Map typemap, Data hit)
+	{
+		String fileformat = hit.fileformat;
+		String currentassettype = hit.assettype;
+		String assettype = typemap.get(fileformat);
+		if(assettype == null)
+		{
+			assettype = "none";
+		}
+		assettype = findCorrectAssetType(hit,assettype);
+		if(!assettype.equals(currentassettype))
+		{
+			Asset real = mediaarchive.getAssetBySourcePath(hit.sourcepath);
+			real.setProperty("assettype", assettype);
+			return real;
+		}
+		return null;
+	}
+	public Asset checkLibrary(MediaArchive mediaarchive, Data hit)
+	{
+		//Load up asset if needed to change the library?
+		return null;
+	}
+	public Asset checkLibrary(MediaArchive mediaarchive, Asset real)
+	{
+		//Load up asset if needed to change the library?
+		return real;
+	}
+
+	public void saveAssets(Searcher inSearcher, Collection tosave)
+	{
+		//Do any other checks on the asset. Add to library?
+		inSearcher.saveAllData(tosave, context.getUser());
+	}
+	public String findCorrectAssetType(Data inAssetHit, String inSuggested)
+	{
+/*		String path = inAssetHit.getSourcePath().toLowercase();
+		if( path.contains("/links/") )
+		{
+			return "links";
+		}
+		if( path.contains("/press ready pdf/") || path.endsWith("_pfinal.pdf") )
+		{
+			return "printreadyfinal";
+		}
+*/		
+		return inSuggested;
+	}
+	
 }
