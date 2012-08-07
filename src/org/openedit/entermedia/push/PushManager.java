@@ -27,6 +27,7 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.util.NaiveTrustManager;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -146,50 +147,42 @@ public class PushManager
 	}
 
 
-	public void uploadPresets(MediaArchive archive, Collection presets, User inUser, Asset target, List savequeue)
+	public void uploadGenerated(MediaArchive archive, Collection presets, User inUser, Asset target, List savequeue)
 	{
 		Searcher searcher = archive.getAssetSearcher();
-
-		String mediatype = archive.getMediaRenderType(target.getFileFormat());
-
-		List filestosend = new ArrayList();
-		for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
+		
+		if( !"complete".equals( target.get("importstatus") ) )
 		{
-			String presetid = (String) iterator2.next();
-			Data preset = getSearcherManager().getData(archive.getCatalogId(), "convertpreset", presetid);
-			String requiredtype = preset.get("inputtype");
-			if( requiredtype != null && requiredtype.length() > 0)
-			{
-				if( !requiredtype.equals(mediatype))
-				{
-					continue;
-				}
-			}
-					
-			Page tosend = findInputPage(archive, target, preset);
-			if (tosend.exists())
-			{
-				File file = new File(tosend.getContentItem().getAbsolutePath());
-				filestosend.add(file);
-			}
-			else
-			{
-				//Try again to run the tasks
-				archive.fireMediaEvent("importing/queueconversions", null, target);	//This will run right now, conflict?			
-				archive.fireMediaEvent("conversions/runconversion", null, target);	//This will run right now, conflict?			
-				tosend = findInputPage(archive, target, preset);
-				if (tosend.exists())
-				{
-					File file = new File(tosend.getContentItem().getAbsolutePath());
-					filestosend.add(file);
-				}
-				else
-				{
-					saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
-					break;
-				}
-			}
+			saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
+			return;
+		}	
+		List paths = archive.getPageManager().getChildrenPaths("/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath() );
+		List<File> filestosend = new ArrayList<File>(paths.size());
+
+		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		{
+			String path = (String) iterator.next();
+			ContentItem item = archive.getPageManager().getRepository().get(path);
+			filestosend.add(new File( item.getAbsolutePath() ) );
 		}
+//			}
+//			else
+//			{
+//				//Try again to run the tasks
+//				archive.fireMediaEvent("importing/queueconversions", null, target);	//This will run right now, conflict?			
+//				archive.fireMediaEvent("conversions/runconversion", null, target);	//This will run right now, conflict?			
+//				tosend = findInputPage(archive, target, preset);
+//				if (tosend.exists())
+//				{
+//					File file = new File(tosend.getContentItem().getAbsolutePath());
+//					filestosend.add(file);
+//				}
+//				else
+//				{
+//					break;
+//				}
+//			}
+//		}
 		if( filestosend.size() > 0 )
 		{
 			try
@@ -258,7 +251,7 @@ public class PushManager
 
 	}
 	
-	public Map<String, String> upload(Asset inAsset, MediaArchive inArchive, List inFiles)
+	public Map<String, String> upload(Asset inAsset, MediaArchive inArchive, List<File> inFiles)
 	{
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		//String account = inArchive.getCatalogSettingValue("push_server_username");
@@ -324,7 +317,7 @@ public class PushManager
 				Element asset = (Element) o;
 				result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
 			}
-			log.info("Sent " + server + "/" + inAsset.getSourcePath());
+			log.info("Sent " + server + "/" + inAsset.getSourcePath() + " with " + inFiles.size() + " generated files");
 			return result;
 		}
 		catch (Exception e)
@@ -540,7 +533,7 @@ asset: " + asset);
 			//TODO Dont push locked assets?
 			
 			asset.setProperty("pushstatus", "notallconverted");
-			uploadPresets(inArchive, presets, null, asset, tosave);
+			uploadGenerated(inArchive, presets, null, asset, tosave);
 		}
 		inArchive.getAssetSearcher().saveAllData(tosave, null);
 
