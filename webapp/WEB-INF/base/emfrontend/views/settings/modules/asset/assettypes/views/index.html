@@ -9,7 +9,7 @@
 	</div>	
 	<div class="ui-widget-content" id="editlayout">
 
-		<form id="assettypeeditform" name="assettypeeditform" action="$home$apphome/views/settings/metadata/assettypes/views/modifytype.html">
+		<form id="assettypeeditform" name="assettypeeditform" action="$home$apphome/views/settings/modules/asset/assettypes/views/modifytype.html">
 			<input type="hidden" name="assettype" value="$type.id"/>
 			<input type="hidden" name="id" value="$type.id"/>
 			<input type="hidden" name="searchtype" value="assettype"/>
@@ -23,12 +23,7 @@
 			
 			<a class="btn" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
 #if( $type )
-<a class="btn red" onclick="return confirm('Are you sure you want to delete $type?')" href='$home$apphome/views/settings/metadata/assettypes/edit/delete.html?id=$type.id'>Delete</a>
-#end
-
-
-#if( $savedok )			
-<div class="common-success">Saved</div>
+<a class="btn red" onclick="return confirm('Are you sure you want to delete $type?')" href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>Delete</a>
 #end			
 		</form>
 		
