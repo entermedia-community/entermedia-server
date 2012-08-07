@@ -27,12 +27,42 @@ import java.util.concurrent.TimeUnit;
 
 class CompositeConvertRunner implements Runnable
 {
+	String fieldAssetSourcePath;
+	MediaArchive fieldMediaArchive;
 	List runners = new ArrayList();
+
+	public CompositeConvertRunner(MediaArchive archive,String sourcepath)
+	{
+		fieldMediaArchive = archive;
+		fieldAssetSourcePath = sourcepath;
+	}
+	
 	public void run()
 	{
 		for( Runnable runner: runners )
 		{
 			runner.run();
+		}
+		for( ConvertRunner runner: runners )
+		{
+			if( runner.result == null )
+			{
+				return;
+			}
+			boolean complete = runner.result.isComplete();
+			if( !complete)
+			{
+				//log.info("no result");
+				return;
+			}
+		}
+		//load the asset and save the import status to complete
+		Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
+		if( asset != null && !"complete".equals(asset.get("importstatus") ) )
+		{
+			//Publishing to Amazon can happen even if the images in the search results
+			asset.setProperty("importstatus","complete");
+			fieldMediaArchive.saveAsset(asset, null);
 		}
 	}
 	public void add(Runnable runner )
@@ -320,8 +350,8 @@ public void checkforTasks()
 				{
 					executor.execute(byassetid);
 				}
-				byassetid = new CompositeConvertRunner();
 				lastassetid = hit.get("assetid");
+				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
 			}
 			byassetid.add(runner);
 		}

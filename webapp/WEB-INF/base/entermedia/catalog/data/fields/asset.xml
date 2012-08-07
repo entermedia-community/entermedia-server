@@ -16,13 +16,13 @@
 	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
 	<property id="pushpercentage" internalfield="true"  index="true"  stored="true">Push Percentage</property>
 	<property id="pusherrordetails" internalfield="true"  index="true"  stored="true">Push Error Details</property>
-	<property id="pusheddate" internalfield="true" editable="true"  index="true"  type="date" stored="true" >Pushed Date</property>
+	<property id="pusheddate" internalfield="true" editable="true"  index="true"  searchcomponent="datesearch"  type="date" stored="true" >Pushed Date</property>
 	
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	
 	<property id="fulltext" internalfield="true" keyword="true">Full Text</property> 	<!-- This is for PDFs -->
-	<property id="pages" datatype="number" viewtype="number" index="true" stored="true" >Total Pages</property> 	<!--  These are writen to by outside API -->
+	<property id="pages" datatype="number" viewtype="number" index="true" stored="true" >Pages</property> 	<!--  These are writen to by outside API -->
 	<property id="assetviews" internalfield="true" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
 	<property id="assetviews_sortable" internalfield="true" datatype="number" >Views</property>
 	<property id="assetvotes" internalfield="true" datatype="number" index="true" stored="true" >Vote Rank</property>
@@ -61,7 +61,7 @@
 	<property id="height" index="true" stored="true" datatype="number" >Height</property>
 	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  viewtype="time" searchcomponent="datesearch" externalid="Create Date,MediaCreateDate,CreateDate">Created On</property>
 	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date"  searchcomponent="datesearch"  viewtype="time" >Last Modified</property>
-	<property id="recordmodificationdate" index="true" type="date" stored="true" editable="false">Record Date</property> <!--  should be a date -->
+	<property id="recordmodificationdate" index="true" type="date"  searchcomponent="datesearch"  stored="true" editable="false">Record Date</property> <!--  should be a date -->
 	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
 	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" query="groups:developers">Owner</property>
 	<property id="primaryfile" internalfield="true" index="true" stored="true">Primary File Name</property>

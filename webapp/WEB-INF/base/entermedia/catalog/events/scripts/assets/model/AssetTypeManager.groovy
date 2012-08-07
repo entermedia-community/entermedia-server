@@ -77,7 +77,7 @@ public class AssetTypeManager extends EnterMediaObject
 		assettype = findCorrectAssetType(hit,assettype);
 		if(!assettype.equals(currentassettype))
 		{
-			Asset real = mediaarchive.getAssetBySourcePath(hit.sourcepath);
+			Asset real = mediaArchive.getAssetBySourcePath(hit.sourcepath);
 			real.setProperty("assettype", assettype);
 			return real;
 		}

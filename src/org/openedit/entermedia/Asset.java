@@ -51,8 +51,9 @@ public class Asset implements MultiValued
 		String val = get(inPreference);
 		
 		if (val == null)
+		{
 			return null;
-		
+		}
 		String[] vals = val.split("\\s+");
 
 		Collection<String> collection = Arrays.asList(vals);

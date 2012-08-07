@@ -19,12 +19,12 @@ public void init()
 	boolean complete = conversionsComplete(assetid);
 	if( complete )
 	{
-		complete = loadPublishing(assetid);
+		//complete = loadPublishing(assetid);
 	}
 	if( complete )
 	{
 		//update the asset import status
-		log.info("import complete, saving asset");
+		//log.info("import complete, saving asset");
 		mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Asset asset = mediaArchive.getAsset(assetid);
 		if( asset != null)
