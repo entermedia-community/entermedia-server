@@ -4,16 +4,12 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.event.WebEvent
+import org.openedit.entermedia.scanner.PresetCreator
 
-import assets.model.PresetCreator;
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery;
-import org.openedit.events.PathEventManager;
 import java.util.ArrayList;
-import java.util.Date;
-import org.openedit.util.DateStorageUtil;
 
 public void createTasksForUpload() throws Exception
 {

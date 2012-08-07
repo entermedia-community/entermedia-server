@@ -1,12 +1,9 @@
-import com.openedit.page.Page
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.scanner.PresetCreator;
 import org.openedit.*;
-import assets.model.PresetCreator;
-import com.openedit.WebPageRequest;
 import com.openedit.hittracker.*;
-import org.openedit.util.DateStorageUtil;
 
 public void init()
 {
@@ -25,7 +22,7 @@ public void init()
 			checked++;
 			Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 			if( asset == null )
-			{
+			{	
 				continue; //Bad index
 			}
 
