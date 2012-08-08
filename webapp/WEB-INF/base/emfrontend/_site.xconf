@@ -52,7 +52,10 @@
 	<permission name="viewhomelink">
 		<userprofile property="viewhomelink" equals="true" />
 	</permission>
-
+	
+	<permission name="maximize">
+		<userprofile property="maximize" equals="true" />
+	</permission>
 		
   	<permission name="viewupload">
 			<userprofile property="viewupload" equals="true" />
@@ -309,6 +312,7 @@
 		<userprofile property="filterbyassettype" equals="true" />
 
 	</permission>
+
   
   
 </page>

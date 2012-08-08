@@ -315,6 +315,9 @@ onloadselectors = function()
 			});
 		}
 	); 
+	jQuery("#fancy_content .fancyclose").livequery( function() {
+		$(this).parent.fancybox.close();
+	});
 	
 	jQuery("a.slideshow").livequery(
 		function() 
