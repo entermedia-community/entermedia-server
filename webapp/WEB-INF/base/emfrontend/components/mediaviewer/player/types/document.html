@@ -17,7 +17,7 @@
         #else
         	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
         #end
-        <a class="emdialog" href="$home$link" target="_parent"	
+        <a class="thickbox" href="$home$link" target="_parent"	
         	title="[[$asset]]">
         	#set( $page = $currentpreview + 1)
         	<img id="main-media" class="emdropshadow #if( $totalpages > 1 ) document #end" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg?pagenum=$gotopage" alt="[[Preview Image]]"/>

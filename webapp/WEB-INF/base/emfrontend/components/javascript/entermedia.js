@@ -305,7 +305,7 @@ onloadselectors = function()
 							theform.submit();
 						});
 			});
-	jQuery("a.thickbox, a.emdialog").livequery(
+	jQuery("a.emdialog").livequery(
 		function() 
 		{
 			jQuery(this).fancybox(
@@ -315,10 +315,24 @@ onloadselectors = function()
 			});
 		}
 	); 
+	jQuery("a.thickbox").livequery(
+			function() 
+			{
+				jQuery(this).fancybox(
+				{
+			    	openEffect	: 'elastic',
+			    	closeEffect	: 'elastic',
+			    	helpers : {
+			    		title : {
+			    			type : 'inside'
+			    		}
+			    	}
+				});
+			}
+		); 
 	jQuery("#fancy_content .fancyclose").livequery( function() {
 		$(this).parent.fancybox.close();
 	});
-	
 	jQuery("a.slideshow").livequery(
 		function() 
 		{
