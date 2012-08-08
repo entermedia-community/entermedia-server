@@ -9,6 +9,9 @@
  				#set($lastselected = $userprofile.last_selected_module )
  			#end
 			#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+			#if ( !$module)
+				#set ($module = $searcherManager.getData($catalogid, "module", "asset") )
+			#end
 			#set($userprofile.last_selected_module = $module.id)
 
 			#if($module)

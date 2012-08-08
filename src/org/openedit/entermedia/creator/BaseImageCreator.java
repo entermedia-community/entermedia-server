@@ -82,6 +82,15 @@ public abstract class BaseImageCreator extends BaseCreator
 		
 		}
 		
+		String watermarkselected = inStructions.getProperty("watermark");
+		if (watermarkselected != null)
+		{
+			inStructions.setWatermark(Boolean.valueOf(watermarkselected));
+		
+		}
+		
+		
+		
 
 		inStructions.setAssetSourcePath(inSourcePath);
 

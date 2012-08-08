@@ -13,7 +13,8 @@
 	</td>
 	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
-		#if(!$detail.isDate())
+		#if(!$detail.searchcomponent)
+				
 					<input name="operation" value="startswith" type="hidden" />
 		#end
 		#set( $viewtype = false )
@@ -29,6 +30,10 @@
 		#if (!$viewtype || $viewtype == "text")
 			#set ($viewtype = "default")
 		#end
+		<!-- This needs to be fixed up. -->
+		#if (!$viewtype || $viewtype == "map")
+			#set ($viewtype = "default")
+		#end
 
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
@@ -37,7 +42,11 @@
 			$context.putPageValue("val",$value)
 		#end
 		$context.putPageValue("detail",$detail)
-		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+		#if($pages.doesExist("/${applicationid}/components/xml/types/${viewtype}.html"))
+			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+		#else
+			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
+		#end
 	</td>
 </tr>
 #end
