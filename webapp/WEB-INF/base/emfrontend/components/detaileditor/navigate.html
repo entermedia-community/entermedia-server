@@ -31,11 +31,11 @@
 								</li>
 								#end
 								#if($candownload)
-    				            <li class="emdialog"><a href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">Download</a></li>
+    				            <li><a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id&oemaxlevel=1">Download</a></li>
     				            #end
     				            #if($candeleteasset)
                                 <li>
-                                    <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                    <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
                                 </li>
                                 #end
     				        </ul>

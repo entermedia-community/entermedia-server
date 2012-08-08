@@ -4162,6 +4162,9 @@ p.info {
     display: block;
     width: 1px;
 }
+#mediaviewer .jp-seek-bar {
+    text-align: left;
+}
 
 /* DATE PICKER UI THEME */
 
