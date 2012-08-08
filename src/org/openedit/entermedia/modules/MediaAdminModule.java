@@ -153,8 +153,10 @@ public class MediaAdminModule extends BaseMediaModule
 			Data existing = (Data)searcher.searchById(fields[i]);
 			if( existing == null)
 			{
-				log.error("No default value"  + fields[i]);
-				continue;
+				//log.error("No default value"  + fields[i]);
+				//continue;
+				existing = searcher.createNewData();
+				existing.setId(fields[i]);
 			}
 			boolean save = false;
 			String[] values = inReq.getRequestParameters(fields[i] + ".value");
