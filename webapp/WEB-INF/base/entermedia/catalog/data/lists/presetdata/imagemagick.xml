@@ -4,5 +4,6 @@
   <preset id="imagepreview" prefwidth="1024" prefheight="768"  watermark="false">Preview</preset>
   <preset id="imagecrop" crop="true" prefwidth="110" prefheight="62"  watermark="false">Crop</preset>
     <preset id="imagecmyk" crop="true" prefwidth="1024" prefheight="768"  watermark="false" colorspace="CMYK">Crop</preset>
+    <preset id="imagepreviewfpo" prefwidth="1024" prefheight="768"  watermark="true">Preview - FPO</preset>
   
 </properties>

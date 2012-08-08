@@ -487,9 +487,11 @@ public class OrderManager
 			{
 				SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid",presetid);
 				Data newTask = taskSearcher.searchByQuery(q);
-				if( newTask != null )
+				if( newTask == null )
 				{
 					newTask = taskSearcher.createNewData();	
+				} else{
+					newTask = (Data) taskSearcher.searchById(newTask.getId());//load real data
 				}
 				newTask.setSourcePath(asset.getSourcePath());
 				newTask.setProperty("status", "new");

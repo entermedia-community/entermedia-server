@@ -6,6 +6,11 @@
     <preset id="mediumimage" guid="imagemedium" outputfile="image640x480.jpg" fileexportformat="${filename}640x480.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="02">Image Medium</preset>
     <preset id="thumbimage" guid="imagethumb" 	outputfile="image200x200.jpg" fileexportformat="${filename}200x200.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="03">Image Thumbnail</preset>
     <preset id="imagecrop" guid="imagecrop"  outputfile="image110x62cropped.jpg" fileexportformat="${filename}110x62cropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="06" >Small Crop</preset>
+    <preset id="imagepreviewfpo" guid="imagepreviewfpo" outputfile="image1024x768wm.jpg" fileexportformat="${filename}1024x768-fpo.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="01" >Image Large FPO</preset>
+   
+    
+    
+    
     <preset id="largedocument" guid="imagepreview" outputfile="image1024x768.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="04">Document Preview</preset>
 
     <preset id="mp3audio" guid="lamemp3" outputfile="audio.mp3"  fileexportformat="${filename}.mp3" type="LameMp3" extension="mp3"  inputtype="audio" onimport="true" ordering="06">Mp3 Audio</preset>
