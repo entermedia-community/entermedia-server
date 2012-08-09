@@ -1,6 +1,7 @@
     #set($currentpreview = $context.findValue('currentpreview'))
     #set($pagenum = $context.findValue('pagenum'))
     #set($totalpages = $numberutils.toInt($asset.pages))
+    #set ( $hitssessionid = $context.findValue("hitssessionid"))
     
     #if( !$currentpreview )
       #if ( !$pagenum )

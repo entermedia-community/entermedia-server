@@ -4162,7 +4162,10 @@ p.info {
     display: block;
     width: 1px;
 }
-#mediaviewer .jp-seek-bar {
+#media-player .jp-seek-bar {
+    text-align: left;
+}
+#media-player .jp-volume-bar, #media-player .jp-volume-bar-value { 
     text-align: left;
 }
 

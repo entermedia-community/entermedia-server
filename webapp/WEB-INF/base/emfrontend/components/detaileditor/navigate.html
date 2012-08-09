@@ -8,10 +8,10 @@
     		#set($previous = $hits.previous($indexOf))
     		#set($next = $hits.next($indexOf))
 		#end
+		
 		<div id="eml-tab-subnav">
     		<ul style="text-align: center;" id="sub-nav" class="mediaview">
     			#if( $hits )
-    			
 
     			#set( $thispage = $content.getDirectoryName() )
                     #if ( $thispage.contains(".") )
@@ -35,7 +35,11 @@
     				            #end
     				            #if($candeleteasset)
                                 <li>
-                                    <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                    #if ( $asset.id.startsWith("multiedit:") )
+                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                    #else
+                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                    #end
                                 </li>
                                 #end
     				        </ul>
@@ -47,7 +51,6 @@
                         #end
     					
     			#if( $hits )
-
     					#if($next)
     						$context.putPageValue("hits", $hits)
     						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">>></a></li>
