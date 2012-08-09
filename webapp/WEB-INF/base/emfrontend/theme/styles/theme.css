@@ -4498,90 +4498,100 @@ p.resultsnumber {
     margin: 0;
 }
 #de-side-nav .comment .icon {
-    background-position: 242px 0;
+    background-position: -20px 0;
     width: 26px;
     height: 26px;
     left: 12px;
     top: 8px;
 }
+#de-side-nav .current.comment .icon {
+    background-position: -20px 26px;
+}
+#de-side-nav .editassetcategories .icon {
+    background-position: 26px 0;
+    width: 26px;
+    height: 26px;
+    left: 12px;
+    top: 8px;
+}
+#de-side-nav .current.editassetcategories .icon {
+    background-position: 26px 26px;
+}
 #de-side-nav .current .text {
     top: -1px;
 }
-#de-side-nav .current.comment .icon {
-    background-position: 242px 26px;
-}
-#de-side-nav .editassetcategories .icon {
-    background-position: 161px 0;
+#de-side-nav .editassettags .icon {
+    background-position: 187px 0;
     width: 26px;
     height: 26px;
     left: 11px;
     top: 8px;
 }
-#de-side-nav .current.editassetcategories .icon {
-    background-position: 161px 26px;
+#de-side-nav .current.editassettags .icon {
+    background-position: 187px 26px;
 }
 #de-side-nav .asseteditorlibraries .icon {
-    background-position: 136px 0;
+    background-position: 160px 0;
     width: 26px;
     height: 26px;
     left: 11px;
     top: 8px;
 }
 #de-side-nav .current.asseteditorlibraries .icon {
-    background-position: 136px 26px;
+    background-position: 160px 26px;
 }
 #de-side-nav .viewmap .icon {
-    background-position: 189px 0;
+    background-position: 213px 0;
     width: 26px;
     height: 26px;
     left: 10px;
     top: 8px;
 }
 #de-side-nav .current.viewmap .icon {
-    background-position: 189px 26px;
+    background-position: 213px 26px;
 }
 #de-side-nav .viewattachments .icon {
-    background-position: 110px 0;
+    background-position: 134px 0;
     width: 24px;
     height: 26px;
     left: 12px;
     top: 8px;
 }
 #de-side-nav .current.viewattachments .icon {
-    background-position: 110px 26px;
+    background-position: 134px 26px;
 }
 #de-side-nav .assetpermissions .icon {
-    background-position: 62px 0;
+    background-position: 85px 0;
     width: 19px;
     height: 26px;
     left: 14px;
     top: 8px;
 }
 #de-side-nav .current.assetpermissions .icon {
-    background-position: 62px 26px;
+    background-position: 85px 26px;
 }
 #de-side-nav .viewassetpreviewhistory .icon {
-    background-position: 86px 0;
+    background-position: 109px 0;
     width: 24px;
     height: 26px;
     left: 12px;
     top: 8px;
 }
 #de-side-nav .current.viewassetpreviewhistory .icon {
-    background-position: 86px 26px;
+    background-position: 109px 26px;
 }
 #de-side-nav.open #opener .icon {
-    background-position: 19px 26px;
+    background-position: 44px 26px;
     width: 19px;
     height: 26px;
-    left: 16px;
+    left: 14px;
     top: 8px;
 }
 #de-side-nav.closed #opener .icon {
-    background-position: 19px 0;
+    background-position: 44px 0;
     width: 19px;
     height: 26px;
-    left: 16px;
+    left: 14px;
     top: 8px;
 }
 #de-side-nav .divider {

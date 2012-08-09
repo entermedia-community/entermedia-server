@@ -30,10 +30,16 @@
                     </div>
                 </div>
                 <div class="asset-details-more">
-                    <p style="line-height: 25px; text-align: left; color: #fff;">
-                        <strong>Categories</strong><br/>
-                        #foreach ($category in $asset.categories)
-                            <a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
+                    <p style="line-height: 25px; text-align: left; color: #fff; width: 450px;">
+                        #if ($asset.getKeywords().size() > 0)
+                            <strong>Tags</strong><br/>
+                            #foreach ($tag in $asset.getKeywords())
+                                #if ( $velocityCount <= 10 )
+                                <a href="$home$apphome/views/search/search.html?field=description&operation=matches&description.value=$tag">$tag</a> 
+                                #elseif ( $velocityCount == 11 )
+                                    <a class="ajax" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                                #end
+                            #end
                         #end
                     </p>
                 </div>
