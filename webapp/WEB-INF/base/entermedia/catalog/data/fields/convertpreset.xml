@@ -1,4 +1,4 @@
-<properties>
+<properties  beanname="xmlFolderSearcher">
 	<property id="id" index="true" stored="true">ID</property>
 	<property id="name" index="true" stored="true" editable="true">Conversion</property>
 	<property id="inputtype" index="true" stored="true" type="list" editable="true" listid="rendertype">Media Type</property>

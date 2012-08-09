@@ -11,7 +11,7 @@
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
 	
-		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id">
+		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id">
 					
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
@@ -28,7 +28,7 @@
 <script>
 	$('th.sortable').on({
 		click: function(){
-			var id = $(this).attr('id');
+			var id = $(this).attr('sortby');
 			if ( $(this).hasClass('currentsort') ) {
 				if ( $(this).hasClass('up') ) {
 					jQuery('#resultsdiv').load( '$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');

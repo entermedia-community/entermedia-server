@@ -117,19 +117,20 @@ public class WorkspaceManager
 			sourcepath.setName("SourcePath");
 			details.addDetail(sourcepath);
 		}
+		details.setBeanName("xmlFileSearcher");
 		archive.savePropertyDetails(details, searchtype, null);
 
 		// edit beans.xml
-		XmlFile file = getXmlArchive().getXml("/" + catalogid + "/configuration/beans.xml");
-		Element element = file.getElementById(searchtype + "Searcher");
-		if (element == null)
-		{
-			element = file.addNewElement();
-			element.addAttribute("id", searchtype + "Searcher");
-			element.addAttribute("bean", "xmlFileSearcher");
-			getXmlArchive().saveXml(file, null);
-			getSearcherManager().clear();
-		}
+//		XmlFile file = getXmlArchive().getXml("/" + catalogid + "/configuration/beans.xml");
+//		Element element = file.getElementById(searchtype + "Searcher");
+//		if (element == null)
+//		{
+//			element = file.addNewElement();
+//			element.addAttribute("id", searchtype + "Searcher");
+//			element.addAttribute("bean", "xmlFileSearcher");
+//			getXmlArchive().saveXml(file, null);
+//		}
+		//getSearcherManager().clear();
 		return searchtype;
 	}
 

@@ -13,16 +13,22 @@ import org.openedit.Data;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.*;
-import org.openedit.entermedia.creator.BaseCreator; 
 import com.openedit.OpenEditException;
 import com.openedit.page.Page;
 import com.openedit.util.ExecResult;
 import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
 
-public class LameMp3Creator extends BaseCreator
+public class lameMp3CreatorOLD extends BaseCreator
 {
-	private static final Log log = LogFactory.getLog(LameMp3Creator.class);
+	private static final Log log = LogFactory.getLog(lameMp3CreatorOLD.class);
+	
+	
+	public boolean canReadIn(MediaArchive inArchive, String inOutputType)
+	{
+		return "au".equalsIgnoreCase(inOutputType) || "wav".equalsIgnoreCase(inOutputType) || "mp3".equalsIgnoreCase(inOutputType);
+	}
+
 	
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page converted, ConvertInstructions inStructions) throws OpenEditException
 	{		
@@ -113,11 +119,6 @@ public class LameMp3Creator extends BaseCreator
 		}
 		log.info( message + " in " + (System.currentTimeMillis() - start)/1000L + " seconds" );
 		return result;
-	}
-
-	public boolean canReadIn(MediaArchive inArchive, String inOutputType)
-	{
-		return "wav".equalsIgnoreCase(inOutputType) || "mp3".equalsIgnoreCase(inOutputType);
 	}
 
 	

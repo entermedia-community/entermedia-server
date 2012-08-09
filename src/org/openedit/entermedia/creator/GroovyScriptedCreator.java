@@ -168,6 +168,10 @@ public class GroovyScriptedCreator implements MediaCreator
 	public ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOputputype, String inSourcePath)
 	{
 		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
+		if( creator == null )
+		{
+			return null;
+		}
 		return creator.createInstructions(inReq, inArchive, inOputputype, inSourcePath);
 	}
 
