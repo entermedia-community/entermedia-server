@@ -53,6 +53,10 @@
 		<userprofile property="viewhomelink" equals="true" />
 	</permission>
 	
+	<permission name="editassettags">
+		<userprofile property="editassettags" equals="true" />
+	</permission>
+	
 	<permission name="maximize">
 		<userprofile property="maximize" equals="true" />
 	</permission>

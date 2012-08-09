@@ -17,6 +17,7 @@
 	<permission id="asseteditorlibraries" permissiontype="edit" name="Asset Libraries" description="Enables access to the asset library editor." />
 	<permission id="changeattachment" permissiontype="edit" name="Attachments" description="Enables the creation and customization of attachments." />
 	<permission id="editassetcategories" permissiontype="edit" name="Categories" description="Enables editing of an assets assigned categories"/>
+	<permission id="editassettags" permissiontype="edit" name="Tags" description="Enables editing of an assets assigned tags"/>
 	<permission id="comment" permissiontype="edit" name="Add Comments" description="Enables commenting on media assets." />
 	<permission id="deletecomments" permissiontype="edit" name="Delete Comments" description="Enables the removal of comments." />
 	<permission id="metadatageneral" permissiontype="edit" name="General Metadata" description="Enable general metadata edits."/>
