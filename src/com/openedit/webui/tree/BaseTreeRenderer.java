@@ -18,6 +18,8 @@ package com.openedit.webui.tree;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hamcrest.core.IsEqual;
+
 import com.openedit.util.PathUtilities;
 
 /**
@@ -103,6 +105,18 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 		return fieldExpandedNodes;
 	}
 
+	@Override
+	public void toggleNode(Object inNode)
+	{
+		if( hasBeenExpanded(inNode) )
+		{
+			collapseNode(inNode);
+		}
+		else
+		{
+			expandNode(inNode);
+		}
+	}
 	public void expandNode(Object inNode)
 	{
 		String path = toUrl(inNode);

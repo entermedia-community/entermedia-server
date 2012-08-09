@@ -2430,7 +2430,7 @@ body .user-input-area h3 {
 #attach-file h3 {
     margin-top: 0;
 }
-body .user-input-area input[type="text"], body .user-input-area textarea, #tree input[type="text"] {
+body .user-input-area input[type="text"], body .user-input-area textarea, .emtree input[type="text"] {
     background: #f7f7f7; /* Old browsers */
     background: -moz-linear-gradient(top, #f7f7f7 0%, #ffffff 42%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(42%,#ffffff)); /* Chrome,Safari4+ */
@@ -2444,7 +2444,7 @@ body .user-input-area input[type="text"], body .user-input-area textarea, #tree 
     box-shadow: 0 1px 0 0 #fff;
     color: #999;
 }
-body .user-input-area input[type="text"]:focus, body .user-input-area textarea:focus, #tree input[type="text"]:focus {
+body .user-input-area input[type="text"]:focus, body .user-input-area textarea:focus, .emtree input[type="text"]:focus {
     color: #444;
     border-color: #37b0d6;
 }
@@ -2501,7 +2501,7 @@ table.emdata th {
     display: table;
     width: 100%;
 }
-#tree {
+.emtree {
     display: table-cell;
     vertical-align: top;
 }
@@ -2513,11 +2513,11 @@ table.emdata th {
     background: #fff;
     display: table-cell;
 }
-#tree ul {
+.emtree ul {
     margin: 0;
     padding: 0;
 }
-#tree ul li {
+.emtree ul li {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -2525,7 +2525,7 @@ table.emdata th {
     color: #444;
     font-size: 11px;
 }
-#tree ul li div {
+.emtree ul li div {
     padding: 0 0 0 20px;
     border-bottom: 1px solid #E2EFF4;
     height: 34px;
@@ -2533,20 +2533,20 @@ table.emdata th {
     display: block;
     cursor: pointer;
 }
-#tree ul li div.selected {
+.emtree ul li div.selected {
     background: #c9e8f2;
 }
-#tree ul li div.selected:hover {
+.emtree ul li div.selected:hover {
     background: #c9e8f2;
 }
-#tree ul li div:hover {
+.emtree ul li div:hover {
     background: #c9e8f2;
 }
-#tree ul li div span a.btn {
+.emtree ul li div span a.btn {
     line-height: 11px;
     margin-left: 5px;
 }
-#tree ul li div span input[type="text"] {
+.emtree ul li div span input[type="text"] {
     padding: 5px 10px 3px 10px;
 }
 .actions {
@@ -2554,49 +2554,49 @@ table.emdata th {
     display: none;
     margin-right: 15px;
 }
-#tree ul li div:hover .actions {
+.emtree ul li div:hover .actions {
     display: inline;
 }
-#tree ul li div .actions a {
+.emtree ul li div .actions a {
     float: left;
     margin-left: 5px;
     opacity: 0.7;
 }
-#tree ul li div .actions a:hover {
+.emtree ul li div .actions a:hover {
     opacity: 1.0;
 }
-#tree ul li div .actions a.add {
+.emtree ul li div .actions a.add {
     background: url('../images/add.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.edit {
+.emtree ul li div .actions a.edit {
     background: url('../images/edit.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.delete {
+.emtree ul li div .actions a.delete {
     background: url('../images/delete.gif') 0 11px no-repeat;
     width: 15px;
     margin-right: 0;
     margin-top: 0;
 }
-#tree ul li div .actions a.add-folder {
+.emtree ul li div .actions a.add-folder {
     background: url('../images/add-folder.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.upload-file {
+.emtree ul li div .actions a.upload-file {
     background: url('../images/add-upload.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.download-folder {
+.emtree ul li div .actions a.download-folder {
     background: url('../images/download-folder.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.download-file {
+.emtree ul li div .actions a.download-file {
     background: url('../images/download-file.gif') 0 11px no-repeat;
     width: 15px;
 }
 
-#tree .arrow {
+.emtree .arrow {
     width: 0;
     height: 0;
     border: 5px solid transparent;
@@ -2606,34 +2606,34 @@ table.emdata th {
     float: none;
     position: relative;
 }
-#tree .arrow.down {
+.emtree .arrow.down {
     border: 5px solid transparent;
     border-top: 5px solid #444;
     top: 3px;
     left: -3px;
 }
-#tree .name {
+.emtree .name {
     padding-left: 35px;
 }
-#tree .name.folder {
+.emtree .name.folder {
     background: url('../images/folder-closed.gif') 14px -1px no-repeat;
 }
-#tree .arrow.down + .name.folder {
+.emtree .arrow.down + .name.folder {
     background: url('../images/folder-open.gif') 14px -1px no-repeat;
 }
-#tree .add {
+.emtree .add {
     background: url('../images/add.gif') 13px 1px no-repeat;
 }
-#tree ul {
+.emtree ul {
     display: none;
 }
-#tree .open {
+.emtree .open {
     display: block;
 }
-#tree .odd {
+.emtree .odd {
     background: #f7fdff;
 }
-#tree .nope {
+.emtree .nope {
     display: none;
 }
 .date-uploaded {
@@ -2730,7 +2730,7 @@ table.emdata th {
 #preview-pane #generatedimage {
     margin-bottom: 10px;
 }
-#tree.attachments form .field {
+.emtree.attachments form .field {
     border-radius: 0;
     font-size: 12px;
     padding: 0;

@@ -14,6 +14,7 @@ public interface TreeRenderer
 	String renderAsString(String inNodeId);
 	public void expandNode(Object inNode);
 	public boolean hasBeenExpanded(Object inNode);
+	public void toggleNode(Object inNode);
 	/**
 	 * @param inObject
 	 */

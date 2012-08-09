@@ -5,5 +5,8 @@
 		<url-prefix>/${applicationid}/components/categorize/categories/picker.html?cache=false&amp;categoryid=</url-prefix>
 		
 	</page-action>
+	
+	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils"/>
+	
 	<inner-layout/>
 </page>
