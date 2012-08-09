@@ -1,9 +1,10 @@
 <linktree>
 
 	<a folder="generalinformation" id="metadatageneral" name="Edit Metadata" multiedit="true" />
-	<a folder="comment" id="comment" name="Comments" />
+	<a folder="comment" id="comment" name="Comments" multiedit="false" />
 	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->
-	<a folder="categorize"  id="editassetcategories" name="Categories / Tags" multiedit="true"/>		    	
+	<a folder="categorize"  id="editassetcategories" name="Categories" multiedit="true"/>
+	<a folder="tags"  id="editassettags" name="Tags" multiedit="true"/>		    	
 	<a folder="libraries" id="asseteditorlibraries"  multiedit="true" name="Libraries"/>
 	<a folder="map"  id="viewmap" multiedit="true" name="Geo Location Info" />		    	
 	<!-- <a folder="edit"  id="viewmediaedit" name="Media Editor" /> -->

@@ -10,6 +10,9 @@
 #set( $tab = $context.findValue("assettab") )
 #set( $links = $searcherManager.getList($catalogid,"detaileditormenu") )
 <ul id="assetmenu" class="sidebar-list">
+    #if ( $asset.id.startsWith("multiedit:") )
+        #set  ( $ismulti = true)
+    #end
     #foreach( $link in $links)
 
     #if( $velocityCount == 2)
