@@ -1248,6 +1248,9 @@ small {
     position: relative;
     z-index: 600;
 }
+.sortable #pages {
+    margin: 0;
+}
 #pages .ellipsis {
     color: #797979;
     width: auto !important;
@@ -1316,6 +1319,30 @@ small {
 }
 #pages .next a:hover {
     background: url('../images/pagination-next.png') top center no-repeat;
+}
+
+/* CATEGORIES AGAIN */
+
+#cat-list {
+    padding: 0;
+    margin: 0 20px;
+}
+#cat-list .row {
+    padding: 7px 10px;
+    border-bottom: 1px solid #eee;
+    list-style: none;
+}
+#cat-list .row a.category {
+    padding-left: 18px;
+    background: url('../images/folder-closed.gif') left -1px no-repeat;
+    margin: 0 3px;
+}
+#cat-list a:hover {
+   text-decoration: underline;
+}
+#cat-list .delete-row {
+    margin-top: 3px;
+    margin-right: 5px;
 }
 
 /* SIDE BAR STYLES */
@@ -5279,6 +5306,9 @@ ul.embuttons li a span {
     top: -28px;
     right: -10px;
     opacity: 1;
+}
+.category.tooltip:hover:after {
+    right: -100%; 
 }
 .tooltip:hover:before {
     content: "";
