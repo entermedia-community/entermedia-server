@@ -1,0 +1,12 @@
+<properties>
+  <preset id="mp3audio" outputextension="mp3" bitrate="64" resample="22.05" channels="1" >Mp3 Settings</preset>
+</properties>
+
+<!---
+
+Need to make this look like this:
+
+<preset id="1234" presetid="mp3audio" name="bitrate" value="64" />
+<preset id="1235" presetid="mp3audio" name="resample" value="22.05" />
+
+-->

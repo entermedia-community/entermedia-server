@@ -1,63 +1,132 @@
-#macro (display $filename $label $assetid $view $print)
-	$context.putPageValue("view", $view)
-	#if ($print && $print == "true")
-		$pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename", $context)
-	#else
-  		$pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view",$context)
-  	#end
-#end
+<div id="detaileditor">
+    #set( $moduleid = $context.findValue("module") )
+    #set ( $hitssessionid = $context.findValue("hitssessionid") )
+    #macro (display $filename $label $assetid $view $print)
+    $context.putPageValue("view", $view)
+    #if ($print && $print == "true")
+    $pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=asset", $context)
+    #else
+    $pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=asset",$context)
+    #end
+    #end
+    
 
-#if( $asset )
+    #if( $asset )
 
-<div class="subcolumns">
-          <div class="c25l" id="left-col">
-			
-			$pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
+    <div id="mediaviewer" class="max">
+        
+            #set( $ismultifine = $asset.id.startsWith("multiedit:") )
+            #if($ismultifine )
+                $pages.include("$apphome/components/detaileditor/navigate.html", $context)
+                <div id="media-player" style="margin: -20px 0 0 0;">
+                    <h2 style="color: #fff; margin: 20px 0;">[[Editing across $asset.size() records]]</h2>
+                </div>
+    
+            #else
 
-         </div>
-         <div id="right-col" class="detail-editor">	
-         	#set( $ismultifine = $asset.id.startsWith("multiedit:") )
-			#if($ismultifine )
-			
-			#else
-					$pages.include("$apphome/components/detaileditor/navigate.html")
-								
-			#end
+                $pages.include("$apphome/components/detaileditor/navigate.html", $context)
+          
+                #if( $userprofile.maximize_player == "false")
+                    $pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
+                #else
+                    <div id="media-player-table" class="table" style="margin: -20px 0 0 0;">
+                        $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+                    </div>
+                #end
+           
+            #end
+        
+    </div>
 
-				#set( $inpreviewpage = false )
-				#if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-					#set( $inpreviewpage = true )
-				#elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-					#set( $inpreviewpage = true )
-				#elseif( $content.path.endsWith("detailviewer/index.html") )
-					#set( $inpreviewpage = true )
-				#end
-			
-				#if( $inpreviewpage )
-					$pages.include("$apphome/components/detaileditor/index.html?assetid=$asset.id")
-				#else
-					#if( $asset.getId().startsWith("multiedit:") )
-					<h2>[[Editing across $asset.size() records]]</h2>
-					#end
-					$pages.includeContent()
-				#end
-         </div>
+    #set( $assettab = $context.findValue("assettab") )
+    <div id="detailarea">
+        <div id="de-table">
+            <div class="tr">
+                <div class="title-bar" style="border-left: none;"></div>
+                #set( $section = $searcherManager.getData($catalogid,"detaileditormenu",$assettab) )
+
+                <div class="title-bar">
+                    <span>$section</span>
+                </div>
+                <div class="title-bar" style="border-right: none;">
+                    <span style="text-align: center;">Related Media</span>
+                </div>
+            </div>
+            <div class="tr">
+                #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
+                <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
+
+                    $pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
+
+                </div>
+                <div id="details">
+
+                    <div id="resultslist">
+                        #set( $inpreviewpage = false )
+                        #if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
+                        #set( $inpreviewpage = true )
+                        #elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
+                        #set( $inpreviewpage = true )
+                        #elseif( $content.path.endsWith("detailviewer/index.html") )
+                        #set( $inpreviewpage = true )
+                        #end
+
+                        #if( $inpreviewpage )
+                        $pages.include("$home$apphome/views/modules/$moduleid/editor/generalinformation/index.html", $context)
+                        #else
+                        
+                            #set ($listid =  $content.tab )
+                            #if ($content.subtab)
+                            
+                            <div id="eml-tab-subnav">
+                                
+                                <ul>
+                                    #set( $screens = $searcherManager.getList($catalogid,$listid) )
+                                    #foreach($screen in $screens)
+                                    <li #if( $content.subtab == "$screen.id" ) class="current" #end>
+                                        <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$screen </a>
+                                    </li>
+                                    #end
+                                </ul>
+                            </div>
+                            #end
+
+                            $pages.includeContent()
+                            
+                        #end
+
+                    </div>
+                </div>
+                <div id="related-media">
+
+                    $pages.include("$apphome/components/results/related/bykeyword.html",$context)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" >
+        toggleEditSection = function(inId, inPath, inAssetID, inView, inLabel) {
+            var targetDiv = "#" + inId;
+            targetDiv = targetDiv.replace(/\//g, "\\/");
+            jQuery(targetDiv).load('$home$apphome/components/detaileditor/toggle.html', {
+                id : inId,
+                pluginpath : inPath,
+                origURL : "$content.path",
+                module : "${moduleid}",
+                assetid : inAssetID,
+                view : inView,
+                label : inLabel
+            });
+        }
+    </script>
+
+    #else
+
+    <p class="info" style="margin: 20px;">
+        [[Asset is missing]]
+    </p>
+
+    #end
+
 </div>
-
-<script type="text/javascript" >
-	toggleEditSection = function(inId, inPath, inAssetID, inView, inLabel)
-	{
-		var targetDiv = "#" + inId;
-		targetDiv = targetDiv.replace(/\//g, "\\/");
-		jQuery(targetDiv).load('$home$apphome/components/detaileditor/toggle.html', {id: inId, pluginpath: inPath, origURL: "$content.path", assetid:inAssetID, view:inView , label:inLabel});
-	}	
-</script>
-
-
-#else
-
-$pages.stream("${cataloghome}/crumbs/categories.html")
-
-[[Asset is missing]]
-
-#end

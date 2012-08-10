@@ -19,15 +19,9 @@ toggleUserProperty = function(property, onsuccess) {
 				success: onsuccess
 			}
 		);
+	
 }
 
-setUserProperty = function(property, value, onsuccess) {
-	/*jQuery.get(
-			url: "${apphome}/components/userprofile.html",
-			{field: property, property + ".value": value},
-			success: onsuccess
-		);*/
-}
 
 outlineSelectionCol = function(event, ui)
 {
@@ -86,12 +80,10 @@ toggleajax = function(e)
 		);
 	}
 }
-
-runajax = function(e)
+runajaxonthis = function(inlink)
 {
-	var nextpage= jQuery(this).attr('href');
-	
-	var targetDiv = jQuery(this).attr("targetdiv");
+	var nextpage= inlink.attr('href');
+	var targetDiv = inlink.attr("targetdiv");
 	if( targetDiv)
 	{
 		targetDiv = targetDiv.replace(/\//g, "\\/");
@@ -108,10 +100,10 @@ runajax = function(e)
 				
 			}
 		);
-	}
+	}	
 	else
 	{
-		var loaddiv = jQuery(this).attr("targetdivinner");
+		var loaddiv = inlink.attr("targetdivinner");
 		loaddiv = loaddiv.replace(/\//g, "\\/");
 		//jQuery("#"+loaddiv).load(nextpage);
 		jQuery.get(nextpage, {}, function(data) 
@@ -125,8 +117,11 @@ runajax = function(e)
 				}
 
 			);
-
 	}
+}
+runajax = function(e)
+{
+	runajaxonthis($(this));
      e.preventDefault();
 	//return false;
 }
@@ -135,13 +130,13 @@ showHoverMenu = function(inDivId)
 {
 	el = jQuery("#" + inDivId);
 	if( el.attr("status") == "show")
-	{
+	{	
 		el.show();
 	}
 }
 
 
-
+/*
 toggleitem = function(e)
 {
 		
@@ -163,37 +158,43 @@ toggleitem = function(e)
 
 		return false;
 
-}
-
-
+}	
+*/
 
 updatebasket = function(e)
 {
-		
 		var nextpage= jQuery(this).attr('href');
 		var targetDiv = jQuery(this).attr("targetdiv");
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 		var action= jQuery(this).data('action');
 		jQuery("#"+targetDiv).load(nextpage, {}, function()
 			{
-				
-				
 			    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
 				if(action == 'remove'){
 					jQuery(".selectionbox:checked").closest("tr").hide("slow");
 				}
-						
-				
-
 			}
 		);
-
+		 e.preventDefault();
 		return false;
-
 }
+/*
+updatebasketonasset = function(e)
+{
+	var nextpage= jQuery(this).attr('href');
+	var targetDiv = jQuery(this).attr("targetdiv");
+	targetDiv = targetDiv.replace(/\//g, "\\/");
+	jQuery("#"+targetDiv).load(nextpage, {}, function()
+	{
+	    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
+	});
+	 e.preventDefault();
+	return false;
+}
+*/
 
-
-
+//Not needed?
+/*
 toggleorderitem = function(e)
 {
 		
@@ -204,21 +205,18 @@ toggleorderitem = function(e)
 		jQuery("."+targetDiv).load(nextpage, {}, function()
 			{
 				var html = jQuery(this).html();
-				
 				jQuery("."+targetDiv, window.parent.document).html(html);
 			    jQuery("#basketmenu").load("$home/$applicationid/views/activity/menuitem.html");
 				jQuery("#basketmenu", window.parent.document).load("$home/$applicationid/views/activity/menuitem.html");
 				// jQuery("#collectionbasket",
 				// window.parent.document).load("$home/$applicationid/views/albums/basket/index.html?oemaxlevel=1");
-						
-				
-
 			}
 		);
 
 		return false;
 
 }
+*/
 
 getConfirmation = function(inText)	
 {
@@ -276,6 +274,7 @@ onloadselectors = function()
 	jQuery("a.toggleajax").livequery('click', toggleajax);
 	
 	jQuery("a.updatebasket").livequery('click', updatebasket);
+//	jQuery("a.updatebasketonasset").livequery('click', updatebasketonasset);
 	
 	
 	jQuery("form.ajaxform").livequery('submit',	
@@ -306,7 +305,7 @@ onloadselectors = function()
 							theform.submit();
 						});
 			});
-	jQuery("a.thickbox, a.emdialog").livequery(
+	jQuery("a.emdialog").livequery(
 		function() 
 		{
 			jQuery(this).fancybox(
@@ -316,7 +315,24 @@ onloadselectors = function()
 			});
 		}
 	); 
-	
+	jQuery("a.thickbox").livequery(
+			function() 
+			{
+				jQuery(this).fancybox(
+				{
+			    	openEffect	: 'elastic',
+			    	closeEffect	: 'elastic',
+			    	helpers : {
+			    		title : {
+			    			type : 'inside'
+			    		}
+			    	}
+				});
+			}
+		); 
+	jQuery("#fancy_content .fancyclose").livequery( function() {
+		$(this).parent.fancybox.close();
+	});
 	jQuery("a.slideshow").livequery(
 		function() 
 		{
@@ -346,6 +362,25 @@ onloadselectors = function()
 			); 
 		});
 
+	jQuery("a.propertyset").livequery('click', 
+			function(e)
+			{
+				var propertyname = jQuery(this).attr("propertyname");
+				var propertyvalue = jQuery(this).attr("propertyvalue");
+				var thelink = $(this);
+				jQuery.ajax(
+					{
+						url: "${home}${apphome}/components/userprofile/saveprofileproperty.html?field=" + propertyname + "&" + propertyname + ".value="  + propertyvalue,
+						success: function()
+						{
+							runajaxonthis(thelink);
+						}
+					}
+				);
+			     e.preventDefault();
+			});
+	
+	
 	/*
 	// Live query not needed since Ajax does not normally replease the header
 	// part of a page
@@ -388,7 +423,7 @@ onloadselectors = function()
 	
 	
 
-	jQuery("#assetsearchinput").livequery( function() 
+	jQuery(".suggestsearchinput").livequery( function() 
 			{
 				var theinput = jQuery(this);
 				if( theinput && theinput.autocomplete )
@@ -398,7 +433,7 @@ onloadselectors = function()
 						select: function(event, ui) {
 							//set input that's just for display purposes
 							theinput.val(ui.item.value);
-							theinput.submit();
+							//theinput.submit();
 							return false;
 						}
 					});
@@ -645,15 +680,6 @@ onloadselectors = function()
 		jQuery("#assetsearchinput").removeClass("defaulttext");
 	}
 	
-	jQuery(".baskettoggle").live('click', function(event) {
-	    var cbox = jQuery(this);
-	    var url = cbox.attr('data-href');
-	    var assetid = cbox.attr('data-assetid');
-	    
-		jQuery("#assettoggle" + assetid).load(url);
-		return false;
-	});
-	
 	jQuery('#mattresulttable table tr').live('click',
 			function(event) {
 				//find the rowid go there
@@ -732,9 +758,9 @@ onloadselectors = function()
 	});
 		
 	
-	jQuery(".toggleitem").livequery('click', toggleitem);
+//	jQuery(".toggleitem").livequery('click', toggleitem);
 	
-	jQuery(".toggleorderitem").livequery('click', toggleorderitem);
+//	jQuery(".toggleorderitem").livequery('click', toggleorderitem);
 
 	jQuery(".headerdraggable").livequery( 
 			function()

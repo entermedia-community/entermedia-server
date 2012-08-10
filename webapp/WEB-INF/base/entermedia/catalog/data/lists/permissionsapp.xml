@@ -7,13 +7,17 @@
 	<permission id="publish" permissiontype="asset" name="Publish" description="Enables the publishing of an asset to a specified set of servers." />
 	<permission id="shareasset" permissiontype="asset" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share." />
 	<permission id="sharetosocialmedia" permissiontype="asset" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook."/>
-	<permission id="forcewatermark" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset."/>
+	<permission id="forcewatermarkasset" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset."/>
 	<permission id="printpreview" permissiontype="asset" name="Print" description="Allows printing of asset and asset metadata."/>
+		
+		
+		
 		
 	<permission id="editadvancedsearch" permissiontype="edit" name="Advanced Search" description="Enables the customization of initial search criteria."/>
 	<permission id="asseteditorlibraries" permissiontype="edit" name="Asset Libraries" description="Enables access to the asset library editor." />
 	<permission id="changeattachment" permissiontype="edit" name="Attachments" description="Enables the creation and customization of attachments." />
 	<permission id="editassetcategories" permissiontype="edit" name="Categories" description="Enables editing of an assets assigned categories"/>
+	<permission id="editassettags" permissiontype="edit" name="Tags" description="Enables editing of an assets assigned tags"/>
 	<permission id="comment" permissiontype="edit" name="Add Comments" description="Enables commenting on media assets." />
 	<permission id="deletecomments" permissiontype="edit" name="Delete Comments" description="Enables the removal of comments." />
 	<permission id="metadatageneral" permissiontype="edit" name="General Metadata" description="Enable general metadata edits."/>
@@ -50,6 +54,11 @@
   	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />
   	<permission id="viewcategorynav" permissiontype="view" name="Category Navigation" description="Enables the Category Navigation in the sidebar." />
 	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." />
+
+	<permission id="viewdevelopertools" permissiontype="view" name="Developer Tools" description="Enables advanced developer tools within various pages." />
+
+	<permission id="filterbyassettype" permissiontype="view" name="Filter by Asset Type" description="Enables filter by asset type box on sidebar." />
+
 
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	

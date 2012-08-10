@@ -101,6 +101,7 @@
 
 	<bean id="MediaAdminModule" class="org.openedit.entermedia.modules.MediaAdminModule">
 			<property name="workspaceManager"><ref bean="workspaceManager" /></property>
+				<property name="pageManager"><ref bean="pageManager" /></property>
 	
 	</bean>
 
@@ -1367,12 +1368,12 @@
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="scriptName"><value>exiftoolthumb</value></property>
 	</bean>
-	<bean id="FfMpegAudioCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
+	<bean id="audioCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>FfMpegAudio</value></property>
+		<property name="scriptName"><value>audio</value></property>
 	</bean>
 	<bean id="ffmpegCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
@@ -1427,15 +1428,6 @@
 		<property name="scriptName"><value>oofficeDocument</value></property>
 	</bean>
 	
-	
-	
-	<bean id="LameMp3Creator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>LameMp3</value></property>
-	</bean>		
 	<bean id="originalCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>

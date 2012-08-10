@@ -8,6 +8,6 @@
 	<property name="hitsname">loghits</property>
 	<property name="foldername">${catalogid}/asseteditLog</property>
 	<property name="sortby">dateDown</property>
-	<path-action name="LogSearchModule.loadPageOfSearch" />
-	<inner-layout>${themeprefix}/layouts/detaileditorsubnomargin.html</inner-layout>
+	<property name="searchtype">asseteditLog</property>
+	<path-action name="DataEditModule.loadPageOfSearch" />
 </page>

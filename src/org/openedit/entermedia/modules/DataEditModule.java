@@ -33,6 +33,7 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
+import org.openedit.xml.XmlSearcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -128,6 +129,55 @@ public class DataEditModule extends BaseMediaModule
 			inReq.putSessionValue(var, data);
 		}
 		return data;
+	}
+	
+	public void makeDefaultFields(WebPageRequest inReq) throws Exception
+	{
+		
+		String fieldName = resolveSearchType(inReq);
+		Searcher searcher = loadSearcher(inReq);
+		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(fieldName);
+		
+		String catalogid = searcher.getCatalogId();
+		String file = "/" + catalogid + "/data/fields/" + fieldName + ".xml";
+		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser(),  file);
+		
+	}
+	
+	public void makeDefaultView(WebPageRequest inReq) throws Exception
+	{
+		
+
+		
+		XmlFile file = (XmlFile)loadView(inReq);
+		
+		
+		String catalogid = resolveCatalogId(inReq);
+		String type = resolveSearchType(inReq);
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String path = "/" + catalogid + "/data/views/" + viewpath + ".xml";
+		file.setPath(path);
+		
+		
+		
+		getXmlArchive().saveXml(file, inReq.getUser());
+		
+		
+		
+	}
+	
+	
+	public void makeDefaultList(WebPageRequest inReq) throws Exception
+	{
+		
+		String fieldName = resolveSearchType(inReq);
+		Searcher searcher = loadSearcher(inReq);
+		if(searcher instanceof XmlSearcher){
+			HitTracker hits = searcher.getAllHits();
+			String catalogid = searcher.getCatalogId();
+			String file = "/" + catalogid + "/data/lists/" + fieldName + ".xml";
+			((XmlSearcher) searcher).saveAllData(hits, inReq.getUser(), file);
+		}
 	}
 
 	public void saveProperty(WebPageRequest inReq) throws Exception

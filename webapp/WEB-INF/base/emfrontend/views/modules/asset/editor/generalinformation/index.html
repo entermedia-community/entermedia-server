@@ -4,9 +4,11 @@
   <h2 class="section">General Information</h2>
 #end  
 
-
+<div id="de-metadata">
 #foreach( $viewpath in $views.keySet() )
 	#set( $target = $views.get($viewpath) )
-	#display("generic.html" $target.name "$asset.id" $viewpath $print)
+	#if( !$target.rendertable )
+		#display("generic.html" $target.name "$asset.id" $viewpath $print)
+	#end
 #end
- 
+ </div>

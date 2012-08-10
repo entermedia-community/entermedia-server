@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+#if( $orders && $orders.size() > 0 )
+<rsp stat="ok">
+#foreach( $hit in $orders )
+	<order id="$hit.id" publishdestination="$hit.publishdestination">
+#foreach( $item in $orderManager.findOrderItems($context,$catalogid,$hit.id) )
+#set( $presetid = $orderManager.getPresetForOrderItem($catalogid, $item) )
+##set( $destination = $orderManager.getPublishDestinationForOrderItem($catalogid, $item) )
+		<orderitem id="$item.id" assetsourcepath="$item.assetsourcepath" presetid="$presetid" status="$item.status" />
+#end
+	</order>
+#end
+#else
+<rsp stat="fail">
+Login failed or no data found
+#end
+</rsp>

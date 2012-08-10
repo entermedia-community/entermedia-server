@@ -19,8 +19,8 @@
 	<property id="jpeg" rendertype="image" creator="imagemagick">JPEG</property>
 	<property id="mov" rendertype="video" creator="ffmpeg">MOV</property>
 	<property id="moov" rendertype="video" creator="ffmpeg">MooV</property>
-	<property id="mp3" rendertype="audio" creator="FfMpegAudio" >MP3</property>
-	<property id="aiff" rendertype="audio" creator="FfMpegAudio" >AIFF</property>
+	<property id="mp3" rendertype="audio" creator="audio" >MP3</property>
+	<property id="aiff" rendertype="audio" creator="audio" >AIFF</property>
 	<property id="mts" rendertype="video" creator="ffmpeg">MTS</property>
 	<property id="m2ts" rendertype="video" creator="ffmpeg">M2TS</property>
 	
@@ -47,7 +47,13 @@
 	<property id="tif" rendertype="image" creator="imagemagick">TIFF (.tif)</property>
 	<property id="tiff" rendertype="image" creator="imagemagick">TIFF</property>
 	<property id="ttf" rendertype="image" creator="imagemagick" >TTF</property>
-	<property id="wav" rendertype="audio" creator="FfMpegAudio" synctags="false">WAV</property>
+	<property id="wav" rendertype="audio" creator="audio" synctags="false">WAV</property>
+	<property id="wma" rendertype="audio"  synctags="false">WMA</property>
+
+	<property id="flac" rendertype="audio"  synctags="false">Flac</property>
+	<property id="m4a" rendertype="audio"  synctags="false">M4A</property>
+	<property id="aac" rendertype="audio"  synctags="false">aac</property>
+
 	<property id="wmv" rendertype="video" creator="ffmpeg">WMV</property>
 	<property id="doc" rendertype="document"  creator="oofficeDocument">DOC</property>
 	<property id="docx" rendertype="document" >DOCx</property>
@@ -55,6 +61,7 @@
 	<property id="xls" rendertype="document" >XLS</property>
 	<property id="xlsx" rendertype="document" >XLS</property>
 	<property id="ppt" rendertype="document" >PPT</property>
+	<property id="pptx" rendertype="document" >PPTX</property>
 	<property id="wps" rendertype="document" >WPS</property>
 	<property id="odt" rendertype="document" >ODT</property>
 	<property id="html" rendertype="document" >HTML</property>

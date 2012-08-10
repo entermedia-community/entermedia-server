@@ -1,19 +1,8 @@
 <page>
 	<property name="module">asset</property>
-
-	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
-	<permission name="viewasset">
-		<or>
-			<user />
-			<action name="AssetControlModule.canViewAsset" />
-		</or>
-	</permission>	
-
-	<permission name="download">
-		<and>
-			<userprofile property="download" equals="true" />
-			<pagevalue name="canviewasset" equals="true"/>
-		</and>
-	</permission>	
-
+	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
+	<property name="searchhome">/${applicationid}/views/modules/${module}</property>
+	<script id="theme-google" src="https://maps.google.com/maps/api/js?sensor=false" />
+  <script id="theme-map" src="/${applicationid}/components/javascript/jquery.ui.map.full.min.js"/>
+  
 </page>

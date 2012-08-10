@@ -78,12 +78,22 @@ public class imagemagickCreator extends BaseImageCreator
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 
-		if( inStructions.getMaxScaledSize() != null && offset == null && inStructions.getPageNumber() < 2) //page numbers are 1 based
+		if( inStructions.getMaxScaledSize() != null && offset == null ) //page numbers are 1 based
 		{
+			String page = null;
+			if( inStructions.getPageNumber() > 1 )
+			{
+				page = "page" + inStructions.getPageNumber();
+			}
+			else
+			{
+				page = "";
+			}
+			
 			Dimension box = inStructions.getMaxScaledSize();
 			if( input == null &&  box.getWidth() < 300 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480.jpg");
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
 				if( !input.exists()  || input.length() == 0)
 				{
 					input = null;
@@ -95,7 +105,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			if( input == null && box.getWidth() < 1024 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg");				
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");				
 				if( !input.exists() )
 				{
 					input = null;
@@ -200,6 +210,19 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		List<String> com = createCommand(inputFile, inStructions);
 
+		
+		String colorspace = inStructions.get("colorspace");
+		if(colorspace != null){
+			
+			com.add("-colorspace");
+			com.add(colorspace);
+		} else{
+		
+		com.add("-colorspace");
+		com.add("sRGB");
+		}
+		
+		
 		if (inStructions.getMaxScaledSize() != null)
 		{
 			//be aware ImageMagick writes to a tmp file with a larger version of the file before it is finished
@@ -281,6 +304,7 @@ public class imagemagickCreator extends BaseImageCreator
 					com.add(prefix + "x" + postfix);
 				}
 			}
+		
 		}
 		
 		//faster to do it after sizing
@@ -305,7 +329,7 @@ public class imagemagickCreator extends BaseImageCreator
 			com.add(resizestring.toString());
 
 
-			if( "pdf".equals(ext) ) 
+			if( "pdf".equals(ext) || "png".equals(ext)) 
 			{
 				com.add("-background");
 				com.add("white");
@@ -315,11 +339,21 @@ public class imagemagickCreator extends BaseImageCreator
 			//now let's crop
 			com.add("+repage");
 			String gravity = inStructions.getProperty("gravity");
-			if(gravity != null)
+			com.add("-gravity");
+			if( gravity == null )
 			{
-				com.add("-gravity");
-				com.add(gravity);
+				String thistype = inAsset.getFileFormat();
+				String found = inArchive.getMediaRenderType(thistype);
+				if( "document".equals(found) )
+				{
+					gravity = "NorthEast";
+				}
 			}
+			if( gravity == null )
+			{
+				gravity = "Center";
+			}
+			com.add(gravity);
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
 			cropString.append(inStructions.getMaxScaledSize().width);
@@ -341,7 +375,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			com.add(cropString.toString());
 		}
-		else if( "pdf".equals(ext) ) 
+		else if( "pdf".equals(ext) ||  "png".equals(ext)) 
 		{
 			com.add("-background");
 			com.add("white");
@@ -353,9 +387,8 @@ public class imagemagickCreator extends BaseImageCreator
 //			TODO: use parameters to specify the color space		
 			//Make sure we use 8 bit output and 	
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
-			com.add("-colorspace");
-			com.add("sRGB");
-		
+			
+			
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
 			com.add("-strip");
@@ -369,6 +402,9 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			com.add(outputpath);
 		}
+		
+		
+		
 		
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();

@@ -1,4 +1,4 @@
-<properties>
+<properties bean="xmlFileSearcher">
 	<property id="id" index="true" stored="true">Id</property>
 	<property id="assetid" index="true" stored="true">Asset Id</property>
 	<property id="publishdestination" editable="true"  type="list" index="true"  stored="true">Publish Destination</property>

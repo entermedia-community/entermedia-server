@@ -129,11 +129,15 @@ public class OrderManager
 		}
 		return order.getRecentOrderHistory();
 	}
-	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, Order inOrder) 
+	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid,  Order inOrder) 
+	{
+		return findOrderItems(inReq, inCatalogid,inOrder.getId() );
+	}
+	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId) 
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
-		query.addExact("orderid", inOrder.getId());
+		query.addExact("orderid", inOrderId);
 		query.setHitsName("orderitems");
 
 		HitTracker items =  itemsearcher.cachedSearch(inReq, query);
@@ -450,9 +454,16 @@ public class OrderManager
 
 			if( presetid == null)
 			{
-				continue; //preview only
+				presetid = "preview";
 			}
+			
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
+			orderItem.setProperty("presetid", presetid);
+			if( "preview".equals(presetid) )
+			{
+				orderItemSearcher.saveData(orderItem, inUser);
+				continue;
+			}
 
 			boolean needstobecreated = true;
 			if( orderItem.get("conversiontaskid") != null )
@@ -464,18 +475,24 @@ public class OrderManager
 			String outputfile = preset.get("outputfile");
 
 			//Make sure preset does not already exists?
-			
-			if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
+			if( needstobecreated && "original".equals( preset.get("type") ) )
 			{
 				needstobecreated = false;
-			}
-			if( needstobecreated && "original".equals( preset.get("type") ) )
+			}			
+			if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
 			{
 				needstobecreated = false;
 			}
 			if (needstobecreated)
 			{
-				Data newTask = taskSearcher.createNewData();
+				SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid",presetid);
+				Data newTask = taskSearcher.searchByQuery(q);
+				if( newTask == null )
+				{
+					newTask = taskSearcher.createNewData();	
+				} else{
+					newTask = (Data) taskSearcher.searchById(newTask.getId());//load real data
+				}
 				newTask.setSourcePath(asset.getSourcePath());
 				newTask.setProperty("status", "new");
 				newTask.setProperty("assetid", assetid);
@@ -523,6 +540,26 @@ public class OrderManager
 		return assetids;
 	}
 	
+	public String getPresetForOrderItem(String inCataId, Data inOrderItem)
+	{
+		String presetid = inOrderItem.get("presetid");
+		if( presetid == null )
+		{
+			return "preview"; //preview? or could be original... I am going to save presetid
+		}
+		return presetid;
+	}
+	public String getPublishDestinationForOrderItem(String inCataId, Data inOrderItem)
+	{
+		String pubqueid = inOrderItem.get("publishqueueid");
+		if( pubqueid == null )
+		{
+			return null;
+		}
+		Data task = getSearcherManager().getData(inCataId,"publishqueue", pubqueid);
+		return task.get("publishdestination");
+	}
+
 	public void updateStatus(MediaArchive archive, Order inOrder)
 	{
 		//look up all the tasks
@@ -633,6 +670,12 @@ public class OrderManager
 						event.setProperty("orderid", inOrder.getId());
 						//archive.getWebEventListener()
 						archive.getMediaEventHandler().eventFired(event);
+
+						inOrder.setOrderStatus("complete");
+						OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "complete");
+						saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+
+					
 					}
 				}
 			}

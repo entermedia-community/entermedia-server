@@ -2,6 +2,7 @@ package org.openedit.entermedia.modules;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.zip.ZipOutputStream;
 
@@ -11,14 +12,11 @@ import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.edit.CategoryEditor;
 import org.openedit.entermedia.links.CatalogTreeRenderer;
 import org.openedit.entermedia.links.CatalogWebTreeModel;
 import org.openedit.entermedia.search.SearchFilter;
 import org.openedit.links.Link;
 import org.openedit.links.LinkTree;
-
-import sun.reflect.generics.tree.Tree;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -124,7 +122,12 @@ public class CategoryModule extends BaseMediaModule
 			renderer.setHome(home);
 			String iconHome = (String) inRequest.findValue( "iconhome" );
 			renderer.setIconHome(iconHome);
-			
+			String allowselections = inRequest.findValue( "allowselections" );
+			renderer.setAllowSelections(Boolean.parseBoolean(allowselections));
+
+			String editable = inRequest.findValue( "editabletree" );
+			renderer.setEditable(Boolean.parseBoolean(editable));
+
 			String iconwidth = (String) inRequest.getPageProperty( "iconwidth" ); //must be saved to page path
 			if( iconwidth != null)
 			{
@@ -140,7 +143,15 @@ public class CategoryModule extends BaseMediaModule
 		}
 		return webTree;
 	}
-	
+	public void selectNodes(WebPageRequest inReq)
+	{
+		WebTree tree =  getCatalogTree(inReq);
+		Collection nodes = (Collection)inReq.getPageValue("selectednodes");
+		if( nodes != null )
+		{		
+			tree.getTreeRenderer().selectNodes(nodes);
+		}
+	}
 	public void expandNode(WebPageRequest inReq){
 		WebTree tree =  getCatalogTree(inReq);
 		String catid = inReq.getRequestParameter("nodeID");

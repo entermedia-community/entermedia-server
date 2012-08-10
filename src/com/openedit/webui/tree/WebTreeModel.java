@@ -12,7 +12,9 @@ See the GNU Lesser General Public License for more details.
 
 package com.openedit.webui.tree;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.openedit.hittracker.HitTracker;
 
@@ -116,4 +118,5 @@ public interface WebTreeModel
 	public boolean hasChildren(Object inNode);
 
 	public boolean hasFolderChildren(Object inNode);
+	
 }

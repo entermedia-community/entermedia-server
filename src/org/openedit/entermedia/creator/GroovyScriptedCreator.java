@@ -97,9 +97,16 @@ public class GroovyScriptedCreator implements MediaCreator
 		Map ref = (Map) perThreadCache.get(); //one per thread please
 		if( ref == null)
 		{
-		 	ref = new HashMap();
-		  	// use weak reference to prevent cyclic reference during GC
-		   perThreadCache.set(ref);
+			synchronized (this)
+			{
+				ref = (Map) perThreadCache.get(); //one per thread please
+				if( ref == null)
+				{				
+					ref = new HashMap();
+					// use weak reference to prevent cyclic reference during GC
+					perThreadCache.set(ref);
+				}
+			}
 		}
 		MediaCreator creator = (MediaCreator)ref.get(inCatalogId); 
 		if( creator == null)
@@ -139,12 +146,19 @@ public class GroovyScriptedCreator implements MediaCreator
 		return creator.createInstructions(inProperties, inArchive, inOutputType, inSourcePath);
 	}
 
+	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions, Data inPreset)
+	{
+		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
+		return creator.populateOutputPath(inArchive, inStructions, inPreset);
+	}
+
 	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
 	{
 		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
 		return creator.populateOutputPath(inArchive, inStructions);
 	}
 	
+
 	public ConvertResult updateStatus(MediaArchive inArchive,Data inTask, Asset inAsset,ConvertInstructions inStructions )
 	{
 		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
@@ -154,6 +168,10 @@ public class GroovyScriptedCreator implements MediaCreator
 	public ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOputputype, String inSourcePath)
 	{
 		MediaCreator creator = loadMediaCreator(inArchive.getCatalogId());
+		if( creator == null )
+		{
+			return null;
+		}
 		return creator.createInstructions(inReq, inArchive, inOputputype, inSourcePath);
 	}
 

@@ -8,4 +8,6 @@
 	<property id="maximize_screen" index="true" stored="true" >Maximize</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>	
 	<property id="last_selected_module" index="true" stored="true">asset</property>
+	<property id="maximize_player" index="true" stored="true">false</property>
+	<property id="expand_media_sidebar" index="true" stored="true">true</property>
 </properties>

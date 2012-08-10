@@ -54,7 +54,8 @@ public class MetadataPdfExtractor extends MetadataExtractor
 //					byte[] bytes = out.toByteArray();
 					Parse results = parser.parse(in); //Do we deal with encoding?
 					//We need to limit this size
-					inAsset.setProperty("fulltext", results.getText());
+					String fulltext = results.getText();
+					inAsset.setProperty("fulltext", fulltext);
 					if( inAsset.getInt("width") == 0)
 					{
 						String val = results.get("width");

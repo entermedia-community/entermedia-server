@@ -9,6 +9,11 @@
 #set( $candelete = "true")
 
 #set($viewid = $context.getRequestParameter("viewid"))
+
+#if( !$viewid )
+    #set( $viewid = $context.getRequestParameter("view"))
+#end
+
 #set($viewpath = $context.getRequestParameter("viewpath"))
 
 #if( !$viewpath )
@@ -27,9 +32,11 @@
 
 #set ($id = $context.getRequestParameter("id"))
 
-
 #set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-#set ($passalong = "candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue")
+#set( $argsnoid = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+
+
+#set ($passalong = "candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
 
 
@@ -50,7 +57,7 @@
 	<script>
 	$(document).ready(function(){
 		
-		addnew = '<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?$args&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>';
+		addnew = '<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>';
 		
 		if ( $('.tab-actions').length > 0  ) {
 			$('.tab-actions').prepend(addnew);

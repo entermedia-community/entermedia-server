@@ -4,25 +4,31 @@
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
+	<path-action name="CommentModule.loadComments" />
 	
-	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
+
 	<property name="saveokpage">/tools/edit/saveok.html</property>
-	
-	<path-action allowduplicates="true" name="CategoryModule.getCatalogTree">
-	    <tree-name>catalogTree</tree-name>
-	    <url-prefix>/${catalogid}/categories/</url-prefix>
-	    <url-postfix>.html?oemaxlevel=1&amp;</url-postfix>
-	</path-action>
-	
-	
-	<inner-layout>${themeprefix}/layouts/detaileditor.html</inner-layout>
+		
+	<inner-layout>${themeprefix}/layouts/mediaviewer.html</inner-layout>
 	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
 	
 	<permission name="view">
 		<or>
-			<group name="administrators" />
-			<action name="AssetControlModule.canViewAsset" />
+			<pagevalue name="canviewasset" equals="true"/>
 		</or>
+	</permission>	
+
+
+	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
+	<permission name="viewasset">
+		<action name="AssetControlModule.canViewAsset" />
+	</permission>	
+
+	<permission name="download">
+		<and>
+			<userprofile property="download" equals="true" />
+			<pagevalue name="canviewasset" equals="true"/>
+		</and>
 	</permission>	
 
 	<property name="section">details</property>

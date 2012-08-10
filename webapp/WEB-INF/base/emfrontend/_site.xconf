@@ -20,6 +20,8 @@
 	<inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
   	
 	<!-- Properties -->
+	<property name="errorpage">${themeprefix}/layouts/errorpage.html</property>
+	
 	<property name="editable">false</property>
 	<property name="enableprofilefilters">true</property>
 	<property name="systemfromemail">noreply@entermediasoftware.com</property>
@@ -50,7 +52,14 @@
 	<permission name="viewhomelink">
 		<userprofile property="viewhomelink" equals="true" />
 	</permission>
-
+	
+	<permission name="editassettags">
+		<userprofile property="editassettags" equals="true" />
+	</permission>
+	
+	<permission name="maximize">
+		<userprofile property="maximize" equals="true" />
+	</permission>
 		
   	<permission name="viewupload">
 			<userprofile property="viewupload" equals="true" />
@@ -292,6 +301,22 @@
   		<userprofile property="editlists" equals="true" />
   	</or>  
   </permission>
+  
+  
+  	<permission name="forcewatermarkasset">
+		<userprofile property="forcewatermarkasset" equals="true" />
+	</permission>
+  
+
+  <permission name="develop">
+		   <userprofile property="viewdevelopertools" equals="true" />
+</permission>
+
+   <permission name="filterbyassettype">
+		<userprofile property="filterbyassettype" equals="true" />
+
+	</permission>
+
   
   
 </page>

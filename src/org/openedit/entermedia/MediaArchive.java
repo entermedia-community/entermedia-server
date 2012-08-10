@@ -34,11 +34,13 @@ import org.openedit.entermedia.search.SearchFilterArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.Permission;
@@ -1202,9 +1204,21 @@ public class MediaArchive
 		}
 		return contentsiteroot;
 	}
-
+	public boolean doesAttachmentExist(Asset asset, Data inPreset, int inPageNumber) 
+	{
+		String outputfile = inPreset.get("outputfile");
+		if( inPageNumber > 1 )
+		{
+			String name = PathUtilities.extractPageName(outputfile);
+			String ext = PathUtilities.extractPageType(outputfile);
+			outputfile = name + "page" + inPageNumber + "." + ext;
+		}
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		return page.exists();
+		
+	}
 	public boolean doesAttachmentExist(String outputfile, Asset asset) {
-		Page page = getPageManager().getPage("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.exists();
 	}
 
@@ -1337,5 +1351,16 @@ public class MediaArchive
 	{
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(), "pathEventManager");
 		return manager.runSharedPathEvent(getCatalogHome() + "/events/" + inName + ".html");
+	}
+	
+	public HitTracker getTracker(int total)
+	{
+		List all = new ArrayList(total);
+		for (int i = 0; i < total; i++)
+		{
+			all.add(new Integer(i+1));
+		}
+		HitTracker tracker = new ListHitTracker(all);
+		return tracker;
 	}
 }

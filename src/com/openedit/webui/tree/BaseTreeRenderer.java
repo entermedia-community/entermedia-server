@@ -15,7 +15,9 @@ See the GNU Lesser General Public License for more details.
  */
 package com.openedit.webui.tree;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.openedit.util.PathUtilities;
@@ -39,12 +41,90 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	protected String fieldUrlPostfix = "";
 	protected boolean  fieldFoldersLinked;
 	protected boolean fieldRenderLeaves = true;
+	protected boolean fieldAllowSelections = false;
+	protected Set fieldSelectedNodes; 
+	protected boolean fieldEditable;
+	
+	
+	public boolean isEditable()
+	{
+		return fieldEditable;
+	}
+
+
+	public void setEditable(boolean inEditable)
+	{
+		fieldEditable = inEditable;
+	}
+
 
 	public BaseTreeRenderer()
 	{
 		
 	}
 
+
+	public boolean isAllowSelections()
+	{
+		return fieldAllowSelections;
+	}
+
+	public void setAllowSelections(boolean inAllowSelections)
+	{
+		fieldAllowSelections = inAllowSelections;
+	}
+
+	
+	public Set getSelectedNodes()
+	{
+		if (fieldSelectedNodes == null)
+		{
+			fieldSelectedNodes = new HashSet();
+		}
+		return fieldSelectedNodes;
+	}
+	public boolean isIdSelected(String inNodeId)
+	{
+		return getSelectedNodes().contains(inNodeId);
+	}
+	public boolean isNodeSelected(Object inNode)
+	{
+		String inId = getId(inNode);
+		return getSelectedNodes().contains(inId);
+	}
+	protected String getId(Object inNode)
+	{
+		return getWebTree().getModel().getId(inNode);
+	}
+
+	public void setSelectedNodes(Set inSelectedNodes)
+	{
+		fieldSelectedNodes = inSelectedNodes;
+	}
+	public void selectNode(Object inNode)
+	{
+		getSelectedNodes().add(getId(inNode));
+	}
+	public void unSelectNode(Object inNode)
+	{
+		getSelectedNodes().remove(getId(inNode));
+	}
+	public void selectNodes(Collection inNodes)
+	{
+		Set newselection = new HashSet();
+		getExpandedNodes().clear();
+		for (Iterator iterator = inNodes.iterator(); iterator.hasNext();)
+		{
+			Object object = (Object) iterator.next();
+			newselection.add(getId(object));
+			Object parent = getWebTree().getModel().getParent(object);
+			expandNode(parent);
+		}
+		setSelectedNodes(newselection);
+		
+	}
+
+	
 	public boolean isRenderLeaves()
 	{
 		return fieldRenderLeaves;
@@ -103,6 +183,18 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 		return fieldExpandedNodes;
 	}
 
+	@Override
+	public void toggleNode(Object inNode)
+	{
+		if( hasBeenExpanded(inNode) )
+		{
+			collapseNode(inNode);
+		}
+		else
+		{
+			expandNode(inNode);
+		}
+	}
 	public void expandNode(Object inNode)
 	{
 		String path = toUrl(inNode);

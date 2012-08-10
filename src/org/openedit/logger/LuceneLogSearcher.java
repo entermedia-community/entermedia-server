@@ -59,7 +59,15 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 	protected DateFormat fieldLogDateFormat;
 	protected File fieldRootLogsDirectory;
 	protected DateFormat fieldFileDateFormat;
-
+	protected boolean fieldRecentSave = false;
+	public boolean isRecentSave()
+	{
+		return fieldRecentSave;
+	}
+	public void setRecentSave(boolean inRecentSave)
+	{
+		fieldRecentSave = inRecentSave;
+	}
 	public LuceneLogSearcher()
 	{
 		setFireEvents(false);
@@ -286,6 +294,7 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 				//the index as needed within the getLiveSearcher()
 	//			updateIndex(inChange, getIndexWriter());
 				clearIndex();
+				setRecentSave(true);
 			}
 			finally
 			{
@@ -297,17 +306,16 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 				moveRecent(recent);
 			}
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
-			log.error(ex);
-			ex.printStackTrace();
+			log.error("Could not save log ", ex);
 			return;
 		}
 	}
 
 	private synchronized void moveRecent(File recent) throws Exception
 	{
-		flushRecentChanges();
+		flush();
 		//setTimeStampCounter(0);
 		//add these to the index
 		//no guarantee there is a searcher initially.indexed
@@ -360,12 +368,22 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 		log.info(getFolderName() + " log rotated");
 	}
 	
-	protected void flushRecentChanges() throws IOException
+	@Override
+	public HitTracker search(SearchQuery inQuery)
+	{
+		if( isRecentSave() )
+		{
+			flushRecentChanges();
+		}
+		return super.search(inQuery);
+	}
+	
+	public void flushRecentChanges() 
 	{
 		flushRecentChanges(false);
 	}
 	
-	protected void flushRecentChanges(boolean force) throws IOException
+	protected void flushRecentChanges(boolean force) 
 	{
 		// TODO Look recent events and look for unindexed records
 		File recent = new File( getRootDirectory(),getFolderName() + "/recent.log");
@@ -375,53 +393,60 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 		}
 		StringWriter tmp = new StringWriter();
 		tmp.write("<events>");
-		Reader filer = new FileReader(recent);
 		try
 		{
-			new OutputFiller().fill(filer, tmp);
-		}
-		finally
-		{
-			FileUtils.safeClose(filer);
-		}
-			tmp.write("</events>");
-		
-		
-		Element root = getXmlUtil().getXml(new StringReader(tmp.toString() ),"UTF-8");
-		boolean foundone = false;
-		for (Iterator iterator = root.elementIterator("event"); iterator.hasNext();) 
-		{
-			Element	webEvent = (Element) iterator.next();
-			if(force || !Boolean.parseBoolean( webEvent.attributeValue("indexed") ) )
-			{
-				foundone = true;
-				updateIndex(  createChange(webEvent), getIndexWriter() );
-				webEvent.addAttribute("indexed","true");
-			}
-		}
-		if( foundone)
-		{
-			flush();
-			StringWriter done = new StringWriter();
-			//Save back out to recent.log
-			for (Iterator iterator = root.elementIterator("event"); iterator.hasNext();) {
-				Element	event = (Element) iterator.next();
-				done.write(event.asXML());
-				done.write('\n');
-			}
-
-			FileWriter filew = new FileWriter(recent);
+			Reader filer = new FileReader(recent);
 			try
 			{
-				new OutputFiller().fill(new StringReader(done.toString()), filew);
+				new OutputFiller().fill(filer, tmp);
 			}
 			finally
 			{
-				FileUtils.safeClose(filew);
+				FileUtils.safeClose(filer);
 			}
-
+			tmp.write("</events>");
+			
+			
+			Element root = getXmlUtil().getXml(new StringReader(tmp.toString() ),"UTF-8");
+			boolean foundone = false;
+			for (Iterator iterator = root.elementIterator("event"); iterator.hasNext();) 
+			{
+				Element	webEvent = (Element) iterator.next();
+				if(force || !Boolean.parseBoolean( webEvent.attributeValue("indexed") ) )
+				{
+					foundone = true;
+					updateIndex(  createChange(webEvent), getIndexWriter() );
+					webEvent.addAttribute("indexed","true");
+				}
+			}
+			if( foundone)
+			{
+				flush();
+				StringWriter done = new StringWriter();
+				//Save back out to recent.log
+				for (Iterator iterator = root.elementIterator("event"); iterator.hasNext();) {
+					Element	event = (Element) iterator.next();
+					done.write(event.asXML());
+					done.write('\n');
+				}
+	
+				FileWriter filew = new FileWriter(recent);
+				try
+				{
+					new OutputFiller().fill(new StringReader(done.toString()), filew);
+				}
+				finally
+				{
+					FileUtils.safeClose(filew);
+				}
+	
+			}
 		}
-		
+		catch ( Throwable ex )
+		{
+			log.error("Could not flush",ex);
+			throw new OpenEditException(ex);
+		}
 	}
 
 	protected String getLogFilePath()
@@ -642,7 +667,6 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 		}
 	}
 */
-	
 	
 	public void saveData(Data inData, User inUser)
 	{

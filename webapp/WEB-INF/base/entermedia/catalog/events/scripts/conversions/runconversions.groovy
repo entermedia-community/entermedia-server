@@ -27,12 +27,42 @@ import java.util.concurrent.TimeUnit;
 
 class CompositeConvertRunner implements Runnable
 {
+	String fieldAssetSourcePath;
+	MediaArchive fieldMediaArchive;
 	List runners = new ArrayList();
+
+	public CompositeConvertRunner(MediaArchive archive,String sourcepath)
+	{
+		fieldMediaArchive = archive;
+		fieldAssetSourcePath = sourcepath;
+	}
+	
 	public void run()
 	{
 		for( Runnable runner: runners )
 		{
 			runner.run();
+		}
+		for( ConvertRunner runner: runners )
+		{
+			if( runner.result == null )
+			{
+				return;
+			}
+			boolean complete = runner.result.isComplete();
+			if( !complete)
+			{
+				//log.info("no result");
+				return;
+			}
+		}
+		//load the asset and save the import status to complete
+		Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
+		if( asset != null && !"complete".equals(asset.get("importstatus") ) )
+		{
+			//Publishing to Amazon can happen even if the images in the search results
+			asset.setProperty("importstatus","complete");
+			fieldMediaArchive.saveAsset(asset, null);
 		}
 	}
 	public void add(Runnable runner )
@@ -193,6 +223,12 @@ class ConvertRunner implements Runnable
 				props.putAll(presetdata.getProperties());
 			}
 		}
+		String pagenumber = inTask.get("pagenumber");
+		if( pagenumber != null )
+		{
+			props.put("pagenum",pagenumber);
+		}
+
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
@@ -208,7 +244,8 @@ class ConvertRunner implements Runnable
 
 		if("new".equals(status) || "retry".equals(status))
 		{
-			String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
+			//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
+			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
 			Page output = inArchive.getPageManager().getPage(outputpage);
 			log.debug("Running Media type: ${type} on asset ${asset.getSourcePath()}" );
 			result = creator.convert(inArchive, asset, output, inStructions);
@@ -232,26 +269,6 @@ class ConvertRunner implements Runnable
 private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
 {
 	MediaCreator creator = moduleManager.getBean(inType + "Creator");
-
-/*	GroovyClassLoader loader = engine.getGroovyClassLoader();
-	Class groovyClass = loader.loadClass("conversions.creators.${inType}Creator");
-	
-	MediaCreator creator = (MediaCreator) groovyClass.newInstance();
-	
-	creator.setPageManager(mediaarchive.getPageManager());
-	creator.setExec(mediaarchive.getModuleManager().getBean("exec"));
-
-	//				<ref bean="ffMpegImageCreator" />
-	//			<ref bean="exifToolThumbCreator" />
-	if( inType == "imagemagick") //TODO:Use Spring
-	{
-		MediaCreator child = getMediaCreator(inArchive,"ffmpegimage");
-		creator.addPreProcessor(child);
-		child = getMediaCreator(inArchive,"exiftoolthumb");
-		creator.addPreProcessor(child);
-
-	}
-	*/
 	return creator;
  }
 } //End Runnable methods
@@ -333,8 +350,8 @@ public void checkforTasks()
 				{
 					executor.execute(byassetid);
 				}
-				byassetid = new CompositeConvertRunner();
 				lastassetid = hit.get("assetid");
+				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
 			}
 			byassetid.add(runner);
 		}

@@ -128,7 +128,7 @@ public class CreatorManager
 	{
 		fieldPageManager = inPageManager;
 	}
-
+/*
 	public Page getThumbImageFile(String inSourcePath)
 	{
 		return getImageFile(inSourcePath, 150, 150);
@@ -151,7 +151,7 @@ public class CreatorManager
 		String convertPath = instructions.getOutputPath();
 		return getPageManager().getPage(convertPath);
 	}
-
+*/
 	public MediaArchive getMediaArchive()
 	{
 		return fieldMediaArchive;

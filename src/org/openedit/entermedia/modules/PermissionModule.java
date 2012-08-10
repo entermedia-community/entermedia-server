@@ -42,19 +42,7 @@ public class PermissionModule extends BaseMediaModule
 		if( name != null)
 		{
 			PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(path);
-			Permission permission = settings.getPermission(name, true);	
-			
-			if( permission == null || !permission.getPath().equals(path))
-			{
-				Permission per = new Permission();
-				per.setName(name);
-				if( permission != null && permission.getRootFilter() != null)
-				{
-					per.setRootFilter(permission.getRootFilter().copy(name));
-				}
-				per.setPath(path);
-				permission = per;
-			}
+			Permission permission = loadOrCreatePermission(settings,path,name); 
 			inReq.putPageValue("editPath", path);			
 			inReq.putPageValue("permission", permission);
 			return permission;
@@ -62,6 +50,27 @@ public class PermissionModule extends BaseMediaModule
 		return null;
 	}
 	
+	private Permission loadOrCreatePermission(PageSettings inSettings, String path, String inName)
+	{
+		Permission permission = inSettings.getPermission(inName, true);	
+		if( permission == null || !permission.getPath().equals(path))
+		{
+			Permission per = new Permission();
+			per.setName(inName);
+			if( permission != null && permission.getRootFilter() != null)
+			{
+				per.setRootFilter(permission.getRootFilter().copy(inName));
+			}
+			else
+			{
+				
+			}
+			per.setPath(path);
+			permission = per;
+		}
+		return permission;
+	}
+
 	public void loadPermissions(WebPageRequest inReq) throws Exception
 	{
 		String path = inReq.getRequestParameter("editPath");
@@ -408,7 +417,7 @@ public class PermissionModule extends BaseMediaModule
 			permissionpath = "/" + catalogid + "/_site.xconf";
 		}
 		Page page = getPageManager().getPage(permissionpath);
-		Permission perm = page.getPermission(id);
+		Permission perm = loadOrCreatePermission(page.getPageSettings(),permissionpath,id);
 		inReq.putPageValue("permission", perm);
 
 		HitTracker groups  = getUserManager().getGroups();

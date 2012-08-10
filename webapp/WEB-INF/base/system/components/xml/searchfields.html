@@ -1,48 +1,56 @@
 ##requires $details  //List of Detail
 ##requires $hits //Gets input from that
 ##requires $searcher //used to get the catalogid and searcherManager
+
 <table class="settings-table">
-#foreach( $searchItem in $details)
-	#set($inputed = false)
-	#set( $inputed = $hits.getInput($hits.searchQuery.getTerm($searchItem.id).id) )
-	#if( !$inputed )
-		#set( $inputed = "$!hits.getInput($searchItem.getId())")
-	#end
-<tr>		
-	<td width="100"><label>${searchItem.getText($context)}</label></td> 
+#foreach( $detail in $details)
+
+<tr class="emsearchfieldrow">
 	<td>
-		<input name="field" value="${searchItem.getId()}" type="hidden">
-		#if( $searchItem.isList() )
-			##set( $types = $searcher.searcherManager.getList($searchItem))  ##new API
-			#set( $types = $searcher.searcherManager.getList($searchItem.getListCatalogId(), $searchItem.getListId())) 
-			<input name="operation" type="hidden" value="matches" />
-			<select name="${searchItem.getId()}.value">
-				<option value=""></option>
-				#foreach( $type in $types ) #set( $key = $type.id)
-				<option value="$key" #if( $inputed && $key == $inputed ) selected #end>
-					$type
-				</option>
-				#end
-			</select>
-		#elseif ($searchItem.isDate())
-		<select name="operation">
-			<option value="after">[[After]]</option>
-			<option value="before">[[Before]]</option>
-		</select>			
-		<input name="${searchItem.getId()}.value" id="datevalue${searchItem.id}" value="$!inputed"
-			class="datepicker" size="8" type="text">
-		#elseif ($searchItem.id == "filename")
-			<input name="operation" value="matches" type="hidden">
-			<input name="${searchItem.getId()}.value" value="$!inputed"
-				size="15" type="text">
+		<div class="emsearchfield"> 
+		$!detail.getText($context) 
+		</div>
+	</td>
+	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
+		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+		#if(!$detail.searchcomponent)
+				
+					<input name="operation" value="startswith" type="hidden" />
+		#end
+		#set( $viewtype = false )
+		#set( $viewtype = $detail.searchcomponent )
+		#if (!$viewtype)
+			#set( $viewtype = $detail.viewType )
+		#end
+		
+		#if (!$viewtype)
+			#set ($viewtype = $detail.dataType)
+		#end
+
+		#if (!$viewtype || $viewtype == "text")
+			#set ($viewtype = "default")
+		#end
+		<!-- This needs to be fixed up. -->
+		#if (!$viewtype || $viewtype == "map")
+			#set ($viewtype = "default")
+		#end
+
+		#if( $hits.getSearchQuery() )
+			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
+			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
+			$context.putPageValue("term",$term)			
+			$context.putPageValue("val",$value)
+		#end
+		$context.putPageValue("detail",$detail)
+		#if($pages.doesExist("/${applicationid}/components/xml/types/${viewtype}.html"))
+			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
 		#else
-			<input name="operation" value="startswith" type="hidden">
-			<input name="${searchItem.getId()}.value" value="$!inputed"
-				size="28" type="text">
+			$pages.include("/${applicationid}/components/xml/types/default.html", $context)
 		#end
 	</td>
-</tr>	
+</tr>
 #end
+
 </table>
 
 #if( $details.size() == 0)

@@ -1,64 +1,51 @@
+<div class="ui-widget uipanel" id="left-col-search" >
+				<div  class="ui-widget-header">[[Filters]]</div>
+<div  class="ui-widget-content">
 #set ($assetTypeSearcher = $searcherManager.getSearcher($catalogid, "assettype"))
 
 #set ($types = $assetTypeSearcher.fieldSearch(id, "*", "name"))
-#set ($rows = $types.getPageInRows(2))
 
 #set( $notselected = $userprofile.getValues("hideassettype") ) 
 
-<div class="subcolumns" style="white-space:nowrap;">   
-#foreach($row in $rows )
 
-#set($item1 = $row.get(0))
-#if($row.size() > 1)
-	#set($item2 = $row.get(1))
-#else
-#set($item2 = "")
-#end
+<div class="subcolumns" style="white-space:nowrap;"> 
+    <ul style="margin: 0; padding: 5px 0 5px 0;">  
+#foreach($type in $types )
 
-#if( $notselected.contains( $item1.getId() ) )
-#set( $selected = false)
-#else
-#set( $selected = true)
-#end
-
-	<div class="c50l">
-		<div class="subcl" >
-			<ul>
-				<li style="list-style-type:none;"><input class="assettypeselect" type="checkbox" name="childquery" value="$item1.getId()" #if( $selected )checked #end/> $item1.name</li> 			
-			</ul>
-		</div>
-	</div>
-	#if($item2 && $item2 != "")
-
-#if( $notselected.contains( $item2.getId() ) )
-#set( $selected = false)
-#else
-#set( $selected = true)
-#end
-
-	<div class="c50r">
-		<div class="subcr">
-			<ul>
+    
+    #if( $notselected.contains( $type.getId() ) )
+    #set( $selected = false)
+    #else
+    #set( $selected = true)
+    #end
+	
+			
+	<li style="list-style-type:none; border-bottom: 1px solid #eee; margin: 5px 0 8px 0; padding: 0 0 5px 10px;"><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/> $type.name</li> 			
 				
-					<li style="list-style-type:none;"><input class="assettypeselect" type="checkbox" name="childquery" value="$item2.getId()" #if( $selected )checked #end/> $item2.name</li> 
-				
-			</ul>
-		</div>
-	</div>
-	#end
+			
+
+
 #end
+</ul>
+
+
+<form  action="$apphome/components/results/table.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
+    ##<input type="hidden"  name="oemaxlevel" value="1" />
+    <input type="hidden" name="catalogid" value="$!catalogid" />
+    <input type="hidden" name="searchtype" value="asset" />
+        <input type="hidden" name="cache" value="false" />
+    
+    <input type="hidden" name="hitssessionid" value="$hits.sessionId" />
+     
+</form>
+<input class="btn"  id="select_all" type="button" value="[[All]]" />
+<input class="btn" style="margin-left: 5px;" id="select_none" type="button" value="[[None]]" />
+
 
 </div>
+</div></div>
 	
-<form  action="$apphome/components/results/table.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
-	##<input type="hidden"  name="oemaxlevel" value="1" />
-	<input type="hidden" name="catalogid" value="$!catalogid" />
-	<input type="hidden" name="searchtype" value="asset" />
-	<input type="hidden" name="hitssessionid" value="$hits.sessionId" />
-		
-	<input type="hidden" name="childquery" value="none" /> ## causes the search to re-run even when no types are selected	 
-</form>
-<input id="select_all" type="button" value="[[Select All]]" />
+
 
 <script type="text/javascript">
 
@@ -68,14 +55,17 @@ applyDontShow = function()
 	
 	var inputs = jQuery('input[name="childquery"]');
 	var query = "hitssessionid=$hits.getSessionId()&cache=false&profilesearchfilters=hideassettype";
+	var found = false;
 	for (var i = 0; i < inputs.size(); i++)
 	{
 		input = inputs[i];
 		if (!input.checked)
 		{
 			query += "&hideassettype=" + input.value;
+			found=true;
 		} 
 	}
+	
 	//TODO: Why not update the results with new data like VD does?
 	jQuery('#dontshow').attr('action', "$home$apphome/components/results/table.html?" + query);
 	jQuery('#dontshow').submit();
@@ -89,9 +79,14 @@ jQuery('#select_all').click(function(){
 	return false;
 });
 
+jQuery('#select_none').click(function(){
+	jQuery('.assettypeselect').each(function(){this.checked = false;});
+	applyDontShow();
+	return false;
+});
+
 
 jQuery('.assettypeselect').bind('click',applyDontShow);
 
 </script>
-
 

@@ -1,6 +1,4 @@
-<div class="ui-widget commentbox">
-<div class="ui-widget-header">[[Libraries]]</div>
-<div  class="ui-widget-content "> 
-$context.putPageValue("data",$asset)
-$pages.include("$apphome/components/libraries/index.html?assetid=$asset.id&searchtype=asset",$context)
-</div></div>
+<div style="padding: 20px;">
+    $context.putPageValue("data",$asset)
+    $pages.include("$apphome/components/libraries/index.html?assetid=$asset.id&searchtype=asset",$context)
+</div>

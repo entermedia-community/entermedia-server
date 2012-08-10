@@ -1,6 +1,3 @@
-<script type="text/javascript" src="$home$apphome/components/javascript/jstree/jquery.jstree.js"></script>
-<script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.cookie.js"></script>
-<script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.hotkeys.js"></script>
 #if($asset.getId().startsWith("multiedit"))
 	#set($postfix = 'multi')
 #else
@@ -11,20 +8,35 @@
 
 #set ($categories = $asset.getCategories())
 <div class="emtable clearfix" >
+    
+    #if ( $categories.size() > 0 )
+    <ul id="cat-list">
 	#foreach($category in $categories)
-		<a class="row category" href="$home$apphome/components/categories/${category.id}.html">
-			$category.name
+		<li class="row" >
+		    #set($tags = "")
+			#foreach( $parent in $category.getParentCategories() )
+				 #if( $velocityCount > 1) #set($tags = "$tags > ") #end
+				 #set($tags = "$tags $parent.getName()" )
+			#end	
+			<a class="category tooltip" href="$home$apphome/views/categories/${$category.id}.html" title="$tags">$category.getName()</a>
 			#if($caneditasset)
-				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id">
+				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id"></a>
 			#end
-		</a>
+		</li>
 	#end
+	</ul>
+	#else 
+	   <p class="info" style="margin: 20px;">There are no categgories associated with this asset.  Add categories below.</p>
+	#end
+	#if($caneditasset)
+    
+        <div id="addcategory$postfix" style="margin: 20px;">
+            <a class="ajax btn small" targetdiv="assetdetailscategorylist$postfix"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
+        </div>
+    #end
 </div>
-#if($caneditasset)
-	<div id="addcategory$postfix" style="margin: 20px 0 10px 0;">
-		<a class="ajax btn small" targetdiv="assetdetailscategorylist$postfix"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
-	</div>
-#end
+
 
 </div>
+
 

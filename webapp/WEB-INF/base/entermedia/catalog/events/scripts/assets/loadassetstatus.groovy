@@ -19,12 +19,12 @@ public void init()
 	boolean complete = conversionsComplete(assetid);
 	if( complete )
 	{
-		complete = loadPublishing(assetid);
+		//complete = loadPublishing(assetid);
 	}
 	if( complete )
 	{
 		//update the asset import status
-		log.info("import complete, saving asset");
+		//log.info("import complete, saving asset");
 		mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Asset asset = mediaArchive.getAsset(assetid);
 		if( asset != null)
@@ -72,10 +72,6 @@ public boolean conversionsComplete(String assetid){
 	context.putPageValue("conversionsremaining", remaining);
 	context.putPageValue("conversions", newtasks);
 	context.putPageValue("conversionerrors", errors);
-	if( newtasks && newtasks.size() == 0)
-	{
-		return false;
-	}
 	if( errors.size() > 0)
 	{
 		return false;
@@ -84,6 +80,8 @@ public boolean conversionsComplete(String assetid){
 	{
 		return false;
 	}
+	//	if( newtasks && newtasks.size() == 0) //We will assume true since these should have been loaded on import
+	
 	return true;
 }
 

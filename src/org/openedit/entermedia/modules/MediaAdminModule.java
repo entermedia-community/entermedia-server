@@ -7,23 +7,29 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Element;
 import org.entermedia.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.xml.XmlArchive;
-import org.openedit.xml.XmlFile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
-import com.openedit.page.PageSettings;
+import com.openedit.page.manage.PageManager;
 
 public class MediaAdminModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(MediaAdminModule.class);
 	protected WorkspaceManager fieldWorkspaceManager;
+	protected PageManager fieldPageManager;
 	
+	public PageManager getPageManager() {
+		return fieldPageManager;
+	}
+
+	public void setPageManager(PageManager inPageManager) {
+		fieldPageManager = inPageManager;
+	}
+
 	public WorkspaceManager getWorkspaceManager()
 	{
 		return fieldWorkspaceManager;
@@ -77,6 +83,13 @@ public class MediaAdminModule extends BaseMediaModule
 			page.getPageSettings().putProperty(skin);
 		}
 		getPageManager().saveSettings(page);
+	}
+	
+	public void deployUploadedApp(WebPageRequest inReq ) throws Exception
+	{
+		
+		Page uploaded = getPageManager().getPage("/WEB-INF/temp/importapp.zip");
+		getWorkspaceManager().deployUploadedApp(uploaded);
 	}
 	
 	public void deployApp(WebPageRequest inReq) throws Exception
@@ -140,8 +153,10 @@ public class MediaAdminModule extends BaseMediaModule
 			Data existing = (Data)searcher.searchById(fields[i]);
 			if( existing == null)
 			{
-				log.error("No default value"  + fields[i]);
-				continue;
+				//log.error("No default value"  + fields[i]);
+				//continue;
+				existing = searcher.createNewData();
+				existing.setId(fields[i]);
 			}
 			boolean save = false;
 			String[] values = inReq.getRequestParameters(fields[i] + ".value");

@@ -1,10 +1,11 @@
 #set($module = $searcherManager.getData($catalogid, "module", $context.findValue("module") ))
+#set ( $defaultview = $userprofile.getDefaultViewForModule($module.id) )
 
 	<ul id="sub-nav" class="search-views">
 
 ## <li><a href="$home${content.searchhome}/actions/reindex.html">Reindex</a></li>
 ## <li><a href="$home${content.searchhome}/import/index.html">Import Data</a></li>
-<li><a href="$home${content.searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$moduleid.id/$defaultview.id">Add New $module</a></li>
+<li><a href="$home${content.searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id">Add New $module</a></li>
 ## <li><a href="$home${content.searchhome}/edit/batchedit.html?hitssessionid=$hits.sessionId">Batch Edit</a></li>
 
      

@@ -53,7 +53,9 @@ $context.putPageValue("thumbsize", $thumbsize)
 
 
 $pages.include("$apphome/components/results/pages.html",$context)
+#else
 
+<p class="info" style="margin: 20px;">[[No results found]]</p>
 #end
 </div>
 

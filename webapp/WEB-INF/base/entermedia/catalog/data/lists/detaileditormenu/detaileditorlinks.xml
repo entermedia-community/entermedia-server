@@ -1,8 +1,10 @@
 <linktree>
 
 	<a folder="generalinformation" id="metadatageneral" name="Edit Metadata" multiedit="true" />
-	<a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" />
-	<a folder="categorize"  id="editassetcategories" name="Categories / Tags" multiedit="true"/>		    	
+	<a folder="comment" id="comment" name="Comments" multiedit="false" />
+	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->
+	<a folder="categorize"  id="editassetcategories" name="Categories" multiedit="true"/>
+	<a folder="tags"  id="editassettags" name="Tags" multiedit="true"/>		    	
 	<a folder="libraries" id="asseteditorlibraries"  multiedit="true" name="Libraries"/>
 	<a folder="map"  id="viewmap" multiedit="true" name="Geo Location Info" />		    	
 	<!-- <a folder="edit"  id="viewmediaedit" name="Media Editor" /> -->
@@ -11,7 +13,7 @@
     
 	<a folder="historypreviews"  id="viewassetpreviewhistory" name="History" />
 	<!-- <a folder="downloads" id="download" name="Download Options" /> -->
-	<a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" />
+	<!-- <a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" /> -->
 <!-- 
 	<a folder="historydownloads"  id="viewassetdownloadhistory" name="Download History" />
 	<a folder="historyedits"  id="viewassetedithistory" name="Data Edit History" />

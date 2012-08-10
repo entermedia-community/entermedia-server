@@ -1,44 +1,44 @@
 package importing;
 
-import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.event.WebEvent
+
+import assets.model.AssetTypeManager
+import assets.model.EmailNotifier;
+import assets.model.LibraryAddingAssetTypeManager;
 
 import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery;
-import org.openedit.events.PathEventManager;
-import java.util.ArrayList;
-import java.util.Date;
-import org.openedit.util.DateStorageUtil;
+import com.openedit.hittracker.SearchQuery
+import com.openedit.page.manage.*;
 
-/*
-public void checkLibraries() 
+public void setAssetTypes()
 {
-	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
-	Searcher assetsearcher = mediaArchive.getAssetSearcher();
-	SearchQuery q = assetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
 	if( ids == null)
 	{
-		return;
+	   log.info("AssetIDS required");
+	   return;
 	}
 	String assetids = ids.replace(","," ");
+
+	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
+	Searcher assetsearcher = mediaArchive.getAssetSearcher();
+	SearchQuery q = assetsearcher.createSearchQuery();
 	q.addOrsGroup( "id", assetids );
 
 	HitTracker assets = assetsearcher.search(q);
-	assets.each
-	{
-		Asset asset = mediaArchive.getAsset(it.id);	
-		if( asset.getSourcePath().startsWith("Marketing_Department/Web" )
-		{
-			asset.addValue("libraries","marketing_web");		
-		}
-		mediaarchive.saveAsset( asset, user );
-	}
+	AssetTypeManager manager = new LibraryAddingAssetTypeManager();
+	manager.context = context;
+	manager.saveAssetTypes(assets);
+}
+public void sendEmail()
+{
+	EmailNotifier emailer = new EmailNotifier();
+	emailer.context = context;
+	emailer.emailOnImport();
 }
 
-checkLibraries();
 
-*/
+
+setAssetTypes();
+//sendEmail();

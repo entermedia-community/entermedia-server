@@ -4,17 +4,17 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.event.WebEvent
+import org.openedit.entermedia.scanner.PresetCreator
+
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery;
-import org.openedit.events.PathEventManager;
 import java.util.ArrayList;
-import java.util.Date;
-import org.openedit.util.DateStorageUtil;
 
-public void createTasksForUpload() 
+public void createTasksForUpload() throws Exception
 {
+	PresetCreator presets = new PresetCreator();
+	 
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
@@ -95,32 +95,19 @@ public void createTasksForUpload()
 //				foundsome = true;
 //			}
 			
-			String outputfile = preset.get("outputfile");
-
-			SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.id).append("presetid", it.id);
-			Data found = tasksearcher.search(taskq).first();
-			if( found != null )
-			{	
-				//If it is complete then the converter will mark it complete again
-				if( found.get("status") != "new")
-				{
-					found = (Data)tasksearcher.searchById(found.getId());
-					found.setProperty("status", "new");
-					tasksearcher.saveData(found, context.getUser());
-					
-				}
-			}
-			else
+			presets.createPresetsForPage(tasksearcher, preset, asset,0);
+			
+			String pages = asset.get("pages");
+			if( pages != null )
 			{
-				found = tasksearcher.createNewData();
-				found.setSourcePath(asset.getSourcePath());
-				found.setProperty("status", "new");
-				found.setProperty("assetid", asset.id);
-				found.setProperty("presetid", it.id);
-				found.setProperty("ordering", it.get("ordering") );
-				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-				found.setProperty("submitted", nowdate);
-				tasksearcher.saveData(found, context.getUser());
+				int npages = Integer.parseInt(pages);
+				if( npages > 1 )
+				{
+					for (int i = 1; i < npages; i++)
+					{
+						presets.createPresetsForPage(tasksearcher, preset, asset, i + 1);
+					}
+				}
 			}
 			foundsome = true;
 		}
@@ -147,7 +134,6 @@ public void createTasksForUpload()
 	}
 	
 }
-
 
 
 createTasksForUpload();

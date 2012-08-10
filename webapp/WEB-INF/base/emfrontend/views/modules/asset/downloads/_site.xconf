@@ -5,8 +5,28 @@
 	<path-action name="ProfileModule.loadUserProfile" alltypes="true"/>
 	
 	<path-action name="Admin.loadPermissions"  alltypes="true">
-		<permissions>view viewasset download forcewatermark</permissions>
+		<permissions>view viewasset download forcewatermarkasset</permissions>
 	</path-action>
+	
+	
+	<!-- 
+	<permission name="viewasset">
+		<or>
+			<user />
+			<action name="AssetControlModule.canViewAsset" /> 
+		</or>
+	</permission>	
+	<permission name="view">
+			<pagevalue name="canviewasset" equals="true"/>
+	</permission>	
+	-->	
+	
+	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->	
+	<permission name="viewasset">
+		<boolean value="true" />
+	</permission>	
+	
+	
 	
 	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
 

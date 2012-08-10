@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property tab="status"  type="toplevel" module="asset" id="status" path="/views/settings/modules/asset/status/transcoding/index.html" ordering="75">Status</property>
-</properties>
-

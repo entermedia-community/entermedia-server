@@ -16,6 +16,7 @@ import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.users.User;
+import com.openedit.util.FileUtils;
 import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 
@@ -28,7 +29,7 @@ public class AssetPathProcessor extends PathProcessor
 	protected AssetUtilities fieldAssetUtilities;
 	protected long fieldLastCheckedTime;
 	protected Collection fieldAttachmentFilters;
-	
+	protected FileUtils fieldFileUtils = new FileUtils();
 	final List<String> assetsids = new ArrayList<String>();
 	final List<Asset> fieldAssetsToSave = new ArrayList<Asset>();
 
@@ -69,8 +70,6 @@ public class AssetPathProcessor extends PathProcessor
 			return;
 		}
 		
-		checkPathLengths();
-		
 		Asset	eventasset = (Asset)getAssetsToSave().get(0);	
 		List<String> someids = new ArrayList();
 
@@ -94,6 +93,28 @@ public class AssetPathProcessor extends PathProcessor
 	{
 		fieldMediaArchive = inMediaArchive;
 	}
+	@Override
+	public boolean acceptFile(ContentItem inItem)
+	{
+		String path = inItem.getPath();
+		if (isOnWindows())
+		{
+			int absolutepathlimit = 260;
+			if (path.length() > absolutepathlimit)
+			{
+				log.info("Path too long. Couldn't save " + path);
+				return false;
+			}
+		}
+		if( !fieldFileUtils.isLegalFilename(path))
+		{
+			log.info("Path is not web friendly. Couldn't import " + path);
+			return false;
+		}
+
+		return super.acceptFile(inItem);
+	}
+	
 		public void process(ContentItem inInput, User inUser)
 		{
 			if (inInput.isFolder())
@@ -144,13 +165,13 @@ public class AssetPathProcessor extends PathProcessor
 				boolean processchildren = true;
 				if( createAttachments(paths) )
 				{
-					//Use the first file that is not a folder
 					ContentItem found = findPrimary(paths);
 					if( found == null )
 					{
-						found = inInput;
+						return; //no good files in here
 					}
-					String foundprimary = PathUtilities.extractFileName(found.getPath());
+
+					//Use the first file that is not a folder
 					String soucepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 
 					asset = getMediaArchive().createAsset(soucepath);
@@ -163,6 +184,9 @@ public class AssetPathProcessor extends PathProcessor
 					asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 					asset.setProperty("assetviews", "1");
 					asset.setProperty("importstatus", "imported");
+
+
+					String foundprimary = PathUtilities.extractFileName(found.getPath());
 					asset.setPrimaryFile(foundprimary);
 					getAssetUtilities().readMetadata(asset, found, getMediaArchive());
 					getAssetUtilities().populateCategory(asset, inInput, getMediaArchive(), inUser);
@@ -221,35 +245,6 @@ public class AssetPathProcessor extends PathProcessor
 			}
 			return fieldOnWindows;
 		}
-		
-
-		/**
-		 * This method removes any assets from the list that have absolute file
-		 * paths which are too long. Should be used on windows servers that can't
-		 * handle more than 256 characters in file names.
-		 * 
-		 * @param inArchive
-		 * @param inAssets
-		 */
-		private void checkPathLengths()
-		{
-			if (isOnWindows())
-			{
-				int absolutepathlimit = 260;
-				for (Iterator iterator = getAssetsToSave().iterator(); iterator.hasNext();)
-				{
-					Asset asset = (Asset) iterator.next();
-					String path = getMediaArchive().getAssetArchive().buildXmlPath(asset);
-					ContentItem item = getPageManager().getPageSettingsManager().getRepository().get(path);
-					if (item.getAbsolutePath().length() > absolutepathlimit)
-					{
-						log.info("Path too long. Couldn't save " + item.getPath());
-						iterator.remove();
-					}
-				}
-			}
-		}
-		
 		
 		protected ContentItem findPrimary(List inPaths)
 		{

@@ -52,11 +52,29 @@ public void init()
 		
 		finder.setPageManager(archive.getPageManager());
 
-		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";
+		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/assets/";
 		finder.setRootPath(assetRoot);
 		finder.process();
 		context.putPageValue("longpaths",finder.folders);		
-		context.putPageValue("badpaths",finder.badfiles);		
+		context.putPageValue("badpaths",finder.badfiles);	
+		Page root = archive.getPageManager().getPage(assetRoot);
+		//Delete the assets?
+		boolean delete = true;
+		if( delete )
+		{
+			for(String path: finder.badfiles)
+			{
+				String sourcepath = path.substring(root.getContentItem().getAbsolutePath().length());
+				sourcepath  = PathUtilities.extractDirectoryPath(sourcepath);
+				log.info(path + " becomes " + sourcepath);
+				Asset asset = archive.getAssetBySourcePath(sourcepath);
+                if( asset != null )
+                {
+ 				     archive.getAssetSearcher().delete(asset, null);
+				}
+			}
+		}
+			
 }
 
 	class LongPathFinder extends  PathProcessor

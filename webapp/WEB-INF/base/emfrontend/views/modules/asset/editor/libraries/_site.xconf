@@ -5,7 +5,6 @@
     <value>Libraries</value>
   </property>
 	<property name="tab">asseteditorlibraries</property>
-  	<property name="subtab">asseteditorlibraries</property>
   	<property name="assettab">asseteditorlibraries</property>
   	
 </page>

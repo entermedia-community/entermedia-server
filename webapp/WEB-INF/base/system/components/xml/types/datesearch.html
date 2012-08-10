@@ -7,14 +7,15 @@
 #set ($inputid = $inputid.replaceAll("/",""))
 #if ($detail.get("daterange")=="true")
 	<input name="operation" type="hidden" value="after" />
-	<input name="${inputname}.value" class="datepicker" id="datevalue${inputid}" value="$!inputed"
+	<input name="${inputname}.value" class="datepicker" id="datevalue${inputid}" value="$!val"
 		size="8" type="text">
 	to
 	<input name="field" value="${inputname}end" type="hidden">
 	<input name="operation" type="hidden" value="before" />
-	<input name="${inputname}end.value" class="datepicker" id="datevalue${inputid}" value="$!inputed" size="8" type="text">
+	<input name="${inputname}end.value" class="datepicker" id="datevalue${inputid}" value="$!val" size="8" type="text">
 	
 #else
+
 	#set( $op = $term.getParameter("op") )
 	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" style="display: block;">
 		<option value="equals" >[[Equals]]</option>
@@ -27,7 +28,7 @@
 		<option value="before365" #if( $op && $op == "before365" )selected #end>[[Past year]]</option>
 	</select>
 	<span id="datevalue${inputid}" style="display: none; width: 1px;">
-	<input name="${inputname}.value" class="datepicker" id="datebox${inputid}" value="$!inputed" size="8" type="text">	
+	<input name="${inputname}.value" class="datepicker" id="datebox${inputid}" value="$!val" size="8" type="text">	
 	</span>
 	
 	<span id="daterange${inputid}" style="display: none;">

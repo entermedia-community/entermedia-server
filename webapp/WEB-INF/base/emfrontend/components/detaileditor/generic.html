@@ -62,12 +62,11 @@ $context.putPageValue("searcher", $searcher)
 		<input type="hidden" name="id" value="$!data.id" />
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
-		<div id="edit-data">
+		<div id="default-fields">
 			$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
 		</div>
-		<p align="right">
-			<a class="ajax" targetdiv="${view}editor" href="$home$apphome/components/detaileditor/generic.html?searchtype=$searcher.searchType&view=$view&id=$!data.id&assetid=$asset.id$label=$label&oemaxlevel=1">[[Cancel]]</a>
-			&nbsp;&nbsp; 
+		<p class="btns" align="right">
+			<a class="ajax" style="margin-right: 5px;" targetdiv="${view}editor" href="$home$apphome/components/detaileditor/generic.html?searchtype=$searcher.searchType&view=$view&id=$!data.id&assetid=$asset.id$label=$label&oemaxlevel=1">[[Cancel]]</a>
 			<input class="btn" type="button" 
 				onclick="jQuery(this.form).submit();"
 			value="[[Save values]]"/>
@@ -98,49 +97,55 @@ $context.putPageValue("searcher", $searcher)
 	
 	#if ($showit)
 	
-			#set( $foundone = false)
-			#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
-			<div class="table" id="default-fields">
-			#foreach( $detail in $assetdetails )
-				#set( $value = false)
-				#set( $value = $data.get($detail.getId()))
-				#if( $value && $value != "") 
-					#set( $foundone = true)
-					<div class="cellrow">
-						<span class="bodylabel" valign="top">
-							$detail.getText($context):
-						</span>
-						<span class="bodycontent" valign="top" width="100%">
-							#if( $detail.isList() )
-								#set( $foundrow = false )
-								#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$value) )  
-								$!foundrow.name
-							#elseif($detail.isFile())
-								<a href = "$home/$value">$!value</a>
-							#elseif($detail.isBoolean())
-								#if ("true" == $value)
-									[[Yes]]
-								#else
-									[[No]]
-								#end
+		#set( $foundone = false)
+		#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
+		<div class="table" id="default-fields">
+		#foreach( $detail in $assetdetails )
+			#set( $value = false)
+			#set( $value = $data.get($detail.getId()))
+			#if( $value && $value != "") 
+				#set( $foundone = true)
+				<div class="cellrow">
+					<span class="bodylabel" valign="top">
+						$detail.getText($context)
+					</span>
+					<span class="bodycontent" valign="top" width="100%">
+						#if( $detail.isList() )
+							#set( $foundrow = false )
+							#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$value) )  
+							$!foundrow.name
+						#elseif($detail.isFile())
+							<a href = "$home/$value">$!value</a>
+						#elseif($detail.isBoolean())
+							#if ("true" == $value)
+								[[Yes]]
 							#else
-								#esc( $value )
-						   	#end
-						</span>
-					</div>
-				#end
-			#end ##foreach loop
-			</div>
+								[[No]]
+							#end
+						#else
+							#esc( $value )
+					   	#end
+					</span>
+				</div>
+			#end
+		#end ##foreach loop
+		</div>
 		#if( !$foundone )
-			<p>[[No Data has yet been entered.]]</p>
+    		<div class="table" id="default-fields">
+        		<div class="cellrow">
+                    <div style="padding: 15px 0; text-align: center; color: #aaa;">
+    			        [[No Data has yet been entered.]]
+    			   </div>
+    			</div>
+    		</div>
 		#end
 		#if($caneditasset && !$print.equals("true"))
-			<p style="margin-top: 20px;" align="right"><a class="ajax btn" targetdiv="${view}editor" 
+			<p class="btns" align="right"><a class="ajax btn" targetdiv="${view}editor" 
 			href="$home$apphome/components/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$asset.id&edit=1&oemaxlevel=1" >[[Edit]]</a>
 			</p>
 		#end
 	#else ##showit
-		[[No data has been entered.]]
+         [[No data has been entered.]]
 	#end
 
 #end ##edit

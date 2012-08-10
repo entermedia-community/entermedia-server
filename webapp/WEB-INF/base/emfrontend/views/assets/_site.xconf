@@ -6,8 +6,8 @@
 
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
+	<path-action name="CommentModule.loadComments" />
 
-	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<permission name="view">
 		<or>
 			<group name="administrators" />
@@ -15,9 +15,20 @@
 		</or>
 	</permission>
 	
+	
+	<property name="module">asset</property>
+	
+	
+	<property name="assettab">metadatageneral</property>
+	
+	
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>
   	<path-action name="AssetStatsModule.addPreViewEvent" />
 	<property name="section">home</property>
+	
+	<script id="theme-google" src="https://maps.google.com/maps/api/js?sensor=false" />
+  <script id="theme-map" src="/${applicationid}/components/javascript/jquery.ui.map.full.min.js"/>
+  
 	
 </page>

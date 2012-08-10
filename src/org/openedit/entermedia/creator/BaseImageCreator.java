@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.openedit.Data;
 import org.openedit.entermedia.MediaArchive;
 
 public abstract class BaseImageCreator extends BaseCreator
@@ -22,6 +23,10 @@ public abstract class BaseImageCreator extends BaseCreator
 		inStructions.setOutputExtension(inOutputType);
 		String pageString = (String)inProperties.get("pagenum");
 		// changed to take a request parameter.
+		if( pageString != null && pageString.length() == 0 )
+		{
+			pageString = null;
+		}
 		if (pageString != null)
 		{
 			inStructions.setPageNumber(Integer.parseInt(pageString));
@@ -48,6 +53,8 @@ public abstract class BaseImageCreator extends BaseCreator
 			}
 		}
 
+
+		
 		
 		// Create temporary location for previews
 		String w = inStructions.getProperty("prefwidth");
@@ -79,6 +86,15 @@ public abstract class BaseImageCreator extends BaseCreator
 		
 		}
 		
+		String watermarkselected = inStructions.getProperty("watermark");
+		if (watermarkselected != null)
+		{
+			inStructions.setWatermark(Boolean.valueOf(watermarkselected));
+		
+		}
+		
+		
+		
 
 		inStructions.setAssetSourcePath(inSourcePath);
 
@@ -89,7 +105,7 @@ public abstract class BaseImageCreator extends BaseCreator
 //		}
 //		else
 //		{
-			populateOutputPath(inArchive,inStructions);
+			//populateOutputPath(inArchive,inStructions);
 //		}
 		
 		return inStructions;
@@ -146,6 +162,11 @@ public abstract class BaseImageCreator extends BaseCreator
 		if(inStructions.isWatermark())
 		{
 			path.append("wm");
+		}
+		
+		if(inStructions.getProperty("colorspace") != null){
+			path.append(inStructions.get("colorspace"));
+			
 		}
 		if(inStructions.isCrop())
 		{

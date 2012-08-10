@@ -1,27 +1,46 @@
-#set($pagenum = $context.getRequestParamater('pagenum'))
-
-<div style="text-align: center;">
-#if($pagenum)
-	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg?pagenum=$pagenum")
-#else
-	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
+#set ($pagenum = $context.findValue("pagenum") )
+#if ( !$pagenum ) 
+    #set ( $pagenum = $currentpreview + 1)
 #end
-<a class="emdialog" href="$home$link" target="_parent"	
-	title="[[$asset]]">
-	
-	<img id="pdfpreview" class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" alt="[[Preview Image]]"/>
-
-</a>
-
-</div>
-#set($pdfpages = $numberutils.toInt($asset.pages))
-#if( $pdfpages > 1 )
-	<input type="hidden" name="field" value="currentpage"/>
-	Jump To Page:
-	<select name="currentpage.value" onchange='$("#pdfpreview").attr("src","$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg?pagenum="+this.value)'>
-	#foreach( $pagenum in [1..$pdfpages] )
-		<option value="$pagenum">$pagenum</option>
-	#end
-	</select>
-	
+#if ( !$pagenum ) 
+    #set ( $pagenum = 1)
 #end
+#set ( $gotopage = $currentpreview + 1)
+    <div id="pdf-viewer-container">
+        #if ($gotopage > 1)
+             #set( $prevthumb = $gotopage - 1)
+            <a id="prevpage" class="ir" href="index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb"> Previous </a>
+        #end
+        #if($currentpreview)
+            #set( $page = $currentpreview + 1)
+        	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg?pagenum=$page")
+        #else
+        	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
+        #end
+        <a class="thickbox" href="$home$link" target="_parent"	
+        	title="[[$asset]]">
+        	#set( $page = $currentpreview + 1)
+        	<img id="main-media" class="emdropshadow #if( $totalpages > 1 ) document #end" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg?pagenum=$!gotopage" alt="[[Preview Image]]"/>
+        
+        </a>
+        #if ($gotopage != $totalpages)
+             #set( $nextthumb = $gotopage + 1)
+            <a id ="nextpage" class="ir" href="index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb"> Next </a>
+        #end
+    </div>
+
+
+
+#if( $totalpages > 1 )
+                    <div id="jumpto">
+                        <form method="get" style="float: left;" action="index.html?sourcepath=$asset.sourcepath">
+                           <input id="pagejumper" name="pagenum" value="$!pagenum" />
+                           <input type="submit" id="gotopage" class="btn" value="Go" />
+                        </form>
+                        <span style="position: relative; top: 10px; left: 10px;">Jump To Page (1 - $totalpages)</span>
+                    </div>
+                #end
+
+
+
+

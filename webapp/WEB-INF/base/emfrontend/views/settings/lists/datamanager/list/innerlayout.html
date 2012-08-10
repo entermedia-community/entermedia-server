@@ -23,6 +23,9 @@
 <div class="tabnav">
 	<a class="#if( $datatab == "data") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/list/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Data</a>
 	<a class="#if( $datatab == "properties") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/properties/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Customize Fields</a>
+<!--
+	<a class="#if( $datatab == "views") current #end ajax" targetdivinner="datamanager-workarea" href="$home$apphome/views/settings/lists/datamanager/views/index.html?catalogid=$catalogid&searchtype=$currentsearch&oemaxlevel=1">Customize Views</a>
+-->
 </div>
 
 <script>
@@ -39,7 +42,10 @@
 		$pages.streamContent()
 	</div>
 </div>
-
+#if($candevelop)
+    <a class="btn " href="$home$content.dataroot/list/makedefault.html?searchtype=$searcher.searchType"  >[[Copy to defaults]]</a>
+    
+    #end
 #if( $showfields )
 
 <a href="$home${content.dataroot}/list/reindex.html?catalogid=$catalogid&searchtype=$currentsearch">Reindex</a>

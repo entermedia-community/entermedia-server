@@ -1,0 +1,8 @@
+<page>
+	<path-action name="Page.uploadFile" />
+
+	<path-action name="MediaAdminModule.deployUploadedApp" >
+	</path-action>
+	
+	
+</page>

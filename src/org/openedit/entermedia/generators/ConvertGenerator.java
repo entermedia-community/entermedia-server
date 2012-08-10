@@ -63,7 +63,11 @@ public class ConvertGenerator extends FileGenerator
 		}
 		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
 		ConvertInstructions inStructions = creator.createInstructions(inReq, archive, outputype, sourcePath);
-
+		if( inStructions == null )
+		{
+			return;
+		}
+		creator.populateOutputPath(archive, inStructions);
 		Page output = getPageManager().getPage(inStructions.getOutputPath());
 		if( !output.exists() || output.getContentItem().getLength() == 0 )
 		{
