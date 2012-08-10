@@ -23,6 +23,10 @@ public abstract class BaseImageCreator extends BaseCreator
 		inStructions.setOutputExtension(inOutputType);
 		String pageString = (String)inProperties.get("pagenum");
 		// changed to take a request parameter.
+		if( pageString != null && pageString.length() == 0 )
+		{
+			pageString = null;
+		}
 		if (pageString != null)
 		{
 			inStructions.setPageNumber(Integer.parseInt(pageString));

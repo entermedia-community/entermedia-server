@@ -63,7 +63,9 @@
                 #end
                 </li>
             </ul>
-            
+            #if(!$currentpreview)
+            	#set( $currentpreview = 1)
+            #end
             $context.putPageValue("currentpreview",$currentpreview)
             $context.putPageValue("totalpages",$totalpages)
          </div>
