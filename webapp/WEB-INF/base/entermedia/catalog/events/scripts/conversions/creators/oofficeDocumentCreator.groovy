@@ -15,7 +15,7 @@ import com.openedit.util.PathUtilities
 
 public class oofficeDocumentCreator extends BaseCreator
 {
-	protected final def formats = ["doc","docx","rtf","ppt","wps","odt","html","xml","csv", "xls", "xlsx"];
+	protected final def formats = ["doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls", "xlsx"];
 	private static final Log log = LogFactory.getLog(this.class);
 	
 	public boolean canReadIn(MediaArchive inArchive, String inInputType)

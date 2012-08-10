@@ -30,7 +30,7 @@ jQuery(document).ready(function()
 		var node = $(this).closest('.noderow');
 		var nodeid = node.data('nodeid');
 		var depth = node.data('depth');
-		var home = $(this).closest(".emtree").data("home");
+		var home = tree.data("home");
 		var prefix = $(this).closest(".emtree").data("url-prefix");
 		if( prefix)
 		{
@@ -80,32 +80,10 @@ jQuery(document).ready(function()
 				var tree = $(this).closest(".emtree");
 				tree = $(tree);
 				var home = tree.data("home");
-				
-				var id = $(this).attr("id");
-				padding = tree.find( "#" + id + "_row div").css('padding-left');
-				padding = padding.replace('px', '');
-				padding = parseInt(padding);
-				padding += 20;
-				var node = $(this).closest('.noderow').data('nodeid');
-				
-				if ( tree.find( "#" + id + "_row > div .arrow").length > 0 ) {
-					if ( tree.find("#" + id + "_row > div .arrow").hasClass('down') ) {	
-						
-					} else {
-						tree.find("#" + id + "_row").find('> ul').toggle('fast');
-						tree.find("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get(home + "/components/emtree/expandnode.html?nodeID=" + node + "&tree-name=" + tree.data("treename"));
-					}
-				} else {
-					tree.find("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
-					tree.find("#" + id + "_row").find('> ul').toggle('fast');
-					tree.find("#" + id + "_row > div .arrow").addClass('down');
-				}
-				
-				tree.find("#" + id + "_add").show("fast");
-				tree.find("#" + id + "_add div").css('padding-left', padding )
-				tree.find("#" + id + "_row > div").addClass('selected');
-				tree.find("#" + id + "_add input").focus();
+				var node = $(this).closest('.noderow');
+				var nodeid = node.data('nodeid');
+				var depth = node.data('depth');
+				node.load(home + "/components/emtree/tree.html?adding=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
 	} );
 	
 	
@@ -221,5 +199,7 @@ jQuery(document).ready(function()
 });
 
 repaintEmTree = function (tree) {
-	tree.closest("#treeholder").load("$home$apphome/components/tree/tree.html");
+	var home = tree.data("home");
+
+	tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );
 }

@@ -43,6 +43,9 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 		Category newcategory = categoryeditor.addNewCategory(
 				new Date().getTime() + "", newname);
+
+		categoryeditor.sortCategory(categoryeditor.getCurrentCategory());
+
 		categoryeditor.setCurrentCategory(newcategory);
 		categoryeditor.saveCategory(newcategory);
 		inContext.putPageValue("category", newcategory);
