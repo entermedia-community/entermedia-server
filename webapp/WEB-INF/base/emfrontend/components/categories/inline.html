@@ -1,17 +1,6 @@
-<div id="emcategories">
 
 #set( $rootpath = "${apphome}/components/categories")
 
-<div class="emsidecontent">
-<div class="emsidecontentbody">
-<div class="emsidecontentbodyinner">
-
-	<div id="emcategoryinline" >
-	<div id="emcategoryinlineinner" >
+	<div id="side-categories" class="cramped">
 	    $pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&allowselections=false&editabletree=false&url-prefix=$home$apphome/views/categories/",$context)
 	</div>
-	</div>
-
-</div></div></div>
-
-</div>
