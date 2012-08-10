@@ -2818,7 +2818,7 @@ table.emdata th {
 .m4a, .mov, .swf, .avi, .mpg, .flv {
     background: url('../images/attachments-video.png') 11px -1px no-repeat;
 }
-.pages, .doc, .docx, .pdf, .odt {
+#details .pages, .doc, .docx, .pdf, .odt {
     background: url('../images/attachments-document.png') 11px -1px no-repeat;
 }
 .new form {
