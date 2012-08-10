@@ -1,7 +1,7 @@
 jQuery(document).ready(function() 
 { 
-	$('.emtree ul li div span.arrow').livequery('click', function(){
-		
+	$('.emtree ul li div span.arrow').livequery('click', function(event){
+			event.stopPropagation();
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest('.noderow');
 			var nodeid = node.data('nodeid');
@@ -18,11 +18,12 @@ jQuery(document).ready(function()
 				//Open it. add a UL
 				$(this).find('.arrow').addClass('down');				
 			}
+			tree.find(nodeid + "_add").remove();
 			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
 	});
 
-	$('.emtree ul li div').livequery('click', function() {
-		
+	$('.emtree ul li div').livequery('click', function(event) {
+		event.stopPropagation();
 		$('.emtree ul li div').removeClass('selected');
 		$(this).addClass("selected");
 		var tree = $(this).closest(".emtree");
@@ -51,6 +52,7 @@ jQuery(document).ready(function()
 		}
 		else
 		{
+			tree.find(nodeid + "_add").remove();
 			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
 		}
 });
