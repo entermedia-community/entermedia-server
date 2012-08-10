@@ -6,6 +6,9 @@
 #set( $model = $webtree.getModel() )
 #set( $render = $webtree.getTreeRenderer() )
 
+#set( $adding = $context.getRequestParameter("adding" ) )
+
+
 #macro(showtreecategories $cat $depth) 
 		#set ( $padding = (20 * $depth) )
 		#if( $showinput )
@@ -39,7 +42,15 @@
 				</span>
 				#end
 			</div>
-		#if($haschildren && $expanded)
+	    #if( $adding )
+		   <ul class="open" >
+		  <li id="${cat.id}_add" >
+			  #set ( $depth = $depth + 1)
+			  #set ( $padding = (20 * $depth) )
+		  	  <div   style="padding-left: ${padding}px" class="selected new"><span class="name folder"><input class="field text" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div>
+	  	 </li> 
+	  	    </ul>
+		#elseif($haschildren && $expanded)
 		   <ul class="open" >
 			#set ( $depth = $depth + 1)
 			#foreach( $category in $children)
@@ -48,7 +59,6 @@
 		   </ul>
 		#end
 		</li>
-		<li id="${cat.id}_add" style="display: none;"><div class="selected new"><span class="name folder"><input class="field text" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div></li>		 	
 		
 #end
 #set( $toggle = $context.getRequestParameter("toggle" ) )
@@ -62,6 +72,16 @@
 	#set( $depth = 0 )
 	#set( $depth = $depth.parseInt($depths) )
 	#showtreecategories($target, $depth)
+
+#elseif( $adding && $adding == "true" )
+	#set( $nodeid = $context.getRequestParameter("nodeID" ) )
+	#set( $target = $webtree.getModel().getChildById($nodeid) )
+	$!webtree.getTreeRenderer().expandNode($target)
+	#set( $depths = $context.getRequestParameter("depth" ) )
+	#set( $depth = 0 )
+	#set( $depth = $depth.parseInt($depths) )
+	#showtreecategories($target, $depth)
+	
 #else
 
 #set($rootcategory = $webtree.getModel().getRoot())
