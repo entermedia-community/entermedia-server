@@ -1,0 +1,9 @@
+<page>
+
+	<page-action name="CategoryModule.getCatalogTree">
+		<root>index</root>
+	</page-action>
+	<page-action name="CategoryModule.selectNodes" />
+
+	<inner-layout/>
+</page>

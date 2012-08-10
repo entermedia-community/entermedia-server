@@ -3,6 +3,8 @@
  */
 package com.openedit.webui.tree;
 
+import java.util.Collection;
+
 
 /**
  * @author cburkey
@@ -27,6 +29,11 @@ public interface TreeRenderer
 	public Object setSelectedNodeByUrl(String inPath);
 	public Object findNodeByUrl(Object inRoot, String inUrl);
 	
-	//void setRenderLeaves(boolean inRenderLeaves);
-	//boolean isChildSelected(Object inParent);
+	public boolean isIdSelected(String inNodeId);
+	public boolean isNodeSelected(Object inNode);
+	public void selectNode(Object inNode);
+	public void unSelectNode(Object inNode);
+
+	public void selectNodes(Collection inNodes);
+
 }

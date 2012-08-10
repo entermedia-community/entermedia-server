@@ -1,6 +1,3 @@
-<script type="text/javascript" src="$home$apphome/components/javascript/jstree/jquery.jstree.js"></script>
-<script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.cookie.js"></script>
-<script type="text/javascript" src="$home$apphome/components/javascript/jstree/_lib/jquery.hotkeys.js"></script>
 #if($asset.getId().startsWith("multiedit"))
 	#set($postfix = 'multi')
 #else
@@ -17,14 +14,18 @@
             <a class="ajax btn small" targetdiv="assetdetailscategorylist$postfix"  href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
         </div>
     #end
+    <ul>
 	#foreach($category in $categories)
-		<a class="row category" href="$home$apphome/views/categories/${category.id}.html">
-			$category.name
+		<li class="row" >
+			#foreach( $parent in $category.getParentCategories() )
+				 #if( $velocityCount > 1) > #end<a class="category" href="$home$apphome/views/categories/${$parent.id}.html">$parent.getName()</a>
+			#end	
 			#if($caneditasset)
-				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id">
+				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id"></a>
 			#end
-		</a>
+		</li>
 	#end
+	</ul>
 </div>
 
 

@@ -1,10 +1,8 @@
 jQuery(document).ready(function() 
 { 
-
-
-	$('.emtree ul li div').livequery('click', function(){
+	$('.emtree ul li div span.arrow').livequery('click', function(){
 		
-			//$(this).parent().find('> ul').toggle('fast');
+			var tree = $(this).closest(".emtree");
 			var node = $(this).closest('.noderow');
 			var nodeid = node.data('nodeid');
 			var depth = node.data('depth');
@@ -20,24 +18,59 @@ jQuery(document).ready(function()
 				//Open it. add a UL
 				$(this).find('.arrow').addClass('down');				
 			}
-			node.load(home + "/views/settings/modules/asset/categories/tree.html?toggle=true&nodeID=" + nodeid + "&depth=" + depth);
+			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
+	});
+
+	$('.emtree ul li div').livequery('click', function() {
+		
+		$('.emtree ul li div').removeClass('selected');
+		$(this).addClass("selected");
+		var tree = $(this).closest(".emtree");
+		var node = $(this).closest('.noderow');
+		var nodeid = node.data('nodeid');
+		var depth = node.data('depth');
+		var home = $(this).closest(".emtree").data("home");
+		var prefix = $(this).closest(".emtree").data("url-prefix");
+		if( prefix)
+		{
+			//$("#right-col").load();
+			
+			jQuery.get(prefix + nodeid + ".html",
+					{
+						'oemaxlevel':2,
+						'tree-name':tree.data("treename"),
+						'nodeID':nodeid,
+						'depth': depth
+					},	
+					function(data) 
+					{
+						var cell = jQuery("#view-picker-content");
+						cell.html(data);
+					}
+			);
+		}
+		else
+		{
+			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
+		}
+});
+	
+	var field = $('.emtree .field'); 
+	
+	field.livequery('click', function(event) 	{
+			event.stopPropagation();
 	});
 	
-	$('.emtree .field').on( {
-		click: function () {
-			event.stopPropagation();
-		},
-		focusin: function(){
-			if ($(this).val() == this.defaultValue ) { 
-				$(this).val(''); 
-			}
-		}, 
-		focusout: function(){
-			if ($(this).val() == "") { 
-				$(this).val(this.defaultValue); 
-			}
+	$('.emtree .field.text').livequery('focusin', function(event) 	{
+		if ($(this).val() == this.defaultValue ) { 
+			$(this).val(''); 
 		}
-			
+	});
+	
+	$('.emtree .field.text').livequery('focusout', function(event)	{
+		if ($(this).val() == "") { 
+			$(this).val(this.defaultValue); 
+		}
 	});
 	
 	
@@ -60,7 +93,7 @@ jQuery(document).ready(function()
 					} else {
 						tree.find("#" + id + "_row").find('> ul').toggle('fast');
 						tree.find("#" + id + "_row > div .arrow").addClass('down');
-					   jQuery.get(home + "/views/settings/modules/asset/categories/expandnode.html?nodeID=" + node);
+					   jQuery.get(home + "/components/emtree/expandnode.html?nodeID=" + node + "&tree-name=" + tree.data("treename"));
 					}
 				} else {
 					tree.find("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
@@ -97,8 +130,9 @@ jQuery(document).ready(function()
 				var tree = $(this).closest(".emtree");
 				var home = tree.data("home");
 
-				jQuery.get(home + "/views/settings/modules/asset/categories/deletecategory.html", {
+				jQuery.get(home + "/components/emtree/deletecategory.html", {
 					categoryid: id,
+					'tree-name': tree.data("treename"),
 					} ,function () {
 						tree.find("#" + id + "_row").hide( 'fast', function(){
 							repaintEmTree(tree); 
@@ -120,10 +154,10 @@ jQuery(document).ready(function()
 					//alert("New name: " + newname);
 					var home = tree.data("home");
 
-					jQuery.get(home + "/views/settings/modules/asset/categories/addcategory.html", {
+					jQuery.get(home + "/components/emtree/addcategory.html", {
 						categoryid: id,
-						'newname': newname
-					
+						'newname': newname,
+						'tree-name': tree.data("treename")
 						} , function () {
 							tree.find("#" + id + "_add").hide("fast", function(){
 								repaintEmTree(tree); 
@@ -166,11 +200,11 @@ jQuery(document).ready(function()
 				var home = tree.data("home");
 				
 				var newname = tree.find("#" + id + "_edit_field").attr("value");
-				jQuery.get( home + "/views/settings/modules/asset/categories/savecategory.html", {
+				jQuery.get( home + "/components/emtree/savecategory.html", {
 					'id': id,
 					categoryid: id,
-					'name': newname
-				
+					'name': newname,
+					'tree-name': tree.data("treename")
 					} , function () {						
 						tree.find("#" + id +"_display").show("fast");
 						tree.find("#" + id +"_edit").hide("fast");		
@@ -186,5 +220,5 @@ jQuery(document).ready(function()
 });
 
 repaintEmTree = function (tree) {
-	tree.closest("#treeholder").load("$home$apphome/views/settings/modules/asset/categories/tree.html");
+	tree.closest("#treeholder").load("$home$apphome/components/tree/tree.html");
 }

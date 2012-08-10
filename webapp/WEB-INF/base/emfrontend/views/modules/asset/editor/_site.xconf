@@ -8,14 +8,7 @@
 	
 
 	<property name="saveokpage">/tools/edit/saveok.html</property>
-	
-	<path-action allowduplicates="true" name="CategoryModule.getCatalogTree">
-	    <tree-name>catalogTree</tree-name>
-	    <url-prefix>/${catalogid}/categories/</url-prefix>
-	    <url-postfix>.html?oemaxlevel=1&amp;</url-postfix>
-	</path-action>
-	
-	
+		
 	<inner-layout>${themeprefix}/layouts/mediaviewer.html</inner-layout>
 	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
 	
