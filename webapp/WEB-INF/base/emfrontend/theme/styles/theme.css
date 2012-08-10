@@ -2495,11 +2495,18 @@ table.emdata th {
     line-height: 20px;
     color: #fff;
 }
-#attachments-container {
+#treeholder {
     margin: 0;
     padding: 0;
     display: table;
     width: 100%;
+}
+#side-categories {
+    width: 221px;
+    overflow-x: auto;
+}
+.cramped {
+    
 }
 .emtree {
     display: table-cell;
@@ -2532,6 +2539,11 @@ table.emdata th {
     line-height: 34px;
     display: block;
     cursor: pointer;
+    white-space: no-wrap;
+}
+.cramped .emtree ul li div {
+    height: 26px;
+    line-height: 26px;
 }
 .emtree ul li div.selected {
     background: #c9e8f2;
@@ -4326,14 +4338,13 @@ p.resultsnumber {
 /* NEW MEDIA VIEW */
 
 #mediaviewer {
-    margin: 0 -20px;
     position: relative;
 }
 #sub-nav.mediaview {
     margin-bottom: 20;
 }
 #detailarea {
-    margin: 0 -20px -20px;
+    margin: 0 0 -20px 0;
 }
 #de-table {
     display: table;
