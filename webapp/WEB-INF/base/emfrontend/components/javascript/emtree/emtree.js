@@ -75,7 +75,6 @@ jQuery(document).ready(function()
 		}
 	});
 	
-	
 	$(".emtree .add").livequery('click', function(event) {
 				event.stopPropagation();
 				var tree = $(this).closest(".emtree");

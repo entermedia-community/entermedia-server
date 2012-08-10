@@ -2638,6 +2638,14 @@ table.emdata th {
     display: table;
     width: 100%;
 }
+#treescroller {
+    width: 544px;
+    overflow-y: auto;
+    overflow-y: hidden;
+}
+.max #treescroller {
+    width: auto;
+}
 .emtree {
     display: table-cell;
     vertical-align: top;
@@ -2675,6 +2683,19 @@ table.emdata th {
     height: 26px;
     line-height: 26px;
 }
+.emtree ul li div {
+    position: relative;
+}
+.emtree .checkbox {
+    position: absolute;
+    height: 34px;
+    border-right: 1px dashed #ddd;
+    left: 0;
+    top: 0;
+    width: 15px;
+    padding: 0 15px;
+    text-align: center;
+}
 .emtree ul li div.selected {
     background: #c9e8f2;
 }
@@ -2688,8 +2709,10 @@ table.emdata th {
     line-height: 11px;
     margin-left: 5px;
 }
-.emtree ul li div span input[type="text"] {
+#details .emtree ul li div span input[type="text"] {
     padding: 5px 10px 3px 10px;
+    font-size: 11px;
+    margin-top: -2px;
 }
 .actions {
     float: right;
@@ -3727,8 +3750,8 @@ div#folders.add .folder {
     display: inline-block;
 }
 .categories-navigation {
-    overflow: visible;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 0 !important;
 }
 #emcategoryinlineinner {
