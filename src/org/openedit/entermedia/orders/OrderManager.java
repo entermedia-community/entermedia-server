@@ -670,6 +670,12 @@ public class OrderManager
 						event.setProperty("orderid", inOrder.getId());
 						//archive.getWebEventListener()
 						archive.getMediaEventHandler().eventFired(event);
+
+						inOrder.setOrderStatus("complete");
+						OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "complete");
+						saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+
+					
 					}
 				}
 			}
