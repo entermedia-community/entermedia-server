@@ -1,5 +1,5 @@
 
 <properties beanname="xmlFolderSearcher">
-  <property id="id" editable="true" stored="true" index="true" stored="true">Id</property>
+  <property id="id" editable="true" stored="true" index="true" >Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
 </properties>

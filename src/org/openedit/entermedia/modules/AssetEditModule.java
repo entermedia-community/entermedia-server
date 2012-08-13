@@ -1023,15 +1023,13 @@ public class AssetEditModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(inReq);
 
-		String sourcePath = inReq.getRequestParameter("sourcepath");
-
-		Asset target = archive.getAssetBySourcePath(sourcePath);
+		Asset target = getAsset(inReq);
 		
 		if (target != null)
 		{
 			if(ext != null)
 			{
-				target.setProperty("fileformat", ext);
+				target.setProperty("fileformat", ext.toLowerCase());
 			}
 			if(primaryname != null)
 			{
