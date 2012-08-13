@@ -190,6 +190,13 @@ public class AssetEditor {
 		getMediaArchive().saveAsset(inAsset, inUser);
 		getMediaArchive().getAssetArchive().clearAssets();
 
+		
+		//Save a file here for future use
+		Page attachments = pageManager.getPage(dataRoot + "/originals/" + newSourcePath + "/attachments.txt" );
+		if( !attachments.exists() )
+		{
+			pageManager.saveContent(attachments, inUser, "EnterMedia attachment holder","empty");
+		}
 		// Don't do this if no changes were made otherwise the product gets
 		// deleted!
 		if (!oldSourcePath.equals(newSourcePath)) {

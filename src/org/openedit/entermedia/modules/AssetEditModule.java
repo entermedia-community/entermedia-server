@@ -1022,7 +1022,10 @@ public class AssetEditModule extends BaseMediaModule
 		String ext = PathUtilities.extractPageType(primaryname);
 
 		MediaArchive archive = getMediaArchive(inReq);
-		Asset target = getAsset(inReq);
+
+		String sourcePath = inReq.getRequestParameter("sourcepath");
+
+		Asset target = archive.getAssetBySourcePath(sourcePath);
 		
 		if (target != null)
 		{
