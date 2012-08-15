@@ -1,8 +1,9 @@
 
-#foreach( $script in $content.getScriptPaths() )
-	<script type="text/javascript" src="$home$script">  </script>
+#foreach( $script in $content.getScripts() )
+    
+	<script type="text/javascript" src="#if(!$script.isExternal())$home#end$script.src">  </script>
 #end
 
-#foreach( $style in $content.getStylePaths() )
-	<link rel="stylesheet" type="text/css" href="$home$style" />
+#foreach( $style in $content.getStyles() )
+	<link rel="stylesheet" type="text/css" href="#if(!$style.isExternal())$home#end$style.href" />
 #end
