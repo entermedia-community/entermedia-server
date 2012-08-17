@@ -130,11 +130,14 @@ public class PushManager
 		{			
 			Data hit = (Data) iterator.next();
 			Asset asset = (Asset) archive.getAssetBySourcePath(hit.getSourcePath());
-			savequeue.add(asset);
-			if( savequeue.size() > 100 )
+			if( asset != null )
 			{
-				pushAssets(archive, savequeue);
-				savequeue.clear();
+				savequeue.add(asset);
+				if( savequeue.size() > 100 )
+				{
+					pushAssets(archive, savequeue);
+					savequeue.clear();
+				}
 			}
 		}
 		if( savequeue.size() > 0 )
@@ -219,7 +222,7 @@ public class PushManager
 
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset)
 	{
-
+		http://demo.entermediasoftware.com
 		if (inPreset.get("type") == "original")
 		{
 			return mediaArchive.getOriginalDocument(asset);
@@ -478,19 +481,28 @@ asset: " + asset);
 		AssetSearcher assetSearcher = inArchive.getAssetSearcher();
 		List savequeue = new ArrayList();
 		HitTracker hits = assetSearcher.fieldSearch("pushstatus", oldStatus);
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+
+		int size = 0;
+		do
 		{
-			Data data = (Data) iterator.next();
-			Asset asset = inArchive.getAssetBySourcePath(data.getSourcePath());
-			asset.setProperty("pushstatus", inNewStatus);
-			savequeue.add(asset);
-			if( savequeue.size() == 100 )
+			hits.setHitsPerPage(1000);
+			size = hits.size();
+			for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 			{
-				assetSearcher.saveAllData(savequeue, null);
-				savequeue.clear();
+				Data data = (Data) iterator.next();
+				Asset asset = inArchive.getAssetBySourcePath(data.getSourcePath());
+				asset.setProperty("pushstatus", inNewStatus);
+				savequeue.add(asset);
+				if( savequeue.size() == 1000 )
+				{
+					assetSearcher.saveAllData(savequeue, null);
+					savequeue.clear();
+				}
 			}
-		}
-		assetSearcher.saveAllData(savequeue, null);
+			assetSearcher.saveAllData(savequeue, null);
+			hits = assetSearcher.fieldSearch("pushstatus", oldStatus);
+		} while( size > hits.size() );
+		
 		
 	}
 	
@@ -543,11 +555,13 @@ asset: " + asset);
 
 	public void pollRemotePublish(MediaArchive inArchive)
 	{
+		fieldClient = null;
+		
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 
-		String url = server + "/media/services/rest/searchpendingorders.xml?catalogid=" + targetcatalogid;
-		url = url + "&field=orderstatus&orderstatus.value=ordered&operation=exact";
+		String url = server + "/media/services/rest/searchpendingpublish.xml?catalogid=" + targetcatalogid;
+		url = url + "&field=status&orderstatus.value=new&operation=exact&field=status&orderstatus.value=retry&operation=exact&field=status&orderstatus.value=pending&operation=exact";
 		PostMethod method = new PostMethod(url);
 
 		try
@@ -560,13 +574,17 @@ asset: " + asset);
 //			
 			Element root = execute(inArchive.getCatalogId(), method);
 			String orderid = root.attributeValue("orderid");
-			for (Object o : root.elements("orderitem"))
+			for (Object row : root.elements("order"))
 			{
-				Element orderitem = (Element) o;
-				String sourcepath = orderitem.attributeValue("assetsourcepath");
-				String presetid = orderitem.attributeValue("presetid");
-				String destinationid = orderitem.attributeValue("destinationid");
-				convertAndPublish(inArchive, inArchive.getAssetBySourcePath(sourcepath), presetid, destinationid);
+				Element order = (Element)row;
+				for( Object item: order.elements("orderitem"))
+				{
+					Element orderitem = (Element) item;
+					String sourcepath = orderitem.attributeValue("assetsourcepath");
+					String presetid = orderitem.attributeValue("presetid");
+					String destinationid = orderitem.attributeValue("destinationid");
+					convertAndPublish(inArchive, inArchive.getAssetBySourcePath(sourcepath), presetid, destinationid);
+				}
 				//result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
 				///TODO: Call the remote server and let it know we are done!
 			}

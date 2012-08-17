@@ -16,6 +16,7 @@ import org.openedit.entermedia.creator.*;
 
 import com.openedit.users.User;
 import com.openedit.util.*;
+import com.openedit.hittracker.*;
 import com.openedit.*;
 
 import org.openedit.xml.*;
@@ -317,9 +318,9 @@ public void checkforTasks()
 		}
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
-	ArrayList newtasks = new ArrayList(tasksearcher.search(query));
-
-	log.info("processing ${newtasks.size()} conversions");
+	HitTracker newtasks = tasksearcher.search(query);
+	newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
+	log.info("processing ${newtasks.size()} conversions ${newtasks.getHitsPerPage()} at a time");
 	
 	List runners = new ArrayList();
 	
@@ -335,7 +336,7 @@ public void checkforTasks()
 		ExecutorService  executor = executorManager.createExecutor();
 		CompositeConvertRunner byassetid = null;
 		String lastassetid = null;
-		for(Data hit: newtasks)
+		for(Data hit: newtasks.getPageOfHits() )
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
 			runners.add(runner);

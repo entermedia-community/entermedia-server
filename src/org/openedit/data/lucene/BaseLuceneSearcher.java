@@ -762,11 +762,20 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	public void deleteAll(User inUser)
 	{
 		HitTracker all = getAllHits();
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		int size = 0;
+		do
 		{
-			Data object = (Data)iterator.next();
-			delete(object, inUser);
-		}
+			
+			all.setHitsPerPage(1000);
+			size = all.size();
+			for (Iterator iterator = all.getPageOfHits().iterator(); iterator.hasNext();)
+			{
+				Data object = (Data)iterator.next();
+				delete(object, inUser);
+			}
+			all = getAllHits();
+		} while ( size > all.size() );
+			
 	}
 
 	public void delete(Data inData, User inUser)
