@@ -192,7 +192,7 @@ public class PushManager
 		{
 			try
 			{
-				upload(target, archive, filestosend);
+				upload(target, archive, "generated", filestosend);
 				target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
 
@@ -256,7 +256,7 @@ public class PushManager
 
 	}
 	
-	public Map<String, String> upload(Asset inAsset, MediaArchive inArchive, List<File> inFiles)
+	public Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, List<File> inFiles)
 	{
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		//String account = inArchive.getCatalogSettingValue("push_server_username");
@@ -293,10 +293,7 @@ public class PushManager
 			}
 			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
 			
-			if(inAsset.getName() != null )
-			{
-				parts.add(new StringPart("original", inAsset.getName())); //What is this?
-			}
+			parts.add(new StringPart("uploadtype", inUploadType)); 
 			parts.add(new StringPart("id", prefix + inAsset.getId()));
 			
 //			StringBuffer buffer = new StringBuffer();
@@ -567,6 +564,7 @@ asset: " + asset);
 		try
 		{
 			Element root = execute(inArchive.getCatalogId(), method);
+			log.info("polled " + root.elements().size() + " children" );
 			for (Object row : root.elements("hit"))
 			{
 				Element hit = (Element)row;
@@ -605,17 +603,27 @@ asset: " + asset);
 						List<File> filestosend = new ArrayList<File>(1);
 
 						Page inputpage = null;
+						String type = null;
 						if( preset.get("type") != "original")
 						{
 							String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("outputfile");
 							inputpage= inArchive.getPageManager().getPage(input);
+							type = "generated";
 						}
 						else
 						{
 							inputpage = inArchive.getOriginalDocument(asset);
+							type = "originals";
 						}
-						filestosend.add(new File( inputpage.getContentItem().getAbsolutePath() ) );
-						upload(asset, inArchive, filestosend);
+						if( inputpage.length() == 0 )
+						{
+							saveurl = saveurl + "&field=errordetails&errordetails.value=output_not_found";
+						}
+						else
+						{
+							filestosend.add(new File( inputpage.getContentItem().getAbsolutePath() ) );
+							upload(asset, inArchive, type, filestosend);
+						}
 					}
 					PostMethod savemethod = new PostMethod(saveurl);
 					Element saveroot = execute(inArchive.getCatalogId(), savemethod);

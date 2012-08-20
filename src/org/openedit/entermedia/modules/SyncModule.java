@@ -43,7 +43,7 @@ public class SyncModule extends BaseMediaModule
 		UploadRequest properties = command.parseArguments(inReq);
 
 		String sourcepath = inReq.getRequestParameter("sourcepath");
-		String original = inReq.getRequestParameter("original");
+		//String original = inReq.getRequestParameter("original");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset target = archive.getAssetBySourcePath(sourcepath);
 		if (target == null)
@@ -64,26 +64,33 @@ public class SyncModule extends BaseMediaModule
 		archive.getAssetSearcher().updateData(inReq, fields, target);
 		archive.saveAsset(target, inReq.getUser());
 		List<FileUploadItem> uploadFiles = properties.getUploadItems();
+
+		
+		String type = inReq.findValue("uploadtype");
+		if( type == null )
+		{
+			type = "generated";
+		}
+		String	saveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/" + type + "/" + sourcepath;
+			
+		//String originalsroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
+
 		if (uploadFiles != null)
 		{
-			String generatedroot = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + sourcepath + "/";
-			String originalsroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
 			Iterator<FileUploadItem> iter = uploadFiles.iterator();
 			while (iter.hasNext())
 			{
 				FileUploadItem fileItem = iter.next();
 
 				String filename = fileItem.getName();
-				if (filename.equals(original))
+				if (type.equals("originals"))
 				{
-					properties.saveFileAs(fileItem, originalsroot + "/" + filename, inReq.getUser());
-
+					properties.saveFileAs(fileItem, saveroot, inReq.getUser());
 				}
 				else
 				{
-					properties.saveFileAs(fileItem, generatedroot + "/" + filename, inReq.getUser());
+					properties.saveFileAs(fileItem, saveroot + "/" + filename, inReq.getUser());
 				}
-				//TODO: Attachments?
 			}
 		}
 
