@@ -319,7 +319,7 @@ public class PushManager
 				Element asset = (Element) o;
 				result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
 			}
-			log.info("Sent " + server + "/" + inAsset.getSourcePath() + " with " + inFiles.size() + " generated files");
+			log.info("Sent " + server + "/" + inUploadType + "/" + inAsset.getSourcePath() + " with " + inFiles.size() + " generated files");
 			return result;
 		}
 		catch (Exception e)
@@ -375,7 +375,7 @@ public class PushManager
 			for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 			{
 				File file = (File) iterator.next();
-				FilePart part = new FilePart("file." + count, file.getName(), file);
+				FilePart part = new FilePart("file." + count, file.getName(),upload file);
 				parts.add(part);
 				count++;
 			}
@@ -582,49 +582,60 @@ asset: " + asset);
 				}
 				else
 				{
+
 					String presetid = hit.attributeValue("presetid");
 					String destinationid = hit.attributeValue("publishdestination");
 					
 					Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
 
 					Data publishedtask = convertAndPublish(inArchive, asset, publishtaskid, preset, destinationid);
+
+					Page inputpage = null;
+					String type = null;
+					if( !"original".equals(preset.get("type")))
+					{
+						String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("outputfile");
+						inputpage= inArchive.getPageManager().getPage(input);
+						type = "generated";
+					}
+					else
+					{
+						inputpage = inArchive.getOriginalDocument(asset);
+						type = "originals";
+					}
+					if( inputpage.length() == 0 )
+					{
+						saveurl = saveurl + "&field=status&status.value=error";
+						saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=error";
+						saveurl = saveurl + "&field=errordetails&errordetails.value=output_not_found";
+						PostMethod savemethod = new PostMethod(saveurl);
+						Element saveroot = execute(inArchive.getCatalogId(), savemethod);
+						continue;
+					}
+
 					String status = publishedtask.get("status");
+	
 					saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=" +  status;
 					saveurl = saveurl + "&field=status&status.value=" + status;
-	
-					String errordetails = publishedtask.get("errordetails");
 					if( status.equals("error") )
 					{
-						saveurl = saveurl + "&field=errordetails&errordetails.value=" + errordetails;
-					}
-					else if( destinationid.equals("0") )
+						String errordetails = publishedtask.get("errordetails");
+						if( errordetails != null )
+						{
+							saveurl = saveurl + "&field=errordetails&errordetails.value=" + errordetails;
+						}
+	
+					} 
+					else	if( destinationid.equals("0") )
 					{
 						//If this is a browser download then we need to upload the file
 						List<File> filestosend = new ArrayList<File>(1);
 
-						Page inputpage = null;
-						String type = null;
-						if( preset.get("type") != "original")
-						{
-							String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("outputfile");
-							inputpage= inArchive.getPageManager().getPage(input);
-							type = "generated";
-						}
-						else
-						{
-							inputpage = inArchive.getOriginalDocument(asset);
-							type = "originals";
-						}
-						if( inputpage.length() == 0 )
-						{
-							saveurl = saveurl + "&field=errordetails&errordetails.value=output_not_found";
-						}
-						else
-						{
-							filestosend.add(new File( inputpage.getContentItem().getAbsolutePath() ) );
-							upload(asset, inArchive, type, filestosend);
-						}
+						filestosend.add(new File( inputpage.getContentItem().getAbsolutePath() ) );
+						upload(asset, inArchive, type, filestosend);
 					}
+
+					
 					PostMethod savemethod = new PostMethod(saveurl);
 					Element saveroot = execute(inArchive.getCatalogId(), savemethod);
 				}
