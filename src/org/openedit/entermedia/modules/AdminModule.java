@@ -12,12 +12,7 @@ See the GNU Lesser General Public License for more details.
 
 package org.openedit.entermedia.modules;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +27,6 @@ import org.openedit.data.SearcherManager;
 import org.openedit.users.AllowViewing;
 import org.openedit.users.PasswordHelper;
 import org.openedit.users.UserSearcher;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;

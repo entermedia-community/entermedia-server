@@ -107,6 +107,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	
 	public Asset getAssetBySourcePath(String inSourcePath)
 	{
+		if( inSourcePath == null )
+		{
+			return null;
+		}
 		return getAssetBySourcePath(inSourcePath, false);
 	}
 

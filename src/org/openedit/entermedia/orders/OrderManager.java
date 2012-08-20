@@ -454,7 +454,7 @@ public class OrderManager
 
 			if( presetid == null)
 			{
-				presetid = "preview";
+				throw new OpenEditException("presetid is required");
 			}
 			
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
@@ -508,17 +508,25 @@ public class OrderManager
 			String destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
 			if( destination == null )
 			{
-				destination = properties.get("publishdestination.value");
+				destination = order.get("publishdestination");
 			}
 			if( destination != null)
 			{
 				Data publishqeuerow = publishQueueSearcher.createNewData();
 				publishqeuerow.setProperty("assetid", assetid);
+				publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
+				
 				publishqeuerow.setProperty("publishdestination", destination);
 				publishqeuerow.setProperty("presetid", presetid);
 				String exportname = archive.asExportFileName(asset, preset);
 				publishqeuerow.setProperty("exportname", exportname);
 				publishqeuerow.setProperty("status", "new");
+				
+				Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
+				if(Boolean.parseBoolean( dest.get("remotempublish") ) )
+				{
+					publishqeuerow.setProperty("remotempublishstatus", "new");
+				}
 				publishqeuerow.setSourcePath(asset.getSourcePath());
 				publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				publishQueueSearcher.saveData(publishqeuerow, inUser);

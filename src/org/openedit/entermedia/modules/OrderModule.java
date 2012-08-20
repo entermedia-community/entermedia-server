@@ -454,13 +454,9 @@ public class OrderModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
 
-		if (order.get("publishdestination") == null) {
-			String publishdestination = inReq
-					.findValue("publishdestination.value");
-			if (publishdestination == null) {
-				// throw new
-				// OpenEditException("publishdestination.value is required");
-			}
+		if (order.get("publishdestination") == null) 
+		{
+			String publishdestination = inReq.findValue("publishdestination.value");
 			order.setProperty("publishdestination", publishdestination);
 		}
 		List assetids = manager.addConversionAndPublishRequest(order, archive,
@@ -475,7 +471,7 @@ public class OrderModule extends BaseMediaModule {
 			order.setProperty("orderstatus", "pending");
 		}
 		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
-		log.info("Added conversion and publish requests for " + order.getId());
+		log.info("Added conversion and publish requests for order id:" + order.getId());
 	}
 
 	public Order placeOrderById(WebPageRequest inReq) {

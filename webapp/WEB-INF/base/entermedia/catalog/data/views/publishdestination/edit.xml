@@ -4,9 +4,10 @@
 	
 	<property id="publishtype"  />
 	<property id="notifyadmin" />
-	<property id="server" note="IP or server name/ID" />
+	<property id="server" note="IP or server name/ID servername + url;" />
 	<property id="url" />
 	<property id="onimport" />
+	<property id="remotempublish" />
 	
 	<property id="username" />
 	<property id="convertpreset" viewtype="multiselect"/>

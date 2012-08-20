@@ -44,6 +44,8 @@ public class PushManager
 	protected UserManager fieldUserManager;
 	protected HttpClient fieldClient;
 	private SAXReader reader = new SAXReader();
+	
+	//TODO: Put a 5 minute timeout on this connection. This way we will reconnect
 	public boolean login(String inCatalogId)
 	{
 		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
@@ -150,7 +152,7 @@ public class PushManager
 	}
 
 
-	public void uploadGenerated(MediaArchive archive, Collection presets, User inUser, Asset target, List savequeue)
+	public void uploadGenerated(MediaArchive archive, User inUser, Asset target, List savequeue)
 	{
 		Searcher searcher = archive.getAssetSearcher();
 		
@@ -391,7 +393,7 @@ public class PushManager
 			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
 			
 			if(inAsset.getName() != null )
-			{
+			{upload(target, archive, filestosend);
 				parts.add(new StringPart("original", inAsset.getName())); //What is this?
 			}
 			parts.add(new StringPart("id", prefix + inAsset.getId()));
@@ -521,7 +523,7 @@ asset: " + asset);
 
 	public Collection getNotConvertedAssets(MediaArchive inArchive)
 	{
-		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("pushstatus", "notallconverted");
+		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("pushstatus", "notallcoupload(target, archive, filestosend);nverted");
 		return hits;
 	}
 
@@ -535,8 +537,6 @@ asset: " + asset);
 			return;
 		}
 
-		Collection presets = inArchive.getCatalogSettingValues("push_convertpresets");
-
 		List tosave = new ArrayList();
 		//convert then save
 		for (Iterator iterator = inAssetsSaved.iterator(); iterator.hasNext();)
@@ -545,7 +545,7 @@ asset: " + asset);
 			//TODO Dont push locked assets?
 			
 			asset.setProperty("pushstatus", "notallconverted");
-			uploadGenerated(inArchive, presets, null, asset, tosave);
+			uploadGenerated(inArchive, null, asset, tosave);
 		}
 		inArchive.getAssetSearcher().saveAllData(tosave, null);
 
@@ -561,35 +561,66 @@ asset: " + asset);
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 
 		String url = server + "/media/services/rest/searchpendingpublish.xml?catalogid=" + targetcatalogid;
-		url = url + "&field=status&orderstatus.value=new&operation=exact&field=status&orderstatus.value=retry&operation=exact&field=status&orderstatus.value=pending&operation=exact";
+		url = url + "&field=remotempublishstatus&remotempublishstatus.value=new&operation=exact";
 		PostMethod method = new PostMethod(url);
 
 		try
 		{
-//			List<Part> parts = new ArrayList();
-//			parts.add(new StringPart("id", prefix + inAsset.getId()));
-//			
-//			Part[] arrayOfparts = parts.toArray(new Part[] {});
-//			method.setRequestEntity(new MultipartRequestEntity(arrayOfparts, method.getParams()));
-//			
 			Element root = execute(inArchive.getCatalogId(), method);
-			String orderid = root.attributeValue("orderid");
-			for (Object row : root.elements("order"))
+			for (Object row : root.elements("hit"))
 			{
-				Element order = (Element)row;
-				for( Object item: order.elements("orderitem"))
+				Element hit = (Element)row;
+				String sourcepath = hit.attributeValue("assetsourcepath");
+				Asset asset = inArchive.getAssetBySourcePath(sourcepath);
+				String publishtaskid = hit.attributeValue("id");
+				String saveurl = server + "/media/services/rest/savedata.xml?save=true&catalogid=" + targetcatalogid + "&searchtype=publishqueue&id=" + publishtaskid;
+				if( asset == null )
 				{
-					Element orderitem = (Element) item;
-					String sourcepath = orderitem.attributeValue("assetsourcepath");
-					String presetid = orderitem.attributeValue("presetid");
-					String destinationid = orderitem.attributeValue("destinationid");
-					convertAndPublish(inArchive, inArchive.getAssetBySourcePath(sourcepath), presetid, destinationid);
+					log.info("Asset not found: " + sourcepath);
+					saveurl = saveurl + "&field=status&status.value=error";
+					saveurl = saveurl + "&field=errordetails&errordetails.value=original_asset_not_found";
+					PostMethod savemethod = new PostMethod(saveurl);
+					Element saveroot = execute(inArchive.getCatalogId(), savemethod);
 				}
-				//result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
-				///TODO: Call the remote server and let it know we are done!
+				else
+				{
+					String presetid = hit.attributeValue("presetid");
+					String destinationid = hit.attributeValue("publishdestination");
+					
+					Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
+
+					Data publishedtask = convertAndPublish(inArchive, asset, publishtaskid, preset, destinationid);
+					String status = publishedtask.get("status");
+					saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=" +  status;
+					saveurl = saveurl + "&field=status&status.value=" + status;
+	
+					String errordetails = publishedtask.get("errordetails");
+					if( status.equals("error") )
+					{
+						saveurl = saveurl + "&field=errordetails&errordetails.value=" + errordetails;
+					}
+					else if( destinationid.equals("0") )
+					{
+						//If this is a browser download then we need to upload the file
+						List<File> filestosend = new ArrayList<File>(1);
+
+						Page inputpage = null;
+						if( preset.get("type") != "original")
+						{
+							String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("outputfile");
+							inputpage= inArchive.getPageManager().getPage(input);
+						}
+						else
+						{
+							inputpage = inArchive.getOriginalDocument(asset);
+						}
+						filestosend.add(new File( inputpage.getContentItem().getAbsolutePath() ) );
+						upload(asset, inArchive, filestosend);
+					}
+					PostMethod savemethod = new PostMethod(saveurl);
+					Element saveroot = execute(inArchive.getCatalogId(), savemethod);
+				}
 			}
-			//log.info("Sent " + server + "/" + inAsset.getSourcePath());
-			//return result;
 		}
 		catch (Exception e)
 		{
@@ -598,9 +629,8 @@ asset: " + asset);
 
 	}
 	
-	protected void convertAndPublish(MediaArchive inArchive, Asset inAsset, String presetid, String destinationid) throws Exception
+	protected Data convertAndPublish(MediaArchive inArchive, Asset inAsset, String publishqueueid, Data preset, String destinationid) throws Exception
 	{
-		Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
 		boolean needstobecreated = true;
 		String outputfile = preset.get("outputfile");
 
@@ -618,7 +648,7 @@ asset: " + asset);
 		{
 			Searcher taskSearcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "conversiontask");
 			//TODO: Make sure it is not already in here
-			SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid", presetid);
+			SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid", preset.getId());
 			HitTracker hits = taskSearcher.search(q);
 			if( hits.size() == 0 )
 			{
@@ -626,26 +656,34 @@ asset: " + asset);
 				newTask.setSourcePath(inAsset.getSourcePath());
 				newTask.setProperty("status", "new");
 				newTask.setProperty("assetid", assetid);
-				newTask.setProperty("presetid", presetid);
+				newTask.setProperty("presetid", preset.getId());
 				taskSearcher.saveData(newTask, null);
 			}
+			//TODO: Make sure it finished?
 			inArchive.fireMediaEvent("conversions/runconversion", null, inAsset);
 		}
 		
 		//Add a publish task to the publish queue
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "publishqueue");
-		Data publishqeuerow = publishQueueSearcher.createNewData();
-		publishqeuerow.setProperty("assetid", assetid);
-		publishqeuerow.setProperty("publishdestination", destinationid);
-		publishqeuerow.setProperty("presetid", presetid);
-		String exportname = inArchive.asExportFileName(inAsset, preset);
-		publishqeuerow.setProperty("exportname", exportname);
-		publishqeuerow.setProperty("status", "new");
-		publishqeuerow.setSourcePath(inAsset.getSourcePath());
-		publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		publishQueueSearcher.saveData(publishqeuerow, null);
+		Data publishqeuerow =  (Data)publishQueueSearcher.searchById("remote" + publishqueueid);
+		if( publishqeuerow == null )
+		{
+			publishqeuerow = publishQueueSearcher.createNewData();
+			publishqeuerow.setId("remote" + publishqueueid);
+			publishqeuerow.setProperty("status", "new");
+			publishqeuerow.setProperty("assetid", assetid);
+			publishqeuerow.setProperty("publishdestination", destinationid);
+			publishqeuerow.setProperty("presetid", preset.getId() );
+			String exportname = inArchive.asExportFileName(inAsset, preset);
+			publishqeuerow.setProperty("exportname", exportname);
+			publishqeuerow.setSourcePath(inAsset.getSourcePath());
+			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			publishQueueSearcher.saveData(publishqeuerow, null);
+		}
 		inArchive.fireMediaEvent("publishing/publishasset", null, inAsset);
 		
+		publishqeuerow =  (Data)publishQueueSearcher.searchById("remote" + publishqueueid);
+		return publishqeuerow;
 	}
 
 
