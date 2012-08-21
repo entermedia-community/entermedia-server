@@ -13,10 +13,6 @@
 	</td>
 	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
-		#if(!$detail.searchcomponent)
-				
-					<input name="operation" value="startswith" type="hidden" />
-		#end
 		#set( $viewtype = false )
 		#set( $viewtype = $detail.searchcomponent )
 		#if (!$viewtype)
@@ -34,6 +30,12 @@
 		#if (!$viewtype || $viewtype == "map")
 			#set ($viewtype = "default")
 		#end
+		#if (!$viewtype || $viewtype == "date")
+			#set ($viewtype = "datesearch")
+		#else
+			<input name="operation" value="startswith" type="hidden" />
+		#end
+
 
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )

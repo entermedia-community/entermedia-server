@@ -83,6 +83,9 @@ public void init() {
 				if(!inputpage.exists() || inputpage.length() == 0)
 				{
 					log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
+					//Change statys to pending so things can timeout
+					publishrequest.setProperty('status', 'pending');
+					queuesearcher.saveData(publishrequest, context.getUser());
 					continue;
 				}
 

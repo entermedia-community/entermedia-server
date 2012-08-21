@@ -23,6 +23,14 @@
 		#if (!$viewtype || $viewtype == "text")
 			#set ($viewtype = "default")
 		#end
+		
+		#if (!$viewtype || $viewtype == "date")
+			#set ($viewtype = "datesearch")
+		#else
+			<input name="operation" value="startswith" type="hidden" />
+		#end
+		
+		
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
 			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
