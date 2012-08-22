@@ -110,6 +110,7 @@ public class PushManager
 		{
 			query.addMatches("category","index");
 			query.addNot("pushstatus","complete");
+			query.addNot("pushstatus","nogenerated");
 			query.addNot("pushstatus","error");
 		}
 		else
@@ -125,9 +126,9 @@ public class PushManager
 			log.info("No new assets to push");
 			return;
 		}
-			
+		log.info("processing " + hits.size() + " assets to push");
 		List savequeue = new ArrayList();
-
+		int noasset = 0;
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{			
 			Data hit = (Data) iterator.next();
@@ -141,14 +142,17 @@ public class PushManager
 					savequeue.clear();
 				}
 			}
+			else
+			{
+				noasset++;
+			}
 		}
+		log.info("Could not load " + noasset + " assets");
 		if( savequeue.size() > 0 )
 		{
 			pushAssets(archive, savequeue);
 			savequeue.clear();
 		}
-		//searcher.saveAllData(savequeue, inUser);
-
 	}
 
 
@@ -203,6 +207,11 @@ public class PushManager
 				saveAssetStatus(searcher, savequeue, target, "error", inUser);
 				log.error("Could not push",e);
 			}
+		}
+		else
+		{
+			//upload(target, archive, "generated", filestosend);
+			saveAssetStatus(searcher, savequeue, target, "nogenerated", inUser);
 		}
 	}
 
@@ -511,6 +520,27 @@ asset: " + asset);
 		return hits;
 	}
 
+	public Collection getProcessedAssets(MediaArchive inArchive)
+	{
+		SearchQuery q = inArchive.getAssetSearcher().createSearchQuery();
+		q.setAndTogether(false);
+		q.append("pushstatus", "nogenerated");
+		q.append("pushstatus", "error");
+		q.append("pushstatus", "notallconverted");
+		q.append("pushstatus", "complete");
+		
+		HitTracker hits = inArchive.getAssetSearcher().search(q);
+		return hits;
+	}
+
+
+	public Collection getNoGenerated(MediaArchive inArchive)
+	{
+		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("pushstatus", "nogenerated");
+		return hits;
+	}
+
+
 
 	public Collection getErrorAssets(MediaArchive inArchive)
 	{
@@ -520,7 +550,7 @@ asset: " + asset);
 
 	public Collection getNotConvertedAssets(MediaArchive inArchive)
 	{
-		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("pushstatus", "notallcoupload(target, archive, filestosend);nverted");
+		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("pushstatus", "notallconverted");
 		return hits;
 	}
 
@@ -539,9 +569,6 @@ asset: " + asset);
 		for (Iterator iterator = inAssetsSaved.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-			//TODO Dont push locked assets?
-			
-			asset.setProperty("pushstatus", "notallconverted");
 			uploadGenerated(inArchive, null, asset, tosave);
 		}
 		inArchive.getAssetSearcher().saveAllData(tosave, null);
@@ -564,7 +591,10 @@ asset: " + asset);
 		try
 		{
 			Element root = execute(inArchive.getCatalogId(), method);
-			log.info("polled " + root.elements().size() + " children" );
+			if( root.elements().size() > 0 )
+			{
+				log.info("polled " + root.elements().size() + " children" );
+			}
 			for (Object row : root.elements("hit"))
 			{
 				Element hit = (Element)row;
@@ -704,6 +734,7 @@ asset: " + asset);
 		publishqeuerow =  (Data)publishQueueSearcher.searchById("remote" + publishqueueid);
 		return publishqeuerow;
 	}
+
 
 
 }

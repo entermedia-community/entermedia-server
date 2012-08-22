@@ -199,7 +199,13 @@ public class SyncModule extends BaseMediaModule
 		
 		Collection all = archive.getAssetSearcher().getAllHits(inReq);
 		inReq.putPageValue("assets", all);
-		
+
+		Collection processed = getPushManager().getProcessedAssets(archive);
+		inReq.putPageValue("processedassets", processed);
+
+		Collection nogenerated = getPushManager().getNoGenerated(archive);
+		inReq.putPageValue("nogenerated", nogenerated);
+
 		Collection completed = getPushManager().getCompletedAssets(archive);
 		inReq.putPageValue("completedassets", completed);
 		Collection errorassets = getPushManager().getErrorAssets(archive);
