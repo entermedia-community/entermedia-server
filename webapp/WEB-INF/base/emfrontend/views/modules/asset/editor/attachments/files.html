@@ -190,7 +190,7 @@
 					$("#" + id + "_row > div .arrow").addClass('down');
 				}
 				
-				$("#" + id + "_upload-file").load('$attachmentroot/upload.html?assetid=${asset.id}&fileid=$file.id' + id);
+				$("#" + id + "_upload-file").load('$attachmentroot/upload.html?assetid=${asset.id}&fileid=' + id);
 				$("#" + id + "_upload-file").show("fast");
 				$("#" + id + "_upload-file div").css('padding-left', padding );
 				$("#" + id + "_row > div").addClass('selected');
@@ -344,7 +344,7 @@
 	});
 
 	repaint = function () {
-		jQuery("#attachments-tree").load("$apphome$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1");
+		jQuery("#attachments-tree").load("$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1");
 		
 		
 	}
