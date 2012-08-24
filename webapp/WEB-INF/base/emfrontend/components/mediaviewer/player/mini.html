@@ -41,6 +41,16 @@
                                 #end
                             #end
                         #end
+                        #if ($asset.getCategories().size() > 0)
+                            <strong>Categories</strong><br/>
+                            #foreach ($tag in $asset.getCategories())
+                                #if ( $velocityCount <= 10 )
+                                <a href="$home$apphome/views/categories/${tag.id}/index.html">$tag</a> 
+                                #elseif ( $velocityCount == 11 )
+                                    <a class="ajax" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                                #end
+                            #end
+                        #end
                     </p>
                 </div>
             </div>
@@ -55,3 +65,4 @@
         $('#mp-asset-info').show();
     });
 </script>
+
