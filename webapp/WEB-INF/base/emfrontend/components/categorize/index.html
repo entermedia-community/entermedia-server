@@ -18,7 +18,7 @@
 				 #if( $velocityCount > 1) #set($tags = "$tags > ") #end
 				 #set($tags = "$tags $parent.getName()" )
 			#end	
-			<a class="category tooltip" href="$home$apphome/views/categories/${$category.id}.html" title="$tags">$category.getName()</a>
+			<a class="category tooltip" href="$home$apphome/views/categories/${category.id}.html" title="$tags">$category.getName()</a>
 			#if($caneditasset)
 				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id"></a>
 			#end
