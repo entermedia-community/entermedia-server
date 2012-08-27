@@ -4,31 +4,33 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
-import org.openedit.repository.filesystem.StringItem;
+import javax.servlet.http.HttpServletRequest;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.modules.BaseModule;
 import com.openedit.modules.translations.Language;
 import com.openedit.modules.translations.Translation;
-import com.openedit.modules.translations.TranslationEventListener;
-import com.openedit.modules.translations.TranslationParser;
 import com.openedit.modules.translations.TranslationSearcher;
-import com.openedit.page.FileFinder;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
-import com.openedit.page.PageSettings;
-import com.openedit.util.PathUtilities;
-import com.openedit.util.URLUtilities;
+import com.openedit.page.PageRequestKeys;
 import com.openedit.web.Browser;
 
 public class TranslationModule extends BaseModule
 {
+	
+	
+	
+	String[] languages = new String [] {"af","sq","ar-DZ","ar","hy","az","eu","bs","bg","ca","zh-HK","zh-CN","zh-TW","hr","cs","da","nl-BE","nl","en-AU","en-NZ","en-GB","eo","et","fo","fa","fi","fr","fr-CH","gl","ge","de","el","he","hi","hu","is","id","it","ja","kk","km","ko","lv","lt","lb","mk","ml","ms","no","pl","pt","pt-BR","rm","ro","ru","sr","sr-SR","sk","sl","es","sv","ta","th","tj","tr","uk","vi","cy-GB"};
+	Collection list = Arrays.asList(languages);
+	
 	public void listFilesInBase(WebPageRequest inReq)
 	{
 		//get a list
@@ -283,7 +285,36 @@ public class TranslationModule extends BaseModule
 		
 	}
 
-	
+	public void loadBrowserLanguage( WebPageRequest inReq )
+	{
+		HttpServletRequest req = inReq.getRequest();
+		if(req != null){
+			Browser browser = new Browser(req.getHeader("User-Agent"));
+			browser.setHttpServletRequest(req);
+			browser.setLocale( req.getLocale() );
+			inReq.putPageValue(PageRequestKeys.BROWSER, browser);
+		}
+		
+		
+		 String temp = req.getLocale().toString();
+		 temp = temp.replace("_","-").toLowerCase();
+		 String[] split = temp.split("-");
+		 String browserlanguage = null;
+		 if(split.length == 1){
+			 
+				 browserlanguage = split[0];
+			 
+		 } else{
+			 browserlanguage = split[0] + "-" + split[1].toUpperCase();
+					 
+		 }
+		 if(list.contains(browserlanguage)){
+			 inReq.putPageValue("browserlanguage", browserlanguage);
+		 }
+		
+		
+	}
 
+	
 	
 }

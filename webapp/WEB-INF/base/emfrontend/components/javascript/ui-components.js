@@ -61,17 +61,50 @@ uiload = function() {
 		);
 	}
 	
+	
+	
+	
+	jQuery.datepicker.setDefaults(jQuery.extend({
+		
+		
+		showOn: 'button',
+		
+		buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
+		buttonImageOnly: true,
+		changeMonth: true,
+		changeYear: true	
+
+		
+	
+	}, jQuery.datepicker.regional['$!browserlanguage']));
+	
 	jQuery("input.datepicker").livequery(
 			function() 
 			{
-				jQuery(this).datepicker(
-				{
-					dateFormat: 'mm/dd/yy', showOn: 'button',
-					buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
-					buttonImageOnly: true,
-					changeMonth: true,
-					changeYear: true
-				});
+				var targetid = jQuery(this).data("targetid");
+							
+				
+				jQuery(this).datepicker( {
+					altField: "#"+ targetid,
+					altFormat: "mm/dd/yy"
+				
+				}
+				
+				
+				
+						
+				
+				);
+				
+				var current = jQuery("#" + targetid).val();
+				
+				if(current != null){
+					//alert(current);	
+					var date = jQuery.datepicker.parseDate('mm/dd/yy', current);
+					jQuery(this).datepicker("setDate", date );
+							
+				}
+				
 			}
 		);
 	

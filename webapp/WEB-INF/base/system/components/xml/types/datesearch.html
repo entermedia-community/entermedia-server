@@ -7,13 +7,14 @@
 #set ($inputid = $inputid.replaceAll("/",""))
 #if ($detail.get("daterange")=="true")
 	<input name="operation" type="hidden" value="after" />
-	<input name="${inputname}.value" class="datepicker" id="datevalue${inputid}" value="$!val"
+	<input name="${inputname}.value"  id="datevalue${inputid}before" 
 		size="8" type="text">
+	<input type="text" class="datepicker " data-targetid="datebox${inputid}before" value="$!val" size="8" /> 	
 	to
 	<input name="field" value="${inputname}end" type="hidden">
 	<input name="operation" type="hidden" value="before" />
-	<input name="${inputname}end.value" class="datepicker" id="datevalue${inputid}" value="$!val" size="8" type="text">
-	
+	<input name="${inputname}end.value" class="" id="datevalue${inputid}after"  size="8" type="text">
+	<input type="text" class="datepicker " data-targetid="datebox${inputid}after" value="$!val" size="8" /> 
 #else
 
 	#set( $op = $term.getParameter("op") )
@@ -27,8 +28,12 @@
 		<option value="before30" #if( $op && $op == "before30" )selected #end>[[Past month]]</option>
 		<option value="before365" #if( $op && $op == "before365" )selected #end>[[Past year]]</option>
 	</select>
+	
 	<span id="datevalue${inputid}" style="display: none; width: 1px;">
-	<input name="${inputname}.value" class="datepicker" id="datebox${inputid}" value="$!val" size="8" type="text">	
+	<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><br/>	
+	<input type="text" class="datepicker " data-targetid="datebox${inputid}" /> 
+	
+	
 	</span>
 	
 	<span id="daterange${inputid}" style="display: none;">
@@ -42,9 +47,13 @@
 		#set($after = $context.getRequestParameter("${inputname}.after"))
 		#set($before = $context.getRequestParameter("${inputname}.before"))
 	#end
-	<input name="${inputname}.after" class="datepicker" id="dateafter${inputid}" value="$!after" size="8" type="text">
+	<input name="${inputname}.after" class="" id="dateafter${inputid}" value="$!after" size="8" type="hidden">
+	<input type="text" class="datepicker " data-targetid="dateafter${inputid}" value="$!after" size="8" /> 	
+
 	<br />
-	<input name="${inputname}.before" class="datepicker" id="datebefore${inputid}" value="$!before" size="8" type="text">
+	<input name="${inputname}.before" class="" id="datebefore${inputid}" value="$!before" size="8" type="hidden">
+	<input type="text" class="datepicker " data-targetid="datebefore${inputid}" value="$!before" size="8" /> 	
+
 	</span>
 	
 	<script type="text/javascript">

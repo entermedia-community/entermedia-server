@@ -1,5 +1,6 @@
 <page>
 	<generator name="velocityGenerator" />
 	 <path-action name="MultiSearchModule.loadApplicationId" alltypes="true"/>
+	 <path-action name="TranslationModule.loadBrowserLanguage" alltypes="true"/>
 
 </page>
