@@ -1,13 +1,23 @@
-<div id="playerwindow${hit.id}">
 
-<a class="ajax" targetdiv="playerwindow${hit.id}" 
-	href="$home$apphome/components/mediaviewer/audioplayer/minimal.html?assetid=$hit.id&width=80" >
+    <script type="text/javascript" src="$home$apphome/components/javascript/jquery.jplayer.min.js">  </script>
+<link  rel="stylesheet" type="text/css" href="$home$themeprefix/jplayer/premium.pixels/premium-pixels.css"/>
 
-	<div id="player_container">
-		<ul id="player_controls">
-			<li id="player_play">play</li>
-		</ul>
-	</div>	
-</a>
 
-</div>
+    <div id="jquery_jplayer_$hit.id" class="jp-jplayer"></div>
+
+        <div id="jp_container_$hit.id" class="jp-audio mini">
+            <div class="jp-type-single">
+                <div class="jp-gui jp-interface">
+                   <ul class="jp-controls">
+                            <li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+                            <li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+                    </ul>
+                    <div class="jp-progress">
+                        <div class="jp-seek-bar">
+                            <div class="jp-play-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
