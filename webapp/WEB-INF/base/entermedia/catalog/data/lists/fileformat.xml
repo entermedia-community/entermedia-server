@@ -20,6 +20,7 @@
 	<property id="mov" rendertype="video" creator="ffmpeg">MOV</property>
 	<property id="moov" rendertype="video" creator="ffmpeg">MooV</property>
 	<property id="mp3" rendertype="audio" creator="audio" >MP3</property>
+	<property id="ptf"  rendertype="default" >PTF</property>
 	<property id="aiff" rendertype="audio" creator="audio" >AIFF</property>
 	<property id="mts" rendertype="video" creator="ffmpeg">MTS</property>
 	<property id="m2ts" rendertype="video" creator="ffmpeg">M2TS</property>
