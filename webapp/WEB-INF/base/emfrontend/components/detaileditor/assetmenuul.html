@@ -33,7 +33,7 @@
     #set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 
     #if($link.id =="comment")
-    #set( $text = "$text (<span id='assetcommentscount'>$comments.size()</span>)")
+    #set( $text = "$text ($comments.size())" )
     #set ($args = "assetid=$asset.getId()&sourcepath=$sourcepath&hitssessionid=$!{hitssessionid}")
     #elseif ($link.id == "viewassetedit")
     #set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
