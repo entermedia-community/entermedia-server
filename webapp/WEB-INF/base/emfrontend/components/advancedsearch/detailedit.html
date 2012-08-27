@@ -10,6 +10,7 @@
 		</div>
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 		#if(!$detail.isDate())
+		
 					<input name="operation" value="startswith" type="hidden" />
 		#end
 	
@@ -27,7 +28,8 @@
 		#if (!$viewtype || $viewtype == "date")
 			#set ($viewtype = "datesearch")
 		#else
-			<input name="operation" value="startswith" type="hidden" />
+		
+		
 		#end
 		
 		
