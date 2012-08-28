@@ -2423,6 +2423,68 @@ tr.odd {
     width: 238px;
     margin-top: 6px;
 }
+
+/* HTML5 UPLOADER STYLES */
+
+#emdropbox {
+    width: 140px;
+    padding: 40px 60px;
+    border: 6px dashed #bbb;
+    text-align: center;
+    color: #bbb;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+#pickfiles {
+    width: 250px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 14px !important;
+    margin-top: 20px;
+}
+#upload {
+    width: 250px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-size: 14px !important;
+    margin-top: 20px;
+    float: right;
+}
+#up-files-list {
+    padding: 0;
+    margin: 15px 0;
+}
+#up-files-list li {
+    padding:0;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+    list-style: none;
+}
+#up-files-list li a {
+    padding: 5px 10px;
+    display: block;
+    margin: 0;
+    color: #444;
+}
+#up-files-list li a:hover {
+    background: #f3f3f3;
+}
+#up-files-list li .delete-row {
+    background: url('../images/iconset-10x10.png') 20px 10px;
+    opacity: 0.7;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    display: block;
+    margin-top: 5px;
+    margin: -18px 5px 0 0px;
+}
+#up-files-list li .delete-row:hover {
+    background: url('../images/iconset-10x10.png') 20px 10px;
+    opacity: 1;
+}
+
 /* ATTACHMENTS STYLES */
 
 #attachments-container {
