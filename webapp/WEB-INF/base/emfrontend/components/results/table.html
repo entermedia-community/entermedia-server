@@ -72,23 +72,29 @@ toggleHit =  function(div, count, sessionid)
     return false;
 }
 
-jQuery("input[name=pagetoggle]").click(function () {
-      
+jQuery("a.selectpage").click(function () 
+{
+	jQuery('input[name=pagetoggle]').attr('checked','checked');
+	 jQuery('.selectionbox').attr('checked','checked');
+});
+jQuery("a.deselectpage").click(function () 
+{
+	jQuery('input[name=pagetoggle]').removeAttr('checked');
+	jQuery('.selectionbox').removeAttr('checked');  
+});
+
+jQuery("input[name=pagetoggle]").click(function () 
+		{
     	   var status = jQuery('input[name=pagetoggle]').is(':checked');
-    	   if(status){
-    		   //jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
+    	   if(status)
+    	   {
     		   jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"page"});
     		   jQuery('.selectionbox').attr('checked','checked');
-           	   }
-        	   else{
-        	       jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
-        	       jQuery('.selectionbox').removeAttr('checked');  
-        	   }
-    	  
+           }
+           else
+           {
+       	       jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
+       	       jQuery('.selectionbox').removeAttr('checked');  
+       	   }
        });
-     
-      
-
-
-
 </script>	
