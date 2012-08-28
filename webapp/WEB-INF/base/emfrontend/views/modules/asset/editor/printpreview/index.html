@@ -10,7 +10,7 @@ $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
     
 #foreach( $viewpath in $views.keySet() )
     #set( $target = $views.get($viewpath) )
-    #display("generic.html" $target.name "$asset.id" $viewpath $print)
+    #displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
 #end
  
 </div>

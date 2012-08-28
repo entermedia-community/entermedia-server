@@ -16,16 +16,16 @@
 #if($permissionvalue == "true")
 
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/$target.id") )
-  #display("generic.html" $target.name "$asset.id" "asset/assettype/$asset.assettype/$target.id" $print)
+  #displaydetails("generic.html" $target.name "$asset.id" "asset/assettype/$asset.assettype/$target.id" $print)
 #else
-  #display("generic.html" $target.name "$asset.id" "asset/assettype/default/$target.id" $print)
+  #displaydetails("generic.html" $target.name "$asset.id" "asset/assettype/default/$target.id" $print)
 #end
 #end
 
 #end
 
- ##display("generic.html" "$asset.id" "asset/details" $print)
-  ##display("approvals.html" "$asset.id" "approvals/details" $print)
+ ##displaydetails("generic.html" "$asset.id" "asset/details" $print)
+  ##displaydetails("approvals.html" "$asset.id" "approvals/details" $print)
  
  
  #if( $asset.assettype )
