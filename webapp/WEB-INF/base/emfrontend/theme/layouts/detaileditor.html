@@ -1,7 +1,7 @@
 <div id="detaileditor">
     #set( $moduleid = $context.findValue("module") )
     #set ( $hitssessionid = $context.findValue("hitssessionid") )
-    #macro (display $filename $label $assetid $view $print)
+    #macro (displaydetails $filename $label $assetid $view $print)
     $context.putPageValue("view", $view)
     #if ($print && $print == "true")
     $pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=asset", $context)
