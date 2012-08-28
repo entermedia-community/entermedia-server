@@ -12,20 +12,22 @@
 <div class="subcolumns">
     
     <div id="right-sidebar" style="padding: 0 20px 0 0">
-        
-        <div class="detailsbox ui-widget">
-            <div class="ui-widget-header">Drag and Drop Below</div>
-            <div class="ui-widget-content emrounded">
-                    
-                    <div id="emdropbox">
-                        
-                    </div>
- 
-            </div>
+           
+        <div id="emdropbox">
+            Drag and Drop files here
         </div>
+        <a class="btn" id="pickfiles">Pick Files...</a>
+        
+        <ul id="up-files-list">
+            <li><a href="#">File 1</a><a class="delete-row ir" href="#">Delete</a></li>
+            <li><a href="#">File 1</a><a class="delete-row ir" href="#">Delete</a></li>
+            <li><a href="#">File 1</a><a class="delete-row ir" href="#">Delete</a></li>
+            <li><a href="#">File 1</a><a class="delete-row ir" href="#">Delete</a></li>
+            <li><a href="#">File 1</a><a class="delete-row ir" href="#">Delete</a></li>
+        </ul>
         
     </div>
-    <div id="main-area">
+    <div id="main-area" style="vertical-align: top;">
         
             
         <div class="ui-widget uipanel">
@@ -65,8 +67,9 @@
              
             </div> 
         </div>
-
+        <a class="btn green" id="upload">Upload</a> 
     </div>
+    
 </div>
 
 </form>
