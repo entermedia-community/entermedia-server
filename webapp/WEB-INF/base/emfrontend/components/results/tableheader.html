@@ -3,9 +3,9 @@
 	<th class="firstheader" id="th-checkbox"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end />
 	    <div id="select-dropdown-open" class="down"></div>
 	    <ul id="select-dropdown" style="display: none;">
-	        <li><a href="#">Select This Page</a></li>
-	        <li><a href="#">Select All Results</a></li>
-	        <li><a href="#">Deselect All</a></li>
+	        <li><a class="ajax selectpage" targetdiv="drag-columns-text" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">Select This Page</a></li>
+	        <li><a class="ajax  selectpage" targetdiv="drag-columns-text" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">Select All Results</a></li>
+	        <li><a class="ajax  deselectpage" targetdiv="drag-columns-text" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">Deselect All</a></li>
 	    </ul>
 	</th>
 #end	
