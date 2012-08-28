@@ -217,6 +217,10 @@
  	 <userprofile property="printpreview" equals="true" />
   </permission>
   
+  <permission name="editmetadatasetup">
+ 	 <userprofile property="editmetadatasetup" equals="true" />
+  </permission>
+  
   <!-- USER DEFUALTS -->
   
 	<permission name="viewvoting">
@@ -317,6 +321,7 @@
 
 	</permission>
 
+	
   
   
 </page>
