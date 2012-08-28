@@ -17,6 +17,11 @@ uiload = function() {
 		}
 	});
 	
+	
+	
+	
+	
+	
 	$('#maximize').click( function(){
 		
 		html = $('#maximize').html()
@@ -172,6 +177,58 @@ uiload = function() {
 			}
 		);
 
+	
+	
+
+	jQuery(".jp-jplayer").each(function(){
+		
+	
+	//	alert("Found a player, setting it up");	
+		var url = jQuery(this).data("url");
+			
+	    jQuery(this).jPlayer({
+	        ready: function (event) {
+	            $(this).jPlayer("setMedia", {
+	                mp3:url
+	            });
+	        },
+	        swfPath: '/emshare/components/javascript',
+	        supplied: "mp3",
+	        wmode: "window"
+	    });
+	    jQuery('.jp-play').click(function(e){
+	    	e.preventDefault();
+	    	e.stopPropagation();
+	    	jQuery(this).hide();
+	        var pause = jQuery(this).data("pause");
+	    	
+	        $("#" + pause).show();
+	    	
+	    	var target = jQuery(this).data("target");
+	    	jQuery("#" + target).jPlayer("play");
+	    	
+	    });
+	    jQuery('.jp-pause').click(function(e){
+	    	e.preventDefault();
+	    	e.stopPropagation();
+	    	jQuery(this).hide();
+	    	
+	    	var pause = jQuery(this).data("play");
+	    	$("#" + pause).show();
+	    	
+	    	
+	    	
+	    	var target = jQuery(this).data("target");
+	    	jQuery("#" + target).jPlayer("pause");
+	    	
+	    	
+	    });
+	});
+
+
+	
+	
+	
 }
 
 function resize() {
