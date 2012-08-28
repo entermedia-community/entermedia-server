@@ -1,6 +1,13 @@
 <tr id="tableheader">
 #if( $showtoolbar )
-	<th class="firstheader" id="th-checkbox"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end /></th>
+	<th class="firstheader" id="th-checkbox"><input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end />
+	    <div id="select-dropdown-open" class="down"></div>
+	    <ul id="select-dropdown" style="display: none;">
+	        <li><a href="#">Select This Page</a></li>
+	        <li><a href="#">Select All Results</a></li>
+	        <li><a href="#">Deselect All</a></li>
+	    </ul>
+	</th>
 #end	
 
 #set( $edit = $context.getRequestParameter("editheader"))

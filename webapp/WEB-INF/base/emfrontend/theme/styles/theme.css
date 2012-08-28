@@ -3360,6 +3360,47 @@ body #emcontainer .emasseteditorarea {
 #main-results-table #tableheader th.sortable.currentsort.down {
     background: rgba(50,79,16,0.1) url('../images/sort-desc.png') right 12px no-repeat;
 }
+#select-dropdown-open.down {
+    background: url('../images/sort-desc.png');
+    width: 10px;
+    height: 6px;
+    position: relative;
+    left: 36px;
+    top: 2px;
+}
+#select-dropdown-open.up {
+    background: url('../images/sort-asc.png');
+    width: 10px;
+    height: 6px;
+    position: relative;
+    left: 35px;
+    top: 3px;
+}
+#select-dropdown {
+    position: absolute;
+    background: #f7f7f7 url('../images/top-shadow.png') center -1px repeat-x;
+    border: 1px solid #bbb;
+    border-top: none;
+    box-shadow: 0 1px 4px 2px rgba(0,0,0,0.1);
+    padding: 0;
+    margin: 14px 0 0 10px;
+}
+#select-dropdown li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+#select-dropdown li a {
+    text-align: left;
+    display: block;
+    padding: 5px 10px;
+    color: #444;
+    text-shadow: none;
+    font-weight: normal;
+}
+#select-dropdown li a:hover {
+    background: #e9e9e9;   
+}
 .settings-table {
     margin: 0 0 20px 0;
     width: 100%;
