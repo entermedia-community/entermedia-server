@@ -9,7 +9,7 @@
 
 
 <div class="subcolumns" style="white-space:nowrap;"> 
-    <ul style="margin: 0; padding: 5px 0 5px 0;">  
+    <ul id="filters-sidebar">  
 #foreach($type in $types )
 
     
@@ -20,7 +20,7 @@
     #end
 	
 			
-	<li style="list-style-type:none; border-bottom: 1px solid #eee; margin: 5px 0 8px 0; padding: 0 0 5px 10px;"><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/> $type.name</li> 			
+	<li><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/><span> $type.name</span></li> 			
 				
 			
 
