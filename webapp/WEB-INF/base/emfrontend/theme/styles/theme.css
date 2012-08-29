@@ -5700,8 +5700,14 @@ td[title]:hover:before {
 }
 
 /* DRAG AND DROP */
-
 .ui-draggable-dragging {
+    background: transparent !important;
+    z-index: 100;
+    opacity: 0.4;
+}
+
+
+#workarea .ui-draggable-dragging {
     width: inherit;
     border-top: 1px solid #aaa !important;
     background: #fff !important;
