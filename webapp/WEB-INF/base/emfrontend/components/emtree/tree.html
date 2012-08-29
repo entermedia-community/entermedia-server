@@ -21,7 +21,7 @@
 		#set( $expanded = $webtree.isExpanded($cat) )
 		#set( $checked = $asset.isInCategory($cat))
 		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id" data-depth="$depth">
-			<div style="padding-left: ${padding}px">
+			<div class="categorydroparea" style="padding-left: ${padding}px">
 			    #if( $showinput )
 			    <div class="checkbox">
 			         <input name="categoryid" class="field" value="$cat.id" type="checkbox" #if( $render.isIdSelected($cat.id) ) checked="true" #end  >
