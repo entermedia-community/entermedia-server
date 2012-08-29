@@ -1357,6 +1357,12 @@ small {
     position: relative;
     text-align: center;
 }
+.sidebar-media .mini {
+    margin-left: 6px;
+}
+.sidebar-media .mini + .sidebar-caption {
+    top: -15px;
+}
 .sidebar-caption {
     text-align: center;
     position: absolute;
@@ -2470,6 +2476,13 @@ tr.odd {
 #up-files-list li a:hover {
     background: #f3f3f3;
 }
+#up-files-list li a span {
+    width: 230px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+}
 #up-files-list li .delete-row {
     background: url('../images/iconset-10x10.png') 20px 10px;
     opacity: 0.7;
@@ -2786,6 +2799,7 @@ table.emdata th {
     padding: 0 15px;
     text-align: center;
 }
+.emtree .checkbox .field
 .emtree ul li div.selected {
     background: #c9e8f2;
 }
@@ -5267,6 +5281,32 @@ p.resultsnumber {
     width: auto;
 }
 
+/* FILTERS SIDEBAR STYLES */
+
+#filters-sidebar {
+    margin: 10px 0;
+    padding: 0 5px;
+}
+#filters-sidebar li {
+    list-style-type:none; 
+    border-bottom: 1px solid #eee; 
+    padding: 8px 0;
+    font-size: 12px;
+}
+#filters-sidebar li input {
+    margin-right: 7px;
+}
+#filters-sidebar li input:checked + span {
+    font-weight: bold;
+}
+#filters-sidebar li span {
+    width: 170px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
 /* BUTTONS */
 
 ul.embuttons li a span {
@@ -5660,8 +5700,14 @@ td[title]:hover:before {
 }
 
 /* DRAG AND DROP */
-
 .ui-draggable-dragging {
+    background: transparent !important;
+    z-index: 100;
+    opacity: 0.4;
+}
+
+
+#workarea .ui-draggable-dragging {
     width: inherit;
     border-top: 1px solid #aaa !important;
     background: #fff !important;

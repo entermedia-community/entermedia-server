@@ -1,4 +1,4 @@
-<tr rowid="$home$apphome/views/assets/$sourcepath/index.html?hitssessionid=$hits.getSessionId()" assetid="${hit.id}" class="assetdraggable">
+<tr rowid="$home$apphome/views/assets/$sourcepath/index.html?hitssessionid=$hits.getSessionId()" >
 #if( $showtoolbar )
 	<td class="borderedcell checkbox" noclick="true"> 
 		
@@ -6,7 +6,7 @@
 
 	</td>
 #end	
-	<td class="resultstablecell thumbnail">
+	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >
 $pages.include("$apphome/components/results/thumbnails/small.html",$context)		
 	</td>
 

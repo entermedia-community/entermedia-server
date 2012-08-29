@@ -25,12 +25,12 @@ toggleUserProperty = function(property, onsuccess) {
 
 outlineSelectionCol = function(event, ui)
 {
-	jQuery(this).addClass("headerdraggableenabled");
+	jQuery(this).addClass("selected");
 }
 	
 unoutlineSelectionCol = function(event, ui)
 {
-	jQuery(this).removeClass("headerdraggableenabled");
+	jQuery(this).removeClass("selected");
 }
 
 outlineSelectionRow = function(event, ui)
@@ -831,16 +831,15 @@ onloadselectors = function()
 				);
 			}
 		);
-	jQuery(".assetdropcategory .treerowtext").livequery(
+	jQuery(".assetdropcategory .categorydroparea").livequery(
 			function()
 			{
 				jQuery(this).droppable(
 					{
 						drop: function(event, ui) {
-							var assetid = ui.draggable.attr("assetid");
+							var assetid = ui.draggable.data("assetid");
 							var node = $(this);
-							var categoryid = node.attr("nodeid");
-							
+							var categoryid = node.parent().data("nodeid");
 							
 //							var tree = this.nearest(".categorytree");
 //							var treeid = tree.data("")

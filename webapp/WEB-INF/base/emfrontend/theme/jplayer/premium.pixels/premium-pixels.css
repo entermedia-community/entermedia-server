@@ -28,7 +28,8 @@
   line-height: 1.6;
 }
 .jp-audio.mini {
-    width: 80px;
+    width: 117px;
+    padding: 0;
 }
 .jp-audio a {
   text-decoration: none;
@@ -300,7 +301,7 @@
   display: none;
   visibility: hidden;
 }
- .jp-time-holder {
+.jp-time-holder {
     display: block;
     visibility: visible;
     font-size: 10px;
@@ -319,6 +320,10 @@
 }
 .jp-current-time {
     font-weight: bold;
+}
+.mini .jp-time-holder {
+    top: -24px;
+    left: 27px;
 }
 
 /* TIME HOLDER
@@ -443,3 +448,4 @@
     background-position: -7px;
   }
 }
+
