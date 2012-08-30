@@ -2531,9 +2531,10 @@ tr.odd {
     display: block;
     cursor: pointer;
 }
-#tree ul li div.selected {
+#tree ul li div.selected, .emtree ul li div.selected {
     background: #c9e8f2;
-}#tree ul li div.selected:hover {
+}
+#tree ul li div.selected:hover, .emtree ul li div.selected:hover {
     background: #c9e8f2;
 }
 #tree ul li div:hover {
