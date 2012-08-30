@@ -1357,6 +1357,12 @@ small {
     position: relative;
     text-align: center;
 }
+.sidebar-media .mini {
+    margin-left: 6px;
+}
+.sidebar-media .mini + .sidebar-caption {
+    top: -15px;
+}
 .sidebar-caption {
     text-align: center;
     position: absolute;
