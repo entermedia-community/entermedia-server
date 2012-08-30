@@ -2473,7 +2473,7 @@ tr.odd {
     margin: 0;
     color: #444;
 }
-#up-files-list li a:hover {
+#up-files-list li:hover a {
     background: #f3f3f3;
 }
 #up-files-list li a span {
@@ -2483,7 +2483,7 @@ tr.odd {
     display: inline-block;
     white-space: nowrap;
 }
-#up-files-list li .delete-row {
+#up-files-list li .delete-row, #up-files-list li:hover .delete-row {
     background: url('../images/iconset-10x10.png') 20px 10px;
     opacity: 0.7;
     width: 10px;
@@ -2493,7 +2493,7 @@ tr.odd {
     margin-top: 5px;
     margin: -18px 5px 0 0px;
 }
-#up-files-list li .delete-row:hover {
+#up-files-list li:hover .delete-row:hover {
     background: url('../images/iconset-10x10.png') 20px 10px;
     opacity: 1;
 }
@@ -5306,6 +5306,16 @@ p.resultsnumber {
     white-space: nowrap;
     text-overflow: ellipsis;
     display: inline-block;
+}
+.sp {
+    color: white;
+    font-size: 11px;
+    margin: -16px 0 020px;
+    padding: 0;
+    opacity: 0.6;
+}
+.sp:hover {
+    opacity: 1;
 }
 
 /* BUTTONS */

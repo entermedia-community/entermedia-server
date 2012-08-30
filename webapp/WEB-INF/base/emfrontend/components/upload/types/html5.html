@@ -1,3 +1,4 @@
+
 #set( $root = "$home$apphome/components/upload/types/dragsync")
 #set($catalogid = $context.getRequestParameter("uploadcatalog"))
 #set($path = "/${catalogid}/temp/uploading/${user.getUserName()}")
@@ -21,11 +22,8 @@
         <a class="btn pickfiles" href="#" id="filePicker">Pick Files...</a>
         
         <ul id="up-files-list">
-            <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li>
-            <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li>
-            <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li>
-            <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li>
-            <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li>
+          <!--  <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li> -->
+           
         </ul>
         
     </div>
@@ -35,8 +33,7 @@
         <div class="ui-widget uipanel">
             <div  class="ui-widget-header">Upload Media</div>
             <div  class="ui-widget-content no-padding">
-             
-             $path
+            
              
              <p class="hints" style="text-align: left; padding: 0 20px;" id="drag-and-drop-instructions">
                 To upload multiple files, drag and drop from your computer's hard drive to the area on the left.  You can also click on <strong>Pick Files</strong> and then select multiple files by using the <strong>Shift</strong> key on your keyboard while clicking on the files you wish to uplaod.
@@ -69,7 +66,7 @@
              
             </div> 
         </div>
-        <a class="btn green" id="upload">Upload</a> 
+        
     </div>
     
 </div>
@@ -80,33 +77,24 @@
 
 <script>
     
-function parseFiles(e) {
-    
-    
-    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
-        var file = files[i];
-        $('#up-files-list').append('<li><a href="#"><span>' + file.name + '</span></a><a class="delete-row ir" href="#">Delete</a></li>')
-    }
-} 
-
-
- 
 $(document).ready(function(){
     $('#filePicker').click(function(e){
        $('#fileElem').trigger('click');
        e.preventDefault(); 
-       handleFiles();
-       parseFiles();
     });
-     
-    var inputElement = document.getElementById("fileElem");
-    inputElement.addEventListener("change", handleFiles, false);
+ 
+})
+ 
+function handleFiles(files) {
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
     
-    function handleFiles() {
-      var fileList = this.files;
-    } 
-     
- })
+    $('#up-files-list').append('<li><a href="#"><span>' + file.name + '</span></a><a class="delete-row ir" id="delete-' + i + '" href="#">Delete</a></li>')
+    
+    $('#main-area').load('$home$apphome/components/upload/types/multiuploadform.html')
+    
+  }
+}
 
 </script>
 
