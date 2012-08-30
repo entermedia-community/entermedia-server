@@ -183,46 +183,41 @@ uiload = function() {
 	jQuery(".jp-jplayer").livequery(function(){
 		
 	
-	//	alert("Found a player, setting it up");	
-		var url = jQuery(this).data("url");
-			
-	    jQuery(this).jPlayer({
+	//	alert("Found a player, setting it up");
+		var player = jQuery(this);
+		var url = player.data("url");
+		var containerid = player.data("container");
+		var container = jQuery("#" + containerid);
+		
+		player.jPlayer({
 	        ready: function (event) {
-	            $(this).jPlayer("setMedia", {
+	        	player.jPlayer("setMedia", {
 	                mp3:url
 	            });
 	        },
-	        swfPath: '/emshare/components/javascript',
+	        play: function() { // To avoid both jPlayers playing together.
+	        	player.jPlayer("pauseOthers");
+			},
+	        swfPath: '$home/emshare/components/javascript',
 	        supplied: "mp3",
-	        wmode: "window"
+	        wmode: "window",
+	        cssSelectorAncestor: "#" + containerid
 	    });
-	    jQuery('.jp-play').click(function(e){
-	    	e.preventDefault();
-	    	e.stopPropagation();
-	    	jQuery(this).hide();
-	        var pause = jQuery(this).data("pause");
-	    	
-	        $("#" + pause).show();
-	    	
-	    	var target = jQuery(this).data("target");
-	    	jQuery("#" + target).jPlayer("play");
-	    	
-	    });
-	    jQuery('.jp-pause').click(function(e){
-	    	e.preventDefault();
-	    	e.stopPropagation();
-	    	jQuery(this).hide();
-	    	
-	    	var pause = jQuery(this).data("play");
-	    	$("#" + pause).show();
-	    	
-	    	
-	    	
-	    	var target = jQuery(this).data("target");
-	    	jQuery("#" + target).jPlayer("pause");
-	    	
-	    	
-	    });
+//		container.find('.jp-play').click(function(e){
+//	    	e.preventDefault();
+//	    	e.stopPropagation();
+//	    	jQuery(this).hide();
+//	    	container.find(".jp-pause").show();
+//	    	player.jPlayer("play");
+//	    	
+//	    });
+//		container.find('.jp-pause').click(function(e){
+//	    	e.preventDefault();
+//	    	e.stopPropagation();
+//	    	jQuery(this).hide();
+//	    	container.find(".jp-play").show();
+//	    	player.jPlayer("pause");
+//	    });
 	});
 
 
