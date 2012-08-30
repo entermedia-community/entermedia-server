@@ -2442,7 +2442,7 @@ tr.odd {
     font-weight: bold;
     margin-top: 3px;
 }
-#pickfiles {
+.btn.pickfiles {
     width: 250px;
     padding-top: 15px;
     padding-bottom: 15px;

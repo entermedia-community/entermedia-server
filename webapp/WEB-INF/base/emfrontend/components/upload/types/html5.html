@@ -16,7 +16,9 @@
         <div id="emdropbox">
             Drag and Drop files here
         </div>
-        <a class="btn" id="pickfiles">Pick Files...</a>
+        
+        <input type="file" id="fileElem" multiple style="display:none" onchange="handleFiles(this.files)">
+        <a class="btn pickfiles" href="#" id="filePicker">Pick Files...</a>
         
         <ul id="up-files-list">
             <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li>
@@ -78,7 +80,33 @@
 
 <script>
     
+function parseFiles(e) {
+    
+    
+    for (var i = 0, numFiles = files.length; i < numFiles; i++) {
+        var file = files[i];
+        $('#up-files-list').append('<li><a href="#"><span>' + file.name + '</span></a><a class="delete-row ir" href="#">Delete</a></li>')
+    }
+} 
+
+
  
+$(document).ready(function(){
+    $('#filePicker').click(function(e){
+       $('#fileElem').trigger('click');
+       e.preventDefault(); 
+       handleFiles();
+       parseFiles();
+    });
+     
+    var inputElement = document.getElementById("fileElem");
+    inputElement.addEventListener("change", handleFiles, false);
+    
+    function handleFiles() {
+      var fileList = this.files;
+    } 
+     
+ })
 
 </script>
 
