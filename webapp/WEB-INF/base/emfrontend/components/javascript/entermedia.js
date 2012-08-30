@@ -852,8 +852,9 @@ onloadselectors = function()
 									},
 									function(data) 
 									{
-										node.find("div").append("<span class='fader'>&nbsp;+1</span>");
+										node.append("<span class='fader'>&nbsp;+1</span>");
 										node.find(".fader").fadeOut(3000);
+										node.removeClass("selected");
 									}
 							);
 

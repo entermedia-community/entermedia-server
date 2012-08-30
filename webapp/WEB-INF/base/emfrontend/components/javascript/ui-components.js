@@ -180,7 +180,7 @@ uiload = function() {
 	
 	
 
-	jQuery(".jp-jplayer").each(function(){
+	jQuery(".jp-jplayer").livequery(function(){
 		
 	
 	//	alert("Found a player, setting it up");	

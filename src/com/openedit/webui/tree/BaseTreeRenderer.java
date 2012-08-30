@@ -118,7 +118,10 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 			Object object = (Object) iterator.next();
 			newselection.add(getId(object));
 			Object parent = getWebTree().getModel().getParent(object);
-			expandNode(parent);
+			if( parent != null )
+			{
+				expandNode(parent);
+			}
 		}
 		setSelectedNodes(newselection);
 		
