@@ -1,7 +1,8 @@
 
-<properties>
+<properties  beanname="xmlFolderSearcher">
   <property id="id" index="true" stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
   <property id="folder" editable="true" index="true" stored="true">Folder</property>
+  <property id="useajax" editable="true" index="true" stored="true" type="boolean">Use Ajax</property>
   <property id="multiedit" editable="true" type="boolean" index="true" stored="true">Multi-Edit</property>
 </properties>

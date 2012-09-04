@@ -23,7 +23,7 @@ $!query.addSortBy("ordering")
                 
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
 				   
-					#if( $target.byassettype && $target.byassettype == "true" || $moduleid == "asset" )
+					#if( ($target.byassettype && $target.byassettype == "true") )
 						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
 					#else
 						#set( $viewpath = "${moduleid}/$target.id")
