@@ -48,6 +48,7 @@ public class exiftoolthumbCreator extends BaseImageCreator
 		if(inOut.length() == 0){
 			inArchive.getPageManager().removePage(inOut);
 			result.setOk(false);
+			result.setError("no thumbnail found");
 		}
 		return result;
 	}

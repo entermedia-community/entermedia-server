@@ -307,36 +307,24 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();
 			StringBuffer buffer = new StringBuffer("true "); //true is for wide open searches
+
+			UserProfile profile = inPageRequest.getUserProfile();
+			if( profile != null)
+			{
+				//Get the libraries
+				Collection libraries = profile.getCombinedLibraries();
+				if( libraries != null)
+				{
+					for (Iterator iterator = libraries.iterator(); iterator	.hasNext();) 
+					{
+						String library = (String) iterator.next();
+						buffer.append( " library_" + library);
+					}
+				}
+			}
+
 			if (currentUser != null)
 			{
-				UserProfile profile = inPageRequest.getUserProfile();
-				if( profile != null)
-				{
-					//Get the libraries
-					Collection libraries = profile.getCombinedLibraries();
-					if( libraries != null)
-					{
-						for (Iterator iterator = libraries.iterator(); iterator	.hasNext();) 
-						{
-							String library = (String) iterator.next();
-							buffer.append( " library_" + library);
-						}
-					}
-//					if(profile.getSettingsGroup() != null)
-//					{
-//						buffer.append( " sgroup" + profile.getSettingsGroup().getId() );
-//					}
-//					String value = profile.getValue("assetadmin");
-//					if( Boolean.parseBoolean(value) )
-//					{
-//						buffer.append(" profileassetadmin");
-//					}
-//					value = profile.getValue("viewassets");
-//					if( Boolean.parseBoolean(value) )
-//					{
-//						buffer.append(" profileviewassets");
-//					}
-				}
 //				if(currentUser.getProperty("zone") != null)
 //				{
 //					buffer.append(" zone" + currentUser.getProperty("zone"));

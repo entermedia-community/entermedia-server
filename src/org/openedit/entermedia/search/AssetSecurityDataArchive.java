@@ -11,12 +11,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
 
 import com.openedit.OpenEditException;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.util.Replacer;
@@ -246,18 +248,72 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive {
 		}
 		if (inUser != null) {
 			for (Iterator iterator = inUser.getGroups().iterator(); iterator
-					.hasNext();) {
+					.hasNext();) 
+			{
 				Group group = (Group) iterator.next();
-				if (allowed.contains("group_" + group.getId())) {
+				if (allowed.contains("group_" + group.getId())) 
+				{
 					return Boolean.TRUE;
 				}
 			}
-			// TODO: Add libraries from user , profile and each group
-
-			if (allowed.contains("user_" + inUser.getUserName())) {
+			if (allowed.contains("user_" + inUser.getUserName())) 
+			{
 				return Boolean.TRUE;
 			}
 		}
+		// TODO: Add libraries from user , profile and each group
+		String values = inAsset.getProperty("libraries");
+		if( values != null && inType.equals("view")  && inProfile != null )
+		{
+			Searcher searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "libraryroles");
+			if( inProfile.getSettingsGroup() != null )
+			{
+				SearchQuery query = searcher.createSearchQuery().append("roleid", inProfile.getSettingsGroup().getId());
+				query.addOrsGroup("libraryid", values);						
+				Collection found = searcher.search(query);
+				if( found.size() > 0 )
+				{
+					return Boolean.TRUE;
+				}
+				if( inUser != null )
+				{
+					//Search for all the libraries defined then check groups
+					searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "librarygroups");
+					query = searcher.createSearchQuery();
+					query.addOrsGroup("libraryid", values);
+
+					StringBuffer groupids = new StringBuffer();
+					for (Iterator iterator2 = inUser.getGroups().iterator(); iterator2.hasNext();)
+					{
+						Group group = (Group)iterator2.next();
+						groupids.append(group.getId());
+						if( iterator2.hasNext() )
+						{
+							groupids.append(" ");
+						}
+					}
+					query.addOrsGroup("groupid", groupids.toString());
+					found = searcher.search(query);
+					if( found.size() > 0 )
+					{
+						return Boolean.TRUE;
+					}
+					
+					found = searcher.search(query);
+					searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "libraryusers");
+					searcher.createSearchQuery().append("userid",inUser.getId());
+					query.addOrsGroup("libraryid", values);						
+					found = searcher.search(query);
+					if( found.size() > 0 )
+					{
+						return Boolean.TRUE;
+					}
+				}
+			}
+
+		
+		}
+		
 		return false;
 	}
 
