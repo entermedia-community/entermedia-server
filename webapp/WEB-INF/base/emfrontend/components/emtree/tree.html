@@ -24,7 +24,7 @@
 			<div class="categorydroparea" style="padding-left: ${padding}px">
 			    #if( $showinput )
 			    <div class="checkbox">
-			         <input name="categoryid"  value="$cat.id" type="checkbox" #if( $render.isIdSelected($cat.id) ) checked="true" #end  >
+			         <input name="categoryid" value="$cat.id" type="checkbox" #if( $render.isIdSelected($cat.id) ) checked="true" #end  >
 			    </div>
 			    #end
 				#if($haschildren)<span class="arrow #if($expanded) down #end "></span>#end 
