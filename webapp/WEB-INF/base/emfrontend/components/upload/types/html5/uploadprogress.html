@@ -1,0 +1,11 @@
+#set($uploadid = $context.getRequestParameter("uploadid"))
+#set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$uploadid) )
+
+##rreplace with emPush percentage code
+#if( $data.getId() )
+	#set( $total = $data.getFloat("filesize"))
+	#set( $uploaded = $data.getFloat("filesizeuploaded"))
+#end
+
+
+$pages.include("./uploadrow.html?id=$uploadid&uploaded=$uploaded",$context)
