@@ -73,11 +73,21 @@
             $('#de-side-nav').addClass('closed');
             $(this).removeClass('open');
             $(this).addClass('closed');
+            var dtw = $('#details-title').width();
+            dtw = dtw + 108;
+            $('#details .tableholder').width(dtw);
         } else {
             $('#de-side-nav').removeClass('closed');
             $('#de-side-nav').addClass('open');
             $(this).removeClass('closed');
             $(this).addClass('open');
+            var dtw = $('#details-title').width();
+            dtw = dtw - 106;
+            $('#details .tableholder').width(dtw);
         }
     }); 
+    $(document).ready(function(){
+        var dtw = $('#details-title').width();
+        $('#details .tableholder').width(dtw);
+    })
 </script>
