@@ -195,6 +195,11 @@ jQuery(document).ready(function()
 				return false;
 	} );
 	
+	$('.emtree .checkbox input').livequery('click', function(event){
+		event.stopPropagation();
+	});
+
+	
 	
 });
 

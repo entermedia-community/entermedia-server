@@ -2875,13 +2875,19 @@ table.emdata th {
     margin: 0 -13px 0 0;
     float: none;
     position: absolute;
-    top: 8px;
+    top: 12px;
 }
 .emtree .arrow.down {
     border: 5px solid transparent;
     border-top: 5px solid #444;
-    top: 10px;
+    top: 15px;
     margin-left: -4px;
+}
+.cramped .emtree .arrow {
+    top: 8px;
+}
+.cramped .emtree .arrow.down {
+    top: 10px;
 }
 .emtree .name {
     padding-left: 35px;
