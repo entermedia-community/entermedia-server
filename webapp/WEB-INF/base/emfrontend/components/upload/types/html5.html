@@ -1,15 +1,12 @@
 
-#set( $root = "$home$apphome/components/upload/types/dragsync")
+#set( $root = "$home$apphome/components/upload/types/html5")
 #set($catalogid = $context.getRequestParameter("uploadcatalog"))
 #set($path = "/${catalogid}/temp/uploading/${user.getUserName()}")
 
-#set( $action = $context.getRequestParameter("action"))
-#if( !$action )
-#set( $action = "/$applicationid/views/upload/finish.html" )
-#end
-
-<form name="uploadwizard" id="uploadwizard"  method="post" target="_top" action="$home$action" >
-
+#set( $catalog = $context.getRequestParameter('uploadcatalog') )
+<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
+    action="$home/${applicationid}/components/upload/types/simple/finish.html">
+    
 <div class="subcolumns">
     
     <div id="right-sidebar" style="padding: 0 20px 0 0">
@@ -29,42 +26,16 @@
     </div>
     <div id="main-area" style="vertical-align: top;">
         
-            
         <div class="ui-widget uipanel">
             <div  class="ui-widget-header">Upload Media</div>
             <div  class="ui-widget-content no-padding">
-            
+            <div id="metadataarea">
              
              <p class="hints" style="text-align: left; padding: 0 20px;" id="drag-and-drop-instructions">
                 To upload multiple files, drag and drop from your computer's hard drive to the area on the left.  You can also click on <strong>Pick Files</strong> and then select multiple files by using the <strong>Shift</strong> key on your keyboard while clicking on the files you wish to uplaod.
              </p>
-             
-             
-                <input type="hidden" name="catalogid" value="$!catalogid"/>
-                <input type="hidden" name="searchtype" value="asset"/>
-                
-                <div id="enabledwithpick" style="display: none;">
-                    <a class="btn" href="#" onclick="document.uploadwizard.submit()">Upload</a>     
-                    <table id="emfilelist" class="emresultscontent">
-                            <!-- <tr id="tableheader">
-                                <th class="firstheader" ></th><th style="min-width: 150px;">File Name</th><th>Size</th><th>Description</th><th  class="lastheader" > Asset Type</th>
-                            </tr> -->
-                            <tbody>
-                            </tbody>
-                    </table>    
-                </div>
-                
-                <!-- Fields pointing to files go here -->
-                <div id="uploadforminsertionpoint" > </div>
-                <input type="hidden" name="hitsname" value="hits" />
-            #set( $searcher = $mediaarchive.getAssetSearcher() )
-    
-#set($details =  $searcher.getDetailsForView("asset/assettype/default/multipleupload", $user))
-#foreach($detail in $details)
-                <input type="hidden" name="field" value="$detail.id" />
-#end                
-             
-            </div> 
+             </div>
+            </div>                   
         </div>
         
     </div>
@@ -84,17 +55,132 @@ $(document).ready(function(){
     });
  
 })
- 
-function handleFiles(files) {
-  for (var i = 0; i < files.length; i++) {
+
+var uploadid = new Date().getTime(); 
+
+function handleFiles(files) 
+{
+  for (var i = 0; i < files.length; i++) 
+  {
     var file = files[i];
     
-    $('#up-files-list').append('<li><a href="#"><span>' + file.name + '</span></a><a class="delete-row ir" id="delete-' + i + '" href="#">Delete</a></li>')
-    
-    $('#main-area').load('$home$apphome/components/upload/types/multiuploadform.html')
-    
+	try 
+	{
+		var link = "$root/uploadrow.html";
+		uploadid++;
+		jQuery.ajax(
+		{
+		   type: "POST",
+		   url: link,
+		   async: false,
+		   data: "id=" + uploadid + "&name=" + file.name + "&size=" + file.size,
+		   success: function(html)
+		   {
+				jQuery("#up-files-list").append(html);
+		   }
+		 });
+		
+		var action = jQuery("#uploadform").attr("action");
+		jQuery("#uploadform").attr("action", action + " );
+
+		
+	}
+	catch (ex) 
+	{
+		alert( ex);
+	}
+	if( jQuery("#uploadform").length > 0)
+	{
+	}
+	else
+	{
+		jQuery("#metadataarea").load('$home$apphome/components/upload/types/html5/bulkloader.html');
+	}
   }
 }
+
+var uploadid;
+
+	doUpload =  function()
+	{
+		if(jQuery("#uploadform").valid()) {
+	 		jQuery("#finishbutton").attr('disabled','disabled');
+		jQuery("#uploadform").submit();
+		}
+	}
+	
+	getUploadId = function()
+	{
+		if( uploadid == undefined)
+		{
+			var d = new Date();
+			uploadid = "$user.getId()_" + d.getTime();
+		}
+		return uploadid;
+	}
+	
+	checkProgress = function()
+	{
+		var next = jQuery("#up-files-list").find("[data-complete='false']").first()
+		if( next )
+		{
+			var complete = next.data("complete");
+			var name = next.data("name");
+			var size = next.data("size");
+			if( complete != "true")
+			{
+				next.load("$home$apphome/components/upload/types/html5/uploadprogress.html?uploadid="+ getUploadId() + "&name=" + name +"&size=" + size);
+				break;
+			}
+			setTimeout("checkProgress()",500);
+		}
+	}
+	
+	function showResponse(responseText, statusText, xhr, $form)  
+	{ 
+		//jQuery.fn.livequery.stopped = true;
+		//jQuery("#embody").html(responseText);	
+		//jQuery.fn.livequery.stopped = false;
+		document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+	}
+	
+	//special validator for file name
+	jQuery.validator.addMethod("filename",
+			function(value) {
+				var characterReg = /^\s*[a-zA-Z0-9\._,\s]+\s*$/;
+	   			return characterReg.test(value);
+			}, 
+			'Invalid file name.'
+	);
+	
+// wait for the DOM to be loaded 
+$(document).ready(function() { 
+	jQuery("#uploadform").validate({
+		rules: {
+			fileName: "filename"
+		}
+	});
+	
+    // bind 'myForm' and provide a simple callback function 
+    $('#uploadform').ajaxForm({ 
+    	        // target identifies the element(s) to update with the server response 
+    	       // target: '#emcontainer', 
+    	        // success identifies the function to invoke when the server response 
+    	        // has been received; here we apply a fade-in effect to the new content
+    	        beforeSubmit:function() 
+    	        { 
+    	            checkProgress(); 
+    	           // document.onclick = disable;
+    	            jQuery("#finishbutton").attr("value","Sending...");
+    	           
+    	        }, 
+    	        success: showResponse
+    	        
+    	    }); 
+}); 
+	
+
+
 
 </script>
 

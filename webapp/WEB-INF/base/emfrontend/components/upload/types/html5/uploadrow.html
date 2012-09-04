@@ -1,0 +1,16 @@
+#set( $id=$context.getRequestParameter("id")) 
+#set( $name=$context.getRequestParameter("name")) 
+#set( $size=$context.getRequestParameter("size"))
+#set( $sizeeng = $sizer.inEnglish($size) )
+#set( $uploaded=$context.getRequestParameter("uploaded")) 
+#if($size == $uploaded )
+	#set( $complete = true)
+#else
+	#set( $complete = false)
+#end	
+<li id="row${id}" class="uploadprogressrow" data-complete="$complete" data-name="$name" data-size="$size">
+<span class="uploadprogress"></span>
+
+<a href="#"><span>$name</span><span>$sizeeng</span></a><a class="delete-row ir" id="delete-${id}" href="#">Delete</a>
+	<input name="uploadid" type="hidden" value="${user.id}_$id" />
+</li>

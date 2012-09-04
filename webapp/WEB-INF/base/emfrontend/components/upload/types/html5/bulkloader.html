@@ -1,0 +1,15 @@
+
+        $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() ) 
+        $context.putPageValue("view","asset/assettype/default/multiupload")    
+
+
+        $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
+        <input type="hidden" name="sourcepath" value="$formatteddate" />
+        
+        
+        Category Picker
+        
+        
+        <input class="btn right" type="submit" id="finishbutton" value="Upload" /> 
+        
