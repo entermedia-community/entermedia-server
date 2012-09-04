@@ -25,7 +25,6 @@
 	    
 	    #set ( $systemdefined = "false" )
         #set ( $systemdefined = $context.findValue("systemdefined") )
-	#if ( $systemdefined == "false" )
 	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view Settings</a>
 	   #if($view.byassettype == "true" )
     
@@ -43,10 +42,7 @@
                     </select> 
             </span>
          #end
-	
-    #end
 	</span>
-	#if ( $systemdefined == "false" )
 	<div id="views-settings" style="display: none;">
 	    
 	    <div class="inner clearfix">
@@ -55,6 +51,12 @@
             <input type="hidden" name="field" value="name" />
             <div>View Name</div>
             <input class="field" name="name.value" value="$view.name" >
+	 		<div class="checkbox">
+                <input class="field" type="checkbox" name="byassettype.value" value="true" #if( $view.byassettype && $view.byassettype == "true" ) checked #end />
+                Use Asset Type
+            	<input type="hidden" value="byassettype" name="field" />
+            </div>
+
             <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
                 Render as Table?
             </div>
@@ -65,7 +67,9 @@
                 <div>Render Table External ID</div>
             	<input type="hidden" value="renderexternalid" name="field" />
                 <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
+
             </div>
+
             
             <div class="hr" style="margin: 5px 0 0 0"></div>
             <input class="btn right" style="margin-top: 10px;" type="submit" value="Save" />
@@ -77,7 +81,6 @@
 	   
 	    </div>
     </div>
-    #end
     <script>
         $('#setup-view').click(function(){
             if ( $('#setup-view').hasClass('open') ) {

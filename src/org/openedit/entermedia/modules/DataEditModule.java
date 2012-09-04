@@ -1344,10 +1344,19 @@ public class DataEditModule extends BaseMediaModule
 				{
 					type = currentdata.get("assettype");
 				}
-				String path = module + "/assettype/" + type + "/" + view.getId();
-				if(type == null || !archive.viewExists( path ) )
+				String path = null;
+				
+				if( Boolean.parseBoolean( view.get("byassettype") ) )
 				{
-					path =	module + "/assettype/default/" + view.getId();
+					path = module + "/assettype/" + type + "/" + view.getId();
+					if(type == null || !archive.viewExists( path ) )
+					{
+						path =	module + "/assettype/default/" + view.getId();
+					}
+				}
+				else
+				{
+					path =	module + "/" + view.getId();
 				}
 				views.put(path,view);
 			}
