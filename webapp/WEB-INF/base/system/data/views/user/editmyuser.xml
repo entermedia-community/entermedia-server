@@ -1,31 +1,17 @@
 <properties>
 
-	<property id="firstName" required="true"/>
-	<property id="lastName" required="true"/>
-	<property id="email" header="blank"/>
-	
-	<property id="companyname" header="Office Address" editable="true">Company Name</property>
+	<property id="firstName" required="true" />
+    <property id="lastName" required="true"/>
+    <property id="userName" editable="true" >User Name</property>
+    
+    <property id="email" required="true" />
+    <property id="phone" required="true"/> 
+    <property id="country" required="true" />
+    <property id="address1" required="true" />
+    <property id="address2" required="true" />
+    <property id="city" required="true" />
+    <property id="state_province" required="true" />   
+    <property id="postal_code" required="true" />
 
- 	<property id="jobtitle" >Job Title</property>
-	<property id="officephone" header="blank"/>
-	<property id="mobilephone" />
-	
-	<property id="officestreet" header="Office Address">Street</property>
-	<property id="officecity" >City</property>
-	<property id="officestate">State</property>
-	<property id="officezip" >Zipcode</property>
-	<property id="officecountry"  blankoption="false">Country</property>
-	
-
-<!--	
-	<property id="mailingsameasoffice" header="Mailing Address">Same as Office Address</property>
-	
-	<property id="mailingstreet">Street</property>
-	<property id="mailingcity" >City</property>
-	<property id="mailingstate" >State</property>
-	<property id="mailingzip" >Zipcode</property>
-	<property id="mailingcountry" blankoption="false" >Country</property>
-	<property id="assistant" />
--->	
 
 </properties> 

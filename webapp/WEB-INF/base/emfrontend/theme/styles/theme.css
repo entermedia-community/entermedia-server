@@ -1953,6 +1953,33 @@ ul#sub-nav li:hover ul {
     color: #666;
     font-size: 12px;
 }
+#role-adder .emdatafield {
+    display: none;
+}
+#role-adder select {
+    margin: 0 !important;
+    padding: 0;
+}
+#role-adder form {
+    margin: 0;
+    padding: 0;
+}
+#usereditform input[type="text"], #usereditform textarea {
+    width: 310px;
+    margin-bottom: 10px;
+}
+#usereditform select {
+    margin-bottom: 10px !important; 
+    margin-top: 5px !important;
+}
+#usereditform input[type="checkbox"] {
+    margin: 5px 0 10px 0;
+}
+#usereditform h4 {
+    background: #eee;
+    margin: 10px -20px 20px -20px;
+    padding: 10px 20px;
+}
 
 /* METADATA EDIT SCREENS
 

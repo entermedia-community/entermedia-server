@@ -9,30 +9,21 @@
 	<property id="enabled" stored="true" editable="true" datatype="boolean">Enabled</property>
 	<property id="password">Password</property>
 	<property id="failedlogincount" editable="true" type="number">Failed login attempts</property>
- 	
 	<property id="showeditor" stored="true" editable="true" datatype="boolean">Enable HTML editing</property>
+	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 
 <!--  Custom fields -->
-	<property id="companyname" header="Office Address">Company Name</property>
-	<property id="jobtitle" editable="true" stored="true" index="true">Job Title</property>
-	<property id="officephone" stored="true" index="true" editable="true">Office Phone</property>
-	<property id="mobilephone" stored="true" index="true" editable="true">Mobile Phone</property>
+
+    <property id="phone" index="true" stored="true" keyword="true" editable="true">Phone</property>
+    
+    <property id="business" index="true" stored="true" keyword="true" editable="true">Business / Affiliation Name</property>
+    <property id="jobtitle" index="true" stored="true" keyword="true" editable="true">Job Title</property>
+    <property id="country" index="true" stored="true" keyword="true" editable="true">Country</property>
+    <property id="address1" index="true" stored="true" keyword="true" editable="true">Address 1</property> 
+    <property id="address2" index="true" stored="true" keyword="true" editable="true">Address 2</property>
+    <property id="city" index="true" stored="true" keyword="true" editable="true">City</property>
+    <property id="state_province" index="true" stored="true" keyword="true" editable="true">State / Province</property>
+    <property id="postal_code" index="true" stored="true" keyword="true" editable="true">Postal Code</property>
+
 	
-	<property id="officestreet" stored="true" index="true" editable="true">Office Address</property>
-	<property id="officecity" stored="true" index="true" editable="true">Office City</property>
-	<property id="officestate" stored="true" index="true" editable="true" datatype="list" listid="state" listcatalogid="media/catalogs/public">Office State</property>
-	<property id="officezip" stored="true" index="true" editable="true">Office Zip</property>
-	<property id="officecountry" stored="true" index="true" editable="true" datatype="list" listid="country" listcatalogid="media/catalogs/public">Office Country</property>
-	
-<!-- 	<property id="mailingsameasoffice" stored="true" index="true" editable="true" datatype="boolean">Mailing Address Same as Office Address</property>
-	
-	<property id="mailingstreet" stored="true" index="true" editable="true">Mailing Address</property>
-	<property id="mailingcity" stored="true" index="true" editable="true">Mailing City</property>
-	<property id="mailingstate" stored="true" index="true" editable="true" datatype="list" listid="state" listcatalogid="media/catalogs/public">Mailing State</property>
-	<property id="mailingzip" stored="true" index="true" editable="true">Mailing Zip</property>
-	<property id="mailingcountry" stored="true" index="true" editable="true" datatype="list" listid="country" listcatalogid="media/catalogs/public">Mailing Country</property>
-	<property id="assistant" stored="true" index="true" editable="true">Assistant Name</property>
-	<property id="birthdate" stored="true" index="true" editable="true" datatype="date" format="mm/dd/yyyy">Birthdate</property>
- -->	
-	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 </properties>
