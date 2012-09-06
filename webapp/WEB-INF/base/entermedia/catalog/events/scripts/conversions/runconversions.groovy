@@ -185,7 +185,7 @@ class ConvertRunner implements Runnable
 					{
 						String sourcepath = hit.get("sourcepath");
 						log.debug("conversion had no error and will try again later for ${sourcepath}");
-						return;
+						realtask.setProperty('status', 'missinginput');
 					}
 					tasksearcher.saveData(realtask, user);
 				}
@@ -299,7 +299,7 @@ public void checkforTasks()
 	
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
-	query.addOrsGroup("status", "new submitted retry");
+	query.addOrsGroup("status", "new submitted retry missinginput");
 	query.addSortBy("assetid");
 	query.addSortBy("ordering");
 	

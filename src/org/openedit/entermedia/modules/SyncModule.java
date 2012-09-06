@@ -210,8 +210,8 @@ public class SyncModule extends BaseMediaModule
 		inReq.putPageValue("completedassets", completed);
 		Collection errorassets = getPushManager().getErrorAssets(archive);
 		inReq.putPageValue("errorassets", errorassets);
-		Collection noteconverted = getPushManager().getNotConvertedAssets(archive);
-		inReq.putPageValue("notconverted", noteconverted);
+		Collection noteconverted = getPushManager().getImportedAssets(archive);
+		inReq.putPageValue("imported", noteconverted);
 	}
 	
 	public void pollRemotePublish(WebPageRequest inReq) throws Exception

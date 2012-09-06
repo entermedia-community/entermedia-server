@@ -41,7 +41,7 @@ public class PathEventModule extends BaseModule
 	    manager.runSharedPathEvent(runpath);
 	    PathEvent event = manager.getPathEvent(runpath);
 	    inReq.putPageValue("ranevent", event);
-	    
+	    inReq.putPageValue("pathevent", event); 
 	}
 
 	public PathEventManager getPathEventManager(WebPageRequest inReq)

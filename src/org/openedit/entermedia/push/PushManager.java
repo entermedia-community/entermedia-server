@@ -109,6 +109,7 @@ public class PushManager
 		if( inAssetIds == null )
 		{
 			query.addMatches("category","index");
+			query.addMatches("importstatus","complete");
 			query.addNot("pushstatus","complete");
 			query.addNot("pushstatus","nogenerated");
 			query.addNot("pushstatus","error");
@@ -160,11 +161,6 @@ public class PushManager
 	{
 		Searcher searcher = archive.getAssetSearcher();
 		
-		if( !"complete".equals( target.get("importstatus") ) )
-		{
-			saveAssetStatus(searcher, savequeue, target, "notallconverted", inUser);
-			return;
-		}	
 		List paths = archive.getPageManager().getChildrenPaths("/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath() );
 		List<File> filestosend = new ArrayList<File>(paths.size());
 
@@ -526,7 +522,6 @@ asset: " + asset);
 		q.setAndTogether(false);
 		q.append("pushstatus", "nogenerated");
 		q.append("pushstatus", "error");
-		q.append("pushstatus", "notallconverted");
 		q.append("pushstatus", "complete");
 		
 		HitTracker hits = inArchive.getAssetSearcher().search(q);
@@ -548,9 +543,15 @@ asset: " + asset);
 		return hits;
 	}
 
-	public Collection getNotConvertedAssets(MediaArchive inArchive)
+	public Collection getImportCompleteAssets(MediaArchive inArchive)
 	{
-		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("pushstatus", "notallconverted");
+		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("importstatus", "complete");
+		return hits;
+	}
+
+	public Collection getImportedAssets(MediaArchive inArchive)
+	{
+		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("importstatus", "imported");
 		return hits;
 	}
 

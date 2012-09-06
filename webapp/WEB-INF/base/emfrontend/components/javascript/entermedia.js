@@ -80,8 +80,17 @@ toggleajax = function(e)
 		);
 	}
 }
-runajaxonthis = function(inlink)
+runajaxonthis = function(inlink,e)
 {
+	
+	var inText = jQuery(inlink).data("confirm");
+	if(inText && !confirm(inText) )
+	{
+		e.stopPropagation();
+		e.preventDefault();
+		return false;
+	}
+	
 	var nextpage= inlink.attr('href');
 	var targetDiv = inlink.attr("targetdiv");
 	if( targetDiv)
@@ -121,7 +130,7 @@ runajaxonthis = function(inlink)
 }
 runajax = function(e)
 {
-	runajaxonthis($(this));
+	runajaxonthis($(this),e);
      e.preventDefault();
 	//return false;
 }
@@ -373,7 +382,7 @@ onloadselectors = function()
 						url: "${home}${apphome}/components/userprofile/saveprofileproperty.html?field=" + propertyname + "&" + propertyname + ".value="  + propertyvalue,
 						success: function()
 						{
-							runajaxonthis(thelink);
+							runajaxonthis(thelink,e);
 						}
 					}
 				);
