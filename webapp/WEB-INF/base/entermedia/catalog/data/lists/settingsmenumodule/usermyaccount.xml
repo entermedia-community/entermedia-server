@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-  <property id="profile"  type="toplevel" module="user" path="/views/myaccount/index.html" ordering="60" sublabel="Scheduled">Profile</property>
-  <property id="setpassword" type="toplevel" module="user" path="/views/myaccount/setuserpassword.html" >Change Password</property>
+  <property id="profile"  type="toplevel" module="user" path="/views/myaccount/index.html" ordering="10">Profile</property>
+  <property id="orders" type="toplevel" module="user" path="/views/myaccount/orders/index.html" ordering="20">Order History</property>
+  <property id="setpassword" type="toplevel" module="user" path="/views/myaccount/setuserpassword.html" ordering="30">Change Password</property>
 </properties>
 

@@ -1953,6 +1953,33 @@ ul#sub-nav li:hover ul {
     color: #666;
     font-size: 12px;
 }
+#role-adder .emdatafield {
+    display: none;
+}
+#role-adder select {
+    margin: 0 !important;
+    padding: 0;
+}
+#role-adder form {
+    margin: 0;
+    padding: 0;
+}
+#usereditform input[type="text"], #usereditform textarea {
+    width: 310px;
+    margin-bottom: 10px;
+}
+#usereditform select {
+    margin-bottom: 10px !important; 
+    margin-top: 5px !important;
+}
+#usereditform input[type="checkbox"] {
+    margin: 5px 0 10px 0;
+}
+#usereditform h4 {
+    background: #eee;
+    margin: 10px -20px 20px -20px;
+    padding: 10px 20px;
+}
 
 /* METADATA EDIT SCREENS
 
@@ -5322,6 +5349,87 @@ p.resultsnumber {
 }
 .sp:hover {
     opacity: 1;
+}
+
+/* GALLERY STYLES */
+
+.emgallery {
+    text-align: left;
+    margin-left: 25px;
+}
+.emgallery .emthumbbox {
+    padding: 0 0 11px 0;
+    border: 1px solid #ddd;
+    margin: 0;
+    margin: 10px;
+    width: 230px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 3px;
+}
+.emgallery .emthumbimage {
+    width: 230px;
+    height: 230px;
+    display: table-cell;
+    veritcal-align: middle;
+    text-align: center;
+    background: #fcfcfc;
+    border-radius: 3px 3px 0 0;
+    box-shadow: inset 0px 0px 20px 8px rgba(0, 0, 0, .05);
+}
+.emgallery .gallery-caption {
+    text-align: left;
+    background: #f9f9f9;
+    border-top: 1px solid #ddd;
+    margin: 0;
+    padding: 4px 10px;
+    border-radius: 0 0 0 5px;
+}
+.emgallery .emthumbimage img {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+.emgallery .emthumbimage.emthumb:hover img.emdropshadow:hover {
+    box-shadow: none;
+}
+#embody .emgallery a.updatebasket {
+   font-size: 26px !important;
+    font-weight: bold;
+    color: #90bc5a;
+    background: white;
+    border-left: 1px solid #DDD;
+    padding: 0 8px;
+    position: relative;
+    top: -32px;
+    height: 36px;
+    display: block;
+    margin-right: -10px;
+    border-radius: 0 0 5px 0;
+}
+
+.emgallery a.updatebasket .remove {
+    display: block;
+    width: 16px;
+    text-align: center;
+    color: #999 !important;
+}
+.emgallery a.updatebasket span:after {
+    font-size:11px;
+}
+.gallery-field-label {
+    text-align: left; 
+    font-size: 10px; 
+    color: #666; 
+    font-weight: bold; 
+}
+.gallery-field-info {
+    text-align: left; 
+    color:#2790B0; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    width: 170px; 
+    white-space: nowrap;
 }
 
 /* BUTTONS */
