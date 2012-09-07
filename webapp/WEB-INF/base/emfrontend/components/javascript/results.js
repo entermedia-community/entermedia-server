@@ -37,12 +37,12 @@ jQuery("input[name=pagetoggle]").click(function ()
        	       jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitsessionid, action:"none"});         
        	       jQuery('.selectionbox').removeAttr('checked');  
        	   }
-       });
-jQuery('.gallery-checkbox input').click(function(){
-	this = jQuery(this);
-	if ( this.is('checked') ) {
-		this.closest('.emthumbbox').addClass('selected');
+});
+
+jQuery(".gallery-checkbox input").click(function(){
+	if ( jQuery(this).is(':checked') ) {
+		jQuery(this).closest(".emthumbbox").addClass("selected");
 	} else {
-		this.closest('.emthumbbox').removeClass('selected');
+		jQuery(this).closest(".emthumbbox").removeClass("selected");
 	}
-})
+});
