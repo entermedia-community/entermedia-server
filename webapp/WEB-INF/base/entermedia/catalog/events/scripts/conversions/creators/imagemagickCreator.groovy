@@ -393,7 +393,7 @@ public class imagemagickCreator extends BaseImageCreator
 	//		com.add("90"); I think the default is about 80
 			com.add("-strip");
 		}
-		if (System.getProperty("os.name").toLowerCase().contains("windows"))
+		if (isOnWindows() )
 		{
 			// windows needs quotes if paths have a space
 			com.add("\"" + outputpath + "\"");
@@ -459,7 +459,14 @@ public class imagemagickCreator extends BaseImageCreator
 			prefix = inStructions.getInputExtension() + ":";
 
 		}
-		com.add(prefix + inFile.getAbsolutePath() + "[" + page + "]");
+		if (isOnWindows())
+		{
+			com.add("\"" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
+		}
+		else
+		{
+			com.add(prefix + inFile.getAbsolutePath() + "[" + page + "]");
+		}
 		return com;
 	}
 
