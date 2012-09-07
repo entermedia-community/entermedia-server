@@ -1,4 +1,4 @@
-<div id="resultsdiv">
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()">
 #set ($resultview = $userprofile.get('resultview'))
 
 #if (!$resultview || $resultview == 'table')
@@ -12,6 +12,7 @@ $context.putPageValue("resultstype", "table" )
 
 
 $pages.include("$apphome/components/results/table.html", $context)
+
 #else
 $context.putPageValue("showcaption", true)
 $context.putPageValue("showhover", "false")

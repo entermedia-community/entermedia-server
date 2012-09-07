@@ -124,7 +124,6 @@ uiload = function() {
 				else
 				{	
 					e.preventDefault();
-					return false;
 				}
 			}
 		);

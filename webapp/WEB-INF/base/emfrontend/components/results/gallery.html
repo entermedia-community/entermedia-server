@@ -44,9 +44,11 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
                    
                     $context.putPageValue("clink", $clink)
                     $context.putPageValue("assetid", $hit.id)
-        
+                    <div class="gallery-checkbox">
+                        <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />          
+                    </div>
                     <a class="hovering" href="$click">
-                        <div class="emthumbimage em$thumbsize" title="$sourcepath">           
+                        <div class="emthumbimage em$thumbsize" title="$sourcepath"> 
                             $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
                         </div>
                     </a>
@@ -75,7 +77,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
     #end
 <br/><br/><br/>
 #if ( $hits.totalPages == 0 )
-<p>
+<p class="info" style="margin: 0 20px;">
 [[No results found.]]
 </p>
 #end

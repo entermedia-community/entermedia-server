@@ -2207,13 +2207,13 @@ tr.odd {
     border: 1px solid #e5e5e5;
 }
 #media-player {
-    background: #002531 url('../images/asset-bg.png');
+    background: #000 url('../images/asset-bg.png');
     box-shadow: inset 0px 0px 60px 15px rgba(0, 0, 0, .8);
     position: relative;
     padding: 20px 0;
 }
 #media-player-table {
-    background: #002531 url('../images/asset-bg.png');
+    background: #000 url('../images/asset-bg.png');
     box-shadow: inset 0px 0px 60px 15px rgba(0, 0, 0, .8);
 }
 #media-player-table #media-player {
@@ -3494,6 +3494,13 @@ body #emcontainer .emasseteditorarea {
     box-shadow: 0 1px 4px 2px rgba(0,0,0,0.1);
     padding: 0;
     margin: 15px 0 0 10px;
+    z-index: 100;
+}
+#tableheader .firstheader {
+    min-width: 40px;
+}
+#main-results-table .checkbox input, #main-results-table .firstheader input {
+    margin-right: 10px;
 }
 #select-dropdown li {
     margin: 0;
@@ -5430,6 +5437,19 @@ p.resultsnumber {
     text-overflow: ellipsis; 
     width: 170px; 
     white-space: nowrap;
+}
+.gallery-checkbox {
+    background: #fff;
+    float: left;
+    position: absolute;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 3px 0; 
+    padding: 4px 4px 2px 4px;
+}
+.emthumbbox.selected {
+    box-shadow: 0 0 4px 2px rgba(80,187,216, 0.2);
 }
 
 /* BUTTONS */
