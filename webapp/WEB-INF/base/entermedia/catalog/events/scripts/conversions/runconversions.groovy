@@ -44,26 +44,45 @@ class CompositeConvertRunner implements Runnable
 		{
 			runner.run();
 		}
+		
+		boolean founderror = false;
+		boolean allcomplete = true;
+		
 		for( ConvertRunner runner: runners )
 		{
 			if( runner.result == null )
 			{
 				return;
 			}
-			boolean complete = runner.result.isComplete();
-			if( !complete)
+			if(runner.result.isError() )
 			{
-				//log.info("no result");
-				return;
+				founderror = true;
 			}
+			
+			if(!runner.result.isComplete() )
+			{
+				allcomplete = false;
+			}
+			
 		}
-		//load the asset and save the import status to complete
-		Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
-		if( asset != null && !"complete".equals(asset.get("importstatus") ) )
+		if( founderror || allcomplete )
 		{
-			//Publishing to Amazon can happen even if the images in the search results
-			asset.setProperty("importstatus","complete");
-			fieldMediaArchive.saveAsset(asset, null);
+			//load the asset and save the import status to complete
+			Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
+			if( asset != null )
+			{
+				if( founderror && "imported".equals(asset.get("importstatus") ) )
+				{
+					asset.setProperty("importstatus","error");
+					fieldMediaArchive.saveAsset(asset, null);
+				}
+				else if( !"complete".equals(asset.get("importstatus") ) )
+				{
+					//Publishing to Amazon can happen even if the images in the search results
+					asset.setProperty("importstatus","complete");
+					fieldMediaArchive.saveAsset(asset, null);
+				}
+			}
 		}
 	}
 	public void add(Runnable runner )
@@ -243,7 +262,8 @@ class ConvertRunner implements Runnable
 		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
 		inStructions.setOutputExtension(extension);
 
-		if("new".equals(status) || "retry".equals(status))
+		//new submitted retry missinginput
+		if("new".equals(status) || "submitted".equals(status) || "retry".equals(status)  || "missinginput".equals(status))
 		{
 			//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
 			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
@@ -375,6 +395,7 @@ public void checkforTasks()
 			}
 		}
 	}
+	log.info("Completed ${newtasks.size()} conversions");
 	
 }
 

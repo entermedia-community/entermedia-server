@@ -4,9 +4,12 @@ package org.openedit.entermedia.scanner;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.push.PushManager;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.hittracker.HitTracker;
@@ -15,6 +18,8 @@ import com.openedit.hittracker.SearchQuery;
 
 public class PresetCreator
 {
+	private static final Log log = LogFactory.getLog(PresetCreator.class);
+
 		public void createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset,int thepage)
 		{
 			SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.getId() ).append("presetid", preset.getId() );
@@ -43,11 +48,18 @@ public class PresetCreator
 			if( found != null )
 			{
 				//If it is complete then the converter will mark it complete again
-				if( found.get("status") != "new")
+				if( !"new".equals( found.get("status") ) )
 				{
 					found = (Data)tasksearcher.searchById(found.getId());
-					found.setProperty("status", "new");
-					tasksearcher.saveData(found, null);
+					if( found != null )
+					{
+						found.setProperty("status", "new");
+						tasksearcher.saveData(found, null);
+					}
+					else
+					{
+						log.error("Conversion tasks index is out of date ${found.getId()}");
+					}
 				}
 			}
 			else
