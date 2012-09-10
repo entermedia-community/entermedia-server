@@ -38,6 +38,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
                 $context.putPageValue("clink", $clink)
                 $context.putPageValue("assetid", $hit.id)
                 $context.putPageValue("count", $count )
+                $context.putPageValue("click", $click)
                 
                 $pages.include("$home$apphome/components/results/gallery-cell.html", $context)
                 
@@ -53,9 +54,8 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 
     #end
-<br/><br/><br/>
 #if ( $hits.totalPages == 0 )
-<p class="info" style="margin: 0 20px;">
+<p class="info" style="margin: 20px;">
 [[No results found.]]
 </p>
 #end

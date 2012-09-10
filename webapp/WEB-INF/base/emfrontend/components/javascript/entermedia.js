@@ -1,5 +1,12 @@
 var ajaxtimerrunning = false;
 
+
+openFancybox = function(href) {
+	  jQuery.fancybox({
+	     'href' : href
+	  });
+}
+
 repaint = function(divid) {
 	var div = jQuery("#" + divid);
 	var href = div.data('href');
@@ -11,7 +18,6 @@ repaint = function(divid) {
 			}
 	);
 }
-
 toggleUserProperty = function(property, onsuccess) {
 	jQuery.ajax(
 			{
@@ -700,47 +706,54 @@ onloadselectors = function()
 		jQuery('#emselectable table td' ).livequery(	
 			function()
 			{
-				if(jQuery(this).attr("noclick") =="true"){
+				if(jQuery(this).attr("noclick") =="true") {
 					return true;
 				}
 				
 				jQuery(this).click(
 					function(event) 
 					{
-						jQuery('#emselectable table tr' ).each(function(index) 
-						{ 
-							jQuery(this).removeClass("emhighlight");
-						});
-						var row = jQuery(this).closest("tr");
-						jQuery(row).addClass('emhighlight');
-						jQuery(row).removeClass("emborderhover");
-						
-						var id = jQuery(row).attr("rowid");
-						var form = jQuery('#emselectable').find("form");
-						if( form.length > 0 )
-						{
-							jQuery('#emselectable #emselectedrow').val(id);
-							jQuery("#emselectable .emneedselection").each( function()
-								{
-									jQuery(this).removeAttr('disabled');
-								});	
-							form.submit();
-						}
-						/*
-						else if(jQuery('#emselectable #editlink'))
-						{
-							var tablediv = jQuery(this).parents('.emselectable').filter(':first');
-							var targetdiv = tablediv.data('targetdiv');
-							var editpath = tablediv.data('editpath');
-							targetdiv = targetdiv.replace(/\//g, "\\/");
+						if ( jQuery(this).closest("tr").hasClass("thickbox") ) {
+							var row = jQuery(this).closest("tr");
+							var href = row.data("href");
+							openFancybox(href);
+						} else {
+								
+							jQuery('#emselectable table tr' ).each(function(index) 
+							{ 
+								jQuery(this).removeClass("emhighlight");
+							});
+							var row = jQuery(this).closest("tr");
+							jQuery(row).addClass('emhighlight');
+							jQuery(row).removeClass("emborderhover");
+							
 							var id = jQuery(row).attr("rowid");
-							editpath = editpath + "&id=" + id;
-							jQuery("#" + targetdiv).load(editpath);
-						}
-						*/
-						else
-						{
-							window.location = id;
+							var form = jQuery('#emselectable').find("form");
+							if( form.length > 0 )
+							{
+								jQuery('#emselectable #emselectedrow').val(id);
+								jQuery("#emselectable .emneedselection").each( function()
+									{
+										jQuery(this).removeAttr('disabled');
+									});	
+								form.submit();
+							}
+							/*
+							else if(jQuery('#emselectable #editlink'))
+							{
+								var tablediv = jQuery(this).parents('.emselectable').filter(':first');
+								var targetdiv = tablediv.data('targetdiv');
+								var editpath = tablediv.data('editpath');
+								targetdiv = targetdiv.replace(/\//g, "\\/");
+								var id = jQuery(row).attr("rowid");
+								editpath = editpath + "&id=" + id;
+								jQuery("#" + targetdiv).load(editpath);
+							}
+							*/
+							else
+							{
+								window.location = id;
+							}
 						}
 					}
 				);		
