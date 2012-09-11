@@ -1,6 +1,13 @@
+<div id="bulkuploader">
+
+        Category Picker
+	<div id="treescroller">
+        $pages.include("$apphome/components/emtree/index.html?tree-name=categoryAssetPickerTree&showchecks=true&editabletree=true&allowselections=true",$context)
+    </div>
+
 
         $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() ) 
-        $context.putPageValue("view","asset/assettype/default/multiupload")    
+        $context.putPageValue("view","asset/multipleupload")    
 
 
         $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
@@ -8,8 +15,8 @@
         <input type="hidden" name="sourcepath" value="$formatteddate" />
         
         
-        Category Picker
         
         
         <input class="btn right" type="submit" id="finishbutton" value="Upload" /> 
         
+</div>       
