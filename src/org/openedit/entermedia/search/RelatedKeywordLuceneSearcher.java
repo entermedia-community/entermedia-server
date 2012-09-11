@@ -275,17 +275,7 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 		return null;
 	}
 
-	public String getIndexPath()
-	{
-		if (getSearchType().startsWith("asset"))
-		{
-			return "/" + getCatalogId() + "/assets/search/suggestions/index";
-		}
-		else
-		{
-			return "/" + getCatalogId() + "/temp/suggestions/" + getSearchType();
-		}
-	}
+	
 
 	public void reIndexAll(IndexWriter writer) throws OpenEditException
 	{
