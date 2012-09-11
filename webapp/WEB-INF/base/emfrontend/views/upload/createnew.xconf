@@ -5,4 +5,5 @@
 	</page-action>
 	<property name="redirecttosourcepath">true</property>
 	<property name="createasfolder">true</property>
+	<property name="uploadtab">new</property>
 </page>
