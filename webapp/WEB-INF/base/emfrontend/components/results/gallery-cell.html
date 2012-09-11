@@ -8,7 +8,7 @@
                     </div>
                     
                     <a class="hovering" href="$click">
-                        <div class="emthumbimage em$thumbsize" title="$sourcepath"> 
+                        <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
                             $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
                         </div>
                     </a>
@@ -18,7 +18,7 @@
                         <div class="gallery-field-label">Asset Title:</div>
                         
                          
-                        <div class="gallery-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" >#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</div> 
+                        <div class="gallery-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a href="$click">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div> 
                         
                         $pages.include("$home$apphome/components/basket/toggleitem.html", $context)
                     </div>
