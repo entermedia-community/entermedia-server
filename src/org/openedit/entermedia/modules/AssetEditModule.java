@@ -968,10 +968,19 @@ public class AssetEditModule extends BaseMediaModule
 			Category cat = (Category) iterator.next();
 			asset.addCategory(cat);
 		}
-		asset.setProperty("editstatus","1");
+		if( asset.get("editstatus") == null )
+		{
+			asset.setProperty("editstatus","1");
+		}
 		//asset.setProperty("importstatus", "uploading");
-		asset.setProperty("importstatus", "imported");
-		asset.setProperty("previewtatus", "0");
+		if( asset.get("importstatus") == null )
+		{
+			asset.setProperty("importstatus", "imported");
+		}
+		if( asset.get("previewtatus") == null )
+		{
+			asset.setProperty("previewtatus", "0");
+		}
 		asset.setProperty("owner", inReq.getUserName());
 		asset.setProperty("datatype", "original");
 		asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));

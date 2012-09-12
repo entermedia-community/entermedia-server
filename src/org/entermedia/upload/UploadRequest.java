@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.fileupload.FileItem;
@@ -40,7 +42,63 @@ public class UploadRequest implements ProgressListener
 	protected File fieldRoot;
 	protected ZipUtil fieldZipUtil;
 	protected OutputFiller fieldFiller;
-	protected Data fieldUploadQueueData;
+	protected String fieldUploadId;
+	protected String fieldCatalogId;
+	protected String fieldUserName;
+	protected long fieldSoFar;
+	
+	public long getSoFar()
+	{
+		return fieldSoFar;
+	}
+	public void setSoFar(long inSoFar)
+	{
+		fieldSoFar = inSoFar;
+	}
+	public String getUserName()
+	{
+		return fieldUserName;
+	}
+	public void setUserName(String inUserName)
+	{
+		fieldUserName = inUserName;
+	}
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
+	public String getUploadId()
+	{
+		return fieldUploadId;
+	}
+	public void setUploadId(String inUploadId)
+	{
+		fieldUploadId = inUploadId;
+	}
+	public Map getUploadCache()
+	{
+		if (fieldUploadCache == null)
+		{
+			fieldUploadCache = new HashMap();
+		}
+
+		return fieldUploadCache;
+
+	}
+	public void setUploadCache(Map inUploadCache)
+	{
+		fieldUploadCache = inUploadCache;
+	}
+
+
+
+	protected Map fieldUploadCache;
+
+
 	protected Searcher fieldUploadQueueSearcher;
 	
 	public Searcher getUploadQueueSearcher()
@@ -82,17 +140,21 @@ public class UploadRequest implements ProgressListener
 	
 	public String getPathFor(String home, FileUploadItem inItem, WebPageRequest inReq) throws OpenEditException
 	{
-		String path = inItem.get("path");
-		if( path == null)
+		String allow = inReq.findValue("allowspecifiedpath");
+		String path  = null;
+		if( Boolean.parseBoolean(allow))
 		{
-			path = inReq.getRequestParameter("path");
-		}
-		
+			path = inItem.get("path");
+			if( path == null)
+			{
+				path = inReq.getRequestParameter("path");
+			}
+		}		
 		if (path == null )
 		{
-			log.error("No path specified in multipart form");
+			long utime = System.currentTimeMillis();
+			path = "/WEB-INF/temp/uploading/" + inReq.getUserName() + "/tmp" + utime + "_" + inItem.getName();
 			//throw new OpenEditException("No path passed in with the upload");
-			return null;
 		}
 		if( home != null && home.length() > 0 && path.startsWith(home))
 		{
@@ -295,7 +357,8 @@ public class UploadRequest implements ProgressListener
 		}
 		return null;
 	}
-	public FileUploadItem getUploadItemByName(String inName) {
+	public FileUploadItem getUploadItemByName(String inName) 
+	{
 		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();)
 		{
 			FileUploadItem item = (FileUploadItem) iterator.next();
@@ -307,14 +370,7 @@ public class UploadRequest implements ProgressListener
 		return null;
 	}
 	
-	public Data getUploadQueueData()
-	{
-		return fieldUploadQueueData;
-	}
-	public void setUploadQueueData(Data inUploadQueueData)
-	{
-		fieldUploadQueueData = inUploadQueueData;
-	}
+
 	
 	/**   
 	 * Put breakpoints here to slow down the upload
@@ -322,13 +378,15 @@ public class UploadRequest implements ProgressListener
 	 */
 	public void update(long inBytesRead, long inContentLength, int inItemNumber)
 	{
-		if( getUploadQueueData() == null)
+		if( getUploadId() == null || inItemNumber == 0)
 		{
 			return;
 		}
-		String existing = getUploadQueueData().get("date");
+		inItemNumber = inItemNumber - 1;
+		Data uploaddata = loadUploadData(inItemNumber);
+		String existing = uploaddata.get("date");
 		boolean update = true;
-		if( existing != null && inBytesRead != inContentLength)
+		if( existing != null)
 		{
 			Date saved = DateStorageUtil.getStorageUtil().parseFromStorage(existing);
 			Date recently = new Date(System.currentTimeMillis() - 2000);
@@ -341,19 +399,30 @@ public class UploadRequest implements ProgressListener
 				update = false;
 			}
 		}
+		//track on a per file basis
+		long thechange = inBytesRead - fieldSoFar;
 		
-		getUploadQueueData().setProperty("filesize", String.valueOf( inContentLength));
-		getUploadQueueData().setProperty("filesizeuploaded", String.valueOf( inBytesRead));
+		fieldSoFar = inBytesRead;
+		
+		String sofar = uploaddata.get("filesizeuploaded");
+		if( sofar == null )
+		{
+			sofar = "0";
+		}
+		long saved = Long.parseLong( sofar ) + thechange; 
+				
+		uploaddata.setProperty("filesize", String.valueOf( inContentLength));
+		uploaddata.setProperty("filesizeuploaded", String.valueOf( saved ));
 
 		if(update)
 		{
 			//PRO tip: Put breakpoint here to slow down uploads 
-			getUploadQueueData().setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			uploaddata.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			if( inBytesRead == inContentLength)
 			{
-				getUploadQueueData().setProperty("status", "complete");
+				uploaddata.setProperty("status", "complete");
 			}
-			getUploadQueueSearcher().saveData(getUploadQueueData(), null);
+			getUploadQueueSearcher().saveData(uploaddata, null);
 //			try
 //			{
 //				Thread.sleep(1000);
@@ -362,4 +431,31 @@ public class UploadRequest implements ProgressListener
 //			{}
 		}
 	}
+	protected Data loadUploadData(int inItemNumber)
+	{
+		Data task = (Data)getUploadCache().get(inItemNumber);
+		if( task == null )
+		{
+			task = addRecentUpload(getCatalogId(), getUploadId() + "_" + inItemNumber);
+			task.setSourcePath("users/" + getUserName());
+			task.setName(getUploadId());
+			getUploadCache().put(inItemNumber, task);
+		}
+
+		return task;
+	}
+	
+	protected Data addRecentUpload(String inCatId, String inUploadId)
+	{
+		Searcher searcher = getUploadQueueSearcher();
+		Data req = (Data)searcher.searchById(inUploadId);
+		if( req == null)
+		{
+			req= searcher.createNewData();
+			req.setId(inUploadId);
+		}
+		return req;
+	}
+
+
 }

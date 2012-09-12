@@ -25,12 +25,8 @@ public class DateModule extends BaseModule
 		Date date = new Date();
 		inReq.putPageValue("now",date);
 		
-		String format = inReq.getRequestParameter("format");
+		String format = inReq.findValue("format");
 		
-		if ( format == null)
-		{
-			format = inAction.getChildValue("format");
-		}
 		if ( format != null)
 		{
 			SimpleDateFormat sformat = new SimpleDateFormat(format);

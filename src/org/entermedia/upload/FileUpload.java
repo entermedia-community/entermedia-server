@@ -19,6 +19,7 @@ package org.entermedia.upload;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -95,18 +96,6 @@ public class FileUpload
 		return props;
 	}
 
-	protected Data addRecentUpload(String inCatId, String inUploadId)
-	{
-		Searcher searcher = loadQueueSearcher(inCatId);
-		Data req = (Data)searcher.searchById(inUploadId);
-		if( req == null)
-		{
-			req= searcher.createNewData();
-			req.setId(inUploadId);
-		}
-		return req;
-	}
-
 	public void saveFiles(WebPageRequest inContext, UploadRequest props) throws OpenEditException
 	{
 		String home = (String)inContext.getPageValue("home");
@@ -148,14 +137,11 @@ public class FileUpload
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
 		String catalogid = inContext.findValue("catalogid");
-		if( uploadid != null)
-		{
-			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
-			Data queue = addRecentUpload(catalogid, uploadid);
-			queue.setSourcePath("users/" + inContext.getUserName());
-			queue.setName(uploadid);		
-			upload.setUploadQueueData(queue);
-		}
+		upload.setUploadId(uploadid);
+		upload.setCatalogId(catalogid);
+		upload.setUserName(inContext.getUserName());
+		upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
+
 		FileItemFactory factory = (FileItemFactory)inContext.getPageValue("uploadfilefactory");
 		if( factory == null)
 		{
