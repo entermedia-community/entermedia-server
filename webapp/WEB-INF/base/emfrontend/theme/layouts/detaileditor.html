@@ -37,7 +37,11 @@
             #end
         
     </div>
-
+    #if ( $canviewvoting )
+    <div id="assetVoteCount">
+        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+    </div>
+    #end
     #set( $assettab = $context.findValue("assettab") )
     <div id="detailarea">
         <div id="de-table">

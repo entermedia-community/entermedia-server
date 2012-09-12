@@ -289,8 +289,8 @@ public class MediaArchiveModule extends BaseMediaModule
 			return;
 		}
 		long utime = System.currentTimeMillis();
-		String temppath = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/tmp" + utime + "_" + map.getFirstItem().getName();
-		map.saveFirstFileAs(temppath, inReq.getUser());
+//		String temppath = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/tmp" + utime + "_" + map.getFirstItem().getName();
+//		map.saveFirstFileAs(temppath, inReq.getUser());
 		
 		List unzipped = map.unzipFiles(false);
 		inReq.putPageValue("uploadrequest", map);

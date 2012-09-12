@@ -196,22 +196,34 @@ public class SyncModule extends BaseMediaModule
 	public void loadQueue(WebPageRequest inReq ) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		
+
 		Collection all = archive.getAssetSearcher().getAllHits(inReq);
 		inReq.putPageValue("assets", all);
 
-		Collection processed = getPushManager().getProcessedAssets(archive);
-		inReq.putPageValue("processedassets", processed);
+		
+		Collection importpending = getPushManager().getImportPendingAssets(archive);
+		inReq.putPageValue("importpending", importpending);
+
+		Collection importcomplete = getPushManager().getImportCompleteAssets(archive);
+		inReq.putPageValue("importcomplete", importcomplete);
+
+		Collection importerror = getPushManager().getImportErrorAssets(archive);
+		inReq.putPageValue("importerror", importerror);
+		
+		//
+		Collection pusherror = getPushManager().getErrorAssets(archive);
+		inReq.putPageValue("pusherror", pusherror);
 
 		Collection nogenerated = getPushManager().getNoGenerated(archive);
 		inReq.putPageValue("nogenerated", nogenerated);
 
-		Collection completed = getPushManager().getCompletedAssets(archive);
-		inReq.putPageValue("completedassets", completed);
-		Collection errorassets = getPushManager().getErrorAssets(archive);
-		inReq.putPageValue("errorassets", errorassets);
-		Collection noteconverted = getPushManager().getImportedAssets(archive);
-		inReq.putPageValue("imported", noteconverted);
+		Collection pushcomplete = getPushManager().getCompletedAssets(archive);
+		inReq.putPageValue("pushcomplete", pushcomplete);
+
+		Collection pushpending = getPushManager().getPendingAssets(archive);
+		inReq.putPageValue("pushpending", pushpending);
+
+
 	}
 	
 	public void pollRemotePublish(WebPageRequest inReq) throws Exception

@@ -94,11 +94,6 @@ uiload = function() {
 					altFormat: "mm/dd/yy"
 				
 				}
-				
-				
-				
-						
-				
 				);
 				
 				var current = jQuery("#" + targetid).val();
@@ -109,7 +104,15 @@ uiload = function() {
 					jQuery(this).datepicker("setDate", date );
 							
 				}
-				
+				jQuery(this).blur(function()
+						{
+							var val = jQuery(this).val();
+							if( val == "")
+							{
+								jQuery("#" + targetid).val("");
+							}
+						}
+				);
 			}
 		);
 	
@@ -124,7 +127,6 @@ uiload = function() {
 				else
 				{	
 					e.preventDefault();
-					return false;
 				}
 			}
 		);

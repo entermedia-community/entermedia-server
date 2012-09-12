@@ -108,7 +108,7 @@ public class PushManager
 		SearchQuery query = searcher.createSearchQuery();
 		if( inAssetIds == null )
 		{
-			query.addMatches("category","index");
+			//query.addMatches("category","index");
 			query.addMatches("importstatus","complete");
 			query.addNot("pushstatus","complete");
 			query.addNot("pushstatus","nogenerated");
@@ -516,15 +516,15 @@ asset: " + asset);
 		return hits;
 	}
 
-	public Collection getProcessedAssets(MediaArchive inArchive)
+	public Collection getPendingAssets(MediaArchive inArchive)
 	{
-		SearchQuery q = inArchive.getAssetSearcher().createSearchQuery();
-		q.setAndTogether(false);
-		q.append("pushstatus", "nogenerated");
-		q.append("pushstatus", "error");
-		q.append("pushstatus", "complete");
-		
-		HitTracker hits = inArchive.getAssetSearcher().search(q);
+		SearchQuery query = inArchive.getAssetSearcher().createSearchQuery();
+		query.addMatches("importstatus","complete");
+		query.addNot("pushstatus","complete");
+		query.addNot("pushstatus","nogenerated");
+		query.addNot("pushstatus","error");
+
+		HitTracker hits = inArchive.getAssetSearcher().search(query);
 		return hits;
 	}
 
@@ -549,9 +549,15 @@ asset: " + asset);
 		return hits;
 	}
 
-	public Collection getImportedAssets(MediaArchive inArchive)
+	public Collection getImportPendingAssets(MediaArchive inArchive)
 	{
 		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("importstatus", "imported");
+		return hits;
+	}
+
+	public Collection getImportErrorAssets(MediaArchive inArchive)
+	{
+		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("importstatus", "error");
 		return hits;
 	}
 

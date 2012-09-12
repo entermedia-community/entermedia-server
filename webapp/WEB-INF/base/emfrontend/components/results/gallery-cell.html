@@ -1,0 +1,26 @@
+
+           
+                <div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
+                    
+                    
+                    <div class="gallery-checkbox">
+                        <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />          
+                    </div>
+                    
+                    <a class="hovering" href="$click">
+                        <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
+                            $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+                        </div>
+                    </a>
+                    
+                    #if( $showcaption )
+                    <div class="gallery-caption">
+                        <div class="gallery-field-label">Asset Title:</div>
+                        
+                         
+                        <div class="gallery-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a href="$click">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div> 
+                        
+                        $pages.include("$home$apphome/components/basket/toggleitem.html", $context)
+                    </div>
+                    #end
+                </div>

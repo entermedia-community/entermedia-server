@@ -30,12 +30,12 @@
 		#if (!$viewtype || $viewtype == "map")
 			#set ($viewtype = "default")
 		#end
-		#if (!$viewtype || $viewtype == "date")
+		
+		#if (!$viewtype || $viewtype == "date" ||  $viewtype == "datesearch")
 			#set ($viewtype = "datesearch")
 		#else
 			<input name="operation" value="startswith" type="hidden" />
 		#end
-
 
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
