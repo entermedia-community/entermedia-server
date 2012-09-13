@@ -31,17 +31,17 @@ jQuery("input[name=pagetoggle]").livequery( 'click', function()
 {
 	  var home = $('#application').data('home');
 	  var apphome = $('#application').data('apphome');
-	  var hitsessionid = $('#resultsdiv').data('hitsessionid');
+	  var hitssessionid = $('#resultsdiv').data('hitssessionid');
 	   
 	   var status = jQuery('input[name=pagetoggle]').is(':checked');
 	   if(status)
 	   {
-		   jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitsessionid, action:"page"});
+		   jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"page"});
 		   jQuery('.selectionbox').attr('checked','checked');
        }
        else
        {
-   	       jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitsessionid, action:"none"});         
+   	       jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"none"});         
    	       jQuery('.selectionbox').removeAttr('checked');  
    	   }
 	   //jQuery("#select-dropdown-open").click();
