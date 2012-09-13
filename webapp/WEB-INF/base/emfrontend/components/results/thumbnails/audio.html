@@ -1,8 +1,10 @@
-
+    #if ( !$hit )
+        #set ( $hit = $asset )
+    #end
  
     #set ($path = "$home$apphome/views/modules/asset/downloads/mp3/$hit.sourcepath/audio.mp3")
-
-
+    
+    
         <div id="jp_container_$hit.id" class="jp-audio mini">
             <div class="jp-type-single">
                 <div id="jquery_jplayer_$hit.id" data-container="jp_container_$hit.id"  class="jp-jplayer" data-url="$path"></div>            
@@ -19,4 +21,3 @@
                 </div>
             </div>
         </div>
-

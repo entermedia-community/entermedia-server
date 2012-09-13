@@ -183,11 +183,11 @@ uiload = function() {
 	
 	
 
-	jQuery(".jp-jplayer").livequery(function(){
+	jQuery(".jp-play").livequery("click", function(){
 		
 	
 	//	alert("Found a player, setting it up");
-		var player = jQuery(this);
+		var player = jQuery(this).closest(".jp-audio").find(".jp-jplayer");
 		var url = player.data("url");
 		var containerid = player.data("container");
 		var container = jQuery("#" + containerid);
@@ -196,7 +196,7 @@ uiload = function() {
 	        ready: function (event) {
 	        	player.jPlayer("setMedia", {
 	                mp3:url
-	            });
+	            }).jPlayer("play");
 	        },
 	        play: function() { // To avoid both jPlayers playing together.
 	        	player.jPlayer("pauseOthers");
@@ -206,21 +206,9 @@ uiload = function() {
 	        wmode: "window",
 	        cssSelectorAncestor: "#" + containerid
 	    });
-//		container.find('.jp-play').click(function(e){
-//	    	e.preventDefault();
-//	    	e.stopPropagation();
-//	    	jQuery(this).hide();
-//	    	container.find(".jp-pause").show();
-//	    	player.jPlayer("play");
-//	    	
-//	    });
-//		container.find('.jp-pause').click(function(e){
-//	    	e.preventDefault();
-//	    	e.stopPropagation();
-//	    	jQuery(this).hide();
-//	    	container.find(".jp-play").show();
-//	    	player.jPlayer("pause");
-//	    });
+		
+		player.jPlayer("play");
+
 	});
 
 
