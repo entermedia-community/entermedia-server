@@ -2483,6 +2483,7 @@ tr.odd {
     margin: 0;
     border-bottom: 1px solid #ddd;
     list-style: none;
+    position: relative;
 }
 #up-files-list li a {
     padding: 5px 10px;
@@ -2493,12 +2494,23 @@ tr.odd {
 #up-files-list li:hover a {
     background: #f3f3f3;
 }
-#up-files-list li a span {
-    width: 230px;
+#up-files-list li a .name {
+    width: 180px;
     overflow: hidden; 
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
+    padding-left: 7px;
+}
+#up-files-list li a .size {
+    color: #3DAACD;
+    font-size: 10px;
+    width: 60px;
+    text-align: right;
+    display: inline-block;
+    float: right;
+    margin-top: 1px;
+    margin-right: -4px; 
 }
 #up-files-list li .delete-row, #up-files-list li:hover .delete-row {
     background: url('../images/iconset-10x10.png') 20px 10px;
@@ -2508,12 +2520,22 @@ tr.odd {
     padding: 0;
     display: block;
     margin-top: 5px;
-    margin: -18px 5px 0 0px;
+    float: left;
+    margin: 8px 0 0 6px;
 }
 #up-files-list li:hover .delete-row:hover {
     background: url('../images/iconset-10x10.png') 20px 10px;
     opacity: 1;
 }
+#up-files-list li .uploadprogress {
+    background: rgba(113, 206, 113, 0.2);
+    display: block;
+    height: 26px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
 
 /* ATTACHMENTS STYLES */
 

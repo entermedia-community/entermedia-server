@@ -4,7 +4,29 @@ $(document).ready(function(){
        $('#fileElem').trigger('click');
        e.preventDefault(); 
     });
- 
+    /*
+    var dropbox = document.getElementById("emdropbox"); 
+    dropbox.addEventListener("dragenter", function(e) {
+    	  e.stopPropagation();
+    	  e.preventDefault();
+    	} , false);
+    dropbox.addEventListener("dragover",  function(e) {
+  	  	e.stopPropagation();
+  	  	e.preventDefault();
+	} , false);
+
+    dropbox.addEventListener("drop", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+       
+        var dt = e.dataTransfer;
+        var files = dt.files;
+       
+       // jQuery("#fileElem").files = files;
+       // document.getElementById("fileElem").files = files;
+        handleFiles(files);
+     }, false);
+     */
 })
 
 var uploadid = new Date().getTime(); 
@@ -19,14 +41,13 @@ function handleFiles(files)
     
 	try 
 	{
-		var link = home + "/components/upload/types/html5/uploadrow.html";
 		uploadid++;
+		var link = home + "/components/upload/types/html5/uploadrow.html?uploadid=" + uploadid + "&name=" + file.name + "&size=" + file.size + "&fileindex=" + i;
 		jQuery.ajax(
 		{
 		   type: "POST",
 		   url: link,
 		   async: false,
-		   data: "id=" + uploadid + "&name=" + file.name + "&size=" + file.size,
 		   success: function(html)
 		   {
 				jQuery("#up-files-list").append(html);
@@ -58,31 +79,34 @@ var uploadid;
 	{
 		if(jQuery("#uploadform").valid()) {
 	 		jQuery("#finishbutton").attr('disabled','disabled');
-		jQuery("#uploadform").submit();
+	 		jQuery("#uploadform").submit();
 		}
 	}
 	
 	getUploadId = function()
 	{
-		if( uploadid == undefined)
-		{
-			var d = new Date();
-			uploadid = "$user.getId()_" + d.getTime();
-		}
-		return uploadid;
+		return jQuery("#uploadform").data("uploadid");
 	}
 	
 	checkProgress = function()
 	{
+		var home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
+
 		var next = jQuery("#up-files-list").find("[data-complete='false']").first()
-		if( next )
+		if( next.length > 0 )
 		{
 			var complete = next.data("complete");
 			var name = next.data("name");
 			var size = next.data("size");
+			var fileindex = next.data("fileindex");
 			if( complete != "true")
 			{
-				next.load("$home$apphome/components/upload/types/html5/uploadprogress.html?uploadid="+ getUploadId() + "&name=" + name +"&size=" + size);
+				var link = home + "/components/upload/types/html5/uploadprogress.html?uploadid="+ getUploadId() + "&name=" + name +"&size=" + size + "&fileindex=" + fileindex;
+				jQuery.get(link, {}, function(data) 
+					{
+						next.replaceWith(data);
+					}
+				);
 			}
 			setTimeout("checkProgress()",500);
 		}
@@ -93,7 +117,10 @@ var uploadid;
 		//jQuery.fn.livequery.stopped = true;
 		//jQuery("#embody").html(responseText);	
 		//jQuery.fn.livequery.stopped = false;
-		document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+		  var home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
+
+		document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+		//  alert("upload done");
 	}
 	
 	//special validator for file name
@@ -106,13 +133,8 @@ var uploadid;
 	);
 	
 // wait for the DOM to be loaded 
-$(document).ready(function() { 
-	jQuery("#uploadform").validate({
-		rules: {
-			fileName: "filename"
-		}
-	});
-	
+$(document).ready(function() 
+{	
     // bind 'myForm' and provide a simple callback function 
     $('#uploadform').ajaxForm({ 
     	        // target identifies the element(s) to update with the server response 
@@ -121,6 +143,7 @@ $(document).ready(function() {
     	        // has been received; here we apply a fade-in effect to the new content
     	        beforeSubmit:function() 
     	        { 
+    	        	
     	            checkProgress(); 
     	           // document.onclick = disable;
     	            jQuery("#finishbutton").attr("value","Sending...");

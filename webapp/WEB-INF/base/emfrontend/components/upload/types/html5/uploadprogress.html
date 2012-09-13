@@ -1,11 +1,14 @@
 #set($uploadid = $context.getRequestParameter("uploadid"))
-#set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$uploadid) )
+#set($fileindex = $context.getRequestParameter("fileindex"))
+
+#set( $id = "${uploadid}_${fileindex}")
+
+#set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$id) )
 
 ##rreplace with emPush percentage code
 #if( $data.getId() )
-	#set( $total = $data.getFloat("filesize"))
-	#set( $uploaded = $data.getFloat("filesizeuploaded"))
+	#set( $uploaded = $data.get("filesizeuploaded"))
 #end
 
 
-$pages.include("./uploadrow.html?id=$uploadid&uploaded=$uploaded",$context)
+$pages.include("./uploadrow.html?uploaded=$!uploaded",$context)
