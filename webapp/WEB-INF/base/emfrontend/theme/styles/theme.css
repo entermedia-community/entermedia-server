@@ -2459,7 +2459,7 @@ tr.odd {
     font-weight: bold;
     margin-top: 3px;
 }
-.btn.pickfiles {
+.btn.large {
     width: 250px;
     padding-top: 15px;
     padding-bottom: 15px;
@@ -2500,7 +2500,6 @@ tr.odd {
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
-    padding-left: 7px;
 }
 #up-files-list li a .size {
     color: #3DAACD;
@@ -2509,8 +2508,7 @@ tr.odd {
     text-align: right;
     display: inline-block;
     float: right;
-    margin-top: 1px;
-    margin-right: -4px; 
+    margin-top: 1px; 
 }
 #up-files-list li .delete-row, #up-files-list li:hover .delete-row {
     background: url('../images/iconset-10x10.png') 20px 10px;
