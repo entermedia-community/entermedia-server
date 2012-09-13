@@ -27,7 +27,7 @@
     				        <ul style="width: 100px; text-align: left;">
     				        	#if($canprintpreview)
 								<li >
-									<a class="print emdialog" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="Print Preview">Print</a>
+									<a class="print emdialog" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="Print Preview">Print</a>
 								</li>
 								#end
 								#if($candownload)
@@ -38,7 +38,7 @@
                                     #if ( $asset.id.startsWith("multiedit:") )
                                         <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
                                     #else
-                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
                                     #end
                                 </li>
                                 #end
@@ -53,7 +53,7 @@
     			#if( $hits )
     					#if($next)
     						$context.putPageValue("hits", $hits)
-    						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${next.sourcepath}&hitssessionid=${hitssessionid}">>></a></li>
+    						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=#uuencode(${next.sourcepath})&hitssessionid=${hitssessionid}">>></a></li>
     					#end
     			#end
     					#if ($canviewbasket)

@@ -224,7 +224,24 @@ uiload = function() {
 	});
 
 
-	
+	$('#select-dropdown-open').livequery("click",function(){
+		
+		if ($(this).hasClass('down')) {
+			$(this).removeClass('down');
+			$(this).addClass('up');
+			$('#select-dropdown').show();
+		} else {
+			$(this).removeClass('up');
+			$(this).addClass('down');
+			$('#select-dropdown').hide();
+		}
+	});
+	$('#select-dropdown li a').livequery("click",function(){
+		$('#select-dropdown-open').removeClass('up');
+		$('#select-dropdown-open').addClass('down');
+		$('#select-dropdown').hide();
+	});
+
 	
 	
 }

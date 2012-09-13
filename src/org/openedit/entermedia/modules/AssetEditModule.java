@@ -1612,7 +1612,9 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			return;
 		}
-		Searcher searcher = getSearcherManager().getSearcher(asset.getCatalogId(), "assetvotes");
+		String catalogid = inReq.findValue("catalogid");
+		
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, "assetvotes");
 		if (searcher == null)
 		{
 			throw new OpenEditException("Unable to load searcher for assetvotes.");
@@ -1679,6 +1681,10 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "assetvotes");
 	//	DateFormat dateformat = searcher.getDetail("time").getDateFormat();
+		if( asset.getId().contains("multiedit:") )
+		{
+			throw new OpenEditException("Can't edit");
+		}
 		Data row = searcher.createNewData();
 		String username = inUser.getUserName();
 		
