@@ -3,8 +3,6 @@
 <page>
 	<property name="subtab">assetcategories</property>  	 
 
-	<property name="root">index</property>
-	
 	<property name="iconwidth">16</property>
 	<inner-layout />
 		<layout />
