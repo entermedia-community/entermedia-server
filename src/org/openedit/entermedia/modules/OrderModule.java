@@ -282,6 +282,7 @@ public class OrderModule extends BaseMediaModule {
 	}
 
 	public boolean checkItemApproval(WebPageRequest inReq) throws Exception {
+		
 		if (inReq.getUser() == null) {
 			return false;
 		}
@@ -302,6 +303,9 @@ public class OrderModule extends BaseMediaModule {
 			sourcepath = asset.getSourcePath();
 		} else {
 			sourcepath = archive.getSourcePathForPage(inReq);
+		}
+		if(sourcepath == null){
+			return false;
 		}
 		Searcher itemsearcher = archive.getSearcherManager().getSearcher(
 				archive.getCatalogId(), "orderitem");
@@ -476,7 +480,7 @@ public class OrderModule extends BaseMediaModule {
 
 	public Order placeOrderById(WebPageRequest inReq) {
 		Order order = loadOrder(inReq);
-		getOrderManager().placeOrder(inReq, getMediaArchive(inReq), order);
+		getOrderManager().placeOrder(inReq, getMediaArchive(inReq), order, false);
 
 		inReq.removeSessionValue("orderbasket");
 		inReq.putPageValue("order", order);
@@ -488,6 +492,7 @@ public class OrderModule extends BaseMediaModule {
 
 	public Order placeOrderFromBasket(WebPageRequest inReq) {
 		Order order = loadOrderBasket(inReq);
+		boolean resetid = Boolean.parseBoolean(inReq.findValue("resetid"));
 		String prefix = inReq.findValue("subjectprefix");
 		if (prefix == null) {
 			prefix = "Order received:";
@@ -500,7 +505,7 @@ public class OrderModule extends BaseMediaModule {
 		}
 		inReq.putPageValue("subject", prefix);
 
-		getOrderManager().placeOrder(inReq, getMediaArchive(inReq), order);
+		getOrderManager().placeOrder(inReq, getMediaArchive(inReq), order, resetid);
 
 		inReq.removeSessionValue("orderbasket");
 		inReq.putPageValue("order", order);
@@ -687,6 +692,12 @@ public class OrderModule extends BaseMediaModule {
 		Order order = loadOrder(inReq);
 		String catalogid = inReq.findValue("catalogid");
 		getOrderManager().delete(catalogid, order);
+	}
+	public void removeItem(WebPageRequest inReq) throws Exception {
+		
+		String catalogid = inReq.findValue("catalogid");
+		String itemid = inReq.getRequestParameter("id");
+		getOrderManager().removeItem(catalogid, itemid);
 	}
 
 }

@@ -668,6 +668,8 @@
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+		
 	</bean>
 
 	<bean id="compositeLuceneAutoCompleteSearcher"

@@ -19,6 +19,7 @@ $!query.addSortBy("ordering")
 				#if ($systemdefined && $systemdefined != "true")
 				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
                 #end
+              
 			#foreach( $target in $views)
                 
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">

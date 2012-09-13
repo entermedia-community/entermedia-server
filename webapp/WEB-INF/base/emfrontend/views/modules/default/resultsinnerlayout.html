@@ -59,7 +59,9 @@ $context.putPageValue("hits", $hits)
 		var sessionid = jQuery(this).data("sessionid");
 		
 		
+
 		jQuery.get("$home${content.searchhome}/selections/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
+		);
 		
 			
 		return;

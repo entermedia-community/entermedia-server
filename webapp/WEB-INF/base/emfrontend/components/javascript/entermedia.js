@@ -961,7 +961,8 @@ showajaxstatus = function(uid, timeout)
 
 jQuery(document).ready(function() 
 { 
-	$('#select-dropdown-open').click(function(){
+	$('#select-dropdown-open').livequery("click",function(){
+		
 		if ($(this).hasClass('down')) {
 			$(this).removeClass('down');
 			$(this).addClass('up');

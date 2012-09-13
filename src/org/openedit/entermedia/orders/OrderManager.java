@@ -356,12 +356,16 @@ public class OrderManager
 		orderearcher.saveData(inBasket, inUser );
 	}
 
-	public void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder)
+	public void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, boolean inResetId)
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "orderitem");
+		Searcher orderseacher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "order");
+
 		HitTracker all = itemsearcher.fieldSearch("orderid", inOrder.getId());
 		List tosave = new ArrayList();
-		
+		if(inResetId){
+			inOrder.setId(orderseacher.nextId());
+		}
 		//TODO: deal with table of assets
 		String[] fields = inReq.getRequestParameters("field");
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -379,6 +383,9 @@ public class OrderManager
 						row.setProperty(fields[i], val);
 					}
 				}
+			}
+			if(inResetId){
+				row.setProperty("orderid", inOrder.getId());
 			}
 			tosave.add(row);
 		}
@@ -754,6 +761,15 @@ public class OrderManager
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "orderitems");
 		//Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
 		
+	}
+
+	public void removeItem(String inCatalogid, String inItemid)
+	{
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
+		Data orderitem = (Data) ordersearcher.searchById(inItemid);
+		if(orderitem != null){
+			ordersearcher.delete(orderitem, null);
+		}
 	}
 
 }
