@@ -47,7 +47,7 @@
 		#end
 #end
 <div class="tab-actions" style="text-align: right;">
-    <a class="btn ajax" targetdivinner="right-col" href="reload.html?sourcepath=$asset.sourcePath&oemaxlevel=2">Reload Files</a>
+    <a class="btn ajax" targetdivinner="right-col" href="$home$attachmentroot/reload.html?sourcepath=$asset.sourcePath&oemaxlevel=2">Reload Files</a>
 </div>
 	<div  class="ui-widget-content categories-widget no-padding-for-real of-visible" style="border: none; box-shadow: none;">
 		<div id="attachments-container">
@@ -100,7 +100,7 @@
 			var file = $(this).find('.name');
 			file = $(file);
 			var fileid = file.attr("fileid");
-			$("#preview-pane").load("$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
+			$("#preview-pane").load("$home$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
 			$('#tree ul li div').removeClass('selected');
 			$(this).addClass('selected');
 		}
@@ -190,7 +190,7 @@
 					$("#" + id + "_row > div .arrow").addClass('down');
 				}
 				
-				$("#" + id + "_upload-file").load('$attachmentroot/upload.html?assetid=${asset.id}&fileid=' + id);
+				$("#" + id + "_upload-file").load('$home$attachmentroot/upload.html?assetid=${asset.id}&fileid=' + id);
 				$("#" + id + "_upload-file").show("fast");
 				$("#" + id + "_upload-file div").css('padding-left', padding );
 				$("#" + id + "_row > div").addClass('selected');
@@ -269,7 +269,7 @@
 				
 				
 				var newname = $("#" + id + "_edit_field").attr("value");
-				jQuery.get("$attachmentroot/renamefolder.html", {
+				jQuery.get("$home$attachmentroot/renamefolder.html", {
 					'id': id,
 					fileid: id,
 					'foldername': newname,
@@ -299,7 +299,7 @@
 				var newname = $("#" + id + "_new").attr("value");
 				var parentid = $("#" + id + "_new").data("parent");
 
-				jQuery.get("$attachmentroot/createfolder-finish.html", {
+				jQuery.get("$home$attachmentroot/createfolder-finish.html", {
 					//'id': id,
 					fileid: id,
 					'foldername': newname,
@@ -329,7 +329,7 @@
 				}
 
 				var id = $(this).attr('fileid');
-				jQuery.get("$attachmentroot/delete.html", {
+				jQuery.get("$home$attachmentroot/delete.html", {
 					fileid: id,					
 					'assetid': $asset.id
 					} , function () {						
@@ -344,7 +344,7 @@
 	});
 
 	repaint = function () {
-		jQuery("#attachments-tree").load("$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1");
+		jQuery("#attachments-tree").load("$home$attachmentroot/files.html?assetid=$asset.id&oemaxlevel=1");
 		
 		
 	}
