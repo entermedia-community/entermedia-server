@@ -852,8 +852,7 @@ public class DataEditModule extends BaseMediaModule
 
 	public void toggleHitSelection(WebPageRequest inReq) throws Exception
 	{
-		loadPageOfSearch(inReq);
-		String name = inReq.getRequestParameter("sessionid");
+		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
 		String[] params = inReq.getRequestParameters("count");
 		for (int i = 0; i < params.length; i++)
@@ -1020,7 +1019,12 @@ public class DataEditModule extends BaseMediaModule
 				hits = searcher.loadHits(inReq, hitsname);
 			}
 		}
-
+		if (hits == null)
+		{
+			if(searcher != null){
+				hits = searcher.loadHits(inReq);
+			}
+		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
 		return hits;

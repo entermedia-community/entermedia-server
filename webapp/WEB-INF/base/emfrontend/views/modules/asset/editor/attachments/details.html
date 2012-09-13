@@ -58,18 +58,12 @@ $pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 	$('#primary-options .btn').click(function(){
 		if ( $(this).hasClass('selected') ) 
 		{
-			
-		
-		
 		}
 		else
 		{	
 			$(this).addClass('selected')
 			var image =	jQuery("#emthumbholder img:first")
-			image.attr('src', $(image).attr('src')+'?'+Math.random());;
-
-			});
-		
+			image.attr('src', $(image).attr('src')+'?'+Math.random());;		
 		}
 	});
 </script>
