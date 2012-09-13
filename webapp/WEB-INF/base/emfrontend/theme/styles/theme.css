@@ -3490,22 +3490,21 @@ body #emcontainer .emasseteditorarea {
 #emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort.down {
     background: rgba(0,0,0,0.1) url('../images/sort-desc.png') right 12px no-repeat;
 }
-#select-dropdown-open.down {
-    background: url('../images/sort-desc.png') 0 3px no-repeat;
-    width: 10px;
-    height: 20px;
+#th-checkbox {
     position: relative;
-    left: 31px;
-    top: 2px;
- 
+}
+#select-dropdown-open {
+    width: 20px;
+    height: 28px;
+    position: absolute;
+    left: 27px;
+    top: 0;
+}
+#select-dropdown-open.down {
+    background: url('../images/sort-desc.png') 5px 10px no-repeat;
 }
 #select-dropdown-open.up {
-    background: url('../images/sort-asc.png') 0 3px no-repeat;
-    width: 10px;
-    height: 20px;
-    position: relative;
-    left: 31px;
- 	top: 2px;
+    background: url('../images/sort-asc.png') 5px 10px no-repeat;
 }
 #select-dropdown {
     position: absolute;
@@ -3514,7 +3513,8 @@ body #emcontainer .emasseteditorarea {
     border-top: none;
     box-shadow: 0 1px 4px 2px rgba(0,0,0,0.1);
     padding: 0;
-    margin: 0 0 0 10px;
+    top: 18px;
+    left: 10px;
     z-index: 100;
 }
 #tableheader .firstheader {

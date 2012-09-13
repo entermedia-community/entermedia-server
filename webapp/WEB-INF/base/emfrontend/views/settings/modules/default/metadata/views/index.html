@@ -52,7 +52,7 @@
             <div>View Name</div>
             <input class="field" name="name.value" value="$view.name" >
 	 		<div class="checkbox">
-                <input class="field" type="checkbox" name="byassettype.value" value="true" #if( $view.byassettype && $view.byassettype == "true" ) checked #end />
+                <input type="checkbox" name="byassettype.value" value="true" #if( $view.byassettype && $view.byassettype == "true" ) checked #end />
                 Use Asset Type
             	<input type="hidden" value="byassettype" name="field" />
             </div>
