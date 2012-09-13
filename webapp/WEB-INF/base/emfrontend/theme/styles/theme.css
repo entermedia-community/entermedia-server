@@ -2642,18 +2642,18 @@ tr.odd {
     width: 0;
     height: 0;
     border: 5px solid transparent;
-    border-left: 5px solid #444;
+    border-left: 7px solid #666;
     display: block;
-    margin: 0 -13px 0 0;
+    margin: 0 -13px 0 0
     float: none;
     position: absolute;
     top: 8px;
 }
 #tree .arrow.down {
     border: 5px solid transparent;
-    border-top: 5px solid #444;
+    border-top: 7px solid #666;
     top: 10px;
-    margin-left: -4px;
+    margin-left: -2px;
 }
 #tree .name {
     padding-left: 35px;
@@ -2907,7 +2907,7 @@ table.emdata th {
     width: 0;
     height: 0;
     border: 5px solid transparent;
-    border-left: 5px solid #444;
+    border-left: 7px solid #666;
     display: block;
     margin: 0 -13px 0 0;
     float: none;
@@ -2916,9 +2916,9 @@ table.emdata th {
 }
 .emtree .arrow.down {
     border: 5px solid transparent;
-    border-top: 5px solid #444;
+    border-top: 7px solid #666;
     top: 15px;
-    margin-left: -4px;
+    margin-left: -2px;
 }
 .cramped .emtree .arrow {
     top: 8px;
