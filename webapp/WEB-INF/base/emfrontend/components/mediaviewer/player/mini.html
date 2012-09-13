@@ -10,7 +10,16 @@
                 #if( !$thumbsize )
                     #set( $thumbsize  = "thumb" )
                 #end
-                $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+                
+                #if ( $type == "image" )
+                    #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
+                    <a class="thickbox" href="$home$link" target="_parent" title="[[$asset]]">
+                        $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+                    </a>
+                #else
+                    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+                #end 
+                
             </div>
             
             <div class="main-info">
@@ -23,7 +32,7 @@
                         #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
                         <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
                         
-                        <a style="margin-right: 0;" href="#" class="comments">$comments.size()<span>&nbsp;</span></a>
+                        <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$assetid&sourcepath=$asset.sourcepath&hitssessionid=$hitsessionid" class="comments">$comments.size()<span>&nbsp;</span></a>
                         
                         <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a -->
                    
@@ -37,21 +46,23 @@
                                 #if ( $velocityCount <= 10 )
                                 <a href="$home$apphome/views/search/search.html?field=description&operation=matches&description.value=$tag">$tag</a> 
                                 #elseif ( $velocityCount == 11 )
-                                    <a class="ajax" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                                    <a class="ajax tooltip" title="View All Tags" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
                         #end
+                     </p>
+                     <p style="line-height: 25px; text-align: left; color: #fff; width: 450px;">
                         #if ($asset.getCategories().size() > 0)
                             <strong>Categories</strong><br/>
-                            #foreach ($tag in $asset.getCategories())
-                                #if ( $velocityCount <= 10 )
-                                <a href="$home$apphome/views/categories/${tag.id}/index.html">$tag</a> 
-                                #elseif ( $velocityCount == 11 )
-                                    <a class="ajax" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                            #foreach ($category in $asset.getCategories())
+                                #if ( $velocityCount <= 8 )
+                                <a href="$home$apphome/views/categories/${category.id}.html">$category</a> 
+                                #elseif ( $velocityCount == 9 )
+                                    <a class="ajax tooltip" title="View All Categories" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
                         #end
-                    </p>
+                     </p>
                 </div>
             </div>
         </div>
