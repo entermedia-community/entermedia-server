@@ -150,7 +150,9 @@ public class DownloadZipGenerator extends BaseGenerator
 
 	public boolean canGenerate(WebPageRequest inReq)
 	{
-		return inReq.getPage().getMimeType().equals("application/zip");
+	
+		boolean ok =  inReq.getPage().getMimeType().equals("application/x-zip");
+		return ok;
 	}
 
 }

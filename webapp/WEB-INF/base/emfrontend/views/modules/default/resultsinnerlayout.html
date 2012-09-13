@@ -47,17 +47,34 @@ $context.putPageValue("hits", $hits)
 
 <script type="text/javascript" >
 
-    toggleHit =  function(div, count, sessionid)
-    {
-    	jQuery.get("$home${content.searchhome}/selections/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
-    	jQuery('#messagearea').load("$home${content.searchhome}/selections/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
-    }
+	jQuery(".selectionbox").livequery("click", function(e) {
+		
+		
+	
+		e.stopPropagation();
+		
+		
+		
+		var count = jQuery(this).data("count");
+		var sessionid = jQuery(this).data("sessionid");
+		
+		
+
+		jQuery.get("$home${content.searchhome}/selections/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
+		
+		
+			
+		return;
+		
+	});
+
+
 
 
     togglehits =  function(action)
     {
         
-    	jQuery('#messagearea').load("$home${content.searchhome}/selections/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:action});         
+    	jQuery.get("$home${content.searchhome}/selections/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:action});         
            if(action == 'all' || action== 'page'){
         	   jQuery('.selectionbox').attr('checked','checked');
             }else{

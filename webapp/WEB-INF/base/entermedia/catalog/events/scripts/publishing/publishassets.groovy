@@ -41,7 +41,7 @@ public void init() {
 	query.addOrsGroup("status","new pending retry");
 	//query.addNot("remotempublishstatus","new");
 	HitTracker tracker = queuesearcher.search(query);
-	log.info("publishing " + tracker.size() + " assets");
+	log.info("publishing " + tracker.size() + " assets" + queuesearcher);
 	if( tracker.size() > 0)
 	{
 		for( Data result:tracker)

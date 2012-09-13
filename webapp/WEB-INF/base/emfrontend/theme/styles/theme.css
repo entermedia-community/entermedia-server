@@ -3491,20 +3491,21 @@ body #emcontainer .emasseteditorarea {
     background: rgba(0,0,0,0.1) url('../images/sort-desc.png') right 12px no-repeat;
 }
 #select-dropdown-open.down {
-    background: url('../images/sort-desc.png');
+    background: url('../images/sort-desc.png') 0 3px no-repeat;
     width: 10px;
-    height: 6px;
+    height: 20px;
     position: relative;
-    left: 36px;
+    left: 31px;
     top: 2px;
+ 
 }
 #select-dropdown-open.up {
-    background: url('../images/sort-asc.png');
+    background: url('../images/sort-asc.png') 0 3px no-repeat;
     width: 10px;
-    height: 6px;
+    height: 20px;
     position: relative;
-    left: 36px;
-    top: 3px;
+    left: 31px;
+ 	top: 2px;
 }
 #select-dropdown {
     position: absolute;
@@ -3513,14 +3514,14 @@ body #emcontainer .emasseteditorarea {
     border-top: none;
     box-shadow: 0 1px 4px 2px rgba(0,0,0,0.1);
     padding: 0;
-    margin: 15px 0 0 10px;
+    margin: 0 0 0 10px;
     z-index: 100;
 }
 #tableheader .firstheader {
-    min-width: 40px;
+    min-width: 50px;
 }
 #main-results-table .checkbox input, #main-results-table .firstheader input {
-    margin-right: 10px;
+    margin-right: 25px;
 }
 #select-dropdown li {
     margin: 0;

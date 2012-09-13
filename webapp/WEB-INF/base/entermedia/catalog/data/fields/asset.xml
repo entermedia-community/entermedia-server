@@ -93,7 +93,7 @@
 	<!-- Approvals -->	
 	<!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->
 	<!-- Geo Location -->
-	<property id="position" internalfield="true" type="position" datatype="position" viewtype="map" index="true" stored="true" externalid="GPSLatitude,GPSLongitude">Position</property>
+	<property id="position" internalfield="true" type="position" datatype="position" viewtype="map" index="true" stored="true" externalid="GPSLatitude,GPSLongitude" searchcomponent="locationsearch">Position</property>
 
 	<!--  Client specific -->
 	<property id="term" internalfield="true" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>
