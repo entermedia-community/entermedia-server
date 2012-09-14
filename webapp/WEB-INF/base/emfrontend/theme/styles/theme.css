@@ -5542,6 +5542,14 @@ p.resultsnumber {
     text-decoration: underline;
 }
 
+/*  NEW UPLOAD AREA */
+
+#uploadarea.tableholder {
+    padding: 0;
+    margin: 0 -20px;
+    overflow-x: auto;
+}
+
 /* BUTTONS */
 
 ul.embuttons li a span {

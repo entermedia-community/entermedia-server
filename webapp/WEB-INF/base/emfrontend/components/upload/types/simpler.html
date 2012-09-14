@@ -87,7 +87,12 @@
  	function showResponse(responseText, statusText, xhr, $form)  
  	{ 
  		//jQuery.fn.livequery.stopped = true;
- 		jQuery("#uploadarea").html(responseText);	
+ 		jQuery("#uploadarea").html(responseText);
+ 		jQuery("#uploadarea").attr('id', 'view-picker-content');
+        jQuery("#view-picker-content").addClass('liquid-sizer');
+        var w = jQuery("#view-picker-content").width();
+        w = w + 20;
+        jQuery("#view-picker-content").width(w);
  		//jQuery.fn.livequery.stopped = false;
 		//document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
  	}
