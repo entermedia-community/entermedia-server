@@ -1000,12 +1000,12 @@ public class DataEditModule extends BaseMediaModule
 		Searcher searcher = null;
 
 		String catalogid = inReq.getRequestParameter("catalogid");
+		if(catalogid == null){
+			catalogid = inReq.findValue("catalogid");
+		}
 		if (catalogid == null)
 		{
 			catalogid = inReq.findValue("applicationid");
-		}
-		if(catalogid == null){
-			catalogid = inReq.findValue("catalogid");
 		}
 		if (catalogid != null)
 		{// for a sub searcher

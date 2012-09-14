@@ -87,7 +87,7 @@
 #set($rootcategory = $webtree.getModel().getRoot())
 
 <div id="treeholder" >
-	<div class="emtree" data-home="$home$apphome" data-treename="$treename" data-editable="$editable" data-url-prefix="$!render.getUrlPrefix()" data-url-postfix="$!render.getUrlPostfix()">
+	<div class="emtree" data-home="$home$apphome" data-treename="$treename" data-editable="$editable" data-url-prefix="$home$apphome/views/categories/" data-url-postfix="">
 			<ul  class="open" >
 			#showtreecategories($rootcategory, 1)
 			</ul>

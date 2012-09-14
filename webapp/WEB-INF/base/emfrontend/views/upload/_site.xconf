@@ -2,8 +2,6 @@
 	<property name="section">upload</property>
 	<inner-layout>${themeprefix}/layouts/uploadlayout.html</inner-layout>
 
-	<script id="jstree" src="/${applicationid}/components/javascript/jstree/jquery.jstree.js"></script>
-	<script id="jstree-cookie" src="/${applicationid}/components/javascript/jstree/_lib/jquery.cookie.js"></script>
-	<script id="jstree-hotkeys" src="/${applicationid}/components/javascript/jstree/_lib/jquery.hotkeys.js"></script>
+	<script id="results" src="/${applicationid}/components/javascript/results.js"/>
 
 </page>

@@ -13,15 +13,15 @@ To: $order.sharewithemail</p>
 	<a href="$home$apphome/views/activity/delete.html?orderid=$order.id" class="btn small" >Discard</a>
 
     #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
+      <input type="hidden" name="field" value="presetid"/>
 
 	#foreach( $item in $orderitems )
 	  <input type="hidden" name="itemid" value="$item.id"/>
-      <input type="hidden" name="field" value="presetid"/>
       #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
-	      #if( $val )
+	  #if( $val )
  	  	<input type="hidden" name="${item.id}.presetid.value" value="$val" />
  	  #else
- 	  	##preview only, no need for a preset
+		<input type="hidden" name="${item.id}.presetid.value"	value="preview" />
  	  #end	
 	#end
 	

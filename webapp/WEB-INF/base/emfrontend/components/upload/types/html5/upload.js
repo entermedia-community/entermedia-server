@@ -117,9 +117,10 @@ var uploadid;
 		//jQuery.fn.livequery.stopped = true;
 		//jQuery("#embody").html(responseText);	
 		//jQuery.fn.livequery.stopped = false;
-		  var home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
-
-		document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+		var home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
+		jQuery("#uploadarea").html(responseText);	
+			 
+		//document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
 		//  alert("upload done");
 	}
 	

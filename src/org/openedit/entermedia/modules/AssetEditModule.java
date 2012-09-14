@@ -827,6 +827,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 		ListHitTracker tracker = new ListHitTracker();
 		tracker.getSearchQuery().setCatalogId(archive.getCatalogId());
+		tracker.setSessionId("hitsasset" +  archive.getCatalogId() );
 //		List<String> allids = new ArrayList();
 		
 		for (Iterator iterator = inPages.iterator(); iterator.hasNext();)
@@ -834,11 +835,6 @@ public class AssetEditModule extends BaseMediaModule
 			Page page = (Page) iterator.next();
 			readMetaData(inReq, archive,"", page, tracker);
 		}
-//		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-//		{
-//			Asset asset = (Asset) iterator.next();
-//			
-//		}		
 		//set the group view permissions if something was passed in
 		findUploadTeam(inReq, archive, tracker);
 
@@ -853,19 +849,30 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putPageValue(tracker.getHitsName(), tracker);
 		inReq.putPageValue("uploadedassets",tracker); 
 
-		List allids = new ArrayList();
+		StringBuffer allids = new StringBuffer();
+		List listids = new ArrayList();
 		//Events are not dependable. We should probably just run the event directly
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-			allids.add(asset.getId());
-			inReq.setRequestParameter("assetid", asset.getId() );
+			listids.add(asset.getId());
+			allids.append(asset.getId());
+			if( iterator.hasNext() )
+			{
+				allids.append(" ");
+			}
+			//inReq.setRequestParameter("assetid", asset.getId() );
 			//archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),asset);
 		}
+		
+		SearchQuery q = archive.getAssetSearcher().createSearchQuery();
+		q.addOrsGroup("id", allids.toString() );
+		archive.getAssetSearcher().cachedSearch(inReq, q);
+		
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
-			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,allids);
+			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
 		}
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
