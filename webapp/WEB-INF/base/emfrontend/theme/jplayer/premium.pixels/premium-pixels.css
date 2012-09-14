@@ -21,7 +21,6 @@
   margin: 0 auto;
   width: 400px;
   max-width: 100%;
-  padding: 0 20px;
   font-size: 1em;
   font-family: "Helvetica Neue", Helvetica, Arial, "Nimbus Sans L", sans-serif;
   color: #fff;
@@ -65,7 +64,7 @@
   border-radius: 3px;
 }
 .jp-type-single {
-    padding: 24px 0;
+    padding: 10px 0;
 }
 .mini .jp-controls li {
     margin: 0;

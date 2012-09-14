@@ -34,7 +34,7 @@
                          #set ($pageholder = $page + 1)
                          #set( $prevthumb = $pageholder - 1)
                          #set( $prevthumb = $prevthumb * 5 - 4)
-                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb"> << Previous Five </a>
+                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb&hitssessionid=$hitsessionid"> << Previous Five </a>
                 #end
                 </li>
                     
@@ -59,7 +59,7 @@
                     #set( $nextthumb = $pageholder + 1)
                     #set( $nextthumb = $nextthumb * 5 - 4)
                     
-                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb"> Next Five >> </a>
+                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb&hitssessionid=$hitssessionid"> Next Five >> </a>
                 #end
                 </li>
             </ul>
@@ -97,7 +97,7 @@
 </div>
 
 <script>
-    $('#main-media').load(function(){
+    $('#main-media').livequery(function(){
         var $wimg = $('#main-media').width();
         $('#mp-player').width($wimg);
         $('#mp-asset-title').show();

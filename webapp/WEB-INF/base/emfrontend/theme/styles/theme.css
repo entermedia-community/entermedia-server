@@ -5019,8 +5019,8 @@ p.resultsnumber {
     font-weight: bold;
     font-size: 16px;
     text-align: left;
-    margin-left: 5px;
-    margin-bottom: 5px;
+    margin-left: 0;
+    margin-bottom: 8px;
 }
 #mp-asset-title span {
     opacity: 0.8;
@@ -5032,8 +5032,8 @@ p.resultsnumber {
 }
 #mp-asset-info {
     text-align: right;
-    margin-right: -23px;
-    margin-top: 5px;
+    margin-right: -8px;
+    margin-top: 8px;
 }
 #mp-asset-info a {
     color: #fff;
