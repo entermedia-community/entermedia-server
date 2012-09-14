@@ -77,7 +77,7 @@
    
 
     <div id="mp-player">
-        <div id="mp-asset-title" style="display: none;">#if ( $asset.title ) $asset.name #else $asset #end #if( $totalpages > 1 ) <span>(Page $pagenum of $totalpages)</span> #end</div>
+        <div id="mp-asset-title" style="display: none;"><span class="name" title="#if ( $asset.title ) $asset.title #else $asset #end">#if ( $asset.title ) $asset.title #else $asset #end</span> #if( $totalpages > 1 ) <span class="pagenum">(Page $pagenum of $totalpages)</span> #end</div>
     	#if( !$asset.importstatus || $asset.importstatus != "complete" )
     		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
     	#else
@@ -102,5 +102,16 @@
         $('#mp-player').width($wimg);
         $('#mp-asset-title').show();
         $('#mp-asset-info').show();
+        $('#mp-asset-title').width($wimg);
     }); 
+    
+    $('#main-media').load(function(){
+        var $wimg = $('#mp-player').width();
+        if ( $wimg = "0" ) {
+            $wimg = $('#main-media').width();
+            $('#mp-player').width($wimg);
+            $('#mp-player').addClass('image');
+            $('#mp-asset-title').width($wimg);
+        }
+    });
 </script>

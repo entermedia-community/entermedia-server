@@ -3488,8 +3488,9 @@ body #emcontainer .emasseteditorarea {
 #emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort.down {
     background: rgba(0,0,0,0.1) url('../images/sort-desc.png') right 12px no-repeat;
 }
-#th-checkbox {
-    position: relative;
+#th-checkbox .anchor {
+    position: relative; 
+    top: -8px;
 }
 #select-dropdown-open {
     width: 20px;
@@ -5021,8 +5022,15 @@ p.resultsnumber {
     text-align: left;
     margin-left: 0;
     margin-bottom: 8px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
-#mp-asset-title span {
+.image #mp-asset-title {
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+#mp-asset-title span.pagenum {
     opacity: 0.8;
     font-weight: normal;
     font-size: 11px;
@@ -5034,6 +5042,10 @@ p.resultsnumber {
     text-align: right;
     margin-right: -8px;
     margin-top: 8px;
+}
+.image #mp-asset-info {
+    margin-right: -20px;
+    margin-top: 5px;
 }
 #mp-asset-info a {
     color: #fff;
