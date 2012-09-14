@@ -51,7 +51,7 @@
   	   	    $presetquery.addExact("inputtype","all");
   	   	    $presetquery.sortBy("name");
   	   	    #set( $results = $presetsearcher.search($presetquery) )
-  	   	    <option value="">Preview Only</option>
+  	   	    <option value="preview">Preview Only</option>
   	    	#foreach ($preset in $results)
   	    		<option value="$preset.id">$preset</option>
   	    	#end
