@@ -81,12 +81,12 @@ public class FileUpload
 			throw new OpenEditException("You must be logged in to upload files");
 		} 
 		
-		Object canUpload = inContext.getPageValue("canupload");
-		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
-		{
-			throw new OpenEditException("You don't have enough permissions to upload files");
-		}
-		
+//		Object canUpload = inContext.getPageValue("canupload");
+//		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
+//		{
+//			throw new OpenEditException("You don't have enough permissions to upload files");
+//		}
+//		
 		UploadRequest props = parseArguments(inContext);
 		if( props == null)
 		{
