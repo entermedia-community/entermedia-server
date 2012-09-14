@@ -5,4 +5,9 @@
 	
 	<path-action name="Page.uploadFile"/>
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
+	
+	<permission name="view">
+		<userprofile property="viewupload" equals="true" />
+	</permission>
+	
 </page>
