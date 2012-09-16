@@ -97,6 +97,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		SearchQuery query = createSearchQuery();
 		query.addExact(inId, inValue);
 		HitTracker hits = search(query);
+		hits.setHitsPerPage(1);
 		Data first = (Data)hits.first();
 		if( first == null)
 		{

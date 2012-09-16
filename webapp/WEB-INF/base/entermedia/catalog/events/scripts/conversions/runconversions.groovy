@@ -22,16 +22,16 @@ import com.openedit.*;
 import org.openedit.xml.*;
 import conversions.*;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 class CompositeConvertRunner implements Runnable
 {
 	String fieldAssetSourcePath;
 	MediaArchive fieldMediaArchive;
 	List runners = new ArrayList();
-
+	User user;
+	ScriptLogger log;
+	
 	public CompositeConvertRunner(MediaArchive archive,String sourcepath)
 	{
 		fieldMediaArchive = archive;
@@ -40,50 +40,66 @@ class CompositeConvertRunner implements Runnable
 	
 	public void run()
 	{
-		for( Runnable runner: runners )
-		{
-			runner.run();
-		}
+		Lock lock = fieldMediaArchive.lockAssetIfPossible(fieldAssetSourcePath, user);
 		
-		boolean founderror = false;
-		boolean allcomplete = true;
+		if( lock == null)
+		{
+			log.info("asset already being processed ${fieldAssetSourcePath}");
+			return;
+		}
+		try
+		{
+			for( Runnable runner: runners )
+			{
+				runner.run();
+			}
+					
+			boolean founderror = false;
+			boolean allcomplete = true;
+			
+			for( ConvertRunner runner: runners )
+			{
+				if( runner.result == null )
+				{
+					return;
+				}
+				if(runner.result.isError() )
+				{
+					founderror = true;
+				}
+				
+				if(!runner.result.isComplete() )
+				{
+					allcomplete = false;
+				}
+				
+			}
+			if( founderror || allcomplete )
+			{
+				//load the asset and save the import status to complete
+				Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
+				if( asset != null )
+				{
+					if( founderror && "imported".equals(asset.get("importstatus") ) )
+					{
+						asset.setProperty("importstatus","error");
+						fieldMediaArchive.saveAsset(asset, null);
+					}
+					else if( !"complete".equals(asset.get("importstatus") ) )
+					{
+						//Publishing to Amazon can happen even if the images in the search results
+						asset.setProperty("importstatus","complete");
+						fieldMediaArchive.saveAsset(asset, null);
+					}
+				}
+			}
+		}
+		finally
+		{
+			fieldMediaArchive.releaseLock(lock);
+		}
+	
 		
-		for( ConvertRunner runner: runners )
-		{
-			if( runner.result == null )
-			{
-				return;
-			}
-			if(runner.result.isError() )
-			{
-				founderror = true;
-			}
-			
-			if(!runner.result.isComplete() )
-			{
-				allcomplete = false;
-			}
-			
-		}
-		if( founderror || allcomplete )
-		{
-			//load the asset and save the import status to complete
-			Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
-			if( asset != null )
-			{
-				if( founderror && "imported".equals(asset.get("importstatus") ) )
-				{
-					asset.setProperty("importstatus","error");
-					fieldMediaArchive.saveAsset(asset, null);
-				}
-				else if( !"complete".equals(asset.get("importstatus") ) )
-				{
-					//Publishing to Amazon can happen even if the images in the search results
-					asset.setProperty("importstatus","complete");
-					fieldMediaArchive.saveAsset(asset, null);
-				}
-			}
-		}
 	}
 	public void add(Runnable runner )
 	{
@@ -129,21 +145,7 @@ class ConvertRunner implements Runnable
 				try
 				{
 					String sourcepath = hit.get("sourcepath");
-					Lock lock = mediaarchive.lockAssetIfPossible(sourcepath, user);
-					if( lock == null)
-					{
-						log.info("asset already being processed ${sourcepath}");
-						return;
-					}
-					
-					try
-					{
-						result = doConversion(mediaarchive, realtask, preset,sourcepath);
-					}
-					finally
-					{
-						mediaarchive.releaseLock(lock);
-					}
+					result = doConversion(mediaarchive, realtask, preset,sourcepath);
 				}
 				catch(Throwable e)
 				{
@@ -216,7 +218,7 @@ class ConvertRunner implements Runnable
 		}
 		else
 		{
-			log.info("Can't find task object with id '${hit.getId()}'. Index out of date?")
+			log.info("Can't find task object with id '${hit.getId()}' '${hit.getSourcePath()}'. Index missing data?")
 		}
 	}
 	
@@ -373,6 +375,8 @@ public void checkforTasks()
 				}
 				lastassetid = hit.get("assetid");
 				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
+				byassetid.log = log;
+				byassetid.user = user;
 			}
 			byassetid.add(runner);
 		}

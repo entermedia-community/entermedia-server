@@ -13,9 +13,11 @@ public void init()
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 		PresetCreator presets = new PresetCreator();
 		
-		//SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
-		//HitTracker assets =  assetsearcher.search(q);
-		HitTracker assets = assetsearcher.getAllHits();
+		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
+		q.addSortBy("id");
+
+		HitTracker assets =  assetsearcher.search(q);
+		//HitTracker assets = assetsearcher.getAllHits();
 		assets.setHitsPerPage(10000);
 		
 		//TODO: Only check importstatus of imported?
@@ -23,7 +25,8 @@ public void init()
 		
 		long added = 0;
 		long checked  = 0;
-		
+		long completed = 0;
+		List tosave = new ArrayList();
 		for (Data hit in assets)
 		{
 			checked++;
@@ -38,7 +41,7 @@ public void init()
 			SearchQuery query = presetsearcher.createSearchQuery();
 			query.addMatches("onimport", "true");
 			query.addMatches("inputtype", rendertype);
-
+			
 			boolean missingconversion = false;
 			HitTracker hits = presetsearcher.search(context,query);
 			hits.each
@@ -49,6 +52,7 @@ public void init()
 				{
 					missingconversion = true;
 					presets.createPresetsForPage(tasksearcher, preset, asset,0);
+					added++;
 				}
 				String pages = asset.get("pages");
 				if( pages != null )
@@ -63,6 +67,7 @@ public void init()
 							{
 								missingconversion = true;
 								presets.createPresetsForPage(tasksearcher, preset, asset, pagenum);
+								added++;
 							}
 						}
 					}
@@ -72,10 +77,19 @@ public void init()
 			{
 				//log.info("complete ${asset}");
 				asset.setProperty("importstatus","complete");
-				mediaarchive.saveAsset(asset, null);
+				//mediaarchive.saveAsset(asset, null);
+				tosave.add(asset);
+				completed++;
+			}
+			if( tosave.size() == 1000 )
+			{
+				mediaarchive.saveAssets(tosave);
+				tosave.clear();
+				log.info("checked ${checked} assets. ${added} tasks queued, ${completed} completed. please run event again since index has changed order" );
+				
 			}
 		}
-		log.info("checked ${checked} assets. ${added} tasks queued" );
+		log.info("checked ${checked} assets. ${added} tasks queued , ${completed} completed." );
 }
 
 init();

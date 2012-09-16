@@ -5,7 +5,7 @@
   ajaxpath="$home$apphome/components/upload/types/simple/uploadprogress.html?uploadid=$uploadid&size=$size">
 
 #set( $id = "${uploadid}_1")
-
+#set( $width = "0" )
 #set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$id) )
 #if( $data.getId() )
 
