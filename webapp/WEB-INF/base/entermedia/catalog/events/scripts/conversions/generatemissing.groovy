@@ -89,6 +89,7 @@ public void init()
 				
 			}
 		}
+		mediaarchive.saveAssets(tosave);
 		log.info("checked ${checked} assets. ${added} tasks queued , ${completed} completed." );
 }
 
