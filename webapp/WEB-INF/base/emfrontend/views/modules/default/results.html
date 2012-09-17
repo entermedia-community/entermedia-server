@@ -35,6 +35,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 #if($content.isPropertyTrue("showactions"))
 
 <th class="firstheader" id="th-checkbox" ><input name="pagetoggle" type="checkbox" onclick="togglehits('page');">
+	   <div class="anchor">
 	    <div id="select-dropdown-open" class="down"></div>
 	    <ul id="select-dropdown" style="display: none; ">
  
@@ -42,6 +43,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 	        <li><a class="ajax  selectpage" targetdiv="drag-columns-text" href="#" onclick="togglehits('all');">Select All Results</a></li>
 	        <li><a class="ajax  deselectpage" targetdiv="drag-columns-text" href="#" onclick="togglehits('none');return false;">Deselect All</a></li>
 	    </ul>
+	    </div>
 	</th>
 	
 	
@@ -108,7 +110,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <td align="center">
 
 
-<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end data-count='$!hits.indexOf(${count})' data-sessionid='$hits.sessionId' />
+<input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end data-count='$!hits.indexOf(${count})' data-hitssessionid='$hits.sessionId' />
 <div id="check_${count}">
 </div>
 

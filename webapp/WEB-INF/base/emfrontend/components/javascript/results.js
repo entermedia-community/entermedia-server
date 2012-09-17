@@ -59,21 +59,20 @@ jQuery(".gallery-checkbox input").livequery( 'click', function()
 
 
 
-/**
-jQuery(".selectionbox").livequery("click", function(e) {
-	
-	
 
+jQuery(".moduleselectionbox").livequery("click", function(e) {
+	
+	
 	e.stopPropagation();
 	
-	
-	
+	var searchhome = $('#resultsdiv').data('searchhome');
+	  
 	var count = jQuery(this).data("count");
-	var sessionid = jQuery(this).data("sessionid");
+	var sessionid = jQuery(this).data("hitssessionid");
 	
 	
 
-	jQuery.get("$home${content.searchhome}/selections/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
+	jQuery.get(searchhome + "/selections/toggle.html", {count:count, hitssessionid:sessionid});
 	
 	
 		
@@ -86,12 +85,14 @@ jQuery(".selectionbox").livequery("click", function(e) {
 
 togglehits =  function(action)
 {
-    
-	jQuery.get("$home${content.searchhome}/selections/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:action});         
+	var searchhome = $('#resultsdiv').data('searchhome');
+	var sessionid = jQuery('#resultsdiv').data("hitssessionid");
+
+	jQuery.get(searchhome + "/selections/togglepage.html", {oemaxlevel:1, hitssessionid:sessionid, action:action});         
        if(action == 'all' || action== 'page'){
-    	   jQuery('.selectionbox').attr('checked','checked');
+    	   jQuery('.moduleselectionbox').attr('checked','checked');
         }else{
-        	jQuery('.selectionbox').removeAttr('checked');  
+        	jQuery('.moduleselectionbox').removeAttr('checked');  
         }
        return false;       
 
@@ -100,17 +101,5 @@ togglehits =  function(action)
 
 
         
-        hide_spinner = function(){$j('#spinner').css('visibility', 'hidden');};
-        show_spinner = function(){$j('#spinner').css('visibility','visible');};
-
-        jQuery('.navlink').livequery('click', function(e){  
-            show_spinner(); 
-            
-           nextpage = $j(this).attr('href');
-         
-           jQuery('#resultsarea').load(nextpage, {oemaxlevel:1}, hide_spinner);       
-            return false;      
-        });
         
         
-*/

@@ -25,7 +25,7 @@ $context.putPageValue("hits", $hits)
 		</div>
 		<div id="right-col" class="module-inner">
 				
-					<div id="resultsdiv">
+					<div id="resultsdiv" data-searchhome="$home$content.searchhome" data-hitssessionid="$hits.sessionId">
 						<div id="emresultscontent">
 							
 							$pages.include("/$applicationid/views/modules/${moduleid}/resultsactions.html",$context)

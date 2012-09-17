@@ -1,17 +1,11 @@
-<div class="ui-widget  uipanel">
-    <div class="ui-widget-header">
-                                Selections
-    </div>
-    <div class="ui-widget-content">
-        <ul id="assetmenu" class="sidebar-list">       
-	          			
-			<li><a href="$home${content.searchhome}/edit/batchedit.html?hitssessionid=$hits.sessionId&catalogid=$catalogid&searchtype=${content.searchtype}">Batch Edit</a></li>
-			<li ><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId&friendly=false">[[Export results CSV]]</a></li>
-			<li ><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId&friendly=true">[[Export results with Friendly values]]</a></li>
-			<li class=" confirm"><a href="$home${content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId">[[Delete selected items]]</a></li>
+<li><a>Selections</a>
+	<ul>
+	 <li><a href="$home${content.searchhome}/edit/batchedit.html?hitssessionid=$hits.sessionId">Batch Edit</a></li>
+				<li><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId">[[Export results]]</a></li>
+				<li ><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId&friendly=true">[[Export results (friendly)]]</a></li>
+				#if($candelete)
+					 <li><a href="$home${content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId">[[Delete Selected Items]]</a></li>
+				#end
+	</ul>
 	
-	          
-                       </ul>
-    </div>
-</div>
-
+	</li>
