@@ -485,11 +485,11 @@ asset: " + asset);
 		AssetSearcher assetSearcher = inArchive.getAssetSearcher();
 		List savequeue = new ArrayList();
 		HitTracker hits = assetSearcher.fieldSearch("pushstatus", oldStatus);
+		hits.setHitsPerPage(1000);
 
 		int size = 0;
 		do
 		{
-			hits.setHitsPerPage(1000);
 			size = hits.size();
 			for (Iterator iterator = hits.getPageOfHits().iterator(); iterator.hasNext();)
 			{
