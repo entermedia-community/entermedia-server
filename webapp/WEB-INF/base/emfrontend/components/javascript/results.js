@@ -1,3 +1,6 @@
+jQuery(document).ready(function() 
+{ 
+
 jQuery("input.selectionbox").livequery( function() 
 {
 	jQuery(this).change(function() 
@@ -80,9 +83,10 @@ jQuery(".moduleselectionbox").livequery("click", function(e) {
 	
 });
 
+});        //document ready
+        
 
-
-
+//TODO: Use a selector for this instead
 togglehits =  function(action)
 {
 	var searchhome = $('#resultsdiv').data('searchhome');
@@ -99,7 +103,3 @@ togglehits =  function(action)
 }
 
 
-
-        
-        
-        

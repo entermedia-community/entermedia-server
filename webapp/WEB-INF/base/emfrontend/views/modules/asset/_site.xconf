@@ -2,5 +2,4 @@
 	<property name="module">asset</property>
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
 	<property name="searchhome">/${applicationid}/views/modules/${module}</property>
-    <script id="results" src="/${applicationid}/components/javascript/results.js"/>
 </page>

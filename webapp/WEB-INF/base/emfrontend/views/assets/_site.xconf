@@ -26,6 +26,5 @@
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>
   	<path-action name="AssetStatsModule.addPreViewEvent" />
 	<property name="section">home</property>
-	<script id="results" src="/${applicationid}/components/javascript/results.js"/>
 	
 </page>
