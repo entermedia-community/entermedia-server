@@ -136,12 +136,14 @@ public class FileUpload
 			return upload;
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
+		
 		String catalogid = inContext.findValue("catalogid");
+		if(uploadid != null && catalogid != null){
 		upload.setUploadId(uploadid);
 		upload.setCatalogId(catalogid);
 		upload.setUserName(inContext.getUserName());
 		upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
-
+		}
 		FileItemFactory factory = (FileItemFactory)inContext.getPageValue("uploadfilefactory");
 		if( factory == null)
 		{
