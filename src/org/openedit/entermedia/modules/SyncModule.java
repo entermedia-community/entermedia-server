@@ -112,8 +112,14 @@ public class SyncModule extends BaseMediaModule
 		String ids = inReq.getRequestParameter("assetids");
 		getPushManager().processPushQueue(archive, ids, inReq.getUser());
 	}
+	public void processDeletedAssets(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//String ids = inReq.getRequestParameter("assetids");
+		getPushManager().processDeletedAssets(archive, inReq.getUser());
+	}
 
-
+	
 //	private boolean isOkToSendX(Data inHotfolder)
 //	{
 //		boolean active = Boolean.parseBoolean(inHotfolder.get("auto"));
