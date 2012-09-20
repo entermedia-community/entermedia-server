@@ -591,7 +591,13 @@ asset: " + asset);
 
 	public Collection getImportPendingAssets(MediaArchive inArchive)
 	{
-		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("importstatus", "imported");
+		SearchQuery query = inArchive.getAssetSearcher().createSearchQuery();
+		//query.addMatches("category","index");
+		query.addMatches("importstatus","imported");
+		query.addNot("editstatus","7");
+
+		//Push them and mark them as pushstatus deleted
+		HitTracker hits = inArchive.getAssetSearcher().search(query);
 		return hits;
 	}
 
