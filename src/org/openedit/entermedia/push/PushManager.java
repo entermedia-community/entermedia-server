@@ -3,6 +3,7 @@ package org.openedit.entermedia.push;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -113,6 +114,7 @@ public class PushManager
 			query.addNot("pushstatus","complete");
 			query.addNot("pushstatus","nogenerated");
 			query.addNot("pushstatus","error");
+			query.addNot("pushstatus","deleted");
 		}
 		else
 		{
@@ -154,6 +156,43 @@ public class PushManager
 			pushAssets(archive, savequeue);
 			savequeue.clear();
 		}
+	}
+
+	public void processDeletedAssets(MediaArchive archive, User inUser)
+	{
+		//Searcher hot = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "hotfolder");
+		Searcher searcher = archive.getAssetSearcher();
+		SearchQuery query = searcher.createSearchQuery();
+		//query.addMatches("category","index");
+		query.addMatches("pushstatus","complete");
+		query.addMatches("editstatus","7");
+		query.addSortBy("id");
+
+		//Push them and mark them as pushstatus deleted
+		HitTracker hits = searcher.search(query);
+		hits.setHitsPerPage(1000);
+		if( hits.size() == 0 )
+		{
+			log.info("No new assets to delete");
+			return;
+		}
+		long deleted = 0;
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Asset asset = archive.getAssetBySourcePath(data.getSourcePath());
+			if( asset == null )
+			{
+				log.error("Reindex assets" + data.getSourcePath() );
+				continue;
+			}
+			
+			upload(asset, archive, "delete", Collections.EMPTY_LIST );
+			asset.setProperty("pushstatus", "deleted");
+			archive.saveAsset(asset, null);
+			deleted++;
+		}
+		log.info("Removed " + deleted);
 	}
 
 
@@ -523,6 +562,7 @@ asset: " + asset);
 		query.addNot("pushstatus","complete");
 		query.addNot("pushstatus","nogenerated");
 		query.addNot("pushstatus","error");
+		query.addNot("pushstatus","deleted");
 
 		HitTracker hits = inArchive.getAssetSearcher().search(query);
 		return hits;

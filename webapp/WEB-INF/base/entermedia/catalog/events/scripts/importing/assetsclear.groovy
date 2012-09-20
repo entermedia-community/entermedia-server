@@ -38,12 +38,12 @@ public void init()
 	}
 	assets = searcher.search(q);
 	assets.setHitsPerPage(10000);
-	int removed = 0;
+	long removed = 0;
+	long existed = 0;
 	List tosave = new ArrayList();
 	for(Object obj: assets)
 	{
 		Data hit = (Data)obj;
-		int existed = 0;
 		String path = hit.getSourcePath();
 		Asset asset = archive.getAssetBySourcePath(path);
 		if( asset == null)
