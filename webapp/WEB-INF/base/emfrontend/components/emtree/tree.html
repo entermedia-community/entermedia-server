@@ -19,9 +19,10 @@
 		#set( $open = $haschildren)
 		#set( $checked = false )
 		#set( $expanded = $webtree.isExpanded($cat) )
-		#set( $checked = $asset.isInCategory($cat))
-		<li class="noderow" id="${cat.id}_row" data-nodeid="$cat.id" data-depth="$depth">
-			<div class="categorydroparea" style="padding-left: ${padding}px">
+		#set( $checked = $asset.isInCategory($cat) )
+		#set( $isselected = $render.isNodeSelected($cat))
+		<li id="${cat.id}_row" class="noderow" data-nodeid="$cat.id" data-depth="$depth">
+			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px">
 			    #if( $showinput )
 			    <div class="checkbox">
 			         <input name="categoryid" value="$cat.id" type="checkbox" #if( $render.isIdSelected($cat.id) ) checked="true" #end  >
@@ -53,14 +54,15 @@
 		#elseif($haschildren && $expanded)
 		   <ul class="open" >
 			#set ( $depth = $depth + 1)
-			#foreach( $category in $children)
-				  #showtreecategories($category, $depth)
+			#foreach( $subcategory in $children)
+				  #showtreecategories($subcategory, $depth)
 		    #end
 		   </ul>
 		#end
 		</li>
 		
 #end
+
 #set( $toggle = $context.getRequestParameter("toggle" ) )
 #if( $toggle && $toggle == "true" )
 	#set( $nodeid = $context.getRequestParameter("nodeID" ) )
@@ -83,7 +85,9 @@
 	#showtreecategories($target, $depth)
 	
 #else
-
+#if( $category )
+$!render.setSelectedNode($category)
+#end
 #set($rootcategory = $webtree.getModel().getRoot())
 
 <div id="treeholder" >

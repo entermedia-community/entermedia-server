@@ -1060,5 +1060,26 @@ emcomponents = function() {
 			return false;
 		}
 	);
+	jQuery("a.categoriespicked").livequery("click", function(e) 
+		{
+			var a = jQuery(this);
+			var olink = a.attr("href");
+			
+			var link = a.attr("href");
+			
+			link = link + "?categories=";
+			//a.closest(".jp-audio").find(".jp-jplayer");
+			jQuery("#addcategoryoptions").find("input:checked").each( function() 
+				{
+					var found = jQuery(this);
+					link = link + found.val() + "|";
+				});
+			link = link.substring(0, link.length - 1);
+			a.attr("href",link);
+			runajaxonthis(a,e);
+			a.attr("href",olink);
+			jQuery.fancybox.close();
+		}
+	);
 }
 

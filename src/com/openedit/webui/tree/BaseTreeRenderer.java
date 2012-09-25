@@ -89,6 +89,10 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 	public boolean isNodeSelected(Object inNode)
 	{
+		if( inNode == getSelectedNode() )
+		{
+			return true;
+		}
 		String inId = getId(inNode);
 		return getSelectedNodes().contains(inId);
 	}

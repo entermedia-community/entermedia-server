@@ -2,9 +2,18 @@
 #set( $param = $val.replace(" ","&selected="))
 #set( $param = "selected=$param")
 #end
+#set( $rootpath = "${apphome}/components/categorize")
 
-<div id="categoriespicker">
-<a class="btn ajax" targetdiv="categoriespicker" href="${apphome}/components/categorize/jstree/tree.html?field=category.value&$param">Pick Categories</a>
-</div>
+        <div id="addcategory" >        	
+        	#set( $categories = $val.replaceAll(" ","|") )
+           $pages.include("$apphome/components/categorize/search/selected.html?categories=$categories",$context)
+        </div>
+            <a class="thickbox btn small"  data-fancybox-type="inline"   href="#addcategoryoptions" >[[Pick Categories]]</a>
 
-##$pages.include("${apphome}/components/categorize/jstree/tree_selectedcategories.html?$param" )
+		<div style="display: none">
+		        <div id="addcategoryoptions">
+		
+		           $pages.include("$apphome/components/categorize/search/pickersearch.html?targetdiv=addcategory",$context)
+		
+		        </div>
+		</div>
