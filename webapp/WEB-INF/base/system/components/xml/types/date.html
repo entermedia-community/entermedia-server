@@ -9,10 +9,9 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-
-<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}.value" value="#esc($!val)"  type="hidden" >
+<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!val)"  type="hidden" >
  <br/>
-<input type="text" class="datepicker #if($detail.isRequired()) required #end " data-targetid="${detail.id}${idcount}.value" /> 
+<input type="text" class="datepicker #if($detail.isRequired()) required #end " data-targetid="${detail.id}${idcount}value" /> 
 
 
 

@@ -544,6 +544,7 @@ asset: " + asset);
 			}
 			assetSearcher.saveAllData(savequeue, null);
 			hits = assetSearcher.fieldSearch("pushstatus", oldStatus);
+			hits.setHitsPerPage(1000);
 		} while( size > hits.size() );
 		
 		
