@@ -2,8 +2,6 @@ package publishing.publishers;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.apache.commons.net.ftp.FTPClient
-import org.apache.commons.net.ftp.FTPReply
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
