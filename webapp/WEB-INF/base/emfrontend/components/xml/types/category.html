@@ -4,9 +4,11 @@
 #end
 #set( $rootpath = "${apphome}/components/categorize")
 
-        <div id="addcategory" >        	
+        <div id="addcategory" >    
+        	#if( $val )    	
         	#set( $categories = $val.replaceAll(" ","|") )
-           $pages.include("$apphome/components/categorize/search/selected.html?categories=$categories",$context)
+           $pages.include("$apphome/components/categorize/search/selected.html?categories=$!categories",$context)
+           #end
         </div>
             <a class="thickbox btn small"  data-fancybox-type="inline"   href="#addcategoryoptions" >[[Pick Categories]]</a>
 

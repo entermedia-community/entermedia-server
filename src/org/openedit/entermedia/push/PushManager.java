@@ -534,6 +534,11 @@ asset: " + asset);
 			{
 				Data data = (Data) iterator.next();
 				Asset asset = inArchive.getAssetBySourcePath(data.getSourcePath());
+				if( asset == null )
+				{
+					log.error("Missing asset" + data.getSourcePath());
+					continue;
+				}
 				asset.setProperty("pushstatus", inNewStatus);
 				savequeue.add(asset);
 				if( savequeue.size() == 1000 )
@@ -543,8 +548,10 @@ asset: " + asset);
 				}
 			}
 			assetSearcher.saveAllData(savequeue, null);
+			savequeue.clear();
 			hits = assetSearcher.fieldSearch("pushstatus", oldStatus);
 			hits.setHitsPerPage(1000);
+			log.info(hits.size() + " remaining status updates " + oldStatus );
 		} while( size > hits.size() );
 		
 		

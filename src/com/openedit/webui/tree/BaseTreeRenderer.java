@@ -107,7 +107,16 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 	public void selectNode(Object inNode)
 	{
-		getSelectedNodes().add(getId(inNode));
+		if( inNode != null )
+		{
+			getSelectedNodes().add(getId(inNode));
+			
+			Object parent = getWebTree().getModel().getParent(inNode);
+			if( parent != null )
+			{
+				expandNode(parent);
+			}
+		}
 	}
 	public void unSelectNode(Object inNode)
 	{
@@ -514,6 +523,12 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	public void setSelectedNode(Object inSelectedNode)
 	{
 		fieldSelectedNode = inSelectedNode;
+		Object parent = getWebTree().getModel().getParent(inSelectedNode);
+		if( parent != null )
+		{
+			expandNode(parent);
+		}
+
 	}
 	public String getUrlPostfix()
 	{
