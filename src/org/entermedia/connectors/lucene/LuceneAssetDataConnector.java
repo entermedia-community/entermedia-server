@@ -25,6 +25,7 @@ import org.openedit.data.lucene.CompositeAnalyzer;
 import org.openedit.data.lucene.LuceneIndexer;
 import org.openedit.data.lucene.NullAnalyzer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
+import org.openedit.data.lucene.StemmerAnalyzer;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
 import org.openedit.entermedia.CategoryArchive;
@@ -85,8 +86,8 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		if (fieldAnalyzer == null)
 		{
 			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("description", new StemmerAnalyzer());
-			//composite.setAnalyzer("description", new EnglishAnalyzer(Version.LUCENE_31));
+			//composite.setAnalyzer("description", new StemmerAnalyzer());
+			composite.setAnalyzer("description", new EnglishAnalyzer(Version.LUCENE_36));
 			composite.setAnalyzer("id", new NullAnalyzer());
 			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
 			composite.setAnalyzer("sourcepath", new NullAnalyzer());
@@ -94,7 +95,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			record.setUseTokens(false);
 			composite.setAnalyzer("cumulusid", record);
 			composite.setAnalyzer("name_sortable", record);
-			fieldAnalyzer = composite;
+			fieldAnalyzer = new EnglishAnalyzer(Version.LUCENE_36);
 		}
 		return fieldAnalyzer;
 	}

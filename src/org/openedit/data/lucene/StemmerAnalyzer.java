@@ -12,7 +12,7 @@ public class StemmerAnalyzer extends Analyzer
 {
 	 public final TokenStream tokenStream(String fieldName, Reader reader) 
 	 {
-		 return new PorterStemFilter(new LowerCaseTokenizer(Version.LUCENE_30,reader));
+		 return new PorterStemFilter(new LowerCaseTokenizer(Version.LUCENE_36,reader));
 	 }
 
 }

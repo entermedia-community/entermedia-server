@@ -25,6 +25,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.analyzing.AnalyzingQueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
@@ -271,7 +272,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//TODO: use a threadgroup
 		
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_31, "description", getAnalyzer());
+		QueryParser parser = new QueryParser(Version.LUCENE_36, "description", getAnalyzer());
+		
 		/*
 		{
 			protected Query getPrefixQuery(String field, String termStr) throws ParseException
@@ -318,7 +320,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		};
 		*/
 		parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-		parser.setLowercaseExpandedTerms(false);
+		parser.setLowercaseExpandedTerms(true);
 		parser.setAllowLeadingWildcard(true);
 		return parser;
 	}
