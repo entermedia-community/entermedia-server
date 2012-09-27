@@ -10,8 +10,11 @@
 		</div>
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 		#if(!$detail.isDate())
-		
-					<input name="operation" value="startswith" type="hidden" />
+				#if($detail.defaultoperation && $detail.defaultoperation != "")
+					<input name="operation" value="$detail.defaultoperation" type="hidden" />
+				#else
+				<input name="operation" value="startswith" type="hidden" />
+				#end
 		#end
 	
 		#set( $viewtype = $detail.searchcomponent )
