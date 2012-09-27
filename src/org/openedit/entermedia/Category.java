@@ -5,6 +5,7 @@ package org.openedit.entermedia;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -33,6 +34,23 @@ public class Category implements Data
 
 	public Category()
 	{
+	}
+	
+	public void sortChildren(boolean inRecursive){
+		
+		Collections.sort(getChildren(), new Comparator() 
+		{
+			public int compare(Object o1, Object o2) {
+				Category c1 = (Category)o1, c2 = (Category)o2;
+				return c1.getName().toLowerCase().compareTo(c2.getName().toLowerCase());
+			}
+		});
+		if(inRecursive){
+			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
+				Category child = (Category) iterator.next();
+				child.sortChildren(inRecursive);
+			}
+		}
 	}
 
 	public Category(String inName)
