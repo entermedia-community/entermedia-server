@@ -173,7 +173,7 @@ public class LuceneSearchQuery extends SearchQuery
 
 				if (getDetail().getId() != null)
 				{
-					return getDetail().getId() + ":(*" + inVal + ")";
+					return getDetail().getId() + ":(*" + inVal + "*)";
 				}
 				else
 				{
