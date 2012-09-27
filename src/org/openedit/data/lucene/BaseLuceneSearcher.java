@@ -271,7 +271,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//TODO: use a threadgroup
 		
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_31, "description", getAnalyzer())
+		QueryParser parser = new QueryParser(Version.LUCENE_31, "description", getAnalyzer());
+		/*
 		{
 			protected Query getPrefixQuery(String field, String termStr) throws ParseException
 			{
@@ -315,6 +316,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				return result;
 			}
 		};
+		*/
 		parser.setDefaultOperator(QueryParser.AND_OPERATOR);
 		parser.setLowercaseExpandedTerms(false);
 		parser.setAllowLeadingWildcard(true);

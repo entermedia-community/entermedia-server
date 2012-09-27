@@ -106,8 +106,7 @@ public class CategoryEditor {
 	{
 		if (inCategory == null)
 			return;
-		List children;
-		children = inCategory.getChildren();
+		List children = inCategory.getChildren();
 
 		Collections.sort(children, new Comparator() 
 		{

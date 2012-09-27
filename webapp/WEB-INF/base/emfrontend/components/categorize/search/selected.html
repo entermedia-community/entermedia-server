@@ -1,7 +1,6 @@
 #set ($categories = $context.getRequestParameter("categories") )
 
 #if( $categories )
-	<input type="hidden" name="operation" value="orsgroup" />
 	#set( $clean = $categories.replace('|',' ') )
 	<input type="hidden" name="category.orvalue" value="$clean" />
     <ul id="cat-list">
