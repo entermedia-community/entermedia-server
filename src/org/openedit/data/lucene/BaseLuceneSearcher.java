@@ -322,6 +322,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		parser.setDefaultOperator(QueryParser.AND_OPERATOR);
 		parser.setLowercaseExpandedTerms(true);
 		parser.setAllowLeadingWildcard(true);
+		
 		return parser;
 	}
 
