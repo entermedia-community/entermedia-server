@@ -870,7 +870,10 @@ public class DataEditModule extends BaseMediaModule
 		// loadPageOfSearch(inReq);
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-
+		if( hits == null )
+		{
+			throw new OpenEditException("Session timed out, reload page");
+		}
 		String action = inReq.getRequestParameter("action");
 		if ("all".equals(action))
 		{

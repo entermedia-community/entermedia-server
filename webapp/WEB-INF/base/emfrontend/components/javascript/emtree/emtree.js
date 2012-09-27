@@ -47,6 +47,7 @@ jQuery(document).ready(function()
 					{
 						var cell = jQuery("#view-picker-content");
 						cell.html(data);
+						window.location.hash="TOP";
 					}
 			);
 		}

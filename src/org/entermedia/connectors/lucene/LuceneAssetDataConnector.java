@@ -12,9 +12,11 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
@@ -84,7 +86,8 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		if (fieldAnalyzer == null)
 		{
 			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("description", new StemmerAnalyzer());
+			//composite.setAnalyzer("description", new StemmerAnalyzer());
+			composite.setAnalyzer("description", new EnglishAnalyzer(Version.LUCENE_36));
 			composite.setAnalyzer("id", new NullAnalyzer());
 			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
 			composite.setAnalyzer("sourcepath", new NullAnalyzer());
@@ -92,7 +95,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			record.setUseTokens(false);
 			composite.setAnalyzer("cumulusid", record);
 			composite.setAnalyzer("name_sortable", record);
-			fieldAnalyzer = composite;
+			fieldAnalyzer = new EnglishAnalyzer(Version.LUCENE_36);
 		}
 		return fieldAnalyzer;
 	}
