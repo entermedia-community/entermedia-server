@@ -10,14 +10,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
@@ -463,11 +467,16 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	{
 		if (fieldAnalyzer == null)
 		{
-			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("description", new StemmerAnalyzer());
-			composite.setAnalyzer("id", new NullAnalyzer());
+			Map analyzermap = new HashMap();
+			
+		
+			analyzermap.put("description", new StemmerAnalyzer());
+			analyzermap.put("id", new NullAnalyzer());
 			//composite.setAnalyzer("id", new RecordLookUpAnalyzer(true));
-			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+			analyzermap.put("foldersourcepath", new NullAnalyzer());
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new EnglishAnalyzer(Version.LUCENE_36), analyzermap);
+
+			
 			fieldAnalyzer = composite;
 		}
 		return fieldAnalyzer;

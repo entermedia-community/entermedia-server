@@ -86,18 +86,20 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	{
 		if (fieldAnalyzer == null)
 		{
-			Map map = new HashMap();
-			map.put("description", new EnglishAnalyzer(Version.LUCENE_36));
-			map.put("id", new NullAnalyzer());
-			map.put("foldersourcepath", new NullAnalyzer());
-			map.put("sourcepath", new NullAnalyzer());
+			Map analyzermap = new HashMap();
+			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
+			//composite.setAnalyzer("description", new StemmerAnalyzer());
+			
+			analyzermap.put("id", new NullAnalyzer());
+			analyzermap.put("foldersourcepath", new NullAnalyzer());
+			analyzermap.put("sourcepath", new NullAnalyzer());
 			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
 			record.setUseTokens(false);
-			map.put("cumulusid", record);
-			//TODO: Add more sortables ones
-			map.put("name_sortable", record);
+			analyzermap.put("cumulusid", record);
+			analyzermap.put("name_sortable", record);
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new EnglishAnalyzer(Version.LUCENE_36), analyzermap);
 
-			fieldAnalyzer = new PerFieldAnalyzerWrapper(new RecordLookUpAnalyzer() ,map);
+			fieldAnalyzer = composite;
 		}
 		return fieldAnalyzer;
 	}
