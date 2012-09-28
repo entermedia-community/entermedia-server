@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
@@ -85,17 +86,20 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	{
 		if (fieldAnalyzer == null)
 		{
-			CompositeAnalyzer composite = new CompositeAnalyzer();
+			Map analyzermap = new HashMap();
+			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
 			//composite.setAnalyzer("description", new StemmerAnalyzer());
-			composite.setAnalyzer("description", new EnglishAnalyzer(Version.LUCENE_36));
-			composite.setAnalyzer("id", new NullAnalyzer());
-			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
-			composite.setAnalyzer("sourcepath", new NullAnalyzer());
+			
+			analyzermap.put("id", new NullAnalyzer());
+			analyzermap.put("foldersourcepath", new NullAnalyzer());
+			analyzermap.put("sourcepath", new NullAnalyzer());
 			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
 			record.setUseTokens(false);
-			composite.setAnalyzer("cumulusid", record);
-			composite.setAnalyzer("name_sortable", record);
-			fieldAnalyzer = new EnglishAnalyzer(Version.LUCENE_36);
+			analyzermap.put("cumulusid", record);
+			analyzermap.put("name_sortable", record);
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new EnglishAnalyzer(Version.LUCENE_36), analyzermap);
+
+			fieldAnalyzer = composite;
 		}
 		return fieldAnalyzer;
 	}
