@@ -38,6 +38,7 @@ files.copyFiles( tmp + "/WEB-INF/base/themes/rational", root + "/WEB-INF/base/th
 log.add("4. REPLACE LIBS");
 files.deleteMatch( web + "/lib/entermedia-server*.jar");
 files.deleteMatch( web + "/lib/entermedia-5*.jar");
+files.deleteMatch( web + "/lib/entermedia-8*.jar");
 files.deleteMatch( web + "/lib/groovy-*.jar");
 files.deleteMatch( web + "/lib/aws-*.jar");
 files.deleteMatch( web + "/lib/gson-*.jar");
