@@ -1,8 +1,7 @@
-<div id="resultsdiv">
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()">
 #set ($resultview = $userprofile.get('resultview'))
 
 #if (!$resultview || $resultview == 'table')
-$!hits.setHitsPerPage(15)
 $context.putPageValue("showhover", "false")
 $context.putPageValue("thumbsize", "crop")
 $context.putPageValue("showcaption", "true")
@@ -12,6 +11,7 @@ $context.putPageValue("resultstype", "table" )
 
 
 $pages.include("$apphome/components/results/table.html", $context)
+
 #else
 $context.putPageValue("showcaption", true)
 $context.putPageValue("showhover", "false")
@@ -19,7 +19,6 @@ $context.putPageValue("thumbsize", "thumb")
 $context.putPageValue("showcaption", "true")
 $context.putPageValue("hideheader", "false")
 $context.putPageValue("pickable", false )
-$!hits.setHitsPerPage(12)
 
 <div id="emresultscontent" >
 

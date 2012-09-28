@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<layout>${themeprefix}/layouts/dialoglayout.html</layout>
+	<property name="section">assets</property>
+	
+	<path-action name="Page.uploadFile"/>
+	
+	<permission name="view">
+		<userprofile property="viewuploadmulti" equals="true" />
+	</permission>
+	
+	<path-action name="AssetEditModule.createAssetFromUploads"/>
+	<path-action name="MediaSearchModule.searchCategories"/>
+</page>

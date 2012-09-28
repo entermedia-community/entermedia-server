@@ -5,91 +5,58 @@ $pages.include("$apphome/components/results/header.html",$context)
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 #if( !$thumbsize )
-	#set( $thumbsize  = "thumb" )
+    #set( $thumbsize  = "thumb" )
 #end
 
-	#if( $category )
-		#set( $catid = $category.id )
-	#else
-		#set( $catid = "index" )
-	#end
+    #if( $category )
+        #set( $catid = $category.id )
+    #else
+        #set( $catid = "index" )
+    #end
 
-	#if ( $hits && $hits.size() > 0 )
-	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
-	$context.putPageValue("details",$details)
-<div  class="emgallery"  >	
-			#set($count = 0)
-			
-			<div  id="emslidesheet" >
-			#set( $rootid = $hits.sessionId )
-			
-			#foreach ($hit in $hits.getPageOfHits())
-		<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
-			#set( $count = $hits.getPage()+-1 )
-			#set( $count = $count*$hits.getHitsPerPage() )	
-			#set( $count = $velocityCount + $count )
-			$context.putPageValue("hitindex",$count )
-			#set ($sourcepath = $hit.sourcepath)
-		
-			$context.putPageValue("hit", $hit)
-			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-			$context.putPageValue("type", $type)
-			#set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
-			$context.putPageValue("clink", $clink)
+    #if ( $hits && $hits.size() > 0 )
+    #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
+    $context.putPageValue("details",$details)
 
-			<a class="hovering" href="$click">
 
-			<div class="emthumbimage em$thumbsize" 
-				##if( $showcaption ) style="vertical-align:bottom;" #end 
-				#if($showhover != false) hover="true" #end 
-				>			
 
-				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
+<div  class="emgallery"  >  
 
-			</div>
-			</a>
-		#if ( $canviewhovergalery )
-			<div class="gallery-hover">
-			    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
-			    <div class="hover-toolbox">
-			        <input type="checkbox" />
-			        <a href="#" class="basket ir">Basket</a>
-			        <a href="#" class="download ir">Download</a>
-			        <a href="#" class="email ir">Email</a>
-			    </div> 
-			    <div class="hover-details">
-			        <h6>#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</h6>
-			    </div>
-			</div>	
-			<script>
-                 $('.emdropshadow').mouseover(function(){
-                      $(this).parent().parent().parent().addClass('hover');
-                 });
-                 $('.gallery-hover').mouseout(function(){
-                      $('.hovering').removeClass('hover');
-                 });
-            </script>	
-	        #end
-			#if( $showcaption )
-				<a class="eml-thumbnail-caption" href="$click">
-					#if( $hit.assettitle ) $hit.assettitle #else $hit.name#end
-				</a>
-			#end
-		</div>
-			  
-			#end
-	
+            
+            <div  id="emslidesheet" >
+            #set( $rootid = $hits.sessionId )
+            #set($count = 0)
+            #foreach ($hit in $hits.getPageOfHits())
+            
+                #set ($sourcepath = $hit.sourcepath)
+                
+                $context.putPageValue("hit", $hit)
+                #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+                $context.putPageValue("type", $type)
+                #set( $click = "$home$apphome/views/assets/${sourcepath}/index.html?categoryid=$catid&hitssessionid=$rootid" )
+               
+                $context.putPageValue("clink", $clink)
+                $context.putPageValue("assetid", $hit.id)
+                $context.putPageValue("count", $count )
+                $context.putPageValue("click", $click)
+                $context.putPageValue("sourcepath", $sourcepath)
+                
+                $pages.include("$apphome/components/results/gallery-cell.html", $context)
+                
+                #set ( $count = $count + 1)
+                
+            #end
+    
 </div>
 
-	$pages.include("$apphome/components/results/pages.html",$context)
+    $pages.include("$apphome/components/results/pages.html",$context)
 
 
 
 
-	#end
-<br/><br/><br/>
+    #end
 #if ( $hits.totalPages == 0 )
-<p>
+<p class="info" style="margin: 20px;">
 [[No results found.]]
 </p>
 #end
@@ -99,31 +66,31 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 toggleHit =  function(div, count, sessionid)
 {
-	if (!e) var e = window.event;
-	e.cancelBubble = true;
-	if (e.stopPropagation) e.stopPropagation();
-	jQuery(this).load("$home$apphome/components/results/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
+    jQuery(this).load("$home$apphome/components/results/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
     jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
     return false;
 }
 
 jQuery("input[name=pagetoggle]").click(function () {
       
-    	   var status = jQuery('input[name=pagetoggle]').is(':checked');
-    	   if(status){
-    		   jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
-    		   jQuery('.selectionbox').attr('checked','checked');
-           	   }
-        	   else{
-        	       jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
-        	       jQuery('.selectionbox').removeAttr('checked');  
-        	   }
-    	  
+           var status = jQuery('input[name=pagetoggle]').is(':checked');
+           if(status){
+               jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
+               jQuery('.selectionbox').attr('checked','checked');
+               }
+               else{
+                   jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
+                   jQuery('.selectionbox').removeAttr('checked');  
+               }
+          
        });
      
       
 
 
 
-</script>	
+</script>   
 </div>

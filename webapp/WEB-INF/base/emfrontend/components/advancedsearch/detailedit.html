@@ -9,8 +9,14 @@
 		$!detail.getText($context) 
 		</div>
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
-		#if(!$detail.isDate())
-					<input name="operation" value="startswith" type="hidden" />
+
+		#if(!$detail.isDate() && $detail.getId() != "category")
+				#if($detail.defaultoperation && $detail.defaultoperation != "")
+					<input name="operation" value="$detail.defaultoperation" type="hidden" />
+				#else
+				<input name="operation" value="startswith" type="hidden" />
+				#end
+
 		#end
 	
 		#set( $viewtype = $detail.searchcomponent )
@@ -23,11 +29,22 @@
 		#if (!$viewtype || $viewtype == "text")
 			#set ($viewtype = "default")
 		#end
+		
+		#if (!$viewtype || $viewtype == "date")
+			#set ($viewtype = "datesearch")
+		#else
+		
+		
+		#end
+		
+		
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
+			#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
 			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
 			$context.putPageValue("term",$term)			
 			$context.putPageValue("val",$value)
+			$context.putPageValue("values",$values)
 		#end
 		
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)

@@ -72,7 +72,7 @@
 		#end
 		
 			<li style="float: right;">	
-				<a class="ajax" targetdivinner="view-picker-content" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset">
+				<a class="ajax" targetdivinner="view-picker-content" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()">
 				
 					#if (!$resultview || $resultview == 'table')
 						View Gallery

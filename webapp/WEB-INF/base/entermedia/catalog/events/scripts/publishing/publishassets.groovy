@@ -39,8 +39,9 @@ public void init() {
 		query.addExact("assetid", assetid);
 	}
 	query.addOrsGroup("status","new pending retry");
+	//query.addNot("remotempublishstatus","new");
 	HitTracker tracker = queuesearcher.search(query);
-	log.info("publishing " + tracker.size() + " assets");
+	log.info("publishing " + tracker.size() + " assets" + queuesearcher);
 	if( tracker.size() > 0)
 	{
 		for( Data result:tracker)
@@ -82,6 +83,9 @@ public void init() {
 				if(!inputpage.exists() || inputpage.length() == 0)
 				{
 					log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
+					//Change statys to pending so things can timeout
+					publishrequest.setProperty('status', 'pending');
+					queuesearcher.saveData(publishrequest, context.getUser());
 					continue;
 				}
 
@@ -109,6 +113,7 @@ public void init() {
 					publishrequest.setProperty("errordetails", " ");
 					queuesearcher.saveData(publishrequest, context.getUser());
 				}
+				//check for remotempublishstatus?
 			}
 			catch( Throwable ex)
 			{

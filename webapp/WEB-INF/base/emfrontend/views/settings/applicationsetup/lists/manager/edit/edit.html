@@ -18,7 +18,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 </div>
 </form>
 <br><br>
-<a href="./delete.html?searchtype=$searcher.searchType&id=$data.id">delete</a>
+<a href="$home$apphome/views/settings/applicationsetup/lists/manager/edit/delete.html?searchtype=$searcher.searchType&id=$data.id">delete</a>
 #if( $savedok && $origURL )
 	<a href="$origURL">[[Go Back]]</a>	
 #end

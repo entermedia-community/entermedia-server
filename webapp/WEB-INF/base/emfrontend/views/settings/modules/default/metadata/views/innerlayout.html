@@ -19,18 +19,19 @@ $!query.addSortBy("ordering")
 				#if ($systemdefined && $systemdefined != "true")
 				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
                 #end
+              
 			#foreach( $target in $views)
                 
 				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
 				   
-					#if( $target.byassettype && $target.byassettype == "true" )
+					#if( ($target.byassettype && $target.byassettype == "true") )
 						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
 					#else
 						#set( $viewpath = "${moduleid}/$target.id")
 					#end
 					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath">
 					<span class="XXXdrag-and-drop"></span>$target</a>
-					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${$moduleid}&id=${target.id}&viewpath=$viewpath"></a>
+					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath"></a>
 
                 </li>
 			

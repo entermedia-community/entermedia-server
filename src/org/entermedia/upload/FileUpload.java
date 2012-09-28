@@ -19,6 +19,7 @@ package org.entermedia.upload;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -80,12 +81,12 @@ public class FileUpload
 			throw new OpenEditException("You must be logged in to upload files");
 		} 
 		
-		Object canUpload = inContext.getPageValue("canupload");
-		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
-		{
-			throw new OpenEditException("You don't have enough permissions to upload files");
-		}
-		
+//		Object canUpload = inContext.getPageValue("canupload");
+//		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
+//		{
+//			throw new OpenEditException("You don't have enough permissions to upload files");
+//		}
+//		
 		UploadRequest props = parseArguments(inContext);
 		if( props == null)
 		{
@@ -93,18 +94,6 @@ public class FileUpload
 		}
 		saveFiles(inContext, props);
 		return props;
-	}
-
-	protected Data addRecentUpload(String inCatId, String inUploadId)
-	{
-		Searcher searcher = loadQueueSearcher(inCatId);
-		Data req = (Data)searcher.searchById(inUploadId);
-		if( req == null)
-		{
-			req= searcher.createNewData();
-			req.setId(inUploadId);
-		}
-		return req;
 	}
 
 	public void saveFiles(WebPageRequest inContext, UploadRequest props) throws OpenEditException
@@ -147,14 +136,13 @@ public class FileUpload
 			return upload;
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
+		
 		String catalogid = inContext.findValue("catalogid");
-		if( uploadid != null)
-		{
-			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
-			Data queue = addRecentUpload(catalogid, uploadid);
-			queue.setSourcePath("users/" + inContext.getUserName());
-			queue.setName(uploadid);		
-			upload.setUploadQueueData(queue);
+		if(uploadid != null && catalogid != null){
+		upload.setUploadId(uploadid);
+		upload.setCatalogId(catalogid);
+		upload.setUserName(inContext.getUserName());
+		upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
 		}
 		FileItemFactory factory = (FileItemFactory)inContext.getPageValue("uploadfilefactory");
 		if( factory == null)

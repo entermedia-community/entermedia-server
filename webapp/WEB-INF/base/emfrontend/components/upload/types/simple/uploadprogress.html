@@ -1,36 +1,27 @@
-#set($uploadid = $context.getRequestParameter("uploadid"))
+#set( $uploadid = $context.getRequestParameter("uploadid"))
+#set( $sizeeng = $sizer.inEnglish($size) )
+
 <div id="status$uploadid" class="ajaxstatus" period="500" 
-  ajaxpath="$home$apphome/components/upload/types/simple/uploadprogress.html?uploadid=$uploadid">
+  ajaxpath="$home$apphome/components/upload/types/simple/uploadprogress.html?uploadid=$uploadid&size=$size">
 
-#set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$uploadid) )
-
+#set( $id = "${uploadid}_1")
+#set( $width = "0" )
+#set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$id) )
 #if( $data.getId() )
 
-	#set( $total = $data.getFloat("filesize"))
-	#set( $uploaded = $data.getFloat("filesizeuploaded"))
-	
-	#if( $total == 0)
-	 	Zero length file
-		#set( $barsize=0)
-		#set( $percentageString="0")
-	#elseif( $total == $uploaded)
-		#set( $barsize=300)
-		#set( $percentageString="Importing...")		
-	#else 
-		#set($ratio = $uploaded/$total)
-		#set( $barsize=$ratio*300)
-		#set( $percent = $ratio * 100)
-		#set( $percentageString=$percent.toString())
-	    #set( $percentageString=$percentageString.substring(0, $percentageString.indexOf(".")) )
-	    #set( $percentageString = "${percentageString}%" )
-	#end
-#else
-	#set( $barsize=0)
-	#set( $percentageString="Uploading...")
+	#set( $uploaded = $data.get("filesizeuploaded"))
+	#set( $size = $data.get("filesize"))
+	#set( $percent = $mathutil.getPercentage($uploaded, $size) )
+	#if($percent >= 1 )
+		#set( $percent = 1)
+	#end	
+	#set( $width = $percent * 300 )
+	#set( $percenteng = $percent * 100 )
+
 #end
 	<div style="border:1px solid #000000;width:300px;height:16px;text-align: left;">
-		<div style="background-color:#336699;width:${barsize}px;height:16px;">
-			<div style="color:#98cced;float:left;width:300px;">$percentageString</div>
+		<div style="background-color:#336699;width:$!{width}px;height:16px;">
+			<div style="color:#98cced;float:left;width:300px;height:16px;"></div>
 		</div>
 	</div>
 	

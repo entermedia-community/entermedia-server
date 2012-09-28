@@ -11,7 +11,6 @@
 	#set( $view = "${searcher.searchType}/edit" )
 #end
 $context.putPageValue("view", $view)
-
 <form id="dataeditor" name="dataeditor" method="post" action="$home$content.searchhome/edit/save.html" >
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$!data.id" />

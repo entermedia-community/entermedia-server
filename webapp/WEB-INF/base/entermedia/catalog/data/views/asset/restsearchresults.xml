@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties usagelabel="REST API search results">
-  <property id="id"/>
+<properties usagelabel="General">
   <property id="name"/>
-  <property id="sourcepath" />
-  <property id="assettype" />  
-  <property id="fileformat" />  
-  <property id="extrakeywords" />  
+  <property id="assettitle"/>
+  <property id="caption"/>
 </properties>

@@ -20,7 +20,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadon
 #if( $order.orderstatus == "complete")
 	##to much work to support group downloads yet
 #else
-<p>Order still being processed. <a href="./index.html?orderid=$order.id">refresh</a>
+<p>Order still being processed. <a href="$home$apphome/views/activity/download/index.html?orderid=$order.id">refresh</a>
 </p>
 #end
 </td>

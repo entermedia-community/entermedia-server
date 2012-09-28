@@ -9,8 +9,8 @@
  
   --> 
 	
-  <property id="defaultviews"  type="toplevel" module="default" parentid="defaultviews" ordering="100" path="/views/settings/modules/default/metadata/views/index.html"  sublabel="Editing" >Views</property>
-  <property id="defaultsystemviews"  module="default" parentid="defaultviews" path="/views/settings/modules/default/metadata/viewssystem/index.html" ordering="10">System</property>
+  <property id="defaultviews"  type="toplevel" module="default" parentid="defaultviews" ordering="100" path="/views/settings/modules/default/metadata/views/index.html"  sublabel="Editing">Views</property>
+  <property id="defaultsystemviews"  module="default" parentid="defaultviews" path="/views/settings/modules/default/metadata/viewssystem/index.html" ordering="110">System</property>
 
     
 

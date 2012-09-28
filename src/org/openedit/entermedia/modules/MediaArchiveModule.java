@@ -32,7 +32,7 @@ public class MediaArchiveModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(MediaArchiveModule.class);
 	protected EmailErrorHandler fieldEmailErrorHandler;
-	protected FileUpload fieldFileUpload;
+	//protected FileUpload fieldFileUpload;
 	
 	public MediaArchiveModule()
 	{
@@ -279,6 +279,7 @@ public class MediaArchiveModule extends BaseMediaModule
 	 * @param inReq
 	 * @throws OpenEditException
 	 */
+	/*
 	public void uploadAsset( WebPageRequest inReq ) throws OpenEditException
 	{
 		UploadRequest map = getFileUpload().parseArguments(inReq);
@@ -289,8 +290,8 @@ public class MediaArchiveModule extends BaseMediaModule
 			return;
 		}
 		long utime = System.currentTimeMillis();
-		String temppath = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/tmp" + utime + "_" + map.getFirstItem().getName();
-		map.saveFirstFileAs(temppath, inReq.getUser());
+//		String temppath = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/tmp" + utime + "_" + map.getFirstItem().getName();
+//		map.saveFirstFileAs(temppath, inReq.getUser());
 		
 		List unzipped = map.unzipFiles(false);
 		inReq.putPageValue("uploadrequest", map);
@@ -302,16 +303,17 @@ public class MediaArchiveModule extends BaseMediaModule
 		inReq.putPageValue("unzippedfiles", unzipped);
 		inReq.putPageValue("pageManager", getPageManager());
 	}
+	*/
 
-	public FileUpload getFileUpload()
-	{
-		return fieldFileUpload;
-	}
-
-	public void setFileUpload(FileUpload fileUpload)
-	{
-		fieldFileUpload = fileUpload;
-	}
+//	public FileUpload getFileUpload()
+//	{
+//		return fieldFileUpload;
+//	}
+//
+//	public void setFileUpload(FileUpload fileUpload)
+//	{
+//		fieldFileUpload = fileUpload;
+//	}
 
 	/**
 	 * This must be called as a path-action

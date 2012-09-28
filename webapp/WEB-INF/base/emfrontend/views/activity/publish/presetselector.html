@@ -18,17 +18,17 @@
 		#end
 		
 		#if ($showselector)
-			<select name="${item.id}.presetid.value">
 		  	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
 		  	   	    $presetquery.setAndTogether(false)
 		  	   	    #set( $rendertype = false)
 		  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($fileformat) )
 		  	   	    #if( $rendertype )
-			  	   	    $presetquery.addExact("inputtype",$rendertype);
+			  	   	    #set( $null = $presetquery.addExact("inputtype",$rendertype) )
 		  	   	    #end
-		  	   	    $presetquery.addExact("inputtype","all");
-		  	   	    $presetquery.sortBy("name");
+		  	   	    #set( $null = $presetquery.addExact("inputtype","all") )
+		  	   	    #set( $null = $presetquery.sortBy("name") )
 		  	   	    #set( $results = $presetsearcher.search($presetquery) )
+			<select name="${itemid}.presetid.value">
 		  	    	#foreach ($preset in $results)
 		  	    		<option value="$preset.id">$preset</option>
 		  	    	#end

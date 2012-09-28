@@ -45,10 +45,12 @@ public class ProfileModule extends MediaArchiveModule
 	public UserProfile loadUserProfile(WebPageRequest inReq)
 	{
 		User user = inReq.getUser();
-		if( user == null || user.getId() == null || user.getId().equals("null") || user.isVirtual())
+		String userid = null;
+		if( user != null && user.getId() != null && !user.getId().equals("null") && !user.isVirtual())
 		{
-			return null;
+			userid = user.getId();
 		}
+		
 		String profilelocation = inReq.findValue("profilemanagerid");// catalogid
 		if (profilelocation == null)
 		{
@@ -58,7 +60,7 @@ public class ProfileModule extends MediaArchiveModule
 		{
 			profilelocation  = inReq.findValue("applicationid");
 		}
-		return getUserProfileManager().loadUserProfile(inReq, profilelocation, user.getId());
+		return getUserProfileManager().loadUserProfile(inReq, profilelocation, userid);
 	}
 
 	public void moveColumn(WebPageRequest inReq) throws Exception
@@ -276,7 +278,8 @@ public class ProfileModule extends MediaArchiveModule
 		Searcher profilesearcher = getSearcherManager().getSearcher(prof.getCatalogId(), "userprofile");
 	
 		profilesearcher.updateData(inReq, fields, prof);
-		profilesearcher.saveData(prof, inReq.getUser());
+		getUserProfileManager().saveUserProfile(prof);
+
 	}
 	
 	public void toggleUserPreference(WebPageRequest inReq)

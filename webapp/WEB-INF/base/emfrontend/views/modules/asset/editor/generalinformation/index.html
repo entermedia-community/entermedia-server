@@ -8,7 +8,7 @@
 #foreach( $viewpath in $views.keySet() )
 	#set( $target = $views.get($viewpath) )
 	#if( !$target.rendertable )
-		#display("generic.html" $target.name "$asset.id" $viewpath $print)
+		#displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
 	#end
 #end
  </div>

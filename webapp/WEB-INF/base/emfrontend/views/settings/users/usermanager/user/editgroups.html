@@ -4,6 +4,24 @@
 <div class="ui-widget-header">Groups</div>
 <div class="ui-widget-content" > 
 
+#if( $selectedUser.getGroups().size() < $UserManager.getGroups().size() ) 
+    <div class="list-adder">
+        <form class="ajaxform" name="addform" id="groupAddForm" targetdiv="groupeditor" action="$home$usermanagerhome/user/editgroups.html" method="post">
+        	<input name="username" type="hidden" value="$selectedUser.id" />
+        	<input name="addUsernames" type="hidden" value="$selectedUser.id" />
+            <span style="color: white; font-size: 11px; font-weight: bold;">Add</span>
+            <select name="groupid" id="groupselect" onchange="$('#groupAddForm').submit()">
+            	<option value=""></option>
+            	#foreach ( $group in $UserManager.getGroups() )
+            		#if( !$selectedUser.isInGroup($group) )  
+            	    	<option value="$group.getId()">$group.getName()</option>
+            		#end
+            	#end     
+            </select>  
+        </form>
+    </div>
+#end
+
 <div class="emtable clearfix" >
 	#foreach ( $group in $selectedUser.getGroups() )
 		<a class="row group" href="$home$usermanagerhome/groups/modifygroup.html?groupid=$group.id">
@@ -16,23 +34,7 @@
 </div>
 
 
-#if( $selectedUser.getGroups().size() < $UserManager.getGroups().size() ) 
-<form class="ajaxform" name="addform" id="groupAddForm" targetdiv="groupeditor" action="$home$usermanagerhome/user/editgroups.html" method="post">
-	
-	<input name="username" type="hidden" value="$selectedUser.id" />
-	<input name="addUsernames" type="hidden" value="$selectedUser.id" />
-	
-	
-Add <select name="groupid" id="groupselect" onchange="$('#groupAddForm').submit()">
-	<option value=""></option>
-	#foreach ( $group in $UserManager.getGroups() )
-		#if( !$selectedUser.isInGroup($group) )  
-	    	<option value="$group.getId()">$group.getName()</option>
-		#end
-	#end     
-</select>  
-</form>
-#end
+
 
 </div>
 </div>

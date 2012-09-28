@@ -5,6 +5,7 @@ import org.openedit.Data;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.search.AssetSearcher;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
@@ -28,29 +29,22 @@ public void init()
 	String sourcepath = context.getRequestParameter("sourcepath");
 	if(sourcepath == null)
 	{
-		assets = searcher.getAllHits();
+		q = searcher.createSearchQuery().append("category", "index");
+		q.addNot("editstatus","7");
 	}
 	else
 	{
 		q.addStartsWith("sourcepath", sourcepath);
-		assets = searcher.search(q);
 	}
-	List<String> removed = new ArrayList<String>();
-	List<String> sourcepaths= new ArrayList<String>();
-	
+	assets = searcher.search(q);
+	assets.setHitsPerPage(10000);
+	long removed = 0;
+	long existed = 0;
+	List tosave = new ArrayList();
 	for(Object obj: assets)
 	{
 		Data hit = (Data)obj;
-		sourcepaths.add(hit.get("sourcepath")); //TODO: Move to using page of hits
-		if( sourcepaths.size() > 250000)
-		{
-			log.error("Should not load up so many paths");
-			break;
-		}
-	}
-	int existed = 0;
-	for(String path: sourcepaths)
-	{
+		String path = hit.getSourcePath();
 		Asset asset = archive.getAssetBySourcePath(path);
 		if( asset == null)
 		{
@@ -63,19 +57,28 @@ public void init()
 		{
 			pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
 		}
-		Page page = pageManager.getPage(pathToOriginal);
+		ContentItem page = pageManager.getRepository().get(pathToOriginal);
 		if(!page.exists())
 		{
-			removed.add(asset.getSourcePath());
-			archive.removeGeneratedImages(asset);
-			archive.getAssetSearcher().delete(asset, user);
+			removed++;
+			//archive.removeGeneratedImages(asset);
+			asset.setProperty("editstatus", "7");
+			tosave.add(asset);
 		}
 		else
 		{
 			existed++;
 		}
+		if( tosave.size() == 100 )
+		{
+			log.info("removed " + removed + " found " + existed);
+			archive.saveAssets(tosave);
+			tosave.clear();
+		}
 	}
-	log.info("removed " + removed.size() + " found " + existed);
+	archive.saveAssets(tosave);
+	tosave.clear();
+	log.info("removed " + removed + " found " + existed);
 	
 }
 

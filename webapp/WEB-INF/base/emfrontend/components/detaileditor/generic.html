@@ -100,6 +100,12 @@ $context.putPageValue("searcher", $searcher)
 		#set( $foundone = false)
 		#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
 		<div class="table" id="default-fields">
+		$context.putPageValue("details",$assetdetails)
+   		$context.putPageValue("searcher",$searcher)
+   		
+   		##$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
+
+		
 		#foreach( $detail in $assetdetails )
 			#set( $value = false)
 			#set( $value = $data.get($detail.getId()))
@@ -110,21 +116,10 @@ $context.putPageValue("searcher", $searcher)
 						$detail.getText($context)
 					</span>
 					<span class="bodycontent" valign="top" width="100%">
-						#if( $detail.isList() )
-							#set( $foundrow = false )
-							#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$value) )  
-							$!foundrow.name
-						#elseif($detail.isFile())
-							<a href = "$home/$value">$!value</a>
-						#elseif($detail.isBoolean())
-							#if ("true" == $value)
-								[[Yes]]
-							#else
-								[[No]]
-							#end
-						#else
-							#esc( $value )
-					   	#end
+					$!context.putPageValue("val",$value)
+					$!context.putPageValue("detail",$detail)
+					$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
+		
 					</span>
 				</div>
 			#end

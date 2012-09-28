@@ -59,36 +59,3 @@ $pages.include("$apphome/components/results/pages.html",$context)
 #end
 </div>
 
-
-
-<script type="text/javascript">
-
-toggleHit =  function(div, count, sessionid)
-{
-	
-	jQuery(this).load("$home$apphome/components/results/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
-	jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
-    //jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
-    return false;
-}
-
-jQuery("input[name=pagetoggle]").click(function () {
-      
-    	   var status = jQuery('input[name=pagetoggle]').is(':checked');
-    	   if(status){
-    		   //jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
-    		   jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"page"});
-    		   jQuery('.selectionbox').attr('checked','checked');
-           	   }
-        	   else{
-        	       jQuery(this).load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
-        	       jQuery('.selectionbox').removeAttr('checked');  
-        	   }
-    	  
-       });
-     
-      
-
-
-
-</script>	

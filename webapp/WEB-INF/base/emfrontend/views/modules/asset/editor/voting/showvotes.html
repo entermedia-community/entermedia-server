@@ -1,13 +1,12 @@
-<h2>[[Users Who like This]]</h2>
-<table class="emdatatable">
-<tr>
-	<th style="font-weight: bold;padding:2px 2px 2px 5px;">User</th>
-	<th style="font-weight: bold;padding:2px 2px 2px 5px;"> Time</th>
+<table class="settings-table" id="likes" style="width:500px">
+<tr id="tableheader">
+	<th style="text-align: left;">User</th>
+	<th> Time</th>
 </tr>
 #foreach($hit in $voteshits)
 <tr>
-	<td style="padding:2px 2px 2px 5px;"><a target="_parent" href="$home/$applicationid/users/$hit.get('username')/index.html">$userManager.getUser($hit.get("username"))</a></td>
-	<td style="padding:2px 2px 2px 5px;">$context.getDateTime( $hit.get("time") )</td>
+	<td><a target="_parent" href="$home/$applicationid/users/$hit.get('username')/index.html">$userManager.getUser($hit.get("username"))</a></td>
+	<td style="width:100px;">$context.getDateTime( $hit.get("time") )</td>
 </tr>
 #end
 </table>

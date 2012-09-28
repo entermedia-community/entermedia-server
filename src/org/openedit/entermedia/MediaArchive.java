@@ -1214,12 +1214,12 @@ public class MediaArchive
 			outputfile = name + "page" + inPageNumber + "." + ext;
 		}
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
-		return page.exists();
+		return page.exists() && page.getLength() > 1;
 		
 	}
 	public boolean doesAttachmentExist(String outputfile, Asset asset) {
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
-		return page.exists();
+		return page.exists() && page.getLength() > 1;
 	}
 
 	public String asExportFileName(Asset inAsset, Data inPreset)

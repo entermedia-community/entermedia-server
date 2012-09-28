@@ -3,7 +3,7 @@
 <div class="tab" id="field-tab">
 	<div class="tab-actions">
 		#if( $catalogid && $searchtype)
-			<form action="$dataroot/properties/addnew.html" name="addnewprop">
+			<form action="$home$dataroot/properties/addnew.html" name="addnewprop">
 				<input type="hidden" name="catalogid" value="$!catalogid" />
 				<input type="hidden" name="searchtype" value="$searchtype" />
 				<strong>[[Add New Field]]: </strong><input class="field" type="text" name="newproperty"  /><input class="btn" style="margin-top: -2px;" type="submit" value="[[Save]]" />
@@ -34,7 +34,7 @@
 	#end
 	</table>
 	##this will auto submit when they click
-	<form name="editlink" action="$dataroot/properties/edit.html?oemaxlevel=1">
+	<form name="editlink" action="$home$dataroot/properties/edit.html?oemaxlevel=1">
 		<input type="hidden" name="id" id="emselectedrow" value="" />
 		<input type="hidden" name="catalogid" value="$catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />

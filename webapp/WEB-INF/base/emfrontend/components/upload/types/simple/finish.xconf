@@ -3,7 +3,11 @@
 	<layout>${themeprefix}/layouts/dialoglayout.html</layout>
 	<property name="section">assets</property>
 	
-	<path-action name="MediaArchiveModule.uploadAsset"/>
+	<path-action name="Page.uploadFile"/>
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
-	<path-action name="MediaSearchModule.searchCategories"/>
+	
+	<permission name="view">
+		<userprofile property="viewupload" equals="true" />
+	</permission>
+	
 </page>

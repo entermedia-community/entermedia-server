@@ -3,7 +3,7 @@
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = $formatteddate )
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
-	action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath">
+	action="$home/${applicationid}/components/upload/types/simple/finish.html?sourcepath=$sourcepath&oemaxlevel=1">
 	<input type="hidden" name="categoryid" value="index"/>
 	
 <div id="eml-tab-green-container" style="width: 400px; margin: 0 auto;" class="clearfix">
@@ -87,9 +87,14 @@
  	function showResponse(responseText, statusText, xhr, $form)  
  	{ 
  		//jQuery.fn.livequery.stopped = true;
- 		//jQuery("#embody").html(responseText);	
+ 		jQuery("#uploadarea").html(responseText);
+ 		jQuery("#uploadarea").attr('id', 'view-picker-content');
+        jQuery("#view-picker-content").addClass('liquid-sizer');
+        var w = jQuery("#view-picker-content").width();
+        w = w + 20;
+        jQuery("#view-picker-content").width(w);
  		//jQuery.fn.livequery.stopped = false;
-		document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+		//document.location.href = "$home$apphome/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
  	}
  	
  	//special validator for file name

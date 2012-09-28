@@ -47,6 +47,7 @@ jQuery(document).ready(function()
 					{
 						var cell = jQuery("#view-picker-content");
 						cell.html(data);
+						window.location.hash="TOP";
 					}
 			);
 		}
@@ -194,6 +195,11 @@ jQuery(document).ready(function()
 				repaintEmTree(tree);
 				return false;
 	} );
+	
+	$('.emtree .checkbox input').livequery('click', function(event){
+		event.stopPropagation();
+	});
+
 	
 	
 });

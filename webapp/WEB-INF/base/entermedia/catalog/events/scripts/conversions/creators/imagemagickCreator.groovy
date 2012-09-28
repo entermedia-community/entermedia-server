@@ -33,7 +33,7 @@ public class imagemagickCreator extends BaseImageCreator
 
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions) throws OpenEditException
 	{
-		if(!inStructions.isForce() && inOutFile.length() > 0 )
+		if(!inStructions.isForce() && inOutFile.length() > 1 )
 		{
 			ConvertResult result = new ConvertResult();
 			result.setOk(true);
@@ -94,7 +94,7 @@ public class imagemagickCreator extends BaseImageCreator
 			if( input == null &&  box.getWidth() < 300 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
-				if( !input.exists()  || input.length() == 0)
+				if( !input.exists()  || input.length() < 2)
 				{
 					input = null;
 				}
@@ -106,7 +106,7 @@ public class imagemagickCreator extends BaseImageCreator
 			if( input == null && box.getWidth() < 1024 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");				
-				if( !input.exists() )
+				if( !input.exists()  || input.length() < 2 )
 				{
 					input = null;
 				}
@@ -393,7 +393,7 @@ public class imagemagickCreator extends BaseImageCreator
 	//		com.add("90"); I think the default is about 80
 			com.add("-strip");
 		}
-		if (System.getProperty("os.name").toLowerCase().contains("windows"))
+		if (isOnWindows() )
 		{
 			// windows needs quotes if paths have a space
 			com.add("\"" + outputpath + "\"");
@@ -459,7 +459,14 @@ public class imagemagickCreator extends BaseImageCreator
 			prefix = inStructions.getInputExtension() + ":";
 
 		}
-		com.add(prefix + inFile.getAbsolutePath() + "[" + page + "]");
+		if (isOnWindows())
+		{
+			com.add("\"" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
+		}
+		else
+		{
+			com.add(prefix + inFile.getAbsolutePath() + "[" + page + "]");
+		}
 		return com;
 	}
 

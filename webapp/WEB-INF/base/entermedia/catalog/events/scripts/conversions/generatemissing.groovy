@@ -13,16 +13,26 @@ public void init()
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 		PresetCreator presets = new PresetCreator();
 		
-		HitTracker assets = assetsearcher.getAllHits();
+		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
+		q.addSortBy("id");
+
+		HitTracker assets =  assetsearcher.search(q);
+		//HitTracker assets = assetsearcher.getAllHits();
+		assets.setHitsPerPage(10000);
+		
+		//TODO: Only check importstatus of imported?
+		log.info("Processing ${assets.size()}" );
+		
 		long added = 0;
 		long checked  = 0;
-		
+		long completed = 0;
+		List tosave = new ArrayList();
 		for (Data hit in assets)
 		{
 			checked++;
 			Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 			if( asset == null )
-			{	
+			{
 				continue; //Bad index
 			}
 
@@ -31,7 +41,8 @@ public void init()
 			SearchQuery query = presetsearcher.createSearchQuery();
 			query.addMatches("onimport", "true");
 			query.addMatches("inputtype", rendertype);
-
+			
+			boolean missingconversion = false;
 			HitTracker hits = presetsearcher.search(context,query);
 			hits.each
 			{
@@ -39,7 +50,9 @@ public void init()
 
 				if (!mediaarchive.doesAttachmentExist(asset,preset,0) )
 				{
+					missingconversion = true;
 					presets.createPresetsForPage(tasksearcher, preset, asset,0);
+					added++;
 				}
 				String pages = asset.get("pages");
 				if( pages != null )
@@ -52,41 +65,32 @@ public void init()
 							int pagenum = i + 1;
 							if (!mediaarchive.doesAttachmentExist(asset,preset,pagenum) )
 							{
+								missingconversion = true;
 								presets.createPresetsForPage(tasksearcher, preset, asset, pagenum);
+								added++;
 							}
 						}
 					}
 				}
-		
-					
-//					Data found = tasksearcher.search(taskq).first();
-//					if( found != null )
-//					{
-//						//If it is complete then the converter will mark it complete again
-//						if( found.get("status") != "new")
-//						{
-//							found = (Data)tasksearcher.searchById(found.getId());
-//							found.setProperty("status", "retry");
-//							added++;
-//							tasksearcher.saveData(found, context.getUser());
-//						}
-//					}
-//					else
-//					{
-//						added++;
-//						Data newTask = tasksearcher.createNewData();
-//						newTask.setSourcePath(asset.getSourcePath());
-//						newTask.setProperty("status", "new");
-//						newTask.setProperty("assetid", asset.id);
-//						newTask.setProperty("presetid", it.id);
-//						newTask.setProperty("ordering", it.get("ordering") );
-//						String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-//						newTask.setProperty("submitted", nowdate);
-//						tasksearcher.saveData(newTask, context.getUser());
-//					}
+			}
+			if( !missingconversion && !"complete".equals(asset.get("importstatus") ) )
+			{
+				//log.info("complete ${asset}");
+				asset.setProperty("importstatus","complete");
+				//mediaarchive.saveAsset(asset, null);
+				tosave.add(asset);
+				completed++;
+			}
+			if( tosave.size() == 1000 )
+			{
+				mediaarchive.saveAssets(tosave);
+				tosave.clear();
+				log.info("checked ${checked} assets. ${added} tasks queued, ${completed} completed. please run event again since index has changed order" );
+				
 			}
 		}
-		log.info("checked ${checked} assets. ${added} tasks queued" );
+		mediaarchive.saveAssets(tosave);
+		log.info("checked ${checked} assets. ${added} tasks queued , ${completed} completed." );
 }
 
 init();

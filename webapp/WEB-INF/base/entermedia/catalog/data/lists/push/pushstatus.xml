@@ -4,5 +4,6 @@
   <property id="retry">Retry</property>
   <property id="resend">Resend</property>
   <property id="notallconverted">Waiting on Conversion</property>
+  <property id="nogenerated">No Generated Files</property>
   
 </properties>

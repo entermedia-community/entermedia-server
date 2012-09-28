@@ -1,4 +1,5 @@
 <page>
-	<path-action name="OrderModule.loadOrder"/>
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
+	<path-action name="OrderModule.updatePendingOrders"/>
 	<inner-layout />
 </page>

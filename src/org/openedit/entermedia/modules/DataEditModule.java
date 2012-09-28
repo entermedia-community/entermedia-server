@@ -852,8 +852,7 @@ public class DataEditModule extends BaseMediaModule
 
 	public void toggleHitSelection(WebPageRequest inReq) throws Exception
 	{
-		loadPageOfSearch(inReq);
-		String name = inReq.getRequestParameter("sessionid");
+		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
 		String[] params = inReq.getRequestParameters("count");
 		for (int i = 0; i < params.length; i++)
@@ -871,7 +870,10 @@ public class DataEditModule extends BaseMediaModule
 		// loadPageOfSearch(inReq);
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-
+		if( hits == null )
+		{
+			throw new OpenEditException("Session timed out, reload page");
+		}
 		String action = inReq.getRequestParameter("action");
 		if ("all".equals(action))
 		{
@@ -1001,12 +1003,12 @@ public class DataEditModule extends BaseMediaModule
 		Searcher searcher = null;
 
 		String catalogid = inReq.getRequestParameter("catalogid");
+		if(catalogid == null){
+			catalogid = inReq.findValue("catalogid");
+		}
 		if (catalogid == null)
 		{
 			catalogid = inReq.findValue("applicationid");
-		}
-		if(catalogid == null){
-			catalogid = inReq.findValue("catalogid");
 		}
 		if (catalogid != null)
 		{// for a sub searcher
@@ -1020,7 +1022,12 @@ public class DataEditModule extends BaseMediaModule
 				hits = searcher.loadHits(inReq, hitsname);
 			}
 		}
-
+		if (hits == null)
+		{
+			if(searcher != null){
+				hits = searcher.loadHits(inReq);
+			}
+		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
 		return hits;
@@ -1344,10 +1351,19 @@ public class DataEditModule extends BaseMediaModule
 				{
 					type = currentdata.get("assettype");
 				}
-				String path = module + "/assettype/" + type + "/" + view.getId();
-				if(type == null || !archive.viewExists( path ) )
+				String path = null;
+				
+				if( Boolean.parseBoolean( view.get("byassettype") ) )
 				{
-					path =	module + "/assettype/default/" + view.getId();
+					path = module + "/assettype/" + type + "/" + view.getId();
+					if(type == null || !archive.viewExists( path ) )
+					{
+						path =	module + "/assettype/default/" + view.getId();
+					}
+				}
+				else
+				{
+					path =	module + "/" + view.getId();
 				}
 				views.put(path,view);
 			}

@@ -2,8 +2,6 @@
 	<property name="revisioneditorhome">/${catalogid}/versions</property>
 	<page-action name="PageValue.loadPageVariable" bean="userManager"  />
 	<page-action name="PageValue.loadPageVariable" bean="dateformat" class="java.text.SimpleDateFormat" />
-	<path-action name="AssetEditModule.getAsset"  />
-	<path-action name="Admin.loadPermissions"  />
 	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
 	<property name="assetrootfolder">/${catalogid}/assets</property>
 </page>

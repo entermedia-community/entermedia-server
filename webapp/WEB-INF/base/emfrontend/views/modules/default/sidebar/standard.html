@@ -2,6 +2,8 @@
 #set( $moduleid = $context.findValue("module") )
 
 <div class="ui-widget uipanel" id="left-col-search" >
+	
+	
 	<div  class="ui-widget-header">Search
 		#if( $caneditadvancedsearch )
 			<span class="widget-header-edit">
@@ -9,11 +11,17 @@
 			</span>
 		#end
 	</div>
+	
+	
+	
 	<div  class="ui-widget-content">
 		#if($content.isPropertyTrue("showsearch"))
 			$pages.include("/${content.searchhome}/searchform.html")
 		#end
 	</div>
+	
+	
+	
 </div>
 
 $pages.include("${content.searchhome}/extra.html")

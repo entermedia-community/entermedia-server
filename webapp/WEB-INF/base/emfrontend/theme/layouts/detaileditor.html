@@ -1,7 +1,7 @@
 <div id="detaileditor">
     #set( $moduleid = $context.findValue("module") )
     #set ( $hitssessionid = $context.findValue("hitssessionid") )
-    #macro (display $filename $label $assetid $view $print)
+    #macro (displaydetails $filename $label $assetid $view $print)
     $context.putPageValue("view", $view)
     #if ($print && $print == "true")
     $pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=asset", $context)
@@ -37,7 +37,11 @@
             #end
         
     </div>
-
+    #if ( $canviewvoting )
+    <div id="assetVoteCount">
+        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+    </div>
+    #end
     #set( $assettab = $context.findValue("assettab") )
     <div id="detailarea">
         <div id="de-table">
@@ -45,7 +49,7 @@
                 <div class="title-bar" style="border-left: none;"></div>
                 #set( $section = $searcherManager.getData($catalogid,"detaileditormenu",$assettab) )
 
-                <div class="title-bar">
+                <div class="title-bar" id="details-title">
                     <span>$section</span>
                 </div>
                 <div class="title-bar" style="border-right: none;">
@@ -72,7 +76,7 @@
                         #end
 
                         #if( $inpreviewpage )
-                        $pages.include("$home$apphome/views/modules/$moduleid/editor/generalinformation/index.html", $context)
+                        $pages.include("$apphome/views/modules/$moduleid/editor/generalinformation/index.html", $context)
                         #else
                         
                             #set ($listid =  $content.tab )

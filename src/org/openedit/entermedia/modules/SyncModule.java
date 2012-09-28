@@ -43,7 +43,7 @@ public class SyncModule extends BaseMediaModule
 		UploadRequest properties = command.parseArguments(inReq);
 
 		String sourcepath = inReq.getRequestParameter("sourcepath");
-		String original = inReq.getRequestParameter("original");
+		//String original = inReq.getRequestParameter("original");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset target = archive.getAssetBySourcePath(sourcepath);
 		if (target == null)
@@ -64,26 +64,33 @@ public class SyncModule extends BaseMediaModule
 		archive.getAssetSearcher().updateData(inReq, fields, target);
 		archive.saveAsset(target, inReq.getUser());
 		List<FileUploadItem> uploadFiles = properties.getUploadItems();
+
+		
+		String type = inReq.findValue("uploadtype");
+		if( type == null )
+		{
+			type = "generated";
+		}
+		String	saveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/" + type + "/" + sourcepath;
+			
+		//String originalsroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
+
 		if (uploadFiles != null)
 		{
-			String generatedroot = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + sourcepath + "/";
-			String originalsroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
 			Iterator<FileUploadItem> iter = uploadFiles.iterator();
 			while (iter.hasNext())
 			{
 				FileUploadItem fileItem = iter.next();
 
 				String filename = fileItem.getName();
-				if (filename.equals(original))
+				if (type.equals("originals"))
 				{
-					properties.saveFileAs(fileItem, originalsroot + "/" + filename, inReq.getUser());
-
+					properties.saveFileAs(fileItem, saveroot, inReq.getUser());
 				}
 				else
 				{
-					properties.saveFileAs(fileItem, generatedroot + "/" + filename, inReq.getUser());
+					properties.saveFileAs(fileItem, saveroot + "/" + filename, inReq.getUser());
 				}
-				//TODO: Attachments?
 			}
 		}
 
@@ -105,8 +112,14 @@ public class SyncModule extends BaseMediaModule
 		String ids = inReq.getRequestParameter("assetids");
 		getPushManager().processPushQueue(archive, ids, inReq.getUser());
 	}
+	public void processDeletedAssets(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		//String ids = inReq.getRequestParameter("assetids");
+		getPushManager().processDeletedAssets(archive, inReq.getUser());
+	}
 
-
+	
 //	private boolean isOkToSendX(Data inHotfolder)
 //	{
 //		boolean active = Boolean.parseBoolean(inHotfolder.get("auto"));
@@ -189,16 +202,34 @@ public class SyncModule extends BaseMediaModule
 	public void loadQueue(WebPageRequest inReq ) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		
+
 		Collection all = archive.getAssetSearcher().getAllHits(inReq);
 		inReq.putPageValue("assets", all);
+
 		
-		Collection completed = getPushManager().getCompletedAssets(archive);
-		inReq.putPageValue("completedassets", completed);
-		Collection errorassets = getPushManager().getErrorAssets(archive);
-		inReq.putPageValue("errorassets", errorassets);
-		Collection noteconverted = getPushManager().getNotConvertedAssets(archive);
-		inReq.putPageValue("notconverted", noteconverted);
+		Collection importpending = getPushManager().getImportPendingAssets(archive);
+		inReq.putPageValue("importpending", importpending);
+
+		Collection importcomplete = getPushManager().getImportCompleteAssets(archive);
+		inReq.putPageValue("importcomplete", importcomplete);
+
+		Collection importerror = getPushManager().getImportErrorAssets(archive);
+		inReq.putPageValue("importerror", importerror);
+		
+		//
+		Collection pusherror = getPushManager().getErrorAssets(archive);
+		inReq.putPageValue("pusherror", pusherror);
+
+		Collection nogenerated = getPushManager().getNoGenerated(archive);
+		inReq.putPageValue("nogenerated", nogenerated);
+
+		Collection pushcomplete = getPushManager().getCompletedAssets(archive);
+		inReq.putPageValue("pushcomplete", pushcomplete);
+
+		Collection pushpending = getPushManager().getPendingAssets(archive);
+		inReq.putPageValue("pushpending", pushpending);
+
+
 	}
 	
 	public void pollRemotePublish(WebPageRequest inReq) throws Exception

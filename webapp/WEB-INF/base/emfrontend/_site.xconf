@@ -45,10 +45,6 @@
 		</or>
 	</permission>
 
-	<permission name="view">
-		<user/>
-	</permission>
-
 	<permission name="viewhomelink">
 		<userprofile property="viewhomelink" equals="true" />
 	</permission>
@@ -217,6 +213,10 @@
  	 <userprofile property="printpreview" equals="true" />
   </permission>
   
+  <permission name="editmetadatasetup">
+ 	 <userprofile property="editmetadatasetup" equals="true" />
+  </permission>
+  
   <!-- USER DEFUALTS -->
   
 	<permission name="viewvoting">
@@ -232,10 +232,6 @@
 		 <userprofile property="vote" equals="true" />
 	</permission>
 		
-	<permission name="upload">
-		   <userprofile property="upload" equals="true" />
-	</permission>
-	
 	<permission name="download">
 		   <userprofile property="download" equals="true" />
 	</permission>
@@ -255,7 +251,7 @@
   <permission name="metadatadetails">
 		 <userprofile property="metadatadetails" equals="true" />
   </permission>
-  viewcategorynav
+
   <permission name="editadvancedsearch">
 		 <userprofile property="editadvancedsearch" equals="true" />
   </permission>
@@ -315,6 +311,11 @@
    <permission name="filterbyassettype">
 		<userprofile property="filterbyassettype" equals="true" />
 
+	</permission>
+
+	
+	<permission name="view">
+		<user/>
 	</permission>
 
   

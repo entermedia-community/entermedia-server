@@ -2,7 +2,7 @@
 
 #set( $userSearcher = $searcherManager.getSearcher("system","user"))
 
-
+<div style="margin: 20px;">
 <div style="overflow: hidden;" class="ui-widget">
 <div class="ui-widget-header">Create New User</div>
 <div class="ui-widget-content"> 
@@ -19,7 +19,7 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 
 			$context.putPageValue("searcher", $userProfileSearcher)	 
 			$context.putPageValue("view", "userprofile/edit")	
-			$context.putPageValue("data", $userprofile)
+			##$context.putPageValue("data", $userprofile)
 			$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 
 <div class="hr" style="margin: 20px 0; padding: 0;"></div>
@@ -28,7 +28,7 @@ $pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context
 
 </div>
 </div>
-
+</div>
 
 
 <script language="JavaScript" type="text/javascript">

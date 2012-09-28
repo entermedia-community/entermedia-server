@@ -120,9 +120,6 @@
 		<property name="emailErrorHandler">
 			<ref bean="emailErrorHandler" />
 		</property>
-		<property name="fileUpload">
-			<ref bean="fileUpload" />
-		</property>
 	</bean>
 
 	<bean id="MediaEmailModule" class="org.openedit.entermedia.modules.MediaEmailModule">
@@ -668,6 +665,8 @@
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+		
 	</bean>
 
 	<bean id="compositeLuceneAutoCompleteSearcher"

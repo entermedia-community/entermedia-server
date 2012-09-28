@@ -17,6 +17,11 @@ uiload = function() {
 		}
 	});
 	
+	
+	
+	
+	
+	
 	$('#maximize').click( function(){
 		
 		html = $('#maximize').html()
@@ -61,17 +66,63 @@ uiload = function() {
 		);
 	}
 	
+	
+	
+	
+	jQuery.datepicker.setDefaults(jQuery.extend({
+		
+		
+		showOn: 'button',
+		
+		buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
+		buttonImageOnly: true,
+		changeMonth: true,
+		changeYear: true	
+
+		
+	
+	}, jQuery.datepicker.regional['$!browserlanguage']));
+	
 	jQuery("input.datepicker").livequery(
 			function() 
 			{
-				jQuery(this).datepicker(
+				var targetid = jQuery(this).data("targetid");
+							
+				
+				jQuery(this).datepicker( {
+					altField: "#"+ targetid,
+					altFormat: "mm/dd/yy"
+				
+				}
+				);
+				
+				var current = jQuery("#" + targetid).val();
+				if(current != undefined)
 				{
-					dateFormat: 'mm/dd/yy', showOn: 'button',
-					buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
-					buttonImageOnly: true,
-					changeMonth: true,
-					changeYear: true
-				});
+					//alert(current);
+					var date;
+					if( current.indexOf("-") > 0)
+					{
+						current = current.substring(2,10);
+						//2012-09-17 09:32:28 -0400
+						date = jQuery.datepicker.parseDate('yy-mm-dd', current);
+					}
+					else
+					{
+						date = jQuery.datepicker.parseDate('mm/dd/yy', current);
+					}
+					jQuery(this).datepicker("setDate", date );
+							
+				}
+				jQuery(this).blur(function()
+						{
+							var val = jQuery(this).val();
+							if( val == "")
+							{
+								jQuery("#" + targetid).val("");
+							}
+						}
+				);
 			}
 		);
 	
@@ -139,6 +190,58 @@ uiload = function() {
 			}
 		);
 
+	
+	
+
+	jQuery(".jp-play").livequery("click", function(){
+		
+	
+	//	alert("Found a player, setting it up");
+		var player = jQuery(this).closest(".jp-audio").find(".jp-jplayer");
+		var url = player.data("url");
+		var containerid = player.data("container");
+		var container = jQuery("#" + containerid);
+		
+		player.jPlayer({
+	        ready: function (event) {
+	        	player.jPlayer("setMedia", {
+	                mp3:url
+	            }).jPlayer("play");
+	        },
+	        play: function() { // To avoid both jPlayers playing together.
+	        	player.jPlayer("pauseOthers");
+			},
+	        swfPath: '$home/emshare/components/javascript',
+	        supplied: "mp3",
+	        wmode: "window",
+	        cssSelectorAncestor: "#" + containerid
+	    });
+		
+		player.jPlayer("play");
+
+	});
+
+
+	$('#select-dropdown-open').livequery("click",function(){
+		
+		if ($(this).hasClass('down')) {
+			$(this).removeClass('down');
+			$(this).addClass('up');
+			$('#select-dropdown').show();
+		} else {
+			$(this).removeClass('up');
+			$(this).addClass('down');
+			$('#select-dropdown').hide();
+		}
+	});
+	$('#select-dropdown li a').livequery("click",function(){
+		$('#select-dropdown-open').removeClass('up');
+		$('#select-dropdown-open').addClass('down');
+		$('#select-dropdown').hide();
+	});
+
+	
+	
 }
 
 function resize() {

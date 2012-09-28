@@ -78,15 +78,15 @@ public class audioCreator extends BaseCreator implements MediaCreator
 
 		return result;
 	}
-	private void runLame(Page input, Page converted, ConvertInstructions inStructions, ConvertResult result)
+	private void runLame(Page input, Page output, ConvertInstructions inStructions, ConvertResult result)
 	{
 		String inputExt = PathUtilities.extractPageType(input.getContentItem().getAbsolutePath());
 		long start = System.currentTimeMillis();
 		
-		InputStream inputstream = null;
+		//InputStream inputstream = null;
 		try
 		{
-			inputstream = input.getInputStream();
+			//inputstream = input.getInputStream();
 			List args = new ArrayList();
 			String bitRate = inStructions.getProperty("bitrate");
 			if(bitRate == null)
@@ -114,19 +114,22 @@ public class audioCreator extends BaseCreator implements MediaCreator
 			{
 				args.add("--mp3input");
 			}
-			args.add("-");
+			args.add("--silent");
+			//args.add("-");
 			if( isOnWindows())
 			{
-				args.add("\"" + converted.getContentItem().getAbsolutePath() + "\"");
+				args.add("\"" + input.getContentItem().getAbsolutePath() + "\"");
+				args.add("\"" + output.getContentItem().getAbsolutePath() + "\"");
 			}
 			else
 			{
-				args.add( converted.getContentItem().getAbsolutePath() );
+				args.add( input.getContentItem().getAbsolutePath() );
+				args.add( output.getContentItem().getAbsolutePath() );
 			}
 			//make sure this folder exists
-			new File( converted.getContentItem().getAbsolutePath() ).getParentFile().mkdirs();
+			new File( output.getContentItem().getAbsolutePath() ).getParentFile().mkdirs();
 			
-			ExecResult res = getExec().runExec("lame", args, inputstream);
+			ExecResult res = getExec().runExec("lame", args);
 			result.setOk( res.isRunOk());
 		}
 		catch (Exception ex)
@@ -137,10 +140,10 @@ public class audioCreator extends BaseCreator implements MediaCreator
 			result.setError(out.toString());
 			result.setOk(false);
 		}
-		finally
-		{
-			FileUtils.safeClose(inputstream);
-		}
+//		finally
+//		{
+//			FileUtils.safeClose(inputstream);
+//		}
 		String message = "mp3 created";
 		if (!result.isOk())
 		{

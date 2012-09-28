@@ -356,12 +356,16 @@ public class OrderManager
 		orderearcher.saveData(inBasket, inUser );
 	}
 
-	public void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder)
+	public void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, boolean inResetId)
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "orderitem");
+		Searcher orderseacher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "order");
+
 		HitTracker all = itemsearcher.fieldSearch("orderid", inOrder.getId());
 		List tosave = new ArrayList();
-		
+		if(inResetId){
+			inOrder.setId(orderseacher.nextId());
+		}
 		//TODO: deal with table of assets
 		String[] fields = inReq.getRequestParameters("field");
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -379,6 +383,9 @@ public class OrderManager
 						row.setProperty(fields[i], val);
 					}
 				}
+			}
+			if(inResetId){
+				row.setProperty("orderid", inOrder.getId());
 			}
 			tosave.add(row);
 		}
@@ -454,7 +461,7 @@ public class OrderManager
 
 			if( presetid == null)
 			{
-				presetid = "preview";
+				throw new OpenEditException("presetid is required");
 			}
 			
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
@@ -508,17 +515,25 @@ public class OrderManager
 			String destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
 			if( destination == null )
 			{
-				destination = properties.get("publishdestination.value");
+				destination = order.get("publishdestination");
 			}
 			if( destination != null)
 			{
 				Data publishqeuerow = publishQueueSearcher.createNewData();
 				publishqeuerow.setProperty("assetid", assetid);
+				publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
+				
 				publishqeuerow.setProperty("publishdestination", destination);
 				publishqeuerow.setProperty("presetid", presetid);
 				String exportname = archive.asExportFileName(asset, preset);
 				publishqeuerow.setProperty("exportname", exportname);
 				publishqeuerow.setProperty("status", "new");
+				
+				Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
+				if(Boolean.parseBoolean( dest.get("remotempublish") ) )
+				{
+					publishqeuerow.setProperty("remotempublishstatus", "new");
+				}
 				publishqeuerow.setSourcePath(asset.getSourcePath());
 				publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				publishQueueSearcher.saveData(publishqeuerow, inUser);
@@ -746,6 +761,15 @@ public class OrderManager
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "orderitems");
 		//Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
 		
+	}
+
+	public void removeItem(String inCatalogid, String inItemid)
+	{
+		Searcher ordersearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
+		Data orderitem = (Data) ordersearcher.searchById(inItemid);
+		if(orderitem != null){
+			ordersearcher.delete(orderitem, null);
+		}
 	}
 
 }

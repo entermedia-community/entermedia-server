@@ -16,21 +16,22 @@ import org.openedit.entermedia.creator.*;
 
 import com.openedit.users.User;
 import com.openedit.util.*;
+import com.openedit.hittracker.*;
 import com.openedit.*;
 
 import org.openedit.xml.*;
 import conversions.*;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 class CompositeConvertRunner implements Runnable
 {
 	String fieldAssetSourcePath;
 	MediaArchive fieldMediaArchive;
 	List runners = new ArrayList();
-
+	User user;
+	ScriptLogger log;
+	
 	public CompositeConvertRunner(MediaArchive archive,String sourcepath)
 	{
 		fieldMediaArchive = archive;
@@ -39,31 +40,66 @@ class CompositeConvertRunner implements Runnable
 	
 	public void run()
 	{
-		for( Runnable runner: runners )
+		Lock lock = fieldMediaArchive.lockAssetIfPossible(fieldAssetSourcePath, user);
+		
+		if( lock == null)
 		{
-			runner.run();
+			log.info("asset already being processed ${fieldAssetSourcePath}");
+			return;
 		}
-		for( ConvertRunner runner: runners )
+		try
 		{
-			if( runner.result == null )
+			for( Runnable runner: runners )
 			{
-				return;
+				runner.run();
 			}
-			boolean complete = runner.result.isComplete();
-			if( !complete)
+					
+			boolean founderror = false;
+			boolean allcomplete = true;
+			
+			for( ConvertRunner runner: runners )
 			{
-				//log.info("no result");
-				return;
+				if( runner.result == null )
+				{
+					return;
+				}
+				if(runner.result.isError() )
+				{
+					founderror = true;
+				}
+				
+				if(!runner.result.isComplete() )
+				{
+					allcomplete = false;
+				}
+				
+			}
+			if( founderror || allcomplete )
+			{
+				//load the asset and save the import status to complete
+				Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
+				if( asset != null )
+				{
+					if( founderror && "imported".equals(asset.get("importstatus") ) )
+					{
+						asset.setProperty("importstatus","error");
+						fieldMediaArchive.saveAsset(asset, null);
+					}
+					else if( !"complete".equals(asset.get("importstatus") ) )
+					{
+						//Publishing to Amazon can happen even if the images in the search results
+						asset.setProperty("importstatus","complete");
+						fieldMediaArchive.saveAsset(asset, null);
+					}
+				}
 			}
 		}
-		//load the asset and save the import status to complete
-		Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
-		if( asset != null && !"complete".equals(asset.get("importstatus") ) )
+		finally
 		{
-			//Publishing to Amazon can happen even if the images in the search results
-			asset.setProperty("importstatus","complete");
-			fieldMediaArchive.saveAsset(asset, null);
+			fieldMediaArchive.releaseLock(lock);
 		}
+	
+		
 	}
 	public void add(Runnable runner )
 	{
@@ -109,21 +145,7 @@ class ConvertRunner implements Runnable
 				try
 				{
 					String sourcepath = hit.get("sourcepath");
-					Lock lock = mediaarchive.lockAssetIfPossible(sourcepath, user);
-					if( lock == null)
-					{
-						log.info("asset already being processed ${sourcepath}");
-						return;
-					}
-					
-					try
-					{
-						result = doConversion(mediaarchive, realtask, preset,sourcepath);
-					}
-					finally
-					{
-						mediaarchive.releaseLock(lock);
-					}
+					result = doConversion(mediaarchive, realtask, preset,sourcepath);
 				}
 				catch(Throwable e)
 				{
@@ -184,7 +206,7 @@ class ConvertRunner implements Runnable
 					{
 						String sourcepath = hit.get("sourcepath");
 						log.debug("conversion had no error and will try again later for ${sourcepath}");
-						return;
+						realtask.setProperty('status', 'missinginput');
 					}
 					tasksearcher.saveData(realtask, user);
 				}
@@ -196,7 +218,7 @@ class ConvertRunner implements Runnable
 		}
 		else
 		{
-			log.info("Can't find task object with id '${hit.getId()}'. Index out of date?")
+			log.info("Can't find task object with id '${hit.getId()}' '${hit.getSourcePath()}'. Index missing data?")
 		}
 	}
 	
@@ -242,7 +264,8 @@ class ConvertRunner implements Runnable
 		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
 		inStructions.setOutputExtension(extension);
 
-		if("new".equals(status) || "retry".equals(status))
+		//new submitted retry missinginput
+		if("new".equals(status) || "submitted".equals(status) || "retry".equals(status)  || "missinginput".equals(status))
 		{
 			//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
 			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
@@ -298,7 +321,7 @@ public void checkforTasks()
 	
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
-	query.addOrsGroup("status", "new submitted retry");
+	query.addOrsGroup("status", "new submitted retry missinginput");
 	query.addSortBy("assetid");
 	query.addSortBy("ordering");
 	
@@ -317,9 +340,9 @@ public void checkforTasks()
 		}
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
-	ArrayList newtasks = new ArrayList(tasksearcher.search(query));
-
-	log.info("processing ${newtasks.size()} conversions");
+	HitTracker newtasks = tasksearcher.search(query);
+	newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
+	log.info("processing ${newtasks.size()} conversions ${newtasks.getHitsPerPage()} at a time");
 	
 	List runners = new ArrayList();
 	
@@ -335,7 +358,7 @@ public void checkforTasks()
 		ExecutorService  executor = executorManager.createExecutor();
 		CompositeConvertRunner byassetid = null;
 		String lastassetid = null;
-		for(Data hit: newtasks)
+		for(Data hit: newtasks.getPageOfHits() )
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
 			runners.add(runner);
@@ -352,6 +375,8 @@ public void checkforTasks()
 				}
 				lastassetid = hit.get("assetid");
 				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
+				byassetid.log = log;
+				byassetid.user = user;
 			}
 			byassetid.add(runner);
 		}
@@ -374,6 +399,7 @@ public void checkforTasks()
 			}
 		}
 	}
+	log.info("Completed ${newtasks.size()} conversions");
 	
 }
 

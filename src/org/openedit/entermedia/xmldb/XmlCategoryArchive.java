@@ -6,6 +6,8 @@ package org.openedit.entermedia.xmldb;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -483,6 +485,18 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 			Category inParentCategory = createCategoryTree(parentPath, inNames);
 			inParentCategory.addChild(child);
+			
+			List children = inParentCategory.getChildren();
+
+			Collections.sort(children, new Comparator() 
+			{
+				public int compare(Object o1, Object o2) {
+					Category c1 = (Category)o1, c2 = (Category)o2;
+					return c1.getName().compareTo(c2.getName());
+				}
+			});
+			inParentCategory.setChildren(children);
+			
 			cacheCategory(child);
 			saveAll();
 		}

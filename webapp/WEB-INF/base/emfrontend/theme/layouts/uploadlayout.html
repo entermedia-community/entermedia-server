@@ -1,4 +1,4 @@
-#set( $tab = $context.findValue("tab") )
+#set( $uploadtab = $context.findValue("uploadtab") )
 #set ( $listid = "uploadmenu" )
 <div class="subcolumns">
 	<div id="left-col">
@@ -8,17 +8,17 @@
 			</div>
 			<div  class="ui-widget-content no-padding-for-real">
 				<ul class="sidebar-list" style="margin: 0 -14px;">
-					<li>
-						<a href="$apphome/views/upload/index.html">Single Asset</a>
+					<li #if ( $uploadtab == "single" ) class="current"  #end>
+						<a href="$home$apphome/views/upload/index.html">Single Asset</a>
 					</li>
 					#if( $canviewuploadmulti)
-					<li>
-						<a href="$apphome/views/upload/multiple.html">Multiple Assets</a>
+					<li #if ( $uploadtab == "multi" ) class="current"  #end>
+						<a href="$home$apphome/views/upload/multiple.html">Multiple Assets</a>
 					</li>
 					#end
 					#if ($cancreatenewrecord)
-					<li>
-						<a href="$apphome/views/upload/createnew.html">Create New Record</a>
+					<li #if ( $uploadtab == "new" ) class="current"  #end>
+						<a href="$home$apphome/views/upload/createnew.html">Create New Record</a>
 					</li>
 					#end
 				</ul>

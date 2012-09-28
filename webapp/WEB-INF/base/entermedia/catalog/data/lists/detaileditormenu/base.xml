@@ -1,0 +1,31 @@
+<linktree>
+
+	<a folder="generalinformation" useajax="true" id="metadatageneral" name="Edit Metadata" multiedit="true" />
+	<a folder="comment" id="comment" useajax="true" name="Comments" multiedit="false" />
+	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->
+	<a folder="categorize"  id="editassetcategories" useajax="true" name="Categories" multiedit="true"/>
+	<a folder="tags"  id="editassettags" useajax="true" name="Tags" multiedit="true"/>		    	
+	<a folder="libraries" id="asseteditorlibraries" useajax="true"  multiedit="true" name="Libraries"/>
+	<a folder="map"  id="viewmap"  useajax="false" multiedit="true" name="Geo Location Info" />		    	
+	<!-- <a folder="edit"  id="viewmediaedit" name="Media Editor" /> -->
+	<a folder="attachments" id="viewattachments"  useajax="false" name="Attachments" />
+	<a folder="permissions" id="assetpermissions"  useajax="true" multiedit="true" name="Permissions" />
+    
+	<a folder="historypreviews"  id="viewassetpreviewhistory"  useajax="true" name="History" />
+	<!-- <a folder="downloads" id="download" name="Download Options" /> -->
+	<!-- <a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" /> -->
+<!-- 
+	<a folder="historydownloads"  id="viewassetdownloadhistory" name="Download History" />
+	<a folder="historyedits"  id="viewassetedithistory" name="Data Edit History" />
+	<a folder="historyorders"  id="viewassetorderhistory" name="Order History" />
+	<a folder="converthistory"  id="converthistory" name="Conversion History" />
+
+
+
+	<a folder="downloads"  id="viewassetdownloads" name="Download Links" />		    	
+			<a folder="edithistory"  id="viewassetedithistory" name="Edit History" />	
+			<a folder="approvals"  id="viewassetdownloads2" name="Approvals" />    	
+			<a folder="voting/showvotes.html"  id="assetviewvotes" name="View Likes" />	
+			HQ printing?
+ -->
+</linktree>
