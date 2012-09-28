@@ -104,18 +104,7 @@ public class CategoryEditor {
 
 	public void sortCategory (Category inCategory)
 	{
-		if (inCategory == null)
-			return;
-		List children = inCategory.getChildren();
-
-		Collections.sort(children, new Comparator() 
-		{
-			public int compare(Object o1, Object o2) {
-				Category c1 = (Category)o1, c2 = (Category)o2;
-				return c1.getName().compareTo(c2.getName());
-			}
-		});
-		inCategory.setChildren(children);
+		inCategory.sortChildren(false);
 	}
 
 	/**
