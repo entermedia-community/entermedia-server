@@ -116,6 +116,7 @@ public class PushManager
 			query.addNot("pushstatus","nogenerated");
 			query.addNot("pushstatus","error");
 			query.addNot("pushstatus","deleted");
+			query.addNot("editstatus","7");
 		}
 		else
 		{
