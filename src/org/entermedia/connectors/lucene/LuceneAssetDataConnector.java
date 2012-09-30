@@ -97,7 +97,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			record.setUseTokens(false);
 			analyzermap.put("cumulusid", record);
 			analyzermap.put("name_sortable", record);
-			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new EnglishAnalyzer(Version.LUCENE_36), analyzermap);
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , analyzermap);
 
 			fieldAnalyzer = composite;
 		}

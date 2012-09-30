@@ -110,9 +110,9 @@ public class LuceneHitTracker extends HitTracker
 					Document doc = searcher.doc( docs.scoreDocs[offset].doc );
 					page.add(new DocumentData(doc) );
 				}
-				if( log.isDebugEnabled() )
+				//if( log.isDebugEnabled() )
 				{
-					log.debug(size() + " total, loaded " + start + " to " + (start+page.size()) + " query:" + getLuceneQuery() + " " + getSessionId() );
+					log.info(size() + " total, loaded " + start + " to " + (start+page.size()) + " query:" + getLuceneQuery() + " " + getSessionId() );
 				}
 				getPages().put(inPageNumberZeroBased,page);
 			}
