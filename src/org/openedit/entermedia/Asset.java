@@ -77,6 +77,15 @@ public class Asset implements MultiValued
 			setProperty(inKey, val);
 		}
 	}
+	public void removeValue(String inKey, String inToRemove)
+	{
+		String val = get(inKey);
+		if( val == null )
+		{
+			return;
+		}
+		val = val.replace(inToRemove, "");
+	}
 	public void setValues(String inKey, Collection<String> inValues)
 	{
 		if( inValues == null || inValues.size() == 0)

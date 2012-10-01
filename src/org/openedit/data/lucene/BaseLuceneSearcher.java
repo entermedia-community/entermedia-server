@@ -10,14 +10,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
@@ -25,6 +29,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.analyzing.AnalyzingQueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
@@ -271,7 +276,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//TODO: use a threadgroup
 		
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_31, "description", getAnalyzer())
+		QueryParser parser = new QueryParser(Version.LUCENE_36, "description", getAnalyzer());
+		
+		/*
 		{
 			protected Query getPrefixQuery(String field, String termStr) throws ParseException
 			{
@@ -315,9 +322,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				return result;
 			}
 		};
+		*/
 		parser.setDefaultOperator(QueryParser.AND_OPERATOR);
-		parser.setLowercaseExpandedTerms(false);
+		parser.setLowercaseExpandedTerms(true);
 		parser.setAllowLeadingWildcard(true);
+		
 		return parser;
 	}
 
@@ -458,11 +467,14 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	{
 		if (fieldAnalyzer == null)
 		{
-			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("description", new StemmerAnalyzer());
-			composite.setAnalyzer("id", new NullAnalyzer());
+			Map analyzermap = new HashMap();
+		
+			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
+			analyzermap.put("id", new NullAnalyzer());
 			//composite.setAnalyzer("id", new RecordLookUpAnalyzer(true));
-			composite.setAnalyzer("foldersourcepath", new NullAnalyzer());
+			analyzermap.put("foldersourcepath", new NullAnalyzer());
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper(new RecordLookUpAnalyzer() , analyzermap);
+			
 			fieldAnalyzer = composite;
 		}
 		return fieldAnalyzer;

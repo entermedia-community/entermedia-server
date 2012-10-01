@@ -97,10 +97,20 @@ uiload = function() {
 				);
 				
 				var current = jQuery("#" + targetid).val();
-				
-				if(current != null){
-					//alert(current);	
-					var date = jQuery.datepicker.parseDate('mm/dd/yy', current);
+				if(current != undefined)
+				{
+					//alert(current);
+					var date;
+					if( current.indexOf("-") > 0)
+					{
+						current = current.substring(2,10);
+						//2012-09-17 09:32:28 -0400
+						date = jQuery.datepicker.parseDate('yy-mm-dd', current);
+					}
+					else
+					{
+						date = jQuery.datepicker.parseDate('mm/dd/yy', current);
+					}
 					jQuery(this).datepicker("setDate", date );
 							
 				}

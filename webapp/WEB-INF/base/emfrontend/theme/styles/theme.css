@@ -1313,10 +1313,15 @@ small {
 
 /* CATEGORIES AGAIN */
 
-#cat-list {
+#detailarea #cat-list {
     padding: 0;
     margin: 0 20px;
 }
+#advsearchpanel #cat-list {
+    padding: 0;
+    margin: 0 0px;
+}
+
 #cat-list .row {
     padding: 7px 10px;
     border-bottom: 1px solid #eee;

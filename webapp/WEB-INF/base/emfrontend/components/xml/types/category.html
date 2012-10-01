@@ -2,9 +2,21 @@
 #set( $param = $val.replace(" ","&selected="))
 #set( $param = "selected=$param")
 #end
+#set( $rootpath = "${apphome}/components/categorize")
+	<input type="hidden" name="operation" value="orsgroup" />
 
-<div id="categoriespicker">
-<a class="btn ajax" targetdiv="categoriespicker" href="${apphome}/components/categorize/jstree/tree.html?field=category.value&$param">Pick Categories</a>
-</div>
+        <div id="addcategory" >    
+        	#if( $val )    	
+        	#set( $categories = $val.replaceAll(" ","|") )
+           $pages.include("$apphome/components/categorize/search/selected.html?categories=$!categories",$context)
+           #end
+        </div>
+            <a class="thickbox btn small"  data-fancybox-type="inline"   href="#addcategoryoptions" >[[Pick Categories]]</a>
 
-##$pages.include("${apphome}/components/categorize/jstree/tree_selectedcategories.html?$param" )
+		<div style="display: none">
+		        <div id="addcategoryoptions" style="width:570px;height:550px;overflow:auto;">
+		
+		           $pages.include("$apphome/components/categorize/search/pickersearch.html?targetdiv=addcategory",$context)
+		
+		        </div>
+		</div>

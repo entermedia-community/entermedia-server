@@ -2,10 +2,10 @@
 
 	<!-- asset details -->
 	<property id="id" index="true" keyword="true" stored="true">Id</property>
-	<property id="name" index="true" stored="true" keyword="true" editable="false">File Name</property>
+	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains">File Name</property>
 	<property id="name_sortable" internalfield="true" >File Name</property>
 	<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
-	<property id="description">All Fields</property>
+	<property id="description" defaultoperation="contains">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" editable="true" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->

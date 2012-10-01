@@ -160,6 +160,15 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			doc.add(format);
 		}
 		
+		String assettype = asset.get("assettype");
+		if(assettype == null)
+		{
+			
+			Field format = new Field("assettype", "none", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+			doc.add(format);
+			
+		}
+		
 		if (asset.getCatalogId() == null)
 		{
 			asset.setCatalogId(getMediaArchive().getCatalogId());

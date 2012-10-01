@@ -159,6 +159,36 @@ public class LuceneSearchQuery extends SearchQuery
 		return term;
 	}
 
+	public Term addContains(PropertyDetail inField, String inValue)
+	{
+		Term term = new Term()
+		{
+			public String toQuery()
+			{
+				String inVal = getValue();
+				if( inVal != null && inVal.startsWith("'") && inVal.endsWith("'"))
+				{
+					inVal = inVal.replace('\'', '\"');
+				}
+
+				if (getDetail().getId() != null)
+				{
+					return getDetail().getId() + ":(*" + inVal + "*)";
+				}
+				else
+				{
+					return inVal;
+				}
+			}
+		};
+		term.setOperation("matches");
+		term.setDetail(inField);
+		term.setValue(inValue);
+		addTerm(term);
+		return term;
+	}
+	
+	
 	public Term addStartsWith(PropertyDetail inField, String inVal)
 	{
 		Term term = new Term()

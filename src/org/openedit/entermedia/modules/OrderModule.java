@@ -207,6 +207,7 @@ public class OrderModule extends BaseMediaModule {
 				.getSearcher(catalogid, "order");
 
 		searcher.updateData(inReq, fields, order);
+		searcher.saveData(order, inReq.getUser());
 		return order;
 	}
 
@@ -461,7 +462,6 @@ public class OrderModule extends BaseMediaModule {
 		if (order.get("publishdestination") == null) 
 		{
 			String publishdestination = inReq.findValue("publishdestination.value");
-			order.setProperty("publishdestination", publishdestination);
 		}
 		List assetids = manager.addConversionAndPublishRequest(order, archive,
 				params, inReq.getUser());
