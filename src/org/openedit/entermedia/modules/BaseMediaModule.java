@@ -136,9 +136,14 @@ public class BaseMediaModule extends BaseModule
 				}
 			}
 		}
-		
-		inReq.putPageValue("asset", asset);
-		
+		if( inReq.getParent() != null)
+		{
+			inReq.getParent().putPageValue("asset", asset);
+		}
+		else
+		{
+			inReq.putPageValue("asset", asset);
+		}
 		return asset;
 	}
 	
