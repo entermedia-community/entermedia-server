@@ -1631,11 +1631,12 @@ public class AssetEditModule extends BaseMediaModule
 		q.addMatches("assetid", asset.getId());
 		HitTracker hits = searcher.cachedSearch(inReq, q);
 
-		if (inReq.getUser() != null)
+		String username = inReq.getUserName();
+		if ( username != null)
 		{
 			for (Object hit : hits)
 			{
-				if (hits.getValue(hit, "username").equals(inReq.getUserName()))
+				if (username.equals( hits.getValue(hit, "username") ) )
 				{
 					inReq.putPageValue("alreadyvoted", Boolean.TRUE);
 					break;
