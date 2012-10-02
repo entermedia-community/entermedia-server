@@ -4,10 +4,12 @@
 	<property name="section">assets</property>
 	
 	<path-action name="Page.uploadFile"/>
-	
 	<permission name="view">
-		<userprofile property="viewuploadmulti" equals="true" />
+		<not>
+			<pagevalue name="canviewupload" equals="false"/>
+		</not>
 	</permission>
+
 	
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	<path-action name="MediaSearchModule.searchCategories"/>

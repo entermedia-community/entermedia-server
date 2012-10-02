@@ -2,6 +2,12 @@
 
 <page>
 <path-action name="Page.uploadFile"/>
+	<permission name="view">
+		<not>
+			<pagevalue name="canviewupload" equals="false"/>
+		</not>
+	</permission>
+
 <property name="allowspecifiedpath" >true</property>
 <path-action name="DataImportModule.importData"/>
 <!--

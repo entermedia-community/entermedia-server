@@ -4,10 +4,14 @@
 	<property name="section">assets</property>
 	
 	<path-action name="Page.uploadFile"/>
-	<path-action name="AssetEditModule.createAssetFromUploads"/>
-	
 	<permission name="view">
-		<userprofile property="viewupload" equals="true" />
+		<not>
+			<pagevalue name="canviewupload" equals="false"/>
+		</not>
 	</permission>
+
+
+	<path-action name="AssetEditModule.createAssetFromUploads"/>
+
 	
 </page>
