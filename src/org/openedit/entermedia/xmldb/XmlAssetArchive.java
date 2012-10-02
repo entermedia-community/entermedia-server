@@ -188,7 +188,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	{
 		Element asset = null;
 		String path = buildXmlPath(inAsset);
-		Page assetPage = getPageManager().getPage(path);
+		ContentItem assetPage = getPageManager().getRepository().get(path);
 		if (!assetPage.exists())
 		{
 			return false;
@@ -328,7 +328,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			// TODO: Speed check this section
 			// TODO: Force users to set the sourcePath if it is not set
 			String path = buildXmlPath(inAsset);
-			Page output = getPageManager().getPage(path);
+			ContentItem output = getPageManager().getRepository().get(path);
 			String encoding = "UTF-8";
 			Document document = DocumentHelper.createDocument();
 			document.setRootElement(DocumentHelper.createElement("asset"));
@@ -344,7 +344,8 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			// output
 			// stream
 			
-			OutputStream out = getPageManager().saveToStream(output);
+			//OutputStream out = getPageManager().saveToStream(output);
+			OutputStream out = output.getOutputStream();
 			try
 			{
 				getXmlUtil().saveXml(document.getRootElement(), out, encoding);
