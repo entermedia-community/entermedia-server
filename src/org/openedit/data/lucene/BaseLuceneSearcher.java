@@ -468,14 +468,12 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		if (fieldAnalyzer == null)
 		{
 			Map analyzermap = new HashMap();
-			
 		
-			analyzermap.put("description", new StemmerAnalyzer());
+			analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
 			analyzermap.put("id", new NullAnalyzer());
 			//composite.setAnalyzer("id", new RecordLookUpAnalyzer(true));
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
-			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new EnglishAnalyzer(Version.LUCENE_36), analyzermap);
-
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper(new RecordLookUpAnalyzer() , analyzermap);
 			
 			fieldAnalyzer = composite;
 		}

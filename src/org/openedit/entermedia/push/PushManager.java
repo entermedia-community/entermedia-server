@@ -35,6 +35,7 @@ import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
+import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 
@@ -115,6 +116,7 @@ public class PushManager
 			query.addNot("pushstatus","nogenerated");
 			query.addNot("pushstatus","error");
 			query.addNot("pushstatus","deleted");
+			query.addNot("editstatus","7");
 		}
 		else
 		{
@@ -187,7 +189,7 @@ public class PushManager
 				continue;
 			}
 			
-			upload(asset, archive, "delete", Collections.EMPTY_LIST );
+			upload(asset, archive, "delete", null, Collections.EMPTY_LIST );
 			asset.setProperty("pushstatus", "deleted");
 			archive.saveAsset(asset, null);
 			deleted++;
@@ -200,16 +202,14 @@ public class PushManager
 	{
 		Searcher searcher = archive.getAssetSearcher();
 		
-		List paths = archive.getPageManager().getChildrenPaths("/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath() );
-		List<File> filestosend = new ArrayList<File>(paths.size());
 
-		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
-		{
-			String path = (String) iterator.next();
-			ContentItem item = archive.getPageManager().getRepository().get(path);
-			filestosend.add(new File( item.getAbsolutePath() ) );
-		}
-//			}
+		List<ContentItem> filestosend = new ArrayList<ContentItem>();
+
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath();
+		
+		readFiles( archive.getPageManager(), path, path, filestosend );
+		
+		//			}
 //			else
 //			{
 //				//Try again to run the tasks
@@ -231,7 +231,7 @@ public class PushManager
 		{
 			try
 			{
-				upload(target, archive, "generated", filestosend);
+				upload(target, archive, "generated", path, filestosend);
 				target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
 
@@ -248,6 +248,28 @@ public class PushManager
 			//upload(target, archive, "generated", filestosend);
 			saveAssetStatus(searcher, savequeue, target, "nogenerated", inUser);
 		}
+	}
+
+
+	private void readFiles(PageManager pageManager, String inRootPath,  String inPath, List<ContentItem> inFilestosend)
+	{
+		
+		List paths = pageManager.getChildrenPaths(inPath);
+		
+		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		{
+			String path = (String) iterator.next();
+			ContentItem item = pageManager.getRepository().get(path);
+			if( item.isFolder() )
+			{
+				readFiles(pageManager, inRootPath, path, inFilestosend);
+			}
+			else
+			{
+				inFilestosend.add( item );
+			}
+		}
+
 	}
 
 
@@ -300,7 +322,7 @@ public class PushManager
 
 	}
 	
-	public Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, List<File> inFiles)
+	protected Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, String inRootPath, List<ContentItem> inFiles)
 	{
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		//String account = inArchive.getCatalogSettingValue("push_server_username");
@@ -322,8 +344,9 @@ public class PushManager
 			int count = 0;
 			for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 			{
-				File file = (File) iterator.next();
-				FilePart part = new FilePart("file." + count, file.getName(), file);
+				ContentItem file = (ContentItem) iterator.next();
+				String name  =  file.getPath().substring(inRootPath.length() + 1);
+				FilePart part = new FilePart("file." + count, name, new File( file.getAbsolutePath() ));
 				parts.add(part);
 				count++;
 			}
@@ -571,6 +594,8 @@ asset: " + asset);
 		query.addNot("pushstatus","nogenerated");
 		query.addNot("pushstatus","error");
 		query.addNot("pushstatus","deleted");
+		query.addNot("editstatus","7");
+
 
 		HitTracker hits = inArchive.getAssetSearcher().search(query);
 		return hits;
@@ -717,13 +742,16 @@ asset: " + asset);
 						}
 	
 					} 
-					else	if( destinationid.equals("0") )
+					else if( destinationid.equals("0") )
 					{
 						//If this is a browser download then we need to upload the file
-						List<File> filestosend = new ArrayList<File>(1);
+						List<ContentItem> filestosend = new ArrayList<ContentItem>(1);
 
-						filestosend.add(new File( inputpage.getContentItem().getAbsolutePath() ) );
-						upload(asset, inArchive, type, filestosend);
+						filestosend.add(inputpage.getContentItem());
+
+						String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
+						
+						upload(asset, inArchive, type, rootpath, filestosend);
 					}
 
 					

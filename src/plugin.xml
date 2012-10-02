@@ -1174,7 +1174,7 @@
 
 	<bean id="sizer" class="org.openedit.entermedia.util.Sizer" />
     
-    <bean id="userprofileSearcher" class="org.openedit.data.XmlFileSearcher" singleton="false">
+    <bean id="userprofileSearcher" class="org.entermedia.profile.UserProfileSearcher" singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		
@@ -1182,6 +1182,7 @@
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
 		<property name="newDataName"><value>userProfile</value></property>
+		<property name="userManager"><ref bean="userManager" /></property>
 		
 	</bean>
 
@@ -1347,6 +1348,8 @@
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>profiles</value></property>
 	</bean>
+	
+		
 	
 	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
