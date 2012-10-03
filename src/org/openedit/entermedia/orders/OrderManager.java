@@ -365,6 +365,7 @@ public class OrderManager
 		List tosave = new ArrayList();
 		if(inResetId){
 			inOrder.setId(orderseacher.nextId());
+			inOrder.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		}
 		//TODO: deal with table of assets
 		String[] fields = inReq.getRequestParameters("field");
