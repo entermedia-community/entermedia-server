@@ -25,6 +25,7 @@ public class sftppublisher extends basepublisher implements Publisher
 		Page inputpage = findInputPage(mediaArchive,asset,preset);
 		String servername = destination.get("server");
 		String username = destination.get("username");
+		String password = destination.get("password");
 		String url = destination.get("url");
 
 		SftpUtil sftp = new SftpUtil();
@@ -32,19 +33,13 @@ public class sftppublisher extends basepublisher implements Publisher
 		sftp.setUsername(username);
 	
 		//get password and login
-		UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
-		
-		User user = userManager.getUser(username);
-		String password = userManager.decryptPassword(user);
-		
-		if(user)
+		if(password != null)
 		{
-			sftp.setUsername(user);
+			UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");		
+			User user = userManager.getUser(username);
+			password = userManager.decryptPassword(user);
 		}
-		if(password)
-		{
-			sftp.setPassword(password);
-		}
+		sftp.setPassword(password);
 		log.info("Publishing ${asset} to sftp server ${servername}, with username ${username}.");
 		
 		//change paths if necessary
@@ -57,7 +52,8 @@ public class sftppublisher extends basepublisher implements Publisher
 		String exportname = inPublishRequest.get("exportname");
 	
 		//sendFileToRemote(local,remote);
-		sftp.sendFileToRemote(exportname, inputpage.getInputStream());
+		File input = new File(inputpage.getContentItem().getAbsolutePath())))
+		sftp.sendFileToRemote(, url+exportname );
 		
 		result.setComplete(true);
 		log.info("publishished  ${asset} to sftp server ${servername}.");
