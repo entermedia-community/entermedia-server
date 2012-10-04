@@ -98,12 +98,12 @@ $context.putPageValue("searcher", $searcher)
 	#if ($showit)
 	
 		#set( $foundone = false)
-		#set( $assetdetails = $searcher.getDetailsForView($view, $user) )
+		#set( $assetdetails = $searcher.getDetailsForView($view, $context.getUserProfile()) )
 		<div class="table" id="default-fields">
 		$context.putPageValue("details",$assetdetails)
    		$context.putPageValue("searcher",$searcher)
    		
-   		##$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
+   		## TODO: USE THIS !$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
 
 		
 		#foreach( $detail in $assetdetails )
