@@ -3,6 +3,7 @@ package org.openedit.entermedia.orders;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -770,6 +771,36 @@ public class OrderManager
 		Data orderitem = (Data) ordersearcher.searchById(inItemid);
 		if(orderitem != null){
 			ordersearcher.delete(orderitem, null);
+		}
+	}
+
+	public void removeMissingAssets(WebPageRequest inReq, MediaArchive archive, Order basket, Collection items)
+	{
+		Collection assets = findAssets(inReq, archive.getCatalogId(), basket);
+		if( assets == null )
+		{
+			assets = Collections.EMPTY_LIST;
+		}
+		if( assets.size() != items.size() )
+		{
+			Set assetids = new HashSet();
+			for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				assetids.add(data.getId());
+			}
+			
+			List allitems = new ArrayList(items);
+			Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+			for (Iterator iterator = allitems.iterator(); iterator.hasNext();)
+			{
+				Data item = (Data) iterator.next();
+				if( !assetids.contains( item.get("assetid") ) )
+				{
+					//asset deleted, remove it
+					itemsearcher.delete(item, null);
+				}
+			}
 		}
 	}
 
