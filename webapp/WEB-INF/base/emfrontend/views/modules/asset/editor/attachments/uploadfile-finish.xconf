@@ -10,7 +10,7 @@
 	
 	<permission name="view">
 		<not>
-			<pagevalue name="canupload" equals="false"/>
+			<pagevalue name="canviewupload" equals="false"/>
 		</not>
 	</permission>
 </page>

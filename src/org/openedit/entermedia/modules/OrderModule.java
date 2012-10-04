@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -432,12 +434,23 @@ public class OrderModule extends BaseMediaModule {
 				archive.getCatalogId(), basket);
 		inReq.putPageValue("orderitems", items);
 
+		String check = inReq.findValue("clearmissing");
+		if( Boolean.parseBoolean(check) )
+		{
+			//Make sure these have the same number of assets found
+			getOrderManager().removeMissingAssets(inReq, archive, basket, items);
+			
+
+		}
+		
 		return basket;
 	}
+
 
 	public HitTracker loadAssets(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
 		Order order = loadOrder(inReq);
+		
 		return getOrderManager().findAssets(inReq, catalogid, order);
 	}
 

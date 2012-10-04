@@ -6,9 +6,9 @@
 #set( $value = $asset.get($detail.id) )
 #if( $value )
 #if($detail.isList())
-<property id="$detail.id" valueid="$value">$!searcherManager.getListData($detail, $value)</property>
+<property id="$detail.id" valueid="$value"><![CDATA[ $!searcherManager.getListData($detail, $value) ]]></property>
 #else
-<property id="$detail.id">$value</property>
+<property id="$detail.id"><![CDATA[ $value ]]></property>
 #end
 #end
 #end
