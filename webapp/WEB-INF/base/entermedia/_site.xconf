@@ -159,7 +159,9 @@
 	</permission>
 	
 	<permission name="view">
-		<user/>
+		<or>
+			<group id="administrators"/>
+		</or>
 	</permission>
 
 	
@@ -168,8 +170,5 @@
 		<value locale="es">Artículos Públicos</value>
 	</property>
 	
-	<!-- Tuan Nguyen: add here for checking active/inactive 
-	-->  	
-  	<property name="active-duration">90</property> 
 	
 </page>

@@ -12,5 +12,4 @@
 
 	
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
-	<path-action name="MediaSearchModule.searchCategories"/>
 </page>

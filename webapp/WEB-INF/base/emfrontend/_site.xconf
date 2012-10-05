@@ -213,9 +213,6 @@
  	 <userprofile property="printpreview" equals="true" />
   </permission>
   
-  <permission name="editmetadatasetup">
- 	 <userprofile property="editmetadatasetup" equals="true" />
-  </permission>
   
   <!-- USER DEFUALTS -->
   
@@ -248,10 +245,6 @@
 		 <userprofile property="publish" equals="true" />
 	</permission>
   
-  <permission name="metadatadetails">
-		 <userprofile property="metadatadetails" equals="true" />
-  </permission>
-
   <permission name="editadvancedsearch">
 		 <userprofile property="editadvancedsearch" equals="true" />
   </permission>

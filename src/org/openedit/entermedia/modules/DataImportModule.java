@@ -108,7 +108,7 @@ public class DataImportModule extends DataEditModule
 		Searcher searcher = loadSearcher(inReq);
 
 		List data = new ArrayList();
-		Page upload = getPageManager().getPage("/" + inReq.findValue("searchhome") + "/temp/import/import.csv");
+		Page upload = getPageManager().getPage("/WEB-INF/temp/import/import.csv");
 		Reader reader = upload.getReader();
 		try
 		{

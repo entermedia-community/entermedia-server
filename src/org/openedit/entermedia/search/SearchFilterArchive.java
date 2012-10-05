@@ -130,6 +130,8 @@ public class SearchFilterArchive
 
 		// /Loop over all the xconfs in categories
 		details.getExcludeCategories().clear();
+		
+		//TODO: 
 		List xconfs = getPageManager().getChildrenPaths("/" + inCatalogId + "/categories/");
 		for (Iterator iterator = xconfs.iterator(); iterator.hasNext();)
 		{

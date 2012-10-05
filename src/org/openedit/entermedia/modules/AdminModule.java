@@ -36,6 +36,7 @@ import com.openedit.page.Page;
 import com.openedit.page.PageRequestKeys;
 import com.openedit.page.PageStreamer;
 import com.openedit.page.Permission;
+import com.openedit.page.PermissionManager;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
 import com.openedit.users.User;
@@ -63,6 +64,7 @@ public class AdminModule extends BaseModule
 	protected StringEncryption fieldCookieEncryption;
 	protected SendMailModule sendMailModule;
 	protected List fieldWelcomeFiles;
+	
 	public List getWelcomeFiles()
 	{
 		return fieldWelcomeFiles;
@@ -110,7 +112,7 @@ public class AdminModule extends BaseModule
 	{
 		return fieldRootFTPURL;
 	}
-
+	//TODO: Use Spring
 	protected PasswordHelper getPasswordHelper(WebPageRequest inReq) throws OpenEditException
 	{
 		PasswordHelper passwordHelper = (PasswordHelper) inReq.getSessionValue("passwordHelper");
@@ -192,35 +194,12 @@ public class AdminModule extends BaseModule
 	}
 	public void loadPermissions(WebPageRequest inReq) throws Exception
 	{
+		String catid = inReq.findValue("catalogid");
+		PermissionManager manager = (PermissionManager)getModuleManager().getBean(catid, "permissionManager"); 
 		String limited = inReq.getCurrentAction().getChildValue("permissions");
-		List permissions = null;
-		if( limited == null )
-		{
-			permissions = inReq.getContentPage().getPermissions();
-		}
-		else
-		{
-			permissions = new ArrayList();
-			String[] array = limited.split("\\s+");
-			for (int i = 0; i < array.length; i++)
-			{
-				Permission permission = inReq.getContentPage().getPermission( array[i] );
-				if( permission != null )
-				{
-					permissions.add(permission);
-				}
-			}
-		}
-		if (permissions != null)
-		{
-			for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
-			{
-				Permission per = (Permission) iterator.next();
-				boolean value = per.passes(inReq);
-				inReq.putPageValue("can" + per.getName(), Boolean.valueOf(value));
-			}
-		}
+		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
 	}
+
 
 	//We will see if we use this or not. Actions may want to handle it themself
 	public void permissionRedirect(WebPageRequest inReq) throws OpenEditException

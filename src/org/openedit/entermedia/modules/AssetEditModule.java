@@ -848,7 +848,11 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putSessionValue(tracker.getSessionId(), tracker);
 		inReq.putPageValue(tracker.getHitsName(), tracker);
 		inReq.putPageValue("uploadedassets",tracker); 
-
+		if( tracker.size() == 0 )
+		{
+			log.error("No pages uploaded");
+			return;
+		}
 		StringBuffer allids = new StringBuffer();
 		List listids = new ArrayList();
 		//Events are not dependable. We should probably just run the event directly
