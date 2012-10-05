@@ -209,23 +209,30 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		if (fieldIntCounter == null)
 		{
-			fieldIntCounter = new IntCounter();
-			fieldIntCounter.setLabelName("idCount");
-			
-			String path = null;
+			synchronized (this)
+			{
 				
-//			if( fieldIndexRootFolder != null)
-//			{
-//				path = "/WEB-INF/data/" + getCatalogId() +"/"+ getIndexRootFolder() + "/" + getSearchType() + "/idcounter.properties";
-//			}
-//			else
-//			{
-				path = "/WEB-INF/data/" + getCatalogId() +"/"+ getSearchType() + "s/idcounter.properties";
-//			}
-			Page prop = getPageManager().getPage(path);
-			File file = new File(prop.getContentItem().getAbsolutePath());
-			file.getParentFile().mkdirs();
-			fieldIntCounter.setCounterFile(file);
+				if (fieldIntCounter == null)
+				{
+					fieldIntCounter = new IntCounter();
+					fieldIntCounter.setLabelName("idCount");
+					
+					String path = null;
+						
+		//			if( fieldIndexRootFolder != null)
+		//			{
+		//				path = "/WEB-INF/data/" + getCatalogId() +"/"+ getIndexRootFolder() + "/" + getSearchType() + "/idcounter.properties";
+		//			}
+		//			else
+		//			{
+						path = "/WEB-INF/data/" + getCatalogId() +"/"+ getSearchType() + "s/idcounter.properties";
+		//			}
+					Page prop = getPageManager().getPage(path);
+					File file = new File(prop.getContentItem().getAbsolutePath());
+					file.getParentFile().mkdirs();
+					fieldIntCounter.setCounterFile(file);
+				}
+			}
 		}
 		return fieldIntCounter;
 	}
