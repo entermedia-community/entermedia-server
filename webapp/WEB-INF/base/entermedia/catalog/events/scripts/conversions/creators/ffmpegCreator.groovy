@@ -207,6 +207,7 @@ Here is a simple PCM audio format for low CPU devices
 				{
 					outpath = converted.getContentItem().getAbsolutePath() + "tmp.mp4";
 					File tmp = new File(outpath);
+					tmp.deleteOnExit();
 					if( tmp.exists())
 					{
 						long old = tmp.lastModified();
