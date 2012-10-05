@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-<path-action name="Page.uploadFile"/>
-<property name="allowspecifiedpath" >true</property>
+<path-action name="Page.uploadFile" />
+<property name="path">/WEB-INF/temp/import/import.csv</property>
 
 <path-action name="DataImportModule.importData"/>
 <!--

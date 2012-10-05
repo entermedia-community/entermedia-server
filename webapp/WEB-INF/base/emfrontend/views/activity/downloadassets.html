@@ -62,7 +62,7 @@ $asset
   	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
   	   	    $presetquery.setAndTogether(false)
   	   	    #set( $rendertype = false)
-  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileformat) )
+  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileFormat) )
   	   	    #if( $rendertype )
 	  	   	    $presetquery.addExact("inputtype",$rendertype);
   	   	    #end

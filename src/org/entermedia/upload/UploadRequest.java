@@ -140,16 +140,19 @@ public class UploadRequest implements ProgressListener
 	
 	public String getPathFor(String home, FileUploadItem inItem, WebPageRequest inReq) throws OpenEditException
 	{
-		String allow = inReq.findValue("allowspecifiedpath");
-		String path  = null;
-		if( allow == null || Boolean.parseBoolean(allow))
+		String path  = inReq.getContentProperty("path");
+		if( path == null )
 		{
-			path = inItem.get("path");
-			if( path == null)
+			String allow = inReq.findValue("allowspecifiedpath");
+			if( Boolean.parseBoolean(allow))
 			{
-				path = inReq.getRequestParameter("path");
-			}
-		}		
+				path = inReq.findValue("path");
+				if( path == null)
+				{
+					path = inItem.get("path");
+				}
+			}		
+		}
 		if (path == null )
 		{
 			long utime = System.currentTimeMillis();

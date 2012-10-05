@@ -279,7 +279,7 @@ class ConvertRunner implements Runnable
 		}
 		else
 		{
-			log.info("${status} status not new or retry, is index out of date? ");
+			log.info("${inTask.getId()} task id with ${status} status not submitted, new, missinginput or retry, is index out of date? ");
 		}
 	}
 	else
