@@ -12,7 +12,7 @@
 #if( !$id )
 <label>[[Module Id]]</label>
 <input class="field short required" name="id" value ="$!data.id" />
-<div class="note">[[Used in path.]]</div>
+<div class="note">[[lower case, singular, no spaces]]</div>
 #else
 <input type="hidden" name="id" value="$!id" />
 
@@ -23,6 +23,7 @@
 ##<label><input type="checkbox" name="showactions.value" style="margin-right: 10px;"  #if( $data.showactions && $data.showactions == "true" ) checked #end />Enable Actions</label>
 
 
+<input name="reloadprofile" type="hidden" value="true" />
 
 <input style="margin-top: 40px;" class="btn" type="submit" value="[[Save]]" />
 
