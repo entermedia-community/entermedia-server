@@ -25,10 +25,12 @@ public class UserProfileSearcher extends XmlFileSearcher {
 	public Data createNewData() {
 		UserProfile userProfile = (UserProfile) getModuleManager().getBean("userProfile");
 		userProfile.setCatalogId(getCatalogId());
-		User current = getUserManager().createUser(null, new PasswordGenerator().generate());
 
-		userProfile.setUser(current);
-		userProfile.setProperty("userid", current.getId());
+// 	    Create new should never save things		
+//		User current = getUserManager().createUser(null, new PasswordGenerator().generate());
+//
+//		userProfile.setUser(current);
+//		userProfile.setProperty("userid", current.getId());
 		return userProfile;
 	}
 
@@ -45,8 +47,15 @@ public class UserProfileSearcher extends XmlFileSearcher {
 	@Override
 	public void saveData(Data inData, User inUser) {
 		UserProfile profile= (UserProfile)inData;
-		if(profile.getUser() == null){
-			User current = getUserManager().createUser(null, new PasswordGenerator().generate());
+		
+		if(profile.getUser() == null)
+		{
+			User current = getUserManager().getUser(profile.get("userid"));
+			if( current == null )
+			{
+				log.info("No user found, creating new one");
+				current = getUserManager().createUser(null, null);
+			}
 			profile.setUser(current);
 			profile.setProperty("userid", current.getId());
 		}

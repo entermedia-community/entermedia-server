@@ -7,13 +7,13 @@
     <property id="enabled" header="blank" />
 
 	<property id="email" required="true" header="Contact Information" />
-    <property id="phone" required="true"/> 
-    <property id="country" required="true" />
-    <property id="address1" required="true" />
-    <property id="address2" required="true" />
-    <property id="city" required="true" />
-    <property id="state_province" required="true" />   
-    <property id="postal_code" required="true" />
+    <property id="phone" /> 
+    <property id="country"  />
+    <property id="address1"  />
+    <property id="address2"  />
+    <property id="city"  />
+    <property id="state_province"  />   
+    <property id="postal_code"  />
 	
 	<property id="notes" viewtype="textarea" header="blank"/>
 
