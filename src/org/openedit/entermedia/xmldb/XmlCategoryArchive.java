@@ -149,9 +149,9 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 	{
 		fieldRootCatalog = inRootCatalog;
 
-		// This is not used much anymore
 		if (fieldRootCatalog != null)
 		{
+			// This is not used much anymore
 			String home = fieldRootCatalog.getProperty("categoryhome");
 			if (home == null)
 			{
@@ -266,7 +266,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 			{
 				try
 				{
-					Element rootE = new XmlUtil().getXml(catalogFile.getReader(), catalogFile.getCharacterEncoding());
+					Element rootE = getXmlUtil().getXml(catalogFile.getReader(), catalogFile.getCharacterEncoding());
 					XMLConfiguration rootConfig = new XMLConfiguration();
 					rootConfig.populate(rootE);
 
@@ -445,7 +445,9 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	public Category createCategoryTree(String inPath) throws OpenEditException
 	{
-		return createCategoryTree(inPath, null);
+		Category created = createCategoryTree(inPath, null);
+
+		return created;
 	}
 
 	public Category createCategoryTree(String inPath, List inNames) throws OpenEditException
@@ -496,9 +498,8 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 				}
 			});
 			inParentCategory.setChildren(children);
-			
+			saveAll(); //This is slow.
 			cacheCategory(child);
-			saveAll();
 		}
 		return child;
 	}

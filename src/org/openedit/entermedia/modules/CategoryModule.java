@@ -168,7 +168,6 @@ public class CategoryModule extends BaseMediaModule
 
 	}
 	
-	
 	public void reloadTree(WebPageRequest inReq) throws OpenEditException
 	{
 		WebTree tree = getCatalogTree(inReq);
@@ -351,5 +350,11 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
+	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
+	{
+		WebTree tree = getCatalogTree(inReq);
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getCategoryEditor().reBuildCategories();
+	}	
 
 }
