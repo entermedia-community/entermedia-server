@@ -784,7 +784,7 @@ public class OrderManager
 		if( assets.size() != items.size() )
 		{
 			Set assetids = new HashSet();
-			for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
+			for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
 				assetids.add(data.getId());
