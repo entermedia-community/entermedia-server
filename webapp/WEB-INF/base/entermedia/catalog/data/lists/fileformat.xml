@@ -26,6 +26,7 @@
 	<property id="m2ts" rendertype="video" creator="ffmpeg">M2TS</property>
 	
 	<property id="3gp" rendertype="video" creator="ffmpeg">3GP</property>
+	<property id="mxf" rendertype="video" creator="ffmpeg">MXF</property>
 	
 	<property id="mp4" rendertype="video" creator="ffmpeg" >MPEG 4 mp4</property>
 	<property id="m4v" rendertype="video" creator="ffmpeg" >MPEG 4 m4v</property>
