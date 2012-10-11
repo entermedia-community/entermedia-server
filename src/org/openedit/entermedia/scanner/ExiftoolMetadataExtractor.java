@@ -336,6 +336,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		{
 			return;
 		}
+		
+		//TODO: Increase this for INDD with larger Page thumbnails
 		Page def = inArchive.getPageManager().getPage( "/" + inArchive.getCatalogId() + "/downloads/preview/large/image.jpg");
 		
 		Map all = new HashMap();
