@@ -133,7 +133,7 @@
 	<target name="jar">
 		<mkdir dir="${wardir}/WEB-INF/lib/" />
 		<mkdir dir="${deployDir}/builds/" />
-		<jar jarfile="${wardir}/WEB-INF/lib/${appname}-${version}.jar" basedir="${build}/compile" >
+		<jar jarfile="${wardir}/WEB-INF/lib/${branch}${appname}-${version}.jar" basedir="${build}/compile" >
 			<!--
 			<exclude name="**/*Test*"/>
 			-->
