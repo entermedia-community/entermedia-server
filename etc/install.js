@@ -36,9 +36,9 @@ files.copyFiles( tmp + "/WEB-INF/base/themes/baseem", root + "/WEB-INF/base/them
 files.copyFiles( tmp + "/WEB-INF/base/themes/rational", root + "/WEB-INF/base/themes/rational");
 
 log.add("4. REPLACE LIBS");
-files.deleteMatch( web + "/lib/deventermedia-server*.jar");
-files.deleteMatch( web + "/lib/deventermedia-5*.jar");
-files.deleteMatch( web + "/lib/deventermedia-8*.jar");
+files.deleteMatch( web + "/lib/dev_entermedia-server*.jar");
+files.deleteMatch( web + "/lib/dev_entermedia-5*.jar");
+files.deleteMatch( web + "/lib/dev_entermedia-8*.jar");
 
 files.deleteMatch( web + "/lib/entermedia-server*.jar");
 files.deleteMatch( web + "/lib/entermedia-5*.jar");
@@ -57,7 +57,7 @@ files.deleteMatch( web + "/lib/lucene*.jar");
 
 
 
-files.copyFileByMatch( tmp + "/WEB-INF/lib/deventermedia*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/dev_entermedia*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/groovy-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/aws-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/gson-*.jar", web + "/lib/");
