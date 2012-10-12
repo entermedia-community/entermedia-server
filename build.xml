@@ -144,7 +144,7 @@
 			    <attribute name="Implementation-Vendor" value="${org}"/>
 		    </manifest>
 		</jar>
-		<copy file="${wardir}/WEB-INF/lib/${appname}-${version}.jar" todir="${deployDir}/builds/"/>
+		<copy file="${wardir}/WEB-INF/lib/${branch}${appname}-${version}.jar" todir="${deployDir}/builds/"/>
   </target>
     
     
