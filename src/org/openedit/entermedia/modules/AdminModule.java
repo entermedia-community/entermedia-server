@@ -195,6 +195,7 @@ public class AdminModule extends BaseModule
 	public void loadPermissions(WebPageRequest inReq) throws Exception
 	{
 		String catid = inReq.findValue("catalogid");
+		
 		PermissionManager manager = (PermissionManager)getModuleManager().getBean(catid, "permissionManager"); 
 		String limited = inReq.getCurrentAction().getChildValue("permissions");
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);

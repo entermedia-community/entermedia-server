@@ -122,7 +122,11 @@ public class AssetEditModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid");
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		Asset asset = mediaArchive.getAsset(assetid);
-		
+		if( asset == null )
+		{
+			//log
+			return;
+		}
 		boolean didSave = false;
 		didSave = writer.saveMetadata(mediaArchive, asset);
 		inReq.putPageValue("didSave", new Boolean(didSave));

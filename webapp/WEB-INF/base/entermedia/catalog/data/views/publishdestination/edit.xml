@@ -4,17 +4,22 @@
 	
 	<property id="publishtype"  />
 	<property id="notifyadmin" />
-	<property id="server" note="IP or server name/ID servername + url;" />
-	<property id="url" />
-	<property id="onimport" />
-	<property id="remotempublish" />
+	<property id="server" note="IP or server name" />
+	<property id="url" note="Path to saved files"/>
 	
 	<property id="username" />
+	<property id="password" note="Optional, defaults to user password" />
 	<property id="convertpreset" viewtype="multiselect"/>
+
+	<property id="onimport" />
+	<property id="remotempublish" note="Used by REST API"/>
 	
-	<property id="bucket" />
-	<property id="accesskey"/>
-	<property id="secretkey" />
+	<property id="bucket" note="Amazon bucket"/>
+	<property id="accesskey" note="Amazon Key" />
+	<property id="secretkey" note="Amazon Secret Key" />
+
+	<property id="administrativecontact" />
+	<property id="administrativeemail" />
 	
 	<!-- This stuff is dumb
 	

@@ -115,11 +115,7 @@ public class XmpWriter {
 		{
 			inValue = "";
 		}
-		
-		for(String tag: inTags)
-		{
-			inComm.add("-" + tag + "=" + inValue);
-		}
+		inComm.add("-" + inTags[0] + "=" + inValue);
 	}
 	
 //	public boolean isIndesign(File inFile) throws IOException
