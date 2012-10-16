@@ -111,10 +111,11 @@ public class XmpWriter {
 			String value = inAsset.get(detail.getId());
 			if( detail.getId().equals("imageorientation"))
 			{
-				Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
-				Data rotationval = (Data)searcher.searchById(value);
-				value = rotationval.get("rotation");
-				if( value != null )
+				value = inAsset.get("rotation"); //custom rotation. this should be set by the rotation tool?
+//				Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
+//				Data rotationval = (Data)searcher.searchById(value);
+//				value = rotationval.get("rotation");
+				if( value == null )
 				{
 					continue; //Only set the value if rotation is set
 				}
