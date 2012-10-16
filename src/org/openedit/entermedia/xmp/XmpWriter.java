@@ -79,9 +79,19 @@ public class XmpWriter {
 			comm.add(etConfig.getContentItem().getAbsolutePath());
 		}
 		
-		addSaveKeywords(inAsset.getKeywords(), comm);
+		boolean ok = true;
+		if( !inAsset.getKeywords().isEmpty() )
+		{
+			List keywords = new ArrayList(comm);
+			addSaveKeywords(inAsset.getKeywords(), keywords);
+			keywords.add(inFile.getAbsolutePath());
+			ok = runExec(keywords);
+			if( !ok )
+			{
+				//log.error("Could not write keywords");
+			}
+		}
 		addSaveFields(inArchive, inAsset, comm);
-		
 		comm.add(inFile.getAbsolutePath());
 		return runExec(comm);
 	}
@@ -99,11 +109,15 @@ public class XmpWriter {
 			String[] tags = detail.getExternalIds();
 			
 			String value = inAsset.get(detail.getId());
-			if( value != null && detail.getId().equals("imageorientation"))
+			if( detail.getId().equals("imageorientation"))
 			{
 				Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
 				Data rotationval = (Data)searcher.searchById(value);
 				value = rotationval.get("rotation");
+				if( value != null )
+				{
+					continue; //Only set the value if rotation is set
+				}
 			}
 			addTags(tags, value, inComm);
 		}
@@ -115,7 +129,13 @@ public class XmpWriter {
 		{
 			inValue = "";
 		}
-		inComm.add("-" + inTags[0] + "=" + inValue);
+		for (int i = 0; i < inTags.length; i++) //We need to add them all since Photoshop adds them all. 
+		{
+			if( inTags[i].contains(":") ) //Only write back to iptc: or xmp: fields
+			{
+				inComm.add("-" + inTags[i] + "=" + inValue);
+			}
+		}
 	}
 	
 //	public boolean isIndesign(File inFile) throws IOException
