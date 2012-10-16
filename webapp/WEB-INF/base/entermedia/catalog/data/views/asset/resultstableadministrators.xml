@@ -2,7 +2,7 @@
 	<property id="name"/>
 	<property id="assettitle"  editable="false"/>
 	<property id="episode" />
-	<property id="caption" />
+	<property id="longcaption" />
 	<property id="filesize" />
 	<property id="assettype" />
 	<property id="assetaddeddate" />

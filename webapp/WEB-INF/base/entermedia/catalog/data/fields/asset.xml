@@ -1,9 +1,4 @@
 <properties>
-<!-- 
-
-Headline, Document Title, Author, Keywords, Description, Copyright Status (dropdown), Copyright Notice, Instructions, Rights Usage Terms
-
- -->
 	<!-- asset details -->
 	<property id="id" index="true" keyword="true" stored="true">Id</property>
 	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains">File Name</property>
@@ -78,8 +73,7 @@ Headline, Document Title, Author, Keywords, Description, Copyright Status (dropd
 	<property id="headline"  index="true" stored="true" editable="true" externalid="iptc:Headline,XMP-photoshop:Headline">Headline</property>
 	
 	
-	<property id="caption" index="true" stored="true" keyword="true" editable="true" >Caption</property>
-	<property id="longcaption"  keyword="true" editable="true" viewtype="textarea" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
+	<property id="longcaption"  keyword="true" index="true" editable="true"  externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
 	<!--  this is built in, Used for related searches property id="keywords" keyword="true" index="true" stored="true" editable="false" >Tags</property --> 
 	<property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords">Extra Keywords</property> 
 	<property id="purpose" index="true" stored="true" editable="true" viewtype="list" datatype="list">Purpose</property>
@@ -91,7 +85,7 @@ Headline, Document Title, Author, Keywords, Description, Copyright Status (dropd
 	<property id="state" foreignkeyid="country" datatype="list" index="true" stored="true" editable="true" viewtype="list" >State</property>
 
 	<property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked" >Copyright Status</property>
-	<property id="copyrightNotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright"  >Copyright Notice</property>
+	<property id="copyrightnotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright"  >Copyright Notice</property>
 	<property id="rightsusageterms" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms," >Rights Usage Terms</property>
 	<property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions" >Instructions</property>
 

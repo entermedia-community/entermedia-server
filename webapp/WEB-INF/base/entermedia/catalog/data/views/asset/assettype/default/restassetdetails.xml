@@ -4,7 +4,6 @@
   <property id="id" />
   <property id="sourcepath" />
   <property id="assettitle" />
-  <property id="caption" />
   <property id="longcaption" />
   <property id="importstatus"/>
   <property id="editstatus"/>
