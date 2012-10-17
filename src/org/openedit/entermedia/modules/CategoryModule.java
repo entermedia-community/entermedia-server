@@ -60,11 +60,12 @@ public class CategoryModule extends BaseMediaModule
 		{
 			name = inRequest.findValue("tree-name");
 		}
+		String appid = inRequest.findValue("applicationid");
 		
 		String treeid = inRequest.getRequestParameter("treeid");
 		if( treeid == null)
 		{
-			treeid = name + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
+			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
 		}		
 		WebTree webTree = (WebTree) inRequest.getPageValue( treeid );
 
