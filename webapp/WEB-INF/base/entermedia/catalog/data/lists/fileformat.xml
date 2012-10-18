@@ -66,6 +66,9 @@
 	<property id="pptx" rendertype="document" >PPTX</property>
 	<property id="wps" rendertype="document" >WPS</property>
 	<property id="odt" rendertype="document" >ODT</property>
+	<property id="ods" rendertype="document" >ODS</property>
+	<property id="odp" rendertype="document" >ODP</property>
+	
 	<property id="html" rendertype="document" >HTML</property>
 	<property id="xml" rendertype="document" >XML</property>
 	<property id="csv" rendertype="document" >CSV</property>
