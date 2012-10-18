@@ -31,10 +31,25 @@
 
 	
 	<tr> <td>[[Editable]]:</td> <td><input name="editable" type="checkbox" #if ($property.editable == true) checked #end value="true"/> </td> </tr>
-	<input type="hidden" name="field" value="required"/>
-	<tr> <td>[[Required]]:</td> <td><input name="required.value" type="checkbox" #if ($property.required == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Index]]:</td> <td><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Stored]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
+
+	<tr> <td>[[Internal Use]]:</td> <td><input name="internalfield" type="checkbox" #if ($property.internalfield == "true") checked #end value="true"/> </td> </tr>	
+
+	<tr> <td>[[Default Search Operation]]:</td>
+	<td>
+	<select name="defaultoperation.value">
+		<option value="" >Default</option>
+		
+		<option value="startswith" #if ($property.defaultoperation == "startswith") selected #end >[[Starts With]]</option>
+		<option value="contains" #if ($property.defaultoperation == "contains") selected #end >[[Contains]]</option>
+
+		<option value="matches" #if ($property.defaultoperation == "matches") selected #end >[[Matches]]</option>
+		<option value="exact" #if ($property.defaultoperation == "exact") selected #end >[[Exact]]</option>
+		<option value="not" #if ($property.defaultoperation == "not") selected #end >[[Not]]</option>
+	</select>	
+	<input type="hidden" name="field" value="defaultoperation"/>
+	</td>
+	</tr>
+	
 
 	<tr> <td>[[Data Type]]:</td>
 	<td>
@@ -58,8 +73,10 @@
 		#end
 	#end
 	</td>
-		
 	</tr>
+	
+
+	
 	<tr> <td>[[Render Type]]:</td>
 	<td>
 	<select name="viewtype">
@@ -92,31 +109,22 @@
 
 	<tr class="tableheader"> <th colspan="2">Advanced</th> </td>
 
+	<input type="hidden" name="field" value="required"/>
+	<tr> <td>[[Required]]:</td> <td><input name="required.value" type="checkbox" #if ($property.required == true) checked #end value="true"/> </td> </tr>
+	<input type="hidden" name="field" value="sortable"/>
+	<tr> <td>[[Sortable]]:</td> <td><input name="sortable.value" type="checkbox" #if ($property.sortable == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Searchable]]:</td> <td><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Stored In Index]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
+
 	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
-	<tr> <td>[[Is Keyword]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Used In Keywords]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Internal Use]]:</td> <td><input name="internalfield" type="checkbox" #if ($property.internalfield == "true") checked #end value="true"/> </td> </tr>	
 	<input type="hidden" name="field" value="listid"/>
 	<input type="hidden" name="field" value="listcatalogid"/>
 	<input type="hidden" name="field" value="sort"/>
 	<input type="hidden" name="field" value="query"/>
 	<input type="hidden" name="field" value="foreignkeyid"/>
 
-<tr> <td>[[Default Search Operation]]:</td>
-	<td>
-	<select name="defaultoperation.value">
-		<option value="" >Default</option>
-		
-		<option value="startswith" #if ($property.defaultoperation == "startswith") selected #end >[[Starts With]]</option>
-		<option value="contains" #if ($property.defaultoperation == "contains") selected #end >[[Contains]]</option>
-
-		<option value="matches" #if ($property.defaultoperation == "matches") selected #end >[[Matches]]</option>
-		<option value="exact" #if ($property.defaultoperation == "exact") selected #end >[[Exact]]</option>
-		<option value="not" #if ($property.defaultoperation == "not") selected #end >[[Not]]</option>
-	</select>	
-	<input type="hidden" name="field" value="defaultoperation"/>
-	</td>
-	</tr>
 
 
 
