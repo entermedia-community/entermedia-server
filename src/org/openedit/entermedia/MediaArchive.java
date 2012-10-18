@@ -1154,6 +1154,10 @@ public class MediaArchive
 	
 	public boolean isTagSync(String inFileFormat)
 	{
+		if( inFileFormat == null )
+		{
+			return false;
+		}
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "fileformat");
 		Data hit = (Data) searcher.searchById(inFileFormat);
 		if(hit == null)

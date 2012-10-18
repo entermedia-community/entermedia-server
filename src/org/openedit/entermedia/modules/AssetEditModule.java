@@ -124,7 +124,11 @@ public class AssetEditModule extends BaseMediaModule
 			return;
 		}
 		boolean didSave = false;
-		didSave = writer.saveMetadata(mediaArchive, asset);
+		if( mediaArchive.isTagSync(asset.getFileFormat() ) )
+		{
+			didSave = getXmpWriter().saveMetadata(mediaArchive, asset);
+		}
+
 		inReq.putPageValue("didSave", new Boolean(didSave));
 	}
 	
@@ -686,7 +690,10 @@ public class AssetEditModule extends BaseMediaModule
 				return;
 			}
 			boolean didSave = false;
-			didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
+			if( mediaArchive.isTagSync(asset.getFileFormat() ) )
+			{
+				didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
+			}
 			inRequest.putPageValue("didSave", new Boolean(didSave));
 		}			
 	}

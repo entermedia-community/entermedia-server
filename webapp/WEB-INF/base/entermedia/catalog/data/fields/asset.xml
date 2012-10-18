@@ -1,15 +1,14 @@
 <properties>
 	<!-- asset details -->
 	<property id="id" index="true" keyword="true" stored="true">Id</property>
-	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains">File Name</property>
-	<property id="name_sortable" internalfield="true" >File Name</property>
+	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
 	<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
 	<property id="description" defaultoperation="contains">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" editable="true" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
 	<property id="libraries"  viewtype="libraries"  editable="true" index="true" >Libraries</property>
-	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  >Asset Type</property>
+	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true"  >Asset Type</property>
 
 	<!-- Push items -->
 	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
@@ -23,21 +22,17 @@
 	<property id="fulltext" internalfield="true" keyword="true">Full Text</property> 	<!-- This is for PDFs -->
 	<property id="pages" datatype="number" viewtype="number" index="true" stored="true" >Pages</property> 	<!--  These are writen to by outside API -->
 	<property id="assetviews" internalfield="true" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
-	<property id="assetviews_sortable" internalfield="true" datatype="number" >Views</property>
 	<property id="assetvotes" internalfield="true" datatype="number" index="true" stored="true" >Vote Rank</property>
-	<property id="assetvotes_sortable" internalfield="true" datatype="number" >Vote Count</property>
-	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>
-	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text">Artist</property>
-	<property id="comment" externalid="Comment,User Comment" index="true" stored="true" datatype="text">Comment</property>
-	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text">Contributor</property>
-	<property id="creator" index="true" stored="true" datatype="text" editable="true" externalid="XMP-dc:Creator,exif:Artist,iptc:By-line" >Author</property>
-	<property id="source" externalid="Source" index="true" stored="true" datatype="text">Source</property>
+	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text" >Compression</property>
+	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text" sortable="true">Artist</property>
+	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text"  sortable="true">Contributor</property>
+	<property id="creator" index="true" stored="true" datatype="text" editable="true" externalid="XMP-dc:Creator,exif:Artist,iptc:By-line"  sortable="true">Author</property>
 	
 	<!-- Camera stuff --> 
-	<property id="lenstype" externalid="Lens ID" index="true" stored="true" datatype="text">Lens Type</property>
-	<property id="focallength" externalid="Focal Length" index="true" stored="true" datatype="text">Focal Length</property>
-	<property id="cameramodel" externalid="Camera Model,Camera Model Name" index="true" stored="true" datatype="text">Camera Model</property>
-	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text">ISO</property>
+	<property id="lenstype" externalid="Lens ID" index="true" stored="true" datatype="text"  >Lens Type</property>
+	<property id="focallength" externalid="Focal Length" index="true" stored="true" datatype="text"  >Focal Length</property>
+	<property id="cameramodel" externalid="Camera Model,Camera Model Name" index="true" stored="true" datatype="text" sortable="true" >Camera Model</property>
+	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text"  >ISO</property>
 	<property id="colorspace"  externalid="Color Space,Color Mode"  index="true" stored="true" viewtype="list" datatype="list">Color Space</property>
 	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list">Color Type</property>
 	<property id="shutterspeed" externalid="Shutter Speed" index="true" stored="true" datatype="text">Shutter Speed</property>
@@ -61,7 +56,7 @@
 	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date"  searchcomponent="datesearch"  viewtype="time" >Last Modified</property>
 	<property id="recordmodificationdate" index="true" type="date"  searchcomponent="datesearch"  stored="true" editable="false">Record Date</property> <!--  should be a date -->
 	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
-	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" query="groups:developers">Owner</property>
+	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" sortable="true" editable="true" query="groups:developers">Owner</property>
 	<property id="primaryfile" internalfield="true" index="true" stored="true">Primary File Name</property>
 	
 	<property id="importstatus" index="true" stored="true" datatype="list" listid="asset/importstatus" editable="true">Import Status</property>
@@ -69,16 +64,17 @@
 	<property id="editstatus" index="true" stored="true" editable="true" listid="asset/editstatus" datatype="list">Edit Status</property>
 
 	<!-- Asset Contains -->
-	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" externalid="XMP-dc:Title,iptc:ObjectName" >Asset Title</property>
-	<property id="headline"  index="true" stored="true" editable="true" externalid="iptc:Headline,XMP-photoshop:Headline">Headline</property>
+	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" sortable="true"  externalid="XMP-dc:Title,iptc:ObjectName" >Asset Title</property>
+	<property id="headline"  index="true" stored="true" editable="true" sortable="true"  externalid="iptc:Headline,XMP-photoshop:Headline">Headline</property>
 	
 	
 	<property id="longcaption"  keyword="true" index="true" editable="true"  externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
-	<!--  this is built in, Used for related searches property id="keywords" keyword="true" index="true" stored="true" editable="false" >Tags</property --> 
+	<property id="keywords" keyword="true" index="true" stored="true" editable="false" >Tags</property> 
 	<property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords">Extra Keywords</property> 
 	<property id="purpose" index="true" stored="true" editable="true" viewtype="list" datatype="list">Purpose</property>
 	<property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed" >General Ethnicity</property>
 	<property id="ethnicitydetailed" foreignkeyid="ethnicity" datatype="list" index="true" stored="true" editable="true" viewtype="list" >Specific Ethnicity</property>
+	<property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp" >Language</property>
 	<property id="viewpoint" datatype="list" editable="true" index="true" stored="true" >Asset Viewpoint</property>
 	<property id="region" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="country" >Region</property>
 	<property id="country" foreignkeyid="region" datatype="list" index="true" stored="true" editable="true" viewtype="list" listchild="state" >Country</property>
@@ -90,10 +86,7 @@
 	<property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions" >Instructions</property>
 
 
-
 	<property id="publisheds3" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Published S3</property>
-	<property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp" >Language</property>
-	<property id="stocknumber" index="true" keyword="true" editable="true" stored="true">Stock Number</property>
 
 	<!-- Approvals -->	
 	<!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->
@@ -101,17 +94,19 @@
 	<property id="position" internalfield="true" type="position" datatype="position" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch">Position</property>
 
 	<!--  Client specific -->
+	<!-- 
+	<property id="stocknumber" index="true" keyword="true" editable="true" stored="true">Stock Number</property>
 	<property id="term" internalfield="true" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>
 	<property id="fatwireid"  internalfield="true"  index="true" stored="true">FatWire ID</property>
 	<property id="uploadteam" index="true"  keyword="true" stored="true"  editable="true"  catalogid="system" type="list" listid="group" sort="namesortedUp">Upload Team</property>
 	<property id="jobnotes" internalfield="true" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>	
 	<property id="cumulusid" internalfield="true" index="true" stored="true">Cumulus ID</property>
-	
+	 -->
 	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
 	<property id="editasset" internalfield="true" filter="true">Writable</property>	
-	
+	<!-- 
 	<property id="showtitle" index="true" datatype="list" stored="true" editable="true" keyword="true" >Show Title</property>
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>
 	<property id="watermark" keyword="true" datatype="list" editable="true" index="true" stored="true" listcatalogid="system"  listid="group"  >Watermark</property>
-
+ 	-->
 </properties>
