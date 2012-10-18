@@ -54,26 +54,30 @@ public void init()
 
 		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/assets/";
 		finder.setRootPath(assetRoot);
+		log.info("Checking for bad paths");
+		
 		finder.process();
+		
+		log.info("found ${finder.badfiles.size()} bad files");
+		
 		context.putPageValue("longpaths",finder.folders);		
 		context.putPageValue("badpaths",finder.badfiles);	
 		Page root = archive.getPageManager().getPage(assetRoot);
-		//Delete the assets?
-		boolean delete = true;
-		if( delete )
+		int edited = 0;
+		for(String path: finder.badfiles)
 		{
-			for(String path: finder.badfiles)
-			{
-				String sourcepath = path.substring(root.getContentItem().getAbsolutePath().length());
-				sourcepath  = PathUtilities.extractDirectoryPath(sourcepath);
-				log.info(path + " becomes " + sourcepath);
-				Asset asset = archive.getAssetBySourcePath(sourcepath);
-                if( asset != null )
-                {
- 				     archive.getAssetSearcher().delete(asset, null);
-				}
+			String sourcepath = path.substring(root.getContentItem().getAbsolutePath().length());
+			sourcepath  = PathUtilities.extractDirectoryPath(sourcepath);
+			//log.info(path + " becomes " + sourcepath);
+			Asset asset = archive.getAssetBySourcePath(sourcepath);
+            if( asset != null )
+            {
+				asset.setProperty("importstatus", "error");
+				archive.saveAsset(asset, null);
+				edited++;
 			}
 		}
+		log.info("saved ${edited} assets as error importstatus");
 			
 }
 

@@ -6,7 +6,7 @@
   
   <property id="name"/>
   <property id="assettitle" />
-  <property id="caption" />
+  <property id="longcaption" />
   <property id="mediatype" />
   <property id="primarymarketsegment"/>
   <property id="purpose"/>
