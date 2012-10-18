@@ -85,7 +85,7 @@ public class XmpWriter
 		boolean ok = runExec(removekeywords);
 		if( ok ) 
 		{
-			addSaveFields(inArchive, inAsset, comm);
+			addSaveKeywords(inAsset.getKeywords(), comm);
 			comm.add(path);
 			ok = runExec(comm);
 		}
