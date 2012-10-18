@@ -20,7 +20,7 @@ public class XmpTest extends BaseEnterMediaTest{
 
 		XmpWriter writer = (XmpWriter) getBean("xmpWriter");
 		assertNotNull(writer);
-		writer.saveMetadata(getMediaArchive(), asset,assetfile);
+		writer.saveMetadata(getMediaArchive(), asset);
 		
 		Asset newasset = new Asset();
 		
