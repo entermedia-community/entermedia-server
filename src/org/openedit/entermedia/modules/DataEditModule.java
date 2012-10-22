@@ -1343,8 +1343,8 @@ public class DataEditModule extends BaseMediaModule
 		for (Iterator iterator = viewsearcher.search(query).iterator(); iterator.hasNext();)
 		{
 			Data view = (Data) iterator.next();
-			String permissionvalue = (String)inReq.getPageValue("can" + view.getId() );
-			if( permissionvalue == null || Boolean.parseBoolean(permissionvalue) )
+			Object permissionvalue = inReq.getPageValue("can" + view.getId() );
+			if( permissionvalue == null || Boolean.parseBoolean(String.valueOf(permissionvalue)) )
 			{
 				String type = null;
 				if( currentdata != null )
