@@ -91,8 +91,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			analyzermap.put("id", new NullAnalyzer());
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
 			analyzermap.put("sourcepath", new NullAnalyzer());
-			RecordLookUpAnalyzer record = new RecordLookUpAnalyzer();
-			record.setUseTokens(false);
 			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , analyzermap);
 
 			fieldAnalyzer = composite;

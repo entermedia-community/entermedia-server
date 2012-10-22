@@ -6,5 +6,7 @@
 	<property name="tab">datamanager</property>
 	<property name="subtab">manager</property>
 	<property name="datatab">data</property>
+	<property name="indatamanager">true</property>
+	
 	<inner-layout>/${applicationid}/views/settings/lists/datamanager/innerlayout.html</inner-layout>
 </page>
