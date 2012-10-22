@@ -20,11 +20,12 @@ import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 import org.openedit.data.Searcher;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.CompositeAnalyzer;
 import org.openedit.data.lucene.NullAnalyzer;
-import org.openedit.data.lucene.StemmerAnalyzer;
+import org.openedit.data.lucene.FullTextAnalyzer;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.entermedia.MediaArchive;
@@ -262,7 +263,7 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 		if (fieldAnalyzer == null)
 		{
 			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("synonymsenc", new StemmerAnalyzer());
+			composite.setAnalyzer("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
 			composite.setAnalyzer("synonyms", new NullAnalyzer());
 			composite.setAnalyzer("word", new NullAnalyzer());
 			fieldAnalyzer = composite;
