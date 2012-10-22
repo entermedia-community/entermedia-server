@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
+import org.apache.lucene.queryParser.QueryParser;
 import org.openedit.data.PropertyDetail;
 
 import com.openedit.hittracker.SearchQuery;
@@ -129,7 +130,7 @@ public class LuceneSearchQuery extends SearchQuery
 		getTerms().add(term);
 		return term;
 	}
-	
+	//Allows any kind of syntax such as + - " "
 	public Term addMatches(PropertyDetail inField, String inValue)
 	{
 		Term term = new Term()
@@ -137,11 +138,18 @@ public class LuceneSearchQuery extends SearchQuery
 			public String toQuery()
 			{
 				String inVal = getValue();
-				if( inVal != null && inVal.startsWith("'") && inVal.endsWith("'"))
+				if( inVal == null )
+				{
+					return null;
+				}
+				if( inVal.startsWith("'") && inVal.endsWith("'"))
 				{
 					inVal = inVal.replace('\'', '\"');
 				}
-
+				if( !inVal.startsWith("+") && !inVal.startsWith("-") )
+				{
+					inVal = QueryParser.escape(inVal);
+				}
 				if (getDetail().getId() != null)
 				{
 					return getDetail().getId() + ":(" + inVal + ")";
@@ -166,10 +174,22 @@ public class LuceneSearchQuery extends SearchQuery
 			public String toQuery()
 			{
 				String inVal = getValue();
-				if( inVal != null && inVal.startsWith("'") && inVal.endsWith("'"))
+				if( inVal == null )
 				{
-					inVal = inVal.replace('\'', '\"');
+					return null;
 				}
+				//I assume you cant mix exact searching with * *
+				if( inVal.startsWith("'") && inVal.endsWith("'"))
+				{
+					inVal = inVal.substring(1);
+					inVal = inVal.substring(0,inVal.length()-2);					
+				}
+				if( inVal.startsWith("\"") && inVal.endsWith("\""))
+				{
+					inVal = inVal.substring(1);
+					inVal = inVal.substring(0,inVal.length()-2);					
+				}
+				inVal = QueryParser.escape(inVal);
 
 				if (getDetail().getId() != null)
 				{
@@ -205,7 +225,11 @@ public class LuceneSearchQuery extends SearchQuery
 				}
 				else
 				{
-					String[] spaces = getValue().split("\\s+");
+					//Deal with multiple words City Group
+					String value = getValue();
+					value = QueryParser.escape(value);
+
+					String[] spaces = value.split("\\s+");
 					for (int i = 0; i < spaces.length; i++)
 					{
 						String chunk = spaces[i];
@@ -285,7 +309,7 @@ public class LuceneSearchQuery extends SearchQuery
 				{
 					val = val.substring(0,val.length()-2);
 				}
-				val = val.replace("\"", "\\\"");
+				val = QueryParser.escape(val);
 				return getDetail().getId() + ":\"" + val + "\"";
 			}
 		};
