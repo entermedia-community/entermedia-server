@@ -1,6 +1,5 @@
 package org.openedit.entermedia.autocomplete;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -11,25 +10,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.CompositeAnalyzer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
-import org.openedit.data.lucene.StemmerAnalyzer;
+import org.openedit.data.lucene.FullTextAnalyzer;
 
-import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.util.FileUtils;
 
 /**
  * Thesaurus searcher for a Lucene index.
@@ -76,7 +72,7 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 		if (fieldAnalyzer == null)
 		{
 			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("synonymsenc", new StemmerAnalyzer());
+			composite.setAnalyzer("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
 			composite.setAnalyzer("synonyms", new RecordLookUpAnalyzer());
 			fieldAnalyzer = composite;
 		}

@@ -297,9 +297,18 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	
 	public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery inSearch) throws OpenEditException
 	{
+		boolean filterstuff = true;
+		String datamanager = inPageRequest.getContentProperty("indatamanager");
+		if( Boolean.parseBoolean(datamanager) )
+		{
+			filterstuff = false;
+		}
 		//modify in query if we are using search security
-		addShowOnly(inPageRequest, inSearch);
-		if(doesIndexSecurely() && !inSearch.isSecurityAttached())
+		if( filterstuff )
+		{
+			addShowOnly(inPageRequest, inSearch);
+		}
+		if(filterstuff && doesIndexSecurely() && !inSearch.isSecurityAttached())
 		{
 			//TODO: This should be in a child query with 	child.setFilter(true);
 			
@@ -325,10 +334,6 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 
 			if (currentUser != null)
 			{
-//				if(currentUser.getProperty("zone") != null)
-//				{
-//					buffer.append(" zone" + currentUser.getProperty("zone"));
-//				}
 				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
 				{
 					String allow = ((Group)iterator.next()).getId();
@@ -340,7 +345,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 			inSearch.setSecurityAttached(true);
 		}
 		String filter = inPageRequest.findValue("enableprofilefilters");
-		if( Boolean.parseBoolean(filter))
+		if( filterstuff && Boolean.parseBoolean(filter))
 		{
 			if( inSearch.getTermByDetailId("album") == null )
 			{

@@ -66,10 +66,33 @@ public class XmpWriter
 
 	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception
 	{
-		File original = new File(inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath());
-		return saveMetadata(inArchive, inAsset,original);
+		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
+		List<String> comm = createCommand(inArchive);
+		addSaveFields(inArchive, inAsset, comm);			
+		comm.add(path);
+		boolean ok = runExec(comm);
+		return ok;
+
 	}	
-	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset, File inFile) throws Exception
+	
+	public boolean saveKeywords(MediaArchive inArchive, Asset inAsset) throws Exception
+	{
+		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
+		List<String> comm = createCommand(inArchive);
+		List removekeywords = new ArrayList(comm);
+		removekeywords.add("-Subject="); //This only works on a line by itself
+		removekeywords.add(path);
+		boolean ok = runExec(removekeywords);
+		if( ok ) 
+		{
+			addSaveKeywords(inAsset.getKeywords(), comm);
+			comm.add(path);
+			ok = runExec(comm);
+		}
+		return ok;
+	}
+
+	protected List<String> createCommand(MediaArchive inArchive)
 	{
 		List<String> comm = GenericsUtil.createList();
 		Page etConfig = inArchive.getPageManager().getPage(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
@@ -79,31 +102,9 @@ public class XmpWriter
 			comm.add(etConfig.getContentItem().getAbsolutePath());
 		}
 		comm.add("-overwrite_original");
-		boolean ok = true;
-		if( !inAsset.getKeywords().isEmpty() )
-		{
-			List removekeywords = new ArrayList(comm);
-			removekeywords.add("-Subject="); //This only works on a line by itself
-			addSaveFields(inArchive, inAsset, removekeywords);			
-			removekeywords.add(inFile.getAbsolutePath());
-			ok = runExec(removekeywords);
-			if( ok )
-			{
-				List keywords = new ArrayList(comm);
-				addSaveKeywords(inAsset.getKeywords(), keywords);
-				keywords.add(inFile.getAbsolutePath());
-				ok = runExec(keywords);
-			}
-			if( !ok )
-			{
-				//log.error("Could not write keywords");
-			}
-		}
-//		addSaveFields(inArchive, inAsset, comm);
-//		comm.add(inFile.getAbsolutePath());
-//		return runExec(comm);
-		return ok;
+		return comm;
 	}
+
 	
 	public void addSaveFields(MediaArchive inArchive, Asset inAsset, List<String> inComm)
 	{

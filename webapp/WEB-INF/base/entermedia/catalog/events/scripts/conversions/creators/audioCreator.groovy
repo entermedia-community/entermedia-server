@@ -60,7 +60,7 @@ public class audioCreator extends BaseCreator implements MediaCreator
 			else
 			{
 				String inOutputType = inStructions.getOutputExtension();
-				if( "wma".equalsIgnoreCase(inputExt) || "acc".equalsIgnoreCase(inputExt) || "m4a".equalsIgnoreCase(inputExt) || "flac".equalsIgnoreCase(inputExt) || "ogg".equalsIgnoreCase(inputExt))
+				if( "wma".equalsIgnoreCase(inputExt) || "aac".equalsIgnoreCase(inputExt) || "m4a".equalsIgnoreCase(inputExt) || "flac".equalsIgnoreCase(inputExt) || "ogg".equalsIgnoreCase(inputExt))
 				{
 					String abspath = inputpage.getContentItem().getAbsolutePath();
 					runFfmpeg(abspath, converted, inStructions, result);

@@ -106,6 +106,7 @@ public class OrderManager
 		cal.add(Calendar.MONTH, -1);
 		query.addAfter("date", cal.getTime());
 		query.addSortBy("historydateDown");
+		query.addExact("userid", inUser.getId());
 		return ordersearcher.search(query);
 	}
 	public void loadOrderHistoryForPage(HitTracker inPage)

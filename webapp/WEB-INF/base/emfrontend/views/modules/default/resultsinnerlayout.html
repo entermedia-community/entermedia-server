@@ -21,6 +21,9 @@ $context.putPageValue("hits", $hits)
 <div id="searchplugin">
 	<div class="subcolumns">
 		<div class="c25l" id="left-col">
+#set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
+
+			<h2>$module</h2>
 				$pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html",$context)
 		</div>
 		<div id="right-col" class="module-inner">

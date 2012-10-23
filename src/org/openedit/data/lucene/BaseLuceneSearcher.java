@@ -326,6 +326,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		parser.setDefaultOperator(QueryParser.AND_OPERATOR);
 		parser.setLowercaseExpandedTerms(true);
 		parser.setAllowLeadingWildcard(true);
+		parser.setEnablePositionIncrements(true);
 		
 		return parser;
 	}
@@ -374,17 +375,22 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					throw new OpenEditException("Lucene Searcher with no details found. catalogid=" + getPropertyDetailsArchive().getCatalogId() + " type=" + getSearchType());
 				}
 				PropertyDetail detail = pdetails.getDetail(inOrdering);
+				String sortfield = inOrdering;
+				if( detail != null )
+				{
+					sortfield = detail.getSortProperty();
+				}
 				if (detail != null && detail.isDataType("number"))
 				{
-					sort = new SortField(inOrdering, SortField.LONG, direction);
+					sort = new SortField(sortfield, SortField.LONG, direction);
 				}
 				else if (detail != null && detail.isDataType("double"))
 				{
-					sort = new SortField(inOrdering, SortField.FLOAT, direction);
+					sort = new SortField(sortfield, SortField.FLOAT, direction);
 				}
 				else
 				{
-					sort = new SortField(inOrdering, SortField.STRING, direction);
+					sort = new SortField(sortfield, SortField.STRING, direction);
 				}
 			}
 			sorts.add(sort);

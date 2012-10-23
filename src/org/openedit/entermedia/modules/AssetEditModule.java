@@ -28,14 +28,10 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.ConvertInstructions;
-import org.openedit.entermedia.creator.MediaCreator;
 import org.openedit.entermedia.edit.AssetEditor;
 import org.openedit.entermedia.scanner.AssetImporter;
-import org.openedit.entermedia.xmp.MetadataWriter;
 import org.openedit.entermedia.xmp.XmpWriter;
 import org.openedit.event.WebEventListener;
-import org.openedit.events.PathEventManager;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
@@ -128,7 +124,11 @@ public class AssetEditModule extends BaseMediaModule
 			return;
 		}
 		boolean didSave = false;
-		didSave = writer.saveMetadata(mediaArchive, asset);
+		if( mediaArchive.isTagSync(asset.getFileFormat() ) )
+		{
+			didSave = getXmpWriter().saveMetadata(mediaArchive, asset);
+		}
+
 		inReq.putPageValue("didSave", new Boolean(didSave));
 	}
 	
@@ -562,11 +562,6 @@ public class AssetEditModule extends BaseMediaModule
 		inContext.setRequestParameter("assetid", asset.getId());
 	}
 	
-	protected MetadataWriter getKeywordWriter( WebPageRequest inRequest )
-	{
-		String catalogid = inRequest.findValue("catalogid");
-		return (MetadataWriter)getModuleManager().getBean(catalogid, "keywordWriter");
-	}
 	public void addAssetValues(WebPageRequest inReq) throws OpenEditException 
 	{
 		Asset asset = getAsset(inReq);
@@ -615,12 +610,10 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		Asset asset;
 		String id = inReq.getRequestParameter("assetid");
-		MetadataWriter writer = getKeywordWriter(inReq);
 		
 		if (id == null)
 		{
 			asset = editor.getCurrentAsset();
-			writer.addAssetForWriting(asset);
 		}
 		else if (id.startsWith("multiedit:"))
 		{
@@ -628,7 +621,6 @@ public class AssetEditModule extends BaseMediaModule
 			composite.addKeyword(key);
 			for(Data data: composite.getItems())
 			{
-				writer.addAssetForWriting((Asset) data);
 				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
 
 				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), (Asset)data);
@@ -638,7 +630,6 @@ public class AssetEditModule extends BaseMediaModule
 		else
 		{
 			asset = getMediaArchive(inReq).getAsset(id);
-			writer.addAssetForWriting(asset);
 		}
 		asset.addKeyword(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
@@ -654,11 +645,9 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		Asset asset;
 		String id = inReq.getRequestParameter("assetid");
-		MetadataWriter writer = getKeywordWriter(inReq);
 		if (id == null)
 		{
 			asset = editor.getCurrentAsset();
-			writer.addAssetForWriting(asset);
 		}
 		else if (id.startsWith("multiedit:"))
 		{
@@ -668,7 +657,6 @@ public class AssetEditModule extends BaseMediaModule
 			for(Data data: composite.getItems())
 			{
 				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
-				writer.addAssetForWriting((Asset) data);
 				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), (Asset)data);
 			}
 			return;
@@ -676,17 +664,38 @@ public class AssetEditModule extends BaseMediaModule
 		else
 		{
 			asset = getMediaArchive(inReq).getAsset(id);
-			writer.addAssetForWriting(asset);
 		}
 		asset.removeKeyword(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 
 		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
 	}
-	
-	public void writeAssetKeywords( WebPageRequest inRequest )
+	protected XmpWriter getXmpWriter()
 	{
-		getKeywordWriter(inRequest).writeAssets();
+		XmpWriter writer = (XmpWriter) getBeanFactory().getBean("xmpWriter");
+		return writer;
+
+	}
+	public void writeAssetKeywords( WebPageRequest inRequest ) throws Exception
+	{
+		String[] assetids = inRequest.getRequestParameters("assetids");
+		
+		MediaArchive mediaArchive = getMediaArchive(inRequest);
+		for (int i = 0; i < assetids.length; i++)
+		{
+			Asset asset = mediaArchive.getAsset(assetids[i]);
+			if( asset == null )
+			{
+				//log
+				return;
+			}
+			boolean didSave = false;
+			if( mediaArchive.isTagSync(asset.getFileFormat() ) )
+			{
+				didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
+			}
+			inRequest.putPageValue("didSave", new Boolean(didSave));
+		}			
 	}
 	
 	public void saveAssetProperties(WebPageRequest inReq) throws OpenEditException 
