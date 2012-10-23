@@ -7,7 +7,7 @@
 <property name="showsearch">true</property>
 <property name="searchfields">advancedsearch</property>
 <property name="searchtype">${module}</property>
-
+<property name="showactions">true</property>
  <path-action allowduplicates="true" bean="searcherManager" name="PageValue.loadPageVariable"/>
  <permission name="delete">
  	<permission name="oe.administration"/>
