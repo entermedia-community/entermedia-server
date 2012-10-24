@@ -1,0 +1,5 @@
+<permissions name="Module Permissions">
+
+	<permission id="view" permissiontype="view" name="View Module" description="Can be viewed" ordering="100"/>
+
+</permissions>

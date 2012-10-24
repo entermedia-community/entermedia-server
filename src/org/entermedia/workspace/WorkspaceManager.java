@@ -152,19 +152,25 @@ public class WorkspaceManager
 		modulesettings.putProperty(prop);
 		getPageManager().getPageSettingsManager().saveSetting(modulesettings);
 
-		String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
 		String template = "/" + catalogid + "/data/lists/view/default.xml";
+		String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
 		copyXml(catalogid, template, path, module);
 		getSearcherManager().removeFromCache(catalogid, "view");
 
-		String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 		String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
+		String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 		copyXml(catalogid, templte2, path2, module);
+
+		
+		String templte3 = "/" + catalogid + "/data/lists/settingsmodulepermissionsdefault.xml";
+		String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
+		copyXml(catalogid, templte3, path3, module);
+
 		getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
 
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
-
+		//getPageManager().clearCache();
 	}
 
 	protected void copyXml(String catalogid, String inTemplatePath, String inEndingPath, Data module)
