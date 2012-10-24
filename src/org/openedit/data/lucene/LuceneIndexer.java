@@ -27,7 +27,7 @@ import com.openedit.hittracker.HitTracker;
 
 public class LuceneIndexer
 {
-	protected List fieldStandardProperties = Arrays.asList("name","id","deliverablestatus","description","sourcepath");  
+	protected List fieldStandardProperties = null;  
 	private static final Log log = LogFactory.getLog(LuceneIndexer.class);
 	protected NumberUtils fieldNumberUtils;
 	protected SearcherManager fieldSearcherManager;
@@ -185,7 +185,7 @@ public class LuceneIndexer
 		StringBuffer keywords = new StringBuffer();
 		readStandardProperties(inDetails, inData, keywords, doc);
 
-		List details = inDetails.findIndexProperties();
+		List details = inDetails.getDetails();
 		for (Iterator iterator = details.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
@@ -195,6 +195,10 @@ public class LuceneIndexer
 	}
 	protected List getStandardProperties()
 	{
+		if (fieldStandardProperties == null)
+		{
+			fieldStandardProperties = Arrays.asList("name","id","deliverablestatus","description","sourcepath");
+		}
 		return fieldStandardProperties;
 	}
 	protected void readStandardProperties(PropertyDetails inDetails, Data inData, StringBuffer keywords, Document doc)
@@ -264,12 +268,23 @@ public class LuceneIndexer
 		{
 			return;
 		}
+		String value = inData.get(detail.getId());
+		
+		if (value != null && detail.isKeyword() )
+		{
+			keywords.append(" ");
+			keywords.append(value);
+		}
+
+		if( !detail.isIndex() )
+		{
+			return;
+		}
 		if( populateJoin(inData, doc, detail) )
 		{
 			return;
 		}
 
-		String value = inData.get(detail.getId());
 		
 		if (value != null)
 		{
@@ -307,11 +322,6 @@ public class LuceneIndexer
 			else
 			{
 				docAdd(detail, doc, detail.getId(), value, Field.Store.NO, Field.Index.ANALYZED_NO_NORMS);
-			}
-			if (detail.isKeyword() && keywords != null)
-			{
-				keywords.append(" ");
-				keywords.append(value);
 			}
 		}
 		else

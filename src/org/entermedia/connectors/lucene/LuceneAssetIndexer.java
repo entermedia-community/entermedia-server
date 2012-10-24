@@ -38,13 +38,21 @@ public class LuceneAssetIndexer extends LuceneIndexer
 
 	public LuceneAssetIndexer()
 	{
-		fieldStandardProperties  = Arrays.asList("name","description","primaryfile","id","category","viewasset","editasset","ordering","assettype","fileformat","datatype","keywords","sourcepath");  
 	}
 	public File getRootDirectory()
 	{
 		return fieldRootDirectory;
 	}
 
+	@Override
+	protected List getStandardProperties()
+	{
+		if (fieldStandardProperties == null)
+		{
+			fieldStandardProperties = Arrays.asList("name","description","primaryfile","id","category","viewasset","editasset","ordering","assettype","fileformat","datatype","keywords","sourcepath");
+		}
+		return fieldStandardProperties;
+	}
 	public void setRootDirectory(File inRootDirectory)
 	{
 		fieldRootDirectory = inRootDirectory;

@@ -1,10 +1,11 @@
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()">
 <div id="emresultscontent" >
-$context.putPageValue("showtoolbar", $page.isPropertyTrue("showtoolbar") )
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
 $context.putPageValue("thumbsize", $page.isPropertyTrue("thumbsize"))
 $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
 $context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
-$page.isPropertyTrue("")
-#if( $page.isPropertyTrue("showtoolbar") )
+#if( $showtoolbar )
 $pages.include("$apphome/components/results/header.html",$context)
 #end
 
@@ -59,3 +60,4 @@ $pages.include("$apphome/components/results/pages.html",$context)
 #end
 </div>
 
+</div>

@@ -114,11 +114,8 @@ public class AssetUtilities
 		}
 		if (newasset)
 		{
-			//inArchive.removeGeneratedImages(asset); //Just in case?
 			readMetadata(asset, inContent, inArchive);
 			// TODO: clear out old cached thumbnails and conversions
-
-			// Makes a mirror of the inputfilepath within the assets
 			// directory
 			if( inCludeCategories )
 			{

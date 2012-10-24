@@ -30,6 +30,7 @@ import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.edit.AssetEditor;
 import org.openedit.entermedia.scanner.AssetImporter;
+import org.openedit.entermedia.scanner.PresetCreator;
 import org.openedit.entermedia.xmp.XmpWriter;
 import org.openedit.event.WebEventListener;
 import org.openedit.repository.Repository;
@@ -1804,5 +1805,28 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putSessionValue(composite.getId(), composite);
 		
 		return composite;
+	}
+	public void originalModified( WebPageRequest inRequest ) throws Exception
+	{
+		String[] assetids = inRequest.getRequestParameters("assetids");
+		MediaArchive mediaArchive = getMediaArchive(inRequest);
+		PresetCreator presets = new PresetCreator();
+		Searcher tasksearcher = mediaArchive.getSearcher("tasksearcher");
+		int missing = 0;
+		for (int i = 0; i < assetids.length; i++)
+		{
+			Asset asset = mediaArchive.getAsset(assetids[i]);
+			if( asset == null )
+			{
+				log.error("Missing asset " + assetids[i]);
+				continue;
+			}
+			mediaArchive.removeGeneratedImages(asset);
+			missing = missing + presets.createMissingOnImport(mediaArchive, tasksearcher, asset);
+		}
+		if( missing > 0 )
+		{
+			mediaArchive.fireSharedMediaEvent("conversions/runconversions");
+		}
 	}
 }
