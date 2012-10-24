@@ -154,7 +154,7 @@ jQuery(document).ready(function()
 
 				var tree = $(this).closest(".emtree");
 				tree.find("#" + id +"_display").hide("fast");
-				tree.find("#" + id +"_edit").show("fast");		
+				tree.find("#" + id +"_edit").show("fast");		//TODO: Load edit dialogs using Ajax
 				
 				return false;
 	} );
@@ -186,13 +186,13 @@ jQuery(document).ready(function()
 					'name': newname,
 					'tree-name': tree.data("treename")
 					} , function () {						
-						tree.find("#" + id +"_display").show("fast");
 						tree.find("#" + id +"_edit").hide("fast");		
+						tree.find("#" + id +"_display").show("fast");
 						tree.find("#" + id + "_display").html(newname);
+						repaintEmTree(tree);
 					}
 				
 				);
-				repaintEmTree(tree);
 				return false;
 	} );
 	
