@@ -130,7 +130,7 @@ public class LuceneSearchQuery extends SearchQuery
 		getTerms().add(term);
 		return term;
 	}
-	//Allows any kind of syntax such as + - " "
+	//Allows any kind of syntax such as + - " " does no escape
 	public Term addMatches(PropertyDetail inField, String inValue)
 	{
 		Term term = new Term()
@@ -146,10 +146,12 @@ public class LuceneSearchQuery extends SearchQuery
 				{
 					inVal = inVal.replace('\'', '\"');
 				}
-				if( !inVal.startsWith("+") && !inVal.startsWith("-") )
-				{
-					inVal = QueryParser.escape(inVal);
-				}
+//				if( !inVal.startsWith("+") && !inVal.startsWith("-") )
+//				{
+//					inVal = inVal.replace("*", "REPLACESTAR");
+//					inVal = QueryParser.escape(inVal);
+//					inVal = inVal.replace("REPLACESTAR","*");
+//				}
 				if (getDetail().getId() != null)
 				{
 					return getDetail().getId() + ":(" + inVal + ")";
