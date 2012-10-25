@@ -1,6 +1,7 @@
 package org.openedit.data.lucene;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -9,9 +10,11 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.DateTools.Resolution;
+import org.apache.lucene.document.Field.Index;
+import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.CorruptIndexException;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
@@ -21,13 +24,14 @@ import org.openedit.data.SearcherManager;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
 
 public class LuceneIndexer
 {
+	protected List fieldStandardProperties = null;  
 	private static final Log log = LogFactory.getLog(LuceneIndexer.class);
 	protected NumberUtils fieldNumberUtils;
 	protected SearcherManager fieldSearcherManager;
+
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -37,7 +41,6 @@ public class LuceneIndexer
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
-
 
 	public NumberUtils getNumberUtils()
 	{
@@ -179,7 +182,29 @@ public class LuceneIndexer
 	 */
 	public void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
 	{
-		doc.add(new Field("id", inData.getId(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
+		StringBuffer keywords = new StringBuffer();
+		readStandardProperties(inDetails, inData, keywords, doc);
+
+		List details = inDetails.getDetails();
+		for (Iterator iterator = details.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			readProperty(inData, doc, keywords, detail);
+		}
+		doc.add(new Field("description", keywords.toString(), Field.Store.NO, Field.Index.ANALYZED));
+	}
+	protected List getStandardProperties()
+	{
+		if (fieldStandardProperties == null)
+		{
+			fieldStandardProperties = Arrays.asList("name","id","deliverablestatus","description","sourcepath");
+		}
+		return fieldStandardProperties;
+	}
+	protected void readStandardProperties(PropertyDetails inDetails, Data inData, StringBuffer keywords, Document doc)
+	{
+		PropertyDetail detail = inDetails.getDetail("id");
+		docAdd(detail, doc, "id", inData.getId(),Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
 		String name = inData.getName();
 		if (name == null || inData.getName().length() == 0)
 		{
@@ -187,32 +212,162 @@ public class LuceneIndexer
 		}
 		if (name != null && name.length() > 0)
 		{
-			doc.add(new Field("name", name, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-			doc.add(new Field("namesorted", name, Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
+			detail = inDetails.getDetail("name");
+			docAdd(detail, doc, "name", name, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
 		}
-
-		StringBuffer keywords = new StringBuffer();
 		keywords.append(inData.getId());
 		keywords.append(" ");
 		keywords.append(inData.getName());
-		List details = inDetails.findIndexProperties();
-		for (Iterator iterator = details.iterator(); iterator.hasNext();)
+		
+		if (inData.getSourcePath() != null)
 		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (detail.getId().equals("id") || detail.getId().equals("name") || detail.getId().equals("deliverablestatus"))
-			{
-				continue;
-			}
-			updateProperty(inData, doc, keywords, detail);
+			detail = inDetails.getDetail("sourcepath");
+			docAdd(detail, doc,"sourcepath", inData.getSourcePath(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
 		}
-		doc.add(new Field("description", keywords.toString(), Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
-		if(inData.getSourcePath() != null)
+	}
+	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore, Index inIndex)
+	{
+		doc.add(new Field(inId, inValue ,inStore, inIndex));
+		if( inDetail != null && inDetail.isSortable() )
 		{
-			doc.add(new Field("sourcepath",inData.getSourcePath(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
+			String id = inDetail.getSortProperty();
+			if( inId.equals( id ) )
+			{
+				return;
+			}
+			//doc.add(new Field(detail.getId() + "_sorted", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+			if( inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long") )
+			{
+				try
+				{	
+					inValue = getNumberUtils().double2sortableStr(inValue);
+				}
+				catch( Exception ex )
+				{
+					//ex
+				}
+			}
+			else if( inDetail.isDataType("list") && inDetail.getCatalogId() != null)
+			{
+				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
+				if( row != null )
+				{
+					inValue = row.toString();
+				}
+			}
+			
+			doc.add(new Field(id, inValue.toLowerCase(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));			
 		}
 	}
 
-	public void updateProperty(Data inData, Document doc, StringBuffer keywords, PropertyDetail detail)
+	protected void readProperty(Data inData, Document doc, StringBuffer keywords, PropertyDetail detail)
+	{
+		String detid = detail.getId();
+		
+		if (getStandardProperties().contains(detid) )
+		{
+			return;
+		}
+		String value = inData.get(detail.getId());
+		
+		if (value != null && detail.isKeyword() )
+		{
+			keywords.append(" ");
+			keywords.append(value);
+		}
+
+		if( !detail.isIndex() )
+		{
+			return;
+		}
+		if( populateJoin(inData, doc, detail) )
+		{
+			return;
+		}
+
+		
+		if (value != null)
+		{
+			if ( detail.isDataType("double") || detail.isDataType("number") || detail.isDataType("long"))
+			{
+				//This is more standard way to save stuff
+				docAdd(detail, doc, detail.getId(), value, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+			} //doubles dont seem to work detail.isDataType("double")
+			else if (detail.isDataType("boolean"))
+			{
+				if (Boolean.parseBoolean(value))
+				{
+					docAdd(detail, doc, detail.getId(), "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+				}
+				else
+				{
+					docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+				}
+
+			}
+			else if (detail.isDataType("date"))
+			{
+				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(value);
+				if (target != null)
+				{
+					String sortable = DateTools.dateToString(target, Resolution.SECOND);
+					//log.info(inData.getId() +  " Saved " + sortable);
+					docAdd(detail, doc, detail.getId(), sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+				}
+			}
+			else if (detail.isStored())
+			{
+				docAdd(detail, doc, detail.getId(), value, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
+			}
+			else
+			{
+				docAdd(detail, doc, detail.getId(), value, Field.Store.NO, Field.Index.ANALYZED_NO_NORMS);
+			}
+		}
+		else
+		//value was null
+		{
+			if (detail.isDataType("boolean"))
+			{
+				docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+			}
+
+			if (detail.isDataType("position"))
+			{
+				String lat = inData.get(detail + "_lat");
+				String lng = inData.get(detail + "_lng");
+
+				try
+				{
+					if (lat != null && lng != null)
+					{
+						//String sortable = getNumberUtils().double2sortableStr(lat);
+						//doc.add(new Field(detail + "_lat_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+						docAdd(detail, doc, detail + "_lat", lat, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+
+						//sortable = getNumberUtils().double2sortableStr(lng);
+						//doc.add(new Field(detail + "_lng_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+						docAdd(detail, doc, detail + "_lng", lng, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+						//doc.add(new Field(detail + "_available", "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+					}
+					else
+					{
+						//doc.add(new Field(detail + "_available", "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+					}
+				}
+				catch (Exception e)
+				{
+					log.info("no valid position data found");
+				}
+				finally
+				{
+					//	inDoc.add(new Field(detid, prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+				}
+			}
+		}
+	}
+
+	protected boolean populateJoin(Data inData, Document doc, PropertyDetail detail)
 	{
 		if (detail.getDataType() != null && detail.getDataType().endsWith("join"))
 		{
@@ -240,119 +395,14 @@ public class LuceneIndexer
 				{
 					//friend.ownerid = user.id
 					String q = detail.getQuery();
-					field = q.substring(q.indexOf(".") + 1,q.indexOf("="));
+					field = q.substring(q.indexOf(".") + 1, q.indexOf("="));
 					field = field.trim();
-					
+
 					populateJoinData(detail, doc, tracker, field);
 				}
+				return true;
 			}
 		}
-
-		String value = inData.get(detail.getId());
-		updateIndex(inData, value, doc, keywords, detail);
-	}
-
-	public void updateIndex(Data inData, String value, Document doc, StringBuffer keywords, PropertyDetail detail)
-	{
-		if (value != null)
-		{
-
-			if (detail.isDataType("number") || detail.isDataType("long"))
-			{
-				try
-				{
-					//This is more standard way to save stuff
-					doc.add(new Field(detail.getId(), value, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					String sortable = getNumberUtils().long2sortableStr(value);
-					doc.add(new Field(detail.getId() + "sorted", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-				catch (Exception e)
-				{
-					log.info("bad number: " + value);
-				}
-				finally
-				{
-					//	doc.add(new Field(detail.getId(), value, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-			} //doubles dont seem to work detail.isDataType("double")
-			else if (detail.isDataType("boolean"))
-			{
-				if (Boolean.parseBoolean(value))
-				{
-					doc.add(new Field(detail.getId(), "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-				else
-				{
-					doc.add(new Field(detail.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-
-			}
-			else if (detail.isDataType("date"))
-			{
-				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(value);
-				if (target != null)
-				{
-					String sortable = DateTools.dateToString(target, Resolution.SECOND);
-					//log.info(inData.getId() +  " Saved " + sortable);
-					doc.add(new Field(detail.getId(), sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-			}
-			else if (detail.isStored())
-			{
-				doc.add(new Field(detail.getId(), value, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-			}
-			else
-			{
-				doc.add(new Field(detail.getId(), value, Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
-			}
-			if (detail.isKeyword() && keywords != null)
-			{
-				keywords.append(" ");
-				keywords.append(value);
-			}
-		}
-		else
-		//value was null
-		{
-			if (detail.isDataType("boolean"))
-			{
-				doc.add(new Field(detail.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-			}
-			
-			if(detail.isDataType("position")){
-				String lat = inData.get(detail + "_lat");
-				String lng = inData.get(detail + "_lng");
-				
-				try
-				{
-					if(lat != null && lng != null){
-					String sortable = getNumberUtils().double2sortableStr(lat);
-					doc.add(new Field(detail + "_lat_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					doc.add(new Field(detail + "_lat", lat, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					
-					
-					
-					sortable = getNumberUtils().double2sortableStr(lng);
-					doc.add(new Field(detail + "_lng_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					doc.add(new Field(detail + "_lng", lng, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					doc.add(new Field(detail + "_available", "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-					else{
-						doc.add(new Field(detail + "_available", "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-					
-					
-					
-				}
-				catch (Exception e){
-					log.info("no valid position data found");
-				}
-				finally
-				{
-				
-					//	inDoc.add(new Field(detid, prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-			}
-		}
+		return false;
 	}
 }

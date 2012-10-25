@@ -268,7 +268,7 @@ public class DataEditModule extends BaseMediaModule
 		getXmlArchive().saveXml(file, inReq.getUser());
 		//reload the archive
 		Searcher searcher = loadSearcher(inReq);
-		searcher.getPropertyDetailsArchive().getPropertyDetails(searcher.getSearchType());
+		searcher.getPropertyDetailsArchive().clearCache();
 	}
 //TODO: Allow disable of views
 	public void removeFromView(WebPageRequest inReq) throws Exception
@@ -285,6 +285,9 @@ public class DataEditModule extends BaseMediaModule
 		file.deleteElement(element);
 
 		getXmlArchive().saveXml(file, inReq.getUser());
+		Searcher searcher = loadSearcher(inReq);
+		searcher.getPropertyDetailsArchive().clearCache();
+
 	}
 
 	public PropertyDetail loadProperty(WebPageRequest inReq) throws Exception
@@ -770,6 +773,7 @@ public class DataEditModule extends BaseMediaModule
 		data.setProperty("ordering", System.currentTimeMillis() + "" );
 		
 		searcher.saveData(data, inReq.getUser());
+		searcher.getPropertyDetailsArchive().clearCache();
 //		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";
 //		XmlFile file = getXmlArchive().getXml(path, "property");
 //
@@ -793,6 +797,8 @@ public class DataEditModule extends BaseMediaModule
 		{
 			getPageManager().removePage(viewPage);
 		}
+		searcher.getPropertyDetailsArchive().clearCache();
+
 	}
 /**
  * @deprecated Not useful
@@ -1343,8 +1349,8 @@ public class DataEditModule extends BaseMediaModule
 		for (Iterator iterator = viewsearcher.search(query).iterator(); iterator.hasNext();)
 		{
 			Data view = (Data) iterator.next();
-			String permissionvalue = (String)inReq.getPageValue("can" + view.getId() );
-			if( permissionvalue == null || Boolean.parseBoolean(permissionvalue) )
+			Object permissionvalue = inReq.getPageValue("can" + view.getId() );
+			if( permissionvalue == null || Boolean.parseBoolean(String.valueOf(permissionvalue)) )
 			{
 				String type = null;
 				if( currentdata != null )

@@ -13,8 +13,9 @@
 #elseif( $order.orderstatus == "error" )
 
 Error
-
-$!order.orderstatusdetail
+<pre>
+$!order.orderstatusdetails
+</pre>
 
 #else
 
@@ -29,3 +30,4 @@ Your Order is processing
 </div>
 
 #end
+

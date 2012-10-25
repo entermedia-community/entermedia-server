@@ -1,4 +1,3 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()">
 #set ($resultview = $userprofile.get('resultview'))
 
 #if (!$resultview || $resultview == 'table')
@@ -25,4 +24,4 @@ $context.putPageValue("pickable", false )
 $pages.include("$apphome/components/results/gallery.html", $context)
 </div>
 #end
-</div>
+

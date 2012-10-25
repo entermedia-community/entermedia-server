@@ -60,11 +60,12 @@ public class CategoryModule extends BaseMediaModule
 		{
 			name = inRequest.findValue("tree-name");
 		}
+		String appid = inRequest.findValue("applicationid");
 		
 		String treeid = inRequest.getRequestParameter("treeid");
 		if( treeid == null)
 		{
-			treeid = name + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
+			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
 		}		
 		WebTree webTree = (WebTree) inRequest.getPageValue( treeid );
 
@@ -167,7 +168,6 @@ public class CategoryModule extends BaseMediaModule
 		tree.getTreeRenderer().collapseNode(target);
 
 	}
-	
 	
 	public void reloadTree(WebPageRequest inReq) throws OpenEditException
 	{
@@ -351,5 +351,11 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
+	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
+	{
+		WebTree tree = getCatalogTree(inReq);
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getCategoryEditor().reBuildCategories();
+	}	
 
 }

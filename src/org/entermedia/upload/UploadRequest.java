@@ -146,7 +146,7 @@ public class UploadRequest implements ProgressListener
 			String allow = inReq.findValue("allowspecifiedpath");
 			if( Boolean.parseBoolean(allow))
 			{
-				path = inReq.findValue("path");
+				path = inReq.getRequestParameter("path");
 				if( path == null)
 				{
 					path = inItem.get("path");

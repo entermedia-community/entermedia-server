@@ -1,12 +1,9 @@
 package org.entermedia.connectors.lucene;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -15,31 +12,20 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.Searcher;
 import org.openedit.data.lucene.LuceneIndexer;
-import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.search.AssetSecurityArchive;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.util.FileUtils;
-import com.openedit.util.OutputFiller;
 
 public class LuceneAssetIndexer extends LuceneIndexer
 {
@@ -49,12 +35,24 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	protected MediaArchive fieldMediaArchive;
 	protected File fieldRootDirectory;
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
-	
+
+	public LuceneAssetIndexer()
+	{
+	}
 	public File getRootDirectory()
 	{
 		return fieldRootDirectory;
 	}
 
+	@Override
+	protected List getStandardProperties()
+	{
+		if (fieldStandardProperties == null)
+		{
+			fieldStandardProperties = Arrays.asList("name","description","primaryfile","id","category","viewasset","editasset","ordering","assettype","fileformat","datatype","keywords","sourcepath");
+		}
+		return fieldStandardProperties;
+	}
 	public void setRootDirectory(File inRootDirectory)
 	{
 		fieldRootDirectory = inRootDirectory;
@@ -126,94 +124,6 @@ public class LuceneAssetIndexer extends LuceneIndexer
 
 		return doc;
 	}
-
-	public void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
-	{
-		Asset asset = (Asset)inData;
-		String datatype = asset.getProperty("datatype");
-		if (datatype == null)
-		{
-			datatype = "original"; //What is this for?
-		}
-		doc.add(new Field("datatype", datatype, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-
-		if(asset.getId() != null)
-		{
-			Field id = new Field("id", asset.getId(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
-			doc.add(id); // Why is this tokenized? Guess so we can find lower
-							// case versions
-		}
-
-		Field path = new Field("sourcepath", asset.getSourcePath(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
-		doc.add(path);
-
-		String primaryfile = asset.getPrimaryFile();
-		if (primaryfile != null)
-		{
-			Field imagename = new Field("primaryfile", primaryfile, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
-			doc.add(imagename);
-		}
-		String fileformat = asset.getFileFormat();
-		if(fileformat != null)
-		{
-			Field format = new Field("fileformat", fileformat, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
-			doc.add(format);
-		}
-		
-		String assettype = asset.get("assettype");
-		if(assettype == null)
-		{
-			
-			Field format = new Field("assettype", "none", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
-			doc.add(format);
-			
-		}
-		
-		if (asset.getCatalogId() == null)
-		{
-			asset.setCatalogId(getMediaArchive().getCatalogId());
-		}
-		Field catalogid = new Field("catalogid", asset.getCatalogId(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
-		doc.add(catalogid);
-
-		// this may be invalid field of -1 but we still need to add it for
-		// the search to work
-		if (asset.getOrdering() != -1)
-		{
-			doc.add(new Field("ordering", Integer.toString(asset.getOrdering()), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
-		}
-		
-		String tagString = getTagString(asset);
-		doc.add(new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-
-		Set catalogs = buildCategorySet(asset);
-		populateDescription(doc, asset, inDetails, catalogs, tagString);
-
-		/*
-		 * 'category' contains all categories, including parents 
-		 */
-		populateJoinData("category", doc, catalogs, "id", true);
-		
-		
-//		Searcher searcher = getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
-//		SearchQuery query = searcher.createSearchQuery();
-//		query.addMatches("assetid", asset.getId());
-//		HitTracker tracker = searcher.search(query);
-		//populateJoinData("album", doc, tracker, "albumid", true);
-		
-		// populateSecurity(doc, asset, catalogs);
-		if (usesSearchSecurity())
-		{
-			populatePermission(doc, asset, "viewasset");
-		}
-		
-		/*
-		 * 'exact-category' only contains categories that we immediately belong to
-		 */
-		populateExactCategory(doc, asset);
-		
-		populateProperties(doc, asset, inDetails);
-	}
 /*
 	protected void addAttachment(Document inDoc, Asset inAsset, String inType, String orig,String origtype)
 	{
@@ -277,138 +187,95 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		populatePermission(inDoc, add, inPermission);
 	}
 
-	protected void populateProperties(Document inDoc, Asset inAsset, PropertyDetails inDetails) throws OpenEditException
+	@Override
+	protected void readStandardProperties(PropertyDetails inDetails, Data inData, StringBuffer inKeywords, Document doc)
 	{
-		List list = inDetails.findIndexProperties();
-		for (Iterator iter = list.iterator(); iter.hasNext();)
+		super.readStandardProperties(inDetails, inData, inKeywords, doc);
+		
+		Asset asset = (Asset)inData;
+		String datatype = asset.getProperty("datatype");
+		if (datatype == null)
 		{
-			PropertyDetail det = (PropertyDetail) iter.next();
-			String detid = det.getId();
-			if (detid.equals("name") || detid.equals("description") || detid.equals("primaryfile") ||
-					detid.equals("id") || detid.equals("category") || detid.equals("datatype"))
-			{
-				// These are already hardcoded
-				continue;
-			}
-			if (det.getDataType() != null && det.getDataType().endsWith("join"))
-			{
-				// get the values from another list
-				String id = det.getExternalId();
-				if (id == null)
-				{
-					id = detid;
-				}
-				String table = id.substring(0, id.indexOf('.'));
-				String field = id.substring(id.indexOf('.') + 1);
-				Searcher searcher = getSearcherManager().getSearcher(det.getCatalogId(getCatalogId()), table);
-				// get this data assetstates.stateid
-				// search by asset id
-				Collection values = searcher.fieldSearch("assetid", inAsset.getId());
-				if (values != null)
-				{
-					if (det.getDataType().startsWith("date"))
-					{
-						populateDateJoin(det, inDoc, values, field, true);
-					}
-					else if ( det.getDataType().startsWith("total"))
-					{
-						populateJoinDataCount(det.getId(), inDoc, values);
-					}
-					else
-					{
-						populateJoinData(det, inDoc, values, field);
-					}
-				}
-				continue;
-			}
-			String prop = inAsset.get(detid);
-			if (prop != null && prop.length() > 0)
-			{
-				if (det.isDate())
-				{
-					String date = inAsset.getProperty(detid);
-					if (date != null && date.length() > 0)
-					{
-						Date realdate = DateStorageUtil.getStorageUtil().parseFromStorage(date);
-						if( realdate != null)
-						{
-							prop = DateTools.dateToString(realdate, Resolution.SECOND);
-							inDoc.add(new Field(detid, prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-						}
-					}
-				}
-				else if (det.isDataType("double") || det.isDataType("number") || det.isDataType("long"))
-				{
-					try
-					{
-						String sortable = getNumberUtils().double2sortableStr(prop);
-						inDoc.add(new Field(detid + "_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-					finally
-					{
-						inDoc.add(new Field(detid, prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-				}
-				else if (det.isStored())
-				{
-					inDoc.add(new Field(detid, prop, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-				}
-				else
-				{
-					inDoc.add(new Field(detid, prop, Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
-				}
-			}
-			
-			if(det.isDataType("position")){
-				String lat = inAsset.get(detid + "_lat");
-				String lng = inAsset.get(detid + "_lng");
-				
-				try
-				{
-					if(lat != null && lng != null){
-					String sortable = getNumberUtils().double2sortableStr(lat);
-					inDoc.add(new Field(detid + "_lat_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					inDoc.add(new Field(detid + "_lat", lat, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					
-					
-					
-					sortable = getNumberUtils().double2sortableStr(lng);
-					inDoc.add(new Field(detid + "_lng_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					inDoc.add(new Field(detid + "_lng", lng, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					inDoc.add(new Field(detid + "_available", "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-					else{
-						inDoc.add(new Field(detid + "_available", "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-					
-					
-					
-				}
-				catch (Exception e){
-					log.info("no valid position data found");
-				}
-				finally
-				{
-				
-					//	inDoc.add(new Field(detid, prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
-			}
-			
-			
-			
-			else if (det.isDataType("permission"))
-			{
-				populatePermission(inDoc, inAsset, detid);
-			}
-			else if (det.isDataType("boolean"))
-			{
-				inDoc.add(new Field(det.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-			}
-
+			datatype = "original"; //What is this for?
 		}
+		doc.add(new Field("datatype", datatype, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 
+//		if(asset.getId() != null)
+//		{
+//			Field id = new Field("id", asset.getId(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
+//			doc.add(id); // Why is this tokenized? Guess so we can find lower
+//							// case versions
+//		}
+
+		Field path = new Field("sourcepath", asset.getSourcePath(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+		doc.add(path);
+
+		String primaryfile = asset.getPrimaryFile();
+		if (primaryfile != null)
+		{
+			Field imagename = new Field("primaryfile", primaryfile, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+			doc.add(imagename);
+		}
+		String fileformat = asset.getFileFormat();
+		if(fileformat != null)
+		{
+			Field format = new Field("fileformat", fileformat, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+			doc.add(format);
+		}
+		
+		String assettype = asset.get("assettype");
+		if(assettype == null)
+		{
+			assettype = "none";
+		}
+		PropertyDetail detail = inDetails.getDetail("assettype");
+		docAdd(detail, doc, "assettype", assettype, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+		
+		if (asset.getCatalogId() == null)
+		{
+			asset.setCatalogId(getMediaArchive().getCatalogId());
+		}
+		Field catalogid = new Field("catalogid", asset.getCatalogId(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+		doc.add(catalogid);
+
+		// this may be invalid field of -1 but we still need to add it for
+		// the search to work
+		if (asset.getOrdering() != -1)
+		{
+			doc.add(new Field("ordering", Integer.toString(asset.getOrdering()), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
+		}
+		
+		String tagString = getTagString(asset);
+		doc.add(new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
+
+		Set catalogs = buildCategorySet(asset);
+		populateDescription(doc, asset, inKeywords, catalogs, tagString);
+
+		/*
+		 * 'category' contains all categories, including parents 
+		 */
+		populateJoinData("category", doc, catalogs, "id", true);
+		
+		
+//		Searcher searcher = getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
+//		SearchQuery query = searcher.createSearchQuery();
+//		query.addMatches("assetid", asset.getId());
+//		HitTracker tracker = searcher.search(query);
+		//populateJoinData("album", doc, tracker, "albumid", true);
+		
+		// populateSecurity(doc, asset, catalogs);
+		if (usesSearchSecurity())
+		{
+			populatePermission(doc, asset, "viewasset");
+		}
+		
+		/*
+		 * 'exact-category' only contains categories that we immediately belong to
+		 */
+		populateExactCategory(doc, asset);
+
+		
 	}
-
 
 	protected void populateExactCategory(Document doc, Asset item)
 	{
@@ -433,17 +300,16 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		 */
 	}
 
-	protected void populateDescription(Document doc, Asset asset, PropertyDetails inDetails, Set inCategories, String inTagString)
+	protected void populateDescription(Document doc, Asset asset, StringBuffer fullDesc, Set inCategories, String inTagString)
 	{
-		if (asset.getName() != null)
-		{
-			// This cannot be used in sorts since it is TOKENIZED. For sorts use
-			doc.add(new Field("name", asset.getName(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-			doc.add(new Field("name_sortable", asset.getName().toLowerCase(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
-		}
+//		if (asset.getName() != null)
+//		{
+//			// This cannot be used in sorts since it is TOKENIZED. For sorts use
+//			doc.add(new Field("name", asset.getName(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
+//			doc.add(new Field("name_sortable", asset.getName().toLowerCase(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
+//		}
 		String htmlPath = asset.getSourcePath() + ".html";
 		// Low level reading in of text
-		StringBuffer fullDesc = new StringBuffer();
 		fullDesc.append(asset.getName());
 		fullDesc.append(' ');
 		
@@ -453,7 +319,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		fullDesc.append(asset.getId());
 		fullDesc.append(' ');
 		fullDesc.append(inTagString);
-		populateKeywords(fullDesc, asset, inDetails);
+		//populateKeywords(fullDesc, asset, inDetails);
 		// add a bunch of stuff to the full text field
 		//never need this anymore
 		/*
@@ -495,10 +361,10 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		}
 
 //		try
-		{
-			String result = fullDesc.toString();//fixInvalidCharacters(fullDesc.toString());
-			doc.add(new Field("description", result, Field.Store.NO, Field.Index.ANALYZED));
-		}
+//		{
+//			String result = fullDesc.toString();//fixInvalidCharacters(fullDesc.toString());
+//			doc.add(new Field("description", result, Field.Store.NO, Field.Index.ANALYZED));
+//		}
 //		catch (IOException ex)
 //		{
 //			throw new OpenEditException(ex);
@@ -546,7 +412,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		return fixed.toString();
 	}
 	*/
-
+/*
 	protected void populateKeywords(StringBuffer inFullDesc, Asset inAsset, PropertyDetails inDetails)
 	{
 		for (Iterator iter = inDetails.getDetails().iterator(); iter.hasNext();)
@@ -563,7 +429,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			}
 		}
 	}
-	
+*/	
 	protected String getTagString(Asset inAsset)
 	{
 		StringBuffer buffer = new StringBuffer();

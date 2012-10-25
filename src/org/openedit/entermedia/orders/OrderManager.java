@@ -106,6 +106,7 @@ public class OrderManager
 		cal.add(Calendar.MONTH, -1);
 		query.addAfter("date", cal.getTime());
 		query.addSortBy("historydateDown");
+		query.addExact("userid", inUser.getId());
 		return ordersearcher.search(query);
 	}
 	public void loadOrderHistoryForPage(HitTracker inPage)
@@ -784,7 +785,7 @@ public class OrderManager
 		if( assets.size() != items.size() )
 		{
 			Set assetids = new HashSet();
-			for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
+			for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
 				assetids.add(data.getId());

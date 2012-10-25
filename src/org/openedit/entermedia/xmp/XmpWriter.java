@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.scanner.MetadataPdfExtractor;
 import org.openedit.util.GenericsUtil;
 
 import com.openedit.OpenEditException;
@@ -21,15 +24,13 @@ import com.openedit.page.Page;
 import com.openedit.util.Exec;
 import com.openedit.util.ExecResult;
 
-public class XmpWriter {
+public class XmpWriter 
+{
+	private static final Log log = LogFactory.getLog(XmpWriter.class);
+
 	protected Exec fieldExec;
 	
-	public void addClearKeywords(List<String> inComm)
-	{
-		inComm.add("-Subject=");
-	}
-	
-	
+
 	public void addKeyword(String inKeyword, List<String> inComm)
 	{
 		inComm.add("-Subject+="+inKeyword);
@@ -57,7 +58,6 @@ public class XmpWriter {
 	
 	public void addSaveKeywords(List<String> inKeywords, List<String> inComm) throws Exception
 	{
-		addClearKeywords(inComm);
 		for (String key: inKeywords) 
 		{
 			addKeyword(key, inComm);
@@ -66,10 +66,33 @@ public class XmpWriter {
 
 	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception
 	{
-		File original = new File(inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath());
-		return saveMetadata(inArchive, inAsset,original);
+		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
+		List<String> comm = createCommand(inArchive);
+		addSaveFields(inArchive, inAsset, comm);			
+		comm.add(path);
+		boolean ok = runExec(comm);
+		return ok;
+
 	}	
-	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset, File inFile) throws Exception
+	
+	public boolean saveKeywords(MediaArchive inArchive, Asset inAsset) throws Exception
+	{
+		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
+		List<String> comm = createCommand(inArchive);
+		List removekeywords = new ArrayList(comm);
+		removekeywords.add("-Subject="); //This only works on a line by itself
+		removekeywords.add(path);
+		boolean ok = runExec(removekeywords);
+		if( ok ) 
+		{
+			addSaveKeywords(inAsset.getKeywords(), comm);
+			comm.add(path);
+			ok = runExec(comm);
+		}
+		return ok;
+	}
+
+	protected List<String> createCommand(MediaArchive inArchive)
 	{
 		List<String> comm = GenericsUtil.createList();
 		Page etConfig = inArchive.getPageManager().getPage(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
@@ -78,13 +101,10 @@ public class XmpWriter {
 			comm.add("-config");
 			comm.add(etConfig.getContentItem().getAbsolutePath());
 		}
-		
-		addSaveKeywords(inAsset.getKeywords(), comm);
-		addSaveFields(inArchive, inAsset, comm);
-		
-		comm.add(inFile.getAbsolutePath());
-		return runExec(comm);
+		comm.add("-overwrite_original");
+		return comm;
 	}
+
 	
 	public void addSaveFields(MediaArchive inArchive, Asset inAsset, List<String> inComm)
 	{
@@ -99,11 +119,16 @@ public class XmpWriter {
 			String[] tags = detail.getExternalIds();
 			
 			String value = inAsset.get(detail.getId());
-			if( value != null && detail.getId().equals("imageorientation"))
+			if( detail.getId().equals("imageorientation"))
 			{
-				Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
-				Data rotationval = (Data)searcher.searchById(value);
-				value = rotationval.get("rotation");
+				value = inAsset.get("rotation"); //custom rotation. this should be set by the rotation tool?
+//				Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
+//				Data rotationval = (Data)searcher.searchById(value);
+//				value = rotationval.get("rotation");
+				if( value == null )
+				{
+					continue; //Only set the value if rotation is set
+				}
 			}
 			addTags(tags, value, inComm);
 		}
@@ -115,10 +140,12 @@ public class XmpWriter {
 		{
 			inValue = "";
 		}
-		
-		for(String tag: inTags)
+		for (int i = 0; i < inTags.length; i++) //We need to add them all since Photoshop adds them all. 
 		{
-			inComm.add("-" + tag + "=" + inValue);
+			if( inTags[i].contains(":") ) //Only write back to iptc: or xmp: fields
+			{
+				inComm.add("-" + inTags[i] + "=" + inValue);
+			}
 		}
 	}
 	

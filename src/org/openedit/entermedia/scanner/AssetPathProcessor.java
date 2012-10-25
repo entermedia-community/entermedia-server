@@ -72,16 +72,32 @@ public class AssetPathProcessor extends PathProcessor
 		
 		Asset	eventasset = (Asset)getAssetsToSave().get(0);	
 		List<String> someids = new ArrayList();
-
 		assetsids.addAll(someids);
 
+		List existingassets = new ArrayList();
+		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
+		{
+			Asset asset = (Asset) iter.next();
+			if( asset.getId() != null )
+			{
+				existingassets.add(asset);
+			}
+		}
+		
 		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); //this clears the list
 
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
+			//inArchive.removeGeneratedImages(asset); //Just in case?
 			Asset asset = (Asset) iter.next();
-			getMediaArchive().fireMediaEvent("assetcreated",inUser, asset);
-			someids.add(asset.getId());
+			if( existingassets.contains(asset) )
+			{
+				getMediaArchive().fireMediaEvent("asset/originalmodified",inUser, asset);				
+			}
+			else
+			{
+				getMediaArchive().fireMediaEvent("asset/assetcreated",inUser, asset);
+			}
 		}
 
 		getMediaArchive().fireMediaEvent("importing/assetsimported", inUser, eventasset, someids);

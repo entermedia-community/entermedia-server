@@ -15,7 +15,8 @@
 	<property id="accesskey" index="true" stored="true" editable="true" >Access Key</property>
 	<property id="secretkey" index="true" stored="true" editable="true" >Secret Key</property>
 
-	<property id="username" listid="publishtypes" index="true" stored="true" editable="true">User Name</property>
+	<property id="username"  index="true" stored="true" editable="true">User Name</property>
+	<property id="password"  index="true" stored="true" editable="true">Password</property>
 	<property id="convertpreset" index="true" stored="true" editable="true" type="list" >Default Profile</property>
 	
 	<property id="company" index="true" stored="true" editable="true" >Company Name</property>

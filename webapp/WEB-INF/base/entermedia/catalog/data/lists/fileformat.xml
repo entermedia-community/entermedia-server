@@ -26,6 +26,7 @@
 	<property id="m2ts" rendertype="video" creator="ffmpeg">M2TS</property>
 	
 	<property id="3gp" rendertype="video" creator="ffmpeg">3GP</property>
+	<property id="mxf" rendertype="video" creator="ffmpeg">MXF</property>
 	
 	<property id="mp4" rendertype="video" creator="ffmpeg" >MPEG 4 mp4</property>
 	<property id="m4v" rendertype="video" creator="ffmpeg" >MPEG 4 m4v</property>
@@ -50,6 +51,7 @@
 	<property id="ttf" rendertype="image" creator="imagemagick" >TTF</property>
 	<property id="wav" rendertype="audio" creator="audio" synctags="false">WAV</property>
 	<property id="wma" rendertype="audio"  synctags="false">WMA</property>
+	<property id="webm" rendertype="video"  synctags="false">WebM</property>
 
 	<property id="flac" rendertype="audio"  synctags="false">Flac</property>
 	<property id="m4a" rendertype="audio"  synctags="false">M4A</property>
@@ -65,6 +67,9 @@
 	<property id="pptx" rendertype="document" >PPTX</property>
 	<property id="wps" rendertype="document" >WPS</property>
 	<property id="odt" rendertype="document" >ODT</property>
+	<property id="ods" rendertype="document" >ODS</property>
+	<property id="odp" rendertype="document" >ODP</property>
+	
 	<property id="html" rendertype="document" >HTML</property>
 	<property id="xml" rendertype="document" >XML</property>
 	<property id="csv" rendertype="document" >CSV</property>

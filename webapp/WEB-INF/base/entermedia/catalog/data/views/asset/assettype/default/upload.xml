@@ -2,6 +2,6 @@
 
 <properties usagelabel="Contents">
   <property id="assettitle"/>
-  <property id="caption"/>
+  <property id="longcaption"/>
   <property id="assettype"/>
 </properties>

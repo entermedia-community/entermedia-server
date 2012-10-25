@@ -1,3 +1,6 @@
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()">
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
 
 #if( $hideheader &&  $hideheader == "false")
 $pages.include("$apphome/components/results/header.html",$context) 
@@ -63,7 +66,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 <div id="messagearea"></div>
 
 <script type="text/javascript">
-
+##Move all these scripts to results.js!
 toggleHit =  function(div, count, sessionid)
 {
     if (!e) var e = window.event;
@@ -93,4 +96,5 @@ jQuery("input[name=pagetoggle]").click(function () {
 
 
 </script>   
+</div>
 </div>

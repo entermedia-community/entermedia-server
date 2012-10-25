@@ -9,15 +9,15 @@ public void init()
 {
 		MediaArchive mediaarchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher assetsearcher = mediaarchive.getAssetSearcher();
-		Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 		PresetCreator presets = new PresetCreator();
-		
-		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
-		q.addSortBy("id");
 
-		HitTracker assets =  assetsearcher.search(q);
-		//HitTracker assets = assetsearcher.getAllHits();
+		HitTracker assets = assetsearcher.getAllHits();
+		
+		//SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
+		//q.addSortBy("id");
+		//HitTracker assets =  assetsearcher.search(q);
+		
 		assets.setHitsPerPage(10000);
 		
 		//TODO: Only check importstatus of imported?
@@ -36,44 +36,10 @@ public void init()
 				continue; //Bad index
 			}
 
-			//TODO: use a hash map for this?
-			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
-			SearchQuery query = presetsearcher.createSearchQuery();
-			query.addMatches("onimport", "true");
-			query.addMatches("inputtype", rendertype);
+			int more = presets.createMissingOnImport(mediaarchive, tasksearcher, asset);
+			added = added + more;
 			
-			boolean missingconversion = false;
-			HitTracker hits = presetsearcher.search(context,query);
-			hits.each
-			{
-				Data preset = (Data) presetsearcher.searchById(it.id);
-
-				if (!mediaarchive.doesAttachmentExist(asset,preset,0) )
-				{
-					missingconversion = true;
-					presets.createPresetsForPage(tasksearcher, preset, asset,0);
-					added++;
-				}
-				String pages = asset.get("pages");
-				if( pages != null )
-				{
-					int npages = Integer.parseInt(pages);
-					if( npages > 1 )
-					{
-						for (int i = 1; i < npages; i++)
-						{
-							int pagenum = i + 1;
-							if (!mediaarchive.doesAttachmentExist(asset,preset,pagenum) )
-							{
-								missingconversion = true;
-								presets.createPresetsForPage(tasksearcher, preset, asset, pagenum);
-								added++;
-							}
-						}
-					}
-				}
-			}
-			if( !missingconversion && !"complete".equals(asset.get("importstatus") ) )
+			if( more == 0 && !"complete".equals(asset.get("importstatus") ) )
 			{
 				//log.info("complete ${asset}");
 				asset.setProperty("importstatus","complete");

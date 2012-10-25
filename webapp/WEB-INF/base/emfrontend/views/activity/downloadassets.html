@@ -1,12 +1,11 @@
 <div class="em-rounded">
 #set($order = $data)
-#if( $order.userid != $user.getId() )
-Invalid order
+#if( $order.userid != $context.getUserName() )
+Invalid order, username does not match
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
-	#set($owner = $userManager.getUser($order.userid))
 	
 <form class="validate" id="usereditform"  method="post" action="$home$apphome/views/activity/download/processorder.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))

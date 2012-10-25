@@ -4,6 +4,7 @@
 	<property id="userid" viewtype="user" index="true" stored="true">User Id</property>
 	<property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>
 	<property id="orderstatus" editable="true"  datatype="list" index="true" stored="true">Status</property>
+	<property id="orderstatusdetails" editable="true"  index="true" stored="true">Status Details</property>
 	<property id="project" editable="true"  datatype="list" listid="order/projects" index="true" stored="true">Project</property>
 
 	<property id="applicationid"  index="true" stored="true">Application Ordered</property>

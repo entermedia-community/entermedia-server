@@ -126,6 +126,7 @@ uiload = function() {
 			}
 		);
 	
+	//deprecated, use data-confirm
 	jQuery(".confirm").livequery('click',
 			function(e)
 			{

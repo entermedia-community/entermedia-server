@@ -233,6 +233,7 @@ toggleorderitem = function(e)
 }
 */
 
+//Is this being used?
 getConfirmation = function(inText)	
 {
 	if(!confirm(inText))
