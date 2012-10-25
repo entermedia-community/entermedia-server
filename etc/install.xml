@@ -67,6 +67,9 @@
 		<delete quiet="true">
 			<fileset dir="./lib" includes="entermedia**.jar"/>
 		</delete>
+		<delete quiet="true">
+			<fileset dir="./lib" includes="dev_entermedia**.jar"/>
+		</delete>
 		
 		<mkdir dir="./lib"/>
 	    <delete>
