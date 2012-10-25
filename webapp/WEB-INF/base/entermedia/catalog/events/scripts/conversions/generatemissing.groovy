@@ -11,12 +11,13 @@ public void init()
 		Searcher assetsearcher = mediaarchive.getAssetSearcher();
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 		PresetCreator presets = new PresetCreator();
-		
-		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
-		q.addSortBy("id");
 
-		HitTracker assets =  assetsearcher.search(q);
-		//HitTracker assets = assetsearcher.getAllHits();
+		HitTracker assets = assetsearcher.getAllHits();
+		
+		//SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
+		//q.addSortBy("id");
+		//HitTracker assets =  assetsearcher.search(q);
+		
 		assets.setHitsPerPage(10000);
 		
 		//TODO: Only check importstatus of imported?
@@ -36,6 +37,7 @@ public void init()
 			}
 
 			int more = presets.createMissingOnImport(mediaarchive, tasksearcher, asset);
+			added = added + more;
 			
 			if( more == 0 && !"complete".equals(asset.get("importstatus") ) )
 			{
