@@ -57,6 +57,7 @@ files.deleteMatch( web + "/lib/lucene*.jar");
 
 
 
+files.copyFileByMatch( tmp + "/WEB-INF/lib/entermedia*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/dev_entermedia*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/groovy-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/aws-*.jar", web + "/lib/");
