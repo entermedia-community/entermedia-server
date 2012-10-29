@@ -53,6 +53,9 @@
   	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />
   	<permission id="viewcategorynav" permissiontype="view" name="Category Navigation" description="Enables the Category Navigation in the sidebar." />
 	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." />
+	<permission id="viewlibrarysearch" permissiontype="view" name="User Libraries" description="Enables a list of libraries on the sidebar." />
+
+
 
 	<permission id="viewdevelopertools" permissiontype="view" name="Developer Tools" description="Enables advanced developer tools within various pages." />
 

@@ -2249,12 +2249,15 @@ tr.odd {
     padding: 0;
     margin: -10px -14px;
 }
+
 .search-list li, .sidebar-list li {
     margin: 0;
     padding: 0;
     list-style: none;
     color: #49494b;
 }
+
+
 .search-list li a.search-href, .sidebar-list a {
     padding: 10px 40px;
     margin: 0 -10px;
@@ -2318,6 +2321,12 @@ tr.odd {
     background: #3daacd;
     color: #fff;
 }
+
+.search-list li.currentsubtle a.search-href, .sidebar-list li.currentsubtle a {
+    background: #c9e8f2;
+}
+
+
 .search-list li.current .search-save a {
     background-position: 0 0;
     opacity: 0.5;

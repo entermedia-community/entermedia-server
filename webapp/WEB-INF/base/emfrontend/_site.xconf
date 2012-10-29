@@ -275,6 +275,10 @@
 		</and>		
   </permission>
 
+  <permission name="viewlibrarysearch">
+	<userprofile property="viewlibrarysearch" equals="true" />	  
+  </permission>
+
 
   <permission name="viewcategorynav">
      <userprofile property="viewcategorynav" equals="true" />
