@@ -86,6 +86,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	protected Set buildCategorySet(Asset inAsset)
 	{
 		HashSet allCatalogs = new HashSet();
+		allCatalogs.add(getMediaArchive().getCategoryArchive().getRootCategory());
 		Collection catalogs = inAsset.getCategories();
 		if( catalogs.size() > 0 )
 		{
@@ -95,10 +96,6 @@ public class LuceneAssetIndexer extends LuceneIndexer
 				Category catalog = (Category) iter.next();
 				buildCategorySet(catalog, allCatalogs);
 			}
-		}
-		else
-		{
-			allCatalogs.add(getMediaArchive().getCategoryArchive().getRootCategory());
 		}
 		return allCatalogs;
 	}
