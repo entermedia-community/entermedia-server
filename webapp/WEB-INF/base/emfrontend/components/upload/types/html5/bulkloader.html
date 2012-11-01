@@ -1,24 +1,68 @@
 <div id="bulkuploader">
-    <div class="ui-widget uipanel" style="width: 520px;">
-        <div  class="ui-widget-header">Categories</div>
-        <div  class="ui-widget-content no-padding" style="padding: 0;">
-            	<div id="treescroller">
-                    $pages.include("$apphome/components/emtree/index.html?tree-name=categoryAssetPickerTree&showchecks=true&editabletree=true&allowselections=true",$context)
-                </div>
-        </div>
-    </div>
-    <div class="ui-widget uipanel" style="width: 520px; margin-top: 20px;">
-        <div  class="ui-widget-header">Metadata</div>
-        <div  class="ui-widget-content">
-            $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() ) 
-            $context.putPageValue("view","asset/multipleupload")    
-    
-    
-            $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-    
-            <input type="hidden" name="sourcepath" value="$formatteddate" />
 
-        </div>
-    </div>
-    <input class="btn right large" type="submit" id="finishbutton" value="Upload" /> 
+#if( $canpickuploadfolder )
+
+
+        
+<label>[[Upload Into:]] </label>
+
+
+#set( $listid = "hotfolder")
+#set( $folders = $searcherManager.getList($catalogid,$listid) )
+<select name="sourcepath" id="list-folders">
+	#foreach($folder in $folders)
+		<option value="$folder.subfolder/$formatteddate">$folder</option>
+	#end
+	#if( $editfolders )
+	<option value="new-$listid">-- New Folder --</option>
+	#end
+</select>
+<div class="note">[[Choose a folder to upload assets into.]] </div>
+
+ 
+<div class="editfield" id="listeditor-$listid" style="display: none;">
+        <input  type="text" />
+        <input  class="btn save" type="button" value="Save" />
+        <a class="btn cancel" style="cursor: pointer; top: 0;">Cancel</a>
+</div>
+
+
+<script>
+
+    $('#list-$listid').change(function(){
+        if ( $(this).val() == "new $listid" )  {
+            $('#list-$listid').hide();
+            $('#listeditor-$listid').show();
+        }
+    });
+    
+    $('#listeditorbtn-$listid').click(function(){
+        $('#list-$listid').hide();
+        $('#listeditor-$listid').show();
+        $('#listeditorbtn-$listid').hide();
+        
+    });
+    $('#listeditor-$listid .cancel').click(function(){
+        $('#list-$listid').show();
+        $('#listeditor-$listid').hide();
+        $('#listeditorbtn-$listid').show();
+    });
+    $('#listeditor-$listid .save').click(function()
+    {
+    	##required: catalogid, searchtype, view, fieldname
+    	##optional: value, foreignkeyid and foreignkeyvalue
+    	#set( $xmledithome = $context.getPageProperty("xmledithome"))
+		var val = $('#listeditor-$listid input[type="text"]').val();
+       	$("#listdetail_$fieldname").load("$xmledithome/listsave.html?catalogid=$catalogid&listid=${listid}&searchtype=$listid&view=$!view&fieldname=$fieldname&foreignkeyid=$!foreignkeyid&foreignkeyvalue=$!foreignkeyvalue&newrow=" + encodeURI(val) )  	
+    	$('#list-$listid').show();
+    	
+    });
+
+</script>
+
+        
+#else    
+    <input type="hidden" name="sourcepath" value="users/$context.getUserName()/$formatteddate" />
+#end
+    <input class="btn right large" type="submit" id="finishbutton" value="Next >>" /> 
 </div>       

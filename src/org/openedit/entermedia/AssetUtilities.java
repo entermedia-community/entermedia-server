@@ -105,6 +105,7 @@ public class AssetUtilities
 			asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			asset.setProperty("assetviews", "1");
 			asset.setProperty("importstatus", "imported");
+			asset.setProperty("pushstatus", "resend");
 			//asset.setProperty("primaryfile", name);
 			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
 			if( assettype != null)

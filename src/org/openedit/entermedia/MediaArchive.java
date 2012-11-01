@@ -20,6 +20,7 @@ import org.entermedia.error.EmailErrorHandler;
 import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
@@ -79,6 +80,7 @@ public class MediaArchive
 	protected Replacer fieldReplacer;
 	protected MimeTypeMap fieldMimeTypeMap;
 	protected LockManager fieldLockManager;
+	protected Map<String,Data> fieldLibraries;
 	
 	public String getMimeTypeIcon(String inFormat)
 	{
@@ -1357,6 +1359,7 @@ public class MediaArchive
 		return manager.runSharedPathEvent(getCatalogHome() + "/events/" + inName + ".html");
 	}
 	
+	//What is this for?
 	public HitTracker getTracker(int total)
 	{
 		List all = new ArrayList(total);
@@ -1367,4 +1370,36 @@ public class MediaArchive
 		HitTracker tracker = new ListHitTracker(all);
 		return tracker;
 	}
+	public Data getLibrary(String inId)
+	{
+		Data library = getLibraries().get(inId);
+		if( library == null )
+		{
+			library = getSearcherManager().getData(getCatalogId(), "library", inId);
+			if( library == null )
+			{
+				library = BaseData.NULL;
+			}
+			if( getLibraries().size() > 1000 )
+			{
+				getLibraries().clear();
+			}
+			getLibraries().put(inId,library);
+		}
+		if ( library == BaseData.NULL )
+		{
+			return null;
+		}
+		return library;
+	}
+	
+	protected Map<String,Data> getLibraries()
+	{
+		if (fieldLibraries == null)
+		{
+			fieldLibraries = new HashMap<String,Data>();
+		}
+		return fieldLibraries;
+	}
+
 }

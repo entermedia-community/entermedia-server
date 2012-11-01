@@ -2,5 +2,6 @@
  <layout />
   <inner-layout />
 	<path-action name="MediaArchiveModule.getAsset"  />
-<path-action name="AssetControlModule.loadAssetPermissions"/>
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
+
 </page>

@@ -70,16 +70,24 @@ public class HotFolderModule extends BaseMediaModule
 		searcher.updateData(inReq, fields, data);			
 		
 		//save subfolder with the value of the end of externalpath
-		String epath = data.get("externalpath").trim();
-		epath = epath.replace('\\', '/');
-		if( epath.endsWith("/"))
+		String epath = data.get("externalpath");
+		if( epath != null )
 		{
-			epath = epath.substring(0,epath.length() - 1);
+			epath = epath.trim();
+			epath = epath.replace('\\', '/');
+			if( epath.endsWith("/"))
+			{
+				epath = epath.substring(0,epath.length() - 1);
+			}
+			String subfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
+			data.setProperty("subfolder", subfolder);
 		}
-		String subfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
-		data.setProperty("subfolder", subfolder);
-		getHotFolderManager().saveFolder(archive.getCatalogId(),data);
+		else
+		{
+			data.setProperty("subfolder", data.getName());
+		}
 		
+		getHotFolderManager().saveFolder(archive.getCatalogId(),data);
 	}
 	protected HotFolderManager getHotFolderManager()
 	{

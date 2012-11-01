@@ -5,7 +5,9 @@
 		<a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id" class="folder">
 			<div class="name">
 				<div class="alias" title="Alias">$folder.name</div>
+				#if( $folder.externalpath )
 				<div class="path" title="$folder.externalpath">$folder.externalpath</div>
+				#end
 				<div class="last-activity">Last Scanned: $!context.getDateTime($folder.lastscanstart)</div>
 			</div>
 		</a>

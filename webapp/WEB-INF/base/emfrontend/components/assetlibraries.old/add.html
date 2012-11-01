@@ -1,6 +1,9 @@
 
-<h4>[[Add Library]]:</h4> 
+<h4>[[Add LibraryXX]]:</h4> 
 
+xcxx
+
+$content.filter_division
 
 #set( $divisions = $searcherManager.getList($catalogid,"division") )
 #if( $content.filter_division )
@@ -23,7 +26,28 @@
 <input type="hidden" name="fieldname" value="libraries" /><br>
 
 		<div id="detail_library">
-			$pages.include("${apphome}/components/xml/types/simplelist.html?searchtype=library&fieldname=libraries&label=Library",$context)
+
+
+#set ($catalogid = $context.getRequestParameter('catalogid'))
+#set ($fieldname = $context.getRequestParameter('fieldname'))
+#set ($searchtype = $context.getRequestParameter('searchtype'))
+#set ($foreignkeyid = $context.getRequestParameter('foreignkeyid')) 
+#set ($foreignkeyvalue = $context.getRequestParameter('foreignkeyvalue')) 
+#set ($label = $context.getRequestParameter('label')) 
+#if( $foreignkeyid && $foreignkeyvalue)
+	#set( $searcher = $searcherManager.getSearcher($catalogid,$searchtype) )
+	#set( $hits = $searcher.fieldSearch($foreignkeyid,$foreignkeyvalue) )
+#else
+	#set( $hits = $searcherManager.getList($catalogid,$searchtype) )
+#end
+<select name="${fieldname}.value">
+<option value=""></option>
+#foreach( $hit in $hits)
+	<option #if ($val && $val == $hit.id) selected #end value="$hit.id">$hit</option>
+#end
+</select>
+
+
 		</div>		
 
 

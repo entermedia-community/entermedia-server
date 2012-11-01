@@ -10,15 +10,17 @@
 	#set( $path = "/WEB-INF/data/$catalogid/originals/hotfolder1" )
 #end
 ##TODO: Use a detail editor here
-<label>[[Local Path]]</label>
-<input type="hidden" name="field" value="externalpath" />
-<input class="field required" name="externalpath.value" value="$!data.externalpath" />
-<div class="note">[[Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</div> 
 
-<label>[[Folder Alias]]</label>
+<label>[[Folder Name]]</label>
 <input type="hidden" name="field" value="name" />
 <input class="field short required" name="name.value" value ="$!data.name" />
-<div class="note">[[Folder nickname.]]</div>
+<div class="note">[[Folder directory name, lowercase, no special characters.]] </div>
+
+<label>[[External Path]]</label>
+<input type="hidden" name="field" value="externalpath" />
+<input class="field" name="externalpath.value" value="$!data.externalpath" />
+<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</div> 
+
 
 <label>[[Date Filter]]</label>
 <input type="hidden" name="field" value="lastscanstart" />

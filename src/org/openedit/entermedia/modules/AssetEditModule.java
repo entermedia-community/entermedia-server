@@ -400,7 +400,7 @@ public class AssetEditModule extends BaseMediaModule
 		CompositeAsset composite = new CompositeAsset();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
-			Object target = (Object) iterator.next();
+			Data target = (Data) iterator.next();
 			Asset p = null;
 			if( target instanceof Asset)
 			{
@@ -408,8 +408,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			else
 			{
-				String id = hits.getValue(target, "id");
-				p = store.getAsset(id);
+				p = store.getAssetBySourcePath(target.getSourcePath());
 			}
 			if( p != null)
 			{
@@ -749,7 +748,21 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 
-		createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
+		HitTracker hits = createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
+		if( hits != null )
+		{
+			if (hits.size() ==  1 )
+			{
+				String sourcepath = ((Data)hits.first()).getSourcePath();
+				Asset asset = archive.getAssetBySourcePath(sourcepath);
+				inReq.putPageValue("asset", asset);
+			}
+			else
+			{		
+				inReq.setRequestParameter("multihitsname", hits.getSessionId());
+				createMultiEditData(inReq);
+			}
+		}
 	}
 
 	public void createAssetsFromFile(WebPageRequest inReq)
@@ -835,7 +848,7 @@ public class AssetEditModule extends BaseMediaModule
 			
 		}
 	}
-	protected void createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
+	protected HitTracker createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
@@ -865,7 +878,7 @@ public class AssetEditModule extends BaseMediaModule
 		if( tracker.size() == 0 )
 		{
 			log.error("No pages uploaded");
-			return;
+			return null;
 		}
 		StringBuffer allids = new StringBuffer();
 		List listids = new ArrayList();
@@ -885,13 +898,14 @@ public class AssetEditModule extends BaseMediaModule
 		
 		SearchQuery q = archive.getAssetSearcher().createSearchQuery();
 		q.addOrsGroup("id", allids.toString() );
-		archive.getAssetSearcher().cachedSearch(inReq, q);
+		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
 		
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
 			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
 		}
+		return results;
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
 	{

@@ -1,1 +1,7 @@
-$pages.include("$apphome/components/results/index.html",$context)
+#if( $hits.size() == 1)
+	$pages.include("$apphome/views/modules/asset/editor/index.html",$context)
+#elseif( $hits.size() > 0)
+	$pages.include("$apphome/views/modules/asset/editor/multiedit/index.html",$context)
+#else
+[[No upload found]]	
+#end
