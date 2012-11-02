@@ -15,6 +15,7 @@ import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.push.PublishChecker;
 import org.openedit.entermedia.push.PushManager;
 
 import com.openedit.WebPageRequest;
@@ -24,7 +25,18 @@ public class SyncModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(SyncModule.class);
 	protected PushManager fieldPushManager;
+	protected PublishChecker fieldPublishChecker;
 	
+
+	public PublishChecker getPublishChecker()
+	{
+		return fieldPublishChecker;
+	}
+
+	public void setPublishChecker(PublishChecker inPublishChecker)
+	{
+		fieldPublishChecker = inPublishChecker;
+	}
 
 	public PushManager getPushManager()
 	{
@@ -151,7 +163,7 @@ public class SyncModule extends BaseMediaModule
 		{
 			archive.fireSharedMediaEvent("push/pushassets");
 		}
-		
+		getPushManager().toggle(archive.getCatalogId());
 	}
 	public void clearQueue(WebPageRequest inReq) throws Exception
 	{
@@ -205,7 +217,6 @@ public class SyncModule extends BaseMediaModule
 
 		Collection all = archive.getAssetSearcher().getAllHits(inReq);
 		inReq.putPageValue("assets", all);
-
 		
 		Collection importpending = getPushManager().getImportPendingAssets(archive);
 		inReq.putPageValue("importpending", importpending);
@@ -235,8 +246,8 @@ public class SyncModule extends BaseMediaModule
 	public void pollRemotePublish(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-	
-		getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
+		getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
+		//getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
 	}
 	
 }

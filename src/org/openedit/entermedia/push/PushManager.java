@@ -1,6 +1,7 @@
 package org.openedit.entermedia.push;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
@@ -19,6 +21,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.openedit.Data;
@@ -58,7 +61,15 @@ public class PushManager
 		//TODO: Support a session key and ssl
 		method.addParameter("accountname", account);
 		method.addParameter("password", password);
-		execute(inCatalogId, method);
+		//execute(inCatalogId, method);
+		try
+		{
+			send(inCatalogId, method);
+		}
+		catch ( Exception ex )
+		{
+			throw new OpenEditException(ex);
+		}
 		return true;
 	}
 
@@ -306,20 +317,34 @@ public class PushManager
 	{
 		try
 		{
-			int status = getClient(inCatalogId).executeMethod(inMethod);
-			if (status != 200)
-			{
-				throw new Exception("Request failed: status code " + status);
-			}
-			Element result = reader.read(inMethod.getResponseBodyAsStream()).getRootElement();
-			return result;
+			return send(inCatalogId, inMethod);
 		}
 		catch (Exception e)
 		{	
-
+			fieldClient = null;//log back in
+		}
+		try
+		{
+			log.error("Retry");
+			return send(inCatalogId, inMethod);
+		}
+		catch (Exception e)
+		{	
 			throw new RuntimeException(e);
 		}
+		
 
+	}
+
+	protected Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	{
+		int status = getClient(inCatalogId).executeMethod(inMethod);
+		if (status != 200)
+		{
+			throw new Exception("Request failed: status code " + status);
+		}
+		Element result = reader.read(inMethod.getResponseBodyAsStream()).getRootElement();
+		return result;
 	}
 	
 	protected Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, String inRootPath, List<ContentItem> inFiles)
@@ -618,14 +643,19 @@ asset: " + asset);
 
 	public Collection getImportCompleteAssets(MediaArchive inArchive)
 	{
-		HitTracker hits = inArchive.getAssetSearcher().fieldSearch("importstatus", "complete");
+		SearchQuery query = inArchive.getAssetSearcher().createSearchQuery();
+		//query.addMatches("category","index");
+		query.addMatches("importstatus","complete");
+		query.addNot("editstatus","7");
+
+		//Push them and mark them as pushstatus deleted
+		HitTracker hits = inArchive.getAssetSearcher().search(query);
 		return hits;
 	}
 
 	public Collection getImportPendingAssets(MediaArchive inArchive)
 	{
 		SearchQuery query = inArchive.getAssetSearcher().createSearchQuery();
-		//query.addMatches("category","index");
 		query.addMatches("importstatus","imported");
 		query.addNot("editstatus","7");
 
@@ -822,6 +852,12 @@ asset: " + asset);
 		
 		publishqeuerow =  (Data)publishQueueSearcher.searchById("remote" + publishqueueid);
 		return publishqeuerow;
+	}
+
+
+	public void toggle(String inCatalogId)
+	{
+		fieldClient = null;
 	}
 
 

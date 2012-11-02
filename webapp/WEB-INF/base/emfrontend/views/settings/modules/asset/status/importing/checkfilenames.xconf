@@ -4,7 +4,7 @@
 	<property name="eventname">Find Bad Filenames</property>	
 	<property name="eventdescription">Looks for assets over 250 characters or invalid file names for the web</property>	
 	<path-action name="Script.run" allowduplicates="true" >
-		<script>/${catalogid}/events/scripts/importing/checkfilenames.groovy</script>
+		<script>./checkfilenames.groovy</script>
 	</path-action>
 	<inner-layout />
 	

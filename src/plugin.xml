@@ -1447,11 +1447,17 @@
 
 	<bean id="SyncModule" class="org.openedit.entermedia.modules.SyncModule" >
 		<property name="pushManager"><ref bean="pushManager" /></property>
+		<property name="publishChecker"><ref bean="publishChecker" /></property>
 	</bean>
 
 	<bean id="pushManager" class="org.openedit.entermedia.push.PushManager" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="userManager"><ref bean="userManager" /></property>
+	</bean>
+
+	<bean id="publishChecker" class="org.openedit.entermedia.push.PublishChecker" >
+			<property name="moduleManager"><ref bean="moduleManager" /></property>
+			<property name="pushManager"><ref bean="pushManager" /></property>
 	</bean>
 	
 	<bean id="workspaceManager" class="org.entermedia.workspace.WorkspaceManager">

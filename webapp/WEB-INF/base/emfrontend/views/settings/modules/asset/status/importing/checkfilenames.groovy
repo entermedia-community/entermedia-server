@@ -46,13 +46,12 @@ import org.openedit.entermedia.scanner.AssetImporter;
 public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");
-	
 		
 		LongPathFinder finder = new LongPathFinder();
 		
 		finder.setPageManager(archive.getPageManager());
 
-		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/assets/";
+		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";
 		finder.setRootPath(assetRoot);
 		log.info("Checking for bad paths");
 		
@@ -64,20 +63,20 @@ public void init()
 		context.putPageValue("badpaths",finder.badfiles);	
 		Page root = archive.getPageManager().getPage(assetRoot);
 		int edited = 0;
-		for(String path: finder.badfiles)
+		for(String sourcepath: finder.badfiles)
 		{
-			String sourcepath = path.substring(root.getContentItem().getAbsolutePath().length());
-			sourcepath  = PathUtilities.extractDirectoryPath(sourcepath);
+			//sourcepath  = PathUtilities.extractDirectoryPath(sourcepath);
 			//log.info(path + " becomes " + sourcepath);
 			Asset asset = archive.getAssetBySourcePath(sourcepath);
-            if( asset != null )
+            if( asset != null && asset.get("importstatus") != "error")
             {
 				asset.setProperty("importstatus", "error");
+				asset.setProperty("pushstatus", "error");
 				archive.saveAsset(asset, null);
 				edited++;
 			}
 		}
-		log.info("saved ${edited} assets as error importstatus");
+		log.info("saved ${edited} assets as importstatus and pushstatus of error");
 			
 }
 
@@ -92,14 +91,17 @@ public void init()
 				String path = inContent.getAbsolutePath();
 				if( path.length() > 240 )
 				{
+					path = inContent.getPath().substring(getRootPath().length());
 					folders.add(path);
 				}
 			}
 			public  void processFile(ContentItem inContent, User inUser) 
 			{ 
-				if (!util.isLegalFilename(inContent.getPath())) 
+				String path = inContent.getAbsolutePath();
+				if (!util.isLegalFilename(path)) 
 				{
-					badfiles.add(inContent.getAbsolutePath() );
+					path = inContent.getPath().substring(getRootPath().length());
+					badfiles.add(path);
 				}
 			
 			}
