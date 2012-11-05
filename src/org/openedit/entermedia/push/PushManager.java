@@ -41,6 +41,7 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
+import com.openedit.util.PathUtilities;
 
 public class PushManager
 {
@@ -341,7 +342,7 @@ public class PushManager
 		int status = getClient(inCatalogId).executeMethod(inMethod);
 		if (status != 200)
 		{
-			throw new Exception("Request failed: status code " + status);
+			throw new Exception(inMethod + " Request failed: status code " + status);
 		}
 		Element result = reader.read(inMethod.getResponseBodyAsStream()).getRootElement();
 		return result;
@@ -370,7 +371,7 @@ public class PushManager
 			for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 			{
 				ContentItem file = (ContentItem) iterator.next();
-				String name  =  file.getPath().substring(inRootPath.length() + 1);
+				String name  =  PathUtilities.extractFileName( file.getPath() );
 				FilePart part = new FilePart("file." + count, name, new File( file.getAbsolutePath() ));
 				parts.add(part);
 				count++;
