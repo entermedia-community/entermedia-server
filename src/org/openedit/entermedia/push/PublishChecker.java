@@ -1,5 +1,6 @@
 package org.openedit.entermedia.push;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -25,7 +26,7 @@ public class PublishChecker
 		fieldModuleManager = inModuleManager;
 	}
 
-	protected List fieldCatalogIds;
+	protected List<String> fieldCatalogIds;
 	
 	public PushManager getPushManager()
 	{
@@ -37,8 +38,13 @@ public class PublishChecker
 		fieldPushManager = inPushManager;
 	}
 
-	public List getCatalogIds()
+	public List<String> getCatalogIds()
 	{
+		if (fieldCatalogIds == null)
+		{
+			fieldCatalogIds = new ArrayList<String>();
+		}
+
 		return fieldCatalogIds;
 	}
 
@@ -51,7 +57,7 @@ public class PublishChecker
 	{
 		if (fieldTimer == null)
 		{
-			fieldTimer = new Timer(true);
+			fieldTimer = new Timer("PublishChecker",true);
 		}
 		return fieldTimer;
 	}
@@ -90,8 +96,14 @@ public class PublishChecker
 				@Override
 				public void run()
 				{
-					MediaArchive archive = getMediaArchive(inCatalogid);
-					getPushManager().pollRemotePublish(archive);
+					try
+					{
+						MediaArchive archive = getMediaArchive(inCatalogid);
+						getPushManager().pollRemotePublish(archive);
+					} catch ( Throwable ex )
+					{
+						ex.printStackTrace();
+					}
 				}
 			};
 			
@@ -102,7 +114,7 @@ public class PublishChecker
 			{
 				period = Integer.parseInt(p);
 			}
-			getTimer().schedule(task, period);
+			getTimer().schedule(task, period,period);
 		}
 	}
 	
