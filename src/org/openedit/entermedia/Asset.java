@@ -434,24 +434,24 @@ public class Asset implements MultiValued
 		}
 		else
 		{
-			if( inString.startsWith("\""))
+			//grab the "" stuff first
+			int start = inString.indexOf("\"");
+			while( start > -1 )
 			{
-				inString = inString.substring(1,inString.length() -1 );
-				addKeyword(inString);
-			}
-			else
+				int end = inString.indexOf("\"", start + 1);
+				addKeyword(inString.substring(start + 1,end));
+				start = inString.indexOf("\"",end +1);
+			} 
+			
+			String[] keywords = inString.split("\\s+");
+			for(int i = 0; i < keywords.length; i++)
 			{
-				String[] keywords = inString.split("\\s+");
-				for(int i = 0; i < keywords.length; i++)
+				String key = keywords[i].trim();
+				if( key.length() == 0 || key.startsWith("\"") || key.endsWith("\""))
 				{
-					if (!getKeywords().contains(keywords[i]))
-					{
-						if( keywords[i].length() > 0)
-						{
-							addKeyword(keywords[i]);
-						}
-					}
+					continue;
 				}
+				addKeyword(key);
 			}
 		}
 	}
