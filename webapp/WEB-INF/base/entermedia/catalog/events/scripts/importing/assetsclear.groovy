@@ -30,7 +30,7 @@ public void init()
 	if(sourcepath == null)
 	{
 		q = searcher.createSearchQuery().append("category", "index");
-		q.addNot("editstatus","7");
+		//q.addNot("editstatus","7");
 	}
 	else
 	{
@@ -38,12 +38,13 @@ public void init()
 	}
 	assets = searcher.search(q);
 	assets.setHitsPerPage(10000);
-	long removed = 0;
-	long existed = 0;
+	int removed = 0;
 	List tosave = new ArrayList();
-	for(Object obj: assets)
+	int existed = 0;	
+for(Object obj: assets)
 	{
 		Data hit = (Data)obj;
+	
 		String path = hit.getSourcePath();
 		Asset asset = archive.getAssetBySourcePath(path);
 		if( asset == null)
@@ -62,12 +63,20 @@ public void init()
 		{
 			removed++;
 			//archive.removeGeneratedImages(asset);
-			asset.setProperty("editstatus", "7");
-			tosave.add(asset);
+                       if( asset.get("editstatus") != "7" )
+                       {
+			   asset.setProperty("editstatus", "7");
+			   tosave.add(asset);
+                        }
 		}
 		else
 		{
 			existed++;
+            if( asset.get("editstatus") != "6" )
+            {
+			   asset.setProperty("editstatus", "6");
+			   tosave.add(asset);
+            }
 		}
 		if( tosave.size() == 100 )
 		{

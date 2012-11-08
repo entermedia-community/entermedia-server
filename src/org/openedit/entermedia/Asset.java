@@ -385,7 +385,7 @@ public class Asset implements MultiValued
 		{
 			if (inValue != null)
 			{
-				addKeyword(inValue);
+				addKeywords(inValue);
 			}
 		}
 		else
@@ -415,8 +415,18 @@ public class Asset implements MultiValued
 		}
 		return false;
 	}
-
 	public void addKeyword(String inString)
+	{
+		if (inString == null)
+		{
+			log.debug("Null keyword");
+		}
+		else if( !getKeywords().contains(inString) )
+		{
+			getKeywords().add(inString);
+		}
+	}
+	public void addKeywords(String inString)
 	{
 		if (inString == null)
 		{
@@ -427,7 +437,7 @@ public class Asset implements MultiValued
 			if( inString.startsWith("\""))
 			{
 				inString = inString.substring(1,inString.length() -1 );
-				getKeywords().add(inString);
+				addKeyword(inString);
 			}
 			else
 			{
@@ -438,7 +448,7 @@ public class Asset implements MultiValued
 					{
 						if( keywords[i].length() > 0)
 						{
-							getKeywords().add(keywords[i]);
+							addKeyword(keywords[i]);
 						}
 					}
 				}

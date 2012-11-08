@@ -631,7 +631,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset = getMediaArchive(inReq).getAsset(id);
 		}
-		asset.addKeyword(key);
+		asset.addKeywords(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
 	}

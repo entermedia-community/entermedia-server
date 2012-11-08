@@ -389,17 +389,20 @@ public class PushManager
 			parts.add(new StringPart("uploadtype", inUploadType)); 
 			parts.add(new StringPart("id", prefix + inAsset.getId()));
 			
-//			StringBuffer buffer = new StringBuffer();
-//			for (Iterator iterator = inAsset.getCategories().iterator(); iterator.hasNext();)
-//			{
-//				Category cat = (Category) iterator.next();
-//				buffer.append( cat );
-//				if( iterator.hasNext() )
-//				{
-//					buffer.append(' ');
-//				}
-//			}
-//			parts.add(new StringPart("catgories", buffer.toString() ));
+			if( inAsset.getKeywords().size() > 0 )
+			{
+				StringBuffer buffer = new StringBuffer();
+				for (Iterator iterator = inAsset.getKeywords().iterator(); iterator.hasNext();)
+				{
+					String keyword = (String) iterator.next();
+					buffer.append( keyword );
+					if( iterator.hasNext() )
+					{
+						buffer.append('|');
+					}
+				}
+				parts.add(new StringPart("keywords", buffer.toString() ));
+			}
 			
 			Part[] arrayOfparts = parts.toArray(new Part[] {});
 
