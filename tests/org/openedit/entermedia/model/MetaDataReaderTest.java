@@ -43,7 +43,7 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 				{"psicología", "dudas", "cabeza"},
 				{"gimnasio", "femenino", "cuerpo", "belleza"},
 				{"oficinas", "empresa"},
-				{"paneles", "solares", "b/n", "energias", "renovables"},
+				{"paneles solares", "b/n", "energias renovables"},
 				{"peugeot","marca","coche"}
 		};
 		
@@ -56,7 +56,7 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 		
 		String[] testFiles = new String[] {"test1.tif"};
 		String[][] knownKeywords = new String[][] {
-				{"XMP", "Blue", "Square", "test", "file", "Photoshop", ".tif"}
+				{"XMP", "Blue Square", "test file", "Photoshop", ".tif"}
 		};
 		
 		checkFiles(testDir, testFiles, knownKeywords);
