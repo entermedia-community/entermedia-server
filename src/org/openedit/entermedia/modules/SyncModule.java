@@ -74,10 +74,21 @@ public class SyncModule extends BaseMediaModule
 		
 		String[] fields = inReq.getRequestParameters("field");
 		archive.getAssetSearcher().updateData(inReq, fields, target);
+
+		String keywords = inReq.getRequestParameter("keywords");
+		if( keywords != null )
+		{
+			String[] keys =  keywords.split("\\|");
+			for (int i = 0; i < keys.length; i++)
+			{
+				target.addKeyword(keys[i]);				
+			}
+		}
+
+		
 		archive.saveAsset(target, inReq.getUser());
 		List<FileUploadItem> uploadFiles = properties.getUploadItems();
 
-		
 		String type = inReq.findValue("uploadtype");
 		if( type == null )
 		{

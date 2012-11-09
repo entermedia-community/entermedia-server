@@ -258,6 +258,9 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			String libraryid = (String) iterator.next();
 			Data library = getMediaArchive().getLibrary(libraryid);
+			if(library == null){
+				continue;
+			}
 			inKeywords.append(library.getName());
 			inKeywords.append(' ');
 		}
