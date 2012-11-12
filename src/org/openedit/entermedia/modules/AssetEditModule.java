@@ -1825,7 +1825,7 @@ public class AssetEditModule extends BaseMediaModule
 		String[] assetids = inRequest.getRequestParameters("assetids");
 		MediaArchive mediaArchive = getMediaArchive(inRequest);
 		PresetCreator presets = new PresetCreator();
-		Searcher tasksearcher = mediaArchive.getSearcher("tasksearcher");
+		Searcher tasksearcher = mediaArchive.getSearcher("conversiontask");
 		int missing = 0;
 		for (int i = 0; i < assetids.length; i++)
 		{

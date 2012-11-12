@@ -364,7 +364,7 @@ public class CategoryEditor {
 		Page totrash = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/categories.xml" );
 		getPageManager().removePage(totrash);
 		
-		String	datadir = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/assets/";
+		String	datadir = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
 		getMediaArchive().getCategoryArchive().clearCategories();
 		Category root = getMediaArchive().getCategoryArchive().createNewCategory("Index");
 		getMediaArchive().getCategoryArchive().setRootCategory(root);

@@ -85,15 +85,21 @@ public class AssetUtilities
 			{
 				long filemmod = inContent.getLastModified();
 				Date saveddate = DateStorageUtil.getStorageUtil().parseFromStorage(existingdate);
-				
-				if (saveddate !=  null && filemmod == saveddate.getTime())
+				//We need to ignore milliseconds since our parsed date will not have them
+				if (saveddate !=  null)
 				{
-					inArchive.getAssetArchive().clearAsset(asset);
-					newasset = false;
+					long oldtime = saveddate.getTime();
+					filemmod = filemmod/1000;
+					oldtime = oldtime/1000;
+					if (filemmod == oldtime)
+					{
+						inArchive.getAssetArchive().clearAsset(asset);
+						newasset = false;
+					}
 				}
 			}
 		}
-		if (asset == null)
+		else
 		{
 			asset = inArchive.createAsset(sourcePath);
 			asset.setFolder(inContent.isFolder());

@@ -258,7 +258,11 @@ class ConvertRunner implements Runnable
 		Asset asset = inArchive.getAssetBySourcePath(inSourcepath);
 		if(asset == null)
 		{
-			return new ConvertResult();
+			throw new OpenEditException("Asset could not be loaded ${inSourcepath} marking as error"); 
+		}
+		if( asset.get("editstatus") == "7") 
+		{
+			throw new OpenEditException("Could not run conversions on deleted assets ${inSourcepath}");
 		}
 		inStructions.setAssetSourcePath(asset.getSourcePath());
 		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );

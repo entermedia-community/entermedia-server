@@ -2,6 +2,7 @@ package org.openedit.entermedia.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +35,8 @@ import org.openedit.entermedia.util.NaiveTrustManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
+import sun.misc.UUEncoder;
+
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
@@ -42,6 +45,7 @@ import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.util.PathUtilities;
+import com.openedit.util.URLUtilities;
 
 public class PushManager
 {
@@ -692,7 +696,6 @@ asset: " + asset);
 			uploadGenerated(inArchive, null, asset, tosave);
 		}
 		inArchive.getAssetSearcher().saveAllData(tosave, null);
-
 		
 	}
 
@@ -718,79 +721,13 @@ asset: " + asset);
 			for (Object row : root.elements("hit"))
 			{
 				Element hit = (Element)row;
-				String sourcepath = hit.attributeValue("assetsourcepath");
-				Asset asset = inArchive.getAssetBySourcePath(sourcepath);
-				String publishtaskid = hit.attributeValue("id");
-				String saveurl = server + "/media/services/rest/savedata.xml?save=true&catalogid=" + targetcatalogid + "&searchtype=publishqueue&id=" + publishtaskid;
-				if( asset == null )
+				try
 				{
-					log.info("Asset not found: " + sourcepath);
-					saveurl = saveurl + "&field=status&status.value=error";
-					saveurl = saveurl + "&field=errordetails&errordetails.value=original_asset_not_found";
-					PostMethod savemethod = new PostMethod(saveurl);
-					Element saveroot = execute(inArchive.getCatalogId(), savemethod);
+					runRemotePublish(inArchive, server, targetcatalogid, hit);
 				}
-				else
+				catch (Exception e)
 				{
-
-					String presetid = hit.attributeValue("presetid");
-					String destinationid = hit.attributeValue("publishdestination");
-					
-					Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
-
-					Data publishedtask = convertAndPublish(inArchive, asset, publishtaskid, preset, destinationid);
-
-					Page inputpage = null;
-					String type = null;
-					if( !"original".equals(preset.get("type")))
-					{
-						String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("outputfile");
-						inputpage= inArchive.getPageManager().getPage(input);
-						type = "generated";
-					}
-					else
-					{
-						inputpage = inArchive.getOriginalDocument(asset);
-						type = "originals";
-					}
-					if( inputpage.length() == 0 )
-					{
-						saveurl = saveurl + "&field=status&status.value=error";
-						saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=error";
-						saveurl = saveurl + "&field=errordetails&errordetails.value=output_not_found";
-						PostMethod savemethod = new PostMethod(saveurl);
-						Element saveroot = execute(inArchive.getCatalogId(), savemethod);
-						continue;
-					}
-
-					String status = publishedtask.get("status");
-	
-					saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=" +  status;
-					saveurl = saveurl + "&field=status&status.value=" + status;
-					if( status.equals("error") )
-					{
-						String errordetails = publishedtask.get("errordetails");
-						if( errordetails != null )
-						{
-							saveurl = saveurl + "&field=errordetails&errordetails.value=" + errordetails;
-						}
-	
-					} 
-					else if( destinationid.equals("0") )
-					{
-						//If this is a browser download then we need to upload the file
-						List<ContentItem> filestosend = new ArrayList<ContentItem>(1);
-
-						filestosend.add(inputpage.getContentItem());
-
-						String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
-						
-						upload(asset, inArchive, type, rootpath, filestosend);
-					}
-
-					
-					PostMethod savemethod = new PostMethod(saveurl);
-					Element saveroot = execute(inArchive.getCatalogId(), savemethod);
+					log.error("Could not save publish " , e);
 				}
 			}
 		}
@@ -799,6 +736,85 @@ asset: " + asset);
 			throw new OpenEditException(e);
 		}
 
+	}
+
+
+	protected void runRemotePublish(MediaArchive inArchive, String server, String targetcatalogid, Element hit) throws Exception
+	{
+		String sourcepath = hit.attributeValue("assetsourcepath");
+		Asset asset = inArchive.getAssetBySourcePath(sourcepath);
+		String publishtaskid = hit.attributeValue("id");
+		String saveurl = server + "/media/services/rest/savedata.xml?save=true&catalogid=" + targetcatalogid + "&searchtype=publishqueue&id=" + publishtaskid;
+		if( asset == null )
+		{
+			log.info("Asset not found: " + sourcepath);
+			saveurl = saveurl + "&field=status&status.value=error";
+			saveurl = saveurl + "&field=errordetails&errordetails.value=original_asset_not_found";
+			PostMethod savemethod = new PostMethod(saveurl);
+			Element saveroot = execute(inArchive.getCatalogId(), savemethod);
+		}
+		else
+		{
+
+			String presetid = hit.attributeValue("presetid");
+			String destinationid = hit.attributeValue("publishdestination");
+			
+			Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
+
+			Data publishedtask = convertAndPublish(inArchive, asset, publishtaskid, preset, destinationid);
+
+			Page inputpage = null;
+			String type = null;
+			if( !"original".equals(preset.get("type")))
+			{
+				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("outputfile");
+				inputpage= inArchive.getPageManager().getPage(input);
+				type = "generated";
+			}
+			else
+			{
+				inputpage = inArchive.getOriginalDocument(asset);
+				type = "originals";
+			}
+			if( inputpage.length() == 0 )
+			{
+				saveurl = saveurl + "&field=status&status.value=error";
+				saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=error";
+				saveurl = saveurl + "&field=errordetails&errordetails.value=output_not_found";
+				PostMethod savemethod = new PostMethod(saveurl);
+				Element saveroot = execute(inArchive.getCatalogId(), savemethod);
+				return;
+			}
+
+			String status = publishedtask.get("status");
+
+			saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=" +  status;
+			saveurl = saveurl + "&field=status&status.value=" + status;
+			if( status.equals("error") )
+			{
+				String errordetails = publishedtask.get("errordetails");
+				if( errordetails != null )
+				{
+					saveurl = saveurl + "&field=errordetails&errordetails.value=" + URLEncoder.encode(errordetails,"UTF-8");
+				}
+
+			} 
+			else if( destinationid.equals("0") )
+			{
+				//If this is a browser download then we need to upload the file
+				List<ContentItem> filestosend = new ArrayList<ContentItem>(1);
+
+				filestosend.add(inputpage.getContentItem());
+
+				String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
+				
+				upload(asset, inArchive, type, rootpath, filestosend);
+			}
+
+			
+			PostMethod savemethod = new PostMethod(saveurl);
+			Element saveroot = execute(inArchive.getCatalogId(), savemethod);					
+		}
 	}
 	
 	protected Data convertAndPublish(MediaArchive inArchive, Asset inAsset, String publishqueueid, Data preset, String destinationid) throws Exception
