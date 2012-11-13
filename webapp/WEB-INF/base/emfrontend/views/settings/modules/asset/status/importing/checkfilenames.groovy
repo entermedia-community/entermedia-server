@@ -63,20 +63,18 @@ public void init()
 		context.putPageValue("badpaths",finder.badfiles);	
 		Page root = archive.getPageManager().getPage(assetRoot);
 		int edited = 0;
-		for(String sourcepath: finder.badfiles)
-		{
-			//sourcepath  = PathUtilities.extractDirectoryPath(sourcepath);
-			//log.info(path + " becomes " + sourcepath);
-			Asset asset = archive.getAssetBySourcePath(sourcepath);
-            if( asset != null && asset.get("importstatus") != "error")
-            {
-				asset.setProperty("importstatus", "error");
-				asset.setProperty("pushstatus", "error");
-				archive.saveAsset(asset, null);
-				edited++;
-			}
-		}
-		log.info("saved ${edited} assets as importstatus and pushstatus of error");
+//		for(String sourcepath: finder.badfiles)
+//		{
+//			Asset asset = archive.getAssetBySourcePath(sourcepath);
+//            if( asset != null && asset.get("importstatus") != "error")
+//            {
+//				asset.setProperty("importstatus", "error");
+//				asset.setProperty("pushstatus", "error");
+//				archive.saveAsset(asset, null);
+//				edited++;
+//			}
+//		}
+		log.info("Complete " + finder.badfiles);
 			
 }
 
@@ -85,7 +83,7 @@ public void init()
 			List folders = new ArrayList();
 			List badfiles = new ArrayList();
 			FileUtils util = new FileUtils();
-			
+			int count = 0;
 			public void processDir(ContentItem inContent)
 			{
 				String path = inContent.getAbsolutePath();
@@ -97,13 +95,19 @@ public void init()
 			}
 			public  void processFile(ContentItem inContent, User inUser) 
 			{ 
-				String path = inContent.getAbsolutePath();
+				String path = inContent.getPath();
 				if (!util.isLegalFilename(path)) 
 				{
 					path = inContent.getPath().substring(getRootPath().length());
 					badfiles.add(path);
 				}
-			
+				count++;
+				if( count == 10000 )
+				{
+					System.out.println(  badfiles.size() + " bad files" );
+					count = 0;
+				}
+
 			}
 			
 		}	

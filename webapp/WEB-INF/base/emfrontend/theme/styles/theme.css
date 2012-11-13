@@ -1701,7 +1701,7 @@ small {
     display: block;
     height: 45px;
     width: 100%;
-    margin: -20px 0 20px 0;
+    margin: 0px 0 20px 0;
     padding: 0;
     border-bottom: 1px solid #a8dae4;
 }
@@ -1896,6 +1896,9 @@ ul#sub-nav li:hover ul {
     padding: 20px;
     border: 1px solid #cecb7c;
     margin: 15px 0;
+}
+.padding {
+    padding: 20px;
 }
 .no-padding {
     padding: 20px 0;
@@ -2104,12 +2107,12 @@ center #addcoment {
 #right-col {
     border-left: 1px solid #80b5c6;
     display: table-cell;
-    padding: 20px;
     margin: 0;
     min-height: 600px;
-    min-width: 95%;
+    min-width: 100%;
     border-radius: 0 0 5px 0;
     background: #f8fdff;
+    padding-bottom: 20px;
 }
 .ui-widget-header, #nav, #header .navlinks {
     background: #3bb0d2; /* Old browsers */
@@ -3347,7 +3350,6 @@ body #emcontainer .emasseteditorarea {
 #view-picker-content {
     border: none;
     box-shadow: none;
-    width: 836px;
 }
 #emcontainer .emdatafieldvalue {
     white-space: normal;
@@ -4411,7 +4413,7 @@ h2 {
     overflow-x: scroll;
 }
 .liquid-sizer {
-    margin: 0 -20px;
+
 }
 .liquid-sizer h2 {
     margin: 0 20px 20px 20px;

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
-	<property name="section">assets</property>
 	
 	<path-action name="Page.uploadFile"/>
 	<permission name="view">
@@ -11,19 +10,27 @@
 
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 
-	<property name="module">asset</property>
+	<inner-layout>/${themeprefix}/layouts/detaileditor.html</inner-layout>
 
-	<inner-layout>${themeprefix}/layouts/detaileditor.html</inner-layout>
+	<!-- Need to check for invites, may tweak the viewasset permission -->
+	<path-action name="MediaArchiveModule.getAsset"  />
+
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+	<path-action name="CommentModule.loadComments" />
+
+	<permission name="view">
+		<or>
+			<group name="administrators" />
+			<action name="AssetControlModule.canViewAsset" />
+		</or>
+	</permission>
+	
 	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
 	
-	<permission name="download">
-		<and>
-			<userprofile property="download" equals="true" />
-			<pagevalue name="canviewasset" equals="true"/>
-		</and>
-	</permission>	
-
 	<property name="section">details</property>
+	<property name="module">asset</property>
+	<property name="assettab">metadatageneral</property>
 
 	
 </page>

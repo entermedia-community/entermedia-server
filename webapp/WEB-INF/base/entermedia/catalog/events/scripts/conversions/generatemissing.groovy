@@ -14,14 +14,15 @@ public void init()
 
 		HitTracker assets = assetsearcher.getAllHits();
 		
-		//SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
-		//q.addSortBy("id");
-		//HitTracker assets =  assetsearcher.search(q);
+		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
+		q.addNot("editstatus","7");
+		q.addSortBy("id");
+		HitTracker assets =  assetsearcher.search(q);
 		
 		assets.setHitsPerPage(10000);
 		
-		//TODO: Only check importstatus of imported?
-		log.info("Processing ${assets.size()}" );
+		log.info("Processing ${assets.size()}" + q	);
+		
 		
 		long added = 0;
 		long checked  = 0;
