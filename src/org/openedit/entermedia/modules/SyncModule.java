@@ -19,6 +19,7 @@ import org.openedit.entermedia.push.PublishChecker;
 import org.openedit.entermedia.push.PushManager;
 
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.util.PathUtilities;
 
 public class SyncModule extends BaseMediaModule
@@ -226,7 +227,9 @@ public class SyncModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Collection all = archive.getAssetSearcher().getAllHits(inReq);
+		SearchQuery q = archive.getAssetSearcher().createSearchQuery().append("category","index");
+		q.addNot("editstatus","7");
+		Collection all =  archive.getAssetSearcher().search(q);
 		inReq.putPageValue("assets", all);
 		
 		Collection importpending = getPushManager().getImportPendingAssets(archive);
