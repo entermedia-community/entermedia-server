@@ -138,7 +138,7 @@ public class AssetPathProcessor extends PathProcessor
 			{
 				if (acceptDir(inInput))
 				{
-					processAssetFolder( inInput, inUser);
+					processAssetFolder( inInput, inUser, 3);
 				}
 			}
 			else
@@ -149,7 +149,7 @@ public class AssetPathProcessor extends PathProcessor
 				}
 			}
 		}
-		protected void processAssetFolder(ContentItem inInput, User inUser)
+		protected void processAssetFolder(ContentItem inInput, User inUser, int deepcheck)
 		{
 			String sourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 			Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
@@ -221,25 +221,48 @@ public class AssetPathProcessor extends PathProcessor
 				{
 					processchildren = true;
 				}
-				if( processchildren)
+				
+				deepcheck--;
+				if( deepcheck == 0 )
 				{
-					boolean checkfiles = true;
+					processchildren = false;
+				}
+				
+				if( processchildren && isRecursive())
+				{
 					
-					
-					if(  getLastCheckedTime() > inInput.getLastModified() )  //On Windows the folder times stamp matches the most recently modified file
-					{
-						//Updated when files are added or removed from a folder
-						checkfiles = false;
-					}
 					for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 					{
 						String path = (String) iterator.next();
 						ContentItem item = getPageManager().getRepository().getStub(path);
-						if( isRecursive() )
+						if( item.isFolder() )
 						{
-							if( checkfiles ||  item.isFolder())
+							if (acceptDir(item))
 							{
-								process(item, inUser);
+								//See if this folders sub folders should be forced to check or not. 
+								boolean keepignoringtime = false;
+								
+								if(  getLastCheckedTime() == 0 || getLastCheckedTime() < item.getLastModified() ) //this folder was edited. 
+								{
+									deepcheck = 3; //If we are deeper than 3 and still showed a mod stamp then check everything
+								}
+								
+//								if( deep > 2 )
+//								{
+//									ignoretime = true; //If we are deeper than 3 and still showed a mod stamp then check everything
+//								}
+								processAssetFolder( item, inUser, deepcheck);
+							}
+							
+						}
+						else
+						{
+							if( getLastCheckedTime() == 0 || getLastCheckedTime() < item.getLastModified() )  //On Windows the folder times stamp matches the most recently modified file
+							{
+								if (acceptFile(item))
+								{
+									processFile(item, inUser);
+								}
 							}
 						}
 					}
