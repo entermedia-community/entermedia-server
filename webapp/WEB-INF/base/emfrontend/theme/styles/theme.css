@@ -2698,9 +2698,7 @@ tr.odd {
 .emdropshadow.attachments {
     border-color: red;
 }
-#right-col.detail-editor > #eml-tab-subnav, #right-col.module-inner #resultsdiv {
-    margin: 0 -20px;
-}
+
 .user-input-area {
     padding: 0px 20px 8px 20px;
     margin-top: -10px;
