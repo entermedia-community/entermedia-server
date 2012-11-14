@@ -36,12 +36,13 @@ public void init()
 	{
 		q.addStartsWith("sourcepath", sourcepath);
 	}
+	q.addSortBy("id");
 	assets = searcher.search(q);
-	assets.setHitsPerPage(10000);
+	assets.setHitsPerPage(1000);
 	int removed = 0;
 	List tosave = new ArrayList();
 	int existed = 0;	
-for(Object obj: assets)
+	for(Object obj: assets)
 	{
 		Data hit = (Data)obj;
 	
@@ -63,11 +64,11 @@ for(Object obj: assets)
 		{
 			removed++;
 			//archive.removeGeneratedImages(asset);
-                       if( asset.get("editstatus") != "7" )
-                       {
+           if( asset.get("editstatus") != "7" )
+           {
 			   asset.setProperty("editstatus", "7");
 			   tosave.add(asset);
-                        }
+           }
 		}
 		else
 		{
