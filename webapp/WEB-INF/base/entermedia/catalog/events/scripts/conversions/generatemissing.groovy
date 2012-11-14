@@ -17,11 +17,9 @@ public void init()
 		//SearchQuery q = assetsearcher.createSearchQuery().append("category", "index");
 		q.addNot("editstatus","7");
 		q.addSortBy("id");
-		HitTracker assets =  assetsearcher.search(q);
+		Collection paths =  assetsearcher.search(q).getSourcePaths();
 		
-		assets.setHitsPerPage(1000); 
-		
-		log.info("Processing ${assets.size()}" + q	);
+		log.info("Processing ${paths.size()}" + q	);
 		
 		
 		long added = 0;
@@ -29,15 +27,15 @@ public void init()
 		long logcount  = 0;
 		long completed = 0;
 		List tosave = new ArrayList();
-		for (Data hit in assets)
+		for (String sourcepath in paths)
 		{
 			checked++;
 			logcount++;
 			
-			Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
+			Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
 			if( asset == null )
 			{
-				log.info("Missing" + hit.getSourcePath() );
+				log.info("Missing" + sourcepath );
 				continue; //Bad index
 			}
 
