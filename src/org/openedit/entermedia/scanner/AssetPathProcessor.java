@@ -131,14 +131,24 @@ public class AssetPathProcessor extends PathProcessor
 
 		return super.acceptFile(inItem);
 	}
-	
+	protected int getFolderDepthToCheck()
+	{
+		if( isOnWindows() )
+		{
+			return 2; //Windows propogates date mods up. Linux does not
+		}
+		else
+		{
+			return 3;
+		}
+	}
 		public void process(ContentItem inInput, User inUser)
 		{
 			if (inInput.isFolder())
 			{
 				if (acceptDir(inInput))
 				{
-					processAssetFolder( inInput, inUser, 3);
+					processAssetFolder( inInput, inUser, getFolderDepthToCheck() );
 				}
 			}
 			else
@@ -244,7 +254,7 @@ public class AssetPathProcessor extends PathProcessor
 								
 								if(  getLastCheckedTime() == 0 || getLastCheckedTime() < item.getLastModified() ) //this folder was edited. 
 								{
-									deepcheck = 3; //If we are deeper than 3 and still showed a mod stamp then check everything
+									deepcheck = getFolderDepthToCheck() + 1; //If we are deeper than 3 and still showed a mod stamp then check everything
 								}
 								
 //								if( deep > 2 )
@@ -261,7 +271,7 @@ public class AssetPathProcessor extends PathProcessor
 							{
 								if (acceptFile(item))
 								{
-									processFile(item, inUser);
+									processFile(item, inUser); //If we found a file add 1 to the deepcheck?
 								}
 							}
 						}
