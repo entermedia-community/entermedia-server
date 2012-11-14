@@ -50,7 +50,7 @@ public void init()
 			}
 			if( more == 0 && !"complete".equals(asset.get("importstatus") ) )
 			{
-				log.info("complete ${asset}");
+				//log.info("complete ${asset}");
 				asset.setProperty("importstatus","complete");
 				//mediaarchive.saveAsset(asset, null);
 				tosave.add(asset);
