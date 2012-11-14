@@ -12,43 +12,51 @@ public void init()
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 		PresetCreator presets = new PresetCreator();
 
-		HitTracker assets = assetsearcher.getAllHits();
-		
+		//HitTracker assets = assetsearcher.getAllHits();
 		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
+		//SearchQuery q = assetsearcher.createSearchQuery().append("category", "index");
 		q.addNot("editstatus","7");
 		q.addSortBy("id");
 		HitTracker assets =  assetsearcher.search(q);
 		
-		assets.setHitsPerPage(10000);
+		assets.setHitsPerPage(1000); 
 		
 		log.info("Processing ${assets.size()}" + q	);
 		
 		
 		long added = 0;
 		long checked  = 0;
+		long logcount  = 0;
 		long completed = 0;
 		List tosave = new ArrayList();
 		for (Data hit in assets)
 		{
 			checked++;
+			logcount++;
+			
 			Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 			if( asset == null )
 			{
+				log.info("Missing" + hit.getSourcePath() );
 				continue; //Bad index
 			}
 
 			int more = presets.createMissingOnImport(mediaarchive, tasksearcher, asset);
 			added = added + more;
-			
+			if( logcount == 1000 )
+			{
+				logcount = 0;
+				log.info("Checked ${checked} ${added} ${more} "  + asset.get("importstatus"));
+			}
 			if( more == 0 && !"complete".equals(asset.get("importstatus") ) )
 			{
-				//log.info("complete ${asset}");
+				log.info("complete ${asset}");
 				asset.setProperty("importstatus","complete");
 				//mediaarchive.saveAsset(asset, null);
 				tosave.add(asset);
 				completed++;
 			}
-			if( tosave.size() == 1000 )
+			if( tosave.size() == 500 )
 			{
 				mediaarchive.saveAssets(tosave);
 				tosave.clear();

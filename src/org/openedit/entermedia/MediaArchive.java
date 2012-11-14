@@ -1219,12 +1219,12 @@ public class MediaArchive
 			String ext = PathUtilities.extractPageType(outputfile);
 			outputfile = name + "page" + inPageNumber + "." + ext;
 		}
-		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.exists() && page.getLength() > 1;
 		
 	}
 	public boolean doesAttachmentExist(String outputfile, Asset asset) {
-		ContentItem page = getPageManager().getRepository().get("/WEB-INF/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
+		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.exists() && page.getLength() > 1;
 	}
 
