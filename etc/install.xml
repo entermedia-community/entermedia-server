@@ -109,6 +109,9 @@
 	      <fileset dir="./lib" includes="commons-fileupload-**.jar"/>
 	    </delete>
 	    <delete>
+	      <fileset dir="./lib" includes="commons-net-**.jar"/>
+	    </delete>
+	    <delete>
 	      <fileset dir="./lib" includes="commons-logging-**.jar"/>
 	    </delete>
 	    <delete>

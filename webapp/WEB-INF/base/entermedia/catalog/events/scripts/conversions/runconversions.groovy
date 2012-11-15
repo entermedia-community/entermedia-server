@@ -152,7 +152,7 @@ class ConvertRunner implements Runnable
 					result = new ConvertResult();
 					result.setOk(false);
 					result.setError(e.toString());
-					log.error("Conversion Failed", e);
+					log.error("Conversion Failed" + e);
 				}
 				
 				if(result != null)

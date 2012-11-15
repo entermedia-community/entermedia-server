@@ -38,7 +38,7 @@ public void init()
 	}
 	q.addSortBy("id");
 	assets = searcher.search(q);
-	assets.setHitsPerPage(1000);
+	assets.setHitsPerPage(10000);
 	int removed = 0;
 	List tosave = new ArrayList();
 	int existed = 0;	
