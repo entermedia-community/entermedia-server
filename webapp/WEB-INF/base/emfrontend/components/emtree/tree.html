@@ -22,14 +22,14 @@
 		#set( $checked = $asset.isInCategory($cat) )
 		#set( $isselected = $render.isNodeSelected($cat))
 		<li id="${cat.id}_row" class="noderow" data-nodeid="$cat.id" data-depth="$depth">
-			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px">
+			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px" title="$cat.name">
 			    #if( $showinput )
 			    <div class="checkbox">
 			         <input name="categoryid" value="$cat.id" type="checkbox" #if( $render.isIdSelected($cat.id) ) checked="true" #end  >
 			    </div>
 			    #end
 				#if($haschildren)<span class="arrow #if($expanded) down #end "></span>#end 
-				<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end">$cat.name</span>
+				<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end" >$cat.name</span>
 				<span id="${cat.id}_edit" class="name folder" style="display:none;">
 					<input class="field" type="text" value="$cat.name" id="${cat.id}_edit_field" />
 					<a class="editsave btn">Save</a>

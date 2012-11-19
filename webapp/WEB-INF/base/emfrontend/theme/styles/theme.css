@@ -2095,6 +2095,7 @@ center #addcoment {
 }
 #left-col {
     width: 221px;
+    max-width: 350px;
     float: none;
     display: table-cell;
     vertical-align: top;
