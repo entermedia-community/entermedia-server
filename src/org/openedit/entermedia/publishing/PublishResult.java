@@ -48,6 +48,10 @@ public class PublishResult
 	}
 	public boolean isError()
 	{
-		return fieldErrorMessage != null;
+		if (fieldErrorMessage != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
