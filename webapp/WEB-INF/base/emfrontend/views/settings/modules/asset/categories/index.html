@@ -6,14 +6,17 @@
 
 <div id="category-tree">
 
-    $pages.include("$apphome/components/emtree/index.html?tree-name=categoryEditTree&editabletree=true&allowselections=false",$context)
+#set( $treename = $content.get("tree-name") )
+
+    $pages.include("$apphome/components/emtree/index.html?tree-name=$treename&editabletree=true&allowselections=false",$context)
 
 </div>
    
 		</div>
 	</div>
 	<a class="btn ajax" title="Sorts all categories alphanumerically" data-confirm="[[Are you sure]]?" targetdiv="finisharea" href="$home$apphome/views/settings/modules/asset/categories/sort.html?oemaxlevel=1">Sort Tree</a>
-	<a class="btn ajax" title="Resets categories to match folder paths" data-confirm="[[Are you sure]]?" targetdiv="finisharea" href="$home$apphome/views/settings/modules/asset/categories/rebuild.html?oemaxlevel=1">Reset Category Tree</a>
+	##<a class="btn ajax" title="Resets categories to match folder paths" data-confirm="[[Are you sure]]?" targetdiv="finisharea" href="$home$apphome/views/settings/modules/asset/categories/rebuild.html?oemaxlevel=1">Reset Category Tree</a>
+	<a class="btn ajax" title="Cleans out empty nodes with no assets in them" data-confirm="[[Are you sure]]?" targetdiv="finisharea" href="$home$apphome/views/settings/modules/asset/categories/trim.html?oemaxlevel=1">Trim Category Tree</a>
 </div>
 </div>
 
