@@ -26,9 +26,8 @@
     #set( $permission = "$!context.getPageValue($pname)")
     #set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
     #set( $text = $link.name)
-
     #if( $permission != "false")
-	    #set($args = "id=$data.getId()&hitssessionid=$!{hitssessionid}")
+	    #set($args = "id=$data.getId()&hitssessionid=$!{hitssessionid}&searchtype=$moduleid")
 	    #if( !$ismulti || $inmultiok )
 	    #set ($href = "$apphome/views/modules/${moduleid}/${link.folder}/index.html")
 	    <li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end $link.id">

@@ -2,5 +2,6 @@
 	<property name="detailsubtab">librarypermissions</property>
 	<property name="detailtab">librarypermissions</property>
 		<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+		<path-action name="DataEditModule.loadSearcherForEdit" />
 	
 </page>

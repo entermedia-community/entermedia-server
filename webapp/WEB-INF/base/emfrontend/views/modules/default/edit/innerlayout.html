@@ -41,7 +41,7 @@
         <div id="de-table">
             <div class="tr">
                 <div class="title-bar" style="border-left: none;"></div>
-                #set( $subtab = $context.findValue("detailsubtab") )                
+                #set( $subtab = $content.get("detailsubtab") )
                 #set( $section = $searcherManager.getData($catalogid,"detaileditormenu",$subtab) )
                 <div class="title-bar" id="details-title">
                     <span>$section</span>
