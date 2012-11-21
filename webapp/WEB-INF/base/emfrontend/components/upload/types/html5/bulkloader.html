@@ -4,14 +4,16 @@
 
 
         
-<label>[[Upload Folder:]] </label>
+<label>[[Upload In :]] </label>
 
 
-#set( $listid = "hotfolder")
+##Pick album first?
+
+#set( $listid = "folder")
 #set( $folders = $searcherManager.getList($catalogid,$listid) )
 <select name="sourcepath" id="list-folders">
 	#foreach($folder in $folders)
-		<option value="$folder.subfolder/$formatteddate">$folder</option>
+		<option value="$folder.subfolder">$folder</option>
 	#end
 	#if( $editfolders )
 	<option value="new-$listid">-- New Folder --</option>

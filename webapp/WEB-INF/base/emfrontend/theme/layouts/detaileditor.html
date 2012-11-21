@@ -60,7 +60,7 @@
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
                 <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
 
-                    $pages.include("$apphome/components/detaileditor/assetmenuul.html",$context)
+                    $pages.include("$apphome/components/detaileditor/assetmenuul.html?moduleid=asset",$context)
 
                 </div>
                 <div id="details">

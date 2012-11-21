@@ -3,5 +3,8 @@
 	<permission name="view">
 		<permission name="oe.administration"/>
 	</permission>
+	<property name="detailtab">${module}metadatageneral</property>
+	<property name="detailsubtab">${module}metadatageneral</property>
+
 	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
 </page>

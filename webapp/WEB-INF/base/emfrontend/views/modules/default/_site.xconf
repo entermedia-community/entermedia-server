@@ -16,5 +16,6 @@
  	<permission name="oe.administration"/>
  </permission>
  	<script id="results" src="/${applicationid}/components/javascript/results.js"/>
+
  
 </page>

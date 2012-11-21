@@ -1,17 +1,17 @@
 <linktree>
 
-	<a folder="generalinformation" useajax="true" id="metadatageneral" name="Edit Metadata" multiedit="true" />
-	<a folder="comment" id="comment" useajax="true" name="Comments" multiedit="false" />
+	<a folder="generalinformation" module="asset" useajax="true" id="metadatageneral" name="Edit Metadata" multiedit="true" />
+	<a folder="comment" id="comment"  module="asset"  useajax="true" name="Comments" multiedit="false" />
 	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->
-	<a folder="categorize"  id="editassetcategories" useajax="true" name="Categories" multiedit="true"/>
-	<a folder="tags"  id="editassettags" useajax="true" name="Tags" multiedit="true"/>		    	
-	<a folder="libraries" id="asseteditorlibraries" useajax="true"  multiedit="true" name="Libraries"/>
-	<a folder="map"  id="viewmap"  useajax="false" multiedit="true" name="Geo Location Info" />		    	
+	<a folder="categorize"  id="editassetcategories"  module="asset" useajax="true" name="Categories" multiedit="true"/>
+	<a folder="tags"  id="editassettags"  module="asset"  useajax="true" name="Tags" multiedit="true"/>		    	
+	<a folder="libraries" id="asseteditorlibraries"  module="asset"  useajax="true"  multiedit="true" name="Libraries"/>
+	<a folder="map"  id="viewmap"  module="asset"  useajax="false" multiedit="true" name="Geo Location Info" />		    	
 	<!-- <a folder="edit"  id="viewmediaedit" name="Media Editor" /> -->
-	<a folder="attachments" id="viewattachments"  useajax="false" name="Attachments" />
-	<a folder="permissions" id="assetpermissions"  useajax="true" multiedit="true" name="Permissions" />
+	<a folder="attachments" id="viewattachments"   module="asset"  useajax="false" name="Attachments" />
+	<a folder="permissions" id="assetpermissions"  module="asset"  useajax="true" multiedit="true" name="Permissions" />
     
-	<a folder="historypreviews"  id="viewassetpreviewhistory"  useajax="true" name="History" />
+	<a folder="historypreviews"  id="viewassetpreviewhistory"  module="asset"  useajax="true" name="History" />
 	<!-- <a folder="downloads" id="download" name="Download Options" /> -->
 	<!-- <a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" /> -->
 <!-- 

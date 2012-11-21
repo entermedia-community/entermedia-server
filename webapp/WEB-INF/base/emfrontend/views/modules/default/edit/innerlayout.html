@@ -6,7 +6,7 @@
 <div id="searchplugin">
     <div class="subcolumns">
         <div class="c25l" id="left-col">
-                $pages.include("/$applicationid/views/modules/${moduleid}/edit/sidebar.html", $context)
+                $pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html", $context)
         </div>
         <div id="right-col" class="module-inner">
                 
@@ -37,7 +37,31 @@
 				$pages.include("/$applicationid/views/modules/${moduleid}/edit/actions.html", $context)
 				$pages.include("/$applicationid/views/modules/${moduleid}/edit/header.html", $context)
   
-                              $pages.includeContent()
+      <div id="detailarea">
+        <div id="de-table">
+            <div class="tr">
+                <div class="title-bar" style="border-left: none;"></div>
+                #set( $subtab = $context.findValue("detailsubtab") )                
+                #set( $section = $searcherManager.getData($catalogid,"detaileditormenu",$subtab) )
+                <div class="title-bar" id="details-title">
+                    <span>$section</span>
+                </div>
+             ##   <div class="title-bar" style="border-right: none;">
+             ##       <span style="text-align: center;">Related Media</span>
+             ##   </div>
+            </div>
+            <div class="tr">
+                #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
+                <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
+                 $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
+                </div>
+                <div id="details">
+                     $pages.includeContent()
+                </div>
+           </div>
+        </div>
+     </div>	               
+                              
                         </div>
                     </div>
                     

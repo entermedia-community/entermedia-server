@@ -2559,7 +2559,7 @@ tr.odd {
     width: 100%;
     border-bottom: 1px solid #eee;
 }
-#tree {
+#attachmenttree {
     display: table-cell;
     vertical-align: top;
 }
@@ -2571,11 +2571,11 @@ tr.odd {
     background: #fff;
     display: table-cell;
 }
-#tree ul {
+#attachmenttree ul {
     margin: 0;
     padding: 0;
 }
-#tree ul li {
+#attachmenttree ul li {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -2583,7 +2583,7 @@ tr.odd {
     color: #444;
     font-size: 11px;
 }
-#tree ul li div {
+#attachmenttree ul li div {
     padding: 0 0 0 20px;
     border-bottom: 1px solid #E2EFF4;
     height: 34px;
@@ -2591,20 +2591,20 @@ tr.odd {
     display: block;
     cursor: pointer;
 }
-#tree ul li div.selected, .emtree ul li div.selected {
+#attachmenttree ul li div.selected, .emtree ul li div.selected {
     background: #c9e8f2;
 }
-#tree ul li div.selected:hover, .emtree ul li div.selected:hover {
+#attachmenttree ul li div.selected:hover, .emtree ul li div.selected:hover {
     background: #c9e8f2;
 }
-#tree ul li div:hover {
+#attachmenttree ul li div:hover {
     background: #c9e8f2;
 }
-#tree ul li div span a.btn {
+#attachmenttree ul li div span a.btn {
     line-height: 11px;
     margin-left: 5px;
 }
-#tree ul li div span input[type="text"] {
+#attachmenttree ul li div span input[type="text"] {
     padding: 5px 10px 3px 10px;
 }
 .actions {
@@ -2612,90 +2612,48 @@ tr.odd {
     display: none;
     margin-right: 15px;
 }
-#tree ul li div:hover .actions {
+#attachmenttree ul li div:hover .actions {
     display: inline;
 }
-#tree ul li div .actions a {
+#attachmenttree ul li div .actions a {
     float: left;
     margin-left: 5px;
     opacity: 0.7;
 }
-#tree ul li div .actions a:hover {
+#attachmenttree ul li div .actions a:hover {
     opacity: 1.0;
 }
-#tree ul li div .actions a.add {
+#attachmenttree ul li div .actions a.add {
     background: url('../images/add.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.edit {
+#attachmenttree ul li div .actions a.edit {
     background: url('../images/edit.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.delete {
+#attachmenttree ul li div .actions a.delete {
     background: url('../images/delete.gif') 0 11px no-repeat;
     width: 15px;
     margin-right: 0;
     margin-top: 0;
 }
-#tree ul li div .actions a.add-folder {
+#attachmenttree ul li div .actions a.add-folder {
     background: url('../images/add-folder.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.upload-file {
+#attachmenttree ul li div .actions a.upload-file {
     background: url('../images/add-upload.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.download-folder {
+#attachmenttree ul li div .actions a.download-folder {
     background: url('../images/download-folder.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.download-file {
+#attachmenttree ul li div .actions a.download-file {
     background: url('../images/download-file.gif') 0 11px no-repeat;
     width: 15px;
 }
 
-
-#tree .arrow {
-    width: 0;
-    height: 0;
-    border: 5px solid transparent;
-    border-left: 7px solid #666;
-    display: block;
-    margin: 0 -13px 0 0
-    float: none;
-    position: absolute;
-    top: 8px;
-}
-#tree .arrow.down {
-    border: 5px solid transparent;
-    border-top: 7px solid #666;
-    top: 10px;
-    margin-left: -2px;
-}
-#tree .name {
-    padding-left: 35px;
-}
-#tree .name.folder {
-    background: url('../images/folder-closed.gif') 14px -1px no-repeat;
-}
-#tree .arrow.down + .name.folder {
-    background: url('../images/folder-open.gif') 14px -1px no-repeat;
-}
-#tree .add {
-    background: url('../images/add.gif') 13px 1px no-repeat;
-}
-#tree ul {
-    display: none;
-}
-#tree .open {
-    display: block;
-}
-#tree .odd {
-    background: #f7fdff;
-}
-#tree .nope {
-    display: none;
-}
 .emdropshadow.attachments {
     border-color: red;
 }
@@ -2918,29 +2876,85 @@ table.emdata th {
     width: 15px;
 }
 
-.emtree .arrow {
+/*
+.arrow {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #8bcbdf;
+    display: none;
+    position: relative;
+    float: left;
+    margin: -35px auto 0 auto;
+}
+*/
+
+/*
+#attachmenttree .arrow {
     width: 0;
     height: 0;
     border: 5px solid transparent;
     border-left: 7px solid #666;
     display: block;
-    margin: 0 -13px 0 0;
+    margin: 0 -13px 0 0
     float: none;
     position: absolute;
-    top: 12px;
-}
-.emtree .arrow.down {
-    border: 5px solid transparent;
-    border-top: 7px solid #666;
-    top: 15px;
-    margin-left: -2px;
-}
-.cramped .emtree .arrow {
     top: 8px;
 }
-.cramped .emtree .arrow.down {
+#attachmenttree .arrow.down {
+    border: 5px solid transparent;
+    border-top: 7px solid #666;
     top: 10px;
+    margin-left: -2px;
 }
+#attachmenttree .name {
+    padding-left: 35px;
+}
+#attachmenttree .name.folder {
+    background: url('../images/folder-closed.gif') 14px -1px no-repeat;
+}
+#attachmenttree .arrow.down + .name.folder {
+    background: url('../images/folder-open.gif') 14px -1px no-repeat;
+}
+#attachmenttree .add {
+    background: url('../images/add.gif') 13px 1px no-repeat;
+}
+#attachmenttree ul {
+    display: none;
+}
+#attachmenttree .open {
+    display: block;
+}
+#attachmenttree .odd {
+    background: #f7fdff;
+}
+#attachmenttree .nope {
+    display: none;
+}
+*/
+
+
+.emtree .arrow {
+    width: 12px;
+    height: 9px;
+    top: 0px;
+    display: block;
+    position: absolute;
+    float: none;
+    margin-left: -12px;
+    padding: 8px 0px 8px 15px;
+    background:  url('../images/detaileditor/triangleup.png') 9px 8px no-repeat;
+}
+.emtree .arrow.down {
+    background:  url('../images/detaileditor/triangledown.png') 9px 8px no-repeat;
+}
+.cramped .emtree .arrow {
+}
+.cramped .emtree .arrow.down {
+}
+
+
 .emtree .name {
     padding-left: 35px;
 }
@@ -3269,17 +3283,6 @@ h3.instructions {
     padding: 20px;
     border-radius: 5px;
     background: #8bcbdf;
-}
-.arrow {
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 20px solid #8bcbdf;
-    display: none;
-    position: relative;
-    float: left;
-    margin: -35px auto 0 auto;
 }
 #savebtn {
     float: right;

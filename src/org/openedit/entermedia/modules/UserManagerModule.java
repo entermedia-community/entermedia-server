@@ -380,7 +380,12 @@ public class UserManagerModule extends BaseModule
 				return;
 			}
 			StringBuffer admins = new StringBuffer();
-			Collection users = getUserManager().getUsersInGroup("administrators");
+			String sendtogroup = inReq.findValue("sendnotificationgroup");
+			if( sendtogroup == null)
+			{
+				sendtogroup = "administrators";
+			}
+			Collection users = getUserManager().getUsersInGroup(sendtogroup);
 			for (Iterator iterator = users.iterator(); iterator.hasNext();)
 			{
 				User user = (User) iterator.next();
