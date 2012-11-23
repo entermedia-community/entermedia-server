@@ -19,7 +19,25 @@ searchtype = context.findValue("searchtype");
 catalogid = context.findValue("catalogid");
 searcher = searcherManager.getSearcher(catalogid, searchtype);
 boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"));
- details = searcher.getDetailsForView("csvexport", context.getUser());
+String[] detaillist = context.getRequestParameters("detail");
+Collection details = null;
+
+if(detaillist != null){
+	log.info("Detail List was used - customizing export");
+	details = new ArrayList();
+	for(int i = 0;i<detaillist.length;i++){
+		String detailid = detaillist[i];
+		detail = searcher.getDetail(detailid);
+		if(detail != null){
+			details.add(detail);
+		}
+	}
+} 
+else{
+
+details = searcher.getDetailsForView("csvexport", context.getUser());
+}
+
 if(details == null){
 	details = searcher.getPropertyDetails();
 }

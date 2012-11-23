@@ -21,7 +21,7 @@ $context.putPageValue("caneditlists","false")
 	#end
 #end	
 
-<div class="oeinputform validate-inputs">
+<div class="oeinputform validate-inputs detaileditor">
 <div id="allerrors">
 </div>
 <table class="settings-table">
@@ -47,7 +47,7 @@ $context.putPageValue("caneditlists","false")
 	#if( $editrow || $val  || !$detail.isEditable()) 
 		#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)
-		<tr>
+		<tr id="inputarea_${detail.id}">
 			<td width="40px" class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
 				#if( $detail.hidelabel == true )
 				#else
@@ -73,6 +73,23 @@ $context.putPageValue("caneditlists","false")
 			#set( $usedhtml = "htmltextarea=${detail.getId()}")
 		#end
 	#end
+	
+		#if($detail.get('dependson'))
+	
+   <script type="text/javascript">			
+			jQuery(document).ready(function(){
+				DetailEditor.find_field_from_row("$!detail.get('dependson')").bind_and_run('change',function(){
+					DetailEditor.toggle_dependency_row("$!detail.getId()",
+																						 jQuery(this),
+																						 "$!detail.get('dependsonvalue')",
+																						 "$!detail.get('dependsondefault')",
+																						 "$!detail.get('dependsonvaluedelimiter')")
+				});
+			});									 
+		</script>
+	#end
+	
+	
 #end
 </table>
 </div>
