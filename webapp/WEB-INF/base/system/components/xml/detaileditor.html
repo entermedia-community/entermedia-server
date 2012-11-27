@@ -48,7 +48,7 @@ $context.putPageValue("caneditlists","false")
 		#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
-			<td width="40px" class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
 				#if( $detail.hidelabel == true )
 				#else
 					$!detail.getText($context)
