@@ -1,9 +1,12 @@
-<div id="uploadarea">
-
+<div id="uploadarea" class="padding">
+	#if( $browser.isHtml5Browser() )
 	
-$pages.include("$apphome/components/upload/types/simpler.html")	
+		$pages.include("$apphome/components/upload/types/html5.html")
+	
+	#else
 
-			
-
+		$pages.include("$apphome/components/upload/types/simpler.html")
+	
+	#end	
 </div>
 
