@@ -1705,7 +1705,7 @@ small {
     display: block;
     height: 45px;
     width: 100%;
-    margin: 0px 0 20px 0;
+    margin: 0;
     padding: 0;
     border-bottom: 1px solid #a8dae4;
 }
@@ -1740,6 +1740,7 @@ table.greytxt {
 }
 #eml-tab-green-container {
     margin: 0 20px;
+    padding-top: 20px;
 }
 
 /* SUB-NAV DROPDOWN */
@@ -3662,7 +3663,7 @@ body #emcontainer .emasseteditorarea {
 /* FULL WIDTH LIST STYLES */
 
 .fwlist, .fw {
-    margin: -20px 0 0 0;
+    margin: 0;
     padding: 0;
 }
 .fwlist li {
@@ -4431,9 +4432,6 @@ h2 {
     top: 2px;
     line-height: 32px;
 }
-#settings-no-margin .tab-actions {
-    margin-top: -20px;
-}
 #meta-no-margin {
     margin: -20px;
 }
@@ -4744,9 +4742,6 @@ p.resultsnumber {
 }
 #sub-nav.mediaview {
     margin-bottom: 20;
-}
-#detailarea {
-    margin: 0 0 -20px 0;
 }
 #de-table {
     display: table;
