@@ -30,6 +30,13 @@ public class audioCreator extends BaseCreator implements MediaCreator
 	{
 		ConvertResult result = new ConvertResult();
 
+		if(!inStructions.isForce() && converted.length() > 1 )
+		{
+			result.setOk(true);
+			result.setComplete(true);
+			return result;
+		}
+		
 		Page inputpage = inArchive.findOriginalMediaByType("audio",inAsset);
 
 		if( inputpage == null || !inputpage.exists())
