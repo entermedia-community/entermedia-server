@@ -1,7 +1,7 @@
 #set($totalpages = $numberutils.toInt($asset.pages))
 #set ( $hitssessionid = $context.findValue("hitssessionid"))
 
-<div id="media-player" class="clearfix" style="margin: -20px 0 0 0;">
+<div id="media-player" class="clearfix" >
     <a id="mp-minmax" class="min ir propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
     
         <div id="default-top" style="border-bottom: none;">

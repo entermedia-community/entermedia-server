@@ -7,6 +7,7 @@
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" editable="true" viewtype="category" type="list" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
+	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
 	<property id="libraries"  viewtype="libraries"  editable="true" index="true" >Libraries</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true"  >Asset Type</property>
 

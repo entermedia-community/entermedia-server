@@ -38,7 +38,7 @@ public void init()
 	}
 	q.addSortBy("id");
 	assets = searcher.search(q);
-	assets.setHitsPerPage(10000);
+	assets.setHitsPerPage(1000);
 	int removed = 0;
 	List tosave = new ArrayList();
 	int existed = 0;	
@@ -46,22 +46,29 @@ public void init()
 	{
 		Data hit = (Data)obj;
 	
-		String path = hit.getSourcePath();
-		Asset asset = archive.getAssetBySourcePath(path);
-		if( asset == null)
-		{
-			log.info("invalid asset " + path);
-			continue;
-		}
-		String assetsource = asset.getSourcePath();
+		String assetsource = hit.getSourcePath();
 		String pathToOriginal = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + assetsource;
-		if(asset.isFolder() && asset.getPrimaryFile() != null)
-		{
-			pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
-		}
+		
 		ContentItem page = pageManager.getRepository().get(pathToOriginal);
 		if(!page.exists())
 		{
+			Asset asset = archive.getAssetBySourcePath(assetsource);
+			if( asset == null)
+			{
+				log.info("invalid asset " + path);
+				continue;
+			}
+
+			if(asset.isFolder() && asset.getPrimaryFile() != null)
+			{
+				pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
+				page = pageManager.getRepository().get(pathToOriginal);
+				if(page.exists())
+				{
+					existed++;
+					continue; //never mind, it is here
+				}
+			}
 			removed++;
 			//archive.removeGeneratedImages(asset);
            if( asset.get("editstatus") != "7" )
@@ -73,11 +80,11 @@ public void init()
 		else
 		{
 			existed++;
-            if( asset.get("editstatus") != "6" )
-            {
-			   asset.setProperty("editstatus", "6");
-			   tosave.add(asset);
-            }
+//            if( asset.get("editstatus") != "7" )
+//            {
+//			   asset.setProperty("editstatus", "6"); //restore files
+//			   tosave.add(asset);
+//            }
 		}
 		if( tosave.size() == 100 )
 		{

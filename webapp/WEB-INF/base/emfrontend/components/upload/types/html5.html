@@ -1,28 +1,17 @@
 <script src="$home$apphome/components/upload/types/html5/upload.js"></script>
 
 #set( $root = "$home$apphome/components/upload/types/html5")
-#set($catalogid = $context.getRequestParameter("uploadcatalog"))
-#set($path = "/${catalogid}/temp/uploading/${user.getUserName()}")
 
-
-#set( $catalog = $context.getRequestParameter('uploadcatalog') )
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
     action="$home/${applicationid}/components/upload/types/html5/finish.html?uploadid=$context.getUserName()_$formatteddate&oemaxlevel=2" data-uploadid="$context.getUserName()_$formatteddate" >
     
 <div class="subcolumns">
     
     <div id="right-sidebar" style="padding: 0 20px 0 0">
-           <!-- 
-        <div id="emdropbox">
-            Drag and Drop files here
-        </div>
-         -->
         <input type="file" name="files" id="fileElem" multiple style="display:none" onchange="handleFiles(this.files)">
         <a class="btn large" href="#" id="filePicker" style="margin-top: 0">Pick Files...</a>
         
         <ul id="up-files-list">
-          <!--  <li><a href="#"><span>File 1</span></a><a class="delete-row ir" href="#">Delete</a></li> -->
-           
         </ul>
         
     </div>

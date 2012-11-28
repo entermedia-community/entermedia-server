@@ -2,4 +2,8 @@
 	<property name="module">asset</property>
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
 	<property name="searchhome">/${applicationid}/views/modules/${module}</property>
+	
+	<permission name="viewmediaviewer">
+		<boolean value="true" />
+	</permission>
 </page>

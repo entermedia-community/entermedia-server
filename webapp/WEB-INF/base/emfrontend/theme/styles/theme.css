@@ -1096,7 +1096,9 @@ p.drag-columns-text {
     display: block;
     padding: 0;
     margin: 0;
+    list-style: none;
 }
+.pre
 
 /* LOGIN FORM STYLES */
 
@@ -1342,16 +1344,25 @@ small {
 
 /* SIDE BAR STYLES */
 
-.sidebar-media {
-    padding-top: 10px;
-    padding-left: 12px;
-}
 .sidebar-media li {
-    margin: 8px 0;
-    padding: 0;
+    margin: 0;
+    padding: 8px 0;
     position: relative;
     text-align: center;
+    width: 155px;
 }
+.sidebar-media .textbutton {
+    padding: 0;
+}
+.sidebar-media .textbutton a {
+    display: block;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 0;
+}
+.sidebar-media li:hover {
+    background: #eee;
+}
+
 .sidebar-media .mini {
     margin-left: 6px;
 }
@@ -1368,12 +1379,10 @@ small {
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #fff !important;
-    overflow: hidden;
     height: 30px;
     padding-top: 15px;
 }
 .sidebar-caption span {
-    left: -13px;
     position: relative;
     padding: 4px 10px;
     color: #fff !important;
@@ -1382,6 +1391,14 @@ small {
     background: #2790B0;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px 2px rgba( 0, 0, 0, 0.4 );
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.sidebar-media li.currentsubtle  {
+    background: #c9e8f2;
 }
 
 .categories-widget {
@@ -1701,7 +1718,7 @@ small {
     display: block;
     height: 45px;
     width: 100%;
-    margin: 0px 0 20px 0;
+    margin: 0;
     padding: 0;
     border-bottom: 1px solid #a8dae4;
 }
@@ -1736,6 +1753,7 @@ table.greytxt {
 }
 #eml-tab-green-container {
     margin: 0 20px;
+    padding-top: 20px;
 }
 
 /* SUB-NAV DROPDOWN */
@@ -3658,7 +3676,7 @@ body #emcontainer .emasseteditorarea {
 /* FULL WIDTH LIST STYLES */
 
 .fwlist, .fw {
-    margin: -20px 0 0 0;
+    margin: 0;
     padding: 0;
 }
 .fwlist li {
@@ -4427,9 +4445,6 @@ h2 {
     top: 2px;
     line-height: 32px;
 }
-#settings-no-margin .tab-actions {
-    margin-top: -20px;
-}
 #meta-no-margin {
     margin: -20px;
 }
@@ -4741,9 +4756,6 @@ p.resultsnumber {
 #sub-nav.mediaview {
     margin-bottom: 20;
 }
-#detailarea {
-    margin: 0 0 -20px 0;
-}
 #de-table {
     display: table;
     width: 100%;
@@ -4753,6 +4765,13 @@ p.resultsnumber {
     vertical-align: top;
 }
 #related-media {
+    width: 155px;
+    display: table-cell;
+    vertical-align: top;
+    background: #f7f7f7 url('../images/sidebar-shadow-left.png') left top repeat-y;
+    border-left: 1px solid #ccc;
+}
+#selected-media {
     width: 155px;
     display: table-cell;
     vertical-align: top;
@@ -4948,6 +4967,17 @@ p.resultsnumber {
 }
 #de-side-nav .current.asseteditorlibraries .icon {
     background-position: 160px 26px;
+}
+
+#de-side-nav .viewmediaviewer .icon {
+    background-position: 240px 0;
+    width: 26px;
+    height: 26px;
+    left: 10px;
+    top: 8px;
+}
+#de-side-nav .current.viewmediaviewer .icon {
+    background-position: 240px 26px;
 }
 #de-side-nav .viewmap .icon {
     background-position: 213px 0;

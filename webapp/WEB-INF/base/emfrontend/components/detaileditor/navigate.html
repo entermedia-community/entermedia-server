@@ -1,7 +1,3 @@
-		#set($hitssessionid = $context.findValue("hitssessionid"))
-		#if($hitssessionid)
-			#set($hits = $context.getSessionValue($hitssessionid))
-		#end
 		#if( $hits )
     		#set($indexOf = $hits.indexOfId( $asset.id))
     		#set($showIndex = $indexOf + 1)
@@ -9,17 +5,18 @@
     		#set($next = $hits.next($indexOf))
 		#end
 		
+		
 		<div id="eml-tab-subnav">
     		<ul style="text-align: center;" id="sub-nav" class="mediaview">
     			#if( $hits )
-
+	#set( $hitssessionid = $hits.getSessionId() )
     			#set( $thispage = $content.getDirectoryName() )
                     #if ( $thispage.contains(".") )
-                        #set ($thispage = "generalinformation")
+                        #set ($thispage = "viewer")
                     #end
                     
     					#if($previous)
-    						 <li><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=${previous.sourcepath}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
+    						 <li><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${previous.id}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
     					#end
     			#end
     					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
@@ -53,7 +50,7 @@
     			#if( $hits )
     					#if($next)
     						$context.putPageValue("hits", $hits)
-    						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?sourcepath=#uuencode(${next.sourcepath})&hitssessionid=${hitssessionid}">>></a></li>
+    						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${next.id}&hitssessionid=${hitssessionid}">>></a></li>
     					#end
     			#end
     					#if ($canviewbasket)

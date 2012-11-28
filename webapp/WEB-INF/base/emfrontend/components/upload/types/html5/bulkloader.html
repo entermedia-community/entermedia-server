@@ -4,11 +4,13 @@
 
 
         
-<label>[[Upload In :]] </label>
-
 
 ##Pick album first?
 
+$pages.include("./metadata.html")
+
+
+<!-- 
 #set( $listid = "folder")
 #set( $folders = $searcherManager.getList($catalogid,$listid) )
 <select name="sourcepath" id="list-folders">
@@ -19,7 +21,7 @@
 	<option value="new-$listid">-- New Folder --</option>
 	#end
 </select>
-
+-->
  
 <div class="editfield" id="listeditor-$listid" style="display: none;">
         <input  type="text" />

@@ -10,9 +10,6 @@
 	
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	
-	<inner-layout>/${themeprefix}/layouts/detaileditor.html</inner-layout>
-	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
-	
 	<permission name="download">
 		<and>
 			<userprofile property="download" equals="true" />

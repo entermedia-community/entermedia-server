@@ -9,10 +9,10 @@
 $!query.addSortBy("ordering")   
 #set($views = $viewsearcher.search($query))
 
-#if( !$viewid && $views.size() > 0)               
-    #set( $viewid = $views.first().getId() )
-    #set( $viewpath = "${moduleid}/$viewid" )
-#end
+##if( !$viewid && $views.size() > 0)               
+    ##set( $viewid = $views.first().getId() )
+    ##set( $viewpath = "${moduleid}/$viewid" )
+##end
 $context.putPageValue("view", $viewpath)
 
 #set($hitssessionid = $context.findValue("hitssessionid"))
@@ -24,7 +24,8 @@ $context.putPageValue("view", $viewpath)
         #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 <ul id="assetmenu" class="sidebar-list">
       
-              #foreach( $target in $views)            
+              #foreach( $target in $views)       
+                   
                   <li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
                   		
                   		#if( $target.rendertable )

@@ -1,0 +1,7 @@
+<page>
+	<property name="detailsubtab">libraryassets</property>
+	<property name="detailtab">libraryassets</property>
+		<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+
+	<property name="searchtype">asset</property>
+</page>

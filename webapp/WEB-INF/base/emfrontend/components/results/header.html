@@ -29,8 +29,8 @@
 		#end
 		
 		
-		#if ($canmultiedit && $hits)
-			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()">Multi-Edit</a></li>
+		#if ($hits)
+			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()">Edit</a></li>
 		#end
 		
 		#set( $edit = $context.getRequestParameter("editheader") )

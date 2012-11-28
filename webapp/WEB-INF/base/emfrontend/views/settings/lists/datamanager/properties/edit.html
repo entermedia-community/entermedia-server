@@ -3,7 +3,7 @@
 <div class="tab-actions">
 	<strong>Editing $!property.name</strong>
 	<div style="float:right;">
-	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px;">
+	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px; width: 80px;" >
 		<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
 				<option value="$detail.id" #if($property.id == $detail.id)selected="selected"#end>$detail.text</option>
@@ -53,7 +53,7 @@
 
 	<tr> <td>[[Data Type]]:</td>
 	<td>
-	<select name="datatype">
+	<select name="datatype" width="60px">
 		<option value="" >Text</option>
 		<option value="boolean" #if ($property.datatype == "boolean") selected #end >[[Boolean]]</option>
 		<option value="number" #if ($property.datatype == "number") selected #end >[[Number]]</option>
