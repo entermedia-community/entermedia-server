@@ -1096,7 +1096,9 @@ p.drag-columns-text {
     display: block;
     padding: 0;
     margin: 0;
+    list-style: none;
 }
+.pre
 
 /* LOGIN FORM STYLES */
 
@@ -1342,17 +1344,25 @@ small {
 
 /* SIDE BAR STYLES */
 
-.sidebar-media a {
-    padding-top: 10px;
-    padding-left: 12px;
-}
 .sidebar-media li {
-    margin: 8px 0;
-    padding: 0;
+    margin: 0;
+    padding: 8px 0;
     position: relative;
     text-align: center;
     width: 155px;
 }
+.sidebar-media .textbutton {
+    padding: 0;
+}
+.sidebar-media .textbutton a {
+    display: block;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 0;
+}
+.sidebar-media li:hover {
+    background: #eee;
+}
+
 .sidebar-media .mini {
     margin-left: 6px;
 }
@@ -1373,7 +1383,6 @@ small {
     padding-top: 15px;
 }
 .sidebar-caption span {
-    left: -13px;
     position: relative;
     padding: 4px 10px;
     color: #fff !important;
@@ -1382,6 +1391,10 @@ small {
     background: #2790B0;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px 2px rgba( 0, 0, 0, 0.4 );
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-block;
 }
 
 .sidebar-media li.currentsubtle  {
@@ -4957,17 +4970,15 @@ p.resultsnumber {
 }
 
 #de-side-nav .viewmediaviewer .icon {
-    background-position: 213px 0;
+    background-position: 240px 0;
     width: 26px;
     height: 26px;
     left: 10px;
     top: 8px;
 }
 #de-side-nav .current.viewmediaviewer .icon {
-    background-position: 213px 26px;
+    background-position: 240px 26px;
 }
-
-
 #de-side-nav .viewmap .icon {
     background-position: 213px 0;
     width: 26px;

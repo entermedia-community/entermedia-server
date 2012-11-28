@@ -29,7 +29,7 @@ uiload = function() {
 			$('#embody').addClass('max');
 			$('#maximize').html('Minimize');
 			$('#maximize').attr('title', 'Minimize the application.');
-			resize();
+			doResize();
 		} else {
 			
 			$('#embody').removeClass('max');
@@ -245,8 +245,8 @@ uiload = function() {
 	
 }
 
-function resize() {
-		w1 = ( $('#main').width() - 261 );
+function doResize() {
+		w1 = ( $('#main').width() - 262 );
 		$('#right-col .liquid-sizer').width(w1);
 		w2 = ( $('#data').width() - 40 );
 		$('#asset-data').width(w2);
@@ -258,11 +258,11 @@ function resize() {
 jQuery(document).ready(function() 
 { 
 	uiload();
-	resize();
+	doResize();
 }); 
 
 $(window).resize(function(){
-	resize();
+	doResize();
 });
 
 
