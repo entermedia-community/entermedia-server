@@ -1,8 +1,8 @@
 #set($totalpages = $numberutils.toInt($asset.pages))
 #set ( $hitssessionid = $context.findValue("hitssessionid"))
-
 <div id="media-player" class="clearfix" >
-    <a id="mp-minmax" class="min ir propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
+<div id="mediaviewer" >
+    ##<a id="mp-minmax" class="min ir propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
     
         <div id="default-top" style="border-bottom: none;">
             <div class="thumbnail">
@@ -37,19 +37,19 @@
                     </div>
                 </div>
                 <div class="asset-details-more">
-                    <p style="line-height: 25px; text-align: left; color: #fff; width: 450px;">
+                    <p style="line-height: 25px; text-align: left; color: #fff;">
                         #if ($asset.getKeywords().size() > 0)
                             <strong>Tags</strong><br/>
                             #foreach ($tag in $asset.getKeywords())
                                 #if ( $velocityCount <= 10 )
-                                <a href="$home$apphome/views/search/search.html?field=description&operation=matches&description.value=$tag">$tag</a> 
+                                <a href="$home$apphome/views/search/search.html?field=keywords&operation=matches&keywords.value=$tag">$tag</a> 
                                 #elseif ( $velocityCount == 11 )
                                     <a class="ajax tooltip" title="View All Tags" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
                         #end
                      </p>
-                     <p style="line-height: 25px; text-align: left; color: #fff; width: 450px;">
+                     <p style="line-height: 25px; text-align: left; color: #fff; ">
                         #if ($asset.getCategories().size() > 0)
                             <strong>Categories</strong><br/>
                             #foreach ($category in $asset.getCategories())
@@ -75,3 +75,4 @@
     });
 </script>
 
+</div>
