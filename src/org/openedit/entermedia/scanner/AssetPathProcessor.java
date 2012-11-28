@@ -26,26 +26,29 @@ public class AssetPathProcessor extends PathProcessor
 
 	protected MediaArchive fieldMediaArchive;
     protected Boolean fieldOnWindows;
+    protected boolean fieldSkipModificationCheck;
+    
+	public boolean isSkipModificationCheck()
+	{
+		return fieldSkipModificationCheck;
+	}
+
+
+	public void setSkipModificationCheck(boolean inSkipModificationCheck)
+	{
+		fieldSkipModificationCheck = inSkipModificationCheck;
+	}
+
 	protected AssetUtilities fieldAssetUtilities;
-	protected long fieldLastCheckedTime;
 	protected Collection fieldAttachmentFilters;
 	protected FileUtils fieldFileUtils = new FileUtils();
 	final List<String> assetsids = new ArrayList<String>();
 	final List<Asset> fieldAssetsToSave = new ArrayList<Asset>();
-
 	protected List<Asset> getAssetsToSave()
 	{
 		return fieldAssetsToSave;
 	}
-	public long getLastCheckedTime()
-	{
-		return fieldLastCheckedTime;
-	}
 
-	public void setLastCheckedTime(long inLastCheckedTime)
-	{
-		fieldLastCheckedTime = inLastCheckedTime;
-	}
 
 		public Collection getAttachmentFilters()
 		{
@@ -131,24 +134,14 @@ public class AssetPathProcessor extends PathProcessor
 
 		return super.acceptFile(inItem);
 	}
-	protected int getFolderDepthToCheck()
-	{
-		if( isOnWindows() )
-		{
-			return 2; //Windows propogates date mods up. Linux does not
-		}
-		else
-		{
-			return 3;
-		}
-	}
+
 		public void process(ContentItem inInput, User inUser)
 		{
 			if (inInput.isFolder())
 			{
 				if (acceptDir(inInput))
 				{
-					processAssetFolder( inInput, inUser, getFolderDepthToCheck() );
+					processAssetFolder( inInput, inUser);
 				}
 			}
 			else
@@ -159,7 +152,7 @@ public class AssetPathProcessor extends PathProcessor
 				}
 			}
 		}
-		protected void processAssetFolder(ContentItem inInput, User inUser, int deepcheck)
+		protected void processAssetFolder(ContentItem inInput, User inUser)
 		{
 			String sourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
 			Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
@@ -232,12 +225,6 @@ public class AssetPathProcessor extends PathProcessor
 					processchildren = true;
 				}
 				
-				deepcheck--;
-				if( deepcheck == 0 )
-				{
-					processchildren = false;
-				}
-				
 				if( processchildren && isRecursive())
 				{
 					
@@ -249,31 +236,33 @@ public class AssetPathProcessor extends PathProcessor
 						{
 							if (acceptDir(item))
 							{
-								//See if this folders sub folders should be forced to check or not. 
-								boolean keepignoringtime = false;
-								
-								if(  getLastCheckedTime() == 0 || getLastCheckedTime() < item.getLastModified() ) //this folder was edited. 
-								{
-									deepcheck = getFolderDepthToCheck() + 1; //If we are deeper than 3 and still showed a mod stamp then check everything
-								}
-								
 //								if( deep > 2 )
 //								{
 //									ignoretime = true; //If we are deeper than 3 and still showed a mod stamp then check everything
 //								}
-								processAssetFolder( item, inUser, deepcheck);
+								processAssetFolder( item, inUser);
 							}
 							
 						}
 						else
 						{
-							if( getLastCheckedTime() == 0 || getLastCheckedTime() < item.getLastModified() )  //On Windows the folder times stamp matches the most recently modified file
-							{
 								if (acceptFile(item))
 								{
-									processFile(item, inUser); //If we found a file add 1 to the deepcheck?
+									if( isSkipModificationCheck() )
+									{
+										//we dont need to load the asset so dont load it
+										String filesourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
+										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/" + filesourcepath;
+										if( !getPageManager().getRepository().doesExist(filepath) )
+										{
+											processFile(item, inUser); //Loads the asset and does a check on mod date
+										}
+									}
+									else
+									{
+										processFile(item, inUser); 
+									}
 								}
-							}
 						}
 					}
 				}
