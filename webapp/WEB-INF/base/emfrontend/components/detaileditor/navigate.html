@@ -1,7 +1,3 @@
-		#set($hitssessionid = $context.findValue("hitssessionid"))
-		#if($hitssessionid)
-			#set($hits = $context.getSessionValue($hitssessionid))
-		#end
 		#if( $hits )
     		#set($indexOf = $hits.indexOfId( $asset.id))
     		#set($showIndex = $indexOf + 1)

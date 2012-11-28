@@ -1342,7 +1342,7 @@ small {
 
 /* SIDE BAR STYLES */
 
-.sidebar-media {
+.sidebar-media a {
     padding-top: 10px;
     padding-left: 12px;
 }
@@ -1351,6 +1351,7 @@ small {
     padding: 0;
     position: relative;
     text-align: center;
+    width: 155px;
 }
 .sidebar-media .mini {
     margin-left: 6px;
@@ -1368,7 +1369,6 @@ small {
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #fff !important;
-    overflow: hidden;
     height: 30px;
     padding-top: 15px;
 }
@@ -1382,6 +1382,10 @@ small {
     background: #2790B0;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px 2px rgba( 0, 0, 0, 0.4 );
+}
+
+.sidebar-media li.currentsubtle  {
+    background: #c9e8f2;
 }
 
 .categories-widget {
@@ -4759,6 +4763,13 @@ p.resultsnumber {
     background: #f7f7f7 url('../images/sidebar-shadow-left.png') left top repeat-y;
     border-left: 1px solid #ccc;
 }
+#selected-media {
+    width: 155px;
+    display: table-cell;
+    vertical-align: top;
+    background: #f7f7f7 url('../images/sidebar-shadow-left.png') left top repeat-y;
+    border-left: 1px solid #ccc;
+}
 .title-bar {
     background: #3bb0d2; /* Old browsers */
     background: -moz-linear-gradient(top, #3bb0d2 0%, #63bdd9 4%, #63bdd9 7%, #5ebcd9 19%, #55bcda 28%, #4cb9d9 33%, #4bb8d8 41%, #46b3d3 48%, #48b3d3 50%, #42b1d1 54%, #44b0cf 57%, #3eaecc 61%, #33a2c1 81%, #329dbd 91%, #2d9cbb 93%, #329bbc 94%, #2b9bba 96%, #309aba 98%, #2b99ba 100%); /* FF3.6+ */
@@ -4949,6 +4960,19 @@ p.resultsnumber {
 #de-side-nav .current.asseteditorlibraries .icon {
     background-position: 160px 26px;
 }
+
+#de-side-nav .viewmediaviewer .icon {
+    background-position: 213px 0;
+    width: 26px;
+    height: 26px;
+    left: 10px;
+    top: 8px;
+}
+#de-side-nav .current.viewmediaviewer .icon {
+    background-position: 213px 26px;
+}
+
+
 #de-side-nav .viewmap .icon {
     background-position: 213px 0;
     width: 26px;

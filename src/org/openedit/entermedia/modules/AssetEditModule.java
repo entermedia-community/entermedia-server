@@ -1780,18 +1780,20 @@ public class AssetEditModule extends BaseMediaModule
 	}
 	public Data createMultiEditDataFromSelections(WebPageRequest inReq) throws Exception
 	{
-		String hitsname = inReq.getRequestParameter("hitssessionid");//expects session id
-		if( hitsname == null)
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");//expects session id
+		if( hitssessionid == null)
 		{
 			return null;
 		}
-		MediaArchive store = getMediaArchive(inReq);
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitsname);
+		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 		if( hits == null)
 		{
-			log.error("Could not find " + hitsname);
+			log.error("Could not find " + hitssessionid);
 			return null;
 		}
+		
+		//TODO: Change multi edit to use trackers instead
+		MediaArchive store = getMediaArchive(inReq);
 		CompositeAsset composite = new CompositeAsset();
 		for (Iterator iterator = hits.getSelectedHits().iterator(); iterator.hasNext();)
 		{
@@ -1811,7 +1813,7 @@ public class AssetEditModule extends BaseMediaModule
 				composite.addData(p);
 			}
 		}
-		composite.setId("multiedit:"+hitsname);
+		composite.setId("multiedit:"+hitssessionid);
 		//set request param?
 		inReq.setRequestParameter("assetid",composite.getId());
 		inReq.putPageValue("data", composite);
@@ -1843,4 +1845,36 @@ public class AssetEditModule extends BaseMediaModule
 			mediaArchive.fireSharedMediaEvent("conversions/runconversions");
 		}
 	}
+	
+	public Asset loadAssetFromSelection(WebPageRequest inReq)
+	{
+		Object found = inReq.getPageValue("asset");
+		if( found instanceof Asset)
+		{
+			return (Asset)found;
+		}
+		Asset asset = null;
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");//expects session id
+		if( hitssessionid != null)
+		{
+			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+			if( hits != null && hits.hasSelections())
+			{
+				Integer selected = (Integer)hits.getSelections().iterator().next();
+				Data first = hits.get(selected);
+				asset = getMediaArchive(inReq).getAssetBySourcePath(first.getSourcePath());
+				if( asset != null )
+				{
+					inReq.putPageValue("asset", asset);
+				}
+			}
+		}
+		if( asset == null )
+		{
+			return getAsset(inReq);
+		}
+		return asset;
+		
+	}
+	
 }

@@ -10,39 +10,21 @@
     #end
     #end
     
+    #set($hitssessionid = $context.findValue("hitssessionid"))
+	#if($hitssessionid)
+		#set($hits = $context.getSessionValue($hitssessionid))
+		#if( $hits )$context.putPageValue("hits",$hits) #end
+	#end
+    
 
     #if( $asset )
 
-    <div id="mediaviewer" class="max">
-        
-            #set( $ismultifine = $asset.id.startsWith("multiedit:") )
-            #if($ismultifine )
-                $pages.include("$apphome/components/detaileditor/navigate.html", $context)
-                <div id="media-player" style="margin: -20px 0 0 0;">
-                    <h2 style="color: #fff; margin: 20px 0;">[[Editing across $asset.size() records]]</h2>
-                </div>
-    
-            #else
-
-                $pages.include("$apphome/components/detaileditor/navigate.html", $context)
-          
-                #if( $userprofile.maximize_player == "false")
-                    $pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
-                #else
-                    <div id="media-player-table" class="table" style="margin: -20px 0 0 0;">
-                        $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
-                    </div>
-                #end
-           
-            #end
-        
-    </div>
-    #if ( $canviewvoting )
-    <div id="assetVoteCount">
-        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
-    </div>
-    #end
+              $pages.include("$apphome/components/detaileditor/navigate.html", $context)
+   
     #set( $assettab = $context.findValue("assettab") )
+    
+   
+    
     <div id="detailarea">
         <div id="de-table">
             <div class="tr">
@@ -53,7 +35,11 @@
                     <span>$section</span>
                 </div>
                 <div class="title-bar" style="border-right: none;">
+                #if( $hits && $hits.hasMultipleSelections() )
+                    <span style="text-align: center;">Selected Media</span>
+                #else
                     <span style="text-align: center;">Related Media</span>
+                #end    
                 </div>
             </div>
             <div class="tr">
@@ -76,7 +62,7 @@
                         #end
 
                         #if( $inpreviewpage )
-                        $pages.include("$apphome/views/modules/$moduleid/editor/generalinformation/index.html", $context)
+                        $pages.include("$apphome/views/modules/$moduleid/editor/preview/index.html", $context)
                         #else
                         
                             #set ($listid =  $content.tab )
@@ -101,10 +87,16 @@
 
                     </div>
                 </div>
+                #if( $hits && $hits.hasMultipleSelections() )
+                <div id="selected-media">
+                    $pages.include("$apphome/components/results/related/byselection.html",$context)
+                </div>
+                #else
                 <div id="related-media">
 
                     $pages.include("$apphome/components/results/related/bykeyword.html",$context)
                 </div>
+                #end
             </div>
         </div>
     </div>

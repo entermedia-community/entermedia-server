@@ -4,11 +4,4 @@
 	<property name="assettab">metadatageneral</property>
 	<property name="scrollable">true</property>
 
-	<property name="hideactions">true</property> 	
-	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
-		
-	<permission name="viewasset">
-		<boolean value="true" />
-	</permission>	
-	
 </page>
