@@ -37,7 +37,7 @@ $context.putPageValue("thumbsize", $thumbsize)
 <div id="emselectable">	
 <div class="autoresize-inner">	
 
-	<table id="main-results-table" class="emdownloadlisting emresultscontent striped" data-clickpath="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=">
+	<table id="main-results-table" class="emdownloadlisting emresultscontent striped" data-clickpath="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=${hits.sessionId}&assetid=">
 			$pages.include("$apphome/components/results/tableheader.html",$context)
 			#set($count = 0)
 			#foreach( $hit in $hits.getPageOfHits() )

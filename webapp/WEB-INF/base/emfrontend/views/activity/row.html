@@ -18,7 +18,7 @@
 		#else
 			#set( $rootid = $hits.sessionId )
 		#end
-			#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html?hitssessionid=$rootid" )
+			#set( $click = "$home$apphome/views/modules/asset/editor/index.html?assetid=${asset.id}&hitssessionid=$rootid" )
 		
 			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
 				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))

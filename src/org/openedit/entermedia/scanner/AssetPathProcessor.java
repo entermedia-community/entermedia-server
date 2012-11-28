@@ -252,7 +252,7 @@ public class AssetPathProcessor extends PathProcessor
 									{
 										//we dont need to load the asset so dont load it
 										String filesourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
-										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/" + filesourcepath;
+										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/assets/" + filesourcepath;
 										if( !getPageManager().getRepository().doesExist(filepath) )
 										{
 											processFile(item, inUser); //Loads the asset and does a check on mod date
