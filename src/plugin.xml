@@ -484,6 +484,15 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	
+	<bean id="orderZipGenerator" class="org.openedit.entermedia.generators.OrderZipGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
+	
+	
 	<bean id="zipGenerator" class="org.openedit.entermedia.generators.ZipGenerator">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="root"><ref bean="root"/></property>
