@@ -1,5 +1,16 @@
 <div id="emresultscontent">
 
+#if( !$related )
+    #set ( $hitssessionid = $context.findValue("hitssessionid") )
+    #set ( $related = $context.getSessionValue($hitssessionid) )
+#end
+
+#set( $pagenum = $context.getRequestParameter("page") )
+#if( $pagenum )
+#set( $pageval = 1)
+#set( $pageval = $pageval.parseInt($pagenum))
+$related.setPage($pageval)
+#end
 #if( $hideheader &&  $hideheader == "false")
     $pages.include("$apphome/components/results/header.html",$context) 
     #end
@@ -20,6 +31,14 @@
         			#set($count = 0)
         			
         			#set( $rootid = $related.sessionId )
+        			
+                #if ($related.getPage() > 1 )
+	 				<li id="prevfive">
+                    #set ($pageval = $related.getPage() - 1)
+                   <a class="ajax" targetdiv="emresultscontent" href="$home$page.getPath()?sourcepath=$asset.sourcepath&page=$pageval&hitssessionid=$rootid&oemaxlevel=1"> << Previous Page </a>
+    				</li>
+                #end
+ 	    			
         			
         			#foreach ($hit in $related.getPageOfHits())
         		<li class="emthumbbox embox$thumbsize #if( $asset && $hit.id == $asset.id ) currentsubtle #end" id="cell${catalogid}_${hit.id}" >
@@ -44,16 +63,18 @@
         				</span>
         			</a>
         		</li>
-        			  
         			#end
+        			
+        		<li id="nextfive">
+                #if ( $related.getPage() < $related.getTotalPages() )
+                    #set ($pageholder = $related.getPage() + 1)
+                   <a class="ajax" targetdiv="emresultscontent" href="$home$page.getPath()?sourcepath=$asset.sourcepath&page=$pageholder&hitssessionid=$rootid&oemaxlevel=1"> Next Page >> </a>
+                #end
+ 				</li>
+        			
+        			
         	</ul>
-        	#if( $related.size() > 7 )
-                <center>
-                    <a class="btn" style="margin-top: 15px; margin-bottom: 30px;" href="$home$apphome/views/search/index.html?hitssessionid=$related.sessionId">All Related</a>
-                </center>
-            #end
         #end
-</div>
 <script>
 	
 	$('.sidebar-media li').hover(function() {
@@ -61,3 +82,4 @@
 	});
 	
 </script>
+</div>
