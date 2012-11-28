@@ -414,7 +414,6 @@ ul.emheaderbuttons li.navselected a {
 }
 
 #media-player {
-    margin-bottom: 10px;
     text-align: center;
 }
 .asset-details h3 {
@@ -5850,7 +5849,6 @@ td[title]:hover:before {
 #default-top {
     background-color: #F7F7F7;
     border-bottom: 1px solid #CCC;
-    margin: 0 0 20px 0;
     width: 100%;
 }
 #default-top .thumbnail {
