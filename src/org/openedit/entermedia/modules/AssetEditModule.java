@@ -751,6 +751,7 @@ public class AssetEditModule extends BaseMediaModule
 		HitTracker hits = createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
 		if( hits != null )
 		{
+			hits.selectAll();
 			if (hits.size() ==  1 )
 			{
 				String sourcepath = ((Data)hits.first()).getSourcePath();
