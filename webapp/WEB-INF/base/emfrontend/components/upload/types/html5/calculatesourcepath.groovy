@@ -33,10 +33,16 @@ public void init()
 			}
 		}
 		String sourcepath = context.findValue("destinationsourcepath");  //${division.uploadpath}/${user.userName}/${formateddate}
+		String libraries = context.getRequestParameter("libraries.value");
+		if(libraries != null){
+			vals.put("library", libraries);
+		}
 		
 		Replacer replacer = new Replacer();
+		
 		replacer.setSearcherManager(mediaArchive.getSearcherManager());
 		replacer.setDefaultCatalogId(mediaArchive.getCatalogId());
+		replacer.setAlwaysReplace(true);
 		sourcepath = replacer.replace(sourcepath, vals);
 		if( sourcepath.startsWith("/") )
 		{
