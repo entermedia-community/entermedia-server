@@ -241,7 +241,90 @@ uiload = function() {
 		$('#select-dropdown').hide();
 	});
 
+/*
+		jQuery('select.choose-select').livequery(
+				function()
+				{
+					if( !jQuery(this).closest(".chzn-filter").length )
+					{
+						//jQuery(this).chosen({ search_contains: true } );
+					}
+				}
+		);
+*/	
+	$("select.choose-select-ajax").livequery(
+			function()
+			{
+				var selector = jQuery(this);
+				//alert(selector.html());
+				var sid = selector.attr("id");
+
+				var listid = selector.data("listid");
+				
+				var app = jQuery("#application").data("apphome");
+						
+				selector.ajaxChosen({
+					method: 'GET',
+					url: app + '/components/xml/types/modulepicker/datasearch.txt?searchtype=' + listid + '&field=name&operation=contains&hitsperpage=400',
+					dataType: 'json',
+					jsonTermKey: 'name.value'
+				}, function(options)
+				{
+					//extends options with data
+					//data: { name: "John", location: "Boston" }
+					var args = jQuery.extend({}, options);
+					var inputs = jQuery("#" + sid + "_filter .autosubmited");
+					inputs.each(function() {
+						var name = this.name;
+						name = name.substring(12,name.length - 6); //remove the prefix and .value
+						args.data[ name + ".value"] = $(this).val();
+						args.data["operation" ] = "matches";
+						args.data["field" ] = name; //does this work with duplicates?
+					 });
+					return jQuery.ajax(args);
+				}, function (data) {
+					var terms = {};
+					jQuery.each(data, function () {
+						terms[this.id] = this.name;
+					});
+					return terms;
+				});
+			}
+		);	
 	
+	
+	jQuery('.module-picker-starter .hideshow').livequery("click",function(e)
+	{
+		  var theinput = $(this).closest(".module-picker-starter");
+	      var dropdown = theinput.find('div.chzn-drop').first();
+	      var dd_top = theinput.height();
+	      var dd_width = theinput.width() - 2;
+
+	      if (theinput.hasClass("chzn-container-active")) {
+
+	    	  theinput.removeClass("chzn-container-active");
+		      dropdown.css({
+			        "width": dd_width + "px",
+			        "top": dd_top + "px",
+		            "left": "-9000px"
+			      });	  
+		      //Do search here and on each keyup and each change of the filter?
+		      
+	      }
+	      else
+	      {
+	    	  theinput.addClass("chzn-container-active");
+		      var a = theinput.find('a').first();
+		      a.addClass("chzn-single-with-drop");
+		      dropdown.css({
+		        "width": dd_width + "px",
+		        "top": dd_top + "px",
+	            "left": 0
+		      });
+	      }
+	});
+	
+
 	
 }
 
