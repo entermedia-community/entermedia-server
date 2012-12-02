@@ -2099,6 +2099,7 @@ center #addcoment {
 #main {
     box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
     margin: 0;
+    
 }
 #emcontent {
     padding: 0;
@@ -2279,7 +2280,7 @@ tr.odd {
 
 .search-list li a.search-href, .sidebar-list a {
     padding: 10px 40px;
-    margin: 0 -10px;
+    margin: 0 4px 0 4px;
     text-decoration: none;
     display: block;
     font-size: 12px;
@@ -3397,10 +3398,24 @@ body #emcontainer .emasseteditorarea {
     text-align: center;
     margin: -6px 0 15px 0;
 }
+#advsearchpanel select.choose-select-ajax select.choose-select {
+    width: 150px !important;
+}
 
-#advsearchpanel table[width="100%"] .field, #advsearchpanel table[width="100%"] select {
+.choose-select-ajax
+{
+	width: 300px;
+}
+
+#advsearchpanel select.choose-select {
     width: 180px !important;
 }
+
+#advsearchpanel table[width="100%"] .field, #advsearchpanel select.choose-select-ajax {
+    width: 180px !important;
+}
+
+
 #advsearchpanel table[width="100%"] input[type="text"] {
     width: 158px;
 }
@@ -4581,7 +4596,7 @@ p.info {
     position: relative;
     top: 5px;
 }
-#advsearchpanel span {
+#advsearchpanelXX span {
     display: block;
     width: 1px;
 }
@@ -6142,4 +6157,9 @@ td[title]:hover:before {
     h2, h3 {
         page-break-after: avoid;
     }
+}
+
+.module-picker input{
+		color:#fff;
+	background:#333;
 }

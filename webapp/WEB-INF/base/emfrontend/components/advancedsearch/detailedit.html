@@ -16,7 +16,6 @@
 				#else
 				<input name="operation" value="startswith" type="hidden" />
 				#end
-
 		#end
 	
 		#set( $viewtype = $detail.searchcomponent )
@@ -34,13 +33,8 @@
 			#set ($viewtype = "list")
 		#end
 		
-		
-		
 		#if (!$viewtype || $viewtype == "date")
 			#set ($viewtype = "datesearch")
-		#else
-		
-		
 		#end
 		
 		
@@ -49,6 +43,7 @@
 			#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
 			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
 			$context.putPageValue("term",$term)			
+			$value
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
 		#end
