@@ -7,7 +7,20 @@
 			<pagevalue name="canviewupload" equals="false"/>
 		</not>
 	</permission>
-	
+<!--
+	<path-action name="Script.runModule" >
+		<module>UploadUtils.calculateSourcePath</module>
+	</path-action>
+-->
+
+	<path-action name="Date.now">
+		<format>yyyy/MM</format>
+	</path-action>
+
+	<path-action name="Script.run" >
+		<script>./calculatesourcepath.groovy</script>
+	</path-action>
+
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	
 	<permission name="download">
@@ -18,5 +31,7 @@
 	</permission>	
 
 	<property name="section">details</property>
+	<propertyXX name="destinationsourcepath">${library}/${formatteddate}</property>
+	<property name="destinationsourcepath">${library}</property>
 	
 </page>

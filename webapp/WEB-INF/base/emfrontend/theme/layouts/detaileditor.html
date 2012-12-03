@@ -46,25 +46,23 @@
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
                 <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
 
-                    $pages.include("$apphome/components/detaileditor/assetmenuul.html?moduleid=asset",$context)
+                    $pages.include("$apphome/components/detaileditor/assetmenuul.html?moduleid=$moduleid",$context)
 
                 </div>
                 <div id="details">
 
                     <div id="resultslist">
-                        #set( $inpreviewpage = false )
+                        #set( $inpreviewpage = $content.isPropertyTrue("showpreviewpage") )
                         #if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-                        #set( $inpreviewpage = true )
+                        	#set( $inpreviewpage = true )
                         #elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-                        #set( $inpreviewpage = true )
+                        	#set( $inpreviewpage = true )
                         #elseif( $content.path.endsWith("detailviewer/index.html") )
-                        #set( $inpreviewpage = true )
+                        	#set( $inpreviewpage = true )
                         #end
-
                         #if( $inpreviewpage )
-                        $pages.include("$apphome/views/modules/$moduleid/editor/preview/index.html", $context)
+	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
                         #else
-                        
                             #set ($listid =  $content.tab )
                             #if ($content.subtab)
                             <div id="eml-tab-subnav">
@@ -79,6 +77,8 @@
                                 </ul>
                             </div>
                             #end
+                            
+	                        $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
                             
                             $pages.includeContent()
                             

@@ -51,10 +51,11 @@ $context.putPageValue("caneditlists","false")
 			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
 				#if( $detail.hidelabel == true )
 				#else
-					$!detail.getText($context)
+				    #if ($detail.required == true) * #end	$!detail.getText($context)
 				#end
 			</td>
 			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
+			
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
 			#else  ##NOT EDITABLE
