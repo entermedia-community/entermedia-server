@@ -1069,98 +1069,129 @@ Copyright (c) 2011 by Harvest
 
 }).call(this);
 
+
 (function($) {
-  if ($ == null) $ = jQuery;
-  return $.fn.ajaxChosen = function(settings, runsearch, callback) {
-    var chosenXhr, defaultOptions, options, select;
-    if (settings == null) settings = {};
-    if (callback == null) callback = function() {};
-    if( runsearch == null) runsearch = function() {};
-    defaultOptions = {
-      minTermLength: 3,
-      afterTypeDelay: 500,
-      jsonTermKey: "term"
-    };
-    select = this;
-    chosenXhr = null;
-    options = $.extend({}, defaultOptions, settings);
-    this.chosen();
-    
-    runStuff = function(val)
-    {
-        if (!(options.data != null)) options.data = {};
-        if (typeof success === "undefined" || success === null) {
-          success = options.success;
-        }
-        options.success = function(data) {
-          var items, selected_values;
-          if (!(data != null)) return;
-          selected_values = [];
-          select.find('option').each(function() {
-            if (!$(this).is(":selected")) {
-              return $(this).remove();
-            } else {
-              return selected_values.push($(this).val() + "-" + $(this).text());
-            }
-          });
-          items = callback(data);
-          $.each(items, function(value, text) {
-            if ($.inArray(value + "-" + text, selected_values) === -1) {
-              return $("<option />").attr('value', value).html(text).appendTo(select);
-            }
-          });
-          select.trigger("liszt:updated");
-          if (typeof success !== "undefined" && success !== null) success();
-        };
-        return this.timer = setTimeout(function() {
-          if (chosenXhr) chosenXhr.abort();
-          return chosenXhr = runsearch(options);
-        }, options.afterTypeDelay);
+	  return $.fn.ajaxChosen = function(settings, callback, chosenOptions) {
+	    var chosenXhr, defaultOptions, options, select;
+	    if (settings == null) {
+	      settings = {};
+	    }
+	    if (callback == null) {
+	      callback = {};
+	    }
+	    if (chosenOptions == null) {
+	      chosenOptions = function() {};
+	    }
+	    defaultOptions = {
+	      minTermLength: 3,
+	      afterTypeDelay: 500,
+	      jsonTermKey: "term"
+	    };
+	    select = this;
+	    chosenXhr = null;
+	    options = $.extend({}, defaultOptions, $(select).data(), settings);
+	    this.chosen(chosenOptions ? chosenOptions : {});
+	    
+	    runStuff = function(field)
+	    {
+	    	//Run Stuff Start
+	    	var untrimmed_val = field.attr('value');
+	        var val = $.trim(untrimmed_val);
 
-    }
-    this.each(function() {
-      return $(this).next('.chzn-container').find(".search-field > input, .chzn-search > input").bind('keyup', 
-    	function()
-    	{
-	        var field, msg, val;
-	        val = $.trim($(this).attr('value'));
-	        msg = val.length < options.minTermLength ? "Keep typing..." : "Looking for '" + val + "'";
-	        select.next('.chzn-container').find('.no-results').text(msg);
-	        if (val === $(this).data('prevVal')) return false;
-	        $(this).data('prevVal', val);
-	        if (this.timer) clearTimeout(this.timer);
-
-	        
-	        if (val.length < options.minTermLength) return false;
-	        
-	        //Run search
-	        field = $(this);
-
-	        if (!(options.data != null)) options.data = {};
+	        var success;
+	        if (!(options.data != null)) {
+	          options.data = {};
+	        }
 	        options.data[options.jsonTermKey] = val;
+	        if (options.dataCallback != null) {
+	          options.data = options.dataCallback(options.data);
+	        }
+	        success = options.success;
+	        options.success = function(data) {
+	          var items, selected_values;
+	          if (!(data != null)) {
+	            return;
+	          }
+	          selected_values = [];
+	          select.find('optgroup').each(function() {
+	            return $(this).remove();
+	          });
+	          select.find('option').each(function() {
+	            if (!$(this).is(":selected")) {
+	              return $(this).remove();
+	            } else {
+	              return selected_values.push($(this).val() + "-" + $(this).text());
+	            }
+	          });
+	          items = callback(data);
+	          $.each(items, function(value, element) {
+	            var group;
+	            if (element.group) {
+	              group = $("<optgroup />").attr('label', element.text).appendTo(select);
+	              return $.each(element.items, function(value, text) {
+	                if ($.inArray(value + "-" + text, selected_values) === -1) {
+	                  return $("<option />").attr('value', value).html(text).appendTo(group);
+	                }
+	              });
+	            } else if ($.inArray(value + "-" + element, selected_values) === -1) {
+	              return $("<option />").attr('value', value).html(element).appendTo(select);
+	            }
+	          });
+	          select.trigger("liszt:updated");
+	          if (success != null) {
+	            success(data);
+	          }
+	          return field.attr('value', untrimmed_val);
+	        };
+	        return this.timer = setTimeout(function() {
+	          if (chosenXhr) {
+	            chosenXhr.abort();
+	          }
+	          return chosenXhr = $.ajax(options);
+	        }, options.afterTypeDelay);
+	        //Run Stuff End
+	    }
+	    
+	    this.each(function() {
+	      return $(this).next('.chzn-container').find(".search-field > input, .chzn-search > input").bind('keyup', function() {
+	        var field = $(this);
+	    	var untrimmed_val = field.attr('value');
+	        var val = $.trim(untrimmed_val);
+	        var msg = val.length < options.minTermLength ? "Keep typing..." : "Looking for '" + val + "'";
+	        select.next('.chzn-container').find('.no-results').text(msg);
+	        if (val === $(this).data('prevVal')) {
+	          return false;
+	        }
+	        $(this).data('prevVal', val);
+	        
+	        if (this.timer) {
+	            clearTimeout(this.timer);
+	          }
+	        if (val.length < options.minTermLength) {
+	          return false;
+	        }
 
-	        runStuff();
+	        return runStuff(field,untrimmed_val,val);
+	      }
+	      );
+	    });
+	    
+	    
+	    var input = this.find(".search-field > input, .chzn-search > input");
+		var sid = this.attr("id");
+	    
+		var chzn = jQuery( "#" + sid + "_chzn");
+		var filter = jQuery( "#" + sid + "_filter");
+		chzn.find(".chzn-search").before(filter);
 
-	        field.attr('value', val);
-	        return field.css('width', 'auto');
-
-     	 }
-      );
-    });
-    
-	var sid = this.attr("id");
-    
-	var chzn = jQuery( "#" + sid + "_chzn");
-	var filter = jQuery( "#" + sid + "_filter");
-	chzn.find(".chzn-search").before(filter);
-
-	//register to filters
-	filter.find("select").change(function()
+		//register to filters
+		filter.find("select").change(function()
 			{
-				runStuff();
+				runStuff(input);
 			});
-	runStuff();
-    
-  };
-})($);
+		runStuff(input);
+	    
+	    
+	  };
+	})(jQuery);
 
