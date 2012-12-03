@@ -5148,7 +5148,7 @@ p.resultsnumber {
 #mediaviewer #default-top .main-info {
     margin-left: 15px;
 }
-#mediaviewer #default-top .primary {
+#mediaviewer .main-info .primary {
     color: #fff;
     text-align: left;
 }
@@ -5880,7 +5880,7 @@ td[title]:hover:before {
     float: left;
     margin: 38px 0 0 39px;
 }
-#default-top .primary {
+.main-info .primary {
     font-size: 24px;
     font-weight: bold;
     color: #444;

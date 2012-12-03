@@ -1862,8 +1862,17 @@ public class AssetEditModule extends BaseMediaModule
 			if( hits != null && hits.hasSelections())
 			{
 				Integer selected = (Integer)hits.getSelections().iterator().next();
-				Data first = hits.get(selected);
-				asset = getMediaArchive(inReq).getAssetBySourcePath(first.getSourcePath());
+
+				String assetid = inReq.getRequestParameter("assetid");
+				if( assetid != null && assetid.startsWith("multiedit:") )
+				{
+					asset = (Asset)inReq.getSessionValue(assetid);
+				}
+				else
+				{
+					Data first = hits.get(selected);
+					asset = getMediaArchive(inReq).getAssetBySourcePath(first.getSourcePath());
+				}
 				if( asset != null )
 				{
 					inReq.putPageValue("asset", asset);

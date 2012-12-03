@@ -4,7 +4,17 @@
 <div id="mediaviewer" >
     ##<a id="mp-minmax" class="min ir propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
     
+        
+        #if( $asset.getId().startsWith("multiedit:") )
+                    <div class="main-info">
+        
+ <div class="primary" style="text-align: center">
+						Editing across $asset.getItems().size() assets
+</div>
+</div>
+		#else            
         <div id="default-top" style="border-bottom: none;">
+        
             <div class="thumbnail">
                 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
                 #if( !$thumbsize )
@@ -21,9 +31,9 @@
                 #end 
                 
             </div>
-            
             <div class="main-info">
                 <div class="primary">
+                                
                     $asset #if ($totalpages > 1) <span style="opacity: 0.8; font-size: 11px; font-weight: normal; position: relative; top: -3px; margin-left: 5px;"><a class="propertyset" propertyname="maximize_player" style="color: #fff;" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2">($totalpages Pages)</a></span> #end
                 </div>
                 <div class="secondary">
@@ -64,6 +74,7 @@
                 </div>
             </div>
         </div>
+               #end 
 </div>
 
 <script>
