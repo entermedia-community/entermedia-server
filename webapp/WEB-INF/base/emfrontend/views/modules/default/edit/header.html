@@ -23,10 +23,7 @@
 <!-- 
      <div class="main-info" style="padding-bottom: 30px;">
         <div class="primary">
-           <!-- Should do this another way
            $!data.first_name $!data.last_name
-            --> 
-           $!data  
         </div>
         <div class="secondary">
            #if ($data.company)
@@ -34,7 +31,14 @@
            #end
         </div>
     </div>
-     -->
+-->
+    #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
+
+      <div class="main-info" >
+      	<div class="primary">$module /  $!data</div>
+      </div>       
+    
+    
 </div>
 
 <div class="editholder">
