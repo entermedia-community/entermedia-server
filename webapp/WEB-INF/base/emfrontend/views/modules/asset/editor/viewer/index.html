@@ -8,13 +8,9 @@
     
             #else
 
-                #if( $userprofile.maximize_player == "false")
-                    $pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
-                #else
-                    <div id="media-player-table" class="table" >
-                        $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
-                    </div>
-                #end
+              <div id="media-player-table" class="table" >
+                  $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+              </div>
 
     #if ( $canviewvoting )
     <div id="assetVoteCount">

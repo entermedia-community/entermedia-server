@@ -1,7 +1,9 @@
 <page>
-	<path-action name="DataEditModule.search"/>
+	<path-action name="DataEditModule.search">
+		<searchtype>${module}</searchtype>
+	</path-action>
 	<path-action name="AutoCompleteModule.updateHits" >
-		<property name="searchtype">asset</property>
+		<searchtype>${module}</searchtype>
 	</path-action>
 	<property name="hitsperpage">25</property>
 	<!-- DON't do this! It saves every time you search
