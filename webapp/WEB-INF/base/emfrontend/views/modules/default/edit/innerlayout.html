@@ -47,6 +47,7 @@
                 <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
                  $pages.include("$apphome/views/modules/${moduleid}/edit/sidebar.html",$context)
                  $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
+				
                 </div>
                 <div id="details">
                      $pages.includeContent()

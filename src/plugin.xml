@@ -1481,4 +1481,7 @@
 	</bean>
 
 	
+	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
+	</bean>
+	
 </beans>

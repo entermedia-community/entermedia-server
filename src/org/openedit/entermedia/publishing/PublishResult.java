@@ -34,17 +34,37 @@ public class PublishResult
 	
 	public String getCompleteMessage()
 	{
+		if (fieldCompletedMessage == null) {
+			fieldCompletedMessage = "";
+		}
 		return fieldCompletedMessage;
 	}
 
 	public String getErrorMessage()
 	{
+		if (fieldErrorMessage == null) {
+			fieldErrorMessage = "";
+		}
 		return fieldErrorMessage;
 	}
 
 	public void setErrorMessage(String inErrorMessage)
 	{
 		fieldErrorMessage = inErrorMessage;
+	}
+	public void appendCompleteMessage(String inErrorMessage) {
+		if (fieldCompletedMessage != null) {
+			fieldCompletedMessage += inErrorMessage;
+		} else {
+			fieldCompletedMessage = inErrorMessage;
+		}
+	}
+	public void appendErrorMessage(String inErrorMessage) {
+		if (fieldErrorMessage != null) {
+			fieldErrorMessage += inErrorMessage;
+		} else {
+			fieldErrorMessage = inErrorMessage;
+		}
 	}
 	public boolean isError()
 	{

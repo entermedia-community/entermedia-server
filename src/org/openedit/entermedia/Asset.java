@@ -801,6 +801,10 @@ public class Asset implements MultiValued
 		
 		return Boolean.parseBoolean(val);
 	}
+	public void addLibrary(String inLibraryid) {
+		addValue("libraries", inLibraryid);
+		
+	}
 
 //	public String getOriginalAttachment()
 //	{
