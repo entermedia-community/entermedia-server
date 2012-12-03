@@ -314,15 +314,6 @@
 		<userprofile property="asseteditorpickanylibrary" equals="true" />
 	</permission>
 
-
-	<permission name="pickuploadfolder">
-		<userprofile property="pickuploadfolder" equals="true" />
-	</permission>
-
-	<permission name="editfolders">
-		<userprofile property="editfolders" equals="true" />
-	</permission>
-
 	
 	<permission name="view">
 		<userprofile property="view" equals="true" />

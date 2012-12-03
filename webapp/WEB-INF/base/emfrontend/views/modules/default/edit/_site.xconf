@@ -1,6 +1,6 @@
 <page>
 	<path-action name="DataEditModule.loadSearcherForEdit" >
-		<searchtype>${module}</searchtype>
+		<property name="searchtype">${module}</property>
 	</path-action>
 	<permission name="view">
 		<permission name="oe.administration"/>
