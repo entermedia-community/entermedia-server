@@ -702,6 +702,15 @@ asset: " + asset);
 
 	public void pollRemotePublish(MediaArchive inArchive)
 	{
+		
+		String enabled = inArchive.getCatalogSettingValue("push_masterswitch");
+		if( "false".equals(enabled) )
+		{
+			//log.info("Push is paused");
+			return;
+		}
+
+		
 		fieldClient = null;
 		
 		String server = inArchive.getCatalogSettingValue("push_server_url");
