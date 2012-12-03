@@ -5,7 +5,7 @@
 #macro(showattachments $parentfolder $depth) 
 
 		#set ( $depth = $depth + 1)
-		#set ( $padding = (20 * $depth) )
+		#set ( $padding = (15 * $depth) )
 		
 		#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
 		#foreach($file in $files)
@@ -51,7 +51,7 @@
 </div>
 	<div  class="ui-widget-content categories-widget no-padding-for-real of-visible" style="border: none; box-shadow: none;">
 		<div id="attachments-container">
-			<div id="tree" class="attachments">
+			<div id="attachmenttree" class="emtree attachments">
 					<ul class="open" >
 						<li class="noderow" id="toplevel_row" data-nodeid="toplevel" >
 							<div style="padding-left: 20px"><span class="arrow down"></span><span class="name folder" fileid="toplevel" sourcepath="$filesource" >Attachments</span>
@@ -82,7 +82,7 @@
 
 
 
-	$('#tree ul li div').livequery(function()
+	$('#attachmenttree ul li div').livequery(function()
 	{ 
 	  $(this).on({
 		click: function(){
@@ -101,13 +101,13 @@
 			file = $(file);
 			var fileid = file.attr("fileid");
 			$("#preview-pane").load("$home$attachmentroot/details.html?oemaxlevel=1&assetid=$asset.id&fileid=" + fileid );
-			$('#tree ul li div').removeClass('selected');
+			$('#attachmenttree ul li div').removeClass('selected');
 			$(this).addClass('selected');
 		}
 	 });
 	});
 
-	$('#tree .clearfield').livequery(function()
+	$('#attachmenttree .clearfield').livequery(function()
 	{ 
 	  $(this).on({
 		click: function (event) {
@@ -127,7 +127,7 @@
 	});
 	});
 
-	$("#tree .add-folder").livequery(function()
+	$("#attachmenttree .add-folder").livequery(function()
 	{ 
 	  $(this).on({
 			click: function (event) {
@@ -163,7 +163,7 @@
 	} );
 	});
 
-	$("#tree .upload-file").livequery(function()
+	$("#attachmenttree .upload-file").livequery(function()
 	{ 
 		$(this).on({
 			click: function (event) {
@@ -199,7 +199,7 @@
 	} );
 	});
 
-	$("#tree .cancel").livequery(function()
+	$("#attachmenttree .cancel").livequery(function()
 	{ 
       $(this).on({
 		click: function (event) {
@@ -217,7 +217,7 @@
 	
 	  });
 	});
-	$("#tree .click-link").livequery(function()
+	$("#attachmenttree .click-link").livequery(function()
 	{ 
 	  $(this).on({
 		click: function (event) {
@@ -229,7 +229,7 @@
 	});
 	});
 
-	$("#tree .edit").livequery(function()
+	$("#attachmenttree .edit").livequery(function()
 	{ 
 	  $(this).on({
 		click: function (event) {
@@ -245,7 +245,7 @@
 	});
 	});
 
-	$("#tree .editcancel").livequery(function()
+	$("#attachmenttree .editcancel").livequery(function()
 	{ 
 	  $(this).on({
 		click: function (event) {
@@ -259,7 +259,7 @@
 		}
 	});
 	});
-	$("#tree .editsave").livequery(function()
+	$("#attachmenttree .editsave").livequery(function()
 	{ 
 	  $(this).on({
 		click: function (event) {
@@ -289,7 +289,7 @@
 
 
 
-	$("#tree .addfoldersave").livequery(function()
+	$("#attachmenttree .addfoldersave").livequery(function()
 	{ 
 	  $(this).on({
 		click: function (event) {
@@ -317,7 +317,7 @@
 	});
 
 
-	$("#tree .delete").livequery(function()
+	$("#attachmenttree .delete").livequery(function()
 	{ 
 	  $(this).on({
 		click: function (event) {

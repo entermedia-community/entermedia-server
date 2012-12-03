@@ -15,7 +15,7 @@
         #set( $currentpreview = $numberutils.toInt($currentpreview) )
         #set( $pagenum = $currentpreview + 1  )
     #end
-    
+    ##TODO Move this to ./player/types/documentpages.html
     #if( $totalpages > 1 )
         <div id="pdf-thumbnail-sidebar">
   
@@ -73,7 +73,7 @@
 
 <div id="media-player" class="#if( $totalpages > 1 ) document #end">
 
-    <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
+ ##   <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
    
 
     <div id="mp-player">

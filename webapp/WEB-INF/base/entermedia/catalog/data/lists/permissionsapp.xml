@@ -17,6 +17,9 @@
 		
 	<permission id="editadvancedsearch" permissiontype="edit" name="Advanced Search" description="Enables the customization of initial search criteria."/>
 	<permission id="asseteditorlibraries" permissiontype="edit" name="Asset Libraries" description="Enables access to the asset library editor." ordering="400" />
+	<permission id="asseteditorpickanylibrary" permissiontype="edit" name="Pick Any Library" description="Asset can be added to any library." ordering="402" />
+	
+	
 	<permission id="changeattachment" permissiontype="edit" name="Attachments" description="Enables the creation and customization of attachments." ordering="400"  />
 	<permission id="editassetcategories" permissiontype="edit" name="Categories" description="Enables editing of an assets assigned categories" ordering="400" />
 	<permission id="editassettags" permissiontype="edit" name="Tags" description="Enables editing of an assets assigned tags" ordering="400" />
@@ -55,6 +58,9 @@
   	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />
   	<permission id="viewcategorynav" permissiontype="view" name="Category Navigation" description="Enables the Category Navigation in the sidebar." />
 	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." />
+	<permission id="viewlibrarysearch" permissiontype="view" name="User Libraries" description="Enables a list of libraries on the sidebar." />
+
+
 
 	<permission id="viewdevelopertools" permissiontype="view" name="Developer Tools" description="Enables advanced developer tools within various pages." />
 

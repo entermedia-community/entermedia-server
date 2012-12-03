@@ -54,6 +54,8 @@
 			And:
 		#elseif($filter.type == "Action" )
 			Action: <input name="condition.${traverse}.value" value="$!filter.getActionName()" size="40" />
+		#elseif($filter.type == "Referer" )
+			Referrer: <input name="condition.${traverse}.value" value="$!filter.getValue()" size="40" /> https://google.com/*
 		#elseif($filter.type == "Or" )
 			Or:
 		#elseif($filter.type == "Not" )

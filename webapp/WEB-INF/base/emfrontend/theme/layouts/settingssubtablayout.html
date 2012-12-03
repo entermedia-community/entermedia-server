@@ -1,7 +1,10 @@
 #set( $subtab = $context.findValue("subtab") )
+
+#if( $subtab )
+
 #set ( $module = $context.findValue("module") )
 #set ( $parentid = $context.findValue("tab") )
-## $subtab | $module | $parentid
+
 <div id="eml-tab-subnav">
 	<ul>
 		#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
@@ -21,3 +24,10 @@
 			$pages.includeContent()
 			
 </div>
+
+#else
+<div style="padding:20px">
+			$pages.includeContent()
+</div>
+
+#end

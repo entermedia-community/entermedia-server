@@ -1,3 +1,5 @@
 <page>
-<path-action name="DataEditModule.reindex"/>
+<path-action name="DataEditModule.reindex">
+	<searchtype>${module}</searchtype>
+</path-action>
 </page>

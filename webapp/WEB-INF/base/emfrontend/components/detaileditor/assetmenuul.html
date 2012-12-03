@@ -1,4 +1,5 @@
 #set($hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set($moduleid = $context.getRequestParameter("moduleid"))
 #set( $sourcepath = $asset.getSourcePath() )
 
 #if( $parenthits )
@@ -8,7 +9,9 @@
 #end
 
 #set( $tab = $context.findValue("assettab") )
-#set( $links = $searcherManager.getList($catalogid,"detaileditormenu") )
+#set( $searcher = $searcherManager.getSearcher($catalogid,"detaileditormenu") )
+#set( $query = $searcher.createSearchQuery().append("module",$moduleid) )
+#set( $links = $searcher.cachedSearch($context,$query) )
 <ul id="assetmenu" class="sidebar-list">
     #if ( $asset.id.startsWith("multiedit:") )
         #set  ( $ismulti = true)

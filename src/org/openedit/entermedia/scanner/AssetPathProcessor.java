@@ -26,26 +26,29 @@ public class AssetPathProcessor extends PathProcessor
 
 	protected MediaArchive fieldMediaArchive;
     protected Boolean fieldOnWindows;
+    protected boolean fieldSkipModificationCheck;
+    
+	public boolean isSkipModificationCheck()
+	{
+		return fieldSkipModificationCheck;
+	}
+
+
+	public void setSkipModificationCheck(boolean inSkipModificationCheck)
+	{
+		fieldSkipModificationCheck = inSkipModificationCheck;
+	}
+
 	protected AssetUtilities fieldAssetUtilities;
-	protected long fieldLastCheckedTime;
 	protected Collection fieldAttachmentFilters;
 	protected FileUtils fieldFileUtils = new FileUtils();
 	final List<String> assetsids = new ArrayList<String>();
 	final List<Asset> fieldAssetsToSave = new ArrayList<Asset>();
-
 	protected List<Asset> getAssetsToSave()
 	{
 		return fieldAssetsToSave;
 	}
-	public long getLastCheckedTime()
-	{
-		return fieldLastCheckedTime;
-	}
 
-	public void setLastCheckedTime(long inLastCheckedTime)
-	{
-		fieldLastCheckedTime = inLastCheckedTime;
-	}
 
 		public Collection getAttachmentFilters()
 		{
@@ -72,13 +75,12 @@ public class AssetPathProcessor extends PathProcessor
 		
 		Asset	eventasset = (Asset)getAssetsToSave().get(0);	
 		List<String> someids = new ArrayList();
-		assetsids.addAll(someids);
 
 		List existingassets = new ArrayList();
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
 			Asset asset = (Asset) iter.next();
-			if( asset.getId() != null )
+			if( asset.get("recordmodificationdate") != null )
 			{
 				existingassets.add(asset);
 			}
@@ -88,8 +90,9 @@ public class AssetPathProcessor extends PathProcessor
 
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
-			//inArchive.removeGeneratedImages(asset); //Just in case?
 			Asset asset = (Asset) iter.next();
+			someids.add(asset.getId() );
+			
 			if( existingassets.contains(asset) )
 			{
 				getMediaArchive().fireMediaEvent("asset/originalmodified",inUser, asset);				
@@ -99,6 +102,7 @@ public class AssetPathProcessor extends PathProcessor
 				getMediaArchive().fireMediaEvent("asset/assetcreated",inUser, asset);
 			}
 		}
+		assetsids.addAll(someids);
 
 		getMediaArchive().fireMediaEvent("importing/assetsimported", inUser, eventasset, someids);
 		
@@ -130,7 +134,7 @@ public class AssetPathProcessor extends PathProcessor
 
 		return super.acceptFile(inItem);
 	}
-	
+
 		public void process(ContentItem inInput, User inUser)
 		{
 			if (inInput.isFolder())
@@ -220,26 +224,45 @@ public class AssetPathProcessor extends PathProcessor
 				{
 					processchildren = true;
 				}
-				if( processchildren)
+				
+				if( processchildren && isRecursive())
 				{
-					boolean checkfiles = true;
 					
-					
-					if(  getLastCheckedTime() > inInput.getLastModified() )  //On Windows the folder times stamp matches the most recently modified file
-					{
-						//Updated when files are added or removed from a folder
-						checkfiles = false;
-					}
 					for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 					{
 						String path = (String) iterator.next();
 						ContentItem item = getPageManager().getRepository().getStub(path);
-						if( isRecursive() )
+						if( item.isFolder() )
 						{
-							if( checkfiles ||  item.isFolder())
+							if (acceptDir(item))
 							{
-								process(item, inUser);
+//								if( deep > 2 )
+//								{
+//									ignoretime = true; //If we are deeper than 3 and still showed a mod stamp then check everything
+//								}
+								processAssetFolder( item, inUser);
 							}
+							
+						}
+						else
+						{
+								if (acceptFile(item))
+								{
+									if( isSkipModificationCheck() )
+									{
+										//we dont need to load the asset so dont load it
+										String filesourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
+										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/assets/" + filesourcepath;
+										if( !getPageManager().getRepository().doesExist(filepath) )
+										{
+											processFile(item, inUser); //Loads the asset and does a check on mod date
+										}
+									}
+									else
+									{
+										processFile(item, inUser); 
+									}
+								}
 						}
 					}
 				}

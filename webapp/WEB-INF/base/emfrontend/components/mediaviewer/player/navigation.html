@@ -5,10 +5,11 @@
 	#set($indexOf = $hits.indexOfId($asset.id))
 	#set($previous = $hits.previous($indexOf))
 	#set($next = $hits.next($indexOf))
-	#if($previous) <a class="linkprevious" href="${home}$apphome/views/assets/${previous.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
+	
+	#if($previous) <a class="linkprevious" href="${home}$apphome/views/modules/asset/editor/index.html?assetid=${previous.id}&hitssessionid=${hitssessionid}"></a>
 	#end
 
-	#if($next) <a class="linknext" href="${home}$apphome/views/assets/${next.sourcepath}/index.html?hitssessionid=${hitssessionid}"></a>
+	#if($next) <a class="linknext" href="${home}$apphome/views/modules/asset/editor/index.html?assetid=${next.id}&hitssessionid=${hitssessionid}"></a>
 	#end
 	#end
 	<p class="asset-caption ellipsis">

@@ -1,4 +1,4 @@
 <page>
-<inner-layout>/${applicationid}/views/myaccount/innerlayout.html</inner-layout>
+<inner-layout>${themeprefix}/layouts/myaccount.html</inner-layout>
 
 </page>

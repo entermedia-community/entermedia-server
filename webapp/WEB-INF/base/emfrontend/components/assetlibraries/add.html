@@ -2,29 +2,32 @@
 <h4>[[Add Library]]:</h4> 
 
 
-#set( $divisions = $searcherManager.getList($catalogid,"division") )
-#if( $content.filter_division )
+<form name="adder" class="ajaxform" targetdiv="emvalueeditor" action="$home$apphome/components/assetlibraries/addfinish.html">
 
-#elseif( $divisions.size() > 1)
-<tr class="emsearchfieldrow">
-	<td valign="middle" nowrap="" align="left" class="emsearchfieldvalue" id="detail_division">
-		<select name="division.value"  id="parent${inputid}" onchange='loadlist("#detail_library", "$catalogid", "library", "Library", "libraries", "division", $(this).val(),"$!val" )'>
-		<option value="">-- Choose Division --</option>
-		#foreach( $division in $divisions)
-			<option value="$division.id">$division</option>
-		#end
-		</select>
-	</td>
-</tr>
+
+<input type="hidden" name="fieldname" value="libraries" />
+
+#if( $canasseteditorpickanylibrary )
+
+
+		$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
+		$context.putPageValue("view","asset/libraryadd")	
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
+#else
+
+<select name="libraries.value">
+<option value=""></option>
+#foreach( $libraryid in $userprofile.getCombinedLibraries() )
+	#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
+	#set( $division = $searcherManager.getData($catalogid,"division",$library.division))
+	<option value="$libraryid">$division / $library</option>
+#end
+</select>
+
+			
 #end
 
-<form name="adder" class="ajaxform" targetdiv="emvalueeditor" action="$home$apphome/components/libraries/addfinish.html">
-
-<input type="hidden" name="fieldname" value="libraries" /><br>
-
-		<div id="detail_library">
-			$pages.include("${apphome}/components/xml/types/simplelist.html?searchtype=library&fieldname=libraries&label=Library",$context)
-		</div>		
 
 
 <input type="hidden" name="assetid" value="$context.getRequestParameter('assetid')" /><br>

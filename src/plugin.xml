@@ -484,6 +484,15 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	
+	<bean id="orderZipGenerator" class="org.openedit.entermedia.generators.OrderZipGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	
+	
+	
 	<bean id="zipGenerator" class="org.openedit.entermedia.generators.ZipGenerator">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="root"><ref bean="root"/></property>
@@ -1447,11 +1456,17 @@
 
 	<bean id="SyncModule" class="org.openedit.entermedia.modules.SyncModule" >
 		<property name="pushManager"><ref bean="pushManager" /></property>
+		<property name="publishChecker"><ref bean="publishChecker" /></property>
 	</bean>
 
 	<bean id="pushManager" class="org.openedit.entermedia.push.PushManager" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="userManager"><ref bean="userManager" /></property>
+	</bean>
+
+	<bean id="publishChecker" class="org.openedit.entermedia.push.PublishChecker" >
+			<property name="moduleManager"><ref bean="moduleManager" /></property>
+			<property name="pushManager"><ref bean="pushManager" /></property>
 	</bean>
 	
 	<bean id="workspaceManager" class="org.entermedia.workspace.WorkspaceManager">
@@ -1465,5 +1480,8 @@
 		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
 
+	
+	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
+	</bean>
 	
 </beans>

@@ -400,7 +400,7 @@ public class AssetEditModule extends BaseMediaModule
 		CompositeAsset composite = new CompositeAsset();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
-			Object target = (Object) iterator.next();
+			Data target = (Data) iterator.next();
 			Asset p = null;
 			if( target instanceof Asset)
 			{
@@ -408,8 +408,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			else
 			{
-				String id = hits.getValue(target, "id");
-				p = store.getAsset(id);
+				p = store.getAssetBySourcePath(target.getSourcePath());
 			}
 			if( p != null)
 			{
@@ -632,7 +631,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset = getMediaArchive(inReq).getAsset(id);
 		}
-		asset.addKeyword(key);
+		asset.addKeywords(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
 	}
@@ -749,7 +748,22 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 
-		createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
+		HitTracker hits = createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
+		if( hits != null )
+		{
+			hits.selectAll();
+			if (hits.size() ==  1 )
+			{
+				String sourcepath = ((Data)hits.first()).getSourcePath();
+				Asset asset = archive.getAssetBySourcePath(sourcepath);
+				inReq.putPageValue("asset", asset);
+			}
+			else
+			{		
+				inReq.setRequestParameter("multihitsname", hits.getSessionId());
+				createMultiEditData(inReq);
+			}
+		}
 	}
 
 	public void createAssetsFromFile(WebPageRequest inReq)
@@ -835,7 +849,7 @@ public class AssetEditModule extends BaseMediaModule
 			
 		}
 	}
-	protected void createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
+	protected HitTracker createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		
@@ -865,7 +879,7 @@ public class AssetEditModule extends BaseMediaModule
 		if( tracker.size() == 0 )
 		{
 			log.error("No pages uploaded");
-			return;
+			return null;
 		}
 		StringBuffer allids = new StringBuffer();
 		List listids = new ArrayList();
@@ -885,13 +899,14 @@ public class AssetEditModule extends BaseMediaModule
 		
 		SearchQuery q = archive.getAssetSearcher().createSearchQuery();
 		q.addOrsGroup("id", allids.toString() );
-		archive.getAssetSearcher().cachedSearch(inReq, q);
+		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
 		
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
 			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
 		}
+		return results;
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
 	{
@@ -1164,7 +1179,7 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				continue;
 			}
-			getAssetImporter().processOn(assetRoot, path,archive, 0,inReq.getUser());
+			getAssetImporter().processOn(assetRoot, path,archive, false,inReq.getUser());
 		}
 
 		if (unzipped != null)
@@ -1172,7 +1187,7 @@ public class AssetEditModule extends BaseMediaModule
 			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
 			{
 				Page page = (Page) iterator.next();
-				getAssetImporter().processOn(assetRoot, page.getPath(), archive, 0,inReq.getUser());
+				getAssetImporter().processOn(assetRoot, page.getPath(), archive, false,inReq.getUser());
 			}
 		}
 	}
@@ -1195,7 +1210,7 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				continue;
 			}
-			getAssetImporter().processOn(assetRoot, path, archive,0, inReq.getUser());
+			getAssetImporter().processOn(assetRoot, path, archive,false, inReq.getUser());
 		}
 
 		if (unzipped != null)
@@ -1203,7 +1218,7 @@ public class AssetEditModule extends BaseMediaModule
 			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
 			{
 				Page page = (Page) iterator.next();
-				getAssetImporter().processOn(assetRoot, page.getPath(), archive,0,inReq.getUser());
+				getAssetImporter().processOn(assetRoot, page.getPath(), archive,false,inReq.getUser());
 			}
 		}
 	}
@@ -1275,7 +1290,7 @@ public class AssetEditModule extends BaseMediaModule
 	}
 	protected void importAndSearch(WebPageRequest inReq, MediaArchive inArchive, String mountpath, String assetRoot)
 	{
-		List<String> created = getAssetImporter().processOn(assetRoot, assetRoot, inArchive,0,inReq.getUser());
+		List<String> created = getAssetImporter().processOn(assetRoot, assetRoot, inArchive,false,inReq.getUser());
 		
 		SearchQuery search = inArchive.getAssetSearcher().createSearchQuery();
 		int max = Math.min(10000, created.size());
@@ -1766,18 +1781,20 @@ public class AssetEditModule extends BaseMediaModule
 	}
 	public Data createMultiEditDataFromSelections(WebPageRequest inReq) throws Exception
 	{
-		String hitsname = inReq.getRequestParameter("hitssessionid");//expects session id
-		if( hitsname == null)
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");//expects session id
+		if( hitssessionid == null)
 		{
 			return null;
 		}
-		MediaArchive store = getMediaArchive(inReq);
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitsname);
+		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 		if( hits == null)
 		{
-			log.error("Could not find " + hitsname);
+			log.error("Could not find " + hitssessionid);
 			return null;
 		}
+		
+		//TODO: Change multi edit to use trackers instead
+		MediaArchive store = getMediaArchive(inReq);
 		CompositeAsset composite = new CompositeAsset();
 		for (Iterator iterator = hits.getSelectedHits().iterator(); iterator.hasNext();)
 		{
@@ -1797,7 +1814,7 @@ public class AssetEditModule extends BaseMediaModule
 				composite.addData(p);
 			}
 		}
-		composite.setId("multiedit:"+hitsname);
+		composite.setId("multiedit:"+hitssessionid);
 		//set request param?
 		inReq.setRequestParameter("assetid",composite.getId());
 		inReq.putPageValue("data", composite);
@@ -1811,7 +1828,7 @@ public class AssetEditModule extends BaseMediaModule
 		String[] assetids = inRequest.getRequestParameters("assetids");
 		MediaArchive mediaArchive = getMediaArchive(inRequest);
 		PresetCreator presets = new PresetCreator();
-		Searcher tasksearcher = mediaArchive.getSearcher("tasksearcher");
+		Searcher tasksearcher = mediaArchive.getSearcher("conversiontask");
 		int missing = 0;
 		for (int i = 0; i < assetids.length; i++)
 		{
@@ -1829,4 +1846,45 @@ public class AssetEditModule extends BaseMediaModule
 			mediaArchive.fireSharedMediaEvent("conversions/runconversions");
 		}
 	}
+	
+	public Asset loadAssetFromSelection(WebPageRequest inReq)
+	{
+		Object found = inReq.getPageValue("asset");
+		if( found instanceof Asset)
+		{
+			return (Asset)found;
+		}
+		Asset asset = null;
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");//expects session id
+		if( hitssessionid != null)
+		{
+			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+			if( hits != null && hits.hasSelections())
+			{
+				Integer selected = (Integer)hits.getSelections().iterator().next();
+
+				String assetid = inReq.getRequestParameter("assetid");
+				if( assetid != null && assetid.startsWith("multiedit:") )
+				{
+					asset = (Asset)inReq.getSessionValue(assetid);
+				}
+				else
+				{
+					Data first = hits.get(selected);
+					asset = getMediaArchive(inReq).getAssetBySourcePath(first.getSourcePath());
+				}
+				if( asset != null )
+				{
+					inReq.putPageValue("asset", asset);
+				}
+			}
+		}
+		if( asset == null )
+		{
+			return getAsset(inReq);
+		}
+		return asset;
+		
+	}
+	
 }

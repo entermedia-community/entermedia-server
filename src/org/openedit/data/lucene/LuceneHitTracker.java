@@ -6,6 +6,7 @@ package org.openedit.data.lucene;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -110,7 +111,7 @@ public class LuceneHitTracker extends HitTracker
 					Document doc = searcher.doc( docs.scoreDocs[offset].doc );
 					page.add(new DocumentData(doc) );
 				}
-				//if( log.isDebugEnabled() )
+				if( log.isDebugEnabled() )
 				{
 					log.info(size() + " total, loaded " + start + " to " + (start+page.size()) + " query:" + getLuceneQuery() + " " + getSessionId() );
 				}
@@ -134,7 +135,48 @@ public class LuceneHitTracker extends HitTracker
 		}
 		return page;
 	}
-	
+	public Collection<String> getSourcePaths()
+	{
+		List sourcepaths = new ArrayList();
+		
+			IndexSearcher searcher = getLuceneSearcherManager().acquire();
+			try
+			{
+				int max = Integer.MAX_VALUE;
+				TopDocs docs = null;
+				if( getLuceneSort() != null )
+				{
+					docs = searcher.search( getLuceneQuery(),max ,getLuceneSort() );
+				}
+				else
+				{
+					docs = searcher.search( getLuceneQuery(),max);
+				}
+				fieldSize = docs.totalHits;
+				for (int i = 0;  i < fieldSize; i++)
+				{
+					Document doc = searcher.doc( docs.scoreDocs[i].doc );
+					sourcepaths.add( doc.get("sourcepath") );
+				}
+				log.info(size() + " total query:" + getLuceneQuery() + " session:" + getSessionId() );
+				return sourcepaths;
+			}
+			catch( Exception ex )
+			{
+				throw new OpenEditException(ex);
+			}
+			finally
+			{
+				try
+				{
+					getLuceneSearcherManager().release(searcher);
+				}
+				catch (IOException e)
+				{
+					//nada
+				}
+			}
+	}
 
 	public Iterator iterator() {
 		return new HitIterator(this);

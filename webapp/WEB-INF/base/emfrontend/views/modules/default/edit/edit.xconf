@@ -1,4 +1,6 @@
 <page>
-	<path-action name="DataEditModule.loadSearcherForEdit" />
+	<page-action name="DataEditModule.loadSearcherForEdit" >
+			<searchtype>${module}</searchtype>
+    </page-action>
 	<property name="searchtype" />
 </page>

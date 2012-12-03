@@ -1,5 +1,6 @@
 <page>
 	<property name="tab">viewmediaviewer</property>
-	<property name="scrollable">true</property>
+	<property name="assettab">viewmediaviewer</property>
+	<property name="showpreviewpage">true</property>
 	
 </page>

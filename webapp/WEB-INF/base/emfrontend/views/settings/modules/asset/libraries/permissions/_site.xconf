@@ -1,4 +1,0 @@
-<page>
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
-	<property name="subtab">librarypermissions</property>
-</page>

@@ -14,7 +14,7 @@ import com.openedit.users.UserManager
 
 public class sftppublisher extends basepublisher implements Publisher
 {
-	private static final Log log = LogFactory.getLog(ftppublisher.class);
+	private static final Log log = LogFactory.getLog(sftppublisher.class);
 	
 	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
 	{

@@ -16,7 +16,6 @@
 				#else
 				<input name="operation" value="startswith" type="hidden" />
 				#end
-
 		#end
 	
 		#set( $viewtype = $detail.searchcomponent )
@@ -30,11 +29,12 @@
 			#set ($viewtype = "default")
 		#end
 		
+		#if ( $viewtype == "multiselect")
+			#set ($viewtype = "list")
+		#end
+		
 		#if (!$viewtype || $viewtype == "date")
 			#set ($viewtype = "datesearch")
-		#else
-		
-		
 		#end
 		
 		

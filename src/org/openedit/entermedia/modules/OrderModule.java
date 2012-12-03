@@ -548,8 +548,25 @@ public class OrderModule extends BaseMediaModule {
 				inReq.getUserName());
 
 		for (int i = 0; i < assetids.length; i++) {
-			Asset asset = archive.getAsset(assetids[i]);
-			getOrderManager().addItemToOrder(catalogId, order, asset, null);
+			String id = assetids[i];
+			if( id.startsWith("multiedit:hits"))
+			{
+				HitTracker hits = (HitTracker)inReq.getSessionValue(id.substring("multiedit:".length()));
+				if( hits  != null )
+				{
+					for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+					{
+						Data data = (Data) iterator.next();
+						Asset asset = archive.getAssetBySourcePath(data.getSourcePath());
+						getOrderManager().addItemToOrder(catalogId, order, asset, null);
+					}
+				}
+			}
+			else
+			{
+				Asset asset = archive.getAsset(id);
+				getOrderManager().addItemToOrder(catalogId, order, asset, null);
+			}
 		}
 
 		getOrderManager().saveOrder(catalogId, inReq.getUser(), order);

@@ -7,14 +7,15 @@
 }
 #emcontainer .emdatafield
 {
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 	padding-right: 5px;
 	text-align: right;
 	vertical-align: middle;
+	max-width: 100px;
 }
 #emcontainer .emdatafieldvalue
 {
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 	padding-right: 5px;
 	text-align: left;
 	vertical-align: middle;

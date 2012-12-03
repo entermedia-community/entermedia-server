@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -35,7 +36,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	protected MediaArchive fieldMediaArchive;
 	protected File fieldRootDirectory;
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
-
+	
 	public LuceneAssetIndexer()
 	{
 	}
@@ -86,6 +87,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	protected Set buildCategorySet(Asset inAsset)
 	{
 		HashSet allCatalogs = new HashSet();
+		allCatalogs.add(getMediaArchive().getCategoryArchive().getRootCategory());
 		Collection catalogs = inAsset.getCategories();
 		if( catalogs.size() > 0 )
 		{
@@ -95,10 +97,6 @@ public class LuceneAssetIndexer extends LuceneIndexer
 				Category catalog = (Category) iter.next();
 				buildCategorySet(catalog, allCatalogs);
 			}
-		}
-		else
-		{
-			allCatalogs.add(getMediaArchive().getCategoryArchive().getRootCategory());
 		}
 		return allCatalogs;
 	}
@@ -255,7 +253,17 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		 * 'category' contains all categories, including parents 
 		 */
 		populateJoinData("category", doc, catalogs, "id", true);
-		
+
+		for (Iterator iterator = asset.getLibraries().iterator(); iterator.hasNext();)
+		{
+			String libraryid = (String) iterator.next();
+			Data library = getMediaArchive().getLibrary(libraryid);
+			if(library == null){
+				continue;
+			}
+			inKeywords.append(library.getName());
+			inKeywords.append(' ');
+		}
 		
 //		Searcher searcher = getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
 //		SearchQuery query = searcher.createSearchQuery();
