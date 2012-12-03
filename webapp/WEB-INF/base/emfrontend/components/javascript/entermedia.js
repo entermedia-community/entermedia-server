@@ -1074,5 +1074,45 @@ emcomponents = function() {
 			jQuery.fancybox.close();
 		}
 	);
+
+
+	jQuery(".librarydroparea").livequery(
+			function()
+			{
+				jQuery(this).droppable(
+					{
+						drop: function(event, ui) {
+							var assetid = ui.draggable.data("assetid");
+							var node = $(this);
+							var libraryid = node.data("libraryid");
+							alert(assetid + " " + libraryid);
+//							var tree = this.nearest(".categorytree");
+//							var treeid = tree.data("")
+							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
+							//this is a category
+							jQuery.get("$home$apphome/components/libraries/addasset.html", 
+									{
+										assetid:assetid,
+										libraryid:libraryid
+									},
+									function(data) 
+									{
+										node.append("<span class='fader'>&nbsp;+1</span>");
+										node.find(".fader").fadeOut(3000);
+										node.removeClass("selected");
+									}
+							);
+
+						},
+						tolerance: 'pointer',
+						over: outlineSelectionCol,
+						out: unoutlineSelectionCol
+					}
+				);
+			}
+		);
+
+
+
 }
 

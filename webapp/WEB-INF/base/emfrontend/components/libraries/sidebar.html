@@ -1,15 +1,15 @@
-#if ( $canviewlibrarysearch &&  !$userprofile.getCombinedLibraries().isEmpty() )
+#if ( $canviewlibrarysearch )
 <div class="ui-widget uipanel" id="left-col-search" >
 	<div class="ui-widget-header">[[Libraries]]</div>
 <div  class="ui-widget-content">
 		<ul class="sidebar-list">
 	#set($selected = false )
 	#set($selected = $hits.getInput("libraries") )
-    	#foreach($libraryid in $userprofile.getCombinedLibraries() )
-    		 #set( $library = $searcherManager.getData($catalogid,"library",$libraryid ) )
+    	#foreach($library in $searcherManager.getSearcher($catalogid, "library").fieldSearch("id", "*") )
+    		 ##set( $library = $libraryid )
     		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )
     		#if($library)
-    		<li class="#if( $selected && $selected == $libraryid) currentsubtle #end "> 
+    		<li class="#if( $selected && $selected == $library.id) currentsubtle #end librarydroparea" libraryid="$library.id"> 
     				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">$!division / $library</a>
     		</li>		
     		#end
@@ -18,3 +18,5 @@
 </div>
 </div>
 #end
+
+
