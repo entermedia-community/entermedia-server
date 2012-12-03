@@ -1,6 +1,8 @@
 <permissions name="Application Permissions">
 
 	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="100"/>
+	<permission id="viewfilemenu" permissiontype="asset" name="File Menu" description="Enables the top level file menu on the asset details page." ordering="100"/>
+	
 	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="100"/>
 	<permission id="embedasset" permissiontype="asset" name="Embed" description="Enables and embed button that provides HTML code for an asset." ordering="100"/>
 	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." ordering="100"/>
