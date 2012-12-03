@@ -1071,7 +1071,7 @@ Copyright (c) 2011 by Harvest
 
 
 (function($) {
-	  return $.fn.ajaxChosen = function(settings, callback, chosenOptions) {
+	  return $.fn.ajaxChosen = function(settings, callback, runsearch, chosenOptions) {
 	    var chosenXhr, defaultOptions, options, select;
 	    if (settings == null) {
 	      settings = {};
@@ -1079,6 +1079,7 @@ Copyright (c) 2011 by Harvest
 	    if (callback == null) {
 	      callback = {};
 	    }
+	    
 	    if (chosenOptions == null) {
 	      chosenOptions = function() {};
 	    }
@@ -1090,6 +1091,10 @@ Copyright (c) 2011 by Harvest
 	    select = this;
 	    chosenXhr = null;
 	    options = $.extend({}, defaultOptions, $(select).data(), settings);
+	    if( runsearch == null) runsearch = function() {
+	    	 return $.ajax(options);
+	    };
+
 	    this.chosen(chosenOptions ? chosenOptions : {});
 	    
 	    runStuff = function(field)
@@ -1147,7 +1152,8 @@ Copyright (c) 2011 by Harvest
 	          if (chosenXhr) {
 	            chosenXhr.abort();
 	          }
-	          return chosenXhr = $.ajax(options);
+	          return chosenXhr = runsearch(options);
+	          //return chosenXhr = $.ajax(options);
 	        }, options.afterTypeDelay);
 	        //Run Stuff End
 	    }
