@@ -120,9 +120,11 @@ Copyright (c) 2011 by Harvest
     AbstractChosen.prototype.set_default_values = function() {
       var _this = this;
       this.click_test_action = function(evt) {
+    	 // if(evt.target != this){ return true; }
         return _this.test_active_click(evt);
       };
       this.activate_action = function(evt) {
+    	// if(evt.target != this){ return true; }
         return _this.activate_field(evt);
       };
       this.active_field = false;
@@ -150,15 +152,23 @@ Copyright (c) 2011 by Harvest
       return this.results_none_found = this.form_field.getAttribute("data-no_results_text") || this.options.no_results_text || "No results match";
     };
 
-    AbstractChosen.prototype.mouse_enter = function() {
+    AbstractChosen.prototype.mouse_enter = function(event) {
+    	//if(event.target != this){ return true; }
+		  //console.log("prototype.mouse_enter mouse_on_container=true" + event);
+
       return this.mouse_on_container = true;
     };
 
-    AbstractChosen.prototype.mouse_leave = function() {
+    AbstractChosen.prototype.mouse_leave = function(event) {
+    	//if(event.target != this){ return true; }
+		  //console.log("prototype.mouse_leave mouse_on_container=false" + event);
+
       return this.mouse_on_container = false;
     };
 
     AbstractChosen.prototype.input_focus = function(evt) {
+		  //console.log("input_focus " + evt.target );
+
       var _this = this;
       if (this.is_multiple) {
         if (!this.active_field) {
@@ -176,6 +186,10 @@ Copyright (c) 2011 by Harvest
     AbstractChosen.prototype.input_blur = function(evt) {
       var _this = this;
       if (!this.mouse_on_container) {
+    	  
+		  //console.log("prototype.input_blur" + evt.target );
+
+    	  
         this.active_field = false;
         return setTimeout((function() {
           return _this.blur_test();
@@ -387,45 +401,67 @@ Copyright (c) 2011 by Harvest
     Chosen.prototype.register_observers = function() {
       var _this = this;
       this.container.mousedown(function(evt) {
-        return _this.container_mousedown(evt);
+    	  if( !$(evt.target).hasClass("autosubmited"))
+    		 {
+        	  	//console.log("container.mousedown " + evt.target.className );
+    	        return _this.container_mousedown(evt);
+    		  
+    		  }
+    	  return true;
       });
       this.container.mouseup(function(evt) {
-        return _this.container_mouseup(evt);
+    	  //console.log("container.mouseup " + evt.target );
+    	  return _this.container_mouseup(evt);
       });
+      
       this.container.mouseenter(function(evt) {
-        return _this.mouse_enter(evt);
+    	  //console.log("container.mouseenter " + evt.target );
+          return _this.mouse_enter(evt);
       });
+      
       this.container.mouseleave(function(evt) {
-        return _this.mouse_leave(evt);
+    	  //console.log("container.mouseleave " + evt.target );
+          return _this.mouse_leave(evt);
       });
+      
       this.search_results.mouseup(function(evt) {
+    	  //console.log("search_results.mouseup " + evt.target );
         return _this.search_results_mouseup(evt);
       });
       this.search_results.mouseover(function(evt) {
+    	  //console.log("search_results.mouseover " + evt.target );
         return _this.search_results_mouseover(evt);
       });
       this.search_results.mouseout(function(evt) {
+    	  //console.log("search_results.mouseout " + evt.target );
         return _this.search_results_mouseout(evt);
       });
       this.form_field_jq.bind("liszt:updated", function(evt) {
+    	  //console.log("form_field_jq.bind " + evt.target );
         return _this.results_update_field(evt);
       });
       this.form_field_jq.bind("liszt:activate", function(evt) {
+    	  //console.log("form_field_jq.bind " + evt.target );
         return _this.activate_field(evt);
       });
       this.form_field_jq.bind("liszt:open", function(evt) {
+    	  //console.log("form_field_jq.bind " + evt.target );
         return _this.container_mousedown(evt);
       });
       this.search_field.blur(function(evt) {
+    	  //console.log("search_field.blur " + evt.target );
         return _this.input_blur(evt);
       });
       this.search_field.keyup(function(evt) {
+    	  //console.log("search_field.keyup " + evt.target );
         return _this.keyup_checker(evt);
       });
       this.search_field.keydown(function(evt) {
+    	  //console.log("search_field.keydown " + evt.target );
         return _this.keydown_checker(evt);
       });
       this.search_field.focus(function(evt) {
+    	  //console.log("search_field.focus" + evt.target );
         return _this.input_focus(evt);
       });
       if (this.is_multiple) {
@@ -434,6 +470,7 @@ Copyright (c) 2011 by Harvest
         });
       } else {
         return this.container.click(function(evt) {
+      	  //console.log("container.click( " + evt.target );
           return evt.preventDefault();
         });
       }
@@ -458,6 +495,11 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.container_mousedown = function(evt) {
+    	
+    	//if(evt.target != this){ return true; }
+    	
+       target = $(evt.target).hasClass("active-result") ? $(evt.target) : $(evt.target).parents(".active-result").first();
+    	
       var target_closelink;
       if (!this.is_disabled) {
         target_closelink = evt != null ? ($(evt.target)).hasClass("search-choice-close") : false;
@@ -483,6 +525,9 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.container_mouseup = function(evt) {
+    	
+    	//if(evt.target != this){ return true; }
+    	
       if (evt.target.nodeName === "ABBR" && !this.is_disabled) {
         return this.results_reset(evt);
       }
@@ -790,10 +835,12 @@ Copyright (c) 2011 by Harvest
     };
 
     Chosen.prototype.result_activate = function(el) {
-      return el.addClass("active-result");
+		  //console.log("result_activate " + el.attr("id") );
+		  return el.addClass("active-result");
     };
 
     Chosen.prototype.result_deactivate = function(el) {
+		  //console.log("result_deactivate");
       return el.removeClass("active-result");
     };
 
@@ -1001,6 +1048,7 @@ Copyright (c) 2011 by Harvest
           if (this.results_showing && !this.is_multiple) {
             this.result_select(evt);
           }
+		  //console.log("mouse_on_container=false" + evt);
           this.mouse_on_container = false;
           break;
         case 13:
@@ -1189,15 +1237,58 @@ Copyright (c) 2011 by Harvest
 		var chzn = jQuery( "#" + sid + "_chzn");
 		var filter = jQuery( "#" + sid + "_filter");
 		chzn.find(".chzn-search").before(filter);
-
+		
 		//register to filters
-		filter.find("select").change(function()
-			{
-				runStuff(input);
-			});
+		//var selects = filter.find("select");
+		var foundinputs = chzn.find("div.chzn-drop select");//.click(function() { alert("hi"); });
+		
+		foundinputs.change(function(evt)
+		{
+			 //console.log("foundinputs.change" + evt.target );
+			runStuff(input);
+		});
+		
+		foundinputs.mousedown(function(evt) {
+		
+			 //console.log("foundinputs.mousedown" + evt.target );
+			evt.stopPropagation();
+			return true;
+		});
+		foundinputs.blur(function(evt) {
+			
+			 //console.log("foundinputs.blur" + evt.target );
+			evt.stopPropagation();
+			return true;
+		});
+		foundinputs.mouseup(function(evt) {
+			 //console.log("foundinputs.mouseup" + evt.target );
+			evt.stopPropagation();
+			return true;
+		});
+		foundinputs.mouseenter(function(evt) {
+			 //console.log("foundinputs.mouseenter" + evt.target );
+			evt.stopPropagation();
+			return true;
+		});
+		foundinputs.mouseleave(function(evt) {
+			 //console.log("foundinputs.mouseleave" + evt.target );
+			evt.stopPropagation();
+			return true;
+		});
+		foundinputs.click(function(evt) {
+			  //console.log("foundinputs.click" + evt.target );
+			  evt.stopPropagation();
+			return true;
+		});
+		
 		runStuff(input);
-	    
+		
+//		var clickEvents = foundinputs.data("events").click;
+//		jQuery.each(clickEvents, function(key, handlerObj) {
+//		  //console.log(handlerObj.handler) // prints "function() { //console.log('clicked!') }"
+//		})
 	    
 	  };
 	})(jQuery);
 
+//http://localhost:8080/emshare/views/modules/asset/editor/generalinformation/index.html?assetid=260&hitssessionid=hitsassetmedia/catalogs/public&edit=true

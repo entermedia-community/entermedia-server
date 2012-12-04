@@ -241,17 +241,14 @@ uiload = function() {
 		$('#select-dropdown').hide();
 	});
 
-/*
-		jQuery('select.choose-select').livequery(
+
+		jQuery('XXXselect.choose-select-ajax').livequery(
 				function()
 				{
-					if( !jQuery(this).closest(".chzn-filter").length )
-					{
-						//jQuery(this).chosen({ search_contains: true } );
-					}
+					jQuery(this).chosen({ search_contains: true } );
 				}
 		);
-*/	
+	
 	$("select.choose-select-ajax").livequery(
 			function()
 			{
