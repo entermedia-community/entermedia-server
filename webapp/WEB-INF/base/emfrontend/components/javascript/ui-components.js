@@ -268,8 +268,13 @@ uiload = function() {
 					url: app + '/components/xml/types/modulepicker/datasearch.txt?searchtype=' + listid + '&field=name&operation=contains&hitsperpage=400',
 					dataType: 'json',
 					jsonTermKey: 'name.value'
-				}, function(options)
-				{
+				}, function (data) {
+					var terms = {};
+					jQuery.each(data, function () {
+						terms[this.id] = this.name;
+					});
+					return terms;
+				},	function(options) {
 					//extends options with data
 					//data: { name: "John", location: "Boston" }
 					var args = jQuery.extend({}, options);
@@ -282,17 +287,12 @@ uiload = function() {
 						args.data["field" ] = name; //does this work with duplicates?
 					 });
 					return jQuery.ajax(args);
-				}, function (data) {
-					var terms = {};
-					jQuery.each(data, function () {
-						terms[this.id] = this.name;
-					});
-					return terms;
-				});
+				}
+				);
 			}
 		);	
 	
-	
+	/*
 	jQuery('.module-picker-starter .hideshow').livequery("click",function(e)
 	{
 		  var theinput = $(this).closest(".module-picker-starter");
@@ -323,7 +323,7 @@ uiload = function() {
 		      });
 	      }
 	});
-	
+	*/
 
 	
 }

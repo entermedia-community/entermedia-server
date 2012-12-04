@@ -1,33 +1,6 @@
 <div id="bulkuploader">
 
-#if( $canpickuploadfolder )
-
-
-        
-
-##Pick album first?
-
-$pages.include("./metadata.html")
-
-
-<!-- 
-#set( $listid = "folder")
-#set( $folders = $searcherManager.getList($catalogid,$listid) )
-<select name="sourcepath" id="list-folders">
-	#foreach($folder in $folders)
-		<option value="$folder.subfolder">$folder</option>
-	#end
-	#if( $editfolders )
-	<option value="new-$listid">-- New Folder --</option>
-	#end
-</select>
--->
- 
-<div class="editfield" id="listeditor-$listid" style="display: none;">
-        <input  type="text" />
-        <input  class="btn save" type="button" value="Save" />
-        <a class="btn cancel" style="cursor: pointer; top: 0;">Cancel</a>
-</div>
+$pages.include("./metadata.html",$context)
 
 
 <script>
@@ -64,9 +37,8 @@ $pages.include("./metadata.html")
 </script>
 
         
-#else    
-    <input type="hidden" name="sourcepath" value="users/$context.getUserName()/$formatteddate" />
-#end
+    
+
 <div style="text-align: right" >
     <input class="btn large" type="submit" id="finishbutton" value="Next >>" />
 </div>     

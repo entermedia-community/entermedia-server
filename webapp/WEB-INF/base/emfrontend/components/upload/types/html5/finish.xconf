@@ -31,7 +31,6 @@
 	</permission>	
 
 	<property name="section">details</property>
-	<propertyXX name="destinationsourcepath">${library}/${formatteddate}</propertyXX>
-	<property name="destinationsourcepath">${library}</property>
+	<property name="destinationsourcepath">${library.division}/${library}/${formatteddate}</property>
 	
 </page>

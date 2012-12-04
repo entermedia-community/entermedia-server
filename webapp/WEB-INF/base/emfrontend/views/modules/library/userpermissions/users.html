@@ -13,7 +13,7 @@
 #set( $libraryusers = $libraryusersSearcher.fieldSearch("libraryid",$libraryid) )
 
 <div class="list-adder" style="padding: 13px 20px;">
-	<form class="ajaxform" targetdiv="userpermissioneditor" name="adduserform" action="$home$apphome/views/settings/modules/asset/libraries/permissions/useradd.html">
+	<form class="ajaxform" targetdiv="userpermissioneditor" name="adduserform" action="$home$apphome/views/modules/library/userpermissions/useradd.html">
 	<div class="add_person_box" style="border: none;">
 		<input id="useradd" class="userautocomplete" name="addinput" type="text" />
 	
@@ -36,7 +36,7 @@
 	#foreach($libraryuser in $libraryusers) 
 		 #set( $theuser = $searcherManager.getData("system","user",$libraryuser.userid) )
 		<a class="row">$theuser</a>
-		<a style="display:inline;" class="ajax delete-row" targetdiv="userpermissioneditor" href="$home$apphome/views/settings/modules/asset/libraries/permissions/userremove.html?searchtype=libraryusers&id=$libraryuser.id&libraryid=$libraryid"></a>
+		<a style="display:inline;" class="ajax delete-row" targetdiv="userpermissioneditor" href="$home$apphome/views/modules/library/userpermissions/userremove.html?searchtype=libraryusers&id=$libraryuser.id&libraryid=$libraryid"></a>
 		</a>
 	#end
 	</div>

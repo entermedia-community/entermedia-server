@@ -43,7 +43,6 @@
 			#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
 			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
 			$context.putPageValue("term",$term)			
-			$value
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
 		#end

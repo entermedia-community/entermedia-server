@@ -1,6 +1,8 @@
 <permissions name="Application Permissions">
 
 	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="100"/>
+	<permission id="viewfilemenu" permissiontype="asset" name="File Menu" description="Enables the top level file menu on the asset details page." ordering="100"/>
+	
 	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="100"/>
 	<permission id="embedasset" permissiontype="asset" name="Embed" description="Enables and embed button that provides HTML code for an asset." ordering="100"/>
 	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." ordering="100"/>
@@ -40,8 +42,6 @@
 	<permission id="download" permissiontype="filetransfers" name="Download Original" description="Enables downloading of the original asset."/>
 	<permission id="viewuploadmulti" permissiontype="filetransfers" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." />
 	<permission id="viewupload" permissiontype="filetransfers" name="Upload Single File" description="Enables the upload of a single asset." ordering="200" />
-	<permission id="pickuploadfolder" permissiontype="filetransfers" name="Choose Upload Folder" description="Lets a user choose what folder they are going to upload into." ordering="200" />
-	<permission id="editfolders" permissiontype="filetransfers" name="Create New Folders" description="Allows a user to define a new upload folder." ordering="200" />
 	
 	<permission id="view" permissiontype="view" name="Application" description="Enables access to the EnterMedia application." ordering="1000"/>
 	<permission id="viewassets" permissiontype="view" name="Assets Details" description="Enables access to asset metadata." />

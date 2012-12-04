@@ -213,7 +213,9 @@
  	 <userprofile property="printpreview" equals="true" />
   </permission>
   
-  
+   <permission name="viewfilemenu">
+ 	 <userprofile property="viewfilemenu" equals="true" />
+  </permission>
   <!-- USER DEFUALTS -->
   
 	<permission name="viewvoting">
@@ -312,15 +314,6 @@
 
 	<permission name="asseteditorpickanylibrary">
 		<userprofile property="asseteditorpickanylibrary" equals="true" />
-	</permission>
-
-
-	<permission name="pickuploadfolder">
-		<userprofile property="pickuploadfolder" equals="true" />
-	</permission>
-
-	<permission name="editfolders">
-		<userprofile property="editfolders" equals="true" />
 	</permission>
 
 	

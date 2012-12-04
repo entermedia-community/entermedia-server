@@ -14,7 +14,7 @@
 #set( $librarygroups = $librarygroupsSearcher.fieldSearch("libraryid",$libraryid) )
 
 <div class="list-adder">
-	<form class="ajaxform" targetdiv="grouppermissioneditor" name="addgroupform" action="$home$apphome/views/settings/modules/asset/libraries/permissions/groupadd.html">
+	<form class="ajaxform" targetdiv="grouppermissioneditor" name="addgroupform" action="$home$apphome/views/modules/library/userpermissions/groupadd.html">
 	<div class="add_group_box">
 		
 		<select name="groupid.value" id="groupselect" class="select-field">
@@ -43,7 +43,7 @@
 	#foreach($librarygroup in $librarygroups) 
 		 #set( $thegroup = $searcherManager.getData("system","group",$librarygroup.groupid) )
 		<a class="row">$thegroup</a>
-		<a style="display:inline;" class="ajax delete-row" targetdiv="grouppermissioneditor" href="$home$apphome/views/settings/modules/asset/libraries/permissions/groupremove.html?searchtype=librarygroups&id=$librarygroup.id&libraryid=$libraryid"></a>
+		<a style="display:inline;" class="ajax delete-row" targetdiv="grouppermissioneditor" href="$home$apphome/views/modules/library/userpermissions/groupremove.html?searchtype=librarygroups&id=$librarygroup.id&libraryid=$libraryid"></a>
 		</a>
 	#end
 	</div>
