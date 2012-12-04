@@ -1861,15 +1861,14 @@ public class AssetEditModule extends BaseMediaModule
 			HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 			if( hits != null && hits.hasSelections())
 			{
-				Integer selected = (Integer)hits.getSelections().iterator().next();
-
 				String assetid = inReq.getRequestParameter("assetid");
 				if( assetid != null && assetid.startsWith("multiedit:") )
 				{
 					asset = (Asset)inReq.getSessionValue(assetid);
 				}
-				else
+				else if( assetid == null )
 				{
+					Integer selected = (Integer)hits.getSelections().iterator().next();
 					Data first = hits.get(selected);
 					asset = getMediaArchive(inReq).getAssetBySourcePath(first.getSourcePath());
 				}
