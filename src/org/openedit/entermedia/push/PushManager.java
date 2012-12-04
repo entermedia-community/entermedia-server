@@ -182,7 +182,7 @@ public class PushManager
 		Searcher searcher = archive.getAssetSearcher();
 		SearchQuery query = searcher.createSearchQuery();
 		//query.addMatches("category","index");
-		query.addMatches("pushstatus","complete");
+		query.addOrsGroup("pushstatus","complete retry");
 		query.addMatches("editstatus","7");
 		query.addSortBy("id");
 
