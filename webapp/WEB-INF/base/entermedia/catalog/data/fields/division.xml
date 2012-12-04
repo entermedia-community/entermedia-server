@@ -1,6 +1,5 @@
 
 <properties>
-  <property id="id" index="true" stored="true">Id</property>
+  <property id="id" index="true" editable="true"  stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
-  <property id="uploadpath" editable="true" index="true" stored="true" >Upload Path</property>
 </properties>
