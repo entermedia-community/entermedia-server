@@ -20,7 +20,7 @@
 <input name="field" type="hidden" value="${detail.id}" />
 <input name="operation" type="hidden" value="matches" />
 
-<select style="margin-top: 8px;" id="${detail.id}_${listid}_input" 
+<select style="margin-top: 8px;" id="$!{idprefix}${detail.id}_${listid}_input" 
 		data-placeholder=" " name="$!{detailprefix}${detail.id}.value" 
 		class="choose-select-ajax #if($detail.isRequired()) required #end"  
 		listid="$listid" 
@@ -34,7 +34,7 @@
 	
 	</select>
 
-	<div id="${detail.id}_${listid}_input_filter" class="chzn-filter" style="text-align: right;margin-right:6px;">
+	<div id="$!{idprefix}${detail.id}_${listid}_input_filter" class="chzn-filter" style="text-align: right;margin-right:6px;">
 			#set( $listsearcher = $searcherManager.getSearcher($catalogid,$listid) )
 			#set ($filterdetails = $listsearcher.getDetailsForView("${listid}/listfilter", $userprofile))
 			$context.putPageValue("detailprefix","filterprefix")	

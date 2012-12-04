@@ -1234,8 +1234,8 @@ Copyright (c) 2011 by Harvest
 	    var input = this.find(".search-field > input, .chzn-search > input");
 		var sid = this.attr("id");
 	    
-		var chzn = jQuery( "#" + sid + "_chzn");
-		var filter = jQuery( "#" + sid + "_filter");
+		var chzn =  this.parent().find( "#" + sid + "_chzn");
+		var filter = this.parent().find( "#" + sid + "_filter");
 		chzn.find(".chzn-search").before(filter);
 		
 		//register to filters
@@ -1283,12 +1283,8 @@ Copyright (c) 2011 by Harvest
 		
 		runStuff(input);
 		
-//		var clickEvents = foundinputs.data("events").click;
-//		jQuery.each(clickEvents, function(key, handlerObj) {
-//		  //console.log(handlerObj.handler) // prints "function() { //console.log('clicked!') }"
-//		})
-	    
 	  };
 	})(jQuery);
 
 //http://localhost:8080/emshare/views/modules/asset/editor/generalinformation/index.html?assetid=260&hitssessionid=hitsassetmedia/catalogs/public&edit=true
+//http://ivaynberg.github.com/select2/select2-latest.html#ajax

@@ -275,7 +275,8 @@ uiload = function() {
 					//extends options with data
 					//data: { name: "John", location: "Boston" }
 					var args = jQuery.extend({}, options);
-					var inputs = jQuery("#" + sid + "_filter .autosubmited");
+					//var inputs = jQuery("#" + sid + "_filter .autosubmited");
+					var inputs = selector.parent().find( "#" + sid + "_filter .autosubmited" );
 					inputs.each(function() {
 						var name = this.name;
 						name = name.substring(12,name.length - 6); //remove the prefix and .value

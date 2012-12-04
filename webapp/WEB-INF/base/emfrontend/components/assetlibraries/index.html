@@ -9,7 +9,7 @@
     		 #set( $data = $searcherManager.getData($catalogid,"library",$library) )
     		 #set( $division = $searcherManager.getData($catalogid,"division",$data.division ) )
     		 
-    		<a class="row tag">$!division / $data</a>
+    		<a class="row tag" href="$home$apphome/views/modules/library/libraryassets/index.html?id=${data.id}">$!division / $data</a>
     
     		#if($canasseteditorlibraries)
     			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$library"></a>
