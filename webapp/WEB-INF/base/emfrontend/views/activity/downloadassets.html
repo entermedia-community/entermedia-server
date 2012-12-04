@@ -66,7 +66,7 @@ $asset
 	  	   	    $presetquery.addExact("inputtype",$rendertype);
   	   	    #end
   	   	    $presetquery.addExact("inputtype","all");
-  	   	    $presetquery.sortBy("name");
+  	   	    $presetquery.addSortBy("name");
   	   	    #set( $results = $presetsearcher.search($presetquery) )
  -->
 
