@@ -1,6 +1,7 @@
 <properties>
 	
 	<property id="librarygeneral" module="library" systemdefined="false" byassettype="true" ordering="01">Details</property>
+	<property id="libraryfilter" module="library"  systemdefined="true" byassettype="false">Search Filter</property>
 	
 	
 </properties>

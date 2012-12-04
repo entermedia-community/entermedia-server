@@ -50,7 +50,7 @@
 
 	<div id="$!{idprefix}${detail.id}_${listid}_input_filter" class="chzn-filter" style="text-align: right;margin-right:6px;">
 			#set( $listsearcher = $searcherManager.getSearcher($catalogid,$listid) )
-			#set ($filterdetails = $listsearcher.getDetailsForView("${listid}/listfilter", $userprofile))
+			#set ($filterdetails = $listsearcher.getDetailsForView("${listid}/${listid}filter", $userprofile))
 			$context.putPageValue("detailprefix","filterprefix")	
 			$context.putPageValue("searcher",$listsearcher)	
 			#foreach( $child in $filterdetails)
