@@ -16,6 +16,20 @@
 #end
 #set( $listid = $detail.getListId())
 
+#if($listid == "library" &&  $canasseteditorpickanylibrary == false )
+
+<select name="libraries.value">
+<option value=""></option>
+#foreach( $libraryid in $userprofile.getCombinedLibraries() )
+	#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
+	#set( $division = $searcherManager.getData($catalogid,"division",$library.division))
+	<option value="$libraryid">$division / $library</option>
+#end
+</select>
+
+		
+
+#else
 
 <input name="field" type="hidden" value="${detail.id}" />
 <input name="operation" type="hidden" value="matches" />
@@ -62,4 +76,12 @@
 			#end	
 	</div>
 
-</div>		
+
+
+
+			
+#end
+
+
+
+
