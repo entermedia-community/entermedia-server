@@ -33,9 +33,9 @@
     </div>
 -->
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-
+	
       <div class="main-info" >
-      	<div class="primary">$module /  $!data</div>
+      	<div class="primary">$module / #if($data.name) $!data.name #elseif($data.id) $data.id #else  #end</div>
       </div>       
     
     

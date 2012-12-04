@@ -1,6 +1,8 @@
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
 #set( $readonly = "false" )
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
+#set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
+
 $context.putPageValue("caneditlists","false")
 
 ##We need 3 things passed in: $searcher, $view, $data
@@ -43,7 +45,7 @@ $context.putPageValue("caneditlists","false")
 			<tr><td colspan="2" style="text-align:center;"><h4>$detail.header</h4></td></tr>
 		#end
 	#end
-	#set( $editrow = $detail.isEditable() && $readonly != "true") 
+	#set( $editrow = $detail.isEditable() && $readonly != "true" )  
 	#if( $editrow || $val  || !$detail.isEditable()) 
 		#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)
@@ -67,6 +69,29 @@ $context.putPageValue("caneditlists","false")
 			</td>
 		</tr>
 	#end
+	
+	#if(!$editrow && $alwaysshow == "true")
+	
+	#if( !$val) #set( $val = "") #end	
+		$!context.putPageValue("val",$val)
+		<tr id="inputarea_${detail.id}">
+			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+				#if( $detail.hidelabel == true )
+				#else
+				    #if ($detail.required == true) * #end	$!detail.getText($context)
+				#end
+			</td>
+			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
+			
+				$pages.include("$xmledithome/detailreadonly.html", $context) 
+			#if ( $detail.note )
+				<span style="color:gray;font-style:italic;font-size:.9em;">$detail.note<span>
+			#end
+			</td>
+		</tr>
+	#end
+	
+	
 	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
 		#if($usedhtml)
 			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
