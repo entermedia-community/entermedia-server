@@ -5,7 +5,6 @@
     		#set($next = $hits.next($indexOf))
 		#end
 		
-		
 		<div id="eml-tab-subnav">
     		<ul style="text-align: center;" id="sub-nav" class="mediaview">
     			#if( $hits )
@@ -20,7 +19,7 @@
     					#end
     			#end
     					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
-    				   #if($canviewfilemenu)
+    				   #if($canprintpreview || $candownload || $candeleteasset)
     				    <li><a href="#">File</a>
     				        <ul style="width: 100px; text-align: left;">
     				        	#if($canprintpreview)

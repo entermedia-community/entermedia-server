@@ -23,13 +23,6 @@
 
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	
-	<permission name="download">
-		<and>
-			<userprofile property="download" equals="true" />
-			<pagevalue name="canviewasset" equals="true"/>
-		</and>
-	</permission>	
-
 	<property name="section">details</property>
 	<property name="destinationsourcepath">${library.division}/${library}/${formatteddate}</property>
 	

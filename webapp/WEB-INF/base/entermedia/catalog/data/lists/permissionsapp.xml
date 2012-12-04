@@ -1,16 +1,14 @@
 <permissions name="Application Permissions">
 
-	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="100"/>
-	<permission id="viewfilemenu" permissiontype="asset" name="File Menu" description="Enables the top level file menu on the asset details page." ordering="100"/>
-	
-	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="100"/>
-	<permission id="embedasset" permissiontype="asset" name="Embed" description="Enables and embed button that provides HTML code for an asset." ordering="100"/>
-	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." ordering="100"/>
-	<permission id="publish" permissiontype="asset" name="Publish" description="Enables the publishing of an asset to a specified set of servers." />
-	<permission id="shareasset" permissiontype="asset" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share." />
-	<permission id="sharetosocialmedia" permissiontype="asset" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook."/>
-	<permission id="forcewatermarkasset" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset."/>
-	<permission id="printpreview" permissiontype="asset" name="Print" description="Allows printing of asset and asset metadata."/>
+	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="200"/>
+	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="200"/>
+	<permission id="embedasset" permissiontype="asset" name="Embed" description="Enables and embed button that provides HTML code for an asset." ordering="200"/>
+	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." ordering="200"/>
+	<permission id="publish" permissiontype="asset" name="Publish" description="Enables the publishing of an asset to a specified set of servers." ordering="200"/>
+	<permission id="shareasset" permissiontype="asset" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share."  ordering="200"/>
+	<permission id="sharetosocialmedia" permissiontype="asset" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook." ordering="200"/>
+	<permission id="forcewatermarkasset" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset." ordering="200"/>
+	<permission id="printpreview" permissiontype="asset" name="Print" description="Allows printing of asset and asset metadata." ordering="200"/>
 		
 		
 		
@@ -37,10 +35,10 @@
 	<permission id="viewassetpreviewhistory" permissiontype="history" name="Preview" description="Logs the preview history of an asset."/>
 	<preference id="capturehistory" permissiontype="history" name="Save Usage" description="Logs the download history of an asset."/>
 		
-	<permission id="createnewrecord" permissiontype="filetransfers" name="Create a New Record" description="Enables the creation of a new record."/>
-	<permission id="convert" permissiontype="filetransfers" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions."/>
-	<permission id="download" permissiontype="filetransfers" name="Download Original" description="Enables downloading of the original asset."/>
-	<permission id="viewuploadmulti" permissiontype="filetransfers" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." />
+	<permission id="createnewrecord" permissiontype="filetransfers" name="Create a New Record" description="Enables the creation of a new record." ordering="500"/>
+	<permission id="convert" permissiontype="filetransfers" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions." ordering="500"/>
+	<permission id="download" permissiontype="filetransfers" name="Download Original" description="Enables downloading of the original asset." ordering="500"/>
+	<permission id="viewuploadmulti" permissiontype="filetransfers" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." ordering="500"/>
 	<permission id="viewupload" permissiontype="filetransfers" name="Upload Single File" description="Enables the upload of a single asset." ordering="200" />
 	
 	<permission id="view" permissiontype="view" name="Application" description="Enables access to the EnterMedia application." ordering="1000"/>
@@ -66,8 +64,8 @@
 
 	<permission id="filterbyassettype" permissiontype="view" name="Filter by Asset Type" description="Enables filter by asset type box on sidebar." />
 
-	<permission id="viewasset" permissiontype="internal" name="View Asset" description="Ability to view a specific asset" ordering="300"/>
-	<permission id="editasset" permissiontype="internal" name="Edit Asset" description="Ability to edit any assets." ordering="301"/>
+	<permission id="viewasset" permissiontype="internal" name="View Asset" description="Ability to view a specific asset" ordering="100"/>
+	<permission id="editasset" permissiontype="internal" name="Edit Asset" description="Ability to edit any assets." ordering="101"/>
 
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
