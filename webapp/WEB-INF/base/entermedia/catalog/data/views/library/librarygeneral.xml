@@ -1,4 +1,6 @@
 
 <root>
+  <property id="id"/>
   <property id="name"/>
+  <property id="division"/>  
 </root>
