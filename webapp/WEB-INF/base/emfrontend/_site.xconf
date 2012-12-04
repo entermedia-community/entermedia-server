@@ -213,7 +213,9 @@
  	 <userprofile property="printpreview" equals="true" />
   </permission>
   
-  
+   <permission name="viewfilemenu">
+ 	 <userprofile property="viewfilemenu" equals="true" />
+  </permission>
   <!-- USER DEFUALTS -->
   
 	<permission name="viewvoting">

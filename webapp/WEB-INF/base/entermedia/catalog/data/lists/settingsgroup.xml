@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <settingsgroups>
-  <settingsgroup id="administrator" name="Administrators" admintoolbar="true" upload="true" multiupload="true" viewupload="true" assetadmin="true" vieworders="true" viewsettings="true" 
+  <settingsgroup id="administrator" name="Administrators" admintoolbar="true" viewfilemenu="true" upload="true" multiupload="true" viewupload="true" assetadmin="true" vieworders="true" viewsettings="true" 
   profilesearchfilters="hideassettype" category="table" viewuploadmulti="true" view="true" viewhomelink="true" viewassets="true" viewbasket="true" shareasset="true" 
   viewvoting="true" emaillink="true" socialshare="true" publish="true" quicksearch="true"  metadatageneral="true" editassetcategories="true" 
   metadatadetails="true" viewmap="true" viewmediaedit="true" download="true" embedasset="true" capturehistory="true" convert="true" forcewatermark="true" comment="true" viewattachments="true" 

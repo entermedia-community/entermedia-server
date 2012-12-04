@@ -20,6 +20,7 @@
     					#end
     			#end
     					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
+    				   #if($canviewfilemenu)
     				    <li><a href="#">File</a>
     				        <ul style="width: 100px; text-align: left;">
     				        	#if($canprintpreview)
@@ -41,6 +42,7 @@
                                 #end
     				        </ul>
     				    </li>
+    				    #end
     					#if ( $canshareasset )
                         <li>
                             <a class="toggleajax" targetdivinner="share-container" href="$home$apphome/components/shareasset/index.html?assetid=$asset.id&oemaxlevel=1" id="share-button">[[Share]]</a>
