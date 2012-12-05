@@ -18,8 +18,11 @@ jQuery(document).ready(function()
 				//Open it. add a UL
 				$(this).find('.arrow').addClass('down');				
 			}
+			
 			tree.find(nodeid + "_add").remove();
-			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
+			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth, doResize);
+			
+			
 	});
 
 	$('.emtree-widget ul li div').livequery('click', function(event) {
