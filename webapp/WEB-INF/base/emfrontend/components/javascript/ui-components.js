@@ -262,7 +262,7 @@ uiload = function() {
 						
 				selector.ajaxChosen({
 					method: 'GET',
-					url: app + '/components/xml/types/modulepicker/datasearch.txt?searchtype=' + listid + '&field=name&operation=contains&hitsperpage=400',
+					url: app + '/components/xml/types/modulepicker/datasearch.txt?searchtype=' + listid + '&field=name&operation=contains&hitsperpage=400&sortby=name',
 					dataType: 'json',
 					jsonTermKey: 'name.value'
 				}, function (data) {
