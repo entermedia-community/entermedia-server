@@ -9,7 +9,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 #else
 
 
-#set( $resultdetail = $searcherManager.getSearcher("$searcher.catalogId", "$searcher.searchType").getDetailsForView("${moduleid}/${moduleid}resultstable", $user))
+#set( $resultdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}resultstable", $userprofile))
 
 
 ##set ( $canedit = $context.getPageValue("${moduleid}edit") )
