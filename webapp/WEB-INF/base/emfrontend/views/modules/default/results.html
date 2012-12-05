@@ -2,8 +2,6 @@
 #set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
 
 
-
-
     
 #if ( $hits.size() == 0 )
 $pages.stream("/${content.searchhome}/empty.html", $context)	
@@ -11,8 +9,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 #else
 
 
-
-#set( $resultdetail = $searcherManager.getSearcher("$content.catalogid", "$content.searchtype").getDetailsForView("${moduleid}/${moduleid}resultstable", $user))
+#set( $resultdetail = $searcherManager.getSearcher("$searcher.catalogId", "$searcher.searchType").getDetailsForView("${moduleid}/${moduleid}resultstable", $user))
 
 
 ##set ( $canedit = $context.getPageValue("${moduleid}edit") )
