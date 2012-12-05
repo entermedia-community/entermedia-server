@@ -408,10 +408,19 @@
     top: -35px;
     background: #fff;
 }
-.chzn-filter select {
+.chzn-filter span {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+
+
+.chzn-filter .listdetailpicker {
     float: right;
+    display: inline;
     margin-right: 10px;
 }
+
 
 /* @end */
 

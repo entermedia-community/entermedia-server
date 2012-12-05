@@ -1258,7 +1258,7 @@ Copyright (c) 2011 by Harvest
 
 		//register to filters
 		//var selects = filter.find("select");
-		var foundinputs = chzn.find("div.chzn-drop select");//.click(function() { alert("hi"); });
+		var foundinputs = filter.find("select");//.click(function() { alert("hi"); });
 		
 		foundinputs.change(function(evt)
 		{
