@@ -102,13 +102,20 @@ public class WorkspaceManager
 		searchtype = searchtype.toLowerCase();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		PropertyDetails details = archive.getPropertyDetails(searchtype);
+		if( details.getInputFile().isExist() )
+		{
+			return searchtype;
+		}
 		if (details == null)
 		{
 			PropertyDetails defaultdetails = archive.getPropertyDetails("default");
 			details = new PropertyDetails();
 			details.setDetails(defaultdetails.getDetails());
 		}
-		details.setPrefix(inPrefix);
+		if( details.getPrefix() == null )
+		{
+			details.setPrefix(inPrefix);
+		}
 		// will default to defaults
 		if (details.getDetail("sourcepath") == null)
 		{
@@ -117,7 +124,10 @@ public class WorkspaceManager
 			sourcepath.setName("SourcePath");
 			details.addDetail(sourcepath);
 		}
-		details.setBeanName("xmlFileSearcher");
+		if( details.getBeanName() == null )
+		{
+			details.setBeanName("xmlFileSearcher");
+		}
 		archive.savePropertyDetails(details, searchtype, null);
 
 		// edit beans.xml
@@ -146,12 +156,14 @@ public class WorkspaceManager
 
 		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
 		PageSettings modulesettings = settings.getPageSettings();
-		modulesettings.setProperty("module", module.getId());
-		prop = new PageProperty("fallbackdirectory");
-		prop.setValue("/" + appid + "/views/settings/modules/default");
-		modulesettings.putProperty(prop);
-		getPageManager().getPageSettingsManager().saveSetting(modulesettings);
-
+		if( !modulesettings.exists() )
+		{
+			modulesettings.setProperty("module", module.getId());
+			prop = new PageProperty("fallbackdirectory");
+			prop.setValue("/" + appid + "/views/settings/modules/default");
+			modulesettings.putProperty(prop);
+			getPageManager().getPageSettingsManager().saveSetting(modulesettings);
+		}
 		String template = "/" + catalogid + "/data/lists/view/default.xml";
 		String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
 		copyXml(catalogid, template, path, module);

@@ -283,6 +283,8 @@ uiload = function() {
 						args.data[ name + ".value"] = $(this).val();
 						args.data["operation" ] = "matches";
 						args.data["field" ] = name; //does this work with duplicates?
+						
+						//TODO: Update status area
 					 });
 					return jQuery.ajax(args);
 				}

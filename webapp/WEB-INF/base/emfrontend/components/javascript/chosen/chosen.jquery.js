@@ -544,6 +544,9 @@ Copyright (c) 2011 by Harvest
       this.active_field = false;
       this.results_hide();
       this.container.removeClass("chzn-container-active");
+      this.container.trigger("container:close", {
+        chosen: this
+      });
       this.winnow_results_clear();
       this.clear_backstroke();
       this.show_search_field_default();
@@ -554,6 +557,10 @@ Copyright (c) 2011 by Harvest
       this.container.addClass("chzn-container-active");
       this.active_field = true;
       this.search_field.val(this.search_field.val());
+      this.container.trigger("container:activate", {
+          chosen: this
+        });
+
       return this.search_field.focus();
     };
 
@@ -1136,7 +1143,7 @@ Copyright (c) 2011 by Harvest
 	      afterTypeDelay: 500,
 	      jsonTermKey: "term"
 	    };
-	    select = this;
+	    select = jQuery(this);
 	    chosenXhr = null;
 	    options = $.extend({}, defaultOptions, $(select).data(), settings);
 	    if( runsearch == null) runsearch = function() {
@@ -1229,15 +1236,26 @@ Copyright (c) 2011 by Harvest
 	      }
 	      );
 	    });
-	    
+
 	    
 	    var input = this.find(".search-field > input, .chzn-search > input");
 		var sid = this.attr("id");
 	    
 		var chzn =  this.parent().find( "#" + sid + "_chzn");
 		var filter = this.parent().find( "#" + sid + "_filter");
-		chzn.find(".chzn-search").before(filter);
+		chzn.prepend(filter);
 		
+		chzn.on("container:activate", function(evt) {
+			filter.show();
+	    	// console.log("container:activate " + evt.target );	
+	    });
+		chzn.on("container:close", function(evt) {
+			filter.hide();
+			//console.log("container:activate " + evt.target );
+			
+	    });
+
+
 		//register to filters
 		//var selects = filter.find("select");
 		var foundinputs = chzn.find("div.chzn-drop select");//.click(function() { alert("hi"); });
