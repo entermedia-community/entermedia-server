@@ -528,7 +528,14 @@ public class OrderManager
 				
 				publishqeuerow.setProperty("publishdestination", destination);
 				publishqeuerow.setProperty("presetid", presetid);
-				String exportname = archive.asExportFileName(asset, preset);
+
+				String userid = order.get("userid");
+				User user = null;
+				if( userid != null )
+				{
+					user = (User)archive.getSearcherManager().getSearcher("system", "user").searchById(userid);
+				}
+				String exportname = archive.asExportFileName(user, asset, preset);
 				publishqeuerow.setProperty("exportname", exportname);
 				publishqeuerow.setProperty("status", "new");
 				

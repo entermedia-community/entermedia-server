@@ -126,6 +126,8 @@ public class MediaArchive
 		if( fieldReplacer == null)
 		{
 			fieldReplacer = new Replacer();
+			fieldReplacer.setDefaultCatalogId(getCatalogId());
+			fieldReplacer.setSearcherManager(getSearcherManager());
 		}
 		return fieldReplacer;
 	}
@@ -1227,8 +1229,11 @@ public class MediaArchive
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.exists() && page.getLength() > 1;
 	}
-
 	public String asExportFileName(Asset inAsset, Data inPreset)
+	{
+		return asExportFileName(null, inAsset, inPreset);
+	}
+	public String asExportFileName(User inUser, Asset inAsset, Data inPreset)
 	{
 		String format = inPreset.get("fileexportformat");
 		if( format == null)
@@ -1251,6 +1256,13 @@ public class MediaArchive
 		tmp.put("sourcepath", inAsset.getSourcePath());
 		tmp.put("date", ymd.format(now));
 		tmp.put("time", time.format(now));
+		tmp.put("asset", inAsset);
+		tmp.put("preset", inPreset);
+		if( inUser != null )
+		{
+			tmp.put("user",inUser);
+			tmp.put("username",inUser.getUserName());
+		}
 		
 		String result = getReplacer().replace(format, tmp);
 		return result;

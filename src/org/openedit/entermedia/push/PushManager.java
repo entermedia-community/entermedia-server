@@ -770,7 +770,9 @@ asset: " + asset);
 			
 			Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
 
-			Data publishedtask = convertAndPublish(inArchive, asset, publishtaskid, preset, destinationid);
+			String exportpath = hit.attributeValue("exportpath");
+
+			Data publishedtask = convertAndPublish(inArchive, asset, publishtaskid, preset, destinationid, exportpath);
 
 			Page inputpage = null;
 			String type = null;
@@ -826,7 +828,7 @@ asset: " + asset);
 		}
 	}
 	
-	protected Data convertAndPublish(MediaArchive inArchive, Asset inAsset, String publishqueueid, Data preset, String destinationid) throws Exception
+	protected Data convertAndPublish(MediaArchive inArchive, Asset inAsset, String publishqueueid, Data preset, String destinationid, String exportpath) throws Exception
 	{
 		boolean needstobecreated = true;
 		String outputfile = preset.get("outputfile");
@@ -871,8 +873,12 @@ asset: " + asset);
 			publishqeuerow.setProperty("assetid", assetid);
 			publishqeuerow.setProperty("publishdestination", destinationid);
 			publishqeuerow.setProperty("presetid", preset.getId() );
-			String exportname = inArchive.asExportFileName(inAsset, preset);
-			publishqeuerow.setProperty("exportname", exportname);
+			//Why is this not being passed back to us?
+			if( exportpath == null )
+			{
+				exportpath = inArchive.asExportFileName(inAsset, preset);
+			}
+			publishqeuerow.setProperty("exportname", exportpath);
 			publishqeuerow.setSourcePath(inAsset.getSourcePath());
 			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			publishQueueSearcher.saveData(publishqeuerow, null);
