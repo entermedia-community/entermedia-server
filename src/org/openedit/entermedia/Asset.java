@@ -385,7 +385,7 @@ public class Asset implements MultiValued
 		{
 			if (inValue != null)
 			{
-				addKeyword(inValue);
+				addKeywords(inValue);
 			}
 		}
 		else
@@ -415,8 +415,18 @@ public class Asset implements MultiValued
 		}
 		return false;
 	}
-
 	public void addKeyword(String inString)
+	{
+		if (inString == null)
+		{
+			log.debug("Null keyword");
+		}
+		else if( !getKeywords().contains(inString) )
+		{
+			getKeywords().add(inString);
+		}
+	}
+	public void addKeywords(String inString)
 	{
 		if (inString == null)
 		{
@@ -424,24 +434,24 @@ public class Asset implements MultiValued
 		}
 		else
 		{
-			if( inString.startsWith("\""))
+			//grab the "" stuff first
+			int start = inString.indexOf("\"");
+			while( start > -1 )
 			{
-				inString = inString.substring(1,inString.length() -1 );
-				getKeywords().add(inString);
-			}
-			else
+				int end = inString.indexOf("\"", start + 1);
+				addKeyword(inString.substring(start + 1,end));
+				start = inString.indexOf("\"",end +1);
+			} 
+			
+			String[] keywords = inString.split("\\s+");
+			for(int i = 0; i < keywords.length; i++)
 			{
-				String[] keywords = inString.split("\\s+");
-				for(int i = 0; i < keywords.length; i++)
+				String key = keywords[i].trim();
+				if( key.length() == 0 || key.startsWith("\"") || key.endsWith("\""))
 				{
-					if (!getKeywords().contains(keywords[i]))
-					{
-						if( keywords[i].length() > 0)
-						{
-							getKeywords().add(keywords[i]);
-						}
-					}
+					continue;
 				}
+				addKeyword(key);
 			}
 		}
 	}
@@ -790,6 +800,10 @@ public class Asset implements MultiValued
 		String val = getProperty(inKey);
 		
 		return Boolean.parseBoolean(val);
+	}
+	public void addLibrary(String inLibraryid) {
+		addValue("libraries", inLibraryid);
+		
 	}
 
 //	public String getOriginalAttachment()

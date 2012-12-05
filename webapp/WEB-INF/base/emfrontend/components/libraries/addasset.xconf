@@ -1,0 +1,4 @@
+<page>
+	<path-action name="LibraryModule.addAssetToLibrary"/>
+	<property name="virtual">true</property>
+</page>

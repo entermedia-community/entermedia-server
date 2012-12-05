@@ -1,5 +1,4 @@
 <page>
 	<property name="tab">categories</property>
-	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
-	
+	<property name="tree-name">categoryEditTree</property>
 </page>

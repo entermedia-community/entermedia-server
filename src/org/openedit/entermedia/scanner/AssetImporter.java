@@ -100,7 +100,7 @@ public class AssetImporter
 			Page topLevelPage = getPageManager().getPage(path);
 			if (topLevelPage.isFolder() && !topLevelPage.getPath().endsWith("/CVS") && !topLevelPage.getPath().endsWith(".versions"))
 			{
-				processOn(inRootPath, path,inArchive, 0, inUser);
+				processOn(inRootPath, path,inArchive, true, inUser);
 			}
 		}
 	}
@@ -108,7 +108,7 @@ public class AssetImporter
 	{
 		//this might be overriden to push
 	}
-	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, final long inLackCheckedTime, User inUser)
+	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, boolean inSkipModCheck, User inUser)
 	{
 		AssetPathProcessor finder = new AssetPathProcessor()
 		{
@@ -117,6 +117,7 @@ public class AssetImporter
 				AssetImporter.this.assetsImported(inArchive, inAssetsSaved);
 			};
 		};
+		finder.setSkipModificationCheck(inSkipModCheck);
 		finder.setMediaArchive(inArchive);
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);
@@ -124,7 +125,6 @@ public class AssetImporter
 		finder.setExcludeMatches(getExcludeMatches()); //The rest should be filtered by the mount itself
 		finder.setIncludeExtensions(getIncludeExtensions());
 		finder.setAttachmentFilters(getAttachmentFilters());
-		finder.setLastCheckedTime(inLackCheckedTime);
 		finder.processAssets(inStartingPoint, inUser);
 		
 		// Windows, for instance, has an absolute file system path limit of 256

@@ -8,15 +8,15 @@
         #if($hitssessionid)
             #set($hits = $context.getSessionValue($hitssessionid))
         #end
-        #if( $hits )
-        #set($indexOf = $hits.indexOfId($data.id))
-        #set($showIndex = $indexOf + 1)
-        #set($previous = $hits.previous($indexOf))
-        #set($next = $hits.next($indexOf))
+       
+    
         <div id="eml-tab-subnav">
      
         <ul style="text-align: center;">
-               
+                   #set($indexOf = $hits.indexOfId($data.id))
+        #set($showIndex = $indexOf + 1)
+        #set($previous = $hits.previous($indexOf))
+        #set($next = $hits.next($indexOf))
             #if( $hits )
            
             #set( $thispage = $content.getDirectoryName() )
@@ -32,5 +32,6 @@
                     
             #end    
         </ul>
+&nbsp;
         </div>
-        #end
+        

@@ -213,7 +213,9 @@
  	 <userprofile property="printpreview" equals="true" />
   </permission>
   
-  
+   <permission name="viewfilemenu">
+ 	 <userprofile property="viewfilemenu" equals="true" />
+  </permission>
   <!-- USER DEFUALTS -->
   
 	<permission name="viewvoting">
@@ -275,6 +277,10 @@
 		</and>		
   </permission>
 
+  <permission name="viewlibrarysearch">
+	<userprofile property="viewlibrarysearch" equals="true" />	  
+  </permission>
+
 
   <permission name="viewcategorynav">
      <userprofile property="viewcategorynav" equals="true" />
@@ -304,6 +310,10 @@
    <permission name="filterbyassettype">
 		<userprofile property="filterbyassettype" equals="true" />
 
+	</permission>
+
+	<permission name="asseteditorpickanylibrary">
+		<userprofile property="asseteditorpickanylibrary" equals="true" />
 	</permission>
 
 	

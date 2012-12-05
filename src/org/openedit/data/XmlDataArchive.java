@@ -185,7 +185,7 @@ public class XmlDataArchive implements DataArchive
 	public Data loadData(DataFactory inFactory, String inSourcePath, String inId)
 	{
 		String path = getPathToXml(inSourcePath);
-		XmlFile xml = getXmlArchive().getXml(path, getElementName());
+		XmlFile xml = getXmlArchive().getXml(path, getElementName()); //This is slow, why even bother to cache this?
 		String id = path + inId + xml.getLastModified();
 		Data found = (Data)getIdCache().get(id);
 		if( found != null)

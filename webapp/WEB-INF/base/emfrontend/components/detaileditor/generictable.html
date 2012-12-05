@@ -52,8 +52,8 @@
 	<div id="${viewid}editor">
 	#if( !$edit || $edit == "false")
 	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
+	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
-	#if( !$parser.parseBoolean($edit) && $caneditasset && !$print.equals("true"))
 	<script>
 	$(document).ready(function(){
 		

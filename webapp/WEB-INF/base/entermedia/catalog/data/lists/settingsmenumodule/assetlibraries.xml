@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property id="libraries" type="toplevel" parentid="libraries" module="asset" path="/views/settings/modules/asset/division/parent/index.html" ordering="030" sublabel="Edit Libraries">Libraries</property>
-  <property id="librarypermissions" parentid="libraries" module="asset" path="/views/settings/modules/asset/libraries/permissions/index.html" ordering="310">Permissions</property>
-</properties>
-  	

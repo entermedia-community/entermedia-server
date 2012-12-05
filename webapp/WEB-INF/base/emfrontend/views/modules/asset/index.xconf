@@ -6,7 +6,10 @@
 	<property name="sectiontitle">Home</property>
 	<property name="dataroot">/${catalogid}/side/search</property>
  	<property name="assetrootfolder">/${catalogid}/assets</property>
-	<path-action name="DataEditModule.loadHits"/>
+	<path-action name="DataEditModule.loadHits">
+		<property name="searchtype">${module}</property>
+	</path-action>	
+	
 	<property name="hitsname">hits</property>
 		
 	<path-action name="DataEditModule.search" cancel="true"/>

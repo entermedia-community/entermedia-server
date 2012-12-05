@@ -25,6 +25,8 @@ $context.putPageValue("edit",$edit)
 	#set ($details = $searcher.getDetailsForView($view))
 #end
 
+$context.putPageValue("idprefix","search")
+
 
 <table 	 width="100%">
 	#foreach( $detail in $details)

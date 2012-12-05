@@ -123,7 +123,11 @@ public class DefaultWebTreeModel extends BaseTreeModel
 
 	public Object getParent(Object inNode)
 	{
+		if(inNode == null){
+			return null;
+		}
 		DefaultWebTreeNode child = (DefaultWebTreeNode) inNode;
+		
 		return child.getParent();
 	}
 

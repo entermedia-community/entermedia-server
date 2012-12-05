@@ -152,7 +152,7 @@ class ConvertRunner implements Runnable
 					result = new ConvertResult();
 					result.setOk(false);
 					result.setError(e.toString());
-					log.error("Conversion Failed", e);
+					log.error("Conversion Failed" + e);
 				}
 				
 				if(result != null)
@@ -258,7 +258,11 @@ class ConvertRunner implements Runnable
 		Asset asset = inArchive.getAssetBySourcePath(inSourcepath);
 		if(asset == null)
 		{
-			return new ConvertResult();
+			throw new OpenEditException("Asset could not be loaded ${inSourcepath} marking as error"); 
+		}
+		if( asset.get("editstatus") == "7") 
+		{
+			throw new OpenEditException("Could not run conversions on deleted assets ${inSourcepath}");
 		}
 		inStructions.setAssetSourcePath(asset.getSourcePath());
 		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );

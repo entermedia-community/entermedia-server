@@ -196,14 +196,28 @@ public class HotFolderManager
 		Date started = new Date();
 		long sincedate = 0;
 		String since = inFolder.get("lastscanstart");
-		log.info(inFolder + " filtered by date " + since );
 		if( since != null )
 		{
 			sincedate = DateStorageUtil.getStorageUtil().parseFromStorage(since).getTime();
 		}
-		List<String> paths = importer.processOn(base, path, inArchive, sincedate, null);
-		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
-		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
+		boolean skipmodcheck = false;
+		if( since != null )
+		{
+			long now = System.currentTimeMillis();
+			sincedate = sincedate + 1000*60*60*24*7; //once a week
+			if( sincedate > now )
+			{
+				skipmodcheck = true;
+			}
+		}
+		log.info(inFolder + " scan stated. skip mod check = " + skipmodcheck );
+		
+		List<String> paths = importer.processOn(base, path, inArchive, skipmodcheck, null);
+		if( !skipmodcheck )
+		{
+			inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
+			getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
+		}
 		log.info(inFolder + " Imported " + paths.size() );
 		
 		return paths;

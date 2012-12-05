@@ -19,8 +19,6 @@
   	
 	<!-- Properties -->
 	<property name="editable">false</property>
-	<property name="systemfromemail">noreply@entermediasoftware.com</property>
-	<property name="systemfromemailname">EnterMedia</property>
 	<property name="oetextfilter">translation</property>
 	<property name="makeversion">false</property>
 	<property name="typespath">/${applicationid}/search/types</property>

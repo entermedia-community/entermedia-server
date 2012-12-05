@@ -16,7 +16,6 @@
 				#else
 				<input name="operation" value="startswith" type="hidden" />
 				#end
-
 		#end
 	
 		#set( $viewtype = $detail.searchcomponent )
@@ -30,13 +29,13 @@
 			#set ($viewtype = "default")
 		#end
 		
-		#if (!$viewtype || $viewtype == "date")
-			#set ($viewtype = "datesearch")
-		#else
-		
-		
+		#if ( $viewtype == "multiselect")
+			#set ($viewtype = "list")
 		#end
 		
+		#if (!$viewtype || $viewtype == "date")
+			#set ($viewtype = "datesearch")
+		#end
 		
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
@@ -46,6 +45,7 @@
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
 		#end
+		
 		
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
 	</td>

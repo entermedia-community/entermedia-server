@@ -1,0 +1,9 @@
+<page>
+	<layout/>
+	<inner-layout/>
+	<page-action name="DataEditModule.search" alltypes="true">
+		<property name="hitsname">autocomplete</property>
+	</page-action>
+	<generator name="velocityGenerator" />
+	
+</page>

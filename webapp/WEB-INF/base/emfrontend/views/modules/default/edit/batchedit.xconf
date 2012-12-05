@@ -7,5 +7,7 @@
         	<value>Go Back</value>
 		<value locale="es">Volver</value>
     	</property>
-    	<path-action name="DataEditModule.loadHits" />
+    	<path-action name="DataEditModule.loadHits" >
+    			<property name="searchtype">${module}</property>
+    	</path-action>
 </page>

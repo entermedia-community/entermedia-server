@@ -11,7 +11,6 @@
 #set( $fieldexternalid = $viewdata.renderexternalid)
 
 #set( $permissionname = "canedit${moduleid}")
-
 #set ( $id = $context.getRequestParameter("id") )
 #if ( $!id )
     #set ( $id = $data.id )
@@ -19,7 +18,7 @@
 #end
 #set( $fieldexternalvalue = $id )
 
-
+$context.putPageValue("canedittable", $caneditdata)
 
 #set( $args = "id=$id&parentid=$id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$listid&listexternalid=$listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)

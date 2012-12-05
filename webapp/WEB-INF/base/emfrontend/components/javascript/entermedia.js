@@ -719,7 +719,6 @@ onloadselectors = function()
 							var href = row.data("href");
 							openFancybox(href);
 						} else {
-								
 							jQuery('#emselectable table tr' ).each(function(index) 
 							{ 
 								jQuery(this).removeClass("emhighlight");
@@ -729,6 +728,7 @@ onloadselectors = function()
 							jQuery(row).removeClass("emborderhover");
 							
 							var id = jQuery(row).attr("rowid");
+							var url = jQuery(this).closest("table").data("clickpath");
 							var form = jQuery('#emselectable').find("form");
 							if( form.length > 0 )
 							{
@@ -739,18 +739,10 @@ onloadselectors = function()
 									});	
 								form.submit();
 							}
-							/*
-							else if(jQuery('#emselectable #editlink'))
+							else if( url != undefined )
 							{
-								var tablediv = jQuery(this).parents('.emselectable').filter(':first');
-								var targetdiv = tablediv.data('targetdiv');
-								var editpath = tablediv.data('editpath');
-								targetdiv = targetdiv.replace(/\//g, "\\/");
-								var id = jQuery(row).attr("rowid");
-								editpath = editpath + "&id=" + id;
-								jQuery("#" + targetdiv).load(editpath);
+								window.location = url + id;
 							}
-							*/
 							else
 							{
 								window.location = id;
@@ -1082,5 +1074,45 @@ emcomponents = function() {
 			jQuery.fancybox.close();
 		}
 	);
+
+
+	jQuery(".librarydroparea").livequery(
+			function()
+			{
+				jQuery(this).droppable(
+					{
+						drop: function(event, ui) {
+							var assetid = ui.draggable.data("assetid");
+							var node = $(this);
+							var libraryid = node.data("libraryid");
+							alert(assetid + " " + libraryid);
+//							var tree = this.nearest(".categorytree");
+//							var treeid = tree.data("")
+							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
+							//this is a category
+							jQuery.get("$home$apphome/components/libraries/addasset.html", 
+									{
+										assetid:assetid,
+										libraryid:libraryid
+									},
+									function(data) 
+									{
+										node.append("<span class='fader'>&nbsp;+1</span>");
+										node.find(".fader").fadeOut(3000);
+										node.removeClass("selected");
+									}
+							);
+
+						},
+						tolerance: 'pointer',
+						over: outlineSelectionCol,
+						out: unoutlineSelectionCol
+					}
+				);
+			}
+		);
+
+
+
 }
 

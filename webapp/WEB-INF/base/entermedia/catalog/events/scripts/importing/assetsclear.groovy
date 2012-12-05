@@ -30,44 +30,61 @@ public void init()
 	if(sourcepath == null)
 	{
 		q = searcher.createSearchQuery().append("category", "index");
-		q.addNot("editstatus","7");
+		//q.addNot("editstatus","7");
 	}
 	else
 	{
 		q.addStartsWith("sourcepath", sourcepath);
 	}
+	q.addSortBy("id");
 	assets = searcher.search(q);
-	assets.setHitsPerPage(10000);
-	long removed = 0;
-	long existed = 0;
+	assets.setHitsPerPage(1000);
+	int removed = 0;
 	List tosave = new ArrayList();
+	int existed = 0;	
 	for(Object obj: assets)
 	{
 		Data hit = (Data)obj;
-		String path = hit.getSourcePath();
-		Asset asset = archive.getAssetBySourcePath(path);
-		if( asset == null)
-		{
-			log.info("invalid asset " + path);
-			continue;
-		}
-		String assetsource = asset.getSourcePath();
+	
+		String assetsource = hit.getSourcePath();
 		String pathToOriginal = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + assetsource;
-		if(asset.isFolder() && asset.getPrimaryFile() != null)
-		{
-			pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
-		}
+		
 		ContentItem page = pageManager.getRepository().get(pathToOriginal);
 		if(!page.exists())
 		{
+			Asset asset = archive.getAssetBySourcePath(assetsource);
+			if( asset == null)
+			{
+				log.info("invalid asset " + path);
+				continue;
+			}
+
+			if(asset.isFolder() && asset.getPrimaryFile() != null)
+			{
+				pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
+				page = pageManager.getRepository().get(pathToOriginal);
+				if(page.exists())
+				{
+					existed++;
+					continue; //never mind, it is here
+				}
+			}
 			removed++;
 			//archive.removeGeneratedImages(asset);
-			asset.setProperty("editstatus", "7");
-			tosave.add(asset);
+           if( asset.get("editstatus") != "7" )
+           {
+			   asset.setProperty("editstatus", "7");
+			   tosave.add(asset);
+           }
 		}
 		else
 		{
 			existed++;
+//            if( asset.get("editstatus") != "7" )
+//            {
+//			   asset.setProperty("editstatus", "6"); //restore files
+//			   tosave.add(asset);
+//            }
 		}
 		if( tosave.size() == 100 )
 		{

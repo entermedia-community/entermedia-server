@@ -1,0 +1,88 @@
+#set ($catalogid = $context.getRequestParameter('catalogid'))
+#set ($searchtype = $context.getRequestParameter('searchtype')) ##product
+#if( !$searchype )
+	#set ($searchtype = $searcher.getSearchType() )
+#end
+#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+#set ($view = $context.getRequestParameter('view')) 
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+#if($val && $val != "")
+#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
+#end
+#set( $listid = $detail.getListId())
+
+#if($listid == "library" &&  $canasseteditorpickanylibrary == false )
+
+<select name="libraries.value">
+<option value=""></option>
+#foreach( $libraryid in $userprofile.getCombinedLibraries() )
+	#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
+	#set( $division = $searcherManager.getData($catalogid,"division",$library.division))
+	<option value="$libraryid">$division / $library</option>
+#end
+</select>
+
+		
+
+#else
+
+<input name="field" type="hidden" value="${detail.id}" />
+<input name="operation" type="hidden" value="matches" />
+
+<select style="margin-top: 8px;" id="$!{idprefix}${detail.id}_${listid}_input" 
+		data-placeholder=" " name="$!{detailprefix}${detail.id}.value" 
+		class="choose-select-ajax #if($detail.isRequired()) required #end"  
+		listid="$listid" 
+		data-listid="$listid" 
+		data-searchtype= '$searchtype'
+	>
+		<option  value=""></option>
+	#if( $foundrow)
+		<option value="#esc($foundrow.id)" selected >#esc($foundrow.name)</option>
+	#end	
+	
+	</select>
+
+	<div id="$!{idprefix}${detail.id}_${listid}_input_filter" class="chzn-filter" style="display:none;">
+			#set( $listsearcher = $searcherManager.getSearcher($catalogid,$listid) )
+			#set ($filterdetails = $listsearcher.getDetailsForView("${listid}/${listid}filter", $userprofile))
+			$context.putPageValue("detailprefix","filterprefix")	
+			$context.putPageValue("searcher",$listsearcher)	
+			#foreach( $child in $filterdetails)
+				$context.putPageValue("detail", $child)				
+				#set( $viewtype = $child.searchcomponent )
+				#if (!$viewtype)
+					#set( $viewtype = $child.viewType )
+				#end
+				#if (!$viewtype)
+					#set ($viewtype = $child.dataType)
+				#end
+				#if (!$viewtype || $viewtype == "text")
+					#set ($viewtype = "default")
+				#end
+				
+				#if ( $viewtype == "multiselect")
+					#set ($viewtype = "list")
+				#end
+				#if (!$viewtype || $viewtype == "date")
+					#set ($viewtype = "datesearch")
+				#end
+				$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+				<span>Filter By:</span>
+			#end	
+	</div>
+
+
+
+
+			
+#end
+
+
+
+

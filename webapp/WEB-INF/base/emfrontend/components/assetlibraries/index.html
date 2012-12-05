@@ -1,21 +1,28 @@
 <div id="emvalueeditor">
 	<div id="valuelist" class="emtable clearfix">
-	#foreach($library in $asset.getLibraries())
-		  
-		 #set( $data = $searcherManager.getData($catalogid,"library",$library) )
-		 #set( $division = $searcherManager.getData($catalogid,"division",$data.division ) )
-		 
-		<a class="row tag">$division / $data</a>
-
-		#if($caneditasset)
-			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/libraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$library"></a>
-		#end
-		</a>
+    #if ( $asset.getLibraries().isEmpty() )
+        <p class="info" style="margin-top: 0;">There are no project associated with this asset.  Add project below.</p>
+    #else 
+    
+    	#foreach($library in $asset.getLibraries())
+    		  
+    		 #set( $data = $searcherManager.getData($catalogid,"library",$library) )
+    		 #set( $division = $searcherManager.getData($catalogid,"division",$data.division ) )
+    		 
+    		<a class="row tag" href="$home$apphome/views/modules/library/libraryassets/index.html?id=${data.id}">$!division / $data</a>
+    
+    		#if($canasseteditorlibraries)
+    			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$library"></a>
+    		#end
+    		</a>
+		#set($division = "")
+    	#end
+	
 	#end
 	</div>
-#if($caneditasset)
-	<div id="valueadd" style="margin: 20px 0 10px 0;">
-	<a class="ajax btn small" targetdiv="valueadd" href="$home$apphome/components/libraries/add.html?oemaxlevel=1&assetid=${asset.id}&sourcepath=${asset.sourcepath}">[[Add Library]]</a>
+#if($canasseteditorlibraries)
+	<div id="valueadd" style="margin: 10px 0 10px 0;">
+	   <a class="ajax btn small" targetdiv="valueadd" href="$home$apphome/components/assetlibraries/add.html?oemaxlevel=1&assetid=${asset.id}&sourcepath=${asset.sourcepath}">[[Add Project]]</a>
 	</div>
 #end
 

@@ -38,6 +38,9 @@ public class UserProfileSearcher extends XmlFileSearcher {
 	public Object searchById(String inId) {
 		
 		UserProfile search =  (UserProfile)super.searchById(inId);
+		if(search == null){
+			return null;
+		}
 		String userid = search.getUserId();
 		User user = getUserManager().getUser(userid);
 		search.setUser(user);

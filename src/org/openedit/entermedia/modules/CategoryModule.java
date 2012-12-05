@@ -356,6 +356,7 @@ public class CategoryModule extends BaseMediaModule
 		WebTree tree = getCatalogTree(inReq);
 		MediaArchive archive = getMediaArchive(inReq);
 		archive.getCategoryEditor().reBuildCategories();
+		reloadTree(inReq);
 	}	
 
 }

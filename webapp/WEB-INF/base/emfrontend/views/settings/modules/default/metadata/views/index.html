@@ -125,7 +125,7 @@
 			#else
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
-            <select name="newone" style="float: right; margin-top: -17px;" onchange="jQuery('#addtoview').submit()">
+            <select name="newone" style="float: right; margin-top: -17px; width:150px;" onchange="jQuery('#addtoview').submit()"  >
                 <option value=""> </option>
                 #foreach( $detail in $searcher.getUserPropertyDetails() )
                     <option value="$detail.id">$detail.text</option>

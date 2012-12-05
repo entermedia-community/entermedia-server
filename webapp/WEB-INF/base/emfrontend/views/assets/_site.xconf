@@ -21,6 +21,8 @@
 	
 	<property name="assettab">metadatageneral</property>
 	
+	<!-- Allows us to skip passing in parameters that might slow down the site. Hope this does not cause problems with other searchers -->
+	<property name="hitssessionid">hitsassetmedia/catalogs/public</property>
 	
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>

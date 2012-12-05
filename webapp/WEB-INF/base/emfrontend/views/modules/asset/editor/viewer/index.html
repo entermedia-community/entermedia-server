@@ -1,16 +1,23 @@
-<div id="emmediaviewer">
+   <div id="mediaviewer" class="max">
+        
+            #set( $ismultifine = $asset.id.startsWith("multiedit:") )
+            #if($ismultifine )
+                <div id="media-player" >
+                    <h2 style="color: #fff; margin: 20px 0;">[[Editing across $asset.size() records]]</h2>
+                </div>
+    
+            #else
 
-		<div class="emcalloutcontent">			
-		
-			<table width="100%">
-				<tr>
-					<td width="100%" valign="top">
+              <div id="media-player-table" class="table" >
+                  $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+              </div>
 
-			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-			$pages.include("${apphome}/views/modules/asset/editor/viewer/types/${type}.html",$context)
-
-					</td>
-				</tr>
-			</table>	
-	</div>		
-</div>
+    #if ( $canviewvoting )
+    <div id="assetVoteCount">
+        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+    </div>
+    #end
+           
+            #end
+        
+    </div>

@@ -11,7 +11,7 @@
     <div id="pdf-viewer-container">
         #if ($gotopage > 1)
              #set( $prevthumb = $gotopage - 1)
-            <a id="prevpage" class="ir" href="index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb&hitssessionid=$hitssessionid"> Previous </a>
+            <a id="prevpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb&hitssessionid=$hitssessionid"> Previous </a>
         #end
         #if($currentpreview)
             #set( $page = $currentpreview + 1)
@@ -27,7 +27,7 @@
         </a>
         #if ($gotopage != $totalpages)
              #set( $nextthumb = $gotopage + 1)
-            <a id ="nextpage" class="ir" href="index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb&hitssessionid=$hitssessionid"> Next </a>
+            <a id ="nextpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb&hitssessionid=$hitssessionid"> Next </a>
         #end
     </div>
 

@@ -1,6 +1,8 @@
-
+<div id="permissions">
 	<script type="text/javascript" charset="utf-8">
-		removePerson = function(userid){
+	console.log("Ian was here");
+	
+	removePerson = function(userid){
 			jQuery("#permissions").load("$home$apphome/components/share/removeperson.html?assetid=$asset.id&userid=" + userid);
 		}
 		removeGroup = function(groupid){
@@ -8,22 +10,24 @@
 			jQuery.get("$home$apphome/components/share/removegroup.html?assetid=$asset.id&groupid=" + groupid, {}, function (data){ jQuery("#permissions").replaceWith(data); }); 
 			
 		}
-		addAllGroups = function(userid){
+		addAllGroups = function(){
 			if(jQuery("#allowallgroups").is(':checked') == false) {
 				jQuery("#permissions").load("$home$apphome/components/share/removeallgroups.html?assetid=$asset.id");
 			} else {
 				jQuery("#permissions").load("$home$apphome/components/share/addallgroups.html?assetid=$asset.id");
 			}
 		}
-		addAll = function(userid){
+		addAll = function(){
+
 			if(jQuery("#allowall").is(':checked') == false) {
 				jQuery("#permissions").load("$home$apphome/components/share/removeall.html?assetid=$asset.id");
 			} else {
 				jQuery("#permissions").load("$home$apphome/components/share/addall.html?assetid=$asset.id");
+				console.log("Ian was here");
+
 			}
 		}
 	</script>
-
 		<p class="info" style="margin: 20px;">
 		    
 			<img src="$home${themeprefix}/images/gfx/lock_icon.png" style="padding-right: 5px; position: relative; top: -2px;" />
@@ -102,3 +106,5 @@
 
 
 
+
+</div>

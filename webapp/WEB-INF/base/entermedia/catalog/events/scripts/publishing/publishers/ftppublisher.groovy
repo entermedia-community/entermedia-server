@@ -33,6 +33,7 @@ public class ftppublisher extends basepublisher implements Publisher
 		FTPClient ftp = new FTPClient();
 		
 		ftp.connect(servername);
+		ftp.enterLocalPassiveMode();
 		
 		//check to see if connected
 		int reply = ftp.getReplyCode();
@@ -42,19 +43,15 @@ public class ftppublisher extends basepublisher implements Publisher
 			ftp.disconnect();
 			return result;
 		}
-		
+		String password = destination.get("password");
 		//get password and login
-		UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
-		User user = userManager.getUser(username);
-		if(user == null)
+		if(password == null)
 		{
-			result.setErrorMessage("Unknown user, ${username}");
-			ftp.disconnect();
-			return result;
+			UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
+			User user = userManager.getUser(username);
+			password = userManager.decryptPassword(user);
 		}
-		
-		String password = userManager.decryptPassword(user);
-		
+			
 		ftp.login(username, password);
 		reply = ftp.getReplyCode();
 		if(!FTPReply.isPositiveCompletion(reply))
@@ -63,7 +60,6 @@ public class ftppublisher extends basepublisher implements Publisher
 			ftp.disconnect();
 			return result;
 		}
-		
 		ftp.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
 		
 		//change paths if necessary

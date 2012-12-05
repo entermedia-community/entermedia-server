@@ -1,3 +1,5 @@
 <page>
-	<path-action name="DataEditModule.createNew" />
+	<path-action name="DataEditModule.createNew" >
+			<searchtype>${module}</searchtype>
+	</path-action>
 </page>

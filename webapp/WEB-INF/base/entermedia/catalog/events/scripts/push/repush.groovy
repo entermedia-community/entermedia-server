@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArch	ive
+import org.openedit.entermedia.MediaArchive
 import org.openedit.*;
 
 import com.openedit.hittracker.*;
@@ -13,31 +13,52 @@ public void init()
 		MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher targetsearcher = mediaArchive.getAssetSearcher();
 		SearchQuery q = targetsearcher.createSearchQuery();
-		q.addMatches("pushstatus", "complete");
-		q.addBefore("pushdate", new SimpleDateFormat("MM/dd/yyyy").parse("7/16/2012") );
-		q.addMatches("importstatus", "complete");
+		
+		q.addMatches("category", "index");
+		
+		//q.addMatches("pushstatus", "complete");
+		//q.addBefore("pusheddate", new SimpleDateFormat("MM/dd/yyyy").parse("07/16/2012") );
+		//q.addMatches("importstatus", "error");
+//                q.addNot("editstatus","7");
+//        q.addMatches("editstatus","7");
 		q.addSortBy("id");
 		HitTracker assets = targetsearcher.search(q);
 
-		assets.setHitsPerPage(100000);
+		assets.setHitsPerPage(10000);
 
 		int count = 0;
-		log.info("Starting ${assets.size()}"); 
+		log.info("Starting ${assets.size()} with ${q}"); 
 		List assetsToSave = new ArrayList();
 		assets.each
 		{
 			Data hit =  it;
 			count++;
-			Asset asset = mediaArchive.getAssetBySourcePath(hit.getSourcePath());
-			if( asset != null )
+			if( hit.get("pushstatus") != "complete" || hit.get("importstatus") != "complete" )
 			{
-				asset.setProperty("pushstatus", "resend");
-				assetsToSave.add(asset)
-				if(assetsToSave.size() == 100)
+				Asset asset = mediaArchive.getAssetBySourcePath(hit.getSourcePath());
+				if( asset != null )
 				{
-						mediaArchive.saveAssets assetsToSave;
-						assetsToSave.clear();
-						log.info("checked ${count} records." );
+	//	 			String pushstatus = asset.get("pushstatus");
+	//				if( pushstatus == "error" )
+	//				{
+						boolean save = false;
+						if( asset.get("pusheddate" ) != null )
+						{
+							asset.setProperty("pushstatus","complete");
+							save = true;
+						}
+	//				}
+	//				if( asset.get("editstatus") == "7")
+	//				{
+	//					asset.setProperty("importstatus","complete");
+	//					assetsToSave.add(asset)
+	//				}
+					if(assetsToSave.size() == 500)
+					{
+							mediaArchive.saveAssets assetsToSave;
+							assetsToSave.clear();
+							log.info("checked ${count} records." );
+					}
 				}
 			}
 		}

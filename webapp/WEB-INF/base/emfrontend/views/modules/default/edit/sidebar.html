@@ -9,40 +9,33 @@
 $!query.addSortBy("ordering")   
 #set($views = $viewsearcher.search($query))
 
-#if( !$viewid && $views.size() > 0)               
-    #set( $viewid = $views.first().getId() )
-    #set( $viewpath = "${moduleid}/$viewid" )
-#end
+##if( !$viewid && $views.size() > 0)               
+    ##set( $viewid = $views.first().getId() )
+    ##set( $viewpath = "${moduleid}/$viewid" )
+##end
 $context.putPageValue("view", $viewpath)
 
 #set($hitssessionid = $context.findValue("hitssessionid"))
 
-<div class="ui-widget  uipanel">
-    <div class="ui-widget-header">
             #set ($lastselected = $content.module )
             #if(!$lastselected)
                 #set($lastselected = $userprofile.last_selected_module )
             #end
         #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
-        Edit $module
-    </div>
-    <div class="ui-widget-content">
-        <ul id="assetmenu" class="sidebar-list">       
-              #foreach( $target in $views)            
+<ul id="assetmenu" class="sidebar-list">
+      
+              #foreach( $target in $views)       
+                   
                   <li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
                   		
                   		#if( $target.rendertable )
                       <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/table.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
-                        $target</a>
+                       <span class="icon"></span><span class="text"> $target</span></a>
                   		#else
                       <a class="tab" href="$home$apphome/views/modules/${moduleid}/edit/edit.html?id=${data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
-                        $target</a>
+                        <span class="icon"></span><span class="text"> $target</span></a>
                         #end
                   </li>
               #end
-         </ul>
-    </div>
-</div>
-
-
-$pages.include("${content.searchhome}/extra.html")
+       
+</ul>

@@ -15,7 +15,7 @@
         #set( $currentpreview = $numberutils.toInt($currentpreview) )
         #set( $pagenum = $currentpreview + 1  )
     #end
-    
+    ##TODO Move this to ./player/types/documentpages.html
     #if( $totalpages > 1 )
         <div id="pdf-thumbnail-sidebar">
   
@@ -73,7 +73,7 @@
 
 <div id="media-player" class="#if( $totalpages > 1 ) document #end">
 
-    <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
+ ##   <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
    
 
     <div id="mp-player">
@@ -86,10 +86,12 @@
     	<div id="mp-asset-info" style="display: none;">
     	    
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-            <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
-            
+           #if($canviewassetpreviewhistory)
+	   <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
+#end
+            #if($canviewcomments)
             <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitsessionsid" class="comments">$comments.size()<span>&nbsp;</span></a>
-            
+            #end
             <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">19<span>&nbsp;</span></a -->
        
         </div>

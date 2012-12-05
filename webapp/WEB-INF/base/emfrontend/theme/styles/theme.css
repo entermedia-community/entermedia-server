@@ -414,7 +414,6 @@ ul.emheaderbuttons li.navselected a {
 }
 
 #media-player {
-    margin-bottom: 10px;
     text-align: center;
 }
 .asset-details h3 {
@@ -1096,6 +1095,7 @@ p.drag-columns-text {
     display: block;
     padding: 0;
     margin: 0;
+    list-style: none;
 }
 
 /* LOGIN FORM STYLES */
@@ -1342,16 +1342,25 @@ small {
 
 /* SIDE BAR STYLES */
 
-.sidebar-media {
-    padding-top: 10px;
-    padding-left: 12px;
-}
 .sidebar-media li {
-    margin: 8px 0;
-    padding: 0;
+    margin: 0;
+    padding: 8px 0;
     position: relative;
     text-align: center;
+    width: 155px;
 }
+.sidebar-media .textbutton {
+    padding: 0;
+}
+.sidebar-media .textbutton a {
+    display: block;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 0;
+}
+.sidebar-media li:hover {
+    background: #eee;
+}
+
 .sidebar-media .mini {
     margin-left: 6px;
 }
@@ -1368,12 +1377,10 @@ small {
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #fff !important;
-    overflow: hidden;
     height: 30px;
     padding-top: 15px;
 }
 .sidebar-caption span {
-    left: -13px;
     position: relative;
     padding: 4px 10px;
     color: #fff !important;
@@ -1382,6 +1389,14 @@ small {
     background: #2790B0;
     border: 2px solid #fff;
     box-shadow: 0 2px 4px 2px rgba( 0, 0, 0, 0.4 );
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.sidebar-media li.currentsubtle  {
+    background: #c9e8f2;
 }
 
 .categories-widget {
@@ -1701,7 +1716,7 @@ small {
     display: block;
     height: 45px;
     width: 100%;
-    margin: -20px 0 20px 0;
+    margin: 0;
     padding: 0;
     border-bottom: 1px solid #a8dae4;
 }
@@ -1736,6 +1751,7 @@ table.greytxt {
 }
 #eml-tab-green-container {
     margin: 0 20px;
+    padding-top: 20px;
 }
 
 /* SUB-NAV DROPDOWN */
@@ -1897,6 +1913,9 @@ ul#sub-nav li:hover ul {
     border: 1px solid #cecb7c;
     margin: 15px 0;
 }
+.padding {
+    padding: 20px;
+}
 .no-padding {
     padding: 20px 0;
 }
@@ -2017,7 +2036,6 @@ ul#sub-nav li:hover ul {
     position: absolute;
     z-index: 20;
     width: auto;
-    top: 46px;
     box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
 }
 #share-container ul {
@@ -2080,6 +2098,7 @@ center #addcoment {
 #main {
     box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
     margin: 0;
+    
 }
 #emcontent {
     padding: 0;
@@ -2092,7 +2111,7 @@ center #addcoment {
 }
 #left-col {
     width: 221px;
-    max-width: 221px;
+    max-width: 350px;
     float: none;
     display: table-cell;
     vertical-align: top;
@@ -2104,12 +2123,12 @@ center #addcoment {
 #right-col {
     border-left: 1px solid #80b5c6;
     display: table-cell;
-    padding: 20px;
     margin: 0;
     min-height: 600px;
-    min-width: 95%;
+    min-width: 100%;
     border-radius: 0 0 5px 0;
     background: #f8fdff;
+    padding-bottom: 20px;
 }
 .ui-widget-header, #nav, #header .navlinks {
     background: #3bb0d2; /* Old browsers */
@@ -2249,15 +2268,18 @@ tr.odd {
     padding: 0;
     margin: -10px -14px;
 }
+
 .search-list li, .sidebar-list li {
     margin: 0;
     padding: 0;
     list-style: none;
     color: #49494b;
 }
+
+
 .search-list li a.search-href, .sidebar-list a {
     padding: 10px 40px;
-    margin: 0 -10px;
+    margin: 0 4px 0 4px;
     text-decoration: none;
     display: block;
     font-size: 12px;
@@ -2318,6 +2340,12 @@ tr.odd {
     background: #3daacd;
     color: #fff;
 }
+
+.search-list li.currentsubtle a.search-href, .sidebar-list li.currentsubtle a {
+    background: #c9e8f2;
+}
+
+
 .search-list li.current .search-save a {
     background-position: 0 0;
     opacity: 0.5;
@@ -2547,7 +2575,7 @@ tr.odd {
     width: 100%;
     border-bottom: 1px solid #eee;
 }
-#tree {
+#attachmenttree {
     display: table-cell;
     vertical-align: top;
 }
@@ -2559,11 +2587,11 @@ tr.odd {
     background: #fff;
     display: table-cell;
 }
-#tree ul {
+#attachmenttree ul {
     margin: 0;
     padding: 0;
 }
-#tree ul li {
+#attachmenttree ul li {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -2571,7 +2599,7 @@ tr.odd {
     color: #444;
     font-size: 11px;
 }
-#tree ul li div {
+#attachmenttree ul li div {
     padding: 0 0 0 20px;
     border-bottom: 1px solid #E2EFF4;
     height: 34px;
@@ -2579,20 +2607,20 @@ tr.odd {
     display: block;
     cursor: pointer;
 }
-#tree ul li div.selected, .emtree ul li div.selected {
+#attachmenttree ul li div.selected, .emtree ul li div.selected {
     background: #c9e8f2;
 }
-#tree ul li div.selected:hover, .emtree ul li div.selected:hover {
+#attachmenttree ul li div.selected:hover, .emtree ul li div.selected:hover {
     background: #c9e8f2;
 }
-#tree ul li div:hover {
+#attachmenttree ul li div:hover {
     background: #c9e8f2;
 }
-#tree ul li div span a.btn {
+#attachmenttree ul li div span a.btn {
     line-height: 11px;
     margin-left: 5px;
 }
-#tree ul li div span input[type="text"] {
+#attachmenttree ul li div span input[type="text"] {
     padding: 5px 10px 3px 10px;
 }
 .actions {
@@ -2600,96 +2628,52 @@ tr.odd {
     display: none;
     margin-right: 15px;
 }
-#tree ul li div:hover .actions {
+#attachmenttree ul li div:hover .actions {
     display: inline;
 }
-#tree ul li div .actions a {
+#attachmenttree ul li div .actions a {
     float: left;
     margin-left: 5px;
     opacity: 0.7;
 }
-#tree ul li div .actions a:hover {
+#attachmenttree ul li div .actions a:hover {
     opacity: 1.0;
 }
-#tree ul li div .actions a.add {
+#attachmenttree ul li div .actions a.add {
     background: url('../images/add.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.edit {
+#attachmenttree ul li div .actions a.edit {
     background: url('../images/edit.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.delete {
+#attachmenttree ul li div .actions a.delete {
     background: url('../images/delete.gif') 0 11px no-repeat;
     width: 15px;
     margin-right: 0;
     margin-top: 0;
 }
-#tree ul li div .actions a.add-folder {
+#attachmenttree ul li div .actions a.add-folder {
     background: url('../images/add-folder.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.upload-file {
+#attachmenttree ul li div .actions a.upload-file {
     background: url('../images/add-upload.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.download-folder {
+#attachmenttree ul li div .actions a.download-folder {
     background: url('../images/download-folder.gif') 0 11px no-repeat;
     width: 15px;
 }
-#tree ul li div .actions a.download-file {
+#attachmenttree ul li div .actions a.download-file {
     background: url('../images/download-file.gif') 0 11px no-repeat;
     width: 15px;
 }
 
-
-#tree .arrow {
-    width: 0;
-    height: 0;
-    border: 5px solid transparent;
-    border-left: 7px solid #666;
-    display: block;
-    margin: 0 -13px 0 0
-    float: none;
-    position: absolute;
-    top: 8px;
-}
-#tree .arrow.down {
-    border: 5px solid transparent;
-    border-top: 7px solid #666;
-    top: 10px;
-    margin-left: -2px;
-}
-#tree .name {
-    padding-left: 35px;
-}
-#tree .name.folder {
-    background: url('../images/folder-closed.gif') 14px -1px no-repeat;
-}
-#tree .arrow.down + .name.folder {
-    background: url('../images/folder-open.gif') 14px -1px no-repeat;
-}
-#tree .add {
-    background: url('../images/add.gif') 13px 1px no-repeat;
-}
-#tree ul {
-    display: none;
-}
-#tree .open {
-    display: block;
-}
-#tree .odd {
-    background: #f7fdff;
-}
-#tree .nope {
-    display: none;
-}
 .emdropshadow.attachments {
     border-color: red;
 }
-#right-col.detail-editor > #eml-tab-subnav, #right-col.module-inner #resultsdiv {
-    margin: 0 -20px;
-}
+
 .user-input-area {
     padding: 0px 20px 8px 20px;
     margin-top: -10px;
@@ -2908,29 +2892,85 @@ table.emdata th {
     width: 15px;
 }
 
-.emtree .arrow {
+/*
+.arrow {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #8bcbdf;
+    display: none;
+    position: relative;
+    float: left;
+    margin: -35px auto 0 auto;
+}
+*/
+
+/*
+#attachmenttree .arrow {
     width: 0;
     height: 0;
     border: 5px solid transparent;
     border-left: 7px solid #666;
     display: block;
-    margin: 0 -13px 0 0;
+    margin: 0 -13px 0 0
     float: none;
     position: absolute;
-    top: 12px;
-}
-.emtree .arrow.down {
-    border: 5px solid transparent;
-    border-top: 7px solid #666;
-    top: 15px;
-    margin-left: -2px;
-}
-.cramped .emtree .arrow {
     top: 8px;
 }
-.cramped .emtree .arrow.down {
+#attachmenttree .arrow.down {
+    border: 5px solid transparent;
+    border-top: 7px solid #666;
     top: 10px;
+    margin-left: -2px;
 }
+#attachmenttree .name {
+    padding-left: 35px;
+}
+#attachmenttree .name.folder {
+    background: url('../images/folder-closed.gif') 14px -1px no-repeat;
+}
+#attachmenttree .arrow.down + .name.folder {
+    background: url('../images/folder-open.gif') 14px -1px no-repeat;
+}
+#attachmenttree .add {
+    background: url('../images/add.gif') 13px 1px no-repeat;
+}
+#attachmenttree ul {
+    display: none;
+}
+#attachmenttree .open {
+    display: block;
+}
+#attachmenttree .odd {
+    background: #f7fdff;
+}
+#attachmenttree .nope {
+    display: none;
+}
+*/
+
+
+.emtree .arrow {
+    width: 12px;
+    height: 9px;
+    top: 0px;
+    display: block;
+    position: absolute;
+    float: none;
+    margin-left: -12px;
+    padding: 8px 0px 8px 15px;
+    background:  url('../images/detaileditor/triangleup.png') 9px 8px no-repeat;
+}
+.emtree .arrow.down {
+    background:  url('../images/detaileditor/triangledown.png') 9px 8px no-repeat;
+}
+.cramped .emtree .arrow {
+}
+.cramped .emtree .arrow.down {
+}
+
+
 .emtree .name {
     padding-left: 35px;
 }
@@ -3260,17 +3300,6 @@ h3.instructions {
     border-radius: 5px;
     background: #8bcbdf;
 }
-.arrow {
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 20px solid #8bcbdf;
-    display: none;
-    position: relative;
-    float: left;
-    margin: -35px auto 0 auto;
-}
 #savebtn {
     float: right;
     margin-top: -49px;
@@ -3338,7 +3367,6 @@ body #emcontainer .emasseteditorarea {
 #view-picker-content {
     border: none;
     box-shadow: none;
-    width: 836px;
 }
 #emcontainer .emdatafieldvalue {
     white-space: normal;
@@ -3369,10 +3397,24 @@ body #emcontainer .emasseteditorarea {
     text-align: center;
     margin: -6px 0 15px 0;
 }
+#advsearchpanel select.choose-select-ajax select.choose-select {
+    width: 150px !important;
+}
 
-#advsearchpanel table[width="100%"] .field, #advsearchpanel table[width="100%"] select {
+.choose-select-ajax
+{
+	width: 300px;
+}
+
+#advsearchpanel select.choose-select {
     width: 180px !important;
 }
+
+#advsearchpanel table[width="100%"] .field, #advsearchpanel select.choose-select-ajax {
+    width: 180px !important;
+}
+
+
 #advsearchpanel table[width="100%"] input[type="text"] {
     width: 158px;
 }
@@ -3646,7 +3688,7 @@ body #emcontainer .emasseteditorarea {
 /* FULL WIDTH LIST STYLES */
 
 .fwlist, .fw {
-    margin: -20px 0 0 0;
+    margin: 0;
     padding: 0;
 }
 .fwlist li {
@@ -4402,7 +4444,7 @@ h2 {
     overflow-x: scroll;
 }
 .liquid-sizer {
-    margin: 0 -20px;
+
 }
 .liquid-sizer h2 {
     margin: 0 20px 20px 20px;
@@ -4414,9 +4456,6 @@ h2 {
     position: relative;
     top: 2px;
     line-height: 32px;
-}
-#settings-no-margin .tab-actions {
-    margin-top: -20px;
 }
 #meta-no-margin {
     margin: -20px;
@@ -4556,7 +4595,7 @@ p.info {
     position: relative;
     top: 5px;
 }
-#advsearchpanel span {
+#advsearchpanelXX span {
     display: block;
     width: 1px;
 }
@@ -4729,9 +4768,6 @@ p.resultsnumber {
 #sub-nav.mediaview {
     margin-bottom: 20;
 }
-#detailarea {
-    margin: 0 0 -20px 0;
-}
 #de-table {
     display: table;
     width: 100%;
@@ -4741,6 +4777,13 @@ p.resultsnumber {
     vertical-align: top;
 }
 #related-media {
+    width: 155px;
+    display: table-cell;
+    vertical-align: top;
+    background: #f7f7f7 url('../images/sidebar-shadow-left.png') left top repeat-y;
+    border-left: 1px solid #ccc;
+}
+#selected-media {
     width: 155px;
     display: table-cell;
     vertical-align: top;
@@ -4937,6 +4980,17 @@ p.resultsnumber {
 #de-side-nav .current.asseteditorlibraries .icon {
     background-position: 160px 26px;
 }
+
+#de-side-nav .viewmediaviewer .icon {
+    background-position: 240px 0;
+    width: 26px;
+    height: 26px;
+    left: 10px;
+    top: 8px;
+}
+#de-side-nav .current.viewmediaviewer .icon {
+    background-position: 240px 26px;
+}
 #de-side-nav .viewmap .icon {
     background-position: 213px 0;
     width: 26px;
@@ -5093,7 +5147,7 @@ p.resultsnumber {
 #mediaviewer #default-top .main-info {
     margin-left: 15px;
 }
-#mediaviewer #default-top .primary {
+#mediaviewer .main-info .primary {
     color: #fff;
     text-align: left;
 }
@@ -5120,7 +5174,7 @@ p.resultsnumber {
     border-bottom: 1px solid #d5d5d5;
     box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
     position: relative;
-    z-index: 3;
+
 }
 #de-metadata #default-fields {
 
@@ -5808,7 +5862,6 @@ td[title]:hover:before {
 #default-top {
     background-color: #F7F7F7;
     border-bottom: 1px solid #CCC;
-    margin: 0 0 20px 0;
     width: 100%;
 }
 #default-top .thumbnail {
@@ -5826,7 +5879,7 @@ td[title]:hover:before {
     float: left;
     margin: 38px 0 0 39px;
 }
-#default-top .primary {
+.main-info .primary {
     font-size: 24px;
     font-weight: bold;
     color: #444;
@@ -6103,4 +6156,9 @@ td[title]:hover:before {
     h2, h3 {
         page-break-after: avoid;
     }
+}
+
+.module-picker input{
+		color:#fff;
+	background:#333;
 }

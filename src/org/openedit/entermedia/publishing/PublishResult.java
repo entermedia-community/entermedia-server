@@ -3,6 +3,7 @@ package org.openedit.entermedia.publishing;
 public class PublishResult
 {
 	protected String fieldErrorMessage;
+	protected String fieldCompletedMessage;
 	protected boolean fieldComplete;
 	protected boolean fieldPending;
 
@@ -25,9 +26,25 @@ public class PublishResult
 	{
 		fieldComplete = inComplete;
 	}
+	
+	public void setCompleteMessage( String inCompleteMessage )
+	{
+		fieldCompletedMessage = inCompleteMessage;
+	}
+	
+	public String getCompleteMessage()
+	{
+		if (fieldCompletedMessage == null) {
+			fieldCompletedMessage = "";
+		}
+		return fieldCompletedMessage;
+	}
 
 	public String getErrorMessage()
 	{
+		if (fieldErrorMessage == null) {
+			fieldErrorMessage = "";
+		}
 		return fieldErrorMessage;
 	}
 
@@ -35,8 +52,26 @@ public class PublishResult
 	{
 		fieldErrorMessage = inErrorMessage;
 	}
+	public void appendCompleteMessage(String inErrorMessage) {
+		if (fieldCompletedMessage != null) {
+			fieldCompletedMessage += inErrorMessage;
+		} else {
+			fieldCompletedMessage = inErrorMessage;
+		}
+	}
+	public void appendErrorMessage(String inErrorMessage) {
+		if (fieldErrorMessage != null) {
+			fieldErrorMessage += inErrorMessage;
+		} else {
+			fieldErrorMessage = inErrorMessage;
+		}
+	}
 	public boolean isError()
 	{
-		return fieldErrorMessage != null;
+		if (fieldErrorMessage != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
