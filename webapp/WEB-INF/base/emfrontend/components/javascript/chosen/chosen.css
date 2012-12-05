@@ -394,4 +394,25 @@
   padding: 4px 5px 4px 20px;
   direction: rtl;
 }
+
+/* @custom */
+
+.chzn-filter {
+    position: absolute;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    height: 35px;
+    width: 95%;
+    left: 5px;
+    top: -35px;
+    background: #fff;
+}
+.chzn-filter select {
+    float: right;
+    margin-right: 10px;
+}
+
 /* @end */
+
+
