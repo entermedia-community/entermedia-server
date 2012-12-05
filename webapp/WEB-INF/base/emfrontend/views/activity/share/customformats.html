@@ -48,7 +48,7 @@
 	  	   	    $presetquery.addExact("inputtype",$rendertype);
   	   	    #end
   	   	    $presetquery.addExact("inputtype","all");
-  	   	    $presetquery.addSortBy("name");
+  	   	    $presetquery.addSortBy("ordering");
   	   	    #set( $results = $presetsearcher.search($presetquery) )
  -->
   			<select name="${item.id}.presetid.value">
