@@ -18,7 +18,8 @@ public class LibraryModule extends BaseMediaModule
 		String libraryid = inReq.getRequestParameter("libraryid");
 		
 		Asset asset = archive.getAsset(assetid);
-		if(!asset.getLibraries().contains(libraryid)){
+		
+		if(asset != null && !asset.getLibraries().contains(libraryid)){
 			asset.addLibrary(libraryid);
 		}
 		archive.saveAsset(asset, inReq.getUser());
