@@ -9,8 +9,8 @@
     		 #set( $library = $searcherManager.getData($catalogid,"library",$libraryid ) )
     		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )
     		#if($library)
-    		<li class="#if( $selected && $selected == $libraryid) currentsubtle #end "> 
-    				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">$!division / $library</a>
+    		<li class="#if( $selected && $selected == $library.id) currentsubtle #end librarydroparea" data-libraryid="$library.id"> 
+    				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">#if($division) $!division / #end $library</a>
     		</li>		
     		#end
     	#end
@@ -18,3 +18,6 @@
 </div>
 </div>
 #end
+
+
+
