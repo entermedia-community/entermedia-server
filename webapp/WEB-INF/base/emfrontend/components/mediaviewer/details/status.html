@@ -1,0 +1,5 @@
+#set($searcher = $mediaarchive.getAssetSearcher())
+$context.putPageValue("searcher", $searcher)
+$context.putPageValue("view", "asset/previewstatus")
+$context.putPageValue("data", $asset)
+$pages.include("$apphome/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
