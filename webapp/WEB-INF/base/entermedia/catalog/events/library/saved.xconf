@@ -1,0 +1,6 @@
+<page>
+	<property name="eventname">Library Saved</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/library/saved.groovy</script>
+	</path-action>
+</page>

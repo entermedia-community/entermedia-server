@@ -203,7 +203,7 @@ public class LuceneSearchQuery extends SearchQuery
 				}
 			}
 		};
-		term.setOperation("matches");
+		term.setOperation("matches"); //tricky
 		term.setDetail(inField);
 		term.setValue(inValue);
 		addTerm(term);

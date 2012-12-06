@@ -1085,7 +1085,7 @@ emcomponents = function() {
 							var assetid = ui.draggable.data("assetid");
 							var node = $(this);
 							var libraryid = node.data("libraryid");
-							alert(assetid + " " + libraryid);
+							//alert(assetid + " " + libraryid);
 //							var tree = this.nearest(".categorytree");
 //							var treeid = tree.data("")
 							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')

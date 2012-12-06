@@ -38,6 +38,7 @@
 		<a class="row">#if($theuser) $theuser #elseif($libraryuser.userid) $libraryuser.userid #else   $libraryuser #end</a>
 		<a style="display:inline;" class="ajax delete-row" targetdiv="userpermissioneditor" href="$home$apphome/views/modules/library/userpermissions/userremove.html?searchtype=libraryusers&id=$libraryuser.id&libraryid=$libraryid"></a>
 		</a>
+		#set($theuser = "")
 	#end
 	</div>
 </div>
