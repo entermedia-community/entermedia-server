@@ -1,6 +1,6 @@
 #if ( $canviewlibrarysearch &&  !$userprofile.getCombinedLibraries().isEmpty() )
 <div class="ui-widget uipanel" id="left-col-search" >
-	<div class="ui-widget-header">[[Projects]]</div>
+	<div class="ui-widget-header">[[My Projects]]</div>
 <div  class="ui-widget-content">
 		<ul class="sidebar-list">
 	#set($selected = false )
@@ -10,7 +10,7 @@
     		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )
     		#if($library)
     		<li class="#if( $selected && $selected == $library.id) currentsubtle #end librarydroparea" data-libraryid="$library.id"> 
-    				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">#if($division) $!division / #end $library</a>
+    				<a  href="$home$apphome/views/modules/library/libraryassets/index.html?id=$library.id">#if($division) $!division / #end $library</a>
     		</li>		
     		#end
     	#end

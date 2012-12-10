@@ -1,0 +1,18 @@
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+
+#if($val && $val != "")
+#set( $foundrow = $mediaarchive.getAsset($val)  )
+
+
+#if($foundrow)
+<img src='$apphome/views/modules/asset/downloads/preview/crop/${foundrow.sourcepath}/thumb.jpg'/>
+ 
+#end
+
+#end
+

@@ -1,0 +1,114 @@
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+
+#if($val && $val != "")
+#set( $foundrow = $mediaarchive.getAsset($val)  )
+
+
+#if($foundrow)
+<img id="${detail.id}-preview" src='$apphome/views/modules/asset/downloads/preview/crop/${foundrow.sourcepath}/thumb.jpg'/>
+
+#else
+<img id="${detail.id}-preview" />
+#end
+ 
+#end
+
+
+
+<br/><br/>
+
+<input type="text" class="bigdrop" id="assetselector" style="width: 500px" name="${detail.id}.value"/>
+
+
+<script type="text/javascript">
+	$("#assetselector")
+			.select2(
+					{
+						placeholder : "Search for an asset",
+						minimumInputLength : 1,
+						ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
+							url : "$apphome/components/xml/types/assetpicker/datasearch.txt?field=description&operation=contains&searchtype=asset",
+							dataType : 'jsonp',
+							data : function(term, page) {
+								return {
+									"description.value" : term, //search term
+									page_limit : 10
+
+								};
+							},
+							results : function(data, page) { // parse the results into the format expected by Select2.
+							
+								// since we are using custom formatting functions we do not need to alter remote JSON data
+								return {
+									results : data.assets
+								};
+							}
+						},
+						formatResult : movieFormatResult, // omitted for brevity, see the source of this page
+						formatSelection : movieFormatSelection, // omitted for brevity, see the source of this page
+						dropdownCssClass : "bigdrop" // apply css that makes the dropdown taller
+					});
+
+	
+
+	$("#assetselector2")
+			.select2(
+					{
+						placeholder : "Search for an asset",
+						minimumInputLength : 3,
+						ajax : {
+							url : "$apphome/components/xml/types/assetpicker/datasearch.txt?field=description&operation=contains&searchtype=asset",
+							dataType : 'jsonp',
+							quietMillis : 100,
+							data : function(term, page) { // page is the one-based page number tracked by Select2
+								return {
+									"description.value" : term, //search term
+									page_limit : 10, // page size
+									page : page, // page number
+									apikey : "ju6z9mjyajq2djue3gbvv26t" // please do not use so this example keeps working
+								};
+							},
+							results : function(data, page) {
+								var more = (page * 10) < data.total; // whether or not there are more results available
+
+								// notice we return the value of more so Select2 knows if more results can be loaded
+								return {
+									results : data.assets,
+									more : more
+								};
+							}
+						},
+						formatResult : movieFormatResult, // omitted for brevity, see the source of this page
+						formatSelection : movieFormatSelection, // omitted for brevity, see the source of this page
+						dropdownCssClass : "bigdrop" // apply css that makes the dropdown taller
+					});
+
+	function movieFormatResult(asset) {
+		 
+
+		var markup = "<table class='movie-result'><tr>";
+	
+		if (asset.sourcepath !== undefined) {
+			//http://localhost:8080/creative/views/modules/asset/downloads/preview/crop/101/welcome.png/thumb.jpg
+			markup += "<td class='movie-image'><img src='$apphome/views/modules/asset/downloads/preview/crop/" + asset.sourcepath + "/thumb.jpg'/></td>";
+		}
+		markup += "<td class='movie-info'><div class='movie-title'>"
+				+ asset.name + "</div>";
+		
+		markup += "</td></tr></table>"
+		return markup;
+		//return "<p>Ian was  here</p>";
+	}
+
+	function movieFormatSelection(asset) {
+		
+		var imgsrc= "$apphome/views/modules/asset/downloads/preview/crop/" + asset.sourcepath + "/thumb.jpg";
+		jQuery("#${detail.id}-preview").attr("src", imgsrc )
+		return asset.name;
+	}
+</script>
