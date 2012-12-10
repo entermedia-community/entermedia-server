@@ -338,11 +338,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		if(fieldPrefix == null)
 		{
 			fieldPrefix = getPropertyDetails().getPrefix();
-			if( fieldPrefix == null )
-			{
-				//TODO: Remove this
-				fieldPrefix = getPageManager().getPage("/" + getCatalogId()).get("defaultdatafolder");
-			}
+			
 			if( fieldPrefix == null)
 			{
 				fieldPrefix = getSearchType();
