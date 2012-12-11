@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -299,7 +300,10 @@ public class OrderManager
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
 		if( order.getId() == null)
 		{
-			order.setId(searcher.nextId());
+			String id = searcher.nextId();
+			order.setProperty("number",id);
+			id = id + "_" + UUID.randomUUID().toString().replace('-', '_');
+			order.setId(id);
 		}
 		return order;
 	}
@@ -415,10 +419,10 @@ public class OrderManager
 		{
 			inHistory.setProperty("userid",inUser.getId() );
 		}
-		inHistory.setProperty("orderid",inOrder.getId() );
 		Searcher historysearcher = getSearcherManager().getSearcher(inCatalogId, "orderhistory");
 		inOrder.setRecentOrderHistory(inHistory);
 		saveOrder(inCatalogId, inUser, inOrder);
+		inHistory.setProperty("orderid",inOrder.getId() );
 		historysearcher.saveData(inHistory, inUser);
 	}
 

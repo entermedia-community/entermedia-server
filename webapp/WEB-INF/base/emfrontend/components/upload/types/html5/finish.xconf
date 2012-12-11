@@ -24,6 +24,5 @@
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	
 	<property name="section">details</property>
-	<property name="destinationsourcepath">${library.division}/${library}/${formatteddate}</property>
 	
 </page>

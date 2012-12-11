@@ -1,6 +1,7 @@
 <properties>
-	<property id="id" index="true" stored="true">Order Id</property>
+	<property id="id" index="true" stored="true">Id</property>
 	<property id="ordertype"  editable="true" index="true" stored="true" type="list" listid="order/ordertype">Order Type</property>
+	<property id="number" index="true" stored="true">Order Number</property>
 	<property id="userid" viewtype="user" index="true" stored="true">User Id</property>
 	<property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>
 	<property id="orderstatus" editable="true"  datatype="list" index="true" stored="true">Status</property>

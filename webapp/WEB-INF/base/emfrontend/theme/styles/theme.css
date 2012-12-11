@@ -6161,3 +6161,10 @@ td[title]:hover:before {
 		color:#fff;
 	background:#333;
 }
+
+a.learnmore {
+    background: url('../images/pagination-next.png') bottom center no-repeat;
+	width:21px;
+	height:21px;
+	
+}

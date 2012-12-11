@@ -1,1 +1,6 @@
-$pages.include("$apphome/views/activity/download/listitems.html")
+#set( $expired = "$expired")
+#if( $canviewassets || $expired == "false" )
+	$pages.include("$apphome/views/activity/download/listitems.html")
+#else
+	This share has expired. 
+#end
