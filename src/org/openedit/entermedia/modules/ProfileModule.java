@@ -192,7 +192,7 @@ public class ProfileModule extends MediaArchiveModule
 
 	protected void initList(WebPageRequest inReq, String view, UserProfile userProfile, String viewkey)
 	{
-		String value = userProfile.getValue(viewkey);
+		String value = userProfile.get(viewkey);
 		if( value == null)
 		{
 			String type = inReq.findValue("searchtype");
@@ -228,7 +228,7 @@ public class ProfileModule extends MediaArchiveModule
 	public void changeResultView(WebPageRequest inReq)
 	{
 		UserProfile userProfile = inReq.getUserProfile();
-		String resultview = userProfile.getValue("resultview");
+		String resultview = userProfile.get("resultview");
 		if (resultview == null || resultview.equalsIgnoreCase("table"))
 		{
 			userProfile.setProperty("resultview", "gallery");

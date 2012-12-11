@@ -10,7 +10,13 @@
 
 
 #if($foundrow)
-<img id="${detail.id}-preview" src='$apphome/views/modules/asset/downloads/preview/crop/${foundrow.sourcepath}/thumb.jpg'/>
+		<div id="${detail.id}-preview">
+		
+			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
+		</div>
+<!-- 
+<a href="$apphome/views/modules/asset/editor/viewer/index.html?assetid=$foundrow.id"><img id="${detail.id}-preview" src='$apphome/views/modules/asset/downloads/preview/crop/${foundrow.sourcepath}/thumb.jpg'/></a>
+ -->
 
 #else
 <img id="${detail.id}-preview" />
@@ -21,8 +27,10 @@
 
 
 <br/><br/>
+<input type="hidden" name="${detail.id}.value" id="${detail.id}-value" value="$!foundrow.id"/>
 
-<input type="text" class="bigdrop" id="assetselector" style="width: 500px" name="${detail.id}.value" value="$!foundrow.id"/>
+
+<input type="text" class="bigdrop" id="assetselector" style="width: 500px" />
 
 <script type="text/javascript">
 	$("#assetselector")
@@ -106,8 +114,10 @@
 
 	function movieFormatSelection(asset) {
 		
-		var imgsrc= "$apphome/views/modules/asset/downloads/preview/crop/" + asset.sourcepath + "/thumb.jpg";
-		jQuery("#${detail.id}-preview").attr("src", imgsrc )
+		//var imgsrc= "$apphome/views/modules/asset/downloads/preview/crop/" + asset.sourcepath + "/thumb.jpg";
+		jQuery("#${detail.id}-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&val=" + asset.id );
+		jQuery("#${detail.id}-value").val(asset.id);
+		
 		return asset.name;
 	}
 </script>

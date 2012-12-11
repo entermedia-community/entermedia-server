@@ -10,8 +10,12 @@
 
 
 #if($foundrow)
-<img src='$apphome/views/modules/asset/downloads/preview/crop/${foundrow.sourcepath}/thumb.jpg'/>
- 
+<div id="${detail.id}-preview">
+		
+			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
+		</div>
+		
+		
 #end
 
 #end

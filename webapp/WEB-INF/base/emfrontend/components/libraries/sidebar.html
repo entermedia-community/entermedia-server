@@ -10,7 +10,7 @@
     		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )
     		#if($library)
     		<li class="#if( $selected && $selected == $library.id) currentsubtle #end librarydroparea" data-libraryid="$library.id"> 
-    				<a  href="$home$apphome/views/modules/library/libraryassets/index.html?id=$library.id">#if($division) $!division / #end $library</a>
+    				<a  href="$home$apphome/views/modules/library/edit/index.html?id=$library.id">#if($division) $!division / #end $library</a>
     		</li>		
     		#end
     	#end
