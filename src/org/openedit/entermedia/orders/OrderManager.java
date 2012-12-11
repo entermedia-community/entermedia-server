@@ -301,7 +301,7 @@ public class OrderManager
 		if( order.getId() == null)
 		{
 			String id = searcher.nextId();
-			order.setProperty("number",id);
+			order.setName(id);
 			id = id + "_" + UUID.randomUUID().toString().replace('-', '_');
 			order.setId(id);
 		}
