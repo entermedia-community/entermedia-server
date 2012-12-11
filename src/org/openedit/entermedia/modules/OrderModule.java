@@ -799,11 +799,11 @@ public class OrderModule extends BaseMediaModule
 			Date expires = DateStorageUtil.getStorageUtil().parseFromStorage(expiration);
 			if( expires.after(new Date() ) )
 			{
-				inReq.putPageValue("expired", Boolean.TRUE);
+				inReq.putPageValue("expired", Boolean.FALSE);
 			}
 			else
 			{
-				inReq.putPageValue("expired", Boolean.FALSE);
+				inReq.putPageValue("expired", Boolean.TRUE);
 			}
 		}
 		return order;
