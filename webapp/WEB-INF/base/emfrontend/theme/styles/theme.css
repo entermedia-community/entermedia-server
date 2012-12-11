@@ -5422,7 +5422,6 @@ p.resultsnumber {
     border-top: 1px solid #eee;
 }
 #details .tableholder {
-    width: 544px;
     overflow-y: auto;
 }
 .max #details .tableholder {

@@ -53,7 +53,7 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 		UserProfile profile = inContext.getUserProfile();
 		if( profile != null)
 		{
-			String show = profile.getValue("admintoolbar");
+			String show = profile.get("admintoolbar");
 			showtoolbar = Boolean.parseBoolean(show);
 		}
 		if( !showtoolbar)
