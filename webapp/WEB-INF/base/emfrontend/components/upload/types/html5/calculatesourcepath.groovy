@@ -32,7 +32,8 @@ public void init()
 				}
 			}
 		}
-		String sourcepath = context.findValue("destinationsourcepath");  //${division.uploadpath}/${user.userName}/${formateddate}
+		String sourcepath = mediaArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+		
 		String libraries = context.getRequestParameter("libraries.value");
 		if(libraries != null){
 			vals.put("library", libraries);

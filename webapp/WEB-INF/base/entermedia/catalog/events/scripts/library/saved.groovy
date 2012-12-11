@@ -4,6 +4,7 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 
 import com.openedit.hittracker.HitTracker
+import com.openedit.page.Page
 import com.openedit.page.manage.*
 import com.openedit.util.Exec
 import com.openedit.util.ExecResult
@@ -42,19 +43,34 @@ public void init() {
 			
 		}
 
+		String gitprojectname = library.getId();
+		//Create Git Repo and check it out
+		String gitlocal = mediaArchive.getCatalogSettingValue("project_git_local_root");
+		if( gitlocal != null )
+		{
+			gitlocal = gitlocal + "/" + gitprojectname + ".git";
 
+			File repo = new File( gitlocal );
+			if( !repo.exists() )
+			{
+				String gitremote = mediaArchive.getCatalogSettingValue("project_git_remote_root");
+				String url = "${gitremote}/${gitprojectname}.git";
+				Exec exec = (Exec)mediaArchive.getModuleManager().getBean("exec");
+				List com = new ArrayList();
+				//Local clone drive, clone URL
+				
+				com.add(gitlocal);
+				com.add(url);
 
-
-
-		String path = library.get("gitpath");
-		if( path != null ) {
-			Exec exec = (Exec)mediaArchive.getModuleManager().getBean("exec");
-			List com = new ArrayList();
-			com.add(library.getId());
-			com.add(path);
-
-			ExecResult result = exec.runExec("gitaddrepository", com);
-			//return result.isRunOk();
+				Page page = pageManager.getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/projects/");					
+				String checkoutpath  = page.getContentItem().getAbsolutePath();
+				com.add(checkoutpath);
+				ExecResult result = exec.runExec("gitaddrepository", com);
+				if( !result.isRunOk() )
+				{
+					context.putPageValue("savemessageerror","Could not create git path");
+				}
+			}
 		}
 	}
 }
