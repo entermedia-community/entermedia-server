@@ -1,0 +1,24 @@
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+#if(!$val)
+	#set($val = $context.getRequestParameter('val'))
+#end
+
+#if($val && $val != "")
+#set( $foundrow = $mediaarchive.getAsset($val)  )
+#end
+#set( $click = "$home$apphome/views/assets/${foundrow.sourcepath}/index.html?hitssessionid=$rootid" )
+
+<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;" id="${detail.id}-preview">
+			#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
+			$context.putPageValue("cell", $foundrow)
+			$context.putPageValue("hit", $foundrow)
+			
+			$context.putPageValue("showdetails", "false")
+			$context.putPageValue("thumbsize", "crop")
+		   	#set( $sourcepath = $foundrow.sourcePath )
+			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+			</a> 
