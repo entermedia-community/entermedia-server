@@ -8,18 +8,15 @@
     
             #else
 
-              <div id="media-player-table" class="table" >
-                  $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
-              </div>
+                <div id="media-player-table" class="table" >
+                    $pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+                </div>
 
-    #if ( $canviewvoting )
-    <div id="assetVoteCount">
-        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
-    </div>
-    #end
-    <div id="asset-viewer-status">
-        $pages.include("$apphome/components/mediaviewer/details/status.html", $context)
-    </div>
+                
+                
+                <div id="asset-viewer-status">
+                    $pages.include("$apphome/components/mediaviewer/details/status.html", $context)
+                </div>
            
             #end
         

@@ -63,6 +63,9 @@
                         #if( $inpreviewpage )
 	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
                         #else
+                            
+                            $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                            
                             #set ($listid =  $content.tab )
                             #if ($content.subtab)
                             <div id="eml-tab-subnav">
@@ -78,7 +81,7 @@
                             </div>
                             #end
 
-	      $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+	      
 
                             $pages.includeContent()
                             

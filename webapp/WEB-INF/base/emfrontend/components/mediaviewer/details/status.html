@@ -2,4 +2,14 @@
 $context.putPageValue("searcher", $searcher)
 $context.putPageValue("view", "asset/previewstatus")
 $context.putPageValue("data", $asset)
-$pages.include("$apphome/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
+
+
+#if ( $canviewvoting )
+    <div id="assetVoteCount">
+        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+    </div>
+#end
+
+<div id="status-flag">
+    $pages.include("$apphome/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
+</div>
