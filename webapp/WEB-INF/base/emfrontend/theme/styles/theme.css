@@ -5639,7 +5639,7 @@ p.resultsnumber {
 #assetVoteCount a:hover {
     text-decoration: underline;
 }
-.learnmore {
+.learnmore span {
     background: #777;
     border: 1px solid #444;
     border-radius: 3px;
@@ -5649,7 +5649,7 @@ p.resultsnumber {
     padding: 2px 5px;
     margin-left: 5px;
 }
-.learnmore:hover {
+.learnmore:hover span {
     background: #999;
     border: 1px solid #666;
 }

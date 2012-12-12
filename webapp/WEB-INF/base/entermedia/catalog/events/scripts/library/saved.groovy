@@ -53,14 +53,9 @@ public void init() {
 			File repo = new File( gitlocal );
 			if( !repo.exists() )
 			{
-				String gitremote = mediaArchive.getCatalogSettingValue("project_git_remote_root");
-				String url = "${gitremote}/${gitprojectname}.git";
 				Exec exec = (Exec)mediaArchive.getModuleManager().getBean("exec");
 				List com = new ArrayList();
-				//Local clone drive, clone URL
-				
 				com.add(gitlocal);
-				com.add(url);
 
 				Page page = pageManager.getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/projects/");					
 				String checkoutpath  = page.getContentItem().getAbsolutePath();
