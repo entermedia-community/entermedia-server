@@ -1701,9 +1701,6 @@ small {
 #eml-tab-subnav {
     margin: 0;
 }
-#details #eml-tab-subnav {
-    margin: 20px 0 -20px 0;
-}
 #eml-tab-subnav ul, #sub-nav {
     background: rgb(255,255,255); /* Old browsers */
     background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(212,245,252,1) 100%); /* FF3.6+ */
@@ -4891,6 +4888,8 @@ p.resultsnumber {
     top: 0;
     line-height: 42px;
     left: 45px;
+    font-size: 12px;
+    color: #979797;
 }
 #de-side-nav ul li a .icon {
     float: left;
@@ -4947,18 +4946,19 @@ p.resultsnumber {
 #de-side-nav .current.comment .icon {
     background-position: -20px 26px;
 }
-#de-side-nav .editassetcategories .icon {
+#de-side-nav .editassetcategories .icon, #de-side-nav .projects-libraryassets .icon {
     background-position: 26px 0;
     width: 26px;
     height: 26px;
     left: 12px;
     top: 8px;
 }
-#de-side-nav .current.editassetcategories .icon {
+#de-side-nav .current.editassetcategories .icon, #de-side-nav .current.projects-libraryassets .icon  {
     background-position: 26px 26px;
 }
 #de-side-nav .current .text {
     top: -1px;
+    color: #fff;
 }
 #de-side-nav .editassettags .icon {
     background-position: 187px 0;
@@ -4970,14 +4970,14 @@ p.resultsnumber {
 #de-side-nav .current.editassettags .icon {
     background-position: 187px 26px;
 }
-#de-side-nav .asseteditorlibraries .icon {
+#de-side-nav .asseteditorlibraries .icon, #de-side-nav  .projects-librarygeneral .icon {
     background-position: 160px 0;
     width: 26px;
     height: 26px;
     left: 11px;
     top: 8px;
 }
-#de-side-nav .current.asseteditorlibraries .icon {
+#de-side-nav .current.asseteditorlibraries .icon, #de-side-nav .current.projects-librarygeneral .icon {
     background-position: 160px 26px;
 }
 
@@ -5011,14 +5011,14 @@ p.resultsnumber {
 #de-side-nav .current.viewattachments .icon {
     background-position: 134px 26px;
 }
-#de-side-nav .assetpermissions .icon {
+#de-side-nav .assetpermissions .icon, #de-side-nav .librarypermissions .icon {
     background-position: 85px 0;
     width: 19px;
     height: 26px;
     left: 14px;
     top: 8px;
 }
-#de-side-nav .current.assetpermissions .icon {
+#de-side-nav .current.assetpermissions, #de-side-nav .current.librarypermissions .icon {
     background-position: 85px 26px;
 }
 #de-side-nav .viewassetpreviewhistory .icon {
@@ -5150,6 +5150,10 @@ p.resultsnumber {
 #mediaviewer .main-info .primary {
     color: #fff;
     text-align: left;
+    width: 200px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 #mediaviewer #default-top .secondary a {
     color: #fff;
@@ -5586,13 +5590,37 @@ p.resultsnumber {
 }
 
 /* VOTING */
-
 #assetVoteCount {
+    display: inline-block;
+    position: relative;
+    top: 4px;
+}
+#asset-viewer-status {
     background: #f7f7f7;
     border-top: 1px solid #000;
     border-bottom: 1px solid #999;
-    padding: 16px 13px 13px 13px;
+    padding: 16px 13px 16px 13px;
 
+}
+#status-flag {
+    float: right;
+    background: #777;
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #fff;
+    font-weight: bold;
+    display: inline-block;
+    padding: 3px 5px;
+    margin-top: -2px;
+}
+#status-flag .emdatafield {
+    display: inline-block;
+    color: #ccc;
+    padding: 0;
+}
+#status-flag .emdatafieldvalue {
+     display: inline-block;
+     padding: 0;
 }
 #assetVoteCount .star {
     display: block;
@@ -5610,6 +5638,20 @@ p.resultsnumber {
 }
 #assetVoteCount a:hover {
     text-decoration: underline;
+}
+.learnmore span {
+    background: #777;
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    padding: 2px 5px;
+    margin-left: 5px;
+}
+.learnmore:hover span {
+    background: #999;
+    border: 1px solid #666;
 }
 
 /*  NEW UPLOAD AREA */
@@ -5879,7 +5921,7 @@ td[title]:hover:before {
     margin: 38px 0 0 39px;
 }
 .main-info .primary {
-    font-size: 24px;
+    font-size: 16px;
     font-weight: bold;
     color: #444;
     line-height: 30px;
