@@ -4,6 +4,7 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 
 import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page
 import com.openedit.page.manage.*
 import com.openedit.util.Exec
@@ -25,22 +26,25 @@ public void init() {
 	}
 
 
-	Searcher libraryusers = mediaArchive.getSearcher("libraryusers");
-	if( library != null ) {
+	if( library != null ) 
+	{
+		Searcher libraryusers = mediaArchive.getSearcher("libraryusers");
 		String username = context.getUserName();
-		if(username != null){
-			HitTracker userlist = libraryusers.fieldSearch("library", library.id);
-			if(userlist.size() == 0){
+		if(username != null)
+		{
+			SearchQuery query = libraryusers.createSearchQuery().append("libraryid", library.id).append("userid", username);
+			Data permission = libraryusers.searchByQuery(query);
+			if(permission == null)
+			{
 				Data newentry = libraryusers.createNewData();
 				newentry.setId(libraryusers.nextId());
 				newentry.setProperty("userid", username);
 				newentry.setProperty("libraryid", library.getId());
-				newentry.setProperty("libraryrole", "owner");//not used yet.
+				//newentry.setProperty("libraryrole", "owner");//not used yet.
 				newentry.setSourcePath(library.getSourcePath());
 				libraryusers.saveData(newentry, context.getUser());
 
 			}
-			
 		}
 
 		String gitprojectname = library.getId();
@@ -57,7 +61,9 @@ public void init() {
 				List com = new ArrayList();
 				com.add(gitlocal);
 
-				Page page = pageManager.getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/projects/");					
+				String division = library.get("division");
+				
+				Page page = pageManager.getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/projects/" + division + "/");					
 				String checkoutpath  = page.getContentItem().getAbsolutePath();
 				com.add(checkoutpath);
 				ExecResult result = exec.runExec("gitaddrepository", com);
