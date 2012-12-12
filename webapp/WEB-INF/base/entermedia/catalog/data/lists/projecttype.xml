@@ -1,0 +1,5 @@
+
+<projecttypes>
+  <projecttype id="website">Website</projecttype>
+  <projecttype id="brochure">Brochure</projecttype>
+</projecttypes>

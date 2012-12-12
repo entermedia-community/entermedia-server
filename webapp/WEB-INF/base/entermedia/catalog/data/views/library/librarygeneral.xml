@@ -1,7 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="id"/>
   <property id="name"/>
-  <property id="division"/>  
-  <property id="gitprojectname"/>  
+  <property id="client"/>
+  <property id="projectdescription"/>
+  <property id="projectstatus"/>
+  <property id="url"/>
+  <property id="projecttype"/>
+  <property id="startdate"/>
+  <property id="featuredasset"/>
 </root>
