@@ -1,5 +1,5 @@
 
-<properties>
+<properties beanname="xmlFileSearcher" prefix="library">
   <property id="id" index="true" editable="true"  stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
   <property id="description">Description</property>
