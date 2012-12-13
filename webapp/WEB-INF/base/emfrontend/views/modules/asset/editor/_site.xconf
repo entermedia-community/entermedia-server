@@ -20,7 +20,10 @@
 
 	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
 	<permission name="viewasset">
-		<action name="AssetControlModule.canViewAsset" />
+		<or>
+			<action name="AssetControlModule.canViewAsset" />
+			<action name="OrderModule.canViewAsset"/>
+		</or>
 	</permission>	
 
 	<permission name="download">

@@ -42,7 +42,7 @@
 	<permission id="viewupload" permissiontype="filetransfers" name="Upload Single File" description="Enables the upload of a single asset." ordering="200" />
 	
 	<permission id="view" permissiontype="view" name="Application" description="Enables access to the EnterMedia application." ordering="1000"/>
-	<permission id="viewassets" permissiontype="view" name="Assets Details" description="Enables access to asset metadata." />
+	<permission id="viewassets" permissiontype="view" name="Asset Search" description="Enables access to assets." ordering="600" />
 	<permission id="viewattachments" permissiontype="view" name="Attachments" description="Enables access to attachments associated with an asset."/>
 	<permission id="viewbasket" permissiontype="view" name="Basket" description="Enables the collection basket and related buttons." />
 	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." />

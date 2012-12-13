@@ -194,10 +194,6 @@
      <userprofile property="shareasset" equals="true" />
   </permission>
   
-  <permission name="viewassets">
-    <userprofile propertyviewcategorynav="viewassets" equals="true" />
-  </permission>
-  
   <permission name="deleteasset">
 	<and>
 		<userprofile property="deleteasset" equals="true" />

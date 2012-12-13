@@ -784,7 +784,6 @@ public class OrderModule extends BaseMediaModule
 
 	public void removeItem(WebPageRequest inReq) throws Exception
 	{
-
 		String catalogid = inReq.findValue("catalogid");
 		String itemid = inReq.getRequestParameter("id");
 		getOrderManager().removeItem(catalogid, itemid);
@@ -793,20 +792,27 @@ public class OrderModule extends BaseMediaModule
 	{
 		Order order = loadOrder(inReq);
 		//check the expriation
-		String expiration = order.get("expireson");
-		if( expiration != null )
+		if( order.isExpired() )
 		{
-			Date expires = DateStorageUtil.getStorageUtil().parseFromStorage(expiration);
-			if( expires.after(new Date() ) )
-			{
-				inReq.putPageValue("expired", Boolean.FALSE);
-			}
-			else
-			{
-				inReq.putPageValue("expired", Boolean.TRUE);
-			}
+			inReq.putPageValue("expired", Boolean.TRUE);
+		}
+		else
+		{
+			inReq.putPageValue("expired", Boolean.FALSE);
 		}
 		return order;
-		
 	}
+	
+	public Boolean canViewAsset(WebPageRequest inReq)
+	{
+		String orderid = inReq.getRequestParameter("orderid");
+		if( orderid == null )
+		{
+			return false;
+		}
+		Order order = loadOrder(inReq);
+		return !order.isExpired();
+	}
+
+	
 }

@@ -34,6 +34,8 @@
                 <div class="title-bar" id="details-title">
                     <span>$section</span>
                 </div>
+                #if( $canviewassets )
+                
                 <div class="title-bar" style="border-right: none;">
                 #if( $hits && $hits.hasMultipleSelections() )
                     <span style="text-align: center;">Selected Media</span>
@@ -41,6 +43,7 @@
                     <span style="text-align: center;">Related Media</span>
                 #end    
                 </div>
+                #end
             </div>
             <div class="tr">
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
@@ -56,8 +59,6 @@
                         #if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
                         	#set( $inpreviewpage = true )
                         #elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
-                        	#set( $inpreviewpage = true )
-                        #elseif( $content.path.endsWith("detailviewer/index.html") )
                         	#set( $inpreviewpage = true )
                         #end
                         #if( $inpreviewpage )
@@ -89,6 +90,9 @@
 
                     </div>
                 </div>
+                
+                #if( $canviewassets )
+                
                 #if( $hits && $hits.hasMultipleSelections() )
                 <div id="selected-media">
                     $pages.include("$apphome/components/results/related/byselection.html",$context)
@@ -98,6 +102,8 @@
 
                     $pages.include("$apphome/components/results/related/bykeyword.html",$context)
                 </div>
+                #end
+                
                 #end
             </div>
         </div>

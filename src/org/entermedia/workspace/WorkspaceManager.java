@@ -148,7 +148,7 @@ public class WorkspaceManager
 	{
 		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
 		PageSettings homesettings = home.getPageSettings();
-		if( !homesettings.exists() )
+		if( !home.exists() )
 		{
 			homesettings.setProperty("module", module.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");
@@ -158,7 +158,7 @@ public class WorkspaceManager
 		}
 		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
 		PageSettings modulesettings = settings.getPageSettings();
-		if( !modulesettings.exists() )
+		if( !settings.exists() )
 		{
 			modulesettings.setProperty("module", module.getId());
 			PageProperty prop = new PageProperty("fallbackdirectory");

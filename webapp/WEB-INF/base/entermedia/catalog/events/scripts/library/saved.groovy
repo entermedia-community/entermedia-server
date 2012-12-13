@@ -60,12 +60,13 @@ public void init() {
 				Exec exec = (Exec)mediaArchive.getModuleManager().getBean("exec");
 				List com = new ArrayList();
 				com.add(gitlocal);
-
 				String division = library.get("division");
 				
 				Page page = pageManager.getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/projects/" + division + "/");					
 				String checkoutpath  = page.getContentItem().getAbsolutePath();
 				com.add(checkoutpath);
+				log.info("setting up a repo");
+				
 				ExecResult result = exec.runExec("gitaddrepository", com);
 				if( !result.isRunOk() )
 				{
