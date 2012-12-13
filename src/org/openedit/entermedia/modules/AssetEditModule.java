@@ -48,6 +48,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
+import com.openedit.util.Replacer;
 
 public class AssetEditModule extends BaseMediaModule
 {
@@ -1885,5 +1886,74 @@ public class AssetEditModule extends BaseMediaModule
 		return asset;
 		
 	}
+	
+	
+	
+	public void handleUploads(WebPageRequest inReq) {
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties == null) {
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		if (properties.getFirstItem() == null) {
+			return;
+		}
+		for (Iterator iterator = properties.getUploadItems().iterator(); iterator
+				.hasNext();) {
+			FileUploadItem item = (FileUploadItem) iterator.next();
+			String name = item.getFieldName();
+			
+			String[] splits = name.split("\\.");
+			String detailid = splits[1];
+			String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath");
+			if(sourcepath == null){
+				 sourcepath = archive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+			}		
+			String[] fields = inReq.getRequestParameters("field");
+			Map vals = new HashMap();
+			vals.putAll(inReq.getPageMap());
+			String prefix ="";
+
+			if( fields != null)
+			{
+				for (int i = 0; i < fields.length; i++)
+				{
+					String val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
+					if( val != null)
+					{
+						vals.put(fields[i],val);
+					}
+				}
+			}
+
+			
+			Replacer replacer = new Replacer();
+			
+			replacer.setSearcherManager(archive.getSearcherManager());
+			replacer.setDefaultCatalogId(archive.getCatalogId());
+			replacer.setAlwaysReplace(true);
+			sourcepath = replacer.replace(sourcepath, vals);
+			sourcepath = sourcepath + "/" + item.getName();
+			
+			String path = "/WEB-INF/data/" + archive.getCatalogId()
+					+ "/originals/" + sourcepath + "/" + item.getName();
+			
+			Asset current = archive.getAssetBySourcePath("sourcepath");
+			if(current ==  null){
+				current = archive.createAsset(sourcepath);
+			}
+			current.setProperty("owner", inReq.getUser().getId());
+			properties.saveFileAs(item, path, inReq.getUser());
+			current.setPrimaryFile(item.getName());
+			archive.removeGeneratedImages(current);
+			archive.saveAsset(current, null);
+			inReq.setRequestParameter(detailid + ".value", current.getId());
+		}
+
+	}
+	
+	
 	
 }

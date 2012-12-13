@@ -72,7 +72,7 @@
 	
 	#else
 	
-	<form name="edit${viewid}" class="ajaxform" targetdiv="${viewid}editor" method="post" id="edit${viewid}" action="$home$editpath" >
+	<form name="edit${viewid}" class="ajaxform" targetdiv="${viewid}editor" method="post" id="edit${viewid}" action="$home$editpath" enctype="multipart/form-data">
 	
 		$context.putPageValue("view", $viewpath)
 		#set ($searcher = $searcherManager.getSearcher($catalogid, $searchtype))
@@ -116,4 +116,3 @@
 #else ##showit
 	<p class="info">No data has been entered.</p>
 #end
-

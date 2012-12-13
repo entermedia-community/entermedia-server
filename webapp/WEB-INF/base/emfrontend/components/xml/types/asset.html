@@ -5,25 +5,20 @@
 #end
 
 
+
+<div id="${detail.id}-preview">
+
+
 #if($val && $val != "")
 #set( $foundrow = $mediaarchive.getAsset($val)  )
-
-
 #if($foundrow)
-		<div id="${detail.id}-preview">
-		
+	
 			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
-		</div>
-<!-- 
-<a href="$apphome/views/modules/asset/editor/viewer/index.html?assetid=$foundrow.id"><img id="${detail.id}-preview" src='$apphome/views/modules/asset/downloads/preview/crop/${foundrow.sourcepath}/thumb.jpg'/></a>
- -->
 
-#else
-<img id="${detail.id}-preview" />
 #end
- 
 #end
 
+</div>
 
 
 <br/><br/>
@@ -31,6 +26,11 @@
 
 
 <input type="text" class="bigdrop" id="assetselector" style="width: 500px" />
+
+
+<input type="hidden" class="$detail.getId()-field" id="${detail.getId()}.value" name="${detail.getId()}.sourcepath" value="$!sourcepath" />
+<input type="file" name="file.${detail.getId()}" />
+
 
 <script type="text/javascript">
 	$("#assetselector")
@@ -106,7 +106,19 @@
 		}
 		markup += "<td class='movie-info'><div class='movie-title'>"
 				+ asset.name + "</div>";
+		#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/typeaheaddetails"))
+		#foreach($detail in $details)
+			if(asset.${detail.id} != undefined && asset.${detail.id} != ""){
+				markup += "<tr><td class='movie-info'><div class='movie-title'> $detail.getText():"
+					+ asset.${detail.id} + "</div></tr>";
+
+			}
+			
+		#end
 		
+		
+				
+				
 		markup += "</td></tr></table>"
 		return markup;
 		//return "<p>Ian was  here</p>";

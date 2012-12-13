@@ -10,5 +10,6 @@
 	<property id="resultstable" module="asset"  systemdefined="true" byassettype="false">Results Table</property>
 	<property id="restassetdetails" module="asset"  systemdefined="true" byassettype="false">REST API Asset Details</property>
 	<property id="restsearchresults" module="asset"  systemdefined="true" byassettype="false">REST API Results</property>
+	<property id="typeaheaddetails" module="asset"  systemdefined="true" byassettype="false">Details for Type Ahead Searches</property>
 	
 </properties>
