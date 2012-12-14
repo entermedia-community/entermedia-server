@@ -2,6 +2,7 @@
 
 <root>
   <property id="thumbnail"/>
+  <property id="division"/>
   <property id="name"/>
   <property id="projecttype"/>
   <property id="projectstatus"/>

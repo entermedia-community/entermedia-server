@@ -1,6 +1,8 @@
 package importing;
 
+import org.openedit.Data
 import org.openedit.data.Searcher
+import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 
 import assets.model.AssetTypeManager
@@ -31,7 +33,7 @@ public void setAssetTypes()
 	manager.context = context;
 	manager.saveAssetTypes(assets);
 	
-	
+	setupProjects(assets);
 	
 }
 public void sendEmail()
@@ -46,54 +48,43 @@ public void setupProjects(HitTracker assets)
 		//Look at source path for each asset?
 		MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
-		AssetSearcher searcher = mediaarchive.getAssetSearcher();
+		Searcher searcher = mediaarchive.getAssetSearcher();
 		Searcher divisionSearcher = mediaarchive.getSearcher("division")
 		Searcher librarySearcher = mediaarchive.getSearcher("library")
 		
 		List tosave = new ArrayList();
-		for (Data hit in inAssets)
+		for (Data hit in assets)
 		{	
-			String split = hit.sourcepath.split("/");
+			String[] split = hit.getSourcePath().split("/");
 			if( split.length > 1 )
 			{
-				Data division = divisionSearcher.find("folder",split[0]);
+				Data division = divisionSearcher.searchByField("folder",split[0]);
 				if( division != null )
 				{
 					SearchQuery query = librarySearcher.createSearchQuery().append("division",division.getId()).append("folder",split[1]);
 					Data library =	librarySearcher.searchByQuery(query);
 					if( library == null )
 					{
-						//create
+						library = librarySearcher.createNewData();
+						library.setProperty("folder",split[1]);
+						library.setProperty("division",division.getId());
+						library.setName(split[1]);
+						
+						librarySearcher.saveData(library,null);
 					}
-					Asset asset = mediaarchive.
-					tosave.add(
-					//Add libraryasset table
-					
+					Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+					asset.addLibrary(library.getId());
+					tosave.add(asset);
+					log.info("Setup new library" + split[1]); 
 				}
-			}
-			
-			Asset real = mediaArchive.getAssetBySourcePath);
-		
-			Asset real = checkForEdits(typemap, hit);
-			if( real == null )
-			{
-				real = checkLibrary(mediaarchive,hit);
-			}
-			else
-			{
-				checkLibrary(mediaarchive,real);
-			}
-			if(real != null)
-			{
-				tosave.add(real);
 			}
 			if(tosave.size() == 100)
 			{
-				saveAssets(searcher, tosave);
+				searcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
 		}
-		saveAssets(searcher, tosave);
+		searcher.saveAllData(tosave, null);
 	
 	
 }
