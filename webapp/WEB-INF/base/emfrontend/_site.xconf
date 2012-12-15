@@ -312,6 +312,15 @@
 		<userprofile property="asseteditorpickanylibrary" equals="true" />
 	</permission>
 
+
+	<permission name="viewmetadatageneral">
+		<or>
+			<pagevalue name="caneditasset" equals="true"/>
+			<userprofile property="viewmetadatageneral" equals="true" />
+		</or>
+	</permission>
+
+	
 	
 	<permission name="view">
 		<userprofile property="view" equals="true" />
