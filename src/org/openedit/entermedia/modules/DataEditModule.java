@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
@@ -20,7 +19,6 @@ import org.entermedia.upload.FileUpload;
 import org.entermedia.upload.FileUploadItem;
 import org.entermedia.upload.UploadRequest;
 import org.openedit.Data;
-import org.openedit.data.BaseData;
 import org.openedit.data.CompositeData;
 import org.openedit.data.CompositeFilteredTracker;
 import org.openedit.data.FilteredTracker;
@@ -29,8 +27,9 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.CompositeAsset;
+import org.openedit.event.WebEvent;
+import org.openedit.event.WebEventListener;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 import org.openedit.xml.XmlSearcher;
@@ -47,7 +46,7 @@ import com.openedit.util.PathUtilities;
 public class DataEditModule extends BaseMediaModule
 {
 	protected XmlArchive fieldXmlArchive;
-	//	protected WebEventListener fieldWebEventListener;
+	protected WebEventListener fieldWebEventListener;
 	private static final Log log = LogFactory.getLog(DataEditModule.class);
 
 	public Searcher loadSearcherForEdit(WebPageRequest inReq) throws Exception
@@ -553,9 +552,27 @@ public class DataEditModule extends BaseMediaModule
 			inReq.putPageValue("data", data);
 
 			inReq.putPageValue("savedok", Boolean.TRUE);
-
+			WebEvent event = new WebEvent();
+			event.setSearchType(searcher.getSearchType());
+			event.setCatalogId(searcher.getCatalogId());
+			event.setOperation(searcher.getSearchType() + "/saved");
+			
+			getWebEventListener().eventFired(event);
+			
+			
+			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>
 		}
 	}
+
+	public WebEventListener getWebEventListener() {
+		return fieldWebEventListener;
+	}
+
+
+	public void setWebEventListener(WebEventListener inWebEventListener) {
+		fieldWebEventListener = inWebEventListener;
+	}
+
 
 	//TODO: Remove this, it is not secure and can be done other ways
 	protected void redirectToSaveOk(WebPageRequest inReq)

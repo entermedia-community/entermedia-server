@@ -178,6 +178,67 @@ public class OrderModule extends BaseMediaModule
 
 		return null;
 	}
+	
+	
+	public Order createOrderFromData(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		String mergefield = inReq.getRequestParameter("mergefield");
+		if(mergefield == null){
+			mergefield="assetid";
+		}
+		HitTracker datalist = null;
+		if (hitssessionid != null)
+		{
+			datalist = (HitTracker) inReq.getSessionValue(hitssessionid);
+		}
+	
+		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
+		List orderitems = new ArrayList();
+
+		if (datalist.getSelectedHits().size() > 0)
+		{
+			Map props = new HashMap();
+
+			String applicationid = inReq.findValue("applicationid");
+			Order order = (Order) getOrderManager().createNewOrderWithId(applicationid, catalogid, inReq.getUserName());
+			inReq.putPageValue("order", order);
+			inReq.setRequestParameter("orderid", order.getId());
+
+			for (Iterator iterator = datalist.getSelectedHits().iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				String targetid = hit.get(mergefield);
+				Asset asset = getMediaArchive(catalogid).getAsset(targetid);
+				getOrderManager().addItemToOrder(catalogid, order, asset, null);
+			}
+			if (order.get("expireson") == null)
+			{
+				String days = getMediaArchive(catalogid).getCatalogSettingValue("orderexpiresdays");
+				if( days == null )
+				{
+					days = "30";
+				}
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+				order.setProperty("expireson", DateStorageUtil.getStorageUtil().formatForStorage(cal.getTime()));
+			}
+
+			getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
+
+			return order;
+		}
+		else
+		{
+			inReq.setCancelActions(true);
+		}
+
+		return null;
+	}
+	
+	
 
 	public Collection saveItems(WebPageRequest inReq) throws Exception
 	{

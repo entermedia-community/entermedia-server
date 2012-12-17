@@ -1903,8 +1903,11 @@ public class AssetEditModule extends BaseMediaModule
 		for (Iterator iterator = properties.getUploadItems().iterator(); iterator
 				.hasNext();) {
 			FileUploadItem item = (FileUploadItem) iterator.next();
-			String name = item.getFieldName();
 			
+			String name = item.getFieldName();
+			if(item.getName().length() == 0){
+				continue;
+			}
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
 			String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath");
@@ -1939,7 +1942,8 @@ public class AssetEditModule extends BaseMediaModule
 			
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();
-			
+			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
+
 			Asset current = archive.getAssetBySourcePath("sourcepath");
 			if(current ==  null){
 				current = archive.createAsset(sourcepath);
@@ -1950,6 +1954,8 @@ public class AssetEditModule extends BaseMediaModule
 			archive.removeGeneratedImages(current);
 			archive.saveAsset(current, null);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
+			archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),current);
+
 		}
 
 	}
