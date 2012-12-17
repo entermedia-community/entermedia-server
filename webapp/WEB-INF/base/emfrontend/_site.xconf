@@ -2,7 +2,6 @@
 
 <page>
   
-	<path-action name="Admin.autoLogin" />
     <path-action name="MediaArchiveModule.loadApplicationId" />
 	<path-action name="ProfileModule.loadUserProfile" />
     <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
