@@ -193,10 +193,6 @@
      <userprofile property="shareasset" equals="true" />
   </permission>
   
-  <permission name="viewassets">
-    <userprofile propertyviewcategorynav="viewassets" equals="true" />
-  </permission>
-  
   <permission name="deleteasset">
 	<and>
 		<userprofile property="deleteasset" equals="true" />
@@ -315,6 +311,15 @@
 		<userprofile property="asseteditorpickanylibrary" equals="true" />
 	</permission>
 
+
+	<permission name="viewmetadatageneral">
+		<or>
+			<pagevalue name="caneditasset" equals="true"/>
+			<userprofile property="viewmetadatageneral" equals="true" />
+		</or>
+	</permission>
+
+	
 	
 	<permission name="view">
 		<userprofile property="view" equals="true" />

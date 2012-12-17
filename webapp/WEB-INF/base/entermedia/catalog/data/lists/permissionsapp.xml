@@ -42,27 +42,28 @@
 	<permission id="viewupload" permissiontype="filetransfers" name="Upload Single File" description="Enables the upload of a single asset." ordering="200" />
 	
 	<permission id="view" permissiontype="view" name="Application" description="Enables access to the EnterMedia application." ordering="1000"/>
-	<permission id="viewassets" permissiontype="view" name="Assets Details" description="Enables access to asset metadata." />
-	<permission id="viewattachments" permissiontype="view" name="Attachments" description="Enables access to attachments associated with an asset."/>
-	<permission id="viewbasket" permissiontype="view" name="Basket" description="Enables the collection basket and related buttons." />
-	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." />
-	<permission id="viewhomelink" permissiontype="view" name="Home" description="Enables the home button." />
-	<permission id="viewmap" permissiontype="view" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." />
-	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window."/>
-	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool."/>
-	<permission id="viewmyaccount" permissiontype="view" name="My Account Area" description="Enables a page that edit user data and updates passwords."/>
-	<permission id="viewrecentsearches" permissiontype="view" name="Previous Searches" description="Enables access to past searches."/>
-	<permission id="quicksearch" permissiontype="view" name="Quick Search" description="Enables a general search bar in the top navigation bar."/>
-  	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." />
-  	<permission id="viewcategorynav" permissiontype="view" name="Category Navigation" description="Enables the Category Navigation in the sidebar." />
-	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." />
-	<permission id="viewlibrarysearch" permissiontype="view" name="User Libraries" description="Enables a list of libraries on the sidebar." />
+	<permission id="viewmetadatageneral" permissiontype="view" name="View General Metadata" description="Enable general metadata viewing." ordering="600" />
+	<permission id="viewassets" permissiontype="view" name="Asset Search" description="Enables access to assets." ordering="601" />
+	<permission id="viewattachments" permissiontype="view" name="Attachments" description="Enables access to attachments associated with an asset." ordering="602"/>
+	<permission id="viewbasket" permissiontype="view" name="Basket" description="Enables the collection basket and related buttons." ordering="603" />
+	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." ordering="604"/>
+	<permission id="viewhomelink" permissiontype="view" name="Home" description="Enables the home button." ordering="605"/>
+	<permission id="viewmap" permissiontype="view" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="606"/>
+	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window." ordering="607"/>
+	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool." ordering="608"/>
+	<permission id="viewmyaccount" permissiontype="view" name="My Account Area" description="Enables a page that edit user data and updates passwords." ordering="609"/>
+	<permission id="viewrecentsearches" permissiontype="view" name="Previous Searches" description="Enables access to past searches." ordering="610"/>
+	<permission id="quicksearch" permissiontype="view" name="Quick Search" description="Enables a general search bar in the top navigation bar." ordering="611"/>
+  	<permission id="viewsettings" permissiontype="view" name="Settings" description="Enables access to application management settings." ordering="612"/>
+  	<permission id="viewcategorynav" permissiontype="view" name="Category Navigation" description="Enables the Category Navigation in the sidebar." ordering="613"/>
+	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." ordering="614"/>
+	<permission id="viewlibrarysearch" permissiontype="view" name="User Libraries" description="Enables a list of libraries on the sidebar." ordering="615"/>
 
 
 
-	<permission id="viewdevelopertools" permissiontype="view" name="Developer Tools" description="Enables advanced developer tools within various pages." />
+	<permission id="viewdevelopertools" permissiontype="view" name="Developer Tools" description="Enables advanced developer tools within various pages." ordering="600"/>
 
-	<permission id="filterbyassettype" permissiontype="view" name="Filter by Asset Type" description="Enables filter by asset type box on sidebar." />
+	<permission id="filterbyassettype" permissiontype="view" name="Filter by Asset Type" description="Enables filter by asset type box on sidebar." ordering="600"/>
 
 	<permission id="viewasset" permissiontype="internal" name="View Asset" description="Ability to view a specific asset" ordering="100"/>
 	<permission id="editasset" permissiontype="internal" name="Edit Asset" description="Ability to edit any assets." ordering="101"/>

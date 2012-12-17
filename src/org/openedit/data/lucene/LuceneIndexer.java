@@ -191,7 +191,10 @@ public class LuceneIndexer
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			readProperty(inData, doc, keywords, detail);
 		}
-		doc.add(new Field("description", keywords.toString(), Field.Store.NO, Field.Index.ANALYZED));
+		if( keywords.toString().trim().length() > 0 )
+		{
+			doc.add(new Field("description", keywords.toString(), Field.Store.NO, Field.Index.ANALYZED));
+		}
 	}
 	protected List getStandardProperties()
 	{

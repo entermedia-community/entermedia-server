@@ -1,5 +1,7 @@
 
 <projecttypes>
-  <projecttype id="website">Website</projecttype>
-  <projecttype id="brochure">Brochure</projecttype>
+  <projecttype id="video">Video</projecttype>
+  <projecttype id="music">Music</projecttype>
+  <projecttype id="website">Web Site</projecttype>
+  <projecttype id="print">Print</projecttype>
 </projecttypes>

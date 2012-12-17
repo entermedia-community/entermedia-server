@@ -2,7 +2,6 @@
 	
 	<property id="librarygeneral" module="library" systemdefined="false" byassettype="true" ordering="01">Details</property>
     <data id="libraryproject_tasks" module="library" systemdefined="false" ordering="2353462437014" rendertable="projecttask" renderexternalid="library">Project Tasks</data>
-    <data id="libraryassets" module="library" systemdefined="false" ordering="1355163760458" rendertable="libraryassets" renderexternalid="libraryid">Assets</data>
 	<property id="libraryfilter" module="library"  systemdefined="true" byassettype="false">Search Filter</property>	
 	
 </properties>
