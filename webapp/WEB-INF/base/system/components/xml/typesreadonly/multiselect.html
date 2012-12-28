@@ -55,30 +55,14 @@
 
 #set( $valueid = "$fieldname" )
 
-#if($types)
-	#if( $foreignkeyid)
-		<script type="text/javascript">
-			addListListener("$foreignkeyid", "${fieldname}");
-		</script>
-	#end
+#if($types)	
 
-<table>
-	<tr>
 	#foreach( $type in $types )
 		#set( $key = $type.id)
-			<td>
-			
-	 
-	    #if ($checked.contains($key)) <img style="position: relative; top: -2px;" src="/system/images/check.gif"/>  <span style="margin-left: 3px;">$type</span> #else  #end
+	    #if ($checked.contains($key)) <img style="position: relative; top: -2px;" src="/system/images/check.gif"/>  <span style="margin-left: 3px;">$type</span><br/> #else  #end 
+	#end	
+		    
 		
-	 
-
-	</td> 
-	#if ($velocityCount % 4 == 0) </tr> <tr> #end	    
-		
-#end
-</tr>
-</table>
 	
    
 #else
