@@ -1257,6 +1257,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 		file.getElements().add(dindex,sourceelement);
 		getXmlArchive().saveXml(file, inReq.getUser());
+		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
 	}
 	
 	public SearcherManager loadSearcherManager(WebPageRequest inReq)
