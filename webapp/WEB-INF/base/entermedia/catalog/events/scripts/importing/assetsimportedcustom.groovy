@@ -55,10 +55,15 @@ public void setupProjects(HitTracker assets)
 		List tosave = new ArrayList();
 		for (Data hit in assets)
 		{	
-			String[] split = hit.getSourcePath().split("/");
+			def sourcepath = hit.getSourcePath()
+			String[] split = sourcepath.split("/");
 			if( split.length > 1 )
 			{
 				Data division = divisionSearcher.searchByField("folder",split[0]);
+				if(division == null && split.length > 1){
+					 division = divisionSearcher.searchByField("folder",split[0]+ "/" + split[1]);
+				}
+				
 				if( division != null )
 				{
 					SearchQuery query = librarySearcher.createSearchQuery().append("division",division.getId()).append("folder",split[1]);
@@ -72,7 +77,7 @@ public void setupProjects(HitTracker assets)
 						
 						librarySearcher.saveData(library,null);
 					}
-					Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+					Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
 					asset.addLibrary(library.getId());
 					tosave.add(asset);
 					log.info("Setup new library" + split[1]); 
