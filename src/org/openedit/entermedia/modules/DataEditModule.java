@@ -556,9 +556,9 @@ public class DataEditModule extends BaseMediaModule
 			event.setSearchType(searcher.getSearchType());
 			event.setCatalogId(searcher.getCatalogId());
 			event.setOperation(searcher.getSearchType() + "/saved");
-			
+			if(getWebEventListener() != null){
 			getWebEventListener().eventFired(event);
-			
+			}
 			
 			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>
 		}
