@@ -6060,6 +6060,15 @@ td[title]:hover:before {
     opacity: 0.4;
 }
 
+div.dragcount {
+	text-align: right;
+	float:right;
+	position: absolute;
+	top: 10px;
+	background-color: black;
+	color: white;
+	font-weight: bold;
+}
 
 #workarea .ui-draggable-dragging {
     width: inherit;

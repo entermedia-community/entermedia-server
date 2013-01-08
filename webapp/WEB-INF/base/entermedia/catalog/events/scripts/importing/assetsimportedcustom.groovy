@@ -56,26 +56,28 @@ public void setupProjects(HitTracker assets)
 		for (Data hit in assets)
 		{	
 			String[] split = hit.getSourcePath().split("/");
-			if( split.length > 1 )
+			if( split.length > 2 )
 			{
-				Data division = divisionSearcher.searchByField("folder",split[0]);
+				String folder = split[0] + "/" + split[1];
+				Data division = divisionSearcher.searchByField("folder",folder);
 				if( division != null )
 				{
-					SearchQuery query = librarySearcher.createSearchQuery().append("division",division.getId()).append("folder",split[1]);
+					String libraryfolder  = split[2];
+					SearchQuery query = librarySearcher.createSearchQuery().append("division",division.getId()).append("folder",libraryfolder);
 					Data library =	librarySearcher.searchByQuery(query);
 					if( library == null )
 					{
 						library = librarySearcher.createNewData();
-						library.setProperty("folder",split[1]);
+						library.setProperty("folder",libraryfolder);
 						library.setProperty("division",division.getId());
-						library.setName(split[1]);
+						library.setName(libraryfolder);
 						
 						librarySearcher.saveData(library,null);
 					}
 					Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
 					asset.addLibrary(library.getId());
 					tosave.add(asset);
-					log.info("Setup new library" + split[1]); 
+					log.info("Setup new library" + libraryfolder); 
 				}
 			}
 			if(tosave.size() == 100)

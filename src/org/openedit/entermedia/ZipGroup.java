@@ -12,7 +12,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.error.EmailErrorHandler;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.repository.ContentItem;
 
@@ -27,7 +26,17 @@ public class ZipGroup
 	private static final Log log = LogFactory.getLog(ZipGroup.class);
 
 	protected User fieldUser;
-	protected EnterMedia fieldEnterMedia;
+	protected MediaArchive fieldMediaArchive;
+
+	public MediaArchive getMediaArchive()
+	{
+		return fieldMediaArchive;
+	}
+
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
+		fieldMediaArchive = inMediaArchive;
+	}
 
 	protected void writeFileToZip(ZipOutputStream inZipOutputStream, OutputFiller inOutputFiller, File inFile)
 	{
@@ -79,7 +88,7 @@ public class ZipGroup
 			missingAssetsStr.append("    - ");
 			missingAssetsStr.append(asset.getName());
 			missingAssetsStr.append(" (");
-			Page path = getMediaArchive(asset.getCatalogId()).getOriginalDocument(asset);
+			Page path = getMediaArchive().getOriginalDocument(asset);
 			if (path == null)
 			{
 				missingAssetsStr.append("no file name specified");
@@ -91,11 +100,6 @@ public class ZipGroup
 			missingAssetsStr.append(")\n");
 		}
 		return missingAssetsStr.toString();
-	}
-
-	public MediaArchive getMediaArchive(String inCatalogId)
-	{
-		return getEnterMedia().getMediaArchive(inCatalogId);
 	}
 
 	public void zipItems(Map<Asset, ConvertInstructions> inAssets, OutputStream inStream) throws OpenEditException
@@ -110,8 +114,7 @@ public class ZipGroup
 			OutputFiller filler = new OutputFiller();
 			for (Asset asset: inAssets.keySet())
 			{
-				MediaArchive archive = getMediaArchive(asset.getCatalogId());
-				Page documentFile = archive.getOriginalDocument(asset);
+				Page documentFile = getMediaArchive().getOriginalDocument(asset);
 				if (documentFile == null || !documentFile.exists())
 				{
 					if (documentFile != null)
@@ -127,9 +130,9 @@ public class ZipGroup
 						File source = null;
 						File temp = null;
 						ConvertInstructions instructions = inAssets.get(asset);
-						if (archive.canConvert(asset, instructions.getOutputExtension(), getUser()))
+						if (getMediaArchive().canConvert(asset, instructions.getOutputExtension(), getUser()))
 						{
-							ContentItem converted = archive.getCreatorManager().createOutput(instructions).getContentItem();
+							ContentItem converted = getMediaArchive().getCreatorManager().createOutput(instructions).getContentItem();
 							source = new File(converted.getAbsolutePath());
 							String extension = "";
 							if (instructions.getOutputExtension() != null)
@@ -170,20 +173,20 @@ public class ZipGroup
 				String missingAssets = buildMissingDocumentsText(missing);
 
 				writeStringToZip(zos, missingAssets, "missing.txt");
-				EmailErrorHandler handler = getEnterMedia().getEmailErrorHandler();
-				if( handler != null )
-				{
-					handler.sendNotification("Missing File Report", missingAssets);
-				}
+//				EmailErrorHandler handler = getEnterMedia().getEmailErrorHandler();
+//				if( handler != null )
+//				{
+//					handler.sendNotification("Missing File Report", missingAssets);
+//				}
 				for (Asset asset: missing)
 				{
-					getMediaArchive(asset.getCatalogId()).logDownload(asset.getSourcePath(), "missing", getUser());
+					getMediaArchive().logDownload(asset.getSourcePath(), "missing", getUser());
 				}
 
 			}
 			for (Asset asset: okAssets)
 			{
-				getMediaArchive(asset.getCatalogId()).logDownload(asset.getSourcePath(), "success", getUser());
+				getMediaArchive().logDownload(asset.getSourcePath(), "success", getUser());
 			}
 
 		}
@@ -202,13 +205,6 @@ public class ZipGroup
 
 	}
 
-	public EnterMedia getEnterMedia() {
-		return fieldEnterMedia;
-	}
-
-	public void setEnterMedia(EnterMedia enterMedia) {
-		fieldEnterMedia = enterMedia;
-	}
 
 	public User getUser()
 	{
