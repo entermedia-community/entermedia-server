@@ -54,8 +54,9 @@ public void setupProjects(HitTracker assets)
 		
 		List tosave = new ArrayList();
 		for (Data hit in assets)
-		{	
-			String[] split = hit.getSourcePath().split("/");
+		{
+			def sourcepath = hit.getSourcePath();
+			String[] split = sourcepath.split("/");plit("/");
 			if( split.length > 2 )
 			{
 				String folder = split[0] + "/" + split[1];
@@ -74,7 +75,7 @@ public void setupProjects(HitTracker assets)
 						
 						librarySearcher.saveData(library,null);
 					}
-					Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+					Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
 					asset.addLibrary(library.getId());
 					tosave.add(asset);
 					log.info("Setup new library" + libraryfolder); 

@@ -7,6 +7,7 @@
 
 
 #set( $userTracker = $hits)
+$context.putPageValue("hits", $hits)
 
 #set ($userSearcher = $searcherManager.getSearcher("system", "user"))
 #set( $oeview = "user/results")
@@ -71,23 +72,30 @@
 
 </div>
 
+
+$pages.include("$apphome/components/results/pages.html",$context)
+
 #if ( $userTracker.totalPages == 0 )
 #elseif( $userTracker.totalPages == 1 )
 #elseif( $userTracker )
 
 <div style="text-align: left; padding-left: 20px; pading-top: 5px;">
 		#set($thispage = $userTracker.getPage())
-		[[Page]] <b>$thispage</b>/$userTracker.totalPages  
-		&nbsp;&nbsp;
 		
 		#if( $userTracker.prevPage() )
-			<a href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.prevPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>&lt;&lt; [[Back]]</b></a>
-		#end
+            <a style="margin-right: 15px;" href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.prevPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>&lt;&lt; [[Previous]]</b></a>
+        #end
+        
+		[[Page]] <b>$thispage</b>/$userTracker.totalPages  
+		
+		
+		
 		
 		
 		#if ( $userTracker.nextPage() )
-			<a href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.nextPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>[[Forward]] &gt;&gt;</b></a>
+			<a style="margin-left: 15px;" href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.nextPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>[[Next]] &gt;&gt;</b></a>
 		#end
 </div>
+
 #end
  
