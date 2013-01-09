@@ -552,12 +552,17 @@ public class DataEditModule extends BaseMediaModule
 			inReq.putPageValue("data", data);
 
 			inReq.putPageValue("savedok", Boolean.TRUE);
-			WebEvent event = new WebEvent();
-			event.setSearchType(searcher.getSearchType());
-			event.setCatalogId(searcher.getCatalogId());
-			event.setOperation(searcher.getSearchType() + "/saved");
+			
+			
 			if(getWebEventListener() != null){
-			getWebEventListener().eventFired(event);
+				WebEvent event = new WebEvent();
+				event.setSearchType(searcher.getSearchType());
+				event.setCatalogId(searcher.getCatalogId());
+				event.setOperation(searcher.getSearchType() + "/saved");
+				event.setProperty("dataid", data.getId());
+				event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+				getWebEventListener().eventFired(event);
 			}
 			
 			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>

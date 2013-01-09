@@ -35,6 +35,7 @@ import org.openedit.entermedia.search.SearchFilterArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
+import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 
 import com.openedit.ModuleManager;
@@ -1413,5 +1414,12 @@ public class MediaArchive
 		}
 		return fieldLibraries;
 	}
+	
+	public UserProfile getUserProfile(String inId){
+		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
+		
+	}
+	
+	
 
 }
