@@ -12,7 +12,9 @@
 	<a folder="permissions" id="assetpermissions"  module="asset"  useajax="true" multiedit="true" name="Permissions" />
     
 	<a folder="historypreviews"  id="viewassetpreviewhistory"  module="asset"  useajax="true" name="History" />
-	<!-- <a folder="downloads" id="download" name="Download Options" /> -->
+		<a folder="downloads"  id="embedlinks"  module="asset"  useajax="false" name="Embed Links" />
+	
+	
 	<!-- <a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" /> -->
 <!-- 
 	<a folder="historydownloads"  id="viewassetdownloadhistory" name="Download History" />
