@@ -704,7 +704,7 @@ asset: " + asset);
 	{
 		
 		String enabled = inArchive.getCatalogSettingValue("push_masterswitch");
-		if( "false".equals(enabled) )
+		if( enabled == null || "false".equals(enabled) )
 		{
 			//log.info("Push is paused");
 			return;

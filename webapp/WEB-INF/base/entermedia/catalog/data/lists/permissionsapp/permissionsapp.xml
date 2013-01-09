@@ -30,10 +30,13 @@
 	<permission id="edittablecolumns" permissiontype="edit" name="Table Columns" description="Enables the customization of search result columns in table view." ordering="400" />
 	<permission id="editlists" permissiontype="edit" name="Inline List Editing" description="Allows users to add values to lists." ordering="400" />
 	<permission id="editmetadatasetup" permissiontype="edit" name="Edit Views From Asset Page" description="Allows users to edit views from a quick link on the asset page." ordering="400"  />
+	<permission id="editcategories" permissiontype="edit" name="Edit Categories" description="Enables the editing of category tree" ordering="400" />
 	
-	<permission id="converthistory" permissiontype="history" name="Conversion" description="Logs the conversion history of an asset."/>
-	<permission id="viewassetpreviewhistory" permissiontype="history" name="Preview" description="Logs the preview history of an asset."/>
-	<preference id="capturehistory" permissiontype="history" name="Save Usage" description="Logs the download history of an asset."/>
+	
+	
+	<permission id="converthistory" permissiontype="history" name="Conversion" description="Logs the conversion history of an asset."  ordering="400" />
+	<permission id="viewassetpreviewhistory" permissiontype="history" name="Preview" description="Logs the preview history of an asset."  ordering="400" />
+	<preference id="capturehistory" permissiontype="history" name="Save Usage" description="Logs the download history of an asset."  ordering="400" />
 		
 	<permission id="createnewrecord" permissiontype="filetransfers" name="Create a New Record" description="Enables the creation of a new record." ordering="500"/>
 	<permission id="convert" permissiontype="filetransfers" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions." ordering="500"/>
@@ -49,6 +52,7 @@
 	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." ordering="604"/>
 	<permission id="viewhomelink" permissiontype="view" name="Home" description="Enables the home button." ordering="605"/>
 	<permission id="viewmap" permissiontype="view" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="606"/>
+	<permission id="asseteditorlibraries" permissiontype="view" name="Pick Libraries" description="Able to change libraries/projects on an asset." ordering="615"/>
 	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window." ordering="607"/>
 	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool." ordering="608"/>
 	<permission id="viewmyaccount" permissiontype="view" name="My Account Area" description="Enables a page that edit user data and updates passwords." ordering="609"/>
@@ -59,8 +63,6 @@
 	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." ordering="614"/>
 	<permission id="viewlibrarysearch" permissiontype="view" name="User Libraries" description="Enables a list of libraries on the sidebar." ordering="615"/>
 
-
-
 	<permission id="viewdevelopertools" permissiontype="view" name="Developer Tools" description="Enables advanced developer tools within various pages." ordering="600"/>
 
 	<permission id="filterbyassettype" permissiontype="view" name="Filter by Asset Type" description="Enables filter by asset type box on sidebar." ordering="600"/>
@@ -70,7 +72,6 @@
 
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
-	<permission id="editassetcategories" name="Edit Categories" description="Edit Asset Categories"/>
 
 	<permission id="viewassetdownloads" name="View Download Links" description="Show screen for custom links"/>
 	<permission id="viewassetedit" name="Media editor" description="Allow JPG crop and resize"/>
