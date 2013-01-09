@@ -127,6 +127,14 @@ public class CategoryModule extends BaseMediaModule
 			renderer.setAllowSelections(Boolean.parseBoolean(allowselections));
 
 			String editable = inRequest.findValue( "editabletree" );
+			if( editable == null )
+			{
+				Boolean val = (Boolean)inRequest.getPageValue("caneditcategories");
+				if( val != null )
+				{
+					editable = val.toString();
+				}
+			}
 			renderer.setEditable(Boolean.parseBoolean(editable));
 
 			String iconwidth = (String) inRequest.getPageProperty( "iconwidth" ); //must be saved to page path
