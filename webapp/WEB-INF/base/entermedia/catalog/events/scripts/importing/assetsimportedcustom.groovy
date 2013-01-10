@@ -56,7 +56,7 @@ public void setupProjects(HitTracker assets)
 		for (Data hit in assets)
 		{
 			def sourcepath = hit.getSourcePath();
-			String[] split = sourcepath.split("/");plit("/");
+			String[] split = sourcepath.split("/");
 			if( split.length > 2 )
 			{
 				String folder = split[0] + "/" + split[1];
