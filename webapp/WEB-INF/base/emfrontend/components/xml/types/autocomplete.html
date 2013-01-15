@@ -12,7 +12,7 @@
 <input name="completefield" class="listautocomplete" id="${detail.id}${idcount}value" value="#esc($!foundrow.name)" size="30" type="text" data-searchtype="$detail.listid" data-listcatalogid="$detail.listCatalogId" />
 <input name="${detail.getId()}.value"  id="${detail.id}${idcount}valuehidden"   value="$!val" type="hidden"/>
 
-#if( $foundrow )
+#if( $canviewsettings && $foundrow )
 	#set($module = $searcherManager.getData($catalogid, "module", $detail.listid ) )
 	#if($module)
 	

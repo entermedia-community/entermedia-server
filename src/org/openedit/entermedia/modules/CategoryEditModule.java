@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
@@ -22,6 +23,7 @@ import org.openedit.event.WebEventListener;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
@@ -268,18 +270,51 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 	}
 
-	public void addCategoryToAsset(WebPageRequest inPageRequest)
-			throws Exception {
+	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception 
+	{
+		
+		String[] categories = inPageRequest.getRequestParameters("categoryid");
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		if (categories == null) 
+		{
+			return;
+		}
+		
+		String hitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		if( hitssessionid != null )
+		{
+			HitTracker tracker = (HitTracker)inPageRequest.getSessionValue(hitssessionid);
+			if( tracker != null )
+			{
+				tracker = tracker.getSelectedHitracker();
+			}
+			if( tracker != null )
+			{
+				int added = 0;
+				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+				{
+					Data data = (Data) iterator.next();
+					Asset asset = archive.getAsset(data.getId());
+					addCategoryToAsset(inPageRequest, archive ,categories, asset);
+					added++;
+				}
+				
+				inPageRequest.putPageValue("added" , String.valueOf( added ) );
+				return;
+			}
+		}
+			
 		Asset asset = getAsset(inPageRequest);
 		if (asset == null) {
 			log.error("No asset id passed in");
 			return;
 		}
-		String[] add = inPageRequest.getRequestParameters("categoryid");
-		MediaArchive archive = getMediaArchive(inPageRequest);
-		if (add == null) {
-			return;
-		}
+		addCategoryToAsset(inPageRequest, archive ,categories, asset);
+		inPageRequest.putPageValue("added" , "1");
+	}
+
+	protected void addCategoryToAsset(WebPageRequest inPageRequest, MediaArchive archive, String[] add, Asset asset)
+	{
 		String message = "Added to category ";
 		for (int i = 0; i < add.length; i++) {
 			Category c = archive.getCategory(add[i]);

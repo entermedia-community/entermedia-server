@@ -18,15 +18,17 @@ public class ReplacerTest extends BaseTestCase
 		replacer.setDefaultCatalogId("system");
 		replacer.setAlwaysReplace(true);
 		replacer.setSearcherManager(manager);
-		String code = "${one}/${longvariable}/${user.email}/${notfound}/${two}/${user.id}";
+		String code = "${one}/${longvariable}/${user.email}/${notfound}/${two}/${user.id}${nogap1}${nogap2}";
 		Map vars = new HashMap();
 		vars.put("user", "admin");
 		vars.put("one", "Uno");
+		vars.put("nogap1", "123");
+		vars.put("nogap2", "456");
 		vars.put("two", "TOOOOLONG");
 		vars.put("longvariable", "short");
 		
 		String returned = replacer.replace(code, vars);
-		assertEquals("Uno/short/support@openedit.org//TOOOOLONG/admin",returned);
+		assertEquals("Uno/short/support@openedit.org//TOOOOLONG/admin123456",returned);
 		
 		
 	}

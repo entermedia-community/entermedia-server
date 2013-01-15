@@ -3,28 +3,28 @@
 	<div class="row">
 		<span>[[Small Thumbnail]]: </span>
 		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/small/$asset.sourcepath/thumb.jpg">view</a>
-			<input size="100" type=text onclick="this.select();" readonly="readonly"
+			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home$apphome/downloads/preview/small/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Thumbnail]]: </span>
 		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg">view</a>
-			<input size="100" type=text onclick="this.select();" readonly="readonly"
+			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home$apphome/downloads/preview/thumb/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Medium]]: </span>
 		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/medium/$asset.sourcepath/thumb.jpg">view</a>
-			<input size="100" type=text onclick="this.select();" readonly="readonly"
+			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/medium/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Medium Plus]]: </span>
 		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$asset.sourcepath/thumb.jpg">view</a>
-			<input size="100" type=text onclick="this.select();" readonly="readonly"
+			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
@@ -37,14 +37,14 @@
 	<div class="row">
 		<span>[[Desktop Size]]: </span>
 		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/cache/$asset.sourcepath/preview.jpg">view</a>
-			<input size="100" type=text onclick="this.select();" readonly="readonly"
+			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/cache/$asset.sourcepath/preview.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Full Size JPG]]: </span>
 		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/converted/cache/$asset.sourcepath/converted.jpg">view</a>
-			<input size="100" type=text onclick="this.select();" readonly="readonly"
+			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/converted/cache/$asset.sourcepath/converted.jpg"/>
 		 </span>
 	</div>
@@ -54,7 +54,7 @@
 		<span>[[Original Download]]: </span>
 		#set( $link = $mediaarchive.asLinkToOriginal($asset) )
 		<span><a href="$context.siteRoot$home$link">view</a>
-			<input size="100" type=text onclick="this.select();" readonly="readonly"
+			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home$link"/>
 		 </span>
 	</div>
@@ -68,7 +68,7 @@
 
 <p>
 [<b>server name</b>]
-[<b>catalog id</b>]
+[<b>applicationid id</b>]
 [<b>/converted/cache/</b>]
 [<b>sourcepath</b>]
 [<b>file name</b>]
@@ -76,10 +76,10 @@
 [<b>?</b>]
 <p>
 <br>
-<p>
+<p style="max-width: 400px; font-size: smaller; width: 400px;">
 [[Example to create a small PDF download]]:<br>
 <b>
-$context.siteRoot$home$cataloghome//downloads/converted/cache/$asset.sourcepath/filename.pdf?prefwidth=1024
+$context.siteRoot$home$apphome/views/modules/asset/downloads/converted/cache/$asset.sourcepath/filename.pdf?prefwidth=1024
 </b>
 </p>
 <div class="emtable" style="margin-left: 20px;">

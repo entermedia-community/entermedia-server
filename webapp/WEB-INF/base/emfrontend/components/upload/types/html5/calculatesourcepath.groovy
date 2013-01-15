@@ -37,6 +37,7 @@ public void init()
 		String libraries = context.getRequestParameter("libraries.value");
 		if(libraries != null){
 			vals.put("library", libraries);
+			
 		}
 		
 		Replacer replacer = new Replacer();

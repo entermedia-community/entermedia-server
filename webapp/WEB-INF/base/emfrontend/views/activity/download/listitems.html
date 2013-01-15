@@ -42,13 +42,19 @@
 	#set( $presetid = $publishqueue.get("presetid") )
 	#if( $publishqueue.publishdestination == "0")   ##download with the browser
 		#set( $presetid = $publishqueue.get("presetid") )
-		#if( $presetid == 0)
+		#if( $presetid == "0")
 			<td></td>
 			<td>
 				<a class="btn small" href="$home$mediaarchive.asLinkToOriginal($asset)">Download</a>
 				#set( $downloadall = true)
 				
 			</td>
+		#elseif( $presetid == "attachment")
+			<td></td>
+			<td>
+				<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/attachments/${asset.sourcepath}.zip">Download Zip</a>				
+			</td>
+			
 		#else
 			<td>
 			${publishqueue.exportname}

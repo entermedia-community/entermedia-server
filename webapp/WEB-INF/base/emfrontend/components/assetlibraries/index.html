@@ -10,7 +10,7 @@
     		 #set( $division = $searcherManager.getData($catalogid,"division",$data.division ) )
     		 			<a class="row tag" href="$home$apphome/views/modules/library/edit/table.html?id=${data.id}&viewid=libraryassets&viewpath=library/libraryassets">#if($division) $!division / #end $library</a>
     
-    		#if($canasseteditorlibraries)
+    		#if($caneditasset)
     			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$library"></a>
     		#end
     		</a>
@@ -19,7 +19,7 @@
 	
 	#end
 	</div>
-#if($canasseteditorlibraries)
+#if($caneditasset)
 	<div id="valueadd" style="margin: 10px 0 10px 0;">
 	   <a class="ajax btn small" targetdiv="valueadd" href="$home$apphome/components/assetlibraries/add.html?oemaxlevel=1&assetid=${asset.id}&sourcepath=${asset.sourcepath}">[[Add Project]]</a>
 	</div>

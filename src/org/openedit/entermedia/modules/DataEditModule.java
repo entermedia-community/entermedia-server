@@ -552,13 +552,18 @@ public class DataEditModule extends BaseMediaModule
 			inReq.putPageValue("data", data);
 
 			inReq.putPageValue("savedok", Boolean.TRUE);
-			WebEvent event = new WebEvent();
-			event.setSearchType(searcher.getSearchType());
-			event.setCatalogId(searcher.getCatalogId());
-			event.setOperation(searcher.getSearchType() + "/saved");
 			
-			getWebEventListener().eventFired(event);
 			
+			if(getWebEventListener() != null){
+				WebEvent event = new WebEvent();
+				event.setSearchType(searcher.getSearchType());
+				event.setCatalogId(searcher.getCatalogId());
+				event.setOperation(searcher.getSearchType() + "/saved");
+				event.setProperty("dataid", data.getId());
+				event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+				getWebEventListener().eventFired(event);
+			}
 			
 			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>
 		}
@@ -1257,6 +1262,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 		file.getElements().add(dindex,sourceelement);
 		getXmlArchive().saveXml(file, inReq.getUser());
+		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
 	}
 	
 	public SearcherManager loadSearcherManager(WebPageRequest inReq)
