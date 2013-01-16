@@ -999,6 +999,12 @@ public class MediaArchive
 	}	
 	public void fireMediaEvent(String operation, User inUser, Asset asset)
 	{
+		if( asset instanceof CompositeAsset )
+		{
+			fireMediaEvent(operation,inUser,(CompositeAsset)asset);
+		}
+		else
+		{
 			WebEvent event = new WebEvent();
 			event.setSearchType("asset");
 			event.setCatalogId(getCatalogId());
@@ -1011,6 +1017,7 @@ public class MediaArchive
 
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
+		}
 	}
 	public void fireMediaEvent(String operation, User inUser)
 	{
