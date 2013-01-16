@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -439,24 +436,15 @@ public class OrderModule extends BaseMediaModule
 		}
 	}
 
-	public Data toggleItemInOrderBasket(WebPageRequest inReq)
+	public void toggleItemInOrderBasket(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
+		
+		Asset asset = archive.getAsset(assetid, inReq);
 
-		Asset asset = archive.getAsset(assetid);
-
-		boolean inorder = getOrderManager().isAssetInOrder(archive.getCatalogId(), basket, asset.getId());
-		if (inorder)
-		{
-			getOrderManager().removeItemFromOrder(archive.getCatalogId(), basket, asset);
-		}
-		else
-		{
-			addItemToOrderBasket(inReq);
-		}
-		return basket;
+		getOrderManager().toggleItemInOrder(archive, basket, asset);
 	}
 
 	public Data addItemToOrderBasket(WebPageRequest inReq)
@@ -759,7 +747,7 @@ public class OrderModule extends BaseMediaModule
 		}
 
 	}
-
+/*
 	public Data createMultiEditData(WebPageRequest inReq) throws Exception
 	{
 		Order order = loadOrder(inReq);
@@ -793,7 +781,7 @@ public class OrderModule extends BaseMediaModule
 
 		return composite;
 	}
-
+*/
 	public void sendOrderEmail(WebPageRequest inReq)
 	{
 		// just a basic email download

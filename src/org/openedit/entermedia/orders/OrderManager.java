@@ -21,6 +21,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.util.SPENGOAuthenticator;
 import org.openedit.event.WebEvent;
@@ -345,12 +346,13 @@ public class OrderManager
 		item.setProperty("assetsourcepath", inAsset.getSourcePath());
 		item.setProperty("assetid", inAsset.getId());
 		item.setProperty("status", "preorder");
-		if(inProps != null){
-		for (Iterator iterator = inProps.keySet().iterator(); iterator.hasNext();)
+		if(inProps != null)
 		{
-			String  key = (String ) iterator.next();
-			item.setProperty(key, (String)inProps.get(key));
-		}
+			for (Iterator iterator = inProps.keySet().iterator(); iterator.hasNext();)
+			{
+				String  key = (String ) iterator.next();
+				item.setProperty(key, (String)inProps.get(key));
+			}
 		}
 		itemsearcher.saveData(item, null);
 		return item;
@@ -814,6 +816,39 @@ public class OrderManager
 				}
 			}
 		}
+	}
+
+	public void toggleItemInOrder(MediaArchive inArchive, Order inBasket, Asset inAsset)
+	{
+		if( inAsset instanceof CompositeAsset )
+		{
+			CompositeAsset assets = (CompositeAsset)inAsset;
+			for (Iterator iterator = assets.getItems().iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				boolean inorder = isAssetInOrder(inArchive.getCatalogId(), inBasket, asset.getId());
+				if (inorder)
+				{
+					removeItemFromOrder(inArchive.getCatalogId(), inBasket, asset);
+				}
+				else
+				{
+					addItemToOrder(inArchive.getCatalogId(), inBasket, asset, null);
+				}
+			}
+			
+		}
+		
+		boolean inorder = isAssetInOrder(inArchive.getCatalogId(), inBasket, inAsset.getId());
+		if (inorder)
+		{
+			removeItemFromOrder(inArchive.getCatalogId(), inBasket, inAsset);
+		}
+		else
+		{
+			addItemToOrder(inArchive.getCatalogId(), inBasket, inAsset, null);
+		}
+
 	}
 
 }

@@ -384,47 +384,47 @@ public class AssetEditModule extends BaseMediaModule
 		
 		archive.removeGeneratedImages(asset);
 	}
-	public Data createMultiEditData(WebPageRequest inReq) throws Exception
-	{
-		String hitsname = inReq.getRequestParameter("multihitsname");//expects session id
-		if( hitsname == null)
-		{
-			return null;
-		}
-		MediaArchive store = getMediaArchive(inReq);
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitsname);
-		if( hits == null)
-		{
-			log.error("Could not find " + hitsname);
-			return null;
-		}
-		CompositeAsset composite = new CompositeAsset();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			Data target = (Data) iterator.next();
-			Asset p = null;
-			if( target instanceof Asset)
-			{
-				p = (Asset)target;
-			}
-			else
-			{
-				p = store.getAssetBySourcePath(target.getSourcePath());
-			}
-			if( p != null)
-			{
-				composite.addData(p);
-			}
-		}
-		composite.setId("multiedit:"+hitsname);
-		//set request param?
-		inReq.setRequestParameter("assetid",composite.getId());
-		inReq.putPageValue("data", composite);
-		inReq.putPageValue("asset", composite);
-		inReq.putSessionValue(composite.getId(), composite);
-		
-		return composite;
-	}
+//	public Data createMultiEditData(WebPageRequest inReq) throws Exception
+//	{
+//		String hitsname = inReq.getRequestParameter("multihitsname");//expects session id
+//		if( hitsname == null)
+//		{
+//			return null;
+//		}
+//		MediaArchive store = getMediaArchive(inReq);
+//		HitTracker hits = (HitTracker) inReq.getSessionValue(hitsname);
+//		if( hits == null)
+//		{
+//			log.error("Could not find " + hitsname);
+//			return null;
+//		}
+//		CompositeAsset composite = new CompositeAsset();
+//		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+//		{
+//			Data target = (Data) iterator.next();
+//			Asset p = null;
+//			if( target instanceof Asset)
+//			{
+//				p = (Asset)target;
+//			}
+//			else
+//			{
+//				p = store.getAssetBySourcePath(target.getSourcePath());
+//			}
+//			if( p != null)
+//			{
+//				composite.addData(p);
+//			}
+//		}
+//		composite.setId("multiedit:"+hitsname);
+//		//set request param?
+//		inReq.setRequestParameter("assetid",composite.getId());
+//		inReq.putPageValue("data", composite);
+//		inReq.putPageValue("asset", composite);
+//		inReq.putSessionValue(composite.getId(), composite);
+//		
+//		return composite;
+//	}
 	
 	
 	public void selectAsset(WebPageRequest inContext) throws OpenEditException 
@@ -609,32 +609,31 @@ public class AssetEditModule extends BaseMediaModule
 		if (key == null) {
 			return;
 		}
-		Asset asset;
+		Asset asset = null;
 		String id = inReq.getRequestParameter("assetid");
 		
 		if (id == null)
 		{
 			asset = editor.getCurrentAsset();
 		}
-		else if (id.startsWith("multiedit:"))
+		if( asset == null )
 		{
-			CompositeAsset composite = (CompositeAsset) inReq.getSessionValue(id);
-			composite.addKeyword(key);
-			for(Data data: composite.getItems())
-			{
-				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
-
-				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), (Asset)data);
-			}
-			return;
-		}
-		else
-		{
-			asset = getMediaArchive(inReq).getAsset(id);
+			asset = getMediaArchive(inReq).getAsset(id,inReq);
 		}
 		asset.addKeywords(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
-		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+		if( asset instanceof CompositeAsset )
+		{
+			for (Iterator iterator = ((CompositeAsset)asset).iterator(); iterator.hasNext();)
+			{
+				Asset saved = (Asset) iterator.next();
+				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), saved);				
+			}
+		}
+		else
+		{
+			getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+		}
 	}
 
 	public void removeAssetKeyword(WebPageRequest inReq) throws OpenEditException 
@@ -650,26 +649,26 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset = editor.getCurrentAsset();
 		}
-		else if (id.startsWith("multiedit:"))
-		{
-			CompositeAsset composite = (CompositeAsset) inReq.getSessionValue(id);
-			composite.removeKeyword(key);
-			
-			for(Data data: composite.getItems())
-			{
-				editor.getMediaArchive().saveAsset((Asset) data,inReq.getUser());
-				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), (Asset)data);
-			}
-			return;
-		}
 		else
 		{
-			asset = getMediaArchive(inReq).getAsset(id);
+			asset = getMediaArchive(inReq).getAsset(id,inReq);
 		}
 		asset.removeKeyword(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 
-		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+		if( asset instanceof CompositeAsset )
+		{
+			for (Iterator iterator = ((CompositeAsset)asset).iterator(); iterator.hasNext();)
+			{
+				Asset saved = (Asset) iterator.next();
+				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), saved);				
+			}
+		}
+		else
+		{
+			getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+		}
+
 	}
 	protected XmpWriter getXmpWriter()
 	{
@@ -752,7 +751,7 @@ public class AssetEditModule extends BaseMediaModule
 		HitTracker hits = createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
 		if( hits != null )
 		{
-			hits.selectAll();
+			hits.selectAll(); //important
 			if (hits.size() ==  1 )
 			{
 				String sourcepath = ((Data)hits.first()).getSourcePath();
@@ -761,8 +760,8 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			else
 			{		
-				inReq.setRequestParameter("multihitsname", hits.getSessionId());
-				createMultiEditData(inReq);
+				Asset asset = archive.getAsset("multiedit:" + hits.getSessionId(),inReq);
+				inReq.putPageValue("asset", asset );
 			}
 		}
 	}
@@ -901,7 +900,6 @@ public class AssetEditModule extends BaseMediaModule
 		SearchQuery q = archive.getAssetSearcher().createSearchQuery();
 		q.addOrsGroup("id", allids.toString() );
 		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
-		
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
@@ -1787,37 +1785,54 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			return null;
 		}
+		if( hitssessionid.startsWith("selected") )
+		{
+			hitssessionid = hitssessionid.substring("selected".length());
+		}
+
 		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
 		if( hits == null)
 		{
 			log.error("Could not find " + hitssessionid);
 			return null;
 		}
-		
 		//TODO: Change multi edit to use trackers instead
 		MediaArchive store = getMediaArchive(inReq);
-		CompositeAsset composite = new CompositeAsset();
-		for (Iterator iterator = hits.getSelectedHits().iterator(); iterator.hasNext();)
+		
+		//lost selections?
+		HitTracker old = hits;
+		hits  = store.getAssetSearcher().cachedSearch(inReq, hits.getSearchQuery());
+		if( !hits.hasSelections() )
 		{
-			Object target = (Object) iterator.next();
-			Asset p = null;
-			if( target instanceof Asset)
-			{
-				p = (Asset)target;
-			}
-			else
-			{
-				String id = hits.getValue(target, "id");
-				p = store.getAsset(id);
-			}
-			if( p != null)
-			{
-				composite.addData(p);
-			}
+			hits.setSelections(old.getSelections());
 		}
-		composite.setId("multiedit:"+hitssessionid);
-		//set request param?
-		inReq.setRequestParameter("assetid",composite.getId());
+//		CompositeAsset composite = new CompositeAsset();
+//		for (Iterator iterator = hits.getSelectedHits().iterator(); iterator.hasNext();)
+//		{
+//			Object target = (Object) iterator.next();
+//			Asset p = null;
+//			if( target instanceof Asset)
+//			{
+//				p = (Asset)target;
+//			}
+//			else
+//			{
+//				String id = hits.getValue(target, "id");
+//				p = store.getAsset(id);
+//			}
+//			if( p != null)
+//			{
+//				composite.addData(p);
+//			}
+//		}
+		
+//		HitTracker freshhits = store.getAssetSearcher().cachedSearch(inReq,hits.getSearchQuery());
+		//freshhits.setSelections(hits.getSelections()); //TODO: What if the order changes?
+		//HitTracker selected = freshhits.getSelectedHitracker();
+		String assetid = "multiedit:"+hitssessionid;
+		inReq.removeSessionValue(assetid);
+		Asset composite = store.getAsset(assetid,inReq);
+		inReq.setRequestParameter("assetid",assetid);
 		inReq.putPageValue("data", composite);
 		inReq.putPageValue("asset", composite);
 		inReq.putSessionValue(composite.getId(), composite);
