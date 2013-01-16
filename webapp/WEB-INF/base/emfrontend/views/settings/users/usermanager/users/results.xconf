@@ -5,4 +5,5 @@
 	<page-action name="User.loadPageOfResults" />
 	<page-action name="ProfileModule.loadUserProfileManager"/>
 	<property name="oemaxlevel">1</property>
+	<property name="showonly"></property>
 </page>
