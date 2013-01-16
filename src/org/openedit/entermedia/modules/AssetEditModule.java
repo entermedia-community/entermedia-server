@@ -622,18 +622,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		asset.addKeywords(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
-		if( asset instanceof CompositeAsset )
-		{
-			for (Iterator iterator = ((CompositeAsset)asset).iterator(); iterator.hasNext();)
-			{
-				Asset saved = (Asset) iterator.next();
-				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), saved);				
-			}
-		}
-		else
-		{
-			getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
-		}
+		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
 	}
 
 	public void removeAssetKeyword(WebPageRequest inReq) throws OpenEditException 
@@ -656,18 +645,7 @@ public class AssetEditModule extends BaseMediaModule
 		asset.removeKeyword(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 
-		if( asset instanceof CompositeAsset )
-		{
-			for (Iterator iterator = ((CompositeAsset)asset).iterator(); iterator.hasNext();)
-			{
-				Asset saved = (Asset) iterator.next();
-				getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), saved);				
-			}
-		}
-		else
-		{
-			getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
-		}
+		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
 
 	}
 	protected XmpWriter getXmpWriter()

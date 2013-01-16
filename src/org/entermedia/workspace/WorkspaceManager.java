@@ -186,6 +186,11 @@ public class WorkspaceManager
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
 		//getPageManager().clearCache();
+		
+		if( Boolean.valueOf( module.get("publicface") ) )
+		{
+			
+		}
 	}
 
 	protected void copyXml(String catalogid, String inTemplatePath, String inEndingPath, Data module)

@@ -823,7 +823,7 @@ public class OrderManager
 		if( inAsset instanceof CompositeAsset )
 		{
 			CompositeAsset assets = (CompositeAsset)inAsset;
-			for (Iterator iterator = assets.getItems().iterator(); iterator.hasNext();)
+			for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 			{
 				Asset asset = (Asset) iterator.next();
 				boolean inorder = isAssetInOrder(inArchive.getCatalogId(), inBasket, asset.getId());
