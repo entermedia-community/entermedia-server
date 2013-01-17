@@ -39,9 +39,19 @@ public void init()
 			vals.put("library", libraries);
 			
 		}
+		String division = context.getRequestParameter("division.value");
+		if(division == null && libraries != null){
+			Data library = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "library", libraries);
+			if(library != null){
+				vals.put("division", library.division);
+			}
+			
+		}
+		
+		
+		
 		
 		Replacer replacer = new Replacer();
-		
 		replacer.setSearcherManager(mediaArchive.getSearcherManager());
 		replacer.setDefaultCatalogId(mediaArchive.getCatalogId());
 		replacer.setAlwaysReplace(true);

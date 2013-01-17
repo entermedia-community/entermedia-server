@@ -335,6 +335,9 @@ public class OrderManager
 	
 	public Data addItemToOrder(String inCatId, Order order, Asset inAsset, Map inProps)
 	{
+		if(inAsset == null){
+			return null;
+		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		Data item = itemsearcher.createNewData();
 		item.setId(itemsearcher.nextId());

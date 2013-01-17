@@ -59,6 +59,8 @@
 
             <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
                 Render as Table?
+            	<input type="hidden" value="rendertype" name="field" />
+
             </div>
             <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
                 <div>Render Table</div>

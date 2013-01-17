@@ -4019,8 +4019,11 @@ div#folders.add .folder {
 }
 .categories-navigation {
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
+    /*overflow-y: hidden;*/
     padding: 0 !important;
+    min-height: 150px;
+    max-height: 500px;
 }
 #emcategoryinlineinner {
 
