@@ -253,21 +253,10 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 
 		String message = "Removed from category \"" + c.getName() + "\"";
-		if (assetid.startsWith("multiedit:")) {
-			CompositeAsset composite = (CompositeAsset) inPageRequest
-					.getSessionValue(assetid);
-			composite.removeCategory(c);
-			archive.saveAssets(composite.getItems(), inPageRequest.getUser());
-			for (Iterator i = composite.getItems().iterator(); i.hasNext();) {
-				Asset asset = (Asset) i.next();
-				fireAssetEditEvent(asset, inPageRequest.getUser(), message);
-			}
-		} else {
-			Asset asset = archive.getAsset(assetid);
-			asset.removeCategory(c);
-			archive.saveAsset(asset, inPageRequest.getUser());
-			fireAssetEditEvent(asset, inPageRequest.getUser(), message);
-		}
+		Asset asset = archive.getAsset(assetid,inPageRequest);
+		asset.removeCategory(c);
+		archive.saveAsset(asset, inPageRequest.getUser());
+		fireAssetEditEvent(asset, inPageRequest.getUser(), message);
 	}
 
 	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception 
@@ -324,18 +313,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			}
 
 			message = message + "\"" + c.getName() + "\"";
-			if (asset.getId().startsWith("multiedit:")) {
-				CompositeAsset composite = (CompositeAsset) inPageRequest
-						.getSessionValue(asset.getId());
-				composite.addCategory(c);
-				archive.saveAssets(composite.getItems());
-				for (Iterator iter = composite.iterator(); iter.hasNext();) {
-					Asset masset = (Asset) iter.next();
-					fireAssetEditEvent(masset, inPageRequest.getUser(), message);
-				}
-			} else {
-				asset.addCategory(c);
-			}
+			asset.addCategory(c);
 		}
 		archive.saveAsset(asset, inPageRequest.getUser());
 		fireAssetEditEvent(asset, inPageRequest.getUser(), message);
@@ -366,25 +344,10 @@ public class CategoryEditModule extends BaseMediaModule {
 			}
 
 			message = message + "\"" + c.getName() + "\"";
-			if (asset.getId().startsWith("multiedit:")) {
-				CompositeAsset composite = (CompositeAsset) inPageRequest
-						.getSessionValue(asset.getId());
-				composite.addCategory(c);
-			
-				for (Iterator iter = composite.getItems().iterator(); iter.hasNext();) {
-			
-					Asset masset = (Asset) iter.next();
-					archive.saveAsset(masset, inPageRequest.getUser());
-					fireAssetEditEvent(masset, inPageRequest.getUser(), message);
-				}
-			} else {
-				asset.addCategory(c);
-			}
+			asset.addCategory(c);
 		}
-		if (!asset.getId().startsWith("multiedit:")) {
-			archive.saveAsset(asset, inPageRequest.getUser());
-			fireAssetEditEvent(asset, inPageRequest.getUser(), message);
-		}
+		archive.saveAsset(asset, inPageRequest.getUser());
+		fireAssetEditEvent(asset, inPageRequest.getUser(), message);
 	}
 
 	/**

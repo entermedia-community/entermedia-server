@@ -101,11 +101,12 @@ public class WorkspaceManager
 		String searchtype = PathUtilities.makeId(tablename);
 		searchtype = searchtype.toLowerCase();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(catalogid);
-		PropertyDetails details = archive.getPropertyDetails(searchtype);
-		if( details.getInputFile().isExist() )
+		String path = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
+		if( getPageManager().getPage(path).exists() )
 		{
 			return searchtype;
 		}
+		PropertyDetails details = archive.getPropertyDetails(searchtype);
 		if (details == null)
 		{
 			PropertyDetails defaultdetails = archive.getPropertyDetails("default");
@@ -185,6 +186,11 @@ public class WorkspaceManager
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
 		//getPageManager().clearCache();
+		
+		if( Boolean.valueOf( module.get("publicface") ) )
+		{
+			
+		}
 	}
 
 	protected void copyXml(String catalogid, String inTemplatePath, String inEndingPath, Data module)

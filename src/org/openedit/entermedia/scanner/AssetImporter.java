@@ -25,6 +25,7 @@ import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
@@ -162,7 +163,7 @@ public class AssetImporter
 		if(unzip && "zip".equalsIgnoreCase(ext))
 		{
 			//unzip and create
-			CompositeAsset results = new CompositeAsset();
+			List assets = new ArrayList();
 			//the folder we are in
 			Page parentfolder = getPageManager().getPage( page.getParentPath() );
 			File dest = new File(parentfolder.getContentItem().getAbsolutePath());
@@ -182,11 +183,13 @@ public class AssetImporter
 					Asset asset = createAssetFromPage(inArchive, inUser, p);
 					if(asset != null)
 					{
-						results.addData(asset);
+						assets.add(asset);
 					}
 				}
 				
 				getPageManager().removePage(page);
+				CompositeAsset results = new CompositeAsset(inArchive,new ListHitTracker(assets));
+
 				return results;
 			}
 			catch (Exception e)

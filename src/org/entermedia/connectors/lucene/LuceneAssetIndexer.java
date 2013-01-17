@@ -244,8 +244,8 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		}
 		
 		String tagString = getTagString(asset);
-		doc.add(new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-
+		Field keys = new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED,  Field.TermVector.YES);
+		doc.add(keys);
 		Set catalogs = buildCategorySet(asset);
 		populateDescription(doc, asset, inKeywords, catalogs, tagString);
 
@@ -449,7 +449,10 @@ public class LuceneAssetIndexer extends LuceneIndexer
 				desc = desc.replace('/', ' '); // Is this needed?
 				desc = desc.replace('\\', ' ');
 				buffer.append(desc);
-				buffer.append(' ');
+				if( iter.hasNext() )
+				{
+					buffer.append(" | ");
+				}
 			}
 		}		
 		return buffer.toString();

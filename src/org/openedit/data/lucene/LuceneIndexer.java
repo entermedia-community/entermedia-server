@@ -135,7 +135,10 @@ public class LuceneIndexer
 				append = ((Document) next).get(inField);
 			}
 			buffer.append(append);
-			buffer.append(" ");
+			if( iter.hasNext() )
+			{
+				buffer.append(" | ");
+			}
 		}
 		// Add in all the catalogs, price, gender, image on disk?, name+ full
 		// text

@@ -457,7 +457,7 @@ public class DataEditModule extends BaseMediaModule
 			}
 			if (id != null && id.startsWith("multiedit:"))
 			{
-				data = (CompositeAsset) inReq.getSessionValue(id);
+				data = (CompositeData) inReq.getSessionValue(id);
 			}
 			if (id != null && data == null)
 			{
@@ -486,14 +486,17 @@ public class DataEditModule extends BaseMediaModule
 				}
 				
 				CompositeData compositedata = (CompositeData) data;
+
 				String[] newfields = new String[fieldswithvalues.size()];
 				fieldswithvalues.toArray(newfields);
-				for (Iterator iterator = compositedata.iterator(); iterator.hasNext();)
-				{
-					Data copy = (Data) iterator.next();
-					inReq.setRequestParameter("id", copy.getId());
-					searcher.saveDetails(inReq, newfields, copy, copy.getId());
-				}
+				searcher.updateData(inReq, newfields, compositedata);
+//				for (Iterator iterator = compositedata.iterator(); iterator.hasNext();)
+//				{
+//					Data copy = (Data) iterator.next();
+//					inReq.setRequestParameter("id", copy.getId());
+//					searcher.saveDetails(inReq, newfields, copy, copy.getId());
+//				}
+				compositedata.saveChanges();
 				// should we redirect to a save ok page?
 				redirectToSaveOk(inReq);
 			}

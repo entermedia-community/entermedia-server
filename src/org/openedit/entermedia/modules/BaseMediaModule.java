@@ -116,12 +116,11 @@ public class BaseMediaModule extends BaseModule
 			
 			if( assetid != null && assetid.startsWith("multiedit:") )
 			{
-				Data data = (Data)inReq.getSessionValue(assetid);
+//				Data data = (Data)inReq.getSessionValue(assetid);
+				Asset data = archive.getAsset(assetid, inReq);
 				inReq.putPageValue("asset", data);
 				inReq.putPageValue("data", data);
 				return (Asset) data;
-				//return null; //Why null?
-				
 			}
 
 		}

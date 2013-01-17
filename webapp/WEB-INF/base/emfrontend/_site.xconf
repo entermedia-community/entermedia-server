@@ -203,6 +203,10 @@
   <permission name="embedasset">
  	 <userprofile property="embedasset" equals="true" />
   </permission>
+
+  <permission name="embedlinks">
+ 	 <userprofile property="embedlinks" equals="true" />
+  </permission>
   
   <permission name="printpreview">
  	 <userprofile property="printpreview" equals="true" />

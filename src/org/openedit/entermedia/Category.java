@@ -18,7 +18,7 @@ import org.openedit.Data;
  * @author cburkey
  * 
  */
-public class Category implements Data
+public class Category implements Data, Comparable<Category>
 {
 	protected String fieldName;
 	protected String fieldId;
@@ -38,15 +38,11 @@ public class Category implements Data
 	
 	public void sortChildren(boolean inRecursive){
 		
-		Collections.sort(getChildren(), new Comparator() 
+		Collections.sort(getChildren());
+		if(inRecursive)
 		{
-			public int compare(Object o1, Object o2) {
-				Category c1 = (Category)o1, c2 = (Category)o2;
-				return c1.getName().toLowerCase().compareTo(c2.getName().toLowerCase());
-			}
-		});
-		if(inRecursive){
-			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) 
+			{
 				Category child = (Category) iterator.next();
 				child.sortChildren(inRecursive);
 			}
@@ -562,6 +558,23 @@ public class Category implements Data
 		// TODO Auto-generated method stub
 		
 	}
+	public int compareTo(Category c2)
+	{
+		if( getName() == null )
+		{
+			if( c2.getName() == null)
+			{
+				return 0;
+			}
+			return -1;
+		}
+		else if( c2.getName() == null)
+		{
+			return 1;
+		}
+		return getName().toLowerCase().compareTo(c2.getName().toLowerCase());
+	}
+
 
 	// public String getSourcePath()
 	// {
