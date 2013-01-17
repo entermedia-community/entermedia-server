@@ -46,7 +46,11 @@ public void init() {
 
 			}
 		}
-
+		String owner = library.get("owner");
+		if(owner == null){
+			library.setProperty("owner", username);
+			mediaArchive.getSearcher("library").saveData("library", null);
+		}
 		String gitprojectname = library.getId();
 		//Create Git Repo and check it out
 		String gitlocal = mediaArchive.getCatalogSettingValue("project_git_local_root");

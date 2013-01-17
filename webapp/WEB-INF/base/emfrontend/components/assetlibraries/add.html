@@ -2,7 +2,7 @@
 <h4>[[Add]]:</h4> 
 
 
-<form name="adder" class="ajaxform" targetdiv="emvalueeditor" action="$home$apphome/components/assetlibraries/addfinish.html">
+<form name="adder" class="ajaxform  validate-inputs" targetdiv="emvalueeditor" action="$home$apphome/components/assetlibraries/addfinish.html">
 
 
 <input type="hidden" name="fieldname" value="libraries" />
@@ -16,7 +16,7 @@
 
 #else
 
-<select name="libraries.value">
+<select name="libraries.value" class="required">
 <option value=""></option>
 #foreach( $libraryid in $userprofile.getCombinedLibraries() )
 	#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
@@ -35,4 +35,3 @@
 
 <input class="btn small" type="submit" value="[[Add]]" />
 </form>
-
