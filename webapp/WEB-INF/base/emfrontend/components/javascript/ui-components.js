@@ -5,6 +5,9 @@ formatHitCountResult = function(inRow)
 
 uiload = function() {
 
+	var app = jQuery("#application");
+	var apphome = app.data("home") + app.data("apphome");
+	var themeprefix = app.data("home") + app.data("themeprefix");
 	
 	$('#module-dropdown').click(function(e){
 		e.stopPropagation();
@@ -16,11 +19,6 @@ uiload = function() {
 			$('#module-list').show();
 		}
 	});
-	
-	
-	
-	
-	
 	
 	$('#maximize').click( function(){
 		
@@ -66,33 +64,27 @@ uiload = function() {
 		);
 	}
 	
-	
-	
-	
+	var browserlanguage =  app.data("browserlanguage");
+	if( browserlanguage == undefined )
+	{
+		browserlanguage = "";
+	}
 	jQuery.datepicker.setDefaults(jQuery.extend({
-		
-		
 		showOn: 'button',
-		
-		buttonImage: '$home$page.themeprefix/entermedia/images/cal.gif',
+		buttonImage: themeprefix + '/entermedia/images/cal.gif',
 		buttonImageOnly: true,
 		changeMonth: true,
 		changeYear: true	
-
-		
-	
-	}, jQuery.datepicker.regional['$!browserlanguage']));
+	}, jQuery.datepicker.regional[browserlanguage]));  //Move this to the layout?
 	
 	jQuery("input.datepicker").livequery(
 			function() 
 			{
 				var targetid = jQuery(this).data("targetid");
-							
 				
 				jQuery(this).datepicker( {
 					altField: "#"+ targetid,
 					altFormat: "mm/dd/yy"
-				
 				}
 				);
 				
@@ -212,7 +204,7 @@ uiload = function() {
 	        play: function() { // To avoid both jPlayers playing together.
 	        	player.jPlayer("pauseOthers");
 			},
-	        swfPath: '$home/emshare/components/javascript',
+	        swfPath: apphome + '/components/javascript',
 	        supplied: "mp3",
 	        wmode: "window",
 	        cssSelectorAncestor: "#" + containerid
@@ -257,12 +249,10 @@ uiload = function() {
 				var sid = selector.attr("id");
 
 				var listid = selector.data("listid");
-				
-				var app = jQuery("#application").data("apphome");
-						
+										
 				selector.ajaxChosen({
 					method: 'GET',
-					url: app + '/components/xml/types/modulepicker/datasearch.txt?searchtype=' + listid + '&field=name&operation=contains&hitsperpage=400&sortby=name',
+					url: apphome + '/components/xml/types/modulepicker/datasearch.txt?searchtype=' + listid + '&field=name&operation=contains&hitsperpage=400&sortby=name',
 					dataType: 'json',
 					jsonTermKey: 'name.value'
 				}, function (data) {
@@ -325,7 +315,31 @@ uiload = function() {
 	});
 	*/
 
-	
+	jQuery(".listautocomplete").livequery( function() 
+			{
+				var theinput = jQuery(this);
+				var listcatalogid = theinput.data("listcatalogid");
+				var searchtype = theinput.data("searchtype");
+				
+				
+				if( theinput && theinput.autocomplete )
+				{
+					var theinputhidden = theinput.attr("id") + "hidden";
+					
+					theinput.autocomplete({
+						source: apphome + '/components/autocomplete/listsuggestions.txt?searchtype=' + searchtype + '&catalogid=' + listcatalogid + '&operation=startswith&field=name&name.value=' + theinput.val() ,
+																
+						select: function(event, ui) {
+							//set input that's just for display purposes
+							theinput.val(ui.item.display);
+							//set a hidden input that's actually used when the form is submitted
+							
+							jQuery("#" + theinputhidden).val(ui.item.value);
+							return false;
+						}
+					});
+				}
+			});
 }
 
 function doResize() {

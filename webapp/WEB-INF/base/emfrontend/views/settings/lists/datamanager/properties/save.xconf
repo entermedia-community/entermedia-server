@@ -4,5 +4,4 @@
 	<path-action name="DataEditModule.loadProperties" />
 	<path-action name="DataEditModule.loadProperty" />
 	
-	<inner-layout>${dataroot}/list/innerlayout.html</inner-layout>
 </page>

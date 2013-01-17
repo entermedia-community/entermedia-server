@@ -243,12 +243,6 @@
 
 	<bean id="Date" class="com.openedit.modules.dates.DateModule"/>
 
-	<bean id="searcherManager" class="org.openedit.data.SearcherManager">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
-
 	<bean id="userSearcher" class="org.openedit.users.LuceneUserSearcher">
 		<property name="userManager">
 			<ref bean="userManager" />

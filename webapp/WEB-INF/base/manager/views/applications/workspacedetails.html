@@ -1,6 +1,5 @@
 <form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="save.html" target="_top">
     
-<h3>[[Hot Folder]]</h3>
 #set( $id = $context.getRequestParameter("id") )
 
 <input type="hidden" name="id" value="$id" />
@@ -11,7 +10,7 @@
 #end
 ##TODO: Use a detail editor here
 
-<label>[[Workspace Name]]</label>
+<label>[[Name]]</label>
 <input type="hidden" name="field" value="name" />
 <input class="field short required" name="name.value" value ="$!data.name" />
 <div class="note">[[Workspace nickname.]]</div>

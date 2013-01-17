@@ -274,7 +274,51 @@ h6 {
     margin: 35px 0;
 }
 
-/* ==|== server page ============================================== */
+/* ==|== catalog page ============================================== */
+
+.catalog-list {
+    padding: 0;
+}
+.catalog-list li {
+	
+	height: 91px;
+    background: url('../images/folder.png') top left no-repeat;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 91px;
+    list-style: none outside none;
+    margin: 0px 0 0px 40px;
+    padding: 0 0 0 110px;
+}
+.catalog-list li a {
+    color: #252525;
+    text-decoration: none;
+}
+.catalog-list li a span {
+    color: #8C4D4A;
+    font-size: 12px;
+    font-weight: normal;
+    position: relative;
+    top: -2px;
+}
+.catalog-list li a:hover {
+    color: #555555;
+}
+.catalog-list li a:hover span {
+    color: #BC7673;
+}
+
+.app-list li {
+	
+	height: 91px;
+    background: url('../images/folder.png') top left no-repeat;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 91px;
+    list-style: none outside none;
+    margin: 0px 0 0px 40px;
+    padding: 0 0 0 110px;
+}
 
 .server-set {
 	width: 100%;

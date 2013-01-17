@@ -1,0 +1,34 @@
+#set( $catalogid = $context.getRequestParameter("appcatalogid") )
+#set ($catalog = $searcherManager.getData("system","catalog",$catalogid))
+
+<ul class="fwlist" id="folders">
+
+	<li class="section-title">
+           <img height="60" width="60" alt="EM Share" src="/manager/theme/images/folder.png" style="float:left;">
+                 <span>Catalog $catalog</span>
+               </li>
+	#set( $apps = $searcherManager.getList($catalogid,"app") )
+	#foreach( $app in $apps)
+	<li class="auto">
+       <a href="$home$apphome/views/applications/index.html?appcatalogid=$catalogid&appid=$app.id" class="app">
+           <img height="60" width="60" alt="EM Share" src="/manager/theme/images/apps/emshare-icon.png" style="float:left;">
+           <div class="name" style="margin-left: 100px;">
+               <div class="alias">$app</div>
+               <div class="path">$context.siteRoot/${app.deploypath}</div>
+               <div class="last-activity">
+               		#set( $module  = $searcherManager.getData($catalogid,"module",$app.module) )
+               		$module
+               </div>
+           </div>
+       </a>
+       <div class="scan">
+           <a class="btn" style="margin-top: 15px;" href="$home/${site.deploypath}">View</a>
+       </div>
+	</li>
+	#end
+	</ul> 
+		
+<div class="scan floatclear" style="margin-top: 150px;margin-right: 0;">
+    <a class="btn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$catalogid">Create New Application</a>
+</div> 
+		

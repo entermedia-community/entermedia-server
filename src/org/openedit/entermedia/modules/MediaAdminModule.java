@@ -11,6 +11,7 @@ import org.entermedia.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 
+import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
@@ -94,8 +95,8 @@ public class MediaAdminModule extends BaseMediaModule
 	
 	public void deployApp(WebPageRequest inReq) throws Exception
 	{
-		String applicationid = inReq.findValue("applicationid");
-		Searcher searcher = getSearcherManager().getSearcher(applicationid,"site");
+		String appcatalogid = inReq.getRequestParameter("appcatalogid");
+		Searcher searcher = getSearcherManager().getSearcher(appcatalogid,"app");
 
 		Data site = null;
 		String id = inReq.getRequestParameter("id");
@@ -107,16 +108,20 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			site = (Data)searcher.searchById(id);
 		}
-//		String frontendid = inReq.findValue("frontendid");
-//		if( frontendid == null)
-//		{
-//			throw new OpenEditException("frontendid was null");
-//		}
+		String frontendid = inReq.findValue("frontendid");
+		if( frontendid == null)
+		{
+			throw new OpenEditException("frontendid was null");
+		}
 		String deploypath = inReq.findValue("deploypath");
+		if( !deploypath.startsWith("/") )
+		{
+			deploypath  = "/" + deploypath;
+		}
 		site.setProperty("deploypath",deploypath);
-		
-		String appcatalogid = inReq.findValue("appcatalogid");
-		site.setProperty("appcatalogid",appcatalogid);
+
+		String module = inReq.findValue("module");
+		site.setProperty("module",module);
 
 		String name = inReq.findValue("sitename");
 		site.setName(name);
@@ -124,19 +129,30 @@ public class MediaAdminModule extends BaseMediaModule
 //		site.setProperty("frontendid",frontendid);
 
 		searcher.saveData(site, inReq.getUser());
-		//Data frontend = getSearcherManager().getData(applicationid,"frontend",frontendid);
-		//Page copyfrompage = getPageManager().getPage(frontend.get("path"));
-		Page copyfrompage = getPageManager().getPage("/WEB-INF/base/manager/components/newworkspace");
+		Data frontend = getSearcherManager().getData("system","frontend",frontendid);
+		Page copyfrompage = getPageManager().getPage(frontend.get("path"));
+		//Page copyfrompage = getPageManager().getPage("/WEB-INF/base/manager/components/newworkspace");
 		
-		Page topage = getPageManager().getPage("/" + site.get("deploypath"));
+		Page topage = getPageManager().getPage(deploypath);
 		if( !topage.exists())
 		{
 			getPageManager().copyPage(copyfrompage,topage);
 		}
 		topage = getPageManager().getPage(topage.getPath(),true);
 		
-		topage.getPageSettings().setProperty("catalogid",site.get("appcatalogid"));
-		topage.getPageSettings().setProperty("applicationid",topage.getName());
+		topage.getPageSettings().setProperty("catalogid",appcatalogid);
+		
+		String appid = deploypath;
+		if( appid.startsWith("/") )
+		{
+			appid = appid.substring(1);
+		}
+		if( appid.endsWith("/") )
+		{
+			appid = appid.substring(0,appid.length()-1);
+		}
+		topage.getPageSettings().setProperty("applicationid",appid);
+		topage.getPageSettings().setProperty("module",site.get("module"));
 		
 		getPageManager().saveSettings(topage);
 		

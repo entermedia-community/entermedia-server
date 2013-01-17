@@ -5,7 +5,7 @@
 			</div>
 			<div class="wizard-body">
 				<h2>Available Applications</h2>
-		#set( $appsearcher = $searcherManager.getSearcher("media","frontend") )
+		#set( $appsearcher = $searcherManager.getSearcher("system","frontend") )
 
 		#set( $frontends = $appsearcher.getAllHits($context) )
 		#foreach( $frontend in $frontends)

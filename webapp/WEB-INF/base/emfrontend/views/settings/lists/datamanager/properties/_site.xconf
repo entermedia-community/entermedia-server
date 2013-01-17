@@ -2,5 +2,5 @@
 
 <page>
 	<property name="datatab">properties</property>
-	<inner-layout>${dataroot}/properties/innerlayout.html</inner-layout>
+   <inner-layout>${dataroot}/list/innerlayout.html</inner-layout>
 </page>

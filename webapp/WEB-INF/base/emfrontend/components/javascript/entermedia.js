@@ -504,34 +504,6 @@ onloadselectors = function()
 			});
 
 	
-	jQuery(".listautocomplete").livequery( function() 
-			{
-				var theinput = jQuery(this);
-				var listcatalogid = theinput.data("listcatalogid");
-				var searchtype = theinput.data("searchtype");
-				
-				
-				if( theinput && theinput.autocomplete )
-				{
-					var theinputhidden = theinput.attr("id") + "hidden";
-					
-					theinput.autocomplete({
-						source: '$home$apphome/components/autocomplete/listsuggestions.txt?searchtype=' + searchtype + '&catalogid=' + listcatalogid + '&operation=startswith&field=name&name.value=' + theinput.val() ,
-																
-						select: function(event, ui) {
-							//set input that's just for display purposes
-							theinput.val(ui.item.display);
-							//set a hidden input that's actually used when the form is submitted
-							
-							jQuery("#" + theinputhidden).val(ui.item.value);
-							return false;
-						}
-					});
-				}
-			});
-
-	
-	
 	
 	
 	jQuery(".addmygroups").livequery( function() 

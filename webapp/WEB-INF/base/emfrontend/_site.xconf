@@ -34,6 +34,8 @@
 	<property name="thumbsize">thumb</property>
 	<!-- property name="contentsiteroot">http://s3.amazonaws.com/emtube</property -->
 
+	<path-action name="TranslationModule.loadBrowserLanguage" />
+
  	<property name="themeprefix">/${applicationid}/theme</property>
 
 	<!-- ROLE BASED PERMISSIONS -->
