@@ -5,7 +5,7 @@
 
 #set ($catalog = $searcherManager.getData("system","catalog",$catalogid))
 
-<a class="btn blue"  href="$home$apphome/views/catalogs/edit.html?id=$catalogid&appcatalogid=$catalogid">Catalog $catalog</a>
+<a href="$home$apphome/views/catalogs/edit.html?id=$catalogid&appcatalogid=$catalogid" style="position: relative; top: 8px; font-size: 16px;">&larr; Back to Catalog $catalog</a>
 <br><br>
 <div id="folders" class="fwlist manual">
     <div class="folder" style="margin-top: 0;">

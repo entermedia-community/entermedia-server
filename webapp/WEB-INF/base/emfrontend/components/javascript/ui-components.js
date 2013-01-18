@@ -215,22 +215,22 @@ uiload = function() {
 	});
 
 
-	$('#select-dropdown-open').livequery("click",function(){
+	$('.select-dropdown-open').livequery("click",function(){
 		
 		if ($(this).hasClass('down')) {
 			$(this).removeClass('down');
 			$(this).addClass('up');
-			$('#select-dropdown').show();
+			$(this).siblings('.select-dropdown').show();
 		} else {
 			$(this).removeClass('up');
 			$(this).addClass('down');
-			$('#select-dropdown').hide();
+			$(this).siblings('.select-dropdown').hide();
 		}
 	});
-	$('#select-dropdown li a').livequery("click",function(){
-		$('#select-dropdown-open').removeClass('up');
-		$('#select-dropdown-open').addClass('down');
-		$('#select-dropdown').hide();
+	$('.select-dropdown li a').livequery("click",function(){
+		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').removeClass('up');
+		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').addClass('down');
+		$(this).closest('.select-dropdown').hide();
 	});
 
 

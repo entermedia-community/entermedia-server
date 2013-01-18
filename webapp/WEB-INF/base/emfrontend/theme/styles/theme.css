@@ -2275,7 +2275,7 @@ tr.odd {
 
 
 .search-list li a.search-href, .sidebar-list a {
-    padding: 10px 40px;
+    padding: 10px 30px;
     margin: 0 4px 0 4px;
     text-decoration: none;
     display: block;
@@ -2309,13 +2309,13 @@ tr.odd {
     width: 10px;
     height: 10px;
     float: left;
-    margin: 12px 0 0 12px;
-    visibility: hidden;
+    margin: 12px -15px 0 15px;
     position: relative;
     z-index: 3;
+    padding: 0;
 }
 .search-edit a:hover {
-    background-position: 10px 20px;
+    background: url('../images/iconset-10x10.png') 10px 20px;
 }
 .search-delete a {
     background: url('../images/iconset-10x10.png') 20px 10px;
@@ -3536,20 +3536,20 @@ body #emcontainer .emasseteditorarea {
     position: relative; 
     top: -8px;
 }
-#select-dropdown-open {
+.select-dropdown-open {
     width: 20px;
     height: 28px;
     position: absolute;
     left: 27px;
     top: 0;
 }
-#select-dropdown-open.down {
+.select-dropdown-open.down {
     background: url('../images/sort-desc.png') 5px 10px no-repeat;
 }
-#select-dropdown-open.up {
+.select-dropdown-open.up {
     background: url('../images/sort-asc.png') 5px 10px no-repeat;
 }
-#select-dropdown {
+.select-dropdown {
     position: absolute;
     background: #f7f7f7 url('../images/top-shadow.png') center -1px repeat-x;
     border: 1px solid #bbb;
@@ -3566,21 +3566,36 @@ body #emcontainer .emasseteditorarea {
 #main-results-table .checkbox input, #main-results-table .firstheader input {
     margin-right: 25px;
 }
-#select-dropdown li {
+.select-dropdown li {
     margin: 0;
     padding: 0;
     list-style: none;
 }
-#select-dropdown li a {
+.select-dropdown li a {
     text-align: left;
     display: block;
     padding: 5px 10px;
     color: #444;
     text-shadow: none;
-    font-weight: normal;
+    font-weight: normal !important;
 }
-#select-dropdown li a:hover {
-    background: #e9e9e9;   
+#header #top-bar-select li a {
+    color: #444 !important;
+    text-align: left;
+    display: block;
+    padding: 5px 10px;
+    color: #444;
+    text-shadow: none;
+    font-weight: normal !important;
+}
+.select-dropdown li a:hover, #header #top-bar-select li a:hover {
+    background: #e9e9e9; 
+    text-decoration: none;  
+}
+#top-bar-select {
+    right: 10px;
+    top: 10px;
+    left: auto;
 }
 .settings-table {
     margin: 0 0 20px 0;

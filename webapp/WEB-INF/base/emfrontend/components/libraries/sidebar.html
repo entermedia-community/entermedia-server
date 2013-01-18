@@ -2,7 +2,7 @@
 <div class="ui-widget uipanel" id="left-col-search" >
 	<div class="ui-widget-header">[[My Projects]]</div>
 <div  class="ui-widget-content">
-		<ul class="sidebar-list">
+		<ul class="sidebar-list search-list">
 	#set($selected = false )
 	#set($selected = $hits.getInput("libraries") )
     	#foreach($libraryid in $userprofile.getCombinedLibraries() )
@@ -11,7 +11,11 @@
     		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )
     		#if($library)
     		<li class="#if( $selected && $selected == $library.id) currentsubtle #end librarydroparea" data-libraryid="$library.id"> 
-				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">#if($division) $!division / #end $library</a>
+    		    
+    		    <div class="search-edit"><a class="ir" href="$home$apphome/views/modules/library/edit/edit.html?id=$library.id&viewid=librarygeneral&viewpath=library/librarygeneral&hitssessionid=hitslibrarymedia/catalogs/public&searchtype=library" title="Edit $library">Edit</a></div>
+    		    
+				<a  class="search-href" href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">#if($division) $!division / #end $library</a>
+    		
     		</li>		
     		#end
 		#set($library = "")

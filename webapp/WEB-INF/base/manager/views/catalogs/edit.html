@@ -4,16 +4,16 @@
 <ul class="fwlist" id="folders">
 
 	<li class="section-title">
-           <img height="60" width="60" alt="EM Share" src="/manager/theme/images/folder.png" style="float:left;">
+           <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 9px 15px 0 15px;">
                  <span>Catalog $catalog</span>
                </li>
 	#set( $apps = $searcherManager.getList($catalogid,"app") )
 	#foreach( $app in $apps)
 	<li class="auto">
        <a href="$home$apphome/views/applications/index.html?appcatalogid=$catalogid&appid=$app.id" class="app">
-           <img height="60" width="60" alt="EM Share" src="/manager/theme/images/apps/emshare-icon.png" style="float:left;">
-           <div class="name" style="margin-left: 100px;">
-               <div class="alias">$app</div>
+           <img height="60" width="60" alt="EM Share" src="/manager/theme/images/folder.png" style="float:left; margin: -15px 15px 0 0;">
+           <div class="name" style="margin-left: 85px; margin-top: -12px;">
+               <div class="alias" style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">$app</div>
                <div class="path">$context.siteRoot/${app.deploypath}</div>
                <div class="last-activity">
                		#set( $module  = $searcherManager.getData($catalogid,"module",$app.module) )
@@ -28,7 +28,7 @@
 	#end
 	</ul> 
 		
-<div class="scan floatclear" style="margin-top: 150px;margin-right: 0;">
+<div class="scan floatclear" style="margin-top: 30px;margin-right: 0;">
     <a class="btn" href="$home$apphome/views/applications/uploadapp.html?appcatalogid=$catalogid">Import Application</a>
     <a class="btn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$catalogid">Create New Application</a>
 
