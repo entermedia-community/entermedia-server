@@ -1,7 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <page>
 	<generator name="admintoolbarGenerator" />
-   	<layout/>
-   	<inner-layout />
-  	<property name="editable">false</property>
 </page>

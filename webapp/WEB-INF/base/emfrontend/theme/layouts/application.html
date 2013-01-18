@@ -1,8 +1,8 @@
-#if ( $canviewerrors )
-<div id="errordiv"></div>
-#end
-
 <div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="${browserlanguage}">
+
+    #if ( $canviewerrors )
+	<div id="errordiv"></div>
+	#end
 	<div id="emcontainer">
 		<div id="header" class="clearfix" role="banner">
 			$pages.include("${themeprefix}/layouts/header.html")

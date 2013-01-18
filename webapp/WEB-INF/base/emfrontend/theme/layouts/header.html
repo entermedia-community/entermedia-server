@@ -1,32 +1,33 @@
-<table width="100%">
-<tr>
-<td>
-$pages.include("$apphome/views/content/logo.html")
-$context.locale
-</td>
-<td>
-<div id="emtopmenu">
-#if( $canviewhomelink )
-	<a href="$home$apphome/index.html">Home</a> |
-#end	
+      
+       	#set ($lastselected = $content.module )
+		 	#if(!$lastselected)
+		 		#set($lastselected = $userprofile.last_selected_module )
+		 	#end
+		 	#if(!$lastselected)
+                #set($lastselected = "asset" )
+            #end
+
+		 	#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
+      <a href="$home$apphome/views/modules/${module.getId()}/index.html"><img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
+      
+      <span class="navlinks">
+       
+
 #if( $user )
-<a href="$home$apphome/users/$!{user.getId()}/index.html">$!user.getScreenName()</a> | <a href="$home$apphome/authentication/logout.html">Logout</a>
-#if( $canviewsettings )
- | <a href="$home$apphome/views/settings/applicationsetup/apprules/index.html">Settings</a>
-#end
+#if( $canviewmyaccount )
+	<a href="$home$apphome/views/myaccount/myassets/index.html">My Account</a> |
+#end	
+	<a href="$home$apphome/authentication/logout.html">Logout</a>
+	
+	
 #else
 	<a href="$home$apphome/authentication/login.html">Login</a>
-#end	
-</div>
-#if( $canupload )
-<div id="emtopmenuactions">
-	<a href="$home$apphome/components/upload/index.html?width=900&height=600" class="emdialog"><img src="$home$themeprefix/images/buttons/upload.png" />Upload</a>
-</div>
+#end	 
+ 			
+ #if($canviewsettings)
+|	<a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>Settings</a>
+|	<a href="$home/manager/views/catalogs/edit.html?appcatalogid=$catalogid">Manager</a>
 #end
-<div id="emtopmenuactions">
-	$pages.include("$apphome/components/navigation/quicksearch.html")
-</div>
-
-</td>
-</tr>
-</table>
+ 			
+        </span>
