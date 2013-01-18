@@ -841,15 +841,17 @@ public class OrderManager
 			}
 			
 		}
-		
-		boolean inorder = isAssetInOrder(inArchive.getCatalogId(), inBasket, inAsset.getId());
-		if (inorder)
-		{
-			removeItemFromOrder(inArchive.getCatalogId(), inBasket, inAsset);
-		}
 		else
 		{
-			addItemToOrder(inArchive.getCatalogId(), inBasket, inAsset, null);
+			boolean inorder = isAssetInOrder(inArchive.getCatalogId(), inBasket, inAsset.getId());
+			if (inorder)
+			{
+				removeItemFromOrder(inArchive.getCatalogId(), inBasket, inAsset);
+			}
+			else
+			{
+				addItemToOrder(inArchive.getCatalogId(), inBasket, inAsset, null);
+			}
 		}
 
 	}

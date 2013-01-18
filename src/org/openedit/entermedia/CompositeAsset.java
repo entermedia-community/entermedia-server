@@ -139,6 +139,10 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		if( fieldCategories == null )
 		{
 			Data first = (Data)getSelectedHits().first();
+			if( first == null )
+			{
+				return Collections.EMPTY_LIST;
+			}
 			String fcats = first.get("category");
 			if( fcats != null )
 			{
