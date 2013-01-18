@@ -2338,7 +2338,7 @@ tr.odd {
     color: #fff;
 }
 
-.search-list li.currentsubtle a.search-href, .sidebar-list li.currentsubtle a {
+.search-list li.currentsubtle a.search-href, .sidebar-list li.currentsubtle a.search-href {
     background: #c9e8f2;
 }
 

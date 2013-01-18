@@ -19,17 +19,10 @@
     
     <div class="select-dropdown-open down" style="position: relative; top: -2px; left: -0; margin: -5px; display: inline-block; width: 20px; height: 20px;"></div>
     <ul id="top-bar-select" class="select-dropdown" style="display: none;">
-        <li>
-            <a href="#">App 1</a>
-        </li>
-        <li>
-            <a href="#">App 2 Has a Long Title</a>
-        </li>
-        <li>
-            <a href="#">App 3 Has a Tile</a>
-        </li>
-        <li>
-            <a href="#">App 4.362</a>
-        </li>  
+		#set( $sitesearcher = $searcherManager.getSearcher($catalogid,"app") )
+		#set( $sites = $sitesearcher.getAllHits($context) )
+		#foreach( $site in $sites)
+			<li ><a href="$site.deploypath">$site <span>($site.deploypath)</span></a></li>
+		#end
     </ul> #end </span>
 

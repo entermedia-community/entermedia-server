@@ -5,7 +5,8 @@
 		<ul class="sidebar-list search-list">
 	#set($selected = false )
 	#set($selected = $hits.getInput("libraries") )
-    	#foreach($libraryid in $userprofile.getCombinedLibraries() )
+    	#foreach($libraryid in $userprofile.getCombinedLibraries() )  ##replace this with a specific module type library filter
+    		 #set( $library = false )
     		 #set( $library = $searcherManager.getData($catalogid,"library",$libraryid ) )
     		 #set( $division = false )
     		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )

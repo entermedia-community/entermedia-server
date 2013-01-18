@@ -85,7 +85,7 @@ public class WorkspaceManager
 		root.addElement("applicationid").addAttribute("id", appid);
 		root.addElement("catalogid").addAttribute("id", catalogid);
 
-		Data app = getSearcherManager().getData("media", "site", appid);
+		Data app = getSearcherManager().getData(catalogid, "app", appid);
 		if (app != null)
 		{
 			root.addElement("name").setText(app.getName());
@@ -225,20 +225,35 @@ public class WorkspaceManager
 		}
 	}
 
-	public void deployUploadedApp(Page zip)
+	public void deployUploadedApp(String inAppcatalogid, Page zip)
 	{
-		Page dest = getPageManager().getPage("/");
+		Page dest = getPageManager().getPage("/WEB-INF/temp/appunzip");
 		try
 		{
+			getPageManager().removePage(dest);
+			
 			new ZipUtil().unzip(zip.getContentItem().getAbsolutePath(), dest.getContentItem().getAbsolutePath());
-			Page def = getPageManager().getPage("/.emapp.xml");
+			Page def = getPageManager().getPage(dest.getPath() + "/.emapp.xml");
 			Element root = new XmlUtil().getXml(def.getReader(), "UTF-8");
 			String applicationid = root.element("applicationid").attributeValue("id");
-			String catalogid = root.element("catalogid").attributeValue("id");
+			String oldcatalogid = root.element("catalogid").attributeValue("id");
 
-			Searcher searcher = getSearcherManager().getSearcher(applicationid, "site");
+			//move the files in place
+			Page apphome = getPageManager().getPage(dest.getPath() + "/" + applicationid);
+			Page appdest = getPageManager().getPage( "/" + applicationid);
+			getPageManager().copyPage(apphome, appdest);
 
-			Data site = (Data) searcher.searchByField("deploypath", applicationid);
+			Page cataloghome = getPageManager().getPage(dest.getPath() + "/" + oldcatalogid);
+			Page catalogdest = getPageManager().getPage( "/" + inAppcatalogid);
+			getPageManager().copyPage(cataloghome, catalogdest);
+
+			Page dataold = getPageManager().getPage(dest.getPath() + "/WEB-INF/data/" + oldcatalogid);
+			Page datadest = getPageManager().getPage( "/WEB-INF/data/" + inAppcatalogid);
+			getPageManager().copyPage(dataold, datadest);
+			
+			//Save the app data
+			Searcher searcher = getSearcherManager().getSearcher(inAppcatalogid, "app");
+			Data site = (Data) searcher.searchByField("deploypath", "/" + applicationid);
 			if (site == null)
 			{
 				site = searcher.createNewData();
@@ -251,13 +266,13 @@ public class WorkspaceManager
 
 			if (applicationid != null)
 			{
-				site.setProperty("deploypath", applicationid);
+				site.setProperty("deploypath", "/" + applicationid);
 			}
-			if (catalogid != null)
-			{
-
-				site.setProperty("appcatalogid", catalogid);
-			}
+//			if (catalogid != null)
+//			{
+//
+//				site.setProperty("appcatalogid", catalogid);
+//			}
 
 			String name = root.elementText("name");
 			if (name != null)
@@ -267,12 +282,12 @@ public class WorkspaceManager
 
 			searcher.saveData(site, null);
 
-			Searcher catsearcher = getSearcherManager().getSearcher("media", "catalogs");
-			Data cat = (Data) catsearcher.searchById(catalogid);
+			Searcher catsearcher = getSearcherManager().getSearcher("system", "catalog");
+			Data cat = (Data) catsearcher.searchById(inAppcatalogid);
 			if (cat == null)
 			{
 				cat = catsearcher.createNewData();
-				cat.setId(catalogid);
+				cat.setId(inAppcatalogid);
 				catsearcher.saveData(cat, null);
 			}
 		}

@@ -1,6 +1,7 @@
 <form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="save.html" target="_top">
     
 #set( $id = $context.getRequestParameter("id") )
+#set( $appcatalogid = $context.getRequestParameter("appcatalogid") )
 
 <input type="hidden" name="id" value="$id" />
 
@@ -12,10 +13,13 @@
 
 <label>[[Name]]</label>
 <input type="hidden" name="field" value="name" />
+<input type="hidden" name="searchtype" value="app" />
+<input type="hidden" name="catalogid" value="$appcatalogid" />
+<input type="hidden" name="appcatalogid" value="$appcatalogid" />
 <input class="field short required" name="name.value" value ="$!data.name" />
 <div class="note">[[Workspace nickname.]]</div>
 
-
+##Add modules here?
 
 <input style="margin-top: 40px;" class="btn" type="submit" value="[[Save]]" />
 
