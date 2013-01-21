@@ -90,7 +90,7 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 			//we are missing the data element of the children
 			//required: catalogid, searchtype, fieldname, value
 			//optional: query, foreignkeyid and foreignkeyvalue
-			jQuery("#" + div).load(apphome '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+			jQuery("#" + div).load(apphome + '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
 		}
 	}
 }
@@ -101,7 +101,7 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 loadlist = function(indiv, catalogid, searchtype, inlabel, childfieldname, foreignkeyid, foreignkeyvalue, value )
 {
 	//what is this?
-	jQuery(indiv).load(apphome + "/components/xml/types/simplelist.html', {catalogid:catalogid, searchtype:searchtype, fieldname:childfieldname, label:inlabel, foreignkeyid:foreignkeyid, foreignkeyvalue:foreignkeyvalue, value:value, oemaxlevel:1});
+	jQuery(indiv).load(apphome + '/components/xml/types/simplelist.html', {catalogid:catalogid, searchtype:searchtype, fieldname:childfieldname, label:inlabel, foreignkeyid:foreignkeyid, foreignkeyvalue:foreignkeyvalue, value:value, oemaxlevel:1});
 }
 //Don't use any form inputs named 'name'!
 postForm = function(inDiv, inFormId)
