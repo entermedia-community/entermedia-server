@@ -27,6 +27,7 @@ public class ZipGroup
 
 	protected User fieldUser;
 	protected MediaArchive fieldMediaArchive;
+	OutputFiller filler = new OutputFiller();
 
 	public MediaArchive getMediaArchive()
 	{
@@ -38,9 +39,9 @@ public class ZipGroup
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	protected void writeFileToZip(ZipOutputStream inZipOutputStream, OutputFiller inOutputFiller, File inFile)
+	protected void writeFileToZip(ZipOutputStream inZipOutputStream, String inName, File inFile)
 	{
-		ZipEntry entry = new ZipEntry(inFile.getName());
+		ZipEntry entry = new ZipEntry(inName);
 		entry.setSize(inFile.length());
 		entry.setTime(inFile.lastModified());
 		try
@@ -49,7 +50,7 @@ public class ZipGroup
 			inZipOutputStream.putNextEntry(entry);
 			try
 			{
-				inOutputFiller.fill(fis, inZipOutputStream);
+				filler.fill(fis, inZipOutputStream);
 			}
 			finally
 			{
@@ -111,7 +112,6 @@ public class ZipGroup
 
 		try
 		{
-			OutputFiller filler = new OutputFiller();
 			for (Asset asset: inAssets.keySet())
 			{
 				Page documentFile = getMediaArchive().getOriginalDocument(asset);
@@ -147,15 +147,15 @@ public class ZipGroup
 							temp = new File(source.getParentFile(), asset.getSaveAsName());
 						}
 
-						if (!source.equals(temp))
+						if (!source.equals(temp)) //What is this for?
 						{
 							new FileUtils().copyFiles(source, temp);
-							writeFileToZip(zos, filler, temp);
+							writeFileToZip(zos, temp.getName(), temp);
 							new FileUtils().deleteAll(temp);
 						}
 						else
 						{
-							writeFileToZip(zos, filler, source);
+							writeFileToZip(zos, source.getName(), source);
 						}
 						okAssets.add(asset);
 					}
@@ -216,4 +216,60 @@ public class ZipGroup
 		fieldUser = user;
 	}
 
+	public void zipAttachments(Asset inAsset, OutputStream inStream) throws OpenEditException
+	{
+		ZipOutputStream zos = new ZipOutputStream(inStream);
+		zos.setLevel(1); // for speed since these are jpegs
+
+		try
+		{
+			
+			String documentFile = getMediaArchive().getOriginalFileManager().getDataAssetsPath(inAsset.getSourcePath());
+			File input = new File( documentFile );
+			if (!input.exists())
+			{
+				writeStringToZip(zos, "Attachments missing "  + documentFile , "missing.txt");
+			}
+			else
+			{
+				writeFolder(zos, input, input);
+			}
+		}
+		finally
+		{
+			try
+			{
+				FileUtils.safeClose(zos); // This will fail if there was any
+
+			}
+			catch (Exception ex2)
+			{
+				// nothing
+			}
+		}
+
+	}
+
+	protected void writeFolder(ZipOutputStream inZos, File inRoot, File inFile)
+	{
+		if( inFile.isDirectory() )
+		{
+			//get the children
+			File[] children = inFile.listFiles();
+			if( children != null )
+			{
+				for (int i = 0; i < children.length; i++)
+				{
+					writeFolder(inZos, inRoot, children[i]);					
+				}
+			}
+		}
+		else
+		{
+			String fileName = inFile.getAbsolutePath().substring(inRoot.getAbsolutePath().length());
+			fileName = fileName.replace("\\", "/");
+			writeFileToZip(inZos,fileName, inFile);
+		}
+	}
+	
 }

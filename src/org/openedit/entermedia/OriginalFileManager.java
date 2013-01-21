@@ -110,10 +110,9 @@ public class OriginalFileManager
 	}
 		
 	/**
-	 * This only works if inSourcePath has an extension,
-	 * i.e. newassets/admin/118/picture.jpg
+	 * Returns the absolute path to the originals source path
 	 * @param inSourcePath
-	 * @return
+	 * @return absolute path
 	 */
 	public String getDataAssetsPath(String inSourcePath)
 	{

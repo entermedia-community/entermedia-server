@@ -47,7 +47,11 @@ public class DownloadZipGenerator extends BaseGenerator
 		String type = inReq.findValue("sourcefile");
 		if( "attachments".equals( type ) )
 		{
-			
+			ZipGroup zip = new ZipGroup();
+			zip.setMediaArchive(archive);
+			zip.setUser(inReq.getUser());
+			Asset asset = archive.getAssetBySourcePath(inReq.getContentPage());
+			zip.zipAttachments(asset, inOut.getStream() );
 		}
 		else
 		{
