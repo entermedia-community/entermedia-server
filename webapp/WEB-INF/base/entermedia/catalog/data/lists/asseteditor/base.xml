@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-
+<!--  not used? see detaileditormenu -->
   <property id="viewmediaviewer" icon="clock" path="/views/modules/asset/editor/viewer/index.html" >Preview</property>
   <property id="asseteditormetadata" icon="lab" path="/views/modules/asset/editor/generalinformation/index.html" >Metadata</property>
   <property id="asseteditorpermissions"  path="/views/modules/asset/editor/share/index.html" >Permissions</property>

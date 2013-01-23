@@ -7,6 +7,8 @@
     <div class="subcolumns">
         <div class="c25l" id="left-col">
                 $pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html", $context)
+$pages.include("$apphome/components/libraries/sidebar.html",$context)
+
         </div>
         <div id="right-col" class="module-inner">
                 
@@ -46,6 +48,7 @@
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
                 <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
                  $pages.include("$apphome/views/modules/${moduleid}/edit/sidebar.html",$context)
+
                  $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
 				
                 </div>

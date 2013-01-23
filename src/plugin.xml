@@ -70,6 +70,9 @@
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
+		<property name="webEventListener">
+			<ref bean="pathEventHandler" />
+		</property>
 
 	</bean>
 
@@ -239,12 +242,6 @@
 	</bean>
 
 	<bean id="Date" class="com.openedit.modules.dates.DateModule"/>
-
-	<bean id="searcherManager" class="org.openedit.data.SearcherManager">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
 
 	<bean id="userSearcher" class="org.openedit.users.LuceneUserSearcher">
 		<property name="userManager">

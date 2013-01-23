@@ -10,6 +10,12 @@
   <property name="applicationid">manager</property>
   <property name="themeprefix">/${applicationid}/theme</property>
 
+  <path-action name="MediaArchiveModule.loadApplicationId" />
+  <path-action name="ProfileModule.loadUserProfile" />
+
+    <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 
 	<permission name="view">
 		<group name="administrators" />

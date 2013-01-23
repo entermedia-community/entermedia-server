@@ -106,6 +106,13 @@ h5 {
 h6 {
 	font-size: 14px;
 }
+a, a:visited {
+    color: #A28562;
+    text-decoration: none;
+}
+a:hover {
+    color: #b69972;
+}
 
 /* ==|== buttons ============================================== */
 
@@ -274,7 +281,51 @@ h6 {
     margin: 35px 0;
 }
 
-/* ==|== server page ============================================== */
+/* ==|== catalog page ============================================== */
+
+.catalog-list {
+    padding: 0;
+}
+.catalog-list li {
+	
+	height: 28px;
+    background: url('../images/small-server.png') top left no-repeat;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 28px;
+    list-style: none outside none;
+    margin: 15px 0 0px 40px;
+    padding: 0 0 0 45px;
+}
+.catalog-list li a {
+    color: #252525;
+    text-decoration: none;
+}
+.catalog-list li a span {
+    color: #8C4D4A;
+    font-size: 12px;
+    font-weight: normal;
+    position: relative;
+    top: -2px;
+}
+.catalog-list li a:hover {
+    color: #555555;
+}
+.catalog-list li a:hover span {
+    color: #BC7673;
+}
+
+.app-list li {
+	
+	height: 91px;
+    background: url('../images/folder.png') top left no-repeat;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 91px;
+    list-style: none outside none;
+    margin: 0px 0 0px 40px;
+    padding: 0 0 0 110px;
+}
 
 .server-set {
 	width: 100%;
@@ -342,6 +393,12 @@ table tr.odd {
 table tr:hover {
 	background: #eee;
 }
+.app div {
+    color: #444;
+}
+.app:hover div {
+    color: #777;
+}
 
 /* ==|== wizard ================================================= */
 
@@ -370,7 +427,18 @@ table tr:hover {
 }
 .wizard-body h2 {
 	text-align: center;
-	margin: 10px 0 30px 0;
+	margin: 0 10px 0 10px;
+	padding-bottom: 25px;
+	border-bottom: 1px solid;
+}
+.wizard-content {
+    padding: 0 40px;
+}
+.wizard-content label {
+    display: block;
+    margin: 25px 0 4px 0;
+    border-top: 1px solid;
+    padding-top: 20px;
 }
 .wizard-bottom {
 	background: url('../images/wizard-bottom.png');
@@ -428,7 +496,7 @@ table tr:hover {
 	width: 460px;
 	margin-left: 10px;
 	padding: 0 20px;
-}x
+}
 .app-info-content p {
 	color: #a28562;
 	font-size: 14px;
@@ -584,6 +652,7 @@ small {
 .fwlist, .fw {
     margin: 0 0 0 0;
     padding: 0;
+    background: #fff;
 }
 .fwlist li {
     margin: 0;
@@ -592,8 +661,8 @@ small {
     display: block;
     border-bottom: 1px solid #d4d4d4;
 }
-.fwlist li:nth-child(even) {
-    background: #f7f7f7;
+.fwlist li {
+    background: #fff;
 }
 #folders li {
     height: 102px;
@@ -630,11 +699,11 @@ small {
     width: 600px;
 }
 .folder:hover .alias, .folder:hover .path {
-    color: #3DAACD;
+    color: white;
 }
 .folder .alias {
     font-weight: bold;
-    color: #000;
+    color: #f7f7f7;
     font-size: 16px;
     margin-top: -4px;
 }
@@ -736,7 +805,7 @@ li.add {
     margin: 38px 20px 0 0;
 }
 div#folders .folder {
-    background-color: #f7f7f7;
+    background-color: #A28562;
     border-bottom: 1px solid #ccc;
     margin: -30px 0 20px 0;
     width: 100%;

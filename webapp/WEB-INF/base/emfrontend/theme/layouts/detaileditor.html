@@ -4,9 +4,9 @@
     #macro (displaydetails $filename $label $assetid $view $print)
     $context.putPageValue("view", $view)
     #if ($print && $print == "true")
-    $pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=asset", $context)
+    $pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=$moduleid", $context)
     #else
-    $pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=asset",$context)
+    $pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=$moduleid",$context)
     #end
     #end
     
@@ -34,6 +34,8 @@
                 <div class="title-bar" id="details-title">
                     <span>$section</span>
                 </div>
+                #if( $canviewassets )
+                
                 <div class="title-bar" style="border-right: none;">
                 #if( $hits && $hits.hasMultipleSelections() )
                     <span style="text-align: center;">Selected Media</span>
@@ -41,6 +43,7 @@
                     <span style="text-align: center;">Related Media</span>
                 #end    
                 </div>
+                #end
             </div>
             <div class="tr">
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
@@ -57,12 +60,13 @@
                         	#set( $inpreviewpage = true )
                         #elseif( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
                         	#set( $inpreviewpage = true )
-                        #elseif( $content.path.endsWith("detailviewer/index.html") )
-                        	#set( $inpreviewpage = true )
                         #end
                         #if( $inpreviewpage )
 	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
                         #else
+                            
+                            $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                            
                             #set ($listid =  $content.tab )
                             #if ($content.subtab)
                             <div id="eml-tab-subnav">
@@ -78,7 +82,7 @@
                             </div>
                             #end
 
-	      $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+	      
 
                             $pages.includeContent()
                             
@@ -86,6 +90,9 @@
 
                     </div>
                 </div>
+                
+                #if( $canviewassets )
+                
                 #if( $hits && $hits.hasMultipleSelections() )
                 <div id="selected-media">
                     $pages.include("$apphome/components/results/related/byselection.html",$context)
@@ -95,6 +102,8 @@
 
                     $pages.include("$apphome/components/results/related/bykeyword.html",$context)
                 </div>
+                #end
+                
                 #end
             </div>
         </div>

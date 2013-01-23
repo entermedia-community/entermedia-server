@@ -57,9 +57,11 @@
     		<div id="geomap">
     		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
     		</div>
+    		#if( $caneditasset )
     			<input class="btn right" style="margin-top: -30px;" type="button" 
     				onclick="jQuery(this.form).submit();"
     			value="[[Save Values]]"/>
+    		#end	
     	</form>
     	
     </div>

@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-
-<page>  
-	<property name="sectiontitle">Home</property>
-	<inner-layout>${themeprefix}/layouts/application.html</inner-layout>
-</page>

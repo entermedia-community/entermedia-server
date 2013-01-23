@@ -48,7 +48,12 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		if (inAsset == null) {
 			return null;
 		}
-		if (inAsset.isPropertyTrue("public")) {
+		boolean editing = false;
+		if( "edit".equals(inType) )
+		{
+			editing = true;
+		}
+		if (!editing && inAsset.isPropertyTrue("public")) {
 			List permission = new ArrayList();
 			permission.add("true");
 			return permission; // Nothing else matters
@@ -67,17 +72,26 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 			permissions.addAll(asList("group_", groups.split("\\s+")));
 		}
 
-		// What Libraries is this asset part of?
-		String libraries = inAsset.get("libraries");
-		if (libraries != null) {
+		String libraries = null;
+		if( editing )
+		{
+			libraries = inAsset.get(inType + "_libraries");
+		}
+		else
+		{
+			libraries = inAsset.get("libraries");
+		}
+		
+		if (libraries != null) 
+		{
 			permissions.addAll(asList("library_", libraries.split("\\s+")));
 		}
-
 		// clean up variables? add a bunch, then they can resolve in index time
 		// tmp.put("asset.owner", inAsset.get("owner"));
 		Map tmp = new HashMap();
 
 		List values = new ArrayList(permissions.size());
+		tmp.put("asset", inAsset);
 		tmp.put("asset.owner", inAsset.get("owner"));
 		for (Iterator iterator = permissions.iterator(); iterator.hasNext();) {
 			String value = (String) iterator.next();

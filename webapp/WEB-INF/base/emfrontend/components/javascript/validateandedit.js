@@ -1,11 +1,17 @@
 
 var openDetail = "";
-	
+
+var app = jQuery("#application");
+var home =  app.data("home");
+var apphome = home + app.data("apphome");
+var themeprefix = app.data("home") + app.data("themeprefix");
+
+
 showPicker = function(detailid)
 {
 	openDetail=detailid;
 	if(!window.name)window.name='admin_parent';
-	window.open( '$home/system/tools/newpicker/index.html?parentName='+window.name+'&detailid='+detailid, 'pickerwindow','alwaysRaised=yes,menubar=no,scrollbars=yes,width=1000,x=100,y=100,height=600,resizable=yes' );
+	window.open( home + '/system/tools/newpicker/index.html?parentName='+window.name+'&detailid='+detailid, 'pickerwindow','alwaysRaised=yes,menubar=no,scrollbars=yes,width=1000,x=100,y=100,height=600,resizable=yes' );
 	return false;
 }
 
@@ -29,26 +35,7 @@ validate = function(inCatalogId, inDataType, inView , inFieldName)
 			value: val
 		};
 	//alert( params );
-	jQuery(div).load('{$home}${apphome}/components/xml/validatefield.html', params);
-}
-
-//Delete this feature. Too complex to maintain
-validateall = function()
-{
-	alert(" Not implemented");
-	return;
-	
-	params = "catalogid=$searcher.getCatalogId()&view=$view&type=$searcher.getFieldName()";
-/*	#foreach ($detail in $details)
-		#if ($detail.isEditable())
-			field = '${detail.id}.value';
-			val = document.getElementById(field).value;
-			params = params + '&field=$detail.id&' + field + '=' + val;
-			validate('$detail.id');
-		#end
-	#end
-*/	
-	jQuery("#"+'allerrors').load( '$home${apphome}/components/xml/validateallfields.html', { parameters: params });
+	jQuery(div).load(apphome + '/components/xml/validatefield.html', params);
 }
 
 var listchangelisteners = []; //list nodes
@@ -103,7 +90,7 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 			//we are missing the data element of the children
 			//required: catalogid, searchtype, fieldname, value
 			//optional: query, foreignkeyid and foreignkeyvalue
-			jQuery("#" + div).load('$home${apphome}/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+			jQuery("#" + div).load(apphome + '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
 		}
 	}
 }
@@ -113,7 +100,8 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 
 loadlist = function(indiv, catalogid, searchtype, inlabel, childfieldname, foreignkeyid, foreignkeyvalue, value )
 {
-	jQuery(indiv).load('$home${apphome}/components/xml/types/simplelist.html', {catalogid:catalogid, searchtype:searchtype, fieldname:childfieldname, label:inlabel, foreignkeyid:foreignkeyid, foreignkeyvalue:foreignkeyvalue, value:value, oemaxlevel:1});
+	//what is this?
+	jQuery(indiv).load(apphome + '/components/xml/types/simplelist.html', {catalogid:catalogid, searchtype:searchtype, fieldname:childfieldname, label:inlabel, foreignkeyid:foreignkeyid, foreignkeyvalue:foreignkeyvalue, value:value, oemaxlevel:1});
 }
 //Don't use any form inputs named 'name'!
 postForm = function(inDiv, inFormId)
@@ -158,5 +146,5 @@ postPath = function(inCss, inPath, inMaxLevel)
 
 toggleBox = function(inId, togglePath, inPath)
 {
-	jQuery("#"+inId).load( '$home' + togglePath,{ pluginpath: inPath, propertyid: inId });
+	jQuery("#"+inId).load( home + togglePath,{ pluginpath: inPath, propertyid: inId });
 }	

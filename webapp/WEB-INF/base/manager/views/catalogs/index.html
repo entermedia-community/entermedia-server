@@ -1,58 +1,30 @@
-#set ($catalogs = $userprofile.getCatalogs())
+#set ($catalogs = $searcherManager.getList("system","catalog"))
 
 #if( $catalogs.size() == 0 )
 
-				<h1 class="page-title">Welcome to the EnterMedia Manager!</h1>
+		<h1 class="page-title">Welcome to the EnterMedia Manager!</h1>
 		<h2 class="page-subtitle">Click below to add a new catalog and get started.</h2>
-
 #else
 
-<ul id="folders" class="fwlist">
-#set( $sitesearcher = $searcherManager.getSearcher("media","site") )
+
+#end
+
+<ul class="catalog-list">
 
 #foreach ($catalog in $catalogs)
-
-            #if( $catalogs.size() == 1 )
-                <li class="section-title">
-                 <span style="margin-left: 20px;">Applications</span>
-               </li>
-            #else 
-           <li class="section-title">
-             <span style="margin-left: 20px;">$catalog</span>
-           </li>
-           
-           #end
-
-		#set( $sites = $sitesearcher.fieldSearch("appcatalogid",$catalog.getId()) )
-		#foreach( $site in $sites)
-			<li class="auto">
-        <a href="$home$apphome/views/applications/index.html?appid=$site.id" class="folder">
-            <div class="name">
-                <div class="alias">$site</div>
-                <div class="path">$context.siteRoot/${site.deploypath}</div>
-                <div class="last-activity">$catalog.getId()</div>
-            </div>
-        </a>
-        <div class="scan">
-            <a class="btn" style="margin-top: 15px;" href="$home/${site.deploypath}">View</a>
-        </div>
-        <div class="scan">
-            <a class="btn" style="margin-top: 15px;"  href="$home$apphome/views/applications/index.html?appid=$site.id">Settings</a>
-        </div>
-    </li>
-		#end	
-		
-		<li class="add">
-            <div class="folder"></div>
-             <div class="scan" style="margin-right: 0;">
-                 <a class="btn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$catalog.getId()">Create New Media Application</a>
-             </div> 
-        </li>
-		
-	
-#end		
+     <li class="section-title" >
+     	<div class="folder"></div>
+       <span ><a href="$home$apphome/views/catalogs/edit.html?appcatalogid=$catalog.id">$catalog Catalog</a></span>
+     </li>
 #end
+
+
+
 </ul>
 
+             <div class="scan" style="margin-right: 0; float: left;">
+                 <a class="btn"  href="$home$apphome/views/catalogs/addcatalog.html">Create New Catalog</a>
+             </div> 
 		
-	
+
+			

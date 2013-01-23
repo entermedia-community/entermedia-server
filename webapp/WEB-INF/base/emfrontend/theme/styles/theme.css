@@ -1701,9 +1701,6 @@ small {
 #eml-tab-subnav {
     margin: 0;
 }
-#details #eml-tab-subnav {
-    margin: 20px 0 -20px 0;
-}
 #eml-tab-subnav ul, #sub-nav {
     background: rgb(255,255,255); /* Old browsers */
     background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(212,245,252,1) 100%); /* FF3.6+ */
@@ -2278,7 +2275,7 @@ tr.odd {
 
 
 .search-list li a.search-href, .sidebar-list a {
-    padding: 10px 40px;
+    padding: 10px 30px;
     margin: 0 4px 0 4px;
     text-decoration: none;
     display: block;
@@ -2312,13 +2309,13 @@ tr.odd {
     width: 10px;
     height: 10px;
     float: left;
-    margin: 12px 0 0 12px;
-    visibility: hidden;
+    margin: 12px -15px 0 15px;
     position: relative;
     z-index: 3;
+    padding: 0;
 }
 .search-edit a:hover {
-    background-position: 10px 20px;
+    background: url('../images/iconset-10x10.png') 10px 20px;
 }
 .search-delete a {
     background: url('../images/iconset-10x10.png') 20px 10px;
@@ -2341,7 +2338,7 @@ tr.odd {
     color: #fff;
 }
 
-.search-list li.currentsubtle a.search-href, .sidebar-list li.currentsubtle a {
+.search-list li.currentsubtle a.search-href, .sidebar-list li.currentsubtle a.search-href {
     background: #c9e8f2;
 }
 
@@ -3397,18 +3394,6 @@ body #emcontainer .emasseteditorarea {
     text-align: center;
     margin: -6px 0 15px 0;
 }
-#advsearchpanel select.choose-select-ajax select.choose-select {
-    width: 150px !important;
-}
-
-.choose-select-ajax
-{
-	width: 300px;
-}
-
-#advsearchpanel select.choose-select {
-    width: 180px !important;
-}
 
 #advsearchpanel table[width="100%"] .field, #advsearchpanel select.choose-select-ajax {
     width: 180px !important;
@@ -3539,20 +3524,20 @@ body #emcontainer .emasseteditorarea {
     position: relative; 
     top: -8px;
 }
-#select-dropdown-open {
+.select-dropdown-open {
     width: 20px;
     height: 28px;
     position: absolute;
     left: 27px;
     top: 0;
 }
-#select-dropdown-open.down {
+.select-dropdown-open.down {
     background: url('../images/sort-desc.png') 5px 10px no-repeat;
 }
-#select-dropdown-open.up {
+.select-dropdown-open.up {
     background: url('../images/sort-asc.png') 5px 10px no-repeat;
 }
-#select-dropdown {
+.select-dropdown {
     position: absolute;
     background: #f7f7f7 url('../images/top-shadow.png') center -1px repeat-x;
     border: 1px solid #bbb;
@@ -3569,21 +3554,36 @@ body #emcontainer .emasseteditorarea {
 #main-results-table .checkbox input, #main-results-table .firstheader input {
     margin-right: 25px;
 }
-#select-dropdown li {
+.select-dropdown li {
     margin: 0;
     padding: 0;
     list-style: none;
 }
-#select-dropdown li a {
+.select-dropdown li a {
     text-align: left;
     display: block;
     padding: 5px 10px;
     color: #444;
     text-shadow: none;
-    font-weight: normal;
+    font-weight: normal !important;
 }
-#select-dropdown li a:hover {
-    background: #e9e9e9;   
+#header #top-bar-select li a {
+    color: #444 !important;
+    text-align: left;
+    display: block;
+    padding: 5px 10px;
+    color: #444;
+    text-shadow: none;
+    font-weight: normal !important;
+}
+.select-dropdown li a:hover, #header #top-bar-select li a:hover {
+    background: #e9e9e9; 
+    text-decoration: none;  
+}
+#top-bar-select {
+    right: 10px;
+    top: 10px;
+    left: auto;
 }
 .settings-table {
     margin: 0 0 20px 0;
@@ -4022,8 +4022,11 @@ div#folders.add .folder {
 }
 .categories-navigation {
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
+    /*overflow-y: hidden;*/
     padding: 0 !important;
+    min-height: 150px;
+    max-height: 500px;
 }
 #emcategoryinlineinner {
 
@@ -4891,6 +4894,8 @@ p.resultsnumber {
     top: 0;
     line-height: 42px;
     left: 45px;
+    font-size: 12px;
+    color: #979797;
 }
 #de-side-nav ul li a .icon {
     float: left;
@@ -4947,18 +4952,19 @@ p.resultsnumber {
 #de-side-nav .current.comment .icon {
     background-position: -20px 26px;
 }
-#de-side-nav .editassetcategories .icon {
+#de-side-nav .editassetcategories .icon, #de-side-nav .projects-libraryassets .icon {
     background-position: 26px 0;
     width: 26px;
     height: 26px;
     left: 12px;
     top: 8px;
 }
-#de-side-nav .current.editassetcategories .icon {
+#de-side-nav .current.editassetcategories .icon, #de-side-nav .current.projects-libraryassets .icon  {
     background-position: 26px 26px;
 }
 #de-side-nav .current .text {
     top: -1px;
+    color: #fff;
 }
 #de-side-nav .editassettags .icon {
     background-position: 187px 0;
@@ -4970,14 +4976,14 @@ p.resultsnumber {
 #de-side-nav .current.editassettags .icon {
     background-position: 187px 26px;
 }
-#de-side-nav .asseteditorlibraries .icon {
+#de-side-nav .asseteditorlibraries .icon, #de-side-nav  .projects-librarygeneral .icon {
     background-position: 160px 0;
     width: 26px;
     height: 26px;
     left: 11px;
     top: 8px;
 }
-#de-side-nav .current.asseteditorlibraries .icon {
+#de-side-nav .current.asseteditorlibraries .icon, #de-side-nav .current.projects-librarygeneral .icon {
     background-position: 160px 26px;
 }
 
@@ -5011,14 +5017,14 @@ p.resultsnumber {
 #de-side-nav .current.viewattachments .icon {
     background-position: 134px 26px;
 }
-#de-side-nav .assetpermissions .icon {
+#de-side-nav .assetpermissions .icon, #de-side-nav .librarypermissions .icon {
     background-position: 85px 0;
     width: 19px;
     height: 26px;
     left: 14px;
     top: 8px;
 }
-#de-side-nav .current.assetpermissions .icon {
+#de-side-nav .current.assetpermissions, #de-side-nav .current.librarypermissions .icon {
     background-position: 85px 26px;
 }
 #de-side-nav .viewassetpreviewhistory .icon {
@@ -5150,6 +5156,10 @@ p.resultsnumber {
 #mediaviewer .main-info .primary {
     color: #fff;
     text-align: left;
+    width: 200px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 #mediaviewer #default-top .secondary a {
     color: #fff;
@@ -5422,7 +5432,6 @@ p.resultsnumber {
     border-top: 1px solid #eee;
 }
 #details .tableholder {
-    width: 544px;
     overflow-y: auto;
 }
 .max #details .tableholder {
@@ -5587,13 +5596,37 @@ p.resultsnumber {
 }
 
 /* VOTING */
-
 #assetVoteCount {
+    display: inline-block;
+    position: relative;
+    top: 4px;
+}
+#asset-viewer-status {
     background: #f7f7f7;
     border-top: 1px solid #000;
     border-bottom: 1px solid #999;
-    padding: 16px 13px 13px 13px;
+    padding: 16px 13px 16px 13px;
 
+}
+#status-flag {
+    float: right;
+    background: #777;
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: #fff;
+    font-weight: bold;
+    display: inline-block;
+    padding: 3px 5px;
+    margin-top: -2px;
+}
+#status-flag .emdatafield {
+    display: inline-block;
+    color: #ccc;
+    padding: 0;
+}
+#status-flag .emdatafieldvalue {
+     display: inline-block;
+     padding: 0;
 }
 #assetVoteCount .star {
     display: block;
@@ -5611,6 +5644,20 @@ p.resultsnumber {
 }
 #assetVoteCount a:hover {
     text-decoration: underline;
+}
+.learnmore span {
+    background: #777;
+    border: 1px solid #444;
+    border-radius: 3px;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    padding: 2px 5px;
+    margin-left: 5px;
+}
+.learnmore:hover span {
+    background: #999;
+    border: 1px solid #666;
 }
 
 /*  NEW UPLOAD AREA */
@@ -5880,7 +5927,7 @@ td[title]:hover:before {
     margin: 38px 0 0 39px;
 }
 .main-info .primary {
-    font-size: 24px;
+    font-size: 16px;
     font-weight: bold;
     color: #444;
     line-height: 30px;
@@ -6019,6 +6066,15 @@ td[title]:hover:before {
     opacity: 0.4;
 }
 
+div.dragcount {
+	text-align: right;
+	float:right;
+	position: absolute;
+	top: 10px;
+	background-color: black;
+	color: white;
+	font-weight: bold;
+}
 
 #workarea .ui-draggable-dragging {
     width: inherit;
@@ -6162,3 +6218,16 @@ td[title]:hover:before {
 		color:#fff;
 	background:#333;
 }
+
+a.learnmore {
+    background: url('../images/pagination-next.png') bottom center no-repeat;
+	width:21px;
+	height:21px;
+	
+}
+
+div.listautocomplete
+{
+	min-width: 180px;
+	margin: 5px 0;
+}	

@@ -9,13 +9,19 @@ Below is a note that was attached with to the order:</p>
 #else 
 </p>
 #end
-#if( $expiresondate)
-Access to these files will expire on $expiresformat.format($expiresondate)
-<hr />
-#end
 
 <p>Please review the assets at this link: <a href="$context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$order.id" style="font-size: 14px; color: blue;">
 $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$order.id</a></p>
+
+#if( $order.expireson)
+Access to these files will expire on 
+	#if( $expiresondate )  ##Use this since events do not have a locale
+		$expiresformat.format($expiresondate)
+	#else
+		$context.getDateTime($order.expireson)	
+	#end	
+#end
+
 
 <p>
 
@@ -49,7 +55,7 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
 			#if( $val )
 				#set($preset = $searcherManager.getData($catalogid, "convertpreset",$val ))
-				$preset
+				$!preset
 			#else
 				#if( $item.conversiontaskid )
 					#set($conversiontask = $searcherManager.getData($catalogid, "conversiontask",$item.conversiontaskid))

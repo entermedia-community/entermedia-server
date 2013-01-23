@@ -44,6 +44,24 @@ public class DownloadZipGenerator extends BaseGenerator
 		MediaArchiveModule archiveModule = (MediaArchiveModule) getModuleManager().getBean("MediaArchiveModule");
 		MediaArchive archive = archiveModule.getMediaArchive(inReq);
 		
+		String type = inReq.findValue("sourcefile");
+		if( "attachments".equals( type ) )
+		{
+			ZipGroup zip = new ZipGroup();
+			zip.setMediaArchive(archive);
+			zip.setUser(inReq.getUser());
+			Asset asset = archive.getAssetBySourcePath(inReq.getContentPage());
+			zip.zipAttachments(asset, inOut.getStream() );
+		}
+		else
+		{
+			zipAssets(inReq, archive, archiveModule, inOut);
+		}
+
+	}
+
+	protected void zipAssets(WebPageRequest inReq, MediaArchive archive, MediaArchiveModule archiveModulex, Output inOut)
+	{
 		Map<Asset, ConvertInstructions> assets = new HashMap<Asset, ConvertInstructions>();
 		
 		String catalogid = archive.getCatalogId();
@@ -142,10 +160,9 @@ public class DownloadZipGenerator extends BaseGenerator
 			}
 		}
 		ZipGroup zip = new ZipGroup();
-		zip.setEnterMedia(archiveModule.getEnterMedia(inReq.findValue("applicationid")));
+		zip.setMediaArchive(archive);
 		zip.setUser(inReq.getUser());
 		zip.zipItems(assets, inOut.getStream());
-
 	}
 
 	public boolean canGenerate(WebPageRequest inReq)

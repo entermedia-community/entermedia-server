@@ -1,18 +1,22 @@
+#set($searchfield = $context.getRequestParameter("autocompletesearchfield"))
+
+#if( !$searchfield)
+	#set($searchfield = "name")
+#end
 
 #set($idcount = $context.getRequestParameter("idcount"))
 #if(!$idcount)
 	#set($idcount = "")
 #end
 
-
 #if($val && $val != "")
 #set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #end
-
-<input name="completefield" class="listautocomplete" id="${detail.id}${idcount}value" value="#esc($!foundrow.name)" size="30" type="text" data-searchtype="$detail.listid" data-listcatalogid="$detail.listCatalogId" />
+<input name="completefield" class="listautocomplete" id="${detail.id}${idcount}value" value="#esc($foundrow.name)"  type="hidden"  
+	data-searchfield="$searchfield" data-searchtype="$detail.listid" data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-sortby="$!detail.sort"/>
 <input name="${detail.getId()}.value"  id="${detail.id}${idcount}valuehidden"   value="$!val" type="hidden"/>
 
-#if( $foundrow )
+#if( $canviewsettings && $foundrow )
 	#set($module = $searcherManager.getData($catalogid, "module", $detail.listid ) )
 	#if($module)
 	
@@ -23,10 +27,10 @@
 			#set($link = "$home$apphome/views/modules/${module.id}/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$module.id")
 		#end
 	
+	#elseif( $detail.listid == "user")
+		#set($link = "$home$apphome/views/settings/users/usermanager/user/index.html?username=$val")
 	#else
-	
 		#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listid")
-	
 	#end
  	<a class="btn" href="$link">View</a>
 #end

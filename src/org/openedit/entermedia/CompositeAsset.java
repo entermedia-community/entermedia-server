@@ -1,163 +1,259 @@
 package org.openedit.entermedia;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 
+import com.openedit.hittracker.HitTracker;
+
 public class CompositeAsset extends Asset implements Data, CompositeData
 {
 	private static final long serialVersionUID = -7154445212382362391L;
-	protected List fieldItems;
+	protected MediaArchive fieldArchive;
+	protected HitTracker fieldSelectedHits;
+	protected String fieldId;
+	protected List fieldRemovedCategories;
+	protected List fieldRemovedKeywords;
+	protected Map fieldPropertiesSet;
 	
-	public List<Asset> getItems() 
+	public Map getPropertiesSet()
 	{
-		if (fieldItems == null) 
+		if (fieldPropertiesSet == null)
 		{
-			fieldItems = new ArrayList<Asset>();
+			fieldPropertiesSet = new HashMap();
+		}
+		return fieldPropertiesSet;
+	}
+
+	public void setPropertiesSet(Map inPropertiesSet)
+	{
+		fieldPropertiesSet = inPropertiesSet;
+	}
+
+	public List getRemovedCategories()
+	{
+		if (fieldRemovedCategories == null)
+		{
+			fieldRemovedCategories = new ArrayList();
 		}
 
-		return fieldItems;
+		return fieldRemovedCategories;
 	}
 
-	public void setItems(List inItems) 
+	public void setRemovedCategories(List inRemovedCategories)
 	{
-		fieldItems = inItems;
+		fieldRemovedCategories = inRemovedCategories;
 	}
+
+	public List getRemovedKeywords()
+	{
+		if (fieldRemovedKeywords == null)
+		{
+			fieldRemovedKeywords = new ArrayList();
+		}
+
+		return fieldRemovedKeywords;
+	}
+
+	public void setRemovedKeywords(List inRemovedKeywords)
+	{
+		fieldRemovedKeywords = inRemovedKeywords;
+	}
+
+	
+	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
+	{
+		setArchive(inMediaArchive);
+		setSelectedHits(inHits.getSelectedHitracker());
+	}
+	
 	public int size()
 	{
-		return getItems().size();
+		return getSelectedHits().size();
 	}
-	public Iterator iterator()
-	{
-		return getItems().iterator();
-	}
-	
 	public List getKeywords()
 	{
-		List keywords = new ArrayList();
-		if (getItems().size() > 0)
+		if( fieldKeywords == null )
 		{
-
-			keywords.addAll(((Asset) getItems().get(0)).getKeywords());
-
-			for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
+			Data first = (Data)getSelectedHits().first();
+			String fwords = first.get("keywords");
+			if( fwords != null && fwords.length() > 0)
 			{
-				Asset Asset = (Asset) iterator.next();
-				keywords.retainAll(Asset.getKeywords());
+				String[] common = fwords.split("\\|");
+				for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
+				{
+					Data data = (Data) iterator.next();
+					String words = data.get("keywords");
+					for (int i = 0; i < common.length; i++)
+					{
+						String k = common[i];
+						if( k != null && !words.contains(k) )
+						{
+							common[i] = null;
+						}
+					}
+				}
+				fieldKeywords = new ArrayList();
+				for (int i = 0; i < common.length; i++)
+				{
+					if( common[i] != null )
+					{
+						fieldKeywords.add(common[i].trim());
+					}
+				}
 			}
-
-			return keywords;
+			else
+			{
+				fieldKeywords = new ArrayList();
+			}
 		}
-		return keywords;
+		return fieldKeywords;
 	}
 
-	public void addKeyword(String inKey)
+
+	protected void checkSave(List<Asset> inTosave)
 	{
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
+		if( inTosave.size() > 99 )
 		{
-			Asset Asset = (Asset) iterator.next();
-			Asset.addKeyword(inKey);
+			getArchive().saveAssets(inTosave);
+			inTosave.clear();
 		}
 	}
 
 	public void removeKeyword(String inKey)
 	{
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
-		{
-			Asset Asset = (Asset) iterator.next();
-			Asset.removeKeyword(inKey);
-		}
+		super.removeKeyword(inKey);
+		getRemovedKeywords().add(inKey);
 	}
 
 	public List getCategories()
 	{
-		ArrayList categories = new ArrayList();
-		HashMap countMap = new HashMap();
-		HashMap categoryMap = new HashMap();
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
+		if( fieldCategories == null )
 		{
-			Asset Asset = (Asset) iterator.next();
-			for (Iterator iterator2 = Asset.getCategories().iterator(); iterator2.hasNext();)
+			Data first = (Data)getSelectedHits().first();
+			if( first == null )
 			{
-				Category cat = (Category) iterator2.next();
-				if (countMap.get(cat.getId()) == null)
+				return Collections.EMPTY_LIST;
+			}
+			String fcats = first.get("category");
+			if( fcats != null )
+			{
+				String[] catlist = fcats.split("\\|");
+				for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
 				{
-					countMap.put(cat.getId(), new Integer(1));
-					categoryMap.put(cat.getId(), cat);
+					Data data = (Data) iterator.next();
+					String cats = data.get("category");
+					if( cats != null )
+					{
+						for (int i = 0; i < catlist.length; i++)
+						{
+							String  catid = catlist[i];
+							if(catid != null && !cats.contains(catid) )
+							{
+								catlist[i] = null;
+							}
+						}
+					}
 				}
-				else
+				ArrayList categories = new ArrayList();
+				for (int i = 0; i < catlist.length; i++)
 				{
-					int count = ((Integer) countMap.get(cat.getId())).intValue();
-					countMap.put(cat.getId(), new Integer(count + 1));
+					String  catid = catlist[i];
+					if( catid != null )
+					{
+						Category cat = getArchive().getCategory(catid.trim());
+						if( cat != null )
+						{
+							categories.add( cat );
+						}
+					}
 				}
+				Collections.sort(categories);
+				fieldCategories  = categories;
+			}
+			else
+			{
+				fieldCategories = new ArrayList();
 			}
 		}
-		for (Iterator i = categoryMap.keySet().iterator(); i.hasNext();)
-		{
-			String catid = (String) i.next();
-			int count = ((Integer) countMap.get(catid)).intValue();
-			if (count == getItems().size())
-			{
-				categories.add(categoryMap.get(catid));
-			}
-		}
-		return categories;
-	}
-
-	public void addCategory(Category inCategory)
-	{
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
-		{
-			Asset p = (Asset) iterator.next();
-			p.addCategory(inCategory);
-		}
+		return fieldCategories;
 	}
 
 	public void removeCategory(Category inCategory)
 	{
-		for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
-		{
-			Asset p = (Asset) iterator.next();
-			p.removeCategory(inCategory);
-		}
+		super.removeCategory(inCategory);
+		getRemovedCategories().add(inCategory);
+		
 	}
 	
-	protected String fieldId;
-	
-	public void addData(Data inData)
-	{
-		getItems().add((Asset)inData);
-	}
 	public String getProperty(String inKey) 
 	{
 		return get(inKey);
 	}
 	public String get(String inId)
 	{	
-		if (getItems().size() > 0)
+		if (size() > 0)
 		{
-			//return something only if all the values match the first record
-			String target = ((Data)getItems().get(0)).get(inId);
-			if (target != null)
+			String val = super.get(inId);
+			if( val != null ) //already set to a value
 			{
-				for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
+				if( val.length() == 0 )
 				{
-					Data data = (Data) iterator.next();
-					if (!target.equals(data.get(inId)))
+					return null; //set to empty
+				}
+				return val;
+			}
+//			if( val == null ) 
+//			{
+//				return null;
+//			}
+			//return something only if all the values match the first record
+			val = ((Data)getSelectedHits().first()).get(inId);
+			for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				String newval = data.get(inId);
+				if( val == null )
+				{
+					if( val != newval )
 					{
-						return null;					//they don't agree
+						val = "";
+						break;
 					}
 				}
-				return target;
+				else if (!val.equals(newval))
+				{
+					val = "";
+					break;
+				}
 			}
+			if(	val == null )
+			{
+				val = "";
+			}
+
+			super.setProperty(inId, val);
+			return val;
 		}
 		
 		return null;
+	}
+	public void setProperty(String inKey, String inValue)
+	{
+		if( inValue == null )
+		{
+			inValue = "";
+		}
+		getProperties().put(inKey, inValue);
+		getPropertiesSet().put(inKey,inValue);
 	}
 
 	public String getId()
@@ -180,33 +276,12 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		fieldId = inNewid;
 	}
 
-	public void setProperty(String inId, String inValue)
-	{
-		String old = get(inId);
-		//check that old is not null 
-		if( old == inValue)
-		{
-			return;
-		}
-		if( old != null && old.equals( inValue ) )
-		{
-			return;
-		}
-//		if (inValue != null && inValue.length() > 0)
-//		{
-			for (Iterator iterator = getItems().iterator(); iterator.hasNext();)
-			{
-				Data data = (Data) iterator.next();
-				data.setProperty(inId, inValue);
-			}
-//		}
-	}
 
 	public String getSourcePath()
 	{
-		if( getItems().size() > 0)
+		if( size() > 0)
 		{
-			Asset first = getItems().get(0);
+			Data first = (Data)getSelectedHits().first();
 			return first.getSourcePath() + "multi" + size();
 		}
 		return null;
@@ -216,4 +291,180 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		
 	}
+	
+	public Iterator iterator()
+	{
+		return new AssetIterator(getSelectedHits().iterator());
+	}
+	
+	public HitTracker getSelectedHits()
+	{
+		return fieldSelectedHits;
+	}
+
+	public void setSelectedHits(HitTracker inSelectedHits)
+	{
+		fieldSelectedHits = inSelectedHits;
+	}
+
+	public MediaArchive getArchive()
+	{
+		return fieldArchive;
+	}
+
+	public void setArchive(MediaArchive inArchive)
+	{
+		fieldArchive = inArchive;
+	}
+
+	public void saveChanges() 
+	{
+		//compare keywords, categories and data. 
+		List tosave = new ArrayList(100);
+		for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Asset fieldCurrentAsset = null;
+			
+			for (Iterator iterator2 = getCategories().iterator(); iterator2.hasNext();)
+			{
+				Category cat = (Category) iterator2.next();
+				String cats = data.get("category");
+				if( !cats.contains(cat.getId() ) )
+				{
+					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					if( asset != null )
+					{
+						asset.addCategory(cat);
+						tosave.add(asset);
+						checkSave(tosave);
+					}
+				}
+			}
+			for (Iterator iterator2 = getRemovedCategories().iterator(); iterator2.hasNext();)
+			{
+				Category cat = (Category) iterator2.next();
+				String cats = data.get("category");
+				if( cats.contains(cat.getId() ) )
+				{
+					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					if( asset != null )
+					{
+						asset.removeCategory(cat);
+						tosave.add(asset);
+						checkSave(tosave);
+					}
+				}
+			}
+			
+			for (Iterator iterator2 = getKeywords().iterator(); iterator2.hasNext();)
+			{
+				String inKey = (String) iterator2.next();
+				String existing = data.get("keywords");
+				if( existing == null || !existing.contains(inKey) )
+				{
+					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					if( asset != null )
+					{
+						asset.addKeyword(inKey);
+					}
+				}
+			}
+			
+			for (Iterator iterator2 = getRemovedKeywords().iterator(); iterator2.hasNext();)
+			{
+				String inKey = (String) iterator2.next();
+				inKey = inKey.trim();
+				String existing = data.get("keywords");
+				if( existing != null && existing.contains(inKey) )
+				{
+					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					if( asset != null )
+					{
+						asset.removeKeyword(inKey);
+					}
+				}
+			}
+			for (Iterator iterator2 = getPropertiesSet().keySet().iterator(); iterator2.hasNext();)
+			{
+				String key = (String) iterator2.next();
+				String value = (String)getPropertiesSet().get(key);
+				String existingvalue = data.get(key);
+				
+				if( existingvalue == value )
+				{
+					continue;
+				}
+				if( existingvalue != null && existingvalue.equals(value) )
+				{
+					continue;
+				}
+				Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+				if( asset != null )
+				{
+					asset.setProperty(key, value);
+				}
+			}
+			//TODO: Deal with multi value fields
+			
+		}
+		getArchive().saveAssets(tosave);
+	}
+//
+	class AssetIterator implements Iterator
+	{
+		Iterator fieldDataIterator;
+		
+		public AssetIterator(Iterator inHitsIterator)
+		{
+			fieldDataIterator = inHitsIterator;
+		}
+		
+		public boolean hasNext()
+		{
+			return fieldDataIterator.hasNext();
+		}
+
+		@Override
+		public Object next()
+		{
+			Data next = (Data)fieldDataIterator.next();
+			
+			return getArchive().getAssetBySourcePath(next.getSourcePath());
+		}
+
+		public void remove()
+		{
+		}
+		
+		
+	}
+	
+	protected Asset loadAsset(Asset inFieldCurrentAsset, Data inData, List toSave)
+	{
+		if( inFieldCurrentAsset == null )
+		{
+			inFieldCurrentAsset =  getArchive().getAssetBySourcePath(inData.getSourcePath());
+		}
+		else
+		{
+			checkSave(toSave);
+		}
+		toSave.add(inFieldCurrentAsset);
+		return inFieldCurrentAsset;
+	}
+	
+	public String toString()
+	{
+		return getId();
+	}
+	
+	public void refresh()
+	{
+		getPropertiesSet().clear();
+		fieldCategories = null;
+		fieldKeywords = null;
+		
+	}
+	
 }

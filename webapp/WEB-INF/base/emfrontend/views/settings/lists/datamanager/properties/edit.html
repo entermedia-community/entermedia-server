@@ -55,14 +55,9 @@
 	<td>
 	<select name="datatype" width="60px">
 		<option value="" >Text</option>
-		<option value="boolean" #if ($property.datatype == "boolean") selected #end >[[Boolean]]</option>
-		<option value="number" #if ($property.datatype == "number") selected #end >[[Number]]</option>
-		<option value="long" #if ($property.datatype == "long") selected #end >Long</option>
-		<option value="double" #if ($property.datatype == "double") selected #end >Double</option>
-		<option value="date" #if ($property.datatype == "date") selected #end >[[Date]]</option>
-		<option value="list" #if ($property.datatype == "list") selected #end >[[List]]</option>
-		<option value="file" #if ($property.datatype == "file") selected #end >[[File]]</option>
-		<option value="image" #if ($property.datatype == "image") selected #end >[[Image]]</option>
+#foreach( $row in $searcherManager.getList($catalogid,"datadatatype") )
+	<option value="$row.id" #if ($property.datatype == $row.id) selected #end >$context.getText($row.name)</option>
+#end
 	</select>
 
 	#if($property.isList())
@@ -75,31 +70,13 @@
 	</td>
 	</tr>
 	
-
-	
 	<tr> <td>[[Render Type]]:</td>
 	<td>
 	<select name="viewtype">
-		<option value="" >Default</option>
-		<option value="boolean" #if ($property.viewtype == "boolean") selected #end >[[Boolean]]</option>
-		<option value="number" #if ($property.viewtype == "number") selected #end >[[Number]]</option>
-		<option value="long" #if ($property.viewtype == "long") selected #end >Long</option>
-		<option value="double" #if ($property.viewtype == "double") selected #end >Double</option>
-		<option value="date" #if ($property.viewtype == "date") selected #end >[[Date]]</option>
-		<option value="list" #if ($property.viewtype == "list") selected #end >[[List]]</option>
-				<option value="html" #if ($property.viewtype == "html") selected #end >[[HTML]]</option>
-
-		<option value="permission" #if ($property.viewtype == "permission") selected #end >[[Permission]]</option>
-		<option value="file" #if ($property.viewtype == "file") selected #end >[[File]]</option>
-		<option value="user" #if ($property.viewtype == "user") selected #end >[[User]]</option>
-		<option value="image" #if ($property.viewtype == "image") selected #end >[[Image]]</option>
-		<option value="multiselect" #if ($property.viewtype == "multiselect") selected #end >[[Multi-Select]]</option>
-		<option value="textjoin" #if ($property.viewtype == "textjoin") selected #end >[[Text Join]]</option>
-		<option value="autocomplete" #if ($property.viewtype == "autocomplete") selected #end >[[Auto Complete]]</option>
-		<option value="modulepicker" #if ($property.viewtype == "modulepicker") selected #end >[[Module Picker]]</option>
-
-		<option value="asset" #if ($property.viewtype == "asset") selected #end >[[Asset]]</option>
-
+	<option value="">Default</option>
+#foreach( $row in $searcherManager.getList($catalogid,"datarendertype") )
+	<option value="$row.id" #if ($property.viewtype == $row.id) selected #end >$context.getText($row.name)</option>
+#end
 	</select>	
 
 	</td>
@@ -142,6 +119,12 @@
 
 	<tr> <td>[[Depends On ID]]:</td> <td><input type="text" name="dependson.value" value="$!property.dependson"/> </td> </tr>
 	<tr> <td>[[Depends On Values]]:</td> <td><input type="text" name="dependsonvalue.value" value="$!property.dependsonvalue"/> </td> </tr>
+
+	#if($detail.viewtype=="asset")
+	<input type="hidden" name="field" value="sourcepath"/>
+	<tr> <td>[[Sourcepath filter (for uploads)]]:</td> <td><input type="text" name="sourcepath.value" value="$!property.sourcepath"/> </td> </tr>
+	#end
+
 
 
 </table>

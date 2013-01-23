@@ -12,7 +12,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.error.EmailErrorHandler;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.repository.ContentItem;
 
@@ -27,11 +26,22 @@ public class ZipGroup
 	private static final Log log = LogFactory.getLog(ZipGroup.class);
 
 	protected User fieldUser;
-	protected EnterMedia fieldEnterMedia;
+	protected MediaArchive fieldMediaArchive;
+	OutputFiller filler = new OutputFiller();
 
-	protected void writeFileToZip(ZipOutputStream inZipOutputStream, OutputFiller inOutputFiller, File inFile)
+	public MediaArchive getMediaArchive()
 	{
-		ZipEntry entry = new ZipEntry(inFile.getName());
+		return fieldMediaArchive;
+	}
+
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
+		fieldMediaArchive = inMediaArchive;
+	}
+
+	protected void writeFileToZip(ZipOutputStream inZipOutputStream, String inName, File inFile)
+	{
+		ZipEntry entry = new ZipEntry(inName);
 		entry.setSize(inFile.length());
 		entry.setTime(inFile.lastModified());
 		try
@@ -40,7 +50,7 @@ public class ZipGroup
 			inZipOutputStream.putNextEntry(entry);
 			try
 			{
-				inOutputFiller.fill(fis, inZipOutputStream);
+				filler.fill(fis, inZipOutputStream);
 			}
 			finally
 			{
@@ -79,7 +89,7 @@ public class ZipGroup
 			missingAssetsStr.append("    - ");
 			missingAssetsStr.append(asset.getName());
 			missingAssetsStr.append(" (");
-			Page path = getMediaArchive(asset.getCatalogId()).getOriginalDocument(asset);
+			Page path = getMediaArchive().getOriginalDocument(asset);
 			if (path == null)
 			{
 				missingAssetsStr.append("no file name specified");
@@ -93,11 +103,6 @@ public class ZipGroup
 		return missingAssetsStr.toString();
 	}
 
-	public MediaArchive getMediaArchive(String inCatalogId)
-	{
-		return getEnterMedia().getMediaArchive(inCatalogId);
-	}
-
 	public void zipItems(Map<Asset, ConvertInstructions> inAssets, OutputStream inStream) throws OpenEditException
 	{
 		List<Asset> missing = new ArrayList<Asset>();
@@ -107,11 +112,9 @@ public class ZipGroup
 
 		try
 		{
-			OutputFiller filler = new OutputFiller();
 			for (Asset asset: inAssets.keySet())
 			{
-				MediaArchive archive = getMediaArchive(asset.getCatalogId());
-				Page documentFile = archive.getOriginalDocument(asset);
+				Page documentFile = getMediaArchive().getOriginalDocument(asset);
 				if (documentFile == null || !documentFile.exists())
 				{
 					if (documentFile != null)
@@ -127,9 +130,9 @@ public class ZipGroup
 						File source = null;
 						File temp = null;
 						ConvertInstructions instructions = inAssets.get(asset);
-						if (archive.canConvert(asset, instructions.getOutputExtension(), getUser()))
+						if (getMediaArchive().canConvert(asset, instructions.getOutputExtension(), getUser()))
 						{
-							ContentItem converted = archive.getCreatorManager().createOutput(instructions).getContentItem();
+							ContentItem converted = getMediaArchive().getCreatorManager().createOutput(instructions).getContentItem();
 							source = new File(converted.getAbsolutePath());
 							String extension = "";
 							if (instructions.getOutputExtension() != null)
@@ -144,15 +147,15 @@ public class ZipGroup
 							temp = new File(source.getParentFile(), asset.getSaveAsName());
 						}
 
-						if (!source.equals(temp))
+						if (!source.equals(temp)) //What is this for?
 						{
 							new FileUtils().copyFiles(source, temp);
-							writeFileToZip(zos, filler, temp);
+							writeFileToZip(zos, temp.getName(), temp);
 							new FileUtils().deleteAll(temp);
 						}
 						else
 						{
-							writeFileToZip(zos, filler, source);
+							writeFileToZip(zos, source.getName(), source);
 						}
 						okAssets.add(asset);
 					}
@@ -170,20 +173,20 @@ public class ZipGroup
 				String missingAssets = buildMissingDocumentsText(missing);
 
 				writeStringToZip(zos, missingAssets, "missing.txt");
-				EmailErrorHandler handler = getEnterMedia().getEmailErrorHandler();
-				if( handler != null )
-				{
-					handler.sendNotification("Missing File Report", missingAssets);
-				}
+//				EmailErrorHandler handler = getEnterMedia().getEmailErrorHandler();
+//				if( handler != null )
+//				{
+//					handler.sendNotification("Missing File Report", missingAssets);
+//				}
 				for (Asset asset: missing)
 				{
-					getMediaArchive(asset.getCatalogId()).logDownload(asset.getSourcePath(), "missing", getUser());
+					getMediaArchive().logDownload(asset.getSourcePath(), "missing", getUser());
 				}
 
 			}
 			for (Asset asset: okAssets)
 			{
-				getMediaArchive(asset.getCatalogId()).logDownload(asset.getSourcePath(), "success", getUser());
+				getMediaArchive().logDownload(asset.getSourcePath(), "success", getUser());
 			}
 
 		}
@@ -202,13 +205,6 @@ public class ZipGroup
 
 	}
 
-	public EnterMedia getEnterMedia() {
-		return fieldEnterMedia;
-	}
-
-	public void setEnterMedia(EnterMedia enterMedia) {
-		fieldEnterMedia = enterMedia;
-	}
 
 	public User getUser()
 	{
@@ -220,4 +216,60 @@ public class ZipGroup
 		fieldUser = user;
 	}
 
+	public void zipAttachments(Asset inAsset, OutputStream inStream) throws OpenEditException
+	{
+		ZipOutputStream zos = new ZipOutputStream(inStream);
+		zos.setLevel(1); // for speed since these are jpegs
+
+		try
+		{
+			
+			String documentFile = getMediaArchive().getOriginalFileManager().getDataAssetsPath(inAsset.getSourcePath());
+			File input = new File( documentFile );
+			if (!input.exists())
+			{
+				writeStringToZip(zos, "Attachments missing "  + documentFile , "missing.txt");
+			}
+			else
+			{
+				writeFolder(zos, input, input);
+			}
+		}
+		finally
+		{
+			try
+			{
+				FileUtils.safeClose(zos); // This will fail if there was any
+
+			}
+			catch (Exception ex2)
+			{
+				// nothing
+			}
+		}
+
+	}
+
+	protected void writeFolder(ZipOutputStream inZos, File inRoot, File inFile)
+	{
+		if( inFile.isDirectory() )
+		{
+			//get the children
+			File[] children = inFile.listFiles();
+			if( children != null )
+			{
+				for (int i = 0; i < children.length; i++)
+				{
+					writeFolder(inZos, inRoot, children[i]);					
+				}
+			}
+		}
+		else
+		{
+			String fileName = inFile.getAbsolutePath().substring(inRoot.getAbsolutePath().length());
+			fileName = fileName.replace("\\", "/");
+			writeFileToZip(inZos,fileName, inFile);
+		}
+	}
+	
 }

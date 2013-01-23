@@ -21,6 +21,7 @@ import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
+import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
@@ -35,6 +36,7 @@ import org.openedit.entermedia.search.SearchFilterArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
+import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 
 import com.openedit.ModuleManager;
@@ -522,6 +524,35 @@ public class MediaArchive
 		fieldCatalogId = inCatalogId;
 	}
 	
+	public Asset getAsset( String assetid, WebPageRequest inReq)
+	{
+		Asset asset = null;
+		if( assetid.startsWith("multiedit") )
+		{
+			asset = (CompositeAsset) inReq.getSessionValue(assetid);
+			if( asset == null )
+			{
+				String hitssessionid = assetid.substring("multiedit".length()  +1 );
+				HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+				if( hits == null)
+				{
+					log.error("Could not find " + hitssessionid);
+					return null;
+				}
+				CompositeAsset composite = new CompositeAsset(this,hits.getSelectedHitracker());
+				composite.setId(assetid);
+				asset = composite;
+			}
+		}
+		else
+		{
+			asset = getAsset(assetid);
+		}
+		return asset;
+		
+		
+	}
+	
 	public Asset getAsset(String inId)
 	{
 		Asset asset = (Asset) getAssetSearcher().searchById(inId);
@@ -569,9 +600,26 @@ public class MediaArchive
 		return sourcePath;
 	}
 
+	public void saveAsset(CompositeAsset inAssets, User inUser)
+	{
+		inAssets.saveChanges();
+//		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
+//		{
+//			Asset asset = (Asset) iterator.next();
+//			getAssetSearcher().saveData(asset, inUser);			
+//		}
+	}
+
 	public void saveAsset(Asset inAsset, User inUser)
 	{
-		getAssetSearcher().saveData(inAsset, inUser);
+		if( inAsset instanceof CompositeAsset)
+		{
+			saveAsset((CompositeAsset)inAsset,inUser);
+		}
+		else
+		{
+			getAssetSearcher().saveData(inAsset, inUser);
+		}
 	}
 	public void saveAssets(Collection inAssets)
 	{
@@ -940,8 +988,23 @@ public class MediaArchive
 		getMediaEventHandler().eventFired(event);
 		
 	}
+	
+	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)
+	{
+		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			fireMediaEvent(operation,inUser,asset);
+		}
+	}	
 	public void fireMediaEvent(String operation, User inUser, Asset asset)
 	{
+		if( asset instanceof CompositeAsset )
+		{
+			fireMediaEvent(operation,inUser,(CompositeAsset)asset);
+		}
+		else
+		{
 			WebEvent event = new WebEvent();
 			event.setSearchType("asset");
 			event.setCatalogId(getCatalogId());
@@ -954,6 +1017,7 @@ public class MediaArchive
 
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
+		}
 	}
 	public void fireMediaEvent(String operation, User inUser)
 	{
@@ -1413,5 +1477,12 @@ public class MediaArchive
 		}
 		return fieldLibraries;
 	}
+	
+	public UserProfile getUserProfile(String inId){
+		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
+		
+	}
+	
+	
 
 }

@@ -8,7 +8,7 @@
                     <div class="main-info">
         
  <div class="primary" style="text-align: center">
-						Editing across $asset.getItems().size() assets
+						Editing across $asset.size() assets
 </div>
 </div>
 		#else            
@@ -19,8 +19,8 @@
                 #if( !$thumbsize )
                     #set( $thumbsize  = "thumb" )
                 #end
-                
-                #if ( $type == "image" )
+                $context.putPageValue("thumbsize",$thumbsize)
+                #if ( $type == "image" || $type == "document" )
                     #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/preview.jpg")
                     <a class="thickbox" href="$home$link" target="_parent" title="[[$asset]]">
                         $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 

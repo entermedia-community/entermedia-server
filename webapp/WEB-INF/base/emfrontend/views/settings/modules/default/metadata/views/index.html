@@ -59,6 +59,8 @@
 
             <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
                 Render as Table?
+            	<input type="hidden" value="rendertype" name="field" />
+
             </div>
             <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
                 <div>Render Table</div>
@@ -140,7 +142,7 @@
 			#foreach( $element in $details)
 				#set( $pid = $element.id)
 				<li class="rowdraggable metadatadroppable" id="$pid" ><span class="drag-and-drop"></span>
-					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$moduleid">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					
 					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
 				</li>

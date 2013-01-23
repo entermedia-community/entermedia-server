@@ -504,61 +504,59 @@ public class MultiSearchModule extends BaseMediaModule
 
 	public void createNewCatalog(WebPageRequest inReq) throws Exception
 	{
-		String catname = inReq.findValue("appfolder");
-		String foldername = inReq.findValue("foldername");
-		String appfolder = null;
-		if(foldername == null)
-		{
-			appfolder= catname;
-	
-			appfolder = PathUtilities.extractId(appfolder, true);
-	
-			if (!appfolder.startsWith("/"))
-			{
-				appfolder = "/" + appfolder;
-			}
-			if (!appfolder.endsWith("/"))
-			{
-				appfolder = appfolder + "/";
-			}
-			appfolder = appfolder.toLowerCase();
-		}
-		else
-		{
-			appfolder = foldername;
-		}
-		if(!appfolder.endsWith("/"))
-		{
-			appfolder = appfolder + "/";
-		}
-		String prefix = inReq.findValue("appfolderprefix");
-		if (prefix == null)
-		{
-			prefix = "";
-		}
-		Page app = getPageManager().getPage(prefix + appfolder + "_site.xconf");
+		String catname = inReq.getRequestParameter("name");
+		String catalogid = inReq.getRequestParameter("appcatalogid");
+//		String foldername = inReq.findValue("foldername");
+//		String appfolder = null;
+//		if(foldername == null)
+//		{
+//			appfolder= catname;
+//	
+//			appfolder = PathUtilities.extractId(appfolder, true);
+//	
+//			if (!appfolder.startsWith("/"))
+//			{
+//				appfolder = "/" + appfolder;
+//			}
+//			if (!appfolder.endsWith("/"))
+//			{
+//				appfolder = appfolder + "/";
+//			}
+//			appfolder = appfolder.toLowerCase();
+//		}
+//		else
+//		{
+//			appfolder = foldername;
+//		}
+//		if(!appfolder.endsWith("/"))
+//		{
+//			appfolder = appfolder + "/";
+//		}
+//		String prefix = inReq.findValue("appfolderprefix");
+//		if (prefix == null)
+//		{
+//			prefix = "";
+//		}
+		Page app = getPageManager().getPage("/" + catalogid + "/_site.xconf");
 		PageProperty prop = new PageProperty("fallbackdirectory");
-
 		prop.setValue(inReq.findValue("fallbackfolder"));
-
 		app.getPageSettings().putProperty(prop);
 
 		PageProperty catid = new PageProperty("catalogid");
-		String catalogid = appfolder;
-		catalogid = catalogid.replace("/", "");
-		String appid = inReq.findValue("applicationid");
-		catalogid = appid + "/catalogs/" + catalogid;
+//		String catalogid = appfolder;
+//		catalogid = catalogid.replace("/", "");
+//		String appid = inReq.findValue("applicationid");
+//		catalogid = appid + "/catalogs/" + catalogid;
 		catid.setValue(catalogid);
 		app.getPageSettings().putProperty(catid);
 
 		getPageManager().saveSettings(app);
 
 		// Add to catalog
-		Searcher searcher = getSearcherManager().getSearcher(inReq.findValue("applicationid"), "catalogs");
+		Searcher searcher = getSearcherManager().getSearcher("system", "catalog");
 		Data row = searcher.createNewData();
-		row.setId(catid.getValue());
+		row.setId(catalogid);
 		row.setProperty("name", catname);
-		row.setProperty("searchtype", "asset");
 		searcher.saveData(row, inReq.getUser());
 		inReq.putPageValue("catalog", row);
 

@@ -504,34 +504,6 @@ onloadselectors = function()
 			});
 
 	
-	jQuery(".listautocomplete").livequery( function() 
-			{
-				var theinput = jQuery(this);
-				var listcatalogid = theinput.data("listcatalogid");
-				var searchtype = theinput.data("searchtype");
-				
-				
-				if( theinput && theinput.autocomplete )
-				{
-					var theinputhidden = theinput.attr("id") + "hidden";
-					
-					theinput.autocomplete({
-						source: '$home$apphome/components/autocomplete/listsuggestions.txt?searchtype=' + searchtype + '&catalogid=' + listcatalogid + '&operation=startswith&field=name&name.value=' + theinput.val() ,
-																
-						select: function(event, ui) {
-							//set input that's just for display purposes
-							theinput.val(ui.item.display);
-							//set a hidden input that's actually used when the form is submitted
-							
-							jQuery("#" + theinputhidden).val(ui.item.value);
-							return false;
-						}
-					});
-				}
-			});
-
-	
-	
 	
 	
 	jQuery(".addmygroups").livequery( function() 
@@ -804,10 +776,31 @@ onloadselectors = function()
 			{	
 				jQuery(this).draggable( 
 					{ 
-						helper: 'clone',
+						helper: function()
+						{
+							var cloned = $(this).clone();
+							
+							//var status = jQuery('input[name=pagetoggle]').is(':checked');
+							 var n = $("input.selectionbox:checked").length;
+							 if( n > 1 )
+							 {
+									cloned.append('<div class="dragcount">+' + n + '</div>');
+								 
+							 }
+							
+							return cloned;
+						}
+						,
 						revert: 'invalid'
 					}
 				);
+				/*
+				jQuery(this).bind("drag", function(event, ui) {
+				    ui.helper.css("background-color", "red");
+				    ui.helper.css("border", "2px solid red");
+				    ui.helper.append("3");
+				});
+				*/
 			}
 		);
 	
@@ -856,6 +849,8 @@ onloadselectors = function()
 							var node = $(this);
 							var categoryid = node.parent().data("nodeid");
 							
+							var hitssessionid = $("#resultsdiv").data("hitssessionid");
+							
 //							var tree = this.nearest(".categorytree");
 //							var treeid = tree.data("")
 							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
@@ -863,11 +858,12 @@ onloadselectors = function()
 							jQuery.get("$home$apphome/components/categorize/addassetcategory.html", 
 									{
 										assetid:assetid,
-										categoryid:categoryid
+										categoryid:categoryid,
+										hitssessionid:hitssessionid
 									},
 									function(data) 
 									{
-										node.append("<span class='fader'>&nbsp;+1</span>");
+										node.append("<span class='fader'>&nbsp;+" + data + "</span>");
 										node.find(".fader").fadeOut(3000);
 										node.removeClass("selected");
 									}

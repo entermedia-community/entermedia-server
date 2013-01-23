@@ -1,6 +1,9 @@
 package org.openedit.entermedia.orders;
 
+import java.util.Date;
+
 import org.openedit.Data;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.ElementData;
 
 public class Order extends ElementData
@@ -59,5 +62,23 @@ public class Order extends ElementData
 		return super.get(inId);
 	}
 
+	public boolean isExpired()
+	{
+		String expiration = get("expireson");
+		if( expiration != null )
+		{
+			Date expires = DateStorageUtil.getStorageUtil().parseFromStorage(expiration);
+			if( expires.after(new Date() ) )
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		return false;
+
+	}
 	
 }

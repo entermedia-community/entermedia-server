@@ -15,14 +15,13 @@
 	
 	
 	<div  class="ui-widget-content">
-		#if($content.isPropertyTrue("showsearch"))
-			$pages.include("/${content.searchhome}/searchform.html")
-		#end
+
+			$pages.include("$apphome/views/modules/$moduleid/searchform.html")
+
 	</div>
 	
 	
 	
 </div>
 
-$pages.include("${content.searchhome}/extra.html")
 			

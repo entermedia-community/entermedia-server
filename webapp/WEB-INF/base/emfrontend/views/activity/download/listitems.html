@@ -2,12 +2,12 @@
 <div >
 	<table id="shared-asset-table" class="striped download-table" >
 
-
+#set( $downloadall = false)
 
 #foreach( $item in $orderitems )
 
     #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
-	#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html?hitssessionid=$rootid" )
+	#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
 
 	<tr>
 	<td class="asset-thumb">		
@@ -42,11 +42,19 @@
 	#set( $presetid = $publishqueue.get("presetid") )
 	#if( $publishqueue.publishdestination == "0")   ##download with the browser
 		#set( $presetid = $publishqueue.get("presetid") )
-		#if( $presetid == 0)
+		#if( $presetid == "0")
 			<td></td>
 			<td>
 				<a class="btn small" href="$home$mediaarchive.asLinkToOriginal($asset)">Download</a>
+				#set( $downloadall = true)
+				
 			</td>
+		#elseif( $presetid == "attachments")
+			<td></td>
+			<td>
+				<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/attachments/${asset.sourcepath}.zip">Download Attachments</a>				
+			</td>
+			
 		#else
 			<td>
 			${publishqueue.exportname}
@@ -54,6 +62,8 @@
 			<td align="right">
 					#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
 					<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
+									#set( $downloadall = true)
+					
 			</td>
 		#end
 	#elseif( $publishqueue.publishdestination == "1") )
@@ -63,6 +73,8 @@
 			#if( $item.status == "complete" || $item.status == "delivered" )
 			<ul class="embuttons">
 				<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>
+								#set( $downloadall = true)
+				
 			</ul>
 			#end
 		#end	
@@ -75,5 +87,7 @@
 	#end
 	
 </table>
+#if($downloadall )
 	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >Download All (Zip)</a></div>
+#end	
 </div>

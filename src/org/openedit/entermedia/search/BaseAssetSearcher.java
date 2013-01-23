@@ -19,6 +19,7 @@ import org.openedit.entermedia.AssetArchive;
 import org.openedit.entermedia.AssetPathFinder;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
+import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
 
@@ -237,7 +238,12 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 
 	public void saveData(Data inData, User inUser)
 	{
-		if (inData instanceof CompositeData)
+		if (inData instanceof CompositeAsset)
+		{
+			CompositeAsset asset = (CompositeAsset)inData;
+			asset.saveChanges();
+		}
+		else if (inData instanceof CompositeData)
 		{
 			saveCompositeData((CompositeData) inData, inUser);
 		}

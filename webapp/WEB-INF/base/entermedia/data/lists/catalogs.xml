@@ -1,4 +1,4 @@
 
 <catalogss>
-  <catalogs id="media/catalogs/public" searchtype="asset">Default</catalogs>
+  <catalogs id="media/catalogs/public">Default</catalogs>
 </catalogss>
