@@ -66,19 +66,19 @@ public void setupProjects(HitTracker assets)
 					String libraryfolder  = split[2];
 					SearchQuery query = librarySearcher.createSearchQuery().append("division",division.getId()).append("folder",libraryfolder);
 					Data library =	librarySearcher.searchByQuery(query);
-					if( library == null )
+					if( library != null )
 					{
-						library = librarySearcher.createNewData();
-						library.setProperty("folder",libraryfolder);
-						library.setProperty("division",division.getId());
-						library.setName(libraryfolder);
-						
-						librarySearcher.saveData(library,null);
+//						library = librarySearcher.createNewData();
+//						library.setProperty("folder",libraryfolder);
+//						library.setProperty("division",division.getId());
+//						library.setName(libraryfolder);
+//						
+//						librarySearcher.saveData(library,null);
+						Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
+						asset.addLibrary(library.getId());
+						tosave.add(asset);
+						log.info("auto added library by folder " + libraryfolder); 
 					}
-					Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
-					asset.addLibrary(library.getId());
-					tosave.add(asset);
-					log.info("Setup new library" + libraryfolder); 
 				}
 			}
 			if(tosave.size() == 100)

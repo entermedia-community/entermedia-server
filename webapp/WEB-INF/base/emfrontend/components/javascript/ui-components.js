@@ -232,114 +232,73 @@ uiload = function() {
 		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').addClass('down');
 		$(this).closest('.select-dropdown').hide();
 	});
-
-
-		jQuery('XXXselect.choose-select-ajax').livequery(
-				function()
-				{
-					jQuery(this).chosen({ search_contains: true } );
-				}
-		);
 	
-	$("select.choose-select-ajax").livequery(
-			function()
-			{
-				var selector = jQuery(this);
-				//alert(selector.html());
-				var sid = selector.attr("id");
-
-				var listid = selector.data("listid");
-										
-				selector.ajaxChosen({
-					method: 'GET',
-					url: apphome + '/components/xml/types/modulepicker/datasearch.txt?searchtype=' + listid + '&field=name&operation=contains&hitsperpage=400&sortby=name',
-					dataType: 'json',
-					jsonTermKey: 'name.value'
-				}, function (data) {
-					var terms = {};
-					jQuery.each(data, function () {
-						terms[this.id] = this.name;
-					});
-					return terms;
-				},	function(options) {
-					//extends options with data
-					//data: { name: "John", location: "Boston" }
-					var args = jQuery.extend({}, options);
-					//var inputs = jQuery("#" + sid + "_filter .autosubmited");
-					var inputs = selector.parent().find( "#" + sid + "_filter .autosubmited" );
-					inputs.each(function() {
-						var name = this.name;
-						name = name.substring(12,name.length - 6); //remove the prefix and .value
-						args.data[ name + ".value"] = $(this).val();
-						args.data["operation" ] = "matches";
-						args.data["field" ] = name; //does this work with duplicates?
-						
-						//TODO: Update status area
-					 });
-					return jQuery.ajax(args);
-				}
-				);
-			}
-		);	
-	
-	/*
-	jQuery('.module-picker-starter .hideshow').livequery("click",function(e)
+	function select2formatResult(emdata, container, query)
 	{
-		  var theinput = $(this).closest(".module-picker-starter");
-	      var dropdown = theinput.find('div.chzn-drop').first();
-	      var dd_top = theinput.height();
-	      var dd_width = theinput.width() - 2;
+		return emdata.name;
+	}
+	function select2Selected(emdata, container) {
+		
+		var id = container.closest(".select2-container").attr("id") + "hidden";
+		id = id.substring(5); //remove sid2_
+		container.closest("form").find("#" + id ).val(emdata.id);
+		return emdata.name;
+	}
+	
+	jQuery("input.listautocomplete").livequery( function() 
+	{
+		var theinput = jQuery(this);
+		var searchtype = theinput.data('searchtype');
+		if(searchtype != undefined ) //called twice due to the way it reinserts components
+		{
+			var searchfield = theinput.data('searchfield');
+			var catalogid = theinput.data('listcatalogid');
 
-	      if (theinput.hasClass("chzn-container-active")) {
-
-	    	  theinput.removeClass("chzn-container-active");
-		      dropdown.css({
-			        "width": dd_width + "px",
-			        "top": dd_top + "px",
-		            "left": "-9000px"
-			      });	  
-		      //Do search here and on each keyup and each change of the filter?
-		      
-	      }
-	      else
-	      {
-	    	  theinput.addClass("chzn-container-active");
-		      var a = theinput.find('a').first();
-		      a.addClass("chzn-single-with-drop");
-		      dropdown.css({
-		        "width": dd_width + "px",
-		        "top": dd_top + "px",
-	            "left": 0
-		      });
-	      }
-	});
-	*/
-
-	jQuery(".listautocomplete").livequery( function() 
-			{
-				var theinput = jQuery(this);
-				var listcatalogid = theinput.data("listcatalogid");
-				var searchtype = theinput.data("searchtype");
-				
-				
-				if( theinput && theinput.autocomplete )
-				{
-					var theinputhidden = theinput.attr("id") + "hidden";
-					
-					theinput.autocomplete({
-						source: apphome + '/components/autocomplete/listsuggestions.txt?searchtype=' + searchtype + '&catalogid=' + listcatalogid + '&operation=startswith&field=name&name.value=' + theinput.val() ,
-																
-						select: function(event, ui) {
-							//set input that's just for display purposes
-							theinput.val(ui.item.display);
-							//set a hidden input that's actually used when the form is submitted
-							
-							jQuery("#" + theinputhidden).val(ui.item.value);
-							return false;
+			var foreignkeyid = theinput.data('foreignkeyid');
+			var sortby = theinput.data('sortby');
+			
+			var value = theinput.val();
+			theinput.select2({
+				placeholder : "Search",
+				minimumInputLength : 0,
+				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
+					url : apphome + "/components/xml/types/autocomplete/datasearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype,
+					dataType : 'json',
+					data : function(term, page) 
+					{
+						var fkv = theinput.closest("form").find("#list-" + foreignkeyid).val();
+						var search = {
+							page_limit : 15,
+							page: page
+						};
+						search[searchfield+ ".value"] = term; //search term
+						if( fkv )
+						{
+							search["field"] = foreignkeyid; //search term
+							search["operation"] = "matches"; //search term
+							search[foreignkeyid+ ".value"] = fkv; //search term
 						}
-					});
-				}
+						if( sortby )
+						{
+							search["sortby"] = sortby; //search term
+						}
+						return search;
+					},
+					results : function(data, page) { // parse the results into the format expected by Select2.
+					
+						// since we are using custom formatting functions we do not need to alter remote JSON data
+						return {
+							results : data.rows
+						};
+					}
+				},
+				formatResult : select2formatResult, 
+				formatSelection : select2Selected
 			});
+		}
+	});		
+
+	
 }
 
 function doResize() {

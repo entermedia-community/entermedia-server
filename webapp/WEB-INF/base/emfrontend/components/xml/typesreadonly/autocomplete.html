@@ -4,7 +4,6 @@
 	#set($idcount = "")
 #end
 
-
 #if($val && $val != "")
 #set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #set($module = $searcherManager.getData($catalogid, "module", $detail.listid ) )
@@ -22,6 +21,9 @@
 		#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listid")
 	
 	#end
- 	<a class="btn" href="$link">$foundrow.name</a>
+
+	#set( $label = $foundrow.name)
+
+ 	<a class="btn" href="$link">#esc($label)</a>
 
 #end

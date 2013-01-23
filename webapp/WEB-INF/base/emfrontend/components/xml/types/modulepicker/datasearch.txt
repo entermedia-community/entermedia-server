@@ -1,7 +1,0 @@
-[
-#foreach ($res in $autocomplete.getPageOfHits())
-#if( $velocityCount > 1 ),#end
-{"id": "$res.get('id')", "name": "$res.get('name')"}
-#end
-]
-

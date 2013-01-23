@@ -9,11 +9,14 @@
   <property name="catalogid">media/catalogs/public</property>
   <property name="section">home</property>
   <property name="tagline"></property>
-  <property name="applicationid">emshare</property>
+
+  <property name="applicationid">/${module}</property>
+  <property name="themeprefix">/${applicationid}/theme</property>
 
   <path-action name="MediaArchiveModule.loadApplicationId" />
   <path-action name="ProfileModule.loadUserProfile" />
 
+  <inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
 
   <style id="baseem" href="${themeprefix}/styles/baseem.css"/>
   <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>

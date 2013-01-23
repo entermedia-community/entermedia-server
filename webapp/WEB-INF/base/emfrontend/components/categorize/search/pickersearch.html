@@ -1,14 +1,8 @@
 #set( $rootpath = "${apphome}/components/categorize")
 
-#if($asset.getId().startsWith("multiedit"))
-	#set($postfix = 'multi')
-#else
-	#set($postfix = $asset.id )
-#end
-
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 
-<div id="assetdetailscategorylist$postfix">
+<div id="assetdetailscategorylist">
 
 <div id="emcategorypicker" >
 <div id="empickerbody">

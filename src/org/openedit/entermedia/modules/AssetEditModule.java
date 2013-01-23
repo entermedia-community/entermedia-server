@@ -569,19 +569,22 @@ public class AssetEditModule extends BaseMediaModule
 		String inFieldName = inReq.getRequestParameter("fieldname");
 		Collection existing = asset.getValues(inFieldName);
 		String value = inReq.getRequestParameter(inFieldName + ".value");
-		if( existing == null)
+		if( value != null )
 		{
-			existing = new ArrayList();
-		}
-		else
-		{
-			existing = new ArrayList(existing);
-		}
-		if( !existing.contains(value))
-		{
-			existing.add(value);
-			asset.setValues(inFieldName, existing);
-			getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
+			if( existing == null)
+			{
+				existing = new ArrayList();
+			}
+			else
+			{
+				existing = new ArrayList(existing);
+			}
+			if( !existing.contains(value))
+			{
+				existing.add(value);
+				asset.setValues(inFieldName, existing);
+				getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
+			}
 		}
 	}	
 	public void removeAssetValues(WebPageRequest inReq) throws OpenEditException 
@@ -832,8 +835,8 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		ListHitTracker tracker = new ListHitTracker();
-		tracker.getSearchQuery().setCatalogId(archive.getCatalogId());
-		tracker.setSessionId("hitsasset" +  archive.getCatalogId() );
+		//tracker.getSearchQuery().setCatalogId(archive.getCatalogId());
+		//tracker.setSessionId("hitsasset" +  archive.getCatalogId() );
 //		List<String> allids = new ArrayList();
 		
 		for (Iterator iterator = inPages.iterator(); iterator.hasNext();)
@@ -846,14 +849,15 @@ public class AssetEditModule extends BaseMediaModule
 
 		archive.saveAssets(tracker, inReq.getUser());
 
-		String hitsname = inReq.findValue("hitsname");
-		if (hitsname != null)
-		{
-			tracker.getSearchQuery().setHitsName(hitsname);
-		}
-		inReq.putSessionValue(tracker.getSessionId(), tracker);
-		inReq.putPageValue(tracker.getHitsName(), tracker);
-		inReq.putPageValue("uploadedassets",tracker); 
+//		String hitsname = inReq.findValue("hitsname");
+//		if (hitsname != null)
+//		{
+//			tracker.getSearchQuery().setHitsName(hitsname);
+//		}
+//		inReq.putSessionValue(tracker.getSessionId(), tracker);
+//		inReq.putPageValue(hitsname, tracker);
+//		log.info("save hits " + hitsname + " with " + tracker.size() );
+//		inReq.putPageValue("uploadedassets",tracker); 
 		if( tracker.size() == 0 )
 		{
 			log.error("No pages uploaded");
@@ -877,12 +881,14 @@ public class AssetEditModule extends BaseMediaModule
 		
 		SearchQuery q = archive.getAssetSearcher().createSearchQuery();
 		q.addOrsGroup("id", allids.toString() );
-		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
+		
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
 			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
 		}
+		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
+		results.selectAll();
 		return results;
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)

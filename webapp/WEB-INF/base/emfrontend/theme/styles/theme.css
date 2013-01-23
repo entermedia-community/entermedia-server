@@ -3394,18 +3394,6 @@ body #emcontainer .emasseteditorarea {
     text-align: center;
     margin: -6px 0 15px 0;
 }
-#advsearchpanel select.choose-select-ajax select.choose-select {
-    width: 150px !important;
-}
-
-.choose-select-ajax
-{
-	width: 300px;
-}
-
-#advsearchpanel select.choose-select {
-    width: 180px !important;
-}
 
 #advsearchpanel table[width="100%"] .field, #advsearchpanel select.choose-select-ajax {
     width: 180px !important;
@@ -6237,3 +6225,9 @@ a.learnmore {
 	height:21px;
 	
 }
+
+div.listautocomplete
+{
+	min-width: 180px;
+	margin: 5px 0;
+}	

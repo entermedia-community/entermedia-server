@@ -1,0 +1,20 @@
+<types>
+		<type id="boolean"  >Boolean</type>
+		<type id="number"  >Number</type>
+		<type id="long"  >Long</type>
+		<type id="double"  >Double</type>
+		<type id="date"  >Date</type>
+		<type id="list"  >List</type>
+		<type id="html"  >HTML</type>
+		<type id="permission"  >Permission</type>
+		<type id="file"  >File</type>
+		<type id="user"  >User</type>
+		<type id="image"  >Image</type>
+		<type id="multiselect"   >Multi-Select</type>
+		<type id="textjoin"   >Text Join</type>
+		<type id="autocomplete"  >Auto Complete</type>
+		<type id="autocompletefulltext"   >Auto Complete Full Text</type>
+		<type id="asset"  >Asset</type>
+		<type id="url"  >URL</type>
+		<type id="color"  >Color</type>
+</types>

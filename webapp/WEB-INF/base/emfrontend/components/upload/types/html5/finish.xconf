@@ -22,6 +22,8 @@
 	</path-action>
 
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
+	<property name="hitsname">hits</property>
+ 	<property name="assetshowonly"></property>
 	
 	<property name="section">details</property>
 	

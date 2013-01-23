@@ -1,4 +1,7 @@
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()">
+#if( $hits.size() == 0 )
+	<p>No Results Found</p>
+#end
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 

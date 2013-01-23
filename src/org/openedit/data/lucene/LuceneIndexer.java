@@ -406,8 +406,8 @@ public class LuceneIndexer
 
 					populateJoinData(detail, doc, tracker, field);
 				}
-				return true;
 			}
+			return true;
 		}
 		return false;
 	}
