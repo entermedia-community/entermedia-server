@@ -1371,7 +1371,7 @@
 
     SingleSelect2 = clazz(AbstractSelect2, {
 
-        // single
+        // single WARNING: line 1383 was added by cburkey@entermediasoftware.com
 
 		createContainer: function () 
 		{
