@@ -36,11 +36,12 @@ protected TemplateWebEmail getMail() {
 
 protected void sendEmail(Order inOrder) {
 
-	if (inOrder.get('orderstatus') == 'complete') {
+	if (inOrder.get('orderstatus') == 'complete' || inOrder.get('orderstatus') == 'finalizing') {
 		log.info("Order is aleady completed");
 		return;
 	}
-
+	inOrder.setProperty('orderstatus', 'finalizing');
+	
 	try {
 		context.putPageValue("orderid", inOrder.getId());
 		context.putPageValue("order", inOrder);
