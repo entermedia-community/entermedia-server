@@ -49,7 +49,8 @@ public void init() {
 		String owner = library.get("owner");
 		if(owner == null){
 			library.setProperty("owner", username);
-			mediaArchive.getSearcher("library").saveData("library", null);
+			library.setProperty("ownerprofile",context.getUserProfile().getId());
+			mediaArchive.getSearcher("library").saveData(library, null);
 		}
 		String gitprojectname = library.getId();
 		//Create Git Repo and check it out
