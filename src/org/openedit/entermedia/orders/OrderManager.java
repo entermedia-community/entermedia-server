@@ -23,7 +23,6 @@ import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.util.SPENGOAuthenticator;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.util.DateStorageUtil;

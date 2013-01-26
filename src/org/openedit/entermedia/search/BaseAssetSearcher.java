@@ -2,10 +2,8 @@ package org.openedit.entermedia.search;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,7 +14,6 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
-import org.openedit.entermedia.AssetPathFinder;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.entermedia.CompositeAsset;

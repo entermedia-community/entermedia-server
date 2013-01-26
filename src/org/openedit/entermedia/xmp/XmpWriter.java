@@ -1,22 +1,15 @@
 package org.openedit.entermedia.xmp;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.scanner.MetadataPdfExtractor;
 import org.openedit.util.GenericsUtil;
 
 import com.openedit.OpenEditException;

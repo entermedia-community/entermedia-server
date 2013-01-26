@@ -5,20 +5,15 @@ package org.openedit.entermedia.generators;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.ZipGroup;
-import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.modules.MediaArchiveModule;
 import org.openedit.entermedia.orders.Order;
 import org.openedit.entermedia.orders.OrderManager;

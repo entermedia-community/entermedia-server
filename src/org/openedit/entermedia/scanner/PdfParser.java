@@ -15,8 +15,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.util.PDFTextStripper;
 
-import com.openedit.OpenEditException;
-
 public class PdfParser
 {
 	private static final Log log = LogFactory.getLog(PdfParser.class);

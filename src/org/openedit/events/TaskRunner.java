@@ -1,18 +1,14 @@
 package org.openedit.events;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.data.Searcher;
-import org.openedit.event.WebEvent;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
-import com.openedit.util.PathUtilities;
 
 public class TaskRunner extends java.util.TimerTask
 {

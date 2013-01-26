@@ -20,7 +20,6 @@ import com.openedit.page.PageProperty;
 import com.openedit.page.PageSettings;
 import com.openedit.page.Permission;
 import com.openedit.users.Group;
-import com.openedit.util.strainer.BlankFilter;
 import com.openedit.util.strainer.BooleanFilter;
 import com.openedit.util.strainer.Filter;
 import com.openedit.util.strainer.FilterReader;

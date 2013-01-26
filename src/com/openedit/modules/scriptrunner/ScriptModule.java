@@ -37,7 +37,6 @@ import com.openedit.config.Configuration;
 import com.openedit.entermedia.scripts.Script;
 import com.openedit.entermedia.scripts.ScriptLogger;
 import com.openedit.entermedia.scripts.ScriptManager;
-import com.openedit.entermedia.scripts.ScriptRunner;
 import com.openedit.entermedia.scripts.TextAppender;
 import com.openedit.modules.BaseModule;
 import com.openedit.page.Page;

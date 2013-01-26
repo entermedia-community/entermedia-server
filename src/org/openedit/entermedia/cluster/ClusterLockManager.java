@@ -10,7 +10,6 @@ import org.entermedia.locks.LockManager;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;

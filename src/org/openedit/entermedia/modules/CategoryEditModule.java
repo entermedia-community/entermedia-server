@@ -15,7 +15,6 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
-import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.edit.CategoryEditor;
 import org.openedit.event.WebEvent;

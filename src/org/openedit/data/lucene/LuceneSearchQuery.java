@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.openedit.data.PropertyDetail;
 
 import com.openedit.hittracker.SearchQuery;

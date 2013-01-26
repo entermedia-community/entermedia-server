@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEventListener;
 import org.openedit.util.DateStorageUtil;
 

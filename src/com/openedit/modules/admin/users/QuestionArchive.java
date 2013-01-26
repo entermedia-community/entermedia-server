@@ -14,6 +14,8 @@ public class QuestionArchive
 {
 	XmlArchive fieldXmlArchive;
 	List fieldQuestions;
+	long lastModDate;
+	
 	public Question getRandomQuestion() throws OpenEditException
 	{
 		if( getQuestions().size() == 0)
@@ -29,20 +31,30 @@ public class QuestionArchive
 	public List getQuestions() throws OpenEditException
 	{
 		String xmlpath = "/system/questions.xml";
-		XmlFile file = getXmlArchive().loadXmlFile(xmlpath);
-		if( file == null)
+		long now = getXmlArchive().getLastModified(xmlpath);
+		boolean reload = false;
+		if( now != lastModDate )
 		{
-			file = getXmlArchive().getXml(xmlpath);
+			reload = true;
+		}
+		
+		if (reload || fieldQuestions == null)
+		{
+			XmlFile file = getXmlArchive().getXml(xmlpath);
 			fieldQuestions = new ArrayList();
-			for (Iterator iterator = file.getElements().iterator(); iterator.hasNext();)
+			if( file.isExist() )
 			{
-				Element elem = (Element) iterator.next();
-				Question q = new Question();
-				q.setId(elem.attributeValue("id"));
-				q.setDescription(elem.attributeValue("text"));
-				q.setAnswer(elem.attributeValue("answer"));
-				fieldQuestions.add(q);
+				for (Iterator iterator = file.getElements().iterator(); iterator.hasNext();)
+				{
+					Element elem = (Element) iterator.next();
+					Question q = new Question();
+					q.setId(elem.attributeValue("id"));
+					q.setDescription(elem.attributeValue("text"));
+					q.setAnswer(elem.attributeValue("answer"));
+					fieldQuestions.add(q);
+				}
 			}
+			lastModDate = file.getLastModified();
 		}
 		return fieldQuestions;
 	}

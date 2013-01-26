@@ -20,28 +20,23 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.analyzing.AnalyzingQueryParser;
-import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.NRTManager;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SearcherFactory;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.SimpleFSLockFactory;
@@ -144,10 +139,30 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		boolean completed = false;
 		try
 		{
-			writer = new IndexWriter(indexDir, getAnalyzer(), true, IndexWriter.MaxFieldLength.UNLIMITED);
-			writer.setMergeFactor(50);
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36, getAnalyzer());
+			config.setOpenMode(OpenMode.CREATE);
+			
+//			  LogMergePolicy lmp = new LogDocMergePolicy();
+//			    //lmp.setMaxMergeDocs(3);
+//			    lmp.setMergeFactor(100);
+//			    
+//				// writer.mergeFactor = 10;
+//				// writer.setMergeFactor(100);
+//				// writer.setMaxBufferedDocs(2000);
+//
+//			    config.setMergePolicy(lmp);
+//			
+			writer = new IndexWriter(indexDir,config);
+			
+			//writer = new IndexWriter(indexDir, , true, IndexWriter.MaxFieldLength.UNLIMITED);
+			//writer.setMergeFactor(50);
+			
+			
+
+			
+			
 			reIndexAll(writer);
-			writer.optimize();
+			//writer.optimize();
 			writer.commit();
 			setCurrentIndexFolder(indexname);
 			setIndexWriter(writer);
@@ -156,7 +171,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			
 			//delete the older indexes
 			deleteOlderIndexes();
-			log.info(getSearchType() + " reindex complete in " + indexname);
+			log.info(getSearchType() + " reindex complete in folder /" + indexname);
 
 		}
 		catch (CorruptIndexException e)
@@ -338,25 +353,25 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			String inOrdering = (String) iterator.next();
 			SortField sort = null;
-			if (inOrdering.equals("random"))
-			{
-				 Sort randomsort = new Sort(
-			                new SortField(
-			                        "",
-			                        new FieldComparatorSource() {
-
-			                            @Override
-			                            public FieldComparator<Integer> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
-			                                return new RandomOrderFieldComparator();
-			                            }
-
-			                        }
-			                    )
-			            );
-				 return randomsort;
-			}
-			else
-			{
+//			if (inOrdering.equals("random"))
+//			{
+//				 Sort randomsort = new Sort(
+//			                new SortField(
+//			                        "",
+//			                        new FieldComparatorSource() {
+//
+//			                            @Override
+//			                            public FieldComparator<Integer> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
+//			                                return new RandomOrderFieldComparator();
+//			                            }
+//
+//			                        }
+//			                    )
+//			            );
+//				 return randomsort;
+//			}
+//			else
+//			{
 				boolean direction = false;
 				if (inOrdering.endsWith("Down"))
 				{
@@ -382,17 +397,17 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				}
 				if (detail != null && detail.isDataType("number"))
 				{
-					sort = new SortField(sortfield, SortField.LONG, direction);
+					sort = new SortField(sortfield, SortField.Type.LONG, direction);
 				}
 				else if (detail != null && detail.isDataType("double"))
 				{
-					sort = new SortField(sortfield, SortField.FLOAT, direction);
+					sort = new SortField(sortfield, SortField.Type.FLOAT, direction);
 				}
 				else
 				{
-					sort = new SortField(sortfield, SortField.STRING, direction);
+					sort = new SortField(sortfield, SortField.Type.STRING, direction);
 				}
-			}
+//			}
 			sorts.add(sort);
 		}
 		SortField[] fields = (SortField[]) sorts.toArray(new SortField[sorts.size()]);
@@ -447,19 +462,17 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	protected boolean checkExists(String indexname) throws IOException
 	{
 		boolean exists = false;
-		try
-		{
-			if( IndexReader.indexExists(buildIndexDir(indexname)) )
+			if( DirectoryReader.indexExists(buildIndexDir(indexname)) )
 			{
 				exists = true;
 			}
-		}
-		catch ( org.apache.lucene.index.IndexNotFoundException ex)
-		{
-			exists = false;
-			File indexDir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
-			new FileUtils().deleteAll(indexDir);
-		}
+//		}
+//		catch ( org.apache.lucene.index.IndexNotFoundException ex)
+//		{
+//			exists = false;
+//			File indexDir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
+//			new FileUtils().deleteAll(indexDir);
+//		}
 		return exists;
 	}
 	
@@ -585,8 +598,12 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 						{
 							log.info(getCatalogId() + " asset writer opened in " + folder);
 						}
+						IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36, getAnalyzer());
+						config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+						fieldIndexWriter = new IndexWriter(indexDir,config);
+
 						//NOTE the false!!! Very important. Wasted 3 days on this!!!!
-							fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),false, IndexWriter.MaxFieldLength.UNLIMITED);
+//						fieldIndexWriter = new IndexWriter(indexDir, getAnalyzer(),false, IndexWriter.MaxFieldLength.UNLIMITED);
 //						log.info("Open Index writer for " + lock);
 					}
 					catch (IOException ex)

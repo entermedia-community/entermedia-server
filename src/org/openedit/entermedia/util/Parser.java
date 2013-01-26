@@ -39,9 +39,6 @@ package org.openedit.entermedia.util;
  * inventing predecessor languages C and C++ is also gratefully acknowledged.
  */
 import java.io.BufferedReader;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /* Simple demo of CSV parser class.
  */

@@ -131,7 +131,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			{
 				log.debug("Loading " + url);
 			}
-			if( getAssets().size() > 1000)
+			if( getAssets().size() > 1000) //Replace this with a real cache engine
 			{
 				clearAssets();
 			}

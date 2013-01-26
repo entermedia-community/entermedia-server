@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.openedit.Data;
 import org.openedit.entermedia.MediaArchive;
 
 public abstract class BaseImageCreator extends BaseCreator

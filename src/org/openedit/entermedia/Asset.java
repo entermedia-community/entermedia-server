@@ -20,7 +20,6 @@ import java.util.Map;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.Data;
 import org.openedit.MultiValued;
 
 import com.openedit.OpenEditRuntimeException;

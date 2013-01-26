@@ -1,17 +1,14 @@
 package org.openedit.entermedia.modules;
 
-import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.EnterMedia;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.modules.BaseModule;
-import com.openedit.util.PathUtilities;
 
 public class BaseMediaModule extends BaseModule
 {

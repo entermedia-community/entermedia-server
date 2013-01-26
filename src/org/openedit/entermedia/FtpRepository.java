@@ -1,8 +1,5 @@
 package org.openedit.entermedia;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -13,8 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.openedit.Data;
-import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.repository.BaseRepository;
 import org.openedit.repository.ContentItem;
@@ -24,7 +19,6 @@ import org.openedit.repository.RepositoryException;
 
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
-import com.openedit.util.PathUtilities;
 
 public class FtpRepository extends BaseRepository
 {

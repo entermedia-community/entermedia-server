@@ -15,8 +15,6 @@ import com.openedit.generators.BaseGenerator;
 import com.openedit.generators.Output;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
-import com.openedit.util.PageZipUtil;
-import com.openedit.util.PathUtilities;
 
 public class WorkspaceExportGenerator extends BaseGenerator
 {

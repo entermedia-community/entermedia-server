@@ -67,7 +67,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 		log.info("Reindex of customer users directory");
 		try
 		{
-			writer.setMergeFactor(50);
+			//writer.setMergeFactor(50);
 		
 			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
 			Collection usernames = getUserManager().listUserNames();
@@ -85,7 +85,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 				}	
 					
 			}
-			writer.optimize();
+			//writer.optimize();
 		}
 		catch (Exception e)
 		{

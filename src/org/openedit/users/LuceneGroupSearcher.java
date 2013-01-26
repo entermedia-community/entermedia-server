@@ -122,7 +122,7 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 		log.info("Reindex of customer groups directory");
 		try
 		{
-			writer.setMergeFactor(50);
+			//writer.setMergeFactor(50);
 			// FIXME: Move this to XmlCustomerArchive, e.g. getAllUserNames()
 			File groupsDirectory = new File(getRootDirectory(),
 					"/WEB-INF/data/system/groups");
@@ -158,7 +158,7 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 	
 				}
 			}
-			writer.optimize();
+			//writer.optimize();
 		} catch (Exception e)
 		{
 			// TODO Auto-generated catch block

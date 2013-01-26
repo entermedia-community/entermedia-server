@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import org.entermedia.videoedit.VideoEditor;
 
 import com.openedit.WebPageRequest;
-import com.openedit.generators.FileGenerator;
 import com.openedit.generators.Output;
 import com.openedit.page.Page;
 

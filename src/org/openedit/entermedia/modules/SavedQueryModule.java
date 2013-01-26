@@ -1,11 +1,8 @@
 package org.openedit.entermedia.modules;
 
-import java.util.Date;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.savedqueries.SavedQueryManager;
 

@@ -7,16 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.management.openmbean.OpenDataException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
-import com.openedit.page.Page;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
