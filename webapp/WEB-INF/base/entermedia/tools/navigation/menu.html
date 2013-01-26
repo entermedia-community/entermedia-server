@@ -9,11 +9,6 @@
 	    	<a href="$home/${applicationid}/sites/index.html" class="menulink">[[Apps]]</a>
 	    </span>
 	    #end
-	    #if( $canbrowsecategories && $userprofile.getLastCatalog())
-	    <span>
-	    	<a href="$home/$userprofile.getLastCatalog().getId()/categories/index.html" class="menulink">[[Assets]]</a>
-	    </span>
-	    #end
 	   	#if( $canviewaddmedia )
 	    <span>
 	    	<a class="thickbox menulink" href="$home/${applicationid}/upload/index.html?width=600&height=380">[[Add Media]]</a> 
