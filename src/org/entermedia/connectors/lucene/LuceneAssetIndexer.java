@@ -242,9 +242,12 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			doc.add(new Field("ordering", Integer.toString(asset.getOrdering()), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 		}
 		
-		String tagString = getTagString(asset);
-		Field keys = new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED,  Field.TermVector.YES);
-		doc.add(keys);
+		String tagString = asset.get("keywords");
+		if( tagString != null )
+		{
+			Field keys = new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED); //make tokens
+			doc.add(keys);
+		}
 		Set catalogs = buildCategorySet(asset);
 		populateDescription(doc, asset, inKeywords, catalogs, tagString);
 
@@ -315,7 +318,6 @@ public class LuceneAssetIndexer extends LuceneIndexer
 //			doc.add(new Field("name", asset.getName(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
 //			doc.add(new Field("name_sortable", asset.getName().toLowerCase(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 //		}
-		String htmlPath = asset.getSourcePath() + ".html";
 		// Low level reading in of text
 		fullDesc.append(asset.getName());
 		fullDesc.append(' ');
@@ -325,7 +327,11 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		
 		fullDesc.append(asset.getId());
 		fullDesc.append(' ');
-		fullDesc.append(inTagString);
+		if( inTagString != null )
+		{
+			inTagString = inTagString.replace(" | ",""); //remove junk
+			fullDesc.append(inTagString);
+		}
 		//populateKeywords(fullDesc, asset, inDetails);
 		// add a bunch of stuff to the full text field
 		//never need this anymore
@@ -437,25 +443,25 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		}
 	}
 */	
-	protected String getTagString(Asset inAsset)
-	{
-		StringBuffer buffer = new StringBuffer();
-		if (inAsset.hasKeywords())
-		{
-			for (Iterator iter = inAsset.getKeywords().iterator(); iter.hasNext();)
-			{
-				String desc = (String) iter.next();
-				desc = desc.replace('/', ' '); // Is this needed?
-				desc = desc.replace('\\', ' ');
-				buffer.append(desc);
-				if( iter.hasNext() )
-				{
-					buffer.append(" | ");
-				}
-			}
-		}		
-		return buffer.toString();
-	}
+//	protected String getTagString(Asset inAsset)
+//	{
+//		StringBuffer buffer = new StringBuffer();
+//		if (inAsset.hasKeywords())
+//		{
+//			for (Iterator iter = inAsset.getKeywords().iterator(); iter.hasNext();)
+//			{
+//				String desc = (String) iter.next();
+//				desc = desc.replace('/', ' '); // Is this needed?
+//				desc = desc.replace('\\', ' ');
+//				buffer.append(desc);
+//				if( iter.hasNext() )
+//				{
+//					buffer.append(" | ");
+//				}
+//			}
+//		}		
+//		return buffer.toString();
+//	}
 
 	public String pad(String inValue)
 	{

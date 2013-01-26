@@ -147,6 +147,7 @@ public class WorkspaceManager
 
 	public void saveModule(String catalogid, String appid, Data module) throws Exception
 	{
+		/** APP STUFF **/
 		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
 		PageSettings homesettings = home.getPageSettings();
 		if( !home.exists() )
@@ -167,6 +168,8 @@ public class WorkspaceManager
 			modulesettings.putProperty(prop);
 			getPageManager().getPageSettingsManager().saveSetting(modulesettings);
 		}
+		
+		/** DATABASE STUFF **/
 		String template = "/" + catalogid + "/data/lists/view/default.xml";
 		String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
 		copyXml(catalogid, template, path, module);

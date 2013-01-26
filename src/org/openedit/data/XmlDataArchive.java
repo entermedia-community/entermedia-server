@@ -19,16 +19,16 @@ import com.openedit.users.User;
 public class XmlDataArchive implements DataArchive 
 {
 	protected XmlArchive fieldXmlArchive;
-	//protected Map fieldIdCache;
+	protected Map fieldIdCache;
 	
-//	protected Map getIdCache()
-//	{
-//		if( fieldIdCache == null)
-//		{
-//			fieldIdCache = new HashMap();
-//		}
-//		return fieldIdCache;
-//	}
+	protected Map getIdCache()
+	{
+		if( fieldIdCache == null)
+		{
+			fieldIdCache = new HashMap();
+		}
+		return fieldIdCache;
+	}
 	public String getPathToData()
 	{
 		return fieldPathToData;
@@ -90,6 +90,7 @@ public class XmlDataArchive implements DataArchive
 		{
 			populateElement(element, inData);
 		}
+		getIdCache().remove(inData.getId());
 	}
 	public void saveData(Data inData, User inUser)
 	{
@@ -185,14 +186,13 @@ public class XmlDataArchive implements DataArchive
 	
 	public Data loadData(DataFactory inFactory, String inSourcePath, String inId)
 	{
+		//This is used a bunch when loading and editing the same xml file
+		Data found = (Data)getIdCache().get(inId);
+		if( found != null)
+		{
+			return found;
+		}
 		String path = getPathToXml(inSourcePath);
-//		long time = getXmlArchive().getLastModified(path);
-//		String id = path + inId + time;
-//		Data found = (Data)getIdCache().get(id);
-//		if( found != null)
-//		{
-//			return found;
-//		}
 
 		XmlFile xml = getXmlArchive().getXml(path, getElementName());
 		Element elem = xml.getElementById(inId);
@@ -203,11 +203,16 @@ public class XmlDataArchive implements DataArchive
 		ElementData data = (ElementData)inFactory.createNewData();
 		data.setElement(elem);
 		data.setSourcePath(inSourcePath);
+		if( getIdCache().size() > 100 )
+		{
+			getIdCache().put(inId,data);
+		}
+		
 		return data;
 	}
 	public void clearCache()
 	{
-		//getIdCache().clear();
+		getIdCache().clear();
 	}
 	public void delete(Data inData, User inUser)
 	{
@@ -219,6 +224,7 @@ public class XmlDataArchive implements DataArchive
 			xml.deleteElement(element);
 		}
 		getXmlArchive().saveXml(xml, inUser);
+		getIdCache().remove(inData.getId());
 	}
 //	public XmlFile getXml(String inPath, String inSearchType)
 //	{

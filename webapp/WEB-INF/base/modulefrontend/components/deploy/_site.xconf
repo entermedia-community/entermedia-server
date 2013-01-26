@@ -5,5 +5,6 @@
   <property name="fallbackdirectory">/WEB-INF/base/modulefrontend</property>
   <property name="catalogid">media/catalogs/public</property>
   <property name="applicationid">emfrontend</property>
+  <property name="appmodule">module</property>
   
 </page>

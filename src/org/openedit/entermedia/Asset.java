@@ -53,7 +53,15 @@ public class Asset implements MultiValued
 		{
 			return null;
 		}
-		String[] vals = val.split("\\s+");
+		String[] vals = null;
+		if( val.contains("|") )
+		{
+			vals = VALUEDELMITER.split(val);
+		}
+		else
+		{
+			vals = val.split("\\s+"); //legacy
+		}
 
 		Collection<String> collection = Arrays.asList(vals);
 		//if null check parent
@@ -98,7 +106,7 @@ public class Asset implements MultiValued
 			values.append(detail);
 			if( iterator.hasNext())
 			{
-				values.append(" ");
+				values.append(" | ");
 			}
 		}
 		setProperty(inKey,values.toString());
@@ -210,17 +218,55 @@ public class Asset implements MultiValued
 		{
 			return getName();
 		}
-		if ("id".equals(inAttribute) || "_id".equals(inAttribute))
+		else if ("id".equals(inAttribute) || "_id".equals(inAttribute))
 		{
 			return getId();
 		}
-		if ("sourcepath".equals(inAttribute))
+		else if ("sourcepath".equals(inAttribute))
 		{
 			return getSourcePath();
 		}
-		if ("catalogid".equals(inAttribute))
+		else if ("catalogid".equals(inAttribute))
 		{
 			return getCatalogId();
+		}
+		else if ("keywords".equals(inAttribute))
+		{
+			List<String> keywords = getKeywords();
+			if( keywords.size() == 0 )
+			{
+				return null;
+			}
+			StringBuffer out = new StringBuffer();
+			for (Iterator iterator = keywords.iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				out.append(key);
+				if( iterator.hasNext() )
+				{
+					out.append(" | ");
+				}
+			}
+			return out.toString();
+		}
+		else if ("category".equals(inAttribute))
+		{
+			List<Category> categories = getCategories();
+			if( categories.size() == 0 )
+			{
+				return null;
+			}
+			StringBuffer out = new StringBuffer();
+			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+			{
+				Category cat = (Category) iterator.next();
+				out.append(cat.getId());
+				if( iterator.hasNext() )
+				{
+					out.append(" | ");
+				}
+			}
+			return out.toString();
 		}
 
 		String value = (String) getProperties().get(inAttribute);
@@ -291,7 +337,7 @@ public class Asset implements MultiValued
 		}
 	}
 
-	public List getCategories()
+	public List<Category> getCategories()
 	{
 		if (fieldCategories == null)
 		{
@@ -384,7 +430,37 @@ public class Asset implements MultiValued
 		{
 			if (inValue != null)
 			{
-				addKeywords(inValue);
+				if( inValue.contains("|") )
+				{
+					String[] vals = VALUEDELMITER.split(inValue);
+					for (int i = 0; i < vals.length; i++)
+					{
+						addKeyword(vals[i]);						
+					}
+				}
+				else
+				{
+					addKeyword(inValue);
+				}
+			}
+		}
+		else if ("category".equals(inKey))
+		{
+			if (inValue != null)
+			{
+				//This is annoying. We will need to fix categories when we save this asset
+				if( inValue.contains("|") )
+				{
+					String[] vals = VALUEDELMITER.split(inValue);
+					for (int i = 0; i < vals.length; i++)
+					{
+						addCategory(new Category(vals[i],null));
+					}
+				}
+				else
+				{
+					addCategory(new Category(inValue,null));
+				}
 			}
 		}
 		else

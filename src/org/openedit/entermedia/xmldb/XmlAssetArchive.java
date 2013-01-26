@@ -375,7 +375,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		saveAssetAttributes(inAsset, assetelm);
 
 		// save out catalogs
-		saveAssetCatalogs(inAsset, assetelm);
+		saveAssetCategories(inAsset, assetelm);
 
 
 		// clear out any old asset properties
@@ -494,16 +494,28 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	 * @param inAsset
 	 * @param assetelm
 	 */
-	private void saveAssetCatalogs(Asset inAsset, Element assetelm)
+	private void saveAssetCategories(Asset inAsset, Element assetelm)
 	{
 		// remove old catalogs
 		deleteElements(assetelm, "category");
 		// TODO: Save over the old category
-		for (Iterator iter = inAsset.getCategories().iterator(); iter.hasNext();)
+		
+		List existing = new ArrayList( inAsset.getCategories() );
+		for (Iterator iter = existing.iterator(); iter.hasNext();)
 		{
 			Category category = (Category) iter.next();
 			Element cat = assetelm.addElement("category");
 			cat.addAttribute("id", category.getId());
+			if( category.getName() == null )
+			{
+				//make sure we have a recent version
+				inAsset.removeCategory(category);
+				category = getCategoryArchive().getCategory(category.getId());
+				if( category != null )
+				{
+					inAsset.addCategory(category);
+				}
+			}
 		}
 	}
 
