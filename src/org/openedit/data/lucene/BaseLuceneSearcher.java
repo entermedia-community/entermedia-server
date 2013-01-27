@@ -774,7 +774,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			Document doc = new Document();
 			
 			//this should cache
-			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
+			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 			if( details == null)
 			{
 				throw new OpenEditException("No " + getSearchType() + "properties.xml file available");
