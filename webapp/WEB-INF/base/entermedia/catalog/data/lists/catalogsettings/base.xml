@@ -3,7 +3,7 @@
 	<!--  An asset can be viewed by the owner and the administrators-->
 	<property id="catalogassetviewispublic" value="true">Default Assets To Public (true/false)</property>
 	<property id="catalogassetviewusers" value="${asset.owner}">Admin Catalog Asset View Users</property>
-	<property id="catalogassetviewgroups" value="">Admin Catalog Asset View Groups</property>
+	<property id="catalogassetviewgroups" value="administrators">Admin Catalog Asset View Groups</property>
 
 	<property id="catalogasseteditusers" value="${asset.owner}">Catalog Asset Edit Users</property>
 	<property id="catalogasseteditgroups" value="administrators users">Catalog Asset Edit Groups</property>

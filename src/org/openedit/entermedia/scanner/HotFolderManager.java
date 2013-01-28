@@ -12,7 +12,6 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.modules.PathEventModule;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.XmlVersionRepository;

@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.amazonaws.http.HttpResponse;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.config.Configuration;

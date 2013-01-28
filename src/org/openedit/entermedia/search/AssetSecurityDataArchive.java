@@ -17,10 +17,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.modules.AssetControlModule;
 import org.openedit.profile.UserProfile;
-
-import sun.util.logging.resources.logging;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.SearchQuery;

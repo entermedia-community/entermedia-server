@@ -12,12 +12,9 @@ See the GNU Lesser General Public License for more details.
 
 package org.openedit.data.lucene;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import org.openedit.Data;
-
-import com.openedit.OpenEditRuntimeException;
 
 
 /**

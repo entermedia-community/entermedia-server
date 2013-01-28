@@ -1,17 +1,11 @@
 package org.openedit.entermedia.util.ssh;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
-import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
-import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 
 import com.jcraft.jsch.ChannelSftp;

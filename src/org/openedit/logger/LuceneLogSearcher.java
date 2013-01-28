@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.io.Reader;
@@ -92,8 +91,8 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 	{
 		try 
 		{
-			writer.setMergeFactor(100);
-			writer.setMaxBufferedDocs(2000);
+//			writer.setMergeFactor(100);
+//			writer.setMaxBufferedDocs(2000);
 
 			PathProcessor process = new PathProcessor()
 			{
@@ -114,7 +113,7 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 			process.setRecursive(false);
 			process.setRootPath("/WEB-INF/logs/"+getFolderName()+"/");
 			process.process();
-			writer.optimize();
+			//writer.optimize();
 			//flushRecentChanges(true);
 		}
 		catch (Exception ex) 

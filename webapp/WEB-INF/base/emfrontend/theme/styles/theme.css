@@ -6226,6 +6226,13 @@ a.learnmore {
 	
 }
 
+.select2
+{
+	min-width: 180px;
+	margin: 5px 0;
+
+}
+
 div.listautocomplete
 {
 	min-width: 180px;

@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -21,7 +19,6 @@ import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
-import com.openedit.OpenEditException;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;

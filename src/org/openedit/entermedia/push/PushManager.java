@@ -35,8 +35,6 @@ import org.openedit.entermedia.util.NaiveTrustManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
-import sun.misc.UUEncoder;
-
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
@@ -45,7 +43,6 @@ import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.util.PathUtilities;
-import com.openedit.util.URLUtilities;
 
 public class PushManager
 {

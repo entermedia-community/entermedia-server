@@ -13,11 +13,10 @@ import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
-import com.amazonaws.services.simpleemail.model.GetSendQuotaRequest;
 import com.openedit.OpenEditException;
 import com.openedit.users.User;
 
-public class XmlDataArchive implements DataArchive
+public class XmlDataArchive implements DataArchive 
 {
 	protected XmlArchive fieldXmlArchive;
 	protected Map fieldIdCache;
@@ -91,6 +90,7 @@ public class XmlDataArchive implements DataArchive
 		{
 			populateElement(element, inData);
 		}
+		getIdCache().remove(inData.getId());
 	}
 	public void saveData(Data inData, User inUser)
 	{
@@ -107,6 +107,8 @@ public class XmlDataArchive implements DataArchive
 		addRow(inData, xml);
 		getXmlArchive().saveXml(xml, null);
 	}
+	
+	//This is optimized for ordered data
 	public void saveAllData(Collection inAll, User inUser)
 	{
 		XmlFile xml = null;//
@@ -184,15 +186,15 @@ public class XmlDataArchive implements DataArchive
 	
 	public Data loadData(DataFactory inFactory, String inSourcePath, String inId)
 	{
-		String path = getPathToXml(inSourcePath);
-		XmlFile xml = getXmlArchive().getXml(path, getElementName()); //This is slow, why even bother to cache this?
-		String id = path + inId + xml.getLastModified();
-		Data found = (Data)getIdCache().get(id);
+		//This is used a bunch when loading and editing the same xml file
+		Data found = (Data)getIdCache().get(inId);
 		if( found != null)
 		{
 			return found;
 		}
+		String path = getPathToXml(inSourcePath);
 
+		XmlFile xml = getXmlArchive().getXml(path, getElementName());
 		Element elem = xml.getElementById(inId);
 		if(elem == null)
 		{
@@ -201,11 +203,11 @@ public class XmlDataArchive implements DataArchive
 		ElementData data = (ElementData)inFactory.createNewData();
 		data.setElement(elem);
 		data.setSourcePath(inSourcePath);
-		if( getIdCache().size() > 100)
+		if( getIdCache().size() > 100 )
 		{
-			getIdCache().clear();
+			getIdCache().put(inId,data);
 		}
-		getIdCache().put(id,data);
+		
 		return data;
 	}
 	public void clearCache()
@@ -222,10 +224,11 @@ public class XmlDataArchive implements DataArchive
 			xml.deleteElement(element);
 		}
 		getXmlArchive().saveXml(xml, inUser);
+		getIdCache().remove(inData.getId());
 	}
-	public XmlFile getXml(String inPath, String inSearchType)
-	{
-		return getXmlArchive().getXml(inPath,inSearchType);
-	}
+//	public XmlFile getXml(String inPath, String inSearchType)
+//	{
+//		return getXmlArchive().getXml(inPath,inSearchType);
+//	}
 
 }

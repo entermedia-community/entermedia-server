@@ -2,7 +2,6 @@ package org.openedit.entermedia.modules;
 
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.event.WebEvent;
 
 import com.openedit.WebPageRequest;
 

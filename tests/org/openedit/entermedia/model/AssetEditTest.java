@@ -132,6 +132,14 @@ public class AssetEditTest extends BaseEnterMediaTest
 		assertEquals(originaltext, returntext);
 	}
 
+	public void testKeyordExportImport() throws Exception
+	{
+		Asset asset = createAsset();
+		String input = "one | two | tree";
+		asset.setProperty("keywords", input);
+		assertEquals(3,asset.getKeywords().size());
+		assertEquals(input,asset.get("keywords") );
+	}
 	public void testEditRelatedAssets() throws Exception
 	{
 		Asset asset = createAsset();

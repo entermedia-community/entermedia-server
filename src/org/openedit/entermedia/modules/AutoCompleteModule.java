@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.data.lucene.LuceneHitTracker;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.autocomplete.AutoCompleteSearcher;

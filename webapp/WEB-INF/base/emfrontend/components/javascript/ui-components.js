@@ -244,6 +244,11 @@ uiload = function() {
 		container.closest("form").find("#" + id ).val(emdata.id);
 		return emdata.name;
 	}
+	jQuery("select.select2").livequery( function() 
+	{
+		var theinput = jQuery(this);
+		theinput.select2()
+	});
 	
 	jQuery("input.listautocomplete").livequery( function() 
 	{

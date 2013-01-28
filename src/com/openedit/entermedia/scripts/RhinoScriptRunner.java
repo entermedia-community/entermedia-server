@@ -15,12 +15,9 @@ package com.openedit.entermedia.scripts;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.script.ScriptException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;

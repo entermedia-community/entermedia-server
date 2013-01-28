@@ -12,7 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
@@ -135,11 +135,11 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 				Asset asset = (Asset) iter.next();
 				getIndexer().populateAsset(getIndexWriter(), asset, false, details);
 			}
-			if (inOptimize)
-			{
-				getIndexWriter().optimize();
-				log.info("Optimized");
-			}
+//			if (inOptimize)
+//			{
+//				getIndexWriter().optimize();
+//				log.info("Optimized");
+//			}
 
 			if (inOptimize || inAssets.size() > 100)
 			{
@@ -179,8 +179,8 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2
 		// writer.mergeFactor = 10;
-		writer.setMergeFactor(100);
-		writer.setMaxBufferedDocs(2000);
+		// writer.setMergeFactor(100);
+		// writer.setMaxBufferedDocs(2000);
 
 		try
 		{
@@ -203,7 +203,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 //			reindexer.process();
 			
 			log.info("Reindex completed on with " + reindexer.getExecCount() + " assets");
-			writer.optimize();
+			//writer.optimize();
 			writer.commit();
 
 		}

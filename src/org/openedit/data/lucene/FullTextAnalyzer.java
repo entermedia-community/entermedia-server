@@ -3,19 +3,19 @@ package org.openedit.data.lucene;
 import java.io.Reader;
 import java.util.Set;
 
-import org.apache.lucene.analysis.CharArraySet;
-import org.apache.lucene.analysis.KeywordMarkerFilter;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.PorterStemFilter;
-import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.StopwordAnalyzerBase;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.StopFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.en.EnglishPossessiveFilter;
+import org.apache.lucene.analysis.en.PorterStemFilter;
+import org.apache.lucene.analysis.miscellaneous.KeywordMarkerFilter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
 import org.apache.lucene.util.Version;
 
 public class FullTextAnalyzer extends StopwordAnalyzerBase
@@ -73,7 +73,7 @@ public class FullTextAnalyzer extends StopwordAnalyzerBase
 	 */
 	private static class DefaultSetHolder
 	{
-		static final Set<?> DEFAULT_STOP_SET = StandardAnalyzer.STOP_WORDS_SET;
+		static final CharArraySet DEFAULT_STOP_SET = StandardAnalyzer.STOP_WORDS_SET;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class FullTextAnalyzer extends StopwordAnalyzerBase
 	 * @param stopwords
 	 *            a stopword set
 	 */
-	public FullTextAnalyzer(Version matchVersion, Set<?> stopwords)
+	public FullTextAnalyzer(Version matchVersion, CharArraySet stopwords)
 	{
 		this(matchVersion, stopwords, CharArraySet.EMPTY_SET);
 	}
@@ -110,7 +110,7 @@ public class FullTextAnalyzer extends StopwordAnalyzerBase
 	 * @param stemExclusionSet
 	 *            a set of terms not to be stemmed
 	 */
-	public FullTextAnalyzer(Version matchVersion, Set<?> stopwords, Set<?> stemExclusionSet)
+	public FullTextAnalyzer(Version matchVersion, CharArraySet stopwords, Set<?> stemExclusionSet)
 	{
 		super(matchVersion, stopwords);
 		this.stemExclusionSet = CharArraySet.unmodifiableSet(CharArraySet.copy(matchVersion, stemExclusionSet));

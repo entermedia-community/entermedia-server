@@ -24,6 +24,7 @@
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	<property name="hitsname">hits</property>
  	<property name="assetshowonly"></property>
+	<property name="indatamanager">true</property>
 	
 	<property name="section">details</property>
 	

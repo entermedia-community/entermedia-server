@@ -27,7 +27,6 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.CompositeAsset;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.xml.XmlArchive;

@@ -1,6 +1,5 @@
 package org.openedit.entermedia.util;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 
 public class Time

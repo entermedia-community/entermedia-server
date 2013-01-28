@@ -1,27 +1,26 @@
-
-#set( $inputid = $detail.id )
-
-#set( $divisions = $searcherManager.getList($catalogid,"division") )
-#if( $content.filter_division )
-
-#elseif( $divisions.size() > 1)
-<tr class="emsearchfieldrow">
-	<td valign="middle" nowrap="" align="left" class="emsearchfieldvalue" id="detail_division">
-		<select name="division.value"  id="parent${inputid}" onchange='loadlist("#detail_library", "$catalogid", "library", "Library", "libraries", "division", $(this).val(),"$!val" )'>
-		<option value="">-- Choose Division --</option>
-		#foreach( $division in $divisions)
-			<option value="$division.id">$division</option>
-		#end
-		</select>
-	</td>
-</tr>
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
 #end
 
-<tr class="emsearchfieldrow">
-	<td valign="middle" nowrap="" align="left" class="emsearchfieldvalue" >
-		<div id="detail_library">
-			$pages.include("${apphome}/components/xml/types/simplelist.html?searchtype=library&fieldname=libraries&label=Library",$context)
-		</div>		
-				
-	</td>
-</tr>
+#set( $listid = $detail.getListId())
+
+#if($listid == "library" &&  $canasseteditorpickanylibrary == false )
+
+<input name="field" type="hidden" value="${detail.id}" />
+<input name="operation" type="hidden" value="matches" />
+
+<select name="${detail.getId()}.value" class="select2">
+<option value=""></option>
+#foreach( $libraryid in $userprofile.getCombinedLibraries() )
+	#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
+	#set( $division = $searcherManager.getData($catalogid,"division",$library.division))
+	<option value="$libraryid" #if($val && $libraryid == $val) selected #end>$division / $library</option>
+#end
+</select>
+
+#else
+
+$pages.include("$apphome/components/xml/types/autocomplete.html",$context)
+
+#end

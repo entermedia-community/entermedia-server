@@ -6,7 +6,6 @@ import groovy.lang.GroovyObject;
 import groovy.util.GroovyScriptEngine;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;

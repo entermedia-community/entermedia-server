@@ -11,7 +11,6 @@ import org.openedit.entermedia.search.RelatedKeywordSearcher;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
 import com.openedit.modules.BaseModule;
 
 public class RelatedKeywordModule extends BaseModule

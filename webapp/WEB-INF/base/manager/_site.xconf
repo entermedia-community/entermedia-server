@@ -13,6 +13,11 @@
   <path-action name="MediaArchiveModule.loadApplicationId" />
   <path-action name="ProfileModule.loadUserProfile" />
 
+	<property name="login-path">/${applicationid}/authentication/nopermissions.html</property>
+	<property name="profilemanagerid">${catalogid}</property>
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+
     <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />

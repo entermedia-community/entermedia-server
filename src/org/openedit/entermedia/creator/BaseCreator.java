@@ -1,6 +1,5 @@
 package org.openedit.entermedia.creator;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

@@ -13,7 +13,6 @@ import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
-import com.openedit.page.Page;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;

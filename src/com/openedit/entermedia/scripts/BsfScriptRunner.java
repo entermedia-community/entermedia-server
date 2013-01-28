@@ -1,21 +1,12 @@
 package com.openedit.entermedia.scripts;
 
-import groovy.lang.Binding;
-import groovy.util.GroovyScriptEngine;
-
-import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
 
-import bsh.EvalError;
-import bsh.Interpreter;
-import bsh.TargetError;
-
 import com.openedit.OpenEditException;
-import com.openedit.page.Page;
 
 public class BsfScriptRunner implements ScriptRunner
 {
