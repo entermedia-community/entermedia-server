@@ -49,7 +49,7 @@ public class Asset implements MultiValued
 	{
 		String val = get(inPreference);
 		
-		if (val == null)
+		if (val == null || val.length() == 0)
 		{
 			return null;
 		}
