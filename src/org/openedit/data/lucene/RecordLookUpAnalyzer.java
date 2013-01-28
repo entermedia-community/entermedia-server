@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.util.Version;
 
 import com.openedit.OpenEditException;
@@ -35,6 +36,26 @@ public class RecordLookUpAnalyzer extends Analyzer
 	{
 		setUseTokens(inUseTokens);
 	}
+	
+	@Override
+	protected TokenStreamComponents createComponents(String inFieldName, Reader inReader)
+	{
+		
+	    Tokenizer source =  null;
+	    TokenStream filter = null;
+		if( isUseTokens())
+		{
+			source = new WhitespaceTokenizer(Version.LUCENE_31, inReader);
+		}
+		else
+		{
+			source = new OneToken(inReader);
+		}
+	    filter = new LowerCaseFilter(Version.LUCENE_31, source);
+		return new TokenStreamComponents(source,filter);
+
+	}
+	/*
 	public TokenStream tokenStream(String fieldName, Reader reader) 
 	{
 		if( isUseTokens())
@@ -50,7 +71,7 @@ public class RecordLookUpAnalyzer extends Analyzer
 			return new LowerCaseFilter(Version.LUCENE_31, new OneToken(reader));
 		}
 	}
-	
+	*/
 
 	public boolean isUseTokens()
 	{
@@ -62,11 +83,12 @@ public class RecordLookUpAnalyzer extends Analyzer
 		fieldUseTokens = inTokens;
 	}
 
-	class OneToken extends TokenStream
+	class OneToken extends Tokenizer
 	{
 		Token fieldToken;
 		public OneToken(Reader inStream)
 		{
+			super(inStream);
 			String token;
 			try
 			{

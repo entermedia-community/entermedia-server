@@ -1,9 +1,5 @@
 package org.openedit.entermedia.generators;
 
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.ConvertInstructions;
-import org.openedit.entermedia.creator.MediaCreator;
-
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;

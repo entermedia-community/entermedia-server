@@ -14,7 +14,6 @@ import org.openedit.entermedia.search.AssetProcessor;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.GenericsUtil;
 
-import com.openedit.OpenEditException;
 import com.openedit.users.User;
 
 public class IndexAllAssets extends AssetProcessor

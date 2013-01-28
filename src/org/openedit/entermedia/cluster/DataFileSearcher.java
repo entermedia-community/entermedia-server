@@ -1,7 +1,6 @@
 package org.openedit.entermedia.cluster;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,8 +14,6 @@ import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
-import com.openedit.OpenEditException;
-import com.openedit.OpenEditRuntimeException;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.manage.PageManager;

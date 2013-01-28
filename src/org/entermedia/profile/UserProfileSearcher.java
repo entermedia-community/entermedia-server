@@ -7,7 +7,6 @@ import org.openedit.profile.UserProfile;
 
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
-import com.openedit.users.authenticate.PasswordGenerator;
 
 public class UserProfileSearcher extends XmlFileSearcher {
 

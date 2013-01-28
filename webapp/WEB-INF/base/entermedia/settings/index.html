@@ -4,18 +4,10 @@
 <table>
 <tr>
 	<td class="settings_index_link">
-		#set($lastcat = $userprofile.getLastCatalog().getId())
-		#if($lastcat)
-		<a href="$home/$lastcat/settings/metadata/index.html">
-			<img src="$home$themeprefix/images/settings/catalogs.png">
-			<p>[[Catalogs]]</p>
-		</a>
-		#else
 		<a href="$home/$applicationid/catalog/settings/index.html">
 			<img src="$home$themeprefix/images/settings/catalogs.png">
 			<p>[[Add Catalog]]</p>
 		</a>
-		#end
 	</td>
 	<td class="settings_index_link">
 		<a href="$home/$applicationid/settings/usermanager/users/index.html">

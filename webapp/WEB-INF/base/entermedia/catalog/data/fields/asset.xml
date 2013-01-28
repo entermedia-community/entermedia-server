@@ -8,7 +8,7 @@
 	<property id="category" editable="true" viewtype="category" type="list" stored="true" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
-	<property id="libraries"  viewtype="autocomplete" listid="library"  editable="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
+	<property id="libraries"  viewtype="libraries" listid="library"  editable="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true"  sort="name">Asset Type</property>
 
 	<!-- Push items -->

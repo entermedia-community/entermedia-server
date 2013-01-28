@@ -11,8 +11,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.openedit.util.FileUtils;
-
 public class ImportFile
 {
 	protected List fieldRows;

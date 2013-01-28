@@ -2,17 +2,13 @@ package org.openedit.entermedia.search;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
 
 import com.openedit.OpenEditException;
-import com.openedit.page.Page;
 import com.openedit.users.User;
-import com.openedit.users.UserManager;
 
 public interface AssetSecurityArchive {
 

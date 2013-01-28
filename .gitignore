@@ -1,9 +1,9 @@
 *.swp
-deploy/
-build/
-bin/
-webapp/WEB-INF/data/entermedia/catalogs/testcatalog/assetalbumss/
-webapp/WEB-INF/data/media/
-webapp/WEB-INF/data/*index/*
-webapp/WEB-INF/data/*
-webapp/WEB-INF/logs/*
+/deploy/
+/build/
+/bin/
+/webapp/WEB-INF/data/entermedia/catalogs/testcatalog/assetalbumss/
+/webapp/WEB-INF/data/media/
+/webapp/WEB-INF/data/*index/*
+/webapp/WEB-INF/data/*
+/webapp/WEB-INF/logs/*

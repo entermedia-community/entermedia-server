@@ -6,7 +6,6 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
-import org.openedit.entermedia.AssetPathFinder;
 import org.openedit.entermedia.Category;
 
 import com.openedit.WebPageRequest;

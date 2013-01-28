@@ -24,9 +24,9 @@
 	<classpathentry kind="lib" path="lib/mp4parser-0826.jar"/>
 	<classpathentry kind="lib" path="lib/PDFBox-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/FontBox-1.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-queryparser-3.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-net-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-analyzers-common-4.1.0.jar" sourcepath="/home/cburkey/git/lucene-4.1.0/analysis/common/src/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-4.1.0.jar" sourcepath="/home/cburkey/git/lucene-4.1.0/core/src/java"/>
+	<classpathentry kind="lib" path="lib/lucene-queryparser-4.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

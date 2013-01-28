@@ -3,11 +3,9 @@ package org.openedit.entermedia;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
@@ -87,7 +85,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			String fwords = first.get("keywords");
 			if( fwords != null && fwords.length() > 0)
 			{
-				String[] common = fwords.split("\\|");
+				String[] common = VALUEDELMITER.split(fwords);
 				for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
@@ -95,7 +93,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					for (int i = 0; i < common.length; i++)
 					{
 						String k = common[i];
-						if( k != null && !words.contains(k) )
+						if(words == null || ( k != null && !words.contains(k) ))
 						{
 							common[i] = null;
 						}

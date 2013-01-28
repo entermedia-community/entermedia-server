@@ -6,7 +6,6 @@ package org.openedit.entermedia.scanner;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,8 +19,6 @@ import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.fetch.UrlMetadataImporter;
 import org.openedit.entermedia.search.AssetSearcher;
-import org.openedit.repository.ContentItem;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
@@ -30,7 +27,6 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
-import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.ZipUtil;
 

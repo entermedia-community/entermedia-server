@@ -9,15 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.dom4j.Element;
 import org.entermedia.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
-import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.util.CSVReader;
-import org.openedit.xml.XmlFile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.entermedia.scripts.Script;
@@ -25,7 +21,6 @@ import com.openedit.entermedia.scripts.ScriptLogger;
 import com.openedit.entermedia.scripts.ScriptManager;
 import com.openedit.page.Page;
 import com.openedit.util.FileUtils;
-import com.openedit.util.PathUtilities;
 import com.openedit.util.URLUtilities;
 
 public class DataImportModule extends DataEditModule

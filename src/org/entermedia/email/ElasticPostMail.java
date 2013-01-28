@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.entermedia.email.PostMail;
 
 //uses ElasticMail to send instead of an SMTP server
 

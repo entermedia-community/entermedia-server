@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
@@ -111,7 +110,7 @@ public class LuceneHitTracker extends HitTracker
 					Document doc = searcher.doc( docs.scoreDocs[offset].doc );
 					page.add(new DocumentData(doc) );
 				}
-				//if( log.isDebugEnabled() )
+				if( log.isDebugEnabled() )
 				{
 					log.info(size() + " total, loaded " + start + " to " + (start+page.size()) + " query:" + getLuceneQuery() + " sort by: " + getLuceneSort() + " " + getSessionId() );
 				}

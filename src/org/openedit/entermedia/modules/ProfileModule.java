@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.soap.Detail;
-
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.MediaArchive;

@@ -18,13 +18,9 @@
 
   <inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
 
-  <style id="baseem" href="${themeprefix}/styles/baseem.css"/>
-  <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
-  <style id="categorypicker" href="${themeprefix}/styles/pages/categorypicker.css"/>
   <style id="layout" href="${themeprefix}/styles/layout.css"/>
-  <style id="jqueryui" href="${themeprefix}/styles/jquery-ui.css"/>
-  <style id="colors" href="${themeprefix}/styles/colors.css"/>
   <style id="app-css" href="${themeprefix}/styles/theme.css"/>
+  <style id="modulefrontend-css" href="${themeprefix}/styles/modulefrontend.css"/>
     
   <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.7.1.min.js"/>
   <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.8.12.custom.min.js"/>

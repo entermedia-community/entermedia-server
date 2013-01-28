@@ -18,7 +18,6 @@ import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.orders.Order;
 import org.openedit.entermedia.orders.OrderHistory;

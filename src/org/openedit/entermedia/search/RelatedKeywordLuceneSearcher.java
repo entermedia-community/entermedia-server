@@ -1,9 +1,9 @@
 package org.openedit.entermedia.search;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -11,21 +11,21 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.openedit.data.Searcher;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.CompositeAnalyzer;
-import org.openedit.data.lucene.NullAnalyzer;
 import org.openedit.data.lucene.FullTextAnalyzer;
+import org.openedit.data.lucene.NullAnalyzer;
+import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.entermedia.MediaArchive;
@@ -35,7 +35,6 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
-import com.openedit.util.FileUtils;
 
 /**
  * Thesaurus searcher for a Lucene index.
@@ -262,10 +261,11 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 	{
 		if (fieldAnalyzer == null)
 		{
-			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
-			composite.setAnalyzer("synonyms", new NullAnalyzer());
-			composite.setAnalyzer("word", new NullAnalyzer());
+			Map map = new HashMap();
+			map.put("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
+			map.put("synonyms", new NullAnalyzer());
+			map.put("word", new NullAnalyzer());
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , map);
 			fieldAnalyzer = composite;
 		}
 		return fieldAnalyzer;
@@ -280,16 +280,16 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 
 	public void reIndexAll(IndexWriter writer) throws OpenEditException
 	{
-		//do nothing
-		try
-		{
-			writer.setMergeFactor(100);
-			writer.setMaxBufferedDocs(2000);
-		}
-		catch (Exception ex)
-		{
-			throw new OpenEditException(ex);
-		}
+//		//do nothing
+//		try
+//		{
+//			writer.setMergeFactor(100);
+//			writer.setMaxBufferedDocs(2000);
+//		}
+//		catch (Exception ex)
+//		{
+//			throw new OpenEditException(ex);
+//		}
 	}
 
 	protected MediaArchive getMediaArchive(String inCatalogId)

@@ -3,12 +3,15 @@ package org.openedit.entermedia.autocomplete;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
@@ -19,9 +22,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.util.Version;
 import org.openedit.data.lucene.BaseLuceneSearcher;
-import org.openedit.data.lucene.CompositeAnalyzer;
-import org.openedit.data.lucene.RecordLookUpAnalyzer;
 import org.openedit.data.lucene.FullTextAnalyzer;
+import org.openedit.data.lucene.RecordLookUpAnalyzer;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -71,9 +73,9 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 	{
 		if (fieldAnalyzer == null)
 		{
-			CompositeAnalyzer composite = new CompositeAnalyzer();
-			composite.setAnalyzer("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
-			composite.setAnalyzer("synonyms", new RecordLookUpAnalyzer());
+			Map map = new HashMap();
+			map.put("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , map);
 			fieldAnalyzer = composite;
 		}
 		return fieldAnalyzer;

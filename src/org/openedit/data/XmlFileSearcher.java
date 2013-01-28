@@ -143,7 +143,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	public void updateIndex(IndexWriter inWriter, Data inData) throws OpenEditException
 	{
 		Document doc = new Document();
-		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
+		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 		if( details == null)
 		{
 			throw new OpenEditException("No " + getSearchType() + "properties.xml file available");

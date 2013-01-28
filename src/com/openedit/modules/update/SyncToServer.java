@@ -1,12 +1,6 @@
 package com.openedit.modules.update;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,24 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.map.ListOrderedMap;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.openedit.entermedia.util.SyncFileDownloader;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.filesystem.FileItem;
-import org.openedit.util.WindowsUtil;
 
 import com.openedit.OpenEditException;
-import com.openedit.page.manage.PageManager;
-import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
-import com.openedit.util.XmlUtil;
-import com.openedit.util.ZipUtil;
 
 public class SyncToServer extends SyncFileDownloader
 {

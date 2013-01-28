@@ -1,15 +1,16 @@
 package org.openedit.data.lucene;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordTokenizer;
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
-
-import com.openedit.OpenEditException;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.Analyzer.TokenStreamComponents;
+import org.apache.lucene.analysis.core.KeywordTokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
+import org.apache.lucene.util.Version;
+import org.openedit.data.lucene.RecordLookUpAnalyzer.OneToken;
 
 /** An Analyzer that filters With minimal changes
  * 
@@ -20,10 +21,12 @@ import com.openedit.OpenEditException;
 
 public class NullAnalyzer extends Analyzer 
 {
-	public TokenStream tokenStream(String inFieldName, Reader inReader)
+	protected TokenStreamComponents createComponents(String inFieldName, Reader inReader)
 	{
-		return new KeywordTokenizer(inReader);
+	    Tokenizer source =  new KeywordTokenizer(inReader);
+		return new TokenStreamComponents(source);
 	}
+
 }
 
 
