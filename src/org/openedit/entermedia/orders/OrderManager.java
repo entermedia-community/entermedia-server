@@ -495,9 +495,9 @@ public class OrderManager
 			//Make sure preset does not already exists?
 			if( needstobecreated && "original".equals( preset.get("type") ) )
 			{
-				needstobecreated = false;
-			}			
-			if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
+				needstobecreated = !archive.getOriginalDocument(asset).exists();
+			}	
+			else if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
 			{
 				needstobecreated = false;
 			}
@@ -548,7 +548,7 @@ public class OrderManager
 				publishqeuerow.setProperty("status", "new");
 				
 				Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
-				if(Boolean.parseBoolean( dest.get("remotempublish") ) )
+				if(needstobecreated && Boolean.parseBoolean( dest.get("remotempublish") ) )
 				{
 					publishqeuerow.setProperty("remotempublishstatus", "new");
 				}
