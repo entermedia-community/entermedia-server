@@ -14,7 +14,6 @@
 		<type id="textjoin"   >Text Join</type>
 		<type id="autocomplete"  >Auto Complete</type>
 		<type id="autocompletefulltext"   >Auto Complete Keywords</type>
-		<type id="asset"  >Asset</type>
 		<type id="url"  >URL</type>
 		<type id="color"  >Color</type>
 </types>
