@@ -9,12 +9,14 @@
   <property name="catalogid">media/catalogs/public</property>
   <property name="section">home</property>
   <property name="tagline"></property>
+  <property name="editable">false</property>
 
   <property name="applicationid">/${module}</property>
   <property name="themeprefix">/${applicationid}/theme</property>
 
   <path-action name="MediaArchiveModule.loadApplicationId" />
   <path-action name="ProfileModule.loadUserProfile" />
+  <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
 
   <inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
 

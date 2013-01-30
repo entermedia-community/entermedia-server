@@ -1,10 +1,16 @@
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()">
+
     <div class="simple-content clearfix">
+#foreach( $parent in $parents)
         <div class="one-to-many clearfix">
-            <div class="group-title"><a href="#">Album Name</a></div>
+            <div class="group-title"><a href="#">$parent</a></div>
             <div class="table-row">
                 <div class="table-cell group-image">
-                    <img src="" alt="" title="" />
+              $context.putPageValue('data',  $parent )
+              $context.putPageValue('val',  $parent.thumb )
+              $context.putPageValue('detail',  $searcher.getDetail("thumb") )
+              $pages.include("$apphome/components/moduleresults/cell.html", $context)    
+                
                 </div>
                 <div class="table-cell">
                     <ul>
@@ -12,158 +18,21 @@
                             <span class="title">Song Title</span>
                             <span class="status">Status</span>
                         </li>
+                        #set( $songsearcher = $searcherManager.getSearcher($catalogid,"song") ) 
+                        #set( $rows = $songsearcher.fieldSearch("mediaalbum",$data.id) )
+                        #foreach($child in $rows)
                         <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
+                            <span class="title"><a href="$home$apphome/view/edit/index.html?id=${child.id}">$child</a></span>
                             <span class="status"></span>
                         </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li class="add-song">
-                            <a class="btn" href=#"">Add New Song</a>
+                        #end
+                        <li class="add-song">                        
+                            <a class="btn" href="/emshare/components/detaileditor/generictablesave.html?candelete=true&editpath=/emshare/components/detaileditor/generictablesave.html&parentid=1359509193471&catalogid=media/catalogs/public&searchtype=song&fieldexternalid=mediaasset&fieldexternalvalue=1359509193471&viewid=mediaalbumsongs&viewpath=mediaalbum/mediaalbumsongs&permissionname=&hitssessionid=hitsmediaalbummedia/catalogs/public&selectlink=/emshare/components/detaileditor/generictablesave.html&edit=true&">Add New Song</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="one-to-many clearfix">
-            <div class="group-title"><a href="#">Album Name</a></div>
-            <div class="table-row">
-                <div class="table-cell group-image">
-                    <img src="" alt="" title="" />
-                </div>
-                <div class="table-cell">
-                    <ul>
-                         <li class="table-header">
-                            <span class="title">Song Title</span>
-                            <span class="status">Status</span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li class="add-song">
-                            <a class="btn" href=#"">Add New Song</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="one-to-many clearfix">
-            <div class="group-title"><a href="#">Album Name</a></div>
-            <div class="table-row">
-                <div class="table-cell group-image">
-                    <img src="" alt="" title="" />
-                </div>
-                <div class="table-cell">
-                    <ul>
-                         <li class="table-header">
-                            <span class="title">Song Title</span>
-                            <span class="status">Status</span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li>
-                            <span class="title"><a href="$home$apphome/view/index.html?id=123">Song Title</a></span>
-                            <span class="status"></span>
-                        </li>
-                        <li class="add-song">
-                            <a class="btn" href=#"">Add New Song</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+#end
     </div>
 </div>

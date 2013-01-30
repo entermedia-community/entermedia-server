@@ -1,12 +1,14 @@
 #set( $moduleid = $context.findValue("module") )
 #set($viewid = $context.getRequestParameter("viewid"))
 #set($viewpath = $context.getRequestParameter("viewpath"))
+#set( $searchhome = $context.findValue("searchhome") )
+$context.putPageValue("searchhome",$searchhome)
 
 
 <div id="searchplugin">
     <div class="subcolumns">
         <div class="c25l" id="left-col">
-                $pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html", $context)
+                $pages.include("${searchhome}/sidebar/standard.html", $context)
 $pages.include("$apphome/components/libraries/sidebar.html",$context)
 
         </div>
@@ -36,8 +38,8 @@ $pages.include("$apphome/components/libraries/sidebar.html",$context)
 				$context.putPageValue("hits", $hits)
 				#set( $moduleid = $context.findValue("module") )
 				
-				$pages.include("/$applicationid/views/modules/${moduleid}/edit/actions.html", $context)
-				$pages.include("/$applicationid/views/modules/${moduleid}/edit/header.html", $context)
+				$pages.include("${searchhome}/edit/actions.html", $context)
+				$pages.include("${searchhome}/edit/header.html", $context)
   
    
   
@@ -47,7 +49,7 @@ $pages.include("$apphome/components/libraries/sidebar.html",$context)
             <div class="tr">
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
                 <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
-                 $pages.include("$apphome/views/modules/${moduleid}/edit/sidebar.html",$context)
+                 $pages.include("${searchhome}/edit/sidebar.html",$context)
 
                  $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)
 				

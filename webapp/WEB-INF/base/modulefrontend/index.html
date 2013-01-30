@@ -1,1 +1,8 @@
+#set( $searcher = $searcherManager.getSearcher($catalogid,"mediaalbum"))
+$context.putPageValue("searcher",$searcher)
+
+#set( $albums = $searcher.getAllHits($context) )
+
+$context.putPageValue("parents",$albums)
+
 $pages.include("$apphome/components/module/onetomanyresults.html",$context)

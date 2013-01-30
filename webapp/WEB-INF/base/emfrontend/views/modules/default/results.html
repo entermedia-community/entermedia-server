@@ -67,14 +67,14 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
             var id = $(this).attr('id');
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
                 } else {
-                    jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
+                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
                 }
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+                jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
             }
         }
     });

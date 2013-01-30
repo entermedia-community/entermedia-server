@@ -13,7 +13,7 @@ $context.putPageValue("searcher", $searcher)
 #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 $context.putPageValue("usestartswith",$usestartswith)
 
-<form  name="advancedsearch" action="$home$apphome/views/modules/${moduleid}/fieldsearch.html" class="em-widget-content">
+<form  name="advancedsearch" action="$home${searchhome}/fieldsearch.html" class="em-widget-content">
 ##We need 2 things passed in: $searcher, $view or $searcher $details
 #if (!$details && $userprofile)
 
