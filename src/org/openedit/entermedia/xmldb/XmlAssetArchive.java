@@ -71,7 +71,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			// HARD means even if the object goes out of scope we still keep it
 			// in the hashmap
 			// until the memory runs low then things get dumped randomly
-			fieldAssets = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.HARD);
+			fieldAssets = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.SOFT);
 		}
 		return fieldAssets;
 	}

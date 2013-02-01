@@ -14,6 +14,7 @@ import org.openedit.entermedia.search.AssetProcessor;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.GenericsUtil;
 
+import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 
 public class IndexAllAssets extends AssetProcessor
@@ -24,7 +25,8 @@ public class IndexAllAssets extends AssetProcessor
 	protected Boolean fieldIndexFolders;
 	protected MediaArchive fieldMediaArchive;
 	protected Set<String> fieldSourcePaths = GenericsUtil.createSet();
-	
+	protected int logcount = 0;
+
 	public LuceneAssetIndexer getIndexer()
 	{
 		return fieldIndexer;
@@ -98,6 +100,12 @@ public class IndexAllAssets extends AssetProcessor
 			// remove it from mem
 			getAssetArchive().clearAsset(asset);
 			incrementCount();
+			logcount++;
+			if( logcount == 1000 )
+			{
+				log.info("Reindex has completed " + getExecCount() + " index updates");
+				logcount=0;
+			}
 		}
 		else
 		{

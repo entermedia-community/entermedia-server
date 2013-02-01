@@ -74,7 +74,7 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 		if (fieldAnalyzer == null)
 		{
 			Map map = new HashMap();
-			map.put("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
+			map.put("synonymsenc", new FullTextAnalyzer(Version.LUCENE_41));
 			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , map);
 			fieldAnalyzer = composite;
 		}

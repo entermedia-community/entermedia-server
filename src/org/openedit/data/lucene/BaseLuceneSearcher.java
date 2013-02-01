@@ -139,7 +139,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		boolean completed = false;
 		try
 		{
-			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36, getAnalyzer());
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_41, getAnalyzer());
 			config.setOpenMode(OpenMode.CREATE);
 			
 //			  LogMergePolicy lmp = new LogDocMergePolicy();
@@ -291,7 +291,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//TODO: use a threadgroup
 		
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_36, "description", getAnalyzer());
+		QueryParser parser = new QueryParser(Version.LUCENE_41, "description", getAnalyzer());
 		
 		/*
 		{
@@ -488,7 +488,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			Map analyzermap = new HashMap();
 		
-			analyzermap.put("description",  new FullTextAnalyzer(Version.LUCENE_36));
+			analyzermap.put("description",  new FullTextAnalyzer(Version.LUCENE_41));
 			//analyzermap.put("id", new NullAnalyzer());
 			//analyzermap.put("id", new RecordLookUpAnalyzer(false));
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
@@ -598,7 +598,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 						{
 							log.info(getCatalogId() + " asset writer opened in " + folder);
 						}
-						IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36, getAnalyzer());
+						IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_41, getAnalyzer());
 						config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 						fieldIndexWriter = new IndexWriter(indexDir,config);
 
