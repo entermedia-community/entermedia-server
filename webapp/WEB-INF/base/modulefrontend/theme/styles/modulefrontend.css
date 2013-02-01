@@ -60,7 +60,7 @@
     width: 210px;
 }
 .one-to-many .table-header span {
-    background: url('../images/bg.jpg'); 
+    background: #444; 
     color: #fff;
     font-weight: bold;
 }
@@ -69,4 +69,15 @@
 }
 .one-to-many ul li span a:hover{
     color: #999;
+}
+#header .site-title a {
+    font-size: 34px;
+    font-weight: bold;
+    font-family: helvetica, arial, sans-serif;
+    color: #eee;
+    margin-bottom: 15px;
+}
+#header .site-title a:hover {
+    color: #fff;
+    text-decoration: none;
 }

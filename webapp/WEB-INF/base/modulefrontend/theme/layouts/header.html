@@ -1,15 +1,10 @@
       
-       	#set ($lastselected = $content.module )
-		 	#if(!$lastselected)
-		 		#set($lastselected = $userprofile.last_selected_module )
-		 	#end
-		 	#if(!$lastselected)
-                #set($lastselected = "asset" )
-            #end
+       	#set ($lastselected = $content.appmodule )
 
-		 	#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+		#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 
-      <a href="$home$apphome/views/modules/${module.getId()}/index.html"><img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
+       
+      <span class="site-title"><a href="$home$apphome/index.html">$module</a></span>
       
       <span class="navlinks">
        

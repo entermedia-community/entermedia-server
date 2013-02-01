@@ -1,3 +1,5 @@
+#set( $searchhome = $context.findValue("searchhome") )
+
 #set( $moduleid = $context.findValue("module") )
 #if( $hits && $hits.totalPages > 1 )
 #set($resultsPage = "$home${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$moduleid&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&oemaxlevel=1&resultstype=$!resultstype")

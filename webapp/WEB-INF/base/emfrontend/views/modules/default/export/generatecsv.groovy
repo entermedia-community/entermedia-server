@@ -1,6 +1,3 @@
-import java.io.StringWriter
-import java.util.Iterator
-
 import org.openedit.Data
 import org.openedit.data.*
 import org.openedit.entermedia.util.CSVWriter
@@ -8,7 +5,7 @@ import org.openedit.entermedia.util.CSVWriter
 import com.openedit.hittracker.HitTracker
 	
 
-HitTracker hits = (HitTracker) context.getPageValue("hits");
+HitTracker hits = (HitTracker) context.getPageValue("hits");	
 if(hits == null){
  String sessionid = context.getRequestParameter("hitssessionid");
  hits = context.getSessionValue(sessionid);
@@ -54,7 +51,15 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 }
 writer.writeNext(headers);
 	log.info("about to start: " + hits);
-for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+Iterator i = null;
+if(hits.getSelectedHits().size() == 0){
+	i = hits.iterator();
+} else{
+
+i = hits.getSelectedHits().iterator();
+
+}
+for (Iterator iterator = i; iterator.hasNext();)
 {
 	hit =  iterator.next();
 	tracker = searcher.searchById(hit.get("id"));

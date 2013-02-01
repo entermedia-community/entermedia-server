@@ -1,6 +1,6 @@
 #set( $moduleid = $context.findValue("module") )
 #set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
-
+#set( $searchhome = $context.findValue("searchhome") )
 
     
 #if ( $hits.size() == 0 )
@@ -33,8 +33,8 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 <th class="firstheader" id="th-checkbox" ><input name="pagetoggle" type="checkbox" onclick="togglehits('page');">
 	   <div class="anchor">
-	    <div id="select-dropdown-open" class="down"></div>
-	    <ul id="select-dropdown" style="display: none; ">
+	    <div class="select-dropdown-open down" ></div>
+	    <ul class="select-dropdown" style="display: none; ">
  
 	        <li><a class="ajax selectpage" targetdiv="drag-columns-text" href="#"  onclick="togglehits('page');return false;">Select This Page</a></li>
 	        <li><a class="ajax  selectpage" targetdiv="drag-columns-text" href="#" onclick="togglehits('all');">Select All Results</a></li>
