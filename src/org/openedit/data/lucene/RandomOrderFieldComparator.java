@@ -5,11 +5,11 @@ import java.util.Random;
 
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.FieldComparator;
+import org.apache.lucene.search.Scorer;
 
 /**
  * 
- * @deprecated
- * This API needs to be migrated to Lucene 4.1 i.e. create a RandomScorer
+ * 
  * @author cburkey
  *
  */
@@ -19,7 +19,8 @@ public class RandomOrderFieldComparator extends FieldComparator<Integer> {
 
     @Override
     public int compare(int slot1, int slot2) {
-        return random.nextInt();
+        int i = random.nextInt();
+    	return i;
     }
 
     @Override
@@ -47,8 +48,7 @@ public class RandomOrderFieldComparator extends FieldComparator<Integer> {
 	@Override
 	public FieldComparator<Integer> setNextReader(AtomicReaderContext inContext) throws IOException
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	@Override
@@ -57,5 +57,7 @@ public class RandomOrderFieldComparator extends FieldComparator<Integer> {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	
 
 }
