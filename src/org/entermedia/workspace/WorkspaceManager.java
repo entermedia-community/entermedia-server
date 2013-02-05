@@ -247,13 +247,18 @@ public class WorkspaceManager
 			getPageManager().copyPage(apphome, appdest);
 
 			Page cataloghome = getPageManager().getPage(dest.getPath() + "/" + oldcatalogid);
-			Page catalogdest = getPageManager().getPage( "/" + inAppcatalogid);
-			getPageManager().copyPage(cataloghome, catalogdest);
+			if( cataloghome.exists() )
+			{
+				Page catalogdest = getPageManager().getPage( "/" + inAppcatalogid);
+				getPageManager().copyPage(cataloghome, catalogdest);
+			}
 
 			Page dataold = getPageManager().getPage(dest.getPath() + "/WEB-INF/data/" + oldcatalogid);
 			Page datadest = getPageManager().getPage( "/WEB-INF/data/" + inAppcatalogid);
-			getPageManager().copyPage(dataold, datadest);
-			
+			if( dataold.exists() )
+			{
+				getPageManager().copyPage(dataold, datadest);
+			}
 			//Save the app data
 			Searcher searcher = getSearcherManager().getSearcher(inAppcatalogid, "app");
 			Data site = (Data) searcher.searchByField("deploypath", "/" + applicationid);

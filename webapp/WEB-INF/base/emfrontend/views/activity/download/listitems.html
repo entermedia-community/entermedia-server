@@ -41,31 +41,38 @@
 
 	#set( $presetid = $publishqueue.get("presetid") )
 	#if( $publishqueue.publishdestination == "0")   ##download with the browser
-		#set( $presetid = $publishqueue.get("presetid") )
-		#if( $presetid == "0")
+	
+		#if( $order.orderstatus == "error" )
 			<td></td>
-			<td>
-				<a class="btn small" href="$home$mediaarchive.asLinkToOriginal($asset)">Download</a>
-				#set( $downloadall = true)
-				
-			</td>
-		#elseif( $presetid == "attachments")
-			<td></td>
-			<td>
-				<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/attachments/${asset.sourcepath}.zip">Download Attachments</a>				
-			</td>
-			
-		#else
-			<td>
-			${publishqueue.exportname}
-			</td>
-			<td align="right">
-					#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
-									#set( $downloadall = true)
+			<td>Error, download not available</td> ##Link to my orders
+			#set( $downloadall = false)
+		#else	
+	
+			#set( $presetid = $publishqueue.get("presetid") )
+			#if( $presetid == "0")
+				<td></td>
+				<td>
+					<a class="btn small" href="$home$mediaarchive.asLinkToOriginal($asset)">Download</a>
+					#set( $downloadall = true)
 					
-			</td>
-		#end
+				</td>
+			#elseif( $presetid == "attachments")
+				<td></td>
+				<td>
+					<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/attachments/${asset.sourcepath}.zip">Download Attachments</a>				
+				</td>
+				
+			#else
+				<td>
+				${publishqueue.exportname}
+				</td>
+				<td align="right">
+						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
+						<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
+										#set( $downloadall = true)
+				</td>
+			#end
+		#end	
 	#elseif( $publishqueue.publishdestination == "1") )
 		<td></td>
 		<td>

@@ -226,7 +226,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			assettype = "none";
 		}
 		PropertyDetail detail = inDetails.getDetail("assettype");
-		docAdd(detail, doc, "assettype", assettype, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+		docAdd(detail, doc, "assettype", assettype, Field.Store.YES, true);
 		
 		if (asset.getCatalogId() == null)
 		{

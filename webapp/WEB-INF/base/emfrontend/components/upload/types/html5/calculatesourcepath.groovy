@@ -43,10 +43,14 @@ public void init()
 		if(division == null && libraries != null){
 			Data library = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "library", libraries);
 			if(library != null){
-				vals.put("division", library.division);
+				division = library.get("division");
 			}
-			
 		}
+		//Should we pull the libraryid.value field or libraries.value
+		
+		//TODO: Load up division and library field
+		
+		vals.put("division"
 		
 		
 		

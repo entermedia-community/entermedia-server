@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.0.xsd"
+
+ default-lazy-init="true"
+>
 
 	<bean id="Admin" class="org.openedit.entermedia.modules.AdminModule">
 		<property name="sendMailModule">
@@ -1067,11 +1073,6 @@
 		</property>
 	</bean>
 
-	<bean id="orderManager" class="org.openedit.entermedia.orders.OrderManager" >
-		<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
-	</bean>
-	
 	<bean id="orderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1456,11 +1457,6 @@
 		<property name="publishChecker"><ref bean="publishChecker" /></property>
 	</bean>
 
-	<bean id="pushManager" class="org.openedit.entermedia.push.PushManager" >
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="userManager"><ref bean="userManager" /></property>
-	</bean>
-
 	<bean id="publishChecker" class="org.openedit.entermedia.push.PublishChecker" >
 			<property name="moduleManager"><ref bean="moduleManager" /></property>
 			<property name="pushManager"><ref bean="pushManager" /></property>
@@ -1480,5 +1476,29 @@
 	
 	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
 	</bean>
+
+<!-- GROOVY Script Version -->
+ 
+	<lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy">
+	   	<lang:property name="searcherManager"><ref bean="searcherManager"/></lang:property>
+		<lang:property name="webEventHandler"><ref bean="mediaEventHandler" /></lang:property>
+	</lang:groovy>
+	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" >
+			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
+			<lang:property name="userManager"><ref bean="userManager" /></lang:property>
+	</lang:groovy>
+ 
+
+<!-- Compiled Class Version -->
+<!-- 
+	<bean id="orderManager" class="model.orders.BaseOrderManager">
+	   	<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
+	</bean>
+	<bean  id="pushManager" class="model.push.BasePushManager" >
+			<property name="searcherManager"><ref bean="searcherManager" /></property>
+			<property name="userManager"><ref bean="userManager" /></property>
+	</bean>
+ -->
 	
 </beans>
