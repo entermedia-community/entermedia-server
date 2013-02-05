@@ -109,40 +109,59 @@ public class TaskRunner extends java.util.TimerTask
 		fieldEventManager = inEventManager;
 	}
 
-	
+	/**
+	 * This is non blocking
+	 */
 	public void run()
 	{
 		try
 		{
-			//before we run this make sure our event is still enabled
-			//make sure this event did not get reloaded
-			PathEvent event = getEventManager().getPathEvent(getTask().getPage().getPath());
-	
-			//make sure nobody is running this
-			try
+			Runnable execrun = new Runnable()
 			{
-				if( event.isEnabled() )
+				public void run()
 				{
-					executeNow(getWebPageRequest(),event);
+					runBlocking();
 				}
-			}
-			finally
-			{
-				getEventManager().getRunningTasks().remove(this);
-			}
-			if( isRepeating() )
-			{
-				//make sure we just have one in the queue
-				TaskRunner runner = new TaskRunner(getTask(), getEventManager());
-				getEventManager().getRunningTasks().push(runner);
-				getEventManager().getTimer().schedule(runner, getTask().getPeriod());
-			}
+			};
+			getEventManager().addToRunQueue(execrun);
+			
 		}
 		catch ( Throwable ex)
 		{
 			log.error("Error from action ",ex);
 		}
 	}
+	
+	public void runBlocking()
+	{
+		// TODO Auto-generated method stub
+		//before we run this make sure our event is still enabled
+		//make sure this event did not get reloaded
+		PathEvent event = getEventManager().getPathEvent(getTask().getPage().getPath());
+
+		//make sure nobody is running this
+		try
+		{
+			if( event.isEnabled() )
+			{
+				executeNow(getWebPageRequest(),event);
+			}
+		}
+		finally
+		{
+			getEventManager().getRunningTasks().remove(this);
+		}
+		if( isRepeating() )
+		{
+			//make sure we just have one in the queue
+			TaskRunner runner = new TaskRunner(getTask(), getEventManager());
+			getEventManager().getRunningTasks().push(runner);
+			getEventManager().getTimer().schedule(runner, getTask().getPeriod());
+		}
+				
+	}
+
+	
 	public boolean isRepeating()
 	{
 		return !isWithParameters() && getTask().getPeriod() > 0 && getTask().isEnabled();

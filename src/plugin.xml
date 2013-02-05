@@ -365,6 +365,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="sftpRepository" class="org.openedit.entermedia.util.ssh.SftpRepository"
 		singleton="false" />
+
 	<bean id="pathEventManager" class="org.openedit.events.PathEventManager"
 		singleton="false">
 		<property name="pageManager">
@@ -379,6 +380,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
+		<property name="executorManager"><ref bean="executorManager"/></property>
+		
 	</bean>
 
 	<bean id="pathEvent" class="org.openedit.events.PathEvent"
@@ -1478,7 +1481,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 <!-- GROOVY Script Version -->
- 
+
 	<lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy">
 	   	<lang:property name="searcherManager"><ref bean="searcherManager"/></lang:property>
 		<lang:property name="webEventHandler"><ref bean="mediaEventHandler" /></lang:property>
@@ -1487,7 +1490,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 			<lang:property name="userManager"><ref bean="userManager" /></lang:property>
 	</lang:groovy>
- 
 
 <!-- Compiled Class Version -->
 <!-- 
@@ -1499,6 +1501,5 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
 			<property name="userManager"><ref bean="userManager" /></property>
 	</bean>
- -->
-	
+	 -->
 </beans>
