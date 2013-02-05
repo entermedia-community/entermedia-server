@@ -36,7 +36,7 @@ public void init()
 	{
 		q.addStartsWith("sourcepath", sourcepath);
 	}
-	q.addSortBy("id");
+	q.addSortBy("sourcepath");
 	assets = searcher.search(q);
 	assets.setHitsPerPage(1000);
 	int removed = 0;
