@@ -25,6 +25,7 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
+import com.openedit.util.ExecutorManager;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.RequestUtils;
 
@@ -52,7 +53,19 @@ public class PathEventManager
 	protected ErrorHandler fieldErrorHandler;
 	protected Timer fieldTimer; // Should this be shared across the system?
 	protected TimeCalculator fieldTimeCalculator;
+	protected ExecutorManager fieldExecutorManager;
 	
+	
+	public ExecutorManager getExecutorManager()
+	{
+		return fieldExecutorManager;
+	}
+
+	public void setExecutorManager(ExecutorManager inExecutorManager)
+	{
+		fieldExecutorManager = inExecutorManager;
+	}
+
 	public TimeCalculator getTimeCalculator()
 	{
 		if (fieldTimeCalculator == null)
@@ -153,7 +166,7 @@ public class PathEventManager
 						{
 							if( task.getTimeToStart().before(soon))
 							{
-								return true;
+								return true;   //Was already waiting to run
 							}
 						}
 					}
@@ -212,7 +225,7 @@ public class PathEventManager
 			TaskRunner runner = new TaskRunner(event, inReq.getParameterMap(), getRequestUtils().extractValueMap(inReq), this);
 //			{
 				getRunningTasks().push(runner);
-				runner.run(); //this will remove it again
+				runner.runBlocking(); //this will remove it again
 //			}
 //			else
 //			{
@@ -432,6 +445,11 @@ public class PathEventManager
 		//get rid of duplicates from base
 		String htmlpage = root + "/" + PathUtilities.extractPagePath(path) + ".html";
 		
+		loadPathEvent(htmlpage);
+	}
+
+	protected void loadPathEvent(String htmlpage)
+	{
 		Page eventpage = getPageManager().getPage(htmlpage);
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
@@ -459,6 +477,20 @@ public class PathEventManager
 			}
 		}
 		return null;
+	}
+
+	public void addToRunQueue(Runnable inExecrun)
+	{
+		getExecutorManager().getSharedExecutor().execute(inExecrun);
+		
+	}
+
+	public void reload(String inEventPath)
+	{
+		PathEvent event = getPathEvent(inEventPath);
+		getPathEvents().remove(event);
+		loadPathEvent(inEventPath);
+		
 	}
 
 }

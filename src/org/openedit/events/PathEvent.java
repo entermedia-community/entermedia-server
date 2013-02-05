@@ -271,14 +271,21 @@ public class PathEvent implements Comparable, TextAppender
 	 */
 	public boolean execute(WebPageRequest inReq) throws OpenEditException
 	{
-		setRunning(true);
-		try
+		if( isRunning() )
 		{
-			return runNow(inReq);
+			return false; //already running
 		}
-		finally
+		synchronized (this)
 		{
-			setRunning(false);
+			setRunning(true);
+			try
+			{
+				return runNow(inReq);
+			}
+			finally
+			{
+				setRunning(false);
+			}
 		}
 	}
 

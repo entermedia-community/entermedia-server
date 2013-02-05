@@ -121,7 +121,7 @@ public class PathEventModule extends BaseModule
 		
 		getPageManager().getPageSettingsManager().saveSetting(settings);
 		manager = getPathEventManager(inReq); 
-		manager.shutdown();
+		manager.reload(eventPath);
 	}
 	
 	public void restartEvents(WebPageRequest inReq)
