@@ -66,9 +66,9 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/mp4parser-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/PDFBox*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/lucene*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/commons-net-*.jar", web + "/lib/");
-files.copyFileByMatch( web + "/lib/spring-*.jar", web + "/lib/");
-files.copyFileByMatch( web + "/lib/aopalliance-*.jar", web + "/lib/");
-files.copyFileByMatch( web + "/lib/jaxen-*.jar", web + "/lib/");
+files.copyFileByMatch( web + "/WEB-INF/lib/spring-*.jar", web + "/lib/");
+files.copyFileByMatch( web + "/WEB-INF/lib/aopalliance-*.jar", web + "/lib/");
+files.copyFileByMatch( web + "/WEB-INF/lib/jaxen-*.jar", web + "/lib/");
 
 
 log.add("5. CLEAN UP");
