@@ -43,9 +43,7 @@ files.deleteMatch( web + "/lib/dev_entermedia-8*.jar");
 files.deleteMatch( web + "/lib/entermedia-server*.jar");
 files.deleteMatch( web + "/lib/entermedia-5*.jar");
 files.deleteMatch( web + "/lib/entermedia-8*.jar");
-
-
-
+files.deleteMatch( web + "/lib/entermedia-8*.jar");
 
 
 files.deleteMatch( web + "/lib/groovy-*.jar");
@@ -54,7 +52,9 @@ files.deleteMatch( web + "/lib/gson-*.jar");
 files.deleteMatch( web + "/lib/mp4parser*.jar");
 files.deleteMatch( web + "/lib/PDFBox*.jar");
 files.deleteMatch( web + "/lib/lucene*.jar");
-files.deleteMatch( web + "/lib/commons-net-*.jar");
+files.deleteMatch( web + "/lib/spring-*.jar");
+files.deleteMatch( web + "/lib/aopalliance-*.jar");
+files.deleteMatch( web + "/lib/jaxen-*.jar");
 
 
 
@@ -66,6 +66,9 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/mp4parser-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/PDFBox*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/lucene*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/commons-net-*.jar", web + "/lib/");
+files.copyFileByMatch( web + "/lib/spring-*.jar", web + "/lib/");
+files.copyFileByMatch( web + "/lib/aopalliance-*.jar", web + "/lib/");
+files.copyFileByMatch( web + "/lib/jaxen-*.jar", web + "/lib/");
 
 
 log.add("5. CLEAN UP");
