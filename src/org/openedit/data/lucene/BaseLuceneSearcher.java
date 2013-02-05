@@ -33,6 +33,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.SearcherFactory;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
@@ -70,7 +71,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	protected String fieldBadSortField = null;
 	protected boolean fieldPendingCommit;
 	protected String fieldIndexId;
-	
 	protected LuceneIndexer fieldLuceneIndexer;
 	protected String fieldCurrentIndexFolder;
 	protected String fieldIndexRootFolder;
@@ -353,25 +353,29 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			String inOrdering = (String) iterator.next();
 			SortField sort = null;
-//			if (inOrdering.equals("random"))
-//			{
-//				 Sort randomsort = new Sort(
-//			                new SortField(
-//			                        "",
-//			                        new FieldComparatorSource() {
-//
-//			                            @Override
-//			                            public FieldComparator<Integer> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
-//			                                return new RandomOrderFieldComparator();
-//			                            }
-//
-//			                        }
-//			                    )
-//			            );
-//				 return randomsort;
-//			}
-//			else
-//			{
+			if (inOrdering.equals("random"))
+			{
+				 Sort randomsort = new Sort(
+			            
+						 new SortField(
+			                        "",
+			                        new FieldComparatorSource() {
+
+			                            @Override
+			                            public FieldComparator<Integer> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
+			                                RandomOrderFieldComparator c = new RandomOrderFieldComparator();
+			                             //   c.setScorer(getIndexWriter().get
+			                            	return new RandomOrderFieldComparator();
+			                            	//return new RandomOrderFieldComparator();
+			                            }
+
+			                        }
+			                    )
+			            );
+				 return randomsort;
+			}
+			else
+			{
 				boolean direction = false;
 				if (inOrdering.endsWith("Down"))
 				{
@@ -407,7 +411,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				{
 					sort = new SortField(sortfield, SortField.Type.STRING, direction);
 				}
-//			}
+			}
 			sorts.add(sort);
 		}
 		SortField[] fields = (SortField[]) sorts.toArray(new SortField[sorts.size()]);
