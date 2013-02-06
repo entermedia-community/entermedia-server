@@ -3,7 +3,7 @@
 
 	<!-- Need to check for invites, may tweak the viewasset permission -->
 	<path-action name="MediaArchiveModule.getAsset"  />
-	<path-action name="FriendModule.checkInvitation"  />
+	
 
 	<path-action name="Admin.loadPermissions"/>
 
