@@ -1480,19 +1480,4 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
 	</bean>
 
-<!-- GROOVY Script Version -->
-
-	
-
-<!-- Compiled Class Version -->
-<!-- 
-	<bean id="orderManager" class="model.orders.BaseOrderManager">
-	   	<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
-	</bean>
-	<bean  id="pushManager" class="model.push.BasePushManager" >
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-			<property name="userManager"><ref bean="userManager" /></property>
-	</bean>
-	 -->
 </beans>

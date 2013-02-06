@@ -85,7 +85,8 @@ public class WorkspaceManager
 		root.addElement("applicationid").addAttribute("id", appid);
 		root.addElement("catalogid").addAttribute("id", catalogid);
 
-		Data app = getSearcherManager().getData(catalogid, "app", appid);
+		Data app = (Data) getSearcherManager().getSearcher(catalogid, "app").searchByField("deploypath", "/" + appid);
+		//Data app = getSearcherManager().getData(catalogid, "app", appid);
 		if (app != null)
 		{
 			root.addElement("name").setText(app.getName());
@@ -228,7 +229,7 @@ public class WorkspaceManager
 		}
 	}
 
-	public void deployUploadedApp(String inAppcatalogid, Page zip)
+	public void deployUploadedApp(String inAppcatalogid, String inDestinationAppId, Page zip)
 	{
 		Page dest = getPageManager().getPage("/WEB-INF/temp/appunzip");
 		try
@@ -236,16 +237,29 @@ public class WorkspaceManager
 			getPageManager().removePage(dest);
 			
 			new ZipUtil().unzip(zip.getContentItem().getAbsolutePath(), dest.getContentItem().getAbsolutePath());
+			
 			Page def = getPageManager().getPage(dest.getPath() + "/.emapp.xml");
 			Element root = new XmlUtil().getXml(def.getReader(), "UTF-8");
-			String applicationid = root.element("applicationid").attributeValue("id");
+			String oldapplicationid = root.element("applicationid").attributeValue("id");
+			String applicationid = inDestinationAppId;
 			String oldcatalogid = root.element("catalogid").attributeValue("id");
 
+			//We need to delete the incoming list of apps
+			Page appdata = getPageManager().getPage(dest.getPath() + "/WEB-INF/data/" + oldcatalogid + "/lists/app/custom.xml" );
+			getPageManager().removePage(appdata);
+			
 			//move the files in place
-			Page apphome = getPageManager().getPage(dest.getPath() + "/" + applicationid);
+			Page apphome = getPageManager().getPage(dest.getPath() + "/" + oldapplicationid);
 			Page appdest = getPageManager().getPage( "/" + applicationid);
 			getPageManager().copyPage(apphome, appdest);
 
+			//tweak the xconf
+			PageSettings homesettings = appdest.getPageSettings();
+			homesettings.setProperty("applicationid", applicationid);
+			homesettings.setProperty("catalogid", inAppcatalogid);
+			getPageManager().getPageSettingsManager().saveSetting(homesettings);
+
+			
 			Page cataloghome = getPageManager().getPage(dest.getPath() + "/" + oldcatalogid);
 			if( cataloghome.exists() )
 			{
