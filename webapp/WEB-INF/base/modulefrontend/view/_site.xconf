@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
 <page>
-<property name="searchhome">/${applicationid}/view</property>
+	<path-action name="DataEditModule.loadSearcherForEdit" >
+		<property name="searchtype">${appmodule}</property>
+	</path-action>
 
-<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
-  <property name="module">${appmodule}</property>
+	<property name="detailtab">${module}metadatageneral</property>
+	<property name="detailsubtab">${module}metadatageneral</property>
+
+	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+	
+	<property name="module">${appmodule}</property>
 </page>

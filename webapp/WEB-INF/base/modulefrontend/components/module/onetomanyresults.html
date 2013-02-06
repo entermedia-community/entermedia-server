@@ -22,7 +22,7 @@
                         #set( $rows = $songsearcher.fieldSearch("mediaalbum",$data.id) )
                         #foreach($child in $rows)
                         <li>
-                            <span class="title"><a href="$home$apphome/view/edit/index.html?id=${child.id}">$child</a></span>
+                            <span class="title"><a href="$home$apphome/view/index.html?id=${child.id}">$child</a></span>
                             <span class="status"></span>
                         </li>
                         #end

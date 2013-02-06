@@ -247,7 +247,7 @@ uiload = function() {
 	jQuery("select.select2").livequery( function() 
 	{
 		var theinput = jQuery(this);
-		theinput.select2()
+		theinput.select2();
 	});
 	
 	jQuery("input.listautocomplete").livequery( function() 

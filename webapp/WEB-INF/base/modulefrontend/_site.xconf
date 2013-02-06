@@ -50,9 +50,6 @@
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
   <script id="results" src="/${applicationid}/components/javascript/results.js"/>
   
-  <style id="chosen" href="/${applicationid}/components/javascript/chosen/chosen.css"/>
-  <script id="chosen" src="/${applicationid}/components/javascript/chosen/chosen.jquery.js"/>
-
   <style id="custom-css" href="${themeprefix}/styles/custom.css"/>
     
   <permission name="quicksearch">

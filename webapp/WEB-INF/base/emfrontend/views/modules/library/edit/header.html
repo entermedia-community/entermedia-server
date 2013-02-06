@@ -7,10 +7,17 @@
 #end
 <div id="default-top" class="clearfix" style="margin: -20px 0 20px 0;">
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-	
-      <div class="main-info" >
+
+      <div class="main-info" style="padding-bottom: 20px; margin-top: 20px;">
       	<div class="primary">$module / #if($data.name) $!data.name #elseif($data.id) $data.id #else  #end</div>
+      	#if( $data.id )
+      	#set( $size = $mediaarchive.getAssetSearcher().fieldSearch("libraries",$data.id).size() )
+      	#if( $size > 0)
+      	<div class="secondary"><a href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$data.id">$data.name contains $size files</a></div>
+      	#end
+      	#end
       </div>       
+      
  	#if( $data.id )
  		#set( $git = $mediaarchive.getCatalogSettingValue("project_git_remote_root") )
  		#if( $git && $git != "") 

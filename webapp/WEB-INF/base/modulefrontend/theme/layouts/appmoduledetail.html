@@ -1,0 +1,49 @@
+
+#set( $parent = $searcherManager.getData($catalogid,"mediaalbum",$data.mediaalbum ))
+
+<div class="table">
+    <div class="module-sidebar-actions tcell">
+        <ul>
+            <li><a href="#">Download Master</a></li>
+            <li><a href="#">Upload New Version</a></li>
+            <li><a href="#">View Song Files</a></li>
+            <li><a href="#">Checkout Song Files</a></li>
+            <li><a href="#">Delete Song</a></li>
+        </ul>
+    </div>
+    <div class="module-details-main tcell">
+        <div class="module-details-header clearfix">
+            <div class="md-thumbnail">
+            
+              $context.putPageValue('data',  $parent )
+              $context.putPageValue('val',  $parent.thumb )
+              $context.putPageValue('detail',  $searcher.getDetail("thumb") )
+              $pages.include("$apphome/components/moduleresults/cell.html", $context)    
+            
+            
+            </div>
+            <div class="md-header-info">
+                <span class="md-title">$data.songtitle</span>
+                <span class="md-sub-title">$data.artist</span>
+                <span class="md-sub-title">$parent.name ($parent.year)</span>
+            </div>
+            <div class="md-player"></div>
+        </div>
+        <div class="md-details-content-holder">
+            <ul class="md-navigation">
+            ##?id=101&viewid=libraryproject_tasks&viewpath=library/libraryproject_tasks
+                <li class="current"><a href="$home$apphome/view/table.html?id=$data.id&viewpath=song_discussions" >Discussions</a></li>
+                <li><a href="$home$apphome/view/">Revisions</a></li>
+                <li><a href="">Lyics</a></li>
+                <li><a href="">Licensees</a></li>
+                <li><a href="">Privacy</a></li>
+                <li><a href="">Info</a></li>
+            </ul>
+            <div class="md-content">
+            	$pages.includeContent()
+##                   <h2>This is a title</h2>
+##                   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+        </div>
+    </div>
+</div>
