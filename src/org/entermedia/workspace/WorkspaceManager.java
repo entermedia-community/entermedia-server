@@ -241,7 +241,6 @@ public class WorkspaceManager
 			Page def = getPageManager().getPage(dest.getPath() + "/.emapp.xml");
 			Element root = new XmlUtil().getXml(def.getReader(), "UTF-8");
 			String oldapplicationid = root.element("applicationid").attributeValue("id");
-			String applicationid = inDestinationAppId;
 			String oldcatalogid = root.element("catalogid").attributeValue("id");
 
 			//We need to delete the incoming list of apps
@@ -250,12 +249,12 @@ public class WorkspaceManager
 			
 			//move the files in place
 			Page apphome = getPageManager().getPage(dest.getPath() + "/" + oldapplicationid);
-			Page appdest = getPageManager().getPage( "/" + applicationid);
+			Page appdest = getPageManager().getPage( "/" + inDestinationAppId);
 			getPageManager().copyPage(apphome, appdest);
 
 			//tweak the xconf
 			PageSettings homesettings = appdest.getPageSettings();
-			homesettings.setProperty("applicationid", applicationid);
+			homesettings.setProperty("applicationid", inDestinationAppId);
 			homesettings.setProperty("catalogid", inAppcatalogid);
 			if( homesettings.getProperty("fallbackdirectory") == null )
 			{
@@ -281,7 +280,7 @@ public class WorkspaceManager
 			}
 			//Save the app data
 			Searcher searcher = getSearcherManager().getSearcher(inAppcatalogid, "app");
-			Data site = (Data) searcher.searchByField("deploypath", "/" + applicationid);
+			Data site = (Data) searcher.searchByField("deploypath", "/" + inDestinationAppId);
 			if (site == null)
 			{
 				site = searcher.createNewData();
@@ -292,9 +291,9 @@ public class WorkspaceManager
 			// throw new OpenEditException("frontendid was null");
 			// }
 
-			if (applicationid != null)
+			if (inDestinationAppId != null)
 			{
-				site.setProperty("deploypath", "/" + applicationid);
+				site.setProperty("deploypath", "/" + inDestinationAppId);
 			}
 //			if (catalogid != null)
 //			{
