@@ -493,7 +493,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			Map analyzermap = new HashMap();
 		
 			analyzermap.put("description",  new FullTextAnalyzer(Version.LUCENE_41));
-			//analyzermap.put("id", new NullAnalyzer());
+			
+			//The ID column is special since it is used to load records from the index. 
+			//When we do a Lucene Update we would have to lowerCase the id
+			
+			analyzermap.put("id", new NullAnalyzer());
 			//analyzermap.put("id", new RecordLookUpAnalyzer(false));
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
 			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper(new RecordLookUpAnalyzer() , analyzermap);

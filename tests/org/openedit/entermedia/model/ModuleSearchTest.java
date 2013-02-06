@@ -22,19 +22,27 @@ public class ModuleSearchTest extends BaseEnterMediaTest
 		
 		Data order = searcher.createNewData();
 		order.setId("search101");
+		order.setProperty("sharewithemail", "TESTING" );
 		order.setSourcePath("testsearch/search101");
 		searcher.saveData(order,null);
+
+		SearchQuery q = searcher.createSearchQuery();
+		q.addMatches("sharewithemail", "TESTing" );
+		HitTracker exact = searcher.search(q);
+		assertEquals(exact.size() , 1);
+		
+		
 		
 		order = searcher.createNewData();
 		order.setId("SEARCH102");
 		order.setSourcePath("testsearch/search102");
 		searcher.saveData(order,null);
 
-		
-		SearchQuery q = searcher.createSearchQuery();
+
+		q = searcher.createSearchQuery();
 		q.addOrsGroup("id", "search101 SEARCH102" );
 		HitTracker three = searcher.search(q);
-		assertEquals(three.size() , 1);
+		assertEquals(three.size() , 2);
 		
 	
 	}

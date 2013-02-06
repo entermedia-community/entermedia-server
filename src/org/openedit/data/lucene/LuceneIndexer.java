@@ -240,7 +240,8 @@ public class LuceneIndexer
 		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
 		if( isText )
 		{
-			field = new StringField(inId,inValue,inStore);
+			//field = new StringField(inId,inValue,inStore);  //This causes case sensitivity to be lost
+			field = new Field(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );
 		}
 		else
 		{

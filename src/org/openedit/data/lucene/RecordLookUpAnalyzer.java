@@ -3,19 +3,15 @@
  */
 package org.openedit.data.lucene;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.util.Version;
-
-import com.openedit.OpenEditException;
 
 /**
  * ID's must be separated by spaces and will become case insenstive
@@ -42,18 +38,17 @@ public class RecordLookUpAnalyzer extends Analyzer
 	{
 		
 	    Tokenizer source =  null;
-	    TokenStream filter = null;
 		if( isUseTokens())
 		{
-			source = new WhitespaceTokenizer(Version.LUCENE_31, inReader);
+			source = new WhitespaceTokenizer(Version.LUCENE_41, inReader);
 		}
 		else
 		{
-			source = new OneToken(inReader);
+			source = new KeywordTokenizer(inReader);
 		}
-	    filter = new LowerCaseFilter(Version.LUCENE_31, source);
+		TokenStream filter = new LowerCaseFilter(Version.LUCENE_41, source);
 		return new TokenStreamComponents(source,filter);
-
+	    
 	}
 	/*
 	public TokenStream tokenStream(String fieldName, Reader reader) 
@@ -82,7 +77,7 @@ public class RecordLookUpAnalyzer extends Analyzer
 	{
 		fieldUseTokens = inTokens;
 	}
-
+/*
 	class OneToken extends Tokenizer
 	{
 		Token fieldToken;
@@ -113,7 +108,7 @@ public class RecordLookUpAnalyzer extends Analyzer
 			return false;
 		}
 	}
-
+*/
 	
 	
 }
