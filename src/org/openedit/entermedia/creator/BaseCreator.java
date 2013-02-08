@@ -86,7 +86,7 @@ public abstract class BaseCreator implements MediaCreator
 	public ConvertInstructions createInstructions(WebPageRequest inReq, MediaArchive inArchive, String inOutputType, String inSourcePath)
 	{
 		Map all = new HashMap(); //TODO: Get parent ones as well
-		for (Iterator iterator = inReq.getPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
+		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{
 			PageProperty type = (PageProperty) iterator.next();
 			all.put(type.getName(), type.getValue());
