@@ -253,7 +253,7 @@ public class WorkspaceManager
 			getPageManager().copyPage(apphome, appdest);
 
 			//tweak the xconf
-			PageSettings homesettings = appdest.getPageSettings();
+			PageSettings homesettings = getPageManager().getPageSettingsManager().getPageSettings("/" + inDestinationAppId + "/_site.xconf");
 			homesettings.setProperty("applicationid", inDestinationAppId);
 			homesettings.setProperty("catalogid", inAppcatalogid);
 			if( homesettings.getProperty("fallbackdirectory") == null )
@@ -270,6 +270,10 @@ public class WorkspaceManager
 			{
 				Page catalogdest = getPageManager().getPage( "/" + inAppcatalogid);
 				getPageManager().copyPage(cataloghome, catalogdest);
+				
+				PageSettings catsettings = getPageManager().getPageSettingsManager().getPageSettings("/" + inAppcatalogid + "/_site.xconf");
+				catsettings.setProperty("catalogid", inAppcatalogid);
+				getPageManager().getPageSettingsManager().saveSetting(catsettings);
 			}
 
 			Page dataold = getPageManager().getPage(dest.getPath() + "/WEB-INF/data/" + oldcatalogid);
@@ -317,6 +321,8 @@ public class WorkspaceManager
 				cat.setId(inAppcatalogid);
 				catsearcher.saveData(cat, null);
 			}
+			
+			
 		}
 		catch (Exception ex)
 		{

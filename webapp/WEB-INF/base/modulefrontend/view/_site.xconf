@@ -6,7 +6,9 @@
 	<property name="detailtab">${module}metadatageneral</property>
 	<property name="detailsubtab">${module}metadatageneral</property>
 
-	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/appmoduledetail.html</inner-layout>
+	
+	<property name="searchhome">/${applicationid}/view/edit</property>
 	
 	<property name="module">${appmodule}</property>
 </page>

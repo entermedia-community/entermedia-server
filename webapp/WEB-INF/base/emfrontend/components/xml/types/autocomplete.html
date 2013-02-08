@@ -12,6 +12,7 @@
 #if($val && $val != "")
 #set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #end
+
 <input name="completefield" class="listautocomplete" id="${detail.id}${idcount}value" value="#esc($foundrow.name)"  type="hidden"  
 	data-searchfield="$searchfield" data-searchtype="$detail.listid" data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-sortby="$!detail.sort"/>
 <input name="${detail.getId()}.value"  id="${detail.id}${idcount}valuehidden"   value="$!val" type="hidden"/>

@@ -10,10 +10,11 @@
 #if($val && $val != "")
 #set( $foundrow = $mediaarchive.getAsset($val)  )
 #end
-#set( $click = "$home$apphome/views/assets/${foundrow.sourcepath}/index.html?hitssessionid=$rootid" )
 
-<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;" id="${detail.id}-preview">
-			#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
+#set( $click = "$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$!val&hitssessionid=$!rootid" )
+#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
+
+<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" id="${detail.id}-preview">
 			$context.putPageValue("cell", $foundrow)
 			$context.putPageValue("hit", $foundrow)
 			
@@ -22,3 +23,11 @@
 		   	#set( $sourcepath = $foundrow.sourcePath )
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 			</a> 
+#if( $type == "audio")
+
+<a href="$click" alt="$foundrow" class="audio-filename"> 
+                  $foundrow.name
+</a>
+#end
+
+			

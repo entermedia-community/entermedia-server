@@ -49,25 +49,14 @@
 #end
 
 #if( $showit )
-	<div id="${viewid}editor">
+<div id="${viewid}editor" >
 	#if( !$edit || $edit == "false")
 	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
-	<script>
-	$(document).ready(function(){
-		
-		addnew = '<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>';
-		
-		if ( $('.tab-actions').length > 0  ) {
-			$('.tab-actions').prepend(addnew);
-		}
-		else {
-			$('.addnew-generic').append(addnew);
-		}
-	});
-	</script>
-	<div class="addnew-generic"></div>
+	<div class="addnew-generic">
+	<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>
+	</div>
 	#end
 	
 	#else
@@ -112,7 +101,7 @@
 			
 	
 	#end
-	</div>
+</div>
 #else ##showit
 	<p class="info">No data has been entered.</p>
 #end

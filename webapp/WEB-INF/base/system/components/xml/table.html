@@ -60,29 +60,6 @@
 	<th></th>
 	#end
 	</tr>
-    	
-    <script>
-        $('th.sortable').on({
-            click: function(){
-                var id = $(this).attr('id');
-                var path = "$home$apphome/components/xml/columnsort.html?oemaxlevel=1&$args&sortby="
-                if ( $(this).hasClass('currentsort') ) {
-                    if ( $(this).hasClass('up') ) {
-                        jQuery('#resultsdiv').load( path + id + 'Down');
-                    } else {
-                        jQuery('#resultsdiv').load( path + id + 'Up');
-                    }
-                } else {
-                    $('th.sortable').removeClass('currentsort');
-                    $(this).addClass('currentsort');
-                    jQuery('#resultsdiv').load( path + id + 'Down');
-                }
-            }
-        });
-    </script>
-    	
-	
-	
 	</thead>
 	<tbody>
 	#foreach ( $hit in $existingrecords )
@@ -108,6 +85,29 @@
 	</tr>
 	</tbody>
 </table>
+
+
+    <script>
+        $('th.sortable').on({
+            click: function(){
+                var id = $(this).attr('id');
+                var path = "$home$apphome/components/xml/columnsort.html?oemaxlevel=1&$args&sortby="
+                if ( $(this).hasClass('currentsort') ) {
+                    if ( $(this).hasClass('up') ) {
+                        jQuery('#${viewid}editor').load( path + id + 'Down');
+                    } else {
+                        jQuery('#${viewid}editor').load( path + id + 'Up');
+                    }
+                } else {
+                    $('th.sortable').removeClass('currentsort');
+                    $(this).addClass('currentsort');
+                    jQuery('#${viewid}editor').load( path + id + 'Down');
+                }
+            }
+        });
+    </script>
+
+
 #end
 
 #if( !$existingrecords || $existingrecords.size() == 0 )

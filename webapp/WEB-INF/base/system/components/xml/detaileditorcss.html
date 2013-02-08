@@ -67,24 +67,6 @@
 			#set( $usedhtml = "htmltextarea=${detail.getId()}")
 		#end
 	#end
-	
-	#if($detail.get('dependson'))
-	
-   <script type="text/javascript">			
-			jQuery(document).ready(function(){
-				DetailEditor.find_field_from_row("$!detail.get('dependson')").bind_and_run('change',function(){
-					alert("checking");
-					DetailEditor.toggle_dependency_row("$!detail.getId()",
-																						 jQuery(this),
-																						 "$!detail.get('dependsonvalue')",
-																						 "$!detail.get('dependsondefault')",
-																						 "$!detail.get('dependsonvaluedelimiter')")
-				});
-			});									 
-		</script>
-	#end
-	
-	
 #end
 </div>
 

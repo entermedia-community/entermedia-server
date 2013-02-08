@@ -1290,26 +1290,7 @@ small {
     border: 1px solid #6a6a6a;
     color: #fff;
 }
-#pages .next a {
-    background: url('../images/pagination-next.png') bottom center no-repeat;
-    height: 21px;
-    width: 21px;
-    margin: 1px 0 0 0;
-    border: none;
-}
-#pages .previous a {
-    background: url('../images/pagination-previous.png') bottom center no-repeat;
-    height: 21px;
-    width: 21px;
-    margin-top: 1px;
-    border: none;
-}
-#pages .previous a:hover {
-    background: url('../images/pagination-previous.png') top center no-repeat;
-}
-#pages .next a:hover {
-    background: url('../images/pagination-next.png') top center no-repeat;
-}
+
 
 /* CATEGORIES AGAIN */
 
@@ -3736,7 +3717,7 @@ body #emcontainer .emasseteditorarea {
     position: relative;
     top: 35px;
     left: 135px;
-    width: 600px;
+    width: 300px;
 }
 .folder:hover .alias, .folder:hover .path {
     color: #3DAACD;
@@ -6219,13 +6200,6 @@ div.dragcount {
 	background:#333;
 }
 
-a.learnmore {
-    background: url('../images/pagination-next.png') bottom center no-repeat;
-	width:21px;
-	height:21px;
-	
-}
-
 .select2
 {
 	min-width: 180px;
@@ -6238,3 +6212,8 @@ div.listautocomplete
 	min-width: 180px;
 	margin: 5px 0;
 }	
+
+a.audio-filename:hover
+{
+	text-decoration: underline;
+}

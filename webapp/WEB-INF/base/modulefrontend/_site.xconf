@@ -18,6 +18,15 @@
   <path-action name="ProfileModule.loadUserProfile" />
   <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
 
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+
+	<path-action name="TranslationModule.loadBrowserLanguage" />
+
+
   <inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
 
   <style id="layout" href="${themeprefix}/styles/layout.css"/>
@@ -31,6 +40,7 @@
   <script id="jplayer"  src="/${applicationid}/components/javascript/jquery.jplayer.min.js">  </script>
   
   <style id="jplayer-css"  href="/${applicationid}/theme/jplayer/premium.pixels/premium-pixels.css"/>
+  <style id="jqueryui" href="${themeprefix}/styles/jquery-ui.css"/>
   
   <script id="jquery-fancybox" src="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.js"/>
   <style id="jquery-fancybox-css" href="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.css"/>
@@ -44,7 +54,7 @@
   <script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
   <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
   
-  <script id="select2" src="/${applicationid}/components/javascript/select2/select2.min.js"/>
+  <script id="select2" src="/${applicationid}/components/javascript/select2/select2.js"/>
   <style id="select2-css" href="/${applicationid}/components/javascript/select2/select2.css"/>
   
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
@@ -61,6 +71,12 @@
 	
 	<permission name="multiedit">
 			<userprofile property="multiedit" equals="true" />
+	</permission>
+  
+	<permission name="editdata">
+			<or>
+				<group id="administrators" />
+			</or>
 	</permission>
   
   

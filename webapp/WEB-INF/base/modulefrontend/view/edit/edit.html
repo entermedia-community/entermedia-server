@@ -1,12 +1,13 @@
 #set($viewid = $context.getRequestParameter("viewid"))
+
 #set($viewpath = $context.getRequestParameter("viewpath"))
 #set( $moduleid = $context.findValue("module") )
 
 #set($view = $searcherManager.getData($catalogid, "view",$viewid))
 #if( $view.rendertype )
-	#set( $action = "$home$content.searchhome/edit/savetable.html")
+	#set( $action = "$home$content.searchhome/savetable.html")
 #else
-	#set( $action = "$home$content.searchhome/edit/save.html")
+	#set( $action = "$home$content.searchhome/save.html")
 #end
 <div id="default-fields">
     <div id="editlayout">
@@ -23,11 +24,11 @@
     	$context.putPageValue("view", $viewpath)
 
 #set( $origURL = $context.getRequestParameter("origURL" ) )
-#set ( $moduleid = $context.findValue("module") )
+
 #if($caneditdata)
-$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 #else
-$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
+$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true&alwaysshow=true", $context)
 #end
     #if($candelete)	
     <a class="btn red confirm" confirm="Are you sure?" style="margin: 20px 0 0 20px; color: #fff;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath" style="margin: 20px 20px 0 0;">Delete</a>

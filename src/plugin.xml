@@ -1120,16 +1120,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	
 	
-	
-	
-	<bean id="conversiontaskSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>assets</value></property>
-	</bean>
-	
 	<bean id="ConvertStatusModule" class="org.openedit.entermedia.modules.ConvertStatusModule">
 		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1479,5 +1469,18 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	
 	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
 	</bean>
+
+	<bean id="transientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" singleton="false">
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory">
+			<ref bean="root" />
+		</property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+	</bean>
+
+
 
 </beans>

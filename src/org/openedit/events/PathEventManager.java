@@ -148,7 +148,7 @@ public class PathEventManager
 		if (event != null)
 		{ 
 			TaskRunner runner = null;
-			synchronized (event)
+			synchronized (getRunningTasks())
 			{
 				String name = event.getName();
 				Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds

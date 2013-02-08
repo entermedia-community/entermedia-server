@@ -23,6 +23,7 @@ $context.putPageValue("caneditlists","false")
 	#end
 #end	
 
+
 <div class="oeinputform validate-inputs detaileditor">
 <div id="allerrors">
 </div>
@@ -45,9 +46,10 @@ $context.putPageValue("caneditlists","false")
 			<tr><td colspan="2" style="text-align:center;"><h4>$detail.header</h4></td></tr>
 		#end
 	#end
-	#set( $editrow = $detail.isEditable() && $readonly != "true" )  
+	#set( $editrow = $detail.isEditable() && $readonly != "true" )
 	#if( $editrow || $val  || !$detail.isEditable()) 
 		#if( !$val) #set( $val = "") #end	
+	
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
 			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
@@ -71,7 +73,6 @@ $context.putPageValue("caneditlists","false")
 	#end
 	
 	#if(!$editrow && $alwaysshow == "true")
-	
 	#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
