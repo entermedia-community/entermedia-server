@@ -30,17 +30,16 @@
   <inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
 
   <style id="layout" href="${themeprefix}/styles/layout.css"/>
-  <style id="app-css" href="${themeprefix}/styles/theme.css"/>
   <style id="modulefrontend-css" href="${themeprefix}/styles/modulefrontend.css"/>
     
   <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.7.1.min.js"/>
   <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.8.12.custom.min.js"/>
   <script id="jquery-ui-i18n" src="/${applicationid}/components/javascript/ui/i18n/jquery-ui-i18n.js"/>
+  <style id="jqueryui" href="${themeprefix}/styles/jquery-ui.css"/>
   
   <script id="jplayer"  src="/${applicationid}/components/javascript/jquery.jplayer.min.js">  </script>
   
   <style id="jplayer-css"  href="/${applicationid}/theme/jplayer/premium.pixels/premium-pixels.css"/>
-  <style id="jqueryui" href="${themeprefix}/styles/jquery-ui.css"/>
   
   <script id="jquery-fancybox" src="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.js"/>
   <style id="jquery-fancybox-css" href="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.css"/>
@@ -53,12 +52,12 @@
   <script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
   <script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
   <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
+  <script id="results" src="/${applicationid}/components/javascript/results.js"/>
   
   <script id="select2" src="/${applicationid}/components/javascript/select2/select2.js"/>
-  <style id="select2-css" href="/${applicationid}/components/javascript/select2/select2.css"/>
-  
+  <style id="select2-css" href="/${applicationid}/components/javascript/select2/select2.css"/>  
+  <style id="app-css" href="${themeprefix}/styles/theme.css"/>
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
-  <script id="results" src="/${applicationid}/components/javascript/results.js"/>
   
   <style id="custom-css" href="${themeprefix}/styles/custom.css"/>
     

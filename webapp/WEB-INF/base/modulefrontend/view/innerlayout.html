@@ -4,12 +4,23 @@
 <div class="table">
     <div class="module-sidebar-actions tcell">
         <ul>
-        #set( $library = $searcherManager.getData($catalogid,"library",$data.library ))
+        #set( $libraryid = $data.library )
+        #if( !$libraryid )
+    	    #set( $libraryid = "song${data.id}" )
+        #end
+        #set( $library = $searcherManager.getData($catalogid,"library",$libraryid ))
+        
         #if( $library)
-            <li><a href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">View Song Folders</a></li>
+            #set( $size = $mediaarchive.getAssetSearcher().fieldSearch("libraries",$libraryid).size() )
+      		#if( $size > 0)            
+            <li><a href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$libraryid">View Song Files ($size)</a></li>
+            #end
+           	<li><a href="$home$apphome/view/git/index.html?id=${data.id}">Download Song Folders</a></li>
         #end  
-            <li><a href="#">Download Song Folders</a></li>
-            <li><a href="#">Delete Song</a></li>
+           	#if( $canviewsettings )
+            <li><a href="$home$apphome/views/modules/library/edit/edit.html?id=${libraryid}&viewid=librarygeneral&viewpath=library/librarygeneral&searchtype=library">Folder Settings</a></li>
+            #end            
+            <li><a class="confirm" confirm="Are you sure?" href="$home$apphome/views/modules/song/edit/delete.html?id=${data.id}&searchtype=song&viewid=songmasters&viewpath=song/songmasters">Delete Song</a></li>
         </ul>
     </div>
     <div class="module-details-main tcell">

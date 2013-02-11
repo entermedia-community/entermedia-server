@@ -2,6 +2,10 @@
 #set($viewpath = $context.getRequestParameter("viewpath"))
 #set( $moduleid = $context.findValue("module") )
 
+#set($id = $data.id )
+#if( !$id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
 #set($view = $searcherManager.getData($catalogid, "view",$viewid))
 #if( $view.rendertype )
 	#set( $action = "$home$content.searchhome/edit/savetable.html")
@@ -12,7 +16,7 @@
     <div id="editlayout">
     <form id="dataeditor" name="dataeditor" method="post"  action="$action" enctype="multipart/form-data">
     	<input name="save" type="hidden" value="true" />
-    	<input name="id" type="hidden" value="$!data.id" />
+    	<input name="id" type="hidden" value="$id" />
     	<input name="categoryid" type="hidden" value="$!categoryid" />
     	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
     	<input name="searchtype" type="hidden" value="$searcher.searchType" />

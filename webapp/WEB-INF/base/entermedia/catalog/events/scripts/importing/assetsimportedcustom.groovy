@@ -49,7 +49,6 @@ public void setupProjects(HitTracker assets)
 		MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 		Searcher searcher = mediaarchive.getAssetSearcher();
-		Searcher divisionSearcher = mediaarchive.getSearcher("division")
 		Searcher librarySearcher = mediaarchive.getSearcher("library")
 		
 		List tosave = new ArrayList();
@@ -59,27 +58,33 @@ public void setupProjects(HitTracker assets)
 			String[] split = sourcepath.split("/");
 			if( split.length > 2 )
 			{
-				String folder = split[0] + "/" + split[1];
-				Data division = divisionSearcher.searchByField("folder",folder);
-				if( division != null )
+				SearchQuery query = librarySearcher.createSearchQuery();
+				query.setAndTogether(false);
+				String sofar = "";
+				for( int i=0;i<split.length - 1;i++)
 				{
-					String libraryfolder  = split[2];
-					SearchQuery query = librarySearcher.createSearchQuery().append("division",division.getId()).append("folder",libraryfolder);
-					Data library =	librarySearcher.searchByQuery(query);
-					if( library != null )
+					sofar = "${sofar}${split[i]}";
+					if( i > 0 )
 					{
-//						library = librarySearcher.createNewData();
-//						library.setProperty("folder",libraryfolder);
-//						library.setProperty("division",division.getId());
-//						library.setName(libraryfolder);
-//						
-//						librarySearcher.saveData(library,null);
-						Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
-						asset.addLibrary(library.getId());
-						tosave.add(asset);
-						log.info("auto added library by folder " + libraryfolder); 
+						query.addExact( "folder", sofar );
 					}
+					if( i > 10 )
+					{
+						break;
+					}
+					sofar = "${sofar}/";
 				}
+				query.addSortBy("folderDown");
+				
+				Data library =	librarySearcher.searchByQuery(query);
+				if( library != null )
+				{
+					Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
+					asset.addLibrary(library.getId());
+					tosave.add(asset);
+					log.info("auto added library by folder " + library.get("folder") ); 
+				}
+				
 			}
 			if(tosave.size() == 100)
 			{

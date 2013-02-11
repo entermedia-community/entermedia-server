@@ -56,10 +56,9 @@
 
 /* Component containers
 ----------------------------------*/
-.ui-widget { font-family: Verdana,Arial; margin: 0 auto; border: 1px solid #AAAAAA;}
 .ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Verdana,Arial; font-size: 11px; }
-.ui-widget-content {  background: #ffffff color: #383838; font-size: 11px; padding: 0px; overflow:hidden;}
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { }
+.ui-widget-content {  background: #ffffff color: #383838; font-size: 11px; padding: 0px; display: block;  }
 .ui-widget-content a { color: #383838; font-size: 11px;}
 .ui-widget-header { background: #2790B0; color: #ffffff; font_size: 11px; font-weight: bold; padding: 5px 0px 5px 14px; }
 .ui-widget-header a { color: #ffffff; font_size: 11px; font-weight: bold;}
