@@ -42,9 +42,11 @@ public class BaseOrderManager implements OrderManager
 	protected SearcherManager fieldSearcherManager;
 	protected WebEventHandler fieldWebEventHandler;
 	
+	
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#getWebEventHandler()
 	 */
+	
 	
 	public WebEventHandler getWebEventHandler() {
 		return fieldWebEventHandler;
@@ -609,17 +611,20 @@ public class BaseOrderManager implements OrderManager
 				if( newTask == null )
 				{
 					newTask = taskSearcher.createNewData();	
-				} else{
+					newTask.setProperty("status", "new");
+					newTask.setProperty("assetid", assetid);
+					newTask.setProperty("presetid", presetid);
+					newTask.setSourcePath(asset.getSourcePath());
+					taskSearcher.saveData(newTask, inUser);
+				}
+				else
+				{
+					//No need to republish the same asset right?
 					newTask = (Data) taskSearcher.searchById(newTask.getId());//load real data
 				}
-				newTask.setSourcePath(asset.getSourcePath());
-				newTask.setProperty("status", "new");
-				newTask.setProperty("assetid", assetid);
-				newTask.setProperty("presetid", presetid);
 				
 				//newTask.setProperty("orderid", order.getId());
 				//newTask.setProperty("itemid", hit.getId());
-				taskSearcher.saveData(newTask, inUser);
 				orderItem.setProperty("conversiontaskid",newTask.getId());
 			}
 			
@@ -631,6 +636,13 @@ public class BaseOrderManager implements OrderManager
 			}
 			if( destination != null)
 			{
+				String publishstatus = "new";
+				//We need a publishing task for the remote push server to push the file here?
+				if( !needstobecreated && destination.equals("0") )
+				{
+					//browser
+					publishstatus = "complete";
+				}
 				Data publishqeuerow = publishQueueSearcher.createNewData();
 				publishqeuerow.setProperty("assetid", assetid);
 				publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
@@ -646,7 +658,7 @@ public class BaseOrderManager implements OrderManager
 				}
 				String exportname = archive.asExportFileName(user, asset, preset);
 				publishqeuerow.setProperty("exportname", exportname);
-				publishqeuerow.setProperty("status", "new");
+				publishqeuerow.setProperty("status", publishstatus);
 				
 				Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
 				if( !needstobecreated )
@@ -710,6 +722,13 @@ public class BaseOrderManager implements OrderManager
 	{
 		//look up all the tasks
 		//if all done then save order status
+		
+		//TODO: Get a lock on this order
+		if( "complete".equals(inOrder.getOrderStatus() ) )
+		{
+			log.debug("Already complete");
+			return;		
+		}
 		
 		Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 		
@@ -806,27 +825,31 @@ public class BaseOrderManager implements OrderManager
 					itemscomplted++;
 					if( itemscomplted == hits.size() )
 					{
-						WebEvent event = new WebEvent();
-						event.setSearchType("order");
-						event.setCatalogId(archive.getCatalogId());
-						event.setOperation("ordering/finalizeorder");
-						event.setUser(null);
-						event.setSource(this);
-						event.setProperty("sourcepath", inOrder.getSourcePath());
-						event.setProperty("orderid", inOrder.getId());
-						//archive.getWebEventListener()
-						archive.getMediaEventHandler().eventFired(event);
-
-						inOrder.setOrderStatus("complete");
-						OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "complete");
-						saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
-
-					
+						//Finalize should be only for complete orders.
+						finalizeOrder(archive, inOrder);
 					}
 				}
 			}
 			
 		}
+	}
+
+	protected finalizeOrder(MediaArchive archive, Order inOrder) 
+	{
+		inOrder.setOrderStatus("complete");
+		OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "ordercomplete");
+		saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+		
+		WebEvent event = new WebEvent();
+		event.setSearchType("order");
+		event.setCatalogId(archive.getCatalogId());
+		event.setOperation("ordering/finalizeorder");
+		event.setUser(null);
+		event.setSource(this);
+		event.setProperty("sourcepath", inOrder.getSourcePath());
+		event.setProperty("orderid", inOrder.getId());
+		//archive.getWebEventListener()
+		archive.getMediaEventHandler().eventFired(event)
 	}
 
 	/* (non-Javadoc)
