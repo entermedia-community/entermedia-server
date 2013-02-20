@@ -274,6 +274,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="webEventListener">
 			<ref bean="editorEventHandler" />
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="compositeLuceneSearcher" class="org.openedit.data.lucene.CompositeLuceneSearcher"
@@ -934,12 +935,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-	<bean id="velocity" class="com.openedit.generators.VelocityGenerator" >
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
-	</bean>
-
-
 	<bean id="velocityGenerator" class="com.openedit.generators.VelocityGenerator" >
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
@@ -1167,6 +1162,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	    	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="root"><ref bean="root" /></property>
+		
     </bean>
     <bean id="bshScriptRunner" class="com.openedit.entermedia.scripts.BshScriptRunner" />
     <bean id="rhinoScriptRunner" class="com.openedit.entermedia.scripts.RhinoScriptRunner" />
@@ -1356,52 +1353,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 
-	<bean id="digitalrapidsCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>digitalrapids</value></property>
-	</bean>
-	<bean id="exiftoolthumbCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>exiftoolthumb</value></property>
-	</bean>
-	<bean id="audioCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>audio</value></property>
-	</bean>
-	<bean id="ffmpegCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>ffmpeg</value></property>
-	</bean>
-	<bean id="ffmpegimageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>ffmpegimage</value></property>
-	</bean>
 	
 	
-	
-	
-	<bean id="GhostScriptImageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>GhostScriptImage</value></property>
-	</bean>
 	<bean id="imagePreProcessors" class="java.util.ArrayList">
 	    <constructor-arg>
 		<list>
@@ -1413,30 +1366,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	    </constructor-arg>
 	</bean>
 	
-	<bean id="imagemagickCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>imagemagick</value></property>
-		<property name="preProcessors"><ref bean="imagePreProcessors" /></property>
-	</bean>
-	
-	<bean id="oofficeDocumentCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>oofficeDocument</value></property>
-	</bean>
-	
-	<bean id="originalCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>original</value></property>
-	</bean>			
 	<bean id="HotFolderModule" class="org.openedit.entermedia.modules.HotFolderModule">
 	</bean>			
 	<bean id="hotFolderManager" class="org.openedit.entermedia.scanner.HotFolderManager">

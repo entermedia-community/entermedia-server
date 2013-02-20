@@ -1,3 +1,5 @@
+package model.importer;
+
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;

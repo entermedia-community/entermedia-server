@@ -197,6 +197,9 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			data.setSourcePath(sourcepath);
 		}
 		getXmlDataArchive().saveData(data,inUser);
+		
+//		String nullcheck = data.get("publishqueueid");
+//		log.info( getSearchType() + " " + data.getId() + " " + nullcheck );
 		updateIndex(data);
 	}
 

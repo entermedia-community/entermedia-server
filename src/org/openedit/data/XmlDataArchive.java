@@ -103,6 +103,7 @@ public class XmlDataArchive implements DataArchive
 			throw new OpenEditException("sourcepath is required ");
 		}
 		String path = getPathToXml(inData.getSourcePath());
+		//TODO: Need to lock this file so another person does not call save
 		XmlFile xml = getXmlArchive().getXml(path, getElementName());
 		addRow(inData, xml);
 		getXmlArchive().saveXml(xml, null);
@@ -117,6 +118,8 @@ public class XmlDataArchive implements DataArchive
 			Data data = (Data) iterator.next();
 			String path = getPathToXml(data.getSourcePath());
 			//open the xml file. May reuse this file for other rows
+			
+			//TODO: Add Lock Manager so that two threads dont save on top of one another
 			if( xml == null || !xml.getPath().equals(path))
 			{
 				if( xml != null)

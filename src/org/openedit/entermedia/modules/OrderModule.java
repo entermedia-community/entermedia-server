@@ -132,7 +132,10 @@ public class OrderModule extends BaseMediaModule
 				assets.addSelection(i);
 			}
 		}
-
+		if( assets == null )
+		{
+			return null;
+		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
 

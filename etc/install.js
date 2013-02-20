@@ -57,6 +57,7 @@ files.deleteMatch( web + "/lib/lucene*.jar");
 files.deleteMatch( web + "/lib/spring-*.jar");
 files.deleteMatch( web + "/lib/aopalliance-*.jar");
 files.deleteMatch( web + "/lib/jaxen-*.jar");
+files.deleteMatch( web + "/lib/guava-*.jar");
 
 
 
@@ -71,6 +72,7 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/commons-net-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/spring-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/aopalliance-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/jaxen-*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/guava*.jar", web + "/lib/");
 
 
 log.add("5. CLEAN UP");

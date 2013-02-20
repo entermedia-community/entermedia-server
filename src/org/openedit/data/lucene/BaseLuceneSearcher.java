@@ -769,6 +769,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public void updateIndex(Data inData) throws OpenEditException
 	{
+		//Already pending, just add another one on
+		fieldPendingCommit = false;
 		IndexWriter writer  = getIndexWriter();
 		updateIndex(writer, inData);
 		clearIndex();

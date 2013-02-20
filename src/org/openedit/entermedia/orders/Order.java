@@ -57,6 +57,10 @@ public class Order extends ElementData
 		if( inId.startsWith("history"))
 		{
 			String key = inId.substring(7);
+			if( getRecentOrderHistory() == null )
+			{
+				return null;
+			}
 			return getRecentOrderHistory().get(key); //may be OrderHistory.EMPTY
 		}
 		return super.get(inId);

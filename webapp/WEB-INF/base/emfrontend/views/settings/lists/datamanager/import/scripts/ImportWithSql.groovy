@@ -11,6 +11,7 @@ import org.openedit.entermedia.util.CSVWriter;
 
 import com.openedit.page.Page
 
+import model.importer.BaseImporter
 
 class ImportWithSqlHelper extends BaseImporter
 {

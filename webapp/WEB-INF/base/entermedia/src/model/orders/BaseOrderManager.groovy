@@ -1,46 +1,36 @@
 package model.orders;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.dom4j.DocumentHelper;
-import org.openedit.Data;
-import org.openedit.data.BaseData;
-import org.openedit.data.Searcher;
-import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.CompositeAsset;
-import org.openedit.entermedia.MediaArchive;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.dom4j.DocumentHelper
+import org.entermedia.locks.Lock
+import org.entermedia.locks.LockManager
+import org.openedit.Data
+import org.openedit.data.BaseData
+import org.openedit.data.Searcher
+import org.openedit.data.SearcherManager
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.CompositeAsset
+import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.orders.Order
 import org.openedit.entermedia.orders.OrderHistory
 import org.openedit.entermedia.orders.OrderManager
-import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventHandler;
-import org.openedit.util.DateStorageUtil;
+import org.openedit.event.WebEvent
+import org.openedit.event.WebEventHandler
+import org.openedit.util.DateStorageUtil
 
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.users.User;
+import com.openedit.OpenEditException
+import com.openedit.WebPageRequest
+import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
+import com.openedit.users.User
 
 public class BaseOrderManager implements OrderManager 
 {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected WebEventHandler fieldWebEventHandler;
+	protected LockManager fieldLockManager;
 	
 	
 	/* (non-Javadoc)
@@ -201,6 +191,7 @@ public class BaseOrderManager implements OrderManager
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrderId);
+		query.addSortBy("id");
 		HitTracker items =  itemsearcher.search(query);
 		return items;
 	}
@@ -557,7 +548,7 @@ public class BaseOrderManager implements OrderManager
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
 
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-
+		log.info("Processing " + hits.size() + " order items ");
 		List<String> assetids = new ArrayList<String>();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
@@ -669,6 +660,11 @@ public class BaseOrderManager implements OrderManager
 				publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				publishQueueSearcher.saveData(publishqeuerow, inUser);
 				
+				if( publishqeuerow.getId() == null )
+				{
+					throw new OpenEditException("Id should not be null");
+				}
+				
 				orderItem.setProperty("publishqueueid",publishqeuerow.getId());
 			}	
 			else
@@ -714,124 +710,148 @@ public class BaseOrderManager implements OrderManager
 		return task.get("publishdestination");
 	}
 
+	public LockManager getLockManager()
+	{
+		return fieldLockManager;
+	}
+	
+	public void setLockManager(LockManager inManager)
+	{
+		fieldLockManager = inManager;
+	}
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#updateStatus(org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order)
 	 */
-	
 	public void updateStatus(MediaArchive archive, Order inOrder)
 	{
 		//look up all the tasks
 		//if all done then save order status
-		
-		//TODO: Get a lock on this order
-		if( "complete".equals(inOrder.getOrderStatus() ) )
+		Lock lock = getLockManager().lock(archive.getCatalogId(), inOrder.getSourcePath(), "BaseOrderManager");
+			
+		try
 		{
-			log.debug("Already complete");
-			return;		
+			if( inOrder.getOrderStatus() == "complete" )
+			{
+				log.debug("Already complete");
+				return;		
+			}
+			
+			Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+			
+			SearchQuery query = itemsearcher.createSearchQuery();
+			query.addExact("orderid", inOrder.getId());
+			query.setHitsName("orderitems");
+			//query.addNot("status", "complete");
+			HitTracker hits =  itemsearcher.search(query);
+			
+			if( hits.size() == 0)
+			{
+				log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
+				//error?
+				return;
+			}
+			Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
+			Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+			Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
+	
+			//Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+	
+			int itemscomplted = 0;
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
+				Data orderitemhit = (Data) iterator.next();
+				boolean complete = updateItem(archive, taskSearcher, itemsearcher, publishQueueSearcher, inOrder, orderitemhit)
+				if( complete )
+				{
+					itemscomplted++;
+				}
+			}
+			if( itemscomplted == hits.size() )
+			{
+				//Finalize should be only for complete orders.
+				finalizeOrder(archive, inOrder);
+			}
 		}
-		
-		Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-		
-		SearchQuery query = itemsearcher.createSearchQuery();
-		query.addExact("orderid", inOrder.getId());
-		query.setHitsName("orderitems");
-		//query.addNot("status", "complete");
-		HitTracker hits =  itemsearcher.search(query);
-		
-		if( hits.size() == 0)
+		finally
 		{
-			log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
-			//error?
-			return;
+			getLockManager().release(archive.getCatalogId(), lock);
 		}
-		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
-		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+	}
 
-		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
-
-		//Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-
-		int itemscomplted = 0;
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+	protected boolean updateItem(MediaArchive archive, Searcher taskSearcher, Searcher itemsearcher,Searcher publishQueueSearcher, Order inOrder, Data orderitemhit) \
+	{
+		boolean convertcomplete = false;
+		boolean publishcomplete = false;
+		String conversiontaskid = orderitemhit.get("conversiontaskid");
+		if( conversiontaskid == null)
 		{
-			Data orderitemhit = (Data) iterator.next();
-			boolean convertcomplete = false;
-			boolean publishcomplete = false;
-			String conversiontaskid = orderitemhit.get("conversiontaskid");
-			if( conversiontaskid == null)
+			convertcomplete = true;
+		}
+		else
+		{
+			Data convert = (Data)taskSearcher.searchById(conversiontaskid);
+			if( "complete".equals( convert.get("status") ) )
 			{
 				convertcomplete = true;
 			}
+			else if ("error".equals( convert.get("status") ) )
+			{
+				Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
+				item.setProperty("status", "error");
+				item.setProperty("errordetails", convert.get("errordetails"));
+				itemsearcher.saveData(item, null);
+				inOrder.setOrderStatus("error",convert.get("errordetails")); //orders are either open closed or error
+				OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
+				saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+				return false;
+			}
+
+		}
+		if( convertcomplete)
+		{
+			String publishqueueid = orderitemhit.get("publishqueueid");
+			if( publishqueueid == null)
+			{
+				publishcomplete = true;
+			}
 			else
 			{
-				Data convert = (Data)taskSearcher.searchById(conversiontaskid);
-				if( "complete".equals( convert.get("status") ) )
+				Data publish = (Data)publishQueueSearcher.searchById(publishqueueid);
+				if( publish == null )
 				{
-					convertcomplete = true;
+					log.error("PublishQueue was null for ${publishqueueid}");
+					publish = new BaseData();
+					 publish.setProperty("status","error");
+					 publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
 				}
-				else if ("error".equals( convert.get("status") ) )
-				{
-					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
-					item.setProperty("status", "error");
-					item.setProperty("errordetails", convert.get("errordetails"));
-					itemsearcher.saveData(item, null);
-					inOrder.setOrderStatus("error",convert.get("errordetails")); //orders are either open closed or error
-					OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
-					saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
-					return;
-				}
-
-			}
-			if( convertcomplete)
-			{
-				String publishqueueid = orderitemhit.get("publishqueueid");
-				if( publishqueueid == null)
+				if( "complete".equals( publish.get("status") ) )
 				{
 					publishcomplete = true;
 				}
-				else
+				else if ("error".equals( publish.get("status") ) )
 				{
-					Data publish = (Data)publishQueueSearcher.searchById(publishqueueid);
-					if( publish == null )
-					{
-						log.error("Publish was null");
-						publish = new BaseData();
-						 publish.setProperty("status","error");
-						 publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
-					}
-					if( "complete".equals( publish.get("status") ) )
-					{
-						publishcomplete = true;
-					}
-					else if ("error".equals( publish.get("status") ) )
-					{
-						Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
-						item.setProperty("status", "error");
-						item.setProperty("errordetails", publish.get("errordetails"));
-						itemsearcher.saveData(item, null);
-						inOrder.setOrderStatus("error",publish.get("errordetails")); //orders are either open closed or error
-						OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
-						saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
-						
-						return;
-					}
+					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
+					item.setProperty("status", "error");
+					item.setProperty("errordetails", publish.get("errordetails"));
+					itemsearcher.saveData(item, null);
+					inOrder.setOrderStatus("error",publish.get("errordetails")); //orders are either open closed or error
+					OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
+					saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+					return false;
 				}
-				if( publishcomplete)
+			}
+			if( publishcomplete )
+			{
+				if( orderitemhit.get("status") != "complete" )
 				{
 					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
 					item.setProperty("status", "complete");
 					//set date?
 					itemsearcher.saveData(item, null);
-					itemscomplted++;
-					if( itemscomplted == hits.size() )
-					{
-						//Finalize should be only for complete orders.
-						finalizeOrder(archive, inOrder);
-					}
 				}
 			}
-			
 		}
+		return true;
 	}
 
 	protected finalizeOrder(MediaArchive archive, Order inOrder) 
