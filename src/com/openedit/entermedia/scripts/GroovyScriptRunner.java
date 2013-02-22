@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
+import com.openedit.config.ScriptPathLoader;
 import com.openedit.page.Page;
 import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
@@ -181,29 +182,10 @@ public class GroovyScriptRunner implements ScriptRunner
 				folders.add(path);
 			}
 		}
-		
-		//Add the base folders
-		File custom = new File( getRoot(), "/WEB-INF/src/");
-		if( custom.exists() )
-		{
-			folders.add(custom.getAbsolutePath());
-		}
-				
-		//There is no order to these folder names
-		File basefolders = new File( getRoot(), "/WEB-INF/base/");
-		File[] children = basefolders.listFiles();
-		if( children != null )
-		{
-			for (int i = 0; i < children.length; i++)
-			{
-				File script = new File( children[i],"/src/");
-				if( script.exists() )
-				{
-					folders.add(script.getAbsolutePath());
-				}
-			}
-		}
-		
+		ScriptPathLoader loader = new ScriptPathLoader();
+		loader.setRoot(getRoot());
+		List basefolders = loader.findPaths();
+		folders.addAll(basefolders);
 		return folders;
 	}
 
