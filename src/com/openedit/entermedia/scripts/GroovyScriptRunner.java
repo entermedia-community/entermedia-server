@@ -147,7 +147,6 @@ public class GroovyScriptRunner implements ScriptRunner
 					GroovyScriptEngine engine = getEngine(packageroot);
 					variableMap.put("engine", engine);
 					
-					GroovyClassLoader loader = engine.getGroovyClassLoader();
 					returned = engine.run(filename, binding); //Pass in only the script file name i.e. conversion/
 //				}
 				return returned;
