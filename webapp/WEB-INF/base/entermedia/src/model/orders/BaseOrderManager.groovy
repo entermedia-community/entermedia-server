@@ -778,7 +778,7 @@ public class BaseOrderManager implements OrderManager
 		}
 	}
 
-	protected boolean updateItem(MediaArchive archive, Searcher taskSearcher, Searcher itemsearcher,Searcher publishQueueSearcher, Order inOrder, Data orderitemhit) \
+	protected boolean updateItem(MediaArchive archive, Searcher taskSearcher, Searcher itemsearcher,Searcher publishQueueSearcher, Order inOrder, Data orderitemhit)
 	{
 		boolean convertcomplete = false;
 		boolean publishcomplete = false;
@@ -819,7 +819,7 @@ public class BaseOrderManager implements OrderManager
 				Data publish = (Data)publishQueueSearcher.searchById(publishqueueid);
 				if( publish == null )
 				{
-					log.error("PublishQueue was null for ${publishqueueid}");
+					log.error("PublishQueue was null for ${publishqueueid} on order ${inOrder.getId()}");
 					publish = new BaseData();
 					 publish.setProperty("status","error");
 					 publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
