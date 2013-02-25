@@ -2,6 +2,7 @@ package com.openedit.entermedia.scripts;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
 import groovy.util.GroovyScriptEngine;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
+import com.openedit.config.Configuration;
 import com.openedit.config.ScriptPathLoader;
 import com.openedit.page.Page;
 import com.openedit.page.PageSettings;
@@ -189,54 +191,54 @@ public class GroovyScriptRunner implements ScriptRunner
 	}
 
 	//Use Spring
-//	public Object newInstance(Script inScript)
-//	{
-//		Page page = inScript.getPage();
-//		Collection folders = loadPackages(page);
-//
-//		try
-//		{
-//			GroovyScriptEngine engine = new GroovyScriptEngine((String[])folders.toArray(new String[folders.size()]));
-//			
-//			GroovyClassLoader loader = engine.getGroovyClassLoader();
-//			
-//			Object returned = null;
-//			
-//			File file = new File(page.getContentItem().getAbsolutePath());
-//			//String text = DefaultGroovyMethods.getText(new FileInputStream(file), "UTF-8");
-//			Class scriptClass = loader.parseClass(file);
-//			
-//			if( log.isDebugEnabled() )
-//			{
-//				log.debug("Parsing a class " + file);
-//			}
-//			GroovyObject object = (GroovyObject) scriptClass.newInstance(); //This may not be a real object if the script does not define a public class
-//			if(inScript.getConfiguration() != null){
-//			for (Iterator iterator = inScript.getConfiguration().getChildIterator("property"); iterator.hasNext();) {
-//				Configuration beanconfig = (Configuration) iterator.next();
-////				<!--
-////				<property name="cookieEncryption">
-////				<ref bean="stringEncryption" />
-////			</property>
-////				-->
-//
-//				String name = beanconfig.getAttribute("name");
-//				Configuration ref = beanconfig.getChild("ref");
-//				if(ref != null){
-//					String bean = beanconfig.getAttribute("bean");
-//					
-//				}
-//				Object bean = getModuleManager().getBean("bean");
-//				object.setProperty(name, bean);
-//			}
-//			}
-//			
-//			return object;
-//		}
-//		catch (Exception ex)
-//		{
-//			throw new OpenEditException(ex);
-//		}
-//	}
+	public Object newInstance(Script inScript)
+	{
+		Page page = inScript.getPage();
+		Collection folders = loadPackages(page.getPath());
+
+		try
+		{
+			GroovyScriptEngine engine = new GroovyScriptEngine((String[])folders.toArray(new String[folders.size()]));
+			
+			GroovyClassLoader loader = engine.getGroovyClassLoader();
+			
+			Object returned = null;
+			
+			File file = new File(page.getContentItem().getAbsolutePath());
+			//String text = DefaultGroovyMethods.getText(new FileInputStream(file), "UTF-8");
+			Class scriptClass = loader.parseClass(file);
+			
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Parsing a class " + file);
+			}
+			GroovyObject object = (GroovyObject) scriptClass.newInstance(); //This may not be a real object if the script does not define a public class
+			if(inScript.getConfiguration() != null){
+			for (Iterator iterator = inScript.getConfiguration().getChildIterator("property"); iterator.hasNext();) {
+				Configuration beanconfig = (Configuration) iterator.next();
+//				<!--
+//				<property name="cookieEncryption">
+//				<ref bean="stringEncryption" />
+//			</property>
+//				-->
+
+				String name = beanconfig.getAttribute("name");
+				Configuration ref = beanconfig.getChild("ref");
+				if(ref != null){
+					String bean = beanconfig.getAttribute("bean");
+					
+				}
+				Object bean = getModuleManager().getBean("bean");
+				object.setProperty(name, bean);
+			}
+			}
+			
+			return object;
+		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+	}
 
 }
