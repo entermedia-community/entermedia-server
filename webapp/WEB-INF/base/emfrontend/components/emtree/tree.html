@@ -14,15 +14,19 @@
 		#if( $showinput )
 		  #set ($padding = $padding + 35)
 		#end
-		#set($children = $cat.getChildren())
-		#set( $haschildren = $cat.hasChildren())
+		#set($children = $model.getChildren($cat))
+		#if( $children.size() > 0)
+			#set( $haschildren = true)
+		#else
+			#set( $haschildren = false)
+		#end
 		#set( $open = $haschildren)
 		#set( $checked = false )
 		#set( $expanded = $webtree.isExpanded($cat) )
 		#set( $checked = $asset.isInCategory($cat) )
 		#set( $isselected = $render.isNodeSelected($cat))
 		<li id="${cat.id}_row" class="noderow" data-nodeid="$cat.id" data-depth="$depth">
-			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px" title="$cat.name">
+			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px" title="$cat.name #if($editable) ($cat.id) #end">
 			    #if( $showinput )
 			    <div class="checkbox">
 			         <input name="categoryid" value="$cat.id" type="checkbox" #if( $render.isIdSelected($cat.id) ) checked="true" #end  >
