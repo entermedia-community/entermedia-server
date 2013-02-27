@@ -13,6 +13,8 @@
 		#if(!$detail.isDate() && $detail.getId() != "category")
 				#if($detail.defaultoperation && $detail.defaultoperation != "")
 					<input name="operation" value="$detail.defaultoperation" type="hidden" />
+				#elseif($detail.isList() || $detail.isBoolean())
+				<input name="operation" value="matches" type="hidden" />
 				#else
 				<input name="operation" value="startswith" type="hidden" />
 				#end
