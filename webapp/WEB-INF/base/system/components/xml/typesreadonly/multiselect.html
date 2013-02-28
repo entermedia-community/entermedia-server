@@ -20,51 +20,20 @@
 ##optional things to filter the list
 #set ($foreignkeyid = $detail.get("foreignkeyid") )
 
-#set ($foreignkeyvalue = $context.getRequestParameter('foreignkeyvalue'))
-
-#set ($squery = $detail.query )
-
-#if ($foreignkeyid && $foreignkeyvalue)
-	#set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
-	#if( $foreigndetail && $foreigndetail.listid )
-		#set( $foreignfield = $foreigndetail.listid )
-	#else
-		#set( $foreignfield = $foreignkeyid )
-	#end
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.setAndTogether(false))
-	#set ($o = $query.addMatches("$foreignfield", "$foreignkeyvalue"))
-	#set ($o = $query.addMatches("$foreignfield", "all"))
-#elseif( $squery && (!$detail.getType() || $detail.getType() != "textjoin") )
-	#set ($query = $lsearcher.parse($squery))
-#else
-	#set ($query = $lsearcher.createSearchQuery())
-	#set ($o = $query.addMatches("id", "*"))
-#end
+#set ($query = $lsearcher.createSearchQuery())
+#set ($o = $query.addMatches("id", "*"))
 
 #if ($detail.sort)
 	$query.setSortBy($detail.sort)
 #end
 #set ($types = $lsearcher.search($query))
-#if( !$value )
-	#set ($value = $context.getRequestParameter('value'))
-#end
-#if (!$value)
-  #set ($value = $context.getRequestParameter("${fieldname}.value"))
-#end
-
-#set( $valueid = "$fieldname" )
-
 #if($types)	
-
-	#foreach( $type in $types )
-		#set( $key = $type.id)
-	    #if ($checked.contains($key)) <img style="position: relative; top: -2px;" src="/system/images/check.gif"/>  <span style="margin-left: 3px;">$type</span><br/> #else  #end 
-	#end	
-		    
-		
-	
-   
+	<ul class="multi-value-list">
+		#foreach( $type in $types )
+			#set( $key = $type.id)
+		    #if ($checked.contains($key)) <li>$type</li> #end 
+		#end	
+	</ul>
 #else
 	No properties found in ../configuration/lists/#esc(${listid}).xml 
 #end

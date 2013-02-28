@@ -105,6 +105,7 @@
 	 -->
 	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
 	<property id="editasset" internalfield="true" filter="true">Writable</property>	
+	<property id="editgroups" >Edit Groups</property>	
 	<!-- 
 	<property id="showtitle" index="true" datatype="list" stored="true" editable="true" keyword="true" >Show Title</property>
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>

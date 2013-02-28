@@ -14,6 +14,8 @@
 		<property id="deleteorder" >Delete Order</property>
 	<property id="viewsettings" stored="true" editable="true" datatype="list" listid="partialaccesslevels">Settings Access</property>
 
+	<property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of Assets to view per page</property>
+
 <!-- 
 	<property id="manageusers" stored="true" editable="true" datatype="list" listid="accesslevels">Users / Groups Access</property>
 	<permission id="metadatadetails" name="Show Metadata" description="Show asset metadata"/>

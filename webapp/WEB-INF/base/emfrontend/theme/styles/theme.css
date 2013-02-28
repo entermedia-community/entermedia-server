@@ -3376,13 +3376,17 @@ body #emcontainer .emasseteditorarea {
     margin: -6px 0 15px 0;
 }
 
-#advsearchpanel table[width="100%"] .field, #advsearchpanel select.choose-select-ajax {
+#advsearchpanel table[width="100%"] .field, #advsearchpanel .select2 {
     width: 180px !important;
 }
 
 
 #advsearchpanel table[width="100%"] input[type="text"] {
     width: 158px;
+}
+
+#advsearchpanel table[width="100%"] select {
+    width: 180px;
 }
 
 .subnav-title {
@@ -6216,4 +6220,22 @@ div.listautocomplete
 a.audio-filename:hover
 {
 	text-decoration: underline;
+}
+
+.multi-value-list
+{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.multi-value-list li 
+{
+    /*For ignore double margin in IE6*/
+    margin: 0px 10px 0 0;
+    padding: 0 0 0px 20px;
+    list-style: none;
+    float: left;
+    display: inline;
+    background: #fff url('../images/icons/check.png') left center no-repeat;
+
 }
