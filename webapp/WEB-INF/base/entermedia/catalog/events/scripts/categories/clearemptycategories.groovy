@@ -25,3 +25,4 @@ public void init()
 
 log.info("Clear empty categories");
 init();
+log.info("Clear empty categories complete");

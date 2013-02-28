@@ -1,7 +1,5 @@
 <page>
 
-	<path-action name="Script.run" allowduplicates="true" >
-		<script>/${catalogid}/events/scripts/categories/clearemptycategories.groovy</script>
-	</path-action>
-	<path-action name="CategoryModule.reloadTree" />	
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/categories/clearemptycategories.html"  allowduplicates="true"/>
+
 </page>

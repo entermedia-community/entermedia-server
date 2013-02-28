@@ -10,7 +10,7 @@
 			<option value=""></option>
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")
-				<option value="$type" #if($type == $currentsearch) selected #end>$context.getText($type)</option>
+				<option value="$type" #if($type == $currentsearch) selected #end>$type</option>
 			#end
 		#end
 	</select>
