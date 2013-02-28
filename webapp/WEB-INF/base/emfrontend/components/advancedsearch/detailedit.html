@@ -25,6 +25,10 @@
 			#set ($viewtype = "datesearch")
 		#end
 
+		#if (!$viewtype || $viewtype == "textarea" || $viewtype == "html")
+			#set ($viewtype = "default")
+		#end
+
 		#if(!$detail.isDate() && $detail.getId() != "category")
 				#if($detail.defaultoperation && $detail.defaultoperation != "")
 					<input name="operation" value="$detail.defaultoperation" type="hidden" />
@@ -34,8 +38,12 @@
 				<input name="operation" value="startswith" type="hidden" />
 				#end
 		#end
-	
-		
+			
+		#if (!$viewtype || $viewtype == "boolean")
+			#set ($viewtype = "booleansearch")
+		#end
+
+
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
 			#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
