@@ -140,7 +140,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 //				getIndexWriter().optimize();
 //				log.info("Optimized");
 //			}
-
 			if (inOptimize || inAssets.size() > 100)
 			{
 				flush();
@@ -168,12 +167,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return (LuceneAssetIndexer)getLuceneIndexer();
 	}
 
-	public void reIndexAll() 
-	{
-		getAssetPaths().clear();
-		super.reIndexAll();
-		
-	};
 	protected void reIndexAll(IndexWriter writer)
 	{
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
@@ -299,6 +292,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 				asset.setId(nextId());
 			}
 			getAssetArchive().saveAsset(asset);
+			getCacheManager().put(getIndexPath(),asset.getId(),asset);
 			updateIndex(asset);
 		}
 	}
@@ -355,8 +349,12 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			}
 		}
 		getAssetArchive().saveAllData(inAll, inUser);
+		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			getCacheManager().put(getIndexPath(),asset.getId(),asset);
+		}
 		updateIndex(inAll);
-		//getLiveSearcher(); //should flush the index
 	}
 
 	public IntCounter getIntCounter()
@@ -380,47 +378,56 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	{
 		if( inField.equals("id") || inField.equals("_id"))
 		{
-			Data generic = (Data)super.searchByField(inField, inValue);
-			if( generic == null)
+			Data data = (Data)getCacheManager().get(getIndexPath(), inValue);
+			if( data == null)
 			{
-				return null;
+				data = (Data)super.searchByField(inField, inValue);
+				if( data == null)
+				{
+					return null;
+				}
 			}
-			return getAssetArchive().getAssetBySourcePath(generic.getSourcePath());
+			if( !(data instanceof Asset) )
+			{
+				data = getAssetArchive().getAssetBySourcePath(data.getSourcePath());
+				getCacheManager().put(getIndexPath(), inValue, data);
+			}
+			return data;
 		}
 		return super.searchByField(inField, inValue);
 	}
 
-	public String idToPath(String inAssetId)
-	{
-		String path = (String) getAssetPaths().get(inAssetId);
-		if (path == null && inAssetId != null)
-		{
-			SearchQuery query = createSearchQuery();
-			query.addExact("id", inAssetId);
+//	public String idToPath(String inAssetId)
+//	{
+//		String path = (String) getAssetPaths().get(inAssetId);
+//		if (path == null && inAssetId != null)
+//		{
+//			SearchQuery query = createSearchQuery();
+//			query.addExact("id", inAssetId);
+//
+//			HitTracker hits = search(query);
+//			if (hits.size() > 0)
+//			{
+//				Data hit = hits.get(0);
+//				path = hit.getSourcePath();
+//				//mem leak? Will this hold the entire DB?
+//				getAssetPaths().put(inAssetId, path);
+//			}
+//			else
+//			{
+//				log.info("No such asset in index: " + inAssetId);
+//			}
+//		}
+//		return path;
+//	}
 
-			HitTracker hits = search(query);
-			if (hits.size() > 0)
-			{
-				Data hit = hits.get(0);
-				path = hit.getSourcePath();
-				//mem leak? Will this hold the entire DB?
-				getAssetPaths().put(inAssetId, path);
-			}
-			else
-			{
-				log.info("No such asset in index: " + inAssetId);
-			}
-		}
-		return path;
-	}
-
-	public Map getAssetPaths()
-	{
-		if (fieldAssetPaths == null)
-		{
-			fieldAssetPaths = new HashMap();
-		}
-		return fieldAssetPaths;
-	}
+//	public Map getAssetPaths()
+//	{
+//		if (fieldAssetPaths == null)
+//		{
+//			fieldAssetPaths = new HashMap();
+//		}
+//		return fieldAssetPaths;
+//	}
 
 }

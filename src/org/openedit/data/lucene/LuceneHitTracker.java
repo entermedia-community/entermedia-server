@@ -46,7 +46,19 @@ public class LuceneHitTracker extends HitTracker
 	protected transient Sort fieldLuceneSort;
 	protected Map fieldPages;
 	protected Integer fieldSize;
+	protected String fieldSearchType;
 	
+	
+	public String getSearchType()
+	{
+		return fieldSearchType;
+	}
+
+	public void setSearchType(String inSearchType)
+	{
+		fieldSearchType = inSearchType;
+	}
+
 	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort)
 	{
 		setLuceneSearcherManager(inManager);
@@ -121,10 +133,7 @@ public class LuceneHitTracker extends HitTracker
 					searcher.doc(docid, visitor);
 					page.add( visitor.createSearchResult() );
 				}
-				if( log.isDebugEnabled() )
-				{
-					log.info(size() + " total, loaded " + start + " to " + (start+page.size()) + " query:" + getLuceneQuery() + " sort by: " + getLuceneSort() + " " + getSessionId() );
-				}
+				log.info(getSearchType() + " " + getLuceneQuery() + " " +  size() + " total, loaded " + start + " to " + (start+page.size()) + " sort by: " + getLuceneSort() + " " + getCatalogId());
 				getPages().put(inPageNumberZeroBased,page);
 			}
 			catch( Exception ex )

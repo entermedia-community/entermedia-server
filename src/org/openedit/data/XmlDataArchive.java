@@ -1,5 +1,6 @@
 package org.openedit.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.entermedia.cache.CacheManager;
 import org.openedit.Data;
 import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
@@ -19,16 +21,7 @@ import com.openedit.users.User;
 public class XmlDataArchive implements DataArchive 
 {
 	protected XmlArchive fieldXmlArchive;
-	protected Map fieldIdCache;
-	
-	protected Map getIdCache()
-	{
-		if( fieldIdCache == null)
-		{
-			fieldIdCache = new HashMap();
-		}
-		return fieldIdCache;
-	}
+
 	public String getPathToData()
 	{
 		return fieldPathToData;
@@ -88,9 +81,9 @@ public class XmlDataArchive implements DataArchive
 		}
 		else
 		{
+			element.setAttributes(new ArrayList());
 			populateElement(element, inData);
 		}
-		getIdCache().remove(inData.getId());
 	}
 	public void saveData(Data inData, User inUser)
 	{
@@ -156,24 +149,26 @@ public class XmlDataArchive implements DataArchive
 	protected void populateElementData(Element inElement, ElementData inData)
 	{
 		List attributes = inData.getAttributes();
-		boolean foundname = false;
-		for(Iterator iterator = attributes.iterator(); iterator.hasNext();)
-		{
-			Attribute attr = (Attribute)iterator.next();
-			String id = attr.getName();
-			if(!id.equals("id") && !id.startsWith("."))
-			{
-				if( id.equals("name"))
-				{
-					foundname = true;
-				}
-				inElement.addAttribute(attr.getName(), attr.getValue());
-			}
-		}
-		if( !foundname && inData.getName() != null)
-		{
-			inElement.setText(inData.getName());
-		}
+		inElement.setAttributes(attributes);
+		inElement.setText(inData.getName());
+//		boolean foundname = false;
+//		for(Iterator iterator = attributes.iterator(); iterator.hasNext();)
+//		{
+//			Attribute attr = (Attribute)iterator.next();
+//			String id = attr.getName();
+//			if(!id.equals("id") && !id.startsWith("."))
+//			{
+//				if( id.equals("name"))
+//				{
+//					foundname = true;
+//				}
+//				inElement.addAttribute(attr.getName(), attr.getValue());
+//			}
+//		}
+//		if( !foundname && inData.getName() != null)
+//		{
+//			inElement.setText(inData.getName());
+//		}
 	}
 
 	public String getPathToXml( String inSourcePath )
@@ -186,15 +181,14 @@ public class XmlDataArchive implements DataArchive
 		path = path +  getDataFileName();
 		return path;
 	}
+	protected String getCacheName()
+	{
+		return getPathToData() + getDataFileName();
+	}
 	
 	public Data loadData(DataFactory inFactory, String inSourcePath, String inId)
 	{
 		//This is used a bunch when loading and editing the same xml file
-		Data found = (Data)getIdCache().get(inId);
-		if( found != null)
-		{
-			return found;
-		}
 		String path = getPathToXml(inSourcePath);
 
 		XmlFile xml = getXmlArchive().getXml(path, getElementName());
@@ -206,16 +200,12 @@ public class XmlDataArchive implements DataArchive
 		ElementData data = (ElementData)inFactory.createNewData();
 		data.setElement(elem);
 		data.setSourcePath(inSourcePath);
-		if( getIdCache().size() > 100 )
-		{
-			getIdCache().put(inId,data);
-		}
 		
 		return data;
 	}
 	public void clearCache()
 	{
-		getIdCache().clear();
+		//getIdCache().clear();
 	}
 	public void delete(Data inData, User inUser)
 	{
@@ -227,7 +217,6 @@ public class XmlDataArchive implements DataArchive
 			xml.deleteElement(element);
 		}
 		getXmlArchive().saveXml(xml, inUser);
-		getIdCache().remove(inData.getId());
 	}
 //	public XmlFile getXml(String inPath, String inSearchType)
 //	{

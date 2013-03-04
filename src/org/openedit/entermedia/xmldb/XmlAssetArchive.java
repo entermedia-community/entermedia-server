@@ -19,6 +19,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.entermedia.cache.CacheManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -52,7 +53,20 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 {
 	private static final Log log = LogFactory.getLog(XmlAssetArchive.class);
 
-	protected Map fieldAssets;
+	protected CacheManager	fieldCacheManager;
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+
+
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+
 	protected PageManager fieldPageManager;
 	protected ModuleManager fieldModuleManager;
 	protected MediaArchive fieldMediaArchive;
@@ -64,27 +78,14 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		log.debug("Created archive");
 	}
 
-	protected Map getAssets()
-	{
-		if (fieldAssets == null)
-		{
-			// HARD means even if the object goes out of scope we still keep it
-			// in the hashmap
-			// until the memory runs low then things get dumped randomly
-			fieldAssets = new ReferenceMap(ReferenceMap.HARD, ReferenceMap.SOFT);
-		}
-		return fieldAssets;
-	}
-
 	public void clearAssets()
 	{
 		getPageManager().clearCache();
-		getAssets().clear();
 	}
 
 	public void deleteAsset(Asset inAsset)
 	{
-		getAssets().remove(inAsset.getSourcePath());
+		getCacheManager().remove(getCatalogId() + "assetarchive", inAsset.getSourcePath());
 		try
 		{
 			Page page = getPageManager().getPage(buildXmlPath(inAsset));
@@ -100,7 +101,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	{
 		if (inAsset != null)
 		{
-			getAssets().remove(inAsset.getSourcePath());
 			getPageManager().clearCache(buildXmlPath(inAsset));
 		}
 	}
@@ -120,29 +120,19 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		{
 			inSourcePath = inSourcePath.substring(0, inSourcePath.length() - 1);
 		}
-		Asset item = (Asset) getAssets().get(inSourcePath);
-		if (item == null)
+		Asset item = new Asset();
+		item.setCatalogId(getCatalogId());
+		item.setSourcePath(inSourcePath);
+		String url = buildXmlPath(item);
+		if( log.isDebugEnabled())
 		{
-			item = new Asset();
-			item.setCatalogId(getCatalogId());
-			item.setSourcePath(inSourcePath);
-			String url = buildXmlPath(item);
-			if( log.isDebugEnabled())
-			{
-				log.debug("Loading " + url);
-			}
-			if( getAssets().size() > 1000) //Replace this with a real cache engine
-			{
-				clearAssets();
-			}
-			getAssets().put(inSourcePath, item);
-			boolean populated = populateAsset(item);
-			if (!populated && !inAutoCreate)
-			{
-				getAssets().remove(inSourcePath);
-				log.debug("No Such asset " + url);
-				return null;
-			}
+			log.debug("Loading " + url);
+		}
+		boolean populated = populateAsset(item);
+		if (!populated && !inAutoCreate)
+		{
+			log.debug("No Such asset " + url);
+			return null;
 		}
 		return item;
 	}
@@ -354,12 +344,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			{
 				FileUtils.safeClose(out);
 			}
-			if( getAssets().size() > 1000)
-			{
-				clearAssets();
-			}
-			getAssets().put(inAsset.getSourcePath(), inAsset);
-
 		}
 		catch (Exception ex)
 		{

@@ -254,6 +254,7 @@ public class MediaArchive
 		return getPropertyDetailsArchive().getPropertyDetailsCached("asset");
 	}
 
+	//Not cached
 	public Asset getAssetBySourcePath(String inSourcePath)
 	{
 		return getAssetArchive().getAssetBySourcePath(inSourcePath);

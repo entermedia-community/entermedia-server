@@ -7,38 +7,19 @@
 #set ($view = $context.getRequestParameter('view')) 
 #if( $data )
 	#set($values = $data.getValues($detail.id) )
-	
 #end
 
-##we need to load up the existing detail object
+#set( $searcher = $searcherManager.getSearcher($catalogid, $detail.getListId() ))
 
-#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
-#if( !$detail) ##this is new. To reduce complexity we want to just load up the detail all the time
-	#set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
-#end
-
-#set( $listid = $detail.getListId())
-#set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
-##optional things to filter the list
-#set ($foreignkeyid = $detail.get("foreignkeyid") )
-
-#set ($query = $lsearcher.createSearchQuery())
-#set ($o = $query.addMatches("id", "*"))
-
-#if ($detail.sort)
-	$query.setSortBy($detail.sort)
-#end
-#set ($types = $lsearcher.search($query))
-#if($types)	
 	<ul class="multi-value-list">
-		#foreach( $type in $types )
-			#set( $key = $type.id)
-		    #if ($values.contains($key)) <li>$type</li> #end 
+		#foreach( $type in $values )
+			#set( $row = false )
+			#set( $row = $searcher.searchById($type) )
+		    #if( $row )
+		    <li>$row</li>
+		    #end 
 		#end	
 	</ul>
-#else
-	No properties found in ../configuration/lists/#esc(${listid}).xml 
-#end
 
 
 

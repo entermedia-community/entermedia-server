@@ -42,6 +42,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.SimpleFSLockFactory;
 import org.apache.lucene.util.Version;
+import org.entermedia.cache.CacheManager;
 import org.openedit.Data;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
@@ -74,7 +75,23 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	protected LuceneIndexer fieldLuceneIndexer;
 	protected String fieldCurrentIndexFolder;
 	protected String fieldIndexRootFolder;
-	
+	protected CacheManager fieldCacheManager;
+
+	public BaseLuceneSearcher() 
+	{
+
+	}
+
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+
 	protected SearcherManager fieldLuceneSearcherManager;
 	
 	public SearcherManager getLuceneSearcherManager() 
@@ -103,10 +120,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		fieldIndexRootFolder = inIndexRootFolder;
 	}
 
-	public BaseLuceneSearcher() 
-	{
-	}
-	
 	public LuceneIndexer getLuceneIndexer()
 	{
 		if( fieldLuceneIndexer == null)
@@ -156,11 +169,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			
 			//writer = new IndexWriter(indexDir, , true, IndexWriter.MaxFieldLength.UNLIMITED);
 			//writer.setMergeFactor(50);
-			
-			
-
-			
-			
 			reIndexAll(writer);
 			//writer.optimize();
 			writer.commit();
@@ -271,6 +279,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				sort = buildSort(inOrdering);
 			}
 			LuceneHitTracker tracker = new LuceneHitTracker(getLuceneSearcherManager(),query1,sort);
+			tracker.setSearchType(getSearchType());
 			tracker.setIndexId(getIndexId());
 
 			return tracker;
@@ -756,6 +765,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				updateIndex(data, doc, details);
 				Term term = new Term("id", data.getId());
 				inWriter.updateDocument(term, doc, getAnalyzer());
+				if( fieldCacheManager != null )
+				{
+					getCacheManager().remove(getIndexPath(), data.getId());
+				}
 				clearIndex();
 			}
 			inWriter.commit();
@@ -792,6 +805,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			updateIndex(inData, doc, details);
 			Term term = new Term("id", inData.getId());
 			inWriter.updateDocument(term, doc, getAnalyzer());
+			if( fieldCacheManager != null )
+			{
+				getCacheManager().remove(getIndexPath(), inData.getId());
+			}
+
 		}
 		catch (Exception ex)
 		{
@@ -835,6 +853,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		try
 		{
 			getIndexWriter().deleteDocuments(term);
+			if( fieldCacheManager != null )
+			{
+				getCacheManager().remove(getIndexPath(), inData.getId());
+			}
 			clearIndex();
 		}
 		catch (Exception e)
@@ -870,6 +892,14 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			return null;
 		}
+		if( fieldCacheManager != null && "id".equals( inField ) )
+		{
+			Object cached = getCacheManager().get(getIndexPath(), inValue);
+			if( cached != null )
+			{
+				return cached;
+			}
+		}
 		SearchQuery query = createSearchQuery();
 		PropertyDetail detail = new PropertyDetail();
 		detail.setId(inField);
@@ -877,16 +907,22 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 		HitTracker hits = search(query);
 		hits.setHitsPerPage(1);
-		return hits.first();
+		Object cached = hits.first();
+		if( fieldCacheManager != null && cached != null && "id".equals( inField ) )
+		{
+			//TODO: Come up with a way to put custom objects in here such as Order, Asset etc
+			getCacheManager().put(getIndexPath(), inValue, cached);
+		}
+		return cached; 
 	}
 	public Object searchById(String inId)
 	{
-		return searchByField("id",inId);
+		Object 	cached = searchByField("id",inId);
+		return cached;
 	}
 
 	public void shutdown()
 	{
-		
 		//setIndexWriter(null);
 		if (fieldIndexWriter != null)
 		{

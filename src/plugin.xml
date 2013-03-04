@@ -866,6 +866,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="assetvotesSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -874,6 +875,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>assets</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="invitationSearcher" class="org.openedit.data.XmlFileSearcher"
@@ -893,6 +896,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="prefix">
 			<value>users</value>
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="friendManager" class="org.openedit.entermedia.friends.FriendManager">
@@ -987,6 +992,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="rootDirectory"><ref bean="root"/></property>
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>		
 	</bean>
 	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
 	
@@ -1090,6 +1096,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>orderitems</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="orderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -1100,6 +1108,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="prefix"><value>orders</value></property>
 		<property name="newDataName"><value>orderhistory</value></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 	<bean id="orderhistory" class="org.openedit.entermedia.orders.OrderHistory" singleton="false"/>
 	
@@ -1128,6 +1137,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 
@@ -1212,6 +1223,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
+		
 	</bean>
 
 	<bean id="lockManager" class="org.entermedia.locks.MemoryLockManager" >
@@ -1249,6 +1263,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>assets</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="SavedQueryModule" class="org.openedit.entermedia.modules.SavedQueryModule">
@@ -1267,6 +1283,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="savedquerytermSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -1276,6 +1294,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 <!--  TODO: Use beans.xml alias -->
@@ -1344,6 +1364,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>profiles</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 	
 		
