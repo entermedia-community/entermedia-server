@@ -761,6 +761,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
+				if( data.getId() == null )
+				{
+					log.error("Could not index " + data + " " + getSearchType() );
+					continue;
+				}
 				Document doc = new Document();
 				updateIndex(data, doc, details);
 				Term term = new Term("id", data.getId());
