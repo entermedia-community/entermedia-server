@@ -5,8 +5,10 @@
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
 #set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 #set ($view = $context.getRequestParameter('view')) 
-#set($checked = $data.getValues($detail.id))
-
+#if( $data )
+	#set($values = $data.getValues($detail.id) )
+	
+#end
 
 ##we need to load up the existing detail object
 
@@ -31,7 +33,7 @@
 	<ul class="multi-value-list">
 		#foreach( $type in $types )
 			#set( $key = $type.id)
-		    #if ($checked.contains($key)) <li>$type</li> #end 
+		    #if ($values.contains($key)) <li>$type</li> #end 
 		#end	
 	</ul>
 #else

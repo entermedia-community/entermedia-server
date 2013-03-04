@@ -1,16 +1,17 @@
 package org.openedit.data.lucene;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 
 import com.openedit.OpenEditException;
 
-public class SearchResultData implements Data
+public class SearchResultData implements Data, MultiValued
 {
 	protected final String[] fieldValues; //fixed size value array
 	protected final Map<String,Integer> fieldFieldLocations; //shared object
@@ -106,4 +107,34 @@ public class SearchResultData implements Data
 		}
 	}
 
+	public Collection getValues(String inKey)
+	{
+		String val = get(inKey);
+		
+		if (val == null)
+			return null;
+		
+		String[] vals = null;
+		if( val.contains("|") )
+		{
+			vals = VALUEDELMITER.split(val);
+		}
+		else
+		{
+			vals = val.split("\\s+"); //legacy
+		}
+
+		Collection collection = Arrays.asList(vals);
+		//if null check parent
+		return collection;
+	}
+
+	@Override
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }
