@@ -147,7 +147,7 @@ public class GroovyScriptRunner implements ScriptRunner
 						log.debug("Running " + filename);
 					}
 					GroovyScriptEngine engine = getEngine(packageroot);
-					variableMap.put("engine", engine);
+					binding.setProperty("engine", engine);
 					
 					returned = engine.run(filename, binding); //Pass in only the script file name i.e. conversion/
 //				}
