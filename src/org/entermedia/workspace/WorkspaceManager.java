@@ -258,9 +258,7 @@ public class WorkspaceManager
 			homesettings.setProperty("catalogid", inAppcatalogid);
 			if( homesettings.getProperty("fallbackdirectory") == null )
 			{
-				PageProperty prop = new PageProperty("fallbackdirectory");
-				prop.setValue("/WEB-INF/base/emshare");
-				homesettings.putProperty(prop);
+				homesettings.setProperty("fallbackdirectory","/WEB-INF/base/emshare");
 			}
 			getPageManager().getPageSettingsManager().saveSetting(homesettings);
 
@@ -273,6 +271,8 @@ public class WorkspaceManager
 				
 				PageSettings catsettings = getPageManager().getPageSettingsManager().getPageSettings("/" + inAppcatalogid + "/_site.xconf");
 				catsettings.setProperty("catalogid", inAppcatalogid);
+				catsettings.setProperty("fallbackdirectory","/media/catalog");
+
 				getPageManager().getPageSettingsManager().saveSetting(catsettings);
 			}
 
