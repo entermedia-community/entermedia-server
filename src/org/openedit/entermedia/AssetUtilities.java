@@ -79,6 +79,15 @@ public class AssetUtilities
 		{
 			// Incremental conversion
 			// Asset Modification Date">2005-03-04 08:28:57
+			String editstatus = asset.get("editstatus");
+			if( "7".equals( editstatus) ) //Not deleted anymore
+			{
+				//restore
+				asset.setProperty("editstatus", "1"); //pending
+				asset.setProperty("pushstatus", "resend");
+				return asset;
+			}
+			
 			String existingdate = asset.getProperty("assetmodificationdate");
 			if( existingdate != null)
 			{
@@ -97,6 +106,7 @@ public class AssetUtilities
 					}
 				}
 			}
+			
 		}
 		else
 		{
