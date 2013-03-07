@@ -196,9 +196,15 @@ public class LuceneIndexer
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			readProperty(inData, doc, keywords, detail);
 		}
-		if( keywords.toString().trim().length() > 0 )
+		readDescription(doc, keywords);
+	}
+
+	protected void readDescription(Document doc, StringBuffer keywords)
+	{
+		String trimkeywords =keywords.toString().trim(); 
+		if( trimkeywords.length() > 0 )
 		{
-			doc.add(new TextField("description", keywords.toString(), Field.Store.NO) );
+			doc.add(new TextField("description", trimkeywords, Field.Store.NO) );
 		}
 	}
 	protected List getStandardProperties()
@@ -234,6 +240,10 @@ public class LuceneIndexer
 		}
 	}
 	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore , boolean isText)
+	{
+		docAdd(inDetail,doc,inId,inValue,null,inStore,isText);
+	}
+	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Data text, Store inStore , boolean isText)
 	{
 		
 		//TODO: Remove this method and use the new data type specific fields
@@ -271,10 +281,10 @@ public class LuceneIndexer
 			}
 			else if( inDetail.isDataType("list") && inDetail.getCatalogId() != null)
 			{
-				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
-				if( row != null )
+//				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
+				if( text != null )
 				{
-					inValue = row.toString();
+					inValue = text.toString();
 				}
 			}
 			
@@ -291,11 +301,21 @@ public class LuceneIndexer
 			return;
 		}
 		String value = inData.get(detail.getId());
-		
+		Data text = null;
 		if (value != null && detail.isKeyword() )
 		{
-			keywords.append(" ");
-			keywords.append(value);
+			if( detail.isList() )
+			{
+				//Loop up the correct text for the search. Should combine this with the lookup for sorting
+				text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), value);
+				keywords.append(" ");
+				keywords.append(text.getName());
+			}
+			else
+			{
+				keywords.append(" ");
+				keywords.append(value);
+			}
 		}
 
 		if( !detail.isIndex() )
@@ -313,7 +333,7 @@ public class LuceneIndexer
 			if ( detail.isDataType("double") || detail.isDataType("number") || detail.isDataType("long"))
 			{
 				//This is more standard way to save stuff
-				docAdd(detail, doc, detail.getId(), value, Field.Store.YES, false);
+				docAdd(detail, doc, detail.getId(), value, text, Field.Store.YES, false);
 			} //doubles dont seem to work detail.isDataType("double")
 			else if (detail.isDataType("boolean"))
 			{
@@ -339,11 +359,11 @@ public class LuceneIndexer
 			}
 			else if (detail.isStored())
 			{
-				docAdd(detail, doc, detail.getId(), value, Field.Store.YES, true);
+				docAdd(detail, doc, detail.getId(), value, text, Field.Store.YES, true);
 			}
 			else
 			{
-				docAdd(detail, doc, detail.getId(), value, Field.Store.NO, true); //Field.Index.ANALYZED_NO_NORMS
+				docAdd(detail, doc, detail.getId(), value, text,  Field.Store.NO, true); //Field.Index.ANALYZED_NO_NORMS
 			}
 		}
 		else

@@ -191,12 +191,14 @@ public class FileUpload
 	protected void expireOldUploads(String inCatalogId)
 	{
 		Searcher searcher = loadQueueSearcher(inCatalogId);
+		
 		SearchQuery q = searcher.createSearchQuery();
 		
 		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.HOUR, -1);
+		cal.add(Calendar.HOUR, -48);
 		q.addBefore("date", cal.getTime());
-		q.addMatches("status", "completed");
+		//child.addMatches("status", "complete");
+		
 		HitTracker hits = searcher.search(q);
 		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)

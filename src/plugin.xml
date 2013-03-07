@@ -1086,6 +1086,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="newDataName"><value>order</value></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="orderManager"><ref bean="orderManager" /></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 	</bean>
 	<bean id="order" class="org.openedit.entermedia.orders.Order" singleton="false">
 	</bean>
@@ -1097,7 +1098,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>orderitems</value></property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 
 	<bean id="orderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -1109,6 +1110,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="newDataName"><value>orderhistory</value></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 	<bean id="orderhistory" class="org.openedit.entermedia.orders.OrderHistory" singleton="false"/>
 	

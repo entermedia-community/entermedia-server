@@ -1,6 +1,5 @@
 #set($uploadid = $context.getRequestParameter("uploadid"))
 #set($fileindex = $context.getRequestParameter("fileindex"))
-
 #set( $id = "${uploadid}_${fileindex}")
 
 #set( $data = $mediaarchive.getSearcherManager().getData($mediaarchive.getCatalogId(), "uploadqueue",$id) )
@@ -9,6 +8,5 @@
 #if( $data.getId() )
 	#set( $uploaded = $data.get("filesizeuploaded"))
 #end
-
 
 $pages.include("./uploadrow.html?uploaded=$!uploaded",$context)

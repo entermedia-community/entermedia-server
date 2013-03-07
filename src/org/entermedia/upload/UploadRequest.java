@@ -417,14 +417,16 @@ public class UploadRequest implements ProgressListener
 		uploaddata.setProperty("filesize", String.valueOf( inContentLength));
 		uploaddata.setProperty("filesizeuploaded", String.valueOf( saved ));
 
+		uploaddata.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		if( inBytesRead == inContentLength)
+		{
+			uploaddata.setProperty("status", "complete");
+			update = true;
+		}
+
 		if(update)
 		{
 			//PRO tip: Put breakpoint here to slow down uploads 
-			uploaddata.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-			if( inBytesRead == inContentLength)
-			{
-				uploaddata.setProperty("status", "complete");
-			}
 			getUploadQueueSearcher().saveData(uploaddata, null);
 //			try
 //			{
