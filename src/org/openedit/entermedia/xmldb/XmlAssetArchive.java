@@ -89,7 +89,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		try
 		{
 			Page page = getPageManager().getPage(buildXmlPath(inAsset));
-			getPageManager().removePage(page);
+			if( page.exists() )
+			{
+				getPageManager().removePage(page);
+			}
 		}
 		catch (Exception ex)
 		{
