@@ -27,24 +27,6 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <div id="emselectable">
 
 
-<script>
-    $('th.sortable').on({
-        click: function(){
-            var id = $(this).attr('id');
-            if ( $(this).hasClass('currentsort') ) {
-                if ( $(this).hasClass('up') ) {
-                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
-                } else {
-                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
-                }
-            } else {
-                $('th.sortable').removeClass('currentsort');
-                $(this).addClass('currentsort');
-                jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
-            }
-        }
-    });
-</script>
 
 
 
@@ -161,6 +143,24 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 </form>
 
 
+<script>
+    $('th.sortable').on({
+        click: function(){
+            var id = $(this).attr('id');
+            if ( $(this).hasClass('currentsort') ) {
+                if ( $(this).hasClass('up') ) {
+                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+                } else {
+                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
+                }
+            } else {
+                $('th.sortable').removeClass('currentsort');
+                $(this).addClass('currentsort');
+                jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+            }
+        }
+    });
+</script>
 
 #end
 

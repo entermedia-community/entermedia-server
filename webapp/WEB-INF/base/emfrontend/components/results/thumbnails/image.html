@@ -31,7 +31,7 @@
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
-	
+		$context.putPageValue("thumbsize", $thumbsize)
 		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
 		
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
