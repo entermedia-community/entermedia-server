@@ -1,13 +1,16 @@
  #if( $canviewcategorynav )
 			<div class="ui-widget  uipanel" id="left-col-categories" >
 				<div  class="ui-widget-header">Categories
+					 #if($cantogglesidebar)
+					 <img src="$apphome/theme/images/minimize.png" class="sidetoggle" data-target="categoriescontent">
+					#end
 				#if( $caneditcategories )
 					<span class="widget-header-edit">
 					<a class="ajax ir" href="$home$apphome/views/settings/modules/asset/categories/index.html">Edit</a>
 					</span>
 				#end	
 				</div>
-				<div  class="ui-widget-content categories-widget categories-navigation">
+				<div  class="ui-widget-content categories-widget categories-navigation" id="categoriescontent" #if($userprofile.minimizecategoriescontent == "true" && $cantogglesidebar) style="display: none;" #end>
 					$pages.include("$apphome/components/categories/inline.html")
 				</div>
 			</div>
