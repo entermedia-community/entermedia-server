@@ -138,6 +138,11 @@ public class BasePushManager implements PushManager
 	 */
 	public void processPushQueue(MediaArchive archive, String inAssetIds, User inUser)
 	{
+		
+		
+		//field=importstatus&importstatus.value=complete&operation=matches&field=pushstatus&pushstatus.value=complete&operation=not&field=pushstatus&pushstatus.value=nogenerated&operation=not&field=pushstatus&
+		//pushstatus.value=error&operation=not&field=pushstatus&pushstatus.value=deleted&operation=not
+		
 		//Searcher hot = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "hotfolder");
 		Searcher searcher = archive.getAssetSearcher();
 		SearchQuery query = searcher.createSearchQuery();
@@ -634,7 +639,7 @@ asset: " + asset);
 			hits = assetSearcher.fieldSearch("pushstatus", oldStatus);
 			hits.setHitsPerPage(1000);
 			log.info(hits.size() + " remaining status updates " + oldStatus );
-			if( size > hits.size() )
+			if( hits.size() == 0 || size > hits.size() )
 			{
 				break;
 			}
