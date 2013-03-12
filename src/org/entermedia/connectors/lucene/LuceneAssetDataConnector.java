@@ -349,11 +349,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			}
 		}
 		getAssetArchive().saveAllData(inAll, inUser);
-		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			getCacheManager().put(getIndexPath(),asset.getId(),asset);
-		}
 		updateIndex(inAll);
 	}
 

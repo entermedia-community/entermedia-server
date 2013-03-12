@@ -308,8 +308,11 @@ public class LuceneIndexer
 			{
 				//Loop up the correct text for the search. Should combine this with the lookup for sorting
 				text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), value);
-				keywords.append(" ");
-				keywords.append(text.getName());
+				if( text != null )
+				{
+					keywords.append(" ");
+					keywords.append(text.getName());
+				}
 			}
 			else
 			{

@@ -53,19 +53,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 {
 	private static final Log log = LogFactory.getLog(XmlAssetArchive.class);
 
-	protected CacheManager	fieldCacheManager;
-	public CacheManager getCacheManager()
-	{
-		return fieldCacheManager;
-	}
-
-
-
-
-	public void setCacheManager(CacheManager inCacheManager)
-	{
-		fieldCacheManager = inCacheManager;
-	}
 
 	protected PageManager fieldPageManager;
 	protected ModuleManager fieldModuleManager;
@@ -85,7 +72,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 
 	public void deleteAsset(Asset inAsset)
 	{
-		getCacheManager().remove(getCatalogId() + "assetarchive", inAsset.getSourcePath());
 		try
 		{
 			Page page = getPageManager().getPage(buildXmlPath(inAsset));

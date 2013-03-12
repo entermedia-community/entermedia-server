@@ -851,7 +851,7 @@ public class BaseOrderManager implements OrderManager
 				}
 			}
 		}
-		return true;
+		return publishcomplete;
 	}
 
 	protected finalizeOrder(MediaArchive archive, Order inOrder) 

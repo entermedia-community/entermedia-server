@@ -14,9 +14,6 @@
                         #set ($thispage = "viewer")
                     #end
                     
-    					#if($previous)
-    						 <li><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${previous.id}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
-    					#end
     			#end
     					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
     				   #if($canprintpreview || $candownload || $candeleteasset)
@@ -28,7 +25,7 @@
 								</li>
 								#end
 								#if($candownload)
-    				            <li><a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/activity/downloadassets.html?width=900&assetid=$asset.id&oemaxlevel=1">Download</a></li>
+    				            <li><a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id&oemaxlevel=1">Download</a></li>
     				            #end
     				            #if($candeleteasset)
                                 <li>
@@ -47,18 +44,27 @@
                             <a class="toggleajax" targetdivinner="share-container" href="$home$apphome/components/shareasset/index.html?assetid=$asset.id&oemaxlevel=1" id="share-button">[[Share]]</a>
                         </li>
                         #end
-    					
-    			#if( $hits )
-    					#if($next)
-    						$context.putPageValue("hits", $hits)
-    						<li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${next.id}&hitssessionid=${hitssessionid}">>></a></li>
-    					#end
-    			#end
+
     					#if ($canviewbasket)
     					<li style="float: right">
 							$pages.include("$apphome/components/basket/detoggleitem.html?assetid=$asset.id",$context)    					
     					</li>
 						#end
+    					
+    			#if( $hits )
+    					#if($next)
+    						$context.putPageValue("hits", $hits)
+	    					<li style="float: right;">
+    							<a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${next.id}&hitssessionid=${hitssessionid}">>></a>
+    						</li>	
+    					#end
+    					<li style="float: right;">
+    					<a href="${home}$apphome/views/modules/asset/index.html?hitssessionid=${hitssessionid}">Results</a>
+    					</li> 
+    					#if($previous)
+    						 <li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${previous.id}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
+    					#end
+    			#end
     						
     		</ul>
     		

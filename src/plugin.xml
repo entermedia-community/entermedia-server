@@ -944,15 +944,16 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
 	</bean>
-	
+
 	<bean id="admintoolbarGenerator" class="org.openedit.entermedia.generators.AdminToolBarGenerator" >
-		<property name="headerPath"><value>/system/components/openedit/toolbar/admintoolbarselector.html</value></property>
+		<property name="headerPath"><value>/openedit/components/toolbar/admintoolbarselector.html</value></property>
 		<property name="search"><value>&lt;body</value></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 		<property name="wraps"><ref bean="velocityGenerator"/></property>
 	</bean>
-	
+
+ 	
 	<bean id="ValidationModule" 
 		class="org.openedit.modules.validation.ValidationModule" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>

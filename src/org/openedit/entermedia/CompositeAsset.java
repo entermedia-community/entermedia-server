@@ -334,8 +334,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					if( asset != null )
 					{
 						asset.addCategory(cat);
-						tosave.add(asset);
-						checkSave(tosave);
+						fieldCurrentAsset = asset;
 					}
 				}
 			}
@@ -349,8 +348,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					if( asset != null )
 					{
 						asset.removeCategory(cat);
-						tosave.add(asset);
-						checkSave(tosave);
+						fieldCurrentAsset = asset;
 					}
 				}
 			}
@@ -365,6 +363,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					if( asset != null )
 					{
 						asset.addKeyword(inKey);
+						fieldCurrentAsset = asset;
 					}
 				}
 			}
@@ -380,6 +379,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					if( asset != null )
 					{
 						asset.removeKeyword(inKey);
+						fieldCurrentAsset = asset;
 					}
 				}
 			}
@@ -401,6 +401,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				if( asset != null )
 				{
 					asset.setProperty(key, value);
+					fieldCurrentAsset = asset;
 				}
 			}
 			//TODO: Deal with multi value fields
@@ -446,9 +447,13 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		else
 		{
+			return inFieldCurrentAsset;
+		}
+		if( inFieldCurrentAsset != null )
+		{
+			toSave.add(inFieldCurrentAsset);
 			checkSave(toSave);
 		}
-		toSave.add(inFieldCurrentAsset);
 		return inFieldCurrentAsset;
 	}
 	
