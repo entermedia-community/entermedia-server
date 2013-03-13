@@ -48,14 +48,6 @@ function handleFiles(files)
 	}
 	jQuery("#uploadinstructionsafter").show();
 	
-	
-//	if( jQuery("#bulkuploader").length > 0)
-//	{
-//	}
-//	else
-//	{
-//		jQuery("#metadataarea").load(home + '/components/upload/types/html5/bulkloader.html');
-//	}
   }
 }
 
@@ -133,81 +125,85 @@ $(document).ready(function()
 {	
 	home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
 
-	var inputfield = $("#upload_field");
+	jQuery("#upload_field").livequery( function() 
+	{
+		var inputfield = $(this);
 	
-	 inputfield.html5_upload(
-	   {
-         url: function(number) {
-       		var url =  $("#upload_field").data("url");
-       		return url;
-            // return prompt(number + " url", "/");
-         },
-         sendBoundary: window.FormData || $.browser.mozilla,
-         onStart: function(event, total, files) 
-         {
-     		 jQuery("#uploadinstructions").hide();
-
-        	 var regex =new RegExp("currentupload", 'g');  
-        	 
-             //return confirm("You are trying to upload " + total + " files. Are you sure?");
-        	 for (var i = 0; i < files.length; i++) 
-        	 {
-        	    var file = files[i];
-        	    
-        	    var html = $("#progress_report_template").html();
-        	    
-        	    html = html.replace(regex,i);
-        	    $("#up-files-list").append(html);
-        	    
-        	    //TODO: set the name and size of each row
-        	    $("#progress_report_name" + i).text(file.name);
-        	    var size = bytesToSize(file.size,2);
-        	    $("#progress_report_size" + i).text(size);
-        	 }
-       		jQuery("#uploadinstructionsafter").show();
-
-             return true;
-        	 //Loop over all the files. add rows
-        	 //alert("start");
-         },
-         onStartOne: function(event, name, number, total) {
-        	 //Set the currrent upload number?
-        	 currentupload = number;
-        	 return true;
-         },
-         onProgress: function(event, progress, name, number, total) {
-             console.log(progress, number);
-         },
-//         genName: function(file, number, total) {
-//             return file;
-//         },
-//         setName: function(text) {
-//             $("#progress_report_name" + currentupload).text(text);
-//         },
-         setStatus: function(text) {
-        	 if( text == "Progress")
-        	 {
-        		 text = "Uploading";
-        	 }
-             $("#progress_report_status" + currentupload).text(text);
-         },
-         setProgress: function(val) {
-             $("#progress_report_bar" + currentupload).css('width', Math.ceil(val*100)+"%");
-         },
-         onFinishOne: function(event, response, name, number, total) {
-             //alert(response);
-             $("#progress_report_bar" + currentupload).css('width', "100%");
-             //$("#progress_report_bar" + currentupload).css('background-color', "green");
-         },
-         onError: function(event, name, error) {
-             alert('error while uploading file ' + name);
-         },
-         onFinish: function(event, total) {
-             //do a search
-     	    document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
-
-         }
-     });
+		 inputfield.html5_upload(
+		   {
+	         url: function(number) {
+	       		var url =  $("#upload_field").data("url");
+	       		return url;
+	            // return prompt(number + " url", "/");
+	         },
+	         extraFields: extraFields,         
+	         sendBoundary: window.FormData || $.browser.mozilla,
+	         onStart: function(event, total, files) 
+	         {
+	     		 jQuery("#uploadinstructions").hide();
+	
+	        	 var regex =new RegExp("currentupload", 'g');  
+	        	 
+	             //return confirm("You are trying to upload " + total + " files. Are you sure?");
+	        	 for (var i = 0; i < files.length; i++) 
+	        	 {
+	        	    var file = files[i];
+	        	    
+	        	    var html = $("#progress_report_template").html();
+	        	    
+	        	    html = html.replace(regex,i);
+	        	    $("#up-files-list").append(html);
+	        	    
+	        	    //TODO: set the name and size of each row
+	        	    $("#progress_report_name" + i).text(file.name);
+	        	    var size = bytesToSize(file.size,2);
+	        	    $("#progress_report_size" + i).text(size);
+	        	 }
+	       		jQuery("#uploadinstructionsafter").show();
+	
+	             return true;
+	        	 //Loop over all the files. add rows
+	        	 //alert("start");
+	         },
+	         onStartOne: function(event, name, number, total) {
+	        	 //Set the currrent upload number?
+	        	 currentupload = number;
+	        	 return true;
+	         },
+	         onProgress: function(event, progress, name, number, total) {
+	             console.log(progress, number);
+	         },
+	//         genName: function(file, number, total) {
+	//             return file;
+	//         },
+	//         setName: function(text) {
+	//             $("#progress_report_name" + currentupload).text(text);
+	//         },
+	         setStatus: function(text) {
+	        	 if( text == "Progress")
+	        	 {
+	        		 text = "Uploading";
+	        	 }
+	             $("#progress_report_status" + currentupload).text(text);
+	         },
+	         setProgress: function(val) {
+	             $("#progress_report_bar" + currentupload).css('width', Math.ceil(val*100)+"%");
+	         },
+	         onFinishOne: function(event, response, name, number, total) {
+	             //alert(response);
+	             $("#progress_report_bar" + currentupload).css('width', "100%");
+	             //$("#progress_report_bar" + currentupload).css('background-color', "green");
+	         },
+	         onError: function(event, name, error) {
+	             alert('error while uploading file ' + name);
+	         },
+	         onFinish: function(event, total) {
+	             //do a search
+	     	    document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+	
+	         }
+	     });
+	});
 	
     // bind 'myForm' and provide a simple callback function 
     $('#uploadform').ajaxForm({ 

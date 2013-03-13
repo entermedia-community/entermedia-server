@@ -8,17 +8,23 @@
     <div  class="ui-widget-content">
 
 			  <input id="upload_field" type="file" data-url="$home/${applicationid}/components/upload/types/html5/finish.html?sourcepath=$sourcepath" style="visibility: hidden;" multiple="multiple"  />
-				<form id="finishform" name="finishform" action="">
-					#set( $fields = $context.getRequestParameter("field") )
-					#foreach( $field in $fields)
-						<input type="hidden" name="field" value="$field" />
+				<script>
+				
+				var extraFields = [];
+				
+				#set( $fields = $context.getRequestParameters("field") )
+				#foreach( $field in $fields)
 						#set( $value = false )
+						extraFields.push(["field","$field"]);
 						#set( $value = $context.getRequestParameter("${field}.value") )
 						#if( $value )
-						<input type="hidden" name="$field.value" value="$value" /> ##todo support multi value?
+							var name = "$field";
+							extraFields.push(["${field}.value","$value"]);
+							//extraFields[name] = "$value";
 						#end
-					#end
-				</form>
+				#end
+				
+				</script>
 
 		        <div id="uploadinstructions">
 			    ##    <p>Drag media here</p>
@@ -34,7 +40,7 @@
 				</ul>		  
 					             
 		        <div id="uploadinstructionsafter" style="display: none">
-			        <a class="btn" href="#">Cancel</a>
+			       ## <a class="btn" href="#">Cancel</a>
 		        </div>
 
 

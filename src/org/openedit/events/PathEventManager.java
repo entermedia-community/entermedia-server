@@ -160,8 +160,16 @@ public class PathEventManager
 					TaskRunner task = (TaskRunner) iterator.next();
 					if( name.equals( task.getTask().getName() ) )
 					{
-						task.setRunAgainSoon(true); //Will cause it to run again right away
-						return true;   
+						if( task.getTask().isRunning() )
+						{
+							task.setRunAgainSoon(true); //Will cause it to run again after it finishes
+						}
+						else
+						{
+							runner.setTimeToStart(new Date());
+							getTimer().schedule(runner,0);
+						}
+						return true;   							
 					}
 				}
 				runner = new TaskRunner(event, this);

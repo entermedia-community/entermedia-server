@@ -156,9 +156,15 @@
                     if (window.FormData) {//Many thanks to scottt.tw
                         var f = new FormData();
                         f.append(typeof(options.fieldName) == "function" ? options.fieldName() : options.fieldName, file);
-                        $.each(options.extraFields, function(key, val){
-                            f.append(key, val);
-                        });
+                        var myStringArray = options.extraFields;
+                        for (var i = 0; i < myStringArray.length; i++) {
+                        	var key = myStringArray[i][0];
+                        	var val = myStringArray[i][1];
+                        	 f.append(key, val);
+                             //alert("appended " + key  + " " + val);
+                        }
+                        //$.each(options.extraFields, function(key, val){
+                        //});
                         xhr.send(f);
                     }
                     else if (file.getAsBinary) {//Thanks to jm.schelcher
