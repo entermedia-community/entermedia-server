@@ -2515,7 +2515,16 @@ tr.odd {
 #up-files-list li a .size {
     color: #3DAACD;
     font-size: 10px;
-    width: 60px;
+    width: 100px;
+    text-align: right;
+    display: inline-block;
+    float: right;
+    margin-top: 1px; 
+}
+#up-files-list li a .uploadstatus {
+    font-style: italic;
+    color: #3DAACD;
+    font-size: 10px;
     text-align: right;
     display: inline-block;
     float: right;
@@ -6237,5 +6246,14 @@ a.audio-filename:hover
     float: left;
     display: inline;
     background: #fff url('../images/icons/check.png') left center no-repeat;
+
+}
+
+#metadataarea
+{
+
+	border-style:dashed;
+    border-color: #b4b4b4;
+    padding: 10px;
 
 }

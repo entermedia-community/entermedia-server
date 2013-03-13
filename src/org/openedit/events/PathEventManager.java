@@ -151,24 +151,17 @@ public class PathEventManager
 			synchronized (getRunningTasks())
 			{
 				String name = event.getName();
-				Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
+				Date now = new Date();
+				//Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
 				List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
+				int count = 0;
 				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 				{
 					TaskRunner task = (TaskRunner) iterator.next();
 					if( name.equals( task.getTask().getName() ) )
 					{
-						if( task.getTask().isRunning() ) //Keep only one not running at a time
-						{
-							//We will add a duplicate below
-						}
-						else
-						{
-							if( task.getTimeToStart().before(soon))
-							{
-								return true;   //Was already waiting to run
-							}
-						}
+						task.setRunAgainSoon(true); //Will cause it to run again right away
+						return true;   
 					}
 				}
 				runner = new TaskRunner(event, this);

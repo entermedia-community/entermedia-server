@@ -11,7 +11,7 @@
 
 	<property id="catalogassetforcewatermarkusers" value="">Admin Catalog Asset View Users</property>
 	<property id="catalogassetforcewatermarkgroups" value="">Admin Catalog Asset View Groups</property>
-	<property id="projectassetupload" value="${division.folder}/${library.folder}/${formatteddate}">Project Upload Path</property>
+	<property id="projectassetupload" value="users/${user.id}/${formatteddate}">Project Upload Path</property>
 	<property id="catalogassetupload" value="${formatteddate}">Default Catalog Upload Path</property>
 
 

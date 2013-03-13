@@ -14,7 +14,7 @@ import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.push.PublishChecker;
+import org.openedit.entermedia.push.OLDPublishChecker;
 import org.openedit.entermedia.push.PushManager;
 
 import com.openedit.WebPageRequest;
@@ -25,18 +25,6 @@ public class SyncModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(SyncModule.class);
 	protected PushManager fieldPushManager;
-	protected PublishChecker fieldPublishChecker;
-	
-
-	public PublishChecker getPublishChecker()
-	{
-		return fieldPublishChecker;
-	}
-
-	public void setPublishChecker(PublishChecker inPublishChecker)
-	{
-		fieldPublishChecker = inPublishChecker;
-	}
 
 	public PushManager getPushManager()
 	{
@@ -259,7 +247,8 @@ public class SyncModule extends BaseMediaModule
 	public void pollRemotePublish(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
+		getPushManager().pollRemotePublish(archive);
+		//getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
 		//getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
 	}
 	

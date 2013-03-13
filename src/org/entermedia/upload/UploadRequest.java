@@ -46,7 +46,10 @@ public class UploadRequest implements ProgressListener
 	protected String fieldCatalogId;
 	protected String fieldUserName;
 	protected long fieldSoFar;
-	
+	public UploadRequest()
+	{
+		// TODO Auto-generated constructor stub
+	}
 	public long getSoFar()
 	{
 		return fieldSoFar;
@@ -243,9 +246,12 @@ public class UploadRequest implements ProgressListener
 			if (item instanceof DiskFileItem)
 			{
 				DiskFileItem fileItem = (DiskFileItem) item;
-				if ("gzip".equals(fileItem.getHeaders().getHeader("Content-Encoding")))
+				if( fileItem.getHeaders() != null )
 				{
-					input = new GZIPInputStream(fileItem.getInputStream());
+					if ("gzip".equals(fileItem.getHeaders().getHeader("Content-Encoding")))
+					{
+						input = new GZIPInputStream(fileItem.getInputStream());
+					}
 				}
 			}
 			if (input == null)
@@ -381,11 +387,11 @@ public class UploadRequest implements ProgressListener
 	 */
 	public void update(long inBytesRead, long inContentLength, int inItemNumber)
 	{
-		if( getUploadId() == null || inItemNumber == 0)
+		if( getUploadId() == null )
 		{
 			return;
 		}
-		inItemNumber = inItemNumber - 1;
+		//inItemNumber = inItemNumber - 1;
 		Data uploaddata = loadUploadData(inItemNumber);
 		String existing = uploaddata.get("date");
 		boolean update = true;
@@ -403,19 +409,19 @@ public class UploadRequest implements ProgressListener
 			}
 		}
 		//track on a per file basis
-		long thechange = inBytesRead - fieldSoFar;
+		//long thechange = inBytesRead - fieldSoFar;
 		
-		fieldSoFar = inBytesRead;
+		//fieldSoFar = inBytesRead;
 		
 		String sofar = uploaddata.get("filesizeuploaded");
 		if( sofar == null )
 		{
 			sofar = "0";
 		}
-		long saved = Long.parseLong( sofar ) + thechange; 
+		//long saved = Long.parseLong( sofar ) + thechange; 
 				
 		uploaddata.setProperty("filesize", String.valueOf( inContentLength));
-		uploaddata.setProperty("filesizeuploaded", String.valueOf( saved ));
+		uploaddata.setProperty("filesizeuploaded", String.valueOf( inBytesRead ));
 
 		uploaddata.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		if( inBytesRead == inContentLength)
@@ -428,6 +434,7 @@ public class UploadRequest implements ProgressListener
 		{
 			//PRO tip: Put breakpoint here to slow down uploads 
 			getUploadQueueSearcher().saveData(uploaddata, null);
+			log.info("updated: " + uploaddata.getId()  + " " + uploaddata.get("filesizeuploaded") + " hash:" + uploaddata.hashCode() );
 //			try
 //			{
 //				Thread.sleep(1000);
@@ -460,6 +467,12 @@ public class UploadRequest implements ProgressListener
 			req.setId(inUploadId);
 		}
 		return req;
+	}
+	public void track(String inFieldName, String inContentType,String inFileName)
+	{
+		//create a record and loop over the records each time an update happens
+		
+
 	}
 
 

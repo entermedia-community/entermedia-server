@@ -7,19 +7,6 @@
 			<pagevalue name="canviewupload" equals="false"/>
 		</not>
 	</permission>
-<!--
-	<path-action name="Script.runModule" >
-		<module>UploadUtils.calculateSourcePath</module>
-	</path-action>
--->
-
-	<path-action name="Date.now">
-		<format>yyyy/MM</format>
-	</path-action>
-
-	<path-action name="Script.run" >
-		<script>./calculatesourcepath.groovy</script>
-	</path-action>
 
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	<property name="hitsname">hits</property>

@@ -1,37 +1,29 @@
 <script src="$home$apphome/components/upload/types/html5/upload.js"></script>
+<script src="$home$apphome/components/javascript/upload/jquery.html5_upload.js"></script>
 
+<div id="uploadmetadata">
 #set( $root = "$home$apphome/components/upload/types/html5")
 
-<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data"
-    action="$home/${applicationid}/components/upload/types/html5/finish.html?uploadid=$context.getUserName()_$formatteddate&oemaxlevel=2" data-uploadid="$context.getUserName()_$formatteddate" >
-    
-<div class="subcolumns">
-    
-    <div id="right-sidebar" style="padding: 0 20px 0 0">
-        <input type="file" name="files" id="fileElem" multiple style="visibility: hidden;" onchange="handleFiles(this.files)">
-        <a class="btn large" href="#" id="filePicker" style="margin-top: 0">Pick Files...</a>
-        
-        <ul id="up-files-list">
-        </ul>
-        
-    </div>
-    <div id="main-area" style="vertical-align: top;">
-        <div class="ui-widget uipanel">
-            <div  class="ui-widget-header">Upload Media Wizard</div>
-            <div  class="ui-widget-content">
+<div class="ui-widget uipanel">
+    <div  class="ui-widget-header">Upload Media</div>
+    <div  class="ui-widget-content">
             
-        <div id="metadataarea">
-             
-             <p class="hints" style="text-align: left; padding: 0 20px;" id="drag-and-drop-instructions">
-                To upload multiple files, click  <strong>Pick Files</strong> and then select multiple files by using the <strong>Shift</strong> key on your keyboard while clicking on the files you wish to uplaod.
-             </p>
-        </div>
-                              
-        </div>
-        </div> 
-    </div>
-    
-</div>
 
+<form id="uploaddata" class="ajaxform" targetdiv="uploadmetadata" name="wizard" method="post"
+    action="$root/files.html?uploadid=$context.getUserName()_$formatteddate" data-uploadid="$context.getUserName()_$formatteddate" >
+
+##Add asset id's here
+
+		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+		$context.putPageValue("view","asset/multipleupload")	
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
+##have the cancel delete these assets?
+	<input type="submit" value="Next" />
 </form>
 
+
+</div>
+</div>
+
+</div>

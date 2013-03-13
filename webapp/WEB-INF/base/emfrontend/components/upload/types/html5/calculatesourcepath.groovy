@@ -64,7 +64,8 @@ public void init()
 		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 		
 		context.setRequestParameter("sourcepath",sourcepath);
-
+		context.putPageValue("sourcepath",sourcepath);
+		
 }
 
 init();

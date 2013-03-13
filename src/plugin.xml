@@ -1401,7 +1401,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="SyncModule" class="org.openedit.entermedia.modules.SyncModule" >
 		<property name="pushManager"><ref bean="pushManager" /></property>
-		<property name="publishChecker"><ref bean="publishChecker" /></property>
 	</bean>
 
 	<bean id="publishChecker" class="org.openedit.entermedia.push.PublishChecker" >

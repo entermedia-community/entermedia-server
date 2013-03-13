@@ -19,7 +19,16 @@ public class TaskRunner extends java.util.TimerTask
 	protected Date fieldTimeToStart;
 	//protected boolean fieldRepeating;
 	protected boolean fieldWithParameters;
+	protected boolean fieldRunAgainSoon;
 	
+	public boolean isRunAgainSoon()
+	{
+		return fieldRunAgainSoon;
+	}
+	public void setRunAgainSoon(boolean inRunAgainSoon)
+	{
+		fieldRunAgainSoon = inRunAgainSoon;
+	}
 	public boolean isWithParameters()
 	{
 		return fieldWithParameters;
@@ -151,12 +160,19 @@ public class TaskRunner extends java.util.TimerTask
 		{
 			getEventManager().getRunningTasks().remove(this);
 		}
-		if( isRepeating() )
+		if( isRepeating() )  //Duplicate ones will not have a period and expire
 		{
 			//make sure we just have one in the queue
 			TaskRunner runner = new TaskRunner(getTask(), getEventManager());
 			getEventManager().getRunningTasks().push(runner);
-			getEventManager().getTimer().schedule(runner, getTask().getPeriod());
+			if( isRunAgainSoon() )
+			{
+				getEventManager().getTimer().schedule(runner, 0);				
+			}
+			else
+			{
+				getEventManager().getTimer().schedule(runner, getTask().getPeriod());
+			}
 		}
 				
 	}

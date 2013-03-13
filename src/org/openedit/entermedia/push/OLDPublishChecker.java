@@ -10,7 +10,7 @@ import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.ModuleManager;
 
-public class PublishChecker
+public class OLDPublishChecker
 {
 	protected Timer fieldTimer;
 	protected PushManager fieldPushManager;
