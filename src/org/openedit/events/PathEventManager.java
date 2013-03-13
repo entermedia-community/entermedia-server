@@ -176,11 +176,12 @@ public class PathEventManager
 				}
 				runner = new TaskRunner(event, this);
 				runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
-				runner.setTimeToStart(new Date());
+				runner.setTimeToStart(now);
 				getRunningTasks().push(runner);
 			}
 			if( runner != null )
 			{
+				//Run outside the lock in case of dead lock issue?
 				getTimer().schedule(runner,0);
 			}
 			return true;
