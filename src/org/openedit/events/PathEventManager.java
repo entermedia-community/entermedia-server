@@ -154,7 +154,6 @@ public class PathEventManager
 				Date now = new Date();
 				//Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
 				List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
-				int count = 0;
 				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 				{
 					TaskRunner task = (TaskRunner) iterator.next();
@@ -162,14 +161,17 @@ public class PathEventManager
 					{
 						if( task.getTask().isRunning() )
 						{
-							task.setRunAgainSoon(true); //Will cause it to run again after it finishes
+							if(task.isRepeating())
+							{
+								task.setRunAgainSoon(true); //Will cause it to run again after it finishes
+								return true;
+							}
 						}
-						else
+						else if( task.getTimeToStart().before(now) )
 						{
-							task.setTimeToStart(new Date());
-							getTimer().schedule(task,0);
+							return true;
 						}
-						return true;   							
+						//else this will add a duplicate. Since it is already running it will just return
 					}
 				}
 				runner = new TaskRunner(event, this);

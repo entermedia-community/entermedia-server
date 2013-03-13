@@ -171,7 +171,7 @@ $(document).ready(function()
 	        	 return true;
 	         },
 	         onProgress: function(event, progress, name, number, total) {
-	             console.log(progress, number);
+	            // console.log(progress, number);
 	         },
 	//         genName: function(file, number, total) {
 	//             return file;
