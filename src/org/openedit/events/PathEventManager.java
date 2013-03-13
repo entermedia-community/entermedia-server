@@ -166,8 +166,8 @@ public class PathEventManager
 						}
 						else
 						{
-							runner.setTimeToStart(new Date());
-							getTimer().schedule(runner,0);
+							task.setTimeToStart(new Date());
+							getTimer().schedule(task,0);
 						}
 						return true;   							
 					}
