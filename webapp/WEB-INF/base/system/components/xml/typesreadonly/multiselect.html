@@ -8,8 +8,7 @@
 #if( $data )
 	#set($values = $data.getValues($detail.id) )
 #end
-
-#set( $searcher = $searcherManager.getSearcher($catalogid, $detail.getListId() ))
+#set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
 
 	<ul class="multi-value-list">
 		#foreach( $type in $values )
