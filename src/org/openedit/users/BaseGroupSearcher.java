@@ -131,4 +131,13 @@ public class BaseGroupSearcher extends BaseSearcher implements GroupSearcher
 	{
 		
 	}
+	
+	public void setCatalogId(String inCatalogId)
+	{
+		if( !"system".equals(inCatalogId) )
+		{
+			throw new OpenEditException("group searcher should only be a system level not " + inCatalogId );
+		}
+		super.setCatalogId(inCatalogId);
+	}
 }
