@@ -2497,7 +2497,7 @@ tr.odd {
     position: relative;
 }
 #up-files-list li a {
-    padding: 5px 10px;
+    padding: 10px 0px 5px 0px;
     display: block;
     margin: 0;
     color: #444;
@@ -2506,7 +2506,7 @@ tr.odd {
     background: #f3f3f3;
 }
 #up-files-list li a .name {
-    width: 180px;
+    width: 200px;
     overflow: hidden; 
     text-overflow: ellipsis;
     display: inline-block;

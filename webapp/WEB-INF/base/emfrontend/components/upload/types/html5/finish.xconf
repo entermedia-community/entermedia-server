@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <page>
+
+	<path-action name="Date.now">
+		<format>yyyy/MM</format>
+	</path-action>
+
+	<path-action name="Script.run" >
+		<script>./calculatesourcepath.groovy</script>
+	</path-action>
 	
 	<path-action name="Page.uploadFile"/>
 	<permission name="view">

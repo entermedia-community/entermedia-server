@@ -1,12 +1,4 @@
     
-$(document).ready(function(){
-    $('#filePicker').click(function(e){
-       $('#upload_field').trigger('click');
-       e.preventDefault(); 
-    });
-  
-})
-
 var uploadid = new Date().getTime(); 
 var home = null;
 function handleFiles(files) 
@@ -119,31 +111,38 @@ var uploadid;
 	);
 	
 	var currentupload = 0;
-	
+	var haderror = false;
 // wait for the DOM to be loaded 
 $(document).ready(function() 
 {	
 	home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
+    $('#filePicker').click(function(e){
+        $('#upload_field').trigger('click');
+        e.preventDefault(); 
+     });
 
+    jQuery("#startbutton").livequery('click',function() 
+    {
+    	$(this).text("Uploading");
+    	$(this).attr('disabled', 'disabled');
+    	//jQuery("#upload_field").upload();
+    	jQuery("#upload_field").triggerHandler("html5_upload.start");
+    	
+    });
+    
 	jQuery("#upload_field").livequery( function() 
 	{
 		var inputfield = $(this);
 	
 		 inputfield.html5_upload(
 		   {
-	         url: function(number) {
-	       		var url =  $("#upload_field").data("url");
-	       		return url;
-	            // return prompt(number + " url", "/");
-	         },
-	         extraFields: extraFields,         
-	         sendBoundary: window.FormData || $.browser.mozilla,
-	         onStart: function(event, total, files) 
+	         filesPicked: function(event, files) 
 	         {
-	     		 jQuery("#uploadinstructions").hide();
-	
+	        	 jQuery("#uploadinstructionsafter").show();
+	        	 
 	        	 var regex =new RegExp("currentupload", 'g');  
 	        	 
+        	    $("#up-files-list").empty();
 	             //return confirm("You are trying to upload " + total + " files. Are you sure?");
 	        	 for (var i = 0; i < files.length; i++) 
 	        	 {
@@ -159,8 +158,22 @@ $(document).ready(function()
 	        	    var size = bytesToSize(file.size,2);
 	        	    $("#progress_report_size" + i).text(size);
 	        	 }
-	       		jQuery("#uploadinstructionsafter").show();
-	
+	         },
+	         url: function(number) {
+	       		var url =  $("#uploaddata").attr("action");
+	       		
+	       		var str = $("#uploaddata").serialize();
+	       		return url + "?" + str;
+	            // return prompt(number + " url", "/");
+	         },
+	         autostart:false,
+//	         extraFields: function() {
+//	        	 return [];
+//	         },         
+	         sendBoundary: window.FormData || $.browser.mozilla,
+	         onStart: function(event, total, files) 
+	         {
+	        	 jQuery("#uploadinstructions").hide();
 	             return true;
 	        	 //Loop over all the files. add rows
 	        	 //alert("start");
@@ -196,10 +209,15 @@ $(document).ready(function()
 	         },
 	         onError: function(event, name, error) {
 	             alert('error while uploading file ' + name);
+	             haderror =true;
 	         },
 	         onFinish: function(event, total) {
 	             //do a search
-	     	    document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+	        	 if( !haderror)
+	        	{
+	        		 //document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+	        		 document.location.href = home + "/views/myaccount/myassets/index.html";
+	        	}
 	
 	         }
 	     });

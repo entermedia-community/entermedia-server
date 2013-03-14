@@ -6,7 +6,7 @@
         function get_file_size(file) {
             return file.size || file.fileSize;
         }
-        var available_events = ['onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
+        var available_events = ['filesPicked','onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
         var options = jQuery.extend({
             onStart: function(event, total) {
                 return true;
@@ -156,7 +156,8 @@
                     if (window.FormData) {//Many thanks to scottt.tw
                         var f = new FormData();
                         f.append(typeof(options.fieldName) == "function" ? options.fieldName() : options.fieldName, file);
-                        var myStringArray = options.extraFields;
+                        
+                        var myStringArray = typeof(options.extraFields) == "function" ? options.extraFields() : options.extraFields;
                         for (var i = 0; i < myStringArray.length; i++) {
                         	var key = myStringArray[i][0];
                         	var val = myStringArray[i][1];
@@ -219,9 +220,15 @@
                     xhr:                    new XMLHttpRequest(),
                     continue_after_abort:    true
                 };
-                if (options.autostart) {
-                    $(this).bind('change', upload);
-                }
+                $(this).bind('change', function() 
+           		{
+            		$(this).triggerHandler('html5_upload.filesPicked', [this.files]);
+            		if (options.autostart) 
+            		{
+            			upload();
+            		}
+            	});
+
                 for (event in available_events) {
                     if (options[available_events[event]]) {
                         $(this).bind("html5_upload."+available_events[event], options[available_events[event]]);
