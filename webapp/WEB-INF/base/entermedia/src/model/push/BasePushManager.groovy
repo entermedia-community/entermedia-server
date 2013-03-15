@@ -346,7 +346,7 @@ public class BasePushManager implements PushManager
 
 	}
 	//The client can only be used by one thread at a time
-	protected synchronized Element execute(String inCatalogId, HttpMethod inMethod)
+	protected Element execute(String inCatalogId, HttpMethod inMethod)
 	{
 		try
 		{
@@ -365,11 +365,9 @@ public class BasePushManager implements PushManager
 		{	
 			throw new RuntimeException(e);
 		}
-		
-
 	}
 
-	protected Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	protected synchronized Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
 		int status = getClient(inCatalogId).executeMethod(inMethod);
 		if (status != 200)
