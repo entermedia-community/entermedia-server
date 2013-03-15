@@ -89,11 +89,7 @@ public abstract class BaseImageCreator extends BaseCreator
 		if (watermarkselected != null)
 		{
 			inStructions.setWatermark(Boolean.valueOf(watermarkselected));
-		
 		}
-		
-		
-		
 
 		inStructions.setAssetSourcePath(inSourcePath);
 
@@ -107,6 +103,8 @@ public abstract class BaseImageCreator extends BaseCreator
 			//populateOutputPath(inArchive,inStructions);
 //		}
 		
+		populateParameters(inArchive, inStructions);		
+
 		return inStructions;
 	}
 

@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 
@@ -138,9 +139,28 @@ public abstract class BaseCreator implements MediaCreator
 				inStructions.addProperty(key, String.valueOf(value));
 			}
 		}
+		
+		populateParameters(inArchive, inStructions);		
+
+		
 		//populateOutputPath(inArchive,inStructions);
 		
 		return inStructions;
+	}
+
+	protected void populateParameters(MediaArchive inArchive, ConvertInstructions inStructions)
+	{
+		String presetdataid = inStructions.get("presetdataid");
+		//Load up the parameter data
+		if( presetdataid != null )
+		{
+			Searcher paramsearcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "presetparameter" );
+			Collection params = paramsearcher.fieldSearch("parameterdata",presetdataid,"id");
+			if( params.size() > 0 )
+			{
+				inStructions.setParameters(params);
+			}
+		}
 	}
 
 	public String getWaterMarkPath(String inThemePrefix)

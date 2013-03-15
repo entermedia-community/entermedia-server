@@ -240,6 +240,7 @@ class ConvertRunner implements Runnable
 			Data presetdata = presetdatasearcher.searchById(guid);
 			//copy over the preset properties..
 			props.put("guid", guid); //needed?
+			props.put("presetdataid", guid); //needed?
 			if( presetdata != null && presetdata.getProperties() != null)
 			{
 				props.putAll(presetdata.getProperties());

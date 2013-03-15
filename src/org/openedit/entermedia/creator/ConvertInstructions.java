@@ -1,9 +1,12 @@
 package org.openedit.entermedia.creator;
 
 import java.awt.Dimension;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.openedit.Data;
 
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
@@ -23,7 +26,19 @@ public class ConvertInstructions
 	//protected String fieldSourceFile;
 	protected Map<String, String> fieldProperties;
 	protected boolean fieldCrop;
+	protected Collection<Data> fieldParameters;
 	
+
+	public Collection<Data> getParameters()
+	{
+		return fieldParameters;
+	}
+
+	public void setParameters(Collection<Data> inParameters)
+	{
+		fieldParameters = inParameters;
+	}
+
 	public boolean isForce() {
 		return fieldForce;
 	}
@@ -57,7 +72,21 @@ public class ConvertInstructions
 		{
 			return null;
 		}
-		return getProperties().get(inName);
+		String value = getProperties().get(inName);
+		if( value == null && getParameters() != null)
+		{
+			for (Iterator iterator = getParameters().iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				if( data.getName().equals(inName) )
+				{
+					value = data.get("value");
+					break;
+				}
+			}
+		}
+		return value;
+		
 	}
 	
 	public void setForce(boolean force) {

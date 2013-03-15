@@ -1,3 +1,3 @@
 <properties>
-  <preset id="rapidspreview" inputfolderholding="/tmp/holding" completefolder = "/tmp/input/complete" inputfolder="/tmp/input" outputfolder="/tmp/output"  outputfolderfailed="/tmp/input/failed" outputextension="mp4" >Digital Rapids Preview</preset>
+  <preset id="rapidspreview" >Digital Rapids Preview</preset>
 </properties>
