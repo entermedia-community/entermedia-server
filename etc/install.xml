@@ -141,6 +141,15 @@
 	  	<delete>
 	  	  	  <fileset dir="./lib" includes="mp4parser**.jar"/>
 	  	</delete>
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="aopalliance**.jar"/>
+	  	</delete>
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="jaxen**.jar"/>
+	  	</delete>
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="guava**.jar"/>
+	  	</delete>
 		
 	  	<delete dir="../base/openedit"/>
 	  	<delete dir="../WEB-INF/base/openedit"/>

@@ -1,9 +1,13 @@
 package org.openedit.entermedia.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.CreatorManager;
+import org.openedit.entermedia.creator.MediaCreator;
 
 import com.openedit.page.Page;
 import com.openedit.util.PathUtilities;
@@ -12,14 +16,24 @@ public class ConvertionTest extends BaseEnterMediaTest
 {
 	public void testPdfToJpeg()
 	{
+
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		CreatorManager manager = archive.getCreatorManager();
+		MediaCreator creater = manager.getMediaCreatorByOutputFormat("jpg");
+		Map map = new HashMap();
+		
+		for (int i = 0; i < 1000; i++)
+		{
+			ConvertInstructions inst = creater.createInstructions(map, archive, "jpg", "users/admin/105");			
+		}
+		
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
 		instructions.setAssetSourcePath("users/admin/105");
 		instructions.setOutputExtension("jpg");
 
-		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		CreatorManager manager = archive.getCreatorManager();
 		
+				
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
 		assertTrue(converted.exists());

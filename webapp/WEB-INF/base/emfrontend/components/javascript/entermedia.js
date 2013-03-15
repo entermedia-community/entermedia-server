@@ -1109,6 +1109,25 @@ emcomponents = function() {
 		);
 
 
+	
+	jQuery(".sidetoggle").livequery("click",
+			function()
+			{
+				var target = jQuery(this).data("target");
+				toggleUserProperty("minimize" + target,
+					function() {
+					
+					jQuery("#" + target).toggle("slow");	
+					} 
+				);
+						
+				
+				
+				
+				
+			}
+	);
+	
 
 }
 

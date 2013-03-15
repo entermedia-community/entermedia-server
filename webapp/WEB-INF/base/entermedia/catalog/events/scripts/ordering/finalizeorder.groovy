@@ -36,11 +36,11 @@ protected TemplateWebEmail getMail() {
 
 protected void sendEmail(Order inOrder) {
 
-	if (inOrder.get('orderstatus') == 'complete' || inOrder.get('orderstatus') == 'finalizing') {
-		log.info("Order is aleady completed");
-		return;
-	}
-	inOrder.setProperty('orderstatus', 'finalizing');
+//	if (inOrder.get('orderstatus') == 'complete' || inOrder.get('orderstatus') == 'finalizing') {
+//		log.info("Order is aleady completed");
+//		return;
+//	}
+//	inOrder.setProperty('orderstatus', 'finalizing');
 	
 	try {
 		context.putPageValue("orderid", inOrder.getId());
@@ -89,7 +89,7 @@ protected void sendEmail(Order inOrder) {
 				}
 			}
 		}
-		inOrder.setProperty('orderstatus', 'complete');
+//		inOrder.setProperty('orderstatus', 'complete');
 		inOrder.setProperty('emailsent', 'true');
 	}
 	catch (Exception ex) 
@@ -100,9 +100,9 @@ protected void sendEmail(Order inOrder) {
 		log.error("Could not email " + ex);
 	}
 
-	OrderManager manager = moduleManager.getBean("orderManager");
-	OrderHistory history = manager.createNewHistory( mediaarchive.getCatalogId(), inOrder, context.getUser(), "ordercomplete" );
-	manager.saveOrderWithHistory( mediaarchive.getCatalogId(), context.getUser(), inOrder, history );
+//	OrderManager manager = moduleManager.getBean("orderManager");
+//	OrderHistory history = manager.createNewHistory( mediaarchive.getCatalogId(), inOrder, context.getUser(), "ordercomplete" );
+//	manager.saveOrderWithHistory( mediaarchive.getCatalogId(), context.getUser(), inOrder, history );
 	
 	log.info("order is complete ${inOrder.getId()}");
 	

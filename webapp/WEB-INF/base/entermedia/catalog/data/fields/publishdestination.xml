@@ -8,7 +8,7 @@
 	<property id="server" index="true" stored="true" editable="true" >Server IP</property>
 	<property id="url" index="true" stored="true" editable="true" >Path/URL</property>
 	<property id="onimport" index="true" type="boolean" stored="true" editable="true" >On Import</property>
-	<property id="remotempublish" index="true" type="boolean" stored="true" editable="true" >Remote Publish</property>
+	<property id="remotempublish" index="true" type="boolean" stored="true" editable="true" >Remote Monitored</property>
 
 <!-- Amazon -->
 	<property id="bucket" index="true" stored="true" editable="true" >Bucket</property>

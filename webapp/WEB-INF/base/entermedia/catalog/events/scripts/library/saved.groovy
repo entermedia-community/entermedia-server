@@ -29,7 +29,7 @@ public void init() {
 	if( library != null ) 
 	{
 		Searcher libraryusers = mediaArchive.getSearcher("libraryusers");
-		String username = context.getUserName();
+		String username = context.getUserName(); 
 		if(username != null)
 		{
 			SearchQuery query = libraryusers.createSearchQuery().append("libraryid", library.id).append("userid", username);
@@ -49,33 +49,32 @@ public void init() {
 		String owner = library.get("owner");
 		if(owner == null){
 			library.setProperty("owner", username);
-			library.setProperty("ownerprofile",context.getUserProfile().getId());
+			library.setProperty("ownerprofile",context.getUserProfile().getId()); 
 			mediaArchive.getSearcher("library").saveData(library, null);
 		}
-		String gitprojectname = library.getId();
-		//Create Git Repo and check it out
-		String gitlocal = mediaArchive.getCatalogSettingValue("project_git_local_root");
-		if( gitlocal != null )
-		{
-			gitlocal = gitlocal + "/" + gitprojectname + ".git";
 
-			File repo = new File( gitlocal );
+		String gitcheckout = library.get("git");
+		String localfolder = library.get("folder");
+		//Create Git Repo and check it out
+		if( gitcheckout != null && localfolder != null)
+		{
+			//We do not use division, too complicated
+			String fullpath = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/" + localfolder;
+			Page repo = pageManager.getPage(fullpath + "/.git");
 			if( !repo.exists() )
 			{
 				Exec exec = (Exec)mediaArchive.getModuleManager().getBean("exec");
 				List com = new ArrayList();
-				com.add(gitlocal);
-				String division = library.get("division");
+				com.add(gitcheckout);
 				
-				Page page = pageManager.getPage("/WEB-INF/data/" + mediaArchive.getCatalogId() + "/originals/projects/" + division + "/");					
-				String checkoutpath  = page.getContentItem().getAbsolutePath();
+				String checkoutpath = pageManager.getPage(fullpath).getContentItem().getAbsolutePath();
 				com.add(checkoutpath);
 				log.info("setting up a repo");
 				
 				ExecResult result = exec.runExec("gitaddrepository", com);
 				if( !result.isRunOk() )
 				{
-					context.putPageValue("savemessageerror","Could not create git path");
+					context.putPageValue("savemessageerror","Could not create git path. Make sure you checkout into an empty location");
 				}
 			}
 		}

@@ -31,6 +31,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
@@ -118,7 +119,7 @@ public class FileUpload
 	 */
 	public UploadRequest parseArguments(WebPageRequest inContext) throws OpenEditException
 	{
-		UploadRequest upload = new UploadRequest();
+		final UploadRequest upload = new UploadRequest();
 		upload.setPageManager(getPageManager());
 		upload.setRoot(getRoot());
 		
@@ -137,17 +138,34 @@ public class FileUpload
 		String uploadid = inContext.getRequestParameter("uploadid");
 		
 		String catalogid = inContext.findValue("catalogid");
-		if(uploadid != null && catalogid != null){
-		upload.setUploadId(uploadid);
-		upload.setCatalogId(catalogid);
-		upload.setUserName(inContext.getUserName());
-		upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
+		if(uploadid != null && catalogid != null)
+		{
+			upload.setUploadId(uploadid);
+			upload.setCatalogId(catalogid);
+			upload.setUserName(inContext.getUserName());
+			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
 		}
+		
+
+		//Our factory will track these items as they are made. Each time some data comes in look over all the files and update the size		
 		FileItemFactory factory = (FileItemFactory)inContext.getPageValue("uploadfilefactory");
 		if( factory == null)
 		{
-			factory = new DiskFileItemFactory();
+			DiskFileItemFactory dfactory = new DiskFileItemFactory();
+//			{
+//				public org.apache.commons.fileupload.FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) 
+//				{
+//					if( !isFormField )
+//					{
+//						upload.track(fieldName, contentType, isFormField, fileName);
+//					}
+//					return super.createItem(fieldName, contentType, isFormField, fileName);
+//				};
+//			}
+			factory = dfactory;
+			
 		}
+		
 		
 		ServletFileUpload uploadreader = new ServletFileUpload(factory);
 		//upload.setSizeThreshold(BUFFER_SIZE);
@@ -191,12 +209,14 @@ public class FileUpload
 	protected void expireOldUploads(String inCatalogId)
 	{
 		Searcher searcher = loadQueueSearcher(inCatalogId);
+		
 		SearchQuery q = searcher.createSearchQuery();
 		
 		Calendar cal = new GregorianCalendar();
-		cal.add(Calendar.HOUR, -1);
+		cal.add(Calendar.HOUR, -48);
 		q.addBefore("date", cal.getTime());
-		q.addMatches("status", "completed");
+		//child.addMatches("status", "complete");
+		
 		HitTracker hits = searcher.search(q);
 		
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)

@@ -12,11 +12,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DocumentStoredFieldVisitor;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SearcherManager;
@@ -43,7 +46,19 @@ public class LuceneHitTracker extends HitTracker
 	protected transient Sort fieldLuceneSort;
 	protected Map fieldPages;
 	protected Integer fieldSize;
+	protected String fieldSearchType;
 	
+	
+	public String getSearchType()
+	{
+		return fieldSearchType;
+	}
+
+	public void setSearchType(String inSearchType)
+	{
+		fieldSearchType = inSearchType;
+	}
+
 	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort)
 	{
 		setLuceneSearcherManager(inManager);
@@ -76,9 +91,8 @@ public class LuceneHitTracker extends HitTracker
 	{
 		if (fieldPages == null)
 		{
-			fieldPages = new HashMap<Integer,List<Data>>();
-			//Does this compile?
-			//fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+			//fieldPages = new HashMap<Integer,List<Data>>(); //this will leak for really large resultsets
+			fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
 		}
 		return fieldPages;
 	}
@@ -104,16 +118,22 @@ public class LuceneHitTracker extends HitTracker
 				}
 				fieldSize = docs.totalHits;
 				page = new ArrayList<Data>(getHitsPerPage());
+				
+				/**
+				 * This is optimized to only store string versions of the data we have. Normally the Document class has FieldType that use a bunch of memory.
+				 * Guess Most people do not loop over their entire database as often as we do. 
+				 * TODO: Find a way to cache more generically instead of one page at a time?
+				 */				
+				Map<String,Integer> columns = new TreeMap<String,Integer>();				
 				for (int i = 0; start + i < size() && i < getHitsPerPage(); i++)
 				{
 					int offset = start + i;
-					Document doc = searcher.doc( docs.scoreDocs[offset].doc );
-					page.add(new DocumentData(doc) );
+				    int docid = docs.scoreDocs[offset].doc;
+					final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+					searcher.doc(docid, visitor);
+					page.add( visitor.createSearchResult() );
 				}
-				if( log.isDebugEnabled() )
-				{
-					log.info(size() + " total, loaded " + start + " to " + (start+page.size()) + " query:" + getLuceneQuery() + " sort by: " + getLuceneSort() + " " + getSessionId() );
-				}
+				log.info(getSearchType() + " " + getLuceneQuery() + " " +  size() + " total, loaded " + start + " to " + (start+page.size()) + " sort by: " + getLuceneSort() + " " + getCatalogId());
 				getPages().put(inPageNumberZeroBased,page);
 			}
 			catch( Exception ex )

@@ -90,7 +90,12 @@ public class MediaAdminModule extends BaseMediaModule
 	{
 		Page uploaded = getPageManager().getPage("/WEB-INF/temp/importapp.zip");
 		String catid = inReq.getRequestParameter("appcatalogid");
-		getWorkspaceManager().deployUploadedApp(catid, uploaded);
+		String destinationid = inReq.getRequestParameter("destinationappid");
+		if( destinationid.startsWith("/") )
+		{
+			destinationid = destinationid.substring(1);
+		}
+		getWorkspaceManager().deployUploadedApp(catid,destinationid, uploaded);
 	}
 	
 	public void deployApp(WebPageRequest inReq) throws Exception

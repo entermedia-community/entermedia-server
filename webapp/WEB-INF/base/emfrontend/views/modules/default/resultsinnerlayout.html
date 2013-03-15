@@ -10,7 +10,8 @@
         #end
 #end
 #set( $moduleid = $context.findValue("module") )
-
+#set( $searchhome = $context.findValue("searchhome") )
+$context.putPageValue("searchhome",$searchhome)
 
 #if(!$hits)
 #set($hits = $context.getPageValue($content.hitsname))
@@ -24,14 +25,14 @@ $context.putPageValue("hits", $hits)
 #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 
 			<h2>$module</h2>
-				$pages.include("/$applicationid/views/modules/${moduleid}/sidebar/standard.html",$context)
+				$pages.include("${searchhome}/sidebar/standard.html",$context)
 		</div>
 		<div id="right-col" class="module-inner">
 				
 					<div id="resultsdiv" data-searchhome="$home$content.searchhome" data-hitssessionid="$hits.sessionId">
 						<div id="emresultscontent">
 							
-							$pages.include("/$applicationid/views/modules/${moduleid}/resultsactions.html",$context)
+							$pages.include("${searchhome}/resultsactions.html",$context)
 							
 							<div id="resultsarea">
 								<div id="resultslist">

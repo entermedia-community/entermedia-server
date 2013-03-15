@@ -57,7 +57,7 @@
 	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date"  searchcomponent="datesearch"  viewtype="time" >Last Modified</property>
 	<property id="recordmodificationdate" index="true" type="date"  searchcomponent="datesearch"  stored="true" editable="false">Record Date</property> <!--  should be a date -->
 	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
-	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" sortable="true" editable="true" query="groups:developers">Owner</property>
+	<property id="owner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" sortable="true" editable="true" >Owner</property>
 	<property id="primaryfile" internalfield="true" index="true" stored="true">Primary File Name</property>
 	
 	<property id="importstatus" index="true" stored="true" datatype="list" listid="asset/importstatus" editable="true">Import Status</property>
@@ -105,6 +105,8 @@
 	 -->
 	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
 	<property id="editasset" internalfield="true" filter="true">Writable</property>	
+	<property id="editgroups" index="true" stored="true" editable="true" viewtype="multiselect" internalfield="true" listcatalogid="system"  listid="group">Edit Groups</property>
+		
 	<!-- 
 	<property id="showtitle" index="true" datatype="list" stored="true" editable="true" keyword="true" >Show Title</property>
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>

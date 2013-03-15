@@ -262,7 +262,7 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 		if (fieldAnalyzer == null)
 		{
 			Map map = new HashMap();
-			map.put("synonymsenc", new FullTextAnalyzer(Version.LUCENE_36));
+			map.put("synonymsenc", new FullTextAnalyzer(Version.LUCENE_41));
 			map.put("synonyms", new NullAnalyzer());
 			map.put("word", new NullAnalyzer());
 			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , map);

@@ -1,6 +1,5 @@
 <page>
-	<path-action name="OrderModule.createConversionAndPublishRequest"/>
-	<path-action name="PathEventModule.runSharedEvent">
-       <runpath>/${catalogid}/events/conversions/runconversions.html</runpath>
-   </path-action>
+	<path-action name="OrderModule.createConversionAndPublishRequest"/>	
+	<path-action name="OrderModule.updatePendingOrders"/>
+
 </page>

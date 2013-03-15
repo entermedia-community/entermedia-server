@@ -1,4 +1,4 @@
-<div class="em-rounded">
+<div class="em-rounded" style="margin:20px;">
 #set($order = $data)
 #if( $order.userid != $context.getUserName() )
 Invalid order, username does not match
@@ -80,7 +80,9 @@ $asset
 	#end
 	
 </table>
-<input class="btn" style="float: right; margin: 20px 0 0 0;" type="submit" name="submit" value="Next"/> 
+<div style="text-align: right">
+<input class="btn" type="submit" name="submit" value="Next"  onclick='this.disabled="disabled";$(this).val("Processing");' /> 
+</div>
 	
 	<div id="itemsave"></div>
 	

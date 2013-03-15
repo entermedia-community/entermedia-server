@@ -38,6 +38,11 @@ public class ProfileModule extends MediaArchiveModule
 	public void reLoadUserProfile(WebPageRequest inReq)
 	{
 		inReq.setRequestParameter("reloadprofile", "true");
+		
+		//TODO: Find a way to clear all the search session ids
+		String catalogid = inReq.findValue("catalogid");
+		inReq.removeSessionValue("hitsasset" + catalogid); //hitsassetmedia/catalogs/public
+		 
 		loadUserProfile(inReq);
 	}
 	public UserProfile loadUserProfile(WebPageRequest inReq)

@@ -93,6 +93,21 @@
 	<input type="hidden" name="field" value="sortable"/>
 	<tr> <td>[[Sortable]]:</td> <td><input name="sortable.value" type="checkbox" #if ($property.sortable == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Searchable]]:</td> <td><input name="index" type="checkbox" #if ($property.index == true) checked #end value="true"/> </td> </tr>
+
+	<tr> <td>[[Search View]]:</td>
+	<td>
+	<input type="hidden" name="field" value="searchcomponent"/>
+	<select name="searchcomponent.value">
+	<option value="">Default</option>
+#foreach( $row in $searcherManager.getList($catalogid,"datarendertype") )
+	<option value="$row.id" #if ($property.searchcomponent == $row.id) selected #end >$context.getText($row.name)</option>
+#end
+	</select>	
+
+	</td>
+	</tr>
+
+
 	<tr> <td>[[Stored In Index]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
 
 	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>

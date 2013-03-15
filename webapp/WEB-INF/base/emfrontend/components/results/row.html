@@ -25,6 +25,7 @@ $pages.include("$apphome/components/results/thumbnails/small.html",$context)
 	#end
 	$!context.putPageValue("detail",$detail)
 	$!context.putPageValue("val",$value)	
+	$!context.putPageValue("data",$hit)
 	<td  class="resultstablecell $detail.id">
 		$pages.include("$apphome/components/xml/detailreadonly.html", $context)
 	</td>	

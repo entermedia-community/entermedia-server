@@ -4,11 +4,7 @@
   <property id="thumbnail"/>
   <property id="name"/>
   <property id="division"/>
-  <property id="projectdescription"/>
-  <property id="projectstatus"/>
-  <property id="projecttype"/>
-  <property id="startdate"/>
-  <property id="url"/>
   <property id="folder"/>
+  <property id="giturl"/>
   
 </root>

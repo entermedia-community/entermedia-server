@@ -1,6 +1,6 @@
 <div class="ui-widget uipanel" id="left-col-search" >
-				<div  class="ui-widget-header">[[Filters]]</div>
-<div  class="ui-widget-content">
+				<div  class="ui-widget-header">[[Filters]] #if($cantogglesidebar) <img src="$apphome/theme/images/minimize.png" class="sidetoggle" data-target="filterscontent">#end </div>
+<div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
 #set ($assetTypeSearcher = $searcherManager.getSearcher($catalogid, "assettype"))
 
 #set ($types = $assetTypeSearcher.fieldSearch(id, "*", "name"))

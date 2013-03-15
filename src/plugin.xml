@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.0.xsd"
+
+ default-lazy-init="true"
+>
 
 	<bean id="Admin" class="org.openedit.entermedia.modules.AdminModule">
 		<property name="sendMailModule">
@@ -268,6 +274,7 @@
 		<property name="webEventListener">
 			<ref bean="editorEventHandler" />
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="compositeLuceneSearcher" class="org.openedit.data.lucene.CompositeLuceneSearcher"
@@ -359,6 +366,7 @@
 
 	<bean id="sftpRepository" class="org.openedit.entermedia.util.ssh.SftpRepository"
 		singleton="false" />
+
 	<bean id="pathEventManager" class="org.openedit.events.PathEventManager"
 		singleton="false">
 		<property name="pageManager">
@@ -373,6 +381,8 @@
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
+		<property name="executorManager"><ref bean="executorManager"/></property>
+		
 	</bean>
 
 	<bean id="pathEvent" class="org.openedit.events.PathEvent"
@@ -856,6 +866,7 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="assetvotesSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -864,6 +875,8 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>assets</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="invitationSearcher" class="org.openedit.data.XmlFileSearcher"
@@ -883,6 +896,8 @@
 		<property name="prefix">
 			<value>users</value>
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="friendManager" class="org.openedit.entermedia.friends.FriendManager">
@@ -925,25 +940,20 @@
 		</property>
 	</bean>
 
-	<bean id="velocity" class="com.openedit.generators.VelocityGenerator" >
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
-	</bean>
-
-
 	<bean id="velocityGenerator" class="com.openedit.generators.VelocityGenerator" >
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
 	</bean>
-	
+
 	<bean id="admintoolbarGenerator" class="org.openedit.entermedia.generators.AdminToolBarGenerator" >
-		<property name="headerPath"><value>/system/components/openedit/toolbar/admintoolbarselector.html</value></property>
+		<property name="headerPath"><value>/openedit/components/toolbar/admintoolbarselector.html</value></property>
 		<property name="search"><value>&lt;body</value></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 		<property name="wraps"><ref bean="velocityGenerator"/></property>
 	</bean>
-	
+
+ 	
 	<bean id="ValidationModule" 
 		class="org.openedit.modules.validation.ValidationModule" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -983,6 +993,7 @@
 		<property name="rootDirectory"><ref bean="root"/></property>
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>		
 	</bean>
 	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
 	
@@ -1067,11 +1078,6 @@
 		</property>
 	</bean>
 
-	<bean id="orderManager" class="org.openedit.entermedia.orders.OrderManager" >
-		<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
-	</bean>
-	
 	<bean id="orderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1081,6 +1087,7 @@
 		<property name="newDataName"><value>order</value></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="orderManager"><ref bean="orderManager" /></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 	</bean>
 	<bean id="order" class="org.openedit.entermedia.orders.Order" singleton="false">
 	</bean>
@@ -1091,6 +1098,8 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>orderitems</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 
 	<bean id="orderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -1101,6 +1110,8 @@
 		<property name="prefix"><value>orders</value></property>
 		<property name="newDataName"><value>orderhistory</value></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 	<bean id="orderhistory" class="org.openedit.entermedia.orders.OrderHistory" singleton="false"/>
 	
@@ -1116,16 +1127,6 @@
 	</bean>
 	
 	
-	
-	
-	<bean id="conversiontaskSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>assets</value></property>
-	</bean>
-	
 	<bean id="ConvertStatusModule" class="org.openedit.entermedia.modules.ConvertStatusModule">
 		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1139,6 +1140,8 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 
@@ -1173,6 +1176,8 @@
 	    	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="root"><ref bean="root" /></property>
+		
     </bean>
     <bean id="bshScriptRunner" class="com.openedit.entermedia.scripts.BshScriptRunner" />
     <bean id="rhinoScriptRunner" class="com.openedit.entermedia.scripts.RhinoScriptRunner" />
@@ -1221,6 +1226,9 @@
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
+		
 	</bean>
 
 	<bean id="lockManager" class="org.entermedia.locks.MemoryLockManager" >
@@ -1258,6 +1266,8 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>assets</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="SavedQueryModule" class="org.openedit.entermedia.modules.SavedQueryModule">
@@ -1276,6 +1286,8 @@
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 	<bean id="savedquerytermSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
@@ -1285,6 +1297,8 @@
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>users</value></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 
 <!--  TODO: Use beans.xml alias -->
@@ -1353,6 +1367,8 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="prefix"><value>profiles</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
 	</bean>
 	
 		
@@ -1362,52 +1378,8 @@
 	</bean>
 
 
-	<bean id="digitalrapidsCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>digitalrapids</value></property>
-	</bean>
-	<bean id="exiftoolthumbCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>exiftoolthumb</value></property>
-	</bean>
-	<bean id="audioCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>audio</value></property>
-	</bean>
-	<bean id="ffmpegCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>ffmpeg</value></property>
-	</bean>
-	<bean id="ffmpegimageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>ffmpegimage</value></property>
-	</bean>
 	
 	
-	
-	
-	<bean id="GhostScriptImageCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>GhostScriptImage</value></property>
-	</bean>
 	<bean id="imagePreProcessors" class="java.util.ArrayList">
 	    <constructor-arg>
 		<list>
@@ -1419,30 +1391,6 @@
 	    </constructor-arg>
 	</bean>
 	
-	<bean id="imagemagickCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>imagemagick</value></property>
-		<property name="preProcessors"><ref bean="imagePreProcessors" /></property>
-	</bean>
-	
-	<bean id="oofficeDocumentCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>oofficeDocument</value></property>
-	</bean>
-	
-	<bean id="originalCreator" class="org.openedit.entermedia.creator.GroovyScriptedCreator">
-		<property name="scriptManager"><ref bean="scriptManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="exec"><ref bean="exec" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="scriptName"><value>original</value></property>
-	</bean>			
 	<bean id="HotFolderModule" class="org.openedit.entermedia.modules.HotFolderModule">
 	</bean>			
 	<bean id="hotFolderManager" class="org.openedit.entermedia.scanner.HotFolderManager">
@@ -1453,12 +1401,6 @@
 
 	<bean id="SyncModule" class="org.openedit.entermedia.modules.SyncModule" >
 		<property name="pushManager"><ref bean="pushManager" /></property>
-		<property name="publishChecker"><ref bean="publishChecker" /></property>
-	</bean>
-
-	<bean id="pushManager" class="org.openedit.entermedia.push.PushManager" >
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="userManager"><ref bean="userManager" /></property>
 	</bean>
 
 	<bean id="publishChecker" class="org.openedit.entermedia.push.PublishChecker" >
@@ -1480,5 +1422,18 @@
 	
 	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
 	</bean>
-	
+
+	<bean id="transientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" singleton="false">
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory">
+			<ref bean="root" />
+		</property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+	</bean>
+
+
+
 </beans>

@@ -185,13 +185,8 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 
 
-	public void saveData(Data inData, User inUser)
+	public void saveData(Data data, User inUser)
 	{
-		if( !(inData instanceof Data) )
-		{
-			return;
-		}
-		Data data = (Data) inData;
 		if(data.getId() == null)
 		{
 			data.setId(nextId());
@@ -202,6 +197,9 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			data.setSourcePath(sourcepath);
 		}
 		getXmlDataArchive().saveData(data,inUser);
+		
+//		String nullcheck = data.get("publishqueueid");
+//		log.info( getSearchType() + " " + data.getId() + " " + nullcheck );
 		updateIndex(data);
 	}
 
@@ -263,7 +261,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	
 
-	public void reIndexAll(final IndexWriter inWriter) throws OpenEditException
+	protected void reIndexAll(final IndexWriter inWriter) throws OpenEditException
 	{
 		final List buffer = new ArrayList(100);
 		PathProcessor processor = new PathProcessor()

@@ -34,23 +34,24 @@ public void init()
 		}
 		String sourcepath = mediaArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
 		
-		String libraries = context.getRequestParameter("libraries.value");
-		if(libraries != null){
-			vals.put("library", libraries);
-			
+		String library = context.getRequestParameter("libraries.value");
+		if(library != null)
+		{
+			vals.put("library", library);
 		}
+
+		library = context.getRequestParameter("library.value");
+		if(library != null)
+		{
+			vals.put("library", library);
+		}
+
 		String division = context.getRequestParameter("division.value");
-		if(division == null && libraries != null){
-			Data library = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "library", libraries);
-			if(library != null){
-				vals.put("division", library.division);
-			}
-			
+		if(division != null)
+		{
+			vals.put("division", division);
 		}
-		
-		
-		
-		
+
 		Replacer replacer = new Replacer();
 		replacer.setSearcherManager(mediaArchive.getSearcherManager());
 		replacer.setDefaultCatalogId(mediaArchive.getCatalogId());
@@ -63,7 +64,8 @@ public void init()
 		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 		
 		context.setRequestParameter("sourcepath",sourcepath);
-
+		context.putPageValue("sourcepath",sourcepath);
+		
 }
 
 init();

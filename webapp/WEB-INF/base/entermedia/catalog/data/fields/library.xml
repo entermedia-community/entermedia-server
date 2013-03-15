@@ -3,7 +3,8 @@
   <property id="id" index="true" editable="true"  stored="true">Id</property>
   <property id="name" editable="true" sortable="true"  index="true" stored="true">Name</property>
   <property id="description">Description</property>
-  <property id="folder" editable="true" index="true" stored="true" note="Folder name">Folder Name</property>
+  <property id="folder" editable="true" index="true" stored="true" note="Relative Folder hotfolder/sub1/song123">Hot Folder Path</property>
+  <property id="giturl" editable="true" index="true" stored="true" note="ssh://servername/vol1/git/song123.git">Git URL</property>
 
   <property id="division" type="list" viewtype="list" editable="true" index="true"  sort="name" stored="true" >Division</property>
   <!--  property id="gitprojectname" editable="true" index="true" stored="true" note="Just the name">Git Project Name</property  -->

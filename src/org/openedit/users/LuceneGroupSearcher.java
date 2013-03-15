@@ -184,4 +184,15 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 		getUserManager().saveGroup((Group) inData);
 		updateIndex((Group) inData);
 	}
+	
+	public void setCatalogId(String inCatalogId)
+	{
+		if( !"system".equals(inCatalogId) )
+		{
+			throw new OpenEditException("group searcher should only be a system level not " + inCatalogId );
+		}
+		super.setCatalogId(inCatalogId);
+	}
+
+	
 }

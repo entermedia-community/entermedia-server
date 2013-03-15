@@ -13,8 +13,10 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
@@ -194,9 +196,15 @@ public class LuceneIndexer
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			readProperty(inData, doc, keywords, detail);
 		}
-		if( keywords.toString().trim().length() > 0 )
+		readDescription(doc, keywords);
+	}
+
+	protected void readDescription(Document doc, StringBuffer keywords)
+	{
+		String trimkeywords =keywords.toString().trim(); 
+		if( trimkeywords.length() > 0 )
 		{
-			doc.add(new Field("description", keywords.toString(), Field.Store.NO, Field.Index.ANALYZED));
+			doc.add(new TextField("description", trimkeywords, Field.Store.NO) );
 		}
 	}
 	protected List getStandardProperties()
@@ -210,7 +218,7 @@ public class LuceneIndexer
 	protected void readStandardProperties(PropertyDetails inDetails, Data inData, StringBuffer keywords, Document doc)
 	{
 		PropertyDetail detail = inDetails.getDetail("id");
-		docAdd(detail, doc, "id", inData.getId(),Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
+		docAdd(detail, doc, "id", inData.getId(),Field.Store.YES,true);
 		String name = inData.getName();
 		if (name == null || inData.getName().length() == 0)
 		{
@@ -219,7 +227,7 @@ public class LuceneIndexer
 		if (name != null && name.length() > 0)
 		{
 			detail = inDetails.getDetail("name");
-			docAdd(detail, doc, "name", name, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
+			docAdd(detail, doc, "name", name, Field.Store.YES,true);
 		}
 		keywords.append(inData.getId());
 		keywords.append(" ");
@@ -228,12 +236,30 @@ public class LuceneIndexer
 		if (inData.getSourcePath() != null)
 		{
 			detail = inDetails.getDetail("sourcepath");
-			docAdd(detail, doc,"sourcepath", inData.getSourcePath(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
+			docAdd(detail, doc,"sourcepath", inData.getSourcePath(), Field.Store.YES,true);
 		}
 	}
-	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore, Index inIndex)
+	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore , boolean isText)
 	{
-		doc.add(new Field(inId, inValue ,inStore, inIndex));
+		docAdd(inDetail,doc,inId,inValue,null,inStore,isText);
+	}
+	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Data text, Store inStore , boolean isText)
+	{
+		
+		//TODO: Remove this method and use the new data type specific fields
+		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
+		if( isText )
+		{
+			//field = new StringField(inId,inValue,inStore);  //This causes case sensitivity to be lost
+			field = new Field(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );
+		}
+		else
+		{
+			//TODO: Replace with specific field types earlier on in the stack trace
+			field = new Field(inId, inValue ,inStore, Field.Index.NOT_ANALYZED_NO_NORMS );
+		}
+		//field.setOmitNorms(true);
+		doc.add(field);
 		if( inDetail != null && inDetail.isSortable() )
 		{
 			String id = inDetail.getSortProperty();
@@ -255,10 +281,10 @@ public class LuceneIndexer
 			}
 			else if( inDetail.isDataType("list") && inDetail.getCatalogId() != null)
 			{
-				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
-				if( row != null )
+//				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
+				if( text != null )
 				{
-					inValue = row.toString();
+					inValue = text.toString();
 				}
 			}
 			
@@ -275,11 +301,24 @@ public class LuceneIndexer
 			return;
 		}
 		String value = inData.get(detail.getId());
-		
+		Data text = null;
 		if (value != null && detail.isKeyword() )
 		{
-			keywords.append(" ");
-			keywords.append(value);
+			if( detail.isList() )
+			{
+				//Loop up the correct text for the search. Should combine this with the lookup for sorting
+				text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), value);
+				if( text != null )
+				{
+					keywords.append(" ");
+					keywords.append(text.getName());
+				}
+			}
+			else
+			{
+				keywords.append(" ");
+				keywords.append(value);
+			}
 		}
 
 		if( !detail.isIndex() )
@@ -297,17 +336,17 @@ public class LuceneIndexer
 			if ( detail.isDataType("double") || detail.isDataType("number") || detail.isDataType("long"))
 			{
 				//This is more standard way to save stuff
-				docAdd(detail, doc, detail.getId(), value, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+				docAdd(detail, doc, detail.getId(), value, text, Field.Store.YES, false);
 			} //doubles dont seem to work detail.isDataType("double")
 			else if (detail.isDataType("boolean"))
 			{
 				if (Boolean.parseBoolean(value))
 				{
-					docAdd(detail, doc, detail.getId(), "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+					docAdd(detail, doc, detail.getId(), "true", Field.Store.YES, false);
 				}
 				else
 				{
-					docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+					docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, false); ///NOT ANALYSED NO NORMS
 				}
 
 			}
@@ -318,16 +357,16 @@ public class LuceneIndexer
 				{
 					String sortable = DateTools.dateToString(target, Resolution.SECOND);
 					//log.info(inData.getId() +  " Saved " + sortable);
-					docAdd(detail, doc, detail.getId(), sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+					docAdd(detail, doc, detail.getId(), sortable, Field.Store.YES, false);
 				}
 			}
 			else if (detail.isStored())
 			{
-				docAdd(detail, doc, detail.getId(), value, Field.Store.YES, Field.Index.ANALYZED_NO_NORMS);
+				docAdd(detail, doc, detail.getId(), value, text, Field.Store.YES, true);
 			}
 			else
 			{
-				docAdd(detail, doc, detail.getId(), value, Field.Store.NO, Field.Index.ANALYZED_NO_NORMS);
+				docAdd(detail, doc, detail.getId(), value, text,  Field.Store.NO, true); //Field.Index.ANALYZED_NO_NORMS
 			}
 		}
 		else
@@ -335,7 +374,7 @@ public class LuceneIndexer
 		{
 			if (detail.isDataType("boolean"))
 			{
-				docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+				docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, false);
 			}
 
 			if (detail.isDataType("position"))
@@ -349,11 +388,11 @@ public class LuceneIndexer
 					{
 						//String sortable = getNumberUtils().double2sortableStr(lat);
 						//doc.add(new Field(detail + "_lat_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-						docAdd(detail, doc, detail + "_lat", lat, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+						docAdd(detail, doc, detail + "_lat", lat, Field.Store.YES, false);
 
 						//sortable = getNumberUtils().double2sortableStr(lng);
 						//doc.add(new Field(detail + "_lng_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-						docAdd(detail, doc, detail + "_lng", lng, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+						docAdd(detail, doc, detail + "_lng", lng, Field.Store.YES, false);
 						//doc.add(new Field(detail + "_available", "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 					}
 					else

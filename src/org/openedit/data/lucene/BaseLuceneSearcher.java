@@ -33,6 +33,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.SearcherFactory;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
@@ -41,6 +42,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.SimpleFSLockFactory;
 import org.apache.lucene.util.Version;
+import org.entermedia.cache.CacheManager;
 import org.openedit.Data;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
@@ -70,11 +72,26 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	protected String fieldBadSortField = null;
 	protected boolean fieldPendingCommit;
 	protected String fieldIndexId;
-	
 	protected LuceneIndexer fieldLuceneIndexer;
 	protected String fieldCurrentIndexFolder;
 	protected String fieldIndexRootFolder;
-	
+	protected CacheManager fieldCacheManager;
+
+	public BaseLuceneSearcher() 
+	{
+
+	}
+
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+
 	protected SearcherManager fieldLuceneSearcherManager;
 	
 	public SearcherManager getLuceneSearcherManager() 
@@ -103,10 +120,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		fieldIndexRootFolder = inIndexRootFolder;
 	}
 
-	public BaseLuceneSearcher() 
-	{
-	}
-	
 	public LuceneIndexer getLuceneIndexer()
 	{
 		if( fieldLuceneIndexer == null)
@@ -139,7 +152,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		boolean completed = false;
 		try
 		{
-			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36, getAnalyzer());
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_41, getAnalyzer());
 			config.setOpenMode(OpenMode.CREATE);
 			
 //			  LogMergePolicy lmp = new LogDocMergePolicy();
@@ -156,11 +169,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			
 			//writer = new IndexWriter(indexDir, , true, IndexWriter.MaxFieldLength.UNLIMITED);
 			//writer.setMergeFactor(50);
-			
-			
-
-			
-			
 			reIndexAll(writer);
 			//writer.optimize();
 			writer.commit();
@@ -271,6 +279,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				sort = buildSort(inOrdering);
 			}
 			LuceneHitTracker tracker = new LuceneHitTracker(getLuceneSearcherManager(),query1,sort);
+			tracker.setSearchType(getSearchType());
 			tracker.setIndexId(getIndexId());
 
 			return tracker;
@@ -291,7 +300,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//TODO: use a threadgroup
 		
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_36, "description", getAnalyzer());
+		QueryParser parser = new QueryParser(Version.LUCENE_41, "description", getAnalyzer());
 		
 		/*
 		{
@@ -353,25 +362,29 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			String inOrdering = (String) iterator.next();
 			SortField sort = null;
-//			if (inOrdering.equals("random"))
-//			{
-//				 Sort randomsort = new Sort(
-//			                new SortField(
-//			                        "",
-//			                        new FieldComparatorSource() {
-//
-//			                            @Override
-//			                            public FieldComparator<Integer> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
-//			                                return new RandomOrderFieldComparator();
-//			                            }
-//
-//			                        }
-//			                    )
-//			            );
-//				 return randomsort;
-//			}
-//			else
-//			{
+			if (inOrdering.equals("random"))
+			{
+				 Sort randomsort = new Sort(
+			            
+						 new SortField(
+			                        "",
+			                        new FieldComparatorSource() {
+
+			                            @Override
+			                            public FieldComparator<Integer> newComparator(String fieldname, int numHits, int sortPos, boolean reversed) throws IOException {
+			                                RandomOrderFieldComparator c = new RandomOrderFieldComparator();
+			                             //   c.setScorer(getIndexWriter().get
+			                            	return new RandomOrderFieldComparator();
+			                            	//return new RandomOrderFieldComparator();
+			                            }
+
+			                        }
+			                    )
+			            );
+				 return randomsort;
+			}
+			else
+			{
 				boolean direction = false;
 				if (inOrdering.endsWith("Down"))
 				{
@@ -407,7 +420,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				{
 					sort = new SortField(sortfield, SortField.Type.STRING, direction);
 				}
-//			}
+			}
 			sorts.add(sort);
 		}
 		SortField[] fields = (SortField[]) sorts.toArray(new SortField[sorts.size()]);
@@ -488,8 +501,12 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			Map analyzermap = new HashMap();
 		
-			analyzermap.put("description",  new FullTextAnalyzer(Version.LUCENE_36));
-			//analyzermap.put("id", new NullAnalyzer());
+			analyzermap.put("description",  new FullTextAnalyzer(Version.LUCENE_41));
+			
+			//The ID column is special since it is used to load records from the index. 
+			//When we do a Lucene Update we would have to lowerCase the id
+			
+			analyzermap.put("id", new NullAnalyzer());
 			//analyzermap.put("id", new RecordLookUpAnalyzer(false));
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
 			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper(new RecordLookUpAnalyzer() , analyzermap);
@@ -598,7 +615,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 						{
 							log.info(getCatalogId() + " asset writer opened in " + folder);
 						}
-						IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36, getAnalyzer());
+						IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_41, getAnalyzer());
 						config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 						fieldIndexWriter = new IndexWriter(indexDir,config);
 
@@ -744,10 +761,19 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
+				if( data.getId() == null )
+				{
+					log.error("Could not index " + data + " " + getSearchType() );
+					continue;
+				}
 				Document doc = new Document();
 				updateIndex(data, doc, details);
 				Term term = new Term("id", data.getId());
 				inWriter.updateDocument(term, doc, getAnalyzer());
+				if( fieldCacheManager != null )
+				{
+					getCacheManager().remove(getIndexPath(), data.getId());
+				}
 				clearIndex();
 			}
 			inWriter.commit();
@@ -761,6 +787,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public void updateIndex(Data inData) throws OpenEditException
 	{
+		//Already pending, just add another one on
+		fieldPendingCommit = false;
 		IndexWriter writer  = getIndexWriter();
 		updateIndex(writer, inData);
 		clearIndex();
@@ -782,6 +810,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			updateIndex(inData, doc, details);
 			Term term = new Term("id", inData.getId());
 			inWriter.updateDocument(term, doc, getAnalyzer());
+			if( fieldCacheManager != null )
+			{
+				getCacheManager().remove(getIndexPath(), inData.getId());
+			}
+
 		}
 		catch (Exception ex)
 		{
@@ -825,6 +858,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		try
 		{
 			getIndexWriter().deleteDocuments(term);
+			if( fieldCacheManager != null )
+			{
+				getCacheManager().remove(getIndexPath(), inData.getId());
+			}
 			clearIndex();
 		}
 		catch (Exception e)
@@ -860,6 +897,14 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			return null;
 		}
+		if( fieldCacheManager != null && "id".equals( inField ) )
+		{
+			Object cached = getCacheManager().get(getIndexPath(), inValue);
+			if( cached != null )
+			{
+				return cached;
+			}
+		}
 		SearchQuery query = createSearchQuery();
 		PropertyDetail detail = new PropertyDetail();
 		detail.setId(inField);
@@ -867,16 +912,22 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 		HitTracker hits = search(query);
 		hits.setHitsPerPage(1);
-		return hits.first();
+		Object cached = hits.first();
+		if( fieldCacheManager != null && cached != null && "id".equals( inField ) )
+		{
+			//TODO: Come up with a way to put custom objects in here such as Order, Asset etc
+			getCacheManager().put(getIndexPath(), inValue, cached);
+		}
+		return cached; 
 	}
 	public Object searchById(String inId)
 	{
-		return searchByField("id",inId);
+		Object 	cached = searchByField("id",inId);
+		return cached;
 	}
 
 	public void shutdown()
 	{
-		
 		//setIndexWriter(null);
 		if (fieldIndexWriter != null)
 		{

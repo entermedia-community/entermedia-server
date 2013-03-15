@@ -20,5 +20,5 @@
 
 $context.putPageValue("canedittable", $caneditdata)
 
-#set( $args = "id=$id&parentid=$id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$listid&listexternalid=$listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "id=$id&parentid=$id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)

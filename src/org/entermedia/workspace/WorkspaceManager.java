@@ -85,7 +85,8 @@ public class WorkspaceManager
 		root.addElement("applicationid").addAttribute("id", appid);
 		root.addElement("catalogid").addAttribute("id", catalogid);
 
-		Data app = getSearcherManager().getData(catalogid, "app", appid);
+		Data app = (Data) getSearcherManager().getSearcher(catalogid, "app").searchByField("deploypath", "/" + appid);
+		//Data app = getSearcherManager().getData(catalogid, "app", appid);
 		if (app != null)
 		{
 			root.addElement("name").setText(app.getName());
@@ -228,7 +229,7 @@ public class WorkspaceManager
 		}
 	}
 
-	public void deployUploadedApp(String inAppcatalogid, Page zip)
+	public void deployUploadedApp(String inAppcatalogid, String inDestinationAppId, Page zip)
 	{
 		Page dest = getPageManager().getPage("/WEB-INF/temp/appunzip");
 		try
@@ -236,27 +237,54 @@ public class WorkspaceManager
 			getPageManager().removePage(dest);
 			
 			new ZipUtil().unzip(zip.getContentItem().getAbsolutePath(), dest.getContentItem().getAbsolutePath());
+			
 			Page def = getPageManager().getPage(dest.getPath() + "/.emapp.xml");
 			Element root = new XmlUtil().getXml(def.getReader(), "UTF-8");
-			String applicationid = root.element("applicationid").attributeValue("id");
+			String oldapplicationid = root.element("applicationid").attributeValue("id");
 			String oldcatalogid = root.element("catalogid").attributeValue("id");
 
+			//We need to delete the incoming list of apps
+			Page appdata = getPageManager().getPage(dest.getPath() + "/WEB-INF/data/" + oldcatalogid + "/lists/app/custom.xml" );
+			getPageManager().removePage(appdata);
+			
 			//move the files in place
-			Page apphome = getPageManager().getPage(dest.getPath() + "/" + applicationid);
-			Page appdest = getPageManager().getPage( "/" + applicationid);
+			Page apphome = getPageManager().getPage(dest.getPath() + "/" + oldapplicationid);
+			Page appdest = getPageManager().getPage( "/" + inDestinationAppId);
 			getPageManager().copyPage(apphome, appdest);
 
+			//tweak the xconf
+			PageSettings homesettings = getPageManager().getPageSettingsManager().getPageSettings("/" + inDestinationAppId + "/_site.xconf");
+			homesettings.setProperty("applicationid", inDestinationAppId);
+			homesettings.setProperty("catalogid", inAppcatalogid);
+			if( homesettings.getProperty("fallbackdirectory") == null )
+			{
+				homesettings.setProperty("fallbackdirectory","/WEB-INF/base/emshare");
+			}
+			getPageManager().getPageSettingsManager().saveSetting(homesettings);
+
+			
 			Page cataloghome = getPageManager().getPage(dest.getPath() + "/" + oldcatalogid);
-			Page catalogdest = getPageManager().getPage( "/" + inAppcatalogid);
-			getPageManager().copyPage(cataloghome, catalogdest);
+			if( cataloghome.exists() )
+			{
+				Page catalogdest = getPageManager().getPage( "/" + inAppcatalogid);
+				getPageManager().copyPage(cataloghome, catalogdest);
+				
+				PageSettings catsettings = getPageManager().getPageSettingsManager().getPageSettings("/" + inAppcatalogid + "/_site.xconf");
+				catsettings.setProperty("catalogid", inAppcatalogid);
+				catsettings.setProperty("fallbackdirectory","/media/catalog");
+
+				getPageManager().getPageSettingsManager().saveSetting(catsettings);
+			}
 
 			Page dataold = getPageManager().getPage(dest.getPath() + "/WEB-INF/data/" + oldcatalogid);
 			Page datadest = getPageManager().getPage( "/WEB-INF/data/" + inAppcatalogid);
-			getPageManager().copyPage(dataold, datadest);
-			
+			if( dataold.exists() )
+			{
+				getPageManager().copyPage(dataold, datadest);
+			}
 			//Save the app data
 			Searcher searcher = getSearcherManager().getSearcher(inAppcatalogid, "app");
-			Data site = (Data) searcher.searchByField("deploypath", "/" + applicationid);
+			Data site = (Data) searcher.searchByField("deploypath", "/" + inDestinationAppId);
 			if (site == null)
 			{
 				site = searcher.createNewData();
@@ -267,9 +295,9 @@ public class WorkspaceManager
 			// throw new OpenEditException("frontendid was null");
 			// }
 
-			if (applicationid != null)
+			if (inDestinationAppId != null)
 			{
-				site.setProperty("deploypath", "/" + applicationid);
+				site.setProperty("deploypath", "/" + inDestinationAppId);
 			}
 //			if (catalogid != null)
 //			{
@@ -293,6 +321,8 @@ public class WorkspaceManager
 				cat.setId(inAppcatalogid);
 				catsearcher.saveData(cat, null);
 			}
+			
+			
 		}
 		catch (Exception ex)
 		{

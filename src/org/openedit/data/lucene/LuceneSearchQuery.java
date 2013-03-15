@@ -221,7 +221,11 @@ public class LuceneSearchQuery extends SearchQuery
 				q.append(getDetail().getId());
 				q.append(":(");
 
-				if (getValue().startsWith("\""))
+				if (getValue().equals("*") )
+				{
+					q.append(getValue());
+				}
+				else if ( getValue().startsWith("\""))
 				{
 					q.append(getValue());
 				}

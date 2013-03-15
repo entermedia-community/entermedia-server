@@ -62,8 +62,6 @@ public class OrderZipGenerator extends BaseGenerator
 			HitTracker orderitems = manager.findOrderItems(inReq, archive.getCatalogId(), orderid);
 			String catalogid = archive.getCatalogId();
 			
-			
-
 			ZipUtil util = new ZipUtil();
 			zos = new ZipOutputStream(inOut.getStream());
 			zos.setLevel(1); // for speed since these are jpegs
@@ -75,7 +73,15 @@ public class OrderZipGenerator extends BaseGenerator
 			for (Iterator iterator = orderitems.iterator(); iterator.hasNext();) {
 				Data orderitem = (Data) iterator.next();
 				Data preset = archive.getSearcherManager().getData(catalogid, "convertpreset", orderitem.get("presetid"));
-				Data publishtask = archive.getSearcherManager().getData(catalogid, "publishqueue", orderitem.get("publishqueueid"));
+				
+				String queid = orderitem.get("publishqueueid");
+				if( queid == null )
+				{
+					log.error("publishqueueid should never be null, 0 for browser");
+					continue;
+				}
+				
+				Data publishtask = archive.getSearcherManager().getData(catalogid, "publishqueue", queid);
 				Asset asset = archive.getAssetBySourcePath(orderitem.get("assetsourcepath"));
 				//TODO:  Handle duplicate filenames
 				Page target = null;

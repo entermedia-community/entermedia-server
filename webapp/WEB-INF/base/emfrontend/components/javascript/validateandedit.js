@@ -1,10 +1,17 @@
 
 var openDetail = "";
+var app,home,apphome,themeprefix;
 
-var app = jQuery("#application");
-var home =  app.data("home");
-var apphome = home + app.data("apphome");
-var themeprefix = app.data("home") + app.data("themeprefix");
+
+
+jQuery(document).ready(function() 
+		{
+			app = jQuery("#application");
+			home =  app.data("home");
+			apphome = home + app.data("apphome");
+			themeprefix = app.data("home") + app.data("themeprefix");	
+		}
+);
 
 
 showPicker = function(detailid)

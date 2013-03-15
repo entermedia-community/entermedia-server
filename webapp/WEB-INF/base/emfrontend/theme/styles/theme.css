@@ -1290,26 +1290,7 @@ small {
     border: 1px solid #6a6a6a;
     color: #fff;
 }
-#pages .next a {
-    background: url('../images/pagination-next.png') bottom center no-repeat;
-    height: 21px;
-    width: 21px;
-    margin: 1px 0 0 0;
-    border: none;
-}
-#pages .previous a {
-    background: url('../images/pagination-previous.png') bottom center no-repeat;
-    height: 21px;
-    width: 21px;
-    margin-top: 1px;
-    border: none;
-}
-#pages .previous a:hover {
-    background: url('../images/pagination-previous.png') top center no-repeat;
-}
-#pages .next a:hover {
-    background: url('../images/pagination-next.png') top center no-repeat;
-}
+
 
 /* CATEGORIES AGAIN */
 
@@ -2516,7 +2497,7 @@ tr.odd {
     position: relative;
 }
 #up-files-list li a {
-    padding: 5px 10px;
+    padding: 10px 0px 5px 0px;
     display: block;
     margin: 0;
     color: #444;
@@ -2525,7 +2506,7 @@ tr.odd {
     background: #f3f3f3;
 }
 #up-files-list li a .name {
-    width: 180px;
+    width: 200px;
     overflow: hidden; 
     text-overflow: ellipsis;
     display: inline-block;
@@ -2534,7 +2515,16 @@ tr.odd {
 #up-files-list li a .size {
     color: #3DAACD;
     font-size: 10px;
-    width: 60px;
+    width: 100px;
+    text-align: right;
+    display: inline-block;
+    float: right;
+    margin-top: 1px; 
+}
+#up-files-list li a .uploadstatus {
+    font-style: italic;
+    color: #3DAACD;
+    font-size: 10px;
     text-align: right;
     display: inline-block;
     float: right;
@@ -3395,13 +3385,17 @@ body #emcontainer .emasseteditorarea {
     margin: -6px 0 15px 0;
 }
 
-#advsearchpanel table[width="100%"] .field, #advsearchpanel select.choose-select-ajax {
+#advsearchpanel table[width="100%"] .field, #advsearchpanel .select2 {
     width: 180px !important;
 }
 
 
 #advsearchpanel table[width="100%"] input[type="text"] {
     width: 158px;
+}
+
+#advsearchpanel table[width="100%"] select {
+    width: 180px;
 }
 
 .subnav-title {
@@ -3736,7 +3730,7 @@ body #emcontainer .emasseteditorarea {
     position: relative;
     top: 35px;
     left: 135px;
-    width: 600px;
+    width: 300px;
 }
 .folder:hover .alias, .folder:hover .path {
     color: #3DAACD;
@@ -6219,13 +6213,6 @@ div.dragcount {
 	background:#333;
 }
 
-a.learnmore {
-    background: url('../images/pagination-next.png') bottom center no-repeat;
-	width:21px;
-	height:21px;
-	
-}
-
 .select2
 {
 	min-width: 180px;
@@ -6238,3 +6225,35 @@ div.listautocomplete
 	min-width: 180px;
 	margin: 5px 0;
 }	
+
+a.audio-filename:hover
+{
+	text-decoration: underline;
+}
+
+.multi-value-list
+{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.multi-value-list li 
+{
+    /*For ignore double margin in IE6*/
+    margin: 0px 10px 0 0;
+    padding: 0 0 0px 20px;
+    list-style: none;
+    float: left;
+    display: inline;
+    background: #fff url('../images/icons/check.png') left center no-repeat;
+
+}
+
+#metadataarea
+{
+
+	border-style:dashed;
+    border-color: #b4b4b4;
+    padding: 10px;
+
+}

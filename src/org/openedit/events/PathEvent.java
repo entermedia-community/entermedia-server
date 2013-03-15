@@ -36,7 +36,7 @@ public class PathEvent implements Comparable, TextAppender
 	protected long fieldPeriod = 0;
 	protected String fieldFormattedDelay;
 	protected boolean fieldEnabled = true;
-	protected boolean fieldRunning = false;
+	protected int fieldRunningCount = 0;
 	protected RequestUtils fieldRequestUtils;
 	
 	public PathEvent()
@@ -45,13 +45,14 @@ public class PathEvent implements Comparable, TextAppender
 	
 	public boolean isRunning() 
 	{
-		return fieldRunning;
+		return fieldRunningCount > 0;
 	}
 
-	public void setRunning(boolean inRunning) {
-		fieldRunning = inRunning;
+	public int getRunningCount()
+	{
+		return fieldRunningCount;
 	}
-
+	
 	public long getPeriod()
 	{
 		return fieldPeriod;
@@ -271,14 +272,20 @@ public class PathEvent implements Comparable, TextAppender
 	 */
 	public boolean execute(WebPageRequest inReq) throws OpenEditException
 	{
-		setRunning(true);
+		if( isRunning() )
+		{
+			log.info("Event is already running" + getPage().getName() );
+			return false; //already running
+		}
+		//Hopefully two events executes would not be run at the same moment. 
+		fieldRunningCount++;
 		try
 		{
 			return runNow(inReq);
 		}
 		finally
 		{
-			setRunning(false);
+			fieldRunningCount--;
 		}
 	}
 

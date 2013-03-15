@@ -27,7 +27,7 @@
     #set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
     #set( $text = $link.name)
     #if( $permission != "false")
-	    #set($args = "id=$data.getId()&hitssessionid=$!{hitssessionid}&searchtype=$moduleid")
+	    #set($args = "id=$!data.getId()&hitssessionid=$!{hitssessionid}&searchtype=$moduleid")
 	    #if( !$ismulti || $inmultiok )
 	    #set ($href = "$apphome/views/modules/${moduleid}/${link.folder}/index.html")
 	    

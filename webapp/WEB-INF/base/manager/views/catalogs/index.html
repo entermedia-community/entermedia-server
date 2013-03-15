@@ -8,13 +8,13 @@
 
 
 #end
-
+<h2>Catalog List</h2>
 <ul class="catalog-list">
 
 #foreach ($catalog in $catalogs)
      <li class="section-title" >
      	<div class="folder"></div>
-       <span ><a href="$home$apphome/views/catalogs/edit.html?appcatalogid=$catalog.id">$catalog Catalog</a></span>
+       <span ><a href="$home$apphome/views/catalogs/edit.html?appcatalogid=$catalog.id">$catalog</a></span>
      </li>
 #end
 

@@ -34,6 +34,7 @@ public void checkforTasks()
 	query.addBefore("recordmodificationdate", now.getTime())
 	
 	HitTracker newitems = searcher.search(query);
+	log.info("Searching for ${query} found ${newitems.size()}");
 	
 	for (Data hit in newitems)
 	{	
@@ -43,7 +44,7 @@ public void checkforTasks()
 		if (realitem != null)
 		{
 			mediaarchive.removeGeneratedImages(realitem);
-			mediaarchive.removeOriginals(realitem);
+			//mediaarchive.removeOriginals(realitem);
 			searcher.delete(realitem, context.getUser());
 		}
 		else

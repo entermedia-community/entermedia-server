@@ -83,8 +83,8 @@ public class AttachmentManager
 	protected void syncFolder(Searcher attachmentSearcher, MediaArchive inArchive, String inAssetId, String inRootFolder, String inFolderSourcePath, String inAssetSourcePath, boolean inReprocess)
 	{
 		SearchQuery query = attachmentSearcher.createSearchQuery();
-		query.addMatches("assetid", inAssetId);
-		query.addMatches("parentsourcepath", inFolderSourcePath);
+		query.addExact("assetid", inAssetId);
+		query.addExact("parentsourcepath", inFolderSourcePath);
 
 		//List known data children for this one folder
 		HitTracker hits = attachmentSearcher.search(query);
