@@ -24,6 +24,7 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -189,6 +190,7 @@ public class PostMail
 		// set the from and to address
 		InternetAddress addressFrom = new InternetAddress(from);
 		msg.setFrom(addressFrom);
+		//msg.setRecipient(RecipientType.BCC, addressFrom);
 		msg.setSentDate(new Date());
 		if (recipients == null || recipients.length == 0) {
 			throw new MessagingException("No recipients specified");

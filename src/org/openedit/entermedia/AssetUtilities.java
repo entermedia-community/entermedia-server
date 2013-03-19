@@ -83,6 +83,7 @@ public class AssetUtilities
 			if( "7".equals( editstatus) ) //Not deleted anymore
 			{
 				//restore
+				asset.setProperty("importstatus", "reimported");
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
 				return asset;
