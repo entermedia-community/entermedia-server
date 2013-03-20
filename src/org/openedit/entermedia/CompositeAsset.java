@@ -405,7 +405,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				}
 			}
 			//TODO: Deal with multi value fields
-			
+			if( tosave.size() > 1000)
+			{
+				getArchive().saveAssets(tosave);
+				tosave.clear();
+			}
 		}
 		getArchive().saveAssets(tosave);
 	}
