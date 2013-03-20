@@ -7,7 +7,11 @@ Invalid order, username does not match
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	
-<form class="validate" id="usereditform"  method="post" action="$home$apphome/views/activity/download/processorder.html">
+<form class="validate" id="usereditform"  method="post" 
+
+onSubmit='$("#submitbutton").attr("disabled","disabled");$("#submitbutton").val("Processing");'
+
+action="$home$apphome/views/activity/download/processorder.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 
@@ -81,7 +85,7 @@ $asset
 	
 </table>
 <div style="text-align: right">
-<input class="btn" type="submit" name="submit" value="Next"  onclick='this.disabled="disabled";$(this).val("Processing");' /> 
+<input class="btn" id="submitbutton" type="submit" name="submit" value="Next"  /> 
 </div>
 	
 	<div id="itemsave"></div>
