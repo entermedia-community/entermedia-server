@@ -10,7 +10,6 @@
 	<property id="jobnotes" index="true" stored="true" >Job Notes</property>
 	<property id="remotePath" index="true" stored="true" >Remote Path</property> <!-- Is This needed? -->
 	<property id="publishqueueid" index="true" stored="true" >Publish Queue Id</property>
-	<property id="conversiontaskid" index="true" stored="true" >Conversion Task Id</property>
 	<property id="presetid" listid="convertpreset" index="true" stored="true" >Preset</property>
 
 </properties>

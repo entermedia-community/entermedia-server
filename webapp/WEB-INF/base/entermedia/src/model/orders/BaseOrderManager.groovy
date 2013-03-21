@@ -576,48 +576,6 @@ public class BaseOrderManager implements OrderManager
 				orderItemSearcher.saveData(orderItem, inUser);
 				continue;
 			}
-
-			boolean needstobecreated = true;
-			if( orderItem.get("conversiontaskid") != null )
-			{
-				needstobecreated = false;
-			}
-			
-			Data preset = (Data) presets.searchById(presetid);
-			String outputfile = preset.get("outputfile");
-
-			//Make sure preset does not already exists?
-			if( needstobecreated && "original".equals( preset.get("type") ) )
-			{
-				needstobecreated = !archive.getOriginalDocument(asset).exists();
-			}	
-			else if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
-			{
-				needstobecreated = false;
-			}
-			if (needstobecreated)
-			{
-				SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid",presetid);
-				Data newTask = taskSearcher.searchByQuery(q);
-				if( newTask == null )
-				{
-					newTask = taskSearcher.createNewData();	
-					newTask.setProperty("status", "new");
-					newTask.setProperty("assetid", assetid);
-					newTask.setProperty("presetid", presetid);
-					newTask.setSourcePath(asset.getSourcePath());
-					taskSearcher.saveData(newTask, inUser);
-				}
-				else
-				{
-					//No need to republish the same asset right?
-					newTask = (Data) taskSearcher.searchById(newTask.getId());//load real data
-				}
-				
-				//newTask.setProperty("orderid", order.getId());
-				//newTask.setProperty("itemid", hit.getId());
-				orderItem.setProperty("conversiontaskid",newTask.getId());
-			}
 			
 			//Add a publish task to the publish queue
 			String destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
@@ -625,58 +583,110 @@ public class BaseOrderManager implements OrderManager
 			{
 				destination = order.get("publishdestination");
 			}
-			if( destination != null)
-			{
-				String publishstatus = "new";
-				//We need a publishing task for the remote push server to push the file here?
-				if( !needstobecreated && destination.equals("0") )
-				{
-					//browser
-					publishstatus = "complete";
-				}
-				Data publishqeuerow = publishQueueSearcher.createNewData();
-				publishqeuerow.setProperty("assetid", assetid);
-				publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
-				
-				publishqeuerow.setProperty("publishdestination", destination);
-				publishqeuerow.setProperty("presetid", presetid);
-
-				String userid = order.get("userid");
-				User user = null;
-				if( userid != null )
-				{
-					user = (User)archive.getSearcherManager().getSearcher("system", "user").searchById(userid);
-				}
-				String exportname = archive.asExportFileName(user, asset, preset);
-				publishqeuerow.setProperty("exportname", exportname);
-				publishqeuerow.setProperty("status", publishstatus);
-				
-				Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
-				if( !needstobecreated )
-				{
-					publishqeuerow.setProperty("remotempublishstatus", "created");
-				}
-				publishqeuerow.setSourcePath(asset.getSourcePath());
-				publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-				publishQueueSearcher.saveData(publishqeuerow, inUser);
-				
-				if( publishqeuerow.getId() == null )
-				{
-					throw new OpenEditException("Id should not be null");
-				}
-				
-				orderItem.setProperty("publishqueueid",publishqeuerow.getId());
-			}	
-			else
+			if( destination == null)
 			{
 				throw new OpenEditException("publishdestination.value is missing");
 			}
-			orderItemSearcher.saveData(orderItem, inUser);
-			if( !needstobecreated )
+			Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
+			
+				
+			String publishstatus = "new";
+			Data publishqeuerow = publishQueueSearcher.createNewData();
+			publishqeuerow.setProperty("assetid", assetid);
+			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
+			
+			publishqeuerow.setProperty("publishdestination", destination);
+			publishqeuerow.setProperty("presetid", presetid);
+
+			String userid = order.get("userid");
+			User user = null;
+			if( userid != null )
 			{
-				//Kick off the publish tasks
-				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
+				user = (User)archive.getSearcherManager().getSearcher("system", "user").searchById(userid);
 			}
+			Data preset = (Data) presets.searchById(presetid);
+			
+			String exportname = archive.asExportFileName(user, asset, preset);
+			publishqeuerow.setProperty("exportname", exportname);
+			publishqeuerow.setProperty("status", publishstatus);
+			
+			publishqeuerow.setSourcePath(asset.getSourcePath());
+			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			
+			
+			//TODO; Move all this into publishassets.groovy so that auto publish things can be smart about remote stuff
+			
+			boolean remotepublish = false;
+			if( Boolean.valueOf( dest.get("onlyremotempublish") ) )
+			{
+				//flip flag and do nothing
+				remotepublish = true;
+			}
+			else //maybe add a conversion request
+			{
+				
+				boolean needstobecreated = true;
+				if( orderItem.get("conversiontaskid") != null )
+				{
+					needstobecreated = false;
+				}
+				
+				String outputfile = preset.get("outputfile");
+	
+				//Make sure preset does not already exists?
+				if( needstobecreated && "original".equals( preset.get("type") ) )
+				{
+					needstobecreated = !archive.getOriginalDocument(asset).exists();
+				}
+				else if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
+				{
+					needstobecreated = false;
+				}
+					
+				if( needstobecreated )
+				{					
+					if (  Boolean.valueOf( dest.get("remotempublish") ) )
+					{
+						remotepublish = true;
+					}
+					else
+					{
+						//create the convert task and save it on the publish request
+						SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid",presetid);
+						Data newTask = taskSearcher.searchByQuery(q);
+						if( newTask == null )
+						{
+							newTask = taskSearcher.createNewData();
+							newTask.setProperty("status", "new");
+							newTask.setProperty("assetid", assetid);
+							newTask.setProperty("presetid", presetid);
+							newTask.setSourcePath(asset.getSourcePath());
+							taskSearcher.saveData(newTask, inUser);
+						}
+						publishqeuerow.setProperty("conversiontaskid", newTask.getId() );
+					}
+				}
+			}
+			if( remotepublish )
+			{
+				publishqeuerow.setProperty("remotepublish", "true");
+			}
+			
+			publishQueueSearcher.saveData(publishqeuerow, inUser);
+			
+			if( publishqeuerow.getId() == null )
+			{
+				throw new OpenEditException("Id should not be null");
+			}
+			
+			orderItem.setProperty("publishqueueid",publishqeuerow.getId());
+
+			orderItemSearcher.saveData(orderItem, inUser);
+//			if( !needstobecreated )
+//			{
+//				//Kick off the publish tasks
+//				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
+//			}
 		}
 		archive.fireSharedMediaEvent("publishing/publishassets");
 		return assetids;
@@ -780,75 +790,46 @@ public class BaseOrderManager implements OrderManager
 
 	protected boolean updateItem(MediaArchive archive, Searcher taskSearcher, Searcher itemsearcher,Searcher publishQueueSearcher, Order inOrder, Data orderitemhit)
 	{
-		boolean convertcomplete = false;
 		boolean publishcomplete = false;
-		String conversiontaskid = orderitemhit.get("conversiontaskid");
-		if( conversiontaskid == null)
+		String publishqueueid = orderitemhit.get("publishqueueid");
+		if( publishqueueid == null)
 		{
-			convertcomplete = true;
+			publishcomplete = true;
 		}
 		else
 		{
-			Data convert = (Data)taskSearcher.searchById(conversiontaskid);
-			if( "complete".equals( convert.get("status") ) )
+			Data publish = (Data)publishQueueSearcher.searchById(publishqueueid);
+			if( publish == null )
 			{
-				convertcomplete = true;
+				log.error("PublishQueue was null for ${publishqueueid} on order ${inOrder.getId()}");
+				publish = new BaseData();
+				 publish.setProperty("status","error");
+				 publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
 			}
-			else if ("error".equals( convert.get("status") ) )
+			if( "complete".equals( publish.get("status") ) )
+			{
+				publishcomplete = true;
+			}
+			else if ("error".equals( publish.get("status") ) )
 			{
 				Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
 				item.setProperty("status", "error");
-				item.setProperty("errordetails", convert.get("errordetails"));
+				item.setProperty("errordetails", publish.get("errordetails"));
 				itemsearcher.saveData(item, null);
-				inOrder.setOrderStatus("error",convert.get("errordetails")); //orders are either open closed or error
+				inOrder.setOrderStatus("error",publish.get("errordetails")); //orders are either open closed or error
 				OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
 				saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
 				return false;
 			}
-
 		}
-		if( convertcomplete)
+		if( publishcomplete )
 		{
-			String publishqueueid = orderitemhit.get("publishqueueid");
-			if( publishqueueid == null)
+			if( orderitemhit.get("status") != "complete" )
 			{
-				publishcomplete = true;
-			}
-			else
-			{
-				Data publish = (Data)publishQueueSearcher.searchById(publishqueueid);
-				if( publish == null )
-				{
-					log.error("PublishQueue was null for ${publishqueueid} on order ${inOrder.getId()}");
-					publish = new BaseData();
-					 publish.setProperty("status","error");
-					 publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
-				}
-				if( "complete".equals( publish.get("status") ) )
-				{
-					publishcomplete = true;
-				}
-				else if ("error".equals( publish.get("status") ) )
-				{
-					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
-					item.setProperty("status", "error");
-					item.setProperty("errordetails", publish.get("errordetails"));
-					itemsearcher.saveData(item, null);
-					inOrder.setOrderStatus("error",publish.get("errordetails")); //orders are either open closed or error
-					OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
-					saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
-					return false;
-				}
-			}
-			if( publishcomplete )
-			{
-				if( orderitemhit.get("status") != "complete" )
-				{
-					Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
-					item.setProperty("status", "complete");
-					//set date?
-					itemsearcher.saveData(item, null);
-				}
+				Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
+				item.setProperty("status", "complete");
+				//set date?
+				itemsearcher.saveData(item, null);
 			}
 		}
 		return publishcomplete;
