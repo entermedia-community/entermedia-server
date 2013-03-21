@@ -28,7 +28,7 @@ $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 			<input type="hidden" name="name" value="$permission.name"/>
 			<input type="hidden" name="inparent" value="$inparent"/>
 			
-			#set( $list = $searcherManager.getList("openedit","group"))
+			#set( $list = $searcherManager.getList("system","group"))
 			$context.putPageValue("groups",$list)
 			##macro starts here
 			#showfilter2($filter 0 "0")
