@@ -74,17 +74,18 @@ uiload = function() {
 		buttonImage: themeprefix + '/entermedia/images/cal.gif',
 		buttonImageOnly: true,
 		changeMonth: true,
-		changeYear: true	
+		changeYear: true, 
+		yearRange: '1900:2050'
 	}, jQuery.datepicker.regional[browserlanguage]));  //Move this to the layout?
 	
 	jQuery("input.datepicker").livequery(
 			function() 
 			{
 				var targetid = jQuery(this).data("targetid");
-				
 				jQuery(this).datepicker( {
 					altField: "#"+ targetid,
-					altFormat: "mm/dd/yy"
+					altFormat: "mm/dd/yy", 
+					yearRange: '1900:2050'
 				}
 				);
 				
