@@ -207,7 +207,7 @@ public class BasePushManager implements PushManager
 		Searcher searcher = archive.getAssetSearcher();
 		SearchQuery query = searcher.createSearchQuery();
 		//query.addMatches("category","index");
-		query.addOrsGroup("pushstatus","complete retry");
+		query.addOrsGroup("pushstatus","complete resend retry"); //retry is legacy
 		query.addMatches("editstatus","7");
 		query.addSortBy("id");
 
@@ -346,7 +346,7 @@ public class BasePushManager implements PushManager
 
 	}
 	//The client can only be used by one thread at a time
-	protected synchronized Element execute(String inCatalogId, HttpMethod inMethod)
+	protected Element execute(String inCatalogId, HttpMethod inMethod)
 	{
 		try
 		{
@@ -365,11 +365,9 @@ public class BasePushManager implements PushManager
 		{	
 			throw new RuntimeException(e);
 		}
-		
-
 	}
 
-	protected Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	protected synchronized Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
 		int status = getClient(inCatalogId).executeMethod(inMethod);
 		if (status != 200)
@@ -783,26 +781,26 @@ asset: " + asset);
 		PostMethod method = new PostMethod(url);
 
 		//loop over all the destinations we are monitoring
-		Searcher dests = getSearcherManager().getSearcher(inArchive.getCatalogId(),"publishdestination");
-		Collection hits = dests.fieldSearch("remotempublish","true");
-		if( hits.size() == 0 )
-		{
-			log.info("No remote publish destinations defined. Disable Pull Remote Event");
-			return;
-		}
-		StringBuffer ors = new StringBuffer();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			Data dest = (Data) iterator.next();
-			ors.append(dest.getId());
-			if( iterator.hasNext() )
-			{
-				ors.append(" ");
-			}
-		}
-		method.addParameter("field", "publishdestination");
-		method.addParameter("publishdestination.value", ors.toString());
-		method.addParameter("operation", "orsgroup");
+////		Searcher dests = getSearcherManager().getSearcher(inArchive.getCatalogId(),"publishdestination");
+////		Collection hits = dests.fieldSearch("remotempublish","true");
+////		if( hits.size() == 0 )
+////		{
+////			log.info("No remote publish destinations defined. Disable Pull Remote Event");
+////			return;
+////		}
+//		StringBuffer ors = new StringBuffer();
+//		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+//		{
+//			Data dest = (Data) iterator.next();
+//			ors.append(dest.getId());
+//			if( iterator.hasNext() )
+//			{
+//				ors.append(" ");
+//			}
+//		}
+		method.addParameter("field", "remotepublish");
+		method.addParameter("remotepublish.value", "true");
+		method.addParameter("operation", "matches");
 
 		method.addParameter("field", "status");
 		method.addParameter("status.value", "complete");

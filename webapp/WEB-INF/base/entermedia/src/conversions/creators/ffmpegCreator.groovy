@@ -120,15 +120,23 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 					comm.add(inStructions.get("vcodec") );
 				}
 
-				if( inStructions.get("vpre") == null )
-				{	
-					comm.add("-vpre");
-					comm.add("normal");
+				if( inStructions.get("pre") == null )
+				{
+					if( inStructions.get("vpre") == null )
+					{	
+						comm.add("-vpre");
+						comm.add("normal");
+					}
+					else
+					{
+						comm.add("-vpre");
+						comm.add(inStructions.get("vpre"));
+					}
 				}
 				else
 				{
-					comm.add("-vpre");
-					comm.add(inStructions.get("vpre"));
+					comm.add("-pre"); //TODO: replace with a parameter search by type
+					comm.add(inStructions.get("pre"));
 				}
 				comm.add("-crf");
 				comm.add("28");  

@@ -1,6 +1,6 @@
 <page>
 
-	<property name="assettab">viewmetadatageneral</property>
+	<property name="assettab">metadatageneral</property>
 	<property name="scrollable">true</property>
 	
 </page>

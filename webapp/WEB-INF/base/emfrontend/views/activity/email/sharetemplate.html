@@ -53,17 +53,14 @@ Access to these files will expire on
 		</td>
 		<td>
 		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
+		    #if( !$val)
+				#set( $val = $item.get("presetid") )		    	
+		    #end
 			#if( $val )
 				#set($preset = $searcherManager.getData($catalogid, "convertpreset",$val ))
 				$!preset
 			#else
-				#if( $item.conversiontaskid )
-					#set($conversiontask = $searcherManager.getData($catalogid, "conversiontask",$item.conversiontaskid))
-					#set($preset = $searcherManager.getData($catalogid, "convertpreset",$conversiontask.presetid ))
-					$preset
-				#else
-					Online Preview
-				#end	
+				Online Preview
 			#end	
 		</tr>
 	#end

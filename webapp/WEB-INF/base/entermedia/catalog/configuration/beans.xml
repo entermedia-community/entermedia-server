@@ -9,7 +9,6 @@
 -->
 <!--  real data -->
 
-	<bean id="presetdataSearcher" bean="xmlFolderSearcher"/>
     <bean id="assetvotesSearcher" bean="xmlFileSearcher" />
 
 

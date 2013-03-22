@@ -438,6 +438,16 @@ public class imagemagickCreator extends BaseImageCreator
 	protected List<String> createCommand(File inFile, ConvertInstructions inStructions)
 	{
 		List<String> com = new ArrayList<String>();
+		
+//		if( inStructions.getParameters() != null )
+//		{
+//			for (Iterator iterator = inStructions.getParameters().iterator(); iterator.hasNext();)
+//			{
+//				Data data = (Data) iterator.next();
+//				com.add(data.getName());
+//				com.add(data.get("value") );
+//			}
+//		}
 		// New version of Image Magik are 0 based
 		int page = inStructions.getPageNumber();
 		page--;

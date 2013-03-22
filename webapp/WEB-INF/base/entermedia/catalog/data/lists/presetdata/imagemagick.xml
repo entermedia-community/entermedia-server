@@ -1,9 +1,9 @@
 <properties>
-  <preset id="imagethumb" prefwidth="200" prefheight="200"  watermark="false">Small Thumbnail</preset>
-  <preset id="imagemedium" prefwidth="550" prefheight="350"  watermark="false">Medium</preset>
-  <preset id="imagepreview" prefwidth="1024" prefheight="768"  watermark="false">Preview</preset>
-  <preset id="imagecrop" crop="true" prefwidth="110" prefheight="62"  watermark="false">Crop</preset>
-    <preset id="imagecmyk" crop="true" prefwidth="1024" prefheight="768"  watermark="false" colorspace="CMYK">Crop</preset>
-    <preset id="imagepreviewfpo" prefwidth="1024" prefheight="768"  watermark="true">Preview - FPO</preset>
+  <preset id="imagethumb" >Small Thumbnail</preset>
+  <preset id="imagemedium" >Medium</preset>
+  <preset id="imagepreview" >Preview</preset>
+  <preset id="imagecrop" >Crop</preset>
+    <preset id="imagecmyk" >Crop</preset>
+    <preset id="imagepreviewfpo" >Preview - FPO</preset>
   
 </properties>
