@@ -41,7 +41,7 @@ $('#${detail.id}_map').gmap({
 	    	).click(function() {
 		//$('#${detail.id}_map').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
 	});
-	    $('#${detail.id}_map').gmap('option', 'zoom', 7);
+	    $('#${detail.id}_map').gmap('option', 'zoom', 12);
 	#else
 	    $('#${detail.id}_map').gmap('option', 'zoom', 2);
 	#end
@@ -80,7 +80,7 @@ dosearch = function ()
 	    	});
 
 	    	$('#${detail.id}_map').gmap('get', 'map').panTo(results[0].geometry.location);
-	       $('#${detail.id}_map').gmap('option', 'zoom', 7);
+	       $('#${detail.id}_map').gmap('option', 'zoom', 12);
 
  		  jQuery('#${detail.id}_lat').val(results[0].geometry.location.lat());
           jQuery('#${detail.id}_lng').val(results[0].geometry.location.lng());
