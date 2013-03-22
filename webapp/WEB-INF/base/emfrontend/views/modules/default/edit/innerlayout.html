@@ -7,11 +7,10 @@ $context.putPageValue("searchhome",$searchhome)
 
 <div id="searchplugin">
     <div class="subcolumns">
-        <div class="c25l" id="left-col">
+        <div class="c25l" id="left-col" #if($userprofile.minimizeleft-col == "true") style="display: none;" #end>
                 $pages.include("${searchhome}/sidebar/standard.html", $context)
 $pages.include("$apphome/components/libraries/sidebar.html",$context)
-
-        </div>
+ </div>
         <div id="right-col" class="module-inner">
                 
             <div id="resultsdiv">
