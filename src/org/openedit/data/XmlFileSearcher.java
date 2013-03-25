@@ -78,6 +78,8 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 
 	public Data loadData(String inSourcePath, String inId)
 	{
+		//TODO: Load from cache?
+		
 		Data data = getXmlDataArchive().loadData(this,inSourcePath,inId);
 		return data;
 	}
