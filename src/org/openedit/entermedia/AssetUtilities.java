@@ -83,8 +83,14 @@ public class AssetUtilities
 			if( "7".equals( editstatus) ) //Not deleted anymore
 			{
 				//restore
+				asset.setProperty("importstatus", "reimported");
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
+				readMetadata(asset, inContent, inArchive); 				//should we re-load metadata?
+				if( inCludeCategories )
+				{
+					populateCategory(asset, inContent, inArchive, inUser);
+				}
 				return asset;
 			}
 			
@@ -119,7 +125,14 @@ public class AssetUtilities
 			}
 			asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			asset.setProperty("assetviews", "1");
-			asset.setProperty("importstatus", "imported");
+//			if( newasset )
+//			{
+				asset.setProperty("importstatus", "imported");
+//			}
+//			else
+//			{
+//				asset.setProperty("importstatus", "reimported");
+//			}
 			asset.setProperty("pushstatus", "resend");
 			//asset.setProperty("primaryfile", name);
 			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());

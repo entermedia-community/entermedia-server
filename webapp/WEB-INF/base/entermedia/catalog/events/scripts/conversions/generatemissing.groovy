@@ -13,7 +13,8 @@ public void init()
 		PresetCreator presets = new PresetCreator();
 
 		//HitTracker assets = assetsearcher.getAllHits();
-		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
+		SearchQuery q = assetsearcher.createSearchQuery();
+		q.addOrsGroup("importstatus", "imported reimported");
 		//SearchQuery q = assetsearcher.createSearchQuery().append("category", "index");
 		q.addNot("editstatus","7");
 		q.addSortBy("id");

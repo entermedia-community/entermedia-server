@@ -48,7 +48,10 @@ public class LuceneHitTracker extends HitTracker
 	protected Integer fieldSize;
 	protected String fieldSearchType;
 	
-	
+	/**
+	 * This is what is searched. getResultsType() is what is returned?
+	 * @deprecated
+	 */
 	public String getSearchType()
 	{
 		return fieldSearchType;
@@ -133,7 +136,7 @@ public class LuceneHitTracker extends HitTracker
 					searcher.doc(docid, visitor);
 					page.add( visitor.createSearchResult() );
 				}
-				log.info(getSearchType() + " " + getLuceneQuery() + " " +  size() + " total, loaded " + start + " to " + (start+page.size()) + " sort by: " + getLuceneSort() + " " + getCatalogId());
+				log.info(getSearchType() +  size() + " total "  + getLuceneQuery() + " :loaded " + start + " to " + (start+page.size()) + " sort by: " + getLuceneSort() + " " + getCatalogId());
 				getPages().put(inPageNumberZeroBased,page);
 			}
 			catch( Exception ex )

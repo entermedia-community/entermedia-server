@@ -41,7 +41,7 @@ init();
 public boolean conversionsComplete(String assetid){
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 	
-	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
+	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher(mediaarchive.getCatalogId(), "conversiontask");
 	log.debug("loadssetstatus is checking for new and submitted conversions");
 	
 	SearchQuery query = tasksearcher.createSearchQuery();

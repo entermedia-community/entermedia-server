@@ -27,6 +27,12 @@ public class LuceneTransientSearcher extends XmlFileSearcher
 	{
 
 	}
+	
+	public void deleteAll(User inUser)
+	{
+		reIndexAll();
+	}
+	
 	public void saveData(Data data, User inUser)
 	{
 		if(data.getId() == null)

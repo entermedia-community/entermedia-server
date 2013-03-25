@@ -39,7 +39,8 @@ public void init() {
 		query.addExact("assetid", assetid);
 	}
 	query.addOrsGroup("status","new pending retry");
-	//query.addNot("remotempublishstatus","new");
+	query.addNot("remotepublish","true");
+	
 	HitTracker tracker = queuesearcher.search(query);
 	log.info("publishing " + tracker.size() + " assets" + queuesearcher);
 	if( tracker.size() > 0)

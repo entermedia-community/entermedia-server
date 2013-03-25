@@ -12,6 +12,7 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.util.TimeParser;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.XmlVersionRepository;
@@ -203,7 +204,13 @@ public class HotFolderManager
 		if( since != null )
 		{
 			long now = System.currentTimeMillis();
-			sincedate = sincedate + 1000*60*60*24*7; //once a week
+			String mod = inArchive.getCatalogSettingValue("importing_modification_interval");
+			if( mod == null)
+			{
+				mod = "1d";
+			}
+			long time = new TimeParser().parse(mod);
+			sincedate = sincedate + time; //once a week
 			if( sincedate > now )
 			{
 				skipmodcheck = true;
