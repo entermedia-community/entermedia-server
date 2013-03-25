@@ -87,6 +87,10 @@ public class AssetUtilities
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
 				readMetadata(asset, inContent, inArchive); 				//should we re-load metadata?
+				if( inCludeCategories )
+				{
+					populateCategory(asset, inContent, inArchive, inUser);
+				}
 				return asset;
 			}
 			
