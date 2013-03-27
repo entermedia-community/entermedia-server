@@ -166,12 +166,14 @@ public class LuceneHitTracker extends HitTracker
 				{
 					fieldOpenDocs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE);
 				}
+				log.info(getSearchType() + " " +  fieldOpenDocs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
+			fieldSize = fieldOpenDocs.totalHits;
 			
 			int start = getHitsPerPage() * inPageNumberZeroBased;
 			int max = start + getHitsPerPage();
-			fieldSize = fieldOpenDocs.totalHits;
 			max = Math.min(max, fieldSize);
 			
 			List<Data> page = new ArrayList<Data>(getHitsPerPage());
