@@ -69,13 +69,14 @@ public class HitIterator implements Iterator
 		if(fieldCurrentPageData == null || page != fieldCurrentPageZeroBased)
 		{
 			fieldCurrentPageData = getLuceneHitTracker().getPage(page);
+			fieldCurrentPageZeroBased = page;
 		}
-
+		
 		// 50 - (1 * 40) = 10 relative
 		int indexlocation = hitCount - ( page * getLuceneHitTracker().getHitsPerPage() );
 
 		hitCount++;
-
+		
 		return fieldCurrentPageData.get(indexlocation);
 
 	}
