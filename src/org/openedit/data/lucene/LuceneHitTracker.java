@@ -271,6 +271,7 @@ public class LuceneHitTracker extends HitTracker
 		 * Guess Most people do not loop over their entire database as often as we do. 
 		 * TODO: Find a way to cache more generically instead of one page at a time?
 		 */		
+		
 		ScoreDoc lastDoc = null;
 		Map<String,Integer> columns = new TreeMap<String,Integer>();	
 		for (int i = 0; start + i < max; i++)
@@ -278,11 +279,13 @@ public class LuceneHitTracker extends HitTracker
 			int offset = start + i;
 			lastDoc = docs.scoreDocs[offset];
 		    int docid = lastDoc.doc;
-			final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
-			searcher.doc(docid, visitor);
+			//final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+		  final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+			
+		    searcher.doc(docid, visitor);
 			page.add( visitor.createSearchResult() );
 		}
-		log.info( getSearchType()  + " ended with "   + lastDoc.doc + " = " + page.get(page.size() - 1).getId());
+	//	log.info( getSearchType()  + " ended with "   + lastDoc.doc + " = " + page.get(page.size() - 1).getId());
 
 		
 		return lastDoc;
