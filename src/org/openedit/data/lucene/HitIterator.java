@@ -13,6 +13,7 @@ See the GNU Lesser General Public License for more details.
 package org.openedit.data.lucene;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.openedit.Data;
 
@@ -26,6 +27,8 @@ public class HitIterator implements Iterator
 {
 	LuceneHitTracker fieldLuceneHitTracker;
 	int hitCount = 0;
+	protected int fieldCurrentPageZeroBased;
+	protected List<Data> fieldCurrentPageData;
 	
 	public LuceneHitTracker getLuceneHitTracker()
 	{
@@ -59,9 +62,22 @@ public class HitIterator implements Iterator
 	 */
 	public Object next()
 	{
-		Data data = getLuceneHitTracker().get(hitCount);
+		
+		int page = hitCount / getLuceneHitTracker().getHitsPerPage();
+		
+		//Make sure we are on the current page?
+		if(fieldCurrentPageData == null || page != fieldCurrentPageZeroBased)
+		{
+			fieldCurrentPageData = getLuceneHitTracker().getPage(page);
+		}
+
+		// 50 - (1 * 40) = 10 relative
+		int indexlocation = hitCount - ( page * getLuceneHitTracker().getHitsPerPage() );
+
 		hitCount++;
-		return data;
+
+		return fieldCurrentPageData.get(indexlocation);
+
 	}
 
 	/**

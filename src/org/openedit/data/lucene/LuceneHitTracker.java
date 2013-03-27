@@ -19,9 +19,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.DocumentStoredFieldVisitor;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
@@ -44,9 +44,12 @@ public class LuceneHitTracker extends HitTracker
 	protected transient SearcherManager fieldLuceneSearcherManager;
 	protected transient Query fieldLuceneQuery;
 	protected transient Sort fieldLuceneSort;
-	protected Map fieldPages;
+	//protected Map fieldPages;
+	//protected Map<Integer,ScoreDoc> fieldCursors;
 	protected Integer fieldSize;
 	protected String fieldSearchType;
+	protected TopDocs fieldOpenDocs;
+	protected int fieldOpenDocsSearcherHash;
 	
 	/**
 	 * This is what is searched. getResultsType() is what is returned?
@@ -77,10 +80,50 @@ public class LuceneHitTracker extends HitTracker
 		}
 		return fieldSize;
 	}
-
+/*
+	protected void setCursorForPage(ScoreDoc inDoc, int inPageZeroBased)
+	{
+		if (fieldCursors == null)
+		{
+			fieldCursors = new HashMap();
+		}
+		if( inDoc != null) //may be zero results
+		{
+			//log.info( getSearchType()  + " Page  " + inPageZeroBased + " ended with " + inDoc.doc  + " " + fieldSize );
+			fieldCursors.put(inPageZeroBased, inDoc);
+		}
+	}
+	
+	protected ScoreDoc getCursorForPage(int inPageZeroBased)
+	{
+		if (fieldCursors == null)
+		{
+			return null;
+		}
+		return fieldCursors.get(inPa  int docid = lastDoc.doc;
+		final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+		searcher.doc(docid, visitor);
+		page.add( visitor.createSearchResult() );geZeroBased);
+	}
+	*/
+	public void setPage(int inPageOneBased)
+	{
+		if( inPageOneBased == 0)
+		{
+			inPageOneBased = 1;
+		}
+		fieldPage = inPageOneBased;
+		fieldCurrentPage = getPage(inPageOneBased - 1);
+	}
+	
+	/**
+	 * @deprecated use getPage(int)
+	 */
 	public Data get(int inCount)
 	{
 		int page = inCount / getHitsPerPage();
+		
+		//Make sure we are on the current page?
 		
 		//get the chunk 1
 		List<Data> row = getPage(page);
@@ -90,73 +133,161 @@ public class LuceneHitTracker extends HitTracker
 
 		return row.get(indexlocation);
 	}
-	protected Map<Integer,List<Data>> getPages()
-	{
-		if (fieldPages == null)
-		{
-			//fieldPages = new HashMap<Integer,List<Data>>(); //this will leak for really large resultsets
-			fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
-		}
-		return fieldPages;
-	}
+//	protected Map<Integer,List<Data>> getPages()
+//	{
+//		if (fieldPages == null)
+//		{
+//			//fieldPages = new HashMap<Integer,List<Data>>(); //this will leak for really large resultsets
+//			fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+//		}
+//		return fieldPages;
+//	}
 	
 	protected List<Data> getPage(int inPageNumberZeroBased)
 	{
-		List<Data> page = getPages().get(inPageNumberZeroBased);
-		if( page == null )
+//		List<Data> page = getPages().get(inPageNumberZeroBased);
+//		if( page == null )
+//		{
+		
+		IndexSearcher searcher = getLuceneSearcherManager().acquire();
+		
+		try
 		{
-			IndexSearcher searcher = getLuceneSearcherManager().acquire();
-			try
+
+			if( fieldOpenDocsSearcherHash != searcher.hashCode() )
 			{
-				int start = getHitsPerPage() * inPageNumberZeroBased;
-				int max = start + getHitsPerPage();
-				TopDocs docs = null;
+				//do the search and save the reuslts
+
 				if( getLuceneSort() != null )
 				{
-					docs = searcher.search( getLuceneQuery(),max ,getLuceneSort() );
+					fieldOpenDocs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE ,getLuceneSort() );
 				}
 				else
 				{
-					docs = searcher.search( getLuceneQuery(),max);
+					fieldOpenDocs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE);
 				}
-				fieldSize = docs.totalHits;
-				page = new ArrayList<Data>(getHitsPerPage());
-				
-				/**
-				 * This is optimized to only store string versions of the data we have. Normally the Document class has FieldType that use a bunch of memory.
-				 * Guess Most people do not loop over their entire database as often as we do. 
-				 * TODO: Find a way to cache more generically instead of one page at a time?
-				 */				
-				Map<String,Integer> columns = new TreeMap<String,Integer>();				
-				for (int i = 0; start + i < size() && i < getHitsPerPage(); i++)
-				{
-					int offset = start + i;
-				    int docid = docs.scoreDocs[offset].doc;
-					final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
-					searcher.doc(docid, visitor);
-					page.add( visitor.createSearchResult() );
-				}
-				log.info(getSearchType() +  size() + " total "  + getLuceneQuery() + " :loaded " + start + " to " + (start+page.size()) + " sort by: " + getLuceneSort() + " " + getCatalogId());
-				getPages().put(inPageNumberZeroBased,page);
 			}
-			catch( Exception ex )
+			fieldOpenDocsSearcherHash = searcher.hashCode();
+			
+			int start = getHitsPerPage() * inPageNumberZeroBased;
+			int max = start + getHitsPerPage();
+			fieldSize = fieldOpenDocs.totalHits;
+			max = Math.min(max, fieldSize);
+			
+			List<Data> page = new ArrayList<Data>(getHitsPerPage());
+			
+			readPageOfData(searcher,start,max,fieldOpenDocs,page);
+			return page;
+
+		}
+		catch( Exception ex )
+		{
+			throw new OpenEditException(ex);
+		}
+		finally
+		{
+			try
 			{
-				throw new OpenEditException(ex);
+				getLuceneSearcherManager().release(searcher);
 			}
-			finally
+			catch (IOException e)
 			{
-				try
-				{
-					getLuceneSearcherManager().release(searcher);
-				}
-				catch (IOException e)
-				{
-					//nada
-				}
+				//nada
 			}
 		}
+	}
+	/*
+	protected List<Data> cursorSearch(IndexSearcher searcher,int inPageNumberZeroBased,ScoreDoc after ) throws IOException
+	{
+		TopDocs docs = null;
+		int start = getHitsPerPage() * inPageNumberZeroBased;
+		int max = start + getHitsPerPage();
+		
+		if( getLuceneSort() != null )
+		{
+			docs = searcher.searchAfter( after, getLuceneQuery(), getHitsPerPage() ,getLuceneSort() );
+		}
+		else
+		{
+			docs = searcher.searchAfter( after, getLuceneQuery(),getHitsPerPage());
+		}
+
+		List<Data> page = new ArrayList<Data>(getHitsPerPage());
+		
+		ScoreDoc lastDoc = null;
+		Map<String,Integer> columns = new TreeMap<String,Integer>();	
+		int returned = docs.scoreDocs.length; 
+		for (int i = 0; i < returned; i++)
+		{
+			lastDoc = docs.scoreDocs[i];
+		    int docid = lastDoc.doc;
+			final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+			searcher.doc(docid, visitor);
+			Data lastRecord =visitor.createSearchResult(); 
+			page.add( lastRecord );
+		}
+		//	return lastDoc;
+
+		//log.info( getSearchType()  + " Page  " + inPageNumberZeroBased + " ended with "   + lastDoc.doc + " = " + lastRecord.getId());
+		//ScoreDoc lastone = readPageOfData(searcher, 0, docs, page);
+		setCursorForPage(lastDoc,inPageNumberZeroBased);
+		if( log.isDebugEnabled() )
+		{
+			log.debug(getSearchType() + " page " + inPageNumberZeroBased );
+		}
+
 		return page;
 	}
+	*/
+/*
+	protected List<Data> fullSearch(IndexSearcher searcher, int inPageNumberZeroBased) throws IOException
+	{
+//		int start = getHitsPerPage() * inPageNumberZeroBased;
+//		int max = start + getHitsPerPage();
+		TopDocs docs = null;
+
+		if( getLuceneSort() != null )
+		{
+			docs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE ,getLuceneSort() );
+		}
+		else
+		{
+			docs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE);
+		}
+		fieldSize = docs.totalHits;
+		List<Data> page = new ArrayList<Data>(getHitsPerPage());
+		
+		ScoreDoc lastone = readPageOfData(searcher, start, docs, page);
+		setCursorForPage(lastone,inPageNumberZeroBased);
+		log.info(getSearchType() + " " +  size() + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+		return page;
+
+	}
+*/
+	protected ScoreDoc readPageOfData(IndexSearcher searcher, int start, int max,
+			TopDocs docs, List<Data> page) throws IOException {
+		/**
+		 * This is optimized to only store string versions of the data we have. Normally the Document class has FieldType that use a bunch of memory.
+		 * Guess Most people do not loop over their entire database as often as we do. 
+		 * TODO: Find a way to cache more generically instead of one page at a time?
+		 */		
+		ScoreDoc lastDoc = null;
+		Map<String,Integer> columns = new TreeMap<String,Integer>();	
+		for (int i = 0; start + i < max; i++)
+		{
+			int offset = start + i;
+			lastDoc = docs.scoreDocs[offset];
+		    int docid = lastDoc.doc;
+			final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+			searcher.doc(docid, visitor);
+			page.add( visitor.createSearchResult() );
+		}
+		log.info( getSearchType()  + " ended with "   + lastDoc.doc + " = " + page.get(page.size() - 1).getId());
+
+		
+		return lastDoc;
+	}
+
 	public Collection<String> getSourcePaths()
 	{
 		List sourcepaths = new ArrayList();
