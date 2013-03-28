@@ -157,16 +157,23 @@ public class LuceneHitTracker extends HitTracker
 			if( fieldOpenDocsSearcherHash != searcher.hashCode() )
 			{
 				//do the search and save the reuslts
-
+				int max = Integer.MAX_VALUE;
+				if( getHitsPerPage() == 1)
+				{
+					max = 1;
+				}
 				if( getLuceneSort() != null )
 				{
-					fieldOpenDocs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE ,getLuceneSort() );
+					fieldOpenDocs = searcher.search( getLuceneQuery(), max ,getLuceneSort() );
 				}
 				else
 				{
-					fieldOpenDocs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE);
+					fieldOpenDocs = searcher.search( getLuceneQuery(),max);
 				}
-				log.info(getSearchType() + " " +  fieldOpenDocs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+				if( max > 1)
+				{
+					log.info(getSearchType() + " " +  fieldOpenDocs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+				}
 
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
