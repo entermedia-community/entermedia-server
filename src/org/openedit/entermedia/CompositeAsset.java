@@ -322,7 +322,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			Asset fieldCurrentAsset = null;
+			Asset inloopasset = null;
 			
 			for (Iterator iterator2 = getCategories().iterator(); iterator2.hasNext();)
 			{
@@ -330,11 +330,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				String cats = data.get("category");
 				if( !cats.contains(cat.getId() ) )
 				{
-					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
 					{
 						asset.addCategory(cat);
-						fieldCurrentAsset = asset;
+						inloopasset = asset;
 					}
 				}
 			}
@@ -344,11 +344,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				String cats = data.get("category");
 				if( cats.contains(cat.getId() ) )
 				{
-					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
 					{
 						asset.removeCategory(cat);
-						fieldCurrentAsset = asset;
+						inloopasset = asset;
 					}
 				}
 			}
@@ -359,11 +359,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				String existing = data.get("keywords");
 				if( existing == null || !existing.contains(inKey) )
 				{
-					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
 					{
 						asset.addKeyword(inKey);
-						fieldCurrentAsset = asset;
+						inloopasset = asset;
 					}
 				}
 			}
@@ -375,17 +375,22 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				String existing = data.get("keywords");
 				if( existing != null && existing.contains(inKey) )
 				{
-					Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
 					{
 						asset.removeKeyword(inKey);
-						fieldCurrentAsset = asset;
+						inloopasset = asset;
 					}
 				}
 			}
 			for (Iterator iterator2 = getPropertiesSet().keySet().iterator(); iterator2.hasNext();)
 			{
 				String key = (String) iterator2.next();
+				if( "assetid".equals(key))
+				{
+					continue;
+				}
+					
 				String value = (String)getPropertiesSet().get(key);
 				String existingvalue = data.get(key);
 				
@@ -397,14 +402,13 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				{
 					continue;
 				}
-				Asset asset = loadAsset( fieldCurrentAsset, data, tosave);
+				Asset asset = loadAsset( inloopasset, data, tosave);
 				if( asset != null )
 				{
 					asset.setProperty(key, value);
-					fieldCurrentAsset = asset;
+					inloopasset = asset;
 				}
 			}
-			//TODO: Deal with multi value fields
 			if( tosave.size() > 1000)
 			{
 				getArchive().saveAssets(tosave);

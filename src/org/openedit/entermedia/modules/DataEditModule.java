@@ -482,12 +482,17 @@ public class DataEditModule extends BaseMediaModule
 					{
 						fieldswithvalues.add(fields[i]);
 					}
+					String[] vals = inReq.getRequestParameters(fields[i]+".values");
+					if(vals != null && vals.length > 0)
+					{
+						fieldswithvalues.add(fields[i]);
+					}
 				}
 				
 				CompositeData compositedata = (CompositeData) data;
 
 				String[] newfields = new String[fieldswithvalues.size()];
-				fieldswithvalues.toArray(newfields);
+				newfields = fieldswithvalues.toArray(newfields);
 				searcher.updateData(inReq, newfields, compositedata);
 //				for (Iterator iterator = compositedata.iterator(); iterator.hasNext();)
 //				{
