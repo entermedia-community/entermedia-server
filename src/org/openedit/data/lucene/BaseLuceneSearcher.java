@@ -32,6 +32,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.SearcherFactory;
@@ -271,8 +272,16 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	{
 		try
 		{
-			QueryParser parser = getQueryParser();
-			Query query1 = parser.parse(inQuery);
+			Query query1 = null;
+			if( inQuery != null && inQuery.equals("id:(*)"))
+			{
+				query1 = new MatchAllDocsQuery();
+			}
+			else
+			{
+				QueryParser parser = getQueryParser();
+				query1 = parser.parse(inQuery);
+			}
 			Sort sort = null;
 			if( inOrdering != null && inOrdering.size() > 0 )
 			{
