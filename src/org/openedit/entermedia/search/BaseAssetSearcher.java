@@ -301,7 +301,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery inSearch) throws OpenEditException
 	{
 		boolean filterstuff = true;
-		String datamanager = inPageRequest.getContentProperty("indatamanager");
+		String datamanager = inPageRequest.getContentProperty("showallfiles");
 		if( Boolean.parseBoolean(datamanager) )
 		{
 			filterstuff = false;
