@@ -1,15 +1,17 @@
 package importing;
 
 import org.openedit.Data
+import org.openedit.MultiValued;
+import org.openedit.data.BaseData
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.scanner.PresetCreator
-
+import org.openedit.util.DateStorageUtil
+import com.openedit.page.Page
 
 import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery;
-import java.util.ArrayList;
+import com.openedit.hittracker.SearchQuery
 
 public void createTasksForUpload() throws Exception
 {
@@ -29,7 +31,6 @@ public void createTasksForUpload() throws Exception
 	String ids = context.getRequestParameter("assetids");
 	if( ids == null)
 	{
-		
 		//Do a search for importstatus of "added" -> "converted"
 		q.addExact( "importstatus", "imported" );
 	}
@@ -63,38 +64,6 @@ public void createTasksForUpload() throws Exception
 			Data preset = (Data) presetsearcher.searchById(it.id);
 			
 			//TODO: Move this to a new script just for auto publishing
-//			SearchQuery presetquery = destinationsearcher.createSearchQuery();
-//			presetquery.addMatches("onimport", "true");
-//		//	presetquery.addMatches("convertpreset", preset.id); //video
-//			
-//			HitTracker dest = destinationsearcher.search(presetquery);
-//						
-//			dest.each{
-//				Data publishrequest = publishqueuesearcher.createNewData();
-//				publishrequest.setSourcePath(asset.getSourcePath());
-//				publishrequest.setProperty("status", "pending"); //pending on the convert to work
-//				publishrequest.setProperty("assetid", asset.id);
-//				publishrequest.setProperty("presetid", preset.id);
-//				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-//				publishrequest.setProperty("date", nowdate);
-//
-//				publishrequest.setProperty("publishdestination", it.id);
-//				String exportName=null;
-//				if( preset.get("type") != "original")
-//				{
-//					exportName = mediaArchive.asExportFileName( asset, preset);
-//				}
-//				if( exportName == null)
-//				{
-//					inputpage = mediaArchive.getOriginalDocument(asset);
-//					exportName = inputpage.getName();
-//				}
-//				publishrequest.setProperty ("exportname", exportName);
-//				
-//				publishqueuesearcher.saveData(publishrequest, context.getUser());
-//				foundsome = true;
-//			}
-			
 			presets.createPresetsForPage(tasksearcher, preset, asset,0);
 			
 			String pages = asset.get("pages");
@@ -111,6 +80,10 @@ public void createTasksForUpload() throws Exception
 			}
 			foundsome = true;
 		}
+		//Add auto publish queue tasks
+		saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
+
+		
 		if( foundsome )
 		{
 			asset.setProperty("importstatus","imported");
@@ -133,6 +106,48 @@ public void createTasksForUpload() throws Exception
 		log.info("No assets found");
 	}
 	
+}
+
+private saveAutoPublishTasks(Searcher publishqueuesearcher, Searcher destinationsearcher, Searcher presetsearcher, Asset asset, MediaArchive mediaArchive) {
+	SearchQuery autopublish = destinationsearcher.createSearchQuery();
+	autopublish.addMatches("onimport", "true");
+
+	HitTracker destinations = destinationsearcher.search(autopublish);
+
+	destinations.each
+	{
+		MultiValued destination = it;
+		Collection destpresets = destination.getValues("convertpreset");
+
+		destpresets.each
+		{
+			String destpresetid = it;
+			Data destpreset = presetsearcher.searchById(destpresetid);
+			Data publishrequest = publishqueuesearcher.createNewData();
+			publishrequest.setSourcePath(asset.getSourcePath());
+			publishrequest.setProperty("status", "pending"); //pending on the convert to work
+			publishrequest.setProperty("assetid", asset.id);
+			publishrequest.setProperty("presetid", destpresetid);
+			String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+			publishrequest.setProperty("date", nowdate);
+
+			publishrequest.setProperty("publishdestination", destination.id);
+			String exportName=null;
+
+			if( destpreset.get("type") != "original")
+			{
+				exportName = mediaArchive.asExportFileName( asset, destpreset);
+			}
+			if( exportName == null)
+			{
+				Page inputpage = mediaArchive.getOriginalDocument(asset);
+				exportName = inputpage.getName();
+			}
+			publishrequest.setProperty ("exportname", exportName);
+
+			publishqueuesearcher.saveData(publishrequest, context.getUser());
+		}
+	}
 }
 
 
