@@ -24,6 +24,8 @@ $related.setPage($pageval)
     		#set( $catid = "index" )
     	#end
     
+    #set( $editlink = $content.get("asseteditlink") )
+    
     	#if ( $related && $related.size() > 0 )
         	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
         	$context.putPageValue("details",$details)
@@ -38,9 +40,8 @@ $related.setPage($pageval)
                    <a class="ajax" targetdiv="emresultscontent" href="$home$page.getPath()?sourcepath=$asset.sourcepath&page=$pageval&hitssessionid=$rootid&oemaxlevel=1"> << Previous Page </a>
     				</li>
                 #end
- 	    			
         			
-        			#foreach ($hit in $related.getPageOfHits())
+       			#foreach ($hit in $related.getPageOfHits())
         		<li class="mediathumb  embox$thumbsize #if( $asset && $hit.id == $asset.id ) currentsubtle #end" id="cell${catalogid}_${hit.id}" >
         			#set( $count = $related.getPage()+-1 )
         			#set( $count = $count*$related.getHitsPerPage() )	
@@ -51,7 +52,7 @@ $related.setPage($pageval)
         			$context.putPageValue("hit", $hit)
         			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
         			$context.putPageValue("type", $type)
-        			#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
+        			#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
         			$context.putPageValue("clink", $clink)
         			$context.putPageValue("thumbsize",$thumbsize)
         			<a href="$click" class="sidebar-image">
