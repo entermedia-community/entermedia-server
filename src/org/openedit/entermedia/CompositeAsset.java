@@ -3,12 +3,15 @@ package org.openedit.entermedia;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
+import org.openedit.data.PropertyDetail;
 
 import com.openedit.hittracker.HitTracker;
 
@@ -200,7 +203,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{	
 		if (size() > 0)
 		{
-			String val = super.get(inId);
+			String val = (String)getPropertiesSet().get(inId);;
+			if( val == null)
+			{
+				val = super.get(inId);
+			}
 			if( val != null ) //already set to a value
 			{
 				if( val.length() == 0 )
@@ -229,8 +236,31 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				}
 				else if (!val.equals(newval))
 				{
-					val = "";
-					break;
+					//Maybe just out of order?
+					if( newval != null && val.contains("|") )
+					{
+						String[] vals = VALUEDELMITER.split(val);
+						val = "";
+						for (int i = 0; i < vals.length; i++) 
+						{
+							if( newval.contains(vals[i]) )
+							{
+								if( val.length() == 0 )
+								{
+									val = vals[i];
+								}
+								else
+								{
+									val = val + " | " + vals[i];
+								}
+							}
+						}
+					}
+					else
+					{
+						val = "";
+						break;
+					}
 				}
 			}
 			if(	val == null )
@@ -250,7 +280,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		{
 			inValue = "";
 		}
-		getProperties().put(inKey, inValue);
+		//getProperties().put(inKey, inValue);
 		getPropertiesSet().put(inKey,inValue);
 	}
 
@@ -405,7 +435,34 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				Asset asset = loadAsset( inloopasset, data, tosave);
 				if( asset != null )
 				{
-					asset.setProperty(key, value);
+					boolean multi = existingvalue != null && existingvalue.contains("|");
+					if( !multi)
+					{
+						multi = value != null && value.contains("|");
+					}
+					if( !multi)
+					{
+						String uivalue = get(key);
+						multi = uivalue != null && uivalue.contains("|");
+					}
+				
+					if( multi )
+					{
+						//Need to add any that are set by user in value 
+						Set existing = collect(existingvalue);
+						Set added = collect(value);
+						existing.addAll(added);
+						
+						//Need to remove any that are missing from combined
+						Set old = collect(super.get(key));
+						old.removeAll(added);
+						existing.removeAll(old);
+						asset.setValues(key, existing);
+					}
+					else
+					{
+						asset.setProperty(key, value);
+					}
 					inloopasset = asset;
 				}
 			}
@@ -417,7 +474,20 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		getArchive().saveAssets(tosave);
 	}
-//
+	protected Set collect(String existingvalue) 
+	{
+		if( existingvalue == null)
+		{
+			return Collections.EMPTY_SET;
+		}
+		String[] vals = VALUEDELMITER.split(existingvalue);
+		Set set = new HashSet(vals.length);
+		for (int i = 0; i < vals.length; i++) {
+			set.add(vals[i]);
+		}
+		return set;
+	}
+	//
 	class AssetIterator implements Iterator
 	{
 		Iterator fieldDataIterator;
