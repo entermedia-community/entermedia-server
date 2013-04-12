@@ -151,31 +151,6 @@ showHoverMenu = function(inDivId)
 }
 
 
-/*
-toggleitem = function(e)
-{
-		
-		var nextpage= jQuery(this).attr('href');
-		var targetDiv = jQuery(this).attr("targetdiv");
-		targetDiv = targetDiv.replace(/\//g, "\\/");
-		
-		jQuery("#"+targetDiv).load(nextpage, {}, function()
-			{
-				var html = jQuery(this).html();
-				
-				jQuery("."+targetDiv, window.parent.document).html(html);
-			    jQuery("#basketmenu").load("$home/$applicationid/components/albums/basket/menuitem.html");
-				jQuery("#basketmenu", window.parent.document).load("$home/$applicationid/components/albums/basket/menuitem.html");
-				jQuery("#collectionbasket", window.parent.document).load("$home/$applicationid/views/albums/basket/index.html?oemaxlevel=1");
-
-			}
-		);
-
-		return false;
-
-}	
-*/
-
 updatebasket = function(e)
 {
 		var nextpage= jQuery(this).attr('href');
@@ -187,51 +162,14 @@ updatebasket = function(e)
 			    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
 				if(action == 'remove'){
 					jQuery(".selectionbox:checked").closest("tr").hide("slow");
+					jQuery(".selectionbox:checked").closest(".emthumbbox").hide("slow");
 				}
 			}
 		);
 		 e.preventDefault();
 		return false;
 }
-/*
-updatebasketonasset = function(e)
-{
-	var nextpage= jQuery(this).attr('href');
-	var targetDiv = jQuery(this).attr("targetdiv");
-	targetDiv = targetDiv.replace(/\//g, "\\/");
-	jQuery("#"+targetDiv).load(nextpage, {}, function()
-	{
-	    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
-	});
-	 e.preventDefault();
-	return false;
-}
-*/
 
-//Not needed?
-/*
-toggleorderitem = function(e)
-{
-		
-		var nextpage= jQuery(this).attr('href');
-		var targetDiv = jQuery(this).attr("targetdiv");
-		targetDiv = targetDiv.replace(/\//g, "\\/");
-		
-		jQuery("."+targetDiv).load(nextpage, {}, function()
-			{
-				var html = jQuery(this).html();
-				jQuery("."+targetDiv, window.parent.document).html(html);
-			    jQuery("#basketmenu").load("$home/$applicationid/views/activity/menuitem.html");
-				jQuery("#basketmenu", window.parent.document).load("$home/$applicationid/views/activity/menuitem.html");
-				// jQuery("#collectionbasket",
-				// window.parent.document).load("$home/$applicationid/views/albums/basket/index.html?oemaxlevel=1");
-			}
-		);
-
-		return false;
-
-}
-*/
 
 //Is this being used?
 getConfirmation = function(inText)	
@@ -269,18 +207,6 @@ pageload = function(hash)
 		}
 	} 
 }
-
-/*
-formatHitCountResult = function(inRow)
-{
-	return inRow[1];
-}
-
-formatHitCount = function(inRow)
-{jQuery('select#speedC').selectmenu({style:'dropdown'});
-	return inRow[0];
-}
-*/
 
 // Everyone put your onload stuff in here:
 onloadselectors = function()
