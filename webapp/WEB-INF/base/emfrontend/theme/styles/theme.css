@@ -6245,7 +6245,7 @@ a.audio-filename:hover
     list-style: none;
     float: left;
     display: inline;
-    background: #fff url('../images/icons/check.png') left center no-repeat;
+    background: url('../images/icons/check.png') left center no-repeat;
 
 }
 

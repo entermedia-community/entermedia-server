@@ -436,6 +436,8 @@ public class OrderModule extends BaseMediaModule
 			Asset asset = getMediaArchive(archive.getCatalogId()).getAsset(hit.getId());
 			getOrderManager().removeItemFromOrder(archive.getCatalogId(), basket, asset);
 		}
+		inReq.removeSessionValue(hitssessionid);
+		loadAssets(inReq);
 	}
 
 	public void toggleItemInOrderBasket(WebPageRequest inReq)

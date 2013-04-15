@@ -225,25 +225,27 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
-				String newval = data.get(inId);
+				String dataval = data.get(inId);
 				if( val == null )
 				{
-					if( val != newval )
+					if( val != dataval )
 					{
 						val = "";
 						break;
 					}
 				}
-				else if (!val.equals(newval))
+				else if (!val.equals(dataval))
 				{
 					//Maybe just out of order?
-					if( newval != null && val.contains("|") )
+					boolean multi = isMulti(inId, val, dataval);
+					
+					if( dataval != null && multi )
 					{
 						String[] vals = VALUEDELMITER.split(val);
 						val = "";
 						for (int i = 0; i < vals.length; i++) 
 						{
-							if( newval.contains(vals[i]) )
+							if( dataval.contains(vals[i]) )
 							{
 								if( val.length() == 0 )
 								{
@@ -435,17 +437,13 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				Asset asset = loadAsset( inloopasset, data, tosave);
 				if( asset != null )
 				{
-					boolean multi = existingvalue != null && existingvalue.contains("|");
-					if( !multi)
-					{
-						multi = value != null && value.contains("|");
-					}
+					boolean multi = isMulti(key, value, existingvalue);
 					if( !multi)
 					{
 						String uivalue = get(key);
 						multi = uivalue != null && uivalue.contains("|");
 					}
-				
+
 					if( multi )
 					{
 						//Need to add any that are set by user in value 
@@ -474,6 +472,17 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		getArchive().saveAssets(tosave);
 	}
+	protected boolean isMulti(String key, String value, String datavalue) 
+	{
+		boolean multi = datavalue != null && datavalue.contains("|");
+		if( !multi)
+		{
+			multi = value != null && value.contains("|");
+		}
+		
+		return multi;
+	}
+
 	protected Set collect(String existingvalue) 
 	{
 		if( existingvalue == null)
