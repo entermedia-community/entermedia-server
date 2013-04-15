@@ -474,6 +474,10 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	}
 	protected boolean isMulti(String key, String value, String datavalue) 
 	{
+		if( key.equals( "libraries") )
+		{
+			return true;
+		}
 		boolean multi = datavalue != null && datavalue.contains("|");
 		if( !multi)
 		{
@@ -487,7 +491,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( existingvalue == null)
 		{
-			return Collections.EMPTY_SET;
+			return new HashSet();
 		}
 		String[] vals = VALUEDELMITER.split(existingvalue);
 		Set set = new HashSet(vals.length);
