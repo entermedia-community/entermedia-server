@@ -46,27 +46,26 @@ public class UserProfileSearcher extends XmlFileSearcher {
 		return search;
 	}
 
-	@Override
-	public void saveData(Data inData, User inUser) {
-		UserProfile profile= (UserProfile)inData;
-		
-		if(profile.getUser() == null)
-		{
-			User current = getUserManager().getUser(profile.get("userid"));
-			if( current == null )
-			{
-				log.info("No user found, creating new one");
-				current = getUserManager().createUser(null, null);
-			}
-			profile.setUser(current);
-			profile.setProperty("userid", current.getId());
-		}
-		Searcher usersearcher = getSearcherManager().getSearcher("system", "user");
-		usersearcher.saveData(profile.getUser(), inUser);
-		
-		// TODO Auto-generated method stub
-		super.saveData(inData, inUser);
-		
-	}
+//	public void saveData(Data inData, User inUser) {
+//		UserProfile profile= (UserProfile)inData;
+//		
+////		if(profile.getUser() == null)
+////		{
+////			User current = getUserManager().getUser(profile.get("userid"));
+////			if( current == null )
+////			{
+////				log.info("No user found, creating new one");
+////				current = getUserManager().createUser(null, null);
+////			}
+////			profile.setUser(current);
+////			profile.setProperty("userid", current.getId());
+////		}
+////		Searcher usersearcher = getSearcherManager().getSearcher("system", "user");
+////		usersearcher.saveData(profile.getUser(), inUser);
+//		
+//		// TODO Auto-generated method stub
+//		super.saveData(inData, inUser);
+//		
+//	}
 	
 }
