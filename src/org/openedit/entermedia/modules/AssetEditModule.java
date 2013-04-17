@@ -1774,22 +1774,28 @@ public class AssetEditModule extends BaseMediaModule
 			hitssessionid = hitssessionid.substring("selected".length());
 		}
 
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+		//Make a new search based on everyone being selected
+		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid); //this could be out of date if we saved already. Just grab the selection and let the composite refresh each data row
 		if( hits == null)
 		{
 			log.error("Could not find " + hitssessionid);
 			return null;
 		}
-		//TODO: Change multi edit to use trackers instead
+		
+		//Now always reload the selected nodes and only pass in those nodes to multi-edit
 		MediaArchive store = getMediaArchive(inReq);
 		
-		//lost selections?
-		HitTracker old = hits;
-		hits  = store.getAssetSearcher().cachedSearch(inReq, hits.getSearchQuery());
+//		//lost selections?
+//		HitTracker old = hits;
+//		hits  = store.getAssetSearcher().getAllHits(inReq);
+//		hits.loadPreviousSelections(old);
+//		
 		if( !hits.hasSelections() )
 		{
-			hits.setSelections(old.getSelections());
+			log.error("No assets selected " + hitssessionid);
+			return null;
 		}
+		
 //		CompositeAsset composite = new CompositeAsset();
 //		for (Iterator iterator = hits.getSelectedHits().iterator(); iterator.hasNext();)
 //		{

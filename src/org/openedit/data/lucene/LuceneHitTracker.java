@@ -7,14 +7,15 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
@@ -48,7 +49,7 @@ public class LuceneHitTracker extends HitTracker
 	//protected Map<Integer,ScoreDoc> fieldCursors;
 	protected Integer fieldSize;
 	protected String fieldSearchType;
-	protected TopDocs fieldOpenDocs;
+	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
 	
 	/**
@@ -153,9 +154,9 @@ public class LuceneHitTracker extends HitTracker
 		
 		try
 		{
-
 			if( fieldOpenDocsSearcherHash != searcher.hashCode() )
 			{
+				TopDocs docs = null;
 				//do the search and save the reuslts
 				int max = Integer.MAX_VALUE;
 				if( getHitsPerPage() == 1)
@@ -164,20 +165,20 @@ public class LuceneHitTracker extends HitTracker
 				}
 				if( getLuceneSort() != null )
 				{
-					fieldOpenDocs = searcher.search( getLuceneQuery(), max ,getLuceneSort() );
+					docs = searcher.search( getLuceneQuery(), max ,getLuceneSort() );
 				}
 				else
 				{
-					fieldOpenDocs = searcher.search( getLuceneQuery(),max);
+					docs = searcher.search( getLuceneQuery(),max);
 				}
 				if( max > 1)
 				{
-					log.info(getSearchType() + " " +  fieldOpenDocs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+					log.info(getSearchType() + " " +  docs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
 				}
-
+				fieldSize = docs.totalHits;
+				fieldDocs = docs.scoreDocs;
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
-			fieldSize = fieldOpenDocs.totalHits;
 			
 			int start = getHitsPerPage() * inPageNumberZeroBased;
 			int max = start + getHitsPerPage();
@@ -185,7 +186,7 @@ public class LuceneHitTracker extends HitTracker
 			
 			List<Data> page = new ArrayList<Data>(getHitsPerPage());
 			
-			readPageOfData(searcher,start,max,fieldOpenDocs,page);
+			readPageOfData(searcher,start,max,page);
 			return page;
 
 		}
@@ -274,7 +275,7 @@ public class LuceneHitTracker extends HitTracker
 	}
 */
 	protected ScoreDoc readPageOfData(IndexSearcher searcher, int start, int max,
-			TopDocs docs, List<Data> page) throws IOException {
+		 List<Data> page) throws IOException {
 		/**
 		 * This is optimized to only store string versions of the data we have. Normally the Document class has FieldType that use a bunch of memory.
 		 * Guess Most people do not loop over their entire database as often as we do. 
@@ -286,7 +287,7 @@ public class LuceneHitTracker extends HitTracker
 		for (int i = 0; start + i < max; i++)
 		{
 			int offset = start + i;
-			lastDoc = docs.scoreDocs[offset];
+			lastDoc = fieldDocs[offset];
 		    int docid = lastDoc.doc;
 			//final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
 		  final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
@@ -649,6 +650,36 @@ public class LuceneHitTracker extends HitTracker
 	public void setLuceneSort(Sort inLuceneSort)
 	{
 		fieldLuceneSort = inLuceneSort;
+	}
+
+	public void loadPreviousSelections(HitTracker inOld) 
+	{
+		if( inOld instanceof LuceneHitTracker)
+		{
+			LuceneHitTracker tracker = (LuceneHitTracker)inOld;
+			
+			//look for selected index docids
+			Set<Integer> selected = tracker.getSelections();
+			Set<Integer> selecteddocid = new TreeSet<Integer>();
+			for (Iterator iterator = selected.iterator(); iterator.hasNext();)
+			{
+				int index = (Integer) iterator.next();
+				selecteddocid.add( tracker.fieldDocs[index].doc );
+			}
+			setSelections(new TreeSet<Integer>());
+			getPage(0); //reload if needed
+			for (int i = 0; i < fieldDocs.length; i++) 
+			{
+				if( selecteddocid.contains( fieldDocs[i].doc ) )
+				{
+					addSelection(i);
+				}
+			}
+		}
+		else
+		{
+			throw new OpenEditException("Do not support cross type selections");
+		}
 	}
 
 

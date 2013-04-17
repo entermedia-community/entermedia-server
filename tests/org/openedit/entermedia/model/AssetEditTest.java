@@ -3,15 +3,20 @@
  */
 package org.openedit.entermedia.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.Category;
+import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.RelatedAsset;
 import org.openedit.entermedia.edit.CategoryEditor;
 
+import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
 
 /**
@@ -174,33 +179,102 @@ public class AssetEditTest extends BaseEnterMediaTest
 	}
 	
 
-//	public void testMultipleEdits() throws Exception
+//	public void testMultipleEditsAdding() throws Exception
 //	{
 //		Asset product = getMediaArchive().getAsset("1");
-//		product.setProperty("stuff", "before");
+//		if( product == null)
+//		{
+//			product = getMediaArchive().createAsset("1","multitest/1");
+//		}
+//		product.setProperty("libraries", "1");
 //		User user = getFixture().createPageRequest().getUser();
 //		getMediaArchive().saveAsset(product, user);
-//		MediaSearchModule module = (MediaSearchModule)getFixture().getModuleManager().getModule("MediaSearchModule");
-//		WebPageRequest req = getFixture().createPageRequest();
-//		req.setRequestParameter("query","id:1");
-//		//assertNotNull(module.getSearcherManager());
-//		HitTracker hits  = module.searchStore(req);
-//		String id = hits.getIndexId();
-//		req.setRequestParameter("multihitsname", "hitsstore");
-//	
-//		CategoryEditModule mod = (CategoryEditModule) getFixture().getModuleManager().getModule("CategoryEditModule");
-//	
-//		mod.createMultiEditData(req);
-//		CompositeData data = (CompositeData) req.getSessionValue("multiedit:hitsstore");
-//		assertNotNull(data);
-//		assertEquals("before", data.get("stuff"));
-//		req.setRequestParameter("id" , data.getId());
-//		DataEditModule dmodule = (DataEditModule)getFixture().getModuleManager().getModule("DataEditModule");
-//		data.setProperty("stuff", "after");
-//		dmodule.saveData(req);
+//
+//		Asset product2 = getMediaArchive().getAsset("2");
+//		if( product2 == null)
+//		{
+//			product2 = getMediaArchive().createAsset("2","multitest/2");
+//		}
+//		product2.setProperty("libraries", "1 | 2");
+//		getMediaArchive().saveAsset(product2, user);
+//
+//		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
+//		q.addOrsGroup("id", "1 2" );
+//		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
+//		hits.selectAll();
+//		assertEquals( 2, hits.size() );
+//		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
+//		composite.addLibrary("3");
+//		composite.saveChanges();
+//		
 //		product = getMediaArchive().getAsset("1");
-//		assertEquals("after", product.getProperty("stuff"));
+//		Collection values = product.getValues("libraries");
+//		assertEquals( 2 , values.size());
+//		assertTrue(values.contains("1"));
+//		assertTrue(values.contains("3"));
+//
+//		product = getMediaArchive().getAsset("2");
+//		values = product.getValues("libraries");
+//		assertEquals( 3 , values.size());
+//		assertTrue(values.contains("1"));
+//		assertTrue(values.contains("2"));
+//		assertTrue(values.contains("3"));
+//
 //	}
 
+	public void testMultipleEditsRemove() throws Exception
+	{
+		Asset product = getMediaArchive().getAsset("1");
+		if( product == null)
+		{
+			product = getMediaArchive().createAsset("1","multitest/1");
+		}
+		product.setProperty("libraries", "1");
+		User user = getFixture().createPageRequest().getUser();
+		getMediaArchive().saveAsset(product, user);
+
+		Asset product2 = getMediaArchive().getAsset("2");
+		if( product2 == null)
+		{
+			product2 = getMediaArchive().createAsset("2","multitest/2");
+		}
+		product2.setProperty("libraries", "1 | 2");
+		getMediaArchive().saveAsset(product2, user);
+
+		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
+		q.addOrsGroup("id", "1 2" );
+		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
+		hits.selectAll();
+		assertEquals( 2, hits.size() );
+		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
+		assertEquals("1",composite.get("libraries"));
+		composite.setProperty("libraries","3"); //We removed 1 (common) and added 3
+		composite.saveChanges();
+		
+		product = getMediaArchive().getAsset("1");
+		Collection values = product.getValues("libraries");
+		assertEquals( 1 , values.size());
+		assertTrue(values.contains("3"));
+
+		product = getMediaArchive().getAsset("2");
+		values = product.getValues("libraries");
+		assertEquals( 2 , values.size());
+		//assertTrue(values.contains("1"));
+		assertTrue(values.contains("2"));
+		assertTrue(values.contains("3"));
+		
+		//Now set it again and it will fail since results are not updated
+		assertEquals("3",composite.get("libraries"));
+		composite.setValues("libraries" , new ArrayList() );
+		composite.saveChanges(); //removed 3
+		
+		product = getMediaArchive().getAsset("2");
+		values = product.getValues("libraries");
+		assertEquals( 1 , values.size());
+		//assertTrue(values.contains("1"));
+		assertTrue(values.contains("2"));
+		
+
+	}
 	
 }
