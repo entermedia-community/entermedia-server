@@ -250,7 +250,9 @@ public class AssetEditTest extends BaseEnterMediaTest
 		assertEquals("1",composite.get("libraries"));
 		composite.setProperty("libraries","3"); //We removed 1 (common) and added 3
 		composite.saveChanges();
-		
+
+		assertEquals("3",composite.get("libraries"));
+
 		product = getMediaArchive().getAsset("1");
 		Collection values = product.getValues("libraries");
 		assertEquals( 1 , values.size());

@@ -65,7 +65,10 @@ public class LuceneHitTracker extends HitTracker
 	{
 		fieldSearchType = inSearchType;
 	}
-
+	public LuceneHitTracker()
+	{
+		
+	}
 	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort)
 	{
 		setLuceneSearcherManager(inManager);
@@ -177,16 +180,11 @@ public class LuceneHitTracker extends HitTracker
 				}
 				fieldSize = docs.totalHits;
 				fieldDocs = docs.scoreDocs;
+				//do we need to reset the selections?
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
 			
-			int start = getHitsPerPage() * inPageNumberZeroBased;
-			int max = start + getHitsPerPage();
-			max = Math.min(max, fieldSize);
-			
-			List<Data> page = new ArrayList<Data>(getHitsPerPage());
-			
-			readPageOfData(searcher,start,max,page);
+			List<Data> page = populatePageData(inPageNumberZeroBased, searcher);
 			return page;
 
 		}
@@ -205,6 +203,18 @@ public class LuceneHitTracker extends HitTracker
 				//nada
 			}
 		}
+	}
+
+	private List<Data> populatePageData(int inPageNumberZeroBased,
+			IndexSearcher searcher) throws IOException {
+		int start = getHitsPerPage() * inPageNumberZeroBased;
+		int max = start + getHitsPerPage();
+		max = Math.min(max, fieldSize);
+		
+		List<Data> page = new ArrayList<Data>(getHitsPerPage());
+		
+		readPageOfData(searcher,start,max,page);
+		return page;
 	}
 	/*
 	protected List<Data> cursorSearch(IndexSearcher searcher,int inPageNumberZeroBased,ScoreDoc after ) throws IOException

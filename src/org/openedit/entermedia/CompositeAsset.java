@@ -23,10 +23,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	private static final long serialVersionUID = -7154445212382362391L;
 	protected MediaArchive fieldArchive;
 	protected HitTracker fieldInitialSearchResults; 
+	protected HitTracker fieldSelectedResults; 
 	protected List<String> fieldRemovedCategories;
 	protected List<String> fieldRemovedKeywords;
 	protected Map<String,String> fieldPropertiesSet;
-	protected HitTracker fieldCurrentSearchResults;
+	protected List<Integer> fieldSelections;
 	protected PropertyDetails fieldPropertyDetails;
 	protected String fieldId;
 	
@@ -46,18 +47,18 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	}
 
 	
-	public HitTracker getCurrentSearchResults() 
+	public HitTracker getSelectedResults() 
 	{
-		if( fieldCurrentSearchResults == null)
+		if( fieldSelectedResults == null)
 		{
 			reloadData();
 		}
-		return fieldCurrentSearchResults;
+		return fieldSelectedResults;
 	}
 
-	public void setCurrentSearchResults(HitTracker inCurrentSearchResults) 
+	public void setSelectedResults(HitTracker inCurrentSearchResults) 
 	{
-		fieldCurrentSearchResults = inCurrentSearchResults;
+		fieldSelectedResults = inCurrentSearchResults;
 	}
 
 
@@ -127,27 +128,25 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	protected void reloadData() 
 	{
 		// TODO Auto-generated method stub
-		HitTracker all = getArchive().getAssetSearcher().getAllHits();
-		all.loadPreviousSelections(getInitialSearchResults());
-		
-		setCurrentSearchResults(all.getSelectedHitracker());
-		super.getProperties().clear();
+		HitTracker existing = getInitialSearchResults();
+		setSelectedResults(existing.getSelectedHitracker());
+		getProperties().clear();
 	}
 
 	public int size()
 	{
-		return getCurrentSearchResults().size();
+		return getSelectedResults().size();
 	}
 	public List getKeywords()
 	{
 		if( fieldKeywords == null )
 		{
-			Data first = (Data)getCurrentSearchResults().first();
+			Data first = (Data)getSelectedResults().first();
 			String fwords = first.get("keywords");
 			if( fwords != null && fwords.length() > 0)
 			{
 				String[] common = VALUEDELMITER.split(fwords);
-				for (Iterator iterator = getCurrentSearchResults().iterator(); iterator.hasNext();)
+				for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
 					String words = data.get("keywords");
@@ -197,7 +196,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( fieldCategories == null )
 		{
-			Data first = (Data)getCurrentSearchResults().first();
+			Data first = (Data)getSelectedResults().first();
 			if( first == null )
 			{
 				return Collections.EMPTY_LIST;
@@ -206,7 +205,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			if( fcats != null )
 			{
 				String[] catlist = fcats.split("\\|");
-				for (Iterator iterator = getCurrentSearchResults().iterator(); iterator.hasNext();)
+				for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
 					String cats = data.get("category");
@@ -294,8 +293,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	protected String getValueFromResults(String inKey) 
 	{
 		String val;
-		val = ((Data)getCurrentSearchResults().first()).get(inKey);
-		for (Iterator iterator = getCurrentSearchResults().iterator(); iterator.hasNext();)
+		val = ((Data)getSelectedResults().first()).get(inKey);
+		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			String dataval = data.get(inKey);
@@ -307,7 +306,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					break;
 				}
 			}
-			else if (!val.equals(dataval))
+			else if (val.length() > 0 && !val.equals(dataval))
 			{
 				//Maybe just out of order?
 				boolean multi = isMulti(inKey);
@@ -379,7 +378,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( size() > 0)
 		{
-			Data first = (Data)getCurrentSearchResults().first();
+			Data first = (Data)getSelectedResults().first();
 			return first.getSourcePath() + "multi" + size();
 		}
 		return null;
@@ -392,7 +391,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	
 	public Iterator iterator()
 	{
-		return new AssetIterator(getCurrentSearchResults().iterator());
+		return new AssetIterator(getSelectedResults().iterator());
 	}
 	
 	public MediaArchive getArchive()
@@ -413,7 +412,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		//compare keywords, categories and data. 
 		List tosave = new ArrayList(100);
-		for (Iterator iterator = getCurrentSearchResults().iterator(); iterator.hasNext();)
+		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			Asset inloopasset = null;
@@ -524,7 +523,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		getArchive().saveAssets(tosave);
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
-		setCurrentSearchResults(null);
+		setSelectedResults(null);
 	}
 
 	/**
