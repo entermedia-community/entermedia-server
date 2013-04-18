@@ -714,15 +714,20 @@ public class LuceneHitTracker extends HitTracker
 	{
 		// TODO Auto-generated method stub
 		//look for selected index docids
+		setSelections(new TreeSet<Integer>());
 		if( fieldSelectedDocIds != null && fieldSelectedDocIds.size() > 0)
 		{
-			setSelections(new TreeSet<Integer>());
-			//getPage(0); //reload if needed
+			int foundthem = fieldSelectedDocIds.size();
 			for (int i = 0; i < fieldDocs.length; i++) 
 			{
 				if( fieldSelectedDocIds.contains( fieldDocs[i].doc ) )
 				{
 					addSelection(i);
+					foundthem--;
+					if( foundthem == 0)
+					{
+						break;
+					}
 				}
 			}
 		}
