@@ -230,6 +230,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 			product = getMediaArchive().createAsset("1","multitest/1");
 		}
 		product.setProperty("libraries", "1");
+		product.setProperty("categories", "index");
 		User user = getFixture().createPageRequest().getUser();
 		getMediaArchive().saveAsset(product, user);
 
@@ -239,15 +240,17 @@ public class AssetEditTest extends BaseEnterMediaTest
 			product2 = getMediaArchive().createAsset("2","multitest/2");
 		}
 		product2.setProperty("libraries", "1 | 2");
+		product2.setProperty("category", "index");
 		getMediaArchive().saveAsset(product2, user);
 
-		HitTracker hits = getMediaArchive().getAssetSearcher().getAllHits();
+		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
+		//HitTracker hits = getMediaArchive().getAssetSearcher().getAllHits();
+		q.addMatches("category","index");
 		//q.addOrsGroup("id", "1 2 102" );
-		//q.addSortBy("librariesDown");
-		int found = hits.findRow("id", "1");
-		hits.toggleSelected(found);
-		found = hits.findRow("id", "2");
-		hits.toggleSelected(found);
+		q.addSortBy("category");
+		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
+		hits.toggleSelected("1");
+		hits.toggleSelected("2");
 		assertEquals( 2, hits.getSelections().size() );
 		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
 		assertEquals("1",composite.get("libraries"));

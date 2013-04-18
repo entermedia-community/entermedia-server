@@ -129,7 +129,7 @@ public class OrderModule extends BaseMediaModule
 				Data hit = new BaseData();
 				hit.setSourcePath(sourcepaths[i]);
 				assets.add(hit);
-				assets.addSelection(i);
+				assets.addSelection(hit.getId());
 			}
 		}
 		if( assets == null )

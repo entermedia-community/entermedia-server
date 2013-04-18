@@ -891,13 +891,11 @@ public class DataEditModule extends BaseMediaModule
 	{
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-		String[] params = inReq.getRequestParameters("count");
+		String[] params = inReq.getRequestParameters("dataid");
 		for (int i = 0; i < params.length; i++)
 		{
 			String id = params[i];
-			int count = Integer.parseInt(id);
-			hits.toggleSelected(count);
-
+			hits.toggleSelected(id);
 		}
 
 	}
@@ -918,7 +916,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 		else if ("page".equals(action))
 		{
-
 			hits.selectCurrentPage();
 		}
 		else if ("none".equals(action))
@@ -1236,7 +1233,7 @@ public class DataEditModule extends BaseMediaModule
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
 		
-		List todelete = hits.getSelectedHits();
+		Collection todelete = hits.getSelectedHits();
 		for (Iterator iterator = todelete.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();

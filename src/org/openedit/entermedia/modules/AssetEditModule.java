@@ -1874,9 +1874,8 @@ public class AssetEditModule extends BaseMediaModule
 				}
 				else if( assetid == null )
 				{
-					Integer selected = (Integer)hits.getSelections().iterator().next();
-					Data first = hits.get(selected);
-					asset = getMediaArchive(inReq).getAssetBySourcePath(first.getSourcePath());
+					String id = hits.getFirstSelected();
+					asset = getMediaArchive(inReq).getAsset(id);
 				}
 				if( asset != null )
 				{

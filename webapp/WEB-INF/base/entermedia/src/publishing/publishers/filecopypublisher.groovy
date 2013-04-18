@@ -38,7 +38,7 @@ public class filecopypublisher extends basepublisher implements Publisher
 		File destination = new File(destinationpath);
 		File source = new File(inputpage.getContentItem().getAbsolutePath());
 		File finalfile = new File(destination, exportname);
-		utils.copyFiles(source, finalfile)
+		utils.copyFiles(source, finalfile);
 		result.setComplete(true);
 		
 		log.info("published ${finalfile}");

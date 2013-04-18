@@ -31,6 +31,7 @@ import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SelectedHitsTracker;
 import com.openedit.hittracker.Term;
 
 /**
@@ -51,20 +52,6 @@ public class LuceneHitTracker extends HitTracker
 	protected String fieldSearchType;
 	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
-	protected Collection fieldSelectedDocIds;
-	
-	public Collection getSelectedDocIds() 
-	{
-		if (fieldSelectedDocIds == null) {
-			fieldSelectedDocIds = new TreeSet();
-		}
-		return fieldSelectedDocIds;
-	}
-
-	public void setSelectedDocIds(Collection inSelectedDocIds) {
-		fieldSelectedDocIds = inSelectedDocIds;
-	}
-
 	/**
 	 * This is what is searched. getResultsType() is what is returned?
 	 * @deprecated
@@ -159,11 +146,6 @@ public class LuceneHitTracker extends HitTracker
 //		}
 //		return fieldPages;
 //	}
-	public void deselectAll()
-	{
-		super.deselectAll();
-		fieldSelectedDocIds = null;
-	}
 	protected List<Data> getPage(int inPageNumberZeroBased)
 	{
 //		List<Data> page = getPages().get(inPageNumberZeroBased);
@@ -199,7 +181,6 @@ public class LuceneHitTracker extends HitTracker
 				fieldDocs = docs.scoreDocs;
 				//do we need to reset the selections?
 				//Use selected doc ids to reload all the selection data
-				reloadSelection();
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
 			
@@ -680,66 +661,24 @@ public class LuceneHitTracker extends HitTracker
 	{
 		fieldLuceneSort = inLuceneSort;
 	}
-
-	public void loadPreviousSelections(HitTracker inOld) 
+	/**
+	 * Don't do this for now since it does not really help with memory to load all the assets so many times
+	 
+	public HitTracker getSelectedHitracker()
 	{
-		if( inOld instanceof LuceneHitTracker)
+//		getPage(0);
+//		reloadSelection();
+		if( getSessionId().startsWith("selected") || isAllSelected() )
 		{
-			LuceneHitTracker tracker = (LuceneHitTracker)inOld;
-			setSelectedDocIds(tracker.getSelectedDocIds() );
-			getPage(0);
-			//reloadSelection();
-			
+			return this;
 		}
-		else
-		{
-			throw new OpenEditException("Do not support cross type selections");
-		}
+		
+		SelectedHitsTracker hits = new SelectedHitsTracker(this);
+		hits.setHitsName("selected" + getHitsName());
+		hits.setSessionId("selected" + getSessionId() );
+		hits.selectAll();
+		return hits;
 	}
-
-	public void addSelection(int hit)
-	{
-		super.addSelection(hit);
-		getSelectedDocIds().add( fieldDocs[hit].doc );
-	}
-
-	
-	public void removeSelection(int hit)
-	{
-		super.removeSelection(hit);
-		getSelectedDocIds().remove( fieldDocs[hit].doc );
-	}
-	
-	protected void reloadSelection() 
-	{
-		// TODO Auto-generated method stub
-		//look for selected index docids
-		setSelections(new TreeSet<Integer>());
-		if( fieldSelectedDocIds != null && fieldSelectedDocIds.size() > 0)
-		{
-			int foundthem = fieldSelectedDocIds.size();
-			for (int i = 0; i < fieldDocs.length; i++) 
-			{
-				if( fieldSelectedDocIds.contains( fieldDocs[i].doc ) )
-				{
-					addSelection(i);
-					foundthem--;
-					if( foundthem == 0)
-					{
-						break;
-					}
-				}
-			}
-		}
-//		Set<Integer> selected = tracker.getSelections();
-//		Set<Integer> selecteddocid = new TreeSet<Integer>();
-//		for (Iterator iterator = selected.iterator(); iterator.hasNext();)
-//		{
-//			int index = (Integer) iterator.next();
-//			selecteddocid.add( tracker.fieldDocs[index].doc );
-//		}
-
-	}
-
+	*/
 
 }
