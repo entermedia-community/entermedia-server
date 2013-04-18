@@ -47,14 +47,10 @@ $pages.stream("/${content.searchhome}/navigate.html", $context)
 	<td>$pages.include("/${content.searchhome}/link.html", $context)</td>
 	#if($content.isPropertyTrue("showselections"))
 	<td>
-	<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${count})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />
+	<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${cell.id})) checked #end onclick="toggleHit('check_$count', '$!hits.indexOf(${count})', '$hits.sessionId');" />
 	<div id="check_${count}">
 	</div>
-	
-	<!--
-##	<input type="checkbox" name="count" value="$!hits.indexOf(${count})" #if($hits.isSelectedOnPage(${count})) checked #end />
-##	<input type="hidden" name="origURL" value="$url_util.requestPathWithArgumentsNoContext()" />
-	-->
+
 	</td>
 	#end
 	
