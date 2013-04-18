@@ -7,14 +7,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,7 +28,6 @@ import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SelectedHitsTracker;
 import com.openedit.hittracker.Term;
 
 /**

@@ -91,7 +91,27 @@ public class DataEditModule extends BaseMediaModule
 		return searcher;
 	}
 
-	
+	public void searchFields(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		if (searcher != null)
+		{
+			HitTracker hits = searcher.fieldSearch(inReq);
+			if (hits != null)
+			{
+				String name = inReq.findValue("hitsname");
+				inReq.putPageValue(name, hits);
+				inReq.putSessionValue(hits.getSessionId(), hits);
+			}
+		}
+		inReq.putPageValue("searcher", searcher);
+		
+	}	
+	/**
+	 * @deprecated use searchFields
+	 * @param inReq
+	 * @throws Exception
+	 */
 	public void search(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
@@ -104,7 +124,6 @@ public class DataEditModule extends BaseMediaModule
 				hits = searcher.getAllHits(inReq);
 
 			}
-
 			if (hits != null)
 			{
 				String name = inReq.findValue("hitsname");
