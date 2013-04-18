@@ -241,11 +241,14 @@ public class AssetEditTest extends BaseEnterMediaTest
 		product2.setProperty("libraries", "1 | 2");
 		getMediaArchive().saveAsset(product2, user);
 
-		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
-		q.addOrsGroup("id", "1 2" );
-		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
-		hits.selectAll();
-		assertEquals( 2, hits.size() );
+		HitTracker hits = getMediaArchive().getAssetSearcher().getAllHits();
+		//q.addOrsGroup("id", "1 2 102" );
+		//q.addSortBy("librariesDown");
+		int found = hits.findRow("id", "1");
+		hits.toggleSelected(found);
+		found = hits.findRow("id", "2");
+		hits.toggleSelected(found);
+		assertEquals( 2, hits.getSelections().size() );
 		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
 		assertEquals("1",composite.get("libraries"));
 		composite.setProperty("libraries","3"); //We removed 1 (common) and added 3

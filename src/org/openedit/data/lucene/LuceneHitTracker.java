@@ -51,7 +51,20 @@ public class LuceneHitTracker extends HitTracker
 	protected String fieldSearchType;
 	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
+	protected Collection fieldSelectedDocIds;
 	
+	public Collection getSelectedDocIds() 
+	{
+		if (fieldSelectedDocIds == null) {
+			fieldSelectedDocIds = new TreeSet();
+		}
+		return fieldSelectedDocIds;
+	}
+
+	public void setSelectedDocIds(Collection inSelectedDocIds) {
+		fieldSelectedDocIds = inSelectedDocIds;
+	}
+
 	/**
 	 * This is what is searched. getResultsType() is what is returned?
 	 * @deprecated
@@ -146,7 +159,11 @@ public class LuceneHitTracker extends HitTracker
 //		}
 //		return fieldPages;
 //	}
-	
+	public void deselectAll()
+	{
+		super.deselectAll();
+		fieldSelectedDocIds = null;
+	}
 	protected List<Data> getPage(int inPageNumberZeroBased)
 	{
 //		List<Data> page = getPages().get(inPageNumberZeroBased);
@@ -181,6 +198,8 @@ public class LuceneHitTracker extends HitTracker
 				fieldSize = docs.totalHits;
 				fieldDocs = docs.scoreDocs;
 				//do we need to reset the selections?
+				//Use selected doc ids to reload all the selection data
+				reloadSelection();
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
 			
@@ -667,29 +686,54 @@ public class LuceneHitTracker extends HitTracker
 		if( inOld instanceof LuceneHitTracker)
 		{
 			LuceneHitTracker tracker = (LuceneHitTracker)inOld;
+			setSelectedDocIds(tracker.getSelectedDocIds() );
+			getPage(0);
+			//reloadSelection();
 			
-			//look for selected index docids
-			Set<Integer> selected = tracker.getSelections();
-			Set<Integer> selecteddocid = new TreeSet<Integer>();
-			for (Iterator iterator = selected.iterator(); iterator.hasNext();)
-			{
-				int index = (Integer) iterator.next();
-				selecteddocid.add( tracker.fieldDocs[index].doc );
-			}
-			setSelections(new TreeSet<Integer>());
-			getPage(0); //reload if needed
-			for (int i = 0; i < fieldDocs.length; i++) 
-			{
-				if( selecteddocid.contains( fieldDocs[i].doc ) )
-				{
-					addSelection(i);
-				}
-			}
 		}
 		else
 		{
 			throw new OpenEditException("Do not support cross type selections");
 		}
+	}
+
+	public void addSelection(int hit)
+	{
+		super.addSelection(hit);
+		getSelectedDocIds().add( fieldDocs[hit].doc );
+	}
+
+	
+	public void removeSelection(int hit)
+	{
+		super.removeSelection(hit);
+		getSelectedDocIds().remove( fieldDocs[hit].doc );
+	}
+	
+	protected void reloadSelection() 
+	{
+		// TODO Auto-generated method stub
+		//look for selected index docids
+		if( fieldSelectedDocIds != null && fieldSelectedDocIds.size() > 0)
+		{
+			setSelections(new TreeSet<Integer>());
+			//getPage(0); //reload if needed
+			for (int i = 0; i < fieldDocs.length; i++) 
+			{
+				if( fieldSelectedDocIds.contains( fieldDocs[i].doc ) )
+				{
+					addSelection(i);
+				}
+			}
+		}
+//		Set<Integer> selected = tracker.getSelections();
+//		Set<Integer> selecteddocid = new TreeSet<Integer>();
+//		for (Iterator iterator = selected.iterator(); iterator.hasNext();)
+//		{
+//			int index = (Integer) iterator.next();
+//			selecteddocid.add( tracker.fieldDocs[index].doc );
+//		}
+
 	}
 
 
