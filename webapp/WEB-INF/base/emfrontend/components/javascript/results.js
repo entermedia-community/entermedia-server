@@ -70,13 +70,11 @@ jQuery(".moduleselectionbox").livequery("click", function(e) {
 	
 	var searchhome = $('#resultsdiv').data('searchhome');
 	  
-	var count = jQuery(this).data("count");
+	var dataid = jQuery(this).data("dataid");
 	var sessionid = jQuery(this).data("hitssessionid");
 	
 	
-
-	jQuery.get(searchhome + "/selections/toggle.html", {count:count, hitssessionid:sessionid});
-	
+	jQuery.get(searchhome + "/selections/toggle.html", {dataid:dataid, hitssessionid:sessionid});
 	
 		
 	return;
