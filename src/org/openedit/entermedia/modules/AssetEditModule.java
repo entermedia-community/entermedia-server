@@ -1915,6 +1915,7 @@ public class AssetEditModule extends BaseMediaModule
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
 			String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath");
+			 
 			if(sourcepath == null){
 				 sourcepath = archive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
 			}		
@@ -1934,7 +1935,10 @@ public class AssetEditModule extends BaseMediaModule
 					}
 				}
 			}
-
+			String id = inReq.getRequestParameter("id");
+			if(id != null){
+				vals.put("id",id);
+			}
 			
 			Replacer replacer = new Replacer();
 			
