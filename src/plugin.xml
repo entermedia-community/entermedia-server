@@ -266,7 +266,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-	<bean id="dynamicSearcher" class="org.openedit.xml.XmlSearcher"
+	<bean id="listSearcher" class="org.openedit.xml.XmlSearcher"
 		singleton="false">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
@@ -276,6 +276,20 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
+
+
+	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"
+		singleton="false">
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>
+		<property name="webEventListener">
+			<ref bean="editorEventHandler" />
+		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+	</bean>
+
+
 
 	<bean id="compositeLuceneSearcher" class="org.openedit.data.lucene.CompositeLuceneSearcher"
 		singleton="false">
@@ -995,6 +1009,19 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="indexRootFolder"><value>lucene</value></property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>		
 	</bean>
+	
+	<!--  TODO: Change to an alias -->
+	<bean id="dataSearcher" class="org.openedit.data.XmlFileSearcher" singleton="false">
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="rootDirectory"><ref bean="root"/></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>		
+	</bean>
+	
+	
 	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
 	
 	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" singleton="false">
