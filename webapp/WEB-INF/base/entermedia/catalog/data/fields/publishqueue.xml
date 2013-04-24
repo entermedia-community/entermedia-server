@@ -1,4 +1,4 @@
-<properties beanname="xmlFileSearcher" >
+<properties beanname="dataSearcher" >
 	<property id="id" index="true" stored="true">Id</property>
 	<property id="assetid" index="true" stored="true">Asset Id</property>
 	<property id="assetsourcepath" index="true" stored="true">Asset SourcePath</property>

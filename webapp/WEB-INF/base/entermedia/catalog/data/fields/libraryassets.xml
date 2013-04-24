@@ -1,5 +1,5 @@
 
-<properties beanname="xmlFileSearcher" prefix="libraries">
+<properties beanname="dataSearcher" prefix="libraries">
   <property id="id" index="true" stored="true" editable="true" searchtype="libraryassets" internalfield="true">Id</property>
   <property id="name" index="true" stored="true" editable="true" searchtype="libraryassets">Name</property>
   <property id="libraryid" index="true" stored="true" editable="true" searchtype="libraryassets" internalfield="false">Project</property>

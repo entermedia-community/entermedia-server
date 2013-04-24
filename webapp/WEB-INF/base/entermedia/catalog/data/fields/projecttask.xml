@@ -1,5 +1,5 @@
 
-<properties prefix="projecttask" beanname="xmlFileSearcher">
+<properties prefix="projecttask" beanname="dataSearcher">
   <property id="id" index="true" stored="true" editable="true" searchtype="projecttask" internalfield="true">Id</property>
   <property id="name" index="true" stored="true" editable="true" searchtype="projecttask" internalfield="false">Title</property>
   <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date" searchtype="projecttask" internalfield="false" datatype="date">Delivery Date</property>

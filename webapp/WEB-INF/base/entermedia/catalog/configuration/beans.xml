@@ -2,71 +2,38 @@
 
 <!--  Upraded 
 
-	<bean id="publishqueueSearcher" bean="xmlFileSearcher"/>
-	<bean id="catalogsettingsSearcher" bean="xmlFolderSearcher"/>
-	<bean id="viewSearcher" bean="xmlFolderSearcher"/>
+	<bean id="publishqueueSearcher" bean="dataSearcher"/>
+	<bean id="catalogsettingsSearcher" bean="folderSearcher"/>
+	<bean id="viewSearcher" bean="folderSearcher"/>
 
 -->
 <!--  real data -->
 
-    <bean id="assetvotesSearcher" bean="xmlFileSearcher" />
+    <bean id="assetvotesSearcher" bean="dataSearcher" />
 
 
 <!--  menus -->
-	<bean id="asseteditorSearcher" bean="xmlFolderSearcher"/>
-	<bean id="asseteditorhistorySearcher" bean="xmlFolderSearcher"/>
-	<bean id="asseteditormetadataSearcher" bean="xmlFolderSearcher"/>
+	<bean id="asseteditorSearcher" bean="folderSearcher"/>
+	<bean id="asseteditorhistorySearcher" bean="folderSearcher"/>
+	<bean id="asseteditormetadataSearcher" bean="folderSearcher"/>
 
 
-	<bean id="settingsmenumoduleSearcher" bean="xmlFolderSearcher"/>
+	<bean id="settingsmenumoduleSearcher" bean="folderSearcher"/>
 
-	<bean id="moduleSearcher" bean="xmlFolderSearcher"/>
+	<bean id="moduleSearcher" bean="folderSearcher"/>
 
 <!--  Old? -->
-	<bean id="photooptionavailableSearcher" bean="xmlFileSearcher"/>
-	<bean id="photooptionunavailableSearcher" bean="xmlFileSearcher"/>
-	<bean id="relatedassetSearcher" bean="xmlFileSearcher" /> 
-	<bean id="relatedassethistorySearcher" bean="xmlFileSearcher" /> 
+	<bean id="relatedassetSearcher" bean="dataSearcher" /> 
+	<bean id="relatedassethistorySearcher" bean="dataSearcher" /> 
 
 	<bean id="assetThesaurusSearcher" bean="thesaurusSearcher"/>
-	<bean id="usagehistorySearcher" bean="xmlFileSearcher"/>
-	<bean id="assetalbumsSearcher" bean="xmlFileSearcher"/>
-	<bean id="conversionSearcher" bean="xmlFileSearcher"/>
-	<bean id="publishSearcher" bean="xmlFileSearcher"/>
+	<bean id="usagehistorySearcher" bean="dataSearcher"/>
+	<bean id="assetalbumsSearcher" bean="dataSearcher"/>
+	<bean id="conversionSearcher" bean="dataSearcher"/>
+	<bean id="publishSearcher" bean="dataSearcher"/>
     <bean id="catalogImportConverter" bean="assetCompositeConverter" /> 
     <bean id="productThesaurusSearcher" bean="thesaurusSearcher" /> 
 
-<!--  Old Asset stuff -->
-	<bean id="campaigntableSearcher" bean="xmlFileSearcher" />
-	<bean id="expirationsSearcher" bean="xmlFileSearcher" />
-	<bean id="assetstatesavailableSearcher" bean="xmlFileSearcher" /> 
-  	<bean id="assetstatesunavailableSearcher" bean="xmlFileSearcher" /> 
-  	<bean id="assetstatesSearcher" bean="xmlFileSearcher" /> 
-  	<bean id="assetzonesavailableSearcher" bean="xmlFileSearcher" /> 
-  	<bean id="assetzonesunavailableSearcher" bean="xmlFileSearcher" /> 
-  	<bean id="assetzonesSearcher" bean="xmlFileSearcher" /> 
-    <bean id="reviewersSearcher" bean="xmlFileSearcher" /> 
-  	<bean id="specialrestrictionsSearcher" bean="xmlFileSearcher" /> 
-  	<bean id="timingtableSearcher" bean="xmlFileSearcher" /> 
-
-	    
-    <!-- Not Needed -->
-    <!--  
-	    <bean id="afoSearcher" bean="xmlFileSearcher" /> 
-		<bean id="agentSearcher" bean="xmlFileSearcher" />  
-		<bean id="filingnumberSearcher" bean="xmlFileSearcher" />  
-		<bean id="insertSearcher" bean="xmlFileSearcher" /> 
-	  	<bean id="orderingcostSearcher" bean="xmlFileSearcher" /> 
-	  	<bean id="orderingSearcher" bean="xmlFileSearcher" /> 
-	  	<bean id="orderingunitsSearcher" bean="xmlFileSearcher" /> 
-	  	<bean id="productioninformationsSearcher" bean="xmlFileSearcher" /> 
-	  	<bean id="productorderableplatformsSearcher" bean="xmlFileSearcher" /> 
-	 	<bean id="variabletextSearcher" bean="xmlFileSearcher" /> 
-		<bean id="vpaSearcher" bean="xmlFileSearcher" /> 
-		<bean id="productorderableplatformsavailableSearcher" bean="xmlFileSearcher" /> 
-		<bean id="productorderableplatformsunavailableSearcher" bean="xmlFileSearcher" /> 
-	-->  
-   
    
    
    
