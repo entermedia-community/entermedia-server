@@ -286,6 +286,18 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
+	
+	<bean id="dynamicSearcher" class="org.openedit.xml.XmlSearcher" singleton="false">
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>
+		<property name="webEventListener">
+			<ref bean="editorEventHandler" />
+		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+	</bean>
+	
+	
 	<bean id="folderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
