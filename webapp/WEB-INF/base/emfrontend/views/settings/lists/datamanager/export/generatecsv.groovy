@@ -24,7 +24,9 @@ if(details == null){
 	details = searcher.getPropertyDetails();
 }
 
-StringWriter output  = new StringWriter();
+Writer output = context.getPageStreamer().getOutput().getWriter();
+
+//StringWriter output  = new StringWriter();
 CSVWriter writer  = new CSVWriter(output);
 int count = 0;
 headers = new String[details.size()];
@@ -76,7 +78,8 @@ for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 }
 writer.close();
 
-String finalout = output.toString();
-context.putPageValue("export", finalout);
+//String finalout = output.toString();
+//context.putPageValue("export", finalout);
+context.setHasRedirected(true);
 
 

@@ -148,6 +148,10 @@ public class BaseOrderManager implements OrderManager
 	
 	public OrderHistory loadOrderHistory(String inCataId, Order order)
 	{
+		if( order == null)
+		{
+			return null;
+		}
 		if( order.getRecentOrderHistory() == null)
 		{
 			OrderHistory history = findRecentOrderHistory(inCataId,order.getId());
