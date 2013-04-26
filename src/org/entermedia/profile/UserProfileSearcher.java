@@ -23,7 +23,7 @@ public class UserProfileSearcher extends XmlFileSearcher {
 	@Override
 	public Data createNewData() {
 		UserProfile userProfile = (UserProfile) getModuleManager().getBean("userProfile");
-		//userProfile.setCatalogId(getCatalogId());
+		userProfile.setCatalogId(getCatalogId());
 
 // 	    Create new should never save things		
 //		User current = getUserManager().createUser(null, new PasswordGenerator().generate());
