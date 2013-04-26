@@ -4,7 +4,7 @@
                 <div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
                     #if($showtoolbar)
                     <div class="gallery-checkbox">
-                        <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="$!hits.indexOf(${count})" />          
+                        <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
                     </div>
                     #end
                     <a class="hovering" href="$click">

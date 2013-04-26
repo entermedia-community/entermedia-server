@@ -910,13 +910,15 @@ public class DataEditModule extends BaseMediaModule
 	{
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-		String[] params = inReq.getRequestParameters("dataid");
-		for (int i = 0; i < params.length; i++)
+		if( hits != null)
 		{
-			String id = params[i];
-			hits.toggleSelected(id);
+			String[] params = inReq.getRequestParameters("dataid");
+			for (int i = 0; i < params.length; i++)
+			{
+				String id = params[i];
+				hits.toggleSelected(id);
+			}
 		}
-
 	}
 
 	public void selectHits(WebPageRequest inReq) throws Exception
