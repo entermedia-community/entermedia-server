@@ -216,7 +216,7 @@ $(document).ready(function()
 	        	 if( !haderror)
 	        	{
 	        		 //document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
-	        		 document.location.href = home + "/views/myaccount/myassets/index.html?hitssessionid=selectedhitsasset${catalogid}";
+	        		 document.location.href = home + "/views/myaccount/myassets/index.html";
 	        	}
 	
 	         }
