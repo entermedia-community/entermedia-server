@@ -50,7 +50,6 @@
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
 	<property id="fileformat" index="true" stored="true" viewtype="list" editable="true" externalid="File Type">File Format</property>
 	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" externalid="File Size">File Size</property>
-	<property id="colortype" index="true" stored="true" viewtype="list" datatype="list">Color</property>
 	<property id="width" index="true" stored="true" datatype="number" >Width</property>
 	<property id="height" index="true" stored="true" datatype="number" >Height</property>
 	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  viewtype="time" searchcomponent="datesearch" externalid="CreateDate,MediaCreateDate">Created On</property>
