@@ -19,8 +19,9 @@
   <parameter id="imagecmyk2" parameterdata="imagecmyk" value="768" >prefheight</parameter> 
   <parameter id="imagecmyk3" parameterdata="imagecmyk" value="CMYK" >colorspace</parameter> 
 
-  <parameter id="imagepreviewfpo1" parameterdata="imagepreviewfpo" value="1024" >prefwidth</parameter> 
+  <parameter id="imagepreviewfpo1" parameterdata="imagepreviewfpo" value="1024"  >prefwidth</parameter> 
   <parameter id="imagepreviewfpo2" parameterdata="imagepreviewfpo" value="768" >prefheight</parameter> 
+  <parameter id="imagepreviewfpo3" parameterdata="imagepreviewfpo" value="true" >watermark</parameter> 
 
   
 </properties>

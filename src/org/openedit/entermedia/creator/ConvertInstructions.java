@@ -16,7 +16,6 @@ import com.openedit.util.PathUtilities;
 public class ConvertInstructions
 {
 	protected int fieldPageNumber = 1;  //This is 1 based
-	protected boolean fieldWatermark;
 	//protected String fieldOutputExtension;
 	//protected String fieldInputType;
 	protected boolean fieldForce = false;
@@ -143,12 +142,16 @@ public class ConvertInstructions
 
 	public boolean isWatermark()
 	{
-		return fieldWatermark;
+		return Boolean.valueOf(getProperty("watermark"));
 	}
 
 	public void setWatermark(boolean inWatermark)
 	{
-		fieldWatermark = inWatermark;
+		if(inWatermark){
+			setProperty("watermark", "true");
+		}   else{
+			setProperty("watermark", "false");
+		}
 	}
 
 	public String getOutputExtension()
