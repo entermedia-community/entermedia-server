@@ -69,7 +69,7 @@ public Data saveUserProfile(String inUserId)
 {
 	Searcher userprofilesearcher = searcherManager.getSearcher(catalogid,"userprofile");
 	
-	hits = userprofilesearcher.fieldSearch("userid", inUserId);
+	hits = userprofilesearcher.fieldSearch("id", inUserId);
 	def userprofile;
 	if (hits.size() == 1)
 	{
@@ -80,7 +80,6 @@ public Data saveUserProfile(String inUserId)
 	{
 		userprofile = userprofilesearcher.createNewData();
 		userprofile.setId(inUserId);
-		userprofile.setProperty("userid", inUserId);
 		userprofile.setSourcePath(inUserId);
 	}
 		

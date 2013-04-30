@@ -9,15 +9,14 @@
     
     			<input type="hidden" name="userid" value="$selectedUser.id"/>
     	#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
-    	#set ($selectedprofile = $userProfileSearcher.searchByField("userid", $selectedUser.id))
+    	#set ($selectedprofile = $userProfileSearcher.searchByField("id", $selectedUser.id))
     	
     			<input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
     			<input type="hidden" name="searchtype" value="userprofile" />
     			<input type="hidden" name="save" value="true" />
     			<input type="hidden" name="sourcepath" value="$selectedUser.id" />
     			<input type="hidden" name="id" value="$!selectedprofile.id" />
-    			<input type="hidden" name="field" value="userid" />
-    			<input type="hidden" name="userid.value" value="$selectedUser.id" />
+    			
     			
     	$context.putPageValue("searcher", $userProfileSearcher)	 
     	$context.putPageValue("view", "userprofile/edit")	
