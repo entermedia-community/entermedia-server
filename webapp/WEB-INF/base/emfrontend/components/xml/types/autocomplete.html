@@ -22,9 +22,9 @@
 #end
 <input name="completefield" class="listautocomplete" id="${detail.id}${idcount}value" value="#esc($label)"  type="hidden"  
 	data-searchfield="$searchfield" data-searchtype="$detail.listId" data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-sortby="$!detail.sort"/>
-<input name="${detail.getId()}.value"  id="${detail.id}${idcount}valuehidden"   value="$!val" type="hidden"/>
+<input name="${detail.getId()}.value"  id="list-${detail.id}${idcount}value"   value="$!val" type="hidden"/>
 
-#if( $canviewsettings && $foundrow )
+#if( $idprefix != "search" && $canviewsettings && $foundrow )
 	#set($module = $searcherManager.getData($catalogid, "module", $detail.listId ) )
 	#if($module)
 	
