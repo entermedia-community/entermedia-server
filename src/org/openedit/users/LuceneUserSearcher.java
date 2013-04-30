@@ -78,9 +78,11 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 					String userid = (String) iterator.next();
 					Document doc = new Document();
 					User data = getUserManager().getUser(userid);
-					updateIndex( data, doc, details);
-					writer.addDocument(doc);
-				
+					if( data != null)
+					{
+						updateIndex( data, doc, details);
+						writer.addDocument(doc);
+					}
 					
 				}	
 					

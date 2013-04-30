@@ -732,7 +732,7 @@ public class AssetEditModule extends BaseMediaModule
 		HitTracker hits = createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
 		if( hits != null )
 		{
-			hits.selectAll(); //important
+			//hits.selectAll(); //important
 			if (hits.size() ==  1 )
 			{
 				String sourcepath = ((Data)hits.first()).getSourcePath();
@@ -744,6 +744,14 @@ public class AssetEditModule extends BaseMediaModule
 				Asset asset = archive.getAsset("multiedit:" + hits.getSessionId(),inReq);
 				inReq.putPageValue("asset", asset );
 			}
+
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
+			{
+				Data data = (Data) iterator.next();
+				hits.addSelection(data.getId());
+			}			
+
+			
 		}
 	}
 
@@ -888,7 +896,10 @@ public class AssetEditModule extends BaseMediaModule
 			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
 		}
 		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
-		results.selectAll();
+		results.addSelection(sample.getId());		
+//		HitTracker selected = results.getSelectedHitracker();
+//		inReq.putSessionValue("selectedhitsasset" + archive.getCatalogId() , selected );
+		
 		return results;
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
