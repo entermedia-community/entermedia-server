@@ -44,7 +44,7 @@ $context.putPageValue("hits", $hits)
 	#end
 		<td nowrap style="padding:4px;text-align:left;">
 		#set($userprofilehit = false)  
-		#set ($userprofilehit = $userProfileSearcher.searchByField("id", $hit.id))
+		#set ($userprofilehit = $userProfileSearcher.searchById($hit.id))
 		#if ($userprofilehit)
 			#set( $newval = $userprofilehit.get('settingsgroup') )
 			#if( $newval )
