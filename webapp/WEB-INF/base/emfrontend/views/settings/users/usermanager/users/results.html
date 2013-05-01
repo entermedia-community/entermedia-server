@@ -43,14 +43,14 @@ $context.putPageValue("hits", $hits)
 		</td>
 	#end
 		<td nowrap style="padding:4px;text-align:left;">
-		#set ($userprofilehits = $userProfileSearcher.fieldSearch("userid", $hit.id))
-		#if ($userprofilehits.size() == 1)
-			
-			#set( $newval = "$!userprofilehits.get(0).get('settingsgroup')")
-			#if($newval != "")  
-				#set( $newval = "$!searcherManager.getData($catalogid,'settingsgroup',$newval)" )
-			#end			
-			$newval
+		#set($userprofilehit = false)  
+		#set ($userprofilehit = $userProfileSearcher.searchByField("id", $hit.id))
+		#if ($userprofilehit)
+			#set( $newval = $userprofilehit.get('settingsgroup') )
+			#if( $newval )
+				#set( $sgroup = $searcherManager.getData($catalogid,'settingsgroup',$newval) )
+				$sgroup
+			#end	
 		#end
 		</td>
 	</tr>
