@@ -123,6 +123,10 @@ $(document).ready(function()
 
     jQuery("#startbutton").livequery('click',function() 
     {
+    	var valid = $("#uploaddata").validate().form();
+    	if(!valid){
+    		return;
+    	}
     	$(this).text("Uploading");
     	$(this).attr('disabled', 'disabled');
     	//jQuery("#upload_field").upload();
