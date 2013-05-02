@@ -13,6 +13,7 @@ See the GNU Lesser General Public License for more details.
 package org.openedit.entermedia.modules;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -54,8 +55,10 @@ import com.openedit.util.URLUtilities;
  */
 public class AdminModule extends BaseModule
 {
-	protected static final String ENTERMEDIAKEY = "entermedia.key";  //username + md542 + md5password
-
+	protected static final String ENTERMEDIAKEY = "entermedia.key";  //username + md542 + md5password + tstamp + timestampenc
+	protected static final String TIMESTAMP = "tstamp";
+	protected static final long PASSWORD_EXPIRY = 3*24*60*60*1000;//3 days, in milliseconds
+	
 	protected String fieldImagesRoot; // used by the imagepicker
 	protected String fieldRootFTPURL;
 	protected static final String UNAME = "username";
@@ -187,8 +190,21 @@ public class AdminModule extends BaseModule
 		PasswordHelper passwordHelper = getPasswordHelper(inReq);
 
 		String passenc = getUserManager().getStringEncryption().getPasswordMd5(foundUser.getPassword());
-		passenc = foundUser.getUserName() + "md542" + passenc;  
+		passenc = foundUser.getUserName() + "md542" + passenc;
 		
+		//append an encrypted timestamp to passenc
+		try{
+			String tsenc = getUserManager().getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
+			if (tsenc!=null && !tsenc.isEmpty()) {
+				if (tsenc.startsWith("DES:")) tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
+				passenc += TIMESTAMP + tsenc;
+			} else{
+				log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+			}
+		}catch (OpenEditException oex){
+			log.error(oex.getMessage(), oex);
+			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+		}
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 
 	}
@@ -733,6 +749,33 @@ public class AdminModule extends BaseModule
 			if (user != null && user.getPassword() != null)
 			{
 				String md5 = uandpass.substring(split + 5);
+				
+				//if timestamp included, check whether the autologin has expired
+				if ((split = md5.indexOf(TIMESTAMP)) != -1){
+					String tsenc = md5.substring(split+TIMESTAMP.length());
+					md5 = md5.substring(0,split);
+					try{
+						String ctext = getCookieEncryption().decrypt(tsenc);
+						long ts = Long.parseLong(ctext);
+						long current = new Date().getTime();
+						if ( (current - ts) > PASSWORD_EXPIRY){
+							log.info("Autologin has expired, redirecting to login page");
+							return false;
+						} else {
+							log.info("Autologin has not expired, processing md5 password");
+						}
+					}catch (OpenEditException oex){
+						log.error(oex.getMessage(),oex);
+						return false;
+					}catch (NumberFormatException nfx){
+						log.error(nfx.getMessage(),nfx);
+						return false;
+					}
+				} else {
+					log.info("Autologin does not have a timestamp, redirecting to login page");
+					return false;
+				}
+				
 				try
 				{
 					String hash = getCookieEncryption().getPasswordMd5(user.getPassword());
