@@ -6,7 +6,7 @@
 	
 	<generator name="velocity"/>
 	
-	
+	<property name="virtual">true</property>
 	
 	<!--
 	<page-action name="EditModule.forceDownload" alltypes="true"/>

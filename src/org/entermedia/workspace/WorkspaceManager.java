@@ -128,7 +128,7 @@ public class WorkspaceManager
 		}
 		if( details.getBeanName() == null )
 		{
-			details.setBeanName("xmlFileSearcher");
+			details.setBeanName("dataSearcher");
 		}
 		archive.savePropertyDetails(details, searchtype, null);
 

@@ -91,7 +91,27 @@ public class DataEditModule extends BaseMediaModule
 		return searcher;
 	}
 
-	
+	public void searchFields(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		if (searcher != null)
+		{
+			HitTracker hits = searcher.fieldSearch(inReq);
+			if (hits != null)
+			{
+				String name = inReq.findValue("hitsname");
+				inReq.putPageValue(name, hits);
+				inReq.putSessionValue(hits.getSessionId(), hits);
+			}
+		}
+		inReq.putPageValue("searcher", searcher);
+		
+	}	
+	/**
+	 * @deprecated use searchFields
+	 * @param inReq
+	 * @throws Exception
+	 */
 	public void search(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
@@ -104,7 +124,6 @@ public class DataEditModule extends BaseMediaModule
 				hits = searcher.getAllHits(inReq);
 
 			}
-
 			if (hits != null)
 			{
 				String name = inReq.findValue("hitsname");
@@ -891,15 +910,15 @@ public class DataEditModule extends BaseMediaModule
 	{
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-		String[] params = inReq.getRequestParameters("count");
-		for (int i = 0; i < params.length; i++)
+		if( hits != null)
 		{
-			String id = params[i];
-			int count = Integer.parseInt(id);
-			hits.toggleSelected(count);
-
+			String[] params = inReq.getRequestParameters("dataid");
+			for (int i = 0; i < params.length; i++)
+			{
+				String id = params[i];
+				hits.toggleSelected(id);
+			}
 		}
-
 	}
 
 	public void selectHits(WebPageRequest inReq) throws Exception
@@ -918,7 +937,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 		else if ("page".equals(action))
 		{
-
 			hits.selectCurrentPage();
 		}
 		else if ("none".equals(action))
@@ -1236,7 +1254,7 @@ public class DataEditModule extends BaseMediaModule
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
 		
-		List todelete = hits.getSelectedHits();
+		Collection todelete = hits.getSelectedHits();
 		for (Iterator iterator = todelete.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();

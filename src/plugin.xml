@@ -266,8 +266,18 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-	<bean id="dynamicSearcher" class="org.openedit.xml.XmlSearcher"
-		singleton="false">
+	<!--  TODO: Change to an alias transientSearcher listSearcher folderSearcher dataSearcher-->
+	<bean id="transientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" singleton="false">
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="rootDirectory">
+			<ref bean="root" />
+		</property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+	</bean>
+	<bean id="listSearcher" class="org.openedit.xml.XmlSearcher" singleton="false">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -276,6 +286,43 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
+	
+	<bean id="dynamicSearcher" class="org.openedit.xml.XmlSearcher" singleton="false">
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>
+		<property name="webEventListener">
+			<ref bean="editorEventHandler" />
+		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+	</bean>
+	
+	
+	<bean id="folderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+	</bean>
+	<bean id="dataSearcher" class="org.openedit.data.XmlFileSearcher" singleton="false">
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="rootDirectory"><ref bean="root"/></property>
+		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
+		<property name="indexRootFolder"><value>lucene</value></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>		
+	</bean>	
+
+	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"	singleton="false">
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>
+		<property name="webEventListener">
+			<ref bean="editorEventHandler" />
+		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+	</bean>
+
+
 
 	<bean id="compositeLuceneSearcher" class="org.openedit.data.lucene.CompositeLuceneSearcher"
 		singleton="false">
@@ -995,6 +1042,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="indexRootFolder"><value>lucene</value></property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>		
 	</bean>
+	
 	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
 	
 	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" singleton="false">
@@ -1301,49 +1349,11 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		
 	</bean>
 
-<!--  TODO: Use beans.xml alias -->
 	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 	</bean>
 
-<!-- 
-	<bean id="databaseSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
-
-
-	<bean id="appsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
-
-	<bean id="extensionsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
-
-	<bean id="settingssecuritySearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
-
-	<bean id="settingsmetadataSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
-
-	<bean id="settingslistsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
-	<bean id="settingseventsSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
- -->
-	
 	<bean id="AttachmentModule" class="org.openedit.entermedia.modules.AttachmentModule" >
 		<property name="attachmentManager">
 			<ref bean="attachmentManager" />
@@ -1421,17 +1431,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	
 	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
-	</bean>
-
-	<bean id="transientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" singleton="false">
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="indexRootFolder"><value>lucene</value></property>
 	</bean>
 
 

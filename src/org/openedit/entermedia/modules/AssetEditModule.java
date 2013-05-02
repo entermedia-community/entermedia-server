@@ -732,7 +732,7 @@ public class AssetEditModule extends BaseMediaModule
 		HitTracker hits = createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
 		if( hits != null )
 		{
-			hits.selectAll(); //important
+			//hits.selectAll(); //important
 			if (hits.size() ==  1 )
 			{
 				String sourcepath = ((Data)hits.first()).getSourcePath();
@@ -744,6 +744,14 @@ public class AssetEditModule extends BaseMediaModule
 				Asset asset = archive.getAsset("multiedit:" + hits.getSessionId(),inReq);
 				inReq.putPageValue("asset", asset );
 			}
+
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
+			{
+				Data data = (Data) iterator.next();
+				hits.addSelection(data.getId());
+			}			
+
+			
 		}
 	}
 
@@ -888,7 +896,10 @@ public class AssetEditModule extends BaseMediaModule
 			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
 		}
 		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
-		results.selectAll();
+		results.addSelection(sample.getId());		
+//		HitTracker selected = results.getSelectedHitracker();
+//		inReq.putSessionValue("selectedhitsasset" + archive.getCatalogId() , selected );
+		
 		return results;
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
@@ -1774,22 +1785,28 @@ public class AssetEditModule extends BaseMediaModule
 			hitssessionid = hitssessionid.substring("selected".length());
 		}
 
-		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+		//Make a new search based on everyone being selected
+		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid); //this could be out of date if we saved already. Just grab the selection and let the composite refresh each data row
 		if( hits == null)
 		{
 			log.error("Could not find " + hitssessionid);
 			return null;
 		}
-		//TODO: Change multi edit to use trackers instead
+		
+		//Now always reload the selected nodes and only pass in those nodes to multi-edit
 		MediaArchive store = getMediaArchive(inReq);
 		
-		//lost selections?
-		HitTracker old = hits;
-		hits  = store.getAssetSearcher().cachedSearch(inReq, hits.getSearchQuery());
+//		//lost selections?
+//		HitTracker old = hits;
+//		hits  = store.getAssetSearcher().getAllHits(inReq);
+//		hits.loadPreviousSelections(old);
+//		
 		if( !hits.hasSelections() )
 		{
-			hits.setSelections(old.getSelections());
+			log.error("No assets selected " + hitssessionid);
+			return null;
 		}
+		
 //		CompositeAsset composite = new CompositeAsset();
 //		for (Iterator iterator = hits.getSelectedHits().iterator(); iterator.hasNext();)
 //		{
@@ -1868,9 +1885,8 @@ public class AssetEditModule extends BaseMediaModule
 				}
 				else if( assetid == null )
 				{
-					Integer selected = (Integer)hits.getSelections().iterator().next();
-					Data first = hits.get(selected);
-					asset = getMediaArchive(inReq).getAssetBySourcePath(first.getSourcePath());
+					String id = hits.getFirstSelected();
+					asset = getMediaArchive(inReq).getAsset(id);
 				}
 				if( asset != null )
 				{
@@ -1910,6 +1926,7 @@ public class AssetEditModule extends BaseMediaModule
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
 			String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath");
+			 
 			if(sourcepath == null){
 				 sourcepath = archive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
 			}		
@@ -1929,7 +1946,10 @@ public class AssetEditModule extends BaseMediaModule
 					}
 				}
 			}
-
+			String id = inReq.getRequestParameter("id");
+			if(id != null){
+				vals.put("id",id);
+			}
 			
 			Replacer replacer = new Replacer();
 			

@@ -1,27 +1,85 @@
 package org.openedit.entermedia;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 
+import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
 
 public class CompositeAsset extends Asset implements Data, CompositeData
 {
 	private static final long serialVersionUID = -7154445212382362391L;
 	protected MediaArchive fieldArchive;
-	protected HitTracker fieldSelectedHits;
+	protected HitTracker fieldInitialSearchResults; 
+	protected HitTracker fieldSelectedResults; 
+	protected List<String> fieldRemovedCategories;
+	protected List<String> fieldRemovedKeywords;
+	protected Map<String,String> fieldPropertiesSet;
+	protected List<Integer> fieldSelections;
+	protected PropertyDetails fieldPropertyDetails;
 	protected String fieldId;
-	protected List fieldRemovedCategories;
-	protected List fieldRemovedKeywords;
-	protected Map fieldPropertiesSet;
 	
+	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
+	{
+		setArchive(inMediaArchive);
+		setInitialSearchResults(inHits);
+	}
+	public HitTracker getInitialSearchResults() 
+	{
+		return fieldInitialSearchResults;
+	}
+
+	public void setInitialSearchResults(HitTracker inInitialSearchResults) 
+	{
+		fieldInitialSearchResults = inInitialSearchResults;
+	}
+
+	
+	public HitTracker getSelectedResults() 
+	{
+		if( fieldSelectedResults == null)
+		{
+			reloadData();
+		}
+		return fieldSelectedResults;
+	}
+
+	public void setSelectedResults(HitTracker inCurrentSearchResults) 
+	{
+		fieldSelectedResults = inCurrentSearchResults;
+	}
+
+
+	
+//	protected Map<String,String> fieldPropertiesPreviouslySaved;
+//	
+//	public Map<String,String> getPropertiesPreviouslySaved() 
+//	{
+//		if (fieldPropertiesPreviouslySaved == null) 
+//		{
+//			fieldPropertiesPreviouslySaved = new HashMap<String,String>();
+//		}
+//		return fieldPropertiesPreviouslySaved;
+//	}
+
+	
+	public PropertyDetails getPropertyDetails() 
+	{
+		return fieldArchive.getAssetPropertyDetails();
+	}
+
 	public Map getPropertiesSet()
 	{
 		if (fieldPropertiesSet == null)
@@ -67,26 +125,28 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	}
 
 	
-	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
+	protected void reloadData() 
 	{
-		setArchive(inMediaArchive);
-		setSelectedHits(inHits.getSelectedHitracker());
+		// TODO Auto-generated method stub
+		HitTracker existing = getInitialSearchResults();
+		setSelectedResults(existing.getSelectedHitracker());
+		getProperties().clear();
 	}
-	
+
 	public int size()
 	{
-		return getSelectedHits().size();
+		return getSelectedResults().size();
 	}
 	public List getKeywords()
 	{
 		if( fieldKeywords == null )
 		{
-			Data first = (Data)getSelectedHits().first();
+			Data first = (Data)getSelectedResults().first();
 			String fwords = first.get("keywords");
 			if( fwords != null && fwords.length() > 0)
 			{
 				String[] common = VALUEDELMITER.split(fwords);
-				for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
+				for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
 					String words = data.get("keywords");
@@ -136,7 +196,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( fieldCategories == null )
 		{
-			Data first = (Data)getSelectedHits().first();
+			Data first = (Data)getSelectedResults().first();
 			if( first == null )
 			{
 				return Collections.EMPTY_LIST;
@@ -145,7 +205,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			if( fcats != null )
 			{
 				String[] catlist = fcats.split("\\|");
-				for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
+				for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
 					String cats = data.get("category");
@@ -200,7 +260,15 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{	
 		if (size() > 0)
 		{
-			String val = super.get(inId);
+			String val = (String)getPropertiesSet().get(inId); //set by the user since last save
+//			if( val == null && fieldPropertiesPreviouslySaved != null)
+//			{
+//				val = (String)getPropertiesPreviouslySaved().get(inId);
+//			}
+			if( val == null)
+			{
+				val = super.get(inId); //set by looking over the cached results
+			}
 			if( val != null ) //already set to a value
 			{
 				if( val.length() == 0 )
@@ -214,35 +282,66 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 //				return null;
 //			}
 			//return something only if all the values match the first record
-			val = ((Data)getSelectedHits().first()).get(inId);
-			for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
-			{
-				Data data = (Data) iterator.next();
-				String newval = data.get(inId);
-				if( val == null )
-				{
-					if( val != newval )
-					{
-						val = "";
-						break;
-					}
-				}
-				else if (!val.equals(newval))
-				{
-					val = "";
-					break;
-				}
-			}
-			if(	val == null )
-			{
-				val = "";
-			}
-
+			val = getValueFromResults(inId);
+			//getPropertiesPreviouslySaved().put(inId, val);
 			super.setProperty(inId, val);
 			return val;
 		}
 		
 		return null;
+	}
+	protected String getValueFromResults(String inKey) 
+	{
+		String val;
+		val = ((Data)getSelectedResults().first()).get(inKey);
+		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String dataval = data.get(inKey);
+			if( val == null )
+			{
+				if( val != dataval )
+				{
+					val = "";
+					break;
+				}
+			}
+			else if (val.length() > 0 && !val.equals(dataval))
+			{
+				//Maybe just out of order?
+				boolean multi = isMulti(inKey);
+				
+				if( dataval != null && multi )
+				{
+					String[] vals = VALUEDELMITER.split(val);
+					val = "";
+					for (int i = 0; i < vals.length; i++) 
+					{
+						if( dataval.contains(vals[i]) ) //vals are in an array
+						{
+							if( val.length() == 0 )
+							{
+								val = vals[i];
+							}
+							else
+							{
+								val = val + " | " + vals[i];
+							}
+						}
+					}
+				}
+				else
+				{
+					val = "";
+					break;
+				}
+			}
+		}
+		if(	val == null )
+		{
+			val = "";
+		}
+		return val;
 	}
 	public void setProperty(String inKey, String inValue)
 	{
@@ -250,7 +349,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		{
 			inValue = "";
 		}
-		getProperties().put(inKey, inValue);
+		//getProperties().put(inKey, inValue);
 		getPropertiesSet().put(inKey,inValue);
 	}
 
@@ -279,7 +378,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( size() > 0)
 		{
-			Data first = (Data)getSelectedHits().first();
+			Data first = (Data)getSelectedResults().first();
 			return first.getSourcePath() + "multi" + size();
 		}
 		return null;
@@ -292,19 +391,9 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	
 	public Iterator iterator()
 	{
-		return new AssetIterator(getSelectedHits().iterator());
+		return new AssetIterator(getSelectedResults().iterator());
 	}
 	
-	public HitTracker getSelectedHits()
-	{
-		return fieldSelectedHits;
-	}
-
-	public void setSelectedHits(HitTracker inSelectedHits)
-	{
-		fieldSelectedHits = inSelectedHits;
-	}
-
 	public MediaArchive getArchive()
 	{
 		return fieldArchive;
@@ -315,11 +404,15 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		fieldArchive = inArchive;
 	}
 
+	/**
+	 * Do not call this more than once!
+	 * Because we use the hit results to check on previous saved 
+	 */
 	public void saveChanges() 
 	{
 		//compare keywords, categories and data. 
 		List tosave = new ArrayList(100);
-		for (Iterator iterator = getSelectedHits().iterator(); iterator.hasNext();)
+		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			Asset inloopasset = null;
@@ -392,20 +485,33 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				}
 					
 				String value = (String)getPropertiesSet().get(key);
-				String existingvalue = data.get(key);
+				String datavalue = data.get(key);
 				
-				if( existingvalue == value )
+				if( datavalue == value )
 				{
 					continue;
 				}
-				if( existingvalue != null && existingvalue.equals(value) )
+				if( datavalue != null && datavalue.equals(value) )
 				{
 					continue;
 				}
 				Asset asset = loadAsset( inloopasset, data, tosave);
 				if( asset != null )
 				{
-					asset.setProperty(key, value);
+					boolean multi = isMulti(key);
+
+					if( multi )
+					{
+						//Need to add any that are set by user in value 
+						Set added = collect(value);
+						Set existing = collect(datavalue);
+						Set previousCommonOnes = collect(getValueFromResults(key)); 
+						saveMultiValues(asset, key, added, existing,previousCommonOnes);
+					}
+					else
+					{
+						asset.setProperty(key, value);
+					}
 					inloopasset = asset;
 				}
 			}
@@ -416,8 +522,53 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			}
 		}
 		getArchive().saveAssets(tosave);
+		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
+		setSelectedResults(null);
 	}
-//
+
+	/**
+	 * @param asset
+	 * @param key
+	 * @param added Ones that needs to be added
+	 * @param existing Ones that are already on the asset
+	 * @param old Ones that need to be removed?
+	 */
+	protected void saveMultiValues(Asset asset, String key, Set added, Set existing, Set previousCommonOnes) 
+	{
+		existing.addAll(added);
+		
+		//Need to remove any that are missing from combined
+		previousCommonOnes.removeAll(added);
+		existing.removeAll(previousCommonOnes);
+		asset.setValues(key, existing);
+		//System.out.println("Saving old value:" + datavalue + " saved: " + existing);
+	}
+	protected boolean isMulti(String key) 
+	{
+		if( key.equals( "libraries") )
+		{
+			return true;
+		}
+		PropertyDetail detail = getPropertyDetails().getDetail(key);
+		
+		boolean multi = detail != null && detail.isMultiValue();
+		return multi;
+	}
+
+	protected Set collect(String existingvalue) 
+	{
+		if( existingvalue == null || existingvalue.length() == 0)
+		{
+			return new HashSet();
+		}
+		String[] vals = VALUEDELMITER.split(existingvalue);
+		Set set = new HashSet(vals.length);
+		for (int i = 0; i < vals.length; i++) {
+			set.add(vals[i]);
+		}
+		return set;
+	}
+	//
 	class AssetIterator implements Iterator
 	{
 		Iterator fieldDataIterator;

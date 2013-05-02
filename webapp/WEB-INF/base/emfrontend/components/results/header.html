@@ -19,15 +19,21 @@
 				</ul>
 			</li>
 		#end
-			
-		#if($content.isPropertyTrue("showaddselections") && $canviewbasket)
-			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">Add to Basket</a></li>
-		#end
 		
-		#if($content.isPropertyTrue("showremoveselections") && $canviewbasket)
-			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">Remove</a></li>
+		#if ( $canviewbasket )
+
+			#set( $showremoveselections = $context.findValue("showremoveselections") )
+			#if( $showremoveselections == "true" )
+				#set( $showremoveselections = true )
+			#else
+				#set( $showremoveselections = false )
+			#end
+			#if($showremoveselections )
+				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">Remove</a></li>
+			#else
+				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">Add to Basket</a></li>
+			#end
 		#end
-		
 		
 		#if ($canmetadatageneral && $hits)
 			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()">Edit</a></li>
@@ -72,7 +78,7 @@
 		#end
 		
 			<li style="float: right;">	
-				<a class="ajax" targetdivinner="view-picker-content" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()">
+				<a class="ajax" targetdivinner="view-picker-content" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
 				
 					#if (!$resultview || $resultview == 'table')
 						View Gallery

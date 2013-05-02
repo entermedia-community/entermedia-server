@@ -8,7 +8,7 @@
 	<property id="category" editable="true" viewtype="category" type="list" stored="true" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
-	<property id="libraries"  viewtype="libraries" listid="library"  editable="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
+	<property id="libraries"  viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true"  sort="name">Asset Type</property>
 
 	<!-- Push items -->
@@ -50,7 +50,6 @@
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
 	<property id="fileformat" index="true" stored="true" viewtype="list" editable="true" externalid="File Type">File Format</property>
 	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" externalid="File Size">File Size</property>
-	<property id="colortype" index="true" stored="true" viewtype="list" datatype="list">Color</property>
 	<property id="width" index="true" stored="true" datatype="number" >Width</property>
 	<property id="height" index="true" stored="true" datatype="number" >Height</property>
 	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  viewtype="time" searchcomponent="datesearch" externalid="CreateDate,MediaCreateDate">Created On</property>

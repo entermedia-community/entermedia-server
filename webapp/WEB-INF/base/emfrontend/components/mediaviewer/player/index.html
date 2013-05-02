@@ -34,7 +34,7 @@
                          #set ($pageholder = $page + 1)
                          #set( $prevthumb = $pageholder - 1)
                          #set( $prevthumb = $prevthumb * 5 - 4)
-                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$prevthumb&hitssessionid=$hitssessionid"> << Previous Five </a>
+                        <a href="index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid"> << Previous Five </a>
                 #end
                 </li>
                     
@@ -46,7 +46,7 @@
                 #end
                 #foreach( $page in [$start..$end])
                     <li class="#if ( $page == $currentpreview ) current #end">
-                        <a href="index.html?sourcepath=$asset.sourcepath&currentpreview=$page&hitssessionid=$hitssessionid">
+                        <a href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&currentpreview=$page&hitssessionid=$hitssessionid">
                             #set( $page = $page + 1)
                             <img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/preview.jpg?pagenum=$page" />
                             <p><span>$page</span></p>
@@ -59,7 +59,7 @@
                     #set( $nextthumb = $pageholder + 1)
                     #set( $nextthumb = $nextthumb * 5 - 4)
                     
-                        <a href="index.html?sourcepath=$asset.sourcepath&pagenum=$nextthumb&hitssessionid=$hitssessionid"> Next Five >> </a>
+                        <a href="index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> Next Five >> </a>
                 #end
                 </li>
             </ul>

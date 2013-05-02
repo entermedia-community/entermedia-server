@@ -7,9 +7,9 @@ jQuery("input.selectionbox").livequery( function()
 	{
 		var home = $('#application').data('home') + $('#application').data('apphome');
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
-		var count = jQuery(this).data('count');
+		var dataid = jQuery(this).data('dataid');
 		
-		jQuery(this).load( home + "/components/results/toggle.html", {count:count, searchtype: "asset", hitssessionid: hitssessionid });
+		jQuery(this).load( home + "/components/results/toggle.html", {dataid:dataid, searchtype: "asset", hitssessionid: hitssessionid });
 			//jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitsessionid });
 	});
 });
@@ -70,13 +70,11 @@ jQuery(".moduleselectionbox").livequery("click", function(e) {
 	
 	var searchhome = $('#resultsdiv').data('searchhome');
 	  
-	var count = jQuery(this).data("count");
+	var dataid = jQuery(this).data("dataid");
 	var sessionid = jQuery(this).data("hitssessionid");
 	
 	
-
-	jQuery.get(searchhome + "/selections/toggle.html", {count:count, hitssessionid:sessionid});
-	
+	jQuery.get(searchhome + "/selections/toggle.html", {dataid:dataid, hitssessionid:sessionid});
 	
 		
 	return;

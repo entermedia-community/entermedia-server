@@ -239,9 +239,10 @@ uiload = function() {
 		return emdata.name;
 	}
 	function select2Selected(emdata, container) {
-		
-		var id = container.closest(".select2-container").attr("id") + "hidden";
-		id = id.substring(5); //remove sid2_
+
+		//"#list-" + foreignkeyid
+		var id = container.closest(".select2-container").attr("id");
+		id = "list-" + id.substring(5); //remove sid2_
 		container.closest("form").find("#" + id ).val(emdata.id);
 		return emdata.name;
 	}
@@ -272,7 +273,11 @@ uiload = function() {
 					dataType : 'json',
 					data : function(term, page) 
 					{
-						var fkv = theinput.closest("form").find("#list-" + foreignkeyid).val();
+						var fkv = theinput.closest("form").find("#list-" + foreignkeyid + "value").val();
+						if( fkv == undefined )
+						{
+							fkv = theinput.closest("form").find("#list-" + foreignkeyid).val();
+						}
 						var search = {
 							page_limit : 15,
 							page: page

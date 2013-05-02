@@ -49,7 +49,8 @@ public boolean conversionsComplete(String assetid){
 	
 	query.addMatches("assetid", assetid);
 	query.setHitsName("convertstatus");
-	HitTracker newtasks = tasksearcher.cachedSearch(context, query);
+	
+	HitTracker newtasks = tasksearcher.search(query);
 
 	List errors = new ArrayList();
 	List complete = new ArrayList();
@@ -96,7 +97,7 @@ public boolean loadPublishing(String assetid)
 	query.addOrsGroup("status", "new submitted retry pending");
 	query.addMatches("assetid", assetid);
 	query.setHitsName("publishstatus");
-	HitTracker newtasks = queuesearcher.cachedSearch(context, query);
+	HitTracker newtasks = queuesearcher.search(query);
 	context.putPageValue("publish", newtasks);
 	
 	//get rid of this
@@ -104,7 +105,7 @@ public boolean loadPublishing(String assetid)
 	query.addMatches("status", "error");
 	query.addMatches("assetid", assetid);
 	query.setHitsName("publishstatuserrors");
-	HitTracker errors = queuesearcher.cachedSearch(context, query);
+	HitTracker errors = queuesearcher.search(query);
 	context.putPageValue("publisherrors", errors);
 	
 	if( newtasks == null || newtasks.size() > 0 || errors.size() > 0)

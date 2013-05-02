@@ -80,18 +80,16 @@ public class Asset implements MultiValued
 		}
 		else
 		{
-			val = val + " " + inNewValue;
+			if( val.length() > 0 )
+			{
+				val = val + " | " + inNewValue;
+			}
+			else
+			{
+				val = inNewValue;
+			}
 			setProperty(inKey, val);
 		}
-	}
-	public void removeValue(String inKey, String inToRemove)
-	{
-		String val = get(inKey);
-		if( val == null )
-		{
-			return;
-		}
-		val = val.replace(inToRemove, "");
 	}
 	public void setValues(String inKey, Collection<String> inValues)
 	{

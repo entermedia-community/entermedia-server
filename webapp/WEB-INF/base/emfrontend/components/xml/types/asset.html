@@ -23,7 +23,9 @@
 
 <br/><br/>
 <input type="hidden" name="${detail.id}.value" id="${detail.id}-value" value="$!foundrow.id"/>
-
+#if($detail.sourcepath)
+<input type="hidden" name="${detail.id}.sourcepath" id="${detail.id}-value" value="$detail.sourcepath"/>
+#end
 
 <input type="text" class="bigdrop" id="assetselector" style="width: 500px" />
 

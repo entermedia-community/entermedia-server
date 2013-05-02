@@ -8,13 +8,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
@@ -48,9 +46,8 @@ public class LuceneHitTracker extends HitTracker
 	//protected Map<Integer,ScoreDoc> fieldCursors;
 	protected Integer fieldSize;
 	protected String fieldSearchType;
-	protected TopDocs fieldOpenDocs;
+	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
-	
 	/**
 	 * This is what is searched. getResultsType() is what is returned?
 	 * @deprecated
@@ -64,7 +61,10 @@ public class LuceneHitTracker extends HitTracker
 	{
 		fieldSearchType = inSearchType;
 	}
-
+	public LuceneHitTracker()
+	{
+		
+	}
 	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort)
 	{
 		setLuceneSearcherManager(inManager);
@@ -142,7 +142,6 @@ public class LuceneHitTracker extends HitTracker
 //		}
 //		return fieldPages;
 //	}
-	
 	protected List<Data> getPage(int inPageNumberZeroBased)
 	{
 //		List<Data> page = getPages().get(inPageNumberZeroBased);
@@ -153,9 +152,9 @@ public class LuceneHitTracker extends HitTracker
 		
 		try
 		{
-
 			if( fieldOpenDocsSearcherHash != searcher.hashCode() )
 			{
+				TopDocs docs = null;
 				//do the search and save the reuslts
 				int max = Integer.MAX_VALUE;
 				if( getHitsPerPage() == 1)
@@ -164,28 +163,24 @@ public class LuceneHitTracker extends HitTracker
 				}
 				if( getLuceneSort() != null )
 				{
-					fieldOpenDocs = searcher.search( getLuceneQuery(), max ,getLuceneSort() );
+					docs = searcher.search( getLuceneQuery(), max ,getLuceneSort() );
 				}
 				else
 				{
-					fieldOpenDocs = searcher.search( getLuceneQuery(),max);
+					docs = searcher.search( getLuceneQuery(),max);
 				}
 				if( max > 1)
 				{
-					log.info(getSearchType() + " " +  fieldOpenDocs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+					log.info(getSearchType() + " " +  docs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
 				}
-
+				fieldSize = docs.totalHits;
+				fieldDocs = docs.scoreDocs;
+				//do we need to reset the selections?
+				//Use selected doc ids to reload all the selection data
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
-			fieldSize = fieldOpenDocs.totalHits;
 			
-			int start = getHitsPerPage() * inPageNumberZeroBased;
-			int max = start + getHitsPerPage();
-			max = Math.min(max, fieldSize);
-			
-			List<Data> page = new ArrayList<Data>(getHitsPerPage());
-			
-			readPageOfData(searcher,start,max,fieldOpenDocs,page);
+			List<Data> page = populatePageData(inPageNumberZeroBased, searcher);
 			return page;
 
 		}
@@ -204,6 +199,18 @@ public class LuceneHitTracker extends HitTracker
 				//nada
 			}
 		}
+	}
+
+	private List<Data> populatePageData(int inPageNumberZeroBased,
+			IndexSearcher searcher) throws IOException {
+		int start = getHitsPerPage() * inPageNumberZeroBased;
+		int max = start + getHitsPerPage();
+		max = Math.min(max, fieldSize);
+		
+		List<Data> page = new ArrayList<Data>(getHitsPerPage());
+		
+		readPageOfData(searcher,start,max,page);
+		return page;
 	}
 	/*
 	protected List<Data> cursorSearch(IndexSearcher searcher,int inPageNumberZeroBased,ScoreDoc after ) throws IOException
@@ -274,7 +281,7 @@ public class LuceneHitTracker extends HitTracker
 	}
 */
 	protected ScoreDoc readPageOfData(IndexSearcher searcher, int start, int max,
-			TopDocs docs, List<Data> page) throws IOException {
+		 List<Data> page) throws IOException {
 		/**
 		 * This is optimized to only store string versions of the data we have. Normally the Document class has FieldType that use a bunch of memory.
 		 * Guess Most people do not loop over their entire database as often as we do. 
@@ -286,7 +293,7 @@ public class LuceneHitTracker extends HitTracker
 		for (int i = 0; start + i < max; i++)
 		{
 			int offset = start + i;
-			lastDoc = docs.scoreDocs[offset];
+			lastDoc = fieldDocs[offset];
 		    int docid = lastDoc.doc;
 			//final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
 		  final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
@@ -650,6 +657,24 @@ public class LuceneHitTracker extends HitTracker
 	{
 		fieldLuceneSort = inLuceneSort;
 	}
-
+	/**
+	 * Don't do this for now since it does not really help with memory to load all the assets so many times
+	 
+	public HitTracker getSelectedHitracker()
+	{
+//		getPage(0);
+//		reloadSelection();
+		if( getSessionId().startsWith("selected") || isAllSelected() )
+		{
+			return this;
+		}
+		
+		SelectedHitsTracker hits = new SelectedHitsTracker(this);
+		hits.setHitsName("selected" + getHitsName());
+		hits.setSessionId("selected" + getSessionId() );
+		hits.selectAll();
+		return hits;
+	}
+	*/
 
 }

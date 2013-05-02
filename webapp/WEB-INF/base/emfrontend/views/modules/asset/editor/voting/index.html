@@ -11,7 +11,7 @@
 	   #if ( $alreadyvoted )
 	       <span>You like this!</span>
 	   #else
-	       <a href="$home/$applicationid/users/$first/index.html">$userManager.getScreenName($first)</a> likes this!
+	       $userManager.getScreenName($first) likes this!
 	   #end
 	#end
 	#if($size == 2)
@@ -19,16 +19,16 @@
 		#if ( $alreadyvoted )
            <span>You</span>
         #else
-           <a href="$home/$applicationid/users/$first/index.html">$userManager.getScreenName($first)</a>
+          $userManager.getScreenName($first)
         #end 
-		 and <a href="$home/$applicationid/users/$second/index.html">$userManager.getScreenName($second)</a> like this!
+		 and $userManager.getScreenName($second) like this!
 	#end
 	#if( $size > 2 )
 		#set($size = $size - 1)
 		#if ( $alreadyvoted )
            <span>You</span>
         #else
-           <a href="$home/$applicationid/users/$first/index.html">$userManager.getScreenName($first)</a>
+           $userManager.getScreenName($first)
         #end 
 			and <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/voting/showvotes.html?sourcepath=$asset.sourcepath&catalogid=$catalogid&oemaxlevel=1">$size others</a> 
 	    like this!

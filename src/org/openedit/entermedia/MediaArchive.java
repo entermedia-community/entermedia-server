@@ -539,7 +539,7 @@ public class MediaArchive
 					log.error("Could not find " + hitssessionid);
 					return null;
 				}
-				CompositeAsset composite = new CompositeAsset(this,hits.getSelectedHitracker());
+				CompositeAsset composite = new CompositeAsset(this,hits);
 				composite.setId(assetid);
 				asset = composite;
 			}

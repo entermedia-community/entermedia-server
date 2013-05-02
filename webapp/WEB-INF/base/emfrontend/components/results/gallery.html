@@ -21,6 +21,8 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
 
+#set( $viewerlink = $content.get("assetviewerlink") )
+
 
 
 <div  class="emgallery"  >  
@@ -36,7 +38,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
                 $context.putPageValue("hit", $hit)
                 #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
                 $context.putPageValue("type", $type)
-                #set( $click = "$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
+                #set( $click = "$home$viewerlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
                
                 $context.putPageValue("clink", $clink)
                 $context.putPageValue("assetid", $hit.id)
