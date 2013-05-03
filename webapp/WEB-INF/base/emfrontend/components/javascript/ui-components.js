@@ -211,7 +211,7 @@ uiload = function() {
 	        cssSelectorAncestor: "#" + containerid
 	    });
 		
-		player.jPlayer("play");
+		//player.jPlayer("play");
 
 	});
 

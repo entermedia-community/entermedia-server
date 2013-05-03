@@ -36,7 +36,7 @@
             
             <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
                     <option value="default" >Default</option>
-                        #foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
+                        #foreach($item in $assettypesearcher.fieldSearch("id","*","nameUp"))
                             <option #if($current == $item.id) selected #end value="$item.id">$item</option>
                         #end
                     </select> 

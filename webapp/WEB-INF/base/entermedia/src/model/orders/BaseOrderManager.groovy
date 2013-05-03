@@ -914,6 +914,9 @@ public class BaseOrderManager implements OrderManager
 	
 	public boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId)
 	{
+		if(inAssetId.startsWith("multi")){
+			return false;
+		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addMatches("orderid", inOrder.getId());

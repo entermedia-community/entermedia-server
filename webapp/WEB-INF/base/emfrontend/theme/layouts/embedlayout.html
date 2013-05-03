@@ -1,8 +1,10 @@
 <html>
 <head>
-<script type="text/javascript" src="/${applicationid}/components/javascript/jquery-1.7.1.min.js"></script>
+$pages.include("$apphome/theme/layouts/includes.html")
 </head>
-<body  >
+<body>
+<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">
 $pages.includeContent()
+</div>
 </body>
 </html>

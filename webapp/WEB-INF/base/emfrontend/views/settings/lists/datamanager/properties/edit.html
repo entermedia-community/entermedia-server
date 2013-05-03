@@ -135,6 +135,16 @@
 	<tr> <td>[[Depends On ID]]:</td> <td><input type="text" name="dependson.value" value="$!property.dependson"/> </td> </tr>
 	<tr> <td>[[Depends On Values]]:</td> <td><input type="text" name="dependsonvalue.value" value="$!property.dependsonvalue"/> </td> </tr>
 
+
+	<tr> <td>[[Regex]]:</td> <td><input type="text" name="regex.value" value="$!property.sort"/> </td> </tr>
+	<input type="hidden" name="field" value="regex"/>
+
+
+	<tr> <td>[[Render Name]]:</td> <td><input type="text" name="render.value" value="$!property.render"/> </td> </tr>
+	<input type="hidden" name="field" value="render"/>
+
+
+
 	#if($detail.viewtype=="asset")
 	<input type="hidden" name="field" value="sourcepath"/>
 	<tr> <td>[[Sourcepath filter (for uploads)]]:</td> <td><input type="text" name="sourcepath.value" value="$!property.sourcepath"/> </td> </tr>

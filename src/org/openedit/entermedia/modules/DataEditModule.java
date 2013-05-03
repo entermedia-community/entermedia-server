@@ -61,7 +61,7 @@ public class DataEditModule extends BaseMediaModule
 			paramname = "id";
 		}
 		String id = inReq.getRequestParameter(paramname);
-		if (id != null)
+		if (id != null && !id.startsWith("multi"))
 		{
 			Object data = searcher.searchById(id);
 			if( data != null)
