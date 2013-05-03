@@ -913,10 +913,13 @@ public class DataEditModule extends BaseMediaModule
 		if( hits != null)
 		{
 			String[] params = inReq.getRequestParameters("dataid");
-			for (int i = 0; i < params.length; i++)
+			if( params != null)
 			{
-				String id = params[i];
-				hits.toggleSelected(id);
+				for (int i = 0; i < params.length; i++)
+				{
+					String id = params[i];
+					hits.toggleSelected(id);
+				}
 			}
 		}
 	}
