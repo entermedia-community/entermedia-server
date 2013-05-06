@@ -57,7 +57,8 @@ public class AdminModule extends BaseModule
 {
 	protected static final String ENTERMEDIAKEY = "entermedia.key";  //username + md542 + md5password + tstamp + timestampenc
 	protected static final String TIMESTAMP = "tstamp";
-	protected static final long PASSWORD_EXPIRY = 3*24*60*60*1000;//3 days, in milliseconds
+	protected static final long PASSWORD_EXPIRY_IN_DAYS = 1;// number of days the password will expire
+	protected static final long PASSWORD_EXPIRY = PASSWORD_EXPIRY_IN_DAYS*24*60*60*1000;// expiry of password in milliseconds
 	
 	protected String fieldImagesRoot; // used by the imagepicker
 	protected String fieldRootFTPURL;
