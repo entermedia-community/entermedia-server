@@ -57,8 +57,7 @@ public class AdminModule extends BaseModule
 {
 	protected static final String ENTERMEDIAKEY = "entermedia.key";  //username + md542 + md5password + tstamp + timestampenc
 	protected static final String TIMESTAMP = "tstamp";
-	protected static final long PASSWORD_EXPIRY_IN_DAYS = 1;// number of days the password will expire
-	protected static final long PASSWORD_EXPIRY = PASSWORD_EXPIRY_IN_DAYS*24*60*60*1000;// expiry of password in milliseconds
+	protected static final long MILLISECONDS_PER_DAY = 24*60*60*1000;// milliseconds in one day (used to calculate password expiry)
 	
 	protected String fieldImagesRoot; // used by the imagepicker
 	protected String fieldRootFTPURL;
@@ -736,6 +735,16 @@ public class AdminModule extends BaseModule
 	
 	protected boolean autoLoginFromMd5Value(WebPageRequest inReq, String uandpass)
 	{
+		//get the password expiry in days
+		int pwd_expiry_in_days = 1;
+		String str = inReq.getPageProperty("temporary_password_expiry");
+		if (str != null && !str.isEmpty()){
+			try{
+				pwd_expiry_in_days = Integer.parseInt(str);
+				if (pwd_expiry_in_days < 1) pwd_expiry_in_days = 1;//default if malformed
+			}catch(NumberFormatException e){}
+		}
+		log.info("Password is set to expire in "+pwd_expiry_in_days+" days");
 		//String uandpass = cook.getValue();
 		if (uandpass != null)
 		{
@@ -759,7 +768,7 @@ public class AdminModule extends BaseModule
 						String ctext = getCookieEncryption().decrypt(tsenc);
 						long ts = Long.parseLong(ctext);
 						long current = new Date().getTime();
-						if ( (current - ts) > PASSWORD_EXPIRY){
+						if ( (current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY) ){
 							log.info("Autologin has expired, redirecting to login page");
 							return false;
 						} else {
