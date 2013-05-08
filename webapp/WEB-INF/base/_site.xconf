@@ -65,10 +65,11 @@
 	<path-action name="Admin.autoLogin"/>  
 	<!-- Enables editing and checks for missing pages -->
 	<page-action name="Admin.allowEditing"/>
-
+	<!--
 	<property name="systemfromemail">noreply@entermediasoftware.com</property>
 	<property name="systemfromemailname">EnterMedia</property>
-	  	<script src="/system/components/javascript/jquery-1.4.2.js" id="jquery" />
+	-->
+	<script src="/system/components/javascript/jquery-1.4.2.js" id="jquery" />
 	<script src="/system/components/javascript/jquery-ui-1.8.4.custom.min.js" id="jquery-ui"/>
 	<script src="/system/components/javascript/jquery.form.js" id="jquery-form"/>
 	<script src="/system/components/javascript/jquery.livequery.js" id="jquery-livequery"/>

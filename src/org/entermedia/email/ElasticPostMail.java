@@ -119,11 +119,6 @@ public class ElasticPostMail extends PostMail {
 
 	}
 	
-	/**
-	 * 
-	 * @param response
-	 * @return
-	 */
 	public ElasticPostMailStatus getMailStatus(String response){
 		ElasticPostMailStatus status = null;
 		try{

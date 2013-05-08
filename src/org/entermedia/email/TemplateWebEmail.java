@@ -199,10 +199,12 @@ public class TemplateWebEmail extends WebEmail implements Data
 	
 	public void loadSettings( WebPageRequest inContext) throws OpenEditException
 	{
-		//retrieve from the database
-		SearcherManager sm = getSearcherManager();
-		if (sm != null)
+		super.loadSettings(inContext);
+		
+		//retrieve system email from database if it hasn't already been specified
+		if (getSearcherManager() != null && getFrom() == null)
 		{
+			SearcherManager sm = getSearcherManager();
 			String catalogid = inContext.findValue("catalogid");
 			Data setting = sm.getData(catalogid, "catalogsettings", "system_from_email");
 			if (setting != null)
@@ -223,7 +225,6 @@ public class TemplateWebEmail extends WebEmail implements Data
 				}
 			}
 		}
-		super.loadSettings(inContext);
 		
 		Page page = inContext.getPage();
 		
@@ -510,6 +511,5 @@ public class TemplateWebEmail extends WebEmail implements Data
 		setSent(true);
 		setSendDate(new Date());
 	}
-	
 	
 }
