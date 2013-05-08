@@ -53,7 +53,8 @@ public class SendMailModule extends BaseModule
 		TemplateWebEmail webmail = (TemplateWebEmail)inContext.getPageValue(EMAIL_SETTINGS);
 		if( webmail == null)
 		{
-			webmail = new TemplateWebEmail();
+//			webmail = new TemplateWebEmail();
+			webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
 			webmail.setPostMail(getPostMail());
 			webmail.setPageManager(getPageManager());
 			webmail.loadSettings(inContext);
@@ -72,7 +73,8 @@ public class SendMailModule extends BaseModule
 			TemplateWebEmail webmail = (TemplateWebEmail)inReq.getPageValue(EMAIL_SETTINGS);
 			if( webmail == null)
 			{
-				webmail = new TemplateWebEmail();
+//				webmail = new TemplateWebEmail();
+				webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
 				webmail.setPostMail(getPostMail());
 				webmail.setPageManager(getPageManager());
 				webmail.loadSettings(inReq);

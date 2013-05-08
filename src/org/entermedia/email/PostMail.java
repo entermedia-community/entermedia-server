@@ -37,6 +37,7 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.openedit.ModuleManager;
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.manage.PageManager;
 
@@ -50,7 +51,18 @@ public class PostMail
 	protected boolean fieldSmtpSecured = false;
 	protected PageManager fieldPageManager;
 	protected boolean fieldSslEnabled = false;
+	protected ModuleManager fieldModuleManager;
 	
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
+
 	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
@@ -91,7 +103,15 @@ public class PostMail
 	// returns a new template web email instance preconfigured with spring
 	// settings.
 	public TemplateWebEmail getTemplateWebEmail() {
-		TemplateWebEmail email = new TemplateWebEmail();
+		TemplateWebEmail email = null;
+		if (getModuleManager()!=null)
+		{
+			email = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+		}
+		if (email == null)
+		{
+			email = new TemplateWebEmail();
+		}
 		email.setPostMail(this);
 		email.setPageManager(getPageManager());
 		return email;
@@ -219,6 +239,9 @@ public class PostMail
 		}
 
 		msg.setRecipients(Message.RecipientType.TO, addressTo);
+		
+		//add bcc
+		//msg.setRecipients(Message.RecipientType.BCC, addressBcc);
 
 		// Optional : You can also set your custom headers in the Email if you
 		// Want

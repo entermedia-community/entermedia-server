@@ -19,6 +19,7 @@ import javax.mail.MessagingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
+import org.openedit.data.SearcherManager;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -43,7 +44,18 @@ public class TemplateWebEmail extends WebEmail implements Data
 	protected List fieldFileAttachments;
 	protected Date fieldSendDate;
 	protected String fieldSourcePath;
+	protected SearcherManager fieldSearcherManager;
 	
+	public SearcherManager getSearcherManager()
+	{
+		return fieldSearcherManager;
+	}
+
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
+		fieldSearcherManager = inSearcherManager;
+	}
+
 	public String getProperty(String inKey) {
 		if("from".equals(inKey)){
 			return getFrom();
@@ -187,6 +199,30 @@ public class TemplateWebEmail extends WebEmail implements Data
 	
 	public void loadSettings( WebPageRequest inContext) throws OpenEditException
 	{
+		//retrieve from the database
+		SearcherManager sm = getSearcherManager();
+		if (sm != null)
+		{
+			String catalogid = inContext.findValue("catalogid");
+			Data setting = sm.getData(catalogid, "catalogsettings", "system_from_email");
+			if (setting != null)
+			{
+				String from = setting.get("value");
+				if (from!=null && !from.isEmpty())
+				{
+					setFrom(from);
+				}
+			}
+			setting = sm.getData(catalogid,  "catalogsettings","system_from_email_name");
+			if (setting != null)
+			{
+				String fromname = setting.get("value");
+				if (fromname!=null && !fromname.isEmpty())
+				{
+					setFromName(fromname);
+				}
+			}
+		}
 		super.loadSettings(inContext);
 		
 		Page page = inContext.getPage();
@@ -474,5 +510,6 @@ public class TemplateWebEmail extends WebEmail implements Data
 		setSent(true);
 		setSendDate(new Date());
 	}
+	
 	
 }

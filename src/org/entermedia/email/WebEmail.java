@@ -18,6 +18,8 @@ public abstract class WebEmail {
 	public static final String OLDEMAIL_TEMPLATE_REQUEST_PARAMETER = "e-mail_layout";
 
 	protected List fieldRecipients;
+	/* list of bcc recipients */
+	protected List<Recipient> fieldBCCRecipients;
 	protected String fieldFrom;
 	protected String fieldFromName;
 	protected Map fieldProperties;
@@ -29,6 +31,14 @@ public abstract class WebEmail {
 	protected String fieldMessage;
 	protected String fieldAlternativeMessage;
 	protected PostMail fieldPostMail;
+	
+	public List<Recipient> getBCCRecipients() {
+		return fieldBCCRecipients;
+	}
+
+	public void setBCCRecipients(List<Recipient> inBCCRecipients) {
+		fieldBCCRecipients = inBCCRecipients;
+	}
 
 	public User getUser() {
 		return fieldUser;
@@ -163,6 +173,8 @@ public abstract class WebEmail {
 
 		return fieldRecipients;
 	}
+	
+	
 
 	public String[] getTo() {
 		if (getRecipients() == null) {
@@ -330,4 +342,11 @@ public abstract class WebEmail {
 	}
 
 	public abstract void send() throws OpenEditException, MessagingException;
+	
+	public MailResult sendAndCollectResult() throws OpenEditException, MessagingException{
+		send();
+		MailResult result = new MailResult();
+		result.setSent(true);
+		return result;
+	}
 }

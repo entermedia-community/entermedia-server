@@ -232,6 +232,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
+		<property name="moduleManager">
+        	<ref bean="moduleManager" />
+        </property>
 
 	</bean>
 
@@ -1435,6 +1438,11 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
 	</bean>
 
+	<bean id="templateWebEmail" class="org.entermedia.email.TemplateWebEmail" singleton="false">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
 
 
 </beans>
