@@ -14,6 +14,7 @@ package org.entermedia.email;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -121,8 +122,58 @@ public class PostMail
 			String inText, String from) throws MessagingException {
 		postMail(recipients, subject, inHtml, inText, from, null, null);
 	}
-
+	
 	public void postMail(String[] recipients, String subject, String inHtml,
+			String inText, String from, List inAttachments, Map inProperties)
+			throws MessagingException {
+		postMail(recipients,new String[]{},subject,inHtml,inText,from,inAttachments,inProperties);
+	}
+	
+	public void postMail(List<Recipient> recipients, List<Recipient> blindrecipients, String subject, 
+			String inHtml, String inText, String from, List inAttachments, Map inProperties)
+			throws MessagingException {
+		ArrayList<String> list = new ArrayList<String>();
+		if (recipients!=null){
+			for (Recipient recipient:recipients){
+				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress()))
+					list.add(recipient.getEmailAddress());
+			}
+		}
+		String [] ccarr = list.toArray(new String[list.size()]);//array of recipients
+		list.clear();
+		if (blindrecipients!=null){
+			for (Recipient recipient:blindrecipients){
+				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress()))
+					list.add(recipient.getEmailAddress());
+			}
+		}
+		String [] bccarr = list.toArray(new String[list.size()]);
+		postMail(ccarr, bccarr, subject, inHtml, inText, from, inAttachments, inProperties);
+	}
+	
+	public void postMail(String [] recipients, List<Recipient> blindrecipients, String subject,
+			String inHtml, String inText, String from, List inAttachments, Map inProperties)
+			throws MessagingException {
+		ArrayList<String> list = new ArrayList<String>();
+		if (recipients!=null){
+			for (String recipient:recipients){
+				if (!list.contains(recipient))
+					list.add(recipient);
+			}
+		}
+		String [] ccarr = list.toArray(new String[list.size()]);//array of recipients
+		list.clear();
+		if (blindrecipients!=null){
+			for (Recipient recipient:blindrecipients){
+				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress()))
+					list.add(recipient.getEmailAddress());
+			}
+		}
+		String [] bccarr = list.toArray(new String[list.size()]);
+		postMail(ccarr, bccarr, subject, inHtml, inText, from, inAttachments, inProperties);
+	}
+
+	public void postMail(String[] recipients, String [] blindrecipients, String subject, String inHtml,
 			String inText, String from, List inAttachments, Map inProperties)
 			throws MessagingException {
 		// Set the host smtp address
@@ -241,7 +292,32 @@ public class PostMail
 		msg.setRecipients(Message.RecipientType.TO, addressTo);
 		
 		//add bcc
-		//msg.setRecipients(Message.RecipientType.BCC, addressBcc);
+		if (blindrecipients!=null && blindrecipients.length > 0)
+		{
+			InternetAddress[] addressBcc = new InternetAddress[blindrecipients.length];
+			for (int i = 0; i < blindrecipients.length; i++) {
+				String rec = blindrecipients[i];
+				if(rec == null || rec.length() <= 0)
+				{
+					continue;
+				}
+				addressBcc[i] = new InternetAddress(rec);
+				String personal = addressBcc[i].getPersonal();
+				if (personal != null && personal.indexOf("\"") == -1) {
+					// check for commas or . and quote it if found
+					if (personal.indexOf(",") > -1 || personal.indexOf(".") > -1) {
+						personal = "\"" + personal + "\"";
+						try {
+							addressBcc[i].setPersonal(personal);
+						} catch (UnsupportedEncodingException ex) {
+							throw new OpenEditRuntimeException(ex);
+						}
+					}
+				}
+			}
+			msg.setRecipients(Message.RecipientType.BCC, addressBcc);
+		}
+		
 
 		// Optional : You can also set your custom headers in the Email if you
 		// Want

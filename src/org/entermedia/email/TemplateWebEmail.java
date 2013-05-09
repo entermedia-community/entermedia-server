@@ -502,7 +502,14 @@ public class TemplateWebEmail extends WebEmail implements Data
 		String output = render(out);
 		try
 		{
-			postMail.postMail(getTo(),getSubject(),output,null,getFrom(),getFileAttachments(), getProperties());
+			if (getBCCRecipients()==null || getBCCRecipients().isEmpty())
+			{
+				postMail.postMail(getTo(),getSubject(),output,null,getFrom(),getFileAttachments(), getProperties());
+			}
+			else
+			{
+				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,getFrom(),getFileAttachments(), getProperties());
+			}
 		}
 		catch ( MessagingException ex)
 		{
@@ -511,5 +518,4 @@ public class TemplateWebEmail extends WebEmail implements Data
 		setSent(true);
 		setSendDate(new Date());
 	}
-	
 }

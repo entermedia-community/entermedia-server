@@ -14,12 +14,10 @@ import org.xml.sax.InputSource;
 
 import com.openedit.OpenEditException;
 
-public class ElasticPostMailStatus implements Serializable{
+public class ElasticPostMailStatus extends PostMailStatus implements Serializable{
 
 	private static final long serialVersionUID = -4640935230997089177L;
 	
-	protected String fieldId;
-	protected String fieldStatus;
 	protected int fieldRecipients;
 	protected int fieldDelivered;
 	protected int fieldFailed;
@@ -29,18 +27,6 @@ public class ElasticPostMailStatus implements Serializable{
 	protected int fieldUnsubscribed;
 	protected int fieldAbusereports;
 	
-	public String getId() {
-		return fieldId;
-	}
-	public void setId(String inId) {
-		fieldId = inId;
-	}
-	public String getStatus() {
-		return fieldStatus;
-	}
-	public void setStatus(String inComplete) {
-		fieldStatus = inComplete;
-	}
 	public int getRecipients() {
 		return fieldRecipients;
 	}
@@ -92,6 +78,7 @@ public class ElasticPostMailStatus implements Serializable{
 	
 	public static ElasticPostMailStatus parseXML(String xml){
 		ElasticPostMailStatus status = new ElasticPostMailStatus();
+		status.setSent(false);
 		try{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware(true);
@@ -117,8 +104,10 @@ public class ElasticPostMailStatus implements Serializable{
 				NamedNodeMap nm = node.getAttributes();
 				for (int j=0; j < nm.getLength(); j++){
 					Node n = nm.item(j);
-					if (n.getNodeName()!=null && n.getNodeName().equalsIgnoreCase("id"))
+					if (n.getNodeName()!=null && n.getNodeName().equalsIgnoreCase("id")){
 						status.setId(n.getNodeValue());
+						status.setSent(true);
+					}
 				}
 			}
 			if (node.getNodeName().equalsIgnoreCase("status")){
@@ -149,6 +138,7 @@ public class ElasticPostMailStatus implements Serializable{
 	public String toString(){
 		StringBuilder buf = new StringBuilder();
 		buf.append("id: ").append(fieldId).append(" [")
+			.append("isSent: ").append(fieldSent).append(", ")
 			.append("status: ").append(fieldStatus).append(", ")
 			.append("recipients: ").append(fieldRecipients).append(", ")
 			.append("failed: ").append(fieldFailed).append(", ")

@@ -17,8 +17,7 @@ public abstract class WebEmail {
 	public static final String EMAIL_TEMPLATE_REQUEST_PARAMETER = "emaillayout";
 	public static final String OLDEMAIL_TEMPLATE_REQUEST_PARAMETER = "e-mail_layout";
 
-	protected List fieldRecipients;
-	/* list of bcc recipients */
+	protected List<Recipient> fieldRecipients;
 	protected List<Recipient> fieldBCCRecipients;
 	protected String fieldFrom;
 	protected String fieldFromName;
@@ -169,7 +168,7 @@ public abstract class WebEmail {
 		}
 	}
 
-	public List getRecipients() {
+	public List<Recipient> getRecipients() {
 
 		return fieldRecipients;
 	}
@@ -343,10 +342,26 @@ public abstract class WebEmail {
 
 	public abstract void send() throws OpenEditException, MessagingException;
 	
-	public MailResult sendAndCollectResult() throws OpenEditException, MessagingException{
-		send();
-		MailResult result = new MailResult();
-		result.setSent(true);
+	public PostMailStatus sendAndCollectStatus()
+	{
+		PostMailStatus result = new PostMailStatus();
+		try
+		{
+			send();
+			result.setSent(true);
+			result.setStatus("complete");
+			if (getProperties()!=null && getProperties().containsKey(PostMailStatus.ID))
+			{
+				result.setId((String)getProperties().get(PostMailStatus.ID));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			result.setSent(false);
+			result.setId("unknown");
+			result.setStatus(e.getLocalizedMessage());
+		}
 		return result;
 	}
 }

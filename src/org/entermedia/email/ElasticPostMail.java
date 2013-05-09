@@ -106,8 +106,7 @@ public class ElasticPostMail extends PostMail {
 			if (statusCode1 == 200) {
 				//need to save response
 				String response = postMethod.getResponseBodyAsString();
-				ElasticPostMailStatus status = getMailStatus(response);
-//				System.out.println(status);
+				if (inProperties!=null) inProperties.put(PostMailStatus.ID,response);//TODO - include type safety
 			}
 		} catch (HttpException e) {
 			e.printStackTrace();
@@ -124,8 +123,8 @@ public class ElasticPostMail extends PostMail {
 		try{
 			String uri = "https://api.elasticemail.com/mailer/status/"+response+"?showstats=true";
 			PostMethod postMethod = new PostMethod(uri);
-			int statusCode1 = getHttpClient().executeMethod(postMethod);
-			if (statusCode1 == 200) {
+			int sc = getHttpClient().executeMethod(postMethod);
+			if (sc == 200) {
 				String xml = postMethod.getResponseBodyAsString();
 				status = ElasticPostMailStatus.parseXML(xml);
 			}
