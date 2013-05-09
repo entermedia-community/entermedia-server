@@ -782,8 +782,7 @@ public class AdminModule extends BaseModule
 						return false;
 					}
 				} else {
-					log.info("Autologin does not have a timestamp, redirecting to login page");
-					return false;
+					log.info("Autologin does not have a timestamp");
 				}
 				
 				try
