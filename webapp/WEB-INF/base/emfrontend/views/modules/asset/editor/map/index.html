@@ -66,5 +66,8 @@
     	
     </div>
     
-    <p class="info">[[Search for a location, drag the icon to the correct place and click the save button. Double left-click to zoom in, double right-click to zoom out]].</p>	
+	#if( $content.isPropertyTrue("showinfo") )
+    <p class="info">[[Search for a location, drag the icon to the correct place and click the save button. Double left-click to zoom in, double right-click to zoom out]].</p>
+	#end
+	
 </div>
