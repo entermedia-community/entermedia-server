@@ -25,11 +25,16 @@
 								</li>
 								#end
 								#if($candownload)
-    				            <li><a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id&oemaxlevel=1">Download</a></li>
+						#if( $asset.getId().startsWith("multiedit:") )
+							<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a></li>
+						#else
+    				            		<li><a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id&oemaxlevel=1">Download</a></li>
+						#end
+					   
     				            #end
     				            #if($candeleteasset)
                                 <li>
-                                    #if ( $asset.id.startsWith("multiedit:") )
+                                    #if ( $asset.getId().startsWith("multiedit:") )
                                         <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
                                     #else
                                         <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
@@ -72,5 +77,3 @@
 		<div id="share-container" style="display: none;">
     
         </div>
-
-
