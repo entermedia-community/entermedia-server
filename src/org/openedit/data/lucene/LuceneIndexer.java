@@ -12,10 +12,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
 import org.openedit.Data;
@@ -245,13 +245,34 @@ public class LuceneIndexer
 	}
 	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Data text, Store inStore , boolean isText)
 	{
-		
+		boolean treatasnumber = false;
+		if(inDetail != null  ){
+			if(inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long")){
+				treatasnumber =  true;
+			}
+		}
 		//TODO: Remove this method and use the new data type specific fields
 		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
 		if( isText )
 		{
 			//field = new StringField(inId,inValue,inStore);  //This causes case sensitivity to be lost
 			field = new Field(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );
+		} else if(treatasnumber){
+			try{
+				if(inDetail.isDataType("double")){
+					Double l = Double.parseDouble(inValue);
+					field = new DoubleField(inId, l, Field.Store.YES );
+				} else{
+					Long l = Long.parseLong(inValue);
+					field = new LongField(inId, l, Field.Store.YES );
+				}
+				
+			
+			} catch(Exception e){
+				log.info("invalid number value skipped");
+				return;
+			}
+					//new LongField(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );
 		}
 		else
 		{
@@ -259,26 +280,29 @@ public class LuceneIndexer
 			field = new Field(inId, inValue ,inStore, Field.Index.NOT_ANALYZED_NO_NORMS );
 		}
 		//field.setOmitNorms(true);
+		
 		doc.add(field);
-		if( inDetail != null && inDetail.isSortable() )
+		
+		
+		if( inDetail != null && (inDetail.isSortable() ))
 		{
 			String id = inDetail.getSortProperty();
-			if( inId.equals( id ) )
+			if( inId.equals( id ) && !treatasnumber )
 			{
 				return;
 			}
 			//doc.add(new Field(detail.getId() + "_sorted", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-			if( inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long") )
-			{
-				try
-				{	
-					inValue = getNumberUtils().double2sortableStr(inValue);
-				}
-				catch( Exception ex )
-				{
-					//ex
-				}
-			}
+//			if( treatasnumber )
+//			{
+//				try
+//				{	
+//					inValue = getNumberUtils().long2sortableStr(inValue);
+//				}
+//				catch( Exception ex )
+//				{
+//					//ex
+//				}
+//			}
 			else if( inDetail.isDataType("list") && inDetail.getCatalogId() != null)
 			{
 //				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
