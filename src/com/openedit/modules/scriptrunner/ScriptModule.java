@@ -20,6 +20,7 @@ package com.openedit.modules.scriptrunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -226,7 +227,12 @@ public class ScriptModule extends BaseModule implements PageRequestKeys
 		List pages = new ArrayList();
 		Set dups = new HashSet();
 		findScripts(scriptroot,scriptroot, pages, dups);
-		Collections.sort(pages);
+		Collections.sort(pages, new Comparator<Page>()
+				{
+			public int compare(Page o1, Page o2) {
+				return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+			};
+		});
 		inReq.putPageValue("scripts", pages);
 		return pages;
 	}
