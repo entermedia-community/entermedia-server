@@ -14,6 +14,7 @@ import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.TextField;
@@ -264,12 +265,16 @@ public class LuceneIndexer
 					field = new DoubleField(inId, l, Field.Store.YES );
 				} else{
 					Long l = Long.parseLong(inValue);
-					field = new LongField(inId, l, Field.Store.YES );
+					FieldType type = new FieldType();
+					type.setIndexed(true);
+					type.setStored(true);
+					type.setNumericType(FieldType.NumericType.LONG);
+					field = new LongField(inId, l,Field.Store.YES);
 				}
 				
 			
 			} catch(Exception e){
-				log.info("invalid number value skipped");
+				log.info("invalid number value skipped: " + inId);
 				return;
 			}
 					//new LongField(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );

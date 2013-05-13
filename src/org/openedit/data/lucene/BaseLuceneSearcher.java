@@ -28,11 +28,13 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
 import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.SearcherFactory;
@@ -309,7 +311,23 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		//TODO: use a threadgroup
 		
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_41, "description", getAnalyzer());
+		QueryParser parser = new QueryParser(Version.LUCENE_41, "description", getAnalyzer())
+		{
+			
+			protected org.apache.lucene.search.Query getRangeQuery(
+					String field, String low, String high,
+					boolean inclusivelow, boolean incluseivehigh) throws ParseException {
+				PropertyDetail detail = getDetail(field);
+				if(detail != null && detail.isDataType("number") || detail.isDataType("long"))
+				{
+					Long lv = Long.parseLong(low);
+					Long hv = Long.parseLong(high);
+					return NumericRangeQuery.newLongRange(field,lv, hv, true, true);
+				}
+				
+				return super.getRangeQuery(field, low, high, inclusivelow, incluseivehigh);
+			}
+		};
 		
 		/*
 		{
@@ -420,6 +438,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				if (detail != null && detail.isDataType("number"))
 				{
 					sort = new SortField(sortfield, SortField.Type.LONG, direction);
+					
 					//sort = new SortField(sortfield, SortField.Type.STRING, direction);
 				}
 				else if (detail != null && detail.isDataType("long"))

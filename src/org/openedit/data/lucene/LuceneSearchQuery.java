@@ -8,6 +8,8 @@ import java.util.Date;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.NumericRangeQuery;
+import org.apache.lucene.search.Query;
 import org.openedit.data.PropertyDetail;
 
 import com.openedit.hittracker.SearchQuery;
@@ -402,46 +404,14 @@ public class LuceneSearchQuery extends SearchQuery
 	
 	public Term addLessThan(PropertyDetail inFieldId, long val)
 	{
-		Term term = new Term()
-		{
-			public String toQuery()
-			{
-				String lowval = getNumberUtils().long2sortableStr(Long.MIN_VALUE);
-				String highval = getNumberUtils().long2sortableStr(getValue());
-
-				String fin = getDetail().getId() + ":[" + lowval + " TO " + highval + "]";
-				return fin;
-			}
-		};
-		term.setOperation("lessthannumber");
-		term.setDetail(inFieldId);
-		term.setValue(String.valueOf( val ) );
-		addTerm(term);
-		return term;
+		return addBetween(inFieldId, 0L, val);
 	}
 
 
 	
 	public Term addGreaterThan(PropertyDetail inFieldId,final long high)
 	{
-		Term term = new Term()
-		{
-			public String toQuery()
-			{
-				//must use int or long since double only works on double values
-				long one = high + 1; //is inclusive
-				String lowval = getNumberUtils().long2sortableStr(one);
-				String highval = getNumberUtils().long2sortableStr(Long.MAX_VALUE);
-
-				String fin = getDetail().getId() + ":[" + lowval + " TO " + highval + "]";
-				return fin;
-			}
-		};
-		term.setOperation("greaterthannumber");
-		term.setDetail(inFieldId);
-		term.setValue(String.valueOf( high) );
-		addTerm(term);
-		return term;
+		return addBetween(inFieldId, high, Long.MAX_VALUE);
 	}
 	public Term addExact(PropertyDetail inField, long inParseInt)
 	{
@@ -450,12 +420,17 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String val = getNumberUtils().long2sortableStr(getValue());
-				String fin = getDetail().getId() + ":\"" + val + "\"";
-				return fin;
+				//TermQuery numberQuery = new TermQuery(new Term("myLongId", NumericUtils.longToPrefixCoded(12345L)))
+				Long targetval = Long.parseLong(getValue());
+				Query q = NumericRangeQuery.newLongRange(getDetail().getId(),targetval, targetval, true, true);
+				return q.toString();
+				
+//				String val = getNumberUtils().long2sortableStr(getValue());
+//				String fin = getDetail().getId() + ":\"" + val + "\"";
+//				return fin;
 			}
 		};
-		term.setOperation("greaterthannumber");
+		term.setOperation("exact");
 		term.setDetail(inField);
 		term.setValue(String.valueOf(inParseInt));
 		addTerm(term);
@@ -471,10 +446,17 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String lowvals = getNumberUtils().long2sortableStr(getParameter("lowval"));
-				String highvals = getNumberUtils().long2sortableStr(getParameter("highval"));
+				Long low = Long.parseLong(getParameter("lowval"));
+				Long high = Long.parseLong(getParameter("highval"));
+				
+				Query q = NumericRangeQuery.newLongRange(getDetail().getId(),low, high, true, true);
+				String fin = q.toString();
+				
+				String lowvals = getParameter("lowval");
+				String highvals = getParameter("highval");
 
-				String fin = getDetail().getId() + ":[" + lowvals + " TO " +  highvals+ "]";
+				fin = getDetail().getId() + ":[" + lowvals +  " TO " +  highvals+  "]";
+				
 				return fin;
 			}
 		};
@@ -492,6 +474,7 @@ public class LuceneSearchQuery extends SearchQuery
 	{
 		// lowval = pad(lowval);
 		// highval = pad(highval);
+		//TODO: Fix Doubles - same as Long.
 		Term term = new Term()
 
 		{
