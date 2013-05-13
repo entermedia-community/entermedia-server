@@ -420,10 +420,16 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				if (detail != null && detail.isDataType("number"))
 				{
 					sort = new SortField(sortfield, SortField.Type.LONG, direction);
+					//sort = new SortField(sortfield, SortField.Type.STRING, direction);
+				}
+				else if (detail != null && detail.isDataType("long"))
+				{
+					sort = new SortField(sortfield, SortField.Type.LONG, direction);
+					//sort = new SortField(sortfield, SortField.Type.STRING, direction);
 				}
 				else if (detail != null && detail.isDataType("double"))
 				{
-					sort = new SortField(sortfield, SortField.Type.FLOAT, direction);
+					sort = new SortField(sortfield, SortField.Type.DOUBLE, direction);
 				}
 				else
 				{

@@ -17,7 +17,8 @@ public abstract class WebEmail {
 	public static final String EMAIL_TEMPLATE_REQUEST_PARAMETER = "emaillayout";
 	public static final String OLDEMAIL_TEMPLATE_REQUEST_PARAMETER = "e-mail_layout";
 
-	protected List fieldRecipients;
+	protected List<Recipient> fieldRecipients;
+	protected List<Recipient> fieldBCCRecipients;
 	protected String fieldFrom;
 	protected String fieldFromName;
 	protected Map fieldProperties;
@@ -29,6 +30,14 @@ public abstract class WebEmail {
 	protected String fieldMessage;
 	protected String fieldAlternativeMessage;
 	protected PostMail fieldPostMail;
+	
+	public List<Recipient> getBCCRecipients() {
+		return fieldBCCRecipients;
+	}
+
+	public void setBCCRecipients(List<Recipient> inBCCRecipients) {
+		fieldBCCRecipients = inBCCRecipients;
+	}
 
 	public User getUser() {
 		return fieldUser;
@@ -159,10 +168,12 @@ public abstract class WebEmail {
 		}
 	}
 
-	public List getRecipients() {
+	public List<Recipient> getRecipients() {
 
 		return fieldRecipients;
 	}
+	
+	
 
 	public String[] getTo() {
 		if (getRecipients() == null) {
@@ -330,4 +341,27 @@ public abstract class WebEmail {
 	}
 
 	public abstract void send() throws OpenEditException, MessagingException;
+	
+	public PostMailStatus sendAndCollectStatus()
+	{
+		PostMailStatus result = new PostMailStatus();
+		try
+		{
+			send();
+			result.setSent(true);
+			result.setStatus("complete");
+			if (getProperties()!=null && getProperties().containsKey(PostMailStatus.ID))
+			{
+				result.setId((String)getProperties().get(PostMailStatus.ID));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			result.setSent(false);
+			result.setId("unknown");
+			result.setStatus(e.getLocalizedMessage());
+		}
+		return result;
+	}
 }
