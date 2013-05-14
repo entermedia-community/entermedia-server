@@ -83,7 +83,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
      
       
         
-        <tr #if($content.isPropertyTrue("hoverenabled") data-popup="$home$content.searchhome/popup.html?id=${cell.id}" class="hoverenabled" #end #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #end >
+        <tr #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #end >
   
     
    
