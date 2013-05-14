@@ -264,7 +264,9 @@ public class LuceneIndexer
 					Double l = Double.parseDouble(inValue);
 					field = new DoubleField(inId, l, Field.Store.YES );
 				} else{
-					Long l = Long.parseLong(inValue);
+					String targetval = inValue.replaceAll("[^0-9]", "");
+					
+					Long l = Long.parseLong(targetval);
 					FieldType type = new FieldType();
 					type.setIndexed(true);
 					type.setStored(true);
