@@ -137,6 +137,7 @@ runajaxonthis = function(inlink,e)
 runajax = function(e)
 {
 	runajaxonthis($(this),e);
+	 e.stopPropagation();
      e.preventDefault();
 	//return false;
 }
@@ -1039,18 +1040,14 @@ emcomponents = function() {
 	jQuery(".sidetoggle").livequery("click",
 			function()
 			{
+				var div = $(this);
 				var target = jQuery(this).data("target");
 				toggleUserProperty("minimize" + target,
 					function() {
-					
-					jQuery("#" + target).toggle("slow");	
-					} 
+						jQuery("#" + target).slideToggle("fast");
+						div.toggleClass("expanded");
+					}
 				);
-						
-				
-				
-				
-				
 			}
 	);
 	

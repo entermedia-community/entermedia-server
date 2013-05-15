@@ -4017,10 +4017,9 @@ div#folders.add .folder {
 .categories-navigation {
     overflow-x: auto;
     overflow-y: auto;
-    /*overflow-y: hidden;*/
     padding: 0 !important;
-    min-height: 150px;
     max-height: 500px;
+    max-width: 219px;
 }
 #emcategoryinlineinner {
 
@@ -6256,4 +6255,19 @@ a.audio-filename:hover
     border-color: #b4b4b4;
     padding: 10px;
 
+}
+.ui-widget-header.sidetoggle {
+	cursor: pointer;
+	border-radius: 5px;
+}
+.ui-widget-header.sidetoggle.expanded {
+	border-radius: 5px 5px 0 0;
+}
+.ui-widget-header.sidetoggle .widget-header-title {
+	background: url('../images/sort-desc.png') left 6px no-repeat;
+	padding-left: 18px;
+}
+.ui-widget-header.sidetoggle.expanded .widget-header-title {
+	background: url('../images/sort-asc.png') left 6px no-repeat;
+	padding-left: 18px;
 }
