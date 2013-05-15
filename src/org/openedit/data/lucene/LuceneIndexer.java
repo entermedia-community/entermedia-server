@@ -247,6 +247,7 @@ public class LuceneIndexer
 	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Data text, Store inStore , boolean isText)
 	{
 		boolean treatasnumber = false;
+		
 		if(inDetail != null  ){
 			if(inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long")){
 				treatasnumber =  true;

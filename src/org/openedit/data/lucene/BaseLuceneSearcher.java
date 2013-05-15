@@ -325,6 +325,12 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					return NumericRangeQuery.newLongRange(field,lv, hv, true, true);
 				}
 				
+				if(detail != null && detail.isDataType("double") )
+				{
+					Double lv = Double.parseDouble(low);
+					Double hv = Double.parseDouble(high);
+					return NumericRangeQuery.newDoubleRange(field, lv, hv, true, true);
+				}
 				return super.getRangeQuery(field, low, high, inclusivelow, incluseivehigh);
 			}
 		};

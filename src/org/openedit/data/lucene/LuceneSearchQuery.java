@@ -437,6 +437,33 @@ public class LuceneSearchQuery extends SearchQuery
 		return term;
 
 	}
+	
+	public Term addExact(PropertyDetail inField, double inParseInt)
+	{
+
+		Term term = new Term()
+		{
+			public String toQuery()
+			{
+				//TermQuery numberQuery = new TermQuery(new Term("myLongId", NumericUtils.longToPrefixCoded(12345L)))
+				Double targetval = Double.parseDouble(getValue());
+				Query q = NumericRangeQuery.newDoubleRange(getDetail().getId(),targetval, targetval, true, true);
+				return q.toString();
+				
+//				String val = getNumberUtils().long2sortableStr(getValue());
+//				String fin = getDetail().getId() + ":\"" + val + "\"";
+//				return fin;
+			}
+		};
+		term.setOperation("exact");
+		term.setDetail(inField);
+		term.setValue(String.valueOf(inParseInt));
+		addTerm(term);
+		return term;
+
+	}
+	
+	
 	public Term addBetween(PropertyDetail inField, long lowval, long highval)
 	{
 		// lowval = pad(lowval);
