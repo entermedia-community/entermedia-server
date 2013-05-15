@@ -1039,18 +1039,14 @@ emcomponents = function() {
 	jQuery(".sidetoggle").livequery("click",
 			function()
 			{
+				var div = $(this);
 				var target = jQuery(this).data("target");
 				toggleUserProperty("minimize" + target,
 					function() {
-					
-					jQuery("#" + target).toggle("slow");	
-					} 
+						jQuery("#" + target).slideToggle("fast");
+						div.toggleClass("expanded");
+					}
 				);
-						
-				
-				
-				
-				
 			}
 	);
 	

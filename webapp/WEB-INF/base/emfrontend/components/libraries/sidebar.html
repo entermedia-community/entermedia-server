@@ -1,7 +1,7 @@
 #if ( $canviewlibrarysearch &&  !$userprofile.getCombinedLibraries().isEmpty() )
 <div class="ui-widget uipanel" id="left-col-search" >
-	<div class="ui-widget-header">[[My Projects]]
-	#if($cantogglesidebar) <img src="$apphome/theme/images/minimize.png" class="sidetoggle" data-target="projectscontent">#end 
+	<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" #else class="ui-widget-header" #end data-target="projectscontent">
+	<span class="widget-header-title">[[My Projects]]</span>
 	</div>
 <div  class="ui-widget-content"  id="projectscontent" #if($userprofile.minimizeprojectscontent == "true" && $cantogglesidebar) style="display: none;" #end>
 		<ul class="sidebar-list search-list">
