@@ -59,6 +59,7 @@ files.deleteMatch( web + "/lib/aopalliance-*.jar");
 files.deleteMatch( web + "/lib/jaxen-*.jar");
 files.deleteMatch( web + "/lib/commons-codec*.jar");
 files.deleteMatch( web + "/lib/guava-*.jar");
+files.deleteMatch( web + "/lib/velocity-tools*.jar");
 
 
 
@@ -76,6 +77,7 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/aopalliance-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/jaxen-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/commons-codec*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/guava*.jar", web + "/lib/");
+files.copyFileByMatch( tmp + "/WEB-INF/lib/velocity-tools*.jar", web + "/lib/");
 
 
 log.add("5. CLEAN UP");
