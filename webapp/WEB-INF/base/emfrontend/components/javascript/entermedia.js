@@ -137,6 +137,7 @@ runajaxonthis = function(inlink,e)
 runajax = function(e)
 {
 	runajaxonthis($(this),e);
+	 e.stopPropagation();
      e.preventDefault();
 	//return false;
 }
