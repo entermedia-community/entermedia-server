@@ -14,6 +14,12 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 ##set ( $canedit = $context.getPageValue("${moduleid}edit") )
 
+#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
+#if ($popupdetail.size() > 0)
+	#set( $enablepopup = "true")
+#end
+
+
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 <input type="hidden" name="hitsname" value="hits"/>
 
@@ -152,6 +158,10 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
             }
         }
     });
+</script>
+
+#if($enablepopup)
+<script>
     $('.popupdetails').on({
 		powerTipPreRender: function() {
 			$(this).data('powertip' , '<div class="details"><img src="${themeprefix}/styles/tooltip/tooltip-loader-blue.gif" /></div>');
@@ -168,6 +178,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 		mouseFollowDiv.powerTip({ followMouse: true });
 	});
 </script>
+#end
 
 #end
 
