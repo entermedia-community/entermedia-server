@@ -7,7 +7,7 @@
 	<div id="keywordlist" class="emtable clearfix">
     	#foreach($keyword in $asset.getKeywords())
     		  
-    		<a class="row tag" href="$home$apphome/views/search/search.html?field=keyword&operation=matches&keyword.value=$keyword"> $keyword</a>
+    		<a class="row tag" href="$home$apphome/views/search/search.html?field=keywords&operation=matches&keywords.value=$keyword"> $keyword</a>
     
     		#if($caneditasset)
     			<a style="display:inline;" class="ajax delete-row" targetdiv="emkeywordeditor" href="$home$apphome/components/keywords/removekeyword.html?assetid=${asset.id}&keyword=#esc($keyword)"></a>

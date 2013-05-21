@@ -148,8 +148,8 @@ public class PathEventManager
 		if (event != null)
 		{ 
 			TaskRunner runner = null;
-			synchronized (getRunningTasks())
-			{
+//			synchronized (getRunningTasks())
+//			{
 				String name = event.getName();
 				Date now = new Date();
 				//Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
@@ -178,7 +178,7 @@ public class PathEventManager
 				runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
 				runner.setTimeToStart(now);
 				getRunningTasks().push(runner);
-			}
+//			}
 			if( runner != null )
 			{
 				//Run outside the lock in case of dead lock issue?
