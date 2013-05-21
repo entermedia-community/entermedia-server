@@ -5,7 +5,7 @@ $context.putPageValue("view",$view)
 ## $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
 
 #set($details = $searcher.getDetailsForView($view))
-    <p>
+    <p style="max-width: 500px; white-space: normal;">
     #foreach($detail in $details)
     
     #if($detail.isList())
