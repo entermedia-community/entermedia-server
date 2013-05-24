@@ -3,6 +3,7 @@
 	#set ($urlenc = $asset.sourcepath)
 #else
 	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
 #end
 #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$urlenc/preview.jpg")
 <a class="thickbox" href="$home$link" target="_parent"	

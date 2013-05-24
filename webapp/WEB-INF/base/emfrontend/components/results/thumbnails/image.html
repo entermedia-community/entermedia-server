@@ -10,6 +10,7 @@
 #set ( $urlutils = $context.getPageValue("url_util"))
 #if ($urlutils)
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
+	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
 
 #set ($mediumend = "/${applicationid}/views/modules/asset/downloads/preview/medium/$sourcepath/thumb.jpg")

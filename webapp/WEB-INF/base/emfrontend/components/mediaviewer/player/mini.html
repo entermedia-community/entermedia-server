@@ -26,6 +26,7 @@
 						#set ( $sourcepath = $urlutils.encode($asset.sourcepath))
 					#else
 						#set ( $sourcepath = $asset.sourcepath)
+						#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 					#end
                     #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/preview.jpg")
                     <a class="thickbox" href="$home$link" target="_parent" title="[[$asset]]">
