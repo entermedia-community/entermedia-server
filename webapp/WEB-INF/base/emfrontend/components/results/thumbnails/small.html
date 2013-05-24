@@ -27,7 +27,13 @@ $context.putPageValue("thumbsize",$thumbsize)
         #if( $type == "audio" || $type == "default")
             $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
         #else
-            <img class="smallthumb emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${sourcepath}/thumb.jpg" border="0" />
+            #set ( $urlutils = $context.getPageValue("url_util"))
+            #if (!$urlutils)
+            	#set ($urlenc = $sourcepath)
+            #else
+            	#set ( $urlenc = $urlutils.encode($sourcepath))
+            #end
+            <img class="smallthumb emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${urlenc}/thumb.jpg" border="0" />
         #end
     #end
     

@@ -7,6 +7,10 @@
 #end
 
 #set ($sourcepath = $hit.sourcepath)
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if ($urlutils)
+	#set ( $sourcepath = $urlutils.encode($sourcepath))
+#end
 
 #set ($mediumend = "/${applicationid}/views/modules/asset/downloads/preview/medium/$sourcepath/thumb.jpg")
 #set( $msize = "$home$mediumend")
@@ -25,7 +29,7 @@
 	#set($thumbsize = "thumb")
 #end
 
-#set ($sourcepath = $hit.sourcepath)
+###set ($sourcepath = $hit.sourcepath)
 
 <span id="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
