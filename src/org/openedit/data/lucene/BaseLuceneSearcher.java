@@ -246,6 +246,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public HitTracker search(SearchQuery inQuery)
 	{
+		if( inQuery == null)
+		{
+			return null;
+		}
 		String query = inQuery.toQuery();
 		if (query == null || query.length() == 0)
 		{
