@@ -1,0 +1,46 @@
+
+#set($this_class = "${detail.id}-class")
+#set($this_name = "${detail.id}-name")
+#set($this_id = "${detail.id}-value")
+#set($this_fs = "${detail.id}-fontselector")
+
+<div style="width:300px;margin:10px auto;">
+		<div id="${this_fs}" class="${this_fs} fontSelect" >
+			<span>$!val</span>
+			<input class="$this_class" name="$this_name" id="$this_id" value="$!val" size="10" type="text" > 
+			<div class="arrow-down"></div>
+			<ul>
+				<li>Arial,Arial,Helvetica,sans-serif</li>
+				<li>Arial Black,Arial Black,Gadget,sans-serif</li>
+				<li>Comic Sans MS,Comic Sans MS,cursive</li>
+				<li>Courier New,Courier New,Courier,monospace</li>
+				<li>Georgia,Georgia,serif</li>
+				<li>Impact,Charcoal,sans-serif</li>
+				<li>Lucida Console,Monaco,monospace</li>
+				<li>Lucida Sans Unicode,Lucida Grande,sans-serif</li>
+				<li>Palatino Linotype,Book Antiqua,Palatino,serif</li>
+				<li>Tahoma,Geneva,sans-serif</li>
+				<li>Times New Roman,Times,serif</li>
+				<li>Trebuchet MS,Helvetica,sans-serif</li>
+				<li>Verdana,Geneva,sans-serif</li>
+				<li>Gill Sans,Geneva,sans-serif</li>
+			</ul>
+		</div>
+	</div>	
+ 
+<script type="text/javascript">
+    $(function() {
+    	console.log('#${this_fs}');
+    	var str = '#${this_fs}';
+    	console.log(str);
+		$(str).fontSelector({
+			'parent_object': str,
+			'hide_fallbacks' : true,
+		    'initial' : 'Courier New,Courier New,Courier,monospace',
+		    'selected' : function(style){
+		    	console.log(style);
+		    	console.log($(this).attr("parent_object"));//this keeps returning the last occurrence of the font controller on the page
+		    }
+		});
+	});
+</script>
