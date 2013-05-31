@@ -77,6 +77,8 @@
 		};
 		Cuepoint.prototype.setCurrentSlide = function(inSlide) {
 			this.currentSlide = inSlide;
+			jQuery( "#videolinks li a").removeClass("current");
+			jQuery("#slide" + inSlide.divid + " a").addClass("current");
 		};
 		Cuepoint.prototype.update = function(inSlide) 
 		{
@@ -94,13 +96,9 @@
 					{
 						doResize();
 					}
-				}
-
-			);
-				
+				});
 			}
 			return false;
-				
 		};
 		Cuepoint.prototype.setTime = function(time) {
 			this.time = time;
