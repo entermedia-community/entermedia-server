@@ -1,13 +1,6 @@
-
-#set($this_class = "${detail.id}-class")
-#set($this_name = "${detail.id}-name")
-#set($this_id = "${detail.id}-value")
-#set($this_fs = "${detail.id}-fontselector")
-
-<div style="width:300px;margin:10px auto;">
-		<div id="${this_fs}" class="${this_fs} fontSelect" >
+<div style="width:300px;">
+		<div id="${detail.id}-fontselector" class="fontSelect" >
 			<span>$!val</span>
-			<input class="$this_class" name="$this_name" id="$this_id" value="$!val" size="10" type="text" > 
 			<div class="arrow-down"></div>
 			<ul>
 				<li>Arial,Arial,Helvetica,sans-serif</li>
@@ -25,22 +18,15 @@
 				<li>Verdana,Geneva,sans-serif</li>
 				<li>Gill Sans,Geneva,sans-serif</li>
 			</ul>
+			<input class="${detail.id}" name="${detail.getId()}.value" id="${detail.id}.value" value="$!val" type="hidden" > 
 		</div>
 	</div>	
  
 <script type="text/javascript">
     $(function() {
-    	console.log('#${this_fs}');
-    	var str = '#${this_fs}';
-    	console.log(str);
-		$(str).fontSelector({
-			'parent_object': str,
+		$('#${detail.id}-fontselector').fontSelector({
 			'hide_fallbacks' : true,
-		    'initial' : 'Courier New,Courier New,Courier,monospace',
-		    'selected' : function(style){
-		    	console.log(style);
-		    	console.log($(this).attr("parent_object"));//this keeps returning the last occurrence of the font controller on the page
-		    }
+			'initial' : '$!val'
 		});
 	});
 </script>

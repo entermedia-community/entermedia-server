@@ -62,7 +62,6 @@
       });
 
       ul.find('li').click(function() {
-
         if (!visible)
           return;
 
@@ -72,12 +71,12 @@
 
         root.find('span').html( $(this).text() );
         root.css('font-family', $(this).css('font-family'));
-
         settings['selected']($(this).css('font-family'));
+		root.find('input').val($(this).css('font-family'));
       });
 
       $(this).click(function(event) {
-
+		  
         if (visible)
           return;
 
@@ -86,9 +85,12 @@
         ul.slideDown('fast', function() {
           visible = true;
         });
+		
+		
       });
 
       $('html').click(function() {
+		 
         if (visible)
         {
           ul.slideUp('fast', function() {

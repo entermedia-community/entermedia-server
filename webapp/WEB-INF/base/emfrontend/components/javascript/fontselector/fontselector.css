@@ -21,6 +21,7 @@
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 	border: 1px solid #cecece;
+	
 }
 
 .fontSelect span {
@@ -45,6 +46,8 @@
 	position: absolute;
 	left: 0;
 	top: 35px;
+	
+	z-index:100;
 }
 
 .fontSelect li {
