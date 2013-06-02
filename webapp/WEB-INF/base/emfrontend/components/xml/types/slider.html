@@ -18,7 +18,7 @@
 	$(function() {
 		$( "#id-${detail.id}-slider" ).slider({
 			range: "min",
-			value: $!{val},
+			value: #if ($val && $val == '') ${detail.default} #else $val #end,
 			min: ${detail.min},
 			max: ${detail.max},
 			slide: function( event, ui ) {
@@ -35,7 +35,7 @@
 	$(function() {
 		$( "#id-${detail.id}-slider" ).slider({
 			range: "min",
-			value: $!{val} * 100,
+			value: #if ($val && $val == '') ${detail.default} #else $val * 100 #end,
 			min: ${detail.min},
 			max: ${detail.max},
 			slide: function( event, ui ) {
