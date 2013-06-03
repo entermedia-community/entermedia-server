@@ -9,11 +9,17 @@
 <input class="${detail.id} color-picker" name="${detail.getId()}.value" id="${detail.id}.value" value="$!val" size="10" type="text" > 
 
 <script type="text/javascript" defer>
-	$(".color-picker").miniColors({
+	/* original color picker */
+	/*$(".color-picker").miniColors({
+					defaultValue: '',
 					letterCase: 'uppercase',
 					change: function(hex, rgb) {
 						logData(hex, rgb);
 					}
+				});*/
+	$(".color-picker").minicolors({
+					defaultValue: '$!{val}',
+					letterCase: 'uppercase'
 				});
 </script>
 
