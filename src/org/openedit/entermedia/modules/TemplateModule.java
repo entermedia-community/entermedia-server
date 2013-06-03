@@ -68,7 +68,7 @@ public class TemplateModule extends BaseMediaModule {
 		getPageManager().putPage(outputpage);
 		loadTemplate(req);
 		
-		MediaArchive archive = getMediaArchive("mediaarchive");
+		MediaArchive archive = getMediaArchive(inReq);
 		req.putPageValue("mediaarchive", archive);
 		
 		req.putProtectedPageValue(PageRequestKeys.HOME,
