@@ -6,7 +6,7 @@
     <preset id="mediumimage" guid="imagemedium" outputfile="image550x350.jpg" fileexportformat="${filename}550x350.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="03">Image Medium</preset>
     <preset id="thumbimage" guid="imagethumb" 	outputfile="image200x200.jpg" fileexportformat="${filename}200x200.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="04">Image Thumbnail</preset>
     <preset id="imagecrop" guid="imagecrop"  outputfile="image110x62cropped.jpg" fileexportformat="${filename}110x62cropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="05" >Small Crop</preset>
-    <preset id="imagepreviewfpo" guid="imagepreviewfpo" outputfile="image1024x768wm.jpg" fileexportformat="${filename}1024x768-fpo.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="06" >Image Large FPO</preset>
+    <preset id="imagepreviewfpo" watermark="true" guid="imagepreviewfpo" outputfile="image1024x768wm.jpg" fileexportformat="${filename}1024x768-fpo.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="06" >Image Large FPO</preset>
    
     
     <preset id="largedocument" guid="imagepreview" outputfile="image1024x768.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="04">Document Preview</preset>

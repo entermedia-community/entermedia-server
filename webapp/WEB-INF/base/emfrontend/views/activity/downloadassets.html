@@ -27,7 +27,9 @@ $context.putPageValue("view", "order/downloadform")
 
 <input type="hidden" name="field" value="ordertype" />
 <input type="hidden" name="ordertype.value" value="download" />
+	#if($canconvert)
 	<p>Please choose a download format for each asset.</p>
+	#end
 	<table class="striped download-table" width="100%" >
 	#foreach( $item in $orderitems )
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
@@ -73,12 +75,18 @@ $asset
   	   	    $presetquery.addSortBy("ordering");
   	   	    #set( $results = $presetsearcher.search($presetquery) )
  -->
-
+#if($canconvert || $candownloadfpo)
   	   	    <select name="${item.id}.presetid.value">
   	    	#foreach ($preset in $results)
+  	    		
   	    		<option value="$preset.id">$preset</option>
   	    	#end
   	    	</select>
+#else
+	      	<input type="hidden" name="presetid.value" value="0"/>
+
+#end
+  	    	
 	</td>
 	</tr>	
 	#end
