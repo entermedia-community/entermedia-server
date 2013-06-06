@@ -8,7 +8,9 @@
 	<generator name="convertArchiveDocument"/>
 	<property name="virtual">true</property>
 	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
-	
+	<permission name="view">
+		<pagevalue name="canviewasset" equals="true"/>
+	</permission>	
 </page>
 
 
