@@ -17,7 +17,7 @@ import com.openedit.util.FileUtils
 
 public class youtubepublisher extends basepublisher implements Publisher
 {
-	private static final Log log = LogFactory.getLog(filecopypublisher.class);
+	private static final Log log = LogFactory.getLog(youtubepublisher.class);
 	
 	
 	
