@@ -26,6 +26,8 @@ import com.openedit.users.User;
 import com.openedit.util.RequestUtils;
 import com.openedit.util.URLUtilities;
 
+import org.apache.commons.lang.math.NumberUtils;
+
 public class TemplateModule extends BaseMediaModule {
 
 	protected RequestUtils fieldRequestUtils;
@@ -70,6 +72,7 @@ public class TemplateModule extends BaseMediaModule {
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		req.putPageValue("mediaarchive", archive);
+		req.putPageValue("numberutils", new NumberUtils());
 		
 		req.putProtectedPageValue(PageRequestKeys.HOME,
 				urlUtil.relativeHomePrefix());
