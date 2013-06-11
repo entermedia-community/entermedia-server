@@ -32,6 +32,10 @@
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
+	#if( !$val && $detail.render )	
+		#set($val = $searcherManager.getValue($catalogid,$detail.render, $data.properties) ) 
+	#end	
+	
 	$!context.putPageValue("detail",$detail)
 	
 	#if ($detail.header)

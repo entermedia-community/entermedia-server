@@ -466,6 +466,7 @@ public class AdminModule extends BaseModule
 			String cancelredirect = inReq.findValue("cancelredirect");
 			if (!Boolean.parseBoolean(cancelredirect))
 			{
+				sendTo = sendTo.replace("oemaxlevel=", "canceloemaxlevel=");
 				inReq.redirect(sendTo);
 			}
 			return true;
