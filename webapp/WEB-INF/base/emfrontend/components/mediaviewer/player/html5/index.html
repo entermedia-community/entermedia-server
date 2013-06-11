@@ -6,7 +6,7 @@
 
 <!-- first try HTML5 playback: if serving as XML, expand `controls` to `controls="controls"` and autoplay likewise -->
 <!-- warning: playback does not work on iOS3 if you include the poster attribute! fixed in iOS4.0 -->
-<video width="500" height="281" controls>
+<video width="500" height="281" controls  webkit-playsinline >
 	<!-- MP4 must be first for iPad! -->
 	<source src="$source" type="video/mp4" /><!-- Safari / iOS video    -->
 	<!-- fallback to Flash: -->
