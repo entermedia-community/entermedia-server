@@ -57,8 +57,9 @@ public class BasePushManager implements PushManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.push.PushManager#login(java.lang.String)
 	 */
-	public boolean login(String inCatalogId)
+	public HttpClient login(String inCatalogId)
 	{
+		HttpClient client = new HttpClient();
 		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
 		String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
 		String password = getUserManager().decryptPassword(getUserManager().getUser(account));
@@ -70,13 +71,18 @@ public class BasePushManager implements PushManager
 		//execute(inCatalogId, method);
 		try
 		{
-			send(inCatalogId, method);
+			int status = client.executeMethod(method);
+			if (status != 200)
+			{
+				throw new Exception(" ${method} Request failed: status code ${status}");
+			}
 		}
 		catch ( Exception ex )
 		{
 			throw new OpenEditException(ex);
 		}
-		return true;
+		log.info("Login sucessful");
+		return client;
 	}
 
 
@@ -121,8 +127,7 @@ public class BasePushManager implements PushManager
 		{
 			//http://stackoverflow.com/questions/2290570/pkix-path-building-failed-while-making-ssl-connection
 			NaiveTrustManager.disableHttps();
-			fieldClient = new HttpClient();
-			login(inCatalogId); //TODO: Track the server we last logged into in case they edit the server
+			fieldClient = login(inCatalogId); //TODO: Track the server we last logged into in case they edit the server
 		}
 		return fieldClient;
 	}
@@ -354,11 +359,11 @@ public class BasePushManager implements PushManager
 		}
 		catch (Exception e)
 		{	
+			log.error(e);
 			fieldClient = null;//log back in
 		}
 		try
 		{
-			log.error("Retry");
 			return send(inCatalogId, inMethod);
 		}
 		catch (Exception e)
@@ -366,10 +371,13 @@ public class BasePushManager implements PushManager
 			throw new RuntimeException(e);
 		}
 	}
-
 	protected synchronized Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
-		int status = getClient(inCatalogId).executeMethod(inMethod);
+		return send(getClient(inCatalogId),inMethod);
+	}
+	protected synchronized Element send(HttpClient inClient, String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	{
+		int status = inClient.executeMethod(inMethod);
 		if (status != 200)
 		{
 			throw new Exception(" ${inMethod} Request failed: status code ${status}");
