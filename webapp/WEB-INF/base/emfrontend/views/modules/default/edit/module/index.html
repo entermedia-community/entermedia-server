@@ -14,6 +14,8 @@ $context.putPageValue("showactions", "false")
 <div id="subresults" style="clear:both;">
 $pages.include("$apphome/views/modules/${table}/moduleresults/results.html", $context)
 </div>
+<div>
 #if($caneditdata)
 <a class="btn" href="$apphome/views/modules/${table}/edit/addnew.html?field=${field}&${field}.value=${data.id}">Add New</a>
 #end
+</div>

@@ -7,7 +7,6 @@
 #set($targetdivinner = "subresults")
              #if ( $hits )
 
-        <p class="resultsnumber">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
     #end
             <div id="pages">
        
@@ -43,5 +42,7 @@
                     #end
                 </ul>
             </div>
+                    <p class="">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
+            
     #end
 

@@ -3,9 +3,8 @@
 <page>
   
   
-  <path-action name="DataEditModule.loadPageOfSearch">
- 	 <searchtype>${module}</searchtype>
-  </path-action>
+  <page-action name="DataEditModule.loadPageOfSearch">
+  </page-action>
   
 
   
