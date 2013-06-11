@@ -362,6 +362,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		SearchQuery q = createSearchQuery();
 		q.addMatches("id","*");  //Had to do this since description is not always fully populated. TODO: use Lucene API to get All
+		addShowOnly(inReq, q);
 		if (inReq != null)
 		{
 			String sort = inReq.getRequestParameter("sortby");

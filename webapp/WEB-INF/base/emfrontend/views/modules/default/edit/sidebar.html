@@ -29,7 +29,13 @@ $context.putPageValue("view", $viewpath)
                   <li class="#if($viewid == $target.id) current #end projects-$target.id" byassettype="$!target.byassettype">
                   		
                   		#if( $target.rendertable )
-                      <a class="tab" href="$home${searchhome}/edit/table.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
+                  		#set($remotemodule = $searcherManager.getData($catalogid, "module", $target.rendertable ) )
+				        #if($remotemodule)
+				        	
+				        	<a class="tab" href="$home${searchhome}/edit/module/index.html?id=$!{data.id}&viewid=${target.id}&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&rendertable=$target.rendertable&externalid=$target.renderexternalid&sortfield=$target.rendersort">
+				        #else
+				        	<a class="tab" href="$home${searchhome}/edit/table.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
+				        #end
                        <span class="icon"></span><span class="text"> $target</span></a>
                   		#else
                       <a class="tab" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">

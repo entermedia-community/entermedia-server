@@ -1,0 +1,32 @@
+<div style="width:300px;">
+		<div id="${detail.id}-fontselector" class="fontSelect" >
+			<span>$!val</span>
+			<div class="arrow-down"></div>
+			<ul>
+				<li>Arial,Arial,Helvetica,sans-serif</li>
+				<li>Arial Black,Arial Black,Gadget,sans-serif</li>
+				<li>Comic Sans MS,Comic Sans MS,cursive</li>
+				<li>Courier New,Courier New,Courier,monospace</li>
+				<li>Georgia,Georgia,serif</li>
+				<li>Impact,Charcoal,sans-serif</li>
+				<li>Lucida Console,Monaco,monospace</li>
+				<li>Lucida Sans Unicode,Lucida Grande,sans-serif</li>
+				<li>Palatino Linotype,Book Antiqua,Palatino,serif</li>
+				<li>Tahoma,Geneva,sans-serif</li>
+				<li>Times New Roman,Times,serif</li>
+				<li>Trebuchet MS,Helvetica,sans-serif</li>
+				<li>Verdana,Geneva,sans-serif</li>
+				<li>Gill Sans,Geneva,sans-serif</li>
+			</ul>
+			<input class="${detail.id}" name="${detail.getId()}.value" id="${detail.id}.value" value="$!val" type="hidden" > 
+		</div>
+	</div>	
+ 
+<script type="text/javascript">
+    $(function() {
+		$('#${detail.id}-fontselector').fontSelector({
+			'hide_fallbacks' : true,
+			'initial' : '$!val'
+		});
+	});
+</script>

@@ -5,6 +5,10 @@ No results found
 #set($view = $context.getRequestParameter("view"))
 $context.putPageValue("view", $view)
 #end
+#set( $moduleid = $context.findValue("module") )
+
+$context.putPageValue("clink", "$apphome/views/modules/${moduleid}/edit/edit.html")
+#set($clink = "$apphome/views/modules/${moduleid}/edit/edit.html")
 
 #set( $resultdetail = $searcher.getDetailsForView("$view", $userprofile))
 <div class="tablecontainer">
@@ -52,7 +56,7 @@ $context.putPageValue("view", $view)
            
               $context.putPageValue('val',  $!cell.get($detail.id))
               $context.putPageValue('detail',  $detail)
-              $pages.include("$apphome/views/modules/${module}/moduleresults/cell.html", $context)    
+              $pages.include("$apphome/components/moduleresults/cell.html", $context)    
     		
 
     </div>
@@ -68,7 +72,7 @@ $context.putPageValue("view", $view)
 </div>
    <div id="navigationrow">
 
- $pages.stream("$apphome/views/modules/${module}/moduleresults/navigate.html", $context)		
+ $pages.stream("$apphome/views/modules/${moduleid}/moduleresults/navigate.html", $context)		
 </div>
 
 </div>
@@ -85,14 +89,14 @@ $context.putPageValue("view", $view)
             var id = $(this).attr('id');
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+                    jQuery('#subresults').load( '$home$apphome/views/modules/$moduleid/moduleresults/columnsort.html?oemaxlevel=1&searchtype=$moduleid&view=${view}&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
                 } else {
-                    jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
+                    jQuery('#subresults').load( '$home$apphome/views/modules/$moduleid/moduleresults/columnsort.html?oemaxlevel=1&searchtype=$moduleid&view=${view}&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
                 }
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                jQuery('#resultsarea').load( '$home$apphome/views/modules/$moduleid/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
+                jQuery('#subresults').load( '$home$apphome/views/modules/$moduleid/moduleresults/columnsort.html?oemaxlevel=1&searchtype=$moduleid&view=${view}&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
             }
         }
     });

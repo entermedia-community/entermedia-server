@@ -130,7 +130,11 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			input = inArchive.findOriginalMediaByType("video",inAsset);
 		}
-		
+		if(input == null){
+			if(inStructions.getInputPath() != null){
+				input = getPageManager().getPage(inStructions.getInputPath());
+			}
+		}
 		//Look over to see if there is a creator that can do a better job of reading in this type
 		String ext = inStructions.getInputExtension();
 		if( ext == null && input != null)

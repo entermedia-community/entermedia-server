@@ -3,7 +3,8 @@ var ajaxtimerrunning = false;
 
 openFancybox = function(href) {
 	  jQuery.fancybox({
-	     'href' : href
+	     'href' : href,
+	     'type': 'iframe'
 	  });
 }
 
