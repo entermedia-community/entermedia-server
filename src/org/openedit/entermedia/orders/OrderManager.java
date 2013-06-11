@@ -74,7 +74,7 @@ public interface OrderManager
 
 	OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser, String inStatus);
 
-	List<String> addConversionAndPublishRequest(Order order, MediaArchive archive, Map<String, String> properties, User inUser);
+	List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String, String> properties, User inUser);
 
 	String getPresetForOrderItem(String inCataId, Data inOrderItem);
 

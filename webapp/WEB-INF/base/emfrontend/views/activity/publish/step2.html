@@ -4,7 +4,10 @@
 <input type="hidden" name="catalogid" value="$catalogid"/>
 <input type="hidden" name="orderid" value="$order.id"/>
 	<div>
-		<h4>Publishing to $!searcherManager.getData($catalogid,"publishdestination",$order.publishdestination)</h4>
+	
+	#set($publishtype = $!searcherManager.getData($catalogid,"publishdestination",$order.publishdestination))
+	
+		<h4>Publishing to $publishtype</h4>
 
 	<table id="shared-asset-table" class="striped download-table" width="100%" >
 	#foreach( $item in $orderitems )
@@ -25,6 +28,16 @@
 		<td>
 			$pages.include("./presetselector.html?fileformat=$asset.fileformat&itemid=$item.id&publishdestid=$!queue.publishdestination")
 		</td>
+		#if ($publishtype == "YouTube")
+		<td>
+			Category
+		</td>
+		<td>
+			<input type="hidden" name="field" value="assetfield">
+			<input type="hidden" name="assetfield.value" value="${asset.id}">
+			$pages.include("./youtubecategoryselector.html")
+		</td>
+		#end
 		</tr>
 	#end
 	</table>
