@@ -107,10 +107,16 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 #foreach( $detail in $resultdetail )
 <td class="editfield highlightMe" halign="right">
    <div id="edit_${cell.id}_$detail.id" class="popupdetails" data-id="${cell.id}">
-			
-		    
-           
-              $context.putPageValue('val',  $!cell.get($detail.id))
+		#set($val = false)	
+		#set( $val =  $cell.get($detail.id) )
+           	#if( !$val && $detail.render )	
+			#set($val = $searcherManager.getValue($catalogid,$detail.render, $data.properties) ) 
+		#end	
+		#if( !$val )
+			#set($val = "")	
+		#end		
+              $context.putPageValue('val',  $val)
+	
               $context.putPageValue('detail',  $detail)
               $pages.include("/${content.searchhome}/cell.html", $context)    
     		

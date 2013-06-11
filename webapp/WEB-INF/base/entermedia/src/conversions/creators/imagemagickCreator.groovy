@@ -338,7 +338,7 @@ public class imagemagickCreator extends BaseImageCreator
 			   		
 			//now let's crop
 			com.add("+repage");
-			String gravity = inStructions.getProperty("gravity");
+			String gravity = inStructions.get("gravity");
 			com.add("-gravity");
 			if( gravity == null )
 			{
@@ -360,8 +360,8 @@ public class imagemagickCreator extends BaseImageCreator
 			cropString.append("x");
 			cropString.append(inStructions.getMaxScaledSize().height);
 			
-			String x1 = inStructions.getProperty("x1");
-			String y1 = inStructions.getProperty("y1");
+			String x1 = inStructions.get("x1");
+			String y1 = inStructions.get("y1");
 			
 			if(x1 != null)
 			{
