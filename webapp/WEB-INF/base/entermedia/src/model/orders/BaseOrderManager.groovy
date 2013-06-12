@@ -543,14 +543,14 @@ public class BaseOrderManager implements OrderManager
 	 * @see org.openedit.entermedia.orders.OrderManager#addConversionAndPublishRequest(org.openedit.entermedia.orders.Order, org.openedit.entermedia.MediaArchive, java.util.Map, com.openedit.users.User)
 	 */
 	
-	public List<String> addConversionAndPublishRequest(Order order, MediaArchive archive, Map<String,String> properties, User inUser)
+	public List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String,String> properties, User inUser)
 	{
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
 		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
 
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
-
+		
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 		log.info("Processing " + hits.size() + " order items ");
 		List<String> assetids = new ArrayList<String>();
@@ -596,6 +596,9 @@ public class BaseOrderManager implements OrderManager
 				
 			String publishstatus = "new";
 			Data publishqeuerow = publishQueueSearcher.createNewData();
+			String []fields = inReq.getRequestParameters("field");
+			publishQueueSearcher.updateData(inReq, fields, publishqeuerow);
+			
 			publishqeuerow.setProperty("assetid", assetid);
 			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
 			
