@@ -1,0 +1,10 @@
+#set($fatwireidsearcher = $searcherManager.getSearcher($catalogid, "publishdestination"))
+#set($fatwirequery = $fatwireidsearcher.createSearchQuery().append("name", "FatWire"))
+#set($fatwiredata = $fatwireidsearcher.searchByQuery($fatwirequery))
+#set($fatwireid = $fatwiredata.id)
+#set($searcher = $searcherManager.getSearcher($catalogid, "publishqueue"))
+#set($query = $searcher.createSearchQuery().append("assetid", $asset.id).append("publishdestination", $fatwireid))
+#set($results = $searcher.search($query))
+
+$context.putPageValue("results",$results)
+$pages.include("$home$apphome/views/modules/asset/editor/fatwire/table.html", $context)

@@ -1,11 +1,8 @@
 package publishing.publishers;
 
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import com.google.gdata.util.ServiceException;
-import com.google.gdata.data.youtube.VideoFeed;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -16,29 +13,7 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
-import com.google.gdata.client.youtube.YouTubeService;
-import com.google.gdata.data.Person;
-import com.google.gdata.data.extensions.Rating;
-import com.google.gdata.data.geo.impl.GeoRssWhere;
-import com.google.gdata.data.media.MediaFileSource;
-import com.google.gdata.data.media.mediarss.MediaCategory;
-import com.google.gdata.data.media.mediarss.MediaDescription;
-import com.google.gdata.data.media.mediarss.MediaKeywords;
-import com.google.gdata.data.media.mediarss.MediaPlayer;
-import com.google.gdata.data.media.mediarss.MediaThumbnail;
-import com.google.gdata.data.media.mediarss.MediaTitle;
-import com.google.gdata.data.youtube.VideoEntry;
-import com.google.gdata.data.youtube.VideoFeed;
-import com.google.gdata.data.youtube.YouTubeMediaContent;
-import com.google.gdata.data.youtube.YouTubeMediaGroup;
-import com.google.gdata.data.youtube.YouTubeMediaRating;
-import com.google.gdata.data.youtube.YouTubeNamespace;
-import com.google.gdata.data.youtube.YtPublicationState;
-import com.google.gdata.data.youtube.YtStatistics;
-import com.google.gdata.util.AuthenticationException;
-import com.google.gdata.util.ServiceException;
 import java.net.URL;
-import com.google.gdata.data.youtube.VideoEntry;
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
@@ -99,8 +74,6 @@ public class fatwirepublisher extends basepublisher implements Publisher
 public class FatwireClientService
 {
 	private static final Log log = LogFactory.getLog(FatwireClientService.class);
-	
-	
 	
 	protected String fieldClientId = null;
 	protected String fieldDevKey = null;

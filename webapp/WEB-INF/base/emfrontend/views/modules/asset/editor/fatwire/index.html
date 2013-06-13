@@ -1,22 +1,23 @@
-#if($asset.get("fatwireid"))
-<p>Asset has been exported to Fatwire.</p>
-<br/>
-<p>Fatwire ID: $!asset.get("fatwireid")</p>
-<p>Exported By: $!asset.get("fatwireexportedby")</p>
-<p>Date Exported: $!asset.get("fatwireexportdate")</p>
-#else
-<p>Asset hasn't been exported to Fatwire.</p>
-<br/>
-<form name="fatwireexportform" id="fatwireexportform" action="/${catalogid}/components/detaileditor/fatwire/index.html">
-	<input name="export" type="hidden" value="true"/>
-	<input name="catalogid" type="hidden" value="$catalogid"/>
-	<input name="sourcepath" type="hidden" value="$asset.getSourcePath()"/>
-	
-	<select name="usage">
-		<option value="Free Reuse">Free Reuse</option>
-  		<option value="One Time Use">One Time Use</option>
-	</select>
-	
-	<input name="submit" type="submit" value="[[Export to Fatwire]]" class="embutton"/>
+#set($fatwireidsearcher = $searcherManager.getSearcher($catalogid, "publishdestination"))
+#set($fatwirequery = $fatwireidsearcher.createSearchQuery().append("name", "FatWire"))
+#set($fatwiredata = $fatwireidsearcher.searchByQuery($fatwirequery))
+#set($fatwireid = $fatwiredata.id)
+#set($searcher = $searcherManager.getSearcher($catalogid, "publishqueue"))
+#set($query = $searcher.createSearchQuery().append("assetid", $asset.id).append("publishdestination", $fatwireid))
+#set($results = $searcher.search($query))
+#if ($results.size() == 0)
+<form class="validate" id="usereditform" method="post" action="$home$apphome/views/modules/asset/editor/fatwire/submit.html">
+	<h1>Fatwire Publishing</h1>
+	<p>This asset is not yet available in FatWire. Click below to initialize the publication process.</p>
+	<input type="hidden" id="publishassetid" name="publishassetid" value="$asset.id"/>
+	<input class="thickbox btn" type="submit" value="Send to Fatwire" style="margin: 5px;" />
 </form>
+#else
+$context.putPageValue("results",$results)
+$pages.include("$home$apphome/views/modules/asset/editor/fatwire/table.html", $context)
 #end
+
+
+
+
+
