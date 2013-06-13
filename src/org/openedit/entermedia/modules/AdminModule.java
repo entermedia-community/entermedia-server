@@ -194,12 +194,33 @@ public class AdminModule extends BaseModule
 		
 		//append an encrypted timestamp to passenc
 		try{
-			String tsenc = getUserManager().getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
-			if (tsenc!=null && !tsenc.isEmpty()) {
-				if (tsenc.startsWith("DES:")) tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
-				passenc += TIMESTAMP + tsenc;
-			} else{
-				log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+			
+			String expiry = inReq.getPageProperty("temporary_password_expiry");
+			if (expiry == null || expiry.isEmpty())
+			{
+				log.info("Temporary password expiry is not enabled.");
+			}
+			else
+			{
+				int days = 0;
+				try
+				{
+					days = Integer.parseInt(expiry);
+				}catch (Exception ee){}
+				if (days <=0)
+				{
+					log.info("Temporary password expiry is not formatted correctly - require a number greater than 0.");
+				}
+				else
+				{
+					String tsenc = getUserManager().getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
+					if (tsenc!=null && !tsenc.isEmpty()) {
+						if (tsenc.startsWith("DES:")) tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
+						passenc += TIMESTAMP + tsenc;
+					} else{
+						log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
+					}
+				}
 			}
 		}catch (OpenEditException oex){
 			log.error(oex.getMessage(), oex);

@@ -1,0 +1,17 @@
+#if($results)
+#set($searcher = $searcherManager.getSearcher($catalogid, "convertpreset"))
+#foreach( $item in $results )
+	#set($assetid = $item.assetid)
+	#set($assetpath = $item.assetsourcepath)
+	#set($assetstatus = $item.status)
+	#set($exportname = $item.exportname)
+	#set($presetid = $item.presetid)
+	
+	#set($query = $searcher.createSearchQuery().append("id", $presetid))
+	#set($data = $searcher.searchByQuery($query))
+	#set($profile = $data.name)
+	
+	##dump this stuff to a table row
+	$assetid - $assetpath - $assetstatus - $exportname - $profile<br>
+#end
+#end
