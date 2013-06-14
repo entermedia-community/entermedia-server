@@ -545,9 +545,22 @@ public class BaseOrderManager implements OrderManager
 	
 	public List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String,String> properties, User inUser)
 	{
+		//get list of invalid items
+		ArrayList<String> omit = new ArrayList<String>();
+		String invaliditems = inReq.findValue("invaliditems");
+		if (invaliditems != null && !invaliditems.isEmpty() )
+		{
+			String [] ovals = invaliditems.replace("[","").replace("]", "").split(",");
+			for (String oval:ovals)
+			{
+				omit.add(oval.trim());
+			}
+		}
+		
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
 		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+		Searcher orderitemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
 		
@@ -560,6 +573,17 @@ public class BaseOrderManager implements OrderManager
 			String assetid = orderitemhit.get("assetid");
 			assetids.add(assetid);
 			Asset asset = archive.getAsset(assetid);
+			
+			if (!omit.isEmpty() && omit.contains(assetid))
+			{
+				Data data = (Data) orderitemsearcher.searchById(orderitemhit.getId());
+				data.setProperty("status","publisherror");
+				data.setProperty("errordetails","Publisher is not configured for this preset");
+				orderitemsearcher.saveData(data, null);
+				omit.remove(assetid);
+				continue;
+			}
+			
 			//item.getId() + "." + field + ".value"
 			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
 			

@@ -3,47 +3,69 @@
 <input type="hidden" name="searchtype" value="order"/>
 <input type="hidden" name="catalogid" value="$catalogid"/>
 <input type="hidden" name="orderid" value="$order.id"/>
+<input type="hidden" name="invaliditems" value="$!invaliditems" />
 	<div>
 	
 	#set($publishtype = $!searcherManager.getData($catalogid,"publishdestination",$order.publishdestination))
 	
 		<h4>Publishing to $publishtype</h4>
-
+		
 	<table id="shared-asset-table" class="striped download-table" width="100%" >
+	
+	
 	#foreach( $item in $orderitems )
+	
 		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 		 #set( $queue = $searcherManager.getData($catalogid,"publishqueue",$item.publishqueueid) )
+		 #set( $omit = $invaliditems.contains("${asset.id}"))
+		 
 		<tr>
+		<td style="width:25px">
+			#if($omit)
+				<img src="$home$apphome/theme/images/important_16.png" />
+			#end
+		</td>
 		<td>
 			$context.putPageValue("hit",$asset)
-			$pages.include("$apphome/components/results/thumbnails/small.html",$context)		
-			
+			$pages.include("$apphome/components/results/thumbnails/small.html",$context)
 		</td>
 		<td>
 			$!asset.name #if( $asset.assettitle ) - $asset.assettitle #end
 		</td>
 		<td>
 			$!searcherManager.getData($catalogid,"assettype",$asset.assettype)
-		</td>	
-		<td>
-			$pages.include("./presetselector.html?fileformat=$asset.fileformat&itemid=$item.id&publishdestid=$!queue.publishdestination")
 		</td>
+		<td>
+			$pages.include("./presetselector.html?fileformat=$asset.fileformat&itemid=$item.id&publishdestid=$!queue.publishdestination&publishtype=$!publishtype")
+		</td>
+		
 		#if ($publishtype == "YouTube")
 		<td>
-			Category
+			#if(!$omit)
+				Category
+			#end
 		</td>
 		<td>
-			<input type="hidden" name="field" value="assetfield">
-			<input type="hidden" name="assetfield.value" value="${asset.id}">
-			$pages.include("./youtubecategoryselector.html")
+			#if(!$omit)
+				<input type="hidden" name="field" value="assetfield">
+				<input type="hidden" name="assetfield.value" value="${asset.id}">
+				$pages.include("./youtubecategoryselector.html")
+			#end
 		</td>
 		#end
+		
+		
 		</tr>
 	#end
 	</table>
 	</div>
 </div>
 
-	<input class="btn small" style="float: right" type="submit" value="Next" />
+
+	#if($invaliditems.size() == $orderitems.size())
+		<input class="btn small" style="float: right" type="button" value="Cancel" onclick="window.history.back()"/>
+	#else
+		<input class="btn small" style="float: right" type="submit" value="Next" />
+	#end
 
 </form>	      

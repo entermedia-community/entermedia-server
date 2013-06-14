@@ -1,17 +1,44 @@
 #if($results)
-#set($searcher = $searcherManager.getSearcher($catalogid, "convertpreset"))
-#foreach( $item in $results )
-	#set($assetid = $item.assetid)
-	#set($assetpath = $item.assetsourcepath)
-	#set($assetstatus = $item.status)
-	#set($exportname = $item.exportname)
-	#set($presetid = $item.presetid)
-	
-	#set($query = $searcher.createSearchQuery().append("id", $presetid))
-	#set($data = $searcher.searchByQuery($query))
-	#set($profile = $data.name)
-	
-	##dump this stuff to a table row
-	$assetid - $assetpath - $assetstatus - $exportname - $profile<br>
+
+<div class="emrounded">
+	<div>
+		<h4>title</h4>
+		<table id="shared-asset-table" class="striped download-table" width="100%" >
+		#set($searcher = $searcherManager.getSearcher($catalogid, "convertpreset"))
+		#foreach( $item in $results )
+			#set($assetid = $item.assetid)
+			#set($assetpath = $item.assetsourcepath)
+			#set($assetstatus = $item.status)
+			#set($exportname = $item.exportname)
+			#set($presetid = $item.presetid)
+			#set($query = $searcher.createSearchQuery().append("id", $presetid))
+			#set($data = $searcher.searchByQuery($query))
+			#set($profile = $data.name)
+			<tr>
+				<td>
+					$assetid
+				</td>
+				<td>
+					$assetpath
+				</td>
+				<td>
+					$assetstatus
+				</td>
+				<td>
+					$exportname
+				</td>
+				<td>
+					$profile
+				</td>
+			</tr>
+		#end
+		</table>
+	</div>
+</div>
 #end
-#end
+
+
+		
+	
+	
+	

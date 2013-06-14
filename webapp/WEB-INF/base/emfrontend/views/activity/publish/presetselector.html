@@ -1,6 +1,7 @@
 		#set ($itemid = $context.getRequestParameter("itemid"))
 		#set ($publishdestid = $context.getRequestParameter("publishdestid"))
 		#set( $fileformat = $context.getRequestParameter("fileformat"))
+		#set( $publishtype = $context.getRequestParameter("publishtype"))
 		
 		#set ($publishdestsearcher = $searcherManager.getSearcher($catalogid, "publishdestination"))
 		#set ($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
@@ -18,20 +19,34 @@
 		#end
 		
 		#if ($showselector)
-		  	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
-		  	   	    $presetquery.setAndTogether(false)
-		  	   	    #set( $rendertype = false)
-		  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($fileformat) )
-		  	   	    #if( $rendertype )
-			  	   	    #set( $null = $presetquery.addExact("inputtype",$rendertype) )
-		  	   	    #end
-		  	   	    #set( $null = $presetquery.addExact("inputtype","all") )
-		  	   	    #set( $null = $presetquery.addSortBy("ordering") )
-		  	   	    #set( $results = $presetsearcher.search($presetquery) )
+  	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
+  	   	    #set( $rendertype = false)
+	  	   	#set( $rendertype = $mediaarchive.getMediaRenderType($fileformat) )
+  	   	    
+  	   	    #if($publishtype == "YouTube")
+  	   	    	#set( $null = $presetquery.append("publishtoyoutube","true"))
+  	   	    	#if( $rendertype )
+  	   	    		#set( $null = $presetquery.append("inputtype",$rendertype))
+  	   	    	#end
+  	   	    #else
+	  	   	    $presetquery.setAndTogether(false)
+	  	   	    #if( $rendertype )
+		  	   	    #set( $null = $presetquery.addExact("inputtype",$rendertype) )
+	  	   	    #end
+	  	   	    #set( $null = $presetquery.addExact("inputtype","all") )
+	  	   	#end
+	  	   	
+  	   	    #set( $null = $presetquery.addSortBy("ordering") )
+  	   	    #set( $results = $presetsearcher.search($presetquery) )
+  	   	    
+  	   	    #if($results.size() > 0)
 			<select name="${itemid}.presetid.value">
-		  	    	#foreach ($preset in $results)
-		  	    		<option value="$preset.id">$preset</option>
-		  	    	#end
-		    	</select>
-		  	    	
+		  	    #foreach ($preset in $results)
+		  	    <option value="$preset.id">$preset</option>
+		  	    #end
+		    </select>
+		    #else
+		    	<input type="hidden" name="${itemid}.presetid.value" value="0">
+		    	<!-- <image src="$home$apphome/theme/images/important_16.png" /> -->
+			#end
 		#end
