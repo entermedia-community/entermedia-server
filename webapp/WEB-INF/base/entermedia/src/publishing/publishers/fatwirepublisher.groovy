@@ -18,6 +18,7 @@ import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
 
+
 public class fatwirepublisher extends basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(fatwirepublisher.class);
@@ -25,10 +26,43 @@ public class fatwirepublisher extends basepublisher implements Publisher
 	public PublishResult publish(MediaArchive mediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
 		
-		System.out.println(" &&& fatwire publish request ");
-		
 		//setup result object
 		PublishResult result = new PublishResult();
+		
+		//exportname - should we embed asset id here????
+		String exportname = inPublishRequest.get("exportname");
+		if (exportname.contains("{assetid}"))
+		{
+			//exportname.
+		}
+		
+		//this does the actual publish
+		
+		Object fatwireManager = mediaArchive.getModuleManager().getBean( "fatwireManager");
+		String urlHome = "${home}${apphome}";
+		String usage = "usage"; //??
+		try {
+			manager.pushAsset(inAsset, "Image_C", "Image", null, urlHome, usage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		/*
+		 * 
+		 * fatwireManager" class="org.entermedia.fatwire.FatwireManager
+		FatwireManager manager = getFatwireManager(inReq);
+		String urlHome = inReq.getSiteRoot() + inReq.getPageValue("home");
+		String usage = inReq.getRequestParameter("usage");
+		
+		try {
+			manager.pushAsset(getAsset(inReq), "Image_C", "Image", inReq.getUser(), urlHome, usage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		 */
+		
+		//no need of fatwireclientservice - use beans in extension instead
+		
 		
 		FatwireClientService fw = new FatwireClientService();
 		//setup fw object
