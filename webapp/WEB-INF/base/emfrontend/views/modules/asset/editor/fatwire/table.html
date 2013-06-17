@@ -2,8 +2,14 @@
 
 <div class="emrounded">
 	<div>
-		<h4>FatWire Publication Record</h4>
+		<h1>FatWire Publication Record</h1>
 		<table id="shared-asset-table" class="striped download-table" width="100%" >
+			<tr>
+			    <th>Status</th>
+			    <th>Path</th>
+			    <th>Name in FatWire</th>
+			    <th>Profile</th>
+		  	</tr>
 		#set($searcher = $searcherManager.getSearcher($catalogid, "convertpreset"))
 		#foreach( $item in $results )
 			#set($assetid = $item.assetid)
@@ -16,13 +22,10 @@
 			#set($profile = $data.name)
 			<tr>
 				<td>
-					$assetid
+					$assetstatus 
 				</td>
 				<td>
 					$assetpath
-				</td>
-				<td>
-					$assetstatus
 				</td>
 				<td>
 					$exportname
