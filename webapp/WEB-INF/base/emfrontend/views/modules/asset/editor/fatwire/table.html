@@ -5,6 +5,7 @@
 		<h1>FatWire Publication Record</h1>
 		<table id="shared-asset-table" class="striped download-table" width="100%" >
 			<tr>
+				<th>FatWire Id</th>
 			    <th>Status</th>
 			    <th>Path</th>
 			    <th>Name in FatWire</th>
@@ -20,7 +21,12 @@
 			#set($query = $searcher.createSearchQuery().append("id", $presetid))
 			#set($data = $searcher.searchByQuery($query))
 			#set($profile = $data.name)
+			
+			#set($fatwireid = $item.trackingnumber)
 			<tr>
+				<td>
+					$!fatwireid
+				</td>
 				<td>
 					$assetstatus 
 				</td>

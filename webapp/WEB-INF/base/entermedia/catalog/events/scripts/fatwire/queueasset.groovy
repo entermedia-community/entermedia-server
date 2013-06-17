@@ -112,6 +112,10 @@ public void init()
 		data.setProperty("presetid", preset.getId());
 		data.setProperty("status", "new");
 		data.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		String homeUrl = "${context.siteRoot}${home}${apphome}";
+		data.setProperty("homeurl",homeUrl);
+		String username = context.getUserName();
+		data.setProperty("username",username);
 		//add reference to conversiontask id if one was created
 		if (conversiontaskid!=null) data.setProperty("conversiontaskid", conversiontaskid );
 		publishqueuesearch.saveData(data, null);//save to publishqueue
