@@ -17,6 +17,10 @@ import java.net.URL;
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
+import com.openedit.util.RequestUtils
+import com.openedit.users.UserManager
+import com.openedit.users.User
+
 
 
 public class fatwirepublisher extends basepublisher implements Publisher
@@ -29,161 +33,60 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		//setup result object
 		PublishResult result = new PublishResult();
 		
-		//exportname - should we embed asset id here????
-		String exportname = inPublishRequest.get("exportname");
-		if (exportname.contains("{assetid}"))
+		String urlHome = inPublishRequest.get("homeurl");
+		String username =  inPublishRequest.get("username");
+		UserManager usermanager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
+		User inUser = usermanager.getUser(username);
+		String copyrightstatus = inAsset.get("copyrightstatus");
+		Searcher searcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "copyrightstatus");
+		String usage = null;
+		if (copyrightstatus!=null)
 		{
-			//exportname.
+			Data data = searcher.searchById(copyrightstatus);
+			usage = data.get("name");
 		}
-		
-		//this does the actual publish
-		
-		Object fatwireManager = mediaArchive.getModuleManager().getBean( "fatwireManager");
-		String urlHome = "${home}${apphome}";
-		String usage = "usage"; //??
-		try {
-			manager.pushAsset(inAsset, "Image_C", "Image", null, urlHome, usage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		/*
-		 * 
-		 * fatwireManager" class="org.entermedia.fatwire.FatwireManager
-		FatwireManager manager = getFatwireManager(inReq);
-		String urlHome = inReq.getSiteRoot() + inReq.getPageValue("home");
-		String usage = inReq.getRequestParameter("usage");
-		
-		try {
-			manager.pushAsset(getAsset(inReq), "Image_C", "Image", inReq.getUser(), urlHome, usage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		 */
-		
-		//no need of fatwireclientservice - use beans in extension instead
-		
-		
-		FatwireClientService fw = new FatwireClientService();
-		//setup fw object
-		if (!fw.hasValidCredentials())
+		String fatwireId = inAsset.get("fatwireid");
+		if (fatwireId != null)
 		{
 			result.setComplete(true);
-			result.setErrorMessage("FatWire credentials are incomplete");
+			result.setErrorMessage("Not exporting asset, already exists on Fatwire");
+			return result;
 		}
-		String pubstatus = inPublishRequest.get("status");
-		if (pubstatus == null || pubstatus.isEmpty())
+		else
 		{
-			result.setComplete(true);
-			result.setErrorMessage("Status is not defined");
-		}
-		else if (pubstatus.equals("new") || pubstatus.equals("retry"))//new, pending, complete, retry, error
-		{
-			//prepare asset to be published
-			Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
-			File file = new File(inputpage.getContentItem().getAbsolutePath());
-			String mimeType = mediaArchive.getOriginalDocument(inAsset).getMimeType();
-			
-			//publish via fatwire
-			fw.startService();
-			String trackingId = fw.publish(file);
-			fw.stopService();
-			inPublishRequest.setProperty("trackingnumber",trackingId);
-			result.setPending(true);
-		}
-		else if (pubstatus.equals("pending"))
-		{
-			String trackingId = inPublishRequest.get("trackingnumber");
-			//do stuff here with fatwireclient
-			fw.startService();
-			fw.updateStatus(trackingId, result);
-			fw.stopService();
+			//this does the actual publishing
+			Object fatwireManager = mediaArchive.getModuleManager().getBean( "fatwireManager");
+			try {
+				fatwireManager.setMediaArchive(mediaArchive);
+				Object assetBean = fatwireManager.pushAsset(inAsset, "Image_C", "Image", inUser, urlHome, usage);
+				if (assetBean != null)
+				{
+					String newId = assetBean.getId();
+					String status = assetBean.getStatus();
+					log.info("response from publishing request to FatWire: newId ${newId} status ${status}");
+					inPublishRequest.setProperty("trackingnumber",newId);
+					result.setComplete(true);
+				}
+				else 
+				{
+					log.info("Error publishing asset: asset bean is NUll");
+					result.setComplete(true);
+					result.setErrorMessage("Error publishing to FatWire: unable to publish asset");
+				}
+			}
+			catch (IOException e)
+			{
+				log.error(e.getMessage(), e);
+				result.setComplete(true);
+				result.setErrorMessage(e.getMessage());
+			}
+			catch (Exception e)
+			{
+				log.error(e.getMessage(), e);
+				result.setComplete(true);
+				result.setErrorMessage(e.getMessage());
+			}
 		}
 		return result;
-	}
-}
-
-
-//move this to a bean!
-public class FatwireClientService
-{
-	private static final Log log = LogFactory.getLog(FatwireClientService.class);
-	
-	protected String fieldClientId = null;
-	protected String fieldDevKey = null;
-	protected String fieldUsername = null;
-	protected String fieldPassword = null;
-	
-	//instance of service or whatever required for fatwire communication
-	
-	
-	public void setClientId(String inClientId)
-	{
-		fieldClientId = inClientId;
-	}
-	
-	public String getClientId()
-	{
-		return fieldClientId;
-	}
-	
-	public void setDevKey(String inDevKey)
-	{
-		fieldDevKey = inDevKey;
-	}
-	
-	public String getDevKey()
-	{
-		return fieldDevKey;
-	}
-	
-	public void setUsername(String inUsername)
-	{
-		fieldUsername = inUsername;
-	}
-	
-	public String getUsername()
-	{
-		return fieldUsername;
-	}
-	
-	public void setPassword(String inPassword)
-	{
-		fieldPassword = inPassword;
-	}
-	
-	public String getPassword()
-	{
-		return fieldPassword;
-	}
-	
-	public boolean hasValidCredentials()
-	{
-		//whatever makes sense here
-		return true;
-	}
-	
-	public void startService()
-	{
-		//code to start client service
-	}
-	
-	public void stopService()
-	{
-		//code to stop client service
-	}
-	
-	public String publish(File file)//include arguments...
-	{
-		String trackingId = null;
-		//do stuff
-		trackingId = "testId";
-		return trackingId;
-	}
-	
-	public void updateStatus(String trackingId, PublishResult result)
-	{
-		//do stuff here
-		result.setComplete(true);
 	}
 }
