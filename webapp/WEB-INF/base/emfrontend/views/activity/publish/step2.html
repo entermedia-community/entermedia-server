@@ -20,11 +20,6 @@
 		 #set( $omit = $invaliditems.contains("${asset.id}"))
 		 
 		<tr>
-		<td style="width:25px">
-			#if($omit)
-				<img src="$home$apphome/theme/images/important_16.png" />
-			#end
-		</td>
 		<td>
 			$context.putPageValue("hit",$asset)
 			$pages.include("$apphome/components/results/thumbnails/small.html",$context)
@@ -33,28 +28,35 @@
 			$!asset.name #if( $asset.assettitle ) - $asset.assettitle #end
 		</td>
 		<td>
-			$!searcherManager.getData($catalogid,"assettype",$asset.assettype)
-		</td>
-		<td>
-			$pages.include("./presetselector.html?fileformat=$asset.fileformat&itemid=$item.id&publishdestid=$!queue.publishdestination&publishtype=$!publishtype")
+			#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
+			$!filetype
 		</td>
 		
-		#if ($publishtype == "YouTube")
-		<td>
-			#if(!$omit)
-				Category
+		#if($omit)
+			#if($publishtype == "YouTube")
+				<td colspan="3">
+			#else
+				<td>
 			#end
-		</td>
-		<td>
-			#if(!$omit)
+				$context.putPageValue("publisher",$publishtype)
+				$context.putPageValue("filetype",$filetype)
+				$pages.include("./publishererror.html",$context)
+				</td>
+		#else
+			<td>
+				$pages.include("./presetselector.html?fileformat=$asset.fileformat&itemid=$item.id&publishdestid=$!queue.publishdestination&publishtype=$!publishtype")
+			</td>
+			#if ($publishtype == "YouTube")
+			<td>
+				Category
+			</td>
+			<td>
 				<input type="hidden" name="field" value="assetfield">
 				<input type="hidden" name="assetfield.value" value="${asset.id}">
 				$pages.include("./youtubecategoryselector.html")
+			</td>
 			#end
-		</td>
 		#end
-		
-		
 		</tr>
 	#end
 	</table>

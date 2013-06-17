@@ -573,7 +573,7 @@ public class BaseOrderManager implements OrderManager
 			String assetid = orderitemhit.get("assetid");
 			assetids.add(assetid);
 			Asset asset = archive.getAsset(assetid);
-			
+			//if asset is in the exclude list, update the orderitem table with a publisherror status
 			if (!omit.isEmpty() && omit.contains(assetid))
 			{
 				Data data = (Data) orderitemsearcher.searchById(orderitemhit.getId());
