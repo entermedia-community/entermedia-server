@@ -1443,6 +1443,11 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
-
+	
+	<bean id="TemplateModule" class="org.openedit.entermedia.modules.TemplateModule" >
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+	</bean>
 
 </beans>

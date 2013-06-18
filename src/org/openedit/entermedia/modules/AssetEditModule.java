@@ -1954,7 +1954,7 @@ public class AssetEditModule extends BaseMediaModule
 			Replacer replacer = new Replacer();
 			
 			replacer.setSearcherManager(archive.getSearcherManager());
-			replacer.setDefaultCatalogId(archive.getCatalogId());
+			replacer.setCatalogId(archive.getCatalogId());
 			replacer.setAlwaysReplace(true);
 			sourcepath = replacer.replace(sourcepath, vals);
 			sourcepath = sourcepath + "/" + item.getName();

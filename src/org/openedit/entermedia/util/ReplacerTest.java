@@ -15,7 +15,7 @@ public class ReplacerTest extends BaseTestCase
 		SearcherManager manager = (SearcherManager)getBean("searcherManager");
 		Replacer replacer = new Replacer();
 		
-		replacer.setDefaultCatalogId("system");
+		replacer.setCatalogId("system");
 		replacer.setAlwaysReplace(true);
 		replacer.setSearcherManager(manager);
 		String code = "${one}/${longvariable}/${user.email}/${notfound}/${two}/${user.id}${nogap1}${nogap2}";

@@ -54,7 +54,7 @@ public void init()
 
 		Replacer replacer = new Replacer();
 		replacer.setSearcherManager(mediaArchive.getSearcherManager());
-		replacer.setDefaultCatalogId(mediaArchive.getCatalogId());
+		replacer.setCatalogId(mediaArchive.getCatalogId());
 		replacer.setAlwaysReplace(true);
 		sourcepath = replacer.replace(sourcepath, vals);
 		if( sourcepath.startsWith("/") )

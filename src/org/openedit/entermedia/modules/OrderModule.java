@@ -16,6 +16,7 @@ import org.entermedia.email.PostMail;
 import org.entermedia.email.TemplateWebEmail;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
@@ -340,6 +341,56 @@ public class OrderModule extends BaseMediaModule
 		}
 		return null;
 	}
+	
+	public void filterOrderItems(WebPageRequest req)
+	{
+		ArrayList<String> list = new ArrayList<String>(); //add omitted orders to a list
+		String publishtype = req.getRequestParameter("publishdestination.value");
+		String catalogid = req.findValue("catalogid");
+		HitTracker items = (HitTracker) req.getPageValue("orderitems");
+		if (items == null)
+		{
+			Order order = loadOrder(req);
+			if (order != null)
+			{
+				String orderid = order.getId();
+				if (orderid == null)
+				{
+					orderid = req.getRequestParameter("orderid");
+				}
+				items = getOrderManager().findOrderItems(req, catalogid, order);
+			}
+		}
+		if (items != null)
+		{
+			//get searchers
+			Searcher publishdestsearcher = getMediaArchive(req).getSearcherManager().getSearcher(catalogid, "publishdestination");
+			Data publisher = (Data) publishdestsearcher.searchById(publishtype);
+			String publishername = publisher.getName();
+			Searcher convertpresetsearcher = getMediaArchive(req).getSearcherManager().getSearcher(catalogid, "convertpreset");
+			//see if convertpreset has the appropriate field
+			String publishtofield = "publishto" + publishername.replace(" ", "").toLowerCase();
+			if (convertpresetsearcher.getDetail(publishtofield) != null)//field is present
+			{
+				for (int i = 0; i < items.size(); i++)
+				{
+					Data data = items.get(i);
+					Asset asset = getMediaArchive(req).getAsset(data.get("assetid"));
+					String fileformat = asset.get("fileformat");
+					String rendertype = getMediaArchive(req).getMediaRenderType(fileformat);
+					//build query
+					SearchQuery presetquery = convertpresetsearcher.createSearchQuery();
+					presetquery.append(publishtofield, "true").append("inputtype",rendertype);
+					//execute query
+					HitTracker hits = convertpresetsearcher.search(presetquery);
+					if (hits.size() > 0)
+						continue;
+					list.add(asset.getId());
+				}
+			}
+		}
+		req.putPageValue("invaliditems",list);//process this in step2
+	}
 
 	public HitTracker findOrderAssets(WebPageRequest req)
 	{
@@ -547,6 +598,7 @@ public class OrderModule extends BaseMediaModule
 
 	public void createConversionAndPublishRequest(WebPageRequest inReq)
 	{
+		
 		// Order and item should be created from previous step.
 		// now we get the items and update the destination information
 		Order order = loadOrder(inReq);
@@ -563,14 +615,13 @@ public class OrderModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Map params = inReq.getParameterMap();
-
 		if (order.get("publishdestination") == null)
 		{
 			//String publishdestination = inReq.findValue("publishdestination.value");
 			//do something? default it to browser?
 			order.setProperty("publishdestination", "0");//assume 0 for most orders, 0 can be told to use Aspera
 		}
-		List assetids = manager.addConversionAndPublishRequest(order, archive, params, inReq.getUser());
+		List assetids = manager.addConversionAndPublishRequest(inReq, order, archive, params, inReq.getUser());
 		// OrderHistory history =
 		// getOrderManager().createNewHistory(archive.getCatalogId(), order,
 		// inReq.getUser(), "pending");

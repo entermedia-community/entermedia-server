@@ -101,6 +101,8 @@ public class RegistrationModule extends BaseMediaModule {
 	
 	
 	public boolean checkCouponCode(WebPageRequest inReq){
+		if(Boolean.parseBoolean(inReq.findValue("requirecode"))){
+			
 		String catalogid = inReq.findValue("catalogid");
 		String couponcode = inReq.getRequestParameter("code.value");
 		
@@ -133,6 +135,9 @@ public class RegistrationModule extends BaseMediaModule {
 		inReq.putPageValue("coupon", prepaidcode);
 		
 		return true;
+		} else{
+			return false;
+		}
 	}
 
 	

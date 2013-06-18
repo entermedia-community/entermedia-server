@@ -44,8 +44,8 @@
 #if ($detail.sort)
 	$query.setSortBy($detail.sort)
 #end
-
-#set ($types = $lsearcher.search($query))
+$lsearcher.addShowOnly($context, $query) 
+#set ($types = $lsearcher.search($context, $query))
 #if( !$value )
 	#set ($value = $context.getRequestParameter('value'))
 #end

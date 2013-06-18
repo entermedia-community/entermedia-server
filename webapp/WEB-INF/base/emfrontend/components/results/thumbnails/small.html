@@ -32,6 +32,7 @@ $context.putPageValue("thumbsize",$thumbsize)
             	#set ($urlenc = $sourcepath)
             #else
             	#set ( $urlenc = $urlutils.encode($sourcepath))
+            	#set ( $urlenc = $urlenc.replace("%2F", "/") )
             #end
             <img class="smallthumb emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${urlenc}/thumb.jpg" border="0" />
         #end

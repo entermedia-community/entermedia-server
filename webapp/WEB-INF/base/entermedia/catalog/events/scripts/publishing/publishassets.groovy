@@ -127,8 +127,9 @@ public void init() {
 				publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
 				queuesearcher.saveData(publishrequest, context.getUser());
 			}
+			asset = null; //This is kind of crappy code.
+		
 		}
-
 	}
 }
 

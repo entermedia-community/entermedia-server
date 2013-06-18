@@ -15,7 +15,7 @@ public interface PushManager
 {
 
 	//TODO: Put a 5 minute timeout on this connection. This way we will reconnect
-	boolean login(String inCatalogId);
+	HttpClient login(String inCatalogId);
 
 	UserManager getUserManager();
 

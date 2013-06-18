@@ -15,6 +15,12 @@
         #set( $currentpreview = $numberutils.toInt($currentpreview) )
         #set( $pagenum = $currentpreview + 1  )
     #end
+    
+    #if ( $totalpages < $numberutils.toInt($pagenum) )
+       #set( $pagenum = $totalpages )
+       #set( $currentpreview = $totalpages - 1 )
+    #end
+    
     ##TODO Move this to ./player/types/documentpages.html
     #if( $totalpages > 1 )
         <div id="pdf-thumbnail-sidebar">
@@ -45,7 +51,7 @@
                   #set( $end = $totalpages - 1 )
                 #end
                 #foreach( $page in [$start..$end])
-                    <li class="#if ( $page == $currentpreview ) current #end">
+                	<li class="#if ( $page == $currentpreview ) current #end">
                         <a href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&currentpreview=$page&hitssessionid=$hitssessionid">
                             #set( $page = $page + 1)
                             <img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/preview.jpg?pagenum=$page" />

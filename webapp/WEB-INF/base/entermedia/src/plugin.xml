@@ -43,6 +43,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
+	
+	
+	
 	<lang:groovy id="GhostScriptImageCreator" script-source="conversions/creators/GhostScriptImageCreator.groovy">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
@@ -59,6 +62,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<lang:groovy id="sftppublisher" script-source="publishing/publishers/sftppublisher.groovy" />
 	<lang:groovy id="smbpublisher" script-source="publishing/publishers/smbpublisher.groovy" />
 	<lang:groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy" />
+	<lang:groovy id="youtubepublisher" script-source="publishing/publishers/youtubepublisher.groovy" />
+	<lang:groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy" />
 
 	
 <lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy">
