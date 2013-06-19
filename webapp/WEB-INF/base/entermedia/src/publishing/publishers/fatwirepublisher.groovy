@@ -33,6 +33,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		//setup result object
 		PublishResult result = new PublishResult();
 		
+		String exportname = inPublishRequest.get("exportname");
 		String urlHome = inPublishRequest.get("homeurl");
 		String username =  inPublishRequest.get("username");
 		UserManager usermanager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
@@ -58,7 +59,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 			Object fatwireManager = mediaArchive.getModuleManager().getBean( "fatwireManager");
 			try {
 				fatwireManager.setMediaArchive(mediaArchive);
-				Object assetBean = fatwireManager.pushAsset(inAsset, "Image_C", "Image", inUser, urlHome, usage);
+				Object assetBean = fatwireManager.pushAsset(inAsset, inUser, urlHome, usage, exportname);//testPut();//
 				if (assetBean != null)
 				{
 					String newId = assetBean.getId();

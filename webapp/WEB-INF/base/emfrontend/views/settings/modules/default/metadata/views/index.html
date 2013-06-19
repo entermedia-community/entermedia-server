@@ -62,6 +62,14 @@
             	<input type="hidden" value="rendertype" name="field" />
 
             </div>
+
+	    <div class="checkbox"><input id="systemdefined" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined) checked #else #end/>
+                System View?
+            	<input type="hidden" value="systemdefined" name="field" />
+
+            </div>
+
+
             <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
                 <div>Render Table</div>
             	<input type="hidden" value="rendertable" name="field" />

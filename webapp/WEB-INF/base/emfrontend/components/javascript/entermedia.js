@@ -8,6 +8,9 @@ openFancybox = function(href) {
 	  });
 }
 
+
+
+
 repaint = function(divid) {
 	var div = jQuery("#" + divid);
 	var href = div.data('href');
@@ -28,6 +31,38 @@ toggleUserProperty = function(property, onsuccess) {
 		);
 	
 }
+
+
+
+setSessionValue = function(key, value) {
+	jQuery.ajax(
+			{
+				url: "${home}${apphome}/components/session/setvalue.html?key=" + key + "&value=" + value 
+			}
+		);
+	
+}
+
+getSessionValue = function(key) {
+	var returnval = null;
+	
+	jQuery.ajax(
+			{
+				url: "${home}${apphome}/components/session/getvalue.html?key=" + key,
+				async: false,
+				success: function(data){
+					
+					returnval = data;
+					
+				}
+			
+				
+			}
+		);
+	
+	return returnval;
+}
+
 
 
 outlineSelectionCol = function(event, ui)
