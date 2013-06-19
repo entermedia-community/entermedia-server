@@ -8,6 +8,7 @@
 	<type id="datejoin" >Date Join</type>
 	<type id="textjoin" >Text Join</type>
 	<type id="totaljoin" >Total Join</type>
+	<type id="searchjoin" >Search Join</type>
 	<type id="file" >File</type>
 	<type id="image"  >Image</type>
 </types>

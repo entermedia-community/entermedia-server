@@ -30,17 +30,20 @@ import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldComparator;
 import org.apache.lucene.search.FieldComparatorSource;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.SearcherFactory;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.join.JoinUtil;
+import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.SimpleFSLockFactory;
@@ -56,6 +59,7 @@ import com.openedit.OpenEditRuntimeException;
 import com.openedit.Shutdownable;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.Join;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
@@ -250,44 +254,118 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			return null;
 		}
-		String query = inQuery.toQuery();
-		if (query == null || query.length() == 0)
-		{
-			throw new OpenEditException("Query is blank");
-		}
-		HitTracker hits = search(query, inQuery.getSorts());
+		HitTracker hits = search(inQuery, inQuery.getSorts());
 		hits.setSearchQuery(inQuery);
 		return hits;
 	}
 
-	public HitTracker search(String inQuery, String inOrdering)
-	{
-		if (inOrdering != null)
-		{
-			List orders = new ArrayList(1);
-			orders.add(inOrdering);
-			return search(inQuery, orders);
-		}
-		else
-		{
-			return search(inQuery, (List) null);
-		}
-	}
+//	protected HitTracker search(String inQuery, String inOrdering)
+//	{
+//		if (inOrdering != null)
+//		{
+//			List orders = new ArrayList(1);
+//			orders.add(inOrdering);
+//			return search(inQuery, orders);
+//		}
+//		else
+//		{
+//			return search(inQuery, (List) null);
+//		}
+//	}
 
-	public HitTracker search(String inQuery, List inOrdering)
+	protected HitTracker search(SearchQuery inQuery, List inOrdering)
 	{
 		try
 		{
+			String query = inQuery.toQuery();
+			if(query != null && query.length() == 0 )
+			{
+				query = null;
+			}
+			if (inQuery.getParentJoins() == null && (query == null) )
+			{
+				throw new OpenEditException("Query is blank");
+			}
+			
 			Query query1 = null;
-			if( inQuery != null && inQuery.equals("id:(*)"))
+			if( query != null)
 			{
-				query1 = new MatchAllDocsQuery();
+				if( inQuery != null && inQuery.equals("id:(*)"))
+				{
+					query1 = new MatchAllDocsQuery();
+				}
+				else
+				{
+					QueryParser parser = getQueryParser();
+					query1 = parser.parse(query);
+				}
 			}
-			else
+			
+			/**
+			 * 
+	IndexSearcher articleSearcher = ...
+2	IndexSearcher commentSearcher = ...
+3	String fromField = "id";
+4	boolean multipleValuesPerDocument = false;
+5	String toField = "article_id";
+6	// This query should yield article with id 2 as result
+7	BooleanQuery fromQuery = new BooleanQuery();
+8	fromQuery.add(new TermQuery(new Term("title", "byte")), BooleanClause.Occur.MUST);
+9	fromQuery.add(new TermQuery(new Term("title", "norms")), BooleanClause.Occur.MUST);
+10	Query joinQuery = JoinUtil.createJoinQuery(fromField, multipleValuesPerDocument, toField, fromQuery, articleSearcher);
+11	TopDocs topDocs = commentSearcher.search(joinQuery, 10);
+
+			 */
+			
+			//Now deal with the join or statement
+			if( inQuery.getParentJoins() != null )
 			{
-				QueryParser parser = getQueryParser();
-				query1 = parser.parse(inQuery);
+			
+					for (Join join: inQuery.getParentJoins() )
+					{
+						/*
+						IndexSearcher articleSearcher = ...
+2	IndexSearcher commentSearcher = ...
+3	String remoteField = "id";
+4	boolean multipleValuesPerDocument = false;
+5	String lField = "article_id";
+6	// This query should yield article with id 2 as result
+7	BooleanQuery fromQuery = new BooleanQuery();
+8	fromQuery.add(new TermQuery(new Term("title", "byte")), BooleanClause.Occur.MUST);
+9	fromQuery.add(new TermQuery(new Term("title", "norms")), BooleanClause.Occur.MUST);
+10	Query joinQuery = JoinUtil.createJoinQuery(fromField, multipleValuesPerDocument, toField, fromQuery, articleSearcher);
+11	TopDocs topDocs = commentSearcher.search(joinQuery, 10);
+						
+*/
+						//
+						
+						BaseLuceneSearcher tosearcher = (BaseLuceneSearcher)getSearcherManager().getSearcher(getCatalogId(), join.getRemoteSearchType());
+						IndexSearcher searcher = tosearcher.getLuceneSearcherManager().acquire();
+						try
+						{
+							Query filter = tosearcher.getQueryParser().parse(join.getRemoteQuery().toQuery());
+							filter = JoinUtil.createJoinQuery(join.getRemoteColumn(), join.isRemoteHasMultiValues(), join.getLocalColumn(), filter, searcher, ScoreMode.None);
+							if( query1 != null)
+							{
+								BooleanQuery finalQuery = new BooleanQuery();
+								finalQuery.add(filter, BooleanClause.Occur.MUST);
+								finalQuery.add(query1, BooleanClause.Occur.MUST);
+								query1 = finalQuery;
+							}
+							else
+							{
+								query1 = filter;
+							}
+						}
+						finally
+						{
+							tosearcher.getLuceneSearcherManager().release(searcher);
+						}
+					}
+				
 			}
+			
+			
 			Sort sort = null;
 			if( inOrdering != null && inOrdering.size() > 0 )
 			{

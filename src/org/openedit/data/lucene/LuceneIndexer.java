@@ -446,8 +446,13 @@ public class LuceneIndexer
 
 	protected boolean populateJoin(Data inData, Document doc, PropertyDetail detail)
 	{
-		if (detail.getDataType() != null && detail.getDataType().endsWith("join"))
+		String type = detail.getDataType();
+		if (type != null && type.endsWith("join"))
 		{
+			if( type.equals("searchjoin") )
+			{
+				return true; //purely virtual
+			}
 			// get the values from another list
 			String id = detail.getExternalId();
 			if (id == null)
@@ -464,7 +469,7 @@ public class LuceneIndexer
 				{
 					populateDateJoin(detail, doc, tracker, field, true);
 				}
-				else if (detail.getDataType().startsWith("total"))
+				else if (type.startsWith("total"))
 				{
 					populateJoinDataCount(detail.getId(), doc, tracker);
 				}

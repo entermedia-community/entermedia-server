@@ -11,6 +11,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
 
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
@@ -54,9 +55,30 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setDetail(inFieldId);
 		term.setValue(getDateFormat().format(inDate));
 		term.setOperation("afterdate");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
+	protected void addTermByDataType(Term inTerm)
+	{
+		if( inTerm.getDetail().isDataType("searchtype" ) )
+		{
+			//split it
+			String id = inTerm.getDetail().getId();
+			String localfield = id.substring(0, id.indexOf('.'));
+			String remotefield = id.substring(id.indexOf('.') + 1);
+			String listid = inTerm.getDetail().getListId();
+			
+			Searcher remotesearcher = getSearcherManager().getSearcher(getCatalogId(), inTerm.getDetail().getListId());
+			SearchQuery q = remotesearcher.createSearchQuery();
+			q.addTerm(inTerm);
+			addRemoteJoin(q, remotefield, false, remotesearcher.getSearchType(), localfield);
+		}
+		else
+		{
+			getTerms().add(inTerm);
+		}
+	}
+
 
 	public Term addBetween(PropertyDetail inFieldId, final Date inAfter, final Date inBefore)
 	{
@@ -77,7 +99,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.addParameter("afterDate", lowDate);
 		term.addParameter("beforeDate", highDate);
 		term.setOperation("betweendates");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -95,7 +117,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("beforedate");
 		term.setDetail(inField);
 		term.setValue(getDateFormat().format(inDate));
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -129,7 +151,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setId(inField.getId());
 		term.setValue(inValue);
 		term.setOperation("orgroup");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 	//Allows any kind of syntax such as + - " " does no escape
@@ -294,7 +316,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setDetail(inField);
 		term.setValue(inNots);
 		term.setId(inField.getId());
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -356,7 +378,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setDetail(inField);
 		term.setValue(inVal);
 		term.setOperation("not");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 /* is this used anyplace?
