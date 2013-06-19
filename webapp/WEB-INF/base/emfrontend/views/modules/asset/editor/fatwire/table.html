@@ -16,11 +16,14 @@
 			#set($assetid = $item.assetid)
 			#set($assetpath = $item.assetsourcepath)
 			#set($assetstatus = $item.status)
+			#set($errormsg = $item.errordetails)
 			#set($exportname = $item.exportname)
 			#set($presetid = $item.presetid)
 			#set($query = $searcher.createSearchQuery().append("id", $presetid))
 			#set($data = $searcher.searchByQuery($query))
 			#set($profile = $data.name)
+			
+			#set($statusinfo = $searcherManager.getData($catalogid,"publishing/queuestatus",$assetstatus))
 			
 			#set($fatwireid = $item.trackingnumber)
 			<tr>
@@ -28,7 +31,7 @@
 					$!fatwireid
 				</td>
 				<td>
-					$assetstatus 
+					#if($statusinfo) $statusinfo.name #else $assetstatus #end  #if($errormsg) - $errormsg #end
 				</td>
 				<td>
 					$assetpath
