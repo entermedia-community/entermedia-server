@@ -33,11 +33,30 @@
     </div>
 -->
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-	
-      <div class="main-info" style="padding-bottom: 20px; margin-top: 20px;">
-      	<div class="primary">$module / #if($data.name) $!data.name #elseif($data.id) $data.id #else  #end</div>
-      </div>       
+	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
+	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
     
+    
+    
+      <div class="main-info" style="padding-bottom: 20px; margin-top: 20px;">
+      	#foreach($detail in $details)     	
+        	#set($val = $data.get($detail.id))
+        	
+        	#if($detail.isList())
+        	      #set($val = $searcherManager.getData($catalogid, "${detail.id}", $val).getName())
+            #end
+	        #if($velocityCount == 1)
+		        <div class="primary">
+		          $module / $!val
+		        </div>
+			#else        
+	        	<div class="secondary">
+	        		$!val         
+	        	</div>
+	   		 #end
+	   		 #set($val = "")
+	    #end
+      	</div>
     
 </div>
 
