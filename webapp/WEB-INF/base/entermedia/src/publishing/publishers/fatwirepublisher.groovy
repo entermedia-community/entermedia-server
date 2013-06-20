@@ -36,6 +36,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		String exportname = inPublishRequest.get("exportname");
 		String urlHome = inPublishRequest.get("homeurl");
 		String username =  inPublishRequest.get("username");
+		String outputfile = inPublishRequest.get("convertpresetoutputfile");
 		UserManager usermanager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
 		User inUser = usermanager.getUser(username);
 		String copyrightstatus = inAsset.get("copyrightstatus");
@@ -46,20 +47,20 @@ public class fatwirepublisher extends basepublisher implements Publisher
 			Data data = searcher.searchById(copyrightstatus);
 			usage = data.get("name");
 		}
-		String fatwireId = inAsset.get("fatwireid");
-		if (fatwireId != null)
-		{
-			result.setComplete(true);
-			result.setErrorMessage("Not exporting asset, already exists on Fatwire");
-			return result;
-		}
-		else
-		{
+//		String fatwireId = inAsset.get("fatwireid");
+//		if (fatwireId != null)
+//		{
+//			result.setComplete(true);
+//			result.setErrorMessage("Not exporting asset, already exists on Fatwire");
+//			return result;
+//		}
+//		else
+//		{
 			//this does the actual publishing
 			Object fatwireManager = mediaArchive.getModuleManager().getBean( "fatwireManager");
 			try {
 				fatwireManager.setMediaArchive(mediaArchive);
-				Object assetBean = fatwireManager.pushAsset(inAsset, inUser, urlHome, usage, exportname);//testPut();//
+				Object assetBean = fatwireManager.pushAsset(inAsset, inUser, urlHome, usage, exportname, outputfile);
 				if (assetBean != null)
 				{
 					String newId = assetBean.getId();
@@ -87,7 +88,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				result.setComplete(true);
 				result.setErrorMessage(e.getMessage());
 			}
-		}
+//		}
 		return result;
 	}
 }

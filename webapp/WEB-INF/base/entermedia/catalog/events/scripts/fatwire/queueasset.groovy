@@ -116,6 +116,7 @@ public void init()
 		data.setProperty("homeurl",homeUrl);
 		String username = context.getUserName();
 		data.setProperty("username",username);
+		data.setProperty("convertpresetoutputfile",outputfile);
 		//add reference to conversiontask id if one was created
 		if (conversiontaskid!=null) data.setProperty("conversiontaskid", conversiontaskid );
 		publishqueuesearch.saveData(data, null);//save to publishqueue

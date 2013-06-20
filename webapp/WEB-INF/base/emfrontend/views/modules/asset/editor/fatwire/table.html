@@ -31,7 +31,7 @@
 					$!fatwireid
 				</td>
 				<td>
-					#if($statusinfo) $statusinfo.name #else $assetstatus #end  #if($errormsg) - $errormsg #end
+					#if($statusinfo) $statusinfo.name #else $assetstatus #end $!errormsg
 				</td>
 				<td>
 					$assetpath
