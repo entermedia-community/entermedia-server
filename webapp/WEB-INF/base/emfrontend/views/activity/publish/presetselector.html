@@ -28,6 +28,11 @@
   	   	    	#if( $rendertype )
   	   	    		#set( $null = $presetquery.append("inputtype",$rendertype))
   	   	    	#end
+  	   	    #elseif($publishtype == "FatWire")
+  	   	    	#set( $null = $presetquery.append("publishtofatwire","true"))
+  	   	    	#if( $rendertype )
+  	   	    		#set( $null = $presetquery.append("inputtype",$rendertype))
+  	   	    	#end
   	   	    #else
 	  	   	    $presetquery.setAndTogether(false)
 	  	   	    #if( $rendertype )

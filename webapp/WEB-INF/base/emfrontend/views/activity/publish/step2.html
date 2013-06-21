@@ -55,6 +55,14 @@
 				<input type="hidden" name="assetfield.value" value="${asset.id}">
 				$pages.include("./youtubecategoryselector.html")
 			</td>
+			#elseif ($publishtype == "FatWire")
+				#set($homeurl = "${context.siteRoot}${home}${apphome}")
+				#set($username = $context.getUserName())
+				<input type="hidden" name="field" value="homeurl">
+				<input type="hidden" name="homeurl.value" value="${homeurl}">
+				<input type="hidden" name="field" value="username">
+				<input type="hidden" name="username.value" value="${username}">
+				
 			#end
 		#end
 		</tr>
