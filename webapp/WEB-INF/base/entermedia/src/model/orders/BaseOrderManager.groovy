@@ -628,6 +628,9 @@ public class BaseOrderManager implements OrderManager
 			for (int i = 0; i < fields.length; i++) {
 				String field = fields[i];
 				String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
+				
+				publishqeuerow.setProperty(field, value);
+				//publishQueueSearcher.up
 			}
 			
 			//publishQueueSearcher.updateData(inReq, fields, publishqeuerow);

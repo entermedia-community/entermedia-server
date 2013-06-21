@@ -29,7 +29,6 @@ public class fatwirepublisher extends basepublisher implements Publisher
 	
 	public PublishResult publish(MediaArchive mediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
-		
 		//setup result object
 		PublishResult result = new PublishResult();
 		
@@ -37,6 +36,16 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		String urlHome = inPublishRequest.get("homeurl");
 		String username =  inPublishRequest.get("username");
 		String outputfile = inPublishRequest.get("convertpresetoutputfile");
+		if (outputfile == null || outputfile.isEmpty())
+		{
+			//search for presetid
+			String presetid = inPublishRequest.get("presetid");
+			//find outputfile
+			Searcher presetsearch = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "convertpreset");
+			Data d = (Data) presetsearch.searchById(presetid);
+			outputfile = d.get("outputfile");
+			if (outputfile != null && outputfile.isEmpty()) outputfile = null;
+		}
 		UserManager usermanager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
 		User inUser = usermanager.getUser(username);
 		String copyrightstatus = inAsset.get("copyrightstatus");
@@ -51,15 +60,6 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		if (exportname == null || urlHome == null || username == null || outputfile == null)
 		{
 			log.info("internal error: unable to publish to fatwire (exportname=${exportname} urlHome=${urlHome} username=${username} outputfile=${outputfile}");
-			
-			Iterator<String> itr = inPublishRequest.getProperties().keySet().iterator();
-			while (itr.hasNext())
-			{
-				String key = itr.next();
-				String val = inPublishRequest.getProperties().get(key).toString();
-				System.out.println("property ${key} ${val}");
-			}
-			
 			result.setComplete(true);
 			result.setErrorMessage("Error publishing to FatWire: variables have not been set");
 			return result;

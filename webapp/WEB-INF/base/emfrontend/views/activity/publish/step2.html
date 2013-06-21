@@ -58,10 +58,10 @@
 			#elseif ($publishtype == "FatWire")
 				#set($homeurl = "${context.siteRoot}${home}${apphome}")
 				#set($username = $context.getUserName())
-				<input type="hidden" name="field" value="homeurl">
-				<input type="hidden" name="homeurl.value" value="${homeurl}">
-				<input type="hidden" name="field" value="username">
-				<input type="hidden" name="username.value" value="${username}">
+				<input type="hidden" name="presetfield" value="homeurl">
+				<input type="hidden" name="${item.id}.homeurl.value" value="${homeurl}">
+				<input type="hidden" name="presetfield" value="username">
+				<input type="hidden" name="${item.id}.username.value" value="${username}">
 				
 			#end
 		#end
