@@ -1,5 +1,7 @@
 package model.orders;
 
+import java.util.Iterator;
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.DocumentHelper
@@ -620,8 +622,15 @@ public class BaseOrderManager implements OrderManager
 				
 			String publishstatus = "new";
 			Data publishqeuerow = publishQueueSearcher.createNewData();
-			String []fields = inReq.getRequestParameters("field");
-			publishQueueSearcher.updateData(inReq, fields, publishqeuerow);
+			
+			
+			String []fields = inReq.getRequestParameters("presetfield");
+			for (int i = 0; i < fields.length; i++) {
+				String field = fields[i];
+				String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
+			}
+			
+			//publishQueueSearcher.updateData(inReq, fields, publishqeuerow);
 			
 			publishqeuerow.setProperty("assetid", assetid);
 			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
