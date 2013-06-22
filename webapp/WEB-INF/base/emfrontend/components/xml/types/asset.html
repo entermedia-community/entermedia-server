@@ -6,7 +6,7 @@
 
 
 
-<div id="${detail.id}-preview">
+<div class="render-type-thumbnail" id="${detail.id}-preview">
 
 
 #if($val && $val != "")
@@ -20,16 +20,13 @@
 #end
 #end
 </div>
-<br>
 <input type="hidden" name="${detail.id}.value" id="${detail.id}-value" value="$!foundrow.id"/>
 #if($detail.sourcepath)
 <input type="hidden" name="${detail.id}.sourcepath" id="${detail.id}-sourcepath" value="$detail.sourcepath"/>
 #end
 <input type="text" class="bigdrop" id="assetselector" style="width: 500px" />
-<input type="hidden" class="$detail.getId()-field" id="${detail.getId()}.value" name="${detail.getId()}.sourcepath" value="$!sourcepath" /><br>
-<input type="file" name="file.${detail.getId()}" />
-<br>
-<br>
+<input type="hidden" class="$detail.getId()-field" id="${detail.getId()}.value" name="${detail.getId()}.sourcepath" value="$!sourcepath" />
+<input class="render-choose-file" type="file" name="file.${detail.getId()}" />
 
 #if($val && $val!="" && $foundrow)
 <label for="${detail.id}-checkbox" style="font-style:italic;">Disable? </label><input id="${detail.id}-checkbox" name="${detail.id}-checkbox" type="checkbox" />
