@@ -32,7 +32,8 @@ public class JoinTest extends BaseEnterMediaTest
 		//from libraries 
 		SearchQuery  lq = lsearcher.createSearchQuery();
 		lq.addMatches("name","stuff");
-		lq.addRemoteJoin(dq, "id", false, "division", "division");
+		lq.addExact("division.tag","test");
+		//lq.addRemoteJoin(dq, "id", false, "division", "division");
 		HitTracker hits = lsearcher.search(lq);
 		assertTrue( hits.size() > 0);
 		

@@ -7,8 +7,7 @@
   <property id="giturl" editable="true" index="true" stored="true" note="ssh://servername/vol1/git/song123.git">Git URL</property>
 
   <property id="division" type="list" viewtype="list" editable="true" index="true"  sort="name" stored="true" >Division</property>
-
-  <property id="division.tag" type="searchjoin" viewtype="text" index="false" listid="division" editable="false" stored="false" >Division Tag</property>
+  <property id="division.tag" type="searchjoin" viewtype="text" index="false" listid="division"  foreignkeyid="id"  editable="false" stored="false" >Division Tag</property>
 
   <!--  property id="gitprojectname" editable="true" index="true" stored="true" note="Just the name">Git Project Name</property  -->
   <property id="startdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="library" internalfield="false" datatype="date">Start Date</property>

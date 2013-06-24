@@ -33,7 +33,7 @@
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
 	#if( !$val && $detail.render )	
-		#set($val = $searcherManager.getValue($catalogid,$detail.render, $data.properties) ) 
+		#set($val = $searcherManager.getValue($catalogid,$detail.render, $data.properties) ) $data.id 
 	#end	
 	
 	$!context.putPageValue("detail",$detail)
