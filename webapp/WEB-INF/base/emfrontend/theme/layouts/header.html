@@ -1,9 +1,12 @@
-#set ($lastselected = $content.module )
+#set($lastselected = $userprofile.last_selected_module )
+ 
 #if(!$lastselected)
-	#set($lastselected = $userprofile.last_selected_module )
+	#set ($lastselected = $content.module )	
+	
 #end
 #if(!$lastselected)
 	#set($lastselected = "asset" )
+	fff
 #end
 
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
