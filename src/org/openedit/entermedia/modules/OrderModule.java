@@ -133,7 +133,7 @@ public class OrderModule extends BaseMediaModule
 				assets.addSelection(hit.getId());
 			}
 		}
-		if( assets == null )
+		if (assets == null)
 		{
 			return null;
 		}
@@ -158,7 +158,7 @@ public class OrderModule extends BaseMediaModule
 			if (order.get("expireson") == null)
 			{
 				String days = getMediaArchive(catalogid).getCatalogSettingValue("orderexpiresdays");
-				if( days == null )
+				if (days == null)
 				{
 					days = "30";
 				}
@@ -178,23 +178,23 @@ public class OrderModule extends BaseMediaModule
 
 		return null;
 	}
-	
-	
+
 	public Order createOrderFromData(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
 
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String mergefield = inReq.getRequestParameter("mergefield");
-		if(mergefield == null){
-			mergefield="assetid";
+		if (mergefield == null)
+		{
+			mergefield = "assetid";
 		}
 		HitTracker datalist = null;
 		if (hitssessionid != null)
 		{
 			datalist = (HitTracker) inReq.getSessionValue(hitssessionid);
 		}
-	
+
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
 
@@ -217,7 +217,7 @@ public class OrderModule extends BaseMediaModule
 			if (order.get("expireson") == null)
 			{
 				String days = getMediaArchive(catalogid).getCatalogSettingValue("orderexpiresdays");
-				if( days == null )
+				if (days == null)
 				{
 					days = "30";
 				}
@@ -237,8 +237,6 @@ public class OrderModule extends BaseMediaModule
 
 		return null;
 	}
-	
-	
 
 	public Collection saveItems(WebPageRequest inReq) throws Exception
 	{
@@ -341,7 +339,7 @@ public class OrderModule extends BaseMediaModule
 		}
 		return null;
 	}
-	
+
 	public void filterOrderItems(WebPageRequest req)
 	{
 		ArrayList<String> list = new ArrayList<String>(); //add omitted orders to a list
@@ -380,7 +378,7 @@ public class OrderModule extends BaseMediaModule
 					String rendertype = getMediaArchive(req).getMediaRenderType(fileformat);
 					//build query
 					SearchQuery presetquery = convertpresetsearcher.createSearchQuery();
-					presetquery.append(publishtofield, "true").append("inputtype",rendertype);
+					presetquery.append(publishtofield, "true").append("inputtype", rendertype);
 					//execute query
 					HitTracker hits = convertpresetsearcher.search(presetquery);
 					if (hits.size() > 0)
@@ -389,7 +387,7 @@ public class OrderModule extends BaseMediaModule
 				}
 			}
 		}
-		req.putPageValue("invaliditems",list);//process this in step2
+		req.putPageValue("invaliditems", list);//process this in step2
 	}
 
 	public HitTracker findOrderAssets(WebPageRequest req)
@@ -496,7 +494,7 @@ public class OrderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Order basket = loadOrderBasket(inReq);
 		String assetid = inReq.getRequestParameter("assetid");
-		
+
 		Asset asset = archive.getAsset(assetid, inReq);
 
 		getOrderManager().toggleItemInOrder(archive, basket, asset);
@@ -518,7 +516,7 @@ public class OrderModule extends BaseMediaModule
 				props.put(key, value);
 			}
 		}
-
+		
 		for (int i = 0; i < assetids.length; i++)
 		{
 			String assetid = assetids[i];
@@ -595,10 +593,33 @@ public class OrderModule extends BaseMediaModule
 
 		return getOrderManager().findAssets(inReq, catalogid, order);
 	}
+	
+	public void preprocessOrder(WebPageRequest inReq)
+	{
+		Object obj = inReq.getParameterMap().get("itemid");
+		if (obj == null || !(obj instanceof String[]))
+		{
+			return;
+		}
+		String [] orderids = (String[]) obj;
+		for(String orderid:orderids)
+		{
+			String formatkey = new StringBuilder().append(orderid).append(".itemfiletype.value").toString();
+			if (!inReq.getParameterMap().containsKey(formatkey))
+				continue;
+			String format = inReq.getParameterMap().get(formatkey).toString();
+			String presetkey = new StringBuilder().append(format).append(".presetid.value").toString();
+			if (!inReq.getParameterMap().containsKey(presetkey))
+				continue;
+			String preset = inReq.getParameterMap().get(presetkey).toString();
+			String itempresetkey = new StringBuilder().append(orderid).append(".presetid.value").toString();
+			inReq.setRequestParameter(itempresetkey, preset);
+		}
+	}
 
 	public void createConversionAndPublishRequest(WebPageRequest inReq)
 	{
-		
+
 		// Order and item should be created from previous step.
 		// now we get the items and update the destination information
 		Order order = loadOrder(inReq);
@@ -802,41 +823,25 @@ public class OrderModule extends BaseMediaModule
 		}
 
 	}
-/*
-	public Data createMultiEditData(WebPageRequest inReq) throws Exception
-	{
-		Order order = loadOrder(inReq);
-		MediaArchive archive = getMediaArchive(inReq);
-		HitTracker hits = getOrderManager().findAssets(inReq, archive.getCatalogId(), order);
-		CompositeAsset composite = new CompositeAsset();
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-		{
-			Data target = (Data) iterator.next();
-			Asset p = null;
-			if (target instanceof Asset)
-			{
-				p = (Asset) target;
-			}
-			else
-			{
-				String sourcepath = target.getSourcePath();
-				p = archive.getAssetBySourcePath(sourcepath);
-			}
-			if (p != null)
-			{
-				composite.addData(p);
-			}
-		}
-		composite.setId("multiedit:" + hits.getHitsName());
-		// set request param?
-		inReq.setRequestParameter("assetid", composite.getId());
-		inReq.putPageValue("data", composite);
-		inReq.putPageValue("asset", composite);
-		inReq.putSessionValue(composite.getId(), composite);
 
-		return composite;
-	}
-*/
+	/*
+	 * public Data createMultiEditData(WebPageRequest inReq) throws Exception {
+	 * Order order = loadOrder(inReq); MediaArchive archive =
+	 * getMediaArchive(inReq); HitTracker hits =
+	 * getOrderManager().findAssets(inReq, archive.getCatalogId(), order);
+	 * CompositeAsset composite = new CompositeAsset(); for (Iterator iterator =
+	 * hits.iterator(); iterator.hasNext();) { Data target = (Data)
+	 * iterator.next(); Asset p = null; if (target instanceof Asset) { p =
+	 * (Asset) target; } else { String sourcepath = target.getSourcePath(); p =
+	 * archive.getAssetBySourcePath(sourcepath); } if (p != null) {
+	 * composite.addData(p); } } composite.setId("multiedit:" +
+	 * hits.getHitsName()); // set request param?
+	 * inReq.setRequestParameter("assetid", composite.getId());
+	 * inReq.putPageValue("data", composite); inReq.putPageValue("asset",
+	 * composite); inReq.putSessionValue(composite.getId(), composite);
+	 * 
+	 * return composite; }
+	 */
 	public void sendOrderEmail(WebPageRequest inReq)
 	{
 		// just a basic email download
@@ -892,11 +897,12 @@ public class OrderModule extends BaseMediaModule
 		String itemid = inReq.getRequestParameter("id");
 		getOrderManager().removeItem(catalogid, itemid);
 	}
+
 	public Order loadOrderForVisitor(WebPageRequest inReq)
 	{
 		Order order = loadOrder(inReq);
 		//check the expriation
-		if( order.isExpired() )
+		if (order.isExpired())
 		{
 			inReq.putPageValue("expired", Boolean.TRUE);
 		}
@@ -906,11 +912,11 @@ public class OrderModule extends BaseMediaModule
 		}
 		return order;
 	}
-	
+
 	public Boolean canViewAsset(WebPageRequest inReq)
 	{
 		String orderid = inReq.getRequestParameter("orderid");
-		if( orderid == null )
+		if (orderid == null)
 		{
 			return false;
 		}
@@ -918,5 +924,4 @@ public class OrderModule extends BaseMediaModule
 		return !order.isExpired();
 	}
 
-	
 }
