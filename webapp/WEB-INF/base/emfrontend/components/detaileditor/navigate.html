@@ -24,7 +24,7 @@
 									<a class="print emdialog" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="Print Preview">Print</a>
 								</li>
 								#end
-								#if($candownload)
+								#if($candownload || $canconvert || $candownloadfpo)
 						#if( $asset.getId().startsWith("multiedit:") )
 							<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a></li>
 						#else

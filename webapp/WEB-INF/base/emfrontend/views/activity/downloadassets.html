@@ -84,10 +84,25 @@ $context.putPageValue("view", "order/downloadform")
 			#set($null = $presetquery.addExact("inputtype","all"))
 			#set($null = $presetquery.addSortBy("ordering"))
 			#set( $results = $presetsearcher.search($presetquery) )
-			#if($canconvert || $candownloadfpo)
+			#if($canconvert || $candownloadfpo) 
+					
+
 		  		<select name="${filetype}.presetid.value">
 				#foreach ($preset in $results)
-					<option value="$preset.id">$preset</option>
+					
+					#if($canconvert && $candownloadfpo)
+						#set($ok = true) a
+					#elseif ($canconvert && $preset.watermark != "true")
+						#set($ok = true) b
+					#elseif($candownloadfpo && $preset.watermark == "true")
+						#set($ok = true) c
+					#end
+					#if($ok)
+					<option value="$preset.id">$preset
+					#end
+					
+					</option>
+					
 				#end
 			</select>
 			#end
