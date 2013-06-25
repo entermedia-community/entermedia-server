@@ -625,15 +625,17 @@ public class BaseOrderManager implements OrderManager
 			
 			
 			String []fields = inReq.getRequestParameters("presetfield");
-			for (int i = 0; i < fields.length; i++) {
-				String field = fields[i];
-				String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
-				
-				publishqeuerow.setProperty(field, value);
-				//publishQueueSearcher.up
+			if (fields!=null && fields.length!=0)
+			{
+				for (int i = 0; i < fields.length; i++) {
+					String field = fields[i];
+					String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
+					
+					publishqeuerow.setProperty(field, value);
+				}
 			}
 			
-			//publishQueueSearcher.updateData(inReq, fields, publishqeuerow);
+			
 			
 			publishqeuerow.setProperty("assetid", assetid);
 			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );

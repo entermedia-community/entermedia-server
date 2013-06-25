@@ -1,9 +1,7 @@
-<br/>
-		<table>
+		<table width="100%">
 			<tr>
-				
 				<td>
-					[[Add By Username or Email]]: 
+					[[Add By Username or Email]]:
 				</td>
 				<td>
 					<form class="ajaxform" targetdiv="groupmanagerpanel" id="addoneform" name="addoneform" action="$home$usermanagerhome/groups/addusertogroup.html" >
@@ -15,13 +13,9 @@
 					<input type="hidden" name="resulttype" value="search"/>
 					
 					<input id="addUsernames" name="addUsernames" size="20" type="text"/> 
-		<input type="button" onclick="jQuery('#addoneform').submit();" name="Add One" value="Add"/>
+					<input class="btn" type="button" onclick="$('#addoneform').submit();" name="Add One" value="Add"/>
+					</form>
 				</td>
-				</form>
 			</tr>
-
 		</table>
-<div class="embutton">
-	<a href="#" onclick="removeAllMembers('$group.id');"  name="Save Permissions" >[[Remove All Members From Group]]</a>
-</div>
 		
