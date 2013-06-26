@@ -96,6 +96,10 @@ $context.putPageValue("view", "order/downloadform")
 						#set($ok = true) b
 					#elseif($candownloadfpo && $preset.watermark == "true")
 						#set($ok = true) c
+						
+					#end
+					#if($preset.id == "0" && !$candownloadoriginal)
+						#set($ok = false)
 					#end
 					#if($ok)
 					<option value="$preset.id">$preset
