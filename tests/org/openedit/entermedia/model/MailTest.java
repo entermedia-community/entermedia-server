@@ -21,7 +21,7 @@ public class MailTest extends BaseEnterMediaTest
 		super(arg0);
 	}
 	
-	public void testBCCEmail()
+	public void xtestBCCEmail()
 	{
 		TestFixture ts = getFixture();
 		PostMail pm = (PostMail) ts.getModuleManager().getBean("postMail");
