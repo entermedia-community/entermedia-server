@@ -596,21 +596,23 @@ public class OrderModule extends BaseMediaModule
 	
 	public void preprocessOrder(WebPageRequest inReq)
 	{
-		Object obj = inReq.getParameterMap().get("itemid");
-		if (obj == null || !(obj instanceof String[]))
-		{
-			return;
-		}
-		String [] orderids = (String[]) obj;
+		
+		String [] orderids = inReq.getRequestParameters("itemid");
+		
+	
 		for(String orderid:orderids)
 		{
 			String formatkey = new StringBuilder().append(orderid).append(".itemfiletype.value").toString();
-			if (!inReq.getParameterMap().containsKey(formatkey))
+			
+			
+			if (!inReq.getParameterMap().containsKey(formatkey)){
 				continue;
+			}
 			String format = inReq.getParameterMap().get(formatkey).toString();
 			String presetkey = new StringBuilder().append(format).append(".presetid.value").toString();
-			if (!inReq.getParameterMap().containsKey(presetkey))
+			if (!inReq.getParameterMap().containsKey(presetkey)){
 				continue;
+			}
 			String preset = inReq.getParameterMap().get(presetkey).toString();
 			String itempresetkey = new StringBuilder().append(orderid).append(".presetid.value").toString();
 			inReq.setRequestParameter(itempresetkey, preset);

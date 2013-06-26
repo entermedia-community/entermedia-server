@@ -162,8 +162,11 @@
 						<option value="$preset.id">$preset</option>
 					#end
 				</select>
+				#else
+					  		<input type="hidden" name="${filetype}.presetid.value" value="0">
+				#end	
 			</td>
-			#end
+			
 			
 			
 			#end
