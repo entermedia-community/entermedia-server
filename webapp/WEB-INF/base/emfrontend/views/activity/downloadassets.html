@@ -89,6 +89,7 @@ $context.putPageValue("view", "order/downloadform")
 
 		  		<select name="${filetype}.presetid.value">
 				#foreach ($preset in $results)
+					#set($ok = false)
 					
 					#if($canconvert && $candownloadfpo)
 						#set($ok = true) a
@@ -98,13 +99,19 @@ $context.putPageValue("view", "order/downloadform")
 						#set($ok = true) c
 						
 					#end
-					#if($preset.id == "0" && !$candownloadoriginal)
-						#set($ok = false)
+					#if($preset.id == "0" && $candownload)
+						#set($ok = true) 
 					#end
+					#if($preset.id == "0" && !$candownload)
+						#set($ok = false) 
+					#end
+					
+					
+					
 					#if($ok)
 					<option value="$preset.id">$preset
 					#end
-					
+					#set($ok = false)
 					</option>
 					
 				#end
