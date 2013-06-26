@@ -13,13 +13,18 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
+import com.openedit.hittracker.SearchQuery;
 import java.net.URL;
+
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
 import com.openedit.util.RequestUtils
 import com.openedit.users.UserManager
 import com.openedit.users.User
+
+import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTPReply
 
 
 
@@ -36,16 +41,19 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		String urlHome = inPublishRequest.get("homeurl");
 		String username =  inPublishRequest.get("username");
 		String outputfile = inPublishRequest.get("convertpresetoutputfile");
+		Searcher presetsearch = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "convertpreset");
+		
 		if (outputfile == null || outputfile.isEmpty())
 		{
 			//search for presetid
 			String presetid = inPublishRequest.get("presetid");
 			//find outputfile
-			Searcher presetsearch = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "convertpreset");
 			Data d = (Data) presetsearch.searchById(presetid);
 			outputfile = d.get("outputfile");
 			if (outputfile != null && outputfile.isEmpty()) outputfile = null;
 		}
+		Data thumbpreset = presetsearch.searchById("thumbimage");//get thumbnail data
+		
 		UserManager usermanager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
 		User inUser = usermanager.getUser(username);
 		String copyrightstatus = inAsset.get("copyrightstatus");
@@ -72,9 +80,65 @@ public class fatwirepublisher extends basepublisher implements Publisher
 			if (assetBean != null)
 			{
 				String newId = assetBean.getId();
-				String status = assetBean.getStatus();
-				log.info("response from publishing request to FatWire: newId ${newId} status ${status}");
 				inPublishRequest.setProperty("trackingnumber",newId);
+				log.info("response from publishing request to FatWire: newId ${newId}");
+				
+				//ftp images to fatwire server
+				Searcher publishdestinationsearch = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "publishdestination");
+				SearchQuery fatwirequery = publishdestinationsearch.createSearchQuery().append("name", "FatWire");
+				Data fatwireData = publishdestinationsearch.searchByQuery(fatwirequery);
+				
+				String ftpServer = fatwireData.get("ftpserver");
+				String ftpUsername = fatwireData.get("ftpusername");
+				User ftpUser = usermanager.getUser(ftpUsername);
+				String ftpPwd = usermanager.decryptPassword(ftpUser);
+				
+				Page original = findInputPage(mediaArchive,inAsset,inPreset);
+//				System.out.println(" &&&& original "+ original);
+				Page thumb = findInputPage(mediaArchive,inAsset,thumbpreset);
+//				System.out.println(" &&&& thumb "+ thumb);
+				
+				ArrayList<String> images = new ArrayList<String>();
+				ArrayList<Page> pages = new ArrayList<Page>();
+				
+				Iterator itr = assetBean.getAttributes().iterator();
+				while(itr.hasNext())
+				{
+					Object att = itr.next();
+					if (att.getName() != null && att.getName().equals("thumbnailurl"))
+					{
+						Object attdata = att.getData();
+						String to = (attdata!=null ? attdata.getStringValue() : null);
+						if (to!=null)
+						{
+							if (to.startsWith("/image/EM/"))
+							{
+								to = to.substring("/image/EM/".length());
+							}
+							pages.add(thumb);
+							images.add(to);
+						}
+					}
+					else if (att.getName() != null && att.getName().equals("imageurl"))
+					{
+						Object attdata = att.getData();
+						String to = (attdata!=null ? attdata.getStringValue() : null);
+						if (to!=null)
+						{
+							if (to.startsWith("/image/EM/"))
+							{
+								to = to.substring("/image/EM/".length());
+							}
+							pages.add(original);
+							images.add(to);
+						}
+					}
+				}
+				
+				ftpPublish(ftpServer, ftpUsername, ftpPwd, pages, images, result);
+				
+				
+				
 				result.setComplete(true);
 			}
 			else 
@@ -97,5 +161,78 @@ public class fatwirepublisher extends basepublisher implements Publisher
 			result.setErrorMessage(e.getMessage());
 		}
 		return result;
+	}
+	
+	public void ftpPublish(String servername, String username, String password, ArrayList<Page> from, ArrayList<String> to, PublishResult result)
+	{
+		
+		log.info("ftpPublish ${servername} ${username} ${password} ${to}");
+		FTPClient ftp = new FTPClient();
+		
+		ftp.connect(servername,21);
+		ftp.enterLocalPassiveMode();
+		
+		//check to see if connected
+		int reply = ftp.getReplyCode();
+		if(!FTPReply.isPositiveCompletion(reply))
+		{
+			result.setErrorMessage("Unable to connect to ${servername}, error code: ${reply}")
+			ftp.disconnect();
+			return;
+		}	
+		ftp.login(username, password);
+		reply = ftp.getReplyCode();
+		if(!FTPReply.isPositiveCompletion(reply))
+		{
+			result.setErrorMessage("Unable to login to ${servername}, error code: ${reply}");
+			ftp.disconnect();
+			return;
+		}
+		ftp.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
+		
+		//change paths if necessary
+//		String url = "/images/EM/";
+//		ftp.changeWorkingDirectory(url);
+//		reply = ftp.getReplyCode();
+//		if(!FTPReply.isPositiveCompletion(reply))
+//		{
+//			result.setErrorMessage("Unable to to cd to ${url}, error code: ${reply}");
+//			ftp.disconnect();
+//			return result;
+//		}
+		
+//		String exportname = inPublishRequest.get("exportname");
+		
+		for (int i=0; i < from.size(); i++){
+			Page page = from.get(i);
+			String export = to.get(i);
+			try
+			{
+				ftp.storeFile(export, page.getInputStream());
+			}
+			finally
+			{
+				try
+				{
+					page.getInputStream().close();
+				}
+				catch (Exception e){}
+			}
+			reply = ftp.getReplyCode();
+			if(!FTPReply.isPositiveCompletion(reply))
+			{
+				result.setErrorMessage("Unable to to send file to ${export}, error code: ${reply}");
+				ftp.disconnect();
+				return;
+			}
+		}
+		
+
+		
+		if(ftp.isConnected())
+		{
+			ftp.disconnect();
+		}
+		result.setComplete(true);
 	}
 }
