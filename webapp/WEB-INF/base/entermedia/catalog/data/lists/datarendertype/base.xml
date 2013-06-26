@@ -20,5 +20,6 @@
 		<type id="url"  >URL</type>
 		<type id="color"  >Color</type>
 		<type id="map"  >Map</type>
+		<type id="category"  >Category Picker</type>
 
 </types>
