@@ -135,16 +135,18 @@ public class PostMail
 		ArrayList<String> list = new ArrayList<String>();
 		if (recipients!=null){
 			for (Recipient recipient:recipients){
-				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress()))
+				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress())){
 					list.add(recipient.getEmailAddress());
+				}
 			}
 		}
 		String [] ccarr = list.toArray(new String[list.size()]);//array of recipients
 		list.clear();
 		if (blindrecipients!=null){
 			for (Recipient recipient:blindrecipients){
-				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress()))
+				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress())){
 					list.add(recipient.getEmailAddress());
+				}
 			}
 		}
 		String [] bccarr = list.toArray(new String[list.size()]);

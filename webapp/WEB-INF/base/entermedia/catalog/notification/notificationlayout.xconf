@@ -7,4 +7,5 @@
 		<value>View Asset</value>
 		<value locale="es">Ver Recurso</value>
 	</property>
+	<property name="emailtemplateid">notificationlayout</property>
 </page>

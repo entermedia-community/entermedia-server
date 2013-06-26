@@ -931,6 +931,21 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 
+		String catlist = inReq.getRequestParameter(prefix + "category.orvalue");
+		if( catlist != null)
+		{
+			categories = catlist.split("\\s");
+			for (int i = 0; i < categories.length; i++)
+			{
+				Category cat = archive.getCategory(categories[i]);
+				if( cat != null)
+				{
+					cats.add(cat);
+				}
+			}
+		}
+		
+		
 		//This is old dont use
 		categories = inReq.getRequestParameters(prefix + "categories");
 		if( categories != null)

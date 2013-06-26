@@ -6271,3 +6271,25 @@ a.audio-filename:hover
 	background: url('../images/sort-asc.png') left 6px no-repeat;
 	padding-left: 18px;
 }
+
+.emgallery .jp-audio {
+    margin-left: 45px;
+}
+.sidebar-media li .jp-audio {
+    margin-left: 19px;
+}
+
+.sidebar-media li .jp-controls li {
+    margin: 0;
+    width: auto;
+    float: left;
+    padding: 0;
+}
+
+.render-type-thumbnail {
+    margin-bottom: 10px;
+}
+.render-choose-file {
+    padding-top: 10px;
+    display: block;
+}

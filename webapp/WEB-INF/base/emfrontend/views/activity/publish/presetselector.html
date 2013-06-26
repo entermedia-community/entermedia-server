@@ -28,6 +28,11 @@
   	   	    	#if( $rendertype )
   	   	    		#set( $null = $presetquery.append("inputtype",$rendertype))
   	   	    	#end
+  	   	    #elseif($publishtype == "FatWire")
+  	   	    	#set( $null = $presetquery.append("publishtofatwire","true"))
+  	   	    	#if( $rendertype )
+  	   	    		#set( $null = $presetquery.append("inputtype",$rendertype))
+  	   	    	#end
   	   	    #else
 	  	   	    $presetquery.setAndTogether(false)
 	  	   	    #if( $rendertype )
@@ -42,7 +47,19 @@
   	   	    #if($results.size() > 0)
 			<select name="${itemid}.presetid.value">
 		  	    #foreach ($preset in $results)
-		  	    <option value="$preset.id">$preset</option>
+		  	  
+#if($canconvert && $candownloadfpo)
+						#set($ok = true) a
+					#elseif ($canconvert && $preset.watermark != "true")
+						#set($ok = true) b
+					#elseif($candownloadfpo && $preset.watermark == "true")
+						#set($ok = true) c
+					#end
+					#if($ok)
+					<option value="$preset.id">$preset
+					#end
+
+			
 		  	    #end
 		    </select>
 		    #else

@@ -7,7 +7,6 @@
 			<tr>
 				<th>FatWire Id</th>
 			    <th>Status</th>
-			    <th>Path</th>
 			    <th>Name in FatWire</th>
 			    <th>Profile</th>
 		  	</tr>
@@ -30,11 +29,8 @@
 				<td>
 					$!fatwireid
 				</td>
-				<td>
-					#if($statusinfo) $statusinfo.name #else $assetstatus #end  #if($errormsg) - $errormsg #end
-				</td>
-				<td>
-					$assetpath
+				<td style="text-align:center;">
+					#if($statusinfo) $statusinfo.name #else $assetstatus #end $!errormsg
 				</td>
 				<td>
 					$exportname
