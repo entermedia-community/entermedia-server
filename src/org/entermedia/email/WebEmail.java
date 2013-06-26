@@ -207,7 +207,7 @@ public abstract class WebEmail {
 		if (to!=null && !to.isEmpty()){
 			setTo(to);
 		}
-		String bcc = template.get("emailrecipient");
+		String bcc = template.get("bcc");
 		if (bcc!=null && !bcc.isEmpty()){
 			ArrayList<Recipient> recipients = new ArrayList<Recipient>();
 			String [] list = bcc.split(" | ");
@@ -226,7 +226,7 @@ public abstract class WebEmail {
 				r.setEmailAddress(email);
 				recipients.add(r);
 			}
-			setRecipients(recipients);
+			setBCCRecipients(recipients);
 		}
 		String from = template.get("from");
 		if (from!=null && !from.isEmpty()){
