@@ -15,7 +15,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 ##set ( $canedit = $context.getPageValue("${moduleid}edit") )
 
 #set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
-#if ($popupdetail.size() > 0)
+#if ($popupdetail && $popupdetail.size() > 0)
 	#set( $enablepopup = "true")
 #end
 
@@ -110,7 +110,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 		#set($val = false)	
 		#set( $val =  $cell.get($detail.id) )
            	#if( !$val && $detail.render )	
-			#set($val = $searcherManager.getValue($catalogid,$detail.render, $data.properties) ) 
+			#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
 		#end	
 		#if( !$val )
 			#set($val = "")	

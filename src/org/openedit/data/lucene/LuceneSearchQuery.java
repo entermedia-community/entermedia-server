@@ -60,22 +60,33 @@ public class LuceneSearchQuery extends SearchQuery
 	}
 	protected void addTermByDataType(Term inTerm)
 	{
-		if( inTerm.getDetail().isDataType("searchtype" ) )
+		PropertyDetail searchdetail = inTerm.getDetail();
+		if( searchdetail.isDataType("searchjoin" ) )
 		{
 			//split it
-			String id = inTerm.getDetail().getId();
+			String id = searchdetail.getId();
 			String localfield = id.substring(0, id.indexOf('.'));
 			String remotefield = id.substring(id.indexOf('.') + 1);
-			String listid = inTerm.getDetail().getListId();
-			
-			Searcher remotesearcher = getSearcherManager().getSearcher(getCatalogId(), inTerm.getDetail().getListId());
+			String remotejoincolumn = searchdetail.get("foreignkeyid");
+
+			//This is the parent. That is not the same thing as the list
+			Searcher remotesearcher = getSearcherManager().getSearcher(searchdetail.getCatalogId(), localfield);
 			SearchQuery q = remotesearcher.createSearchQuery();
+			
+			PropertyDetail detail = remotesearcher.getDetail(remotefield);
+			//why is this null?
+//			if( detail == null)
+//			{
+//				detail = remotesearcher.getDetail(remotejoincolumn); //This makes sense when using users table
+//			}
+			inTerm.setDetail(detail);
 			q.addTerm(inTerm);
-			addRemoteJoin(q, remotefield, false, remotesearcher.getSearchType(), localfield);
+			
+			addRemoteJoin(q, remotejoincolumn, false, localfield, localfield);
 		}
 		else
 		{
-			getTerms().add(inTerm);
+			super.addTermByDataType(inTerm);
 		}
 	}
 
@@ -189,7 +200,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("matches");
 		term.setDetail(inField);
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -230,7 +241,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("matches"); //tricky
 		term.setDetail(inField);
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 	
@@ -281,7 +292,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("startswith");
 		term.setDetail(inField);
 		term.setValue(inVal);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -346,7 +357,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("exact");
 		term.setDetail(inField);
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -362,7 +373,7 @@ public class LuceneSearchQuery extends SearchQuery
 
 		term.setOperation("exact");
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 
 	}
 
@@ -455,7 +466,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("exact");
 		term.setDetail(inField);
 		term.setValue(String.valueOf(inParseInt));
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 
 	}
@@ -480,7 +491,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("exact");
 		term.setDetail(inField);
 		term.setValue(String.valueOf(inParseInt));
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 
 	}
@@ -514,7 +525,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.addParameter("lowval", String.valueOf(  lowval ) );
 		term.addParameter("highval", String.valueOf(highval));
 		term.setValue(lowval  + " to "  + highval);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 	
@@ -541,7 +552,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.addParameter("lowval", String.valueOf(  lowval ) );
 		term.addParameter("highval", String.valueOf(highval));
 		term.setValue(lowval  + " to "  + highval);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 	
