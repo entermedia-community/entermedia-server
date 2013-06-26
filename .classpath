@@ -39,9 +39,8 @@
 	<classpathentry kind="lib" path="lib/google-api-services-drive-v2-rev77-1.15.0-rc.jar"/>
 	<classpathentry kind="lib" path="lib/google-http-client-1.15.0-rc.jar"/>
 	<classpathentry kind="lib" path="lib/google-oauth-client-1.15.0-rc.jar"/>
-	<classpathentry kind="lib" path="lib/groovy-all-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/guava-14.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-join-4.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/tools.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-join-4.3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
