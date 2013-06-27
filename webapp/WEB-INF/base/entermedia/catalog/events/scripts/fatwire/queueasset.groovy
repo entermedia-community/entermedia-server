@@ -64,6 +64,8 @@ public void init()
 	if (presethits.size() == 0)
 	{
 		log.info("Unable to process request: no fatwire presets have been defined");
+		//add asset to context
+		context.putPageValue("asset",asset);
 		return;
 	}
 	
