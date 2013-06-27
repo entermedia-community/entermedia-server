@@ -47,6 +47,9 @@ public abstract class BaseCreator implements MediaCreator
 			{
 				asset = createAsset(inArchive , sourcePath); //virtual assets
 			}
+			if(asset == null){
+				asset = createAsset(inArchive, inStructions.getInputPath());
+			}
 			if (asset == null)
 			{
 				return null;

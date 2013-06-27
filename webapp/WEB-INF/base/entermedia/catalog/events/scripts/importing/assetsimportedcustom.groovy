@@ -97,6 +97,41 @@ public void setupProjects(HitTracker assets)
 	
 }
 
+public void verifyRules()
+{
+	String ids = context.getRequestParameter("assetids");
+	if( ids == null)
+	{
+	   log.info("AssetIDS required");
+	   return;
+	}
+	String assetids = ids.replace(","," ");
+
+	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
+	Searcher assetsearcher = mediaArchive.getAssetSearcher();
+	SearchQuery q = assetsearcher.createSearchQuery();
+	q.addOrsGroup( "id", assetids );
+
+	HitTracker assets = assetsearcher.search(q);
+	assets.each{
+		 Asset asset = mediaArchive.getAsset("${it.id}");
+		 if(asset.width != null){
+			 int width = Integer.parseInt(asset.width);
+			 if(width < 1024){
+				 asset.setProperty("editstatus", "rejected");
+				 asset.setProperty("notes", "Asset did not meet minimum width criteria.  Width was ${asset.width}");
+				 
+			 }
+			 assetsearcher.saveData(asset, null);
+		 }
+	}
+	
+	
+	
+}
+
 
 setAssetTypes();
+//verifyRules();
+
 //sendEmail();

@@ -36,7 +36,7 @@
             
             <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
                     <option value="default" >Default</option>
-                        #foreach($item in $assettypesearcher.fieldSearch("id","*","textUp"))
+                        #foreach($item in $assettypesearcher.fieldSearch("id","*","nameUp"))
                             <option #if($current == $item.id) selected #end value="$item.id">$item</option>
                         #end
                     </select> 
@@ -62,6 +62,14 @@
             	<input type="hidden" value="rendertype" name="field" />
 
             </div>
+
+	    <div class="checkbox"><input id="systemdefined" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined) checked #else #end/>
+                System View?
+            	<input type="hidden" value="systemdefined" name="field" />
+
+            </div>
+
+
             <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
                 <div>Render Table</div>
             	<input type="hidden" value="rendertable" name="field" />
@@ -69,6 +77,10 @@
                 <div>Render Table External ID</div>
             	<input type="hidden" value="renderexternalid" name="field" />
                 <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
+                <div>Render Table Default Sort</div>
+				<input type="hidden" value="rendersort" name="field" />
+                <input class="field" name="rendersort.value" value="$!view.rendersort" >
+
 
             </div>
 

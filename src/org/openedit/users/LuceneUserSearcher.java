@@ -196,4 +196,11 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 		fieldPropertyDetailsArchive.setCatalogId("system");
 		return fieldPropertyDetailsArchive;
 	}
+	
+	
+	
+	@Override
+	public Data createNewData() {
+		return getUserManager().createUser(null, null);
+	}
 }

@@ -27,63 +27,108 @@ $context.putPageValue("view", "order/downloadform")
 
 <input type="hidden" name="field" value="ordertype" />
 <input type="hidden" name="ordertype.value" value="download" />
-	<p>Please choose a download format for each asset.</p>
-	<table class="striped download-table" width="100%" >
-	#foreach( $item in $orderitems )
-		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
-	<tr>
-	<td>		
-		<input type="hidden" name="itemid" value="$item.id"/>
-		$context.putPageValue("asset", $asset)
-		$context.putPageValue("item", $item)
-		$context.setRequestParameter("sourcepath", $asset.sourcepath)					
-	
-	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
-		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
-		#set( $tsize = "$home$thumbend" )
-		
-		#set( $rootid = $context.getRequestParameter("hitssessionid") )
-		#set( $click = "$home$apphome/views/assets/${asset.sourcepath}/index.html?hitssessionid=$rootid" )
-		
-			<a href="$click" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
-			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-			$context.putPageValue("cell", $asset)
-			$context.putPageValue("showdetails", "false")
-			$context.putPageValue("thumbsize", "crop")
-		   	#set( $sourcepath = $asset.sourcePath )
-			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
-			</a>
-</td>
-<td>
-$asset
-</td>
-
-<td>
-	      #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
-	      	<input type="hidden" name="field" value="presetid"/>
-<!-- 
-  	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
-  	   	    $presetquery.setAndTogether(false)
-  	   	    #set( $rendertype = false)
-  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileFormat) )
-  	   	    #if( $rendertype )
-	  	   	    $presetquery.addExact("inputtype",$rendertype);
-  	   	    #end
-  	   	    $presetquery.addExact("inputtype","all");
-  	   	    $presetquery.addSortBy("ordering");
-  	   	    #set( $results = $presetsearcher.search($presetquery) )
- -->
-
-  	   	    <select name="${item.id}.presetid.value">
-  	    	#foreach ($preset in $results)
-  	    		<option value="$preset.id">$preset</option>
-  	    	#end
-  	    	</select>
-	</td>
-	</tr>	
+	#if($canconvert)
+	<p><strong>Please choose a download format for each type of asset.</strong></p>
 	#end
 	
-</table>
+	#set($filetypes = [])
+	#foreach( $item in $orderitems )
+		#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+		#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
+		#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
+		#if(!$filetype)
+			#set($filetype="None")
+		#end
+		#set($found = false)
+		#foreach( $ft in $filetypes)
+			#if ($ft.get(0).equals($filetype))
+				#set($num = $numberutils.toInt("${ft.get(1)}"))
+				#set($num = $num + 1)
+				#set($null = $ft.set(1,"$num"))
+				#set($found = true)
+				#break
+			#end
+		#end
+		#if(!$found)
+			#set($null = $filetypes.add([$filetype,"1",$fileformat]))
+		#end
+		
+		<input type="hidden" name="itemid" value="$item.id"/>
+		<input type="hidden" name="field" value="presetid"/>
+		<input type="hidden" name="${item.id}.presetid.value" value=""/>
+		<input type="hidden" name="field" value="itemfiletype"/>
+		<input type="hidden" name="${item.id}.itemfiletype.value" value="${filetype}"/>
+	#end
+	
+	<table id="shared-asset-table" class="striped download-table" width="100%" >
+	#foreach( $ft in $filetypes)
+		#set($filetype = $ft.get(0))
+		#set($num = $ft.get(1))
+		#set($fileformat = $ft.get(2))
+		<tr>
+			<td>
+			<input type="hidden" name="field" value="filetype"/>
+			<input type="hidden" name="filetype.value" value="${filetype}"/>
+			Downloading $num $filetype
+			</td>
+			<td>
+			<input type="hidden" name="field" value="presetid"/>
+			#set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
+		  	#set($presetquery = $presetsearcher.createSearchQuery() )
+			#set($null = $presetquery.setAndTogether(false))
+			#set( $rendertype = false)
+		    #set( $rendertype = $mediaarchive.getMediaRenderType($fileformat) )
+		    #if( $rendertype )
+		   	    #set($null = $presetquery.addExact("inputtype",$rendertype))
+		    #end
+			#set($null = $presetquery.addExact("inputtype","all"))
+			#set($null = $presetquery.addSortBy("ordering"))
+			#set( $results = $presetsearcher.search($presetquery) )
+			#if($canconvert || $candownloadfpo) 
+					
+
+		  		<select name="${filetype}.presetid.value">
+				#foreach ($preset in $results)
+					#set($ok = false)
+					
+					#if($canconvert && $candownloadfpo)
+						#set($ok = true) a
+					#elseif ($canconvert && $preset.watermark != "true")
+						#set($ok = true) b
+					#elseif($candownloadfpo && $preset.watermark == "true")
+						#set($ok = true) c
+						
+					#end
+					#if($preset.id == "0" && $candownload)
+						#set($ok = true) 
+					#end
+					#if($preset.id == "0" && !$candownload)
+						#set($ok = false) 
+					#end
+					
+					
+					
+					#if($ok)
+					<option value="$preset.id">$preset
+					#end
+					#set($ok = false)
+					</option>
+					
+				#end
+			</select>
+			#else
+					  		<input type="hidden" name="${filetype}.presetid.value" value="0">
+			
+			#end
+			</td>
+		</tr>
+	#end
+	</table>
+
+
+
+
+
 <div style="text-align: right">
 <input class="btn" id="submitbutton" type="submit" name="submit" value="Next"  /> 
 </div>

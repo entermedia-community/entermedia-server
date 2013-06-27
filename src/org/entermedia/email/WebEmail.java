@@ -8,16 +8,23 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import org.openedit.Data;
+import org.openedit.data.Searcher;
+import org.openedit.entermedia.MediaArchive;
+
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.page.Page;
 import com.openedit.page.PageRequestKeys;
 import com.openedit.users.User;
+import com.openedit.util.PathUtilities;
 
 public abstract class WebEmail {
 	public static final String EMAIL_TEMPLATE_REQUEST_PARAMETER = "emaillayout";
 	public static final String OLDEMAIL_TEMPLATE_REQUEST_PARAMETER = "e-mail_layout";
 
-	protected List fieldRecipients;
+	protected List<Recipient> fieldRecipients;
+	protected List<Recipient> fieldBCCRecipients;
 	protected String fieldFrom;
 	protected String fieldFromName;
 	protected Map fieldProperties;
@@ -29,6 +36,14 @@ public abstract class WebEmail {
 	protected String fieldMessage;
 	protected String fieldAlternativeMessage;
 	protected PostMail fieldPostMail;
+	
+	public List<Recipient> getBCCRecipients() {
+		return fieldBCCRecipients;
+	}
+
+	public void setBCCRecipients(List<Recipient> inBCCRecipients) {
+		fieldBCCRecipients = inBCCRecipients;
+	}
 
 	public User getUser() {
 		return fieldUser;
@@ -116,6 +131,18 @@ public abstract class WebEmail {
 	}
 
 	public void loadSettings(WebPageRequest inContext) throws OpenEditException {
+		
+		String templatePath = inContext.findValue(EMAIL_TEMPLATE_REQUEST_PARAMETER);
+		if(templatePath == null){
+			templatePath = inContext.findValue(OLDEMAIL_TEMPLATE_REQUEST_PARAMETER);
+		}
+		if( templatePath != null){
+			templatePath = PathUtilities.buildRelative(templatePath,inContext.getPath());
+		}
+		if(templatePath != null){
+			loadSettingsFromTemplate(inContext, templatePath);
+		}
+		
 		if (getFrom() == null) {
 			String from = inContext.findValue("from");
 			setFrom(from);
@@ -147,6 +174,8 @@ public abstract class WebEmail {
 			}
 			setTo(to);
 		}
+		
+	
 
 		// TODO: remove this since you can get it from url_utils
 		if (getWebServerName() == null) {
@@ -159,10 +188,62 @@ public abstract class WebEmail {
 		}
 	}
 
-	public List getRecipients() {
+	protected void loadSettingsFromTemplate(WebPageRequest inContext, String inTemplatePath)
+	{
+		MediaArchive archive = (MediaArchive) inContext.getPageValue("mediaarchive");
+		Page pg = archive.getPageManager().getPage(inTemplatePath);
+		if (pg == null){
+			return;
+		}
+		String templateid = pg.getProperty("emailtemplateid");
+		if (templateid == null || templateid.isEmpty()){
+			return;
+		}
+		//load the template 
+		Searcher emailtemplateSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "emailtemplate");
+		Searcher emailrecipientSearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "emailrecipient");
+		Data template = (Data) emailtemplateSearcher.searchById(templateid);
+		String to = template.get("to");
+		if (to!=null && !to.isEmpty()){
+			setTo(to);
+		}
+		String bcc = template.get("bcc");
+		if (bcc!=null && !bcc.isEmpty()){
+			ArrayList<Recipient> recipients = new ArrayList<Recipient>();
+			String [] list = bcc.split(" | ");
+			for (String ls:list){
+				if (ls.isEmpty() || ls.trim().equals("|")){
+					continue;
+				}
+				Data recipient = (Data) emailrecipientSearcher.searchById(ls.trim());
+				if (recipient == null){
+					continue;
+				}
+				String email = recipient.getName();
+				Recipient r = new Recipient();
+				r.setFirstName("");
+				r.setLastName("");
+				r.setEmailAddress(email);
+				recipients.add(r);
+			}
+			setBCCRecipients(recipients);
+		}
+		String from = template.get("from");
+		if (from!=null && !from.isEmpty()){
+			setFrom(from);
+		}
+		String subject = template.get("subject");
+		if (subject!=null && !subject.isEmpty()){
+			setSubject(subject);
+		}
+	}
+
+	public List<Recipient> getRecipients() {
 
 		return fieldRecipients;
 	}
+	
+	
 
 	public String[] getTo() {
 		if (getRecipients() == null) {
@@ -330,4 +411,27 @@ public abstract class WebEmail {
 	}
 
 	public abstract void send() throws OpenEditException, MessagingException;
+	
+	public PostMailStatus sendAndCollectStatus()
+	{
+		PostMailStatus result = new PostMailStatus();
+		try
+		{
+			send();
+			result.setSent(true);
+			result.setStatus("complete");
+			if (getProperties()!=null && getProperties().containsKey(PostMailStatus.ID))
+			{
+				result.setId((String)getProperties().get(PostMailStatus.ID));
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			result.setSent(false);
+			result.setId("unknown");
+			result.setStatus(e.getLocalizedMessage());
+		}
+		return result;
+	}
 }

@@ -21,6 +21,8 @@
     	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
     	<input name="searchtype" type="hidden" value="$searcher.searchType" />
     	<input name="viewid" type="hidden" value="$viewid" />
+    	<input name="view" type="hidden" value="$viewpath" />
+
     	<input name="viewpath" type="hidden" value="$viewpath" />
     	<input name="origURL"  type="hidden" value="$!origURL" />
     	
@@ -31,7 +33,8 @@
 #if($caneditdata)
 $pages.include("/$applicationid/components/xml/detaileditor.html", $context)
 #else
-$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
+##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
+$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
 #end
     #if($candelete)	
     <a class="btn red confirm" confirm="Are you sure?" style="margin: 20px 0 0 20px; color: #fff;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath" style="margin: 20px 20px 0 0;">Delete</a>

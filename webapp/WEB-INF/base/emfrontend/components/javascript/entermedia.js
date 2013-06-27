@@ -3,9 +3,13 @@ var ajaxtimerrunning = false;
 
 openFancybox = function(href) {
 	  jQuery.fancybox({
-	     'href' : href
+	     'href' : href,
+	     'type': 'iframe'
 	  });
 }
+
+
+
 
 repaint = function(divid) {
 	var div = jQuery("#" + divid);
@@ -27,6 +31,38 @@ toggleUserProperty = function(property, onsuccess) {
 		);
 	
 }
+
+
+
+setSessionValue = function(key, value) {
+	jQuery.ajax(
+			{
+				url: "${home}${apphome}/components/session/setvalue.html?key=" + key + "&value=" + value 
+			}
+		);
+	
+}
+
+getSessionValue = function(key) {
+	var returnval = null;
+	
+	jQuery.ajax(
+			{
+				url: "${home}${apphome}/components/session/getvalue.html?key=" + key,
+				async: false,
+				success: function(data){
+					
+					returnval = data;
+					
+				}
+			
+				
+			}
+		);
+	
+	return returnval;
+}
+
 
 
 outlineSelectionCol = function(event, ui)
@@ -137,6 +173,7 @@ runajaxonthis = function(inlink,e)
 runajax = function(e)
 {
 	runajaxonthis($(this),e);
+	 e.stopPropagation();
      e.preventDefault();
 	//return false;
 }
@@ -1039,18 +1076,14 @@ emcomponents = function() {
 	jQuery(".sidetoggle").livequery("click",
 			function()
 			{
+				var div = $(this);
 				var target = jQuery(this).data("target");
 				toggleUserProperty("minimize" + target,
 					function() {
-					
-					jQuery("#" + target).toggle("slow");	
-					} 
+						jQuery("#" + target).slideToggle("fast");
+						div.toggleClass("expanded");
+					}
 				);
-						
-				
-				
-				
-				
 			}
 	);
 	

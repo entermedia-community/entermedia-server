@@ -13,6 +13,13 @@
 #set( $query = $searcher.createSearchQuery().append("module",$moduleid) )
 #set( $nil = $query.addSortBy("ordering") ) 
 #set( $links = $searcher.cachedSearch($context,$query) )
+
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if ($urlutils)
+	#set($sourcepath = $urlutils.encode($sourcepath))
+	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+#end
+
 <ul id="assetmenu" class="sidebar-list">
     #if ( $asset.id.startsWith("multiedit:") )
         #set  ( $ismulti = true)

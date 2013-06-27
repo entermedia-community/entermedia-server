@@ -127,7 +127,7 @@ public class MediaArchive
 		if( fieldReplacer == null)
 		{
 			fieldReplacer = new Replacer();
-			fieldReplacer.setDefaultCatalogId(getCatalogId());
+			fieldReplacer.setCatalogId(getCatalogId());
 			fieldReplacer.setSearcherManager(getSearcherManager());
 		}
 		return fieldReplacer;

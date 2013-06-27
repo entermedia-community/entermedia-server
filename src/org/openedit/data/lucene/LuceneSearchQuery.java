@@ -8,7 +8,10 @@ import java.util.Date;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.NumericRangeQuery;
+import org.apache.lucene.search.Query;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
 
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
@@ -52,9 +55,41 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setDetail(inFieldId);
 		term.setValue(getDateFormat().format(inDate));
 		term.setOperation("afterdate");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
+	protected void addTermByDataType(Term inTerm)
+	{
+		PropertyDetail searchdetail = inTerm.getDetail();
+		if( searchdetail.isDataType("searchjoin" ) )
+		{
+			//split it
+			String id = searchdetail.getId();
+			String localfield = id.substring(0, id.indexOf('.'));
+			String remotefield = id.substring(id.indexOf('.') + 1);
+			String remotejoincolumn = searchdetail.get("foreignkeyid");
+
+			//This is the parent. That is not the same thing as the list
+			Searcher remotesearcher = getSearcherManager().getSearcher(searchdetail.getCatalogId(), localfield);
+			SearchQuery q = remotesearcher.createSearchQuery();
+			
+			PropertyDetail detail = remotesearcher.getDetail(remotefield);
+			//why is this null?
+//			if( detail == null)
+//			{
+//				detail = remotesearcher.getDetail(remotejoincolumn); //This makes sense when using users table
+//			}
+			inTerm.setDetail(detail);
+			q.addTerm(inTerm);
+			
+			addRemoteJoin(q, remotejoincolumn, false, localfield, localfield);
+		}
+		else
+		{
+			super.addTermByDataType(inTerm);
+		}
+	}
+
 
 	public Term addBetween(PropertyDetail inFieldId, final Date inAfter, final Date inBefore)
 	{
@@ -75,7 +110,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.addParameter("afterDate", lowDate);
 		term.addParameter("beforeDate", highDate);
 		term.setOperation("betweendates");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -93,7 +128,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("beforedate");
 		term.setDetail(inField);
 		term.setValue(getDateFormat().format(inDate));
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -127,7 +162,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setId(inField.getId());
 		term.setValue(inValue);
 		term.setOperation("orgroup");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 	//Allows any kind of syntax such as + - " " does no escape
@@ -165,7 +200,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("matches");
 		term.setDetail(inField);
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -206,7 +241,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("matches"); //tricky
 		term.setDetail(inField);
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 	
@@ -257,7 +292,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("startswith");
 		term.setDetail(inField);
 		term.setValue(inVal);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -292,7 +327,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setDetail(inField);
 		term.setValue(inNots);
 		term.setId(inField.getId());
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -322,7 +357,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setOperation("exact");
 		term.setDetail(inField);
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 
@@ -338,7 +373,7 @@ public class LuceneSearchQuery extends SearchQuery
 
 		term.setOperation("exact");
 		term.setValue(inValue);
-		addTerm(term);
+		addTermByDataType(term);
 
 	}
 
@@ -354,7 +389,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.setDetail(inField);
 		term.setValue(inVal);
 		term.setOperation("not");
-		getTerms().add(term);
+		addTermByDataType(term);
 		return term;
 	}
 /* is this used anyplace?
@@ -402,46 +437,14 @@ public class LuceneSearchQuery extends SearchQuery
 	
 	public Term addLessThan(PropertyDetail inFieldId, long val)
 	{
-		Term term = new Term()
-		{
-			public String toQuery()
-			{
-				String lowval = getNumberUtils().long2sortableStr(Long.MIN_VALUE);
-				String highval = getNumberUtils().long2sortableStr(getValue());
-
-				String fin = getDetail().getId() + ":[" + lowval + " TO " + highval + "]";
-				return fin;
-			}
-		};
-		term.setOperation("lessthannumber");
-		term.setDetail(inFieldId);
-		term.setValue(String.valueOf( val ) );
-		addTerm(term);
-		return term;
+		return addBetween(inFieldId, 0L, val);
 	}
 
 
 	
 	public Term addGreaterThan(PropertyDetail inFieldId,final long high)
 	{
-		Term term = new Term()
-		{
-			public String toQuery()
-			{
-				//must use int or long since double only works on double values
-				long one = high + 1; //is inclusive
-				String lowval = getNumberUtils().long2sortableStr(one);
-				String highval = getNumberUtils().long2sortableStr(Long.MAX_VALUE);
-
-				String fin = getDetail().getId() + ":[" + lowval + " TO " + highval + "]";
-				return fin;
-			}
-		};
-		term.setOperation("greaterthannumber");
-		term.setDetail(inFieldId);
-		term.setValue(String.valueOf( high) );
-		addTerm(term);
-		return term;
+		return addBetween(inFieldId, high, Long.MAX_VALUE);
 	}
 	public Term addExact(PropertyDetail inField, long inParseInt)
 	{
@@ -450,18 +453,50 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String val = getNumberUtils().long2sortableStr(getValue());
-				String fin = getDetail().getId() + ":\"" + val + "\"";
-				return fin;
+				//TermQuery numberQuery = new TermQuery(new Term("myLongId", NumericUtils.longToPrefixCoded(12345L)))
+				Long targetval = Long.parseLong(getValue());
+				Query q = NumericRangeQuery.newLongRange(getDetail().getId(),targetval, targetval, true, true);
+				return q.toString();
+				
+//				String val = getNumberUtils().long2sortableStr(getValue());
+//				String fin = getDetail().getId() + ":\"" + val + "\"";
+//				return fin;
 			}
 		};
-		term.setOperation("greaterthannumber");
+		term.setOperation("exact");
 		term.setDetail(inField);
 		term.setValue(String.valueOf(inParseInt));
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 
 	}
+	
+	public Term addExact(PropertyDetail inField, double inParseInt)
+	{
+
+		Term term = new Term()
+		{
+			public String toQuery()
+			{
+				//TermQuery numberQuery = new TermQuery(new Term("myLongId", NumericUtils.longToPrefixCoded(12345L)))
+				Double targetval = Double.parseDouble(getValue());
+				Query q = NumericRangeQuery.newDoubleRange(getDetail().getId(),targetval, targetval, true, true);
+				return q.toString();
+				
+//				String val = getNumberUtils().long2sortableStr(getValue());
+//				String fin = getDetail().getId() + ":\"" + val + "\"";
+//				return fin;
+			}
+		};
+		term.setOperation("exact");
+		term.setDetail(inField);
+		term.setValue(String.valueOf(inParseInt));
+		addTermByDataType(term);
+		return term;
+
+	}
+	
+	
 	public Term addBetween(PropertyDetail inField, long lowval, long highval)
 	{
 		// lowval = pad(lowval);
@@ -471,10 +506,17 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String lowvals = getNumberUtils().long2sortableStr(getParameter("lowval"));
-				String highvals = getNumberUtils().long2sortableStr(getParameter("highval"));
+				Long low = Long.parseLong(getParameter("lowval"));
+				Long high = Long.parseLong(getParameter("highval"));
+				
+				Query q = NumericRangeQuery.newLongRange(getDetail().getId(),low, high, true, true);
+				String fin = q.toString();
+				
+				String lowvals = getParameter("lowval");
+				String highvals = getParameter("highval");
 
-				String fin = getDetail().getId() + ":[" + lowvals + " TO " +  highvals+ "]";
+				fin = getDetail().getId() + ":[" + lowvals +  " TO " +  highvals+  "]";
+				
 				return fin;
 			}
 		};
@@ -483,7 +525,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.addParameter("lowval", String.valueOf(  lowval ) );
 		term.addParameter("highval", String.valueOf(highval));
 		term.setValue(lowval  + " to "  + highval);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 	
@@ -492,6 +534,7 @@ public class LuceneSearchQuery extends SearchQuery
 	{
 		// lowval = pad(lowval);
 		// highval = pad(highval);
+		//TODO: Fix Doubles - same as Long.
 		Term term = new Term()
 
 		{
@@ -509,7 +552,7 @@ public class LuceneSearchQuery extends SearchQuery
 		term.addParameter("lowval", String.valueOf(  lowval ) );
 		term.addParameter("highval", String.valueOf(highval));
 		term.setValue(lowval  + " to "  + highval);
-		addTerm(term);
+		addTermByDataType(term);
 		return term;
 	}
 	

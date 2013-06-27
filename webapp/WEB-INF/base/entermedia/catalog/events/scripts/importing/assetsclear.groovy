@@ -30,7 +30,7 @@ public void init()
 	if(sourcepath == null)
 	{
 		q = searcher.createSearchQuery().append("category", "index");
-		//q.addNot("editstatus","7");
+		q.addNot("editstatus","7");
 	}
 	else
 	{

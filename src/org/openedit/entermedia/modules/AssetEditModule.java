@@ -931,6 +931,21 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 
+		String catlist = inReq.getRequestParameter(prefix + "category.orvalue");
+		if( catlist != null)
+		{
+			categories = catlist.split("\\s");
+			for (int i = 0; i < categories.length; i++)
+			{
+				Category cat = archive.getCategory(categories[i]);
+				if( cat != null)
+				{
+					cats.add(cat);
+				}
+			}
+		}
+		
+		
 		//This is old dont use
 		categories = inReq.getRequestParameters(prefix + "categories");
 		if( categories != null)
@@ -1954,7 +1969,7 @@ public class AssetEditModule extends BaseMediaModule
 			Replacer replacer = new Replacer();
 			
 			replacer.setSearcherManager(archive.getSearcherManager());
-			replacer.setDefaultCatalogId(archive.getCatalogId());
+			replacer.setCatalogId(archive.getCatalogId());
 			replacer.setAlwaysReplace(true);
 			sourcepath = replacer.replace(sourcepath, vals);
 			sourcepath = sourcepath + "/" + item.getName();

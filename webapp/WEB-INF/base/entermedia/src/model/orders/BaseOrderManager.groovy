@@ -1,5 +1,7 @@
 package model.orders;
 
+import java.util.Iterator;
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.DocumentHelper
@@ -543,14 +545,27 @@ public class BaseOrderManager implements OrderManager
 	 * @see org.openedit.entermedia.orders.OrderManager#addConversionAndPublishRequest(org.openedit.entermedia.orders.Order, org.openedit.entermedia.MediaArchive, java.util.Map, com.openedit.users.User)
 	 */
 	
-	public List<String> addConversionAndPublishRequest(Order order, MediaArchive archive, Map<String,String> properties, User inUser)
+	public List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String,String> properties, User inUser)
 	{
+		//get list of invalid items
+		ArrayList<String> omit = new ArrayList<String>();
+		String invaliditems = inReq.findValue("invaliditems");
+		if (invaliditems != null && !invaliditems.isEmpty() )
+		{
+			String [] ovals = invaliditems.replace("[","").replace("]", "").split(",");
+			for (String oval:ovals)
+			{
+				omit.add(oval.trim());
+			}
+		}
+		
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
 		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
+		Searcher orderitemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
-
+		
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 		log.info("Processing " + hits.size() + " order items ");
 		List<String> assetids = new ArrayList<String>();
@@ -560,6 +575,17 @@ public class BaseOrderManager implements OrderManager
 			String assetid = orderitemhit.get("assetid");
 			assetids.add(assetid);
 			Asset asset = archive.getAsset(assetid);
+			//if asset is in the exclude list, update the orderitem table with a publisherror status
+			if (!omit.isEmpty() && omit.contains(assetid))
+			{
+				Data data = (Data) orderitemsearcher.searchById(orderitemhit.getId());
+				data.setProperty("status","publisherror");
+				data.setProperty("errordetails","Publisher is not configured for this preset");
+				orderitemsearcher.saveData(data, null);
+				omit.remove(assetid);
+				continue;
+			}
+			
 			//item.getId() + "." + field + ".value"
 			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
 			
@@ -596,6 +622,21 @@ public class BaseOrderManager implements OrderManager
 				
 			String publishstatus = "new";
 			Data publishqeuerow = publishQueueSearcher.createNewData();
+			
+			
+			String []fields = inReq.getRequestParameters("presetfield");
+			if (fields!=null && fields.length!=0)
+			{
+				for (int i = 0; i < fields.length; i++) {
+					String field = fields[i];
+					String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
+					
+					publishqeuerow.setProperty(field, value);
+				}
+			}
+			
+			
+			
 			publishqeuerow.setProperty("assetid", assetid);
 			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
 			
@@ -914,6 +955,9 @@ public class BaseOrderManager implements OrderManager
 	
 	public boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId)
 	{
+		if(inAssetId.startsWith("multi")){
+			return false;
+		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addMatches("orderid", inOrder.getId());

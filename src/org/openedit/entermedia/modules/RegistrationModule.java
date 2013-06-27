@@ -98,6 +98,49 @@ public class RegistrationModule extends BaseMediaModule {
 		}
 
 	}
+	
+	
+	public boolean checkCouponCode(WebPageRequest inReq){
+		if(Boolean.parseBoolean(inReq.findValue("requirecode"))){
+			
+		String catalogid = inReq.findValue("catalogid");
+		String couponcode = inReq.getRequestParameter("code.value");
+		
+		Map errors = new HashMap();
+		Searcher prepaidsearcher = getSearcherManager().getSearcher(catalogid, "prepaid");
+		Data prepaidcode = (Data) prepaidsearcher.searchById(couponcode);
+		if(prepaidcode == null){
+			prepaidcode = (Data) inReq.getPageValue("coupon");
+		}
+		
+		if(prepaidcode == null){
+			
+			log.info("invalid code usage detected: " + couponcode);
+			errors.put("error-invalidcode", "This code is invalid");
+			inReq.putPageValue("errors", errors);
+			cancelAndForward(inReq);
+			return false;
+		}
+		boolean available  = Boolean.parseBoolean(prepaidcode.get("available"));
+		if(!available){
+			log.info("attempted to use already used code: " + couponcode);
+			errors.put("error-codeused", "This code was already used");
+			inReq.putPageValue("errors", errors);
+			cancelAndForward(inReq);
+			return false;
+		}
+		log.info("processed code successfully" + couponcode);
+		
+		inReq.putSessionValue("coupon", prepaidcode);
+		inReq.putPageValue("coupon", prepaidcode);
+		
+		return true;
+		} else{
+			return false;
+		}
+	}
+
+	
 
 	private void cancelAndForward(WebPageRequest inReq) {
 		String errorURL = inReq.findValue("errorURL");
@@ -381,7 +424,65 @@ public class RegistrationModule extends BaseMediaModule {
 		return true;
 	}
 
-	
+	protected void handleCoupon(WebPageRequest inReq, String inCatalogId, User current, Data code)
+	{
+		log.info("detected coupon code: " + code.getId());
+		Searcher prepaidsearcher = getSearcherManager().getSearcher(inCatalogId, "prepaid");
+		code.setProperty("available", "false");
+		
+		String collegeid = code.get("college");
+		if (collegeid != null) {
+			Group group = getUserManager().getGroup(collegeid);
+			if (group == null) {
+				group = getUserManager().createGroup(collegeid);
+				getUserManager().saveGroup(group);
+
+			}
+			if (!current.isInGroup(group)) {
+				current.addGroup(group);
+			}
+			current.setProperty("college", collegeid);
+
+		}
+		//if there is a class specified for this code, add them to it.
+		String classid = inReq.getRequestParameter("class.value");
+		if(classid != null){
+		
+				Group group = getUserManager().getGroup(classid + "_students");
+				if (group == null) {
+					group = getUserManager().createGroup(classid + "_students");
+					getUserManager().saveGroup(group);
+
+				}
+				if (!current.isInGroup(group)) {
+				current.addGroup(group);
+			}
+		
+		}
+		else{
+			String codeclass = code.get("class");
+			if(!codeclass.contains(" ")){
+				Group group = getUserManager().getGroup(codeclass + "_students");
+				if (group == null) {
+					group = getUserManager().createGroup(codeclass + "_students");
+					getUserManager().saveGroup(group);
+
+				}
+				if (!current.isInGroup(group)) {
+					current.addGroup(group);
+				}
+			}
+		}
+		
+		
+		
+		
+				
+		
+		code.setProperty("user", current.getId());
+		prepaidsearcher.saveData(code, inReq.getUser());
+		inReq.removeSessionValue("coupon");
+	}
 	
 
 }

@@ -21,7 +21,7 @@ public class PlugInFinder
 	protected ModuleManager fieldModuleManager;
 	protected WebServer fieldWebServer;
 	protected PageManager fieldPageManager;
-	protected List fieldInstalledPlugIns;
+	//protected List fieldInstalledPlugIns;
 	protected List fieldNotInstalledPlugIns;
 	protected String fieldAppServerPath;
 	protected String fieldId;
@@ -55,24 +55,24 @@ public class PlugInFinder
 		return fieldNotInstalledPlugIns;
 	}
 
-	public List getInstalledPlugIns()
-	{
-		if( fieldInstalledPlugIns == null)
-		{
-			loadPlugIns();
-		}
-		return fieldInstalledPlugIns;
-	}
+//	public List getInstalledPlugIns()
+//	{
+//		if( fieldInstalledPlugIns == null)
+//		{
+//			loadPlugIns();
+//		}
+//		return fieldInstalledPlugIns;
+//	}
 	public void loadPlugIns()
 	{
-		List installed = getWebServer().getAllPlugIns();
+		//List installed = getWebServer().getAllPlugIns();
 
 		Map installedmap = new HashMap();
-		for (Iterator iterator = installed.iterator(); iterator.hasNext();)
-		{
-			PlugIn plugin = (PlugIn) iterator.next();
-			installedmap.put( plugin.getId(), plugin);
-		}
+//		for (Iterator iterator = installed.iterator(); iterator.hasNext();)
+//		{
+//			PlugIn plugin = (PlugIn) iterator.next();
+//			installedmap.put( plugin.getId(), plugin);
+//		}
 		
 		List available = listAvailablePlugIns();
 		List notinstalled = new ArrayList();
@@ -91,7 +91,7 @@ public class PlugInFinder
 			populatePluginDetails(found, plugin);
 		}
 		
-		fieldInstalledPlugIns = installed;
+		//fieldInstalledPlugIns = installed;
 		fieldNotInstalledPlugIns = notinstalled;
 		checkDepends(available);
 
@@ -99,7 +99,7 @@ public class PlugInFinder
 	public List listAll()
 	{
 		List sorted = new ArrayList();
-		sorted.addAll(getInstalledPlugIns());
+		//sorted.addAll(getInstalledPlugIns());
 		sorted.addAll(getNotInstalledPlugIns());
 		return sorted;
 	}
@@ -184,14 +184,14 @@ public class PlugInFinder
 
 	public PlugIn getPlugIn(String inPluginid)
 	{
-		for (Iterator iterator = getInstalledPlugIns().iterator(); iterator.hasNext();)
-		{
-			PlugIn plugin = (PlugIn) iterator.next();
-			if( inPluginid.equals(plugin.getId()) )
-			{
-				return plugin;
-			}
-		}
+//		for (Iterator iterator = getInstalledPlugIns().iterator(); iterator.hasNext();)
+//		{
+//			PlugIn plugin = (PlugIn) iterator.next();
+//			if( inPluginid.equals(plugin.getId()) )
+//			{
+//				return plugin;
+//			}
+//		}
 		for (Iterator iterator = getNotInstalledPlugIns().iterator(); iterator.hasNext();)
 		{
 			PlugIn plugin = (PlugIn) iterator.next();

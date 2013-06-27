@@ -10,24 +10,19 @@ $context.putPageValue("groupid", $groupid)
 <div  id="emselectable" style="border:1px solid lightgray;height:185px;margin-bottom:5px;background-color:white;">
 
 <table width="100%">
-<tr>
-##foreach( $detail in $details )
-##<th align="left" nowrap >$detail.getText($context)</th>
-##end		
+<tr>	
 </tr>	
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
 	#set( $selecteduser = $context.getRequestParameter("username" ) )				
-#foreach ( $hit in $userTracker.getPageOfHits() )
-	<tr rowid="${hit.id}" >
+	#foreach ( $hit in $userTracker.getPageOfHits() )
+	<tr rowid="${hit.id}" id="${hit.id}_row">
 	#foreach( $detail in $details ) 
 		#set( $newval = "$!hit.get($detail.getId())")
 		#if($newval != "" && $detail.isList())  
-			##set( $newval = "$!searcherManager.getSearcher($searcher.getCatalogId(),$detail).getById($detail.getId())" )
 			#set( $newval = "$!searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$newval)" )
-	
 		#end			
-		<td nowrap>
-			<a href="#" onclick="selectUser('$hit.id');" class="oeactionlink">$newval</a>
+		<td nowrap noclick="true">
+			<a href="#" onclick="selectUser('${hit.id}');" class="oeactionlink">$newval</a>
 		</td>
 	#end
 	</tr>
@@ -44,36 +39,26 @@ $context.putPageValue("groupid", $groupid)
 	<input type="hidden" id="emselectedrow" name="username" />
 
 </div>
-<table><tr><td>
-<div class="embutton" >
-	<a href="#" onclick="return removeMember();" >[[Remove Selected]]</a>
-</div>
-</td>
-<td>
-<div class="embutton" >
-	<a href="#" onclick="return viewUser();" >[[View User]]</a>
-</div>
-</td>
+<table width="100%">
+<tr>
+	<td>
+		<div>
+			<a  href="#" class="btn" onclick="removeMember('$group.id');">[[Remove Selected]]</a>
+		</div>
+	</td>
+	<td>
+		<div>
+			<a  href="#" class="btn" onclick="viewUser();">[[View Selected]]</a>
+		</div>
+	</td>
+	<td>
+		<div>
+			<a  href="#" class="btn" style="float: right;" onclick="removeAllMembers('$group.id');">[[Remove All]]</a>
+		</div>
+	</td>
 </tr>
 </table>
 </div>
-
-<script type="text/javascript">
-	viewUser = function()
-	{
-		var currentUser = jQuery("#emselectedrow").attr("value");
-		window.location.href="$home$usermanagerhome/users/modifyuser.html?username=" + currentUser;
-		return false;
-	}
-
-	removeMember = function()
-	{
-		var currentUser = jQuery("#emselectedrow").attr("value");
-		jQuery("#usersearchresultspanel").load("$home$usermanagerhome/groups/removemember.html", {removeUsernames: currentUser, groupid: '$groupid', oemaxlevel: '1'});
-		return false;
-	}
-</script>
-
 
 <div style="text-align: right; padding-left: 30px; padding-top: 5px;">
 	#if ( $userTracker.totalPages == 0 )

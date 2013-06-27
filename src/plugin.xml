@@ -26,6 +26,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			</list>
 		</property>
 	</bean>
+	
+	
 	<bean id="AssetEditModule" class="org.openedit.entermedia.modules.AssetEditModule">
 		<property name="assetImporter"><ref bean="assetImporter" /></property>
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
@@ -230,6 +232,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
+		<property name="moduleManager">
+        	<ref bean="moduleManager" />
+        </property>
 
 	</bean>
 
@@ -1433,6 +1438,27 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
 	</bean>
 
-
+	<bean id="templateWebEmail" class="org.entermedia.email.TemplateWebEmail" singleton="false">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
+	
+	<bean id="TemplateModule" class="org.openedit.entermedia.modules.TemplateModule" >
+		<property name="requestUtils">
+			<ref bean="requestUtils" />
+		</property>
+	</bean>
+	
+	
+	<bean id="cataloguserSearcher" class="org.openedit.users.CatalogUserSearcher"	singleton="false">
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="userSearcher"><ref bean="userSearcher" /></property>
+		
+		
+	</bean>
+	
+	
+	
 
 </beans>

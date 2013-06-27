@@ -21,5 +21,9 @@
 	-->
 	<property id="events_notify_app" value="emshare">Email Notify App</property>
 	<property id="events_conversion_error_grace_period" value="1h">Conversion Error Asset Delete</property>
+	
+	<!--  system email settings -->
+	<property id="system_from_email" value="noreply@entermediasoftware.com">System From Email</property>
+	<property id="system_from_email_name" value="EnterMedia">System From Email Name</property>
 
 </properties>

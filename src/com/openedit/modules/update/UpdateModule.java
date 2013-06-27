@@ -712,14 +712,14 @@ public class UpdateModule extends BaseModule {
 	}
 
 	public void listPlugins(WebPageRequest inReq) throws Exception {
-		List installed = getPlugInFinder(inReq).getInstalledPlugIns();
-		inReq.putPageValue("installed", installed);
+//		List installed = getPlugInFinder(inReq).getInstalledPlugIns();
+//		inReq.putPageValue("installed", installed);
 
 		List notinstalled = getPlugInFinder(inReq).getNotInstalledPlugIns();
 		inReq.putPageValue("notinstalled", notinstalled);
 
 		List sorted = new ArrayList();
-		sorted.addAll(installed);
+		//sorted.addAll(installed);
 		sorted.addAll(notinstalled);
 		inReq.putPageValue("sortedlist", sorted);
 	}

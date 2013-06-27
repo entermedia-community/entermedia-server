@@ -1,4 +1,6 @@
 <types>
+		<type id="autocomplete"  >Auto Complete</type>
+		<type id="autocompletefulltext"   >Auto Complete Keywords</type>
 		<type id="boolean"  >Boolean</type>
 		<type id="number"  >Number</type>
 		<type id="long"  >Long</type>
@@ -15,10 +17,9 @@
 		<type id="multiselect"   >Multi-Select</type>
 		<type id="text"   >Text</type>
 		<type id="textjoin"   >Text Join</type>
-		<type id="autocomplete"  >Auto Complete</type>
-		<type id="autocompletefulltext"   >Auto Complete Keywords</type>
 		<type id="url"  >URL</type>
 		<type id="color"  >Color</type>
 		<type id="map"  >Map</type>
+		<type id="category"  >Category Picker</type>
 
 </types>

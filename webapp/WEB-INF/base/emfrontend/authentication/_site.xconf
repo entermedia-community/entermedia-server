@@ -6,5 +6,5 @@
   <inner-layout>${themeprefix}/layouts/largearea.html</inner-layout>
   <property name="fallbackdirectory">/WEB-INF/base/system/components/authentication</property>
   <property name="loginroot">/${applicationid}/authentication</property>
-  
+    <property name="shownav">false</property>
 </page>

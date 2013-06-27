@@ -130,7 +130,11 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			input = inArchive.findOriginalMediaByType("video",inAsset);
 		}
-		
+		if(input == null){
+			if(inStructions.getInputPath() != null){
+				input = getPageManager().getPage(inStructions.getInputPath());
+			}
+		}
 		//Look over to see if there is a creator that can do a better job of reading in this type
 		String ext = inStructions.getInputExtension();
 		if( ext == null && input != null)
@@ -338,7 +342,7 @@ public class imagemagickCreator extends BaseImageCreator
 			   		
 			//now let's crop
 			com.add("+repage");
-			String gravity = inStructions.getProperty("gravity");
+			String gravity = inStructions.get("gravity");
 			com.add("-gravity");
 			if( gravity == null )
 			{
@@ -360,8 +364,8 @@ public class imagemagickCreator extends BaseImageCreator
 			cropString.append("x");
 			cropString.append(inStructions.getMaxScaledSize().height);
 			
-			String x1 = inStructions.getProperty("x1");
-			String y1 = inStructions.getProperty("y1");
+			String x1 = inStructions.get("x1");
+			String y1 = inStructions.get("y1");
 			
 			if(x1 != null)
 			{

@@ -1,17 +1,21 @@
-#set ($lastselected = $content.module )
-#if(!$lastselected)
 #set($lastselected = $userprofile.last_selected_module )
+ 
+#if(!$lastselected)
+	#set ($lastselected = $content.module )	
+	
 #end
 #if(!$lastselected)
-#set($lastselected = "asset" )
+	#set($lastselected = "asset" )
+	fff
 #end
 
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 
 <a href="$home$apphome/views/modules/${module.getId()}/index.html"><img class="logo" src="$home$themeprefix/images/logo.png" alt="EnterMedia Share" /></a>
 
-<span class="navlinks" style="position: relative;"> #if( $user )
-    #if( $canviewmyaccount ) <a href="$home$apphome/views/myaccount/myassets/index.html">My Account</a> |
+<span class="navlinks" style="position: relative;"> 
+	#if( $user )
+    	#if( $canviewmyaccount ) <a href="$home$apphome/views/myaccount/myassets/index.html">My Account</a> |
     #end <a href="$home$apphome/authentication/logout.html">Logout</a> #else <a href="$home$apphome/authentication/login.html">Login</a> #end
 
     #if($canviewsettings)

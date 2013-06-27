@@ -4,7 +4,7 @@
    
         #foreach ( $module in $modules )
     <li>
-        <a href="$home$apphome/views/settings/modules/${module.id}/info/module-setup.html?id=$module.id" class="folder module">      <div class="name">      <div style="margin-top: 8px" class="alias" title="Alias">$module</div>            </div>        </a>
+        <a href="$home$apphome/views/settings/modules/${module.id}/info/module-setup.html?id=$module.id&field=last_selected_module&last_selected_module.value=${module.id}" class="folder module">      <div class="name">      <div style="margin-top: 8px" class="alias" title="Alias">$module</div>            </div>        </a>
        
         <div class="scan">
              <a class="btn" href="$home$apphome/views/modules/${module.id}/index.html">Data</a>
@@ -44,4 +44,3 @@
     </li>
      -->
 </ul>               
-

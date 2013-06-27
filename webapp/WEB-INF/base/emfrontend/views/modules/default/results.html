@@ -14,6 +14,12 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 ##set ( $canedit = $context.getPageValue("${moduleid}edit") )
 
+#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
+#if ($popupdetail && $popupdetail.size() > 0)
+	#set( $enablepopup = "true")
+#end
+
+
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 <input type="hidden" name="hitsname" value="hits"/>
 
@@ -73,31 +79,25 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
     
     
     
-    #set( $even = true )
+#set( $even = true )
 #set($count = 0)
 #foreach ( $cell in $hits.getPageOfHits() )
-   $context.putPageValue('data', $cell)
+
+   	$context.putPageValue('data', $cell)
     $context.putPageValue('cell', $cell)
     
-     #set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}")
-     
-      
+	#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
         
-        <tr #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #end >
-  
-    
+        <tr  #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #end >
    
     
 #if($content.isPropertyTrue("showactions"))
 
 <td align="center">
 
-
 <input type="checkbox" class="moduleselectionbox" name="count" value="" #if($hits.isSelectedOnPage(${cell.id})) checked #end data-dataid='${cell.id}' data-hitssessionid='$hits.sessionId' />
 <div id="check_${count}">
 </div>
-
-
 
 </td>
 
@@ -105,13 +105,18 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 
 #foreach( $detail in $resultdetail )
-
-<td class="editfield highlightMe" id="$detail.id" halign="right"  >
-   <div id="edit_${cell.id}_$detail.id">
-			
-		    
-           
-              $context.putPageValue('val',  $!cell.get($detail.id))
+<td class="editfield highlightMe" halign="right">
+   <div id="edit_${cell.id}_$detail.id" class="popupdetails" data-id="${cell.id}">
+		#set($val = false)	
+		#set( $val =  $cell.get($detail.id) )
+           	#if( !$val && $detail.render )	
+			#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
+		#end	
+		#if( !$val )
+			#set($val = "")	
+		#end		
+              $context.putPageValue('val',  $val)
+	
               $context.putPageValue('detail',  $detail)
               $pages.include("/${content.searchhome}/cell.html", $context)    
     		
@@ -142,7 +147,6 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 
 </form>
 
-
 <script>
     $('th.sortable').on({
         click: function(){
@@ -161,6 +165,26 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
         }
     });
 </script>
+
+#if($enablepopup)
+<script>
+    $('.popupdetails').on({
+		powerTipPreRender: function() {
+			$(this).data('powertip' , '<div class="details"><img src="${themeprefix}/styles/tooltip/tooltip-loader-blue.gif" /></div>');
+		},
+		powerTipRender: function() {
+			var id = $(this).data("id");
+			$('#powerTip').find('.details').load( '$home${searchhome}/popup.html?oemaxlevel=1&id=' + id );
+		}
+	});
+	$(function() {
+		var mouseFollowDiv = $('.popupdetails');
+		var tipContent = $('<p></p>');
+		mouseFollowDiv.data('powertip', tipContent);
+		mouseFollowDiv.powerTip({ followMouse: true });
+	});
+</script>
+#end
 
 #end
 

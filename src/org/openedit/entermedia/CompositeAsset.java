@@ -628,5 +628,12 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		fieldKeywords = null;
 		
 	}
+	@Override
+	public Collection<String> getValues(String inPreference) {
+		String currentlist =getValueFromResults(inPreference); 
+		return collect(currentlist);
+		
+	}
+	
 	
 }

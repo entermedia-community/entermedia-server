@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/catalog/events/scripts"/>
-	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/src"/>
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/extras/jtds-1.2.jar"/>
@@ -22,10 +20,12 @@
 	<classpathentry kind="lib" path="lib/PDFBox-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/FontBox-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-net-3.1.jar"/>
-	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry kind="lib" path="lib/commons-fileupload-1.2.1-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-common-4.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-core-4.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-queryparser-4.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-generic-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-join-4.3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

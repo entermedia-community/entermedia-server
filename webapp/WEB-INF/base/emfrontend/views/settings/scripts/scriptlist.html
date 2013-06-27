@@ -4,11 +4,12 @@
 <div id="scriptlist">
 <h3 style="margin: 10px 0 5px 0;">Script Editor</h3>
 <div>
-	<select style="margin: 8px 5px 20px 0;" name="scriptname" onchange='loadscript(this.value)'>
+	<select style="margin: 8px 5px 20px 0;width:400px;" name="scriptname" onchange='loadscript(this.value)' class="select2">
 	##loop over scripts
 		<option value="none">- Choose Script -</option>
 		#foreach( $script in $scripts)
-			<option #if( $selected && $selected == $script.getPath() )selected #end value="$script.getPath()">$script.getPath()</option>
+			<option #if( $selected && $selected == $script.getPath() )selected #end value="$script.getPath()">
+				$script.getName() - <b>$script.getDirectoryName()</b></option>
 		#end
 	</select> 
 </div>

@@ -14,7 +14,7 @@
 $pages.include("${themeprefix}/layouts/includes.html")
 
 </head>
-<body id="embody" #if ($userprofile.maximize_screen && $userprofile.maximize_screen == "true") class="max" #end>
+<body id="embody" #if ($userprofile.maximize_screen && $userprofile.maximize_screen == "true") #else class="max" #end>
    #if ( $browser.isMSIE() )
          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
           <style>
