@@ -94,9 +94,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				String ftpPwd = usermanager.decryptPassword(ftpUser);
 				
 				Page original = findInputPage(mediaArchive,inAsset,inPreset);
-//				System.out.println(" &&&& original "+ original);
 				Page thumb = findInputPage(mediaArchive,inAsset,thumbpreset);
-//				System.out.println(" &&&& thumb "+ thumb);
 				
 				ArrayList<String> images = new ArrayList<String>();
 				ArrayList<Page> pages = new ArrayList<Page>();
@@ -136,9 +134,6 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				}
 				
 				ftpPublish(ftpServer, ftpUsername, ftpPwd, pages, images, result);
-				
-				
-				
 				result.setComplete(true);
 			}
 			else 
@@ -166,7 +161,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 	public void ftpPublish(String servername, String username, String password, ArrayList<Page> from, ArrayList<String> to, PublishResult result)
 	{
 		
-		log.info("ftpPublish ${servername} ${username} ${password} ${to}");
+		log.info("ftpPublish ${servername} ${username} ${to}");
 		FTPClient ftp = new FTPClient();
 		
 		ftp.connect(servername,21);
