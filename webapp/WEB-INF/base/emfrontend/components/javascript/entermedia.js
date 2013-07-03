@@ -631,7 +631,7 @@ onloadselectors = function()
 		jQuery("#assetsearchinput").removeClass("defaulttext");
 	}
 	
-	jQuery('#mattresulttable table tr').live('click',
+	jQuery('#mattresulttable table tr').livequery('click',
 			function(event) {
 				//find the rowid go there
 				var id = jQuery(this).attr("rowid");
