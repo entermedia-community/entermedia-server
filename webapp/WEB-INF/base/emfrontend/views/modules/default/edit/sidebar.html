@@ -30,12 +30,12 @@ $context.putPageValue("view", $viewpath)
                   		
                   		#if( $target.rendertable )
                   		#set($remotemodule = $searcherManager.getData($catalogid, "module", $target.rendertable ) )
-				        #if($remotemodule)
-				        	
+				        #if($remotemodule && $remotemodule != "")
 				        	<a class="tab" href="$home${searchhome}/edit/module/index.html?id=$!{data.id}&viewid=${target.id}&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&rendertable=$target.rendertable&externalid=$target.renderexternalid&sortfield=$target.rendersort">
 				        #else
 				        	<a class="tab" href="$home${searchhome}/edit/table.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
 				        #end
+					#set($remotemodule = "")
                        <span class="icon"></span><span class="text"> $target</span></a>
                   		#else
                       <a class="tab" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
