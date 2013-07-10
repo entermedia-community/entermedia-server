@@ -15,6 +15,7 @@ import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.RelatedAsset;
 import org.openedit.entermedia.edit.CategoryEditor;
 
+import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
@@ -284,5 +285,29 @@ public class AssetEditTest extends BaseEnterMediaTest
 		
 
 	}
+
 	
+	public void testDeleteFromIndex() throws Exception
+	{
+		Asset asset = getMediaArchive().createAsset("666","multitest/666");
+		
+		asset.setProperty("libraries", "1");
+		asset.setProperty("category", "index");
+		getMediaArchive().saveAsset(asset, null);
+
+		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
+		q.addMatches("category","index");
+		
+		WebPageRequest req = getFixture().createPageRequest();
+
+		HitTracker tracker = getMediaArchive().getAssetSearcher().cachedSearch(req,q);
+		int size = tracker.size();
+		
+		getMediaArchive().getAssetArchive().deleteAsset(asset);
+		getMediaArchive().getAssetSearcher().deleteFromIndex(asset);
+
+		tracker = getMediaArchive().getAssetSearcher().cachedSearch(req,q);
+		assertEquals( tracker.size() + 1, size);
+	
+	}
 }

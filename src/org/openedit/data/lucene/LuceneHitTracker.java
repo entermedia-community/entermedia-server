@@ -24,6 +24,7 @@ import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.openedit.Data;
+import org.openedit.data.Searcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -65,8 +66,9 @@ public class LuceneHitTracker extends HitTracker
 	{
 		
 	}
-	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort)
+	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort, Searcher inSearcher)
 	{
+		super(inSearcher);
 		setLuceneSearcherManager(inManager);
 		setLuceneQuery(inQuery);
 		setLuceneSort(inSort);

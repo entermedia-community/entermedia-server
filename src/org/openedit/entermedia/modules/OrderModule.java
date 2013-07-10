@@ -140,7 +140,7 @@ public class OrderModule extends BaseMediaModule
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
 
-		if (assets.getSelectedHits().size() > 0)
+		if (assets.hasSelections())
 		{
 			Map props = new HashMap();
 
@@ -149,11 +149,14 @@ public class OrderModule extends BaseMediaModule
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
-			for (Iterator iterator = assets.getSelectedHits().iterator(); iterator.hasNext();)
+			for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();
 				Asset asset = getMediaArchive(catalogid).getAssetBySourcePath(hit.getSourcePath());
-				getOrderManager().addItemToOrder(catalogid, order, asset, null);
+				if( asset != null)
+				{
+					getOrderManager().addItemToOrder(catalogid, order, asset, null);
+				}
 			}
 			if (order.get("expireson") == null)
 			{
@@ -198,7 +201,7 @@ public class OrderModule extends BaseMediaModule
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		List orderitems = new ArrayList();
 
-		if (datalist.getSelectedHits().size() > 0)
+		if (datalist.getSelectedHitracker().size() > 0)
 		{
 			Map props = new HashMap();
 
@@ -207,7 +210,7 @@ public class OrderModule extends BaseMediaModule
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
-			for (Iterator iterator = datalist.getSelectedHits().iterator(); iterator.hasNext();)
+			for (Iterator iterator = datalist.getSelectedHitracker().iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();
 				String targetid = hit.get(mergefield);
@@ -478,7 +481,7 @@ public class OrderModule extends BaseMediaModule
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		HitTracker assets = (HitTracker) inReq.getSessionValue(hitssessionid);
 
-		for (Iterator iterator = assets.getSelectedHits().iterator(); iterator.hasNext();)
+		for (Iterator iterator = assets.getSelectedHitracker().iterator(); iterator.hasNext();)
 		{
 
 			Data hit = (Data) iterator.next();
@@ -546,7 +549,7 @@ public class OrderModule extends BaseMediaModule
 			}
 		}
 
-		int added = getOrderManager().addItemsToBasket(inReq, archive, basket, assets.getSelectedHits(), props);
+		int added = getOrderManager().addItemsToBasket(inReq, archive, basket, assets.getSelectedHitracker(), props);
 		inReq.putPageValue("added", Integer.valueOf(added));
 		return basket;
 	}

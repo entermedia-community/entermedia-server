@@ -1256,8 +1256,8 @@ public class DataEditModule extends BaseMediaModule
 		Searcher searcher = loadSearcher(inReq);
 		String name = inReq.getRequestParameter("hitssessionid");
 		HitTracker hits = (HitTracker) inReq.getSessionValue(name);
-		
-		Collection todelete = hits.getSelectedHits();
+
+		Collection todelete = hits.getSelectedHitracker();
 		for (Iterator iterator = todelete.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
