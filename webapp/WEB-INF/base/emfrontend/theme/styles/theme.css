@@ -30,6 +30,7 @@ body, button, input, select, textarea {
     color: #222;
 }
 
+/**
 ::-moz-selection {
     background: #adceff;
     color: #fff;
@@ -40,6 +41,7 @@ body, button, input, select, textarea {
     color: #fff;
     text-shadow: none;
 }
+**/
 
 a {
     color: #333;
