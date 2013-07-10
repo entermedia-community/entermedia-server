@@ -80,10 +80,11 @@ public class ElasticPostMail extends PostMail {
 	public void postMail(String[] recipients, String subject, String inHtml,
 			String inText, String from, List inAttachments, Map inProperties) {
 
+		PostMethod postMethod = null;
 		try {
 			String fullpath = "https://api.elasticemail.com/mailer/send";
 
-			PostMethod postMethod = new PostMethod(fullpath);
+			postMethod = new PostMethod(fullpath);
 			postMethod.setParameter("username", getSmtpUsername());
 			postMethod.setParameter("api_key", getSmtpPassword());
 			postMethod.setParameter("from", from);
@@ -114,15 +115,24 @@ public class ElasticPostMail extends PostMail {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new OpenEditException(e.getMessage(),e);
+		} finally {
+			if (postMethod!=null)
+			{
+				try
+				{
+					postMethod.releaseConnection();
+				}catch (Exception e){}//not handled
+			}
 		}
 
 	}
 	
 	public ElasticPostMailStatus getMailStatus(String response){
 		ElasticPostMailStatus status = null;
+		PostMethod postMethod = null;
 		try{
 			String uri = "https://api.elasticemail.com/mailer/status/"+response+"?showstats=true";
-			PostMethod postMethod = new PostMethod(uri);
+			postMethod = new PostMethod(uri);
 			int sc = getHttpClient().executeMethod(postMethod);
 			if (sc == 200) {
 				String xml = postMethod.getResponseBodyAsString();
@@ -130,6 +140,14 @@ public class ElasticPostMail extends PostMail {
 			}
 		}catch (Exception e){
 			throw new OpenEditException(e.getMessage(),e);
+		} finally {
+			if (postMethod!=null)
+			{
+				try
+				{
+					postMethod.releaseConnection();
+				}catch (Exception e){}//not handled
+			}
 		}
 		return status;
 	}
