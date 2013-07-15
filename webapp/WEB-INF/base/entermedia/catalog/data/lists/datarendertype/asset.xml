@@ -1,3 +1,4 @@
 <types>
 		<type id="asset"  >Asset</type>
+		<type id="tageditor"  >Tags</type>
 </types>
