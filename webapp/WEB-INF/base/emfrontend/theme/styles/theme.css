@@ -1451,6 +1451,8 @@ small {
 .c25l .ui-widget-content {
     padding: 10px;
 }
+
+
 .asset-details-more a {
     background: #90be5a;
     color: #fff;
@@ -1462,6 +1464,23 @@ small {
 .asset-details-more a:hover {
     background: #b0df7a;
 }
+
+.tageditor-viewer a
+{
+   background: #90be5a;
+    color: #fff;
+    padding: 3px 8px;
+    display:block;
+    float:left;
+    margin: 0px 3px 3px 0px;
+    font-weight: bold;
+    border-radius: 5px;
+    
+}
+.tageditor-viewer a:hover {
+    background: #b0df7a;
+}
+
 
 .asset-caption {
     height: 25px;
