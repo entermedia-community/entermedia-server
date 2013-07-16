@@ -215,7 +215,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				os  = ftp.storeFileStream(export);
 				long responsecode = Util.copyStream(page.getInputStream(), os);
 				
-				log.info(" response from server ${reponsecode}");
+				log.info(" response from server ${responsecode}");
 				
 //				IOUtils.copy(page.getInputStream(),os);
 			}
