@@ -186,6 +186,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 			return;
 		}
 		ftp.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
+		ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
 		
 		//change paths if necessary
 //		String url = "/images/EM/";
@@ -203,23 +204,23 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		for (int i=0; i < from.size(); i++){
 			Page page = from.get(i);
 			String export = to.get(i);
-			OutputStream os = null;
+//			OutputStream os = null;
 			try
 			{
-//				ftp.storeFile(export, page.getInputStream());
-				os  = ftp.storeFileStream(export);
-				IOUtils.copy(page.getInputStream(),os);
+				ftp.storeFile(export, page.getInputStream());
+//				os  = ftp.storeFileStream(export);
+//				IOUtils.copy(page.getInputStream(),os);
 			}
 			finally
 			{
-				try
-				{
-					if (os!=null)
-					{
-						os.close();
-					}
-				}
-				catch (Exception e){}
+//				try
+//				{
+//					if (os!=null)
+//					{
+//						os.close();
+//					}
+//				}
+//				catch (Exception e){}
 				try
 				{
 					page.getInputStream().close();
