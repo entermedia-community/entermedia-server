@@ -215,7 +215,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				os  = ftp.storeFileStream(export);
 				long responsecode = Util.copyStream(page.getInputStream(), os);
 				
-				log.info(" response from server ${responsecode}");
+				log.info("&&&& response from server ${responsecode}");
 				
 //				IOUtils.copy(page.getInputStream(),os);
 			}
@@ -244,13 +244,16 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				}
 				catch (Exception e){}
 			}
-			reply = ftp.getReplyCode();
-			if(!FTPReply.isPositiveCompletion(reply))
-			{
-				result.setErrorMessage("Unable to to send file to ${export}, error code: ${reply}");
-				ftp.disconnect();
-				return;
-			}
+			
+			ftp.completePendingCommand();
+//			
+//			reply = ftp.getReplyCode();
+//			if(!FTPReply.isPositiveCompletion(reply))
+//			{
+//				result.setErrorMessage("Unable to to send file to ${export}, error code: ${reply}");
+//				ftp.disconnect();
+//				return;
+//			}
 		}
 		
 
