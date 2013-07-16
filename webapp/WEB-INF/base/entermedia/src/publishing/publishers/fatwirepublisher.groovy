@@ -26,6 +26,8 @@ import com.openedit.users.User
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 
+import org.apache.commons.io.IOUtils
+
 
 
 public class fatwirepublisher extends basepublisher implements Publisher
@@ -134,7 +136,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				}
 				
 				ftpPublish(ftpServer, ftpUsername, ftpPwd, pages, images, result);
-				result.setComplete(true);
+//				result.setComplete(true);
 			}
 			else 
 			{
@@ -146,13 +148,13 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		catch (IOException e)
 		{
 			log.error(e.getMessage(), e);
-			result.setComplete(true);
+//			result.setComplete(true);
 			result.setErrorMessage(e.getMessage());
 		}
 		catch (Exception e)
 		{
 			log.error(e.getMessage(), e);
-			result.setComplete(true);
+//			result.setComplete(true);
 			result.setErrorMessage(e.getMessage());
 		}
 		return result;
@@ -201,12 +203,23 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		for (int i=0; i < from.size(); i++){
 			Page page = from.get(i);
 			String export = to.get(i);
+			OutputStream os = null;
 			try
 			{
-				ftp.storeFile(export, page.getInputStream());
+//				ftp.storeFile(export, page.getInputStream());
+				os  = ftp.storeFileStream(export);
+				IOUtils.copy(page.getInputStream(),os);
 			}
 			finally
 			{
+				try
+				{
+					if (os!=null)
+					{
+						os.close();
+					}
+				}
+				catch (Exception e){}
 				try
 				{
 					page.getInputStream().close();
