@@ -60,6 +60,11 @@ public void init() {
 				assetid = result.get("assetid");
 				asset = mediaArchive.getAsset(assetid);
 			}
+			String resultassetid = result.get("assetid");
+			if(asset != null && !asset.getId().equals(resultassetid))
+			{
+				asset = mediaArchive.getAsset(resultassetid );
+			}
 
 			String publishdestination = publishrequest.get("publishdestination");
 			
