@@ -140,7 +140,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				}
 				
 				ftpPublish(ftpServer, ftpUsername, ftpPwd, pages, images, result);
-//				result.setComplete(true);
+				result.setComplete(true);
 			}
 			else 
 			{
@@ -152,13 +152,13 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		catch (IOException e)
 		{
 			log.error(e.getMessage(), e);
-//			result.setComplete(true);
+			result.setComplete(true);
 			result.setErrorMessage(e.getMessage());
 		}
 		catch (Exception e)
 		{
 			log.error(e.getMessage(), e);
-//			result.setComplete(true);
+			result.setComplete(true);
 			result.setErrorMessage(e.getMessage());
 		}
 		return result;
