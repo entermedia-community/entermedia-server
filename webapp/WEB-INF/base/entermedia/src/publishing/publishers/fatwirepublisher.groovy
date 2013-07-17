@@ -102,6 +102,9 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				Page original = findInputPage(mediaArchive,inAsset,inPreset);
 				Page thumb = findInputPage(mediaArchive,inAsset,thumbpreset);
 				
+				log.info(" &&&& original page ${page}, thumbnail ${thumb}");
+				
+				
 				ArrayList<String> images = new ArrayList<String>();
 				ArrayList<Page> pages = new ArrayList<Page>();
 				
