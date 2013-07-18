@@ -244,8 +244,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 
 		try
 		{
-			Query q = getQueryParser().parse("id:" + inId);
-			getIndexWriter().deleteDocuments(q);
+			//Query q = getQueryParser().parse("id:" + inId);
+			Term term = new Term("id", inId);
+			getIndexWriter().deleteDocuments(term);
+			//getIndexWriter().deleteDocuments(q);
 			clearIndex();
 		}
 		catch (Exception ex)
@@ -276,6 +278,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		{
 			throw new OpenEditException(e);
 		}
+		clearIndex();
 	}
 
 	public void saveData(Data inData, User inUser)
@@ -382,10 +385,13 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 					return null;
 				}
 			}
-			if( !(data instanceof Asset) )
+			if( data != null && !(data instanceof Asset) )
 			{
 				data = getAssetArchive().getAssetBySourcePath(data.getSourcePath());
-				getCacheManager().put(getIndexPath(), inValue, data);
+				if( data != null)
+				{
+					getCacheManager().put(getIndexPath(), inValue, data);
+				}
 			}
 			return data;
 		}

@@ -35,9 +35,9 @@
     				            #if($candeleteasset)
                                 <li>
                                     #if ( $asset.getId().startsWith("multiedit:") )
-                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete Assets</a>
                                     #else
-                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
                                     #end
                                 </li>
                                 #end

@@ -497,7 +497,7 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						getPageManager().removePage(original);
 					}
-				}
+					}
 			}
 		}
 	}

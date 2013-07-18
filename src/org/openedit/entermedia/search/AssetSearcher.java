@@ -1,5 +1,6 @@
 package org.openedit.entermedia.search;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.openedit.Data;
@@ -47,5 +48,6 @@ public interface AssetSearcher extends Searcher
 
 	String nextAssetNumber();
 	
+	public HitTracker searchByIds(Collection<String> inIds);
 
 }

@@ -371,7 +371,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			{
 				sort = buildSort(inOrdering);
 			}
-			LuceneHitTracker tracker = new LuceneHitTracker(getLuceneSearcherManager(),query1,sort);
+			LuceneHitTracker tracker = new LuceneHitTracker(getLuceneSearcherManager(),query1,sort,this);
 			tracker.setSearchType(getSearchType());
 			tracker.setIndexId(getIndexId());
 

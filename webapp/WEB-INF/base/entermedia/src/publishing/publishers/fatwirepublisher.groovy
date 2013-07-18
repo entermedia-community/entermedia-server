@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Iterator;
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
@@ -25,6 +27,10 @@ import com.openedit.users.User
 
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
+
+import org.apache.commons.io.IOUtils
+
+import org.apache.commons.net.io.Util;
 
 
 
@@ -96,6 +102,8 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				Page original = findInputPage(mediaArchive,inAsset,inPreset);
 				Page thumb = findInputPage(mediaArchive,inAsset,thumbpreset);
 				
+				log.info("preparing to ftp, image ${original}, thumbnail ${thumb}");
+				
 				ArrayList<String> images = new ArrayList<String>();
 				ArrayList<Page> pages = new ArrayList<Page>();
 				
@@ -160,74 +168,91 @@ public class fatwirepublisher extends basepublisher implements Publisher
 	
 	public void ftpPublish(String servername, String username, String password, ArrayList<Page> from, ArrayList<String> to, PublishResult result)
 	{
-		
 		log.info("ftpPublish ${servername} ${username} ${to}");
-		FTPClient ftp = new FTPClient();
 		
+		FTPClient ftp = new FTPClient();
 		ftp.connect(servername,21);
 		ftp.enterLocalPassiveMode();
-		
-		//check to see if connected
 		int reply = ftp.getReplyCode();
+		String replymsg = ftp.getReplyString().trim();
+		log.info("ftp client reply="+reply+", message="+replymsg+", is positive code? "+FTPReply.isPositiveCompletion(reply));
 		if(!FTPReply.isPositiveCompletion(reply))
 		{
-			result.setErrorMessage("Unable to connect to ${servername}, error code: ${reply}")
+			result.setErrorMessage(replymsg);
 			ftp.disconnect();
 			return;
 		}	
 		ftp.login(username, password);
 		reply = ftp.getReplyCode();
+		replymsg = ftp.getReplyString().trim();
+		log.info("ftp client reply="+reply+", message="+replymsg.trim()+", is positive code? "+FTPReply.isPositiveCompletion(reply));
 		if(!FTPReply.isPositiveCompletion(reply))
 		{
-			result.setErrorMessage("Unable to login to ${servername}, error code: ${reply}");
+			result.setErrorMessage(replymsg);
 			ftp.disconnect();
 			return;
 		}
 		ftp.setFileTransferMode(FTPClient.BINARY_FILE_TYPE);
 		
-		//change paths if necessary
-//		String url = "/images/EM/";
-//		ftp.changeWorkingDirectory(url);
-//		reply = ftp.getReplyCode();
-//		if(!FTPReply.isPositiveCompletion(reply))
-//		{
-//			result.setErrorMessage("Unable to to cd to ${url}, error code: ${reply}");
-//			ftp.disconnect();
-//			return result;
-//		}
-		
-//		String exportname = inPublishRequest.get("exportname");
-		
 		for (int i=0; i < from.size(); i++){
+//			File file = new File(from.get(i));
+			
 			Page page = from.get(i);
+			long filelen = page.length();
 			String export = to.get(i);
+			
+			ftp.setFileType(FTPClient.BINARY_FILE_TYPE);
+			
+			OutputStream os = null;
+//			FileInputStream fis = null;
 			try
 			{
-				ftp.storeFile(export, page.getInputStream());
+//				fis = new FileInputStream(file);
+				os  = ftp.storeFileStream(export);
+				long copylen = Util.copyStream(page.getInputStream(), os);
+				
+				log.info("file export ${export} size="+filelen+", copy size="+copylen);
 			}
 			finally
 			{
 				try
 				{
-					page.getInputStream().close();
+					if (page.getInputStream()!=null) page.getInputStream().close();
 				}
 				catch (Exception e){}
+				try
+				{
+					if (os!=null) os.close();
+				} catch (Exception e){}
+				try
+				{
+					ftp.completePendingCommand();
+				} catch (Exception e){
+					log.error(e.getMessage(), e);
+					
+					try{
+						ftp.disconnect();
+					}catch (Exception e2){}
+					
+					throw e;
+				}
 			}
+			
 			reply = ftp.getReplyCode();
-			if(!FTPReply.isPositiveCompletion(reply))
+			replymsg = ftp.getReplyString().trim();
+			boolean ispositive = FTPReply.isPositiveCompletion(reply);
+			log.info("ftp client following file copy of ${export} reply="+reply+", message="+replymsg+", ispositive="+ispositive);
+			
+			if (!ispositive)
 			{
-				result.setErrorMessage("Unable to to send file to ${export}, error code: ${reply}");
+				result.setErrorMessage(replymsg);
 				ftp.disconnect();
 				return;
 			}
 		}
-		
-
-		
 		if(ftp.isConnected())
 		{
 			ftp.disconnect();
 		}
-		result.setComplete(true);
 	}
 }

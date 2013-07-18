@@ -11,9 +11,17 @@
 					$!query.addSort("ordering")
 					#set($screens = $searcher.search($query)) 
 					#foreach($screen in	$screens)
-					<li id="$screen.id" #if( $tab== "$screen.id" ) class="current" #end>
-						<a href="$home$apphome${screen.path}">$screen</a>
-					</li> #end
+						#if($screen.permission)
+							#set($canview = $context.getPageValue("can${screen.permission}"))
+						#else
+							#set($canview = true)
+						#end
+						#if($canview)
+							<li id="$screen.id" #if( $tab== "$screen.id" ) class="current" #end>
+								<a href="$home$apphome${screen.path}">$screen</a>
+							</li>
+						#end
+					#end
 				</ul>
 			</div>
 		</div>

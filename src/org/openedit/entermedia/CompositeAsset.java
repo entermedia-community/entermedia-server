@@ -129,7 +129,9 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		// TODO Auto-generated method stub
 		HitTracker existing = getInitialSearchResults();
-		setSelectedResults(existing.getSelectedHitracker());
+		HitTracker selecteddata = getArchive().getAssetSearcher().searchByIds(existing.getSelections() );
+		selecteddata.setHitsPerPage(10000);
+		setSelectedResults(selecteddata);
 		getProperties().clear();
 	}
 
