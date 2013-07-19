@@ -22,6 +22,7 @@ import com.openedit.entermedia.scripts.EnterMediaObject;
 import com.openedit.page.Page;
 import com.openedit.util.*;
 
+
 public class BaseImporter extends EnterMediaObject 
 {
 	protected Map<String,String> fieldLookUps;
@@ -32,7 +33,6 @@ public class BaseImporter extends EnterMediaObject
 	{
 		return fieldSearcher;
 	}
-	
 	public void importData() throws Exception 
 	{
 		fieldSearcher = loadSearcher(context);
@@ -56,33 +56,30 @@ public class BaseImporter extends EnterMediaObject
 			{
 				rowNum++;
 
+				Data target = null;
 				String idCell = trow.get("id");
-				if( idCell == null && isMakeId() )
+				if (idCell != null && idCell.trim().length() > 0) 
 				{
-					idCell = String.valueOf(rowNum);
-				}
-				
-				if (idCell != null) 
-				{
-					Data target = findExistingData(idCell);
-//					for (Iterator iterator = data.iterator(); iterator.hasNext();) 
-//					{
-//						Data one = (Data) iterator.next();
-//						if(idCell.equals(one.getId()))
-//						{
-//							target = one;
-//						}
-//					}
+					target = findExistingData(idCell);
 					if (target == null) 
 					{
-
 						target = getSearcher().createNewData();
 						target.setId(idCell);
-
 					}
-					addProperties( trow, target);
-					data.add(target);
 				}
+				else if ( isMakeId() )
+				{
+					target = getSearcher().createNewData();
+					idCell = getSearcher().nextId();
+				}
+				else
+				{
+					continue;
+				}
+				
+				addProperties( trow, target);
+				target.setId( idCell );
+				data.add(target);
 				if ( data.size() == 100 )
 				{
 					getSearcher().saveAllData(data, context.getUser());
@@ -96,7 +93,6 @@ public class BaseImporter extends EnterMediaObject
 			getPageManager().removePage(upload);
 		}
 		getSearcher().saveAllData(data, context.getUser());
-		//searcher.reIndexAll();
 	}
 	
 	/** Might be overriden by scripts */

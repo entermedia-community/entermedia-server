@@ -13,9 +13,7 @@
 					#foreach($screen in	$screens)
 						#if($screen.permission)
 							#set($canview = $context.getPageValue("can${screen.permission}"))
-							<li>${screen.id}</li>
 						#else
-							<li>else - ${screen.id}</li>
 							#set($canview = true)
 						#end
 						#if($canview)
