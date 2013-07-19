@@ -51,7 +51,7 @@
 	<property id="ttf" rendertype="image" creator="imagemagick" >TTF</property>
 	<property id="wav" rendertype="audio" creator="audio" synctags="false">WAV</property>
 	<property id="wma" rendertype="audio"  synctags="false">WMA</property>
-	<property id="webm" rendertype="video"  synctags="false">WebM</property>
+	<property id="webm" rendertype="video"  creator="ffmpeg" synctags="false">WebM</property>
 
 	<property id="flac" rendertype="audio"  synctags="false">Flac</property>
 	<property id="m4a" rendertype="audio"  synctags="false">M4A</property>
