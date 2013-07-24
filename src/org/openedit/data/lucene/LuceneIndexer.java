@@ -240,7 +240,7 @@ public class LuceneIndexer
 			docAdd(detail, doc,"sourcepath", inData.getSourcePath(), Field.Store.YES,true);
 		}
 	}
-	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore , boolean isText)
+	public void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore , boolean isText)
 	{
 		docAdd(inDetail,doc,inId,inValue,null,inStore,isText);
 	}
