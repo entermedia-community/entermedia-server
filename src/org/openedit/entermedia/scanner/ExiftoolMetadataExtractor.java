@@ -68,7 +68,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		fieldExifToolThumbCreator = inExifToolThumbCreator;
 	}
 
-	public boolean extractData(MediaArchive inArchive, File inputFile, Asset inAsset)
+	/**
+	 * synchronized because ExifTool is not thread safe
+	 */
+	public synchronized boolean extractData(MediaArchive inArchive, File inputFile, Asset inAsset)
 	{
 		String[] supportedTypes = new String[] {"audio", "video", "image", "document"};
 		String type = PathUtilities.extractPageType(inputFile.getName());
