@@ -1324,7 +1324,8 @@ public class UserManagerModule extends BaseModule
 	}
 	public void loadPageOfResults(WebPageRequest inReq)
 	{
-		getUserSearcher().loadPageOfSearch(inReq);
+		HitTracker hits = getUserSearcher().loadPageOfSearch(inReq);
+		inReq.putPageValue("hits", hits);
 	}
 	public void loadPageOfGroupResults(WebPageRequest inReq)
 	{

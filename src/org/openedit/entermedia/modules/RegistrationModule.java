@@ -249,7 +249,11 @@ public class RegistrationModule extends BaseMediaModule {
 
 		handleValidationCodes(inReq,  current);
 
-		
+		boolean enable = Boolean.parseBoolean(inReq
+				.findValue("autoenable"));	
+		if(enable){
+			current.setEnabled(true);
+		}
 		getUserManager().saveUser(current);
 		inReq.putPageValue("saved", "true");
 		inReq.putPageValue("newuser", current);
