@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="ok">
-#foreach( $catalog in $userprofile.getCatalogs() )
-<catalog id="$catalog.id">$catalog.name</catalog>
-#end
+#set( $fields = $searcher.getPropertyDetails().findStoredProperties() )
+#foreach( $hit in $hits.getPageOfHits() )
+<hit #foreach( $field in $fields )
+#set( $value = false )
+#set( $value = $hit.get($field.id))
+#if( $value ) $field.id="#esc($value)" #end
+#end >
+</hit>#end
 </rsp>
