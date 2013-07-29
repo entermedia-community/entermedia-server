@@ -109,7 +109,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
    <div id="edit_${cell.id}_$detail.id" class="popupdetails" data-id="${cell.id}">
 		#set($val = false)	
 		#set( $val =  $cell.get($detail.id) )
-           	#if( !$val && $detail.render )	
+      	#if( !$val && $detail.render )	
 			#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
 		#end	
 		#if( !$val )
