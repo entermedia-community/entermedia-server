@@ -636,13 +636,17 @@ public class DataEditModule extends BaseMediaModule
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
-			String id = inReq.getRequestParameter("id");
+			String[] id = inReq.getRequestParameters("id");
 			if (id != null)
 			{
-				Data data = (Data) searcher.searchById(id);
-				if (data != null)
+				for (int i = 0; i < id.length; i++)
 				{
-					searcher.delete(data, inReq.getUser());
+					Data data = (Data) searcher.searchById(id[i]);
+					if (data != null)
+					{
+						searcher.delete(data, inReq.getUser());
+					}
+					
 				}
 			}
 
