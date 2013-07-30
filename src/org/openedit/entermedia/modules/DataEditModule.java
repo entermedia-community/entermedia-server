@@ -453,6 +453,7 @@ public class DataEditModule extends BaseMediaModule
 
 	public void saveData(WebPageRequest inReq) throws Exception
 	{
+		int count = 0;
 		String[] fields = inReq.getRequestParameters("field");
 		if (fields == null)
 		{
@@ -519,6 +520,7 @@ public class DataEditModule extends BaseMediaModule
 //					inReq.setRequestParameter("id", copy.getId());
 //					searcher.saveDetails(inReq, newfields, copy, copy.getId());
 //				}
+				count = compositedata.size();
 				compositedata.saveChanges();
 				// should we redirect to a save ok page?
 				redirectToSaveOk(inReq);
@@ -545,6 +547,7 @@ public class DataEditModule extends BaseMediaModule
 							inReq.setRequestParameter("id", data.getId());
 							inReq.setRequestParameter(externalid + ".value", element.getId());
 							searcher.saveDetails(inReq, fields, data, id);
+							count++;
 						}
 						redirectToSaveOk(inReq);
 					}
@@ -572,6 +575,7 @@ public class DataEditModule extends BaseMediaModule
 					inReq.setRequestParameter("id", data.getId());
 					inReq.setRequestParameter("id.value", data.getId());
 					searcher.saveDetails(inReq, fields, data, id);
+					count++;
 					
 				}
 			}
@@ -592,7 +596,8 @@ public class DataEditModule extends BaseMediaModule
 
 				getWebEventListener().eventFired(event);
 			}
-			
+			inReq.putPageValue("rowsedited", String.valueOf(count));
+			//rowsedited="$!rowsedited}
 			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>
 		}
 	}
@@ -637,6 +642,7 @@ public class DataEditModule extends BaseMediaModule
 		if (searcher != null)
 		{
 			String[] id = inReq.getRequestParameters("id");
+			int changes = 0;
 			if (id != null)
 			{
 				for (int i = 0; i < id.length; i++)
@@ -645,11 +651,12 @@ public class DataEditModule extends BaseMediaModule
 					if (data != null)
 					{
 						searcher.delete(data, inReq.getUser());
+						changes++;
 					}
 					
 				}
 			}
-
+			inReq.putPageValue("rowsedited", String.valueOf(changes));
 		}
 
 	}
