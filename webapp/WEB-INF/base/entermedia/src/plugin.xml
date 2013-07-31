@@ -50,8 +50,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="amazonpublisher" script-source="publishing/publishers/amazonpublisher.groovy" />
 <!--
+	<lang:groovy id="amazonpublisher" script-source="publishing/publishers/amazonpublisher.groovy" />
 	<lang:groovy id="asperapublisher" script-source="publishing/publishers/asperapublisher.groovy" />
 	<lang:groovy id="entermediapublisher" script-source="publishing/publishers/entermediapublisher.groovy" />
 -->
