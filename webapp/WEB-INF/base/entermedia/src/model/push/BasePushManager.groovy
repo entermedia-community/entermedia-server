@@ -373,7 +373,7 @@ public class BasePushManager implements PushManager
 	}
 	protected synchronized Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
-		return send(getClient(inCatalogId),inMethod);
+		return send(getClient(inCatalogId),inCatalogId, inMethod);
 	}
 	protected synchronized Element send(HttpClient inClient, String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
