@@ -594,6 +594,10 @@ public class LuceneSearchQuery extends SearchQuery
 		}
 		if( fieldChildren != null && fieldChildren.size() > 0)
 		{
+			if( done.length() > 0 )
+			{
+				done.append(" ");
+			}
 			for (int j = 0; j < getChildren().size(); j++)
 			{
 				SearchQuery child = (SearchQuery) getChildren().get(j);
