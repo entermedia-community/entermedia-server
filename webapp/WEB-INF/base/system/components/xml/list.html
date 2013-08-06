@@ -55,7 +55,6 @@ $lsearcher.addShowOnly($context, $query)
 
 #set( $valueid = "$fieldname" )
 
-
 #if($types)
 	#if( $foreignkeyid)
 		<script type="text/javascript">
@@ -75,7 +74,15 @@ $lsearcher.addShowOnly($context, $query)
 	#end
 	#foreach( $type in $types )
 		#set( $key = $type.id)
-		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($type.name)</option>
+		#if($detail.render)
+   			#set($label = $searcherManager.getValue($catalogid, $detail.render, $type.properties))
+		#else
+   		#set($label = $type.name)
+		#end
+		
+		
+		
+		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
 	#end
 	#if( $caneditlists && "$caneditlists" == "true")
 		<option value="new $listid">-- Add New --</option>
