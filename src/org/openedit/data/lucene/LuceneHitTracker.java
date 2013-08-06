@@ -161,7 +161,7 @@ public class LuceneHitTracker extends HitTracker
 				int max = Integer.MAX_VALUE;
 				if( getHitsPerPage() == 1)
 				{
-					max = 1;
+					max = 1;   //This causes our array to not have the right number of hits in it
 				}
 				if( getLuceneSort() != null )
 				{

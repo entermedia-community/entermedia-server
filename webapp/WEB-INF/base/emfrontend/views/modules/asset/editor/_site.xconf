@@ -11,18 +11,17 @@
 	<inner-layout>${themeprefix}/layouts/mediaviewer.html</inner-layout>
 	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
 	
-	<permission name="view">
-		<or>
-			<pagevalue name="canviewasset" equals="true"/>
-		</or>
-	</permission>	
-
 
 	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
 	<permission name="viewasset">
 		<or>
-			<action name="AssetControlModule.canViewAsset" />
 			<action name="OrderModule.canViewAsset"/>
+		</or>
+	</permission>	
+
+	<permission name="view">
+		<or>
+			<pagevalue name="canviewasset" equals="true"/>
 		</or>
 	</permission>	
 

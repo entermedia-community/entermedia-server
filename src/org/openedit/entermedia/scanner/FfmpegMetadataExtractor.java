@@ -1,6 +1,5 @@
 package org.openedit.entermedia.scanner;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.util.Exec;
 import com.openedit.util.ExecResult;
@@ -17,7 +17,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 	private static final Log log = LogFactory.getLog(FfmpegMetadataExtractor.class);
 	protected Exec fieldExec;
 	
-	public boolean extractData(MediaArchive inArchive, File inFile, Asset inAsset)
+	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
 		String mediatype = inArchive.getMediaRenderType(inAsset.getFileFormat());
 		if( "video".equals(mediatype )) 

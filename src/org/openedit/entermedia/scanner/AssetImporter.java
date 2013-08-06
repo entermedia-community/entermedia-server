@@ -228,9 +228,7 @@ public class AssetImporter
 			asset.addCategory(category);
 		}
 
-		String absolutepath = inAssetPage.getContentItem().getAbsolutePath();
-		File itemFile = new File(absolutepath);
-		getAssetUtilities().getMetaDataReader().populateAsset(inArchive, itemFile, asset);
+		getAssetUtilities().getMetaDataReader().populateAsset(inArchive, inAssetPage.getContentItem(), asset);
 		inArchive.saveAsset(asset, inUser);
 		
 		return asset;

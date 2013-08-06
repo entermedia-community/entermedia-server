@@ -31,6 +31,7 @@ public void setAssetTypes()
 	HitTracker assets = assetsearcher.search(q);
 	AssetTypeManager manager = new LibraryAddingAssetTypeManager();
 	manager.context = context;
+	manager.log = log;
 	manager.saveAssetTypes(assets);
 	
 	setupProjects(assets);

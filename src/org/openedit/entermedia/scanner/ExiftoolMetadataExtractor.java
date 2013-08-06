@@ -22,6 +22,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.ConvertResult;
 import org.openedit.entermedia.creator.MediaCreator;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.page.Page;
@@ -71,7 +72,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	/**
 	 * synchronized because ExifTool is not thread safe
 	 */
-	public synchronized boolean extractData(MediaArchive inArchive, File inputFile, Asset inAsset)
+	public synchronized boolean extractData(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
 	{
 		String[] supportedTypes = new String[] {"audio", "video", "image", "document"};
 		String type = PathUtilities.extractPageType(inputFile.getName());
@@ -88,11 +89,11 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			PropertyDetails details = inArchive.getAssetPropertyDetails();
 			ArrayList<String> base = new ArrayList<String>();
 			
-			Page etConfig = inArchive.getPageManager().getPage(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
+			ContentItem etConfig = inArchive.getPageManager().getRepository().getStub(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
 			if( etConfig.exists() )
 			{
 				base.add("-config");
-				base.add(etConfig.getContentItem().getAbsolutePath());
+				base.add(etConfig.getAbsolutePath());
 			}
 			
 			base.add("-S");
@@ -333,7 +334,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		return value;
 	}
 
-	protected void extractThumb(MediaArchive inArchive, File inInputFile, Asset inAsset)
+	protected void extractThumb(MediaArchive inArchive, ContentItem inInputFile, Asset inAsset)
 	{
 		if( !getExifToolThumbCreator().canReadIn(inArchive, inAsset.getFileFormat()) )
 		{

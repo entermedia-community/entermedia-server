@@ -761,12 +761,17 @@ public class AdminModule extends BaseModule
 		int pwd_expiry_in_days = 1;
 		String str = inReq.getPageProperty("temporary_password_expiry");
 		if (str != null && !str.isEmpty()){
-			try{
+			try
+			{
 				pwd_expiry_in_days = Integer.parseInt(str);
 				if (pwd_expiry_in_days < 1) pwd_expiry_in_days = 1;//default if malformed
-			}catch(NumberFormatException e){}
+			}
+			catch(NumberFormatException e)
+			{
+				
+			}
+			log.info("Password is set to expire in "+pwd_expiry_in_days+" days");
 		}
-		log.info("Password is set to expire in "+pwd_expiry_in_days+" days");
 		//String uandpass = cook.getValue();
 		if (uandpass != null)
 		{

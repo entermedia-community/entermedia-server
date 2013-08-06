@@ -14,6 +14,7 @@ import com.openedit.util.PathUtilities;
 
 public class ConvertionTest extends BaseEnterMediaTest
 {
+	
 	public void testPdfToJpeg()
 	{
 

@@ -248,7 +248,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			}
 			inAsset.setProperty(key, prop.getTextTrim());
 		}
-		ContentItem originalPage = getPageManager().getRepository().get("/WEB-INF/data/" + inAsset.getCatalogId() + "/originals/" + inAsset.getSourcePath());
+		ContentItem originalPage = getPageManager().getRepository().getStub("/WEB-INF/data/" + inAsset.getCatalogId() + "/originals/" + inAsset.getSourcePath());
 		inAsset.setFolder(originalPage.isFolder());
 		loadRelatedAssets(inAsset, inAssetElement);
 		return true;

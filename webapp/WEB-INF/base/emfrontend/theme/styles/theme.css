@@ -2737,6 +2737,11 @@ body .user-input-area input[type="text"]:focus, body .user-input-area textarea:f
     padding: 0;
     margin: 0;
 }
+#shared-asset-table 
+{
+	width: 100%;
+}
+
 #shared-asset-table thead tr th {
     color: #fff;
 }

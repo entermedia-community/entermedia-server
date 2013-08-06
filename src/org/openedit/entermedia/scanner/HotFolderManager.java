@@ -19,6 +19,7 @@ import org.openedit.repository.filesystem.XmlVersionRepository;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebServer;
+import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.util.EmStringUtils;
 
@@ -166,7 +167,12 @@ public class HotFolderManager
 		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 		String name = inFolder.get("subfolder");
 		String path = base + "/" + name;
-		
+
+//		Page local = getPageManager().getPage(path + "/");
+//		if( !local.exists() )
+//		{
+//			getPageManager().putPage(local);
+//		}
 		AssetImporter importer = (AssetImporter)getWebServer().getModuleManager().getBean("assetImporter");
 		
 		String excludes = inFolder.get("excludes");

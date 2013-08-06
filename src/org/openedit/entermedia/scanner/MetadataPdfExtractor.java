@@ -1,6 +1,5 @@
 package org.openedit.entermedia.scanner;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
@@ -18,7 +18,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 {
 	private static final Log log = LogFactory.getLog(MetadataPdfExtractor.class);
 
-	public boolean extractData(MediaArchive inArchive, File inFile, Asset inAsset)
+	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
 		
 		String type = PathUtilities.extractPageType(inFile.getPath());
@@ -42,7 +42,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 				InputStream in = null;
 				try
 				{
-					in = new FileInputStream(inFile);
+					in = inFile.getInputStream();
 //					try
 //					{
 //						new OutputFiller().fill(in, out);
@@ -77,19 +77,10 @@ public class MetadataPdfExtractor extends MetadataExtractor
 					}
 
 				}
-				catch (FileNotFoundException e)
-				{
-					log.error("cant process" , e);
-					return false;
-				}
-				catch (IOException e)
-				{
-					log.error("cant process" , e);
-					return false;
-				}
 				catch( Exception ex)
 				{
 					log.error("cant process" , ex);
+					return false;
 				}
 				finally
 				{

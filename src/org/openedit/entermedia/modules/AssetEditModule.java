@@ -1113,7 +1113,7 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 			
-			getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, new File(itemFile.getContentItem().getAbsolutePath()), target);
+			getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, itemFile.getContentItem(), target);
 			
 			for(String detail: externaldetails.keySet())
 			{
