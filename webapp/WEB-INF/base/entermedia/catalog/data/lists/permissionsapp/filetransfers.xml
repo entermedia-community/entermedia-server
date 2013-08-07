@@ -8,6 +8,7 @@
 	
 	<permission id="viewuploadmulti" permissiontype="filetransfers" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." ordering="500"/>
 	<permission id="viewupload" permissiontype="filetransfers" name="Upload Single File" description="Enables the upload of a single asset." ordering="200" />
+	<permission id="viewrecentuploads" permissiontype="filetransfers" name="View Recent Uploads" description="Allows users to view a page where the most recent uploaded files are shown." ordering="500"/>
 	
 		
 </permissions>
