@@ -25,5 +25,8 @@
 	<!--  system email settings -->
 	<property id="system_from_email" value="noreply@entermediasoftware.com">System From Email</property>
 	<property id="system_from_email_name" value="EnterMedia">System From Email Name</property>
+	
+	<!--  upload flow, next page -->
+	<property id="uploadflow_nextpage" value="default">Next page in upload flow</property>
 
 </properties>
