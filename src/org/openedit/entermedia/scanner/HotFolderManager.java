@@ -72,17 +72,20 @@ public class HotFolderManager
 		//remove any old hot folders for this catalog
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		String path = "/WEB-INF/data/" + inCatalogId + "/originals";
+
+		List extras = new ArrayList();
 		
-		//remove all the mounts
 		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
 		{
 			Repository config = (Repository) iterator.next();
-			if (config.getPath().startsWith(path)) 
+			if( config.getPath().startsWith(path))
 			{
-				getPageManager().getRepositoryManager().removeRepository(config.getPath());
+				extras.add( config.getPath());
 			}
 		}
-		
+
+		//We should see if they are already configured?
+
 		List<Repository> mounts = new ArrayList<Repository>();
 		Collection folders = loadFolders(inCatalogId);
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
@@ -90,25 +93,34 @@ public class HotFolderManager
 			Data folder = (Data) iterator.next();
 			String folderpath = folder.get("subfolder");
 			String fullpath = path + "/" + folderpath;
-			Repository repo = null;
-			String versioncontrol = folder.get("versioncontrol");
-			if( Boolean.valueOf(versioncontrol) )
+			extras.remove(fullpath);
+			Repository repo = findRepoByPath( configs, fullpath );
+			if( repo == null)
 			{
-				repo = new XmlVersionRepository();
-				repo.setRepositoryType("versionRepository");
-			}
-			else
-			{
-				repo = new FileRepository();
+				String versioncontrol = folder.get("versioncontrol");
+				if( Boolean.valueOf(versioncontrol) )
+				{
+					repo = new XmlVersionRepository();
+					repo.setRepositoryType("versionRepository");
+				}
+				else
+				{
+					repo = new FileRepository();
+				}
+				mounts.add(repo);
 			}
 			//save data to repo
 			repo.setPath(fullpath);
 			repo.setExternalPath(folder.get("externalpath"));
-			mounts.add(repo);
 			//repo.setFilterIn(folder.get("includes"));
 			//repo.setFilterOut(folder.get("excludes"));
 		}
-		
+		for (Iterator iterator = extras.iterator(); iterator.hasNext();)
+		{
+			String fullpath = (String) iterator.next();
+			getPageManager().getRepositoryManager().removeRepository(fullpath);
+		}
+
 		if( mounts.size() > 0)
 		{
 			configs = getPageManager().getRepositoryManager().getRepositories();
@@ -117,6 +129,20 @@ public class HotFolderManager
 		}
 		//getPageManager().getRepositoryManager().setRepositories(configs);
 		//save the file
+	}
+
+	protected Repository findRepoByPath(List inConfigs, String inFullpath)
+	{
+
+		for (Iterator iterator = inConfigs.iterator(); iterator.hasNext();)
+		{
+			Repository config = (Repository) iterator.next();
+			if (config.getPath().startsWith(inFullpath)) 
+			{
+				return config;
+			}
+		}
+		return null;
 	}
 
 

@@ -54,7 +54,7 @@ public void init()
 
 void pullGit(String path, int deep)
 {
-	ContentItem page = pageManager.getRepository().get(path + "/.git");
+	ContentItem page = pageManager.getRepository().getStub(path + "/.git");
 	if( page.exists() )
 	{
 		Exec exec = moduleManager.getBean("exec");
@@ -83,7 +83,7 @@ void pullGit(String path, int deep)
 			deep++;
 			for(String child: paths)
 			{
-				ContentItem childpage = pageManager.getRepository().get(child);
+				ContentItem childpage = pageManager.getRepository().getStub(child);
 				if( childpage.isFolder() )
 				{
 					pullGit(child,deep);
