@@ -63,7 +63,7 @@ public class MetaDataReader
 		}
 		catch (Exception e)
 		{
-			log.error(e);
+			log.error("Could not read metadata", e);
 		}
 	}
 
