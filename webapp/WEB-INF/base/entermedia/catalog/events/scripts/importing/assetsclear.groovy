@@ -49,8 +49,7 @@ public void init()
 		String assetsource = hit.getSourcePath();
 		String pathToOriginal = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + assetsource;
 		
-		ContentItem page = pageManager.getRepository().get(pathToOriginal);
-		if(!page.exists())
+		if(!pageManager.getRepository().doesExist(pathToOriginal) )
 		{
 			Asset asset = archive.getAssetBySourcePath(assetsource);
 			if( asset == null)
@@ -62,8 +61,7 @@ public void init()
 			if(asset.isFolder() && asset.getPrimaryFile() != null)
 			{
 				pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
-				page = pageManager.getRepository().get(pathToOriginal);
-				if(page.exists())
+				if( pageManager.getRepository().doesExist(pathToOriginal) )
 				{
 					existed++;
 					continue; //never mind, it is here
