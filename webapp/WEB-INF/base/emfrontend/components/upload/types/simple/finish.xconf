@@ -31,6 +31,8 @@
 	<property name="section">details</property>
 	<property name="module">asset</property>
 	<property name="assettab">metadatageneral</property>
+	
+	<path-action name="AssetEditModule.appendRecentUploads"/>
 
 	
 </page>

@@ -74,12 +74,8 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		{
 			return "Root";
 		}
-		int lastSlashIndex = path.lastIndexOf('/');
-		if ( lastSlashIndex < 0 )
-		{
-			return path;
-		}
-		return path.substring( lastSlashIndex + 1 );
+		String name = PathUtilities.extractFileName(path);
+		return name;
 	}
 
 	/**
@@ -227,7 +223,9 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 				
 				String npath = (String)iterator.next();
 				RepositoryTreeNode child = createNode( npath );
-
+				child.getName();
+				child.toString();
+				child.getURL();
 				boolean okToAdd = true;
 				if( getFilter() != null && (checkpermissions || !child.isLeaf() ) )
 				{
@@ -358,7 +356,6 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	protected RepositoryTreeNode createNode(String inPath) 
 	{
 		//inPath may be the name of the fallback file. Rebuild the path 
-		
 		String path = null;
 		if( getParent() == null)
 		{
@@ -371,7 +368,14 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		ContentItem childItem = null;
 		try
 		{
-			childItem = getRepository().get(inPath);
+			if( inPath.endsWith("/") )
+			{
+				childItem = getRepository().getStub(path + "/");
+			}
+			else
+			{
+				childItem = getRepository().getStub(path);
+			}
 		}
 		catch (RepositoryException e)
 		{
@@ -386,7 +390,9 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	
 		RepositoryTreeNode node = new RepositoryTreeNode( getRepository(), childItem, id);
 		node.setFilter(getFilter());
+		//node.setParent(this);
 		node.setPageManager(getPageManager());
+		
 		return node;
 	}
 
@@ -440,6 +446,12 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		{
 			return getName(); //the root does not need a special URL since it is part of the base path
 		}
+	}
+	
+	public void setParent(DefaultWebTreeNode inParent)
+	{
+		super.setParent(inParent);
+		setUrl( getURL() );
 	}
 	protected void setUrl(String inPath)
 	{

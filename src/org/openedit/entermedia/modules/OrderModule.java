@@ -915,18 +915,45 @@ public class OrderModule extends BaseMediaModule
 		{
 			inReq.putPageValue("expired", Boolean.FALSE);
 		}
+		//load up hits and select all the items. 
+		HitTracker hits = loadAssets(inReq);
+		hits.selectAll();
+		inReq.putPageValue("hits", hits);
+		inReq.putSessionValue("vieworder", order);
+		
 		return order;
 	}
 
 	public Boolean canViewAsset(WebPageRequest inReq)
 	{
-		String orderid = inReq.getRequestParameter("orderid");
-		if (orderid == null)
+//		String orderid = inReq.getRequestParameter("orderid");
+//		if (orderid == null)
+//		{
+//			return false;
+//		}
+		Order order = loadOrder(inReq);
+		if( order == null)
+		{
+			order = (Order)inReq.getSessionValue("vieworder");
+		}
+		if( order == null )
 		{
 			return false;
 		}
-		Order order = loadOrder(inReq);
-		return !order.isExpired();
+		Asset asset = getAsset(inReq);
+		if( asset == null)
+		{
+			log.info("Asset not found");
+			return false;
+		}
+		String catalogid = inReq.findValue("catalogid");
+		HitTracker assets = getOrderManager().findOrderItems(inReq, catalogid, order);
+		int found = assets.findRow("assetid", asset.getId());
+		if( found > -1 && !order.isExpired() )
+		{
+			return true;
+		}
+		return false;
 	}
 
 }

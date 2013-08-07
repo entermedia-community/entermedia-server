@@ -40,16 +40,15 @@ $context.putPageValue("data", $userprofile)
             <input type="hidden" name="save" value="true"/>
             <input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
             <input type="hidden" name="method" value="edituser"/>
-                        <input type="hidden" name="oemaxlevel" value="1"/>
+            <input type="hidden" name="oemaxlevel" value="1"/>
             
-              
             <div class="clearfix">
                    
-		<div id="resultslist">
-			<div id="default-fields">
- 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			<div id="resultslist">
+				<div id="default-fields">
+	 				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+				</div>
 			</div>
-		</div>
             </div>
             
             #if( $message || $errors)
@@ -57,8 +56,7 @@ $context.putPageValue("data", $userprofile)
                     $context.getText($message)  $!errors
                 </div>
             #end
-  <div id="usereditproperties" ></div>
-
+  			<div id="usereditproperties" ></div>
             <a href="#" class="btn right" style="margin: 20px 20px 0 0" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
         </form>
     

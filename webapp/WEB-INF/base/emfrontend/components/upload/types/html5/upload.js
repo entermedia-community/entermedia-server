@@ -219,8 +219,17 @@ $(document).ready(function()
 	             //do a search
 	        	 if( !haderror)
 	        	{
-	        		 //document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
-	        		 document.location.href = home + "/views/myaccount/myassets/index.html";
+//	        		 document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
+//	        		 document.location.href = home + "/views/myaccount/myassets/index.html";
+	        		 
+	        		 var nexturl = "/views/myaccount/myassets/index.html";
+	        		 var uploadarea = $("#uploadarea");
+	        		 if (uploadarea!=null && uploadarea!=undefined){
+	        			 if (uploadarea.data("nextpage")!=null && uploadarea.data("nextpage")!=undefined && uploadarea.data("nextpage")!="default"){
+	        				 nexturl = uploadarea.data("nextpage");
+	        			 }
+	        		 }
+	        		 document.location.href = home + nexturl;
 	        	}
 	
 	         }

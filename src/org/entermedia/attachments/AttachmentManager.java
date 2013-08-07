@@ -123,8 +123,7 @@ public class AttachmentManager
 					attachment.setProperty("parentsourcepath", inFolderSourcePath);
 
 					Asset asset = new Asset();
-					File input = new File(page.getContentItem().getAbsolutePath());
-					getMetaDataReader().populateAsset(inArchive, input, asset);
+					getMetaDataReader().populateAsset(inArchive, page.getContentItem(), asset);
 					for (Iterator iterator2 = asset.getProperties().keySet().iterator(); iterator2.hasNext();)
 					{
 						String key = (String) iterator2.next();

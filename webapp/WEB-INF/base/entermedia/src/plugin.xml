@@ -10,43 +10,43 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 >
 
 <!-- GROOVY Script Version -->
-	<lang:groovy id="imagemagickCreator" script-source="conversions/creators/imagemagickCreator.groovy">
+	<lang:groovy id="imagemagickCreator" script-source="conversions/creators/imagemagickCreator.groovy" lazy-init="false">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 		<lang:property name="preProcessors"><ref bean="imagePreProcessors" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="oofficeDocumentCreator" script-source="conversions/creators/oofficeDocumentCreator.groovy">
+	<lang:groovy id="oofficeDocumentCreator" script-source="conversions/creators/oofficeDocumentCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="originalCreator" script-source="conversions/creators/originalCreator.groovy">
+	<lang:groovy id="originalCreator" script-source="conversions/creators/originalCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>			
-	<lang:groovy id="digitalrapidsCreator" script-source="conversions/creators/digitalrapidsCreator.groovy">
+	<lang:groovy id="digitalrapidsCreator" script-source="conversions/creators/digitalrapidsCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="exiftoolthumbCreator" script-source="conversions/creators/exiftoolthumbCreator.groovy">
+	<lang:groovy id="exiftoolthumbCreator" script-source="conversions/creators/exiftoolthumbCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="audioCreator" script-source="conversions/creators/audioCreator.groovy">
+	<lang:groovy id="audioCreator" script-source="conversions/creators/audioCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="ffmpegCreator" script-source="conversions/creators/ffmpegCreator.groovy">
+	<lang:groovy id="ffmpegCreator" script-source="conversions/creators/ffmpegCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="ffmpegimageCreator" script-source="conversions/creators/ffmpegimageCreator.groovy">
+	<lang:groovy id="ffmpegimageCreator" script-source="conversions/creators/ffmpegimageCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
 	
 	
 	
-	<lang:groovy id="GhostScriptImageCreator" script-source="conversions/creators/GhostScriptImageCreator.groovy">
+	<lang:groovy id="GhostScriptImageCreator" script-source="conversions/creators/GhostScriptImageCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
@@ -65,12 +65,12 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<lang:groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy" />
 
 	
-<lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy">
+<lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy" lazy-init="default">
 	   	<lang:property name="searcherManager"><ref bean="searcherManager"/></lang:property>
 		<lang:property name="webEventHandler"><ref bean="mediaEventHandler" /></lang:property>
 		<lang:property name="lockManager"><ref bean="lockManager" /></lang:property>
 	</lang:groovy>
-	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" >
+	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 			<lang:property name="userManager"><ref bean="userManager" /></lang:property>
 	</lang:groovy>

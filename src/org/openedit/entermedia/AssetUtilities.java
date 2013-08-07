@@ -183,18 +183,9 @@ public class AssetUtilities
 
 	public void readMetadata(Asset asset, ContentItem inContent, final MediaArchive inArchive)
 	{
-		if (inContent instanceof FileItem)
-		{
-			File input = ((FileItem) inContent).getFile();
-			getMetaDataReader().populateAsset(inArchive, input, asset);
-		}
+		getMetaDataReader().populateAsset(inArchive, inContent, asset);
 	}
-	
-	public void readMetadata(Asset asset, File inFile, final MediaArchive inArchive)
-	{
-		getMetaDataReader().populateAsset(inArchive, inFile, asset);
-	}
-	
+		
 	public boolean deleteAsset(ContentItem inContent, final MediaArchive inArchive)
 	{
 		Asset asset = getAsset(inContent, inArchive);

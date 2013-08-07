@@ -1,6 +1,5 @@
 package org.openedit.entermedia.modules;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -31,6 +30,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.edit.AssetEditor;
 import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.scanner.PresetCreator;
+import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.xmp.XmpWriter;
 import org.openedit.event.WebEventListener;
 import org.openedit.repository.Repository;
@@ -587,6 +587,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 	}	
+	
 	public void removeAssetValues(WebPageRequest inReq) throws OpenEditException 
 	{
 		Asset asset = getAsset(inReq);
@@ -751,10 +752,74 @@ public class AssetEditModule extends BaseMediaModule
 				hits.addSelection(data.getId());
 			}			
 
+			inReq.putPageValue("hits", hits );
 			
 		}
 	}
-
+	
+	public void appendRecentUploads(WebPageRequest inReq) throws Exception
+	{
+		List recent = (List) inReq.getSessionValue("recent-uploads");
+		if(recent == null)
+		{
+			recent = new ArrayList();
+			inReq.putSessionValue("recent-uploads", recent);
+		}
+		Asset asset = (Asset) inReq.getPageValue("asset");
+		if(asset != null)
+		{
+			if(asset.getId()!=null && !recent.contains(asset.getId()))
+			{
+				recent.add(asset.getId());
+			}
+		}
+		HitTracker hits = (HitTracker) inReq.getPageValue("hits"); 
+		if(hits != null){
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				if(hit.getId()!=null && !recent.contains(hit.getId()))
+				{
+					recent.add(hit.getId());
+				}
+			}
+		}
+	}
+	
+	public void clearRecentUploads(WebPageRequest inReq) throws Exception
+	{
+		inReq.removeSessionValue("recent-uploads");
+	}
+	
+	public void loadRecentUploads(WebPageRequest inReq) throws Exception
+	{
+		List recent = (List) inReq.getSessionValue("recent-uploads");
+		if(recent == null)
+		{
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		if (archive == null)
+		{
+			return;
+		}
+		AssetSearcher searcher = archive.getAssetSearcher();
+		SearchQuery query = searcher.createSearchQuery();
+		SearchQuery allassetsquery = searcher.createSearchQuery();
+		for (Iterator iterator = recent.iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			allassetsquery.addExact("id", id);
+		}
+		allassetsquery.setAndTogether(false);
+		query.addChildQuery(allassetsquery);
+		searcher.cachedSearch(inReq, query);
+		if(Boolean.parseBoolean(inReq.findValue("clearonload")))
+		{
+			clearRecentUploads(inReq);
+		}
+	}
+	
 	public void createAssetsFromFile(WebPageRequest inReq)
 	{
 		String sourcepath = inReq.findValue("sourcepath");
@@ -1113,7 +1178,7 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 			
-			getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, new File(itemFile.getContentItem().getAbsolutePath()), target);
+			getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, itemFile.getContentItem(), target);
 			
 			for(String detail: externaldetails.keySet())
 			{
