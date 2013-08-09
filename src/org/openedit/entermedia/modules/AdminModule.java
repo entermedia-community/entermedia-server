@@ -362,18 +362,7 @@ public class AdminModule extends BaseModule
 				inReq.putPageValue("oe-exception", "Invalid Logon");
 				return;
 			}
-			AuthenticationRequest aReq = new AuthenticationRequest();
-			aReq.setUser(user);
-			aReq.setPassword(password);
-
-			String domain = inReq.getRequestParameter("domain");
-			if (domain == null)
-			{
-				domain = inReq.getContentPage().get("authenticationdomain");
-			}
-			aReq.putProperty("authenticationdomain", domain);
-			String server = inReq.getPage().get("authenticationserver");
-			aReq.putProperty("authenticationserver", server);
+			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
 
 			if (loginAndRedirect(aReq, inReq))
 			{
@@ -381,6 +370,41 @@ public class AdminModule extends BaseModule
 				getUserManager().saveUser(user);
 			}
 		}
+	}
+	public boolean authenticate(WebPageRequest inReq) throws Exception
+	{
+		String account = inReq.getRequestParameter("id");
+		String password = inReq.getRequestParameter("password");
+		User user = getUserManager().getUser(account);
+		Boolean ok = false;
+		if( user != null)
+		{
+			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
+			if( getUserManager().authenticate(aReq) )
+			{
+				ok = true;
+			}
+		}
+		inReq.putPageValue("id", user.getId() );
+		inReq.putPageValue("authenticated", ok);
+		return ok;
+		
+	}
+	protected AuthenticationRequest createAuthenticationRequest(WebPageRequest inReq, String password, User user)
+	{
+		AuthenticationRequest aReq = new AuthenticationRequest();
+		aReq.setUser(user);
+		aReq.setPassword(password);
+
+		String domain = inReq.getRequestParameter("domain");
+		if (domain == null)
+		{
+			domain = inReq.getContentPage().get("authenticationdomain");
+		}
+		aReq.putProperty("authenticationdomain", domain);
+		String server = inReq.getPage().get("authenticationserver");
+		aReq.putProperty("authenticationserver", server);
+		return aReq;
 	}
 
 	/**

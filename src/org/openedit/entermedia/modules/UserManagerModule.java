@@ -21,6 +21,7 @@ import org.entermedia.email.PostMail;
 import org.entermedia.email.TemplateWebEmail;
 import org.entermedia.upload.FileUpload;
 import org.entermedia.upload.UploadRequest;
+import org.openedit.MultiValued;
 import org.openedit.data.Searcher;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.users.GroupSearcher;
@@ -1446,4 +1447,41 @@ public class UserManagerModule extends BaseModule
 			}
 		}
 	}
+	
+	public void saveGroupData(WebPageRequest inReq) throws Exception
+	{
+		//Already save using DataEditModule.saveData
+		User user = (User)inReq.getPageValue("data");
+
+		String groups = inReq.getRequestParameter("groups.value");
+		if( groups != null)
+		{
+			user.clearGroups();
+			if( groups != null )
+			{
+				String[] vals = null;
+				if( groups.contains("|") )
+				{
+					vals = MultiValued.VALUEDELMITER.split(groups);
+				}
+				else
+				{
+					vals = groups.split("\\s+"); //legacy
+				}
+				for (int i = 0; i < vals.length; i++)
+				{
+					Group group = getGroupSearcher().getGroup( vals[i] );
+					if( group != null )
+					{
+						user.addGroup( group );
+					}
+				}
+			}
+			getSearcherManager().getSearcher("system", "user").saveData(user, inReq.getUser());
+			
+		}
+		
+		
+	}
+	
 }

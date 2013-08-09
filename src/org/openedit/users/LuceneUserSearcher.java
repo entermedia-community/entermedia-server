@@ -105,7 +105,10 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 		{
 			Group group = (Group) iterator.next();
 			groups.append(group.getId());
-			groups.append(" ");
+			if( iterator.hasNext() )
+			{
+				groups.append(" | ");
+			}
 		}
 		if( groups.length() > 0)
 		{
@@ -202,5 +205,11 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 	@Override
 	public Data createNewData() {
 		return getUserManager().createUser(null, null);
+	}
+	
+	@Override
+	public void deleteData(Data inData)
+	{
+		getUserManager().deleteUser((User)inData);
 	}
 }
