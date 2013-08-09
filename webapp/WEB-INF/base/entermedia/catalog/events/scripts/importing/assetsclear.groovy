@@ -1,16 +1,12 @@
 package importing;
-import java.util.*;
+import org.openedit.Data
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.search.AssetSearcher
 
-import org.openedit.Data;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.search.AssetSearcher;
-import org.openedit.repository.ContentItem;
-
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
-import com.openedit.page.manage.*;
+import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
+import com.openedit.page.manage.*
 
 public void init()
 {
