@@ -13,7 +13,7 @@ $context.putPageValue("caneditlists","false")
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
 	#if( !$details)
-		No details available for this view.  Please configure your view settings.	
+		[[No details available for this view.  Please configure your view settings.]]
 
 	#end
 #else
@@ -43,7 +43,7 @@ $context.putPageValue("caneditlists","false")
 	#if ($detail.header)
 		<tr><td colspan="2">&nbsp;</td></tr>
 		#if ($detail.header != "blank")
-			<tr><td colspan="2" style="text-align:center;"><h4>$detail.header</h4></td></tr>
+			<tr><td colspan="2" style="text-align:center;"><h4>#translate($detail.header)</h4></td></tr>
 		#end
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true" )
@@ -82,7 +82,7 @@ $context.putPageValue("caneditlists","false")
 				    #if ($detail.required == true) * #end	$!detail.getText($context)
 				#end
 			</td>
-			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
+			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) [[required]] #end">
 			
 				$pages.include("$xmledithome/detailreadonly.html", $context) 
 			#if ( $detail.note )
