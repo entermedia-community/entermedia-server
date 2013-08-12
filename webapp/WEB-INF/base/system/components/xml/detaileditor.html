@@ -80,7 +80,7 @@ $context.putPageValue("caneditlists","false")
 				#if( $detail.hidelabel == true )
 				#else
 				    #if ($detail.required == true) * #end	$!detail.getText($context)
-				#end
+				#end				
 			</td>
 			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
 			
@@ -125,16 +125,5 @@ $context.putPageValue("caneditlists","false")
 #if( $usedhtml && $readonly !=  "true") 
 	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
 #end
-
-<!-- 
-<script type="text/javascript">
-	//jQuery(".required").find('input[type!="hidden"], textarea, select, radio').rules( "add", {required:true} );
-	//var form = jQuery(".required").closest("form");
-	//form.addClass("validate");
-	//jQuery(".validate").validate();
-	//form.validate();
-	
-</script>
- -->
  
  
