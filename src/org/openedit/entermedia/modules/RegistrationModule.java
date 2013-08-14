@@ -292,6 +292,41 @@ public class RegistrationModule extends BaseMediaModule {
 		}
 
 	}
+	
+	public void checkPasswordMatch(WebPageRequest inReq) throws Exception
+	{
+		Map errors = new HashMap();
+		String password = inReq.getRequestParameter("password.value");
+		String password2 = inReq.getRequestParameter("password2.value");
+		if (password2 == null)
+		{
+			password2 = inReq.getRequestParameter("passwordmatch.value");
+		}
+		String errorURL = inReq.findValue("errorURL");
+		if (password == null)
+		{
+			if (errorURL != null)
+			{
+				errors.put("password", "error-no-password");
+				inReq.setHasForwarded(true);
+				inReq.putPageValue("errors", errors);
+				inReq.setCancelActions(true);
+				inReq.forward(errorURL);
+			}
+			return;
+		}
+		if (!password.equals(password2) || password.length() == 0)
+		{
+			if (errorURL != null)
+			{
+				errors.put("password", "error-no-password-match");
+				inReq.setHasForwarded(true);
+				inReq.putPageValue("errors", errors);
+				inReq.setCancelActions(true);
+				inReq.forward(errorURL);
+			}
+		}
+	}
 
 	protected void handleValidationCodes(WebPageRequest inReq,
 			 User inCurrent) {
