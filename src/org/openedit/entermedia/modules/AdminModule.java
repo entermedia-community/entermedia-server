@@ -385,7 +385,11 @@ public class AdminModule extends BaseModule
 				ok = true;
 			}
 		}
-		inReq.putPageValue("id", user.getId() );
+		else
+		{
+			log.info("No such user" + account );
+		}
+		inReq.putPageValue("id", account );
 		inReq.putPageValue("authenticated", ok);
 		return ok;
 		
