@@ -426,6 +426,7 @@ public class Asset implements MultiValued
 		}
 		else if ("keywords".equals(inKey))
 		{
+			getKeywords().clear();
 			if (inValue != null)
 			{
 				if( inValue.contains("|") )
@@ -438,7 +439,6 @@ public class Asset implements MultiValued
 				}
 				else if( inValue.contains(",") )
 				{
-						getKeywords().clear();
 						String[] vals = inValue.split(",");
 						for (int i = 0; i < vals.length; i++)
 						{

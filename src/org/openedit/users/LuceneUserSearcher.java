@@ -68,7 +68,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 		try
 		{
 			//writer.setMergeFactor(50);
-		
+			getUserManager().flush();
 			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
 			Collection usernames = getUserManager().listUserNames();
 			if( usernames != null)
