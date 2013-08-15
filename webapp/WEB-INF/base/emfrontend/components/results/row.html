@@ -23,6 +23,10 @@ $pages.include("$apphome/components/results/thumbnails/small.html",$context)
       #else	
 		#set( $value = $hit.get($detail.id))
 	#end
+	#if( !$value && $detail.render )	
+			#set($value = $searcherManager.getValue($catalogid,$detail.render, $hit.properties) ) 
+	#end	
+	
 	$!context.putPageValue("detail",$detail)
 	$!context.putPageValue("val",$value)	
 	$!context.putPageValue("data",$hit)
