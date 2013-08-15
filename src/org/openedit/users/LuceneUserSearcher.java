@@ -21,9 +21,11 @@ import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.users.BaseUser;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
+import com.openedit.users.filesystem.FileSystemUser;
 
 /**
  *
@@ -204,7 +206,8 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 	
 	@Override
 	public Data createNewData() {
-		return getUserManager().createUser(null, null);
+		//return getUserManager().createUser(null, null);
+		return new BaseUser();
 	}
 	
 	@Override
