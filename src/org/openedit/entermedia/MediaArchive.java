@@ -1316,6 +1316,10 @@ public class MediaArchive
 		Map tmp = new HashMap(inPreset.getProperties());
 		tmp.put("assetid", inAsset.getId());
 		tmp.put("filename", inAsset.getName());
+		
+		String shortname = PathUtilities.extractPageName(inAsset.getName());
+		tmp.put("shortfilename", shortname);
+		
 		tmp.put("catalogid", inAsset.getCatalogId());
 		tmp.put("sourcepath", inAsset.getSourcePath());
 		tmp.put("date", ymd.format(now));
