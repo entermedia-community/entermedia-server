@@ -6,7 +6,7 @@
   <parameter id="ffmpegpreviewmp43" parameterdata="ffmpegpreviewmp4" value="libfaac" >acodec</parameter> 
   <parameter id="ffmpegpreviewmp45" parameterdata="ffmpegpreviewmp4" value="medium" >preset</parameter> 
 
-  <parameter id="ffmpeg480p1" parameterdata="ffmpeg480p" value="704" >prefwidth</parameter> 
+  <parameter id="ffmpeg480p1" parameterdata="ffmpeg480p" value="720" >prefwidth</parameter> 
   <parameter id="ffmpeg480p2" parameterdata="ffmpeg480p" value="480" >prefheight</parameter> 
   <parameter id="ffmpeg480p3" parameterdata="ffmpeg480p" value="libfaac" >acodec</parameter> 
   <parameter id="ffmpeg480p4" parameterdata="ffmpeg480p" value="libx264" >vcodec</parameter> 
