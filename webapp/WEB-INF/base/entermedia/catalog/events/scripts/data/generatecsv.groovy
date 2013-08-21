@@ -49,7 +49,9 @@ public void init(){
 
 	String realpath = output.getContentItem().getAbsolutePath();
 	File outputfile = new File(realpath);
-
+	File parent = outputfile.parentFile;
+	
+	parent.mkdirs();
 	FileWriter out = new FileWriter(outputfile);
 	CSVWriter writer  = new CSVWriter(out);
 	int count = 0;
@@ -105,7 +107,6 @@ public void init(){
 
 		writer.writeNext(nextrow);
 	}
-	throw new OpenEditException("THis is a problem");
 	writer.close();
 	
 	

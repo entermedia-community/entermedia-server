@@ -63,7 +63,7 @@
 
             </div>
 
-	    <div class="checkbox"><input id="systemdefined" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined) checked #else #end/>
+	    <div class="checkbox"><input id="systemdefined" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
                 System View?
             	<input type="hidden" value="systemdefined" name="field" />
 
