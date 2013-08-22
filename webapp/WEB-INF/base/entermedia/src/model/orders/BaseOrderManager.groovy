@@ -858,9 +858,12 @@ public class BaseOrderManager implements OrderManager
 			else if ("error".equals( publish.get("status") ) )
 			{
 				Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
-				item.setProperty("status", "error");
-				item.setProperty("errordetails", publish.get("errordetails"));
-				itemsearcher.saveData(item, null);
+				if( item != null)
+				{
+					item.setProperty("status", "error");
+					item.setProperty("errordetails", publish.get("errordetails"));
+					itemsearcher.saveData(item, null);
+				}
 				inOrder.setOrderStatus("error",publish.get("errordetails")); //orders are either open closed or error
 				OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
 				saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
