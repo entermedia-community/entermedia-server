@@ -103,7 +103,7 @@ public class IndexAllAssets extends AssetProcessor
 			logcount++;
 			if( logcount == 1000 )
 			{
-				log.info("Reindex has completed " + getExecCount() + " index updates");
+				log.info("Reindex processed " + getExecCount() + " index updates so far");
 				logcount=0;
 			}
 		}
