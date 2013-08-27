@@ -129,7 +129,7 @@ public class XmlDataArchive implements DataArchive
 		}
 	}
 
-
+	//Not recommeneded, use populateElementData
 	protected void populateElement(Element inElement, Data inData)
 	{
 		for (Iterator iterator = inData.getProperties().keySet().iterator(); iterator.hasNext();)
@@ -150,15 +150,31 @@ public class XmlDataArchive implements DataArchive
 	{
 		List attributes = inData.getAttributes();
 		List attributessaved = new ArrayList(attributes.size()); 
+		boolean foundname = false;
 		for (Iterator iterator = attributes.iterator(); iterator.hasNext();) {
 			Attribute attr = (Attribute) iterator.next();
 			if( !attr.getName().startsWith(".") )
 			{
 				attributessaved.add(attr);				
 			}
+			if( attr.getName().equals("name")  )
+			{
+				foundname = true;
+			}
 		}
 		inElement.setAttributes(attributessaved);
-		inElement.setText(inData.getName());
+		
+		//Mixed content is ok
+		for (Iterator iterator = inData.getElement().elementIterator(); iterator.hasNext();)
+		{
+			Element child = (Element) iterator.next();
+			inElement.add(child.createCopy());
+			if( "name".equals( child.attributeValue("id") ) )
+			{
+				foundname = true;
+			}
+		}
+		
 //		boolean foundname = false;
 //		for(Iterator iterator = attributes.iterator(); iterator.hasNext();)
 //		{
@@ -173,10 +189,12 @@ public class XmlDataArchive implements DataArchive
 //				inElement.addAttribute(attr.getName(), attr.getValue());
 //			}
 //		}
-//		if( !foundname && inData.getName() != null)
-//		{
-//			inElement.setText(inData.getName());
-//		}
+		
+		//This should not happen any more
+		if( !foundname && inData.getName() != null)
+		{
+			inElement.addCDATA(inData.getName());
+		}
 	}
 
 	public String getPathToXml( String inSourcePath )
