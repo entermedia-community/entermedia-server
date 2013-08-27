@@ -18,7 +18,7 @@ import com.openedit.hittracker.HitTracker
 		HitTracker targets = context.getSessionValue(sessionid);
 		ArrayList toSave = new ArrayList();
 
-		for (Iterator iterator = targets.getSelectedHits().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = targets.getSelectedHitracker().iterator(); iterator.hasNext();) {
 			Data hit = (Data) iterator.next();
 			Object real = searcher.searchById(hit.getId());
 			String[] fields = context.getRequestParameters("field");

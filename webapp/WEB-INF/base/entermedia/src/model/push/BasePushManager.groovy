@@ -25,10 +25,14 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.entermedia.upload.FileUpload;
+import org.entermedia.upload.FileUploadItem;
+import org.entermedia.upload.UploadRequest;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.push.PushManager;
 import org.openedit.entermedia.search.AssetSearcher;
@@ -37,6 +41,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
+import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
@@ -50,6 +55,8 @@ public class BasePushManager implements PushManager
 	private static final Log log = LogFactory.getLog(PushManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected UserManager fieldUserManager;
+	protected PageManager fieldPageManager;
+	
 	protected HttpClient fieldClient;
 	private SAXReader reader = new SAXReader();
 	
@@ -419,8 +426,11 @@ public class BasePushManager implements PushManager
 			for (Iterator iterator = inAsset.getProperties().keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				parts.add(new StringPart("field", key));
-				parts.add(new StringPart(key+ ".value", inAsset.get(key)));
+				if( !key.equals("libraries"))
+				{
+					parts.add(new StringPart("field", key));
+					parts.add(new StringPart(key+ ".value", inAsset.get(key)));
+				}
 			}
 			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
 			
@@ -994,6 +1004,75 @@ asset: " + asset);
 	public void toggle(String inCatalogId)
 	{
 		fieldClient = null;
+	}
+	
+	@Override
+	public void acceptPush(WebPageRequest inReq, MediaArchive archive, String sourcepath)
+	{
+		FileUpload command = new FileUpload();
+		command.setPageManager(archive.getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+
+		Asset target = archive.getAssetBySourcePath(sourcepath);
+		if (target == null)
+		{
+			String id = inReq.getRequestParameter("id");
+			target = archive.createAsset(id, sourcepath);
+		}
+		
+//		String categories = inReq.getRequestParameter("categories");
+//		String[] vals = categories.split(";");
+//		archive.c
+//		target.setCategories(cats);
+		String categorypath = PathUtilities.extractDirectoryPath(sourcepath);
+		Category category = archive.getCategoryArchive().createCategoryTree(categorypath);
+		target.addCategory(category);
+		
+		String[] fields = inReq.getRequestParameters("field");
+		archive.getAssetSearcher().updateData(inReq, fields, target);
+
+		String keywords = inReq.getRequestParameter("keywords");
+		if( keywords != null )
+		{
+			String[] keys =  keywords.split("\\|");
+			for (int i = 0; i < keys.length; i++)
+			{
+				target.addKeyword(keys[i]);
+			}
+		}
+
+		
+		archive.saveAsset(target, inReq.getUser());
+		List<FileUploadItem> uploadFiles = properties.getUploadItems();
+
+		String type = inReq.findValue("uploadtype");
+		if( type == null )
+		{
+			type = "generated";
+		}
+		String	saveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/" + type + "/" + sourcepath;
+			
+		//String originalsroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
+
+		if (uploadFiles != null)
+		{
+			Iterator<FileUploadItem> iter = uploadFiles.iterator();
+			while (iter.hasNext())
+			{
+				FileUploadItem fileItem = iter.next();
+
+				String filename = fileItem.getName();
+				if (type.equals("originals"))
+				{
+					properties.saveFileAs(fileItem, saveroot, inReq.getUser());
+				}
+				else
+				{
+					properties.saveFileAs(fileItem, saveroot + "/" + filename, inReq.getUser());
+				}
+			}
+		}
+
 	}
 
 
