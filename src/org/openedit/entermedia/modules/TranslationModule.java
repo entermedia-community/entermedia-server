@@ -266,7 +266,7 @@ public class TranslationModule extends BaseModule {
 			inReq.putPageValue(PageRequestKeys.BROWSER, browser);
 		}
 
-		if (inReq.getLocale() != null) {
+		if (inReq.getLocale() != null && req != null && req.getLocale() != null) {
 			String temp = req.getLocale().toString();
 			temp = temp.replace("_", "-").toLowerCase();
 			String[] split = temp.split("-");
