@@ -164,6 +164,8 @@ public class XmlDataArchive implements DataArchive
 		}
 		inElement.setAttributes(attributessaved);
 		
+		inElement.clearContent();
+		
 		//Mixed content is ok
 		for (Iterator iterator = inData.getElement().elementIterator(); iterator.hasNext();)
 		{

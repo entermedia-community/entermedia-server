@@ -27,6 +27,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.BaseCompositeData;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.xml.XmlArchive;
@@ -476,7 +477,12 @@ public class DataEditModule extends BaseMediaModule
 			}
 			if (id != null && id.startsWith("multiedit:"))
 			{
+				
 				data = (CompositeData) inReq.getSessionValue(id);
+				if( data == null)
+				{
+					data = loadData(inReq);
+				}
 			}
 			if (id != null && data == null)
 			{
@@ -1213,7 +1219,7 @@ public class DataEditModule extends BaseMediaModule
 
 	}
 
-	public Object loadData(WebPageRequest inReq) throws Exception
+	public Data loadData(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
 		String variablename = inReq.findValue("pageval");
@@ -1228,7 +1234,32 @@ public class DataEditModule extends BaseMediaModule
 			id = pagename.substring(0, pagename.indexOf("."));
 
 		}
-		Object result = searcher.searchById(id);
+		
+		Data result = null;
+		
+		if( id.startsWith("multiedit:"))
+		{
+			//setup the session value
+			//BaseCompositeData
+				Data data = (CompositeData) inReq.getSessionValue(id);
+				if( data == null )
+				{
+					String hitssessionid = id.substring("multiedit".length()  +1 );
+					HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+					if( hits == null)
+					{
+						log.error("Could not find " + hitssessionid);
+						return null;
+					}
+					CompositeData composite = new BaseCompositeData(searcher,hits);
+					composite.setId(id);
+					result = composite;
+				}
+		}
+		if( result == null)
+		{
+			result = (Data)searcher.searchById(id);
+		}
 		inReq.putPageValue(variablename, result);
 		return result;
 
