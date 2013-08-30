@@ -54,7 +54,13 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 		{
 			return false;
 		}
+		
 		boolean edit = Boolean.parseBoolean(user.get("showeditor"));
+		
+		if(!edit && inPageRequest.getUserProfile() != null){
+			edit = Boolean.parseBoolean(inPageRequest.getUserProfile().get("contentedit"));
+		}
+		
 		if (edit && !requestedPage.isBinary() && inPageRequest.isEditable() )
 		{
 			return true;

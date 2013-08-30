@@ -32,7 +32,7 @@ if(detaillist != null){
 } 
 else{
 
-details = searcher.getDetailsForView("csvexport", context.getUser());
+details = searcher.getDetailsForView("${searchtype}/csvexport", context.getUser());
 }
 
 if(details == null){
