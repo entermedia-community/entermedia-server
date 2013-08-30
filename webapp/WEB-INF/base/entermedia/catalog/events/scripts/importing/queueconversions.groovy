@@ -32,7 +32,7 @@ public void createTasksForUpload() throws Exception
 	if( ids == null)
 	{
 		//Do a search for importstatus of "added" -> "converted"
-		q.addExact( "importstatus", "imported" );
+		q.addOrsGroup( "importstatus", "imported reimported" );
 	}
 	else
 	{
