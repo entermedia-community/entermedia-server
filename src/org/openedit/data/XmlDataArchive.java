@@ -77,13 +77,7 @@ public class XmlDataArchive implements DataArchive
 		}
 		if(inData instanceof ElementData)
 		{
-			//populateElementData(element, (ElementData)inData); 
-			//Can we do this by copy?
-			
-			xml.getRoot().remove(element);
-			ElementData newrow = (ElementData) inData;
-		
-			xml.getRoot().add(newrow.getElement().createCopy());
+			populateElementData(element, (ElementData)inData);
 		}
 		else
 		{
@@ -176,22 +170,6 @@ public class XmlDataArchive implements DataArchive
 		for (Iterator iterator = inData.getElement().elementIterator(); iterator.hasNext();)
 		{
 			Element child = (Element) iterator.next();
-			String id = child.getName();
-			//We need to ensure there are no new duplicates	
-			Iterator children = inElement.elementIterator(id);
-			if( children != null)
-			{
-				for (Iterator iterator2 = children; iterator2
-						.hasNext();) {
-					Element oldchild = (Element) iterator2.next();
-					inElement.remove(oldchild);	
-				}
-				//TODO: See if value changed?
-				
-			}
-			
-			
-			
 			inElement.add(child.createCopy());
 			if( "name".equals( child.attributeValue("id") ) )
 			{
@@ -215,7 +193,7 @@ public class XmlDataArchive implements DataArchive
 //		}
 		
 		//This should not happen any more
-		if( !foundname && inData.getName() != null && !inData.getName().isEmpty())
+		if( !foundname && inData.getName() != null)
 		{
 			inElement.addCDATA(inData.getName());
 		}
