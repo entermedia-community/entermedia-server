@@ -5,10 +5,6 @@
     	<value>User Manager</value>
   	</property>
   <inner-layout>${themeprefix}/layouts/settingssubtablayoutnomargin.html</inner-layout>
-  <path-action name="DataEditModule.loadPageOfSearch" >
-    <property name="searchtype">member</property>
-  </path-action>
-  <property name="hitsname">members</property>
   <property name="tab">users</property>
   <property name="subtab">users</property>
   <property name="oeuseradmintabid">userstab</property>
