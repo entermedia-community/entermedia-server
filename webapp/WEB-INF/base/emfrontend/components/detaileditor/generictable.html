@@ -9,7 +9,6 @@
 #set( $candelete = "true")
 
 #set($viewid = $context.getRequestParameter("viewid"))
-
 #if( !$viewid )
     #set( $viewid = $context.getRequestParameter("view"))
 #end
@@ -35,11 +34,10 @@
 #set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 #set( $argsnoid = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 
+#set($viewdetailspath = $context.getRequestParameter("viewdetailspath"))
 
-#set ($passalong = "candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
+#set ($passalong = "viewdetailspath=$!viewdetailspath&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
-
-
 
 #set( $showit = true )
 
@@ -72,7 +70,11 @@
 		<div id="default-fields">
 		  $pages.include("/$applicationid/components/xml/detaileditor.html",$context)
 		</div>
-		
+		#if( $viewdetailspath )
+		<div style="text-align:right;padding: 10px;">
+		  <a href="$home${viewdetailspath}?id=$id">[[see more details]]</a>
+		</div>
+		#end
 		<div style="margin: 20px 20px 0 20px;">
 			<input class="btn right"  type="submit" value="Save Values"/>
 			<a class="btn ajax red" style="color: #fff;" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
