@@ -132,8 +132,12 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 					for (int i = 0; i < hits.length; i++)
 					{
 						String word = hits[i];
-						String key = word.substring(0, word.lastIndexOf('('));
-						suggestions.put(key, word);
+						int index = word.lastIndexOf('(');
+						if( index > -1)
+						{
+							String key = word.substring(0, index);
+							suggestions.put(key, word);
+						}
 					}
 				}
 			}
