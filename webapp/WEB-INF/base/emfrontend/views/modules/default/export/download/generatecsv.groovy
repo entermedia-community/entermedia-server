@@ -39,8 +39,8 @@ if(details == null){
 	details = searcher.getPropertyDetails();
 }
 
-StringWriter output  = new StringWriter();
-CSVWriter writer  = new CSVWriter(output);
+//StringWriter output  = new StringWriter();
+CSVWriter writer  = new CSVWriter(context.getWriter());
 int count = 0;
 headers = new String[details.size()];
 for (Iterator iterator = details.iterator(); iterator.hasNext();)
@@ -62,7 +62,7 @@ i = hits.getSelectedHits().iterator();
 for (Iterator iterator = i; iterator.hasNext();)
 {
 	hit =  iterator.next();
-	tracker = searcher.searchById(hit.get("id"));
+	tracker = searcher.searchById(hit.get("id"));  //why do we need to load every record?
 
 
 	nextrow = new String[details.size()];//make an extra spot for c
@@ -87,15 +87,7 @@ for (Iterator iterator = i; iterator.hasNext();)
 	
 		fieldcount++;
 	}
-	
-	
-	
-	
 	writer.writeNext(nextrow);
 }
 writer.close();
-
-String finalout = output.toString();
-context.putPageValue("export", finalout);
-
 
