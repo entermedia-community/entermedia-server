@@ -212,7 +212,7 @@ public class PathEvent implements Comparable, TextAppender
 	public void setLastRun(Date inLastRun)
 	{
 		fieldLastRun = inLastRun;
-		getLastOutput().append("ran on: ");
+		getLastOutput().append("event started: ");
 		getLastOutput().append(DateFormat.getDateTimeInstance().format(fieldLastRun));
 		getLastOutput().append('\n');
 
