@@ -36,6 +36,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	{
 		setSearcher(inSearcher);
 		setInitialSearchResults(inHits);
+		reloadData();
 	}
 	public HitTracker getInitialSearchResults() 
 	{
@@ -125,14 +126,29 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		fieldRemovedKeywords = inRemovedKeywords;
 	}
 
-	
+	/**
+	 * This gets called quite often. 1st when we load the landing page
+	 * 2nd when we click on a link to edit something
+	 * 3rd when we go to save, we reload it again
+	 * 4th when we click to edit something again
+	 * Option is to store it in a session field but then it might get out of date 
+	 */
 	protected void reloadData() 
 	{
-		// TODO Auto-generated method stub
 		HitTracker existing = getInitialSearchResults();
-		HitTracker selecteddata = getSearcher().searchByIds(existing.getSelections() );
-		selecteddata.setHitsPerPage(10000);
-		setSelectedResults(selecteddata);
+		HitTracker selecteddata = getSearcher().search(existing.getSearchQuery());
+		if( existing.isAllSelected() )
+		{
+			//rerun the search
+			selecteddata.selectAll();
+		}
+		else
+		{
+			selecteddata.setSelections(existing.getSelections());
+			selecteddata.setShowOnlySelected(true);
+			selecteddata.setHitsPerPage(10000);
+		}
+		setSelectedResults(selecteddata);			
 		getProperties().clear();
 	}
 
