@@ -1105,6 +1105,11 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
+		String clear = inReq.getRequestParameter("clearselection");
+		if( Boolean.parseBoolean(clear))
+		{
+			hits.deselectAll();
+		}
 		return hits;
 	}
 

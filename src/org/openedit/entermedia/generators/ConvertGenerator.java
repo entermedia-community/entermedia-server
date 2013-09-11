@@ -37,6 +37,7 @@ public class ConvertGenerator extends FileGenerator
 
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
+		//TODO: Revamp all API to use ContentItem instead of Page
 		String catalogid = inReq.findValue("catalogid");
 		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
 		String sourcePath = inReq.getRequestParameter("sourcepath");

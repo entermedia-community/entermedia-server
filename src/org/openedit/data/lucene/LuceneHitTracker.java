@@ -17,6 +17,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.FieldCacheTermsFilter;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -49,6 +51,7 @@ public class LuceneHitTracker extends HitTracker
 	protected String fieldSearchType;
 	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
+	
 	/**
 	 * This is what is searched. getResultsType() is what is returned?
 	 * @deprecated
@@ -78,7 +81,7 @@ public class LuceneHitTracker extends HitTracker
 	{
 		if( fieldSize == null )
 		{
-			getPage(0);
+			getPage(0); //this will never happen because we set the size already
 		}
 		return fieldSize;
 	}
@@ -163,13 +166,25 @@ public class LuceneHitTracker extends HitTracker
 				{
 					max = 1;   //This causes our array to not have the right number of hits in it
 				}
+				Filter filter = null;
+				
+				if( isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
+				{
+					filter = new FieldCacheTermsFilter("id", fieldSelections.toArray(new String[fieldSelections.size()]) );
+				}
+				
+//				List<String> terms = new ArrayList();
+//			    terms.add("5");
+//			    results = searcher.search(q, ), numDocs).scoreDocs;
+//			    assertEquals("Must match nothing", 0, results.length);
+				
 				if( getLuceneSort() != null )
 				{
-					docs = searcher.search( getLuceneQuery(), max ,getLuceneSort() );
+					docs = searcher.search( getLuceneQuery(), filter, max ,getLuceneSort(), false, false );
 				}
 				else
 				{
-					docs = searcher.search( getLuceneQuery(),max);
+					docs = searcher.search( getLuceneQuery(),filter, max);
 				}
 				if( max > 1)
 				{
@@ -203,7 +218,7 @@ public class LuceneHitTracker extends HitTracker
 		}
 	}
 
-	private List<Data> populatePageData(int inPageNumberZeroBased,
+	protected List<Data> populatePageData(int inPageNumberZeroBased,
 			IndexSearcher searcher) throws IOException {
 		int start = getHitsPerPage() * inPageNumberZeroBased;
 		int max = start + getHitsPerPage();
@@ -299,9 +314,10 @@ public class LuceneHitTracker extends HitTracker
 		    int docid = lastDoc.doc;
 			//final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
 		  final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
-			
 		    searcher.doc(docid, visitor);
-			page.add( visitor.createSearchResult() );
+		    Data data = visitor.createSearchResult();
+		    //if data.getId()
+			page.add( data );
 		}
 	//	log.info( getSearchType()  + " ended with "   + lastDoc.doc + " = " + page.get(page.size() - 1).getId());
 
