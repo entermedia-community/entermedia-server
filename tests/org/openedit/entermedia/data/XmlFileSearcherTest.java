@@ -197,5 +197,9 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 		String lines = newlines.get("notes");
 		assertEquals(  "Here are my notes.\nFull of", lines );
 		
+		newlines.setProperty("notes", "Here are my notes.");
+		newlines.setProperty("notes", "Here are my notes.\nFull of 2");
+		xmlsearcher.saveData(newlines, null);
+		
 	}
 }
