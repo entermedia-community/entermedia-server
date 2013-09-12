@@ -185,21 +185,34 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 		Searcher xmlsearcher = getMediaArchive().getSearcher("library");
 		Data newxml = xmlsearcher.createNewData();
 		newxml.setProperty("notes", "Here are my notes Full of stuf");
+		
 		newxml.setProperty("notes", "Here are my notes.\"Full");
 		newxml.setProperty("notes", "Here are my notes.&");
+		xmlsearcher.saveData(newxml, null);
+		xmlsearcher.clearIndex();
+		
 		newxml.setProperty("notes", "Here are my notes.< ");
 		newxml.setProperty("notes", "Here are my notes. >");
+		xmlsearcher.saveData(newxml, null);
+		xmlsearcher.clearIndex();
+		
 		newxml.setProperty("notes", "Here are my notes.\nFull of");
 		xmlsearcher.saveData(newxml, null);
 		xmlsearcher.clearIndex();
+		
 		
 		Data newlines = (Data)xmlsearcher.searchById(newxml.getId());
 		String lines = newlines.get("notes");
 		assertEquals(  "Here are my notes.\nFull of", lines );
 		
-		newlines.setProperty("notes", "Here are my notes.");
-		newlines.setProperty("notes", "Here are my notes.\nFull of 2");
-		xmlsearcher.saveData(newlines, null);
+		newxml.setProperty("notes", "Here are my notes Full of stuf");
+		xmlsearcher.saveData(newxml, null);
+		xmlsearcher.clearIndex();
+		
+		newlines = (Data)xmlsearcher.searchById(newxml.getId());
+		lines = newlines.get("notes");
+		assertEquals(  "Here are my notes Full of stuf", lines );
+		
 		
 	}
 }
