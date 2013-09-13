@@ -68,6 +68,8 @@ public class TemplateModule extends BaseMediaModule {
 						.getPageValue(PageRequestKeys.URL_UTILITIES));
 		Page outputpage = getPageManager().getPage(outputfile);
 		getPageManager().putPage(outputpage);
+		loadTheme(req);
+
 		loadTemplate(req);
 		
 		MediaArchive archive = getMediaArchive(inReq);
@@ -119,6 +121,7 @@ public class TemplateModule extends BaseMediaModule {
 		String catalogid = inReq.findValue("catalogid");
 		Searcher templateSearcher = getSearcherManager().getSearcher(catalogid,
 				"portfolio");
+		
 		String owner = inReq.findValue("owner");
 		if (owner != null) {
 			Data template = (Data) templateSearcher.searchById(owner);
@@ -129,6 +132,16 @@ public class TemplateModule extends BaseMediaModule {
 	}
 
 
-	
+	public void loadTheme(WebPageRequest inReq) {
+		String catalogid = inReq.findValue("catalogid");
+		Searcher templateSearcher = getSearcherManager().getSearcher(catalogid,
+				"theme");
+		
+			Data template = (Data) templateSearcher.searchById("theme");
+			if (template != null) {
+				inReq.putPageValue("theme", template);
+			}
+		
+	}
 
 }
