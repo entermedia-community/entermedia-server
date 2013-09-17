@@ -93,6 +93,7 @@ public class TemplateModule extends BaseMediaModule {
 		revision.setMessage("updated by  user");
 		outputpage.setContentItem(revision);
 		getPageManager().putPage(outputpage);
+		getPageManager().clearCache(outputpage);
 
 	}
 
@@ -136,8 +137,11 @@ public class TemplateModule extends BaseMediaModule {
 		String catalogid = inReq.findValue("catalogid");
 		Searcher templateSearcher = getSearcherManager().getSearcher(catalogid,
 				"theme");
-		
-			Data template = (Data) templateSearcher.searchById("theme");
+			String themeid = inReq.findValue("themeid");
+			if(themeid == null){
+				themeid = "theme";
+			}
+			Data template = (Data) templateSearcher.searchById(themeid);
 			if (template != null) {
 				inReq.putPageValue("theme", template);
 			}
