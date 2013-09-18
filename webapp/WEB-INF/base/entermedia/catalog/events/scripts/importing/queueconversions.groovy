@@ -27,8 +27,13 @@ public void createTasksForUpload() throws Exception
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
+	
+	//There is a chance that the index is out of date. 
+	
 	SearchQuery q = targetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
+	//log.info("Found ${ids} assets from context ${context}");
+	
 	if( ids == null)
 	{
 		//Do a search for importstatus of "added" -> "converted"
@@ -41,9 +46,11 @@ public void createTasksForUpload() throws Exception
 	}
 	
 	List assets = new ArrayList(targetsearcher.search(q) );
-
+	if( assets.size() == 0 )
+	{
+		log.error("Problem with import, no asset found");
+	}
 	boolean foundsome = false;
-	log.debug("Found ${assets.size()} assets");
 	assets.each
 	{
 		foundsome = false;
@@ -55,7 +62,7 @@ public void createTasksForUpload() throws Exception
 		query.addMatches("inputtype", rendertype); //video
 
 		HitTracker hits = presetsearcher.search(query);
-		log.debug("Found ${hits.size()} automatic presets");
+	//	log.info("Found ${hits.size()} automatic presets");
 		hits.each
 		{
 			Data hit = it;
