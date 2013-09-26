@@ -33,6 +33,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
 		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
 		<property name="webServer"><ref bean="WebServer" /></property>
+		<property name="attachmentManager"><ref bean="attachmentManager" /></property>
 	</bean>
 
 

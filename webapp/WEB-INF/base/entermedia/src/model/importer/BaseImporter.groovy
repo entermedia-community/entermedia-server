@@ -74,7 +74,11 @@ public class BaseImporter extends EnterMediaObject
 				}
 				else
 				{
-					continue;
+					target = findExistingRecord(trow);
+					if( target == null)
+					{
+						continue;
+					}
 				}
 				
 				addProperties( trow, target);
@@ -94,7 +98,10 @@ public class BaseImporter extends EnterMediaObject
 		}
 		getSearcher().saveAllData(data, context.getUser());
 	}
-	
+	protected Data findExistingRecord(Row inRow)
+	{
+		return null;
+	}
 	/** Might be overriden by scripts */
 	protected Data findExistingData(String inId )
 	{
