@@ -153,10 +153,11 @@ public class LuceneHitTracker extends HitTracker
 //		if( page == null )
 //		{
 		
-		IndexSearcher searcher = getLuceneSearcherManager().acquire();
+		IndexSearcher searcher = null;
 		
 		try
 		{
+			searcher = getLuceneSearcherManager().acquire();
 			if( fieldOpenDocsSearcherHash != searcher.hashCode() )
 			{
 				TopDocs docs = null;
@@ -329,9 +330,10 @@ public class LuceneHitTracker extends HitTracker
 	{
 		List sourcepaths = new ArrayList();
 		
-			IndexSearcher searcher = getLuceneSearcherManager().acquire();
+		IndexSearcher searcher = null;	
 			try
 			{
+				searcher = getLuceneSearcherManager().acquire();
 				int max = Integer.MAX_VALUE;
 				TopDocs docs = null;
 				if( getLuceneSort() != null )
