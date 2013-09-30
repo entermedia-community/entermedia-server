@@ -9,7 +9,7 @@
 	<!-- Allow searching -->
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
 	<property id="libraries"  viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
-	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true"  sort="name">Asset Type</property>
+	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
 
 	<!-- Push items -->
 	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>

@@ -18,6 +18,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.util.Version;
@@ -99,7 +100,7 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 	}
 
 
-	public synchronized void reIndexAll(IndexWriter inWriter)
+	public synchronized void reIndexAll(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter)
 	{
 		//do nothing
 	}

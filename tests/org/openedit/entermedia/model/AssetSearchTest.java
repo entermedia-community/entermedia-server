@@ -1,9 +1,16 @@
 package org.openedit.entermedia.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.lucene.facet.search.FacetResult;
+import org.apache.lucene.facet.search.FacetResultNode;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.openedit.Data;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.lucene.LuceneHitTracker;
+import org.openedit.data.lucene.LuceneSearchQuery;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.search.AssetSearcher;
 
@@ -70,5 +77,75 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		assertEquals(hits.size(), 1);
 		
 	}
+	
+	
+	public void testFacetedSearch() throws Exception
+	{
+		WebPageRequest req = getFixture().createPageRequest("/entermedia/index.html");
+		
+		AssetSearcher searcher = getMediaArchive().getAssetSearcher();
+		Data asset = searcher.createNewData();
+		asset.setId("facet101");
+		asset.setSourcePath("testsearch/search101");
+		asset.setName("facetedasset");
+		asset.setProperty("assettype", "audio");
+		searcher.saveData(asset,null);
+		
+	
+		
+		
+		
+		
+		asset = searcher.createNewData();
+		asset.setId("facet102");
+		asset.setSourcePath("testsearch/search101");
+		asset.setName("facetedasset");
+		asset.setProperty("assettype", "video");
+		searcher.saveData(asset,null);
+		
+		
+		asset = searcher.createNewData();
+		asset.setId("facet103");
+		asset.setSourcePath("testsearch/search101");
+		asset.setName("facetedasset");
+		asset.setProperty("assettype", "image");
+		searcher.saveData(asset,null);
+		
+		asset = searcher.createNewData();
+		asset.setId("facet104");
+		asset.setSourcePath("testsearch/search101");
+		asset.setName("facetedasset");
+		asset.setProperty("assettype", "audio");
+		searcher.saveData(asset,null);
+		
+		
+		LuceneSearchQuery q = (LuceneSearchQuery) searcher.createSearchQuery();		
+		q.addMatches("name", "facetedasset");
+		
+		LuceneHitTracker hits = (LuceneHitTracker) searcher.search(q);
+		assertEquals(4, hits.size());
+		PropertyDetail detail = searcher.getDetail("assettype");
+		ArrayList list = new ArrayList();
+		list.add(detail);
+		q.setFacetList(list);
+		
+		
+		List <FacetResult> facets = hits.getFacetedResults();
+		
+		for (FacetResult fres : facets) {
+			FacetResultNode root = fres.getFacetResultNode();
+			  System.out.println(root.label + "" +  root.value);
+			  for (FacetResultNode cat : root.subResults) {
+			    System.out.println(cat.label.components[1]+ "" +    cat.value);
+			  }
+			 
+			}
+		
+		
+		
+		
+		
+	}
+	
 	
 }

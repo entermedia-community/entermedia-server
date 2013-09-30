@@ -9,6 +9,7 @@ import java.io.FilenameFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
@@ -118,7 +119,7 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 	{
 		return getGroup(inId);
 	}
-	public void reIndexAll(IndexWriter writer)
+	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter)
 	{
 		log.info("Reindex of customer groups directory");
 		try

@@ -1,6 +1,7 @@
 package org.openedit.data.lucene;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -14,10 +15,11 @@ import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.index.CorruptIndexException;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
@@ -190,14 +192,17 @@ public class LuceneIndexer
 	{
 		StringBuffer keywords = new StringBuffer();
 		readStandardProperties(inDetails, inData, keywords, doc);
-
+		
 		List details = inDetails.getDetails();
 		for (Iterator iterator = details.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			readProperty(inData, doc, keywords, detail);
 		}
+		
 		readDescription(doc, keywords);
+		
+		
 	}
 
 	protected void readDescription(Document doc, StringBuffer keywords)
@@ -352,11 +357,15 @@ public class LuceneIndexer
 				keywords.append(value);
 			}
 		}
-
+	
+		
 		if( !detail.isIndex() )
 		{
 			return;
 		}
+		
+		
+		
 		if( populateJoin(inData, doc, detail) )
 		{
 			return;

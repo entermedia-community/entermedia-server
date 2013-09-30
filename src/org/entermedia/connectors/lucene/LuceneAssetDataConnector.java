@@ -13,9 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
@@ -34,7 +35,6 @@ import org.openedit.entermedia.search.DataConnector;
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
@@ -133,7 +133,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			for (Iterator iter = inAssets.iterator(); iter.hasNext();)
 			{
 				Asset asset = (Asset) iter.next();
-				getIndexer().populateAsset(getIndexWriter(), asset, false, details);
+				Document doc = getIndexer().populateAsset(getIndexWriter(), asset, false, details);
+				updateFacets(doc, getIndexWriter(), getTaxonomyWriter());
+				
+				getIndexer().writeDoc(getIndexWriter(), asset.getId().toLowerCase() , doc, false);
 			}
 //			if (inOptimize)
 //			{
@@ -167,7 +170,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return (LuceneAssetIndexer)getLuceneIndexer();
 	}
 
-	protected void reIndexAll(IndexWriter writer)
+	protected void reIndexAll(IndexWriter writer, TaxonomyWriter inTaxonomyWriter)
 	{
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2

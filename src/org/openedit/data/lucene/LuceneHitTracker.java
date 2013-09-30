@@ -17,15 +17,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.params.FacetSearchParams;
+import org.apache.lucene.facet.search.CountFacetRequest;
+import org.apache.lucene.facet.search.FacetResult;
+import org.apache.lucene.facet.search.FacetResultNode;
+import org.apache.lucene.facet.search.FacetsCollector;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
+import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.openedit.Data;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.util.DateStorageUtil;
 
@@ -696,5 +707,33 @@ public class LuceneHitTracker extends HitTracker
 		return hits;
 	}
 	*/
+
+	public List<FacetResult> getFacetedResults() throws Exception
+	{
+		IndexSearcher searcher = getLuceneSearcherManager().acquire();
+		BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
+		DirectoryTaxonomyReader taxor = new DirectoryTaxonomyReader((DirectoryTaxonomyWriter) lsearcher.getTaxonomyWriter());
+
+		ArrayList params = new ArrayList();
+		List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
+		if (propertydetails.size() > 0)
+		{
+			for (Iterator iterator = propertydetails.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 10));
+			}
+			FacetSearchParams fsp = new FacetSearchParams(params);
+
+			FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), taxor);
+
+			// Should we do THIS search in
+			searcher.search(getLuceneQuery(), facetsCollector);
+
+			return facetsCollector.getFacetResults();
+
+		}
+		return null;
+	}
 
 }
