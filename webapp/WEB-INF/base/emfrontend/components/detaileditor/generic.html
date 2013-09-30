@@ -113,7 +113,13 @@ $context.putPageValue("searcher", $searcher)
 		
 		#foreach( $detail in $assetdetails )
 			#set( $value = false)
-			#set( $value = $data.get($detail.getId()))
+			
+			#if( $searcherManager )
+				#set( $value = $searcherManager.getValue($data,$detail) )	
+			#else
+				#set( $value = $data.get($detail.getId()))
+			#end
+			
 			#if( $value && $value != "") 
 				#set( $foundone = true)
 				<div class="cellrow">
