@@ -1,7 +1,9 @@
 package org.entermedia.profile;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.openedit.Data;
-import org.openedit.data.Searcher;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.XmlFileSearcher;
 import org.openedit.profile.UserProfile;
 
@@ -67,5 +69,32 @@ public class UserProfileSearcher extends XmlFileSearcher {
 //		super.saveData(inData, inUser);
 //		
 //	}
+	
+	
+
+	public synchronized String nextId() {
+		return getUserManager().nextId();
+	}
+	
+	protected void updateIndex(Data inData, Document doc,
+			PropertyDetails inDetails) {
+		
+		if(inData instanceof UserProfile){
+			UserProfile up = (UserProfile) inData;
+			User user = up.getUser();
+			if(user != null){
+				doc.add(new Field("firstname", user.getFirstName(), Field.Store.YES,
+						Field.Index.NOT_ANALYZED_NO_NORMS));
+				doc.add(new Field("lastname", user.getFirstName(), Field.Store.YES,
+						Field.Index.NOT_ANALYZED_NO_NORMS));
+			}
+		}
+		
+		
+		super.updateIndex(inData, doc, inDetails);
+
+	
+	}
+	
 	
 }
