@@ -207,6 +207,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			reIndexAll(writer, taxonomywriter);
 			// writer.optimize();
 			writer.commit();
+			taxonomywriter.commit();
 			setCurrentIndexFolder(indexname);
 			// setCurrentIndexFolder(indexname + "facets");
 

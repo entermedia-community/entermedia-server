@@ -711,8 +711,10 @@ public class LuceneHitTracker extends HitTracker
 		{
 			searcher = getLuceneSearcherManager().acquire();
 			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
+		
 			DirectoryTaxonomyReader taxor = new DirectoryTaxonomyReader((DirectoryTaxonomyWriter) lsearcher.getTaxonomyWriter());
-
+			//TaxonomyReader newReader = TaxonomyReader.openIfChanged( this.taxoReader );
+			
 			ArrayList params = new ArrayList();
 			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
 			if (propertydetails.size() > 0)
