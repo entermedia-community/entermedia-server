@@ -79,6 +79,11 @@ public class LuceneHitTracker extends HitTracker
 
 	public int size() 
 	{
+		if( !isAllSelected() && isShowOnlySelected() && ( fieldSelections == null || fieldSelections.size() == 0 ) )
+		{
+			return 0;
+		}
+		
 		if( fieldSize == null )
 		{
 			getPage(0); //this will never happen because we set the size already

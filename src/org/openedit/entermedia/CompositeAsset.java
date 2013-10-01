@@ -135,15 +135,15 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		{
 			//rerun the search
 			selecteddata.selectAll();
-			setSelectedResults(selecteddata);			
 		}
 		else
 		{
 			selecteddata.setSelections(existing.getSelections());
 			selecteddata.setShowOnlySelected(true);
 			selecteddata.setHitsPerPage(10000);
-			setSelectedResults(selecteddata);
 		}
+		setSelectedResults(selecteddata);			
+
 		getProperties().clear();
 	}
 
