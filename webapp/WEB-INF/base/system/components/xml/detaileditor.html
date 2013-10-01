@@ -2,7 +2,14 @@
 #set( $readonly = "false" )
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
 #set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
-
+#set( $multiedit = "false")
+#set( $multiedit = $context.getRequestParameter("multiedit"))
+#if ( $multiedit == "true" )
+	#set( $multiedit = true)
+#else
+	#set( $multiedit = false)
+#end
+$context.putPageValue("multiedit",$multiedit)
 $context.putPageValue("caneditlists","false")
 
 ##We need 3 things passed in: $searcher, $view, $data
@@ -32,12 +39,16 @@ $context.putPageValue("caneditlists","false")
 	#set($val = false)
 	#set($target = "${detail.id}.value")
 	#set( $val = $context.getRequestParameter($target))					
-	#if( !$val )
+	#if( $searcherManager )
+		#set( $val = $searcherManager.getValue($data,$detail) )	
+	#else
 		#set( $val = $!{data.getProperty($detail.getId())} )
 	#end
+	
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
+
 	$!context.putPageValue("detail",$detail)
 	
 	#if ($detail.header)
@@ -48,8 +59,7 @@ $context.putPageValue("caneditlists","false")
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true" )
 	#if( $editrow || $val  || !$detail.isEditable()) 
-		#if( !$val) #set( $val = "") #end	
-	
+		#if( !$val) #set( $val = "") #end		
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
 			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
@@ -58,8 +68,8 @@ $context.putPageValue("caneditlists","false")
 				    #if ($detail.required == true) * #end	$!detail.getText($context)
 				#end
 			</td>
-			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
 			
+			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) required #end">
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
 			#else  ##NOT EDITABLE

@@ -26,15 +26,15 @@
 	#set($val = false)
 	#set($target = "${detail.id}.value")
 	#set( $val = $context.getRequestParameter($target))					
-	#if( !$val )
+	#if( $searcherManager )
+		#set( $val = $searcherManager.getValue($data,$detail) )	
+	#else
 		#set( $val = $!{data.getProperty($detail.getId())} )
 	#end
+	
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
-	#if( !$val && $detail.render )	
-		#set($val = $searcherManager.getValue($catalogid,$detail.render, $data.properties) ) $data.id 
-	#end	
 	
 	$!context.putPageValue("detail",$detail)
 	
