@@ -451,7 +451,22 @@ public class BasePushManager implements PushManager
 				}
 				parts.add(new StringPart("keywords", buffer.toString() ));
 			}
-			
+			Collection libraries =  inAsset.getLibraries();
+			if(  libraries != null && libraries.size() > 0 )
+			{
+				StringBuffer buffer = new StringBuffer();
+				for (Iterator iterator = inAsset.getLibraries().iterator(); iterator.hasNext();)
+				{
+					String keyword = (String) iterator.next();
+					buffer.append( keyword );
+					if( iterator.hasNext() )
+					{
+						buffer.append('|');
+					}
+				}
+				parts.add(new StringPart("libraries", buffer.toString() ));
+			}
+
 			Part[] arrayOfparts = parts.toArray(new Part[0]);
 
 			method.setRequestEntity(new MultipartRequestEntity(arrayOfparts, method.getParams()));
@@ -1007,12 +1022,14 @@ asset: " + asset);
 	}
 	
 	@Override
-	public void acceptPush(WebPageRequest inReq, MediaArchive archive, String sourcepath)
+	public void acceptPush(WebPageRequest inReq, MediaArchive archive)
 	{
 		FileUpload command = new FileUpload();
 		command.setPageManager(archive.getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
 
+		String sourcepath = inReq.getRequestParameter("sourcepath");
+		
 		Asset target = archive.getAssetBySourcePath(sourcepath);
 		if (target == null)
 		{
@@ -1029,7 +1046,21 @@ asset: " + asset);
 		target.addCategory(category);
 		
 		String[] fields = inReq.getRequestParameters("field");
+		
+		//Make sure we ADD libraries not replace them
+		Collection existing = target.getLibraries();
 		archive.getAssetSearcher().updateData(inReq, fields, target);
+
+		String libraries = inReq.getRequestParameter("libraries");
+		if( libraries != null )
+		{
+			String[] keys =  libraries.split("\\|");
+			for (int i = 0; i < keys.length; i++)
+			{
+				existing.add(keys[i]);
+			}
+		}
+		target.setValues("libraries", existing);
 
 		String keywords = inReq.getRequestParameter("keywords");
 		if( keywords != null )
