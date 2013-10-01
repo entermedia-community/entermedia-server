@@ -114,13 +114,14 @@ public class IndexAllAssets extends AssetProcessor
 				return;
 			}
 			fieldSourcePaths.add(asset.getSourcePath());
-			Document doc = getIndexer().createAssetDoc(asset, getMediaArchive().getAssetPropertyDetails());
-			
+			//Document doc = getIndexer().createAssetDoc(asset, getMediaArchive().getAssetPropertyDetails());
+			Document doc = getIndexer().populateAsset(getWriter(), asset, false, getMediaArchive().getAssetPropertyDetails());
+
 			String id = asset.getId().toLowerCase();
 			
 			updateFacets(doc,  getTaxonomyWriter());
 
-			getIndexer().writeDoc(writer, id, doc, true);
+			getIndexer().writeDoc(writer, id, doc, false);
 			// remove it from mem
 			getAssetArchive().clearAsset(asset);
 			incrementCount();
@@ -161,6 +162,7 @@ public class IndexAllAssets extends AssetProcessor
 					vals.add(value);
 					String[] components = vals.toArray(new String[vals.size()]);
 					categorypaths.add(new CategoryPath(components));
+					log.info("Adding: " + vals);
 				}
 			}
 

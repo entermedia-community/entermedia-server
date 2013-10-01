@@ -25,7 +25,8 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.index.FacetFields;
 import org.apache.lucene.facet.params.FacetIndexingParams;
 import org.apache.lucene.facet.search.DrillDownQuery;
-import org.apache.lucene.facet.search.DrillSideways;
+import org.apache.lucene.facet.search.SearcherTaxonomyManager;
+import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
@@ -91,14 +92,14 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	protected String fieldCurrentIndexFolder;
 	protected String fieldIndexRootFolder;
 	protected CacheManager fieldCacheManager;
-	protected TaxonomyWriter fieldTaxonomyWriter;
+	protected DirectoryTaxonomyWriter fieldTaxonomyWriter;
 
-	public TaxonomyWriter getTaxonomyWriter()
+	public DirectoryTaxonomyWriter getTaxonomyWriter()
 	{
 		return fieldTaxonomyWriter;
 	}
 
-	public void setTaxonomyWriter(TaxonomyWriter inTaxonomyWriter)
+	public void setTaxonomyWriter(DirectoryTaxonomyWriter inTaxonomyWriter)
 	{
 		fieldTaxonomyWriter = inTaxonomyWriter;
 	}
@@ -118,15 +119,16 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		fieldCacheManager = inCacheManager;
 	}
 
-	protected SearcherManager fieldLuceneSearcherManager;
+	protected SearcherTaxonomyManager fieldLuceneSearcherManager;
 
-	public SearcherManager getLuceneSearcherManager()
+	public SearcherTaxonomyManager getLuceneSearcherManager()
 	{
 		try
 		{
 			if (fieldLuceneSearcherManager == null)
 			{
-				fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(), true, new SearcherFactory());
+				IndexWriter writer = getIndexWriter();
+				fieldLuceneSearcherManager = new SearcherTaxonomyManager(writer, true, new SearcherFactory(), getTaxonomyWriter());
 			}
 			fieldLuceneSearcherManager.maybeRefresh();
 		}
@@ -198,11 +200,10 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			// IndexWriter.MaxFieldLength.UNLIMITED);
 			// writer.setMergeFactor(50);
 			DirectoryTaxonomyWriter taxonomywriter = null;
-			if (getPropertyDetails().getDetailsByProperty("filter", "true").size() > 0)
-			{
+			
 				Directory taxoDir = buildIndexDir(indexname + "facets");
 				taxonomywriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
-			}
+			
 
 			reIndexAll(writer, taxonomywriter);
 			// writer.optimize();
@@ -372,7 +373,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					//
 
 					BaseLuceneSearcher tosearcher = (BaseLuceneSearcher) getSearcherManager().getSearcher(getCatalogId(), join.getRemoteSearchType());
-					IndexSearcher searcher = tosearcher.getLuceneSearcherManager().acquire();
+					SearcherAndTaxonomy refs =tosearcher.getLuceneSearcherManager().acquire(); 
+					IndexSearcher searcher = refs.searcher;
+					
 					try
 					{
 						Query filter = tosearcher.getQueryParser().parse(join.getRemoteQuery().toQuery());
@@ -391,7 +394,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					}
 					finally
 					{
-						tosearcher.getLuceneSearcherManager().release(searcher);
+						tosearcher.getLuceneSearcherManager().release(refs);
 					}
 				}
 
@@ -768,8 +771,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 						config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 						fieldIndexWriter = new IndexWriter(indexDir, config);
 
-						if (getPropertyDetails().getDetailsByProperty("filter", "true").size() > 0)
-						{
+					
 							String name = folder + "facets";
 							Directory taxoDir = buildIndexDir(name);
 							File taxlock = new File(getRootDirectory(), getIndexPath() + "/" + name + "/" + "write.lock");
@@ -783,7 +785,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 							}
 							fieldTaxonomyWriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE_OR_APPEND);
 
-						}
+					
 
 						// NOTE the false!!! Very important. Wasted 3 days on
 						// this!!!!
@@ -828,7 +830,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			if (fieldLuceneSearcherManager != null)
 			{
-				fieldLuceneSearcherManager = new SearcherManager(getIndexWriter(), true, new SearcherFactory());
+				fieldLuceneSearcherManager = new SearcherTaxonomyManager(getIndexWriter(), true, new SearcherFactory(), getTaxonomyWriter());
 			}
 		}
 		catch (IOException ex)
@@ -1026,6 +1028,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					vals.add(value);
 					String[] components = vals.toArray(new String[vals.size()]);
 					categorypaths.add(new CategoryPath(components));
+					log.info("Adding: " + vals);
+
 				}
 			}
 

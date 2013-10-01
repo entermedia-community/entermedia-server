@@ -14,8 +14,10 @@ import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.search.AssetSearcher;
 
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.FacetValues;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.hittracker.SelectedFacet;
 
 public class AssetSearchTest extends BaseEnterMediaTest
 {
@@ -130,18 +132,41 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		for (FacetResult fres : facets) {
 			FacetResultNode root = fres.getFacetResultNode();
 			  System.out.println(root.label + "" +  root.value);
+			
 			  for (FacetResultNode cat : root.subResults) {
 			    System.out.println(cat.label.components[1]+ "" +    cat.value);
 			  }
 			 
-			}
-		String[] f=  {"assettype","audio"}; 
-		String[] f2=  {"assettype","video"}; 
-		                   
-		q.setFacetQuery(f);
+		}
+		searcher.reIndexAll();
+		hits = (LuceneHitTracker) searcher.search(q);
+		facets = hits.getFacetedResults();
 		
-		LuceneHitTracker facetedhits = (LuceneHitTracker) searcher.search(q);
-		assertEquals(2 ,facetedhits.size());
+		for (FacetResult fres : facets) {
+			
+			FacetResultNode root = fres.getFacetResultNode();
+			
+			System.out.println(root.label + "" +  root.value);
+			
+			  for (FacetResultNode cat : root.subResults) {
+			    System.out.println(cat.label.components[1]+ "" +    cat.value);
+			  }
+			 
+		}
+		
+		
+//		//
+//		String[] f=  {"assettype","audio"}; 
+//		 
+//		                   
+//		SelectedFacet facet = new SelectedFacet();
+//		facet.setValues(f);
+//		FacetValues values = new FacetValues();
+//		values.addFacet(facet);
+//		q.setFacetValues(values);
+//		
+//		LuceneHitTracker facetedhits = (LuceneHitTracker) searcher.search(q);
+//		assertEquals(2 ,facetedhits.size());
 		
 		
 	}

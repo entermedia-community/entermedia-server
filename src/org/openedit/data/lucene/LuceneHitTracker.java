@@ -22,14 +22,14 @@ import org.apache.lucene.facet.search.CountFacetRequest;
 import org.apache.lucene.facet.search.FacetResult;
 import org.apache.lucene.facet.search.FacetResultNode;
 import org.apache.lucene.facet.search.FacetsCollector;
+import org.apache.lucene.facet.search.SearcherTaxonomyManager;
+import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.SearcherManager;
@@ -53,7 +53,7 @@ public class LuceneHitTracker extends HitTracker
 	private static final Log log = LogFactory.getLog(LuceneHitTracker.class);
 
 	// protected transient TopDocs fieldHits;
-	protected transient SearcherManager fieldLuceneSearcherManager;
+	protected transient SearcherTaxonomyManager fieldLuceneSearcherManager;
 	protected transient Query fieldLuceneQuery;
 	protected transient Sort fieldLuceneSort;
 	// protected Map fieldPages;
@@ -83,7 +83,7 @@ public class LuceneHitTracker extends HitTracker
 
 	}
 
-	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort, Searcher inSearcher)
+	public LuceneHitTracker(SearcherTaxonomyManager inManager, Query inQuery, Sort inSort, Searcher inSearcher)
 	{
 		super(inSearcher);
 		setLuceneSearcherManager(inManager);
@@ -159,10 +159,12 @@ public class LuceneHitTracker extends HitTracker
 		// {
 
 		IndexSearcher searcher = null;
-
+		SearcherAndTaxonomy refs = null;
 		try
 		{
-			searcher = getLuceneSearcherManager().acquire();
+			 refs = getLuceneSearcherManager().acquire(); 
+			 searcher = refs.searcher;
+			//searcher = getLuceneSearcherManager().acquire();
 			if (fieldOpenDocsSearcherHash != searcher.hashCode())
 			{
 				TopDocs docs = null;
@@ -216,7 +218,7 @@ public class LuceneHitTracker extends HitTracker
 		{
 			try
 			{
-				getLuceneSearcherManager().release(searcher);
+				getLuceneSearcherManager().release(refs);
 			}
 			catch (IOException e)
 			{
@@ -320,9 +322,11 @@ public class LuceneHitTracker extends HitTracker
 		List sourcepaths = new ArrayList();
 
 		IndexSearcher searcher = null;
+		SearcherAndTaxonomy refs = null;
 		try
 		{
-			searcher = getLuceneSearcherManager().acquire();
+			refs = getLuceneSearcherManager().acquire();
+			searcher = refs.searcher;
 			int max = Integer.MAX_VALUE;
 			TopDocs docs = null;
 			if (getLuceneSort() != null)
@@ -350,7 +354,7 @@ public class LuceneHitTracker extends HitTracker
 		{
 			try
 			{
-				getLuceneSearcherManager().release(searcher);
+				getLuceneSearcherManager().release(refs);
 			}
 			catch (IOException e)
 			{
@@ -660,12 +664,12 @@ public class LuceneHitTracker extends HitTracker
 
 	// }
 
-	public SearcherManager getLuceneSearcherManager()
+	public SearcherTaxonomyManager getLuceneSearcherManager()
 	{
 		return fieldLuceneSearcherManager;
 	}
 
-	public void setLuceneSearcherManager(SearcherManager inLuceneSearcherManager)
+	public void setLuceneSearcherManager(SearcherTaxonomyManager inLuceneSearcherManager)
 	{
 		fieldLuceneSearcherManager = inLuceneSearcherManager;
 	}
@@ -707,12 +711,16 @@ public class LuceneHitTracker extends HitTracker
 	public List<FacetResult> getFacetedResults() throws Exception
 	{
 		IndexSearcher searcher = null;
+		
+		SearcherAndTaxonomy refs = null;
 		try
 		{
-			searcher = getLuceneSearcherManager().acquire();
+			refs = getLuceneSearcherManager().acquire();
+			searcher = refs.searcher;
+			
 			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
 		
-			DirectoryTaxonomyReader taxor = new DirectoryTaxonomyReader((DirectoryTaxonomyWriter) lsearcher.getTaxonomyWriter());
+			//DirectoryTaxonomyReader taxor = new DirectoryTaxonomyReader((DirectoryTaxonomyWriter) lsearcher.getTaxonomyWriter());
 			//TaxonomyReader newReader = TaxonomyReader.openIfChanged( this.taxoReader );
 			
 			ArrayList params = new ArrayList();
@@ -722,25 +730,40 @@ public class LuceneHitTracker extends HitTracker
 				for (Iterator iterator = propertydetails.iterator(); iterator.hasNext();)
 				{
 					PropertyDetail detail = (PropertyDetail) iterator.next();
-					params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 10));
+					params.add(new CountFacetRequest(new CategoryPath("assettype"), 10));
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
 
-				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), taxor);
+				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
 
 				// Should we do THIS search in
 				searcher.search(getLuceneQuery(), facetsCollector);
 
-				return facetsCollector.getFacetResults();
+				List<FacetResult> facetResults = facetsCollector.getFacetResults();
+				for (FacetResult fres : facetResults) {
+					
+					FacetResultNode root = fres.getFacetResultNode();
+					
+					System.out.println("1" +root.label + "" +  root.value);
+					
+					  for (FacetResultNode cat : root.subResults) {
+					    System.out.println("-" + cat.label.components[1]+ "" +    cat.value);
+					  }
+					 
+				}
+				return facetResults;
 
 			}
 		}
 		finally
 		{
 
-			getLuceneSearcherManager().release(searcher);
+			getLuceneSearcherManager().release(refs);
 		}
 		return null;
 	}
 
+	
+	
+	
 }
