@@ -736,4 +736,9 @@ public class LuceneHitTracker extends HitTracker
 		return null;
 	}
 
+	
+	
+	
+	
+	
 }

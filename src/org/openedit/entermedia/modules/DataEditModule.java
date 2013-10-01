@@ -135,6 +135,8 @@ public class DataEditModule extends BaseMediaModule
 		inReq.putPageValue("searcher", searcher);
 	}
 
+	
+	
 	public Data createNew(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcherForEdit(inReq);

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.lucene.facet.search.FacetResult;
 import org.apache.lucene.facet.search.FacetResultNode;
-import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.lucene.LuceneHitTracker;
@@ -91,10 +90,6 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		asset.setProperty("assettype", "audio");
 		searcher.saveData(asset,null);
 		
-	
-		
-		
-		
 		
 		asset = searcher.createNewData();
 		asset.setId("facet102");
@@ -140,9 +135,13 @@ public class AssetSearchTest extends BaseEnterMediaTest
 			  }
 			 
 			}
+		String[] f=  {"assettype","audio"}; 
+		String[] f2=  {"assettype","video"}; 
+		                   
+		q.setFacetQuery(f);
 		
-		
-		
+		LuceneHitTracker facetedhits = (LuceneHitTracker) searcher.search(q);
+		assertEquals(2 ,facetedhits.size());
 		
 		
 	}

@@ -23,13 +23,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.index.FacetFields;
-import org.apache.lucene.facet.params.FacetSearchParams;
-import org.apache.lucene.facet.search.CountFacetRequest;
-import org.apache.lucene.facet.search.FacetResult;
-import org.apache.lucene.facet.search.FacetsCollector;
+import org.apache.lucene.facet.params.FacetIndexingParams;
+import org.apache.lucene.facet.search.DrillDownQuery;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
-import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
@@ -70,6 +67,7 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.Join;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.hittracker.SelectedFacet;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
 
@@ -396,7 +394,25 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				}
 
 			}
-
+			if(inQuery.getFacetValues() != null){
+				
+				BooleanQuery facetquery = new BooleanQuery();
+				
+				for (Iterator iterator = inQuery.getFacetValues().getSelectedFacets().iterator(); iterator.hasNext();)
+				{
+					SelectedFacet facet = (SelectedFacet) iterator.next();
+					
+					DrillDownQuery ddq = new DrillDownQuery(FacetIndexingParams.DEFAULT, facetquery);
+					
+					//This needs to read: ["assettype","audio"];
+					assetype/audio
+					assetype/video
+					ddq.add(new CategoryPath(facet.getPath()));						
+				}
+				
+							
+				query1 = ddq;
+			}
 			Sort sort = null;
 			if (inOrdering != null && inOrdering.size() > 0)
 			{
@@ -751,8 +767,19 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 						if (getPropertyDetails().getDetailsByProperty("filter", "true").size() > 0)
 						{
-							Directory taxoDir = buildIndexDir(folder + "facets");
-							fieldTaxonomyWriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
+							String name = folder + "facets";
+							Directory taxoDir = buildIndexDir(name);
+							File taxlock = new File(getRootDirectory(), getIndexPath() + "/" + name + "/" + "write.lock");
+							if (taxlock.exists() && !taxlock.delete())
+							{
+								// Invalid lock errors are returned when the
+								// index
+								// has no valid files in it
+								log.error("Could not delete lock");
+								IndexWriter.unlock(indexDir);
+							}
+							fieldTaxonomyWriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE_OR_APPEND);
+
 						}
 
 						// NOTE the false!!! Very important. Wasted 3 days on
@@ -986,11 +1013,16 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String value = inDoc.get(detail.getId());
+
 			if (detail.isFilter())
 			{
 				if (value != null)
 				{
-					categorypaths.add(new CategoryPath(detail.getId(), value));
+					ArrayList<String> vals = new ArrayList();
+					vals.add(detail.getId());
+					vals.add(value);
+					String[] components = vals.toArray(new String[vals.size()]);
+					categorypaths.add(new CategoryPath(components));
 				}
 			}
 
@@ -1144,7 +1176,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				{
 					File folder = (File) iterator.next();
 					char firstchar = folder.getName().charAt(0);
-					if (Character.isDigit(firstchar))
+					if (Character.isDigit(firstchar) && !folder.getName().contains("facet"))
 					{
 						fieldCurrentIndexFolder = folder.getName();
 						break;
@@ -1170,5 +1202,4 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	}
 
-	
 }

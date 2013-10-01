@@ -24,6 +24,7 @@ public class LuceneSearchQuery extends SearchQuery
 	protected List <PropertyDetail> fieldFacetList;
 	
 	
+
 	public LuceneSearchQuery()
 	{
 		// TODO Auto-generated constructor stub
@@ -659,6 +660,7 @@ public class LuceneSearchQuery extends SearchQuery
 	public void setFacetList(List inFacetList) {
 		fieldFacetList = inFacetList;
 	}
+
 
 
 
