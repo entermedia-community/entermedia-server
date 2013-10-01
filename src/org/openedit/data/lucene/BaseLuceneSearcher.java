@@ -25,6 +25,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.index.FacetFields;
 import org.apache.lucene.facet.params.FacetIndexingParams;
 import org.apache.lucene.facet.search.DrillDownQuery;
+import org.apache.lucene.facet.search.DrillSideways;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
@@ -401,17 +402,18 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				for (Iterator iterator = inQuery.getFacetValues().getSelectedFacets().iterator(); iterator.hasNext();)
 				{
 					SelectedFacet facet = (SelectedFacet) iterator.next();
+						
 					
 					DrillDownQuery ddq = new DrillDownQuery(FacetIndexingParams.DEFAULT, facetquery);
-					
-					//This needs to read: ["assettype","audio"];
-					assetype/audio
-					assetype/video
-					ddq.add(new CategoryPath(facet.getPath()));						
-				}
+					ddq.add(new CategoryPath(facet.getValues()));
+					facetquery.add(ddq, BooleanClause.Occur.MUST);
 				
-							
-				query1 = ddq;
+					
+					
+				}
+				facetquery.add(query1, BooleanClause.Occur.MUST);
+				query1 = facetquery;			
+				
 			}
 			Sort sort = null;
 			if (inOrdering != null && inOrdering.size() > 0)
@@ -937,7 +939,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				}
 				Document doc = new Document();
 				updateIndex(data, doc, details);
-				updateFacets(doc, inWriter, inTaxonomyWriter);
+				updateFacets(doc, inTaxonomyWriter);
 				Term term = new Term("id", data.getId());
 				inWriter.updateDocument(term, doc, getAnalyzer());
 				if (fieldCacheManager != null)
@@ -984,7 +986,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			ArrayList categorypaths = new ArrayList();
 			updateIndex(inData, doc, details);
 
-			updateFacets(doc, inWriter, inTaxonomyWriter);
+			updateFacets(doc,  inTaxonomyWriter);
 
 			Term term = new Term("id", inData.getId());
 			inWriter.updateDocument(term, doc, getAnalyzer());
@@ -1000,7 +1002,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 	}
 
-	protected void updateFacets(Document inDoc, IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter) throws Exception
+	protected void updateFacets(Document inDoc,  TaxonomyWriter inTaxonomyWriter) throws Exception
 	{
 		if (inTaxonomyWriter == null)
 		{
