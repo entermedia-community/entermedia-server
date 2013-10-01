@@ -37,6 +37,10 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 			{
 				textinfo = resulttext.getStandardError();
 			}
+			if( textinfo == null)
+			{
+				return false;
+			}
 			//Stream #0.2: Video: G2M3 / 0x334D3247,
 			int start = textinfo.indexOf("Video: ");
 			if( start > -1)
