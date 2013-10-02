@@ -4,31 +4,41 @@
 			</div>
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
 #set ($assetTypeSearcher = $searcherManager.getSearcher($catalogid, "assettype"))
-
 #set ($types = $assetTypeSearcher.fieldSearch(id, "*", "name"))
-
 #set( $notselected = $userprofile.getValues("hideassettype") ) 
 
 
+#set($facets = $hits.getFacetedResults())
+$facets
 <div class="subcolumns" style="white-space:nowrap;"> 
-    <ul id="filters-sidebar">  
-#foreach($type in $types )
+<!-- 
+for (FacetResult fres : facets) {
+			FacetResultNode root = fres.getFacetResultNode();
+			  System.out.println(root.label + "" +  root.value);
+			  for (FacetResultNode cat : root.subResults) {
+			    System.out.println(cat.label.components[1]+ "" +    cat.value);
+			  }
+			 
+		}
+ -->
 
-    
-    #if( $notselected.contains( $type.getId() ) )
-    #set( $selected = false)
-    #else
-    #set( $selected = true)
-    #end
-	
+#foreach($type in $facets )
+      
+	    #set($root = $type.getFacetResultNode())
+	    #set($children = $type.subResults)
+	     <ul id="filters-sidebar">
+	     <li>$root $children ${root.subResults} ${root.SubResults} </li>
+		    
+   
+	#foreach($entry in $children)
 			
-	<li><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/><span> $type.name</span></li> 			
+	<li><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/><span> $entry.label ($entry.value) $entry</span></li> 			
 				
-			
+			#end
 
+</ul>
 
 #end
-</ul>
 
 
 <form  action="$apphome/components/results/table.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
