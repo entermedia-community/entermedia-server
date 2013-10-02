@@ -25,14 +25,11 @@ import org.apache.lucene.facet.search.FacetsCollector;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
-import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
-import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.openedit.Data;
@@ -62,6 +59,17 @@ public class LuceneHitTracker extends HitTracker
 	protected String fieldSearchType;
 	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
+	protected List fieldFacets;
+	
+	public List getFacets()
+	{
+		return fieldFacets;
+	}
+
+	public void setFacets(List inFacets)
+	{
+		fieldFacets = inFacets;
+	}
 
 	/**
 	 * This is what is searched. getResultsType() is what is returned?
@@ -708,7 +716,7 @@ public class LuceneHitTracker extends HitTracker
 	 * hits; }
 	 */
 
-	public List<FacetResult> getFacetedResults() throws Exception
+	public List<FilterNode> getFacetedResults() throws Exception
 	{
 		IndexSearcher searcher = null;
 		
@@ -725,12 +733,14 @@ public class LuceneHitTracker extends HitTracker
 			
 			ArrayList params = new ArrayList();
 			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
+			FilterNode node = new FilterNode();
+			
 			if (propertydetails.size() > 0)
 			{
 				for (Iterator iterator = propertydetails.iterator(); iterator.hasNext();)
 				{
 					PropertyDetail detail = (PropertyDetail) iterator.next();
-					params.add(new CountFacetRequest(new CategoryPath("assettype"), 10));
+					params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 10));
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
 
@@ -740,14 +750,19 @@ public class LuceneHitTracker extends HitTracker
 				searcher.search(getLuceneQuery(), facetsCollector);
 
 				List<FacetResult> facetResults = facetsCollector.getFacetResults();
+				
 				for (FacetResult fres : facetResults) {
 					
 					FacetResultNode root = fres.getFacetResultNode();
+					FilterNode filterNode = new FilterNode();
 					
-					System.out.println("1" +root.label + "" +  root.value);
+					filterNode.setProperty("label", root.label.toString());
+					filterNode.setProperty("value", root.value);
+					
+					System.out.println(root.label + "" +  root.value);
 					
 					  for (FacetResultNode cat : root.subResults) {
-					    System.out.println("-" + cat.label.components[1]+ "" +    cat.value);
+					//    System.out.println("cat.label.components[1]+ "" +    cat.value);
 					  }
 					 
 				}
@@ -763,6 +778,23 @@ public class LuceneHitTracker extends HitTracker
 		return null;
 	}
 
+	
+	public List getFilters(){
+		if (fieldFacets == null)
+		{
+			try
+			{
+				fieldFacets = getFacetedResults();
+			}
+			catch (Exception e)
+			{
+			throw new OpenEditException(e);
+			}
+			
+		}
+
+		return fieldFacets;
+	}
 	
 	
 	
