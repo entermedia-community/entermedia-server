@@ -202,7 +202,9 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			
 			log.info("Reindex completed on with " + reindexer.getExecCount() + " assets");
 			//writer.optimize();
+			inTaxonomyWriter.commit();
 			writer.commit();
+			
 
 		}
 		catch(Exception ex)

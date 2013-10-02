@@ -25,6 +25,7 @@ import org.apache.lucene.facet.search.FacetsCollector;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
@@ -721,9 +722,11 @@ public class LuceneHitTracker extends HitTracker
 		IndexSearcher searcher = null;
 		
 		SearcherAndTaxonomy refs = null;
+		
 		try
 		{
 			refs = getLuceneSearcherManager().acquire();
+			
 			searcher = refs.searcher;
 			
 			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
@@ -733,7 +736,6 @@ public class LuceneHitTracker extends HitTracker
 			
 			ArrayList params = new ArrayList();
 			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
-			FilterNode node = new FilterNode();
 			
 			if (propertydetails.size() > 0)
 			{
@@ -743,30 +745,37 @@ public class LuceneHitTracker extends HitTracker
 					params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 10));
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
-
 				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
 
 				// Should we do THIS search in
 				searcher.search(getLuceneQuery(), facetsCollector);
 
 				List<FacetResult> facetResults = facetsCollector.getFacetResults();
-				
+				List<FilterNode> facetNodes = new ArrayList();
+
 				for (FacetResult fres : facetResults) {
 					
 					FacetResultNode root = fres.getFacetResultNode();
 					FilterNode filterNode = new FilterNode();
 					
 					filterNode.setProperty("label", root.label.toString());
-					filterNode.setProperty("value", root.value);
+					filterNode.setProperty("value", String.valueOf(root.value));
 					
-					System.out.println(root.label + "" +  root.value);
+					facetNodes.add(filterNode);
 					
 					  for (FacetResultNode cat : root.subResults) {
-					//    System.out.println("cat.label.components[1]+ "" +    cat.value);
+				
+						  FilterNode childnode = new FilterNode();
+							
+						  childnode.setProperty("label", cat.label.toString());
+						  childnode.setProperty("value", String.valueOf(cat.value));
+							filterNode.addChild(childnode);
+								  
+						
 					  }
 					 
 				}
-				return facetResults;
+				return facetNodes;
 
 			}
 		}

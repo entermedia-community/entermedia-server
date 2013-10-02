@@ -128,6 +128,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			if (fieldLuceneSearcherManager == null)
 			{
 				IndexWriter writer = getIndexWriter();
+				
 				fieldLuceneSearcherManager = new SearcherTaxonomyManager(writer, true, new SearcherFactory(), getTaxonomyWriter());
 			}
 			fieldLuceneSearcherManager.maybeRefresh();
@@ -697,6 +698,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			try
 			{
+				fieldTaxonomyWriter.commit();
+
 				fieldIndexWriter.commit(); // this flushes right away. This is
 											// slow. try not to call this often
 			}
@@ -785,7 +788,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 							}
 							fieldTaxonomyWriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE_OR_APPEND);
 
-					
 
 						// NOTE the false!!! Very important. Wasted 3 days on
 						// this!!!!
@@ -951,11 +953,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				}
 				clearIndex();
 			}
+			inTaxonomyWriter.commit();
+
 			inWriter.commit();
-			if (inTaxonomyWriter != null)
-			{
-				inTaxonomyWriter.commit();
-			}
+		
+		
 			inRecords.clear();
 		}
 		catch (Exception e)
