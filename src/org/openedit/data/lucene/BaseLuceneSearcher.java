@@ -32,6 +32,7 @@ import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexNotFoundException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -47,7 +48,6 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SearcherFactory;
-import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.join.JoinUtil;
@@ -66,10 +66,10 @@ import com.openedit.OpenEditException;
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.Shutdownable;
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.FilterNode;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.Join;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.hittracker.SelectedFacet;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
 
@@ -128,7 +128,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			if (fieldLuceneSearcherManager == null)
 			{
 				IndexWriter writer = getIndexWriter();
-				
+
 				fieldLuceneSearcherManager = new SearcherTaxonomyManager(writer, true, new SearcherFactory(), getTaxonomyWriter());
 			}
 			fieldLuceneSearcherManager.maybeRefresh();
@@ -172,6 +172,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public synchronized void reIndexAll() throws OpenEditException
 	{
+		
+		
+		
 		String indexname = String.valueOf(System.currentTimeMillis());
 		log.info(getSearchType() + " reindexing in " + "(" + getCatalogId() + ") as " + indexname);
 		File dir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
@@ -203,20 +206,24 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			DirectoryTaxonomyWriter taxonomywriter = null;
 			Directory taxoDir = buildIndexDir(indexname + "facets");
 			taxonomywriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
-			
 
 			reIndexAll(writer, taxonomywriter);
 			// writer.optimize();
 			taxonomywriter.commit();
 			writer.commit();
+			
 
 			setCurrentIndexFolder(indexname);
 			// setCurrentIndexFolder(indexname + "facets");
-
-			setIndexWriter(writer);
+			
+			setIndexWriter(writer, taxonomywriter);
 			setTaxonomyWriter(taxonomywriter);
+			
+
+			
 			clearIndex();
 			completed = true;
+			
 
 			// delete the older indexes
 			deleteOlderIndexes();
@@ -374,7 +381,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 					//
 
 					BaseLuceneSearcher tosearcher = (BaseLuceneSearcher) getSearcherManager().getSearcher(getCatalogId(), join.getRemoteSearchType());
-					SearcherAndTaxonomy refs =tosearcher.getLuceneSearcherManager().acquire(); 
+					
+					SearcherAndTaxonomy refs = tosearcher.getLuceneSearcherManager().acquire();
+					
 					IndexSearcher searcher = refs.searcher;
 					
 					try
@@ -400,25 +409,28 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				}
 
 			}
-			if(inQuery.getFacetValues() != null){
-				
-				BooleanQuery facetquery = new BooleanQuery();
-				
-				for (Iterator iterator = inQuery.getFacetValues().getSelectedFacets().iterator(); iterator.hasNext();)
+			if (inQuery.getFacetValues() != null)
+			{
+
+				for (Iterator iterator = inQuery.getFacetValues().iterator(); iterator.hasNext();)
 				{
-					SelectedFacet facet = (SelectedFacet) iterator.next();
-						
 					
-					DrillDownQuery ddq = new DrillDownQuery(FacetIndexingParams.DEFAULT, facetquery);
-					ddq.add(new CategoryPath(facet.getValues()));
-					facetquery.add(ddq, BooleanClause.Occur.MUST);
-				
-					
-					
+					FilterNode rootnode = (FilterNode) iterator.next();
+					DrillDownQuery ddq = new DrillDownQuery(FacetIndexingParams.DEFAULT, query1);
+					for (Iterator iterator2 = rootnode.getChildren().iterator(); iterator2.hasNext();)
+					{
+						FilterNode node = (FilterNode) iterator2.next();
+						if (node.isSelected())
+						{
+							ddq.add(new CategoryPath(node.get("label")));
+						}
+
+					}
+					//ddq.add(query1, BooleanClause.Occur.MUST);
+					query1 = ddq;
 				}
-				facetquery.add(query1, BooleanClause.Occur.MUST);
-				query1 = facetquery;			
 				
+
 			}
 			Sort sort = null;
 			if (inOrdering != null && inOrdering.size() > 0)
@@ -694,13 +706,24 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 	public void flush()
 	{
+		if(fieldTaxonomyWriter != null){
+			try
+			{
+				fieldTaxonomyWriter.commit();
+
+			}
+			catch (Exception e)
+			{
+				throw new OpenEditRuntimeException(e);
+			}
+		}
 		if (fieldIndexWriter != null)
 		{
 			try
 			{
-				fieldTaxonomyWriter.commit();
 				fieldIndexWriter.commit(); // this flushes right away. This is
 											// slow. try not to call this often
+
 			}
 			catch (Exception e)
 			{
@@ -737,11 +760,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			flush();
 		}
 
-		if (fieldIndexWriter == null)
+		if (fieldIndexWriter == null || fieldTaxonomyWriter == null)
 		{
 			synchronized (this)
 			{
-				if (fieldIndexWriter == null)
+				if (fieldIndexWriter == null || fieldTaxonomyWriter == null)
 				{
 					BooleanQuery.setMaxClauseCount(100000);
 
@@ -770,23 +793,21 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 							log.info(getCatalogId() + " asset writer opened in " + folder);
 						}
 						IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_41, getAnalyzer());
-						config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+						config.setOpenMode(OpenMode.APPEND);
 						fieldIndexWriter = new IndexWriter(indexDir, config);
 
-					
-							String name = folder + "facets";
-							Directory taxoDir = buildIndexDir(name);
-							File taxlock = new File(getRootDirectory(), getIndexPath() + "/" + name + "/" + "write.lock");
-							if (taxlock.exists() && !taxlock.delete())
-							{
-								// Invalid lock errors are returned when the
-								// index
-								// has no valid files in it
-								log.error("Could not delete lock");
-								IndexWriter.unlock(indexDir);
-							}
-							fieldTaxonomyWriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE_OR_APPEND);
-
+						String name = folder + "facets";
+						Directory taxoDir = buildIndexDir(name);
+						File taxlock = new File(getRootDirectory(), getIndexPath() + "/" + name + "/" + "write.lock");
+						if (taxlock.exists() && !taxlock.delete())
+						{
+							// Invalid lock errors are returned when the
+							// index
+							// has no valid files in it
+							log.error("Could not delete lock");
+							IndexWriter.unlock(taxoDir);
+						}
+						fieldTaxonomyWriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.APPEND);
 
 						// NOTE the false!!! Very important. Wasted 3 days on
 						// this!!!!
@@ -794,6 +815,9 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 						// getAnalyzer(),false,
 						// IndexWriter.MaxFieldLength.UNLIMITED);
 						// log.info("Open Index writer for " + lock);
+					}
+					catch(IndexNotFoundException e){
+						reIndexAll();
 					}
 					catch (IOException ex)
 					{
@@ -810,13 +834,29 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 	 * 
 	 * @param inIndexWriter
 	 */
-	public void setIndexWriter(IndexWriter inIndexWriter)
+	public void setIndexWriter(IndexWriter inIndexWriter, DirectoryTaxonomyWriter inTaxoWriter)
 	{
+		if(fieldTaxonomyWriter != null){
+			try
+			{
+				
+				fieldTaxonomyWriter.close();
+				
+				
+				// fieldLiveSearcher = null;
+			}
+			catch (IOException ex)
+			{
+				log.error(ex);
+			}
+		}
+		
 		if (fieldIndexWriter != null)
 		{
 			try
 			{
-				getLuceneSearcherManager();
+				
+				
 				fieldIndexWriter.close(); // This should flush if needed
 				// fieldLiveSearcher = null;
 			}
@@ -825,14 +865,15 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 				log.error(ex);
 			}
 		}
+		
+		
 		fieldIndexWriter = inIndexWriter;
-
+		fieldTaxonomyWriter = inTaxoWriter;
 		try
 		{
-			if (fieldLuceneSearcherManager != null)
-			{
+		
 				fieldLuceneSearcherManager = new SearcherTaxonomyManager(getIndexWriter(), true, new SearcherFactory(), getTaxonomyWriter());
-			}
+		
 		}
 		catch (IOException ex)
 		{
@@ -955,8 +996,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			inTaxonomyWriter.commit();
 
 			inWriter.commit();
-		
-		
+
 			inRecords.clear();
 		}
 		catch (Exception e)
@@ -990,7 +1030,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			ArrayList categorypaths = new ArrayList();
 			updateIndex(inData, doc, details);
 
-			updateFacets(doc,  inTaxonomyWriter);
+			updateFacets(doc, inTaxonomyWriter);
 
 			Term term = new Term("id", inData.getId());
 			inWriter.updateDocument(term, doc, getAnalyzer());
@@ -1006,7 +1046,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		}
 	}
 
-	protected void updateFacets(Document inDoc,  TaxonomyWriter inTaxonomyWriter) throws Exception
+	protected void updateFacets(Document inDoc, TaxonomyWriter inTaxonomyWriter) throws Exception
 	{
 		if (inTaxonomyWriter == null)
 		{
@@ -1036,8 +1076,8 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 		}
 
-		
-		if(categorypaths.size() > 0){
+		if (categorypaths.size() > 0)
+		{
 			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
 			facetFields.addFields(inDoc, categorypaths);
 		}
@@ -1161,6 +1201,7 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		{
 			try
 			{
+				fieldTaxonomyWriter.close();
 				fieldIndexWriter.close();
 			}
 			catch (IOException ex)
@@ -1211,6 +1252,26 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 		fieldCurrentIndexFolder = inCurrentIndexFolder;
 		// TODO: Delete the last two older indexes
 
+	}
+
+	public void updateFilters(WebPageRequest inReq) throws OpenEditException
+	{
+
+		String[] selected = inReq.getRequestParameters("filter");
+		HitTracker hits = loadHits(inReq);
+
+		if (hits != null && selected != null)
+		{
+			SearchQuery group = hits.getSearchQuery();
+			List selecteditems = Arrays.asList(selected);
+			hits.selectFilters(selecteditems);
+			List filters = hits.getFilters();
+			group.setFacetValues(filters);
+			hits.setIndexId(hits.getIndexId() + 1); // Causes the hits to
+			// be // reloaded
+			cachedSearch(inReq, group);
+
+		}
 	}
 
 }

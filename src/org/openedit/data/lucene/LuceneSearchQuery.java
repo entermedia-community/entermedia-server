@@ -648,18 +648,7 @@ public class LuceneSearchQuery extends SearchQuery
 		return done.toString();
 	}
 
-	public List getFacetList() {
-	if (fieldFacetList == null) {
-		fieldFacetList = new ArrayList();
-		
-	}
-
-	return fieldFacetList;
-	}
-
-	public void setFacetList(List inFacetList) {
-		fieldFacetList = inFacetList;
-	}
+	
 
 
 

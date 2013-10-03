@@ -6,6 +6,7 @@ package org.openedit.data.lucene;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -25,7 +26,6 @@ import org.apache.lucene.facet.search.FacetsCollector;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
@@ -39,6 +39,7 @@ import org.openedit.data.Searcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
+import com.openedit.hittracker.FilterNode;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.Term;
 
@@ -61,13 +62,13 @@ public class LuceneHitTracker extends HitTracker
 	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
 	protected List fieldFacets;
-	
-	public List getFacets()
+
+	protected List getFacets()
 	{
 		return fieldFacets;
 	}
 
-	public void setFacets(List inFacets)
+	protected void setFacets(List inFacets)
 	{
 		fieldFacets = inFacets;
 	}
@@ -166,14 +167,14 @@ public class LuceneHitTracker extends HitTracker
 		// List<Data> page = getPages().get(inPageNumberZeroBased);
 		// if( page == null )
 		// {
-
 		IndexSearcher searcher = null;
 		SearcherAndTaxonomy refs = null;
 		try
-		{
-			 refs = getLuceneSearcherManager().acquire(); 
-			 searcher = refs.searcher;
-			//searcher = getLuceneSearcherManager().acquire();
+		{	
+
+			refs = getLuceneSearcherManager().acquire();
+			searcher = refs.searcher;
+			// searcher = getLuceneSearcherManager().acquire();
 			if (fieldOpenDocsSearcherHash != searcher.hashCode())
 			{
 				TopDocs docs = null;
@@ -717,26 +718,31 @@ public class LuceneHitTracker extends HitTracker
 	 * hits; }
 	 */
 
-	public List<FilterNode> getFacetedResults() throws Exception
+	protected List<FilterNode> getFacetedResults() throws Exception
 	{
 		IndexSearcher searcher = null;
-		
+
 		SearcherAndTaxonomy refs = null;
-		
+
 		try
+
 		{
+//			getLuceneSearcherManager().maybeRefresh();
 			refs = getLuceneSearcherManager().acquire();
-			
+
 			searcher = refs.searcher;
 			
 			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
-		
-			//DirectoryTaxonomyReader taxor = new DirectoryTaxonomyReader((DirectoryTaxonomyWriter) lsearcher.getTaxonomyWriter());
-			//TaxonomyReader newReader = TaxonomyReader.openIfChanged( this.taxoReader );
-			
+
+			// DirectoryTaxonomyReader taxor = new
+			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
+			// lsearcher.getTaxonomyWriter());
+			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
+			// this.taxoReader );
+
 			ArrayList params = new ArrayList();
 			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
-			
+
 			if (propertydetails.size() > 0)
 			{
 				for (Iterator iterator = propertydetails.iterator(); iterator.hasNext();)
@@ -753,27 +759,46 @@ public class LuceneHitTracker extends HitTracker
 				List<FacetResult> facetResults = facetsCollector.getFacetResults();
 				List<FilterNode> facetNodes = new ArrayList();
 
-				for (FacetResult fres : facetResults) {
-					
+				for (FacetResult fres : facetResults)
+				{
+
 					FacetResultNode root = fres.getFacetResultNode();
 					FilterNode filterNode = new FilterNode();
-					
+					String label = root.label.toString();
+					PropertyDetail parent = getSearcher().getDetail(label);
+					if (parent != null)
+					{
+						filterNode.setName(parent.getText());
+					}
 					filterNode.setProperty("label", root.label.toString());
 					filterNode.setProperty("value", String.valueOf(root.value));
-					
+
 					facetNodes.add(filterNode);
-					
-					  for (FacetResultNode cat : root.subResults) {
-				
-						  FilterNode childnode = new FilterNode();
-							
-						  childnode.setProperty("label", cat.label.toString());
-						  childnode.setProperty("value", String.valueOf(cat.value));
-							filterNode.addChild(childnode);
-								  
-						
-					  }
-					 
+
+					for (FacetResultNode cat : root.subResults)
+					{
+
+						FilterNode childnode = new FilterNode();
+
+						String id = cat.label.toString();
+						String[] splits = id.split("/");
+						String text = splits[1];
+						Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
+						if (value != null)
+						{
+							childnode.setName(value.getName());
+						}
+						else
+						{
+							childnode.setName(text);
+						}
+						childnode.setId(id);
+						childnode.setProperty("label", id);
+						childnode.setProperty("value", String.valueOf(cat.value));
+						filterNode.addChild(childnode);
+
+					}
+
 				}
 				return facetNodes;
 
@@ -787,8 +812,8 @@ public class LuceneHitTracker extends HitTracker
 		return null;
 	}
 
-	
-	public List getFilters(){
+	public List<FilterNode> getFilters()
+	{
 		if (fieldFacets == null)
 		{
 			try
@@ -797,14 +822,54 @@ public class LuceneHitTracker extends HitTracker
 			}
 			catch (Exception e)
 			{
-			throw new OpenEditException(e);
+				throw new OpenEditException(e);
 			}
-			
 		}
-
 		return fieldFacets;
 	}
-	
-	
-	
+
+	public void selectFilters(List selected)
+	{
+		List topnodes = getFilters();
+		if (topnodes != null)
+		{
+			for (Iterator iterator = topnodes.iterator(); iterator.hasNext();)
+			{
+				FilterNode node = (FilterNode) iterator.next();
+				for (Iterator iterator2 = node.getChildren().iterator(); iterator2.hasNext();)
+				{
+					FilterNode child = (FilterNode) iterator2.next();
+					if (selected.contains(child.getId()))
+					{
+						child.setSelected(true);
+					}
+					else
+					{
+						child.setSelected(false);
+					}
+				}
+			}
+		}
+
+	}
+
+	public boolean hasSelectedFilters()
+	{
+
+		List topnodes = getFilters();
+		for (Iterator iterator = topnodes.iterator(); iterator.hasNext();)
+		{
+			FilterNode node = (FilterNode) iterator.next();
+			for (Iterator iterator2 = node.getChildren().iterator(); iterator2.hasNext();)
+			{
+				FilterNode child = (FilterNode) iterator2.next();
+				if (child.isSelected())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }

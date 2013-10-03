@@ -135,8 +135,9 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 				Asset asset = (Asset) iter.next();
 				Document doc = getIndexer().populateAsset(getIndexWriter(), asset, false, details);
 				updateFacets(doc,  getTaxonomyWriter());
-				
 				getIndexer().writeDoc(getIndexWriter(), asset.getId().toLowerCase() , doc, false);
+
+
 			}
 //			if (inOptimize)
 //			{
@@ -204,7 +205,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			//writer.optimize();
 			inTaxonomyWriter.commit();
 			writer.commit();
-			
 
 		}
 		catch(Exception ex)
