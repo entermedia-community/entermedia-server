@@ -3,36 +3,24 @@
 				<span class="widget-header-title">[[Filters]]</span>
 			</div>
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
-#set ($assetTypeSearcher = $searcherManager.getSearcher($catalogid, "assettype"))
-#set ($types = $assetTypeSearcher.fieldSearch(id, "*", "name"))
-#set( $notselected = $userprofile.getValues("hideassettype") ) 
 
 
-#set($facets = $hits.getFacetedResults())
-$facets
+#set($facets = $hits.getFilters())
 <div class="subcolumns" style="white-space:nowrap;"> 
-<!-- 
-for (FacetResult fres : facets) {
-			FacetResultNode root = fres.getFacetResultNode();
-			  System.out.println(root.label + "" +  root.value);
-			  for (FacetResultNode cat : root.subResults) {
-			    System.out.println(cat.label.components[1]+ "" +    cat.value);
-			  }
-			 
-		}
- -->
+
+<form  action="$apphome/components/results/filter.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
 
 #foreach($type in $facets )
       
-	    #set($root = $type.getFacetResultNode())
-	    #set($children = $type.subResults)
+	    
+	    
 	     <ul id="filters-sidebar">
-	     <li>$root $children ${root.subResults} ${root.SubResults} </li>
+	     <li><b>$type</b> </li>
 		    
    
-	#foreach($entry in $children)
+	#foreach($entry in $type.children)
 			
-	<li><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/><span> $entry.label ($entry.value) $entry</span></li> 			
+	<li><input class="assettypeselect" type="checkbox" name="filter" value="$entry.getId()" #if( $entry.selected )checked #end/><span> $entry ($entry.value)</span></li> 			
 				
 			#end
 
@@ -41,17 +29,13 @@ for (FacetResult fres : facets) {
 #end
 
 
-<form  action="$apphome/components/results/table.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
     ##<input type="hidden"  name="oemaxlevel" value="1" />
     <input type="hidden" name="catalogid" value="$!catalogid" />
     <input type="hidden" name="searchtype" value="asset" />
-        <input type="hidden" name="cache" value="false" />
     
     <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
-     
+     <input type="submit" >
 </form>
-<input class="btn"  id="select_all" type="button" value="[[All]]" />
-<input class="btn" style="margin-left: 5px;" id="select_none" type="button" value="[[None]]" />
 
 
 </div>
@@ -61,44 +45,18 @@ for (FacetResult fres : facets) {
 
 <script type="text/javascript">
 
-applyDontShow = function()
+applyFilters = function()
 {	
-	jQuery('#spinner').css('visibility', 'visible');
-	
-	var inputs = jQuery('input[name="childquery"]');
-	var query = "hitssessionid=$hits.getSessionId()&cache=false&profilesearchfilters=hideassettype";
-	var found = false;
-	for (var i = 0; i < inputs.size(); i++)
-	{
-		input = inputs[i];
-		if (!input.checked)
-		{
-			query += "&hideassettype=" + input.value;
-			found=true;
-		} 
-	}
 	
 	//TODO: Why not update the results with new data like VD does?
-	jQuery('#dontshow').attr('action', "$home$apphome/components/results/table.html?" + query);
+	//jQuery('#dontshow').attr('action', "$home$apphome/components/results/table.html?" + query);
 	jQuery('#dontshow').submit();
 
 
 }
 
-jQuery('#select_all').click(function(){
-	jQuery('.assettypeselect').each(function(){this.checked = true;});
-	applyDontShow();
-	return false;
-});
 
-jQuery('#select_none').click(function(){
-	jQuery('.assettypeselect').each(function(){this.checked = false;});
-	applyDontShow();
-	return false;
-});
-
-
-jQuery('.assettypeselect').bind('click',applyDontShow);
+jQuery('.assettypeselect').bind('click',applyFilters);
 
 </script>
 
