@@ -201,15 +201,15 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			// IndexWriter.MaxFieldLength.UNLIMITED);
 			// writer.setMergeFactor(50);
 			DirectoryTaxonomyWriter taxonomywriter = null;
-			
-				Directory taxoDir = buildIndexDir(indexname + "facets");
-				taxonomywriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
+			Directory taxoDir = buildIndexDir(indexname + "facets");
+			taxonomywriter = new DirectoryTaxonomyWriter(taxoDir, OpenMode.CREATE);
 			
 
 			reIndexAll(writer, taxonomywriter);
 			// writer.optimize();
-			writer.commit();
 			taxonomywriter.commit();
+			writer.commit();
+
 			setCurrentIndexFolder(indexname);
 			// setCurrentIndexFolder(indexname + "facets");
 
@@ -699,7 +699,6 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 			try
 			{
 				fieldTaxonomyWriter.commit();
-
 				fieldIndexWriter.commit(); // this flushes right away. This is
 											// slow. try not to call this often
 			}
@@ -1037,8 +1036,11 @@ public abstract class BaseLuceneSearcher extends BaseSearcher implements Shutdow
 
 		}
 
-		FacetFields facetFields = new FacetFields(inTaxonomyWriter);
-		facetFields.addFields(inDoc, categorypaths);
+		
+		if(categorypaths.size() > 0){
+			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
+			facetFields.addFields(inDoc, categorypaths);
+		}
 		// do stuff
 
 	}
