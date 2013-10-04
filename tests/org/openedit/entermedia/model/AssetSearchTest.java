@@ -112,12 +112,18 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		asset.setProperty("assettype", "audio");
 		searcher.saveData(asset,null);
 		
+		asset = searcher.createNewData();
+		asset.setId("facet105");
+		asset.setSourcePath("testsearch/search105");
+		asset.setName("facetedasset");
+		asset.setProperty("assettype", null);
+		searcher.saveData(asset,null);
 		
 		LuceneSearchQuery q = (LuceneSearchQuery) searcher.createSearchQuery();		
 		q.addMatches("name", "facetedasset");
 		
 		LuceneHitTracker hits = (LuceneHitTracker) searcher.search(q);
-		assertEquals(4, hits.size());
+		assertEquals(5, hits.size());
 		
 		
 		
@@ -154,7 +160,10 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		LuceneHitTracker facetedhits = (LuceneHitTracker) searcher.search(q);
 		assertEquals(2 ,facetedhits.size());
 		searcher.reIndexAll();
+		
 		 facetedhits = (LuceneHitTracker) searcher.search(q);
+		 facets = hits.getFilters();
+ 
 		assertEquals(2 ,facetedhits.size());
 		FilterNode child2 = new FilterNode();
 		child2.setId("assetype/image");
