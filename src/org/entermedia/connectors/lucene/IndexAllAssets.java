@@ -21,7 +21,7 @@ import org.openedit.entermedia.search.AssetProcessor;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.GenericsUtil;
 
-import com.openedit.OpenEditException;
+import com.openedit.OpenEditRuntimeException;
 import com.openedit.users.User;
 
 public class IndexAllAssets extends AssetProcessor
@@ -114,13 +114,18 @@ public class IndexAllAssets extends AssetProcessor
 				return;
 			}
 			fieldSourcePaths.add(asset.getSourcePath());
+			
+			
+			
 			//Document doc = getIndexer().createAssetDoc(asset, getMediaArchive().getAssetPropertyDetails());
 			Document doc = getIndexer().populateAsset(getWriter(), asset, false, getMediaArchive().getAssetPropertyDetails());
-
 			String id = asset.getId().toLowerCase();
-			
+			try{
 			updateFacets(doc,  getTaxonomyWriter());
-
+			} catch(Exception e){
+				throw new OpenEditRuntimeException(e);
+			}
+			
 			getIndexer().writeDoc(writer, id, doc, false);
 			// remove it from mem
 			getAssetArchive().clearAsset(asset);
@@ -137,10 +142,10 @@ public class IndexAllAssets extends AssetProcessor
 			log.info("Error loading asset: " + inSourcePath);
 		}
 	}
-	//TODO: MOVE THIS code and the version in  
-	protected void updateFacets(Document inDoc,  TaxonomyWriter inTaxonomyWriter) throws OpenEditException
+
+	
+	protected void updateFacets(Document inDoc, TaxonomyWriter inTaxonomyWriter) throws Exception
 	{
-		
 		if (inTaxonomyWriter == null)
 		{
 			return;
@@ -163,20 +168,22 @@ public class IndexAllAssets extends AssetProcessor
 					String[] components = vals.toArray(new String[vals.size()]);
 					categorypaths.add(new CategoryPath(components));
 					log.info("Adding: " + vals);
+
 				}
 			}
 
 		}
 
-		FacetFields facetFields = new FacetFields(inTaxonomyWriter);
-		try{
+		if (categorypaths.size() > 0)
+		{
+			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
 			facetFields.addFields(inDoc, categorypaths);
-		} catch(Exception e){
-			throw new OpenEditException(e);
 		}
 		// do stuff
 
 	}
+	
+	
 
 	public void processDir(ContentItem inContent)
 	{

@@ -133,9 +133,11 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			for (Iterator iter = inAssets.iterator(); iter.hasNext();)
 			{
 				Asset asset = (Asset) iter.next();
-				Document doc = getIndexer().populateAsset(getIndexWriter(), asset, false, details);
+				IndexWriter writer = getIndexWriter();
+				Document doc = getIndexer().populateAsset(writer, asset, false, details);
+				
 				updateFacets(doc,  getTaxonomyWriter());
-				getIndexer().writeDoc(getIndexWriter(), asset.getId().toLowerCase() , doc, false);
+				getIndexer().writeDoc(writer, asset.getId().toLowerCase() , doc, false);
 
 
 			}
@@ -186,7 +188,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			
 			reindexer.setPageManager(getPageManager());
 			reindexer.setIndexer(getIndexer());
-			reindexer.setTaxonomyWriter(getTaxonomyWriter());
+			reindexer.setTaxonomyWriter(inTaxonomyWriter);
 			reindexer.setMediaArchive(getMediaArchive());
 			
 			/* Search in the new path, if it exists */

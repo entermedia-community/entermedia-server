@@ -432,10 +432,10 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		return getDataConnector().nextId();
 	}
 	
-	public void updateFilters(WebPageRequest inReq) throws OpenEditException
-	{
-	getDataConnector().updateFilters(inReq);;
-	}
+//	public void updateFilters(WebPageRequest inReq) throws OpenEditException
+//	{
+//	updateFilters(inReq);
+//	}
 
 
 }

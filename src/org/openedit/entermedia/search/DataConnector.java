@@ -60,6 +60,6 @@ public interface DataConnector
 	boolean hasChanged(HitTracker inTracker);
 
 	String nextId();
-	public void updateFilters(WebPageRequest inReq);
+	//public void updateFilters(WebPageRequest inReq);
 
 }

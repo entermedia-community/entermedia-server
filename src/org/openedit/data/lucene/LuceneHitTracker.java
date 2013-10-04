@@ -6,7 +6,6 @@ package org.openedit.data.lucene;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -20,6 +19,8 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.params.FacetSearchParams;
 import org.apache.lucene.facet.search.CountFacetRequest;
+import org.apache.lucene.facet.search.DrillDownQuery;
+import org.apache.lucene.facet.search.DrillSideways;
 import org.apache.lucene.facet.search.FacetResult;
 import org.apache.lucene.facet.search.FacetResultNode;
 import org.apache.lucene.facet.search.FacetsCollector;
@@ -61,16 +62,16 @@ public class LuceneHitTracker extends HitTracker
 	protected String fieldSearchType;
 	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
-	protected List fieldFacets;
+	protected DrillDownQuery fieldDrillDownQuery;
 
-	protected List getFacets()
+	public DrillDownQuery getDrillDownQuery()
 	{
-		return fieldFacets;
+		return fieldDrillDownQuery;
 	}
 
-	protected void setFacets(List inFacets)
+	public void setdDrillDownQuery(DrillDownQuery fieldDrillDownQuery)
 	{
-		fieldFacets = inFacets;
+		this.fieldDrillDownQuery = fieldDrillDownQuery;
 	}
 
 	/**
@@ -170,7 +171,7 @@ public class LuceneHitTracker extends HitTracker
 		IndexSearcher searcher = null;
 		SearcherAndTaxonomy refs = null;
 		try
-		{	
+		{
 
 			refs = getLuceneSearcherManager().acquire();
 			searcher = refs.searcher;
@@ -727,11 +728,11 @@ public class LuceneHitTracker extends HitTracker
 		try
 
 		{
-//			getLuceneSearcherManager().maybeRefresh();
+			// getLuceneSearcherManager().maybeRefresh();
 			refs = getLuceneSearcherManager().acquire();
 
 			searcher = refs.searcher;
-			
+
 			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
 
 			// DirectoryTaxonomyReader taxor = new
@@ -747,13 +748,13 @@ public class LuceneHitTracker extends HitTracker
 			{
 				for (Iterator iterator = propertydetails.iterator(); iterator.hasNext();)
 				{
+
 					PropertyDetail detail = (PropertyDetail) iterator.next();
 					params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 10));
+
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
 				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
-
-				// Should we do THIS search in
 				searcher.search(getLuceneQuery(), facetsCollector);
 
 				List<FacetResult> facetResults = facetsCollector.getFacetResults();
@@ -812,64 +813,94 @@ public class LuceneHitTracker extends HitTracker
 		return null;
 	}
 
-	public List<FilterNode> getFilters()
+	public void refreshFilters() throws Exception
 	{
 		if (fieldFacets == null)
 		{
-			try
-			{
-				fieldFacets = getFacetedResults();
-			}
-			catch (Exception e)
-			{
-				throw new OpenEditException(e);
-			}
+			getFacets();
 		}
-		return fieldFacets;
-	}
-
-	public void selectFilters(List selected)
-	{
-		List topnodes = getFilters();
-		if (topnodes != null)
+		if (fieldFacets == null)
 		{
-			for (Iterator iterator = topnodes.iterator(); iterator.hasNext();)
+			return;
+		}
+		IndexSearcher searcher = null;
+
+		SearcherAndTaxonomy refs = null;
+
+		try
+
+		{
+			// getLuceneSearcherManager().maybeRefresh();
+			refs = getLuceneSearcherManager().acquire();
+
+			searcher = refs.searcher;
+
+			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
+
+			// DirectoryTaxonomyReader taxor = new
+			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
+			// lsearcher.getTaxonomyWriter());
+			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
+			// this.taxoReader );
+
+			ArrayList params = new ArrayList();
+			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
+
+			for (Iterator facetiter = getFacets().iterator(); facetiter.hasNext();)
 			{
-				FilterNode node = (FilterNode) iterator.next();
-				for (Iterator iterator2 = node.getChildren().iterator(); iterator2.hasNext();)
-				{
-					FilterNode child = (FilterNode) iterator2.next();
-					if (selected.contains(child.getId()))
+				FilterNode node = (FilterNode) facetiter.next();
+				if(!node.hasSelections(node)){
+					node.setChildren(null);
+					params.add(new CountFacetRequest(new CategoryPath(node.get("label").split("/")), 10));
+					FacetSearchParams fsp = new FacetSearchParams(params);
+					FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
+					searcher.search(getLuceneQuery(), facetsCollector);
+
+					List<FacetResult> facetResults = facetsCollector.getFacetResults();
+					List<FilterNode> facetNodes = new ArrayList();
+
+					for (FacetResult fres : facetResults)
 					{
-						child.setSelected(true);
+
+						FacetResultNode root = fres.getFacetResultNode();
+
+						String label = root.label.toString();
+						PropertyDetail parent = getSearcher().getDetail(label);
+						
+						for (FacetResultNode cat : root.subResults)
+						{
+
+							FilterNode childnode = new FilterNode();
+
+							String id = cat.label.toString();
+							String[] splits = id.split("/");
+							String text = splits[1];
+							Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
+							if (value != null)
+							{
+								childnode.setName(value.getName());
+							}
+							else
+							{
+								childnode.setName(text);
+							}
+							childnode.setId(id);
+							childnode.setProperty("label", id);
+							childnode.setProperty("value", String.valueOf(cat.value));
+							node.addChild(childnode);
+
+						}
+
 					}
-					else
-					{
-						child.setSelected(false);
-					}
+
 				}
 			}
 		}
-
-	}
-
-	public boolean hasSelectedFilters()
-	{
-
-		List topnodes = getFilters();
-		for (Iterator iterator = topnodes.iterator(); iterator.hasNext();)
+		finally
 		{
-			FilterNode node = (FilterNode) iterator.next();
-			for (Iterator iterator2 = node.getChildren().iterator(); iterator2.hasNext();)
-			{
-				FilterNode child = (FilterNode) iterator2.next();
-				if (child.isSelected())
-				{
-					return true;
-				}
-			}
+
+			getLuceneSearcherManager().release(refs);
 		}
-		return false;
 	}
 
 }
