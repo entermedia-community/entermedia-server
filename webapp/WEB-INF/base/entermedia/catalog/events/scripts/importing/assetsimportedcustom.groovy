@@ -57,7 +57,7 @@ public void setupProjects(HitTracker assets)
 		{
 			def sourcepath = hit.getSourcePath();
 			String[] split = sourcepath.split("/");
-			if( split.length > 2 )
+			if( split.length > 1 )
 			{
 				SearchQuery query = librarySearcher.createSearchQuery();
 				query.setAndTogether(false);

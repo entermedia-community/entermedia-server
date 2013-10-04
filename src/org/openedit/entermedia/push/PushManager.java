@@ -211,6 +211,6 @@ public interface PushManager
 
 	void toggle(String inCatalogId);
 
-	void acceptPush(WebPageRequest inReq, MediaArchive archive, String sourcepath);
+	void acceptPush(WebPageRequest inReq, MediaArchive archive);
 
 }
