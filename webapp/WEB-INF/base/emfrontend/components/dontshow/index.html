@@ -10,6 +10,8 @@
 
 <form  action="$apphome/components/results/filter.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
 
+
+
 #foreach($type in $facets )
       
 	    
@@ -20,7 +22,7 @@
    
 	#foreach($entry in $type.children)
 			
-	<li><input class="assettypeselect" type="checkbox" name="filter" value="$entry.getId()" #if( $entry.selected )checked #end/><span> $entry ($entry.value)</span></li> 			
+	<li><input class="assettypeselect" type="checkbox" name="filter" value="$entry.getId()" #if( $entry.isSelected() )checked #end/><span> $entry ($entry.value) $entry.isSelected()</span></li> 			
 				
 			#end
 
@@ -29,7 +31,7 @@
 #end
 
 
-    ##<input type="hidden"  name="oemaxlevel" value="1" />
+    <input type="hidden"  name="oemaxlevel" value="1" />
     <input type="hidden" name="catalogid" value="$!catalogid" />
     <input type="hidden" name="searchtype" value="asset" />
     
