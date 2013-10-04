@@ -24,6 +24,7 @@ import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.index.FacetFields;
 import org.apache.lucene.facet.params.FacetIndexingParams;
+import org.apache.lucene.facet.params.PerDimensionIndexingParams;
 import org.apache.lucene.facet.search.DrillDownQuery;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager;
 import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
@@ -1089,7 +1090,6 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 		if (categorypaths.size() > 0)
 		{
-
 			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
 			facetFields.addFields(inDoc, categorypaths);
 		}
