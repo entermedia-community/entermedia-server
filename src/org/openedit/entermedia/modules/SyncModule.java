@@ -38,9 +38,8 @@ public class SyncModule extends BaseMediaModule
 
 	public void acceptPush(WebPageRequest inReq)
 	{
-		String sourcepath = inReq.getRequestParameter("sourcepath");
 		MediaArchive archive = getMediaArchive(inReq);
-		getPushManager().acceptPush(inReq,archive,sourcepath);
+		getPushManager().acceptPush(inReq,archive);
 	}
 
 	public void resetPushStatus(WebPageRequest inReq)
