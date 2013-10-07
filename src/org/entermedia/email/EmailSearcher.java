@@ -2,6 +2,7 @@ package org.entermedia.email;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
@@ -43,7 +44,7 @@ public class EmailSearcher extends BaseLuceneSearcher implements Searcher {
 	
 	private static final Log log = LogFactory.getLog(EmailSearcher.class);
 	
-	public void reIndexAll(final IndexWriter writer)
+	public void reIndexAll(final IndexWriter writer, final TaxonomyWriter inTaxonomyWriter)
 	{
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2
@@ -61,7 +62,7 @@ public class EmailSearcher extends BaseLuceneSearcher implements Searcher {
 				sourcepath = sourcepath.replace(".xml", "");
 				
 				TemplateWebEmail email = getEmailArchive().loadEmail(sourcepath);
-				populateEmail(writer, email, true);
+				populateEmail(writer, inTaxonomyWriter, email, true);
 					
 				
 			}
@@ -79,9 +80,9 @@ public class EmailSearcher extends BaseLuceneSearcher implements Searcher {
 		log.info("Reindex done");
 
 	}
-	private void populateEmail(IndexWriter inWriter, TemplateWebEmail inEmail, boolean add)  {
+	private void populateEmail(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter, TemplateWebEmail inEmail, boolean add)  {
 		
-		super.updateIndex(inWriter,  inEmail);
+		super.updateIndex(inWriter,  inTaxonomyWriter,inEmail);
 		
 //		try {
 //			if (add) {

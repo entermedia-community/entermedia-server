@@ -21,6 +21,7 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
@@ -87,7 +88,7 @@ public class LuceneLogSearcher extends BaseLuceneSearcher implements WebEventLis
 		return search(inReq, search);
 	}
 	
-	public void reIndexAll(final IndexWriter writer) 
+	public void reIndexAll(final IndexWriter writer, TaxonomyWriter inWriter) 
 	{
 		try 
 		{

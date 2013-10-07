@@ -9,7 +9,7 @@
 	<!-- Allow searching -->
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
 	<property id="libraries"  viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
-	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true"  sort="name">Asset Type</property>
+	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
 
 	<!-- Push items -->
 	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
@@ -102,8 +102,8 @@
 	<property id="jobnotes" internalfield="true" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>	
 	<property id="cumulusid" internalfield="true" index="true" stored="true">Cumulus ID</property>
 	 -->
-	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
-	<property id="editasset" internalfield="true" filter="true">Writable</property>	
+	<property id="viewasset" internalfield="true" >Readable</property>	
+	<property id="editasset" internalfield="true" >Writable</property>	
 	<property id="editgroups" index="true" stored="true" editable="true" viewtype="multiselect" internalfield="true" listcatalogid="system"  listid="group">Edit Groups</property>
 		
 	<!-- 

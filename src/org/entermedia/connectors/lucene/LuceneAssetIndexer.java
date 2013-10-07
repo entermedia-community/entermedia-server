@@ -14,11 +14,13 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.LuceneIndexer;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
@@ -118,7 +120,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	{
 		Document doc = new Document();
 		updateIndex(asset, doc, inDetails);
-
+		
 		return doc;
 	}
 /*
@@ -136,10 +138,11 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		}
 	}
 */
-	public void populateAsset(IndexWriter writer, Asset asset, boolean add, PropertyDetails inDetails) throws OpenEditException
+	public Document populateAsset(IndexWriter writer,  Asset asset, boolean add, PropertyDetails inDetails) throws OpenEditException
 	{
 		Document doc = createAssetDoc(asset, inDetails);
-		writeDoc(writer, asset.getId().toLowerCase(), doc, add);
+		return doc;
+	
 	}
 
 	protected void populatePermission(Document inDoc, List inAccessList, String inPermission)

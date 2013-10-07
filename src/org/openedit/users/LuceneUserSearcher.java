@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
@@ -25,7 +26,6 @@ import com.openedit.users.BaseUser;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
-import com.openedit.users.filesystem.FileSystemUser;
 
 /**
  *
@@ -64,7 +64,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 	}
 
 	
-	public void reIndexAll(IndexWriter writer) throws OpenEditException
+	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter) throws OpenEditException
 	{
 		log.info("Reindex of customer users directory");
 		try

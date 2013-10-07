@@ -17,19 +17,30 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.params.FacetSearchParams;
+import org.apache.lucene.facet.search.CountFacetRequest;
+import org.apache.lucene.facet.search.DrillDownQuery;
+import org.apache.lucene.facet.search.DrillSideways;
+import org.apache.lucene.facet.search.FacetResult;
+import org.apache.lucene.facet.search.FacetResultNode;
+import org.apache.lucene.facet.search.FacetsCollector;
+import org.apache.lucene.facet.search.SearcherTaxonomyManager;
+import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.openedit.Data;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
+import com.openedit.hittracker.FilterNode;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.Term;
 
@@ -37,23 +48,35 @@ import com.openedit.hittracker.Term;
  * @author cburkey
  * 
  */
-public class LuceneHitTracker extends HitTracker 
+public class LuceneHitTracker extends HitTracker
 {
 	private static final Log log = LogFactory.getLog(LuceneHitTracker.class);
-	
-	//protected transient TopDocs fieldHits;
-	protected transient SearcherManager fieldLuceneSearcherManager;
+
+	// protected transient TopDocs fieldHits;
+	protected transient SearcherTaxonomyManager fieldLuceneSearcherManager;
 	protected transient Query fieldLuceneQuery;
 	protected transient Sort fieldLuceneSort;
-	//protected Map fieldPages;
-	//protected Map<Integer,ScoreDoc> fieldCursors;
+	// protected Map fieldPages;
+	// protected Map<Integer,ScoreDoc> fieldCursors;
 	protected Integer fieldSize;
 	protected String fieldSearchType;
 	protected ScoreDoc[] fieldDocs;
 	protected int fieldOpenDocsSearcherHash;
-	
+	protected DrillDownQuery fieldDrillDownQuery;
+
+	public DrillDownQuery getDrillDownQuery()
+	{
+		return fieldDrillDownQuery;
+	}
+
+	public void setdDrillDownQuery(DrillDownQuery fieldDrillDownQuery)
+	{
+		this.fieldDrillDownQuery = fieldDrillDownQuery;
+	}
+
 	/**
 	 * This is what is searched. getResultsType() is what is returned?
+	 * 
 	 * @deprecated
 	 */
 	public String getSearchType()
@@ -65,11 +88,13 @@ public class LuceneHitTracker extends HitTracker
 	{
 		fieldSearchType = inSearchType;
 	}
+
 	public LuceneHitTracker()
 	{
-		
+
 	}
-	public LuceneHitTracker(SearcherManager inManager, Query inQuery, Sort inSort, Searcher inSearcher)
+
+	public LuceneHitTracker(SearcherTaxonomyManager inManager, Query inQuery, Sort inSort, Searcher inSearcher)
 	{
 		super(inSearcher);
 		setLuceneSearcherManager(inManager);
@@ -77,137 +102,131 @@ public class LuceneHitTracker extends HitTracker
 		setLuceneSort(inSort);
 	}
 
-	public int size() 
+	public int size()
 	{
 		if( !isAllSelected() && isShowOnlySelected() && ( fieldSelections == null || fieldSelections.size() == 0 ) )
 		{
 			return 0;
 		}
 		
-		if( fieldSize == null )
+		if (fieldSize == null)
 		{
-			getPage(0); //this will never happen because we set the size already
+			getPage(0); // this will never happen because we set the size
+						// already
 		}
 		return fieldSize;
 	}
-/*
-	protected void setCursorForPage(ScoreDoc inDoc, int inPageZeroBased)
-	{
-		if (fieldCursors == null)
-		{
-			fieldCursors = new HashMap();
-		}
-		if( inDoc != null) //may be zero results
-		{
-			//log.info( getSearchType()  + " Page  " + inPageZeroBased + " ended with " + inDoc.doc  + " " + fieldSize );
-			fieldCursors.put(inPageZeroBased, inDoc);
-		}
-	}
-	
-	protected ScoreDoc getCursorForPage(int inPageZeroBased)
-	{
-		if (fieldCursors == null)
-		{
-			return null;
-		}
-		return fieldCursors.get(inPa  int docid = lastDoc.doc;
-		final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
-		searcher.doc(docid, visitor);
-		page.add( visitor.createSearchResult() );geZeroBased);
-	}
-	*/
+
+	/*
+	 * protected void setCursorForPage(ScoreDoc inDoc, int inPageZeroBased) { if
+	 * (fieldCursors == null) { fieldCursors = new HashMap(); } if( inDoc !=
+	 * null) //may be zero results { //log.info( getSearchType() + " Page  " +
+	 * inPageZeroBased + " ended with " + inDoc.doc + " " + fieldSize );
+	 * fieldCursors.put(inPageZeroBased, inDoc); } }
+	 * 
+	 * protected ScoreDoc getCursorForPage(int inPageZeroBased) { if
+	 * (fieldCursors == null) { return null; } return fieldCursors.get(inPa int
+	 * docid = lastDoc.doc; final SearchResultStoredFieldVisitor visitor = new
+	 * SearchResultStoredFieldVisitor(columns); searcher.doc(docid, visitor);
+	 * page.add( visitor.createSearchResult() );geZeroBased); }
+	 */
 	public void setPage(int inPageOneBased)
 	{
-		if( inPageOneBased == 0)
+		if (inPageOneBased == 0)
 		{
 			inPageOneBased = 1;
 		}
 		fieldPage = inPageOneBased;
 		fieldCurrentPage = getPage(inPageOneBased - 1);
 	}
-	
+
 	/**
 	 * @deprecated use getPage(int)
 	 */
 	public Data get(int inCount)
 	{
 		int page = inCount / getHitsPerPage();
-		
-		//Make sure we are on the current page?
-		
-		//get the chunk 1
+
+		// Make sure we are on the current page?
+
+		// get the chunk 1
 		List<Data> row = getPage(page);
 
 		// 50 - (1 * 40) = 10 relative
-		int indexlocation = inCount - ( page * getHitsPerPage() );
+		int indexlocation = inCount - (page * getHitsPerPage());
 
 		return row.get(indexlocation);
 	}
-//	protected Map<Integer,List<Data>> getPages()
-//	{
-//		if (fieldPages == null)
-//		{
-//			//fieldPages = new HashMap<Integer,List<Data>>(); //this will leak for really large resultsets
-//			fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
-//		}
-//		return fieldPages;
-//	}
+
+	// protected Map<Integer,List<Data>> getPages()
+	// {
+	// if (fieldPages == null)
+	// {
+	// //fieldPages = new HashMap<Integer,List<Data>>(); //this will leak for
+	// really large resultsets
+	// fieldPages = new ReferenceMap(ReferenceMap.HARD,ReferenceMap.SOFT);
+	// }
+	// return fieldPages;
+	// }
 	protected List<Data> getPage(int inPageNumberZeroBased)
 	{
-//		List<Data> page = getPages().get(inPageNumberZeroBased);
-//		if( page == null )
-//		{
-		
+		// List<Data> page = getPages().get(inPageNumberZeroBased);
+		// if( page == null )
+		// {
 		IndexSearcher searcher = null;
-		
+		SearcherAndTaxonomy refs = null;
 		try
 		{
-			searcher = getLuceneSearcherManager().acquire();
-			if( fieldOpenDocsSearcherHash != searcher.hashCode() )
+
+			refs = getLuceneSearcherManager().acquire();
+			searcher = refs.searcher;
+			// searcher = getLuceneSearcherManager().acquire();
+			if (fieldOpenDocsSearcherHash != searcher.hashCode())
 			{
 				TopDocs docs = null;
-				//do the search and save the reuslts
+				// do the search and save the reuslts
 				int max = Integer.MAX_VALUE;
-				if( getHitsPerPage() == 1)
+				if (getHitsPerPage() == 1)
 				{
-					max = 1;   //This causes our array to not have the right number of hits in it
+					max = 1; // This causes our array to not have the right
+								// number of hits in it
 				}
 				Filter filter = null;
-				
-				if( isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
+
+				if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
 				{
-					filter = new FieldCacheTermsFilter("id", fieldSelections.toArray(new String[fieldSelections.size()]) );
+					filter = new FieldCacheTermsFilter("id", fieldSelections.toArray(new String[fieldSelections.size()]));
 				}
-				
-//				List<String> terms = new ArrayList();
-//			    terms.add("5");
-//			    results = searcher.search(q, ), numDocs).scoreDocs;
-//			    assertEquals("Must match nothing", 0, results.length);
-				
-				if( getLuceneSort() != null )
+
+				// List<String> terms = new ArrayList();
+				// terms.add("5");
+				// results = searcher.search(q, ), numDocs).scoreDocs;
+				// assertEquals("Must match nothing", 0, results.length);
+
+				if (getLuceneSort() != null)
 				{
-					docs = searcher.search( getLuceneQuery(), filter, max ,getLuceneSort(), false, false );
+					docs = searcher.search(getLuceneQuery(), filter, max, getLuceneSort(), false, false);
 				}
 				else
 				{
-					docs = searcher.search( getLuceneQuery(),filter, max);
+					docs = searcher.search(getLuceneQuery(), filter, max);
 				}
-				if( max > 1)
+				if (max > 1)
 				{
-					log.info(getSearchType() + " " +  docs.totalHits + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+					log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
 				}
 				fieldSize = docs.totalHits;
 				fieldDocs = docs.scoreDocs;
-				//do we need to reset the selections?
-				//Use selected doc ids to reload all the selection data
+				// do we need to reset the selections?
+				// Use selected doc ids to reload all the selection data
 			}
 			fieldOpenDocsSearcherHash = searcher.hashCode();
-			
+
 			List<Data> page = populatePageData(inPageNumberZeroBased, searcher);
 			return page;
 
 		}
-		catch( Exception ex )
+		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
@@ -215,200 +234,192 @@ public class LuceneHitTracker extends HitTracker
 		{
 			try
 			{
-				getLuceneSearcherManager().release(searcher);
+				getLuceneSearcherManager().release(refs);
 			}
 			catch (IOException e)
 			{
-				//nada
+				// nada
 			}
 		}
 	}
 
-	protected List<Data> populatePageData(int inPageNumberZeroBased,
-			IndexSearcher searcher) throws IOException {
+	protected List<Data> populatePageData(int inPageNumberZeroBased, IndexSearcher searcher) throws IOException
+	{
 		int start = getHitsPerPage() * inPageNumberZeroBased;
 		int max = start + getHitsPerPage();
 		max = Math.min(max, fieldSize);
-		
+
 		List<Data> page = new ArrayList<Data>(getHitsPerPage());
-		
-		readPageOfData(searcher,start,max,page);
+
+		readPageOfData(searcher, start, max, page);
 		return page;
 	}
+
 	/*
-	protected List<Data> cursorSearch(IndexSearcher searcher,int inPageNumberZeroBased,ScoreDoc after ) throws IOException
+	 * protected List<Data> cursorSearch(IndexSearcher searcher,int
+	 * inPageNumberZeroBased,ScoreDoc after ) throws IOException { TopDocs docs
+	 * = null; int start = getHitsPerPage() * inPageNumberZeroBased; int max =
+	 * start + getHitsPerPage();
+	 * 
+	 * if( getLuceneSort() != null ) { docs = searcher.searchAfter( after,
+	 * getLuceneQuery(), getHitsPerPage() ,getLuceneSort() ); } else { docs =
+	 * searcher.searchAfter( after, getLuceneQuery(),getHitsPerPage()); }
+	 * 
+	 * List<Data> page = new ArrayList<Data>(getHitsPerPage());
+	 * 
+	 * ScoreDoc lastDoc = null; Map<String,Integer> columns = new
+	 * TreeMap<String,Integer>(); int returned = docs.scoreDocs.length; for (int
+	 * i = 0; i < returned; i++) { lastDoc = docs.scoreDocs[i]; int docid =
+	 * lastDoc.doc; final SearchResultStoredFieldVisitor visitor = new
+	 * SearchResultStoredFieldVisitor(columns); searcher.doc(docid, visitor);
+	 * Data lastRecord =visitor.createSearchResult(); page.add( lastRecord ); }
+	 * // return lastDoc;
+	 * 
+	 * //log.info( getSearchType() + " Page  " + inPageNumberZeroBased +
+	 * " ended with " + lastDoc.doc + " = " + lastRecord.getId()); //ScoreDoc
+	 * lastone = readPageOfData(searcher, 0, docs, page);
+	 * setCursorForPage(lastDoc,inPageNumberZeroBased); if( log.isDebugEnabled()
+	 * ) { log.debug(getSearchType() + " page " + inPageNumberZeroBased ); }
+	 * 
+	 * return page; }
+	 */
+	/*
+	 * protected List<Data> fullSearch(IndexSearcher searcher, int
+	 * inPageNumberZeroBased) throws IOException { // int start =
+	 * getHitsPerPage() * inPageNumberZeroBased; // int max = start +
+	 * getHitsPerPage(); TopDocs docs = null;
+	 * 
+	 * if( getLuceneSort() != null ) { docs = searcher.search(
+	 * getLuceneQuery(),Integer.MAX_VALUE ,getLuceneSort() ); } else { docs =
+	 * searcher.search( getLuceneQuery(),Integer.MAX_VALUE); } fieldSize =
+	 * docs.totalHits; List<Data> page = new ArrayList<Data>(getHitsPerPage());
+	 * 
+	 * ScoreDoc lastone = readPageOfData(searcher, start, docs, page);
+	 * setCursorForPage(lastone,inPageNumberZeroBased); log.info(getSearchType()
+	 * + " " + size() + " hits " + getLuceneQuery() + " page " +
+	 * inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " +
+	 * getCatalogId()); return page;
+	 * 
+	 * }
+	 */
+	protected ScoreDoc readPageOfData(IndexSearcher searcher, int start, int max, List<Data> page) throws IOException
 	{
-		TopDocs docs = null;
-		int start = getHitsPerPage() * inPageNumberZeroBased;
-		int max = start + getHitsPerPage();
-		
-		if( getLuceneSort() != null )
-		{
-			docs = searcher.searchAfter( after, getLuceneQuery(), getHitsPerPage() ,getLuceneSort() );
-		}
-		else
-		{
-			docs = searcher.searchAfter( after, getLuceneQuery(),getHitsPerPage());
-		}
-
-		List<Data> page = new ArrayList<Data>(getHitsPerPage());
-		
-		ScoreDoc lastDoc = null;
-		Map<String,Integer> columns = new TreeMap<String,Integer>();	
-		int returned = docs.scoreDocs.length; 
-		for (int i = 0; i < returned; i++)
-		{
-			lastDoc = docs.scoreDocs[i];
-		    int docid = lastDoc.doc;
-			final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
-			searcher.doc(docid, visitor);
-			Data lastRecord =visitor.createSearchResult(); 
-			page.add( lastRecord );
-		}
-		//	return lastDoc;
-
-		//log.info( getSearchType()  + " Page  " + inPageNumberZeroBased + " ended with "   + lastDoc.doc + " = " + lastRecord.getId());
-		//ScoreDoc lastone = readPageOfData(searcher, 0, docs, page);
-		setCursorForPage(lastDoc,inPageNumberZeroBased);
-		if( log.isDebugEnabled() )
-		{
-			log.debug(getSearchType() + " page " + inPageNumberZeroBased );
-		}
-
-		return page;
-	}
-	*/
-/*
-	protected List<Data> fullSearch(IndexSearcher searcher, int inPageNumberZeroBased) throws IOException
-	{
-//		int start = getHitsPerPage() * inPageNumberZeroBased;
-//		int max = start + getHitsPerPage();
-		TopDocs docs = null;
-
-		if( getLuceneSort() != null )
-		{
-			docs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE ,getLuceneSort() );
-		}
-		else
-		{
-			docs = searcher.search( getLuceneQuery(),Integer.MAX_VALUE);
-		}
-		fieldSize = docs.totalHits;
-		List<Data> page = new ArrayList<Data>(getHitsPerPage());
-		
-		ScoreDoc lastone = readPageOfData(searcher, start, docs, page);
-		setCursorForPage(lastone,inPageNumberZeroBased);
-		log.info(getSearchType() + " " +  size() + " hits "  + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
-		return page;
-
-	}
-*/
-	protected ScoreDoc readPageOfData(IndexSearcher searcher, int start, int max,
-		 List<Data> page) throws IOException {
 		/**
-		 * This is optimized to only store string versions of the data we have. Normally the Document class has FieldType that use a bunch of memory.
-		 * Guess Most people do not loop over their entire database as often as we do. 
-		 * TODO: Find a way to cache more generically instead of one page at a time?
-		 */		
-		
+		 * This is optimized to only store string versions of the data we have.
+		 * Normally the Document class has FieldType that use a bunch of memory.
+		 * Guess Most people do not loop over their entire database as often as
+		 * we do. TODO: Find a way to cache more generically instead of one page
+		 * at a time?
+		 */
+
 		ScoreDoc lastDoc = null;
-		Map<String,Integer> columns = new TreeMap<String,Integer>();	
+		Map<String, Integer> columns = new TreeMap<String, Integer>();
 		for (int i = 0; start + i < max; i++)
 		{
 			int offset = start + i;
 			lastDoc = fieldDocs[offset];
-		    int docid = lastDoc.doc;
-			//final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
-		  final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
-		    searcher.doc(docid, visitor);
-		    Data data = visitor.createSearchResult();
-		    //if data.getId()
-			page.add( data );
+			int docid = lastDoc.doc;
+			// final SearchResultStoredFieldVisitor visitor = new
+			// SearchResultStoredFieldVisitor(columns);
+			final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+			searcher.doc(docid, visitor);
+			Data data = visitor.createSearchResult();
+			// if data.getId()
+			page.add(data);
 		}
-	//	log.info( getSearchType()  + " ended with "   + lastDoc.doc + " = " + page.get(page.size() - 1).getId());
+		// log.info( getSearchType() + " ended with " + lastDoc.doc + " = " +
+		// page.get(page.size() - 1).getId());
 
-		
 		return lastDoc;
 	}
 
 	public Collection<String> getSourcePaths()
 	{
 		List sourcepaths = new ArrayList();
-		
-		IndexSearcher searcher = null;	
+
+		IndexSearcher searcher = null;
+		SearcherAndTaxonomy refs = null;
+		try
+		{
+			refs = getLuceneSearcherManager().acquire();
+			searcher = refs.searcher;
+			int max = Integer.MAX_VALUE;
+			TopDocs docs = null;
+			if (getLuceneSort() != null)
+			{
+				docs = searcher.search(getLuceneQuery(), max, getLuceneSort());
+			}
+			else
+			{
+				docs = searcher.search(getLuceneQuery(), max);
+			}
+			fieldSize = docs.totalHits;
+			for (int i = 0; i < fieldSize; i++)
+			{
+				Document doc = searcher.doc(docs.scoreDocs[i].doc);
+				sourcepaths.add(doc.get("sourcepath"));
+			}
+			log.info(size() + " total query:" + getLuceneQuery() + " session:" + getSessionId());
+			return sourcepaths;
+		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+		finally
+		{
 			try
 			{
-				searcher = getLuceneSearcherManager().acquire();
-				int max = Integer.MAX_VALUE;
-				TopDocs docs = null;
-				if( getLuceneSort() != null )
-				{
-					docs = searcher.search( getLuceneQuery(),max ,getLuceneSort() );
-				}
-				else
-				{
-					docs = searcher.search( getLuceneQuery(),max);
-				}
-				fieldSize = docs.totalHits;
-				for (int i = 0;  i < fieldSize; i++)
-				{
-					Document doc = searcher.doc( docs.scoreDocs[i].doc );
-					sourcepaths.add( doc.get("sourcepath") );
-				}
-				log.info(size() + " total query:" + getLuceneQuery() + " session:" + getSessionId() );
-				return sourcepaths;
+				getLuceneSearcherManager().release(refs);
 			}
-			catch( Exception ex )
+			catch (IOException e)
 			{
-				throw new OpenEditException(ex);
+				// nada
 			}
-			finally
-			{
-				try
-				{
-					getLuceneSearcherManager().release(searcher);
-				}
-				catch (IOException e)
-				{
-					//nada
-				}
-			}
+		}
 	}
 
-	public Iterator iterator() {
+	public Iterator iterator()
+	{
 		return new HitIterator(this);
 	}
 
-	public String toDate(String inValue) 
+	public String toDate(String inValue)
 	{
-		if (inValue == null) {
+		if (inValue == null)
+		{
 			return null;
 		}
 		Date date = toDateObject(inValue);
 		return DateStorageUtil.getStorageUtil().formatForStorage(date);
 	}
 
-	//This is main date API
+	// This is main date API
 	public Date getDateValue(Data inHit, String inField)
 	{
 		String value = inHit.get(inField);
-		if( value == null)
+		if (value == null)
 		{
 			return null;
 		}
 		return toDateObject(value);
 	}
+
 	public Date toDateObject(String inValue)
 	{
 		Date date = null;
-		try {
+		try
+		{
 			date = DateTools.stringToDate(inValue);
-		} catch (ParseException ex) {
+		}
+		catch (ParseException ex)
+		{
 			log.error(ex);
 			return null;
 		}
 		return date;
 	}
+
 	/**
 	 * @deprecated removed for $context.getDateTime
 	 * @param inValue
@@ -418,10 +429,12 @@ public class LuceneHitTracker extends HitTracker
 	{
 		return toDate(inValue);
 	}
-	
-	//Only look for data within the current page
-	public Integer findSelf(String inId) throws Exception {
-		if (inId == null) {
+
+	// Only look for data within the current page
+	public Integer findSelf(String inId) throws Exception
+	{
+		if (inId == null)
+		{
 			return null;
 		}
 		int i = getPage() * getHitsPerPage();
@@ -429,7 +442,7 @@ public class LuceneHitTracker extends HitTracker
 		{
 			i++;
 			Data type = (Data) iterator.next();
-			if (inId.equals(type.getId() ) )
+			if (inId.equals(type.getId()))
 			{
 				return new Integer(i);
 			}
@@ -437,7 +450,7 @@ public class LuceneHitTracker extends HitTracker
 		return null;
 	}
 
-	public String previousId(String inId) throws Exception 
+	public String previousId(String inId) throws Exception
 	{
 		Data previous = previous(inId);
 		if (previous != null)
@@ -447,7 +460,7 @@ public class LuceneHitTracker extends HitTracker
 		return null;
 	}
 
-	public String nextId(String inId) throws Exception 
+	public String nextId(String inId) throws Exception
 	{
 		Data next = next(inId);
 		if (next != null)
@@ -456,51 +469,57 @@ public class LuceneHitTracker extends HitTracker
 		}
 		return null;
 	}
-	
+
 	public Data previous(String inId) throws Exception
 	{
 		Integer row = findSelf(inId);
-		if (row != null && row.intValue() - 1 >= 0) {
+		if (row != null && row.intValue() - 1 >= 0)
+		{
 			Data hit = (Data) get(row.intValue() - 1);
 			return hit;
 		}
 		return null;
 	}
-	
+
 	public Data next(String inId) throws Exception
 	{
 		Integer row = findSelf(inId);
-		if (row != null && row.intValue() + 1 < getTotal()) {
-			Data hit =  get(row.intValue() + 1);
+		if (row != null && row.intValue() + 1 < getTotal())
+		{
+			Data hit = get(row.intValue() + 1);
 			return hit;
 		}
 		return null;
 	}
-	//Never call this!!!
-	public boolean contains(Object inHit) 
+
+	// Never call this!!!
+	public boolean contains(Object inHit)
 	{
-		Data contains = (Data)inHit;
+		Data contains = (Data) inHit;
 		for (Iterator iterator = iterator(); iterator.hasNext();)
 		{
 			Data type = (Data) iterator.next();
 			String id = type.getId();
-			if (id != null && id.equals( contains.getId() ) ) {
+			if (id != null && id.equals(contains.getId()))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public String highlight(Object inDoc, String inField) {
+	public String highlight(Object inDoc, String inField)
+	{
 		Data doc = (Data) inDoc;
 		String value = doc.get(inField);
-		if (value != null) {
-			for (Iterator iterator = getSearchQuery().getTerms().iterator(); iterator
-					.hasNext();) {
+		if (value != null)
+		{
+			for (Iterator iterator = getSearchQuery().getTerms().iterator(); iterator.hasNext();)
+			{
 				Term term = (Term) iterator.next();
-				if (term.getValue() != null) {
-					value = replaceAll(value, term.getValue(),
-							"<span class='hit'>", "</span>");
+				if (term.getValue() != null)
+				{
+					value = replaceAll(value, term.getValue(), "<span class='hit'>", "</span>");
 				}
 			}
 		}
@@ -520,7 +539,7 @@ public class LuceneHitTracker extends HitTracker
 		// String fragmentSeparator = "...";
 		// TokenStream tokenStream =
 		// analyzer.tokenStream(FIELD_NAME, new StringReader(text));
-		//	
+		//
 		// String result =
 		// highlighter.getBestFragments(
 		// tokenStream,
@@ -530,15 +549,17 @@ public class LuceneHitTracker extends HitTracker
 		// System.out.println("\t" + result);
 	}
 
-	private String replaceAll(String inSource, String inFind,
-			String inPreReplace, String inPostReplace) {
+	private String replaceAll(String inSource, String inFind, String inPreReplace, String inPostReplace)
+	{
 		String lowercase = inSource.toLowerCase();
 		String findlower = inFind.toLowerCase();
 		StringBuffer buffer = new StringBuffer();
 		int start = 0;
-		while (true) {
+		while (true)
+		{
 			int hit = lowercase.indexOf(findlower, start);
-			if (hit == -1) {
+			if (hit == -1)
+			{
 				buffer.append(inSource.substring(start, inSource.length()));
 				break;
 			}
@@ -554,30 +575,40 @@ public class LuceneHitTracker extends HitTracker
 		return buffer.toString();
 	}
 
-	public String trim(String value, int inMax) {
-		if (value.length() > inMax) {
+	public String trim(String value, int inMax)
+	{
+		if (value.length() > inMax)
+		{
 			// trim the begining
 			int start = value.indexOf("<span class='hit'>");
-			if (start > -1 && start > 10 && start + 150 < value.length()) {
+			if (start > -1 && start > 10 && start + 150 < value.length())
+			{
 				int before = value.indexOf(" ", start - 10);
-				if (before < start) {
+				if (before < start)
+				{
 					value = value.substring(before, value.length());
-				} else {
+				}
+				else
+				{
 
 				}
 				// TODO: Look for needed <span class='res'>
 			}
 			// if still too long trim the end
-			if (value.length() > inMax) {
+			if (value.length() > inMax)
+			{
 				int end = inMax;
 				// Near max distance.
-				for (; end > 0; end--) {
-					if (value.charAt(end) == ' ') {
+				for (; end > 0; end--)
+				{
+					if (value.charAt(end) == ' ')
+					{
 						break;
 					}
 				}
 				value = value.substring(0, end);
-				if (value.endsWith("<span")) {
+				if (value.endsWith("<span"))
+				{
 					value = value.substring(0, value.length() - 5);
 				}
 			}
@@ -588,118 +619,293 @@ public class LuceneHitTracker extends HitTracker
 
 	public String getValue(Object inHit, String inKey)
 	{
-		if(inHit instanceof Data)
+		if (inHit instanceof Data)
 		{
 			Data hit = (Data) inHit;
 			return hit.get(inKey);
 		}
 
-		if( inHit instanceof Document)
+		if (inHit instanceof Document)
 		{
-			Document doc = (Document)inHit;
-			return doc.get(inKey);				
+			Document doc = (Document) inHit;
+			return doc.get(inKey);
 		}
 		else
 		{
 			log.error("Invalid data type " + inHit);
 		}
 
-		return  null;
-		
+		return null;
+
 	}
-	
+
 	public Data toData(Object inHit)
 	{
-		if( inHit instanceof Data)
+		if (inHit instanceof Data)
 		{
-			return (Data)inHit;
+			return (Data) inHit;
 		}
-		DocumentData data = new DocumentData((Document)inHit);
+		DocumentData data = new DocumentData((Document) inHit);
 		return data;
 	}
-	
+
 	public Object[] toArray()
 	{
 		List list = new ArrayList(size());
-		for (Iterator iterator = iterator(); iterator.hasNext();) {
+		for (Iterator iterator = iterator(); iterator.hasNext();)
+		{
 			Object hit = iterator.next();
 			list.add(hit);
 		}
 		return list.toArray();
 	}
-//	public Object getById(String inId)
-//	{
-//		if(inId == null)
-//		{
-//			return null;
-//		}
-//		int size = size();
-//		for (int i = 0; i < size; i++)
-//		{
-//			Document doc = getDoc(i);
-//			String id = doc.get("id");
-//			if( inId.equals(id))
-//			{
-//				return toData(doc);
-//			}
-//		}
-//		return null;
-		
-//	}
-	
-	public SearcherManager getLuceneSearcherManager()
+
+	// public Object getById(String inId)
+	// {
+	// if(inId == null)
+	// {
+	// return null;
+	// }
+	// int size = size();
+	// for (int i = 0; i < size; i++)
+	// {
+	// Document doc = getDoc(i);
+	// String id = doc.get("id");
+	// if( inId.equals(id))
+	// {
+	// return toData(doc);
+	// }
+	// }
+	// return null;
+
+	// }
+
+	public SearcherTaxonomyManager getLuceneSearcherManager()
 	{
 		return fieldLuceneSearcherManager;
 	}
 
-
-	public void setLuceneSearcherManager(SearcherManager inLuceneSearcherManager)
+	public void setLuceneSearcherManager(SearcherTaxonomyManager inLuceneSearcherManager)
 	{
 		fieldLuceneSearcherManager = inLuceneSearcherManager;
 	}
-
-
 
 	public Query getLuceneQuery()
 	{
 		return fieldLuceneQuery;
 	}
 
-
 	public void setLuceneQuery(Query inLuceneQuery)
 	{
 		fieldLuceneQuery = inLuceneQuery;
 	}
-
 
 	public Sort getLuceneSort()
 	{
 		return fieldLuceneSort;
 	}
 
-
 	public void setLuceneSort(Sort inLuceneSort)
 	{
 		fieldLuceneSort = inLuceneSort;
 	}
+
 	/**
-	 * Don't do this for now since it does not really help with memory to load all the assets so many times
-	 
-	public HitTracker getSelectedHitracker()
+	 * Don't do this for now since it does not really help with memory to load
+	 * all the assets so many times
+	 * 
+	 * public HitTracker getSelectedHitracker() { // getPage(0); //
+	 * reloadSelection(); if( getSessionId().startsWith("selected") ||
+	 * isAllSelected() ) { return this; }
+	 * 
+	 * SelectedHitsTracker hits = new SelectedHitsTracker(this);
+	 * hits.setHitsName("selected" + getHitsName());
+	 * hits.setSessionId("selected" + getSessionId() ); hits.selectAll(); return
+	 * hits; }
+	 */
+
+	protected List<FilterNode> getFacetedResults() throws Exception
 	{
-//		getPage(0);
-//		reloadSelection();
-		if( getSessionId().startsWith("selected") || isAllSelected() )
+		IndexSearcher searcher = null;
+
+		SearcherAndTaxonomy refs = null;
+
+		try
+
 		{
-			return this;
+			// getLuceneSearcherManager().maybeRefresh();
+			refs = getLuceneSearcherManager().acquire();
+
+			searcher = refs.searcher;
+
+			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
+
+			// DirectoryTaxonomyReader taxor = new
+			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
+			// lsearcher.getTaxonomyWriter());
+			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
+			// this.taxoReader );
+
+			ArrayList params = new ArrayList();
+			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
+
+			if (propertydetails.size() > 0)
+			{
+				for (Iterator iterator = propertydetails.iterator(); iterator.hasNext();)
+				{
+
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 10));
+
+				}
+				FacetSearchParams fsp = new FacetSearchParams(params);
+				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
+				searcher.search(getLuceneQuery(), facetsCollector);
+
+				List<FacetResult> facetResults = facetsCollector.getFacetResults();
+				List<FilterNode> facetNodes = new ArrayList();
+
+				for (FacetResult fres : facetResults)
+				{
+
+					FacetResultNode root = fres.getFacetResultNode();
+					FilterNode filterNode = new FilterNode();
+					String label = root.label.toString();
+					PropertyDetail parent = getSearcher().getDetail(label);
+					if (parent != null)
+					{
+						filterNode.setName(parent.getText());
+					}
+					filterNode.setProperty("label", root.label.toString());
+					filterNode.setProperty("value", String.valueOf(root.value));
+
+					facetNodes.add(filterNode);
+
+					for (FacetResultNode cat : root.subResults)
+					{
+
+						FilterNode childnode = new FilterNode();
+
+						String id = cat.label.toString();
+						String[] splits = id.split("/");
+						String text = splits[1];
+						Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
+						if (value != null)
+						{
+							childnode.setName(value.getName());
+						}
+						else
+						{
+							childnode.setName(text);
+						}
+						childnode.setId(id);
+						childnode.setProperty("label", id);
+						childnode.setProperty("value", String.valueOf(cat.value));
+						filterNode.addChild(childnode);
+
+					}
+
+				}
+				return facetNodes;
+
+			}
 		}
-		
-		SelectedHitsTracker hits = new SelectedHitsTracker(this);
-		hits.setHitsName("selected" + getHitsName());
-		hits.setSessionId("selected" + getSessionId() );
-		hits.selectAll();
-		return hits;
+		finally
+		{
+
+			getLuceneSearcherManager().release(refs);
+		}
+		return null;
 	}
-	*/
+
+	public void refreshFilters() throws Exception
+	{
+		if (fieldFacets == null)
+		{
+			getFacets();
+		}
+		if (fieldFacets == null)
+		{
+			return;
+		}
+		IndexSearcher searcher = null;
+
+		SearcherAndTaxonomy refs = null;
+
+		try
+
+		{
+			// getLuceneSearcherManager().maybeRefresh();
+			refs = getLuceneSearcherManager().acquire();
+
+			searcher = refs.searcher;
+
+			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
+
+			// DirectoryTaxonomyReader taxor = new
+			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
+			// lsearcher.getTaxonomyWriter());
+			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
+			// this.taxoReader );
+
+			ArrayList params = new ArrayList();
+			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
+
+			for (Iterator facetiter = getFacets().iterator(); facetiter.hasNext();)
+			{
+				FilterNode node = (FilterNode) facetiter.next();
+				if(!node.hasSelections(node)){
+					node.setChildren(null);
+					params.add(new CountFacetRequest(new CategoryPath(node.get("label").split("/")), 10));
+					FacetSearchParams fsp = new FacetSearchParams(params);
+					FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
+					searcher.search(getLuceneQuery(), facetsCollector);
+
+					List<FacetResult> facetResults = facetsCollector.getFacetResults();
+					List<FilterNode> facetNodes = new ArrayList();
+
+					for (FacetResult fres : facetResults)
+					{
+
+						FacetResultNode root = fres.getFacetResultNode();
+
+						String label = root.label.toString();
+						PropertyDetail parent = getSearcher().getDetail(label);
+						
+						for (FacetResultNode cat : root.subResults)
+						{
+
+							FilterNode childnode = new FilterNode();
+
+							String id = cat.label.toString();
+							String[] splits = id.split("/");
+							String text = splits[1];
+							Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
+							if (value != null)
+							{
+								childnode.setName(value.getName());
+							}
+							else
+							{
+								childnode.setName(text);
+							}
+							childnode.setId(id);
+							childnode.setProperty("label", id);
+							childnode.setProperty("value", String.valueOf(cat.value));
+							node.addChild(childnode);
+
+						}
+
+					}
+
+				}
+			}
+		}
+		finally
+		{
+
+			getLuceneSearcherManager().release(refs);
+		}
+	}
 
 }

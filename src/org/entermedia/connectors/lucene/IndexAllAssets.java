@@ -1,12 +1,19 @@
 package org.entermedia.connectors.lucene;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.index.FacetFields;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
+import org.openedit.data.PropertyDetail;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
 import org.openedit.entermedia.MediaArchive;
@@ -14,7 +21,7 @@ import org.openedit.entermedia.search.AssetProcessor;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.GenericsUtil;
 
-import com.openedit.page.manage.PageManager;
+import com.openedit.OpenEditRuntimeException;
 import com.openedit.users.User;
 
 public class IndexAllAssets extends AssetProcessor
@@ -26,6 +33,19 @@ public class IndexAllAssets extends AssetProcessor
 	protected MediaArchive fieldMediaArchive;
 	protected Set<String> fieldSourcePaths = GenericsUtil.createSet();
 	protected int logcount = 0;
+	protected TaxonomyWriter fieldTaxonomyWriter;
+	
+	
+	
+	public TaxonomyWriter getTaxonomyWriter()
+	{
+		return fieldTaxonomyWriter;
+	}
+
+	public void setTaxonomyWriter(TaxonomyWriter inTaxonomyWriter)
+	{
+		fieldTaxonomyWriter = inTaxonomyWriter;
+	}
 
 	public LuceneAssetIndexer getIndexer()
 	{
@@ -94,9 +114,19 @@ public class IndexAllAssets extends AssetProcessor
 				return;
 			}
 			fieldSourcePaths.add(asset.getSourcePath());
-			Document doc = getIndexer().createAssetDoc(asset, getMediaArchive().getAssetPropertyDetails());
+			
+			
+			
+			//Document doc = getIndexer().createAssetDoc(asset, getMediaArchive().getAssetPropertyDetails());
+			Document doc = getIndexer().populateAsset(getWriter(), asset, false, getMediaArchive().getAssetPropertyDetails());
 			String id = asset.getId().toLowerCase();
-			getIndexer().writeDoc(writer, id, doc, true);
+			try{
+			updateFacets(doc,  getTaxonomyWriter());
+			} catch(Exception e){
+				throw new OpenEditRuntimeException(e);
+			}
+			
+			getIndexer().writeDoc(writer, id, doc, false);
 			// remove it from mem
 			getAssetArchive().clearAsset(asset);
 			incrementCount();
@@ -112,6 +142,48 @@ public class IndexAllAssets extends AssetProcessor
 			log.info("Error loading asset: " + inSourcePath);
 		}
 	}
+
+	
+	protected void updateFacets(Document inDoc, TaxonomyWriter inTaxonomyWriter) throws Exception
+	{
+		if (inTaxonomyWriter == null)
+		{
+			return;
+		}
+
+		List facetlist = getMediaArchive().getAssetPropertyDetails().getDetailsByProperty("filter", "true");
+		ArrayList<CategoryPath> categorypaths = new ArrayList();
+		for (Iterator iterator = facetlist.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String value = inDoc.get(detail.getId());
+
+			if (detail.isFilter())
+			{
+				if (value != null)
+				{
+					ArrayList<String> vals = new ArrayList();
+					vals.add(detail.getId());
+					vals.add(value);
+					String[] components = vals.toArray(new String[vals.size()]);
+					categorypaths.add(new CategoryPath(components));
+					log.info("Adding: " + vals);
+
+				}
+			}
+
+		}
+
+		if (categorypaths.size() > 0)
+		{
+			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
+			facetFields.addFields(inDoc, categorypaths);
+		}
+		// do stuff
+
+	}
+	
+	
 
 	public void processDir(ContentItem inContent)
 	{

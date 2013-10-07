@@ -135,6 +135,8 @@ public class DataEditModule extends BaseMediaModule
 		inReq.putPageValue("searcher", searcher);
 	}
 
+	
+	
 	public Data createNew(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcherForEdit(inReq);
@@ -984,6 +986,17 @@ public class DataEditModule extends BaseMediaModule
 		}
 	}
 
+	public void changeFilters(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		if (searcher != null)
+		{
+			searcher.updateFilters(inReq);
+		}
+	}
+	
+	
+	
 	public void addChildQuery(WebPageRequest inReq) throws Exception
 	{
 		String querystring = inReq.getRequestParameter("childquery");
