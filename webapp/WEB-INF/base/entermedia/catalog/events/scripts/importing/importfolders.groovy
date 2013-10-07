@@ -33,9 +33,15 @@ public void init()
 		String path = base + "/" + name ;
 		
 		//look for git folders?
-		pullGit(path,1);
-		
-		manager.importHotFolder(archive,folder);
+		try
+		{
+			pullGit(path,1);
+			manager.importHotFolder(archive,folder);
+		}
+		catch( Exception ex)
+		{
+			log.error("Could not process folder ${path}",ex);
+		}
 	}
 	
 	/*
