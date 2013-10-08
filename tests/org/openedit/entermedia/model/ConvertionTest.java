@@ -42,6 +42,40 @@ public class ConvertionTest extends BaseEnterMediaTest
 		assertEquals("jpg", PathUtilities.extractPageType(converted.getPath()));
 	}
 	
+	
+	
+	
+	
+	public void testCropInstructions()
+	{
+
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		CreatorManager manager = archive.getCreatorManager();
+		MediaCreator creater = manager.getMediaCreatorByOutputFormat("jpg");
+		Map map = new HashMap();
+	
+		ConvertInstructions instructions = new ConvertInstructions();
+		instructions.setForce(true);
+		instructions.setAssetSourcePath("users/admin/105");
+		instructions.setOutputExtension("jpg");
+		instructions.setCrop(true);
+		instructions.setProperty("prefwidth", "100");
+		instructions.setProperty("prefheight", "100");
+		
+		instructions.setProperty("x1","10");
+		instructions.setProperty("y1","10");
+		
+		
+		
+		Page converted = manager.createOutput(instructions);
+		assertNotNull(converted);
+		assertTrue(converted.exists());
+		assertTrue(converted.length() > 0);
+		assertEquals("jpg", PathUtilities.extractPageType(converted.getPath()));
+	}
+	
+	
+	
 	public void testTiffToEps()
 	{
 		ConvertInstructions instructions = new ConvertInstructions();

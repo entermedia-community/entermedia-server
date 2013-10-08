@@ -299,8 +299,11 @@ public class imagemagickCreator extends BaseImageCreator
 					prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
 					postfix =  String.valueOf( inStructions.getMaxScaledSize().height );				
 //				}
+				
+					
 				if (isOnWindows())
 				{
+					
 					com.add("\"" + prefix + "x" + postfix + "\"");
 				}
 				else

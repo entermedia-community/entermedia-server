@@ -138,7 +138,7 @@ class ConvertRunner implements Runnable
 		if (realtask != null)
 		{
 			String presetid = hit.get("presetid");
-			//log.debug("starting preset ${presetid}");
+			log.debug("starting preset ${presetid}");
 			Data preset = presetsearcher.searchById(presetid);
 			if(preset != null)
 			{
@@ -251,8 +251,21 @@ class ConvertRunner implements Runnable
 		{
 			props.put("pagenum",pagenumber);
 		}
-
+		
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
+		log.info("Task Properties: " + inTask.getProperties());
+		if(Boolean.parseBoolean(inTask.get("crop"))){
+			inStructions.setCrop(true);
+			inStructions.setProperty("x1", inTask.get("x1"));
+			inStructions.setProperty("y1", inTask.get("y1"));
+			inStructions.setProperty("prefwidth", inTask.get("prefwidth"));
+			inStructions.setProperty("prefheight", inTask.get("prefheight"));
+			if(Boolean.parseBoolean(inTask.get("force"))){
+				inStructions.setForce(true);
+			}
+		}
+
+		
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );
