@@ -91,6 +91,18 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			
 			Dimension box = inStructions.getMaxScaledSize();
+			if (input == null && inStructions.getProperty("useinput")!=null)
+			{
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/"+inStructions.getProperty("useinput") + page + ".jpg");
+				if( !input.exists()  || input.length() < 2)
+				{
+					input = null;
+				}
+				else
+				{
+					autocreated = true;
+				}
+			}
 			if( input == null &&  box.getWidth() < 300 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
@@ -327,40 +339,53 @@ public class imagemagickCreator extends BaseImageCreator
 		if(inStructions.isCrop())
 		{
 			//resize then cut off edges so end up with a square image
-			com.add("-resize");
-			StringBuffer resizestring = new StringBuffer();
-			resizestring.append(inStructions.getMaxScaledSize().width);
-			resizestring.append("x");
-			resizestring.append(inStructions.getMaxScaledSize().height);
-			resizestring.append("^");
-			com.add(resizestring.toString());
+			
+			
+			
 
 
-			if( "pdf".equals(ext) || "png".equals(ext)) 
+			
+			   		
+			//now let's crop
+			com.add("+repage");
+			String gravity = inStructions.get("gravity");
+			if(!"default".equals(gravity)){
+				
+				com.add("-resize");
+				StringBuffer resizestring = new StringBuffer();
+				resizestring.append(inStructions.getMaxScaledSize().width);
+				resizestring.append("x");
+				resizestring.append(inStructions.getMaxScaledSize().height);
+				resizestring.append("^");
+				com.add(resizestring.toString());
+				
+				
+				com.add("-gravity");
+				if( gravity == null )
+				{
+					String thistype = inAsset.getFileFormat();
+					String found = inArchive.getMediaRenderType(thistype);
+					if( "document".equals(found) )
+					{
+						gravity = "NorthEast";
+					}
+				}
+				if( gravity == null )
+				{
+					gravity = "Center";
+				}
+				com.add(gravity);
+			}
+			
+			
+			if( "pdf".equals(ext) || "png".equals(ext))
 			{
 				com.add("-background");
 				com.add("white");
 				com.add("-flatten");
 			}
-			   		
-			//now let's crop
-			com.add("+repage");
-			String gravity = inStructions.get("gravity");
-			com.add("-gravity");
-			if( gravity == null )
-			{
-				String thistype = inAsset.getFileFormat();
-				String found = inArchive.getMediaRenderType(thistype);
-				if( "document".equals(found) )
-				{
-					gravity = "NorthEast";
-				}
-			}
-			if( gravity == null )
-			{
-				gravity = "Center";
-			}
-			com.add(gravity);
+			
+			
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
 			cropString.append(inStructions.getMaxScaledSize().width);

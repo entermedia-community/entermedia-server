@@ -38,7 +38,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 		path = inPage.getPath().substring(assetrootfolder.length());
 		path = PathUtilities.extractDirectoryPath(path);
 		
-		Page output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + path);
+		Page output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + path + "/" + inPage.getName());
 		if( !output.exists() )
 		{
 			throw new ContentNotAvailableException("Missing: " +output.getPath(),output.getPath());
