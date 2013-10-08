@@ -866,13 +866,19 @@ public class AdminModule extends BaseModule
 	public void forwardToSecureSocketsLayer(WebPageRequest inReq)
 	{
 		String useSecure = inReq.getPage().get("useshttps");
-
+		
 		if (Boolean.parseBoolean(useSecure) && inReq.getRequest() != null)
 		{
 			String host = inReq.getPage().get("hostname");
 			if (host == null)
 			{
 				host = inReq.getPage().get("hostName");
+			}
+			if(host == null){
+				return;
+			}
+			if(host.contains("localhost")){
+				return;
 			}
 			if (host != null && !inReq.getRequest().isSecure())
 			{

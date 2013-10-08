@@ -56,10 +56,22 @@ public class ConvertStatusModule extends BaseMediaModule
 		newTask.setSourcePath(sourcePath);
 		newTask.setProperty("status", "new");
 		newTask.setProperty("presetid", presetId);
+		
+	
+		String []fields = inReq.getRequestParameters("field");
+		if(fields != null){
+			taskSearcher.updateData(inReq, fields, newTask);
+		}
+		
 		taskSearcher.saveData(newTask, inReq.getUser());
 		
 		processConversions(inReq);
 	}
+	
+	
+	
+	
+	
 
 
 
@@ -71,7 +83,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		event.setSource(this);
 		MediaArchive archive = getMediaArchive(inReq);
 		event.setCatalogId(archive.getCatalogId());
-		event.setOperation("runconversions");
+		event.setOperation("conversions/runconversions");
 		event.setUser(inReq.getUser());
 		//log.info(getWebEventListener());
 		getWebEventListener().eventFired(event);
