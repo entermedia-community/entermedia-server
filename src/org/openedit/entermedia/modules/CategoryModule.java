@@ -2,8 +2,11 @@ package org.openedit.entermedia.modules;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
@@ -156,6 +159,31 @@ public class CategoryModule extends BaseMediaModule
 	{
 		WebTree tree =  getCatalogTree(inReq);
 		Collection nodes = (Collection)inReq.getPageValue("selectednodes");
+		if( nodes == null)
+		{
+			//check param data
+			String cats = inReq.getRequestParameter("categories");
+			if( cats != null)
+			{
+			    String[] selected = cats.replace(' ','|').split("\\|");
+			    nodes = new ArrayList();
+			    MediaArchive archive = getMediaArchive(inReq); 
+			    for (int i = 0; i < selected.length; i++)
+				{
+					Category found = archive.getCategory(selected[i].trim());
+					if( found != null)
+					{
+						nodes.add(found);
+					}
+				}
+			}
+		}
+		String clear = inReq.getRequestParameter("clearselection");
+		if( Boolean.parseBoolean(clear))
+		{
+			 nodes = new ArrayList();
+		}
+		
 		if( nodes != null )
 		{		
 			tree.getTreeRenderer().selectNodes(nodes);
