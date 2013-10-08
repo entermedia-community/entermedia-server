@@ -248,7 +248,7 @@ public class HotFolderManager
 				skipmodcheck = true;
 			}
 		}
-		log.info(inFolder + " scan stated. skip mod check = " + skipmodcheck );
+		log.info(path + " scan started. skip mod check = " + skipmodcheck );
 		
 		List<String> paths = importer.processOn(base, path, inArchive, skipmodcheck, null);
 		if( !skipmodcheck )
