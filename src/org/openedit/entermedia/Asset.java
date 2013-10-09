@@ -74,21 +74,31 @@ public class Asset implements MultiValued
 		{
 			setProperty(inKey, inNewValue);
 		}
-		else if( inKey.contains(inNewValue) )
+		else 
 		{
-			return;
-		}
-		else
-		{
-			if( val.length() > 0 )
+			Collection values = getValues(inKey);
+			if(values.contains(inNewValue))
 			{
-				val = val + " | " + inNewValue;
+				return;
 			}
 			else
 			{
-				val = inNewValue;
+				values.add(inNewValue);
 			}
-			setProperty(inKey, val);
+			setValues(inKey, values);
+//			return;
+//		}
+//		else
+//		{
+//			if( val.length() > 0 )
+//			{
+//				val = val + " | " + inNewValue;
+//			}
+//			else
+//			{
+//				val = inNewValue;
+//			}
+//			setProperty(inKey, val);
 		}
 	}
 	public void setValues(String inKey, Collection<String> inValues)

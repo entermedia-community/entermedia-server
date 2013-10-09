@@ -21,9 +21,7 @@
 			#set( $haschildren = false)
 		#end
 		#set( $open = $haschildren)
-		#set( $checked = false )
 		#set( $expanded = $webtree.isExpanded($cat) )
-		#set( $checked = $asset.isInCategory($cat) )
 		#set( $isselected = $render.isNodeSelected($cat))
 		<li id="${cat.id}_row" class="noderow" data-nodeid="$cat.id" data-depth="$depth">
 			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px" title="$cat.name #if($editable) ($cat.id) #end">
@@ -89,9 +87,6 @@
 	#showtreecategories($target, $depth)
 	
 #else
-#if( $category )
-$render.setSelectedNode($category)
-#end
 #set($rootcategory = $webtree.getModel().getRoot())
 
 <div id="treeholder" >
