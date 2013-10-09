@@ -3,6 +3,7 @@ package org.openedit.entermedia.modules;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
@@ -62,10 +63,10 @@ public class ConvertStatusModule extends BaseMediaModule
 		if(fields != null){
 			taskSearcher.updateData(inReq, fields, newTask);
 		}
-		
+		Asset asset = archive.getAssetBySourcePath(sourcePath);
 		taskSearcher.saveData(newTask, inReq.getUser());
-		
-		processConversions(inReq);
+		archive.fireMediaEvent("conversions/runconversion", inReq.getUser(), asset);
+		//processConversions(inReq);
 	}
 	
 	
