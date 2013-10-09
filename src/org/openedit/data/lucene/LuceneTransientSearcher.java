@@ -2,6 +2,7 @@ package org.openedit.data.lucene;
 
 import java.util.Collection;
 
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
@@ -22,8 +23,9 @@ public class LuceneTransientSearcher extends XmlFileSearcher
 	{
 		updateIndex(inAll);
 	}
-
-	protected void reIndexAll(IndexWriter inWriter)
+	
+	@Override
+	protected void reIndexAll(IndexWriter inWriter, final TaxonomyWriter inTaxonomyWriter)
 	{
 
 	}
