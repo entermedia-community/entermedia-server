@@ -1,66 +1,42 @@
-#set($fatwireidsearcher = $searcherManager.getSearcher($catalogid, "publishdestination"))
-#set($fatwirequery = $fatwireidsearcher.createSearchQuery().append("name", "FatWire"))
-#set($fatwiredata = $fatwireidsearcher.searchByQuery($fatwirequery))
-#set($fatwireid = $fatwiredata.id)
-#set($searcher = $searcherManager.getSearcher($catalogid, "publishqueue"))
-#set($query = $searcher.createSearchQuery().append("assetid", $asset.id).append("publishdestination", $fatwireid))
-#set($results = $searcher.search($query))
-
-<!-- 
-
-#if ($results.size() > 0)
-	#set($msg = "Click below to republish to FatWire.")
-	$context.putPageValue("results",$results)
-	$pages.include("$home$apphome/views/modules/asset/editor/fatwire/table.html", $context)
-#else
-	#set($msg = "This asset is not yet available in FatWire. Click below to initialize the publication process.")
-#end
-
-
-$context.putPageValue("msg",$msg)
-$pages.include("$home$apphome/views/modules/asset/editor/fatwire/submitform.html", $context)
-
--->
-
 <h1>Conversions</h1>
 
+#set($publishpresetid = $context.findValue("publishpresetid"))
+#if($publishpresetid)
+	$publishpresetid should have been posted to fatwire...
+#end
 
-## $pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html", $context)
-
-#set($searcher = $searcherManager.getSearcher($catalogid, "publishqueue"))
-#set($metadatasearcher = $searcherManager.getSearcher($catalogid, "presetmetadata"))
-
-#set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
-#set($presetquery = $presetsearcher.createSearchQuery().append("publishtofatwire","true") )
-#set($null = $presetquery.addSortBy("ordering"))
-#set( $results = $presetsearcher.search($presetquery) )
+#set($newpreset = $context.findValue("newpreset"))
+#set($results = $conversionUtil.getProcessedFatwireConvertPresetList($catalogid, $asset.id, $newpreset))
 #foreach ($result in $results)
 <hr>
-	#set($mdquery = $metadatasearcher.createSearchQuery().append("convertpreset", $result.id))
-	#set($results2 = $metadatasearcher.search($mdquery))
-	#set($data = $results2.get(0))
-	<h2>$result.name &nbsp;&nbsp; $data.dimensions &nbsp;&nbsp; Aspect Ratio: $data.aspectratio</h2>
+	<!-- include name + info -->
+	#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
+	#set($height = $mathtool.toInteger($dimension.getHeight()))
+	#set($width = $mathtool.toInteger($dimension.getWidth()))
+	#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
+	Conversion Name: $result.name &nbsp; Dimension: $height x $width &nbsp; Aspect Ratio: $aspectratio<br>
 	<hr>
 	
-	#set($query = $searcher.createSearchQuery().append("assetid", $asset.id).append("publishdestination", $fatwireid).append("presetid", $result.id))
-	#set($results2 = $searcher.search($query))
-	File Name: $asset.name <a href="$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html?assetid=${asset.id}&presetid=${result.id}">edit</a> ($results2.size() versions) <br>
-	<a class="thickbox" href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/$result.outputfile">Preview</a>
-	<a href="$home$apphome/views/modules/asset/downloads/generated/${asset.sourcepath}/$result.outputfile">Download</a>
-	Embed Link: <input type="text" value="$content.siteroot$home$apphome/views/modules/asset/downloads/generated/${asset.sourcepath}/$result.outputfile"><br>
-	<h3>Send to Fatwire:</h3>
-	Select Region: <select><option value="CA">CA</option></select> <input class="thickbox btn" type="submit" value="Send to Fatwire" style="margin: 5px;" />
+	<!-- include modify -->
+	$context.putPageValue("presetdata",$result)
+	$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/modify.html", $context)
+	<br>
+	
+	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$result.id))
+	#if($isready)
+		<!--  include share -->
+		$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
+		
+		<br>
+		<!-- include submit to fatwire -->
+		$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
+	#end
 #end
-
 <hr>
 
-#set($presetquery = $presetsearcher.createSearchQuery().append("publishtofatwire","true") )
-#set($null = $presetquery.addSortBy("ordering"))
-#set( $results = $presetsearcher.search($presetquery) )
-Create New Conversion: 
-<select>
-#foreach ($result in $results)
-	<option value="$result.id">$result</option>
+$context.putPageValue("asset",$asset)
+#if($newpreset)
+	$context.putPageValue("omitpreset",$newpreset)
 #end
-</select>
-<input class="thickbox btn" type="submit" value="Create" style="margin: 5px;" />
+$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/createnewconversion.html", $context)
+

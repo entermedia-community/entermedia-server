@@ -1460,7 +1460,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="categoryArchive"><ref bean="categoryArchive" /></property>
 	</bean>
 	
-	
-	
+	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" singleton="false">
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+	</bean>
 
 </beans>

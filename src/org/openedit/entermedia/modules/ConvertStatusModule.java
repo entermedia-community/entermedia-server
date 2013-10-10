@@ -65,8 +65,8 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		Asset asset = archive.getAssetBySourcePath(sourcePath);
 		taskSearcher.saveData(newTask, inReq.getUser());
-		archive.fireMediaEvent("conversions/runconversion", inReq.getUser(), asset);
-		//processConversions(inReq);
+//		archive.fireMediaEvent("conversions/runconversions", inReq.getUser(), asset);//block
+		processConversions(inReq);//non-block
 	}
 	
 	

@@ -1,0 +1,12 @@
+#set($status = $conversionUtil.getConversionStatus($catalogid,$asset.id,$presetdata.id))
+
+
+File Name: $presetdata.outputfile
+&nbsp;
+Status: $status
+&nbsp;
+<a href="$home$apphome/views/modules/asset/editor/fatwirecrop/swap.html?assetid=${asset.id}&presetid=${presetdata.id}">upload</a>
+&nbsp;
+<a href="$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}">edit</a>
+&nbsp;
+(2 versions)

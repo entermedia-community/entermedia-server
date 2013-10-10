@@ -1,5 +1,7 @@
 #set($presetid = $context.findValue("presetid"))
 
+$presetid <br>
+$asset
 
 <img src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="[Jcrop Example]" />
 
@@ -23,11 +25,14 @@
     <input type="hidden" name="field" value="prefheight"/>
     <input type="hidden" name="field" value="crop"/>
     <input type="hidden" name="field" value="force"/>
-            <input type="hidden" name="preset" value="${presetid}"/>
-            <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
-        
-      <input type="hidden" name="crop.value" value="true"/>
+    <input type="hidden" name="field" value="assetid"/>
+    
+    <input type="hidden" name="preset" value="${presetid}"/>
+    <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
+    
+    <input type="hidden" name="crop.value" value="true"/>
     <input type="hidden" name="force.value" value="true"/>
+    <input type="hidden" name="assetid.value" value="${asset.id}"/>
     <input type="submit"/>
   </form>
 

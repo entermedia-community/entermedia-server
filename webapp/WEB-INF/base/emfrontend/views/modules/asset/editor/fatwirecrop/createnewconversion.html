@@ -1,0 +1,13 @@
+#set($results = $conversionUtil.getUnprocessedFatwireConvertPresetList($catalogid, $asset.id, $omitpreset))
+#if($results && $results.size()!=0)
+<form method="post" action="$home$apphome/views/modules/asset/editor/fatwirecrop/index.html">
+	<input type="hidden" id="assetid" name="assetid" value="$asset.id"/>
+	Create New Conversion:
+	<select name="newpreset" id="newpreset">
+	#foreach ($result in $results)
+	<option value="$result.id">$result.name</option>
+	#end
+	</select>
+	<input class="thickbox btn" type="submit" value="Create" style="margin: 5px;" />
+</form>
+#end
