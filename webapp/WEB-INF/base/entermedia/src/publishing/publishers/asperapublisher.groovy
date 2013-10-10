@@ -5,8 +5,8 @@ import com.openedit.page.Page
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.aspera.AsperaManager 
-import org.entermedia.aspera.AsperaRepository 
+//import org.entermedia.aspera.AsperaManager 
+//import org.entermedia.aspera.AsperaRepository 
 import org.openedit.Data 
 import org.openedit.entermedia.Asset 
 import org.openedit.entermedia.MediaArchive 
@@ -35,10 +35,10 @@ public class asperapublisher extends basepublisher implements Publisher
 		item.setPath(exportname); //Aspera repo is mounted in a sub folder already. So we just need to append the name
 		item.setAbsolutePath(inputpage.getContentItem().getAbsolutePath());
 
-		AsperaManager manager = (AsperaManager)mediaArchive.getModuleManager().getBean("asperaManager");
-
-		AsperaRepository repo = manager.loadRepository(mediaArchive.getCatalogId(), inDestination );
-		repo.put(item); //copy the file
+//		AsperaManager manager = (AsperaManager)mediaArchive.getModuleManager().getBean("asperaManager");
+//
+//		AsperaRepository repo = manager.loadRepository(mediaArchive.getCatalogId(), inDestination );
+//		repo.put(item); //copy the file
 		log.info("publishished  ${inAsset.sourcepath} to aspera");
 
 		result.setComplete(true);
