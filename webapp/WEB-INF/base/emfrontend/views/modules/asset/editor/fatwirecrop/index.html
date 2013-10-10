@@ -1,9 +1,11 @@
 <h1>Conversions</h1>
 
-#set($publishpresetid = $context.findValue("publishpresetid"))
-#if($publishpresetid)
-	$publishpresetid should have been posted to fatwire...
-#end
+###set($publishpresetid = $context.findValue("publishpresetid"))
+###if($publishpresetid)
+###	<div class="common-success fader">
+###	$publishpresetid was submitted to fatwire.
+###	</div>
+####end
 
 #set($newpreset = $context.findValue("newpreset"))
 #set($results = $conversionUtil.getActivePresetList($catalogid))
