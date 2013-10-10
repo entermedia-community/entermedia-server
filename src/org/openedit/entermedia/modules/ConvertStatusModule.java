@@ -1,14 +1,19 @@
 package org.openedit.entermedia.modules;
 
+import java.util.Date;
 import java.util.Iterator;
 
+import org.entermedia.upload.FileUpload;
+import org.entermedia.upload.UploadRequest;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -119,6 +124,35 @@ public class ConvertStatusModule extends BaseMediaModule
 		event.setUser(inReq.getUser());
 		//log.info(getWebEventListener());
 		getWebEventListener().eventFired(event);
+	}
+	
+	
+	
+	public void uploadConversionDocument(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		if (properties == null) {
+			return;
+		}
+		if (properties.getFirstItem() == null) {
+			return;
+			
+		}
+		String assetid = inReq.getRequestParameter("assetid");
+		
+		String presetid = inReq.getRequestParameter("presetid");
+		Data preset  = getSearcherManager().getData(archive.getCatalogId(), "convertpreset",presetid);
+		Asset current = archive.getAsset(assetid);
+	
+		
+		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("outputfile");
+		properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
+			
+
+		inReq.putPageValue("asset", current);
+		
 	}
 
 }
