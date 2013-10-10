@@ -8,6 +8,7 @@ import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.XmlFileSearcher;
 
+import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
@@ -48,6 +49,15 @@ public class LuceneTransientSearcher extends XmlFileSearcher
 		}
 		updateIndex(data);
 	}
+	
+	public void delete(Data inData, User inUser)
+	{
+	
+		// Remove from Index
+		deleteRecord(inData);
+	}
+	
+	
 
 	public Object searchByField(String inId, String inValue)
 	{

@@ -6,8 +6,11 @@
 #end
 
 #set($newpreset = $context.findValue("newpreset"))
-#set($results = $conversionUtil.getProcessedFatwireConvertPresetList($catalogid, $asset.id, $newpreset))
+#set($results = $conversionUtil.getActivePresetList($catalogid))
+$context.putPageValue("results", $results)
 #foreach ($result in $results)
+#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
+
 <hr>
 	<!-- include name + info -->
 	#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
@@ -22,14 +25,19 @@
 	$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/modify.html", $context)
 	<br>
 	
-	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$result.id))
+	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
+	
 	#if($isready)
 		<!--  include share -->
 		$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
 		
 		<br>
 		<!-- include submit to fatwire -->
-		$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
+		#if($result.publishtofatwire == "true")
+		
+			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
+		#end
+	#end
 	#end
 #end
 <hr>

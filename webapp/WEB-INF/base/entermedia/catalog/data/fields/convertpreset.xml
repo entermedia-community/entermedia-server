@@ -8,6 +8,7 @@
 	<property id="guid" index="true" type="list" listid="presetdata" stored="true" editable="true">GUID</property>
 	<property id="onimport" type="boolean" index="true" stored="true" editable="true">On Import</property>
 	<property id="ordering" index="true" stored="true" editable="true">Ordering</property>
+	<property id="display" type="boolean" index="true" stored="true" editable="true">Display on Convert/Crop Page</property>
 	
 </properties>
 

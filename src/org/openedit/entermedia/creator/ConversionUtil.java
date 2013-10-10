@@ -7,10 +7,13 @@ import java.util.Iterator;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.Asset;
 
 import com.openedit.hittracker.DataHitTracker;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.page.Page;
+import com.openedit.page.manage.PageManager;
 
 public class ConversionUtil {
 	
@@ -104,19 +107,34 @@ public class ConversionUtil {
 		SearchQuery sq = ctsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId);
 		sq.addSortBy("id");
 		HitTracker hits = ctsearcher.search(sq);
-		Iterator<?> itr = hits.iterator();
-		while (itr.hasNext()){
-			Data data = (Data) itr.next();
-			String str = data.get("status");// get the LAST status if more than one
-			Data data2 = (Data) cssearcher.searchById(str);
+		if(hits.size() > 0){
+			Data hit = hits.get(0);
+			Data data2 = (Data) cssearcher.searchById(hit.get("status"));
 			status = data2.getName();
+			return status;
 		}
+		Asset asset = (Asset) sm.getData(inCatalogId, "asset", inAssetId);
+		if(doesExist(inCatalogId, inAssetId, asset.getSourcePath(), inPresetId)){
+ 			Data data2 = (Data) cssearcher.searchById("complete");
+			if(data2 != null){
+			return  data2.getName();
+			} return "Complete";
+
+		}
+		
+		
+		
 		return status;
 	}
 	
-	public boolean isConvertPresetReady(String inCatalogId, String inAssetId, String inPresetId) throws Exception{
+	public boolean isConvertPresetReady(String inCatalogId, String inAssetId, String sourcepath, String inPresetId) throws Exception{
 		boolean isOk = false;
 		SearcherManager sm = getSearcherManager();
+
+		if(doesConvertedFileExist(inCatalogId, sourcepath, inPresetId)){
+			return true;
+		}
+
 		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
 		SearchQuery sq = ctsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId);
 		sq.addSortBy("id");
@@ -127,7 +145,20 @@ public class ConversionUtil {
 			String str = data.get("status");
 			isOk =  ("complete".equals(str));
 		}
+
 		return isOk;
+
+	}
+
+	public boolean doesConvertedFileExist(String inCatalogId,
+			String sourcepath, String inPresetId) {
+		
+		PageManager pm = (PageManager) getSearcherManager().getModuleManager().getBean("pageManager");
+		Data preset = getSearcherManager().getData(inCatalogId, "convertpreset", inPresetId);
+		String outputfile = preset.get("outputfile");
+		
+		Page outputpage = pm.getPage("/WEB-INF/data/" + inCatalogId + "/generated/" + sourcepath + "/" + outputfile);
+		return outputpage.exists();
 	}
 	
 	public HitTracker getUnprocessedFatwireConvertPresetList(String inCatalogId, String inAssetId, String inOmitPresetId) throws Exception {
@@ -173,6 +204,17 @@ public class ConversionUtil {
 		return hits;
 	}
 	
+	public HitTracker getActivePresetList(String inCatalogId) throws Exception {
+		SearcherManager sm = getSearcherManager();
+		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
+		HitTracker all = cpsearcher.fieldSearch("display", "true");
+		return all;
+		
+	}
+	
+	
+	
+	
 	public HitTracker getFatwireConvertPresetList(String inCatalogId, String inAssetId) throws Exception {
 		SearcherManager sm = getSearcherManager();
 		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
@@ -193,4 +235,25 @@ public class ConversionUtil {
 		return hits;
 	}
 
+	public boolean doesExist(String inCatalogId, String inAssetId, String assetSourcePath, String inPresetId){
+		boolean doesexist = false;
+		SearcherManager sm = getSearcherManager();
+		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
+		SearchQuery q = ctsearcher.createSearchQuery();
+		q.addExact("presetid", inPresetId);
+		q.addExact("assetid", inAssetId);
+		
+		HitTracker hits = ctsearcher.search(q);
+		if(hits.size() > 0){
+			return true;
+			
+		}
+		return doesConvertedFileExist(inCatalogId, assetSourcePath, inPresetId);
+		
+		
+		
+		
+	}
+	
+	
 }
