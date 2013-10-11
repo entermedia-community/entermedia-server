@@ -36,7 +36,6 @@ $context.putPageValue("results", $results)
 		<br>
 		<!-- include submit to fatwire -->
 		#if($result.publishtofatwire == "true")
-		
 			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
 		#end
 	#end
