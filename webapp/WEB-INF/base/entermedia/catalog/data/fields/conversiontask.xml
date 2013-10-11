@@ -17,8 +17,13 @@
 	
 	<property id="x1" index="true" stored="true" editable="true">Ordering</property>
 	<property id="y1" index="true" stored="true" editable="true">Ordering</property>
+	
 	<property id="prefwidth" index="true" stored="true" editable="true">Ordering</property>
 	<property id="prefheight" index="true" stored="true" editable="true">Ordering</property>
+	
+	<property id="cropwidth" index="true" stored="true" editable="true">Ordering</property>
+	<property id="cropheight" index="true" stored="true" editable="true">Ordering</property>
+	
 	<property id="force" index="true" stored="true" editable="true">Ordering</property>
 	<property id="crop" index="true" stored="true" editable="true">Ordering</property>
 	<property id="useinput" index="true" stored="true" editable="true">Use Input</property>

@@ -24,9 +24,13 @@ repaint = function(divid) {
 	);
 }
 toggleUserProperty = function(property, onsuccess) {
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
 	jQuery.ajax(
 			{
-				url: "${home}${apphome}/components/userprofile/toggleprofileproperty.html?field=" + property,
+				url:  apphome + "/components/userprofile/toggleprofileproperty.html?field=" + property,
 				success: onsuccess
 			}
 		);
@@ -36,9 +40,13 @@ toggleUserProperty = function(property, onsuccess) {
 
 
 setSessionValue = function(key, value) {
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
 	jQuery.ajax(
 			{
-				url: "${home}${apphome}/components/session/setvalue.html?key=" + key + "&value=" + value 
+				url: apphome + "/components/session/setvalue.html?key=" + key + "&value=" + value 
 			}
 		);
 	
@@ -46,10 +54,14 @@ setSessionValue = function(key, value) {
 
 getSessionValue = function(key) {
 	var returnval = null;
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
 	
 	jQuery.ajax(
 			{
-				url: "${home}${apphome}/components/session/getvalue.html?key=" + key,
+				url: apphome + "/components/session/getvalue.html?key=" + key,
 				async: false,
 				success: function(data){
 					
@@ -389,9 +401,13 @@ onloadselectors = function()
 				var propertyname = jQuery(this).attr("propertyname");
 				var propertyvalue = jQuery(this).attr("propertyvalue");
 				var thelink = $(this);
+				app = jQuery("#application");
+				home =  app.data("home");
+				apphome = home + app.data("apphome");
+				
 				jQuery.ajax(
 					{
-						url: "${home}${apphome}/components/userprofile/saveprofileproperty.html?field=" + propertyname + "&" + propertyname + ".value="  + propertyvalue,
+						url: apphome + "/components/userprofile/saveprofileproperty.html?field=" + propertyname + "&" + propertyname + ".value="  + propertyvalue,
 						success: function()
 						{
 							runajaxonthis(thelink,e);

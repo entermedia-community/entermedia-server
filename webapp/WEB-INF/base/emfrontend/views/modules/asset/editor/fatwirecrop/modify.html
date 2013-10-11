@@ -1,0 +1,14 @@
+#set($status = $conversionUtil.getConversionStatus($catalogid,$asset.id,$presetdata.id))
+
+
+File Name: $presetdata.outputfile
+&nbsp;
+Status: $status
+&nbsp;
+<a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/upload.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">upload</a>
+&nbsp;
+<a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">edit</a>
+&nbsp;
+
+#set( $editPath = "/WEB-INF/data/$catalogid/generated/$asset.sourcePath/${presetdata.outputfile}" )
+$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/attachmenthistory/revisionslink.html?editPath=$editPath&assetid=${asset.id}&sourcepath=$asset.sourcepath", $context)

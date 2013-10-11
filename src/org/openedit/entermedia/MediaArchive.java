@@ -129,6 +129,7 @@ public class MediaArchive
 			fieldReplacer = new Replacer();
 			fieldReplacer.setCatalogId(getCatalogId());
 			fieldReplacer.setSearcherManager(getSearcherManager());
+			fieldReplacer.setAlwaysReplace(true);
 		}
 		return fieldReplacer;
 	}

@@ -72,7 +72,6 @@ public class HotFolderManager
 		//remove any old hot folders for this catalog
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		String path = "/WEB-INF/data/" + inCatalogId + "/originals";
-
 		List extras = new ArrayList();
 		
 		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
@@ -109,6 +108,28 @@ public class HotFolderManager
 				}
 				mounts.add(repo);
 			}
+
+			String generatedpath = "/WEB-INF/data/" + inCatalogId + "/generated";
+			String fullgeneratedpath = generatedpath + "/" + folderpath;
+			Repository generatedrepo = findRepoByPath( configs, fullgeneratedpath );
+			if( generatedrepo == null)
+			{
+				String versioncontrol = folder.get("generatedversioncontrol");
+				if( Boolean.valueOf(versioncontrol) )
+				{
+					generatedrepo = new XmlVersionRepository();
+					generatedrepo.setRepositoryType("versionRepository");
+				}
+				else
+				{
+					generatedrepo = new FileRepository();
+				}
+				generatedrepo.setPath(fullgeneratedpath);
+
+				mounts.add(generatedrepo);
+			}
+			
+			
 			//save data to repo
 			repo.setPath(fullpath);
 			repo.setExternalPath(folder.get("externalpath"));

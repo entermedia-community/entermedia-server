@@ -1,38 +1,51 @@
 #set($presetid = $context.findValue("presetid"))
+#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$presetid))
+#set($width = $dimension.getWidth())
+#set($height = $dimension.getHeight())
+#set($width = $mathtool.toInt($width))
+#set($height = $mathtool.toInt($height))
 
-
-<img src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="[Jcrop Example]" />
+<img src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="${asset}" />
 
 <div id="submit-crop"></div>
 <form id="coords"
     class="coords " targetdiv="submit-crop"
-    
     action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
-
     <div class="inline-labels">
+    <!-- 
     <label>X1 <input type="text" size="4" id="x1" name="x1.value" /></label>
     <label>Y1 <input type="text" size="4" id="y1" name="y1.value" /></label>
     <label>X2 <input type="text" size="4" id="x2" name="x2.value" /></label>
     <label>Y2 <input type="text" size="4" id="y2" name="y2.value" /></label>
     <label>W <input type="text" size="4" id="w" name="prefwidth.value" /></label>
     <label>H <input type="text" size="4" id="h" name="prefheight.value" /></label>
+     -->
+    <input type="hidden" size="4" id="x1" name="x1.value" />
+    <input type="hidden" size="4" id="y1" name="y1.value" />
+    <input type="hidden" size="4" id="x2" name="x2.value" />
+    <input type="hidden" size="4" id="y2" name="y2.value" />
+    <input type="hidden" size="4" id="w" name="cropwidth.value" />
+    <input type="hidden" size="4" id="h" name="cropheight.value" />
     </div>
     <input type="hidden" name="field" value="x1"/>
     <input type="hidden" name="field" value="y1"/>
-    <input type="hidden" name="field" value="prefwidth"/>
-    <input type="hidden" name="field" value="prefheight"/>
+    <input type="hidden" name="field" value="cropwidth"/>
+    <input type="hidden" name="field" value="cropheight"/>
     <input type="hidden" name="field" value="crop"/>
     <input type="hidden" name="field" value="force"/>
-            <input type="hidden" name="preset" value="${presetid}"/>
-            <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
-        
-      <input type="hidden" name="crop.value" value="true"/>
+    <input type="hidden" name="field" value="assetid"/>
+    
+    <input type="hidden" name="preset" value="${presetid}"/>
+    <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
+    
+    <input type="hidden" name="crop.value" value="true"/>
     <input type="hidden" name="force.value" value="true"/>
+    <input type="hidden" name="assetid.value" value="${asset.id}"/>
     <input type="submit"/>
   </form>
 
 <div id="preview-pane">
-  <div class="preview-container">
+  <div class="preview-container" >
     <img src="$home$apphome/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" class="jcrop-preview" alt="Preview" />
   </div>
 </div>
@@ -51,15 +64,15 @@
         pcnt = $('#preview-pane .preview-container'),
         pimg = $('#preview-pane .preview-container img'),
 
-        xsize = pcnt.width(),
-        ysize = pcnt.height();
+        xsize = $width,
+        ysize = $height;
     
-    console.log('init',[xsize,ysize]);
     $('#target').Jcrop({
       onChange: updatePreview,
       onSelect: updatePreview,
       onRelease: clearCoords,
-      //aspectRatio: xsize / ysize
+      minSize: [xsize,ysize],
+      aspectRatio: xsize / ysize
     },function(){
       // Use the API to get the real image size
       var bounds = this.getBounds();
@@ -74,8 +87,10 @@
 
     function updatePreview(c)
     {
+      
       if (parseInt(c.w) > 0)
       {
+    	
         var rx = xsize / c.w;
         var ry = ysize / c.h;
 
@@ -104,12 +119,19 @@
   
   function showCoords(c)
   {
-    $('#x1').val(c.x);
-    $('#y1').val(c.y);
-    $('#x2').val(c.x2);
-    $('#y2').val(c.y2);
-    $('#w').val(c.w);
-    $('#h').val(c.h);
+	  var x1 = Math.round(c.x),
+	  	y1 = Math.round(c.y),
+	  	x2 = Math.round(c.x2),
+	  	y2 = Math.round(c.y2),
+	  	w = Math.round(c.w),
+	  	h = Math.round(c.h);
+	  
+    $('#x1').val(x1);
+    $('#y1').val(y1);
+    $('#x2').val(x2);
+    $('#y2').val(y2);
+    $('#w').val(w);
+    $('#h').val(h);
   };
 
   function clearCoords()
@@ -119,7 +141,7 @@
 </script>
 <style type="text/css">
 .jcrop-holder #preview-pane {
-  display: block;
+  display: none;
   position: absolute;
   z-index: 2000;
   top: 10px;
@@ -137,8 +159,9 @@
   box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
 }
 #preview-pane .preview-container {
-  width: 250px;
-  height: 170px;
+  width: ${width}px;
+  height: ${height}px;
   overflow: hidden;
+  display:none;
 }
 </style>
