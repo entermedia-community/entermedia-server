@@ -342,22 +342,13 @@ public class imagemagickCreator extends BaseImageCreator
 			
 			
 			
-
-
-			
 			   		
 			//now let's crop
 			com.add("+repage");
 			String gravity = inStructions.get("gravity");
 			if(!"default".equals(gravity)){
 				
-				com.add("-resize");
-				StringBuffer resizestring = new StringBuffer();
-				resizestring.append(inStructions.getMaxScaledSize().width);
-				resizestring.append("x");
-				resizestring.append(inStructions.getMaxScaledSize().height);
-				resizestring.append("^");
-				com.add(resizestring.toString());
+				
 				
 				
 				com.add("-gravity");
@@ -388,9 +379,9 @@ public class imagemagickCreator extends BaseImageCreator
 			
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
-			cropString.append(inStructions.getMaxScaledSize().width);
+			cropString.append(inStructions.get("cropwidth"));
 			cropString.append("x");
-			cropString.append(inStructions.getMaxScaledSize().height);
+			cropString.append(inStructions.get("cropheight"));
 			
 			String x1 = inStructions.get("x1");
 			String y1 = inStructions.get("y1");
@@ -406,6 +397,18 @@ public class imagemagickCreator extends BaseImageCreator
 				cropString.append(y1);
 			}
 			com.add(cropString.toString());
+			
+			com.add("-resize");
+			StringBuffer resizestring = new StringBuffer();
+			resizestring.append(inStructions.getMaxScaledSize().width);
+			resizestring.append("x");
+			resizestring.append(inStructions.getMaxScaledSize().height);
+			resizestring.append("^");
+			com.add(resizestring.toString());
+
+
+			
+			
 		}
 		else if( "pdf".equals(ext) ||  "png".equals(ext)) 
 		{
