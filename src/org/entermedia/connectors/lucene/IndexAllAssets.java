@@ -167,8 +167,10 @@ public class IndexAllAssets extends AssetProcessor
 					vals.add(value);
 					String[] components = vals.toArray(new String[vals.size()]);
 					categorypaths.add(new CategoryPath(components));
-					log.info("Adding: " + vals);
-
+					if( log.isDebugEnabled() )
+					{
+						log.debug("Adding: " + vals);
+					}
 				}
 			}
 
