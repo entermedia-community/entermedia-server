@@ -19,7 +19,8 @@ $context.putPageValue("results", $results)
 	#set($height = $mathtool.toInteger($dimension.getHeight()))
 	#set($width = $mathtool.toInteger($dimension.getWidth()))
 	#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-	Conversion Name: $result.name &nbsp; Dimension: $height x $width &nbsp; Aspect Ratio: $aspectratio<br>
+	#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
+	Conversion Name: $result.name ($description) &nbsp; Dimension: $height x $width &nbsp; Aspect Ratio: $aspectratio<br>
 	<hr>
 	
 	<!-- include modify -->
