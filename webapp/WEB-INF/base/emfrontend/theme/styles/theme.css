@@ -6319,3 +6319,8 @@ a.audio-filename:hover
     padding-top: 10px;
     display: block;
 }
+
+/* Groups page */
+div#emselectable {
+	overflow:auto;
+}
