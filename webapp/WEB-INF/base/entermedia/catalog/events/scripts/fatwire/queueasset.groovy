@@ -19,7 +19,6 @@ import com.openedit.util.XmlUtil;
 import org.openedit.repository.ContentItem;
 import com.openedit.entermedia.scripts.ScriptLogger;
 import java.security.MessageDigest;
-import java.math.BigInteger;
 
 import com.openedit.WebPageRequest
 import com.openedit.entermedia.scripts.EnterMediaObject
@@ -50,9 +49,23 @@ public void init()
 	Searcher publishdestinationsearch = sm.getSearcher(archive.getCatalogId(), "publishdestination");
 	
 	//get form data from page
-	Map map = (Map) context.getProperties().get("parameterMap");
-	String assetId = map.get("publishassetid");//asset id that needs to be published
+	String assetId = context.findValue("publishassetid");//asset id that needs to be published
+	if (assetId == null){
+		log.info("Unable to process request: asset is null");
+		return;
+	}
 	Asset asset = archive.getAsset(assetId);//get the asset from the asset id
+	//get the specific presetid if available
+	String presetId = context.findValue("presetid");
+	//get specific regionid if available
+	String regionId = context.findValue("regionid");
+	if (regionId == null){
+		Searcher fatwireregionsearch = sm.getSearcher(archive.getCatalogId(), "fatwireregion");
+		Data defaultfr = fatwireregionsearch.searchByField("default", "true");
+		if (defaultfr!=null){
+			regionId = defaultfr.getId();
+		}
+	}
 	
 	//execute searches
 	SearchQuery fatwirequery = publishdestinationsearch.createSearchQuery().append("name", "FatWire");
@@ -73,6 +86,10 @@ public void init()
 	for (int i=0; i < presethits.size(); i++)
 	{
 		Data preset = presethits.get(i);
+		// add extra check for specific presetid
+		if (presetId!=null && !preset.getId().equals(presetId)){
+			continue;
+		}
 		
 		//get a few key variables
 		String outputfile = preset.get("outputfile");
@@ -120,7 +137,13 @@ public void init()
 		data.setProperty("username",username);
 		data.setProperty("convertpresetoutputfile",outputfile);
 		//add reference to conversiontask id if one was created
-		if (conversiontaskid!=null) data.setProperty("conversiontaskid", conversiontaskid );
+		if (conversiontaskid!=null){
+			data.setProperty("conversiontaskid", conversiontaskid );
+		}
+		//add regionid if one was specified
+		if (regionId!=null){
+			data.setProperty("regionid", regionId);
+		}
 		publishqueuesearch.saveData(data, null);//save to publishqueue
 	}
 	//trigger publishing queue
