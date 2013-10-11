@@ -1,54 +1,49 @@
 package model.push;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
-import org.entermedia.upload.FileUpload;
-import org.entermedia.upload.FileUploadItem;
-import org.entermedia.upload.UploadRequest;
-import org.openedit.Data;
-import org.openedit.data.Searcher;
-import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.Category;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.push.PushManager;
-import org.openedit.entermedia.search.AssetSearcher;
-import org.openedit.entermedia.util.NaiveTrustManager;
-import org.openedit.repository.ContentItem;
-import org.openedit.util.DateStorageUtil;
+import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.HttpException
+import org.apache.commons.httpclient.HttpMethod
+import org.apache.commons.httpclient.methods.PostMethod
+import org.apache.commons.httpclient.methods.multipart.FilePart
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
+import org.apache.commons.httpclient.methods.multipart.Part
+import org.apache.commons.httpclient.methods.multipart.StringPart
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.dom4j.DocumentException
+import org.dom4j.Element
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader
+import org.dom4j.io.XMLWriter;
+import org.entermedia.upload.FileUpload
+import org.entermedia.upload.FileUploadItem
+import org.entermedia.upload.UploadRequest
+import org.openedit.Data
+import org.openedit.data.Searcher
+import org.openedit.data.SearcherManager
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.Category
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.push.PushManager
+import org.openedit.entermedia.search.AssetSearcher
+import org.openedit.entermedia.util.NaiveTrustManager
+import org.openedit.repository.ContentItem
+import org.openedit.util.DateStorageUtil
 
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager;
-import com.openedit.users.User;
-import com.openedit.users.UserManager;
-import com.openedit.util.PathUtilities;
+import com.openedit.OpenEditException
+import com.openedit.OpenEditRuntimeException;
+import com.openedit.WebPageRequest
+import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
+import com.openedit.page.Page
+import com.openedit.page.manage.PageManager
+import com.openedit.users.User
+import com.openedit.users.UserManager
+import com.openedit.util.PathUtilities
 
 public class BasePushManager implements PushManager
 {
@@ -57,8 +52,9 @@ public class BasePushManager implements PushManager
 	protected UserManager fieldUserManager;
 	protected PageManager fieldPageManager;
 	
-	protected HttpClient fieldClient;
-	private SAXReader reader = new SAXReader();
+	//protected HttpClient fieldClient;
+	
+	protected ThreadLocal perThreadCache = new ThreadLocal();
 	
 	//TODO: Put a 5 minute timeout on this connection. This way we will reconnect
 	/* (non-Javadoc)
@@ -130,13 +126,17 @@ public class BasePushManager implements PushManager
 	 */
 	public HttpClient getClient(String inCatalogId)
 	{
-		if (fieldClient == null)
+		HttpClient ref = (HttpClient) perThreadCache.get();
+		if (ref == null)
 		{
-			//http://stackoverflow.com/questions/2290570/pkix-path-building-failed-while-making-ssl-connection
-			NaiveTrustManager.disableHttps();
-			fieldClient = login(inCatalogId); //TODO: Track the server we last logged into in case they edit the server
+			if( ref == null)
+			{
+				ref = login(inCatalogId);
+				// use weak reference to prevent cyclic reference during GC
+				perThreadCache.set(ref);
+			}
 		}
-		return fieldClient;
+		return ref;
 	}
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.push.PushManager#processPushQueue(org.openedit.entermedia.MediaArchive, com.openedit.users.User)
@@ -357,7 +357,6 @@ public class BasePushManager implements PushManager
 		return inputpage;
 
 	}
-	//The client can only be used by one thread at a time
 	protected Element execute(String inCatalogId, HttpMethod inMethod)
 	{
 		try
@@ -367,7 +366,8 @@ public class BasePushManager implements PushManager
 		catch (Exception e)
 		{	
 			log.error(e);
-			fieldClient = null;//log back in
+			//try logging in again?
+			perThreadCache.remove();
 		}
 		try
 		{
@@ -378,11 +378,11 @@ public class BasePushManager implements PushManager
 			throw new RuntimeException(e);
 		}
 	}
-	protected synchronized Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	protected Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
 		return send(getClient(inCatalogId),inCatalogId, inMethod);
 	}
-	protected synchronized Element send(HttpClient inClient, String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	protected Element send(HttpClient inClient, String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
 		int status = inClient.executeMethod(inMethod);
 		if (status != 200)
@@ -426,7 +426,7 @@ public class BasePushManager implements PushManager
 			for (Iterator iterator = inAsset.getProperties().keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				if( !key.equals("libraries"))
+				if( !key.equals("libraries"))  //handled below
 				{
 					parts.add(new StringPart("field", key));
 					parts.add(new StringPart(key+ ".value", inAsset.get(key)));
@@ -1105,7 +1105,6 @@ asset: " + asset);
 		}
 
 	}
-
 
 
 }
