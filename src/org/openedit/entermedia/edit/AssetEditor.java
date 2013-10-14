@@ -181,7 +181,7 @@ public class AssetEditor {
 				throw new OpenEditException("Could not attach, originals folder may be read only");
 			}
 		} finally {
-			inAsset.setProperty("primaryfile", oldAssets.getName());
+			inAsset.setPrimaryFile(oldAssets.getName());
 		}
 		inAsset.setFolder(true);
 		getMediaArchive().saveAsset(inAsset, inUser);
@@ -211,6 +211,7 @@ public class AssetEditor {
 						+ oldFile.getAbsolutePath());
 			}
 		}
+		//getMediaArchive().
 		return true;
 	}
 	

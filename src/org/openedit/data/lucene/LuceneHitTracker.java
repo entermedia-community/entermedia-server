@@ -777,7 +777,8 @@ public class LuceneHitTracker extends HitTracker
 						filterNode.setName(parent.getText());
 					}
 					filterNode.setProperty("label", root.label.toString());
-					filterNode.setProperty("value", String.valueOf(root.value));
+//					filterNode.setProperty("value", String.valueOf(root.value));
+					filterNode.setProperty("value", String.valueOf( Math.round( root.value)) ) ;
 
 					facetNodes.add(filterNode);
 
@@ -800,7 +801,7 @@ public class LuceneHitTracker extends HitTracker
 						}
 						childnode.setId(id);
 						childnode.setProperty("label", id);
-						childnode.setProperty("value", String.valueOf(cat.value));
+						childnode.setProperty("value", String.valueOf( Math.round( cat.value)) ) ;
 						filterNode.addChild(childnode);
 
 					}

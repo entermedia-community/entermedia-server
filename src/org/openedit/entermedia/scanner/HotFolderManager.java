@@ -72,14 +72,14 @@ public class HotFolderManager
 		//remove any old hot folders for this catalog
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		String path = "/WEB-INF/data/" + inCatalogId + "/originals";
-		List extras = new ArrayList();
+		List existing = new ArrayList();
 		
 		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
 		{
 			Repository config = (Repository) iterator.next();
 			if( config.getPath().startsWith(path))
 			{
-				extras.add( config.getPath());
+				existing.add( config.getPath());
 			}
 		}
 
@@ -92,40 +92,29 @@ public class HotFolderManager
 			Data folder = (Data) iterator.next();
 			String folderpath = folder.get("subfolder");
 			String fullpath = path + "/" + folderpath;
-			extras.remove(fullpath);
 			Repository repo = findRepoByPath( configs, fullpath );
+			String versioncontrol = folder.get("versioncontrol");
+			repo = checkForChange(configs, repo, versioncontrol);
 			if( repo == null)
 			{
-				String versioncontrol = folder.get("versioncontrol");
-				if( Boolean.valueOf(versioncontrol) )
-				{
-					repo = new XmlVersionRepository();
-					repo.setRepositoryType("versionRepository");
-				}
-				else
-				{
-					repo = new FileRepository();
-				}
+				repo = createRepo(versioncontrol);
+				existing.remove(fullpath);
 				mounts.add(repo);
 			}
 
 			String generatedpath = "/WEB-INF/data/" + inCatalogId + "/generated";
 			String fullgeneratedpath = generatedpath + "/" + folderpath;
 			Repository generatedrepo = findRepoByPath( configs, fullgeneratedpath );
+			
+			//Check for change in status
+			String genversioncontrol = folder.get("generatedversioncontrol");
+			generatedrepo = checkForChange(configs, generatedrepo, genversioncontrol);
+			
 			if( generatedrepo == null)
 			{
-				String versioncontrol = folder.get("generatedversioncontrol");
-				if( Boolean.valueOf(versioncontrol) )
-				{
-					generatedrepo = new XmlVersionRepository();
-					generatedrepo.setRepositoryType("versionRepository");
-				}
-				else
-				{
-					generatedrepo = new FileRepository();
-				}
+				generatedrepo = createRepo(genversioncontrol);
 				generatedrepo.setPath(fullgeneratedpath);
-
+				existing.remove(fullpath);
 				mounts.add(generatedrepo);
 			}
 			
@@ -136,7 +125,7 @@ public class HotFolderManager
 			//repo.setFilterIn(folder.get("includes"));
 			//repo.setFilterOut(folder.get("excludes"));
 		}
-		for (Iterator iterator = extras.iterator(); iterator.hasNext();)
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
 		{
 			String fullpath = (String) iterator.next();
 			getPageManager().getRepositoryManager().removeRepository(fullpath);
@@ -150,6 +139,41 @@ public class HotFolderManager
 		}
 		//getPageManager().getRepositoryManager().setRepositories(configs);
 		//save the file
+	}
+
+
+	protected Repository createRepo(String versioncontrol)
+	{
+		Repository repo;
+		if( Boolean.valueOf(versioncontrol) )
+		{
+			repo = new XmlVersionRepository();
+			repo.setRepositoryType("versionRepository");
+		}
+		else
+		{
+			repo = new FileRepository();
+		}
+		return repo;
+	}
+
+
+	protected Repository checkForChange(List configs, Repository generatedrepo, String genversioncontrol)
+	{
+		if( generatedrepo != null)
+		{
+			if( Boolean.valueOf(genversioncontrol) && !(generatedrepo instanceof XmlVersionRepository) )
+			{
+				configs.remove(generatedrepo);
+				generatedrepo = null;					
+			}
+			if( !Boolean.valueOf(genversioncontrol) && (generatedrepo instanceof XmlVersionRepository) )
+			{
+				configs.remove(generatedrepo);
+				generatedrepo = null;					
+			}
+		}
+		return generatedrepo;
 	}
 
 	protected Repository findRepoByPath(List inConfigs, String inFullpath)
