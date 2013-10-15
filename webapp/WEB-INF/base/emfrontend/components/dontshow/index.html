@@ -22,7 +22,9 @@
    
 	#foreach($entry in $type.children)
 			
-	<li><input class="assettypeselect" type="checkbox" name="filter" value="$entry.getId()" #if( $entry.isSelected() )checked #end/><span> $entry ($entry.value) $entry.isSelected()</span></li> 			
+	<li>
+	<a class="addfilter" href="#"><span> $entry ($entry.value)</span></a>
+	##<input class="assettypeselect" type="checkbox" name="filter" value="$entry.getId()" #if( $entry.isSelected() )checked #end/><span> $entry ($entry.value)</span></li> 			
 				
 			#end
 
@@ -34,6 +36,7 @@
     <input type="hidden"  name="oemaxlevel" value="1" />
     <input type="hidden" name="catalogid" value="$!catalogid" />
     <input type="hidden" name="searchtype" value="asset" />
+    <input type="hidden" id="filterselected" name="filter" value="" />
     
     <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
      <input type="submit" >
@@ -51,7 +54,12 @@ applyFilters = function()
 {	
 	
 	//TODO: Why not update the results with new data like VD does?
-	//jQuery('#dontshow').attr('action', "$home$apphome/components/results/table.html?" + query);
+	
+	jQuery(".addfilter").onClick(
+		var picked = $this.data("");
+		jQuery('#filterselected').val(picked);
+	);
+	
 	jQuery('#dontshow').submit();
 
 
