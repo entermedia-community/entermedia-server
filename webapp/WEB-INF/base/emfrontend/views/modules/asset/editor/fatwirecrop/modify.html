@@ -9,7 +9,7 @@ Status: $status
 
 <span class="h3e">
 <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/upload.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">upload</a>
-<a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">edit</a>
+<a class="cropbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">edit</a>
 </span>
 
 #set( $editPath = "/WEB-INF/data/$catalogid/generated/$asset.sourcePath/${presetdata.outputfile}" )
@@ -17,3 +17,28 @@ Status: $status
 $pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/attachmenthistory/revisionslink.html?editPath=$editPath&assetid=${asset.id}&sourcepath=$asset.sourcepath", $context)
 </span>
 </h3>
+
+##set($pagemanager = $mediaarchive.getPageManager())
+##set($previewpath = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg")
+##set($page = $pagemanager.getPage($previewpath, $context))
+
+
+<script type="text/javascript">
+jQuery("a.cropbox").livequery(
+			function() 
+			{
+				jQuery(this).fancybox(
+				{
+			    	openEffect	: 'elastic',
+			    	closeEffect	: 'elastic',
+			    	scrolling: 'no',
+			    	helpers:  {
+       					title : {
+			    			type : 'inside'
+			    		}
+    				}
+			    	
+				});
+			}
+		); 
+</script>
