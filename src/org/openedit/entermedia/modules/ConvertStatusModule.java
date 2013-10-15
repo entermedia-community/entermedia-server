@@ -101,7 +101,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 	
 		taskSearcher.saveData(newTask, inReq.getUser());
-//		archive.fireMediaEvent("conversions/runconversions", inReq.getUser(), asset);//block
+		archive.fireMediaEvent("conversions/runconversions", inReq.getUser(), asset);//block
 		processConversions(inReq);//non-block
 	}
 	

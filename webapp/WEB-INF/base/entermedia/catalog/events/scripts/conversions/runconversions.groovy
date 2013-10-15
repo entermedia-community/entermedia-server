@@ -255,6 +255,7 @@ class ConvertRunner implements Runnable
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
 		log.info("Task Properties: " + inTask.getProperties());
 		if(Boolean.parseBoolean(inTask.get("crop"))){
+			log.info("HERE!!!");
 			inStructions.setCrop(true);
 			inStructions.setProperty("x1", inTask.get("x1"));
 			inStructions.setProperty("y1", inTask.get("y1"));
