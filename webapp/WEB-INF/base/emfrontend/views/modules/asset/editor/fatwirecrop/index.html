@@ -41,21 +41,12 @@ p{
 
 <h1>Conversions</h1>
 
-###set($publishpresetid = $context.findValue("publishpresetid"))
-###if($publishpresetid)
-###	<div class="common-success fader">
-###	$publishpresetid was submitted to fatwire.
-###	</div>
-###end
-
 #set($newpreset = $context.findValue("newpreset"))
 #set($results = $conversionUtil.getActivePresetList($catalogid))
 $context.putPageValue("results", $results)
 
-
 #foreach ($result in $results)
-#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
-
+	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
 <hr>
 	<!-- include name + info -->
 	#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
@@ -63,8 +54,7 @@ $context.putPageValue("results", $results)
 	#set($width = $mathtool.toInteger($dimension.getWidth()))
 	#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 	#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
-	<h2>$result.name  <span class="h2e">${height}x${width}</span>  <span class="h2e">Aspect Ratio: $aspectratio</span></h2>
-	## this doesn't look good
+	<h2>$result.name  <span class="h2e">${width}x${height}</span>  <span class="h2e">Aspect Ratio: $aspectratio</span></h2>
 	###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
 	#set($description = "")
 	<hr>
@@ -73,9 +63,7 @@ $context.putPageValue("results", $results)
 	$context.putPageValue("presetdata",$result)
 	$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/modify.html", $context)
 	
-	
 	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
-	
 	#if($isready)
 		<!--  include share -->
 		$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
