@@ -1,7 +1,7 @@
 #set($results = $conversionUtil.getFatwirePublishQueueList($catalogid, $asset.id, $presetdata.id))
 
 #if($results && $results.size()!=0)
-<table id="shared-asset-table" class="striped download-table" width="100%" >
+<table class="striped download-table" width="98%" style="margin: 0 20px 20px;" >
 	<tr>
 		<th>FatWire Id</th>
 	    <th>Status</th>

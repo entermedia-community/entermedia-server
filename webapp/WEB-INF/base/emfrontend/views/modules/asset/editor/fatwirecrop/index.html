@@ -1,3 +1,44 @@
+<style>
+h1{
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:24px;
+	color:black;
+}
+h2{
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:22px;
+	color:black;
+}
+.h2e {
+	display: inline-block;
+  	margin: 0px 20px;
+  	color:#686868;
+}
+h3{
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:20px;
+	margin: 0 20px 20px;
+}
+.h3e {
+	display: inline-block;
+  	margin: 0px 20px;
+  	
+}
+.h3e a{
+	color:#003399;
+	text-decoration: underline;
+}
+h4{
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:18px;
+	margin: 0 20px 20px;
+}
+p{
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:14px;
+}
+</style>
+
 <h1>Conversions</h1>
 
 ###set($publishpresetid = $context.findValue("publishpresetid"))
@@ -5,11 +46,13 @@
 ###	<div class="common-success fader">
 ###	$publishpresetid was submitted to fatwire.
 ###	</div>
-####end
+###end
 
 #set($newpreset = $context.findValue("newpreset"))
 #set($results = $conversionUtil.getActivePresetList($catalogid))
 $context.putPageValue("results", $results)
+
+
 #foreach ($result in $results)
 #if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
 
@@ -20,13 +63,16 @@ $context.putPageValue("results", $results)
 	#set($width = $mathtool.toInteger($dimension.getWidth()))
 	#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 	#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
-	Conversion Name: $result.name ($description) &nbsp; Dimension: $height x $width &nbsp; Aspect Ratio: $aspectratio<br>
+	<h2>$result.name  <span class="h2e">${height}x${width}</span>  <span class="h2e">Aspect Ratio: $aspectratio</span></h2>
+	## this doesn't look good
+	###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
+	#set($description = "")
 	<hr>
 	
 	<!-- include modify -->
 	$context.putPageValue("presetdata",$result)
 	$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/modify.html", $context)
-	<br>
+	
 	
 	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
 	
@@ -34,7 +80,6 @@ $context.putPageValue("results", $results)
 		<!--  include share -->
 		$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
 		
-		<br>
 		<!-- include submit to fatwire -->
 		#if($result.publishtofatwire == "true")
 			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
