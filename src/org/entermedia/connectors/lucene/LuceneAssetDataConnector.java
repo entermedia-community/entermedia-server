@@ -136,7 +136,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 				IndexWriter writer = getIndexWriter();
 				Document doc = getIndexer().populateAsset(writer, asset, false, details);
 				
-				updateFacets(doc,  getTaxonomyWriter());
+				getIndexer().updateFacets(details, doc,  getTaxonomyWriter());
 				getIndexer().writeDoc(writer, asset.getId().toLowerCase() , doc, false);
 
 

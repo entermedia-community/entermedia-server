@@ -59,6 +59,7 @@ import org.apache.lucene.store.SimpleFSLockFactory;
 import org.apache.lucene.util.Version;
 import org.entermedia.cache.CacheManager;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -414,34 +415,28 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			DrillDownQuery ddq = null;
 			boolean empty = true;
 
-			if (inQuery.getFacetValues() != null)
+			if (inQuery.hasFilters())
 			{
-
-				for (Iterator iterator = inQuery.getFacetValues().iterator(); iterator.hasNext();)
+				for (Iterator iterator = inQuery.getFilters().iterator(); iterator.hasNext();)
 				{
-					
 					FilterNode rootnode = (FilterNode) iterator.next();
-					ddq = new DrillDownQuery(FacetIndexingParams.DEFAULT, query1);
-					for (Iterator iterator2 = rootnode.getChildren().iterator(); iterator2.hasNext();)
-					{
-						FilterNode node = (FilterNode) iterator2.next();
-						if (node.isSelected())
-						{
-							String [] path = node.get("label").split("/");
-							ddq.add(new CategoryPath(path));
-						}
-
-					}
+					ddq = new DrillDownQuery(FacetIndexingParams.DEFAULT, query1);  //this is recursive, is that the fastest way to do it?
 					
+					//Lets not do multiple paths just yet. For now support a single list of filters
+					
+//					for (Iterator iterator2 = rootnode.getChildren().iterator(); iterator2.hasNext();)
+//					{
+//						FilterNode node = (FilterNode) iterator2.next();
+//						if (node.isSelected())
+//						{
+//					String [] path = node.get("label").split("/");
+					String [] path = new String[] { rootnode.getId(), rootnode.get("value") };
+					ddq.add(new CategoryPath(path));
+//						}
+//					}
 					//ddq.add(query1, BooleanClause.Occur.MUST);
 					query1 = ddq;
-					
-
-					
-					
 				}
-				
-
 			}
 			Sort sort = null;
 			if (inOrdering != null && inOrdering.size() > 0)
@@ -996,7 +991,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				}
 				Document doc = new Document();
 				updateIndex(data, doc, details);
-				updateFacets(doc, inTaxonomyWriter);
+				getLuceneIndexer().updateFacets(details,doc, inTaxonomyWriter);
 				Term term = new Term("id", data.getId());
 				inWriter.updateDocument(term, doc, getAnalyzer());
 				if (fieldCacheManager != null)
@@ -1039,10 +1034,9 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			{
 				throw new OpenEditException("No " + getSearchType() + "properties.xml file available");
 			}
-			ArrayList categorypaths = new ArrayList();
 			updateIndex(inData, doc, details);
 
-			updateFacets(doc, inTaxonomyWriter);
+			getLuceneIndexer().updateFacets(details,doc, inTaxonomyWriter);
 
 			Term term = new Term("id", inData.getId());
 			inWriter.updateDocument(term, doc, getAnalyzer());
@@ -1056,45 +1050,6 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 		{
 			throw new OpenEditException(ex);
 		}
-	}
-
-	protected void updateFacets(Document inDoc, TaxonomyWriter inTaxonomyWriter) throws Exception
-	{
-		if (inTaxonomyWriter == null)
-		{
-			return;
-		}
-
-		List facetlist = getPropertyDetails().getDetailsByProperty("filter", "true");
-		ArrayList<CategoryPath> categorypaths = new ArrayList();
-		for (Iterator iterator = facetlist.iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			String value = inDoc.get(detail.getId());
-
-			if (detail.isFilter())
-			{
-				if (value != null)
-				{
-					ArrayList<String> vals = new ArrayList();
-					vals.add(detail.getId());
-					vals.add(value);
-					String[] components = vals.toArray(new String[vals.size()]);
-					categorypaths.add(new CategoryPath(components));
-					log.info("Adding: " + vals);
-
-				}
-			}
-
-		}
-
-		if (categorypaths.size() > 0)
-		{
-			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
-			facetFields.addFields(inDoc, categorypaths);
-		}
-		// do stuff
-
 	}
 
 	protected void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
