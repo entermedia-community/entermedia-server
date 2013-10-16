@@ -4,6 +4,8 @@
 	<property name="sortby">assetaddeddateDown</property>
 	<property name="section">assets</property>
 	<property name="virtual">true</property>
+	<property name="searchcategory">true</property>
+	
 	<property name="assetrootfolder">/${applicationid}/views/assets</property>
 
 </page>
