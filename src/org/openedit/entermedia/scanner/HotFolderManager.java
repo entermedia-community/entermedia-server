@@ -99,8 +99,8 @@ public class HotFolderManager
 			{
 				repo = createRepo(versioncontrol);
 				existing.remove(fullpath);
-				mounts.add(repo);
 			}
+			mounts.add(repo);
 
 			String generatedpath = "/WEB-INF/data/" + inCatalogId + "/generated";
 			String fullgeneratedpath = generatedpath + "/" + folderpath;
