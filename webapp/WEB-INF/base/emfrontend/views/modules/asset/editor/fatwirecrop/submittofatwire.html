@@ -12,7 +12,7 @@
 		<label for="regionid">Select a Region</label>
 		<select name="regionid" id="regionid">
 		#foreach ($region in $regions)
-			<option value="${region.id}">$region.name</option>
+			<option value="${region.id}" #if($region.default == "true") selected #end>$region.name</option>
 		#end
 		</select>
 	</span>

@@ -255,7 +255,7 @@ class ConvertRunner implements Runnable
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
 		log.info("Task Properties: " + inTask.getProperties());
 		if(Boolean.parseBoolean(inTask.get("crop"))){
-			log.info("HERE!!!");
+//			log.info("HERE!!!");
 			inStructions.setCrop(true);
 			inStructions.setProperty("x1", inTask.get("x1"));
 			inStructions.setProperty("y1", inTask.get("y1"));
@@ -395,7 +395,12 @@ public void checkforTasks()
 			String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
 			if( id == null )
 			{
-				throw new OpenEditException("asset id was null on " + hit );
+//				throw new OpenEditException("asset id was null on " + hit );
+				Data missingdata = tasksearcher.searchById(hit.getId())
+				missingdata.setProperty("status", "error");
+				missingdata.setProperty("errordetails", "asset id is null");
+				tasksearcher.saveData(missingdata, null);
+				continue;
 			}
 			if( id != lastassetid )
 			{
