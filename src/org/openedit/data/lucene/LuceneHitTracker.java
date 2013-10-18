@@ -797,10 +797,11 @@ public class LuceneHitTracker extends HitTracker
 						if( parent.isList() || "category".equals( parent.getId() ) )
 						{
 							Data data = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getListId(), id);
-							if (data != null)
+							if (data == null)
 							{
-								label = data.getName();
+								continue;
 							}
+							label = data.getName();
 						}
 						if( label == null)
 						{
