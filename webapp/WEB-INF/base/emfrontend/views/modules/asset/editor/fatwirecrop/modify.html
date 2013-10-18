@@ -1,22 +1,20 @@
 #set($status = $conversionUtil.getConversionStatus($catalogid,$asset.id,$presetdata.id))
 
-<h3>
-File Name: $presetdata.outputfile
+<h5>
+
+##File Name: $presetdata.outputfile
 
 <span class="h3e">
 Status: $status
 </span>
 
-<span class="h3e">
-<a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/upload.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">upload</a>
-<a class="cropbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">edit</a>
-</span>
+
 
 #set( $editPath = "/WEB-INF/data/$catalogid/generated/$asset.sourcePath/${presetdata.outputfile}" )
 <span class="h3e">
 $pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/attachmenthistory/revisionslink.html?editPath=$editPath&assetid=${asset.id}&sourcepath=$asset.sourcepath", $context)
 </span>
-</h3>
+</h5>
 
 ##set($pagemanager = $mediaarchive.getPageManager())
 ##set($previewpath = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg")
@@ -31,7 +29,7 @@ jQuery("a.cropbox").livequery(
 				{
 			    	openEffect	: 'elastic',
 			    	closeEffect	: 'elastic',
-			    	scrolling: 'no',
+			    	scrolling: 'auto',
 			    	helpers:  {
        					title : {
 			    			type : 'inside'
@@ -42,3 +40,5 @@ jQuery("a.cropbox").livequery(
 			}
 		); 
 </script>
+<a class="thickbox btn" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/upload.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">upload</a>
+<a class="cropbox btn" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/fatwirecrop/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">edit</a>

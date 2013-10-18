@@ -39,7 +39,7 @@ p{
 }
 </style>
 
-<h1>Conversions</h1>
+<h1>Automatic Conversions</h1>
 
 #set($newpreset = $context.findValue("newpreset"))
 #set($results = $conversionUtil.getActivePresetList($catalogid))
@@ -73,14 +73,14 @@ $context.putPageValue("results", $results)
 			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
 			
 			<!-- include submit to fatwire -->
-			#if($result.publishtofatwire == "true")
+			#if($result.publishtofatwire == "true") 
+				<h2>Previous Sends To Fatwire</h2>
 				$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
 			#end
 		#end
 	#end
 #end
 <hr>
-
 $context.putPageValue("asset",$asset)
 #if($newpreset)
 	$context.putPageValue("omitpreset",$newpreset)

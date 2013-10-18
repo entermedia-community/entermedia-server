@@ -40,7 +40,7 @@
 
 
 <div id="preview-pane">
-  <div class="preview-container" >
+  <div class="preview-container" style="overflow: scroll;" >
     <img src="$home$apphome/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" class="jcrop-preview" alt="Preview" />
   </div>
 </div>
@@ -155,6 +155,7 @@
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
+  overflow: scroll;
 
   -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
@@ -163,7 +164,7 @@
 #preview-pane .preview-container {
   width: ${width}px;
   height: ${height}px;
-  overflow: hidden;
+  overflow: scroll;
   display:none;
 }
 .inline-labels {

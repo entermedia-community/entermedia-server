@@ -93,13 +93,13 @@ public class ConvertStatusModule extends BaseMediaModule
 		newTask.setSourcePath(sourcePath);
 		newTask.setProperty("status", "new");
 		newTask.setProperty("presetid", presetId);
-		
+		newTask.setProperty("assetid", asset.getId());
 	
 		String []fields = inReq.getRequestParameters("field");
 		if(fields != null){
 			taskSearcher.updateData(inReq, fields, newTask);
 		}
-	
+		
 		taskSearcher.saveData(newTask, inReq.getUser());
 		archive.fireMediaEvent("conversions/runconversions", inReq.getUser(), asset);//block
 		processConversions(inReq);//non-block
