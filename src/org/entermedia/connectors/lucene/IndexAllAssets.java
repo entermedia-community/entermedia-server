@@ -114,17 +114,9 @@ public class IndexAllAssets extends AssetProcessor
 				return;
 			}
 			fieldSourcePaths.add(asset.getSourcePath());
-			
-			
-			
-			//Document doc = getIndexer().createAssetDoc(asset, getMediaArchive().getAssetPropertyDetails());
 			Document doc = getIndexer().populateAsset(getWriter(), asset, false, getMediaArchive().getAssetPropertyDetails());
 			String id = asset.getId().toLowerCase();
-			try{
-			updateFacets(doc,  getTaxonomyWriter());
-			} catch(Exception e){
-				throw new OpenEditRuntimeException(e);
-			}
+			getIndexer().updateFacets(getMediaArchive().getAssetPropertyDetails(),doc,  getTaxonomyWriter());
 			
 			getIndexer().writeDoc(writer, id, doc, false);
 			// remove it from mem
@@ -143,47 +135,6 @@ public class IndexAllAssets extends AssetProcessor
 		}
 	}
 
-	
-	protected void updateFacets(Document inDoc, TaxonomyWriter inTaxonomyWriter) throws Exception
-	{
-		if (inTaxonomyWriter == null)
-		{
-			return;
-		}
-
-		List facetlist = getMediaArchive().getAssetPropertyDetails().getDetailsByProperty("filter", "true");
-		ArrayList<CategoryPath> categorypaths = new ArrayList();
-		for (Iterator iterator = facetlist.iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			String value = inDoc.get(detail.getId());
-
-			if (detail.isFilter())
-			{
-				if (value != null)
-				{
-					ArrayList<String> vals = new ArrayList();
-					vals.add(detail.getId());
-					vals.add(value);
-					String[] components = vals.toArray(new String[vals.size()]);
-					categorypaths.add(new CategoryPath(components));
-					if( log.isDebugEnabled() )
-					{
-						log.debug("Adding: " + vals);
-					}
-				}
-			}
-
-		}
-
-		if (categorypaths.size() > 0)
-		{
-			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
-			facetFields.addFields(inDoc, categorypaths);
-		}
-		// do stuff
-
-	}
 	
 	
 

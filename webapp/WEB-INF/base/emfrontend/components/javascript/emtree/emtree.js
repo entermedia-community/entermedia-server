@@ -44,6 +44,7 @@ jQuery(document).ready(function()
 						'oemaxlevel':2,
 						'tree-name':tree.data("treename"),
 						'nodeID':nodeid,
+						'clearfilters':true,
 						'depth': depth
 					},	
 					function(data) 

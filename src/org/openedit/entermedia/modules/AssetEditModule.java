@@ -996,7 +996,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 
-		String catlist = inReq.getRequestParameter(prefix + "category.orvalue");
+		String catlist = inReq.getRequestParameter(prefix + "category.values");
 		if( catlist != null)
 		{
 			categories = catlist.split("\\s");

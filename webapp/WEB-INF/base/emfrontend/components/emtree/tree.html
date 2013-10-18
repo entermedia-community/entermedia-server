@@ -87,6 +87,9 @@
 	#showtreecategories($target, $depth)
 	
 #else
+#if($category && $content.isPropertyTrue("searchcategory") )
+	$render.setSelectedNode($category)
+#end
 #set($rootcategory = $webtree.getModel().getRoot())
 
 <div id="treeholder" >

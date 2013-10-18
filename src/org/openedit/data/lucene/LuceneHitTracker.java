@@ -710,20 +710,6 @@ public class LuceneHitTracker extends HitTracker
 		fieldLuceneSort = inLuceneSort;
 	}
 
-	/**
-	 * Don't do this for now since it does not really help with memory to load
-	 * all the assets so many times
-	 * 
-	 * public HitTracker getSelectedHitracker() { // getPage(0); //
-	 * reloadSelection(); if( getSessionId().startsWith("selected") ||
-	 * isAllSelected() ) { return this; }
-	 * 
-	 * SelectedHitsTracker hits = new SelectedHitsTracker(this);
-	 * hits.setHitsName("selected" + getHitsName());
-	 * hits.setSessionId("selected" + getSessionId() ); hits.selectAll(); return
-	 * hits; }
-	 */
-
 	protected List<FilterNode> getFacetedResults() throws Exception
 	{
 		IndexSearcher searcher = null;
@@ -731,7 +717,6 @@ public class LuceneHitTracker extends HitTracker
 		SearcherAndTaxonomy refs = null;
 
 		try
-
 		{
 			// getLuceneSearcherManager().maybeRefresh();
 			refs = getLuceneSearcherManager().acquire();
@@ -753,160 +738,177 @@ public class LuceneHitTracker extends HitTracker
 			{
 				for (Iterator iterator = propertydetails.iterator(); iterator.hasNext();)
 				{
-
 					PropertyDetail detail = (PropertyDetail) iterator.next();
-					params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 10));
-
+					if( detail.getId().equals("viewasset") || detail.getId().equals("editasset") )
+					{
+						continue;
+					}
+					//TODO: Do not collect data on any that we have already selected
+					if( !getSearchQuery().hasFilter(detail.getId()))
+					{
+						params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 20));  //need to have a show more button on UI
+					}
+				}
+				List<FilterNode> facetNodes = new ArrayList<FilterNode>();
+				if( params.isEmpty() )
+				{
+					return facetNodes;
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
 				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
 				searcher.search(getLuceneQuery(), facetsCollector);
 
+				//copy the collected results to our data structure
+				
 				List<FacetResult> facetResults = facetsCollector.getFacetResults();
-				List<FilterNode> facetNodes = new ArrayList();
+				
+				//a tree of options
 
 				for (FacetResult fres : facetResults)
 				{
-
 					FacetResultNode root = fres.getFacetResultNode();
+					
+					if( root.subResults.isEmpty() )
+					{
+						continue;
+					}
+				
+					
 					FilterNode filterNode = new FilterNode();
-					String label = root.label.toString();
-					PropertyDetail parent = getSearcher().getDetail(label);
+					String type = root.label.toString();
+					filterNode.setId(type);
+					//filterNode.setProperty("path", type);
+					PropertyDetail parent = getSearcher().getDetail(type);
 					if (parent != null)
 					{
 						filterNode.setName(parent.getText());
 					}
-					filterNode.setProperty("label", root.label.toString());
-//					filterNode.setProperty("value", String.valueOf(root.value));
-					filterNode.setProperty("value", String.valueOf( Math.round( root.value)) ) ;
-
+					filterNode.setProperty("count", String.valueOf( Math.round( root.value)) ) ;
 					facetNodes.add(filterNode);
 
 					for (FacetResultNode cat : root.subResults)
 					{
-
 						FilterNode childnode = new FilterNode();
-
-						String id = cat.label.toString();
-						String[] splits = id.split("/");
-						String text = splits[1];
-						Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
-						if (value != null)
+						String childlabel = cat.label.toString();
+						String[] splits = childlabel.split("/");
+						String group = splits[0];
+						String id = splits[1];
+						childnode.setId(id);
+						Data data = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getListId(), id);
+						if (data != null)
 						{
-							childnode.setName(value.getName());
+							childnode.setName(data.getName());
 						}
 						else
 						{
-							childnode.setName(text);
+							childnode.setName(id);
 						}
-						childnode.setId(id);
-						childnode.setProperty("label", id);
-						childnode.setProperty("value", String.valueOf( Math.round( cat.value)) ) ;
+						childnode.setProperty("path", childlabel);
+						childnode.setProperty("count", String.valueOf( Math.round( cat.value)) ) ;
+						//log.info("Found " + root.label + " " + id);
 						filterNode.addChild(childnode);
-
 					}
-
+					//filterNode.sortChildren();
 				}
+				
 				return facetNodes;
-
 			}
 		}
 		finally
 		{
-
 			getLuceneSearcherManager().release(refs);
 		}
 		return null;
 	}
 
-	public void refreshFilters() throws Exception
-	{
-		if (fieldFacets == null)
-		{
-			getFacets();
-		}
-		if (fieldFacets == null)
-		{
-			return;
-		}
-		IndexSearcher searcher = null;
-
-		SearcherAndTaxonomy refs = null;
-
-		try
-
-		{
-			// getLuceneSearcherManager().maybeRefresh();
-			refs = getLuceneSearcherManager().acquire();
-
-			searcher = refs.searcher;
-
-			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
-
-			// DirectoryTaxonomyReader taxor = new
-			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
-			// lsearcher.getTaxonomyWriter());
-			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
-			// this.taxoReader );
-
-			ArrayList params = new ArrayList();
-			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
-
-			for (Iterator facetiter = getFacets().iterator(); facetiter.hasNext();)
-			{
-				FilterNode node = (FilterNode) facetiter.next();
-				if(!node.hasSelections(node)){
-					node.setChildren(null);
-					params.add(new CountFacetRequest(new CategoryPath(node.get("label").split("/")), 10));
-					FacetSearchParams fsp = new FacetSearchParams(params);
-					FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
-					searcher.search(getLuceneQuery(), facetsCollector);
-
-					List<FacetResult> facetResults = facetsCollector.getFacetResults();
-					List<FilterNode> facetNodes = new ArrayList();
-
-					for (FacetResult fres : facetResults)
-					{
-
-						FacetResultNode root = fres.getFacetResultNode();
-
-						String label = root.label.toString();
-						PropertyDetail parent = getSearcher().getDetail(label);
-						
-						for (FacetResultNode cat : root.subResults)
-						{
-
-							FilterNode childnode = new FilterNode();
-
-							String id = cat.label.toString();
-							String[] splits = id.split("/");
-							String text = splits[1];
-							Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
-							if (value != null)
-							{
-								childnode.setName(value.getName());
-							}
-							else
-							{
-								childnode.setName(text);
-							}
-							childnode.setId(id);
-							childnode.setProperty("label", id);
-							childnode.setProperty("value", String.valueOf(cat.value));
-							node.addChild(childnode);
-
-						}
-
-					}
-
-				}
-			}
-		}
-		finally
-		{
-
-			getLuceneSearcherManager().release(refs);
-		}
-	}
+//	public void refreshFilters() throws Exception
+//	{
+//		if (fieldFacets == null)
+//		{
+//			getFacets();
+//		}
+//		if (fieldFacets == null)
+//		{
+//			return;
+//		}
+//		IndexSearcher searcher = null;
+//
+//		SearcherAndTaxonomy refs = null;
+//
+//		try
+//
+//		{
+//			// getLuceneSearcherManager().maybeRefresh();
+//			refs = getLuceneSearcherManager().acquire();
+//
+//			searcher = refs.searcher;
+//
+//			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
+//
+//			// DirectoryTaxonomyReader taxor = new
+//			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
+//			// lsearcher.getTaxonomyWriter());
+//			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
+//			// this.taxoReader );
+//
+//			ArrayList params = new ArrayList();
+//			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
+//
+//			for (Iterator facetiter = getFacets().iterator(); facetiter.hasNext();)
+//			{
+//				FilterNode node = (FilterNode) facetiter.next();
+//				if(!node.hasSelections(node)){
+//					node.setChildren(null);
+//					params.add(new CountFacetRequest(new CategoryPath(node.get("label").split("/")), 10));
+//					FacetSearchParams fsp = new FacetSearchParams(params);
+//					FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
+//					searcher.search(getLuceneQuery(), facetsCollector);
+//
+//					List<FacetResult> facetResults = facetsCollector.getFacetResults();
+//					List<FilterNode> facetNodes = new ArrayList();
+//
+//					for (FacetResult fres : facetResults)
+//					{
+//
+//						FacetResultNode root = fres.getFacetResultNode();
+//
+//						String label = root.label.toString();
+//						PropertyDetail parent = getSearcher().getDetail(label);
+//						
+//						for (FacetResultNode cat : root.subResults)
+//						{
+//
+//							FilterNode childnode = new FilterNode();
+//
+//							String id = cat.label.toString();
+//							String[] splits = id.split("/");
+//							String text = splits[1];
+//							Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
+//							if (value != null)
+//							{
+//								childnode.setName(value.getName());
+//							}
+//							else
+//							{
+//								childnode.setName(text);
+//							}
+//							childnode.setId(id);
+//							childnode.setProperty("label", id);
+//							childnode.setProperty("value", String.valueOf(cat.value));
+//							node.addChild(childnode);
+//
+//						}
+//
+//					}
+//
+//				}
+//			}
+//		}
+//		finally
+//		{
+//
+//			getLuceneSearcherManager().release(refs);
+//		}
+//	}
 
 }

@@ -3,70 +3,75 @@
 				<span class="widget-header-title">[[Filters]]</span>
 			</div>
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
+ 
+ <ul id="filters-sidebar-selected">
+ #if( $hits.getSearchQuery().hasFilters() )
+ ##<h4>Selected</h4>
+	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
+			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
+				href="$home$apphome/views/search/filter.html?removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >$selectedfilter
+				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>
+	#end
+#end	
+</ul>
 
+#set($facets = $hits.getFilterOptions())
 
-#set($facets = $hits.getFilters())
-<div class="subcolumns" style="white-space:nowrap;"> 
-
-<form  action="$apphome/components/results/filter.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
-
-
+<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
 
 #foreach($type in $facets )
-      
-	    
-	    
+<h4>$type</h4>
 	     <ul id="filters-sidebar">
-	     <li><b>$type</b> </li>
-		    
-   
+	     
 	#foreach($entry in $type.children)
 			
 	<li>
-	<a class="addfilter" href="#"><span> $entry ($entry.value)</span></a>
-	##<input class="assettypeselect" type="checkbox" name="filter" value="$entry.getId()" #if( $entry.isSelected() )checked #end/><span> $entry ($entry.value)</span></li> 			
-				
-			#end
+	<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry" href="#"><span> $entry ($entry.count)</span></a>
+	</li>
+	#end
 
 </ul>
 
 #end
-
-
-    <input type="hidden"  name="oemaxlevel" value="1" />
     <input type="hidden" name="catalogid" value="$!catalogid" />
-    <input type="hidden" name="searchtype" value="asset" />
-    <input type="hidden" id="filterselected" name="filter" value="" />
-    
+    <input type="hidden" name="searchtype" value="$searcher.searchType" />
+    <input type="hidden" id="filtertype" name="filtertype" value="" />
+    <input type="hidden" id="filtervalue" name="filtervalue" value="" />
+    <input type="hidden" id="filterlabel" name="filterlabel" value="" />
+    <input type="hidden" name="oemaxlevel" value="2" />
     <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
-     <input type="submit" >
 </form>
 
-
-</div>
 </div></div>
 	
 
 
 <script type="text/javascript">
 
-applyFilters = function()
-{	
-	
-	//TODO: Why not update the results with new data like VD does?
-	
-	jQuery(".addfilter").onClick(
-		var picked = $this.data("");
-		jQuery('#filterselected').val(picked);
-	);
-	
-	jQuery('#dontshow').submit();
+
+jQuery(document).ready(function() 
+{ 
+
+	jQuery('.addfilter').bind('click',function(e)
+	{	
+		e.preventDefault();
+		//TODO: Why not update the results with new data like VD does?
+			var link = $(this);
+			var picked = link.data("filtertype");
+			jQuery('#filtertype').val(picked);
+			var value = link.data("filtervalue");
+			jQuery('#filtervalue').val(value);
+			var label = link.data("filterlabel");
+			jQuery('#filterlabel').val(label);
+
+			jQuery('#dontshow').submit();
+			
+	});
+
+});
 
 
-}
-
-
-jQuery('.assettypeselect').bind('click',applyFilters);
 
 </script>
 

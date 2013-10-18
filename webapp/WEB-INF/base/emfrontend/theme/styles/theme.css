@@ -5460,28 +5460,38 @@ p.resultsnumber {
 /* FILTERS SIDEBAR STYLES */
 
 #filters-sidebar {
-    margin: 10px 0;
+    margin: 0px 0 10px 4px;
     padding: 0 5px;
 }
 #filters-sidebar li {
     list-style-type:none; 
-    border-bottom: 1px solid #eee; 
-    padding: 8px 0;
-    font-size: 12px;
+    padding: 0px 0 4px 4px;
+    font-size: 1em;
 }
-#filters-sidebar li input {
-    margin-right: 7px;
+#filters-sidebar li a:hover
+{
+	text-decoration: underline;
 }
-#filters-sidebar li input:checked + span {
-    font-weight: bold;
+
+#filters-sidebar-selected {
+    margin: 6px 0 0 0;
+    padding: 0;
 }
-#filters-sidebar li span {
-    width: 170px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: inline-block;
+#filters-sidebar-selected li {
+    list-style-type:none; 
+    font-size: 1em;
 }
+#filters-sidebar-selected li a
+{
+	padding: 6px;
+	display:block;
+}
+#filters-sidebar-selected li a:hover
+{
+	background-color: #EEE;
+}
+
+
 .sp {
     color: white;
     font-size: 11px;
@@ -6323,4 +6333,17 @@ a.audio-filename:hover
 /* Groups page */
 div#emselectable {
 	overflow:auto;
+}
+
+div#filterscontent {
+	padding-right:15px;
+}
+
+div#filterscontent form {
+	margin-bottom:0;
+	
+}
+
+div#filterscontent h4 {
+	margin: 0 0 2px 0;
 }
