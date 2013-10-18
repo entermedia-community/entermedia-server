@@ -1,25 +1,26 @@
 
-$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/table.html", $context)
-
 #set($searcher = $searcherManager.getSearcher($catalogid, "fatwireregion"))
 #set($regions = $searcher.getAllHits())
+
+<h4>Send to Fatwire:</h4>
 
 <form method="post" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submit-fatwire-finish.html">
 	<input type="hidden" id="publishassetid" name="publishassetid" value="$asset.id"/>
 	<input type="hidden" id="presetid" name="presetid" value="$presetdata.id"/>
-	
 	#if($regions.size() > 0)
-		<label for="regionid">Region</label>
+	<span style="margin: 0 20px 20px;">
+		<label for="regionid">Select a Region</label>
 		<select name="regionid" id="regionid">
 		#foreach ($region in $regions)
-			<option value="${region.id}">$region.name</option>
+			<option value="${region.id}" #if($region.default == "true") selected #end>$region.name</option>
 		#end
 		</select>
+	</span>
 	#end
-	
-	<input class="thickbox btn" type="submit" value="Send to Fatwire" style="margin: 5px;" />
+	<input style="margin: 0 20px 20px;" class="thickbox btn" type="submit" value="Send to Fatwire" style="margin: 5px;" />
 </form>
 
+$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/table.html", $context)
 
 
 

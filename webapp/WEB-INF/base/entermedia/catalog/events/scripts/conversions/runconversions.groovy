@@ -255,11 +255,21 @@ class ConvertRunner implements Runnable
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
 		log.info("Task Properties: " + inTask.getProperties());
 		if(Boolean.parseBoolean(inTask.get("crop"))){
+//			log.info("HERE!!!");
 			inStructions.setCrop(true);
 			inStructions.setProperty("x1", inTask.get("x1"));
 			inStructions.setProperty("y1", inTask.get("y1"));
 			inStructions.setProperty("cropwidth", inTask.get("cropwidth"));
 			inStructions.setProperty("cropheight", inTask.get("cropheight"));
+			if(inStructions.getProperty("prefwidth") == null){
+				inStructions.setProperty("prefwidth", inTask.get("cropwidth"));
+			}
+			if(inStructions.getProperty("prefheight") == null){
+				inStructions.setProperty("prefheight", inTask.get("cropheight"));
+			}
+			
+			
+			
 			inStructions.setProperty("useinput", "image1280x1024");//hard-coded a specific image size (large)
 			inStructions.setProperty("gravity", "default");//hard-coded a specific image size (large)
 			if(Boolean.parseBoolean(inTask.get("force"))){
@@ -385,7 +395,12 @@ public void checkforTasks()
 			String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
 			if( id == null )
 			{
-				throw new OpenEditException("asset id was null on " + hit );
+//				throw new OpenEditException("asset id was null on " + hit );
+				Data missingdata = tasksearcher.searchById(hit.getId())
+				missingdata.setProperty("status", "error");
+				missingdata.setProperty("errordetails", "asset id is null");
+				tasksearcher.saveData(missingdata, null);
+				continue;
 			}
 			if( id != lastassetid )
 			{

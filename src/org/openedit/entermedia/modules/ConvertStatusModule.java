@@ -1,6 +1,5 @@
 package org.openedit.entermedia.modules;
 
-import java.util.Date;
 import java.util.Iterator;
 
 import org.entermedia.upload.FileUpload;
@@ -9,15 +8,14 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.page.Page;
 
 public class ConvertStatusModule extends BaseMediaModule
 {
@@ -93,15 +91,21 @@ public class ConvertStatusModule extends BaseMediaModule
 		newTask.setSourcePath(sourcePath);
 		newTask.setProperty("status", "new");
 		newTask.setProperty("presetid", presetId);
-		
+		newTask.setProperty("assetid", asset.getId());
 	
 		String []fields = inReq.getRequestParameters("field");
 		if(fields != null){
 			taskSearcher.updateData(inReq, fields, newTask);
 		}
-	
+		
 		taskSearcher.saveData(newTask, inReq.getUser());
-//		archive.fireMediaEvent("conversions/runconversions", inReq.getUser(), asset);//block
+		archive.fireMediaEvent("conversions/runconversions", inReq.getUser(), asset);//block
+		Data preset = archive.getData("convertpreset", presetId);
+		
+		Page outputpage = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "generated"+ asset.getSourcePath() + "/" + preset.get("outputfile"));
+		if(outputpage.exists()){
+			getPageManager().putPage(outputpage); // this should create a new version
+		}
 		processConversions(inReq);//non-block
 	}
 	

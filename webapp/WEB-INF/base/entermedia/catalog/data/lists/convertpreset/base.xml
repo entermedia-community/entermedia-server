@@ -12,6 +12,9 @@
     <preset id="largedocument" guid="imagepreview" outputfile="image1024x768.jpg"  fileexportformat="${filename}.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="04">Document Preview</preset>
     <preset id="cropdocument" guid="imagecrop"  outputfile="image110x62cropped.jpg" fileexportformat="${filename}110x62cropped.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="05" >Document Crop</preset>
 
+    <preset id="cropinput" guid="cropinput"  outputfile="image1280x1024.jpg" fileexportformat="cropinput.jpg" type="imagemagick" extension="jpg" inputtype="jpg" onimport="true" ordering="05" >Cropping  Crop</preset>
+
+
     <preset id="mp3audio" guid="mp3audio" outputfile="audio.mp3"  fileexportformat="${filename}.mp3" type="audio" extension="mp3"  inputtype="audio" onimport="true" ordering="06">Mp3 Audio</preset>
 
 <!--gui= ffmpeg480p or ffmpegpreviewmp4 -->

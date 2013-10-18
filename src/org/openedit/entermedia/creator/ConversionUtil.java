@@ -48,8 +48,8 @@ public class ConversionUtil {
 	
 	public Dimension getConvertPresetDimension(String inCatalogId, String inPresetId) throws Exception {
 		Dimension dimension = new Dimension();
-		double width = 1.0d;
-		double height = 1.0d;
+		double width = 0d;
+		double height = 0d;
 		HitTracker hits = getParameterData(inCatalogId,inPresetId);
 		Iterator<?> itr = hits.iterator();
 		while (itr.hasNext()){
@@ -81,9 +81,11 @@ public class ConversionUtil {
 	public String getConvertPresetAspectRatio(Dimension inDimension){
 		double height = inDimension.getHeight();
 		double width = inDimension.getWidth();
-		DecimalFormat format = new DecimalFormat(DECIMAL_FORMAT);
-		String ratio = format.format(width / height) + ":1";
-		return ratio;
+		if (height > 0 && width > 0){
+			DecimalFormat format = new DecimalFormat(DECIMAL_FORMAT);
+			return format.format(width / height) + ":1";
+		}
+		return null;
 	}
 	
 	public String getConvertPresetParameter(String inCatalogId, String inPresetId, String inParameter) throws Exception{

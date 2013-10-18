@@ -379,9 +379,24 @@ public class imagemagickCreator extends BaseImageCreator
 			
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
-			cropString.append(inStructions.get("cropwidth"));
+			String cropwidth = inStructions.get("cropwidth");
+			if(!cropwidth){
+				cropwidth = inStructions.getMaxScaledSize().width;
+			}
+			cropString.append(cropwidth);
+			
+			
+			
+			
+			
 			cropString.append("x");
-			cropString.append(inStructions.get("cropheight"));
+			String cropheight = inStructions.get("cropheight");
+			
+			if(!cropheight){
+				cropheight = inStructions.getMaxScaledSize().height;
+			}
+			
+			cropString.append(cropheight);
 			
 			String x1 = inStructions.get("x1");
 			String y1 = inStructions.get("y1");

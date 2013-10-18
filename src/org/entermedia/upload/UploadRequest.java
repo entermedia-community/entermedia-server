@@ -159,7 +159,7 @@ public class UploadRequest implements ProgressListener
 		if (path == null )
 		{
 			long utime = System.currentTimeMillis();
-			path = "/WEB-INF/temp/uploading/" + inReq.getUserName() + "/tmp" + utime + "/" + inItem.getName();
+			path = "/WEB-INF/temp/uploading/" + inReq.getUserName() + "/tmp" + utime + "_" + inItem.getName();
 			//throw new OpenEditException("No path passed in with the upload");
 		}
 		if( home != null && home.length() > 0 && path.startsWith(home))

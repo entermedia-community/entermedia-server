@@ -33,7 +33,6 @@ import org.openedit.entermedia.scanner.PresetCreator;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.xmp.XmpWriter;
 import org.openedit.event.WebEventListener;
-import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
@@ -111,9 +110,7 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		else
 		{
-			getAssetEditor(inReq).makeFolderAsset(asset, inReq.getUser());
-			getAttachmentManager().syncAttachments(inReq, getMediaArchive(inReq), asset, true);
-			return true;
+			return getAssetEditor(inReq).makeFolderAsset(asset, inReq.getUser());
 		}
 	}
 
@@ -728,48 +725,6 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putPageValue("asset", asset);
 	}
 	
-	
-	public void replacePrimaryAsset(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
-		Asset asset = getAsset(inReq);
-		List<Page> temppages = getUploadedPages(inReq);
-		
-		if( temppages.isEmpty() )
-		{
-			throw new OpenEditException("No uploads found"); 
-		}
-		//move the old file into the .versions folder?
-		
-		if(!asset.isFolder())
-		{
-			makeFolderAsset(inReq);
-		}
-		
-		String destination = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + asset.getSourcePath();
-		//copy the temppages in to the originals folder, but first check if this is a folder based asset
-		Page dest = getPageManager().getPage(destination);
-			
-		Page page = (Page) temppages.iterator().next();
-		if(!page.exists()){
-			log.info("Could not attach file temp file doesn't exist: " + page.getPath());
-		}
-		dest.setProperty("makeversion","true");
-		getPageManager().movePage(page, dest);
-		asset = archive.getAssetBySourcePath(asset.getSourcePath());
-		asset.setPrimaryFile(page.getName());
-		Page media = archive.getOriginalDocument(asset);
-		updateMetadata(archive, asset, media);
-		archive.saveAsset(asset, null);
-
-		inReq.setRequestParameter("assetids",new String[]{asset.getId()});
-		originalModified(inReq);
-		
-		getAttachmentManager().processAttachments(archive, asset, true);//don't reprocess everything else
-		inReq.putPageValue("asset", asset);
-	}
-	
 	public void createAssetFromUploads(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1182,14 +1137,16 @@ public class AssetEditModule extends BaseMediaModule
 		
 	}
 	
+	
 	public void selectPrimaryAsset(WebPageRequest inReq)
 	{
 		String primaryname = inReq.getRequestParameter("filename");
 		String imagefilename = inReq.getRequestParameter("imagefilename");
+		String ext = PathUtilities.extractPageType(primaryname);
+
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Asset target = getAsset(inReq);
-		String ext = PathUtilities.extractPageType(primaryname);
 		
 		if (target != null)
 		{
@@ -1199,7 +1156,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			if(primaryname != null)
 			{
-				target.setPrimaryFile(PathUtilities.extractFileName(primaryname));
+				target.setProperty("primaryfile", PathUtilities.extractFileName(primaryname));
 			}
 			if(imagefilename != null)
 			{
@@ -1209,32 +1166,71 @@ public class AssetEditModule extends BaseMediaModule
 			
 			// We're going to allow the metadata reader to replace this asset's properties
 			// but we want to keep old values the reader is not going to replace
-			updateMetadata(archive, target, itemFile);
+			PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
+			HashMap<String, String> externaldetails = new HashMap<String, String>();
+			for(Iterator i = details.iterator(); i.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) i.next();
+				if(detail.getExternalId() != null)
+				{
+					externaldetails.put(detail.getId(), target.get(detail.getId()));
+					target.setProperty(detail.getId(), null);
+				}
+			}
+			
+			getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, itemFile.getContentItem(), target);
+			
+			for(String detail: externaldetails.keySet())
+			{
+				if(target.get(detail) == null)
+				{
+					target.setProperty(detail, externaldetails.get(detail));
+				}
+			}
 			archive.saveAsset(target, inReq.getUser());
-		}
-	}
-	protected void updateMetadata(MediaArchive archive, Asset target, Page itemFile)
-	{
-		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
-		HashMap<String, String> externaldetails = new HashMap<String, String>();
-		for(Iterator i = details.iterator(); i.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) i.next();
-			if(detail.getExternalId() != null)
+			
+			//TODO: run queueconversions.grooovy
+			
+			//generate mediums for videos if necessary
+			/*
+			String rendertype = archive.getMediaRenderType(target.get("fileformat"));
+			if( "video".equals(rendertype) )
 			{
-				externaldetails.put(detail.getId(), target.get(detail.getId()));
-				target.setProperty(detail.getId(), null);
+				MediaCreator creator = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+				Page thumb = getPageManager().getPage( "/" + archive.getCatalogId() + "/downloads/preview/medium/medium.jpg");
+				WebPageRequest req = inReq.copy(thumb);
+				String length = target.get("length");
+				log.info("video length: " + length);
+				if(length == null)
+				{
+					return;
+				}
+				int duration = Integer.parseInt(length);
+				if(duration == 0)
+				{
+					return;
+				}
+				int frames = 10;
+				if( duration < 10 )
+				{
+					frames = duration;
+				}
+				int interval = (int) Math.round((double)duration / (double)frames);
+				log.info("interval " + interval);
+				for(int current = 0; current < frames; current ++)
+				{
+					ConvertInstructions inStructions = creator.createInstructions(req, archive, "jpg", target.getSourcePath());
+					inStructions.addProperty("timeoffset", String.valueOf(current*interval));
+					inStructions.addProperty("pathpostfix", "mediums/" + current);
+					creator.populateOutputPath(archive, inStructions);
+					Page output = getPageManager().getPage(inStructions.getOutputPath());
+					if( !output.exists() || output.getContentItem().getLength() == 0 )
+					{
+						output = creator.createOutput(archive,inStructions);
+					}
+				}
 			}
-		}
-		
-		getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, itemFile.getContentItem(), target);
-		
-		for(String detail: externaldetails.keySet())
-		{
-			if(target.get(detail) == null)
-			{
-				target.setProperty(detail, externaldetails.get(detail));
-			}
+			*/
 		}
 	}
 

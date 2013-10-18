@@ -5,28 +5,20 @@
 #set($width = $mathtool.toInt($width))
 #set($height = $mathtool.toInt($height))
 
-<img src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="${asset}" />
-
 <div id="submit-crop"></div>
-<form id="coords"
-    class="coords " targetdiv="submit-crop"
-    action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
-    <div class="inline-labels">
-    <!-- 
-    <label>X1 <input type="text" size="4" id="x1" name="x1.value" /></label>
-    <label>Y1 <input type="text" size="4" id="y1" name="y1.value" /></label>
-    <label>X2 <input type="text" size="4" id="x2" name="x2.value" /></label>
-    <label>Y2 <input type="text" size="4" id="y2" name="y2.value" /></label>
-    <label>W <input type="text" size="4" id="w" name="prefwidth.value" /></label>
-    <label>H <input type="text" size="4" id="h" name="prefheight.value" /></label>
-     -->
+
+<div class="inline-labels">
+	<label>Crop Box Dimension:</label>
+	<label id="dimension"></label>
+</div>
+
+<form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
     <input type="hidden" size="4" id="x1" name="x1.value" />
     <input type="hidden" size="4" id="y1" name="y1.value" />
     <input type="hidden" size="4" id="x2" name="x2.value" />
     <input type="hidden" size="4" id="y2" name="y2.value" />
     <input type="hidden" size="4" id="w" name="cropwidth.value" />
     <input type="hidden" size="4" id="h" name="cropheight.value" />
-    </div>
     <input type="hidden" name="field" value="x1"/>
     <input type="hidden" name="field" value="y1"/>
     <input type="hidden" name="field" value="cropwidth"/>
@@ -34,22 +26,27 @@
     <input type="hidden" name="field" value="crop"/>
     <input type="hidden" name="field" value="force"/>
     <input type="hidden" name="field" value="assetid"/>
-    
     <input type="hidden" name="preset" value="${presetid}"/>
     <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
-    
     <input type="hidden" name="crop.value" value="true"/>
     <input type="hidden" name="force.value" value="true"/>
     <input type="hidden" name="assetid.value" value="${asset.id}"/>
-    <input type="submit"/>
+    
+    <span style="margin: 0 10px 20px;">
+	    <label for="submitbutton">Crop the image below</label>
+	    <input class="thickbox btn" type="submit" name="submitbutton" value="Submit" style="margin: 5px;" />
+    </span>
   </form>
 
+
 <div id="preview-pane">
-  <div class="preview-container" >
+  <div class="preview-container" style="overflow: scroll;" >
     <img src="$home$apphome/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" class="jcrop-preview" alt="Preview" />
   </div>
 </div>
 
+
+<img src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="${asset}" />
 
 <script type="text/javascript">
   jQuery(function(){
@@ -72,6 +69,7 @@
       onSelect: updatePreview,
       onRelease: clearCoords,
       minSize: [xsize,ysize],
+     /*setSelect: [0,0,xsize,ysize],*/
       aspectRatio: xsize / ysize
     },function(){
       // Use the API to get the real image size
@@ -105,14 +103,15 @@
       showCoords(c);
     };
     
+    /*
     $('#coords').on('change','input',function(e){
-        var x1 = $('#x1').val(),
-            x2 = $('#x2').val(),
-            y1 = $('#y1').val(),
-            y2 = $('#y2').val();
+        var x1 = $('#coordsx1').val(),
+            x2 = $('#coordsx2').val(),
+            y1 = $('#coordsy1').val(),
+            y2 = $('#coordsy2').val();
         jcrop_api.setSelect([x1,y1,x2,y2]);
       });
-
+    */
   });
   
   
@@ -125,6 +124,7 @@
 	  	y2 = Math.round(c.y2),
 	  	w = Math.round(c.w),
 	  	h = Math.round(c.h);
+	  var dimension = w + " X " + h;
 	  
     $('#x1').val(x1);
     $('#y1').val(y1);
@@ -132,6 +132,8 @@
     $('#y2').val(y2);
     $('#w').val(w);
     $('#h').val(h);
+    
+    $('#dimension').text(dimension);
   };
 
   function clearCoords()
@@ -153,6 +155,7 @@
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
+  overflow: scroll;
 
   -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
@@ -161,7 +164,21 @@
 #preview-pane .preview-container {
   width: ${width}px;
   height: ${height}px;
-  overflow: hidden;
+  overflow: scroll;
   display:none;
+}
+.inline-labels {
+	margin: 0 10px 20px;
+#if($width < 1 && $height < 1)
+	display:inline;
+#else
+	display:none;
+#end
+}
+.inline-labels label {
+	font-weight: bold;
+	padding-bottom: 8px;
+	width: 100%;
+	font-size: 14px;
 }
 </style>
