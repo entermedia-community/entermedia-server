@@ -15,7 +15,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.users.User;
 
-public class XmlCategorySearcher extends BaseSearcher
+public class XmlCategorySearcher extends BaseSearcher implements CategorySearcher
 {
 	protected CategoryArchive fieldCategoryArchive;
 	
@@ -28,7 +28,7 @@ public class XmlCategorySearcher extends BaseSearcher
 	{
 		fieldCategoryArchive = inCategoryArchive;
 	}
-
+	
 	@Override
 	public void reIndexAll() throws OpenEditException
 	{
@@ -107,4 +107,15 @@ public class XmlCategorySearcher extends BaseSearcher
 		}
 	}
 
+	@Override
+	public Category getRootCategory()
+	{
+		return getCategoryArchive().getRootCategory();
+	}
+	@Override
+	public void setCatalogId(String inCatalogId)
+	{
+		getCategoryArchive().setCatalogId(inCatalogId);
+		super.setCatalogId(inCatalogId);
+	}
 }

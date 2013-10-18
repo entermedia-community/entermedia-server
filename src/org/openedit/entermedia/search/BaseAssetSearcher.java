@@ -18,6 +18,7 @@ import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.xmldb.CategorySearcher;
 import org.openedit.profile.UserProfile;
 
 import com.openedit.ModuleManager;
@@ -43,7 +44,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	protected PageManager fieldPageManager;
 	private Boolean fieldUsesSearchSecurity;
 	protected ModuleManager fieldModuleManager;
-	protected CategoryArchive fieldCategoryArchive;
+	protected CategorySearcher fieldCategorySearcher;
 	protected MediaArchive fieldMediaArchive;
 	
 	public BaseAssetSearcher()
@@ -203,7 +204,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		Category root = null;
 		try
 		{
-			root = getCategoryArchive().getRootCategory();
+			root = getCategorySearcher().getRootCategory();
 		}
 		catch (OpenEditException e)
 		{
@@ -279,18 +280,18 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		fieldModuleManager = inModuleManager;
 	}
 
-	public CategoryArchive getCategoryArchive()
+	public CategorySearcher getCategorySearcher()
 	{
-		if (fieldCategoryArchive == null)
+		if (fieldCategorySearcher == null)
 		{
-			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(),"categoryArchive");
+			fieldCategorySearcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
 		}
-		return fieldCategoryArchive;
+		return fieldCategorySearcher;
 	}
 
-	public void setCategoryArchive(CategoryArchive inCategoryArchive)
+	public void setCategorySearcher(CategorySearcher inCategorySearcher)
 	{
-		fieldCategoryArchive = inCategoryArchive;
+		fieldCategorySearcher = inCategorySearcher;
 	}
 
 	public AssetArchive getAssetArchive()

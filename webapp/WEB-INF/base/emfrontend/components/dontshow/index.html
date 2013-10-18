@@ -22,9 +22,16 @@
 
 #foreach($type in $facets )
 <h4>$type</h4>
-	     <ul id="filters-sidebar">
+	     <ul class="filters-sidebar">
 	     
 	#foreach($entry in $type.children)
+			
+			#if( $velocityCount == 10 )
+			</ul>
+			<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="Show More" data-hidelabel="Show Less"><span>Show More</span></a>
+			<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
+			
+			#end
 			
 	<li>
 	<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry" href="#"><span> $entry ($entry.count)</span></a>

@@ -793,6 +793,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="xmlUtil">
 			<ref bean="xmlUtil" />
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="searchFilterArchive" class="org.openedit.entermedia.search.SearchFilterArchive"

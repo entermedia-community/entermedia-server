@@ -45,11 +45,31 @@ uiload = function() {
 		
 	});
 	
-	
 	jQuery(".validate-inputs").livequery(
 			function() 
 			{
 					jQuery(this).closest("form").validate();
+			}
+		);
+	
+	
+	jQuery("a.toggle-visible").livequery('click',
+			function(e) 
+			{
+				e.preventDefault();
+				var div = jQuery(this).data("targetdiv");
+				var target = jQuery("#" + div );
+				if(target.is(":hidden"))
+				{
+					var hidelable = jQuery(this).data("hidelabel");
+					jQuery(this).find("span").text(hidelable);
+          			target.show();
+          		} else {
+
+					var showlabel = jQuery(this).data("showlabel");
+					jQuery(this).find("span").text(showlabel);
+          			target.hide();
+          		}
 			}
 		);
 	

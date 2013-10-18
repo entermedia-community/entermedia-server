@@ -791,18 +791,22 @@ public class LuceneHitTracker extends HitTracker
 						FilterNode childnode = new FilterNode();
 						String childlabel = cat.label.toString();
 						String[] splits = childlabel.split("/");
-						String group = splits[0];
 						String id = splits[1];
 						childnode.setId(id);
-						Data data = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getListId(), id);
-						if (data != null)
+						String label = null;
+						if( parent.isList() || "category".equals( parent.getId() ) )
 						{
-							childnode.setName(data.getName());
+							Data data = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getListId(), id);
+							if (data != null)
+							{
+								label = data.getName();
+							}
 						}
-						else
+						if( label == null)
 						{
-							childnode.setName(id);
+							label = id;
 						}
+						childnode.setName(label);
 						childnode.setProperty("path", childlabel);
 						childnode.setProperty("count", String.valueOf( Math.round( cat.value)) ) ;
 						//log.info("Found " + root.label + " " + id);

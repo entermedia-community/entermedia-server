@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.entermedia.cache.CacheManager;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.repository.filesystem.StringItem;
@@ -37,10 +38,26 @@ import com.openedit.util.XmlUtil;
 public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchive
 {
 	private static final Log log = LogFactory.getLog(XmlCategoryArchive.class);
-	protected Map fieldCatalogMap;
 	protected Category fieldRootCatalog;
 	protected PageManager fieldPageManager;
 	protected XmlUtil fieldXmlUtil;
+	protected CacheManager fieldCacheManager;
+	protected Category NULL = new Category();
+	
+	public XmlCategoryArchive()
+	{
+		log.info("created");
+	}
+	
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
 
 	public List listAllCategories()
 	{
@@ -64,28 +81,83 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 		}
 	}
 
-	public Map getCatalogMap()
-	{
-		if (fieldCatalogMap == null)
-		{
-			fieldCatalogMap = new HashMap();
-		}
-		return fieldCatalogMap;
-	}
 
 	public Category getCategory(String inCategory)
 	{
 		try
 		{
-			getRootCategory();
-			return (Category) getCatalogMap().get(inCategory);
+			Category cat = (Category) getCacheManager().get(cacheId(),inCategory);
+			if( cat == null)
+			{
+				//search twice. Once follow the id path
+				cat = findChildByPath(getRootCategory(), inCategory );
+				//second time search everyone
+				if( cat == null)
+				{
+					cat = findChild(getRootCategory(),inCategory);
+				}
+				if( cat == null)
+				{
+					cat = NULL;
+				}
+				getCacheManager().put(cacheId(), inCategory, cat);
+			}
+			if( cat == NULL)
+			{
+				return null;
+			}
+			return cat;
 		}
 		catch (Exception ex)
 		{
 			throw new OpenEditRuntimeException(ex);
 		}
 	}
+	protected Category findChildByPath(Category inRoot, String inId)
+	{
+		String test = inRoot.getId();
+		if (test.equals(inId))
+		{
+			return inRoot;
+		}
+		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category)iterator.next();
+			if( child.getId().startsWith(inId))
+			{
+				child = findChild(child, inId);
+				if (child != null)
+				{
+					return child;
+				}
+			}
+		}
+		return null;
+	}
+	public Category findChild(Category inRoot, String inId)
+	{
+		String test = inRoot.getId();
+		if (test.equals(inId))
+		{
+			return inRoot;
+		}
+		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category)iterator.next();
+			child = findChild(child, inId);
+			if (child != null)
+			{
+				return child;
+			}
+		}
+		return null;
+	}
 
+
+	protected String cacheId()
+	{
+		return getCatalogId() + "categoryarchive";
+	}
 	public Category getCategoryByName(String inCategoryName)
 	{
 		List catalogs = listAllCategories();
@@ -112,7 +184,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	public void deleteCategory(Category inCategory)
 	{
-		getCatalogMap().remove(inCategory.getId());
+		getCacheManager().remove(cacheId(),inCategory.getId());
 		if (getRootCategory().getId().equals(inCategory.getId()))
 		{
 			setRootCategory(new Category("index", "Index"));
@@ -141,7 +213,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	public void clearCategories()
 	{
-		fieldCatalogMap = null;
+		getCacheManager().clear(cacheId());
 		fieldRootCatalog = null;
 	}
 
@@ -257,7 +329,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	public synchronized void reloadCategories()
 	{
-		getCatalogMap().clear();
+		getCacheManager().clear(cacheId());
 
 		try
 		{
@@ -409,7 +481,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	public Category cacheCategory(Category inCat)
 	{
-		getCatalogMap().put(inCat.getId(), inCat);
+		getCacheManager().put(cacheId(),inCat.getId(), inCat);
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();

@@ -530,9 +530,13 @@ public class LuceneIndexer
 					}
 					for (int i = 0; i < values.length; i++)
 					{
+						if( detail.getId().equals("category") && values[i].equals("index"))
+						{
+							continue;
+						}
 						String[] vals = new String[2];
-						vals[0] = detail.getId();
-						vals[1] = values[i];
+						vals[0] = detail.getId().replace('/', '_');
+						vals[1] = values[i].replace('/', '_');
 						categorypaths.add(new CategoryPath(vals));
 					}
 						//log.info("Adding: " + vals);

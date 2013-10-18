@@ -5459,16 +5459,29 @@ p.resultsnumber {
 
 /* FILTERS SIDEBAR STYLES */
 
-#filters-sidebar {
+ul.filters-sidebar {
     margin: 0px 0 10px 4px;
     padding: 0 5px;
 }
-#filters-sidebar li {
+
+a.morelink
+{
+	margin-top: -8px;
+	display:block;
+	padding: 0 0 6px 15px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+ul.morefilters {
+    display:none;
+}
+ul.filters-sidebar li {
     list-style-type:none; 
     padding: 0px 0 4px 4px;
     font-size: 1em;
 }
-#filters-sidebar li a:hover
+ul.filters-sidebar li a:hover
 {
 	text-decoration: underline;
 }

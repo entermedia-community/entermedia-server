@@ -32,6 +32,7 @@ import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.search.AssetSecurityArchive;
 import org.openedit.entermedia.search.SearchFilterArchive;
+import org.openedit.entermedia.xmldb.CategorySearcher;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
@@ -509,8 +510,8 @@ public class MediaArchive
 	{
 		if (fieldCategoryArchive == null)
 		{
-			fieldCategoryArchive = (CategoryArchive) getModuleManager().getBean(getCatalogId(), "categoryArchive");
-			fieldCategoryArchive.setCatalogId(getCatalogId());
+			CategorySearcher searcher = (CategorySearcher)getSearcher("category");
+			fieldCategoryArchive = searcher.getCategoryArchive();
 		}
 		return fieldCategoryArchive;
 	}
