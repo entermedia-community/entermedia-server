@@ -41,13 +41,12 @@ jQuery(document).ready(function()
 			var toplocation =  parseInt( treeholder.scrollTop() );
 			var leftlocation =  parseInt( treeholder.scrollLeft() );
 		
-			//$("#right-col").load();
+			//$("#right-col").load(); 'clearfilters':true,
 				jQuery.get(prefix + nodeid + ".html",
 						{
 							'oemaxlevel':3,
 							'tree-name':tree.data("treename"),
-							'nodeID':nodeid,
-							'clearfilters':true,
+							'nodeID':nodeid,							
 							'treetoplocation':toplocation,
 							'treeleftlocation':leftlocation,
 							'depth': depth

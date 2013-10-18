@@ -5474,12 +5474,13 @@ p.resultsnumber {
 }
 
 #filters-sidebar-selected {
-    margin: 6px 0 0 0;
+    margin: 4px 0 4px 0;
     padding: 0;
 }
 #filters-sidebar-selected li {
     list-style-type:none; 
     font-size: 1em;
+    font-weight: bold;
 }
 #filters-sidebar-selected li a
 {
@@ -6335,8 +6336,9 @@ div#emselectable {
 	overflow:auto;
 }
 
-div#filterscontent {
-	padding-right:15px;
+div#filterscontent
+{
+	padding: 4px 10px 10px 10px;
 }
 
 div#filterscontent form {
@@ -6346,4 +6348,5 @@ div#filterscontent form {
 
 div#filterscontent h4 {
 	margin: 0 0 2px 0;
+	font-size: .9em;
 }
