@@ -1,6 +1,5 @@
 <page>
 	<path-action name="AssetEditModule.handleUploads"/>
-		<path-action name="ValidationModule.validateFields"/>
 	
 	<property name="searchtype">${module}</property>
 	<path-action name="DataEditModule.saveData" >
