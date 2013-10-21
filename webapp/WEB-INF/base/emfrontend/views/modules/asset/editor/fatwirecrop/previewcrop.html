@@ -40,7 +40,7 @@
 
 
 <div id="preview-pane">
-  <div class="preview-container" style="overflow: scroll;" >
+  <div class="preview-container" >
     <img src="$home$apphome/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" class="jcrop-preview" alt="Preview" />
   </div>
 </div>
@@ -69,6 +69,8 @@
       onSelect: updatePreview,
       onRelease: clearCoords,
       minSize: [xsize,ysize],
+      boxWidth: 600, 
+      boxHeight: 600,
      /*setSelect: [0,0,xsize,ysize],*/
       aspectRatio: xsize / ysize
     },function(){
@@ -164,7 +166,7 @@
 #preview-pane .preview-container {
   width: ${width}px;
   height: ${height}px;
-  overflow: scroll;
+  overflow: none;
   display:none;
 }
 .inline-labels {
