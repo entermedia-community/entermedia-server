@@ -272,6 +272,8 @@ class ConvertRunner implements Runnable
 			
 			inStructions.setProperty("useinput", "image1280x1024");//hard-coded a specific image size (large)
 			inStructions.setProperty("gravity", "default");//hard-coded a specific image size (large)
+			inStructions.setProperty("croplast", "true");//hard-coded a specific image size (large)
+			
 			if(Boolean.parseBoolean(inTask.get("force"))){
 				inStructions.setForce(true);
 			}
