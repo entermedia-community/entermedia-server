@@ -1,5 +1,4 @@
 <page>
-	<path-action name="ValidationModule.validateFields"/>
 	<path-action name="DataEditModule.saveData"/>
 	<property name="searchtype">asset</property>
 	<permission name="view">

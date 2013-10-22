@@ -13,12 +13,12 @@
 </div>
 
 <form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
-    <input type="hidden" size="4" id="x1" name="x1.value" />
-    <input type="hidden" size="4" id="y1" name="y1.value" />
-    <input type="hidden" size="4" id="x2" name="x2.value" />
-    <input type="hidden" size="4" id="y2" name="y2.value" />
-    <input type="hidden" size="4" id="w" name="cropwidth.value" />
-    <input type="hidden" size="4" id="h" name="cropheight.value" />
+    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
+    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
+    <input class="clearable" type="hidden" size="4" id="x2" name="x2.value" />
+    <input class="clearable" type="hidden" size="4" id="y2" name="y2.value" />
+    <input class="clearable" type="hidden" size="4" id="w" name="cropwidth.value" />
+    <input class="clearable" type="hidden" size="4" id="h" name="cropheight.value" />
     <input type="hidden" name="field" value="x1"/>
     <input type="hidden" name="field" value="y1"/>
     <input type="hidden" name="field" value="cropwidth"/>
@@ -69,8 +69,8 @@
       onSelect: updatePreview,
       onRelease: clearCoords,
       minSize: [xsize,ysize],
-      boxWidth: 600, 
-      boxHeight: 600,
+      boxWidth: 900, 
+      boxHeight: 700,
      /*setSelect: [0,0,xsize,ysize],*/
       aspectRatio: xsize / ysize
     },function(){
@@ -140,7 +140,7 @@
 
   function clearCoords()
   {
-    $('#coords input').val('');
+    $('#coords input .clearable').val('');
   };
 </script>
 <style type="text/css">

@@ -39,11 +39,6 @@ $context.putPageValue("searcher", $searcher)
 #if(!$editpath)
 	#set( $editpath = "${page.directory}/genericsave.html" )
 #end
-#if($errors)
-<span style="color:red;">Your entry is invalid.  Please check your values and try again.</span>
-#set($edit = "true")
-#end
-
 #if($data.getId().startsWith("multiedit"))
 	#set($multiedit = true)
 #end

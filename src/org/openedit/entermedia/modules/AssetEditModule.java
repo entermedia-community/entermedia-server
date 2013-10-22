@@ -462,6 +462,9 @@ public class AssetEditModule extends BaseMediaModule
 		
 		Asset asset;
 		
+		
+		HitTracker tracker = editor.getMediaArchive().getAssetSearcher().loadHits(inContext);
+		
 		for (int i = 0; i < assetIds.length; i++) {
 			if (assetIds[i].startsWith("multiedit:"))
 			{
@@ -471,6 +474,10 @@ public class AssetEditModule extends BaseMediaModule
 					for (Iterator iterator = assets.iterator(); iterator
 							.hasNext();) {
 						asset = (Asset) iterator.next();
+						if( tracker != null)
+						{
+							tracker.removeSelection(asset.getId());
+						}
 						Page original = editor.getMediaArchive().getOriginalDocument(asset);
 						editor.deleteAsset(asset);
 						String ok = inContext.getRequestParameter("deleteoriginal");
@@ -490,6 +497,10 @@ public class AssetEditModule extends BaseMediaModule
 				asset = editor.getAsset(assetIds[i]);
 				if (asset != null) 
 				{
+					if( tracker != null)
+					{
+						tracker.removeSelection(asset.getId());
+					}
 					Page original = editor.getMediaArchive().getOriginalDocument(asset);
 					editor.deleteAsset(asset);
 					String ok = inContext.getRequestParameter("deleteoriginal");

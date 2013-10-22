@@ -9,6 +9,7 @@
 #else
 	#set( $multiedit = false)
 #end
+
 $context.putPageValue("multiedit",$multiedit)
 $context.putPageValue("caneditlists","false")
 
@@ -62,14 +63,14 @@ $context.putPageValue("caneditlists","false")
 		#if( !$val) #set( $val = "") #end		
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
-			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+			<td   class="emdatafield" >
 				#if( $detail.hidelabel == true )
 				#else
 				    #if ($detail.required == true) * #end	$!detail.getText($context)
 				#end
 			</td>
 			
-			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) required #end">
+			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) requiredfield #end">
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
 			#else  ##NOT EDITABLE
@@ -86,7 +87,7 @@ $context.putPageValue("caneditlists","false")
 	#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
-			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+			<td   class="emdatafield" >
 				#if( $detail.hidelabel == true )
 				#else
 				    #if ($detail.required == true) * #end	$!detail.getText($context)
@@ -102,7 +103,6 @@ $context.putPageValue("caneditlists","false")
 		</tr>
 	#end
 	
-	
 	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
 		#if($usedhtml)
 			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
@@ -111,21 +111,20 @@ $context.putPageValue("caneditlists","false")
 		#end
 	#end
 	
-		#if($detail.get('dependson'))
-	
+	#if($detail.get('dependson'))
    <script type="text/javascript">			
+			##TODO: Put this in validateandedit.js
 			jQuery(document).ready(function(){
 				DetailEditor.find_field_from_row("$!detail.get('dependson')").bind_and_run('change',function(){
 					DetailEditor.toggle_dependency_row("$!detail.getId()",
-																						 jQuery(this),
-																						 "$!detail.get('dependsonvalue')",
-																						 "$!detail.get('dependsondefault')",
-																						 "$!detail.get('dependsonvaluedelimiter')")
+					 jQuery(this),
+					 "$!detail.get('dependsonvalue')",
+					 "$!detail.get('dependsondefault')",
+					 "$!detail.get('dependsonvaluedelimiter')")
 				});
 			});									 
 		</script>
 	#end
-	
 	
 #end
 </table>

@@ -3,7 +3,6 @@
 <path-action name="User.updateUserProperties" />
 	<path-action name="User.loadUserProperties" /> 
   
-  <path-action name="ValidationModule.validateFields">
     <catalogid>${membershipid}</catalogid>
     
   </path-action>

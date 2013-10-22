@@ -293,7 +293,16 @@ onloadselectors = function()
 	jQuery("form.ajaxform").livequery('submit',	
 		function() 
 		{
-			var targetdiv = jQuery(this).attr("targetdiv");
+			var form = jQuery(this);
+			form.validate();    
+    		var isvalidate = form.valid();
+			if(!isvalidate)
+        	{
+            	e.preventDefault();
+            	//show message
+            	return;
+        	}
+			var targetdiv = form.attr("targetdiv");
 			targetdiv = targetdiv.replace(/\//g, "\\/");
 			// allows for posting to a div in the parent from a fancybox.
 			if(targetdiv.indexOf("parent.") == 0)
@@ -302,7 +311,6 @@ onloadselectors = function()
 				parent.jQuery(this).ajaxSubmit({target: "#" + targetdiv});
 				// closes the fancybox after submitting
 				parent.jQuery.fancybox.close();
-				//parent.jQuery.fn.fancybox.close();
 			}
 			else
 			{

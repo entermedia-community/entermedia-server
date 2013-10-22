@@ -442,9 +442,9 @@ ul.emheaderbuttons li.navselected a {
     margin: 0;
     padding: 0;
 }
-#emresultscontent a {
-    font-size: 11px;
-    font-weight: bold;
+#emresultscontent a:hover 
+{
+	    text-decoration: underline;
 }
 
 .playerbox {
@@ -659,7 +659,7 @@ input[type=submit], input[type=button], button, a.btn {
     box-shadow: 1px 1px 0px #fff;
 }
 
-.error {
+label.error {
     font-weight: bold;
     line-height: 16px;
     display: block;
