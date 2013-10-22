@@ -338,10 +338,17 @@ public class imagemagickCreator extends BaseImageCreator
 
 		if(inStructions.isCrop())
 		{
+			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
 			//resize then cut off edges so end up with a square image
-			
-			
-			
+			if(!croplast){
+			com.add("-resize");
+			StringBuffer resizestring = new StringBuffer();
+			resizestring.append(inStructions.getMaxScaledSize().width);
+			resizestring.append("x");
+			resizestring.append(inStructions.getMaxScaledSize().height);
+			resizestring.append("^");
+			com.add(resizestring.toString());
+			}
 			   		
 			//now let's crop
 			com.add("+repage");
@@ -413,13 +420,17 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			com.add(cropString.toString());
 			
-			com.add("-resize");
-			StringBuffer resizestring = new StringBuffer();
-			resizestring.append(inStructions.getMaxScaledSize().width);
-			resizestring.append("x");
-			resizestring.append(inStructions.getMaxScaledSize().height);
-			resizestring.append("^");
-			com.add(resizestring.toString());
+			if(croplast){
+				com.add("-resize");
+				StringBuffer resizestring = new StringBuffer();
+				resizestring.append(inStructions.getMaxScaledSize().width);
+				resizestring.append("x");
+				resizestring.append(inStructions.getMaxScaledSize().height);
+				resizestring.append("^");
+				com.add(resizestring.toString());
+			}
+				
+			
 
 
 			
