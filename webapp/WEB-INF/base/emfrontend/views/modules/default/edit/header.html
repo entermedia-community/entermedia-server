@@ -57,7 +57,9 @@
 	   		 #set($val = "")
 	    #end
       	</div>
-    
+      	#if( $data && $data.getId().startsWith("multiedit:") && $hits )
+			<h3>Editing  $hits.getSelectionSize() records</h3>
+		#end	
 </div>
 
 <div class="editholder">
