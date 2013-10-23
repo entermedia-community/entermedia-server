@@ -45,6 +45,43 @@ uiload = function() {
 		
 	});
 	
+	jQuery("input.select2editable").livequery( function() 
+	{
+	 	var input = jQuery(this);
+		var arr = new Array(); //[{id: 0, text: 'story'},{id: 1, text: 'bug'},{id: 2, text: 'task'}]
+		
+		var ulid = input.data("optionsul");
+		
+		var options = jQuery("#" + ulid + " li");
+		
+		if( !options.length )
+		{
+			return;
+		}		
+		
+		options.each(function() 
+		{
+			var id = $(this).data('value');
+			var text = $(this).text();
+			console.log(id + " " + text);
+		 	arr.push({id: id, text: text}); 
+		});
+
+		
+		//Be aware: calling select2 forces livequery to filter again
+	 	input.select2({
+				createSearchChoice: function(term, data) 
+				{ 
+					if ($(data).filter(function() { return this.text.localeCompare(term)===0; } ).length===0) 
+					{
+						return {id:term, text:term};
+					}
+				 }
+				 , multiple: false
+				 , data: arr
+		});
+	});	
+	
 	jQuery(".validate-inputs").livequery(
 			function() 
 			{
@@ -98,46 +135,41 @@ uiload = function() {
 		yearRange: '1900:2050'
 	}, jQuery.datepicker.regional[browserlanguage]));  //Move this to the layout?
 	
-	jQuery("input.datepicker").livequery(
-			function() 
-			{
-				var targetid = jQuery(this).data("targetid");
-				jQuery(this).datepicker( {
-					altField: "#"+ targetid,
-					altFormat: "mm/dd/yy", 
-					yearRange: '1900:2050'
-				}
-				);
+	jQuery("input.datepicker").livequery( function() 
+	{
+		var targetid = jQuery(this).data("targetid");
+		jQuery(this).datepicker( {
+			altField: "#"+ targetid,
+			altFormat: "mm/dd/yy", 
+			yearRange: '1900:2050'
+		});
 				
-				var current = jQuery("#" + targetid).val();
-				if(current != undefined)
-				{
-					//alert(current);
-					var date;
-					if( current.indexOf("-") > 0)
-					{
-						current = current.substring(2,10);
-						//2012-09-17 09:32:28 -0400
-						date = jQuery.datepicker.parseDate('yy-mm-dd', current);
-					}
-					else
-					{
-						date = jQuery.datepicker.parseDate('mm/dd/yy', current);
-					}
-					jQuery(this).datepicker("setDate", date );
-							
-				}
-				jQuery(this).blur(function()
-						{
-							var val = jQuery(this).val();
-							if( val == "")
-							{
-								jQuery("#" + targetid).val("");
-							}
-						}
-				);
+		var current = jQuery("#" + targetid).val();
+		if(current != undefined)
+		{
+			//alert(current);
+			var date;
+			if( current.indexOf("-") > 0)
+			{
+				current = current.substring(2,10);
+				//2012-09-17 09:32:28 -0400
+				date = jQuery.datepicker.parseDate('yy-mm-dd', current);
 			}
-		);
+			else
+			{
+				date = jQuery.datepicker.parseDate('mm/dd/yy', current);
+			}
+			jQuery(this).datepicker("setDate", date );					
+		}
+		jQuery(this).blur(function()
+		{
+			var val = jQuery(this).val();
+			if( val == "")
+			{
+				jQuery("#" + targetid).val("");
+			}
+		});
+	});
 	
 	//deprecated, use data-confirm
 	jQuery(".confirm").livequery('click',

@@ -29,7 +29,7 @@
 			#set ($viewtype = "default")
 		#end
 
-		#if(!$detail.isDate() && $detail.getId() != "category")
+		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
 				#if($detail.defaultoperation && $detail.defaultoperation != "")
 					<input name="operation" value="$detail.defaultoperation" type="hidden" />
 				#elseif($detail.isList() || $detail.isBoolean() || $viewtype == "multiselect")
