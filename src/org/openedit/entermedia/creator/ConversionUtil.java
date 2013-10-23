@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -16,6 +18,8 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 
 public class ConversionUtil {
+	
+	private static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
 	public static final String DECIMAL_FORMAT = "#.00";
 	public static final String NOTHING_FOUND = "Not Converted";
@@ -44,6 +48,48 @@ public class ConversionUtil {
 		SearchQuery sq = ppsearcher.createSearchQuery().append("parameterdata", pdata);
 		HitTracker hits = ppsearcher.search(sq);
 		return hits;
+	}
+	
+	public boolean canCrop(String inCatalogId, String inPresetId, String inAssetId) throws Exception{
+		log.debug("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
+		boolean canCrop = false;
+		Dimension cropDimension = getConvertPresetDimension(inCatalogId,inPresetId);
+		log.debug("Crop Dimension: "+cropDimension);
+		if (cropDimension!=null && cropDimension.getHeight()!=0 && cropDimension.getWidth()!=0){
+			Dimension inputDimension = getConvertPresetDimension(inCatalogId,"cropinput");//this needs to be in convertpreset table!
+			log.debug("Preset Input Dimension: "+inputDimension);
+			if (inputDimension!=null && inputDimension.getHeight()!=0 && inputDimension.getWidth()!=0){
+				Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
+				double assetwidth = asset.get("width") != null ? (double) Integer.parseInt(asset.get("width")) : 0d;
+				double assetheight = asset.get("height") != null ? (double) Integer.parseInt(asset.get("height")) : 0d;
+				log.debug("Asset dimension: "+assetwidth+", "+assetheight);
+				if (assetwidth != 0 && assetheight != 0){
+					//input w x h
+					double inputwidth = inputDimension.getWidth();
+					double inputheight = inputDimension.getWidth();
+					//crop w x h
+					double cropwidth = cropDimension.getWidth();
+					double cropheight = cropDimension.getWidth();
+					//calculate cropinput for particular asset; does best fit
+					double bestfitwidth = 0;
+					double bestfitheight = 0;
+					double factorwidth = assetwidth / inputwidth;
+					double factorheight = assetheight / inputheight;
+					if (factorwidth > factorheight){
+						bestfitwidth = assetwidth / factorwidth;
+						bestfitheight = assetheight / factorwidth;
+					} else {
+						bestfitwidth = assetwidth / factorheight;
+						bestfitheight = assetheight / factorheight;
+					}
+					log.debug("Best fit dimension: "+bestfitwidth+", "+bestfitheight);
+					//now have calculated cropinput dimension and crop dimension
+					canCrop = (cropwidth <= bestfitwidth && cropheight <= bestfitheight);
+				}
+			}
+		}
+		log.debug("Can image be cropped? "+canCrop);
+		return canCrop;
 	}
 	
 	public Dimension getConvertPresetDimension(String inCatalogId, String inPresetId) throws Exception {
@@ -123,20 +169,15 @@ public class ConversionUtil {
 			} return "Complete";
 
 		}
-		
-		
-		
 		return status;
 	}
 	
 	public boolean isConvertPresetReady(String inCatalogId, String inAssetId, String sourcepath, String inPresetId) throws Exception{
 		boolean isOk = false;
 		SearcherManager sm = getSearcherManager();
-
 		if(doesConvertedFileExist(inCatalogId, sourcepath, inPresetId)){
 			return true;
 		}
-
 		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
 		SearchQuery sq = ctsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId);
 		sq.addSortBy("id");
@@ -147,18 +188,14 @@ public class ConversionUtil {
 			String str = data.get("status");
 			isOk =  ("complete".equals(str));
 		}
-
 		return isOk;
-
 	}
 
 	public boolean doesConvertedFileExist(String inCatalogId,
 			String sourcepath, String inPresetId) {
-		
 		PageManager pm = (PageManager) getSearcherManager().getModuleManager().getBean("pageManager");
 		Data preset = getSearcherManager().getData(inCatalogId, "convertpreset", inPresetId);
 		String outputfile = preset.get("outputfile");
-		
 		Page outputpage = pm.getPage("/WEB-INF/data/" + inCatalogId + "/generated/" + sourcepath + "/" + outputfile);
 		return outputpage.exists();
 	}
@@ -211,11 +248,7 @@ public class ConversionUtil {
 		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
 		HitTracker all = cpsearcher.fieldSearch("display", "true");
 		return all;
-		
 	}
-	
-	
-	
 	
 	public HitTracker getFatwireConvertPresetList(String inCatalogId, String inAssetId) throws Exception {
 		SearcherManager sm = getSearcherManager();
@@ -238,23 +271,17 @@ public class ConversionUtil {
 	}
 
 	public boolean doesExist(String inCatalogId, String inAssetId, String assetSourcePath, String inPresetId){
-		boolean doesexist = false;
 		SearcherManager sm = getSearcherManager();
 		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
 		SearchQuery q = ctsearcher.createSearchQuery();
 		q.addExact("presetid", inPresetId);
 		q.addExact("assetid", inAssetId);
-		
 		HitTracker hits = ctsearcher.search(q);
 		if(hits.size() > 0){
 			return true;
 			
 		}
 		return doesConvertedFileExist(inCatalogId, assetSourcePath, inPresetId);
-		
-		
-		
-		
 	}
 	
 	

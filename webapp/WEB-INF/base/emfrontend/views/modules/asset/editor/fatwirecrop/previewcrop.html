@@ -1,3 +1,4 @@
+<div style="padding:20px;">
 #set($presetid = $context.findValue("presetid"))
 #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$presetid))
 #set($width = $dimension.getWidth())
@@ -46,7 +47,7 @@
 </div>
 
 
-<img src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="${asset}" />
+<img align="center" src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="${asset}" />
 
 <script type="text/javascript">
   jQuery(function(){
@@ -68,10 +69,10 @@
       onChange: updatePreview,
       onSelect: updatePreview,
       onRelease: clearCoords,
-      minSize: [xsize,ysize],
-      boxWidth: 900, 
-      boxHeight: 700,
-     /*setSelect: [0,0,xsize,ysize],*/
+    //  minSize: [xsize,ysize],
+      boxWidth: 1080,
+      boxHeight: 1000,
+     setSelect: [0,0,xsize,ysize],
       aspectRatio: xsize / ysize
     },function(){
       // Use the API to get the real image size
@@ -184,3 +185,4 @@
 	font-size: 14px;
 }
 </style>
+</div>
