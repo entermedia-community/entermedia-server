@@ -2,8 +2,4 @@
 
 <page>
 	<page-action name="User.loadUserProperties" />
-		<property name="catalogid">system</property>
-		<property name="searchtype">user</property>
-		<property name="view">user/simpleuseredit</property>
-	</path-action>
 </page>

@@ -932,7 +932,7 @@ public class UserManagerModule extends BaseModule
 				user.addGroup(group );
 				getUserSearcher().saveData(user,inReq.getUser());
 			}
-			getUserManager().saveGroup(group);
+			getGroupSearcher().saveData(group,null); //This is probably called to update the index
 		}
 	}
 
