@@ -1939,9 +1939,7 @@ ul#sub-nav li:hover ul {
 .emdatafieldvalue {
     padding: 5px 0;
 }
-
-/* USER PROFILE PAGE */
-
+ 	
 .three-up {
     width: 258px;
     float: left;
@@ -3544,6 +3542,9 @@ body #emcontainer .emasseteditorarea {
     position: relative; 
     top: -8px;
 }
+
+
+
 .select-dropdown-open {
     width: 20px;
     height: 28px;
@@ -3571,7 +3572,7 @@ body #emcontainer .emasseteditorarea {
 #tableheader .firstheader {
     min-width: 50px;
 }
-#main-results-table .checkbox input, #main-results-table .firstheader input {
+td.checkbox input, th.firstheader input {
     margin-right: 25px;
 }
 .select-dropdown li {
@@ -4030,6 +4031,13 @@ div#folders.add .folder {
     margin-right: 4px;
     margin-bottom: -1px;
 }
+
+.striped tr td.editfield {
+    padding: 6px 10px !important;
+    vertical-align: middle;
+}
+
+
 .striped tr:nth-child(even) {
     backgorund: #F7FDFF;
 }

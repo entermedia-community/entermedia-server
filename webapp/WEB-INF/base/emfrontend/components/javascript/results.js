@@ -84,7 +84,7 @@ jQuery(".moduleselectionbox").livequery("click", function(e) {
 });        //document ready
         
 
-//TODO: Use a selector for this instead
+//TODO: remove this. using ajax
 togglehits =  function(action)
 {
 	var searchhome = $('#resultsdiv').data('searchhome');
