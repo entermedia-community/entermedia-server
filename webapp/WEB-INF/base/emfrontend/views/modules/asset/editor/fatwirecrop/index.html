@@ -52,6 +52,9 @@ $context.putPageValue("results", $results)
 		#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
 		#set($height = $mathtool.toInteger($dimension.getHeight()))
 		#set($width = $mathtool.toInteger($dimension.getWidth()))
+		##$context.putPageValue("height", $height)
+		##$context.putPageValue("width", $width)
+		
 		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
 		#if ($height > 0 && $width > 0)
@@ -71,7 +74,13 @@ $context.putPageValue("results", $results)
 		#if($isready)
 			<!--  include share -->
 			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
-			
+			#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
+			#if($cancrop)
+			#else
+				<span style="font-size:smaller;margin: 0 20px 20px;">Image is too small to crop to the desired crop dimension</span>
+				<br>
+				<br>
+			#end
 			<!-- include submit to fatwire -->
 			#if($result.publishtofatwire == "true") 
 				<h2>Previous Sends To Fatwire</h2>
