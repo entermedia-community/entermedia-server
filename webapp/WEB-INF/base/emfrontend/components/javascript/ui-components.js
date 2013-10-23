@@ -63,7 +63,7 @@ uiload = function() {
 		{
 			var id = $(this).data('value');
 			var text = $(this).text();
-			console.log(id + " " + text);
+			//console.log(id + " " + text);
 		 	arr.push({id: id, text: text}); 
 		});
 
@@ -74,6 +74,7 @@ uiload = function() {
 				{ 
 					if ($(data).filter(function() { return this.text.localeCompare(term)===0; } ).length===0) 
 					{
+						console.log("picking" + term );
 						return {id:term, text:term};
 					}
 				 }
