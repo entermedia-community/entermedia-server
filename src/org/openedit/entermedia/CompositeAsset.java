@@ -307,8 +307,13 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	protected String getValueFromResults(String inKey) 
 	{
 		String val;
-		val = ((Data)getSelectedResults().first()).get(inKey);
-		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
+		Iterator iterator = getSelectedResults().iterator();
+		if( !iterator.hasNext())
+		{
+			return null;
+		}
+		val = ((Data)iterator.next()).get(inKey);
+		while (iterator.hasNext())
 		{
 			Data data = (Data) iterator.next();
 			String dataval = data.get(inKey);

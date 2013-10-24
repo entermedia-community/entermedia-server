@@ -59,7 +59,8 @@ public class audioCreator extends BaseCreator implements MediaCreator
 		{
 			String inputExt = PathUtilities.extractPageType(inputpage.getContentItem().getAbsolutePath());
 			String outputExt = inStructions.getOutputExtension();
-			if( outputExt != null && outputExt.equals(inputExt))
+			String useoriginalmediawhenpossible = inStructions.getProperty("useoriginalmediawhenpossible");
+			if( Boolean.parseBoolean(useoriginalmediawhenpossible) && outputExt != null && outputExt.equals(inputExt))
 			{
 				createFallBackContent(inputpage, converted);
 				result.setOk(true);

@@ -3,6 +3,7 @@
   <parameter id="mp3audio2" parameterdata="mp3audio" value="64" >bitrate</parameter> 
   <parameter id="mp3audio3" parameterdata="mp3audio" value="22.05" >resample</parameter> 
   <parameter id="mp3audio4" parameterdata="mp3audio" value="1" >channels</parameter> 
+  <parameter id="mp3audio5" parameterdata="mp3audio" value="true" >useoriginalmediawhenpossible</parameter> 
 
 </properties>
 
