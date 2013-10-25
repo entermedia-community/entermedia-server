@@ -127,11 +127,11 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		
 		
 		
-		List <FilterNode> facets = hits.getFilters();
+		List <FilterNode> facets = hits.getFilterOptions();
 		assertTrue(facets.size() > 0);
 	//	searcher.reIndexAll();
 		hits = (LuceneHitTracker) searcher.search(q);
-		facets = hits.getFilters();
+		facets = hits.getFilterOptions();
 		
 		
 		
@@ -141,14 +141,11 @@ public class AssetSearchTest extends BaseEnterMediaTest
 //		 
 //		         
 		FilterNode parent = new FilterNode();
-		FilterNode child = new FilterNode();
-		parent.addChild(child);
-		child.setId("assettype/audio");
-		child.setProperty("label", "assettype/audio");
-		child.setSelected(true);
+		parent.setId("assettype");
+		parent.setProperty("value", "audio");
 		ArrayList list = new ArrayList();
 		list.add(parent);
-		q.setFacetValues(list);
+		q.setFilters(list);
 
 		
 //		facet.setValues(f);
@@ -162,17 +159,17 @@ public class AssetSearchTest extends BaseEnterMediaTest
 		searcher.reIndexAll();
 		
 		 facetedhits = (LuceneHitTracker) searcher.search(q);
-		 facets = hits.getFilters();
+		 facets = hits.getFilterOptions();
  
 		assertEquals(2 ,facetedhits.size());
-		FilterNode child2 = new FilterNode();
-		child2.setId("assetype/image");
-		child2.setProperty("label", "assettype/video");
-		parent.addChild(child2);
-		child2.setSelected(true);
-		
-		 facetedhits = (LuceneHitTracker) searcher.search(q);
-		assertEquals(3 ,facetedhits.size());
+		FilterNode parent2 = new FilterNode();
+		parent2.setId("assetype");
+		parent2.setProperty("value", "video");
+		ArrayList list2 = new ArrayList();
+		list2.add(parent2);
+		q.setFilters(list2);
+		facetedhits = (LuceneHitTracker) searcher.search(q);
+		//assertEquals(1 ,facetedhits.size());
 		
 	}
 	

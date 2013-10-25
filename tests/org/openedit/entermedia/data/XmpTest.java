@@ -7,6 +7,7 @@ import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.scanner.ExiftoolMetadataExtractor;
 import org.openedit.entermedia.xmp.XmpWriter;
+import org.openedit.repository.filesystem.FileItem;
 
 public class XmpTest extends BaseEnterMediaTest{
 	
@@ -27,7 +28,11 @@ public class XmpTest extends BaseEnterMediaTest{
 		ExiftoolMetadataExtractor reader= (ExiftoolMetadataExtractor)getBean("exiftoolMetadataExtractor");
 		MediaArchive mediaArchive = getMediaArchive();
 		
-		reader.extractData(mediaArchive, assetfile, newasset);
+		FileItem item = new FileItem();
+		item.setPath("/etc/testassets/Indesign.indd");
+		item.setFile(assetfile);
+		
+		reader.extractData(mediaArchive, item, newasset);
 	//	assertEquals(2, newasset.getKeywords().size());
 		assertTrue(newasset.getKeywords().contains("test1"));
 		assertTrue(newasset.getKeywords().contains("test2"));
