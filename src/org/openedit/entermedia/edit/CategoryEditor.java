@@ -124,7 +124,11 @@ public class CategoryEditor {
 		 }
 		 else if (getRootCategory() != null)
 		 {
-			 getRootCategory().addChild(newCat);
+			 Category core = getRootCategory().getChild(inId);
+			 if( core != null )
+			 {
+				 newCat = core;
+			 }
 		 }
 		 else
 		 {

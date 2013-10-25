@@ -184,7 +184,6 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 
 	public void deleteCategory(Category inCategory)
 	{
-		getCacheManager().remove(cacheId(),inCategory.getId());
 		if (getRootCategory().getId().equals(inCategory.getId()))
 		{
 			setRootCategory(new Category("index", "Index"));
@@ -197,6 +196,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 				inCategory.getParentCategory().removeChild(inCategory);
 			}
 		}
+		getCacheManager().remove(cacheId(),inCategory.getId());
 		saveAll();
 	}
 

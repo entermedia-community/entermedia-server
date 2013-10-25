@@ -192,10 +192,16 @@ public class Category implements Data, Comparable<Category>
 	public void removeChild(Category inChild)
 	{
 		Category child = getChild(inChild.getId());
-		if (child != null)
+		if (child != null )
 		{
 			getChildren().remove(child);
 			child.setParentCategory(null);
+			if( child != inChild)
+			{
+				//tell the old parent to remove itself?
+				
+			}
+			
 		}
 
 		inChild.setParentCategory(null);
