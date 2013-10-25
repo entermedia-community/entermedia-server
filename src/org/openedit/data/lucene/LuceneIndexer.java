@@ -534,10 +534,14 @@ public class LuceneIndexer
 						{
 							continue;
 						}
-						String[] vals = new String[2];
-						vals[0] = detail.getId().replace('/', '_');
-						vals[1] = values[i].replace('/', '_');
-						categorypaths.add(new CategoryPath(vals));
+						String val = values[i];
+						if( val != null && !val.trim().isEmpty() )
+						{
+							String[] vals = new String[2];
+							vals[0] = detail.getId().replace('/', '_');
+							vals[1] = values[i].replace('/', '_');
+							categorypaths.add(new CategoryPath(vals));
+						}
 					}
 						//log.info("Adding: " + vals);
 
