@@ -18,8 +18,9 @@
   	<permission id="viewcategorynav" permissiontype="view" name="Category Navigation" description="Enables the Category Navigation in the sidebar." ordering="613"/>
 	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." ordering="614"/>
 	<permission id="viewlibrarysearch" permissiontype="view" name="User Libraries" description="Enables a list of libraries on the sidebar." ordering="615"/>
-	<permission id="filterbyassettype" permissiontype="view" name="Filter By Asset Type" description="Enables filtering by asset type." ordering="615"/>
-	<permission id="togglesidebar" permissiontype="view" name="Show and Hide Sidebars" description="Allow users to toggle sidebar components on and off" ordering="615"/>
+	<permission id="filterbyassettype" permissiontype="view" name="Filter By Asset Type" description="Enables filters." ordering="615"/>
+	<permission id="viewrelatedkeywords" permissiontype="view" name="Related Keywords" description="Enables a list of related keywords when searching." ordering="616"/>
+	<permission id="togglesidebar" permissiontype="view" name="Show and Hide Sidebars" description="Allow users to toggle sidebar components on and off" ordering="617"/>
 
 
 

@@ -5,11 +5,11 @@
 	<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
 	<property id="description" defaultoperation="contains">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
-	<property id="category" editable="true" viewtype="category" type="list" stored="true" listid="category" datatype="textjoin" externalid="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
+	<property id="category" keyword="true" editable="true" viewtype="category" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
-	<property id="libraries"  viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
-	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true"  sort="name">Asset Type</property>
+	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
+	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
 
 	<!-- Push items -->
 	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
@@ -48,8 +48,8 @@
 
 	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="Orientation">Image Rotation</property>
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
-	<property id="fileformat" index="true" stored="true" viewtype="list" editable="true" externalid="File Type">File Format</property>
-	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" externalid="File Size">File Size</property>
+	<property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type">File Format</property>
+	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size">File Size</property>
 	<property id="width" index="true" stored="true" datatype="number" >Width</property>
 	<property id="height" index="true" stored="true" datatype="number" >Height</property>
 	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  viewtype="time" searchcomponent="datesearch" externalid="CreateDate,MediaCreateDate">Created On</property>
@@ -61,7 +61,7 @@
 	
 	<property id="importstatus" index="true" stored="true" datatype="list" listid="asset/importstatus" editable="true">Import Status</property>
 	<property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" listid="asset/previewstatus" datatype="list">Preview Status</property>
-	<property id="editstatus" index="true" stored="true" editable="true" listid="asset/editstatus" datatype="list">Edit Status</property>
+	<property id="editstatus" filter="true" index="true" stored="true" editable="true" listid="asset/editstatus" datatype="list">Edit Status</property>
 
 	<!-- Asset Contains -->
 	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" sortable="true"  externalid="XMP-dc:Title,iptc:ObjectName" >Asset Title</property>
@@ -69,7 +69,7 @@
 	
 	
 	<property id="longcaption"  keyword="true" index="true" editable="true"  externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
-	<property id="keywords" keyword="true" viewtype="tageditor" index="true" stored="true" editable="true" >Tags</property> 
+	<property id="keywords" viewtype="tageditor" index="true" stored="true" editable="true" >Tags</property> 
 	<property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords">Extra Keywords</property> 
 	<property id="purpose" index="true" stored="true" editable="true" viewtype="list" datatype="list">Purpose</property>
 	<property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed" >General Ethnicity</property>
@@ -102,8 +102,8 @@
 	<property id="jobnotes" internalfield="true" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>	
 	<property id="cumulusid" internalfield="true" index="true" stored="true">Cumulus ID</property>
 	 -->
-	<property id="viewasset" internalfield="true" filter="true">Readable</property>	
-	<property id="editasset" internalfield="true" filter="true">Writable</property>	
+	<property id="viewasset" internalfield="true" >Readable</property>	
+	<property id="editasset" internalfield="true" >Writable</property>	
 	<property id="editgroups" index="true" stored="true" editable="true" viewtype="multiselect" internalfield="true" listcatalogid="system"  listid="group">Edit Groups</property>
 		
 	<!-- 

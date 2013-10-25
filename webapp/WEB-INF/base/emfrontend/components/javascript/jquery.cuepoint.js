@@ -77,7 +77,7 @@
 		};
 		Cuepoint.prototype.setCurrentSlide = function(inSlide) {
 			this.currentSlide = inSlide;
-			jQuery( "#videolinks li a").removeClass("current");
+			jQuery( ".videolinks li a").removeClass("current");
 			jQuery("#slide" + inSlide.divid + " a").addClass("current");
 		};
 		Cuepoint.prototype.update = function(inSlide) 
@@ -90,12 +90,20 @@
 				
 				jQuery.get(inSlide.link, {}, function(data) 
 				{
-					var cell = jQuery("#cuepointcontainer");
+					var cell = jQuery("#left-slide");
 					cell.html(data);
 					if (typeof(doResize) == "function")
 					{
 						doResize();
+						
 					}
+					if (typeof(slideToCue) == "function")
+					{
+						slideToCue();
+						
+					}
+					
+					
 				});
 			}
 			return false;

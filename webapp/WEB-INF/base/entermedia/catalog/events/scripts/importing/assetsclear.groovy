@@ -1,16 +1,12 @@
 package importing;
-import java.util.*;
+import org.openedit.Data
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.search.AssetSearcher
 
-import org.openedit.Data;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.search.AssetSearcher;
-import org.openedit.repository.ContentItem;
-
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
-import com.openedit.page.manage.*;
+import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
+import com.openedit.page.manage.*
 
 public void init()
 {
@@ -49,8 +45,7 @@ public void init()
 		String assetsource = hit.getSourcePath();
 		String pathToOriginal = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + assetsource;
 		
-		ContentItem page = pageManager.getRepository().get(pathToOriginal);
-		if(!page.exists())
+		if(!pageManager.getRepository().doesExist(pathToOriginal) )
 		{
 			Asset asset = archive.getAssetBySourcePath(assetsource);
 			if( asset == null)
@@ -62,8 +57,7 @@ public void init()
 			if(asset.isFolder() && asset.getPrimaryFile() != null)
 			{
 				pathToOriginal = pathToOriginal + "/" + asset.getPrimaryFile();
-				page = pageManager.getRepository().get(pathToOriginal);
-				if(page.exists())
+				if( pageManager.getRepository().doesExist(pathToOriginal) )
 				{
 					existed++;
 					continue; //never mind, it is here

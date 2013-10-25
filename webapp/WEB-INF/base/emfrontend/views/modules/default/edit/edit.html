@@ -1,12 +1,19 @@
-#set($viewid = $context.getRequestParameter("viewid"))
-#set($viewpath = $context.getRequestParameter("viewpath"))
+#if( !$view )
+	#set($viewid = $context.getRequestParameter("viewid"))
+#end
+#if( !$viewpath )	
+	#set($viewpath = $context.getRequestParameter("viewpath"))
+#end
+
 #set( $moduleid = $context.findValue("module") )
 
 #set($id = $data.id )
 #if( !$id )
 	#set( $id = $context.getRequestParameter("id") )
 #end
-#set($view = $searcherManager.getData($catalogid, "view",$viewid))
+#if( !$view )
+	#set($view = $searcherManager.getData($catalogid, "view",$viewid))
+#end
 #if( $view.rendertype )
 	#set( $action = "$home$content.searchhome/edit/savetable.html")
 #else
@@ -22,6 +29,7 @@
     	<input name="searchtype" type="hidden" value="$searcher.searchType" />
     	<input name="viewid" type="hidden" value="$viewid" />
     	<input name="view" type="hidden" value="$viewpath" />
+    	<input name="hitssessionid" type="hidden" value="$hits.sessionId" />
 
     	<input name="viewpath" type="hidden" value="$viewpath" />
     	<input name="origURL"  type="hidden" value="$!origURL" />

@@ -9,11 +9,14 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermedia.profile.UserProfileSearcher;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.MediaArchive;
+import org.openedit.profile.UserProfile;
 import org.openedit.users.UserSearcher;
 
 import com.openedit.WebPageRequest;
@@ -249,12 +252,27 @@ public class RegistrationModule extends BaseMediaModule {
 
 		handleValidationCodes(inReq,  current);
 
-		
+		boolean enable = Boolean.parseBoolean(inReq
+				.findValue("autoenable"));	
+		if(enable){
+			current.setEnabled(true);
+		}
 		getUserManager().saveUser(current);
 		inReq.putPageValue("saved", "true");
 		inReq.putPageValue("newuser", current);
 		inReq.putPageValue("password", password);
 
+		//lets create a user profile now too.
+		MediaArchive archive = getMediaArchive(inReq);
+		UserProfileSearcher upsearcher= (UserProfileSearcher) archive.getSearcher("userprofile");
+		UserProfile up = (UserProfile) upsearcher.createNewData();
+		up.setProperty("settingsgroup", "guest");
+		up.setUser(current);
+		up.setId(current.getId());
+		upsearcher.saveData(up, null);
+		
+		
+		
 		Group notifygroup = getUserManager().getGroup("registration");
 		if (notifygroup == null) {
 			notifygroup = getUserManager().createGroup("registration");
@@ -286,7 +304,44 @@ public class RegistrationModule extends BaseMediaModule {
 			inReq.putSessionValue("user", current);// this logs in the user that
 													// just registered.
 		}
+		
+	
 
+	}
+	
+	public void checkPasswordMatch(WebPageRequest inReq) throws Exception
+	{
+		Map errors = new HashMap();
+		String password = inReq.getRequestParameter("password.value");
+		String password2 = inReq.getRequestParameter("password2.value");
+		if (password2 == null)
+		{
+			password2 = inReq.getRequestParameter("passwordmatch.value");
+		}
+		String errorURL = inReq.findValue("errorURL");
+		if (password == null)
+		{
+			if (errorURL != null)
+			{
+				errors.put("password", "error-no-password");
+				inReq.setHasForwarded(true);
+				inReq.putPageValue("errors", errors);
+				inReq.setCancelActions(true);
+				inReq.forward(errorURL);
+			}
+			return;
+		}
+		if (!password.equals(password2) || password.length() == 0)
+		{
+			if (errorURL != null)
+			{
+				errors.put("password", "error-no-password-match");
+				inReq.setHasForwarded(true);
+				inReq.putPageValue("errors", errors);
+				inReq.setCancelActions(true);
+				inReq.forward(errorURL);
+			}
+		}
 	}
 
 	protected void handleValidationCodes(WebPageRequest inReq,

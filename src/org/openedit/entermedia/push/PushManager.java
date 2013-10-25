@@ -8,6 +8,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 
+import com.openedit.WebPageRequest;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 
@@ -209,5 +210,7 @@ public interface PushManager
 	void pollRemotePublish(MediaArchive inArchive);
 
 	void toggle(String inCatalogId);
+
+	void acceptPush(WebPageRequest inReq, MediaArchive archive);
 
 }

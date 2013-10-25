@@ -125,7 +125,6 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	public void selectNodes(Collection inNodes)
 	{
 		Set newselection = new HashSet();
-		getExpandedNodes().clear();
 		for (Iterator iterator = inNodes.iterator(); iterator.hasNext();)
 		{
 			Object object = (Object) iterator.next();

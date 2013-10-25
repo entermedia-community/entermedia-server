@@ -2,7 +2,15 @@
 #set( $readonly = "false" )
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
 #set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
+#set( $multiedit = "false")
+#set( $multiedit = $context.getRequestParameter("multiedit"))
+#if ( $multiedit == "true" )
+	#set( $multiedit = true)
+#else
+	#set( $multiedit = false)
+#end
 
+$context.putPageValue("multiedit",$multiedit)
 $context.putPageValue("caneditlists","false")
 
 ##We need 3 things passed in: $searcher, $view, $data
@@ -13,7 +21,7 @@ $context.putPageValue("caneditlists","false")
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
 	#if( !$details)
-		No details available for this view.  Please configure your view settings.	
+		[[No details available for this view.  Please configure your view settings.]]
 
 	#end
 #else
@@ -32,34 +40,37 @@ $context.putPageValue("caneditlists","false")
 	#set($val = false)
 	#set($target = "${detail.id}.value")
 	#set( $val = $context.getRequestParameter($target))					
-	#if( !$val )
+	#if( $searcherManager )
+		#set( $val = $searcherManager.getValue($data,$detail) )	
+	#else
 		#set( $val = $!{data.getProperty($detail.getId())} )
 	#end
+	
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
+
 	$!context.putPageValue("detail",$detail)
 	
 	#if ($detail.header)
 		<tr><td colspan="2">&nbsp;</td></tr>
 		#if ($detail.header != "blank")
-			<tr><td colspan="2" style="text-align:center;"><h4>$detail.header</h4></td></tr>
+			<tr><td colspan="2" style="text-align:center;"><h4>#translate($detail.header)</h4></td></tr>
 		#end
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true" )
 	#if( $editrow || $val  || !$detail.isEditable()) 
-		#if( !$val) #set( $val = "") #end	
-	
+		#if( !$val) #set( $val = "") #end		
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
-			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+			<td   class="emdatafield" >
 				#if( $detail.hidelabel == true )
 				#else
 				    #if ($detail.required == true) * #end	$!detail.getText($context)
 				#end
 			</td>
-			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
 			
+			<td id="detail_$detail.id" class="emdatafieldvalue #if (!$multiedit && $detail.required == true) requiredfield #end">
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
 			#else  ##NOT EDITABLE
@@ -76,13 +87,13 @@ $context.putPageValue("caneditlists","false")
 	#if( !$val) #set( $val = "") #end	
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
-			<td   class="emdatafield"  #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
+			<td   class="emdatafield" >
 				#if( $detail.hidelabel == true )
 				#else
 				    #if ($detail.required == true) * #end	$!detail.getText($context)
-				#end
+				#end				
 			</td>
-			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) required #end">
+			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) [[required]] #end">
 			
 				$pages.include("$xmledithome/detailreadonly.html", $context) 
 			#if ( $detail.note )
@@ -92,7 +103,6 @@ $context.putPageValue("caneditlists","false")
 		</tr>
 	#end
 	
-	
 	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
 		#if($usedhtml)
 			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
@@ -101,21 +111,20 @@ $context.putPageValue("caneditlists","false")
 		#end
 	#end
 	
-		#if($detail.get('dependson'))
-	
+	#if($detail.get('dependson'))
    <script type="text/javascript">			
+			##TODO: Put this in validateandedit.js
 			jQuery(document).ready(function(){
 				DetailEditor.find_field_from_row("$!detail.get('dependson')").bind_and_run('change',function(){
 					DetailEditor.toggle_dependency_row("$!detail.getId()",
-																						 jQuery(this),
-																						 "$!detail.get('dependsonvalue')",
-																						 "$!detail.get('dependsondefault')",
-																						 "$!detail.get('dependsonvaluedelimiter')")
+					 jQuery(this),
+					 "$!detail.get('dependsonvalue')",
+					 "$!detail.get('dependsondefault')",
+					 "$!detail.get('dependsonvaluedelimiter')")
 				});
 			});									 
 		</script>
 	#end
-	
 	
 #end
 </table>
@@ -125,16 +134,5 @@ $context.putPageValue("caneditlists","false")
 #if( $usedhtml && $readonly !=  "true") 
 	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
 #end
-
-<!-- 
-<script type="text/javascript">
-	//jQuery(".required").find('input[type!="hidden"], textarea, select, radio').rules( "add", {required:true} );
-	//var form = jQuery(".required").closest("form");
-	//form.addClass("validate");
-	//jQuery(".validate").validate();
-	//form.validate();
-	
-</script>
- -->
  
  

@@ -10,7 +10,7 @@
 #set( $searchtype = $viewdata.rendertable )
 #set( $fieldexternalid = $viewdata.renderexternalid)
 
-#set( $permissionname = "canedit${moduleid}")
+#set( $permissionname = "canedit${searchtype}")
 #set ( $id = $context.getRequestParameter("id") )
 #if ( $!id )
     #set ( $id = $data.id )
@@ -20,5 +20,11 @@
 
 $context.putPageValue("canedittable", $caneditdata)
 
-#set( $args = "id=$id&parentid=$id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
+#if($ismodule)
+	#set( $viewdetailspath = "$apphome/views/modules/${searchtype}/edit/edit.html") ##the table should add the ID to edit
+#end	
+
+##if there is a module then click on it
+#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)

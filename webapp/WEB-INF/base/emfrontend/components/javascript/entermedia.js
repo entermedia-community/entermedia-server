@@ -1,4 +1,5 @@
 var ajaxtimerrunning = false;
+var app,home,apphome,themeprefix;
 
 
 openFancybox = function(href) {
@@ -23,9 +24,13 @@ repaint = function(divid) {
 	);
 }
 toggleUserProperty = function(property, onsuccess) {
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
 	jQuery.ajax(
 			{
-				url: "${home}${apphome}/components/userprofile/toggleprofileproperty.html?field=" + property,
+				url:  apphome + "/components/userprofile/toggleprofileproperty.html?field=" + property,
 				success: onsuccess
 			}
 		);
@@ -35,9 +40,13 @@ toggleUserProperty = function(property, onsuccess) {
 
 
 setSessionValue = function(key, value) {
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
 	jQuery.ajax(
 			{
-				url: "${home}${apphome}/components/session/setvalue.html?key=" + key + "&value=" + value 
+				url: apphome + "/components/session/setvalue.html?key=" + key + "&value=" + value 
 			}
 		);
 	
@@ -45,10 +54,14 @@ setSessionValue = function(key, value) {
 
 getSessionValue = function(key) {
 	var returnval = null;
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
 	
 	jQuery.ajax(
 			{
-				url: "${home}${apphome}/components/session/getvalue.html?key=" + key,
+				url: apphome + "/components/session/getvalue.html?key=" + key,
 				async: false,
 				success: function(data){
 					
@@ -135,12 +148,24 @@ runajaxonthis = function(inlink,e)
 	
 	var nextpage= inlink.attr('href');
 	var targetDiv = inlink.attr("targetdiv");
+	
+	var useparent = inlink.data("useparent");
+	
 	if( targetDiv)
 	{
 		targetDiv = targetDiv.replace(/\//g, "\\/");
+		
 		jQuery.get(nextpage, {}, function(data) 
 			{
-				var cell = jQuery("#" + targetDiv);
+				var cell;
+				if(useparent && useparent == "true")
+				{
+					cell = jQuery("#" + targetDiv, window.parent.document);
+				}
+				else
+				{
+					cell = jQuery("#" + targetDiv);
+				}
 				cell.replaceWith(data);
 				
 				
@@ -159,7 +184,16 @@ runajaxonthis = function(inlink,e)
 		//jQuery("#"+loaddiv).load(nextpage);
 		jQuery.get(nextpage, {}, function(data) 
 				{
-					var cell = jQuery("#" + loaddiv);
+					var cell;
+					
+					if(useparent && useparent == "true")
+					{
+						cell = jQuery("#" + loaddiv, window.parent.document);
+					}
+					else
+					{
+						cell = jQuery("#" + loaddiv);
+					}
 					cell.html(data);
 					if (typeof(doResize) == "function")
 					{
@@ -196,7 +230,7 @@ updatebasket = function(e)
 		var action= jQuery(this).data('action');
 		jQuery("#"+targetDiv).load(nextpage, {}, function()
 			{
-			    jQuery("#basket-paint").load("$home/$applicationid/components/basket/menuitem.html");
+			    jQuery("#basket-paint").load(apphome + "/components/basket/menuitem.html");
 				if(action == 'remove'){
 					jQuery(".selectionbox:checked").closest("tr").hide("slow");
 					jQuery(".selectionbox:checked").closest(".emthumbbox").hide("slow");
@@ -259,7 +293,16 @@ onloadselectors = function()
 	jQuery("form.ajaxform").livequery('submit',	
 		function() 
 		{
-			var targetdiv = jQuery(this).attr("targetdiv");
+			var form = jQuery(this);
+			form.validate();    
+    		var isvalidate = form.valid();
+			if(!isvalidate)
+        	{
+            	e.preventDefault();
+            	//show message
+            	return;
+        	}
+			var targetdiv = form.attr("targetdiv");
 			targetdiv = targetdiv.replace(/\//g, "\\/");
 			// allows for posting to a div in the parent from a fancybox.
 			if(targetdiv.indexOf("parent.") == 0)
@@ -267,7 +310,7 @@ onloadselectors = function()
 				targetdiv = targetdiv.substr(7);
 				parent.jQuery(this).ajaxSubmit({target: "#" + targetdiv});
 				// closes the fancybox after submitting
-				parent.jQuery.fn.fancybox.close();
+				parent.jQuery.fancybox.close();
 			}
 			else
 			{
@@ -284,16 +327,35 @@ onloadselectors = function()
 							theform.submit();
 						});
 			});
-	jQuery("a.emdialog").livequery(
-		function() 
-		{
-			jQuery(this).fancybox(
-			{ 
-				'zoomSpeedIn': 300, 'zoomSpeedOut': 300, 'overlayShow': true,
-				enableEscapeButton: true, type: 'iframe'
-			});
-		}
-	); 
+		jQuery("a.emdialog").livequery(
+			function() 
+			{
+				var dialog = jQuery(this);
+				var height = dialog.data("height");
+				if( !height )
+				{
+					height = "500";
+				}
+	
+				var width = dialog.data("width");
+				if( !width )
+				{
+					width = "650";
+				}
+				
+				dialog.fancybox(
+				{ 
+					'zoomSpeedIn': 0, 'zoomSpeedOut': 0, 'overlayShow': true,
+					enableEscapeButton: true, type: 'iframe',
+			        height: height,
+			        width: width,
+					autoScale: false,
+			        autoHeight: false,
+			        fitToView: false,
+			        iframe: { preload   : false }
+				});
+			}
+		); 
 	jQuery("a.thickbox").livequery(
 			function() 
 			{
@@ -347,9 +409,13 @@ onloadselectors = function()
 				var propertyname = jQuery(this).attr("propertyname");
 				var propertyvalue = jQuery(this).attr("propertyvalue");
 				var thelink = $(this);
+				app = jQuery("#application");
+				home =  app.data("home");
+				apphome = home + app.data("apphome");
+				
 				jQuery.ajax(
 					{
-						url: "${home}${apphome}/components/userprofile/saveprofileproperty.html?field=" + propertyname + "&" + propertyname + ".value="  + propertyvalue,
+						url: apphome + "/components/userprofile/saveprofileproperty.html?field=" + propertyname + "&" + propertyname + ".value="  + propertyvalue,
 						success: function()
 						{
 							runajaxonthis(thelink,e);
@@ -366,7 +432,7 @@ onloadselectors = function()
 	var theinput = jQuery("#assetsearchinput");
 	if( theinput && theinput.autocomplete )
 	{
-		theinput.autocomplete('$home$apphome/components/autocomplete/suggestions.txt', {
+		theinput.autocomplete(apphome + '/components/autocomplete/suggestions.txt', {
 			selectFirst: false,
 			formatItem: formatHitCount,
 			formatResult:formatHitCountResult
@@ -379,7 +445,7 @@ onloadselectors = function()
 		var theinput = jQuery(this);
 		if( theinput && theinput.autocomplete )
 		{
-			theinput.autocomplete('$home/$applicationid/components/autocomplete/emailsuggestions.txt', {
+			theinput.autocomplete(apphome + '/components/autocomplete/emailsuggestions.txt', {
 				selectFirst: false,
 				matchCase: true,
 				formatResult:formatHitCountResult
@@ -391,7 +457,7 @@ onloadselectors = function()
 		var theinput = jQuery(this);
 		if( theinput && theinput.autocomplete )
 		{
-			theinput.autocomplete('$home/$applicationid/components/autocomplete/friendemailsuggestions.txt', {
+			theinput.autocomplete(apphome + '/components/autocomplete/friendemailsuggestions.txt', {
 				selectFirst: false,
 				matchCase: true,
 				formatResult:formatHitCountResult
@@ -408,7 +474,7 @@ onloadselectors = function()
 				if( theinput && theinput.autocomplete )
 				{
 					theinput.autocomplete({
-						source: '$home$apphome/components/autocomplete/assetsuggestions.txt',
+						source: apphome + '/components/autocomplete/assetsuggestions.txt',
 						select: function(event, ui) {
 							//set input that's just for display purposes
 							theinput.val(ui.item.value);
@@ -430,7 +496,7 @@ onloadselectors = function()
 					    source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
 					});*/
 					theinput.autocomplete({
-						source: '$home$apphome/components/autocomplete/addmygroupusers.txt?assetid=' + assetid,
+						source: apphome + '/components/autocomplete/addmygroupusers.txt?assetid=' + assetid,
 						select: function(event, ui) {
 							//set input that's just for display purposes
 							jQuery(".addmygroupusers").val(ui.item.display);
@@ -454,7 +520,7 @@ onloadselectors = function()
 				{
 					var theinputhidden = theinput.attr("id") + "hidden";
 					theinput.autocomplete({
-						source: '$home$apphome/components/autocomplete/usersuggestions.txt',
+						source: apphome + '/components/autocomplete/usersuggestions.txt',
 						select: function(event, ui) {
 							//set input that's just for display purposes
 							theinput.val(ui.item.display);
@@ -476,7 +542,7 @@ onloadselectors = function()
 		{
 			var assetid = theinput.attr("assetid");
 			theinput.autocomplete({
-					source:  '$home$apphome/components/autocomplete/addmygroups.txt?assetid=' + assetid,
+					source:  apphome + '/components/autocomplete/addmygroups.txt?assetid=' + assetid,
 					select: function(event, ui) {
 						//set input that's just for display purposes
 						jQuery(".addmygroups").val(ui.item.label);
@@ -543,12 +609,12 @@ onloadselectors = function()
 		window.name = "uploader" + new Date().getTime();	
 	}
 	
-	var appletholder = jQuery('#emsyncstatus');
-	if(appletholder.size() > 0)
-	{
-		appletholder.load('$home/${page.applicationid}/components/uploadqueue/index.html?appletname=' + window.name);
-	}
-	
+/*	var appletholder = jQuery('#emsyncstatus');
+//	if(appletholder.size() > 0)
+//	{
+//		appletholder.load('$home/${page.applicationid}/components/uploadqueue/index.html?appletname=' + window.name);
+//	}
+*/	
 	jQuery('.baseemshowonhover' ).livequery( function() 
 	{ 
 		var image = jQuery(this);
@@ -596,7 +662,7 @@ onloadselectors = function()
 					var path = el.attr("contentpath");
 					if( path )
 					{
-						el.load('$home' + path);
+						el.load( home + path);
 					}
 					el.attr("status","show"); //The mouse may jump over a gap so we need delay the show
 					el.show();
@@ -785,7 +851,7 @@ onloadselectors = function()
 							{
 								editing = false;
 							}
-							jQuery("#resultsdiv").load("$home$apphome/components/results/savecolumns.html",
+							jQuery("#resultsdiv").load(apphome + "/components/results/savecolumns.html",
 								{
 								"source":source,
 								"destination":destination,
@@ -818,7 +884,7 @@ onloadselectors = function()
 //							var treeid = tree.data("")
 							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
 							//this is a category
-							jQuery.get("$home$apphome/components/categorize/addassetcategory.html", 
+							jQuery.get(apphome + "/components/categorize/addassetcategory.html", 
 									{
 										assetid:assetid,
 										categoryid:categoryid,
@@ -913,9 +979,14 @@ showajaxstatus = function(uid, timeout)
 
 jQuery(document).ready(function() 
 { 
+
 	jQuery.ajaxSetup({
 	    cache: false
 	});
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	themeprefix = app.data("home") + app.data("themeprefix");	
 
 	$(document).ajaxError(function(e, jqxhr, settings, exception) 
 			{
@@ -924,7 +995,7 @@ jQuery(document).ready(function()
 				{
 					
 					function fade(elem){
-						$(elem).delay(300).fadeOut(3000, "linear");
+						$(elem).delay(300).fadeOut(1000, "linear");
 					}
 					
 					$('#errordiv').stop(true, true).show().css('opacity', 1);
@@ -1012,28 +1083,6 @@ emcomponents = function() {
 			return false;
 		}
 	);
-	jQuery("a.categoriespicked").livequery("click", function(e) 
-		{
-			var a = jQuery(this);
-			var olink = a.attr("href");
-			
-			var link = a.attr("href");
-			
-			link = link + "?categories=";
-			//a.closest(".jp-audio").find(".jp-jplayer");
-			jQuery("#addcategoryoptions").find("input:checked").each( function() 
-				{
-					var found = jQuery(this);
-					link = link + found.val() + "|";
-				});
-			link = link.substring(0, link.length - 1);
-			a.attr("href",link);
-			runajaxonthis(a,e);
-			a.attr("href",olink);
-			jQuery.fancybox.close();
-		}
-	);
-
 
 	jQuery(".librarydroparea").livequery(
 			function()
@@ -1049,7 +1098,7 @@ emcomponents = function() {
 //							var treeid = tree.data("")
 							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
 							//this is a category
-							jQuery.get("$home$apphome/components/libraries/addasset.html", 
+							jQuery.get(apphome + "/components/libraries/addasset.html", 
 									{
 										assetid:assetid,
 										libraryid:libraryid

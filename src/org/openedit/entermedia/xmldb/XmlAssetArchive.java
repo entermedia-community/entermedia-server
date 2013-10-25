@@ -184,7 +184,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			}
 			catch ( Exception ex )
 			{
-				log.error("Could not load: " + assetPage.getPath(), ex );
+				log.debug("Could not load: " + assetPage.getPath(), ex );
 				
 				return false;
 			}
@@ -248,7 +248,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			}
 			inAsset.setProperty(key, prop.getTextTrim());
 		}
-		ContentItem originalPage = getPageManager().getRepository().get("/WEB-INF/data/" + inAsset.getCatalogId() + "/originals/" + inAsset.getSourcePath());
+		ContentItem originalPage = getPageManager().getRepository().getStub("/WEB-INF/data/" + inAsset.getCatalogId() + "/originals/" + inAsset.getSourcePath());
 		inAsset.setFolder(originalPage.isFolder());
 		loadRelatedAssets(inAsset, inAssetElement);
 		return true;
@@ -520,7 +520,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			Category category = getCategoryArchive().getCategory(catid);
 			if (category == null)
 			{
-				log.error("Could not find a category with id: " + catid);
+				log.debug("Could not find a category with id: " + catid);
 				continue;
 			}
 			inAsset.addCategory(category);

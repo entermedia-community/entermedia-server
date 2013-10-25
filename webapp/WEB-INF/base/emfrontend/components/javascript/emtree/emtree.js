@@ -37,22 +37,27 @@ jQuery(document).ready(function()
 		var prefix = $(this).closest(".emtree").data("url-prefix");
 		if( prefix)
 		{
-			//$("#right-col").load();
-			
-			jQuery.get(prefix + nodeid + ".html",
-					{
-						'oemaxlevel':2,
-						'tree-name':tree.data("treename"),
-						'nodeID':nodeid,
-						'depth': depth
-					},	
-					function(data) 
-					{
-						var cell = jQuery("#view-picker-content");
-						cell.html(data);
-						//window.location.hash="TOP";
-					}
-			);
+			var treeholder = $("div#categoriescontent");
+			var toplocation =  parseInt( treeholder.scrollTop() );
+			var leftlocation =  parseInt( treeholder.scrollLeft() );
+		
+			//$("#right-col").load(); 'clearfilters':true,
+				jQuery.get(prefix + nodeid + ".html",
+						{
+							'oemaxlevel':3,
+							'tree-name':tree.data("treename"),
+							'nodeID':nodeid,							
+							'treetoplocation':toplocation,
+							'treeleftlocation':leftlocation,
+							'depth': depth
+						},	
+						function(data) 
+						{
+							var cell = jQuery("#searchlayout"); //view-picker-content
+							cell.html(data);
+							//window.location.hash="TOP";
+						}
+				);
 		}
 		else
 		{
@@ -203,7 +208,22 @@ jQuery(document).ready(function()
 		event.stopPropagation();
 	});
 
+	//need to init this with the tree
 	
+	$("div#treeholder").livequery( function()
+	{	
+		var treeholder = $(this);
+		var top = treeholder.data("treetoplocation");
+		if( top )
+		{
+			var left = treeholder.data("treeleftlocation");
+			var catcontent = $("div#categoriescontent");
+			catcontent.scrollTop(parseInt(top));
+			catcontent.scrollLeft(parseInt(left));
+		}
+	});
+	
+	//end document ready
 	
 });
 

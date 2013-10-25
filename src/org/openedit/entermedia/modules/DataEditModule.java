@@ -27,6 +27,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.BaseCompositeData;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.xml.XmlArchive;
@@ -134,6 +135,8 @@ public class DataEditModule extends BaseMediaModule
 		inReq.putPageValue("searcher", searcher);
 	}
 
+	
+	
 	public Data createNew(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcherForEdit(inReq);
@@ -453,6 +456,7 @@ public class DataEditModule extends BaseMediaModule
 
 	public void saveData(WebPageRequest inReq) throws Exception
 	{
+		int count = 0;
 		String[] fields = inReq.getRequestParameters("field");
 		if (fields == null)
 		{
@@ -475,7 +479,12 @@ public class DataEditModule extends BaseMediaModule
 			}
 			if (id != null && id.startsWith("multiedit:"))
 			{
+				
 				data = (CompositeData) inReq.getSessionValue(id);
+				if( data == null)
+				{
+					data = loadData(inReq);
+				}
 			}
 			if (id != null && data == null)
 			{
@@ -519,6 +528,7 @@ public class DataEditModule extends BaseMediaModule
 //					inReq.setRequestParameter("id", copy.getId());
 //					searcher.saveDetails(inReq, newfields, copy, copy.getId());
 //				}
+				count = compositedata.size();
 				compositedata.saveChanges();
 				// should we redirect to a save ok page?
 				redirectToSaveOk(inReq);
@@ -545,6 +555,7 @@ public class DataEditModule extends BaseMediaModule
 							inReq.setRequestParameter("id", data.getId());
 							inReq.setRequestParameter(externalid + ".value", element.getId());
 							searcher.saveDetails(inReq, fields, data, id);
+							count++;
 						}
 						redirectToSaveOk(inReq);
 					}
@@ -572,6 +583,7 @@ public class DataEditModule extends BaseMediaModule
 					inReq.setRequestParameter("id", data.getId());
 					inReq.setRequestParameter("id.value", data.getId());
 					searcher.saveDetails(inReq, fields, data, id);
+					count++;
 					
 				}
 			}
@@ -592,7 +604,8 @@ public class DataEditModule extends BaseMediaModule
 
 				getWebEventListener().eventFired(event);
 			}
-			
+			inReq.putPageValue("rowsedited", String.valueOf(count));
+			//rowsedited="$!rowsedited}
 			//<script>/${catalogid}/events/scripts/library/saved.groovy</script>
 		}
 	}
@@ -636,16 +649,22 @@ public class DataEditModule extends BaseMediaModule
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
-			String id = inReq.getRequestParameter("id");
+			String[] id = inReq.getRequestParameters("id");
+			int changes = 0;
 			if (id != null)
 			{
-				Data data = (Data) searcher.searchById(id);
-				if (data != null)
+				for (int i = 0; i < id.length; i++)
 				{
-					searcher.delete(data, inReq.getUser());
+					Data data = (Data) searcher.searchById(id[i]);
+					if (data != null)
+					{
+						searcher.delete(data, inReq.getUser());
+						changes++;
+					}
+					
 				}
 			}
-
+			inReq.putPageValue("rowsedited", String.valueOf(changes));
 		}
 
 	}
@@ -967,6 +986,17 @@ public class DataEditModule extends BaseMediaModule
 		}
 	}
 
+	public void changeFilters(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		if (searcher != null)
+		{
+			searcher.updateFilters(inReq);
+		}
+	}
+	
+	
+	
 	public void addChildQuery(WebPageRequest inReq) throws Exception
 	{
 		String querystring = inReq.getRequestParameter("childquery");
@@ -1088,6 +1118,11 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
+		String clear = inReq.getRequestParameter("clearselection");
+		if( Boolean.parseBoolean(clear))
+		{
+			hits.deselectAll();
+		}
 		return hits;
 	}
 
@@ -1202,7 +1237,7 @@ public class DataEditModule extends BaseMediaModule
 
 	}
 
-	public Object loadData(WebPageRequest inReq) throws Exception
+	public Data loadData(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
 		String variablename = inReq.findValue("pageval");
@@ -1217,7 +1252,32 @@ public class DataEditModule extends BaseMediaModule
 			id = pagename.substring(0, pagename.indexOf("."));
 
 		}
-		Object result = searcher.searchById(id);
+		
+		Data result = null;
+		
+		if( id.startsWith("multiedit:"))
+		{
+			//setup the session value
+			//BaseCompositeData
+				Data data = (CompositeData) inReq.getSessionValue(id);
+				if( data == null )
+				{
+					String hitssessionid = id.substring("multiedit".length()  +1 );
+					HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+					if( hits == null)
+					{
+						log.error("Could not find " + hitssessionid);
+						return null;
+					}
+					CompositeData composite = new BaseCompositeData(searcher,hits);
+					composite.setId(id);
+					result = composite;
+				}
+		}
+		if( result == null)
+		{
+			result = (Data)searcher.searchById(id);
+		}
 		inReq.putPageValue(variablename, result);
 		return result;
 

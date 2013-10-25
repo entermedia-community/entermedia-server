@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.dom4j.Element;
@@ -263,7 +264,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	
 
-	protected void reIndexAll(final IndexWriter inWriter) throws OpenEditException
+	protected void reIndexAll(final IndexWriter inWriter, final TaxonomyWriter inTaxonomyWriter) throws OpenEditException
 	{
 		final List buffer = new ArrayList(100);
 		PathProcessor processor = new PathProcessor()
@@ -288,7 +289,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 					buffer.add(data);
 					if( buffer.size() > 99)
 					{
-						updateIndex(inWriter, buffer);
+						updateIndex(inWriter, inTaxonomyWriter, buffer);
 					}
 				}
 			}
@@ -298,7 +299,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		processor.setPageManager(getPageManager());
 		processor.setIncludeExtensions("xml");
 		processor.process();
-		updateIndex(inWriter, buffer);
+		updateIndex(inWriter, inTaxonomyWriter, buffer);
 	}
 	
 

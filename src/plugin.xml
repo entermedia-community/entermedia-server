@@ -33,6 +33,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
 		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
 		<property name="webServer"><ref bean="WebServer" /></property>
+		<property name="attachmentManager"><ref bean="attachmentManager" /></property>
 	</bean>
 
 
@@ -625,6 +626,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="metaDataReader" class="org.openedit.entermedia.scanner.MetaDataReader">
+	<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
 		<property name="metadataExtractors">
 			<list>
 				<ref bean="pdfExtractor" />
@@ -789,6 +793,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="xmlUtil">
 			<ref bean="xmlUtil" />
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="searchFilterArchive" class="org.openedit.entermedia.search.SearchFilterArchive"
@@ -1259,11 +1264,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		singleton="true" lazy-init="default" autowire="default"
 		dependency-check="default">
 	</bean>
- 	<bean id="S3Repository" name="S3Repository"
-        class="org.entermedia.amazon.S3Repository" abstract="false"
-        singleton="false" lazy-init="default" autowire="default"
-        dependency-check="default">
-    </bean>
     
     <bean id="luceneAssetDataConnector" class="org.entermedia.connectors.lucene.LuceneAssetDataConnector"
 		singleton="false">
@@ -1454,11 +1454,15 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="cataloguserSearcher" class="org.openedit.users.CatalogUserSearcher"	singleton="false">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="userSearcher"><ref bean="userSearcher" /></property>
-		
-		
+	</bean>
+
+	<bean id="categorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" singleton="false">
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+		<property name="categoryArchive"><ref bean="categoryArchive" /></property>
 	</bean>
 	
-	
-	
+	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" singleton="false">
+		<property name="searcherManager"><ref bean="searcherManager" /></property>
+	</bean>
 
 </beans>

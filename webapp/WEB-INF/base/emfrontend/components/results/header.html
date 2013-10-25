@@ -36,7 +36,7 @@
 		#end
 		
 		#if ($canmetadatageneral && $hits)
-			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()">Edit</a></li>
+			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">Edit</a></li>
 		#end
 		
 		#set( $edit = $context.getRequestParameter("editheader") )
@@ -44,6 +44,10 @@
 			<li>
 				<a class="drag-columns-text"><span class="ui-icon ui-icon-info" style="float: left; margin-top: 14px; margin-right: 5px;"></span>
 				[[Drag columns to move them]]</a>
+			</li>
+		#elseif($hits.hasSelections() )
+			<li>
+				$pages.include("$apphome/components/results/selected/index.html",$context)
 			</li>
 		#end
 		
@@ -78,7 +82,7 @@
 		#end
 		
 			<li style="float: right;">	
-				<a class="ajax" targetdivinner="view-picker-content" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
+				<a class="ajax" targetdivinner="view-picker-content" title="$hits.size() results" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
 				
 					#if (!$resultview || $resultview == 'table')
 						View Gallery

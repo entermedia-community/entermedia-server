@@ -442,9 +442,9 @@ ul.emheaderbuttons li.navselected a {
     margin: 0;
     padding: 0;
 }
-#emresultscontent a {
-    font-size: 11px;
-    font-weight: bold;
+#emresultscontent a:hover 
+{
+	    text-decoration: underline;
 }
 
 .playerbox {
@@ -659,7 +659,7 @@ input[type=submit], input[type=button], button, a.btn {
     box-shadow: 1px 1px 0px #fff;
 }
 
-.error {
+label.error {
     font-weight: bold;
     line-height: 16px;
     display: block;
@@ -1939,9 +1939,7 @@ ul#sub-nav li:hover ul {
 .emdatafieldvalue {
     padding: 5px 0;
 }
-
-/* USER PROFILE PAGE */
-
+ 	
 .three-up {
     width: 258px;
     float: left;
@@ -2737,6 +2735,11 @@ body .user-input-area input[type="text"]:focus, body .user-input-area textarea:f
     padding: 0;
     margin: 0;
 }
+#shared-asset-table 
+{
+	width: 100%;
+}
+
 #shared-asset-table thead tr th {
     color: #fff;
 }
@@ -3539,6 +3542,9 @@ body #emcontainer .emasseteditorarea {
     position: relative; 
     top: -8px;
 }
+
+
+
 .select-dropdown-open {
     width: 20px;
     height: 28px;
@@ -3566,7 +3572,7 @@ body #emcontainer .emasseteditorarea {
 #tableheader .firstheader {
     min-width: 50px;
 }
-#main-results-table .checkbox input, #main-results-table .firstheader input {
+td.checkbox input, th.firstheader input {
     margin-right: 25px;
 }
 .select-dropdown li {
@@ -4025,6 +4031,13 @@ div#folders.add .folder {
     margin-right: 4px;
     margin-bottom: -1px;
 }
+
+.striped tr td.editfield {
+    padding: 6px 10px !important;
+    vertical-align: middle;
+}
+
+
 .striped tr:nth-child(even) {
     backgorund: #F7FDFF;
 }
@@ -5454,29 +5467,53 @@ p.resultsnumber {
 
 /* FILTERS SIDEBAR STYLES */
 
-#filters-sidebar {
-    margin: 10px 0;
+ul.filters-sidebar {
+    margin: 0px 0 10px 4px;
     padding: 0 5px;
 }
-#filters-sidebar li {
+
+a.morelink
+{
+	margin-top: -8px;
+	display:block;
+	padding: 0 0 6px 15px;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+ul.morefilters {
+    display:none;
+}
+ul.filters-sidebar li {
     list-style-type:none; 
-    border-bottom: 1px solid #eee; 
-    padding: 8px 0;
-    font-size: 12px;
+    padding: 0px 0 4px 4px;
+    font-size: 1em;
 }
-#filters-sidebar li input {
-    margin-right: 7px;
+ul.filters-sidebar li a:hover
+{
+	text-decoration: underline;
 }
-#filters-sidebar li input:checked + span {
+
+#filters-sidebar-selected {
+    margin: 4px 0 4px 0;
+    padding: 0;
+}
+#filters-sidebar-selected li {
+    list-style-type:none; 
+    font-size: 1em;
     font-weight: bold;
 }
-#filters-sidebar li span {
-    width: 170px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: inline-block;
+#filters-sidebar-selected li a
+{
+	padding: 6px;
+	display:block;
 }
+#filters-sidebar-selected li a:hover
+{
+	background-color: #EEE;
+}
+
+
 .sp {
     color: white;
     font-size: 11px;
@@ -6313,4 +6350,24 @@ a.audio-filename:hover
 .render-choose-file {
     padding-top: 10px;
     display: block;
+}
+
+/* Groups page */
+div#emselectable {
+	overflow:auto;
+}
+
+div#filterscontent
+{
+	padding: 4px 10px 10px 10px;
+}
+
+div#filterscontent form {
+	margin-bottom:0;
+	
+}
+
+div#filterscontent h4 {
+	margin: 0 0 2px 0;
+	font-size: .9em;
 }

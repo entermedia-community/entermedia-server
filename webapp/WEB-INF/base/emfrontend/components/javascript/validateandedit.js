@@ -29,7 +29,7 @@ SetPath = function( inUrl )
 	input.value = inUrl;
 }
 	
-
+/*
 validate = function(inCatalogId, inDataType, inView , inFieldName)
 {
 	var val = $("#list-" + inFieldName).val();
@@ -44,6 +44,7 @@ validate = function(inCatalogId, inDataType, inView , inFieldName)
 	//alert( params );
 	jQuery(div).load(apphome + '/components/xml/validatefield.html', params);
 }
+*/
 
 var listchangelisteners = []; //list nodes
 
@@ -79,8 +80,8 @@ addListListener = function( inParentFieldName, inFieldName )
 updatelisteners = function(catalogid, searchtype,view , fieldname)
 {
 	var val = $("#list-" + fieldname).val();
-	//alert( "found "  + val );
-	validate(catalogid, searchtype, view , fieldname);
+
+	//validate(catalogid, searchtype, view , fieldname);
 	
 	var node = findOrAddNode(fieldname);
 	

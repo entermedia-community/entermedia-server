@@ -3,7 +3,9 @@
  */
 package org.openedit.data.lucene;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
@@ -18,6 +20,11 @@ import com.openedit.hittracker.Term;
 
 public class LuceneSearchQuery extends SearchQuery
 {
+	
+	protected List <PropertyDetail> fieldFacetList;
+	
+	
+
 	public LuceneSearchQuery()
 	{
 		// TODO Auto-generated constructor stub
@@ -594,6 +601,10 @@ public class LuceneSearchQuery extends SearchQuery
 		}
 		if( fieldChildren != null && fieldChildren.size() > 0)
 		{
+			if( done.length() > 0 )
+			{
+				done.append(" ");
+			}
 			for (int j = 0; j < getChildren().size(); j++)
 			{
 				SearchQuery child = (SearchQuery) getChildren().get(j);
@@ -636,5 +647,10 @@ public class LuceneSearchQuery extends SearchQuery
 		}
 		return done.toString();
 	}
+
+	
+
+
+
 
 }

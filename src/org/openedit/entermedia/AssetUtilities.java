@@ -74,7 +74,7 @@ public class AssetUtilities
 		getAssetUtilities().getMetaDataReader().populateAsset(archive,itemFile, asset);
 		archive.saveAsset(asset, inUser);
 		 */
-		boolean newasset = true;
+		boolean importedasset = true;
 		if (asset != null)
 		{
 			// Incremental conversion
@@ -108,7 +108,8 @@ public class AssetUtilities
 					if (filemmod == oldtime)
 					{
 						inArchive.getAssetArchive().clearAsset(asset);
-						newasset = false;
+						//saveasset = false;
+						return null;
 					}
 				}
 			}
@@ -125,24 +126,17 @@ public class AssetUtilities
 			}
 			asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			asset.setProperty("assetviews", "1");
-//			if( newasset )
-//			{
-				asset.setProperty("importstatus", "imported");
-//			}
-//			else
-//			{
-//				asset.setProperty("importstatus", "reimported");
-//			}
-			asset.setProperty("pushstatus", "resend");
-			//asset.setProperty("primaryfile", name);
 			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
 			if( assettype != null)
 			{
 				asset.setProperty("assettype",assettype.getId());
 			}
 		}
-		if (newasset)
+		if (importedasset)
 		{
+			asset.setProperty("importstatus", "imported");
+			asset.setProperty("pushstatus", "resend");
+
 			readMetadata(asset, inContent, inArchive);
 			// TODO: clear out old cached thumbnails and conversions
 			// directory
@@ -189,18 +183,9 @@ public class AssetUtilities
 
 	public void readMetadata(Asset asset, ContentItem inContent, final MediaArchive inArchive)
 	{
-		if (inContent instanceof FileItem)
-		{
-			File input = ((FileItem) inContent).getFile();
-			getMetaDataReader().populateAsset(inArchive, input, asset);
-		}
+		getMetaDataReader().populateAsset(inArchive, inContent, asset);
 	}
-	
-	public void readMetadata(Asset asset, File inFile, final MediaArchive inArchive)
-	{
-		getMetaDataReader().populateAsset(inArchive, inFile, asset);
-	}
-	
+		
 	public boolean deleteAsset(ContentItem inContent, final MediaArchive inArchive)
 	{
 		Asset asset = getAsset(inContent, inArchive);

@@ -19,6 +19,7 @@ import org.openedit.repository.filesystem.XmlVersionRepository;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebServer;
+import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.util.EmStringUtils;
 
@@ -71,17 +72,19 @@ public class HotFolderManager
 		//remove any old hot folders for this catalog
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		String path = "/WEB-INF/data/" + inCatalogId + "/originals";
+		List existing = new ArrayList();
 		
-		//remove all the mounts
 		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
 		{
 			Repository config = (Repository) iterator.next();
-			if (config.getPath().startsWith(path)) 
+			if( config.getPath().startsWith(path))
 			{
-				getPageManager().getRepositoryManager().removeRepository(config.getPath());
+				existing.add( config.getPath());
 			}
 		}
-		
+
+		//We should see if they are already configured?
+
 		List<Repository> mounts = new ArrayList<Repository>();
 		Collection folders = loadFolders(inCatalogId);
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
@@ -89,25 +92,45 @@ public class HotFolderManager
 			Data folder = (Data) iterator.next();
 			String folderpath = folder.get("subfolder");
 			String fullpath = path + "/" + folderpath;
-			Repository repo = null;
+			Repository repo = findRepoByPath( configs, fullpath );
 			String versioncontrol = folder.get("versioncontrol");
-			if( Boolean.valueOf(versioncontrol) )
+			repo = checkForChange(configs, repo, versioncontrol);
+			if( repo == null)
 			{
-				repo = new XmlVersionRepository();
-				repo.setRepositoryType("versionRepository");
+				repo = createRepo(versioncontrol);
+				existing.remove(fullpath);
 			}
-			else
+			mounts.add(repo);
+
+			String generatedpath = "/WEB-INF/data/" + inCatalogId + "/generated";
+			String fullgeneratedpath = generatedpath + "/" + folderpath;
+			Repository generatedrepo = findRepoByPath( configs, fullgeneratedpath );
+			
+			//Check for change in status
+			String genversioncontrol = folder.get("generatedversioncontrol");
+			generatedrepo = checkForChange(configs, generatedrepo, genversioncontrol);
+			
+			if( generatedrepo == null)
 			{
-				repo = new FileRepository();
+				generatedrepo = createRepo(genversioncontrol);
+				generatedrepo.setPath(fullgeneratedpath);
+				existing.remove(fullpath);
+				mounts.add(generatedrepo);
 			}
+			
+			
 			//save data to repo
 			repo.setPath(fullpath);
 			repo.setExternalPath(folder.get("externalpath"));
-			mounts.add(repo);
 			//repo.setFilterIn(folder.get("includes"));
 			//repo.setFilterOut(folder.get("excludes"));
 		}
-		
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
+		{
+			String fullpath = (String) iterator.next();
+			getPageManager().getRepositoryManager().removeRepository(fullpath);
+		}
+
 		if( mounts.size() > 0)
 		{
 			configs = getPageManager().getRepositoryManager().getRepositories();
@@ -116,6 +139,55 @@ public class HotFolderManager
 		}
 		//getPageManager().getRepositoryManager().setRepositories(configs);
 		//save the file
+	}
+
+
+	protected Repository createRepo(String versioncontrol)
+	{
+		Repository repo;
+		if( Boolean.valueOf(versioncontrol) )
+		{
+			repo = new XmlVersionRepository();
+			repo.setRepositoryType("versionRepository");
+		}
+		else
+		{
+			repo = new FileRepository();
+		}
+		return repo;
+	}
+
+
+	protected Repository checkForChange(List configs, Repository generatedrepo, String genversioncontrol)
+	{
+		if( generatedrepo != null)
+		{
+			if( Boolean.valueOf(genversioncontrol) && !(generatedrepo instanceof XmlVersionRepository) )
+			{
+				configs.remove(generatedrepo);
+				generatedrepo = null;					
+			}
+			if( !Boolean.valueOf(genversioncontrol) && (generatedrepo instanceof XmlVersionRepository) )
+			{
+				configs.remove(generatedrepo);
+				generatedrepo = null;					
+			}
+		}
+		return generatedrepo;
+	}
+
+	protected Repository findRepoByPath(List inConfigs, String inFullpath)
+	{
+
+		for (Iterator iterator = inConfigs.iterator(); iterator.hasNext();)
+		{
+			Repository config = (Repository) iterator.next();
+			if (config.getPath().startsWith(inFullpath)) 
+			{
+				return config;
+			}
+		}
+		return null;
 	}
 
 
@@ -166,7 +238,12 @@ public class HotFolderManager
 		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 		String name = inFolder.get("subfolder");
 		String path = base + "/" + name;
-		
+
+//		Page local = getPageManager().getPage(path + "/");
+//		if( !local.exists() )
+//		{
+//			getPageManager().putPage(local);
+//		}
 		AssetImporter importer = (AssetImporter)getWebServer().getModuleManager().getBean("assetImporter");
 		
 		String excludes = inFolder.get("excludes");
@@ -216,7 +293,7 @@ public class HotFolderManager
 				skipmodcheck = true;
 			}
 		}
-		log.info(inFolder + " scan stated. skip mod check = " + skipmodcheck );
+		log.info(path + " scan started. skip mod check = " + skipmodcheck );
 		
 		List<String> paths = importer.processOn(base, path, inArchive, skipmodcheck, null);
 		if( !skipmodcheck )

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
@@ -37,15 +38,15 @@ public class DataFileSearcher extends BaseLuceneSearcher
 		return new BaseData();
 	}
 	
-	public void reIndexAll(IndexWriter inWriter)
+	public void reIndexAll(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter)
 	{
 		//loop over all the files
 		//super.reIndexAll();
 		ContentItem root = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId());
-		addFolderToIndex(root,inWriter);
+		addFolderToIndex(root,inWriter, inTaxonomyWriter);
 	}
 	
-	protected void addFolderToIndex(ContentItem inRoot, IndexWriter inWriter)
+	protected void addFolderToIndex(ContentItem inRoot, IndexWriter inWriter ,TaxonomyWriter inTaxonomyWriter)
 	{
 		List childrenItems = listChildren(inRoot.getPath());
 
@@ -58,10 +59,10 @@ public class DataFileSearcher extends BaseLuceneSearcher
 			tosavelist.add(tosave);
 			if( item.isFolder())
 			{
-				addFolderToIndex(item, inWriter);
+				addFolderToIndex(item, inWriter, inTaxonomyWriter);
 			}
 		}
-		updateIndex(inWriter,tosavelist);
+		updateIndex(inWriter, inTaxonomyWriter, tosavelist);
 	}
 	protected List listChildren(String inPath)
 	{

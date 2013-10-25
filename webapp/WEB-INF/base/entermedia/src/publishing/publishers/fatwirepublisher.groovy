@@ -17,6 +17,7 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
 import com.openedit.hittracker.SearchQuery;
 import java.net.URL;
+import java.awt.Dimension;
 
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
@@ -31,6 +32,7 @@ import org.apache.commons.net.ftp.FTPReply
 import org.apache.commons.io.IOUtils
 
 import org.apache.commons.net.io.Util;
+import org.openedit.entermedia.creator.ConversionUtil;
 
 
 
@@ -47,17 +49,44 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		String urlHome = inPublishRequest.get("homeurl");
 		String username =  inPublishRequest.get("username");
 		String outputfile = inPublishRequest.get("convertpresetoutputfile");
+		
+		//use default Type and Subtypes since we are dealing with images
+		String defaultType = "Image_C";
+		String defaultSubtype = "Image";
+		String regionid = inPublishRequest.get("regionid");
+		if (regionid == null){
+			Searcher fatwireregionsearch = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "fatwireregion");
+			Data defaultfr = fatwireregionsearch.searchByField("default", "true");
+			if (defaultfr!=null){
+				regionid = defaultfr.getId();
+			}
+		}
+		//if region is still null, then revert to old way of publishing
+		if (regionid == null){
+			defaultType = defaultSubtype = null;
+		}
+		
+		
 		Searcher presetsearch = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "convertpreset");
+		String presetid = inPublishRequest.get("presetid");
+		
+		Dimension dimension = null;
+		if (presetid!=null)
+		{
+			//use the dimension defined by the preset
+			ConversionUtil cutil = (ConversionUtil) mediaArchive.getModuleManager().getBean( "conversionUtil");
+			dimension = cutil.getConvertPresetDimension(mediaArchive.getCatalogId(), presetid);
+		}
+		
 		
 		if (outputfile == null || outputfile.isEmpty())
 		{
-			//search for presetid
-			String presetid = inPublishRequest.get("presetid");
-			//find outputfile
 			Data d = (Data) presetsearch.searchById(presetid);
 			outputfile = d.get("outputfile");
 			if (outputfile != null && outputfile.isEmpty()) outputfile = null;
 		}
+		
+		
 		Data thumbpreset = presetsearch.searchById("thumbimage");//get thumbnail data
 		
 		UserManager usermanager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
@@ -82,7 +111,17 @@ public class fatwirepublisher extends basepublisher implements Publisher
 		Object fatwireManager = mediaArchive.getModuleManager().getBean( "fatwireManager");
 		try {
 			fatwireManager.setMediaArchive(mediaArchive);
-			Object assetBean = fatwireManager.pushAsset(inAsset, inUser, urlHome, usage, exportname, outputfile);
+			
+			Object assetBean = null;
+			if (regionid!=null && defaultType!=null && defaultSubtype!=null )
+			{
+				//pushAsset(inAsset, regionId, defaultType, defaultSubtype, inUser, inUrlHome, inUsage, exportName, outputFile);
+				assetBean = fatwireManager.pushAsset(inAsset, regionid, defaultType, defaultSubtype, inUser, urlHome, usage, exportname, outputfile, dimension);
+			} 
+			else
+			{
+				assetBean = fatwireManager.pushAsset(inAsset, inUser, urlHome, usage, exportname, outputfile, dimension);
+			}
 			if (assetBean != null)
 			{
 				String newId = assetBean.getId();

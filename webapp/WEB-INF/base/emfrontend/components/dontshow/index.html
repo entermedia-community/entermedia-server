@@ -3,92 +3,82 @@
 				<span class="widget-header-title">[[Filters]]</span>
 			</div>
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
-#set ($assetTypeSearcher = $searcherManager.getSearcher($catalogid, "assettype"))
-
-#set ($types = $assetTypeSearcher.fieldSearch(id, "*", "name"))
-
-#set( $notselected = $userprofile.getValues("hideassettype") ) 
-
-
-<div class="subcolumns" style="white-space:nowrap;"> 
-    <ul id="filters-sidebar">  
-#foreach($type in $types )
-
-    
-    #if( $notselected.contains( $type.getId() ) )
-    #set( $selected = false)
-    #else
-    #set( $selected = true)
-    #end
-	
-			
-	<li><input class="assettypeselect" type="checkbox" name="childquery" value="$type.getId()" #if( $selected )checked #end/><span> $type.name</span></li> 			
-				
-			
-
-
-#end
+ 
+ <ul id="filters-sidebar-selected">
+ #if( $hits.getSearchQuery().hasFilters() )
+ ##<h4>Selected</h4>
+	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
+			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
+				href="$home$apphome/views/search/filter.html?removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >$selectedfilter
+				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>
+	#end
+#end	
 </ul>
 
+#set($facets = $hits.getFilterOptions())
 
-<form  action="$apphome/components/results/table.html" class="ajaxform" targetdiv="resultsdiv" style="margin-bottom:0;padding-right:15px;" target="_parent" name="dontshow" id="dontshow" valign="middle">
-    ##<input type="hidden"  name="oemaxlevel" value="1" />
+<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+
+#foreach($type in $facets )
+<h4>$type</h4>
+	     <ul class="filters-sidebar">
+	     
+	#foreach($entry in $type.children)
+			
+			#if( $velocityCount == 10 )
+			</ul>
+			<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="Show More" data-hidelabel="Show Less"><span>Show More</span></a>
+			<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
+			
+			#end
+			
+	<li>
+	<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry" href="#"><span> $entry ($entry.count)</span></a>
+	</li>
+	#end
+
+</ul>
+
+#end
     <input type="hidden" name="catalogid" value="$!catalogid" />
-    <input type="hidden" name="searchtype" value="asset" />
-        <input type="hidden" name="cache" value="false" />
-    
+    <input type="hidden" name="searchtype" value="$searcher.searchType" />
+    <input type="hidden" id="filtertype" name="filtertype" value="" />
+    <input type="hidden" id="filtervalue" name="filtervalue" value="" />
+    <input type="hidden" id="filterlabel" name="filterlabel" value="" />
+    <input type="hidden" name="oemaxlevel" value="2" />
     <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
-     
 </form>
-<input class="btn"  id="select_all" type="button" value="[[All]]" />
-<input class="btn" style="margin-left: 5px;" id="select_none" type="button" value="[[None]]" />
 
-
-</div>
 </div></div>
 	
 
 
 <script type="text/javascript">
 
-applyDontShow = function()
-{	
-	jQuery('#spinner').css('visibility', 'visible');
-	
-	var inputs = jQuery('input[name="childquery"]');
-	var query = "hitssessionid=$hits.getSessionId()&cache=false&profilesearchfilters=hideassettype";
-	var found = false;
-	for (var i = 0; i < inputs.size(); i++)
-	{
-		input = inputs[i];
-		if (!input.checked)
-		{
-			query += "&hideassettype=" + input.value;
-			found=true;
-		} 
-	}
-	
-	//TODO: Why not update the results with new data like VD does?
-	jQuery('#dontshow').attr('action', "$home$apphome/components/results/table.html?" + query);
-	jQuery('#dontshow').submit();
 
+jQuery(document).ready(function() 
+{ 
 
-}
+	jQuery('.addfilter').bind('click',function(e)
+	{	
+		e.preventDefault();
+		//TODO: Why not update the results with new data like VD does?
+			var link = $(this);
+			var picked = link.data("filtertype");
+			jQuery('#filtertype').val(picked);
+			var value = link.data("filtervalue");
+			jQuery('#filtervalue').val(value);
+			var label = link.data("filterlabel");
+			jQuery('#filterlabel').val(label);
 
-jQuery('#select_all').click(function(){
-	jQuery('.assettypeselect').each(function(){this.checked = true;});
-	applyDontShow();
-	return false;
-});
+			jQuery('#dontshow').submit();
+			
+	});
 
-jQuery('#select_none').click(function(){
-	jQuery('.assettypeselect').each(function(){this.checked = false;});
-	applyDontShow();
-	return false;
 });
 
 
-jQuery('.assettypeselect').bind('click',applyDontShow);
 
 </script>
 

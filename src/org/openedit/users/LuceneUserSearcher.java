@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
@@ -21,6 +22,7 @@ import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.users.BaseUser;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
@@ -62,13 +64,13 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 	}
 
 	
-	public void reIndexAll(IndexWriter writer) throws OpenEditException
+	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter) throws OpenEditException
 	{
 		log.info("Reindex of customer users directory");
 		try
 		{
 			//writer.setMergeFactor(50);
-		
+			getUserManager().flush();
 			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
 			Collection usernames = getUserManager().listUserNames();
 			if( usernames != null)
@@ -105,7 +107,10 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 		{
 			Group group = (Group) iterator.next();
 			groups.append(group.getId());
-			groups.append(" ");
+			if( iterator.hasNext() )
+			{
+				groups.append(" | ");
+			}
 		}
 		if( groups.length() > 0)
 		{
@@ -201,6 +206,13 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 	
 	@Override
 	public Data createNewData() {
-		return getUserManager().createUser(null, null);
+		//return getUserManager().createUser(null, null);
+		return new BaseUser();
+	}
+	
+	@Override
+	public void deleteData(Data inData)
+	{
+		getUserManager().deleteUser((User)inData);
 	}
 }

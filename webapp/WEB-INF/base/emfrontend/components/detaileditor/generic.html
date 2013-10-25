@@ -39,12 +39,9 @@ $context.putPageValue("searcher", $searcher)
 #if(!$editpath)
 	#set( $editpath = "${page.directory}/genericsave.html" )
 #end
-#if($errors)
-<span style="color:red;">Your entry is invalid.  Please check your values and try again.</span>
-#set($edit = "true")
+#if($data.getId().startsWith("multiedit"))
+	#set($multiedit = true)
 #end
-
-
 
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 
@@ -68,7 +65,7 @@ $context.putPageValue("searcher", $searcher)
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
 		<div id="default-fields">
-			$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+			$pages.include("/$applicationid/components/xml/detaileditor.html?multiedit=$multiedit", $context)
 		</div>
 		<p class="btns" align="right">
 			<a class="ajax" style="margin-right: 5px;" targetdiv="${view}editor" href="$home$apphome/components/detaileditor/generic.html?searchtype=$searcher.searchType&view=$view&id=$!data.id&assetid=$asset.id$label=$label&oemaxlevel=1">[[Cancel]]</a>
@@ -113,7 +110,13 @@ $context.putPageValue("searcher", $searcher)
 		
 		#foreach( $detail in $assetdetails )
 			#set( $value = false)
-			#set( $value = $data.get($detail.getId()))
+			
+			#if( $searcherManager )
+				#set( $value = $searcherManager.getValue($data,$detail) )	
+			#else
+				#set( $value = $data.get($detail.getId()))
+			#end
+			
 			#if( $value && $value != "") 
 				#set( $foundone = true)
 				<div class="cellrow">

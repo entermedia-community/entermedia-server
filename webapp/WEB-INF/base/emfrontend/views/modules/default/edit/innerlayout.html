@@ -1,6 +1,26 @@
 #set( $moduleid = $context.findValue("module") )
 #set($viewid = $context.getRequestParameter("viewid"))
 #set($viewpath = $context.getRequestParameter("viewpath"))
+
+
+#if( !$viewid )
+
+	#set($ismodule = $searcherManager.getData($catalogid, "module", $moduleid ) )
+	#if($ismodule)
+		#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+		#set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined","false") )
+		$!query.addSortBy("ordering")   
+		#set($view = $viewsearcher.searchByQuery($query))
+		#if( $view )
+		    #set( $viewid = $view.getId() )
+		    #set( $viewpath = "${moduleid}/$viewid" )
+			$context.getParent().setRequestParameter("viewid",$viewid)
+			$context.getParent().setRequestParameter("viewpath",$viewpath)
+		#end
+	#end
+#end		
+
+
 #set( $searchhome = $context.findValue("searchhome") )
 $context.putPageValue("searchhome",$searchhome)
 

@@ -1,4 +1,5 @@
 #!/bin/sh
 input=$1
 output=$2
-exiftool -b -ThumbnailImage "$input" > "$output"
+type=$3
+exiftool -b -$type "$input" > "$output"

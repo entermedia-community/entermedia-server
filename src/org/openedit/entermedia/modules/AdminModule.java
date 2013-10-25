@@ -362,18 +362,7 @@ public class AdminModule extends BaseModule
 				inReq.putPageValue("oe-exception", "Invalid Logon");
 				return;
 			}
-			AuthenticationRequest aReq = new AuthenticationRequest();
-			aReq.setUser(user);
-			aReq.setPassword(password);
-
-			String domain = inReq.getRequestParameter("domain");
-			if (domain == null)
-			{
-				domain = inReq.getContentPage().get("authenticationdomain");
-			}
-			aReq.putProperty("authenticationdomain", domain);
-			String server = inReq.getPage().get("authenticationserver");
-			aReq.putProperty("authenticationserver", server);
+			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
 
 			if (loginAndRedirect(aReq, inReq))
 			{
@@ -381,6 +370,45 @@ public class AdminModule extends BaseModule
 				getUserManager().saveUser(user);
 			}
 		}
+	}
+	public boolean authenticate(WebPageRequest inReq) throws Exception
+	{
+		String account = inReq.getRequestParameter("id");
+		String password = inReq.getRequestParameter("password");
+		User user = getUserManager().getUser(account);
+		Boolean ok = false;
+		if( user != null)
+		{
+			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
+			if( getUserManager().authenticate(aReq) )
+			{
+				ok = true;
+			}
+		}
+		else
+		{
+			log.info("No such user" + account );
+		}
+		inReq.putPageValue("id", account );
+		inReq.putPageValue("authenticated", ok);
+		return ok;
+		
+	}
+	protected AuthenticationRequest createAuthenticationRequest(WebPageRequest inReq, String password, User user)
+	{
+		AuthenticationRequest aReq = new AuthenticationRequest();
+		aReq.setUser(user);
+		aReq.setPassword(password);
+
+		String domain = inReq.getRequestParameter("domain");
+		if (domain == null)
+		{
+			domain = inReq.getContentPage().get("authenticationdomain");
+		}
+		aReq.putProperty("authenticationdomain", domain);
+		String server = inReq.getPage().get("authenticationserver");
+		aReq.putProperty("authenticationserver", server);
+		return aReq;
 	}
 
 	/**
@@ -761,12 +789,17 @@ public class AdminModule extends BaseModule
 		int pwd_expiry_in_days = 1;
 		String str = inReq.getPageProperty("temporary_password_expiry");
 		if (str != null && !str.isEmpty()){
-			try{
+			try
+			{
 				pwd_expiry_in_days = Integer.parseInt(str);
 				if (pwd_expiry_in_days < 1) pwd_expiry_in_days = 1;//default if malformed
-			}catch(NumberFormatException e){}
+			}
+			catch(NumberFormatException e)
+			{
+				
+			}
+			log.info("Password is set to expire in "+pwd_expiry_in_days+" days");
 		}
-		log.info("Password is set to expire in "+pwd_expiry_in_days+" days");
 		//String uandpass = cook.getValue();
 		if (uandpass != null)
 		{
@@ -833,13 +866,19 @@ public class AdminModule extends BaseModule
 	public void forwardToSecureSocketsLayer(WebPageRequest inReq)
 	{
 		String useSecure = inReq.getPage().get("useshttps");
-
+		
 		if (Boolean.parseBoolean(useSecure) && inReq.getRequest() != null)
 		{
 			String host = inReq.getPage().get("hostname");
 			if (host == null)
 			{
 				host = inReq.getPage().get("hostName");
+			}
+			if(host == null){
+				return;
+			}
+			if(host.contains("localhost")){
+				return;
 			}
 			if (host != null && !inReq.getRequest().isSecure())
 			{

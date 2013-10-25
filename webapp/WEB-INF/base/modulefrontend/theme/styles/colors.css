@@ -148,7 +148,7 @@ ul.emheaderbuttons li.navselected a
 	background-color: #FFFFFF;
 }
 
-.error {
+label.error {
 	color: #90002A;
 }
 

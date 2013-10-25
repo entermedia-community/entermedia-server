@@ -118,7 +118,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	{
 		Document doc = new Document();
 		updateIndex(asset, doc, inDetails);
-
+		
 		return doc;
 	}
 /*
@@ -136,10 +136,11 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		}
 	}
 */
-	public void populateAsset(IndexWriter writer, Asset asset, boolean add, PropertyDetails inDetails) throws OpenEditException
+	public Document populateAsset(IndexWriter writer,  Asset asset, boolean add, PropertyDetails inDetails) throws OpenEditException
 	{
 		Document doc = createAssetDoc(asset, inDetails);
-		writeDoc(writer, asset.getId().toLowerCase(), doc, add);
+		return doc;
+	
 	}
 
 	protected void populatePermission(Document inDoc, List inAccessList, String inPermission)

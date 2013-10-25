@@ -18,6 +18,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.util.Version;
 import org.openedit.data.Searcher;
@@ -132,8 +133,12 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 					for (int i = 0; i < hits.length; i++)
 					{
 						String word = hits[i];
-						String key = word.substring(0, word.lastIndexOf('('));
-						suggestions.put(key, word);
+						int index = word.lastIndexOf('(');
+						if( index > -1)
+						{
+							String key = word.substring(0, index);
+							suggestions.put(key, word);
+						}
 					}
 				}
 			}
@@ -278,7 +283,7 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 
 	
 
-	public void reIndexAll(IndexWriter writer) throws OpenEditException
+	public void reIndexAll(IndexWriter writer, TaxonomyWriter inTaxonomyWriter) throws OpenEditException
 	{
 //		//do nothing
 //		try

@@ -32,6 +32,7 @@ import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.search.AssetSecurityArchive;
 import org.openedit.entermedia.search.SearchFilterArchive;
+import org.openedit.entermedia.xmldb.CategorySearcher;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
@@ -129,6 +130,7 @@ public class MediaArchive
 			fieldReplacer = new Replacer();
 			fieldReplacer.setCatalogId(getCatalogId());
 			fieldReplacer.setSearcherManager(getSearcherManager());
+			fieldReplacer.setAlwaysReplace(true);
 		}
 		return fieldReplacer;
 	}
@@ -508,8 +510,8 @@ public class MediaArchive
 	{
 		if (fieldCategoryArchive == null)
 		{
-			fieldCategoryArchive = (CategoryArchive) getModuleManager().getBean(getCatalogId(), "categoryArchive");
-			fieldCategoryArchive.setCatalogId(getCatalogId());
+			CategorySearcher searcher = (CategorySearcher)getSearcher("category");
+			fieldCategoryArchive = searcher.getCategoryArchive();
 		}
 		return fieldCategoryArchive;
 	}
@@ -1316,6 +1318,10 @@ public class MediaArchive
 		Map tmp = new HashMap(inPreset.getProperties());
 		tmp.put("assetid", inAsset.getId());
 		tmp.put("filename", inAsset.getName());
+		
+		String shortname = PathUtilities.extractPageName(inAsset.getName());
+		tmp.put("shortfilename", shortname);
+		
 		tmp.put("catalogid", inAsset.getCatalogId());
 		tmp.put("sourcepath", inAsset.getSourcePath());
 		tmp.put("date", ymd.format(now));
@@ -1416,6 +1422,11 @@ public class MediaArchive
 	public Searcher getSearcher(String inSearchType){
 		return getSearcherManager().getSearcher(getCatalogId(), inSearchType);
 	}
+	
+	public Data getData(String inSearchType, String inId){
+		return getSearcherManager().getData(getCatalogId(), inSearchType, inId);
+	}
+	
 	public Collection getCatalogSettingValues(String inKey)
 	{
 		String value = getCatalogSettingValue(inKey);

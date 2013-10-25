@@ -44,7 +44,7 @@ files.deleteMatch( web + "/lib/dev_entermedia-8*.jar");
 
 files.deleteMatch( web + "/lib/entermedia-server*.jar");
 files.deleteMatch( web + "/lib/entermedia-5*.jar");
-files.deleteMatch( web + "/lib/entermedia-8*.jar");
+files.deleteMatch( web + "/lib/entermedia-7*.jar");
 files.deleteMatch( web + "/lib/entermedia-8*.jar");
 
 
@@ -60,9 +60,11 @@ files.deleteMatch( web + "/lib/jaxen-*.jar");
 files.deleteMatch( web + "/lib/commons-codec*.jar");
 files.deleteMatch( web + "/lib/guava-*.jar");
 files.deleteMatch( web + "/lib/velocity-tools*.jar");
+files.deleteMatch( web + "/lib/http*.jar");
 
 
 
+/*
 files.copyFileByMatch( tmp + "/WEB-INF/lib/entermedia*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/dev_entermedia*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/groovy-*.jar", web + "/lib/");
@@ -78,6 +80,8 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/jaxen-*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/commons-codec*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/guava*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/velocity-tools*.jar", web + "/lib/");
+*/
+files.copyFileByMatch( tmp + "/WEB-INF/lib/*.jar", web + "/lib/");
 
 
 log.add("5. CLEAN UP");

@@ -3,8 +3,8 @@
 				<div  #if($userprofile.minimizecategoriescontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" #else class="ui-widget-header" #end data-target="categoriescontent">
 				<span class="widget-header-title">[[Categories]]</span>
 				#if( $caneditcategories )
-					<span class="widget-header-edit">
-					<a class="ajax ir" href="$home$apphome/views/settings/modules/asset/categories/index.html">Edit</a>
+					<span class="widget-header-edit">					
+					<a class="emdialog ir" data-width="560" data-height="450" href="$home$apphome/components/categories/edit/editdialog.html?targetdiv=addcategory&clearselection=true">Edit</a>
 					</span>
 				#end	
 				</div>

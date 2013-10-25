@@ -29,9 +29,11 @@
 
   <inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
 
+<!--    
+
   <style id="layout" href="${themeprefix}/styles/layout.css"/>
   <style id="modulefrontend-css" href="${themeprefix}/styles/modulefrontend.css"/>
-    
+
   <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.7.1.min.js"/>
   <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.8.12.custom.min.js"/>
   <script id="jquery-ui-i18n" src="/${applicationid}/components/javascript/ui/i18n/jquery-ui-i18n.js"/>
@@ -60,7 +62,8 @@
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
   
   <style id="custom-css" href="${themeprefix}/styles/custom.css"/>
-    
+  -->
+   
   <permission name="quicksearch">
   	<boolean value="true" />
   </permission>

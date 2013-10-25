@@ -212,7 +212,7 @@ public class PathEvent implements Comparable, TextAppender
 	public void setLastRun(Date inLastRun)
 	{
 		fieldLastRun = inLastRun;
-		getLastOutput().append("ran on: ");
+		getLastOutput().append("event started: ");
 		getLastOutput().append(DateFormat.getDateTimeInstance().format(fieldLastRun));
 		getLastOutput().append('\n');
 
@@ -272,12 +272,13 @@ public class PathEvent implements Comparable, TextAppender
 	 */
 	public boolean execute(WebPageRequest inReq) throws OpenEditException
 	{
-		if( isRunning() )
-		{
-			log.info("Event is already running" + getPage().getName() );
-			return false; //already running
-		}
-		//Hopefully two events executes would not be run at the same moment. 
+		//The task should make sure this does not run if it is a repeating type
+//		if( isRunning() )
+//		{
+//			log.info("Event is already running " + getPage().getName() );
+//			return false; //already running
+//		}
+		//Track if two parameterized events execute at the same moment. 
 		fieldRunningCount++;
 		try
 		{

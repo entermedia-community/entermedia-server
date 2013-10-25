@@ -91,6 +91,18 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			
 			Dimension box = inStructions.getMaxScaledSize();
+			if (input == null && inStructions.getProperty("useinput")!=null)
+			{
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/"+inStructions.getProperty("useinput") + page + ".jpg");
+				if( !input.exists()  || input.length() < 2)
+				{
+					input = null;
+				}
+				else
+				{
+					autocreated = true;
+				}
+			}
 			if( input == null &&  box.getWidth() < 300 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
@@ -299,8 +311,11 @@ public class imagemagickCreator extends BaseImageCreator
 					prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
 					postfix =  String.valueOf( inStructions.getMaxScaledSize().height );				
 //				}
+				
+					
 				if (isOnWindows())
 				{
+					
 					com.add("\"" + prefix + "x" + postfix + "\"");
 				}
 				else
@@ -323,7 +338,9 @@ public class imagemagickCreator extends BaseImageCreator
 
 		if(inStructions.isCrop())
 		{
+			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
 			//resize then cut off edges so end up with a square image
+			if(!croplast){
 			com.add("-resize");
 			StringBuffer resizestring = new StringBuffer();
 			resizestring.append(inStructions.getMaxScaledSize().width);
@@ -331,38 +348,62 @@ public class imagemagickCreator extends BaseImageCreator
 			resizestring.append(inStructions.getMaxScaledSize().height);
 			resizestring.append("^");
 			com.add(resizestring.toString());
-
-
-			if( "pdf".equals(ext) || "png".equals(ext)) 
-			{
-				com.add("-background");
-				com.add("white");
-				com.add("-flatten");
 			}
 			   		
 			//now let's crop
 			com.add("+repage");
 			String gravity = inStructions.get("gravity");
-			com.add("-gravity");
-			if( gravity == null )
-			{
-				String thistype = inAsset.getFileFormat();
-				String found = inArchive.getMediaRenderType(thistype);
-				if( "document".equals(found) )
+			if(!"default".equals(gravity)){
+				
+				
+				
+				
+				com.add("-gravity");
+				if( gravity == null )
 				{
-					gravity = "NorthEast";
+					String thistype = inAsset.getFileFormat();
+					String found = inArchive.getMediaRenderType(thistype);
+					if( "document".equals(found) )
+					{
+						gravity = "NorthEast";
+					}
 				}
+				if( gravity == null )
+				{
+					gravity = "Center";
+				}
+				com.add(gravity);
 			}
-			if( gravity == null )
+			
+			
+			if( "pdf".equals(ext) || "png".equals(ext))
 			{
-				gravity = "Center";
+				com.add("-background");
+				com.add("white");
+				com.add("-flatten");
 			}
-			com.add(gravity);
+			
+			
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
-			cropString.append(inStructions.getMaxScaledSize().width);
+			String cropwidth = inStructions.get("cropwidth");
+			if(!cropwidth){
+				cropwidth = inStructions.getMaxScaledSize().width;
+			}
+			cropString.append(cropwidth);
+			
+			
+			
+			
+			
 			cropString.append("x");
-			cropString.append(inStructions.getMaxScaledSize().height);
+			String cropheight = inStructions.get("cropheight");
+			
+			if(!cropheight){
+				cropheight = inStructions.getMaxScaledSize().height;
+			}
+			
+			cropString.append(cropheight);
 			
 			String x1 = inStructions.get("x1");
 			String y1 = inStructions.get("y1");
@@ -378,6 +419,22 @@ public class imagemagickCreator extends BaseImageCreator
 				cropString.append(y1);
 			}
 			com.add(cropString.toString());
+			
+			if(croplast){
+				com.add("-resize");
+				StringBuffer resizestring = new StringBuffer();
+				resizestring.append(inStructions.getMaxScaledSize().width);
+				resizestring.append("x");
+				resizestring.append(inStructions.getMaxScaledSize().height);
+				resizestring.append("^");
+				com.add(resizestring.toString());
+			}
+				
+			
+
+
+			
+			
 		}
 		else if( "pdf".equals(ext) ||  "png".equals(ext)) 
 		{

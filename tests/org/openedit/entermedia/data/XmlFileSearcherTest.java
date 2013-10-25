@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.openedit.Data;
 import org.openedit.data.BaseData;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.data.XmlFileSearcher;
 import org.openedit.entermedia.Asset;
@@ -179,8 +180,39 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 	/*
 	 * 4. Save and load Email data? LuceneEmailSearcher
 	 */
-	public void testEmailData()
+	public void testLibrarySave()
 	{
+		Searcher xmlsearcher = getMediaArchive().getSearcher("library");
+		Data newxml = xmlsearcher.createNewData();
+		newxml.setProperty("notes", "Here are my notes Full of stuf");
+		
+		newxml.setProperty("notes", "Here are my notes.\"Full");
+		newxml.setProperty("notes", "Here are my notes.&");
+		xmlsearcher.saveData(newxml, null);
+		xmlsearcher.clearIndex();
+		
+		newxml.setProperty("notes", "Here are my notes.< ");
+		newxml.setProperty("notes", "Here are my notes. >");
+		xmlsearcher.saveData(newxml, null);
+		xmlsearcher.clearIndex();
+		
+		newxml.setProperty("notes", "Here are my notes.\nFull of");
+		xmlsearcher.saveData(newxml, null);
+		xmlsearcher.clearIndex();
+		
+		
+		Data newlines = (Data)xmlsearcher.searchById(newxml.getId());
+		String lines = newlines.get("notes");
+		assertEquals(  "Here are my notes.\nFull of", lines );
+		
+		newxml.setProperty("notes", "Here are my notes Full of stuf");
+		xmlsearcher.saveData(newxml, null);
+		xmlsearcher.clearIndex();
+		
+		newlines = (Data)xmlsearcher.searchById(newxml.getId());
+		lines = newlines.get("notes");
+		assertEquals(  "Here are my notes Full of stuf", lines );
+		
 		
 	}
 }

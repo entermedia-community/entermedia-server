@@ -1,7 +1,7 @@
 <div style="padding: 20px;">
 <h1>Custom CSV Export</h1>
 <p>Select from the fields below to create a custom CSV</p>
-<form name="customexport" action="export.csv">
+<form name="customexport" action="./download/${searcher.getSearchType()}custom.csv">
 
 #set($details = $searcher.getPropertyDetails())
 #foreach($detail in $details)

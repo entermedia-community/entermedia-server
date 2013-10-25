@@ -26,7 +26,6 @@
 	
 	<property name="oe.edit.directedits">true</property>	
 	<property name="showadmintoolbar">true</property>	
-	<property name="oetextfilter">translation</property>
 
 	<generator name="velocityGenerator" mimetypes="text/html"/>
   	<generator name="fileGenerator" />

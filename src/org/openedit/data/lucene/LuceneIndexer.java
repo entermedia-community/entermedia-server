@@ -1,6 +1,7 @@
 package org.openedit.data.lucene;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -14,18 +15,23 @@ import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.facet.index.FacetFields;
+import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.CorruptIndexException;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.util.DateStorageUtil;
 
+import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
 
 public class LuceneIndexer
@@ -34,7 +40,6 @@ public class LuceneIndexer
 	private static final Log log = LogFactory.getLog(LuceneIndexer.class);
 	protected NumberUtils fieldNumberUtils;
 	protected SearcherManager fieldSearcherManager;
-
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -190,14 +195,17 @@ public class LuceneIndexer
 	{
 		StringBuffer keywords = new StringBuffer();
 		readStandardProperties(inDetails, inData, keywords, doc);
-
+		
 		List details = inDetails.getDetails();
 		for (Iterator iterator = details.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			readProperty(inData, doc, keywords, detail);
 		}
+		
 		readDescription(doc, keywords);
+		
+		
 	}
 
 	protected void readDescription(Document doc, StringBuffer keywords)
@@ -240,7 +248,7 @@ public class LuceneIndexer
 			docAdd(detail, doc,"sourcepath", inData.getSourcePath(), Field.Store.YES,true);
 		}
 	}
-	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore , boolean isText)
+	public void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore , boolean isText)
 	{
 		docAdd(inDetail,doc,inId,inValue,null,inStore,isText);
 	}
@@ -352,11 +360,15 @@ public class LuceneIndexer
 				keywords.append(value);
 			}
 		}
-
+	
+		
 		if( !detail.isIndex() )
 		{
 			return;
 		}
+		
+		
+		
 		if( populateJoin(inData, doc, detail) )
 		{
 			return;
@@ -487,4 +499,72 @@ public class LuceneIndexer
 		}
 		return false;
 	}
+	
+	public void updateFacets(PropertyDetails inDetails, Document inDoc, TaxonomyWriter inTaxonomyWriter)
+	{
+		if (inTaxonomyWriter == null)
+		{
+			return;
+		}
+
+		List facetlist = inDetails.getDetailsByProperty("filter", "true");
+		ArrayList<CategoryPath> categorypaths = new ArrayList();
+		for (Iterator iterator = facetlist.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String value = inDoc.get(detail.getId());
+
+			if (detail.isFilter())
+			{
+				if (value != null)
+				{
+					//split the values and add a path for each one?
+					String[] values = null;
+					if(value.contains("|"))
+					{
+						values = MultiValued.VALUEDELMITER.split(value);
+					}
+					else
+					{
+						values = new String[] { value };
+					}
+					for (int i = 0; i < values.length; i++)
+					{
+						if( detail.getId().equals("category") && values[i].equals("index"))
+						{
+							continue;
+						}
+						String val = values[i];
+						if( val != null && !val.trim().isEmpty() )
+						{
+							String[] vals = new String[2];
+							vals[0] = detail.getId().replace('/', '_');
+							vals[1] = values[i].replace('/', '_');
+							categorypaths.add(new CategoryPath(vals));
+						}
+					}
+						//log.info("Adding: " + vals);
+
+				}
+			}
+
+		}
+
+		if (categorypaths.size() > 0)
+		{
+			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
+			try
+			{
+				facetFields.addFields(inDoc, categorypaths);
+			}
+			catch (IOException e)
+			{
+				throw new OpenEditException(e);
+			}
+		}
+		// do stuff
+	
+	}
+
+	
 }

@@ -9,6 +9,7 @@ import java.io.FilenameFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
@@ -17,6 +18,7 @@ import org.openedit.data.lucene.BaseLuceneSearcher;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.users.BaseGroup;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
@@ -117,7 +119,7 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 	{
 		return getGroup(inId);
 	}
-	public void reIndexAll(IndexWriter writer)
+	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter)
 	{
 		log.info("Reindex of customer groups directory");
 		try
@@ -168,6 +170,12 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 
 	}
 
+	@Override
+	public Data createNewData()
+	{
+		return new BaseGroup();
+	}
+	
 	public Group getGroup(String inGroupId)
 	{
 		Group group = getUserManager().getGroup(inGroupId);
@@ -194,5 +202,9 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 		super.setCatalogId(inCatalogId);
 	}
 
+	public void deleteData(Data inData)
+	{
+		getUserManager().deleteGroup((Group)inData);
+	}
 	
 }
