@@ -24,9 +24,13 @@ public class CategoryEditTest extends BaseEnterMediaTest
 
 	protected void setUp() throws Exception
 	{
-		Category blank = getCategoryEditor().addNewCategory( "GOODSTUFF","Some Good Stuff");
+		Category blank = getCategoryEditor().getCategory("GOODSTUFF"); 
+		if( blank == null)
+		{
+			blank = getCategoryEditor().addNewCategory( "GOODSTUFF","Some Good Stuff");
+			getCategoryEditor().saveCategory(blank);
+		}
 		assertNotNull( blank );
-		getCategoryEditor().saveCategory(blank);
 	}
 	
 	public void testDeleteCategory() throws Exception
