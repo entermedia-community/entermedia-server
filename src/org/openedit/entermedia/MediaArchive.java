@@ -1427,6 +1427,10 @@ public class MediaArchive
 		return getSearcherManager().getData(getCatalogId(), inSearchType, inId);
 	}
 	
+	
+	public HitTracker getList(String inSearchType){
+		return getSearcherManager().getList(getCatalogId(), inSearchType);
+	}
 	public Collection getCatalogSettingValues(String inKey)
 	{
 		String value = getCatalogSettingValue(inKey);

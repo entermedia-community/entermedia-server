@@ -261,7 +261,6 @@ public class RegistrationModule extends BaseMediaModule {
 		inReq.putPageValue("saved", "true");
 		inReq.putPageValue("newuser", current);
 		inReq.putPageValue("password", password);
-
 		//lets create a user profile now too.
 		MediaArchive archive = getMediaArchive(inReq);
 		UserProfileSearcher upsearcher= (UserProfileSearcher) archive.getSearcher("userprofile");
@@ -270,6 +269,7 @@ public class RegistrationModule extends BaseMediaModule {
 		up.setUser(current);
 		up.setId(current.getId());
 		upsearcher.saveData(up, null);
+		inReq.putPageValue("data", up);
 		
 		
 		
