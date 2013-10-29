@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
@@ -15,24 +16,24 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
+
 import com.openedit.hittracker.SearchQuery;
+
 import java.net.URL;
 import java.awt.Dimension;
 
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
-
 import com.openedit.util.RequestUtils
 import com.openedit.users.UserManager
 import com.openedit.users.User
 
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
-
 import org.apache.commons.io.IOUtils
-
 import org.apache.commons.net.io.Util;
 import org.openedit.entermedia.creator.ConversionUtil;
+import org.openedit.util.DateStorageUtil;
 
 
 
@@ -126,6 +127,8 @@ public class fatwirepublisher extends basepublisher implements Publisher
 			{
 				String newId = assetBean.getId();
 				inPublishRequest.setProperty("trackingnumber",newId);
+				inPublishRequest.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				
 				log.info("response from publishing request to FatWire: newId ${newId}");
 				
 				//ftp images to fatwire server
