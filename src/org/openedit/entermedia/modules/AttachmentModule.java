@@ -12,6 +12,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.edit.AssetEditor;
 
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 
 public class AttachmentModule extends BaseMediaModule
 {
@@ -32,10 +33,17 @@ public class AttachmentModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		if (asset != null)
+		if (asset != null && asset.isFolder() )
 		{
 			getAttachmentManager().syncAttachments(inReq, archive, asset, false);
 		}
+	}
+	public void listChildren(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String parentsourcepath = inReq.getRequestParameter("parentsourcepath");
+		HitTracker hits = getAttachmentManager().listChildren(inReq, archive, parentsourcepath);
+		inReq.putPageValue("attachments",hits);
 	}
 
 	public void reSyncAttachments(WebPageRequest inReq)
@@ -99,6 +107,11 @@ public class AttachmentModule extends BaseMediaModule
 
 	}
 
+	/**
+	 * Creates sub folders in attachment area
+	 * @param inReq
+	 * @throws Exception
+	 */
 	public void createFolder(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
