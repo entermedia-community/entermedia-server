@@ -772,9 +772,13 @@ public class AssetEditModule extends BaseMediaModule
 		asset.setPrimaryFile(page.getName());
 		Page media = archive.getOriginalDocument(asset);
 		updateMetadata(archive, asset, media);
+		asset.setProperty("editstatus", "1");
+		asset.setProperty("importstatus", "reimported");
+		asset.setProperty("previewstatus", "converting");
 		archive.saveAsset(asset, null);
 
 		inReq.setRequestParameter("assetids",new String[]{asset.getId()});
+
 		originalModified(inReq);
 		
 		getAttachmentManager().processAttachments(archive, asset, true);//don't reprocess everything else
