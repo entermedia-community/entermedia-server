@@ -37,6 +37,16 @@ p{
 	font-family:Arial,Helvetica,sans-serif;
 	font-size:14px;
 }
+
+.info {
+    font-size: 12px;
+    color: #666;
+    background: #eee;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 15px 0px;
+    /*text-align: center;*/
+}
 </style>
 
 <h1>Automatic Conversions</h1>
@@ -47,7 +57,8 @@ $context.putPageValue("results", $results)
 
 #foreach ($result in $results)
 	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
-<hr>
+<div class="info" >
+
 		<!-- include name + info -->
 		#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
 		#set($height = $mathtool.toInteger($dimension.getHeight()))
@@ -64,7 +75,7 @@ $context.putPageValue("results", $results)
 			<h2>$result.name</h2>
 		#end
 		#set($description = "")
-		<hr>
+	
 		
 		<!-- include modify -->
 		$context.putPageValue("presetdata",$result)
@@ -78,18 +89,18 @@ $context.putPageValue("results", $results)
 			#if($cancrop)
 			#else
 				<span style="font-size:smaller;margin: 0 20px 20px;">Image is too small to crop to the desired crop dimension</span>
-				<br>
-				<br>
+				
 			#end
 			<!-- include submit to fatwire -->
 			#if($result.publishtofatwire == "true") 
-				<h2>Previous Sends To Fatwire</h2>
 				$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
 			#end
 		#end
+	</div>
 	#end
+
 #end
-<hr>
+
 $context.putPageValue("asset",$asset)
 #if($newpreset)
 	$context.putPageValue("omitpreset",$newpreset)
