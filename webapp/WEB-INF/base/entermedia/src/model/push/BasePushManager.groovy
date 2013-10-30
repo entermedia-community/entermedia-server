@@ -1,9 +1,5 @@
 package model.push;
 
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpException
 import org.apache.commons.httpclient.HttpMethod
@@ -16,9 +12,6 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.DocumentException
 import org.dom4j.Element
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader
-import org.dom4j.io.XMLWriter;
 import org.entermedia.upload.FileUpload
 import org.entermedia.upload.FileUploadItem
 import org.entermedia.upload.UploadRequest
@@ -30,12 +23,10 @@ import org.openedit.entermedia.Category
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.push.PushManager
 import org.openedit.entermedia.search.AssetSearcher
-import org.openedit.entermedia.util.NaiveTrustManager
 import org.openedit.repository.ContentItem
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
-import com.openedit.OpenEditRuntimeException;
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
@@ -44,6 +35,7 @@ import com.openedit.page.manage.PageManager
 import com.openedit.users.User
 import com.openedit.users.UserManager
 import com.openedit.util.PathUtilities
+import com.openedit.util.XmlUtil
 
 public class BasePushManager implements PushManager
 {
@@ -51,7 +43,7 @@ public class BasePushManager implements PushManager
 	protected SearcherManager fieldSearcherManager;
 	protected UserManager fieldUserManager;
 	protected PageManager fieldPageManager;
-	
+	protected XmlUtil xmlUtil = new XmlUtil();
 	//protected HttpClient fieldClient;
 	
 	protected ThreadLocal perThreadCache = new ThreadLocal();
@@ -389,7 +381,7 @@ public class BasePushManager implements PushManager
 		{
 			throw new Exception(" ${inMethod} Request failed: status code ${status}");
 		}
-		Element result = reader.read(inMethod.getResponseBodyAsStream()).getRootElement();
+		Element result = xmlUtil.getXml(inMethod.getResponseBodyAsStream(),"UTF-8");
 		return result;
 	}
 	
