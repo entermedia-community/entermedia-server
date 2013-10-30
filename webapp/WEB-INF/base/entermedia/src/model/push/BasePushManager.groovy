@@ -804,8 +804,6 @@ asset: " + asset);
 		}
 
 		
-		fieldClient = null;
-		
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 
@@ -1018,7 +1016,7 @@ asset: " + asset);
 	 */
 	public void toggle(String inCatalogId)
 	{
-		fieldClient = null;
+		perThreadCache = new ThreadLocal();
 	}
 	
 	@Override
