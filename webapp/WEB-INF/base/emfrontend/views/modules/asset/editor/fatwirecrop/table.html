@@ -3,12 +3,6 @@
 #if($results && $results.size()!=0)
 <table class="emselectable striped download-table emdata" id="main-results-table" width="98%"  >
 <tbody>
-	<tr id="tableheader">
-	<th colspan="5">
-	Previous Sends To Fatwire
-	
-	</th>
-	</tr>
 	
 	<tr id="tableheader">
 		<th>FatWire Id</th>
@@ -39,10 +33,10 @@
 			$!errormsg
 		</td>
 		<td>
-			$item.regionid
+			$!item.regionid
 		</td>
 		<td>
-			$context.getDate($item.date)
+			$context.getDateTime($item.date)
 		</td>
 		<td>
 			$exportname

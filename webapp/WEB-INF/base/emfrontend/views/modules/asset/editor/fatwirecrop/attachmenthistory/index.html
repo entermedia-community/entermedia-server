@@ -1,5 +1,4 @@
 
-#set ( $parentsourcepath = $context.getRequestParameter("parentsourcepath") )
 
 #set ( $editPath = $context.getRequestParameter("editPath") )
 
@@ -22,7 +21,7 @@
 	<tr>
 		<td>
 		    <span style="margin-left: 20px">
-   				<a href="$home/${applicationid}/views/modules/asset/downloads/generated/$parentsourcepath/.versions/$revisionNumber~$revision.getName()/$revision.getName()">[[Version]] $revisionNumber</a>
+   				<a href="$home/${applicationid}/views/modules/asset/downloads/generated/$asset.sourcePath/.versions/$revisionNumber~$revision.getName()/$revision.getName()">[[Version]] $revisionNumber</a>
     		</span>
 		</td>
 		<td class="tooltip" title="$revision.getLength() bytes" >$sizer.inEnglish($revision.getLength())	</td>
