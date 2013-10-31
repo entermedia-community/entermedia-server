@@ -58,7 +58,6 @@ public class LuceneConnectionManager
 	{
 		try
 		{
-			//maybeRefresh(); 
 			LuceneConnection connection = new LuceneConnection();
 			if( fieldSearcherManager != null)
 			{

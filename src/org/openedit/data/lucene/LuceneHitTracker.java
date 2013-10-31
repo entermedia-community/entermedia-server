@@ -306,7 +306,7 @@ public class LuceneHitTracker extends HitTracker
 		 */
 
 		ScoreDoc lastDoc = null;
-		Map<String, Integer> columns = new TreeMap<String, Integer>();
+		Map<String, Integer> columns = new TreeMap<String, Integer>(); //TODO: Test performance vs HashMap
 		for (int i = 0; start + i < max; i++)
 		{
 			int offset = start + i;

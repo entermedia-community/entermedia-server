@@ -126,6 +126,9 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 			fieldLuceneConnectionManager = 	new LuceneConnectionManager(writer, true, new SearcherFactory(), getTaxonomyWriter() );
 		}
+		//fieldLuceneConnectionManager.maybeRefresh();
+		//mayberefresh
+		
 		return fieldLuceneConnectionManager;
 	}
 
@@ -334,6 +337,10 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 					QueryParser parser = getQueryParser();
 					query1 = parser.parse(query);
 				}
+			}
+			if (fieldPendingCommit)
+			{
+				flush();
 			}
 			getLuceneConnectionManager().maybeRefresh();
 			/**
@@ -769,11 +776,11 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			flush();
 		}
 
-		if (fieldIndexWriter == null || fieldTaxonomyWriter == null)
+		if (fieldIndexWriter == null )
 		{
 			synchronized (this)
 			{
-				if (fieldIndexWriter == null || fieldTaxonomyWriter == null)
+				if (fieldIndexWriter == null )
 				{
 					BooleanQuery.setMaxClauseCount(100000);
 
