@@ -1,4 +1,3 @@
-
 <div class="em-rounded" style="margin:20px;">
 #set($order = $data)
 #if( $order.userid != $context.getUserName() )
@@ -85,10 +84,9 @@ $context.putPageValue("view", "order/downloadform")
 			#set($null = $presetquery.addExact("inputtype","all"))
 			#set($null = $presetquery.addSortBy("ordering"))
 			#set( $results = $presetsearcher.search($presetquery) )
-			$results
 			#if($canconvert || $candownloadfpo) 
 					
-				
+
 		  		<select name="${filetype}.presetid.value">
 				#foreach ($preset in $results)
 					#set($ok = false)
