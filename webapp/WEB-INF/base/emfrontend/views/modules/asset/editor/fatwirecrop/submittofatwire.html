@@ -2,7 +2,6 @@
 #set($searcher = $searcherManager.getSearcher($catalogid, "fatwireregion"))
 #set($regions = $searcher.getAllHits())
 
-<h4>Send to Fatwire:</h4>
 
 <form method="post" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submit-fatwire-finish.html">
 	<input type="hidden" id="publishassetid" name="publishassetid" value="$asset.id"/>

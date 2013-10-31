@@ -53,7 +53,7 @@ public class LuceneHitTracker extends HitTracker
 	private static final Log log = LogFactory.getLog(LuceneHitTracker.class);
 
 	// protected transient TopDocs fieldHits;
-	protected transient SearcherTaxonomyManager fieldLuceneSearcherManager;
+	protected transient LuceneConnectionManager fieldLuceneConnectionManager;
 	protected transient Query fieldLuceneQuery;
 	protected transient Sort fieldLuceneSort;
 	// protected Map fieldPages;
@@ -94,10 +94,10 @@ public class LuceneHitTracker extends HitTracker
 
 	}
 
-	public LuceneHitTracker(SearcherTaxonomyManager inManager, Query inQuery, Sort inSort, Searcher inSearcher)
+	public LuceneHitTracker(LuceneConnectionManager inManager, Query inQuery, Sort inSort, Searcher inSearcher)
 	{
 		super(inSearcher);
-		setLuceneSearcherManager(inManager);
+		setLuceneConnectionManager(inManager);
 		setLuceneQuery(inQuery);
 		setLuceneSort(inSort);
 	}
@@ -174,12 +174,12 @@ public class LuceneHitTracker extends HitTracker
 		// if( page == null )
 		// {
 		IndexSearcher searcher = null;
-		SearcherAndTaxonomy refs = null;
+		LuceneConnection refs = null;
 		try
 		{
 
-			refs = getLuceneSearcherManager().acquire();
-			searcher = refs.searcher;
+			refs = getLuceneConnectionManager().acquire();
+			searcher = refs.getIndexSearcher();
 			// searcher = getLuceneSearcherManager().acquire();
 			if (fieldOpenDocsSearcherHash != searcher.hashCode())
 			{
@@ -232,14 +232,7 @@ public class LuceneHitTracker extends HitTracker
 		}
 		finally
 		{
-			try
-			{
-				getLuceneSearcherManager().release(refs);
-			}
-			catch (IOException e)
-			{
-				// nada
-			}
+			getLuceneConnectionManager().release(refs);
 		}
 	}
 
@@ -313,7 +306,7 @@ public class LuceneHitTracker extends HitTracker
 		 */
 
 		ScoreDoc lastDoc = null;
-		Map<String, Integer> columns = new TreeMap<String, Integer>();
+		Map<String, Integer> columns = new TreeMap<String, Integer>(); //TODO: Test performance vs HashMap
 		for (int i = 0; start + i < max; i++)
 		{
 			int offset = start + i;
@@ -332,17 +325,20 @@ public class LuceneHitTracker extends HitTracker
 
 		return lastDoc;
 	}
-
+	/**
+	 * @deprecated not really needed
+	 */
+	//TODO: Remove this API
 	public Collection<String> getSourcePaths()
 	{
 		List sourcepaths = new ArrayList();
 
 		IndexSearcher searcher = null;
-		SearcherAndTaxonomy refs = null;
+		LuceneConnection refs = null;
 		try
 		{
-			refs = getLuceneSearcherManager().acquire();
-			searcher = refs.searcher;
+			refs = getLuceneConnectionManager().acquire();
+			searcher = refs.getIndexSearcher();
 			int max = Integer.MAX_VALUE;
 			TopDocs docs = null;
 			if (getLuceneSort() != null)
@@ -368,14 +364,7 @@ public class LuceneHitTracker extends HitTracker
 		}
 		finally
 		{
-			try
-			{
-				getLuceneSearcherManager().release(refs);
-			}
-			catch (IOException e)
-			{
-				// nada
-			}
+			getLuceneConnectionManager().release(refs);
 		}
 	}
 
@@ -680,14 +669,14 @@ public class LuceneHitTracker extends HitTracker
 
 	// }
 
-	public SearcherTaxonomyManager getLuceneSearcherManager()
+	public LuceneConnectionManager getLuceneConnectionManager()
 	{
-		return fieldLuceneSearcherManager;
+		return fieldLuceneConnectionManager;
 	}
 
-	public void setLuceneSearcherManager(SearcherTaxonomyManager inLuceneSearcherManager)
+	public void setLuceneConnectionManager(LuceneConnectionManager inLuceneSearcherManager)
 	{
-		fieldLuceneSearcherManager = inLuceneSearcherManager;
+		fieldLuceneConnectionManager = inLuceneSearcherManager;
 	}
 
 	public Query getLuceneQuery()
@@ -714,19 +703,22 @@ public class LuceneHitTracker extends HitTracker
 	{
 		IndexSearcher searcher = null;
 
-		SearcherAndTaxonomy refs = null;
+		LuceneConnection refs = null;
 
 		try
 		{
-			// getLuceneSearcherManager().maybeRefresh();
-			refs = getLuceneSearcherManager().acquire();
+			refs = getLuceneConnectionManager().acquire();
+			List<FilterNode> facetNodes = new ArrayList<FilterNode>();
 
-			searcher = refs.searcher;
+			if( refs.getTaxonomyReader() == null)
+			{
+				log.error("Tried to get facets on a non-facet index. restart?");
+				return facetNodes;
+			}
+			searcher = refs.getIndexSearcher();
 
 			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
 
-			// DirectoryTaxonomyReader taxor = new
-			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
 			// lsearcher.getTaxonomyWriter());
 			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
 			// this.taxoReader );
@@ -743,19 +735,17 @@ public class LuceneHitTracker extends HitTracker
 					{
 						continue;
 					}
-					//TODO: Do not collect data on any that we have already selected
 					if( !getSearchQuery().hasFilter(detail.getId()))
 					{
 						params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 20));  //need to have a show more button on UI
 					}
 				}
-				List<FilterNode> facetNodes = new ArrayList<FilterNode>();
 				if( params.isEmpty() )
 				{
 					return facetNodes;
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
-				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
+				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.getTaxonomyReader() );
 				searcher.search(getLuceneQuery(), facetsCollector);
 
 				//copy the collected results to our data structure
@@ -821,99 +811,8 @@ public class LuceneHitTracker extends HitTracker
 		}
 		finally
 		{
-			getLuceneSearcherManager().release(refs);
+			getLuceneConnectionManager().release(refs);
 		}
 		return null;
 	}
-
-//	public void refreshFilters() throws Exception
-//	{
-//		if (fieldFacets == null)
-//		{
-//			getFacets();
-//		}
-//		if (fieldFacets == null)
-//		{
-//			return;
-//		}
-//		IndexSearcher searcher = null;
-//
-//		SearcherAndTaxonomy refs = null;
-//
-//		try
-//
-//		{
-//			// getLuceneSearcherManager().maybeRefresh();
-//			refs = getLuceneSearcherManager().acquire();
-//
-//			searcher = refs.searcher;
-//
-//			BaseLuceneSearcher lsearcher = (BaseLuceneSearcher) getSearcher();
-//
-//			// DirectoryTaxonomyReader taxor = new
-//			// DirectoryTaxonomyReader((DirectoryTaxonomyWriter)
-//			// lsearcher.getTaxonomyWriter());
-//			// TaxonomyReader newReader = TaxonomyReader.openIfChanged(
-//			// this.taxoReader );
-//
-//			ArrayList params = new ArrayList();
-//			List propertydetails = lsearcher.getPropertyDetails().getDetailsByProperty("filter", "true");
-//
-//			for (Iterator facetiter = getFacets().iterator(); facetiter.hasNext();)
-//			{
-//				FilterNode node = (FilterNode) facetiter.next();
-//				if(!node.hasSelections(node)){
-//					node.setChildren(null);
-//					params.add(new CountFacetRequest(new CategoryPath(node.get("label").split("/")), 10));
-//					FacetSearchParams fsp = new FacetSearchParams(params);
-//					FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.taxonomyReader);
-//					searcher.search(getLuceneQuery(), facetsCollector);
-//
-//					List<FacetResult> facetResults = facetsCollector.getFacetResults();
-//					List<FilterNode> facetNodes = new ArrayList();
-//
-//					for (FacetResult fres : facetResults)
-//					{
-//
-//						FacetResultNode root = fres.getFacetResultNode();
-//
-//						String label = root.label.toString();
-//						PropertyDetail parent = getSearcher().getDetail(label);
-//						
-//						for (FacetResultNode cat : root.subResults)
-//						{
-//
-//							FilterNode childnode = new FilterNode();
-//
-//							String id = cat.label.toString();
-//							String[] splits = id.split("/");
-//							String text = splits[1];
-//							Data value = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getId(), text);
-//							if (value != null)
-//							{
-//								childnode.setName(value.getName());
-//							}
-//							else
-//							{
-//								childnode.setName(text);
-//							}
-//							childnode.setId(id);
-//							childnode.setProperty("label", id);
-//							childnode.setProperty("value", String.valueOf(cat.value));
-//							node.addChild(childnode);
-//
-//						}
-//
-//					}
-//
-//				}
-//			}
-//		}
-//		finally
-//		{
-//
-//			getLuceneSearcherManager().release(refs);
-//		}
-//	}
-
 }

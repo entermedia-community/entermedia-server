@@ -356,7 +356,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	public void clearIndex()
 	{
 		super.clearIndex();
-		getXmlDataArchive().clearCache();
+		getXmlDataArchive().clearCache();  //Is this needed? We should just clear one item at a time from the c
 	}
 
 	public HitTracker getAllHits(WebPageRequest inReq)
