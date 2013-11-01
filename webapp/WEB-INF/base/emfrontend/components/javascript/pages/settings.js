@@ -52,7 +52,24 @@
 		
 		
 		 
-	
+		jQuery('.listsort').sortable({
+			  
+			axis: 'y',
+		    stop: function (event, ui) {
+		  
+				var path = jQuery(this).data("path");
+				
+		    	
+		        var data = jQuery(this).sortable('serialize');
+		        
+		        // POST to server using $.post or $.ajax
+		        jQuery.ajax({
+		            data: data,
+		            type: 'POST',
+		            url: path 		            
+		        });
+		    }
+		});
 		
 		
 		
