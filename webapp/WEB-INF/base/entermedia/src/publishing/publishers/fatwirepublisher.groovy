@@ -128,6 +128,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				String newId = assetBean.getId();
 				inPublishRequest.setProperty("trackingnumber",newId);
 				inPublishRequest.setProperty("date",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				inPublishRequest.setProperty("regionid",regionid);
 				
 				log.info("response from publishing request to FatWire: newId ${newId}");
 				
