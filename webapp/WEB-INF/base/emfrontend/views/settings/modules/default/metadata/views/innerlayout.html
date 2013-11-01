@@ -11,33 +11,13 @@ $!query.addSortBy("ordering")
 #set($views = $viewsearcher.search($query))
 
 #set( $viewsroot = $content.viewsroot )
+
+
 	<div id="table-container">
 		<div id="side-nav-inner">
-			<ul>
-		
-				<li class="header no-sort">Editing Boxes</li>
-				#if ($systemdefined && $systemdefined != "true")
-				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
-                #end
-              
-			#foreach( $target in $views)
-                
-				<li #if($viewid == $target.id) class="current" #end byassettype="$!target.byassettype">
-				   
-					#if( ($target.byassettype && $target.byassettype == "true") )
-						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
-					#else
-						#set( $viewpath = "${moduleid}/$target.id")
-					#end
-					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath">
-					<span class="XXXdrag-and-drop"></span>$target</a>
-					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath"></a>
-
-                </li>
-			
-			#end			
-								
-			</ul>		
+			<div id="viewlist">
+				$pages.include("$apphome/views/settings/modules/${moduleid}/metadata/views/viewslist.html", $context)		
+			</div>
 		</div>
 		<div id="workarea">
 			$pages.includeContent()

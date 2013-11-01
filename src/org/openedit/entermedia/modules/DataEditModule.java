@@ -1355,6 +1355,25 @@ public class DataEditModule extends BaseMediaModule
 		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
 	}
 	
+	
+	public void sortList(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		String field = inReq.getRequestParameter("field");
+		
+		String [] id2 = inReq.getRequestParameters("view[]");
+		ArrayList valuestosave = new ArrayList();
+		for (int i = 0; i < id2.length; i++)
+		{
+			String dataid = id2[i];
+			Data item = (Data)searcher.searchById(dataid);
+			item.setProperty(field, String.valueOf(i));
+			valuestosave.add(item);
+		}
+		searcher.saveAllData(valuestosave, inReq.getUser());
+	}
+	
+	
 	public SearcherManager loadSearcherManager(WebPageRequest inReq)
 	{
 		SearcherManager searcherManager = getSearcherManager();
@@ -1489,4 +1508,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue("views", views);
 	}
+	
+	
+	
 }
