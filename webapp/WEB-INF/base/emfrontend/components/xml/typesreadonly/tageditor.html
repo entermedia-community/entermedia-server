@@ -2,6 +2,7 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
+#if( $val && !$val.isEmpty() )
 
 #set( $vals = $val.split("\s\|\s") )
 
@@ -11,3 +12,5 @@
   >#esc($val)</a> 
 #end
 </div>
+
+#end
