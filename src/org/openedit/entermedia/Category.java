@@ -367,6 +367,14 @@ public class Category implements Data, Comparable<Category>
 		{
 			return getName();
 		}
+		if (inKey.equals("parentid"))
+		{
+			Category parent = getParentCategory();
+			if( parent != null )
+			{
+				return parent.getId();
+			}
+		}
 		String val = getProperty(inKey);
 		if (val != null)
 		{
