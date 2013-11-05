@@ -310,7 +310,8 @@ uiload = function() {
 		var theinput = jQuery(this);
 		theinput.select2({tags:[],
 			formatNoMatches: function () { return theinput.data("enterdata") ; },
-			tokenSeparators: [",","|"]
+			tokenSeparators: [",","|"],
+			separator: '|'
 		});
 	});
 	

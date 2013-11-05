@@ -447,14 +447,14 @@ public class Asset implements MultiValued
 						addKeyword(vals[i]);						
 					}
 				}
-				else if( inValue.contains(",") )
-				{
-						String[] vals = inValue.split(",");
-						for (int i = 0; i < vals.length; i++)
-						{
-							addKeyword(vals[i]);						
-						}				
-				}
+//				else if( inValue.contains(",") ) //Removed this because the new tag editor uses | now
+//				{
+//						String[] vals = inValue.split(",");
+//						for (int i = 0; i < vals.length; i++)
+//						{
+//							addKeyword(vals[i]);						
+//						}				
+//				}
 				else
 				{
 					addKeyword(inValue);
