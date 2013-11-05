@@ -6371,3 +6371,10 @@ div#filterscontent h4 {
 	margin: 0 0 2px 0;
 	font-size: .9em;
 }
+
+div.listtags {
+	min-width: 100px;
+	width: 100%;
+	max-width: 250px;
+	maring-bottom: 5px;
+}

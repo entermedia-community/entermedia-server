@@ -737,7 +737,13 @@ public class LuceneHitTracker extends HitTracker
 					}
 					if( !getSearchQuery().hasFilter(detail.getId()))
 					{
-						params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 20));  //need to have a show more button on UI
+						String count = detail.get("facetcount");
+						int defaultcount = 20;
+						if( count != null)
+						{
+							defaultcount = Integer.parseInt(count);
+						}
+						params.add(new CountFacetRequest(new CategoryPath(detail.getId()), defaultcount));  //need to have a show more button on UI
 					}
 				}
 				if( params.isEmpty() )
