@@ -4,9 +4,15 @@
 #if ( $hits.size() == 0 )
 No results found                                                                                                                                                                        
 #else
+#if(!$view)
+#set($view = $context.getRequestParameter("view"))
+$context.putPageValue("hits", $hits)
+$context.putPageValue("searcher", $searcher)
+$context.putPageValue("view", $view)
 
-
+#end
 #set( $resultdetail = $searcher.getDetailsForView("$view", $userprofile))
+
 
 
 ##set ( $canedit = $context.getPageValue("${moduleid}edit") )
