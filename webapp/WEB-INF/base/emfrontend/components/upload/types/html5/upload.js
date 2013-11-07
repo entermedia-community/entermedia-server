@@ -1,150 +1,32 @@
     
 var uploadid = new Date().getTime(); 
 var home = null;
-function handleFiles(files) 
-{
-	
-  for (var i = 0; i < files.length; i++) 
-  {
-    var file = files[i];
-    
-	try 
-	{
-		uploadid++;
-		
-		//replace with jQuery based uploading. Disable the buttons
-		jQuery("#uploadinstructions").hide();
-		
-		var link = home + "/components/upload/types/html5/uploadrow.html?uploadid=" + uploadid + "&name=" + file.name + "&size=" + file.size + "&fileindex=" + i;
-		jQuery.ajax(
-		{
-		   type: "POST",
-		   url: link,
-		   async: false,
-		   success: function(html)
-		   {
-				jQuery("#up-files-list").append(html);
-				
-				//start up the XHD data transfer and progress bar, thumbnail?
-		   }
-		 });
-		
-//		var action = jQuery("#uploadform").attr("action");
-//		jQuery("#uploadform").attr("action", action + " );
+var currentupload = 0;
+var haderror = false;
+var allfiles = new Array();
 
-		
-	}
-	catch (ex) 
-	{
-		alert( ex);
-	}
-	jQuery("#uploadinstructionsafter").show();
-	
-  }
-}
 
 var uploadid;
 
-	doUpload =  function()
+	function filesPicked(event, files) 
 	{
-		if(jQuery("#uploadform").valid()) {
-	 		jQuery("#finishbutton").attr('disabled','disabled');
-	 		jQuery("#uploadform").submit();
-		}
-	}
-	
-	getUploadId = function()
-	{
-		return jQuery("#uploadform").data("uploadid");
-	}
-/*	
-	checkProgress = function()
-	{
-		var home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
-
-		var next = jQuery("#up-files-list").find("[data-complete='false']").first()
-		if( next.length > 0 )
-		{
-			var complete = next.data("complete");
-			var name = next.data("name");
-			var size = next.data("size");
-			var fileindex = next.data("fileindex");
-			if( complete != "true")
-			{
-				var link = home + "/components/upload/types/html5/uploadprogress.html?uploadid="+ getUploadId() + "&name=" + name +"&size=" + size + "&fileindex=" + fileindex;
-				jQuery.get(link, {}, function(data) 
-					{
-						next.replaceWith(data);
-					}
-				);
-			}
-			setTimeout("checkProgress()",500);
-		}
-	}
-*/	
-	function showResponse(responseText, statusText, xhr, $form)  
-	{ 
-		//jQuery.fn.livequery.stopped = true;
-		//jQuery("#embody").html(responseText);	
-		//jQuery.fn.livequery.stopped = false;
-		
-		
-		/*
-		    var home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
-			jQuery("#uploadarea").html(responseText);
-			jQuery("#uploadarea").attr('id', 'view-picker-content');
-	        jQuery("#view-picker-content").addClass('liquid-sizer');
-	        doResize();
-	    */    
-
-	    //document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
-		//  alert("upload done");
-	}
-	
-	//special validator for file name
-	jQuery.validator.addMethod("filename",
-			function(value) {
-				var characterReg = /^\s*[a-zA-Z0-9\._,\s]+\s*$/;
-	   			return characterReg.test(value);
-			}, 
-			'Invalid file name.'
-	);
-	
-	var currentupload = 0;
-	var haderror = false;
-// wait for the DOM to be loaded 
-$(document).ready(function() 
-{	
-	home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
-    $('#filePicker').click(function(e){
-        $('#upload_field').trigger('click');
-        e.preventDefault(); 
-     });
-
-    jQuery("#startbutton").livequery('click',function() 
-    {
-    	var valid = $("#uploaddata").validate().form();
-    	if(!valid){
-    		return;
-    	}
-    	$(this).text("Uploading");
-    	$(this).attr('disabled', 'disabled');
-    	//jQuery("#upload_field").upload();
-    	jQuery("#upload_field").triggerHandler("html5_upload.start");
-    	
-    });
-    
-	jQuery("#upload_field").livequery( function() 
-	{
-		var inputfield = $(this);
-	
-		 inputfield.html5_upload(
-		   {
-	         filesPicked: function(event, files) 
-	         {
+         		//merge them together
+         		for (var i = 0; i < files.length; i++) 
+        	 	{
+        	    	var file = files[i];
+        	    	allfiles.push(file);
+        	    }
+        	    files = allfiles;
+				var inputbox = jQuery("#upload_field")[0];
+				jQuery("#upload_field").triggerHandler("html5_upload.setFiles",[allfiles]);
+				
+				inputbox.count = allfiles.length;
+				
+	         	//jQuery("#upload_field").setFiles( allfiles );
+	         	
 	        	 jQuery("#uploadinstructionsafter").show();
 	        	 
-	        	 var regex =new RegExp("currentupload", 'g');  
+	        	 var regex = new RegExp("currentupload", 'g');  
 	        	 
         	    $("#up-files-list").empty();
 	             //return confirm("You are trying to upload " + total + " files. Are you sure?");
@@ -162,7 +44,71 @@ $(document).ready(function()
 	        	    var size = bytesToSize(file.size,2);
 	        	    $("#progress_report_size" + i).text(size);
 	        	 }
-	         },
+	        	 console.log("Picked " + files.length );
+	        	 
+	         }
+	
+// wait for the DOM to be loaded 
+$(document).ready(function() 
+{	
+	home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
+    $('#filePicker').click(function(e){
+        $('#upload_field').trigger('click');
+        e.preventDefault(); 
+     });
+
+    jQuery("#startbutton").livequery('click',function() 
+    {
+    	var valid = $("#uploaddata").validate().form();
+    	if(!valid){
+    		return;
+    	}
+    	$(this).text("Uploading");
+    	$(this).attr('disabled', 'disabled');
+    	jQuery("#upload_field").triggerHandler("html5_upload.start");
+    	
+    });
+
+
+	jQuery(".drop-over").livequery(function()
+	{
+		var div = $(this);
+		
+		div.on( 'dragover',
+		    function(e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+		    }
+		)
+		div.on( 'dragenter',
+		    function(e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+		    }
+		)
+		
+		div.on( 'drop',
+		    function(e){
+		        if(e.originalEvent.dataTransfer){
+		            if(e.originalEvent.dataTransfer.files.length) {
+		                e.preventDefault();
+		                e.stopPropagation();
+						jQuery("#upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
+		            }   
+		        }
+		    }
+		);
+	
+	});
+				
+	jQuery("#upload_field").livequery( function() 
+	{
+
+		var inputfield = $(this);
+	
+		 inputfield.html5_upload(
+		   {
+	         filesPicked: filesPicked,
 	         url: function(number) {
 	       		var url =  $("#uploaddata").attr("action");
 	       		
@@ -177,7 +123,9 @@ $(document).ready(function()
 	         sendBoundary: window.FormData || $.browser.mozilla,
 	         onStart: function(event, total, files) 
 	         {
-	        	 jQuery("#uploadinstructions").hide();
+	        	 jQuery(".uploadinstructions").hide();
+        	  	 console.log("On start " + files.length );
+	        	 
 	             return true;
 	        	 //Loop over all the files. add rows
 	        	 //alert("start");
@@ -235,26 +183,9 @@ $(document).ready(function()
 	         }
 	     });
 	});
-	
-    // bind 'myForm' and provide a simple callback function 
-    $('#uploadform').ajaxForm({ 
-    	        // target identifies the element(s) to update with the server response 
-    	       // target: '#emcontainer', 
-    	        // success identifies the function to invoke when the server response 
-    	        // has been received; here we apply a fade-in effect to the new content
-    	        beforeSubmit:function() 
-    	        { 
-    	        	
-    	            checkProgress(); 
-    	           // document.onclick = disable;
-    	            jQuery("#finishbutton").attr("value","Sending...");
-    	           
-    	        }, 
-    	        success: showResponse
-    	        
-    	    }); 
 }); 
 	
+
 
 function bytesToSize(bytes, precision)
 {  
