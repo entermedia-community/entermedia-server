@@ -1,7 +1,9 @@
 
 #set($searcher = $searcherManager.getSearcher($catalogid, "fatwireregion"))
-#set($regions = $searcher.getAllHits())
-
+#set($query = $searcher.createSearchQuery())
+#set($null = $query.addMatches("id","*"))
+#set($null = $query.addSortBy("id"))
+#set($regions = $searcher.search($query))
 
 <form method="post" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submit-fatwire-finish.html">
 	<input type="hidden" id="publishassetid" name="publishassetid" value="$asset.id"/>
