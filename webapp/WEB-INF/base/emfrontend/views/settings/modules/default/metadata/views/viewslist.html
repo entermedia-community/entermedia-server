@@ -22,8 +22,8 @@ $!query.addSortBy("ordering")
 			#foreach( $target in $views)
                 
                 
-                
-				<li id="view_$target.id" data-ordering="${view.ordering}" class="#if($viewid == $target.id) current #end " byassettype="$!target.byassettype">
+                		#set($sortid = $target.id.replaceAll("_", "||"))
+				<li id="view_$sortid" data-ordering="${view.ordering}" class="#if($viewid == $target.id) current #end " byassettype="$!target.byassettype">
 				   
 					#if( ($target.byassettype && $target.byassettype == "true") )
 						#set( $viewpath = "${moduleid}/assettype/default/$target.id")

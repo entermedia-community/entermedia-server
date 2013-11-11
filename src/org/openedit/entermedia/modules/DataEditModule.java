@@ -1366,6 +1366,7 @@ public class DataEditModule extends BaseMediaModule
 		for (int i = 0; i < id2.length; i++)
 		{
 			String dataid = id2[i];
+			dataid = dataid.replace("||", "_");//This is because of how jquery UI collects the values.
 			Data item = (Data)searcher.searchById(dataid);
 			item.setProperty(field, String.valueOf(i));
 			valuestosave.add(item);
