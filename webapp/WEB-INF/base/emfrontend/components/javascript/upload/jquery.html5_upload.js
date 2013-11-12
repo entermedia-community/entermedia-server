@@ -6,10 +6,16 @@
         function get_file_size(file) {
             return file.size || file.fileSize;
         }
-        var available_events = ['filesPicked','onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
+        var available_events = ['filesPicked','setFiles','onStart', 'onStartOne', 'onProgress', 'onFinishOne', 'onFinish', 'onError'];
+        var allfiles = null;
+        
         var options = jQuery.extend({
             onStart: function(event, total) {
                 return true;
+            },
+            setFiles: function(event, inFiles )
+            {
+            	setFiles( inFiles );
             },
             onStartOne: function(event, name, number, total) {
                 return true;
@@ -78,8 +84,13 @@
             }
         }, options);
 
+		function setFiles(inAllFiles)
+		{
+			allfiles = inAllFiles;
+		}
+
         function upload() {
-            var files = this.files;
+            var files = allfiles;
             var total = files.length;
             var $this = $(this);
             if (!$this.triggerHandler('html5_upload.onStart', [total,files])) {

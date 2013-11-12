@@ -1,5 +1,6 @@
 package org.openedit.entermedia.xmldb;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -68,6 +69,17 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 				hits.getList().add(category);
 			}
 		}
+		
+		Term parentterm = inQuery.getTermByDetailId("parentid");
+		if( parentterm != null)
+		{
+			Category category = getCategoryArchive().getCategory(parentterm.getValue());
+			if( category != null)
+			{
+				hits.getList().addAll(category.getChildren());
+			}
+		}
+		
 		return hits;
 	}
 
@@ -97,13 +109,44 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	}
 
 	@Override
+	public void saveData(Data inData, User inUser)
+	{
+		Collection<Data> list = new ArrayList<Data>(1);
+		list.add(inData);
+		saveAllData(list,inUser);
+	}	
+	@Override
 	public void saveAllData(Collection<Data> inAll, User inUser)
 	{
+		//TODO: Remove all this. Categories are hard to maintain 
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
 		{
 			Category cat = (Category) iterator.next();
-			getCategoryArchive().saveCategory(cat);		
-			
+			//this might be a temporary copy of a category
+			if( cat.getParentCategory() == null)
+			{
+				Category existingcat = getCategoryArchive().getCategory(cat.getId());
+				if( existingcat != null )
+				{
+					existingcat.getProperties().putAll(cat.getProperties());
+					cat = existingcat;
+				}
+				else
+				{
+					//new one
+					String parentid = cat.get("parentid");
+					if( parentid != null)
+					{
+						Category parent = getCategoryArchive().getCategory(parentid);
+						if( parent != null)
+						{
+							cat.setParentCategory(parent);
+							parent.addChild(cat);
+						}
+					}
+				}
+			}
+			getCategoryArchive().saveCategory(cat);
 		}
 	}
 

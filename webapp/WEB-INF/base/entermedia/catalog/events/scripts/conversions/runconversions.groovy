@@ -337,7 +337,7 @@ protected ConvertRunner createRunnable(MediaArchive mediaarchive, Searcher tasks
 	   runner.itemsearcher = itemsearcher;
 	   runner.hit = hit;
 	   runner.log = log;
-	   runner.user = user;
+	   runner.user = user; //if you get errors here make sure they did not delete the admin user
 	   runner.moduleManager= moduleManager;
 	   return runner;
 }
