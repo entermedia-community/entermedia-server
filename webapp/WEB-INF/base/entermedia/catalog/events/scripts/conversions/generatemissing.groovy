@@ -13,14 +13,15 @@ public void init()
 		PresetCreator presets = new PresetCreator();
 
 		//HitTracker assets = assetsearcher.getAllHits();
-		SearchQuery q = assetsearcher.createSearchQuery();
-		q.addOrsGroup("importstatus", "imported reimported");
-		//SearchQuery q = assetsearcher.createSearchQuery().append("category", "index");
+//		SearchQuery q = assetsearcher.createSearchQuery();
+//		q.addOrsGroup("importstatus", "imported reimported");
+		SearchQuery q = assetsearcher.createSearchQuery().append("category", "index");
 		q.addNot("editstatus","7");
 		q.addSortBy("id");
-		Collection paths =  assetsearcher.search(q).getSourcePaths();
+		HitTracker assets =  assetsearcher.search(q);
+		assets.setHitsPerPage(1000);
 		
-		log.info("Processing ${paths.size()}" + q	);
+		log.info("Processing ${assets.size()}" + q	);
 		
 		
 		long added = 0;
@@ -28,15 +29,15 @@ public void init()
 		long logcount  = 0;
 		long completed = 0;
 		List tosave = new ArrayList();
-		for (String sourcepath in paths)
+		for (Data hit in assets)
 		{
 			checked++;
 			logcount++;
 			
-			Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
+			Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
 			if( asset == null )
 			{
-				log.info("Missing" + sourcepath );
+				log.info("Missing" + hit.getSourcePath() );
 				continue; //Bad index
 			}
 
@@ -47,10 +48,10 @@ public void init()
 				logcount = 0;
 				log.info("Checked ${checked} ${added} ${more} "  + asset.get("importstatus"));
 			}
-			if( more == 0 && !"complete".equals(asset.get("importstatus") ) )
+			if( more == 0 && !"converting".equals(asset.get("previewstatus") ) )
 			{
 				//log.info("complete ${asset}");
-				asset.setProperty("importstatus","complete");
+				asset.setProperty("previewstatus","converting");
 				//mediaarchive.saveAsset(asset, null);
 				tosave.add(asset);
 				completed++;

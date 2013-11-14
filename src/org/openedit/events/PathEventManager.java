@@ -465,6 +465,10 @@ public class PathEventManager
 		}
 		UserManager usermanager = (UserManager)getModuleManager().getBean("userManager");
 		User user = usermanager.getUser(username);
+		if( user == null)
+		{
+			log.error("No such user: " + username);
+		}
 		event.setUser(user);
 		loadTask(event);
 	}
