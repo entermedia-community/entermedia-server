@@ -1,14 +1,17 @@
 package org.openedit.entermedia.modules;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
 import org.openedit.events.PathEvent;
 import org.openedit.events.PathEventManager;
 
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.modules.BaseModule;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
@@ -132,7 +135,14 @@ public class PathEventModule extends BaseModule
 	
 	public void init(WebPageRequest inReq)
 	{
-		getPathEvents(inReq);
+		HitTracker catalogs = getSearcherManager().getList("system","catalog");
+		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String catalogid = data.getId();
+			PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
+			manager.getPathEvents();
+		}
 	}
 	
 }
