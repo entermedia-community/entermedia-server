@@ -128,5 +128,11 @@ public class PathEventModule extends BaseModule
 	{
 		PathEventManager manager = getPathEventManager(inReq); 
 		manager.shutdown();
-	}	
+	}
+	
+	public void init(WebPageRequest inReq)
+	{
+		getPathEvents(inReq);
+	}
+	
 }

@@ -1044,13 +1044,14 @@ asset: " + asset);
 		String libraries = inReq.getRequestParameter("libraries");
 		if( libraries != null )
 		{
+			List combinedl = new ArrayList(existing);
 			String[] keys =  libraries.split("\\|");
 			for (int i = 0; i < keys.length; i++)
 			{
-				existing.add(keys[i]);
+				combinedl.add(keys[i]);
 			}
+			target.setValues("libraries", combinedl);
 		}
-		target.setValues("libraries", existing);
 
 		String keywords = inReq.getRequestParameter("keywords");
 		if( keywords != null )
