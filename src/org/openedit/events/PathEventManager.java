@@ -306,7 +306,7 @@ public class PathEventManager
 	{
 		if (fieldTimer == null)
 		{
-			fieldTimer = new Timer(true);
+			fieldTimer = new Timer("Scheduler_" + getCatalogId(), true);
 		}
 		return fieldTimer;
 	}
