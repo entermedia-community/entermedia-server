@@ -202,14 +202,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						log.warn("Could not parse file length: " + value);
 					}
 				}
-				else if("Subject".equals(key))
-				{
-					String[] kwords = value.split(",");
-					for( String kword : kwords )
-					{
-						inAsset.addKeyword(kword.trim());
-					}
-				}
+//				else if("Subject".equals(key))
+//				{
+//					String[] kwords = value.split(",");
+//					for( String kword : kwords )
+//					{
+//						inAsset.addKeyword(kword.trim());
+//					}
+//				}
 				else if("FileType".equals(key))
 				{
 					if( inAsset.getProperty("fileformat") == null)
@@ -217,7 +217,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("fileformat", value.toLowerCase() );
 					}
 				}
-				else if("Keyword".equals(key))
+				else if("Subject".equals(key) || "Keyword".equals(key) || "Keywords".equals(key))
 				{
 					String[] kwords = value.split(",");
 					for( String kword : kwords )
