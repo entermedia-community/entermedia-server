@@ -63,7 +63,7 @@ public void init(){
 		return;
 	}
 	log.info("Sending email notifications to ${emails}");
-	String fromEmail = "notifications@shawnbest.com";//maybe put in _site.xconf?
+	String fromEmail = "support@openedit.org";//maybe put in _site.xconf?
 	boolean isSent = dispatchEmail(archive,context,hits,emails,fromEmail);
 	if (isSent){
 		assetSearcher.saveAllData(assetsToUpdate, null);
@@ -75,7 +75,11 @@ public void init(){
 
 public boolean dispatchEmail(MediaArchive inArchive, WebPageRequest inReq, HitTracker inHits, ArrayList<String> inEmails, String inFrom){
 	PostMail mail = (PostMail)inArchive.getModuleManager().getBean( "postMail");
-	String templatePath = "/${applicationid}/components/notification/assetimport-email-template.html";
+	
+	Data setting = inArchive.getCatalogSetting("events_notify_app");
+	String appid = setting.get("value");
+	
+	String templatePath = "/${appid}/components/notification/assetimport-email-template.html";
 	Page template = inArchive.getPageManager().getPage(templatePath);
 	WebPageRequest newcontext = inReq.copy(template);
 	newcontext.putPageValue("hits",inHits);

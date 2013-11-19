@@ -4,6 +4,9 @@
 	#set($message = "The following ${hits.size()} assets have been imported to the DAM.")
 #end
 
+#set($setting = $mediaarchive.getCatalogSetting("events_notify_app"))
+#set($appid = $setting.get("value"))
+
 <p>$message</p>
 
 <ul>
@@ -13,8 +16,8 @@
 		#set($lastname = $user.lastName)
 		#set($name = "${firstname} ${lastname}")
 		#set($email = $user.email)
-		#set($url = "${content.siteroot}${home}/${applicationid}/views/modules/asset/editor/viewer/index.html?hitssessionid=hitsassetmedia/catalogs/public&assetid=${hit.id}")
-	<li><strong>$context.getDateTime($hit.assetaddeddate):</strong> &nbsp; <a href="$!url">$hit.name</a> by $name ($email)</li>
+		#set($url = "${content.siteroot}${home}/${appid}/views/modules/asset/editor/viewer/index.html?hitssessionid=hitsassetmedia/catalogs/public&assetid=${hit.id}")
+	<li><strong>$dateStorageUtil2.getStorageUtil().parseFromStorage($hit.assetaddeddate):</strong> &nbsp; <a href="$!url">$hit.name</a> by $name ($email)</li>
 		#set($user = false)
 		#set($firstname = false)
 		#set($lastname = false)
