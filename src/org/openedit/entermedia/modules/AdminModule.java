@@ -236,8 +236,12 @@ public class AdminModule extends BaseModule
 		{
 			catid = "system";
 		}
-		PermissionManager manager = (PermissionManager)getModuleManager().getBean(catid, "permissionManager"); 
-		String limited = inReq.getCurrentAction().getChildValue("permissions");
+		PermissionManager manager = (PermissionManager)getModuleManager().getBean(catid, "permissionManager");
+		String limited= null;
+		if( inReq.getCurrentAction() != null)
+		{
+			limited = inReq.getCurrentAction().getChildValue("permissions");
+		}
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
 	}
 

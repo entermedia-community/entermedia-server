@@ -1,0 +1,68 @@
+package test.projects;
+
+import java.util.Collection;
+
+import model.projects.ProjectManager;
+import model.projects.UserCollection;
+
+import org.junit.Test;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
+import org.openedit.entermedia.BaseEnterMediaTest;
+import org.openedit.entermedia.modules.ProfileModule;
+
+import com.openedit.WebPageRequest;
+
+public class ProjectTest extends BaseEnterMediaTest
+{
+	@Test
+	public void testCollectionAssets() throws Exception
+	{
+		ProjectManager manager = (ProjectManager)getFixture().getModuleManager().getBean(getMediaArchive().getCatalogId(),"projectManager");
+		
+		WebPageRequest req = getFixture().createPageRequest("/testcatalog/index.html");
+		Searcher lsearcher = getMediaArchive().getSearcher("library");
+		Data library = lsearcher.createNewData();
+		library.setId("testlibrary");
+		library.setName("Test");
+		lsearcher.saveData(library, null);
+		
+		ProfileModule module = (ProfileModule)getFixture().getModuleManager().getBean("ProfileModule");
+		
+		module.loadUserProfile(req);
+		
+		req.getUserProfile().setProperty("last_selected_library", "testlibrary");
+		
+		Searcher lcsearcher = getMediaArchive().getSearcher("librarycollection");
+		Data collection = lcsearcher.createNewData();
+		collection.setId("testcollection");
+		collection.setName("Movie");
+		collection.setProperty("library", "testlibrary");
+		lcsearcher.saveData(collection, null);
+
+
+		int beforecount = 0;
+		Collection<UserCollection> lessfiles = manager.loadCollections(req);
+		if( lessfiles != null && lessfiles.size() > 0)
+		{
+			UserCollection hit = lessfiles.iterator().next();
+			beforecount = hit.getAssetCount();
+		}
+		
+		Searcher lcasearcher = getMediaArchive().getSearcher("librarycollectionasset");
+		Data collectionasset = lcasearcher.createNewData();
+		collectionasset.setProperty("asset", "101");
+		collectionasset.setProperty("librarycollection", "testcollection");
+		lcasearcher.saveData(collectionasset, null);
+
+		Collection<UserCollection> files = manager.loadCollections(req);
+		assertNotNull( files );
+		assertEquals( files.size(), 1);
+		UserCollection hit = files.iterator().next();
+		
+		assertEquals(beforecount + 1, hit.getAssetCount());
+		
+		
+	}
+	
+}

@@ -81,11 +81,13 @@ getSessionValue = function(key) {
 outlineSelectionCol = function(event, ui)
 {
 	jQuery(this).addClass("selected");
+	jQuery(this).addClass("dragoverselected");
 }
 	
 unoutlineSelectionCol = function(event, ui)
 {
 	jQuery(this).removeClass("selected");
+	jQuery(this).removeClass("dragoverselected");
 }
 
 outlineSelectionRow = function(event, ui)
@@ -105,6 +107,16 @@ toggleajax = function(e)
 	e.preventDefault();
 	var nextpage= jQuery(this).attr('href');
 	var loaddiv = jQuery(this).attr("targetdivinner");
+	var maxlevel = jQuery(this).data("oemaxlevel");
+	if( maxlevel )
+	{
+		if( !nextpage.contains("?") )
+		{
+			nextpage = nextpage + "?"; 
+		}
+		nextpage = nextpage + "oemaxlevel=" + maxlevel; 
+	}
+	
 	loaddiv = loaddiv.replace(/\//g, "\\/");
 	var cell = jQuery("#" + loaddiv);
 
@@ -139,7 +151,7 @@ runajaxonthis = function(inlink,e)
 {
 	
 	var inText = jQuery(inlink).data("confirm");
-	if(inText && !confirm(inText) )
+	if(e && inText && !confirm(inText) )
 	{
 		e.stopPropagation();
 		e.preventDefault();
@@ -291,11 +303,6 @@ onloadselectors = function()
 	
 	//Sorting for views and lists
 	
-	
-	
-	
-	
-	
 	jQuery("form.ajaxform").livequery('submit',	
 		function() 
 		{
@@ -325,6 +332,11 @@ onloadselectors = function()
 			return false;
 		}
 	);
+	jQuery("form.ajaxform input.cancel").livequery('click',function()
+	{
+		parent.jQuery.fancybox.close();
+	});
+	
 	jQuery("form.ajaxautosubmit").livequery( function() 
 			{
 				var theform = jQuery(this); 
@@ -432,48 +444,6 @@ onloadselectors = function()
 			});
 	
 	
-	/*
-	// Live query not needed since Ajax does not normally replease the header
-	// part of a page
-	var theinput = jQuery("#assetsearchinput");
-	if( theinput && theinput.autocomplete )
-	{
-		theinput.autocomplete(apphome + '/components/autocomplete/suggestions.txt', {
-			selectFirst: false,
-			formatItem: formatHitCount,
-			formatResult:formatHitCountResult
-		});
-	}
-
-	// For group manager area
-	jQuery("#useremailinput").livequery( function() 
-	{
-		var theinput = jQuery(this);
-		if( theinput && theinput.autocomplete )
-		{
-			theinput.autocomplete(apphome + '/components/autocomplete/emailsuggestions.txt', {
-				selectFirst: false,
-				matchCase: true,
-				formatResult:formatHitCountResult
-			});
-		}
-	});
-	jQuery("#friendemailinput").livequery( function() 
-	{
-		var theinput = jQuery(this);
-		if( theinput && theinput.autocomplete )
-		{
-			theinput.autocomplete(apphome + '/components/autocomplete/friendemailsuggestions.txt', {
-				selectFirst: false,
-				matchCase: true,
-				formatResult:formatHitCountResult
-			});
-		}
-	});
-	*/
-	
-	
-
 	jQuery(".suggestsearchinput").livequery( function() 
 			{
 				var theinput = jQuery(this);
@@ -491,7 +461,7 @@ onloadselectors = function()
 				}
 			});
 
-	
+	//move this to the settings.js or someplace similar 
 	jQuery(".addmygroupusers").livequery( function() 
 			{
 				var theinput = jQuery(this);
@@ -598,13 +568,19 @@ onloadselectors = function()
 	});
 	
 
-	var ta = jQuery(".initialtext");
-	ta.click(function() 
+	jQuery(".initialtext").livequery('click', function() 
 	{
-		var initial = ta.attr("initialtext");
+		var ta = $(this);
+		 
+		var initial = ta.data("initialtext");
+		if( !initial )
+		{
+			initial = ta.attr("initialtext");
+		}
 		if( ta.val() == "Write a comment" ||  ta.val() == initial) 
 		{
 			ta.val('');
+			ta.removeClass("initialtext");
 			ta.unbind('click');
 		}
 	});
@@ -885,7 +861,10 @@ onloadselectors = function()
 							var categoryid = node.parent().data("nodeid");
 							
 							var hitssessionid = $("#resultsdiv").data("hitssessionid");
-							
+							if( !hitssessionid )
+							{
+								hitssessionid = $("#main-results-table").data("hitssessionid");
+							}
 //							var tree = this.nearest(".categorytree");
 //							var treeid = tree.data("")
 							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
@@ -954,7 +933,22 @@ onloadselectors = function()
 					}
 				}
 		);
-}
+		
+		jQuery('XXdiv#left-col-libraries input[name="sidebarlibraryvalue"]').livequery(
+				function()
+				{
+					var div = $(this);
+					//listen to changes in input?
+					div.on("change",function() 
+					{
+						//reload 					
+					} );
+				}
+		);
+		
+		
+		
+} //End of selections
 
 var runningstatus = {};
 
@@ -1099,11 +1093,6 @@ emcomponents = function() {
 							var assetid = ui.draggable.data("assetid");
 							var node = $(this);
 							var libraryid = node.data("libraryid");
-							//alert(assetid + " " + libraryid);
-//							var tree = this.nearest(".categorytree");
-//							var treeid = tree.data("")
-							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
-							//this is a category
 							jQuery.get(apphome + "/components/libraries/addasset.html", 
 									{
 										assetid:assetid,
@@ -1111,6 +1100,10 @@ emcomponents = function() {
 									},
 									function(data) 
 									{
+										var count = node.data("count");
+										count = parseInt(count) + 1;
+										var label = node.data("label");
+										node.html("<span>" + count + " " + label + " </span>");
 										node.append("<span class='fader'>&nbsp;+1</span>");
 										node.find(".fader").fadeOut(3000);
 										node.removeClass("selected");
@@ -1126,6 +1119,30 @@ emcomponents = function() {
 			}
 		);
 
+	jQuery(".librarycollectiondroparea").livequery(
+			function()
+			{
+				jQuery(this).droppable(
+				{
+					drop: function(event, ui) {
+						var assetid = ui.draggable.data("assetid");
+						var anode = $(this);
+						var targetDiv = anode.data("targetdiv");
+						var dropsave = anode.data("dropsaveurl");
+						
+						var nextpage= dropsave + "&assetid=" + assetid;
+						jQuery.get(nextpage, {}, function(data) 
+						{
+							var	cell = jQuery("#" + targetDiv);
+							cell.replaceWith(data);
+						});
+					},
+					tolerance: 'pointer',
+					over: outlineSelectionCol,
+					out: unoutlineSelectionCol
+				});
+			}
+		);
 
 	
 	jQuery(".sidetoggle").livequery("click",

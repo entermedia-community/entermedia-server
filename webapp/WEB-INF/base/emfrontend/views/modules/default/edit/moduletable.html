@@ -22,9 +22,10 @@ $context.putPageValue("canedittable", $caneditdata)
 
 #set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
 #if($ismodule)
-	#set( $viewdetailspath = "$apphome/views/modules/${searchtype}/edit/edit.html") ##the table should add the ID to edit
+	#set( $viewdetailspath = "$apphome/views/modules/${searchtype}/edit/index.html") ##the table should add the ID to edit	
+	#set( $jumptomodule = true )
 #end	
 
 ##if there is a module then click on it
-#set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "id=$id&parentid=$id&selectlink=$!viewdetailspath&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)

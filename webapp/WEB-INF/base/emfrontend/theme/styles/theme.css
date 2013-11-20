@@ -6322,11 +6322,11 @@ a.audio-filename:hover
 	border-radius: 5px 5px 0 0;
 }
 .ui-widget-header.sidetoggle .widget-header-title {
-	background: url('../images/sort-desc.png') left 6px no-repeat;
+	background: url('../images/arrow-right.png') left 4px no-repeat;
 	padding-left: 18px;
 }
 .ui-widget-header.sidetoggle.expanded .widget-header-title {
-	background: url('../images/sort-asc.png') left 6px no-repeat;
+	background: url('../images/arrow-down.png') left 6px no-repeat;
 	padding-left: 18px;
 }
 
@@ -6397,3 +6397,117 @@ div.uploadinstructions
 margin:0 auto;
 text-align:center;
 }
+
+.select2-result img.autocompleteicon 
+{
+	margin-right: 6px;
+	width: 20px;
+}
+
+.librarymenu
+{
+	margin-top: 3px;
+	margin-bottom: 10px;
+}
+.librarymenu a
+{
+	padding: 5px;
+}
+.librarymenu a:hover
+{
+	text-decoration:underline;
+}
+
+.librarymenu a.selected
+{
+	border: 1px solid #aaa;
+	 
+}
+.librarylabels h2
+{
+	font-size: .9em;
+}
+
+.librarylabels
+{
+	margin: 4px;
+	padding: 6px;
+	background-color: #eee;
+}
+.librarylabels ul {
+    margin: 0px 0 4px 4px;
+    padding: 0 0px;
+}
+
+.librarylabels ul li
+{
+	padding: 0px;
+    list-style-type:none; 
+    padding: 0px 0 4px 4px;
+    font-size: 1em;
+}
+
+.librarylabels ul li a:hover
+{
+	text-decoration: underline;
+}
+
+
+a.librarylabel
+{
+	display:block;	
+}
+a.librarylabel span 
+{
+	padding-left: 25px;
+	display:inline-block;
+	background: url("../images/icons/box.png") no-repeat scroll left center;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+a.librarylabel.selected
+{
+	background: none repeat scroll 0 0 #C9E8F2;
+}
+a.librarylabel:hover
+{
+	background: none repeat scroll 0 0 #C9E8F2;
+}
+
+a.librarylabel.dragoverselected
+{
+	border: 1px dashed #aaa;
+}
+
+a.librarydetails
+{
+	background: url("../images/icons/library.png") no-repeat scroll left center;
+	padding-left: 30px;
+	padding-right: 12px;
+}
+
+a.librarydroparea
+{
+	background: url("../images/icons/lgicn_16x16gray.png") no-repeat scroll left center;
+	padding-left: 24px;
+}
+
+
+.initialtext
+{
+	color: #aaa;
+}
+#librarychange div.collectionheaderleft
+{
+	width: 174px;float:left;
+}
+#librarychange div.collectionheaderright
+{
+	width: 20px;float:left;
+	padding: 8px 0px 0px 2px
+}
+
+#librarychange div.listautocomplete
+{
+	min-width: 174px; !important;
+}	

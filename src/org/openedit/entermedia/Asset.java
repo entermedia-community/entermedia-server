@@ -83,6 +83,7 @@ public class Asset implements MultiValued
 			}
 			else
 			{
+				values = new ArrayList(values);
 				values.add(inNewValue);
 			}
 			setValues(inKey, values);

@@ -1,6 +1,6 @@
 #set( $moduleid = $context.findValue("module") )
-#set($viewid = $context.getRequestParameter("viewid"))
-#set($viewpath = $context.getRequestParameter("viewpath"))
+#set($viewid = $context.findValue("viewid"))
+#set($viewpath = $context.findValue("viewpath"))
 #set( $origURL = $context.getRequestParameter("origURL" ) )
     
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
@@ -26,7 +26,7 @@ $context.putPageValue("view", $viewpath)
                   <li class="#if($viewid == $target.id) current #end projects-$target.id" byassettype="$!target.byassettype">
                   		
                   	#if( $target.rendertable )
-			        	 <a class="tab" href="$home${searchhome}/edit/table.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+			        	 <a class="tab" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
 	                     <span class="icon"></span><span class="text"> $target</span></a>
                   	#else
                       	<a class="tab" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">

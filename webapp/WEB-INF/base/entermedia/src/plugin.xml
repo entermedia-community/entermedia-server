@@ -76,6 +76,22 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</lang:groovy>
 
 
+	<bean  id="ProjectModule" class="modules.asset.ProjectModule" lazy-init="default" />
+	<bean  id="projectManager" class="model.projects.BaseProjectManager" lazy-init="default">
+			<property name="searcherManager"><ref bean="searcherManager" /></property>
+	</bean>
+
+
+<!--
+	<lang:groovy  id="projectManager" script-source="model/projects/BaseProjectManager.groovy" lazy-init="default">
+			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
+	</lang:groovy>
+
+	<lang:groovy  id="ProjectModule" script-source="modules/asset/ProjectModule.groovy" lazy-init="default">
+	</lang:groovy>
+
+-->
+
 <!-- Compiled Class Version
 
 	<bean id="orderManager" class="model.orders.BaseOrderManager">

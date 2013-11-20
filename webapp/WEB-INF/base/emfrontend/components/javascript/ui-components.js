@@ -289,7 +289,18 @@ uiload = function() {
 	
 	function select2formatResult(emdata, container, query)
 	{
-		return emdata.name;
+		var element = $(this.element);
+		var showicon = element.data("showicon");
+		if( showicon )
+		{
+			var type = element.data("searchtype");
+	    	var html = "<img class='autocompleteicon' src='" + themeprefix + "/images/icons/" + type + ".png'/>" + emdata.name;
+	    	return html;
+		}
+		else
+		{
+			return emdata.name;
+		}
 	}
 	function select2Selected(emdata, container) {
 
@@ -297,13 +308,14 @@ uiload = function() {
 		var id = container.closest(".select2-container").attr("id");
 		id = "list-" + id.substring(5); //remove sid2_
 		container.closest("form").find("#" + id ).val(emdata.id);
-		return emdata.name;
+		return select2formatResult(emdata, container);
 	}
 	jQuery("select.select2").livequery( function() 
 	{
 		var theinput = jQuery(this);
 		theinput.select2();
 	});
+	
 	
 	jQuery("input.listtags").livequery( function() 
 	{
@@ -366,6 +378,7 @@ uiload = function() {
 						};
 					}
 				},
+				escapeMarkup: function(m) { return m; },
 				formatResult : select2formatResult, 
 				formatSelection : select2Selected
 			});

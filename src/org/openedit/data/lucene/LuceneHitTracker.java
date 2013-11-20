@@ -20,13 +20,11 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.params.FacetSearchParams;
 import org.apache.lucene.facet.search.CountFacetRequest;
 import org.apache.lucene.facet.search.DrillDownQuery;
-import org.apache.lucene.facet.search.DrillSideways;
 import org.apache.lucene.facet.search.FacetResult;
 import org.apache.lucene.facet.search.FacetResultNode;
 import org.apache.lucene.facet.search.FacetsCollector;
-import org.apache.lucene.facet.search.SearcherTaxonomyManager;
-import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
@@ -752,7 +750,16 @@ public class LuceneHitTracker extends HitTracker
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
 				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.getTaxonomyReader() );
-				searcher.search(getLuceneQuery(), facetsCollector);
+				
+				if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
+				{
+					Filter filterids = new FieldCacheTermsFilter("id", fieldSelections.toArray(new String[fieldSelections.size()]));
+					searcher.search(getLuceneQuery(),filterids, facetsCollector);
+				}
+				else
+				{
+					searcher.search(getLuceneQuery(), facetsCollector);
+				}
 
 				//copy the collected results to our data structure
 				
@@ -790,7 +797,7 @@ public class LuceneHitTracker extends HitTracker
 						String id = splits[1];
 						childnode.setId(id);
 						String label = null;
-						if( parent.isList() || "category".equals( parent.getId() ) )
+						if( parent != null && (parent.isList() || "category".equals( parent.getId() ) ) )
 						{
 							Data data = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getListId(), id);
 							if (data == null)
@@ -811,7 +818,6 @@ public class LuceneHitTracker extends HitTracker
 					}
 					//filterNode.sortChildren();
 				}
-				
 				return facetNodes;
 			}
 		}

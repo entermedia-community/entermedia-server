@@ -1435,9 +1435,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	
-	<bean id="LibraryModule" class="org.openedit.entermedia.modules.LibraryModule" >
-	</bean>
-
 	<bean id="templateWebEmail" class="org.entermedia.email.TemplateWebEmail" singleton="false">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />

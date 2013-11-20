@@ -24,6 +24,7 @@
 	<property id="aiff" rendertype="audio" creator="audio" >AIFF</property>
 	<property id="mts" rendertype="video" creator="ffmpeg">MTS</property>
 	<property id="m2ts" rendertype="video" creator="ffmpeg">M2TS</property>
+	<property id="m2t" rendertype="video" creator="ffmpeg">M2T</property>
 	
 	<property id="3gp" rendertype="video" creator="ffmpeg">3GP</property>
 	<property id="mxf" rendertype="video" creator="ffmpeg">MXF</property>
