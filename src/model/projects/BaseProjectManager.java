@@ -90,9 +90,12 @@ public class BaseProjectManager implements ProjectManager
 				Data collection = (Data) iterator.next();
 				ids.add( collection.getId() );
 			}
-
+			FilterNode collectionhits = null;
 			HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).search(inReq); //todo: Cache?
-			FilterNode collectionhits = collectionassets.findFilterNode("librarycollection");
+			if( collectionassets != null)
+			{
+				collectionhits = collectionassets.findFilterNode("librarycollection");
+			}
 			
 			Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
 			inReq.putPageValue("usercollections", usercollections);
