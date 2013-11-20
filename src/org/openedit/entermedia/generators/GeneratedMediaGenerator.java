@@ -48,7 +48,11 @@ public class GeneratedMediaGenerator extends FileGenerator
 		if( existed )
 		{
 			
-			output = new Page();
+			output = new Page()
+			{
+				public boolean isHtml() { return false;}
+			};
+			output.setPageSettings(inPage.getPageSettings());
 			output.setContentItem(item);
 		}
 		else
