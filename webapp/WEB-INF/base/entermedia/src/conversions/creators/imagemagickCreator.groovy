@@ -464,9 +464,6 @@ public class imagemagickCreator extends BaseImageCreator
 			com.add(outputpath);
 		}
 		
-		
-		
-		
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
 		ExecResult execresult = getExec().runExec("convert", com, true);
@@ -480,13 +477,6 @@ public class imagemagickCreator extends BaseImageCreator
 			
 			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 			
-			//See if this was a onimport one, for now this means  the thumbs are probably done
-			//Dont save virtual assets
-			if( inAsset.getId() != null &&  inAsset.get("previewstatus") != "generated")
-			{
-				inAsset.setProperty("previewstatus", "generated");
-				inArchive.saveAsset( inAsset, null );
-			}
 			return result;
 		}
 		//problems

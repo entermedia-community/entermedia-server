@@ -13,9 +13,11 @@ import com.openedit.page.Page
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 
+
+//I do not need this at all since the assets are already set based on the import script or the conversion script
+
 public void checkPreviewStatus() throws Exception
 {
-	PresetCreator presets = new PresetCreator();
 	 
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 

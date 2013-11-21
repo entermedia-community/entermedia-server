@@ -14,9 +14,7 @@ $context.putPageValue("thumbsize",$thumbsize)
      </div>
     #elseif( !$hit.importstatus || $hit.importstatus != "complete" )
      <div class="smallthumb emdropshadow proxythumb">
-        <div class="loadingborder">
           $pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
-        </div>
      </div>
     #elseif( $hit.previewstatus && $hit.previewstatus == "mime")
         #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
