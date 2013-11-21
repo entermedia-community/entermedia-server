@@ -23,6 +23,7 @@
 	<property id="historynote" editable="false" stored="true" index="true">Last Note</property>
 	<property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" >Last Changed</property>
 	<property id="historyassetids" editable="false" stored="true" index="true"  >Last Attachments</property>
+	<property id="basket"  index="true" stored="true" type="boolean">Is an order basket</property>
 
 
 </properties>

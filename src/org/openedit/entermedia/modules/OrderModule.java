@@ -565,6 +565,7 @@ public class OrderModule extends BaseMediaModule
 			String appid = inReq.findValue("applicationid");
 			Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
 			basket = (Order) searcher.searchById(id);
+			basket.setProperty("basket", "true");
 			if (basket == null)
 			{
 				basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
@@ -572,6 +573,7 @@ public class OrderModule extends BaseMediaModule
 				getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
 			}
 			inReq.putSessionValue("orderbasket", basket);
+			
 		}
 		inReq.putPageValue("order", basket);
 
