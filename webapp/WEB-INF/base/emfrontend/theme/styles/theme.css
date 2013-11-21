@@ -6511,3 +6511,7 @@ a.librarydroparea
 {
 	min-width: 174px; !important;
 }	
+div#left-col-libraries div.ui-widget-content
+{
+	min-height: 150px;
+}

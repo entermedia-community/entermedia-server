@@ -934,20 +934,6 @@ onloadselectors = function()
 				}
 		);
 		
-		jQuery('XXdiv#left-col-libraries input[name="sidebarlibraryvalue"]').livequery(
-				function()
-				{
-					var div = $(this);
-					//listen to changes in input?
-					div.on("change",function() 
-					{
-						//reload 					
-					} );
-				}
-		);
-		
-		
-		
 } //End of selections
 
 var runningstatus = {};
@@ -1100,13 +1086,8 @@ emcomponents = function() {
 									},
 									function(data) 
 									{
-										var count = node.data("count");
-										count = parseInt(count) + 1;
-										var label = node.data("label");
-										node.html("<span>" + count + " " + label + " </span>");
-										node.append("<span class='fader'>&nbsp;+1</span>");
-										node.find(".fader").fadeOut(3000);
-										node.removeClass("selected");
+										var	cell = jQuery("#" + targetDiv);
+										cell.replaceWith(data);									
 									}
 							);
 
@@ -1129,8 +1110,13 @@ emcomponents = function() {
 						var anode = $(this);
 						var targetDiv = anode.data("targetdiv");
 						var dropsave = anode.data("dropsaveurl");
+						var hitssessionid = $("#resultsdiv").data("hitssessionid");
+						if( !hitssessionid )
+						{
+							hitssessionid = $("#main-results-table").data("hitssessionid");
+						}
 						
-						var nextpage= dropsave + "&assetid=" + assetid;
+						var nextpage= dropsave + "&assetid=" + assetid + "&hitssessionid=" + hitssessionid;
 						jQuery.get(nextpage, {}, function(data) 
 						{
 							var	cell = jQuery("#" + targetDiv);

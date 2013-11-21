@@ -592,7 +592,8 @@ public class DataEditModule extends BaseMediaModule
 			inReq.putPageValue("savedok", Boolean.TRUE);
 			
 			
-			if(getWebEventListener() != null){
+			if(getWebEventListener() != null)
+			{
 				WebEvent event = new WebEvent();
 				event.setSearchType(searcher.getSearchType());
 				event.setCatalogId(searcher.getCatalogId());

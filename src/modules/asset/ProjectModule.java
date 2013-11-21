@@ -1,5 +1,7 @@
 package modules.asset;
 
+import java.util.Iterator;
+
 import model.projects.ProjectManager;
 
 import org.apache.commons.logging.Log;
@@ -11,6 +13,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.modules.BaseMediaModule;
 
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 
 public class ProjectModule extends BaseMediaModule
 {
@@ -38,9 +41,35 @@ public class ProjectModule extends BaseMediaModule
 		{
 			//TODO: Support multiple selections
 			MediaArchive archive = getMediaArchive(inReq);
-			String assetid = inReq.getRequestParameter("assetid");
 			String libraryid = inReq.getRequestParameter("libraryid");
+			String hitssessionid = inReq.getRequestParameter("hitssessionid");
+			if( hitssessionid != null )
+			{
+				HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
+				if( tracker != null )
+				{
+					tracker = tracker.getSelectedHitracker();
+				}
+				if( tracker != null && tracker.size() > 0 )
+				{
+					for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+					{
+						Data data = (Data) iterator.next();
+						addAssetToLibrary(inReq, archive, libraryid, data.getId());
+					}
+					inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
+					return;
+				}
+			}
+
+			String assetid = inReq.getRequestParameter("assetid");
+			addAssetToLibrary(inReq, archive, libraryid, assetid);
+			inReq.putPageValue("added" , "1" );
 			
+		}
+
+		protected void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid)
+		{
 			Asset asset = archive.getAsset(assetid);
 			
 			if(asset != null && !asset.getLibraries().contains(libraryid))
@@ -48,22 +77,42 @@ public class ProjectModule extends BaseMediaModule
 				asset.addLibrary(libraryid);
 				archive.saveAsset(asset, inReq.getUser());
 			}
-			
 		}
 		
 		public void addAssetToCollection(WebPageRequest inReq)
 		{
 			//TODO: Support multiple selections
 			MediaArchive archive = getMediaArchive(inReq);
-			String assetid = inReq.getRequestParameter("assetid");
+			String hitssessionid = inReq.getRequestParameter("hitssessionid");
 			String libraryid = inReq.getRequestParameter("libraryid");
-			
-			Asset asset = archive.getAsset(assetid);
-			if(asset != null && !asset.getLibraries().contains(libraryid))
+			if( hitssessionid != null )
 			{
-				asset.addLibrary(libraryid);
-				archive.saveAsset(asset, inReq.getUser());
+				HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
+				if( tracker != null )
+				{
+					tracker = tracker.getSelectedHitracker();
+				}
+				if( tracker != null && tracker.size() > 0 )
+				{
+					for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+					{
+						Data data = (Data) iterator.next();
+						addAssetToCollection(inReq, archive, libraryid, data.getId());
+					}
+					inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
+					return;
+				}
 			}
+			String assetid = inReq.getRequestParameter("assetid");
+			
+			addAssetToCollection(inReq, archive, libraryid, assetid);
+			inReq.putPageValue("added" , "1" );
+		
+		}
+
+		protected void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid)
+		{
+			addAssetToLibrary(inReq, archive, libraryid, assetid);
 
 			
 			String librarycollection = inReq.getRequestParameter("librarycollection");
@@ -80,7 +129,6 @@ public class ProjectModule extends BaseMediaModule
 				librarycollectionassetSearcher.saveData(found, inReq.getUser());
 				log.info("Saved " + found.getId());
 			}
-		
 		}
 	
 }

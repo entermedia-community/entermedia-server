@@ -74,7 +74,7 @@ public class BaseProjectManager implements ProjectManager
 			inReq.putPageValue("selectedlibrary",library);
 			
 			Searcher assetsearcher = getSearcherManager().getSearcher(getCatalogId(),"asset");
-			int assetsize = assetsearcher.query().match("libraries",library.getId()).search(inReq).size();
+			int assetsize = assetsearcher.query().match("libraries",library.getId()).search().size();
 			inReq.putPageValue("librarysize",assetsize);
 			
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
