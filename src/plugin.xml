@@ -579,7 +579,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-
 	<bean id="assetArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
 		singleton="false">
 		<property name="pageManager">
@@ -591,6 +590,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
 	<bean id="pdfExtractor" class="org.openedit.entermedia.scanner.MetadataPdfExtractor" />

@@ -349,10 +349,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 				}
 			}
 			if (data != null && !(data instanceof Asset)) {
-				data = getAssetArchive().getAssetBySourcePath(
-						data.getSourcePath());
+				data = getAssetArchive().getAssetBySourcePath(	data.getSourcePath());
 				if (data != null) {
 					getCacheManager().put(getIndexPath(), inValue, data);
+					getCacheManager().put(getIndexPath(), data.getSourcePath(), data);
 				}
 			}
 			return data;

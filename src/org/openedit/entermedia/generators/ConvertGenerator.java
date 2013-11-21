@@ -3,6 +3,7 @@ package org.openedit.entermedia.generators;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.ConvertInstructions;
 import org.openedit.entermedia.creator.MediaCreator;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -69,8 +70,25 @@ public class ConvertGenerator extends FileGenerator
 			return;
 		}
 		creator.populateOutputPath(archive, inStructions);
-		Page output = getPageManager().getPage(inStructions.getOutputPath());
-		if( !output.exists() || output.getContentItem().getLength() == 0 )
+		
+		
+		ContentItem stub = getPageManager().getRepository().getStub(inStructions.getOutputPath());
+		Page output = null;
+		boolean existed = stub.exists();
+		if( existed )
+		{
+			output = new Page() //SPEED UP
+			{
+				public boolean isHtml() { return false;}
+			};
+			output.setPageSettings(inPage.getPageSettings());
+			output.setContentItem(stub);
+		}
+		else
+		{
+			 output = getPageManager().getPage(inStructions.getOutputPath());  //mp3 and other types
+		}
+		if( !existed || output.getContentItem().getLength() == 0 )
 		{
 			//TODO: Return the quick embeded jpg thumbnails then queue up the larger thumbs for later
 			//synchronized (this)
@@ -78,7 +96,6 @@ public class ConvertGenerator extends FileGenerator
 				output = creator.createOutput(archive,inStructions);//archive.getCreatorManager().createOutput( inStructions);				
 			//}
 			//make sure we hide thumbs that are not ready
-			
 		}
 		// getDefaultImage(inType, archive.getCatalogId());
 		if (output == null)

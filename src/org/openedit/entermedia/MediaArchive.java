@@ -1498,6 +1498,58 @@ public class MediaArchive
 		
 	}
 	
+	public void updateAssetConvertStatus(String inSourcePath) 
+	{
+		Asset asset = getAssetBySourcePath(inSourcePath);
+		
+		String existingimportstatus = asset.get("importstatus");
+		String existingpreviewstatus = asset.get("previewstatus");
+
+		log.info("existingpreviewstatus" + existingpreviewstatus);
+		//update importstatus and previewstatus to complete
+		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
+		{
+			//check tasks and update the asset status
+			Searcher tasksearcher = getSearcher( "conversiontask");
+			HitTracker conversions = tasksearcher.query().match("assetid",asset.getId()).search();
+			boolean allcomplete = true;
+			boolean founderror = false;
+
+			for( Object object : conversions )
+			{
+				Data task = (Data)object;
+				if( "error".equals( task.get("status") ) )
+				{
+					founderror = true;
+					break;
+				}
+
+				if( !"complete".equals( task.get("status") ) )
+				{
+					allcomplete = false;
+					break;
+				}
+			}
+			if( founderror || allcomplete )
+			{
+				//load the asset and save the import status to complete
+				
+				if( asset != null )
+				{
+					if( founderror)
+					{
+						asset.setProperty("importstatus","error");
+					}
+					else
+					{
+						asset.setProperty("importstatus","complete");
+						asset.setProperty("previewstatus","2");
+					}
+					saveAsset(asset, null);
+				}
+			}
+		}
+	}
 	
 
 }
