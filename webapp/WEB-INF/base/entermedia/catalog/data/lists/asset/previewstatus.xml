@@ -3,7 +3,8 @@
 <properties> 
 	<property id="0">Unknown</property>
 	<property id="1">Exif Stub Created</property>
-	<property id="converting">Being Converted</property>
+	<property id="converting">Converted OnImports</property>
 	<property id="2">OnImports Completed</property>
 	<property id="3">Error</property>
+	<!-- deprecated: generated is set when the crop thumbnail is complete -->
 </properties>

@@ -4,4 +4,7 @@
 	<page-action name="RevisionEditor.restoreRevision" alltypes="true"/>   
 	<page-action name="PageValue.loadPageVariable" bean="sizer" alltypes="true"/>	
 	
+	<!-- Requires an assetid and filename -->
+	<page-action name="AssetEditModule.selectPrimaryAsset" alltypes="true"/>
+	
 </page>
