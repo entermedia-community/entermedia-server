@@ -40,7 +40,8 @@
 	<property id="aperture" externalid="Aperture" index="true" stored="true" >Aperture</property>
 
 	<!--  Video stuff -->
-	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Videos -->
+	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Rounded to the nearest second -->
+	<property id="duration" index="true" stored="true" >Duration Stamp</property> <!-- Videos -->
 	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
 	<property id="bitspersample" externalid="Bits Per Sample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="videocodec"  index="true" stored="true" >Video Codec</property>

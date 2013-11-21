@@ -139,7 +139,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected boolean parseNumericValues(Asset inAsset, PropertyDetails details, String numberinfo)
 	{
-		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace
+		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace TODO: handle lower/mixed case
 		boolean foundtextvalues = false;
 		if (numberinfo != null)
 		{
@@ -194,6 +194,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					try
 					{
+						inAsset.setProperty("duration", value);
 						value = processDuration(value);
 						inAsset.setProperty("length", value);
 					}
@@ -324,12 +325,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		else
 		{
 			String[] parts = value.split(":");
-			long total = 0;
+			double total = 0;
 			for(int j = 0; j < parts.length; j++)
 			{
 				total += Math.pow(60, parts.length - 1 - j) * Double.parseDouble(parts[j]);
 			}
-			value = String.valueOf(total);
+			value = String.valueOf(Math.round( total ) );
 		}
 		return value;
 	}
