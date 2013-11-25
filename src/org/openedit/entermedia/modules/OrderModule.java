@@ -565,13 +565,14 @@ public class OrderModule extends BaseMediaModule
 			String appid = inReq.findValue("applicationid");
 			Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
 			basket = (Order) searcher.searchById(id);
-			basket.setProperty("basket", "true");
 			if (basket == null)
 			{
 				basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
 				basket.setId(id);
 				getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
 			}
+			basket.setProperty("basket", "true");
+
 			inReq.putSessionValue("orderbasket", basket);
 			
 		}
