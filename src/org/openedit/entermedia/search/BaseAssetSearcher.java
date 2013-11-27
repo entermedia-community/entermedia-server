@@ -198,7 +198,30 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	{
 		getDataConnector().deleteFromIndex(inOld);
 	}
-
+	@Override
+	public HitTracker getAllHits()
+	{
+		Category root = null;
+		try
+		{
+			root = getCategorySearcher().getRootCategory();
+		}
+		catch (OpenEditException e)
+		{
+			throw new OpenEditRuntimeException(e);
+		}
+		SearchQuery query = createSearchQuery();
+		if (root != null)
+		{
+			query.addMatches("category", root.getId());
+		}
+		else
+		{
+			query.addMatches("category", "index");
+		}
+		query.addSortBy("id");
+		return search(query);
+	}
 	public HitTracker getAllHits(WebPageRequest inReq)
 	{
 		Category root = null;
