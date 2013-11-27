@@ -662,9 +662,24 @@ public class DataEditModule extends BaseMediaModule
 						searcher.delete(data, inReq.getUser());
 						changes++;
 					}
+					if(getWebEventListener() != null)
+					{
+						WebEvent event = new WebEvent();
+						event.setSearchType(searcher.getSearchType());
+						event.setCatalogId(searcher.getCatalogId());
+						event.setOperation(searcher.getSearchType() + "/deleted");
+						event.setProperty("dataid", data.getId());
+						event.setProperty("id", data.getId());
+
+						event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+						getWebEventListener().eventFired(event);
+					}
 					
 				}
 			}
+
+			
 			inReq.putPageValue("rowsedited", String.valueOf(changes));
 		}
 
