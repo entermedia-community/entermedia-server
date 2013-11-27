@@ -454,7 +454,7 @@ public class PathEventManager
 
 	protected void loadPathEvent(String htmlpage)
 	{
-		Page eventpage = getPageManager().getPage(htmlpage);
+		Page eventpage = getPageManager().getPage(htmlpage, true);
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
 	

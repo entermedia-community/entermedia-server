@@ -5,6 +5,7 @@
 #end
 <div class="tab-actions clearfix">
 	<select class="jump">
+			<option value=""></option>
 		#foreach( $event in $pathevents )
 				#if( $type != $event.getPage().getDirectoryName() )
 					#set( $type = $event.getPage().getDirectoryName())
