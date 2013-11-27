@@ -49,9 +49,9 @@ $lsearcher.addShowOnly($context, $query)
 #if( !$value )
 	#set ($value = $context.getRequestParameter('value'))
 #end
-#if (!$value)
-  #set ($value = $context.getRequestParameter("${fieldname}.value"))
-#end
+##if (!$value)
+##  #set ($value = $context.getRequestParameter("${fieldname}.value"))
+##end
 
 #set( $valueid = "$fieldname" )
 
