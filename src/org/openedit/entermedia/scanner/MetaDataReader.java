@@ -58,7 +58,10 @@ public class MetaDataReader
 			if( foundone )
 			{
 				long end = System.currentTimeMillis();
-				log.info("Got metadata in " + (end - start) + " mili seconds.");
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Got metadata in " + (end - start) + " mili seconds.");
+				}
 			}
 		}
 		catch (Exception e)

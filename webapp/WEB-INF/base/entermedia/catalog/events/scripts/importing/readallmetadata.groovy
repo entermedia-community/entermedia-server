@@ -14,7 +14,8 @@ public void init()
 {
 		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher searcher = archive.getAssetSearcher();
-		Collection assets = searcher.getAllHits();
+		HitTracker assets = searcher.getAllHits();
+		assets.setHitsPerPage(1000);
 		List assetsToSave = new ArrayList();
 		MetaDataReader reader = moduleManager.getBean("metaDataReader");
 		for (Data hit in assets)
@@ -25,11 +26,11 @@ public void init()
 
 			reader.populateAsset(archive, content.getContentItem(), asset);
 			assetsToSave.add(asset);
-			if(assetsToSave.size() == 100)
+			if(assetsToSave.size() == 1000)
 			{
 				archive.saveAssets( assetsToSave );
 				assetsToSave.clear();
-				log.info("saved 100 metadata readings");
+				log.info("saved 1000 metadata readings");
 			}
 		}
 		archive.saveAssets assetsToSave;
