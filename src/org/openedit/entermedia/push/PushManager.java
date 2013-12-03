@@ -212,5 +212,7 @@ public interface PushManager
 	void toggle(String inCatalogId);
 
 	void acceptPush(WebPageRequest inReq, MediaArchive archive);
+	
+	void pullApprovedAssets(WebPageRequest inReq, MediaArchive inArchive);
 
 }
