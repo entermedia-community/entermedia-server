@@ -1,5 +1,7 @@
 package model.push;
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.Map;
 import java.util.Properties;
 
@@ -1196,7 +1198,6 @@ asset: " + asset);
 		String catalogid = inArchive.getCatalogId();
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
-		
 		String exportpath = inArchive.getCatalogSettingValue("push_download_exportpath");
 		if (exportpath == null){
 			exportpath = "/WEB-INF/data/${catalogid}/originals/";
@@ -1217,14 +1218,27 @@ asset: " + asset);
 			//2. download original to a specific location
 			String url = prop.getProperty("original");
 			String name = prop.getProperty("name");
+			if (url == null || name == null){
+				log.info("unable to process $key, name ($name) or url ($url) are null, skipping");
+				continue;
+			}
 			Page page = getDownloadedAsset(inArchive,url,name,exportpath);
-			//3. copy metadata to new asset
-			if (!createAsset(inArchive,page,metadata)){
+			if (!page.exists()){
+				log.info("unable to download asset $name, skipping");
+				continue;
+			}
+			//3. update sourcepath
+			page = moveDownloadedAsset(inArchive,page,metadata);
+			//4. copy metadata to new asset
+			Asset asset = null;
+			if ( (asset = createAsset(inArchive,page,metadata)) == null){
 				log.info("unable to create asset skipping changing asset status to deleted");
 				continue;
 			}
-			//4. query REST to set delete status of asset
+			//5. query REST to set delete status of asset
 			updateAssetEditStatus(inArchive,key);
+			//6. fire event
+			inArchive.fireMediaEvent("asset/finalizepull",null,asset);
 		}
 	}
 	
@@ -1239,7 +1253,6 @@ asset: " + asset);
 	
 	protected Properties getAssetMetadata(MediaArchive inArchive, String inAssetId){
 		log.info("get asset metadata for $inAssetId");
-		
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 		String url = server + "/media/services/rest/assetdetails.xml";
@@ -1268,7 +1281,7 @@ asset: " + asset);
 		return props;
 	}
 	
-	protected boolean createAsset(MediaArchive inArchive, Page inPage, Properties inMetadata){
+	protected Asset createAsset(MediaArchive inArchive, Page inPage, Properties inMetadata){
 		AssetImporter importer = (AssetImporter) inArchive.getModuleManager().getBean("assetImporter");
 		String catalogid = inArchive.getCatalogId();
 		String exportpath = "/WEB-INF/data/" + catalogid + "/originals/";
@@ -1290,7 +1303,22 @@ asset: " + asset);
 			asset.setProperty(key, value);
 		}
 		inArchive.getAssetSearcher().saveData(asset, null);
-		return true;
+		return asset;
+	}
+	
+	protected Page moveDownloadedAsset(MediaArchive inArchive, Page inPage, Properties inMetadata){
+		String user = inMetadata.getProperty("owner","admin").trim();//make the default "admin" if owner has not been specified
+		Calendar cal = Calendar.getInstance();
+		String month = String.valueOf(cal.get(Calendar.MONTH)+1);
+		if (month.size() == 1) month = "0${month}";
+		String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+		if (day.size() == 1) day = "0${day}";
+		String year = String.valueOf(cal.get(Calendar.YEAR));
+		String generatedpath = "users/${user}/${year}/${month}/${day}/${inPage.getName()}";
+		String destinationpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/$generatedpath";
+		Page destinationpage = inArchive.getPageManager().getPage(destinationpath);
+		inArchive.getPageManager().movePage(inPage,destinationpage);
+		return destinationpage;
 	}
 	
 	protected void updateAssetEditStatus(MediaArchive inArchive, String inAssetId){
