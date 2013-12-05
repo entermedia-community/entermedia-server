@@ -398,6 +398,9 @@ public class BasePushManager implements PushManager
 		{
 			throw new Exception(" ${inMethod} Request failed: status code ${status}");
 		}
+		
+		log.info(inMethod.getResponseBodyAsString());//for debug purposes only
+		
 		Element result = xmlUtil.getXml(inMethod.getResponseBodyAsStream(),"UTF-8");
 		return result;
 	}
@@ -1117,8 +1120,13 @@ asset: " + asset);
 	public void pullApprovedAssets(WebPageRequest inReq, MediaArchive inArchive){
 		log.info("pulling approved assets from remote server");
 		Map<String,Properties> map = getApprovedAssets(inArchive);
-		processApprovedAssets(inArchive,map);
-		log.info("finished pull");
+		log.info("found the following files, $map");
+		if (!map.isEmpty()){
+			processApprovedAssets(inArchive,map);
+			log.info("finished pull");
+		} else{
+			log.info("no files approved on remote server, returning");
+		}
 	}
 	
 	/**
@@ -1127,9 +1135,10 @@ asset: " + asset);
 	 * @return
 	 */
 	protected HashMap<String,Properties> getApprovedAssets(MediaArchive inArchive) {
+		log.info("getApprovedAssets starting");
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
-		
+		log.info("push_server_url = $server, push_target_catalogid = $remotecatalogid");
 		String [] inFields = ["approvalstatus", "editstatus"] as String[];
 		String [] inValues = ["approved", "7"] as String[];
 		String [] inOperations = ["matches", "not"] as String[];
@@ -1142,7 +1151,7 @@ asset: " + asset);
 			method.addParameter("operation", inOperations[i]);
 			method.addParameter(inFields[i] + ".value", inValues[i]);
 		}
-		
+		log.info("executing $remotecatalogid, $method");
 		Element root = execute(remotecatalogid,method);
 		method.releaseConnection();
 		Element hits = (Element)root.elements().get(0);
@@ -1150,6 +1159,7 @@ asset: " + asset);
 		int pages = Integer.parseInt(hits.attributeValue("pages"));
 		String sessionid = hits.attributeValue("sessionid");
 		
+		log.info("found $pages, $sessionid, $root")
 		Map<String, Properties> map = new HashMap<String, Properties>();
 		addHits(hits, map);
 		
