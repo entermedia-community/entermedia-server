@@ -399,7 +399,7 @@ public class BasePushManager implements PushManager
 			throw new Exception(" ${inMethod} Request failed: status code ${status}");
 		}
 		
-		log.info(inMethod.getResponseBodyAsString());//for debug purposes only
+//		log.info(inMethod.getResponseBodyAsString());//for debug purposes only
 		
 		Element result = xmlUtil.getXml(inMethod.getResponseBodyAsStream(),"UTF-8");
 		return result;
