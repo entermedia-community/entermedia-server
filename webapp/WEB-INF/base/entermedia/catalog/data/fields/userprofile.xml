@@ -13,6 +13,7 @@
 	<property id="expand_media_sidebar" index="true" stored="true"  internalfield="true">true</property>
 	
 	<property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of Assets to view per page</property>
+	<property id="modulehitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of rows show on Module results</property>
 	
 	<!--  Custom fields -->
 
