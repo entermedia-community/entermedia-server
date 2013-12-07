@@ -1,6 +1,4 @@
-
 #foreach( $script in $content.getScriptPaths() )
-    
 	<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script">  </script>
 #end
 
