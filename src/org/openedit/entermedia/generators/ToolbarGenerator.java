@@ -38,7 +38,7 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 		}
 	}	
 	public boolean addHeader( WebPageRequest inPageRequest, Output inOut ) throws OpenEditException
-	{
+	{		
 		User user = inPageRequest.getUser();
 		
 		if (user == null)
@@ -46,7 +46,7 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 			return false;
 		}
 		Page requestedPage  = inPageRequest.getPage();
-		if( requestedPage.getPath().equals(getHeaderPath()))
+		if( requestedPage.getPath().equals(getHeaderPath()) || requestedPage.getInnerLayout() == null)
 		{
 			return false;
 		}
@@ -70,7 +70,7 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 
 		if( debug && requestedPage.isHtml())
 		{
-			String show = inPageRequest.getContentProperty("showdebug");
+			String show = inPageRequest.getPageProperty("showdebug");
 			if( show != null)
 			{
 				return Boolean.parseBoolean(show);
