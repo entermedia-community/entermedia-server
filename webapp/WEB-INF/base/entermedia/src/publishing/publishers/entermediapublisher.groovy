@@ -151,10 +151,10 @@ public class entermediapublisher extends basepublisher implements Publisher
 	   if (fieldClient == null)
 	   {
 		   fieldClient = new HttpClient();
-		   PostMethod method = new PostMethod(destination. + getDefaultAppId() + getRestPath() + "/login.xml");
-		   method.addParameter("accountname", getUserName());
-		   method.addParameter("password", getPassword());
-		   execute(method);
+//		   PostMethod method = new PostMethod(destination. + getDefaultAppId() + getRestPath() + "/login.xml");
+//		   method.addParameter("accountname", getUserName());
+//		   method.addParameter("password", getPassword());
+//		   execute(method);
 	   }
 	   return fieldClient;
    }

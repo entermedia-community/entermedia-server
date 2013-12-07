@@ -464,6 +464,8 @@ public class BaseOrderManager implements OrderManager
 		if(inResetId){
 			inOrder.setId(orderseacher.nextId());
 			inOrder.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			inOrder.setProperty("basket","false");
+			
 		}
 		//TODO: deal with table of assets
 		String[] fields = inReq.getRequestParameters("field");

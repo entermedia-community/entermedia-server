@@ -10,7 +10,6 @@ if(hits == null){
  String sessionid = context.getRequestParameter("hitssessionid");
  hits = context.getSessionValue(sessionid);
 }
-log.info("hits: " +hits);
 searcherManager = context.getPageValue("searcherManager");
 searchtype = context.findValue("searchtype");
 catalogid = context.findValue("catalogid");
@@ -18,7 +17,6 @@ searcher = searcherManager.getSearcher(catalogid, searchtype);
 boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"));
 String[] detaillist = context.getRequestParameters("detail");
 Collection details = null;
-
 if(detaillist != null){
 	log.info("Detail List was used - customizing export");
 	details = new ArrayList();
@@ -31,8 +29,16 @@ if(detaillist != null){
 	}
 } 
 else{
-
-details = searcher.getDetailsForView("${searchtype}/csvexport", context.getUser());
+	log.info("here " + context.findValue("view"));
+	if(context.findValue("view")){
+		details = searcher.getDetailsForView(context.findValue("view"), context.getUser());
+		log.info("details" + details);
+	} 
+	else{
+		
+		details = searcher.getDetailsForView("${searchtype}/csvexport", context.getUser());
+		
+	}
 }
 
 if(details == null){

@@ -1471,6 +1471,16 @@ public class DataEditModule extends BaseMediaModule
 		inData.setProperty(inKey,values.toString());
 	}
 	
+	public void loadModule(WebPageRequest inReq){
+		String moduleid = inReq.findValue("module");
+		if(moduleid != null){
+		
+			inReq.putPageValue("module", moduleid);
+			
+		}
+	}
+	
+	
 	public void loadCorrectViewForUser(WebPageRequest inReq ) throws Exception 
 	{
 		String catalogid = resolveCatalogId(inReq);

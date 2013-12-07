@@ -36,7 +36,11 @@
     #set( $permission = "$!context.getPageValue($pname)")
     #set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
     #set( $text = $link.name)
-
+    
+    #if($pname == "canmetadatageneral" &&  $caneditmetadatageneral == "false")
+		#set($text = "View Metadata") ##change label
+	#end
+	
     #if( $permission == "true")
 
     ##Check for custom links, arguments and labels
