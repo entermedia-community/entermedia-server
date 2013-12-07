@@ -56,10 +56,16 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 		}
 		
 		boolean edit = Boolean.parseBoolean(user.get("showeditor"));
-		
+
+		if( edit && "preview".equals( user.get("oe.edit.mode") ) )
+		{
+			return false;
+		}
+
 		if(!edit && inPageRequest.getUserProfile() != null){
 			edit = Boolean.parseBoolean(inPageRequest.getUserProfile().get("contentedit"));
 		}
+		
 		
 		if (edit && !requestedPage.isBinary() && inPageRequest.isEditable() )
 		{
