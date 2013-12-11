@@ -337,6 +337,9 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 
 	public Object findNodeByUrl(Object inRoot, String inUrl)
 	{
+		if(inUrl == null){
+			return null;
+		}
 		int count = getWebTree().getModel().getChildCount(inRoot);
 		for (int i = 0; i < count; i++)
 		{
