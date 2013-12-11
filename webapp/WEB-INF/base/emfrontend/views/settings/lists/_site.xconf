@@ -2,4 +2,8 @@
 
 	<property name="tab">datamanager</property>
 	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
+	
+	<permission name="view">
+		<userprofile property="viewsettings" equals="true" />
+	</permission>
 </page>
