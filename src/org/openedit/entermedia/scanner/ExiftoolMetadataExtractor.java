@@ -3,8 +3,11 @@ package org.openedit.entermedia.scanner;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -98,7 +101,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			
 			base.add("-S");
 			base.add("-d");
-			base.add("%Y-%m-%d %H:%M:%S"); //yyyy-MM-dd HH:mm:ss
+			base.add("\"%Y-%m-%d %H:%M:%S\""); //yyyy-MM-dd HH:mm:ss
 			
 			base.add(inputFile.getAbsolutePath());
 			ArrayList<String> comm= new ArrayList(base);
@@ -306,9 +309,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					continue;
 				}
-				
 				PropertyDetail property = details.getDetailByExternalId(key);
-
 				if(property == null)
 				{
 					continue;

@@ -38,6 +38,8 @@ public class WorkFlow
 		finder.setRoot(getRoot());
 		finder.setPageManager(getPageManager());
 		finder.addSkipFileName("*.xconf");
+		finder.addSkipFileName("WEB-INF");
+		finder.addSkipFileName("*/WEB-INF/*");
 		return finder.findPages("*.draft.*");
 	}
 	public String getUserDescription( String inUserName )
