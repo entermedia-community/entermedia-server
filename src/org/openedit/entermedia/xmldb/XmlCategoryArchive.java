@@ -86,6 +86,9 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 	{
 		try
 		{
+			if(inCategory == null){
+				return null;
+			}
 			Category cat = (Category) getCacheManager().get(cacheId(),inCategory);
 			if( cat == null)
 			{
