@@ -5,9 +5,9 @@
 	
 	
 	<div  class="ui-widget-header">Search
-		#if( $caneditadvancedsearch )
+		#if( $canviewmodulesettings )
 			<span class="widget-header-edit">
-			<a class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/index.html?viewid=${moduleid}advancedsearch&viewpath=${moduleid}/${moduleid}advancedsearch">Edit</a>
+			<a class="ir emdialog" data-width="700" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/indexdialog.html?viewid=${moduleid}advancedsearch&viewpath=${moduleid}/${moduleid}advancedsearch">Edit</a>
 			</span>
 		#end
 	</div>

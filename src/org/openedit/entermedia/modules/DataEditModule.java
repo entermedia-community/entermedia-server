@@ -134,8 +134,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue("searcher", searcher);
 	}
-
-	
 	
 	public Data createNew(WebPageRequest inReq) throws Exception
 	{
@@ -1297,6 +1295,27 @@ public class DataEditModule extends BaseMediaModule
 		inReq.putPageValue(variablename, result);
 		return result;
 
+	}
+	
+	public Data loadDataByField(WebPageRequest inReq) throws Exception{
+		log.info("loadDataByField "+inReq);
+		Searcher searcher = loadSearcher(inReq);
+		String field = inReq.findValue("field");
+		if (field == null){
+			field = "id";
+		}
+		String pagename = inReq.getPage().getName();
+		String searchValue = pagename.substring(0, pagename.lastIndexOf("."));
+		SearchQuery query = searcher.createSearchQuery();
+		query.append(field, searchValue);
+		HitTracker hits = searcher.search(query);
+		Data result = null;
+		if (hits.size() > 0){
+			result = (Data) hits.first();
+		}
+		inReq.putPageValue("data", result);
+		log.info("found "+(result == null ? "NULL" : result.getId()));
+		return result;
 	}
 
 	public Object loadDataByValue(WebPageRequest inReq) throws Exception
