@@ -55,26 +55,23 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 			return false;
 		}
 		
-		boolean edit = Boolean.parseBoolean(user.get("showeditor"));
-
-		if( edit && "preview".equals( user.get("oe.edit.mode") ) )
+		String val = user.get("oe.edit.mode");
+		
+		if( "preview".equals( val ) )
 		{
 			return false;
 		}
 
-		if(!edit && inPageRequest.getUserProfile() != null){
-			edit = Boolean.parseBoolean(inPageRequest.getUserProfile().get("contentedit"));
-		}
 		
 		
-		if (edit && !requestedPage.isBinary() && inPageRequest.isEditable() )
+		if ("editing".equals(val) &&  !requestedPage.isBinary() && inPageRequest.isEditable() )
 		{
 			return true;
 		}
 
-		boolean debug = Boolean.parseBoolean(user.get("showdebug"));
+		//boolean debug = Boolean.parseBoolean(user.get("showdebug"));
 
-		if( debug && requestedPage.isHtml())
+		if( "debug".equals(val) && requestedPage.isHtml())
 		{
 			String show = inPageRequest.getPageProperty("showdebug");
 			if( show != null)
