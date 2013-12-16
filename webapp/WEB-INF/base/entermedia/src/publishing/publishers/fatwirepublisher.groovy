@@ -143,9 +143,9 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				String ftpPwd = usermanager.decryptPassword(ftpUser);
 				
 				Page original = findInputPage(mediaArchive,inAsset,inPreset);
-				Page thumb = findInputPage(mediaArchive,inAsset,thumbpreset);
+//				Page thumb = findInputPage(mediaArchive,inAsset,thumbpreset);
 				
-				log.info("preparing to ftp, image ${original}, thumbnail ${thumb}");
+				log.info("preparing to ftp, image ${original}");
 				
 				ArrayList<String> images = new ArrayList<String>();
 				ArrayList<Page> pages = new ArrayList<Page>();
@@ -154,21 +154,22 @@ public class fatwirepublisher extends basepublisher implements Publisher
 				while(itr.hasNext())
 				{
 					Object att = itr.next();
-					if (att.getName() != null && att.getName().equals("thumbnailurl"))
-					{
-						Object attdata = att.getData();
-						String to = (attdata!=null ? attdata.getStringValue() : null);
-						if (to!=null)
-						{
-							if (to.startsWith("/image/EM/"))
-							{
-								to = to.substring("/image/EM/".length());
-							}
-							pages.add(thumb);
-							images.add(to);
-						}
-					}
-					else if (att.getName() != null && att.getName().equals("imageurl"))
+//					if (att.getName() != null && att.getName().equals("thumbnailurl"))
+//					{
+//						Object attdata = att.getData();
+//						String to = (attdata!=null ? attdata.getStringValue() : null);
+//						if (to!=null)
+//						{
+//							if (to.startsWith("/image/EM/"))
+//							{
+//								to = to.substring("/image/EM/".length());
+//							}
+//							pages.add(thumb);
+//							images.add(to);
+//						}
+//					}
+//					else
+					if (att.getName() != null && att.getName().equals("imageurl"))
 					{
 						Object attdata = att.getData();
 						String to = (attdata!=null ? attdata.getStringValue() : null);
@@ -180,6 +181,7 @@ public class fatwirepublisher extends basepublisher implements Publisher
 							}
 							pages.add(original);
 							images.add(to);
+							break;
 						}
 					}
 				}
