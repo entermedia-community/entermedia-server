@@ -564,11 +564,9 @@ public class BaseOrderManager implements OrderManager
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
 		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
-		Searcher orderitemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
-		
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+		
 		log.info("Processing " + hits.size() + " order items ");
 		List<String> assetids = new ArrayList<String>();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
@@ -580,10 +578,10 @@ public class BaseOrderManager implements OrderManager
 			//if asset is in the exclude list, update the orderitem table with a publisherror status
 			if (!omit.isEmpty() && omit.contains(assetid))
 			{
-				Data data = (Data) orderitemsearcher.searchById(orderitemhit.getId());
+				Data data = (Data) orderItemSearcher.searchById(orderitemhit.getId());
 				data.setProperty("status","publisherror");
 				data.setProperty("errordetails","Publisher is not configured for this preset");
-				orderitemsearcher.saveData(data, null);
+				orderItemSearcher.saveData(data, null);
 				omit.remove(assetid);
 				continue;
 			}
@@ -602,6 +600,13 @@ public class BaseOrderManager implements OrderManager
 			}
 			
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
+			if (orderItem == null)
+			{
+				log.info("Unknown error: unable to find ${orderitemhit.getId()} in orderitem table, skipping");
+				//update what table exactly?
+				continue;
+			}
+			
 			orderItem.setProperty("presetid", presetid);
 			if( "preview".equals(presetid) )
 			{

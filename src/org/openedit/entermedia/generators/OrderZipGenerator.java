@@ -3,10 +3,13 @@
  */
 package org.openedit.entermedia.generators;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
@@ -69,6 +72,8 @@ public class OrderZipGenerator extends BaseGenerator
 			List<Asset> missing = new ArrayList<Asset>();
 			List<Asset> okAssets = new ArrayList<Asset>();
 			
+			Set<String> fileset = new HashSet<String>();//set of unique filenames
+			StringBuilder buf = new StringBuilder();//some accounting of filenames that are renamed
 			
 			for (Iterator iterator = orderitems.iterator(); iterator.hasNext();) {
 				Data orderitem = (Data) iterator.next();
@@ -83,14 +88,32 @@ public class OrderZipGenerator extends BaseGenerator
 				
 				Data publishtask = archive.getSearcherManager().getData(catalogid, "publishqueue", queid);
 				Asset asset = archive.getAssetBySourcePath(orderitem.get("assetsourcepath"));
-				//TODO:  Handle duplicate filenames
+				
 				Page target = null;
 				String filename = publishtask.get("exportname");
 				if(filename == null){
 					throw new OpenEditException("Filename was not set on publish task:  " + publishtask.getId());					
 				}
+				//handle duplicate filenames
+				if (fileset.contains(filename)){
+					buf.append(filename).append("\t").append(asset.getSourcePath()).append("\t");
+					String filetype = "";
+					if (filename.contains(".")){
+						filetype = filename.substring(filename.lastIndexOf("."));
+						filename = filename.substring(0,filename.lastIndexOf("."));
+					}
+					filename = new StringBuilder()
+						.append(filename).append("_")
+						.append(String.valueOf( (int) (Math.random() * 1000)))
+						.append(filetype)
+						.toString();
+					buf.append(filename).append("\n");
+					fileset.add(filename);
+				} else {
+					fileset.add(filename);
+				}
 				if(preset.getId().equals("0")){
-					 target = archive.getOriginalDocument(asset);				
+					 target = archive.getOriginalDocument(asset);
 					 util.addTozip(target.getContentItem(),filename , zos);
 				}
 				else{
@@ -106,6 +129,10 @@ public class OrderZipGenerator extends BaseGenerator
 				
 			 	// <a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
 				
+			}
+			
+			if (!buf.toString().isEmpty()){
+				util.addTozip("Original Name\tSource Path\tNew Name\n"+buf.toString(),"files.txt",zos);
 			}
 			
 			
