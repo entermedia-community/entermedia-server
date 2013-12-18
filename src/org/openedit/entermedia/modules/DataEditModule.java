@@ -1555,6 +1555,19 @@ public class DataEditModule extends BaseMediaModule
 		inReq.putPageValue("views", views);
 	}
 	
-	
+	public void saveHtmlEditorContent(WebPageRequest inReq) throws Exception{
+		String content = inReq.getRequestParameter("content");
+		
+		
+		if(content != null){
+			String field = inReq.getRequestParameter("field");
+			inReq.setRequestParameter(field + ".value", content);
+			
+		}
+		inReq.setRequestParameter("save", "true");
+		
+		saveData(inReq);
+		
+	}
 	
 }
