@@ -1,9 +1,17 @@
 package model.push;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.openedit.data.PropertyDetail;
+
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpException
@@ -23,6 +31,7 @@ import org.entermedia.upload.FileUpload
 import org.entermedia.upload.FileUploadItem
 import org.entermedia.upload.UploadRequest
 import org.openedit.Data
+import org.openedit.data.PropertyDetails
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
@@ -1317,18 +1326,97 @@ asset: " + asset);
 	}
 	
 	protected Page moveDownloadedAsset(MediaArchive inArchive, Page inPage, Properties inMetadata){
-		String user = inMetadata.getProperty("owner","admin").trim();//make the default "admin" if owner has not been specified
-		Calendar cal = Calendar.getInstance();
-		String month = String.valueOf(cal.get(Calendar.MONTH)+1);
-		if (month.size() == 1) month = "0${month}";
-		String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
-		if (day.size() == 1) day = "0${day}";
-		String year = String.valueOf(cal.get(Calendar.YEAR));
-		String generatedpath = "users/${user}/${year}/${month}/${day}/${inPage.getName()}";
+		PropertyDetails props = inArchive.getAssetSearcher().getPropertyDetails();
+		StringBuilder buf = new StringBuilder();
+		//parser pattern specified in download sourcepath; look for keys in metadata and match fields in asset property definition
+		//to determin datatype; otherwise just use exact string provided
+		String pattern = inArchive.getCatalogSettingValue("push_download_sourcepath");
+		if (pattern!=null && !pattern.isEmpty()){
+            List<String> tokens = findKeys(pattern,"//");
+            tokens.each{
+                String token = it;
+                if (token.startsWith("\$")){//metadata field
+					//get field, parameter and value from metadata map
+                    String field = token.substring(1);
+                    String param = null;
+                    int start = -1;
+                    int end = -1;
+                    if ( (start = field.indexOf("{"))!=-1 && (end = field.indexOf("}"))!=-1 && start < end){
+                        param = field.substring(start+1,end).trim();//eg, YYYY, MM for dates
+                        field = field.substring(0,start).trim();//eg, $owner, $assetcreationdate
+                    }
+					String value = inMetadata.getProperty(field,"").trim();
+					//check if it's a date
+					boolean isDate = false;
+					if (props.contains(field)){
+						PropertyDetail prop = props.getDetail(field);
+						if (prop.isDate()){
+							isDate = true;
+						} else if (param!=null){//check if it's formatted as a date because of provided param
+							//if this succeeds then we know there's a difference in configs between client and server
+							isDate = DateStorageUtil.getStorageUtil().parseFromStorage(value) != null;
+						}
+					}
+					if (value!=null && !value.isEmpty()){
+						if (isDate){
+							String cleaned = DateStorageUtil.getStorageUtil().checkFormat(value);
+							Date date = DateStorageUtil.getStorageUtil().parseFromStorage(value);
+							if (date == null){
+								date = new Date();
+								log.info("unable to parse Date value from remote server: field = $field, value = $value, defaulting to NOW");
+							}
+							String formatted = null;
+							try{
+								SimpleDateFormat format = new SimpleDateFormat(param.trim());
+								formatted = format.format(date);
+							}catch (Exception e){
+								log.info("exception caught parsing $date using format \"${param.trim()}\", ${e.getMessage()}, defaulting to $value");
+							}
+							if (formatted!=null && !formatted.isEmpty()){
+								buf.append(formatted).append("/");
+							} else {
+								buf.append(value).append("/");
+							}
+						} else {
+							buf.append(value).append("/");
+						}
+					} else {
+						log.info("skipping $field, unable to find in metadata obtained from server");
+					}
+                } else {
+					buf.append(token.trim()).append("/");
+                }
+            }
+			if (!buf.toString().isEmpty()){
+				buf.append("${inPage.getName()}");
+			}
+        }
+		if (buf.toString().isEmpty()){
+			String user = inMetadata.getProperty("owner","admin").trim();//make the default "admin" if owner has not been specified
+			Calendar cal = Calendar.getInstance();
+			String month = String.valueOf(cal.get(Calendar.MONTH)+1);
+			if (month.size() == 1) month = "0${month}";
+			String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+			if (day.size() == 1) day = "0${day}";
+			String year = String.valueOf(cal.get(Calendar.YEAR));
+			buf.append("users/${user}/${year}/${month}/${day}/${inPage.getName()}");
+		}
+		String generatedpath = buf.toString();
+		log.info("moving ${inPage.getName()} to generated path \"$generatedpath\"");
 		String destinationpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/$generatedpath";
 		Page destinationpage = inArchive.getPageManager().getPage(destinationpath);
 		inArchive.getPageManager().movePage(inPage,destinationpage);
 		return destinationpage;
+	}
+	
+	protected ArrayList<String> findKeys(String Subject, String Delimiters)
+	{
+		StringTokenizer tok = new StringTokenizer(Subject, Delimiters);
+		ArrayList<String> list = new ArrayList<String>(Subject.length());
+		while(tok.hasMoreTokens()){
+			list.add(tok.nextToken());
+		}
+		return list;
 	}
 	
 	protected void updateAssetEditStatus(MediaArchive inArchive, String inAssetId){
