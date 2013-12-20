@@ -1,6 +1,11 @@
-<div id="output_message">
-Ok
-</div>
+Refreshing... <img src="/${applicationid}/theme/images/ajax-loader.gif">
+
+#set($redirecturl = $context.getRequestParameter("redirecturl"))
+#if($redirecturl)
 <script>
-$("#output_message").fadeOut(1000);
+	setTimeout(function(){
+		var url = "$redirecturl";
+		window.open(url,"_self");
+	}, 2500);
 </script>
+#end
