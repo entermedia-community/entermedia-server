@@ -59,7 +59,6 @@ public class imagemagickCreator extends BaseImageCreator
 
 	protected ConvertResult createOutput(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions) {
 		ConvertResult result = new ConvertResult();
-		
 		String outputpath = inOutFile.getContentItem().getAbsolutePath();
 		//if watermarking is set
 		if(inStructions.isWatermark())
@@ -225,19 +224,15 @@ public class imagemagickCreator extends BaseImageCreator
 			ext = newext.toLowerCase();
 		}
 		List<String> com = createCommand(inputFile, inStructions);
-
 		
 		String colorspace = inStructions.get("colorspace");
 		if(colorspace != null){
-			
 			com.add("-colorspace");
 			com.add(colorspace);
 		} else{
-		
-		com.add("-colorspace");
-		com.add("sRGB");
+			com.add("-colorspace");
+			com.add("sRGB");
 		}
-		
 		
 		if (inStructions.getMaxScaledSize() != null)
 		{
@@ -381,6 +376,12 @@ public class imagemagickCreator extends BaseImageCreator
 				com.add("-background");
 				com.add("white");
 				com.add("-flatten");
+			} 
+			else if ("svg".equals(ext))//add svg support; include transparency
+			{
+				com.add("-background");
+				com.add("transparent");
+				com.add("-flatten");
 			}
 			
 			
@@ -436,10 +437,16 @@ public class imagemagickCreator extends BaseImageCreator
 			
 			
 		}
-		else if( "pdf".equals(ext) ||  "png".equals(ext)) 
+		else if( "pdf".equals(ext) || "png".equals(ext))
 		{
 			com.add("-background");
 			com.add("white");
+			com.add("-flatten");
+		} 
+		else if ("svg".equals(ext))//add svg support; include transparency
+		{
+			com.add("-background");
+			com.add("transparent");
 			com.add("-flatten");
 		}
 
