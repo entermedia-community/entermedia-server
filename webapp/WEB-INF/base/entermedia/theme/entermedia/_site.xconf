@@ -1,8 +1,0 @@
-<page>
-<inner-layout>${themeprefix}/layouts/mediaapplication.html</inner-layout>
-	<property name="themename">Base EM</property>
-	<property name="oetextfilter">translation</property>
-	<property name="editable">false</property>
-	
-
-</page>

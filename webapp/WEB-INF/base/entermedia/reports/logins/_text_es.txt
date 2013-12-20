@@ -1,4 +1,0 @@
-#
-#Tue Apr 27 10:23:23 CLT 2010
-Search=Buscar
-Authentication\ Report=Reporte de Autenticaci\u00F3n

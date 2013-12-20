@@ -1,5 +1,0 @@
-<properties>		
-	<property id="id" index="true" stored="true">id</property>
-	<property id="name" index="true" stored="true" editable="true">Name</property>
-	<property id="synonyms" index="true" stored="true" editable="true" >Synonyms</property>
-</properties>

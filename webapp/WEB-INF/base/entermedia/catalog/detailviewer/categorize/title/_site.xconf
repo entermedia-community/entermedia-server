@@ -1,5 +1,0 @@
-<page>
-	<path-action name="MediaArchiveModule.getAsset"  />
-	<path-action name="AssetControlModule.loadAssetPermissions"/>
-		<inner-layout />
-</page>

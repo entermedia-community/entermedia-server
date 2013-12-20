@@ -1,5 +1,0 @@
-<page>
-	<path-action name="MediaArchiveModule.getAsset"/>
-	<path-action name="MultiSearchModule.loadApplicationId"/>
-	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
-</page>

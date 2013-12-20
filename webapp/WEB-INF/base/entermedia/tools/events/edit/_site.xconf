@@ -1,5 +1,0 @@
-<page>
-	<property name="editview">events/edit</property> 
-	<property name="searchtype">event</property>
-	<path-action name="PathEventModule.loadPathEvent"/>
-</page>

@@ -1,7 +1,0 @@
-<page>
-	<property name="sectiontitle">
-		<value>Edit Layout</value>
-	</property>
-	<property name="tab">changetheme</property>
-	<page-action name="MediaAdminModule.listThemes"/>
-</page>

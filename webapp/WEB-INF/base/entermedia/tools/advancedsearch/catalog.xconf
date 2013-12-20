@@ -1,4 +1,0 @@
-<page>
-	<path-action name="PageValue.loadPageVariable" bean="searcherManager"/>
-	<inner-layout/>
-</page>

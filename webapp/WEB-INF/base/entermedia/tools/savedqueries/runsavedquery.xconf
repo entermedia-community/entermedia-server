@@ -1,6 +1,0 @@
-<page>
-
-<path-action name="MultiSearchModule.loadQuery"/>
-<path-action name="MultiSearchModule.runCurrentQuery"/>
-<inner-layout>${themeprefix}/layouts/searchresultslayout.html</inner-layout>
-</page>

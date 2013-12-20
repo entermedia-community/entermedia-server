@@ -1,7 +1,0 @@
-<uploadtypes>
-	<uploadtype id="simple">Single File Upload</uploadtype>
-	<uploadtype id="mount">Mount Folder</uploadtype>
-	<uploadtype id="newasset">Create New Asset</uploadtype>
-	<uploadtype id="url">Fetch asset from URL</uploadtype>
-	<uploadtype id="youtube">Import From YouTube</uploadtype>
-</uploadtypes>

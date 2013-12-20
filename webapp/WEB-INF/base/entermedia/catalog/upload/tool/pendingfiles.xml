@@ -1,7 +1,0 @@
-<assets>
-#foreach($hit in $hits)
-	#if( $hit.localpath )
-	<asset id="$hit.id" localpath="$!hit.localpath"/>
-	#end
-#end
-</assets>

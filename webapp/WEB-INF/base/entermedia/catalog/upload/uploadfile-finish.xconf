@@ -1,6 +1,0 @@
-<page>
-	<path-action name="Page.uploadFile"/>
-	<property name="allowspecifiedpath" >true</property>
-	
-	<path-action name="AssetEditModule.createAssetFromUploads"/>
-</page>

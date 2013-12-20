@@ -2,6 +2,7 @@
 #set($viewpath = $context.getRequestParameter("viewpath"))
 #set($moduleid = $context.findValue("module"))
 #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
+#set($searchhome = $context.findValue("searchhome"))
 
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
@@ -28,4 +29,4 @@ $context.putPageValue("canedittable", $caneditdata)
 
 ##if there is a module then click on it
 #set( $args = "id=$id&parentid=$id&selectlink=$!viewdetailspath&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
-$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
+$pages.include("$searchhome/edit/table/generictable.html?$args", $context)

@@ -1,8 +1,0 @@
-<page>
-  	<page-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
-  	<permission name="view">
-		<boolean value="true"/>
-	</permission>
-	
-	<inner-layout/>
-</page>

@@ -5,4 +5,6 @@
   <property id="deliverydate" />
   <property id="notes" />
   <property id="owner" />
+  <property id="addnotifypolicy" />
+  
 </root>

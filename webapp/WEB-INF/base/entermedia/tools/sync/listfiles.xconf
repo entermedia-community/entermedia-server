@@ -1,4 +1,0 @@
-<page>
-	<path-action name="UpdateModule.listFilesInDirectory" alltypes="true" />
-	<generator name="velocityGenerator" />
-</page>

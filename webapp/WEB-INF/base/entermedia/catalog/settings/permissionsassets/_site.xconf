@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-  <property name="tab">permissionsassets</property>
-  <property name="fallbackdirectory">/WEB-INF/base/entermedia/tools/permissions</property>
-  <property name="permissionrootpath">/${catalogid}/settings/permissionsassets/xml</property>
-  <property name="permissiontype">permissionsassets</property>
-  <property name="editPath">/${catalogid}/assets/_site.xconf</property>
-</page>
