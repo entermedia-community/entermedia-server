@@ -51,7 +51,7 @@ public class ConversionUtil {
 	}
 	
 	public boolean canCrop(String inCatalogId, String inPresetId, String inAssetId) throws Exception{
-		log.debug("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
+		log.info("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
 		boolean canCrop = false;
 		Dimension cropDimension = getConvertPresetDimension(inCatalogId,inPresetId);
 		log.debug("Crop Dimension: "+cropDimension);
@@ -67,14 +67,17 @@ public class ConversionUtil {
 					//input w x h
 					double inputwidth = inputDimension.getWidth();
 					double inputheight = inputDimension.getWidth();
+					log.info("input dimension: "+inputwidth+" x "+inputheight);
 					//crop w x h
 					double cropwidth = cropDimension.getWidth();
-					double cropheight = cropDimension.getWidth();
+					double cropheight = cropDimension.getHeight();
+					log.info("crop dimension: "+cropwidth+" x "+cropheight);
 					//calculate cropinput for particular asset; does best fit
 					double bestfitwidth = 0;
 					double bestfitheight = 0;
 					double factorwidth = assetwidth / inputwidth;
 					double factorheight = assetheight / inputheight;
+					log.info("factor dimension: "+factorwidth+" x "+factorheight);
 					if (factorwidth > factorheight){
 						bestfitwidth = assetwidth / factorwidth;
 						bestfitheight = assetheight / factorwidth;
@@ -82,13 +85,14 @@ public class ConversionUtil {
 						bestfitwidth = assetwidth / factorheight;
 						bestfitheight = assetheight / factorheight;
 					}
-					log.debug("Best fit dimension: "+bestfitwidth+", "+bestfitheight);
+					log.info("best-fit dimension: "+bestfitwidth+" x "+bestfitheight);
+					
 					//now have calculated cropinput dimension and crop dimension
 					canCrop = (cropwidth <= bestfitwidth && cropheight <= bestfitheight);
 				}
 			}
 		}
-		log.debug("Can image be cropped? "+canCrop);
+		log.info("Can image be cropped? "+canCrop);
 		return canCrop;
 	}
 	

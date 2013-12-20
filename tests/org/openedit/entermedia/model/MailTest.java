@@ -56,12 +56,12 @@ public class MailTest extends BaseEnterMediaTest
 		mail.setMessage("JUnit Test - Testing Mail");
 		mail.setFrom("noreply@entermediasoftware.com");
 		
-		PostMailStatus status = mail.sendAndCollectStatus();
-		
-		assertNotNull(status);
-		assertTrue(status.isSent());
-		assertNotNull(status.getId());
-		assertNotNull(status.getStatus());
+//		PostMailStatus status = mail.sendAndCollectStatus();
+//		
+//		assertNotNull(status);
+//		assertTrue(status.isSent());
+//		assertNotNull(status.getId());
+//		assertNotNull(status.getStatus());
 		
 		/*if (pm instanceof ElasticPostMail)
 		{
