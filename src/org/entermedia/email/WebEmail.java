@@ -1,6 +1,7 @@
 package org.entermedia.email;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -444,15 +445,7 @@ public abstract class WebEmail
 
 	public void setRecipientsFrom(InternetAddress[] recipients)
 	{
-
-		List tos = new ArrayList();
-
-		for (int i = 0; i < recipients.length; i++)
-		{
-			Recipient rec = new Recipient();
-			rec.setInternetAddress(recipients[i]);
-			tos.add(rec);
-		}
+		List tos = Arrays.asList(recipients);
 		setRecipients(tos);
 	}
 	/*
