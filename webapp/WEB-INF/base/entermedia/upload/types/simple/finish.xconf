@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<page>
-	<path-action name="MediaArchiveModule.uploadAsset"/>
-	<path-action name="AssetEditModule.createAssetFromUploads"/>
-	<inner-layout >${themeprefix}/layouts/dialoglayout.html</inner-layout>
-	
-</page>

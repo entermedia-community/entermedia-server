@@ -2,8 +2,8 @@
 
 <page>
 
-  <property name="section">home</property>
   <property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
+  <property name="section">home</property>
   <property name="title">EnterMedia Manager</property>
   <property name="catalogid">media</property>
   <property name="parentapplicationid">media</property>
@@ -25,6 +25,11 @@
 	<permission name="view">
 		<group name="administrators" />
 	</permission>
+  
+	<permission name="viewsettings">
+		<group name="administrators" />
+	</permission>
+  
   
   <style id="app-css" href="${themeprefix}/styles/theme.css"/>
   <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.6.1.js"/>

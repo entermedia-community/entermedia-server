@@ -1,7 +1,0 @@
-<page>
-<path-action name="DataEditModule.search" />
-<path-action name="DataEditModule.loadPageOfSearch" />
-
-<property name="searchtype">order</property>
-
-</page>

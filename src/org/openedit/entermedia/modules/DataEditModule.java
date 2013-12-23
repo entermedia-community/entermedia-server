@@ -1300,21 +1300,20 @@ public class DataEditModule extends BaseMediaModule
 	public Data loadDataByField(WebPageRequest inReq) throws Exception{
 		log.info("loadDataByField "+inReq);
 		Searcher searcher = loadSearcher(inReq);
-		String field = inReq.findValue("field");
-		if (field == null){
-			field = "id";
-		}
+		String field = inReq.findValue("field") == null ? "id" : inReq.findValue("field");
+		String variablename = inReq.findValue("pageval") == null ? "data" : inReq.findValue("pageval");
 		String pagename = inReq.getPage().getName();
-		String searchValue = pagename.substring(0, pagename.lastIndexOf("."));
+		String searchValue = pagename.contains(".") ? pagename.substring(0, pagename.lastIndexOf(".")): pagename;
 		SearchQuery query = searcher.createSearchQuery();
 		query.append(field, searchValue);
 		HitTracker hits = searcher.search(query);
 		Data result = null;
-		if (hits.size() > 0){
+		if (hits.size() > 0)
+		{
 			result = (Data) hits.first();
 		}
-		inReq.putPageValue("data", result);
-		log.info("found "+(result == null ? "NULL" : result.getId()));
+		inReq.putPageValue(variablename, result);
+		log.info("loadDataByField found "+(result == null ? "NULL" : result.getId()));
 		return result;
 	}
 

@@ -79,6 +79,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	{
 		String[] supportedTypes = new String[] {"audio", "video", "image", "document"};
 		String type = PathUtilities.extractPageType(inputFile.getName());
+		
 		if (type != null)
 		{
 			String mediatype = inArchive.getMediaRenderType(type);
@@ -167,8 +168,19 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					try
 					{
 						String[] dims = value.split("x");
-						inAsset.setProperty("width", dims[0]);
-						inAsset.setProperty("height", dims[1]);
+						String width = dims[0];
+						String height = dims[1];
+						//width & heights can have decimals if converted from vectors, e.g., SVGs
+						if (width.contains(".")){//round off to the nearest integer
+							Float fwidth = Float.parseFloat(width);
+							width = String.valueOf(fwidth.intValue());
+						}
+						if (height.contains(".")){
+							Float fheight = Float.parseFloat(height);
+							height = String.valueOf(fheight.intValue());
+						}
+						inAsset.setProperty("width",width);
+						inAsset.setProperty("height",height);
 					}
 					catch( Exception e )
 					{

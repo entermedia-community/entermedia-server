@@ -30,6 +30,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -42,7 +43,7 @@ import com.openedit.ModuleManager;
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.manage.PageManager;
 
-public class PostMail 
+public class PostMail
 {
 	private static final Log log = LogFactory.getLog(PostMail.class);
 	protected String fieldSmtpUsername;
@@ -53,7 +54,7 @@ public class PostMail
 	protected PageManager fieldPageManager;
 	protected boolean fieldSslEnabled = false;
 	protected ModuleManager fieldModuleManager;
-	
+
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -64,48 +65,57 @@ public class PostMail
 		fieldModuleManager = inModuleManager;
 	}
 
-	public PageManager getPageManager() {
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
-	public String getSmtpPassword() {
+	public String getSmtpPassword()
+	{
 		return fieldSmtpPassword;
 	}
 
-	public void setSmtpPassword(String inSmtpPassword) {
+	public void setSmtpPassword(String inSmtpPassword)
+	{
 		this.fieldSmtpPassword = inSmtpPassword;
 	}
 
-	public boolean isSmtpSecured() {
+	public boolean isSmtpSecured()
+	{
 		return fieldSmtpSecured;
 	}
 
-	public void setSmtpSecured(boolean inSmtpSecured) {
+	public void setSmtpSecured(boolean inSmtpSecured)
+	{
 		this.fieldSmtpSecured = inSmtpSecured;
 	}
 
-	public String getSmtpUsername() {
+	public String getSmtpUsername()
+	{
 		return fieldSmtpUsername;
 	}
 
-	public void setSmtpUsername(String inSmtpUsername) {
+	public void setSmtpUsername(String inSmtpUsername)
+	{
 		this.fieldSmtpUsername = inSmtpUsername;
 	}
 
-	public void postMail(String recipient, String subject, String message,
-			String from) throws MessagingException {
+	public void postMail(String recipient, String subject, String message, String from) throws MessagingException
+	{
 		postMail(new String[] { recipient }, subject, message, null, from);
 	}
 
 	// returns a new template web email instance preconfigured with spring
 	// settings.
-	public TemplateWebEmail getTemplateWebEmail() {
+	public TemplateWebEmail getTemplateWebEmail()
+	{
 		TemplateWebEmail email = null;
-		if (getModuleManager()!=null)
+		if (getModuleManager() != null)
 		{
 			email = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
 		}
@@ -118,85 +128,61 @@ public class PostMail
 		return email;
 	}
 
-	public void postMail(String[] recipients, String subject, String inHtml,
-			String inText, String from) throws MessagingException {
-		postMail(recipients, subject, inHtml, inText, from, null, null);
-	}
-	
-	public void postMail(String[] recipients, String subject, String inHtml,
-			String inText, String from, List inAttachments, Map inProperties)
-			throws MessagingException {
-		postMail(recipients,new String[]{},subject,inHtml,inText,from,inAttachments,inProperties);
-	}
-	
-	public void postMail(List<Recipient> recipients, List<Recipient> blindrecipients, String subject, 
-			String inHtml, String inText, String from, List inAttachments, Map inProperties)
-			throws MessagingException {
-		ArrayList<String> list = new ArrayList<String>();
-		if (recipients!=null){
-			for (Recipient recipient:recipients){
-				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress())){
-					list.add(recipient.getEmailAddress());
-				}
-			}
-		}
-		String [] ccarr = list.toArray(new String[list.size()]);//array of recipients
-		list.clear();
-		if (blindrecipients!=null){
-			for (Recipient recipient:blindrecipients){
-				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress())){
-					list.add(recipient.getEmailAddress());
-				}
-			}
-		}
-		String [] bccarr = list.toArray(new String[list.size()]);
-		postMail(ccarr, bccarr, subject, inHtml, inText, from, inAttachments, inProperties);
-	}
-	
-	public void postMail(String [] recipients, List<Recipient> blindrecipients, String subject,
-			String inHtml, String inText, String from, List inAttachments, Map inProperties)
-			throws MessagingException {
-		ArrayList<String> list = new ArrayList<String>();
-		if (recipients!=null){
-			for (String recipient:recipients){
-				if (!list.contains(recipient))
-					list.add(recipient);
-			}
-		}
-		String [] ccarr = list.toArray(new String[list.size()]);//array of recipients
-		list.clear();
-		if (blindrecipients!=null){
-			for (Recipient recipient:blindrecipients){
-				if (recipient.getEmailAddress()!=null && !list.contains(recipient.getEmailAddress()))
-					list.add(recipient.getEmailAddress());
-			}
-		}
-		String [] bccarr = list.toArray(new String[list.size()]);
-		postMail(ccarr, bccarr, subject, inHtml, inText, from, inAttachments, inProperties);
+	public void postMail(String[] recipients, String subject, String inHtml, String inText, String from) throws MessagingException
+	{
+		postMail(parseEmails(recipients), subject, inHtml, inText, from, null, null);
 	}
 
-	public void postMail(String[] recipients, String [] blindrecipients, String subject, String inHtml,
-			String inText, String from, List inAttachments, Map inProperties)
-			throws MessagingException {
+	
+	public List<InternetAddress> parseEmails(String[] inEmails)
+	{
+		List emails = new ArrayList<InternetAddress>();
+		for (int i = 0; i < inEmails.length; i++)
+		{
+			try
+			{
+			InternetAddress[] inet = InternetAddress.parse(inEmails[i]);
+			for (int j = 0; j < inet.length; j++)
+			{
+				emails.add(inet[i]);
+			}
+			}
+			catch( AddressException ex)
+			{
+				//ignore
+				log.error("Could not process email " + inEmails[i], ex);
+			}
+		}
+		return emails;
+	}
+	public void postMail(List<InternetAddress> recipients, String subject, String inHtml, String inText, String from, List inAttachments, Map inProperties) throws MessagingException
+	{
+		postMail(recipients, null, subject, inHtml, inText, from, inAttachments, inProperties);
+	}
+
+	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, String from, List inAttachments, Map inProperties) throws MessagingException
+	{
 		// Set the host smtp address
 		Properties props = new Properties();
 		// create some properties and get the default Session
 		props.put("mail.smtp.host", fieldSmtpServer);
 		props.put("mail.smtp.port", String.valueOf(getPort()));
 		props.put("mail.smtp.auth", new Boolean(fieldSmtpSecured).toString());
-		if (isSslEnabled()) {
+		if (isSslEnabled())
+		{
 			props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.socketFactory.class",
-					"javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		}
-		
+
 		Session session;
 		// If we need to authenticate, create the authenticator
 		if (fieldSmtpSecured)
 		{
 			SmtpAuthenticator auth = new SmtpAuthenticator();
 			session = Session.getInstance(props, auth);
-		} else {
+		}
+		else
+		{
 			session = Session.getInstance(props);
 		}
 		// session.setDebug(debug);
@@ -206,51 +192,55 @@ public class PostMail
 		MimeMultipart mp = null;
 		// msg.setDataHandler(new DataHandler(new ByteArrayDataSource(message,
 		// "text/html")));
-		
-		if(inAttachments != null && inAttachments.size() == 0)
+
+		if (inAttachments != null && inAttachments.size() == 0)
 		{
 			inAttachments = null;
 		}
-		
-		if (inText != null && inHtml != null  || inAttachments != null) {
+
+		if (inText != null && inHtml != null || inAttachments != null)
+		{
 			// Create an "Alternative" Multipart message
 			mp = new MimeMultipart("mixed");
-			
-			if(inText != null){
+
+			if (inText != null)
+			{
 				BodyPart messageBodyPart = new MimeBodyPart();
-		
+
 				messageBodyPart.setContent(inText, "text/plain");
 				mp.addBodyPart(messageBodyPart);
 			}
-			if(inHtml != null){
+			if (inHtml != null)
+			{
 				BodyPart messageBodyPart = new MimeBodyPart();
 				messageBodyPart.setContent(inHtml, "text/html");
 				mp.addBodyPart(messageBodyPart);
 			}
-			if (inAttachments != null) {
-				for (Iterator iterator = inAttachments.iterator(); iterator
-						.hasNext();) {
+			if (inAttachments != null)
+			{
+				for (Iterator iterator = inAttachments.iterator(); iterator.hasNext();)
+				{
 					String filename = (String) iterator.next();
-	
+
 					File file = new File(filename);
-	
-					if (file.exists() && !file.isDirectory()) {
+
+					if (file.exists() && !file.isDirectory())
+					{
 						// create the second message part
 						MimeBodyPart mbp = new MimeBodyPart();
-						
+
 						FileDataSource fds = new FileDataSource(file);
 						mbp.setDataHandler(new DataHandler(fds));
-						
+
 						mbp.setFileName(fds.getName());
-						
-	
+
 						mp.addBodyPart(mbp);
 					}
 				}
 			}
-			
+
 			msg.setContent(mp);
-			
+
 		}
 		else if (inHtml != null)
 		{
@@ -265,61 +255,20 @@ public class PostMail
 		msg.setFrom(addressFrom);
 		//msg.setRecipient(RecipientType.BCC, addressFrom);
 		msg.setSentDate(new Date());
-		if (recipients == null || recipients.length == 0) {
+		if (recipients == null || recipients.isEmpty() )
+		{
 			throw new MessagingException("No recipients specified");
 		}
-		InternetAddress[] addressTo = new InternetAddress[recipients.length];
-
-		for (int i = 0; i < recipients.length; i++) {
-			String rec = recipients[i];
-			if(rec == null || rec.length() <= 0)
-			{
-				continue;
-			}
-			addressTo[i] = new InternetAddress(rec);
-			String personal = addressTo[i].getPersonal();
-			if (personal != null && personal.indexOf("\"") == -1) {
-				// check for commas or . and quote it if found
-				if (personal.indexOf(",") > -1 || personal.indexOf(".") > -1) {
-					personal = "\"" + personal + "\"";
-					try {
-						addressTo[i].setPersonal(personal);
-					} catch (UnsupportedEncodingException ex) {
-						throw new OpenEditRuntimeException(ex);
-					}
-				}
-			}
-		}
+		InternetAddress[] addressTo = recipients.toArray(new InternetAddress[recipients.size()]);
 
 		msg.setRecipients(Message.RecipientType.TO, addressTo);
-		
+
 		//add bcc
-		if (blindrecipients!=null && blindrecipients.length > 0)
+		if (blindrecipients != null && blindrecipients.isEmpty())
 		{
-			InternetAddress[] addressBcc = new InternetAddress[blindrecipients.length];
-			for (int i = 0; i < blindrecipients.length; i++) {
-				String rec = blindrecipients[i];
-				if(rec == null || rec.length() <= 0)
-				{
-					continue;
-				}
-				addressBcc[i] = new InternetAddress(rec);
-				String personal = addressBcc[i].getPersonal();
-				if (personal != null && personal.indexOf("\"") == -1) {
-					// check for commas or . and quote it if found
-					if (personal.indexOf(",") > -1 || personal.indexOf(".") > -1) {
-						personal = "\"" + personal + "\"";
-						try {
-							addressBcc[i].setPersonal(personal);
-						} catch (UnsupportedEncodingException ex) {
-							throw new OpenEditRuntimeException(ex);
-						}
-					}
-				}
-			}
+			InternetAddress[] addressBcc = blindrecipients.toArray(new InternetAddress[blindrecipients.size()]);
 			msg.setRecipients(Message.RecipientType.BCC, addressBcc);
 		}
-		
 
 		// Optional : You can also set your custom headers in the Email if you
 		// Want
@@ -333,17 +282,17 @@ public class PostMail
 		// tr.sendMessage(msg, msg.getAllRecipients());
 		// tr.close();
 		// msg.setContent(msg, "text/plain");
-		
+
 		Transport.send(msg);
 		log.info("sent email " + subject);
 	}
 
-	public int getPort() 
+	public int getPort()
 	{
-		if( fieldPort == null)
+		if (fieldPort == null)
 		{
 			fieldPort = Integer.getInteger("mail.smtp.port");
-			if(fieldPort == null)
+			if (fieldPort == null)
 			{
 				fieldPort = new Integer(25);
 			}
@@ -351,34 +300,57 @@ public class PostMail
 		return fieldPort;
 	}
 
-	public void setPort(int inPort) {
+	public void setPort(int inPort)
+	{
 		this.fieldPort = new Integer(inPort);
 	}
-	public void setPort(Integer inPort) {
+
+	public void setPort(Integer inPort)
+	{
 		this.fieldPort = inPort;
 	}
 
-	public String getSmtpServer() {
+	public String getSmtpServer()
+	{
 		return fieldSmtpServer;
 	}
 
-	public void setSmtpServer(String inSmtpServer) {
+	public void setSmtpServer(String inSmtpServer)
+	{
 		this.fieldSmtpServer = inSmtpServer;
 	}
 
-	public class SmtpAuthenticator extends javax.mail.Authenticator {
-		public javax.mail.PasswordAuthentication getPasswordAuthentication() {
-			return new PasswordAuthentication(fieldSmtpUsername,
-					fieldSmtpPassword);
+	public class SmtpAuthenticator extends javax.mail.Authenticator
+	{
+		public javax.mail.PasswordAuthentication getPasswordAuthentication()
+		{
+			return new PasswordAuthentication(fieldSmtpUsername, fieldSmtpPassword);
 		}
 	}
 
-	public boolean isSslEnabled() {
+	public boolean isSslEnabled()
+	{
 		return fieldSslEnabled;
 	}
 
-	public void setSslEnabled(boolean inSslEnabled) {
+	public void setSslEnabled(boolean inSslEnabled)
+	{
 		fieldSslEnabled = inSslEnabled;
+	}
+
+	public InternetAddress parseEmail(String inValue)
+	{
+		try
+		{
+			InternetAddress inet = new InternetAddress(inValue);
+			return inet;
+		}
+		catch (AddressException ex)
+		{
+			//ignore
+			log.error("Could not process email " + inValue, ex);
+		}
+		return null;
 	}
 
 }

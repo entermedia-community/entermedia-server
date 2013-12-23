@@ -1,6 +1,0 @@
-<page>
-	<path-action name="CategoryModule.loadHomeCategory" />
-	<path-action name="MediaSearchModule.searchCategories"/>
-	<path-action name="CategoryModule.loadCrumbs" />
-	
-</page>

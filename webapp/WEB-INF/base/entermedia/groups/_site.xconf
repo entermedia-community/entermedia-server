@@ -1,6 +1,0 @@
-<page>
-	<inner-layout>${themeprefix}/layouts/userhomelayout.html</inner-layout>
-	<property name="matttabstabid">browse</property>
-	<property name="sectiontitle">Groups</property>
-	
-</page>

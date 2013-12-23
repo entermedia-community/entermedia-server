@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-  <inner-layout>/${catalogid}/settings/users/users/innerlayout.html</inner-layout>
-  <path-action name="DataEditModule.loadPageOfSearch" >
-    <property name="searchtype">member</property>
-  </path-action>
-  <property name="hitsname">members</property>
-</page>

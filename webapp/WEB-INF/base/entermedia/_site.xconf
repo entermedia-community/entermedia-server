@@ -3,9 +3,6 @@
 <page>
   
 	<path-action name="Admin.autoLogin" />
-	<property name="themeprefix">/${applicationid}/theme/entermedia</property>
-
-	<inner-layout>${themeprefix}/layouts/mediaapplication.html</inner-layout>
 	<!-- Actions -->
 	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true"/>
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
@@ -15,146 +12,11 @@
 	<path-action name="Admin.loadPermissions"/>
 	
 	<path-action name="Admin.allowViewing" />
-	<property name="login-path">/${applicationid}/authentication/logon.html</property>
-  	
-	<!-- Properties -->
-	<property name="editable">false</property>
-	<property name="oetextfilter">translation</property>
+	<property name="login-path">/manager/authentication/logon.html</property>
+
 	<property name="makeversion">false</property>
-	<property name="typespath">/${applicationid}/search/types</property>
-	<property name="albumname">Posting</property>
-  	<property name="albumsname">Postings</property>
-  	<property name="hitsname">hits</property>
-  	<property name="allowguestregistration">true</property>
-	<property name="defaultdatafolder">assets</property>
-	<property name="autopublish">false</property>
-	<!-- Search now checks viewasset permissions on all searches-->
-	<property name="usessearchsecurity">true</property>
-	<property name="parentapplicationid">${applicationid}</property>
-	<property name="recentactivityid">${parentapplicationid}</property>
+
     <property name="editable">false</property>
-	<property name="text.selection1">
-		<value>Send</value>
-		<value locale="es">Enviar</value>
-		<value locale="de">Senden</value>
-	</property>
-	<property name="text.selection2">
-		<value>Categorize</value>
-		<value locale="es">Categorizar</value>
-		<value locale="de">Einordnen</value>
-	</property>	
-	<property name="text.selection3">
-		<value>Download</value>
-		<value locale="es">Descargas</value>
-	</property>
-		
-<script id="jquery" src="/${applicationid}/javascript/jquery-1.4.2.js" />
-<script id="jquery-ui" src="/${applicationid}/javascript/jquery-ui-1.8.4.custom.min.js" />
-<script id="jquery-form" src="/${applicationid}/javascript/jquery.form.js" />
-<script id="jquery-livequery" src="/${applicationid}/javascript/jquery.livequery.js" />
-<script id="jquery-fancybox" src="/${applicationid}/javascript/jquery.fancybox/jquery.fancybox-1.2.1.js" />
-<style id="jquery-fancybox-css" href="/${applicationid}/javascript/jquery.fancybox/jquery.fancybox.css" />
-<script id="jquery-autocomplete" src="/${applicationid}/javascript/jquery.autocomplete.js"/>
-<script id="jquery-jplayer" src="/${applicationid}/javascript/jquery.jplayer.js"/>
-<script id="jquery-jcarousel" src="/${applicationid}/javascript/jquery.jcarousel/jquery.jcarousel.js"/>
-<script id="jquery-imagereaselect" src="/${applicationid}/javascript/jquery.imgareaselect-0.9.1.js"/>
-<script id="jquery-prettycomments" src="/${applicationid}/javascript/prettycomments.js"/>
-<script id="jquery-history" src="/${applicationid}/javascript/jquery.history.js"/>
-<script id="em-validateandedit" src="/${applicationid}/javascript/validateandedit.js"/>
-<script id="em-oepopup" src="/${applicationid}/javascript/oepopup.js"/> 
-<script id="em-gotopage" src="/${applicationid}/javascript/gotopage.js"/>
-<script id="em-entermedia" src="/${applicationid}/tools/entermedia.js" />
-
-
-<style id="em-style" href="${themeprefix}/styles/style.css" />
-
-	<permission name="viewaddmedia">
-		<user/>
-	</permission>
-
-	<permission name="browsecategories">
-		<user/>
-	</permission>
-	<permission name="viewadvancedsearch">
-		<boolean value="true"/>
-	</permission>
-
-	<permission name="viewsites">
-		<boolean value="true"/>
-	</permission>
-
-
-	<permission name="editsavedquery">
-		<or>
-			<group name="administrators"/>
-		</or>
-	</permission>
-
-<permission name="rssfeed">
-		<boolean value="true"/>
-	</permission>
-
-	<permission name="viewcatalogsettings">
-		<or>
-			<group name="administrators"/>
-		</or>
-	</permission>
-
-
-
-	<permission name="vieweditwebserver">
-		<or>
-			<group name="administrators"/>
-		</or>
-	</permission>
-	<permission name="viewreports">
-		<or>
-			<group name="administrators"/>
-		</or>
-	</permission>
-	<permission name="viewsettings">
-		<or>
-			<group name="administrators"/>
-		</or>
-	</permission>
-
-	<permission name="viewusersecurity">
-		<or>
-			<group name="administrators"/>
-		</or>
-	</permission>
-
-	<permission name="viewsavedquery">
-		<boolean value="true"/>
-	</permission>
-
-	<!--change this permission to boolean value=true to allow anonymous gallery viewing-->
-	<permission name="viewquicksearch">
-		<user/>
-	</permission>
-	
-	<permission name="viewclipboards">
-		<or>
-			<group id="administrators"/>
-			<group id="uploaders"/>
-			<group id="guest"/>
-		</or>	
-	</permission>
-
-	<permission name="upload">
-		<or>
-			<group id="administrators"/>
-			<group id="uploaders"/>
-			<group id="guest"/>
-		</or>	
-	</permission>
-	
-	<permission name="multiedit">
-		<or>
-			<group id="administrators"/>
-			<group id="uploaders"/>
-		</or>	
-	</permission>
 	
 	<permission name="view">
 		<or>
@@ -162,11 +24,6 @@
 		</or>
 	</permission>
 
-	
-	<!-- Catalog names translation -->
-	<property name="text.Public Assets">
-		<value locale="es">Artículos Públicos</value>
-	</property>
 	
 	
 </page>

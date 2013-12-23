@@ -1,4 +1,0 @@
-<page>
-	<property name="eventroot">/${applicationid}/tools/events</property>
-	<property name="description"></property>
-</page>

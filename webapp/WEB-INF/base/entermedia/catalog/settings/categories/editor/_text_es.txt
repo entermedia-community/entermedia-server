@@ -1,6 +1,0 @@
-#
-#Thu Aug 12 21:24:22 EDT 2010
-Edit\ Name=Editar Nombre
-Edit\ Category=Modificar categor\u00EDa
-Save\ Edits=Guardar Cambios
-Edit\ Fields=Editar Campos

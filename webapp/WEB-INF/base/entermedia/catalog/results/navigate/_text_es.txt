@@ -1,4 +1,0 @@
-#
-#Wed Apr 28 12:44:24 CLT 2010
-Edit\ Layout=Editar dise\u00F1o
-settings=ajustes

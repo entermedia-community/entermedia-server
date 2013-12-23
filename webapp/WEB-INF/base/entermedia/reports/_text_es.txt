@@ -1,9 +1,0 @@
-#
-#Tue Apr 27 12:27:34 CLT 2010
-Data\ Logs=Registros de Datos
-Settings=Ajustes
-User\ Searches=B\u00FAsquedas de Usuarios
-User\ Authentication=Autenticaci\u00F3n Usuarios
-Downloads=Descargas
-User\ Edits=Ediciones de Usuarios
-

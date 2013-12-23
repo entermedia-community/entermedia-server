@@ -1,4 +1,0 @@
-#
-#Tue Apr 27 12:20:31 CLT 2010
-Search=Buscar
-Search\ Report=Reporte de B\u00FAsquedas

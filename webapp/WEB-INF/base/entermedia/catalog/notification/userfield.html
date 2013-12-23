@@ -1,8 +1,0 @@
-#set($email = $context.getRequestParameter("email"))
-
-	<div id="selected_$email">
-		
-		$email[<a href="javascript:removeuser('$email');">x</a>]
-		<input type="hidden" name="email" value="$email"/>
-			
-	</div>

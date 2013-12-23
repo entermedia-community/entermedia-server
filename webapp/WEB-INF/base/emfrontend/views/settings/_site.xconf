@@ -6,8 +6,8 @@
 	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
 	<permission name="view">
 		<or>
-			<userprofile property="viewsettings" equals="true" />
-			<userprofile property="viewmodulesettings" equals="true" />
+			<pagevalue name="canviewsettings" equals="true" />
+			<pagevalue name="canviewmodulesettings" equals="true" />
 		</or>	
 	</permission>
 </page>

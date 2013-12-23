@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-  <property name="text.Reindex">
-    <value locale="es">Reindexar</value>
-  </property>
-  <property name="tab">albumreindex</property>
-</page>

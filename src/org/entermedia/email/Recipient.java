@@ -14,11 +14,16 @@ See the GNU Lesser General Public License for more details.
 */
 package org.entermedia.email;
 
+import javax.mail.internet.InternetAddress;
+
 /**
  * @author Matt Avery, mavery@einnovation.com
+ * @deprecated use InternetAddress
  */
 public class Recipient 
 {
+	protected InternetAddress fieldInternetAddress;
+
 	protected String fieldEmailAddress;
 	protected String fieldFirstName;
 	protected String fieldLastName;
@@ -31,7 +36,15 @@ public class Recipient
 	{
 		return fieldFirstName;
 	}
+	public InternetAddress getInternetAddress()
+	{
+		return fieldInternetAddress;
+	}
 
+	public void setInternetAddress(InternetAddress inInternetAddress)
+	{
+		fieldInternetAddress = inInternetAddress;
+	}
 	public String getLastName()
 	{
 		return fieldLastName;

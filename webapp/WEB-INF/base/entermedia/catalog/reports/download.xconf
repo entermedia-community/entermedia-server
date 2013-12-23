@@ -1,5 +1,0 @@
-<page>
-	<page-action name="LogSearchModule.fieldSearch"/>
-	<property name="hitsname">loghits</property>
-	<inner-layout/>
-</page>

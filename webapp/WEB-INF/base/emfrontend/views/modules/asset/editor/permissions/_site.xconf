@@ -3,8 +3,8 @@
 <page>
   <property name="sectiontitle"><value>Asset Permissions</value></property>
   <property name="assettab">assetpermissions</property>
-  <property name="fallbackdirectory">/WEB-INF/base/entermedia/tools/permissions</property>
-  <property name="permissionrootpath">/${catalogid}/components/detaileditor/permissions/xml</property>
+  <property name="fallbackdirectory">/WEB-INF/base/emfrontend/components/assetpermissions</property>
+  <property name="permissionrootpath">/${applicationid}/views/modules/asset/editor/permissions</property>
   <property name="permissiontype">permissionsassets</property>  
   
 </page>
