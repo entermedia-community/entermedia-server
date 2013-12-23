@@ -455,14 +455,22 @@ public abstract class WebEmail
 		}
 		setRecipients(tos);
 	}
-
+	/*
+	 * @deprecated use InternetAddress
+	 */
 	public void setRecipient(Recipient inRecipient)
+	{
+		List one = new ArrayList(1);
+		InternetAddress inet = getPostMail().parseEmail(inRecipient.toString());
+		one.add(inet);
+		setRecipients(one);
+	}
+	public void setRecipient(InternetAddress inRecipient)
 	{
 		List one = new ArrayList(1);
 		one.add(inRecipient);
 		setRecipients(one);
 	}
-
 	public String getMessage()
 	{
 		return fieldMessage;
