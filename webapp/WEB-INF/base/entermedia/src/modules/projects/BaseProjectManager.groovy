@@ -77,11 +77,11 @@ public class BaseProjectManager implements ProjectManager
 			inReq.putPageValue("selectedlibrary",library);
 			
 			Searcher assetsearcher = getSearcherManager().getSearcher(getCatalogId(),"asset");
-			int assetsize = assetsearcher.query().match("libraries",library.getId()).search().size();
+			int assetsize = assetsearcher.query().match("libraries",library.getId()).named("sidebar").search(inReq).size();
 			inReq.putPageValue("librarysize",assetsize);
 			
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
-			HitTracker allcollections = searcher.query().match("library",library.getId()).sort("name").search(inReq);
+			HitTracker allcollections = searcher.query().match("library",library.getId()).sort("name").named("sidebar").search(inReq);
 			//enable filters
 			inReq.putPageValue("allcollections", allcollections);
 			
@@ -94,7 +94,7 @@ public class BaseProjectManager implements ProjectManager
 				ids.add( collection.getId() );
 			}
 			FilterNode collectionhits = null;
-			HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).search(inReq); //todo: Cache?
+			HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
 			if( collectionassets != null)
 			{
 				collectionhits = collectionassets.findFilterNode("librarycollection");
