@@ -329,6 +329,10 @@ onloadselectors = function()
 			{
 				jQuery(this).ajaxSubmit( {target:"#" + targetdiv} );
 			}
+			var reset =form.data("reset") 
+			if( reset == true){
+				form.get(0).reset();
+			}
 			return false;
 		}
 	);

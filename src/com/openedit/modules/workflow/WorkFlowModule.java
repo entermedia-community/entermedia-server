@@ -69,6 +69,9 @@ public class WorkFlowModule extends BaseModule
 	public void approve(WebPageRequest inReq) throws Exception
 	{
 		String path = inReq.getRequestParameter("editPath");
+		if(!path.contains(".draft.")){
+			path = path.replace(".html", ".draft.");
+		}
 
 		if ( path.indexOf(".draft.") > -1)
 		{
