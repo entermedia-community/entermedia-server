@@ -66,18 +66,18 @@ public class ConversionUtil {
 				if (assetwidth != 0 && assetheight != 0){
 					//input w x h
 					double inputwidth = inputDimension.getWidth();
-					double inputheight = inputDimension.getWidth();
-					log.info("input dimension: "+inputwidth+" x "+inputheight);
+					double inputheight = inputDimension.getHeight();
+					log.debug("input dimension: "+inputwidth+" x "+inputheight);
 					//crop w x h
 					double cropwidth = cropDimension.getWidth();
 					double cropheight = cropDimension.getHeight();
-					log.info("crop dimension: "+cropwidth+" x "+cropheight);
+					log.debug("crop dimension: "+cropwidth+" x "+cropheight);
 					//calculate cropinput for particular asset; does best fit
 					double bestfitwidth = 0;
 					double bestfitheight = 0;
 					double factorwidth = assetwidth / inputwidth;
 					double factorheight = assetheight / inputheight;
-					log.info("factor dimension: "+factorwidth+" x "+factorheight);
+					log.debug("factor dimension: "+factorwidth+" x "+factorheight);
 					if (factorwidth > factorheight){
 						bestfitwidth = assetwidth / factorwidth;
 						bestfitheight = assetheight / factorwidth;
@@ -85,8 +85,7 @@ public class ConversionUtil {
 						bestfitwidth = assetwidth / factorheight;
 						bestfitheight = assetheight / factorheight;
 					}
-					log.info("best-fit dimension: "+bestfitwidth+" x "+bestfitheight);
-					
+					log.debug("best-fit dimension: "+bestfitwidth+" x "+bestfitheight);
 					//now have calculated cropinput dimension and crop dimension
 					canCrop = (cropwidth <= bestfitwidth && cropheight <= bestfitheight);
 				}
@@ -267,11 +266,14 @@ public class ConversionUtil {
 		SearcherManager sm = getSearcherManager();
 		Searcher pdsearcher = sm.getSearcher(inCatalogId, "publishdestination");
 		Data data = (Data) pdsearcher.searchByField("name", "Fatwire");
-		Searcher pqsearcher = sm.getSearcher(inCatalogId, "publishqueue");
-		SearchQuery query = pqsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId).append("publishdestination",data.getId());
-		query.addSortBy("id");
-		HitTracker hits = pqsearcher.search(query);
-		return hits;
+		if (data!=null){//np check
+			Searcher pqsearcher = sm.getSearcher(inCatalogId, "publishqueue");
+			SearchQuery query = pqsearcher.createSearchQuery().append("presetid", inPresetId).append("assetid",inAssetId).append("publishdestination",data.getId());
+			query.addSortBy("id");
+			HitTracker hits = pqsearcher.search(query);
+			return hits;
+		}
+		return null;
 	}
 
 	public boolean doesExist(String inCatalogId, String inAssetId, String assetSourcePath, String inPresetId){
