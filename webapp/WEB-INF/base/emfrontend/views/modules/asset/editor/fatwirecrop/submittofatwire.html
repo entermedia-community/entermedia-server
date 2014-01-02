@@ -21,7 +21,7 @@
 						<select name="regionid" id="regionid">
 							<option value="" selected>Choose...</option>
 						#foreach ($region in $regions)
-							<option value="${region.id}">$region.name</option> <!-- #if($region.default == "true") selected #end -->
+							<option value="${region.id}">$region.name</option>
 						#end
 						</select>
 					</span>
@@ -47,7 +47,7 @@ $(document).ready(function(){
 	$("#submitbtn-${presetdata.id}").click(function(){
 		var region = $("#submit-${presetdata.id} select[name=regionid]").val();
 		if (!region || 0 == region.length){
-			$("#info-${presetdata.id}").html("<span style=\"color:red;\">Select a Region before submitting.</span>").show().fadeOut( 2000 );
+			$("#info-${presetdata.id}").html("<span style=\"color:red;\">Select a Region before submitting.</span>").show().fadeOut( 5000 );
 			return false;
 		}
 		$("#submit-${presetdata.id}").submit(function(e){
@@ -62,13 +62,13 @@ $(document).ready(function(){
 					$("#info-${presetdata.id}").html("Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\">").show();
 					setTimeout(function(){
 						redirectTo("${context.getContentPage()}?assetid=${asset.id}&hitssessionid=$!hitssessionid"); 
-					}, 2500);
+					}, 5000);
 				},
 				error: function(jqXHR, textStatus, errorThrown){
 					$("#info-${presetdata.id}").html("<img src=\"/${applicationid}/theme/images/ajax-loader.gif\">").show();
 					setTimeout(function(){ 
 						redirectTo("${context.getContentPage()}?assetid=${asset.id}&hitssessionid=$!hitssessionid");
-					}, 2500);
+					}, 5000);
 				}
 			});
 		});

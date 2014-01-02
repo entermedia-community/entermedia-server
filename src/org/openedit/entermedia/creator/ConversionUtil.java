@@ -56,40 +56,48 @@ public class ConversionUtil {
 		Dimension cropDimension = getConvertPresetDimension(inCatalogId,inPresetId);
 		log.debug("Crop Dimension: "+cropDimension);
 		if (cropDimension!=null && cropDimension.getHeight()!=0 && cropDimension.getWidth()!=0){
-			Dimension inputDimension = getConvertPresetDimension(inCatalogId,"cropinput");//this needs to be in convertpreset table!
-			log.debug("Preset Input Dimension: "+inputDimension);
-			if (inputDimension!=null && inputDimension.getHeight()!=0 && inputDimension.getWidth()!=0){
-				Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
-				double assetwidth = asset.get("width") != null ? (double) Integer.parseInt(asset.get("width")) : 0d;
-				double assetheight = asset.get("height") != null ? (double) Integer.parseInt(asset.get("height")) : 0d;
-				log.debug("Asset dimension: "+assetwidth+", "+assetheight);
-				if (assetwidth != 0 && assetheight != 0){
-					//input w x h
-					double inputwidth = inputDimension.getWidth();
-					double inputheight = inputDimension.getHeight();
-					log.debug("input dimension: "+inputwidth+" x "+inputheight);
-					//crop w x h
-					double cropwidth = cropDimension.getWidth();
-					double cropheight = cropDimension.getHeight();
-					log.debug("crop dimension: "+cropwidth+" x "+cropheight);
-					//calculate cropinput for particular asset; does best fit
-					double bestfitwidth = 0;
-					double bestfitheight = 0;
-					double factorwidth = assetwidth / inputwidth;
-					double factorheight = assetheight / inputheight;
-					log.debug("factor dimension: "+factorwidth+" x "+factorheight);
-					if (factorwidth > factorheight){
-						bestfitwidth = assetwidth / factorwidth;
-						bestfitheight = assetheight / factorwidth;
-					} else {
-						bestfitwidth = assetwidth / factorheight;
-						bestfitheight = assetheight / factorheight;
-					}
-					log.debug("best-fit dimension: "+bestfitwidth+" x "+bestfitheight);
-					//now have calculated cropinput dimension and crop dimension
-					canCrop = (cropwidth <= bestfitwidth && cropheight <= bestfitheight);
-				}
-			}
+//			Dimension inputDimension = getConvertPresetDimension(inCatalogId,"cropinput");//this needs to be in convertpreset table!
+//			log.debug("Preset Input Dimension: "+inputDimension);
+//			if (inputDimension!=null && inputDimension.getHeight()!=0 && inputDimension.getWidth()!=0){
+//				Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
+//				double assetwidth = asset.get("width") != null ? (double) Integer.parseInt(asset.get("width")) : 0d;
+//				double assetheight = asset.get("height") != null ? (double) Integer.parseInt(asset.get("height")) : 0d;
+//				log.debug("Asset dimension: "+assetwidth+", "+assetheight);
+//				if (assetwidth != 0 && assetheight != 0){
+//					//input w x h
+//					double inputwidth = inputDimension.getWidth();
+//					double inputheight = inputDimension.getHeight();
+//					log.debug("input dimension: "+inputwidth+" x "+inputheight);
+//					//crop w x h
+//					double cropwidth = cropDimension.getWidth();
+//					double cropheight = cropDimension.getHeight();
+//					log.debug("crop dimension: "+cropwidth+" x "+cropheight);
+//					//calculate cropinput for particular asset; does best fit
+//					double bestfitwidth = 0;
+//					double bestfitheight = 0;
+//					double factorwidth = assetwidth / inputwidth;
+//					double factorheight = assetheight / inputheight;
+//					log.debug("factor dimension: "+factorwidth+" x "+factorheight);
+//					if (factorwidth > factorheight){
+//						bestfitwidth = assetwidth / factorwidth;
+//						bestfitheight = assetheight / factorwidth;
+//					} else {
+//						bestfitwidth = assetwidth / factorheight;
+//						bestfitheight = assetheight / factorheight;
+//					}
+//					log.debug("best-fit dimension: "+bestfitwidth+" x "+bestfitheight);
+//					//now have calculated cropinput dimension and crop dimension
+//					canCrop = (cropwidth <= bestfitwidth && cropheight <= bestfitheight);
+//				}
+//			}
+			
+			//use asset dimension instead of standardized input dimension
+			Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
+			double assetwidth = asset.get("width") != null ? (double) Integer.parseInt(asset.get("width")) : 0d;
+			double assetheight = asset.get("height") != null ? (double) Integer.parseInt(asset.get("height")) : 0d;
+			double cropwidth = cropDimension.getWidth();
+			double cropheight = cropDimension.getHeight();
+			canCrop = (cropwidth <= assetwidth && cropheight <= assetheight);
 		}
 		log.info("Can image be cropped? "+canCrop);
 		return canCrop;

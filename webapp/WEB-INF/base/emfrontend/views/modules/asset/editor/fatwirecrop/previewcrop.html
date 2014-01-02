@@ -6,6 +6,10 @@
 #set($width = $mathtool.toInt($width))
 #set($height = $mathtool.toInt($height))
 
+<!-- 
+Preset Details: $width x $height <br>
+Asset Details: $asset.width x $asset.height<br>
+ -->
 <div id="submit-crop"></div>
 
 <div class="inline-labels">
@@ -20,6 +24,7 @@
     <input class="clearable" type="hidden" size="4" id="y2" name="y2.value" />
     <input class="clearable" type="hidden" size="4" id="w" name="cropwidth.value" />
     <input class="clearable" type="hidden" size="4" id="h" name="cropheight.value" />
+    
     <input type="hidden" name="field" value="x1"/>
     <input type="hidden" name="field" value="y1"/>
     <input type="hidden" name="field" value="cropwidth"/>
@@ -42,10 +47,11 @@
 
 <div id="preview-pane">
   <div class="preview-container" >
-    <img src="$home$apphome/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" class="jcrop-preview" alt="Preview" />
+    <!-- 
+    <img src="$home$apphome/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" class="jcrop-preview" alt="Preview" /> 
+    -->
   </div>
 </div>
-
 
 <img align="center" src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="${asset}" />
 
@@ -70,9 +76,9 @@
       onSelect: updatePreview,
       onRelease: clearCoords,
       minSize: [xsize,ysize],
-      boxWidth: 1080,
-      boxHeight: 1000,
-     setSelect: [0,0,xsize,ysize],
+      boxWidth: 1280,
+      boxHeight: 1280,
+      setSelect: [0,0,xsize,ysize],
       aspectRatio: xsize / ysize
     },function(){
       // Use the API to get the real image size
