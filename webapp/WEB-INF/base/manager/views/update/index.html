@@ -19,6 +19,7 @@
 <tr>
 	<th>Plug In</th>
 	<th>[[Details]]</th>
+	<th>[[Status]]</th>
 	<th>[[To Update]]</th>	
 </tr>
 #foreach( $plugin in $sortedlist ) 
@@ -36,9 +37,15 @@
 	<span id="description$plugin.getId()" style="display: none">#esc($plugin.getLongDescription()) <br><a href="$plugin.getInstallScript()">Installer</a><br>Depends: $plugin.getDependsOn() </span>
 #end
 </td>
+<td>
+	#if( $installedids.contains($plugin.getId()) )
+		[[Installed]]
+	#end
+</td>
+
 <td align="center">
 #set ($alldeps = $plugin.getAllDepends())
-<input type="checkbox" name="toupdate" id="checkbox_${plugin.id}" value="${plugin.id}" 
+<input type="checkbox" name="toupdate" id="checkbox_${plugin.id}" value="${plugin.id}"  #if( $installedids.contains($plugin.getId()) ) checked #end
 onclick="javascript:togglePlugins( '$plugin.id'
 		#foreach ($dep in $alldeps)
 			, '$dep.id'
@@ -53,6 +60,7 @@ onclick="javascript:togglePlugins( '$plugin.id'
 </tr>
 #end
 <tr>
+	<td></td>
 	<td></td>
 	<td></td>
 	<td align="center"><div class="embutton"><a href="#" onclick="document.upgradepicker.submit();" >[[Upgrade]]</a></div></td>
