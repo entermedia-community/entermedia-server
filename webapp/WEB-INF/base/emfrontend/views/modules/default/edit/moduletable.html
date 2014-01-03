@@ -27,6 +27,7 @@ $context.putPageValue("canedittable", $caneditdata)
 	#set( $jumptomodule = true )
 #end	
 
-##if there is a module then click on it
+##TODO: Create a new type of table.html component that runs locally using searchhome and has a TableModel with it passed along with sessionids
+
 #set( $args = "id=$id&parentid=$id&selectlink=$!viewdetailspath&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 $pages.include("$searchhome/edit/table/generictable.html?$args", $context)

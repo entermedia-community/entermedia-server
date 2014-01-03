@@ -20,7 +20,7 @@
 	<input name="id" type="hidden" value="$!property.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
-<div id="edit-data">	
+<div id="edit-data" class="oeinputform validate-inputs">	
 
 
 
@@ -107,19 +107,21 @@
 	</td>
 	</tr>
 
-
 	<tr> <td>[[Stored In Index]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
 
 	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
 	<tr> <td>[[Used In Keywords]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Used In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
 	<input type="hidden" name="field" value="listid"/>
 	<input type="hidden" name="field" value="listcatalogid"/>
 	<input type="hidden" name="field" value="sort"/>
 	<input type="hidden" name="field" value="query"/>
 	<input type="hidden" name="field" value="foreignkeyid"/>
 
-
+<input type="hidden" name="field" value="facetcount"/>
+	<tr> <td>[[Filter Count]]:</td> <td><input type="text" name="facetcount.value" value="$!property.facetcount"/> <span class="detail-note">Defaults to 20<span></td> </tr>
+<input type="hidden" name="field" value="note"/>
+	<tr> <td>[[Help Note]]:</td> <td><input type="text" name="note.value" value="$!property.note"/> </td> </tr>
 
 
 	<tr> <td>[[List ID]]:</td> <td><input type="text" name="listid.value" value="$!property.listid"/> </td> </tr>

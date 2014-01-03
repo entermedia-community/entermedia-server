@@ -2054,14 +2054,14 @@ public class AssetEditModule extends BaseMediaModule
 			if(id != null){
 				vals.put("id",id);
 			}
-			
+			vals.put("filename", item.getName());
 			Replacer replacer = new Replacer();
 			
 			replacer.setSearcherManager(archive.getSearcherManager());
 			replacer.setCatalogId(archive.getCatalogId());
 			replacer.setAlwaysReplace(true);
 			sourcepath = replacer.replace(sourcepath, vals);
-			sourcepath = sourcepath + "/" + item.getName();
+			//sourcepath = sourcepath + "/" + item.getName();
 			
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();

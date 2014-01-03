@@ -28,9 +28,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +47,7 @@ import org.openedit.Data;
 import org.openedit.PlugIn;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.util.SyncFileDownloader;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.WindowsUtil;
 
 import com.openedit.OpenEditException;
@@ -84,7 +87,6 @@ public class UpdateModule extends BaseModule {
 		}
 		return fieldScriptManager;
 	}
-
 	public void setScriptManager(ScriptManager inScriptManager)
 	{
 		fieldScriptManager = inScriptManager;
@@ -712,16 +714,19 @@ public class UpdateModule extends BaseModule {
 	}
 
 	public void listPlugins(WebPageRequest inReq) throws Exception {
-//		List installed = getPlugInFinder(inReq).getInstalledPlugIns();
-//		inReq.putPageValue("installed", installed);
+		List all = getPlugInFinder(inReq).getPlugIns();
 
-		List notinstalled = getPlugInFinder(inReq).getNotInstalledPlugIns();
-		inReq.putPageValue("notinstalled", notinstalled);
+		inReq.putPageValue("sortedlist", all);
 
-		List sorted = new ArrayList();
-		//sorted.addAll(installed);
-		sorted.addAll(notinstalled);
-		inReq.putPageValue("sortedlist", sorted);
+		HitTracker hits = getSearcherManager().getList("system","installedplugin");
+		Set installed = new HashSet();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			installed.add(hit.getId());
+		}
+		inReq.putPageValue("installedids", installed);
+
 	}
 
 	public PlugIn loadPlugIn(WebPageRequest inReq) throws Exception {
@@ -838,6 +843,20 @@ public class UpdateModule extends BaseModule {
 			String serverid = inReq.findValue("serverid");
 			inReq.putSessionValue("upgrader" + serverid, upgrader);
 			inReq.putPageValue("upgrader", upgrader);
+			
+			//save these before the server crashes
+			Searcher searcher = getSearcherManager().getSearcher("system", "installedplugin");
+			searcher.deleteAll(null);
+			List all = new ArrayList();
+			for (int i = 0; i < toupdate.length; i++)
+			{
+				Data tosave = searcher.createNewData();
+				tosave.setId(toupdate[i]);
+				tosave.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				all.add(tosave);
+			}
+			searcher.saveAllData(all, null);
+			
 		}
 	}
 

@@ -73,9 +73,7 @@ public class LuceneHitTracker extends HitTracker
 	}
 
 	/**
-	 * This is what is searched. getResultsType() is what is returned?
-	 * 
-	 * @deprecated
+	 * Data type
 	 */
 	public String getSearchType()
 	{
@@ -211,7 +209,7 @@ public class LuceneHitTracker extends HitTracker
 				}
 				if (max > 1)
 				{
-					log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+					log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getSessionId());
 				}
 				fieldSize = docs.totalHits;
 				fieldDocs = docs.scoreDocs;
