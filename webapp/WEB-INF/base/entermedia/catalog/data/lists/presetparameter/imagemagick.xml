@@ -23,10 +23,10 @@
   <parameter id="imagepreviewfpo2" parameterdata="imagepreviewfpo" value="768" >prefheight</parameter> 
   <parameter id="imagepreviewfpo3" parameterdata="imagepreviewfpo" value="true" >watermark</parameter> 
 
-  
+  <!-- 
     <parameter id="cropinput1" parameterdata="cropinput" value="1280" >prefwidth</parameter> 
   <parameter id="cropinput2" parameterdata="cropinput" value="1024" >prefheight</parameter> 
-  
+   -->
   
   
 </properties>

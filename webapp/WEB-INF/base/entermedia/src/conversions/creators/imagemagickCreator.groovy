@@ -90,18 +90,18 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			
 			Dimension box = inStructions.getMaxScaledSize();
-			if (input == null && inStructions.getProperty("useinput")!=null)
-			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/"+inStructions.getProperty("useinput") + page + ".jpg");
-				if( !input.exists()  || input.length() < 2)
-				{
-					input = null;
-				}
-				else
-				{
-					autocreated = true;
-				}
-			}
+//			if (input == null && inStructions.getProperty("useinput")!=null)
+//			{
+//				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/"+inStructions.getProperty("useinput") + page + ".jpg");
+//				if( !input.exists()  || input.length() < 2)
+//				{
+//					input = null;
+//				}
+//				else
+//				{
+//					autocreated = true;
+//				}
+//			}
 			if( input == null &&  box.getWidth() < 300 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
@@ -128,12 +128,13 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 		}
 
-		//get the original input
+		//get the original inut
+		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
 		if( offset != null && input == null)
 		{
 			input = inArchive.findOriginalMediaByType("video",inAsset);
 		}
-		if( input == null)
+		if( input == null || useoriginal)
 		{
 			input = inArchive.findOriginalMediaByType("image",inAsset);
 		}
