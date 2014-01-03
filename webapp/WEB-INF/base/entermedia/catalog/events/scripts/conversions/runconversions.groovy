@@ -227,7 +227,9 @@ class ConvertRunner implements Runnable
 			if(inStructions.getProperty("prefheight") == null){
 				inStructions.setProperty("prefheight", inTask.get("cropheight"));
 			}
-			inStructions.setProperty("useinput", "image1280x1024");//hard-coded a specific image size (large)
+			//inStructions.setProperty("useinput", "cropinput");//hard-coded a specific image size (large)
+			inStructions.setProperty("useoriginalasinput", "true");//hard-coded a specific image size (large)
+			
 			inStructions.setProperty("gravity", "default");//hard-coded a specific image size (large)
 			inStructions.setProperty("croplast", "true");//hard-coded a specific image size (large)
 			
