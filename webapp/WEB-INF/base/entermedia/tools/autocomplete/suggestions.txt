@@ -1,4 +1,0 @@
-#set( $q = $searchstring)
-#foreach ($res in $suggestions)#set( $s = $res.get('synonyms'))
-<b>$s.replace($q,"</b>$q<b>")</b> ($res.get('hitcount'))|$res.get('synonyms')
-#end

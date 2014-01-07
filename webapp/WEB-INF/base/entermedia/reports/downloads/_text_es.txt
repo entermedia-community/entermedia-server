@@ -1,4 +1,0 @@
-#
-#Tue Apr 27 10:23:19 CLT 2010
-Search=Buscar
-Download\ Report=Reporte de Descargas

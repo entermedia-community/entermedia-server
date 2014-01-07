@@ -38,7 +38,7 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 		}
 	}	
 	public boolean addHeader( WebPageRequest inPageRequest, Output inOut ) throws OpenEditException
-	{
+	{		
 		User user = inPageRequest.getUser();
 		
 		if (user == null)
@@ -46,7 +46,7 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 			return false;
 		}
 		Page requestedPage  = inPageRequest.getPage();
-		if( requestedPage.getPath().equals(getHeaderPath()))
+		if( requestedPage.getPath().equals(getHeaderPath()) || requestedPage.getInnerLayout() == null)
 		{
 			return false;
 		}
@@ -55,22 +55,25 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 			return false;
 		}
 		
-		boolean edit = Boolean.parseBoolean(user.get("showeditor"));
+		String val = user.get("oe.edit.mode");
 		
-		if(!edit && inPageRequest.getUserProfile() != null){
-			edit = Boolean.parseBoolean(inPageRequest.getUserProfile().get("contentedit"));
+		if( "preview".equals( val ) )
+		{
+			return false;
 		}
+
 		
-		if (edit && !requestedPage.isBinary() && inPageRequest.isEditable() )
+		
+		if ("editing".equals(val) &&  !requestedPage.isBinary() && inPageRequest.isEditable() )
 		{
 			return true;
 		}
 
-		boolean debug = Boolean.parseBoolean(user.get("showdebug"));
+		//boolean debug = Boolean.parseBoolean(user.get("showdebug"));
 
-		if( debug && requestedPage.isHtml())
+		if( "debug".equals(val) && requestedPage.isHtml())
 		{
-			String show = inPageRequest.getContentProperty("showdebug");
+			String show = inPageRequest.getPageProperty("showdebug");
 			if( show != null)
 			{
 				return Boolean.parseBoolean(show);

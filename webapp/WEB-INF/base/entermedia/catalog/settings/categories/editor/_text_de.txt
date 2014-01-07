@@ -1,4 +1,0 @@
-#
-#Tue Apr 27 17:04:40 EDT 2010
-Edit\ Name=Name bearbeiten
-Edit\ Fields=Eingabefelder

@@ -10,9 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.collections.map.ReferenceMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
@@ -59,15 +57,29 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	protected MediaArchive fieldMediaArchive;
 	protected XmlUtil fieldXmlUtil;
 	protected boolean fieldUpdateExistingRecord = true;
-	
+	protected CacheManager fieldCacheManager;
 	public XmlAssetArchive()
 	{
 		log.debug("Created archive");
 	}
 
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+	protected String toCacheId()
+	{
+		return "/WEB-INF/data/" + getCatalogId() + "/assets/index";
+	}
 	public void clearAssets()
 	{
 		getPageManager().clearCache();
+   	    getCacheManager().clear(toCacheId());
 	}
 
 	public void deleteAsset(Asset inAsset)
@@ -109,19 +121,25 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		{
 			inSourcePath = inSourcePath.substring(0, inSourcePath.length() - 1);
 		}
-		Asset item = new Asset();
-		item.setCatalogId(getCatalogId());
-		item.setSourcePath(inSourcePath);
-		String url = buildXmlPath(item);
-		if( log.isDebugEnabled())
+		Asset item = (Asset)getCacheManager().get(toCacheId(), inSourcePath);
+		if( item == null)
 		{
-			log.debug("Loading " + url);
-		}
-		boolean populated = populateAsset(item);
-		if (!populated && !inAutoCreate)
-		{
-			log.debug("No Such asset " + url);
-			return null;
+			item = new Asset();
+			item.setCatalogId(getCatalogId());
+			item.setSourcePath(inSourcePath);
+			String url = buildXmlPath(item);
+			if( log.isDebugEnabled())
+			{
+				log.debug("Loading " + url);
+			}
+			boolean populated = populateAsset(item);
+			if (!populated && !inAutoCreate)
+			{
+				log.debug("No Such asset " + url);
+				return null;
+			}
+			getCacheManager().put(toCacheId(),inSourcePath,item);
+			getCacheManager().put(toCacheId(),item.getId(),item);
 		}
 		return item;
 	}
@@ -333,6 +351,9 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			{
 				FileUtils.safeClose(out);
 			}
+			getCacheManager().put(toCacheId(),inAsset.getSourcePath(),inAsset);
+			getCacheManager().put(toCacheId(),inAsset.getId(),inAsset);
+
 		}
 		catch (Exception ex)
 		{

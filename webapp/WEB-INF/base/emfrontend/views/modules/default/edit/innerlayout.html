@@ -1,6 +1,7 @@
 #set( $moduleid = $context.findValue("module") )
-#set($viewid = $context.getRequestParameter("viewid"))
-#set($viewpath = $context.getRequestParameter("viewpath"))
+#set($viewid = $context.findValue("viewid"))
+
+#set($viewpath = $context.findValue("viewpath"))
 
 
 #if( !$viewid )
@@ -29,8 +30,7 @@ $context.putPageValue("searchhome",$searchhome)
     <div class="subcolumns">
         <div class="c25l" id="left-col" #if($userprofile.minimizeleft-col == "true") style="display: none;" #end>
                 $pages.include("${searchhome}/sidebar/standard.html", $context)
-$pages.include("$apphome/components/libraries/sidebar.html",$context)
- </div>
+		 </div>
         <div id="right-col" class="module-inner">
                 
             <div id="resultsdiv">

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<page>
-	<property name="sectiontitle">
-    	<value>Import/Export Users</value>
-  	</property>
-	<property name="tab">admin</property>
-	<property name="oeuseradmintabid">admintab</property>
-</page>

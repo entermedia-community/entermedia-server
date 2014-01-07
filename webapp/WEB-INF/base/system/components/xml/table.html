@@ -1,3 +1,5 @@
+##Why is this here? Looks like a duplicate of types/table.html
+
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
 
 #set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
@@ -50,7 +52,7 @@
 #set($selectedid = $context.getRequestParameter("selectedid"))
 
 #if( $existingrecords && $existingrecords.size() > 0 )
-<table id="main-results-table" class="emdata striped greytxt">
+<table id="main-results-table" class="emdata striped greytxt table tbl-responsive"  data-hitssessionid="$!existingrecords.sessionId">
 	<thead>
 	<tr id="tableheader">
 	#foreach( $detail in $details )
@@ -67,6 +69,9 @@
 		#foreach( $detail in $details )
 			<td style="padding:4px;">
 				#set( $val = "$!hit.get($detail.id)" )
+				#if($detail.render)
+					#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
+				#end
 				$context.putPageValue("detail",$detail)
 				$context.putPageValue("val",$val)
 				$pages.include("$xmledithome/detailreadonly.html", $context)
@@ -116,7 +121,19 @@
 
 #set($link = $context.getRequestParameter("selectlink"))
 #if($link)
-
+	#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
+	#if( $jumptomodule && $jumptomodule == "true")
+		<form name="editrow" method="post" action="$home$link?$passalongdec">
+		#set($fieldname = "id" )
+		#set($fieldname = $context.getRequestParameter("fieldname"))
+		<input type="hidden" id="emselectedrow" name="$fieldname" />	
+		<input type="hidden"  name="edit" value="true" />
+		<input type="hidden" name="searchtype" value="${searchtype}" />
+		
+	</form>
+	
+	#else
+	
 	<form name="editrow" method="post" class="ajaxform" targetdiv="${viewid}editor" action="$home$link?$passalongdec">
 	#set($fieldname = "id" )
 	#set($fieldname = $context.getRequestParameter("fieldname"))
@@ -124,8 +141,8 @@
 		<input type="hidden"  name="edit" value="true" />
 		<input type="hidden"  name="oemaxlevel" value="1" />
 		<input type="hidden" name="searchtype" value="${searchtype}" />
-		
 	</form>
+	#end
 #else
 	<div id="$editlink" targetdiv="${viewid}editor" link="$home$editpath?$args&edit=true&oemaxlevel=1"></div>
 #end

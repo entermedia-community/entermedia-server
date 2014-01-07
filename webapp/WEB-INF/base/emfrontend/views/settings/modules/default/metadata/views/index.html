@@ -1,3 +1,5 @@
+<div id="vieweditorarea">
+
 #set($viewid = $context.getRequestParameter("viewid"))
 #set( $assettype = $context.getRequestParameter("assettype") )
 
@@ -25,7 +27,11 @@
 	    
 	    #set ( $systemdefined = "false" )
         #set ( $systemdefined = $context.findValue("systemdefined") )
+        
+    #if( $canviewsettings )   
 	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view Settings</a>
+	#end
+	
 	   #if($view.byassettype == "true" )
     
     
@@ -127,11 +133,14 @@
         #else
             #set($searchtype = $moduleid)
         #end
+        #if( $canviewsettings )
 	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype">Add New</a>
-	    <form name="addtoview" id="addtoview" action="addtoview.html">
+	    #end
+	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="addtoview.html">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
             <input type="hidden" name="searchtype" value="$moduleid"/>
             <input type="hidden" name="assettype" value="$assettype"/>
+            <input type="hidden" name="oemaxlevel" value="1"/>
             <input type="hidden" name="viewid" value="$viewid"/>
             <input type="hidden" name="viewpath" value="$viewpath"/>
 			#if( $view.rendertable)
@@ -139,7 +148,7 @@
 			#else
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
-            <select name="newone" style="float: right; margin-top: -17px; width:150px;" onchange="jQuery('#addtoview').submit()"  >
+            <select name="newone" style="float: right; #if( $canviewsettings ) margin-top: -17px; #else margin-top: -41px;  #end width:150px;" onchange="jQuery('#addtoview').submit()"  >
                 <option value=""> </option>
                 #foreach( $detail in $searcher.getUserPropertyDetails() )
                     <option value="$detail.id">$detail.text</option>
@@ -154,10 +163,15 @@
 			#foreach( $element in $details)
 				#set( $pid = $element.id)
 				<li class="rowdraggable metadatadroppable" id="$pid" ><span class="drag-and-drop"></span>
+					#if( $canviewsettings )
 					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
-					
-					<a class="ajax delete-row" targetdiv="" href="./removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath"></a>
+					#else	
+						<A href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					#end	
+					<a class="ajax delete-row" targetdiv="vieweditorarea" href="./removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1"></a>
 				</li>
 			#end		
 		
 </ul>
+
+</div>

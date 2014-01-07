@@ -193,6 +193,8 @@ public class FileManagerModule extends BaseModule
 			getPageManager().putPage(destPage); //This is a folder?
 		}
 		inReq.setRequestParameter("path", destPage.getPath());
+		inReq.setRequestParameter("editPath", destPage.getPath());
+
 	}
 	
 	public void deletePage( WebPageRequest inReq ) throws OpenEditException
@@ -302,6 +304,7 @@ public class FileManagerModule extends BaseModule
 		}
 		inReq.setRequestParameter("path", destpage.getPath());
 
+			inReq.setRequestParameter("editPath", destpage.getPath());
 	}
 	
 	public void clearCache(WebPageRequest inReq)

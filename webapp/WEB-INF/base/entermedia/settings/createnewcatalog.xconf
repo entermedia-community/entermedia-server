@@ -1,4 +1,0 @@
-<page>
-	<layout>${themeprefix}/layouts/dialoglayout.html</layout>
-	<inner-layout></inner-layout>
-</page>

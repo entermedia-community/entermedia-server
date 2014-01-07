@@ -883,6 +883,10 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 		fieldIndexWriter = inIndexWriter;
 		fieldTaxonomyWriter = inTaxoWriter;
 		fieldLuceneConnectionManager = null;
+		if (fieldCacheManager != null)
+		{
+			getCacheManager().clear(getIndexPath());
+		}
 //		try
 //		{
 //		
@@ -1167,6 +1171,10 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 	public Object searchById(String inId)
 	{
+		if(inId ==  null)
+		{
+			return null;
+		}
 		Object cached = searchByField("id", inId);
 		return cached;
 	}

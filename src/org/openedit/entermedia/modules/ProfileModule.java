@@ -270,7 +270,19 @@ public class ProfileModule extends MediaArchiveModule
 		}
 
 	}
-	
+	public void savePreference(WebPageRequest inReq)
+	{
+		String field = inReq.getRequestParameter("profilepreference");
+		if( field == null)
+		{
+			return;
+		}
+		UserProfile prof = loadUserProfile(inReq);
+		String value = inReq.getRequestParameter("profilepreference.value");
+		prof.setProperty(field, value);
+		getUserProfileManager().saveUserProfile(prof);
+
+	}
 	public void saveProperties(WebPageRequest inReq)
 	{
 		String[] fields = inReq.getRequestParameters("field");

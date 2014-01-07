@@ -1,32 +1,26 @@
 package conversions;
 
-import org.entermedia.locks.Lock;
-import org.openedit.Data;
-import org.openedit.data.Searcher 
-import org.openedit.entermedia.modules.*;
-import org.openedit.entermedia.edit.*;
+import java.util.concurrent.ExecutorService
 
-import com.openedit.ModuleManager;
-import com.openedit.page.*;
-import org.openedit.entermedia.*;
+import org.entermedia.locks.Lock
+import org.openedit.Data
+import org.openedit.data.Searcher
+import org.openedit.entermedia.*
+import org.openedit.entermedia.creator.*
+import org.openedit.entermedia.edit.*
+import org.openedit.entermedia.modules.*
+import org.openedit.xml.*
 
-import com.openedit.entermedia.scripts.ScriptLogger;
-import com.openedit.hittracker.*;
-import org.openedit.entermedia.creator.*;
-
-import com.openedit.users.User;
-import com.openedit.util.*;
-import com.openedit.hittracker.*;
-import com.openedit.*;
-
-import org.openedit.xml.*;
-import conversions.*;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
+import com.openedit.*
+import com.openedit.entermedia.scripts.ScriptLogger
+import com.openedit.hittracker.*
+import com.openedit.page.*
+import com.openedit.users.User
+import com.openedit.util.*
 
 class CompositeConvertRunner implements Runnable
 {
-	String fieldAssetSourcePath;
+	String fieldSourcePath;
 	MediaArchive fieldMediaArchive;
 	List runners = new ArrayList();
 	User user;
@@ -35,16 +29,16 @@ class CompositeConvertRunner implements Runnable
 	public CompositeConvertRunner(MediaArchive archive,String sourcepath)
 	{
 		fieldMediaArchive = archive;
-		fieldAssetSourcePath = sourcepath;
+		fieldSourcePath = sourcepath;
 	}
 	
 	public void run()
 	{
-		Lock lock = fieldMediaArchive.lockAssetIfPossible(fieldAssetSourcePath, user);
+		Lock lock = fieldMediaArchive.lockAssetIfPossible(fieldSourcePath, user);
 		
 		if( lock == null)
 		{
-			log.info("asset already being processed ${fieldAssetSourcePath}");
+			log.info("asset already being processed ${fieldSourcePath}");
 			return;
 		}
 		try
@@ -53,46 +47,7 @@ class CompositeConvertRunner implements Runnable
 			{
 				runner.run();
 			}
-					
-			boolean founderror = false;
-			boolean allcomplete = true;
-			
-			for( ConvertRunner runner: runners )
-			{
-				if( runner.result == null )
-				{
-					return;
-				}
-				if(runner.result.isError() )
-				{
-					founderror = true;
-				}
-				
-				if(!runner.result.isComplete() )
-				{
-					allcomplete = false;
-				}
-				
-			}
-			if( founderror || allcomplete )
-			{
-				//load the asset and save the import status to complete
-				Asset asset = fieldMediaArchive.getAssetBySourcePath(fieldAssetSourcePath);
-				if( asset != null )
-				{
-					if( founderror && "imported".equals(asset.get("importstatus") ) )
-					{
-						asset.setProperty("importstatus","error");
-						fieldMediaArchive.saveAsset(asset, null);
-					}
-					else if( !"complete".equals(asset.get("importstatus") ) )
-					{
-						//Publishing to Amazon can happen even if the images in the search results
-						asset.setProperty("importstatus","complete");
-						fieldMediaArchive.saveAsset(asset, null);
-					}
-				}
-			}
+			fieldMediaArchive.updateAssetConvertStatus(fieldSourcePath);
 		}
 		finally
 		{
@@ -101,6 +56,8 @@ class CompositeConvertRunner implements Runnable
 	
 		
 	}
+
+	
 	public void add(Runnable runner )
 	{
 		runners.add(runner);
@@ -233,6 +190,7 @@ class ConvertRunner implements Runnable
 	if (creator != null)
 	{
 		Map props = new HashMap();
+		
 		String guid = inPreset.guid;
 		if( guid != null)
 		{
@@ -253,8 +211,10 @@ class ConvertRunner implements Runnable
 		}
 		
 		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
-		log.info("Task Properties: " + inTask.getProperties());
-		if(Boolean.parseBoolean(inTask.get("crop"))){
+		
+		//TODO: Copy the task properties into the props so that crop stuff can be handled in the createInstructions
+		if(Boolean.parseBoolean(inTask.get("crop")))
+		{
 //			log.info("HERE!!!");
 			inStructions.setCrop(true);
 			inStructions.setProperty("x1", inTask.get("x1"));
@@ -267,10 +227,9 @@ class ConvertRunner implements Runnable
 			if(inStructions.getProperty("prefheight") == null){
 				inStructions.setProperty("prefheight", inTask.get("cropheight"));
 			}
+			//inStructions.setProperty("useinput", "cropinput");//hard-coded a specific image size (large)
+			inStructions.setProperty("useoriginalasinput", "true");//hard-coded a specific image size (large)
 			
-			
-			
-			inStructions.setProperty("useinput", "image1280x1024");//hard-coded a specific image size (large)
 			inStructions.setProperty("gravity", "default");//hard-coded a specific image size (large)
 			inStructions.setProperty("croplast", "true");//hard-coded a specific image size (large)
 			
@@ -278,8 +237,6 @@ class ConvertRunner implements Runnable
 				inStructions.setForce(true);
 			}
 		}
-
-		
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );
@@ -337,7 +294,7 @@ protected ConvertRunner createRunnable(MediaArchive mediaarchive, Searcher tasks
 	   runner.itemsearcher = itemsearcher;
 	   runner.hit = hit;
 	   runner.log = log;
-	   runner.user = user;
+	   runner.user = user; //if you get errors here make sure they did not delete the admin user
 	   runner.moduleManager= moduleManager;
 	   return runner;
 }
@@ -380,9 +337,11 @@ public void checkforTasks()
 	
 	if( newtasks.size() == 1 )
 	{
-		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, newtasks.first() );
+		Data task = (Data)newtasks.first();
+		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, task);
 		runners.add(runner);
 		runner.run();
+		mediaarchive.updateAssetConvertStatus(task.getSourcePath());
 	}
 	else
 	{

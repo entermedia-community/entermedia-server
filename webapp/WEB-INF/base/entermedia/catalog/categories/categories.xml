@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<catalog id="index" name="Index" >
-    <catalog id="collections" name="Collections" />
-	<catalog id="users" name="Users" />		
-</catalog>

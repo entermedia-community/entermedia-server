@@ -115,7 +115,7 @@ public class ElasticPostMailStatus extends PostMailStatus implements Serializabl
 			} else if (node.getNodeName().equalsIgnoreCase("recipients")){
 				status.setRecipients(Integer.parseInt(node.getTextContent()));
 			} else if (node.getNodeName().equalsIgnoreCase("failed")){
-				status.setRecipients(Integer.parseInt(node.getTextContent()));
+				status.setFailed(Integer.parseInt(node.getTextContent()));
 			} else if (node.getNodeName().equalsIgnoreCase("delivered")){
 				status.setDelivered(Integer.parseInt(node.getTextContent()));
 			} else if (node.getNodeName().equalsIgnoreCase("pending")){

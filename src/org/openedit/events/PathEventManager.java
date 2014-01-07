@@ -306,7 +306,7 @@ public class PathEventManager
 	{
 		if (fieldTimer == null)
 		{
-			fieldTimer = new Timer(true);
+			fieldTimer = new Timer("Scheduler_" + getCatalogId(), true);
 		}
 		return fieldTimer;
 	}
@@ -454,7 +454,7 @@ public class PathEventManager
 
 	protected void loadPathEvent(String htmlpage)
 	{
-		Page eventpage = getPageManager().getPage(htmlpage);
+		Page eventpage = getPageManager().getPage(htmlpage, true);
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
 	
@@ -465,6 +465,10 @@ public class PathEventManager
 		}
 		UserManager usermanager = (UserManager)getModuleManager().getBean("userManager");
 		User user = usermanager.getUser(username);
+		if( user == null)
+		{
+			log.error("No such user: " + username);
+		}
 		event.setUser(user);
 		loadTask(event);
 	}

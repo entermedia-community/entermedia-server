@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.AllowViewing;
+import org.openedit.users.GroupSearcher;
 import org.openedit.users.PasswordHelper;
 import org.openedit.users.UserSearcher;
 
@@ -236,8 +237,12 @@ public class AdminModule extends BaseModule
 		{
 			catid = "system";
 		}
-		PermissionManager manager = (PermissionManager)getModuleManager().getBean(catid, "permissionManager"); 
-		String limited = inReq.getCurrentAction().getChildValue("permissions");
+		PermissionManager manager = (PermissionManager)getModuleManager().getBean(catid, "permissionManager");
+		String limited= null;
+		if( inReq.getCurrentAction() != null)
+		{
+			limited = inReq.getCurrentAction().getChildValue("permissions");
+		}
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
 	}
 
@@ -310,6 +315,11 @@ public class AdminModule extends BaseModule
 		return (UserSearcher) getSearcherManager().getSearcher("system", "user");
 	}
 
+	protected GroupSearcher getGroupSearcher()
+	{
+		return (GroupSearcher) getSearcherManager().getSearcher("system", "group");
+	}
+
 	/*
 	 * public void loginByEmail( WebPageRequest inReq ) throws Exception {
 	 * String account = inReq.getRequestParameter("email");
@@ -367,7 +377,7 @@ public class AdminModule extends BaseModule
 			if (loginAndRedirect(aReq, inReq))
 			{
 				user.setVirtual(false);
-				getUserManager().saveUser(user);
+				getUserSearcher().saveData(user,null);
 			}
 		}
 	}
@@ -375,7 +385,7 @@ public class AdminModule extends BaseModule
 	{
 		String account = inReq.getRequestParameter("id");
 		String password = inReq.getRequestParameter("password");
-		User user = getUserManager().getUser(account);
+		User user = getUserSearcher().getUser(account);
 		Boolean ok = false;
 		if( user != null)
 		{
@@ -457,7 +467,7 @@ public class AdminModule extends BaseModule
 			{
 				//This resets the "failed attemps" to 0.
 				inUser.setProperty("failedlogincount", "0");
-				getUserManager().saveUser(inUser);
+				getUserSearcher().saveData(inUser,null);
 				
 			}
 			
@@ -545,7 +555,7 @@ public class AdminModule extends BaseModule
 					}	
 					inUser.setEnabled(false);
 				}
-				getUserManager().saveUser(inUser);
+				getUserSearcher().saveData(inUser,null);
 
 			}
 
@@ -701,7 +711,7 @@ public class AdminModule extends BaseModule
 			{
 				return;
 			}
-			User user = getUserManager().getUser(username);
+			User user = getUserSearcher().getUser(username);
 			if (user == null)
 			{
 				return;
@@ -1191,7 +1201,7 @@ public class AdminModule extends BaseModule
 				{
 					user.put(id, String.valueOf(has));
 				}
-				getUserManager().saveUser(user);
+				getUserSearcher().saveData(user,null);
 			}
 		}
 	}
@@ -1315,7 +1325,7 @@ public class AdminModule extends BaseModule
 	public void createGuestUser(WebPageRequest inReq) {
 		User user = inReq.getUser();
 		if (user == null) {
-			Group guest = getUserManager().getGroup("guest");
+			Group guest = getGroupSearcher().getGroup("guest");
 			if (guest == null) {
 				getUserManager().createGroup("guest");
 			}

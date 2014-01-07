@@ -1,8 +1,0 @@
-<page>
-	<inner-layout>/${catalogid}/settings/metadata/innerlayout.html</inner-layout>
-	<property name="tab">data</property>
-	<property name="searchhome">/${catalogid}/settings/metadata</property>
-	<property name="showsearch">false</property>
-	<property name="showactions">true</property>
-
-</page>

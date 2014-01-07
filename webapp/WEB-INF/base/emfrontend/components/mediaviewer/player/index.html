@@ -15,8 +15,8 @@
         #set( $currentpreview = $numberutils.toInt($currentpreview) )
         #set( $pagenum = $currentpreview + 1  )
     #end
-    
-    #if ( $totalpages < $numberutils.toInt($pagenum) )
+   #set($pagenumparsed = $numberutils.toInt($pagenum) )
+   #if ( $pagenumparsed && ($totalpages < $pagenumparsed) )
        #set( $pagenum = $totalpages )
        #set( $currentpreview = $totalpages - 1 )
     #end

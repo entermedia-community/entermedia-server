@@ -3,7 +3,7 @@
 	<property id="name" editable="true" index="true" stored="true">Destination</property>
 	
 	<property id="publishtype"  index="true" stored="true" editable="true" viewtype="list" type="list">Publish Type</property>
-	<property id="notifyadmin" index="true" stored="true" editable="true" type="boolean" >Notify Administator</property>
+	<property id="notifyadmin" index="true" stored="true" editable="true" type="boolean" >Notify Administrator</property>
 	
 	<property id="server" index="true" stored="true" editable="true" >Server IP</property>
 	<property id="url" index="true" stored="true" editable="true" >Path/URL</property>

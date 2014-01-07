@@ -97,8 +97,18 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	public Object searchByField(String inId, String inValue)
 	{
+		if (fieldCacheManager != null && "id".equals(inId))
+		{
+			Object cached = getCacheManager().get(getIndexPath(), inValue);
+			if (cached != null)
+			{
+				return cached;
+			}
+		}
+		
 		SearchQuery query = createSearchQuery();
 		query.addExact(inId, inValue);
+		
 		HitTracker hits = search(query);
 		hits.setHitsPerPage(1);
 		Data first = (Data)hits.first();
@@ -109,17 +119,13 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		String sourcepath = first.getSourcePath();
 		if (sourcepath != null)
 		{
-			return loadData(sourcepath, first.getId());
+			first = loadData(sourcepath, first.getId());
+			if (fieldCacheManager != null && first != null && "id".equals(inId))
+			{
+				getCacheManager().put(getIndexPath(), inValue, first);
+			}
 		}
-		return null;
-	}
-	public Object searchById(String inId)
-	{
-		if(inId ==  null){
-			return null;
-		}
-//		return super.searchById(inId);
-		return searchByField("id",inId);
+		return first;
 	}
 	
 	public void saveAllData(Collection inAll, User inUser)
@@ -156,6 +162,10 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			updateIndex(inData, doc, details);
 			Term term = new Term("id", inData.getId());
 			inWriter.updateDocument(term, doc, getAnalyzer());
+			if (fieldCacheManager != null)
+			{
+				getCacheManager().remove(getIndexPath(), inData.getId());
+			}
 			clearIndex();
 		}
 		catch (IOException ex)

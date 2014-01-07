@@ -13,9 +13,11 @@ import com.openedit.page.Page
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 
+
+//I do not need this at all since the assets are already set based on the import script or the conversion script
+
 public void checkPreviewStatus() throws Exception
 {
-	PresetCreator presets = new PresetCreator();
 	 
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
@@ -29,6 +31,7 @@ public void checkPreviewStatus() throws Exception
 		//why are these not marked as complete or error?
 		q.addNot("previewstatus","2");
 		q.addNot("previewstatus","3");
+		q.addNot("previewstatus","generated");
 	}
 	else
 	{
@@ -61,37 +64,43 @@ public void checkPreviewStatus() throws Exception
 		//Make sure they exists, and if they do that that are all complete. if error mark as error
 		boolean markerror = false;
 		boolean markcomplete = true;
-		for( Data task in newtasks)
+		if( newtasks.size()  > 0)
 		{
-			String status = task.get("status");
-			if( status == null)
+			for( Data task in newtasks)
 			{
-				markcomplete = false;
-				break;
-			} 
-			if( status.equals("error") )
-			{
-				markerror = true;
-				break;
+				String status = task.get("status");
+				if( status == null)
+				{
+					markcomplete = false;
+					break;
+				} 
+				if( status.equals("error") )
+				{
+					markerror = true;
+					break;
+				}
+				else if( !status.equals("complete") )
+				{
+					markcomplete = false;
+					break;
+				}
 			}
-			else if( !status.equals("complete") )
+			if( markerror || markcomplete)
 			{
-				markcomplete = false;
-				break;
+				Asset asset = mediaarchive.getAssetBySourcePath(data.getSourcePath());
+				if( asset != null)
+				{
+					if( markerror )
+					{
+						asset.setProperty("previewstatus","3");
+					}
+					else
+					{
+						asset.setProperty("previewstatus","2");
+					}
+					mediaarchive.saveAsset( asset, user );
+				}
 			}
-		}
-		if( markerror || markcomplete)
-		{
-			Asset asset = mediaarchive.getAssetBySourcePath(data.getSourcePath());
-			if( markerror )
-			{
-				asset.setProperty("previewstatus","3");
-			}
-			else
-			{
-				asset.setProperty("previewstatus","2");
-			}
-			mediaarchive.saveAsset( asset, user );
 		}
 	}
 	

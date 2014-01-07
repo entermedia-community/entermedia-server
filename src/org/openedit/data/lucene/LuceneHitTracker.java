@@ -20,13 +20,11 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.facet.params.FacetSearchParams;
 import org.apache.lucene.facet.search.CountFacetRequest;
 import org.apache.lucene.facet.search.DrillDownQuery;
-import org.apache.lucene.facet.search.DrillSideways;
 import org.apache.lucene.facet.search.FacetResult;
 import org.apache.lucene.facet.search.FacetResultNode;
 import org.apache.lucene.facet.search.FacetsCollector;
-import org.apache.lucene.facet.search.SearcherTaxonomyManager;
-import org.apache.lucene.facet.search.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.search.CachingWrapperFilter;
 import org.apache.lucene.search.FieldCacheTermsFilter;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
@@ -75,9 +73,7 @@ public class LuceneHitTracker extends HitTracker
 	}
 
 	/**
-	 * This is what is searched. getResultsType() is what is returned?
-	 * 
-	 * @deprecated
+	 * Data type
 	 */
 	public String getSearchType()
 	{
@@ -213,7 +209,7 @@ public class LuceneHitTracker extends HitTracker
 				}
 				if (max > 1)
 				{
-					log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getCatalogId());
+					log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getSessionId());
 				}
 				fieldSize = docs.totalHits;
 				fieldDocs = docs.scoreDocs;
@@ -737,7 +733,13 @@ public class LuceneHitTracker extends HitTracker
 					}
 					if( !getSearchQuery().hasFilter(detail.getId()))
 					{
-						params.add(new CountFacetRequest(new CategoryPath(detail.getId()), 20));  //need to have a show more button on UI
+						String count = detail.get("facetcount");
+						int defaultcount = 20;
+						if( count != null)
+						{
+							defaultcount = Integer.parseInt(count);
+						}
+						params.add(new CountFacetRequest(new CategoryPath(detail.getId()), defaultcount));  //need to have a show more button on UI
 					}
 				}
 				if( params.isEmpty() )
@@ -746,7 +748,16 @@ public class LuceneHitTracker extends HitTracker
 				}
 				FacetSearchParams fsp = new FacetSearchParams(params);
 				FacetsCollector facetsCollector = FacetsCollector.create(fsp, searcher.getIndexReader(), refs.getTaxonomyReader() );
-				searcher.search(getLuceneQuery(), facetsCollector);
+				
+				if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
+				{
+					Filter filterids = new FieldCacheTermsFilter("id", fieldSelections.toArray(new String[fieldSelections.size()]));
+					searcher.search(getLuceneQuery(),filterids, facetsCollector);
+				}
+				else
+				{
+					searcher.search(getLuceneQuery(), facetsCollector);
+				}
 
 				//copy the collected results to our data structure
 				
@@ -784,7 +795,7 @@ public class LuceneHitTracker extends HitTracker
 						String id = splits[1];
 						childnode.setId(id);
 						String label = null;
-						if( parent.isList() || "category".equals( parent.getId() ) )
+						if( parent != null && (parent.isList() || "category".equals( parent.getId() ) ) )
 						{
 							Data data = getSearcher().getSearcherManager().getData(getCatalogId(), parent.getListId(), id);
 							if (data == null)
@@ -805,7 +816,6 @@ public class LuceneHitTracker extends HitTracker
 					}
 					//filterNode.sortChildren();
 				}
-				
 				return facetNodes;
 			}
 		}

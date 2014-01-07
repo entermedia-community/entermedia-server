@@ -8,7 +8,7 @@
 	<property id="category" keyword="true" editable="true" viewtype="category" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
-	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
+	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Projects</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
 
 	<!-- Push items -->
@@ -40,7 +40,8 @@
 	<property id="aperture" externalid="Aperture" index="true" stored="true" >Aperture</property>
 
 	<!--  Video stuff -->
-	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Videos -->
+	<property id="length" index="true" viewtype="timelength" stored="true" datatype="number">Length</property> <!-- Rounded to the nearest second -->
+	<property id="duration" index="true" stored="true" >Duration Stamp</property> <!-- Videos -->
 	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
 	<property id="bitspersample" externalid="Bits Per Sample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="videocodec"  index="true" stored="true" >Video Codec</property>
@@ -69,7 +70,7 @@
 	
 	
 	<property id="longcaption"  keyword="true" index="true" editable="true"  externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
-	<property id="keywords" viewtype="tageditor" index="true" stored="true" editable="true" >Tags</property> 
+	<property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" >Tags</property> 
 	<property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords">Extra Keywords</property> 
 	<property id="purpose" index="true" stored="true" editable="true" viewtype="list" datatype="list">Purpose</property>
 	<property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed" >General Ethnicity</property>

@@ -1,4 +1,4 @@
-#if( $hits && $hits.totalPages > 1 )
+#if( $hits )
 #set($resultsPage = "$home$apphome/views/search/index.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&oemaxlevel=1&resultstype=$!resultstype")
 ##set($resultsPage = "$home$apphome/users/${member.id}/assets/results.html?hitssessionid=$hits.sessionId&searchtype=asset&hitsperpage=$!hits.hitsPerPage&categoryid=$!category.id&resultstype=$!resultstype")
 #set($resultsPage = "$resultsPage&page")

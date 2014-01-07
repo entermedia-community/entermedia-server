@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<properties>
-  <property id="emlibrary" path="/eml" caption="Asset managemennt application" longdescription="This application allows librarians and power users to search, edit and manage thousands of assets. Centralize your media and with approval and advanced metadata editing.">EM Library</property>
-</properties>

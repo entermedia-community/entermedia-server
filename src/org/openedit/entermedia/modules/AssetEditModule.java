@@ -1197,7 +1197,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 	}
 	
-	public void selectPrimaryAsset(WebPageRequest inReq)
+	public void selectPrimaryAsset(WebPageRequest inReq) throws Exception
 	{
 		String primaryname = inReq.getRequestParameter("filename");
 		String imagefilename = inReq.getRequestParameter("imagefilename");
@@ -1225,7 +1225,10 @@ public class AssetEditModule extends BaseMediaModule
 			// We're going to allow the metadata reader to replace this asset's properties
 			// but we want to keep old values the reader is not going to replace
 			updateMetadata(archive, target, itemFile);
+			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
+			inReq.setRequestParameter("assetids", new String[] { target.getId() });
+			originalModified(inReq);
 		}
 	}
 	protected void updateMetadata(MediaArchive archive, Asset target, Page itemFile)
@@ -1954,7 +1957,9 @@ public class AssetEditModule extends BaseMediaModule
 				log.error("Missing asset " + assetids[i]);
 				continue;
 			}
+			
 			mediaArchive.removeGeneratedImages(asset);
+			
 			missing = missing + presets.createMissingOnImport(mediaArchive, tasksearcher, asset);
 		}
 		if( missing > 0 )
@@ -2049,14 +2054,14 @@ public class AssetEditModule extends BaseMediaModule
 			if(id != null){
 				vals.put("id",id);
 			}
-			
+			vals.put("filename", item.getName());
 			Replacer replacer = new Replacer();
 			
 			replacer.setSearcherManager(archive.getSearcherManager());
 			replacer.setCatalogId(archive.getCatalogId());
 			replacer.setAlwaysReplace(true);
 			sourcepath = replacer.replace(sourcepath, vals);
-			sourcepath = sourcepath + "/" + item.getName();
+			//sourcepath = sourcepath + "/" + item.getName();
 			
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();

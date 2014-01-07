@@ -1,8 +1,15 @@
 #set($searcher = $mediaarchive.getAssetSearcher())
 $context.putPageValue("searcher", $searcher)
 $context.putPageValue("data", $asset)
+##check for assettype specific first?
 
-#set( $details  = $searcher.getDetailsForView("asset/previewstatus",$userprofile) )
+#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/previewstatus") )
+  #set ($view = "asset/assettype/$asset.assettype/previewstatus")
+#else
+  #set ($view = "asset/assettype/default/previewstatus")
+#end
+
+#set( $details  = $searcher.getDetailsForView($view,$userprofile) )
 $context.putPageValue("details", $details)
 
 #set( $showstatus = false)

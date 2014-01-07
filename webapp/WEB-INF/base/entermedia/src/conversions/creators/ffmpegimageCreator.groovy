@@ -44,7 +44,15 @@ public class ffmpegimageCreator extends BaseImageCreator
 			return false;
 		}
 		String lcfileformat = inFileFormatInput.toLowerCase();
-		return "flv".equals(lcfileformat) || "avi".equals(lcfileformat) || (lcfileformat.startsWith("m") && !lcfileformat.equals("mp3"));
+		
+		//This should also read in WMV... ?
+		String type = inArchive.getMediaRenderType(inFileFormatInput);
+		if( "video".equals(type))
+		{
+			return true;
+		}
+		return false;
+		//return "flv".equals(lcfileformat) || "avi".equals(lcfileformat) || (lcfileformat.startsWith("m") && !lcfileformat.equals("mp3"));
 	}
 
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions)

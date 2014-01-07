@@ -1,5 +1,18 @@
 package model.push;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.openedit.data.PropertyDetail;
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpException
 import org.apache.commons.httpclient.HttpMethod
@@ -12,16 +25,20 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.DocumentException
 import org.dom4j.Element
+import org.dom4j.io.SAXReader;
+import org.dom4j.Attribute;
 import org.entermedia.upload.FileUpload
 import org.entermedia.upload.FileUploadItem
 import org.entermedia.upload.UploadRequest
 import org.openedit.Data
+import org.openedit.data.PropertyDetails
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.Category
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.push.PushManager
+import org.openedit.entermedia.scanner.AssetImporter
 import org.openedit.entermedia.search.AssetSearcher
 import org.openedit.repository.ContentItem
 import org.openedit.util.DateStorageUtil
@@ -30,6 +47,7 @@ import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
+import com.openedit.modules.update.Downloader;
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 import com.openedit.users.User
@@ -43,6 +61,7 @@ public class BasePushManager implements PushManager
 	protected SearcherManager fieldSearcherManager;
 	protected UserManager fieldUserManager;
 	protected PageManager fieldPageManager;
+	protected Downloader fielddownloader;
 	protected XmlUtil xmlUtil = new XmlUtil();
 	//protected HttpClient fieldClient;
 	
@@ -111,6 +130,13 @@ public class BasePushManager implements PushManager
 	public void setSearcherManager(SearcherManager inSearcherManager)
 	{
 		fieldSearcherManager = inSearcherManager;
+	}
+	
+	public Downloader getDownloader(){
+		if (fielddownloader == null){
+			fielddownloader = new Downloader();
+		}
+		return fielddownloader;
 	}
 
 	/* (non-Javadoc)
@@ -338,7 +364,7 @@ public class BasePushManager implements PushManager
 
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset)
 	{
-		http://demo.entermediasoftware.com
+//		http://demo.entermediasoftware.com
 		if (inPreset.get("type") == "original")
 		{
 			return mediaArchive.getOriginalDocument(asset);
@@ -381,6 +407,9 @@ public class BasePushManager implements PushManager
 		{
 			throw new Exception(" ${inMethod} Request failed: status code ${status}");
 		}
+		
+//		log.info(inMethod.getResponseBodyAsString());//for debug purposes only
+		
 		Element result = xmlUtil.getXml(inMethod.getResponseBodyAsStream(),"UTF-8");
 		return result;
 	}
@@ -1044,13 +1073,14 @@ asset: " + asset);
 		String libraries = inReq.getRequestParameter("libraries");
 		if( libraries != null )
 		{
+			List combinedl = new ArrayList(existing);
 			String[] keys =  libraries.split("\\|");
 			for (int i = 0; i < keys.length; i++)
 			{
-				existing.add(keys[i]);
+				combinedl.add(keys[i]);
 			}
+			target.setValues("libraries", combinedl);
 		}
-		target.setValues("libraries", existing);
 
 		String keywords = inReq.getRequestParameter("keywords");
 		if( keywords != null )
@@ -1095,6 +1125,314 @@ asset: " + asset);
 		}
 
 	}
+	
+	public void pullApprovedAssets(WebPageRequest inReq, MediaArchive inArchive){
+		log.info("pulling approved assets from remote server");
+		Map<String,Properties> map = getApprovedAssets(inArchive);
+		log.info("found the following files, $map");
+		if (!map.isEmpty()){
+			processApprovedAssets(inArchive,map);
+			log.info("finished pull");
+		} else{
+			log.info("no files approved on remote server, returning");
+		}
+	}
+	
+	/**
+	 * Gets the approved assets (that are not marked for deletion) from remote server
+	 * @param inArchive
+	 * @return
+	 */
+	protected HashMap<String,Properties> getApprovedAssets(MediaArchive inArchive) {
+		log.info("getApprovedAssets starting");
+		String server = inArchive.getCatalogSettingValue("push_server_url");
+		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
+		log.info("push_server_url = $server, push_target_catalogid = $remotecatalogid");
+		String [] inFields = ["approvalstatus", "editstatus"] as String[];
+		String [] inValues = ["approved", "7"] as String[];
+		String [] inOperations = ["matches", "not"] as String[];
 
-
+		String url = server + "/media/services/rest/assetsearch.xml";
+		PostMethod method = new PostMethod(url);
+		method.addParameter("catalogid", remotecatalogid);
+		for(int i=0; i<inFields.length; i++){
+			method.addParameter("field", inFields[i]);
+			method.addParameter("operation", inOperations[i]);
+			method.addParameter(inFields[i] + ".value", inValues[i]);
+		}
+		log.info("executing $remotecatalogid, $method");
+		Element root = execute(remotecatalogid,method);
+		method.releaseConnection();
+		Element hits = (Element)root.elements().get(0);
+		
+		int pages = Integer.parseInt(hits.attributeValue("pages"));
+		String sessionid = hits.attributeValue("sessionid");
+		
+		log.info("found $pages, $sessionid, $root")
+		Map<String, Properties> map = new HashMap<String, Properties>();
+		addHits(hits, map);
+		
+		url = server + "/media/services/rest/getpage.xml";
+		for( int i = 2; i <= pages; i++ )
+		{
+			method = new PostMethod(url);
+			method.addParameter("catalogid", remotecatalogid);
+			method.addParameter("hitssessionid", sessionid);
+			method.addParameter("page", String.valueOf(i));
+			root = execute(remotecatalogid,method);
+			method.releaseConnection();
+			hits = (Element)root.elements().get(0);
+			addHits(hits, map);
+		}
+		return map;
+	}
+	
+	protected void addHits(Element inHits, Map<String, Properties> inResults){
+		Iterator<?> hits = inHits.elements("hit").iterator();
+		while (hits.hasNext()){
+			Element e = (Element) hits.next();
+			Properties props = new Properties();
+			Iterator<Attribute> attributes = e.attributeIterator();
+			while(attributes.hasNext()){
+				Attribute attr = attributes.next();
+				String n = attr.getName();
+				String v = attr.getValue();
+				if (n.equalsIgnoreCase("id")){
+					inResults.put(v, props);
+				} else {
+					props.put(n,v);
+				}
+			}
+			Iterator<Element> elements = e.elementIterator();
+			while(elements.hasNext()){
+				Element element = elements.next();
+				String n = element.getName();
+				String v = element.getText();
+				props.put(n,v);
+			}
+		}
+	}
+	
+	protected void processApprovedAssets(MediaArchive inArchive, Map<String,Properties> inMap){
+		String catalogid = inArchive.getCatalogId();
+		String server = inArchive.getCatalogSettingValue("push_server_url");
+		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
+		String exportpath = inArchive.getCatalogSettingValue("push_download_exportpath");
+		if (exportpath == null){
+			exportpath = "/WEB-INF/data/${catalogid}/originals/";
+		} else if (exportpath.startsWith("/")){
+			exportpath = "/WEB-INF/data/${catalogid}/originals${exportpath}";
+		} else {
+			exportpath = "/WEB-INF/data/${catalogid}/originals/${exportpath}";
+		}
+		if (!exportpath.endsWith("/")){
+			exportpath = "${exportpath}/";
+		}
+		Iterator<String> itr = inMap.keySet().iterator();
+		while(itr.hasNext()){
+			String key = itr.next();
+			Properties prop = inMap.get(key);
+			//1. query REST for metadata of particular asset
+			Properties metadata = getAssetMetadata(inArchive,key);
+			//2. download original to a specific location
+			String url = prop.getProperty("original");
+			String name = prop.getProperty("name");
+			if (url == null || name == null){
+				log.info("unable to process $key, name ($name) or url ($url) are null, skipping");
+				continue;
+			}
+			Page page = getDownloadedAsset(inArchive,url,name,exportpath);
+			if (!page.exists()){
+				log.info("unable to download asset $name, skipping");
+				continue;
+			}
+			//3. update sourcepath
+			page = moveDownloadedAsset(inArchive,page,metadata);
+			//4. copy metadata to new asset
+			Asset asset = null;
+			if ( (asset = createAsset(inArchive,page,metadata)) == null){
+				log.info("unable to create asset skipping changing asset status to deleted");
+				continue;
+			}
+			//5. query REST to set delete status of asset
+			updateAssetEditStatus(inArchive,key);
+			//6. fire event
+			inArchive.fireMediaEvent("asset/finalizepull",null,asset);
+		}
+	}
+	
+	protected Page getDownloadedAsset(MediaArchive inArchive, String inUrl, String inName, String inExportPath){
+		String server = inArchive.getCatalogSettingValue("push_server_url");
+		String incomingPath = "${inExportPath}${inName}";
+		Page page = inArchive.getPageManager().getPage(incomingPath);
+		File fileOut = new File(page.getContentItem().getAbsolutePath());
+		getDownloader().download(server+inUrl,fileOut);
+		return page;
+	}
+	
+	protected Properties getAssetMetadata(MediaArchive inArchive, String inAssetId){
+		log.info("get asset metadata for $inAssetId");
+		String server = inArchive.getCatalogSettingValue("push_server_url");
+		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
+		String url = server + "/media/services/rest/assetdetails.xml";
+		PostMethod method = new PostMethod(url);
+		method.addParameter("catalogid", remotecatalogid);
+		method.addParameter("id", inAssetId);
+		Element root = execute(remotecatalogid,method);
+		method.releaseConnection();
+		Properties props = new Properties();
+		Iterator<Element> itr = root.elementIterator();
+		while(itr.hasNext()){
+			Element e = itr.next();
+			if (e.getName()==null || !e.getName().equals("property") || e.attribute("id")==null || e.attribute("id").getValue().isEmpty()){
+//				log.info("skipping ${inAssetId}: ${e}");
+				continue;
+			}
+			String id = e.attribute("id").getValue();
+			String valueid = e.attribute("valueid")!=null ? e.attribute("valueid").getValue() : null;
+			String text = e.getText();
+			if (valueid!=null && !valueid.isEmpty()){
+				props.put(id,valueid);
+			} else {
+				props.put(id,text);
+			}
+		}
+		return props;
+	}
+	
+	protected Asset createAsset(MediaArchive inArchive, Page inPage, Properties inMetadata){
+		AssetImporter importer = (AssetImporter) inArchive.getModuleManager().getBean("assetImporter");
+		String catalogid = inArchive.getCatalogId();
+		String exportpath = "/WEB-INF/data/" + catalogid + "/originals/";
+		String path = inPage.getPath();
+		int index;
+		if ( (index = path.toLowerCase().indexOf(exportpath.toLowerCase())) !=-1 ){
+			path = path.substring(index + exportpath.length());
+		}
+		Asset asset = importer.createAssetFromExistingFile(inArchive,null,false,path);
+		if (asset == null){
+			log.info("unable to create asset, aborting");
+			return false;
+		}
+		log.info("created $asset: ${asset.getId()}");
+		Enumeration<?> keys = inMetadata.keys();
+		while (keys.hasMoreElements()){
+			String key = keys.nextElement().toString();
+			String value = inMetadata.getProperty(key);
+			asset.setProperty(key, value);
+		}
+		inArchive.getAssetSearcher().saveData(asset, null);
+		return asset;
+	}
+	
+	protected Page moveDownloadedAsset(MediaArchive inArchive, Page inPage, Properties inMetadata){
+		PropertyDetails props = inArchive.getAssetSearcher().getPropertyDetails();
+		StringBuilder buf = new StringBuilder();
+		//parser pattern specified in download sourcepath; look for keys in metadata and match fields in asset property definition
+		//to determin datatype; otherwise just use exact string provided
+		String pattern = inArchive.getCatalogSettingValue("push_download_sourcepath");
+		if (pattern!=null && !pattern.isEmpty()){
+            List<String> tokens = findKeys(pattern,"//");
+            tokens.each{
+                String token = it;
+                if (token.startsWith("\$")){//metadata field
+					//get field, parameter and value from metadata map
+                    String field = token.substring(1);
+                    String param = null;
+                    int start = -1;
+                    int end = -1;
+                    if ( (start = field.indexOf("{"))!=-1 && (end = field.indexOf("}"))!=-1 && start < end){
+                        param = field.substring(start+1,end).trim();//eg, YYYY, MM for dates
+                        field = field.substring(0,start).trim();//eg, $owner, $assetcreationdate
+                    }
+					String value = inMetadata.getProperty(field,"").trim();
+					//check if it's a date
+					boolean isDate = false;
+					if (props.contains(field)){
+						PropertyDetail prop = props.getDetail(field);
+						if (prop.isDate()){
+							isDate = true;
+						} else if (param!=null){//check if it's formatted as a date because of provided param
+							//if this succeeds then we know there's a difference in configs between client and server
+							isDate = DateStorageUtil.getStorageUtil().parseFromStorage(value) != null;
+						}
+					}
+					if (value!=null && !value.isEmpty()){
+						if (isDate){
+							String cleaned = DateStorageUtil.getStorageUtil().checkFormat(value);
+							Date date = DateStorageUtil.getStorageUtil().parseFromStorage(value);
+							if (date == null){
+								date = new Date();
+								log.info("unable to parse Date value from remote server: field = $field, value = $value, defaulting to NOW");
+							}
+							String formatted = null;
+							try{
+								SimpleDateFormat format = new SimpleDateFormat(param.trim());
+								formatted = format.format(date);
+							}catch (Exception e){
+								log.info("exception caught parsing $date using format \"${param.trim()}\", ${e.getMessage()}, defaulting to $value");
+							}
+							if (formatted!=null && !formatted.isEmpty()){
+								buf.append(formatted).append("/");
+							} else {
+								buf.append(value).append("/");
+							}
+						} else {
+							buf.append(value).append("/");
+						}
+					} else {
+						log.info("skipping $field, unable to find in metadata obtained from server");
+					}
+                } else {
+					buf.append(token.trim()).append("/");
+                }
+            }
+			if (!buf.toString().isEmpty()){
+				buf.append("${inPage.getName()}");
+			}
+        }
+		if (buf.toString().isEmpty()){
+			String user = inMetadata.getProperty("owner","admin").trim();//make the default "admin" if owner has not been specified
+			Calendar cal = Calendar.getInstance();
+			String month = String.valueOf(cal.get(Calendar.MONTH)+1);
+			if (month.size() == 1) month = "0${month}";
+			String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+			if (day.size() == 1) day = "0${day}";
+			String year = String.valueOf(cal.get(Calendar.YEAR));
+			buf.append("users/${user}/${year}/${month}/${day}/${inPage.getName()}");
+		}
+		String generatedpath = buf.toString();
+		log.info("moving ${inPage.getName()} to generated path \"$generatedpath\"");
+		String destinationpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/$generatedpath";
+		Page destinationpage = inArchive.getPageManager().getPage(destinationpath);
+		inArchive.getPageManager().movePage(inPage,destinationpage);
+		return destinationpage;
+	}
+	
+	protected ArrayList<String> findKeys(String Subject, String Delimiters)
+	{
+		StringTokenizer tok = new StringTokenizer(Subject, Delimiters);
+		ArrayList<String> list = new ArrayList<String>(Subject.length());
+		while(tok.hasMoreTokens()){
+			list.add(tok.nextToken());
+		}
+		return list;
+	}
+	
+	protected void updateAssetEditStatus(MediaArchive inArchive, String inAssetId){
+		String server = inArchive.getCatalogSettingValue("push_server_url");
+		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
+		String url = server + "/media/services/rest/saveassetdetails.xml";
+		PostMethod method = new PostMethod(url);
+		method.addParameter("catalogid", remotecatalogid);
+		method.addParameter("id", inAssetId);
+		method.addParameter("field", "editstatus");
+		method.addParameter("editstatus.value", "7");
+		Element root = execute(remotecatalogid,method);
+		method.releaseConnection();
+		String out = root.attributeValue("stat");
+		if (!"ok".equalsIgnoreCase(out)){
+			log.info("warning, could not update $inAssetId editstatus!!!");
+		}
+	}
 }

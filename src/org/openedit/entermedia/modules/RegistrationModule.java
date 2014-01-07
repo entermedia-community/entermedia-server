@@ -94,8 +94,8 @@ public class RegistrationModule extends BaseMediaModule {
 
 		Map errors = new HashMap();
 		if (user != null) {
-			errors.put("error-email-in-use", "This email address is in use");
-			inReq.putPageValue("errors", errors);
+			//errors.put("error-email-in-use", "This email address is in use");
+			//inReq.putPageValue("errors", errors);
 			inReq.putPageValue("emailinuse", true);
 			cancelAndForward(inReq);
 		}
@@ -284,9 +284,11 @@ public class RegistrationModule extends BaseMediaModule {
 			inReq.setRequestParameter("to", "dummy@ijsolutions.ca");
 		}
 		current.setProperty("creationdate", new Date().toString());
-
-		inReq.setRequestParameter("subject",
-				inReq.getPageProperty("subjectprefix") + current.getId());
+		String subject = inReq.findValue("subjectprefix"); 
+		if(subject == null){
+			subject = "New Registration Received";
+		}
+		inReq.setRequestParameter("subject", subject);
 		inReq.putPageValue("registration", current);
 		
 

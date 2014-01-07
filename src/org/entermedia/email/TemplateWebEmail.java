@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -445,7 +446,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		fieldSourcePath = sourcePath;
 	}
 
-	public void configureAndSend(WebPageRequest inReq, String inTemplate,Recipient inRecipient) throws OpenEditException, MessagingException
+	public void configureAndSend(WebPageRequest inReq, String inTemplate,InternetAddress inRecipient) throws OpenEditException, MessagingException
 	{
 		List one = new ArrayList();
 		one.add(inRecipient);
@@ -457,7 +458,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		setTo(inRecipients);
 		configureAndSend(inReq,inTemplate,getRecipients());
 	}	
-	public void configureAndSend(WebPageRequest inReq, String inTemplate, List<Recipient> inRecipients) throws OpenEditException, MessagingException
+	public void configureAndSend(WebPageRequest inReq, String inTemplate, List<InternetAddress> inRecipients) throws OpenEditException, MessagingException
 	{
 		Page emailLayout = getPageManager().getPage(inTemplate);
 		if (!emailLayout.exists()) {
@@ -504,7 +505,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		{
 			if (getBCCRecipients()==null || getBCCRecipients().isEmpty())
 			{
-				postMail.postMail(getTo(),getSubject(),output,null,getFrom(),getFileAttachments(), getProperties());
+				postMail.postMail(getRecipients(),getSubject(),output,null,getFrom(),getFileAttachments(), getProperties());
 			}
 			else
 			{

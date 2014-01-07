@@ -330,7 +330,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		fullDesc.append(' ');
 		if( inTagString != null )
 		{
-			inTagString = inTagString.replace(" | ",""); //remove junk
+			inTagString = inTagString.replace(" | "," "); //remove junk
 			fullDesc.append(inTagString);
 		}
 		//populateKeywords(fullDesc, asset, inDetails);

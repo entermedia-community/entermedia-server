@@ -8,7 +8,6 @@ import org.openedit.entermedia.MediaArchive
 
 import assets.model.AssetTypeManager
 import assets.model.EmailNotifier
-import assets.model.LibraryAddingAssetTypeManager
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
@@ -30,7 +29,7 @@ public void setAssetTypes()
 	q.addOrsGroup( "id", assetids );
 
 	HitTracker assets = assetsearcher.search(q);
-	AssetTypeManager manager = new LibraryAddingAssetTypeManager();
+	AssetTypeManager manager = new AssetTypeManager();
 	manager.context = context;
 	manager.log = log;
 	manager.saveAssetTypes(assets);

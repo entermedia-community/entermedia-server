@@ -5,5 +5,9 @@
 	<property name="tab">scheduler</property>
 	<property name="subtab">scheduler</property>
 	
+	<permission name="view">
+		<userprofile property="viewsettings" equals="true" />
+	</permission>
+	
 	
 </page>

@@ -21,8 +21,7 @@ public class PlugInFinder
 	protected ModuleManager fieldModuleManager;
 	protected WebServer fieldWebServer;
 	protected PageManager fieldPageManager;
-	//protected List fieldInstalledPlugIns;
-	protected List fieldNotInstalledPlugIns;
+	protected List fieldPlugIns;
 	protected String fieldAppServerPath;
 	protected String fieldId;
 	
@@ -46,23 +45,15 @@ public class PlugInFinder
 		fieldAppServerPath = inAppServerPath;
 	}
 
-	public List getNotInstalledPlugIns()
+	public List getPlugIns()
 	{
-		if( fieldNotInstalledPlugIns == null)
+		if( fieldPlugIns == null)
 		{
 			loadPlugIns();
 		}
-		return fieldNotInstalledPlugIns;
+		return fieldPlugIns;
 	}
 
-//	public List getInstalledPlugIns()
-//	{
-//		if( fieldInstalledPlugIns == null)
-//		{
-//			loadPlugIns();
-//		}
-//		return fieldInstalledPlugIns;
-//	}
 	public void loadPlugIns()
 	{
 		//List installed = getWebServer().getAllPlugIns();
@@ -92,7 +83,7 @@ public class PlugInFinder
 		}
 		
 		//fieldInstalledPlugIns = installed;
-		fieldNotInstalledPlugIns = notinstalled;
+		fieldPlugIns = notinstalled;
 		checkDepends(available);
 
 	}
@@ -100,7 +91,7 @@ public class PlugInFinder
 	{
 		List sorted = new ArrayList();
 		//sorted.addAll(getInstalledPlugIns());
-		sorted.addAll(getNotInstalledPlugIns());
+		sorted.addAll(getPlugIns());
 		return sorted;
 	}
 	
@@ -126,7 +117,6 @@ public class PlugInFinder
 			}
 		}	
 	}
-
 	protected void populatePluginDetails(Element found, PlugIn plugin)
 	{
 		plugin.setVendorLink(found.attributeValue("vendorlink"));
@@ -192,7 +182,7 @@ public class PlugInFinder
 //				return plugin;
 //			}
 //		}
-		for (Iterator iterator = getNotInstalledPlugIns().iterator(); iterator.hasNext();)
+		for (Iterator iterator = getPlugIns().iterator(); iterator.hasNext();)
 		{
 			PlugIn plugin = (PlugIn) iterator.next();
 			if( inPluginid.equals(plugin.getId()) )

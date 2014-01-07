@@ -14,22 +14,26 @@ public void init()
 {
 		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher searcher = archive.getAssetSearcher();
-		Collection assets = searcher.getAllHits();
+		//HitTracker assets = searcher.getAllHits();
+		HitTracker assets = searcher.query().match("category","index").not("editstatus","7").sort("id").search();
+		assets.setHitsPerPage(1000);
 		List assetsToSave = new ArrayList();
 		MetaDataReader reader = moduleManager.getBean("metaDataReader");
 		for (Data hit in assets)
 		{
 			Asset asset = archive.getAssetBySourcePath(hit.get("sourcepath"));
 
-			Page content = archive.getOriginalDocument( asset );
-
-			reader.populateAsset(archive, content.getContentItem(), asset);
-			assetsToSave.add(asset);
-			if(assetsToSave.size() == 100)
+			if( asset != null)
 			{
-				archive.saveAssets( assetsToSave );
-				assetsToSave.clear();
-				log.info("saved 100 metadata readings");
+				Page content = archive.getOriginalDocument( asset );
+				reader.populateAsset(archive, content.getContentItem(), asset);
+				assetsToSave.add(asset);
+				if(assetsToSave.size() == 1000)
+				{
+					archive.saveAssets( assetsToSave );
+					assetsToSave.clear();
+					log.info("saved 1000 metadata readings");
+				}
 			}
 		}
 		archive.saveAssets assetsToSave;

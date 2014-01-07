@@ -40,9 +40,8 @@ import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.util.IntCounter;
 
-
-public class LuceneAssetDataConnector extends BaseLuceneSearcher implements DataConnector
-{
+public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
+		DataConnector {
 	static final Log log = LogFactory.getLog(LuceneAssetDataConnector.class);
 	protected static final String CATALOGIDX = "catalogid";
 	protected static final String CATEGORYID = "categoryid";
@@ -54,24 +53,22 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	protected IntCounter fieldIntCounter;
 	protected Map fieldAssetPaths;
 
-	public LuceneAssetDataConnector()
-	{
+	public LuceneAssetDataConnector() {
 		setFireEvents(true);
 	}
-	
-	public Data createNewData()
-	{
+
+	public Data createNewData() {
 		Asset temp = new Asset();
 		return temp;
-		
+
 	}
-	public String nextId()
-	{
+
+	public String nextId() {
 		String countString = String.valueOf(getIntCounter().incrementCount());
 		return countString;
 	}
-	public void updateIndex(Asset inAsset)
-	{
+
+	public void updateIndex(Asset inAsset) {
 		List all = new ArrayList(1);
 		all.add(inAsset);
 		updateIndex(all, false);
@@ -80,28 +77,27 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 
 	}
 
-	public Analyzer getAnalyzer()
-	{
-		if (fieldAnalyzer == null)
-		{
+	public Analyzer getAnalyzer() {
+		if (fieldAnalyzer == null) {
 			Map analyzermap = new HashMap();
-			//analyzermap.put("description",  new EnglishAnalyzer(Version.LUCENE_36));
-			analyzermap.put("description",  new FullTextAnalyzer(Version.LUCENE_41));
-			
+			// analyzermap.put("description", new
+			// EnglishAnalyzer(Version.LUCENE_36));
+			analyzermap.put("description", new FullTextAnalyzer(
+					Version.LUCENE_41));
+
 			analyzermap.put("id", new NullAnalyzer());
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
 			analyzermap.put("sourcepath", new NullAnalyzer());
-			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper( new RecordLookUpAnalyzer() , analyzermap);
+			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper(
+					new RecordLookUpAnalyzer(), analyzermap);
 
 			fieldAnalyzer = composite;
 		}
 		return fieldAnalyzer;
 	}
 
-	public LuceneIndexer getLuceneIndexer()
-	{
-		if (fieldLuceneIndexer == null)
-		{
+	public LuceneIndexer getLuceneIndexer() {
+		if (fieldLuceneIndexer == null) {
 			LuceneAssetIndexer luceneIndexer = new LuceneAssetIndexer();
 			luceneIndexer.setAnalyzer(getAnalyzer());
 			luceneIndexer.setSearcherManager(getSearcherManager());
@@ -109,254 +105,216 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			luceneIndexer.setNumberUtils(getNumberUtils());
 			luceneIndexer.setRootDirectory(getRootDirectory());
 			luceneIndexer.setMediaArchive(getMediaArchive());
-			if(getMediaArchive().getAssetSecurityArchive() == null)
-			{
+			if (getMediaArchive().getAssetSecurityArchive() == null) {
 				log.error("Asset Security Archive Not Set");
 			}
-			luceneIndexer.setAssetSecurityArchive(getMediaArchive().getAssetSecurityArchive());
+			luceneIndexer.setAssetSecurityArchive(getMediaArchive()
+					.getAssetSecurityArchive());
 			fieldLuceneIndexer = luceneIndexer;
 		}
 		return fieldLuceneIndexer;
 	}
 
-	public synchronized void updateIndex(List<Data> inAssets, boolean inOptimize)
-	{
-		if (log.isDebugEnabled())
-		{
+	public synchronized void updateIndex(List<Data> inAssets, boolean inOptimize) {
+		if (log.isDebugEnabled()) {
 			log.debug("update index");
 		}
 
-		try
-		{
+		try {
 			PropertyDetails details = getPropertyDetails();
 
-			for (Iterator iter = inAssets.iterator(); iter.hasNext();)
-			{
+			for (Iterator iter = inAssets.iterator(); iter.hasNext();) {
 				Asset asset = (Asset) iter.next();
 				IndexWriter writer = getIndexWriter();
-				Document doc = getIndexer().populateAsset(writer, asset, false, details);
-				
-				getIndexer().updateFacets(details, doc,  getTaxonomyWriter());
-				getIndexer().writeDoc(writer, asset.getId().toLowerCase() , doc, false);
+				Document doc = getIndexer().populateAsset(writer, asset, false,
+						details);
 
+				getIndexer().updateFacets(details, doc, getTaxonomyWriter());
+				getIndexer().writeDoc(writer, asset.getId().toLowerCase(), doc,
+						false);
 
 			}
-//			if (inOptimize)
-//			{
-//				getIndexWriter().optimize();
-//				log.info("Optimized");
-//			}
-			if (inOptimize || inAssets.size() > 100)
-			{
+			// if (inOptimize)
+			// {
+			// getIndexWriter().optimize();
+			// log.info("Optimized");
+			// }
+			if (inOptimize || inAssets.size() > 100) {
 				flush();
-			}
-			else
-			{
+			} else {
 				clearIndex();
 			}
-			//else will be flushed next time someone searches. This is a key performance improvement for things like voting that need to be fast
-			//BaseLuceneSearcher implements Shutdownable
-		}
-		catch (Exception ex)
-		{
-			clearIndex(); //try to recover
-			if (ex instanceof OpenEditException)
-			{
+			// else will be flushed next time someone searches. This is a key
+			// performance improvement for things like voting that need to be
+			// fast
+			// BaseLuceneSearcher implements Shutdownable
+		} catch (Exception ex) {
+			clearIndex(); // try to recover
+			if (ex instanceof OpenEditException) {
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
 		}
 	}
 
-	protected LuceneAssetIndexer getIndexer()
-	{
-		return (LuceneAssetIndexer)getLuceneIndexer();
+	protected LuceneAssetIndexer getIndexer() {
+		return (LuceneAssetIndexer) getLuceneIndexer();
 	}
 
-	protected void reIndexAll(IndexWriter writer, TaxonomyWriter inTaxonomyWriter)
-	{
+	protected void reIndexAll(IndexWriter writer,
+			TaxonomyWriter inTaxonomyWriter) {
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html
 		// http://www.onjava.com/pub/a/onjava/2003/03/05/lucene.html?page=2
 		// writer.mergeFactor = 10;
 		// writer.setMergeFactor(100);
 		// writer.setMaxBufferedDocs(2000);
 
-		try
-		{
+		try {
 			IndexAllAssets reindexer = new IndexAllAssets();
 			reindexer.setWriter(writer);
-			
+
 			reindexer.setPageManager(getPageManager());
 			reindexer.setIndexer(getIndexer());
 			reindexer.setTaxonomyWriter(inTaxonomyWriter);
 			reindexer.setMediaArchive(getMediaArchive());
-			
+
 			/* Search in the new path, if it exists */
-			Page root = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() + "/assets/");
-			if( root.exists())
-			{
+			Page root = getPageManager().getPage(
+					"/WEB-INF/data/" + getCatalogId() + "/assets/");
+			if (root.exists()) {
 				reindexer.setRootPath(root.getPath());
 				reindexer.process();
 			}
-			
+
 			/* Search in the old place */
-//			reindexer.setRootPath("/" + getCatalogId() + "/assets/");
-//			reindexer.process();
-			
-			log.info("Reindex completed on with " + reindexer.getExecCount() + " assets");
-			//writer.optimize();
-			inTaxonomyWriter.commit();
+			// reindexer.setRootPath("/" + getCatalogId() + "/assets/");
+			// reindexer.process();
+
+			log.info("Reindex completed on with " + reindexer.getExecCount()
+					+ " assets");
+			// writer.optimize();
+			if (inTaxonomyWriter != null) {
+				inTaxonomyWriter.commit();
+			}
 			writer.commit();
 
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new OpenEditException(ex);
 		}
 		// HitCollector
 	}
 
-
-	public MediaArchive getMediaArchive()
-	{
-		if (fieldMediaArchive == null)
-		{
-			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+	public MediaArchive getMediaArchive() {
+		if (fieldMediaArchive == null) {
+			fieldMediaArchive = (MediaArchive) getModuleManager().getBean(
+					getCatalogId(), "mediaArchive");
 		}
 
 		return fieldMediaArchive;
 	}
-	
-	public void deleteData(Data inData)
-	{
-		if(inData instanceof Asset){
-			getAssetArchive().deleteAsset((Asset)inData);
-		} else{
-			
+
+	public void deleteData(Data inData) {
+		if (inData instanceof Asset) {
+			getAssetArchive().deleteAsset((Asset) inData);
+		} else {
+
 			Asset asset = (Asset) searchById(inData.getId());
-			if(asset != null){
+			if (asset != null) {
 				getAssetArchive().deleteAsset(asset);
 
 			}
 		}
 	}
-	
-	public void deleteFromIndex(Asset inAsset)
-	{
+
+	public void deleteFromIndex(Asset inAsset) {
 		deleteFromIndex(inAsset.getId());
 	}
 
-	public void deleteFromIndex(String inId)
-	{
+	public void deleteFromIndex(String inId) {
 		// TODO Auto-generated method stub
 		log.info("delete from index " + inId);
 
-		try
-		{
-			//Query q = getQueryParser().parse("id:" + inId);
+		try {
+			// Query q = getQueryParser().parse("id:" + inId);
 			Term term = new Term("id", inId);
 			getIndexWriter().deleteDocuments(term);
-			//getIndexWriter().deleteDocuments(q);
+			// getIndexWriter().deleteDocuments(q);
 			clearIndex();
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			throw new OpenEditException(ex);
 		}
 	}
 
-	public void deleteFromIndex(HitTracker inOld)
-	{
-		if (inOld.size() == 0)
-		{
+	public void deleteFromIndex(HitTracker inOld) {
+		if (inOld.size() == 0) {
 			return;
 		}
 		Term[] all = new Term[inOld.getTotal()];
-		for (int i = 0; i < all.length; i++)
-		{
+		for (int i = 0; i < all.length; i++) {
 			Object hit = (Object) inOld.get(i);
 			String id = inOld.getValue(hit, "id");
 			Term term = new Term("id", id);
 			all[i] = term;
 		}
-		try
-		{
+		try {
 			getIndexWriter().deleteDocuments(all);
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
 		clearIndex();
 	}
 
-	public void saveData(Data inData, User inUser)
-	{
-		if (inData instanceof CompositeData)
-		{
+	public void saveData(Data inData, User inUser) {
+		if (inData instanceof CompositeData) {
 			saveCompositeData((CompositeData) inData, inUser);
-		}
-		else if (inData instanceof Asset)
-		{
+		} else if (inData instanceof Asset) {
 			Asset asset = (Asset) inData;
-			if( asset.getId() == null)
-			{
+			if (asset.getId() == null) {
 				asset.setId(nextId());
 			}
 			getAssetArchive().saveAsset(asset);
-			getCacheManager().put(getIndexPath(),asset.getId(),asset);
+			getCacheManager().put(getIndexPath(), asset.getId(), asset);
 			updateIndex(asset);
 		}
 	}
 
-	public PageManager getPageManager()
-	{
+	public PageManager getPageManager() {
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager)
-	{
+	public void setPageManager(PageManager inPageManager) {
 		fieldPageManager = inPageManager;
 	}
 
-
-	public ModuleManager getModuleManager()
-	{
+	public ModuleManager getModuleManager() {
 		return getSearcherManager().getModuleManager();
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager)
-	{
+	public void setModuleManager(ModuleManager inModuleManager) {
 		fieldModuleManager = inModuleManager;
 	}
 
-	public CategoryArchive getCategoryArchive()
-	{
-		if (fieldCategoryArchive == null)
-		{
-			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(),"categoryArchive");
+	public CategoryArchive getCategoryArchive() {
+		if (fieldCategoryArchive == null) {
+			fieldCategoryArchive = (CategoryArchive) getModuleManager()
+					.getBean(getCatalogId(), "categoryArchive");
 		}
 		return fieldCategoryArchive;
 	}
 
-	public void setCategoryArchive(CategoryArchive inCategoryArchive)
-	{
+	public void setCategoryArchive(CategoryArchive inCategoryArchive) {
 		fieldCategoryArchive = inCategoryArchive;
 	}
 
-	public AssetArchive getAssetArchive()
-	{
+	public AssetArchive getAssetArchive() {
 		return getMediaArchive().getAssetArchive();
 	}
 
-	public void saveAllData(Collection inAll, User inUser)
-	{
-		//check that all have ids
-		for (Object object: inAll)
-		{
-			Data data = (Data)object;
-			if(data.getId() == null)
-			{
+	public void saveAllData(Collection inAll, User inUser) {
+		// check that all have ids
+		for (Object object : inAll) {
+			Data data = (Data) object;
+			if (data.getId() == null) {
 				data.setId(nextId());
 			}
 		}
@@ -364,42 +322,37 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		updateIndex(inAll);
 	}
 
-	public IntCounter getIntCounter()
-	{
-		if (fieldIntCounter == null)
-		{
+	public IntCounter getIntCounter() {
+		if (fieldIntCounter == null) {
 			fieldIntCounter = new IntCounter();
 			fieldIntCounter.setLabelName("assetIdCount");
-			Page prop = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogHome()+ "/assets/idcounter.properties");
+			Page prop = getPageManager().getPage(
+					"/WEB-INF/data/" + getMediaArchive().getCatalogHome()
+							+ "/assets/idcounter.properties");
 			File file = new File(prop.getContentItem().getAbsolutePath());
 			fieldIntCounter.setCounterFile(file);
 		}
 		return fieldIntCounter;
 	}
 
-	public void setIntCounter(IntCounter inIntCounter)
-	{
+	public void setIntCounter(IntCounter inIntCounter) {
 		fieldIntCounter = inIntCounter;
 	}
-	public Object searchByField(String inField, String inValue)
-	{
-		if( inField.equals("id") || inField.equals("_id"))
-		{
-			Data data = (Data)getCacheManager().get(getIndexPath(), inValue);
-			if( data == null)
-			{
-				data = (Data)super.searchByField(inField, inValue);
-				if( data == null)
-				{
+
+	public Object searchByField(String inField, String inValue) {
+		if (inField.equals("id") || inField.equals("_id")) {
+			Data data = (Data) getCacheManager().get(getIndexPath(), inValue);
+			if (data == null) {
+				data = (Data) super.searchByField(inField, inValue);
+				if (data == null) {
 					return null;
 				}
 			}
-			if( data != null && !(data instanceof Asset) )
-			{
-				data = getAssetArchive().getAssetBySourcePath(data.getSourcePath());
-				if( data != null)
-				{
+			if (data != null && !(data instanceof Asset)) {
+				data = getAssetArchive().getAssetBySourcePath(	data.getSourcePath());
+				if (data != null) {
 					getCacheManager().put(getIndexPath(), inValue, data);
+					getCacheManager().put(getIndexPath(), data.getSourcePath(), data);
 				}
 			}
 			return data;
@@ -407,37 +360,37 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return super.searchByField(inField, inValue);
 	}
 
-//	public String idToPath(String inAssetId)
-//	{
-//		String path = (String) getAssetPaths().get(inAssetId);
-//		if (path == null && inAssetId != null)
-//		{
-//			SearchQuery query = createSearchQuery();
-//			query.addExact("id", inAssetId);
-//
-//			HitTracker hits = search(query);
-//			if (hits.size() > 0)
-//			{
-//				Data hit = hits.get(0);
-//				path = hit.getSourcePath();
-//				//mem leak? Will this hold the entire DB?
-//				getAssetPaths().put(inAssetId, path);
-//			}
-//			else
-//			{
-//				log.info("No such asset in index: " + inAssetId);
-//			}
-//		}
-//		return path;
-//	}
+	// public String idToPath(String inAssetId)
+	// {
+	// String path = (String) getAssetPaths().get(inAssetId);
+	// if (path == null && inAssetId != null)
+	// {
+	// SearchQuery query = createSearchQuery();
+	// query.addExact("id", inAssetId);
+	//
+	// HitTracker hits = search(query);
+	// if (hits.size() > 0)
+	// {
+	// Data hit = hits.get(0);
+	// path = hit.getSourcePath();
+	// //mem leak? Will this hold the entire DB?
+	// getAssetPaths().put(inAssetId, path);
+	// }
+	// else
+	// {
+	// log.info("No such asset in index: " + inAssetId);
+	// }
+	// }
+	// return path;
+	// }
 
-//	public Map getAssetPaths()
-//	{
-//		if (fieldAssetPaths == null)
-//		{
-//			fieldAssetPaths = new HashMap();
-//		}
-//		return fieldAssetPaths;
-//	}
+	// public Map getAssetPaths()
+	// {
+	// if (fieldAssetPaths == null)
+	// {
+	// fieldAssetPaths = new HashMap();
+	// }
+	// return fieldAssetPaths;
+	// }
 
 }

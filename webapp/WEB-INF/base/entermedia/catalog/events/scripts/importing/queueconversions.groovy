@@ -94,11 +94,16 @@ public void createTasksForUpload() throws Exception
 		if( foundsome )
 		{
 			asset.setProperty("importstatus","imported");
+			if( asset.get("previewstatus") == null)
+			{
+				asset.setProperty("previewstatus","converting");
+			}
+			//runconversions will take care of setting the importstatus
 		}
 		else
 		{
-			asset.setProperty("previewstatus","mime");
 			asset.setProperty("importstatus","complete");
+			asset.setProperty("previewstatus","mime");
 		}
 		mediaarchive.saveAsset( asset, user );
 	}

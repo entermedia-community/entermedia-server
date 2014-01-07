@@ -1,11 +1,3 @@
 <page>
 	<page-action bean="searcherManager" name="PageValue.loadPageVariable"/>
-	<property name="matttabstabid">browse</property>
-	<property name="sectiontitle">
-		<value>Browse</value>
-		<value locale="es">Navegar</value>
-	</property>
-	<property name="text.Please select a catalog">
-		<value locale="es">Por favor, seleccione un catálogo</value>
-	</property>
 </page>

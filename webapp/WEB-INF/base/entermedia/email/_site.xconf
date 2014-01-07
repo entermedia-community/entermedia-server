@@ -1,7 +1,0 @@
-<page>
-
-	<property name="hitsname">emailhits</property>
-	<property name="emailhome">/${applicationid}/email/</property>
-	
-	   <page-action name="PageValue.loadPageVariable"  bean="searcherManager" />
-</page>

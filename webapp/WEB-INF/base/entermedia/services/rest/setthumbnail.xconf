@@ -1,4 +1,3 @@
 <page>
 	<page-action name="AssetEditModule.selectPrimaryAsset" alltypes="true"/>
-	<page-action name="AssetEditModule.removeAssetImages" alltypes="true"/>
 </page>

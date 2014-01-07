@@ -1,9 +1,0 @@
-
-#set($catalogid = $context.getRequestParameter("catalogid"))
-
-$context.putPageValue("catalogid", $catalogid)
-$context.putPageValue("resultsPage", "$home/${catalogid}/results/catresults.html")
-
-<div id="oeresults_$catalogid">
-		$pages.include("$cataloghome/results/innercatresults.html", $context)	
-</div>

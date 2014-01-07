@@ -134,8 +134,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue("searcher", searcher);
 	}
-
-	
 	
 	public Data createNew(WebPageRequest inReq) throws Exception
 	{
@@ -592,7 +590,8 @@ public class DataEditModule extends BaseMediaModule
 			inReq.putPageValue("savedok", Boolean.TRUE);
 			
 			
-			if(getWebEventListener() != null){
+			if(getWebEventListener() != null)
+			{
 				WebEvent event = new WebEvent();
 				event.setSearchType(searcher.getSearchType());
 				event.setCatalogId(searcher.getCatalogId());
@@ -661,9 +660,24 @@ public class DataEditModule extends BaseMediaModule
 						searcher.delete(data, inReq.getUser());
 						changes++;
 					}
+					if(getWebEventListener() != null)
+					{
+						WebEvent event = new WebEvent();
+						event.setSearchType(searcher.getSearchType());
+						event.setCatalogId(searcher.getCatalogId());
+						event.setOperation(searcher.getSearchType() + "/deleted");
+						event.setProperty("dataid", data.getId());
+						event.setProperty("id", data.getId());
+
+						event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+						getWebEventListener().eventFired(event);
+					}
 					
 				}
 			}
+
+			
 			inReq.putPageValue("rowsedited", String.valueOf(changes));
 		}
 
@@ -1282,6 +1296,26 @@ public class DataEditModule extends BaseMediaModule
 		return result;
 
 	}
+	
+	public Data loadDataByField(WebPageRequest inReq) throws Exception{
+		log.info("loadDataByField "+inReq);
+		Searcher searcher = loadSearcher(inReq);
+		String field = inReq.findValue("field") == null ? "id" : inReq.findValue("field");
+		String variablename = inReq.findValue("pageval") == null ? "data" : inReq.findValue("pageval");
+		String pagename = inReq.getPage().getName();
+		String searchValue = pagename.contains(".") ? pagename.substring(0, pagename.lastIndexOf(".")): pagename;
+		SearchQuery query = searcher.createSearchQuery();
+		query.append(field, searchValue);
+		HitTracker hits = searcher.search(query);
+		Data result = null;
+		if (hits.size() > 0)
+		{
+			result = (Data) hits.first();
+		}
+		inReq.putPageValue(variablename, result);
+		log.info("loadDataByField found "+(result == null ? "NULL" : result.getId()));
+		return result;
+	}
 
 	public Object loadDataByValue(WebPageRequest inReq) throws Exception
 	{
@@ -1354,6 +1388,26 @@ public class DataEditModule extends BaseMediaModule
 		getXmlArchive().saveXml(file, inReq.getUser());
 		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
 	}
+	
+	
+	public void sortList(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		String field = inReq.getRequestParameter("field");
+		
+		String [] id2 = inReq.getRequestParameters("view[]");
+		ArrayList valuestosave = new ArrayList();
+		for (int i = 0; i < id2.length; i++)
+		{
+			String dataid = id2[i];
+			dataid = dataid.replace("||", "_");//This is because of how jquery UI collects the values.
+			Data item = (Data)searcher.searchById(dataid);
+			item.setProperty(field, String.valueOf(i));
+			valuestosave.add(item);
+		}
+		searcher.saveAllData(valuestosave, inReq.getUser());
+	}
+	
 	
 	public SearcherManager loadSearcherManager(WebPageRequest inReq)
 	{
@@ -1435,6 +1489,16 @@ public class DataEditModule extends BaseMediaModule
 		inData.setProperty(inKey,values.toString());
 	}
 	
+	public void loadModule(WebPageRequest inReq){
+		String moduleid = inReq.findValue("module");
+		if(moduleid != null){
+		
+			inReq.putPageValue("module", moduleid);
+			
+		}
+	}
+	
+	
 	public void loadCorrectViewForUser(WebPageRequest inReq ) throws Exception 
 	{
 		String catalogid = resolveCatalogId(inReq);
@@ -1489,4 +1553,20 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue("views", views);
 	}
+	
+	public void saveHtmlEditorContent(WebPageRequest inReq) throws Exception{
+		String content = inReq.getRequestParameter("content");
+		
+		
+		if(content != null){
+			String field = inReq.getRequestParameter("field");
+			inReq.setRequestParameter(field + ".value", content);
+			
+		}
+		inReq.setRequestParameter("save", "true");
+		
+		saveData(inReq);
+		
+	}
+	
 }

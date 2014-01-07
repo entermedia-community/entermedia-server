@@ -1,4 +1,0 @@
-#
-#Mon May 03 11:21:01 CLT 2010
-No\ results\ found.=No hay resultados.
-Remove\ from\ album=Quitar del \u00E1lbum

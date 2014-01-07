@@ -1,9 +1,0 @@
-<page>
-	<property name="sectiontitle">
-    	<value>User Permissions</value>
-  	</property>
-	<property name="fallbackdirectory">/WEB-INF/base/entermedia/tools/permissions</property>
-	<property name="tab">usersecurity</property>
-	<property name="editPath">/${applicationid}/_site.xconf</property>
-	
-</page>

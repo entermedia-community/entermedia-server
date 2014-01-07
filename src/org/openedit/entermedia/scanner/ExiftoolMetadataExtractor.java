@@ -3,8 +3,11 @@ package org.openedit.entermedia.scanner;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -76,6 +79,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	{
 		String[] supportedTypes = new String[] {"audio", "video", "image", "document"};
 		String type = PathUtilities.extractPageType(inputFile.getName());
+		
 		if (type != null)
 		{
 			String mediatype = inArchive.getMediaRenderType(type);
@@ -98,7 +102,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			
 			base.add("-S");
 			base.add("-d");
-			base.add("%Y-%m-%d %H:%M:%S"); //yyyy-MM-dd HH:mm:ss
+			base.add("\"%Y-%m-%d %H:%M:%S\""); //yyyy-MM-dd HH:mm:ss
 			
 			base.add(inputFile.getAbsolutePath());
 			ArrayList<String> comm= new ArrayList(base);
@@ -139,7 +143,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected boolean parseNumericValues(Asset inAsset, PropertyDetails details, String numberinfo)
 	{
-		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace
+		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace TODO: handle lower/mixed case
 		boolean foundtextvalues = false;
 		if (numberinfo != null)
 		{
@@ -164,8 +168,19 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					try
 					{
 						String[] dims = value.split("x");
-						inAsset.setProperty("width", dims[0]);
-						inAsset.setProperty("height", dims[1]);
+						String width = dims[0];
+						String height = dims[1];
+						//width & heights can have decimals if converted from vectors, e.g., SVGs
+						if (width.contains(".")){//round off to the nearest integer
+							Float fwidth = Float.parseFloat(width);
+							width = String.valueOf(fwidth.intValue());
+						}
+						if (height.contains(".")){
+							Float fheight = Float.parseFloat(height);
+							height = String.valueOf(fheight.intValue());
+						}
+						inAsset.setProperty("width",width);
+						inAsset.setProperty("height",height);
 					}
 					catch( Exception e )
 					{
@@ -194,6 +209,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					try
 					{
+						inAsset.setProperty("duration", value);
 						value = processDuration(value);
 						inAsset.setProperty("length", value);
 					}
@@ -202,14 +218,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						log.warn("Could not parse file length: " + value);
 					}
 				}
-				else if("Subject".equals(key))
-				{
-					String[] kwords = value.split(",");
-					for( String kword : kwords )
-					{
-						inAsset.addKeyword(kword.trim());
-					}
-				}
+//				else if("Subject".equals(key))
+//				{
+//					String[] kwords = value.split(",");
+//					for( String kword : kwords )
+//					{
+//						inAsset.addKeyword(kword.trim());
+//					}
+//				}
 				else if("FileType".equals(key))
 				{
 					if( inAsset.getProperty("fileformat") == null)
@@ -217,7 +233,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("fileformat", value.toLowerCase() );
 					}
 				}
-				else if("Keyword".equals(key))
+				else if("Subject".equals(key) || "Keyword".equals(key) || "Keywords".equals(key))
 				{
 					String[] kwords = value.split(",");
 					for( String kword : kwords )
@@ -305,9 +321,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					continue;
 				}
-				
 				PropertyDetail property = details.getDetailByExternalId(key);
-
 				if(property == null)
 				{
 					continue;
@@ -324,12 +338,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		else
 		{
 			String[] parts = value.split(":");
-			long total = 0;
+			double total = 0;
 			for(int j = 0; j < parts.length; j++)
 			{
 				total += Math.pow(60, parts.length - 1 - j) * Double.parseDouble(parts[j]);
 			}
-			value = String.valueOf(total);
+			value = String.valueOf(Math.round( total ) );
 		}
 		return value;
 	}

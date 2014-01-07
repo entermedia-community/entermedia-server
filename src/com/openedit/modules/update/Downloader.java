@@ -25,6 +25,8 @@ public class Downloader
 	
 	public void download(String inStrUrl, File outputFile) throws OpenEditException
 	{
+		FileOutputStream out = null;
+		InputStream in  = null;
 		try
 		{
 			URL url = new URL(inStrUrl);
@@ -35,24 +37,29 @@ public class Downloader
 			//*** create new output file
 	        //*** make a growable storage area to read into 
 			outputFile.getParentFile().mkdirs();
-	        FileOutputStream out = new FileOutputStream(outputFile);
+	        out = new FileOutputStream(outputFile);
 	        //*** read in url connection stream into input stream
-	        InputStream in = con.getInputStream();
+	        in = con.getInputStream();
 	        //*** fill output stream
 	        new OutputFiller().fill(in,out);
-	        //*** close output stream
-	        FileUtils.safeClose(out);
-	        //*** close input stream
-	        FileUtils.safeClose(in);
 		}
 		catch ( Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
+		finally
+		{
+			//*** close output stream
+			FileUtils.safeClose(out);
+	        //*** close input stream
+	        FileUtils.safeClose(in);
+		}
 	}
 	
 	public String downloadToString(String inUrl)
 	{
+		StringWriter out = null;
+		InputStream in  = null;
 		try
 		{
 			URL url = new URL(inUrl);
@@ -62,21 +69,23 @@ public class Downloader
 			
 			//*** create new output file
 	        //*** make a growable storage area to read into 
-	        StringWriter out = new StringWriter();
+	        out = new StringWriter();
 	        //*** read in url connection stream into input stream
-	        InputStream in = con.getInputStream();
+	        in = con.getInputStream();
 	        //*** fill output stream
 	        new OutputFiller().fill(new InputStreamReader(in),out);
-	        //*** close output stream
-	        FileUtils.safeClose(out);
-	        //*** close input stream
-	        FileUtils.safeClose(in);
 	        return out.toString();
 		}
 		catch ( Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
-		
+		finally
+		{
+			//*** close output stream
+	        FileUtils.safeClose(out);
+	        //*** close input stream
+	        FileUtils.safeClose(in);
+		}
 	}
 }

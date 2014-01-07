@@ -1,5 +1,7 @@
 package org.openedit.entermedia.generators;
 
+import org.openedit.repository.ContentItem;
+
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -39,8 +41,26 @@ public class GeneratedMediaGenerator extends FileGenerator
 		path = PathUtilities.extractDirectoryPath(path);
 		//make sure your path tacks a filename on the end.
 		
-		Page output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + path);
-		if( !output.exists() )
+		//Try the contentitem first. If misssing try a fake page
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + catalogid + "/generated" + path);
+		Page output = null;
+		boolean existed = item.exists();
+		if( existed )
+		{
+			
+			output = new Page()
+			{
+				public boolean isHtml() { return false;}
+			};
+			output.setPageSettings(inPage.getPageSettings());
+			output.setContentItem(item);
+		}
+		else
+		{
+			output = getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated" + path);
+		}
+		
+		if( !existed && !output.exists() )
 		{
 			throw new ContentNotAvailableException("Missing: " +output.getPath(),output.getPath());
 		}

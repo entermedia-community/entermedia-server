@@ -571,7 +571,10 @@ public class OrderModule extends BaseMediaModule
 				basket.setId(id);
 				getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
 			}
+			basket.setProperty("basket", "true");
+
 			inReq.putSessionValue("orderbasket", basket);
+			
 		}
 		inReq.putPageValue("order", basket);
 
