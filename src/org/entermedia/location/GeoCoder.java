@@ -10,6 +10,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import com.openedit.OpenEditException;
+
 
 
 
@@ -36,7 +43,8 @@ public class GeoCoder {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
-			URL url = new URL("http://maps.google.com/maps/geo?q="+lookupString+"&output=csv&key=ABQIAAAAV_4kQH5zDc5ZTkrZLZTDgxTwM0brOpm-All5BF6PoaKBxRWWERScmQEK2Y_2bQMkZs6DY9U1FD096g ");
+			URL url = new URL("http://maps.googleapis.com/maps/api/geocode/xml?address=" + lookupString + "&sensor=false");
+			//http://maps.googleapis.com/maps/api/geocode/xml?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 			StringWriter out = new StringWriter();
 			InputStream in = url.openConnection().getInputStream();
 			byte[] input = new byte[1024];
@@ -45,20 +53,33 @@ public class GeoCoder {
 				out.append(new String(input, 0, size, "UTF-8"));
 			}
 			String responseString = out.toString();
-			String[] data = responseString.split(",");
-			int response = Integer.parseInt(data[0]);
-			if(response == 620){
-				delay = delay + 10000;
+			Element root1 = null;
+			try
+			{
+				Document document = DocumentHelper.parseText(responseString);
+				 root1 = document.getRootElement();
 			}
-			if(response != 602){
-			 Double lat = Double.parseDouble(data[2]);
-			 Double longi = Double.parseDouble(data[3]);
-			Double accuracy = Double.parseDouble(data[1]);
+			catch (DocumentException e)
+			{
+				throw new OpenEditException(e);
+				
+			}
+			Element result = root1.element("result");
+			Element geo = result.element("geometry");
+			Element location = geo.element("location");
+			Element latelem = location.element("lat");
+			Element lngelem = location.element("lng");
+			
+			
+				
+			 Double lat = Double.parseDouble(latelem.getText());
+			 Double longi = Double.parseDouble(lngelem.getText());
+//			Double accuracy = Double.parseDouble(data[1]);
 			
 			Position p = new Position(lat, longi);
-			p.setAccuracy(accuracy);
+	//		p.setAccuracy(accuracy);
 			l.add(p);
-			}
+			
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

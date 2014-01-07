@@ -547,10 +547,18 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String lowvals = getNumberUtils().double2sortableStr(getParameter("lowval"));
-				String highvals = getNumberUtils().double2sortableStr(getParameter("highval"));
+		
+				
+				Double low = Double.parseDouble(getParameter("lowval"));
+				Double high = Double.parseDouble(getParameter("highval"));
+				
+				Query q = NumericRangeQuery.newDoubleRange(getDetail().getId(),low, high, true, true);
+				String fin = q.toString();
+				
+				String lowvals = getParameter("lowval");
+				String highvals = getParameter("highval");
 
-				String fin = getDetail().getId() + ":[" + lowvals + " TO " +  highvals+ "]";
+				fin = getDetail().getId() + ":[" + lowvals +  " TO " +  highvals+  "]";
 				return fin;
 			}
 		};
