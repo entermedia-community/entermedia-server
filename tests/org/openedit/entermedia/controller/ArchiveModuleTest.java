@@ -16,7 +16,7 @@ public class ArchiveModuleTest extends BaseEnterMediaTest
 	}
 	
 	//Depends on a guest group with 
-	public void OLDtestShowAll() throws Exception 
+	public void testShowAll() throws Exception 
 	{
 		//ArchiveModule mod = (ArchiveModule)getModule("ArchiveModule");
 		WebPageRequest req = getFixture().createPageRequest("/entermedia/catalogs/testcatalog/categories/index.html");

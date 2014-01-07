@@ -27,7 +27,7 @@ public class AllTests {
 	{
 		TestSuite suite = new TestSuite( "Test for entermedia" );
 		
-		suite.addTestSuite( ArchiveModuleTest.class );
+		//suite.addTestSuite( ArchiveModuleTest.class );
 		//suite.addTestSuite( MultiSearchModuleTest.class );
 		
 		//suite.addTestSuite( AlbumTest.class );
