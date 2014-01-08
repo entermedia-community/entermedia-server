@@ -13,7 +13,7 @@
 	
 	<path-action name="Admin.allowViewing" />
 	<property name="login-path">/manager/authentication/logon.html</property>
-
+	<property name="themeprefix">/${applicationid}/theme/entermedia</property>
 	<property name="makeversion">false</property>
 
     <property name="editable">false</property>
