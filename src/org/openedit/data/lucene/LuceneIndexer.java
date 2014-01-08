@@ -430,14 +430,21 @@ public class LuceneIndexer
 				{
 					if (lat != null && lng != null)
 					{
-						//String sortable = getNumberUtils().double2sortableStr(lat);
-						//doc.add(new Field(detail + "_lat_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-						docAdd(detail, doc, detail + "_lat", lat, Field.Store.YES, false);
+						
+						Double l = Double.parseDouble(lat);
+						Field field = new DoubleField(detid + "_lat", l, Field.Store.YES );
+						
+						doc.add(field);
+						
+						l = Double.parseDouble(lng); 
+						field = new DoubleField(detid + "_lng", l, Field.Store.YES );
+						
+						
+						doc.add(field);
 
-						//sortable = getNumberUtils().double2sortableStr(lng);
-						//doc.add(new Field(detail + "_lng_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-						docAdd(detail, doc, detail + "_lng", lng, Field.Store.YES, false);
-						//doc.add(new Field(detail + "_available", "true", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+						
+					
+					
 					}
 					else
 					{
