@@ -24,6 +24,6 @@
 		</or>
 	</permission>
 
-	
+	<property name="usessearchsecurity">true</property>
 	
 </page>
