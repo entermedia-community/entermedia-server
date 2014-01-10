@@ -1410,7 +1410,11 @@ public class MediaArchive
 		if (inSeconds==null||inSeconds.trim().length()==0)
 			return ":00";
 		StringBuilder sb = new StringBuilder();
-		int allSeconds = Integer.parseInt(inSeconds);
+		int allSeconds = 0;
+		try{
+			float secs = Float.parseFloat(inSeconds);
+			allSeconds = new Float(secs).intValue();
+		}catch (NumberFormatException e){}//not handled
 		int minutes = allSeconds>60?allSeconds/60:0;
 		int seconds = allSeconds%60;
 		String min = minutes>0?String.valueOf(minutes):"";
