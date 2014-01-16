@@ -584,6 +584,8 @@ public class AdminModule extends BaseModule
 				String value = user.getUserName() + "md542" + md5;
 				Cookie cookie = new Cookie(name, value);
 				cookie.setMaxAge(Integer.MAX_VALUE);
+				//Needs new servelet api jar
+				cookie.setHttpOnly(true);
 				cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm
 				res.addCookie(cookie);
 				inReq.putPageValue("entermediakey", value);
