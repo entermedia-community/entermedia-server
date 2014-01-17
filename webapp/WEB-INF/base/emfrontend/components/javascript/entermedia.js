@@ -37,6 +37,20 @@ toggleUserProperty = function(property, onsuccess) {
 	
 }
 
+saveProfileProperty = function(property, value,onsuccess) {
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
+	jQuery.ajax(
+			{
+				url:  apphome + "/components/userprofile/saveprofileproperty.html?field=" + property + "&" + property + ".value=" + value,
+				success: onsuccess
+			}
+		);
+	
+}
+
 
 
 setSessionValue = function(key, value) {
@@ -1150,5 +1164,10 @@ emcomponents = function() {
 	);
 	
 
+	
+	
+	
+	
+	
 }
 
