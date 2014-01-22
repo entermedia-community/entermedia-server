@@ -263,13 +263,13 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				if (Character.isDigit(firstchar))
 				{
 					keepers.add(folder);
-					if (keepers.size() > 2)
+					if (keepers.size() > 6)
 					{
 						utils.deleteAll(folder);
 					}
 				}
 			}
-			// delete any A folders
+			// delete any A folders legacy
 			if (keepers.size() > 1)
 			{
 				for (int i = 0; i < sorted.size(); i++)
