@@ -1505,7 +1505,10 @@ public class MediaArchive
 	public void updateAssetConvertStatus(String inSourcePath) 
 	{
 		Asset asset = getAssetBySourcePath(inSourcePath);
-		
+		if( asset == null)
+		{
+			return; //asset deleted
+		}
 		String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 
