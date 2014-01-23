@@ -196,6 +196,7 @@ public class AssetEditor {
 		}
 		// Don't do this if no changes were made otherwise the product gets
 		// deleted!
+		/* We dont use .xconf to store data files any more
 		if (!oldSourcePath.equals(newSourcePath)) {
 			// Remove old asset file
 			File oldFile = new File(getMediaArchive().getRootDirectory(), "assets/"
@@ -211,6 +212,7 @@ public class AssetEditor {
 						+ oldFile.getAbsolutePath());
 			}
 		}
+		*/
 		//getMediaArchive().
 		return true;
 	}
