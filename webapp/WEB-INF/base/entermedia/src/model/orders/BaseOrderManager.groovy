@@ -641,6 +641,17 @@ public class BaseOrderManager implements OrderManager
 					publishqeuerow.setProperty(field, value);
 				}
 			}
+			//Add and shared fields across the entire order/publish request
+			String [] sharedfields = inReq.getRequestParameters("field");
+			if (sharedfields!=null && sharedfields.length!=0)
+			{
+				for (int i = 0; i < sharedfields.length; i++) {
+					String field = sharedfields[i];
+					String value = inReq.getRequestParameter( field + ".value");
+					
+					publishqeuerow.setProperty(field, value);
+				}
+			}
 			
 			
 			

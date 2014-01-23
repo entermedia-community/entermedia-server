@@ -8,68 +8,7 @@
 	#set($publishtype = $!searcherManager.getData($catalogid,"publishdestination",$order.publishdestination))
 	
 		<h4>Publishing to $publishtype</h4>
-	
-	<!-- 
-	<table id="shared-asset-table" class="striped download-table" width="100%" >
-	
-	
-	#foreach( $item in $orderitems )
-	
-		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
-		 #set( $queue = $searcherManager.getData($catalogid,"publishqueue",$item.publishqueueid) )
-		 #set( $omit = $invaliditems.contains("${asset.id}"))
-		 
-		<tr>
-		<td>
-			$context.putPageValue("hit",$asset)
-			$pages.include("$apphome/components/results/thumbnails/small.html",$context)
-		</td>
-		<td>
-			$!asset.name #if( $asset.assettitle ) - $asset.assettitle #end
-		</td>
-		<td>
-			#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
-			$!filetype
-		</td>
-		
-		#if($omit)
-			#if($publishtype == "YouTube")
-				<td colspan="3">
-			#else
-				<td>
-			#end
-				$context.putPageValue("publisher",$publishtype)
-				$context.putPageValue("filetype",$filetype)
-				$pages.include("./publishererror.html",$context)
-				</td>
-		#else
-			<td>
-				$pages.include("./presetselector.html?fileformat=$asset.fileformat&itemid=$item.id&publishdestid=$!queue.publishdestination&publishtype=$!publishtype")
-			</td>
-			#if ($publishtype == "YouTube")
-			<td>
-				Category
-			</td>
-			<td>
-				<input type="hidden" name="field" value="assetfield">
-				<input type="hidden" name="assetfield.value" value="${asset.id}">
-				$pages.include("./youtubecategoryselector.html")
-			</td>
-			#elseif ($publishtype == "FatWire")
-				#set($homeurl = "${context.siteRoot}${home}${apphome}")
-				#set($username = $context.getUserName())
-				<input type="hidden" name="presetfield" value="homeurl">
-				<input type="hidden" name="${item.id}.homeurl.value" value="${homeurl}">
-				<input type="hidden" name="presetfield" value="username">
-				<input type="hidden" name="${item.id}.username.value" value="${username}">
-				
-			#end
-		#end
-		</tr>
-	#end
-	</table>
-	-->
-	
+
 	<!-- preprocess step -->
 	
 	#set($filetypes = [])
@@ -114,13 +53,22 @@
 		#end
 	#end
 	
-	<!-- new table -->
+	
 	<table id="shared-asset-table" class="striped download-table" width="100%" >
 	#foreach( $ft in $filetypes)
 		#set($filetype = $ft.get(0))
 		#set($num = $ft.get(1))
 		#set($fileformat = $ft.get(2))
 		#set($omit = $ft.get(3))
+		
+		##include header if youtube
+		#if($publishtype == "YouTube")
+		<tr>
+			<th>&nbsp;</th>
+			<th>YouTube Category</th>
+			<th>Format</th>
+		</tr>
+		#end
 		<tr>
 			<td>
 				<input type="hidden" name="field" value="filetype"/>
@@ -139,7 +87,7 @@
 			</td>
 			#else
 			#if ($publishtype == "YouTube")
-				<td>	
+				<td style="text-align: center;">	
 					$pages.include("./youtubecategoryselector.html")
 				</td>
 			#end
