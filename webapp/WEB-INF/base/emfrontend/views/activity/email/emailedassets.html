@@ -1,3 +1,7 @@
+#if( $expired )
+	[[This share has expired]]. 
+#end
+
 #if( $canviewassets || !$expired )
 <table width="100%">
 <tr><td>
@@ -10,6 +14,5 @@
 </td>
 </tr>
 </table>
-#else
-	This share has expired. 
+
 #end
