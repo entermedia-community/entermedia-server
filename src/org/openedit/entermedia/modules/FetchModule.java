@@ -26,7 +26,7 @@ public class FetchModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String url = inReq.getRequestParameter("importurl");
-		Asset asset = archive.getAssetImporter().createAssetFromFetchUrl(archive, url, inReq.getUser());
+		Asset asset = archive.getAssetImporter().createAssetFromFetchUrl(archive, url, inReq.getUser(), null);
 		inReq.putPageValue("asset", asset);
 		//This will download the asset in a catalog event handler
 	}
