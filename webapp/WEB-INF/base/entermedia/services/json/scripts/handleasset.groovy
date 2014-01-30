@@ -2,6 +2,7 @@ import groovy.json.JsonSlurper
 
 import org.entermedia.upload.FileUpload
 import org.entermedia.upload.UploadRequest
+import org.json.simple.JSONObject
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
@@ -9,31 +10,52 @@ import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.scanner.AssetImporter
 import org.openedit.entermedia.search.AssetSearcher
-import org.openedit.util.DateStorageUtil;
-import org.json.simple.JSONObject;
+import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.page.Page
+import com.openedit.util.OutputFiller
 
 public void handleAssetRequest(){
 
 
 	WebPageRequest inReq = context;
 
-
+	JSONObject object = null;
 	String method = inReq.getMethod();
 
 	if(method == "POST"){
-		handlePost();
+		object = handlePost();
 	}
 	if(method == "PUT"){
-		handlePut();
+		object = handlePut();
 	}
 	if(method == "DELETE"){
-		handleDelete();
+		object = handleDelete();
 	}
 
+	if(object != null){
+		
+		try
+		{
+			OutputFiller filler = new OutputFiller();
+			InputStream stream = new ByteArrayInputStream(object.toJSONString().getBytes("UTF-8"));
+			
+			//filler.setBufferSize(40000);
+			//InputStream input = object.
+			filler.fill(stream, inReq.getOutputStream());
+		}
+		finally
+		{
+//			stream.close();
+//			inOut.getStream().close();
+//			log.info("Document sent");
+//			//archive.logDownload(filename, "success", inReq.getUser());
+		}
+		
+		
+	}
 	//	jsondata = obj.toString();
 	//
 	//	log.info(jsondata);
@@ -42,12 +64,10 @@ public void handleAssetRequest(){
 
 }
 
-public void handlePost(){
-	JsonSlurper slurper = new JsonSlurper();
+public JSONObject handlePost(){
 	WebPageRequest inReq = context;
-
 	SearcherManager sm = inReq.getPageValue("searcherManager");
-	
+
 	String catalogid =  findCatalogId(inReq);
 	MediaArchive archive = getMediaArchive(catalogid);
 	AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
@@ -56,16 +76,19 @@ public void handlePost(){
 
 	FileUpload command = archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 	UploadRequest properties = command.parseArguments(context);
+
+	JsonSlurper slurper = new JsonSlurper();
 	def request = null;
-	String content = inReq.getPageValue("jsondata");
+	String content = context.getPageValue("jsondata");
 	if(properties != null){
-		
+
 	}
 	if(content != null){
 		request = slurper.parseText(content); //NOTE:  This is for unit tests.
 	} else{
 		request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 	}
+		
 	AssetImporter importer = archive.getAssetImporter();
 	HashMap keys = new HashMap();
 
@@ -84,7 +107,7 @@ public void handlePost(){
 	String sourcepath = keys.get("sourcepath");
 
 	if(sourcepath == null){
-		 sourcepath = archive.getCatalogSettingValue("catalogassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+		sourcepath = archive.getCatalogSettingValue("catalogassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
 	}
 	if(sourcepath.length() == 0){
 		sourcepath = "receivedfiles/${id}";
@@ -147,18 +170,28 @@ public void handlePost(){
 	jsondata = result.toString();
 
 	context.putPageValue("json", jsondata);
-
+	return result;
 }
 
 
-public void handlePut(){
-	JsonSlurper slurper = new JsonSlurper();
+public JSONObject handlePut(){
 	WebPageRequest inReq = context;
 
 	SearcherManager sm = inReq.getPageValue("searcherManager");
 	//	slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-	String content = inReq.getPageValue("jsondata");
-	def request = slurper.parseText(content);
+	JsonSlurper slurper = new JsonSlurper();
+	def request = null;
+	String content = context.getPageValue("jsondata");
+	if(properties != null){
+
+	}
+	if(content != null){
+		request = slurper.parseText(content); //NOTE:  This is for unit tests.
+	} else{
+		request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+	}
+	
+	
 	String catalogid = request.catalogid;
 	MediaArchive archive = getMediaArchive(catalogid);
 	AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
@@ -187,11 +220,12 @@ public void handlePut(){
 	jsondata = result.toString();
 
 	context.putPageValue("json", jsondata);
-
+	return result;
+	
 }
 
 
-public void handleDelete(){
+public JSONObject handleDelete(){
 	JsonSlurper slurper = new JsonSlurper();
 	WebPageRequest inReq = context;
 
