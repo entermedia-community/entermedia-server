@@ -8,7 +8,7 @@ import com.openedit.users.User;
 public interface UrlMetadataImporter
 {
 	//gets the metadata save to this asset. Does not download or save anything
-	Asset importFromUrl(MediaArchive inArchive, String inUrl, User inUser);
+	Asset importFromUrl(MediaArchive inArchive, String inUrl, User inUser, String inSourcePath);
 
 	//Download the original media it needs
 	void fetchMediaForAsset(MediaArchive inArchive, Asset inAsset, User inUser);
