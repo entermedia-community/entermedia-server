@@ -19,15 +19,16 @@ public class YoutubeImporter implements UrlMetadataImporter
 	
 	protected YoutubeParser fieldParser;
 	
-	public Asset importFromUrl(MediaArchive inArchive, String inUrl, User inUser)
+	public Asset importFromUrl(MediaArchive inArchive, String inUrl, User inUser, String sourcepath)
 	{
 		Map<String, String> data = getParser().parseUrl(inUrl);
 		if( data == null )
 		{
 			return null;
 		}
-		
-		String sourcepath = "users/" + inUser.getUserName() + "/youtube.com/" + data.get("id");
+		if(sourcepath == null){
+		 sourcepath = "users/" + inUser.getUserName() + "/youtube.com/" + data.get("id");
+		}
 		Asset asset = inArchive.getAssetBySourcePath(sourcepath);
 		if( asset == null)
 		{

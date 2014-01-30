@@ -285,11 +285,11 @@ public class AssetImporter
 		return removed;
 	}
 
-	public Asset createAssetFromFetchUrl(MediaArchive inArchive, String inUrl, User inUser)
+	public Asset createAssetFromFetchUrl(MediaArchive inArchive, String inUrl, User inUser, String inSourcePath)
 	{
 		for(UrlMetadataImporter importer: getUrlMetadataImporters())
 		{
-			Asset asset = importer.importFromUrl(inArchive, inUrl, inUser);
+			Asset asset = importer.importFromUrl(inArchive, inUrl, inUser,  inSourcePath);
 			if( asset != null )
 			{
 				return asset;

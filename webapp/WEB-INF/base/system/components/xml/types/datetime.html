@@ -10,7 +10,7 @@
 #end
 <input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!val)"  type="hidden" >
  <br/>
-<input type="text" class="datepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
+<input type="text" class="mydatepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
 
 
 
@@ -45,5 +45,17 @@
 </div>
 
 
-
-
+<script type="text/javascript">
+jQuery("input.mydatepicker").livequery( function() 
+		{
+			var targetid = jQuery(this).data("targetid");
+			jQuery(this).datepicker( {
+				altField: "#"+ targetid,
+				altFormat: "dd/mm/yy",
+				dateFormat: "dd/mm/yy",
+				yearRange: '1900:2050'
+			});
+}
+);
+			
+			</script>
