@@ -1,0 +1,7 @@
+<properties  beanname="folderSearcher">
+	<property id="id" editable="true"  index="true" stored="true">ID</property>
+	<property id="name"  editable="true"  index="true" stored="true">Name</property>
+	<property id="rendertype" type="list"  editable="true"  index="true" stored="true" >Render Type</property>
+	<property id="creator"  editable="true"  index="true" stored="true" >Creator</property>
+	<property id="synctags" type="boolean"  editable="true"  index="true" stored="true"	>Sync Tags</property>
+</properties>
