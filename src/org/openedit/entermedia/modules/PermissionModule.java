@@ -324,7 +324,9 @@ public class PermissionModule extends BaseMediaModule
 					permission.getRootFilter().addFilter(newFilter);
 				}
 				Page page = getPageManager().getPage(path,true);
+				page.getPageSettings().setProperty("encoding","UTF-8");
 				page.getPageSettings().addPermission(permission);
+				
 				getPageManager().saveSettings(page);
 				getPageManager().clearCache(page);
 			}
@@ -406,10 +408,12 @@ public class PermissionModule extends BaseMediaModule
 		String searchtype = inReq.findValue("permissiontype");
 
 		Searcher permsearcher = getSearcherManager().getSearcher(catalogid, searchtype);
+		
 		String id = inReq.getRequestParameter("id");
+		if(searchtype != null && id != null){
 		Data data = (Data)permsearcher.searchById(id);
 		inReq.putPageValue("permdata", data);
-		
+		}
 		String permissionpath = inReq.findValue("editPath");
 		if( permissionpath == null)
 		{
