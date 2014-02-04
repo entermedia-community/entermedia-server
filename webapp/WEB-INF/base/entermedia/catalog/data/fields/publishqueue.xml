@@ -13,5 +13,6 @@
 	<property id="trackingnumber" editable="true"  index="true"  stored="true">Tracking Number</property>
 	<property id="completionpercent" editable="true"  index="true"  stored="true">Completion Percent</property>
 	<property id="conversiontaskid" index="true" stored="true" >Conversion Task Id</property>
+	<property id="notes" index="true" stored="true" >Notes</property>
 	
 </properties>
