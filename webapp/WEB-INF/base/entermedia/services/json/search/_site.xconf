@@ -1,7 +1,5 @@
 <page>
 <property name="virtual">true</property>
-<path-action name="Script.run" alltypes="true">
- 		<script>/entermedia/services/json/scripts/handlesearch.groovy</script>
+<path-action name="JsonModule.handleAssetSearch" alltypes="true"/>
 
-</path-action>
 </page>
