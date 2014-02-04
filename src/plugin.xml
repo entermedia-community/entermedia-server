@@ -1461,5 +1461,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" singleton="false">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
+	
+	<bean id="HtmlUtil" class="org.openedit.entermedia.util.HtmlUtil">
+	</bean>
 
 </beans>
