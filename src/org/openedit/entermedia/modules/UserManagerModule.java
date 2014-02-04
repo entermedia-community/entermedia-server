@@ -48,6 +48,7 @@ import com.openedit.users.UserManagerException;
 import com.openedit.users.authenticate.PasswordGenerator;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.strainer.Filter;
+import com.openedit.util.strainer.FilterReader;
 import com.openedit.util.strainer.GroupFilter;
 import com.openedit.util.strainer.OrFilter;
 
@@ -164,7 +165,8 @@ public class UserManagerModule extends BaseModule
 					}
 					else
 					{
-						localperm.setRootFilter(fil.copy(name));
+						FilterReader reader = (FilterReader) getModuleManager().getBean("filterReader");
+						localperm.setRootFilter(fil.copy(reader, name));
 						fil = localperm.getRootFilter();
 					}
 				}

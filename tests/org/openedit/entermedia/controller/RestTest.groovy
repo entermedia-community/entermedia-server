@@ -146,14 +146,21 @@ class RestTest extends BaseEnterMediaTest {
 
 	public void testSearch(){
 
-		WebPageRequest req = getFixture().createPageRequest("/entermedia/services/json/search/asset/");
-		JsonBuilder builder = new JsonBuilder();
-		def root = builder.query {
-			catalogid "entermedia/catalogs/testcatalog"
-			searchtype "asset"
-		}
-
-		req.putPageValue("jsondata", builder.toPrettyString());
+		
+		JsonSlurper slurper = new JsonSlurper();
+		WebPageRequest req = getFixture().createPageRequest("/entermedia/services/json/search/asset");
+		req.setMethod("POST");
+		Page page = getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/json/Asset_SEARCH.txt");
+		String content = page.getContent();
+		req.setRequestParameter("catalogid", "entermedia/catalogs/testcatalog");//header is also checked
+		
+		req.putPageValue("jsondata", content );
 		getFixture().getEngine().executePathActions(req);
+		String response = req.getPageValue("json");
+		assertNotNull(response);
+		def data = slurper.parseText(response);
+		
+		
+		
 	}
 }

@@ -58,7 +58,8 @@ public class PermissionModule extends BaseMediaModule
 			per.setName(inName);
 			if( permission != null && permission.getRootFilter() != null)
 			{
-				per.setRootFilter(permission.getRootFilter().copy(inName));
+				FilterReader reader = (FilterReader) getModuleManager().getBean("filterReader");
+				per.setRootFilter(permission.getRootFilter().copy(reader, inName));
 			}
 			else
 			{
@@ -150,6 +151,18 @@ public class PermissionModule extends BaseMediaModule
 				{
 					target.setProperty("property",value);
 				}
+				String fieldroot = "condition." + traverse + ".field";
+				String[] fields = inReq.getRequestParameters(fieldroot);
+				if(fields != null){
+					for (String string : fields) {
+						String extra = inReq.getRequestParameter("condition." + traverse + "." + string + ".value");
+						if(extra != null){
+							target.setProperty(string, extra);
+						}
+					}
+				}
+				
+				//String fields = inReq.getRequestParameter(condtion.)
 				//TODO: Handle special filters
 			}
 		}
