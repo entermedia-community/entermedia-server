@@ -9,31 +9,13 @@
                 "grouping": "and",
                 "query": [
                     {
-                        "field": "name",
-                        "operator": "startsWith",
+                        "field": "contenttype",
+                        "operator": "matches",
                         "grouping": "or",
                         "values": [
-                            "hero",
-                            "man"
-                        ]
-                    },
-                    {
-                        "field": "longdescription",
-                        "operator": "contains",
-                        "value": "jacket",
-                        "grouping": "or",
-                        "values": [
-                            "jacket"
-                        ]
-                    },
-                    {
-                        "field": "tags",
-                        "operator": "contains",
-                        "value": "jacket",
-                        "grouping": "or",
-                        "values": [
-                            "jacket"
+                            "article"                            
                         ]
                     }
+                    
                 ]
             }

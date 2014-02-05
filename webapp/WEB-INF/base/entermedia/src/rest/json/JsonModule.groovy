@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.entermedia.upload.FileUpload
 import org.entermedia.upload.UploadRequest
+import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -42,7 +43,7 @@ class JsonModule {
 		}
 
 		if(object != null){
-
+			inReq.putPageValue("json", object.toString());
 			try {
 				OutputFiller filler = new OutputFiller();
 				InputStream stream = new ByteArrayInputStream(object.toJSONString().getBytes("UTF-8"));
@@ -66,9 +67,9 @@ class JsonModule {
 	}
 
 
-	public void handleAssetSearch(WebPageRequest inReq){
+	public JSONObject handleAssetSearch(WebPageRequest inReq){
 		//Could probably handle this generically, but I think they want tags, keywords etc.
-		JSONObject object = null;
+		
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 
 		String catalogid =  findCatalogId(inReq);
@@ -112,9 +113,19 @@ class JsonModule {
 		HitTracker hits = searcher.cachedSearch(inReq, query);
 		println hits.size();
 		JSONObject parent = new JSONObject();
+		parent.put("size", hits.size());
 		
-		JSONObject result = getAssetJson(searcher, asset);
-		String jsondata = result.toString();
+		JSONArray array = new JSONArray();
+		hits.getPageOfHits().each{
+			JSONObject hit = getAssetJson(searcher, it);
+			array.add(hit);
+		}
+		
+		
+		parent.put("results", array);
+		inReq.putPageValue("json", parent.toString());
+		
+		return parent;
 	}
 
 
@@ -246,8 +257,10 @@ class JsonModule {
 		}
 
 
-		String catalogid = request.catalogid;
-		MediaArchive archive = getMediaArchive(catalogid);
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+		
+		
 		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
@@ -269,7 +282,7 @@ class JsonModule {
 			asset.setProperty(key, value);
 		}
 
-		searcher.saveData(asset, context.getUser());
+		searcher.saveData(asset, inReq.getUser());
 		JSONObject result = getAssetJson(searcher, asset);
 		String jsondata = result.toString();
 

@@ -86,7 +86,26 @@ class RestTest extends BaseEnterMediaTest {
 		assertEquals(asset.description, "Article about a squirrel who waterskis");
 	}
 
-
+	public void testSearch(){
+		
+		
+				JsonSlurper slurper = new JsonSlurper();
+				WebPageRequest req = getFixture().createPageRequest("/entermedia/services/json/search/asset");
+				req.setMethod("POST");
+				Page page = getPage("/entermedia/catalogs/testcatalog/json/Asset_SEARCH.txt");
+				String content = page.getContent();
+				req.setRequestParameter("catalogid", "entermedia/catalogs/testcatalog");//header is also checked
+		
+				req.putPageValue("jsondata", content );
+				getFixture().getEngine().executePathActions(req);
+				String response = req.getPageValue("json");
+				assertNotNull(response);
+				def data = slurper.parseText(response);
+				println data;
+				
+		
+		
+			}
 
 	public void testUpdateAndDelete(){
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
@@ -143,24 +162,27 @@ class RestTest extends BaseEnterMediaTest {
 
 	}
 
-
-	public void testSearch(){
-
-
-		JsonSlurper slurper = new JsonSlurper();
-		WebPageRequest req = getFixture().createPageRequest("/entermedia/services/json/search/asset");
-		req.setMethod("POST");
-		Page page = getPage("/entermedia/catalogs/testcatalog/json/Asset_SEARCH.txt");
-		String content = page.getContent();
-		req.setRequestParameter("catalogid", "entermedia/catalogs/testcatalog");//header is also checked
-
-		req.putPageValue("jsondata", content );
-		getFixture().getEngine().executePathActions(req);
-		String response = req.getPageValue("json");
-		assertNotNull(response);
-		def data = slurper.parseText(response);
-
-
-
+	public void testSearchData(){
+		
+				JsonSlurper slurper = new JsonSlurper();
+				WebPageRequest req = getFixture().createPageRequest("/entermedia/services/json/datasearch/channel");
+				req.setMethod("POST");
+				Page page = getPage("/entermedia/catalogs/testcatalog/json/DATA_SEARCH.txt");
+				String content = page.getContent();
+				req.setRequestParameter("catalogid", "entermedia/catalogs/testcatalog");//header is also checked
+		
+				req.putPageValue("jsondata", content );
+				getFixture().getEngine().executePathActions(req);
+				String response = req.getPageValue("json");
+				assertNotNull(response);
+				def data = slurper.parseText(response);
+				String id = data.id;
+				assertNotNull(data.id);
+				MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+				Data target = archive.getData("channel", "somedata")
+				assertNotNull(target);
+				assertEquals(target.name, "Adam Gillaspie")
+		
 	}
+	
 }
