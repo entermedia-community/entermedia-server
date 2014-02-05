@@ -512,7 +512,7 @@
             if ("LABEL" === e.target.tagName && attr && attr.length > 0) {
                 target = $("#"+attr);
                 target = target.data("select2");
-                if (target !== undefined) { target.focus(); e.preventDefault();}
+                if (target != undefined) { target.focus(); e.preventDefault();}
             }
         });
     });
