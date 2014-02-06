@@ -11,6 +11,7 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.scanner.AssetImporter
 import org.openedit.entermedia.search.AssetSearcher
 import org.openedit.util.DateStorageUtil
+import org.openedit.entermedia.Category
 
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
@@ -150,20 +151,50 @@ public JSONObject handlePost(){
 		asset.setId(id);
 	}
 
-
-
 	request.each{
 		println it;
 		String key = it.key;
 		String value = it.value;
 		asset.setProperty(key, value);
 	}
-
-
+	
+	// Handle Tags
+	def tagsList = request.tags;
+	String tags = ""
+	tags.each{
+		tags += it.toString() + " ";
+	}
+	asset.addKeywords(tags);
+	
+	// Handle Categories
+	if(request.category != null){
+		// Get Category ID
+		String id = request.category.id;
+		
+		if(id == null){
+			// Create a unique ID
+			id = "new"; // TODO: Needs to be unique!
+		}
+		
+		// Check to see if category exists
+		Category cat = archive.getCategory(id)
+		if(cat == null){
+			// New Category
+			// TODO: Not sure how to add new category
+		}
+		else {
+			// Modify existing Category
+			cat.setName(request.category.name);
+			cat.setSourcePath(request.category.tree);
+			// ...
+			// TODO: save category
+		}
+		
+		asset.addCategory(id);
+	}
+	
 	asset.setProperty("sourcepath", sourcepath);
 	searcher.saveData(asset, context.getUser());
-
-
 
 
 	JSONObject result = getAssetJson(searcher, asset);
@@ -239,8 +270,6 @@ public JSONObject handleDelete(){
 	String id = getId(inReq);
 
 
-
-
 	Asset asset = archive.getAsset(id);
 
 	if(asset != null){
@@ -271,14 +300,21 @@ public JSONObject getAssetJson(Searcher inSearcher, Data inAsset){
 	JSONObject asset = new JSONObject();
 	inSearcher.getPropertyDetails().each{
 		String key = it.id;
-		String value=inAsset.get(it.id);
+		String value = "";
+		
+		if(key == "keywords"){
+			// Handle Parsing for special keys
+			value = "[".concat(inAsset.get(it.id).replace("|", ",")).concat("]");
+		}
+		else{
+			value = inAsset.get(it.id);
+		}
+		
 		if(key && value){
 			asset.put(key, value);
 		}
 	}
 	//need to add tags and categories, etc
-
-
 
 	return asset;
 }
