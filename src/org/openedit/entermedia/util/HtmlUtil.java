@@ -152,7 +152,10 @@ public class HtmlUtil {
 	
 	public String truncateHTML(String text, int length) {
 	    // if the plain text is shorter than the maximum length, return the whole text
-	    if (text.replaceAll("<.*?>", "").length() <= length) {
+	  if(text == null || text.length()== 0){
+		  return null;
+	  }
+		if (text.replaceAll("<.*?>", "").length() <= length) {
 	        return text;
 	    }
 	    StringBuilder result = new StringBuilder();
@@ -316,7 +319,11 @@ public class HtmlUtil {
 	
 	public String truncateHTMLtoPlainText(String inHTML, int inMaxLength){
 		String html = truncateHTML(inHTML,inMaxLength);
-	    return html.replaceAll("<.*?>", "");
+	   if(html != null){
+		return html.replaceAll("<.*?>", "");
+	   } else{
+		   return null;
+	   }
 	}
 	
 	public void stripHTML(String inHTML, StringBuilder buf){

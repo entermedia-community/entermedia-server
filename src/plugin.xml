@@ -1462,7 +1462,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 	
-	<bean id="HtmlUtil" class="org.openedit.entermedia.util.HtmlUtil">
+	<bean id="htmlUtil" class="org.openedit.entermedia.util.HtmlUtil">
 	</bean>
 
 </beans>
