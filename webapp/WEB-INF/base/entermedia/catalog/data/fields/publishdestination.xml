@@ -12,7 +12,7 @@
 	<property id="onlyremotempublish" index="true" type="boolean" stored="true" editable="true" note="Always handled remotely" >Force Remote Publishing</property>
 
 <!-- Amazon -->
-	<property id="bucket" index="true" stored="true" editable="true" >Bucket</property>
+	<property id="bucket" index="true" stored="true" editable="true" >Bucket / Catalog</property>
 	<property id="accesskey" index="true" stored="true" editable="true" >Access Key</property>
 	<property id="secretkey" index="true" stored="true" editable="true" >Secret Key</property>
 

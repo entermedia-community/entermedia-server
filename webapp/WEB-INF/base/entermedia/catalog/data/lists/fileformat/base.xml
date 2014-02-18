@@ -20,6 +20,7 @@
 	<property id="mov"  synctags="true"  rendertype="video" creator="ffmpeg">MOV</property>
 	<property id="moov"  synctags="true"  rendertype="video" creator="ffmpeg">MooV</property>
 	<property id="mp3"  synctags="true"  rendertype="audio" creator="audio" >MP3</property>
+	<property id="ts"  synctags="true"  rendertype="video" creator="ffmpeg">TS</property>
 	<property id="ptf"   synctags="true"  rendertype="default" >PTF</property>
 	<property id="aiff"  synctags="true"  rendertype="audio" creator="audio" >AIFF</property>
 	<property id="mts"  synctags="true"  rendertype="video" creator="ffmpeg">MTS</property>

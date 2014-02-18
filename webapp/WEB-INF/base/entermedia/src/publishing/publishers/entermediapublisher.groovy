@@ -1,16 +1,8 @@
 package publishing.publishers;
 
-import org.apache.commons.httpclient.HttpClient
-import org.apache.commons.httpclient.HttpMethod
-import org.apache.commons.httpclient.methods.PostMethod
-import org.apache.commons.httpclient.methods.multipart.FilePart
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
-import org.apache.commons.httpclient.methods.multipart.Part
-import org.apache.commons.httpclient.methods.multipart.StringPart
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.dom4j.Element
-import org.dom4j.io.SAXReader;
+import org.dom4j.io.SAXReader
 import org.openedit.Data
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
@@ -19,6 +11,8 @@ import org.openedit.entermedia.publishing.*
 import com.openedit.page.Page
 import com.openedit.users.User
 import com.openedit.users.UserManager
+
+import em.model.push.MediaUploader
 
 public class entermediapublisher extends basepublisher implements Publisher
 {
@@ -29,10 +23,9 @@ public class entermediapublisher extends basepublisher implements Publisher
 	{
 		PublishResult result = new PublishResult();
 
-		Page inputpage = findInputPage(mediaArchive,asset,preset);
 		String servername = destination.get("server");
 		String username = destination.get("username");
-		String url = destination.get("url");
+		//String url = destination.get("url");
 		
 		log.info("Publishing ${asset} to EnterMedia server ${servername}, with username ${username}.");
 		
@@ -46,35 +39,42 @@ public class entermediapublisher extends basepublisher implements Publisher
 		
 		String password = userManager.decryptPassword(user);
 		
+		MediaUploader uploader = (MediaUploader)mediaArchive.getModuleManager().getBean("mediaUploader");
 		
-		String exportname = inPublishRequest.get("exportname");
-		File tosend = new File(inputpage.getContentItem().getAbsolutePath());
-		Map results = upload(servername, mediaArchive.getCatalogId(), asset.getSourcePath(), tosend);
-		if(upload != null){
-		result.setComplete(true);
-		log.info("publishished  ${asset} to FTP server ${servername}");
+		//always send generated media. sometimes add in the original file as well
+		//if preset is original then send all the generated media as well
+		//if preset id is all generated then send all
+		//if preset is a specific generated then just send that
+
+		//upload original and all generated
 		
+		//upload one
+		
+		try
+		{
+			//MediaArchive archive, Asset inAsset, Data inPublishDestination, User inUser )
+			uploader.uploadOriginal(mediaArchive,asset, destination, user);
+			result.setComplete(true);
+			log.info("publishished  ${asset} to EnterMedia server ${servername}");
+		}
+		catch ( Exception ex)
+		{
+			//inPublishDestination(searcher, savequeue, target, "complete", inUser);
+			result.setErrorMessage(ex.toString());
 		}
 		return result;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public Map<String, String> upload(String server, String inCatalogId, String inSourcePath, File inFile)
+	/*
+	 * public Map<String, String> upload(String server, String inCatalogId, String inSourcePath, File inFile)
+	 
 	{
 		String url =server + "/media/services/" + "/uploadfile.xml?catalogid=" + inCatalogId;
 		PostMethod method = new PostMethod(url);
 
 		try
 		{
-			 def parts =[new FilePart("file", inFile.getName(), inFile),	new StringPart("sourcepath", "users/admin/")] as Part[];
+			 def parts =[new FilePart("file", inFile.getName(), inFile),	new StringPart("sourcepath", inSourcePath)] as Part[];
 			
 			method.setRequestEntity( new MultipartRequestEntity(parts, method.getParams()) );
 	
@@ -92,23 +92,9 @@ public class entermediapublisher extends basepublisher implements Publisher
 			return null;
 		}
 	}
+	*/
 	
 	
-	
-	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset)
-	{
-		
-		
-		if( inPreset.get("type") == "original")
-		{
-			return mediaArchive.getOriginalDocument(asset);
-			
-		}
-		String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
-		Page inputpage= mediaArchive.getPageManager().getPage(input);
-		return inputpage;
-
-	}
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
 	{
 		if( presetid == null)
@@ -119,44 +105,5 @@ public class entermediapublisher extends basepublisher implements Publisher
 		return findInputPage(mediaArchive,asset,(Data)preset);
 	}
 	
-	
-	protected Element execute( HttpMethod inMethod )
-	{
-		try
-		{
-			int status = getClient().executeMethod(inMethod);
-			if(status != 200)
-			{
-				throw new Exception("Request failed: status code " + status);
-			}
-			Element result = reader.read(inMethod.getResponseBodyAsStream()).getRootElement();
-			return result;
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-		
-	}
-	/**
-	* The web services API require a client to log first.
-	* The login is the same as one used within the EnterMedia usermanager
-	* There are two Cookies that need to be passed in on subsequent requests
-	* 1. JSESSIONID - This is used by resin or similar Java container. Enables short term sessions on the server
-	* 2. entermedia.key - This allows the user to be auto-logged in. Useful for long term connections.
-	* 	  If the web server is restarted then clients don't need to log in again
-	*/
-   public HttpClient getClient(Data destination)
-   {
-	   if (fieldClient == null)
-	   {
-		   fieldClient = new HttpClient();
-//		   PostMethod method = new PostMethod(destination. + getDefaultAppId() + getRestPath() + "/login.xml");
-//		   method.addParameter("accountname", getUserName());
-//		   method.addParameter("password", getPassword());
-//		   execute(method);
-	   }
-	   return fieldClient;
-   }
 	
 }

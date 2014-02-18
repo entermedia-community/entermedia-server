@@ -7,7 +7,5 @@
   <location id="3" publishtype="smartjog" server="124">SmartJog (Paris)</location>
   <location id="4" publishtype="amazon" bucket="testpublishing" accesskey="AKIAIHFKVZJBUPJOZKWA" secretkey="SECRETKEY" presetid="ffmpegpreviewmp4" server="" url="" username="" convertpreset="" company="" division="" technicalcontact="" technicalphone="" technicalemail="" administrativecontact="" administrativephone="" administrativeemail="" emergencycontact="" emergencyphone="" emergencyemail="">Amazon Cloud</location>
   <location id="5" publishtype="youtube" >YouTube</location>
-
-
-
+  <location id="6" publishtype="entermedia" server="demo.entermediasoftware.com"  bucket="media/catalogs/public" username="admin" >Demo EM Server</location>
 </publishlocations>

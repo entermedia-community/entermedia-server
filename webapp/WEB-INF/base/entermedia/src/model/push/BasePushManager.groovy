@@ -1056,6 +1056,12 @@ asset: " + asset);
 			target = archive.createAsset(id, sourcepath);
 		}
 		
+		String name = inReq.getRequestParameter("name");
+		if( name != null)
+		{
+			target.setName(name);
+		}
+		
 //		String categories = inReq.getRequestParameter("categories");
 //		String[] vals = categories.split(";");
 //		archive.c
@@ -1091,18 +1097,14 @@ asset: " + asset);
 				target.addKeyword(keys[i]);
 			}
 		}
-
 		
 		archive.saveAsset(target, inReq.getUser());
 		List<FileUploadItem> uploadFiles = properties.getUploadItems();
 
-		String type = inReq.findValue("uploadtype");
-		if( type == null )
-		{
-			type = "generated";
-		}
-		String	saveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/" + type + "/" + sourcepath;
-			
+
+		String	generatedsaveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + sourcepath;
+		String	originalsaveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
+		
 		//String originalsroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
 
 		if (uploadFiles != null)
@@ -1111,15 +1113,14 @@ asset: " + asset);
 			while (iter.hasNext())
 			{
 				FileUploadItem fileItem = iter.next();
-
-				String filename = fileItem.getName();
-				if (type.equals("originals"))
+				String inputName = fileItem.getFieldName();
+				if( inputName.startsWith("original") )
 				{
-					properties.saveFileAs(fileItem, saveroot, inReq.getUser());
+					properties.saveFileAs(fileItem, originalsaveroot, inReq.getUser());
 				}
 				else
 				{
-					properties.saveFileAs(fileItem, saveroot + "/" + filename, inReq.getUser());
+					properties.saveFileAs(fileItem, generatedsaveroot + "/" + fileItem.getName(), inReq.getUser());
 				}
 			}
 		}
