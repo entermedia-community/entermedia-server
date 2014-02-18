@@ -1,0 +1,30 @@
+{
+    "id": "jsondata",
+    "catalogid": "entermedia/catalogs/testcatalog",
+    "eid": 1084683,
+    "mid": 1084683,
+    "name": "Hero Image",
+    "description": "Image of a man wearing a jacket",
+    "category": {
+        "id": 328
+    },
+    "status": "Active",
+    "publishDate": "Sun, 26 Jan 2014 10:15:46 +0000",
+    "expirationDate": "Sat, 01 Mar 2014 00:00:00 +0000",
+    "locked": false,
+    "archived": false,
+    "favorite": true,
+    "campaigns": [
+        61
+    ],
+    "customFields": [
+        {
+            "key": "SKU",
+            "value": "1047191"
+        },
+        {
+            "key": "Brand",
+            "value": "Columbia"
+        }
+    ]
+}

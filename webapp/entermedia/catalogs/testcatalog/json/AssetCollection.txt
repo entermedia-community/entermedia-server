@@ -1,0 +1,196 @@
+{
+    "count": 3,
+    "pageSize": 50,
+    "page": 1,
+    "items": [
+        {
+            "id": 1,
+            "assetType": "file",
+            "fileType": "Image",
+            "version": 1,
+            "name": "Hero Image",
+            "description": "Image of a man wearing a jacket",
+            "createdDate": "Sun, 26 Jan 2014 10:15:46 +0000",
+            "modifiedDate": "Sun, 26 Jan 2014 10:15:46 +0000",
+            "createdBy": 1093137,
+            "modifiedBy": 1093137,
+            "owner": 1093137,
+            "catalogId": 1084683,
+            "eid": 1084683,
+            "mid": 1084683,
+            "category": {
+                "id": 328,
+                "name": "promo",
+                "tree": "/agency/promo"
+            },
+            "tags": [
+                "hero",
+                "man",
+                "jacket",
+                "columbia"
+            ],
+            "status": "Active",
+            "publishDate": "Sun, 26 Jan 2014 10:15:46 +0000",
+            "expirationDate": "Sat, 01 Mar 2014 00:00:00 +0000",
+            "locked": false,
+            "archived": false,
+            "favorite": true,
+            "channels": [
+                "email",
+                "site",
+                "socialPages"
+            ],
+            "campaigns": [
+                61
+            ],
+            "businessUnits": [
+                1038710,
+                1039012,
+                1039113,
+                1039039
+            ],
+            "cdnUrls": [
+                {
+                    "key": "akamai",
+                    "value": "http://image.exacttarget.com/lib/fec3167874670174/m/1/heroImage.jpg"
+                },
+                {
+                    "key": "amazonS3",
+                    "value": "http://s3.amazonaws.com/fec3167874670174/heroImage.jpg"
+                }
+            ],
+            // EnterMedia Properties
+            "fileName": "heroImage.jpg",
+            "sourcePath": "//etincrep03/1084683/heroImage.jpg",
+            "lensType": "",
+            "focalLength": "",
+            "cameraModel": "",
+            "iso": "",
+            "colorSpace": "",
+            "colorType": "",
+            "shutterSpeed": "",
+            "aperture": "",
+            "fileFormat": "JPG",
+            "fileSize": "7140",
+            "width": 199,
+            "height": 254
+        },
+        {
+            "id": 3,
+            "assetType": "content",
+            "contentType": "imagePlusText",
+            "version": 3,
+            "name": "Example Image & Text Content",
+            "description": "Hero image for our NYE mobile page",
+            "createdDate": "Sun, 29 Dec 2013 16:43:20 +0000",
+            "modifiedDate": "Mon, 30 Dec 2013 21:55:38 +0000",
+            "createdBy": 1093028,
+            "modifiedBy": 1093141,
+            "owner": 1093028,
+            "catalogId": 1084683,
+            "eid": 1084683,
+            "mid": 1039012,
+            "category": {
+                "id": 319,
+                "name": "example",
+                "tree": "/something/another/example"
+            },
+            "tags": [
+                "mobile",
+                "new_years",
+                "blue"
+            ],
+            "status": "Active",
+            "publishDate": "Sun, 26 Jan 2014 10:15:46 +0000",
+            "expirationDate": "Sat, 01 Mar 2014 00:00:00 +0000",
+            "locked": true,
+            "archived": false,
+            "favorite": false,
+            "channels": [
+                "email",
+                "site",
+                "mms"
+            ],
+            "campaigns": [
+                38,
+                57,
+                61
+            ],
+            "businessUnits": [
+                1038710,
+                1038711,
+                1039012
+            ],
+            "customFields:[
+                {
+                    "key": "SKU",
+                    "value": "1047191"
+                },
+                {
+                    "key": "Brand",
+                    "value": "Columbia"
+                }
+            ],
+            "body": "Mister wayne, if you don't want to tell me exactly what you're doing, when i'm asked, i don't have to lie. but don't think of me as an idiot. cities fall but they are rebuilt. heroes die but they are remembered. let me tell you something my friend. hope is a dangerous thing. hope can drive a man insane. the man likes to play chess; let's get him some rocks. multiply your anger by about a hundred, kate, that's how much he thinks he loves you. cities fall but they are rebuilt. heroes die but they are remembered. i did the same thing to gandhi, he didn't eat for three weeks. well, what is it today? more spelunking? i once heard a wise man say there are no perfect men. only perfect intentions. you measure yourself by the people who measure themselves by you. i now issue a new commandment": thou shalt do the dance.",
+            "link": 2,
+            "image": 1
+        },
+        {
+            "id": 8,
+            "assetType": "content",
+            "contentType": "article",
+            "version": 2,
+            "name": "Example Blog Post",
+            "description": "Article about a squirrel who waterskis",
+            "createdDate": "Tue, 28 Jan 2014 18:01:03 +0000",
+            "modifiedDate": "Tue, 28 Jan 2014 18:01:03 +0000",
+            "createdBy": 1093141,
+            "modifiedBy": 1093141,
+            "owner": 1093028,
+            "catalogId": 1084683,
+            "eid": 1084683,
+            "mid": 1084683,
+            "category": {
+                "id": 317,
+                "name": "another",
+                "tree": "/something/another"
+            },
+            "tags": [
+                "squirrel",
+                "waterski"
+            ],
+            "status": "Active",
+            "publishDate": "Sun, 26 Jan 2014 10:15:46 +0000",
+            "expirationDate": "Sat, 01 Mar 2014 00:00:00 +0000",
+            "locked": true,
+            "archived": false,
+            "favorite": false,
+            "channels": [
+                "email",
+                "site",
+                "mms"
+            ],
+            "campaigns": [
+                38,
+                82
+            ],
+            "businessUnits": [
+                1039012
+            ],
+            "customFields:[
+                {
+                    key": "PublisherId",
+                    value": "118"
+                }
+            ],
+            "author": "Adam Gillaspie",
+            "body": "<p>we're going for a ride on the information super highway. we're going for a ride on the information super highway. your entrance was good, his was better. here she comes to wreck the day. we got no food we got no money and our pets heads are falling off! haaaaaaarry. i just heard about evans new position,good luck to you evan backstabber, i mean baxter. we got no food we got no money and our pets heads are falling off! haaaaaaarry. good morning, oh in case i don't see you, good afternoon, good evening and goodnight. it's because i'm green isn't it! we got no food we got no money and our pets heads are falling off! haaaaaaarry. i just heard about evans new position,good luck to you evan backstabber.</p><p> brain freeze. excuse me, i'd like to ass you a few questions. kinda hot in these rhinos. here she comes to wreck the day. good morning, oh in case i don't see you, good afternoon, good evening and goodnight. kinda hot in these rhinos. excuse me, i'd like to ass you a few questions. your entrance was good, his was better. your entrance was good, his was better. it's because i'm green isn't it! look at that, it's exactly three seconds before i honk your nose and pull your underwear over your head. look ma i'm road kill.</p>",
+            "summary": "We're going for a ride on the information super highway. we're going for a ride on the information super highway. your entrance was good, his was better. here she comes to wreck the day. we got no food we got no money and our pets heads are falling off! haaaaaaarry....",
+            "title": "A Talented Squirrel",
+            "link": 4,
+            "image": 6,
+            "characterCount": 1239,
+            "wordCount": 231
+        }
+    ]
+}

@@ -97,6 +97,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
 
+	<lang:groovy  id="JsonModule" script-source="rest/json/JsonModule.groovy" lazy-init="default" />
 
 <!-- Compiled Class Version
 

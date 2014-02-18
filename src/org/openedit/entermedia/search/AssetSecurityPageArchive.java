@@ -28,6 +28,7 @@ import com.openedit.util.strainer.ActionFilter;
 import com.openedit.util.strainer.BlankFilter;
 import com.openedit.util.strainer.BooleanFilter;
 import com.openedit.util.strainer.Filter;
+import com.openedit.util.strainer.FilterReader;
 import com.openedit.util.strainer.GroupFilter;
 import com.openedit.util.strainer.NotFilter;
 import com.openedit.util.strainer.OrFilter;
@@ -41,8 +42,16 @@ public class AssetSecurityPageArchive implements AssetSecurityArchive
 	protected RequestUtils fieldRequestUtils;
 	protected UserManager fieldUserManager;
 	protected Replacer fieldReplacer;
+	protected FilterReader fieldFilterReader;
 	
-	
+	public FilterReader getFilterReader() {
+		return fieldFilterReader;
+	}
+
+	public void setFilterReader(FilterReader inFilterReader) {
+		fieldFilterReader = inFilterReader;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.search.AssetSecurity#getUserManager()
 	 */
@@ -485,7 +494,7 @@ public class AssetSecurityPageArchive implements AssetSecurityArchive
 		per.setName(inPermissionString);
 		if( per != null && per.getRootFilter() != null)
 		{
-			per.setRootFilter(per.getRootFilter().copy(inPermissionString));
+			per.setRootFilter(per.getRootFilter().copy(getFilterReader(), inPermissionString));
 		}
 		per.setPath(inSettings.getPath());
 		inSettings.addPermission(per);

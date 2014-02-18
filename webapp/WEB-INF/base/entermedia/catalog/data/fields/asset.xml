@@ -112,4 +112,6 @@
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>
 	<property id="watermark" keyword="true" datatype="list" editable="true" index="true" stored="true" listcatalogid="system"  listid="group"  >Watermark</property>
  	-->
+ 		<property id="contenttype" keyword="true" datatype="list" editable="true" index="true" stored="true" >Content Type</property>
+ 	
 </properties>
