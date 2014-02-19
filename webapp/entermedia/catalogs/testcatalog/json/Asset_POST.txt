@@ -16,6 +16,10 @@
         {
             "key": "PublisherId",
             "value": "118"
+        },
+        {
+            "key": "PublisherId",
+            "value": "118"
         }
     ],
     "author": "Adam Gillaspie",
