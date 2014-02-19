@@ -31,6 +31,6 @@
   <parameter id="ffmpegslomo5" parameterdata="ffmpegslomo" value="medium" >preset</parameter> 
   <parameter id="ffmpegslomo6" parameterdata="ffmpegslomo" value=".5" >setpts</parameter> 
 
-  <parameter id="previewffmpegthumb1" parameterdata="previewffmpegthumb" value="timeoffset" >2</parameter> 
+  <parameter id="previewffmpegthumb1" parameterdata="previewffmpegthumb" value="2" >timeoffset</parameter> 
   
 </properties>
