@@ -91,9 +91,12 @@ public class PresetCreator
 		}
 		return added;
 	}
-	
-		public void createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset,int thepage)
-		{
+	public Data createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset)
+	{
+		return createPresetsForPage(tasksearcher,preset,asset,0);
+	}
+	public Data createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset,int thepage)
+	{
 			SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.getId() ).append("presetid", preset.getId() );
 			if( thepage > 0 )
 			{
@@ -127,6 +130,7 @@ public class PresetCreator
 					{
 						found.setProperty("status", "new");
 						tasksearcher.saveData(found, null);
+						return found;
 					}
 					else
 					{
@@ -144,13 +148,14 @@ public class PresetCreator
 				found.setProperty("ordering", preset.get("ordering") );
 				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
 				found.setProperty("submitted", nowdate);
-				tasksearcher.saveData(found, null);
 				if( thepage > 0 )
 				{
 					found.setProperty("pagenumber", String.valueOf(thepage));
 				}
 				tasksearcher.saveData(found, null);
+				return found;
 			}
+			return found;
 		}
 		
 	}

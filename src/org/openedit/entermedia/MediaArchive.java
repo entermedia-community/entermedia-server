@@ -1512,7 +1512,7 @@ public class MediaArchive
 		String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 
-		log.info("existingpreviewstatus" + existingpreviewstatus);
+		//log.info("existingpreviewstatus" + existingpreviewstatus);
 		//update importstatus and previewstatus to complete
 		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
 		{

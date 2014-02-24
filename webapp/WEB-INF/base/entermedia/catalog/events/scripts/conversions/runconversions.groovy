@@ -318,7 +318,7 @@ public void checkforTasks()
 	if(assetids != null)
 	{
 		assetids = assetids.replace(","," ");
-		query.addOrsGroup( "id", assetids );
+		query.addOrsGroup( "assetid", assetids );
 	}
 	else
 	{	
