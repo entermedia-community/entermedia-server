@@ -1373,7 +1373,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
-		
+		<property name="postMail">
+			<ref bean="postMail" />
+		</property>
 	</bean>
 	<!-- Catalog based user details (not like preferences) -->
 	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">

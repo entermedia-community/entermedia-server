@@ -16,9 +16,13 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 	private static Log log = LogFactory.getLog(UrlDownloadImporter.class);
 
 	public Asset importFromUrl(MediaArchive inArchive, String inUrl,
-			User inUser, String sourcepath) {
+			User inUser, String sourcepath, String inFileName) {
 		String filename = PathUtilities.extractFileName(inUrl);
 		filename = filename.replaceAll("\\?.*", "");
+		if(inFileName != null){
+			filename = inFileName;
+		}
+		
 		if (sourcepath == null) {
 			sourcepath = "users/" + inUser.getUserName() + "/url/" + filename;
 		}
@@ -28,7 +32,12 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 			asset.setId(inArchive.getAssetSearcher().nextAssetNumber());
 		}
 		asset.setName(filename);
+		
+		asset.setPrimaryFile(filename);
 		asset.setProperty("downloadurl.file", inUrl);
+		if(inFileName != null){
+			asset.setProperty("downloadurl.filename", inFileName);
+		}
 		asset.setFolder(true);
 		Category pcat = inArchive.getCategoryArchive().createCategoryTree(sourcepath);
 		
@@ -48,7 +57,11 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 				.getContentItem().getAbsolutePath());
 		String url = asset.get("downloadurl.file");
 		if (url != null) {
-			String filename = PathUtilities.extractFileName(url);
+			String filename = asset.get("downloadurl.filename");
+			
+			if(filename == null){
+			 filename = PathUtilities.extractFileName(url);
+			}
 			filename = filename.replaceAll("\\?.*", "");
 			log.info("Downloading " + url + " ->" + path + "/" + filename);
 			File target = new File(attachments, filename);
@@ -57,6 +70,8 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 			}
 			asset.setProperty("downloadourl", url);
 			asset.removeProperty("downloadurl.file");
+			asset.removeProperty("downloadurl.filename");
+
 			asset.setPrimaryFile(filename);
 		}
 		inArchive.saveAsset(asset, inUser);

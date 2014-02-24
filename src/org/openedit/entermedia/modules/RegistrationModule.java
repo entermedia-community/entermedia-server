@@ -7,8 +7,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermedia.email.PostMail;
+import org.entermedia.email.TemplateWebEmail;
 import org.entermedia.profile.UserProfileSearcher;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
@@ -31,6 +35,17 @@ public class RegistrationModule extends BaseMediaModule
 
 	protected UserManager userManager;
 	protected SearcherManager fieldSearcherManager;
+	protected PostMail fieldPostMail;
+	
+	
+	
+	public PostMail getPostMail() {
+		return fieldPostMail;
+	}
+
+	public void setPostMail(PostMail inPostMail) {
+		fieldPostMail = inPostMail;
+	}
 
 	public SearcherManager getSearcherManager()
 	{
@@ -523,10 +538,17 @@ public class RegistrationModule extends BaseMediaModule
 		return true;
 	}
 
-	protected void handleCoupon(WebPageRequest inReq, String inCatalogId, User current, Data code)
+	public void handleCoupon(WebPageRequest inReq)
 	{
+		Data code = (Data) inReq.getSessionValue("coupon");
+		if(code == null){
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		
 		log.info("detected coupon code: " + code.getId());
-		Searcher prepaidsearcher = getSearcherManager().getSearcher(inCatalogId, "prepaid");
+		User current = inReq.getUser();
+		Searcher prepaidsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "prepaid");
 		code.setProperty("available", "false");
 
 		String collegeid = code.get("college");
@@ -588,4 +610,29 @@ public class RegistrationModule extends BaseMediaModule
 		inReq.removeSessionValue("coupon");
 	}
 
+	
+	public void sendWelcomeMessage(WebPageRequest inReq) throws Exception{
+		MediaArchive archive = getMediaArchive(inReq);
+		TemplateWebEmail email = getPostMail().getTemplateWebEmail();
+
+		 
+		
+		String userid = inReq.getRequestParameter("userid");
+		UserProfile p = (UserProfile) getSearcherManager().getData(archive.getCatalogId(), "userprofile", userid );
+		inReq.putPageValue("target", p);
+		User user = p.getUser();
+		
+		inReq.putPageValue("password", getUserManager().decryptPassword(user));
+		
+		email.loadSettings(inReq);
+		InternetAddress recipient = new InternetAddress();
+		recipient.setAddress(p.get("email"));
+		recipient.setPersonal(p.toString());
+		email.setRecipient(recipient);
+		
+		email.send();
+	}
+	
+	
+	
 }

@@ -2,6 +2,9 @@ package rest.json
 
 import groovy.json.JsonSlurper
 
+import java.awt.Dimension
+import java.text.SimpleDateFormat
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.entermedia.upload.FileUpload
@@ -9,13 +12,14 @@ import org.entermedia.upload.UploadRequest
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.openedit.Data
+import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.creator.ConversionUtil
 import org.openedit.entermedia.scanner.AssetImporter
 import org.openedit.entermedia.search.AssetSearcher
-import org.openedit.util.DateStorageUtil
 
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
@@ -24,6 +28,7 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.util.OutputFiller
 
+
 class JsonModule {
 	private static final Log log = LogFactory.getLog(JsonModule.class);
 
@@ -31,7 +36,6 @@ class JsonModule {
 	public void handleAssetRequest(WebPageRequest inReq){
 		JSONObject object = null;
 		String method = inReq.getMethod();
-
 		if(method == "POST"){
 			object = handleAssetPost(inReq);
 		}
@@ -42,6 +46,11 @@ class JsonModule {
 			object = handleAssetDelete(inReq);
 		}
 
+		if(method == "GET"){
+			object = handleAssetGet(inReq);
+		}
+		
+		
 		if(object != null){
 			inReq.putPageValue("json", object.toString());
 			try {
@@ -69,7 +78,7 @@ class JsonModule {
 
 	public JSONObject handleAssetSearch(WebPageRequest inReq){
 		//Could probably handle this generically, but I think they want tags, keywords etc.
-		
+
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 
 		String catalogid =  findCatalogId(inReq);
@@ -84,10 +93,10 @@ class JsonModule {
 			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
-		
+
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
-		
+
 		request.query.each{
 			println it;
 			fields.add(it.field);
@@ -99,12 +108,12 @@ class JsonModule {
 			}
 			inReq.setRequestParameter(it.field + ".value", values.toString());
 		}
-		
+
 		println "field" + fields;
 		println "operations: " + operations;
 		String[] fieldarray = fields.toArray(new String[fields.size()]) as String[];
 		String[] opsarray = operations.toArray(new String[operations.size()]) as String[];
-		
+
 		inReq.setRequestParameter("field", fieldarray);
 		inReq.setRequestParameter("operation", opsarray);
 
@@ -114,17 +123,27 @@ class JsonModule {
 		println hits.size();
 		JSONObject parent = new JSONObject();
 		parent.put("size", hits.size());
-		
+
 		JSONArray array = new JSONArray();
 		hits.getPageOfHits().each{
-			JSONObject hit = getAssetJson(searcher, it);
+			JSONObject hit = getAssetJson(sm,searcher, it);
+			
 			array.add(hit);
 		}
-		
-		
+
+
 		parent.put("results", array);
 		inReq.putPageValue("json", parent.toString());
-		
+		try {
+			OutputFiller filler = new OutputFiller();
+			InputStream stream = new ByteArrayInputStream(parent.toJSONString().getBytes("UTF-8"));
+
+			//filler.setBufferSize(40000);
+			//InputStream input = object.
+			filler.fill(stream, inReq.getOutputStream());
+		} catch(Exception e){
+		throw new OpenEditException(e);
+		}
 		return parent;
 	}
 
@@ -162,19 +181,23 @@ class JsonModule {
 			String key = it.key;
 			String value = it.value;
 			keys.put(key, value);
-			keys.put("formatteddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+			String df = format.format(new Date());
+			keys.put("formatteddate", df);
+
+
 		}
 		String id = request.id;
 		if(id == null){
 			id = searcher.nextAssetNumber()
 		}
-
+		keys.put("id", id);
 		String sourcepath = keys.get("sourcepath");
 
 		if(sourcepath == null){
 			sourcepath = archive.getCatalogSettingValue("catalogassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
 		}
-		if(sourcepath.length() == 0){
+		if(sourcepath == null || sourcepath.length() == 0){
 			sourcepath = "receivedfiles/${id}";
 		}
 		sourcepath = sm.getValue(catalogid, sourcepath, keys);
@@ -189,7 +212,7 @@ class JsonModule {
 
 
 		if(asset == null && keys.get("fetchURL") != null){
-			asset = importer.createAssetFromFetchUrl(archive, keys.get("fetchURL"), inReq.getUser(), sourcepath);
+			asset = importer.createAssetFromFetchUrl(archive, keys.get("fetchURL"), inReq.getUser(), sourcepath, keys.get("importfilename"));
 		}
 
 		if(asset == null && keys.get("localPath") != null)
@@ -231,7 +254,7 @@ class JsonModule {
 
 
 
-		JSONObject result = getAssetJson(searcher, asset);
+		JSONObject result = getAssetJson(sm, searcher, asset);
 		String jsondata = result.toString();
 
 		inReq.putPageValue("json", jsondata);
@@ -259,8 +282,8 @@ class JsonModule {
 
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		
-		
+
+
 		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
@@ -283,13 +306,69 @@ class JsonModule {
 		}
 
 		searcher.saveData(asset, inReq.getUser());
-		JSONObject result = getAssetJson(searcher, asset);
+		JSONObject result = getAssetJson(sm,searcher, asset);
+		
+		
+		JSONObject converisons = getConversions(archive, asset);
+			
+						result.put("conversions", converisons);
+		
 		String jsondata = result.toString();
-
+		 
 		inReq.putPageValue("json", jsondata);
 		return result;
 
 	}
+	
+	
+	public JSONObject handleAssetGet(WebPageRequest inReq){
+		
+				SearcherManager sm = inReq.getPageValue("searcherManager");
+				//	slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+//				JsonSlurper slurper = new JsonSlurper();
+//				def request = null;
+//				String content = inReq.getPageValue("jsondata");
+//				if(properties != null){
+//		
+//				}
+//				if(content != null){
+//					request = slurper.parseText(content); //NOTE:  This is for unit tests.
+//				} else{
+//					request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+//				}
+//		
+		
+				String catalogid =  findCatalogId(inReq);
+				MediaArchive archive = getMediaArchive(inReq, catalogid);
+		
+		
+				AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
+				//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
+				//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
+				String id = getId(inReq);
+		
+		
+		
+		
+				Asset asset = archive.getAsset(id);
+		
+				if(asset == null){
+					throw new OpenEditException("Asset was not found!");
+				}
+		
+				JSONObject result = getAssetJson(sm,searcher, asset);
+				JSONObject converisons = getConversions(archive, asset);
+
+				
+				result.put("conversions", converisons);
+				
+				String jsondata = result.toString();
+		
+				inReq.putPageValue("json", jsondata);
+				return result;
+		
+			}
+	
 
 
 	public void handleAssetDelete(WebPageRequest inReq){
@@ -332,23 +411,204 @@ class JsonModule {
 		return archive;
 	}
 
-	public JSONObject getAssetJson(Searcher inSearcher, Data inAsset){
+	public JSONObject getAssetJson(SearcherManager sm, Searcher inSearcher, Data inAsset){
 
 		JSONObject asset = new JSONObject();
 		inSearcher.getPropertyDetails().each{
+			PropertyDetail detail = it;
+
 			String key = it.id;
 			String value=inAsset.get(it.id);
 			if(key && value){
+				if(detail.isList()){
+
+					asset.put(key, value);
+
+				}
+				else if(detail.isBoolean()){
+					asset.put(key, Boolean.parseBoolean(value));
+
+
+				} else{
 				asset.put(key, value);
+				}
+
+
 			}
+
+
+			//need to add tags and categories, etc
+
+
+		
+
 		}
-		//need to add tags and categories, etc
-
-
+		//String tags = inAsset.get("keywords");
+		List tags = inAsset.getValues("keywords");
+		JSONArray array = new JSONArray();
+		tags.each{
+			array.add(it);
+		}
+		asset.put("tags", array);
+		
+		
 
 		return asset;
 	}
 
+	public JSONObject getDataJson(SearcherManager sm, Searcher inSearcher, Data inAsset){
+				JSONObject asset = new JSONObject();
+				asset.put("id", inAsset.getId());
+				asset.put("name", inAsset.getName());
+				inSearcher.getPropertyDetails().each{
+					PropertyDetail detail = it;
+					String key = it.id;
+					String value=inAsset.get(it.id);
+					if(key && value){
+						if(detail.isList()){
+							//friendly?
+							asset.put(key, value);
+						}
+						else if(detail.isBoolean()){
+							asset.put(key, Boolean.parseBoolean(value));
+						} else{
+						asset.put(key, value);
+						}
+		
+		
+					}
+		
+					
+		
+				}
+				
+				
+		
+				return asset;
+			}
+		
+	
+	
+	public JSONObject getAssetPublishLocations(MediaArchive inArchive, Data inAsset){
+		
+				JSONObject asset = new JSONObject();
+				Searcher publish = inArchive.getSearcher("publishqueue");
+				
+				
+		
+				return asset;
+			}
+		
+	public JSONObject getConversions(MediaArchive inArchive, Data inAsset){
+		
+				JSONObject asset = new JSONObject();
+				Searcher publish = inArchive.getSearcher("conversiontask");
+				
+				
+				
+				
+				JSONArray array = new JSONArray();
+				ConversionUtil util = new ConversionUtil();
+				util.setSearcherManager(inArchive.getSearcherManager());
+					
+				HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId());
+                conversions.each{
+					if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.id)){
+						Dimension dimension = util.getConvertPresetDimension(inArchive.getCatalogId(), it.id);
+						JSONObject data = new JSONObject();
+//			<a class="thickbox btn" href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)">Preview</a>
+						String exportfilename = inArchive.asExportFileName(inAsset, it);
+						String url = "/views/modules/asset/downloads/generatedpreview/${inAsset.getSourcePath()}/${it.outputfile}/${exportfilename}";
+						data.put("URL", url);
+						data.put("height", dimension.getHeight());
+						data.put("width", dimension.getWidth());
+						asset.put(it.id, data);
+						
+					}
+				}		
+				
+
+				return asset;
+	}
+	
+	
+	
+	
+	public JSONObject handleSearch(WebPageRequest inReq){
+		//Could probably handle this generically, but I think they want tags, keywords etc.
+
+		SearcherManager sm = inReq.getPageValue("searcherManager");
+
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+		String searchtype = findSearchType(inReq);
+		Searcher searcher = archive.getSearcher(searchtype);
+		JsonSlurper slurper = new JsonSlurper();
+		def request = null;
+		String content = inReq.getPageValue("jsondata");
+		if(content != null){
+			request = slurper.parseText(content); //NOTE:  This is for unit tests.
+		} else{
+			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+		}
+
+
+		ArrayList <String> fields = new ArrayList();
+		ArrayList <String> operations = new ArrayList();
+
+		request.query.each{
+			println it;
+			fields.add(it.field);
+			operations.add(it.operator.toLowerCase());
+			StringBuffer values = new StringBuffer();
+			it.values.each{
+				values.append(it);
+				values.append(" ");
+			}
+			String finals = values.toString().trim();
+			inReq.setRequestParameter(it.field + ".value", finals);
+		}
+
+		println "field" + fields;
+		println "operations: " + operations;
+		String[] fieldarray = fields.toArray(new String[fields.size()]) as String[];
+		String[] opsarray = operations.toArray(new String[operations.size()]) as String[];
+
+		inReq.setRequestParameter("field", fieldarray);
+		inReq.setRequestParameter("operation", opsarray);
+
+		SearchQuery query = searcher.addStandardSearchTerms(inReq);
+		println "Query was: " + query;
+		
+		HitTracker hits = searcher.cachedSearch(inReq, query);
+		println hits.size();
+		JSONObject parent = new JSONObject();
+		parent.put("size", hits.size());
+
+		JSONArray array = new JSONArray();
+		hits.getPageOfHits().each{
+			JSONObject hit = getDataJson(sm,searcher, it);			
+			array.add(hit);
+		}
+
+
+		parent.put("results", array);
+		inReq.putPageValue("json", parent.toString());
+		try {
+			OutputFiller filler = new OutputFiller();
+			InputStream stream = new ByteArrayInputStream(parent.toJSONString().getBytes("UTF-8"));
+
+			//filler.setBufferSize(40000);
+			//InputStream input = object.
+			filler.fill(stream, inReq.getOutputStream());
+		} catch(Exception e){
+		throw new OpenEditException(e);
+		}
+		return parent;
+	}
+
+	
+	
 
 	public String getId(WebPageRequest inReq){
 		String root  = "/entermedia/services/json/asset/";
@@ -364,7 +624,7 @@ class JsonModule {
 
 
 	public String findSearchType(WebPageRequest inReq){
-		String root  = "/entermedia/services/json/data/";
+		String root  = "/entermedia/services/json/search/data/";
 		String url = inReq.getPath();
 		if(!url.endsWith("/")){
 			url = url + "/";
@@ -377,7 +637,7 @@ class JsonModule {
 
 
 	public String findCatalogId(WebPageRequest inReq){
-		String catalogid = inReq.findValue("catalogid");
+		String catalogid = inReq.getRequestParameter("catalogid");
 		if(catalogid == null){
 			if(inReq.getRequest()){
 				catalogid = inReq.getRequest().getHeader("catalogid");

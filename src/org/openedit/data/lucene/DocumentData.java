@@ -1,5 +1,7 @@
 package org.openedit.data.lucene;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -7,10 +9,11 @@ import java.util.Map;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 
 import com.openedit.OpenEditException;
 
-public class DocumentData implements Data
+public class DocumentData implements Data, MultiValued
 {
 	protected Document fieldDocument;
 	
@@ -95,6 +98,43 @@ public class DocumentData implements Data
 		} else{
 			return getId();
 		}
+	}
+	
+	public Collection getValues(String inPreference)
+	{
+		String val = get(inPreference);
+		
+		if (val == null)
+			return null;
+		
+		String[] vals = null;
+		if( val.contains("|") )
+		{
+			vals = VALUEDELMITER.split(val);
+		}
+		else
+		{
+			vals = val.split("\\s+"); //legacy
+		}
+
+		Collection collection = Arrays.asList(vals);
+		//if null check parent
+		return collection;
+	}
+	
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		StringBuffer values = new StringBuffer();
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			values.append(detail);
+			if( iterator.hasNext())
+			{
+				values.append(" | ");
+			}
+		}
+		setProperty(inKey,values.toString());
 	}
 
 }
