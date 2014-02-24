@@ -831,7 +831,7 @@ asset: " + asset);
 		String url = server + "/media/services/rest/searchpendingpublish.xml?catalogid=" + targetcatalogid;
 		//url = url + "&field=remotempublishstatus&remotempublishstatus.value=new&operation=exact";
 		PostMethod method = new PostMethod(url);
-
+		
 		//loop over all the destinations we are monitoring
 ////		Searcher dests = getSearcherManager().getSearcher(inArchive.getCatalogId(),"publishdestination");
 ////		Collection hits = dests.fieldSearch("remotempublish","true");

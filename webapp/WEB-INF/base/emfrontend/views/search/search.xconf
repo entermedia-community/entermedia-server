@@ -5,7 +5,7 @@
 	<path-action name="AutoCompleteModule.updateHits" >
 		<property name="searchtype">asset</property>
 	</path-action>
-	<property name="hitsperpage">25</property>
+	
 	
 <!--
     TODO: Make this an extension?
