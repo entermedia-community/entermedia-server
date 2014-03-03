@@ -1,194 +1,231 @@
-<div style="padding:20px;">
 #set($presetid = $context.findValue("presetid"))
 #set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$presetid))
 #set($width = $dimension.getWidth())
 #set($height = $dimension.getHeight())
-#set($width = $mathtool.toInt($width))
-#set($height = $mathtool.toInt($height))
+#set($width = $numberutils.createDouble("$width").intValue())
+#set($height = $numberutils.createDouble("$height").intValue())
+#set($assetwidth = $numberutils.toInt($asset.width))
+#set($assetheight = $numberutils.toInt($asset.height))
 
-<!-- 
-Preset Details: $width x $height <br>
-Asset Details: $asset.width x $asset.height<br>
- -->
-<div id="submit-crop"></div>
+###display constants
+#set($bf_img_width = 725.0)
+#set($bf_img_height = 725.0)
+#set($bf_preview_width = 250.0)
+#set($bf_preview_height = 250.0)
 
-<div class="inline-labels">
-	<label>Crop Box Dimension:</label>
-	<label id="dimension"></label>
+###calculate the best fit dimensions of the display and crop preview
+#set($factorwidth = $assetwidth / $bf_img_width)
+#set($factorheight = $assetheight / $bf_img_height)
+#if($factorwidth > $factorheight)
+	#set($img_width = $assetwidth / $factorwidth)
+	#set($img_height = $assetheight / $factorwidth)
+#else
+	#set($img_width = $assetwidth / $factorheight)
+	#set($img_height = $assetheight / $factorheight)
+#end
+#set($img_width = $numberutils.createDouble("${img_width}").intValue())
+#set($img_height = $numberutils.createDouble("${img_height}").intValue())
+
+#set($factorwidth = $width / $bf_preview_width)
+#set($factorheight = $height / $bf_preview_height)
+#if($factorwidth > $factorheight)
+	#set($preview_img_width = $width / $factorwidth)
+	#set($preview_img_height = $height / $factorwidth)
+#else
+	#set($preview_img_width = $width / $factorheight)
+	#set($preview_img_height = $height / $factorheight)
+#end
+
+#set($preview_img_width = $numberutils.createDouble("${preview_img_width}").intValue())
+#set($preview_img_height = $numberutils.createDouble("${preview_img_height}").intValue())
+
+#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg")
+
+
+<div style="padding:30px;">
+	<div class="jc-demo-box">
+		<h2>Instructions</h2>
+		<p>
+			Select the crop-box selector on the large image below, manipulating it's size and location on the image.<br/>
+			A small preview of the resulting crop will appear on the Preview Panel. <br/>
+			Select the image in the Preview Panel to see a preview of the resulting crop, at ${width}px x ${height}px.<br/>
+			Select the Submit button to commit the crop.
+		</p>
+		<!--
+		<h2>Debug Information</h2>
+		<ul>
+		    <li><strong>Input Dimensions</strong></li>
+		    <li>Image Dimension: $assetwidth x $assetheight &nbsp; Crop Dimension: $width x $height </li>
+		    <li><strong>Display Dimensions</strong></li>
+		    <li>Image Dimension: $img_width x $img_height &nbsp; Preview Dimension: $preview_img_width x $preview_img_height</li>
+		</ul>
+	    -->
+	    <form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
+		    
+		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
+		    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
+		    <input class="clearable" type="hidden" size="4" id="x2" name="x2.value" />
+		    <input class="clearable" type="hidden" size="4" id="y2" name="y2.value" />
+		    <input class="clearable" type="hidden" size="4" id="w" name="cropwidth.value" />
+		    <input class="clearable" type="hidden" size="4" id="h" name="cropheight.value" />
+		    
+		    <input type="hidden" name="field" value="x1"/>
+		    <input type="hidden" name="field" value="y1"/>
+		    <input type="hidden" name="field" value="cropwidth"/>
+		    <input type="hidden" name="field" value="cropheight"/>
+		    <input type="hidden" name="field" value="crop"/>
+		    <input type="hidden" name="field" value="force"/>
+		    <input type="hidden" name="field" value="assetid"/>
+		    <input type="hidden" name="preset" value="${presetid}"/>
+		    <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
+		    <input type="hidden" name="crop.value" value="true"/>
+		    <input type="hidden" name="force.value" value="true"/>
+		    <input type="hidden" name="assetid.value" value="${asset.id}"/>
+		    <span style="margin: 0 10px 20px;">
+			    <label for="submitbutton">Crop the image below</label>
+			    <input class="thickbox btn" type="submit" name="submitbutton" value="Submit" style="margin: 5px;" />
+			</span>
+		</form>
+		<hr>
+		<div class="display-container">
+			<img id="target" src="$cropinputlink" alt="Crop Area" style="display:none;"/>
+		</div>
+		<div id="preview-panel">
+			<div class="preview-container">
+				<a href="#fancybox-container" id="showpreview">
+					<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview" style="display:none;" />
+				</a>
+			</div>
+			<div class="preview-labels">
+				<label>Preview Panel</label>
+				<label id="dimension"></label>
+			</div>
+		</div>
+		<hr>
+		<div class="clearfix"></div>
+	</div>
+	<div id="fancybox-container" style="width:${width}px;height:${height}px;overflow:hidden;display:none;">
+		<img id="fancybox-preview" src="$cropinputlink" />
+	</div>
 </div>
 
-<form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
-    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
-    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
-    <input class="clearable" type="hidden" size="4" id="x2" name="x2.value" />
-    <input class="clearable" type="hidden" size="4" id="y2" name="y2.value" />
-    <input class="clearable" type="hidden" size="4" id="w" name="cropwidth.value" />
-    <input class="clearable" type="hidden" size="4" id="h" name="cropheight.value" />
-    
-    <input type="hidden" name="field" value="x1"/>
-    <input type="hidden" name="field" value="y1"/>
-    <input type="hidden" name="field" value="cropwidth"/>
-    <input type="hidden" name="field" value="cropheight"/>
-    <input type="hidden" name="field" value="crop"/>
-    <input type="hidden" name="field" value="force"/>
-    <input type="hidden" name="field" value="assetid"/>
-    <input type="hidden" name="preset" value="${presetid}"/>
-    <input type="hidden" name="sourcepath" value="${asset.sourcepath}"/>
-    <input type="hidden" name="crop.value" value="true"/>
-    <input type="hidden" name="force.value" value="true"/>
-    <input type="hidden" name="assetid.value" value="${asset.id}"/>
-    
-    <span style="margin: 0 10px 20px;">
-	    <label for="submitbutton">Crop the image below</label>
-	    <input class="thickbox btn" type="submit" name="submitbutton" value="Submit" style="margin: 5px;" />
-    </span>
-  </form>
-
-
-<div id="preview-pane">
-  <div class="preview-container" >
-    <!-- 
-    <img src="$home$apphome/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg" class="jcrop-preview" alt="Preview" /> 
-    -->
-  </div>
-</div>
-
-<img align="center" src="$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg" id="target" alt="${asset}" />
-
-<script type="text/javascript">
-  jQuery(function(){
-
-    // Create variables (in this scope) to hold the API and image size
-    var jcrop_api,
-        boundx,
-        boundy,
-
-        // Grab some information about the preview pane
-        preview = $('#preview-pane'),
-        pcnt = $('#preview-pane .preview-container'),
-        pimg = $('#preview-pane .preview-container img'),
-
-        xsize = $width,
-        ysize = $height;
-    
-    $('#target').Jcrop({
-      onChange: updatePreview,
-      onSelect: updatePreview,
-      onRelease: clearCoords,
-      minSize: [xsize,ysize],
-      boxWidth: 1280,
-      boxHeight: 1280,
-      setSelect: [0,0,xsize,ysize],
-      aspectRatio: xsize / ysize
-    },function(){
-      // Use the API to get the real image size
-      var bounds = this.getBounds();
-      boundx = bounds[0];
-      boundy = bounds[1];
-      // Store the API in the jcrop_api variable
-      jcrop_api = this;
-
-      // Move the preview into the jcrop container for css positioning
-      preview.appendTo(jcrop_api.ui.holder);
-    });
-
-    function updatePreview(c)
-    {
-      
-      if (parseInt(c.w) > 0)
-      {
-    	
-        var rx = xsize / c.w;
-        var ry = ysize / c.h;
-
-        pimg.css({
-          width: Math.round(rx * boundx) + 'px',
-          height: Math.round(ry * boundy) + 'px',
-          marginLeft: '-' + Math.round(rx * c.x) + 'px',
-          marginTop: '-' + Math.round(ry * c.y) + 'px'
-        });
-      }
-      
-      showCoords(c);
-    };
-    
-    /*
-    $('#coords').on('change','input',function(e){
-        var x1 = $('#coordsx1').val(),
-            x2 = $('#coordsx2').val(),
-            y1 = $('#coordsy1').val(),
-            y2 = $('#coordsy2').val();
-        jcrop_api.setSelect([x1,y1,x2,y2]);
-      });
-    */
-  });
-  
-  
-  
-  function showCoords(c)
-  {
-	  var x1 = Math.round(c.x),
-	  	y1 = Math.round(c.y),
-	  	x2 = Math.round(c.x2),
-	  	y2 = Math.round(c.y2),
-	  	w = Math.round(c.w),
-	  	h = Math.round(c.h);
-	  var dimension = w + " X " + h;
-	  
-    $('#x1').val(x1);
-    $('#y1').val(y1);
-    $('#x2').val(x2);
-    $('#y2').val(y2);
-    $('#w').val(w);
-    $('#h').val(h);
-    
-    $('#dimension').text(dimension);
-  };
-
-  function clearCoords()
-  {
-    $('#coords input .clearable').val('');
-  };
-</script>
-<style type="text/css">
-.jcrop-holder #preview-pane {
-  display: none;
+<style>
+.jcrop-holder #preview-panel {
+  width: ${preview_img_width}px;
+  height: ${preview_img_height}+36px;
+  display: block;
   position: absolute;
   z-index: 2000;
-  top: 10px;
+  top: -6px;
   right: -280px;
   padding: 6px;
   border: 1px rgba(0,0,0,.4) solid;
   background-color: white;
-
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
-  overflow: scroll;
-
   -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
   box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
 }
-#preview-pane .preview-container {
-  width: ${width}px;
-  height: ${height}px;
-  overflow: none;
-  display:none;
+#preview-panel .preview-container {
+  width: ${preview_img_width}px;
+  height: ${preview_img_height}px;
+  overflow: hidden;
 }
-.inline-labels {
-	margin: 0 10px 20px;
-#if($width < 1 && $height < 1)
-	display:inline;
-#else
-	display:none;
-#end
+.display-container{
+  width:${img_width}px;
+  height: ${img_height}px;
+  padding: 6px;
+  border: 1px rgba(0,0,0,.4) solid;
+  background-color: white;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
 }
-.inline-labels label {
-	font-weight: bold;
-	padding-bottom: 8px;
-	width: 100%;
-	font-size: 14px;
+.preview-labels {
+	margin:10px 0px; 
+	padding:0px;
+	text-align:center;
 }
 </style>
-</div>
+
+<script>
+$(document).ready(function(){
+	$("img").one('load', function() {
+		var id = $(this).attr("id");
+		if (id == "target"){
+			$(this).show();
+			prepareCropUtil();
+		} else if (id == "preview-image"){
+			$(this).show();
+		}
+	}).each(function() {
+		if (this.complete) $(this).load();
+	});
+});
+function prepareCropUtil(){
+	var boundx,
+	    boundy,
+	    xsize = ${preview_img_width},
+	    ysize = ${preview_img_height};
+    
+	$('#target').Jcrop({
+		keySupport: false,
+		onChange: updatePreview,
+		onSelect: updatePreview,
+		minSize: [xsize,ysize],
+		boxWidth: ${img_width},
+		boxHeight: ${img_height},
+		setSelect: [0,0,xsize,ysize],
+		aspectRatio: xsize / ysize
+	},function(){
+		var bounds = this.getBounds();
+		boundx = bounds[0];
+		boundy = bounds[1];
+		$('#preview-panel').appendTo(this.ui.holder);
+	});
+	function updatePreview(c){
+		if (parseInt(c.w) > 0){
+	    	var rx = xsize / c.w;
+	    	var ry = ysize / c.h;
+	    	$("#preview-image").css({
+	        	width: Math.round(rx * boundx) + 'px',
+	          	height: Math.round(ry * boundy) + 'px',
+	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
+	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
+	        });
+	    	rx = ${width} / c.w;
+	    	ry = ${height} / c.h;
+	    	$("#fancybox-preview").css({
+	        	width: Math.round(rx * boundx) + 'px',
+	          	height: Math.round(ry * boundy) + 'px',
+	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
+	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
+	        });
+	  	}
+	  	var x1 = Math.round(c.x),
+	 		y1 = Math.round(c.y),
+	 		x2 = Math.round(c.x2),
+	 		y2 = Math.round(c.y2),
+	 		w = Math.round(c.w),
+	 		h = Math.round(c.h);
+		$('#x1').val(x1);
+	 	$('#y1').val(y1);
+	  	$('#x2').val(x2);
+	  	$('#y2').val(y2);
+	  	$('#w').val(w);
+	  	$('#h').val(h); 
+	  	$('#dimension').text(w+"x"+h);
+	};
+	$("#showpreview").fancybox({
+		'autoScale':'false',
+		'scrolling':'no'
+	});
+}
+</script>
+
+
