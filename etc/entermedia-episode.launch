@@ -10,9 +10,6 @@
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="LD_LIBRARY_PATH" value="/usr/local/Cumulus_6_Java_SDK/lib"/>
 </mapAttribute>
-<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
-<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
-</listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.einnovation.launcher.LaunchResin"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="etc/resin.conf"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="entermedia-server"/>
