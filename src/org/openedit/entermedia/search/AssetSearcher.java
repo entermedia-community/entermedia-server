@@ -49,5 +49,8 @@ public interface AssetSearcher extends Searcher
 	String nextAssetNumber();
 	
 	public HitTracker searchByIds(Collection<String> inIds);
+	public Asset getAssetBySourcePath(String inSourcepath, boolean autocreate);
+	public Asset getAssetBySourcePath(String inSourcepath);
+
 
 }

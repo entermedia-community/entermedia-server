@@ -259,7 +259,7 @@ public class MediaArchive
 	//Not cached
 	public Asset getAssetBySourcePath(String inSourcePath)
 	{
-		return getAssetArchive().getAssetBySourcePath(inSourcePath);
+		return getAssetSearcher().getAssetBySourcePath(inSourcePath);
 	}
 	
 	public String asLinkToPreview(String inSourcePath)

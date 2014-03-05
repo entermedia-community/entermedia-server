@@ -455,6 +455,19 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	{
 		return getDataConnector().nextId();
 	}
+
+	
+	public Asset getAssetBySourcePath(String inSourcepath, boolean inAutocreate)
+	{
+		return (Asset) getDataConnector().getDataBySourcePath(inSourcepath, inAutocreate);
+		//return getAssetArchive().getAssetBySourcePath(inSourcepath, inAutocreate);
+	}
+
+	
+	public Asset getAssetBySourcePath(String inSourcepath)
+	{
+	return (Asset) getDataConnector().getDataBySourcePath(inSourcepath);
+	}
 	
 //	public void updateFilters(WebPageRequest inReq) throws OpenEditException
 //	{
