@@ -363,7 +363,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 	
 	public Data getDataBySourcePath(String inSourcePath)
 	{
-		return getMediaArchive().getAssetBySourcePath(inSourcePath);
+		return getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath);
 	}
 
 	
