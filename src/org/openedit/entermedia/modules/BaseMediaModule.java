@@ -104,7 +104,8 @@ public class BaseMediaModule extends BaseModule
 		Asset asset = null;
 		if (sourcePath != null)
 		{
-			asset = archive.getAssetArchive().getAssetBySourcePath(sourcePath, true);
+			//asset = archive.getAssetArchive().getAssetBySourcePath(sourcePath, true);
+			asset = archive.getAssetSearcher().getAssetBySourcePath(sourcePath, true);
 		}
 		String assetid = null;
 		if( asset == null)

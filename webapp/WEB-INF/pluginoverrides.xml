@@ -27,6 +27,13 @@
 		</property>
 	</bean>
  
+
+
+	<bean id="JsonModule" class="rest.json.JsonModule">
+	   	
+	</bean>
+	
+	
     
 </beans>
         

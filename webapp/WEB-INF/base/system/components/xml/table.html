@@ -120,9 +120,11 @@
 #end
 
 #set($link = $context.getRequestParameter("selectlink"))
+
 #if($link)
 	#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
 	#if( $jumptomodule && $jumptomodule == "true")
+		#set( $link = "$apphome/views/modules/${searchtype}/edit/index.html")
 		<form name="editrow" method="post" action="$home$link?$passalongdec">
 		#set($fieldname = "id" )
 		#set($fieldname = $context.getRequestParameter("fieldname"))

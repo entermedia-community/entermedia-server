@@ -56,7 +56,9 @@ class JsonModule {
 			try {
 				OutputFiller filler = new OutputFiller();
 				InputStream stream = new ByteArrayInputStream(object.toJSONString().getBytes("UTF-8"));
-
+				if(inReq.getResponse()){
+					inReq.getResponse().setContentType("application/json");
+				}
 				//filler.setBufferSize(40000);
 				//InputStream input = object.
 				filler.fill(stream, inReq.getOutputStream());
@@ -607,7 +609,26 @@ class JsonModule {
 		return parent;
 	}
 
-	
+	public void preprocess(WebPageRequest inReq){
+		
+		JsonSlurper slurper = new JsonSlurper();
+		def request = null;
+		String content = inReq.getPageValue("jsondata");
+		if(content != null){
+			request = slurper.parseText(content); //NOTE:  This is for unit tests.
+		} else{
+			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+		}
+		
+		request.parameters.each{
+			println it;
+			String key = it.key;
+			String val = it.value;
+			inReq.setRequestParameter(key, val);
+		}
+		
+		
+	}
 	
 
 	public String getId(WebPageRequest inReq){

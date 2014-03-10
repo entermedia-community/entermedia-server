@@ -7,7 +7,6 @@ import org.openedit.Data;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
 
-import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
@@ -15,6 +14,10 @@ import com.openedit.users.User;
 public interface DataConnector 
 {
 
+	
+	public Data getDataBySourcePath(String inSourcePath);
+	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate);
+	
 	Data createNewData();
 
 	SearchQuery createSearchQuery();

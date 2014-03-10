@@ -185,4 +185,24 @@ class RestTest extends BaseEnterMediaTest {
 		
 	}
 	
+	
+	public void testPreprocessor(){
+		
+				JsonSlurper slurper = new JsonSlurper();
+				WebPageRequest req = getFixture().createPageRequest("/entermedia/services/json/publish");
+				req.setMethod("POST");
+				Page page = getPage("/entermedia/catalogs/testcatalog/json/PUBLISH.txt");
+				String content = page.getContent();
+				req.setRequestParameter("catalogid", "entermedia/catalogs/testcatalog");//header is also checked
+		
+				req.putPageValue("jsondata", content );
+				getFixture().getEngine().executePathActions(req);
+				String param = req.getRequestParameter("id")
+				assertEquals("somedata", param);
+				
+		
+	}
+	
+	
+	
 }

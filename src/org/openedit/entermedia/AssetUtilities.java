@@ -46,7 +46,7 @@ public class AssetUtilities
 	public Asset createAssetIfNeeded(ContentItem inContent, final MediaArchive inArchive, User inUser)
 	{
 		String sourcepath = extractSourcePath(inContent,inArchive);
-		Asset asset = inArchive.getAssetArchive().getAssetBySourcePath(sourcepath);
+		Asset asset = inArchive.getAssetSearcher().getAssetBySourcePath(sourcepath);
 		asset = populateAsset(asset, inContent, inArchive, sourcepath, inUser);
 		return asset;
 	}
@@ -208,7 +208,7 @@ public class AssetUtilities
 		{
 			sourcePath = sourcePath.substring(1);
 		}
-		Asset asset = inArchive.getAssetArchive().getAssetBySourcePath(sourcePath);
+		Asset asset = inArchive.getAssetSearcher().getAssetBySourcePath(sourcePath);
 		return asset;
 	}
 

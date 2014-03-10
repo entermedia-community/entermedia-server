@@ -7,6 +7,8 @@
 #set( $edit  = $context.getRequestParameter("edit"))
 #set( $candelete = "true")
 
+
+
 #set($viewid = $context.getRequestParameter("viewid"))
 #if( !$viewid )
     #set( $viewid = $context.getRequestParameter("view"))
@@ -33,7 +35,7 @@
 #set ($id = $context.getRequestParameter("id"))
 
 #set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
-#set( $argsnoid = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+#set( $argsnoid = "candelete=$candelete&jumptomodule=$!jumptomodule&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 
 #set($viewdetailspath = $context.getRequestParameter("viewdetailspath"))
 #set ($passalong = "viewdetailspath=$!viewdetailspath&jumptomodule=$!jumptomodule&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
@@ -53,7 +55,7 @@
 	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
 	<div class="addnew-generic">
-	<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>
+	<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?candelete=false&$argsnoid&passalong=$passalong&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>
 	</div>
 	#end
 	
@@ -95,6 +97,8 @@
 		<input name="permissionname" type="hidden" value="$!permissionname" />
 		
 		<input name="searchtype" type="hidden" value="$searchtype" />
+		<input name="jumptomodule" type="hidden" value="$!jumptomodule" />
+
 		#if ($id)
 			<input name="id" type="hidden" value="$id"/>
 		#end

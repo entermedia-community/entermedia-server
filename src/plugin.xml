@@ -1136,6 +1136,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
+
 	<bean id="orderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>

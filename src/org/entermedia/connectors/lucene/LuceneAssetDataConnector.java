@@ -360,6 +360,33 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 		return super.searchByField(inField, inValue);
 	}
 
+	
+	public Data getDataBySourcePath(String inSourcePath)
+	{
+		return getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath);
+	}
+
+	
+	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate)
+	{
+
+		return getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath, inAutocreate);
+	}
+
+//	@Override
+//	public void saveAllData(Collection<Data> inAll, User inUser)
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void updateIndex(Collection<Data> inAll, boolean inB)
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
+
 	// public String idToPath(String inAssetId)
 	// {
 	// String path = (String) getAssetPaths().get(inAssetId);
