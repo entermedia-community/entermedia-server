@@ -7,9 +7,12 @@
 #set($assetwidth = $numberutils.toInt($asset.width))
 #set($assetheight = $numberutils.toInt($asset.height))
 
-###display constants
-#set($bf_img_width = 800.0)
-#set($bf_img_height = 800.0)
+##set a few constants
+#set($min_display = 800.0)
+#set($max_display = 1306.0)
+
+#set($bf_img_width = $min_display)
+#set($bf_img_height = $max_display)
 #set($bf_preview_width = 220.0)
 #set($bf_preview_height = 220.0)
 
@@ -33,9 +36,26 @@
 		#set($img_height = $assetheight / $factorheight)
 	#end
 #end
+
+##check if maxsize button has been clicked
+#set($maxdisplay = $context.getRequestParameter("maxsize"))
+#if($userprofile.maximize_screen == "true" || $maxdisplay == "true")
+	#set($display_factor = $max_display / $min_display)
+	#set($img_width = $img_width * $display_factor)
+	#set($img_height = $img_height * $display_factor)
+#end
+
+##round to int
 #set($img_width = $numberutils.createDouble("${img_width}").intValue())
 #set($img_height = $numberutils.createDouble("${img_height}").intValue())
 
+##check whether resulting display dimensions is greather than original image
+#if($img_width > $assetwidth)
+	#set($img_width = $assetwidth)
+	#set($img_height = $assetheight)
+#end
+
+##calculate preview dimensions
 #set($factorwidth = $width / $bf_preview_width)
 #set($factorheight = $height / $bf_preview_height)
 #if($factorwidth > $factorheight)
@@ -45,16 +65,16 @@
 	#set($preview_img_width = $width / $factorheight)
 	#set($preview_img_height = $height / $factorheight)
 #end
-
+##round to int
 #set($preview_img_width = $numberutils.createDouble("${preview_img_width}").intValue())
 #set($preview_img_height = $numberutils.createDouble("${preview_img_height}").intValue())
 
+##set crop link
 #set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg")
-
 
 <div style="padding:30px;">
 	<div class="jc-demo-box">
-		<!-- 
+		<!--  
 		<h2>Debug Information</h2>
 		<ul>
 		    <li><strong>Input Dimensions</strong></li>
@@ -62,7 +82,7 @@
 		    <li><strong>Display Dimensions</strong></li>
 		    <li>Image Dimension: $img_width x $img_height &nbsp; Preview Dimension: $preview_img_width x $preview_img_height</li>
 		</ul>
-	   -->
+	    -->
 	    <form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
 		    
 		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
@@ -188,11 +208,91 @@
 
 <script>
 $(document).ready(function(){
+	var jcrop_api;
+	function prepareCropUtil(boxwidth,boxheight){
+		var boundx,
+		    boundy,
+		    xsize = ${preview_img_width},
+		    ysize = ${preview_img_height};
+	    
+		$('#target').Jcrop({
+			keySupport: false,
+			onChange: updatePreview,
+			onSelect: updatePreview,
+			minSize: [xsize,ysize],
+			boxWidth: ${img_width},
+			boxHeight: ${img_height},
+			setSelect: [0,0,xsize,ysize],
+			aspectRatio: xsize / ysize
+		},function(){
+		    jcrop_api = this;
+			var bounds = this.getBounds();
+			boundx = bounds[0];
+			boundy = bounds[1];
+			$('#preview-panel').appendTo(this.ui.holder);
+		});
+		function updatePreview(c){
+			if (parseInt(c.w) > 0){
+		    	var rx = xsize / c.w;
+		    	var ry = ysize / c.h;
+		    	$("#preview-image").css({
+		        	width: Math.round(rx * boundx) + 'px',
+		          	height: Math.round(ry * boundy) + 'px',
+		          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
+		          	marginTop: '-' + Math.round(ry * c.y) + 'px'
+		        });
+		    	rx = ${width} / c.w;
+		    	ry = ${height} / c.h;
+		    	$("#fancybox-preview").css({
+		        	width: Math.round(rx * boundx) + 'px',
+		          	height: Math.round(ry * boundy) + 'px',
+		          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
+		          	marginTop: '-' + Math.round(ry * c.y) + 'px'
+		        });
+		  	}
+		  	var x1 = Math.round(c.x),
+		 		y1 = Math.round(c.y),
+		 		x2 = Math.round(c.x2),
+		 		y2 = Math.round(c.y2),
+		 		w = Math.round(c.w),
+		 		h = Math.round(c.h);
+			$('#x1').val(x1);
+		 	$('#y1').val(y1);
+		  	$('#x2').val(x2);
+		  	$('#y2').val(y2);
+		  	$('#w').val(w);
+		  	$('#h').val(h); 
+		  	$('#dimension').text(w+"x"+h);
+		};
+		$("#showpreview").fancybox({
+			'autoScale':'false',
+			'scrolling':'no'
+		});
+	}
+	$("#maximize").bind("click",function(){
+		//either: 
+		//destroy and rebuild (not pretty) 
+		//or refresh page (not pretty either)
+		//or create an outer div and reload inner div (probably best solution)
+		
+		//destroy
+		//jcrop_api.destroy();
+		//var is_max = $("#embody").hasClass("max");
+		//prepareCropUtil(width, height);
+		
+		//refresh
+		$(".jc-demo-box").prepend("<p>Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\"></p>");
+		setTimeout(function(){
+			var is_max = $("#embody").hasClass("max");
+			var url = "${context.getContentPage()}?assetid=${asset.id}&presetid=${presetid}&maxsize="+is_max;
+			window.open(url,"_self");
+		}, 500);//add a timeout to allow for toggleprofileproperty to be executed
+	});
 	$("img").one('load', function() {
 		var id = $(this).attr("id");
 		if (id == "target"){
 			$(this).show();
-			prepareCropUtil();
+			prepareCropUtil(${img_width},${img_height});
 		} else if (id == "preview-image"){
 			$(this).show();
 		}
@@ -200,65 +300,6 @@ $(document).ready(function(){
 		if (this.complete) $(this).load();
 	});
 });
-function prepareCropUtil(){
-	var boundx,
-	    boundy,
-	    xsize = ${preview_img_width},
-	    ysize = ${preview_img_height};
-    
-	$('#target').Jcrop({
-		keySupport: false,
-		onChange: updatePreview,
-		onSelect: updatePreview,
-		minSize: [xsize,ysize],
-		boxWidth: ${img_width},
-		boxHeight: ${img_height},
-		setSelect: [0,0,xsize,ysize],
-		aspectRatio: xsize / ysize
-	},function(){
-		var bounds = this.getBounds();
-		boundx = bounds[0];
-		boundy = bounds[1];
-		$('#preview-panel').appendTo(this.ui.holder);
-	});
-	function updatePreview(c){
-		if (parseInt(c.w) > 0){
-	    	var rx = xsize / c.w;
-	    	var ry = ysize / c.h;
-	    	$("#preview-image").css({
-	        	width: Math.round(rx * boundx) + 'px',
-	          	height: Math.round(ry * boundy) + 'px',
-	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
-	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
-	        });
-	    	rx = ${width} / c.w;
-	    	ry = ${height} / c.h;
-	    	$("#fancybox-preview").css({
-	        	width: Math.round(rx * boundx) + 'px',
-	          	height: Math.round(ry * boundy) + 'px',
-	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
-	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
-	        });
-	  	}
-	  	var x1 = Math.round(c.x),
-	 		y1 = Math.round(c.y),
-	 		x2 = Math.round(c.x2),
-	 		y2 = Math.round(c.y2),
-	 		w = Math.round(c.w),
-	 		h = Math.round(c.h);
-		$('#x1').val(x1);
-	 	$('#y1').val(y1);
-	  	$('#x2').val(x2);
-	  	$('#y2').val(y2);
-	  	$('#w').val(w);
-	  	$('#h').val(h); 
-	  	$('#dimension').text(w+"x"+h);
-	};
-	$("#showpreview").fancybox({
-		'autoScale':'false',
-		'scrolling':'no'
-	});
-}
 </script>
 
 
