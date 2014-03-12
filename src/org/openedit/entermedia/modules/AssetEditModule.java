@@ -2012,12 +2012,20 @@ public class AssetEditModule extends BaseMediaModule
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
+		if(properties == null){
+			properties = (UploadRequest) inReq.getPageValue("properties");
+		}
 		if (properties == null) {
 			return;
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 		if (properties.getFirstItem() == null) {
-			return;
+			properties = (UploadRequest) inReq.getPageValue("properties");
+			if(properties == null || properties.getFirstItem() == null){
+				return;	
+			}
+
+			
 		}
 		for (Iterator iterator = properties.getUploadItems().iterator(); iterator
 				.hasNext();) {
