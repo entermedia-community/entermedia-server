@@ -27,12 +27,31 @@ public init(){
 		}
 	}
 	if (asset != null){
+		boolean haschanged = false;
 		String category = mediaArchive.getCatalogSettingValue("push_download_category");
 		if (category != null && !category.isEmpty()){
 			log.info("found push_download_category $category, updating asset $asset (${asset.id})");
 			Category target = mediaArchive.getCategoryArchive().createCategoryTree(category);
 			asset.addCategory(target);
 			mediaArchive.getCategoryArchive().saveAll();
+			haschanged = true;
+		}
+		//check push_download_library then default_library
+		Data library = null;
+		String libraryid = mediaArchive.getCatalogSettingValue("push_download_library");
+		if (libraryid == null || libraryid.isEmpty()){
+			libraryid = mediaArchive.getCatalogSettingValue("default_library");
+		}
+		if (libraryid != null && !libraryid.isEmpty()){
+			Searcher libsearcher = mediaArchive.getSearcher("library");
+			library = libsearcher.searchById(libraryid);
+		}
+		if (library != null){
+			log.info("found push_download_library (or default_library) $libraryid, updating asset $asset (${asset.id})");
+			asset.addLibrary(library.getId());
+			haschanged = true;
+		}
+		if (haschanged){
 			mediaArchive.getAssetSearcher().saveData(asset, null);
 		}
 	} else {
