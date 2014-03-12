@@ -804,13 +804,16 @@ public class AdminModule extends BaseModule
 			try
 			{
 				pwd_expiry_in_days = Integer.parseInt(str);
-				if (pwd_expiry_in_days < 1) pwd_expiry_in_days = 1;//default if malformed
 			}
 			catch(NumberFormatException e)
 			{
 				
 			}
-			log.info("Password is set to expire in "+pwd_expiry_in_days+" days");
+			if (pwd_expiry_in_days < 1) pwd_expiry_in_days = 1;//default if malformed
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Password is set to expire in "+pwd_expiry_in_days+" days");
+			}
 		}
 		//String uandpass = cook.getValue();
 		if (uandpass != null)
@@ -836,20 +839,26 @@ public class AdminModule extends BaseModule
 						long ts = Long.parseLong(ctext);
 						long current = new Date().getTime();
 						if ( (current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY) ){
-							log.info("Autologin has expired, redirecting to login page");
+							log.debug("Autologin has expired, redirecting to login page");
 							return false;
-						} else {
-							log.info("Autologin has not expired, processing md5 password");
+						} else 
+						{	
+							if( log.isDebugEnabled() )
+							{
+								log.debug("Autologin has not expired, processing md5 password");
+							}
 						}
-					}catch (OpenEditException oex){
+					}
+					catch (Exception oex)
+					{
 						log.error(oex.getMessage(),oex);
-						return false;
-					}catch (NumberFormatException nfx){
-						log.error(nfx.getMessage(),nfx);
 						return false;
 					}
 				} else {
-					log.info("Autologin does not have a timestamp");
+					if( log.isDebugEnabled() )
+					{
+						log.debug("Autologin does not have a timestamp");
+					}
 				}
 				
 				try
