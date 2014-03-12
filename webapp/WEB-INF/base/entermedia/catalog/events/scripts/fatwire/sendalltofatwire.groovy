@@ -108,9 +108,13 @@ public void init()
 		{
 			needstobecreated = !archive.getOriginalDocument(asset).exists();
 		}
-		else if( archive.doesAttachmentExist(outputfile, asset) )
+		else 
 		{
-			needstobecreated = false;
+			if( !archive.doesAttachmentExist(outputfile, asset) ){
+				log.info("send to fatwire: $outputfile for $asset (${asset.id}) does not exist, skipping");
+				return;
+			}
+//			needstobecreated = false;
 		}
 		if( needstobecreated )
 		{

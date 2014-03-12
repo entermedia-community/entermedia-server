@@ -7,12 +7,21 @@
 #set($assetwidth = $numberutils.toInt($asset.width))
 #set($assetheight = $numberutils.toInt($asset.height))
 
+###get the window size
+#set($maxdisplay = $context.getRequestParameter("maxsize"))
+#set($displaywidth = $context.getRequestParameter("displaywidth"))
+#if(!$displaywidth)
+	#set($displaywidth = 1306.0)
+#end
+#set($displaywidth = $numberutils.createDouble("${displaywidth}"))
+
 ##set a few constants
 #set($min_display = 800.0)
-#set($max_display = 1306.0)
+#set($max_display = $displaywidth)
+#set($width_offset = 138.0)
 
 #set($bf_img_width = $min_display)
-#set($bf_img_height = $max_display)
+#set($bf_img_height = $min_display)
 #set($bf_preview_width = 220.0)
 #set($bf_preview_height = 220.0)
 
@@ -36,15 +45,12 @@
 		#set($img_height = $assetheight / $factorheight)
 	#end
 #end
-
-##check if maxsize button has been clicked
-#set($maxdisplay = $context.getRequestParameter("maxsize"))
+##check if maxsize or maxsize button clicked
 #if($userprofile.maximize_screen == "true" || $maxdisplay == "true")
 	#set($display_factor = $max_display / $min_display)
 	#set($img_width = $img_width * $display_factor)
 	#set($img_height = $img_height * $display_factor)
 #end
-
 ##round to int
 #set($img_width = $numberutils.createDouble("${img_width}").intValue())
 #set($img_height = $numberutils.createDouble("${img_height}").intValue())
@@ -82,7 +88,7 @@
 		    <li><strong>Display Dimensions</strong></li>
 		    <li>Image Dimension: $img_width x $img_height &nbsp; Preview Dimension: $preview_img_width x $preview_img_height</li>
 		</ul>
-	    -->
+	     -->
 	    <form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submitcrop.html">
 		    
 		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
@@ -270,6 +276,11 @@ $(document).ready(function(){
 		});
 	}
 	$("#maximize").bind("click",function(){
+		
+		var displaywidth = $(window).width() - $bf_preview_width - $width_offset;
+		if(displaywidth < $min_display){
+			displaywidth = $min_display;
+		}
 		//either: 
 		//destroy and rebuild (not pretty) 
 		//or refresh page (not pretty either)
@@ -281,12 +292,15 @@ $(document).ready(function(){
 		//prepareCropUtil(width, height);
 		
 		//refresh
+		
 		$(".jc-demo-box").prepend("<p>Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\"></p>");
 		setTimeout(function(){
 			var is_max = $("#embody").hasClass("max");
-			var url = "${context.getContentPage()}?assetid=${asset.id}&presetid=${presetid}&maxsize="+is_max;
+			var url = "${context.getContentPage()}?assetid=${asset.id}&presetid=${presetid}&maxsize="+is_max+"&displaywidth="+displaywidth+".0";
 			window.open(url,"_self");
-		}, 500);//add a timeout to allow for toggleprofileproperty to be executed
+		}, 500);//add a timeout to allow for toggleprofileproperty to be executed 
+		
+		
 	});
 	$("img").one('load', function() {
 		var id = $(this).attr("id");
