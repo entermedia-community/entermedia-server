@@ -1,4 +1,4 @@
-
+<div id="datamanager-workarea">
 
 				$pages.include("./search.html")
 
@@ -13,15 +13,14 @@ $context.putPageValue("hits", $hits)
 #set( $oeview = "user/results")
 #set( $details = $userSearcher.getDetailsForView($oeview,$user))
 
-<table width="100%" class="striped emdata" style="margin-top: 15px;">
+<table width="100%" class="striped emdata" id="main-results-table" style="margin-top: 15px;">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )				
 	#set( $selecteduser = $context.getRequestParameter("username" ) )
 	<thead>
-	<tr class="tableheader">
+		<tr id="tableheader">
+		#set( $sortby = $userTracker.getSearchQuery().getSortBy() )
 		#foreach( $detail in $details )
-		<th>
-			$detail.text
-		</th>
+		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.getText($context)</th>
 		#end
 		<th>
 			Security Group 
@@ -87,11 +86,6 @@ $context.putPageValue("hits", $hits)
         #end
         
 		[[Page]] <b>$thispage</b>/$userTracker.totalPages  
-		
-		
-		
-		
-		
 		#if ( $userTracker.nextPage() )
 			<a style="margin-left: 15px;" href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.nextPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>[[Next]] &gt;&gt;</b></a>
 		#end
@@ -99,3 +93,23 @@ $context.putPageValue("hits", $hits)
 
 #end
  
+    <script>
+        $('th.sortable').on({
+            click: function(){
+                var id = $(this).attr('id');
+                if ( $(this).hasClass('currentsort') ) {
+                    if ( $(this).hasClass('up') ) {
+                        jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
+                    } else {
+                        jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Up');
+                    }
+                } else {
+                    $('th.sortable').removeClass('currentsort');
+                    $(this).addClass('currentsort');
+                    jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
+                }
+            }
+        });
+    </script>
+ 
+ </div>

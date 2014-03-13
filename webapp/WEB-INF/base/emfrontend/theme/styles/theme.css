@@ -3530,7 +3530,7 @@ body #emcontainer .emasseteditorarea {
 #emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort {
     box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
     border-right: none;
-    padding: 0 28px 0 10px;
+    
 }
 #emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort.up {
     background: rgba(0,0,0,0.1) url('../images/sort-asc.png') right 12px no-repeat;
