@@ -7,23 +7,28 @@
 #set($assetwidth = $numberutils.toInt($asset.width))
 #set($assetheight = $numberutils.toInt($asset.height))
 
-###get the window size
-#set($maxdisplay = $context.getRequestParameter("maxsize"))
-#set($displaywidth = $context.getRequestParameter("displaywidth"))
-#if(!$displaywidth)
-	#set($displaywidth = 1306.0)
-#end
-#set($displaywidth = $numberutils.createDouble("${displaywidth}"))
-
 ##set a few constants
 #set($min_display = 800.0)
-#set($max_display = $displaywidth)
 #set($width_offset = 138.0)
-
 #set($bf_img_width = $min_display)
 #set($bf_img_height = $min_display)
 #set($bf_preview_width = 220.0)
 #set($bf_preview_height = 220.0)
+
+###get the window size
+#set($maxdisplay = $context.getRequestParameter("maxsize"))
+#set($displaywidth = $context.getRequestParameter("displaywidth"))
+#if(!$displaywidth)
+	#set($displaywidth = $min_display + $bf_preview_width + $width_offset)
+#end
+#set($displaywidth = $numberutils.createDouble("${displaywidth}"))
+#set($displaywidth = $displaywidth - $bf_preview_width - $width_offset)
+
+###set max display
+#if($displaywidth < $min_display)
+	#set($displaywidth = $min_display)
+#end
+#set($max_display = $displaywidth)
 
 ###calculate the best fit dimensions of the display and crop preview
 #set($factorwidth = $assetwidth / $bf_img_width)
@@ -277,14 +282,11 @@ $(document).ready(function(){
 	}
 	$("#maximize").bind("click",function(){
 		
-		var displaywidth = $(window).width() - $bf_preview_width - $width_offset;
-		if(displaywidth < $min_display){
-			displaywidth = $min_display;
-		}
-		//either: 
-		//destroy and rebuild (not pretty) 
-		//or refresh page (not pretty either)
-		//or create an outer div and reload inner div (probably best solution)
+		var displaywidth = $(window).width();
+		
+		###jcrop_api.destroy();
+		###$("#preview-panel").hide();
+		###$(".display-container").hide();
 		
 		//destroy
 		//jcrop_api.destroy();
@@ -292,14 +294,12 @@ $(document).ready(function(){
 		//prepareCropUtil(width, height);
 		
 		//refresh
-		
 		$(".jc-demo-box").prepend("<p>Refreshing... <img src=\"/${applicationid}/theme/images/ajax-loader.gif\"></p>");
 		setTimeout(function(){
 			var is_max = $("#embody").hasClass("max");
-			var url = "${context.getContentPage()}?assetid=${asset.id}&presetid=${presetid}&maxsize="+is_max+"&displaywidth="+displaywidth+".0";
+			var url = "${context.getContentPage()}?assetid=${asset.id}&presetid=${presetid}&maxsize="+is_max+"&displaywidth="+displaywidth;
 			window.open(url,"_self");
-		}, 500);//add a timeout to allow for toggleprofileproperty to be executed 
-		
+		}, 300); //add a timeout to allow for toggleprofileproperty to be executed
 		
 	});
 	$("img").one('load', function() {
