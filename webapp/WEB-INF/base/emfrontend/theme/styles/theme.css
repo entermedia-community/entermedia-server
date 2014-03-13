@@ -6515,3 +6515,8 @@ div#left-col-libraries div.ui-widget-content
 {
 	min-height: 150px;
 }
+
+
+.detail-select{
+margin-top: 8px; max-width: 200px;
+}

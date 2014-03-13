@@ -62,8 +62,8 @@ $lsearcher.addShowOnly($context, $query)
 		</script>
 	#end
 		
-	<select style="margin-top: 8px; max-width: 200px;" id="list-$listid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
-		class="choose-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
+	<select  id="list-$listid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
+		class="choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" id="${valueid}.value"
 		data-listid="$listid" 
 		data-searchtype= '$searchtype'
