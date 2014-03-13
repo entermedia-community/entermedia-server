@@ -1,10 +1,9 @@
-
 #set($idcount = $context.getRequestParameter("idcount"))
 #if(!$idcount)
 	#set($idcount = "")
 #end
 #if(!$val)
-	#set($val = $context.getRequestParameter('val'))
+	#set($val = $context.getRequestParameter('assetid'))
 #end
 
 #if($val && $val != "")
@@ -28,6 +27,9 @@
 <a href="$click" alt="$foundrow" class="audio-filename"> 
                   $foundrow.name
 </a>
+#end
+#if($val && $val!="" && $foundrow)
+<label for="${detail.id}-checkbox" style="font-style:italic;">Disable? </label><input id="${detail.id}-checkbox" name="${detail.id}-checkbox" type="checkbox" />
 #end
 
 			

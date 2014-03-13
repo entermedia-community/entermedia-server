@@ -382,7 +382,8 @@ onloadselectors = function()
 				dialog.fancybox(
 				{ 
 					'zoomSpeedIn': 0, 'zoomSpeedOut': 0, 'overlayShow': true,
-					enableEscapeButton: true, type: 'iframe',
+					enableEscapeButton: true, 
+					type: 'iframe',
 			        height: height,
 			        width: width,
 					autoScale: false,

@@ -1,0 +1,27 @@
+#set($uploadtype = $context.getRequestParameter("uploadtype"))
+#set($catalogid = $context.getRequestParameter("catalogid"))
+#set($originalpath = $mediaarchive.asLinkToOriginal($newasset))
+Upload complete.. please wait.
+
+
+<script type="text/javascript">
+	
+	
+	var targetdiv = "$context.getRequestParameter('targetdiv')";
+	var detailid = "$context.getRequestParameter('detailid')";
+	
+	var assetid = $newasset.id;
+	
+	if(jQuery.fancybox != null){
+		//This is for fancybox
+		parent.jQuery("#" + targetdiv).attr("value", assetid);
+		parent.jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
+			parent.jQuery(".fancybox-close").trigger("click");	
+		});
+	}
+
+
+
+</script>
+
+
