@@ -512,6 +512,8 @@ public class MediaArchive
 		{
 			CategorySearcher searcher = (CategorySearcher)getSearcher("category");
 			fieldCategoryArchive = searcher.getCategoryArchive();
+			fieldCategoryArchive.setCatalogId(getCatalogId());
+
 		}
 		return fieldCategoryArchive;
 	}

@@ -79,9 +79,8 @@ $context.putPageValue("caneditlists","false")
 			#else  ##NOT EDITABLE
 				$pages.include("$xmledithome/detailreadonly.html", $context) 
 			#end
-			#if ( $detail.note )
-				<span style="color:gray;font-style:italic;font-size:.9em;">$detail.note<span>
-			#end
+				<span style="color:gray;font-style:italic;font-size:.9em;">$!detail.note<span>
+
 			</td>
 		</tr>
 	#end
