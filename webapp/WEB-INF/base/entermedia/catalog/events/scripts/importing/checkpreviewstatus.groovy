@@ -32,6 +32,7 @@ public void checkPreviewStatus() throws Exception
 		q.addNot("previewstatus","2");
 		q.addNot("previewstatus","3");
 		q.addNot("previewstatus","generated");
+		q.addNot("previewstatus","mine");
 	}
 	else
 	{
