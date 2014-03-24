@@ -18,7 +18,7 @@
         </div>
         <div class="delete" style="margin-top: 15px; position: relative; z-index: 100;">
             #set( $path = $data.deploypath )
-            <a class="btn" href="./exports/${data}.zip?apppath=/$path" confirm="Are you sure?">Export</a>
+            <a class="btn" href="./exports/${data}.zip?apppath=$path" >Export</a>
             <a class="btn blue" href="./remove.html?appcatalogid=$appcatalogid&catalogid=$appcatalogid&searchtype=app&id=$data.id" confirm="Are you sure?">Delete</a>
         </div>
     </div>
