@@ -11,7 +11,7 @@
 	#foreach( $app in $apps)
 	<li class="auto">
        <a href="$home$apphome/views/applications/index.html?appcatalogid=$appcatalogid&id=$app.id" class="app">
-           <img height="60" width="60" alt="EM Share" src="/manager/theme/images/folder.png" style="float:left; margin: -15px 15px 0 0;">
+           <img height="60" width="60" alt="$app" src="/manager/theme/images/folder.png" style="float:left; margin: -15px 15px 0 0;">
            <div class="name" style="margin-left: 85px; margin-top: -12px;">
                <div class="alias" style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">$app</div>
                <div class="path">${context.siteRoot}${app.deploypath}</div>
@@ -23,6 +23,7 @@
        </a>
        <div class="scan">
            <a class="btn" style="margin-top: 15px;" href="$home${app.deploypath}">View</a>
+           <a class="btn" style="margin-top: 15px;" href="$home$apphome/views/applications/exports/${app}.zip?apppath=$app.deploypath">Download</a>
        </div>
 	</li>
 	#end

@@ -1,0 +1,7 @@
+<properties>
+	<property id="1">/${applicationid}/</property>
+	<property id="2">/${catalogid}/</property>
+	<property id="3">/WEB-INF/data/${catalogid}/lists/</property>
+	<property id="4">/WEB-INF/data/${catalogid}/views/</property>
+	<property id="5">/WEB-INF/data/${catalogid}/fields/</property>
+</properties>
