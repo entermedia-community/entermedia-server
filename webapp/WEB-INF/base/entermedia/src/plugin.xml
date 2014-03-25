@@ -93,7 +93,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
  	-->
  	
 	<lang:groovy  id="ProjectModule" script-source="modules/projects/ProjectModule.groovy" lazy-init="default" />
-	<lang:groovy  id="projectManager" script-source="modules/projects/BaseProjectManager.groovy" lazy-init="default">
+	<lang:groovy  id="projectManager" script-source="modules/projects/BaseProjectManager.groovy" lazy-init="default"  singleton="false">
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
 
