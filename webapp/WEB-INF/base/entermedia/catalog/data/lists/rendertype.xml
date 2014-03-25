@@ -1,5 +1,6 @@
 <properties>
 	<property id="all" >All Types</property>
+	<property id="default" >Default</property>
 	<property id="document" >Documents</property>
 	<property id="video" >Video</property>
 	<property id="embedded" >Web</property>
