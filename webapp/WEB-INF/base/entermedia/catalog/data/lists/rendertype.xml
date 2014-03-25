@@ -6,4 +6,5 @@
 	<property id="embedded" >Web</property>
 	<property id="image" >Image</property>
 	<property id="audio" >Audio</property>
+	<property id="default" >Generic</property>
 </properties>	

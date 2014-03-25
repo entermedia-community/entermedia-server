@@ -5,16 +5,13 @@
 #end
 
 
-
 <div class="render-type-thumbnail" id="${detail.id}-preview" style="padding: 4px;">
 
 
 #if($val && $val != "")
 #set( $foundrow = $mediaarchive.getAsset($val)  )
 #if($foundrow)
-	
-			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
-
+	$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
 #else
 ##set( $foundrow = "")
 #end
@@ -26,10 +23,5 @@
 <input type="hidden" name="${detail.id}.sourcepath" id="${detail.id}-sourcepath" value="$detail.sourcepath"/>
 #end
 <input type="hidden" class="$detail.getId()-field" id="${detail.getId()}.value" name="${detail.getId()}.sourcepath" value="$!sourcepath" />
-Choose Existing:<br/>
+
 <a href="$home$apphome/components/html/assetpicker/index.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-target="$home$apphome/components/html/assetpicker/index.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-width="90%" data-height="90%"  class="emdialog ajaxDialog btn btn-default" >Browse</a><br/> or Upload New:	<input class="render-choose-file" type="file" name="file.${detail.getId()}" />
-
-
-<!-- 
-<input type="button" class="btn asset-picker" data-detailid="$detail.id" >Browse</input>
- -->
