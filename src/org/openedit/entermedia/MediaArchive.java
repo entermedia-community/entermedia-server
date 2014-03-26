@@ -1280,7 +1280,7 @@ public class MediaArchive
 		}
 		return contentsiteroot;
 	}
-	public boolean doesAttachmentExist(Asset asset, Data inPreset, int inPageNumber) 
+	public boolean doesAttachmentExist(Data asset, Data inPreset, int inPageNumber) 
 	{
 		String outputfile = inPreset.get("outputfile");
 		if( inPageNumber > 1 )
@@ -1293,7 +1293,7 @@ public class MediaArchive
 		return page.exists() && page.getLength() > 1;
 		
 	}
-	public boolean doesAttachmentExist(String outputfile, Asset asset) {
+	public boolean doesAttachmentExist(String outputfile, Data asset) {
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.exists() && page.getLength() > 1;
 	}
