@@ -21,6 +21,8 @@
 <form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
 
 #foreach($type in $facets )
+
+#if(!$hits.isChildFacetSelected($type))
 <h4>$type</h4>
 	     <ul class="filters-sidebar">
 	     
@@ -39,6 +41,7 @@
 	#end
 
 </ul>
+#end
 
 #end
     <input type="hidden" name="catalogid" value="$!catalogid" />
