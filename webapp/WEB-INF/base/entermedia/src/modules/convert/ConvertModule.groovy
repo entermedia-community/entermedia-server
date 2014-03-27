@@ -9,7 +9,7 @@ import org.openedit.util.DateStorageUtil
 
 import com.openedit.WebPageRequest
 
-public class ProjectModule extends BaseMediaModule
+public class ConvertModule extends BaseMediaModule
 {
 	
 	public void convertAsset(WebPageRequest inReq) throws Exception
