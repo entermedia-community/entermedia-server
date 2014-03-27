@@ -1313,7 +1313,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 	
-	
+	<!-- 
 	<bean id="attachmentSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1323,7 +1323,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 		
 	</bean>
-
+ -->
 	<bean id="SavedQueryModule" class="org.openedit.entermedia.modules.SavedQueryModule">
 		<property name="savedQueryManager"><ref bean="savedQueryManager" /></property>
 	</bean>

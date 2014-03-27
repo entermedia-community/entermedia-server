@@ -252,7 +252,7 @@ public class AttachmentManager
 
 	public void clearAttachmentData(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, boolean inB)
 	{
-		XmlFileSearcher attachmentSearcher = (XmlFileSearcher) getAttachmentSearcher(inArchive.getCatalogId());
+		Searcher attachmentSearcher = (Searcher) getAttachmentSearcher(inArchive.getCatalogId());
 
 		SearchQuery query = attachmentSearcher.createSearchQuery();
 		query.addMatches("assetid", inAsset.getId());
@@ -263,7 +263,7 @@ public class AttachmentManager
 			for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
 			{
 				Data data = (Data) iterator2.next();
-				attachmentSearcher.deleteRecord(data);
+				attachmentSearcher.delete(data, inReq.getUser());
 			}
 		}
 	}
