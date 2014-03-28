@@ -1150,7 +1150,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	<bean id="order" class="org.openedit.entermedia.orders.Order" singleton="false">
 	</bean>
-
+<!-- 
 	<bean id="orderitemSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1172,6 +1172,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
+	 -->
 	<bean id="orderhistory" class="org.openedit.entermedia.orders.OrderHistory" singleton="false"/>
 	
 	<bean id="publishManager" class="org.openedit.entermedia.publishing.PublishManager" >
@@ -1193,20 +1194,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 
 
-	<bean id="messageSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>users</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-	</bean>
-
-
-	<bean id="MessageModule" class="org.openedit.entermedia.modules.MessageModule">
-		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
-	</bean>
 	  
 	  <bean id="DataImportModule" class="org.openedit.entermedia.modules.DataImportModule">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
