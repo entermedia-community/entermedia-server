@@ -52,7 +52,7 @@ var uploadid;
 $(document).ready(function() 
 {	
 	home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
-    $('#filePicker').click(function(e){
+    $('#filePicker').livequery('click',function(e){
         $('#upload_field').trigger('click');
         e.preventDefault(); 
      });

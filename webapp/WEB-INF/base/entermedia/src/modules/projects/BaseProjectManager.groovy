@@ -100,7 +100,7 @@ public class BaseProjectManager implements ProjectManager
 					ids.add( collection.getId() );
 				}
 				HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
-				if( collectionassets.size() > 0) //No assets found at all
+				if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
 				{
 					collectionhits = collectionassets.findFilterNode("librarycollection");
 				}
