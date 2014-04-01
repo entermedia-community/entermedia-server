@@ -916,7 +916,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-
+<!--
 	<bean id="friendSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -926,16 +926,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
-	<bean id="assetvotesSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>assets</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-	</bean>
 
+ 
 	<bean id="invitationSearcher" class="org.openedit.data.XmlFileSearcher"
 		singleton="false">
 		<property name="pageManager">
@@ -956,7 +948,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 		
 	</bean>
-
+ -->
 	<bean id="friendManager" class="org.openedit.entermedia.friends.FriendManager">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
@@ -1319,7 +1311,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="savedQueryManager" class="org.openedit.entermedia.savedqueries.SavedQueryManager"	singleton="false">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
-
+<!-- 
 	<bean id="savedquerySearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1341,7 +1333,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 		
 	</bean>
-
+ -->
 	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1366,6 +1358,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 	<!-- Catalog based user details (not like preferences) -->
+	<!-- 
 	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
@@ -1376,7 +1369,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		
 	</bean>
 	
-		
+		 -->
 	
 	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
