@@ -86,7 +86,10 @@ uiload = function() {
 	jQuery(".validate-inputs").livequery(
 			function() 
 			{
-					jQuery(this).closest("form").validate();
+					jQuery(this).closest("form").validate({
+						  ignore: ".ignore, .select2-input"
+					});
+
 			}
 		);
 	
@@ -319,14 +322,16 @@ uiload = function() {
 	
 	jQuery("input.listtags").livequery( function() 
 	{
+		
 		var theinput = jQuery(this);
 		theinput.select2({tags:[],
 			formatNoMatches: function () { return theinput.data("enterdata") ; },
 			tokenSeparators: [",","|"],
 			separator: '|'
-		});
+		}).change(function() { $(this).valid();	});
+
 	});
-	
+
 	jQuery("input.listautocomplete").livequery( function() 
 	{
 		var theinput = jQuery(this);

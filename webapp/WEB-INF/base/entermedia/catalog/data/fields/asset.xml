@@ -27,7 +27,7 @@
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text" >Compression</property>
 	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text" sortable="true">Artist</property>
 	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text"  sortable="true">Contributor</property>
-	<property id="creator" index="true" stored="true" datatype="text" editable="true" externalid="XMP-dc:Creator,exif:Artist,iptc:By-line"  sortable="true">Author</property>
+	<property id="creator" index="true" stored="true" datatype="text" editable="true" externalid="XMP-dc:Creator,iptc:By-line"  sortable="true">Author</property>
 	
 	<!-- Camera stuff --> 
 	<property id="lenstype" externalid="Lens ID" index="true" stored="true" datatype="text"  >Lens Type</property>
