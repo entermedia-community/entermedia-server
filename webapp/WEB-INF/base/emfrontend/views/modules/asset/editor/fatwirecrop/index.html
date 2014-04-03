@@ -83,18 +83,19 @@ $pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/sendalltofa
 		
 		<!-- include modify -->
 		$context.putPageValue("presetdata",$result)
-		$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/modify.html", $context)
-		
+		#if( $canviewfatwirecrop )
+			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/modify.html", $context)
+		#end
 		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
 		#if($isready)
 			<!--  include share -->
 			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
-			#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
-			#if($cancrop)
-			#else
-				<span style="font-size:smaller;margin: 0 20px 20px;">Image is too small to crop to the desired crop dimension</span>
-				
-			#end
+			#if( $canviewfatwirecrop )
+				#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
+				#if(!$cancrop)
+					<span style="font-size:smaller;margin: 0 20px 20px;">Image is too small to crop to the desired crop dimension</span>
+				#end
+			#end	
 			<!-- include submit to fatwire -->
 			#if($result.publishtofatwire == "true") 
 				$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
