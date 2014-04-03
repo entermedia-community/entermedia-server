@@ -86,19 +86,11 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	}
 	
 	public Data createNewData()
-	{
-
-
-		
-		
-		if( fieldNewDataName == null)
+	{	
+		if( getNewDataName() == null)
 		{
-			
-			fieldNewDataName = getNewDataName();
-			if( fieldNewDataName == null){
-				ElementData data = new ElementData();
-				return data;
-			}
+			ElementData data = new ElementData();
+			return data;
 		}
 		return (Data)getModuleManager().getBean(getNewDataName());
 	}
