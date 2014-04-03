@@ -1,4 +1,4 @@
-<properties classname="order">
+<properties class="order">
 	<property id="id" index="true" stored="true">Id</property>
 	<property id="name" index="true" stored="true">Order Number</property>
 	<property id="ordertype"  editable="true" index="true" stored="true" type="list" listid="order/ordertype">Order Type</property>

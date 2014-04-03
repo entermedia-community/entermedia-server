@@ -1,4 +1,4 @@
-<properties beanname="dataSearcher" prefix="orders" classname="orderhistory">
+<properties beanname="dataSearcher" prefix="orders" class="orderhistory">
 	<property id="id" editable="false" index="true" stored="true">History Id</property>
 	<property id="orderid" editable="false" index="true" stored="true">Order Id</property>
 	<property id="userstatus" index="true" type="list" stored="true" listid="order/userstatus" >Last Status</property>
