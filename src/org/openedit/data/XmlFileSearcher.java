@@ -94,7 +94,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		if( fieldNewDataName == null)
 		{
 			
-			fieldNewDataName = getPropertyDetails().getClassName();
+			fieldNewDataName = getNewDataName();
 			if( fieldNewDataName == null){
 				ElementData data = new ElementData();
 				return data;
