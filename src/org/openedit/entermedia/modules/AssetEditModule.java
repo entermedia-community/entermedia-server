@@ -1,6 +1,7 @@
 package org.openedit.entermedia.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -1035,7 +1036,15 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			for (int i = 0; i < fields.length; i++)
 			{
-				String val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
+				Object val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
+				if( val == null)
+				{
+					String[] array = inReq.getRequestParameters(prefix + fields[i]+ ".values");
+					if( array != null)
+					{
+						val = Arrays.asList(array);
+					}
+				}
 				if( val != null)
 				{
 					vals.put(fields[i],val);
@@ -1134,9 +1143,17 @@ public class AssetEditModule extends BaseMediaModule
 		for (Iterator iterator = vals.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();
-			String val = (String)vals.get(field);
-			asset.setProperty(field, val);
+			Object val = vals.get(field);
+			if( val instanceof Collection)
+			{
+				asset.setValues(field, (Collection)val);
+			}
+			else
+			{
+				asset.setProperty(field, (String)val);
+			}
 		}
+		
 		for (Iterator iterator = cats.iterator(); iterator.hasNext();)
 		{
 			Category cat = (Category) iterator.next();
