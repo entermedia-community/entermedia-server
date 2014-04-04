@@ -7,3 +7,4 @@
 ]
 
 ##{"label": "$s.replace($q,"<b>$q</b>") ($res.get('hitcount'))", "value": "$s"}
+## {"label": "Dog (2)", "value","Dog"}

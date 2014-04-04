@@ -1143,7 +1143,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	<bean id="order" class="org.openedit.entermedia.orders.Order" singleton="false">
 	</bean>
-<!-- 
 	<bean id="orderitemSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>

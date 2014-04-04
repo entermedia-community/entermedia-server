@@ -6,5 +6,5 @@ import com.openedit.hittracker.HitTracker;
 
 public interface AutoCompleteSearcher extends Searcher
 {
-	public void updateHits(HitTracker tracker, String word) throws Exception;
+	public void updateHits(HitTracker tracker, String word);
 }
