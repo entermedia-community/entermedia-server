@@ -315,7 +315,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="rootDirectory"><ref bean="root"/></property>
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>		
+		<property name="cacheManager"><ref bean="cacheManager"/></property>	
+		<property name="moduleManager"><ref bean="moduleManager" /></property>	
 	</bean>	
 
 	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"	singleton="false">
