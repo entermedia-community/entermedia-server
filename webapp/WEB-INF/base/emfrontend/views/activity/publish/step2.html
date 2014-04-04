@@ -10,7 +10,7 @@
 			<h4>Publishing to $publishtype</h4>
 			
 			#set($filetypes = [])
-			#if ($publishtype == "YouTube")
+			#if ($publishtype.publishtype == "youtube")
 				<input type="hidden" name="field" value="assetfield">
 			#end
 			
@@ -42,9 +42,9 @@
 				<input type="hidden" name="field" value="itemfiletype"/>
 				<input type="hidden" name="${item.id}.itemfiletype.value" value="${filetype}"/>
 				##add extra variables for specific publishers
-				#if ($publishtype == "YouTube")
+				#if ($publishtype.publishtype == "youtube")
 					<input type="hidden" name="assetfield.value" value="${asset.id}">
-				#elseif ($publishtype == "FatWire")
+				#elseif ($publishtype.publishtype == "fatwire")
 					#set($homeurl = "${context.siteRoot}${home}${apphome}")
 					#set($username = $context.getUserName())
 					<input type="hidden" name="presetfield" value="homeurl">
@@ -61,7 +61,7 @@
 				#set($omit = $ft.get(3))
 				
 				##include header if youtube
-				#if($publishtype == "YouTube")
+				#if($publishtype.publishtype == "youtube")
 				<tr>
 					<th>&nbsp;</th>
 					<th>YouTube Category</th>
@@ -85,7 +85,7 @@
 						$pages.include("./publishererror.html",$context)
 					</td>
 					#else
-					#if ($publishtype == "YouTube")
+					#if ($publishtype.publishtype == "youtube")
 						<td style="text-align: center;">	
 							$pages.include("./youtubecategoryselector.html")
 						</td>
@@ -98,7 +98,7 @@
 						#set( $rendertype = false)
 					    #set( $rendertype = $mediaarchive.getMediaRenderType($fileformat) )
 					    
-					    #if($publishtype == "FatWire")
+					    #if($publishtype.publishtype == "fatwire")
 					    	#set( $null = $presetquery.setAndTogether(true) )
 			  	   	    	#set( $null = $presetquery.append("publishtofatwire","true"))
 			  	   	    	#if( $rendertype )
