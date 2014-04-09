@@ -116,7 +116,7 @@ $context.putPageValue("searcher", $searcher)
 				#set( $value = $data.get($detail.getId()))
 			#end
 			
-			#if( $value && $value != "") 
+			#if( $value && $value != "" || $detail.dataType == "searchjoin") 
 				#set( $foundone = true)
 				<div class="cellrow">
 					<span class="bodylabel" valign="top">

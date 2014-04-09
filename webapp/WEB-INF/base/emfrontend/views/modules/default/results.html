@@ -89,7 +89,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
     
 	#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
         
-        <tr  #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid" #end >
+        <tr  #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=true&preview=true" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=true&preview=true" #end >
    
     
 #if($content.isPropertyTrue("showactions"))

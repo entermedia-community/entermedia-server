@@ -76,7 +76,13 @@ public class BasePushManager implements PushManager
 		HttpClient client = new HttpClient();
 		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
 		String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
-		String password = getUserManager().decryptPassword(getUserManager().getUser(account));
+		User user = getUserManager().getUser(account);
+		if( user == null)
+		{
+			log.info("No such user " + account);
+			return null;
+		}
+		String password = getUserManager().decryptPassword(user);
 		PostMethod method = new PostMethod(server + "/media/services/rest/login.xml");
 
 		//TODO: Support a session key and ssl

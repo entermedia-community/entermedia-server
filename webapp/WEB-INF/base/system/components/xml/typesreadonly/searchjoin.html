@@ -9,11 +9,10 @@
 	#set( $newsearcher = $searcherManager.getSearcher($catalogid,$table) )
 	$context.putPageValue("searcher",$newsearcher)
 	#set( $newdetail = $newsearcher.getDetail($column) )
+	$context.putPageValue("detail",$newdetail)
 	#set ($viewtype = $newdetail.viewType)
-	#if( $data)
-		#set( $data = $newsearcher.searchById($data.get($table)) )
-		$context.putPageValue("data",$data)
-		$context.putPageValue("detail",$newdetail)
-	#end
+	#set( $data = $newsearcher.searchById($data.get($table)) )
+	$context.putPageValue("data",$data)
 	
-$pages.include("$xmledithome/types/${viewtype}.html", $context)
+	
+$pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)

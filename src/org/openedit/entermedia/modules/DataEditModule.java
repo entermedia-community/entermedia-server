@@ -1120,7 +1120,10 @@ public class DataEditModule extends BaseMediaModule
 		if (catalogid != null)
 		{// for a sub searcher
 			searcher = getSearcherManager().getSearcher(catalogid, searchType);
-			hits = searcher.loadHits(inReq);
+			if(searcher != null)
+			{
+				hits = searcher.loadHits(inReq);
+			}
 		}
 
 		if (hits == null)

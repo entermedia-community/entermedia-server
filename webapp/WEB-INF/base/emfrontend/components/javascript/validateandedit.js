@@ -80,7 +80,6 @@ addListListener = function( inParentFieldName, inFieldName )
 updatelisteners = function(catalogid, searchtype,view , fieldname)
 {
 	var val = $("#list-" + fieldname).val();
-
 	//validate(catalogid, searchtype, view , fieldname);
 	
 	var node = findOrAddNode(fieldname);
@@ -91,8 +90,9 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 		{
 			var childfieldname = node.children[i];
 			var element = $("#list-" + childfieldname);
+			var valueselection;
 			if(element.options !== undefined) {
-				var valueselection = element.options[element.selectedIndex].value;
+				valueselection = element.options[element.selectedIndex].value;
 			}
 			var div="listdetail_" + childfieldname;
 			//we are missing the data element of the children

@@ -1,4 +1,3 @@
-
 ## API -- Set these page variables
 ##$searchtype  ##jointable
 ##$fieldexternalid ##productid
@@ -24,6 +23,7 @@
 	#set ($o = $query.addMatches("id", "*"))
 #end
 #set ($types = $lsearcher.search($query))
+
 
 $context.putPageValue("all", $types)
 

@@ -62,7 +62,7 @@ $context.putPageValue("caneditlists","false")
 		#end
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true" )
-	#if( $editrow || $val  || !$detail.isEditable()) 
+	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin") 
 		#if( !$val) #set( $val = "") #end		
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">

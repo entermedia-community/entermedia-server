@@ -15,6 +15,8 @@
 #end
 
 #set( $listid = $detail.getListId())
+#set( $csslistid = "list-$!detailprefix${detail.id}")
+
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 ##optional things to filter the list
 #set ($foreignkeyid = $detail.get("foreignkeyid") )
@@ -40,7 +42,6 @@
 	#set ($query = $lsearcher.createSearchQuery())
 	#set ($o = $query.addMatches("id", "*"))
 #end
-
 #if ($detail.sort)
 	$query.setSortBy($detail.sort)
 #end
@@ -62,7 +63,7 @@ $lsearcher.addShowOnly($context, $query)
 		</script>
 	#end
 		
-	<select  id="list-$listid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
+	<select  id="$csslistid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
 		class="choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" id="${valueid}.value"
 		data-listid="$listid" 
@@ -103,9 +104,9 @@ $lsearcher.addShowOnly($context, $query)
 
 <script>
 
-    $('#list-$listid').change(function(){
+    $('#$csslistid').change(function(){
         if ( $(this).val() == "new $listid" )  {
-            $('#list-$listid').hide();
+            $('#$csslistid').hide();
             $('#listeditor-$listid').show();
         }
     });

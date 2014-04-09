@@ -3,7 +3,6 @@
  */
 package org.openedit.data.lucene;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -86,10 +85,23 @@ public class LuceneSearchQuery extends SearchQuery
 //			{
 //				detail = remotesearcher.getDetail(remotejoincolumn); //This makes sense when using users table
 //			}
+			
 			inTerm.setDetail(detail);
 			q.addTerm(inTerm);
-			
+
 			addRemoteJoin(q, remotejoincolumn, false, localfield, localfield);
+
+			//We dont actually add a term
+			Term stub = new Term() {
+				public String toQuery() {
+					return null;
+				}
+			};
+			stub.setDetail(searchdetail);
+			stub.setValues(inTerm.getValues());
+			stub.setValue(inTerm.getValue());
+			super.addTermByDataType(stub);
+
 		}
 		else
 		{
@@ -591,6 +603,10 @@ public class LuceneSearchQuery extends SearchQuery
 			{
 				Term field = (Term) fieldTerms.get(i);
 				String q = field.toQuery();
+				if( q == null )
+				{
+					continue;
+				}
 				if (i > 0 && !q.startsWith("+") && !q.startsWith("-"))
 				{
 					done.append(op);
