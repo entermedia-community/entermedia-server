@@ -93,8 +93,23 @@ public class ConversionUtil {
 			
 			//use asset dimension instead of standardized input dimension
 			Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
-			double assetwidth = asset.get("width") != null ? (double) Integer.parseInt(asset.get("width")) : 0d;
-			double assetheight = asset.get("height") != null ? (double) Integer.parseInt(asset.get("height")) : 0d;
+			//error check dimensions
+			double assetwidth = 0.0d;
+			try{
+				String num = asset.get("width");
+				if (num!=null) num = num.trim();
+				assetwidth = (double) Integer.parseInt(num);
+			}catch (Exception e){
+				log.warn("Exception caught parsing asset width, assetid="+asset.getId()+", width="+asset.get("width")+", defaulting value to 0");
+			}
+			double assetheight = 0.0d; 
+			try{
+				String num = asset.get("height");
+				if (num!=null) num = num.trim();
+				assetheight = (double) Integer.parseInt(num);
+			}catch (Exception e){
+				log.warn("Exception caught parsing asset height, assetid="+asset.getId()+", height="+asset.get("height")+", defaulting value to 0");
+			}
 			double cropwidth = cropDimension.getWidth();
 			double cropheight = cropDimension.getHeight();
 			canCrop = (cropwidth <= assetwidth && cropheight <= assetheight);
