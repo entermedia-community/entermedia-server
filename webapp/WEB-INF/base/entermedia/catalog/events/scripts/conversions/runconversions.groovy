@@ -80,7 +80,7 @@ class ConvertRunner implements Runnable
 	{
 		try
 		{
-			convert();Runnable
+			convert();
 		}
 		catch (Throwable ex )
 		{
@@ -346,10 +346,13 @@ public void checkforTasks()
 	else
 	{
 		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
-		ExecutorService  executor = executorManager.createExecutor();
+		ExecutorService  executor = null;
+		ExecutorService  videoexecutor = null;
+		
 		CompositeConvertRunner byassetid = null;
 		String lastassetid = null;
-		for(Data hit: newtasks.getPageOfHits() )
+		Iterator iter = newtasks.getPageOfHits().iterator();
+		for(Data hit:  iter)
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
 			runners.add(runner);
@@ -363,11 +366,29 @@ public void checkforTasks()
 				tasksearcher.saveData(missingdata, null);
 				continue;
 			}
-			if( id != lastassetid )
+			if( id != lastassetid || !iter.hasNext() )
 			{
+				Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+				String format = mediaarchive.getMediaRenderType(asset.get("fileformat") );
+				boolean isvideo = "video" ==  format;
 				if( byassetid != null )
 				{
-					executor.execute(byassetid);
+					if( isvideo)
+					{
+						if( videoexecutor == null)
+						{
+							videoexecutor = executorManager.createExecutor(0,1);
+						}
+						videoexecutor.execute(byassetid);
+					}
+					else
+					{
+						if( executor == null)
+						{
+							executor = executorManager.createExecutor();
+						}
+						executor.execute(byassetid);
+					}
 				}
 				lastassetid = hit.get("assetid");
 				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
@@ -376,11 +397,15 @@ public void checkforTasks()
 			}
 			byassetid.add(runner);
 		}
-		if( byassetid != null )
+		if( videoexecutor != null)
 		{
-			executor.execute(byassetid);
+			executorManager.waitForIt(videoexecutor);
 		}
-		executorManager.waitForIt(executor);
+		if( executor != null)
+		{
+			executorManager.waitForIt(executor);
+		}
+			
 	}
 	
 	if( newtasks.size() > 0 )
