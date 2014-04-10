@@ -3,4 +3,9 @@
 ## $searcher
 ## $val
 ## $searcherManager
-#esc($!val)
+#if($detail.render && $data)
+	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
+	#esc( $label )
+#else
+	#esc($!val)
+#end

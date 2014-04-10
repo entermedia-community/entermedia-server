@@ -80,7 +80,7 @@ class ConvertRunner implements Runnable
 	{
 		try
 		{
-			convert();Runnable
+			convert();
 		}
 		catch (Throwable ex )
 		{
@@ -346,10 +346,15 @@ public void checkforTasks()
 	else
 	{
 		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
-		ExecutorService  executor = executorManager.createExecutor();
+		ExecutorService  executor = null;
+		ExecutorService  videoexecutor = null;
+		
 		CompositeConvertRunner byassetid = null;
+		CompositeConvertRunner lastcomposite = null;
+		boolean runexec = false;
 		String lastassetid = null;
-		for(Data hit: newtasks.getPageOfHits() )
+		Iterator iter = newtasks.getPageOfHits().iterator();
+		for(Data hit:  iter)
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
 			runners.add(runner);
@@ -365,22 +370,52 @@ public void checkforTasks()
 			}
 			if( id != lastassetid )
 			{
-				if( byassetid != null )
-				{
-					executor.execute(byassetid);
-				}
-				lastassetid = hit.get("assetid");
+				lastcomposite = byassetid;
 				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
 				byassetid.log = log;
 				byassetid.user = user;
+				lastassetid = id;
 			}
 			byassetid.add(runner);
+			
+			if( !iter.hasNext() ) //Make sure we run the last task in the iterator
+			{
+				lastcomposite = byassetid;
+			}
+			
+			if( lastcomposite != null )
+			{	
+				Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+				String format = mediaarchive.getMediaRenderType(asset.get("fileformat") );
+				boolean isvideo = "video" ==  format;
+				if( isvideo)
+				{
+					if( videoexecutor == null)
+					{
+						videoexecutor = executorManager.createExecutor(0,1);
+					}
+					videoexecutor.execute(lastcomposite);
+				}
+				else
+				{
+					if( executor == null)
+					{
+						executor = executorManager.createExecutor();
+					}
+					executor.execute(lastcomposite);
+				}
+				lastcomposite = null;
+			}
 		}
-		if( byassetid != null )
+		if( videoexecutor != null)
 		{
-			executor.execute(byassetid);
+			executorManager.waitForIt(videoexecutor);
 		}
-		executorManager.waitForIt(executor);
+		if( executor != null)
+		{
+			executorManager.waitForIt(executor);
+		}
+			
 	}
 	
 	if( newtasks.size() > 0 )

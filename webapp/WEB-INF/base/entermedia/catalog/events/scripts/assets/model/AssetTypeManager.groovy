@@ -52,6 +52,7 @@ public class AssetTypeManager extends EnterMediaObject
 			{
 				checkLibrary(mediaarchive,real);
 			}
+			real = checkCustomFields(hit,real);
 			if(real != null)
 			{
 				tosave.add(real);
@@ -61,10 +62,14 @@ public class AssetTypeManager extends EnterMediaObject
 				saveAssets(searcher, tosave);
 				tosave.clear();
 			}
+			
 		}
 		saveAssets(searcher, tosave);
 	}
-	
+	protected Asset checkCustomFields(MediaArchive inArchive, Data inHit, Asset loadedAsset)
+	{
+		return loadedAsset;
+	}
 	public Asset checkForEdits(Map typemap, Data hit)
 	{
 		String fileformat = hit.fileformat;
