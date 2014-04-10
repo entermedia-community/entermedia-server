@@ -14,19 +14,11 @@
 	#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #end
 
-#if($detail.render && $foundrow)
-   #set($label = $replacer.replace($detail.render, $foundrow.properties))
-#else
-   #set($label = $foundrow.name)
+#set($label = $searcherManager.getLabel($detail,$foundrow) )
+
+#if( $searcherManager.getSearcher( $detail.getListCatalogId(),$detail.getListId() ).getPropertyDetails().getRender() )
+	#set($searchfield = "description")
 #end
-
-##if($listsearcher.getPropertyDetails().getRender() && $foundrow)
-##set($label = $replacer.replace($listsearcher.getPropertyDetails().getRender(), $foundrow.properties))
-##else
-##set($label = $foundrow.name)
-##end
-
-##.replace('.','-')
 
 #set( $detailid = $detail.getId().replace('.','-') )
 

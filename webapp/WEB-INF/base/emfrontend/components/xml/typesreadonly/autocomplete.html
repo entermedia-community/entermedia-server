@@ -19,11 +19,8 @@
 		#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listId")
 	
 	#end
-#if($detail.render && $foundrow)
-#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $foundrow.properties))
-#else
-#set($label = $foundrow.name)
-#end
+
+#set($label = $searcherManager.getLabel($detail,$foundrow) )
 
  	<a class="btn" href="$link">#esc($label)</a>
 
