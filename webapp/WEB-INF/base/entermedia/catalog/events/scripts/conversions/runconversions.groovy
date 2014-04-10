@@ -350,6 +350,8 @@ public void checkforTasks()
 		ExecutorService  videoexecutor = null;
 		
 		CompositeConvertRunner byassetid = null;
+		CompositeConvertRunner lastcomposite = null;
+		boolean runexec = false;
 		String lastassetid = null;
 		Iterator iter = newtasks.getPageOfHits().iterator();
 		for(Data hit:  iter)
@@ -366,36 +368,44 @@ public void checkforTasks()
 				tasksearcher.saveData(missingdata, null);
 				continue;
 			}
-			if( id != lastassetid || !iter.hasNext() )
+			if( id != lastassetid )
 			{
-				Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
-				String format = mediaarchive.getMediaRenderType(asset.get("fileformat") );
-				boolean isvideo = "video" ==  format;
-				if( byassetid != null )
-				{
-					if( isvideo)
-					{
-						if( videoexecutor == null)
-						{
-							videoexecutor = executorManager.createExecutor(0,1);
-						}
-						videoexecutor.execute(byassetid);
-					}
-					else
-					{
-						if( executor == null)
-						{
-							executor = executorManager.createExecutor();
-						}
-						executor.execute(byassetid);
-					}
-				}
-				lastassetid = hit.get("assetid");
+				lastcomposite = byassetid;
 				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
 				byassetid.log = log;
 				byassetid.user = user;
+				lastassetid = id;
 			}
 			byassetid.add(runner);
+			
+			if( !iter.hasNext() ) //Make sure we run the last task in the iterator
+			{
+				lastcomposite = byassetid;
+			}
+			
+			if( lastcomposite != null )
+			{	
+				Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+				String format = mediaarchive.getMediaRenderType(asset.get("fileformat") );
+				boolean isvideo = "video" ==  format;
+				if( isvideo)
+				{
+					if( videoexecutor == null)
+					{
+						videoexecutor = executorManager.createExecutor(0,1);
+					}
+					videoexecutor.execute(lastcomposite);
+				}
+				else
+				{
+					if( executor == null)
+					{
+						executor = executorManager.createExecutor();
+					}
+					executor.execute(lastcomposite);
+				}
+				lastcomposite = null;
+			}
 		}
 		if( videoexecutor != null)
 		{
