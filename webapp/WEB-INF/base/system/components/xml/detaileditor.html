@@ -42,18 +42,13 @@ $context.putPageValue("caneditlists","false")
  
 	#set($val = false)
 	#set($target = "${detail.id}.value")
-	#set( $val = $context.getRequestParameter($target))					
-	#if( $searcherManager )
-		#set( $val = $searcherManager.getValue($data,$detail) )	
-	#else
-		#set( $val = $!{data.getProperty($detail.getId())} )
-	#end
-	
+	#set( $val = $context.getRequestParameter($target))		
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
 
 	$!context.putPageValue("detail",$detail)
+	
 	
 	#if ($detail.header)
 		<tr><td colspan="2">&nbsp;</td></tr>
@@ -62,7 +57,7 @@ $context.putPageValue("caneditlists","false")
 		#end
 	#end
 	#set( $editrow = $detail.isEditable() && $readonly != "true" )
-	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin") 
+	#if( $editrow || $val  || !$detail.isEditable() || $detail.dataType == "searchjoin" || $detail.render ) 
 		#if( !$val) #set( $val = "") #end		
 		$!context.putPageValue("val",$val)
 		<tr id="inputarea_${detail.id}">
