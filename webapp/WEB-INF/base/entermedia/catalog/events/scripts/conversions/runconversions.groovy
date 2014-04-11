@@ -19,6 +19,21 @@ import com.openedit.users.User
 import com.openedit.util.*
 import model.assets.ConvertQueue;
 
+class Finisher implements Runnable 
+{
+	MediaArchive fieldMediaArchive;
+	public Finisher(MediaArchive inArchive)
+	{
+		fieldMediaArchive = inArchive;
+	} 
+	public void run()
+	{
+		fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
+		//fieldMediaArchive.fireSharedMediaEvent("conversions/runconversions");
+	}
+}
+
+
 class CompositeConvertRunner implements Runnable
 {
 	String fieldSourcePath;
@@ -335,6 +350,8 @@ public void checkforTasks()
 	log.info("processing ${newtasks.size()} conversions ${newtasks.getHitsPerPage()} at a time");
 	
 	List runners = new ArrayList();
+
+	ConvertQueue executorQueue = getQueue();
 	
 	if( newtasks.size() == 1 )
 	{
@@ -346,8 +363,6 @@ public void checkforTasks()
 	}
 	else
 	{
-		ConvertQueue executorQueue = getQueue();
-		
 		CompositeConvertRunner byassetid = null;
 		CompositeConvertRunner lastcomposite = null;
 		boolean runexec = false;
@@ -392,15 +407,15 @@ public void checkforTasks()
 	
 	if( newtasks.size() > 0 )
 	{
-		for(ConvertRunner runner: runners)
-		{
-			if( runner.result != null && runner.result.isComplete() )
-			{
-				mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
-				mediaarchive.fireSharedMediaEvent("conversions/runconversions");
-				break;
-			}
-		}
+//		for(ConvertRunner runner: runners) //TODO use a boolean
+//		{
+//			if( runner.result != null && runner.result.isComplete() )
+//			{
+				Finisher finisher = new Finisher(mediaarchive);
+				executorQueue.getExecutor().execute(finisher);
+//				break;
+//			}
+//		}
 	}
 	log.info("Completed ${newtasks.size()} conversions");
 	
