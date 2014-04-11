@@ -54,7 +54,7 @@ public void createTasksForUpload() throws Exception
 	assets.each
 	{
 		foundsome = false;
-		Asset asset = mediaArchive.getAsset(it.id);
+		Asset asset = mediaArchive.getAssetBySourcePath(it.sourcepath);
 		
 		String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 		SearchQuery query = presetsearcher.createSearchQuery();
@@ -71,7 +71,7 @@ public void createTasksForUpload() throws Exception
 			Data preset = (Data) presetsearcher.searchById(it.id);
 			
 			//TODO: Move this to a new script just for auto publishing
-			presets.createPresetsForPage(tasksearcher, preset, asset,0);
+			presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
 			
 			String pages = asset.get("pages");
 			if( pages != null )
@@ -81,7 +81,7 @@ public void createTasksForUpload() throws Exception
 				{
 					for (int i = 1; i < npages; i++)
 					{
-						presets.createPresetsForPage(tasksearcher, preset, asset, i + 1);
+						presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
 					}
 				}
 			}

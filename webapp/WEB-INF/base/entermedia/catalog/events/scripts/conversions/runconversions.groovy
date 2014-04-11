@@ -17,6 +17,7 @@ import com.openedit.hittracker.*
 import com.openedit.page.*
 import com.openedit.users.User
 import com.openedit.util.*
+import model.assets.ConvertQueue;
 
 class CompositeConvertRunner implements Runnable
 {
@@ -345,9 +346,7 @@ public void checkforTasks()
 	}
 	else
 	{
-		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
-		ExecutorService  executor = null;
-		ExecutorService  videoexecutor = null;
+		ConvertQueue executorQueue = getQueue();
 		
 		CompositeConvertRunner byassetid = null;
 		CompositeConvertRunner lastcomposite = null;
@@ -385,37 +384,10 @@ public void checkforTasks()
 			
 			if( lastcomposite != null )
 			{	
-				Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
-				String format = mediaarchive.getMediaRenderType(asset.get("fileformat") );
-				boolean isvideo = "video" ==  format;
-				if( isvideo)
-				{
-					if( videoexecutor == null)
-					{
-						videoexecutor = executorManager.createExecutor(0,1);
-					}
-					videoexecutor.execute(lastcomposite);
-				}
-				else
-				{
-					if( executor == null)
-					{
-						executor = executorManager.createExecutor();
-					}
-					executor.execute(lastcomposite);
-				}
+				executorQueue.getExecutor().execute(lastcomposite);
 				lastcomposite = null;
 			}
 		}
-		if( videoexecutor != null)
-		{
-			executorManager.waitForIt(videoexecutor);
-		}
-		if( executor != null)
-		{
-			executorManager.waitForIt(executor);
-		}
-			
 	}
 	
 	if( newtasks.size() > 0 )
@@ -434,6 +406,25 @@ public void checkforTasks()
 	
 }
 
+
+//Temporary work around for a lack of an interface
+public ConvertQueue getQueue(String inCatalogId)
+{
+	//(ConvertQueue)moduleManager.getBean(mediaarchive.getCatalogId(),"convertQueue");
+	ConvertQueue queue = null;
+	if( moduleManager.contains( inCatalogId, "convertQueue") )
+	{
+		queue =  (ConvertQueue)moduleManager.getBean(mediaarchive.getCatalogId(),"convertQueue");
+	}
+	else
+	{
+		queue = new ConvertQueue();
+		ExecutorManager manager = (ExecutorManager)moduleManager.getBean("executorManager");
+		queue.setExecutorManager(manager);
+		moduleManager.getCatalogIdBeans().put(inCatalogId + "_" + "convertQueue", queue);
+	}
+	return queue;
+}
 
 checkforTasks();
 

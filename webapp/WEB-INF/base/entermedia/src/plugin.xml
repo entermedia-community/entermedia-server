@@ -115,5 +115,10 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	
  -->
+ <!-- 
+	<lang:groovy  id="convertQueue" script-source="model/assets/ConvertQueue.groovy" lazy-init="default"  scope="prototype" singleton="false">
+			<lang:property name="executorManager"><ref bean="executorManager" /></lang:property>
+	</lang:groovy>
+ -->
  	
 </beans>

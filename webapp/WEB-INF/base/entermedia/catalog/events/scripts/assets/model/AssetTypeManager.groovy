@@ -52,7 +52,7 @@ public class AssetTypeManager extends EnterMediaObject
 			{
 				checkLibrary(mediaarchive,real);
 			}
-			real = checkCustomFields(hit,real);
+			real = checkCustomFields(mediaarchive,hit,real);
 			if(real != null)
 			{
 				tosave.add(real);
