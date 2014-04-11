@@ -256,10 +256,10 @@ public class MediaArchive
 		return getPropertyDetailsArchive().getPropertyDetailsCached("asset");
 	}
 
-	//Not cached
+	//cached
 	public Asset getAssetBySourcePath(String inSourcePath)
 	{
-		return getAssetSearcher().getAssetBySourcePath(inSourcePath);
+		return (Asset)getAssetSearcher().searchByField("sourcepath",inSourcePath);
 	}
 	
 	public String asLinkToPreview(String inSourcePath)
