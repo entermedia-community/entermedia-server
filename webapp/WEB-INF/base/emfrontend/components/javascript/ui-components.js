@@ -393,7 +393,6 @@ uiload = function() {
 				if( e.val == "" ) //Work around for a bug with the select2 code
 				{
 					var id = "#list-" + theinput.attr("id");
-					alert( id);
 					jQuery(id).val("");
 				}
 			});
