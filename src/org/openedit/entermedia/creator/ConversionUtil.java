@@ -2,6 +2,8 @@ package org.openedit.entermedia.creator;
 
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -289,10 +291,12 @@ public class ConversionUtil {
 		return hits;
 	}
 	
-	public HitTracker getActivePresetList(String inCatalogId) throws Exception {
+	public HitTracker getActivePresetList(String inCatalogId, String mediatype) throws Exception {
 		SearcherManager sm = getSearcherManager();
-		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
-		HitTracker all = cpsearcher.fieldSearch("display", "true");
+		Collection both = new ArrayList();
+		both.add("all");
+		both.add(mediatype);
+		HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").orgroup("inputtype", both).sort("ordering").search();
 		return all;
 	}
 	

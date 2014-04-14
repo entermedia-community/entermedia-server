@@ -51,10 +51,9 @@ p{
 
 <h1>Automatic Conversions</h1>
 
-
-
 #set($newpreset = $context.findValue("newpreset"))
-#set($results = $conversionUtil.getActivePresetList($catalogid))
+#set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
 $context.putPageValue("results", $results)
 
 $pages.include("$home$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
