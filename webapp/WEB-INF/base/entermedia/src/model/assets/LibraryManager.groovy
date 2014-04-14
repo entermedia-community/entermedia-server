@@ -13,11 +13,12 @@ import com.openedit.hittracker.SearchQuery
 
 public class LibraryManager extends EnterMediaObject
 {
-	protected Map fieldLibraryFolders = new HashMap();
+	protected Map fieldLibraryFolders = null;
 	protected Object NULL = new BaseData();
 	
 	public void assignLibraries(MediaArchive mediaarchive, HitTracker assets)
 	{
+		
 		Searcher searcher = mediaarchive.getAssetSearcher();
 		Searcher librarySearcher = mediaarchive.getSearcher("library")
 		
@@ -29,6 +30,7 @@ public class LibraryManager extends EnterMediaObject
 			//log.info("try ${sourcepath}" );
 			String[] split = sourcepath.split("/");
 			String sofar = "";
+			Asset loaded = null;
 			for( int i=0;i<split.length - 1;i++)
 			{
 				if( i > 10 )
@@ -36,20 +38,22 @@ public class LibraryManager extends EnterMediaObject
 					break;
 				}
 				sofar = "${sofar}${split[i]}";
-				Data library = findLibrary(librarySearcher,sofar);
+				String libraryid = getLibraryIdForFolder(librarySearcher,sofar);
 				sofar = "${sofar}/";
 		
-				if( library != null )
+				if( libraryid != null )
 				{
 					Collection existing = hit.getValues("libraries");
-					if( existing == null || !existing.contains(library.getId()))
+					if( existing == null || !existing.contains(libraryid))
 					{
-						Asset asset = mediaarchive.getAssetBySourcePath(sourcepath);
-						asset.addLibrary(library.getId());
+						if( loaded == null)
+						{
+							loaded = mediaarchive.getAssetBySourcePath(sourcepath);
+							tosave.add(loaded);
+							savedsofar++;
+						}
+						loaded.addLibrary(libraryid);
 						//log.info("found ${sofar}" );
-						tosave.add(asset);
-						savedsofar++;
-						break;
 					}
 				}
 			}
@@ -67,31 +71,24 @@ public class LibraryManager extends EnterMediaObject
 		fieldLibraryFolders.clear();
 		
 	}
-	protected Data findLibrary(Searcher librarySearcher, String inFolder)
+	protected String getLibraryIdForFolder(Searcher librarySearcher, String inFolder)
 	{
-		Data library = fieldLibraryFolders.get(inFolder);
-		if( library == null)
+		if( fieldLibraryFolders == null)
 		{
-			SearchQuery query = librarySearcher.createSearchQuery();
-			query.setAndTogether(false);
-			query.addExact( "folder", inFolder );
-			query.addSortBy("folderDown");
-			library =	librarySearcher.searchByQuery(query);
-			if( library == null)
+			//load up all the folder we have
+			Collection alllibraries = librarySearcher.query().match("folder", "*").search();
+			fieldLibraryFolders = new HashMap(alllibraries.size());
+			for (Data hit in alllibraries)
 			{
-				library = NULL;
-			}
-			fieldLibraryFolders.put(inFolder, library);
-			if( fieldLibraryFolders.size() > 20000 )
-			{
-				fieldLibraryFolders.clear();
+				String folder = hit.get("folder");
+				if( folder != null)
+				{
+					fieldLibraryFolders.put( folder, hit.getId());
+				}
 			}
 		}
-		if(library == NULL)
-		{
-			return null;
-		}
-		return library;
+		String libraryid = fieldLibraryFolders.get(inFolder);
+		return libraryid;
 
 	}
 }
