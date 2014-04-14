@@ -11,7 +11,7 @@
 	<permission id="printpreview" permissiontype="asset" name="Print" description="Allows printing of asset and asset metadata." ordering="200"/>
 	<permission id="embedlinks" permissiontype="asset" name="Conversions" description="Shows conversions and links." ordering="200"/>
 	<permission id="viewfatwire" permissiontype="asset" name="View Fatwire Status" description="Shows Fatwire Status." ordering="200"/>
-	<permission id="viewfatwirecrop" permissiontype="asset" name="View Fatwire Cropping Tool" description="Accesses Cropping Tool" ordering="220"/>
+	<permission id="viewconversions" permissiontype="asset" name="Conversion and Cropping Tool" description="Virw Conversions and Cropping Tool" ordering="220"/>
 		
 		
 		

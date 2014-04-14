@@ -44,7 +44,9 @@ public class ConvertQueue extends EnterMediaObject
 				max = 4;
 			}
 			max--;
-			fieldGeneralConvertExecutor = getExecutorManager().createExecutor(1, max);
+			fieldGeneralConvertExecutor = getExecutorManager().createExecutor(max, max); //Max does not seem to work as advertised
+			//fieldGeneralConvertExecutor = getExecutorManager().createUnlimitedExecutor();
+			//System.out.println("Creating unlimited" + max);
 		}
 		return fieldGeneralConvertExecutor;
 	}

@@ -10,12 +10,6 @@
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
 	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Projects</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
-
-	<!-- Push items -->
-	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
-	<property id="pushpercentage" internalfield="true"  index="true"  stored="true">Push Percentage</property>
-	<property id="pusherrordetails" internalfield="true"  index="true"  stored="true">Push Error Details</property>
-	<property id="pusheddate" internalfield="true" editable="true"  index="true"  searchcomponent="datesearch"  type="date" stored="true" >Pushed Date</property>
 	
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
