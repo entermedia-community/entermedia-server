@@ -51,6 +51,10 @@ public class ConvertStatusModule extends BaseMediaModule
 	{
 		//sourcepath=" + asset.getSourcePath() + "preset=" + preset.getId());
 		String sourcePath = inReq.getRequestParameter("sourcepath");
+		if( sourcePath == null)
+		{
+			return;
+		}
 		String presetId = inReq.getRequestParameter("preset");
 		
 		if(presetId == null){
