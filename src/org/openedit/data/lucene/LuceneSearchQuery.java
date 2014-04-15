@@ -582,7 +582,31 @@ public class LuceneSearchQuery extends SearchQuery
 		addTermByDataType(term);
 		return term;
 	}
-	
+	public Term addFreeFormQuery(PropertyDetail inField, String inValue)
+	{
+		if( inValue != null && 
+				!inValue.contains("NOT ") &&
+				!inValue.contains("AND ") &&
+				!inValue.contains("OR ") &&
+				!inValue.contains(":") && !inValue.contains("*") && !inValue.contains("!") && !inValue.contains("-") && !inValue.contains("+"))
+		{
+			return addContains(inField, inValue);
+		}
+		Term term = new Term()
+		{
+			public String toQuery()
+			{
+				String inVal = getValue();
+				return inVal;
+			}
+		};
+		term.setOperation("freeform");
+		term.setDetail(inField);
+		term.setValue(inValue);
+		addTermByDataType(term);
+		return term;
+	}
+
 	
 	public String toQuery()
 	{
