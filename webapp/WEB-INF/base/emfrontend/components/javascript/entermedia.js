@@ -37,6 +37,20 @@ toggleUserProperty = function(property, onsuccess) {
 	
 }
 
+saveProfileProperty = function(property, value,onsuccess) {
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	
+	jQuery.ajax(
+			{
+				url:  apphome + "/components/userprofile/saveprofileproperty.html?field=" + property + "&" + property + ".value=" + value,
+				success: onsuccess
+			}
+		);
+	
+}
+
 
 
 setSessionValue = function(key, value) {
@@ -307,7 +321,11 @@ onloadselectors = function()
 		function() 
 		{
 			var form = jQuery(this);
-			form.validate();    
+			form.validate({
+			  ignore: ".ignore, .select2-input"
+			});
+			
+			
     		var isvalidate = form.valid();
 			if(!isvalidate)
         	{
@@ -368,7 +386,8 @@ onloadselectors = function()
 				dialog.fancybox(
 				{ 
 					'zoomSpeedIn': 0, 'zoomSpeedOut': 0, 'overlayShow': true,
-					enableEscapeButton: true, type: 'iframe',
+					enableEscapeButton: true, 
+					type: 'iframe',
 			        height: height,
 			        width: width,
 					autoScale: false,
@@ -1150,5 +1169,10 @@ emcomponents = function() {
 	);
 	
 
+	
+	
+	
+	
+	
 }
 

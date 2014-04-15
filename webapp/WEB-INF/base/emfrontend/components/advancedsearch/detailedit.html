@@ -43,7 +43,6 @@
 			#set ($viewtype = "booleansearch")
 		#end
 
-
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
 			#set( $values = "$!hits.getSearchQuery().getInputs($detail.id)" )
@@ -51,8 +50,7 @@
 			$context.putPageValue("term",$term)			
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
-		#end
-		
+		#end	
 		
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
 	</td>

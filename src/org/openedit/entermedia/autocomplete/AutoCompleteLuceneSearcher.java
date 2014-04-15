@@ -1,5 +1,6 @@
 package org.openedit.entermedia.autocomplete;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -26,6 +27,7 @@ import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.FullTextAnalyzer;
 import org.openedit.data.lucene.RecordLookUpAnalyzer;
 
+import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
@@ -104,7 +106,7 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 	{
 		//do nothing
 	}
-	public void updateHits(HitTracker tracker, String word) throws Exception
+	public void updateHits(HitTracker tracker, String word)
 	{
 		if( new Date().after(getCacheDate()) )
 		{
@@ -118,7 +120,7 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 			return;
 		}
 		int size = getCache().size();
-		if( size > 2000)
+		if( size > 2000) //TODO: Move to a normal 1000 cache system
 		{
 			getCache().clear();
 		}
@@ -129,8 +131,7 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 		{
 			return;
 		}
-		
-		
+				
 		SearchQuery suggestionsQuery = createSearchQuery();
 		//String nospace = word.replace(' ', '_'); //hot_dog
 		suggestionsQuery.addExact("synonyms", word);
@@ -139,56 +140,73 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 
 		HitTracker wordsHits = search(suggestionsQuery);
 		Field id = new Field("synonyms", word, Store.YES, Index.NOT_ANALYZED_NO_NORMS);
-		if (wordsHits.size() == 0)
+		try
 		{
-			Document doc = new Document();
-
-			doc.add(id);
-			doc.add(new Field("synonymsenc", word, Store.NO, Index.ANALYZED));
-			doc.add(new Field("hits", getNumberUtils().int2sortableStr(hits), Store.NO, Index.NOT_ANALYZED_NO_NORMS));
-			doc.add(new Field("hitcount", Integer.toString(hits), Store.YES, Index.NOT_ANALYZED_NO_NORMS));
-
-			/* Timestamp */
-			String newstamp = DateTools.dateToString(new Date(), Resolution.SECOND);
-			doc.add(new Field("timestamp", newstamp, Field.Store.YES, Field.Index.NOT_ANALYZED));
-
-			getIndexWriter().addDocument(doc, getAnalyzer());
-			clearIndex();
+			if (wordsHits.size() == 0)
+			{
+				saveHitCount(word, hits, id);
+			}
+			else if (wordsHits.size() > 0)
+			{
+				Object row = wordsHits.get(0);
+				String hitstring = wordsHits.getValue(row, "hitcount");
+				int currentcount = Integer.parseInt(hitstring);
+				if (currentcount == hits)
+				{
+					return;
+				}
+				/* Check for timestamp */
+				String stamp = wordsHits.getValue(row, "timestamp");
+				GregorianCalendar timestamp = new GregorianCalendar();
+				timestamp.setTime(DateTools.stringToDate(stamp));
+	
+				GregorianCalendar yesterday = new GregorianCalendar();
+				yesterday.add(Calendar.DATE, -1);
+	
+				if (timestamp.before(yesterday))
+				{
+					saveHitCountWithSynonyms(word, hits, id);
+				}
+			}
 		}
-		else if (wordsHits.size() > 0)
+		catch(Exception ex)
 		{
-			Object row = wordsHits.get(0);
-			String hitstring = wordsHits.getValue(row, "hitcount");
-			int currentcount = Integer.parseInt(hitstring);
-			if (currentcount == hits)
-			{
-				return;
-			}
-			/* Check for timestamp */
-			String stamp = wordsHits.getValue(row, "timestamp");
-			GregorianCalendar timestamp = new GregorianCalendar();
-			timestamp.setTime(DateTools.stringToDate(stamp));
-
-			GregorianCalendar yesterday = new GregorianCalendar();
-			yesterday.add(Calendar.DATE, -1);
-
-			if (timestamp.before(yesterday))
-			{
-				Document doc = new Document();
-
-				doc.add(id);
-				doc.add(new Field("synonymsenc", word, Store.NO, Index.ANALYZED));
-				doc.add(new Field("hits", getNumberUtils().int2sortableStr(hits), Store.NO, Index.NOT_ANALYZED_NO_NORMS));
-				doc.add(new Field("hitcount", Integer.toString(hits), Store.YES, Index.NOT_ANALYZED_NO_NORMS));
-
-				/* Timestamp */
-				String newstamp = DateTools.dateToString(new Date(), Resolution.SECOND);
-				doc.add(new Field("timestamp", newstamp, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				Term term = new Term("synonyms", word);
-				getIndexWriter().updateDocument(term, doc, getAnalyzer());
-				clearIndex();
-			}
+			throw new OpenEditException(ex);
 		}
 	}
 
+
+	protected void saveHitCountWithSynonyms(String word, int hits, Field id) throws IOException
+	{
+		Document doc = new Document();
+
+		doc.add(id);
+		doc.add(new Field("synonymsenc", word, Store.NO, Index.ANALYZED));
+		doc.add(new Field("hits", getNumberUtils().int2sortableStr(hits), Store.NO, Index.NOT_ANALYZED_NO_NORMS));
+		doc.add(new Field("hitcount", Integer.toString(hits), Store.YES, Index.NOT_ANALYZED_NO_NORMS));
+
+		/* Timestamp */
+		String newstamp = DateTools.dateToString(new Date(), Resolution.SECOND);
+		doc.add(new Field("timestamp", newstamp, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+		Term term = new Term("synonyms", word);
+		getIndexWriter().updateDocument(term, doc, getAnalyzer());
+		clearIndex();
+	}
+
+	protected void saveHitCount(String word, int hits, Field id) throws IOException
+	{
+		Document doc = new Document();
+
+		doc.add(id);
+		doc.add(new Field("synonymsenc", word, Store.NO, Index.ANALYZED));
+		doc.add(new Field("hits", getNumberUtils().int2sortableStr(hits), Store.NO, Index.NOT_ANALYZED_NO_NORMS));
+		doc.add(new Field("hitcount", Integer.toString(hits), Store.YES, Index.NOT_ANALYZED_NO_NORMS));
+
+		/* Timestamp */
+		String newstamp = DateTools.dateToString(new Date(), Resolution.SECOND);
+		doc.add(new Field("timestamp", newstamp, Field.Store.YES, Field.Index.NOT_ANALYZED));
+
+		getIndexWriter().addDocument(doc, getAnalyzer());
+		clearIndex();
+	}
 }

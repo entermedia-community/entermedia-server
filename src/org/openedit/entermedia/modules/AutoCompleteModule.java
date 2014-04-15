@@ -61,7 +61,7 @@ public class AutoCompleteModule extends DataEditModule
 	 * @param inReq
 	 * @throws Exception
 	 */
-	public void updateHits(WebPageRequest inReq) throws Exception
+	public void updateHits(WebPageRequest inReq)
 	{
 		String word = inReq.getRequestParameter("description.value");
 		if (word == null)

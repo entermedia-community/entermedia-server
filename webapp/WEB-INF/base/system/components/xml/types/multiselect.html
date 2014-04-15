@@ -3,6 +3,9 @@
 
 #set ($catalogid = $context.getRequestParameter('catalogid'))
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
+#if( !$searchtype )
+	#set( $searchtype = $searcher.getSearchType() )
+#end	
 #set ($view = $context.getRequestParameter('view')) 
 #if( !$values )
 #set($values = $data.getValues($detail.id))
@@ -36,7 +39,7 @@
 		listid="$listid" 
 		data-listid="$listid" 
 		data-placeholder=" "
-		data-searchtype='$searchtype'
+		data-searchtype='$!searchtype'
 	>
 	#if ($detail.blankoption != false)
 	<option value=""></option>

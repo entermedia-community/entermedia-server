@@ -155,7 +155,7 @@ public class AssetPathProcessor extends PathProcessor
 		protected void processAssetFolder(ContentItem inInput, User inUser)
 		{
 			String sourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
-			Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
+			Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(sourcepath);
 			if( asset != null)
 			{
 				//check this one primary asset to see if it changed

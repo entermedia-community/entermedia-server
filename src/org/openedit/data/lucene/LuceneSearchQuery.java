@@ -3,7 +3,6 @@
  */
 package org.openedit.data.lucene;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -86,10 +85,23 @@ public class LuceneSearchQuery extends SearchQuery
 //			{
 //				detail = remotesearcher.getDetail(remotejoincolumn); //This makes sense when using users table
 //			}
+			
 			inTerm.setDetail(detail);
 			q.addTerm(inTerm);
-			
+
 			addRemoteJoin(q, remotejoincolumn, false, localfield, localfield);
+
+			//We dont actually add a term
+			Term stub = new Term() {
+				public String toQuery() {
+					return null;
+				}
+			};
+			stub.setDetail(searchdetail);
+			stub.setValues(inTerm.getValues());
+			stub.setValue(inTerm.getValue());
+			super.addTermByDataType(stub);
+
 		}
 		else
 		{
@@ -547,10 +559,18 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String lowvals = getNumberUtils().double2sortableStr(getParameter("lowval"));
-				String highvals = getNumberUtils().double2sortableStr(getParameter("highval"));
+		
+				
+				Double low = Double.parseDouble(getParameter("lowval"));
+				Double high = Double.parseDouble(getParameter("highval"));
+				
+				Query q = NumericRangeQuery.newDoubleRange(getDetail().getId(),low, high, true, true);
+				String fin = q.toString();
+				
+				String lowvals = getParameter("lowval");
+				String highvals = getParameter("highval");
 
-				String fin = getDetail().getId() + ":[" + lowvals + " TO " +  highvals+ "]";
+				fin = getDetail().getId() + ":[" + lowvals +  " TO " +  highvals+  "]";
 				return fin;
 			}
 		};
@@ -562,7 +582,31 @@ public class LuceneSearchQuery extends SearchQuery
 		addTermByDataType(term);
 		return term;
 	}
-	
+	public Term addFreeFormQuery(PropertyDetail inField, String inValue)
+	{
+		if( inValue != null && 
+				!inValue.contains("NOT ") &&
+				!inValue.contains("AND ") &&
+				!inValue.contains("OR ") &&
+				!inValue.contains(":") && !inValue.contains("*") && !inValue.contains("!") && !inValue.contains("-") && !inValue.contains("+"))
+		{
+			return addContains(inField, inValue);
+		}
+		Term term = new Term()
+		{
+			public String toQuery()
+			{
+				String inVal = getValue();
+				return inVal;
+			}
+		};
+		term.setOperation("freeform");
+		term.setDetail(inField);
+		term.setValue(inValue);
+		addTermByDataType(term);
+		return term;
+	}
+
 	
 	public String toQuery()
 	{
@@ -583,6 +627,10 @@ public class LuceneSearchQuery extends SearchQuery
 			{
 				Term field = (Term) fieldTerms.get(i);
 				String q = field.toQuery();
+				if( q == null )
+				{
+					continue;
+				}
 				if (i > 0 && !q.startsWith("+") && !q.startsWith("-"))
 				{
 					done.append(op);

@@ -61,7 +61,11 @@
                         <div id="valuelist" class="emtable clearfix" style="margin: -10px -20px 0 -20px;">
                             <a class="owner row" style="color: #3490B2;">
             				#set( $owner = ${userManager.getUser($asset.owner)} )
+            				#if( $owner )
             					#if ($user.id == $asset.owner) You are the owner  #else $owner is the owner #end
+            				#else
+            					[[No owner]]
+            				#end	
                             </a>
             				#foreach($person in $peoples)
                                 <a class="row">$person</a>

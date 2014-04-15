@@ -2,6 +2,6 @@
 	<server id="4" listingurl="http://entermediasoftware.com/plugins/allplugins8dev.xml">EnterMediaSoftware.com Version 8 Sandbox</server>	
 	<server id="1" listingurl="http://entermediasoftware.com/plugins/allplugins8.xml">EnterMediaSoftware.com Version 8 Releases</server>	
 	<server id="2" listingurl="http://entermediasoftware.com/plugins/allplugins.xml">EnterMediaSoftware.com Version 7</server>	
-	<server id="3" listingurl="http://entermediasoftware.com/plugins/ian.xml">Ian Miller Examples</server>	
+	<server id="3" listingurl="http://entermediasoftware.com/plugins/ian.xml">NetEvolved Platform</server>	
 
 </servers>

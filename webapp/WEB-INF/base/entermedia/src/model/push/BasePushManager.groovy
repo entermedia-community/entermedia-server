@@ -76,7 +76,13 @@ public class BasePushManager implements PushManager
 		HttpClient client = new HttpClient();
 		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
 		String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
-		String password = getUserManager().decryptPassword(getUserManager().getUser(account));
+		User user = getUserManager().getUser(account);
+		if( user == null)
+		{
+			log.info("No such user " + account);
+			return null;
+		}
+		String password = getUserManager().decryptPassword(user);
 		PostMethod method = new PostMethod(server + "/media/services/rest/login.xml");
 
 		//TODO: Support a session key and ssl
@@ -831,7 +837,7 @@ asset: " + asset);
 		String url = server + "/media/services/rest/searchpendingpublish.xml?catalogid=" + targetcatalogid;
 		//url = url + "&field=remotempublishstatus&remotempublishstatus.value=new&operation=exact";
 		PostMethod method = new PostMethod(url);
-
+		
 		//loop over all the destinations we are monitoring
 ////		Searcher dests = getSearcherManager().getSearcher(inArchive.getCatalogId(),"publishdestination");
 ////		Collection hits = dests.fieldSearch("remotempublish","true");
@@ -1056,6 +1062,12 @@ asset: " + asset);
 			target = archive.createAsset(id, sourcepath);
 		}
 		
+		String name = inReq.getRequestParameter("name");
+		if( name != null)
+		{
+			target.setName(name);
+		}
+		
 //		String categories = inReq.getRequestParameter("categories");
 //		String[] vals = categories.split(";");
 //		archive.c
@@ -1091,18 +1103,14 @@ asset: " + asset);
 				target.addKeyword(keys[i]);
 			}
 		}
-
 		
 		archive.saveAsset(target, inReq.getUser());
 		List<FileUploadItem> uploadFiles = properties.getUploadItems();
 
-		String type = inReq.findValue("uploadtype");
-		if( type == null )
-		{
-			type = "generated";
-		}
-		String	saveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/" + type + "/" + sourcepath;
-			
+
+		String	generatedsaveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + sourcepath;
+		String	originalsaveroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath;
+		
 		//String originalsroot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/";
 
 		if (uploadFiles != null)
@@ -1111,15 +1119,14 @@ asset: " + asset);
 			while (iter.hasNext())
 			{
 				FileUploadItem fileItem = iter.next();
-
-				String filename = fileItem.getName();
-				if (type.equals("originals"))
+				String inputName = fileItem.getFieldName();
+				if( inputName.startsWith("original") )
 				{
-					properties.saveFileAs(fileItem, saveroot, inReq.getUser());
+					properties.saveFileAs(fileItem, originalsaveroot, inReq.getUser());
 				}
 				else
 				{
-					properties.saveFileAs(fileItem, saveroot + "/" + filename, inReq.getUser());
+					properties.saveFileAs(fileItem, generatedsaveroot + "/" + fileItem.getName(), inReq.getUser());
 				}
 			}
 		}

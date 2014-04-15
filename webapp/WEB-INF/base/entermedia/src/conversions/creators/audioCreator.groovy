@@ -10,7 +10,7 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.creator.*
 
-import com.coremedia.iso.boxes.BitRateBox;
+//import com.coremedia.iso.boxes.BitRateBox;
 import com.openedit.page.Page;
 import com.openedit.util.ExecResult;
 import com.openedit.util.FileUtils;

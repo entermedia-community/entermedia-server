@@ -354,6 +354,10 @@ public class Asset implements MultiValued
 		}
 		return fieldCategories;
 	}
+	
+	
+	
+	
 
 	public boolean isInCatalog(Category inCategory)
 	{

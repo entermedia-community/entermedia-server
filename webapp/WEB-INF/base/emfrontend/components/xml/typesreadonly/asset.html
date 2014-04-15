@@ -10,11 +10,8 @@
 
 #if($foundrow)
 <div id="${detail.id}-preview" class="assetdraggable ui-draggable" data-assetid="$foundrow.getId()">
-		
-			$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
-		</div>
-		
-		
+	$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val&readonly=true", $context)
+</div>
 #end
 
 #end

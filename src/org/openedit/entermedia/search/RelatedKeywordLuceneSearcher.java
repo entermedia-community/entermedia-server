@@ -1,11 +1,13 @@
 package org.openedit.entermedia.search;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -89,13 +91,45 @@ public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements 
 		if (keyword != null)
 		{
 			SearchQuery suggestionsQuery = createSearchQuery();
-			String nospace = keyword.getValue().replace(' ', '_');
-			if (nospace.contains("*"))   //* messes up our logic
+			
+			List<String> keywordValueList = new ArrayList<String>();
+
+			String keywordValue = keyword.getValue();
+			Object[] keywordValues = keyword.getValues();
+
+			if(keywordValue == null && keywordValues == null)
 			{
 				return suggestions;
 			}
-			//word is a cached version of results
-			suggestionsQuery.addMatches("word", nospace);
+
+			// Get keyword values
+			if(keywordValue == null)
+			{
+				for(int i=0; i < keywordValues.length;++i)
+				{
+					keywordValueList.add((String)keywordValues[i]);
+				}
+			}
+			else
+			{
+				keywordValueList.add(keywordValue);
+			}
+
+			String nospace = "";
+			
+			// Remove spaces and add to suggestion query
+			for (int i=0; i < keywordValueList.size();++i)
+			{
+				nospace = keywordValueList.get(i).replace(' ', '_');
+				if (nospace.contains("*"))   //* messes up our logic
+				{
+					return suggestions;
+				}
+			
+				//word is a cached version of results
+				suggestionsQuery.addMatches("word", nospace);
+			}
+			
 			HitTracker wordsHits = search(suggestionsQuery);
 			if (wordsHits == null || wordsHits.size() == 0)
 			{

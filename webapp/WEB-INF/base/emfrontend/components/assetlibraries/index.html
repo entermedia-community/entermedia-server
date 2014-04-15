@@ -7,10 +7,11 @@
     	#foreach($libraryid in $asset.getLibraries())
     		  
     		 #set( $library = false )
+    		 #set( $division = false )
     		 #set( $library = $searcherManager.getData($catalogid,"library",$libraryid) )
     		 #if( $library )
 	    		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )
-	 			<a class="row tag" href="$home$apphome/views/modules/library/userpermissions/index.html?id=$libraryid&searchtype=library">#if($division) $!division / #end $library</a>    
+	 			<a class="row tag" href="$home$apphome/views/modules/library/userpermissions/index.html?id=$libraryid&searchtype=library">#if($division) $!division / #end $library #if( $library.folder ) ( $library.folder #end)</a>    
 	    		#if($caneditasset)
 	    			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$libraryid"></a>
 	    		#end

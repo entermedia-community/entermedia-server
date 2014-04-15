@@ -82,24 +82,31 @@ public class BaseProjectManager implements ProjectManager
 			
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
 			HitTracker allcollections = searcher.query().match("library",library.getId()).sort("name").named("sidebar").search(inReq);
-			//enable filters
+
+			//Show all the collections for a library
 			inReq.putPageValue("allcollections", allcollections);
 			
-			Searcher collectionassetsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollectionasset");
-
-			List ids = new ArrayList(allcollections.size());
-			for (Iterator iterator = allcollections.iterator(); iterator.hasNext();)
-			{
-				Data collection = (Data) iterator.next();
-				ids.add( collection.getId() );
-			}
+			//enable filters to show the asset count on each collection node
 			FilterNode collectionhits = null;
-			HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
-			if( collectionassets != null)
+			if( allcollections.size() > 0 ) //May not have any collections
 			{
-				collectionhits = collectionassets.findFilterNode("librarycollection");
-			}
-			
+				Searcher collectionassetsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollectionasset");
+				
+				//Build list of ID's
+				List ids = new ArrayList(allcollections.size());
+				for (Iterator iterator = allcollections.iterator(); iterator.hasNext();)
+				{
+					Data collection = (Data) iterator.next();
+					ids.add( collection.getId() );
+				}
+				if(ids.size() > 0){
+				HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
+				if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+				{
+					collectionhits = collectionassets.findFilterNode("librarycollection");
+				}
+				}
+			}			
 			Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
 			inReq.putPageValue("usercollections", usercollections);
 			return usercollections;

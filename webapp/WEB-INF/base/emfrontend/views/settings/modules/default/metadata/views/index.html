@@ -69,6 +69,12 @@
 
             </div>
 
+   <div class="checkbox"><input id="systemdefined" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
+                Show on registration section:
+            	<input type="hidden" value="showonregistration" name="field" />
+
+            </div>
+
 	    <div class="checkbox"><input id="systemdefined" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
                 System View?
             	<input type="hidden" value="systemdefined" name="field" />

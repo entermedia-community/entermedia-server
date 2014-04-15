@@ -8,6 +8,7 @@ import java.util.Map;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -107,7 +108,7 @@ public class ValidationModule extends BaseModule
 			
 			for( String view: views )
 			{
-				List properties = archive.getDataProperties(datatype, view, inReq.getUser());
+				List properties = archive.getDataProperties(datatype, view, (UserProfile)null);;
 				if(properties == null)
 				{
 					continue;

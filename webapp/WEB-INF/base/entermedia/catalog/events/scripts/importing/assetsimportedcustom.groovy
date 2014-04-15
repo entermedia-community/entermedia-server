@@ -21,6 +21,8 @@ public void setAssetTypes()
 	   log.info("AssetIDS required");
 	   return;
 	}
+	
+	//TODO: Get rid of the need to search all the assets use the Asset Cache
 	String assetids = ids.replace(","," ");
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");

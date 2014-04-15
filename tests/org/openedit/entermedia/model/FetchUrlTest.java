@@ -21,7 +21,7 @@ public class FetchUrlTest extends BaseEnterMediaTest
 
 		WebPageRequest req = getFixture().createPageRequest(archive.getCatalogHome() + "/data/originals");
 		///This API should fire an event:
-		Asset asset = getMediaArchive().getAssetImporter().createAssetFromFetchUrl(archive, url, req.getUser());
+		Asset asset = getMediaArchive().getAssetImporter().createAssetFromFetchUrl(archive, url, req.getUser(),"some/sourcepath",  "testfile.mp4");
 		assertEquals( asset.getSourcePath(), "users/admin/youtube.com/EEWE65hKQTo");
 
 		assertFalse(original.exists()); //Should not exists until the event fires

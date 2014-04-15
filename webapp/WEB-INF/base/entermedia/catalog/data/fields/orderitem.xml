@@ -1,4 +1,4 @@
-<properties>
+<properties beanname="dataSearcher" prefix="orderitems">
 	<property id="id" index="true" stored="true">Item Id</property>
 	<property id="orderid" index="true" stored="true">Order Id</property>
 	<property id="userid" index="true" stored="true">User Id</property>

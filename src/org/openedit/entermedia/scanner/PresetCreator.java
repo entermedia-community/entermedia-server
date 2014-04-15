@@ -91,29 +91,41 @@ public class PresetCreator
 		}
 		return added;
 	}
-	
-		public void createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset,int thepage)
-		{
-			SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.getId() ).append("presetid", preset.getId() );
-			if( thepage > 0 )
-			{
-				taskq.append("pagenumber",String.valueOf(thepage));
-			}
+	public Data createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset)
+	{
+		return createPresetsForPage(tasksearcher,preset,asset,0);
+	}
+	public Data createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset,int thepage)
+	{
+		Data found = createPresetsForPage(tasksearcher, preset, asset,thepage,false);
+		return found;
+	}
+	public Data createPresetsForPage(Searcher tasksearcher,Data preset,Asset asset,int thepage,boolean createall)
+	{
 			Data found = null;
-			HitTracker hits = tasksearcher.search(taskq);
-			if ( hits.size() == 1 )
+			if( !createall)
 			{
-				found = (Data)hits.first(); //there will be only once most of the time
-			}
-			else if ( hits.size() > 1 )
-			{
-				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+				SearchQuery taskq = tasksearcher.createSearchQuery().append("assetid", asset.getId() ).append("presetid", preset.getId() ); //This is so dumb
+				if( thepage > 0 )
 				{
-					Data hit = (Data)iterator.next();
-					if( hit.get("pagenumber") == null )
+					taskq.append("pagenumber",String.valueOf(thepage));
+				}
+				
+				HitTracker hits = tasksearcher.search(taskq);
+				if ( hits.size() == 1 )
+				{
+					found = (Data)hits.first(); //there will be only once most of the time
+				}
+				else if ( hits.size() > 1 )
+				{
+					for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 					{
-						found = hit;
-						break;
+						Data hit = (Data)iterator.next();
+						if( hit.get("pagenumber") == null )
+						{
+							found = hit;
+							break;
+						}
 					}
 				}
 			}
@@ -127,6 +139,7 @@ public class PresetCreator
 					{
 						found.setProperty("status", "new");
 						tasksearcher.saveData(found, null);
+						return found;
 					}
 					else
 					{
@@ -144,13 +157,14 @@ public class PresetCreator
 				found.setProperty("ordering", preset.get("ordering") );
 				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
 				found.setProperty("submitted", nowdate);
-				tasksearcher.saveData(found, null);
 				if( thepage > 0 )
 				{
 					found.setProperty("pagenumber", String.valueOf(thepage));
 				}
 				tasksearcher.saveData(found, null);
+				return found;
 			}
+			return found;
 		}
 		
 	}

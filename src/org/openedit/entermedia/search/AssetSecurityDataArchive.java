@@ -299,8 +299,8 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 			{
 				SearchQuery query = searcher.createSearchQuery().append("roleid", inProfile.getSettingsGroup().getId());
 				query.addOrsGroup("libraryid", values);						
-				Collection found = searcher.search(query);
-				if( found.size() > 0 )
+				Data found = searcher.searchByQuery(query);
+				if( found != null )
 				{
 					return Boolean.TRUE;
 				}
@@ -322,18 +322,17 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 						}
 					}
 					query.addOrsGroup("groupid", groupids.toString());
-					found = searcher.search(query);
-					if( found.size() > 0 )
+					found = searcher.searchByQuery(query);
+					if( found != null )
 					{
 						return Boolean.TRUE;
 					}
 					
-					found = searcher.search(query);
 					searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "libraryusers");
-					searcher.createSearchQuery().append("userid",inUser.getId());
+					query = searcher.createSearchQuery().append("userid",inUser.getId());
 					query.addOrsGroup("libraryid", values);						
-					found = searcher.search(query);
-					if( found.size() > 0 )
+					found = searcher.searchByQuery(query);
+					if( found != null )
 					{
 						return Boolean.TRUE;
 					}

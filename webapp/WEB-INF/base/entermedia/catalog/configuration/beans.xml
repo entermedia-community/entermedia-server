@@ -10,7 +10,6 @@
 <!--  real data -->
     <bean id="userSearcher" bean="cataloguserSearcher" />
 
-    <bean id="assetvotesSearcher" bean="dataSearcher" />
 
 
 <!--  menus -->

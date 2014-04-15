@@ -3,7 +3,7 @@
 	<property id="id" index="true" keyword="true" stored="true">Id</property>
 	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
 	<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
-	<property id="description" defaultoperation="contains">All Fields</property>
+	<property id="description" defaultoperation="freeform">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" keyword="true" editable="true" viewtype="category" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
@@ -27,7 +27,7 @@
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text" >Compression</property>
 	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text" sortable="true">Artist</property>
 	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text"  sortable="true">Contributor</property>
-	<property id="creator" index="true" stored="true" datatype="text" editable="true" externalid="XMP-dc:Creator,exif:Artist,iptc:By-line"  sortable="true">Author</property>
+	<property id="creator" index="true" stored="true" datatype="text" editable="true" externalid="XMP-dc:Creator,iptc:By-line"  sortable="true">Author</property>
 	
 	<!-- Camera stuff --> 
 	<property id="lenstype" externalid="Lens ID" index="true" stored="true" datatype="text"  >Lens Type</property>
@@ -112,4 +112,6 @@
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>
 	<property id="watermark" keyword="true" datatype="list" editable="true" index="true" stored="true" listcatalogid="system"  listid="group"  >Watermark</property>
  	-->
+ 		<property id="contenttype" keyword="true" datatype="list" editable="true" index="true" stored="true" >Content Type</property>
+ 	
 </properties>

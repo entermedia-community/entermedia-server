@@ -109,6 +109,10 @@ public void init()
 				}
 
 			}
+			public int getTotalCount()
+			{
+				return count;
+			}
 			
 		}	
 

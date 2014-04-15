@@ -54,7 +54,10 @@ public void init() {
 				continue;
 			}
 			String presetid = publishrequest.get("presetid");
-
+			if( presetid == null)
+			{
+				presetid = "0";
+			}
 			if(asset == null)
 			{
 				assetid = result.get("assetid");

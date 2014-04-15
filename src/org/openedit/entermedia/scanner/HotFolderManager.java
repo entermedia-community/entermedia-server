@@ -71,81 +71,103 @@ public class HotFolderManager
 	{
 		//remove any old hot folders for this catalog
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
-		String path = "/WEB-INF/data/" + inCatalogId + "/originals";
-		List existing = new ArrayList();
+		String path = "/WEB-INF/data/" + inCatalogId + "/";
+		List extras = new ArrayList();
 		
 		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
 		{
 			Repository config = (Repository) iterator.next();
 			if( config.getPath().startsWith(path))
 			{
-				existing.add( config.getPath());
+				extras.add( config.getPath());
 			}
 		}
 
 		//We should see if they are already configured?
-
 		List<Repository> mounts = new ArrayList<Repository>();
 		Collection folders = loadFolders(inCatalogId);
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
 		{
 			Data folder = (Data) iterator.next();
+			String external = folder.get("externalpath");
+
 			String folderpath = folder.get("subfolder");
-			String fullpath = path + "/" + folderpath;
-			Repository repo = findRepoByPath( configs, fullpath );
+			String originalpath = "/WEB-INF/data/" + inCatalogId + "/originals";
+			String fullpath = originalpath + "/" + folderpath;
 			String versioncontrol = folder.get("versioncontrol");
-			repo = checkForChange(configs, repo, versioncontrol);
-			if( repo == null)
+			if( addOrEdit(configs,mounts,fullpath,external,Boolean.parseBoolean(versioncontrol)) )
 			{
-				repo = createRepo(versioncontrol);
-				existing.remove(fullpath);
+				extras.remove(fullpath);
 			}
-			mounts.add(repo);
 
 			String generatedpath = "/WEB-INF/data/" + inCatalogId + "/generated";
 			String fullgeneratedpath = generatedpath + "/" + folderpath;
-			Repository generatedrepo = findRepoByPath( configs, fullgeneratedpath );
-			
-			//Check for change in status
 			String genversioncontrol = folder.get("generatedversioncontrol");
-			generatedrepo = checkForChange(configs, generatedrepo, genversioncontrol);
-			
-			if( generatedrepo == null)
+			if( addOrEdit(configs,mounts,fullgeneratedpath,null,Boolean.parseBoolean(genversioncontrol)) )
 			{
-				generatedrepo = createRepo(genversioncontrol);
-				generatedrepo.setPath(fullgeneratedpath);
-				existing.remove(fullpath);
-				mounts.add(generatedrepo);
+				extras.remove(fullgeneratedpath); //remove the old
 			}
-			
-			
-			//save data to repo
-			repo.setPath(fullpath);
-			repo.setExternalPath(folder.get("externalpath"));
-			//repo.setFilterIn(folder.get("includes"));
-			//repo.setFilterOut(folder.get("excludes"));
+
 		}
-		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
+		for (Iterator iterator = extras.iterator(); iterator.hasNext();)
 		{
 			String fullpath = (String) iterator.next();
 			getPageManager().getRepositoryManager().removeRepository(fullpath);
 		}
 
-		if( mounts.size() > 0)
-		{
-			configs = getPageManager().getRepositoryManager().getRepositories();
-			configs.addAll(mounts);
-			getWebServer().saveMounts(configs);
-		}
+		configs = getPageManager().getRepositoryManager().getRepositories();
+		configs.addAll(mounts);
+		getWebServer().saveMounts(configs);
 		//getPageManager().getRepositoryManager().setRepositories(configs);
 		//save the file
 	}
 
+	/**
+	 * return true if we should just keep the old one
+	*/
+	
+	protected boolean addOrEdit(List configs, List<Repository> mounts, String inPath, String externalpath, boolean useversioncontrol)
+	{
+		if( externalpath == null && !useversioncontrol)
+		{
+			return false; //this will remove it			
+		}
 
-	protected Repository createRepo(String versioncontrol)
+		Repository existing = findRepoByPath( configs, inPath );
+		//Do we need to create one?
+		boolean keepexisting = true;
+		if( existing != null)
+		{
+			existing.setExternalPath(externalpath);
+			if( useversioncontrol && !(existing instanceof XmlVersionRepository) )
+			{
+				configs.remove(existing);
+				existing = null;
+			}
+			if( !useversioncontrol && (existing instanceof XmlVersionRepository) )
+			{
+				configs.remove(existing);
+				existing = null;
+			}
+		}
+		
+		if( existing == null)
+		{
+			existing = createRepo(useversioncontrol);
+			existing.setPath(inPath);
+			existing.setExternalPath(externalpath);
+			mounts.add(existing);
+			keepexisting = false;
+		}
+
+		return keepexisting;
+	}
+
+
+	protected Repository createRepo(boolean versioncontrol)
 	{
 		Repository repo;
-		if( Boolean.valueOf(versioncontrol) )
+		if( versioncontrol )
 		{
 			repo = new XmlVersionRepository();
 			repo.setRepositoryType("versionRepository");
@@ -155,25 +177,6 @@ public class HotFolderManager
 			repo = new FileRepository();
 		}
 		return repo;
-	}
-
-
-	protected Repository checkForChange(List configs, Repository generatedrepo, String genversioncontrol)
-	{
-		if( generatedrepo != null)
-		{
-			if( Boolean.valueOf(genversioncontrol) && !(generatedrepo instanceof XmlVersionRepository) )
-			{
-				configs.remove(generatedrepo);
-				generatedrepo = null;					
-			}
-			if( !Boolean.valueOf(genversioncontrol) && (generatedrepo instanceof XmlVersionRepository) )
-			{
-				configs.remove(generatedrepo);
-				generatedrepo = null;					
-			}
-		}
-		return generatedrepo;
 	}
 
 	protected Repository findRepoByPath(List inConfigs, String inFullpath)

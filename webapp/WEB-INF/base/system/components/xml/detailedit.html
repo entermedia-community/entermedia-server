@@ -1,6 +1,10 @@
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
 
-#set ($viewtype = $detail.viewType)
+#if($detail.dataType == "searchjoin" )
+	#set ($viewtype = "searchjoin" )
+#else
+	#set ($viewtype = $detail.viewType)
+#end
 
 #if (!$viewtype)
 	#set ($viewtype = $detail.dataType)

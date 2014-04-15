@@ -15,6 +15,8 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.entermedia.location.GeoCoder;
+import org.entermedia.location.Position;
 import org.entermedia.upload.FileUpload;
 import org.entermedia.upload.FileUploadItem;
 import org.entermedia.upload.UploadRequest;
@@ -28,6 +30,7 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.BaseCompositeData;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.xml.XmlArchive;
@@ -47,6 +50,9 @@ public class DataEditModule extends BaseMediaModule
 {
 	protected XmlArchive fieldXmlArchive;
 	protected WebEventListener fieldWebEventListener;
+	protected GeoCoder fieldGeoCoder;
+	
+
 	private static final Log log = LogFactory.getLog(DataEditModule.class);
 
 	public Searcher loadSearcherForEdit(WebPageRequest inReq) throws Exception
@@ -659,21 +665,20 @@ public class DataEditModule extends BaseMediaModule
 					{
 						searcher.delete(data, inReq.getUser());
 						changes++;
+						if(getWebEventListener() != null)
+						{
+							WebEvent event = new WebEvent();
+							event.setSearchType(searcher.getSearchType());
+							event.setCatalogId(searcher.getCatalogId());
+							event.setOperation(searcher.getSearchType() + "/deleted");
+							event.setProperty("dataid", data.getId());
+							event.setProperty("id", data.getId());
+	
+							event.setProperty("applicationid", inReq.findValue("applicationid"));
+	
+							getWebEventListener().eventFired(event);
+						}
 					}
-					if(getWebEventListener() != null)
-					{
-						WebEvent event = new WebEvent();
-						event.setSearchType(searcher.getSearchType());
-						event.setCatalogId(searcher.getCatalogId());
-						event.setOperation(searcher.getSearchType() + "/deleted");
-						event.setProperty("dataid", data.getId());
-						event.setProperty("id", data.getId());
-
-						event.setProperty("applicationid", inReq.findValue("applicationid"));
-
-						getWebEventListener().eventFired(event);
-					}
-					
 				}
 			}
 
@@ -1115,7 +1120,10 @@ public class DataEditModule extends BaseMediaModule
 		if (catalogid != null)
 		{// for a sub searcher
 			searcher = getSearcherManager().getSearcher(catalogid, searchType);
-			hits = searcher.loadHits(inReq);
+			if(searcher != null)
+			{
+				hits = searcher.loadHits(inReq);
+			}
 		}
 
 		if (hits == null)
@@ -1569,4 +1577,58 @@ public class DataEditModule extends BaseMediaModule
 		
 	}
 	
+	public void rangeSearch(WebPageRequest inReq) throws Exception {
+		
+		//This does a search in a square for the range (+/- the range in both directions from the point
+
+	String rangeString = inReq.findValue("range");
+	if(rangeString  == null){
+		rangeString = "10000"; //10 Km default.  
+	}
+	String detailid = inReq.findValue("rangefield");
+	
+	String target = inReq.getRequestParameter(detailid + ".value");
+
+	double range = Double.parseDouble(rangeString);
+    range = range / 157253.2964;//convert to decimal degrees (FROM Meters)
+	
+    List positions = getGeoCoder().getPositions(target);
+	if(positions != null && positions.size() > 0){
+		Position p = (Position)positions.get(0);
+		Double latitude = p.getLatitude();
+		Double longitude = p.getLongitude();
+		Double maxlat = latitude + range;
+		Double minlat = latitude - range;
+		Double maxlong = longitude + range;
+		Double minlong = longitude - range; 
+		Searcher searcher = loadSearcher(inReq);
+		
+		SearchQuery query = searcher.addStandardSearchTerms(inReq);
+		if(query == null){
+			query = searcher.createSearchQuery();
+		}
+		
+		
+		query.addBetween(detailid + "_lat", minlat, maxlat);
+		query.addBetween(detailid + "_lng", minlong, maxlong );
+		searcher.cachedSearch(inReq, query);
+		
+	}
+
+}
+	public GeoCoder getGeoCoder()
+	{
+		if (fieldGeoCoder == null)
+		{
+			fieldGeoCoder = new GeoCoder();
+			
+		}
+
+		return fieldGeoCoder;
+	}
+
+	public void setGeoCoder(GeoCoder inGeoCoder)
+	{
+		fieldGeoCoder = inGeoCoder;
+	}
 }

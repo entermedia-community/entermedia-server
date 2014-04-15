@@ -256,10 +256,10 @@ public class MediaArchive
 		return getPropertyDetailsArchive().getPropertyDetailsCached("asset");
 	}
 
-	//Not cached
+	//cached
 	public Asset getAssetBySourcePath(String inSourcePath)
 	{
-		return getAssetArchive().getAssetBySourcePath(inSourcePath);
+		return (Asset)getAssetSearcher().searchByField("sourcepath",inSourcePath);
 	}
 	
 	public String asLinkToPreview(String inSourcePath)
@@ -512,6 +512,8 @@ public class MediaArchive
 		{
 			CategorySearcher searcher = (CategorySearcher)getSearcher("category");
 			fieldCategoryArchive = searcher.getCategoryArchive();
+			fieldCategoryArchive.setCatalogId(getCatalogId());
+
 		}
 		return fieldCategoryArchive;
 	}
@@ -1278,7 +1280,7 @@ public class MediaArchive
 		}
 		return contentsiteroot;
 	}
-	public boolean doesAttachmentExist(Asset asset, Data inPreset, int inPageNumber) 
+	public boolean doesAttachmentExist(Data asset, Data inPreset, int inPageNumber) 
 	{
 		String outputfile = inPreset.get("outputfile");
 		if( inPageNumber > 1 )
@@ -1291,7 +1293,7 @@ public class MediaArchive
 		return page.exists() && page.getLength() > 1;
 		
 	}
-	public boolean doesAttachmentExist(String outputfile, Asset asset) {
+	public boolean doesAttachmentExist(String outputfile, Data asset) {
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.exists() && page.getLength() > 1;
 	}
@@ -1410,7 +1412,11 @@ public class MediaArchive
 		if (inSeconds==null||inSeconds.trim().length()==0)
 			return ":00";
 		StringBuilder sb = new StringBuilder();
-		int allSeconds = Integer.parseInt(inSeconds);
+		int allSeconds = 0;
+		try{
+			float secs = Float.parseFloat(inSeconds);
+			allSeconds = new Float(secs).intValue();
+		}catch (NumberFormatException e){}//not handled
 		int minutes = allSeconds>60?allSeconds/60:0;
 		int seconds = allSeconds%60;
 		String min = minutes>0?String.valueOf(minutes):"";
@@ -1501,11 +1507,14 @@ public class MediaArchive
 	public void updateAssetConvertStatus(String inSourcePath) 
 	{
 		Asset asset = getAssetBySourcePath(inSourcePath);
-		
+		if( asset == null)
+		{
+			return; //asset deleted
+		}
 		String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 
-		log.info("existingpreviewstatus" + existingpreviewstatus);
+		//log.info("existingpreviewstatus" + existingpreviewstatus);
 		//update importstatus and previewstatus to complete
 		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
 		{

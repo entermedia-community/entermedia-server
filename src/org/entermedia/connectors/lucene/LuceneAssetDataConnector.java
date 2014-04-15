@@ -339,7 +339,12 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 		fieldIntCounter = inIntCounter;
 	}
 
-	public Object searchByField(String inField, String inValue) {
+	public Object searchByField(String inField, String inValue) 
+	{
+		if( inValue == null)
+		{
+			return null;
+		}
 		if (inField.equals("id") || inField.equals("_id")) {
 			Data data = (Data) getCacheManager().get(getIndexPath(), inValue);
 			if (data == null) {
@@ -357,8 +362,52 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 			}
 			return data;
 		}
+		else if (inField.equals("sourcepath") ) 
+		{
+			Data data = (Data) getCacheManager().get(getIndexPath(), inValue);
+			if (data == null || !(data instanceof Asset))
+			{
+				data = getAssetArchive().getAssetBySourcePath(inValue);
+			}
+			else
+			{
+				return data;
+			}
+			if (data != null) {
+				getCacheManager().put(getIndexPath(), data.getId(), data);
+				getCacheManager().put(getIndexPath(), data.getSourcePath(), data);
+			}
+			return data;
+		}
 		return super.searchByField(inField, inValue);
 	}
+
+	
+	public Data getDataBySourcePath(String inSourcePath)
+	{
+		return getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath);
+	}
+
+	
+	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate)
+	{
+
+		return getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath, inAutocreate);
+	}
+
+//	@Override
+//	public void saveAllData(Collection<Data> inAll, User inUser)
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void updateIndex(Collection<Data> inAll, boolean inB)
+//	{
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	// public String idToPath(String inAssetId)
 	// {

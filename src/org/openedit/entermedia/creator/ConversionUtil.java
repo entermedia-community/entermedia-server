@@ -2,6 +2,8 @@ package org.openedit.entermedia.creator;
 
 import java.awt.Dimension;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -44,6 +46,10 @@ public class ConversionUtil {
 		Data cpdata = (Data) cpsearcher.searchById(inPresetId);
 		String guid = cpdata.get("guid");
 		Data pddata = (Data) pdsearcher.searchById(guid);
+		if( pddata == null)
+		{
+			return null;
+		}
 		String pdata = pddata.getId();
 		SearchQuery sq = ppsearcher.createSearchQuery().append("parameterdata", pdata);
 		HitTracker hits = ppsearcher.search(sq);
@@ -93,8 +99,23 @@ public class ConversionUtil {
 			
 			//use asset dimension instead of standardized input dimension
 			Asset asset = (Asset) getSearcherManager().getData(inCatalogId, "asset", inAssetId);
-			double assetwidth = asset.get("width") != null ? (double) Integer.parseInt(asset.get("width")) : 0d;
-			double assetheight = asset.get("height") != null ? (double) Integer.parseInt(asset.get("height")) : 0d;
+			//error check dimensions
+			double assetwidth = 0.0d;
+			try{
+				String num = asset.get("width");
+				if (num!=null) num = num.trim();
+				assetwidth = (double) Integer.parseInt(num);
+			}catch (Exception e){
+				log.warn("Exception caught parsing asset width, assetid="+asset.getId()+", width="+asset.get("width")+", defaulting value to 0");
+			}
+			double assetheight = 0.0d; 
+			try{
+				String num = asset.get("height");
+				if (num!=null) num = num.trim();
+				assetheight = (double) Integer.parseInt(num);
+			}catch (Exception e){
+				log.warn("Exception caught parsing asset height, assetid="+asset.getId()+", height="+asset.get("height")+", defaulting value to 0");
+			}
 			double cropwidth = cropDimension.getWidth();
 			double cropheight = cropDimension.getHeight();
 			canCrop = (cropwidth <= assetwidth && cropheight <= assetheight);
@@ -108,6 +129,10 @@ public class ConversionUtil {
 		double width = 0d;
 		double height = 0d;
 		HitTracker hits = getParameterData(inCatalogId,inPresetId);
+		if( hits == null)
+		{
+			return null;
+		}
 		Iterator<?> itr = hits.iterator();
 		while (itr.hasNext()){
 			Data data = (Data) itr.next();
@@ -132,10 +157,18 @@ public class ConversionUtil {
 	
 	public String getConvertPresetAspectRatio(String inCatalogId, String inPresetId) throws Exception {
 		Dimension dimension = getConvertPresetDimension(inCatalogId, inPresetId);
+		if( dimension == null)
+		{
+			return null;
+		}
 		return getConvertPresetAspectRatio(dimension);
 	}
 	
 	public String getConvertPresetAspectRatio(Dimension inDimension){
+		if( inDimension == null)
+		{
+			return null;
+		}
 		double height = inDimension.getHeight();
 		double width = inDimension.getWidth();
 		if (height > 0 && width > 0){
@@ -147,6 +180,10 @@ public class ConversionUtil {
 	
 	public String getConvertPresetParameter(String inCatalogId, String inPresetId, String inParameter) throws Exception{
 		HitTracker hits = getParameterData(inCatalogId,inPresetId);
+		if( hits == null)
+		{
+			return null;
+		}
 		Iterator<?> itr = hits.iterator();
 		while (itr.hasNext()){
 			Data data = (Data) itr.next();
@@ -254,10 +291,12 @@ public class ConversionUtil {
 		return hits;
 	}
 	
-	public HitTracker getActivePresetList(String inCatalogId) throws Exception {
+	public HitTracker getActivePresetList(String inCatalogId, String mediatype) throws Exception {
 		SearcherManager sm = getSearcherManager();
-		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
-		HitTracker all = cpsearcher.fieldSearch("display", "true");
+		Collection both = new ArrayList();
+		both.add("all");
+		both.add(mediatype);
+		HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").orgroup("inputtype", both).sort("ordering").search();
 		return all;
 	}
 	

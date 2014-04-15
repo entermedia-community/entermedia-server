@@ -11,7 +11,31 @@ import com.openedit.WebPageRequest;
 
 public class PublishingTest extends BaseEnterMediaTest
 {
-
+	
+	public void testPublishEvent() throws Exception
+	{
+		//Create a publish task
+		MediaArchive archive = getMediaArchive();
+		Searcher searcher = archive.getSearcher("publishqueue");
+		Data task = searcher.createNewData();
+		task.setProperty("assetsourcepath", "users/admin/102");
+		task.setProperty("assetid", "102");
+		task.setProperty("publishdestination", "localem");
+		task.setProperty("status", "new");
+		searcher.saveData(task, null);
+		
+		//run the event
+		WebPageRequest req = getFixture().createPageRequest("/entermedia/catalogs/testcatalog/events/publishing/publishassets.html");
+		req.setRequestParameter("forced", "true");
+		
+		getFixture().getEngine().executePageActions(req);
+		getFixture().getEngine().executePathActions(req);
+		
+		task = (Data)searcher.searchById(task.getId());
+		assertEquals("complete",task.get("status"));
+		
+	}	
+/*
 	public void testPublishAssets() throws Exception
 	{
 		//take an album,copy all the assets, give an ID, send email, save order, clear cart
@@ -118,7 +142,7 @@ public class PublishingTest extends BaseEnterMediaTest
 		
 		
 	}
-	
+	*/
 	
 	
 }

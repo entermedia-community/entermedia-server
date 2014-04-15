@@ -1,4 +1,4 @@
-<properties>
+<properties beanname="dataSearcher">
 	<property id="id"  index="true" stored="true" >ID</property>
 	<property id="queryid" editable="true" index="true" stored="true">Saved Query Id</property>
 	

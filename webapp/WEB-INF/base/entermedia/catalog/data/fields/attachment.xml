@@ -1,5 +1,5 @@
 
-<properties>
+<properties beanname="dataSearcher" prefix="assets">
   <property id="id" index="true" stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
   <property id="description" editable="true" index="true" stored="true">Text</property>

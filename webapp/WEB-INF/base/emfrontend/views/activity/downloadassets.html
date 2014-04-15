@@ -37,11 +37,12 @@ $context.putPageValue("view", "order/downloadform")
 		#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
 		#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
 		#if(!$filetype)
-			#set($filetype="None")
+			#set($filetype=$searcherManager.getData($catalogid,"assettype","none"))
 		#end
 		#set($found = false)
 		#foreach( $ft in $filetypes)
-			#if ($ft.get(0).equals($filetype))
+		 
+			#if ($ft.get(0).equals($filetype.getId()))
 				#set($num = $numberutils.toInt("${ft.get(1)}"))
 				#set($num = $num + 1)
 				#set($null = $ft.set(1,"$num"))
@@ -50,14 +51,16 @@ $context.putPageValue("view", "order/downloadform")
 			#end
 		#end
 		#if(!$found)
-			#set($null = $filetypes.add([$filetype,"1",$fileformat]))
+		
+			#set($null = $filetypes.add([$filetype.getId(),"1",$fileformat]))
+		
 		#end
 		
 		<input type="hidden" name="itemid" value="$item.id"/>
 		<input type="hidden" name="field" value="presetid"/>
 		<input type="hidden" name="${item.id}.presetid.value" value=""/>
 		<input type="hidden" name="field" value="itemfiletype"/>
-		<input type="hidden" name="${item.id}.itemfiletype.value" value="${filetype}"/>
+		<input type="hidden" name="${item.id}.itemfiletype.value" value="${filetype.getId()}"/>
 	#end
 	
 	<table id="shared-asset-table" class="striped download-table" width="100%" >

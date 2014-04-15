@@ -20,14 +20,13 @@
 #set( $fieldexternalvalue = $id )
 
 $context.putPageValue("canedittable", $caneditdata)
-
+#set($ismodule = false )
 #set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
 #if($ismodule)
-	#set( $viewdetailspath = "$apphome/views/modules/${searchtype}/edit/index.html") ##the table should add the ID to edit	
 	#set( $jumptomodule = true )
-#end	
+#end
 
 ##TODO: Create a new type of table.html component that runs locally using searchhome and has a TableModel with it passed along with sessionids
 
-#set( $args = "id=$id&parentid=$id&selectlink=$!viewdetailspath&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "id=$id&parentid=$id&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 $pages.include("$searchhome/edit/table/generictable.html?$args", $context)

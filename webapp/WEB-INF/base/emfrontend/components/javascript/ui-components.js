@@ -86,7 +86,10 @@ uiload = function() {
 	jQuery(".validate-inputs").livequery(
 			function() 
 			{
-					jQuery(this).closest("form").validate();
+					jQuery(this).closest("form").validate({
+						  ignore: ".ignore, .select2-input"
+					});
+
 			}
 		);
 	
@@ -319,14 +322,16 @@ uiload = function() {
 	
 	jQuery("input.listtags").livequery( function() 
 	{
+		
 		var theinput = jQuery(this);
 		theinput.select2({tags:[],
 			formatNoMatches: function () { return theinput.data("enterdata") ; },
 			tokenSeparators: [",","|"],
 			separator: '|'
-		});
+		}).change(function() { $(this).valid();	});
+
 	});
-	
+
 	jQuery("input.listautocomplete").livequery( function() 
 	{
 		var theinput = jQuery(this);
@@ -339,9 +344,10 @@ uiload = function() {
 			var foreignkeyid = theinput.data('foreignkeyid');
 			var sortby = theinput.data('sortby');
 			
-			var value = theinput.val();
+			//var value = theinput.val();
 			theinput.select2({
 				placeholder : "Search",
+				allowClear: true,
 				minimumInputLength : 0,
 				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
 					url : apphome + "/components/xml/types/autocomplete/datasearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype,
@@ -381,6 +387,14 @@ uiload = function() {
 				escapeMarkup: function(m) { return m; },
 				formatResult : select2formatResult, 
 				formatSelection : select2Selected
+			});
+			
+			theinput.on("change", function(e) {
+				if( e.val == "" ) //Work around for a bug with the select2 code
+				{
+					var id = "#list-" + theinput.attr("id");
+					jQuery(id).val("");
+				}
 			});
 		}
 	});		

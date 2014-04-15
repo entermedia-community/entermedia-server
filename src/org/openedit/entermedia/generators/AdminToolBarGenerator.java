@@ -48,17 +48,23 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 			getWraps().generate(inContext, inPage, inOut);
 			return;
 		}
-		boolean showtoolbar = false;
+		Boolean showtoolbar = false;
 		
-		UserProfile profile = inContext.getUserProfile();
-		if( profile != null)
+		
+		showtoolbar = (Boolean)inContext.getPageValue("canshowadmintoolbar");
+		if( showtoolbar == null )
 		{
-			String show = profile.get("admintoolbar");
-			showtoolbar = Boolean.parseBoolean(show);
-		}
-		if( !showtoolbar)
-		{
-			showtoolbar = user.hasPermission("oe.administration");
+			showtoolbar = false;
+			UserProfile profile = inContext.getUserProfile();
+			if( profile != null)
+			{
+				String show = profile.get("admintoolbar");
+				showtoolbar = Boolean.parseBoolean(show);
+			}
+			if( !showtoolbar)
+			{
+				showtoolbar = user.hasPermission("oe.administration");
+			}
 		}
 //		if( !showtoolbar)
 //		{

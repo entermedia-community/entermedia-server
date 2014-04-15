@@ -17,6 +17,22 @@ import com.openedit.hittracker.*
 import com.openedit.page.*
 import com.openedit.users.User
 import com.openedit.util.*
+import model.assets.ConvertQueue;
+
+class Finisher implements Runnable 
+{
+	MediaArchive fieldMediaArchive;
+	public Finisher(MediaArchive inArchive)
+	{
+		fieldMediaArchive = inArchive;
+	} 
+	public void run()
+	{
+		fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
+		//fieldMediaArchive.fireSharedMediaEvent("conversions/runconversions");
+	}
+}
+
 
 class CompositeConvertRunner implements Runnable
 {
@@ -80,7 +96,7 @@ class ConvertRunner implements Runnable
 	{
 		try
 		{
-			convert();Runnable
+			convert();
 		}
 		catch (Throwable ex )
 		{
@@ -318,7 +334,7 @@ public void checkforTasks()
 	if(assetids != null)
 	{
 		assetids = assetids.replace(","," ");
-		query.addOrsGroup( "id", assetids );
+		query.addOrsGroup( "assetid", assetids );
 	}
 	else
 	{	
@@ -334,6 +350,8 @@ public void checkforTasks()
 	log.info("processing ${newtasks.size()} conversions ${newtasks.getHitsPerPage()} at a time");
 	
 	List runners = new ArrayList();
+
+	ConvertQueue executorQueue = getQueue();
 	
 	if( newtasks.size() == 1 )
 	{
@@ -345,11 +363,12 @@ public void checkforTasks()
 	}
 	else
 	{
-		ExecutorManager executorManager = (ExecutorManager)moduleManager.getBean("executorManager");
-		ExecutorService  executor = executorManager.createExecutor();
 		CompositeConvertRunner byassetid = null;
+		CompositeConvertRunner lastcomposite = null;
+		boolean runexec = false;
 		String lastassetid = null;
-		for(Data hit: newtasks.getPageOfHits() )
+		Iterator iter = newtasks.getPageOfHits().iterator();
+		for(Data hit:  iter)
 		{
 			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
 			runners.add(runner);
@@ -365,40 +384,62 @@ public void checkforTasks()
 			}
 			if( id != lastassetid )
 			{
-				if( byassetid != null )
-				{
-					executor.execute(byassetid);
-				}
-				lastassetid = hit.get("assetid");
+				lastcomposite = byassetid;
 				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
 				byassetid.log = log;
 				byassetid.user = user;
+				lastassetid = id;
 			}
 			byassetid.add(runner);
+			
+			if( !iter.hasNext() ) //Make sure we run the last task in the iterator
+			{
+				lastcomposite = byassetid;
+			}
+			
+			if( lastcomposite != null )
+			{	
+				executorQueue.getExecutor().execute(lastcomposite);
+				lastcomposite = null;
+			}
 		}
-		if( byassetid != null )
-		{
-			executor.execute(byassetid);
-		}
-		executorManager.waitForIt(executor);
 	}
 	
 	if( newtasks.size() > 0 )
 	{
-		for(ConvertRunner runner: runners)
-		{
-			if( runner.result != null && runner.result.isComplete() )
-			{
-				mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
-				mediaarchive.fireSharedMediaEvent("conversions/runconversions");
-				break;
-			}
-		}
+//		for(ConvertRunner runner: runners) //TODO use a boolean
+//		{
+//			if( runner.result != null && runner.result.isComplete() )
+//			{
+				Finisher finisher = new Finisher(mediaarchive);
+				executorQueue.getExecutor().execute(finisher);
+//				break;
+//			}
+//		}
 	}
 	log.info("Completed ${newtasks.size()} conversions");
 	
 }
 
+
+//Temporary work around for a lack of an interface
+public ConvertQueue getQueue(String inCatalogId)
+{
+	//(ConvertQueue)moduleManager.getBean(mediaarchive.getCatalogId(),"convertQueue");
+	ConvertQueue queue = null;
+	if( moduleManager.contains( inCatalogId, "convertQueue") )
+	{
+		queue =  (ConvertQueue)moduleManager.getBean(mediaarchive.getCatalogId(),"convertQueue");
+	}
+	else
+	{
+		queue = new ConvertQueue();
+		ExecutorManager manager = (ExecutorManager)moduleManager.getBean("executorManager");
+		queue.setExecutorManager(manager);
+		moduleManager.getCatalogIdBeans().put(inCatalogId + "_" + "convertQueue", queue);
+	}
+	return queue;
+}
 
 checkforTasks();
 

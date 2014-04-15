@@ -76,7 +76,7 @@ public class imagemagickCreator extends BaseImageCreator
 		Page input = null;
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
-
+		
 		if( inStructions.getMaxScaledSize() != null && offset == null ) //page numbers are 1 based
 		{
 			String page = null;
@@ -225,7 +225,9 @@ public class imagemagickCreator extends BaseImageCreator
 			ext = newext.toLowerCase();
 		}
 		List<String> com = createCommand(inputFile, inStructions);
-		
+		com.add("-limit");
+		com.add("thread");
+		com.add("1");
 		String colorspace = inStructions.get("colorspace");
 		if(colorspace != null){
 			com.add("-colorspace");
@@ -475,8 +477,8 @@ public class imagemagickCreator extends BaseImageCreator
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
 		ExecResult execresult = getExec().runExec("convert", com, true);
-		
-		boolean ok = execresult.isRunOk();
+
+				boolean ok = execresult.isRunOk();
 		result.setOk(ok);
 		
 		if (ok)

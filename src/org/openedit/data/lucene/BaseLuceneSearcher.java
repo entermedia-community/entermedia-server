@@ -263,13 +263,13 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				if (Character.isDigit(firstchar))
 				{
 					keepers.add(folder);
-					if (keepers.size() > 2)
+					if (keepers.size() > 6)
 					{
 						utils.deleteAll(folder);
 					}
 				}
 			}
-			// delete any A folders
+			// delete any A folders legacy
 			if (keepers.size() > 1)
 			{
 				for (int i = 0; i < sorted.size(); i++)
@@ -481,7 +481,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			protected org.apache.lucene.search.Query getRangeQuery(String field, String low, String high, boolean inclusivelow, boolean incluseivehigh) throws ParseException
 			{
 				PropertyDetail detail = getDetail(field);
-				if (detail != null && detail.isDataType("number") || detail.isDataType("long"))
+				if (detail != null && ( detail.isDataType("number") || detail.isDataType("long")))
 				{
 					Long lv = Long.parseLong(low);
 					Long hv = Long.parseLong(high);
@@ -494,6 +494,13 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 					Double hv = Double.parseDouble(high);
 					return NumericRangeQuery.newDoubleRange(field, lv, hv, true, true);
 				}
+				if(detail == null && field.contains("lat") || field.contains("lng")){
+					//this is a position search
+					Double lv = Double.parseDouble(low);
+					Double hv = Double.parseDouble(high);
+					return NumericRangeQuery.newDoubleRange(field, lv, hv, true, true);
+				}
+				
 				return super.getRangeQuery(field, low, high, inclusivelow, incluseivehigh);
 			}
 		};

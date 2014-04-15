@@ -136,7 +136,7 @@ public class CategoryEditor {
 
 	 public void saveCategory(Category inCategory) throws OpenEditRuntimeException
 	 {
-		 if ( inCategory.getParentCategory() == null && getMediaArchive().getCategoryArchive().getRootCategory() != inCategory)
+		 if ( inCategory.getParentCategory() == null && getMediaArchive().getCategoryArchive().getRootCategory().getId() != inCategory.getId())
 		 {
 			 getMediaArchive().getCategoryArchive().getRootCategory().addChild(inCategory);
 			 getMediaArchive().getCategoryArchive().cacheCategory(inCategory);
