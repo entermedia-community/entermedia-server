@@ -37,7 +37,7 @@ $context.putPageValue("view", "order/downloadform")
 		#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
 		#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
 		#if(!$filetype)
-			#set($filetype="None")
+			#set($filetype=$searcherManager.getData($catalogid,"assettype","none"))
 		#end
 		#set($found = false)
 		#foreach( $ft in $filetypes)
