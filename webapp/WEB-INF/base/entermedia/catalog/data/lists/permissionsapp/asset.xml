@@ -9,8 +9,8 @@
 	<permission id="forcewatermarkasset" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset." ordering="200"/>
 	<permission id="printpreview" permissiontype="asset" name="Print" description="Allows printing of asset and asset metadata." ordering="200"/>
 	<permission id="viewfatwire" permissiontype="asset" name="View Fatwire Status" description="Shows Fatwire Status." ordering="200"/>
-	<permission id="viewconversions" permissiontype="asset" name="Conversion" description="View Conversions and Cropping Tool" ordering="220"/>
-	<permission id="embedasset" permissiontype="asset" name="Embed" description="Enables and embed button that provides HTML code for an asset." ordering="200"/>
+	<permission id="viewconversions" permissiontype="asset" name="Conversions" description="View Conversions and Cropping Tool" ordering="220"/>
+	<permission id="embedasset" permissiontype="asset" name="Embedding" description="Enables and embed button that provides HTML code for an asset." ordering="200"/>
 		
 		
 		
