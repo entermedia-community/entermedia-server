@@ -1,18 +1,30 @@
 #if( !$xmledithome)
 	#set( $xmledithome = $context.getPageProperty("xmledithome"))
 #end
-	#set( $id = $detail.getId() )
-	#set( $index = $id.indexOf(".") )
-	#set( $table = $id.substring(0,$index) )
-	#set( $index = $index  + 1)
-	#set( $column = $id.substring($index) )
-	#set( $newsearcher = $searcherManager.getSearcher($catalogid,$table) )
-	$context.putPageValue("searcher",$newsearcher)
-	#set( $newdetail = $newsearcher.getDetail($column) )
-	$context.putPageValue("detail",$newdetail)
-	#set ($viewtype = $newdetail.viewType)
+#set( $id = $detail.getId() )
+#set( $index = $id.indexOf(".") )
+#set( $table = $id.substring(0,$index) )
+#set( $index = $index  + 1)
+#set( $column = $id.substring($index) )
+
+#set( $newsearcher = $searcherManager.getSearcher($catalogid,$table) )
+$context.putPageValue("searcher",$newsearcher)
+#set( $newdetail = $newsearcher.getDetail($column) )
+$context.putPageValue("detail",$newdetail)
+
+#set ($viewtype = $newdetail.viewType)
+#if( $data)
 	#set( $data = $newsearcher.searchById($data.get($table)) )
 	$context.putPageValue("data",$data)
+#end
+
+#if (!$viewtype)
+	#set ($viewtype = $newdetail.dataType)
+#end
+#if (!$viewtype || $viewtype== "text")
+	#set ($viewtype = "default")
+#end
+
 	
 	
 $pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)
