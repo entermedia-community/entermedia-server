@@ -343,6 +343,7 @@ public class Category implements Data, Comparable<Category>
 		while (parent != null)
 		{
 			parent = parent.getParentCategory();
+			i++;
 		}
 		return i;
 	}
