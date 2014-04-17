@@ -893,9 +893,18 @@ public class BaseOrderManager implements OrderManager
 			if( orderitemhit.get("status") != "complete" )
 			{
 				Data item = (Data)itemsearcher.searchById(orderitemhit.getId());
-				item.setProperty("status", "complete");
-				//set date?
-				itemsearcher.saveData(item, null);
+				if( item == null)
+				{
+					inOrder.setOrderStatus("error","Could not find orderitem " + orderitemhit.getId() );
+					OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "error");
+					saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
+					return false;
+				}
+				else
+				{
+					item.setProperty("status", "complete");
+					itemsearcher.saveData(item, null);
+				}	
 			}
 		}
 		return publishcomplete;
