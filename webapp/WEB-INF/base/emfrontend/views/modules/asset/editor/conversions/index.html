@@ -51,13 +51,12 @@ p{
 
 <h1>Automatic Conversions</h1>
 
-
-
 #set($newpreset = $context.findValue("newpreset"))
-#set($results = $conversionUtil.getActivePresetList($catalogid))
+#set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
 $context.putPageValue("results", $results)
 
-$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/sendalltofatwire.html", $context)
+$pages.include("$home$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
 
 #foreach ($result in $results)
 	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
@@ -83,14 +82,14 @@ $pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/sendalltofa
 		
 		<!-- include modify -->
 		$context.putPageValue("presetdata",$result)
-		#if( $canviewfatwirecrop )
-			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/modify.html", $context)
+		#if( $canviewconversions )
+			$pages.include("$home$apphome/views/modules/asset/editor/conversions/modify.html", $context)
 		#end
 		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
 		#if($isready)
 			<!--  include share -->
-			$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/share.html", $context)
-			#if( $canviewfatwirecrop )
+			$pages.include("$home$apphome/views/modules/asset/editor/conversions/share.html", $context)
+			#if( $canviewconversions )
 				#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
 				#if(!$cancrop)
 					<span style="font-size:smaller;margin: 0 20px 20px;">Image is too small to crop to the desired crop dimension</span>
@@ -98,7 +97,7 @@ $pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/sendalltofa
 			#end	
 			<!-- include submit to fatwire -->
 			#if($result.publishtofatwire == "true") 
-				$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/submittofatwire.html", $context)
+				$pages.include("$home$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
 			#end
 		#end
 	</div>
@@ -110,7 +109,7 @@ $context.putPageValue("asset",$asset)
 #if($newpreset)
 	$context.putPageValue("omitpreset",$newpreset)
 #end
-$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/createnewconversion.html", $context)
+$pages.include("$home$apphome/views/modules/asset/editor/conversions/createnewconversion.html", $context)
 
 <script>
 $(document).ready(function(){

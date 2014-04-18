@@ -339,7 +339,12 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 		fieldIntCounter = inIntCounter;
 	}
 
-	public Object searchByField(String inField, String inValue) {
+	public Object searchByField(String inField, String inValue) 
+	{
+		if( inValue == null)
+		{
+			return null;
+		}
 		if (inField.equals("id") || inField.equals("_id")) {
 			Data data = (Data) getCacheManager().get(getIndexPath(), inValue);
 			if (data == null) {

@@ -1,0 +1,5 @@
+<page>
+	<property name="assettab">viewconversions</property>
+	<inner-layout>/${applicationid}/views/modules/asset/editor/conversions/innerlayout.html</inner-layout>
+	<path-action name="PageValue.loadPageVariable" bean="mathtool" class="org.apache.velocity.tools.generic.MathTool"/>
+</page>

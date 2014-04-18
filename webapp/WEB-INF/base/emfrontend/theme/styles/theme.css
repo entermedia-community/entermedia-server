@@ -5034,6 +5034,19 @@ p.resultsnumber {
 #de-side-nav .current.viewmap .icon {
     background-position: 213px 26px;
 }
+
+#de-side-nav .viewconversions .icon {
+    background-position: 240px 0;
+    width: 26px;
+    height: 26px;
+    left: 10px;
+    top: 8px;
+}
+#de-side-nav .current.viewconversions .icon {
+    background-position: 240px 26px;
+}
+
+
 #de-side-nav .viewattachments .icon {
     background-position: 134px 0;
     width: 24px;

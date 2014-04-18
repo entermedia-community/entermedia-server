@@ -6,7 +6,7 @@
 #set($regions = $searcher.search($query))
 
 <hr>
-<form id="submit-${presetdata.id}" method="post" action="$home$apphome/views/modules/asset/editor/fatwirecrop/submit-fatwire-finish.html">
+<form id="submit-${presetdata.id}" method="post" action="$home$apphome/views/modules/asset/editor/conversions/submit-fatwire-finish.html">
 	<input type="hidden" id="oemaxlevel" name="oemaxlevel" value="1"/>
 	<input type="hidden" id="publishassetid" name="publishassetid" value="$asset.id"/>
 	<input type="hidden" id="presetid" name="presetid" value="$presetdata.id"/>
@@ -38,7 +38,7 @@
 		</tr>
 	</table>
 </form>
-$pages.include("$home$apphome/views/modules/asset/editor/fatwirecrop/table.html", $context)
+$pages.include("$home$apphome/views/modules/asset/editor/conversions/table.html", $context)
 
 #set( $D = '$' )
 #set($hitssessionid = $context.findValue("hitssessionid"))
