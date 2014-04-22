@@ -330,6 +330,28 @@ public class HtmlUtil {
 		buf.append(inHTML.replaceAll("<.*?>", ""));
 	}
 	
+	public String toHTML(String inText)
+	{
+		StringBuilder buf = new StringBuilder();
+		String [] lines = inText.split("\n");
+		boolean isList = false;
+		for(String line:lines)
+		{
+			if (line.startsWith("*")) //if bullet then put in list
+			{
+				isList = true;
+				buf.append("<ul><li>").append(line).append("</li>");
+			} else {
+				if (isList){
+					buf.append("</ul>");
+				}
+				isList = false;
+				buf.append("<p>").append(line).append("</p>");
+			}
+		}
+		return buf.toString();
+	}
+	
 	public ArrayList<String> generateKeywords(String inCatalogId, Data inData, ArrayList<String> inFields) throws Exception{
 		HashMap<String,String> map = new HashMap<String,String>();
 		for(String field:inFields){
