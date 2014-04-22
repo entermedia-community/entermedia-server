@@ -430,24 +430,24 @@ public class PathEventManager
 
 	protected void loadByPath(String path,String root, Set duplicates)
 	{
-		path = PathUtilities.extractFileName(path);
-		if( path.endsWith("html"))
-		{
-			path = PathUtilities.extractPagePath(path) + ".xconf";
-		}
-		if( duplicates.contains(path))
-		{
-			return;
-		}
-		if( !path.endsWith(".xconf"))
+//		if( path.endsWith(".xconf"))
+//		{
+//			path = PathUtilities.extractPagePath(path) + ".xconf";
+//		}
+		if( !path.endsWith(".xconf") || path.endsWith("_site.xconf"))
 		{
 			return;
 		}
-		duplicates.add(path);
+		String htmlpage = PathUtilities.extractPagePath(path) + ".html";
+		if( duplicates.contains(htmlpage))
+		{
+			return;
+		}
+		//path = PathUtilities.extractFileName(path);
+		duplicates.add(htmlpage);
 		//make .xconf into .html
 		//ignore folders and html pages
 		//get rid of duplicates from base
-		String htmlpage = root + "/" + PathUtilities.extractPagePath(path) + ".html";
 		
 		loadPathEvent(htmlpage);
 	}
