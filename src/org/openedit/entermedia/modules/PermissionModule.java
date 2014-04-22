@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -33,6 +34,9 @@ public class PermissionModule extends BaseMediaModule
 	public Permission loadPermission(WebPageRequest inReq) throws Exception
 	{
 		String path = inReq.getRequestParameter("editPath");
+		if(path == null){
+		
+		}
 		String name = inReq.getRequestParameter("id");
 		if( name == null)
 		{
@@ -309,7 +313,15 @@ public class PermissionModule extends BaseMediaModule
 		String name = inReq.getRequestParameter("name");
 		String traverse = inReq.getRequestParameter("traverse");
 		String type = inReq.getRequestParameter("conditiontype");
-		type = type.toLowerCase();
+		String id = null;
+		
+		Data conditiondetail =  getMediaArchive(inReq).getData("conditiontypes" , type);
+		 if(conditiondetail !=  null && conditiondetail.get("type") != null){
+			 id=type;
+			 type = conditiondetail.get("type");
+			 
+		 }
+		
 		FilterReader reader = (FilterReader)getModuleManager().getBean("filterReader");
 		
 		if( name != null)
@@ -335,6 +347,11 @@ public class PermissionModule extends BaseMediaModule
 				else
 				{
 					permission.getRootFilter().addFilter(newFilter);
+				}
+				if("action".equals(type)){
+					String action =  conditiondetail.get("method");
+					newFilter.setProperty("name", action);
+					newFilter.setProperty("conditiontype",id );
 				}
 				Page page = getPageManager().getPage(path,true);
 				page.getPageSettings().setProperty("encoding","UTF-8");
