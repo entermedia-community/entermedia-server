@@ -444,7 +444,12 @@ public class BasePushManager implements PushManager
 			{
 				ContentItem file = (ContentItem) iterator.next();
 				String name  =  PathUtilities.extractFileName( file.getPath() );
-				FilePart part = new FilePart("file." + count, name, new File( file.getAbsolutePath() ));
+				String type = "file.";
+				if( inUploadType.equals("originals") )
+				{
+					type = "originals." + type;
+				}
+				FilePart part = new FilePart(type + count, name, new File( file.getAbsolutePath() ));
 				parts.add(part);
 				count++;
 			}
@@ -505,7 +510,7 @@ public class BasePushManager implements PushManager
 				Element asset = (Element) o;
 				result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
 			}
-			log.info("Sent " + server + "/" + inUploadType + "/" + inAsset.getSourcePath() + " with " + inFiles.size() + " generated files");
+			log.info("Sent " + server + " Type:" + inUploadType + " Path" + inAsset.getSourcePath() + " with " + inFiles.size() + " generated files");
 			return result;
 		}
 		catch (Exception e)
