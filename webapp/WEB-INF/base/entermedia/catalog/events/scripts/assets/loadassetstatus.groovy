@@ -23,15 +23,16 @@ public void init()
 	}
 	if( complete )
 	{
-		//update the asset import status
-		//log.info("import complete, saving asset");
-		mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
-		Asset asset = mediaArchive.getAsset(assetid);
-		if( asset != null)
-		{
-			asset.setProperty("importstatus","complete");
-			mediaArchive.saveAsset(asset,null);
-		}
+//  This should be handled by MediaArchive.updateAssetConvertStatus that is run from runconversions	or by queueconversions
+//		//update the asset import status
+//		//log.info("import complete, saving asset");
+//		mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
+//		Asset asset = mediaArchive.getAsset(assetid);
+//		if( asset != null)
+//		{
+//			asset.setProperty("importstatus","complete");
+//			mediaArchive.saveAsset(asset,null);
+//		}
 	}
 }
 
