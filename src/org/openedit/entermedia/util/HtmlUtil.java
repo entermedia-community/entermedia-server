@@ -337,17 +337,9 @@ public class HtmlUtil {
 		boolean isList = false;
 		for(String line:lines)
 		{
-			if (line.startsWith("*") || line.startsWith("•") || line.startsWith("-")) //if bullet then put in list
-			{
-				isList = true;
-				buf.append("<ul><li>").append(line).append("</li>");
-			} else {
-				if (isList){
-					buf.append("</ul>");
-				}
-				isList = false;
+			
 				buf.append("<p>").append(line).append("</p>");
-			}
+			
 		}
 		return buf.toString();
 	}
