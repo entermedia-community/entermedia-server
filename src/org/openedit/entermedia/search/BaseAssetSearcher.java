@@ -148,6 +148,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	public void reIndexAll()
 	{
 		getDataConnector().reIndexAll();
+		fieldUsesSearchSecurity = null;
 	}
 
 	private boolean doesIndexSecurely()
