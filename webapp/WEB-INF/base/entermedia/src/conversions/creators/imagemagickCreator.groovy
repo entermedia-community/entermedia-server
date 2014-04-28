@@ -20,11 +20,25 @@ import com.openedit.OpenEditException
 import com.openedit.page.Page
 import com.openedit.util.ExecResult;
 import com.openedit.util.PathUtilities
+
 import java.awt.Dimension;
 
 public class imagemagickCreator extends BaseImageCreator 
 {
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
+	protected String fieldPathToProfile;
+	
+	public String getPathtoProfile(){
+		if(fieldPathToProfile == null){
+			Page profile = getPageManager().getPage("/system/components/conversions/tinysRGB.icc");
+			fieldPathToProfile = profile.getContentItem().getAbsolutePath(); 
+			
+			
+		}
+		return fieldPathToProfile;
+		
+		
+	}
 	
 	public boolean canReadIn(MediaArchive inArchive, String inInput)
 	{
@@ -228,14 +242,6 @@ public class imagemagickCreator extends BaseImageCreator
 		com.add("-limit");
 		com.add("thread");
 		com.add("1");
-		String colorspace = inStructions.get("colorspace");
-		if(colorspace != null){
-			com.add("-colorspace");
-			com.add(colorspace);
-		} else{
-			com.add("-colorspace");
-			com.add("sRGB");
-		}
 		
 		if (inStructions.getMaxScaledSize() != null)
 		{
@@ -452,7 +458,17 @@ public class imagemagickCreator extends BaseImageCreator
 			com.add("transparent");
 			com.add("-flatten");
 		}
-
+//				String colorspace = inStructions.get("colorspace");
+//				if(colorspace != null){
+//					com.add("-colorspace");
+//					com.add(colorspace);
+//				} else{
+//					com.add("-colorspace");
+//					com.add("sRGB");
+//				}
+		
+				
+         				
 		if( !autocreated )
 		{
 //			TODO: use parameters to specify the color space		
@@ -462,8 +478,14 @@ public class imagemagickCreator extends BaseImageCreator
 			
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
+			setValue("profile", getPathtoProfile(), inStructions, com);
 			com.add("-strip");
+			
 		}
+		
+		
+		
+		
 		if (isOnWindows() )
 		{
 			// windows needs quotes if paths have a space
@@ -668,4 +690,21 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 	}
 */	
+	protected void setValue(String inName, String inDefault,ConvertInstructions inStructions, List comm)
+	{
+		String value = inStructions.get(inName);
+		if( value != null || inDefault != null)
+		{
+			comm.add("-" + inName );
+			if( value != null)
+			{
+				comm.add(value);
+			}
+			else if( inDefault != null)
+			{
+				comm.add(inDefault);
+			}
+		}
+	
+	}
 }
