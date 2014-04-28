@@ -1135,6 +1135,7 @@ asset: " + asset);
 				}
 			}
 		}
+		archive.fireMediaEvent("importing/pushassetimported", inReq.getUser(), target);
 
 	}
 	

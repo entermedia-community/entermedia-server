@@ -11,6 +11,8 @@ import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 
+import org.entermedia.locks.Lock;
+
 
 public void init() {
 
@@ -99,7 +101,27 @@ public void init() {
 				}
 
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
-				PublishResult presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+				
+				Lock lock = mediaArchive.lockAssetIfPossible(asset.getSourcePath(), context.getUser());
+				if( lock == null)
+				{
+					log.info("asset already being processed ${asset}");
+					continue;
+				}
+				PublishResult presult = null;
+				try
+				{
+					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+				}
+				finally
+				{
+					mediaArchive.releaseLock(lock);
+				}
+				if (presult == null)
+				{
+					log.info("result from publisher is null, continuing");
+					continue;
+				}
 				if( presult.isError() )
 				{
 					publishrequest.setProperty('status', 'error');
