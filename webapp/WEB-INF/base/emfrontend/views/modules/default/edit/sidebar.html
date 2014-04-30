@@ -22,7 +22,8 @@ $context.putPageValue("view", $viewpath)
 <ul id="assetmenu" class="sidebar-list">
       
               #foreach( $target in $views)       
-                   
+                   #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+                   #if("$!permissionvalue" == "" || $permissionvalue == true)
                   <li class="#if($viewid == $target.id) current #end projects-$target.id" byassettype="$!target.byassettype">
                   		
                   	#if( $target.rendertable )
@@ -33,6 +34,8 @@ $context.putPageValue("view", $viewpath)
                         	<span class="icon"></span><span class="text"> $target</span></a>
                     #end
                   </li>
+                  #end
+                  #set($permissionvalue = "")
               #end
        
 </ul>
