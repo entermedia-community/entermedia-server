@@ -1348,12 +1348,6 @@ public class MediaArchive
 		fieldLockManager = inLockManager;
 	}
 	
-	public Lock lockAssetIfPossible(String inSourcePath, User inUser)
-	{
-		Lock lock = getLockManager().lockIfPossible(getCatalogId(),  "assets/" + inSourcePath, inUser.getId());
-		return lock;
-	}
-	
 	public boolean releaseLock(Lock inLock)
 	{
 		if( inLock == null)
@@ -1506,6 +1500,7 @@ public class MediaArchive
 	
 	public void updateAssetConvertStatus(String inSourcePath) 
 	{
+		//TODO: Lock the asset so that nobody edits it while we are doing this
 		Asset asset = getAssetBySourcePath(inSourcePath);
 		if( asset == null)
 		{

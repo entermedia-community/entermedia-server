@@ -102,10 +102,10 @@ public void init() {
 
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
 				
-				Lock lock = mediaArchive.lockAssetIfPossible(asset.getSourcePath(), context.getUser());
+				Lock lock = mediaArchive.getLockManager().lockIfPossible("assetpublish/" + asset.getSourcePath(), context.getUser());
 				if( lock == null)
 				{
-					log.info("asset already being processed ${asset}");
+					log.info("asset already being published ${asset}");
 					continue;
 				}
 				PublishResult presult = null;

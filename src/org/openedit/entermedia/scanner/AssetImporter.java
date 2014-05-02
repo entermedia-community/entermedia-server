@@ -201,35 +201,32 @@ public class AssetImporter
 	
 	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)
 	{
-		String originals = "/WEB-INF/data" +  inArchive.getCatalogHome() + "/originals/";
-		String sourcepath = inAssetPage.getPath().substring(originals.length());
-		Asset asset = inArchive.getAssetBySourcePath(sourcepath);
-		
-		if(asset == null)
+		Asset asset = getAssetUtilities().createAssetIfNeeded(inAssetPage.getContentItem(),inArchive, inUser);
+		boolean existing = true;
+		if( asset == null)
 		{
-			String id = inArchive.getAssetSearcher().nextAssetNumber();
-			asset = new Asset();
-			asset.setId(id);
-			asset.setSourcePath(sourcepath);
-			//asset.setProperty("datatype", "original");
-			asset.setFolder(inAssetPage.isFolder());
-			String name = inAssetPage.getName();
-			String ext = PathUtilities.extractPageType(name);
-			if( ext != null)
-			{
-				ext = ext.toLowerCase();
-			}
-			asset.setProperty("fileformat", ext);
-			asset.setName(name);
-			asset.setCatalogId(inArchive.getCatalogId());
-	
-			String categorypath = PathUtilities.extractDirectoryPath(sourcepath);
-			Category category = inArchive.getCategoryArchive().createCategoryTree(categorypath);
-			asset.addCategory(category);
+			//Should never call this
+			String originals = "/WEB-INF/data" +  inArchive.getCatalogHome() + "/originals/";
+			String sourcepath = inAssetPage.getPath().substring(originals.length());
+			asset = inArchive.getAssetBySourcePath(sourcepath);
+			return asset;
+		}
+		if( asset.get("recordmodificationdate") == null )
+		{
+			existing = false;
+		}
+		inArchive.saveAsset(asset, inUser);
+		if( existing )
+		{
+			inArchive.fireMediaEvent("asset/originalmodified",inUser, asset);				
+		}
+		else
+		{
+			inArchive.fireMediaEvent("asset/assetcreated",inUser, asset);
 		}
 
-		getAssetUtilities().getMetaDataReader().populateAsset(inArchive, inAssetPage.getContentItem(), asset);
-		inArchive.saveAsset(asset, inUser);
+		inArchive.fireMediaEvent("importing/assetsimported", inUser, asset);
+		
 		
 		return asset;
 	}

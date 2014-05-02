@@ -228,32 +228,44 @@ public class XmlDataArchive implements DataArchive
 		getXmlArchive().saveXml(xml, null,inLock);
 		
 	}
-
-	
-	public void saveAllData(Collection<Data> inAll, User inUser) {
+	public void saveAllData(Collection<Data> inAll, String catalogid, String inLockPrefix, User inUser) 
+	{
 		XmlFile xml = null;//
-		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
+		Lock lock = null;
+		try
 		{
-			Data data = (Data) iterator.next();
-			String path = getPathToXml(data.getSourcePath());
-			//open the xml file. May reuse this file for other rows
-			
-			//TODO: Add Lock Manager so that two threads dont save on top of one another
-			if( xml == null || !xml.getPath().equals(path))
+			for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
 			{
-				if( xml != null)
+				Data data = (Data) iterator.next();
+				String path = getPathToXml(data.getSourcePath());
+				//open the xml file. May reuse this file for other rows
+				
+				//TODO: Add Lock Manager so that two threads dont save on top of one another
+				if( xml == null || !xml.getPath().equals(path))
 				{
-					getXmlArchive().saveXml(xml, null);
+					if( xml != null)
+					{
+						getXmlArchive().saveXml(xml, null, lock);
+						getXmlArchive().getLockManager().release(catalogid, lock);
+					}
+					lock = getXmlArchive().getLockManager().lock(catalogid, inLockPrefix + data.getSourcePath(), null);
+					xml = getXmlArchive().getXml(path, getElementName());
 				}
-				xml = getXmlArchive().getXml(path, getElementName());
+				addRow(data, xml);
 			}
-			addRow(data, xml);
+			if( xml != null)
+			{
+				getXmlArchive().saveXml(xml, null, lock);
+			}
 		}
-		if( xml != null)
+		finally
 		{
-			getXmlArchive().saveXml(xml, null);
+			if( lock != null)
+			{
+				getXmlArchive().getLockManager().release(catalogid, lock);
+			}
 		}
-		
+
 	}
 
 }
