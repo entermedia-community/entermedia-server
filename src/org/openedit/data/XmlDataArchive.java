@@ -10,6 +10,7 @@ import java.util.Map;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.entermedia.cache.CacheManager;
+import org.entermedia.locks.Lock;
 import org.openedit.Data;
 import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
@@ -85,49 +86,7 @@ public class XmlDataArchive implements DataArchive
 			populateElement(element, inData);
 		}
 	}
-	public void saveData(Data inData, User inUser)
-	{
-		if( inData == null )
-		{
-			throw new OpenEditException("Cannot save null data.");
-		}
-		if(  inData.getSourcePath() == null )
-		{
-			throw new OpenEditException("sourcepath is required ");
-		}
-		String path = getPathToXml(inData.getSourcePath());
-		//TODO: Need to lock this file so another person does not call save
-		XmlFile xml = getXmlArchive().getXml(path, getElementName());
-		addRow(inData, xml);
-		getXmlArchive().saveXml(xml, null);
-	}
 	
-	//This is optimized for ordered data
-	public void saveAllData(Collection inAll, User inUser)
-	{
-		XmlFile xml = null;//
-		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
-		{
-			Data data = (Data) iterator.next();
-			String path = getPathToXml(data.getSourcePath());
-			//open the xml file. May reuse this file for other rows
-			
-			//TODO: Add Lock Manager so that two threads dont save on top of one another
-			if( xml == null || !xml.getPath().equals(path))
-			{
-				if( xml != null)
-				{
-					getXmlArchive().saveXml(xml, null);
-				}
-				xml = getXmlArchive().getXml(path, getElementName());
-			}
-			addRow(data, xml);
-		}
-		if( xml != null)
-		{
-			getXmlArchive().saveXml(xml, null);
-		}
-	}
 
 	//Not recommeneded, use populateElementData
 	protected void populateElement(Element inElement, Data inData)
@@ -250,5 +209,51 @@ public class XmlDataArchive implements DataArchive
 //	{
 //		return getXmlArchive().getXml(inPath,inSearchType);
 //	}
+
+	
+	public void saveData(Data inData, User inUser, Lock inLock) {
+		
+		if( inData == null )
+		{
+			throw new OpenEditException("Cannot save null data.");
+		}
+		if(  inData.getSourcePath() == null )
+		{
+			throw new OpenEditException("sourcepath is required ");
+		}
+		String path = getPathToXml(inData.getSourcePath());
+		//TODO: Need to lock this file so another person does not call save
+		XmlFile xml = getXmlArchive().getXml(path, getElementName());
+		addRow(inData, xml);
+		getXmlArchive().saveXml(xml, null,inLock);
+		
+	}
+
+	
+	public void saveAllData(Collection<Data> inAll, User inUser) {
+		XmlFile xml = null;//
+		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			String path = getPathToXml(data.getSourcePath());
+			//open the xml file. May reuse this file for other rows
+			
+			//TODO: Add Lock Manager so that two threads dont save on top of one another
+			if( xml == null || !xml.getPath().equals(path))
+			{
+				if( xml != null)
+				{
+					getXmlArchive().saveXml(xml, null);
+				}
+				xml = getXmlArchive().getXml(path, getElementName());
+			}
+			addRow(data, xml);
+		}
+		if( xml != null)
+		{
+			getXmlArchive().saveXml(xml, null);
+		}
+		
+	}
 
 }

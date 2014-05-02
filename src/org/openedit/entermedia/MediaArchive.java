@@ -1350,7 +1350,7 @@ public class MediaArchive
 	
 	public Lock lockAssetIfPossible(String inSourcePath, User inUser)
 	{
-		Lock lock = getLockManager().lockIfPossible(getCatalogId(), getCatalogHome() + "/" + inSourcePath, inUser.getId());
+		Lock lock = getLockManager().lockIfPossible(getCatalogId(),  "assets/" + inSourcePath, inUser.getId());
 		return lock;
 	}
 	
