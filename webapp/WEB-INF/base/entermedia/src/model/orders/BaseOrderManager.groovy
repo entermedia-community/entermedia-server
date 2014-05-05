@@ -589,6 +589,13 @@ public class BaseOrderManager implements OrderManager
 			//item.getId() + "." + field + ".value"
 			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
 			
+			String rendertype = null;
+			if( presetid == null)
+			{
+				rendertype = archive.getMediaRenderType(asset.getFileFormat());
+				presetid = properties.get(rendertype + ".presetid.value");
+			}
+			
 			if( presetid == null )
 			{
 				presetid = properties.get("presetid.value");
@@ -652,9 +659,6 @@ public class BaseOrderManager implements OrderManager
 					publishqeuerow.setProperty(field, value);
 				}
 			}
-			
-			
-			
 			publishqeuerow.setProperty("assetid", assetid);
 			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
 			
