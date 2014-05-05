@@ -1290,12 +1290,12 @@ public class MediaArchive
 			outputfile = name + "page" + inPageNumber + "." + ext;
 		}
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
-		return page.exists() && page.getLength() > 1;
+		return page.getLength() > 1;
 		
 	}
 	public boolean doesAttachmentExist(String outputfile, Data asset) {
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
-		return page.exists() && page.getLength() > 1;
+		return  page.getLength() > 1;
 	}
 	public String asExportFileName(Asset inAsset, Data inPreset)
 	{
@@ -1346,12 +1346,6 @@ public class MediaArchive
 	public void setLockManager(LockManager inLockManager)
 	{
 		fieldLockManager = inLockManager;
-	}
-	
-	public Lock lockAssetIfPossible(String inSourcePath, User inUser)
-	{
-		Lock lock = getLockManager().lockIfPossible(getCatalogId(), getCatalogHome() + "/" + inSourcePath, inUser.getId());
-		return lock;
 	}
 	
 	public boolean releaseLock(Lock inLock)
@@ -1506,6 +1500,7 @@ public class MediaArchive
 	
 	public void updateAssetConvertStatus(String inSourcePath) 
 	{
+		//TODO: Lock the asset so that nobody edits it while we are doing this
 		Asset asset = getAssetBySourcePath(inSourcePath);
 		if( asset == null)
 		{

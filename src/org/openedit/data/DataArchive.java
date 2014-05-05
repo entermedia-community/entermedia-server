@@ -2,6 +2,7 @@ package org.openedit.data;
 
 import java.util.Collection;
 
+import org.entermedia.locks.Lock;
 import org.openedit.Data;
 import org.openedit.xml.XmlArchive;
 
@@ -22,9 +23,9 @@ public interface DataArchive
 
 	void delete(Data inData, User inUser);
 
-	void saveData(Data inData, User inUser);
-
-	void saveAllData(Collection<Data> inAll, User inUser);
+	void saveData(Data inData, User inUser, Lock inLock);
+	
+	public void saveAllData(Collection<Data> inAll, String catalogid, String inLockPrefix, User inUser);
 
 
 }

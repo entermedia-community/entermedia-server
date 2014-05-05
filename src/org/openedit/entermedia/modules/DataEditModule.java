@@ -33,6 +33,7 @@ import org.openedit.entermedia.BaseCompositeData;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.profile.UserProfile;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 import org.openedit.xml.XmlSearcher;
@@ -592,7 +593,14 @@ public class DataEditModule extends BaseMediaModule
 				}
 			}
 			inReq.putPageValue("data", data);
-
+			if(data instanceof UserProfile){
+				//saving our own user profile while logged in was immediately getting overridden by the one in memory
+				
+				if(inReq.getUserName().equals(data.getId())){
+					String sessionid = searcher.getCatalogId() + "userprofile" + data.getId();
+					inReq.removeSessionValue(sessionid);
+				}
+			}
 			inReq.putPageValue("savedok", Boolean.TRUE);
 			
 			

@@ -12,6 +12,9 @@
   </property>
   <property name="editable">false</property>
   <property name="encoding">UTF-8</property>
+  
   <property name="oemaxlevel">1</property>
+  
   <inner-layout>${permissionrootpath}/layout.html</inner-layout>
+  
 </page>

@@ -120,6 +120,8 @@ public class AssetUtilities
 			asset = inArchive.createAsset(sourcePath);
 			asset.setFolder(inContent.isFolder());
 			asset.setProperty("datatype", "original");
+			asset.setProperty("editstatus", "1");
+			
 			if( inUser != null ) 
 			{
 				asset.setProperty("owner", inUser.getUserName());
@@ -136,6 +138,7 @@ public class AssetUtilities
 		{
 			asset.setProperty("importstatus", "imported");
 			asset.setProperty("pushstatus", "resend");
+			asset.setProperty("editstatus", "1");
 
 			readMetadata(asset, inContent, inArchive);
 			// TODO: clear out old cached thumbnails and conversions

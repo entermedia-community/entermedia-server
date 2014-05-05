@@ -18,6 +18,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermedia.cache.CacheManager;
+import org.entermedia.locks.Lock;
+import org.entermedia.locks.LockManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -56,6 +58,8 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	protected ModuleManager fieldModuleManager;
 	protected MediaArchive fieldMediaArchive;
 	protected XmlUtil fieldXmlUtil;
+	
+	
 	protected boolean fieldUpdateExistingRecord = true;
 	protected CacheManager fieldCacheManager;
 	public XmlAssetArchive()
@@ -310,7 +314,22 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	{
 		saveAsset((Asset)inData, inUser);
 	}
-	public synchronized void saveAsset(Asset inAsset, User inUser)
+	
+	public  void saveAsset(Asset inAsset, User inUser)
+	{
+		Lock lock = null;
+		try
+		{
+			lock = getMediaArchive().getLockManager().lock(getCatalogId(), "assets/" + inAsset.getSourcePath(),"admin");
+			saveAsset(inAsset, inUser, lock);
+		}
+		finally
+		{
+			getMediaArchive().getLockManager().release(getCatalogId(), lock);
+		}
+	}
+	
+	public  void saveAsset(Asset inAsset, User inUser, Lock inLock)
 	{
 		if( inAsset.getId() == null)
 		{
@@ -345,6 +364,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 			OutputStream out = output.getOutputStream();
 			try
 			{
+				
 				getXmlUtil().saveXml(document.getRootElement(), out, encoding);
 			}
 			finally
@@ -651,13 +671,31 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	}
 
 	@Override
-	public void saveAllData(Collection<Data> inAll, User inUser)
+	public void saveAllData(Collection<Data> inAll,String catalogid, String inLockPrefix, User inUser)
 	{
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-			saveAsset(asset, inUser);
+			Lock lock = null;
+			try
+			{
+				lock = getMediaArchive().getLockManager().lock(getCatalogId(), inLockPrefix + asset.getSourcePath(),"admin");
+				saveAsset(asset, inUser, lock);
+			}
+			finally
+			{
+				getMediaArchive().getLockManager().release(getCatalogId(), lock);
+			}
 		}
+		
+	}
+
+	@Override
+	public void saveData(Data inData, User inUser, Lock inLock) {
+		
+		saveAsset((Asset)inData, inUser);
+
+		// TODO Auto-generated method stub
 		
 	}
 

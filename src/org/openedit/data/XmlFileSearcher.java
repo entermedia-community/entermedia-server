@@ -15,6 +15,7 @@ import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.dom4j.Element;
+import org.entermedia.locks.Lock;
 import org.openedit.Data;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.entermedia.SourcePathCreator;
@@ -143,7 +144,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 				data.setSourcePath(sourcepath);
 			}
 		}
-		getXmlDataArchive().saveAllData(inAll, inUser);
+		getXmlDataArchive().saveAllData(inAll, getCatalogId(), getPrefix() + "/", inUser );
 		updateIndex(inAll);
 		//getLiveSearcher(); //should flush the index
 	}
@@ -208,11 +209,20 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
 			data.setSourcePath(sourcepath);
 		}
-		getXmlDataArchive().saveData(data,inUser);
+		
+		Lock lock = null;
+		try
+		{
+			lock = getLockManager().lock(getCatalogId(), getPrefix() + "/" + data.getSourcePath(),"admin");
+			getXmlDataArchive().saveData(data,inUser, lock);
 		
 //		String nullcheck = data.get("publishqueueid");
 //		log.info( getSearchType() + " " + data.getId() + " " + nullcheck );
 		updateIndex(data);
+		} 	finally
+		{
+			getLockManager().release(getCatalogId(), lock);
+		}
 	}
 
 	protected IntCounter getIntCounter()

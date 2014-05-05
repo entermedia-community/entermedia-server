@@ -95,7 +95,9 @@
 
 
             </div>
-
+            #set($editpath = $context.findValue("editPath"))
+            <a class="ajax btn" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">Edit Permissions</a>
+<div id="permissionedit"></div>
             
             <div class="hr" style="margin: 5px 0 0 0"></div>
             <input class="btn right" style="margin-top: 10px;" type="submit" value="Save" />

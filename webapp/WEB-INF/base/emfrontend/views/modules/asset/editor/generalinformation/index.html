@@ -7,9 +7,15 @@
 <div id="de-metadata">
 #foreach( $viewpath in $views.keySet() )
 	#set( $target = $views.get($viewpath) )
-	#if( !$target.rendertable )
-		#displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+	 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+                       #if("$!permissionvalue" == "" || $permissionvalue == true)
+     
+		#if( !$target.rendertable )
+			#displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+		#end
 	#end
+	                  #set($permissionvalue = "")
+	
 #end
 
 $pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
