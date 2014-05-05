@@ -1,3 +1,4 @@
+<div id="browse-resultsarea">
 $context.putPageValue("assetrootfolder", "/${catalogid}/assets")
 #if( !$thumbsize )
 	#set( $thumbsize  = "thumbsmall" )
@@ -8,6 +9,8 @@ $context.putPageValue("assetrootfolder", "/${catalogid}/assets")
 $context.putPageValue("thumbsize", $thumbsize)
 $context.putPageValue("showhover", "true")
 $context.putPageValue("showcaption", "true")
+$pages.include("$apphome/components/html/browse/navigate.html", $context)
+
 <div class="row">
 	#foreach ($hit in $hits.getPageOfHits())
 		<div class="col-md-3">
@@ -62,5 +65,7 @@ $context.putPageValue("showcaption", "true")
 [[No results found.]]
 </p>
 #end
-	
+$pages.include("$apphome/components/html/browse/navigate.html", $context)
+
+</div>
 	
