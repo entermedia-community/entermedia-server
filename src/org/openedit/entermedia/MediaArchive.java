@@ -1290,12 +1290,12 @@ public class MediaArchive
 			outputfile = name + "page" + inPageNumber + "." + ext;
 		}
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
-		return page.exists() && page.getLength() > 1;
+		return page.getLength() > 1;
 		
 	}
 	public boolean doesAttachmentExist(String outputfile, Data asset) {
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
-		return page.exists() && page.getLength() > 1;
+		return  page.getLength() > 1;
 	}
 	public String asExportFileName(Asset inAsset, Data inPreset)
 	{
