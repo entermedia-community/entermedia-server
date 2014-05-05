@@ -380,7 +380,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			
 			
-			if( "pdf".equals(ext) || "png".equals(ext))
+			if( "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext))
 			{
 				com.add("-background");
 				com.add("white");
@@ -439,14 +439,8 @@ public class imagemagickCreator extends BaseImageCreator
 				resizestring.append("^");
 				com.add(resizestring.toString());
 			}
-				
-			
-
-
-			
-			
 		}
-		else if( "pdf".equals(ext) || "png".equals(ext))
+		else if( "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext))
 		{
 			com.add("-background");
 			com.add("white");

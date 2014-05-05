@@ -49,11 +49,11 @@
 		  	    #foreach ($preset in $results)
 		  	  
 #if($canconvert && $candownloadfpo)
-						#set($ok = true) a
+						#set($ok = true) 
 					#elseif ($canconvert && $preset.watermark != "true")
-						#set($ok = true) b
+						#set($ok = true) 
 					#elseif($candownloadfpo && $preset.watermark == "true")
-						#set($ok = true) c
+						#set($ok = true) 
 					#end
 					#if($ok)
 					<option value="$preset.id">$preset

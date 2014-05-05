@@ -144,7 +144,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 				data.setSourcePath(sourcepath);
 			}
 		}
-		getXmlDataArchive().saveAllData(inAll, inUser);
+		getXmlDataArchive().saveAllData(inAll, getCatalogId(), getPrefix() + "/", inUser );
 		updateIndex(inAll);
 		//getLiveSearcher(); //should flush the index
 	}
@@ -213,7 +213,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		Lock lock = null;
 		try
 		{
-			lock = getLockManager().lock(getCatalogId(), getPathToData() + "/" + data.getSourcePath(),"admin");
+			lock = getLockManager().lock(getCatalogId(), getPrefix() + "/" + data.getSourcePath(),"admin");
 			getXmlDataArchive().saveData(data,inUser, lock);
 		
 //		String nullcheck = data.get("publishqueueid");

@@ -315,19 +315,18 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		saveAsset((Asset)inData, inUser);
 	}
 	
-	public  void saveAsset(Asset inAsset, User inUser){
-		
+	public  void saveAsset(Asset inAsset, User inUser)
+	{
 		Lock lock = null;
 		try
 		{
 			lock = getMediaArchive().getLockManager().lock(getCatalogId(), "assets/" + inAsset.getSourcePath(),"admin");
 			saveAsset(inAsset, inUser, lock);
-		} finally{
-			getMediaArchive().getLockManager().release(getCatalogId(), lock);
-
 		}
-		
-		
+		finally
+		{
+			getMediaArchive().getLockManager().release(getCatalogId(), lock);
+		}
 	}
 	
 	public  void saveAsset(Asset inAsset, User inUser, Lock inLock)
@@ -672,12 +671,21 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	}
 
 	@Override
-	public void saveAllData(Collection<Data> inAll, User inUser)
+	public void saveAllData(Collection<Data> inAll,String catalogid, String inLockPrefix, User inUser)
 	{
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-			saveAsset(asset, inUser);
+			Lock lock = null;
+			try
+			{
+				lock = getMediaArchive().getLockManager().lock(getCatalogId(), inLockPrefix + asset.getSourcePath(),"admin");
+				saveAsset(asset, inUser, lock);
+			}
+			finally
+			{
+				getMediaArchive().getLockManager().release(getCatalogId(), lock);
+			}
 		}
 		
 	}

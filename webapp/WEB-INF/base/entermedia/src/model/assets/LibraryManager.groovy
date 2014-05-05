@@ -68,7 +68,10 @@ public class LibraryManager extends EnterMediaObject
 		searcher.saveAllData(tosave, null);
 		savedsofar = tosave.size() + savedsofar;
 		log.info("completedlibraryadd added : ${savedsofar} " );
-		fieldLibraryFolders.clear();
+		if( fieldLibraryFolders != null)
+		{
+			fieldLibraryFolders.clear();
+		}
 		
 	}
 	protected String getLibraryIdForFolder(Searcher librarySearcher, String inFolder)
