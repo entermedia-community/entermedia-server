@@ -17,6 +17,14 @@ public void init()
 		//HitTracker assets = searcher.getAllHits();
 		HitTracker assets = searcher.query().match("category","index").not("editstatus","7").sort("id").search();
 		assets.setHitsPerPage(1000);
+		String ids = context.getRequestParameter("assetids");
+		if( ids != null )
+		{
+			String[] assetids = ids.split(",");
+			assets.setSelections(Arrays.asList( assetids) );
+			assets.setShowOnlySelected(true);
+		}
+
 		List assetsToSave = new ArrayList();
 		MetaDataReader reader = moduleManager.getBean("metaDataReader");
 		for (Data hit in assets)
