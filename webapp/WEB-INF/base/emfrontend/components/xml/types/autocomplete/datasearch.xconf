@@ -5,5 +5,5 @@
 		<property name="hitsname">autocomplete</property>
 	</page-action>
 	<generator name="velocityGenerator" />
-	
+	<property name="hitsperpage">500</property>
 </page>
