@@ -77,6 +77,21 @@
                             #end
                         #end
                      </p>
+                     #set($contact = $mediaarchive.getSearcher("contact").query().exact("thumbnail", $asset.id).searchOne())
+                     <!-- Added for highlights -->
+                     #if($contact)
+                      <p style="line-height: 25px; text-align: left; color: #fff; ">
+                        
+                            <strong>Contact</strong><br/>
+                                
+                                <a href="$home$apphome/views/modules/contact/edit/edit.html?id=${contact.id}&viewid=contactcontact_details&viewpath=contact/contactcontact_details&searchtype=contact&detailsreadonly=true&preview=true">$contact</a> 
+                                
+                        
+
+                     </p>
+                     #end
+                     
+                     
                 </div>
             </div>
         </div>
