@@ -86,12 +86,15 @@ public class imagemagickCreator extends BaseImageCreator
 			String fullInputPath = inputPage.getContentItem().getAbsolutePath();
 			return applyWaterMark(inArchive, fullInputPath, outputpath, inStructions);
 		}
-		
+
 		Page input = null;
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 		
-		if( inStructions.getMaxScaledSize() != null && offset == null ) //page numbers are 1 based
+		String tmpinput = PathUtilities.extractPageType( inOutFile.getPath() );
+		boolean transparent = inStructions.isTransparencyMaintained(tmpinput);
+		
+		if( !transparent  && ( inStructions.getMaxScaledSize() != null && offset == null ) ) //page numbers are 1 based
 		{
 			String page = null;
 			if( inStructions.getPageNumber() > 1 )
@@ -380,7 +383,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			
 			
-			if( "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext))
+			if( !transparent && ("pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{
 				com.add("-background");
 				com.add("white");
@@ -440,7 +443,7 @@ public class imagemagickCreator extends BaseImageCreator
 				com.add(resizestring.toString());
 			}
 		}
-		else if( "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext))
+		else if( !transparent && ( "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext) ) )
 		{
 			com.add("-background");
 			com.add("white");

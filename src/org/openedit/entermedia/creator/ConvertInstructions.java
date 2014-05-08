@@ -154,6 +154,24 @@ public class ConvertInstructions
 		}
 	}
 
+	public boolean isTransparencyMaintained(String inputtype)
+	{
+		String type = getOutputExtension();
+		if( type == null || inputtype == null)
+		{
+			return false;
+		}
+		if(( type.equals("png")|| type.equals("gif") ) && (inputtype.equals("gif") || inputtype.equals("png")) )
+		{
+			return true;
+		}
+		return false;
+			
+			
+		
+	}
+	
+	
 	public String getOutputExtension()
 	{
 		return getProperty("outputextension");
