@@ -1431,11 +1431,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	
 	
-	<bean id="cataloguserSearcher" class="org.openedit.users.CatalogUserSearcher"	singleton="false">
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="userSearcher"><ref bean="userSearcher" /></property>
-	</bean>
-
 	<bean id="categorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" singleton="false">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="categoryArchive"><ref bean="categoryArchive" /></property>

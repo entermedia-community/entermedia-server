@@ -58,14 +58,14 @@ public class AssetStatsManager
 		change.setCatalogId(inCatalogId);
 		getMediaEventHandler().eventFired(change);
 	}
-	public void logAssetPreview(Asset inAsset, User inUser)
+	public void logAssetPreview(MediaArchive inArchive, Asset inAsset, User inUser)
 	{
 		WebEvent change = new WebEvent();
 		change.setOperation("asset/preview");
 		change.setSearchType("asset");
 		change.setSourcePath(inAsset.getSourcePath());
 		change.setUser(inUser);
-		change.setCatalogId(inAsset.getCatalogId());
+		change.setCatalogId(inArchive.getCatalogId());
 
 		change.setProperty("assetid",inAsset.getId());
 	
