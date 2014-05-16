@@ -481,6 +481,7 @@ public class imagemagickCreator extends BaseImageCreator
 	//		com.add("90"); I think the default is about 80
 	//		setValue("colorspace", "RGB", inStructions, com);
 			setValue("profile", getPathtoProfile(), inStructions, com);
+			com.add("-auto-orient"); //Needed for rotate tool
 			com.add("-strip"); //This does not seem to do much
 			
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case

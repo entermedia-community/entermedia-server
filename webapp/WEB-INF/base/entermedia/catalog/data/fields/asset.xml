@@ -47,7 +47,7 @@
 	<property id="videocodec"  index="true" stored="true" >Video Codec</property>
 	<property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true" >Audio Codec</property>
 
-	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="Orientation">Image Rotation</property>
+	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="exif:Orientation">Image Rotation</property>
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
 	<property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type">File Format</property>
 	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size">File Size</property>
