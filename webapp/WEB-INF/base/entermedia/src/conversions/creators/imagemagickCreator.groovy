@@ -272,6 +272,7 @@ public class imagemagickCreator extends BaseImageCreator
 					}
 				}
 			}
+			else
 			
 /** We dont need this any more?
 			//we need to rotate this before we start otherwise the width and heights might be flipped. This is only 5% slower
@@ -466,17 +467,24 @@ public class imagemagickCreator extends BaseImageCreator
 		
 				
          				
-		if( !autocreated )
+		if( autocreated )  //we are using a color corrected input
+		{
+			setValue("quality", "89", inStructions, com);
+			com.add("-strip"); //This does not seem to do much
+		}
+		else
 		{
 //			TODO: use parameters to specify the color space		
 			//Make sure we use 8 bit output and 	
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
-			
-			
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
+	//		setValue("colorspace", "RGB", inStructions, com);
 			setValue("profile", getPathtoProfile(), inStructions, com);
-			com.add("-strip");
+			com.add("-strip"); //This does not seem to do much
+			
+			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
+			
 			
 		}
 		
