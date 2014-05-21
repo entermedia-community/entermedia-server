@@ -1,0 +1,6 @@
+<page>
+	<property id="fetchurl" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains"  sortable="true" >Fetch URL</property>
+
+
+
+</page>
