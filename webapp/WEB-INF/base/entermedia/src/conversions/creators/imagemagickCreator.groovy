@@ -119,22 +119,22 @@ public class imagemagickCreator extends BaseImageCreator
 //					autocreated = true;
 //				}
 //			}
-			if( input == null &&  box.getWidth() < 300 )
-			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
-				if( !input.exists()  || input.length() < 2)
-				{
-					input = null;
-				}
-				else
-				{
-					autocreated = true;
-				}
-			}
+//			if( input == null &&  box.getWidth() < 300 )
+//			{
+//				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
+//				if( !input.exists()  || input.length() < 2)
+//				{
+//					input = null;
+//				}
+//				else
+//				{
+//					autocreated = true;
+//				}
+//			}
 			if( input == null && box.getWidth() < 1024 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");				
-				if( !input.exists()  || input.length() < 2 )
+				if( input.length() < 2 )
 				{
 					input = null;
 				}
@@ -479,7 +479,17 @@ public class imagemagickCreator extends BaseImageCreator
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
-	//		setValue("colorspace", "RGB", inStructions, com);
+			
+			String type = inAsset.get("colortype");
+			if( type != null && type.equalsIgnoreCase("RGB") )
+			{
+				String cmyk = inAsset.get("colorspace");  
+				if( cmyk != null && cmyk.equalsIgnoreCase("CMYK") )  //Edge case where someone has the wrong colorspace set in the file
+				{
+					com.add("-colorspace");
+					com.add("RGB");
+				}	
+			}
 			setValue("profile", getPathtoProfile(), inStructions, com);
 			com.add("-auto-orient"); //Needed for rotate tool
 			com.add("-strip"); //This does not seem to do much
