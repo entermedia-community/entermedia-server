@@ -272,7 +272,7 @@ public class imagemagickCreator extends BaseImageCreator
 					}
 				}
 			}
-			else
+			//else
 			
 /** We dont need this any more?
 			//we need to rotate this before we start otherwise the width and heights might be flipped. This is only 5% slower
