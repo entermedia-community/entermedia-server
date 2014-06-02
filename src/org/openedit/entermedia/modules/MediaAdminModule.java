@@ -9,10 +9,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermedia.workspace.WorkspaceManager;
 import org.openedit.Data;
+import org.openedit.data.Reloadable;
 import org.openedit.data.Searcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
 import com.openedit.page.manage.PageManager;
@@ -22,12 +24,14 @@ public class MediaAdminModule extends BaseMediaModule
 	private static final Log log = LogFactory.getLog(MediaAdminModule.class);
 	protected WorkspaceManager fieldWorkspaceManager;
 	protected PageManager fieldPageManager;
-	
-	public PageManager getPageManager() {
+
+	public PageManager getPageManager()
+	{
 		return fieldPageManager;
 	}
 
-	public void setPageManager(PageManager inPageManager) {
+	public void setPageManager(PageManager inPageManager)
+	{
 		fieldPageManager = inPageManager;
 	}
 
@@ -67,14 +71,15 @@ public class MediaAdminModule extends BaseMediaModule
 			return;
 		}
 		String path = inReq.getRequestParameter("path");
-		if( path == null)
+		if (path == null)
 		{
 			return;
 		}
-		//"/" + inReq.findValue("applicationid");
-		Page page = getPageManager().getPage(path); //This is the root level for this album
+		// "/" + inReq.findValue("applicationid");
+		Page page = getPageManager().getPage(path); // This is the root level
+													// for this album
 		PageProperty skin = new PageProperty("themeprefix");
-		if( "default".equals( layout) )
+		if ("default".equals(layout))
 		{
 			page.getPageSettings().removeProperty("themeprefix");
 		}
@@ -85,107 +90,108 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		getPageManager().saveSettings(page);
 	}
-	
-	public void deployUploadedApp(WebPageRequest inReq ) throws Exception
+
+	public void deployUploadedApp(WebPageRequest inReq) throws Exception
 	{
 		Page uploaded = getPageManager().getPage("/WEB-INF/temp/importapp.zip");
 		String catid = inReq.getRequestParameter("appcatalogid");
 		String destinationid = inReq.getRequestParameter("destinationappid");
-		if( destinationid.startsWith("/") )
+		if (destinationid.startsWith("/"))
 		{
 			destinationid = destinationid.substring(1);
 		}
-		getWorkspaceManager().deployUploadedApp(catid,destinationid, uploaded);
+		getWorkspaceManager().deployUploadedApp(catid, destinationid, uploaded);
 	}
-	
+
 	public void deployApp(WebPageRequest inReq) throws Exception
 	{
 		String appcatalogid = inReq.getRequestParameter("appcatalogid");
-		Searcher searcher = getSearcherManager().getSearcher(appcatalogid,"app");
+		Searcher searcher = getSearcherManager().getSearcher(appcatalogid, "app");
 
 		Data site = null;
 		String id = inReq.getRequestParameter("id");
-		if( id == null)
+		if (id == null)
 		{
 			site = searcher.createNewData();
 		}
 		else
 		{
-			site = (Data)searcher.searchById(id);
+			site = (Data) searcher.searchById(id);
 		}
 		String frontendid = inReq.findValue("frontendid");
-		if( frontendid == null)
+		if (frontendid == null)
 		{
 			throw new OpenEditException("frontendid was null");
 		}
 		String deploypath = inReq.findValue("deploypath");
-		if( !deploypath.startsWith("/") )
+		if (!deploypath.startsWith("/"))
 		{
-			deploypath  = "/" + deploypath;
+			deploypath = "/" + deploypath;
 		}
-		site.setProperty("deploypath",deploypath);
+		site.setProperty("deploypath", deploypath);
 
 		String module = inReq.findValue("module");
-		site.setProperty("module",module);
+		site.setProperty("module", module);
 
 		String name = inReq.findValue("sitename");
 		site.setName(name);
 
-//		site.setProperty("frontendid",frontendid);
+		// site.setProperty("frontendid",frontendid);
 
 		searcher.saveData(site, inReq.getUser());
-		Data frontend = getSearcherManager().getData("system","frontend",frontendid);
+		Data frontend = getSearcherManager().getData("system", "frontend", frontendid);
 		Page copyfrompage = getPageManager().getPage(frontend.get("path"));
-		//Page copyfrompage = getPageManager().getPage("/WEB-INF/base/manager/components/newworkspace");
-		
+		// Page copyfrompage =
+		// getPageManager().getPage("/WEB-INF/base/manager/components/newworkspace");
+
 		Page topage = getPageManager().getPage(deploypath);
-		if( !topage.exists())
+		if (!topage.exists())
 		{
-			getPageManager().copyPage(copyfrompage,topage);
+			getPageManager().copyPage(copyfrompage, topage);
 		}
-		topage = getPageManager().getPage(topage.getPath(),true);
-		
-		topage.getPageSettings().setProperty("catalogid",appcatalogid);
-		
+		topage = getPageManager().getPage(topage.getPath(), true);
+
+		topage.getPageSettings().setProperty("catalogid", appcatalogid);
+
 		String appid = deploypath;
-		if( appid.startsWith("/") )
+		if (appid.startsWith("/"))
 		{
 			appid = appid.substring(1);
 		}
-		if( appid.endsWith("/") )
+		if (appid.endsWith("/"))
 		{
-			appid = appid.substring(0,appid.length()-1);
+			appid = appid.substring(0, appid.length() - 1);
 		}
-		topage.getPageSettings().setProperty("applicationid",appid);
-		topage.getPageSettings().setProperty("appmodule",site.get("module"));
-		
+		topage.getPageSettings().setProperty("applicationid", appid);
+		topage.getPageSettings().setProperty("appmodule", site.get("module"));
+
 		getPageManager().saveSettings(topage);
-		
+
 	}
-	
+
 	public void saveRows(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");
-		Searcher searcher = getSearcherManager().getSearcher(catalogid,"catalogsettings");
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, "catalogsettings");
 
 		String[] fields = inReq.getRequestParameters("field");
 		for (int i = 0; i < fields.length; i++)
 		{
-			Data existing = (Data)searcher.searchById(fields[i]);
-			if( existing == null)
+			Data existing = (Data) searcher.searchById(fields[i]);
+			if (existing == null)
 			{
-				//log.error("No default value"  + fields[i]);
-				//continue;
+				// log.error("No default value" + fields[i]);
+				// continue;
 				existing = searcher.createNewData();
 				existing.setId(fields[i]);
 			}
 			boolean save = false;
 			String[] values = inReq.getRequestParameters(fields[i] + ".value");
-			if( values != null && values.length > 0)
+			if (values != null && values.length > 0)
 			{
-				if( values.length == 1)
+				if (values.length == 1)
 				{
-					if( !values[0].equals(existing.get("value")))
+					if (!values[0].equals(existing.get("value")))
 					{
 						save = true;
 						existing.setProperty("value", values[0]);
@@ -198,7 +204,7 @@ public class MediaAdminModule extends BaseMediaModule
 					for (int j = 0; j < values.length; j++)
 					{
 						buffer.append(values[j]);
-						if( j+1 < values.length)
+						if (j + 1 < values.length)
 						{
 							buffer.append(' ');
 						}
@@ -208,13 +214,13 @@ public class MediaAdminModule extends BaseMediaModule
 			}
 			else
 			{
-				if( existing.get("value") != null)
+				if (existing.get("value") != null)
 				{
 					save = true;
 					existing.setProperty("value", null);
 				}
 			}
-			if( save )
+			if (save)
 			{
 				searcher.saveData(existing, inReq.getUser());
 			}
@@ -223,10 +229,32 @@ public class MediaAdminModule extends BaseMediaModule
 
 	public void saveModule(WebPageRequest inReq) throws Exception
 	{
-		Data module = (Data)inReq.getPageValue("data");
-		
+		Data module = (Data) inReq.getPageValue("data");
+
 		String appid = inReq.findValue("applicationid");
 		String catalogid = inReq.findValue("catalogid");
 		getWorkspaceManager().saveModule(catalogid, appid, module);
 	}
+
+	public void reindexLists(WebPageRequest inReq) throws Exception
+	{
+		HitTracker catalogs = getSearcherManager().getList("system", "catalog");
+		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
+		{
+			Data catalog = (Data) iterator.next();
+			List tables = getSearcherManager().getPropertyDetailsArchive(catalog.getId()).listSearchTypes();
+			for (Iterator iterator2 = tables.iterator(); iterator2.hasNext();)
+			{
+				String type = (String) iterator2.next();
+				Searcher searcher = getSearcherManager().getSearcher(catalog.getId(), type);
+				if (searcher instanceof Reloadable)
+				{
+					searcher.reIndexAll();
+				}
+			}
+
+		}
+
+	}
+
 }
