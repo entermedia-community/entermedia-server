@@ -676,23 +676,29 @@ public class AssetEditModule extends BaseMediaModule
 	public void writeAssetKeywords( WebPageRequest inRequest ) throws Exception
 	{
 		String[] assetids = inRequest.getRequestParameters("assetids");
-		
-		MediaArchive mediaArchive = getMediaArchive(inRequest);
-		for (int i = 0; i < assetids.length; i++)
+		if( assetids == null)
 		{
-			Asset asset = mediaArchive.getAsset(assetids[i]);
-			if( asset == null )
+			assetids = inRequest.getRequestParameters("assetid");
+		}
+		if( assetids != null)
+		{
+			MediaArchive mediaArchive = getMediaArchive(inRequest);
+			for (int i = 0; i < assetids.length; i++)
 			{
-				//log
-				return;
-			}
-			boolean didSave = false;
-			if( mediaArchive.isTagSync(asset.getFileFormat() ) )
-			{
-				didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
-			}
-			inRequest.putPageValue("didSave", new Boolean(didSave));
-		}			
+				Asset asset = mediaArchive.getAsset(assetids[i]);
+				if( asset == null )
+				{
+					//log
+					return;
+				}
+				boolean didSave = false;
+				if( mediaArchive.isTagSync(asset.getFileFormat() ) )
+				{
+					didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
+				}
+				inRequest.putPageValue("didSave", new Boolean(didSave));
+			}			
+		}	
 	}
 	
 	public void saveAssetProperties(WebPageRequest inReq) throws OpenEditException 
