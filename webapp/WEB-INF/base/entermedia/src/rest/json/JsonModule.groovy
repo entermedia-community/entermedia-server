@@ -513,7 +513,7 @@ class JsonModule {
 				ConversionUtil util = new ConversionUtil();
 				util.setSearcherManager(inArchive.getSearcherManager());
 					
-				HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId());
+				HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId(),inAsset.get("assettype"));
                 conversions.each{
 					if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.id)){
 						Dimension dimension = util.getConvertPresetDimension(inArchive.getCatalogId(), it.id);
