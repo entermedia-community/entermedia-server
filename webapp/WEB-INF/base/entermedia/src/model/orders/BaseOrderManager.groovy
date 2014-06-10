@@ -27,19 +27,18 @@ import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.users.User
 
-public class BaseOrderManager implements OrderManager 
-{
+public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected WebEventHandler fieldWebEventHandler;
 	protected LockManager fieldLockManager;
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#getWebEventHandler()
 	 */
-	
-	
+
+
 	public WebEventHandler getWebEventHandler() {
 		return fieldWebEventHandler;
 	}
@@ -47,7 +46,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#setWebEventHandler(org.openedit.event.WebEventHandler)
 	 */
-	
+
 	public void setWebEventHandler(WebEventHandler inWebEventHandler) {
 		fieldWebEventHandler = inWebEventHandler;
 	}
@@ -55,49 +54,43 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#getSearcherManager()
 	 */
-	
-	public SearcherManager getSearcherManager() 
-	{
+
+	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#setSearcherManager(org.openedit.data.SearcherManager)
 	 */
-	
-	public void setSearcherManager(SearcherManager inSearcherManager) 
-	{
+
+	public void setSearcherManager(SearcherManager inSearcherManager) {
 		fieldSearcherManager = inSearcherManager;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#placeOrder(java.lang.String, java.lang.String, com.openedit.users.User, com.openedit.hittracker.HitTracker, java.util.Map)
 	 */
-	
-	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties)
-	{
+
+	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		Data order = createNewOrderWithId(frontendappid, inCatlogId,inUser.getUserName());
-		
-		for (Iterator iterator = inProperties.keySet().iterator(); iterator.hasNext();) 
-		{
+
+		for (Iterator iterator = inProperties.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			order.setProperty(key, (String)inProperties.get(key));
-			
 		}
-		
+
 		searcher.saveData(order, inUser);
-		
+
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatlogId, "orderitem");
-		
+
 		List items = new ArrayList();
-		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) 
-		{
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();) {
 			Data asset = (Data) iterator.next();
 			Data item = itemsearcher.createNewData();
 			item.setProperty("orderid", order.getId());
 			item.setProperty("userid", inUser.getId());
-			
+
 			item.setSourcePath(order.getSourcePath()); //will have orderitem.xml added to it
 			item.setProperty("assetsourcepath", asset.getSourcePath());
 			item.setProperty("assetid", asset.getId());
@@ -111,16 +104,15 @@ public class BaseOrderManager implements OrderManager
 		event.setSourcePath(order.getSourcePath());
 		event.setSearchType("order");
 		getWebEventHandler().eventFired(event);
-		
+
 		return order;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#findOrdersForUser(java.lang.String, com.openedit.users.User)
 	 */
-	
-	public HitTracker findOrdersForUser(String inCatlogId, User inUser) 
-	{
+
+	public HitTracker findOrdersForUser(String inCatlogId, User inUser) {
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatlogId, "order");
 		SearchQuery query = ordersearcher.createSearchQuery();
 		query.addOrsGroup("orderstatus","ordered complete");
@@ -134,11 +126,9 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#loadOrderHistoryForPage(com.openedit.hittracker.HitTracker)
 	 */
-	
-	public void loadOrderHistoryForPage(HitTracker inPage)
-	{
-		for (Iterator iterator = inPage.getPageOfHits().iterator(); iterator.hasNext();)
-		{
+
+	public void loadOrderHistoryForPage(HitTracker inPage) {
+		for (Iterator iterator = inPage.getPageOfHits().iterator(); iterator.hasNext();) {
 			Order order = (Order) iterator.next();
 			loadOrderHistory(inPage.getCatalogId(), order);
 		}
@@ -147,18 +137,14 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#loadOrderHistory(java.lang.String, org.openedit.entermedia.orders.Order)
 	 */
-	
-	public OrderHistory loadOrderHistory(String inCataId, Order order)
-	{
-		if( order == null)
-		{
+
+	public OrderHistory loadOrderHistory(String inCataId, Order order) {
+		if( order == null) {
 			return null;
 		}
-		if( order.getRecentOrderHistory() == null)
-		{
+		if( order.getRecentOrderHistory() == null) {
 			OrderHistory history = findRecentOrderHistory(inCataId,order.getId());
-			if( history == null)
-			{
+			if( history == null) {
 				history = OrderHistory.EMPTY;
 			}
 			order.setRecentOrderHistory(history);
@@ -168,17 +154,15 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#findOrderItems(com.openedit.WebPageRequest, java.lang.String, org.openedit.entermedia.orders.Order)
 	 */
-	
-	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid,  Order inOrder) 
-	{
+
+	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid,  Order inOrder) {
 		return findOrderItems(inReq, inCatalogid,inOrder.getId() );
 	}
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#findOrderItems(com.openedit.WebPageRequest, java.lang.String, java.lang.String)
 	 */
-	
-	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId) 
-	{
+
+	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId) {
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrderId);
@@ -186,14 +170,12 @@ public class BaseOrderManager implements OrderManager
 
 		HitTracker items =  itemsearcher.cachedSearch(inReq, query);
 		return items;
-		
 	}
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#findOrderAssets(java.lang.String, java.lang.String)
 	 */
-	
-	public HitTracker findOrderAssets(String inCatalogid, String inOrderId) 
-	{
+
+	public HitTracker findOrderAssets(String inCatalogid, String inOrderId) {
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrderId);
@@ -204,22 +186,18 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#findAssets(com.openedit.WebPageRequest, java.lang.String, org.openedit.entermedia.orders.Order)
 	 */
-	
-	public HitTracker findAssets(WebPageRequest inReq, String inCatalogid, Order inOrder) 
-	{		
+
+	public HitTracker findAssets(WebPageRequest inReq, String inCatalogid, Order inOrder) {
 		HitTracker items =  findOrderItems(inReq, inCatalogid, inOrder);
-		if( items.size() == 0)
-		{
+		if( items.size() == 0) {
 			//log.info("No items");
 			return null;
 		}
 		StringBuffer ids = new StringBuffer();
-		for (Iterator iterator = items.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
 			Data hit = (Data) iterator.next();
 			ids.append(hit.get("assetid"));
-			if( iterator.hasNext() )
-			{
+			if( iterator.hasNext() ) {
 				ids.append(" ");
 			}
 		}
@@ -232,43 +210,39 @@ public class BaseOrderManager implements OrderManager
 		return hits;
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#findOrderHistory(java.lang.String, org.openedit.entermedia.orders.Order)
 	 */
-	
-	public HitTracker findOrderHistory(String inCatalogid, Order inOrder) 
-	{
+
+	public HitTracker findOrderHistory(String inCatalogid, Order inOrder) {
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderhistory");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrder.getId());
 		query.addSortBy("dateDown");
 		HitTracker items =  itemsearcher.search(query);
 
-		OrderHistory history = OrderHistory.EMPTY;; 
+		OrderHistory history = OrderHistory.EMPTY;;
 		Data hit = (Data)items.first();
-		if( hit != null)
-		{
+		if( hit != null) {
 			history = (OrderHistory)itemsearcher.searchById(hit.getId());
 		}
-		
+
 		inOrder.setRecentOrderHistory(history);
-		
+
 		return items;
 	}
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#findRecentOrderHistory(java.lang.String, java.lang.String)
 	 */
-	
-	public OrderHistory findRecentOrderHistory(String inCatalogid, String inOrderId) 
-	{
+
+	public OrderHistory findRecentOrderHistory(String inCatalogid, String inOrderId) {
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderhistory");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrderId);
 		query.addSortBy("dateDown");
 		Data index =  (Data)itemsearcher.uniqueResult(query);
-		if( index != null)
-		{
+		if( index != null) {
 			OrderHistory history = (OrderHistory)itemsearcher.searchById(index.getId());
 			return history;
 		}
@@ -278,9 +252,8 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#loadOrder(java.lang.String, java.lang.String)
 	 */
-	
-	public Order loadOrder(String catalogid, String orderid) 
-	{
+
+	public Order loadOrder(String catalogid, String orderid) {
 		Searcher ordersearcher = getSearcherManager().getSearcher(catalogid, "order");
 		Order order =  (Order) ordersearcher.searchById(orderid);
 		loadOrderHistory(catalogid,order);
@@ -290,30 +263,25 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#createOrder(java.lang.String, com.openedit.WebPageRequest, boolean)
 	 */
-	
-	public Order createOrder(String catalogid, WebPageRequest inReq, boolean saveitems) 
-	{
+
+	public Order createOrder(String catalogid, WebPageRequest inReq, boolean saveitems) {
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 		Order order = (Order)searcher.createNewData();
 		String[] fields = inReq.getRequestParameters("field");
 		searcher.updateData(inReq, fields, order);
 		String newstatus = inReq.getRequestParameter("newuserstatus");
-		if( newstatus != null)
-		{
+		if( newstatus != null) {
 			OrderHistory history = createNewHistory(catalogid, order, inReq.getUser(), newstatus);
-			
+
 			String note = inReq.getRequestParameter("newuserstatusnote");
 			history.setProperty("note", note);
-			if( saveitems)
-			{
-				if (fields != null)
-				{
+			if( saveitems) {
+				if (fields != null) {
 					String[] items = inReq.getRequestParameters("itemid");
 
 					Collection itemssaved = saveItems(catalogid,inReq,fields,items);
 					List assetids = new ArrayList();
-					for (Iterator iterator = itemssaved.iterator(); iterator.hasNext();)
-					{
+					for (Iterator iterator = itemssaved.iterator(); iterator.hasNext();) {
 						Data item = (Data) iterator.next();
 						assetids.add(item.get("assetid"));
 					}
@@ -322,34 +290,29 @@ public class BaseOrderManager implements OrderManager
 			}
 			saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
 		}
-		else
-		{
+		else {
 			saveOrder(catalogid, inReq.getUser(), order);
 		}
 		return order;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#saveItems(java.lang.String, com.openedit.WebPageRequest, java.lang.String[], java.lang.String[])
 	 */
-	
-	public ArrayList saveItems(String catalogid, WebPageRequest inReq, String[] fields, String[] items)
-	{
+
+	public ArrayList saveItems(String catalogid, WebPageRequest inReq, String[] fields, String[] items) {
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		ArrayList toSave = new ArrayList();
 		Data order = loadOrder(catalogid,inReq.findValue("orderid"));
-		for (String itemid : items)
-		{
+		for (String itemid : items) {
 			Data item = (Data) itemsearcher.searchById(itemid);
 			toSave.add(item);
 
 			item.setProperty("userid", order.get("userid"));
-			for (String field : fields)
-			{
+			for (String field : fields) {
 				String value = inReq.getRequestParameter(item.getId() + "." + field + ".value");
-				if (value != null)
-				{
+				if (value != null) {
 					item.setProperty(field, value);
 				}
 			}
@@ -361,13 +324,11 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#createNewOrderWithId(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	
-	public Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername)
-	{
+
+	public Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername) {
 		Order order = createNewOrder(inAppId, inCatalogId, inUsername);
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
-		if( order.getId() == null)
-		{
+		if( order.getId() == null) {
 			String id = searcher.nextId();
 			order.setName(id);
 			id = id + "_" + UUID.randomUUID().toString().replace('-', '_');
@@ -378,9 +339,8 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#createNewOrder(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	
-	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername)
-	{
+
+	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
 		Order order  = (Order)searcher.createNewData();
 		order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
@@ -396,9 +356,8 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#removeItemFromOrder(java.lang.String, org.openedit.entermedia.orders.Order, org.openedit.entermedia.Asset)
 	 */
-	
-	public void removeItemFromOrder(String inCatId, Order inOrder, Asset inAsset)
-	{
+
+	public void removeItemFromOrder(String inCatId, Order inOrder, Asset inAsset) {
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addMatches("orderid", inOrder.getId());
@@ -408,13 +367,12 @@ public class BaseOrderManager implements OrderManager
 			itemsearcher.delete((Data)result, null);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#addItemToOrder(java.lang.String, org.openedit.entermedia.orders.Order, org.openedit.entermedia.Asset, java.util.Map)
 	 */
-	
-	public Data addItemToOrder(String inCatId, Order order, Asset inAsset, Map inProps)
-	{
+
+	public Data addItemToOrder(String inCatId, Order order, Asset inAsset, Map inProps) {
 		if(inAsset == null){
 			return null;
 		}
@@ -423,7 +381,7 @@ public class BaseOrderManager implements OrderManager
 		item.setId(itemsearcher.nextId());
 		item.setProperty("orderid", order.getId());
 		item.setProperty("userid", order.get("userid"));
-		
+
 		item.setSourcePath(order.getSourcePath()); //will have orderitem.xml added to it
 		item.setProperty("assetsourcepath", inAsset.getSourcePath());
 		item.setProperty("assetid", inAsset.getId());
@@ -443,7 +401,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#saveOrder(java.lang.String, com.openedit.users.User, org.openedit.entermedia.orders.Order)
 	 */
-	
+
 	public void saveOrder(String inCatalogId, User inUser, Order inBasket)
 	{
 		Searcher orderearcher = getSearcherManager().getSearcher(inCatalogId, "order");
@@ -453,7 +411,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#placeOrder(com.openedit.WebPageRequest, org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order, boolean)
 	 */
-	
+
 	public void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, boolean inResetId)
 	{
 		Searcher itemsearcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "orderitem");
@@ -465,7 +423,7 @@ public class BaseOrderManager implements OrderManager
 			inOrder.setId(orderseacher.nextId());
 			inOrder.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			inOrder.setProperty("basket","false");
-			
+
 		}
 		//TODO: deal with table of assets
 		String[] fields = inReq.getRequestParameters("field");
@@ -491,7 +449,7 @@ public class BaseOrderManager implements OrderManager
 			tosave.add(row);
 		}
 		itemsearcher.saveAllData(tosave,null);
-		
+
 		//Change the status and save order
 		//TODO: Add history
 		saveOrder(inArchive.getCatalogId(), inReq.getUser(), inOrder);
@@ -510,7 +468,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#saveOrderWithHistory(java.lang.String, com.openedit.users.User, org.openedit.entermedia.orders.Order, org.openedit.entermedia.orders.OrderHistory)
 	 */
-	
+
 	public void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder, OrderHistory inHistory)
 	{
 		if( inUser != null)
@@ -527,7 +485,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#createNewHistory(java.lang.String, org.openedit.entermedia.orders.Order, com.openedit.users.User, java.lang.String)
 	 */
-	
+
 	public OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser, String inStatus)
 	{
 		Searcher historysearcher = getSearcherManager().getSearcher(inCatId, "orderhistory");
@@ -546,7 +504,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#addConversionAndPublishRequest(org.openedit.entermedia.orders.Order, org.openedit.entermedia.MediaArchive, java.util.Map, com.openedit.users.User)
 	 */
-	
+
 	public List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String,String> properties, User inUser)
 	{
 		//get list of invalid items
@@ -560,13 +518,13 @@ public class BaseOrderManager implements OrderManager
 				omit.add(oval.trim());
 			}
 		}
-		
+
 		HitTracker hits = findOrderAssets(archive.getCatalogId(), order.getId());
 		Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 		Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
 		Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
 		Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-		
+
 		log.info("Processing " + hits.size() + " order items ");
 		List<String> assetids = new ArrayList<String>();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
@@ -585,27 +543,29 @@ public class BaseOrderManager implements OrderManager
 				omit.remove(assetid);
 				continue;
 			}
-			
-			//item.getId() + "." + field + ".value"
-			String presetid = properties.get(orderitemhit.getId() + ".presetid.value");
-			
-			String rendertype = null;
-			if( presetid == null)
-			{
-				rendertype = archive.getMediaRenderType(asset.getFileFormat());
-				presetid = properties.get(rendertype + ".presetid.value");
-			}
-			
-			if( presetid == null )
-			{
-				presetid = properties.get("presetid.value");
-			}
 
-			if( presetid == null)
-			{
-				throw new OpenEditException("presetid is required");
+			//item.getId() + "." + field + ".value"
+			String presetid = orderitemhit.get("presetid");
+			if(presetid == null){
+				presetid = properties.get(orderitemhit.getId() + ".presetid.value");
+
+				String rendertype = null;
+				if( presetid == null)
+				{
+					rendertype = archive.getMediaRenderType(asset.getFileFormat());
+					presetid = properties.get(rendertype + ".presetid.value");
+				}
+
+				if( presetid == null )
+				{
+					presetid = properties.get("presetid.value");
+				}
+
+				if( presetid == null)
+				{
+					throw new OpenEditException("presetid is required");
+				}
 			}
-			
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
 			if (orderItem == null)
 			{
@@ -613,38 +573,42 @@ public class BaseOrderManager implements OrderManager
 				//update what table exactly?
 				continue;
 			}
-			
+
 			orderItem.setProperty("presetid", presetid);
 			if( "preview".equals(presetid) )
 			{
 				orderItemSearcher.saveData(orderItem, inUser);
 				continue;
 			}
-			
-			//Add a publish task to the publish queue
-			String destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
-			if( destination == null )
-			{
-				destination = order.get("publishdestination");
-			}
-			if( destination == null)
-			{
-				throw new OpenEditException("publishdestination.value is missing");
+
+			String destination = orderitemhit.get("publishdestination");
+			if(destination == null){
+
+				//Add a publish task to the publish queue
+				 destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
+				if( destination == null )
+				{
+					destination = order.get("publishdestination");
+				}
+				if( destination == null)
+				{
+					throw new OpenEditException("publishdestination.value is missing");
+				}
 			}
 			Data dest = getSearcherManager().getData(archive.getCatalogId(), "publishdestination", destination);
-			
-				
+
+
 			String publishstatus = "new";
 			Data publishqeuerow = publishQueueSearcher.createNewData();
-			
-			
+
+
 			String []fields = inReq.getRequestParameters("presetfield");
 			if (fields!=null && fields.length!=0)
 			{
 				for (int i = 0; i < fields.length; i++) {
 					String field = fields[i];
 					String value = inReq.getRequestParameter(orderitemhit.getId() +"." +  field + ".value");
-					
+
 					publishqeuerow.setProperty(field, value);
 				}
 			}
@@ -655,13 +619,13 @@ public class BaseOrderManager implements OrderManager
 				for (int i = 0; i < sharedfields.length; i++) {
 					String field = sharedfields[i];
 					String value = inReq.getRequestParameter( field + ".value");
-					
+
 					publishqeuerow.setProperty(field, value);
 				}
 			}
 			publishqeuerow.setProperty("assetid", assetid);
 			publishqeuerow.setProperty("assetsourcepath", asset.getSourcePath() );
-			
+
 			publishqeuerow.setProperty("publishdestination", destination);
 			publishqeuerow.setProperty("presetid", presetid);
 
@@ -672,17 +636,17 @@ public class BaseOrderManager implements OrderManager
 				user = (User)archive.getSearcherManager().getSearcher("system", "user").searchById(userid);
 			}
 			Data preset = (Data) presets.searchById(presetid);
-			
+
 			String exportname = archive.asExportFileName(user, asset, preset);
 			publishqeuerow.setProperty("exportname", exportname);
 			publishqeuerow.setProperty("status", publishstatus);
-			
+
 			publishqeuerow.setSourcePath(asset.getSourcePath());
 			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-			
-			
+
+
 			//TODO; Move all this into publishassets.groovy so that auto publish things can be smart about remote stuff
-			
+
 			boolean remotepublish = false;
 			if( Boolean.valueOf( dest.get("onlyremotempublish") ) )
 			{
@@ -691,15 +655,15 @@ public class BaseOrderManager implements OrderManager
 			}
 			else //maybe add a conversion request
 			{
-				
+
 				boolean needstobecreated = true;
 				if( orderItem.get("conversiontaskid") != null )
 				{
 					needstobecreated = false;
 				}
-				
+
 				String outputfile = preset.get("outputfile");
-	
+
 				//Make sure preset does not already exists?
 				if( needstobecreated && "original".equals( preset.get("type") ) )
 				{
@@ -709,9 +673,9 @@ public class BaseOrderManager implements OrderManager
 				{
 					needstobecreated = false;
 				}
-					
+
 				if( needstobecreated )
-				{					
+				{
 					if (  Boolean.valueOf( dest.get("remotempublish") ) )
 					{
 						remotepublish = true;
@@ -738,31 +702,31 @@ public class BaseOrderManager implements OrderManager
 			{
 				publishqeuerow.setProperty("remotepublish", "true");
 			}
-			
+
 			publishQueueSearcher.saveData(publishqeuerow, inUser);
-			
+
 			if( publishqeuerow.getId() == null )
 			{
 				throw new OpenEditException("Id should not be null");
 			}
-			
+
 			orderItem.setProperty("publishqueueid",publishqeuerow.getId());
 
 			orderItemSearcher.saveData(orderItem, inUser);
-//			if( !needstobecreated )
-//			{
-//				//Kick off the publish tasks
-//				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
-//			}
+			//			if( !needstobecreated )
+			//			{
+			//				//Kick off the publish tasks
+			//				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
+			//			}
 		}
 		archive.fireSharedMediaEvent("publishing/publishassets");
 		return assetids;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#getPresetForOrderItem(java.lang.String, org.openedit.Data)
 	 */
-	
+
 	public String getPresetForOrderItem(String inCataId, Data inOrderItem)
 	{
 		String presetid = inOrderItem.get("presetid");
@@ -775,7 +739,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#getPublishDestinationForOrderItem(java.lang.String, org.openedit.Data)
 	 */
-	
+
 	public String getPublishDestinationForOrderItem(String inCataId, Data inOrderItem)
 	{
 		String pubqueid = inOrderItem.get("publishqueueid");
@@ -791,7 +755,7 @@ public class BaseOrderManager implements OrderManager
 	{
 		return fieldLockManager;
 	}
-	
+
 	public void setLockManager(LockManager inManager)
 	{
 		fieldLockManager = inManager;
@@ -804,23 +768,23 @@ public class BaseOrderManager implements OrderManager
 		//look up all the tasks
 		//if all done then save order status
 		Lock lock = getLockManager().lock(archive.getCatalogId(), inOrder.getSourcePath(), "BaseOrderManager");
-			
+
 		try
 		{
 			if( inOrder.getOrderStatus() == "complete" )
 			{
 				log.debug("Already complete");
-				return;		
+				return;
 			}
-			
+
 			Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-			
+
 			SearchQuery query = itemsearcher.createSearchQuery();
 			query.addExact("orderid", inOrder.getId());
 			query.setHitsName("orderitems");
 			//query.addNot("status", "complete");
 			HitTracker hits =  itemsearcher.search(query);
-			
+
 			if( hits.size() == 0)
 			{
 				log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
@@ -830,9 +794,9 @@ public class BaseOrderManager implements OrderManager
 			Searcher taskSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");
 			Searcher presets = getSearcherManager().getSearcher(archive.getCatalogId(), "convertpreset");
 			Searcher publishQueueSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "publishqueue");
-	
+
 			//Searcher orderItemSearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-	
+
 			int itemscomplted = 0;
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
@@ -870,8 +834,8 @@ public class BaseOrderManager implements OrderManager
 			{
 				log.error("PublishQueue was null for ${publishqueueid} on order ${inOrder.getId()}");
 				publish = new BaseData();
-				 publish.setProperty("status","error");
-				 publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
+				publish.setProperty("status","error");
+				publish.setProperty("errordetails","Publish queue not found in database " + publishqueueid );
 			}
 			if( "complete".equals( publish.get("status") ) )
 			{
@@ -908,18 +872,18 @@ public class BaseOrderManager implements OrderManager
 				{
 					item.setProperty("status", "complete");
 					itemsearcher.saveData(item, null);
-				}	
+				}
 			}
 		}
 		return publishcomplete;
 	}
 
-	protected finalizeOrder(MediaArchive archive, Order inOrder) 
+	protected finalizeOrder(MediaArchive archive, Order inOrder)
 	{
 		inOrder.setOrderStatus("complete");
 		OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "ordercomplete");
 		saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
-		
+
 		WebEvent event = new WebEvent();
 		event.setSearchType("order");
 		event.setCatalogId(archive.getCatalogId());
@@ -935,7 +899,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#updatePendingOrders(org.openedit.entermedia.MediaArchive)
 	 */
-	
+
 	public void updatePendingOrders(MediaArchive archive)
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
@@ -946,14 +910,14 @@ public class BaseOrderManager implements OrderManager
 		{
 			Data hit = (Data) iterator.next();
 			Order order = loadOrder(archive.getCatalogId(), hit.getId());
-			updateStatus(archive, order);			
+			updateStatus(archive, order);
 		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#addItemsToBasket(com.openedit.WebPageRequest, org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order, java.util.Collection, java.util.Map)
 	 */
-	
+
 	public int addItemsToBasket(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, Collection inSelectedHits, Map inProps)
 	{
 		HitTracker items =  findOrderItems(inReq, inArchive.getCatalogId(), inOrder);
@@ -982,11 +946,11 @@ public class BaseOrderManager implements OrderManager
 		}
 		return count;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#isAssetInOrder(java.lang.String, org.openedit.entermedia.orders.Order, java.lang.String)
 	 */
-	
+
 	public boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId)
 	{
 		if(inAssetId.startsWith("multi")){
@@ -1007,19 +971,19 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#delete(java.lang.String, org.openedit.entermedia.orders.Order)
 	 */
-	
+
 	public void delete(String inCatId, Order inOrder)
 	{
 		// TODO Auto-generated method stub
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "orderitems");
 		//Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
-		
+
 	}
 
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#removeItem(java.lang.String, java.lang.String)
 	 */
-	
+
 	public void removeItem(String inCatalogid, String inItemid)
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
@@ -1032,7 +996,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#removeMissingAssets(com.openedit.WebPageRequest, org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order, java.util.Collection)
 	 */
-	
+
 	public void removeMissingAssets(WebPageRequest inReq, MediaArchive archive, Order basket, Collection items)
 	{
 		Collection assets = findAssets(inReq, archive.getCatalogId(), basket);
@@ -1048,7 +1012,7 @@ public class BaseOrderManager implements OrderManager
 				Data data = (Data) iterator.next();
 				assetids.add(data.getId());
 			}
-			
+
 			List allitems = new ArrayList(items);
 			Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 			for (Iterator iterator = allitems.iterator(); iterator.hasNext();)
@@ -1066,7 +1030,7 @@ public class BaseOrderManager implements OrderManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#toggleItemInOrder(org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order, org.openedit.entermedia.Asset)
 	 */
-	
+
 	public void toggleItemInOrder(MediaArchive inArchive, Order inBasket, Asset inAsset)
 	{
 		if( inAsset instanceof CompositeAsset )
@@ -1085,7 +1049,7 @@ public class BaseOrderManager implements OrderManager
 					addItemToOrder(inArchive.getCatalogId(), inBasket, asset, null);
 				}
 			}
-			
+
 		}
 		else
 		{

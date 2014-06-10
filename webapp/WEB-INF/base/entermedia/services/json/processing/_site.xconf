@@ -1,0 +1,13 @@
+<page>
+<property name="virtual">true</property>
+
+<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+
+<path-action name="JsonModule.handleOrderRequest" alltypes="true"/>
+<!--
+<path-action name="Script.run" alltypes="true">
+ 		<script>/entermedia/services/json/scripts/handleasset.groovy</script>
+
+</path-action>
+-->
+</page>
