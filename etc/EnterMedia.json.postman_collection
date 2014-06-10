@@ -5,7 +5,11 @@
 	"order": [
 		"9fe4e786-105a-68a8-4437-37054eeadc01",
 		"f44b9859-acd6-0190-b7c1-279020cc0c54",
-		"f724e180-3668-b448-5673-d8d7e2914c66"
+		"f724e180-3668-b448-5673-d8d7e2914c66",
+		"be49a003-ab31-a12e-0429-1f7ac463e749",
+		"fbb592f8-be26-bf60-5864-6f40ffe597c9",
+		"69e900fa-d242-f947-5f86-a147e789e6e0",
+		"4d34c8e5-b74b-786e-56c9-c2bd4ccfb9bb"
 	],
 	"folders": [],
 	"timestamp": 1391026593874,
@@ -46,6 +50,24 @@
 			"synced": false
 		},
 		{
+			"id": "4d34c8e5-b74b-786e-56c9-c2bd4ccfb9bb",
+			"headers": "catalogid: media/catalogs/public\n",
+			"url": "{{baseurl}}/entermedia/services/json/asset/104",
+			"pathVariables": {},
+			"method": "PUT",
+			"data": "{\n    \"catalogid\": \"{{catalogid}}\",\n    \"id\": \"104\"\n    \n}",
+			"dataMode": "raw",
+			"name": "Retrieve Asset Data",
+			"description": "Create a new piece of data",
+			"descriptionFormat": "html",
+			"time": 1402406415841,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234f",
+			"synced": false
+		},
+		{
 			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234f",
 			"id": "532e49b9-bc12-8e01-0589-5785dfc965a8",
 			"name": "FETCH from URL",
@@ -58,6 +80,24 @@
 			"timestamp": 0,
 			"version": 2,
 			"time": 1391101106197,
+			"synced": false
+		},
+		{
+			"id": "69e900fa-d242-f947-5f86-a147e789e6e0",
+			"headers": "catalogid: media/catalogs/public\n",
+			"url": "{{baseurl}}/entermedia/services/json/search/data/convertpreset",
+			"pathVariables": {},
+			"method": "POST",
+			"data": "{ \n                \"query\": [\n                    {\n                        \"field\": \"id\",\n                        \"operator\": \"matches\",\n                        \"values\": [\n                            \"*\"                            \n                        ]\n                    }\n                    \n                ]\n}",
+			"dataMode": "raw",
+			"name": "Search data",
+			"description": "Create a new piece of data",
+			"descriptionFormat": "html",
+			"time": 1402406379578,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234f",
 			"synced": false
 		},
 		{
@@ -75,6 +115,24 @@
 			"description": "Single asset",
 			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234f",
 			"responses": [],
+			"synced": false
+		},
+		{
+			"id": "be49a003-ab31-a12e-0429-1f7ac463e749",
+			"headers": "catalogid: exacttarget/catalog\n",
+			"url": "{{baseurl}}/entermedia/services/json/asset/",
+			"pathVariables": {},
+			"method": "POST",
+			"data": "{\n    \"catalogid\": \"{{catalogid}}\",\n    \"id\": \"jsondata\",\n    \n    \"eid\": 1084683,\n    \"mid\": 1084683,\n    \"assettype\": \"content\",\n    \"contenttype\": \"article\",\n    \"name\": \"Example Blog Post\",\n    \"description\": \"Article about a squirrel who waterskis\",\n    \"category\": {\n        \"id\": 317\n    },\n    \"status\": \"Active\",\n    \"customFields\":[\n        {\n            \"key\": \"PublisherId\",\n            \"value\": \"118\"\n        }\n    ],\n    \"author\": \"Adam Gillaspie\",\n    \"body\": \"<p>we're going for a ride on the information super highway. we're going for a ride on the information super highway. your entrance was good, his was better. here she comes to wreck the day. we got no food we got no money and our pets heads are falling off! haaaaaaarry. i just heard about evans new position,good luck to you evan backstabber, bastard, i mean baxter. we got no food we got no money and our pets heads are falling off! haaaaaaarry. good morning, oh in case i don't see you, good afternoon, good evening and goodnight. it's because i'm green isn't it! we got no food we got no money and our pets heads are falling off! haaaaaaarry. i just heard about evans new position,good luck to you evan backstabber.</p><p> brain freeze. excuse me, i'd like to ass you a few questions. kinda hot in these rhinos. here she comes to wreck the day. good morning, oh in case i don't see you, good afternoon, good evening and goodnight. kinda hot in these rhinos. excuse me, i'd like to ass you a few questions. your entrance was good, his was better. your entrance was good, his was better. it's because i'm green isn't it! look at that, it's exactly three seconds before i honk your nose and pull your underwear over your head. look ma i'm road kill.</p>\",\n    \"summary\": \"We're going for a ride on the information super highway. we're going for a ride on the information super highway. your entrance was good, his was better. here she comes to wreck the day. we got no food we got no money and our pets heads are falling off! haaaaaaarry....\",\n    \"title\": \"A Talented Squirrel\",\n    \"link\": 4,\n    \"image\": 6\n}",
+			"dataMode": "raw",
+			"name": "Asset Post",
+			"description": "Create a new piece of data",
+			"descriptionFormat": "html",
+			"time": 1402406336332,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234f",
 			"synced": false
 		},
 		{
@@ -125,6 +183,24 @@
 			"description": "Create a new piece of data",
 			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234f",
 			"responses": [],
+			"synced": false
+		},
+		{
+			"id": "fbb592f8-be26-bf60-5864-6f40ffe597c9",
+			"headers": "catalogid: media/catalogs/public\nContent-Type: application/json\n",
+			"url": "{{baseurl}}/entermedia/services/json/data/assettype/newassettype",
+			"pathVariables": {},
+			"method": "DELETE",
+			"data": "",
+			"dataMode": "raw",
+			"name": "Delete some data",
+			"description": "Create a new piece of data",
+			"descriptionFormat": "html",
+			"time": 1402406362515,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234f",
 			"synced": false
 		},
 		{
