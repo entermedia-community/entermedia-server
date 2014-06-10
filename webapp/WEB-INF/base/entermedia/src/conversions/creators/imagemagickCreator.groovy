@@ -464,12 +464,11 @@ public class imagemagickCreator extends BaseImageCreator
 //					com.add("-colorspace");
 //					com.add("sRGB");
 //				}
-		
 				
-         				
+		setValue("quality", "89", inStructions, com);
+		
 		if( autocreated )  //we are using a color corrected input
 		{
-			setValue("quality", "89", inStructions, com);
 			com.add("-strip"); //This does not seem to do much
 		}
 		else
