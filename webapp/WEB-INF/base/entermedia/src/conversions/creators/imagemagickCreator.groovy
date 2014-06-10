@@ -489,7 +489,7 @@ public class imagemagickCreator extends BaseImageCreator
 					com.add("RGB");
 				}	
 			}
-			setValue("profile", getPathtoProfile(), inStructions, com);
+			// setValue("profile", getPathtoProfile(), inStructions, com);
 			com.add("-auto-orient"); //Needed for rotate tool
 			com.add("-strip"); //This does not seem to do much
 			
