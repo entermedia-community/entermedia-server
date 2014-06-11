@@ -147,6 +147,8 @@ class ConvertRunner implements Runnable
 							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 							
 							mediaarchive.fireMediaEvent("conversions/conversioncomplete",user,asset);
+							mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
+							
 						}
 						else
 						{
@@ -182,6 +184,7 @@ class ConvertRunner implements Runnable
 						realtask.setProperty('status', 'missinginput');
 					}
 					tasksearcher.saveData(realtask, user);
+					
 				}
 			}
 			else
