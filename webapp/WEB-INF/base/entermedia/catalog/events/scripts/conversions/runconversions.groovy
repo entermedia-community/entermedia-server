@@ -366,7 +366,7 @@ public void checkforTasks()
 //		CompositeConvertRunner lastcomposite = null;
 //		boolean runexec = false;
 	String lastassetid = null;
-	Iterator iter = newtasks.getPageOfHits().iterator();
+	Iterator iter = newtasks.iterator();
 	for(Data hit:  iter)
 	{
 		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
@@ -387,7 +387,7 @@ public void checkforTasks()
 			{
 				executorQueue.execute(runners);
 				runners.clear();
-				log.info("Clearing " + id);
+				//log.info("Clearing " + id);
 			}
 			//lastcomposite = byassetid;
 			byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
@@ -395,7 +395,7 @@ public void checkforTasks()
 			byassetid.user = user;
 			lastassetid = id;
 			runners.add(byassetid);
-			log.info("Adding by asset id " + id);
+			//log.info("Adding by asset id " + id);
 			
 		}
 		byassetid.add(runner);
@@ -411,7 +411,7 @@ public void checkforTasks()
 //				lastcomposite = null;
 //			}
 	}
-	log.info("Running XXX" + runners.size());
+	//log.info("Running XXX" + runners.size());
 	executorQueue.execute(runners);
 	if( runners.size() > 0)
 	{

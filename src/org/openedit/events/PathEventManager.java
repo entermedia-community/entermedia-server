@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -148,9 +149,14 @@ public class PathEventManager
 		if (event != null)
 		{ 
 			TaskRunner runner = null;
+			String name = event.getName();
+			if( name.equals("Run media conversions") )
+			{
+				log.info("Running YYYY conversion task ");
+			}
+
 			synchronized (getRunningTasks())
 			{
-				String name = event.getName();
 				Date now = new Date();
 				//Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
 				List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
@@ -159,30 +165,41 @@ public class PathEventManager
 					TaskRunner task = (TaskRunner) iterator.next();
 					if( name.equals( task.getTask().getName() ) )
 					{
+						if( name.equals("Run media conversions") )
+						{
+							log.info("Found conversion task " + now + "  "  + name + " " + task.isRepeating());
+						}
 						if( task.getTask().isRunning() )
 						{
-							if(task.isRepeating())
-							{
-								task.setRunAgainSoon(true); //Will cause it to run again after it finishes
-								return true;
-							}
+							//task.run();
+							task.setRunAgainSoon(true);
+//							if(task.isRepeating())
+//							{
+//								task.setRunAgainSoon(true); //Will cause it to run again after it finishes
+//								return true;
+//							}
 						}
-						else if( task.getTimeToStart().before(now) )
+//						else if( task.getTimeToStart().before(now) )
+//						{
+//							return true;
+//						}
+						else
 						{
-							return true;
+							//update the start time and call run now
+							//task.setTimeToStart(now);
+							task.run();
 						}
+						return true;
+						
+						
 						//else this will add a duplicate. Since it is already running it will just return
 					}
 				}
 				runner = new TaskRunner(event, this);
-				runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
+				//runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
 				runner.setTimeToStart(now);
 				getRunningTasks().push(runner);
-			}
-			if( runner != null )
-			{
-				//Run outside the lock in case of dead lock issue?
-				getTimer().schedule(runner,0);
+				runner.run();
 			}
 			return true;
 		}
@@ -255,21 +272,29 @@ public class PathEventManager
 		}
 	}
 
+	/*
 	protected void schedule(PathEvent event, TaskRunner runner)
 	{
-		getRunningTasks().push(runner);
+		//getRunningTasks().push(runner);
 		try
 		{
-			getTimer().schedule(runner,event.getPeriod()); 
+			schedule(runner,event.getPeriod()); 
 		} 
 		catch (Exception e)
 		{
 			fieldTimer = null;
 			getRunningTasks().clear();
 			getRunningTasks().push(runner);
-			getTimer().schedule(runner,event.getPeriod() );
+			schedule(runner,event.getPeriod() );
 			//to fix  java.lang.IllegalStateException: Timer already cancelled.
 		}
+	}
+	*/
+
+	public void schedule(TaskRunner inRunner, long inPeriod)
+	{
+		RunSharedEventPath runthing = new RunSharedEventPath(inRunner.getTask().getPage().getPath() );
+		getTimer().schedule(runthing, inPeriod, inPeriod);
 	}
 
 	public ModuleManager getModuleManager()
@@ -383,7 +408,7 @@ public class PathEventManager
 				TaskRunner runner = new TaskRunner(inTask, this);
 				//runner.setRepeating(true);
 				getRunningTasks().push(runner);
-				getTimer().schedule(runner, inTask.getPeriod());
+				schedule(runner, inTask.getPeriod());
 			}
 		}
 	}
@@ -497,8 +522,22 @@ public class PathEventManager
 	{
 		PathEvent event = getPathEvent(inEventPath);
 		getPathEvents().remove(event);
+		//TODO: Reload scheduler
 		loadPathEvent(inEventPath);
 		
 	}
 
+	public class RunSharedEventPath extends TimerTask
+	{
+		protected String path;
+		public RunSharedEventPath(String inPath)
+		{
+			path = inPath;
+		}
+		public void run()
+		{
+			runSharedPathEvent(path);
+		}
+	}
+	
 }

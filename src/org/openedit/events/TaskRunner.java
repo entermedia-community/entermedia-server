@@ -158,22 +158,35 @@ public class TaskRunner extends java.util.TimerTask
 		}
 		finally
 		{
-			getEventManager().getRunningTasks().remove(this);
-		}
-		if( isRepeating() )  //Duplicate ones will not have a period and expire
-		{
-			//make sure we just have one in the queue
-			TaskRunner runner = new TaskRunner(getTask(), getEventManager());
-			getEventManager().getRunningTasks().push(runner);
 			if( isRunAgainSoon() )
 			{
-				getEventManager().getTimer().schedule(runner, 0);				
+				setRunAgainSoon(false);
+				getEventManager().runSharedPathEvent(getTask().getPage().getPath());
 			}
 			else
 			{
-				getEventManager().getTimer().schedule(runner, getTask().getPeriod());
+				if( !isRepeating() )
+				{
+					getEventManager().getRunningTasks().remove(this);
+				}
 			}
 		}
+//		if( isRepeating() )  //Duplicate ones will not have a period and expire
+//		{
+//			Date now = new Date(); //see if its already scheduled for the future
+//			
+//			//make sure we just have one in the queue
+//			TaskRunner runner = new TaskRunner(getTask(), getEventManager());
+//			getEventManager().getRunningTasks().push(runner);
+//			if( isRunAgainSoon() )
+//			{
+//				getEventManager().schedule(runner, 0);				
+//			}
+//			else
+//			{
+//				getEventManager().schedule(runner, getTask().getPeriod());
+//			}
+//		}
 				
 	}
 
