@@ -1,6 +1,7 @@
 package conversions;
 
-import java.util.concurrent.ExecutorService
+
+import model.assets.ConvertQueue
 
 import org.entermedia.locks.Lock
 import org.openedit.Data
@@ -17,21 +18,20 @@ import com.openedit.hittracker.*
 import com.openedit.page.*
 import com.openedit.users.User
 import com.openedit.util.*
-import model.assets.ConvertQueue;
 
-class Finisher implements Runnable 
-{
-	MediaArchive fieldMediaArchive;
-	public Finisher(MediaArchive inArchive)
-	{
-		fieldMediaArchive = inArchive;
-	} 
-	public void run()
-	{
-		fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
-		//fieldMediaArchive.fireSharedMediaEvent("conversions/runconversions");
-	}
-}
+//class Finisher implements Runnable 
+//{
+//	MediaArchive fieldMediaArchive;
+//	public Finisher(MediaArchive inArchive)
+//	{
+//		fieldMediaArchive = inArchive;
+//	} 
+//	public void run()
+//	{
+//		fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
+//		//fieldMediaArchive.fireSharedMediaEvent("conversions/runconversions");
+//	}
+//}
 
 
 class CompositeConvertRunner implements Runnable
@@ -63,11 +63,13 @@ class CompositeConvertRunner implements Runnable
 			{
 				runner.run();
 			}
-			fieldMediaArchive.updateAssetConvertStatus(fieldSourcePath);
+			
 		}
 		finally
 		{
 			fieldMediaArchive.releaseLock(lock);
+			fieldMediaArchive.updateAssetConvertStatus(fieldSourcePath);
+			fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
 		}
 	
 		
@@ -144,22 +146,26 @@ class ConvertRunner implements Runnable
 								itemsearcher.saveData(item, null);
 							}
 							realtask.setProperty("externalid", result.get("externalid"));
+							tasksearcher.saveData(realtask, user);
+							
 							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 							
 							mediaarchive.fireMediaEvent("conversions/conversioncomplete",user,asset);
-							mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
-							
+							//mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
 						}
 						else
 						{
 							realtask.setProperty("status", "submitted");
 							realtask.setProperty("externalid", result.get("externalid"));
+							tasksearcher.saveData(realtask, user);
 						}
+						
 					}
 					else if ( result.isError() )
 					{
 						realtask.setProperty('status', 'error');
 						realtask.setProperty("errordetails", result.getError() );
+						tasksearcher.saveData(realtask, user);
 						
 						//TODO: Remove this one day
 						String itemid = realtask.get("itemid")
@@ -182,8 +188,8 @@ class ConvertRunner implements Runnable
 						String sourcepath = hit.get("sourcepath");
 						log.debug("conversion had no error and will try again later for ${sourcepath}");
 						realtask.setProperty('status', 'missinginput');
+						tasksearcher.saveData(realtask, user);
 					}
-					tasksearcher.saveData(realtask, user);
 					
 				}
 			}
@@ -356,74 +362,83 @@ public void checkforTasks()
 
 	ConvertQueue executorQueue = getQueue();
 	
-	if( newtasks.size() == 1 )
+	CompositeConvertRunner byassetid = null;
+//		CompositeConvertRunner lastcomposite = null;
+//		boolean runexec = false;
+	String lastassetid = null;
+	Iterator iter = newtasks.getPageOfHits().iterator();
+	for(Data hit:  iter)
 	{
-		Data task = (Data)newtasks.first();
-		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, task);
-		runners.add(runner);
-		runner.run();
-		mediaarchive.updateAssetConvertStatus(task.getSourcePath());
-	}
-	else
-	{
-		CompositeConvertRunner byassetid = null;
-		CompositeConvertRunner lastcomposite = null;
-		boolean runexec = false;
-		String lastassetid = null;
-		Iterator iter = newtasks.getPageOfHits().iterator();
-		for(Data hit:  iter)
+		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
+		String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
+		if( id == null )
 		{
-			ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
-			runners.add(runner);
-			String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
-			if( id == null )
-			{
 //				throw new OpenEditException("asset id was null on " + hit );
-				Data missingdata = tasksearcher.searchById(hit.getId())
-				missingdata.setProperty("status", "error");
-				missingdata.setProperty("errordetails", "asset id is null");
-				tasksearcher.saveData(missingdata, null);
-				continue;
-			}
-			if( id != lastassetid )
-			{
-				lastcomposite = byassetid;
-				byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
-				byassetid.log = log;
-				byassetid.user = user;
-				lastassetid = id;
-			}
-			byassetid.add(runner);
-			
-			if( !iter.hasNext() ) //Make sure we run the last task in the iterator
-			{
-				lastcomposite = byassetid;
-			}
-			
-			if( lastcomposite != null )
-			{	
-				executorQueue.getExecutor().execute(lastcomposite);
-				lastcomposite = null;
-			}
+			log.info("No assetid set");
+			Data missingdata = tasksearcher.searchById(hit.getId())
+			missingdata.setProperty("status", "error");
+			missingdata.setProperty("errordetails", "asset id is null");
+			tasksearcher.saveData(missingdata, null);
+			continue;
 		}
-	}
-	
-	if( newtasks.size() > 0 )
-	{
-//		for(ConvertRunner runner: runners) //TODO use a boolean
-//		{
-//			if( runner.result != null && runner.result.isComplete() )
+		if( id != lastassetid )
+		{
+			if( runners.size() > 100)
+			{
+				executorQueue.execute(runners);
+				runners.clear();
+				log.info("Clearing " + id);
+			}
+			//lastcomposite = byassetid;
+			byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
+			byassetid.log = log;
+			byassetid.user = user;
+			lastassetid = id;
+			runners.add(byassetid);
+			log.info("Adding by asset id " + id);
+			
+		}
+		byassetid.add(runner);
+		
+//			if( !iter.hasNext() ) //Make sure we run the last task in the iterator
 //			{
-				Finisher finisher = new Finisher(mediaarchive);
-				executorQueue.getExecutor().execute(finisher);
-//				break;
+//				lastcomposite = byassetid;
 //			}
-//		}
+		
+//			if( lastcomposite != null )
+//			{	
+//				executorQueue.getExecutor().execute(lastcomposite);
+//				lastcomposite = null;
+//			}
 	}
-	log.info("Completed ${newtasks.size()} conversions");
+	log.info("Running XXX" + runners.size());
+	executorQueue.execute(runners);
+	if( runners.size() > 0)
+	{
+		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
+		//mediaarchive.fireSharedMediaEvent("conversions/runconversions");   //this should not be needed
+	}
+
+	
+//	if( newtasks.size() > 0 )
+//	{
+//		//executorQueue.getExecutor().waitForIt(executor);
+//		
+//		//Wait for executor to finish
+//		
+//		//		for(ConvertRunner runner: runners) //TODO use a boolean
+////		{
+////			if( runner.result != null && runner.result.isComplete() )
+////			{
+//				Finisher finisher = new Finisher(mediaarchive);
+//				executorQueue.getExecutor().execute(finisher); //This might not actually run in the right order.
+////				break;
+////			}
+////		}
+//	}
+	log.info("Added ${newtasks.size()} conversion tasks for processing");
 	
 }
-
 
 //Temporary work around for a lack of an interface
 public ConvertQueue getQueue(String inCatalogId)

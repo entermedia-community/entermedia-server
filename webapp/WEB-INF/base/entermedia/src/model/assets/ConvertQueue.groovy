@@ -1,19 +1,12 @@
 package model.assets
 
-import java.util.concurrent.Executor;
-
-import org.entermedia.cache.CacheManager;
-import org.openedit.Data
-import org.openedit.MultiValued
-import org.openedit.data.BaseData
-import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
+import java.util.concurrent.Callable
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors
 
 import com.openedit.entermedia.scripts.EnterMediaObject
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.util.ExecutorManager;
+import com.openedit.util.ExecutorManager
 
 public class ConvertQueue extends EnterMediaObject
 {
@@ -30,7 +23,7 @@ public class ConvertQueue extends EnterMediaObject
 		fieldExecutorManager = inExecutorManager;
 	}
 
-	public Executor getExecutor()
+	public ExecutorService getExecutor()
 	{
 		if(fieldGeneralConvertExecutor == null )
 		{
@@ -50,6 +43,16 @@ public class ConvertQueue extends EnterMediaObject
 		}
 		return fieldGeneralConvertExecutor;
 	}
-
+	public void execute( List<Runnable> inTasks)
+	{
+		List<Callable> runnow = new ArrayList<Callable>(inTasks.size());
+	
+		for (Runnable runner: inTasks)
+		{ 
+			runnow.add(Executors.callable(runner)); 
+		}
+	
+		getExecutor().invokeAll(runnow);
+	}
 	
 }
