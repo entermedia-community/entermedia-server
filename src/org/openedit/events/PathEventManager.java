@@ -134,12 +134,17 @@ public class PathEventManager
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
+	public boolean runSharedPathEvent(String runpath)
+	{
+		return runSharedPathEvent(runpath,false);
+	}
+	
 	/**
 	 * This will only add the event if it is not already queued up. There is no reason to queue up multiple copies. Kind of like mouse events. 
 	 * @param runpath
 	 * @return
 	 */
-	public boolean runSharedPathEvent(String runpath )
+	public boolean runSharedPathEvent(String runpath, boolean inUpdateRunTimes )
 	{
 		if (runpath == null)
 		{
@@ -148,7 +153,6 @@ public class PathEventManager
 		PathEvent event = getPathEvent(runpath);
 		if (event != null)
 		{ 
-			TaskRunner runner = null;
 			String name = event.getName();
 			if( name.equals("Run media conversions") )
 			{
@@ -158,6 +162,7 @@ public class PathEventManager
 			synchronized (getRunningTasks())
 			{
 				Date now = new Date();
+				TaskRunner runner = null;
 				//Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
 				List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
 				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
@@ -189,17 +194,24 @@ public class PathEventManager
 							//task.setTimeToStart(now);
 							task.run();
 						}
-						return true;
-						
-						
+						runner = task;
+						break;
 						//else this will add a duplicate. Since it is already running it will just return
 					}
 				}
-				runner = new TaskRunner(event, this);
-				//runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
-				runner.setTimeToStart(now);
-				getRunningTasks().push(runner);
-				runner.run();
+				if( runner == null)
+				{
+					runner = new TaskRunner(event, this);
+					//runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
+					//runner.setTimeToStart(now);
+					getRunningTasks().push(runner);
+					runner.run();
+				}
+				if(runner.isRepeating() && inUpdateRunTimes)
+				{
+					long later  = now.getTime() + runner.getTask().getPeriod();
+					runner.setTimeToStart(new Date(later));
+				}
 			}
 			return true;
 		}
@@ -290,12 +302,6 @@ public class PathEventManager
 		}
 	}
 	*/
-
-	public void schedule(TaskRunner inRunner, long inPeriod)
-	{
-		RunSharedEventPath runthing = new RunSharedEventPath(inRunner.getTask().getPage().getPath() );
-		getTimer().schedule(runthing, inPeriod, inPeriod);
-	}
 
 	public ModuleManager getModuleManager()
 	{
@@ -408,7 +414,6 @@ public class PathEventManager
 				TaskRunner runner = new TaskRunner(inTask, this);
 				//runner.setRepeating(true);
 				getRunningTasks().push(runner);
-				schedule(runner, inTask.getPeriod());
 			}
 		}
 	}
@@ -429,6 +434,7 @@ public class PathEventManager
 		Set duplicates = new HashSet();
 		loadPathEvents(root, duplicates);
 		Collections.sort(getPathEvents());
+		reloadScheduler();
 	}
 
 	protected void loadPathEvents(String inRoot, Set inDuplicates)
@@ -522,9 +528,50 @@ public class PathEventManager
 	{
 		PathEvent event = getPathEvent(inEventPath);
 		getPathEvents().remove(event);
-		//TODO: Reload scheduler
-		loadPathEvent(inEventPath);
+		List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
+		for (Iterator iterator = copy.iterator(); iterator.hasNext();)
+		{
+			TaskRunner runner = (TaskRunner) iterator.next();
+			if( event == runner.getTask() )
+			{
+				getRunningTasks().remove(runner);
+//				if(runner.isRepeating())
+//				{
+//					long later  = new Date().getTime() + runner.getTask().getPeriod();
+//					runner.setTimeToStart(new Date(later));
+//				}
+			}
+		}
 		
+		loadPathEvent(inEventPath);
+		reloadScheduler();
+		
+		
+	}
+
+	private void reloadScheduler()
+	{
+		if (fieldTimer != null)
+		{
+			try
+			{
+				getTimer().cancel();
+			}
+			catch ( Throwable ex)
+			{
+				log.error("ignoring error",ex);
+			}
+			fieldTimer = null;
+		}
+		for (Iterator iterator = getPathEvents().iterator(); iterator.hasNext();)
+		{
+			PathEvent type = (PathEvent) iterator.next();
+			if( type.getPeriod() > 0)
+			{
+				RunSharedEventPath runthing = new RunSharedEventPath(type.getPage().getPath() );
+				getTimer().schedule(runthing, type.getPeriod(), type.getPeriod());
+			}
+		}
 	}
 
 	public class RunSharedEventPath extends TimerTask
@@ -536,7 +583,7 @@ public class PathEventManager
 		}
 		public void run()
 		{
-			runSharedPathEvent(path);
+			runSharedPathEvent(path,true);
 		}
 	}
 	

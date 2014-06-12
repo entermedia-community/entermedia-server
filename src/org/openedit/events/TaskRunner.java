@@ -171,10 +171,12 @@ public class TaskRunner extends java.util.TimerTask
 				}
 			}
 		}
+		
+		//Just update time and reshedule
 //		if( isRepeating() )  //Duplicate ones will not have a period and expire
 //		{
 //			Date now = new Date(); //see if its already scheduled for the future
-//			
+			
 //			//make sure we just have one in the queue
 //			TaskRunner runner = new TaskRunner(getTask(), getEventManager());
 //			getEventManager().getRunningTasks().push(runner);
