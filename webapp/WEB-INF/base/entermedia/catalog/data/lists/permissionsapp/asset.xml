@@ -11,6 +11,7 @@
 	<permission id="viewfatwire" permissiontype="asset" name="View Fatwire Status" description="Shows Fatwire Status." ordering="200"/>
 	<permission id="viewconversions" permissiontype="asset" name="Conversions" description="View Conversions and Cropping Tool" ordering="220"/>
 	<permission id="embedasset" permissiontype="asset" name="Embedding" description="Enables and embed button that provides HTML code for an asset." ordering="200"/>
+	<permission id="quickpublish" permissiontype="asset" name="Quick Publish" description="Enables the quick publish menu for rapidly publishing assets" ordering="200"/>
 		
 		
 		

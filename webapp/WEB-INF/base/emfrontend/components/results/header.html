@@ -20,6 +20,25 @@
 			</li>
 		#end
 		
+		
+		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
+		
+		#if($canquickpublish )
+		
+		<li><a>Publish</a>
+				<ul>
+					#foreach($item in $quickpublishlist)
+						<li><a href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a></li>
+					#end
+				</ul>
+			</li>
+		
+		
+		
+		
+		
+		#end
+		
 		#if ( $canviewbasket )
 
 			#set( $showremoveselections = $context.findValue("showremoveselections") )

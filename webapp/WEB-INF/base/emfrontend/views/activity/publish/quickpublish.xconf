@@ -1,0 +1,8 @@
+<page>
+	<path-action name="OrderModule.createQuickOrder"/>	
+   	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/runconversions.html" allowduplicates="true" />
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
+	
+	<path-action name="OrderModule.updatePendingOrders"/>
+	<property name="sectiontitle">Publishing...</property>
+</page>
