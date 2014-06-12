@@ -395,47 +395,17 @@ public void checkforTasks()
 			byassetid.user = user;
 			lastassetid = id;
 			runners.add(byassetid);
-			//log.info("Adding by asset id " + id);
 			
 		}
 		byassetid.add(runner);
 		
-//			if( !iter.hasNext() ) //Make sure we run the last task in the iterator
-//			{
-//				lastcomposite = byassetid;
-//			}
-		
-//			if( lastcomposite != null )
-//			{	
-//				executorQueue.getExecutor().execute(lastcomposite);
-//				lastcomposite = null;
-//			}
 	}
-	//log.info("Running XXX" + runners.size());
 	executorQueue.execute(runners);
 	if( runners.size() > 0)
 	{
 		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
 		//mediaarchive.fireSharedMediaEvent("conversions/runconversions");   //this should not be needed
 	}
-
-	
-//	if( newtasks.size() > 0 )
-//	{
-//		//executorQueue.getExecutor().waitForIt(executor);
-//		
-//		//Wait for executor to finish
-//		
-//		//		for(ConvertRunner runner: runners) //TODO use a boolean
-////		{
-////			if( runner.result != null && runner.result.isComplete() )
-////			{
-//				Finisher finisher = new Finisher(mediaarchive);
-//				executorQueue.getExecutor().execute(finisher); //This might not actually run in the right order.
-////				break;
-////			}
-////		}
-//	}
 	log.info("Added ${newtasks.size()} conversion tasks for processing");
 	
 }
