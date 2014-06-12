@@ -361,11 +361,8 @@ public class imagemagickCreator extends BaseImageCreator
 			//now let's crop
 			com.add("+repage");
 			String gravity = inStructions.get("gravity");
-			if(!"default".equals(gravity)){
-				
-				
-				
-				
+			if(!"default".equals(gravity))
+			{
 				com.add("-gravity");
 				if( gravity == null )
 				{
@@ -478,8 +475,17 @@ public class imagemagickCreator extends BaseImageCreator
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
-			
-			String type = inAsset.get("colortype");
+			setValue("colorspace", "sRGB", inStructions, com);
+//			String colorspace = inStructions.get("colorspace");
+//			if(colorspace != null){
+//				com.add("-colorspace");
+//				com.add(colorspace);
+//			} else{
+//				com.add("-colorspace");
+//				com.add("sRGB");
+//			}
+						
+/*			String type = inAsset.get("colortype");
 			if( type != null && type.equalsIgnoreCase("RGB") )
 			{
 				String cmyk = inAsset.get("colorspace");  
@@ -489,6 +495,7 @@ public class imagemagickCreator extends BaseImageCreator
 					com.add("RGB");
 				}	
 			}
+*/		
 			// setValue("profile", getPathtoProfile(), inStructions, com);
 			com.add("-auto-orient"); //Needed for rotate tool
 			com.add("-strip"); //This does not seem to do much

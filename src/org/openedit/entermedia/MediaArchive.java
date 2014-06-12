@@ -1497,15 +1497,19 @@ public class MediaArchive
 		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
 		
 	}
-	
 	public void updateAssetConvertStatus(String inSourcePath) 
 	{
-		//TODO: Lock the asset so that nobody edits it while we are doing this
 		Asset asset = getAssetBySourcePath(inSourcePath);
+		updateAssetConvertStatus(asset);
+	}
+	public void updateAssetConvertStatus(Asset asset) 
+	{
 		if( asset == null)
 		{
 			return; //asset deleted
 		}
+		//TODO: Lock the asset so that nobody edits it while we are doing this
+		
 		String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 
