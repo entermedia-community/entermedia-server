@@ -40,9 +40,11 @@
 			<a href="$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${usercollection.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel librarycollectiondroparea #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
 		</li>
 		#end
+		#if ($canaddnewcollection)
 		<li>
 			<div id="createnewarea"><a class="ajax" targetdivinner="createnewarea" data-oemaxlevel="1" href="$home$apphome/components/libraries/addnewchild.html?libraryid=$selectedlibrary.id" ><span> Create New</span></a></div>
 		</li>
+		#end
 	</ul>	
 	</div>
 #end
