@@ -97,6 +97,22 @@ public class ProjectModule extends BaseMediaModule
 		
 	}
 
-	
+	public void searchForAssetsOnCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.getRequestParameter("id");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		
+		Collection<String> ids = manager.loadAssetsInCollection(inReq, archive, collectionid );
+		//Do an asset search with permissions, showing only the assets on this collection
+		HitTracker all = archive.getAssetSearcher().getAllHits();
+		all.setSelections(ids);
+		all.setShowOnlySelected(true);
+		all.getSearchQuery().setHitsName("collectionassets");
+		inReq.putPageValue("hits", all);
+		inReq.putPageValue(all.getSessionId(),all);
+		
+				
+	}
 	
 }

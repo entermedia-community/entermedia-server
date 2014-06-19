@@ -11,9 +11,11 @@
 		<div class="collectionheaderleft">
 			<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" data-sortby="name" onChange='$("#librarychange").submit()' />
 		</div>
+#if ($canaddnewcollection)		
 		<div class="collectionheaderright">
 			<a href="$home$apphome/components/libraries/addnewlibrary.html" class="emdialog" title="Add Library"><img src="$home$themeprefix/images/icons/addgray.png"> </a>
 		</div>
+#end		
 	<input name="profilepreference"    value="last_selected_library" type="hidden" />
 	<input name="profilepreference.value"  id="list-sidebarlibraryvalue"   value="$!selectedlibrary.getId()" type="hidden" />
 
@@ -27,7 +29,7 @@
 #if( $selectedlibrary )
 	<div class="librarymenu" >
 		<a href="$home$apphome/views/modules/library/edit/edit.html?id=${selectedlibrary.id}&viewid=librarygeneral&viewpath=library/librarygeneral&hitssessionid=hitslibrarymedia/catalogs/public&searchtype=library" class="librarydetails"><span> Details</span></a>
-		<a href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$selectedlibrary.id" class="librarydroparea"  data-libraryid="$selectedlibrary.id" data-count="$librarysize" data-label="Assets"><span> $librarysize Assets</span></a>
+		<a href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$selectedlibrary.id" #if ($user) class="librarydroparea" #end data-libraryid="$selectedlibrary.id" data-count="$librarysize" data-label="Assets"><span> $librarysize Assets</span></a>
 	</div>
 	<div class="librarylabels"><h2>Collections</h2>
    	<ul >
@@ -37,12 +39,15 @@
 			#if( $inmodule && $data && $usercollection.getId() == $data.id )
 				#set( $selected = true )
 			#end
-			<a href="$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${usercollection.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel librarycollectiondroparea #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
+			##<a href="$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${usercollection.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
+			<a href="$home$apphome/views/modules/librarycollection/viewassets.html?id=${usercollection.getId()}&searchtype=librarycollection" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
 		</li>
 		#end
+		#if ($canaddnewcollection)
 		<li>
 			<div id="createnewarea"><a class="ajax" targetdivinner="createnewarea" data-oemaxlevel="1" href="$home$apphome/components/libraries/addnewchild.html?libraryid=$selectedlibrary.id" ><span> Create New</span></a></div>
 		</li>
+		#end
 	</ul>	
 	</div>
 #end

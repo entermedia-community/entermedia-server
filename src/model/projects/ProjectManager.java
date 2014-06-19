@@ -20,5 +20,6 @@ public interface ProjectManager
 
 	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid);
 	
+	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
 	
 }
