@@ -15,9 +15,9 @@ import org.openedit.entermedia.modules.BaseMediaModule;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 
-public class ProjectModule extends BaseMediaModule
+public class ProjectModuleOld extends BaseMediaModule
 {
-	private static final Log log = LogFactory.getLog(ProjectModule.class);
+	private static final Log log = LogFactory.getLog(ProjectModuleOld.class);
 
 	public void loadCollections(WebPageRequest inReq) throws Exception
 	{

@@ -189,9 +189,16 @@ public class LuceneHitTracker extends HitTracker
 				}
 				Filter filter = null;
 
-				if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
+				//Add security filter first. Then commbine it with selections
+				Collection<String> allowedids = getSearchQuery().getSecurityIds();
+				if( fieldSelections != null && isShowOnlySelected() )
 				{
-					filter = new FieldCacheTermsFilter("id", fieldSelections.toArray(new String[fieldSelections.size()]));
+					allowedids = fieldSelections;
+				}
+				
+				if (allowedids != null && allowedids.size() > 0)
+				{
+					filter = new FieldCacheTermsFilter("id", allowedids.toArray(new String[allowedids.size()]));
 				}
 
 				// List<String> terms = new ArrayList();

@@ -6533,3 +6533,10 @@ div#left-col-libraries div.ui-widget-content
 .detail-select{
 margin-top: 8px; max-width: 200px;
 }
+
+div.tableheaderactions 
+{
+	padding: 6px;
+	background-color: #eee;  
+	
+}

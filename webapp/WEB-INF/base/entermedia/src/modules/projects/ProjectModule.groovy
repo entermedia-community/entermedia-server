@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.openedit.Data;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.modules.BaseMediaModule;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -111,8 +112,23 @@ public class ProjectModule extends BaseMediaModule
 		all.getSearchQuery().setHitsName("collectionassets");
 		inReq.putPageValue("hits", all);
 		inReq.putSessionValue(all.getSessionId(),all);
-		
-				
 	}
-	
+
+	public boolean checkLibraryPermission(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.getRequestParameter("id");
+		Data data = archive.getData("librarycollection", collectionid);
+		if( data != null)
+		{
+			String libraryid  = data.get("library");
+			UserProfile profile = inReq.getUserProfile();
+			if( profile != null)
+			{
+				boolean ok = profile.getCombinedLibraries().contains(libraryid);
+				return ok;
+			}
+		}
+		return false;
+	}
 }

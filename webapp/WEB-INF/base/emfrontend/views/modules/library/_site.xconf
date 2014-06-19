@@ -4,4 +4,6 @@
 
 <property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
   <property name="module">library</property>
+  <property name="enforcesecurity">true</property>
+  
 </page>
