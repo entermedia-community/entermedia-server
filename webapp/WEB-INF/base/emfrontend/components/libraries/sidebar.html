@@ -39,7 +39,6 @@
 			#if( $inmodule && $data && $usercollection.getId() == $data.id )
 				#set( $selected = true )
 			#end
-			##<a href="$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${usercollection.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
 			<a href="$home$apphome/views/modules/librarycollection/viewassets.html?id=${usercollection.getId()}&searchtype=librarycollection" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
 		</li>
 		#end

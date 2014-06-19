@@ -110,7 +110,7 @@ public class ProjectModule extends BaseMediaModule
 		all.setShowOnlySelected(true);
 		all.getSearchQuery().setHitsName("collectionassets");
 		inReq.putPageValue("hits", all);
-		inReq.putPageValue(all.getSessionId(),all);
+		inReq.putSessionValue(all.getSessionId(),all);
 		
 				
 	}
