@@ -51,7 +51,7 @@ public void init()
 		
 		finder.setPageManager(archive.getPageManager());
 
-		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";
+		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
 		finder.setRootPath(assetRoot);
 		log.info("Checking for bad paths");
 		
@@ -96,6 +96,7 @@ public void init()
 			public  void processFile(ContentItem inContent, User inUser) 
 			{ 
 				String path = inContent.getPath();
+			
 				if (!util.isLegalFilename(path)) 
 				{
 					path = inContent.getPath().substring(getRootPath().length());
