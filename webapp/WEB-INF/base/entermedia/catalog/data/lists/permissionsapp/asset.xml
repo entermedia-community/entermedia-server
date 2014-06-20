@@ -1,5 +1,5 @@
 <permissions name="Application Permissions">
-
+	<permission id="addnewcollection" permissiontype="asset" name="Create New Collection" description="Allows user to create new collections from Project Tracker." ordering="200"/>
 	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="200"/>
 	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="200"/>
 	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." ordering="200"/>

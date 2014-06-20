@@ -167,6 +167,17 @@ public class BaseProjectManager implements ProjectManager
 		}
 	}
 
+	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
+	{
+		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
+		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
+		Collection<String> ids = new ArrayList();
+		for(Data hit in found)
+		{
+			ids.add(hit.get("asset"));
+		}
+		return ids;
+	}
 	
 }
 

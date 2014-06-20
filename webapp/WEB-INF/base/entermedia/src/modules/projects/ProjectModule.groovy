@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.openedit.Data;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.modules.BaseMediaModule;
+import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
@@ -97,6 +98,37 @@ public class ProjectModule extends BaseMediaModule
 		
 	}
 
-	
-	
+	public void searchForAssetsOnCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.getRequestParameter("id");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		
+		Collection<String> ids = manager.loadAssetsInCollection(inReq, archive, collectionid );
+		//Do an asset search with permissions, showing only the assets on this collection
+		HitTracker all = archive.getAssetSearcher().getAllHits();
+		all.setSelections(ids);
+		all.setShowOnlySelected(true);
+		all.getSearchQuery().setHitsName("collectionassets");
+		inReq.putPageValue("hits", all);
+		inReq.putSessionValue(all.getSessionId(),all);
+	}
+
+	public boolean checkLibraryPermission(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = inReq.getRequestParameter("id");
+		Data data = archive.getData("librarycollection", collectionid);
+		if( data != null)
+		{
+			String libraryid  = data.get("library");
+			UserProfile profile = inReq.getUserProfile();
+			if( profile != null)
+			{
+				boolean ok = profile.getCombinedLibraries().contains(libraryid);
+				return ok;
+			}
+		}
+		return false;
+	}
 }
