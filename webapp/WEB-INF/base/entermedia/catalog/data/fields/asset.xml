@@ -35,7 +35,7 @@
 	<property id="cameramodel" externalid="Camera Model,Camera Model Name" index="true" stored="true" datatype="text" sortable="true" >Camera Model</property>
 	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text"  >ISO</property>
 	<property id="colorspace"  externalid="Color Space,Color Mode"  index="true" stored="true" viewtype="list" datatype="list">Color Space</property>
-	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list">Color Type</property>
+	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list" externalid="Color Space Data">Color Type</property>
 	<property id="shutterspeed" externalid="Shutter Speed" index="true" stored="true" datatype="text">Shutter Speed</property>
 	<property id="aperture" externalid="Aperture" index="true" stored="true" >Aperture</property>
 
