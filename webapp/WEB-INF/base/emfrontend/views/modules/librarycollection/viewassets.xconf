@@ -1,0 +1,17 @@
+<page>
+	<inner-layout>${themeprefix}/layouts/searchlayout.html</inner-layout>
+	<property name="hitsname">hits</property>
+	<property name="searchtype">asset</property>
+	
+	<path-action name="DataEditModule.loadData" >
+			<searchtype>${module}</searchtype>
+    </path-action>
+	
+	<path-action name="ProjectModule.searchForAssetsOnCollection"/>
+	
+	  <permission name="view">
+    		<action name="ProjectModule.checkLibraryPermission" />
+    </permission>
+	
+	
+</page>
