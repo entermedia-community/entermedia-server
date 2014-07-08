@@ -398,6 +398,7 @@ public class AdminModule extends BaseModule
 		else
 		{
 			log.info("No such user" + account );
+			inReq.putSessionValue("user", null);
 		}
 		inReq.putPageValue("id", account );
 		inReq.putPageValue("authenticated", ok);
