@@ -1,0 +1,5 @@
+#if($user)
+{userid:$user.id}
+#else
+{"authenticated":false}
+#end
