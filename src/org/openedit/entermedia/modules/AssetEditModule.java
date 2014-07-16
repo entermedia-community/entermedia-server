@@ -1137,10 +1137,10 @@ public class AssetEditModule extends BaseMediaModule
 
 		
 		Page dest = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath);
-		if(!inPage.exists()){
-			log.info("Could not find uploaded file: " + inPage.getPath());
-		}
-		if(inPage.exists() && !inPage.getPath().equals(dest.getPath()))//move from tmp location to final location
+//		if(!inPage.exists()){
+//			log.info("Could not find uploaded file: " + inPage.getPath());
+//		}
+		if(!inPage.getPath().equals(dest.getPath()))//move from tmp location to final location
 		{
 			getPageManager().movePage(inPage, dest);
 		}

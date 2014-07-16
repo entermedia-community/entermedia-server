@@ -121,7 +121,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			}
 			else
 			{
-				log.info("Exiftool found " + inAsset.getSourcePath() + " returned " + numberinfo.length() );
+				log.debug("Exiftool found " + inAsset.getSourcePath() + " returned " + numberinfo.length() );
 			}
 			
 			boolean foundtext = parseNumericValues(inAsset, details, numberinfo);

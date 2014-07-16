@@ -2814,8 +2814,8 @@ table.emdata th {
 .emtree ul li div {
     padding: 0 0 0 20px;
     border-bottom: 1px solid #E2EFF4;
-    height: 34px;
-    line-height: 34px;
+    height: 27px;
+    line-height: 27px;
     display: block;
     cursor: pointer;
     white-space: no-wrap;
@@ -2829,12 +2829,12 @@ table.emdata th {
 }
 .emtree .checkbox {
     position: absolute;
-    height: 34px;
+    height: 7px;
     border-right: 1px dashed #ddd;
     left: 0;
     top: 0;
     width: 15px;
-    padding: 0 15px;
+    padding: 10px;
     text-align: center;
 }
 .emtree .checkbox .field

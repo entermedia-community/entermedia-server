@@ -11,10 +11,10 @@
 
 	<property id="catalogassetforcewatermarkusers" value="">Admin Catalog Asset View Users</property>
 	<property id="catalogassetforcewatermarkgroups" value="">Admin Catalog Asset View Groups</property>
-	<property id="projectassetupload" value="users/${user.id}/${formatteddate}">Project Upload Path</property>
+	<property id="projectassetupload" value="users/${formatteddate}/${guid}/">Project Upload Path</property>
 	<property id="catalogassetupload" value="${formatteddate}">Default Catalog Upload Path</property>
 
-	<property id="server_log_location" value="/opt/apache-tomcat/logs/catalina.log">Web Server Logs</property>
+	<property id="server_log_location" value="/opt/entermedia/tomcat/logs/catalina.log">Web Server Logs</property>
 
 
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>

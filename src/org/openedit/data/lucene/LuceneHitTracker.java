@@ -216,7 +216,14 @@ public class LuceneHitTracker extends HitTracker
 				}
 				if (max > 1)
 				{
-					log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getSessionId());
+					if( docs.totalHits > 1)
+					{
+						log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getSessionId());
+					}
+					else
+					{
+						log.debug(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getSessionId());
+					}
 				}
 				fieldSize = docs.totalHits;
 				fieldDocs = docs.scoreDocs;

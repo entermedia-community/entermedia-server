@@ -4,6 +4,7 @@ import groovy.json.JsonSlurper
 
 import java.awt.Dimension
 import java.text.SimpleDateFormat
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
@@ -16,8 +17,10 @@ import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
+import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.creator.ConversionUtil
+import org.openedit.entermedia.modules.BaseMediaModule
 import org.openedit.entermedia.orders.Order
 import org.openedit.entermedia.orders.OrderManager
 import org.openedit.entermedia.orders.OrderSearcher
@@ -32,7 +35,8 @@ import com.openedit.page.Page
 import com.openedit.util.OutputFiller
 
 
-class JsonModule {
+public class JsonModule extends BaseMediaModule 
+{
 	private static final Log log = LogFactory.getLog(JsonModule.class);
 
 
@@ -222,7 +226,7 @@ class JsonModule {
 
 		if(asset == null && keys.get("localPath") != null)
 		{
-			log.info("HERE!!!");
+			//log.info("HERE!!!");
 			File file = new File(keys.get("localPath"));
 			if(file.exists())
 			{
@@ -255,9 +259,6 @@ class JsonModule {
 
 		asset.setProperty("sourcepath", sourcepath);
 		searcher.saveData(asset, inReq.getUser());
-
-
-
 
 		JSONObject result = getAssetJson(sm, searcher, asset);
 		String jsondata = result.toString();
@@ -352,8 +353,8 @@ class JsonModule {
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
 		String id = getId(inReq);
 
-
-
+		log.info("JSON get with ${id} and ${catalogid}");
+		
 
 		Asset asset = archive.getAsset(id);
 
@@ -400,10 +401,7 @@ class JsonModule {
 
 	}
 
-
-
-
-
+	//this is not needed see parent class
 	public MediaArchive getMediaArchive(WebPageRequest inReq,  String inCatalogid)
 	{
 		SearcherManager sm = inReq.getPageValue("searcherManager");
@@ -424,51 +422,67 @@ class JsonModule {
 
 			String key = it.id;
 			String value=inAsset.get(it.id);
-			if(key && value){
-				if(detail.isList()){
-
-					asset.put(key, value);
-
+			if(key && value)
+			{
+				if(detail.isMultiValue() || key =="category")
+				{
+					List values = inAsset.getValues(key);
+					JSONArray items = new JSONArray();
+					values.each{
+						JSONObject data = getDataJson(sm,detail,it);
+						if( data != null )
+							{
+								items.add(data);
+							}
+					}
+					asset.put(key, items);
 				}
-				else if(detail.isBoolean()){
+				else if(detail.isList())
+				{
+					JSONObject data = getDataJson(sm,detail,value);
+					if( data != null)
+					{
+						asset.put(key,data);
+					}
+				}
+				else if(detail.isBoolean())
+				{
 					asset.put(key, Boolean.parseBoolean(value));
 
 
 				} else{
 					asset.put(key, value);
 				}
-
-
 			}
-
-
 			//need to add tags and categories, etc
-
-
-
-
 		}
 		//String tags = inAsset.get("keywords");
-		List tags = inAsset.getValues("keywords");
-		JSONArray array = new JSONArray();
-		tags.each{
-			array.add(it);
-		}
-		asset.put("tags", array);
-
-
-
+//		List tags = inAsset.getValues("keywords");
+//		JSONArray array = new JSONArray();
+//		tags.each{
+//			array.add(it);
+//		}
+//		asset.put("tags", array);
 		return asset;
 	}
-
-	public JSONObject getDataJson(SearcherManager sm, Searcher inSearcher, Data inAsset){
+	public JSONObject getDataJson(SearcherManager sm, PropertyDetail inDetail, String inId)
+		{
+			Searcher searcher = sm.getSearcher(inDetail.getListCatalogId(), inDetail.getListId());
+			Data data = searcher.searchById(inId);
+			if( data == null)
+			{
+				return null;
+			}
+			return getDataJson(sm,searcher,data);
+		}
+	public JSONObject getDataJson(SearcherManager sm, Searcher inSearcher, Data inData){
 		JSONObject asset = new JSONObject();
-		asset.put("id", inAsset.getId());
-		asset.put("name", inAsset.getName());
+		asset.put("id", inData.getId());
+		asset.put("name", inData.getName());
 		inSearcher.getPropertyDetails().each{
 			PropertyDetail detail = it;
 			String key = it.id;
-			String value=inAsset.get(it.id);
+			String value=inData.get(it.id);
 			if(key && value){
 				if(detail.isList()){
 					//friendly?
@@ -479,15 +493,27 @@ class JsonModule {
 				} else{
 					asset.put(key, value);
 				}
-
-
 			}
-
-
-
 		}
-
-
+		if( inSearcher.getSearchType() == "category")
+		{
+			MediaArchive archive = getMediaArchive(inSearcher.getCatalogId());
+			Category cat = archive.getCategory(inData.getId());
+			if( cat != null)
+			{
+				StringBuffer out = new StringBuffer();
+				for (Iterator iterator = cat.getParentCategories().iterator(); iterator.hasNext();)
+				{
+					Category parent = (Category) iterator.next();
+					out.append(parent.getName());
+					if( iterator.hasNext())
+					{
+						out.append("/");
+					}
+				}
+				asset.put("path",out.toString());
+			}
+		}
 
 		return asset;
 	}
@@ -504,18 +530,22 @@ class JsonModule {
 		return asset;
 	}
 
-	public JSONObject getConversions(MediaArchive inArchive, Data inAsset){
+	public JSONObject getConversions(MediaArchive inArchive, Asset inAsset){
 
 		JSONObject asset = new JSONObject();
 		Searcher publish = inArchive.getSearcher("conversiontask");
-
-
-
 
 		JSONArray array = new JSONArray();
 		ConversionUtil util = new ConversionUtil();
 		util.setSearcherManager(inArchive.getSearcherManager());
 
+		String origurl = "/views/modules/asset/downloads/originals/${inAsset.getSourcePath()}/${inAsset.getMediaName()}";
+		
+		JSONObject original = new JSONObject();
+		original.put("URL", origurl);
+		
+		asset.put("original", original);
+		
 		HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId(),inAsset.get("assettype"));
 		conversions.each{
 			if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.id)){
@@ -523,7 +553,7 @@ class JsonModule {
 				JSONObject data = new JSONObject();
 				//			<a class="thickbox btn" href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)">Preview</a>
 				String exportfilename = inArchive.asExportFileName(inAsset, it);
-				String url = "/views/modules/asset/downloads/generatedpreview/${inAsset.getSourcePath()}/${it.outputfile}/${exportfilename}";
+				String url = "/views/modules/asset/downloads/preview/${inAsset.getSourcePath()}/${it.outputfile}";
 				data.put("URL", url);
 				data.put("height", dimension.getHeight());
 				data.put("width", dimension.getWidth());
@@ -531,14 +561,8 @@ class JsonModule {
 
 			}
 		}
-
-
 		return asset;
 	}
-
-
-
-
 	public JSONObject handleSearch(WebPageRequest inReq){
 		//Could probably handle this generically, but I think they want tags, keywords etc.
 
@@ -635,13 +659,15 @@ class JsonModule {
 
 
 	public String getId(WebPageRequest inReq){
-		String root  = "/entermedia/services/json/asset/";
-		String url = inReq.getPath();
-		if(!url.endsWith("/")){
-			url = url + "/";
-		}
-		String id = url.substring(root.length(), url.length())
-		id = id.substring(0, id.indexOf("/"));
+		String id = inReq.getPage().getName();
+		
+//		String root  = "/entermedia/services/json/asset/";
+//		String url = inReq.getPath();
+//		if(!url.endsWith("/")){
+//			url = url + "/";
+//		}
+//		String id = url.substring(root.length(), url.length())
+//		id = id.substring(0, id.indexOf("/"));
 		return id;
 	}
 
@@ -797,15 +823,7 @@ class JsonModule {
 			JSONObject asset = new JSONObject();
 
 			populateJsonObject(inSearcher, asset,inOrder);
-
-
-
 			//need to add tags and categories, etc
-
-
-
-
-		
 		//String tags = inAsset.get("keywords");
 		Searcher itemsearcher = sm.getSearcher(inSearcher.getCatalogId(),"orderitem" );
 		HitTracker items = itemsearcher.query().match("orderid", inOrder.getId()).search();

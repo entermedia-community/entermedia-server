@@ -2,7 +2,7 @@
 <page>
 
 	<path-action name="Date.now">
-		<format>yyyy/MM</format>
+		<format>yyyyMM</format>
 	</path-action>
 
 	<path-action name="Script.run" >

@@ -25,10 +25,13 @@
 		#set( $isselected = $render.isNodeSelected($cat))
 		<li id="${cat.id}_row" class="noderow" data-nodeid="$cat.id" data-depth="$depth">
 			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px" title="$cat.name #if($editable) ($cat.id) #end">
+				#set( $checked = $render.isIdSelected($cat.id) )
 			    #if( $showinput )
 			    <div class="checkbox">
-			         <input name="categoryid" value="$cat.id" type="checkbox" #if( $render.isIdSelected($cat.id) ) checked="true" #end  >
+			         <input name="categoryid" value="$cat.id" type="checkbox" #if( $checked ) checked="true" #end  >
 			    </div>
+			    #elseif( $checked )
+			   	 <input name="categoryid" value="$cat.id" type="hidden" >
 			    #end
 				#if($haschildren)<span class="arrow #if($expanded) down #end "></span>#end 
 				<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end" >$cat.name</span>
