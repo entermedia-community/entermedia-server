@@ -1,0 +1,5 @@
+<ul class="nav nav-sidebar">
+    <li ng-repeat="nav in navigation" ng-class="{'active': nav.name == currentLocationName}">
+        <a ui-sref="app.{{nav.state}}">{{nav.name}}</a>
+    </li>
+</ul>
