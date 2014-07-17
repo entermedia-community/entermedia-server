@@ -1,0 +1,15 @@
+{
+  "name": "TaskDude",
+  "version": "0.0.8",
+  "description": "",
+  "author": "EnterMedia Software",
+  "dependencies": {
+    "grunt": "~0.4.4",
+    "grunt-coffeelint": "~0.0.10",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-contrib-less": "~1.7.3",
+    "express": "^4.5.1",
+    "socket.io": "^1.0.6"
+  }
+}

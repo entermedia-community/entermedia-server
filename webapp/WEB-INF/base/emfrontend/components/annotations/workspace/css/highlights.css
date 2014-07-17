@@ -1,0 +1,252 @@
+.em-workspace {
+  background: #86cae5;
+  /* Bootstrap Overrides */
+  /* Annotations Specific */
+}
+.em-workspace .sidebar {
+  background: #abdcef;
+  border-color: #2186ad;
+}
+.em-workspace .navbar {
+  background: #ead6b7;
+  border-bottom: 10px solid #b6373d;
+}
+.em-workspace .btn {
+  border-radius: 0;
+}
+.em-workspace .btn.btn-primary {
+  background-color: #68a8c1;
+  border: 1px solid #41768b;
+}
+.em-workspace .btn.btn-primary:hover {
+  background-color: #569eba;
+}
+.em-workspace .btn.btn-default {
+  background-color: #eee;
+  border: 1px solid #ddd;
+}
+.em-workspace .annotations-toolbar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin: 15px 0;
+  height: 38px;
+  position: relative;
+  z-index: 999;
+}
+.em-workspace .annotations-toolbar li {
+  float: left;
+  margin: 0;
+  background: #f1f1f1;
+  width: 44px;
+  height: 36px;
+  line-height: 36px;
+  border: 1px solid #ccc;
+  border-right: none;
+  cursor: pointer;
+  color: #666;
+}
+.em-workspace .annotations-toolbar li .tool-options {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.em-workspace .annotations-toolbar li .tool-options li {
+  border-right: 1px solid #ccc;
+}
+.em-workspace .annotations-toolbar li .icon {
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin: 7px 11px;
+  fill: #777;
+}
+.em-workspace .annotations-toolbar li .additional-info {
+  font-weight: bold;
+  margin-left: 15px;
+}
+.em-workspace .annotations-toolbar li:hover {
+  background: #f9f9f9;
+}
+.em-workspace .annotations-toolbar li:hover .icon {
+  fill: #555;
+}
+.em-workspace .annotations-toolbar li:hover .tool-options {
+  display: block;
+}
+.em-workspace .annotations-toolbar li.active {
+  background: #fff;
+}
+.em-workspace .annotations-toolbar li.active .icon {
+  fill: #6fb353;
+}
+.em-workspace .annotations-toolbar li.last {
+  border-right: 1px solid #ccc;
+}
+.em-workspace .annotations-toolbar li.comments,
+.em-workspace .annotations-toolbar li.approved,
+.em-workspace .annotations-toolbar li.rejected {
+  margin-left: 20px;
+  width: 75px;
+  color: #fff;
+}
+.em-workspace .annotations-toolbar li.comments {
+  background-color: #68a8c1;
+  border: 1px solid #41768b;
+}
+.em-workspace .annotations-toolbar li.approved {
+  background-color: #37d045;
+  border: 1px solid #458a30;
+}
+.em-workspace .annotations-toolbar li.rejected {
+  background-color: #d03737;
+  border: 1px solid #752123;
+}
+.em-workspace .canvas-holder {
+  background: #fff;
+  border: 10px solid #fff;
+  overflow: scroll;
+}
+.em-workspace .canvas-holder .annotations-canvas {
+  margin: 0 auto;
+  width: 800px;
+  height: 600px;
+}
+.em-workspace .annotations-carousel {
+  height: 93px;
+  background: #000;
+  padding: 0;
+  margin: 0;
+}
+.em-workspace .annotations-carousel ul {
+  margin: 0;
+  padding: 0 15px 0 5px;
+  list-style: none;
+}
+.em-workspace .annotations-carousel ul li {
+  height: 60px;
+  background: #fff;
+  float: left;
+  margin: 15px 0 0 12px;
+  text-align: center;
+  border-radius: 0;
+}
+.em-workspace .annotations-carousel ul li.thumb {
+  padding: 5px;
+}
+.em-workspace .annotations-carousel ul li.thumb img {
+  height: 100%;
+  padding: 0;
+}
+.em-workspace .annotations-carousel ul li.thumb:hover {
+  background: #fff;
+}
+.em-workspace .annotations-carousel ul li.thumb.active {
+  background: #abdcef;
+}
+.em-workspace .annotations-carousel ul li.previous,
+.em-workspace .annotations-carousel ul li.next {
+  width: 25px;
+  background: none;
+  cursor: pointer;
+}
+.em-workspace .annotations-carousel ul li.previous .icon,
+.em-workspace .annotations-carousel ul li.next .icon {
+  fill: #333;
+}
+.em-workspace .annotations-carousel ul li.previous:hover .icon,
+.em-workspace .annotations-carousel ul li.next:hover .icon {
+  fill: #777;
+}
+.em-workspace .annotations-carousel ul li.next {
+  float: right;
+}
+.em-workspace .colorpicker span {
+  color: #005E7A;
+}
+.em-workspace .comment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.em-workspace .comment-list li {
+  margin: 10px 0;
+  background: #fff;
+  display: block;
+}
+.em-workspace .comment-list li .pull-right {
+  margin-top: 5px;
+}
+.em-workspace .comment-list li .btn {
+  margin-left: 10px;
+}
+.em-workspace .comment-list li.user-input {
+  background: none;
+}
+.em-workspace .comment-list li.user-input textarea {
+  max-width: 100%;
+  width: 100%;
+  border: none;
+  color: #777;
+  line-height: 21px;
+  padding: 15px;
+  border: 1px solid #66a1b9;
+  background: #fff;
+}
+.em-workspace .comment-list li.user-input textarea:focus {
+  outline: none;
+}
+.em-workspace .comment-list li.separator {
+  background: #41768b;
+  margin: 30px 0;
+  height: 1px;
+  padding: 0;
+}
+.em-workspace .comment-list li.comment {
+  border: 1px solid #66a1b9;
+  margin-bottom: 35px;
+}
+.em-workspace .comment-list li.comment.normal .user-gravatar {
+  width: 46px;
+  height: 46px;
+  padding: 3px;
+  background: #fff;
+  border: 1px solid #41768b;
+  float: right;
+  position: relative;
+  top: -15px;
+  right: 10px;
+}
+.em-workspace .comment-list li.comment.normal .user-gravatar img {
+  width: 38px;
+  height: 38px;
+}
+.em-workspace .comment-list li.comment.normal .comment-content {
+  padding: 15px;
+}
+.em-workspace .comment-list li.comment.normal .comment-content strong {
+  display: block;
+  margin-bottom: 12px;
+  color: #222;
+}
+.em-workspace .comment-list li.comment.normal .comment-content p {
+  line-height: 21px;
+  color: #666;
+  margin-bottom: 0;
+}
+.em-workspace .comment-list li.comment.normal .comment-meta {
+  padding: 0 15px 15px 15px;
+  font-size: 12px;
+}
+.em-workspace .comment-list li.comment.normal .comment-meta .comment-id {
+  background: #4fabe5;
+  border-radius: 3px;
+  padding: 2px 8px;
+  color: #fff;
+  font-weight: bold;
+  display: inline-block;
+}
+.em-workspace .comment-list li.comment.normal .comment-meta .comment-timestamp {
+  color: #87cbe6;
+}

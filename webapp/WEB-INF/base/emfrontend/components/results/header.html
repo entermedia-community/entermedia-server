@@ -57,7 +57,9 @@
 		#if ($canmetadatageneral && $hits)
 			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">Edit</a></li>
 		#end
-		
+		##test angular
+		<li><a href="$home$apphome/views/modules/asset/test/test_angular.html">TEST ANGULAR</a></li>
+		##test angular
 		#set( $edit = $context.getRequestParameter("editheader") )
 		#if($edit && $edit == "true"  )
 			<li>
