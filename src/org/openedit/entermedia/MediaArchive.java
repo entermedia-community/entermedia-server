@@ -1502,11 +1502,11 @@ public class MediaArchive
 		Asset asset = getAssetBySourcePath(inSourcePath);
 		updateAssetConvertStatus(asset);
 	}
-	public void updateAssetConvertStatus(Asset asset) 
+	public String updateAssetConvertStatus(Asset asset) 
 	{
 		if( asset == null)
 		{
-			return; //asset deleted
+			return null; //asset deleted
 		}
 		//TODO: Lock the asset so that nobody edits it while we are doing this
 		
@@ -1515,6 +1515,8 @@ public class MediaArchive
 
 		//log.info("existingpreviewstatus" + existingpreviewstatus);
 		//update importstatus and previewstatus to complete
+		log.info("Checking conversion status: " + asset.getId() + existingimportstatus +"/" + existingpreviewstatus);
+
 		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
 		{
 			//check tasks and update the asset status
@@ -1528,6 +1530,7 @@ public class MediaArchive
 				Data task = (Data)object;
 				if( "error".equals( task.get("status") ) )
 				{
+					log.info(asset.getId() + "Found an error");
 					founderror = true;
 					break;
 				}
@@ -1535,6 +1538,7 @@ public class MediaArchive
 				if( !"complete".equals( task.get("status") ) )
 				{
 					allcomplete = false;
+					log.info(asset.getId() + "Found an incomplete task - status was: " + task.get("status"));
 					break;
 				}
 			}
@@ -1547,16 +1551,19 @@ public class MediaArchive
 					if( founderror)
 					{
 						asset.setProperty("importstatus","error");
+						
 					}
 					else
 					{
 						asset.setProperty("importstatus","complete");
 						asset.setProperty("previewstatus","2");
+						
 					}
 					saveAsset(asset, null);
 				}
 			}
 		}
+		return asset.get("importstatus");
 	}
 	
 

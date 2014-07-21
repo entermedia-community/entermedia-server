@@ -61,14 +61,22 @@ class CompositeConvertRunner implements Runnable
 		{
 			for( Runnable runner: runners )
 			{
+				
 				runner.run();
 			}
 			
 		}
+		catch(Exception e){
+			log.info("ERRORS ${fieldSourcePath}");
+		}
 		finally
 		{
+			
+			log.info("updating conversion statys on ${fieldSourcePath} - runner size was: " + runners.size());
+			String result = fieldMediaArchive.updateAssetConvertStatus(fieldSourcePath);
+			log.info("Result on ${fieldSourcePath} was ${result}");
+			
 			fieldMediaArchive.releaseLock(lock);
-			fieldMediaArchive.updateAssetConvertStatus(fieldSourcePath);
 			fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
 		}
 	
@@ -147,7 +155,7 @@ class ConvertRunner implements Runnable
 							}
 							realtask.setProperty("externalid", result.get("externalid"));
 							tasksearcher.saveData(realtask, user);
-							
+							log.info("Marked " + hit.getSourcePath() +  " complete");
 							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
 							
 							mediaarchive.fireMediaEvent("conversions/conversioncomplete",user,asset);
@@ -367,9 +375,11 @@ public void checkforTasks()
 //		boolean runexec = false;
 	String lastassetid = null;
 	Iterator iter = newtasks.iterator();
+	String sourcepath = null;
 	for(Data hit:  iter)
 	{
 		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
+		
 		String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
 		if( id == null )
 		{
@@ -404,7 +414,9 @@ public void checkforTasks()
 	if( runners.size() > 0)
 	{
 		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
-		//mediaarchive.fireSharedMediaEvent("conversions/runconversions");   //this should not be needed
+		
+		
+			//mediaarchive.fireSharedMediaEvent("conversions/runconversions");   //this should not be needed
 	}
 	log.info("Added ${newtasks.size()} conversion tasks for processing");
 	
