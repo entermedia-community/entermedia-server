@@ -111,7 +111,7 @@ public class ClusterLockManager implements LockManager
 	{
 		Searcher searcher = getLockSearcher(inCatId);
 
-		SearchQuery q = searcher.createSearchQuery();
+		SearchQuery q = searcher.createSearchQuery(); 
 		q.addExact("path", inPath);
 		// q.addSortBy("date");
 
