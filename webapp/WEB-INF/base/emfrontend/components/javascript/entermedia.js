@@ -192,6 +192,9 @@ runajaxonthis = function(inlink,e)
 				{
 					cell = jQuery("#" + targetDiv);
 				}
+				
+				//Call replacer to pull $scope variables
+				
 				cell.replaceWith(data);
 				
 				
@@ -999,12 +1002,13 @@ jQuery(document).ready(function()
 
 	$(document).ajaxError(function(e, jqxhr, settings, exception) 
 			{
+				console.log(e,jqxhr,exception);
 				var errordiv = jQuery("#errordiv")
 				if( errordiv.length > 0)
 				{
 					
 					function fade(elem){
-						$(elem).delay(300).fadeOut(1000, "linear");
+						$(elem).delay(1).fadeOut(5000, "linear");
 					}
 					
 					$('#errordiv').stop(true, true).show().css('opacity', 1);
