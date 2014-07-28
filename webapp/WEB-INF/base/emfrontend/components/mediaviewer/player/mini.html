@@ -91,6 +91,14 @@
                      </p>
                      #end
                      
+                     #if($canviewshoppingcart)
+                     	<p style="line-height: 25px; text-align: left; color: #fff; ">
+                     		<strong>Shopping Cart</strong><br/>
+                            $pages.include("/$applicationid/views/modules/asset/editor/editshoppingcart/shoppingcartbutton.html",$context)
+                        </p>
+                     #end
+                     
+                     
                      
                 </div>
             </div>

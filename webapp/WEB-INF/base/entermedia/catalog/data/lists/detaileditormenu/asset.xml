@@ -16,7 +16,7 @@
 	<a folder="historypreviews"  id="viewassetpreviewhistory"  module="asset"  useajax="true" name="History"  ordering="200"/>
 	
 	<a folder="fatwire"  id="viewfatwire"  module="asset"  useajax="true" name="Fatwire"  ordering="200"/>
-	
+	<a folder="editshoppingcart"  id="editshoppingcart"  module="asset"  useajax="true" name="Shopping Cart"  ordering="210"  multiedit="true" />
 	
 	<!-- <a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" /> -->
 <!-- 
