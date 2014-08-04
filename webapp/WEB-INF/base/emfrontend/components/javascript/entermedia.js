@@ -1127,35 +1127,24 @@ emcomponents = function() {
 			}
 		);
 
-
- getCookie = function(name) 
- {
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
- }
-
 	jQuery("img.assetdragdrop").livequery( function()
 	{
 		var img = $(this);
 			
 		var httplink = location.protocol + '//' + location.host;			
-		//Add in the entermedia.key value with timestamp?
-		var cookie = getCookie("entermedia.key");
-        var urls =  httplink + apphome + "/views/modules/asset/downloads/originals/" + img.data('sourcepath') + "/" + img.data('name') + "?entermedia.key=" + cookie;
+        var urls =  httplink + apphome + "/views/modules/asset/downloads/originals/" + img.data('sourcepath') + "/" + img.data('name');
         
         var handler = function(event) 
 	    {
-	        var download = "application/force-download:" + name + ":" + urls;
-            event.dataTransfer.setData("DownloadURL", download);   
+            event.dataTransfer.clearData();
             event.dataTransfer.setData('text/uri-list',urls);
             event.dataTransfer.setData('text/plain',urls);
 	        event.dataTransfer.effectAllowed = 'copy';
 	        return true;
 	    };
         
-        this.addEventListener('dragstart', handler ); 
-        this.parentNode.addEventListener('dragstart', handler ); //Deal with A tags?
+        this.addEventListener('dragstart', handler, false ); 
+        this.parentNode.addEventListener('dragstart', handler, false ); //Deal with A tags?
         
 	});
 
