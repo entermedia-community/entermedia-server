@@ -1,5 +1,4 @@
-#if($asset.shoppingcartlink)
-
+#if($asset.shoppingcartlink && $asset.id.startsWith("multiedit:") == false)
 	#set($replacer = $mediaarchive.getReplacer())
 	#set($link = $replacer.replace("${asset.shoppingcartlink}",$asset))
 	#if($asset.shoppingcartargs && $asset.shoppingcartargs.isEmpty() == false)
