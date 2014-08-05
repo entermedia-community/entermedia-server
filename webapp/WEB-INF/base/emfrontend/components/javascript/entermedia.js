@@ -1132,14 +1132,28 @@ emcomponents = function() {
 		var img = $(this);
 			
 		var httplink = location.protocol + '//' + location.host;			
-        var urls =  httplink + apphome + "/views/modules/asset/downloads/originals/" + img.data('sourcepath') + "/" + img.data('name');
+		var filename = img.data('name');
+        var urls =  httplink + apphome + "/views/modules/asset/downloads/originals/" + img.data('sourcepath') + "/" + filename;
         
         var handler = function(event) 
 	    {
-            event.dataTransfer.clearData();
+           if( event.dataTransfer.getData("application/x-moz-file-promise-url") && navigator.appVersion.indexOf("Win") != -1 )
+           {
+     	 		event.dataTransfer.setData('application/x-moz-file-promise-url',urls );
+             	event.dataTransfer.setData('application/x-moz-file-promise-dest-filename',filename);
+             	event.dataTransfer.effectAllowed = 'all';       
+           }
+           else
+           {
+           		event.dataTransfer.clearData();
+	            var download = "application/force-download:" + filename + ":" + urls;
+	            event.dataTransfer.setData("DownloadURL", download);   
+	        	event.dataTransfer.effectAllowed = 'copy';
+	        }
+	        
             event.dataTransfer.setData('text/uri-list',urls);
             event.dataTransfer.setData('text/plain',urls);
-	        event.dataTransfer.effectAllowed = 'copy';
+
 	        return true;
 	    };
         
