@@ -13,7 +13,6 @@
 </div>
 		#else            
         <div id="default-top" style="border-bottom: none;">
-        
             <div class="thumbnail">
                 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
                 #if( !$thumbsize )
@@ -32,10 +31,12 @@
                     <a class="thickbox" href="$home$link" target="_parent" title="[[$asset]]">
                         $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
                     </a>
+                    <br>
+                    <input style="border:0px;width:200px;text-overflow:ellipsis;color:#555555;background-color: transparent;" overflow:hidden;white-space:nowrap;" value="$asset.sourcepath" onclick="$(this).select();"/>...
+                    
                 #else
                     $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
                 #end 
-                
             </div>
             <div class="main-info">
                 <div class="primary">
