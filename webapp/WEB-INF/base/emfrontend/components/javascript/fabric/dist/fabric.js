@@ -182,6 +182,14 @@ fabric.Collection = {
     this.renderOnAddRemove && this.renderAll();
     return this;
   },
+  addInternal: function () {
+    this._objects.push.apply(this._objects, arguments);
+    for (var i = 0, length = arguments.length; i < length; i++) {
+      this._onObjectAdded(arguments[i],true);
+    }
+    
+    return this;
+  },
 
   /**
    * Inserts an object into collection at specified index, then renders canvas (if `renderOnAddRemove` is not `false`)
@@ -5811,12 +5819,15 @@ fabric.Pattern = fabric.util.createClass(/** @lends fabric.Pattern.prototype */ 
      * @private
      * @param {fabric.Object} obj Object that was added
      */
-    _onObjectAdded: function(obj) {
+    _onObjectAdded: function(obj, hideevents) {
       this.stateful && obj.setupState();
       obj.setCoords();
       obj.canvas = this;
-      this.fire('object:added', { target: obj });
-      obj.fire('added');
+      if( hideevents !== true)
+      {
+	      this.fire('object:added', { target: obj,source:this });
+      	  obj.fire('added');
+      }
     },
 
     /**
