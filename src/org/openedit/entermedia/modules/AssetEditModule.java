@@ -2097,8 +2097,9 @@ public class AssetEditModule extends BaseMediaModule
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
+			path = path.replace("//", "/");
 
-			Asset current = archive.getAssetBySourcePath("sourcepath");
+			Asset current = archive.getAssetBySourcePath(sourcepath);
 			if(current ==  null){
 				current = archive.createAsset(sourcepath);
 			}
