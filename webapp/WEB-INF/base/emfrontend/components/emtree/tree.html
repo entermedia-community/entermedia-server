@@ -28,7 +28,7 @@
 				#set( $checked = $render.isIdSelected($cat.id) )
 			    #if( $showinput )
 			    <div class="checkbox">
-			         <input name="categoryid" value="$cat.id" type="checkbox" #if( $checked ) checked="true" #end  >
+			         <input class="categorycheckbox" data-assetid="$asset.id" name="categoryid" value="$cat.id" type="checkbox" #if( $checked ) checked="true" #end  >
 			    </div>
 			    #elseif( $checked )
 			   	 <input name="categoryid" value="$cat.id" type="hidden" >
@@ -53,7 +53,7 @@
 		  <li id="${cat.id}_add" >
 			  #set ( $depth = $depth + 1)
 			  #set ( $padding = (20 * $depth) )
-		  	  <div   style="padding-left: ${padding}px" class="selected new"><span class="name folder"><input class="field text" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div>
+		  	  <div style="padding-left: ${padding}px" class="selected new"><span class="name folder"><input class="field text" type="text" value="New Category" id="${cat.id}_new" /><a data-parent="${cat.id}" class="save btn">Save</a><a id="${cat.id}" class="cancel btn">Cancel</a></span></div>
 	  	 </li> 
 	  	    </ul>
 		#elseif($haschildren && $expanded)
@@ -97,7 +97,7 @@
 
 #set( $top = $context.getRequestParameter("treetoplocation") )
 #set( $left = $context.getRequestParameter("treeleftlocation") )
-<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left">
+<div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" data-treeid="$webtree.getId()">
 	<div class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" data-editable="$editable" data-url-prefix="$home$apphome/views/categories/" data-url-postfix="">
 			<ul  class="open" >
 			#showtreecategories($rootcategory, 1)
@@ -105,3 +105,27 @@
 	</div>
 </div>
 #end
+<script type="text/javascript">
+	$(".categorycheckbox").on("click", function()
+	{
+		var checkbox = $(this);
+		var checked = checkbox.is(":checked");
+		var assetid = checkbox.data("assetid");
+		var categoryid = checkbox.attr("value");
+		var treeid = $("#treeholder").data("treeid");
+		if (checked)
+		{
+			jQuery.get("$home$apphome/components/emtree/addassetcategory.html?categories="+categoryid+"&treeid="+treeid)
+			.fail(function()
+				{
+					alert("failed to add category to asset");
+				});
+		} else {
+		    jQuery.get("$home$apphome/components/emtree/deleteassetcategory.html?assetid="+assetid+"&categoryid="+categoryid)
+			.fail(function()
+				{
+					alert("failed to delete category to asset");
+				});
+		}
+	});
+</script>

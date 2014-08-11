@@ -85,7 +85,7 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 	public boolean isIdSelected(String inNodeId)
 	{
-		return getSelectedNodes().contains(inNodeId);
+		return getSelectedNodes().contains(inNodeId); // TODO: look at this
 	}
 	public boolean isNodeSelected(Object inNode)
 	{

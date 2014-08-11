@@ -148,10 +148,12 @@ public class CategoryModule extends BaseMediaModule
 
 			inRequest.putSessionValue(treeid, webTree);
 			inRequest.putPageValue(webTree.getName(), webTree);
+			inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
 		else
 		{
 			inRequest.putPageValue(webTree.getName(), webTree);
+			inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
 		return webTree;
 	}
@@ -161,20 +163,20 @@ public class CategoryModule extends BaseMediaModule
 		Collection nodes = (Collection)inReq.getPageValue("selectednodes");
 		if( nodes == null)
 		{
-			//check param data
-			String cats = inReq.getRequestParameter("categories");
-			if( cats != null)
+		    nodes = new ArrayList();
+		}
+		//check param data
+		String cats = inReq.getRequestParameter("categories");
+		if( cats != null)
+		{
+		    String[] selected = cats.replace(' ','|').split("\\|");
+		    MediaArchive archive = getMediaArchive(inReq); 
+		    for (int i = 0; i < selected.length; i++)
 			{
-			    String[] selected = cats.replace(' ','|').split("\\|");
-			    nodes = new ArrayList();
-			    MediaArchive archive = getMediaArchive(inReq); 
-			    for (int i = 0; i < selected.length; i++)
+				Category found = archive.getCategory(selected[i].trim());
+				if( found != null)
 				{
-					Category found = archive.getCategory(selected[i].trim());
-					if( found != null)
-					{
-						nodes.add(found);
-					}
+					nodes.add(found);
 				}
 			}
 		}
@@ -186,6 +188,30 @@ public class CategoryModule extends BaseMediaModule
 		
 		if( nodes != null )
 		{		
+			tree.getTreeRenderer().selectNodes(nodes);
+		}
+	}
+	public void deselectNodes(WebPageRequest inReq)
+	{
+		WebTree tree =  getCatalogTree(inReq);
+		Collection nodes = (Collection)inReq.getPageValue("selectednodes");
+		if( nodes != null)
+		{
+			//check param data
+			String cats = inReq.getRequestParameter("categories");
+			if( cats != null)
+			{
+			    String[] selected = cats.replace(' ','|').split("\\|");
+			    MediaArchive archive = getMediaArchive(inReq); 
+			    for (int i = 0; i < selected.length; i++)
+				{
+					Category found = archive.getCategory(selected[i].trim());
+					if( found != null)
+					{
+						nodes.remove(found);
+					}
+				}
+			}
 			tree.getTreeRenderer().selectNodes(nodes);
 		}
 	}
