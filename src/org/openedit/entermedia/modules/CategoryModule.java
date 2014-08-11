@@ -148,23 +148,18 @@ public class CategoryModule extends BaseMediaModule
 
 			inRequest.putSessionValue(treeid, webTree);
 			inRequest.putPageValue(webTree.getName(), webTree);
-			inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
+		//	inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
 		else
 		{
 			inRequest.putPageValue(webTree.getName(), webTree);
-			inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
+			//inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
 		return webTree;
 	}
 	public void selectNodes(WebPageRequest inReq)
 	{
 		WebTree tree =  getCatalogTree(inReq);
-		Collection nodes = (Collection)inReq.getPageValue("selectednodes");
-		if( nodes == null)
-		{
-		    nodes = new ArrayList();
-		}
 		//check param data
 		String cats = inReq.getRequestParameter("categories");
 		if( cats != null)
@@ -176,27 +171,22 @@ public class CategoryModule extends BaseMediaModule
 				Category found = archive.getCategory(selected[i].trim());
 				if( found != null)
 				{
-					nodes.add(found);
+					tree.getTreeRenderer().selectNode(found);
 				}
 			}
 		}
 		String clear = inReq.getRequestParameter("clearselection");
 		if( Boolean.parseBoolean(clear))
 		{
-			 nodes = new ArrayList();
+			 tree.getTreeRenderer().selectNodes(null);
 		}
 		
-		if( nodes != null )
-		{		
-			tree.getTreeRenderer().selectNodes(nodes);
-		}
+		
 	}
 	public void deselectNodes(WebPageRequest inReq)
 	{
 		WebTree tree =  getCatalogTree(inReq);
-		Collection nodes = (Collection)inReq.getPageValue("selectednodes");
-		if( nodes != null)
-		{
+		
 			//check param data
 			String cats = inReq.getRequestParameter("categories");
 			if( cats != null)
@@ -208,12 +198,12 @@ public class CategoryModule extends BaseMediaModule
 					Category found = archive.getCategory(selected[i].trim());
 					if( found != null)
 					{
-						nodes.remove(found);
+						tree.getTreeRenderer().unSelectNode(found);
 					}
 				}
 			}
-			tree.getTreeRenderer().selectNodes(nodes);
-		}
+		
+		
 	}
 	public void expandNode(WebPageRequest inReq){
 		WebTree tree =  getCatalogTree(inReq);
