@@ -15,11 +15,11 @@
 
 
 	<property id="catalogassetupload" value="${formatteddate}">Default Catalog Upload Path</property>
-
+<!-- 
 	<property id="categorytreemask" value="users/${username}/">Default mask for creating categories on upload/asset creation</property>
-<!-- This is what the OLD way would have done:
+	 -->
 	<property id="categorytreemask" value="${folderpath}">Default mask for creating categories on upload/asset creation</property>
- -->
+
 
 
 	<property id="server_log_location" value="/opt/entermedia/tomcat/logs/catalina.log">Web Server Logs</property>
