@@ -83,6 +83,10 @@ public class UserProfileSearcher extends XmlFileSearcher {
 		if (inData instanceof UserProfile) {
 			UserProfile up = (UserProfile) inData;
 			User user = up.getUser();
+			if(user == null){
+				user = getUserManager().getUser(up.getId());
+			}
+			up.setUser(user);
 			if (user != null) {
 				if (user.getFirstName() != null) {
 					doc.add(new Field("firstname", user.getFirstName(),
@@ -92,6 +96,11 @@ public class UserProfileSearcher extends XmlFileSearcher {
 					doc.add(new Field("lastname", user.getFirstName(),
 							Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 				}
+				doc.add(new Field("deleted", "false",
+						Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+			} else{
+				doc.add(new Field("deleted", "true",
+						Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 			}
 		}
 
