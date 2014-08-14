@@ -304,12 +304,12 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			Category catalog = (Category) iter.next();
 			buffer.append(catalog.getId());
-			buffer.append(" ");
+			buffer.append(" | ");
 		}
 
 		if (buffer.length() > 0)
 		{
-			doc.add(new Field("category-exact", buffer.toString(), INTERNAL_FIELD_TYPE ));
+			doc.add(new Field("category-exact", buffer.toString(), ID_FIELD_TYPE ));
 		}
 		/*
 		 * Not used any more if ( item.getDepartment() != null) { doc.add( new

@@ -1,14 +1,25 @@
 package org.entermedia.profile;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
+import org.apache.lucene.index.IndexWriter;
+import org.dom4j.Element;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.XmlFileSearcher;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
+import org.openedit.xml.XmlFile;
 
+import com.openedit.OpenEditException;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
+import com.openedit.util.PathProcessor;
 
 public class UserProfileSearcher extends XmlFileSearcher {
 
@@ -22,6 +33,52 @@ public class UserProfileSearcher extends XmlFileSearcher {
 
 	protected UserManager fieldUserManager;
 
+	
+	protected void reIndexAll(final IndexWriter inWriter, final TaxonomyWriter inTaxonomyWriter) throws OpenEditException
+	{
+		final List buffer = new ArrayList(100);
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				if (!inContent.getName().equals(getSearchType() + ".xml"))
+				{
+					return;
+				}
+				String sourcepath = inContent.getPath();
+				sourcepath = sourcepath.substring(getPathToData().length() + 1,
+						sourcepath.length() - getDataFileName().length() - 1);
+				String path = inContent.getPath();
+				XmlFile content = getXmlArchive().getXml(path, getSearchType());
+				for (Iterator iterator = content.getElements().iterator(); iterator.hasNext();)
+				{
+					Element element = (Element) iterator.next();
+					UserProfile data = (UserProfile)createNewData();
+					data.setElement(element);
+					data.setSourcePath(sourcepath);
+					User target = getUserManager().getUser(data.getId());
+					data.setUser(target);
+					
+					buffer.add(data);
+					
+					if( buffer.size() > 99)
+					{
+						updateIndex(inWriter, inTaxonomyWriter, buffer);
+					}
+				}
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(getPathToData());
+		processor.setPageManager(getPageManager());
+		processor.setIncludeExtensions("xml");
+		processor.process();
+		updateIndex(inWriter, inTaxonomyWriter, buffer);
+	}
+	
+	
+	
+	
 	@Override
 	public Data createNewData() {
 		UserProfile userProfile = (UserProfile) getModuleManager().getBean(
