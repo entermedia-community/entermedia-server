@@ -167,6 +167,10 @@ public class AssetUtilities
 		{
 			String folderPath = dir.substring(datadir.length());
 			String folderfilter = inArchive.getCatalogSettingValue("categorytreemask");
+			if(folderfilter == null || folderfilter.length() == 0){
+				return;
+				
+			}
 			HashMap properties = new HashMap();
 			for (Iterator iterator = asset.getProperties().keySet().iterator(); iterator.hasNext();)
 			{

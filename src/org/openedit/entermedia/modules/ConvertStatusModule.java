@@ -9,6 +9,8 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.creator.ConvertInstructions;
+import org.openedit.entermedia.creator.MediaCreator;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 
@@ -157,10 +159,65 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("outputfile");
 		properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
+
+		boolean newdefault = Boolean.parseBoolean(inReq.getRequestParameter("replaceall"));
+		if(newdefault){
 			
+		}
 
 		inReq.putPageValue("asset", current);
 		
 	}
 
+	public void handleCustomThumb(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = (FileUpload) archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		if (properties == null) {
+			return;
+		}
+		if (properties.getFirstItem() == null) {
+			return;
+			
+		}
+		String assetid = inReq.getRequestParameter("assetid");
+		Asset current = archive.getAsset(assetid);
+		
+		
+		archive.removeGeneratedImages(current);
+		
+		
+		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + properties.getFirstItem().getName(); //TODO: Should run a conversion here first to ensure this is a large JPG
+		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
+		String generatedpng = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
+		
+		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
+        MediaCreator c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+		ConvertInstructions instructions = new ConvertInstructions();
+		instructions.setForce(true);
+		instructions.setInputPath(input);
+		instructions.setOutputPath(generated);
+	 	 
+	 	// instructions.setOutputExtension("jpg");
+	 	 c.createOutput(archive, instructions);
+		instructions.setOutputPath(generatedpng);
+		 c.createOutput(archive, instructions);
+	 	 
+	 	 
+	 	 
+	 	 
+		
+		
+		
+		//current.setProperty("importstatus", "imported");
+		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());
+		archive.fireMediaEvent("conversions/thumbnailreplaced", inReq.getUser());
+
+		inReq.putPageValue("asset", current);
+		
+	}
+
+	
+	
 }
