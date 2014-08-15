@@ -145,6 +145,26 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 		}
 
+			if( input == null)
+			{
+				if("png".equals(ext)){
+					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+				}	else
+				{
+					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+				}			
+				
+				if( input.length() < 2 )
+				{
+					input = null;
+				}
+				else
+				{
+					autocreated = true;
+				}
+			}
+		
+		
 		//get the original inut
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
 		if( offset != null && input == null)
