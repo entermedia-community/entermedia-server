@@ -93,7 +93,16 @@ public class imagemagickCreator extends BaseImageCreator
 		
 		String tmpinput = PathUtilities.extractPageType( inOutFile.getPath() );
 		boolean transparent = inStructions.isTransparencyMaintained(tmpinput);
+		String ext = inStructions.getInputExtension();
+		if( ext == null && input != null)
+		{
+			ext = PathUtilities.extractPageType( input.getPath() );
+		}
 		
+		if( ext == null)
+		{
+			ext = inAsset.getFileFormat();
+		}
 		if( !transparent  && ( inStructions.getMaxScaledSize() != null && offset == null ) ) //page numbers are 1 based
 		{
 			String page = null;
@@ -185,16 +194,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 		}
 		//Look over to see if there is a creator that can do a better job of reading in this type
-		String ext = inStructions.getInputExtension();
-		if( ext == null && input != null)
-		{
-			ext = PathUtilities.extractPageType( input.getPath() );
-		}
 		
-		if( ext == null)
-		{
-			ext = inAsset.getFileFormat();
-		}
 
 		MediaCreator preprocessor = getPreProcessor(inArchive, ext);
 		if( preprocessor != null)
