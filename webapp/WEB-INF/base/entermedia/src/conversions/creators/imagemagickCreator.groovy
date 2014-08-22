@@ -153,7 +153,7 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 		}
-
+		
 			if( input == null)
 			{
 				if("png".equals(ext)){
@@ -197,7 +197,7 @@ public class imagemagickCreator extends BaseImageCreator
 		
 
 		MediaCreator preprocessor = getPreProcessor(inArchive, ext);
-		if( preprocessor != null)
+		if( preprocessor != null && ! input.getName().equals("customthumb.jpg"))
 		{
 			//This will output a native format. First one wins. it is not a loop.
 			String tmppath = preprocessor.populateOutputPath(inArchive, inStructions);
