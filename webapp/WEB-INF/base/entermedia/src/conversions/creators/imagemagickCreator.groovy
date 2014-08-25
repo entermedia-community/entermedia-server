@@ -153,8 +153,8 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 		}
-		
-			if( input == null)
+		String filetype = inArchive.getMediaRenderType(inAsset.getFileFormat());
+			if( input == null && !"document".equals(filetype))
 			{
 				if("png".equals(ext)){
 					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");

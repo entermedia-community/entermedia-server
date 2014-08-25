@@ -50,7 +50,8 @@ p{
 </style>
 
 <h1>Automatic Conversions</h1>
-
+                #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+#if($type != "document")
 <div class="info">
 <h2>Replace all conversion with a new custom thumbnail:</h2>
 
@@ -65,7 +66,7 @@ p{
 
 </form>
 </div>
-
+#end
 #set($newpreset = $context.findValue("newpreset"))
 #set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
