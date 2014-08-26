@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
 import org.entermedia.error.EmailErrorHandler;
 import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
@@ -38,6 +39,8 @@ import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.xml.ElementData;
+import org.openedit.xml.XmlFile;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -50,6 +53,7 @@ import com.openedit.page.Permission;
 import com.openedit.page.manage.MimeTypeMap;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
+import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.Replacer;
 
@@ -901,6 +905,46 @@ public class MediaArchive
 		
 	}
 	
+	
+	
+	
+	public void removeGeneratedImages(Asset inAsset, boolean everything)
+	{
+		if(everything){
+			removeGeneratedImages(inAsset);
+			return;
+		}
+		
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
+		if(inAsset.isFolder() && !path.endsWith("/")){
+			path = path + "/"; 
+				
+		}
+		
+		
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+			
+				//getPageManager().removePage(page);
+				String type = PathUtilities.extractPageType(inContent.getPath()); 
+				String fileformat = getMediaRenderType(type);
+				if("image".equals(fileformat)){
+					Page page = getPageManager().getPage(inContent.getPath());
+					getPageManager().removePage(page);
+				}
+				
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(path);
+		processor.setPageManager(getPageManager());
+		processor.process();
+		
+
+		
+	}
 	
 	public void removeOriginals(Asset inAsset)
 	{

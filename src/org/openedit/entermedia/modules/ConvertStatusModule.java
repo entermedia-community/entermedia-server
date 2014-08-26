@@ -185,7 +185,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset current = archive.getAsset(assetid);
 		
 		
-		archive.removeGeneratedImages(current);
+		archive.removeGeneratedImages(current, false);
 		
 		
 		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + properties.getFirstItem().getName(); //TODO: Should run a conversion here first to ensure this is a large JPG
@@ -212,8 +212,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		//current.setProperty("importstatus", "imported");
 		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());
-		archive.fireMediaEvent("conversions/thumbnailreplaced", inReq.getUser());
-
+		archive.fireMediaEvent("conversions/thumbnailreplaced", inReq.getUser(), current);
 		inReq.putPageValue("asset", current);
 		
 	}
