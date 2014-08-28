@@ -11,9 +11,10 @@ import org.openedit.entermedia.MediaArchive;
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
-import com.openedit.generators.BaseGenerator;
+import com.openedit.generators.FileGenerator;
 import com.openedit.generators.Output;
 import com.openedit.page.Page;
+import com.openedit.page.PageRequestKeys;
 import com.openedit.util.OutputFiller;
 import com.openedit.util.PathUtilities;
 
@@ -24,7 +25,7 @@ import com.openedit.util.PathUtilities;
  * 
  * @author Eric Galluzzo
  */
-public class OriginalDocumentGenerator extends BaseGenerator
+public class OriginalDocumentGenerator extends FileGenerator
 {
 	private static final Log log = LogFactory.getLog(OriginalDocumentGenerator.class);
 	protected ModuleManager moduleManager;
@@ -82,6 +83,22 @@ public class OriginalDocumentGenerator extends BaseGenerator
 			filename += asset.getPrimaryFile();
 		}
 
+		Page content = archive.getOriginalDocument(asset);
+		if( content.exists() )
+		{
+			//its a regular file
+			WebPageRequest req = inReq.copy(content);
+			req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
+			super.generate(req, content, inOut);
+		}
+		else
+		{
+			stream(inReq, archive, inOut, asset, filename);
+		}
+	}
+
+	private void stream(WebPageRequest inReq, MediaArchive archive, Output inOut, Asset asset, String filename)
+	{
 		InputStream in = null;
 		try
 		{
