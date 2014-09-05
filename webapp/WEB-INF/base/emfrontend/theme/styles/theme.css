@@ -6540,3 +6540,70 @@ div.tableheaderactions
 	background-color: #eee;  
 	
 }
+
+/*---CSS CHANGES----------*/
+ul.emheaderbuttons {
+    margin: -3px 5px 5px -10px !important; 
+}
+#module-dropdown {
+    height: 35px;
+}
+#emcontainer #emselectable table tr{
+padding: 7px 25px !important;
+height:100% !important;
+}
+#childrenlist #valuelist {
+    margin:  -10px -4px 0px !important;
+}
+.borderedcell, .resultstablecell {
+    display: table-cell;
+}
+#emcontainer #emselectable #main-results-table tr .checkbox {
+  float: right;
+  margin-left: 30px;
+}
+.subcolumns {
+    float: left !important;
+}
+.select-dropdown-open.down {
+    background: url('../images/sort-desc.png') 3px 16px no-repeat !important;
+}
+#emcontainer #emselectable table th {
+    white-space: nowrap;
+    padding: 4px 10px !important;
+    text-align: none !important;
+    font-weight: bold;
+    height: 20px;
+    line-height: 20px;
+}
+.form-control {
+    background-color: #EDEAE8 !important;
+    height: 17px !important;
+    padding: 0;
+    width:47%!important;
+}
+#listdetail_division .form-control {
+    width:47%!important;
+} 
+#advsearchpanel table[width="100%"] select {
+    width: 160px !important;
+}
+#de-side-nav ul li a{
+	opacity:1 !important;
+}
+.emtable a.row {
+	height: 100% !important;
+	margin-left: 1%;
+}
+.folder:after {
+    height: 0 !important;
+}
+input[type="text"], input[type="password"], textarea {
+    padding: 0 !important;
+}
+#media-player-table {
+    margin-bottom: 0;
+}
+#footer {
+    clear: both;
+}
