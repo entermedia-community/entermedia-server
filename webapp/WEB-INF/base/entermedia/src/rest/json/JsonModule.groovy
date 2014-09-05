@@ -4,7 +4,6 @@ import groovy.json.JsonSlurper
 
 import java.awt.Dimension
 import java.text.SimpleDateFormat
-import java.util.Iterator;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
@@ -12,12 +11,13 @@ import org.entermedia.upload.FileUpload
 import org.entermedia.upload.UploadRequest
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
+import org.json.simple.parser.JSONParser
 import org.openedit.Data
 import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
-import org.openedit.entermedia.Category;
+import org.openedit.entermedia.Category
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.creator.ConversionUtil
 import org.openedit.entermedia.modules.BaseMediaModule
@@ -273,16 +273,14 @@ public class JsonModule extends BaseMediaModule
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 		//	slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		JsonSlurper slurper = new JsonSlurper();
-		def request = null;
 		String content = inReq.getPageValue("jsondata");
-		if(properties != null){
-
-		}
+		JSONObject inputdata = null;
+		JSONParser parser = new JSONParser();
+		
 		if(content != null){
-			request = slurper.parseText(content); //NOTE:  This is for unit tests.
+			inputdata = parser.parse(content);
 		} else{
-			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+			inputdata = parser.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
 
@@ -304,13 +302,84 @@ public class JsonModule extends BaseMediaModule
 			throw new OpenEditException("Asset was not found!");
 		}
 
-		request.each{
+		inputdata.keySet().each {
 			println it;
-			String key = it.key;
-			String value = it.value;
-			asset.setProperty(key, value);
-		}
+			
+			String key = it;
+			Object value = inputdata.get(key);
+			if(value instanceof String){
+				asset.setProperty(key, value);
+			} 
+			
+			if(value instanceof List){
+				ArrayList ids = new ArrayList();
+				PropertyDetail detail = searcher.getDetail(key);
+				
+				
+				value.each{
+					JSONObject object = it;
+					String val = it.get("id");
+					ids.add(val);
+					if(detail != null){
+						Searcher rsearcher = archive.getSearcher(key);
+						Data remote = rsearcher.searchById(val);
+						if(remote == null){
+							remote = rsearcher.createNewData();
+							remote.setId(val);							
+						}
+						object.keySet().each{
+							remote.setProperty(it, object.get(it));
+						}
+						rsearcher.saveData(remote, inReq.getUser());
+					}
+					
+					
+					
+				} 
+				asset.setValues(key, ids);				
+			}
+			
+			
+			if(value instanceof Map){
+					Map values = value;
+					
+					PropertyDetail detail = searcher.getDetail(key);
+					Searcher rsearcher = archive.getSearcher(key);
+					String targetid = value.id;
+					Data remote = rsearcher.searchById(id);
+					if(remote == null){
+						remote = rsearcher.createNewData();
+						remote.setId(targetid);
+					}
+					values.keySet().each{
+						remote.setProperty(it, values.get(it));
+					}
+					rsearcher.saveData(remote, inReq.getUser());
+					asset.setProperty(key, targetid);
+			}
+			
+			else{
+				//do osomething else
+				
+				println value;
+			}
 
+		}
+		
+				
+
+//		request.each{
+//			println it;
+//			String key = it.key;
+			
+	//		String value = it.value;
+//			
+//			asset.setProperty(key, value);
+//		}
+
+		
+		
+		
 		searcher.saveData(asset, inReq.getUser());
 		JSONObject result = getAssetJson(sm,searcher, asset);
 
