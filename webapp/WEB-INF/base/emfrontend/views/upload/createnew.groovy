@@ -13,7 +13,6 @@ String sourcepath = "newassets/${context.getUserName()}/${asset.id}";
 asset.setSourcePath(sourcepath);
 asset.setFolder(true);
 asset.setProperty("owner", context.userName);
-asset.setProperty("embeddedurl", context.getRequestParameter("embedurl"));
 asset.setProperty("importstatus", "complete")
 asset.setProperty("datatype", "original");
 
@@ -28,7 +27,6 @@ if(fields != null) {
 }
 
 mediaarchive.saveAsset(asset, context.getUser());
-
 
 context.putPageValue("asset", asset);
 context.setRequestParameter("assetid", asset.id);

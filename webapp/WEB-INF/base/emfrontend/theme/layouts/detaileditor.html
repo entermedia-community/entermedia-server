@@ -64,8 +64,7 @@
                         #end
                         #if( $inpreviewpage )
 	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
-	                    #elseif($asset.embeddedurl)
-	                    	$pages.include("$apphome/components/mediaviewer/embeddedplayer/index.html", $context)
+	                   
                         #else
                             
                             $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
