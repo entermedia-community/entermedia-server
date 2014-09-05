@@ -299,7 +299,7 @@ public class JsonModule extends BaseMediaModule
 		Asset asset = archive.getAsset(id);
 
 		if(asset == null){
-			throw new OpenEditException("Asset was not found!");
+			throw new OpenEditException("Asset was not found! (${catalogid}:${id})");
 		}
 
 		inputdata.keySet().each {
