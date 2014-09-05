@@ -5,9 +5,6 @@ import org.openedit.store.*
 import com.openedit.page.*
 
 
-
-
-
 MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 
 Asset asset = new Asset();
@@ -16,6 +13,8 @@ String sourcepath = "newassets/${context.getUserName()}/${asset.id}";
 asset.setSourcePath(sourcepath);
 asset.setFolder(true);
 asset.setProperty("owner", context.userName);
+asset.setProperty("embeddedurl", context.getRequestParameter("embedurl"));
+asset.setProperty("importstatus", "complete")
 asset.setProperty("datatype", "original");
 
 String assettype = context.getRequestParameter("assettype");
@@ -23,6 +22,10 @@ asset.setProperty("assettype", assettype);
 branch = mediaarchive.getCategoryArchive().createCategoryTree("/newassets/${context.getUserName()}");
 asset.addCategory(branch);
 
+String[] fields = context.getRequestParameters("field");
+if(fields != null) {
+	mediaarchive.getAssetSearcher().updateData(context,fields,asset);
+}
 
 mediaarchive.saveAsset(asset, context.getUser());
 
