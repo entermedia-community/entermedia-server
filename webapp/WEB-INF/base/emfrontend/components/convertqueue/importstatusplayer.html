@@ -34,6 +34,10 @@
 			Publishing Proxy $publish.size()
 		</div>
 	</div>
+#elseif($asset.embeddedurl)
+      
+    $pages.include("$apphome/components/mediaplayer/embeddedplayer/index.html",$context)
+
 #elseif($conversions && $conversions.size() == 0)
 	<div id="status$hit.id" class="ajaxstatus"  ajaxpath="$home$apphome/components/convertqueue/importstatusplayer.html?assetid=$hit.id" style="width:550px;height:350px;">
 		<div style="padding-top:150px;">

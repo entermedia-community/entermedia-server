@@ -1,18 +1,17 @@
    <div id="mediaviewer" class="max">
         
             #set( $ismultifine = $asset.id.startsWith("multiedit:") )
-            #set( $embeddedurl = $asset.embeddedurl )
+            <!-- #set( $embeddedurl = $asset.embeddedurl ) -->
             #if($ismultifine )
                 <div id="media-player" >
                     <h2 style="color: #fff; margin: 20px 0;">[[Editing across $asset.size() records]]</h2>
                 </div>
-    		#elseif($embeddedurl)
+    		##elseif($embeddedurl)
     		
-    			<div id="embedded-player-table" class="table" >
-    				<embed id="embeddedvideoasset" width="320" height="180" src="$embeddedurl" frameborder="0" ></embed>
-                </div>
-                <a>$embeddedurl</a>
-    			
+    		##	<div id="embedded-player-table" class="table" >
+    		##		<embed id="embeddedvideoasset" width="320" height="180" src="$embeddedurl" frameborder="0" ></embed>
+            ##    </div>
+            ##    <a>$embeddedurl</a>
             #else
 
                 <div id="media-player-table" class="table" >
