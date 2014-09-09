@@ -6542,15 +6542,9 @@ div.tableheaderactions
 }
 
 /*---CSS CHANGES----------*/
-ul.emheaderbuttons {
-    margin: -3px 5px 5px -10px !important; 
-}
+
 #module-dropdown {
     height: 35px;
-}
-#emcontainer #emselectable table tr{
-padding: 7px 25px !important;
-height:100% !important;
 }
 #childrenlist #valuelist {
     margin:  -10px -4px 0px !important;
@@ -6558,35 +6552,15 @@ height:100% !important;
 .borderedcell, .resultstablecell {
     display: table-cell;
 }
-#emcontainer #emselectable #main-results-table tr .checkbox {
-  float: right;
-  margin-left: 30px;
-}
 .subcolumns {
     float: left !important;
-}
-.select-dropdown-open.down {
-    background: url('../images/sort-desc.png') 3px 16px no-repeat !important;
-}
-#emcontainer #emselectable table th {
-    white-space: nowrap;
-    padding: 4px 10px !important;
-    text-align: none !important;
-    font-weight: bold;
-    height: 20px;
-    line-height: 20px;
-}
+}s
 .form-control {
-    background-color: #EDEAE8 !important;
-    height: 17px !important;
-    padding: 0;
-    width:47%!important;
+    height: 15px;
+    padding: 0px;
 }
-#listdetail_division .form-control {
-    width:47%!important;
-} 
-#advsearchpanel table[width="100%"] select {
-    width: 160px !important;
+#listdetail_division {
+    width:47% !important;
 }
 #de-side-nav ul li a{
 	opacity:1 !important;
@@ -6598,7 +6572,7 @@ height:100% !important;
 .folder:after {
     height: 0 !important;
 }
-input[type="text"], input[type="password"], textarea {
+input[type="password"], textarea {
     padding: 0 !important;
 }
 #media-player-table {
@@ -6606,4 +6580,63 @@ input[type="text"], input[type="password"], textarea {
 }
 #footer {
     clear: both;
+}
+
+
+/* CSS Bootstrap Overrides*/
+/* 9/9/14 - CR */
+
+.tooltip {
+    position: relative;
+    opacity: 1;
+    z-index: auto;
+    line-height: normal;
+}
+
+.btn {
+    line-height: normal;
+    white-space: normal;
+    vertical-align: baseline;
+}
+
+#advsearchpanel table[width="100%"] select {
+    padding: 0px;
+    height: 21px;
+    box-sizing: content-box;
+}
+
+#nav, #maximizer a, a.btn, input[type="text"], input[type="password"], textarea, .emtree .arrow {
+    box-sizing: content-box;
+}
+
+.thumbnail {
+    background-color: transparent;
+    border: none;
+}
+
+.checkbox input[type="checkbox"] {
+    float: none;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+.checkbox {
+
+    min-height: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+    box-sizing: content-box;
+}
+
+#emcontainer #emselectable table th {
+    box-sizing: content-box;
+}
+
+#emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr {
+    box-sizing: content-box;
+}
+
+h4 {
+    font-weight: bold;
 }
