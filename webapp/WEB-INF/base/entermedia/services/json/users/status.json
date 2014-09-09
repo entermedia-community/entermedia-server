@@ -1,5 +1,5 @@
 #if($user)
-{"userid":"$user.id"}
+{"userid":"$user.id","defaultcolor":"$user.defaultcolor"}
 #else
 {"authenticated":"false"}
 #end
