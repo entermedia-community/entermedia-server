@@ -6640,3 +6640,7 @@ input[type="password"], textarea {
 h4 {
     font-weight: bold;
 }
+
+#nav .flat-left {
+    box-sizing: border-box;
+}
