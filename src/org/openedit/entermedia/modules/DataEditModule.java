@@ -657,17 +657,23 @@ public class DataEditModule extends BaseMediaModule
 			searcher.deleteAll(inReq.getUser());
 		}		
 	}
+	
 	public void deleteData(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
 			String[] id = inReq.getRequestParameters("id");
+			String field = inReq.getRequestParameter("field");
+			String value = inReq.getRequestParameter("value");
+			
 			int changes = 0;
+			
 			if (id != null)
 			{
 				for (int i = 0; i < id.length; i++)
 				{
+					
 					Data data = (Data) searcher.searchById(id[i]);
 					if (data != null)
 					{
@@ -689,12 +695,47 @@ public class DataEditModule extends BaseMediaModule
 					}
 				}
 			}
+			else if(field != null && value != null)
+			{
+				SearchQuery query = searcher.createSearchQuery();
+				
+				query.addExact(field, value);
+				HitTracker hits = (HitTracker)searcher.search(query);
+				
+				if( hits.size() > 0)
+				{
+					for( Object hit : hits)
+					{
+						Data curdata = (Data)hit;
+						
+						if(curdata != null)
+						{
+							searcher.delete(curdata, inReq.getUser());
+							
+							if(getWebEventListener() != null)
+							{
+								WebEvent event = new WebEvent();
+								event.setSearchType(searcher.getSearchType());
+								event.setCatalogId(searcher.getCatalogId());
+								event.setOperation(searcher.getSearchType() + "/deleted");
+								event.setProperty("dataid", curdata.getId());
+								event.setProperty("id", curdata.getId());
 
+								event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+								getWebEventListener().eventFired(event);
+							}
+						}
+					}				
+				}
 			
+			}
+
 			inReq.putPageValue("rowsedited", String.valueOf(changes));
 		}
 
 	}
+
 
 	public void searchAndDeleteData(WebPageRequest inReq) throws Exception
 	{
