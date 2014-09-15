@@ -6572,9 +6572,6 @@ div.tableheaderactions
 .folder:after {
     height: 0 !important;
 }
-input[type="password"], textarea {
-    padding: 0 !important;
-}
 #media-player-table {
     margin-bottom: 0;
 }
@@ -6633,7 +6630,7 @@ input[type="password"], textarea {
     box-sizing: content-box;
 }
 
-#emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr {
+#emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
     box-sizing: content-box;
 }
 
