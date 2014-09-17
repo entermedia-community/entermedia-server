@@ -6530,7 +6530,7 @@ div#left-col-libraries div.ui-widget-content
 }
 
 
-.detail-select{
+.detail-select {
 margin-top: 8px; max-width: 200px;
 }
 
@@ -6546,15 +6546,13 @@ div.tableheaderactions
 #module-dropdown {
     height: 35px;
 }
+
 #childrenlist #valuelist {
     margin:  -10px -4px 0px !important;
 }
 .borderedcell, .resultstablecell {
     display: table-cell;
 }
-.subcolumns {
-    float: left !important;
-}s
 .form-control {
     height: 15px;
     padding: 0px;
@@ -6565,20 +6563,12 @@ div.tableheaderactions
 #de-side-nav ul li a{
 	opacity:1 !important;
 }
-.emtable a.row {
-	height: 100% !important;
-	margin-left: 1%;
-}
 .folder:after {
     height: 0 !important;
 }
 #media-player-table {
     margin-bottom: 0;
 }
-#footer {
-    clear: both;
-}
-
 
 /* CSS Bootstrap Overrides*/
 /* 9/9/14 - CR */
@@ -6602,7 +6592,7 @@ div.tableheaderactions
     box-sizing: content-box;
 }
 
-#nav, #maximizer a, a.btn, input[type="text"], input[type="password"], textarea, .emtree .arrow {
+#nav, #maximizer a, a.btn, input[type="text"], input[type="password"], textarea, .emtree .arrow, .emtable a.row  {
     box-sizing: content-box;
 }
 
@@ -6618,7 +6608,6 @@ div.tableheaderactions
 }
 
 .checkbox {
-
     min-height: 0px;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -6626,11 +6615,7 @@ div.tableheaderactions
     box-sizing: content-box;
 }
 
-#emcontainer #emselectable table th {
-    box-sizing: content-box;
-}
-
-#emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
+#emcontainer #emselectable table th, .categories-widget, #emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
     box-sizing: content-box;
 }
 
@@ -6640,4 +6625,12 @@ h4 {
 
 #nav .flat-left {
     box-sizing: border-box;
+}
+
+#attachmenttree ul li div:hover .actions a {
+    line-height: 34px;
+}
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
 }
