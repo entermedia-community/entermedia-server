@@ -340,7 +340,7 @@ public class JsonModule extends BaseMediaModule
 			}
 			
 			
-			if(value instanceof Map){
+			if(value instanceof Map ){
 					Map values = value;
 					
 					PropertyDetail detail = searcher.getDetail(key);
@@ -352,7 +352,10 @@ public class JsonModule extends BaseMediaModule
 						remote.setId(targetid);
 					}
 					values.keySet().each{
-						remote.setProperty(it, values.get(it));
+						Object test = values.get(it);
+						if(test instanceof String){
+							remote.setProperty(it,test );
+						}
 					}
 					rsearcher.saveData(remote, inReq.getUser());
 					asset.setProperty(key, targetid);
