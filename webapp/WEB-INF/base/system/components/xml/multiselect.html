@@ -46,6 +46,7 @@
 	$query.setSortBy($detail.sort)
 #end
 $lsearcher.addShowOnly($context, $query) 
+
 #set ($types = $lsearcher.search($context, $query))
 #if( !$value )
 	#set ($value = $context.getRequestParameter('value'))
@@ -59,6 +60,7 @@ $lsearcher.addShowOnly($context, $query)
 #if( !$values )
 #set($values = $data.getValues($detail.id))
 #end
+$values
 
 #if($types)
 	#if( $foreignkeyid)
