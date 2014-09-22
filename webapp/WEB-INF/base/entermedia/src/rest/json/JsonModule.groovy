@@ -40,7 +40,10 @@ public class JsonModule extends BaseMediaModule
 	private static final Log log = LogFactory.getLog(JsonModule.class);
 
 
-	public void handleAssetRequest(WebPageRequest inReq){
+	public void handleAssetRequest(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+		
 		JSONObject object = null;
 		String method = inReq.getMethod();
 		if(method == "POST"){
@@ -87,6 +90,7 @@ public class JsonModule extends BaseMediaModule
 
 	public JSONObject handleAssetSearch(WebPageRequest inReq){
 		//Could probably handle this generically, but I think they want tags, keywords etc.
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 
@@ -158,7 +162,10 @@ public class JsonModule extends BaseMediaModule
 
 
 
-	public JSONObject handleAssetPost(WebPageRequest inReq){
+	public JSONObject handleAssetPost(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+	
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 
 		String catalogid =  findCatalogId(inReq);
@@ -269,7 +276,9 @@ public class JsonModule extends BaseMediaModule
 	}
 
 
-	public JSONObject handleAssetPut(WebPageRequest inReq){
+	public JSONObject handleAssetPut(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 		//	slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
@@ -399,7 +408,9 @@ public class JsonModule extends BaseMediaModule
 	}
 
 
-	public JSONObject handleAssetGet(WebPageRequest inReq){
+	public JSONObject handleAssetGet(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 		//	slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
@@ -449,7 +460,10 @@ public class JsonModule extends BaseMediaModule
 
 
 
-	public void handleAssetDelete(WebPageRequest inReq){
+	public void handleAssetDelete(WebPageRequest inReq)
+	{
+	    inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+	
 		JsonSlurper slurper = new JsonSlurper();
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
@@ -460,9 +474,6 @@ public class JsonModule extends BaseMediaModule
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
 		String id = getId(inReq);
-
-
-
 
 		Asset asset = archive.getAsset(id);
 
@@ -635,7 +646,10 @@ public class JsonModule extends BaseMediaModule
 		}
 		return asset;
 	}
-	public JSONObject handleSearch(WebPageRequest inReq){
+	public JSONObject handleSearch(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+	
 		//Could probably handle this generically, but I think they want tags, keywords etc.
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
@@ -708,7 +722,9 @@ public class JsonModule extends BaseMediaModule
 		return parent;
 	}
 
-	public void preprocess(WebPageRequest inReq){
+	public void preprocess(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 
 		JsonSlurper slurper = new JsonSlurper();
 		def request = null;
@@ -730,7 +746,10 @@ public class JsonModule extends BaseMediaModule
 	}
 
 
-	public String getId(WebPageRequest inReq){
+	public String getId(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+	
 		String id = inReq.getPage().getName();
 		
 //		String root  = "/entermedia/services/json/asset/";
@@ -745,7 +764,8 @@ public class JsonModule extends BaseMediaModule
 
 
 
-	public String findSearchType(WebPageRequest inReq){
+	public String findSearchType(WebPageRequest inReq)
+	{
 		String root  = "/entermedia/services/json/search/data/";
 		String url = inReq.getPath();
 		if(!url.endsWith("/")){
@@ -758,7 +778,8 @@ public class JsonModule extends BaseMediaModule
 
 
 
-	public String findCatalogId(WebPageRequest inReq){
+	public String findCatalogId(WebPageRequest inReq)
+	{
 		String catalogid = inReq.getRequestParameter("catalogid");
 		if(catalogid == null){
 			if(inReq.getRequest()){
@@ -768,9 +789,9 @@ public class JsonModule extends BaseMediaModule
 		return catalogid;
 	}
 
-
-
-	public void handleOrderRequest(WebPageRequest inReq){
+	public void handleOrderRequest(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 		println "Order request detected";
 		JSONObject object = null;
 		String method = inReq.getMethod();
@@ -811,7 +832,10 @@ public class JsonModule extends BaseMediaModule
 
 
 
-	public JSONObject handleOrderPost(WebPageRequest inReq){
+	public JSONObject handleOrderPost(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+	
 		println "starting to handle create order request";
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 

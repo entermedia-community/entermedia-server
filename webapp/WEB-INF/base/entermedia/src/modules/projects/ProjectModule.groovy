@@ -3,6 +3,7 @@ package model.projects;
 import java.util.Iterator;
 
 import org.openedit.Data;
+import com.openedit.users.*;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.modules.BaseMediaModule;
 import org.openedit.profile.UserProfile;
@@ -117,6 +118,14 @@ public class ProjectModule extends BaseMediaModule
 	public boolean checkLibraryPermission(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		
+		User user = inReq.getUser();
+			
+		if(  user != null && user.isInGroup("administrators"))
+		{
+			//dont filter since its the admin
+			return true;
+		}
 		String collectionid = inReq.getRequestParameter("id");
 		Data data = archive.getData("librarycollection", collectionid);
 		if( data != null)
