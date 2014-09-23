@@ -416,5 +416,58 @@ public class ProfileModule extends MediaArchiveModule
 		
 		
 	}
-	
+	public void addRemoveColumnModule(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+
+		UserProfile userProfile = inReq.getUserProfile();
+		String searchtype = inReq.findValue("searchtype");
+		String view = searchtype + "/" + searchtype + "resultstable";
+		
+		String add = inReq.getRequestParameter("addcolumn");
+		if( add != null)
+		{
+			List details = archive.getSearcher(searchtype).getDetailsForView(view,userProfile);
+			boolean exists = false;
+			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if( add.equals( detail.getId() ) )
+				{
+					exists = true;
+					break;
+				}
+			}
+			if( !exists)
+			{
+				//add it
+				Collection ids = new ArrayList();
+				for (Iterator iterator = details.iterator(); iterator.hasNext();)
+				{
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					ids.add(detail.getId());
+				}
+				ids.add(add);
+				userProfile.setValues("view_" + searchtype + "_" + searchtype + "resultstable", ids);
+				getUserProfileManager().saveUserProfile(userProfile);
+			}
+		}
+		
+		String remove = inReq.getRequestParameter("removecolumn");
+		if( remove != null)
+		{
+			List details = archive.getSearcher(searchtype).getDetailsForView(view,userProfile);
+			Collection ids = new ArrayList();
+			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if( !remove.equals(detail.getId() ) )
+				{
+					ids.add(detail.getId());
+				}
+			}
+			userProfile.setValues("view_" + searchtype + "_" + searchtype + "resultstable", ids);
+			getUserProfileManager().saveUserProfile(userProfile);
+		}
+	}
 }
