@@ -3,6 +3,7 @@ package model.projects;
 import java.util.Iterator;
 
 import org.openedit.Data;
+import com.openedit.users.*;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.modules.BaseMediaModule;
 import org.openedit.profile.UserProfile;
@@ -28,7 +29,15 @@ public class ProjectModule extends BaseMediaModule
 			inReq.setRequestParameter("profilepreference","last_selected_library" );
 			inReq.setRequestParameter("profilepreference.value", saved.getId() );
 		}
-			
+		//Make sure I am in the list of users for the library
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
+		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+		{
+			//reload profile?
+			UserProfile profile = inReq.getUserProfile();
+			profile.getCombinedLibraries().add(saved.getId());
+		}
 	}
 	
 	
@@ -117,6 +126,14 @@ public class ProjectModule extends BaseMediaModule
 	public boolean checkLibraryPermission(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		
+		User user = inReq.getUser();
+			
+		if(  user != null && user.isInGroup("administrators"))
+		{
+			//dont filter since its the admin
+			return true;
+		}
 		String collectionid = inReq.getRequestParameter("id");
 		Data data = archive.getData("librarycollection", collectionid);
 		if( data != null)

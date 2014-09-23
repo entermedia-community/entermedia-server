@@ -6634,3 +6634,6 @@ h4 {
     margin-left: 0px;
     margin-right: 0px;
 }
+input[type="file"] {
+    display:inline;
+}
