@@ -385,8 +385,13 @@ var AnnotationEditor = function(scope) {
 			{
 				var scope = this.scope;
 				var editor = this;
-				base_destination = "ws://localhost:8080/entermedia/services/websocket/echoProgrammatic";
-				final_destination = "" + base_destination + "?catalogid=" + scope.catalogid + "&collectionid=" + scope.collectionid;
+				
+				//scope.siteroot.replace("http")
+				var l = window.location;
+				var rootpath = ((l.protocol === "https:") ? "wss://" : "ws://") + l.hostname + (((l.port != 80) && (l.port != 443)) ? ":" + l.port : "");
+				
+				var base_destination =  rootpath + "/entermedia/services/websocket/echoProgrammatic";
+				var final_destination = base_destination + "?catalogid=" + scope.catalogid + "&collectionid=" + scope.collectionid;
 				connection = new socket(final_destination);
 				connection.onopen = function(e)
 				{
