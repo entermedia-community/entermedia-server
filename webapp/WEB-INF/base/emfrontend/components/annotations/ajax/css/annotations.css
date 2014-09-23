@@ -206,7 +206,7 @@ Below css from old highlights.css
   height: 77px;
   padding: 0;
   display: block;
-  width: 111px;
+  /* width: 111px; */
   float:  right;
   margin-right: 10px;
   margin-top: -7px;
