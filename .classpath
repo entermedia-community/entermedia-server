@@ -33,5 +33,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/lucene-join-4.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-queryparser-4.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-4.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/compile/websocket-api.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
