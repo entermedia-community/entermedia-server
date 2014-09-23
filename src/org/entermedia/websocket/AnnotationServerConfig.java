@@ -33,7 +33,7 @@ public class AnnotationServerConfig implements ServerApplicationConfig
 	@Override
 	public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> scanned)
 	{
-		Set<ServerEndpointConfig> result = new HashSet<>();
+		Set<ServerEndpointConfig> result = new HashSet<ServerEndpointConfig>();
 		if (scanned.contains(AnnotationConnection.class))
 		{
 			ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(
@@ -50,7 +50,7 @@ public class AnnotationServerConfig implements ServerApplicationConfig
 		// Deploy all WebSocket endpoints defined by annotations in the examples
 		// web application. Filter out all others to avoid issues when running
 		// tests on Gump
-		Set<Class<?>> results = new HashSet<>();
+		Set<Class<?>> results = new HashSet<Class<?>>();
 		for (Class<?> clazz : scanned)
 		{
 			if (clazz.getPackage().getName().startsWith("org.entermedia.websocket."))

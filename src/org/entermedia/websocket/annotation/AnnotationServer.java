@@ -43,7 +43,7 @@ public class AnnotationServer  {
 	private static final Log log = LogFactory.getLog(AnnotationServer.class);
 
 	 private static final Set<AnnotationConnection> connections =
-	            new CopyOnWriteArraySet<>();
+	            new CopyOnWriteArraySet<AnnotationConnection>();
 	 
 	 private static final String CACHENAME = "AnnotationServer";
 	 
