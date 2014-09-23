@@ -121,14 +121,14 @@ var AnnotationEditor = function(scope) {
 			
 			//update UI?
 			
+			//jAngular.render("#annotationlist", scope); //changed
 			this.notifyAnnotationModified(annotation);
-			jAngular.render("#annotationtab");
 		
 		}
 		,
 		cancelComment: function(annotationid)
 		{
-			jAngular.render("#annotationtab");
+			jAngular.render("#annotationlist", scope); //changed
 		}
 		,
 		setCurrentAnnotatedAsset: function(annotatedAsset)
@@ -205,7 +205,7 @@ var AnnotationEditor = function(scope) {
 			});
 			*/
 			editor.fabricModel.canvas.renderAll();
-			jAngular.render("#annotationtab");
+			jAngular.render("#annotationtab", scope); //changed
 			// jAngular.render("#annotationlist"); // shouldn't have to do this
 			// this method also needs to clear the canvas and comments and update from the persisted data
 			// DONE: Clear canvas state, refresh with AnnotatedAsset data
@@ -266,7 +266,7 @@ var AnnotationEditor = function(scope) {
 			
 			this.scope.add("annotations",this.currentAnnotatedAsset.annotations);
 			
-			jAngular.render("#annotationlist");
+			jAngular.render("#annotationlist", scope); //changed
 			return currentAnnotation;
 		}
 		,
@@ -479,15 +479,15 @@ var AnnotationEditor = function(scope) {
 							
 							editor.currentAnnotatedAsset.currentAnnotation = newannotation;
 							editor.addAnnotationToCanvas(newannotation);
-							
+							jAngular.render("#annotationlist", scope); //changed	
 							scope.annotations = newannotation.annotations;
-							jAngular.render("#annotationlist");
 						}
 						else
 						{
-							// this should never happen
 							console.log("Already had annotation" + newannotation.id);
 						}
+
+	
 
 					} 
 					else if (command.command == "annotation.modified")
@@ -511,6 +511,8 @@ var AnnotationEditor = function(scope) {
 						{
 							editor.removeAnnotationFromCanvas(modifiedAnnotation.assetid,modifiedAnnotation.id);
 							editor.addAnnotationToCanvas(modifiedAnnotation);
+							scope.annotations = editor.currentAnnotatedAsset.annotations;
+							jAngular.render("#annotationlist", scope); //changed
 						}
 													
 					}
@@ -539,7 +541,7 @@ var AnnotationEditor = function(scope) {
 //							});
 							
 							scope.annotations = editor.currentAnnotatedAsset.annotations;
-							jAngular.render("#annotationlist");
+							jAngular.render("#annotationlist", scope); //changed
 						}
 					}
 				};
