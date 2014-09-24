@@ -9,6 +9,5 @@
   <property id="library" index="true" stored="true" editable="true" sortable="true" type="list" searchtype="projecttask" internalfield="false" listid="library" datatype="list">Project</property>
   <property id="notes" index="true" stored="true" editable="true" >Notes</property>
   <property id="addnotifypolicy" index="true" type="list" listid="librarycollection/addnotifypolicy" stored="true" editable="true" note="Who do we notify when assets are added" >Send Notifications</property>
-  <property id="ordering" index="true" stored="true" editable="true" >Page Order</property>
   
 </properties>

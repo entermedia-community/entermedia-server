@@ -5,4 +5,6 @@
   <property id="asset" index="true" stored="true" editable="true" type="list" viewtype="asset" >Asset</property>
   <property id="collectioncategory" index="true" stored="true" editable="true" type="list" viewtype="tageditor" >Category</property>
   <property id="collectionstatus" index="true" stored="true" editable="true" type="list" viewtype="tageditor" >Status</property>
+  <property id="ordering" index="true" stored="true" editable="true" >Page</property>
+  
 </properties>
