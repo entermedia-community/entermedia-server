@@ -61,7 +61,7 @@ files.deleteMatch( web + "/lib/commons-codec*.jar");
 files.deleteMatch( web + "/lib/guava-*.jar");
 files.deleteMatch( web + "/lib/velocity-tools*.jar");
 files.deleteMatch( web + "/lib/http*.jar");
-
+files.deleteMatch( web + "/lib/servlet-gzip.jar");
 files.deleteMatch( web + "/lib/json-simple*.jar");
 
 

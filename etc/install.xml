@@ -158,6 +158,10 @@
 	    <delete>
 	      <fileset dir="./lib" includes="http**.jar"/>
 	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="servlet-gzip.jar"/>
+	    </delete>
+
 		
 	  	<delete dir="../base/openedit"/>
 	  	<delete dir="../WEB-INF/base/openedit"/>

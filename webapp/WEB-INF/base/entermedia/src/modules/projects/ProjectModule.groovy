@@ -29,7 +29,15 @@ public class ProjectModule extends BaseMediaModule
 			inReq.setRequestParameter("profilepreference","last_selected_library" );
 			inReq.setRequestParameter("profilepreference.value", saved.getId() );
 		}
-			
+		//Make sure I am in the list of users for the library
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
+		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+		{
+			//reload profile?
+			UserProfile profile = inReq.getUserProfile();
+			profile.getCombinedLibraries().add(saved.getId());
+		}
 	}
 	
 	
