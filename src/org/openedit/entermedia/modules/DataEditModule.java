@@ -510,6 +510,14 @@ public class DataEditModule extends BaseMediaModule
 				ArrayList<String> fieldswithvalues = new ArrayList<String>();
 				for(int i=0;i<fields.length;i++)
 				{
+					//see if we have boolean fields
+					PropertyDetail detail = searcher.getDetail(fields[i]);
+					if( detail != null && detail.isBoolean())
+					{
+						fieldswithvalues.add(fields[i]);
+						continue;
+					}
+					
 					val = inReq.getRequestParameter(fields[i]+".value");
 					if(val!= null && val.length() > 0)
 					{
