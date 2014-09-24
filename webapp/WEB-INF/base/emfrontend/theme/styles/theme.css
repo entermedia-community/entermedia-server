@@ -6591,6 +6591,12 @@ div.tableheaderactions
     height: 21px;
     box-sizing: content-box;
 }
+.oeinputform  select {
+    padding: 0px;
+    height: 21px;
+    box-sizing: content-box;
+}
+
 
 #nav, #maximizer a, a.btn, input[type="text"], input[type="password"], textarea, .emtree .arrow, .emtable a.row  {
     box-sizing: content-box;
