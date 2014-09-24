@@ -689,10 +689,23 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			// The ID column is special since it is used to load records from
 			// the index.
 			// When we do a Lucene Update we would have to lowerCase the id
-
-			analyzermap.put("id", new NullAnalyzer());
-			// analyzermap.put("id", new RecordLookUpAnalyzer(false));
-			analyzermap.put("foldersourcepath", new NullAnalyzer());
+			PropertyDetails details = getPropertyDetails();
+			NullAnalyzer nua = new NullAnalyzer();
+			//analyzermap.put("id", );
+			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				String field = detail.getId();
+				if( field.contains("sourcepath") || field.equals("id") )
+				{
+					analyzermap.put(field, nua);
+				}
+				else if( detail.isList() && !detail.isMultiValue()) //multi needs to be tokenized
+				{
+					analyzermap.put(field, nua);
+				}
+			}
+			
 			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper(new RecordLookUpAnalyzer(), analyzermap);
 
 			fieldAnalyzer = composite;

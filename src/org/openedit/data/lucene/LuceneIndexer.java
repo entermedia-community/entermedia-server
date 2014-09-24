@@ -301,13 +301,9 @@ public class LuceneIndexer
 				return;
 			}
 		}
-		else if( inId.equals("id") || inDetail.isList() )
+		else if( ( inId.equals("id") || inDetail.isList() ||  inId.contains("sourcepath") ) &&  !inDetail.isMultiValue() )
 		{
 			field = new Field(inId, inValue, ID_FIELD_TYPE );
-		}
-		else if( inId.contains("sourcepath") )
-		{
-			field = new Field(inId, inValue, INTERNAL_FIELD_TYPE );
 		}
 		if( field == null)
 		{
