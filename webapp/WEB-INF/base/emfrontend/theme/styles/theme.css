@@ -6536,8 +6536,13 @@ margin-top: 8px; max-width: 200px;
 
 div.tableheaderactions 
 {
+	padding: 10px;
+	
+}
+
+div.tableheaderactions a 
+{
 	padding: 6px;
-	background-color: #eee;  
 	
 }
 

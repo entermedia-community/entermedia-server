@@ -269,6 +269,10 @@ public class AttachmentManager
 	}
 	public String parseFileSubPath(String inAssetSourcePath, String inParentSourcePath, String inFilename)
 	{
+		if( inParentSourcePath == null)
+		{
+			return null;
+		}
 		String folder = inParentSourcePath.substring(inAssetSourcePath.length());
 		if( folder.length() > 0)
 		{

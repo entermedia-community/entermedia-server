@@ -305,10 +305,13 @@ public class LuceneIndexer
 		{
 			field = new Field(inId, inValue, ID_FIELD_TYPE );
 		}
-
+		else if( inId.contains("sourcepath") )
+		{
+			field = new Field(inId, inValue, INTERNAL_FIELD_TYPE );
+		}
 		if( field == null)
 		{
-			field = new Field(inId, inValue, INPUT_FIELD_TYPE );
+			field = new Field(inId, inValue, INPUT_FIELD_TYPE ); //tokenized for searchability
 		}
 		doc.add(field);
 
@@ -655,7 +658,7 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(false);
 		type.setTokenized(true);
-		type.setOmitNorms(true); 
+		type.setOmitNorms(true); //This saves memory, at the expense of scoring (results not ranked)
 		return type;
 	}
 
