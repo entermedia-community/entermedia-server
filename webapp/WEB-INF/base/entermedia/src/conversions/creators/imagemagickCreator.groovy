@@ -153,16 +153,23 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 		}
+		
+		boolean hascustomthumb = false;
+		Page customthumb = null;
+		
+		if("png".equals(ext)){
+			customthumb = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+			
+		}	else
+		{
+			customthumb = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+		}
 		String filetype = inArchive.getMediaRenderType(inAsset.getFileFormat());
-			if( input == null && !"document".equals(filetype))
-			{
-				if("png".equals(ext)){
-					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
-				}	else
-				{
-					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
-				}			
-				
+		if(customthumb.exists()){
+			hascustomthumb = true;
+			if(input == null && !"document".equals(filetype)){
+				input = customthumb;
+				log.info("Length was ${input.length()}");
 				if( input.length() < 2 )
 				{
 					input = null;
@@ -172,8 +179,10 @@ public class imagemagickCreator extends BaseImageCreator
 					autocreated = true;
 				}
 			}
+		}
+				
 		
-		
+			
 		//get the original inut
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
 		if( offset != null && input == null)
@@ -194,10 +203,10 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 		}
 		//Look over to see if there is a creator that can do a better job of reading in this type
+		log.info("here we are: ${input.getName()}" );
 		
-
 		MediaCreator preprocessor = getPreProcessor(inArchive, ext);
-		if( preprocessor != null && ! input.getName().equals("customthumb.jpg"))
+		if( preprocessor != null && !hascustomthumb)
 		{
 			//This will output a native format. First one wins. it is not a loop.
 			String tmppath = preprocessor.populateOutputPath(inArchive, inStructions);
