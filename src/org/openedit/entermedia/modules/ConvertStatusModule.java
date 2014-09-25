@@ -191,7 +191,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + properties.getFirstItem().getName(); //TODO: Should run a conversion here first to ensure this is a large JPG
 		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		String generatedpng = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
-		
+
+		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
+
 		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
         MediaCreator c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
 		ConvertInstructions instructions = new ConvertInstructions();
@@ -203,7 +205,9 @@ public class ConvertStatusModule extends BaseMediaModule
 	 	 c.createOutput(archive, instructions);
 		instructions.setOutputPath(generatedpng);
 		 c.createOutput(archive, instructions);
-	 	 
+		 instructions.setMaxScaledSize(1024, 768);
+		 instructions.setOutputPath(s1024);
+		 c.createOutput(archive, instructions);
 	 	 
 	 	 
 	 	 
