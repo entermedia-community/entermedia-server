@@ -341,14 +341,11 @@ colornumber
 	border-top: 2px solid #eee;
 	margin-top: -2px;
 }
-#settings.tab-pane
-{
-	padding: 20px;	
-	
-}
-#settings.tab-pane div#default-fields
+div.tab-pane div#default-fields
 {
 	background-color: #eee;	
+	padding: 20px;	
+	margin: 15px 20px 0px 20px;
 	
 }
 #settings.tab-pane div#default-fields .emdatafield

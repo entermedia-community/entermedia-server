@@ -716,36 +716,40 @@ onloadselectors = function()
 		jQuery('#emselectable table td' ).livequery(	
 			function()
 			{
-				if(jQuery(this).attr("noclick") =="true") {
+				var clicked = jQuery(this);
+				
+				if(clicked.attr("noclick") =="true") {
 					return true;
 				}
 				
-				jQuery(this).click(
+				var emselectable = clicked.closest("#emselectable");
+				var row = $(clicked.closest("tr"));
+				
+				clicked.click(
 					function(event) 
 					{
-						if ( jQuery(this).closest("tr").hasClass("thickbox") ) {
-							var row = jQuery(this).closest("tr");
+						if ( row.hasClass("thickbox") ) 
+						{
 							var href = row.data("href");
 							openFancybox(href);
 						} else {
-							jQuery('#emselectable table tr' ).each(function(index) 
+							emselectable.find('table tr' ).each(function(index) 
 							{ 
-								jQuery(this).removeClass("emhighlight");
+								clicked.removeClass("emhighlight");
 							});
-							var row = jQuery(this).closest("tr");
-							jQuery(row).addClass('emhighlight');
-							jQuery(row).removeClass("emborderhover");
+							row.addClass('emhighlight');
+							row.removeClass("emborderhover");
 							
-							var id = jQuery(row).attr("rowid");
-							var url = jQuery(this).closest("table").data("clickpath");
-							var form = jQuery('#emselectable').find("form");
+							var id = row.attr("rowid");
+							var url = row.closest("table").data("clickpath");
+							var form = emselectable.find("form");
 							if( form.length > 0 )
 							{
-								jQuery('#emselectable #emselectedrow').val(id);
-								jQuery("#emselectable .emneedselection").each( function()
-									{
-										jQuery(this).removeAttr('disabled');
-									});	
+								emselectable.find( '#emselectedrow' ).val(id);
+								emselectable.find( '.emneedselection').each( function()
+								{
+									clicked.removeAttr('disabled');
+								});	
 								form.submit();
 							}
 							else if( url != undefined )

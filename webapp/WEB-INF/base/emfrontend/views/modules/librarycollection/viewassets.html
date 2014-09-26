@@ -6,8 +6,7 @@
 		<div class="tableheaderactions">
 #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${data.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
 		<a href="$editlink" class="librarylabel"  data-targetdiv="left-col-libraries" title="$!{data.notes}"><span> $data.getName() ($hits.size())</span></a>
-	</div>
-	
+		</div>
 		</div>
 		<div class="col-md-8">
 		<ul class="nav nav-tabs pull-right" role="tablist">
