@@ -203,7 +203,6 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 		}
 		//Look over to see if there is a creator that can do a better job of reading in this type
-		log.info("here we are: ${input.getName()}" );
 		
 		MediaCreator preprocessor = getPreProcessor(inArchive, ext);
 		if( preprocessor != null && !hascustomthumb)
