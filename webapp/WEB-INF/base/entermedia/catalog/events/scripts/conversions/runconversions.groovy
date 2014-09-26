@@ -224,7 +224,7 @@ class ConvertRunner implements Runnable
 	{
 		Map props = new HashMap();
 		
-		String guid = inPreset.guid;
+		String guid = inPreset.get("guid");
 		if( guid != null)
 		{
 			Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "presetdata" );

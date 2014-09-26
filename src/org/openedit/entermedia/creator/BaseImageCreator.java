@@ -20,16 +20,6 @@ public abstract class BaseImageCreator extends BaseCreator
 //		}		
 		
 		inStructions.setOutputExtension(inOutputType);
-		String pageString = (String)inProperties.get("pagenum");
-		// changed to take a request parameter.
-		if( pageString != null && pageString.length() == 0 )
-		{
-			pageString = null;
-		}
-		if (pageString != null)
-		{
-			inStructions.setPageNumber(Integer.parseInt(pageString));
-		}
 		//Maybe this is too much stuff? 
 		//Yes it is.
 		for (Iterator iterator = inProperties.keySet().iterator(); iterator.hasNext();)
@@ -51,9 +41,18 @@ public abstract class BaseImageCreator extends BaseCreator
 				inStructions.addProperty(key,(String)value);
 			}
 		}
+		populateParameters(inArchive, inStructions);		
 
-
-		
+		String pageString = (String)inProperties.get("pagenum");
+		// changed to take a request parameter.
+		if( pageString != null && pageString.length() == 0 )
+		{
+			pageString = null;
+		}
+		if (pageString != null)
+		{
+			inStructions.setPageNumber(Integer.parseInt(pageString));
+		}
 		
 		// Create temporary location for previews
 		String w = inStructions.getProperty("prefwidth");
@@ -103,7 +102,6 @@ public abstract class BaseImageCreator extends BaseCreator
 			//populateOutputPath(inArchive,inStructions);
 //		}
 		
-		populateParameters(inArchive, inStructions);		
 
 		return inStructions;
 	}

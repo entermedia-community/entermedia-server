@@ -376,18 +376,18 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
 			//resize then cut off edges so end up with a square image
-			if(!croplast){
-			com.add("-resize");
-			StringBuffer resizestring = new StringBuffer();
-			resizestring.append(inStructions.getMaxScaledSize().width);
-			resizestring.append("x");
-			resizestring.append(inStructions.getMaxScaledSize().height);
-			resizestring.append("^");
-			com.add(resizestring.toString());
+			if(!croplast)
+			{
+				com.add("-resize");
+				StringBuffer resizestring = new StringBuffer();
+				resizestring.append(inStructions.getMaxScaledSize().width);
+				resizestring.append("x");
+				resizestring.append(inStructions.getMaxScaledSize().height);
+				resizestring.append("^");
+				com.add(resizestring.toString());
 			}
 			   		
 			//now let's crop
-			com.add("+repage");
 			String gravity = inStructions.get("gravity");
 			if(!"default".equals(gravity))
 			{
@@ -430,36 +430,39 @@ public class imagemagickCreator extends BaseImageCreator
 				cropwidth = inStructions.getMaxScaledSize().width;
 			}
 			cropString.append(cropwidth);
-			
-			
-			
-			
-			
 			cropString.append("x");
 			String cropheight = inStructions.get("cropheight");
 			
 			if(!cropheight){
 				cropheight = inStructions.getMaxScaledSize().height;
 			}
-			
 			cropString.append(cropheight);
 			
 			String x1 = inStructions.get("x1");
 			String y1 = inStructions.get("y1");
 			
-			if(x1 != null)
+			cropString.append("+");
+			if(x1 == null)
 			{
-				cropString.append("+");
+				cropString.append("0");
+			}
+			else
+			{
 				cropString.append(x1);
 			}
-			if(y1 != null)
+			cropString.append("+");
+			if(y1 == null)
 			{
-				cropString.append("+");
+				cropString.append("0");
+			}
+			else
+			{
 				cropString.append(y1);
 			}
 			com.add(cropString.toString());
-			
-			if(croplast){
+			com.add("+repage");
+			if(croplast)
+			{
 				com.add("-resize");
 				StringBuffer resizestring = new StringBuffer();
 				resizestring.append(inStructions.getMaxScaledSize().width);
