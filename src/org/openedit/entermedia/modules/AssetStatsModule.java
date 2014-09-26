@@ -14,7 +14,7 @@ public class AssetStatsModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = (Asset)inReq.getPageValue("asset");
 		if(asset != null){
-			archive.getAssetStatsManager().logAssetPreview(asset, inReq.getUser());
+			archive.getAssetStatsManager().logAssetPreview(archive,asset, inReq.getUser());
 		}
 	}
 //	public void updateAssetStats(WebPageRequest inReq) throws Exception
