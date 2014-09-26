@@ -6648,3 +6648,6 @@ h4 {
 input[type="file"] {
     display:inline;
 }
+.emtree ul li div .actions a.edit {
+    line-height: 22px;
+}
