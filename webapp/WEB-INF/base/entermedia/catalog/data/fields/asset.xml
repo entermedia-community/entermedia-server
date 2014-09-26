@@ -35,7 +35,7 @@
 	<property id="cameramodel" externalid="Camera Model,Camera Model Name" index="true" stored="true" datatype="text" sortable="true" >Camera Model</property>
 	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text"  >ISO</property>
 	<property id="colorspace"  externalid="Color Space,Color Mode"  index="true" stored="true" viewtype="list" datatype="list">Color Space</property>
-	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list">Color Type</property>
+	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list" externalid="Color Space Data">Color Type</property>
 	<property id="shutterspeed" externalid="Shutter Speed" index="true" stored="true" datatype="text">Shutter Speed</property>
 	<property id="aperture" externalid="Aperture" index="true" stored="true" >Aperture</property>
 
@@ -46,8 +46,9 @@
 	<property id="bitspersample" externalid="Bits Per Sample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="videocodec"  index="true" stored="true" >Video Codec</property>
 	<property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true" >Audio Codec</property>
+	<property id="embeddedurl" externalid="Embedded Video URL" index="true" stored="true" datatype="text" editable="true">Embedded Video URL</property>
 
-	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="Orientation">Image Rotation</property>
+	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="exif:Orientation">Image Rotation</property>
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
 	<property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type">File Format</property>
 	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size">File Size</property>

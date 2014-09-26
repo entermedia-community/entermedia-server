@@ -57,10 +57,10 @@ public class ConversionUtil {
 	}
 	
 	public boolean canCrop(String inCatalogId, String inPresetId, String inAssetId) throws Exception{
-		log.info("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
+		//log.info("canCrop "+inCatalogId+", "+inPresetId+", "+inAssetId);
 		boolean canCrop = false;
 		Dimension cropDimension = getConvertPresetDimension(inCatalogId,inPresetId);
-		log.debug("Crop Dimension: "+cropDimension);
+		//log.debug("Crop Dimension: "+cropDimension);
 		if (cropDimension!=null && cropDimension.getHeight()!=0 && cropDimension.getWidth()!=0){
 //			Dimension inputDimension = getConvertPresetDimension(inCatalogId,"cropinput");//this needs to be in convertpreset table!
 //			log.debug("Preset Input Dimension: "+inputDimension);
@@ -120,7 +120,7 @@ public class ConversionUtil {
 			double cropheight = cropDimension.getHeight();
 			canCrop = (cropwidth <= assetwidth && cropheight <= assetheight);
 		}
-		log.info("Can image be cropped? "+canCrop);
+		//log.info("Can image be cropped? "+canCrop);
 		return canCrop;
 	}
 	

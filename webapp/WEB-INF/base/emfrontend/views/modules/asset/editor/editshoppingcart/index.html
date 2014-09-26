@@ -1,0 +1,71 @@
+#set( $searcher = $mediaarchive.getAssetSearcher())
+#set( $details = $searcher.getDetailsForView("asset/shoppingcart",$context.getUserProfile()) )
+#set( $detaileditsuffix = "")
+
+<div style="padding: 20px;">
+	
+	<h3 style="color: #3490B2;">Test Shopping Cart Button</h3>
+	
+	<div class="shoppingcartlink">
+		$pages.include("/$applicationid/views/modules/asset/editor/editshoppingcart/shoppingcartbutton.html",$context)
+	</div>
+	
+	<hr/>
+	
+	<h3 style="color: #3490B2;">Edit Shopping Cart Variables</h3>
+		
+	<div id="editresponse" style="display:block;"></div>
+	<form class="ajaxform" targetdiv="editresponse" method="post" action="$home$apphome/views/modules/asset/editor/editshoppingcart/save.html">
+		<input type="hidden" name="catalogid" value="$searcher.catalogId"/>
+		<input type="hidden" name="save" value="true"/>	
+		<input type="hidden" name="id" value="$!asset.id"/>
+		<input type="hidden" name="assetid" value="$!asset.id" />
+		<input type="hidden" name="oemaxlevel" value="1"/>
+		<input type="hidden" name="searchtype" value="asset" />
+		$context.putPageValue("searcher", $searcher)  
+		$context.putPageValue("view", "asset/shoppingcart") 
+		$context.putPageValue("data", $asset)
+		$pages.include("$apphome/components/xml/detaileditor.html$detaileditsuffix", $context)
+		<p>
+			<input class="btn small" type="submit" value="Save">
+		</p>
+	</form>
+</div>
+
+<script>
+$("#editresponse").bind("DOMSubtreeModified",editresponseChange);
+
+function editresponseChange(){
+	var html = $("#editresponse").html();
+	refreshbutton();
+	/*if (html != "&nbsp;" && html.contains("fader") == false){
+		refreshbutton();
+		$( "#editresponse").unbind( "DOMSubtreeModified" );
+		var wrap = "<span style='color:green'>"+ html + "</span>";
+		$("#editresponse").html(wrap);
+		$("#editresponse").fadeOut(2200,function(){
+			$("#editresponse").html("&nbsp;");
+			$("#editresponse").show();
+			$("#editresponse").bind("DOMSubtreeModified",editresponseChange);
+		});
+	}*/
+}
+#set($D = "$")
+function refreshbutton(){
+	var action = "/$applicationid/views/modules/asset/editor/editshoppingcart/shoppingcartbutton.html";
+	${D}.ajax({
+		url : action,
+		type: "GET",
+		data: "assetid=${asset.id}&oemaxlevel=1",
+		success:function(data, textStatus, jqXHR){
+			//console.log(data);
+			$(".shoppingcartlink").html(data);
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+			//console.log(textStatus);
+			$(".shoppingcartlink").html("Refresh your browser...");
+		}
+	});
+}
+</script>
+

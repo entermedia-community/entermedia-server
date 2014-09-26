@@ -162,6 +162,13 @@ public abstract class BaseCreator implements MediaCreator
 			if( params.size() > 0 )
 			{
 				inStructions.setParameters(params);
+				
+				for (Iterator iterator = params.iterator(); iterator.hasNext();)
+				{
+					Data row = (Data) iterator.next();
+					inStructions.setProperty(row.getName(), row.get("value"));
+				}
+				
 			}
 		}
 	}

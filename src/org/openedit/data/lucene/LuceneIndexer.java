@@ -15,14 +15,13 @@ import org.apache.lucene.document.DateTools.Resolution;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.LongField;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.facet.index.FacetFields;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.FieldInfo;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
@@ -36,10 +35,11 @@ import com.openedit.hittracker.HitTracker;
 
 public class LuceneIndexer
 {
-	protected List fieldStandardProperties = null;  
+	protected List fieldStandardProperties = null;
 	private static final Log log = LogFactory.getLog(LuceneIndexer.class);
 	protected NumberUtils fieldNumberUtils;
 	protected SearcherManager fieldSearcherManager;
+
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -111,14 +111,7 @@ public class LuceneIndexer
 		if (tosave != null)
 		{
 			String val = DateTools.dateToString(tosave, Resolution.SECOND);
-			if (inIsStored)
-			{
-				doc.add(new Field(inDetail.getId(), val, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-			}
-			else
-			{
-				doc.add(new Field(inDetail.getId(), val, Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
-			}
+			doc.add(new Field(inDetail.getId(), val, ID_FIELD_TYPE));
 		}
 	}
 
@@ -143,7 +136,7 @@ public class LuceneIndexer
 				append = ((Document) next).get(inField);
 			}
 			buffer.append(append);
-			if( iter.hasNext() )
+			if (iter.hasNext())
 			{
 				buffer.append(" | ");
 			}
@@ -152,14 +145,7 @@ public class LuceneIndexer
 		// text
 		if (buffer.length() > 0)
 		{
-			if (inIsStored)
-			{
-				doc.add(new Field(inType, buffer.toString(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-			}
-			else
-			{
-				doc.add(new Field(inType, buffer.toString(), Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
-			}
+			doc.add(new Field(inType, buffer.toString(), INPUT_FIELD_TYPE ));
 		}
 		/*
 		 * Not used any more if ( item.getDepartment() != null) { doc.add( new
@@ -169,18 +155,18 @@ public class LuceneIndexer
 
 	}
 
-	public void populateJoinDataCount(String inType, Document doc, Collection inDataElements)
-	{
-		int count = 0;
-		if (inDataElements != null)
-		{
-			count = inDataElements.size();
-		}
-		//must use int or long since double only works on double values
-		String sortable = getNumberUtils().long2sortableStr(count);
-		doc.add(new Field(inType + "_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-		doc.add(new Field(inType, String.valueOf(count), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-	}
+//	public void populateJoinDataCount(String inType, Document doc, Collection inDataElements)
+//	{
+//		int count = 0;
+//		if (inDataElements != null)
+//		{
+//			count = inDataElements.size();
+//		}
+//		//must use int or long since double only works on double values
+//		String sortable = getNumberUtils().long2sortableStr(count);
+//		doc.add(new Field(inType + "_sortable", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+//		doc.add(new Field(inType, String.valueOf(count), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+//	}
 
 	/**
 	 * This is the main API
@@ -195,39 +181,43 @@ public class LuceneIndexer
 	{
 		StringBuffer keywords = new StringBuffer();
 		readStandardProperties(inDetails, inData, keywords, doc);
-		
+
 		List details = inDetails.getDetails();
 		for (Iterator iterator = details.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			readProperty(inData, doc, keywords, detail);
 		}
-		
+
 		readDescription(doc, keywords);
-		
-		
+
 	}
 
 	protected void readDescription(Document doc, StringBuffer keywords)
 	{
-		String trimkeywords =keywords.toString().trim(); 
-		if( trimkeywords.length() > 0 )
+		String trimkeywords = keywords.toString().trim();
+		if (trimkeywords.length() > 0)
 		{
-			doc.add(new TextField("description", trimkeywords, Field.Store.NO) );
+			//TextField field = new TextField("description", trimkeywords, Field.Store.NO);
+			Field field = new Field("description", trimkeywords, ALL_SEARCH_TYPE );
+			doc.add(field);
+
 		}
 	}
+
 	protected List getStandardProperties()
 	{
 		if (fieldStandardProperties == null)
 		{
-			fieldStandardProperties = Arrays.asList("name","id","deliverablestatus","description","sourcepath");
+			fieldStandardProperties = Arrays.asList("name", "id", "deliverablestatus", "description", "sourcepath");
 		}
 		return fieldStandardProperties;
 	}
+
 	protected void readStandardProperties(PropertyDetails inDetails, Data inData, StringBuffer keywords, Document doc)
 	{
 		PropertyDetail detail = inDetails.getDetail("id");
-		docAdd(detail, doc, "id", inData.getId(),Field.Store.YES,true);
+		docAdd(detail, doc, "id", inData.getId());
 		String name = inData.getName();
 		if (name == null || inData.getName().length() == 0)
 		{
@@ -236,119 +226,224 @@ public class LuceneIndexer
 		if (name != null && name.length() > 0)
 		{
 			detail = inDetails.getDetail("name");
-			docAdd(detail, doc, "name", name, Field.Store.YES,true);
+			docAdd(detail, doc, "name", name);
 		}
 		keywords.append(inData.getId());
 		keywords.append(" ");
 		keywords.append(inData.getName());
-		
+
 		if (inData.getSourcePath() != null)
 		{
 			detail = inDetails.getDetail("sourcepath");
-			docAdd(detail, doc,"sourcepath", inData.getSourcePath(), Field.Store.YES,true);
+			docAdd(detail, doc, "sourcepath", inData.getSourcePath());
 		}
 	}
-	public void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore , boolean isText)
+
+//	public void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Store inStore, boolean isText)
+//	{
+//		docAdd(inDetail, doc, inId, inValue, null, inStore, isText);
+//	}
+
+	/**
+	 * This method will replace the old way of indexing fields
+	 * 
+	 * @param inDetail
+	 * @param doc
+	 * @param inId
+	 * @param inValue
+	 */
+	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue)
 	{
-		docAdd(inDetail,doc,inId,inValue,null,inStore,isText);
-	}
-	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Data text, Store inStore , boolean isText)
-	{
-		boolean treatasnumber = false;
+		if( inDetail == null)
+		{
+			return;
+		}
+		if (inDetail.isDataType("boolean"))
+		{
+			inValue = String.valueOf( Boolean.parseBoolean(inValue) );
+		}
+		if( inValue == null)
+		{
+			return;
+		}
+					
+		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
 		
-		if(inDetail != null  ){
-			if(inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long")){
-				treatasnumber =  true;
+		boolean treatasnumber = isNumber(inDetail);
+		if (inDetail.isDataType("date"))
+		{
+			Date target = DateStorageUtil.getStorageUtil().parseFromStorage(inValue);
+			if (target != null)
+			{
+				inValue = DateTools.dateToString(target, Resolution.SECOND);
 			}
 		}
-		//TODO: Remove this method and use the new data type specific fields
-		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
-		if( isText )
+		else if(treatasnumber)
 		{
-			//field = new StringField(inId,inValue,inStore);  //This causes case sensitivity to be lost
-			field = new Field(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );
-		} else if(treatasnumber){
-			try{
-				if(inDetail.isDataType("double")){
+			try
+			{
+				if (inDetail.isDataType("double"))
+				{
 					Double l = Double.parseDouble(inValue);
-					field = new DoubleField(inId, l, Field.Store.YES );
-				} else{
-					String targetval = inValue.replace("$", "");
-					 targetval = targetval.replace(",", "");
-					Long l = Long.parseLong(targetval);
-					FieldType type = new FieldType();
-					type.setIndexed(true);
-					type.setStored(true);
-					type.setNumericType(FieldType.NumericType.LONG);
-					field = new LongField(inId, l,Field.Store.YES);
+					field = new DoubleField(inId, l, Field.Store.YES);
 				}
-				
-			
-			} catch(Exception e){
+				else
+				{
+					String targetval = inValue.replace("$", "");
+					targetval = targetval.replace(",", "");
+					Long l = Long.parseLong(targetval);
+					field = new LongField(inId, l, Field.Store.YES);
+				}
+			}
+			catch (Exception e)
+			{
 				log.info("invalid number value skipped: " + inId);
 				return;
 			}
-					//new LongField(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );
+		}
+		else if( ( inId.equals("id") || inDetail.isList() ||  inId.contains("sourcepath") ) &&  !inDetail.isMultiValue() )
+		{
+			field = new Field(inId, inValue, ID_FIELD_TYPE );
+		}
+		if( field == null)
+		{
+			field = new Field(inId, inValue, INPUT_FIELD_TYPE ); //tokenized for searchability
+		}
+		doc.add(field);
+
+		if (inDetail.isList() && inDetail.isSortable() )
+		{
+			String id = inDetail.getSortProperty();
+			if (inId.equals(id) && !treatasnumber)
+			{
+				return;
+			}
+			else if ( inDetail.getListCatalogId() != null)
+			{
+				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
+				if (inValue != null)
+				{
+					inValue = inValue.toString().toLowerCase();
+				}
+				doc.add(new Field(id, inValue, SORT_FIELD_TYPE ));
+			}
+		}
+		
+	}
+/*
+	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue, Data text, Store inStore, boolean isText)
+	{
+		boolean treatasnumber = isNumber(inDetail);
+		//TODO: Remove this method and use the new data type specific fields
+		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
+		if (isText)
+		{
+			//field = new StringField(inId,inValue,inStore);  //This causes case sensitivity to be lost
+			field = new Field(inId, inValue, inStore, Field.Index.ANALYZED_NO_NORMS);
+		}
+		else if (treatasnumber)
+		{
+			try
+			{
+				if (inDetail.isDataType("double"))
+				{
+					Double l = Double.parseDouble(inValue);
+					field = new DoubleField(inId, l, Field.Store.YES);
+				}
+				else
+				{
+					String targetval = inValue.replace("$", "");
+					targetval = targetval.replace(",", "");
+					Long l = Long.parseLong(targetval);
+					//					FieldType type = new FieldType();
+					//					type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
+					//					//type.setIndexOptions(value);
+					//					type.setIndexed(true);
+					//					type.setStored(true);
+					//					type.setNumericType(FieldType.NumericType.LONG);
+					field = new LongField(inId, l, Field.Store.YES);
+				}
+
+			}
+			catch (Exception e)
+			{
+				log.info("invalid number value skipped: " + inId);
+				return;
+			}
+			//new LongField(inId, inValue ,inStore, Field.Index.ANALYZED_NO_NORMS );
 		}
 		else
 		{
 			//TODO: Replace with specific field types earlier on in the stack trace
-			field = new Field(inId, inValue ,inStore, Field.Index.NOT_ANALYZED_NO_NORMS );
+			field = new Field(inId, inValue, inStore, Field.Index.NOT_ANALYZED_NO_NORMS);
 		}
 		//field.setOmitNorms(true);
-		
+
 		doc.add(field);
-		
-		
-		if( inDetail != null && (inDetail.isSortable() ))
+
+		if (inDetail != null && (inDetail.isSortable()))
 		{
 			String id = inDetail.getSortProperty();
-			if( inId.equals( id ) && !treatasnumber )
+			if (inId.equals(id) && !treatasnumber)
 			{
 				return;
 			}
 			//doc.add(new Field(detail.getId() + "_sorted", sortable, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-//			if( treatasnumber )
-//			{
-//				try
-//				{	
-//					inValue = getNumberUtils().long2sortableStr(inValue);
-//				}
-//				catch( Exception ex )
-//				{
-//					//ex
-//				}
-//			}
-			else if( inDetail.isDataType("list") && inDetail.getCatalogId() != null)
+			//			if( treatasnumber )
+			//			{
+			//				try
+			//				{	
+			//					inValue = getNumberUtils().long2sortableStr(inValue);
+			//				}
+			//				catch( Exception ex )
+			//				{
+			//					//ex
+			//				}
+			//			}
+			else if (inDetail.isDataType("list") && inDetail.getCatalogId() != null)
 			{
-//				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
-				if( text != null )
+				//				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
+				if (text != null)
 				{
 					inValue = text.toString();
 				}
 			}
-			
-			doc.add(new Field(id, inValue.toLowerCase(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));			
+
+			doc.add(new Field(id, inValue.toLowerCase(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 		}
+	}
+*/
+	protected boolean isNumber(PropertyDetail inDetail)
+	{
+		boolean treatasnumber = false;
+
+		if (inDetail != null)
+		{
+			if (inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long"))
+			{
+				treatasnumber = true;
+			}
+		}
+		return treatasnumber;
 	}
 
 	protected void readProperty(Data inData, Document doc, StringBuffer keywords, PropertyDetail detail)
 	{
 		String detid = detail.getId();
-		
-		if (getStandardProperties().contains(detid) )
+
+		if (getStandardProperties().contains(detid))
 		{
 			return;
 		}
 		String value = inData.get(detail.getId());
 		Data text = null;
-		if (value != null && detail.isKeyword() )
+		if (value != null && detail.isKeyword())
 		{
-			if( detail.isList() )
+			if (detail.isList())
 			{
 				//Loop up the correct text for the search. Should combine this with the lookup for sorting
 				text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), value);
-				if( text != null )
+				if (text != null)
 				{
 					keywords.append(" ");
 					keywords.append(text.getName());
@@ -360,105 +455,47 @@ public class LuceneIndexer
 				keywords.append(value);
 			}
 		}
-	
-		
-		if( !detail.isIndex() )
-		{
-			return;
-		}
-		
-		
-		
-		if( populateJoin(inData, doc, detail) )
+
+		if (!detail.isIndex())
 		{
 			return;
 		}
 
-		
-		if (value != null)
+		if (populateJoin(inData, doc, detail))
 		{
-			if ( detail.isDataType("double") || detail.isDataType("number") || detail.isDataType("long"))
+			return;
+		}
+
+		docAdd(detail, doc, detail.getId(), value);
+
+		if (detail.isDataType("position"))
+		{
+			String lat = inData.get(detail + "_lat");
+			String lng = inData.get(detail + "_lng");
+
+			try
 			{
-				//This is more standard way to save stuff
-				docAdd(detail, doc, detail.getId(), value, text, Field.Store.YES, false);
-			} //doubles dont seem to work detail.isDataType("double")
-			else if (detail.isDataType("boolean"))
-			{
-				if (Boolean.parseBoolean(value))
+				if (lat != null && lng != null)
 				{
-					docAdd(detail, doc, detail.getId(), "true", Field.Store.YES, false);
+
+					Double l = Double.parseDouble(lat);
+					Field field = new DoubleField(detid + "_lat", l, Field.Store.YES);
+
+					doc.add(field);
+
+					l = Double.parseDouble(lng);
+					field = new DoubleField(detid + "_lng", l, Field.Store.YES);
+
+					doc.add(field);
 				}
 				else
 				{
-					docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, false); ///NOT ANALYSED NO NORMS
-				}
-
-			}
-			else if (detail.isDataType("date"))
-			{
-				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(value);
-				if (target != null)
-				{
-					String sortable = DateTools.dateToString(target, Resolution.SECOND);
-					//log.info(inData.getId() +  " Saved " + sortable);
-					docAdd(detail, doc, detail.getId(), sortable, Field.Store.YES, false);
+					//doc.add(new Field(detail + "_available", "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 				}
 			}
-			else if (detail.isStored())
+			catch (Exception e)
 			{
-				docAdd(detail, doc, detail.getId(), value, text, Field.Store.YES, true);
-			}
-			else
-			{
-				docAdd(detail, doc, detail.getId(), value, text,  Field.Store.NO, true); //Field.Index.ANALYZED_NO_NORMS
-			}
-		}
-		else
-		//value was null
-		{
-			if (detail.isDataType("boolean"))
-			{
-				docAdd(detail, doc, detail.getId(), "false", Field.Store.YES, false);
-			}
-
-			if (detail.isDataType("position"))
-			{
-				String lat = inData.get(detail + "_lat");
-				String lng = inData.get(detail + "_lng");
-
-				try
-				{
-					if (lat != null && lng != null)
-					{
-						
-						Double l = Double.parseDouble(lat);
-						Field field = new DoubleField(detid + "_lat", l, Field.Store.YES );
-						
-						doc.add(field);
-						
-						l = Double.parseDouble(lng); 
-						field = new DoubleField(detid + "_lng", l, Field.Store.YES );
-						
-						
-						doc.add(field);
-
-						
-					
-					
-					}
-					else
-					{
-						//doc.add(new Field(detail + "_available", "false", Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-					}
-				}
-				catch (Exception e)
-				{
-					log.info("no valid position data found");
-				}
-				finally
-				{
-					//	inDoc.add(new Field(detid, prop, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
-				}
+				log.info("no valid position data found");
 			}
 		}
 	}
@@ -468,7 +505,7 @@ public class LuceneIndexer
 		String type = detail.getDataType();
 		if (type != null && type.endsWith("join"))
 		{
-			if( type.equals("searchjoin") )
+			if (type.equals("searchjoin"))
 			{
 				return true; //purely virtual
 			}
@@ -488,10 +525,10 @@ public class LuceneIndexer
 				{
 					populateDateJoin(detail, doc, tracker, field, true);
 				}
-				else if (type.startsWith("total"))
-				{
-					populateJoinDataCount(detail.getId(), doc, tracker);
-				}
+//				else if (type.startsWith("total")) Use facets
+//				{
+//					populateJoinDataCount(detail.getId(), doc, tracker);
+//				}
 				else
 				{
 					//friend.ownerid = user.id
@@ -506,7 +543,7 @@ public class LuceneIndexer
 		}
 		return false;
 	}
-	
+
 	public void updateFacets(PropertyDetails inDetails, Document inDoc, TaxonomyWriter inTaxonomyWriter)
 	{
 		if (inTaxonomyWriter == null)
@@ -527,7 +564,7 @@ public class LuceneIndexer
 				{
 					//split the values and add a path for each one?
 					String[] values = null;
-					if(value.contains("|"))
+					if (value.contains("|"))
 					{
 						values = MultiValued.VALUEDELMITER.split(value);
 					}
@@ -537,12 +574,12 @@ public class LuceneIndexer
 					}
 					for (int i = 0; i < values.length; i++)
 					{
-						if( detail.getId().equals("category") && values[i].equals("index"))
+						if (detail.getId().equals("category") && values[i].equals("index"))
 						{
 							continue;
 						}
 						String val = values[i];
-						if( val != null && !val.trim().isEmpty() )
+						if (val != null && !val.trim().isEmpty())
 						{
 							String[] vals = new String[2];
 							vals[0] = detail.getId().replace('/', '_');
@@ -550,7 +587,7 @@ public class LuceneIndexer
 							categorypaths.add(new CategoryPath(vals));
 						}
 					}
-						//log.info("Adding: " + vals);
+					//log.info("Adding: " + vals);
 
 				}
 			}
@@ -570,8 +607,81 @@ public class LuceneIndexer
 			}
 		}
 		// do stuff
-	
+
 	}
 
+	/**
+	 * Used for tokenized text fields
+	 */
 	
+	//Input Fields - Search Name column should be case insensitive and should allow for search of John OR smith or Wild Cards.  (YES analized or tokeninzed stoare) 
+
+
+//ID field what you put in is what you get out. Good for ID column all formating is off (not analized or tokeninzed) Always stored Option: sortable
+	
+	protected static final FieldType INPUT_FIELD_TYPE = getInputFieldType();
+
+	static FieldType getInputFieldType()
+	{
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
+		type.setStored(true);
+		type.setTokenized(true);
+		type.setOmitNorms(false); //Makes it sortable?
+		return type;
+	}
+	
+	protected static final FieldType ID_FIELD_TYPE = getIdFieldType();
+
+	static FieldType getIdFieldType()
+	{
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
+		type.setStored(true);
+		type.setTokenized(false);
+		type.setOmitNorms(true); 
+		return type;
+	}
+
+	protected static final FieldType INTERNAL_FIELD_TYPE = getInternalFieldType();
+
+	static FieldType getInternalFieldType()
+	{
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
+		type.setStored(false);
+		type.setTokenized(true);
+		type.setOmitNorms(true); //This saves memory, at the expense of scoring (results not ranked)
+		return type;
+	}
+
+	protected static final FieldType SORT_FIELD_TYPE = getIdFieldType();
+
+	static FieldType getSortFieldType()
+	{
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
+		type.setStored(false);
+		type.setTokenized(false);
+		type.setOmitNorms(false); 
+		return type;
+	}
+
+	protected static final FieldType ALL_SEARCH_TYPE = getAllFieldType();
+
+	static FieldType getAllFieldType()
+	{
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_AND_FREQS);  //TODO: Move this to freq check
+		type.setStored(false);
+		type.setTokenized(true);
+		type.setOmitNorms(true); //Norms are faster for dates and numbers
+		return type;
+	}
+
 }

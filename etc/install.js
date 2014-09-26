@@ -49,7 +49,7 @@ files.deleteMatch( web + "/lib/entermedia-8*.jar");
 
 
 files.deleteMatch( web + "/lib/groovy-*.jar");
-files.deleteMatch( web + "/lib/aws-*.jar");
+//files.deleteMatch( web + "/lib/aws-*.jar");
 files.deleteMatch( web + "/lib/gson-*.jar");
 files.deleteMatch( web + "/lib/mp4parser*.jar");
 files.deleteMatch( web + "/lib/PDFBox*.jar");
@@ -61,7 +61,7 @@ files.deleteMatch( web + "/lib/commons-codec*.jar");
 files.deleteMatch( web + "/lib/guava-*.jar");
 files.deleteMatch( web + "/lib/velocity-tools*.jar");
 files.deleteMatch( web + "/lib/http*.jar");
-
+files.deleteMatch( web + "/lib/servlet-gzip.jar");
 files.deleteMatch( web + "/lib/json-simple*.jar");
 
 

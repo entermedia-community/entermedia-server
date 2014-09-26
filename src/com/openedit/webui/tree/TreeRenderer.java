@@ -35,5 +35,6 @@ public interface TreeRenderer
 	public void unSelectNode(Object inNode);
 
 	public void selectNodes(Collection inNodes);
+	public Collection getSelectedNodes();
 
 }

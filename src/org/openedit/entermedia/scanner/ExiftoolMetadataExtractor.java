@@ -107,7 +107,6 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			base.add(inputFile.getAbsolutePath());
 			ArrayList<String> comm= new ArrayList(base);
 			comm.add("-n");
-
 			ExecResult result = getExec().runExec("exiftool", comm, true);
 			if( !result.isRunOk())
 			{
@@ -116,6 +115,15 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				return false;
 			}
 			String numberinfo = result.getStandardOut();
+			if( numberinfo == null)
+			{
+				log.info("Exiftool found " + inAsset.getSourcePath() + " returned null" );
+			}
+			else
+			{
+				log.debug("Exiftool found " + inAsset.getSourcePath() + " returned " + numberinfo.length() );
+			}
+			
 			boolean foundtext = parseNumericValues(inAsset, details, numberinfo);
 			if( foundtext )
 			{

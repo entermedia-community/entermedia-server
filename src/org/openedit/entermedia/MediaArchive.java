@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Element;
 import org.entermedia.error.EmailErrorHandler;
 import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
@@ -38,6 +39,8 @@ import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.xml.ElementData;
+import org.openedit.xml.XmlFile;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -50,6 +53,7 @@ import com.openedit.page.Permission;
 import com.openedit.page.manage.MimeTypeMap;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
+import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.Replacer;
 
@@ -902,6 +906,46 @@ public class MediaArchive
 	}
 	
 	
+	
+	
+	public void removeGeneratedImages(Asset inAsset, boolean everything)
+	{
+		if(everything){
+			removeGeneratedImages(inAsset);
+			return;
+		}
+		
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
+		if(inAsset.isFolder() && !path.endsWith("/")){
+			path = path + "/"; 
+				
+		}
+		
+		
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+			
+				//getPageManager().removePage(page);
+				String type = PathUtilities.extractPageType(inContent.getPath()); 
+				String fileformat = getMediaRenderType(type);
+				if("image".equals(fileformat)){
+					Page page = getPageManager().getPage(inContent.getPath());
+					getPageManager().removePage(page);
+				}
+				
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(path);
+		processor.setPageManager(getPageManager());
+		processor.process();
+		
+
+		
+	}
+	
 	public void removeOriginals(Asset inAsset)
 	{
 		String path = "/WEB-INF/data/" + getCatalogId() + "/originals/" + inAsset.getSourcePath();
@@ -1497,20 +1541,26 @@ public class MediaArchive
 		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
 		
 	}
-	
 	public void updateAssetConvertStatus(String inSourcePath) 
 	{
-		//TODO: Lock the asset so that nobody edits it while we are doing this
 		Asset asset = getAssetBySourcePath(inSourcePath);
+		updateAssetConvertStatus(asset);
+	}
+	public String updateAssetConvertStatus(Asset asset) 
+	{
 		if( asset == null)
 		{
-			return; //asset deleted
+			return null; //asset deleted
 		}
+		//TODO: Lock the asset so that nobody edits it while we are doing this
+		
 		String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 
 		//log.info("existingpreviewstatus" + existingpreviewstatus);
 		//update importstatus and previewstatus to complete
+		log.info("Checking conversion status: " + asset.getId() + existingimportstatus +"/" + existingpreviewstatus);
+
 		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
 		{
 			//check tasks and update the asset status
@@ -1524,6 +1574,7 @@ public class MediaArchive
 				Data task = (Data)object;
 				if( "error".equals( task.get("status") ) )
 				{
+					log.info(asset.getId() + "Found an error");
 					founderror = true;
 					break;
 				}
@@ -1531,6 +1582,7 @@ public class MediaArchive
 				if( !"complete".equals( task.get("status") ) )
 				{
 					allcomplete = false;
+					log.info(asset.getId() + "Found an incomplete task - status was: " + task.get("status"));
 					break;
 				}
 			}
@@ -1543,16 +1595,19 @@ public class MediaArchive
 					if( founderror)
 					{
 						asset.setProperty("importstatus","error");
+						
 					}
 					else
 					{
 						asset.setProperty("importstatus","complete");
 						asset.setProperty("previewstatus","2");
+						
 					}
 					saveAsset(asset, null);
 				}
 			}
 		}
+		return asset.get("importstatus");
 	}
 	
 

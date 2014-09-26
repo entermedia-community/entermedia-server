@@ -664,6 +664,61 @@ public class OrderModule extends BaseMediaModule
 		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		log.info("Added conversion and publish requests for order id:" + order.getId());
 	}
+	
+	public void createQuickOrder(WebPageRequest inReq)
+	{
+
+
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		OrderManager manager = getOrderManager();
+		String catalogid = inReq.findValue("catalogid");
+		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
+		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
+
+		Order order = (Order) searcher.createNewData();
+		order.setProperty("userid", inReq.getUserName());
+		String quickpublishid = inReq.getRequestParameter("quickid");
+		Data publishtemplate = archive.getData("quickpublish", quickpublishid);
+		
+		order.setProperty("publishdestination", publishtemplate.get("publishdestination"));//assume 0 for most orders, 0 can be told to use Aspera
+		searcher.saveData(order, inReq.getUser());
+		
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
+		for (Iterator iterator = hits.getSelectedHitracker().iterator(); iterator.hasNext();) {
+			Data hit = (Data) iterator.next();
+			Data item = itemsearcher.createNewData();
+			item.setProperty("presetid", publishtemplate.get("convertpreset"));
+			item.setProperty("assetid", hit.getId());
+			item.setProperty("orderid", order.getId());
+
+			item.setId(itemsearcher.nextId());
+			itemsearcher.saveData(item, inReq.getUser());
+					
+		}
+		
+		
+		
+		List assetids = manager.addConversionAndPublishRequest(inReq, order, archive, new HashMap(), inReq.getUser());
+		// OrderHistory history =
+		// getOrderManager().createNewHistory(archive.getCatalogId(), order,
+		// inReq.getUser(), "pending");
+		// history.setAssetIds(assetids);
+		// manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(),
+		// order, history);
+		if (assetids.size() > 0)
+		{
+			order.setProperty("orderstatus", "pending");
+		}
+		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+		inReq.putPageValue("order", order);
+		inReq.putPageValue("data", order);
+
+		log.info("Added conversion and publish requests for order id:" + order.getId());
+	}
+	
+	
 
 	public Order placeOrderById(WebPageRequest inReq)
 	{

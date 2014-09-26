@@ -95,6 +95,7 @@ public class XmpWriter
 			comm.add(etConfig.getContentItem().getAbsolutePath());
 		}
 		comm.add("-overwrite_original");
+		comm.add("-n");
 		return comm;
 	}
 
@@ -112,17 +113,17 @@ public class XmpWriter
 			String[] tags = detail.getExternalIds();
 			
 			String value = inAsset.get(detail.getId());
-			if( detail.getId().equals("imageorientation"))
-			{
-				value = inAsset.get("rotation"); //custom rotation. this should be set by the rotation tool?
-//				Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
-//				Data rotationval = (Data)searcher.searchById(value);
-//				value = rotationval.get("rotation");
-				if( value == null )
-				{
-					continue; //Only set the value if rotation is set
-				}
-			}
+//			if( detail.getId().equals("imageorientation"))
+//			{
+//				value = inAsset.get("rotation"); //custom rotation. this should be set by the rotation tool?
+////				Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
+////				Data rotationval = (Data)searcher.searchById(value);
+////				value = rotationval.get("rotation");
+//				if( value == null )
+//				{
+//					continue; //Only set the value if rotation is set
+//				}
+//			}
 			addTags(tags, value, inComm);
 		}
 	}

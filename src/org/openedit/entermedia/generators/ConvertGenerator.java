@@ -55,6 +55,20 @@ public class ConvertGenerator extends FileGenerator
 			return;
 		}
 		outputype = outputype.toLowerCase();
+		
+		String name = inPage.getName();
+		
+		if( name.startsWith("image") && name.length() > 10 && name.contains("x"))
+		{
+			//see if there is a with and height?
+			String size = name.substring(5,name.length() - outputype.length() - 1 );
+			int cutoff= size.indexOf("x");
+			String width = size.substring(0,cutoff);
+			String height = size.substring(cutoff + 1,size.length());
+			inReq.setRequestParameter("prefwidth", width);
+			inReq.setRequestParameter("prefheight", height);
+		}
+		
 		//TODO: Use hard coded path lookups for these based on media type?
 		
 		//We use the output extension so that we don't have look up the original input file to find the actual type

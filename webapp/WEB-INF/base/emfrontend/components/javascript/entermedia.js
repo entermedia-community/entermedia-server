@@ -192,6 +192,9 @@ runajaxonthis = function(inlink,e)
 				{
 					cell = jQuery("#" + targetDiv);
 				}
+				
+				//Call replacer to pull $scope variables
+				
 				cell.replaceWith(data);
 				
 				
@@ -713,36 +716,40 @@ onloadselectors = function()
 		jQuery('#emselectable table td' ).livequery(	
 			function()
 			{
-				if(jQuery(this).attr("noclick") =="true") {
+				var clicked = jQuery(this);
+				
+				if(clicked.attr("noclick") =="true") {
 					return true;
 				}
 				
-				jQuery(this).click(
+				var emselectable = clicked.closest("#emselectable");
+				var row = $(clicked.closest("tr"));
+				
+				clicked.click(
 					function(event) 
 					{
-						if ( jQuery(this).closest("tr").hasClass("thickbox") ) {
-							var row = jQuery(this).closest("tr");
+						if ( row.hasClass("thickbox") ) 
+						{
 							var href = row.data("href");
 							openFancybox(href);
 						} else {
-							jQuery('#emselectable table tr' ).each(function(index) 
+							emselectable.find('table tr' ).each(function(index) 
 							{ 
-								jQuery(this).removeClass("emhighlight");
+								clicked.removeClass("emhighlight");
 							});
-							var row = jQuery(this).closest("tr");
-							jQuery(row).addClass('emhighlight');
-							jQuery(row).removeClass("emborderhover");
+							row.addClass('emhighlight');
+							row.removeClass("emborderhover");
 							
-							var id = jQuery(row).attr("rowid");
-							var url = jQuery(this).closest("table").data("clickpath");
-							var form = jQuery('#emselectable').find("form");
+							var id = row.attr("rowid");
+							var url = row.closest("table").data("clickpath");
+							var form = emselectable.find("form");
 							if( form.length > 0 )
 							{
-								jQuery('#emselectable #emselectedrow').val(id);
-								jQuery("#emselectable .emneedselection").each( function()
-									{
-										jQuery(this).removeAttr('disabled');
-									});	
+								emselectable.find( '#emselectedrow' ).val(id);
+								emselectable.find( '.emneedselection').each( function()
+								{
+									clicked.removeAttr('disabled');
+								});	
 								form.submit();
 							}
 							else if( url != undefined )
@@ -999,12 +1006,13 @@ jQuery(document).ready(function()
 
 	$(document).ajaxError(function(e, jqxhr, settings, exception) 
 			{
+				console.log(e,jqxhr,exception);
 				var errordiv = jQuery("#errordiv")
 				if( errordiv.length > 0)
 				{
 					
 					function fade(elem){
-						$(elem).delay(300).fadeOut(1000, "linear");
+						$(elem).delay(1).fadeOut(5000, "linear");
 					}
 					
 					$('#errordiv').stop(true, true).show().css('opacity', 1);
@@ -1122,6 +1130,41 @@ emcomponents = function() {
 				);
 			}
 		);
+
+	jQuery("img.assetdragdrop").livequery( function()
+	{
+		var img = $(this);
+			
+		var httplink = location.protocol + '//' + location.host;			
+		var filename = img.data('name');
+        var urls =  httplink + apphome + "/views/modules/asset/downloads/originals/" + img.data('sourcepath') + "/" + filename;
+        
+        var handler = function(event) 
+	    {
+           if( event.dataTransfer.getData("application/x-moz-file-promise-url") && navigator.appVersion.indexOf("Win") != -1 )
+           {
+     	 		event.dataTransfer.setData('application/x-moz-file-promise-url',urls );
+             	event.dataTransfer.setData('application/x-moz-file-promise-dest-filename',filename);
+             	event.dataTransfer.effectAllowed = 'all';       
+           }
+           else
+           {
+           		event.dataTransfer.clearData();
+	            var download = "application/force-download:" + filename + ":" + urls;
+	            event.dataTransfer.setData("DownloadURL", download);   
+	        	event.dataTransfer.effectAllowed = 'copy';
+	        }
+	        
+            event.dataTransfer.setData('text/uri-list',urls);
+            event.dataTransfer.setData('text/plain',urls);
+
+	        return true;
+	    };
+        
+        this.addEventListener('dragstart', handler, false ); 
+        this.parentNode.addEventListener('dragstart', handler, false ); //Deal with A tags?
+        
+	});
 
 	jQuery(".librarycollectiondroparea").livequery(
 			function()

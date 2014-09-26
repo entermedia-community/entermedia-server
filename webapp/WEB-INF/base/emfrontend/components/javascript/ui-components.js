@@ -332,6 +332,25 @@ uiload = function() {
 
 	});
 
+	$(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e)   
+	{
+	    var link = $(e.target); // activated tab
+	    
+	    var tab = $(link.attr("href"));
+	    
+		//var tab = $(this);
+		var url = tab.data("tabpath");
+		if( !tab.data("tabloaded") )
+		{
+			jQuery.get(url, {}, function(data) 
+			{
+				tab.html(data);
+				tab.data("tabloaded",true);
+			});
+		}	
+	});
+
+
 	jQuery("input.listautocomplete").livequery( function() 
 	{
 		var theinput = jQuery(this);

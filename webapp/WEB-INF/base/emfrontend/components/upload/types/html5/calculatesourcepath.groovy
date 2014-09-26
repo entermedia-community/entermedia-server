@@ -1,16 +1,8 @@
-import java.util.HashMap;
-import java.util.Map;
-
-import com.openedit.page.Page
-import com.openedit.util.Replacer;
-
-import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
+import org.openedit.*
 import org.openedit.entermedia.MediaArchive
-import org.openedit.*;
 
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.*;
+import com.openedit.hittracker.*
+import com.openedit.util.Replacer
 
 public void init()
 {
@@ -52,6 +44,8 @@ public void init()
 			vals.put("division", division);
 		}
 
+		vals.put("guid",UUID.randomUUID().toString() );
+		
 		Replacer replacer = new Replacer();
 		replacer.setSearcherManager(mediaArchive.getSearcherManager());
 		replacer.setCatalogId(mediaArchive.getCatalogId());

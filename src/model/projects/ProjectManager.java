@@ -2,10 +2,11 @@ package model.projects;
 
 import java.util.Collection;
 
-import org.openedit.entermedia.Asset;
+import org.openedit.Data;
 import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.WebPageRequest;
+import com.openedit.users.User;
 
 public interface ProjectManager
 {
@@ -20,5 +21,7 @@ public interface ProjectManager
 
 	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid);
 	
+	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
 	
+	public boolean addUserToLibrary(MediaArchive archive, Data inLibrary, User inUser);
 }

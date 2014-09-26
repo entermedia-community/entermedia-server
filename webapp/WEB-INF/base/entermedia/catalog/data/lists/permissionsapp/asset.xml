@@ -1,5 +1,4 @@
 <permissions name="Application Permissions">
-
 	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="200"/>
 	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="200"/>
 	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." ordering="200"/>
@@ -12,7 +11,9 @@
 	<permission id="viewfatwire" permissiontype="asset" name="View Fatwire Status" description="Shows Fatwire Status." ordering="200"/>
 	<permission id="viewconversions" permissiontype="asset" name="Conversions" description="View Conversions and Cropping Tool" ordering="220"/>
 	<permission id="embedasset" permissiontype="asset" name="Embedding" description="Enables and embed button that provides HTML code for an asset." ordering="200"/>
-		
+	<permission id="quickpublish" permissiontype="asset" name="Quick Publish" description="Enables the quick publish menu for rapidly publishing assets" ordering="200"/>
+	<permission id="editshoppingcart" permissiontype="asset" name="Shopping Cart - Edit Parameters" description="Enables users to edit the Shopping Cart button parameters" ordering="200"/>
+	<permission id="viewshoppingcart" permissiontype="asset" name="Shopping Cart - View Button" description="View the Shopping Cart button" ordering="200"/>	
 		
 		
 	<!-- 

@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Reload All Asset Metadata</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/importing/readallmetadata.groovy</script>
+	</path-action>
+	
+</page>

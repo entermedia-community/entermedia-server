@@ -86,12 +86,24 @@ public class imagemagickCreator extends BaseImageCreator
 			String fullInputPath = inputPage.getContentItem().getAbsolutePath();
 			return applyWaterMark(inArchive, fullInputPath, outputpath, inStructions);
 		}
-		
+
 		Page input = null;
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 		
-		if( inStructions.getMaxScaledSize() != null && offset == null ) //page numbers are 1 based
+		String tmpinput = PathUtilities.extractPageType( inOutFile.getPath() );
+		boolean transparent = inStructions.isTransparencyMaintained(tmpinput);
+		String ext = inStructions.getInputExtension();
+		if( ext == null && input != null)
+		{
+			ext = PathUtilities.extractPageType( input.getPath() );
+		}
+		
+		if( ext == null)
+		{
+			ext = inAsset.getFileFormat();
+		}
+		if( !transparent  && ( inStructions.getMaxScaledSize() != null && offset == null ) ) //page numbers are 1 based
 		{
 			String page = null;
 			if( inStructions.getPageNumber() > 1 )
@@ -116,22 +128,22 @@ public class imagemagickCreator extends BaseImageCreator
 //					autocreated = true;
 //				}
 //			}
-			if( input == null &&  box.getWidth() < 300 )
-			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
-				if( !input.exists()  || input.length() < 2)
-				{
-					input = null;
-				}
-				else
-				{
-					autocreated = true;
-				}
-			}
+//			if( input == null &&  box.getWidth() < 300 )
+//			{
+//				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
+//				if( !input.exists()  || input.length() < 2)
+//				{
+//					input = null;
+//				}
+//				else
+//				{
+//					autocreated = true;
+//				}
+//			}
 			if( input == null && box.getWidth() < 1024 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");				
-				if( !input.exists()  || input.length() < 2 )
+				if( input.length() < 2 )
 				{
 					input = null;
 				}
@@ -141,7 +153,36 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 		}
-
+		
+		boolean hascustomthumb = false;
+		Page customthumb = null;
+		
+		if("png".equals(ext)){
+			customthumb = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+			
+		}	else
+		{
+			customthumb = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+		}
+		String filetype = inArchive.getMediaRenderType(inAsset.getFileFormat());
+		if(customthumb.exists()){
+			hascustomthumb = true;
+			if(input == null && !"document".equals(filetype)){
+				input = customthumb;
+				log.info("Length was ${input.length()}");
+				if( input.length() < 2 )
+				{
+					input = null;
+				}
+				else
+				{
+					autocreated = true;
+				}
+			}
+		}
+				
+		
+			
 		//get the original inut
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
 		if( offset != null && input == null)
@@ -162,19 +203,9 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 		}
 		//Look over to see if there is a creator that can do a better job of reading in this type
-		String ext = inStructions.getInputExtension();
-		if( ext == null && input != null)
-		{
-			ext = PathUtilities.extractPageType( input.getPath() );
-		}
 		
-		if( ext == null)
-		{
-			ext = inAsset.getFileFormat();
-		}
-
 		MediaCreator preprocessor = getPreProcessor(inArchive, ext);
-		if( preprocessor != null)
+		if( preprocessor != null && !hascustomthumb)
 		{
 			//This will output a native format. First one wins. it is not a loop.
 			String tmppath = preprocessor.populateOutputPath(inArchive, inStructions);
@@ -269,6 +300,7 @@ public class imagemagickCreator extends BaseImageCreator
 					}
 				}
 			}
+			//else
 			
 /** We dont need this any more?
 			//we need to rotate this before we start otherwise the width and heights might be flipped. This is only 5% slower
@@ -344,24 +376,21 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
 			//resize then cut off edges so end up with a square image
-			if(!croplast){
-			com.add("-resize");
-			StringBuffer resizestring = new StringBuffer();
-			resizestring.append(inStructions.getMaxScaledSize().width);
-			resizestring.append("x");
-			resizestring.append(inStructions.getMaxScaledSize().height);
-			resizestring.append("^");
-			com.add(resizestring.toString());
+			if(!croplast)
+			{
+				com.add("-resize");
+				StringBuffer resizestring = new StringBuffer();
+				resizestring.append(inStructions.getMaxScaledSize().width);
+				resizestring.append("x");
+				resizestring.append(inStructions.getMaxScaledSize().height);
+				resizestring.append("^");
+				com.add(resizestring.toString());
 			}
 			   		
 			//now let's crop
-			com.add("+repage");
 			String gravity = inStructions.get("gravity");
-			if(!"default".equals(gravity)){
-				
-				
-				
-				
+			if(!"default".equals(gravity))
+			{
 				com.add("-gravity");
 				if( gravity == null )
 				{
@@ -380,7 +409,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			
 			
-			if( "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext))
+			if( !transparent && ("pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{
 				com.add("-background");
 				com.add("white");
@@ -401,36 +430,39 @@ public class imagemagickCreator extends BaseImageCreator
 				cropwidth = inStructions.getMaxScaledSize().width;
 			}
 			cropString.append(cropwidth);
-			
-			
-			
-			
-			
 			cropString.append("x");
 			String cropheight = inStructions.get("cropheight");
 			
 			if(!cropheight){
 				cropheight = inStructions.getMaxScaledSize().height;
 			}
-			
 			cropString.append(cropheight);
 			
 			String x1 = inStructions.get("x1");
 			String y1 = inStructions.get("y1");
 			
-			if(x1 != null)
+			cropString.append("+");
+			if(x1 == null)
 			{
-				cropString.append("+");
+				cropString.append("0");
+			}
+			else
+			{
 				cropString.append(x1);
 			}
-			if(y1 != null)
+			cropString.append("+");
+			if(y1 == null)
 			{
-				cropString.append("+");
+				cropString.append("0");
+			}
+			else
+			{
 				cropString.append(y1);
 			}
 			com.add(cropString.toString());
-			
-			if(croplast){
+			com.add("+repage");
+			if(croplast)
+			{
 				com.add("-resize");
 				StringBuffer resizestring = new StringBuffer();
 				resizestring.append(inStructions.getMaxScaledSize().width);
@@ -440,7 +472,7 @@ public class imagemagickCreator extends BaseImageCreator
 				com.add(resizestring.toString());
 			}
 		}
-		else if( "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext))
+		else if( !transparent && ( "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext) ) )
 		{
 			com.add("-background");
 			com.add("white");
@@ -460,20 +492,47 @@ public class imagemagickCreator extends BaseImageCreator
 //					com.add("-colorspace");
 //					com.add("sRGB");
 //				}
-		
 				
-         				
-		if( !autocreated )
+		setValue("quality", "89", inStructions, com);
+		
+		if( autocreated )  //we are using a color corrected input
+		{
+			com.add("-strip"); //This does not seem to do much
+		}
+		else
 		{
 //			TODO: use parameters to specify the color space		
 			//Make sure we use 8 bit output and 	
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
-			
-			
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
-			setValue("profile", getPathtoProfile(), inStructions, com);
-			com.add("-strip");
+			setValue("colorspace", "sRGB", inStructions, com);
+//			String colorspace = inStructions.get("colorspace");
+//			if(colorspace != null){
+//				com.add("-colorspace");
+//				com.add(colorspace);
+//			} else{
+//				com.add("-colorspace");
+//				com.add("sRGB");
+//			}
+						
+/*			String type = inAsset.get("colortype");
+			if( type != null && type.equalsIgnoreCase("RGB") )
+			{
+				String cmyk = inAsset.get("colorspace");  
+				if( cmyk != null && cmyk.equalsIgnoreCase("CMYK") )  //Edge case where someone has the wrong colorspace set in the file
+				{
+					com.add("-colorspace");
+					com.add("RGB");
+				}	
+			}
+*/		
+			// setValue("profile", getPathtoProfile(), inStructions, com);
+			com.add("-auto-orient"); //Needed for rotate tool
+			com.add("-strip"); //This does not seem to do much
+			
+			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
+			
 			
 		}
 		

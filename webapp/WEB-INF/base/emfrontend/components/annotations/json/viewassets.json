@@ -1,0 +1,16 @@
+[
+#foreach($hit in $hits)
+ 
+ #if($velocityCount > 1)
+ ,
+ #end
+ {
+ "id": "${hit.id}",
+ "sourcepath": "${hit.sourcepath}",
+ "name": "${hit.name}"
+ ## "thumb" : "$home$apphome/views/modules/assets/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg",
+ ## "large" : "$home$apphome/views/modules/assets/downloads/preview/extralarge/${hit.sourcepath}/thumb.jpg"
+ } 
+#end
+]
+

@@ -112,13 +112,23 @@ public class RegistrationModule extends BaseMediaModule
 		String email = inReq.getRequestParameter("email.value");
 
 		User user = getUserManager().getUserByEmail(email);
-
-		Map errors = new HashMap();
+		String id = inReq.getRequestParameter("id");
+		
+		User current = getUserManager().getUser(id);
+		
 		if (user != null)
 		{
+			if(id != null){
+				if(id.equals(user.getId())){
+					return;
+				}
+			}
+			
+			
 			// errors.put("error-email-in-use", "This email address is in use");
 			// inReq.putPageValue("errors", errors);
 			inReq.putPageValue("emailinuse", true);
+			inReq.setRequestParameter("email.value", current.getEmail());
 			cancelAndForward(inReq);
 		}
 

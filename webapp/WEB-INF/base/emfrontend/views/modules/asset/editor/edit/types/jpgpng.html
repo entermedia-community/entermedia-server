@@ -12,6 +12,12 @@
 <table style="border-spacing: 10px; border-collapse: separate">
 <tr>
 <td>
+<a href="#" onclick="cropImage(); return false;"><img src="$home${themeprefix}/images/buttons/crop_16x16.png" border="0" title="[[Crop Image]]" />
+	[[Crop Image]]
+	</a>
+
+</td>
+<td>
 ##<a href="#" onclick="resizeImage();return false;"><img src="$home${themeprefix}/images/buttons/aspectratio_16x16.png" border="0" title="[[Resize Image]]" />
 ##	[[Resize Image]]</a>
 #set($currentOrientation = $asset.get("imageorientation"))
@@ -28,19 +34,16 @@
 	<input type="hidden" name="sourcepath" value="$asset.sourcepath"/>
 	
 	<select onchange="this.form.submit()" name="imageorientation.value">
+		<option value="">Rotate</option>
 		<option value="1"#if($currentOrientation && $currentOrientation == 1) selected #end>Default Rotation</option>
 		<option value="6" #if($currentOrientation && $currentOrientation == 6) selected #end>Clockwise</option> 
 		<option value="8"#if($currentOrientation && $currentOrientation == 8) selected #end>Counter Clockwise</option>
 		<option value="3"#if($currentOrientation && $currentOrientation == 3) selected #end>Flip Top</option>
 	</select>
 </form>
-<br>
-<a href="#" onclick="cropImage(); return false;"><img src="$home${themeprefix}/images/buttons/crop_16x16.png" border="0" title="[[Crop Image]]" />
-	[[Crop Editor]]
-	</a>
+</td>
+<td>
 
-<br>
-<br>
 <a href="$home${apphome}/views/modules/asset/editor/historyimageedit/index.html?editPath=${editPath}&assetid=${asset.id}">
 	<img src="$home${themeprefix}/images/buttons/undo_16x16.png" border="0"/> Versions
 </a>

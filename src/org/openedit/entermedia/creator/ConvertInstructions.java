@@ -72,18 +72,6 @@ public class ConvertInstructions
 			return null;
 		}
 		String value = getProperties().get(inName);
-		if( value == null && getParameters() != null)
-		{
-			for (Iterator iterator = getParameters().iterator(); iterator.hasNext();)
-			{
-				Data data = (Data) iterator.next();
-				if( data.getName().equals(inName) )
-				{
-					value = data.get("value");
-					break;
-				}
-			}
-		}
 		return value;
 		
 	}
@@ -154,6 +142,24 @@ public class ConvertInstructions
 		}
 	}
 
+	public boolean isTransparencyMaintained(String inputtype)
+	{
+		String type = getOutputExtension();
+		if( type == null || inputtype == null)
+		{
+			return false;
+		}
+		if(( type.equals("png")|| type.equals("gif") ) && (inputtype.equals("gif") || inputtype.equals("png")) )
+		{
+			return true;
+		}
+		return false;
+			
+			
+		
+	}
+	
+	
 	public String getOutputExtension()
 	{
 		return getProperty("outputextension");

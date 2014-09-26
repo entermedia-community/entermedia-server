@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.openedit.Data;
 import org.openedit.entermedia.scanner.MetaDataReader;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
@@ -165,7 +166,27 @@ public class AssetUtilities
 		if (dir.length() > datadir.length())
 		{
 			String folderPath = dir.substring(datadir.length());
-			category = inArchive.getCategoryArchive().createCategoryTree(folderPath);
+			String folderfilter = inArchive.getCatalogSettingValue("categorytreemask");
+			if(folderfilter == null || folderfilter.length() == 0){
+				return;
+				
+			}
+			HashMap properties = new HashMap();
+			for (Iterator iterator = asset.getProperties().keySet().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				String value = asset.get(key);
+				properties.put(key, value);
+			}
+			if(inUser != null){
+				properties.put("username", inUser.getUserName());
+			}
+			properties.put("folderpath", folderPath);
+			String categorypath = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), folderfilter, properties);
+			
+			//This now is really long, unique, and has a GUID...lets strip off the last folder?
+					
+			category = inArchive.getCategoryArchive().createCategoryTree(categorypath);
 		}
 		else
 		{

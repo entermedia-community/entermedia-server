@@ -50,7 +50,23 @@ p{
 </style>
 
 <h1>Automatic Conversions</h1>
+                #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+#if($type != "document")
+<div class="info">
+<h2>Replace all conversion with a new custom thumbnail:</h2>
 
+<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
+		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+		<input type="hidden" name="unzip" value="false" />
+		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+		<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" /><br/>
+		<input type="submit" id="finishbutton" value="[[Upload]]" >
+
+
+</form>
+</div>
+#end
 #set($newpreset = $context.findValue("newpreset"))
 #set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )

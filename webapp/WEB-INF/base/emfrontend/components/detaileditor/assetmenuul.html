@@ -41,6 +41,10 @@
 		#set($text = "View Metadata") ##change label
 	#end
 	
+	#if( $permission == "true" && $link.id == "viewassetedit" && $asset.fileformat != "jpg")
+		#set( $permission = false)
+	#end
+	
     #if( $permission == "true")
 
     ##Check for custom links, arguments and labels

@@ -1,0 +1,33 @@
+<div>
+    <div><input type="text" ng-model="tableFilter"></div>
+    <button ng-click="tableParams.sorting({})" class="btn btn-default pull-right">Clear sorting</button>
+    <table ng-table="tableParams" class="table">
+        <!-- this should be grabbing the data attribute of the tableParams from $scope -->
+        <tr ng-repeat="element in $data | filter: tableFilter">
+          <td data-title="'Updates'" sortable="'annotation.hasRecentActivity'">
+              <span ng-if="element.annotation.hasRecentActivity">New Notes!</span>
+          </td>
+          <td data-title="'Project'" sortable="'project.name'">
+              <a ui-sref="app.projects.details({projectID: element.project.id})">{{element.project.name}}</a>
+          </td>
+          <td data-title="'Annotation'" sortable="'annotation.name'">
+              <a ui-sref="app.annotations.details({annotationID: element.annotation.id})">{{element.annotation.name}}</a>
+          </td>
+          <td data-title="'Description'" sortable="'annotation.description'">
+              <a ui-sref="app.annotations.details({annotationID: element.annotation.id})">{{element.annotation.description}}</a>
+          </td>
+          <td data-title="'Owner'" sortable="'annotation.owner'">
+              <!-- maybe later use ID for linking to profiles -->
+              {{element.annotation.owner}}
+          </td>
+          <td data-title="'Status'" sortable="'annotation.status'">
+              {{element.annotation.status}}
+          </td>
+          <td data-title="'Created'" sortable="'annotation.createTime'">
+              {{element.annotation.createTime}}
+          </td>
+          <td data-title="'Updated'" sortable="'annotation.lastUpdateTime'">
+              {{element.annotation.lastUpdateTime}}
+          </td></tr>
+    </table>
+</div>

@@ -2814,8 +2814,8 @@ table.emdata th {
 .emtree ul li div {
     padding: 0 0 0 20px;
     border-bottom: 1px solid #E2EFF4;
-    height: 34px;
-    line-height: 34px;
+    height: 27px;
+    line-height: 27px;
     display: block;
     cursor: pointer;
     white-space: no-wrap;
@@ -2829,12 +2829,12 @@ table.emdata th {
 }
 .emtree .checkbox {
     position: absolute;
-    height: 34px;
+    height: 7px;
     border-right: 1px dashed #ddd;
     left: 0;
     top: 0;
     width: 15px;
-    padding: 0 15px;
+    padding: 10px;
     text-align: center;
 }
 .emtree .checkbox .field
@@ -6530,6 +6530,124 @@ div#left-col-libraries div.ui-widget-content
 }
 
 
-.detail-select{
+.detail-select {
 margin-top: 8px; max-width: 200px;
+}
+
+div.tableheaderactions 
+{
+	padding: 10px;
+	
+}
+
+div.tableheaderactions a 
+{
+	padding: 6px;
+	
+}
+
+/*---CSS CHANGES----------*/
+
+#module-dropdown {
+    height: 35px;
+}
+
+#childrenlist #valuelist {
+    margin:  -10px -4px 0px !important;
+}
+.borderedcell, .resultstablecell {
+    display: table-cell;
+}
+.form-control {
+    height: 15px;
+    padding: 0px;
+}
+#listdetail_division {
+    width:47% !important;
+}
+#de-side-nav ul li a{
+	opacity:1 !important;
+}
+.folder:after {
+    height: 0 !important;
+}
+#media-player-table {
+    margin-bottom: 0;
+}
+
+/* CSS Bootstrap Overrides*/
+/* 9/9/14 - CR */
+
+.tooltip {
+    position: relative;
+    opacity: 1;
+    z-index: auto;
+    line-height: normal;
+}
+
+.btn {
+    line-height: normal;
+    white-space: normal;
+    vertical-align: baseline;
+}
+
+#advsearchpanel table[width="100%"] select {
+    padding: 0px;
+    height: 21px;
+    box-sizing: content-box;
+}
+.oeinputform  select {
+    padding: 0px;
+    height: 21px;
+    box-sizing: content-box;
+}
+
+
+#nav, #maximizer a, a.btn, input[type="text"], input[type="password"], textarea, .emtree .arrow, .emtable a.row  {
+    box-sizing: content-box;
+}
+
+.thumbnail {
+    background-color: transparent;
+    border: none;
+}
+
+.checkbox input[type="checkbox"] {
+    float: none;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+.checkbox {
+    min-height: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+    box-sizing: content-box;
+}
+
+#workarea ul li:first-child, #emcontainer #emselectable table th, .categories-widget, #emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
+    box-sizing: content-box;
+}
+
+h4 {
+    font-weight: bold;
+}
+
+#nav .flat-left {
+    box-sizing: border-box;
+}
+
+#attachmenttree ul li div:hover .actions a {
+    line-height: 34px;
+}
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+input[type="file"] {
+    display:inline;
+}
+.emtree ul li div .actions a {
+    line-height: 22px;
 }

@@ -676,23 +676,29 @@ public class AssetEditModule extends BaseMediaModule
 	public void writeAssetKeywords( WebPageRequest inRequest ) throws Exception
 	{
 		String[] assetids = inRequest.getRequestParameters("assetids");
-		
-		MediaArchive mediaArchive = getMediaArchive(inRequest);
-		for (int i = 0; i < assetids.length; i++)
+		if( assetids == null)
 		{
-			Asset asset = mediaArchive.getAsset(assetids[i]);
-			if( asset == null )
+			assetids = inRequest.getRequestParameters("assetid");
+		}
+		if( assetids != null)
+		{
+			MediaArchive mediaArchive = getMediaArchive(inRequest);
+			for (int i = 0; i < assetids.length; i++)
 			{
-				//log
-				return;
-			}
-			boolean didSave = false;
-			if( mediaArchive.isTagSync(asset.getFileFormat() ) )
-			{
-				didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
-			}
-			inRequest.putPageValue("didSave", new Boolean(didSave));
-		}			
+				Asset asset = mediaArchive.getAsset(assetids[i]);
+				if( asset == null )
+				{
+					//log
+					return;
+				}
+				boolean didSave = false;
+				if( mediaArchive.isTagSync(asset.getFileFormat() ) )
+				{
+					didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
+				}
+				inRequest.putPageValue("didSave", new Boolean(didSave));
+			}			
+		}	
 	}
 	
 	public void saveAssetProperties(WebPageRequest inReq) throws OpenEditException 
@@ -1131,10 +1137,10 @@ public class AssetEditModule extends BaseMediaModule
 
 		
 		Page dest = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath);
-		if(!inPage.exists()){
-			log.info("Could not find uploaded file: " + inPage.getPath());
-		}
-		if(inPage.exists() && !inPage.getPath().equals(dest.getPath()))//move from tmp location to final location
+//		if(!inPage.exists()){
+//			log.info("Could not find uploaded file: " + inPage.getPath());
+//		}
+		if(!inPage.getPath().equals(dest.getPath()))//move from tmp location to final location
 		{
 			getPageManager().movePage(inPage, dest);
 		}
@@ -2091,8 +2097,9 @@ public class AssetEditModule extends BaseMediaModule
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
+			path = path.replace("//", "/");
 
-			Asset current = archive.getAssetBySourcePath("sourcepath");
+			Asset current = archive.getAssetBySourcePath(sourcepath);
 			if(current ==  null){
 				current = archive.createAsset(sourcepath);
 			}

@@ -22,7 +22,11 @@
 	<tr>
 		<td>
 		    <span style="margin-left: 20px">
+		    	#if( !$revisionNumber)
+		    	 [[Version control not enabled on Hot Folder]]
+		    	#else 
    				<a href="$home/${applicationid}/views/modules/asset/downloads/originals/$parentsourcepath/.versions/$revisionNumber~$revision.getName()/$revision.getName()">[[Version]] $revisionNumber</a>
+   				#end
     		</span>
 		</td>
 		<td class="tooltip" title="$revision.getLength() bytes" >$sizer.inEnglish($revision.getLength())	</td>

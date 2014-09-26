@@ -1,39 +1,38 @@
 package importing;
 
+import org.entermedia.locks.Lock
 import org.openedit.Data
-import org.openedit.MultiValued;
-import org.openedit.data.BaseData
+import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.scanner.PresetCreator
 import org.openedit.util.DateStorageUtil
-import com.openedit.page.Page
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
+import com.openedit.page.Page
 
-public void createTasksForUpload() throws Exception
-{
+public void createTasksForUpload() throws Exception {
 	PresetCreator presets = new PresetCreator();
-	 
+
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 	Searcher destinationsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishdestination");
-	
+
 	Searcher publishqueuesearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishqueue");
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
-	
-	//There is a chance that the index is out of date. 
-	
+
+	//There is a chance that the index is out of date.
+
 	SearchQuery q = targetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
 	//log.info("Found ${ids} assets from context ${context}");
-	
+
 	if( ids == null)
 	{
 		//Do a search for importstatus of "added" -> "converted"
@@ -44,7 +43,7 @@ public void createTasksForUpload() throws Exception
 		String assetids = ids.replace(","," ");
 		q.addOrsGroup( "id", assetids );
 	}
-	
+
 	List assets = new ArrayList(targetsearcher.search(q) );
 	if( assets.size() == 0 )
 	{
@@ -54,58 +53,69 @@ public void createTasksForUpload() throws Exception
 	assets.each
 	{
 		foundsome = false;
-		Asset asset = mediaArchive.getAssetBySourcePath(it.sourcepath);
-		
-		String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
-		SearchQuery query = presetsearcher.createSearchQuery();
-		query.addMatches("onimport", "true");
-		query.addMatches("inputtype", rendertype); //video
 
-		HitTracker hits = presetsearcher.search(query);
-	//	log.info("Found ${hits.size()} automatic presets");
-		hits.each
-		{
-			Data hit = it;
-		//	Data newconversion = tasksearcher.createNewData();
 
-			Data preset = (Data) presetsearcher.searchById(it.id);
-			
-			//TODO: Move this to a new script just for auto publishing
-			presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
-			
-			String pages = asset.get("pages");
-			if( pages != null )
+		Lock lock = mediaArchive.getLockManager().lock(mediaArchive.getCatalogId(), "assetconversions/" + it.sourcepath, "admin");
+		try{
+			Asset asset = mediaArchive.getAssetBySourcePath(it.sourcepath);
+
+			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
+			SearchQuery query = presetsearcher.createSearchQuery();
+			query.addMatches("onimport", "true");
+			query.addMatches("inputtype", rendertype); //video
+
+			HitTracker hits = presetsearcher.search(query);
+			//	log.info("Found ${hits.size()} automatic presets");
+			hits.each
 			{
-				int npages = Integer.parseInt(pages);
-				if( npages > 1 )
+				Data hit = it;
+				//	Data newconversion = tasksearcher.createNewData();
+
+				Data preset = (Data) presetsearcher.searchById(it.id);
+
+				//TODO: Move this to a new script just for auto publishing
+				presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
+
+				String pages = asset.get("pages");
+				if( pages != null )
 				{
-					for (int i = 1; i < npages; i++)
+					int npages = Integer.parseInt(pages);
+					if( npages > 1 )
 					{
-						presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
+						for (int i = 1; i < npages; i++)
+						{
+							presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
+						}
 					}
 				}
+				foundsome = true;
 			}
-			foundsome = true;
-		}
-		//Add auto publish queue tasks
-		saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
+			//Add auto publish queue tasks
+			saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
 
-		
-		if( foundsome )
-		{
-			asset.setProperty("importstatus","imported");
-			if( asset.get("previewstatus") == null)
+
+			if( foundsome )
 			{
-				asset.setProperty("previewstatus","converting");
+				asset.setProperty("importstatus","imported");
+				if( asset.get("previewstatus") == null)
+				{
+					asset.setProperty("previewstatus","converting");
+				}
+				//runconversions will take care of setting the importstatus
 			}
-			//runconversions will take care of setting the importstatus
+			else
+			{
+				asset.setProperty("importstatus","complete");
+				asset.setProperty("previewstatus","mime");
+			}
+			mediaarchive.saveAsset( asset, user );
 		}
-		else
-		{
-			asset.setProperty("importstatus","complete");
-			asset.setProperty("previewstatus","mime");
+		finally{
+			mediaArchive.releaseLock(lock);
+
 		}
-		mediaarchive.saveAsset( asset, user );
+
+
 	}
 	if( foundsome )
 	{
@@ -117,7 +127,7 @@ public void createTasksForUpload() throws Exception
 	{
 		log.info("No assets found");
 	}
-	
+
 }
 
 private saveAutoPublishTasks(Searcher publishqueuesearcher, Searcher destinationsearcher, Searcher presetsearcher, Asset asset, MediaArchive mediaArchive) {

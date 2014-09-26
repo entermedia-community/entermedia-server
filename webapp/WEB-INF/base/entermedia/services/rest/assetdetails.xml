@@ -21,7 +21,7 @@
 #else
 	#set( $thumb = "$home$cataloghome/downloads/preview/thumb/$asset.sourcePath/thumb.jpg")
 #end
-<thumb>$thumb</thumb>
+<thumb>#esc($thumb)</thumb>
 #if( $type == "image" || $type == "document")
 #set( $preview = "$home$cataloghome/downloads/preview/large/$asset.sourcePath/image.jpg")
 #elseif(  $type == "video" )

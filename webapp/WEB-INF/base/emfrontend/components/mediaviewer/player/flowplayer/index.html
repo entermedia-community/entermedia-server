@@ -59,7 +59,9 @@ a.mediaplayer img {
 }
 
 </style>		
-		
+
+#set( $loop = $context.getRequestParameter("loop") )
+		$loop
 <script language='javascript'>
 			flowplayer('a.mediaplayer', {src: '$root/flowplayer-3.2.7.swf'},
 			{  
@@ -68,8 +70,8 @@ a.mediaplayer img {
 			    { 
 			        url: '$source', 
 			        provider: 'h264streaming',
-			        scaling: 'fit' 
-		    	}, 
+			        scaling: 'fit' #if( $loop )   , autoPlay: true, onBeforeFinish: function() {return false; } #end
+		    	},
 			     // streaming plugins are configured normally under the plugins node 
 			    plugins: 
 			    { 

@@ -20,6 +20,25 @@
 			</li>
 		#end
 		
+		
+		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
+		
+		#if($canquickpublish )
+		
+		<li><a>Publish</a>
+				<ul>
+					#foreach($item in $quickpublishlist)
+						<li><a href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a></li>
+					#end
+				</ul>
+			</li>
+		
+		
+		
+		
+		
+		#end
+		
 		#if ( $canviewbasket )
 
 			#set( $showremoveselections = $context.findValue("showremoveselections") )
@@ -38,7 +57,6 @@
 		#if ($canmetadatageneral && $hits)
 			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">Edit</a></li>
 		#end
-		
 		#set( $edit = $context.getRequestParameter("editheader") )
 		#if($edit && $edit == "true"  )
 			<li>
@@ -82,7 +100,7 @@
 		#end
 		
 			<li style="float: right;">	
-				<a class="ajax" targetdivinner="view-picker-content" title="$hits.size() results" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
+				<a class="ajax" targetdivinner="resultsdiv" title="$hits.size() results" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
 				
 					#if (!$resultview || $resultview == 'table')
 						View Gallery

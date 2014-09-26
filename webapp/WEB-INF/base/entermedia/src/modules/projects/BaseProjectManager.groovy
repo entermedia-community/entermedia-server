@@ -6,6 +6,7 @@ import model.projects.UserCollection
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
+import com.openedit.users.*
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset;
@@ -163,10 +164,35 @@ public class BaseProjectManager implements ProjectManager
 		if (asset != null && !asset.getLibraries().contains(libraryid))
 		{
 			asset.addLibrary(libraryid);
-			archive.saveAsset(asset, inReq.getUser());
+			archive.saveAsset(asset, inReq.getUser());	
 		}
 	}
 
+	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
+	{
+		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
+		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
+		Collection<String> ids = new ArrayList();
+		for(Data hit in found)
+		{
+			ids.add(hit.get("asset"));
+		}
+		return ids;
+	}
+	public boolean addUserToLibrary( MediaArchive archive, Data inLibrary, User inUser) 
+	{
+		Searcher searcher = archive.getSearcher("libraryusers");
+		Data found = searcher.query().match("userid",inUser.getId()).match("libraryid", inLibrary.getId()).searchOne();	
+		if( found == null )
+		{
+			found = searcher.createNewData();
+			found.setProperty("userid",inUser.getId());
+			found.setProperty("libraryid",inLibrary.getId());
+			searcher.saveData(found,null);
+			return true;
+		}				
+		return false;	
+	}
 	
 }
 

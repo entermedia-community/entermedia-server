@@ -291,8 +291,15 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 			if (id != null && !"id".equals(id) && !"name".equals(id))
 			{
 				Element prop = child.addElement("property");
+				
+				String text = inRootCatalog.getProperty(id);
+				
 				prop.addAttribute("id", id);
-				prop.setText(inRootCatalog.getProperty(id));
+				if(text != null){
+				prop.setText(text);
+				} else{
+					//prop.setText("missing");
+				}
 			}
 		}
 		saveRelatedCategories(inRootCatalog, child);

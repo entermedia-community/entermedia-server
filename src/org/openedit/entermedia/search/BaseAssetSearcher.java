@@ -453,10 +453,14 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	{
 		return getDataConnector().hasChanged(inTracker);
 	}
-
+	public String nextId()
+	{
+		//throw new IllegalAccessError("nextId Not implemented");
+		return getDataConnector().nextId();
+	}
 	public String nextAssetNumber()
 	{
-		return getDataConnector().nextId();
+		return nextId();
 	}
 
 	

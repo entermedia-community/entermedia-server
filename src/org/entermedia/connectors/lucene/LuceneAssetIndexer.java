@@ -49,7 +49,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	{
 		if (fieldStandardProperties == null)
 		{
-			fieldStandardProperties = Arrays.asList("name","description","primaryfile","id","category","viewasset","editasset","ordering","assettype","fileformat","datatype","keywords","sourcepath");
+			fieldStandardProperties = Arrays.asList("name","description","primaryfile","id","category","viewasset","editasset","ordering","assettype","fileformat","sourcepath");
 		}
 		return fieldStandardProperties;
 	}
@@ -158,10 +158,10 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		for (Iterator iterator = inAccessList.iterator(); iterator.hasNext();)
 		{
 			String allow = (String) iterator.next();
-			buffer.append(" ");
+			buffer.append(" | ");
 			buffer.append(allow);
 		}
-		inDoc.add(new Field(inPermission, buffer.toString(), Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
+		inDoc.add(new Field(inPermission, buffer.toString(), INTERNAL_FIELD_TYPE));
 	}
 
 //	protected void populatePermission(Document inDoc, Page inPage, String inPermission, Asset inAsset) throws OpenEditException
@@ -191,12 +191,14 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		super.readStandardProperties(inDetails, inData, inKeywords, doc);
 		
 		Asset asset = (Asset)inData;
+		/**
 		String datatype = asset.getProperty("datatype");
 		if (datatype == null)
 		{
 			datatype = "original"; //What is this for?
 		}
 		doc.add(new Field("datatype", datatype, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
+		*/
 
 //		if(asset.getId() != null)
 //		{
@@ -205,19 +207,19 @@ public class LuceneAssetIndexer extends LuceneIndexer
 //							// case versions
 //		}
 
-		Field path = new Field("sourcepath", asset.getSourcePath(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+		Field path = new Field("sourcepath", asset.getSourcePath(), ID_FIELD_TYPE );
 		doc.add(path);
 
 		String primaryfile = asset.getPrimaryFile();
 		if (primaryfile != null)
 		{
-			Field imagename = new Field("primaryfile", primaryfile, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+			Field imagename = new Field("primaryfile", primaryfile, ID_FIELD_TYPE);
 			doc.add(imagename);
 		}
 		String fileformat = asset.getFileFormat();
 		if(fileformat != null)
 		{
-			Field format = new Field("fileformat", fileformat, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+			Field format = new Field("fileformat", fileformat, ID_FIELD_TYPE);
 			doc.add(format);
 		}
 		
@@ -227,28 +229,30 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			assettype = "none";
 		}
 		PropertyDetail detail = inDetails.getDetail("assettype");
-		docAdd(detail, doc, "assettype", assettype, Field.Store.YES, true);
+		docAdd(detail, doc, "assettype", assettype);
 		
 		if (asset.getCatalogId() == null)
 		{
 			asset.setCatalogId(getMediaArchive().getCatalogId());
 		}
-		Field catalogid = new Field("catalogid", asset.getCatalogId(), Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS);
+		Field catalogid = new Field("catalogid", asset.getCatalogId(),ID_FIELD_TYPE);
 		doc.add(catalogid);
 
 		// this may be invalid field of -1 but we still need to add it for
 		// the search to work
+		/*
 		if (asset.getOrdering() != -1)
 		{
 			doc.add(new Field("ordering", Integer.toString(asset.getOrdering()), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
 		}
+		*/
 		
 		String tagString = asset.get("keywords");
-		if( tagString != null )
-		{
-			Field keys = new Field("keywords", tagString, Field.Store.YES, Field.Index.ANALYZED); //make tokens
-			doc.add(keys);
-		}
+//		if( tagString != null )
+//		{
+//			Field keys = new Field("keywords", tagString, ); //make tokens
+//			doc.add(keys);
+//		}
 		Set catalogs = buildCategorySet(asset);
 		populateDescription(doc, asset, inKeywords, catalogs, tagString);
 
@@ -283,7 +287,10 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		/*
 		 * 'exact-category' only contains categories that we immediately belong to
 		 */
-		populateExactCategory(doc, asset);
+		if( inDetails.getDetail("category-exact") != null)
+		{
+			populateExactCategory(doc, asset);
+		}
 
 		
 	}
@@ -297,12 +304,12 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			Category catalog = (Category) iter.next();
 			buffer.append(catalog.getId());
-			buffer.append(" ");
+			buffer.append(" | ");
 		}
 
 		if (buffer.length() > 0)
 		{
-			doc.add(new Field("category-exact", buffer.toString(), Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
+			doc.add(new Field("category-exact", buffer.toString(), ID_FIELD_TYPE ));
 		}
 		/*
 		 * Not used any more if ( item.getDepartment() != null) { doc.add( new
@@ -464,16 +471,16 @@ public class LuceneAssetIndexer extends LuceneIndexer
 //		return buffer.toString();
 //	}
 
-	public String pad(String inValue)
-	{
-
-		// return getDecimalFormatter().format(inShortprice);
-
-		String all = "0000000000000" + inValue;
-		String cut = all.substring(all.length() - 10); // 10 is the max width
-		// of integers
-		return cut;
-	}
+//	public String pad(String inValue)
+//	{
+//
+//		// return getDecimalFormatter().format(inShortprice);
+//
+//		String all = "0000000000000" + inValue;
+//		String cut = all.substring(all.length() - 10); // 10 is the max width
+//		// of integers
+//		return cut;
+//	}
 
 	public void writeDoc(IndexWriter writer, String inId, Document doc, boolean add)
 	{
