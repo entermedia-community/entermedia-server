@@ -6,7 +6,7 @@ import org.openedit.entermedia.MediaArchive
 import com.openedit.hittracker.HitTracker
 
 
-
+	// this is no longer used: Use BaseCompositeData 
 
 	public void batchSave(){
 		MediaArchive archive = context.getPageValue("mediaarchive");

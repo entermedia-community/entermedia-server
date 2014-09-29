@@ -327,6 +327,9 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	{
 		//compare keywords, categories and data. 
 		List tosave = new ArrayList(100);
+		
+		getSelectedResults().setAutoRefresh(false);
+		
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
