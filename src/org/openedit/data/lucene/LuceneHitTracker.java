@@ -62,6 +62,7 @@ public class LuceneHitTracker extends HitTracker
 	protected int fieldOpenDocsSearcherHash;
 	protected DrillDownQuery fieldDrillDownQuery;
 
+	
 	public DrillDownQuery getDrillDownQuery()
 	{
 		return fieldDrillDownQuery;
@@ -177,7 +178,7 @@ public class LuceneHitTracker extends HitTracker
 			refs = getLuceneConnectionManager().acquire();
 			searcher = refs.getIndexSearcher();
 			// searcher = getLuceneSearcherManager().acquire();
-			if (fieldOpenDocsSearcherHash != searcher.hashCode())
+			if (isAutoRefresh() && fieldOpenDocsSearcherHash != searcher.hashCode())
 			{
 				TopDocs docs = null;
 				// do the search and save the reuslts
@@ -229,8 +230,8 @@ public class LuceneHitTracker extends HitTracker
 				fieldDocs = docs.scoreDocs;
 				// do we need to reset the selections?
 				// Use selected doc ids to reload all the selection data
+				fieldOpenDocsSearcherHash = searcher.hashCode();
 			}
-			fieldOpenDocsSearcherHash = searcher.hashCode();
 
 			List<Data> page = populatePageData(inPageNumberZeroBased, searcher);
 			return page;
