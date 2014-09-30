@@ -79,6 +79,7 @@ public void createTasksForUpload() throws Exception {
 				String pages = asset.get("pages");
 				if( pages != null )
 				{
+					/*
 					int npages = Integer.parseInt(pages);
 					if( npages > 1 )
 					{
@@ -87,6 +88,7 @@ public void createTasksForUpload() throws Exception {
 							presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
 						}
 					}
+					*/
 				}
 				foundsome = true;
 			}
