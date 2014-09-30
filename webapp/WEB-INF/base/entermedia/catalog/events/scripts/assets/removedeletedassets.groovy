@@ -34,7 +34,8 @@ public void checkforTasks()
 	query.addBefore("recordmodificationdate", now.getTime())
 	
 	HitTracker newitems = searcher.search(query);
-	newitems.setHitsPerPage(5000);
+	newitems.setAutoRefresh(false);
+	newitems.setHitsPerPage(1000);
 
 	log.info("Searching for ${query} found ${newitems.size()}");
 	
