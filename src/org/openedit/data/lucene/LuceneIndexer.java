@@ -439,7 +439,21 @@ public class LuceneIndexer
 		Data text = null;
 		if (value != null && detail.isKeyword())
 		{
-			if (detail.isList())
+			if( detail.isMultiValue() && inData instanceof MultiValued)
+			{
+				Collection values = ((MultiValued)inData).getValues(detail.getId());
+				for (Iterator iterator = values.iterator(); iterator.hasNext();)
+				{
+					String val = (String) iterator.next();
+					text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), val);
+					if (text != null)
+					{
+						keywords.append(" ");
+						keywords.append(text.getName());
+					}
+				}
+			}
+			else if (detail.isList())
 			{
 				//Loop up the correct text for the search. Should combine this with the lookup for sorting
 				text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), value);
