@@ -477,8 +477,8 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		}
 		if( inFieldCurrentAsset != null )
 		{
-			toSave.add(inFieldCurrentAsset);
 			checkSave(toSave);
+			toSave.add(inFieldCurrentAsset);
 		}
 		return inFieldCurrentAsset;
 	}
