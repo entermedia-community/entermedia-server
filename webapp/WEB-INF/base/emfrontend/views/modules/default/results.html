@@ -68,7 +68,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $resultdetail)
 	
-		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id">
+		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
 					
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="XXheaderdraggable XXheaderdroppable"> 
 					#text( $detail.name )
@@ -128,8 +128,6 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 	
               $context.putPageValue('detail',  $detail)
               $pages.include("${searchhome}/cell.html", $context)    
-    		
-
     </div>
 </td>
 #end
@@ -159,7 +157,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <script>
     $('th.sortable').on({
         click: function(){
-            var id = $(this).attr('id');
+            var id = $(this).attr('sortby');
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
                     jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
