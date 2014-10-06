@@ -1012,6 +1012,10 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				throw new OpenEditException("No " + getSearchType() + "properties.xml file available");
 			}
 
+			Term[] terms = new Term[inRecords.size()];
+			List<Document> docs = new ArrayList<Document>(inRecords.size());
+			
+			int i = 0;
 			for (Iterator iterator = inRecords.iterator(); iterator.hasNext();)
 			{
 				Data data = (Data) iterator.next();
@@ -1022,15 +1026,22 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				}
 				Document doc = new Document();
 				updateIndex(data, doc, details);
-				getLuceneIndexer().updateFacets(details,doc, inTaxonomyWriter);
 				Term term = new Term("id", data.getId());
-				inWriter.updateDocument(term, doc, getAnalyzer());
+				terms[i++] = term;
+				docs.add(doc);
+				getLuceneIndexer().updateFacets(details,doc, inTaxonomyWriter);
 				if (fieldCacheManager != null)
 				{
 					getCacheManager().remove(getIndexPath(), data.getId());
 				}
-				clearIndex();
 			}
+			inWriter.deleteDocuments(terms);
+			inWriter.addDocuments(docs);
+			
+			//inWriter.updateDocument(term, doc, getAnalyzer());
+			clearIndex();
+
+			
 			if( inTaxonomyWriter != null)
 			{
 				inTaxonomyWriter.commit();

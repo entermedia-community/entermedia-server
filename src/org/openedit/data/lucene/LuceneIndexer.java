@@ -307,7 +307,14 @@ public class LuceneIndexer
 		}
 		if( field == null)
 		{
-			field = new Field(inId, inValue, INPUT_FIELD_TYPE ); //tokenized for searchability
+			if( inDetail.isSortable() && !inDetail.isList() )
+			{
+				field = new Field(inId, inValue, INPUT_FIELD_TYPE_SORTABLE ); //tokenized for searchability
+			}
+			else
+			{
+				field = new Field(inId, inValue, INPUT_FIELD_TYPE ); //tokenized for searchability
+			}
 		}
 		doc.add(field);
 
@@ -642,6 +649,18 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(true);
 		type.setTokenized(true);
+		type.setOmitNorms(true); //Makes it sortable?
+		return type;
+	}
+	protected static final FieldType INPUT_FIELD_TYPE_SORTABLE = getInputFieldTypeSortable();
+
+	static FieldType getInputFieldTypeSortable()
+	{
+		FieldType type = new FieldType();
+		type.setIndexed(true);
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
+		type.setStored(true);
+		type.setTokenized(true);
 		type.setOmitNorms(false); //Makes it sortable?
 		return type;
 	}
@@ -655,7 +674,7 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(true);
 		type.setTokenized(false);
-		type.setOmitNorms(true); 
+		type.setOmitNorms(false); //Used for multi-editing or editing a resultset inline
 		return type;
 	}
 
@@ -672,7 +691,7 @@ public class LuceneIndexer
 		return type;
 	}
 
-	protected static final FieldType SORT_FIELD_TYPE = getIdFieldType();
+	protected static final FieldType SORT_FIELD_TYPE = getSortFieldType();
 
 	static FieldType getSortFieldType()
 	{

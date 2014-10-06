@@ -75,8 +75,8 @@ public class HitIterator implements Iterator
 		// 50 - (1 * 40) = 10 relative
 		int indexlocation = hitCount - ( page * getLuceneHitTracker().getHitsPerPage() );
 
-		hitCount++;
-		
+		//hitCount++;
+		//System.out.println(hitCount + " is " + ( page * getLuceneHitTracker().getHitsPerPage() + indexlocation));
 		return fieldCurrentPageData.get(indexlocation);
 
 	}
