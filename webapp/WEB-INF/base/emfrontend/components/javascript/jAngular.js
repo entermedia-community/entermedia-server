@@ -1,4 +1,5 @@
 // jAngular.js
+jAngular.PREFIX = "ng-";
 
 var Scope = function() {
 		var parentScope;
@@ -45,6 +46,26 @@ var Scope = function() {
 
 var Replacer = function() {
 		var out = {
+				regex : /{{([^{]+)}}/g ,
+				replace: function( inCode, scope)
+				{
+					var text = inCode;
+					var m;
+					while ((m = this.regex.exec(text)) !== null)
+					{
+						try
+						{
+							text = text.replace(m[0], eval(m[1]));
+						}
+						catch( err )
+						{
+							//Dont log?
+							console.log(err);
+						}	
+					}
+					return text;
+				}	
+				/*
 				replace : function( inCode, scope)
 				{
 						if( inCode == null)
@@ -84,6 +105,7 @@ var Replacer = function() {
 						}
 						return inCode;
 				}   
+				*/
 		};
 		return out;
 };
@@ -92,17 +114,7 @@ var jAngular =  {};
 
 var jAngularScopes = {};
 
-jAngular.livequery = function()
-{
-		$( "[ng-click]").livequery('click', function(e)
-		{
-				e.preventDefault();
-				var theel = jQuery(this);
-				var code = theel.attr("ng-click");
-				var scope = jAngular.findScopeFor(theel);
-				eval(code);
-		});
-}
+jAngular.replacer = new Replacer();
 
 jAngular.findScope = function(scopename)
 {
@@ -111,31 +123,12 @@ jAngular.findScope = function(scopename)
 		return  foundscope;
 }
 
-
 jAngular.findScopeFor = function(inElement)
 {
-				var theel = $(inElement);
-
-		/*
-				var theel = inElement;
-				var scopename = theel.attr("ng-scope");
-				while( scopename !== null )
-				{
-						theel = theel.parentNode;
-						if(theel)
-						{ 
-								scopename = theel.attr("ng-scope");
-						}
-						else
-						{
-								break;
-						}
-				}
-		*/
-		
-				var found = theel.closest("[ng-scope]");
-				var scopename = found.attr("ng-scope");
-				return jAngular.findScope(scopename);
+		var theel = $(inElement);
+		var found = theel.closest("[ng-scope]");
+		var scopename = found.attr("ng-scope");
+		return jAngular.findScope(scopename);
 }       
 
 jAngular.addScope = function(scopename, inScope)
@@ -143,6 +136,7 @@ jAngular.addScope = function(scopename, inScope)
 		jAngularScopes[scopename] = inScope; 
 }
 
+/*
 jAngular.replace = function(selector, scope)
 {
 		var replacer = new Replacer();
@@ -162,54 +156,119 @@ jAngular.replace = function(selector, scope)
 		}	
 
 }
+*/
 
-jAngular.replaceRows = function(div , scope)
+jAngular.processRepeat = function(li , scope)
 {
-		var replacer = new Replacer();
+	var li = $(this);
+	var vars = li.attr("ng-repeat");
+	var split = vars.indexOf(" in ");
+	var lid = li.contents().attr("id");
+	
+	var rowname = vars.substring(0,split);
+	var loopname = vars.substring(split + 4,vars.length );
+	
+	var rows = scope.eval(loopname);  //TODO: Find the name
+	
+	//set a local scope of asset = rows[i];
+	var origContent = this.origContent;
+	if( typeof( origContent ) === 'undefined' )
+	{
+			origContent = li.html();
 
-		var selector = div + 'li[ng-repeat]';
-		
-		//Live query this?
-		$( selector ).each(function( index ) 
-		{
-				var li = $(this);
-				var vars = li.attr("ng-repeat");
-				var split = vars.indexOf(" in ");
-				var lid = li.contents().attr("id");
-				
-				var rowname = vars.substring(0,split);
-				var loopname = vars.substring(split + 4,vars.length );
-				
-				
-				var rows = scope.eval(loopname);  //TODO: Find the name
-				
-				//set a local scope of asset = rows[i];
-				var origContent = this.origContent;
-				if( typeof( origContent ) === 'undefined' )
-				{
-						origContent = li.html();
+			this.origContent =origContent; 
+	}
+	li.html("");
+	if( rows )
+	{
+			$.each(rows, function(index, value) {
+					//TODO: replace scope variables
+					var localscope = scope.createScope();
+					localscope.add("loopcountzero",index);
+					localscope.add("loopcountone",index + 1);
+					
+					localscope.add(rowname,value);
 
-						this.origContent =origContent; 
-				}
-				li.html("");
-				if( rows )
-				{
-						$.each(rows, function(index, value) {
-								//TODO: replace scope variables
-								var localscope = scope.createScope();
-								localscope.add("loopcountzero",index);
-								localscope.add("loopcountone",index + 1);
-								
-								localscope.add(rowname,value);
-		
-								var evalcontent = replacer.replace(origContent,localscope);
-								evalcontent = evalcontent.replace("ng-src","src");
-								li.append(evalcontent);
-								//var lidr = li.contents().attr("id");
-						});
-				 }
-		});
+					var child = li.append(origContent);
+					jAngular.process( child, localscope);
+//					var evalcontent = replacer.replace(origContent,localscope);
+//					evalcontent = evalcontent.replace("ng-src","src");
+//					li.append(evalcontent);
+				});
+		 }
 }
+
+jAngular.process = function(div, scope)
+{
+	var newscope  = div.attr("ng-scope");
+	if( newscope )
+	{
+		scope = jAngular.findScope(newscope);
+	}
+
+	if( scope) 
+	{
+		$.each(div.attributes, function() 
+		{
+		   var attr = this;
+		   var code = div.data("origattr" + attr.name);
+		   if( !code )
+		   {
+			   if( attr.value.indexOf("{{") > -1)
+			   {
+				   code = attr.value;
+				   div.data("origattr" + attr.name, code);   //backup original code for future renderings
+			   }
+		   }
+		   if( code )
+		   {
+			   var val = jAngular.replacer.replace(code,scope);
+			   attr.attr(attr.name,val);
+		   }
+		   var aname = attr.name;
+		   if( aname.indexOf(jAngular.PREFIX) > -1 )
+		   {
+			   if( aname == jAngular.PREFIX + "click" )
+			   {
+				   $div.on('click', function(e)
+					{
+						e.preventDefault();
+						var theel = jQuery(this);
+						var code = theel.attr("ng-click");
+						eval(code);
+					});
+			   }
+			   if( aname == jAngular.PREFIX + "repeat" )
+			   {
+				   //We are going to loop the content of this div/li
+				   jAngular.processRepeat(div,scope);
+			   }
+		   }
+		   //TODO: Now check for loops	   
+		}  
+		//TODO: Deal with text variables
+		var code = div.data("origtext");   
+		if( !code ) 
+		{
+			var orig = div.text();
+		    if( orig && orig.indexOf("{{") > -1)
+		    {
+				div.data("origtext", orig);   //backup original code for future renderings
+				code = orig;
+			}
+		}
+		if( code )
+		{
+			 var val = jAngular.replacer.replace(code,scope);
+			 div.text(val);
+		}
+	}	
+	div.children().each(function()
+	{
+		jAngular.process(this,scope);
+	});
+}
+
 
 jAngular.render = function(div, scope)
 {
@@ -232,14 +291,10 @@ jAngular.render = function(div, scope)
 		
 		var toplevel = $(div);
 		
-		if( !scope)
-		{
-			scope = jAngular.findScopeFor(toplevel);
-		}	 
-		if( !scope) 
-		{
-				alert( "No ng-scope= defined for " + div);
-		}
+		//look at all the attributes
+		jAngular.process(div,scope);
+
+		/*
 		jAngular.replaceRows(div, scope);
 
 		$(div + " .jangular-render" ).each(function()
@@ -270,6 +325,8 @@ jAngular.render = function(div, scope)
 			element.text(text);
 
 		});
+		*/
+		
 };
 
 
