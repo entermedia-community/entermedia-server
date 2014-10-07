@@ -13,7 +13,6 @@ public void init()
 		
 		SearchQuery q = assetsearcher.createSearchQuery().append("importstatus", "imported");
 		HitTracker assets =  assetsearcher.search(q);
-		assets.setAutoRefresh(false);
 		assets.setHitsPerPage(1000);
 		
 		//TODO: Only check importstatus of imported?

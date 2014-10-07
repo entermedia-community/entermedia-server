@@ -13,7 +13,6 @@ public void init()
 		
 		//Loop over every user profile and move the userid colum into the id column
 		HitTracker profiles = searcher.getAllHits();
-		profiles.setAutoRefresh(false);
 		profiles.setHitsPerPage(1000);
 		int ok = 0;
 		profiles.each

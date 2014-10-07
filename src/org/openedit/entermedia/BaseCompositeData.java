@@ -154,8 +154,8 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		{
 			selecteddata.setSelections(existing.getSelections());
 			selecteddata.setShowOnlySelected(true);
-			selecteddata.setHitsPerPage(10000);
 		}
+		selecteddata.setHitsPerPage(1000);
 		setSelectedResults(selecteddata);			
 		getProperties().clear();
 	}
@@ -335,8 +335,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	{
 		//compare keywords, categories and data. 
 		List tosave = new ArrayList(100);
-		
-		log.info("Saving multi");
+		long start = System.currentTimeMillis();
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -389,7 +388,9 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		}
 		
 		getSearcher().saveAllData( tosave, null);
-		log.info("Saving multi done");
+		long time = System.currentTimeMillis() - start;
+		
+		log.info("Saving multi done in " + time);
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
 	}

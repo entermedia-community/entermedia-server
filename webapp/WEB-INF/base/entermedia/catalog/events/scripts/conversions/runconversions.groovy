@@ -418,7 +418,7 @@ public void checkforTasks()
 		
 			//mediaarchive.fireSharedMediaEvent("conversions/runconversions");   //this should not be needed
 	}
-	log.info("Added ${newtasks.size()} conversion tasks for processing");
+	log.debug("Added ${newtasks.size()} conversion tasks for processing");
 	
 }
 

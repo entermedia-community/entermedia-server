@@ -111,7 +111,7 @@ public class LuceneIndexer
 		if (tosave != null)
 		{
 			String val = DateTools.dateToString(tosave, Resolution.SECOND);
-			doc.add(new Field(inDetail.getId(), val, ID_FIELD_TYPE));
+			doc.add(new Field(inDetail.getId(), val, INPUT_FIELD_TYPE_ONE_TOKEN));
 		}
 	}
 
@@ -269,7 +269,7 @@ public class LuceneIndexer
 					
 		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
 		
-		boolean treatasnumber = isNumber(inDetail);
+		boolean treatasnumber = inDetail.isNumber();
 		if (inDetail.isDataType("date"))
 		{
 			Date target = DateStorageUtil.getStorageUtil().parseFromStorage(inValue);
@@ -301,15 +301,15 @@ public class LuceneIndexer
 				return;
 			}
 		}
-		else if( ( inId.equals("id") || inDetail.isList() ||  inId.contains("sourcepath") ) &&  !inDetail.isMultiValue() )
+		else if( ( inId.equals("id") || inId.contains("sourcepath") )  ) //TODO: be sure attachments still works with spaces in sourcepath
 		{
-			field = new Field(inId, inValue, ID_FIELD_TYPE );
+			field = new Field(inId, inValue, INPUT_FIELD_TYPE_ONE_TOKEN );
 		}
 		if( field == null)
 		{
-			if( inDetail.isSortable() && !inDetail.isList() )
+			if( !inDetail.isMultiValue() && ( inDetail.isList() || inDetail.isBoolean() || inDetail.isNumber() || inDetail.isDate() ) )
 			{
-				field = new Field(inId, inValue, INPUT_FIELD_TYPE_SORTABLE ); //tokenized for searchability
+				field = new Field(inId, inValue, INPUT_FIELD_TYPE_ONE_TOKEN ); //not tokenized for lower memory
 			}
 			else
 			{
@@ -318,22 +318,22 @@ public class LuceneIndexer
 		}
 		doc.add(field);
 
-		if (inDetail.isList() && inDetail.isSortable() )
+		if (inDetail.isExternalSort() )
 		{
-			String id = inDetail.getSortProperty();
-			if (inId.equals(id) && !treatasnumber)
-			{
-				return;
-			}
-			else if ( inDetail.getListCatalogId() != null)
+			String sortfield = inDetail.getSortProperty();
+			if ( inDetail.isList() && inDetail.getListCatalogId() != null)
 			{
 				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
-				if (inValue != null)
+				if( row != null)
 				{
-					inValue = inValue.toString().toLowerCase();
+					inValue = row.getName();
 				}
-				doc.add(new Field(id, inValue, SORT_FIELD_TYPE ));
 			}
+			if (inValue != null)
+			{
+				inValue = inValue.toString().toLowerCase();
+			}
+			doc.add(new Field(sortfield, inValue, SORT_FIELD_TYPE ));
 		}
 		
 	}
@@ -420,19 +420,6 @@ public class LuceneIndexer
 		}
 	}
 */
-	protected boolean isNumber(PropertyDetail inDetail)
-	{
-		boolean treatasnumber = false;
-
-		if (inDetail != null)
-		{
-			if (inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long"))
-			{
-				treatasnumber = true;
-			}
-		}
-		return treatasnumber;
-	}
 
 	protected void readProperty(Data inData, Document doc, StringBuffer keywords, PropertyDetail detail)
 	{
@@ -652,32 +639,19 @@ public class LuceneIndexer
 		type.setOmitNorms(true); //Makes it sortable?
 		return type;
 	}
-	protected static final FieldType INPUT_FIELD_TYPE_SORTABLE = getInputFieldTypeSortable();
+	protected static final FieldType INPUT_FIELD_TYPE_ONE_TOKEN = getInputFieldTypeOneToken();
 
-	static FieldType getInputFieldTypeSortable()
+	static FieldType getInputFieldTypeOneToken()
 	{
 		FieldType type = new FieldType();
 		type.setIndexed(true);
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(true);
-		type.setTokenized(true);
-		type.setOmitNorms(false); //Makes it sortable?
+		type.setTokenized(false);//true Makes it searchable  and means you cant sort
+		type.setOmitNorms(true);  //Makes it ranked
 		return type;
 	}
 	
-	protected static final FieldType ID_FIELD_TYPE = getIdFieldType();
-
-	static FieldType getIdFieldType()
-	{
-		FieldType type = new FieldType();
-		type.setIndexed(true);
-		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
-		type.setStored(true);
-		type.setTokenized(false);
-		type.setOmitNorms(false); //Used for multi-editing or editing a resultset inline
-		return type;
-	}
-
 	protected static final FieldType INTERNAL_FIELD_TYPE = getInternalFieldType();
 
 	static FieldType getInternalFieldType()
@@ -700,7 +674,7 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(false);
 		type.setTokenized(false);
-		type.setOmitNorms(false); 
+		type.setOmitNorms(true); 
 		return type;
 	}
 
@@ -713,7 +687,7 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_AND_FREQS);  //TODO: Move this to freq check
 		type.setStored(false);
 		type.setTokenized(true);
-		type.setOmitNorms(true); //Norms are faster for dates and numbers
+		type.setOmitNorms(true); //Norms are nice to have but not really needed
 		return type;
 	}
 

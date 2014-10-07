@@ -178,7 +178,6 @@ public class LuceneHitTracker extends HitTracker
 			refs = getLuceneConnectionManager().acquire();
 			searcher = refs.getIndexSearcher();
 			// searcher = getLuceneSearcherManager().acquire();
-			//isAutoRefresh() && 
 			if (fieldOpenDocsSearcherHash != searcher.hashCode())
 			{
 				TopDocs docs = null;
@@ -224,7 +223,7 @@ public class LuceneHitTracker extends HitTracker
 					}
 					else
 					{
-						log.debug(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getSessionId());
+						log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() );
 					}
 				}
 				fieldSize = docs.totalHits;

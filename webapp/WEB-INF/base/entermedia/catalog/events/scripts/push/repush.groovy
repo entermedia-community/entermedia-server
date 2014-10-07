@@ -24,7 +24,6 @@ public void init()
 		q.addSortBy("id");
 		HitTracker assets = targetsearcher.search(q);
 
-		assets.setAutoRefresh(false);
 		assets.setHitsPerPage(1000);
 
 		int count = 0;
