@@ -6595,16 +6595,18 @@ div.tableheaderactions a
     padding: 0px;
     height: 21px;
     box-sizing: content-box;
+    -moz-box-sizing: content-box;
 }
 .oeinputform  select {
     padding: 0px;
     height: 21px;
     box-sizing: content-box;
+    -moz-box-sizing: content-box;
 }
-
 
 #nav, #maximizer a, a.btn, input[type="text"], input[type="password"], textarea, .emtree .arrow, .emtable a.row  {
     box-sizing: content-box;
+    -moz-box-sizing: content-box;
 }
 
 .thumbnail {
@@ -6624,10 +6626,12 @@ div.tableheaderactions a
     margin-bottom: 0px;
     vertical-align: middle;
     box-sizing: content-box;
+    -moz-box-sizing: content-box;
 }
 
 #workarea ul li:first-child, #emcontainer #emselectable table th, .categories-widget, #emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
     box-sizing: content-box;
+    -moz-box-sizing: content-box;
 }
 
 h4 {
@@ -6636,8 +6640,8 @@ h4 {
 
 #nav .flat-left {
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
-
 #attachmenttree ul li div:hover .actions a {
     line-height: 34px;
 }

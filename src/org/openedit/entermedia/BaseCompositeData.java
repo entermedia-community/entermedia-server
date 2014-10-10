@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
@@ -16,11 +18,15 @@ import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.data.lucene.LuceneIndexer;
 
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 
 public class BaseCompositeData extends BaseData implements Data, CompositeData
 {
+	private static final Log log = LogFactory.getLog(BaseCompositeData.class);
+
 	private static final long serialVersionUID = -7154445212382362391L;
 	protected Searcher fieldSearcher;
 	protected HitTracker fieldInitialSearchResults; 
@@ -136,7 +142,9 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	protected void reloadData() 
 	{
 		HitTracker existing = getInitialSearchResults();
-		HitTracker selecteddata = getSearcher().search(existing.getSearchQuery());
+		SearchQuery q = existing.getSearchQuery().copy();
+		q.setSortBy("id");
+		HitTracker selecteddata = getSearcher().search(q);
 		if( existing.isAllSelected() )
 		{
 			//rerun the search
@@ -146,8 +154,8 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		{
 			selecteddata.setSelections(existing.getSelections());
 			selecteddata.setShowOnlySelected(true);
-			selecteddata.setHitsPerPage(10000);
 		}
+		selecteddata.setHitsPerPage(1000);
 		setSelectedResults(selecteddata);			
 		getProperties().clear();
 	}
@@ -327,9 +335,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	{
 		//compare keywords, categories and data. 
 		List tosave = new ArrayList(100);
-		
-		getSelectedResults().setAutoRefresh(false);
-		
+		long start = System.currentTimeMillis();
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -380,7 +386,11 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 				tosave.clear();
 			}
 		}
+		
 		getSearcher().saveAllData( tosave, null);
+		long time = System.currentTimeMillis() - start;
+		
+		log.info("Saving multi done in " + time);
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
 	}
@@ -468,8 +478,8 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		}
 		if( inFieldCurrentAsset != null )
 		{
-			toSave.add(inFieldCurrentAsset);
 			checkSave(toSave);
+			toSave.add(inFieldCurrentAsset);
 		}
 		return inFieldCurrentAsset;
 	}

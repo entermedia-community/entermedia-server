@@ -207,19 +207,19 @@ public class LuceneAssetIndexer extends LuceneIndexer
 //							// case versions
 //		}
 
-		Field path = new Field("sourcepath", asset.getSourcePath(), ID_FIELD_TYPE );
+		Field path = new Field("sourcepath", asset.getSourcePath(), INPUT_FIELD_TYPE_ONE_TOKEN );
 		doc.add(path);
 
 		String primaryfile = asset.getPrimaryFile();
 		if (primaryfile != null)
 		{
-			Field imagename = new Field("primaryfile", primaryfile, ID_FIELD_TYPE);
+			Field imagename = new Field("primaryfile", primaryfile, INPUT_FIELD_TYPE_ONE_TOKEN);
 			doc.add(imagename);
 		}
 		String fileformat = asset.getFileFormat();
 		if(fileformat != null)
 		{
-			Field format = new Field("fileformat", fileformat, ID_FIELD_TYPE);
+			Field format = new Field("fileformat", fileformat, INPUT_FIELD_TYPE_ONE_TOKEN);
 			doc.add(format);
 		}
 		
@@ -235,7 +235,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			asset.setCatalogId(getMediaArchive().getCatalogId());
 		}
-		Field catalogid = new Field("catalogid", asset.getCatalogId(),ID_FIELD_TYPE);
+		Field catalogid = new Field("catalogid", asset.getCatalogId(),INPUT_FIELD_TYPE_ONE_TOKEN);
 		doc.add(catalogid);
 
 		// this may be invalid field of -1 but we still need to add it for
@@ -309,7 +309,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 
 		if (buffer.length() > 0)
 		{
-			doc.add(new Field("category-exact", buffer.toString(), ID_FIELD_TYPE ));
+			doc.add(new Field("category-exact", buffer.toString(), INPUT_FIELD_TYPE_ONE_TOKEN ));
 		}
 		/*
 		 * Not used any more if ( item.getDepartment() != null) { doc.add( new

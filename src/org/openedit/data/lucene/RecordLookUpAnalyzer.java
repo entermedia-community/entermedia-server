@@ -44,7 +44,7 @@ public class RecordLookUpAnalyzer extends Analyzer
 		}
 		else
 		{
-			source = new KeywordTokenizer(inReader);
+			source = new KeywordTokenizer(inReader); //Emits the entire input as a single token.
 		}
 		TokenStream filter = new LowerCaseFilter(Version.LUCENE_41, source);
 		return new TokenStreamComponents(source,filter);

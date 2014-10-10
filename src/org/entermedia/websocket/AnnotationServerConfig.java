@@ -23,16 +23,20 @@ import javax.websocket.Endpoint;
 import javax.websocket.server.ServerApplicationConfig;
 import javax.websocket.server.ServerEndpointConfig;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermedia.websocket.annotation.AnnotationConnection;
 import org.entermedia.websocket.annotation.AnnotationServer;
 
 public class AnnotationServerConfig implements ServerApplicationConfig
 {
+	private static final Log log = LogFactory.getLog(AnnotationServerConfig.class);
 	GetHttpSessionConfigurator configurator = new GetHttpSessionConfigurator();
 	
 	@Override
 	public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> scanned)
 	{
+		log.info("loading endpoints " + scanned.size());
 		Set<ServerEndpointConfig> result = new HashSet<ServerEndpointConfig>();
 		if (scanned.contains(AnnotationConnection.class))
 		{
@@ -40,6 +44,7 @@ public class AnnotationServerConfig implements ServerApplicationConfig
 					AnnotationConnection.class, "/entermedia/services/websocket/echoProgrammatic")
 					.configurator(configurator).build();
 			result.add(conf);
+			log.info("configured /entermedia/services/websocket/echoProgrammatic");
 		}
 		return result;
 	}
@@ -50,12 +55,14 @@ public class AnnotationServerConfig implements ServerApplicationConfig
 		// Deploy all WebSocket endpoints defined by annotations in the examples
 		// web application. Filter out all others to avoid issues when running
 		// tests on Gump
+		log.info("loading classes " + scanned.size());
 		Set<Class<?>> results = new HashSet<Class<?>>();
 		for (Class<?> clazz : scanned)
 		{
 			if (clazz.getPackage().getName().startsWith("org.entermedia.websocket."))
 			{
 				results.add(clazz);
+				log.info("configured " + clazz.getPackage().getName());
 			}
 		}
 		return results;

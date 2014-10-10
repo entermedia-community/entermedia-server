@@ -178,7 +178,7 @@ public class LuceneHitTracker extends HitTracker
 			refs = getLuceneConnectionManager().acquire();
 			searcher = refs.getIndexSearcher();
 			// searcher = getLuceneSearcherManager().acquire();
-			if (isAutoRefresh() && fieldOpenDocsSearcherHash != searcher.hashCode())
+			if (fieldOpenDocsSearcherHash != searcher.hashCode())
 			{
 				TopDocs docs = null;
 				// do the search and save the reuslts
@@ -223,7 +223,7 @@ public class LuceneHitTracker extends HitTracker
 					}
 					else
 					{
-						log.debug(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " page " + inPageNumberZeroBased + " sort by: " + getLuceneSort() + " " + getSessionId());
+						log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() );
 					}
 				}
 				fieldSize = docs.totalHits;
@@ -279,7 +279,7 @@ public class LuceneHitTracker extends HitTracker
 	 * Data lastRecord =visitor.createSearchResult(); page.add( lastRecord ); }
 	 * // return lastDoc;
 	 * 
-	 * //log.info( getSearchType() + " Page  " + inPageNumberZeroBased +
+	 * //log.info( getSearchType() + " Page ID_FIELD_TYPE " + inPageNumberZeroBased +
 	 * " ended with " + lastDoc.doc + " = " + lastRecord.getId()); //ScoreDoc
 	 * lastone = readPageOfData(searcher, 0, docs, page);
 	 * setCursorForPage(lastDoc,inPageNumberZeroBased); if( log.isDebugEnabled()
@@ -318,16 +318,20 @@ public class LuceneHitTracker extends HitTracker
 
 		ScoreDoc lastDoc = null;
 		Map<String, Integer> columns = new TreeMap<String, Integer>(); //TODO: Test performance vs HashMap
+		//columns.put("dataid", new Integer(100));
 		for (int i = 0; start + i < max; i++)
 		{
 			int offset = start + i;
 			lastDoc = fieldDocs[offset];
 			int docid = lastDoc.doc;
+			//log.info(getQuery() + "doc id" + docid);
 			// final SearchResultStoredFieldVisitor visitor = new
 			// SearchResultStoredFieldVisitor(columns);
 			final SearchResultStoredFieldVisitor visitor = new SearchResultStoredFieldVisitor(columns);
+			//visitor.putValue("dataid", offset +" was " + docid );
 			searcher.doc(docid, visitor);
 			Data data = visitor.createSearchResult();
+			
 			// if data.getId()
 			page.add(data);
 		}

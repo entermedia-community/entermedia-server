@@ -7,7 +7,7 @@
 	$pages.include("$apphome/components/annotations/ajax/svg/svg-definitions.tpl.html")
  
     <div class="row">
-        <div class="col-md-10" style="margin-right: -11px;" >
+        <div class="col-md-9" style="margin-right: -11px;" >
         
                 <div class="annotations-carousel">
                 <ul>
@@ -78,11 +78,11 @@
 		            <h3 class="jangular-render">{{scope.annotationEditor.currentAnnotatedAsset.assetData.name}}</h3>
 		</div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <ul class="comment-list" id="annotationlist">
                 <li class="user-input clearfix" id="annotation-template">
                     <form id="annotation-input{{scope.annotation.id}}" >
-                        <textarea class="user-comment-input" name="user-input" rows="7" cols="33" >{{scope.annotation.comment}}</textarea>
+                        <textarea class="user-comment-input" name="user-input" rows="7" cols="30" >{{scope.annotation.comment}}</textarea>
                         <div class="pull-right">
                             <button name="user-add-comment" class="btn btn-danger" ng-click='scope.annotationEditor.cancelComment("{{scope.annotation.id}}")'>Cancel</button>
                             <button name="user-add-comment" class="btn btn-primary" ng-click='scope.annotationEditor.saveComment("{{scope.annotation.id}}")'>Add Comment</button>
