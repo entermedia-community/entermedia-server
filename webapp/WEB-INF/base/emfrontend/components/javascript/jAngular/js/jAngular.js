@@ -136,13 +136,13 @@ jAngular.processRepeat = function(li , scope)
 
 jAngular.process = function(div, scope)
 {
+	console.log("Processing: ", div);
 	var element = div.get(0);
 	var newscope  = div.attr("ng-scope");
 	if( newscope )
 	{
 		scope = jAngular.findScope(newscope);
 	}
-
 	if( scope) 
 	{
 		$.each(element.attributes, function() 
@@ -150,6 +150,10 @@ jAngular.process = function(div, scope)
 		   var attr = this;
 		   var aname = attr.name;
 		   var code = div.data("origattr" + aname);
+			if (aname == "id" && scope.loopcountone)
+		  	{
+				div.attr('id', attr.value + scope.loopcountone);
+			}
 		   if( !code )
 		   {
 			   if( attr.value.indexOf("{{") > -1)
@@ -173,7 +177,7 @@ jAngular.process = function(div, scope)
 						e.preventDefault();
 						var theel = jQuery(this);
 						var code = theel.attr(jAngular.PREFIX + "click");
-						eval(code);
+						scope.eval(code);
 					});
 			   }
 			   if( aname == jAngular.PREFIX + "repeat" )

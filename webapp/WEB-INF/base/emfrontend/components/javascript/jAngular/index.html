@@ -13,35 +13,35 @@
     	<!-- meat goes here -->
     	<div id="outermostWrapper">
 
-	    	<div id="secondWrapper" ng-scope="secondScope">
-	    		<h1>I'm a {{moose}}</h1>
+	    	<div id="wrapper" ng-scope="firstScope">
+	    		<h1>Hello {{worldtext}}</h1>
 	    		<ul>
-		    		<li id="secondOutsideloop" ng-repeat="item in secondItems">
+		    		<li id="outsideloop" ng-repeat="item in items">
 		    			<h1>{{item.name}}</h1>
 		    			<a>{{item.info}} AND {{item.name}}</a>    			
-		    			<button ng-click="item.clear('{{item.info}})">Click Button</button>
-		    			<span id="secondSomespan">{{item.nested.info}}</span>
+		    			<button ng-click="item.clear('{{item.info}}')">Click Button</button>
+		    			<span id="somespan">{{item.nested.info}}</span>
 		    			<a class="{{item.type}}">Some additional text</a>
 		    			<ul>
-			    			<li id="secondInsideloop" ng-repeat="stuff in item.tasks">
+			    			<li id="insideloop" ng-repeat="stuff in item.tasks">
 			    				<a>{{stuff}}</a>
 			    			</li>
 			    		</ul>
 		    		</li>
 	    		</ul>
 	    	</div>
-	    	    	
-	    	<div id="wrapper" ng-scope="scope">
-	    		<h1>Hello {{worldtext}}</h1>
+
+	    	<div id="secondWrapper" ng-scope="secondScope">
+	    		<h1>I'm a {{moose}}</h1>
 	    		<ul>
-		    		<li id="outsideloop" ng-repeat="item in items">
+		    		<li id="secondOutsideloop" ng-repeat="item in secondItems">
 		    			<h1>{{item.name}}</h1>
 		    			<a>{{item.info}} AND {{item.name}}</a>    			
-		    			<button ng-click="item.clear('{{item.info}})">Click Button</button>
-		    			<span id="somespan">{{item.nested.info}}</span>
+		    			<button ng-click="item.clear('{{item.info}}')">Click Button</button>
+		    			<span id="secondSomespan">{{item.nested.info}}</span>
 		    			<a class="{{item.type}}">Some additional text</a>
 		    			<ul>
-			    			<li id="insideloop" ng-repeat="stuff in item.tasks">
+			    			<li id="secondInsideloop" ng-repeat="stuff in item.tasks">
 			    				<a>{{stuff}}</a>
 			    			</li>
 			    		</ul>

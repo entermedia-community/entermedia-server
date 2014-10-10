@@ -2,7 +2,7 @@ $(document).ready(function()
 {
 	/* test model for jAngular */
 
-	var scope = new Scope();
+	var firstScope = new Scope();
 	var worldtext = "world";
 	var items =
 		[{
@@ -31,10 +31,11 @@ $(document).ready(function()
 			tasks: ["do the thing", "fix broken stuff", "walk the dog", "eat food"],			
 			type: "fruity"
 		}];
-	scope.add("items", items);
-	scope.add("worldtext", worldtext);
+	firstScope.add("items", items);
+	firstScope.add("worldtext", worldtext);
+	firstScope.add("scopename", "firstScope");
 
-	jAngular.addScope("scope", scope);
+	jAngular.addScope("firstScope", firstScope);
 
 	var secondScope = new Scope();
 	var babyMoose = "BABY MOOSE";
@@ -68,11 +69,12 @@ $(document).ready(function()
 		
 	secondScope.add("secondItems", secondItems);
 	secondScope.add("moose", babyMoose);
+	secondScope.add("scopename", "secondScope");
 
 	jAngular.addScope("secondScope", secondScope);
 
-	// jAngular.render("#wrapper", scope);
-	// jAngular.render("#secondWrapper", secondScope);
+	//jAngular.render("#wrapper", firstScope);
+	//jAngular.render("#secondWrapper", secondScope);
 
 	jAngular.render("body");
 
