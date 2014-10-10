@@ -65,7 +65,7 @@ var Replacer = function() {
 				catch( err )
 				{
 					//Dont log?
-					console.log(err);
+					//console.log(err);
 				}	
 			}
 			return text;
@@ -136,36 +136,50 @@ jAngular.processRepeat = function(li , scope)
 
 jAngular.process = function(div, scope)
 {
-	console.log("Processing: ", div);
+	//console.log("Processing: " + div.get(0).localName, div);
 	var element = div.get(0);
-	var newscope  = div.attr("ng-scope");
+	var newscope  = div.attr(jAngular.PREFIX + "scope");
 	if( newscope )
 	{
 		scope = jAngular.findScope(newscope);
 	}
+	var hascontent = true;
 	if( scope) 
 	{
 		$.each(element.attributes, function() 
 		{
 		   var attr = this;
 		   var aname = attr.name;
+		   
 		   var code = div.data("origattr" + aname);
-			if (aname == "id" && scope.loopcountone)
-		  	{
+		   if (aname == "id" && scope.loopcountone)
+		   {
 				div.attr('id', attr.value + scope.loopcountone);
-			}
-		   if( !code )
+		   }
+		   if(!code ) 
 		   {
 			   if( attr.value.indexOf("{{") > -1)
 			   {
 				   code = attr.value;
-				   div.data("origattr" + aname, code);   //backup original code for future renderings
+				   if(  aname.indexOf(jAngular.PREFIX) != 0 ) //Dont backup ng- prefix items
+				   {
+					  div.data("origattr" + aname, code);   //backup original code for future renderings
+				   }
 			   }
 		   }
+
 		   if( code )
 		   {
 			   var val = jAngular.replacer.replace(code,scope);
-			   div.attr(aname,val);
+			   if( aname == jAngular.PREFIX + "src" )
+			   {
+				   //copy it
+				   div.attr("src",val);
+			   }
+			   else
+			   {
+				   div.attr(aname,val);
+			   }
 		   }
 
 		   if( aname.indexOf(jAngular.PREFIX) > -1 )
@@ -180,38 +194,43 @@ jAngular.process = function(div, scope)
 						scope.eval(code);
 					});
 			   }
-			   if( aname == jAngular.PREFIX + "repeat" )
+			   else if( aname == jAngular.PREFIX + "repeat" )
 			   {
 				   //We are going to loop the content of this div/li
 				   jAngular.processRepeat(div,scope);
-				   return;
+				   hascontent = false;
 			   }
 		   }
 		   //TODO: Now check for loops	   
 		}); 
-		//TODO: Deal with text variables
-		var code = div.data("origtext");   
-		if( !code && div.children().length == 0) 
+		if( hascontent )
 		{
-			var orig = div.text();
-		    if( orig && orig.indexOf("{{") > -1)
-		    {
-				div.data("origtext", orig);   //backup original code for future renderings
-				code = orig;
+			//TODO: Deal with text variables
+			var code = div.data("origtext");   
+			if( !code && div.children().length == 0) 
+			{
+				var orig = div.text();
+			    if( orig && orig.indexOf("{{") > -1)
+			    {
+					div.data("origtext", orig);   //backup original code for future renderings
+					code = orig;
+				}
 			}
-		}
-		if( code )
-		{
-			 var val = jAngular.replacer.replace(code,scope);
-			 div.text(val);
-		}
+			if( code )
+			{
+				 var val = jAngular.replacer.replace(code,scope);
+				 div.text(val);
+			}
+		}	
 	}	
-	div.children().each(function()
+	if( hascontent )
 	{
-		jAngular.process($(this),scope);
-	});
+		div.children().each(function()
+		{
+			jAngular.process($(this),scope);
+		});
+	}	
 }
-
 
 jAngular.render = function(div, scope)
 {
@@ -238,9 +257,3 @@ jAngular.render = function(div, scope)
 		jAngular.process(toplevel,scope);
 		
 };
-
-
-// jQuery(document).ready(function() 
-// {       
-// 		jAngular.livequery();
-// });

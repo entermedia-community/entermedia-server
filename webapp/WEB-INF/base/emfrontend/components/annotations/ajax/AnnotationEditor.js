@@ -62,10 +62,6 @@ var AnnotationEditor = function(scope) {
 			// load asset data
 			this.connect();
 
-			// get user data, should this be in connect?
-			$.getJSON('/entermedia/services/json/users/status.json', function(data) {
-				scope.annotationEditor.userData = data;
-			});
 		}
 		,
 		removeAnnotation: function(annotationid)
@@ -397,8 +393,11 @@ var AnnotationEditor = function(scope) {
 				{
 					//console.log('Opened a connection!');
 					//console.log(e);
-					
-					editor.loadAssetList();
+					// get user data, should this be in connect?
+					$.getJSON('/entermedia/services/json/users/status.json', function(data) {
+						scope.annotationEditor.userData = data;
+						editor.loadAssetList();
+					});
 					
 				};
 				connection.onclose = function(e)

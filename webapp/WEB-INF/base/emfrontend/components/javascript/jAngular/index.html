@@ -15,6 +15,7 @@
 
 	    	<div id="wrapper" ng-scope="firstScope">
 	    		<h1>Hello {{worldtext}}</h1>
+	    	
 	    		<ul>
 		    		<li id="outsideloop" ng-repeat="item in items">
 		    			<h1>{{item.name}}</h1>
@@ -25,10 +26,12 @@
 		    			<ul>
 			    			<li id="insideloop" ng-repeat="stuff in item.tasks">
 			    				<a>{{stuff}}</a>
-			    			</li>
+			    			</li>		
 			    		</ul>
 		    		</li>
 	    		</ul>
+
+
 	    	</div>
 
 	    	<div id="secondWrapper" ng-scope="secondScope">
