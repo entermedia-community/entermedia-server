@@ -89,7 +89,7 @@ jAngular.findScopeFor = function(indiv)
 	var found = theel.closest("[ng-scope]");
 	var scopename = found.attr("ng-scope");
 	return jAngular.findScope(scopename);
-}       
+}
 
 jAngular.addScope = function(scopename, inScope)
 {
@@ -148,60 +148,60 @@ jAngular.process = function(div, scope)
 	{
 		$.each(element.attributes, function() 
 		{
-		   var attr = this;
-		   var aname = attr.name;
-		   
-		   var code = div.data("origattr" + aname);
-		   if (aname == "id" && scope.loopcountone)
-		   {
+			var attr = this;
+			var aname = attr.name;
+		
+			var code = div.data("origattr" + aname);
+			if (aname == "id" && scope.loopcountone)
+			{
 				div.attr('id', attr.value + scope.loopcountone);
-		   }
-		   if(!code ) 
-		   {
-			   if( attr.value.indexOf("{{") > -1)
-			   {
-				   code = attr.value;
-				   if(  aname.indexOf(jAngular.PREFIX) != 0 ) //Dont backup ng- prefix items
-				   {
-					  div.data("origattr" + aname, code);   //backup original code for future renderings
-				   }
-			   }
-		   }
-
-		   if( code )
-		   {
-			   var val = jAngular.replacer.replace(code,scope);
-			   if( aname == jAngular.PREFIX + "src" )
-			   {
-				   //copy it
-				   div.attr("src",val);
-			   }
-			   else
-			   {
-				   div.attr(aname,val);
-			   }
-		   }
-
-		   if( aname.indexOf(jAngular.PREFIX) > -1 )
-		   {
-			   if( aname == jAngular.PREFIX + "click" )
-			   {
-				   div.on('click', function(e)
+			}
+			if(!code ) 
+			{
+				if( attr.value.indexOf("{{") > -1)
+				{
+					code = attr.value;
+					if(  aname.indexOf(jAngular.PREFIX) != 0 ) //Dont backup ng- prefix items
 					{
-						e.preventDefault();
-						var theel = jQuery(this);
-						var code = theel.attr(jAngular.PREFIX + "click");
-						scope.eval(code);
-					});
-			   }
-			   else if( aname == jAngular.PREFIX + "repeat" )
-			   {
-				   //We are going to loop the content of this div/li
-				   jAngular.processRepeat(div,scope);
-				   hascontent = false;
-			   }
-		   }
-		   //TODO: Now check for loops	   
+						div.data("origattr" + aname, code);   //backup original code for future renderings
+					}
+				}
+			}
+
+			if( code )
+			{
+				var val = jAngular.replacer.replace(code,scope);
+				if( aname == jAngular.PREFIX + "src" )
+				{
+					//copy it
+					div.attr("src",val);
+				}
+				else
+				{
+					div.attr(aname,val);
+				}
+			}
+
+			if( aname.indexOf(jAngular.PREFIX) > -1 )
+			{
+				switch (aname)
+				{
+					case jAngular.PREFIX + "click":
+						div.on('click', function(e)
+						{
+							e.preventDefault();
+							var theel = jQuery(this);
+							var code = theel.attr(jAngular.PREFIX + "click");
+							scope.eval(code);
+						});
+						break;
+						//behavior is same as before. we can't fall through here
+				case jAngular.PREFIX + "repeat":
+					//We are going to loop the content of this div/li
+					jAngular.processRepeat(div,scope);
+					hascontent = false;
+				}
+			}  
 		}); 
 		if( hascontent )
 		{
@@ -210,8 +210,8 @@ jAngular.process = function(div, scope)
 			if( !code && div.children().length == 0) 
 			{
 				var orig = div.text();
-			    if( orig && orig.indexOf("{{") > -1)
-			    {
+				if( orig && orig.indexOf("{{") > -1)
+				{
 					div.data("origtext", orig);   //backup original code for future renderings
 					code = orig;
 				}
