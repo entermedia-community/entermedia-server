@@ -27,7 +27,7 @@ var AnnotationEditor = function(scope) {
 							scope.userColor = "#" + val;
 						},
 						close: function(event,color) {
-							jAngular.replace("#colortoolbararea", scope);
+							jAngular.render("#colortoolbararea", scope);
 							var tool = scope.annotationEditor.currentTool.name;
 							var type = scope.annotationEditor.currentTool.type;
 							
@@ -104,7 +104,7 @@ var AnnotationEditor = function(scope) {
 			jQuery("#annotation" + annotationid).html(html); //replace div
 			var localscope = this.scope.createScope();
 			localscope.annotation = annotation;
-			jAngular.replace("#annotation" + annotationid, localscope);
+			jAngular.render("#annotation" + annotationid, localscope);
 		}
 		,
 		saveComment: function(annotationid)
@@ -353,7 +353,7 @@ var AnnotationEditor = function(scope) {
 					scope.userColor = scope.annotationEditor.userData.defaultcolor;
 					
 					//jAngular.replace("#annotation-toolbar", scope);
-					jAngular.replace("#colortoolbararea", scope);
+					jAngular.render("#colortoolbararea", scope);
 					
 					scope.annotationEditor.fabricModel.selectTool("draw");
 					//Grab list of users and annotations for assets
