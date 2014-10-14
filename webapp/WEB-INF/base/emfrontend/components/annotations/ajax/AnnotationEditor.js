@@ -201,7 +201,23 @@ var AnnotationEditor = function(scope) {
 			});
 			*/
 			editor.fabricModel.canvas.renderAll();
-			jAngular.render("#annotationtab", scope); //changed
+			jAngular.render("#annotationtab", scope); 
+
+			// it seems like we trash the data when we render, thus may need to update the active status post-render
+
+			$("a.thumb").each(function()
+				{
+					var element = $(this);
+					if (element.attr("id") == "thumb" + inAnnotatedAsset.assetData.id)
+					{
+						element.addClass("active");
+					}
+					else
+					{
+						element.removeClass("active");
+					}
+				}
+			);
 			// jAngular.render("#annotationlist"); // shouldn't have to do this
 			// this method also needs to clear the canvas and comments and update from the persisted data
 			// DONE: Clear canvas state, refresh with AnnotatedAsset data

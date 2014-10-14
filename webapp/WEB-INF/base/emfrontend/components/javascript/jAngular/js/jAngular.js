@@ -31,9 +31,9 @@ var Scope = function() {
 				var found = eval("this." + code);
 				return found;
 			}
-			else if(parentScope != null)
+			else if(this.parentScope != null)
 			{
-				return parentScope.eval(code);
+				return this.parentScope.eval(code);
 			}
 			else
 			{
@@ -173,10 +173,11 @@ jAngular.process = function(div, scope)
 			var aname = attr.name;
 		
 			var code = div.data("origattr" + aname);
-			if (aname == "id" && scope.loopcountone)
-			{
-				div.attr('id', attr.value + scope.loopcountone);
-			}
+			// should actually require the end user to explicitly use the provided loopcount variables instead
+			// if (aname == "id" && scope.loopcountone)
+			// {
+			// 	div.attr('id', attr.value + scope.loopcountone);
+			// }
 			if(!code ) 
 			{
 				if( attr.value.indexOf("{{") > -1)
