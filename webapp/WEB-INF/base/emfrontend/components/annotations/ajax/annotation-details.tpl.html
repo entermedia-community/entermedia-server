@@ -14,9 +14,9 @@
                     <li class="previous">
                         <svg class="icon icon-arrow-left" viewBox="0 0 32 32"><use xlink:href="#icon-arrow-left"></use></svg>
                     </li>
-                    <li ng-repeat="image in assets" class="clearfix" ng-class="if( scope.currentAnnotation.annotation.id === image.id) return 'active';">
-                    	<a class="thumb" ui-sref="app.annotations.details({annotationID: image.id})">
-                            <img ng-click='scope.annotationEditor.switchToAsset("{{image.id}}")' ng-src="$home$apphome/views/modules/asset/downloads/preview/thumbsmall/{{image.sourcepath}}/thumb.jpg"></img>
+                    <li ng-repeat="image in assets" class="clearfix">
+                    	<a id="thumb{{image.id}}" class="thumb">
+                            <img ng-click='annotationEditor.switchToAsset("{{image.id}}")' ng-src="$home$apphome/views/modules/asset/downloads/preview/thumbsmall/{{image.sourcepath}}/thumb.jpg"></img>
                         </a>
                     </li>
                     <li class="next icon-arrow-right">
@@ -85,7 +85,7 @@
                         <textarea class="user-comment-input" name="user-input" rows="7" cols="30" >{{scope.annotation.comment}}</textarea>
                         <div class="pull-right">
                             <button name="user-add-comment" class="btn btn-danger" ng-click='scope.annotationEditor.cancelComment("{{scope.annotation.id}}")'>Cancel</button>
-                            <button name="user-add-comment" class="btn btn-primary" ng-click='scope.annotationEditor.saveComment("{{scope.annotation.id}}")'>Add Comment</button>
+                            <button name="user-add-comment" class="btn btn-primary" ng-click='annotationEditor.saveComment("{{scope.annotation.id}}")'>Add Comment</button>
                         </div>
                     </form>
                      <div class="separator" ></div>

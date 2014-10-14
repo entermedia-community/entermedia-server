@@ -12,26 +12,34 @@ var Scope = function() {
 		add: function(name, model) {
 			this[name] = model;
 		},
-		eval: function(name) 
+		eval: function(code) 
 		{
 			var scope = this;				
 			
-			var command = name;
-			if( name.indexOf("if") == 0 || name.indexOf("scope") == 0 ) //see if it starts with scope.
+			var name = code;
+			var cut = code.indexOf(".");
+			if( cut > -1)
 			{
-				//do nothing
+				name = code.substring(0,cut);
 			}
 			else
 			{
-				command = "this." + name;
+				name = code;
 			}
-			
-			var found = eval(command);
-			if( parentScope != null && found == null )
+			if(  typeof scope[name] != 'undefined' )
 			{
-				return parentScope.eval(name);
+				var found = eval("this." + code);
+				return found;
 			}
-			return found;				
+			else if(parentScope != null)
+			{
+				return parentScope.eval(code);
+			}
+			else
+			{
+				var found = eval(code);
+				return found;
+			}
 		},
 		get: function(name) 
 		{
@@ -116,9 +124,7 @@ jAngular.processRepeat = function(li , scope)
 
 		element.origContent = origContent;
 	}
-	parent.html("");
-	var child = $(origContent);
-	child.removeAttr(jAngular.PREFIX + "repeat");
+	li.removeAttr(jAngular.PREFIX + "repeat");
 	if( rows )
 	{
 		$.each(rows, function(index, value) {
@@ -128,27 +134,42 @@ jAngular.processRepeat = function(li , scope)
 			localscope.add("loopcountone",index + 1);
 			
 			localscope.add(rowname,value);
-			var copy = child.clone().appendTo(parent);
-			jAngular.process( copy, localscope);
+			
+			var template = li.clone();
+			li.before(template);
+			jAngular.process( template, localscope);
 		});
 	}
+	li.remove();
 }
 
 jAngular.process = function(div, scope)
 {
 	//console.log("Processing: " + div.get(0).localName, div);
 	var element = div.get(0);
+	var origContent = element.origContent;
+	if( origContent )
+	{
+		div.html(origContent);
+	}
+
 	var newscope  = div.attr(jAngular.PREFIX + "scope");
 	if( newscope )
 	{
 		scope = jAngular.findScope(newscope);
 	}
-	var hascontent = true;
+	
+	var processchildren = true;
 	if( scope) 
 	{
 		$.each(element.attributes, function() 
 		{
 			var attr = this;
+			
+			if( !attr.value )
+			{
+				return;
+			}
 			var aname = attr.name;
 		
 			var code = div.data("origattr" + aname);
@@ -199,11 +220,11 @@ jAngular.process = function(div, scope)
 				case jAngular.PREFIX + "repeat":
 					//We are going to loop the content of this div/li
 					jAngular.processRepeat(div,scope);
-					hascontent = false;
+					processchildren = false;
 				}
 			}  
 		}); 
-		if( hascontent )
+		if( processchildren )
 		{
 			//TODO: Deal with text variables
 			var code = div.data("origtext");   
@@ -223,7 +244,7 @@ jAngular.process = function(div, scope)
 			}
 		}	
 	}	
-	if( hascontent )
+	if( processchildren )
 	{
 		div.children().each(function()
 		{
