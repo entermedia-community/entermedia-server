@@ -1,0 +1,10 @@
+{
+"totalhits":$hits.size(),
+[
+#foreach($hit in $hits)
+{"assetid":"$hit.id"
+},
+
+#end
+]
+}
