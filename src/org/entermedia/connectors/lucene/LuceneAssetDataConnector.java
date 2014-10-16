@@ -198,7 +198,10 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 			}
 			writer.commit();
 
-		} catch (Exception ex) {
+		}
+		catch (Throwable ex) 
+		{
+			log.error(ex);
 			throw new OpenEditException(ex);
 		}
 		// HitCollector
