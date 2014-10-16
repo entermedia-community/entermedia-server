@@ -95,44 +95,42 @@ public class IndexAllAssets extends AssetProcessor
 //				throw new OpenEditException(e);
 //			}
 //		}
-		Asset asset = null;
 		try
 		{
-			asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath);
+			Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath);
+			if (asset != null)
+			{
+				// This should try to convert the Id into a path. The path will be null if the asset is not in the index.
+				if(fieldSourcePaths.contains(asset.getSourcePath()))
+				{
+					return;
+				}
+				fieldSourcePaths.add(asset.getSourcePath());
+				Document doc = getIndexer().populateAsset(getWriter(), asset, false, getMediaArchive().getAssetPropertyDetails());
+				String id = asset.getId().toLowerCase();
+				getIndexer().updateFacets(getMediaArchive().getAssetPropertyDetails(),doc,  getTaxonomyWriter());
+				
+				getIndexer().writeDoc(writer, id, doc, false);
+				// remove it from mem
+				getAssetArchive().clearAsset(asset);
+				incrementCount();
+				logcount++;
+				if( logcount == 1000 )
+				{
+					log.info("Reindex processed " + getExecCount() + " index updates so far");
+					logcount=0;
+				}
+			}
+			else
+			{
+				log.info("Error loading asset: " + inSourcePath);
+			}
 		}
-		catch( Exception ex)
+		catch( Throwable ex)
 		{
 			log.error("Could not read asset: " + inSourcePath + " continuing " + ex,ex);
-			
 		}
-
-		if (asset != null)
-		{
-			// This should try to convert the Id into a path. The path will be null if the asset is not in the index.
-			if(fieldSourcePaths.contains(asset.getSourcePath()))
-			{
-				return;
-			}
-			fieldSourcePaths.add(asset.getSourcePath());
-			Document doc = getIndexer().populateAsset(getWriter(), asset, false, getMediaArchive().getAssetPropertyDetails());
-			String id = asset.getId().toLowerCase();
-			getIndexer().updateFacets(getMediaArchive().getAssetPropertyDetails(),doc,  getTaxonomyWriter());
-			
-			getIndexer().writeDoc(writer, id, doc, false);
-			// remove it from mem
-			getAssetArchive().clearAsset(asset);
-			incrementCount();
-			logcount++;
-			if( logcount == 1000 )
-			{
-				log.info("Reindex processed " + getExecCount() + " index updates so far");
-				logcount=0;
-			}
-		}
-		else
-		{
-			log.info("Error loading asset: " + inSourcePath);
-		}
+	
 	}
 
 	
