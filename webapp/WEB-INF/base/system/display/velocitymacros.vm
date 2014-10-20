@@ -15,3 +15,15 @@
 		$invalue
 	#end
 #end
+
+#macro(json $hit $details)
+	{
+	#foreach($detail in $details)
+		#set($val = $hit.get(${detail.id}))
+		"${detail.id}":"$jsonUtil.escape($val)"  #if( $velocityCount != $details.size() ) ,	#end
+	#end
+	}
+
+#end
+
+
