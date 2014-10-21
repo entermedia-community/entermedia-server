@@ -1,4 +1,8 @@
-{"results":[
+{
+"totalhits" : $hits.size(),
+"searchtype" : "$searcher.getSearchType()",
+"page" : $hits.getPage(),
+"results":[
 #foreach($hit in $hits.getPageOfHits())
 #json($hit $searcher.getPropertyDetails()) #if( $velocityCount != $hits.getHitsPerPage() ), #end
 #end

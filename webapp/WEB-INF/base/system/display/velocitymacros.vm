@@ -20,7 +20,21 @@
 	{
 	#foreach($detail in $details)
 		#set($val = $hit.get(${detail.id}))
-		"${detail.id}":"$jsonUtil.escape($val)"  #if( $velocityCount != $details.size() ) ,	#end
+		#if($detail.isNumber())
+			#if($val && $val != "")
+				"${detail.id}":$val
+			#end
+		
+		#elseif($detail.isDate())
+			#if($val && $val != "")
+				"${detail.id}":$context.getDateTime($val)
+			#end
+			
+		#else
+		"${detail.id}":"$jsonUtil.escape($val)"  
+		#end
+		
+		#if( $velocityCount != $details.size() ) ,	#end
 	#end
 	}
 

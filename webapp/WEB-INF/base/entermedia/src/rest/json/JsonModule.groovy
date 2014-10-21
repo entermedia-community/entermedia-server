@@ -695,6 +695,11 @@ public class JsonModule extends BaseMediaModule
 		println "Query was: " + query;
 
 		HitTracker hits = searcher.cachedSearch(inReq, query);
+		String page = request.page;
+		if(page != null){
+			int pagenumb = Integer.parseInt(page);
+			hits.setPage(pagenumb);
+		}
 		inReq.putPageValue("searcher", searcher);
 //		try {
 //			OutputFiller filler = new OutputFiller();
