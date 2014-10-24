@@ -260,6 +260,9 @@ public class JsonModule extends BaseMediaModule
 			println it;
 			String key = it.key;
 			String value = it.value;
+			
+			
+			
 			asset.setProperty(key, value);
 		}
 
@@ -300,16 +303,21 @@ public class JsonModule extends BaseMediaModule
 		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
+
 		String id = getId(inReq);
-
-
-
-
-		Asset asset = archive.getAsset(id);
-
-		if(asset == null){
-			throw new OpenEditException("Asset was not found! (${catalogid}:${id})");
+		Asset asset = null;
+		if(id == null)
+		{
+			id = searcher.createNewData()
 		}
+		else
+		{
+			 asset = archive.getAsset(id);
+			if(asset == null){
+				throw new OpenEditException("Asset was not found! (${catalogid}:${id})");
+			}
+		}
+		
 
 		inputdata.keySet().each {
 			println it;
@@ -691,17 +699,36 @@ public class JsonModule extends BaseMediaModule
 			int pagenumb = Integer.parseInt(page);
 			hits.setPage(pagenumb);
 		}
+		
+		JSONArray array = new JSONArray();
+		hits.getPageOfHits().each{
+			JSONObject hit = getDataJson(sm,searcher,it);
+			array.add(hit);
+		}
+		
+		JSONObject parent = new JSONObject();
+		parent.put("size", hits.size());
+		parent.put("results", array);
+		inReq.putPageValue("json", parent.toString());
+		
+		
 		inReq.putPageValue("searcher", searcher);
-//		try {
-//			OutputFiller filler = new OutputFiller();
-//			InputStream stream = new ByteArrayInputStream(parent.toJSONString().getBytes("UTF-8"));
-//
-//			//filler.setBufferSize(40000);
-//			//InputStream input = object.
-//			filler.fill(stream, inReq.getOutputStream());
-//		} catch(Exception e){
-//			throw new OpenEditException(e);
-//		}
+try {
+				OutputFiller filler = new OutputFiller();
+				InputStream stream = new ByteArrayInputStream(parent.toJSONString().getBytes("UTF-8"));
+				if(inReq.getResponse()){
+					inReq.getResponse().setContentType("application/json");
+				}
+				//filler.setBufferSize(40000);
+				//InputStream input = object.
+				filler.fill(stream, inReq.getOutputStream());
+			}
+			finally {
+				//			stream.close();
+				//			inOut.getStream().close();
+				//			log.info("Document sent");
+				//			//archive.logDownload(filename, "success", inReq.getUser());
+			}
 	}
 
 	public void preprocess(WebPageRequest inReq)

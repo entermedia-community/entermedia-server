@@ -16,10 +16,8 @@ public void init() {
 	String assetid = context.findValue("assetid");
 	log.info("Reading metadata for asset $assetid");
 
-
 	Searcher searcher = archive.getAssetSearcher();
 	HitTracker assets = searcher.fieldSearch("importstatus", "needsdownload");
-
 
 	String ids = context.getRequestParameter("assetids");
 	if( ids != null ) {
@@ -27,51 +25,52 @@ public void init() {
 		assets.setSelections(Arrays.asList( assetids) );
 		assets.setShowOnlySelected(true);
 	}
-
+	Downloader dl = new Downloader();
 	List tosave = new ArrayList();
-	assets.each{
-
-
-		Asset current = archive.getAssetBySourcePath(it.sourcepath);
-
-		String fetchurl = current.fetchurl;
-		String filename = current.name;
-
-
-
-
-		if(filename == null){
-
-
-			filename = PathUtilities.extractFileName(fetchurl);
-			filename = filename.replaceAll("\\?.*", "");
-		}
-
-
-
-		String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/originals/" + current.getSourcePath()			+ "/" + filename;
-		Page finalfile = archive.getPageManager().getPage(path);
-		
+	assets.each
+	{
+		try
+		{	
+			Asset current = archive.getAssetBySourcePath(it.sourcepath);
+			String fetchurl = current.fetchurl;
+			if( fetchurl != null )
+			{
+				String filename = current.name;
+				if(filename == null){
+					filename = PathUtilities.extractFileName(fetchurl);
+					filename = filename.replaceAll("\\?.*", "");
+				}
+				String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/originals/" + current.getSourcePath()			+ "/" + filename;
+				Page finalfile = archive.getPageManager().getPage(path);
+				
 				File image = new File(finalfile.getContentItem().getAbsolutePath());
-		Downloader dl = new Downloader();
-		//imagename = URIUtil.encodeQuery(imagename);
-		//String imageurl = "http://rogersfido.area.ca/productimages/"	+ imagename;
-		log.info("URL : " + fetchurl);
-		dl.download(fetchurl, image);
-
-		current.setPrimaryFile(image.getName());
-		current.setProperty("importstatus", "imported");
-		MetaDataReader reader = archive.getModuleManager().getBean("metaDataReader");
-		reader.populateAsset(archive, finalfile.getContentItem(), current)
-		tosave.add(current);
-		if(tosave.size() > 1000){
-			archive.saveAssets(tosave);
-			tosave.clear();
-
+				
+				dl.download(fetchurl, image);
+		
+				current.setPrimaryFile(image.getName());
+				MetaDataReader reader = archive.getModuleManager().getBean("metaDataReader");
+				reader.populateAsset(archive, finalfile.getContentItem(), current)
+			}	
+			String fetchthumbnailurl = current.fetchthumbnailurl;
+			if(fetchthumbnailurl != null )
+			{
+				String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/generated/" + current.getSourcePath()	+ "/customthumb.jpg";
+				Page finalfile = archive.getPageManager().getPage(path);
+				File image = new File(finalfile.getContentItem().getAbsolutePath());
+				dl.download(fetchthumbnailurl, image);
+			}		
+			current.setProperty("importstatus", "imported");
+			tosave.add(current);
+			if(tosave.size() > 1000){
+				archive.saveAssets(tosave);
+				tosave.clear();
+			}
 		}
+		catch( Exception ex )
+		{
+			log.error("could not process asset: " + it.sourcepath,ex);
+		}	
 	}
-
-
 	archive.saveAssets(tosave);
 
 	archive.fireSharedMediaEvent("importing/queueconversions");
