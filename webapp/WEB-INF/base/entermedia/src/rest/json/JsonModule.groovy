@@ -40,52 +40,52 @@ public class JsonModule extends BaseMediaModule
 	private static final Log log = LogFactory.getLog(JsonModule.class);
 
 
-	public void handleAssetRequest(WebPageRequest inReq)
-	{
-		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
-		
-		JSONObject object = null;
-		String method = inReq.getMethod();
-		if(method == "POST"){
-			object = handleAssetPost(inReq);
-		}
-		if(method == "PUT"){
-			object = handleAssetPut(inReq);
-		}
-		if(method == "DELETE"){
-			object = handleAssetDelete(inReq);
-		}
-
-		if(method == "GET"){
-			object = handleAssetGet(inReq);
-		}
-
-
-		if(object != null){
-			inReq.putPageValue("json", object.toString());
-			try {
-				OutputFiller filler = new OutputFiller();
-				InputStream stream = new ByteArrayInputStream(object.toJSONString().getBytes("UTF-8"));
-				if(inReq.getResponse()){
-					inReq.getResponse().setContentType("application/json");
-				}
-				//filler.setBufferSize(40000);
-				//InputStream input = object.
-				filler.fill(stream, inReq.getOutputStream());
-			}
-			finally {
-				//			stream.close();
-				//			inOut.getStream().close();
-				//			log.info("Document sent");
-				//			//archive.logDownload(filename, "success", inReq.getUser());
-			}
-		}
-		//	jsondata = obj.toString();
-		//
-		//	log.info(jsondata);
-		//	inReq.putPageValue("json", jsondata);
-
-	}
+//	public void handleAssetRequest(WebPageRequest inReq)
+//	{
+//		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+//		
+//		JSONObject object = null;
+//		String method = inReq.getMethod();
+//		if(method == "POST"){
+//			object = handleAssetPost(inReq);
+//		}
+//		if(method == "PUT"){
+//			object = handleAssetPut(inReq);
+//		}
+//		if(method == "DELETE"){
+//			object = handleAssetDelete(inReq);
+//		}
+//
+//		if(method == "GET"){
+//			object = handleAssetGet(inReq);
+//		}
+//
+//
+//		if(object != null){
+//			inReq.putPageValue("json", object.toString());
+//			try {
+//				OutputFiller filler = new OutputFiller();
+//				InputStream stream = new ByteArrayInputStream(object.toJSONString().getBytes("UTF-8"));
+//				if(inReq.getResponse()){
+//					inReq.getResponse().setContentType("application/json");
+//				}
+//				//filler.setBufferSize(40000);
+//				//InputStream input = object.
+//				filler.fill(stream, inReq.getOutputStream());
+//			}
+//			finally {
+//				//			stream.close();
+//				//			inOut.getStream().close();
+//				//			log.info("Document sent");
+//				//			//archive.logDownload(filename, "success", inReq.getUser());
+//			}
+//		}
+//		//	jsondata = obj.toString();
+//		//
+//		//	log.info(jsondata);
+//		//	inReq.putPageValue("json", jsondata);
+//
+//	}
 
 
 	public JSONObject handleAssetSearch(WebPageRequest inReq){
@@ -162,7 +162,7 @@ public class JsonModule extends BaseMediaModule
 
 
 
-	public JSONObject handleAssetPost(WebPageRequest inReq)
+	public JSONObject createAsset(WebPageRequest inReq)
 	{
 		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 	
@@ -276,7 +276,7 @@ public class JsonModule extends BaseMediaModule
 	}
 
 
-	public JSONObject handleAssetPut(WebPageRequest inReq)
+	public JSONObject updateAsset(WebPageRequest inReq)
 	{
 		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 
@@ -408,7 +408,7 @@ public class JsonModule extends BaseMediaModule
 	}
 
 
-	public JSONObject handleAssetGet(WebPageRequest inReq)
+	public void loadAsset(WebPageRequest inReq)
 	{
 		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 
@@ -445,22 +445,13 @@ public class JsonModule extends BaseMediaModule
 			throw new OpenEditException("Asset was not found!");
 		}
 
-		JSONObject result = getAssetJson(sm,searcher, asset);
-		JSONObject converisons = getConversions(archive, asset);
-
-
-		result.put("conversions", converisons);
-
-		String jsondata = result.toString();
-
-		inReq.putPageValue("json", jsondata);
-		return result;
+		
 
 	}
 
 
 
-	public void handleAssetDelete(WebPageRequest inReq)
+	public void deleteAsset(WebPageRequest inReq)
 	{
 	    inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 	
@@ -783,50 +774,50 @@ public class JsonModule extends BaseMediaModule
 		return catalogid;
 	}
 
-	public void handleOrderRequest(WebPageRequest inReq)
-	{
-		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
-		println "Order request detected";
-		JSONObject object = null;
-		String method = inReq.getMethod();
-		if(method == "POST"){
-			object = handleOrderPost(inReq);
-			println object;
+//	public void handleOrderRequest(WebPageRequest inReq)
+//	{
+//		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+//		println "Order request detected";
+//		JSONObject object = null;
+//		String method = inReq.getMethod();
+//		if(method == "POST"){
+//			object = handleOrderPost(inReq);
+//			println object;
+//
+//		}
+//		if(method == "PUT"){
+//			//	object = handleAssetPut(inReq);
+//		}
+//		if(method == "DELETE"){
+//			//	object = handleAssetDelete(inReq);
+//		}
+//
+//		if(method == "GET"){
+//			//		object = handleAssetGet(inReq);
+//		}
+//
+//
+//		if(object != null){
+//			inReq.putPageValue("json", object.toString());
+//			try {
+//				OutputFiller filler = new OutputFiller();
+//				InputStream stream = new ByteArrayInputStream(object.toJSONString().getBytes("UTF-8"));
+//				if(inReq.getResponse()){
+//					inReq.getResponse().setContentType("application/json");
+//				}
+//
+//				filler.fill(stream, inReq.getOutputStream());
+//			}
+//			finally {
+//			}
+//		}
+//
+//
+//	}
 
-		}
-		if(method == "PUT"){
-			//	object = handleAssetPut(inReq);
-		}
-		if(method == "DELETE"){
-			//	object = handleAssetDelete(inReq);
-		}
-
-		if(method == "GET"){
-			//		object = handleAssetGet(inReq);
-		}
 
 
-		if(object != null){
-			inReq.putPageValue("json", object.toString());
-			try {
-				OutputFiller filler = new OutputFiller();
-				InputStream stream = new ByteArrayInputStream(object.toJSONString().getBytes("UTF-8"));
-				if(inReq.getResponse()){
-					inReq.getResponse().setContentType("application/json");
-				}
-
-				filler.fill(stream, inReq.getOutputStream());
-			}
-			finally {
-			}
-		}
-
-
-	}
-
-
-
-	public JSONObject handleOrderPost(WebPageRequest inReq)
+	public JSONObject createOrder(WebPageRequest inReq)
 	{
 		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 	

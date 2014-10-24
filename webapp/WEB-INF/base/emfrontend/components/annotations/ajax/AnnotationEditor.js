@@ -345,7 +345,7 @@ var AnnotationEditor = function(scope) {
 		{
 			jQuery.ajax({
 				type: "GET",
-				url: "" + scope.apphome + "/components/annotations/json/viewassets.json?id=" + scope.collectionid,
+				url: "" + scope.dbhome + "/json/viewassets.json?id=" + scope.collectionid,
 				async: false,
 				error: function(data, status, err) {
 					console.log('from error:', data);

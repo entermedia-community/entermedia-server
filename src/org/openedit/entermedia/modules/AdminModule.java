@@ -393,6 +393,9 @@ public class AdminModule extends BaseModule
 			if( getUserManager().authenticate(aReq) )
 			{
 				ok = true;
+				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
+				String value = user.getUserName() + "md542" + md5;
+				inReq.putPageValue("entermediakey", value);
 			}
 		}
 		else
@@ -400,6 +403,8 @@ public class AdminModule extends BaseModule
 			log.info("No such user" + account );
 			inReq.putSessionValue("user", null);
 		}
+		
+		
 		inReq.putPageValue("id", account );
 		inReq.putPageValue("authenticated", ok);
 		return ok;
