@@ -1,0 +1,54 @@
+jquery jangular
+Gallery model - getPlayerHtml(type, asset) getAssetsForCollection(id) setUserKey(key) 
+
+<html>
+
+<body>
+
+<script>
+
+var scope = new Scope();
+var gallery = new Gallery(scope);
+gallery.setCollectionId(getParam("collectionid"));
+gallery.setUserKey(getParam("entermediakey"));
+gallery.setMediaDbUrl("$context.siteRoot/mediadb");
+
+scope.put("gallery",gallery);
+
+var Gallery = function()
+{
+	var out = {
+		getPlayerHtml(type, asset)
+		getAssetsForCollection(id) 
+		setUserKey(key) 
+		setCollectionId
+		getAssets = function()
+		{
+			
+			url: "" + scope.apphome + "/components/annotations/json/viewassets.json?id=" + scope.collectionid,
+
+		}
+	}
+}
+
+
+
+function getParam(name){
+	   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+	      return decodeURIComponent(name[1]);
+	}
+</script>
+
+
+<ul>
+<li ng-repeat="asset in gallery.getAssets()">
+	<b>{{asset.name}}</b>	{{gallery.getPlayerHtml(asset)}}
+</li>
+
+</ul>
+
+
+</body>
+
+
+</html>
