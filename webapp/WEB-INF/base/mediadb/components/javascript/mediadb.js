@@ -72,13 +72,13 @@ var MediaDb = function()
 	out.getTemplate = function (template)
 	{
 		// assuming template is 'document', 'audio', 'video', 'embedded', or 'image', if not use 'default'
-		if (this.template.indexOf(template) == -1)
+		if (this.templates.indexOf(template) == -1)
 		{
 			template = 'default';
 		}
 		// does this need user authentication and catalogid?
 		// will this even return the HTML content or just a messed up request?
-		
+
 		return this.getObject(testhome + "/entermedia/components/mediaviewer/player/" + template);
 	};
 
