@@ -1,9 +1,14 @@
-jquery jangular
-Gallery model - getPlayerHtml(type, asset) getAssetsForCollection(id) setUserKey(key) 
-
 <html>
 
 	<body>
+		<script src="../../../mediadb/components/javascript/jquery-1.11.1.js"/>
+		<script>
+				var app = $("#application");
+				console.log(app);
+	// scope.add("home" ,scope.app.data("home") );
+	// scope.add("apphome" , scope.app.data("apphome") );
+		</script>
+		<script src="../../../mediadb/components/javascript/mediadb.js"/>
 
 		<script>
 
@@ -40,6 +45,7 @@ Gallery model - getPlayerHtml(type, asset) getAssetsForCollection(id) setUserKey
 					$.get(scope.apphome + "/components/annotations/json/viewassets.json?id=" + scope.collectionid, function(data)
 					{
 						// get asset data off data object and build outAssets
+						outAssets = JSON.parse(data);
 					});
 					return outAssets;
 				};
@@ -47,6 +53,7 @@ Gallery model - getPlayerHtml(type, asset) getAssetsForCollection(id) setUserKey
 				{
 					this.mediaDbUrl = inUrl; // nothing fancy
 				}
+			return out;
 		}
 
 
