@@ -1,7 +1,7 @@
 <page>
 	<generator name="velocityGenerator" />
 	<inner-layout />
-		<path-action name="JsonModule.preprocess"  alltypes="true" />
+	
 	
 	<path-action name="Admin.autoLogin" alltypes="true"/>
 	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>	 
