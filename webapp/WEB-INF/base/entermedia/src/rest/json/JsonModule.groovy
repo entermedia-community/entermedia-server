@@ -486,6 +486,8 @@ public class JsonModule extends BaseMediaModule
 	//this is not needed see parent class
 	public MediaArchive getMediaArchive(WebPageRequest inReq,  String inCatalogid)
 	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+		
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 
 		if (inCatalogid == null)
