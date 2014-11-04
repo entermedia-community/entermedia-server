@@ -1,9 +1,13 @@
 {
 "totalhits":$hits.size(),
+"results":
 [
 #foreach($hit in $hits)
+#if($velocityCount != 1)
+,
+#end
 {"assetid":"$hit.id"
-},
+}
 
 #end
 ]
