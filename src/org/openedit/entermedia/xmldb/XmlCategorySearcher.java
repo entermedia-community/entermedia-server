@@ -97,7 +97,7 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 						break;
 					}
 				}
-				if( i == parents.length-1 && hit != null)
+				if( i == parents.length && hit != null)
 				{
 					hits.getList().add(hit);
 				}
