@@ -22,12 +22,12 @@
 		#set($val = $hit.get(${detail.id}))
 		#if($detail.isNumber())
 			#if($val && $val != "")
-				"${detail.id}":$val
+				"${detail.id}":"$val"
 			#end
 		
 		#elseif($detail.isDate())
 			#if($val && $val != "")
-				"${detail.id}":$context.getDateTime($val)
+				"${detail.id}":"$context.getDateTime($val)"
 			#end
 			
 		#else

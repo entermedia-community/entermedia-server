@@ -1,14 +1,11 @@
 {
-"totalhits":$hits.size(),
-"results":
-[
-#foreach($hit in $hits)
-#if($velocityCount != 1)
-,
-#end
-{"assetid":"$hit.id"
-}
-
+"totalhits" : $hits.size(),
+"searchtype" : "$searcher.getSearchType()",
+"page" : $hits.getPage(),
+"results":[
+#foreach($hit in $hits.getPageOfHits())
+#if( $velocityCount != 1), #end
+#json($hit $searcher.getPropertyDetails())
 #end
 ]
 }
