@@ -401,6 +401,7 @@ public class JsonModule extends BaseMediaModule
 		
 		
 		searcher.saveData(asset, inReq.getUser());
+		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset)
 		JSONObject result = getAssetJson(sm,searcher, asset);
 
 

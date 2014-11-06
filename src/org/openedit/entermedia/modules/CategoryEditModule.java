@@ -255,7 +255,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		Asset asset = archive.getAsset(assetid,inPageRequest);
 		asset.removeCategory(c);
 		archive.saveAsset(asset, inPageRequest.getUser());
-		fireAssetEditEvent(asset, inPageRequest.getUser(), message);
+		archive.fireMediaEvent("asset/assetedited", inPageRequest.getUser(), asset);
 	}
 
 	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception 
@@ -315,7 +315,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			asset.addCategory(c);
 		}
 		archive.saveAsset(asset, inPageRequest.getUser());
-		fireAssetEditEvent(asset, inPageRequest.getUser(), message);
+		archive.fireMediaEvent("asset/assetedited", inPageRequest.getUser(), asset);
 	}
 
 	public void setAssetCategories(WebPageRequest inPageRequest)
@@ -346,7 +346,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			asset.addCategory(c);
 		}
 		archive.saveAsset(asset, inPageRequest.getUser());
-		fireAssetEditEvent(asset, inPageRequest.getUser(), message);
+		archive.fireMediaEvent("asset/assetedited", inPageRequest.getUser(), asset);
 	}
 
 	/**
@@ -389,17 +389,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 	}
 
-	protected void fireAssetEditEvent(Asset inAsset, User inUser, String message) {
-		WebEvent event = new WebEvent();
-		event.setCatalogId(inAsset.getCatalogId());
-		event.setSearchType("assetedit");
-		event.setSource(this);
-		event.addDetail("assetname", inAsset.getName());
-		event.addDetail("assetid", inAsset.getId());
-		event.addDetail("changes", message);
-		event.setUser(inUser);
-		getWebEventListener().eventFired(event);
-	}
+	
 
 	public WebEventListener getWebEventListener() {
 		return fieldWebEventListener;
