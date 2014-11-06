@@ -79,6 +79,31 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 				hits.getList().addAll(category.getChildren());
 			}
 		}
+
+		Term path = inQuery.getTermByTermId("path");
+		if( path != null)
+		{
+			String paths = path.getValue();
+			if( paths != null)
+			{
+				String[] parents = paths.split("/");
+				Category hit = getCategoryArchive().getRootCategory();
+				int i = 1;
+				for (; i < parents.length; i++)
+				{
+					hit = hit.getChildByName(parents[i]);
+					if( hit == null)
+					{
+						break;
+					}
+				}
+				if( i == parents.length && hit != null)
+				{
+					hits.getList().add(hit);
+				}
+			}
+		}
+
 		
 		return hits;
 	}
