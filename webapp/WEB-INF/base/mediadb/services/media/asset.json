@@ -1,3 +1,7 @@
+#if($method = "DELETE")
+
+#else
+
 {
 
 #json($asset $searcher.getPropertyDetails()) 
@@ -6,3 +10,5 @@
 
 
 }
+
+#end
