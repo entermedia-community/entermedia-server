@@ -1,0 +1,8 @@
+{
+
+#json($asset $searcher.getPropertyDetails()) 
+
+
+
+
+}
