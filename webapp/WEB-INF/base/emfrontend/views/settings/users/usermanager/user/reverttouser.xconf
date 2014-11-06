@@ -1,0 +1,4 @@
+<page>
+<permission name="view"><blank/></permission>
+<path-action name="Admin.revertToUser"/>
+</page>
