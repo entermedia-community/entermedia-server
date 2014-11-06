@@ -4,7 +4,8 @@
 "page" : $hits.getPage(),
 "results":[
 #foreach($hit in $hits.getPageOfHits())
-#json($hit $searcher.getPropertyDetails()) #if( $velocityCount != $hits.getHitsPerPage() ), #end
+#if( $velocityCount != 1 ), #end
+#json($hit $searcher.getPropertyDetails()) 
 #end
 ]
 }

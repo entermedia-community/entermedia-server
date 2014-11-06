@@ -64,11 +64,15 @@ public void init() {
 			asset.setSourcePath(uid);
 		}
 		String filename = asset.get("af4b2e69-5f6a-11d2-8f20-0000c0e166dc");
-		asset.setPrimaryFile(filename);
+		
+		
 		asset.setName(filename);
 		String categories = asset.get("af4b2e0c-5f6a-11d2-8f20-0000c0e166dc");
 		String catalog = asset.get("c02adb32-5c2c-4014-b86a-a53cf83f7e6c");
 		asset.setFolder(false);
+		
+		
+		
 		if(categories){
 				categories = categories.replace("/", "_");
 				String replacementcat = "HSM -  Forschung & Entwicklung"

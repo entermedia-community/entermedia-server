@@ -105,7 +105,9 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 				return cached;
 			}
 		}
-		
+		if(inValue == null || inValue.trim().length() == 0){
+			return null;
+		}
 		SearchQuery query = createSearchQuery();
 		query.addMatches(inId, inValue);
 		
