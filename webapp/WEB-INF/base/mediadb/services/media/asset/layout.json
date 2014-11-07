@@ -1,0 +1,39 @@
+#set($method = $context.getMethod())
+#if($method == "DELETE")
+{
+  "response":
+      {
+        "id":"$asset.id"
+      }
+}
+#elseif($method == "PUT")## for updating assets
+{
+  "response":
+      {
+        "id":"$asset.id"
+      }
+  ,
+  "data":#json($asset $searcher.getPropertyDetails())
+}  
+#elseif($method == "POST")## for creating assets
+{
+  "response":
+      {
+        "id":"$asset.id"
+      }
+  ,
+  "data":#json($asset $searcher.getPropertyDetails())
+}
+#elseif($method == "GET")
+{
+  "response":
+      {
+        "id":"$asset.id"
+      }
+  ,
+  
+  "data":#json($asset $searcher.getPropertyDetails())
+}
+#else
+  {"error":"Invalid request"}
+#end

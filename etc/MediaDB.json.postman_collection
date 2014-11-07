@@ -1,0 +1,57 @@
+{
+	"id": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234g",
+	"name": "MediaDB JSON",
+	"description": "",
+	"order": [
+		"9fe4e786-105a-68a8-4437-37054eeadc01",
+		"f44b9859-acd6-0190-b7c1-279020cc0c54",
+		"918951f3-9aa7-0120-783f-092fa5568225",
+		"96000c5c-5caf-aac1-53f8-c894237d554a",
+		"5394ce94-6961-0e5a-837c-39fc0125c230",
+		"11a30acb-68d6-1618-2453-ce9c973c2b57",
+		"e9a83753-3c99-7466-758b-371f9c8540c3"
+	],
+	"folders": [],
+	"timestamp": 1391026593874,
+	"synced": false,
+	"requests": [
+		{
+			"id": "11a30acb-68d6-1618-2453-ce9c973c2b57",
+			"headers": "catalogid: {{catalogid}}\n",
+			"url": "{{baseurl}}/mediadb/services/media/asset/",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": "",
+			"time": 1415398651347,
+			"name": "Asset/Create",
+			"description": "Create new asset",
+			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234g",
+			"responses": [],
+			"synced": false,
+			"rawModeData": "{\n    \"assettype\": \"article\",\n    \"fileformat\":\"jpg\",\n    \"keywords\": \"animals\",\n    \"name\": \"example.jpg\",\n    \"description\": \"Image of a squirrel who waterskis\",\n    \"creator\":{\n    \t\"id\":\"billmoyers1\",\n    \t\"firstname\":\"Bill\",\n    \t\"lastname\":\"Moyers\"\n        },\n    \"category\": {\n        \"id\": \"index\"\n    },\n    \"editstatus\": 6\n}"
+		},
+		{
+			"id": "e9a83753-3c99-7466-758b-371f9c8540c3",
+			"headers": "catalogid: {{catalogid}}\n",
+			"url": "{{baseurl}}/mediadb/services/media/asset/105",
+			"pathVariables": {},
+			"preRequestScript": "",
+			"method": "GET",
+			"data": [],
+			"dataMode": "params",
+			"name": "Asset/Get",
+			"description": "Get asset data",
+			"descriptionFormat": "html",
+			"time": 1415304321469,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"collectionId": "bdeacf1e-f9f1-9a01-a2c9-41f601eb234g",
+			"synced": false
+		}
+	]
+}

@@ -1,5 +1,5 @@
 <page>
 <property name="virtual">true</property>
-<path-action name="JsonModule.handleAssetSearch" alltypes="true" />
+<path-action name="JsonAssetModule.handleAssetSearch" alltypes="true" />
 
 </page>

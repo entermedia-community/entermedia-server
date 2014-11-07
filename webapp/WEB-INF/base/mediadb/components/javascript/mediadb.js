@@ -20,7 +20,7 @@ testing using old xml-based API calls, new calls will use mediaDbUrl/services/ta
 var MediaDb = function()
 {
 	var out = {
-		mediaDbUrl: null,
+		mediaDbUrl: '/mediadb',
 		entermediakey: "webusermd5420a1e7019490f00b90913b280ce20500ef0e23",
 		templates: ['document', 'image', 'video', 'embedded', 'audio']
 	};
@@ -85,17 +85,17 @@ var MediaDb = function()
 	out.getLibraries = function ()
 	{
 		// need special parsing?
-		return this.getObject(testhome + "/media/services/rest/search.xml?entermedia.key="+ self.getuserKey() +"&catalogid=media/catalogs/public&searchtype=library");
+		return this.getObject(testhome + "/" + this.mediaDbUrl + "/services/rest/search.xml?entermedia.key="+ self.getuserKey() +"&catalogid=media/catalogs/public&searchtype=library");
 	};
 	
 	out.getCollections = function (libraryid)
 	{
-		return this.getObject(testhome + "/media/services/rest/search.xml?entermedia.key="+ self.getUserKey() +"&catalogid=media/catalogs/public&searchtype=librarycollection&field=library&operation=matches&library.value=" + libraryid);
+		return this.getObject(testhome + "/" + this.mediaDbUrl + "/services/rest/search.xml?entermedia.key="+ self.getUserKey() +"&catalogid=media/catalogs/public&searchtype=librarycollection&field=library&operation=matches&library.value=" + libraryid);
 	};
 	
 	out.getCollectionAssets = function (collectionid)
 	{
-		return this.getObject(testhome + "/media/services/rest/search.xml?entermedia.key="+ self.getuserKey() +"&catalogid=media/catalogs/public&searchtype=librarycollectionasset&field=librarycollection&operation=exact&librarycollection.value=" + collectionid);
+		return this.getObject(testhome + "/" + this.mediaDbUrl + "/services/rest/search.xml?entermedia.key="+ self.getuserKey() +"&catalogid=media/catalogs/public&searchtype=librarycollectionasset&field=librarycollection&operation=exact&librarycollection.value=" + collectionid);
 	};
 
 	out.searchAssets = function (query)
@@ -107,8 +107,8 @@ var MediaDb = function()
               contentType: 'text/plain',
               type: 'POST',
               //processData: false,
-              url: testhome + '/media/services/json/search/data/asset?entermedia.key=' + self.getUserKey() + '&catalogid=media/catalogs/public',
-              data: '{ "query" : [' + JSON.stringify(query) + '] }',
+              url: testhome + "/" + self.mediaDbUrl + "/services/search/data/asset?&catalogid=media/catalogs/public",
+              data: '{ "entermediakey: "' + self.getUserKey() + '" ,"query" : [' + JSON.stringify(query) + '] }',
               success: 
                     function(outData)
                     {
@@ -123,16 +123,20 @@ var MediaDb = function()
         return outResult;
 	};
 	
-	out.searchTables = function (query)
+	out.searchTables = function (tablename, inQuery)
 	{
 		var outResult = null;
-		var self = this;
+		var inData = {
+			entermediakey: this.getUserKey(),
+			searchtype: tablename,
+			query: [inQuery]
+		};
 		$.ajax({
             contentType: 'text/plain',
             type: 'POST',
             //processData: false,
-            url: testhome + '/media/services/json/search/data/asset?entermedia.key=' + self.getUserKey() + '&catalogid=media/catalogs/public',
-            data: '{ "query" : [' + JSON.stringify(query) + '] }',
+            url: testhome + "/" + this.mediaDbUrl + "/services/search/data/asset?catalogid=media/catalogs/public",
+            data: inQuery,
             success: 
                 function(outData)
                 {

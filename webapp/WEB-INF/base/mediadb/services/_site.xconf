@@ -7,7 +7,8 @@
 	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>	 
 	<path-action name="Admin.loadPermissions" alltypes="true"/>
 	<path-action name="MediaArchiveModule.getEnterMedia"  alltypes="true"/>
-		<path-action name="MediaArchiveModule.getMediaArchive"  alltypes="true"/>
+	<path-action name="MediaArchiveModule.getMediaArchive"  alltypes="true"/>
+	<path-action name="JsonAdminModule.allowHeaders"  alltypes="true"/>	
 	
 	<property name="cancelredirect">true</property>
 <!--	
@@ -24,7 +25,7 @@
 	<permission name="view">
 		<blank/>
 	</permission>	
-	<property name="alternative_extension">json</property>
+	<!--<property name="alternative_extension">json</property>-->
 	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	
 </page>

@@ -5,39 +5,41 @@
 #macro( translate $text )
 	$!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
 #end
-
 #macro(makeid $invalue)$!url_util.getPathUtilities().extractId($invalue)#end
-
-
 #macro(debug $invalue)
 	#set ($mode = $user.get("showdebug"))
 	#if($mode && $mode == "true")
 		$invalue
 	#end
 #end
-
+#macro(datajsonmin $detail $id)
+	#set($data = $searcherManager.getData($detail, $id))
+	{"id":"$id", "name":"$!{data.name}"}
+#end
 #macro(json $hit $details)
 	{
+	#set($rendercomma = false)
 	#foreach($detail in $details)
-		#set($val = $hit.get(${detail.id}))
-		#if($detail.isNumber())
-			#if($val && $val != "")
-				"${detail.id}":"$val"
+		#set($val = false)#set($val = $hit.get(${detail.id}))
+		#if($val)
+			#if($rendercomma),
+			#else
+				#set($rendercomma = true)
 			#end
-		
-		#elseif($detail.isDate())
-			#if($val && $val != "")
-				"${detail.id}":"$context.getDateTime($val)"
+		    "${detail.id}":
+		    #if($detail.isMultiValue() || $detail.id == "category")
+            [
+			#foreach($value in $asset.getValues($detail.id))
+			#if($velocityCount > 1),#end
+		    #datajsonmin($detail $value)
 			#end
-			
-		#else
-		"${detail.id}":"$jsonUtil.escape($val)"  
+			]
+			#elseif($detail.isList())
+	        #datajsonmin($detail $val)
+			#else
+			"$jsonUtil.escape($val)"  
+			#end
 		#end
-		
-		#if( $velocityCount != $details.size() ) ,	#end
 	#end
 	}
-
 #end
-
-

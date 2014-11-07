@@ -2,7 +2,7 @@
 <permission name="view">
 	<blank/>
 </permission>
-	<path-action name="JsonModule.preprocess"  alltypes="true" />
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
 
 	<path-action name="Admin.authenticate"  alltypes="true" />
 	<generator name="velocity"/>

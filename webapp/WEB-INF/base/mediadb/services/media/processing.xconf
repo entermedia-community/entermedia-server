@@ -3,6 +3,6 @@
 
 <path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 
-<path-action name="JsonModule.createOrder" alltypes="true" method="POST"/>
+<path-action name="BaseJsonModule.createOrder" alltypes="true" method="POST"/>
 
 </page>
