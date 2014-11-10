@@ -6,7 +6,7 @@ jQuery(document).ready(function()
 	scope.add("app", jQuery("#application") );
 	scope.add("home" ,scope.app.data("home") );
 	scope.add("apphome" , scope.app.data("apphome") );
-	scope.add("dbhome" , "mediadb" );
+	scope.add("dbhome" , "/mediadb" );
 
 	scope.add("componentroot" ,scope.app.data("home") );
 	scope.add("collectionid", $("#collectiontoplevel").data("collectionid").toString() );
