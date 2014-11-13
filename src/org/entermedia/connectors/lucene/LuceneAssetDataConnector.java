@@ -20,6 +20,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.util.Version;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.FullTextAnalyzer;
@@ -85,9 +86,28 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 			analyzermap.put("description", new FullTextAnalyzer(
 					Version.LUCENE_41));
 
-			analyzermap.put("id", new NullAnalyzer());
+			
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
-			analyzermap.put("sourcepath", new NullAnalyzer());
+		
+			
+			PropertyDetails details = getPropertyDetails();
+			NullAnalyzer nua = new NullAnalyzer();
+			//analyzermap.put("id", );
+			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				String field = detail.getId();
+				if( field.contains("sourcepath") || field.equals("id") )
+				{
+					analyzermap.put(field, nua);
+				}
+				else if( detail.isList() && !detail.isMultiValue()) //multi needs to be tokenized
+				{
+					analyzermap.put(field, nua);
+				}
+			}
+			
+			
 			PerFieldAnalyzerWrapper composite = new PerFieldAnalyzerWrapper(
 					new RecordLookUpAnalyzer(), analyzermap);
 
