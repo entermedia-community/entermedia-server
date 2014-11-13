@@ -6615,9 +6615,8 @@ div.tableheaderactions a
 }
 
 .checkbox input[type="checkbox"] {
-    float: none;
-    margin-top: 0px;
-    margin-left: 0px;
+    margin-top: -2px;
+    margin-left: 1px;
 }
 
 .checkbox {
