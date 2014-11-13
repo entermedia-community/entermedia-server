@@ -4849,6 +4849,7 @@ p.resultsnumber {
     background: #F7F7F7 url('../images/sidebar-shadow.png') right top repeat-y;
     border-right: 1px solid #CCC;
     width: 48px;
+    min-width: 48px;
     -webkit-transition: width 0.05s ease-out;
     -moz-transition: width 0.05s ease-out;
     -ms-transition: width 0.05s ease-out;
