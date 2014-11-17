@@ -164,7 +164,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		if(newdefault){
 			
 		}
-		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), current);
+		archive.fireMediaEvent("asset/saved", inReq.getUser(), current);
 
 		inReq.putPageValue("asset", current);
 		
@@ -218,7 +218,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		//current.setProperty("importstatus", "imported");
 		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());
 		archive.fireMediaEvent("conversions/thumbnailreplaced", inReq.getUser(), current);
-		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), current);
+		archive.fireMediaEvent("asset/saved", inReq.getUser(), current);
 
 		inReq.putPageValue("asset", current);
 		

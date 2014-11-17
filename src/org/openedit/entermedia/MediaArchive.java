@@ -1021,6 +1021,7 @@ public class MediaArchive
 		if( inids.size() < 10000)
 		{
 			StringBuffer paths = new StringBuffer();
+			
 			for (Iterator iterator = inids.iterator(); iterator.hasNext();)
 			{
 				String path = (String) iterator.next();
@@ -1032,6 +1033,7 @@ public class MediaArchive
 			}
 			event.setProperty("assetids", paths.toString());
 		}
+		event.setValues("dataids", inids);
 		//archive.getWebEventListener()
 		getMediaEventHandler().eventFired(event);
 		
@@ -1062,6 +1064,7 @@ public class MediaArchive
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
 			event.setProperty("assetids", asset.getId() );
+			event.setProperty("dataid", asset.getId() );
 
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
@@ -1144,6 +1147,7 @@ public class MediaArchive
 		}
 		if (category == null)
 		{
+
 //			if (inReq.getContentPage() == inReq.getPage())
 //			{
 //				String val = inReq.findValue("showmissingcategories");
