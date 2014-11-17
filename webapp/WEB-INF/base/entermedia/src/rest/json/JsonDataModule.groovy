@@ -52,18 +52,25 @@ public class JsonDataModule extends BaseJsonModule
 		JsonSlurper slurper = new JsonSlurper();
 		def request = null;
 		String content = inReq.getPageValue("jsondata");
-		if(content != null){
-		} else{
+		
+		if(content != null)
+		{
+			//TODO: do we want to do something here?
+		}
+		else
+		{
 			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
+		
 		String searchtype = request.searchtype;
 		
 		Searcher searcher = archive.getSearcher(searchtype);
 
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
-		request.query.each{
-			println it;
+		
+		request.query.each
+		{
 			fields.add(it.field);
 			operations.add(it.operator.toLowerCase());
 			StringBuffer values = new StringBuffer();
@@ -75,8 +82,6 @@ public class JsonDataModule extends BaseJsonModule
 			inReq.setRequestParameter(it.field + ".value", finals);
 		}
 
-		println "field" + fields;
-		println "operations: " + operations;
 		String[] fieldarray = fields.toArray(new String[fields.size()]) as String[];
 		String[] opsarray = operations.toArray(new String[operations.size()]) as String[];
 
@@ -84,17 +89,23 @@ public class JsonDataModule extends BaseJsonModule
 		inReq.setRequestParameter("operation", opsarray);
 
 		SearchQuery query = searcher.addStandardSearchTerms(inReq);
-		println "Query was: " + query;
 
 		HitTracker hits = searcher.cachedSearch(inReq, query);
+		String hitsperpage = request.hitsperpage;
+		
+		if (hitsperpage != null)
+		{
+			int pagesnum = Integer.parseInt(hitsperpage);
+			hits.setHitsPerPage(pagesnum);
+		}
+		
 		String page = request.page;
-		if(page != null){
+		
+		if(page != null)
+		{
 			int pagenumb = Integer.parseInt(page);
 			hits.setPage(pagenumb);
 		}
-		
-		
-		
 		
 		inReq.putPageValue("searcher", searcher);
 

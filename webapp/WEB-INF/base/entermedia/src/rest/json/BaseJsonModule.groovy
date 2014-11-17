@@ -38,22 +38,30 @@ import com.openedit.util.OutputFiller
 public class BaseJsonModule extends BaseMediaModule 
 {
 	private static final Log log = LogFactory.getLog(BaseJsonModule.class);
-
+	
+	public void allowHeaders(WebPageRequest inReq)
+	{
+		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+	}
+	
 	public void preprocess(WebPageRequest inReq)
 	{
 		JsonSlurper slurper = new JsonSlurper();
 		def request = null;
 		String content = inReq.getPageValue("jsondata");
-		if(content != null){
+		if(content != null)
+		{
 			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		} else{
+		} else {
 			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
-		request.keySet().each{
+		request.keySet().each
+		{
 			String key = it;
 			Object val = request.get(key);
-			if(val instanceof String){
+			if(val instanceof String)
+			{
 			inReq.setRequestParameter(key, val);
 			}
 		}
@@ -79,7 +87,8 @@ public class BaseJsonModule extends BaseMediaModule
 	{
 		String root  = "/mediadb/json/search/data/";
 		String url = inReq.getPath();
-		if(!url.endsWith("/")){
+		if(!url.endsWith("/"))
+		{
 			url = url + "/";
 		}
 		String id = url.substring(root.length(), url.length())
@@ -90,8 +99,10 @@ public class BaseJsonModule extends BaseMediaModule
 	public String findCatalogId(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
-		if(catalogid == null){
-			if(inReq.getRequest()){
+		if(catalogid == null)
+		{
+			if(inReq.getRequest())
+			{
 				catalogid = inReq.getRequest().getHeader("catalogid");
 			}
 		}
@@ -99,22 +110,27 @@ public class BaseJsonModule extends BaseMediaModule
 		return catalogid;
 	}
 	
-	public void populateJsonObject(Searcher inSearcher, JSONObject inObject, Data inData){
-		inSearcher.getPropertyDetails().each{
+	public void populateJsonObject(Searcher inSearcher, JSONObject inObject, Data inData)
+	{
+		inSearcher.getPropertyDetails().each
+		{
 			PropertyDetail detail = it;
 			String key = it.id;
 			String value=inData.get(it.id);
-			if(key && value){
-				if(detail.isList()){
+			if(key && value)
+			{
+				if(detail.isList())
+				{
 
 					inObject.put(key, value);
 
 				}
-				else if(detail.isBoolean()){
+				else if(detail.isBoolean())
+				{
 					inObject.put(key, Boolean.parseBoolean(value));
 
 
-				} else{
+				} else {
 					inObject.put(key, value);
 				}
 
@@ -124,18 +140,20 @@ public class BaseJsonModule extends BaseMediaModule
 		}
 	}
 
-		public JSONObject getOrderJson(SearcherManager sm, Searcher inSearcher, Data inOrder){
+	public JSONObject getOrderJson(SearcherManager sm, Searcher inSearcher, Data inOrder)
+	{
 
-			JSONObject asset = new JSONObject();
+		JSONObject asset = new JSONObject();
 
-			populateJsonObject(inSearcher, asset,inOrder);
-			//need to add tags and categories, etc
+		populateJsonObject(inSearcher, asset,inOrder);
+		//need to add tags and categories, etc
 		//String tags = inAsset.get("keywords");
 		Searcher itemsearcher = sm.getSearcher(inSearcher.getCatalogId(),"orderitem" );
 		HitTracker items = itemsearcher.query().match("orderid", inOrder.getId()).search();
 
 		JSONArray array = new JSONArray();
-		items.each{
+		items.each
+		{
 
 			JSONObject item = new JSONObject();
 			populateJsonObject(itemsearcher, item,it);
@@ -150,7 +168,7 @@ public class BaseJsonModule extends BaseMediaModule
 
 	public MediaArchive getMediaArchive(WebPageRequest inReq,  String inCatalogid)
 	{
-		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+		allowHeaders(inReq);
 		
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 
@@ -162,31 +180,38 @@ public class BaseJsonModule extends BaseMediaModule
 		return archive;
 	}
 	public JSONObject getDataJson(SearcherManager sm, PropertyDetail inDetail, String inId)
+	{
+		Searcher searcher = sm.getSearcher(inDetail.getListCatalogId(), inDetail.getListId());
+		Data data = searcher.searchById(inId);
+		if( data == null)
 		{
-			Searcher searcher = sm.getSearcher(inDetail.getListCatalogId(), inDetail.getListId());
-			Data data = searcher.searchById(inId);
-			if( data == null)
-			{
-				return null;
-			}
-			return getDataJson(sm,searcher,data);
+			return null;
 		}
-	public JSONObject getDataJson(SearcherManager sm, Searcher inSearcher, Data inData){
+		return getDataJson(sm,searcher,data);
+	}
+	public JSONObject getDataJson(SearcherManager sm, Searcher inSearcher, Data inData)
+	{
 		JSONObject asset = new JSONObject();
 		asset.put("id", inData.getId());
 		asset.put("name", inData.getName());
-		inSearcher.getPropertyDetails().each{
+		inSearcher.getPropertyDetails().each
+		{
 			PropertyDetail detail = it;
 			String key = it.id;
 			String value=inData.get(it.id);
-			if(key && value){
-				if(detail.isList()){
+			if(key && value)
+			{
+				if(detail.isList())
+				{
 					//friendly?
 					asset.put(key, value);
 				}
-				else if(detail.isBoolean()){
+				else if(detail.isBoolean())
+				{
 					asset.put(key, Boolean.parseBoolean(value));
-				} else{
+				}
+				else
+				{
 					asset.put(key, value);
 				}
 			}

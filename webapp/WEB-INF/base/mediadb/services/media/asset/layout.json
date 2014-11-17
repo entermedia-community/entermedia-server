@@ -35,5 +35,7 @@
   "data":#json($asset $searcher.getPropertyDetails())
 }
 #else
-  {"error":"Invalid request"}
+  {
+  	"error":"Invalid request"
+  }
 #end

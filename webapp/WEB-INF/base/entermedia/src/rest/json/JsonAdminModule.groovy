@@ -38,9 +38,5 @@ import com.openedit.util.OutputFiller
 public class JsonAdminModule extends BaseJsonModule 
 {
 	private static final Log log = LogFactory.getLog(JsonAdminModule.class);
-
-	public void allowHeaders(WebPageRequest inReq)
-	{
-		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
-	}
+	// TODO: special user stuff
 }

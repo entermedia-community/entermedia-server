@@ -2,6 +2,7 @@
 #set( $error = "ok")
 #if( $conversiontask.get("status") == "error")
 	#set( $error = "error")
+	##why not just set to the value of the method call above?
 #end
 <rsp stat="$error">
 #set( $genname = $preset.get("outputfile") )

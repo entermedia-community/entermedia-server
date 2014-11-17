@@ -39,10 +39,8 @@ public class JsonAssetModule extends BaseJsonModule
 {
 	private static final Log log = LogFactory.getLog(JsonAssetModule.class);
 
-
-
-
-	public JSONObject handleAssetSearch(WebPageRequest inReq){
+	public JSONObject handleAssetSearch(WebPageRequest inReq)
+	{
 		//Could probably handle this generically, but I think they want tags, keywords etc.
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
@@ -53,17 +51,20 @@ public class JsonAssetModule extends BaseJsonModule
 		JsonSlurper slurper = new JsonSlurper();
 		def request = null;
 		String content = inReq.getPageValue("jsondata");
-		if(content != null){
+		if(content != null)
+		{
 			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		} else{
+		}
+		else
+		{
 			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
-
 
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
 
-		request.query.each{
+		request.query.each
+		{
 			fields.add(it.field);
 			operations.add(it.operator.toLowerCase());
 			StringBuffer values = new StringBuffer();
@@ -79,14 +80,28 @@ public class JsonAssetModule extends BaseJsonModule
 
 		inReq.setRequestParameter("field", fieldarray);
 		inReq.setRequestParameter("operation", opsarray);
+		inReq.setRequestParameter("hitsperpage", String.valueOf(request.hitsperpage));
 
 		SearchQuery query = searcher.addStandardSearchTerms(inReq);
 		HitTracker hits = searcher.cachedSearch(inReq, query);
+//		String hitsperpage = request.hitsperpage;
+//		if (hitsperpage != null)
+//		{
+//			int pagesnum = Integer.parseInt(hitsperpage);
+//			hits.setHitsPerPage(pagesnum);
+//		}
+		String page = request.page;
+		if(page != null)
+		{
+			int pagenumb = Integer.parseInt(page);
+			hits.setPage(pagenumb);
+		}
 		JSONObject parent = new JSONObject();
 		parent.put("size", hits.size());
 
 		JSONArray array = new JSONArray();
-		hits.getPageOfHits().each{
+		hits.getPageOfHits().each
+		{
 			JSONObject hit = getAssetJson(sm,searcher, it);
 
 			array.add(hit);
@@ -117,19 +132,24 @@ public class JsonAssetModule extends BaseJsonModule
 		JsonSlurper slurper = new JsonSlurper();
 		def request = null;
 		String content = inReq.getPageValue("jsondata");
-		if(properties != null){
-
+		if(properties != null)
+		{
+			// TODO: don't we want to do something here?
 		}
-		if(content != null){
+		if(content != null)
+		{
 			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		} else{
+		}
+		else
+		{
 			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
 		AssetImporter importer = archive.getAssetImporter();
 		HashMap keys = new HashMap();
 
-		request.each{
+		request.each
+		{
 			String key = it.key;
 			String value = it.value;
 			keys.put(key, value);
@@ -140,22 +160,26 @@ public class JsonAssetModule extends BaseJsonModule
 
 		}
 		String id = request.id;
-		if(id == null){
+		if(id == null)
+		{
 			id = searcher.nextAssetNumber()
 		}
 		keys.put("id", id);
 		String sourcepath = keys.get("sourcepath");
 
-		if(sourcepath == null){
+		if(sourcepath == null)
+		{
 			sourcepath = archive.getCatalogSettingValue("catalogassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
 		}
-		if(sourcepath == null || sourcepath.length() == 0){
+		if(sourcepath == null || sourcepath.length() == 0)
+		{
 			sourcepath = "receivedfiles/${id}";
 		}
 		sourcepath = sm.getValue(catalogid, sourcepath, keys);
 		Asset asset = null;
 
-		if(properties.getFirstItem() != null){
+		if(properties.getFirstItem() != null)
+		{
 			String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/${properties.getFirstItem().getName()}";
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
 			Page newfile = archive.getPageManager().getPage(path);
@@ -163,7 +187,8 @@ public class JsonAssetModule extends BaseJsonModule
 		}
 
 
-		if(asset == null && keys.get("fetchURL") != null){
+		if(asset == null && keys.get("fetchURL") != null)
+		{
 			asset = importer.createAssetFromFetchUrl(archive, keys.get("fetchURL"), inReq.getUser(), sourcepath, keys.get("importfilename"));
 		}
 
@@ -178,21 +203,26 @@ public class JsonAssetModule extends BaseJsonModule
 				String realpath = newfile.getContentItem().getAbsolutePath();
 				File target = new File(realpath);
 				target.getParentFile().mkdirs();
-				if(file.renameTo(realpath)){
+				if(file.renameTo(realpath))
+				{
 					asset = importer.createAssetFromPage(archive, inReq.getUser(), newfile);
-				} else{
+				}
+				else
+				{
 					throw new OpenEditException("Error moving file: " + realpath);
 				}
 			}
 		}
-		if(asset == null){
+		if(asset == null)
+		{
 			asset = new Asset();//Empty Record
 			asset.setId(id);
 		}
 
 
 
-		request.each{
+		request.each
+		{
 			String key = it.key;
 			String value = it.value;
 			
@@ -224,9 +254,12 @@ public class JsonAssetModule extends BaseJsonModule
 		JSONObject inputdata = null;
 		JSONParser parser = new JSONParser();
 		
-		if(content != null){
+		if(content != null)
+		{
 			inputdata = parser.parse(content);
-		} else{
+		}
+		else
+		{
 			inputdata = parser.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
@@ -245,40 +278,48 @@ public class JsonAssetModule extends BaseJsonModule
 		{
 			id = searcher.createNewData()
 		}
-		else
-		{
+				else
+				{
 			 asset = archive.getAsset(id);
-			if(asset == null){
+			if(asset == null)
+			{
 				throw new OpenEditException("Asset was not found! (${catalogid}:${id})");
 			}
 		}
 		
 
-		inputdata.keySet().each {
+		inputdata.keySet().each
+		{
 
 			String key = it;
 			Object value = inputdata.get(key);
-			if(value instanceof String){
+			if(value instanceof String)
+			{
 				asset.setProperty(key, value);
 			} 
 			
-			if(value instanceof List){
+			if(value instanceof List)
+			{
 				ArrayList ids = new ArrayList();
 				PropertyDetail detail = searcher.getDetail(key);
 				
 				
-				value.each{
+				value.each
+				{
 					JSONObject object = it;
 					String val = it.get("id");
 					ids.add(val);
-					if(detail != null){
+					if(detail != null)
+					{
 						Searcher rsearcher = archive.getSearcher(key);
 						Data remote = rsearcher.searchById(val);
-						if(remote == null){
+						if(remote == null)
+						{
 							remote = rsearcher.createNewData();
 							remote.setId(val);							
 						}
-						object.keySet().each{
+						object.keySet().each
+						{
 							remote.setProperty(it, object.get(it));
 						}
 						rsearcher.saveData(remote, inReq.getUser());
@@ -291,28 +332,32 @@ public class JsonAssetModule extends BaseJsonModule
 			}
 			
 			
-			if(value instanceof Map ){
+			if(value instanceof Map )
+			{
 					Map values = value;
 					
 					PropertyDetail detail = searcher.getDetail(key);
 					Searcher rsearcher = archive.getSearcher(key);
 					String targetid = value.id;
 					Data remote = rsearcher.searchById(id);
-					if(remote == null){
+					if(remote == null)
+					{
 						remote = rsearcher.createNewData();
 						remote.setId(targetid);
 					}
-					values.keySet().each{
+					values.keySet().each
+					{
 						Object test = values.get(it);
-						if(test instanceof String){
+						if(test instanceof String)
+						{
 							remote.setProperty(it,test );
 						}
 					}
 					rsearcher.saveData(remote, inReq.getUser());
 					asset.setProperty(key, targetid);
 			}
-			
-			else{
+			else
+			{
 				//do osomething else
 				
 			}
@@ -357,7 +402,8 @@ public class JsonAssetModule extends BaseJsonModule
 
 		Asset asset = archive.getAsset(id);
 
-		if(asset == null){
+		if(asset == null)
+		{
 			throw new OpenEditException("Asset was not found!");
 		}
 		
@@ -384,7 +430,8 @@ public class JsonAssetModule extends BaseJsonModule
 
 		Asset asset = archive.getAsset(id);
 
-		if(asset != null){
+		if(asset != null)
+		{
 			searcher.delete(asset, null);
 		}
 		inReq.putPageValue("asset", asset);
@@ -393,10 +440,12 @@ public class JsonAssetModule extends BaseJsonModule
 
 	}
 
-	public void getAssetJson(SearcherManager sm, Searcher inSearcher, Data inAsset){
+	public void getAssetJson(SearcherManager sm, Searcher inSearcher, Data inAsset)
+	{
 
 		JSONObject asset = new JSONObject();
-		inSearcher.getPropertyDetails().each{
+		inSearcher.getPropertyDetails().each
+		{
 			PropertyDetail detail = it;
 
 			String key = it.id;
@@ -429,7 +478,9 @@ public class JsonAssetModule extends BaseJsonModule
 					asset.put(key, Boolean.parseBoolean(value));
 
 
-				} else{
+				}
+				else
+				{
 					asset.put(key, value);
 				}
 			}
@@ -439,14 +490,16 @@ public class JsonAssetModule extends BaseJsonModule
 	}
 
 
-	public JSONObject getAssetPublishLocations(MediaArchive inArchive, Data inAsset){
+	public JSONObject getAssetPublishLocations(MediaArchive inArchive, Data inAsset)
+	{
 
 		JSONObject asset = new JSONObject();
 		Searcher publish = inArchive.getSearcher("publishqueue");
 		return asset;
 	}
 
-	public JSONObject getConversions(MediaArchive inArchive, Asset inAsset){
+	public JSONObject getConversions(MediaArchive inArchive, Asset inAsset)
+	{
 
 		JSONObject asset = new JSONObject();
 		Searcher publish = inArchive.getSearcher("conversiontask");
@@ -463,8 +516,10 @@ public class JsonAssetModule extends BaseJsonModule
 		asset.put("original", original);
 		
 		HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId(),inAsset.get("assettype"));
-		conversions.each{
-			if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.id)){
+		conversions.each
+		{
+			if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.id))
+			{
 				Dimension dimension = util.getConvertPresetDimension(inArchive.getCatalogId(), it.id);
 				JSONObject data = new JSONObject();
 				//			<a class="thickbox btn" href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)">Preview</a>
@@ -498,9 +553,12 @@ public class JsonAssetModule extends BaseJsonModule
 		def request = null;
 		String content = inReq.getPageValue("jsondata");
 
-		if(content != null){
+		if(content != null)
+		{
 			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		} else{
+		}
+		else
+		{
 			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
@@ -513,7 +571,8 @@ public class JsonAssetModule extends BaseJsonModule
 
 		ordersearcher.saveData(order, null);
 
-		request.items.each{
+		request.items.each
+		{
 			String assetid = it.assetid;
 			String presetid = it.presetid;
 			Data orderitem = itemsearcher.createNewData();
