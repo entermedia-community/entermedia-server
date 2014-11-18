@@ -6620,6 +6620,10 @@ div.tableheaderactions a
     margin-left: 1px;
 }
 
+.checkbox input[type="checkbox"]:not(.categorycheckbox) {
+    float: none;
+}
+
 .checkbox {
     min-height: 0px;
     margin-top: 0px;
@@ -6628,6 +6632,7 @@ div.tableheaderactions a
     box-sizing: content-box;
     -moz-box-sizing: content-box;
 }
+
 
 #workarea ul li:first-child, #emcontainer #emselectable table th, .categories-widget, #emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
     box-sizing: content-box;
