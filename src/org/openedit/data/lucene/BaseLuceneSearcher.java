@@ -191,6 +191,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			// config.setMergePolicy(lmp);
 			//
 			setAnalyzer(null);
+			setLuceneIndexer(null);
 			writer = new IndexWriter(indexDir, config);
 
 			// writer = new IndexWriter(indexDir, , true,
