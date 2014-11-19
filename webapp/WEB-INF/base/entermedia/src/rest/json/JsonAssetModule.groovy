@@ -48,17 +48,8 @@ public class JsonAssetModule extends BaseJsonModule
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
-		JsonSlurper slurper = new JsonSlurper();
-		def request = null;
-		String content = inReq.getPageValue("jsondata");
-		if(content != null)
-		{
-			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		}
-		else
-		{
-			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		}
+
+		def	request = inReq.getJsonRequest(); //this is real, the other way is just for testing
 
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
@@ -136,14 +127,7 @@ public class JsonAssetModule extends BaseJsonModule
 		{
 			// TODO: don't we want to do something here?
 		}
-		if(content != null)
-		{
-			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		}
-		else
-		{
-			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		}
+		request = inReq.getJsonRequest(); 
 
 		AssetImporter importer = archive.getAssetImporter();
 		HashMap keys = new HashMap();
@@ -249,19 +233,8 @@ public class JsonAssetModule extends BaseJsonModule
 	{
 
 		SearcherManager sm = inReq.getPageValue("searcherManager");
-		//	slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		String content = inReq.getPageValue("jsondata");
-		JSONObject inputdata = null;
-		JSONParser parser = new JSONParser();
-		
-		if(content != null)
-		{
-			inputdata = parser.parse(content);
-		}
-		else
-		{
-			inputdata = parser.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		}
+
+		JSONObject inputdata  = inReq.getJsonRequest(); 
 
 
 		String catalogid =  findCatalogId(inReq);
