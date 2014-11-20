@@ -38,15 +38,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 
 	<bean id="AssetControlModule" class="org.openedit.entermedia.modules.AssetControlModule" />
-	<bean id="AlbumModule" class="org.openedit.entermedia.modules.AlbumModule">
-		<property name="postMail">
-			<ref bean="postMail" />
-		</property>
-		<property name="webEventListener">
-			<ref bean="mediaEventHandler" />
-		</property>
-	</bean>
-	<bean id="AlbumGroupModule" class="org.openedit.entermedia.modules.AlbumGroupModule" />
+	
 	<bean id="AssetSyncModule" class="org.openedit.entermedia.modules.AssetSyncModule">
 		<property name="assetImporter">
 			<ref bean="assetImporter" />
@@ -98,9 +90,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-	<bean id="FriendModule" class="org.openedit.entermedia.modules.FriendModule">
-
-	</bean>
 	<bean id="FetchModule" class="org.openedit.entermedia.modules.FetchModule" />
 
 	<bean id="LDAPModule" class="org.openedit.entermedia.modules.LDAPModule">
@@ -560,25 +549,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="wikiGenerator" class="org.openedit.entermedia.generators.WikiGenerator">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
-	<bean id="xmlRpcGenerator" class="org.openedit.entermedia.generators.XmlRpcGenerator">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
+	
 
-	<bean id="albumSearcher" class="org.openedit.entermedia.albums.LuceneAlbumSearcher"
-		scope="prototype">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
-
+	
 	<bean id="assetArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
 		scope="prototype">
 		<property name="pageManager">
@@ -670,10 +643,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 
-	<bean id="resultsDownloadGenerator"
-		class="org.openedit.entermedia.generators.ResultsDownloadGenerator" />
-	<bean id="categoryDownloadGenerator"
-		class="org.openedit.entermedia.generators.CategoryDownloadGenerator"></bean>
+	
+
 
 	<bean id="assetCompositeConverter" class="org.openedit.entermedia.scanner.CompositeConverter">
 		<property name="moduleManager">
@@ -689,7 +660,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-	<bean id="serialTaskManager" class="com.openedit.modules.scheduler.SerialTaskManager" />
 
 
 	<bean id="authenticator" class="com.openedit.users.authenticate.CompositeAuthenticator">
@@ -901,81 +871,13 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	</bean>
 
-	<bean id="recentActivityManager" class="org.openedit.entermedia.friends.RecentActivityManager">
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
-
-	</bean>
-
+	
 	<bean id="uploadQueue" class="org.openedit.entermedia.scanner.UploadQueue">
 		<property name="assetImporter">
 			<ref bean="assetImporter" />
 		</property>
 		<property name="pageManager">
 			<ref bean="pageManager" />
-		</property>
-	</bean>
-<!--
-	<bean id="friendSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory"><ref bean="root" /></property>
-		<property name="prefix"><value>users</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-	</bean>
-
-
- 
-	<bean id="invitationSearcher" class="org.openedit.data.XmlFileSearcher"
-		scope="prototype">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="xmlArchive">
-			<ref bean="xmlArchive" />
-		</property>
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
-		<property name="prefix">
-			<value>users</value>
-		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-	</bean>
- -->
-	<bean id="friendManager" class="org.openedit.entermedia.friends.FriendManager">
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
-		<property name="commentArchive">
-			<ref bean="commentArchive" />
-		</property>
-		<property name="postMail">
-			<ref bean="postMail" />
-		</property>
-	</bean>
-
-	<bean id="albumGroupManager" class="org.openedit.entermedia.albums.AlbumGroupManager">
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
-		<property name="commentArchive">
-			<ref bean="commentArchive" />
-		</property>
-		<property name="postMail">
-			<ref bean="postMail" />
 		</property>
 	</bean>
 
@@ -1028,12 +930,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="TranslationModule" class="org.openedit.entermedia.modules.TranslationModule" />
 
-	<bean id="autoTranslationVelocityGenerator" class="org.openedit.entermedia.generators.ToolbarGenerator" >
-		<property name="headerPath"><value>/system/tools/debug/toolbar.html</value></property>
-		<property name="footerPath"><value>/system/tools/debug/footer.html</value></property>
-		<property name="pageManager"><ref bean="pageManager"/></property>
-		<property name="wraps"><ref bean="autoTranslationGenerator"/></property>
-	</bean>
+	
 	
 	<bean id="xmlFileSearcher" class="org.openedit.data.XmlFileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager"/></property>
@@ -1400,10 +1297,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="pushManager"><ref bean="pushManager" /></property>
 	</bean>
 
-	<bean id="publishChecker" class="org.openedit.entermedia.push.PublishChecker" >
-			<property name="moduleManager"><ref bean="moduleManager" /></property>
-			<property name="pushManager"><ref bean="pushManager" /></property>
-	</bean>
+	
 	
 	<bean id="workspaceManager" class="org.entermedia.workspace.WorkspaceManager">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
