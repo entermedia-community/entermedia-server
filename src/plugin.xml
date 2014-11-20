@@ -165,7 +165,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<!-- bean id="TaskModule" name="TaskModule"
 		class="org.openedit.entermedia.workflow.TaskModule" abstract="false"
-		singleton="true" lazy-init="default" autowire="default"
+		 lazy-init="default" autowire="default"
 		dependency-check="default">
 		<property name="mediaArchiveManager">
 			<ref bean="mediaArchiveManager" />
@@ -240,8 +240,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 
-
-	<bean id="plugInFinder" class="com.openedit.modules.update.PlugInFinder" singleton="false">
+	<bean id="plugInFinder" class="com.openedit.modules.update.PlugInFinder" scope="prototype">
 		<property name="webServer">
 			<ref bean="WebServer" />
 		</property>
@@ -273,7 +272,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<!--  TODO: Change to an alias transientSearcher listSearcher folderSearcher dataSearcher-->
-	<bean id="transientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" singleton="false">
+	<bean id="transientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" scope="prototype">
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory">
@@ -283,7 +282,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
 	</bean>
-	<bean id="listSearcher" class="org.openedit.xml.XmlSearcher" singleton="false">
+	<bean id="listSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -293,7 +292,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 	
-	<bean id="dynamicSearcher" class="org.openedit.xml.XmlSearcher" singleton="false">
+	<bean id="dynamicSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -304,11 +303,11 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	
 	
-	<bean id="folderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+	<bean id="folderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 	</bean>
-	<bean id="dataSearcher" class="org.openedit.data.XmlFileSearcher" singleton="false">
+	<bean id="dataSearcher" class="org.openedit.data.XmlFileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -319,7 +318,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="moduleManager"><ref bean="moduleManager" /></property>	
 	</bean>	
 
-	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"	singleton="false">
+	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"	scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -332,7 +331,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 
 	<bean id="compositeLuceneSearcher" class="org.openedit.data.lucene.CompositeLuceneSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -342,7 +341,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 
 	<bean id="searchQueryArchive" class="org.openedit.data.SearchQueryArchive"
-		singleton="true">
+		>
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -382,7 +381,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 
 	<bean id="pathAction" class="com.openedit.modules.scheduler.PathAction"
-		singleton="false">
+		scope="prototype">
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
 		</property>
@@ -392,7 +391,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="propertyDetailsArchive" class="org.openedit.data.PropertyDetailsArchive"
-		singleton="false">
+		scope="prototype">
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="textLabelManager"><ref bean="textLabelManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -416,13 +415,13 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 
 	<bean id="urlRepository" class="org.openedit.entermedia.util.UrlRepository"
-		singleton="false" />
+		scope="prototype" />
 
 	<bean id="sftpRepository" class="org.openedit.entermedia.util.ssh.SftpRepository"
-		singleton="false" />
+		scope="prototype" />
 
 	<bean id="pathEventManager" class="org.openedit.events.PathEventManager"
-		singleton="false">
+		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -440,7 +439,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="pathEvent" class="org.openedit.events.PathEvent"
-		singleton="false">
+		scope="prototype">
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
 		</property>
@@ -456,7 +455,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="ldapSearcher" class="org.openedit.entermedia.util.LdapSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -471,7 +470,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 
 	<bean id="enterMedia" class="org.openedit.entermedia.EnterMedia"
-		singleton="false">
+		scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -480,7 +479,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-	<bean id="mediaArchive" class="org.openedit.entermedia.MediaArchive" singleton="false">
+	<bean id="mediaArchive" class="org.openedit.entermedia.MediaArchive" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -517,7 +516,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="albumArchive" class="org.openedit.entermedia.albums.AlbumArchive"
-		singleton="false">
+		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -533,7 +532,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="userAlbums" class="com.entermedia.archive.albums.UserAlbums"
-		singleton="false" />
+		scope="prototype" />
 
 	<bean id="zipAlbumGenerator" class="org.openedit.entermedia.generators.ZipAlbumGenerator">
 		<property name="moduleManager">
@@ -568,7 +567,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="albumSearcher" class="org.openedit.entermedia.albums.LuceneAlbumSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -581,7 +580,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="assetArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
-		singleton="false">
+		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -614,7 +613,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="creatorManager" class="org.openedit.entermedia.creator.CreatorManager"
-		singleton="false">
+		scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -714,7 +713,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="includeCategories" value="true"/>
 	</bean>
 
-	<bean id="assetImporter" class="org.openedit.entermedia.scanner.AssetImporter"  singleton="false">
+	<bean id="assetImporter" class="org.openedit.entermedia.scanner.AssetImporter"  scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -734,7 +733,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="assetRelatedKeywordSearcher"
 		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
@@ -744,14 +743,14 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="compositeLuceneAutoCompleteSearcher"
 		class="org.openedit.entermedia.autocomplete.AutoCompleteLuceneSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
 
 	<bean id="dynamicLogSearcher" class="org.openedit.logger.LuceneLogSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="rootDirectory">
 			<bean class="java.io.File">
 				<constructor-arg>
@@ -770,13 +769,13 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="LogSearchModule" 
 		class="org.openedit.logger.LogSearchModule" abstract="false"
-		singleton="true" lazy-init="default" autowire="default"
+		 lazy-init="default" autowire="default"
 		dependency-check="default">
 		
 	</bean>
 	
 	<bean id="logSearcher" 
-		class="org.openedit.logger.LuceneLogSearcher" singleton="false" >
+		class="org.openedit.logger.LuceneLogSearcher" scope="prototype" >
 		<property name="rootDirectory">
 			<bean class="java.io.File">
 				<constructor-arg><ref bean="root"/></constructor-arg>
@@ -787,7 +786,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="categoryArchive" class="org.openedit.entermedia.xmldb.XmlCategoryArchive"
-		singleton="false">
+		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -798,7 +797,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="searchFilterArchive" class="org.openedit.entermedia.search.SearchFilterArchive"
-		singleton="true">
+		>
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -809,7 +808,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
   <!-- This can be aliased using beans.xml to one with a nicer connector -->
 	<bean id="assetSearcher" class="org.openedit.entermedia.search.BaseAssetSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="dataConnector">
 			<ref bean="luceneAssetDataConnector" />
 		</property>
@@ -829,20 +828,20 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="originalFileManager" class="org.openedit.entermedia.OriginalFileManager"
-		singleton="false">
+		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
 	</bean>
 
-	<bean id="assetEditor" class="org.openedit.entermedia.edit.AssetEditor" singleton="false">
+	<bean id="assetEditor" class="org.openedit.entermedia.edit.AssetEditor" scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
 		<property name="commentArchive"><ref bean="commentArchive"/></property>
 	</bean>
 
-	<bean id="categoryEditor" class="org.openedit.entermedia.edit.CategoryEditor" singleton="false">
+	<bean id="categoryEditor" class="org.openedit.entermedia.edit.CategoryEditor" scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -918,7 +917,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 <!--
-	<bean id="friendSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="friendSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -930,7 +929,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
  
 	<bean id="invitationSearcher" class="org.openedit.data.XmlFileSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -981,7 +980,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	<bean id="keywordWriter" class="org.openedit.entermedia.xmp.MetadataWriter"
-		singleton="false">
+		scope="prototype">
 		<property name="xmpWriter">
 			<ref bean="xmpWriter" />
 		</property>
@@ -1036,7 +1035,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="wraps"><ref bean="autoTranslationGenerator"/></property>
 	</bean>
 	
-	<bean id="xmlFileSearcher" class="org.openedit.data.XmlFileSearcher" singleton="false">
+	<bean id="xmlFileSearcher" class="org.openedit.data.XmlFileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -1048,7 +1047,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	
 	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
 	
-	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" singleton="false">
+	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" scope="prototype">
 		<property name="userManager"><ref bean="userManager"/></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -1056,12 +1055,12 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="root"><ref bean="root"/></property>	
 	</bean>
 	
-	<bean id="emailSearcher" class="org.entermedia.email.EmailSearcher" singleton="false">
+	<bean id="emailSearcher" class="org.entermedia.email.EmailSearcher" scope="prototype">
 		<property name="emailArchive"><ref bean="emailArchive"/></property>	
 		<property name="rootDirectory"><ref bean="root"/></property>	
 	</bean>
 	
-	<bean id="fileSearcher" class="org.openedit.data.FileSearcher" singleton="false">
+	<bean id="fileSearcher" class="org.openedit.data.FileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="root"><ref bean="root"/></property>
@@ -1087,7 +1086,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="assetAutoCompleteSearcher"
 		class="org.openedit.entermedia.autocomplete.AutoCompleteLuceneSearcher"
-		singleton="false">
+		scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
@@ -1130,7 +1129,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 
-	<bean id="orderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	singleton="false">
+	<bean id="orderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1141,9 +1140,9 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="orderManager"><ref bean="orderManager" /></property>
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 	</bean>
-	<bean id="order" class="org.openedit.entermedia.orders.Order" singleton="false">
+	<bean id="order" class="org.openedit.entermedia.orders.Order" scope="prototype">
 	</bean>
-	<bean id="orderitemSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="orderitemSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1153,7 +1152,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 
-	<bean id="orderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="orderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1165,7 +1164,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 	 -->
-	<bean id="orderhistory" class="org.openedit.entermedia.orders.OrderHistory" singleton="false"/>
+	<bean id="orderhistory" class="org.openedit.entermedia.orders.OrderHistory" scope="prototype"/>
 	
 	<bean id="publishManager" class="org.openedit.entermedia.publishing.PublishManager" >
 			<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1199,7 +1198,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	
 	<bean id="ftpRepository" name="ftpRepository"
         class="org.openedit.entermedia.FtpRepository" abstract="false"
-        singleton="false" lazy-init="default" autowire="default"
+        scope="prototype" lazy-init="default" autowire="default"
         dependency-check="default">
         <property name="userManager"><ref bean="userManager" /></property>
         <property name="searcherManager"><ref bean="searcherManager" /></property> 
@@ -1223,7 +1222,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="sizer" class="org.openedit.entermedia.util.Sizer" />
     
-    <bean id="userprofileSearcher" class="org.entermedia.profile.UserProfileSearcher" singleton="false">
+    <bean id="userprofileSearcher" class="org.entermedia.profile.UserProfileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		
@@ -1241,12 +1240,12 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="BannerModule" name="BannerModule"
 		class="org.openedit.images.BannerModule" abstract="false"
-		singleton="true" lazy-init="default" autowire="default"
+		 lazy-init="default" autowire="default"
 		dependency-check="default">
 	</bean>
     
     <bean id="luceneAssetDataConnector" class="org.entermedia.connectors.lucene.LuceneAssetDataConnector"
-		singleton="false">
+		scope="prototype">
 		<property name="webEventListener">
 			<ref bean="mediaEventHandler" />
 		</property>
@@ -1293,7 +1292,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	
 	<!-- 
-	<bean id="attachmentSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="attachmentSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1308,11 +1307,11 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 
-	<bean id="savedQueryManager" class="org.openedit.entermedia.savedqueries.SavedQueryManager"	singleton="false">
+	<bean id="savedQueryManager" class="org.openedit.entermedia.savedqueries.SavedQueryManager"	scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 <!-- 
-	<bean id="savedquerySearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="savedquerySearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1323,7 +1322,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		
 	</bean>
 
-	<bean id="savedquerytermSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="savedquerytermSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1334,7 +1333,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		
 	</bean>
  -->
-	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	singleton="false">
+	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 	</bean>
@@ -1359,7 +1358,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	<!-- Catalog based user details (not like preferences) -->
 	<!-- 
-	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	singleton="false">
+	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1418,7 +1417,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 
 	
-	<bean id="templateWebEmail" class="org.entermedia.email.TemplateWebEmail" singleton="false">
+	<bean id="templateWebEmail" class="org.entermedia.email.TemplateWebEmail" scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -1431,12 +1430,12 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	</bean>
 	
 	
-	<bean id="categorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" singleton="false">
+	<bean id="categorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="categoryArchive"><ref bean="categoryArchive" /></property>
 	</bean>
 	
-	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" singleton="false">
+	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 	
