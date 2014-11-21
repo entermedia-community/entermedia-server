@@ -71,20 +71,24 @@ public class PresetCreator
 			createPresetsForPage(tasksearcher, preset, asset,0);
 			added++;
 		}
-		String pages = asset.get("pages");
-		if( pages != null )
+		Boolean onlyone = Boolean.parseBoolean(preset.get("singlepage") );
+		if( !onlyone)
 		{
-			int npages = Integer.parseInt(pages);
-			if( npages > 1 )
+			String pages = asset.get("pages");
+			if( pages != null )
 			{
-				for (int i = 1; i < npages; i++)
+				int npages = Integer.parseInt(pages);
+				if( npages > 1 )
 				{
-					int pagenum = i + 1;
-					if (!mediaarchive.doesAttachmentExist(asset,preset,pagenum) )
+					for (int i = 1; i < npages; i++)
 					{
-						missingconversion = true;
-						createPresetsForPage(tasksearcher, preset, asset, pagenum);
-						added++;
+						int pagenum = i + 1;
+						if (!mediaarchive.doesAttachmentExist(asset,preset,pagenum) )
+						{
+							missingconversion = true;
+							createPresetsForPage(tasksearcher, preset, asset, pagenum);
+							added++;
+						}
 					}
 				}
 			}
