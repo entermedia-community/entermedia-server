@@ -26,7 +26,6 @@ public void init() {
 		assets.setShowOnlySelected(true);
 	}
 	Downloader dl = new Downloader();
-	List tosave = new ArrayList();
 	assets.each
 	{
 		try
@@ -60,25 +59,15 @@ public void init() {
 				dl.download(fetchthumbnailurl, image);
 			}		
 			current.setProperty("importstatus", "imported");
-			tosave.add(current);
-			if(tosave.size() > 1000){
-				archive.saveAssets(tosave);
-				tosave.clear();
-			}
+			archive.saveAsset(current,user);
+			archive.fireMediaEvent( "importing/queueconversions", user, current);
 		}
 		catch( Exception ex )
 		{
 			log.error("could not process asset: " + it.sourcepath,ex);
 		}	
 	}
-	archive.saveAssets(tosave);
-
-	archive.fireSharedMediaEvent("importing/queueconversions");
-
 
 }
-
-
-
 
 init();
