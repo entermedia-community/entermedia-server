@@ -60,6 +60,14 @@ public void init() {
 			}		
 			current.setProperty("importstatus", "imported");
 			archive.saveAsset(current,user);
+			archive.removeGeneratedImages(current, false);	
+			
+			def tasksearcher = archive.getSearcher("conversiontask");
+			def existing = tasksearcher.query().append("assetid", asset.getId() ).search(); 
+			existing.each
+			{
+				tasksearcher.delete(it,user);		
+			}			
 			archive.fireMediaEvent( "importing/queueconversions", user, current);
 		}
 		catch( Exception ex )
