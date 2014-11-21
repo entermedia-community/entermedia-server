@@ -26,7 +26,6 @@ public void init() {
 		assets.setShowOnlySelected(true);
 	}
 	Downloader dl = new Downloader();
-	List tosave = new ArrayList();
 	assets.each
 	{
 		try
@@ -57,28 +56,24 @@ public void init() {
 				String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/generated/" + current.getSourcePath()	+ "/customthumb.jpg";
 				Page finalfile = archive.getPageManager().getPage(path);
 				File image = new File(finalfile.getContentItem().getAbsolutePath());
+				archive.removeGeneratedImages(current, false);	
 				dl.download(fetchthumbnailurl, image);
 			}		
-			current.setProperty("importstatus", "imported");
-			tosave.add(current);
-			if(tosave.size() > 1000){
-				archive.saveAssets(tosave);
-				tosave.clear();
-			}
+			def tasksearcher = archive.getSearcher("conversiontask");
+			def existing = tasksearcher.query().match("assetid", current.getId() ).search(); 
+			existing.each
+			{
+				tasksearcher.delete(it,user);		
+			}			
+			archive.saveAsset(current,user);
+			archive.fireMediaEvent( "importing/queueconversions", user, current); //this will save the asset as imported
 		}
 		catch( Exception ex )
 		{
 			log.error("could not process asset: " + it.sourcepath,ex);
 		}	
 	}
-	archive.saveAssets(tosave);
-
-	archive.fireSharedMediaEvent("importing/queueconversions");
-
 
 }
-
-
-
 
 init();

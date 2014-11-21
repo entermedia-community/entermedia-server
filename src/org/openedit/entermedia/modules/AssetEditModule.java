@@ -1800,6 +1800,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset.setProperty("assetvotes", String.valueOf( hits.size()) );
 			MediaArchive archive = getMediaArchive(inReq);
+			//async asset save?
 			archive.fireMediaEvent("asset/assetsave", inReq.getUser(), asset);
 		}
 		
