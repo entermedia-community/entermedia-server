@@ -56,14 +56,14 @@ public void init() {
 				String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/generated/" + current.getSourcePath()	+ "/customthumb.jpg";
 				Page finalfile = archive.getPageManager().getPage(path);
 				File image = new File(finalfile.getContentItem().getAbsolutePath());
+				archive.removeGeneratedImages(current, false);	
 				dl.download(fetchthumbnailurl, image);
 			}		
 			current.setProperty("importstatus", "imported");
 			archive.saveAsset(current,user);
-			archive.removeGeneratedImages(current, false);	
 			
 			def tasksearcher = archive.getSearcher("conversiontask");
-			def existing = tasksearcher.query().append("assetid", asset.getId() ).search(); 
+			def existing = tasksearcher.query().match("assetid", current.getId() ).search(); 
 			existing.each
 			{
 				tasksearcher.delete(it,user);		
