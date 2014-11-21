@@ -2086,6 +2086,11 @@ public class AssetEditModule extends BaseMediaModule
 			if(id != null){
 				vals.put("id",id);
 			}
+			else{
+				id = archive.getAssetSearcher().nextAssetNumber();
+				vals.put("id",id);
+
+			}
 			vals.put("filename", item.getName());
 			Replacer replacer = new Replacer();
 			
