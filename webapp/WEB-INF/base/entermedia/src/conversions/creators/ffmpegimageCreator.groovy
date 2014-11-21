@@ -66,6 +66,15 @@ public class ffmpegimageCreator extends BaseImageCreator
 			return result;
 		}
 		result.setOk(true);
+		
+		Page customthumb = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+		if( customthumb.exists() )
+		{
+			getPageManager().copyPage(customthumb,inOutFile);
+			result.setComplete(true);
+			return result;
+		}
+		
 
 		// We are going to take frames from the converted flv video
 //		ConvertInstructions ci = new ConvertInstructions();

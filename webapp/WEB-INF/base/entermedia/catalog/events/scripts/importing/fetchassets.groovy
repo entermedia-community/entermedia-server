@@ -59,16 +59,14 @@ public void init() {
 				archive.removeGeneratedImages(current, false);	
 				dl.download(fetchthumbnailurl, image);
 			}		
-			current.setProperty("importstatus", "imported");
-			archive.saveAsset(current,user);
-			
 			def tasksearcher = archive.getSearcher("conversiontask");
 			def existing = tasksearcher.query().match("assetid", current.getId() ).search(); 
 			existing.each
 			{
 				tasksearcher.delete(it,user);		
 			}			
-			archive.fireMediaEvent( "importing/queueconversions", user, current);
+			archive.saveAsset(current,user);
+			archive.fireMediaEvent( "importing/queueconversions", user, current); //this will save the asset as imported
 		}
 		catch( Exception ex )
 		{
