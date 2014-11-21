@@ -64,7 +64,7 @@ $lsearcher.addShowOnly($context, $query)
 	#end
 		
 	<select  id="$csslistid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
-		class="choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
+		class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" id="${valueid}.value"
 		data-listid="$listid" 
 		data-searchtype= '$searchtype'
@@ -132,6 +132,7 @@ $lsearcher.addShowOnly($context, $query)
     	$('#list-$listid').show();
     	
     });
+    
 
 </script>
 

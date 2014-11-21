@@ -9,4 +9,8 @@
   <property id="rendertype"  index="true" stored="true">Renderer Type</property>
   <property id="rendertable"  index="true" stored="true">Table</property>
   <property id="renderexternalid"  index="true" stored="true">Table External ID</property>
+  <property id="rendercustomview"  index="true" stored="true">Renderer Custom View</property>
+  
+  
+  
 </properties>
