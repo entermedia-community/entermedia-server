@@ -2,9 +2,14 @@ package org.openedit.entermedia.model;
 
 import java.io.File;
 
+import org.openedit.Data;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.BaseEnterMediaTest;
+import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.scanner.MetaDataReader;
+import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.repository.filesystem.FileItem;
 
 public class MetaDataReaderTest extends BaseEnterMediaTest {
@@ -85,5 +90,51 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 				assertTrue(p.getKeywords().contains(keywords[i][j]));
 			}
 		}
+	}
+	
+	public void testListLookups()
+	{
+		File testDir = new File(getRoot().getAbsoluteFile().getParentFile().getPath() + "/etc/testassets");
+		
+	
+		Asset p;
+		MetaDataReader reader = (MetaDataReader) getBean("metaDataReader");
+	
+		File testFile = new File(testDir, "location.jpg");
+		p = new Asset();
+		FileItem item = new FileItem();
+		item.setPath(testFile.getName());
+		item.setFile(testFile);
+		
+	
+		MediaArchive  archive = getMediaArchive();
+		Searcher locations = archive.getSearcher("location");
+		locations.deleteAll(null);
+		
+		Data lookup = locations.createNewData();
+		lookup.setId("campusscene");
+		lookup.setName("Campus Scenes");
+		locations.saveData(lookup, null);
+		reader.populateAsset(getMediaArchive(),item, p);
+		assertTrue(p.get("location").equals("campusscene"));
+		
+		AssetSearcher searcher = archive.getAssetSearcher();
+		PropertyDetail location = searcher.getDetail("location");
+		location.setProperty("autocreatefromexif", "true");
+		locations.deleteAll(null);
+		reader.populateAsset(getMediaArchive(),item, p);
+		assertNotNull(p.get("location"));
+		
+		assertNotSame(p.get("location"),"Campus Scenes");
+
+		location.setProperty("autocreatefromexif", "false");
+		searcher.getPropertyDetails().addDetail(location);
+		locations.deleteAll(null);
+		reader.populateAsset(getMediaArchive(),item, p);
+		assertNotNull(p.get("location"));
+		
+		assertTrue(p.get("location").equals("Campus Scenes"));
+
+		
 	}
 }

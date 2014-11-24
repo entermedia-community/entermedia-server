@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.util.GenericsUtil;
@@ -113,6 +115,14 @@ public class XmpWriter
 			String[] tags = detail.getExternalIds();
 			
 			String value = inAsset.get(detail.getId());
+			
+			if(detail.isList() && Boolean.parseBoolean(detail.get("writenametoexif"))){
+				Searcher lookups = inArchive.getSearcherManager().getSearcher(detail.getListCatalogId(), detail.getListId());
+				Data remote = (Data) lookups.searchById(value);
+				if(remote != null){
+					value = remote.getName();
+				}
+			}
 //			if( detail.getId().equals("imageorientation"))
 //			{
 //				value = inAsset.get("rotation"); //custom rotation. this should be set by the rotation tool?
