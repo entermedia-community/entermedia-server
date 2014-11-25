@@ -47,7 +47,6 @@
 
 #set($selectedid = $context.getRequestParameter("selectedid"))
 
-#if( $existingrecords && $existingrecords.size() > 0 )
 
 
 <script type="text/javascript">
@@ -81,6 +80,7 @@ $('#map').gmap({
 
    
     </script>
+  
 <div id="map" align style="width: 100%; height: 750px;"></div>
 
 
@@ -90,6 +90,6 @@ $('#map').gmap({
 
    
 
-#end
+
 
 
