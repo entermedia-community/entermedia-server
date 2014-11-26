@@ -108,8 +108,17 @@ public void createTasksForUpload() throws Exception {
 			}
 			else
 			{
-				asset.setProperty("importstatus","complete");
-				asset.setProperty("previewstatus","mime");
+
+				if(asset.getProperty("fileformat") == "embeddedvideo")
+				{
+					asset.setProperty("importstatus","complete");
+					asset.setProperty("previewstatus","2");
+				}
+				else
+				{
+					asset.setProperty("importstatus","complete");
+					asset.setProperty("previewstatus","mime");
+				}
 			}
 			mediaarchive.saveAsset( asset, user );
 		}
