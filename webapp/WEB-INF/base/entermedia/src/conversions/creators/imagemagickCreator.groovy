@@ -287,15 +287,15 @@ public class imagemagickCreator extends BaseImageCreator
 					if( width < outputw)
 					{
 						//for small input files we want to scale up the density
-						float density = ((float)outputw / (float)width) * 72f;
-						density = Math.max(density,200);
+						float density = ((float)outputw / (float)width) * 300f;
+						density = Math.max(density,300);
 						String val = String.valueOf( Math.round(density) );
 						com.add(0,val);
 						com.add(0,"-density");
 					}
 					else
 					{
-						com.add(0,"200");
+						com.add(0,"300");
 						com.add(0,"-density");						
 					}
 				}
