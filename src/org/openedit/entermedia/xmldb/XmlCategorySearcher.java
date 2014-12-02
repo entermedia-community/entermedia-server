@@ -33,7 +33,7 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	@Override
 	public void reIndexAll() throws OpenEditException
 	{
-		
+		getCategoryArchive().reloadCategories();
 	}
 	@Override
 	public Data createNewData()
@@ -50,6 +50,18 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	public HitTracker search(SearchQuery inQuery)
 	{
 		ListHitTracker hits = new ListHitTracker();
+		//load them all up?
+		Term desc = inQuery.getTermByDetailId("description");
+		if( desc == null)
+		{
+			desc = inQuery.getTermByDetailId("id");
+		}
+		if( desc != null && "*".equals( desc.getValue() ) ) 
+		{
+			hits.setList( getCategoryArchive().listAllCategories() );
+			return hits;
+		}
+		
 		Term id = inQuery.getTermByDetailId("id");
 		if( id != null)
 		{
