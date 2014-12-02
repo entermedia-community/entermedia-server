@@ -1,0 +1,13 @@
+<!--<properties usagelabel="Approvals and Licensing">
+  <property id="contact" required="true" validate="true" />
+  <property id="departments"/>
+  <property id="datereviewed" validate="true"/>
+  <property id="notes" />
+  <property id="dateexpires" />
+  <property id="reviewstatus" />
+  
+</properties> -->
+## need to dump stuff from a macro
+{
+	"contact":"$context.contact"
+}

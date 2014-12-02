@@ -39,4 +39,13 @@ public class JsonAdminModule extends BaseJsonModule
 {
 	private static final Log log = LogFactory.getLog(JsonAdminModule.class);
 	// TODO: special user stuff
+	
+	public void createUser(WebPageRequest inReq) {
+		
+	}
+	
+	public void updateUser(WebPageRequest inReq) {
+		
+	}
+	
 }

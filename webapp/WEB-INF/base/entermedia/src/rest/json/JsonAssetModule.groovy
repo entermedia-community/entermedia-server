@@ -281,6 +281,7 @@ public class JsonAssetModule extends BaseJsonModule
 				{
 					JSONObject object = it;
 					String val = it.get("id");
+					log.info("In VALUE: ${val}");
 					ids.add(val);
 					if(detail != null)
 					{
@@ -320,6 +321,7 @@ public class JsonAssetModule extends BaseJsonModule
 					}
 					values.keySet().each
 					{
+						log.info("in MAP : ${it}");
 						Object test = values.get(it);
 						if(test instanceof String)
 						{
