@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Fetch assets from remote locations</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/importing/fetchassets.groovy</script>
+	</path-action>
+		<property name="period">5h</property>
+	
+</page>

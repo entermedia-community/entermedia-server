@@ -1,0 +1,7 @@
+<properties >
+	<property id="id" index="true" stored="true">Id</property>
+	<property id="name" index="true" stored="true" editable="true">Name</property>
+	<property id="convertpreset" type="list" index="true" stored="true" editable="true">Conversion</property>
+	<property id="publishdestination" type="list" index="true" stored="true" editable="true">Preset ID</property>
+	
+</properties>

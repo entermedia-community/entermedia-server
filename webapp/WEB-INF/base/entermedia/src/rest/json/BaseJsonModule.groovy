@@ -46,6 +46,7 @@ public class BaseJsonModule extends BaseMediaModule
 	
 	public void preprocess(WebPageRequest inReq)
 	{
+		/*
 		JsonSlurper slurper = new JsonSlurper();
 		def request = null;
 		String content = inReq.getPageValue("jsondata");
@@ -65,8 +66,8 @@ public class BaseJsonModule extends BaseMediaModule
 			inReq.setRequestParameter(key, val);
 			}
 		}
-
-
+	*/
+		inReq.getJsonRequest();
 	}
 
 
