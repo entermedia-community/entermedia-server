@@ -118,6 +118,11 @@ public class ProjectModule extends BaseMediaModule
 		HitTracker all = archive.getAssetSearcher().getAllHits();
 		all.setSelections(ids);
 		all.setShowOnlySelected(true);
+		UserProfile usersettings = (UserProfile) inPageRequest.getUserProfile();
+		if( usersettings != null )
+		{
+			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
+		}
 		all.getSearchQuery().setHitsName("collectionassets");
 		inReq.putPageValue("hits", all);
 		inReq.putSessionValue(all.getSessionId(),all);
