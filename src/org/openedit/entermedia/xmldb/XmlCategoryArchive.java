@@ -252,13 +252,14 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 		try
 		{
 			Page catalogFile = getPageManager().getPage(listCatalogXml());
-
+			Page tempfile = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() + "/categories.tmp.xml");
 			Element root = createElement(getRootCategory());
 			// lets write to a stream
 			//TODO: Lock the path
 			
-			OutputStream out = getPageManager().saveToStream(catalogFile);
+			OutputStream out = getPageManager().saveToStream(tempfile);
 			getXmlUtil().saveXml(root, out, catalogFile.getCharacterEncoding());
+			getPageManager().movePage(tempfile, catalogFile);
 		}
 		catch (Exception e)
 		{
