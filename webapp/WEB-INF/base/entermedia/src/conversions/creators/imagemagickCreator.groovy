@@ -505,7 +505,7 @@ public class imagemagickCreator extends BaseImageCreator
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
-			setValue("colorspace", "sRGB", inStructions, com);
+//			setValue("colorspace", "sRGB", inStructions, com);
 //			String colorspace = inStructions.get("colorspace");
 //			if(colorspace != null){
 //				com.add("-colorspace");
@@ -526,9 +526,10 @@ public class imagemagickCreator extends BaseImageCreator
 				}	
 			}
 */		
-			// setValue("profile", getPathtoProfile(), inStructions, com);
+			setValue("profile", getPathtoProfile(), inStructions, com);
 			com.add("-auto-orient"); //Needed for rotate tool
 			com.add("-strip"); //This does not seem to do much
+			setValue("profile", getPathtoProfile(), inStructions, com);
 			
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
 			
