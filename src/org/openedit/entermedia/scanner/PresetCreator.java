@@ -70,9 +70,9 @@ public class PresetCreator
 			Data preset = (Data) iterator.next();
 			added = added + createMissing(mediaarchive, tasksearcher, existingtasks, preset, asset);
 		}
-		if(added > 0){
+		
 			mediaarchive.updateAssetConvertStatus(asset);
-		}
+		
 		return added;
 	}
 
