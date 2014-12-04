@@ -104,6 +104,8 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<lang:groovy  id="ConvertModule" script-source="modules/convert/ConvertModule.groovy" lazy-init="default" />
 
+	<lang:groovy  id="AnnotationModule" script-source="modules/annotations/AnnotationModule.groovy" lazy-init="default" />
+
 <!-- Compiled Class Version
 
 	<bean id="orderManager" class="model.orders.BaseOrderManager">
