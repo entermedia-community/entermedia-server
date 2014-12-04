@@ -1,0 +1,6 @@
+<page>
+	<property name="module">librarycollection</property>
+	<property name="fallbackdirectory">/WEB-INF/mediadb/services/modules/default</property>
+	<property name="searchtype">${module}</property>
+	
+</page>
