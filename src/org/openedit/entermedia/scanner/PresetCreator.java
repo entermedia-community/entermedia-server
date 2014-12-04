@@ -71,7 +71,7 @@ public class PresetCreator
 			added = added + createMissing(mediaarchive, tasksearcher, existingtasks, preset, asset);
 		}
 		if(added > 0){
-			mediaarchive.updateAssetConvertStatus(asset.getSourcePath());
+			mediaarchive.updateAssetConvertStatus(asset);
 		}
 		return added;
 	}
