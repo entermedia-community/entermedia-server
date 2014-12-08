@@ -7,7 +7,9 @@
 #set( $render = $webtree.getTreeRenderer() )
 
 #set( $adding = $context.getRequestParameter("adding" ) )
-
+#if($selectednodes)
+$!webtree.getTreeRenderer().selectNodes($selectednodes)
+#end
 
 #macro(showtreecategories $cat $depth) 
 		#set ( $padding = (15 * $depth) )
