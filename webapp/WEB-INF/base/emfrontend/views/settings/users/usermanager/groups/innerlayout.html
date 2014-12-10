@@ -37,33 +37,27 @@
 	removeMember = function(inGroupId)
 	{
 		var currentUser = $("#selecteduserholder").attr("value");
-		//console.log("remove current user "+currentUser+" from group "+inGroupId);
+		console.log("remove current user "+currentUser+" from group "+inGroupId);
 		$("#usersearchresultspanel").load("$home$usermanagerhome/groups/removemember.html", {removeUsernames: currentUser, groupid: inGroupId, oemaxlevel: '1'});
 		return false;
 	}
 </script>
 
 <div class="subcolumns">
-          <div class="c33l">
-            <div class="subcl">
-<div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">[[Groups]]</div>
-<div  class="ui-widget-content emselectmenu">
-				$pages.include("./searchgroups.html")
-
-
-				
-
-</div>
-</div>
-
-</div>
-          </div>
-        <div class="c66r">
-            <div id="groupmanagerpanel" class="subcr" >
-	
-				$pages.streamContent()
+	<div class="c33l">
+		<div class="subcl">
+			<div class="ui-widget" style="overflow: hidden;">
+				<div class="ui-widget-header">[[Groups]]</div>
+				<div  class="ui-widget-content emselectmenu">
+					$pages.include("./searchgroups.html")
+				</div>
 			</div>
 		</div>
-		<div id="selecteduserholder" style="display:none;"></div>
+    </div>
+    <div class="c66r">
+	    <div id="groupmanagerpanel" class="subcr" >
+			$pages.streamContent()
+		</div>
+	</div>
+	<div id="selecteduserholder" style="display:none;"></div>
 </div>
