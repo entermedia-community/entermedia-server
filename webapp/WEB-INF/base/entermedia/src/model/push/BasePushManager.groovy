@@ -1118,6 +1118,7 @@ asset: " + asset);
 
 		if (uploadFiles != null)
 		{
+			archive.removeGeneratedImages(target, true);
 			Iterator<FileUploadItem> iter = uploadFiles.iterator();
 			while (iter.hasNext())
 			{
