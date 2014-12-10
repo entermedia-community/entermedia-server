@@ -16,13 +16,17 @@ $context.putPageValue("groupid", $groupid)
 	#set( $selecteduser = $context.getRequestParameter("username" ) )				
 	#foreach ( $hit in $userTracker.getPageOfHits() )
 	<tr rowid="${hit.id}" id="${hit.id}_row">
+		<td nowrap noclick="true">
+			<input type="radio" data-user="${hit.id}" name="groupcheckbox" class="groupcheckbox">
+		</td>
 	#foreach( $detail in $details ) 
 		#set( $newval = "$!hit.get($detail.getId())")
 		#if($newval != "" && $detail.isList())  
 			#set( $newval = "$!searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$newval)" )
 		#end			
 		<td nowrap noclick="true">
-			<a href="#" onclick="selectUser('${hit.id}');" class="oeactionlink">$newval</a>
+			####<a href="#" onclick="selectUser('${hit.id}');" class="oeactionlink" >$newval</a>
+			$newval
 		</td>
 	#end
 	</tr>
@@ -79,3 +83,22 @@ $context.putPageValue("groupid", $groupid)
 	#end
 </div>
 </div> 
+
+
+<script>
+$(".groupcheckbox").on("click",function(e){
+	var val = $(this).prop("checked");
+	var user = $(this).data("user");
+	if (val == true && user.length != 0){
+		selectUser(user);
+	}
+});
+</script>
+<style>
+.groupcheckbox{
+    -webkit-appearance: checkbox;
+    -moz-appearance: checkbox;
+    -ms-appearance: checkbox;
+    -o-appearance: checkbox;
+}
+</style>
