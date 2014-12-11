@@ -1,0 +1,30 @@
+{
+    "catalogid": "entermedia/catalogs/testcatalog",
+    "id": "fromentermedia",
+    "sourcepath": "uploads/fromentermedia",
+    
+    "eid": 1084683,
+    "mid": 1084683,
+    "assettype": "content",
+    "contenttype": "article",
+    "name": "Example Blog Post",
+    "description": "Article about a squirrel who waterskis",
+    "category": {
+        "id": 317
+    },
+    "status": "Active",
+    "customFields":[
+        {
+            "key": "PublisherId",
+            "value": "118"
+        }
+    ],
+    "fetchURL": "http://entermediasoftware.com/media/slide-3.png",
+    
+    "author": "Adam Gillaspie",
+    "body": "<p>we're going for a ride on the information super highway. we're going for a ride on the information super highway. your entrance was good, his was better. here she comes to wreck the day. we got no food we got no money and our pets heads are falling off! haaaaaaarry. i just heard about evans new position,good luck to you evan backstabber, bastard, i mean baxter. we got no food we got no money and our pets heads are falling off! haaaaaaarry. good morning, oh in case i don't see you, good afternoon, good evening and goodnight. it's because i'm green isn't it! we got no food we got no money and our pets heads are falling off! haaaaaaarry. i just heard about evans new position,good luck to you evan backstabber.</p><p> brain freeze. excuse me, i'd like to ass you a few questions. kinda hot in these rhinos. here she comes to wreck the day. good morning, oh in case i don't see you, good afternoon, good evening and goodnight. kinda hot in these rhinos. excuse me, i'd like to ass you a few questions. your entrance was good, his was better. your entrance was good, his was better. it's because i'm green isn't it! look at that, it's exactly three seconds before i honk your nose and pull your underwear over your head. look ma i'm road kill.</p>",
+    "summary": "We're going for a ride on the information super highway. we're going for a ride on the information super highway. your entrance was good, his was better. here she comes to wreck the day. we got no food we got no money and our pets heads are falling off! haaaaaaarry....",
+    "title": "A Talented Squirrel",
+    "link": 4,
+    "image": 6
+}
