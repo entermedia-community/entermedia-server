@@ -1,11 +1,59 @@
-$data
-$data.url
-<textarea>
+        <div class="page-header">
+  <h1>$data <small>($data.url) $data.httpmethod</small></h1>
+</div>
+$!data.description
+<div id="jsontext" style="display: none;">
 $data.samplerequest
+</div>
+<h2>Request</h2>
+<textarea id="request" data-url="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="20">
 </textarea>
+<input type="button" class="btn btn-default" id="process" value="Execute">
 
+<h2>Response:</h2>
 
 <div id="responsearea">
 
 
 </div>
+<textarea id="test" class="form-control" disabled rows="20">
+
+
+</textarea>
+
+<script type="text/javascript">
+jQuery(document).ready(function(){
+	var original = jQuery("#jsontext").html();
+	var data = jQuery.parseJSON(original);
+	var string  = JSON.stringify(data,undefined, 2);
+    jQuery("#request").val(string);
+
+	
+});
+
+
+jQuery("#process").on("click", function(){
+    var req = jQuery("#request").val();
+   	var url = jQuery("#request").data("url");
+    var method =  jQuery("#request").data("method");
+    jQuery.ajax({
+        contentType: 'text/plain',
+	
+    	type: method,
+    	  url: url,
+    	  data: req,
+    	  success: success,
+    	//  dataType: "JSON"
+    });
+});
+
+
+success = function(data) {
+    if(data){
+   	var string  = JSON.stringify(data,undefined, 2);
+   	jQuery("#test").val(string);
+    }
+
+}
+
+</script>

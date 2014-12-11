@@ -1,7 +1,6 @@
 <page>
-<property name="virtual">true</property>
-<!--
-<path-action name="JsonAssetModule.handleAssetSearch" alltypes="true" />
--->
-<page-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
+	<property name="virtual">true</property>
+	<path-action name="JsonDataModule.handleSearch" alltypes="true"/>
+	<page-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+
 </page>

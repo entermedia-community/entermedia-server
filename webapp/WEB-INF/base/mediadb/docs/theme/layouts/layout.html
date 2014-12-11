@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
 <head>
-  <title>#if( $asset || $catalog )$!asset.name $!catalog.name - #end$content.title</title>
+  <title>$content.title - $!data</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -43,15 +43,15 @@ $pages.include("/${applicationid}/docs/theme/layouts/includes.html")
    #foreach($section in $sections)
     <div class="panel-group" role="tablist">
     <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+      <div class="panel-heading" role="tab" id="collapseListGroupHeading1${section}">
         <h4 class="panel-title">
-          <a class="" data-toggle="collapse" href="#collapseListGroup1" aria-expanded="false" aria-controls="collapseListGroup1">
+          <a class="" data-toggle="collapse" href="#collapseListGroup1${section}" aria-expanded="false" aria-controls="collapseListGroup1">
             $section
           </a>
         </h4>
       </div>
       
-      <div id="collapseListGroup1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="collapseListGroupHeading1" aria-expanded="true">
+      <div id="collapseListGroup1${section}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="collapseListGroupHeading1${section}" aria-expanded="false">
         <ul class="list-group">
       		#set($endpoints = $searcher.fieldSearch("docsection",$section.id ))
          #foreach($endpoint in $endpoints)
@@ -59,14 +59,12 @@ $pages.include("/${applicationid}/docs/theme/layouts/includes.html")
           #end
         
         </ul>
-        <div class="panel-footer">Footer</div>
       </div>
     </div>
   </div>
   #end
         </div>
         <div class="col-sm-9 ">
-          <h1 class="page-header">Dashboard</h1>
 			$pages.includeContent()
           
           </div>

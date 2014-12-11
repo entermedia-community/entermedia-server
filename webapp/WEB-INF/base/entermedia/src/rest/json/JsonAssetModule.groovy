@@ -379,7 +379,8 @@ public class JsonAssetModule extends BaseJsonModule
 
 		if(asset == null)
 		{
-			throw new OpenEditException("Asset was not found!");
+			//throw new OpenEditException("Asset was not found!");
+			return;
 		}
 		
 		inReq.putPageValue("asset", asset);

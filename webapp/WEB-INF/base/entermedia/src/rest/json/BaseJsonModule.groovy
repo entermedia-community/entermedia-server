@@ -43,7 +43,7 @@ public class BaseJsonModule extends BaseMediaModule
 	{
 		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 	}
-	
+	 
 	public void preprocess(WebPageRequest inReq)
 	{
 		/*

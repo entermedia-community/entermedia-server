@@ -17,5 +17,5 @@
  <style id="bootstrap" href='/${applicationid}/docs/bootstrap/css/bootstrap.min.css' />
 
  <inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>
-	
+	<property name="title">EnterMedia MediaDB Documentation</property>
 </page>
