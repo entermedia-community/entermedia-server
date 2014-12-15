@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints>
+  <endpoint id="createasset" name="Create a new asset" url="/mediadb/services/modules/assets/data/" module="asset" docsection="1418314436747" description="This endpoint creates a new asset on the server and returns the resulting object.  Nested lists can be created automatically." httpmethod="POST">
+    <samplerequest><![CDATA[{     "assettype": "article",     "fileformat":"jpg",     "keywords": "animals",     "name": "example.jpg",     "description": "Image of a squirrel who waterskis",     "creator":{     	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },     "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>Create a new asset
+  </endpoint>
+  <endpoint id="searchdata" name="Search for Data (Any Table)" url="/mediadb/services/lists/search" httpmethod="POST" docsection="1418330376263">
+    <samplerequest><![CDATA[{ "searchtype":"library",         "page": 1,         "query": [             {                 "field": "id",                 "operator": "matches",                  "values": [                     "*"                                             ]             }          ] }]]></samplerequest>Search for Data (Any Table)
+  </endpoint>
+  <endpoint id="getasset" name="Load Details of existing asset" url="/mediadb/services/modules/assets/data/101" docsection="1418314436747" httpmethod="GET">Load Details of existing asset</endpoint>
+  <endpoint id="searchassets" name="Search for Assets" url="/mediadb/services/modules/assets/search" docsection="1418314436747" description="Example of searching for assets" httpmethod="POST">
+    <samplerequest><![CDATA[{         "hitsperpage":15,         "query": [             {                 "field": "id",                 "operator": "matches",                  "values": [                     "*"                                             ]             }          ] }]]></samplerequest>Search for Assets
+  </endpoint>
+  <endpoint id="authenticate" name="User Authenctication" url="/mediadb/services/authentication/authenticate" docsection="1418334117799" httpmethod="POST" description="Send authentication information and return entermedia key">
+    <samplerequest><![CDATA[{ 	"id":"admin",     "password":"admin" }]]></samplerequest>User Authenctication
+  </endpoint>
+</endpoints>

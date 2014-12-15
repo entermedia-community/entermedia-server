@@ -5,9 +5,13 @@ $!data.description
 <div id="jsontext" style="display: none;">
 $data.samplerequest
 </div>
+#if($data.httpmethod=="POST" || $data.httpmethod=="PUT")
+#set($displayreq = true)
+#end
 <h2>Request</h2>
-<textarea id="request" data-url="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="20">
+<textarea #if(!$displayreq) style="display: none;" #end id="request" data-url="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="20">
 </textarea>
+
 <input type="button" class="btn btn-default" id="process" value="Execute">
 
 <h2>Response:</h2>
