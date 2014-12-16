@@ -252,7 +252,7 @@ public class LuceneIndexer
 	 * @param inId
 	 * @param inValue
 	 */
-	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue)
+	public void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue)
 	{
 		if( inDetail == null)
 		{

@@ -5,5 +5,5 @@
 	-->
 	<!--TODO: Remove the need for this -->
 	<property name="searchtype">${module}</property>
-	
+	removeassetimages.xconf
 </page>
