@@ -13,7 +13,6 @@ if(hits == null){
  String sessionid = context.getRequestParameter("hitssessionid");
  hits = context.getSessionValue(sessionid);
 }
-log.info("hits: " +hits);
 searcherManager = context.getPageValue("searcherManager");
 searchtype = context.findValue("searchtype");
 catalogid = context.findValue("catalogid");
@@ -47,8 +46,8 @@ try
 
 	for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 	{
-		hit =  iterator.next();
-		tracker = searcher.searchById(hit.get("id"));
+		Data hit =  iterator.next();
+		Data tracker = searcher.searchById(hit.get("id"));
 	
 		nextrow = new String[details.size()];//make an extra spot for c
 		int fieldcount = 0;
