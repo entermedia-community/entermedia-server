@@ -542,7 +542,7 @@ public class imagemagickCreator extends BaseImageCreator
 		if (isOnWindows() )
 		{
 			// windows needs quotes if paths have a space
-			com.add("\"" + outputpath + "\"");
+			com.add("\"\\\\?\\" + outputpath + "\"");
 		}
 		else
 		{
