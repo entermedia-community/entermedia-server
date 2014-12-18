@@ -18,7 +18,8 @@
     <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>Remove Generated Asset Images
   </endpoint>
   <endpoint id="systemstatus" name="Show System Cache Status" url="/mediadb/services/system/systemstatus" docsection="1418334117799" description="Shows a status report of overall cache usage" httpmethod="GET">Show System Cache Status</endpoint>
-  <endpoint id="getassetversions" name="Show version history" url="/mediadb/services/modules/assets/versions/101" docsection="1418314436747" description="Shows a history of all versions of this asset." httpmethod="GET">Show version history</endpoint>
+  <endpoint id="getassetversions" name="Show version history" url="/mediadb/services/modules/assets/versions/getversions.json?assetid=101" docsection="assetmedia" description="Shows a history of all versions of this asset." httpmethod="GET">Show version history</endpoint>
+  <endpoint id="resotoreassetversions" name="Restore version" url="/mediadb/services/modules/assets/versions/restoreversion.json?assetid=101" docsection="assetmedia" description="Restores a specific version." httpmethod="GET">Restore Version</endpoint>
   <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="1418314436747" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373">
     <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
   </endpoint>

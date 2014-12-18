@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<property name="forcelayout">true</property>
-	<layout>/${applicationid}/services/modules/assets/versions/layout.json</layout>
-		<property name="virtual">true</property>
 	
-	<page-action name="PageValue.loadPageVariable" bean="attachmentManager" alltypes="true"  />
-	<page-action name="PageValue.loadPageVariable" bean="userManager" alltypes="true"  />
-	<page-action name="PageValue.loadPageVariable" bean="sizer" alltypes="true"/>	
+	<path-action name="PageValue.loadPageVariable" bean="attachmentManager" alltypes="true"  />
+	<path-action name="PageValue.loadPageVariable" bean="userManager" alltypes="true"  />
+	<path-action name="PageValue.loadPageVariable" bean="sizer" alltypes="true"/>	
 	<path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
-
 	<path-action name="JsonAssetModule.loadAsset" alltypes="true" />
-
-	<page-action name="Script.run" alltypes="true">
- 		<script>./getversions.groovy</script>
-	</page-action>
 	
 </page>
