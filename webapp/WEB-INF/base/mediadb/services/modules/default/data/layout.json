@@ -3,36 +3,36 @@
 {
   "response":
       {
-        "id":"$asset.id"
+        "deleted":"true"
       }
 }
 #elseif($method == "PUT")## for updating assets
 {
   "response":
       {
-        "id":"$asset.id"
+        "id":"$data.id"
       }
   ,
-  "data":#json($asset $searcher.getPropertyDetails())
+  "data":#json($data $searcher.getPropertyDetails())
 }  
 #elseif($method == "POST")## for creating assets
 {
   "response":
       {
-        "id":"$asset.id"
+        "id":"$data.id"
       }
   ,
-  "data":#json($asset $searcher.getPropertyDetails())
+  "data":#json($data $searcher.getPropertyDetails())
 }
 #elseif($method == "GET")
 {
   "response":
       {
-        "id":"$asset.id"
+        "id":"$data.id"
       }
   ,
   
-  "data":#json($asset $searcher.getPropertyDetails())
+  "data":#json($data $searcher.getPropertyDetails())
 }
 #else
   {

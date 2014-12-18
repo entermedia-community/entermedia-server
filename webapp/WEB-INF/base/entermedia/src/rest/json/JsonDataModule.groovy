@@ -4,12 +4,9 @@ import groovy.json.JsonSlurper
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.json.simple.JSONObject
 import org.openedit.Data
-import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 
 import com.openedit.WebPageRequest
@@ -94,6 +91,165 @@ public class JsonDataModule extends BaseJsonModule
 		inReq.putPageValue("searcher", searcher);
 
 	}
+	
+	
+	
+	public void createData(WebPageRequest inReq)
+	{
+	
+		SearcherManager sm = inReq.getPageValue("searcherManager");
+		def request = null;
+		
+		request = inReq.getJsonRequest();
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+		String searchtype = resolveSearchType(inReq);
+		
+		if(searchtype == null){
+			searchtype = inReq.findValue("searchtype");
+		}
+		Searcher searcher = archive.getSearcher(searchtype);
+		String id = request.id;
+		String sourcepath = request.sourcepath;
+		Data newdata = searcher.createNewData();
+		newdata.setId(id);
+		newdata.setProperty("sourcepath", sourcepath);
+		request.each
+		{
+			String key = it.key;
+			String value = it.value;
+			newdata.setProperty(key, value);
+		}
+
+
+		searcher.saveData(newdata, inReq.getUser());
+		
+	
+		inReq.putPageValue("searcher", searcher);
+		inReq.putPageValue("data", newdata);
+		
+
+	}
+	
+	public Data loadData(WebPageRequest inReq)
+	{
+
+		SearcherManager sm = inReq.getPageValue("searcherManager");
+
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+
+		String searchtype = resolveSearchType(inReq);
+		Searcher searcher = archive.getSearcher(searchtype);
+		String id = getId(inReq);
+
+		log.info("JSON get with ${id} and ${catalogid}");
+		
+
+		Data data = searcher.searchById(id);
+
+		if(data == null)
+		{
+			//throw new OpenEditException("Asset was not found!");
+			return;
+		}
+		
+		inReq.putPageValue("data", data);
+		inReq.putPageValue("searcher", searcher);
+
+		return data;
+
+	}
+	
+	
+	public void deleteData(WebPageRequest inReq)
+	{
+
+		SearcherManager sm = inReq.getPageValue("searcherManager");
+
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+
+		String searchtype = resolveSearchType(inReq);
+		Searcher searcher = archive.getSearcher(searchtype);
+		String id = getId(inReq);
+
+		log.info("JSON get with ${id} and ${catalogid}");
+		
+
+		Data data = searcher.searchById(id);
+
+		if(data == null)
+		{
+			//throw new OpenEditException("Asset was not found!");
+			return;
+		}
+		searcher.delete(data, inReq.getUser());
+		//inReq.putPageValue("data", data);
+		//inReq.putPageValue("searcher", searcher);
+
+		
+
+	}
+	
+	
+	
+	public String resolveSearchType(WebPageRequest inReq)
+	{
+		def request = null;
+		request = inReq.getJsonRequest();
+		String searchtype = null;
+		if(request){
+			searchtype = request.searchtype;
+		}
+		if(searchtype == null){
+			searchtype = inReq.findValue("searchtype");
+		}
+		
+		if(searchtype == null){
+			String root  = "/mediadb/services/modules/default/data/";
+			String url = inReq.getPath();
+			if(!url.endsWith("/"))
+			{
+				url = url + "/";
+			}
+			String id = url.substring(root.length(), url.length())
+			id = id.substring(0, id.indexOf("/"));
+			return id;
+		}
+		return searchtype;
+	}
+	
+	public void updateData(WebPageRequest inReq)
+	{
+	
+		SearcherManager sm = inReq.getPageValue("searcherManager");
+		def request = null;
+		
+		request = inReq.getJsonRequest();
+		String catalogid =  findCatalogId(inReq);
+		MediaArchive archive = getMediaArchive(inReq, catalogid);
+		String searchtype = resolveSearchType(inReq);
+		Searcher searcher = archive.getSearcher(searchtype);
+		
+		Data newdata = loadData(inReq);
+		if(newdata){
+			request.each
+			{
+				String key = it.key;
+				String value = it.value;
+				newdata.setProperty(key, value);
+			}
+			searcher.saveData(newdata, inReq.getUser());
+			
+		
+			inReq.putPageValue("searcher", searcher);
+			inReq.putPageValue("data", newdata);
+		}
+
+	}
+	
+
 	
 	
 }

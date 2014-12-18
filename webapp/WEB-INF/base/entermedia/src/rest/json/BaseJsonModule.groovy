@@ -46,27 +46,7 @@ public class BaseJsonModule extends BaseMediaModule
 	 
 	public void preprocess(WebPageRequest inReq)
 	{
-		/*
-		JsonSlurper slurper = new JsonSlurper();
-		def request = null;
-		String content = inReq.getPageValue("jsondata");
-		if(content != null)
-		{
-			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		} else {
-			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		}
-
-		request.keySet().each
-		{
-			String key = it;
-			Object val = request.get(key);
-			if(val instanceof String)
-			{
-			inReq.setRequestParameter(key, val);
-			}
-		}
-	*/
+		
 		inReq.getJsonRequest();
 	}
 
@@ -84,18 +64,7 @@ public class BaseJsonModule extends BaseMediaModule
 
 
 
-	public String findSearchType(WebPageRequest inReq)
-	{
-		String root  = "/mediadb/json/search/data/";
-		String url = inReq.getPath();
-		if(!url.endsWith("/"))
-		{
-			url = url + "/";
-		}
-		String id = url.substring(root.length(), url.length())
-		id = id.substring(0, id.indexOf("/"));
-		return id;
-	}
+	
 
 	public String findCatalogId(WebPageRequest inReq)
 	{

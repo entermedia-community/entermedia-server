@@ -246,21 +246,18 @@ public class JsonAssetModule extends BaseJsonModule
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
 
 		String id = getId(inReq);
-		Asset asset = null;
 		if(id == null)
 		{
-			id = searcher.createNewData()
-		}
-				else
-				{
-			 asset = archive.getAsset(id);
-			if(asset == null)
-			{
-				throw new OpenEditException("Asset was not found! (${catalogid}:${id})");
-			}
+			return;
 		}
 		
-
+			Asset asset = archive.getAsset(id);
+			
+		
+		if(asset == null)
+		{
+				return;
+		}
 		inputdata.keySet().each
 		{
 
@@ -341,16 +338,7 @@ public class JsonAssetModule extends BaseJsonModule
 				
 		searcher.saveData(asset, inReq.getUser());
 		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset)
-		JSONObject result = getAssetJson(sm,searcher, asset);
-
-
-		JSONObject conversions = getConversions(archive, asset);
-
-		result.put("conversions", conversions);
-
-		String jsondata = result.toString();
-
-		inReq.putPageValue("json", jsondata);
+		
 		inReq.putPageValue("asset", asset);
 		inReq.putPageValue("searcher", searcher);
 		//return result;

@@ -607,7 +607,7 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		if (isOnWindows())
 		{
-			com.add("\"" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
+			com.add("\"\\\\?\\" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
 		}
 		else
 		{
