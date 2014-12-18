@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<rsp stat="ok">
+<rsp stat="OK">
 #foreach( $revision in $revisions.getRevisions() )
 	<revision number="$revision.getVersion()" 
 		bytes="$revision.getLength()" 

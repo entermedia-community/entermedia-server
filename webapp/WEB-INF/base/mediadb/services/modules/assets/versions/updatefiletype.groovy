@@ -11,7 +11,6 @@ import com.openedit.page.Page
 
 
 public void init(){
-	System.out.println("#### updating file type");
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	Asset asset = getAsset(req);
