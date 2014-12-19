@@ -1,8 +1,8 @@
-{ #set( $hits = $searchtypes )
+{ #set( $hits = $properties )
 	"response":
 	{
 			"totalhits" : $hits.size(),
-			"searchtype" : "table",
+			"searchtype" : "field",
 			"page": 1,
 			"pages": 1,
 			"query":
@@ -11,8 +11,8 @@
 			}
 	},
 	"results":[
-#foreach( $table in $hits )
-		{"name": "$table" }	#if( $velocityCount != $hits.size() ), #end
+#foreach( $detail in $hits )
+		{"id": "$detail.id" }	#if( $velocityCount != $hits.size() ), #end
 
 #end		
 	]
