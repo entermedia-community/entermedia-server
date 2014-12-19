@@ -73,4 +73,20 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/mediadb/services/modules/assets/conversions/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file.">
     <samplerequest><![CDATA[{   "assetid": "101",   "presetid": "imagepreviewfpo" }]]></samplerequest>Run a conversion
   </endpoint>
+  <endpoint id="import1" url="settings/datamanager/listtables" docsection="datamanager" name="List Tables"/>
+  <endpoint id="import2" url="settings/datamanager/addtable" docsection="datamanager" name="Add Table"/>
+  <endpoint id="import3" url="settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field"/>
+  <endpoint id="import4" url="settings/datamanager/fields/save" docsection="datamanager" name="Save Field"/>
+  <endpoint id="import5" url="settings/datamanager/fields/listfields" docsection="datamanager" name="List Fields"/>
+  <endpoint id="import6" url="settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field"/>
+  <endpoint id="import7" url="settings/datamanager/table/deletetable" docsection="datamanager" name="Delete Table"/>
+  <endpoint id="import8" url="settings/datamanager/table/reindex" docsection="datamanager" name="Reindex Table"/>
+  <endpoint id="import9" url="settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV"/>
+  <endpoint id="import10" url="settings/events/list" docsection="events" name="List Events"/>
+  <endpoint id="import11" url="settings/events/event/details" docsection="events" name="Event Details"/>
+  <endpoint id="import12" url="settings/events/event/save" docsection="events" name="Save Event"/>
+  <endpoint id="import13" url="settings/events/event/run" docsection="events" name="Run Event"/>
+  <endpoint id="import14" url="settings/modules/remove" docsection="modules" name="Remove Module"/>
+  <endpoint id="import15" url="settings/modules/list" docsection="modules" name="List Modules"/>
+  <endpoint id="import16" url="settings/modules/save" docsection="modules" name="Save Module"/>
 </endpoints>

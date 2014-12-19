@@ -5,4 +5,7 @@
   <docsection name="Asset Media" id="assetmedia">Asset Media</docsection>
   <docsection name="Lists" id="1418330376263">List Data</docsection>
   <docsection name="System" id="1418334117799">System</docsection>
+  <docsection id="datamanager" name="Data Manager">Data Manager</docsection>
+  <docsection id="events" name="Events">Events</docsection>
+  <docsection id="modules" name="Modules">Modules</docsection>
 </docsections>
