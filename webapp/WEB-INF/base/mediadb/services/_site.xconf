@@ -26,6 +26,5 @@
 		<blank/>
 	</permission>	
 	<property name="alternative_extension">json</property>
-	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	
 </page>

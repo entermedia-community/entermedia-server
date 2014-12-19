@@ -1230,6 +1230,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				log.error(ex);
 			}
 		}
+		getCacheManager().clear(getIndexPath());
 
 	}
 

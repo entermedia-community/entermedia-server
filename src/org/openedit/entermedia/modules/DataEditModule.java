@@ -1688,4 +1688,10 @@ public class DataEditModule extends BaseMediaModule
 	{
 		fieldGeoCoder = inGeoCoder;
 	}
+	
+	public void reload(WebPageRequest inReq)
+	{
+		getSearcherManager().clear();
+		
+	}
 }
