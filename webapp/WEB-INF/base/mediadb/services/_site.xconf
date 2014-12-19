@@ -11,17 +11,20 @@
 	<path-action name="JsonAdminModule.allowHeaders"  alltypes="true"/>	
 	
 	<property name="cancelredirect">true</property>
-<!--	
+	
 	<path-action name="Admin.allowViewing" alltypes="true">
 		<login-path>/${applicationid}/services/rest/noaccess.xml</login-path>
 		<exclude>/${applicationid}/services/rest/login.xml</exclude>
 	</path-action>
 
 	<permission name="view">
-		<group id="administrators"/>
+		<user />
 	</permission>	
-	-->
-		<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+
+
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+	<!-- used in velocity macro -->
+	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	<permission name="view">
 		<blank/>
 	</permission>	
