@@ -74,19 +74,33 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
     <samplerequest><![CDATA[{   "assetid": "101",   "presetid": "imagepreviewfpo" }]]></samplerequest>Run a conversion
   </endpoint>  
   <endpoint id="import1" url="/mediadb/services/settings/datamanager/listtables" docsection="datamanager" name="List Tables" httpmethod="GET">List Tables</endpoint>  
-  <endpoint id="import2" url="/mediadb/services/settings/datamanager/addtable" docsection="datamanager" name="Add Table" httpmethod="POST">Add Table</endpoint>  
+  <endpoint id="import2" url="/mediadb/services/settings/datamanager/addtable" docsection="datamanager" name="Add Table" httpmethod="POST"> 
+    <samplerequest><![CDATA[{"tablename":"testtable"}]]></samplerequest>Add Table
+  </endpoint>  
   <endpoint id="import3" url="/mediadb/services/settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field" httpmethod="DELETE">Remove Field</endpoint>  
   <endpoint id="import4" url="/mediadb/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field</endpoint>  
-  <endpoint id="import5" url="/mediadb/services/settings/datamanager/fields/listfields" docsection="datamanager" name="List Fields" parameters="searchtype=asset" httpmethod="GET">List Fields</endpoint>  
-  <endpoint id="import6" url="settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field"/>  
-  <endpoint id="import7" url="settings/datamanager/table/deletetable" docsection="datamanager" name="Delete Table"/>  
-  <endpoint id="import8" url="settings/datamanager/table/reindex" docsection="datamanager" name="Reindex Table"/>  
-  <endpoint id="import9" url="settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV"/>  
-  <endpoint id="import10" url="settings/events/list" docsection="events" name="List Events"/>  
-  <endpoint id="import11" url="settings/events/event/details" docsection="events" name="Event Details"/>  
-  <endpoint id="import12" url="settings/events/event/save" docsection="events" name="Save Event"/>  
-  <endpoint id="import13" url="settings/events/event/run" docsection="events" name="Run Event"/>  
-  <endpoint id="import14" url="settings/modules/remove" docsection="modules" name="Remove Module"/>  
-  <endpoint id="import15" url="settings/modules/list" docsection="modules" name="List Modules"/>  
-  <endpoint id="import16" url="settings/modules/save" docsection="modules" name="Save Module"/> 
+  <endpoint id="import5" url="/mediadb/services/settings/datamanager/fields/listfields?searchtype=asset" docsection="datamanager" name="List Fields" httpmethod="GET">List Fields</endpoint>  
+  <endpoint id="import6" url="/mediadb/services/settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field" httpmethod="POST">Add new Field</endpoint>  
+  <endpoint id="import7" url="/mediadb/services/settings/datamanager/table/deletetable?searchtype=testtable" docsection="datamanager" name="Delete Table" httpmethod="DELETE">Delete Table</endpoint>  
+  <endpoint id="import8" url="/mediadb/services/settings/datamanager/table/reindex" docsection="datamanager" name="Reindex Table" httpmethod="POST"> 
+    <samplerequest><![CDATA[{"searchtype":"asset"}]]></samplerequest>Reindex Table
+  </endpoint>  
+  <endpoint id="import9" url="/mediadb/services/settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV" httpmethod="POST"> 
+    <samplerequest><![CDATA[{"searchtype":"testtable", "scriptname":"ImportCsvFile.groovy"}]]></samplerequest>Import From CSV
+  </endpoint>  
+  <endpoint id="import10" url="/mediadb/services/settings/events/list" docsection="events" name="List Events" httpmethod="GET">List Events</endpoint>  
+  <endpoint id="import11" url="/mediadb/services/settings/events/event/details" docsection="events" name="Event Details" httpmethod="GET">Event Details</endpoint>  
+  <endpoint id="import12" url="/mediadb/services/settings/events/event/save" docsection="events" name="Save Event" httpmethod="PUT"> 
+    <samplerequest><![CDATA[{"eventpath":"testevent", "period":"1m", "delay":"5s", "enabled":"false"}]]></samplerequest>Save Event
+  </endpoint>  
+  <endpoint id="import13" url="/mediadb/services/settings/events/event/run" docsection="events" name="Run Event" httpmethod="POST"> 
+    <samplerequest><![CDATA[{"runpath":"/media/catalogs/public/events/testevent.groovy"}]]></samplerequest>Run Event
+  </endpoint>  
+  <endpoint id="import14" url="/mediadb/services/settings/modules/remove?id=testmodule" docsection="modules" name="Remove Module" httpmethod="DELETE">Remove Module</endpoint>  
+  <endpoint id="import15" url="/mediadb/services/settings/modules/list" docsection="modules" name="List Modules" httpmethod="GET">List Modules</endpoint>  
+  <endpoint id="import16" url="/mediadb/services/settings/modules/save" docsection="modules" name="Save Module" httpmethod="POST"> 
+    <samplerequest><![CDATA[{"field": ["name","id"], "name.value":"testmodule", "id.value":"testmodule", "save":"true"}]]></samplerequest>Save Module
+  </endpoint>  
+  <endpoint id="customthumb" name="Custom Thumbnail" url="/mediadb/services/modules/assets/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia">Custom Thumbnail</endpoint>  
+  <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="GET" description="Lists conversions" docsection="assetmedia">List Conversions</endpoint> 
 </endpoints>
