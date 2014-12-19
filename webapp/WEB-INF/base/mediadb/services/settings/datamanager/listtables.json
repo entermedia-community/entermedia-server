@@ -1,0 +1,19 @@
+{ #set( $hits = $searchtypes )
+	"response":
+	{
+			"totalhits" : $hits.size(),
+			"searchtype" : "table",
+			"page": 1,
+			"pages": 1,
+			"query":
+			{
+				"search":"*"
+			}
+	},
+	"results":[
+#foreach( $table in $hits )
+		{"name": "$table" }	#if( $velocityCount != $hits.size() ), #end
+
+#end		
+	]
+}
