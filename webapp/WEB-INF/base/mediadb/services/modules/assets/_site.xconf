@@ -3,7 +3,5 @@
 	<!--
 	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/modules/default</property>
 	-->
-	<!--TODO: Remove the need for this -->
 	<property name="searchtype">${module}</property>
-	removeassetimages.xconf
 </page>
