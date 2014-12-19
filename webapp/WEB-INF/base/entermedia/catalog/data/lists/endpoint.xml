@@ -102,5 +102,6 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
     <samplerequest><![CDATA[{"field": ["name","id"], "name.value":"testmodule", "id.value":"testmodule", "save":"true"}]]></samplerequest>Save Module
   </endpoint>  
   <endpoint id="customthumb" name="Custom Thumbnail" url="/mediadb/services/modules/assets/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia">Custom Thumbnail</endpoint>  
-  <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="GET" description="Lists conversions" docsection="assetmedia">List Conversions</endpoint> 
+  <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="GET" description="Lists conversions" docsection="assetmedia">List Conversions</endpoint>  
+  <endpoint id="reload" name="Reload Data" url="/mediadb/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint> 
 </endpoints>
