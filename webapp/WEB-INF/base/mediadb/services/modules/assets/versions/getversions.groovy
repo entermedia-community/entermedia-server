@@ -32,6 +32,8 @@ public void init()
 		allrevisions.addAll(revisions);
 	}
 	context.putPageValue("allrevisions",allrevisions);
+	context.putPageValue("hits",allrevisions);
+	
 	log.info("done");
 }
 
