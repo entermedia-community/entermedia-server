@@ -1,5 +1,5 @@
         <div class="page-header">
-  <h1>$data <small>($data.url) $data.httpmethod</small></h1>
+  <h1>$data <small><br/>URL: <input class="form-control" id="url" type="text" value="$data.url"/> $data.httpmethod</small></h1>
 </div>
 $!data.description
 <div id="jsontext" style="display: none;">
@@ -38,7 +38,7 @@ jQuery(document).ready(function(){
 
 jQuery("#process").on("click", function(){
     var req = jQuery("#request").val();
-   	var url = jQuery("#request").data("url");
+   	var url = jQuery("#url").val();
     var method =  jQuery("#request").data("method");
     jQuery.ajax({
         contentType: 'text/plain',
