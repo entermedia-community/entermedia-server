@@ -208,4 +208,81 @@ public class BaseJsonModule extends BaseMediaModule
 
 		return asset;
 	}
+	
+	
+	public void saveJsonData(Map inputdata, Searcher searcher, Data inData)
+	{
+		inputdata.keySet().each
+		{
+			String key = it;
+			Object value = inputdata.get(key);
+			if(value instanceof String)
+			{
+				inData.setProperty(key, value);
+			} 
+			
+			if(value instanceof List)
+			{
+				ArrayList ids = new ArrayList();
+				PropertyDetail detail = searcher.getDetail(key);
+				
+				value.each
+				{
+					JSONObject object = it;
+					String val = it.get("id");
+					//log.info("In VALUE: ${val}");
+					ids.add(val);
+					if(detail != null)
+					{
+						Searcher rsearcher = searcher.getSearcherManager().getSearcher(searcher.getCatalogId(),key);
+						Data remote = rsearcher.searchById(val);
+						if(remote == null)
+						{
+							remote = rsearcher.createNewData();
+							remote.setId(val);							
+						}
+						object.keySet().each
+						{
+							remote.setProperty(it, object.get(it));
+						}
+						rsearcher.saveData(remote, inReq.getUser());
+					}
+				} 
+				inData.setValues(key, ids);				
+			}
+			if(value instanceof Map )
+			{
+					Map values = value;
+					
+					PropertyDetail detail = searcher.getDetail(key);
+					Searcher rsearcher = searcher.getSearcherManager().getListSearcher(detail);
+					String targetid = value.id;
+					Data remote = rsearcher.searchById(targetid);
+					if(remote == null)
+					{
+						remote = rsearcher.createNewData();
+						remote.setId(targetid);
+					}
+					values.keySet().each
+					{
+						Object test = values.get(it);
+						if(test instanceof String)
+						{
+							remote.setProperty(it,test );
+						}
+					}
+					rsearcher.saveData(remote, null);
+					inData.setProperty(key, targetid);
+			}
+			else
+			{
+				//do something else?
+				
+			}
+
+		}
+	
+	}
+	
+	
 }

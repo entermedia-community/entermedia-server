@@ -120,35 +120,19 @@ public class JsonAssetModule extends BaseJsonModule
 		FileUpload command = archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 		UploadRequest properties = command.parseArguments(inReq);
 
-		JsonSlurper slurper = new JsonSlurper();
-		def request = null;
-		String content = inReq.getPageValue("jsondata");
-		if(properties != null)
-		{
-			// TODO: don't we want to do something here?
-		}
-		request = inReq.getJsonRequest(); 
+		def request = inReq.getJsonRequest(); 
 
 		AssetImporter importer = archive.getAssetImporter();
 		HashMap keys = new HashMap();
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		String df = format.format(new Date());
+		keys.put("formatteddate", df);
 
-		request.each
-		{
-			String key = it.key;
-			String value = it.value;
-			keys.put(key, value);
-			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-			String df = format.format(new Date());
-			keys.put("formatteddate", df);
-
-
-		}
 		String id = request.id;
 		if(id == null)
 		{
 			id = searcher.nextAssetNumber()
 		}
-		keys.put("id", id);
 		String sourcepath = keys.get("sourcepath");
 
 		if(sourcepath == null)
@@ -203,20 +187,10 @@ public class JsonAssetModule extends BaseJsonModule
 			asset.setId(id);
 		}
 
-
-
-		request.each
-		{
-			String key = it.key;
-			String value = it.value;
-			
-			
-			
-			asset.setProperty(key, value);
-		}
-
-
 		asset.setProperty("sourcepath", sourcepath);
+		
+		saveJsonData(request,searcher,asset);
+		
 		searcher.saveData(asset, inReq.getUser());
 		
 		//JSONObject result = getAssetJson(sm, searcher, asset);
@@ -227,7 +201,6 @@ public class JsonAssetModule extends BaseJsonModule
 		//return result;
 
 	}
-
 
 	public void updateAsset(WebPageRequest inReq)
 	{
@@ -251,91 +224,14 @@ public class JsonAssetModule extends BaseJsonModule
 			return;
 		}
 		
-			Asset asset = archive.getAsset(id);
-			
+		Asset asset = archive.getAsset(id);
 		
 		if(asset == null)
 		{
 				return;
 		}
-		inputdata.keySet().each
-		{
-
-			String key = it;
-			Object value = inputdata.get(key);
-			if(value instanceof String)
-			{
-				asset.setProperty(key, value);
-			} 
-			
-			if(value instanceof List)
-			{
-				ArrayList ids = new ArrayList();
-				PropertyDetail detail = searcher.getDetail(key);
-				
-				
-				value.each
-				{
-					JSONObject object = it;
-					String val = it.get("id");
-					log.info("In VALUE: ${val}");
-					ids.add(val);
-					if(detail != null)
-					{
-						Searcher rsearcher = archive.getSearcher(key);
-						Data remote = rsearcher.searchById(val);
-						if(remote == null)
-						{
-							remote = rsearcher.createNewData();
-							remote.setId(val);							
-						}
-						object.keySet().each
-						{
-							remote.setProperty(it, object.get(it));
-						}
-						rsearcher.saveData(remote, inReq.getUser());
-					}
-					
-					
-					
-				} 
-				asset.setValues(key, ids);				
-			}
-			
-			
-			if(value instanceof Map )
-			{
-					Map values = value;
-					
-					PropertyDetail detail = searcher.getDetail(key);
-					Searcher rsearcher = archive.getSearcher(key);
-					String targetid = value.id;
-					Data remote = rsearcher.searchById(id);
-					if(remote == null)
-					{
-						remote = rsearcher.createNewData();
-						remote.setId(targetid);
-					}
-					values.keySet().each
-					{
-						log.info("in MAP : ${it}");
-						Object test = values.get(it);
-						if(test instanceof String)
-						{
-							remote.setProperty(it,test );
-						}
-					}
-					rsearcher.saveData(remote, inReq.getUser());
-					asset.setProperty(key, targetid);
-			}
-			else
-			{
-				//do osomething else
-				
-			}
-
-		}
-				
+		saveJsonData(inputdata,searcher,asset);
+						
 		searcher.saveData(asset, inReq.getUser());
 		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset)
 		

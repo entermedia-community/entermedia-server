@@ -224,25 +224,17 @@ public class JsonDataModule extends BaseJsonModule
 	{
 	
 		SearcherManager sm = inReq.getPageValue("searcherManager");
-		def request = null;
-		
-		request = inReq.getJsonRequest();
+		def request = inReq.getJsonRequest();
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		
 		Data newdata = loadData(inReq);
-		if(newdata){
-			request.each
-			{
-				String key = it.key;
-				String value = it.value;
-				newdata.setProperty(key, value);
-			}
+		if(newdata)
+		{
+			saveJsonData(request,searcher,newdata);
 			searcher.saveData(newdata, inReq.getUser());
-			
-		
 			inReq.putPageValue("searcher", searcher);
 			inReq.putPageValue("data", newdata);
 		}

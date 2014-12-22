@@ -66,3 +66,8 @@
     border-bottom: 0;
 }
 
+.responsearea
+{
+	max-height: 200px;
+	
+}

@@ -17,7 +17,10 @@
  */
 package org.entermedia.upload;
 
+import groovy.json.JsonSlurper;
+
 import java.io.File;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -242,27 +245,36 @@ public class FileUpload
 			{
 				org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
 				int count = 0;				
-				
 				if (!tmp.isFormField())
 				{
-					FileUploadItem foundUpload = new FileUploadItem();
-					foundUpload.setFileItem(tmp);
-					String name = tmp.getName();
-					if( name !=  null && name.contains("\\"))
+					if(tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json") )
 					{
-						name = name.substring(name.lastIndexOf("\\")+1);
+						JsonSlurper slurper = new JsonSlurper();
+						String content = tmp.getString(encoding).trim();
+						Map jsonRequest = (Map)slurper.parseText(content); //this is real, the other way is just for t
+						inContext.setJsonRequest(jsonRequest);
 					}
-					foundUpload.setName(name);
-					//String num = "0";
-					//int index = tmp.getFieldName().indexOf(".");
-//					if(  index > -1)
-//					{
-//						num = tmp.getFieldName().substring(index+1);
-//					}
-					
-					foundUpload.setCount(count);
-					count++;
-					upload.addUploadItem(foundUpload);
+					else
+					{
+						FileUploadItem foundUpload = new FileUploadItem();
+						foundUpload.setFileItem(tmp);
+						String name = tmp.getName();
+						if( name !=  null && name.contains("\\"))
+						{
+							name = name.substring(name.lastIndexOf("\\")+1);
+						}
+						foundUpload.setName(name);
+						//String num = "0";
+						//int index = tmp.getFieldName().indexOf(".");
+	//					if(  index > -1)
+	//					{
+	//						num = tmp.getFieldName().substring(index+1);
+	//					}
+						
+						foundUpload.setCount(count);
+						count++;
+						upload.addUploadItem(foundUpload);
+					}
 				}
 			}
 		}
