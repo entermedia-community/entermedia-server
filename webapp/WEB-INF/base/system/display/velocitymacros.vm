@@ -20,7 +20,7 @@ $invalue
 }
 #end
 #macro(jesc $string)
-	"$!jsonUtil.escape($string)"
+ "$!jsonUtil.escape($string)"
 #end
 #macro(json $hit $details)
 {
@@ -30,7 +30,7 @@ $invalue
 #if($val)#if($rendercomma),#else
 #set($rendercomma = true)#end
 "${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
-#foreach($value in $asset.getValues($detail.id))
+#foreach($value in $hit.getValues($detail.id))
 #if($velocityCount > 1),#end
 #datajsonmin($detail $value)
 #end]

@@ -2,7 +2,7 @@
 	<!-- asset details -->
 	<property id="id" index="true" keyword="true" stored="true">Id</property>
 	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
-	<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property>
+	<!--<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property> -->
 	<property id="description" defaultoperation="freeform">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
 	<property id="category" keyword="true" editable="true" viewtype="category" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
