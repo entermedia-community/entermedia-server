@@ -43,7 +43,7 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="getassetversions" name="Show version history" url="/mediadb/services/modules/assets/versions/getrevisions" docsection="1418314436747" description="Shows a history of all versions of this asset." httpmethod="POST"> 
     <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
   </endpoint>  
-  <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="1418314436747" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373">
+  <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="1418314436747" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373"> 
     <samplerequest><![CDATA[{ "assetid":"101","parentsourcepath":"users/admin/2013/11/server-rack-cabinet-md.png"}]]></samplerequest>List asset attachments
   </endpoint>  
   <endpoint id="deleteasset" name="Delete an Asset" url="/mediadb/services/modules/assets/data/101" docsection="1418314436747" description="This endpoint deletes the asset." httpmethod="DELETE">Delete an Asset</endpoint>  
@@ -69,7 +69,7 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
  "creator":{   	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   
   "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>Update Asset
   </endpoint>  
-  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/mediadb/services/modules/assets/conversions/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file."> 
+  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/mediadb/services/modules/assets/media/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file.">
     <samplerequest><![CDATA[{   "assetid": "101",   "presetid": "imagepreviewfpo" }]]></samplerequest>Run a conversion
   </endpoint>  
   <endpoint id="import1" url="/mediadb/services/settings/datamanager/listtables" docsection="datamanager" name="List Tables" httpmethod="GET">List Tables</endpoint>  
@@ -103,6 +103,8 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
     <samplerequest><![CDATA[{"field": ["name","id"], "name.value":"testmodule", "id.value":"testmodule", "save":"true"}]]></samplerequest>Save Module
   </endpoint>  
   <endpoint id="customthumb" name="Custom Thumbnail" url="/mediadb/services/modules/assets/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia">Custom Thumbnail</endpoint>  
-  <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="GET" description="Lists conversions" docsection="assetmedia">List Conversions</endpoint>  
+  <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="POST" description="Lists conversions" docsection="assetmedia"> 
+    <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>List Conversions
+  </endpoint>  
   <endpoint id="reload" name="Reload Data" url="/mediadb/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint> 
 </endpoints>

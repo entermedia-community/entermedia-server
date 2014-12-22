@@ -18,7 +18,7 @@
 	</path-action>
 
 	<permission name="view">
-		<user />
+		<group id="administrators"/>
 	</permission>	
 
 
