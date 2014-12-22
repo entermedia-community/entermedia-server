@@ -55,7 +55,7 @@ jQuery("#process").on("click", function(){
 success = function(data) {
     if(data){
    	var string  = JSON.stringify(data,undefined, 2);
-   	jQuery("#test").val(string);
+   	jQuery("#test").val(data);
     }
 
 }

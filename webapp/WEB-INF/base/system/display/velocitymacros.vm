@@ -27,25 +27,17 @@ $invalue
 #set($rendercomma = false)
 #foreach($detail in $details)
 #set($val = false)#set($val = $hit.get(${detail.id}))
-#if($val)
-#if($rendercomma)	,
-#else
-#set($rendercomma = true)
-#end
-	"${detail.id}":
-#if($detail.isMultiValue() || $detail.id == "category")
-		[
+#if($val)#if($rendercomma),#else
+#set($rendercomma = true)#end
+"${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
 #foreach($value in $asset.getValues($detail.id))
-#if($velocityCount > 1)        ,#end
-	#datajsonmin($detail $value)
-#end
-		]
+#if($velocityCount > 1),#end
+#datajsonmin($detail $value)
+#end]
 #elseif($detail.isList())
 #datajsonmin($detail $val)
-#else
-#jesc($val) 
+#else#jesc($val) 
 #end
 #end
-#end
-}
+#end}
 #end
