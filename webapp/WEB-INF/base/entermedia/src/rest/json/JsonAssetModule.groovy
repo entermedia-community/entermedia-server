@@ -11,16 +11,13 @@ import org.entermedia.upload.FileUpload
 import org.entermedia.upload.UploadRequest
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
-import org.json.simple.parser.JSONParser
 import org.openedit.Data
 import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
-import org.openedit.entermedia.Category
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.creator.ConversionUtil
-import org.openedit.entermedia.modules.BaseMediaModule
 import org.openedit.entermedia.orders.Order
 import org.openedit.entermedia.orders.OrderManager
 import org.openedit.entermedia.orders.OrderSearcher
@@ -32,7 +29,6 @@ import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
-import com.openedit.util.OutputFiller
 
 
 public class JsonAssetModule extends BaseJsonModule 
@@ -108,7 +104,6 @@ public class JsonAssetModule extends BaseJsonModule
 
 	public void createAsset(WebPageRequest inReq)
 	{
-	
 		SearcherManager sm = inReq.getPageValue("searcherManager");
 
 		String catalogid =  findCatalogId(inReq);

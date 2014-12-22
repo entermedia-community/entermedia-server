@@ -10,5 +10,6 @@
 	<path-action name="JsonAssetModule.loadAsset" alltypes="true" method="GET"/>
 	<path-action name="JsonAssetModule.deleteAsset" alltypes="true" method="DELETE"/>
 	<property name="alternative_extension">json</property>
+	
 </page>
 
