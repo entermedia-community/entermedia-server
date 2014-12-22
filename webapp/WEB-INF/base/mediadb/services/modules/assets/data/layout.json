@@ -3,7 +3,8 @@
 {
   "response":
       {
-        "id":"$asset.id"
+        "id":"$id",
+        "deleted":"$!deleted"
       }
 }
 #elseif($method == "PUT")## for updating assets

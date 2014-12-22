@@ -42,21 +42,40 @@ jQuery("#process").on("click", function(){
     var method =  jQuery("#request").data("method");
     jQuery.ajax({
         contentType: 'text/plain',
-	
     	type: method,
-    	  url: url,
-    	  data: req,
-    	  success: success,
+		url: url,
+		data: req,
+		dataType:'text',
+		error: function(data)
+		{
+			//errors are always objects
+       		var text  = JSON.stringify(data,undefined, 2);    
+       		jQuery("#test").val(text);
+		},
+		success: success,
     	//  dataType: "JSON"
     });
 });
 
 
-success = function(data) {
-    if(data){
-   	var string  = JSON.stringify(data,undefined, 2);
-   	jQuery("#test").val(string);
+success = function(text) {
+    if(text)
+    {
+    	try
+    	{
+    	   	var data = JSON.parse(text);
+       		text  = JSON.stringify(data,undefined, 2);        
+    	}
+    	catch( ex )
+    	{
+    		text = ex;
+    	}
     }
+    else
+    {
+    	text = "Nothing returned";	
+    }
+		jQuery("#test").val(text);
 
 }
 

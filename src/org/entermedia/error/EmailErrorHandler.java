@@ -44,7 +44,7 @@ public class EmailErrorHandler implements ErrorHandler
 	protected PostMail postMail;
 	private static Log log = LogFactory.getLog(EmailErrorHandler.class);
 	
-	public boolean handleError(Exception error, WebPageRequest inRequest)
+	public boolean handleError(Throwable error, WebPageRequest inRequest)
 	//public boolean handleError( Exception error, String inPath, WebPageRequest inContext )
 	{
 		try
@@ -127,7 +127,7 @@ public class EmailErrorHandler implements ErrorHandler
 		return emailAddresses;
 	}
 
-	protected String createMessage(Exception error, WebPageRequest inRequest, String server)
+	protected String createMessage(Throwable error, WebPageRequest inRequest, String server)
 	{
 		StringWriter writer = new StringWriter();
 		writer.write("<pre>");

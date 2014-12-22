@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="createasset" name="Create a new asset" url="/mediadb/services/modules/assets/data/" module="asset" docsection="1418314436747" httpmethod="POST">
+  <endpoint id="createasset" name="Create a new asset" url="/mediadb/services/modules/assets/data/" module="asset" docsection="1418314436747" httpmethod="POST"> 
     <samplerequest><![CDATA[{
   "assettype": "article",
   "fileformat": "jpg",
@@ -17,7 +17,7 @@
     "id": "index"
   },
   "editstatus": 6
-}]]></samplerequest>
+}]]></samplerequest>  
     <description><![CDATA[This endpoint creates a new asset on the server and returns the resulting object.  Nested lists can be created automatically.
 
 If you include a "localPath" parameter, EnterMedia will copy the file at that path into the DAM. 
@@ -43,8 +43,8 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="getassetversions" name="Show version history" url="/mediadb/services/modules/assets/versions/getrevisions" docsection="1418314436747" description="Shows a history of all versions of this asset." httpmethod="POST"> 
     <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
   </endpoint>  
-  <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="1418314436747" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373"> 
-    <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
+  <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="1418314436747" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373">
+    <samplerequest><![CDATA[{ "assetid":"101","parentsourcepath":"users/admin/2013/11/server-rack-cabinet-md.png"}]]></samplerequest>List asset attachments
   </endpoint>  
   <endpoint id="deleteasset" name="Delete an Asset" url="/mediadb/services/modules/assets/data/101" docsection="1418314436747" description="This endpoint deletes the asset." httpmethod="DELETE">Delete an Asset</endpoint>  
   <endpoint id="createnewdata" name="Create a new data object" docsection="1418330376263" description="Creates a new entry in any table.  This example is a library, but changing the searchtype argument will allow you to update any arbitrary table" httpmethod="POST" url="/mediadb/services/modules/default/data/"> 

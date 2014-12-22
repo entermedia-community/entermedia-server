@@ -281,17 +281,21 @@ public class JsonAssetModule extends BaseJsonModule
 		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
-		String id = getId(inReq);
+		String id = getId(inReq); //TODO: Handle multiple deletes?
 
 		Asset asset = archive.getAsset(id);
 
+		int counted = 0;
 		if(asset != null)
 		{
 			searcher.delete(asset, null);
+			counted++;
 		}
+		inReq.putPageValue("id", id);
 		inReq.putPageValue("asset", asset);
 		inReq.putPageValue("searcher", searcher);
-
+		inReq.putPageValue("deleted", counted);
+		
 
 	}
 
