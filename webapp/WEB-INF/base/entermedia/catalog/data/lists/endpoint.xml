@@ -55,12 +55,12 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
     "keywords": "animals",     "description": "Image of a squirrel who waterskis"   }]]></samplerequest>Create a new data object
   </endpoint>  
   <endpoint id="loaddata" name="Load Data " url="/mediadb/services/modules/default/data/library/101" docsection="1418330376263" httpmethod="GET">Load Data</endpoint>  
-  <endpoint id="deletedata" name="Delete Data" url="/mediadb/services/modules/default/data/library/101" docsection="1418330376263" description="Delete Data - replace library with the table you wish to work with.  " httpmethod="DELETE">Delete Data</endpoint>  
   <endpoint id="updatedata" name="Update Data" url="/mediadb/services/modules/default/data/library/101" docsection="1418330376263" description="Update data with key/values in request" httpmethod="PUT"> 
     <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE",
     "description": "Image of a squirrel who waterskis"
    }]]></samplerequest>Update Data
   </endpoint>  
+  <endpoint id="deletedata" name="Delete Data" url="/mediadb/services/modules/default/data/library/101" docsection="1418330376263" description="Delete Data - replace library with the table you wish to work with.  " httpmethod="DELETE">Delete Data</endpoint>  
   <endpoint id="updateasset" name="Update Asset" url="/mediadb/services/modules/assets/data/101" docsection="1418314436747" description="Updates an existing asset" httpmethod="PUT"> 
     <samplerequest><![CDATA[{     "assettype": "article",    
  "fileformat":"jpg",    
@@ -77,12 +77,12 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="import2" url="/mediadb/services/settings/datamanager/addtable" docsection="datamanager" name="Add Table" httpmethod="POST"> 
     <samplerequest><![CDATA[{"tablename":"testtable"}]]></samplerequest>Add Table
   </endpoint>  
-  <endpoint id="import3" url="/mediadb/services/settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field" httpmethod="DELETE">Remove Field</endpoint>  
-  <endpoint id="import4" url="/mediadb/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field</endpoint>  
-  <endpoint id="import5" url="/mediadb/services/settings/datamanager/fields/listfields?searchtype=testtable" docsection="datamanager" name="List Fields" httpmethod="GET">List Fields</endpoint>  
   <endpoint id="import6" url="/mediadb/services/settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field" httpmethod="POST"> 
     <samplerequest><![CDATA[{"searchtype":"testtable", "newproperty":"testfield"}]]></samplerequest>Add new Field
-  </endpoint>  
+  </endpoint>    
+  <endpoint id="import4" url="/mediadb/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field</endpoint>  
+  <endpoint id="import5" url="/mediadb/services/settings/datamanager/fields/listfields?searchtype=testtable" docsection="datamanager" name="List Fields" httpmethod="GET">List Fields</endpoint>  
+<endpoint id="import3" url="/mediadb/services/settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field" httpmethod="DELETE">Remove Field</endpoint>
   <endpoint id="import7" url="/mediadb/services/settings/datamanager/table/deletetable?searchtype=testtable" docsection="datamanager" name="Delete Table" httpmethod="DELETE">Delete Table</endpoint>  
   <endpoint id="import8" url="/mediadb/services/settings/datamanager/table/reindex" docsection="datamanager" name="Reindex Table" httpmethod="POST"> 
     <samplerequest><![CDATA[{"searchtype":"asset"}]]></samplerequest>Reindex Table
