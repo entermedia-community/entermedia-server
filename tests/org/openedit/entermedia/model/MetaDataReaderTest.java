@@ -92,7 +92,7 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 		}
 	}
 	
-	public void testListLookups()
+	public void XtestListLookups()
 	{
 		File testDir = new File(getRoot().getAbsoluteFile().getParentFile().getPath() + "/etc/testassets");
 		
