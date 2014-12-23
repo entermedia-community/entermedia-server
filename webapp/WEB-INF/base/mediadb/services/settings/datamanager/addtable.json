@@ -1,0 +1,2 @@
+#set($table = $context.getRequestParameter("tablename"))
+$pages.include("./listtables.json")

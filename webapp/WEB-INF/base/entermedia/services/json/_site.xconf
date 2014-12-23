@@ -21,6 +21,6 @@
 	-->
 		<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	<permission name="view">
-		<blank/>
+		<group id="administrators"/>
 	</permission>	
 </page>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<property name="virtual">true</property>
+
+<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+
+	<path-action name="Script.run" alltypes="true">
+ 		<script>./getversions.groovy</script>
+	</path-action>	
+</page>

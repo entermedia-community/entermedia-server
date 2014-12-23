@@ -147,16 +147,16 @@ public class JsonModule extends BaseMediaModule
 
 		parent.put("results", array);
 		inReq.putPageValue("json", parent.toString());
-		try {
-			OutputFiller filler = new OutputFiller();
-			InputStream stream = new ByteArrayInputStream(parent.toJSONString().getBytes("UTF-8"));
-
-			//filler.setBufferSize(40000);
-			//InputStream input = object.
-			filler.fill(stream, inReq.getOutputStream());
-		} catch(Exception e){
-			throw new OpenEditException(e);
-		}
+//		try {
+//			OutputFiller filler = new OutputFiller();
+//			InputStream stream = new ByteArrayInputStream(parent.toJSONString().getBytes("UTF-8"));
+//
+//			//filler.setBufferSize(40000);
+//			//InputStream input = object.
+//			filler.fill(stream, inReq.getOutputStream());
+//		} catch(Exception e){
+//			throw new OpenEditException(e);
+//		}
 		return parent;
 	}
 
@@ -260,6 +260,9 @@ public class JsonModule extends BaseMediaModule
 			println it;
 			String key = it.key;
 			String value = it.value;
+			
+			
+			
 			asset.setProperty(key, value);
 		}
 
@@ -300,16 +303,21 @@ public class JsonModule extends BaseMediaModule
 		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
+
 		String id = getId(inReq);
-
-
-
-
-		Asset asset = archive.getAsset(id);
-
-		if(asset == null){
-			throw new OpenEditException("Asset was not found! (${catalogid}:${id})");
+		Asset asset = null;
+		if(id == null)
+		{
+			id = searcher.createNewData()
 		}
+		else
+		{
+			 asset = archive.getAsset(id);
+			if(asset == null){
+				throw new OpenEditException("Asset was not found! (${catalogid}:${id})");
+			}
+		}
+		
 
 		inputdata.keySet().each {
 			println it;
@@ -628,7 +636,9 @@ public class JsonModule extends BaseMediaModule
 		original.put("URL", origurl);
 		
 		asset.put("original", original);
-		
+		String assettype = inAsset.get("assettype");
+                 if (assettype)
+                 {
 		HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId(),inAsset.get("assettype"));
 		conversions.each{
 			if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.id)){
@@ -644,83 +654,10 @@ public class JsonModule extends BaseMediaModule
 
 			}
 		}
+              }
 		return asset;
 	}
-	public JSONObject handleSearch(WebPageRequest inReq)
-	{
-		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 	
-		//Could probably handle this generically, but I think they want tags, keywords etc.
-
-		SearcherManager sm = inReq.getPageValue("searcherManager");
-
-		String catalogid =  findCatalogId(inReq);
-		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		String searchtype = findSearchType(inReq);
-		Searcher searcher = archive.getSearcher(searchtype);
-		JsonSlurper slurper = new JsonSlurper();
-		def request = null;
-		String content = inReq.getPageValue("jsondata");
-		if(content != null){
-			request = slurper.parseText(content); //NOTE:  This is for unit tests.
-		} else{
-			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		}
-
-
-		ArrayList <String> fields = new ArrayList();
-		ArrayList <String> operations = new ArrayList();
-
-		request.query.each{
-			println it;
-			fields.add(it.field);
-			operations.add(it.operator.toLowerCase());
-			StringBuffer values = new StringBuffer();
-			it.values.each{
-				values.append(it);
-				values.append(" ");
-			}
-			String finals = values.toString().trim();
-			inReq.setRequestParameter(it.field + ".value", finals);
-		}
-
-		println "field" + fields;
-		println "operations: " + operations;
-		String[] fieldarray = fields.toArray(new String[fields.size()]) as String[];
-		String[] opsarray = operations.toArray(new String[operations.size()]) as String[];
-
-		inReq.setRequestParameter("field", fieldarray);
-		inReq.setRequestParameter("operation", opsarray);
-
-		SearchQuery query = searcher.addStandardSearchTerms(inReq);
-		println "Query was: " + query;
-
-		HitTracker hits = searcher.cachedSearch(inReq, query);
-		println hits.size();
-		JSONObject parent = new JSONObject();
-		parent.put("size", hits.size());
-
-		JSONArray array = new JSONArray();
-		hits.getPageOfHits().each{
-			JSONObject hit = getDataJson(sm,searcher, it);
-			array.add(hit);
-		}
-
-
-		parent.put("results", array);
-		inReq.putPageValue("json", parent.toString());
-		try {
-			OutputFiller filler = new OutputFiller();
-			InputStream stream = new ByteArrayInputStream(parent.toJSONString().getBytes("UTF-8"));
-
-			//filler.setBufferSize(40000);
-			//InputStream input = object.
-			filler.fill(stream, inReq.getOutputStream());
-		} catch(Exception e){
-			throw new OpenEditException(e);
-		}
-		return parent;
-	}
 
 	public void preprocess(WebPageRequest inReq)
 	{
@@ -735,11 +672,13 @@ public class JsonModule extends BaseMediaModule
 			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
-		request.parameters.each{
+		request.keySet().each{
 			println it;
-			String key = it.key;
-			String val = it.value;
+			String key = it;
+			Object val = request.get(key);
+			if(val instanceof String){
 			inReq.setRequestParameter(key, val);
+			}
 		}
 
 
@@ -766,7 +705,7 @@ public class JsonModule extends BaseMediaModule
 
 	public String findSearchType(WebPageRequest inReq)
 	{
-		String root  = "/entermedia/services/json/search/data/";
+		String root  = "/mediadb/json/search/data/";
 		String url = inReq.getPath();
 		if(!url.endsWith("/")){
 			url = url + "/";
@@ -780,12 +719,13 @@ public class JsonModule extends BaseMediaModule
 
 	public String findCatalogId(WebPageRequest inReq)
 	{
-		String catalogid = inReq.getRequestParameter("catalogid");
+		String catalogid = inReq.findValue("catalogid");
 		if(catalogid == null){
 			if(inReq.getRequest()){
 				catalogid = inReq.getRequest().getHeader("catalogid");
 			}
 		}
+		
 		return catalogid;
 	}
 

@@ -1021,6 +1021,7 @@ public class MediaArchive
 		if( inids.size() < 10000)
 		{
 			StringBuffer paths = new StringBuffer();
+			
 			for (Iterator iterator = inids.iterator(); iterator.hasNext();)
 			{
 				String path = (String) iterator.next();
@@ -1032,6 +1033,7 @@ public class MediaArchive
 			}
 			event.setProperty("assetids", paths.toString());
 		}
+		event.setValues("dataids", inids);
 		//archive.getWebEventListener()
 		getMediaEventHandler().eventFired(event);
 		
@@ -1062,6 +1064,7 @@ public class MediaArchive
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
 			event.setProperty("assetids", asset.getId() );
+			event.setProperty("dataid", asset.getId() );
 
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
@@ -1144,6 +1147,7 @@ public class MediaArchive
 		}
 		if (category == null)
 		{
+
 //			if (inReq.getContentPage() == inReq.getPage())
 //			{
 //				String val = inReq.findValue("showmissingcategories");
@@ -1546,7 +1550,7 @@ public class MediaArchive
 		Asset asset = getAssetBySourcePath(inSourcePath);
 		updateAssetConvertStatus(asset);
 	}
-	public String updateAssetConvertStatus(Asset asset) 
+	public String updateAssetConvertStatus(Data asset) 
 	{
 		if( asset == null)
 		{
@@ -1589,21 +1593,30 @@ public class MediaArchive
 			if( founderror || allcomplete )
 			{
 				//load the asset and save the import status to complete
-				
+			
 				if( asset != null )
 				{
+					if(founderror && "error".equals(asset.get("importstatus"))){
+						return asset.get("importstatus");						
+					}
+					if(allcomplete && "complete".equals(asset.get("importstatus")) && "2".equals(asset.get("previewstatus")  ) )
+					{
+						return asset.get("importstatus");
+						
+					}
+					Asset target =  getAsset(asset.getId());
 					if( founderror)
 					{
-						asset.setProperty("importstatus","error");
+						target.setProperty("importstatus","error");
 						
 					}
 					else
 					{
-						asset.setProperty("importstatus","complete");
-						asset.setProperty("previewstatus","2");
+						target.setProperty("importstatus","complete");
+						target.setProperty("previewstatus","2");
 						
 					}
-					saveAsset(asset, null);
+					saveAsset(target, null);
 				}
 			}
 		}

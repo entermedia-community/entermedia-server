@@ -66,9 +66,14 @@
 	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
 	                   
                         #else
+                           #set( $showviewer = $content.isPropertyTrue("showviewer") )
+                            #if($showviewer)
+                            	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
                             
-                            $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                            #else
                             
+                                                        $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                            #end
                             #set ($listid =  $content.tab )
                             #if ($content.subtab)
                             <div id="eml-tab-subnav">

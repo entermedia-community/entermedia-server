@@ -66,6 +66,12 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 				showtoolbar = user.hasPermission("oe.administration");
 			}
 		}
+		
+		if(!showtoolbar){
+			if(inContext.getSessionValue("realuser") != null){
+				showtoolbar = true;
+			}
+		}
 //		if( !showtoolbar)
 //		{
 //			String mode = (String)user.getProperty("oe.edit.mode");

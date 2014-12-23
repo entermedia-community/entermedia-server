@@ -27,7 +27,7 @@ var AnnotationEditor = function(scope) {
 							scope.userColor = "#" + val;
 						},
 						close: function(event,color) {
-							jAngular.replace("#colortoolbararea", scope);
+							jAngular.render("#colortoolbararea", scope);
 							var tool = scope.annotationEditor.currentTool.name;
 							var type = scope.annotationEditor.currentTool.type;
 							
@@ -62,10 +62,6 @@ var AnnotationEditor = function(scope) {
 			// load asset data
 			this.connect();
 
-			// get user data, should this be in connect?
-			$.getJSON('/entermedia/services/json/users/status.json', function(data) {
-				scope.annotationEditor.userData = data;
-			});
 		}
 		,
 		removeAnnotation: function(annotationid)
@@ -108,7 +104,7 @@ var AnnotationEditor = function(scope) {
 			jQuery("#annotation" + annotationid).html(html); //replace div
 			var localscope = this.scope.createScope();
 			localscope.annotation = annotation;
-			jAngular.replace("#annotation" + annotationid, localscope);
+			jAngular.render("#annotation" + annotationid, localscope);
 		}
 		,
 		saveComment: function(annotationid)
@@ -205,7 +201,23 @@ var AnnotationEditor = function(scope) {
 			});
 			*/
 			editor.fabricModel.canvas.renderAll();
-			jAngular.render("#annotationtab", scope); //changed
+			jAngular.render("#annotationtab", scope); 
+
+			// it seems like we trash the data when we render, thus may need to update the active status post-render
+
+			$("a.thumb").each(function()
+				{
+					var element = $(this);
+					if (element.attr("id") == "thumb" + inAnnotatedAsset.assetData.id)
+					{
+						element.addClass("active");
+					}
+					else
+					{
+						element.removeClass("active");
+					}
+				}
+			);
 			// jAngular.render("#annotationlist"); // shouldn't have to do this
 			// this method also needs to clear the canvas and comments and update from the persisted data
 			// DONE: Clear canvas state, refresh with AnnotatedAsset data
@@ -333,7 +345,7 @@ var AnnotationEditor = function(scope) {
 		{
 			jQuery.ajax({
 				type: "GET",
-				url: "" + scope.apphome + "/components/annotations/json/viewassets.json?id=" + scope.collectionid,
+				url: scope.dbhome + "/services/modules/librarycollections/viewassets.json?id=" + scope.collectionid + "&catalogid=" + scope.catalogid,
 				async: false,
 				error: function(data, status, err) {
 					console.log('from error:', data);
@@ -357,7 +369,7 @@ var AnnotationEditor = function(scope) {
 					scope.userColor = scope.annotationEditor.userData.defaultcolor;
 					
 					//jAngular.replace("#annotation-toolbar", scope);
-					jAngular.replace("#colortoolbararea", scope);
+					jAngular.render("#colortoolbararea", scope);
 					
 					scope.annotationEditor.fabricModel.selectTool("draw");
 					//Grab list of users and annotations for assets
@@ -397,8 +409,11 @@ var AnnotationEditor = function(scope) {
 				{
 					//console.log('Opened a connection!');
 					//console.log(e);
-					
-					editor.loadAssetList();
+					// get user data, should this be in connect?
+					$.getJSON('/entermedia/services/json/users/status.json', function(data) {
+						scope.annotationEditor.userData = data;
+						editor.loadAssetList();
+					});
 					
 				};
 				connection.onclose = function(e)

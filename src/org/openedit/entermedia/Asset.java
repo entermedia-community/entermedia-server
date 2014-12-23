@@ -314,6 +314,10 @@ public class Asset implements MultiValued
 		{
 			getProperties().remove(inKey);
 		}
+		if ("category".equals(inKey))
+		{
+			getCategories().clear();
+		}
 	}
 
 	public void addCategory(Category inCatid)

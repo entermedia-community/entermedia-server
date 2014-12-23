@@ -19,10 +19,9 @@
     <input type="hidden" name="field" value="${detail.id}_lng"/>
     Longitude: <input type="text" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!lng"/>
 
-
 <script type="text/javascript">
 
-$('#${detail.id}_map').gmap({
+jQuery('#${detail.id}_map').gmap({
 	 'center':'39.025818619038375,-95.03089171562499',
 }).bind('init', function(ev, map) {
 	#if( $lat )

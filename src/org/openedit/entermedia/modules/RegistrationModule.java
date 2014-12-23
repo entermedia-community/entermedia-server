@@ -110,7 +110,9 @@ public class RegistrationModule extends BaseMediaModule
 			return;
 		}
 		String email = inReq.getRequestParameter("email.value");
-
+		if(email == null){
+			email = inReq.getRequestParameter("email");
+		}
 		User user = getUserManager().getUserByEmail(email);
 		String id = inReq.getRequestParameter("id");
 		
@@ -128,8 +130,9 @@ public class RegistrationModule extends BaseMediaModule
 			// errors.put("error-email-in-use", "This email address is in use");
 			// inReq.putPageValue("errors", errors);
 			inReq.putPageValue("emailinuse", true);
-			inReq.setRequestParameter("email.value", current.getEmail());
-			cancelAndForward(inReq);
+			if(current != null){
+				inReq.setRequestParameter("email.value", current.getEmail());
+				}			cancelAndForward(inReq);
 		}
 
 	}

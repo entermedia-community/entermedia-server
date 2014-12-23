@@ -1,0 +1,9 @@
+#if($authenticated)
+{
+"authenticated": true,
+"user":"${id}",
+"entermediakey": "$entermediakey"
+}
+#else
+{"authenticated":false}
+#end

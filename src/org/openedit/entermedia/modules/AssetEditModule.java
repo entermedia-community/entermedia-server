@@ -812,13 +812,13 @@ public class AssetEditModule extends BaseMediaModule
 				Asset asset = archive.getAsset("multiedit:" + hits.getSessionId(),inReq);
 				inReq.putPageValue("asset", asset );
 			}
-
+			/*
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
 			{
 				Data data = (Data) iterator.next();
 				hits.addSelection(data.getId());
 			}			
-
+			*/
 			inReq.putPageValue("hits", hits );
 			
 		}
@@ -1800,6 +1800,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset.setProperty("assetvotes", String.valueOf( hits.size()) );
 			MediaArchive archive = getMediaArchive(inReq);
+			//async asset save?
 			archive.fireMediaEvent("asset/assetsave", inReq.getUser(), asset);
 		}
 		
@@ -2084,6 +2085,11 @@ public class AssetEditModule extends BaseMediaModule
 			String id = inReq.getRequestParameter("id");
 			if(id != null){
 				vals.put("id",id);
+			}
+			else{
+				id = archive.getAssetSearcher().nextAssetNumber();
+				vals.put("id",id);
+
 			}
 			vals.put("filename", item.getName());
 			Replacer replacer = new Replacer();

@@ -1,0 +1,8 @@
+<page>
+<property name="virtual">true</property>
+
+<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+
+<path-action name="BaseJsonModule.createOrder" alltypes="true" method="POST"/>
+
+</page>

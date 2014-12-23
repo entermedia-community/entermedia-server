@@ -1,0 +1,11 @@
+<page>
+<property name="virtual">true</property>
+
+<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+
+<path-action name="JsonAssetModule.createAsset" alltypes="true" method="POST"/>
+<path-action name="JsonAssetModule.updateAsset" alltypes="true" method="PUT"/>
+<path-action name="JsonAssetModule.loadAsset" alltypes="true" method="GET"/>
+<path-action name="JsonAssetModule.deleteAsset" alltypes="true" method="DELETE"/>
+
+</page>

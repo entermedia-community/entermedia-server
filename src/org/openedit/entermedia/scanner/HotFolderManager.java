@@ -70,6 +70,7 @@ public class HotFolderManager
 	public void saveMounts(String inCatalogId)
 	{
 		//remove any old hot folders for this catalog
+		getWebServer().reloadMounts();
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		String path = "/WEB-INF/data/" + inCatalogId + "/";
 		List extras = new ArrayList();

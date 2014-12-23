@@ -287,15 +287,15 @@ public class imagemagickCreator extends BaseImageCreator
 					if( width < outputw)
 					{
 						//for small input files we want to scale up the density
-						float density = ((float)outputw / (float)width) * 72f;
-						density = Math.max(density,200);
+						float density = ((float)outputw / (float)width) * 300f;
+						density = Math.max(density,300);
 						String val = String.valueOf( Math.round(density) );
 						com.add(0,val);
 						com.add(0,"-density");
 					}
 					else
 					{
-						com.add(0,"200");
+						com.add(0,"300");
 						com.add(0,"-density");						
 					}
 				}
@@ -408,8 +408,7 @@ public class imagemagickCreator extends BaseImageCreator
 				com.add(gravity);
 			}
 			
-			
-			if( !transparent && ("pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
+			if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{
 				com.add("-background");
 				com.add("white");
@@ -472,7 +471,7 @@ public class imagemagickCreator extends BaseImageCreator
 				com.add(resizestring.toString());
 			}
 		}
-		else if( !transparent && ( "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext) ) )
+		else if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext) ) )
 		{
 			com.add("-background");
 			com.add("white");
@@ -506,7 +505,7 @@ public class imagemagickCreator extends BaseImageCreator
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
 	//		com.add("-quality"); 
 	//		com.add("90"); I think the default is about 80
-			setValue("colorspace", "sRGB", inStructions, com);
+//			setValue("colorspace", "sRGB", inStructions, com);
 //			String colorspace = inStructions.get("colorspace");
 //			if(colorspace != null){
 //				com.add("-colorspace");
@@ -527,9 +526,10 @@ public class imagemagickCreator extends BaseImageCreator
 				}	
 			}
 */		
-			// setValue("profile", getPathtoProfile(), inStructions, com);
+			setValue("profile", getPathtoProfile(), inStructions, com);
 			com.add("-auto-orient"); //Needed for rotate tool
 			com.add("-strip"); //This does not seem to do much
+			setValue("profile", getPathtoProfile(), inStructions, com);
 			
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
 			
@@ -542,7 +542,7 @@ public class imagemagickCreator extends BaseImageCreator
 		if (isOnWindows() )
 		{
 			// windows needs quotes if paths have a space
-			com.add("\"" + outputpath + "\"");
+			com.add("\"\\\\?\\" + outputpath + "\"");
 		}
 		else
 		{
@@ -607,7 +607,7 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		if (isOnWindows())
 		{
-			com.add("\"" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
+			com.add("\"\\\\?\\" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
 		}
 		else
 		{

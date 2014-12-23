@@ -3,15 +3,41 @@
 #macro(escwrap $invalue $inwrap)$!url_util.xmlEscapeWithWrap($invalue, $inwrap)#end
 #macro(text $t)$!context.getText($t)#end
 #macro( translate $text )
-	$!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
+$!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
 #end
-
 #macro(makeid $invalue)$!url_util.getPathUtilities().extractId($invalue)#end
-
-
 #macro(debug $invalue)
-	#set ($mode = $user.get("showdebug"))
-	#if($mode && $mode == "true")
-		$invalue
-	#end
+#set ($mode = $user.get("showdebug"))
+#if($mode && $mode == "true")
+$invalue
+#end
+#end
+#macro(datajsonmin $detail $id)
+#set($data = $searcherManager.getData($detail, $id))
+{
+	"id":"$id",
+	"name":#jesc($data.name)
+}
+#end
+#macro(jesc $string)
+ "$!jsonUtil.escape($string)"
+#end
+#macro(json $hit $details)
+{
+#set($rendercomma = false)
+#foreach($detail in $details)
+#set($val = false)#set($val = $hit.get(${detail.id}))
+#if($val)#if($rendercomma),#else
+#set($rendercomma = true)#end
+"${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
+#foreach($value in $hit.getValues($detail.id))
+#if($velocityCount > 1),#end
+#datajsonmin($detail $value)
+#end]
+#elseif($detail.isList())
+#datajsonmin($detail $val)
+#else#jesc($val) 
+#end
+#end
+#end}
 #end

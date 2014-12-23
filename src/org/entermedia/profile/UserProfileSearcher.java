@@ -150,7 +150,7 @@ public class UserProfileSearcher extends XmlFileSearcher {
 							Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 				}
 				if (user.getLastName() != null) {
-					doc.add(new Field("lastname", user.getFirstName(),
+					doc.add(new Field("lastname", user.getLastName(),
 							Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS));
 				}
 				doc.add(new Field("deleted", "false",

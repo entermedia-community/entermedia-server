@@ -4849,6 +4849,7 @@ p.resultsnumber {
     background: #F7F7F7 url('../images/sidebar-shadow.png') right top repeat-y;
     border-right: 1px solid #CCC;
     width: 48px;
+    min-width: 48px;
     -webkit-transition: width 0.05s ease-out;
     -moz-transition: width 0.05s ease-out;
     -ms-transition: width 0.05s ease-out;
@@ -6615,9 +6616,12 @@ div.tableheaderactions a
 }
 
 .checkbox input[type="checkbox"] {
+    margin-top: -2px;
+    margin-left: 1px;
+}
+
+.checkbox input[type="checkbox"]:not(.categorycheckbox) {
     float: none;
-    margin-top: 0px;
-    margin-left: 0px;
 }
 
 .checkbox {
@@ -6629,7 +6633,8 @@ div.tableheaderactions a
     -moz-box-sizing: content-box;
 }
 
-#workarea ul li:first-child, #emcontainer #emselectable table th, .categories-widget, #emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
+
+#emcontainer #resultslist #default-fields .settings-table tr td:first-child, #de-metadata #default-fields .cellrow span.bodylabel, #workarea ul li:first-child, #emcontainer #emselectable table th, .categories-widget, #emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
     box-sizing: content-box;
     -moz-box-sizing: content-box;
 }

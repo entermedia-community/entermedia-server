@@ -1,0 +1,4 @@
+<page>
+	<path-action name="DataEditModule.search" alltypes="true"/>
+	<property name="searchtype">module</property>
+</page>

@@ -191,7 +191,9 @@ public class audioCreator extends BaseCreator implements MediaCreator
 		new File( outpath).getParentFile().mkdirs();
 		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 
-		boolean ok =  runExec("ffmpeg", comm);
+		//boolean ok =  runExec("ffmpeg", comm);
+		boolean ok =  runExec("avconv", comm);
+		
 		result.setOk(ok);
 		log.info( "ok: ${ok} in " + (System.currentTimeMillis() - start)/1000L + " seconds" );
 	}

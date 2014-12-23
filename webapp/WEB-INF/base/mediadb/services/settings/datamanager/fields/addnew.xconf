@@ -1,0 +1,6 @@
+<page>
+<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
+	<path-action name="DataEditModule.addProperty" />
+ 	<path-action name="DataEditModule.loadProperties" alltypes="true"/>
+ 
+</page>

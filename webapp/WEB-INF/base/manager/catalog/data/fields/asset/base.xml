@@ -1,0 +1,6 @@
+<page>
+	<property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains"  sortable="true" >Exact Categories</property>
+
+
+
+</page>

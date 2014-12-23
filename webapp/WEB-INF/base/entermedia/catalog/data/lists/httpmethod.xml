@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<httpmethods>
+  <httpmethod id="POST" name="POST">POST</httpmethod>
+  <httpmethod id="GET" name="GET">GET</httpmethod>
+  <httpmethod id="PUT" name="PUT">PUT</httpmethod>
+  <httpmethod id="DELETE" name="DELETE">DELETE</httpmethod>
+</httpmethods>

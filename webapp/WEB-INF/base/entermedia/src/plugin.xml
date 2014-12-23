@@ -93,13 +93,18 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
  	-->
  	
 	<lang:groovy  id="ProjectModule" script-source="modules/projects/ProjectModule.groovy" lazy-init="default" />
-	<lang:groovy  id="projectManager" script-source="modules/projects/BaseProjectManager.groovy" lazy-init="default"  scope="prototype" singleton="false">
+	<lang:groovy  id="projectManager" script-source="modules/projects/BaseProjectManager.groovy" lazy-init="default"  scope="prototype" >
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
 
 	<lang:groovy  id="JsonModule" script-source="rest/json/JsonModule.groovy" lazy-init="default" />
+	<lang:groovy  id="JsonAssetModule" script-source="rest/json/JsonAssetModule.groovy" lazy-init="default" />
+	<lang:groovy  id="JsonDataModule" script-source="rest/json/JsonDataModule.groovy" lazy-init="default" />
+	<lang:groovy  id="JsonAdminModule" script-source="rest/json/JsonAdminModule.groovy" lazy-init="default" />
 
 	<lang:groovy  id="ConvertModule" script-source="modules/convert/ConvertModule.groovy" lazy-init="default" />
+
+	<lang:groovy  id="AnnotationModule" script-source="modules/annotations/AnnotationModule.groovy" lazy-init="default" />
 
 <!-- Compiled Class Version
 
@@ -116,7 +121,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	
  -->
  <!-- 
-	<lang:groovy  id="convertQueue" script-source="model/assets/ConvertQueue.groovy" lazy-init="default"  scope="prototype" singleton="false">
+	<lang:groovy  id="convertQueue" script-source="model/assets/ConvertQueue.groovy" lazy-init="default"  scope="prototype" >
 			<lang:property name="executorManager"><ref bean="executorManager" /></lang:property>
 	</lang:groovy>
  -->

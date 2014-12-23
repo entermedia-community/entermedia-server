@@ -1,0 +1,19 @@
+{
+ "sessionid":"$!attachments.sessionId",
+ "page":"$!attachments.page",
+ "pages":"$!attachments.totalPages",
+ "totalsize":"$!attachments.size()",
+ "attachments":[
+  #foreach( $hit in $attachments )
+	#if( $velocityCount != 1), #end 
+	{ 
+		"name":"$hit.name" ,
+		"sourcepath":"$!hit.sourcepath" ,
+		"folder":"$!hit.folder",
+	 	"parentsourcepath":"$!hit.parentsourcepath"
+	}
+	
+
+#end
+	]
+}

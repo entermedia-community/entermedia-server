@@ -1,4 +1,3 @@
-
 #set( $dataroot = $content.dataroot )
 <div class="tab-actions">
 	<strong>Editing $!property.name</strong>
@@ -109,11 +108,11 @@
 	</tr>
 
 	<tr> <td>[[Stored In Index]]:</td> <td><input name="stored" type="checkbox" #if ($property.stored == true) checked #end value="true"/> </td> </tr>
+	<input type="hidden" name="field" value="listid"/>
 
 	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
 	<tr> <td>[[Used In Keywords]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Used In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
-	<input type="hidden" name="field" value="listid"/>
 	<input type="hidden" name="field" value="listcatalogid"/>
 	<input type="hidden" name="field" value="sort"/>
 	<input type="hidden" name="field" value="query"/>
@@ -145,6 +144,14 @@
 
 	<tr> <td>[[Render Mask]]:</td> <td><input type="text" name="render.value" value="$!property.render"/> </td> </tr>
 	<input type="hidden" name="field" value="render"/>
+
+
+<tr> <td>[[Auto create list values when found in XMP Metadata]]:</td> <td><input name="autocreatefromexif.value" type="checkbox" #if ($property.autocreatefromexif == true) checked #end value="true"/> </td> </tr>
+	<input type="hidden" name="field" value="autocreatefromexif"/>
+
+
+<tr> <td>[[Write the name value to assets instead of the list ID for XMP]]:</td> <td><input name="writenametoexif.value" type="checkbox" #if ($property.writenametoexif == true) checked #end value="true"/> </td> </tr>
+	<input type="hidden" name="field" value="writenametoexif"/>
 
 
 

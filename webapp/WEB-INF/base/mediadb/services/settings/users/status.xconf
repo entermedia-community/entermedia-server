@@ -1,0 +1,6 @@
+<page>
+<generator name="velocity"/>
+
+<path-action name="AnnotationModule.pickUserColor" alltypes="true" />
+
+</page>

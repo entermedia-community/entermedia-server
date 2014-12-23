@@ -1,0 +1,15 @@
+{
+  "response":
+      {
+        "eventpath":"$pathevent.getPage().getPath()"
+      }
+  ,
+  "data":
+  {
+  	"name":"$!pathevent.getPage().getProperty("eventname")",
+  	"period":"$!pathevent.getFormattedPeriod()",
+  	"enabled":"$pathevent.isEnabled()",
+  	"lastrun":"$pathevent.getFormattedLastRun()",
+  	"running" : "$pathevent.isRunning()"
+  }
+}

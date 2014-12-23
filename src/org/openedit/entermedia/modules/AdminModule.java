@@ -56,10 +56,10 @@ import com.openedit.util.URLUtilities;
  */
 public class AdminModule extends BaseModule
 {
-	protected static final String ENTERMEDIAKEY = "entermedia.key";  //username + md542 + md5password + tstamp + timestampenc
+	protected static final String ENTERMEDIAKEY = "entermedia.key"; //username + md542 + md5password + tstamp + timestampenc
 	protected static final String TIMESTAMP = "tstamp";
-	protected static final long MILLISECONDS_PER_DAY = 24*60*60*1000;// milliseconds in one day (used to calculate password expiry)
-	
+	protected static final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;// milliseconds in one day (used to calculate password expiry)
+
 	protected String fieldImagesRoot; // used by the imagepicker
 	protected String fieldRootFTPURL;
 	protected static final String UNAME = "username";
@@ -68,7 +68,7 @@ public class AdminModule extends BaseModule
 	protected StringEncryption fieldCookieEncryption;
 	protected SendMailModule sendMailModule;
 	protected List fieldWelcomeFiles;
-	
+
 	public List getWelcomeFiles()
 	{
 		return fieldWelcomeFiles;
@@ -78,6 +78,7 @@ public class AdminModule extends BaseModule
 	{
 		fieldWelcomeFiles = inWelcomeFiles;
 	}
+
 	public AdminModule()
 	{
 		super();
@@ -116,6 +117,7 @@ public class AdminModule extends BaseModule
 	{
 		return fieldRootFTPURL;
 	}
+
 	//TODO: Use Spring
 	protected PasswordHelper getPasswordHelper(WebPageRequest inReq) throws OpenEditException
 	{
@@ -151,11 +153,11 @@ public class AdminModule extends BaseModule
 		{
 			foundUser = (User) getUserSearcher().getUserByEmail(emailaddress);
 		}
-		if( foundUser == null )
+		if (foundUser == null)
 		{
 			// If the user provided a valid username
 			username = inReq.getRequestParameter(UNAME);
-			if (username != null )
+			if (username != null)
 			{
 				foundUser = (User) getUserSearcher().getUser(username);
 			}
@@ -192,10 +194,11 @@ public class AdminModule extends BaseModule
 
 		String passenc = getUserManager().getStringEncryption().getPasswordMd5(foundUser.getPassword());
 		passenc = foundUser.getUserName() + "md542" + passenc;
-		
+
 		//append an encrypted timestamp to passenc
-		try{
-			
+		try
+		{
+
 			String expiry = inReq.getPageProperty("temporary_password_expiry");
 			if (expiry == null || expiry.isEmpty())
 			{
@@ -207,45 +210,54 @@ public class AdminModule extends BaseModule
 				try
 				{
 					days = Integer.parseInt(expiry);
-				}catch (Exception ee){}
-				if (days <=0)
+				}
+				catch (Exception ee)
+				{
+				}
+				if (days <= 0)
 				{
 					log.info("Temporary password expiry is not formatted correctly - require a number greater than 0.");
 				}
 				else
 				{
 					String tsenc = getUserManager().getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
-					if (tsenc!=null && !tsenc.isEmpty()) {
-						if (tsenc.startsWith("DES:")) tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
+					if (tsenc != null && !tsenc.isEmpty())
+					{
+						if (tsenc.startsWith("DES:"))
+							tsenc = tsenc.substring("DES:".length());//kloog: remove DES: prefix since appended to URL
 						passenc += TIMESTAMP + tsenc;
-					} else{
+					}
+					else
+					{
 						log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 					}
 				}
 			}
-		}catch (OpenEditException oex){
+		}
+		catch (OpenEditException oex)
+		{
 			log.error(oex.getMessage(), oex);
 			log.info("Unable to append encrypted timestamp. Autologin URL does not have an expiry.");
 		}
 		passwordHelper.emailPasswordReminder(inReq, getPageManager(), username, password, passenc, email);
 
 	}
+
 	public void loadPermissions(WebPageRequest inReq) throws Exception
 	{
 		String catid = inReq.findValue("catalogid");
-		if( catid == null )
+		if (catid == null)
 		{
 			catid = "system";
 		}
-		PermissionManager manager = (PermissionManager)getModuleManager().getBean(catid, "permissionManager");
-		String limited= null;
-		if( inReq.getCurrentAction() != null)
+		PermissionManager manager = (PermissionManager) getModuleManager().getBean(catid, "permissionManager");
+		String limited = null;
+		if (inReq.getCurrentAction() != null)
 		{
 			limited = inReq.getCurrentAction().getChildValue("permissions");
 		}
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
 	}
-
 
 	//We will see if we use this or not. Actions may want to handle it themself
 	public void permissionRedirect(WebPageRequest inReq) throws OpenEditException
@@ -337,14 +349,14 @@ public class AdminModule extends BaseModule
 
 		if (account == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
 		{
-			String referrer = inReq.getRequest().getHeader("REFERER"); 
-			if ( referrer != null &&  !referrer.contains("authentication") && referrer.startsWith( inReq.getSiteRoot()) ) 
-				
+			String referrer = inReq.getRequest().getHeader("REFERER");
+			if (referrer != null && !referrer.contains("authentication") && referrer.startsWith(inReq.getSiteRoot()))
+
 			{ //the original page someone might have been on
-				inReq.putSessionValue("fullOriginalEntryPage",referrer );  
-			}			
+				inReq.putSessionValue("fullOriginalEntryPage", referrer);
+			}
 		}
-		else if( account != null)
+		else if (account != null)
 		{
 			User user = getUserSearcher().getUser(account);
 			if (user == null && account.contains("@"))
@@ -377,34 +389,41 @@ public class AdminModule extends BaseModule
 			if (loginAndRedirect(aReq, inReq))
 			{
 				user.setVirtual(false);
-				getUserSearcher().saveData(user,null);
+				getUserSearcher().saveData(user, null);
 			}
 		}
 	}
+
 	public boolean authenticate(WebPageRequest inReq) throws Exception
 	{
 		String account = inReq.getRequestParameter("id");
 		String password = inReq.getRequestParameter("password");
 		User user = getUserSearcher().getUser(account);
 		Boolean ok = false;
-		if( user != null)
+		if (user != null)
 		{
 			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
-			if( getUserManager().authenticate(aReq) )
+			if (getUserManager().authenticate(aReq))
 			{
 				ok = true;
+				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
+				String value = user.getUserName() + "md542" + md5;
+				inReq.putPageValue("entermediakey", value);
+				inReq.putSessionValue("user", user);
 			}
 		}
 		else
 		{
-			log.info("No such user" + account );
+			log.info("No such user" + account);
 			inReq.putSessionValue("user", null);
 		}
-		inReq.putPageValue("id", account );
+
+		inReq.putPageValue("id", account);
 		inReq.putPageValue("authenticated", ok);
 		return ok;
-		
+
 	}
+
 	protected AuthenticationRequest createAuthenticationRequest(WebPageRequest inReq, String password, User user)
 	{
 		AuthenticationRequest aReq = new AuthenticationRequest();
@@ -433,11 +452,15 @@ public class AdminModule extends BaseModule
 		String sendTo = inReq.getRequestParameter("loginokpage");
 		String maxcounts = inReq.findValue("maxfailedloginattemps");
 		int maxattemps = 5;
-		if(maxcounts != null){
-			try{
+		if (maxcounts != null)
+		{
+			try
+			{
 				maxattemps = Integer.parseInt(maxcounts);
-			} catch(Exception e){
-				
+			}
+			catch (Exception e)
+			{
+
 			}
 		}
 		boolean disable = Boolean.parseBoolean(inReq.getContentProperty("autodisableusers"));
@@ -468,29 +491,28 @@ public class AdminModule extends BaseModule
 			{
 				//This resets the "failed attemps" to 0.
 				inUser.setProperty("failedlogincount", "0");
-				getUserSearcher().saveData(inUser,null);
-				
+				getUserSearcher().saveData(inUser, null);
+
 			}
-			
-//			// check validation
-//			String lastTime= inUser.getLastLoginTime(); 
-//			if(lastTime != null){
-//				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
-//				if(duration >-1){
-//					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
-//					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
-//					if( eslapsedPeriod > duration){
-//						inReq.putPageValue("inactive", true);
-//						inReq.putSessionValue("inactive", true);
-//						inReq.putPageValue("inactiveuser", inUser);
-//						inReq.putSessionValue("active-duration", String.valueOf(duration));
-//						return false;
-//					}
-//					
-//				}
-//			}
-			
-			
+
+			//			// check validation
+			//			String lastTime= inUser.getLastLoginTime(); 
+			//			if(lastTime != null){
+			//				int duration= Integer.parseInt(inReq.getPageProperty("active-duration"));
+			//				if(duration >-1){
+			//					//Date lastDateTime = DateStorageUtil.getStorageUtil().parseFromStorage(lastTime);
+			//					double eslapsedPeriod =DateStorageUtil.getStorageUtil().compareStorateDateWithCurrentTime(lastTime);
+			//					if( eslapsedPeriod > duration){
+			//						inReq.putPageValue("inactive", true);
+			//						inReq.putSessionValue("inactive", true);
+			//						inReq.putPageValue("inactiveuser", inUser);
+			//						inReq.putSessionValue("active-duration", String.valueOf(duration));
+			//						return false;
+			//					}
+			//					
+			//				}
+			//			}
+
 			inReq.removeSessionValue("userprofile");
 			inReq.putSessionValue("user", inUser);
 			// user is now logged in
@@ -512,7 +534,7 @@ public class AdminModule extends BaseModule
 			if (sendTo == null)
 			{
 				String appid = inReq.findValue("applicationid");
-				if( appid != null)
+				if (appid != null)
 				{
 					sendTo = "/" + appid + "/index.html";
 				}
@@ -547,20 +569,20 @@ public class AdminModule extends BaseModule
 				{
 					{
 						User user = inReq.getUser();
-						if( user != null)
+						if (user != null)
 						{
 							String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 							String value = user.getUserName() + "md542" + md5;
 							inReq.putPageValue("entermediakey", value);
 						}
-					}	
+					}
 					inUser.setEnabled(false);
 				}
-				getUserSearcher().saveData(inUser,null);
+				getUserSearcher().saveData(inUser, null);
 
 			}
 
-		//	inReq.putSessionValue("oe-exception", "Invalid Logon");
+			//	inReq.putSessionValue("oe-exception", "Invalid Logon");
 			inReq.putPageValue("oe-exception", "Invalid Logon");
 			return false;
 		}
@@ -586,12 +608,12 @@ public class AdminModule extends BaseModule
 				Cookie cookie = new Cookie(name, value);
 				cookie.setMaxAge(Integer.MAX_VALUE);
 				//Needs new servelet api jar
-//				cookie.setHttpOnly(true);
+				//				cookie.setHttpOnly(true);
 				cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm
 				res.addCookie(cookie);
 				inReq.putPageValue("entermediakey", value);
 			}
-			catch ( Exception ex)
+			catch (Exception ex)
 			{
 				throw new OpenEditException(ex);
 			}
@@ -600,16 +622,18 @@ public class AdminModule extends BaseModule
 
 		}
 	}
+
 	public void loadEnterMediaKey(WebPageRequest inReq)
 	{
 		User user = inReq.getUser();
-		if( user != null)
+		if (user != null)
 		{
 			String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 			String value = user.getUserName() + "md542" + md5;
 			inReq.putPageValue("entermediakey", value);
 		}
 	}
+
 	public void logout(WebPageRequest inReq) throws OpenEditException
 	{
 		User user = (User) inReq.getSessionValue("user");
@@ -681,21 +705,21 @@ public class AdminModule extends BaseModule
 		{
 			readPasswordFromCookie(inReq);
 		}
-		if( inReq.getUser() == null)
+		if (inReq.getUser() == null)
 		{
 			String md5 = inReq.getRequestParameter(ENTERMEDIAKEY);
-			if( md5 != null)
+			if (md5 != null)
 			{
 				autoLoginFromMd5Value(inReq, md5);
 			}
 		}
 
-//			
-//			String login = inReq.getRequestParameter("accountname");
-//			if (login != null)
-//			{
-//				quickLogin(inReq);
-//			}
+		//			
+		//			String login = inReq.getRequestParameter("accountname");
+		//			if (login != null)
+		//			{
+		//				quickLogin(inReq);
+		//			}
 
 	}
 
@@ -756,6 +780,7 @@ public class AdminModule extends BaseModule
 			inRequest.putProtectedPageValue(PageRequestKeys.USER, user);
 		}
 	}
+
 	String createMd5CookieName(WebPageRequest inReq)
 	{
 		String home = (String) inReq.getPageValue("home");
@@ -795,25 +820,26 @@ public class AdminModule extends BaseModule
 		}
 	}
 
-	
 	protected boolean autoLoginFromMd5Value(WebPageRequest inReq, String uandpass)
 	{
 		//get the password expiry in days
 		int pwd_expiry_in_days = 1;
 		String str = inReq.getPageProperty("temporary_password_expiry");
-		if (str != null && !str.isEmpty()){
+		if (str != null && !str.isEmpty())
+		{
 			try
 			{
 				pwd_expiry_in_days = Integer.parseInt(str);
 			}
-			catch(NumberFormatException e)
+			catch (NumberFormatException e)
 			{
-				
+
 			}
-			if (pwd_expiry_in_days < 1) pwd_expiry_in_days = 1;//default if malformed
-			if( log.isDebugEnabled() )
+			if (pwd_expiry_in_days < 1)
+				pwd_expiry_in_days = 1;//default if malformed
+			if (log.isDebugEnabled())
 			{
-				log.debug("Password is set to expire in "+pwd_expiry_in_days+" days");
+				log.debug("Password is set to expire in " + pwd_expiry_in_days + " days");
 			}
 		}
 		//String uandpass = cook.getValue();
@@ -830,21 +856,25 @@ public class AdminModule extends BaseModule
 			if (user != null && user.getPassword() != null)
 			{
 				String md5 = uandpass.substring(split + 5);
-				
+
 				//if timestamp included, check whether the autologin has expired
-				if ((split = md5.indexOf(TIMESTAMP)) != -1){
-					String tsenc = md5.substring(split+TIMESTAMP.length());
-					md5 = md5.substring(0,split);
-					try{
+				if ((split = md5.indexOf(TIMESTAMP)) != -1)
+				{
+					String tsenc = md5.substring(split + TIMESTAMP.length());
+					md5 = md5.substring(0, split);
+					try
+					{
 						String ctext = getCookieEncryption().decrypt(tsenc);
 						long ts = Long.parseLong(ctext);
 						long current = new Date().getTime();
-						if ( (current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY) ){
+						if ((current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY))
+						{
 							log.debug("Autologin has expired, redirecting to login page");
 							return false;
-						} else 
-						{	
-							if( log.isDebugEnabled() )
+						}
+						else
+						{
+							if (log.isDebugEnabled())
 							{
 								log.debug("Autologin has not expired, processing md5 password");
 							}
@@ -852,16 +882,18 @@ public class AdminModule extends BaseModule
 					}
 					catch (Exception oex)
 					{
-						log.error(oex.getMessage(),oex);
+						log.error(oex.getMessage(), oex);
 						return false;
 					}
-				} else {
-					if( log.isDebugEnabled() )
+				}
+				else
+				{
+					if (log.isDebugEnabled())
 					{
 						log.debug("Autologin does not have a timestamp");
 					}
 				}
-				
+
 				try
 				{
 					String hash = getCookieEncryption().getPasswordMd5(user.getPassword());
@@ -888,7 +920,7 @@ public class AdminModule extends BaseModule
 	public void forwardToSecureSocketsLayer(WebPageRequest inReq)
 	{
 		String useSecure = inReq.getPage().get("useshttps");
-		
+
 		if (Boolean.parseBoolean(useSecure) && inReq.getRequest() != null)
 		{
 			String host = inReq.getPage().get("hostname");
@@ -896,10 +928,12 @@ public class AdminModule extends BaseModule
 			{
 				host = inReq.getPage().get("hostName");
 			}
-			if(host == null){
+			if (host == null)
+			{
 				return;
 			}
-			if(host.contains("localhost")){
+			if (host.contains("localhost"))
+			{
 				return;
 			}
 			if (host != null && !inReq.getRequest().isSecure())
@@ -1037,7 +1071,7 @@ public class AdminModule extends BaseModule
 	 */
 	public void redirectHost(WebPageRequest inReq) throws OpenEditException
 	{
-		if( inReq.getRequest() == null)
+		if (inReq.getRequest() == null)
 		{
 			return;
 		}
@@ -1057,7 +1091,6 @@ public class AdminModule extends BaseModule
 		{
 			host = host.substring(0, host.length() - 1);
 		}
-
 
 		if (!host.equals(server))
 		{
@@ -1178,12 +1211,12 @@ public class AdminModule extends BaseModule
 
 	public StringEncryption getCookieEncryption()
 	{
-//		if (fieldCookieEncryption == null)
-//		{
-//			fieldCookieEncryption = new StringEncryption();
-////			String KEY = "SomeWeirdReallyLongStringYUITYGFNERDF343dfdGDFGSDGGD";
-////			fieldCookieEncryption.setEncryptionKey(KEY);
-//		}
+		//		if (fieldCookieEncryption == null)
+		//		{
+		//			fieldCookieEncryption = new StringEncryption();
+		////			String KEY = "SomeWeirdReallyLongStringYUITYGFNERDF343dfdGDFGSDGGD";
+		////			fieldCookieEncryption.setEncryptionKey(KEY);
+		//		}
 		return fieldCookieEncryption;
 	}
 
@@ -1213,7 +1246,7 @@ public class AdminModule extends BaseModule
 				{
 					user.put(id, String.valueOf(has));
 				}
-				getUserSearcher().saveData(user,null);
+				getUserSearcher().saveData(user, null);
 			}
 		}
 	}
@@ -1229,19 +1262,20 @@ public class AdminModule extends BaseModule
 	{
 		String dir = inDirectory.getPath();
 		if (!dir.endsWith("/"))
-     	{
-     		dir =  dir + "/";
-     	}
+		{
+			dir = dir + "/";
+		}
 		for (Iterator iterator = getWelcomeFiles().iterator(); iterator.hasNext();)
 		{
 			String index = (String) iterator.next();
-	    	if( getPageManager().getRepository().doesExist( dir + index))
-		    {
-	    		return getPageManager().getPage(dir + index,true);
-		    }
+			if (getPageManager().getRepository().doesExist(dir + index))
+			{
+				return getPageManager().getPage(dir + index, true);
+			}
 		}
-		return getPageManager().getPage( dir + "index.html",true);
+		return getPageManager().getPage(dir + "index.html", true);
 	}
+
 	public void checkExist(WebPageRequest inReq) throws Exception
 	{
 		check404(inReq);
@@ -1249,64 +1283,63 @@ public class AdminModule extends BaseModule
 
 	public void check404(WebPageRequest inReq) throws Exception
 	{
-		boolean exist = inReq.getPage().exists(); 
-		if (  exist )
+		boolean exist = inReq.getPage().exists();
+		if (exist)
 		{
 			return;
 		}
-	
-		
+
 		PageStreamer streamer = inReq.getPageStreamer();
-		if(streamer != null)
+		if (streamer != null)
 		{
-			streamer.getWebPageRequest().putPageValue("pathNotFound",inReq.getPath());
+			streamer.getWebPageRequest().putPageValue("pathNotFound", inReq.getPath());
 		}
 		String isVirtual = inReq.getPage().get("virtual");
-		if ( Boolean.parseBoolean(isVirtual))
+		if (Boolean.parseBoolean(isVirtual))
 		{
 			return;
 		}
-		
-		URLUtilities utils = (URLUtilities)inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 
-		if( utils != null)
+		URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+
+		if (utils != null)
 		{
 			//redirecting only works relative to a webapp
-			if(streamer != null)
+			if (streamer != null)
 			{
-				streamer.getWebPageRequest().putPageValue("forcedDestinationPath", utils.requestPathWithArgumentsNoContext() );
+				streamer.getWebPageRequest().putPageValue("forcedDestinationPath", utils.requestPathWithArgumentsNoContext());
 			}
 		}
 		PageManager pageManager = getPageManager();
-		if ( inReq.getPage().isHtml() &&  inReq.isEditable() )
+		if (inReq.getPage().isHtml() && inReq.isEditable())
 		{
 			Page wizard = pageManager.getPage("/system/nopagefound.html");
-			if ( wizard.exists() )
+			if (wizard.exists())
 			{
-				inReq.getPageStreamer().include( wizard);
+				inReq.getPageStreamer().include(wizard);
 				inReq.setHasRedirected(true);
 				return;
 			}
 		}
-		if ( !inReq.getPage().isHtml() )
+		if (!inReq.getPage().isHtml())
 		{
 			HttpServletResponse response = inReq.getResponse();
-			if( response  != null)
+			if (response != null)
 			{
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 				inReq.setHasRedirected(true);
 				return;
 			}
 		}
-		
-		if ( inReq.getContentPage().getPath().equals( inReq.getPath()))
+
+		if (inReq.getContentPage().getPath().equals(inReq.getPath()))
 		{
 			//log.info( "Could not use  add page wizard. 404 error on: " + inReq.getPath() );
 			Page p404 = pageManager.getPage("/error404.html");
-			if ( p404.exists() )
+			if (p404.exists())
 			{
 				HttpServletResponse response = inReq.getResponse();
-				if ( response != null)
+				if (response != null)
 				{
 					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				}
@@ -1316,10 +1349,10 @@ public class AdminModule extends BaseModule
 			}
 			else
 			{
-				log.error( "Could not report full 404 error on: " + inReq.getPath() + ". Make sure the 404 error page exists " + p404.getPath());
+				log.error("Could not report full 404 error on: " + inReq.getPath() + ". Make sure the 404 error page exists " + p404.getPath());
 				//other users will get the standard file not found error
 				HttpServletResponse response = inReq.getResponse();
-				if( response != null)
+				if (response != null)
 				{
 					response.sendError(HttpServletResponse.SC_NOT_FOUND);
 					inReq.setHasRedirected(true);
@@ -1331,14 +1364,18 @@ public class AdminModule extends BaseModule
 			inReq.getWriter().write("404 on " + inReq.getPath());
 			inReq.getWriter().flush();
 			inReq.setHasRedirected(true);
-			
+
 		}
 	}
-	public void createGuestUser(WebPageRequest inReq) {
+
+	public void createGuestUser(WebPageRequest inReq)
+	{
 		User user = inReq.getUser();
-		if (user == null) {
+		if (user == null)
+		{
 			Group guest = getGroupSearcher().getGroup("guest");
-			if (guest == null) {
+			if (guest == null)
+			{
 				getUserManager().createGroup("guest");
 			}
 
@@ -1348,4 +1385,50 @@ public class AdminModule extends BaseModule
 		}
 
 	}
+
+	public void switchToUser(WebPageRequest inReq)
+	{
+
+		User user = inReq.getUser();
+		if (!user.isInGroup("administrators"))
+		{
+			return;
+		}
+
+		String userid = inReq.getRequestParameter("userid");
+		User target = getUserManager().getUser(userid);
+		if (target != null)
+		{
+			clearSession(inReq);		
+			inReq.putSessionValue("realuser", user);
+			inReq.putSessionValue("user", target);
+		}
+
+	}
+
+	public void revertToUser(WebPageRequest inReq)
+	{
+
+		User olduser = (User) inReq.getSessionValue("realuser");
+		if (olduser != null)
+		{
+			clearSession(inReq);		
+
+			inReq.putSessionValue("realuser", null);
+			inReq.putSessionValue("user", olduser);
+		}
+
+	} 
+	
+	public void clearSession(WebPageRequest inReq){
+		
+		Enumeration keys = inReq.getSession().getAttributeNames();
+		while (keys.hasMoreElements())
+		{
+			  String key = (String)keys.nextElement();
+
+			inReq.putSessionValue(key, null);
+		}
+	}
+
 }

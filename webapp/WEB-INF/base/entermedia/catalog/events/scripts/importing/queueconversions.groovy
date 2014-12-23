@@ -72,14 +72,15 @@ public void createTasksForUpload() throws Exception {
 				//	Data newconversion = tasksearcher.createNewData();
 
 				Data preset = (Data) presetsearcher.searchById(it.id);
-
+				Boolean onlyone = Boolean.parseBoolean(preset.singlepage);
+				
 				//TODO: Move this to a new script just for auto publishing
 				presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
 
 				String pages = asset.get("pages");
-				if( pages != null )
+				if( pages != null && !onlyone)
 				{
-					/*
+					
 					int npages = Integer.parseInt(pages);
 					if( npages > 1 )
 					{
@@ -88,7 +89,7 @@ public void createTasksForUpload() throws Exception {
 							presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
 						}
 					}
-					*/
+					
 				}
 				foundsome = true;
 			}
@@ -107,8 +108,17 @@ public void createTasksForUpload() throws Exception {
 			}
 			else
 			{
-				asset.setProperty("importstatus","complete");
-				asset.setProperty("previewstatus","mime");
+
+				if(asset.getProperty("fileformat") == "embeddedvideo")
+				{
+					asset.setProperty("importstatus","complete");
+					asset.setProperty("previewstatus","2");
+				}
+				else
+				{
+					asset.setProperty("importstatus","complete");
+					asset.setProperty("previewstatus","mime");
+				}
 			}
 			mediaarchive.saveAsset( asset, user );
 		}
