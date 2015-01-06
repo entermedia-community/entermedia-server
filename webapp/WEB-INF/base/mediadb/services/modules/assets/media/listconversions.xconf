@@ -1,5 +1,6 @@
 <page>
-	<path-action name="PageValue.loadPageVariable" bean="mathtool" class="org.apache.velocity.tools.generic.MathTool"/>	
-	<path-action name="ConvertStatusModule.addConvertRequest"/>
-	<page-action name="PageValue.loadPageVariable" bean="conversionUtil"/>
+	<path-action name="MediaArchiveModule.getAsset" alltypes="true"  />
+	<path-action name="PageValue.loadPageVariable" bean="mathtool" class="org.apache.velocity.tools.generic.MathTool"  alltypes="true" />	
+	<path-action name="ConvertStatusModule.addConvertRequest"  alltypes="true" />
+	<page-action name="PageValue.loadPageVariable" bean="conversionUtil"  alltypes="true" />
 </page>

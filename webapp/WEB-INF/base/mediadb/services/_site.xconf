@@ -1,16 +1,19 @@
 <page>
 	<generator name="velocityGenerator" />
 	<inner-layout />
-	
-	
+
+	<path-action name="MediaArchiveModule.loadApplicationId" alltypes="true"  />
 	<path-action name="Admin.autoLogin" alltypes="true"/>
-	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>	 
-	<path-action name="Admin.loadPermissions" alltypes="true"/>
-	<path-action name="MediaArchiveModule.getEnterMedia"  alltypes="true"/>
+	<path-action name="ProfileModule.loadUserProfile" alltypes="true" />
 	<path-action name="MediaArchiveModule.getMediaArchive"  alltypes="true"/>
-	<path-action name="JsonAdminModule.allowHeaders"  alltypes="true"/>	
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true" />		
+	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true" />
+    <path-action bean="moduleManager" name="PageValue.loadPageVariable" allowduplicates="true"  alltypes="true" />
 	
-	<property name="cancelredirect">true</property>
+	<path-action name="Admin.loadPermissions" alltypes="true"/>
+
+	<path-action name="TranslationModule.loadBrowserLanguage" alltypes="true" />	
+	<path-action name="JsonAdminModule.allowHeaders"  alltypes="true"/>	
 	
 	<path-action name="Admin.allowViewing" alltypes="true">
 		<login-path>/${applicationid}/services/rest/noaccess.xml</login-path>
@@ -21,13 +24,13 @@
 		<group id="administrators"/>
 	</permission>	
 
-
-	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	<!-- used in velocity macro -->
 	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	<permission name="view">
 		<blank/>
 	</permission>	
+
 	<property name="alternative_extension">json</property>
+	<property name="cancelredirect">true</property>
 	
 </page>

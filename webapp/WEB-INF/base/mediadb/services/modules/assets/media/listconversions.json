@@ -1,58 +1,28 @@
+{
 #set($newpreset = $context.findValue("newpreset"))
-#set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
-#set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
-$context.putPageValue("results", $results)
-
-#foreach ($result in $results)
-	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
-<div class="info" >
-
-		<!-- include name + info -->
-		#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
-		#set($height = $mathtool.toInteger($dimension.getHeight()))
-		#set($width = $mathtool.toInteger($dimension.getWidth()))
-		##$context.putPageValue("height", $height)
-		##$context.putPageValue("width", $width)
-		
-		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
-		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
-		#if ($height > 0 && $width > 0)
-			<h2>$result.name  <span class="h2e">${width}x${height}</span>  <span class="h2e">Aspect Ratio: $aspectratio</span></h2>
-			###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
-		#else
-			<h2>$result.name</h2>
-		#end
-		#set($description = "")
-	
-		
-		<!-- include modify -->
-		$context.putPageValue("presetdata",$result)
-		#if( $canviewconversions )
-			$pages.include("$apphome/views/modules/asset/editor/conversions/modify.html", $context)
-		#end
-		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
-		#if($isready)
-			<!--  include share -->
-			$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
-			#if( $canviewconversions )
-				#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
-				#if(!$cancrop)
-					<span style="font-size:smaller;margin: 0 20px 20px;">Image is too small to crop to the desired crop dimension</span>
-				#end
-			#end	
-			<!-- include submit to fatwire -->
-			#if($result.publishtofatwire == "true") 
-				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
-			#end
-		#end
-	</div>
-	#end
-
-#end
-
-
-You can specify custom width, height or formats. For example:
-</p>
-<p><i>
-$context.siteRoot$home$apphome/views/modules/asset/downloads/preview/cache/$asset.sourcePath/image1024-768.pdf </i></p>
-</p>
+#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($hits = $conversionUtil.getActivePresetList($catalogid,$type) )
+	"response":
+		{
+			"totalhits" : "$hits.size()",
+			"searchtype" : "presetdata",
+			"page": 1,
+			"pages": 1,
+			"query":
+			{
+				"search":"assetid:$asset.id"
+			}
+		},
+	"results":[
+#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
+#foreach( $presetdata in $hits )#if( $velocityCount != 1 ), #end
+{	
+	"name":#jesc($presetdata.name),
+	#set( $outputfile = "${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)")
+	"outputfile":#jesc($outputfile),
+	#set( $url = "$cdn$home$apphome/services/modules/assets/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
+	"url":"$url",
+	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $presetdata.id))
+	"iscomplete":"$isready"}#end
+]
+}
