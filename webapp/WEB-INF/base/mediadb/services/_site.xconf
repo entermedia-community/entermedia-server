@@ -16,8 +16,8 @@
 	<path-action name="JsonAdminModule.allowHeaders"  alltypes="true"/>	
 	
 	<path-action name="Admin.allowViewing" alltypes="true">
-		<login-path>/${applicationid}/services/rest/noaccess.xml</login-path>
-		<exclude>/${applicationid}/services/rest/login.xml</exclude>
+		<login-path>/${applicationid}/services/authentication/noaccess.json</login-path>
+		<exclude>/${applicationid}/services/authentication/getkey.json</exclude>
 	</path-action>
 
 	<permission name="view">

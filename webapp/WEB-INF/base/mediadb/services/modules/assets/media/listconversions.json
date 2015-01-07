@@ -20,7 +20,7 @@
 	"name":#jesc($presetdata.name),
 	#set( $outputfile = "${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)")
 	"outputfile":#jesc($outputfile),
-	#set( $url = "$cdn$home$apphome/services/modules/assets/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
+	#set( $url = "$!cdn$home$apphome/services/modules/assets/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
 	"url":"$url",
 	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $presetdata.id))
 	"iscomplete":"$isready"}#end

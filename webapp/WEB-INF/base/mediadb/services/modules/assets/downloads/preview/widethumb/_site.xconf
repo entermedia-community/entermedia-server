@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
-	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preview/widethumb</property>
+	<property name="assetrootfolder">/${applicationid}/services/modules/assets/downloads/preview/widethumb</property>
 	<generator name="convertArchiveDocument"/>
 	<property name="crop">true</property>
 	<property name="prefwidth">236</property>

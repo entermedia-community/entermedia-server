@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
-	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preview/thumb</property>
+	<property name="assetrootfolder">/${applicationid}/services/modules/assets/downloads/preview/thumb</property>
 	<generator name="convertArchiveDocument"/>
 	<property name="prefwidth">75</property>
 	<property name="prefheight">75</property>

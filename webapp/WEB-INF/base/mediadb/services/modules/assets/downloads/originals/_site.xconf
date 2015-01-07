@@ -2,7 +2,7 @@
 
 <page>
 
-	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/originals</property>
+	<property name="assetrootfolder">/${applicationid}/services/modules/assets/downloads/originals</property>
 	<property name="sourcepathhasfilename">true</property>
 	
 	<generator name="originalDownloadGenerator"/>
