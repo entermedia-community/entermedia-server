@@ -3,5 +3,5 @@
 		<blank/>
 	</permission>
 	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
-	<path-action name="Admin.authenticate"  alltypes="true" />
+	<path-action name="Admin.loadEnterMediaKey"  alltypes="true" />
 </page>

@@ -1,0 +1,8 @@
+#if($id)
+{
+"authenticated": false,
+"user":"${id}",
+}
+#else
+{"authenticated":false}
+#end
