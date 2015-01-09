@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-  <path-action name="JsonAdminModule.preprocess" />
   <path-action name="Admin.logout"/>
   <path-action name="Admin.loadPermissions"/>
   <permission name="view">

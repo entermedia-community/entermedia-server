@@ -33,8 +33,8 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="searchassets" name="Search for Assets" url="/mediadb/services/modules/assets/search" docsection="1418314436747" description="Example of searching for assets" httpmethod="POST"> 
     <samplerequest><![CDATA[{         "hitsperpage":15,         "query": [             {                 "field": "id",                 "operator": "matches",                  "values": [                     "*"                                             ]             }          ] }]]></samplerequest>Search for Assets
   </endpoint>  
-  <endpoint id="authenticate" name="User Authentication" url="/mediadb/services/authentication/getkey" docsection="1418334117799" httpmethod="POST" description="Send authentication information and return entermedia key"> 
-    <samplerequest><![CDATA[{ 	"id":"admin",     "password":"admin" }]]></samplerequest>User Authenctication
+  <endpoint id="authenticate" name="User Security Key" url="/mediadb/services/authentication/getkey" docsection="1420730727080" httpmethod="POST" description="Send authentication information and return entermedia key"> 
+    <samplerequest><![CDATA[{ 	"id":"admin",     "password":"admin" }]]></samplerequest>User Security Key
   </endpoint>  
   <endpoint id="removeassetimages" name="Remove Generated Asset Images" url="/mediadb/services/modules/assets/media/removeassetimages" docsection="assetmedia" description="This endpoint will remove any conversions that the system has created for the given asset." httpmethod="POST"> 
     <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>Remove Generated Asset Images
@@ -69,7 +69,7 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
  "creator":{   	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   
   "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>Update Asset
   </endpoint>  
-  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/mediadb/services/modules/assets/media/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file.">
+  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/mediadb/services/modules/assets/media/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file."> 
     <samplerequest><![CDATA[{   "assetid": "101",   "presetid": "imagepreviewfpo" }]]></samplerequest>Run a conversion
   </endpoint>  
   <endpoint id="import1" url="/mediadb/services/settings/datamanager/listtables" docsection="datamanager" name="List Tables" httpmethod="GET">List Tables</endpoint>  
@@ -106,5 +106,15 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="POST" description="Lists conversions" docsection="assetmedia"> 
     <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>List Conversions
   </endpoint>  
-  <endpoint id="reload" name="Reload Data" url="/mediadb/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint> 
+  <endpoint id="reload" name="Reload Data" url="/mediadb/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint>  
+  <endpoint id="userlogin" name="User Login" url="/mediadb/services/authentication/login" docsection="1420730727080" httpmethod="POST" description="Saves a cookie so the user session remains open"> 
+    <samplerequest><![CDATA[{   "id": "admin",   "password": "admin" }]]></samplerequest>User Login
+  </endpoint>  
+  <endpoint id="userlogout" name="User Logout" url="/mediadb/services/authentication/logout" docsection="1420730727080" description="Removes the session cookie for this user" httpmethod="GET">User Logout</endpoint>  
+  <endpoint id="savemodule" name="Add Module" url="/mediadb/services/settings/modules/save" docsection="modules" httpmethod="POST"> 
+    <samplerequest><![CDATA[{   "field": [     "name",     "id"   ],   "name.value": "testmodule",   "id.value": "testmodule",   "save": "true" }]]></samplerequest>Add Module
+  </endpoint>  
+  <endpoint name="Search Contact Module" docsection="modules" httpmethod="POST" id="1420743716222" url="/mediadb/services/modules/contacts/search" description="Ability to search a module once it is defined">
+    <samplerequest><![CDATA[{   "hitsperpage": 15,   "query": [     {       "field": "id",       "operator": "matches",       "values": [         "*"       ]     }   ] }]]></samplerequest>Search Contact Module
+  </endpoint> 
 </endpoints>

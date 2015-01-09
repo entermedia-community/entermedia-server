@@ -1,9 +1,14 @@
-#if($authenticated)
 {
-"authenticated": true,
-"user":"${id}",
-"entermediakey": "$entermediakey"
+	"response":
+	{
+			"user":"${user.id}"
+	},
+	"results": 
+	{ 
+		"entermediakey": "$entermediakey",
+		"firstname": "$!user.firstname",
+		"lastname" : "$!user.lastname",
+		"screenname" : "$!user.getScreenName()"
+
+	}
 }
-#else
-{"authenticated":false}
-#end

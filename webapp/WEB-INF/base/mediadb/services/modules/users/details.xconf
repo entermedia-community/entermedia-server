@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<page>
+	<path-action name="User.loadUserProperties" />
+	<path-action name="AnnotationModule.pickUserColor" alltypes="true" />
+	
+</page>

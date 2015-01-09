@@ -20,10 +20,6 @@
 		<exclude>/${applicationid}/services/authentication/getkey.json</exclude>
 	</path-action>
 
-	<permission name="view">
-		<group id="administrators"/>
-	</permission>	
-
 	<!-- used in velocity macro -->
 	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true"/>		
 	<permission name="view">

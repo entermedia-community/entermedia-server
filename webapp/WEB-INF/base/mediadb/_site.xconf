@@ -6,5 +6,8 @@
 	<property name="catalogid">media/catalogs/public</property>
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
+	<permission name="view">
+		<group id="administrators"/>
+	</permission>	
 
 </page>

@@ -1,8 +1,6 @@
-#if($id)
 {
-"authenticated": false,
-"user":"${id}",
+	"results": 
+	{ 
+		"status":"logout"
+	}
 }
-#else
-{"authenticated":false}
-#end

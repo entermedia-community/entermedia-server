@@ -196,15 +196,15 @@ public class JsonDataModule extends BaseJsonModule
 	
 	public String resolveSearchType(WebPageRequest inReq)
 	{
-		def request = null;
-		request = inReq.getJsonRequest();
-		String searchtype = null;
-		if(request){
-			searchtype = request.searchtype;
-		}
-		if(searchtype == null){
-			searchtype = inReq.findValue("searchtype");
-		}
+//		def request = null;
+//		request = inReq.getJsonRequest();
+//		String searchtype = null;
+//		if(request){
+//			searchtype = request.searchtype;
+//		}
+		//if(searchtype == null){
+		String	searchtype = inReq.findValue("searchtype");
+		//}
 		
 		if(searchtype == null){
 			String root  = "/mediadb/services/modules/default/data/";
