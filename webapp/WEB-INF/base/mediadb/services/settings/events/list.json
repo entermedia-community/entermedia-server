@@ -12,16 +12,16 @@
 	},
 	"results":[
 #foreach( $event in $hits )
-#set( $seltype == $event.getPage().getDirectoryName() )
+#set( $seltype = $event.getPage().getDirectoryName() )
 		{
-			"name": "$context.getText($event.getName())",
+			"name": #jesc($context.getText($event.getName())),
 			"type": "$seltype",
-			"path: "$event.getPage().getPath()",
-			"description","$!event.getPage().getProperty("eventdescription")",
-			"running","$event.isRunning()",
-			"lastrun","$!event.getFormattedLastRun()",
-			"period","$event.getPeriod()",
-			"enabled","$event.isEnabled()"
+			"path": #jesc($event.getPage().getPath()),
+			"description": #jesc($!event.getPage().getProperty("eventdescription")),
+			"running":"$event.isRunning()",
+			"lastrun":#jesc($!event.getFormattedLastRun()),
+			"period":"$event.getPeriod()",
+			"enabled":"$event.isEnabled()"
 		 }	#if( $velocityCount != $hits.size() ), #end
 
 #end		

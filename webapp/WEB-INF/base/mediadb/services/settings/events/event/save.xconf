@@ -1,3 +1,5 @@
 <page>
-	<path-action name="PathEventModule.savePathEvent"/>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
+
+	<path-action name="PathEventModule.savePathEvent" alltypes="true" />
 </page>
