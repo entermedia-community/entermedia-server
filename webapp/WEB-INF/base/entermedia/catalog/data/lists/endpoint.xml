@@ -92,10 +92,10 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="import10" url="/mediadb/services/settings/events/list" docsection="events" name="List Events" httpmethod="GET">List Events</endpoint>  
   <endpoint id="import11" url="/mediadb/services/settings/events/event/details" docsection="events" name="Event Details" httpmethod="GET">Event Details</endpoint>  
   <endpoint id="import12" url="/mediadb/services/settings/events/event/save" docsection="events" name="Save Event" httpmethod="PUT"> 
-    <samplerequest><![CDATA[{"eventpath":"testevent", "period":"1m", "delay":"5s", "enabled":"false"}]]></samplerequest>Save Event
+    <samplerequest><![CDATA[{"eventpath":"/media/catalogs/public/events/tests/testevent.html", "period":"1m", "delay":"5s", "enabled":"false"}]]></samplerequest>Save Event
   </endpoint>  
-  <endpoint id="import13" url="/mediadb/services/settings/events/event/run" docsection="events" name="Run Event" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"runpath":"/media/catalogs/public/events/testevent.groovy"}]]></samplerequest>Run Event
+  <endpoint id="import13" url="/mediadb/services/settings/events/event/run" docsection="events" name="Run Event" httpmethod="POST">
+    <samplerequest><![CDATA[{"runpath":"/media/catalogs/public/events/tests/testevent.html"}]]></samplerequest>Run Event
   </endpoint>  
   <endpoint id="import14" url="/mediadb/services/settings/modules/remove?id=testmodule" docsection="modules" name="Remove Module" httpmethod="DELETE">Remove Module</endpoint>  
   <endpoint id="import15" url="/mediadb/services/settings/modules/list" docsection="modules" name="List Modules" httpmethod="GET">List Modules</endpoint>  
@@ -114,7 +114,7 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="savemodule" name="Add Module" url="/mediadb/services/settings/modules/save" docsection="modules" httpmethod="POST"> 
     <samplerequest><![CDATA[{   "field": [     "name",     "id"   ],   "name.value": "testmodule",   "id.value": "testmodule",   "save": "true" }]]></samplerequest>Add Module
   </endpoint>  
-  <endpoint name="Search Contact Module" docsection="modules" httpmethod="POST" id="1420743716222" url="/mediadb/services/modules/contacts/search" description="Ability to search a module once it is defined">
+  <endpoint name="Search Contact Module" docsection="modules" httpmethod="POST" id="1420743716222" url="/mediadb/services/modules/contacts/search" description="Ability to search a module once it is defined"> 
     <samplerequest><![CDATA[{   "hitsperpage": 15,   "query": [     {       "field": "id",       "operator": "matches",       "values": [         "*"       ]     }   ] }]]></samplerequest>Search Contact Module
   </endpoint> 
 </endpoints>
