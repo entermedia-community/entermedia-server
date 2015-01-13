@@ -4,7 +4,7 @@
 	##why not just set to the value of the method call above?
 #end
 {
-"stat":"$error",
+"status":"$error",
 #set( $genname = $preset.get("outputfile") )
 #set( $link = "$home/$catalogid/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
 "path":"$link"
