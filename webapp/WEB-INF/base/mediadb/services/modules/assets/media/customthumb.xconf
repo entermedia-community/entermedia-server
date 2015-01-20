@@ -1,0 +1,5 @@
+<page>
+	<property name="virtual">true</property>
+    <page-action name="JsonAssetModule.preprocess" alltypes="true"/>
+	<page-action name="AssetEditModule.selectPrimaryAsset" alltypes="true"/>
+</page>

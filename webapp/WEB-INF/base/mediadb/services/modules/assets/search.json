@@ -1,11 +1,11 @@
 {
 	"response":
 	{
-		"totalhits" : $hits.size(),
+		"totalhits" : "$hits.size()",
 		"searchtype" : "$searcher.getSearchType()",
-		"hitsperpage": $hits.getHitsPerPage(),			
-		"page": $hits.getPage(),
-		"pages": $hits.totalPages,
+		"hitsperpage": "$hits.getHitsPerPage()",			
+		"page": "$hits.getPage()",
+		"pages": "$hits.totalPages",
 		"hitsessionid": "$hits.getSessionId()",
 		"query":
 		{
