@@ -5,10 +5,14 @@
 	},
 	"results": 
 	{ 
-		"entermediakey": "$entermediakey",
-		"firstname": "$!user.firstname",
-		"lastname" : "$!user.lastname",
-		"screenname" : "$!user.getScreenName()"
+		#if($entermediakey)
+			"entermediakey": "$entermediakey",
+			"firstname": "$!user.firstname",
+			"lastname" : "$!user.lastname",
+			"screenname" : "$!user.getScreenName()"
+		#else
+					 "status": "invalidlogin"		
+		#end
 
 	}
 }

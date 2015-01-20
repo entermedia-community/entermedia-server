@@ -5,6 +5,10 @@
 	},
 	"results": 
 	{ 
-		"entermediakey": "$entermediakey"
+		#if($entermediakey)
+		 "entermediakey": "$entermediakey"
+		#else
+		 "status": "invalidlogin"		
+		#end
 	}
 }

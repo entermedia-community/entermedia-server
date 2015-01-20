@@ -6,6 +6,6 @@
 {
 "status":"$error",
 #set( $genname = $preset.get("outputfile") )
-#set( $link = "$home/$catalogid/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
+#set( $link = "$home/$applicationid/services/modules/assets/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
 "path":"$link"
 }
