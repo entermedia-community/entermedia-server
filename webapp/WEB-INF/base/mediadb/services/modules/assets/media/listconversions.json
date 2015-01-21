@@ -4,6 +4,7 @@
 #set($hits = $conversionUtil.getActivePresetList($catalogid,$type) )
 	"response":
 		{
+            "status":"ok",
 			"totalhits" : "$hits.size()",
 			"searchtype" : "presetdata",
 			"page": 1,

@@ -1,6 +1,7 @@
 { #set( $hits = $pathevents )
 	"response":
 	{
+	        "status":"ok",
 			"totalhits" : $hits.size(),
 			"searchtype" : "event",
 			"page": 1,

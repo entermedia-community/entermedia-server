@@ -4,7 +4,8 @@
 			"status":"ok"
   		},
   "results":
-  	{ 	"asset":"$asset.id",
+  	{ 	
+  		"asset":"$asset.id",
   		"filename":#jesc($asset.getPrimaryFile()),
   		"imagefilename":#jesc($asset.imagefile)
   	}

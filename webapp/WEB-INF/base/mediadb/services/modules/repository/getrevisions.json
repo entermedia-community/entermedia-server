@@ -1,6 +1,7 @@
 { #set( $hits = $revisions.getRevisions() )
 	"response":
 		{
+		    "status":"ok",
 			"totalhits" : $hits.size(),
 			"searchtype" : "revision",
 			"page": 1,

@@ -1,1 +1,6 @@
-{"response":"ok"}
+{
+  "response":
+ 	{
+ 	   "status": "ok"
+ 	}
+}

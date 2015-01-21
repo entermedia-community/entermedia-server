@@ -1,6 +1,7 @@
 { #set( $hits = $searchtypes )
 	"response":
 	{
+	        "status":"ok",
 			"totalhits" : $hits.size(),
 			"searchtype" : "table",
 			"page": 1,

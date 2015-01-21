@@ -1,7 +1,15 @@
+## This should not have HTML in it
 #if($user)
-{"userid":"$user.id","defaultcolor":"$user.defaultcolor"}
+{
+    "status":"ok",
+    "userid":"$user.id",
+    "defaultcolor":"$user.defaultcolor"
+}
 #else
-{"authenticated":"false"}
+{
+	"status":"error",
+	"authenticated":"false"
+}
 #end
 
 #if (!$userName)

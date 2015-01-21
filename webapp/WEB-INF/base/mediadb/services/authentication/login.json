@@ -1,6 +1,7 @@
 {
 	"response":
 	{
+	        "status":"ok",
 			"user":"${user.id}"
 	},
 	"results": 

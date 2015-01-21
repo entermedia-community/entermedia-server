@@ -1,6 +1,7 @@
 {
 	"response":
 	{
+	    "status":"ok",
 		"totalhits" : "$hits.size()",
 		"searchtype" : "$searcher.getSearchType()",
 		"hitsperpage": "$hits.getHitsPerPage()",			
