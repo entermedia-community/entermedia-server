@@ -1,12 +1,17 @@
+#set ($status = "error")
+#set ($imagefile = $asset.imagefile)
+#if ($imagefile)
+  #set ($status = "ok")
+#end
 {
   "response":
   		{
-			"status":"ok"
+			"status":"$status"
   		},
   "results":
   	{ 	
   		"asset":"$asset.id",
   		"filename":#jesc($asset.getPrimaryFile()),
-  		"imagefilename":#jesc($asset.imagefile)
+  		"imagefilename":#jesc($imagefile)
   	}
 }

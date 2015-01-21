@@ -4,8 +4,14 @@
 	##why not just set to the value of the method call above?
 #end
 {
-"status":"$error",
+	"response":
+		{
+			"status":"$error"
 #set( $genname = $preset.get("outputfile") )
 #set( $link = "$home/$applicationid/services/modules/assets/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
-"path":"$link"
+		},
+	"results":
+		{
+			"path":"$link"
+		}
 }
