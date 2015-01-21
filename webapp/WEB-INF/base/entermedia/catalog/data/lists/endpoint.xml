@@ -43,8 +43,8 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="getassetversions" name="Show version history" url="/mediadb/services/modules/assets/versions/getrevisions" docsection="1418314436747" description="Shows a history of all versions of this asset." httpmethod="POST"> 
     <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
   </endpoint>  
-  <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="1418314436747" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373"> 
-    <samplerequest><![CDATA[{ "assetid":"101","parentsourcepath":"users/admin/2013/11/server-rack-cabinet-md.png"}]]></samplerequest>List asset attachments
+  <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="1418314436747" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373">
+    <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
   </endpoint>  
   <endpoint id="deleteasset" name="Delete an Asset" url="/mediadb/services/modules/assets/data/101" docsection="1418314436747" description="This endpoint deletes the asset." httpmethod="DELETE">Delete an Asset</endpoint>  
   <endpoint id="createnewdata" name="Create a new data object" docsection="1418330376263" description="Creates a new entry in any table.  This example is a library, but changing the searchtype argument will allow you to update any arbitrary table" httpmethod="POST" url="/mediadb/services/modules/default/data/"> 
@@ -94,7 +94,7 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="import12" url="/mediadb/services/settings/events/event/save" docsection="events" name="Save Event" httpmethod="PUT"> 
     <samplerequest><![CDATA[{"eventpath":"/media/catalogs/public/events/tests/testevent.html", "period":"1m", "delay":"5s", "enabled":"false"}]]></samplerequest>Save Event
   </endpoint>  
-  <endpoint id="import13" url="/mediadb/services/settings/events/event/run" docsection="events" name="Run Event" httpmethod="POST">
+  <endpoint id="import13" url="/mediadb/services/settings/events/event/run" docsection="events" name="Run Event" httpmethod="POST"> 
     <samplerequest><![CDATA[{"runpath":"/media/catalogs/public/events/tests/testevent.html"}]]></samplerequest>Run Event
   </endpoint>  
   <endpoint id="import14" url="/mediadb/services/settings/modules/remove?id=testmodule" docsection="modules" name="Remove Module" httpmethod="DELETE">Remove Module</endpoint>  
@@ -102,7 +102,9 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="import16" url="/mediadb/services/settings/modules/save" docsection="modules" name="Save Module" httpmethod="POST"> 
     <samplerequest><![CDATA[{"field": ["name","id"], "name.value":"testmodule", "id.value":"testmodule", "save":"true"}]]></samplerequest>Save Module
   </endpoint>  
-  <endpoint id="customthumb" name="Custom Thumbnail" url="/mediadb/services/modules/assets/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia">Custom Thumbnail</endpoint>  
+  <endpoint id="customthumb" name="Custom Thumbnail" url="/mediadb/services/modules/assets/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia"> 
+    <samplerequest><![CDATA[{"assetid":101, "primaryfile":"sphynx_cat.jpg"}]]></samplerequest>Custom Thumbnail
+  </endpoint>  
   <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="POST" description="Lists conversions" docsection="assetmedia"> 
     <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>List Conversions
   </endpoint>  
@@ -116,5 +118,8 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   </endpoint>  
   <endpoint name="Search Contact Module" docsection="modules" httpmethod="POST" id="1420743716222" url="/mediadb/services/modules/contacts/search" description="Ability to search a module once it is defined"> 
     <samplerequest><![CDATA[{   "hitsperpage": 15,   "query": [     {       "field": "id",       "operator": "matches",       "values": [         "*"       ]     }   ] }]]></samplerequest>Search Contact Module
-  </endpoint> 
+  </endpoint>  
+  <endpoint id="uploadasset" name="Upload Local Asset" url="/mediadb/services/assets/data/uploadasset" docsection="1418314436747" description="Upload new local file to DAM" httpmethod="POST">Upload Local Asset</endpoint>  
+  <endpoint id="uploadattachment" name="Upload Attachment" url="/mediadb/services/modules/assets/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST">Upload Attachment</endpoint>  
+  <endpoint id="deleteattachment" name="Delete Attachment" url="/mediadb/services/modules/assets/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">Delete Attachment</endpoint> 
 </endpoints>
