@@ -7,5 +7,5 @@
 	<property id="parameters" editable="true" stored="true" index="true">Parameters</property>	
 	<property id="description" editable="true" stored="true" index="true">Description</property>	
 	<property id="httpmethod" type="list" editable="true" stored="true" index="true">Method</property>	
-	
+	<property id="uploadfile" type="boolean" editable="true" stored="true" index="true">Upload</property>	
 </properties>
