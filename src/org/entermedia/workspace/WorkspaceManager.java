@@ -2,7 +2,9 @@ package org.entermedia.workspace;
 
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import org.dom4j.Attribute;
@@ -24,6 +26,7 @@ import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
 import com.openedit.util.PageZipUtil;
 import com.openedit.util.PathUtilities;
+import com.openedit.util.Replacer;
 import com.openedit.util.XmlUtil;
 import com.openedit.util.ZipUtil;
 
@@ -185,15 +188,76 @@ public class WorkspaceManager
 		String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
 		copyXml(catalogid, templte3, path3, module);
 
+		
+		createMediaDbModule(catalogid,module);
+		
+		
 		getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
 
 		// add settings menu
 		createTable(catalogid, module.getId(), module.getId());
 		//getPageManager().clearCache();
+				
 		
-		if( Boolean.valueOf( module.get("publicface") ) )
+	}
+
+	protected void createMediaDbModule(String inCatalogId, Data inModule)
+	{
+		//Data setup
+		Data setting = getSearcherManager().getData(inCatalogId, "catalogsettings", "mediadbappid");
+		String mediadb = setting.get("value");
+		
+		
+		Replacer replacer = new Replacer();
+		Map lookup = new HashMap();
+		lookup.put("mediadbappid",mediadb);
+		lookup.put("moduleid",inModule.getId());
+		lookup.put("module",inModule);
+		
+		Searcher sectionSearcher = getSearcherManager().getSearcher(inCatalogId, "docsection");
+		Data section = (Data)sectionSearcher.searchById("module" + inModule.getId() );
+		if( section == null )
 		{
+			section = sectionSearcher.createNewData();
+			section.setId("module" + inModule.getId());
+			section.setName(inModule.getName());
+			sectionSearcher.saveData(section, null);
+		}
+		
+		Searcher endpointSearcher = getSearcherManager().getSearcher(inCatalogId, "endpoint");
+		Collection templates = getSearcherManager().getList(inCatalogId, "endpointmoduletemplate");
+		for (Iterator iterator = templates.iterator(); iterator.hasNext();)
+		{
+			Data row = (Data) iterator.next();
+			Data endpoint = (Data)endpointSearcher.searchById(section.getId() + row.getId());
+			if( endpoint == null )
+			{
+				endpoint = endpointSearcher.createNewData();
+			}
+			//endpoint.setProperties(row.getProperties());
+			for (Iterator iterator2 = row.getProperties().keySet().iterator(); iterator2.hasNext();)
+			{
+				String key = (String) iterator2.next();
+				String val = row.get(key);
+				val = replacer.replace(val, lookup);
+				endpoint.setProperty(key, val);
+			}
 			
+			endpoint.setId(section.getId() + row.getId() );
+			endpoint.setProperty( "docsection",section.getId() );
+			endpointSearcher.saveData(endpoint, null);
+		}
+		
+		//Files
+		Page home = getPageManager().getPage("/" + mediadb + "/services/modules/" + inModule.getId() + "/_site.xconf");
+		PageSettings homesettings = home.getPageSettings();
+		if( !home.exists() )
+		{
+			homesettings.setProperty("module", inModule.getId());
+			PageProperty prop = new PageProperty("fallbackdirectory");
+			prop.setValue("/" + mediadb + "/services/modules/default");
+			homesettings.putProperty(prop);
+			getPageManager().getPageSettingsManager().saveSetting(homesettings);
 		}
 	}
 

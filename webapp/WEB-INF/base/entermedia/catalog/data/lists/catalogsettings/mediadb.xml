@@ -1,0 +1,4 @@
+<properties>
+	<property id="cdn_prefix" >CDN Prefix</property>
+	<property id="mediadbappid" value="mediadb">MediaDB Application ID</property>
+</properties>

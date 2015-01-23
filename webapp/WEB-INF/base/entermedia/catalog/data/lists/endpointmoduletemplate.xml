@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+  <endpoint id="create" name="Create a new ${module.name}" description="Creates a new record without an ID." httpmethod="POST" url="/${mediadbappid}/services/modules/${moduleid}/data/"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON ${module.name} Test",   
+     }]]></samplerequest>
+  </endpoint>  
+  <endpoint id="search" name="Search for ${module.name}" url="/${mediadbappid}/services/modules/${moduleid}/search" httpmethod="POST"> 
+    <samplerequest>
+    	<![CDATA[{
+    	    "page": 1, 
+    	    "hitsperpage","20",
+            "query": {
+            	"field": "id",
+				"operator": "matches",
+				"value": "*"
+	         }
+	      ]]></samplerequest>
+  </endpoint>  
+  <endpoint id="retrieve" name="Load Data " url="/${mediadbappid}/services/modules/${moduleid}/data/101" httpmethod="GET">Load Data</endpoint>  
+  <endpoint id="update" name="Update Data" url="/${mediadbappid}/services/modules/${moduleid}/data/101" description="Update data with key/values in request" httpmethod="PUT"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest>
+  </endpoint>  
+  <endpoint id="delete" name="Delete Data" url="/${mediadbappid}/services/modules/${moduleid}/data/101" description="Delete Data" httpmethod="DELETE"></endpoint>  
+
+</endpoints>

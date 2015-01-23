@@ -1,0 +1,9 @@
+<page>
+	<property name="virtual">true</property>
+	<property name="eventname">Setup Existing Modules</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>
+			/${catalogid}/events/scripts/modules/createmodules.groovy
+		</script>
+	</path-action>
+</page>
