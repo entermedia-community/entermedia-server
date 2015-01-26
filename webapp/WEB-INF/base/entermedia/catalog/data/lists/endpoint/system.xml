@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+  <endpoint id="upgradeserver" name="Run Application Upgrade" url="/mediadb/services/system/upgradeserver" docsection="1418334117799" description="Upgrade Server" httpmethod="POST">Run Application Upgrade</endpoint>  
+  <endpoint id="deployapp" name="Deploy New Application" url="/mediadb/services/system/deployapp" docsection="1418334117799" description="Deploy Application to a New Location" httpmethod="POST">Deploy New Application</endpoint>
+
+  <endpoint id="systemstatus" name="Show System Cache Status" url="/mediadb/services/system/systemstatus" docsection="1418334117799" description="Shows a status report of overall cache usage" httpmethod="GET">Show System Cache Status</endpoint>  
+ </endpoints>

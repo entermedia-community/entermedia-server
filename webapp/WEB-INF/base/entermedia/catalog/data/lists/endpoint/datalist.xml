@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+  <endpoint id="createnewdata" name="Create a new data object" docsection="1418330376263" description="Creates a new entry in any table.  This example is a library, but changing the searchtype argument will allow you to update any arbitrary table" httpmethod="POST" 
+  		url="/mediadb/services/modules/default/data/"> 
+    <samplerequest><![CDATA[{   "id": "101",  
+     "name": "JSON Library Test",   
+    "keywords": "animals",     "description": "Image of a squirrel who waterskis"   }]]></samplerequest>Create a new data object
+  </endpoint>  
+
+  <endpoint id="searchdata" name="Search for Data (Any Table)" url="/mediadb/services/lists/search/library" httpmethod="POST" docsection="1418330376263"> 
+    <samplerequest><![CDATA[{ "page": 1,         "query": [             {                 "field": "id",                 "operator": "matches",                  "values": [                     "*"                                             ]             }          ] }]]></samplerequest>Search for Data (Any Table)
+  </endpoint>  
+  
+  <endpoint id="loaddata" name="Load Data " url="/mediadb/services/lists/data/library/101" docsection="1418330376263" httpmethod="GET">Load Data</endpoint>  
+  <endpoint id="updatedata" name="Update Data" url="/mediadb/services/lists/data/library/101" docsection="1418330376263" description="Update data with key/values in request" httpmethod="PUT"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE",
+    "description": "Image of a squirrel who waterskis"
+   }]]></samplerequest>Update Data
+  </endpoint>  
+  <endpoint id="deletedata" name="Delete Data" url="/mediadb/services/lists/data/library/101" docsection="1418330376263" description="Delete Data - replace library with the table you wish to work with.  " httpmethod="DELETE">Delete Data</endpoint>
+  
+</endpoints>
