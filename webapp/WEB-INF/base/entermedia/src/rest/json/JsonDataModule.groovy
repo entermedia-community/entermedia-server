@@ -27,40 +27,27 @@ public class JsonDataModule extends BaseJsonModule
 
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		
-		JsonSlurper slurper = new JsonSlurper();
-		def request = null;
-		String content = inReq.getPageValue("jsondata");
-		
-		if(content != null)
-		{
-			//TODO: do we want to do something here? 
-		}
-		else
-		{
-			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		}
-		
-		String searchtype = request.searchtype;
-		if(searchtype == null){
-			searchtype = inReq.findValue("searchtype");
-		}
+		def request = inReq.getJsonRequest();
+
+		String searchtype = resolveSearchType(inReq, request);
 		Searcher searcher = archive.getSearcher(searchtype);
 
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
 		
-		request.query.each
+		request.query.terms.each
 		{
 			fields.add(it.field);
 			operations.add(it.operator.toLowerCase());
-			StringBuffer values = new StringBuffer();
-			it.values.each{
-				values.append(it);
-				values.append(" ");
+			if( it.values != null)
+			{
+				String[] values = it.values.toArray(new String[it.values.size()]);
+				inReq.setRequestParameter(it.field + ".values", values);
 			}
-			String finals = values.toString().trim();
-			inReq.setRequestParameter(it.field + ".value", finals);
+			else
+			{
+				inReq.setRequestParameter(it.field + ".value", it.value);
+			}
 		}
 
 		String[] fieldarray = fields.toArray(new String[fields.size()]) as String[];
@@ -103,17 +90,20 @@ public class JsonDataModule extends BaseJsonModule
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		String searchtype = resolveSearchType(inReq, request);
 		Searcher searcher = archive.getSearcher(searchtype);
-		
-		String id = request.id;
-		String sourcepath = request.sourcepath;
 		Data newdata = searcher.createNewData();
-		newdata.setId(id);
-		newdata.setProperty("sourcepath", sourcepath);
-		request.each
+		
+		if( request )
 		{
-			String key = it.key;
-			String value = it.value;
-			newdata.setProperty(key, value);
+			String id = request.id;
+			String sourcepath = request.sourcepath;
+			newdata.setId(id);
+			newdata.setProperty("sourcepath", sourcepath);
+			request.each
+			{
+				String key = it.key;
+				String value = it.value;
+				newdata.setProperty(key, value);
+			}
 		}
 
 
@@ -186,7 +176,7 @@ public class JsonDataModule extends BaseJsonModule
 		
 
 	}
-	
+	//Maybe we should be careful about security here, only allow searchtype from path or hard coded
 	public String resolveSearchType(WebPageRequest inReq, Map inJson)
 	{
 		String	searchtype = inReq.findValue("searchtype");

@@ -1,165 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="createasset" name="Create a new asset" url="/mediadb/services/modules/assets/data/" module="asset" docsection="moduleasset" httpmethod="POST"> 
-    <samplerequest><![CDATA[{
-  "assettype": "article",
-  "fileformat": "jpg",
-  "keywords": "animals",
-  "fetchURL": "http://o.onionstatic.com/images/25/25530/16x9/700.jpg?8747",
-
-  "description": "Image of a squirrel who waterskis",
-  "purpose": {
-    "id": "sales",
-    "name": "Sales Channel"
-  },
-  "category": {
-    "id": "index"
-  },
-  "editstatus": 6
-}]]></samplerequest>  
-    <description><![CDATA[This endpoint creates a new asset on the server and returns the resulting object.  Nested lists can be created automatically.
-
-If you include a "localPath" parameter, EnterMedia will copy the file at that path into the DAM. 
-
-If you include a "fetchURL" parameter, EnterMedia will download the file at that URL into the DAM. 
-
-You can post to this endpoint with a mutlipart file upload.]]></description>Create a new asset
-  </endpoint>  
-  <endpoint id="searchdata" name="Search for Data (Any Table)" url="/mediadb/services/lists/search" httpmethod="POST" docsection="1418330376263"> 
-    <samplerequest><![CDATA[{ "searchtype":"library",         "page": 1,         "query": [             {                 "field": "id",                 "operator": "matches",                  "values": [                     "*"                                             ]             }          ] }]]></samplerequest>Search for Data (Any Table)
-  </endpoint>  
-  <endpoint id="getasset" name="Load Details of existing asset" url="/mediadb/services/modules/assets/data/101" docsection="moduleasset" httpmethod="GET">Load Details of existing asset</endpoint>  
-  <endpoint id="searchassets" name="Search for Assets" url="/mediadb/services/modules/assets/search" docsection="moduleasset" description="Example of searching for assets" httpmethod="POST"> 
-    <samplerequest><![CDATA[{         "hitsperpage":15,         "query": [             {                 "field": "id",                 "operator": "matches",                  "values": [                     "*"                                             ]             }          ] }]]></samplerequest>Search for Assets
-  </endpoint>  
-  <endpoint id="authenticate" name="User Security Key" url="/mediadb/services/authentication/getkey" docsection="1420730727080" httpmethod="POST" description="Send authentication information and return entermedia key"> 
-    <samplerequest><![CDATA[{ 	"id":"admin",     "password":"admin" }]]></samplerequest>User Security Key
-  </endpoint>  
-  <endpoint id="removeassetimages" name="Remove Generated Asset Images" url="/mediadb/services/modules/assets/media/removeassetimages" docsection="assetmedia" description="This endpoint will remove any conversions that the system has created for the given asset." httpmethod="POST"> 
-    <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>Remove Generated Asset Images
-  </endpoint>  
-  <endpoint id="systemstatus" name="Show System Cache Status" url="/mediadb/services/system/systemstatus" docsection="1418334117799" description="Shows a status report of overall cache usage" httpmethod="GET">Show System Cache Status</endpoint>  
-  <endpoint id="getassetversions" name="Show version history" url="/mediadb/services/modules/assets/versions/getrevisions" docsection="moduleasset" description="Shows a history of all versions of this asset." httpmethod="POST"> 
-    <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
-  </endpoint>  
-  <endpoint name="List asset attachments" url="/mediadb/services/modules/assets/attachments/listattachments" docsection="moduleasset" description="Lists all of the attached files for an asset." httpmethod="POST" id="1418755308373"> 
-    <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
-  </endpoint>  
-  <endpoint id="deleteasset" name="Delete an Asset" url="/mediadb/services/modules/assets/data/101" docsection="moduleasset" description="This endpoint deletes the asset." httpmethod="DELETE">Delete an Asset</endpoint>  
-  <endpoint id="createnewdata" name="Create a new data object" docsection="1418330376263" description="Creates a new entry in any table.  This example is a library, but changing the searchtype argument will allow you to update any arbitrary table" httpmethod="POST" url="/mediadb/services/modules/default/data/"> 
-    <samplerequest><![CDATA[{   "searchtype": "library",   
- "id": "101",  
-     "name": "JSON Library Test",   
-    "keywords": "animals",     "description": "Image of a squirrel who waterskis"   }]]></samplerequest>Create a new data object
-  </endpoint>  
-  <endpoint id="loaddata" name="Load Data " url="/mediadb/services/modules/default/data/library/101" docsection="1418330376263" httpmethod="GET">Load Data</endpoint>  
-  <endpoint id="updatedata" name="Update Data" url="/mediadb/services/modules/default/data/library/101" docsection="1418330376263" description="Update data with key/values in request" httpmethod="PUT"> 
-    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE",
-    "description": "Image of a squirrel who waterskis"
-   }]]></samplerequest>Update Data
-  </endpoint>  
-  <endpoint id="deletedata" name="Delete Data" url="/mediadb/services/modules/default/data/library/101" docsection="1418330376263" description="Delete Data - replace library with the table you wish to work with.  " httpmethod="DELETE">Delete Data</endpoint>  
-  <endpoint id="updateasset" name="Update Asset" url="/mediadb/services/modules/assets/data/101" docsection="moduleasset" description="Updates an existing asset" httpmethod="PUT"> 
-    <samplerequest><![CDATA[{     "assettype": "article",    
- "fileformat":"jpg",    
- "keywords": "animals",     
-"name": "Updated Name",     
-"description": "TEST",    
- "creator":{   	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   
-  "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>Update Asset
-  </endpoint>  
-  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/mediadb/services/modules/assets/media/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file."> 
-    <samplerequest><![CDATA[{   "assetid": "101",   "presetid": "imagepreviewfpo" }]]></samplerequest>Run a conversion
-  </endpoint>  
-  <endpoint id="import1" url="/mediadb/services/settings/datamanager/listtables" docsection="datamanager" name="List Tables" httpmethod="GET">List Tables</endpoint>  
-  <endpoint id="import2" url="/mediadb/services/settings/datamanager/addtable" docsection="datamanager" name="Add Table" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"tablename":"testtable"}]]></samplerequest>Add Table
-  </endpoint>  
-  <endpoint id="import6" url="/mediadb/services/settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"searchtype":"testtable", "newproperty":"testfield"}]]></samplerequest>Add new Field
-  </endpoint>  
-  <endpoint id="import4" url="/mediadb/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field</endpoint>  
-  <endpoint id="import5" url="/mediadb/services/settings/datamanager/fields/listfields?searchtype=testtable" docsection="datamanager" name="List Fields" httpmethod="GET">List Fields</endpoint>  
-  <endpoint id="import3" url="/mediadb/services/settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field" httpmethod="DELETE">Remove Field</endpoint>  
-  <endpoint id="import7" url="/mediadb/services/settings/datamanager/table/deletetable?searchtype=testtable" docsection="datamanager" name="Delete Table" httpmethod="DELETE">Delete Table</endpoint>  
-  <endpoint id="import8" url="/mediadb/services/settings/datamanager/table/reindex" docsection="datamanager" name="Reindex Table" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"searchtype":"asset"}]]></samplerequest>Reindex Table
-  </endpoint>  
-  <endpoint id="import9" url="/mediadb/services/settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"searchtype":"testtable", "scriptname":"ImportCsvFile.groovy"}]]></samplerequest>Import From CSV
-  </endpoint>  
-  <endpoint id="import10" url="/mediadb/services/settings/events/list" docsection="events" name="List Events" httpmethod="GET">List Events</endpoint>  
-  <endpoint id="import11" url="/mediadb/services/settings/events/event/details" docsection="events" name="Event Details" httpmethod="GET">Event Details</endpoint>  
-  <endpoint id="import12" url="/mediadb/services/settings/events/event/save" docsection="events" name="Save Event" httpmethod="PUT"> 
-    <samplerequest><![CDATA[{"eventpath":"/media/catalogs/public/events/tests/testevent.html", "period":"1m", "delay":"5s", "enabled":"false"}]]></samplerequest>Save Event
-  </endpoint>  
-  <endpoint id="import13" url="/mediadb/services/settings/events/event/run" docsection="events" name="Run Event" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"runpath":"/media/catalogs/public/events/tests/testevent.html"}]]></samplerequest>Run Event
-  </endpoint>  
-  <endpoint id="import14" url="/mediadb/services/settings/modules/remove?id=testmodule" docsection="modules" name="Remove Module" httpmethod="DELETE">Remove Module</endpoint>  
-  <endpoint id="import15" url="/mediadb/services/settings/modules/list" docsection="modules" name="List Modules" httpmethod="GET">List Modules</endpoint>  
-  <endpoint id="import16" url="/mediadb/services/settings/modules/save" docsection="modules" name="Save Module" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"field": ["name","id"], "name.value":"testmodule", "id.value":"testmodule", "save":"true"}]]></samplerequest>Save Module
-  </endpoint>  
-  <endpoint id="customthumb" name="Custom Thumbnail" url="/mediadb/services/modules/assets/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia"> 
-    <samplerequest><![CDATA[{"assetid":101, "primaryfile":"sphynx_cat.jpg"}]]></samplerequest>Custom Thumbnail
-  </endpoint>  
-  <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/assets/media/listconversions" httpmethod="POST" description="Lists conversions" docsection="assetmedia"> 
-    <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>List Conversions
-  </endpoint>  
-  <endpoint id="reload" name="Reload Data" url="/mediadb/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint>  
-  <endpoint id="userlogin" name="User Login" url="/mediadb/services/authentication/login" docsection="1420730727080" httpmethod="POST" description="Saves a cookie so the user session remains open"> 
-    <samplerequest><![CDATA[{   "id": "admin",   "password": "admin" }]]></samplerequest>User Login
-  </endpoint>  
-  <endpoint id="userlogout" name="User Logout" url="/mediadb/services/authentication/logout" docsection="1420730727080" description="Removes the session cookie for this user" httpmethod="GET">User Logout</endpoint>  
-  <endpoint id="savemodule" name="Add Module" url="/mediadb/services/settings/modules/save" docsection="modules" httpmethod="POST"> 
-    <samplerequest><![CDATA[{   "field": [     "name",     "id"   ],   "name.value": "testmodule",   "id.value": "testmodule",   "save": "true" }]]></samplerequest>Add Module
-  </endpoint>  
-  <endpoint name="Search Contact Module" docsection="modules" httpmethod="POST" id="1420743716222" url="/mediadb/services/modules/contacts/search" description="Ability to search a module once it is defined"> 
-    <samplerequest><![CDATA[{   "hitsperpage": 15,   "query": [     {       "field": "id",       "operator": "matches",       "values": [         "*"       ]     }   ] }]]></samplerequest>Search Contact Module
-  </endpoint>  
-  <endpoint id="uploadasset" name="Upload Local Asset" url="/mediadb/services/assets/data/uploadasset" docsection="assetmedia" description="Upload new local file to DAM" httpmethod="POST">Upload Local Asset</endpoint>  
-  <endpoint id="uploadattachment" name="Upload Attachment" url="/mediadb/services/modules/assets/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST">Upload Attachment</endpoint>  
-  <endpoint id="deleteattachment" name="Delete Attachment" url="/mediadb/services/modules/assets/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">Delete Attachment</endpoint>  
-  <endpoint id="modulelibrarycollectioncreate" description="Creates a new record without an ID." name="Create a new Collections" httpmethod="POST" url="/mediadb/services/modules/librarycollection/data/" docsection="modulelibrarycollection"> 
-    <samplerequest><![CDATA[{      
-     "name": "JSON Collections Test",   
-     }]]></samplerequest> 
-  </endpoint>  
-  <endpoint id="modulelibrarycollectionsearch" name="Search for Collections" httpmethod="POST" url="/mediadb/services/modules/librarycollection/search" docsection="modulelibrarycollection"> 
-    <samplerequest><![CDATA[
-    	{
-    	    "page": 1, 
-    	    "hitsperpage","20",
-            "query": {
-            	"field": "id",
-				"operator": "matches",
-				"value": "*"
-	         }
-	      ]]></samplerequest> 
-  </endpoint>  
-  <endpoint id="modulelibrarycollectionretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/modules/librarycollection/data/101" docsection="modulelibrarycollection"/>  
-  <endpoint id="modulelibrarycollectionupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/modules/librarycollection/data/101" docsection="modulelibrarycollection"> 
-    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
-   }]]></samplerequest> 
-  </endpoint>  
-  <endpoint id="modulelibrarycollectiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/librarycollection/data/101" docsection="modulelibrarycollection"/>  
-  <endpoint id="moduleordercreate" description="Creates a new record without an ID." name="Create a new Orders" httpmethod="POST" url="/mediadb/services/modules/order/data/" docsection="moduleorder"> 
-    <samplerequest><![CDATA[{      
-     "name": "JSON Orders Test",   
-     }]]></samplerequest> 
-  </endpoint>  
   <endpoint id="moduleordersearch" name="Search for Orders" httpmethod="POST" url="/mediadb/services/modules/order/search" docsection="moduleorder"> 
     <samplerequest><![CDATA[
     	{
-    	    "page": 1, 
-    	    "hitsperpage","20",
-            "query": {
-            	"field": "id",
-				"operator": "matches",
-				"value": "*"
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
 	         }
+	        } 
 	      ]]></samplerequest> 
   </endpoint>  
   <endpoint id="moduleorderretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/modules/order/data/101" docsection="moduleorder"/>  
@@ -170,19 +25,23 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
   <endpoint id="moduleorderdelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/order/data/101" docsection="moduleorder"/>  
   <endpoint id="moduleassetcreate" description="Creates a new record without an ID." name="Create a new Assets" httpmethod="POST" url="/mediadb/services/modules/asset/data/" docsection="moduleasset"> 
     <samplerequest><![CDATA[{      
-     "name": "JSON Assets Test",   
+     "name": "JSON Assets Test"   
      }]]></samplerequest> 
   </endpoint>  
   <endpoint id="moduleassetsearch" name="Search for Assets" httpmethod="POST" url="/mediadb/services/modules/asset/search" docsection="moduleasset"> 
     <samplerequest><![CDATA[
     	{
-    	    "page": 1, 
-    	    "hitsperpage","20",
-            "query": {
-            	"field": "id",
-				"operator": "matches",
-				"value": "*"
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
 	         }
+	        } 
 	      ]]></samplerequest> 
   </endpoint>  
   <endpoint id="moduleassetretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/modules/asset/data/101" docsection="moduleasset"/>  
@@ -191,21 +50,25 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
    }]]></samplerequest> 
   </endpoint>  
   <endpoint id="moduleassetdelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/asset/data/101" docsection="moduleasset"/>  
-  <endpoint id="modulelibrarycreate" description="Creates a new record without an ID." name="Create a new Projects" httpmethod="POST" url="/mediadb/services/modules/library/data/" docsection="modulelibrary"> 
+  <endpoint id="modulelibrarycreate" description="Creates a new record without an ID." name="Create a new Libraries" httpmethod="POST" url="/mediadb/services/modules/library/data/" docsection="modulelibrary"> 
     <samplerequest><![CDATA[{      
-     "name": "JSON Projects Test",   
+     "name": "JSON Libraries Test"   
      }]]></samplerequest> 
   </endpoint>  
-  <endpoint id="modulelibrarysearch" name="Search for Projects" httpmethod="POST" url="/mediadb/services/modules/library/search" docsection="modulelibrary"> 
+  <endpoint id="modulelibrarysearch" name="Search for Libraries" httpmethod="POST" url="/mediadb/services/modules/library/search" docsection="modulelibrary"> 
     <samplerequest><![CDATA[
     	{
-    	    "page": 1, 
-    	    "hitsperpage","20",
-            "query": {
-            	"field": "id",
-				"operator": "matches",
-				"value": "*"
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
 	         }
+	        } 
 	      ]]></samplerequest> 
   </endpoint>  
   <endpoint id="modulelibraryretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/modules/library/data/101" docsection="modulelibrary"/>  
@@ -214,21 +77,52 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
    }]]></samplerequest> 
   </endpoint>  
   <endpoint id="modulelibrarydelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/library/data/101" docsection="modulelibrary"/>  
+  <endpoint id="modulelibrarycollectioncreate" description="Creates a new record without an ID." name="Create a new Collections" httpmethod="POST" url="/mediadb/services/modules/librarycollection/data/" docsection="modulelibrarycollection"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Collections Test"   
+     }]]></samplerequest> 
+  </endpoint>  
+  <endpoint id="modulelibrarycollectionsearch" name="Search for Collections" httpmethod="POST" url="/mediadb/services/modules/librarycollection/search" docsection="modulelibrarycollection"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </endpoint>  
+  <endpoint id="modulelibrarycollectionretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/modules/librarycollection/data/101" docsection="modulelibrarycollection"/>  
+  <endpoint id="modulelibrarycollectionupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/modules/librarycollection/data/101" docsection="modulelibrarycollection"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest> 
+  </endpoint>  
+  <endpoint id="modulelibrarycollectiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/librarycollection/data/101" docsection="modulelibrarycollection"/>  
   <endpoint id="moduledivisioncreate" description="Creates a new record without an ID." name="Create a new Divisions" httpmethod="POST" url="/mediadb/services/modules/division/data/" docsection="moduledivision"> 
     <samplerequest><![CDATA[{      
-     "name": "JSON Divisions Test",   
+     "name": "JSON Divisions Test"   
      }]]></samplerequest> 
   </endpoint>  
   <endpoint id="moduledivisionsearch" name="Search for Divisions" httpmethod="POST" url="/mediadb/services/modules/division/search" docsection="moduledivision"> 
     <samplerequest><![CDATA[
     	{
-    	    "page": 1, 
-    	    "hitsperpage","20",
-            "query": {
-            	"field": "id",
-				"operator": "matches",
-				"value": "*"
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
 	         }
+	        } 
 	      ]]></samplerequest> 
   </endpoint>  
   <endpoint id="moduledivisionretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/modules/division/data/101" docsection="moduledivision"/>  
@@ -236,5 +130,10 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
     <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
    }]]></samplerequest> 
   </endpoint>  
-  <endpoint id="moduledivisiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/division/data/101" docsection="moduledivision"/> 
+  <endpoint id="moduledivisiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/division/data/101" docsection="moduledivision"/>  
+  <endpoint id="moduleordercreate" description="Creates a new record without an ID." name="Create a new Orders" httpmethod="POST" url="/mediadb/services/modules/order/data/" docsection="moduleorder"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Orders Test"   
+     }]]></samplerequest> 
+  </endpoint> 
 </endpoints>
