@@ -40,6 +40,8 @@ $pages.include("/${applicationid}/docs/theme/layouts/includes.html")
         <div class="col-sm-3 col-md-2 sidebar">
    #set($searcher = $mediaarchive.getSearcher("endpoint"))
    #set($sections  = $mediaarchive.getList("docsection"))
+   #set($sectionid  = $context.getRequestParameter("section"))
+   
    #foreach($section in $sections)
     <div class="panel-group" role="tablist">
     <div class="panel panel-default">
@@ -51,11 +53,11 @@ $pages.include("/${applicationid}/docs/theme/layouts/includes.html")
         </h4>
       </div>
       
-      <div id="collapseListGroup1${section.id}" class="panel-collapse collapse " role="tabpanel" aria-labelledby="collapseListGroupHeading1${section.id}" aria-expanded="false">
+      <div id="collapseListGroup1${section.id}" class="panel-collapse #if($sectionid == $section.id)  #else collapse #end " role="tabpanel" aria-labelledby="collapseListGroupHeading1${section.id}" #if($sectionid == $sectionid) aria-expanded="true" #else aria-expanded="false" #end>
         <ul class="list-group">
       		#set($endpoints = $searcher.fieldSearch("docsection",$section.id ))
          #foreach($endpoint in $endpoints)
-          <li class="list-group-item"><a href="showdoc.html?id=${endpoint.id}">$endpoint</a></li>
+          <li class="list-group-item"><a href="showdoc.html?id=${endpoint.id}&section=${section.id}">$endpoint</a></li>
           #end
         
         </ul>
