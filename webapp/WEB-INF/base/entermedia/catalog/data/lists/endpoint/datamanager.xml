@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="import1" url="/mediadb/services/settings/datamanager/listtables" docsection="datamanager" name="List Tables" httpmethod="GET">List Tables</endpoint>  
-  <endpoint id="import2" url="/mediadb/services/settings/datamanager/addtable" docsection="datamanager" name="Add Table" httpmethod="POST"> 
+  <endpoint id="import1" url="/${applicationid}/services/settings/datamanager/listtables" docsection="datamanager" name="List Tables" httpmethod="GET">List Tables</endpoint>  
+  <endpoint id="import2" url="/${applicationid}/services/settings/datamanager/addtable" docsection="datamanager" name="Add Table" httpmethod="POST"> 
     <samplerequest><![CDATA[{"tablename":"testtable"}]]></samplerequest>Add Table
   </endpoint>  
-  <endpoint id="import6" url="/mediadb/services/settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field" httpmethod="POST"> 
+  <endpoint id="import6" url="/${applicationid}/services/settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field" httpmethod="POST"> 
     <samplerequest><![CDATA[{"searchtype":"testtable", "newproperty":"testfield"}]]></samplerequest>Add new Field
   </endpoint>  
-  <endpoint id="import4" url="/mediadb/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field</endpoint>  
-  <endpoint id="import5" url="/mediadb/services/settings/datamanager/fields/listfields?searchtype=testtable" docsection="datamanager" name="List Fields" httpmethod="GET">List Fields</endpoint>  
-  <endpoint id="import3" url="/mediadb/services/settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field" httpmethod="DELETE">Remove Field</endpoint>  
-  <endpoint id="import7" url="/mediadb/services/settings/datamanager/table/deletetable?searchtype=testtable" docsection="datamanager" name="Delete Table" httpmethod="DELETE">Delete Table</endpoint>  
-  <endpoint id="import8" url="/mediadb/services/settings/datamanager/table/reindex" docsection="datamanager" name="Reindex Table" httpmethod="POST"> 
+  <endpoint id="import4" url="/${applicationid}/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field</endpoint>  
+  <endpoint id="import5" url="/${applicationid}/services/settings/datamanager/fields/listfields?searchtype=testtable" docsection="datamanager" name="List Fields" httpmethod="GET">List Fields</endpoint>  
+  <endpoint id="import3" url="/${applicationid}/services/settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field" httpmethod="DELETE">Remove Field</endpoint>  
+  <endpoint id="import7" url="/${applicationid}/services/settings/datamanager/table/deletetable?searchtype=testtable" docsection="datamanager" name="Delete Table" httpmethod="DELETE">Delete Table</endpoint>  
+  <endpoint id="import8" url="/${applicationid}/services/settings/datamanager/table/reindex" docsection="datamanager" name="Reindex Table" httpmethod="POST"> 
     <samplerequest><![CDATA[{"searchtype":"asset"}]]></samplerequest>Reindex Table
   </endpoint>  
-  <endpoint id="import9" url="/mediadb/services/settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV" httpmethod="POST"> 
+  <endpoint id="import9" url="/${applicationid}/services/settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV" httpmethod="POST"> 
     <samplerequest><![CDATA[{"searchtype":"testtable", "scriptname":"ImportCsvFile.groovy"}]]></samplerequest>Import From CSV
   </endpoint>  
-  <endpoint id="reload" name="Reload Data" url="/mediadb/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint>  
+  <endpoint id="reload" name="Reload Data" url="/${applicationid}/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint>  
 
 </endpoints>

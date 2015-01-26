@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="basketadd" name="Add to Basket" url="/mediadb/services/modules/order/basketadd" docsection="moduleorder" description="Add asset to basket" httpmethod="POST">Add to Basket</endpoint>  
-  <endpoint id="basketremove" name="Remove from Basket" url="/mediadb/services/modules/order/basketremove" docsection="moduleorder" description="Remove asset from basket" httpmethod="POST">Remove from Basket</endpoint>  
-  <endpoint id="listopenorders" name="List Open Orders" url="/mediadb/services/modules/order/listopenorders" docsection="moduleorder" description="List all open orders" httpmethod="GET">List Open Orders</endpoint>  
-  <endpoint id="emailassets" name="Create Email Order" url="/mediadb/services/modules/order/emailorder" docsection="moduleorder" description="Create order for emailing assets" httpmethod="POST">Create Email Order</endpoint>  
-  <endpoint id="createdownload" name="Create Download Order" url="/mediadb/services/modules/order/createdownload" docsection="moduleorder" description="Create order for download" httpmethod="POST">Create Download Order</endpoint>  
+  <endpoint id="basketadd" name="Add to Basket" url="/${applicationid}/services/module/order/basketadd" docsection="moduleorder" description="Add asset to basket" httpmethod="POST">Add to Basket</endpoint>  
+  <endpoint id="basketremove" name="Remove from Basket" url="/${applicationid}/services/module/order/basketremove" docsection="moduleorder" description="Remove asset from basket" httpmethod="POST">Remove from Basket</endpoint>  
+  <endpoint id="listopenorders" name="List Open Orders" url="/${applicationid}/services/module/order/listopenorders" docsection="moduleorder" description="List all open orders" httpmethod="GET">List Open Orders</endpoint>  
+  <endpoint id="emailassets" name="Create Email Order" url="/${applicationid}/services/module/order/emailorder" docsection="moduleorder" description="Create order for emailing assets" httpmethod="POST">Create Email Order</endpoint>  
+  <endpoint id="createdownload" name="Create Download Order" url="/${applicationid}/services/module/order/createdownload" docsection="moduleorder" description="Create order for download" httpmethod="POST">Create Download Order</endpoint>  
 
  </endpoints>

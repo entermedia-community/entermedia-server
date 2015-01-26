@@ -2,20 +2,20 @@
 
 <endpoints> 
     
-  <endpoint id="authenticate" name="User Security Key" url="/mediadb/services/authentication/getkey" docsection="1420730727080" httpmethod="POST" description="Send authentication information and return entermedia key"> 
+  <endpoint id="authenticate" name="User Security Key" url="/${applicationid}/services/authentication/getkey" docsection="1420730727080" httpmethod="POST" description="Send authentication information and return entermedia key"> 
     <samplerequest><![CDATA[{ 	"id":"admin",     "password":"admin" }]]></samplerequest>User Security Key
   </endpoint>  
   
-  <endpoint id="userlogin" name="User Login" url="/mediadb/services/authentication/login" docsection="1420730727080" httpmethod="POST" description="Saves a cookie so the user session remains open"> 
+  <endpoint id="userlogin" name="User Login" url="/${applicationid}/services/authentication/login" docsection="1420730727080" httpmethod="POST" description="Saves a cookie so the user session remains open"> 
     <samplerequest><![CDATA[{   "id": "admin",   "password": "admin" }]]></samplerequest>User Login
   </endpoint>  
-  <endpoint id="userlogout" name="User Logout" url="/mediadb/services/authentication/logout" docsection="1420730727080" description="Removes the session cookie for this user" httpmethod="GET">User Logout</endpoint>  
+  <endpoint id="userlogout" name="User Logout" url="/${applicationid}/services/authentication/logout" docsection="1420730727080" description="Removes the session cookie for this user" httpmethod="GET">User Logout</endpoint>  
 
-  <endpoint id="registeruser" name="Register New User" url="/mediadb/services/authentication/registeruser" docsection="1420730727080" description="Register New User" httpmethod="POST">Register New User</endpoint>  
-  <endpoint id="saveuser" name="Update User" url="/mediadb/services/modules/users/data/testuser" docsection="1420730727080" description="Update User Data" httpmethod="PUT">Update User</endpoint>  
-  <endpoint id="groupadd" name="Add Group to User" url="/mediadb/services/modules/users/data/testuser" docsection="1420730727080" description="Add group to user" httpmethod="PUT">Add Group to User</endpoint>  
-  <endpoint id="groupremove" name="Remove Group from User" url="/mediadb/services/modules/users/data/testuser" docsection="1420730727080" description="Remove group from user" httpmethod="PUT">Remove Group from User</endpoint>  
-  <endpoint id="importusers" name="Import Users" url="/mediadb/services/settings/datamanager/import/import" docsection="1420730727080" description="Import users from CSV" httpmethod="POST" uploadfile="true">Import Users</endpoint>  
-  <endpoint id="exportusers" name="Export Users to CSV" url="/mediadb/services/settings/datamanager/export/users.csv" docsection="1420730727080" httpmethod="GET">Export Users to CSV</endpoint>  
+  <endpoint id="registeruser" name="Register New User" url="/${applicationid}/services/authentication/registeruser" docsection="1420730727080" description="Register New User" httpmethod="POST">Register New User</endpoint>  
+  <endpoint id="saveuser" name="Update User" url="/${applicationid}/services/module/users/data/testuser" docsection="1420730727080" description="Update User Data" httpmethod="PUT">Update User</endpoint>  
+  <endpoint id="groupadd" name="Add Group to User" url="/${applicationid}/services/module/users/data/testuser" docsection="1420730727080" description="Add group to user" httpmethod="PUT">Add Group to User</endpoint>  
+  <endpoint id="groupremove" name="Remove Group from User" url="/${applicationid}/services/module/users/data/testuser" docsection="1420730727080" description="Remove group from user" httpmethod="PUT">Remove Group from User</endpoint>  
+  <endpoint id="importusers" name="Import Users" url="/${applicationid}/services/settings/datamanager/import/import" docsection="1420730727080" description="Import users from CSV" httpmethod="POST" uploadfile="true">Import Users</endpoint>  
+  <endpoint id="exportusers" name="Export Users to CSV" url="/${applicationid}/services/settings/datamanager/export/users.csv" docsection="1420730727080" httpmethod="GET">Export Users to CSV</endpoint>  
 
 </endpoints>

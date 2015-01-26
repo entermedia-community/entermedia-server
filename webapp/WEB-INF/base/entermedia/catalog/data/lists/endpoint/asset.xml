@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="createasset" name="Fetch External Asset" url="/mediadb/services/modules/asset/data/" module="asset" docsection="moduleasset" httpmethod="POST"> 
+  <endpoint id="createasset" name="Fetch External Asset" url="/${applicationid}/services/module/asset/data/" module="asset" docsection="moduleasset" httpmethod="POST"> 
     <samplerequest><![CDATA[{
   "assettype": "article",
   "fileformat": "jpg",
@@ -27,7 +27,7 @@ If you include a "fetchURL" parameter, EnterMedia will download the file at that
 You can post to this endpoint with a mutlipart file upload.]]></description>
   </endpoint>  
   
-  <endpoint id="customupdateasset" name="Update Purpose" url="/mediadb/services/modules/asset/data/101" docsection="moduleasset" description="Updates an existing asset" httpmethod="PUT"> 
+  <endpoint id="customupdateasset" name="Update Purpose" url="/${applicationid}/services/module/asset/data/101" docsection="moduleasset" description="Updates an existing asset" httpmethod="PUT"> 
     <samplerequest><![CDATA[{     "assettype": "article",    
  "fileformat":"jpg",    
  "keywords": "animals",     
@@ -37,35 +37,35 @@ You can post to this endpoint with a mutlipart file upload.]]></description>
  "category": {         "id": "index"     },     
  "editstatus": 6 }]]></samplerequest>
   </endpoint>  
-  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/mediadb/services/modules/asset/media/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file."> 
+  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/${applicationid}/services/module/asset/media/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file."> 
     <samplerequest><![CDATA[{   "assetid": "101",   "presetid": "imagepreviewfpo" }]]></samplerequest>Run a conversion
   </endpoint>  
     
-    <endpoint id="customthumb" name="Conversion Override" url="/mediadb/services/modules/asset/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia" uploadfile="true"> 
+    <endpoint id="customthumb" name="Conversion Override" url="/${applicationid}/services/module/asset/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia" uploadfile="true"> 
     <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>Conversion Override
   </endpoint>  
-  <endpoint id="listconversions" name="List Conversions" url="/mediadb/services/modules/asset/media/listconversions" httpmethod="POST" description="Lists conversions" docsection="assetmedia"> 
+  <endpoint id="listconversions" name="List Conversions" url="/${applicationid}/services/module/asset/media/listconversions" httpmethod="POST" description="Lists conversions" docsection="assetmedia"> 
     <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>List Conversions
   </endpoint>  
   
-  <endpoint id="removeassetimages" name="Remove Generated Asset Images" url="/mediadb/services/modules/asset/media/removeassetimages" docsection="assetmedia" description="This endpoint will remove any conversions that the system has created for the given asset." httpmethod="POST"> 
+  <endpoint id="removeassetimages" name="Remove Generated Asset Images" url="/${applicationid}/services/module/asset/media/removeassetimages" docsection="assetmedia" description="This endpoint will remove any conversions that the system has created for the given asset." httpmethod="POST"> 
     <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>Remove Generated Asset Images
   </endpoint>  
 
-  <endpoint id="getassetversions" name="Show version history" url="/mediadb/services/modules/asset/versions/getrevisions" docsection="moduleasset" description="Shows a history of all versions of this asset." httpmethod="POST"> 
+  <endpoint id="getassetversions" name="Show version history" url="/${applicationid}/services/module/asset/versions/getrevisions" docsection="moduleasset" description="Shows a history of all versions of this asset." httpmethod="POST"> 
     <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
   </endpoint>  
-  <endpoint id="1418755308373" name="List asset attachments" url="/mediadb/services/modules/asset/attachments/listattachments" docsection="moduleasset" description="Lists all of the attached files for an asset." httpmethod="POST" > 
+  <endpoint id="1418755308373" name="List asset attachments" url="/${applicationid}/services/module/asset/attachments/listattachments" docsection="moduleasset" description="Lists all of the attached files for an asset." httpmethod="POST" > 
     <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
   </endpoint>  
     
-  <endpoint id="uploadasset" name="Upload File" url="/mediadb/services/assets/media/uploadfile" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
+  <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/assets/media/uploadfile" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
     <samplerequest><![CDATA[{     "assettype": "article",      "fileformat":"jpg",      "keywords": "animals",      "name": "Updated Name",      "description": "TEST",      "creator":{   	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },      "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>Upload File
   </endpoint>  
-  <endpoint id="uploadattachment" name="Upload Attachment" url="/mediadb/services/modules/asset/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST">Upload Attachment</endpoint>  
-  <endpoint id="deleteattachment" name="Delete Attachment" url="/mediadb/services/modules/asset/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">Delete Attachment</endpoint>  
-  <endpoint id="attachmentprimary" name="Attachment Primary File" url="/mediadb/services/modules/asset/attachments/attachmentprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST">Attachment Primary File</endpoint>  
-  <endpoint id="attachmentthumb" name="Attachment Thumbnail" url="/mediadb/services/modules/asset/attachments/attachmentthumb" docsection="assetmedia" description="Set thumbnail for asset from attachments" httpmethod="POST">Attachment Thumbnail</endpoint>  
-  <endpoint id="publishassets" name="Publish Assets" url="/mediadb/services/modules/orders/publishassets" docsection="moduleorder" description="Publish Assets to Desination" httpmethod="POST">Publish Assets</endpoint>  
+  <endpoint id="uploadattachment" name="Upload Attachment" url="/${applicationid}/services/module/asset/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST">Upload Attachment</endpoint>  
+  <endpoint id="deleteattachment" name="Delete Attachment" url="/${applicationid}/services/module/asset/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">Delete Attachment</endpoint>  
+  <endpoint id="attachmentprimary" name="Attachment Primary File" url="/${applicationid}/services/module/asset/attachments/attachmentprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST">Attachment Primary File</endpoint>  
+  <endpoint id="attachmentthumb" name="Attachment Thumbnail" url="/${applicationid}/services/module/asset/attachments/attachmentthumb" docsection="assetmedia" description="Set thumbnail for asset from attachments" httpmethod="POST">Attachment Thumbnail</endpoint>  
+  <endpoint id="publishassets" name="Publish Assets" url="/${applicationid}/services/module/orders/publishassets" docsection="moduleorder" description="Publish Assets to Desination" httpmethod="POST">Publish Assets</endpoint>  
 
 </endpoints>

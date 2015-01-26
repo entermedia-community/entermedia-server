@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="savemodule" name="Add Module" url="/mediadb/services/settings/modules/save" docsection="modules" httpmethod="POST"> 
+  <endpoint id="savemodule" name="Add Module" url="/${applicationid}/services/settings/modules/save" docsection="modules" httpmethod="POST"> 
     <samplerequest><![CDATA[{   "field": [     "name",     "id"   ],   "name.value": "testmodule",   "id.value": "testmodule",   "save": "true" }]]></samplerequest>Add Module
   </endpoint>  
-  <endpoint id="import14" url="/mediadb/services/settings/modules/remove?id=testmodule" docsection="modules" name="Remove Module" httpmethod="DELETE">Remove Module</endpoint>  
-  <endpoint id="import15" url="/mediadb/services/settings/modules/list" docsection="modules" name="List Modules" httpmethod="GET">List Modules</endpoint>  
-  <endpoint id="import16" url="/mediadb/services/settings/modules/save" docsection="modules" name="Save Module" httpmethod="POST"> 
+  <endpoint id="import14" url="/${applicationid}/services/settings/modules/remove?id=testmodule" docsection="modules" name="Remove Module" httpmethod="DELETE">Remove Module</endpoint>  
+  <endpoint id="import15" url="/${applicationid}/services/settings/modules/list" docsection="modules" name="List Modules" httpmethod="GET">List Modules</endpoint>  
+  <endpoint id="import16" url="/${applicationid}/services/settings/modules/save" docsection="modules" name="Save Module" httpmethod="POST"> 
     <samplerequest><![CDATA[{"field": ["name","id"], "name.value":"testmodule", "id.value":"testmodule", "save":"true"}]]></samplerequest>Save Module
   </endpoint>  
 
