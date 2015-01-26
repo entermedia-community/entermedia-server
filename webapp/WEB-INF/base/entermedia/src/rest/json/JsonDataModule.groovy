@@ -98,17 +98,12 @@ public class JsonDataModule extends BaseJsonModule
 	{
 	
 		SearcherManager sm = inReq.getPageValue("searcherManager");
-		def request = null;
-		
-		request = inReq.getJsonRequest();
+		Map request = inReq.getJsonRequest();
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		String searchtype = resolveSearchType(inReq);
-		
-		if(searchtype == null){
-			searchtype = inReq.findValue("searchtype");
-		}
+		String searchtype = resolveSearchType(inReq, request);
 		Searcher searcher = archive.getSearcher(searchtype);
+		
 		String id = request.id;
 		String sourcepath = request.sourcepath;
 		Data newdata = searcher.createNewData();
@@ -192,7 +187,29 @@ public class JsonDataModule extends BaseJsonModule
 
 	}
 	
-	
+	public String resolveSearchType(WebPageRequest inReq, Map inJson)
+	{
+		String	searchtype = inReq.findValue("searchtype");
+		if(searchtype == null)
+		{
+			if( inJson != null)
+			{
+				searchtype = inJson.searchtype;
+			}
+			String path = inReq.getPath();
+			if(searchtype == null && path.contains("modules/default/data/") )
+			{
+				int  start  = path.indexOf( "modules/default/data/") + "modules/default/data/".length();
+				if(!path.endsWith("/"))
+				{
+					path = path + "/";
+				}
+				String id = path.substring(start, path.length())
+				searchtype = id.substring(0, id.indexOf("/"));
+			}
+		}
+		return searchtype;
+	}
 	
 	public String resolveSearchType(WebPageRequest inReq)
 	{
@@ -227,7 +244,7 @@ public class JsonDataModule extends BaseJsonModule
 		def request = inReq.getJsonRequest();
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		String searchtype = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq, request);
 		Searcher searcher = archive.getSearcher(searchtype);
 		
 		Data newdata = loadData(inReq);

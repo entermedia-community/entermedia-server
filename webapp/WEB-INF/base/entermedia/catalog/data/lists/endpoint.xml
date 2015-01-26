@@ -236,5 +236,5 @@ You can post to this endpoint with a mutlipart file upload.]]></description>Crea
     <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
    }]]></samplerequest> 
   </endpoint>  
-  <endpoint id="moduledivisiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/division/data/101" docsection="moduledivision"/>
+  <endpoint id="moduledivisiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/modules/division/data/101" docsection="moduledivision"/> 
 </endpoints>
