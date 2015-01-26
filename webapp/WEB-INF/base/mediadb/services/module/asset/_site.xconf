@@ -1,0 +1,6 @@
+<page>
+	<property name="module">asset</property>
+	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+
+	<property name="searchtype">${module}</property>
+</page>

@@ -249,7 +249,7 @@ public class WorkspaceManager
 		}
 		
 		//Files
-		Page home = getPageManager().getPage("/" + mediadb + "/services/modules/" + inModule.getId() + "/_site.xconf");
+		Page home = getPageManager().getPage("/" + mediadb + "/services/module/" + inModule.getId() + "/_site.xconf");
 		PageSettings homesettings = home.getPageSettings();
 		homesettings.setProperty("module", inModule.getId());
 		PageProperty prop = new PageProperty("fallbackdirectory");

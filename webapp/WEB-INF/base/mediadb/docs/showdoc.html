@@ -1,5 +1,5 @@
 <div class="page-header">
-  <h1>$data <small><br/>URL: <input id="url" type="text" value="$data.url" size="50"/> $data.httpmethod</small></h1>
+  <h1>$data <small><br/>URL: <input id="url" type="text" value="$content.replaceProperty( $data.url )" size="50"/> $data.httpmethod</small></h1>
 </div>
 $!data.description
 <div id="jsontext" style="display: none;">
@@ -9,7 +9,7 @@ $data.samplerequest
 #set($displayreq = true)
 #end
 <h2>Request</h2>
-<textarea #if(!$displayreq) style="display: none;" #end id="request" data-url="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="10">
+<textarea #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="10">
 </textarea>
 
 
