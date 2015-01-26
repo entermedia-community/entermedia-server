@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="createasset" name="Create a new asset" url="/mediadb/services/modules/assets/data/" module="asset" docsection="moduleasset" httpmethod="POST"> 
+  <endpoint id="createasset" name="Fetch External Asset" url="/mediadb/services/modules/assets/data/" module="asset" docsection="moduleasset" httpmethod="POST"> 
     <samplerequest><![CDATA[{
   "assettype": "article",
   "fileformat": "jpg",
@@ -24,7 +24,7 @@ If you include a "localPath" parameter, EnterMedia will copy the file at that pa
 
 If you include a "fetchURL" parameter, EnterMedia will download the file at that URL into the DAM. 
 
-You can post to this endpoint with a mutlipart file upload.]]></description>Fetch External Asset
+You can post to this endpoint with a mutlipart file upload.]]></description>
   </endpoint>  
   
   <endpoint id="customupdateasset" name="Update Asset" url="/mediadb/services/modules/assets/data/101" docsection="moduleasset" description="Updates an existing asset" httpmethod="PUT"> 
