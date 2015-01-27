@@ -250,15 +250,18 @@ public class WorkspaceManager
 		
 		//Files
 		Page home = getPageManager().getPage("/" + mediadb + "/services/module/" + inModule.getId() + "/_site.xconf");
-		PageSettings homesettings = home.getPageSettings();
-		homesettings.setProperty("module", inModule.getId());
-		PageProperty prop = new PageProperty("fallbackdirectory");
-		prop.setValue("/" + mediadb + "/services/modules/default");
-		homesettings.putProperty(prop);
-		prop = new PageProperty("searchtype");
-		prop.setValue(inModule.getId());
-		homesettings.putProperty(prop);
-		getPageManager().getPageSettingsManager().saveSetting(homesettings);
+		if (!home.exists())
+		{
+			PageSettings homesettings = home.getPageSettings();
+			homesettings.setProperty("module", inModule.getId());
+			PageProperty prop = new PageProperty("fallbackdirectory");
+			prop.setValue("/" + mediadb + "/services/module/default");
+			homesettings.putProperty(prop);
+			prop = new PageProperty("searchtype");
+			prop.setValue(inModule.getId());
+			homesettings.putProperty(prop);
+			getPageManager().getPageSettingsManager().saveSetting(homesettings);
+		}
 	}
 
 	protected void copyXml(String catalogid, String inTemplatePath, String inEndingPath, Data module)
