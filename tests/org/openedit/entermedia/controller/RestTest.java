@@ -1,19 +1,26 @@
-package org.openedit.entermedia.controller
+package org.openedit.entermedia.controller;
 
-import org.apache.http.HttpResponse
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.DefaultHttpClient
-import org.json.simple.JSONObject
-import org.openedit.Data
-import org.openedit.data.Searcher
-import org.openedit.entermedia.BaseEnterMediaTest
-import org.openedit.entermedia.MediaArchive
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import com.openedit.hittracker.HitTracker
-import com.openedit.util.Replacer
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
+import org.openedit.entermedia.BaseEnterMediaTest;
+import org.openedit.entermedia.MediaArchive;
 
-class RestTest extends BaseEnterMediaTest {
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.openedit.OpenEditException;
+import com.openedit.hittracker.HitTracker;
+import com.openedit.util.Replacer;
+
+public class RestTest extends BaseEnterMediaTest {
 
 
 
@@ -28,35 +35,45 @@ class RestTest extends BaseEnterMediaTest {
 		HashMap map = new HashMap();
 		map.put("applicationid", "mediadb");
 		Replacer replacer = new Replacer();
+		 
 		
-		apicalls.each{
-			Data endpoint = it;
-			String samplerequest = endpoint.samplerequest;
-			String url = "http://localhost:8080/" + endpoint.url;
-			String method = endpoint.httpmethod;
+		for (Iterator iterator = apicalls.iterator(); iterator.hasNext();) {
+		
 			
-			url = replacer.replace(url, map);
-			if("POST".equalsIgnoreCase(endpoint.httpmethod)){
-				HttpPost postRequest = new HttpPost(
-						url);
+		
+		
+			try {
+				Data endpoint = (Data) iterator.next();
+				String samplerequest = endpoint.get("samplerequest");
+				String url = "http://localhost:8080" + endpoint.get("url");
+				String method = endpoint.get("httpmethod");
+				
+				url = replacer.replace(url, map);
+				if("POST".equalsIgnoreCase(method)){
+					HttpPost postRequest = new HttpPost(
+							url);
+						
+					StringEntity input = new StringEntity(samplerequest);
+					input.setContentType("application/json");
+					postRequest.setEntity(input);
+
+					HttpResponse response = httpClient.execute(postRequest);
+					assertTrue(verifyResponseIsJson(response));
 					
-				StringEntity input = new StringEntity(samplerequest);
-				input.setContentType("application/json");
-				postRequest.setEntity(input);
-
-				HttpResponse response = httpClient.execute(postRequest);
-				assertTrue(verifyResponseIsJson(response));
-				
-				assertEquals(201, response.getStatusLine().getStatusCode());
-				
+					assertEquals(201, response.getStatusLine().getStatusCode());
+					
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				throw new OpenEditException(e);
 			}
-		}
-	}
+		
+	}}
 
 
 	
 	
-	public boolean verifyResponseIsJson(HttpResponse response){
+	public boolean verifyResponseIsJson(HttpResponse response) throws Exception{
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		
 		StringBuffer result = new StringBuffer();
@@ -66,7 +83,8 @@ class RestTest extends BaseEnterMediaTest {
 		}
 		try{
 			String responsestring = result.toString();
-			JSONObject o = new JSONObject(result.toString());
+			new JsonParser().parse(responsestring);
+			
 			return true;
 			
 		} catch(Exception e){
