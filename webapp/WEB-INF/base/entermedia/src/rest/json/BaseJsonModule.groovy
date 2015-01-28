@@ -53,7 +53,6 @@ public class BaseJsonModule extends BaseMediaModule
 
 	public String getId(WebPageRequest inReq)
 	{
-	
 		String id = inReq.getPage().getName();
 		if (id.endsWith(".json"))
 		{
@@ -61,10 +60,6 @@ public class BaseJsonModule extends BaseMediaModule
 		}
 		return id;
 	}
-
-
-
-	
 
 	public String findCatalogId(WebPageRequest inReq)
 	{

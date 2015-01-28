@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="createasset" name="Fetch External Asset" url="/${applicationid}/services/module/asset/data/" module="asset" docsection="moduleasset" httpmethod="POST"> 
+  <endpoint id="createasset" name="Fetch External Asset" url="/${applicationid}/services/module/asset/data/create" module="asset" docsection="moduleasset" httpmethod="POST"> 
     <samplerequest><![CDATA[{
   "assettype": "article",
   "fileformat": "jpg",

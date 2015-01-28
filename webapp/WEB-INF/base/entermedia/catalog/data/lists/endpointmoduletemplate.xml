@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="create" name="Create a new ${module.name}" description="Creates a new record without an ID." httpmethod="POST" url="/${mediadbappid}/services/module/${moduleid}/data/"> 
+  <endpoint id="create" name="Create a new ${module.name}" description="Creates a new record without an ID." httpmethod="POST" url="/${mediadbappid}/services/module/${moduleid}/create"> 
     <samplerequest><![CDATA[{      
      "name": "JSON ${module.name} Test"   
      }]]></samplerequest>

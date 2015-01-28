@@ -192,6 +192,7 @@ public class JsonAssetModule extends BaseJsonModule
 		//String jsondata = result.toString();
 		inReq.putPageValue("searcher", searcher);
 		inReq.putPageValue("asset", asset);
+		inReq.putPageValue("data", asset);
 		//inReq.putPageValue("json", jsondata);
 		//return result;
 

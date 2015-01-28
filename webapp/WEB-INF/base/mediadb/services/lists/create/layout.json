@@ -3,7 +3,6 @@
 {
   "response":
       {
-        "status":"ok",
         "deleted":"true"
       }
 }
@@ -11,17 +10,24 @@
 {
   "response":
       {
-      "status":"ok",
-      "id":"$data.id"
+        "id":"$data.id"
       }
   ,
   "data":#json($data $searcher.getPropertyDetails())
 }  
+#elseif($method == "POST")## for creating assets
+{
+  "response":
+      {
+        "id":"$data.id"
+      }
+  ,
+  "data":#json($data $searcher.getPropertyDetails())
+}
 #elseif($method == "GET")
 {
   "response":
       {
-        "status":"ok",      
         "id":"$data.id"
       }
   ,
@@ -30,7 +36,6 @@
 }
 #else
   {
-    "status":"error",
   	"error":"Invalid request"
   }
 #end

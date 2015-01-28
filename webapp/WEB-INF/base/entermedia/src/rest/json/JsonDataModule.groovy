@@ -12,6 +12,7 @@ import org.openedit.entermedia.MediaArchive
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
+import com.openedit.util.PathUtilities;
 
 
 public class JsonDataModule extends BaseJsonModule 
@@ -29,7 +30,7 @@ public class JsonDataModule extends BaseJsonModule
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		def request = inReq.getJsonRequest();
 
-		String searchtype = resolveSearchType(inReq, request);
+		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 
 		ArrayList <String> fields = new ArrayList();
@@ -88,7 +89,7 @@ public class JsonDataModule extends BaseJsonModule
 		Map request = inReq.getJsonRequest();
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		String searchtype = resolveSearchType(inReq, request);
+		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		Data newdata = searcher.createNewData();
 		
@@ -176,53 +177,21 @@ public class JsonDataModule extends BaseJsonModule
 		
 
 	}
-	//Maybe we should be careful about security here, only allow searchtype from path or hard coded
-	public String resolveSearchType(WebPageRequest inReq, Map inJson)
-	{
-		String	searchtype = inReq.findValue("searchtype");
-		if(searchtype == null)
-		{
-			if( inJson != null)
-			{
-				searchtype = inJson.searchtype;
-			}
-			String path = inReq.getPath();
-			if(searchtype == null && path.contains("modules/default/data/") )
-			{
-				int  start  = path.indexOf( "modules/default/data/") + "modules/default/data/".length();
-				if(!path.endsWith("/"))
-				{
-					path = path + "/";
-				}
-				String id = path.substring(start, path.length())
-				searchtype = id.substring(0, id.indexOf("/"));
-			}
-		}
-		return searchtype;
-	}
 	
 	public String resolveSearchType(WebPageRequest inReq)
 	{
-//		def request = null;
-//		request = inReq.getJsonRequest();
-//		String searchtype = null;
-//		if(request){
-//			searchtype = request.searchtype;
-//		}
-		//if(searchtype == null){
-		String	searchtype = inReq.findValue("searchtype");
-		//}
-		
-		if(searchtype == null){
-			String root  = "/mediadb/services/modules/default/data/";
+		String	searchtype = inReq.getContentProperty("searchtype");
+		if(searchtype == null)
+		{
+			String root  = inReq.getContentProperty("searchtyperoot");
 			String url = inReq.getPath();
 			if(!url.endsWith("/"))
 			{
 				url = url + "/";
 			}
-			String id = url.substring(root.length(), url.length())
-			id = id.substring(0, id.indexOf("/"));
-			return id;
+			String ending = url.substring(root.length(), url.length());
+			searchtype = ending.substring(1, ending.indexOf("/",1));
+			searchtype = PathUtilities.extractPageName(searchtype);
 		}
 		return searchtype;
 	}
@@ -234,7 +203,7 @@ public class JsonDataModule extends BaseJsonModule
 		def request = inReq.getJsonRequest();
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		String searchtype = resolveSearchType(inReq, request);
+		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		
 		Data newdata = loadData(inReq);

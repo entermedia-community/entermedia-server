@@ -36,6 +36,7 @@ $invalue
 #end]
 #elseif($detail.isList())
 #datajsonmin($detail $val)
+#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDate($val)"
 #else#jesc($val) 
 #end
 #end

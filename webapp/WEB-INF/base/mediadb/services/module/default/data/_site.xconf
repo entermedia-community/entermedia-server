@@ -5,7 +5,6 @@
 
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	
-	<path-action name="JsonDataModule.createData" alltypes="true" method="POST"/>
 	<path-action name="JsonDataModule.updateData" alltypes="true" method="PUT"/>
 	<path-action name="JsonDataModule.loadData" alltypes="true" method="GET"/>
 	<path-action name="JsonDataModule.deleteData" alltypes="true" method="DELETE"/>
