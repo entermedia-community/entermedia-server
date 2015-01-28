@@ -171,7 +171,7 @@ public class JsonDataModule extends BaseJsonModule
 			return;
 		}
 		searcher.delete(data, inReq.getUser());
-		//inReq.putPageValue("data", data);
+		inReq.putPageValue("data", data);
 		//inReq.putPageValue("searcher", searcher);
 
 		

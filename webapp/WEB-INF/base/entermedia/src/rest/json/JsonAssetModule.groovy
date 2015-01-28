@@ -294,6 +294,7 @@ public class JsonAssetModule extends BaseJsonModule
 		}
 		inReq.putPageValue("id", id);
 		inReq.putPageValue("asset", asset);
+		inReq.putPageValue("data", asset);
 		inReq.putPageValue("searcher", searcher);
 		inReq.putPageValue("deleted", counted);
 		
