@@ -262,6 +262,7 @@ public class WorkspaceManager
 			homesettings.putProperty(prop);
 			getPageManager().getPageSettingsManager().saveSetting(homesettings);
 		}
+		getPageManager().clearCache();
 	}
 
 	protected void copyXml(String catalogid, String inTemplatePath, String inEndingPath, Data module)
