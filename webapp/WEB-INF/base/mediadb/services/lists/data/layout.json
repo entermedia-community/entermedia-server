@@ -1,27 +1,41 @@
 #set($method = $context.getMethod())
+#set ($status = "ok")
+#if (!$data)
+  #set ($status = "not found")
+#end
 #if($method == "DELETE")
 {
   "response":
       {
-        "status":"ok",
-        "deleted":"true"
+        "status":"$status",
+        "deleted":"$!deleted"
       }
 }
 #elseif($method == "PUT")## for updating assets
 {
   "response":
       {
-      "status":"ok",
-      "id":"$data.id"
+        "status":"$status",
+        "id":"$data.id"
       }
   ,
   "data":#json($data $searcher.getPropertyDetails())
 }  
+#elseif($method == "POST")## for creating assets
+{
+  "response":
+      {
+        "status":"$status",
+        "id":"$data.id"
+      }
+  ,
+  "data":#json($data $searcher.getPropertyDetails())
+}
 #elseif($method == "GET")
 {
   "response":
       {
-        "status":"ok",      
+        "status":"$status",
         "id":"$data.id"
       }
   ,

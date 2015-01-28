@@ -1,9 +1,13 @@
 #set($method = $context.getMethod())
+#set ($status = "ok")
+#if (!$data)
+  #set ($status = "not found")
+#end
 #if($method == "DELETE")
 {
   "response":
       {
-        "status":"ok",
+        "status":"$status",
         "deleted":"true"
       }
 }
@@ -11,7 +15,7 @@
 {
   "response":
       {
-        "status":"ok",
+        "status":"$status",
         "id":"$data.id"
       }
   ,
@@ -21,7 +25,7 @@
 {
   "response":
       {
-        "status":"ok",
+        "status":"$status",
         "id":"$data.id"
       }
   ,
@@ -31,7 +35,7 @@
 {
   "response":
       {
-        "status":"ok",
+        "status":"$status",
         "id":"$data.id"
       }
   ,
