@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -22,7 +24,7 @@ import com.openedit.util.Replacer;
 
 public class RestTest extends BaseEnterMediaTest {
 
-
+	private static final Log log = LogFactory.getLog(RestTest.class);
 
 	public void testAPI(){
 
@@ -57,10 +59,12 @@ public class RestTest extends BaseEnterMediaTest {
 					input.setContentType("application/json");
 					postRequest.setEntity(input);
 
+					log.info("testing " + endpoint.getName());
+					
 					HttpResponse response = httpClient.execute(postRequest);
 					assertTrue(verifyResponseIsJson(response));
 					
-					assertEquals(201, response.getStatusLine().getStatusCode());
+					assertEquals(200, response.getStatusLine().getStatusCode());
 					
 				}
 			} catch (Exception e) {

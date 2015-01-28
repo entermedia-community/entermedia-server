@@ -1,6 +1,6 @@
 <page>
 	<property name="forcelayout">true</property>
-	<layout>/${applicationid}/services/module/assets/data/layout.json</layout>
+	<layout>/${applicationid}/services/module/asset/data/layout.json</layout>
 	<property name="virtual">true</property>
 
 	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
