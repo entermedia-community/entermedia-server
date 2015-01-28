@@ -6,7 +6,7 @@
     	{
     		"serverid": "4",
     		"toupdate": 
-    			["emshare"]
+    			["app-emshare"]
 	    } 
 	      ]]></samplerequest> Run Application Upgrade</endpoint>  
   <endpoint id="systemstatus" name="Show System Cache Status" url="/${applicationid}/services/system/systemstatus" docsection="1418334117799" description="Shows a status report of overall cache usage" httpmethod="GET">Show System Cache Status</endpoint>  
