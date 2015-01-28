@@ -1,7 +1,5 @@
 <page>
-	<property name="module">asset</property>
+	<property name="module">order</property>
 	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
-	<!--TODO: Remove the need for this -->
-	<property name="searchtype">${module}</property>
 	
 </page>

@@ -1,7 +1,5 @@
 package rest.json
 
-import groovy.json.JsonSlurper
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
@@ -12,7 +10,7 @@ import org.openedit.entermedia.MediaArchive
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
-import com.openedit.util.PathUtilities;
+import com.openedit.util.PathUtilities
 
 
 public class JsonDataModule extends BaseJsonModule 
@@ -76,11 +74,15 @@ public class JsonDataModule extends BaseJsonModule
 			hits.setPage(pagenumb);
 		}
 		
+		if( "true" == request.showfilters)
+		{
+			List nodes = hits.getFilterOptions();
+			inReq.putPageValue("filteroptions", nodes);
+		}
+		
 		inReq.putPageValue("searcher", searcher);
 
 	}
-	
-	
 	
 	public void createData(WebPageRequest inReq)
 	{

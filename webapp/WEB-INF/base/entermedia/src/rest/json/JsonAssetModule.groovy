@@ -35,6 +35,7 @@ public class JsonAssetModule extends BaseJsonModule
 {
 	private static final Log log = LogFactory.getLog(JsonAssetModule.class);
 
+	/*
 	public JSONObject handleAssetSearch(WebPageRequest inReq)
 	{
 		//Could probably handle this generically, but I think they want tags, keywords etc.
@@ -50,7 +51,7 @@ public class JsonAssetModule extends BaseJsonModule
 		ArrayList <String> fields = new ArrayList();
 		ArrayList <String> operations = new ArrayList();
 
-		request.query.each
+		request.query.terms.each
 		{
 			fields.add(it.field);
 			operations.add(it.operator.toLowerCase());
@@ -100,7 +101,7 @@ public class JsonAssetModule extends BaseJsonModule
 		return parent;
 	}
 
-
+*/
 
 	public void createAsset(WebPageRequest inReq)
 	{
@@ -232,12 +233,13 @@ public class JsonAssetModule extends BaseJsonModule
 		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset)
 		
 		inReq.putPageValue("asset", asset);
+		inReq.putPageValue("data", asset);
 		inReq.putPageValue("searcher", searcher);
 		//return result;
 
 	}
 
-
+/*
 	public void loadAsset(WebPageRequest inReq)
 	{
 
@@ -269,7 +271,8 @@ public class JsonAssetModule extends BaseJsonModule
 		
 
 	}
-
+	*/
+/*
 	public void deleteAsset(WebPageRequest inReq)
 	{
 	
@@ -349,7 +352,7 @@ public class JsonAssetModule extends BaseJsonModule
 		}
 		//return asset;
 	}
-
+*/
 
 	public JSONObject getAssetPublishLocations(MediaArchive inArchive, Data inAsset)
 	{

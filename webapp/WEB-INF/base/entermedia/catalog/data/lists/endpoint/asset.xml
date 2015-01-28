@@ -27,6 +27,24 @@ If you include a "fetchURL" parameter, EnterMedia will download the file at that
 You can post to this endpoint with a mutlipart file upload.]]></description>
   </endpoint>  
   
+    <data id="moduleassetfiltersearch" name="List Search Filters" httpmethod="POST" url="/${applicationid}/services/module/asset/search" docsection="moduleasset"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+    	    "showfilters":"true",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+
   <endpoint id="customupdateasset" name="Update Purpose" url="/${applicationid}/services/module/asset/data/101" docsection="moduleasset" description="Updates an existing asset" httpmethod="PUT"> 
     <samplerequest><![CDATA[{     "assettype": "article",    
  "fileformat":"jpg",    
@@ -67,5 +85,6 @@ You can post to this endpoint with a mutlipart file upload.]]></description>
   <endpoint id="attachmentprimary" name="Attachment Primary File" url="/${applicationid}/services/module/asset/attachments/attachmentprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST">Attachment Primary File</endpoint>  
   <endpoint id="attachmentthumb" name="Attachment Thumbnail" url="/${applicationid}/services/module/asset/attachments/attachmentthumb" docsection="assetmedia" description="Set thumbnail for asset from attachments" httpmethod="POST">Attachment Thumbnail</endpoint>  
   <endpoint id="publishassets" name="Publish Assets" url="/${applicationid}/services/module/orders/publishassets" docsection="moduleorder" description="Publish Assets to Desination" httpmethod="POST">Publish Assets</endpoint>  
+
 
 </endpoints>
