@@ -1,17 +1,17 @@
+{
 #set ($status = "ok")
 #if( $error )
 	#set ($status = $error)	
 #end
-{
+
 "response":
 	{
 	    "status":"$status"
 	},
-"results":[
-#foreach( $id in $upgrader.list )
-	#if( $velocityCount != 1 ), #end
-	"$id"
+	"results":[
+	#foreach( $id in $upgrader.list )
+		#if( $velocityCount != 1 ), #end
+		"$id"
+	#end 
 	]
-#end 
-]
 }
