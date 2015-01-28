@@ -23,40 +23,31 @@ import com.openedit.util.PathUtilities
 
 import java.awt.Dimension;
 
-public class imagemagickCreator extends BaseImageCreator 
-{
+public class imagemagickCreator extends BaseImageCreator {
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
 	protected String fieldPathToProfile;
-	
+
 	public String getPathtoProfile(){
 		if(fieldPathToProfile == null){
 			Page profile = getPageManager().getPage("/system/components/conversions/tinysRGB.icc");
-			fieldPathToProfile = profile.getContentItem().getAbsolutePath(); 
-			
-			
+			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
-		
-		
 	}
-	
-	public boolean canReadIn(MediaArchive inArchive, String inInput)
-	{
+
+	public boolean canReadIn(MediaArchive inArchive, String inInput) {
 		return !inInput.equals("mp3") || canPreProcess(inArchive, inInput); //Can read in most any input except mp3. Maybe in the future it will look up the album cover
 	}
 
-	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions) throws OpenEditException
-	{
-		if(!inStructions.isForce() && inOutFile.length() > 1 )
-		{
+	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions) throws OpenEditException {
+		if(!inStructions.isForce() && inOutFile.length() > 1 ) {
 			ConvertResult result = new ConvertResult();
 			result.setOk(true);
 			result.setComplete(true);
 			return result;
 		}
-		
-		if(inStructions.isWatermark())
-		{
+
+		if(inStructions.isWatermark()) {
 			inStructions.setWatermark(false);
 			String outputPath = populateOutputPath(inArchive, inStructions); //now does not contain wm
 			Page outputPage = getPageManager().getPage(outputPath);
@@ -90,7 +81,7 @@ public class imagemagickCreator extends BaseImageCreator
 		Page input = null;
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
-		
+
 		String tmpinput = PathUtilities.extractPageType( inOutFile.getPath() );
 		boolean transparent = inStructions.isTransparencyMaintained(tmpinput);
 		String ext = inStructions.getInputExtension();
@@ -98,7 +89,7 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			ext = PathUtilities.extractPageType( input.getPath() );
 		}
-		
+
 		if( ext == null)
 		{
 			ext = inAsset.getFileFormat();
@@ -114,35 +105,35 @@ public class imagemagickCreator extends BaseImageCreator
 			{
 				page = "";
 			}
-			
+
 			Dimension box = inStructions.getMaxScaledSize();
-//			if (input == null && inStructions.getProperty("useinput")!=null)
-//			{
-//				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/"+inStructions.getProperty("useinput") + page + ".jpg");
-//				if( !input.exists()  || input.length() < 2)
-//				{
-//					input = null;
-//				}
-//				else
-//				{
-//					autocreated = true;
-//				}
-//			}
-//			if( input == null &&  box.getWidth() < 300 )
-//			{
-//				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
-//				if( !input.exists()  || input.length() < 2)
-//				{
-//					input = null;
-//				}
-//				else
-//				{
-//					autocreated = true;
-//				}
-//			}
+			//			if (input == null && inStructions.getProperty("useinput")!=null)
+			//			{
+			//				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/"+inStructions.getProperty("useinput") + page + ".jpg");
+			//				if( !input.exists()  || input.length() < 2)
+			//				{
+			//					input = null;
+			//				}
+			//				else
+			//				{
+			//					autocreated = true;
+			//				}
+			//			}
+			//			if( input == null &&  box.getWidth() < 300 )
+			//			{
+			//				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image640x480" + page + ".jpg");
+			//				if( !input.exists()  || input.length() < 2)
+			//				{
+			//					input = null;
+			//				}
+			//				else
+			//				{
+			//					autocreated = true;
+			//				}
+			//			}
 			if( input == null && box.getWidth() < 1024 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");				
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
 				if( input.length() < 2 )
 				{
 					input = null;
@@ -153,13 +144,13 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 		}
-		
+
 		boolean hascustomthumb = false;
 		Page customthumb = null;
-		
+
 		if("png".equals(ext)){
 			customthumb = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
-			
+
 		}	else
 		{
 			customthumb = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
@@ -180,9 +171,9 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 		}
-				
-		
-			
+
+
+
 		//get the original inut
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
 		if( offset != null && input == null)
@@ -203,39 +194,44 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 		}
 		//Look over to see if there is a creator that can do a better job of reading in this type
-		
+
 		MediaCreator preprocessor = getPreProcessor(inArchive, ext);
-		if( preprocessor != null && !hascustomthumb)
+		Page original = inArchive.getOriginalDocument(inAsset);
+		
+		if(original.exists() &&  preprocessor != null && !hascustomthumb)
 		{
 			//This will output a native format. First one wins. it is not a loop.
 			String tmppath = preprocessor.populateOutputPath(inArchive, inStructions);
 			Page tmpout = getPageManager().getPage(tmppath);
 			if( !tmpout.exists() || tmpout.getContentItem().getLength()==0)
 			{
-				//Create 
+				//Create
 				ConvertResult tmpresult = preprocessor.convert(inArchive, inAsset, tmpout, inStructions);
 				if( !tmpresult.isOk() )
 				{
 					return tmpresult;
 				}
-//					if( !inStructions.isWatermark() && out.getPath().equals(inOutFile.getPath())) //this is the same file we originally wanted
-//					{
-//						//return tmpresult;
-//					}
+				//					if( !inStructions.isWatermark() && out.getPath().equals(inOutFile.getPath())) //this is the same file we originally wanted
+				//					{
+				//						//return tmpresult;
+				//					}
 				if( tmpout.getContentItem().getLength() > 0)
 				{
 					input = tmpout;
-//					This is only useful for INDD at 1024. to complex to try and optimize					
-//					if( input.getPath().equals(inOutFile.getPath()))
-//					{
-//						//preprosessor took care of the entire file. such as exiftol
-//						result.setOk(true);
-//						return result;
-//					}
+					//					This is only useful for INDD at 1024. to complex to try and optimize
+					//					if( input.getPath().equals(inOutFile.getPath()))
+					//					{
+					//preprosessor took care of the entire file. such as exiftol
+					//						result.setOk(true);
+					//						return result;
+					//					}
 				}
 				else
 				{
 					//exifthumbtool probably did not work due to permissions
+					//Highlights doesn't have the original - maybe we can revert back to an input if the original doesn't exist?  Or just
+					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+					
 					result.setError("Prepropessor could not create tmp file");
 					result.setOk(false);
 					return result;
@@ -262,7 +258,7 @@ public class imagemagickCreator extends BaseImageCreator
 			return result;
 		}
 
-		
+
 		File inputFile = new File(input.getContentItem().getAbsolutePath());
 		String newext = PathUtilities.extractPageType( input.getPath() );
 		if( newext != null && newext.length()> 1)
@@ -273,7 +269,7 @@ public class imagemagickCreator extends BaseImageCreator
 		com.add("-limit");
 		com.add("thread");
 		com.add("1");
-		
+
 		if (inStructions.getMaxScaledSize() != null)
 		{
 			//be aware ImageMagick writes to a tmp file with a larger version of the file before it is finished
@@ -296,62 +292,62 @@ public class imagemagickCreator extends BaseImageCreator
 					else
 					{
 						com.add(0,"300");
-						com.add(0,"-density");						
+						com.add(0,"-density");
 					}
 				}
 			}
 			//else
-			
-/** We dont need this any more?
-			//we need to rotate this before we start otherwise the width and heights might be flipped. This is only 5% slower
-			//since we now strip all metadata from resulting images the orientation will be lost
-			if( autocreated )
-			{
-				String rotation = inAsset.getProperty("imageorientation");
-				if(rotation != null)
-				{
-					try		//TODO: Use a local lookup map
-					{
-						Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
-						Data rotationval = (Data)searcher.searchById(rotation);
-						if(rotationval != null )
-						{
-							String val = rotationval.get("rotation");
-							inStructions.setRotation(Integer.parseInt(val));
-						}
-					}
-					catch(Exception e)
-					{
-						log.error("Error: " + e,e);
-					}
-				}
-			}
-*/			
-			if (!inStructions.isCrop()) 
+
+			/** We dont need this any more?
+			 //we need to rotate this before we start otherwise the width and heights might be flipped. This is only 5% slower
+			 //since we now strip all metadata from resulting images the orientation will be lost
+			 if( autocreated )
+			 {
+			 String rotation = inAsset.getProperty("imageorientation");
+			 if(rotation != null)
+			 {
+			 try		//TODO: Use a local lookup map
+			 {
+			 Searcher searcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "imageorientation");
+			 Data rotationval = (Data)searcher.searchById(rotation);
+			 if(rotationval != null )
+			 {
+			 String val = rotationval.get("rotation");
+			 inStructions.setRotation(Integer.parseInt(val));
+			 }
+			 }
+			 catch(Exception e)
+			 {
+			 log.error("Error: " + e,e);
+			 }
+			 }
+			 }
+			 */			
+			if (!inStructions.isCrop())
 			{
 				//end of probably wrong section
 				com.add("-resize");
-	
+
 				String prefix = null;
 				String postfix = null;
-	
-	
+
+
 				//We need to flip the width and height if we have a rotated image. This allows us to crop first to speed up the rotation on a smaller image
-//				if( inStructions.getRotation() == 90 || inStructions.getRotation() == 270)
-//				{
-//					prefix =  String.valueOf( inStructions.getMaxScaledSize().height );
-//					postfix =  String.valueOf( inStructions.getMaxScaledSize().width );
-//				}
-//				else
-//				{
-					prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
-					postfix =  String.valueOf( inStructions.getMaxScaledSize().height );				
-//				}
-				
-					
+				//				if( inStructions.getRotation() == 90 || inStructions.getRotation() == 270)
+				//				{
+				//					prefix =  String.valueOf( inStructions.getMaxScaledSize().height );
+				//					postfix =  String.valueOf( inStructions.getMaxScaledSize().width );
+				//				}
+				//				else
+				//				{
+				prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
+				postfix =  String.valueOf( inStructions.getMaxScaledSize().height );
+				//				}
+
+
 				if (isOnWindows())
 				{
-					
+
 					com.add("\"" + prefix + "x" + postfix + "\"");
 				}
 				else
@@ -359,18 +355,18 @@ public class imagemagickCreator extends BaseImageCreator
 					com.add(prefix + "x" + postfix);
 				}
 			}
-		
+
 		}
-		
+
 		//faster to do it after sizing
 		//TODO: Is this needed any more? Seems that ImageMagik will use the orientation flag that is built in
-/** Dont need this
-		if (autocreated && inStructions.getRotation() != 0 && inStructions.getRotation() != 360)
-		{
-			com.add("-rotate");
-			com.add(String.valueOf(360 - inStructions.getRotation()));
-		}
-*/		
+		/** Dont need this
+		 if (autocreated && inStructions.getRotation() != 0 && inStructions.getRotation() != 360)
+		 {
+		 com.add("-rotate");
+		 com.add(String.valueOf(360 - inStructions.getRotation()));
+		 }
+		 */		
 
 		if(inStructions.isCrop())
 		{
@@ -386,7 +382,7 @@ public class imagemagickCreator extends BaseImageCreator
 				resizestring.append("^");
 				com.add(resizestring.toString());
 			}
-			   		
+
 			//now let's crop
 			String gravity = inStructions.get("gravity");
 			if(!"default".equals(gravity))
@@ -407,21 +403,21 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 				com.add(gravity);
 			}
-			
+
 			if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{
 				com.add("-background");
 				com.add("white");
 				com.add("-flatten");
-			} 
+			}
 			else if ("svg".equals(ext))//add svg support; include transparency
 			{
 				com.add("-background");
 				com.add("transparent");
 				com.add("-flatten");
 			}
-			
-			
+
+
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
 			String cropwidth = inStructions.get("cropwidth");
@@ -431,15 +427,15 @@ public class imagemagickCreator extends BaseImageCreator
 			cropString.append(cropwidth);
 			cropString.append("x");
 			String cropheight = inStructions.get("cropheight");
-			
+
 			if(!cropheight){
 				cropheight = inStructions.getMaxScaledSize().height;
 			}
 			cropString.append(cropheight);
-			
+
 			String x1 = inStructions.get("x1");
 			String y1 = inStructions.get("y1");
-			
+
 			cropString.append("+");
 			if(x1 == null)
 			{
@@ -476,69 +472,69 @@ public class imagemagickCreator extends BaseImageCreator
 			com.add("-background");
 			com.add("white");
 			com.add("-flatten");
-		} 
+		}
 		else if ("svg".equals(ext))//add svg support; include transparency
 		{
 			com.add("-background");
 			com.add("transparent");
 			com.add("-flatten");
 		}
-//				String colorspace = inStructions.get("colorspace");
-//				if(colorspace != null){
-//					com.add("-colorspace");
-//					com.add(colorspace);
-//				} else{
-//					com.add("-colorspace");
-//					com.add("sRGB");
-//				}
-				
+		//				String colorspace = inStructions.get("colorspace");
+		//				if(colorspace != null){
+		//					com.add("-colorspace");
+		//					com.add(colorspace);
+		//				} else{
+		//					com.add("-colorspace");
+		//					com.add("sRGB");
+		//				}
+
 		setValue("quality", "89", inStructions, com);
-		
+
 		if( autocreated )  //we are using a color corrected input
 		{
 			com.add("-strip"); //This does not seem to do much
 		}
 		else
 		{
-//			TODO: use parameters to specify the color space		
-			//Make sure we use 8 bit output and 	
+			//			TODO: use parameters to specify the color space
+			//Make sure we use 8 bit output and
 			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
-	//		com.add("-quality"); 
-	//		com.add("90"); I think the default is about 80
-//			setValue("colorspace", "sRGB", inStructions, com);
-//			String colorspace = inStructions.get("colorspace");
-//			if(colorspace != null){
-//				com.add("-colorspace");
-//				com.add(colorspace);
-//			} else{
-//				com.add("-colorspace");
-//				com.add("sRGB");
-//			}
-						
-/*			String type = inAsset.get("colortype");
-			if( type != null && type.equalsIgnoreCase("RGB") )
-			{
-				String cmyk = inAsset.get("colorspace");  
-				if( cmyk != null && cmyk.equalsIgnoreCase("CMYK") )  //Edge case where someone has the wrong colorspace set in the file
-				{
-					com.add("-colorspace");
-					com.add("RGB");
-				}	
-			}
-*/		
+			//		com.add("-quality");
+			//		com.add("90"); I think the default is about 80
+			//			setValue("colorspace", "sRGB", inStructions, com);
+			//			String colorspace = inStructions.get("colorspace");
+			//			if(colorspace != null){
+			//				com.add("-colorspace");
+			//				com.add(colorspace);
+			//			} else{
+			//				com.add("-colorspace");
+			//				com.add("sRGB");
+			//			}
+
+			/*			String type = inAsset.get("colortype");
+			 if( type != null && type.equalsIgnoreCase("RGB") )
+			 {
+			 String cmyk = inAsset.get("colorspace");  
+			 if( cmyk != null && cmyk.equalsIgnoreCase("CMYK") )  //Edge case where someone has the wrong colorspace set in the file
+			 {
+			 com.add("-colorspace");
+			 com.add("RGB");
+			 }	
+			 }
+			 */		
 			setValue("profile", getPathtoProfile(), inStructions, com);
 			com.add("-auto-orient"); //Needed for rotate tool
 			com.add("-strip"); //This does not seem to do much
 			setValue("profile", getPathtoProfile(), inStructions, com);
-			
+
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
-			
-			
+
+
 		}
-		
-		
-		
-		
+
+
+
+
 		if (isOnWindows() )
 		{
 			// windows needs quotes if paths have a space
@@ -548,20 +544,20 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			com.add(outputpath);
 		}
-		
+
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
 		ExecResult execresult = getExec().runExec("convert", com, true);
 
-				boolean ok = execresult.isRunOk();
+		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
-		
+
 		if (ok)
 		{
 			result.setComplete(true);
-			
+
 			log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
-			
+
 			return result;
 		}
 		//problems
@@ -574,16 +570,16 @@ public class imagemagickCreator extends BaseImageCreator
 	protected List<String> createCommand(File inFile, ConvertInstructions inStructions)
 	{
 		List<String> com = new ArrayList<String>();
-		
-//		if( inStructions.getParameters() != null )
-//		{
-//			for (Iterator iterator = inStructions.getParameters().iterator(); iterator.hasNext();)
-//			{
-//				Data data = (Data) iterator.next();
-//				com.add(data.getName());
-//				com.add(data.get("value") );
-//			}
-//		}
+
+		//		if( inStructions.getParameters() != null )
+		//		{
+		//			for (Iterator iterator = inStructions.getParameters().iterator(); iterator.hasNext();)
+		//			{
+		//				Data data = (Data) iterator.next();
+		//				com.add(data.getName());
+		//				com.add(data.get("value") );
+		//			}
+		//		}
 		// New version of Image Magik are 0 based
 		int page = inStructions.getPageNumber();
 		page--;
@@ -640,60 +636,57 @@ public class imagemagickCreator extends BaseImageCreator
 		return com;
 	}
 	/*
-	protected File getOriginalDocument(MediaArchive inArchive, ConvertInstructions inStructions, Asset asset)
-	{
-		String original = null;
-		if (inStructions.getSourceFile() != null)
-		{
-			original = inArchive.getOriginalFileManager().getFilePath(inStructions.getSourceFile(), asset);
-		}
-		else
-		{
-			original = inArchive.getOriginalFileManager().getOriginalFilePath(asset);
-		}
-		if(original == null)
-		{
-			return null; //we haven't uploaded anything yet
-		}
-		
-		String extension = PathUtilities.extractPageType(original);
-		inStructions.setInputType(extension);
-
-		String orientation = asset.get("imageorientation");
-		if (orientation != null)
-		{
-			Data ed = (Data) inArchive.getSearcherManager().getSearcher(asset.getCatalogId(), "imageorientation").searchById(orientation);
-			if (ed != null)
-			{
-				String rotation = ed.get("rotation");
-				if (rotation != null && !rotation.equals(""))
-				{
-					inStructions.setRotation(Integer.parseInt(rotation));
-				}
-			}
-		}
-
-		File input = new File(original);
-		return input;
-	}
-*/
-	public ConvertResult applyWaterMark(MediaArchive inArchive, String inInputAbsPath, String inOutputAbsPath, ConvertInstructions inStructions) 
+	 protected File getOriginalDocument(MediaArchive inArchive, ConvertInstructions inStructions, Asset asset)
+	 {
+	 String original = null;
+	 if (inStructions.getSourceFile() != null)
+	 {
+	 original = inArchive.getOriginalFileManager().getFilePath(inStructions.getSourceFile(), asset);
+	 }
+	 else
+	 {
+	 original = inArchive.getOriginalFileManager().getOriginalFilePath(asset);
+	 }
+	 if(original == null)
+	 {
+	 return null; //we haven't uploaded anything yet
+	 }
+	 String extension = PathUtilities.extractPageType(original);
+	 inStructions.setInputType(extension);
+	 String orientation = asset.get("imageorientation");
+	 if (orientation != null)
+	 {
+	 Data ed = (Data) inArchive.getSearcherManager().getSearcher(asset.getCatalogId(), "imageorientation").searchById(orientation);
+	 if (ed != null)
+	 {
+	 String rotation = ed.get("rotation");
+	 if (rotation != null && !rotation.equals(""))
+	 {
+	 inStructions.setRotation(Integer.parseInt(rotation));
+	 }
+	 }
+	 }
+	 File input = new File(original);
+	 return input;
+	 }
+	 */
+	public ConvertResult applyWaterMark(MediaArchive inArchive, String inInputAbsPath, String inOutputAbsPath, ConvertInstructions inStructions)
 	{
 		// composite -dissolve 15 -tile watermark.png src.jpg dst.jpg
 		List<String> com = new ArrayList<String>();
 		com.add("-dissolve");
 		com.add("100");
-		
+
 		String placement = inStructions.getWatermarkPlacement();
 		if(placement == null)
 		{
 			placement = "tile";//"SouthWest";
 		}
-		
+
 		if (placement.equals("tile"))
 		{
 			com.add("-tile");
-			
+
 		}
 		else
 		{
@@ -708,41 +701,39 @@ public class imagemagickCreator extends BaseImageCreator
 		ConvertResult result = new ConvertResult();
 		result.setOk(ok);
 		return result;
-		
+
 	}
 
-	
-	
-/*
-	private File makeWaterMark(ConvertInstructions inStructions, File input, String watermarkPath)
-	{
-		File watermarked = null;
-		ContentItem stub = getPageManager().getRepository().getStub(watermarkPath);
-		watermarked = new File(stub.getAbsolutePath());
 
-		if (watermarked.exists() && watermarked.length() > 0)
-		{
-			return watermarked;
-		}
-		else
-		{
-			watermarked.getParentFile().mkdirs();
-			try
-			{
-				watermarked.createNewFile();
-			}
-			catch (IOException e)
-			{
-				throw new OpenEditException(e);
-			}
 
-			// watermark it
-			MediaCreator convert = getConverterByFileFormat(inStructions.getInputType());
-			convert.applyWaterMark(getMediaArchive(), input, watermarked, inStructions);
-			return watermarked;
-		}
-	}
-*/	
+	/*
+	 private File makeWaterMark(ConvertInstructions inStructions, File input, String watermarkPath)
+	 {
+	 File watermarked = null;
+	 ContentItem stub = getPageManager().getRepository().getStub(watermarkPath);
+	 watermarked = new File(stub.getAbsolutePath());
+	 if (watermarked.exists() && watermarked.length() > 0)
+	 {
+	 return watermarked;
+	 }
+	 else
+	 {
+	 watermarked.getParentFile().mkdirs();
+	 try
+	 {
+	 watermarked.createNewFile();
+	 }
+	 catch (IOException e)
+	 {
+	 throw new OpenEditException(e);
+	 }
+	 // watermark it
+	 MediaCreator convert = getConverterByFileFormat(inStructions.getInputType());
+	 convert.applyWaterMark(getMediaArchive(), input, watermarked, inStructions);
+	 return watermarked;
+	 }
+	 }
+	 */	
 	protected void setValue(String inName, String inDefault,ConvertInstructions inStructions, List comm)
 	{
 		String value = inStructions.get(inName);
@@ -758,6 +749,6 @@ public class imagemagickCreator extends BaseImageCreator
 				comm.add(inDefault);
 			}
 		}
-	
+
 	}
 }
