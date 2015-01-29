@@ -364,11 +364,11 @@ public class DataEditModule extends BaseMediaModule
 	public void deleteProperty(WebPageRequest inReq) throws Exception
 	{
 		String id = inReq.getRequestParameter("id");
-		String fieldName = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = loadSearcher(inReq);
-		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(fieldName);
+		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype);
 		details.removeDetail(id);
-		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		searcher.getPropertyDetailsArchive().savePropertyDetails(details, searchtype, inReq.getUser());
 	}
 
 	public void saveMultiJoinData(WebPageRequest inReq) throws Exception

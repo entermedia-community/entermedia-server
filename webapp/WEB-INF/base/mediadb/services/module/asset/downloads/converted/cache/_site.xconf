@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
-	<property name="assetrootfolder">/${applicationid}/services/module/assets/downloads/converted/cache</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/converted/cache</property>
 	<property name="sourcepathhasfilename">true</property>
 	<generator name="mp4Generator" mimetypes="video/mp4"/>
 

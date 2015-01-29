@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
-	<property name="assetrootfolder">/${applicationid}/services/module/assets/downloads/attachments</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/attachments</property>
 	<generator name="downloadZipGenerator"/>
 	<property name="sourcefile">attachments</property>
 </page>

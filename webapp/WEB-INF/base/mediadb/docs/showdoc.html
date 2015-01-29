@@ -9,23 +9,34 @@ $data.samplerequest
 #set($displayreq = true)
 #end
 <h2>Request</h2>
-<textarea #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="10">
+<textarea #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="6">
 </textarea>
 
+#if( $data.uploadfile )
 
+<input type="file" name="file" />
+
+#end
 
 
 <input type="button" class="btn btn-default" id="process" value="Execute">
 
-<h2>Response:</h2>
+<h2>Formated and Raw Response:</h2>
 
-<div id="responsearea">
+<div id="responsearea" cass="row">
 
 
-<textarea id="test" class="form-control" disabled rows="20">
+
+<textarea id="test" class="form-control  col-md-6" style="width:45%;" rows="20">
 
 
 </textarea>
+
+<textarea id="testraw" class="form-control col-md-6" style="width:45%;" disabled rows="20">
+
+
+</textarea>
+
 </div>
 
 <script type="text/javascript">
@@ -66,6 +77,8 @@ success = function(text) {
     {
     	try
     	{
+			jQuery("#testraw").val(text);
+			
     	   	var data = JSON.parse(text);
        		text  = JSON.stringify(data,undefined, 2);        
     	}

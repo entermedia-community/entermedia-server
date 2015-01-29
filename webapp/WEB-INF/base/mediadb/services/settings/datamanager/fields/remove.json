@@ -1,2 +1,2 @@
-$pages.include("./index.html")
+$pages.include("./listfields.json")
 

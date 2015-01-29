@@ -7,8 +7,10 @@
 {
   "response":
       {
-        "status":"$status",
+        "status":"$status"
+        #if( $deleted ),
         "deleted":"$!deleted"
+        #end
       }
 }
 #elseif($method == "PUT")## for updating assets

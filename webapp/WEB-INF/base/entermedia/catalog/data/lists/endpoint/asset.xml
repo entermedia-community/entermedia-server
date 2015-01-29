@@ -73,18 +73,25 @@ You can post to this endpoint with a mutlipart file upload.]]></description>
   <endpoint id="getassetversions" name="Show version history" url="/${applicationid}/services/module/asset/versions/getrevisions" docsection="moduleasset" description="Shows a history of all versions of this asset." httpmethod="POST"> 
     <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
   </endpoint>  
-  <endpoint id="1418755308373" name="List asset attachments" url="/${applicationid}/services/module/asset/attachments/listattachments" docsection="moduleasset" description="Lists all of the attached files for an asset." httpmethod="POST" > 
+  <endpoint id="1418755308373" name="List asset attachments" url="/${applicationid}/services/module/asset/attachments/listattachments" docsection="assetmedia" description="Lists all of the attached files for an asset." httpmethod="POST" > 
     <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
   </endpoint>  
     
   <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/assets/media/uploadfile" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
     <samplerequest><![CDATA[{     "assettype": "article",      "fileformat":"jpg",      "keywords": "animals",      "name": "Updated Name",      "description": "TEST",      "creator":{   	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },      "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>Upload File
   </endpoint>  
-  <endpoint id="uploadattachment" name="Upload Attachment" url="/${applicationid}/services/module/asset/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST">Upload Attachment</endpoint>  
-  <endpoint id="deleteattachment" name="Delete Attachment" url="/${applicationid}/services/module/asset/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">Delete Attachment</endpoint>  
-  <endpoint id="attachmentprimary" name="Attachment Primary File" url="/${applicationid}/services/module/asset/attachments/attachmentprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST">Attachment Primary File</endpoint>  
-  <endpoint id="attachmentthumb" name="Attachment Thumbnail" url="/${applicationid}/services/module/asset/attachments/attachmentthumb" docsection="assetmedia" description="Set thumbnail for asset from attachments" httpmethod="POST">Attachment Thumbnail</endpoint>  
-  <endpoint id="publishassets" name="Publish Assets" url="/${applicationid}/services/module/orders/publishassets" docsection="moduleorder" description="Publish Assets to Desination" httpmethod="POST">Publish Assets</endpoint>  
+  <endpoint id="uploadattachment" name="Upload Attachment" url="/${applicationid}/services/module/asset/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST" uploadfile="true">
+      <samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg" }]]></samplerequest> 
+  </endpoint>  
+  <endpoint id="deleteattachment" name="Delete Attachment" url="/${applicationid}/services/module/asset/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">
+	<samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg/junk.jpg" }]]></samplerequest>
+  </endpoint>  
+  <endpoint id="attachmentprimary" name="Attachment Primary File" url="/${applicationid}/services/module/asset/attachments/attachmentprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST" uploadfile="true">
+  <samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg/junk.jpg" }]]></samplerequest>
+  </endpoint>  
+  <endpoint id="attachmentthumb" name="Attachment Thumbnail" url="/${applicationid}/services/module/asset/attachments/attachmentthumb" docsection="assetmedia" description="Set thumbnail for asset from attachments" httpmethod="POST" uploadfile="true">
+  <samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg/junk.jpg" }]]></samplerequest>
+  </endpoint>  
 
 
 </endpoints>

@@ -8,7 +8,7 @@
 		{
 			"status":"$error"
 #set( $genname = $preset.get("outputfile") )
-#set( $link = "$home/$applicationid/services/module/assets/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
+#set( $link = "$home/$applicationid/services/module/asset/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
 		},
 	"results":
 		{

@@ -1,4 +1,6 @@
 <page>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true"/>
+
     <page-action name="PageValue.loadPageVariable"  bean="searcherManager" alltypes="true"/>
 	<path-action name="DataEditModule.loadHits"  alltypes="true"/>
 	<page-action name="Script.run" alltypes="true" >

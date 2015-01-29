@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="testmoduleadvancedsearch" module="testmodule" systemdefined="true" byassettype="false">Advanced Search</property>  
+  <property id="testmoduleresultstable" module="testmodule" systemdefined="true" byassettype="false">Results Table</property>  
+  <property id="testmodulebatchedit" module="testmodule" systemdefined="true" byassettype="false">Batch Edit</property>  
+  <property id="testmodulepopupdetail" module="testmodule" systemdefined="true" byassettype="false">Popup Details</property>  
+  <property id="testmoduleheaderdetail" module="testmodule" systemdefined="true" byassettype="false">Header Details</property> 
+</properties>

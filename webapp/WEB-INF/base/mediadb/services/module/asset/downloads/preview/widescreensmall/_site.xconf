@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
-	<property name="assetrootfolder">/${applicationid}/services/module/assets/downloads/preview/widescreensmall</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/preview/widescreensmall</property>
 	<generator name="convertArchiveDocument"/>
 	<property name="crop">true</property>
 	<property name="prefwidth">715</property>

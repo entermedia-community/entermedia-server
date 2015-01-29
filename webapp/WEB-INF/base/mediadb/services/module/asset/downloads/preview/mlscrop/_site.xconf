@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
                                                                                                                                    
 <page>
-	<property name="assetrootfolder">/${applicationid}/services/module/assets/downloads/preview/mlscrop</property>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/preview/mlscrop</property>
 	<generator name="convertArchiveDocument"/>
 	<property name="crop">true</property>
 	<property name="prefwidth">256</property>

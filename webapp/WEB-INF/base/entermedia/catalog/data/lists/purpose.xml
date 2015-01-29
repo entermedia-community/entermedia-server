@@ -6,6 +6,5 @@
   <property id="3">Information / Educational Material</property>  
   <property id="4">Needs Based Material</property>  
   <property id="5">Retention / Relationship Building / Referral</property>  
-  <purpose id="sales" name="Sales Channel"/>  
-  <purpose id="101" name="JSON NAME CHANGE"/> 
+  <purpose id="sales" name="Sales Channel"/> 
 </properties>
