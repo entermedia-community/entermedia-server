@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<hotfolders>
-  <hotfolder name="asdf" subfolder="asdf" id="1381433732252" versioncontrol="true" generatedversioncontrol="true" lastscanstart="2014-12-18 10:56:46 -0500">asdf</hotfolder>
+<hotfolders> 
+  <hotfolder name="asdf" subfolder="asdf" id="1381433732252" versioncontrol="true" generatedversioncontrol="true" lastscanstart="2015-01-29 10:36:12 -0500">asdf</hotfolder>  
+  <hotfolder name="sadf" externalpath="/home/blah" subfolder="blah" id="1421596821299" versioncontrol="true" generatedversioncontrol="true" lastscanstart="2015-01-29 10:36:12 -0500">sadf</hotfolder> 
 </hotfolders>
