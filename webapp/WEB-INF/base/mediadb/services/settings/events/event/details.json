@@ -6,10 +6,11 @@
   ,
   "data":
   {
-  	"name":"$!pathevent.getPage().getProperty("eventname")",
+  	"name":"$!pathevent.getName()",
   	"period":"$!pathevent.getFormattedPeriod()",
   	"enabled":"$pathevent.isEnabled()",
-  	"lastrun":"$pathevent.getFormattedLastRun()",
-  	"running" : "$pathevent.isRunning()"
+  	"lastrun":"$jsonUtil.formatDateObj($pathevent.getLastRun())",
+  	"running" : "$pathevent.isRunning()",
+  	"exists" : "$pathevent.getPage().getPageSettings().exists()"
   }
 }
