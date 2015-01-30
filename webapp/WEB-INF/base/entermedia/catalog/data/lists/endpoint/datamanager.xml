@@ -20,7 +20,24 @@
     <samplerequest><![CDATA[{"searchtype":"asset"}]]></samplerequest>Reindex Table
   </endpoint>  
   <endpoint id="tableexport" url="/${applicationid}/services/settings/datamanager/table/export/purpose.csv" docsection="datamanager" name="Export To CSV" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"searchtype":"purpose","hitssessionid":"hitspurposemedia/catalogs/public"}]]></samplerequest>
+
+     <samplerequest><![CDATA[
+    	{
+    		"searchtype": "purpose", 
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+
+
   </endpoint>  
   <endpoint id="import9" url="/${applicationid}/services/settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV" httpmethod="POST" uploadfile="true"> 
     <samplerequest><![CDATA[{"searchtype":"testtable", "scriptname":"ImportCsvFile.groovy"}]]></samplerequest>

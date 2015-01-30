@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="Page.uploadFile"/>
+	<property name="path" >/WEB-INF/temp/importing/${catalogid}/uploaded.csv</property>
+	<property name="importpath" >/WEB-INF/temp/importing/${catalogid}/uploaded.csv</property>
+	<path-action name="DataImportModule.importDataWithScript"/>
+</page>

@@ -20,9 +20,9 @@
 	        } 
 	      ]]></samplerequest> 
   </data>  
-  <data id="deletegroup" name="Delete Group" url="/mediadb/services/settings/groups/delete/testgroup" docsection="modulegroups" description="Delete group by name" httpmethod="DELETE"/>  
-  <data id="updategroup" name="Update Group" url="/mediadb/services/settings/groups/update" docsection="modulegroups" description="Change group settings" httpmethod="POST"> 
-    <samplerequest><![CDATA[{"id":"testgroup"}]]></samplerequest> 
+  <data id="deletegroup" name="Delete Group" url="/mediadb/services/settings/groups/data/testgroup" docsection="modulegroups" description="Delete group by name" httpmethod="DELETE"/>  
+  <data id="updategroup" name="Update Group" url="/mediadb/services/settings/groups/data/testgroup" docsection="modulegroups" description="Change group settings" httpmethod="PUT"> 
+    <samplerequest><![CDATA[{"name":"Test Group"}]]></samplerequest> 
   </data>  
-  <data id="getgroup" name="Load Group" url="/mediadb/services/settings/groups/data/101" docsection="modulegroups" description="List group data" httpmethod="GET"/>
+  <data id="getgroup" name="Load Group" url="/mediadb/services/settings/groups/data/testgroup" docsection="modulegroups" description="List group data" httpmethod="GET"/>
 </endpoints>

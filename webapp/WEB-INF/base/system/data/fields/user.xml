@@ -13,6 +13,8 @@
 	<property id="showeditor" stored="true" editable="true" datatype="boolean">Enable HTML editing</property>
 	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 
+	<property id="groups" stored="true" index="true" type="list"   viewtype="multiselect"  listid="group" editable="false">Groups</property>
+
 <!--  Custom fields -->
 
     <property id="phone" index="true" stored="true" keyword="true" editable="true">Phone</property>

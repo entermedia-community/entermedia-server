@@ -53,10 +53,14 @@ public class BaseJsonModule extends BaseMediaModule
 
 	public String getId(WebPageRequest inReq)
 	{
-		String id = inReq.getPage().getName();
-		if (id.endsWith(".json"))
+		String id = inReq.getRequestParameter("id"); 
+		if( id == null)
 		{
-			id = id.substring(0, id.length()-5);	
+			id = inReq.getPage().getName();
+			if (id.endsWith(".json"))
+			{
+				id = id.substring(0, id.length()-5);	
+			}
 		}
 		return id;
 	}

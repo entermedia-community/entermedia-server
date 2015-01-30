@@ -1,6 +1,6 @@
 <page>
 
-	<path-action name="UserModule.deleteUser" method="DELETE"/>
+
 
 
 </page>

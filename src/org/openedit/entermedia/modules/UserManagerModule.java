@@ -622,9 +622,14 @@ public class UserManagerModule extends BaseModule
 	public void deleteUser(WebPageRequest inReq) throws OpenEditException
 	{
 		checkAdminPermission(inReq);
-		String user = inReq.getRequestParameter("usertodelete");
-		getUserManager().deleteUser(getUserManager().getUser(user));
-		getUserSearcher().reIndexAll();
+		String usertodelete = inReq.getRequestParameter("usertodelete");
+		if( usertodelete == null)
+		{
+			usertodelete = inReq.getRequestParameter("id");
+		}
+		User user = getUserManager().getUser(usertodelete);
+		getUserManager().deleteUser(user);
+		getUserSearcher().delete(user, inReq.getUser());
 	}
 
 	public void deleteGroupProperties( WebPageRequest inReq ) throws OpenEditException,
@@ -912,6 +917,10 @@ public class UserManagerModule extends BaseModule
 		String[] userNames = inReq.getRequestParameters( "addUsernames" );
 		if( userNames == null)
 		{
+			userNames = inReq.getRequestParameters( "id" );
+		}
+		if( userNames == null)
+		{		
 			return;
 		}
 		Group group = getGroup( inReq );
@@ -944,10 +953,6 @@ public class UserManagerModule extends BaseModule
 	protected Group getGroup( WebPageRequest inReq ) throws OpenEditException
 	{
 		String name = inReq.getRequestParameter( GROUP_ID_PARAMETER );
-		if( name == null)
-		{
-			name = inReq.getRequestParameter( "groupid");
-		}
 		
 		if ( name == null)
 		{
@@ -989,7 +994,10 @@ public class UserManagerModule extends BaseModule
 		inReq.removeSessionValue("cachedGroupQuery");
 
 		String[] userNames = inReq.getRequestParameters( "removeUsernames" );
-
+		if( userNames == null)
+		{
+			userNames = inReq.getRequestParameters( "id" );
+		}
 		if (userNames != null)
 		{
 			Group group = getGroup(inReq);
