@@ -1,0 +1,8 @@
+<page>
+	<path-action name="JsonDataModule.createData" method="POST"/>
+
+	<path-action name="UserModule.createNewUser" method="POST"/>
+
+	<path-action name="ProfileModule.loadUserProfile" allowduplicates="true" />
+
+</page>
