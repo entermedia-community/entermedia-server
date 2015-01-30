@@ -17,5 +17,28 @@
   <endpoint id="groupremove" name="Remove Group from User" url="/${applicationid}/services/module/users/data/testuser" docsection="1420730727080" description="Remove group from user" httpmethod="PUT">Remove Group from User</endpoint>  
   <endpoint id="importusers" name="Import Users" url="/${applicationid}/services/settings/datamanager/import/import" docsection="1420730727080" description="Import users from CSV" httpmethod="POST" uploadfile="true">Import Users</endpoint>  
   <endpoint id="exportusers" name="Export Users to CSV" url="/${applicationid}/services/settings/datamanager/export/users.csv" docsection="1420730727080" httpmethod="GET">Export Users to CSV</endpoint>  
-
+  <data id="createuser" name="Create New User" url="/mediadb/services/settings/users/create" docsection="1420730727080" description="Create new user" httpmethod="POST"> 
+    <samplerequest><![CDATA[{ "id":"testuser", "password":"changeme"}]]></samplerequest> 
+  </data>  
+    <data id="usersearch" name="Search for Users" httpmethod="POST" url="/mediadb/services/settings/users/search" docsection="1420730727080"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="deleteuser" name="Delete User" url="/mediadb/services/settings/users/delete/testuser" docsection="1420730727080" description="Delete user by name" httpmethod="DELETE"/>  
+  <data id="updateuser" name="Update User" url="/mediadb/services/settings/users/update" docsection="1420730727080" description="Change user settings" httpmethod="POST"> 
+    <samplerequest><![CDATA[{"id":"testuser", "email":"myemail@domain.tld"}]]></samplerequest> 
+  </data>  
+  <data id="getuser" name="Load User" url="/mediadb/services/settings/users/data/101" docsection="1420730727080" description="List user data" httpmethod="GET"/>
 </endpoints>

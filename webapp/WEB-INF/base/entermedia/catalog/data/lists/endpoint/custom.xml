@@ -162,5 +162,5 @@
     <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
    }]]></samplerequest> 
   </data>  
-  <data id="moduletestmoduledelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/testmodule/data/101" docsection="moduletestmodule"/>
+  <data id="moduletestmoduledelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/testmodule/data/101" docsection="moduletestmodule"/>  
 </root>
