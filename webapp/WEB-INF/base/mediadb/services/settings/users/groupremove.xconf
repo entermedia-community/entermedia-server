@@ -1,0 +1,9 @@
+<page>
+	<path-action name="JsonDataModule.preprocess" />
+
+	<page-action name="User.removeUsersFromGroup" />
+	<path-action name="JsonDataModule.loadData" />
+	<inner-layout />
+	<property name="virtual">true</property>
+	
+</page>

@@ -1,5 +1,4 @@
 <page>
-	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
 
 	<path-action name="PathEventModule.runSharedEvent" alltypes="true"/>
 </page>

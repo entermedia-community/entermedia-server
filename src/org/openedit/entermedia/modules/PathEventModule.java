@@ -89,7 +89,16 @@ public class PathEventModule extends BaseModule
 		String eventPath = inReq.getRequestParameter("eventpath");
 		inReq.putPageValue("pathevent", manager.getPathEvent(eventPath));
 	}
-	
+	public void removePathEvent(WebPageRequest inReq)
+	{
+		PathEventManager manager = getPathEventManager(inReq);
+		String eventPath = inReq.getRequestParameter("eventpath");
+		PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(eventPath);
+		Page todelete = getPageManager().getPage(settings.getPath());
+		getPageManager().removePage(todelete);
+		manager = getPathEventManager(inReq); 
+		manager.reload(eventPath);
+	}	
 	public void savePathEvent(WebPageRequest inReq)
 	{
 		PathEventManager manager = getPathEventManager(inReq);
