@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
+  <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/module/asset/data/create" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
+    <samplerequest><![CDATA[{    
+     "assettype": "article",     "keywords": ["animals","bird"],        
+     "description": "TEST",      "creator":{  
+      	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   
+     "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>
+  </endpoint>  
   <endpoint id="createasset" name="Fetch External Asset" url="/${applicationid}/services/module/asset/data/create" module="asset" docsection="moduleasset" httpmethod="POST"> 
     <samplerequest><![CDATA[{
   "assettype": "article",
@@ -23,8 +30,7 @@
 If you include a "localPath" parameter, EnterMedia will copy the file at that path into the DAM. 
 
 If you include a "fetchURL" parameter, EnterMedia will download the file at that URL into the DAM. 
-
-You can post to this endpoint with a mutlipart file upload.]]></description>
+]]></description>
   </endpoint>  
   
     <data id="moduleassetfiltersearch" name="List Search Filters" httpmethod="POST" url="/${applicationid}/services/module/asset/search" docsection="moduleasset"> 
@@ -77,9 +83,6 @@ You can post to this endpoint with a mutlipart file upload.]]></description>
     <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
   </endpoint>  
     
-  <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/assets/media/uploadfile" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
-    <samplerequest><![CDATA[{     "assettype": "article",      "fileformat":"jpg",      "keywords": "animals",      "name": "Updated Name",      "description": "TEST",      "creator":{   	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },      "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>Upload File
-  </endpoint>  
   <endpoint id="uploadattachment" name="Upload Attachment" url="/${applicationid}/services/module/asset/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST" uploadfile="true">
       <samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg" }]]></samplerequest> 
   </endpoint>  

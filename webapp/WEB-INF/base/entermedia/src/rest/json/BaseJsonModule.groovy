@@ -222,29 +222,37 @@ public class BaseJsonModule extends BaseMediaModule
 			
 			if(value instanceof List)
 			{
-				ArrayList ids = new ArrayList();
+				Collection ids = new ArrayList();
 				PropertyDetail detail = searcher.getDetail(key);
 				
+				//We have a list full of maps or strings
 				value.each
 				{
-					JSONObject object = it;
-					String val = it.get("id");
-					//log.info("In VALUE: ${val}");
-					ids.add(val);
-					if(detail != null)
+					if( it instanceof String)
 					{
-						Searcher rsearcher = searcher.getSearcherManager().getSearcher(searcher.getCatalogId(),key);
-						Data remote = rsearcher.searchById(val);
-						if(remote == null)
+						ids.add(it);
+					}
+					else
+					{
+						JSONObject object = it;
+						String val = it.get("id");
+						//log.info("In VALUE: ${val}");
+						ids.add(val);
+						if(detail != null)
 						{
-							remote = rsearcher.createNewData();
-							remote.setId(val);							
+							Searcher rsearcher = searcher.getSearcherManager().getSearcher(searcher.getCatalogId(),key);
+							Data remote = rsearcher.searchById(val);
+							if(remote == null)
+							{
+								remote = rsearcher.createNewData();
+								remote.setId(val);							
+							}
+							object.keySet().each
+							{
+								remote.setProperty(it, object.get(it));
+							}
+							rsearcher.saveData(remote, inReq.getUser());
 						}
-						object.keySet().each
-						{
-							remote.setProperty(it, object.get(it));
-						}
-						rsearcher.saveData(remote, inReq.getUser());
 					}
 				} 
 				inData.setValues(key, ids);				

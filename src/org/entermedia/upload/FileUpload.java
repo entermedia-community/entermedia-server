@@ -325,9 +325,17 @@ public class FileUpload
 		{
 			String param = (String)iterator.next();
 			Object vals = arguments.get(param);
-			if( vals instanceof String[])
+			if( vals instanceof String[] )
 			{
-				inContext.setRequestParameter(param, (String[])vals);
+				String[] existing = (String[])vals;
+				inContext.setRequestParameter(param, existing);
+				if(param.equals("jsonrequest") && existing.length > 0)
+				{
+					JsonSlurper slurper = new JsonSlurper();
+					String content = existing[0];
+					Map jsonRequest = (Map)slurper.parseText(content); //this is real, the other way is just for t
+					inContext.setJsonRequest(jsonRequest);
+				}
 			}
 		}
 		addAlreadyUploaded(inContext, upload);

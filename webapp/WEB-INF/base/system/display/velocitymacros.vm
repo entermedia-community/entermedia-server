@@ -13,7 +13,7 @@ $invalue
 #end
 #end
 #macro(datajsonmin $detail $id)
-#set($data = $searcherManager.getData($detail, $id))
+#set($data = false)#set($data = $searcherManager.getData($detail, $id))
 {
 	"id":"$id",
 	"name":#jesc($data.name)

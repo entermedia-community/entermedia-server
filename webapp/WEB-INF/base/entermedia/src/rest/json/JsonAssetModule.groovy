@@ -12,7 +12,6 @@ import org.entermedia.upload.UploadRequest
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.openedit.Data
-import org.openedit.data.PropertyDetail
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
@@ -27,7 +26,6 @@ import org.openedit.entermedia.search.AssetSearcher
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 
 
@@ -120,15 +118,23 @@ public class JsonAssetModule extends BaseJsonModule
 
 		AssetImporter importer = archive.getAssetImporter();
 		HashMap keys = new HashMap();
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 		String df = format.format(new Date());
 		keys.put("formatteddate", df);
+
+		format = new SimpleDateFormat("yyyy/MM");
+		df = format.format(new Date());
+		keys.put("formattedmonth", df);
 
 		String id = request.id;
 		if(id == null)
 		{
 			id = searcher.nextAssetNumber()
 		}
+		keys.put("id",id);		
+		keys.put("guid",UUID.randomUUID().toString() );
+
+		
 		String sourcepath = keys.get("sourcepath");
 
 		if(sourcepath == null)
@@ -181,9 +187,8 @@ public class JsonAssetModule extends BaseJsonModule
 		{
 			asset = new Asset();//Empty Record
 			asset.setId(id);
+			asset.setProperty("sourcepath", sourcepath);
 		}
-
-		asset.setProperty("sourcepath", sourcepath);
 		
 		saveJsonData(request,searcher,asset);
 		

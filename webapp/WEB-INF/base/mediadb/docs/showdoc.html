@@ -5,19 +5,23 @@ $!data.description
 <div id="jsontext" style="display: none;">
 $data.samplerequest
 </div>
+
+<form name="requestform" id="requestform">
+
 #if($data.httpmethod=="POST" || $data.httpmethod=="PUT")
 #set($displayreq = true)
 #end
 <h2>Request</h2>
-<textarea #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="6">
+<textarea name="jsonrequest" #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="6">
 </textarea>
 
 #if( $data.uploadfile )
 
-<input type="file" name="file" />
+<input type="file" name="file"  id="file"/>
 
 #end
 
+</form>
 
 <input type="button" class="btn btn-default" id="process" value="Execute">
 
@@ -54,21 +58,46 @@ jQuery("#process").on("click", function(){
     var req = jQuery("#request").val();
    	var url = jQuery("#url").val();
     var method =  jQuery("#request").data("method");
-    jQuery.ajax({
-        contentType: 'text/plain',
-    	type: method,
-		url: url,
-		data: req,
-		dataType:'text',
-		error: function(data)
-		{
-			//errors are always objects
-       		var text  = JSON.stringify(data,undefined, 2);    
-       		jQuery("#test").val(text);
-		},
-		success: success,
-    	//  dataType: "JSON"
-    });
+    
+    if( $data.uploadfile )
+    {
+        var data = new FormData(jQuery("#requestform")[0]);
+        
+        jQuery.ajax({
+        	url: url,
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType:'text',
+            type: method,
+            error: function(data)
+    		{
+    			//errors are always objects
+           		var text  = JSON.stringify(data,undefined, 2);    
+           		jQuery("#test").val(text);
+    		},
+    		success: success
+        });
+    }
+    else
+    {
+	    jQuery.ajax({
+	        contentType: 'text/plain',
+	    	type: method,
+			url: url,
+			data: req,
+			dataType:'text',
+			error: function(data)
+			{
+				//errors are always objects
+	       		var text  = JSON.stringify(data,undefined, 2);    
+	       		jQuery("#test").val(text);
+			},
+			success: success
+	    	//  dataType: "JSON"
+	    });
+    } 
 });
 
 
