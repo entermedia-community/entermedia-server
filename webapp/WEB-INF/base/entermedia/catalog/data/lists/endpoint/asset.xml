@@ -93,7 +93,7 @@ If you include a "fetchURL" parameter, EnterMedia will download the file at that
 	<samplerequest><![CDATA[{  "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" , "filename": "img_0002_01.jpg" }]]></samplerequest> 
   </endpoint>
   <endpoint id="uploadprimary" name="Upload Primary Attachment" url="/${applicationid}/services/module/asset/attachments/uploadprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST" uploadfile="true">
-  <samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg/junk.jpg" }]]></samplerequest>
+	<samplerequest><![CDATA[{  "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" }]]></samplerequest>
   </endpoint>
 
 

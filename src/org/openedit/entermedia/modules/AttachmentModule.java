@@ -107,6 +107,7 @@ public class AttachmentModule extends BaseMediaModule
 
 		//inReq.putPageValue("newattachments", newattachments);
 		inReq.putPageValue("first", firstfile);
+		inReq.setRequestParameter("filename", firstfile);
 		// inIn.delete();
 
 	}

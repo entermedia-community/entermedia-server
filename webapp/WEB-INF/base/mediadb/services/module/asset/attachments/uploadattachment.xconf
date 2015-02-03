@@ -1,5 +1,4 @@
 <page>
 	<path-action name="AttachmentModule.uploadAttachments" alltypes="true"/>
-	<OLDpath-action name="AssetEditModule.attachToAssetFromUploads" alltypes="true"/>
 	<path-action name="AttachmentModule.listChildren" alltypes="true"/>
 </page>
