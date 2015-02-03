@@ -1,5 +1,0 @@
-<page>
-imagefilename
-	<path-action name="AssetEditModule.selectPrimaryAsset" alltypes="true"/>
-	
-</page>

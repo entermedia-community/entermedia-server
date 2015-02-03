@@ -3,11 +3,13 @@
  "page":"$!attachments.page",
  "pages":"$!attachments.totalPages",
  "totalsize":"$!attachments.size()",
+ "primaryfile":"$!asset.getMediaName()",
  "attachments":[
   #foreach( $hit in $attachments )
 	#if( $velocityCount != 1), #end 
 	{ 
-		"name":"$hit.name" ,
+		"id":"$hit.id" ,
+		"name":"$hit.name" ,		
 		"sourcepath":"$!hit.sourcepath" ,
 		"folder":"$!hit.folder",
 	 	"parentsourcepath":"$!hit.parentsourcepath"
