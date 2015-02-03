@@ -80,11 +80,11 @@ If you include a "fetchURL" parameter, EnterMedia will download the file at that
     <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
   </endpoint>  
   <endpoint id="1418755308373" name="List asset attachments" url="/${applicationid}/services/module/asset/attachments/listattachments" docsection="assetmedia" description="Lists all of the attached files for an asset." httpmethod="POST" > 
-    <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>List asset attachments
+    <samplerequest><![CDATA[{ "parentsourcepath":"users/admin/2014/06/IMG_4838_2107.JPG"}]]></samplerequest>List asset attachments
   </endpoint>  
     
   <endpoint id="uploadattachment" name="Upload Attachment" url="/${applicationid}/services/module/asset/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST" uploadfile="true">
-      <samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg" }]]></samplerequest> 
+      <samplerequest><![CDATA[{   "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" }]]></samplerequest> 
   </endpoint>  
   <endpoint id="deleteattachment" name="Delete Attachment" url="/${applicationid}/services/module/asset/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">
 	<samplerequest><![CDATA[{   "assetid": "101",   "parentsourcepath": "users/admin/2014/04/glitter heart_136.jpg/junk.jpg" }]]></samplerequest>

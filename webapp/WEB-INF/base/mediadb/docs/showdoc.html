@@ -15,7 +15,7 @@ $data.samplerequest
 <textarea name="jsonrequest" #if(!$displayreq) style="display: none;" #end id="request" data-urlOLD="${data.url}" class="form-control" data-method="${data.httpmethod}" rows="6">
 </textarea>
 
-#if( $data.uploadfile )
+#if( "$!data.uploadfile" == "true" )
 
 <input type="file" name="file"  id="file"/>
 
@@ -59,7 +59,7 @@ jQuery("#process").on("click", function(){
    	var url = jQuery("#url").val();
     var method =  jQuery("#request").data("method");
     
-    if( $data.uploadfile )
+    if( "$!data.uploadfile" == "true" )
     {
         var data = new FormData(jQuery("#requestform")[0]);
         

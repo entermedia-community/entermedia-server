@@ -11,9 +11,10 @@
 		"sourcepath":"$!hit.sourcepath" ,
 		"folder":"$!hit.folder",
 	 	"parentsourcepath":"$!hit.parentsourcepath"
+	 	#if( $isprimary )
+	 	, "primaryfile":"true"
+	 	#end
 	}
-	
-
 #end
 	]
 }

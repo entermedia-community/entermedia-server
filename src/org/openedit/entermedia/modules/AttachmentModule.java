@@ -42,6 +42,10 @@ public class AttachmentModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String parentsourcepath = inReq.getRequestParameter("parentsourcepath");
+		if( parentsourcepath == null ) 
+		{
+			parentsourcepath = inReq.getRequestParameter("sourcepath");
+		}
 		HitTracker hits = getAttachmentManager().listChildren(inReq, archive, parentsourcepath);
 		inReq.putPageValue("attachments",hits);
 	}
@@ -99,7 +103,7 @@ public class AttachmentModule extends BaseMediaModule
 			String finalpath = folder + name;
 			properties.saveFileAs(item, finalpath, inReq.getUser());
 		}		
-		getAttachmentManager().processAttachments(archive, asset, false);
+		getAttachmentManager().processAttachments(archive, asset, true);
 
 		//inReq.putPageValue("newattachments", newattachments);
 		inReq.putPageValue("first", firstfile);
