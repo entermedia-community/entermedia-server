@@ -3,8 +3,7 @@
 <endpoints> 
   <endpoint id="create" name="Create a new ${module.name}" description="Creates a new record with or without an ID." httpmethod="POST" url="/${mediadbappid}/services/module/${moduleid}/create"> 
     <samplerequest><![CDATA[{      
-     "name": "JSON ${module.name} Test",
-     "id":"101"   
+     "name": "JSON ${module.name} Test"
      }]]></samplerequest>
   </endpoint>  
   <endpoint id="search" name="Search for ${module.name}" url="/${mediadbappid}/services/module/${moduleid}/search" httpmethod="POST"> 

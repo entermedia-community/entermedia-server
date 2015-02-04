@@ -912,7 +912,7 @@ public class OrderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String catalogid = archive.getCatalogId();
 		String[] emails = inReq.getRequestParameters("sharewithemail.value");
-		String[] organizations = inReq.getRequestParameters("organization.value");
+		//String[] organizations = inReq.getRequestParameters("organization.value");
 		HitTracker orderItems = getOrderManager().findOrderItems(inReq, archive.getCatalogId(), order);
 		inReq.putPageValue("orderitems", orderItems);
 		inReq.putPageValue("order", order);

@@ -37,4 +37,6 @@
 	<!--  upload flow, next page -->
 	<property id="uploadflow_nextpage" value="default">Next page in upload flow</property>
 
+	<property id="system_email_application_url" value="">System Email Application URL</property>
+
 </properties>

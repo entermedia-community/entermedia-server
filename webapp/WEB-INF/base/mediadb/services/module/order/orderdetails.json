@@ -1,0 +1,20 @@
+#set($searcher = $searcherManager.getSearcher("$catalogid","order") )
+ #set($itemsearcher = $searcherManager.getSearcher("$catalogid","orderitem") )
+{
+  "response":
+      {
+        "status":"ok",
+        "id":"$order.id"
+      }
+  ,  
+  "data":#json($order $searcher.getPropertyDetails())
+, "orderitems": [
+#foreach( $item in $orderManager.findOrderItems($context,"$catalogid",$order) )
+#if( $velocityCount != 1), #end 
+#json($item $itemsearcher.getPropertyDetails())
+#end  
+]
+ ## "history":
+ ## #foreach( $items $orderManager.loadOrderHistory
+  
+}

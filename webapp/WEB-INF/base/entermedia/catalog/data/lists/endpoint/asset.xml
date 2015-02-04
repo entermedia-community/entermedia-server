@@ -2,7 +2,8 @@
 
 <endpoints> 
   <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/module/asset/data/create" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
-    <samplerequest><![CDATA[{    
+    <samplerequest><![CDATA[{  
+    "id":"101",  
      "assettype": "article",     "keywords": ["animals","bird"],        
      "description": "TEST",      "creator":{  
       	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   

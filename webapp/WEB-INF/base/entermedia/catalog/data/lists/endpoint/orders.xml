@@ -10,8 +10,34 @@
   <endpoint id="listopenorders" name="List Open Orders" url="/${applicationid}/services/module/order/listopenorders" docsection="moduleorder" description="List open orders within last 90 days" httpmethod="GET">
 	
   </endpoint>  
-  <endpoint id="emailassets" name="Create Email Order" url="/${applicationid}/services/module/order/emailorder" docsection="moduleorder" description="Create order for emailing assets" httpmethod="POST">Create Email Order</endpoint>  
-  <endpoint id="createdownload" name="Create Download Order" url="/${applicationid}/services/module/order/createdownload" docsection="moduleorder" description="Create order for download" httpmethod="POST">Create Download Order</endpoint>  
-  <endpoint id="publishassets" name="Publish Assets" url="/${applicationid}/services/module/orders/publishassets" docsection="moduleorder" description="Publish Assets to Desination" httpmethod="POST">Publish Assets</endpoint>  
-
+  <endpoint id="emailassets" name="Create Email Order" url="/${applicationid}/services/module/order/orderemail" docsection="moduleorder" description="Create order for emailing assets" httpmethod="POST">
+	<samplerequest><![CDATA[{
+	"field":["publishdestination","ordertype","presetid"],
+	"publishdestination.value":"0",
+	"presetid.value":"mediumimage",
+	"ordertype.value":"email",
+	"assetid":["101"],
+	"sharewithemail.value":["cburkey.mediadb@openedit.org"]
+	}]]></samplerequest>
+</endpoint>  
+  <endpoint id="createdownload" name="Create Download Order" url="/${applicationid}/services/module/order/orderdownload" docsection="moduleorder" description="Create order for download in original format" httpmethod="POST">
+	<samplerequest><![CDATA[{
+	"field":["publishdestination","ordertype","presetid"],
+	"publishdestination.value":"0",
+	"presetid.value":"0",
+	"ordertype.value":"download",
+	"assetid":["101"]
+	}]]></samplerequest>
+</endpoint>  
+  <endpoint id="publishassets" name="Publish Assets" url="/${applicationid}/services/module/orders/orderexport" docsection="moduleorder" description="Publish Assets to Desination" httpmethod="POST">Publish Assets</endpoint>  
+	<samplerequest><![CDATA[{
+	"field":["publishdestination","ordertype","presetid"],
+	"publishdestination.value":"local",
+	"presetid.value":"mediumimage",
+	"ordertype.value":"export",
+	"assetid":["101"]
+	}]]></samplerequest>
+  <endpoint id="updatestatus" name="Update Order Status" url="/${applicationid}/services/module/order/updateorderstatus" docsection="moduleorder" description="Check the conversion status of a pending order" httpmethod="POST">
+	<samplerequest><![CDATA[{"orderid":"ertFGErre3234"}]]></samplerequest>
+  </endpoint>
  </endpoints>

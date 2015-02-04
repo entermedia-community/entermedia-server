@@ -590,6 +590,12 @@ public class BaseOrderManager implements OrderManager {
 				{
 					destination = order.get("publishdestination");
 				}
+				
+				if( destination == null )
+				{
+					destination = properties.get("publishdestination.value");
+				}
+				
 				if( destination == null)
 				{
 					throw new OpenEditException("publishdestination.value is missing");
