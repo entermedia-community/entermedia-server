@@ -6,6 +6,6 @@
 	<path-action name="PageValue.loadPageVariable" bean="userManager" alltypes="true"  />
 	<path-action name="PageValue.loadPageVariable" bean="sizer" alltypes="true"/>	
 	<path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
-	<path-action name="JsonAssetModule.loadAsset" alltypes="true" />
+	<path-action name="JsonDataModule.loadData" alltypes="true" />
 	
 </page>
