@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="create" name="Create a new ${module.name}" description="Creates a new record without an ID." httpmethod="POST" url="/${mediadbappid}/services/module/${moduleid}/create"> 
+  <endpoint id="create" name="Create a new ${module.name}" description="Creates a new record with or without an ID." httpmethod="POST" url="/${mediadbappid}/services/module/${moduleid}/create"> 
     <samplerequest><![CDATA[{      
-     "name": "JSON ${module.name} Test"   
+     "name": "JSON ${module.name} Test",
+     "id":"101"   
      }]]></samplerequest>
   </endpoint>  
   <endpoint id="search" name="Search for ${module.name}" url="/${mediadbappid}/services/module/${moduleid}/search" httpmethod="POST"> 

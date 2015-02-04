@@ -117,7 +117,7 @@ public class BaseOrderManager implements OrderManager {
 		SearchQuery query = ordersearcher.createSearchQuery();
 		query.addOrsGroup("orderstatus","ordered complete");
 		GregorianCalendar cal = new GregorianCalendar();
-		cal.add(Calendar.MONTH, -1);
+		cal.add(Calendar.MONTH, -3);
 		query.addAfter("date", cal.getTime());
 		query.addSortBy("historydateDown");
 		query.addExact("userid", inUser.getId());
