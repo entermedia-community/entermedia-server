@@ -99,9 +99,9 @@ public class OrderModule extends BaseMediaModule
 		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
 		inReq.putPageValue("order", order);
 
-		OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
+		//OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
 
-		getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
+		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 		inReq.setRequestParameter("orderid", order.getId());
 		return order;
 	}
@@ -811,31 +811,31 @@ public class OrderModule extends BaseMediaModule
 		return order;
 	}
 
-	public Order createOrderFromUpload(WebPageRequest inReq)
-	{
-		String catalogId = inReq.findValue("catalogid");
-		MediaArchive archive = getMediaArchive(catalogId);
-		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
-
-		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
-		// order.setProperty("orderstatus", "newupload");
-		List assetids = new ArrayList();
-		for (Iterator iter = assets.iterator(); iter.hasNext();)
-		{
-			Asset asset = (Asset) iter.next();
-			assetids.add(asset.getId());
-			getOrderManager().addItemToOrder(catalogId, order, asset, null);
-		}
-		// Order history needs to be updated
-		OrderHistory history = getOrderManager().createNewHistory(catalogId, order, inReq.getUser(), "newupload");
-		history.setAssetIds(assetids);
-		getOrderManager().saveOrderWithHistory(catalogId, inReq.getUser(), order, history);
-
-		// getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
-		inReq.putPageValue("order", order);
-
-		return order;
-	}
+//	public Order createOrderFromUpload(WebPageRequest inReq)
+//	{
+//		String catalogId = inReq.findValue("catalogid");
+//		MediaArchive archive = getMediaArchive(catalogId);
+//		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
+//
+//		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+//		// order.setProperty("orderstatus", "newupload");
+//		List assetids = new ArrayList();
+//		for (Iterator iter = assets.iterator(); iter.hasNext();)
+//		{
+//			Asset asset = (Asset) iter.next();
+//			assetids.add(asset.getId());
+//			getOrderManager().addItemToOrder(catalogId, order, asset, null);
+//		}
+//		// Order history needs to be updated
+//		OrderHistory history = getOrderManager().createNewHistory(catalogId, order, inReq.getUser(), "newupload");
+//		history.setAssetIds(assetids);
+//		getOrderManager().saveOrderWithHistory(catalogId, inReq.getUser(), order, history);
+//
+//		// getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
+//		inReq.putPageValue("order", order);
+//
+//		return order;
+//	}
 
 	public OrderManager loadOrderManager(WebPageRequest inReq)
 	{
@@ -843,24 +843,24 @@ public class OrderModule extends BaseMediaModule
 		return getOrderManager();
 	}
 
-	public Data addUserStatus(WebPageRequest inReq) throws Exception
-	{
-		Order order = loadOrder(inReq);
-		if (order != null)
-		{
-			String catalogid = inReq.findValue("catalogid");
-			String[] fields = inReq.getRequestParameters("field");
-			String userstatus = inReq.findValue("userstatus.value");
-			OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), userstatus);
-
-			Searcher searcher = getSearcherManager().getSearcher(catalogid, "orderhistory");
-			searcher.updateData(inReq, fields, history);
-
-			getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
-
-		}
-		return order;
-	}
+//	public Data addUserStatus(WebPageRequest inReq) throws Exception
+//	{
+//		Order order = loadOrder(inReq);
+//		if (order != null)
+//		{
+//			String catalogid = inReq.findValue("catalogid");
+//			String[] fields = inReq.getRequestParameters("field");
+//			String userstatus = inReq.findValue("userstatus.value");
+//			OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), userstatus);
+//
+//			Searcher searcher = getSearcherManager().getSearcher(catalogid, "orderhistory");
+//			searcher.updateData(inReq, fields, history);
+//
+//			getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
+//
+//		}
+//		return order;
+//	}
 	/**
 	 * Update the history of pending orders
 	 * @param inReq

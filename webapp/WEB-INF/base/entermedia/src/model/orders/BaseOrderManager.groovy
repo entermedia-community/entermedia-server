@@ -10,7 +10,6 @@ import org.entermedia.email.TemplateWebEmail
 import org.entermedia.locks.Lock
 import org.entermedia.locks.LockManager
 import org.openedit.Data
-import org.openedit.data.BaseData
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
@@ -769,16 +768,23 @@ public class BaseOrderManager implements OrderManager
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
 				Data orderitemhit = (Data) iterator.next();
-				addItemToHistory(archive, inOrder, temphistory );
+				addItemToHistory(archive, temphistory,  orderitemhit);
 			}
-
+			OrderHistory recent = loadOrderHistory(archive.getCatalogId(), inOrder);
+			if(temphistory.hasCountChanged(recent)){
+				
+				
+				saveOrderHistory(archive, temphistory, inOrder)	;		
+			}	
 			//If changed then save history and update order
 			
-			if( itemscomplted == hits.size() )
+			if((temphistory.getItemErrorCount() + temphistory.getItemSuccessCount()) == hits.size() )
 			{
 				//Finalize should be only for complete orders.
-				sendOrderNotifications(archive, inOrder);
+				inOrder.setProperty('orderstatus', 'complete');
 				
+				sendOrderNotifications(archive, inOrder);
+				saveOrder(archive.getCatalogId(), null, inOrder);
 				//complete the order
 			}
 		}
@@ -1120,6 +1126,15 @@ public class BaseOrderManager implements OrderManager
 		mailer.send();
 		log.info("email sent to ${email}");
 	}
+	
+	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){
+		Searcher orderHistorySearcher = inArchive.getSearcher("orderhistory");
+		inOrder.setRecentOrderHistory(inHistory);
+		inHistory.setProperty("orderid", inOrder.getId());
+		
+		orderHistorySearcher.saveData(inHistory, null);
+	}
+	
 	
 	protected PageManager getPageManager()
 	{
