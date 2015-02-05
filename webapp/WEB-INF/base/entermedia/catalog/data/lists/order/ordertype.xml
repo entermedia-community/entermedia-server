@@ -1,6 +1,7 @@
 <properties>
 	
 	<property id="collaborate" >Collaborate</property>
+	<property id="basket" >Basket</property>
 	<property id="email" >Email</property>
 	<property id="export" >Export</property>
 	<property id="download" >Download</property>

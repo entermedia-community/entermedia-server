@@ -25,6 +25,14 @@ public class filecopypublisher extends basepublisher implements Publisher
 	{
 		PublishResult result = new PublishResult();
 		
+		//checkfor orignal 
+		
+		if( notremote) 
+		{
+			checkForConversionTask();
+			//if( complete then get input file)
+		}
+		
 		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
 		String destinationpath = inDestination.get("url");
 		if(!destinationpath.endsWith("/"))
@@ -32,7 +40,7 @@ public class filecopypublisher extends basepublisher implements Publisher
 			destinationpath = destinationpath + "/";
 		}
 		String exportname = inPublishRequest.get("exportname");
-		String guid = inPreset.get("guid");
+		//String guid = inPreset.get("guid");
 		
 		FileUtils utils = new FileUtils();
 		File destination = new File(destinationpath);

@@ -27,34 +27,55 @@ public class OrderHistory extends ElementData
 	{
 		return get("note");
 	}
-	public String getUserStatus()
+	public String getHistoryType()
 	{
-		return get("userstatus");
+		return get("type");
 	}
-	public void setUserStatus(String inS)
+	public void setHistoryType(String inS)
 	{
-		setProperty("userstatus", inS);
+		setProperty("type", inS);
 	}
 	public String toString()
 	{
-		return getUserStatus();
-	}
-	public boolean isClosed()
-	{
-		return "closed".equals(getUserStatus());
+		return getHistoryType();
 	}
 
-	public void setAssetIds(List<String> inAssetids)
+	public int addItemCount()
 	{
-		StringBuffer assets = new StringBuffer();
-		for( String id : inAssetids)
-		{
-			if( assets.length() > 0)
-			{
-				assets.append(" ");
-			}
-			assets.append(id);
-		}
-		setProperty("assetids", assets.toString());
+		return addCount("itemcount");
 	}
+	public int addItemSuccessCount()
+	{
+		return addCount("itemsuccesscount");
+	}
+	public int addItemErrorCount()
+	{
+		return addCount("itemerrorcount");
+	}
+	
+	protected int addCount(String inField)
+	{
+		String existing = get(inField);
+		if( existing == null)
+		{
+			existing = "0";
+		}
+		int count = Integer.parseInt(existing)  + 1;
+		setProperty(inField, String.valueOf(count));
+		return count;
+	}
+	
+//	public void setAssetIds(List<String> inAssetids)
+//	{
+//		StringBuffer assets = new StringBuffer();
+//		for( String id : inAssetids)
+//		{
+//			if( assets.length() > 0)
+//			{
+//				assets.append(" ");
+//			}
+//			assets.append(id);
+//		}
+//		setProperty("assetids", assets.toString());
+//	}
 }

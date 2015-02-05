@@ -37,17 +37,17 @@ public class OrderModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(OrderModule.class);
 	protected OrderManager fieldOrderManager;
-	protected PostMail fieldPostMail;
-
-	public PostMail getPostMail()
-	{
-		return fieldPostMail;
-	}
-
-	public void setPostMail(PostMail inPostMail)
-	{
-		fieldPostMail = inPostMail;
-	}
+//	protected PostMail fieldPostMail;
+//
+//	public PostMail getPostMail()
+//	{
+//		return fieldPostMail;
+//	}
+//
+//	public void setPostMail(PostMail inPostMail)
+//	{
+//		fieldPostMail = inPostMail;
+//	}
 
 	public OrderManager getOrderManager()
 	{
@@ -569,9 +569,11 @@ public class OrderModule extends BaseMediaModule
 			{
 				basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
 				basket.setId(id);
+				basket.setProperty("ordertype", "basket");
 				getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
 			}
 			basket.setProperty("basket", "true");
+			basket.setProperty("ordertype", "basket");
 
 			inReq.putSessionValue("orderbasket", basket);
 			
@@ -659,7 +661,7 @@ public class OrderModule extends BaseMediaModule
 		// order, history);
 		if (assetids.size() > 0)
 		{
-			order.setProperty("orderstatus", "pending");
+			order.setProperty("orderstatus", "ordered"); //what is pendig
 		}
 		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		log.info("Added conversion and publish requests for order id:" + order.getId());
@@ -709,7 +711,7 @@ public class OrderModule extends BaseMediaModule
 		// order, history);
 		if (assetids.size() > 0)
 		{
-			order.setProperty("orderstatus", "pending");
+			order.setProperty("orderstatus", "ordered");
 		}
 		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		inReq.putPageValue("order", order);
@@ -859,7 +861,11 @@ public class OrderModule extends BaseMediaModule
 		}
 		return order;
 	}
-
+	/**
+	 * Update the history of pending orders
+	 * @param inReq
+	 * @throws Exception
+	 */
 	public void updatePendingOrders(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -905,6 +911,7 @@ public class OrderModule extends BaseMediaModule
 	 * 
 	 * return composite; }
 	 */
+	/*
 	public void sendOrderEmail(WebPageRequest inReq)
 	{
 		// just a basic email download
@@ -946,7 +953,7 @@ public class OrderModule extends BaseMediaModule
 		}
 
 	}
-
+	*/
 	public void deleteOrder(WebPageRequest inReq) throws Exception
 	{
 		Order order = loadOrder(inReq);
