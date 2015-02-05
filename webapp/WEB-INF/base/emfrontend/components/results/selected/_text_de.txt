@@ -1,0 +1,5 @@
+#
+#Wed Feb 04 07:57:52 EST 2015
+Clear\ Selections=Auswahl löschen
+selected=ausgewählt
+
