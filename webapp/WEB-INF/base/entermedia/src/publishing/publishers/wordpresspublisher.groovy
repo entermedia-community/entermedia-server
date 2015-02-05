@@ -3,8 +3,6 @@ package publishing.publishers;
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.apache.http.HttpEntity
-import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.DefaultHttpClient
 import org.mozilla.javascript.tools.idswitch.FileBody
@@ -39,12 +37,17 @@ public class entermediapublisher extends basepublisher implements Publisher
 			result.setErrorMessage("Unknown user, ${username}");
 			return result;
 		}
-		
-		HttpPost method = new HttpPost(url);
-		MultipartEntity parts = new MultipartEntity();
-		
 		String password = user.password;
+		//http://hc.apache.org/httpcomponents-client-4.4.x/httpmime/examples/org/apache/http/examples/entity/mime/ClientMultipartFormPost.java
+		HttpPost method = new HttpPost(url);
 		
+		/* example for adding an image part */
+		MultipartEntityBuilder parts = MultipartEntityBuilder.create()
+		.addPart("bin", bin)
+		.addPart("comment", comment)
+		//.build();
+
+			
 		parts.addPart("accesskey", new StringBody(password)) ;
 		parts.addPart("sourcepath", new StringBody(asset.getSourcePath())) ;
 		parts.addPart("assetid", new StringBody(asset.getId())) ;
@@ -86,21 +89,25 @@ public class entermediapublisher extends basepublisher implements Publisher
 			}
 			parts.addPart("libraries", new StringBody( buffer.toString()));
 		}
-		method.setEntity(parts);
+		method.setEntity(parts.build());
 		
-		HttpClient client = new DefaultHttpClient() ;
-		try
-		{
-			HttpResponse response = client.execute(method) ;
-			if (response != null)
-			{
-				HttpEntity responseEntity = response.getEntity() ;
-			}
-		}
+		CloseableHttpResponse response2 = httpclient.execute(httpPost);
+		
+		try {
+			System.out.println(response2.getStatusLine());
+			HttpEntity entity2 = response2.getEntity();
+			// do something useful with the response body
+			// and ensure it is fully consumed
+			EntityUtils.consume(entity2);
 		catch( Exception ex)
 		{
 			throw new OpenEditException(" ${method} Request failed: status code",ex);
 		}		
+		} finally {
+			response2.close();
+		}
+
+		
 //			if (status != 200)
 //			{
 //				throw new Exception(" ${method} Request failed: status code ${status}");
