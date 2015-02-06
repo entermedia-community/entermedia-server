@@ -12,7 +12,7 @@
   </endpoint>  
   <endpoint id="emailassets" name="Create Email Order" url="/${applicationid}/services/module/order/orderemail" docsection="moduleorder" description="Create order for emailing assets" httpmethod="POST">
 	<samplerequest><![CDATA[{
-	"field":["publishdestination","ordertype","presetid"],
+	"field":["publishdestination","ordertype","presetid","sharewithemail"],
 	"publishdestination.value":"0",
 	"presetid.value":"mediumimage",
 	"ordertype.value":"email",
