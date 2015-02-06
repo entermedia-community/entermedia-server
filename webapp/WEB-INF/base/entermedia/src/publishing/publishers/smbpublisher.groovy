@@ -24,7 +24,13 @@ public class smbpublisher extends basepublisher implements Publisher
 	
 	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data inPreset)
 	{
-		PublishResult result = new PublishResult();
+		PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,asset.getId(),inPreset);
+		if( result != null)
+		{
+			return result;
+		}
+
+		result = new PublishResult();
 		
 		Page inputpage = findInputPage(mediaArchive,asset,inPreset);
 		String servername = destination.get("server");

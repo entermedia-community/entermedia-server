@@ -70,9 +70,9 @@ public interface OrderManager
 
 	void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, boolean inResetId);
 
-	void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder, OrderHistory inHistory);
+	//void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder, OrderHistory inHistory);
 
-	OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser, String inStatus);
+	//OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser, String inStatus);
 
 	List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String, String> properties, User inUser);
 

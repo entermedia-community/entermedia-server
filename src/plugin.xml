@@ -1020,9 +1020,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="orderManager">
 			<ref bean="orderManager" />
 		</property>
-		<property name="postMail">
-			<ref bean="postMail" />
-		</property>
+		
 	</bean>
 
 

@@ -1,5 +1,8 @@
-#set($searcher = $searcherManager.getSearcher("$catalogid","order") )
- #set($itemsearcher = $searcherManager.getSearcher("$catalogid","orderitem") )
+#set($searcher = $searcherManager.getSearcher($catalogid,"order") )
+#set($hsearcher = $searcherManager.getSearcher($catalogid,"orderhistory") )
+#set($psearcher = $searcherManager.getSearcher($catalogid,"preset") )
+#set($pqsearcher = $searcherManager.getSearcher($catalogid,"publishqueue") )
+ #set($itemsearcher = $searcherManager.getSearcher($catalogid,"orderitem") )
 {
   "response":
       {
@@ -7,14 +10,21 @@
         "id":"$order.id"
       }
   ,  
-  "data":#json($order $searcher.getPropertyDetails())
+  "order":#json($order $searcher.getPropertyDetails())
 , "orderitems": [
-#foreach( $item in $orderManager.findOrderItems($context,"$catalogid",$order) )
+#foreach( $item in $orderManager.findOrderItems($context,$catalogid,$order) )
 #if( $velocityCount != 1), #end 
-#json($item $itemsearcher.getPropertyDetails())
+{"id":"$item.getId()",
+#set($pqueue = false)#set($pqueue = $pqsearcher.searchById($item.publishqueueid) )
+"publishqueue": #json($pqueue $pqsearcher.getPropertyDetails())  
+}
 #end  
 ]
- ## "history":
- ## #foreach( $items $orderManager.loadOrderHistory
-  
+, "history": [
+#set( $historyhits = $orderManager.findOrderHistory( $catalogid,$order) )
+	#foreach( $history in $historyhits ) 
+	 #if( $velocityCount != 1), #end 
+	 #json($history $hsearcher.getPropertyDetails())
+	#end
+ ] 
 }

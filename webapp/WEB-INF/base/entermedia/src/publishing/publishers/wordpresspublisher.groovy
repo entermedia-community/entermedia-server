@@ -1,11 +1,16 @@
 package publishing.publishers;
 
-import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.apache.http.HttpEntity
+import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpPost
-import org.apache.http.impl.client.DefaultHttpClient
-import org.mozilla.javascript.tools.idswitch.FileBody
+import org.apache.http.entity.mime.MultipartEntityBuilder
+import org.apache.http.entity.mime.content.FileBody
+import org.apache.http.entity.mime.content.StringBody
+import org.apache.http.impl.client.CloseableHttpClient
+import org.apache.http.impl.client.HttpClients
+import org.apache.http.util.EntityUtils
 import org.openedit.Data
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
@@ -16,14 +21,20 @@ import com.openedit.page.Page
 import com.openedit.users.User
 import com.openedit.users.UserManager
 
-public class entermediapublisher extends basepublisher implements Publisher
+public class wordpresspublisher extends basepublisher implements Publisher
 {
-	private static final Log log = LogFactory.getLog(entermediapublisher.class);
+	private static final Log log = LogFactory.getLog(wordpresspublisher.class);
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	
 	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
 	{
-		PublishResult result = new PublishResult();
+		PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,asset,preset); 
+		if( result != null)
+		{
+			return result;
+		}
+
+		result = new PublishResult();
 
 		String username = destination.get("username");
 		String url = destination.get("url");
@@ -42,24 +53,13 @@ public class entermediapublisher extends basepublisher implements Publisher
 		HttpPost method = new HttpPost(url);
 		
 		/* example for adding an image part */
-		MultipartEntityBuilder parts = MultipartEntityBuilder.create()
-		.addPart("bin", bin)
-		.addPart("comment", comment)
-		//.build();
-
-			
+		MultipartEntityBuilder parts = MultipartEntityBuilder.create();
 		parts.addPart("accesskey", new StringBody(password)) ;
 		parts.addPart("sourcepath", new StringBody(asset.getSourcePath())) ;
 		parts.addPart("assetid", new StringBody(asset.getId())) ;
-		
-		File file = new File(inputpage.getContentItem().getAbsolutePath());
-		FileBody fileBody = new FileBody(file, "application/octect-stream") ;
-		parts.addPart("file", fileBody) ;
-		
-		Page inputpage = findInputPage(mediaArchive,asset,preset);
 		String exportname = inPublishRequest.get("exportname");
 		parts.addPart("exportname", new StringBody(exportname));
-		
+
 		if( asset.getKeywords().size() > 0 )
 		{
 			StringBuffer buffer = new StringBuffer();
@@ -89,97 +89,37 @@ public class entermediapublisher extends basepublisher implements Publisher
 			}
 			parts.addPart("libraries", new StringBody( buffer.toString()));
 		}
+		Page inputpage = findInputPage(mediaArchive,asset,preset);
+		File file = new File(inputpage.getContentItem().getAbsolutePath());
+		FileBody fileBody = new FileBody(file, "application/octect-stream") ;
+		parts.addPart("file", fileBody);
+		
 		method.setEntity(parts.build());
 		
-		CloseableHttpResponse response2 = httpclient.execute(httpPost);
+		CloseableHttpClient httpclient = HttpClients.createDefault();  //TODO: Cache this
+		CloseableHttpResponse response2 = httpclient.execute(method);
 		
-		try {
-			System.out.println(response2.getStatusLine());
+		try 
+		{
+			if( response2.getStatusLine().getStatusCode() != 200 )
+			{
+				result.setErrorMessage("Wordpress Server error returned ${response2.getStatusLine().getStatusCode()}");
+			}
 			HttpEntity entity2 = response2.getEntity();
 			// do something useful with the response body
 			// and ensure it is fully consumed
 			EntityUtils.consume(entity2);
+		}	
 		catch( Exception ex)
 		{
 			throw new OpenEditException(" ${method} Request failed: status code",ex);
-		}		
-		} finally {
+		}
+		finally 
+		{
 			response2.close();
 		}
-
-		
-//			if (status != 200)
-//			{
-//				throw new Exception(" ${method} Request failed: status code ${status}");
-//			}
-//			String returned = method.getResponseBodyAsString(); 
-//			log.debug(returned);//for debug purposes only
-//		}		
 		result.setComplete(true);
 		return result;
 	}
-	protected HttpClient getClient()
-	{
-		HttpClient ref = (HttpClient) perThreadCache.get();
-		if( ref != null)
-		{
-			
-//Look into connection manager and check state of connection? 
-//			if( ref.getState())
-//			{
-//				perThreadCache.remove();
-//				ref = null;	
-//			}
-		}
-		
-		if (ref == null)
-		{
-			ref = new HttpClient();
-			//Make sure client is up?				
-			// use weak reference to prevent cyclic reference during GC
-			perThreadCache.set(ref);
-		}
-		return ref;
-	}
-	/*
-	 * public Map<String, String> upload(String server, String inCatalogId, String inSourcePath, File inFile)
-	 
-	{
-		String url =server + "/media/services/" + "/uploadfile.xml?catalogid=" + inCatalogId;
-		PostMethod method = new PostMethod(url);
-
-		try
-		{
-			 def parts =[new FilePart("file", inFile.getName(), inFile),	new StringPart("sourcepath", inSourcePath)] as Part[];
-			
-			method.setRequestEntity( new MultipartRequestEntity(parts, method.getParams()) );
-	
-			Element root = execute(method);
-			Map<String, String> result = new HashMap<String, String>();
-			for(Object o: root.elements("asset"))
-			{
-				Element asset = (Element)o;
-				result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
-			}
-			return result;
-		}
-		catch( Exception e )
-		{
-			return null;
-		}
-	}
-	*/
-	
-	
-	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
-	{
-		if( presetid == null)
-		{
-			return mediaArchive.getOriginalDocument(asset);
-		}
-		Data preset = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "convertpreset", presetid);
-		return findInputPage(mediaArchive,asset,(Data)preset);
-	}
-	
 	
 }
