@@ -863,23 +863,12 @@ public class BaseOrderManager implements OrderManager {
 		}
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#delete(java.lang.String, org.openedit.entermedia.orders.Order)
-	 */
-
 	public void delete(String inCatId, Order inOrder)
 	{
-		// TODO Auto-generated method stub
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "orderitems");
 		//Searcher ordersearcher = getSearcherManager().getSearcher(inCatId, "order");
 
 	}
-
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#removeItem(java.lang.String, java.lang.String)
-	 */
-
 	public void removeItem(String inCatalogid, String inItemid)
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
@@ -888,10 +877,6 @@ public class BaseOrderManager implements OrderManager {
 			ordersearcher.delete(orderitem, null);
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#removeMissingAssets(com.openedit.WebPageRequest, org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order, java.util.Collection)
-	 */
 
 	public void removeMissingAssets(WebPageRequest inReq, MediaArchive archive, Order basket, Collection items)
 	{
@@ -967,73 +952,56 @@ public class BaseOrderManager implements OrderManager {
 		return mail.getTemplateWebEmail();
 	}
 
-	protected void sendOrderNotifications(MediaArchive inArchive, Order inOrder) {
+	protected void sendOrderNotifications(MediaArchive inArchive, Order inOrder) 
+	{
+		Map context = new HashMap();
+		context.put("orderid", inOrder.getId());
+		context.put("order", inOrder);
 
-		//	if (inOrder.get('orderstatus') == 'complete' || inOrder.get('orderstatus') == 'finalizing') {
-		//		log.info("Order is aleady completed");
-		//		return;
-		//	}
-		//	inOrder.setProperty('orderstatus', 'finalizing');
-
-		try {
-			Map context = new HashMap();
-			context.put("orderid", inOrder.getId());
-			context.put("order", inOrder);
-
-
-			String publishid = inOrder.get("publishdestination");
-			String appid = inOrder.get("applicationid");
-
-
-			if(publishid != null){
-				Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
-				String email = dest.get("administrativeemail");
-				if(email != null){
-					sendEmail(context, email, "/${appid}/views/activity/email/admintemplate.html");
-					//TODO: Save the fact that email was sent back to the publishtask?
-				}
+		String publishid = inOrder.get("publishdestination");
+		String appid = inOrder.get("applicationid");
+		if(publishid != null){
+			Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
+			String email = dest.get("administrativeemail");
+			if(email != null){
+				sendEmail(context, email, "/${appid}/views/activity/email/admintemplate.html");
+				//TODO: Save the fact that email was sent back to the publishtask?
 			}
-			String emailto = inOrder.get('sharewithemail');
-			String notes = inOrder.get('sharenote');
-
-			if( inOrder.getRecentOrderHistory().getItemErrorCount() == 0)
-			{
-				if(emailto != null) {
-					String expireson=inOrder.get("expireson");
-					if ((expireson!=null) && (expireson.trim().length()>0)) {
-						Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
-						context.put("expiresondate", date);
-						context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
-					}
-	
-					sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
-				}
-			}
-			if( "download" != inOrder.get("ordertype") )
-			{
-				String userid = inOrder.get("userid");
-				if(userid != null)
-				{
-					User muser = getUserManager().getUser(userid);
-					if(muser != null)
-					{
-						String owneremail = muser.getEmail();
-						if(owneremail != null)
-						{
-							context.put("sharewithemail", emailto);
-							sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
-						}
-					}
-				}
-			}
-			//		inOrder.setProperty('orderstatus', 'complete');
-			inOrder.setProperty('emailsent', 'true');
 		}
-		catch (Exception ex)
+		String emailto = inOrder.get('sharewithemail');
+		String notes = inOrder.get('sharenote');
+
+		if( inOrder.getRecentOrderHistory().getItemErrorCount() == 0)
 		{
-			ex.printStackTrace();
-			log.error("Could not email " + ex);
+			if(emailto != null) {
+				String expireson=inOrder.get("expireson");
+				if ((expireson!=null) && (expireson.trim().length()>0)) {
+					Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
+					context.put("expiresondate", date);
+					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
+				}
+
+				sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
+			}
 		}
+		if( "download" != inOrder.get("ordertype") )
+		{
+			String userid = inOrder.get("userid");
+			if(userid != null)
+			{
+				User muser = getUserManager().getUser(userid);
+				if(muser != null)
+				{
+					String owneremail = muser.getEmail();
+					if(owneremail != null)
+					{
+						context.put("sharewithemail", emailto);
+						sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+					}
+				}
+			}
+		}
+		inOrder.setProperty('emailsent', 'true');
 	}
 
 
