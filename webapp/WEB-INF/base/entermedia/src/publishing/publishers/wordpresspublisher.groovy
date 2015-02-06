@@ -101,7 +101,7 @@ public class wordpresspublisher extends basepublisher implements Publisher
 		{
 			throw new OpenEditException("Input file missing " + file.getPath() );
 		}
-		FileBody fileBody = new FileBody(file, "application/octect-stream") ;
+		FileBody fileBody = new FileBody(file);//, "application/octect-stream") ;
 		parts.addPart("file", fileBody);
 		
 		method.setEntity(parts.build());
