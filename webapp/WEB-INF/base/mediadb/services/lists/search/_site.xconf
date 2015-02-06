@@ -9,5 +9,12 @@
 
 	<property name="alternative_extension">json</property>
 	<property name="searchtyperoot">/${applicationid}/services/lists/search</property>	
+	
+	<permission name="view">
+		<or>
+			<userprofile property="api-search-data" equals="true"  />
+			
+		</or>
+	</permission>
 </page>
 

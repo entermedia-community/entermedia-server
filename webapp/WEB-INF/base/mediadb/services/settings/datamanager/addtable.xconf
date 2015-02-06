@@ -6,4 +6,10 @@
 	<path-action name="DataImportModule.createTable"  alltypes="true"/>
 	<path-action name="DataEditModule.loadSearchTypes"  alltypes="true"/>
 	
+	<permission name="view">
+		
+			<userprofile property="api-manage-list" equals="true"/>
+			
+		
+	</permission>
 </page>

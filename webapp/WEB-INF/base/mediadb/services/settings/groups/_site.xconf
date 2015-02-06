@@ -8,4 +8,8 @@
   	<property name="module">group</property>
   	<property name="searchtype">group</property>
   
+ <permission name="view">
+		<userprofile property="api-manage-users" equals="true"/>
+	</permission>
+ 
 </page>

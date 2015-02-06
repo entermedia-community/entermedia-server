@@ -5,4 +5,6 @@
 	<type id="filetransfers">Uploading Downloading</type> 
 	<type id="view">Views</type> 
 	<type id="internal">System Fields</type> 
+	<type id="api">JSON API</type> 
+	
 </types>

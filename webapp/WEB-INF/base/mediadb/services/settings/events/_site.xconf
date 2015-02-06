@@ -1,0 +1,5 @@
+<page>
+	<permission name="view">
+		<userprofile property="api-manage-events" equals="true"/>
+	</permission>
+</page>

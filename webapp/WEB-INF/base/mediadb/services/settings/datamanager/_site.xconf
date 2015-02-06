@@ -1,0 +1,5 @@
+<page>
+	<permission name="view">
+		<userprofile property="api-manage-list" equals="true"/>
+	</permission>
+</page>
