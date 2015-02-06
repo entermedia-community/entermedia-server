@@ -77,11 +77,15 @@ public abstract class basepublisher implements Publisher {
 		{
 			//make sure conversions task exists and are marked as new (not error)
 			Data conversiontask = loadConversionTask(mediaArchive, inAsset, inPreset.getId());
-			if( conversiontask.get("status") == "error")
+			if( conversiontask.get("status") == "error" || conversiontask.get("status") == "new")
 			{
 				conversiontask.setProperty("status","retry");
+				saveConversionTask(mediaArchive,conversiontask);
 			}
-			saveConversionTask(mediaArchive,conversiontask);
+			if( conversiontask.get("status") == "retry" || conversiontask.get("status") == "new")
+			{
+				mediaArchive.fireSharedMediaEvent("conversions/runconversions");				
+			}
 			//then return pending so we only do this once per publish
 			PublishResult result = new PublishResult();
 			result.setPending(true);

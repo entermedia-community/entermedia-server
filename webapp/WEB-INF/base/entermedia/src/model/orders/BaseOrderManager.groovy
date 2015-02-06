@@ -619,7 +619,7 @@ public class BaseOrderManager implements OrderManager {
 		}
 		order.setOrderStatus("processing");
 		saveOrder(archive.getCatalogId(), inUser, order);
-		archive.fireSharedMediaEvent("publishing/publishassets");
+		archive.fireSharedMediaEvent("publishing/publishassets"); //this might add conversions
 		return assetids;
 	}
 
