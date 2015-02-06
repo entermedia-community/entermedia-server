@@ -1,8 +1,5 @@
 <properties>
-  <property id="created" color="#638185">Order Created</property>
-  <property id="itemcountchange" color="#638585">Item Count Changed</property>
-  <property id="itemsuccesschange" color="#638985">Item Success Change</property>
-  <property id="itemerrorchange" color="#638985">Item Error Change</property>
+  <property id="countchange" color="#638585">Item Count Changed</property>
   <property id="ordercomplete" color="#638985">Order Completed</property>
 </properties>
   

@@ -659,14 +659,18 @@ public class OrderModule extends BaseMediaModule
 		// history.setAssetIds(assetids);
 		// manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(),
 		// order, history);
-		if (assetids.size() > 0)
-		{
-			order.setProperty("orderstatus", "ordered"); //what is pendig
-		}
-		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+//		if (assetids.size() > 0)
+//		{
+//			order.setProperty("orderstatus", "ordered"); //what is pendig
+//		}
+//		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		log.info("Added conversion and publish requests for order id:" + order.getId());
 	}
-	
+	/**
+	 * Is this needed?
+	 * @deprecated
+	 * @param inReq
+	 */
 	public void createQuickOrder(WebPageRequest inReq)
 	{
 
@@ -709,11 +713,11 @@ public class OrderModule extends BaseMediaModule
 		// history.setAssetIds(assetids);
 		// manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(),
 		// order, history);
-		if (assetids.size() > 0)
-		{
-			order.setProperty("orderstatus", "ordered");
-		}
-		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+//		if (assetids.size() > 0)
+//		{
+//			order.setProperty("orderstatus", "ordered");
+//		}
+//		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		inReq.putPageValue("order", order);
 		inReq.putPageValue("data", order);
 

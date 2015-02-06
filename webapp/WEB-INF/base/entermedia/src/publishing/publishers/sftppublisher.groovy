@@ -18,7 +18,14 @@ public class sftppublisher extends basepublisher implements Publisher
 	
 	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
 	{
-		PublishResult result = new PublishResult();
+		
+		PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,asset,preset);
+		if( result != null)
+		{
+			return result;
+		}
+
+		result = new PublishResult();
 
 		Page inputpage = findInputPage(mediaArchive,asset,preset);
 		String servername = destination.get("server");

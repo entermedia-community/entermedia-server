@@ -13,19 +13,35 @@ import org.openedit.entermedia.publishing.*
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
+/**
+ * This is a poorly named browser download publisher. 
+ * @author shanti
+ *
+ */
+
 public class httppublisher extends basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(httppublisher.class);
 	
 	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset)
 	{
-		PublishResult result = new PublishResult();
+		PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,inAsset,inPreset); 
+		if( result != null)
+		{
+			return result;
+		}
+
+		result = new PublishResult();
 		
 		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
 		if( inputpage.exists() )
 		{
 			result.setComplete(true);
-		}		
+		}
+		else
+		{
+			result.setErrorMessage("Input file is missing");
+		}
 		return result;
 	}
 	

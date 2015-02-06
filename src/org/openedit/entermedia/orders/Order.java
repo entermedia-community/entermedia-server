@@ -66,6 +66,13 @@ public class Order extends ElementData
 		return super.get(inId);
 	}
 
+	@Override
+	public void setProperty(String inId, String inValue)
+	{
+		// TODO Auto-generated method stub
+		super.setProperty(inId, inValue);
+	}
+	
 	public boolean isExpired()
 	{
 		String expiration = get("expireson");

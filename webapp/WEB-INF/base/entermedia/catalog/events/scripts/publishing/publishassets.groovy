@@ -55,51 +55,24 @@ public void init() {
 				log.error("Publish queue index out of date");
 				continue;
 			}
-			String presetid = publishrequest.get("presetid");
-			if( presetid == null)
-			{
-				presetid = "0";
-			}
-			if(asset == null)
-			{
-				assetid = result.get("assetid");
-				asset = mediaArchive.getAsset(assetid);
-			}
-			String resultassetid = result.get("assetid");
-			if(asset != null && !asset.getId().equals(resultassetid))
-			{
-				asset = mediaArchive.getAsset(resultassetid );
-			}
-
-			String publishdestination = publishrequest.get("publishdestination");
 			
+			assetid = result.get("assetid");
+			asset = mediaArchive.getAsset(assetid);
+//			}
+//			String resultassetid = result.get("assetid");
+//			if(asset != null && !asset.getId().equals(resultassetid))
+//			{
+//				asset = mediaArchive.getAsset(resultassetid );
+//			}
+
+			String presetid = publishrequest.get("presetid");
 			Data preset = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "convertpreset", presetid);
 					
+			String publishdestination = publishrequest.get("publishdestination");
 			Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
 
 			try
 			{
-
-				Page inputpage = null;
-				if( preset.get("type") != "original")
-				{
-					String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${preset.outputfile}";
-					inputpage= mediaArchive.getPageManager().getPage(input);
-				}
-				else
-				{
-					inputpage = mediaArchive.getOriginalDocument(asset);
-				}
-
-				if(!inputpage.exists() || inputpage.length() == 0)
-				{
-					log.info("Input file ${inputpage.getName()} did not exist. Skipping publishing.");
-					//Change statys to pending so things can timeout
-					publishrequest.setProperty('status', 'pending');
-					queuesearcher.saveData(publishrequest, context.getUser());
-					continue;
-				}
-
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
 				Lock lock = mediaArchive.getLockManager().lockIfPossible(mediaArchive.getCatalogId(), "assetpublish/" + asset.getSourcePath(), "admin");
 				if( lock == null)

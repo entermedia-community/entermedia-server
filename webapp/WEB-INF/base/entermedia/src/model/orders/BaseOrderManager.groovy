@@ -22,59 +22,43 @@ import org.openedit.event.WebEvent
 import org.openedit.event.WebEventHandler
 import org.openedit.util.DateStorageUtil
 
+import com.openedit.BaseWebPageRequest;
 import com.openedit.ModuleManager
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
+import com.openedit.page.PageRequestKeys;
 import com.openedit.page.manage.PageManager
 import com.openedit.users.User
+import com.openedit.users.UserManager
+import com.openedit.util.RequestUtils;
 
-public class BaseOrderManager implements OrderManager 
-{
+public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected WebEventHandler fieldWebEventHandler;
 	protected LockManager fieldLockManager;
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
+	protected UserManager fieldUserManager;
 	
-
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#getWebEventHandler()
-	 */
 	public WebEventHandler getWebEventHandler() {
 		return fieldWebEventHandler;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#setWebEventHandler(org.openedit.event.WebEventHandler)
-	 */
 
 	public void setWebEventHandler(WebEventHandler inWebEventHandler) {
 		fieldWebEventHandler = inWebEventHandler;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#getSearcherManager()
-	 */
-
 	public SearcherManager getSearcherManager() {
 		return fieldSearcherManager;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#setSearcherManager(org.openedit.data.SearcherManager)
-	 */
-
 	public void setSearcherManager(SearcherManager inSearcherManager) {
 		fieldSearcherManager = inSearcherManager;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#placeOrder(java.lang.String, java.lang.String, com.openedit.users.User, com.openedit.hittracker.HitTracker, java.util.Map)
-	 */
 
 	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatlogId, "order");
@@ -227,7 +211,7 @@ public class BaseOrderManager implements OrderManager
 		query.addSortBy("dateDown");
 		HitTracker items =  itemsearcher.search(query);
 
-		OrderHistory history = OrderHistory.EMPTY;;
+		OrderHistory history = OrderHistory.EMPTY;
 		Data hit = (Data)items.first();
 		if( hit != null) {
 			history = (OrderHistory)itemsearcher.searchById(hit.getId());
@@ -350,7 +334,7 @@ public class BaseOrderManager implements OrderManager
 		Order order  = (Order)searcher.createNewData();
 		order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
 		//order.setId(searcher.nextId());
-		order.setProperty("orderstatus", "ordered");
+		order.setProperty("orderstatus", "preorder");
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		order.setSourcePath(inUsername + "/" + order.getId());
 		order.setProperty("userid", inUsername);
@@ -469,6 +453,10 @@ public class BaseOrderManager implements OrderManager
 		event.setProperty("orderid", inOrder.getId());
 		inArchive.getMediaEventHandler().eventFired(event);
 	}
+	
+	/**
+	 * Main entry point for adding conversion and publish requests on item in an order
+	 */
 	public List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String,String> properties, User inUser)
 	{
 		//get list of invalid items
@@ -539,7 +527,7 @@ public class BaseOrderManager implements OrderManager
 			}
 
 			orderItem.setProperty("presetid", presetid);
-			if( "preview".equals(presetid) )
+			if( "preview".equals(presetid) )   //This never touches publishing
 			{
 				orderItemSearcher.saveData(orderItem, inUser);
 				continue;
@@ -549,17 +537,17 @@ public class BaseOrderManager implements OrderManager
 			if(destination == null){
 
 				//Add a publish task to the publish queue
-				 destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
+				destination = properties.get(orderitemhit.getId() + ".publishdestination.value");
 				if( destination == null )
 				{
 					destination = order.get("publishdestination");
 				}
-				
+
 				if( destination == null )
 				{
 					destination = properties.get("publishdestination.value");
 				}
-				
+
 				if( destination == null)
 				{
 					throw new OpenEditException("publishdestination.value is missing");
@@ -613,66 +601,6 @@ public class BaseOrderManager implements OrderManager
 
 			publishqeuerow.setSourcePath(asset.getSourcePath());
 			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-
-
-			//TODO; Move all this into publishassets.groovy so that auto publish things can be smart about remote stuff
-
-			boolean remotepublish = false;
-			if( Boolean.valueOf( dest.get("onlyremotempublish") ) )
-			{
-				//flip flag and do nothing
-				remotepublish = true;
-			}
-			else //maybe add a conversion request
-			{
-
-				boolean needstobecreated = true;
-				if( orderItem.get("conversiontaskid") != null )   //????? Needed?
-				{
-					needstobecreated = false;
-				}
-
-				String outputfile = preset.get("outputfile");
-
-				//Make sure preset does not already exists?
-				if( needstobecreated && "original".equals( preset.get("type") ) )
-				{
-					needstobecreated = !archive.getOriginalDocument(asset).exists();
-				}
-				else if( needstobecreated && archive.doesAttachmentExist(outputfile, asset) )
-				{
-					needstobecreated = false;
-				}
-
-				if( needstobecreated )
-				{
-					if (  Boolean.valueOf( dest.get("remotempublish") ) )
-					{
-						remotepublish = true;
-					}
-					else
-					{
-						//create the convert task and save it on the publish request
-						SearchQuery q = taskSearcher.createSearchQuery().append("assetid", assetid).append("presetid",presetid);
-						Data newTask = taskSearcher.searchByQuery(q);
-						if( newTask == null )
-						{
-							newTask = taskSearcher.createNewData();
-							newTask.setProperty("status", "new");
-							newTask.setProperty("assetid", assetid);
-							newTask.setProperty("presetid", presetid);
-							newTask.setSourcePath(asset.getSourcePath());
-							taskSearcher.saveData(newTask, inUser);
-						}
-						publishqeuerow.setProperty("conversiontaskid", newTask.getId() );
-					}
-				}
-			}
-			if( remotepublish )
-			{
-				publishqeuerow.setProperty("remotepublish", "true");
-			}
-
 			publishQueueSearcher.saveData(publishqeuerow, inUser);
 
 			if( publishqeuerow.getId() == null )
@@ -689,6 +617,8 @@ public class BaseOrderManager implements OrderManager
 			//				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
 			//			}
 		}
+		order.setOrderStatus("processing");
+		saveOrder(archive.getCatalogId(), inUser, order);
 		archive.fireSharedMediaEvent("publishing/publishassets");
 		return assetids;
 	}
@@ -746,7 +676,7 @@ public class BaseOrderManager implements OrderManager
 				log.debug("Already complete");
 				return;
 			}
-	
+
 			Searcher itemsearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
 
 			SearchQuery query = itemsearcher.createSearchQuery();
@@ -764,26 +694,31 @@ public class BaseOrderManager implements OrderManager
 
 			Searcher historysearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "orderhistory");
 			OrderHistory temphistory = (OrderHistory)historysearcher.createNewData();
-			
+
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 			{
 				Data orderitemhit = (Data) iterator.next();
 				addItemToHistory(archive, temphistory,  orderitemhit);
 			}
 			OrderHistory recent = loadOrderHistory(archive.getCatalogId(), inOrder);
-			if(temphistory.hasCountChanged(recent)){
-				
-				
-				saveOrderHistory(archive, temphistory, inOrder)	;		
-			}	
+			if(temphistory.hasCountChanged(recent))
+			{
+				saveOrderHistory(archive, temphistory, inOrder)	;
+			}
 			//If changed then save history and update order
-			
+
 			if((temphistory.getItemErrorCount() + temphistory.getItemSuccessCount()) == hits.size() )
 			{
 				//Finalize should be only for complete orders.
-				inOrder.setProperty('orderstatus', 'complete');
-				
-				sendOrderNotifications(archive, inOrder);
+				inOrder.setOrderStatus('complete');
+				try
+				{
+					sendOrderNotifications(archive, inOrder);
+				}
+				catch( Exception ex)
+				{
+					inOrder.setOrderStatus('complete',"could not send notification " + ex.getMessage() );
+				}
 				saveOrder(archive.getCatalogId(), null, inOrder);
 				//complete the order
 			}
@@ -798,13 +733,13 @@ public class BaseOrderManager implements OrderManager
 	{
 		//Go find if there are any publishing or conversion errors
 		//If both are done then mark as complete
-		
+
 		inHistory.addItemCount();
-		
+
 		//Is the conversion done?
 		//Make sure preset does not already exists?
-		
-		
+
+
 		boolean publishcomplete = false;
 		String publishqueueid = orderitemhit.get("publishqueueid");
 		if( publishqueueid == null)
@@ -837,13 +772,9 @@ public class BaseOrderManager implements OrderManager
 		}
 		return publishcomplete;
 	}
-
+/*
 	protected processOrder(MediaArchive archive, Order inOrder)
 	{
-		
-		
-		sendOrderNotifications
-		
 		inOrder.setOrderStatus("complete");
 		OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "ordercomplete");
 		saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
@@ -859,7 +790,8 @@ public class BaseOrderManager implements OrderManager
 		//archive.getWebEventListener()
 		archive.getMediaEventHandler().eventFired(event); //Marks it as an error if email cant be sent or leaves it as complete
 	}
-
+	*/
+	
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#updatePendingOrders(org.openedit.entermedia.MediaArchive)
 	 */
@@ -868,7 +800,7 @@ public class BaseOrderManager implements OrderManager
 	{
 		Searcher ordersearcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
 		SearchQuery query = ordersearcher.createSearchQuery();
-		query.addOrsGroup("orderstatus","ordered pending"); //pending is depreacted
+		query.addOrsGroup("orderstatus","processing"); //pending is depreacted
 		Collection hits = ordersearcher.search(query);
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
@@ -1029,34 +961,32 @@ public class BaseOrderManager implements OrderManager
 		}
 
 	}
-
-	
-	
-	protected TemplateWebEmail getMail() {
-		PostMail mail = (PostMail)mediaarchive.getModuleManager().getBean( "postMail");
+	protected TemplateWebEmail getMail() 
+	{
+		PostMail mail = (PostMail)getModuleManager().getBean( "postMail");
 		return mail.getTemplateWebEmail();
 	}
-	
+
 	protected void sendOrderNotifications(MediaArchive inArchive, Order inOrder) {
-	
-	//	if (inOrder.get('orderstatus') == 'complete' || inOrder.get('orderstatus') == 'finalizing') {
-	//		log.info("Order is aleady completed");
-	//		return;
-	//	}
-	//	inOrder.setProperty('orderstatus', 'finalizing');
-		
+
+		//	if (inOrder.get('orderstatus') == 'complete' || inOrder.get('orderstatus') == 'finalizing') {
+		//		log.info("Order is aleady completed");
+		//		return;
+		//	}
+		//	inOrder.setProperty('orderstatus', 'finalizing');
+
 		try {
 			Map context = new HashMap();
 			context.put("orderid", inOrder.getId());
 			context.put("order", inOrder);
-	
-	
+
+
 			String publishid = inOrder.get("publishdestination");
 			String appid = inOrder.get("applicationid");
-	
-	
+
+
 			if(publishid != null){
-				Data dest = mediaarchive.getSearcherManager().getData(mediaarchive.getCatalogId(), "publishdestination", publishid);
+				Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
 				String email = dest.get("administrativeemail");
 				if(email != null){
 					sendEmail(context, email, "/${appid}/views/activity/email/admintemplate.html");
@@ -1065,26 +995,29 @@ public class BaseOrderManager implements OrderManager
 			}
 			String emailto = inOrder.get('sharewithemail');
 			String notes = inOrder.get('sharenote');
+
+			if( inOrder.getRecentOrderHistory().getItemErrorCount() == 0)
+			{
+				if(emailto != null) {
+					String expireson=inOrder.get("expireson");
+					if ((expireson!=null) && (expireson.trim().length()>0)) {
+						Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
+						context.put("expiresondate", date);
+						context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
+					}
 	
-			if(emailto != null) {
-				String expireson=inOrder.get("expireson");
-				if ((expireson!=null) && (expireson.trim().length()>0)) {
-					Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
-					context.put("expiresondate", date);
-					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
+					sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
 				}
-	
-				sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
 			}
 			if( "download" != inOrder.get("ordertype") )
 			{
 				String userid = inOrder.get("userid");
 				if(userid != null)
 				{
-					User muser = userManager.getUser(userid);
+					User muser = getUserManager().getUser(userid);
 					if(muser != null)
 					{
-						String owneremail =muser.getEmail();
+						String owneremail = muser.getEmail();
 						if(owneremail != null)
 						{
 							context.put("sharewithemail", emailto);
@@ -1093,30 +1026,25 @@ public class BaseOrderManager implements OrderManager
 					}
 				}
 			}
-	//		inOrder.setProperty('orderstatus', 'complete');
+			//		inOrder.setProperty('orderstatus', 'complete');
 			inOrder.setProperty('emailsent', 'true');
 		}
 		catch (Exception ex)
 		{
-			inOrder.setOrderStatus( 'error');
-			inOrder.setProperty('orderstatusdetail', "Could not email " + ex);
 			ex.printStackTrace();
 			log.error("Could not email " + ex);
 		}
-	
-	//	OrderManager manager = moduleManager.getBean("orderManager");
-	//	OrderHistory history = manager.createNewHistory( mediaarchive.getCatalogId(), inOrder, context.getUser(), "ordercomplete" );
-	//	manager.saveOrderWithHistory( mediaarchive.getCatalogId(), context.getUser(), inOrder, history );
-		
-		log.info("order is complete ${inOrder.getId()}");
-		
 	}
-	
-	
+
+
 	protected void sendEmail(Map pageValues, String email, String templatePage){
 		//send e-mail
-		Page template = get.getPage(templatePage);
-		WebPageRequest newcontext = context.copy(template);
+		//Page template = getPageManager().getPage(templatePage);
+		RequestUtils rutil = getModuleManager().getBean("requestUtils");
+		BaseWebPageRequest newcontext = rutil.createVirtualPageRequest(templatePage,null, null); 
+		
+		newcontext.putPageValues(pageValues);
+
 		TemplateWebEmail mailer = getMail();
 		mailer.loadSettings(newcontext);
 		mailer.setMailTemplatePath(templatePage);
@@ -1126,31 +1054,39 @@ public class BaseOrderManager implements OrderManager
 		mailer.send();
 		log.info("email sent to ${email}");
 	}
-	
+
 	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){
 		Searcher orderHistorySearcher = inArchive.getSearcher("orderhistory");
 		inOrder.setRecentOrderHistory(inHistory);
 		inHistory.setProperty("orderid", inOrder.getId());
-		
+		inHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		orderHistorySearcher.saveData(inHistory, null);
 	}
-	
-	
-	protected PageManager getPageManager()
-	{
-		return fieldPageManager;
-	}
+
+
 	protected ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
 	}
 
-	protected void setModuleManager(ModuleManager inManager)
+	public void setModuleManager(ModuleManager inManager)
 	{
 		fieldModuleManager = inManager;
 	}
-	protected void setPageManager(PageManager inManager)
+	protected PageManager getPageManager()
+	{
+		return fieldPageManager;
+	}
+	public void setPageManager(PageManager inManager)
 	{
 		fieldPageManager = inManager;
+	}
+	protected UserManager getUserManager()
+	{
+		return fieldUserManager;
+	}
+	public void setUserManager(UserManager inManager)
+	{
+		fieldUserManager = inManager;
 	}
 }
