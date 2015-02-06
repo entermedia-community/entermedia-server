@@ -322,6 +322,8 @@ public class OrderModule extends BaseMediaModule
 		}
 		HitTracker orders = getOrderManager().findOrdersForUser(catalogid, owner);
 		req.putPageValue("orders", orders);
+		req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
+		
 		return orders;
 	}
 
