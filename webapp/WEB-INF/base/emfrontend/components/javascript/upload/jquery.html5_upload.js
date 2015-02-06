@@ -231,6 +231,7 @@
                     xhr:                    new XMLHttpRequest(),
                     continue_after_abort:    true
                 };
+                
                 $(this).bind('change', function() 
            		{
             		$(this).triggerHandler('html5_upload.filesPicked', [this.files]);
@@ -246,6 +247,7 @@
                     }
                 }
                 $(this)
+                    .bind('html5_upload.filesPicked', options.filesPicked)
                     .bind('html5_upload.start', upload)
                     .bind('html5_upload.cancelOne', function() {
                         this.html5_upload['xhr'].abort();
