@@ -69,7 +69,7 @@ public class wordpresspublisher extends basepublisher implements Publisher
 				buffer.append( keyword );
 				if( iterator.hasNext() )
 				{
-					buffer.append('|');
+					buffer.append(',');
 				}
 			}
 			parts.addPart("keywords", new StringBody( buffer.toString()));
@@ -84,7 +84,7 @@ public class wordpresspublisher extends basepublisher implements Publisher
 				buffer.append( keyword );
 				if( iterator.hasNext() )
 				{
-					buffer.append('|');
+					buffer.append(',');
 				}
 			}
 			parts.addPart("libraries", new StringBody( buffer.toString()));
