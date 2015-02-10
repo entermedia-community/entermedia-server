@@ -121,9 +121,9 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 						continue;
 					}
 					String presetinputtype = presetdata.get("inputtype");
-					if (presetinputtype == rendertype){
-						continue;
-					}
+//					if (presetinputtype == rendertype){
+//						continue;
+//					}
 					Data data = (Data) searcher.searchById(d.getId());
 					if (data!=null) {
 						todelete.add(data);
