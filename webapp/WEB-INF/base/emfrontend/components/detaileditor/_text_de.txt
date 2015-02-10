@@ -1,8 +1,6 @@
-#
-#Wed Feb 04 07:55:42 EST 2015
+#Tue Feb 10 14:58:16 EST 2015
 Save\ values=Werte speichern
 Share=Teilen
-Cancel=stornieren
 Edit\ =bearbeiten
+Cancel=stornieren
 No\ data\ has\ been\ entered.=Es wurdenkeine Daten eingegeben.
-

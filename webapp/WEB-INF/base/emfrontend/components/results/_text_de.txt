@@ -1,9 +1,7 @@
-#
-#Wed Feb 04 06:35:12 EST 2015
+#Tue Feb 10 14:58:16 EST 2015
 items=Gegenstände
-Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
+Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgewählte Einträge bearbeiten
 No\ results\ found=keine Ergebnisse gefunden
 Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen
 Displaying\ records=Anzeige von Datensätzen
 of=von
-
