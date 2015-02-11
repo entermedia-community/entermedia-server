@@ -18,8 +18,6 @@ import org.openedit.entermedia.publishing.*
 
 import com.openedit.OpenEditException
 import com.openedit.page.Page
-import com.openedit.users.User
-import com.openedit.users.UserManager
 
 public class wordpresspublisher extends basepublisher implements Publisher
 {
@@ -81,13 +79,17 @@ public class wordpresspublisher extends basepublisher implements Publisher
 		if(  libraries != null && libraries.size() > 0 )
 		{
 			StringBuffer buffer = new StringBuffer();
-			for (Iterator iterator = asset.getLibraries().iterator(); iterator.hasNext();)
+			for (Iterator iterator = libraries.iterator(); iterator.hasNext();)
 			{
-				String keyword = (String) iterator.next();
-				buffer.append( keyword );
-				if( iterator.hasNext() )
+				String id = (String) iterator.next();
+				Data library = mediaArchive.getData("library", id);
+				if( library != null)
 				{
-					buffer.append(',');
+					buffer.append(library.getName());
+					if( iterator.hasNext() )
+					{
+						buffer.append(',');
+					}
 				}
 			}
 			if( buffer.length() > 0)
