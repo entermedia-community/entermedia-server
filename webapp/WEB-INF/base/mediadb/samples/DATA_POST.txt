@@ -1,6 +1,0 @@
-{
-    "id": "somedata",
-    "name": "Adam Gillaspie",
-   
-    "image": 6
-}

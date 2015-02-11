@@ -11,7 +11,7 @@
 	
 	<permission name="view">
 		
-			<userprofile property="api-create-list" equals="true"/>
+			<userprofile property="api-create-data" equals="true"/>
 			
 		
 	</permission>
