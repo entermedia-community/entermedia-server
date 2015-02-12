@@ -7,8 +7,15 @@
 	
 	<generator name="originalDownloadGenerator"/>
 	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
-	<permission name="view">
+	
+	<permission name="viewasset">
+		<and>
 			<pagevalue name="candownload" equals="true"/>
-	</permission>
+			<action name="AssetControlModule.canViewAsset" /> 
+		</and>
+	</permission>	
+	<permission name="view">
+			<pagevalue name="canviewasset" equals="true"/>
+	</permission>	
 	
 </page>
