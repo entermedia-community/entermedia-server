@@ -35,6 +35,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.analyzing.AnalyzingQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -477,10 +478,9 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 		// TODO: use a threadgroup
 
 		// Parsers are not thread safe.
-		QueryParser parser = new QueryParser(Version.LUCENE_41, "description", getAnalyzer())
+		QueryParser parser = new AnalyzingQueryParserWithStop(Version.LUCENE_41, "description", getAnalyzer() )//QueryParser(Version.LUCENE_41, "description", getAnalyzer())
 		{
-
-			protected org.apache.lucene.search.Query getRangeQuery(String field, String low, String high, boolean inclusivelow, boolean incluseivehigh) throws ParseException
+			protected org.apache.lucene.search.Query getRangeQuery(final String field, final  String low, final  String high, final boolean inclusivelow, final boolean incluseivehigh) throws ParseException
 			{
 				PropertyDetail detail = getDetail(field);
 				if (detail != null && ( detail.isDataType("number") || detail.isDataType("long")))
@@ -505,8 +505,8 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				
 				return super.getRangeQuery(field, low, high, inclusivelow, incluseivehigh);
 			}
-		};
 
+		};
 		/*
 		 * { protected Query getPrefixQuery(String field, String termStr) throws
 		 * ParseException { // deal with apple books.ep* -> apple* +books.ep*
