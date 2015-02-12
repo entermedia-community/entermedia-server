@@ -1109,6 +1109,7 @@ emcomponents = function() {
 						drop: function(event, ui) {
 							var assetid = ui.draggable.data("assetid");
 							var node = $(this);
+							var targetDiv = node.data("targetdiv");
 							var libraryid = node.data("libraryid");
 							jQuery.get(apphome + "/components/libraries/addasset.html", 
 									{
