@@ -160,7 +160,7 @@ public class AnalyzingQueryParserWithStop extends org.apache.lucene.queryparser.
     if(analyzed == null )
     {
     	//was a stop word do *
-    	analyzed = "*";
+    	analyzed = termStr;
     }
     return super.getPrefixQuery(field, analyzed);
   }
