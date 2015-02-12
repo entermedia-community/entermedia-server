@@ -1,5 +1,7 @@
-#Tue Feb 10 14:58:16 EST 2015
+#
+#Wed Feb 04 07:56:54 EST 2015
 Share=Anteil
 Edit\ Permissions=Bearbeitungsrechte
 Note\:\ Sharing\ enables\ access\ to\ anonymous\ visitors=Hinweis\: Die Freigabe ermöglicht den Zugriff auf anonyme Besucher
 No\ owner=kein Eigentümer
+

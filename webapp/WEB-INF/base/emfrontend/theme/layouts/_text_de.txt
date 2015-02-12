@@ -1,3 +1,12 @@
-#Tue Feb 10 14:58:16 EST 2015
-Asset\ is\ missing=Asset fehlt
+#
+#Thu Feb 12 14:37:45 EST 2015
 Settings=Einstellungen
+Manager=Manager
+Related\ Media=verwandten Medien
+Logout=Logout
+Selected\ Media=Die ausgew\u00E4hlten Medien
+My\ Account=mein konto
+open=ge\u00F6ffnet
+Login=einloggen
+closed=geschlossen
+Asset\ is\ missing=Asset fehlt

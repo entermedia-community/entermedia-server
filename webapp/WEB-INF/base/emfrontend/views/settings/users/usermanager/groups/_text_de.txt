@@ -1,4 +1,5 @@
-#Tue Feb 10 14:58:16 EST 2015
+#
+#Thu Apr 08 15:18:24 EDT 2010
 Remove\ All\ Members\ From\ Group=Entfernen Sie alle Mitglieder aus der Gruppe
 newuser=Fügen Sie der Gruppe einen neuen Benutzer hinzu. Geben Sie einen neuen Benutzernamen ein
 Delete\ Group=Gruppe löschen
@@ -6,14 +7,14 @@ addbyemail=Durch email hinzufügen
 Members=Mitglieder
 add=hinzufügen
 Group=Gruppe
-Group\ $groupname\ added=Gruppe $groupname hinzugefügt
 Add\ By\ Username\ or\ Email=hinzufügen, indem Sie Benutzernamen oder E-Mail angeben
+Group\ $groupname\ added=Gruppe $groupname hinzugefügt
 GROUP\ ADDED=Gruppe hinzugefügt
 Remove\ Selected=Ausgewählte entfernen
 removeall=Alle Mitglieder der Gruppe entfernen
 View\ User=Benutzer anzeigen
 Back=zurück
-Add\ New=neu hinzufügen
+Add\ New= neu hinzufügen
 Edit\ Group=Gruppe bearbeiten
 Group\ Name=Name der Gruppe
 Forward=vorwärts

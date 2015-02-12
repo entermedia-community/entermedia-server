@@ -17,27 +17,27 @@
     			#end
     					<!--	<span class="subnav-title" style="#if ($previous) margin-right: 56px; #end #if ($previous && !$next) margin-right: 112px; #end ">$asset</span> -->
     				   #if($canprintpreview || $candownload || $candeleteasset)
-    				    <li><a href="#">File</a>
+    				    <li><a href="#">[[File]]</a>
     				        <ul style="width: 100px; text-align: left;">
     				        	#if($canprintpreview)
 								<li >
-									<a class="print emdialog" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="Print Preview">Print</a>
+									<a class="print emdialog" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="Print Preview">[[Print]]</a>
 								</li>
 								#end
 								#if($candownload || $canconvert || $candownloadfpo)
 						#if( $asset.getId().startsWith("multiedit:") )
-							<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a></li>
+							<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
 						#else
-    				            		<li><a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id&oemaxlevel=1">Download</a></li>
+    				            		<li><a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id&oemaxlevel=1">[[Download]]</a></li>
 						#end
 					   
     				            #end
     				            #if($candeleteasset)
                                 <li>
                                     #if ( $asset.getId().startsWith("multiedit:") )
-                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete Assets</a>
+                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">[[Delete Assets]]</a>
                                     #else
-                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">Delete</a>
+                                        <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">[[Delete]]</a>
                                     #end
                                 </li>
                                 #end
@@ -64,7 +64,7 @@
     						</li>	
     					#end
     					<li style="float: right;">
-    					<a href="${home}$apphome/views/search/index.html?hitssessionid=${hitssessionid}">Results</a>
+    					<a href="${home}$apphome/views/search/index.html?hitssessionid=${hitssessionid}">[[Results]]</a>
     					</li> 
     					#if($previous)
     						 <li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${previous.id}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>

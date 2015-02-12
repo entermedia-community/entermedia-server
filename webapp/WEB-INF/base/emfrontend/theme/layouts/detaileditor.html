@@ -39,16 +39,16 @@
                 
                 <div class="title-bar" style="border-right: none;">
                 #if( $hits && $hits.hasMultipleSelections() )
-                    <span style="text-align: center;">Selected Media</span>
+                    <span style="text-align: center;">[[Selected Media]]</span>
                 #else
-                    <span style="text-align: center;">Related Media</span>
+                    <span style="text-align: center;">[[Related Media]]</span>
                 #end    
                 </div>
                 #end
             </div>
             <div class="tr">
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
-                <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
+                <div id="de-side-nav" class="#if( $expanded )[[open]] #else [[closed]] #end">
 
                     $pages.include("$apphome/components/detaileditor/assetmenuul.html?moduleid=$moduleid",$context)
 

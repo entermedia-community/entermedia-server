@@ -1,0 +1,14 @@
+#
+#Thu Feb 12 12:15:29 EST 2015
+System\ View?=Systemansicht ?
+Render\ Table\ Custom\ View=machen Tabelle benutzerdefinierte Ansicht
+Asset\ Type=Asset-Typ
+View\ Name=Ansichtsnamen
+Show\ on\ registration\ section\:=Auf der Anmeldebereich\:
+$view\ Settings=Einstellungen $ view
+Use\ Asset\ Type=benutzen Asset-Typ
+Render\ Table=machen Tisch
+Editing\ Boxes=Bearbeitungsboxen
+Render\ Table\ Default\ Sort=machen Tabelle Standardsortierung
+Render\ as\ Table?=Tisch machen ?
+Render\ Table\ External\ ID=machen Tabelle externe ID

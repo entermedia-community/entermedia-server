@@ -1,6 +1,13 @@
-#Tue Feb 10 14:58:16 EST 2015
+#
+#Thu Feb 12 14:17:58 EST 2015
+Results=Ergebnisse
 Save\ values=Werte speichern
-Share=Teilen
-Edit\ =bearbeiten
-Cancel=stornieren
 No\ data\ has\ been\ entered.=Es wurdenkeine Daten eingegeben.
+Delete\ Assets=Verm\u00F6genswerte l\u00F6schen
+File=Datei
+Share=Teilen
+Download=Download
+Print=drucken
+Cancel=stornieren
+Delete=l\u00F6schen
+Edit\ =bearbeiten

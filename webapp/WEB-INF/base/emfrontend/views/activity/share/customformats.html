@@ -52,7 +52,7 @@
   	   	    #set( $results = $presetsearcher.search($presetquery) )
  -->
   			<select name="${item.id}.presetid.value">
-  	   	    <option value="preview">Preview Only</option>
+  	   	    <option value="preview">[[Preview Only]]</option>
   	    	#foreach ($preset in $results)
   	    		<option value="$preset.id">$preset</option>
   	    	#end

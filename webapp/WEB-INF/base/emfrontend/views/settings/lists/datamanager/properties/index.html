@@ -12,12 +12,12 @@
 		#end
 	</div>
 #if($candevelop)
-	<a href="$dataroot/properties/makedefault.html?searchtype=$searchtype&catalogid=$catalogid" class="btn" >Copy to catalog defaults</a>
+	<a href="$dataroot/properties/makedefault.html?searchtype=$searchtype&catalogid=$catalogid" class="btn" >[[Copy to catalog defaults]]</a>
 	#end
 	<div id="emselectable">
 	<table class="striped emdata">
 		<tr class="tableheader">
-			<th #if ($detail.getExternalId ) colspan="2" #end>Field Name</th>
+			<th #if ($detail.getExternalId ) colspan="2" #end>[[Field Name]]</th>
 			<th style="width:200px;">Field Type</th>
 		</tr>	
 	#foreach( $detail in $properties)

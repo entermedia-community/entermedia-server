@@ -1,7 +1,18 @@
-#Tue Feb 10 14:58:16 EST 2015
-items=Gegenstände
-Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgewählte Einträge bearbeiten
-No\ results\ found=keine Ergebnisse gefunden
+#
+#Thu Feb 12 15:12:31 EST 2015
+Edit=bearbeiten
+Displaying\ records=Anzeige von Datens\u00E4tzen
+Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
+Email\ Assets=E-Mail- Verm\u00F6genswerte
+Publish\ Assets\ to\ Server=Verm\u00F6genswerte auf Server ver\u00F6ffentlichen
+Edit\ Columns=edit Spalten
+items=Gegenst\u00E4nde
+Remove=entfernen
+Download=Download
+Add\ to\ Basket=in den Warenkorb
+Share\ Gallery=Aktien Galerie
 Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen
-Displaying\ records=Anzeige von Datensätzen
+Add\ Column=Spalte hinzuf\u00FCgen
+No\ results\ found=keine Ergebnisse gefunden
 of=von
+Cancel=r\u00FCckg\u00E4ngig machen

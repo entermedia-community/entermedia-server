@@ -1,4 +1,6 @@
-#Tue Feb 10 14:58:16 EST 2015
+#
+#Tue Apr 27 17:04:27 EDT 2010
 Language=Sprache
 Read=lesen
 Translation\ Exporter=Übersetzung exportieren
+
