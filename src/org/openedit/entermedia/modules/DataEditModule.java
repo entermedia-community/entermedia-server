@@ -1016,6 +1016,7 @@ public class DataEditModule extends BaseMediaModule
 					hits.toggleSelected(id);
 				}
 			}
+			inReq.putPageValue(hits.getHitsName(), hits);
 		}
 	}
 
@@ -1041,6 +1042,7 @@ public class DataEditModule extends BaseMediaModule
 		{
 			hits.deselectAll();
 		}
+		inReq.putPageValue(hits.getHitsName(), hits);
 
 	}
 
