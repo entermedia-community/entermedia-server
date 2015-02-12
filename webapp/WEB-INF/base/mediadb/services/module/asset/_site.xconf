@@ -3,7 +3,6 @@
 	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
 
 	<!--TODO: add assetid's, preprocess, path-action name="MediaArchiveXXXX.loadAsset" alltypes="true"/ -->
-	<path-action name="Admin.loadPermissions" alltypes="true"/>
 	
 	<permission name="download">
 		   <userprofile property="download" equals="true" />
