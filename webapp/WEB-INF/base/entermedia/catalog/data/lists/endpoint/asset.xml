@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/module/asset/data/create" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
+  <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/module/asset/create" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
     <samplerequest><![CDATA[{  
     "id":"101",  
      "assettype": "article",     "keywords": ["animals","bird"],        
