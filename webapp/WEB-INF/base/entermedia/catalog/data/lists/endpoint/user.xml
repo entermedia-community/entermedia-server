@@ -61,9 +61,10 @@
 	         }
 	        } 
 	      ]]></samplerequest> 
-  </endpoint>  
+  </endpoint>
+<!--
   <endpoint id="userimport2" url="/${applicationid}/services/settings/users/import/import" docsection="1420730727080" name="Import From CSV" httpmethod="POST" uploadfile="true"> 
     <samplerequest><![CDATA[{"scriptname":"ImportCsvFile.groovy"}]]></samplerequest>
   </endpoint>  
-
+-->
 </endpoints>
