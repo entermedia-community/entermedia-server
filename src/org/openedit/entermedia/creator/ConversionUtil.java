@@ -222,6 +222,12 @@ public class ConversionUtil {
 	
 	public boolean isConvertPresetReady(String inCatalogId, String inAssetId, String sourcepath, String inPresetId) throws Exception{
 		boolean isOk = false;
+		
+		if( "0".equals( inPresetId ) )
+		{
+			return true;
+		}
+		
 		SearcherManager sm = getSearcherManager();
 		if(doesConvertedFileExist(inCatalogId, sourcepath, inPresetId)){
 			return true;

@@ -15,14 +15,18 @@
 		},
 	"results":[
 #set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
-#foreach( $presetdata in $hits )#if( $velocityCount != 1 ), #end
+#foreach( $preset in $hits )#if( $velocityCount != 1 ), #end
 {	
-	"name":#jesc($presetdata.name),
-	#set( $outputfile = "${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)")
+	"name":#jesc($preset.name),	
+#if( $preset.getId() == "0")
+	#set( $url = "$home$apphome/services/module/asset/downloads/originals/${asset.sourcepath}/$asset.getMediaName()")
+#else
+	#set( $outputfile = "${preset.outputfile}/$mediaarchive.asExportFileName($asset, $preset)")
 	"outputfile":#jesc($outputfile),
-	#set( $url = "$!cdn$home$apphome/services/module/asset/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
+	#set( $url = "$home$apphome/services/module/asset/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
+#end	
 	"url":"$url",
-	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $presetdata.id))
+	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $preset.id))
 	"iscomplete":"$isready"}#end
 ]
 }
