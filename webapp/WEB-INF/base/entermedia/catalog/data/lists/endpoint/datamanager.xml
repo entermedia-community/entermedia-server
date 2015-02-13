@@ -8,7 +8,11 @@
   <endpoint id="import6" url="/${applicationid}/services/settings/datamanager/fields/addnew" docsection="datamanager" name="Add new Field" httpmethod="POST"> 
     <samplerequest><![CDATA[{"searchtype":"testtable", "newproperty":"testfield"}]]></samplerequest>
   </endpoint>  
-  <endpoint id="import4" url="/${applicationid}/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field</endpoint>  
+  <!--
+  <endpoint id="import4" url="/${applicationid}/services/settings/datamanager/fields/save" docsection="datamanager" name="Save Field" httpmethod="POST">Save Field
+  	<samplerequest><![CDATA[{  "searchtype": "testtable","id":"testfield"}]]></samplerequest>
+  </endpoint>
+  -->  
   <endpoint id="import5" url="/${applicationid}/services/settings/datamanager/fields/listfields?searchtype=testtable" docsection="datamanager" name="List Fields" httpmethod="GET">List Fields</endpoint>  
   <endpoint id="import3" url="/${applicationid}/services/settings/datamanager/fields/remove" docsection="datamanager" name="Remove Field" httpmethod="POST">
 	<samplerequest><![CDATA[{  "searchtype": "testtable","id":"testfield"}]]></samplerequest>
@@ -39,9 +43,11 @@
 
 
   </endpoint>  
+  <!--
   <endpoint id="import9" url="/${applicationid}/services/settings/datamanager/table/import/import" docsection="datamanager" name="Import From CSV" httpmethod="POST" uploadfile="true"> 
     <samplerequest><![CDATA[{"searchtype":"testtable", "scriptname":"ImportCsvFile.groovy"}]]></samplerequest>
   </endpoint>  
+  -->
   <endpoint id="reload" name="Reload Data" url="/${applicationid}/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint>  
 
 </endpoints>

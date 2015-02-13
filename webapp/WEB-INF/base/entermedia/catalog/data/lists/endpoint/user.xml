@@ -35,7 +35,9 @@
   </endpoint>  
   <endpoint id="userlogout" name="User Logout" url="/${applicationid}/services/authentication/logout" docsection="1420730727080" description="Removes the session cookie for this user" httpmethod="GET">User Logout</endpoint>  
 
-  <endpoint id="registeruser" name="Register New User" url="/${applicationid}/services/authentication/registeruser" docsection="1420730727080" description="Register New User" httpmethod="POST">Register New User</endpoint>  
+  <!--
+  <endpoint id="registeruser" name="Register New User" url="/${applicationid}/services/authentication/registeruser" docsection="1420730727080" description="Register New User" httpmethod="POST">Register New User</endpoint>
+  -->  
   <endpoint id="groupadd" name="Add Group to User" url="/${applicationid}/services/settings/users/groupadd" docsection="1420730727080" description="Add group to user" httpmethod="POST"> 
     <samplerequest><![CDATA[{ "id":"testuser", "groupid":"testgroup"}]]></samplerequest> 
   </endpoint>  
