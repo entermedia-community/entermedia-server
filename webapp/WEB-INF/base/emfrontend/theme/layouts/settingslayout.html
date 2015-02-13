@@ -27,7 +27,7 @@
 						#foreach($screen in $screens)
 
 						<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
-							<a href="$home$apphome${screen.path}">$screen</a>
+							<a href="$home$apphome${screen.path}">$context.getText($screen.toString())</a>
 						</li>
 						#end
 					</ul>
@@ -35,7 +35,7 @@
 			</div>
 			#end
 			<div class="ui-widget" >
-				<div  class="ui-widget-header">System Settings</div>
+				<div  class="ui-widget-header">[[System Settings]]</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
 						
@@ -46,7 +46,7 @@
 						$!query.addSortBy("ordering")
 						#foreach($screen in $searcher.search($query) )
 						<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
-							<a href="$home$apphome${screen.path}">$screen</a>
+							<a href="$home$apphome${screen.path}">$context.getText($screen.toString())</a>
 						</li>
 						#end
 					</ul>

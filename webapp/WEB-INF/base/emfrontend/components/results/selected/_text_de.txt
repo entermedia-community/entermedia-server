@@ -1,5 +1,7 @@
 #
-#Wed Feb 04 07:57:52 EST 2015
-Clear\ Selections=Auswahl löschen
-selected=ausgewählt
-
+#Thu Feb 12 16:09:36 EST 2015
+Show\ All=alle anzeigen
+Clear\ Selections=Auswahl l\u00F6schen
+selected=ausgew\u00E4hlt
+View\ Selections=Ansicht Auswahl
+Show\ Selected=Show ausgesucht

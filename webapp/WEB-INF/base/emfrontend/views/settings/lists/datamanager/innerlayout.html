@@ -10,11 +10,11 @@
 			<option value=""></option>
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")
-				<option value="$type" #if($type == $currentsearch) selected #end>$type</option>
+				<option value="$type" #if($type == $currentsearch) [[selected]] #end>$type</option>
 			#end
 		#end
 	</select>
-<a style="margin-top: 0px;" class="btn" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">Create New Table</a>
+<a style="margin-top: 0px;" class="btn" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">[[Create New Table]]</a>
 </form>
 
 

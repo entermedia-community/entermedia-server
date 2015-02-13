@@ -1,0 +1,21 @@
+#
+#Fri Feb 13 10:39:03 EST 2015
+Data\ Search=Datensuche
+Data=Daten
+Export=Export
+Records=Aufzeichnungen
+Search=Suche
+Reindex=indizieren
+Customize\ Views=Ansichten anpassen
+Import=Import
+Page=Seite
+of=von
+Delete\ Table=Tabelle l\u00F6schen
+Data\ Type=Datentyp
+Found=gefunden
+Copy\ to\ defaults=Kopieren auf die Standardwerte
+Add\ New\ Record=Hinzuf\u00FCgen neuer Rekord
+Back=der r\u00FCcken
+Delete\ Records=Datens\u00E4tze l\u00F6schen
+Customize\ Fields=anpassen Felder
+Forward=nach vorne

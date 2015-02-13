@@ -1,18 +1,21 @@
 #
-#Thu Feb 12 15:12:31 EST 2015
-Edit=bearbeiten
-Displaying\ records=Anzeige von Datens\u00E4tzen
-Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
-Email\ Assets=E-Mail- Verm\u00F6genswerte
-Publish\ Assets\ to\ Server=Verm\u00F6genswerte auf Server ver\u00F6ffentlichen
-Edit\ Columns=edit Spalten
-items=Gegenst\u00E4nde
-Remove=entfernen
+#Thu Feb 12 16:09:36 EST 2015
 Download=Download
+Deselect\ All=alle abw\u00E4hlen
 Add\ to\ Basket=in den Warenkorb
-Share\ Gallery=Aktien Galerie
-Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen
-Add\ Column=Spalte hinzuf\u00FCgen
-No\ results\ found=keine Ergebnisse gefunden
+Email\ Assets=E-Mail- Verm\u00F6genswerte
+Select\ All\ Results=w\u00E4hlen Sie alle Ergebnisse
+Publish\ Assets\ to\ Server=Verm\u00F6genswerte auf Server ver\u00F6ffentlichen
+Select\ This\ Page=W\u00E4hlen Sie diese Seite
+items=Gegenst\u00E4nde
 of=von
 Cancel=r\u00FCckg\u00E4ngig machen
+Add\ Column=Spalte hinzuf\u00FCgen
+Share\ Gallery=Aktien Galerie
+Edit\ Columns=edit Spalten
+No\ results\ found=keine Ergebnisse gefunden
+Displaying\ records=Anzeige von Datens\u00E4tzen
+Edit=bearbeiten
+Remove=entfernen
+Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
+Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen

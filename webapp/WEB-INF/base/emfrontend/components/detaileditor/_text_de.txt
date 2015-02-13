@@ -1,6 +1,7 @@
 #
-#Thu Feb 12 14:17:58 EST 2015
+#Thu Feb 12 16:19:15 EST 2015
 Results=Ergebnisse
+Edit=bearbeiten
 Save\ values=Werte speichern
 No\ data\ has\ been\ entered.=Es wurdenkeine Daten eingegeben.
 Delete\ Assets=Verm\u00F6genswerte l\u00F6schen
@@ -8,6 +9,6 @@ File=Datei
 Share=Teilen
 Download=Download
 Print=drucken
-Cancel=stornieren
 Delete=l\u00F6schen
+Cancel=stornieren
 Edit\ =bearbeiten
