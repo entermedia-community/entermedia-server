@@ -63,21 +63,36 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		assertEquals("flv", PathUtilities.extractPageType(converted.getPath()));
 	}
 
+	
 	public void testMpegToJpeg()
 	{
+		
+		ConvertInstructions instructions1 = new ConvertInstructions();
+		instructions1.setForce(true);
+		instructions1.setAssetSourcePath("users/admin/101");
+		instructions1.setOutputExtension("mp4");
+
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		CreatorManager manager = archive.getCreatorManager();
+
+		Page converted = manager.createOutput(instructions1);
+		assertNotNull(converted);
+		assertTrue(converted.exists());
+		assertTrue(converted.length() > 0);
+		assertEquals("mp4", PathUtilities.extractPageType(converted.getPath()));
+
+		
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
 		instructions.setAssetSourcePath("users/admin/101");
 		instructions.setOutputExtension("jpg");
 
-		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		CreatorManager manager = archive.getCreatorManager();
 
-		Page converted = manager.createOutput(instructions);
-		assertNotNull(converted);
-		assertTrue(converted.exists());
-		assertTrue(converted.length() > 0);
-		assertEquals("jpg", PathUtilities.extractPageType(converted.getPath()));
+		Page converted2 = manager.createOutput(instructions);
+		assertNotNull(converted2);
+		assertTrue(converted2.exists());
+		assertTrue(converted2.length() > 0);
+		assertEquals("jpg", PathUtilities.extractPageType(converted2.getPath()));
 	}
 
 	/* We dont do this any more
