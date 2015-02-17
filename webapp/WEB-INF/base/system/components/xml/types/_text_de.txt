@@ -1,0 +1,12 @@
+#
+#Fri Feb 13 10:32:44 EST 2015
+Past\ year=vergangenen Jahr
+Before\ Date=Mindesthaltbarkeitsdatum
+Equals=ist gleich
+Past\ month=letzten Monat
+Past\ 24\ hours=letzten 24 Stunden
+Past\ week=letzte Woche
+After\ Date=nach Datum
+Enter\ a\ Custom\ Range=Geben Sie einen benutzerdefinierten Bereich an
+Between=zwischen
+Over=zu ende

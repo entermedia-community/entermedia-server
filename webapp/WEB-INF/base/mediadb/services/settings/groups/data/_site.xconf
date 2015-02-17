@@ -1,0 +1,15 @@
+<page>
+
+	<path-action name="JsonDataModule.updateData" alltypes="true" method="PUT">
+		<property name="catalogid">system</property>
+	</path-action> 
+		
+	<path-action name="JsonDataModule.loadData" alltypes="true" method="GET">
+		<property name="catalogid">system</property>
+	</path-action> 
+	
+	<path-action name="JsonDataModule.deleteData" alltypes="true" method="DELETE">
+		<property name="catalogid">system</property>
+	</path-action> 
+
+</page>

@@ -1,0 +1,5 @@
+<page>
+	<path-action name="JsonDataModule.handleSearch" alltypes="true">
+		<property name="catalogid">system</property>
+	</path-action> 
+</page>

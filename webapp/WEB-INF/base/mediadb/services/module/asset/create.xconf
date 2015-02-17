@@ -1,0 +1,6 @@
+<page>
+	<path-action name="JsonDataModule.createData"  method="POST" cancel="true"/>
+
+	<path-action name="JsonAssetModule.createAsset" method="POST"/>
+
+</page>

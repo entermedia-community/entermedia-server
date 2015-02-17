@@ -54,21 +54,27 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<lang:groovy id="amazonpublisher" script-source="publishing/publishers/amazonpublisher.groovy" />
 	<lang:groovy id="asperapublisher" script-source="publishing/publishers/asperapublisher.groovy" />
 -->
+<!--  Not used 
 	<lang:groovy id="entermediapublisher" script-source="publishing/publishers/entermediapublisher.groovy" />
 	<lang:groovy id="attachmentpublisher" script-source="publishing/publishers/attachmentpublisher.groovy" />
+	<lang:groovy id="pushpublisher" script-source="publishing/publishers/pushpublisher.groovy" />
+	
+-->	
 	<lang:groovy id="filecopypublisher" script-source="publishing/publishers/filecopypublisher.groovy" />
 	<lang:groovy id="ftppublisher" script-source="publishing/publishers/ftppublisher.groovy" />
-	<lang:groovy id="pushpublisher" script-source="publishing/publishers/pushpublisher.groovy" />
 	<lang:groovy id="sftppublisher" script-source="publishing/publishers/sftppublisher.groovy" />
 	<lang:groovy id="smbpublisher" script-source="publishing/publishers/smbpublisher.groovy" />
 	<lang:groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy" />
 	<lang:groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy" />
-
+	<lang:groovy id="wordpresspublisher" script-source="publishing/publishers/wordpresspublisher.groovy" />
 	
 	<lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy" lazy-init="default">
 	   	<lang:property name="searcherManager"><ref bean="searcherManager"/></lang:property>
 		<lang:property name="webEventHandler"><ref bean="mediaEventHandler" /></lang:property>
 		<lang:property name="lockManager"><ref bean="lockManager" /></lang:property>
+		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
+		<lang:property name="moduleManager"><ref bean="moduleManager" /></lang:property>
+		<lang:property name="userManager"><ref bean="userManager" /></lang:property>
 	</lang:groovy>
 	
 	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
@@ -96,11 +102,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<lang:groovy  id="projectManager" script-source="modules/projects/BaseProjectManager.groovy" lazy-init="default"  scope="prototype" >
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
-
-	<lang:groovy  id="JsonModule" script-source="rest/json/JsonModule.groovy" lazy-init="default" />
-	<lang:groovy  id="JsonAssetModule" script-source="rest/json/JsonAssetModule.groovy" lazy-init="default" />
-	<lang:groovy  id="JsonDataModule" script-source="rest/json/JsonDataModule.groovy" lazy-init="default" />
-	<lang:groovy  id="JsonAdminModule" script-source="rest/json/JsonAdminModule.groovy" lazy-init="default" />
 
 	<lang:groovy  id="ConvertModule" script-source="modules/convert/ConvertModule.groovy" lazy-init="default" />
 

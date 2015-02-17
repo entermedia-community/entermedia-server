@@ -1,4 +1,4 @@
-package model.projects;
+package modules.convert;
 
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -63,7 +63,7 @@ public class ConvertModule extends BaseMediaModule
 		{
 			return;
 		}
-		archive.fireMediaEvent("conversions/runconversion", inReq.getUser(), asset); //this blocks		
+		archive.fireMediaEvent("conversions/runconversion", inReq.getUser(), asset); //this blocks does not use the queue	
 		
 	}
 		

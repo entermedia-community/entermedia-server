@@ -1,0 +1,22 @@
+<page>
+	<property name="forcelayout">true</property>
+	<layout>/${applicationid}/services/module/default/data/layout.json</layout>
+	<property name="virtual">true</property>
+
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+	
+	<path-action name="JsonDataModule.updateData" alltypes="true" method="PUT"/>
+	<path-action name="JsonDataModule.loadData" alltypes="true" method="GET"/>
+	<path-action name="JsonDataModule.deleteData" alltypes="true" method="DELETE"/>
+	<property name="alternative_extension">json</property>
+	
+	<permission name="view">
+		<or>
+			<userprofile property="api-delete-data" equals="true" method="DELETE" />
+			<userprofile property="api-update-data" equals="true" method="PUT" />
+			<userprofile property="api-load-data" equals="true" method="GET" />			
+		</or>
+	</permission>
+	
+</page>
+

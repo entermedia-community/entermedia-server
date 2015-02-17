@@ -1,5 +1,0 @@
-<page>
-	<path-action name="PageValue.loadPageVariable" bean="mathtool" class="org.apache.velocity.tools.generic.MathTool"/>	
-	<path-action name="ConvertStatusModule.addConvertRequest"/>
-	<page-action name="PageValue.loadPageVariable" bean="conversionUtil"/>
-</page>

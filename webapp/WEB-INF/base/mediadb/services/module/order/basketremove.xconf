@@ -1,0 +1,6 @@
+<page>
+	<path-action name="JsonAssetModule.preprocess" />
+
+	<path-action name="OrderModule.removeItem" />
+	<path-action name="OrderModule.loadOrderBasket" />	
+</page>

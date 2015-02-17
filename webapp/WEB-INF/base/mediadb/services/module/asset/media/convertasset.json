@@ -1,0 +1,17 @@
+#set( $error = "ok")
+#if( $conversiontask.get("status") == "error")
+	#set( $error = "error")
+	##why not just set to the value of the method call above?
+#end
+{
+	"response":
+		{
+			"status":"$error"
+#set( $genname = $preset.get("outputfile") )
+#set( $link = "$home/$applicationid/services/module/asset/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
+		},
+	"results":
+		{
+			"path":"$link"
+		}
+}

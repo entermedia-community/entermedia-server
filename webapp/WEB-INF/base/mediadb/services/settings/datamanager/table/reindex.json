@@ -1,9 +1,9 @@
 { #set( $hits = $searcher.getAllHits() )
 	"response":
 	{	
-		"status":"complete"
+		"status":"complete",
 		"totalhits" : $hits.size(),
-		"searchtype" : "table",
+		"searchtype" : "$searcher.getSearchType()",
 		"page": 1,
 		"pages": 1,
 		"query":

@@ -1223,7 +1223,7 @@ public class AssetEditModule extends BaseMediaModule
 	public void selectPrimaryAsset(WebPageRequest inReq) throws Exception
 	{
 		String primaryname = inReq.getRequestParameter("filename");
-		String imagefilename = inReq.getRequestParameter("imagefilename");
+		String imagefilename = inReq.getRequestParameter("imagefilename"); //Dont support this any longer since we have conversion thumbs
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Asset target = getAsset(inReq);

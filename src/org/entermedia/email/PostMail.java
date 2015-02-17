@@ -264,7 +264,7 @@ public class PostMail
 		msg.setRecipients(Message.RecipientType.TO, addressTo);
 
 		//add bcc
-		if (blindrecipients != null && blindrecipients.isEmpty())
+		if (blindrecipients != null && !blindrecipients.isEmpty())
 		{
 			InternetAddress[] addressBcc = blindrecipients.toArray(new InternetAddress[blindrecipients.size()]);
 			msg.setRecipients(Message.RecipientType.BCC, addressBcc);

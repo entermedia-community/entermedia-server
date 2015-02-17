@@ -1,5 +1,5 @@
 
-<h4>Select a Group</h4>
+<h4>[[Select a Group]]</h4>
 <script type="text/javascript">
 selectgroup = function(group)
 {
@@ -18,7 +18,7 @@ selectgroup = function(group)
 <select name="groupid" id="groupselect" onchange="jQuery('#groupselectform').submit();">
 	<option value="null"></option>
 #foreach ( $hit in $grouphits)
-	<option value="$hit.id" #if( $group && $group.id == $hit.id ) selected #end>$hit</option>
+	<option value="$hit.id" #if( $group && $group.id == $hit.id ) [[selected]] #end>$hit</option>
 #end
 </select>
 </form>

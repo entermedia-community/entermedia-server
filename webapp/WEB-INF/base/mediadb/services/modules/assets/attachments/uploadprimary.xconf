@@ -1,7 +1,0 @@
-<page>
-	<path-action name="Page.uploadFile" alltypes="true"/>
-	<path-action name="AssetEditModule.replacePrimaryAsset" alltypes="true"/>
-	<path-action name="Script.run" alltypes="true">
-		<script>./updatefiletype.groovy</script>
-	</path-action>
-</page>

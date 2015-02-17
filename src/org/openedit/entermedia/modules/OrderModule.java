@@ -37,17 +37,17 @@ public class OrderModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(OrderModule.class);
 	protected OrderManager fieldOrderManager;
-	protected PostMail fieldPostMail;
-
-	public PostMail getPostMail()
-	{
-		return fieldPostMail;
-	}
-
-	public void setPostMail(PostMail inPostMail)
-	{
-		fieldPostMail = inPostMail;
-	}
+//	protected PostMail fieldPostMail;
+//
+//	public PostMail getPostMail()
+//	{
+//		return fieldPostMail;
+//	}
+//
+//	public void setPostMail(PostMail inPostMail)
+//	{
+//		fieldPostMail = inPostMail;
+//	}
 
 	public OrderManager getOrderManager()
 	{
@@ -99,9 +99,9 @@ public class OrderModule extends BaseMediaModule
 		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
 		inReq.putPageValue("order", order);
 
-		OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
+		//OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
 
-		getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
+		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 		inReq.setRequestParameter("orderid", order.getId());
 		return order;
 	}
@@ -322,6 +322,8 @@ public class OrderModule extends BaseMediaModule
 		}
 		HitTracker orders = getOrderManager().findOrdersForUser(catalogid, owner);
 		req.putPageValue("orders", orders);
+		req.putPageValue("searcher", getSearcherManager().getSearcher(catalogid, "order"));
+		
 		return orders;
 	}
 
@@ -569,9 +571,11 @@ public class OrderModule extends BaseMediaModule
 			{
 				basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
 				basket.setId(id);
+				basket.setProperty("ordertype", "basket");
 				getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
 			}
 			basket.setProperty("basket", "true");
+			basket.setProperty("ordertype", "basket");
 
 			inReq.putSessionValue("orderbasket", basket);
 			
@@ -657,14 +661,18 @@ public class OrderModule extends BaseMediaModule
 		// history.setAssetIds(assetids);
 		// manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(),
 		// order, history);
-		if (assetids.size() > 0)
-		{
-			order.setProperty("orderstatus", "pending");
-		}
-		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+//		if (assetids.size() > 0)
+//		{
+//			order.setProperty("orderstatus", "ordered"); //what is pendig
+//		}
+//		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		log.info("Added conversion and publish requests for order id:" + order.getId());
 	}
-	
+	/**
+	 * Is this needed?
+	 * @deprecated
+	 * @param inReq
+	 */
 	public void createQuickOrder(WebPageRequest inReq)
 	{
 
@@ -707,11 +715,11 @@ public class OrderModule extends BaseMediaModule
 		// history.setAssetIds(assetids);
 		// manager.saveOrderWithHistory(archive.getCatalogId(), inReq.getUser(),
 		// order, history);
-		if (assetids.size() > 0)
-		{
-			order.setProperty("orderstatus", "pending");
-		}
-		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
+//		if (assetids.size() > 0)
+//		{
+//			order.setProperty("orderstatus", "ordered");
+//		}
+//		manager.saveOrder(archive.getCatalogId(), inReq.getUser(), order);
 		inReq.putPageValue("order", order);
 		inReq.putPageValue("data", order);
 
@@ -809,31 +817,31 @@ public class OrderModule extends BaseMediaModule
 		return order;
 	}
 
-	public Order createOrderFromUpload(WebPageRequest inReq)
-	{
-		String catalogId = inReq.findValue("catalogid");
-		MediaArchive archive = getMediaArchive(catalogId);
-		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
-
-		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
-		// order.setProperty("orderstatus", "newupload");
-		List assetids = new ArrayList();
-		for (Iterator iter = assets.iterator(); iter.hasNext();)
-		{
-			Asset asset = (Asset) iter.next();
-			assetids.add(asset.getId());
-			getOrderManager().addItemToOrder(catalogId, order, asset, null);
-		}
-		// Order history needs to be updated
-		OrderHistory history = getOrderManager().createNewHistory(catalogId, order, inReq.getUser(), "newupload");
-		history.setAssetIds(assetids);
-		getOrderManager().saveOrderWithHistory(catalogId, inReq.getUser(), order, history);
-
-		// getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
-		inReq.putPageValue("order", order);
-
-		return order;
-	}
+//	public Order createOrderFromUpload(WebPageRequest inReq)
+//	{
+//		String catalogId = inReq.findValue("catalogid");
+//		MediaArchive archive = getMediaArchive(catalogId);
+//		Collection assets = (Collection) inReq.getPageValue("uploadedassets");
+//
+//		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+//		// order.setProperty("orderstatus", "newupload");
+//		List assetids = new ArrayList();
+//		for (Iterator iter = assets.iterator(); iter.hasNext();)
+//		{
+//			Asset asset = (Asset) iter.next();
+//			assetids.add(asset.getId());
+//			getOrderManager().addItemToOrder(catalogId, order, asset, null);
+//		}
+//		// Order history needs to be updated
+//		OrderHistory history = getOrderManager().createNewHistory(catalogId, order, inReq.getUser(), "newupload");
+//		history.setAssetIds(assetids);
+//		getOrderManager().saveOrderWithHistory(catalogId, inReq.getUser(), order, history);
+//
+//		// getOrderManager().saveOrder(catalogId, inReq.getUser(), order);
+//		inReq.putPageValue("order", order);
+//
+//		return order;
+//	}
 
 	public OrderManager loadOrderManager(WebPageRequest inReq)
 	{
@@ -841,25 +849,29 @@ public class OrderModule extends BaseMediaModule
 		return getOrderManager();
 	}
 
-	public Data addUserStatus(WebPageRequest inReq) throws Exception
-	{
-		Order order = loadOrder(inReq);
-		if (order != null)
-		{
-			String catalogid = inReq.findValue("catalogid");
-			String[] fields = inReq.getRequestParameters("field");
-			String userstatus = inReq.findValue("userstatus.value");
-			OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), userstatus);
-
-			Searcher searcher = getSearcherManager().getSearcher(catalogid, "orderhistory");
-			searcher.updateData(inReq, fields, history);
-
-			getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
-
-		}
-		return order;
-	}
-
+//	public Data addUserStatus(WebPageRequest inReq) throws Exception
+//	{
+//		Order order = loadOrder(inReq);
+//		if (order != null)
+//		{
+//			String catalogid = inReq.findValue("catalogid");
+//			String[] fields = inReq.getRequestParameters("field");
+//			String userstatus = inReq.findValue("userstatus.value");
+//			OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), userstatus);
+//
+//			Searcher searcher = getSearcherManager().getSearcher(catalogid, "orderhistory");
+//			searcher.updateData(inReq, fields, history);
+//
+//			getOrderManager().saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
+//
+//		}
+//		return order;
+//	}
+	/**
+	 * Update the history of pending orders
+	 * @param inReq
+	 * @throws Exception
+	 */
 	public void updatePendingOrders(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -905,6 +917,7 @@ public class OrderModule extends BaseMediaModule
 	 * 
 	 * return composite; }
 	 */
+	/*
 	public void sendOrderEmail(WebPageRequest inReq)
 	{
 		// just a basic email download
@@ -912,7 +925,7 @@ public class OrderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String catalogid = archive.getCatalogId();
 		String[] emails = inReq.getRequestParameters("sharewithemail.value");
-		String[] organizations = inReq.getRequestParameters("organization.value");
+		//String[] organizations = inReq.getRequestParameters("organization.value");
 		HitTracker orderItems = getOrderManager().findOrderItems(inReq, archive.getCatalogId(), order);
 		inReq.putPageValue("orderitems", orderItems);
 		inReq.putPageValue("order", order);
@@ -946,7 +959,7 @@ public class OrderModule extends BaseMediaModule
 		}
 
 	}
-
+	*/
 	public void deleteOrder(WebPageRequest inReq) throws Exception
 	{
 		Order order = loadOrder(inReq);

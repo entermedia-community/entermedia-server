@@ -1,0 +1,7 @@
+#
+#Thu Feb 12 11:44:27 EST 2015
+No\ events\ in\ queue=Keine Ereignisse in der Warteschlange
+running=Laufen
+Refresh=erfrischen
+last\ run=letzten Lauf
+repeats\ every=wiederholt sich jeden

@@ -1,0 +1,22 @@
+{
+	"response":
+		{
+		    "status":"ok",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"search":#jesc($hits.getSearchQuery().toQuery())
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( $velocityCount != 1 ), #end
+		#json($hit $searcher.getPropertyDetails()) 
+		#end
+		]
+}

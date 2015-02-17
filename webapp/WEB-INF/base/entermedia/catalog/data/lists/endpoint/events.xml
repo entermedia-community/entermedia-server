@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+  <endpoint id="import10" url="/${applicationid}/services/settings/events/list" docsection="events" name="List Events" httpmethod="GET">List Events</endpoint>  
+  <endpoint id="import11" url="/${applicationid}/services/settings/events/event/details" docsection="events" name="Event Details" httpmethod="POST">
+    <samplerequest><![CDATA[{"eventpath":"/media/catalogs/public/events/tests/testevent.html"}]]></samplerequest>
+</endpoint>  
+  <endpoint id="import12" url="/${applicationid}/services/settings/events/event/save" docsection="events" name="Save Event" httpmethod="PUT"> 
+    <samplerequest><![CDATA[{"eventpath":"/media/catalogs/public/events/tests/testevent.html","eventname":"Test Event", "enabled":"true","period":"1m", "delay":"5s"}]]></samplerequest>Save Event
+  </endpoint>  
+  <endpoint id="import13" url="/${applicationid}/services/settings/events/event/run" docsection="events" name="Run Event" httpmethod="POST"> 
+    <samplerequest><![CDATA[{"runpath":"/media/catalogs/public/events/tests/testevent.html"}]]></samplerequest>Run Event
+  </endpoint>  
+  <endpoint id="importdel" url="/${applicationid}/services/settings/events/event/remove" docsection="events" name="Delete Details" httpmethod="POST">
+    <samplerequest><![CDATA[{"eventpath":"/media/catalogs/public/events/tests/testevent.html"}]]></samplerequest>
+</endpoint>  
+
+</endpoints>

@@ -1,0 +1,57 @@
+{
+	"response":
+		{
+		    "status":"ok",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"terms":[
+					#foreach( $term in $hits.getSearchQuery().getTerms() )#if( $velocityCount != 1 ), #end
+					 { "id":"$term.getId()","operation":#jesc($term.getOperation())
+					 	#if( $term.getValue() ),"value":#jesc($term.getValue())#end
+					 	#if($term.getValues())
+					 		,"values": [
+					 			#foreach( $val in $term.getValues() )#if( $velocityCount != 1 ), #end
+					 				#jesc($val)
+					 			#end
+					 		]
+					 	#end		
+					 }
+					#end
+				]	
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( $velocityCount != 1 ), #end
+		#json($hit $searcher.getPropertyDetails()) 
+		#end
+		]		
+ #if( $hits.getSearchQuery().hasFilters() )
+ , "filters":[
+	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )#if( $velocityCount != 1 ), #end #set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+		{ "id":"$selectedfilter.getId()", "name":#jesc($selectedfilter.getName()) }
+	#end
+  ]	
+#end	
+#if( $filteroptions)		
+, "filteroptions":[
+	#foreach($type in $filteroptions )#if( $velocityCount != 1 ), #end
+		#if(!$hits.isChildFacetSelected($type))
+		 {"id":"$type.getId()","name":#jesc($type.getName()),"children":
+		    [
+			#foreach($entry in $type.children)#if( $velocityCount != 1 ), #end
+			{"id":"$entry.getId()","name":#jesc($entry.getName()),"count":#jesc($entry.count)}
+			#end
+			]
+		}
+		#end
+	#end
+    ]		
+#end		
+}

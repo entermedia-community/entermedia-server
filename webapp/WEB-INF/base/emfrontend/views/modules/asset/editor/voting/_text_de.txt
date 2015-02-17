@@ -1,0 +1,9 @@
+#
+#Thu Feb 12 14:29:48 EST 2015
+Be\ the\ first\ to\ like\ this\ asset\!=sei der erste, diese Anlage gef\u00E4llt\!
+likes\ this=gef\u00E4llt das
+You=Sie
+You\ like\ this=Sie dieses m\u00F6gen
+others=andere
+and=und
+like\ this=so was

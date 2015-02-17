@@ -1,0 +1,5 @@
+<page>
+	<path-action name="JsonAssetModule.preprocess" />
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
+    <path-action name="OrderModule.updatePendingOrders"/>
+</page>    

@@ -1,0 +1,12 @@
+<page>
+	<path-action name="JsonDataModule.preprocess" />
+
+	<page-action name="User.removeUsersFromGroup" />
+	<page-action name="User.addUsersToGroup" />
+	<path-action name="JsonDataModule.loadData" >
+		<property name="catalogid">system</property>
+	</path-action> 
+	
+	<inner-layout />
+	<property name="virtual">true</property>
+</page>

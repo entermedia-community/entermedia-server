@@ -1,0 +1,19 @@
+{
+	"response":
+	{
+	        "status":"ok",
+			"user":"${user.id}"
+	},
+	"results": 
+	{ 
+		#if($entermediakey)
+			"entermediakey": "$entermediakey",
+			"firstname": "$!user.firstname",
+			"lastname" : "$!user.lastname",
+			"screenname" : "$!user.getScreenName()"
+		#else
+					 "status": "invalidlogin"		
+		#end
+
+	}
+}

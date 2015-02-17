@@ -364,11 +364,11 @@ public class DataEditModule extends BaseMediaModule
 	public void deleteProperty(WebPageRequest inReq) throws Exception
 	{
 		String id = inReq.getRequestParameter("id");
-		String fieldName = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = loadSearcher(inReq);
-		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(fieldName);
+		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype);
 		details.removeDetail(id);
-		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		searcher.getPropertyDetailsArchive().savePropertyDetails(details, searchtype, inReq.getUser());
 	}
 
 	public void saveMultiJoinData(WebPageRequest inReq) throws Exception
@@ -1016,6 +1016,7 @@ public class DataEditModule extends BaseMediaModule
 					hits.toggleSelected(id);
 				}
 			}
+			inReq.putPageValue(hits.getHitsName(), hits);
 		}
 	}
 
@@ -1041,6 +1042,7 @@ public class DataEditModule extends BaseMediaModule
 		{
 			hits.deselectAll();
 		}
+		inReq.putPageValue(hits.getHitsName(), hits);
 
 	}
 
@@ -1197,11 +1199,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
-		String clear = inReq.getRequestParameter("clearselection");
-		if( Boolean.parseBoolean(clear))
-		{
-			hits.deselectAll();
-		}
 		return hits;
 	}
 

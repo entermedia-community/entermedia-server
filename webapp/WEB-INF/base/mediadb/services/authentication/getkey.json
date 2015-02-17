@@ -1,9 +1,15 @@
-#if($authenticated)
 {
-"authenticated": true,
-"user":"${id}",
-"entermediakey": "$entermediakey"
+	"response":
+	{
+	        "status":"ok",
+			"user":"${user.id}"
+	},
+	"results": 
+	{ 
+		#if($entermediakey)
+		 "entermediakey": "$entermediakey"
+		#else
+		 "status": "invalidlogin"		
+		#end
+	}
 }
-#else
-{"authenticated":false}
-#end

@@ -1,0 +1,6 @@
+<page>
+	<property name="virtual">true</property>
+    <page-action name="JsonAssetModule.preprocess" alltypes="true"/>
+<path-action name="ConvertStatusModule.handleCustomThumb" />
+
+</page>

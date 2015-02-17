@@ -3,4 +3,4 @@
 Users=Benutzer
 Groups=Gruppen
 Security=Sicherheit
-User\ Account\ Manager=Benutzer-Account-Manager
+User\ Account\ Manager=Benutzeraccount-Manager

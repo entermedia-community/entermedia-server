@@ -597,7 +597,7 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String inVal = getValue();
+				String inVal = "+(" + getValue() + ")";
 				return inVal;
 			}
 		};

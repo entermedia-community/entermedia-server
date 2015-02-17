@@ -1,20 +1,20 @@
 #set( $apphome = "/${order.applicationid}")
-<p>Hello,</p>
+<p>[[Hello]],</p>
 <br />
-<p>$userManager.getScreenName( $order.userid ) has shared some assets with you.
+<p>$userManager.getScreenName( $order.userid ) [[has shared some assets with you]].
 #if($order.sharenote)
-Below is a note that was attached:</p>
+[[Below is a note that was attached]]:</p>
 <blockquote>$order.sharenote</blockquote>
 <hr />
 #else 
 </p>
 #end
 
-<p>Please review the assets at this link: <a href="$context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$order.id" style="font-size: 14px; color: blue;">
+<p>[[Please review the assets at this link]]: <a href="$context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$order.id" style="font-size: 14px; color: blue;">
 $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$order.id</a></p>
 
 #if( $order.expireson)
-Access to these files will expire on 
+[[Access to these files will expire on ]]
 	#if( $expiresondate )  ##Use this since events do not have a locale
 		$expiresformat.format($expiresondate)
 	#else
@@ -27,13 +27,13 @@ Access to these files will expire on
 
 </p>
 <hr />
-<p>Below is a list of assets available at the link above:</p>
+<p>[[Below is a list of assets available at the link above]]:</p>
 <table cellspacing="0" cellpadding="0" width="100%">		
 	<tr>
-	<th>Title</th>
-	<th>File Name</th>
-	<th>Asset Type</th>
-	<th>Format</th>
+	<th>[[Title]]</th>
+	<th>[[File Name]]</th>
+	<th>[[Asset Type]]</th>
+	<th>[[Format]]</th>
 	</tr>
 
 	#foreach( $item in $orderitems )
@@ -60,7 +60,7 @@ Access to these files will expire on
 				#set($preset = $searcherManager.getData($catalogid, "convertpreset",$val ))
 				$!preset
 			#else
-				Online Preview
+				[[Online Preview]]
 			#end	
 		</tr>
 	#end

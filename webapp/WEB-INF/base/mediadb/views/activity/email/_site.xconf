@@ -1,0 +1,7 @@
+<page>
+	<property name="subject">Order processed</property>
+	<permission name="view">
+		<boolean value="true"/>
+	</permission>	
+
+</page>

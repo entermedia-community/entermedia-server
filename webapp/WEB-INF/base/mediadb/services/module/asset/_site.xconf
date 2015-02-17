@@ -1,0 +1,21 @@
+<page>
+	<property name="module">asset</property>
+	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+
+	<!--TODO: add assetid's, preprocess, path-action name="MediaArchiveXXXX.loadAsset" alltypes="true"/ -->
+	
+	<permission name="download">
+		   <userprofile property="download" equals="true" />
+	</permission>
+	<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<userprofile property="metadatageneral" equals="true" />
+			<userprofile property="editassettags" equals="true" />
+			<!-- Make sure we load the asset before we load permissions -->
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>
+
+
+</page>

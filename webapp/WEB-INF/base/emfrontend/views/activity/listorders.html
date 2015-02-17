@@ -5,7 +5,7 @@
 <div id="emselectable" >
 <table class="emresultscontent" > 
 <tr id="tableheader">
-
+<td>Order Type</td>
 #foreach( $detail in $details)
 	#if( $velocityCount == 1)
 	<th class="firstheader">$detail.text</th>
@@ -17,10 +17,14 @@
 	<th >$detail.text</th>
 	#end
 #end
+
+
+</tr>
 #foreach( $order in $orders )
 #set( $userstatus = false )
 #set( $userstatus = $searcherManager.getData($catalogid,"order/userstatus",$order.historyuserstatus ))
 	<tr rowid="$order.id">
+	<td> $searcherManager.getData($catalogid,"order/ordertype",$order.ordertype )</td>
 	#foreach( $detail in $details)
 		$!context.putPageValue("detail",$detail)
 		#if( $detail.id == "historyuserstatus" && $userstatus)

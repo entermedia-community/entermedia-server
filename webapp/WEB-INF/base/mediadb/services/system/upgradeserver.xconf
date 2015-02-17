@@ -1,0 +1,5 @@
+<page>
+	<property name="virtual">true</property>
+		<path-action name="JsonDataModule.preprocess" />
+	<path-action name="UpdateModule.updateProjects" />
+</page>

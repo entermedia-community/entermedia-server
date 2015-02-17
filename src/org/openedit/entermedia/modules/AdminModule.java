@@ -625,12 +625,20 @@ public class AdminModule extends BaseModule
 
 	public void loadEnterMediaKey(WebPageRequest inReq)
 	{
-		User user = inReq.getUser();
+		String account = inReq.getRequestParameter("id");
+		String password = inReq.getRequestParameter("password");
+		User user = getUserSearcher().getUser(account);
+		Boolean ok = false;
 		if (user != null)
 		{
-			String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
-			String value = user.getUserName() + "md542" + md5;
-			inReq.putPageValue("entermediakey", value);
+			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
+			if (getUserManager().authenticate(aReq))
+			{
+				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
+				String value = user.getUserName() + "md542" + md5;
+				inReq.putPageValue("entermediakey", value);
+				inReq.putPageValue("user", user);
+			}
 		}
 	}
 

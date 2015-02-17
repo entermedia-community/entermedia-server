@@ -18,4 +18,5 @@
 	<location id="attachment">Attachments</location>
 	
 	<location id="pushpublisher">Push Publisher</location>
+	<location id="wordpress">Wordpress CMS</location> 
 </publishtype>

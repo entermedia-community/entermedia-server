@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root> 
+  <data id="moduletestmodulecreate" description="Creates a new record with or without an ID." name="Create a new Test Module" httpmethod="POST" url="/mediadb/services/module/testmodule/create" docsection="moduletestmodule"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Test Module Test",
+     "id":"101"   
+     }]]></samplerequest> 
+  </data>  
+  <data id="moduletestmodulesearch" name="Search for Test Module" httpmethod="POST" url="/mediadb/services/module/testmodule/search" docsection="moduletestmodule"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="moduletestmoduleretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/module/testmodule/data/101" docsection="moduletestmodule"/>  
+  <data id="moduletestmoduleupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/module/testmodule/data/101" docsection="moduletestmodule"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest> 
+  </data>  
+  <data id="moduletestmoduledelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/testmodule/data/101" docsection="moduletestmodule"/>  
+  <data id="moduleordercreate" description="Creates a new record with or without an ID." name="Create a new Orders" httpmethod="POST" url="/mediadb/services/module/order/create" docsection="moduleorder"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Orders Test",
+     "id":"101"   
+     }]]></samplerequest> 
+  </data>  
+  <data id="moduleordersearch" name="Search for Orders" httpmethod="POST" url="/mediadb/services/module/order/search" docsection="moduleorder"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="moduleorderretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/module/order/data/101" docsection="moduleorder"/>  
+  <data id="moduleorderupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/module/order/data/101" docsection="moduleorder"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest> 
+  </data>  
+  <data id="moduleorderdelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/order/data/101" docsection="moduleorder"/>  
+  <data id="moduleassetcreate" description="Creates a new record with or without an ID." name="Create a new Assets" httpmethod="POST" url="/mediadb/services/module/asset/create" docsection="moduleasset"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Assets Test",
+     "id":"101"   
+     }]]></samplerequest> 
+  </data>  
+  <data id="moduleassetsearch" name="Search for Assets" httpmethod="POST" url="/mediadb/services/module/asset/search" docsection="moduleasset"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="moduleassetretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/module/asset/data/101" docsection="moduleasset"/>  
+  <data id="moduleassetupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/module/asset/data/101" docsection="moduleasset"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest> 
+  </data>  
+  <data id="moduleassetdelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/asset/data/101" docsection="moduleasset"/>  
+  <data id="modulelibrarycreate" description="Creates a new record with or without an ID." name="Create a new Libraries" httpmethod="POST" url="/mediadb/services/module/library/create" docsection="modulelibrary"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Libraries Test",
+     "id":"101"   
+     }]]></samplerequest> 
+  </data>  
+  <data id="modulelibrarysearch" name="Search for Libraries" httpmethod="POST" url="/mediadb/services/module/library/search" docsection="modulelibrary"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="modulelibraryretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/module/library/data/101" docsection="modulelibrary"/>  
+  <data id="modulelibraryupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/module/library/data/101" docsection="modulelibrary"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest> 
+  </data>  
+  <data id="modulelibrarydelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/library/data/101" docsection="modulelibrary"/>  
+  <data id="modulelibrarycollectioncreate" description="Creates a new record with or without an ID." name="Create a new Collections" httpmethod="POST" url="/mediadb/services/module/librarycollection/create" docsection="modulelibrarycollection"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Collections Test",
+     "id":"101"   
+     }]]></samplerequest> 
+  </data>  
+  <data id="modulelibrarycollectionsearch" name="Search for Collections" httpmethod="POST" url="/mediadb/services/module/librarycollection/search" docsection="modulelibrarycollection"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="modulelibrarycollectionretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/module/librarycollection/data/101" docsection="modulelibrarycollection"/>  
+  <data id="modulelibrarycollectionupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/module/librarycollection/data/101" docsection="modulelibrarycollection"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest> 
+  </data>  
+  <data id="modulelibrarycollectiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/librarycollection/data/101" docsection="modulelibrarycollection"/>  
+  <data id="moduledivisioncreate" description="Creates a new record with or without an ID." name="Create a new Divisions" httpmethod="POST" url="/mediadb/services/module/division/create" docsection="moduledivision"> 
+    <samplerequest><![CDATA[{      
+     "name": "JSON Divisions Test",
+     "id":"101"   
+     }]]></samplerequest> 
+  </data>  
+  <data id="moduledivisionsearch" name="Search for Divisions" httpmethod="POST" url="/mediadb/services/module/division/search" docsection="moduledivision"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="moduledivisionretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/module/division/data/101" docsection="moduledivision"/>  
+  <data id="moduledivisionupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/mediadb/services/module/division/data/101" docsection="moduledivision"> 
+    <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
+   }]]></samplerequest> 
+  </data>  
+  <data id="moduledivisiondelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/mediadb/services/module/division/data/101" docsection="moduledivision"/>
+</root>

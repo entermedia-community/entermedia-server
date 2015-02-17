@@ -1,0 +1,17 @@
+{
+#set ($status = "ok")
+#if( $error )
+	#set ($status = $error)	
+#end
+
+"response":
+	{
+	    "status":"$status"
+	},
+	"results":[
+	#foreach( $id in $upgrader.list ) #set( $logreturned = $upgrader.upgrade($id,$context) )
+		#if( $velocityCount != 1 ), #end
+		{"id":"$id","loglines": "$logreturned.size()" }
+	#end 
+	]
+}

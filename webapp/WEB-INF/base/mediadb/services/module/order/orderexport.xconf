@@ -1,0 +1,7 @@
+<page>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
+	<path-action name="OrderModule.createOrderFromAssets" />
+	<path-action name="OrderModule.createConversionAndPublishRequest"/>
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
+	
+</page>

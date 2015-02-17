@@ -217,14 +217,16 @@ public class AttachmentManager
 	{
 		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
 		Data file = (Data) attachmentSearcher.searchById(inFileid);
-
-		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
-		String sourcepath = file.get("parentsourcepath") + "/" + file.getName();
-
-		Page page = getPageManager().getPage(root + sourcepath);
-		getPageManager().removePage(page);
-
-		attachmentSearcher.delete(file, inReq.getUser());
+		if( file != null)
+		{
+			String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
+			String sourcepath = file.get("parentsourcepath") + "/" + file.getName();
+	
+			Page page = getPageManager().getPage(root + sourcepath);
+			getPageManager().removePage(page);
+	
+			attachmentSearcher.delete(file, inReq.getUser());
+		}
 	}
 
 	public void renameFilder(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inFolderId, String inNewName)
