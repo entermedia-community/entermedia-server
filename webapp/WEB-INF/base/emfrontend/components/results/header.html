@@ -6,7 +6,7 @@
 		#end	
 		##Email and publish should be under share
 		#if($canpublish || $canemaillink )
-			<li><a>Share</a>
+			<li><a>[[Share]]</a>
 				<ul>
 					#if( $canemaillink )
 					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a></li>
@@ -104,9 +104,9 @@
 				<a class="ajax" targetdivinner="resultsdiv" title="$hits.size() results" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
 				
 					#if (!$resultview || $resultview == 'table')
-						View Gallery
+						[[View Gallery]]
 					#else
-						View Table
+						[[View Table]]
 					#end
 					
 				</a>

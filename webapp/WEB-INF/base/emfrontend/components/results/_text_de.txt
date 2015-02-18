@@ -1,5 +1,7 @@
 #
-#Thu Feb 12 16:09:36 EST 2015
+#Mon Feb 16 09:59:47 EST 2015
+Share=Aktie
+View\ Table=view-Tabelle
 Download=Download
 Deselect\ All=alle abw\u00E4hlen
 Add\ to\ Basket=in den Warenkorb
@@ -12,10 +14,11 @@ of=von
 Cancel=r\u00FCckg\u00E4ngig machen
 Add\ Column=Spalte hinzuf\u00FCgen
 Share\ Gallery=Aktien Galerie
+View\ Gallery=Galerie ansehen
 Edit\ Columns=edit Spalten
 No\ results\ found=keine Ergebnisse gefunden
 Displaying\ records=Anzeige von Datens\u00E4tzen
 Edit=bearbeiten
 Remove=entfernen
-Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
 Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen
+Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
