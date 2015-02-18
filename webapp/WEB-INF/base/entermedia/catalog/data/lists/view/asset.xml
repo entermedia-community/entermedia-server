@@ -13,5 +13,6 @@
 	<property id="restassetdetails" module="asset"  systemdefined="true" byassettype="false" ordering="06">REST API Asset Details</property>
 	<property id="restsearchresults" module="asset"  systemdefined="true" byassettype="false" ordering="07">REST API Results</property>
 	<property id="typeaheaddetails" module="asset"  systemdefined="true" byassettype="false" ordering="08">Details for Type Ahead Searches</property>
+		<property id="print" module="asset" systemdefined="false" byassettype="true" ordering="09">Printable Details (Galllery)</property>
 	
 </properties>

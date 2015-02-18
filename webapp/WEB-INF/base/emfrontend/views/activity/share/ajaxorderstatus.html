@@ -5,6 +5,10 @@
 	
 	Sent!
 	
+	#elseif( $order.ordertype == "gallery")
+	
+	[[Your Gallery is ready.]] <a class="btn" href="$home$apphome/views/activity/details/vieworder.html?orderid=${order.id}">View gallery</a>
+		
 	#else
 	
 	Published!

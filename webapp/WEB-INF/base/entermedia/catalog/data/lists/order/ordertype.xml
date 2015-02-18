@@ -6,5 +6,6 @@
 	<property id="export" >Export</property>
 	<property id="download" >Download</property>
 	<property id="upload" >Upload</property>
+	<property id="gallery" >Gallery</property>
 
 </properties>

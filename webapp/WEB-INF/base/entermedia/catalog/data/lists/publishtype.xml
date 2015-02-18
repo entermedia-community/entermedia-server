@@ -19,4 +19,6 @@
 	
 	<location id="pushpublisher">Push Publisher</location>
 	<location id="wordpress">Wordpress CMS</location> 
+		<location id="gallery">Gallery</location>
+	
 </publishtype>

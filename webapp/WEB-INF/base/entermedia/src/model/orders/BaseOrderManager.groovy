@@ -592,6 +592,8 @@ public class BaseOrderManager implements OrderManager {
 			if( userid != null )
 			{
 				user = (User)archive.getSearcherManager().getSearcher("system", "user").searchById(userid);
+			} else{
+				user = inUser;
 			}
 			Data preset = (Data) presets.searchById(presetid);
 

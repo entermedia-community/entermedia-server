@@ -429,7 +429,10 @@ public class BasePushManager implements PushManager
 
 		String url = server + "/media/services/rest/" + "handlesync.xml?catalogid=" + targetcatalogid;
 		PostMethod method = new PostMethod(url);
-
+		method.getParams().setContentCharset("utf-8"); //The line I added
+		method.setRequestHeader("Content-Type", "multipart/form-data; charset=utf-8");
+		
+		
 		String prefix = inArchive.getCatalogSettingValue("push_asset_prefix");
 		if( prefix == null)
 		{
