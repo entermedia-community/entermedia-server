@@ -53,14 +53,18 @@
 
 jQuery(document).ready(function(){ 
 $('#map').gmap({
-	 'center':'39.025818619038375,-95.03089171562499',
+	 'center':'$mediaarchive.getCatalogSettingValue("startinglatlong")',
 }).bind('init', function(ev, map) {
 	#foreach($location in $existingrecords)
+	#set($icon = $mediaarchive.getData("geoicon", $location.geoicon))
 		#set($lat = $location.position_lat)
 		#set($lng = $location.position_lng)
       	$('#map').gmap('addMarker', 
 		{
-			'position': '$lat,$lng'		    
+			'position': '$lat,$lng'	
+			#if($icon)
+			,'icon': '$icon.url'
+			#end
 	 	}).click(function() {
 	 		var location = this;
 	 		jQuery.get("$content.searchhome/edit/table/mapbubble.html?searchtype=${searchtype}&id=$location.id&$passalongdec&args&editpath=$editpath", function (content){

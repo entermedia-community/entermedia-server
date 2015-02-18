@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<geoicons> 
+  
+  <geoicon id="blue" name="Blue" url="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" />
+  <geoicon id="red" name="Red" url="http://maps.google.com/mapfiles/ms/icons/red-dot.png" />  
+  <geoicon id="purple" name="Purple" url="http://maps.google.com/mapfiles/ms/icons/purple-dot.png" />  
+  <geoicon id="yellow" name="Yellow" url="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png" />  
+  <geoicon id="green" name="Green" url="http://maps.google.com/mapfiles/ms/icons/green-dot.png" />  
+</geoicons>
+
+
+
+
+  

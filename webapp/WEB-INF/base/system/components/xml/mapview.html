@@ -55,7 +55,7 @@
 
 jQuery(document).ready(function(){ 
 $('#map').gmap({
-	 'center':'39.025818619038375,-95.03089171562499',
+	 'center':'$mediaarchive.getCatalogSettingValue("startinglatlong")',
 }).bind('init', function(ev, map) {
 	#foreach($location in $existingrecords)
 		#set($lat = $location.position_lat)
