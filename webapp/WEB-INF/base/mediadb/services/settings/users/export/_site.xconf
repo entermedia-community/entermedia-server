@@ -6,8 +6,6 @@
 		<property name="hitsname">hits</property>
 		<property name="catalogid">system</property>
 	</path-action> 
-		
-	</path-action>
 	
 	<path-action name="Script.run" alltypes="true" >
 		<script>./generatecsv.groovy</script>
