@@ -95,6 +95,7 @@
 	
 </table>
 #if($downloadall )
-	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >Download All (Zip)</a></div>
+	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >Download All (Zip)</a><br/><a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">Download Metadata</a></div>
 #end	
+
 </div>

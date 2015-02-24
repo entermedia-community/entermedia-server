@@ -408,6 +408,8 @@ public class OrderModule extends BaseMediaModule
 			}
 			HitTracker items = getOrderManager().findAssets(req, catalogid, order);
 			req.putPageValue("orderassets", items);
+			req.putPageValue("hits", items);
+
 			return items;
 		}
 		return null;
