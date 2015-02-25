@@ -144,7 +144,7 @@ uiload = function() {
 		var targetid = jQuery(this).data("targetid");
 		jQuery(this).datepicker( {
 			altField: "#"+ targetid,
-			altFormat: "yy-mm-dd", 
+			altFormat: "mm/dd/yy", 
 			yearRange: '1900:2050'
 		});
 				
