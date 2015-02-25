@@ -45,12 +45,13 @@
 		#if( !$val) #set( $val = "") #end	
 	
 		$!context.putPageValue("val",$val)
-		<div id="inputarea_${detail.id}" class="row" style="padding: 5px 0px;">
+		<div id="inputarea_${detail.id}" class="row" >
 		
 		
-	<div class="form-group">
-		<label for="${detail.id}.value" class="col-lg-4 control-label">$!detail.name</label>
-		<div class="col-lg-8">
+	
+		
+		<div class="col-md-8">
+		<strong>$!detail.name:</strong>
 			#if( $editrow )	
 				$pages.include("$xmledithome/detailedit.html", $context)
 			#else  ##NOT EDITABLE
@@ -60,7 +61,7 @@
 				<span class="help-block">$detail.note</span>
 			#end
 		</div>
-	</div>
+	
 	</div>
 	#end
 	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
