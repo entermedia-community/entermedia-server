@@ -4,6 +4,6 @@
   <path-action name="Admin.logout"/>
   <path-action name="Admin.loadPermissions"/>
   <permission name="view">
-    <boolean value="true"/>
+   <blank/>
   </permission>
 </page>
