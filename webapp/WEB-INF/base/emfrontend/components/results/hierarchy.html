@@ -8,7 +8,7 @@
 	#if( $hideheader &&  $hideheader != "true")
 		$pages.include("$apphome/components/results/header.html",$context) 
 	#end
-	#if($category && $category.id != "index")
+	#if($category)
 		#set($categorycarousel = "true")
 		$context.putPageValue("categorycarousel","true")
 	#else

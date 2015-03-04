@@ -13,18 +13,23 @@ public void init(){
 	if (hits){
 		Data data = req.getPageValue("category");
 		if (data){
+			String categoryid = "${data.id}";
 			int max = toInt(archive.getCatalogSettingValue("category_hierarchy_peeknumber"),4);//give it a default of 4 if not specified
 			if (max > 4 || max <= 0) max = 4;//only supports 4 at the most
 			Map<Data,List<Data>> map = new HashMap<Data,List<Data>>();
 			hits.each{
 				Data hit = it;
 				String cat = hit.get("category-exact").replace("|","").trim();
-				if (cat.startsWith("${data.id}_")){
-					cat = cat.substring("${data.id}_".length());
+				if (categoryid == "index"){
+					cat = "index_$cat";
+				}
+				if (cat.startsWith("${categoryid}_")){
+					cat = cat.substring("${categoryid}_".length());
 					String [] tokens = cat.split("_");
 					if (tokens && tokens.length > 0){
 						cat = tokens[0];
-						Data categorydata = archive.getData("category","${data.id}_$cat");
+						String searchid = (categoryid == "index" ? "$cat" : "${categoryid}_$cat");
+						Data categorydata = archive.getData("category",searchid);
 						if (!categorydata){
 							return;
 						}
