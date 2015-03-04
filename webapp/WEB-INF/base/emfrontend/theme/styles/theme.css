@@ -4300,6 +4300,7 @@ span.drag-and-drop {
 #module-dropdown {
     padding-left: 8px !important;
     padding-right: 6px !important;
+    height: 13px !important;
     position: relative;
 }
 #module-dropdown span {

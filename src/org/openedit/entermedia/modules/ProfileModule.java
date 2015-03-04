@@ -234,14 +234,33 @@ public class ProfileModule extends MediaArchiveModule
 	public void changeResultView(WebPageRequest inReq)
 	{
 		UserProfile userProfile = inReq.getUserProfile();
-		String resultview = userProfile.get("resultview");
-		if (resultview == null || resultview.equalsIgnoreCase("table"))
+		String changerequest = inReq.getRequestParameter("resultview");
+		if (changerequest == null || changerequest.isEmpty())
 		{
-			userProfile.setProperty("resultview", "gallery");
+			String resultview = userProfile.get("resultview");
+			if (resultview == null || resultview.equalsIgnoreCase("table"))
+			{
+				userProfile.setProperty("resultview", "gallery");
+			}
+			else
+			{
+				userProfile.setProperty("resultview", "table");
+			}
 		}
 		else
 		{
-			userProfile.setProperty("resultview", "table");
+			if (changerequest.equalsIgnoreCase("gallery"))
+			{
+				userProfile.setProperty("resultview", "gallery");
+			}
+			else if (changerequest.equalsIgnoreCase("hierarchy"))
+			{
+				userProfile.setProperty("resultview", "hierarchy");
+			}
+			else
+			{
+				userProfile.setProperty("resultview", "table");
+			}
 		}
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
 		if (hits == null)
@@ -249,7 +268,6 @@ public class ProfileModule extends MediaArchiveModule
 			hits = (HitTracker) inReq.getPageValue("albumitems");
 		}
 		inReq.putPageValue("hits", hits);
-
 	}
 
 	public void saveValues(WebPageRequest inReq) throws Exception
