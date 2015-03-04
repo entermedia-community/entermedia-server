@@ -10,6 +10,10 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 >
 
 <!-- GROOVY Script Version -->
+	<lang:groovy id="cmykpreprocessorCreator" script-source="conversions/creators/cmykpreprocessorCreator.groovy" lazy-init="false">
+		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
+		<lang:property name="exec"><ref bean="exec" /></lang:property>
+	</lang:groovy>
 	<lang:groovy id="imagemagickCreator" script-source="conversions/creators/imagemagickCreator.groovy" lazy-init="false">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
