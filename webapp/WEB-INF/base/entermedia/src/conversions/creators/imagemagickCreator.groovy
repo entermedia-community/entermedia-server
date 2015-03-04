@@ -230,6 +230,16 @@ public class imagemagickCreator extends BaseImageCreator {
 				{
 					//exifthumbtool probably did not work due to permissions
 					//Highlights doesn't have the original - maybe we can revert back to an input if the original doesn't exist?  Or just
+					String page = null;
+					if( inStructions.getPageNumber() > 1 )
+					{
+						page = "page" + inStructions.getPageNumber();
+					}
+					else
+					{
+						page = "";
+					}
+					
 					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
 					
 					result.setError("Prepropessor could not create tmp file");
