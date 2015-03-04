@@ -1278,7 +1278,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<ref bean="ffmpegimageCreator" />
 			<ref bean="exiftoolthumbCreator" />
 			<ref bean="oofficeDocumentCreator" />
-			
+			<ref bean="cmykpreprocessorCreator" />
 		</list>
 	    </constructor-arg>
 	</bean>
