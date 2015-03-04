@@ -54,7 +54,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 				preprocessCMYKAsset(inArchive,inAsset,result);
 			}
 		}
-		result.setComplete(false);
+		result.setOk(true);
+		result.setComplete(true);
 		return result;
 	}
 	
@@ -73,10 +74,9 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 					log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and ICCProfile, do not need to embed profile");
 				}
 				else {
-					log.info("#### preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and no ICCProfile, need to embed profile");
+					log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and no ICCProfile, need to embed profile");
 					String out = getEmbedICCProfile(original);
-					System.out.println("result: "+out);
-					
+					log.info("finished embedding profile, output=$out");
 				}
 			} else {
 				log.info("preprocessing step: asset ["+inAsset.getId()+"] does not have CMYK ColorMode, skipping");
