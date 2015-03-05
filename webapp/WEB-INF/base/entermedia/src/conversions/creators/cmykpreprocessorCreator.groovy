@@ -123,8 +123,14 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		if (colorinfo!=null){
 			String [] tokens = colorinfo.split("\\s");
 			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-			String iccprofile = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
-			if (colormode!=null && colormode.equalsIgnoreCase("cmyk")){
+			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
+			String iccprofile = (tokens!=null && tokens.length >= 9 ? tokens[8] : null);
+//			System.out.println("Mode: $colormode\nSpace: $colorspace\nProfile: $iccprofile")
+			//if colormode || colorspace == cmyk
+			// then if iccprofile == cmky then don't embed
+			// otherwise embed
+			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
+				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
 				if (iccprofile==null || !iccprofile.equalsIgnoreCase("cmyk")){
 					requiresProfile = true;
 				}
@@ -139,8 +145,11 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		if (colorinfo!=null){
 			String [] tokens = colorinfo.split("\\s");
 			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-			String iccprofile = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
-			if (colormode!=null && colormode.equalsIgnoreCase("cmyk")){
+			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
+			String iccprofile = (tokens!=null && tokens.length >= 9 ? tokens[8] : null);
+//			System.out.println("Mode: $colormode\nSpace: $colorspace\nProfile: $iccprofile")
+			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
+				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
 				if (iccprofile!=null && iccprofile.equalsIgnoreCase("cmyk")){
 					hasprofile = true;
 				}
@@ -157,6 +166,7 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		command.add("-S");
 		command.add("-G0");
 		command.add("-ColorMode");
+		command.add("-ColorSpace");
 		command.add("-ICC_Profile:ColorSpaceData");
 		if (isOnWindows()){
 			command.add("\"" +  inOriginal.getContentItem().getAbsolutePath()+ "\"");
