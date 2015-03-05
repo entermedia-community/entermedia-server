@@ -36,8 +36,33 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 
 	@Override
 	public boolean canReadIn(MediaArchive inArchive, String inInputType) {
-		log.info("cmykpreprocessor canReadIn, $inInputType, return true");
-		return true;
+		return ("jpg".equals(inInputType));
+	}
+	
+	@Override
+	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
+	{
+		StringBuffer path = new StringBuffer();
+		String prefix = inStructions.getProperty("pathprefix");
+		if( prefix != null)
+		{
+			path.append(prefix);
+		}
+		else
+		{
+			path.append("/WEB-INF/data");
+			path.append(inArchive.getCatalogHome());
+			path.append("/generated/");
+		}
+		path.append(inStructions.getAssetSourcePath()).append("/originalcopy");
+		if (inStructions.getOutputExtension() != null)
+		{
+			path.append(".").append(inStructions.getOutputExtension());
+		}
+		//this is a preprocessor so don't want to populate outputpath (?)
+//		inStructions.setOutputPath(path.toString());
+//		return inStructions.getOutputPath();
+		return path.toString();
 	}
 
 	@Override
@@ -45,30 +70,46 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			Page inOut, ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
+		Page original = inArchive.getOriginalDocument(inAsset);
+		String generatedpath = populateOutputPath(inArchive,inStructions);
+		Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
 		String colorspace = inAsset.get("colorspace");
 		if (colorspace!=null && colorspace.isEmpty()==false)
 		{
 			Data colorspacedata  = inArchive.getData("colorspace",colorspace);
 			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk"))
 			{
-				preprocessCMYKAsset(inArchive,inAsset,result);
+				preprocessCMYKAsset(inArchive,inAsset,inStructions,result);
 			}
+		}
+		if (!generatedpage.exists()){
+			String outputpath = generatedpage.getContentItem().getAbsolutePath();
+			new File(outputpath).getParentFile().mkdirs();
+			inArchive.getPageManager().copyPage(original,generatedpage);
 		}
 		result.setOk(true);
 		result.setComplete(true);
 		return result;
 	}
 	
-	protected void preprocessCMYKAsset(MediaArchive inArchive, Asset inAsset, ConvertResult inResult)
+	protected void preprocessCMYKAsset(MediaArchive inArchive, Asset inAsset, ConvertInstructions inStructions, ConvertResult inResult)
 	{
 		Page original = inArchive.getOriginalDocument(inAsset);
 		if (requiresICCProfileEmbed(original)){
 			log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and no ICCProfile, need to embed profile");
-			embedICCProfile(original,original);
-			if (requiresICCProfileEmbed(original)){
+			String generatedpath = populateOutputPath(inArchive,inStructions);
+			Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
+			String outputpath = generatedpage.getContentItem().getAbsolutePath();
+			new File(outputpath).getParentFile().mkdirs();
+			embedICCProfile(original,generatedpage);
+			if (requiresICCProfileEmbed(generatedpage)){
 				log.warn("preprocessing step: asset ["+inAsset.getId()+"] still does not have ICCProfile, unable to embed");
 			} else {
 				log.info("preprocessing step: asset ["+inAsset.getId()+"] has embedded profile, executed successfully");
+				//at this point, need to replace original with embedded version
+				//this is so that all future conversions are working from embedded version
+				inArchive.getPageManager().copyPage(generatedpage,original);
+				log.info("preprocessing step: asset ["+inAsset.getId()+"] copied generated embedded file to original location");
 			}
 		}
 		else {
