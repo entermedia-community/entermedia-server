@@ -1268,20 +1268,16 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
-
-
-	
-	
 	<bean id="imagePreProcessors" class="java.util.ArrayList">
 	    <constructor-arg>
 		<list>
 			<ref bean="ffmpegimageCreator" />
 			<ref bean="exiftoolthumbCreator" />
 			<ref bean="oofficeDocumentCreator" />
+			<ref bean="cmykpreprocessorCreator" />
 		</list>
 	    </constructor-arg>
 	</bean>
-	
 	<bean id="HotFolderModule" class="org.openedit.entermedia.modules.HotFolderModule">
 	</bean>			
 	<bean id="hotFolderManager" class="org.openedit.entermedia.scanner.HotFolderManager">
