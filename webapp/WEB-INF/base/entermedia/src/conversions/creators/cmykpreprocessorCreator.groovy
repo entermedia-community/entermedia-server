@@ -1,19 +1,23 @@
 package conversions.creators;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.dom4j.DocumentHelper
+import org.dom4j.Element
+import org.dom4j.io.OutputFormat
+import org.dom4j.io.XMLWriter
+import org.openedit.Data
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.creator.BaseImageCreator
+import org.openedit.entermedia.creator.ConvertInstructions
+import org.openedit.entermedia.creator.ConvertResult
+import org.openedit.util.DateStorageUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openedit.Data;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.BaseImageCreator;
-import org.openedit.entermedia.creator.ConvertInstructions;
-import org.openedit.entermedia.creator.ConvertResult;
-
-import com.openedit.page.Page;
-import com.openedit.util.ExecResult;
+import com.openedit.OpenEditException
+import com.openedit.page.Page
+import com.openedit.util.ExecResult
+import com.openedit.util.FileUtils
 
 
 
@@ -54,15 +58,13 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			path.append(inArchive.getCatalogHome());
 			path.append("/generated/");
 		}
-		path.append(inStructions.getAssetSourcePath()).append("/originalcopy");
-		if (inStructions.getOutputExtension() != null)
-		{
-			path.append(".").append(inStructions.getOutputExtension());
-		}
-		//this is a preprocessor so don't want to populate outputpath (?)
-//		inStructions.setOutputPath(path.toString());
-//		return inStructions.getOutputPath();
-		return path.toString();
+		path.append(inStructions.getAssetSourcePath()).append("/cmykinfo.xconf");//make an xconf
+//		if (inStructions.getOutputExtension() != null)
+//		{
+//			path.append(".").append(inStructions.getOutputExtension());
+//		}
+		inStructions.setOutputPath(path.toString());
+		return inStructions.getOutputPath();
 	}
 
 	@Override
@@ -83,9 +85,11 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			}
 		}
 		if (!generatedpage.exists()){
-			String outputpath = generatedpage.getContentItem().getAbsolutePath();
-			new File(outputpath).getParentFile().mkdirs();
-			inArchive.getPageManager().copyPage(original,generatedpage);
+//			String outputpath = generatedpage.getContentItem().getAbsolutePath();
+//			new File(outputpath).getParentFile().mkdirs();
+//			inArchive.getPageManager().copyPage(original,generatedpage);
+			//do not copy original file - create an xconf with a timestamp
+			saveOutput(inArchive,inStructions);
 		}
 		result.setOk(true);
 		result.setComplete(true);
@@ -97,19 +101,23 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		Page original = inArchive.getOriginalDocument(inAsset);
 		if (requiresICCProfileEmbed(original)){
 			log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and no ICCProfile, need to embed profile");
-			String generatedpath = populateOutputPath(inArchive,inStructions);
-			Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
-			String outputpath = generatedpage.getContentItem().getAbsolutePath();
-			new File(outputpath).getParentFile().mkdirs();
-			embedICCProfile(original,generatedpage);
-			if (requiresICCProfileEmbed(generatedpage)){
+//			String generatedpath = populateOutputPath(inArchive,inStructions);
+//			Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
+//			String outputpath = generatedpage.getContentItem().getAbsolutePath();
+//			new File(outputpath).getParentFile().mkdirs();
+//			embedICCProfile(original,generatedpage);
+			embedICCProfile(original,original);//change the original
+//			if (requiresICCProfileEmbed(generatedpage)){
+			if (requiresICCProfileEmbed(original)){//check the original
 				log.warn("preprocessing step: asset ["+inAsset.getId()+"] still does not have ICCProfile, unable to embed");
+				saveOutput(inArchive,inStructions,"unable to embed ICCProfile");
 			} else {
 				log.info("preprocessing step: asset ["+inAsset.getId()+"] has embedded profile, executed successfully");
 				//at this point, need to replace original with embedded version
 				//this is so that all future conversions are working from embedded version
-				inArchive.getPageManager().copyPage(generatedpage,original);
-				log.info("preprocessing step: asset ["+inAsset.getId()+"] copied generated embedded file to original location");
+//				inArchive.getPageManager().copyPage(generatedpage,original);
+//				log.info("preprocessing step: asset ["+inAsset.getId()+"] copied generated embedded file to original location");
+				saveOutput(inArchive,inStructions,"embedded ICCProfile");
 			}
 		}
 		else {
@@ -125,10 +133,6 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
 			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
 			String iccprofile = (tokens!=null && tokens.length >= 9 ? tokens[8] : null);
-//			System.out.println("Mode: $colormode\nSpace: $colorspace\nProfile: $iccprofile")
-			//if colormode || colorspace == cmyk
-			// then if iccprofile == cmky then don't embed
-			// otherwise embed
 			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
 				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
 				if (iccprofile==null || !iccprofile.equalsIgnoreCase("cmyk")){
@@ -147,7 +151,6 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
 			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
 			String iccprofile = (tokens!=null && tokens.length >= 9 ? tokens[8] : null);
-//			System.out.println("Mode: $colormode\nSpace: $colorspace\nProfile: $iccprofile")
 			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
 				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
 				if (iccprofile!=null && iccprofile.equalsIgnoreCase("cmyk")){
@@ -220,5 +223,50 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			}
 		}
 		return (result.getReturnValue() == 0);
+	}
+	
+	protected void saveOutput(MediaArchive inArchive, ConvertInstructions inStructions){
+		saveOutput(inArchive,inStructions,"no change");
+	}
+	
+	protected void saveOutput(MediaArchive inArchive, ConvertInstructions inStructions, String inDetails){
+		String outputpath = populateOutputPath(inArchive,inStructions);
+		Page output = inArchive.getPageManager().getPage(outputpath);
+		File file = new File(output.getContentItem().getAbsolutePath());
+		Element root = DocumentHelper.createDocument().addElement("properties");
+		Element prop1 = root.addElement("property");
+		prop1.addAttribute("name", "date");
+		prop1.setText(DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		Element prop2 = root.addElement("property");
+		prop2.addAttribute("name", "info");
+		prop2.setText(inDetails);
+		writeXmlFile(root,file);
+	}
+	
+	protected void writeXmlFile( Element inRoot, File inFile ){
+		File tempFile = new File( inFile.getParentFile(), inFile.getName() + ".temp" );
+		inFile.getParentFile().mkdirs();
+		FileOutputStream fos = null;
+		try
+		{
+			fos = new FileOutputStream( tempFile );
+			XMLWriter writer = new XMLWriter( fos, OutputFormat.createPrettyPrint() );
+			writer.write( inRoot );
+		}
+		catch( IOException e )
+		{
+			throw new OpenEditException(e);
+		}
+		finally
+		{
+			FileUtils.safeClose( fos );
+		}
+		if (inFile.exists()){
+			inFile.delete();
+		}
+		if ( !tempFile.renameTo(inFile) )
+		{
+			throw new OpenEditException( "Unable to rename " + tempFile + " to " + inFile );
+		}
 	}
 }
