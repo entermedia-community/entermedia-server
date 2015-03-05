@@ -153,14 +153,17 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		StringBuilder out = new StringBuilder();
 		StringBuilder err = new StringBuilder();
 		List<String> command = new ArrayList<String>();
-		command.add("exiftool");
 		command.add("-a");
 		command.add("-S");
 		command.add("-G0");
 		command.add("-ColorMode");
 		command.add("-ICC_Profile:ColorSpaceData");
-		command.add(inOriginal.getContentItem().getAbsolutePath());
-		if (execute(command,out,err)){
+		if (isOnWindows()){
+			command.add("\"" +  inOriginal.getContentItem().getAbsolutePath()+ "\"");
+		} else {
+			command.add(inOriginal.getContentItem().getAbsolutePath());
+		}
+		if (execute("exiftool",command,out,err)){
 			return out.toString();
 		}
 		return err.toString();
@@ -170,20 +173,26 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		StringBuilder out = new StringBuilder();
 		StringBuilder err = new StringBuilder();
 		List<String> command = new ArrayList<String>();
-		command.add("convert");
-		command.add(inOriginal.getContentItem().getAbsolutePath());
-		command.add("-profile");
-		command.add(getCMYKProfile());
-		command.add(inGenerated.getContentItem().getAbsolutePath());
-		execute(command);
+		if (isOnWindows()){
+			command.add("\"" + inOriginal.getContentItem().getAbsolutePath()+ "\"");
+			command.add("-profile");
+			command.add("\"" + getCMYKProfile()+ "\"");
+			command.add("\"" + inGenerated.getContentItem().getAbsolutePath()+ "\"");
+		} else {
+			command.add(inOriginal.getContentItem().getAbsolutePath());
+			command.add("-profile");
+			command.add(getCMYKProfile());
+			command.add(inGenerated.getContentItem().getAbsolutePath());
+		}
+		execute("convert",command);
 	}
 	
-	protected boolean execute(List<String> command){
-		return execute(command,null,null);
+	protected boolean execute(String command, List<String> args){
+		return execute(command,args,null,null);
 	}
 	
-	protected boolean execute(List<String> command, StringBuilder out, StringBuilder err){
-		ExecResult result = getExec().runExec(command, null, true, null);
+	protected boolean execute(String command, List<String> args, StringBuilder out, StringBuilder err){
+		ExecResult result = getExec().runExec(command, args, true);
 		if(!result.isRunOk()){
 			String error = result.getStandardError();
 			if (error != null) {
