@@ -5,9 +5,22 @@
 
 	<li class="section-title">
            <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 9px 15px 0 15px;">
-                 <span>Catalog $catalog</span>
+                 <span>$catalog</span>
+                 <span>$!catalog.rootpath</span>
                </li>
 	#set( $apps = $searcherManager.getList($appcatalogid,"app") )
+	<li class="auto">
+       <a href="#" class="app"> 
+           <img height="60" width="60" alt="$app" src="/manager/theme/images/folder.png" style="float:left; margin: -15px 15px 0 0;">
+           <div class="name" style="margin-left: 85px; margin-top: -12px;">
+               <div class="alias" style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Catalog Data</div>
+               <div class="path">$catalog.rootpath/catalog</div>
+                <div class="last-activity"></div>
+           </div>
+		</a>           
+	       <div class="scan">
+       </div>
+	</li>	
 	#foreach( $app in $apps)
 	<li class="auto">
        <a href="$home$apphome/views/applications/index.html?appcatalogid=$appcatalogid&id=$app.id" class="app">
@@ -22,17 +35,17 @@
            </div>
        </a>
        <div class="scan">
-           <a class="btn" style="margin-top: 15px;" href="$home${app.deploypath}">View</a>
-           <a class="btn" style="margin-top: 15px;" href="$home$apphome/views/applications/exports/${app}.zip?apppath=$app.deploypath">Download</a>
+           <a class="mbtn" style="margin-top: 15px;" href="$home${app.deploypath}">View</a>
+           <a class="mbtn" style="margin-top: 15px;" href="$home$apphome/views/applications/exports/${app}.zip?apppath=$app.deploypath">Download</a>
        </div>
 	</li>
 	#end
 	</ul> 
     
 <div class="scan" style="margin-top: 30px;margin-right: 0;">
-    <a class="btn" href="$home$apphome/views/applications/uploadapp.html?appcatalogid=$appcatalogid">Import Application</a>
-    <a class="btn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$appcatalogid">Create New Application</a>
-	<a class="btn blue confirm" style="margin-left: 200px;" href="./remove.html?catalogid=system&searchtype=catalog&id=$appcatalogid" confirm="Are you sure?">Delete Catalog</a>
+    <a class="mbtn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$appcatalogid">Create New Application</a>
+    <a class="mbtn" href="$home$apphome/views/applications/uploadapp.html?appcatalogid=$appcatalogid">Import Application</a>
+	<a class="mbtn blue confirm" style="margin-left: 200px;" href="./remove.html?catalogid=system&searchtype=catalog&id=$appcatalogid" confirm="Are you sure?">Delete Catalog</a>
 
 </div> 
 		

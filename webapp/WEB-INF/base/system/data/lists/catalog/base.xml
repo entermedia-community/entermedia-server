@@ -1,5 +1,4 @@
 
 <catalogss>
-  <catalogs id="media/catalogs/public" >Default</catalogs>
-  <catalog id="system" >System</catalog>
+  <catalogs id="media/catalogs/public" rootpath="/emshare" >Default</catalogs>
 </catalogss>
