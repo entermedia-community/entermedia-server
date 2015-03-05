@@ -36,7 +36,7 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 
 	@Override
 	public boolean canReadIn(MediaArchive inArchive, String inInputType) {
-		log.info("#### canReadIn");
+		log.info("cmykpreprocessor canReadIn, $inInputType, return true");
 		return true;
 	}
 
@@ -62,29 +62,50 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 	protected void preprocessCMYKAsset(MediaArchive inArchive, Asset inAsset, ConvertResult inResult)
 	{
 		Page original = inArchive.getOriginalDocument(inAsset);
-		String colorinfo = getColorModeAndProfileInfo(original);
+		if (requiresICCProfileEmbed(original)){
+			log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and no ICCProfile, need to embed profile");
+			embedICCProfile(original,original);
+			if (requiresICCProfileEmbed(original)){
+				log.warn("preprocessing step: asset ["+inAsset.getId()+"] still does not have ICCProfile, unable to embed");
+			} else {
+				log.info("preprocessing step: asset ["+inAsset.getId()+"] has embedded profile, executed successfully");
+			}
+		}
+		else {
+			log.info("preprocessing step: asset ["+inAsset.getId()+"] does not require an embedded ICCProfile");
+		}
+	}
+	
+	protected boolean requiresICCProfileEmbed(Page inPage){
+		boolean requiresProfile = false;
+		String colorinfo = getColorModeAndProfileInfo(inPage);
 		if (colorinfo!=null){
 			String [] tokens = colorinfo.split("\\s");
-			//[XMP];ColorMode:;CMYK
-			//[ICC_Profile];ColorSpaceData:;CMYK
+			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
+			String iccprofile = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
+			if (colormode!=null && colormode.equalsIgnoreCase("cmyk")){
+				if (iccprofile==null || !iccprofile.equalsIgnoreCase("cmyk")){
+					requiresProfile = true;
+				}
+			}
+		}
+		return requiresProfile;
+	}
+	
+	protected boolean hasICCProfile(Page inPage){
+		boolean hasprofile = false;
+		String colorinfo = getColorModeAndProfileInfo(inPage);
+		if (colorinfo!=null){
+			String [] tokens = colorinfo.split("\\s");
 			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
 			String iccprofile = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
 			if (colormode!=null && colormode.equalsIgnoreCase("cmyk")){
 				if (iccprofile!=null && iccprofile.equalsIgnoreCase("cmyk")){
-					log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and ICCProfile, do not need to embed profile");
+					hasprofile = true;
 				}
-				else {
-					log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and no ICCProfile, need to embed profile");
-					String out = getEmbedICCProfile(original);
-					log.info("finished embedding profile, output=$out");
-				}
-			} else {
-				log.info("preprocessing step: asset ["+inAsset.getId()+"] does not have CMYK ColorMode, skipping");
 			}
 		}
-		else {
-			log.info("preprocessing step: asset ["+inAsset.getId()+"] unable to retrieve ColorMode and ICCProfile info, aborting");
-		}
+		return hasprofile;
 	}
 	
 	protected String getColorModeAndProfileInfo(Page inOriginal){
@@ -104,8 +125,7 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		return err.toString();
 	}
 	
-	protected String getEmbedICCProfile(Page inOriginal){
-		//convert input.jpg -profile "USWebCoatedSWOP.icc" out.jpg
+	protected void embedICCProfile(Page inOriginal, Page inGenerated){
 		StringBuilder out = new StringBuilder();
 		StringBuilder err = new StringBuilder();
 		List<String> command = new ArrayList<String>();
@@ -113,11 +133,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		command.add(inOriginal.getContentItem().getAbsolutePath());
 		command.add("-profile");
 		command.add(getCMYKProfile());
-		command.add(inOriginal.getContentItem().getAbsolutePath());//should have a different output path?
-		if (execute(command,out,err)){
-			return out.toString();
-		}
-		return err.toString();
+		command.add(inGenerated.getContentItem().getAbsolutePath());
+		execute(command);
 	}
 	
 	protected boolean execute(List<String> command){
