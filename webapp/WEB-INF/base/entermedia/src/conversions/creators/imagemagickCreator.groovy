@@ -254,7 +254,14 @@ public class imagemagickCreator extends BaseImageCreator {
 			}
 			else if( input == null)
 			{
-				input = tmpout; //we are looking for a working format to use as input
+				//we are looking for a working format to use as input
+				
+				//cmykpreprocessor returns an xconf
+				//so this should be safe since there are probably
+				//no other preprocessors that return xconf files
+				if ("xconf" != tmpout.getPageType()){
+					input = tmpout;
+				}
 			}
 		}
 		if( input == null)
