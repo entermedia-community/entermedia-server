@@ -543,11 +543,23 @@ public class imagemagickCreator extends BaseImageCreator {
 			 com.add("RGB");
 			 }	
 			 }
-			 */		
-			setValue("profile", getPathtoProfile(), inStructions, com);
-			com.add("-auto-orient"); //Needed for rotate tool
-			com.add("-strip"); //This does not seem to do much
-			setValue("profile", getPathtoProfile(), inStructions, com);
+			 */	
+
+			String _colorspace = inAsset.get("colorspace");
+			log.info("Colorspace: " + _colorspace)
+
+			if( _colorspace != null && _colorspace.equalsIgnoreCase("4") )  //Edge case where someone has the wrong colorspace set in the file
+			{
+				setValue("profile", getPathtoProfile(), inStructions, com);
+				com.add("-auto-orient"); //Needed for rotate tool
+				com.add("-strip"); //This does not seem to do much
+				setValue("profile", getPathtoProfile(), inStructions, com);
+			}
+			else
+			{
+				setValue("colorspace", "sRGB", inStructions, com);
+			}
+			
 
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
 
