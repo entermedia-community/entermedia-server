@@ -40,7 +40,11 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 
 	@Override
 	public boolean canReadIn(MediaArchive inArchive, String inInputType) {
-		return ("jpg".equals(inInputType));
+		return ("jpg".equalsIgnoreCase(inInputType) || "jpeg".equalsIgnoreCase(inInputType) ||
+			"png".equalsIgnoreCase(inInputType) || 
+			"tiff".equalsIgnoreCase(inInputType) || "tif".equalsIgnoreCase(inInputType) ||
+			"gif".equalsIgnoreCase(inInputType) || "eps".equalsIgnoreCase(inInputType)
+			);
 	}
 	
 	@Override
@@ -130,15 +134,15 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		String colorinfo = getColorModeAndProfileInfo(inPage);
 		if (colorinfo!=null){
 			String [] tokens = colorinfo.split("\\s");
-			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
-			String iccprofile = (tokens!=null && tokens.length >= 9 ? tokens[8] : null);
-			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
-				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
+//			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
+//			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
+			String iccprofile = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
+//			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
+//				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
 				if (iccprofile==null || !iccprofile.equalsIgnoreCase("cmyk")){
 					requiresProfile = true;
 				}
-			}
+//			}
 		}
 		return requiresProfile;
 	}
@@ -148,15 +152,15 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		String colorinfo = getColorModeAndProfileInfo(inPage);
 		if (colorinfo!=null){
 			String [] tokens = colorinfo.split("\\s");
-			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
-			String iccprofile = (tokens!=null && tokens.length >= 9 ? tokens[8] : null);
-			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
-				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
+//			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
+//			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
+			String iccprofile = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
+//			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
+//				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
 				if (iccprofile!=null && iccprofile.equalsIgnoreCase("cmyk")){
 					hasprofile = true;
 				}
-			}
+//			}
 		}
 		return hasprofile;
 	}
@@ -168,8 +172,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		command.add("-a");
 		command.add("-S");
 		command.add("-G0");
-		command.add("-ColorMode");
-		command.add("-ColorSpace");
+//		command.add("-ColorMode");
+//		command.add("-ColorSpace");
 		command.add("-ICC_Profile:ColorSpaceData");
 		if (isOnWindows()){
 			command.add("\"" +  inOriginal.getContentItem().getAbsolutePath()+ "\"");

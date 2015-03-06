@@ -547,8 +547,9 @@ public class imagemagickCreator extends BaseImageCreator {
 
 			String _colorspace = inAsset.get("colorspace");
 			log.info("Colorspace: " + _colorspace)
-
-			if( _colorspace != null && _colorspace.equalsIgnoreCase("4") )  //Edge case where someone has the wrong colorspace set in the file
+			
+			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
+			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
 			{
 				setValue("profile", getPathtoProfile(), inStructions, com);
 				com.add("-auto-orient"); //Needed for rotate tool
