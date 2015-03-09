@@ -1,4 +1,5 @@
 #
 #Wed Feb 04 07:56:46 EST 2015
-Pick\ Categories=Pick Kategorien
+Pick\ Categories=Kategorien auswählen
+
 

@@ -4,11 +4,12 @@ Results=Ergebnisse
 Edit=bearbeiten
 Save\ values=Werte speichern
 No\ data\ has\ been\ entered.=Es wurdenkeine Daten eingegeben.
-Delete\ Assets=Verm\u00F6genswerte l\u00F6schen
+Delete\ Assets=Assets löschen
 File=Datei
 Share=Teilen
 Download=Download
 Print=drucken
-Delete=l\u00F6schen
-Cancel=stornieren
+Delete=löschen
+Cancel=abbrechen
 Edit\ =bearbeiten
+

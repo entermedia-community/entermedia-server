@@ -1,27 +1,28 @@
 #
 #Fri Feb 13 10:45:34 EST 2015
 Remove\ All\ Members\ From\ Group=Entfernen Sie alle Mitglieder aus der Gruppe
-newuser=F\u00FCgen Sie der Gruppe einen neuen Benutzer hinzu. Geben Sie einen neuen Benutzernamen ein
-Delete\ Group=Gruppe l\u00F6schen
-Select\ a\ Group=w\u00E4hlen Sie eine Gruppe
+newuser=neuer Benutzer
+Delete\ Group=Gruppe löschen
+Select\ a\ Group=wählen Sie eine Gruppe
 Groups=Gruppen
-Add\ a\ New\ Group=f\u00FCgen Sie eine neue Gruppe
-addbyemail=Durch email hinzuf\u00FCgen
+Add\ a\ New\ Group=fügen Sie eine neue Gruppe hinzu
+addbyemail=Durch email hinzufügen
 Members=Mitglieder
-add=hinzuf\u00FCgen
-selected=ausgew\u00E4hlt
+add=hinzufügen
+selected=ausgewählt
 Group=Gruppe
-Group\ $groupname\ added=Gruppe $groupname hinzugef\u00FCgt
-Add\ By\ Username\ or\ Email=hinzuf\u00FCgen, indem Sie Benutzernamen oder E-Mail angeben
-GROUP\ ADDED=Gruppe hinzugef\u00FCgt
-Remove\ Selected=Ausgew\u00E4hlte entfernen
-Reload\ Search\ Index=reload Suchindex
+Group\ $groupname\ added=Gruppe $groupname hinzugefügt
+Add\ By\ Username\ or\ Email=hinzufügen, indem Sie Benutzernamen oder E-Mail angeben
+GROUP\ ADDED=GRUPPE HINZUGEFÜGT
+Remove\ Selected=Ausgewählte entfernen
+Reload\ Search\ Index=Suchindex neu laden
 removeall=Alle Mitglieder der Gruppe entfernen
-Please\ select\ a\ group=Bitte w\u00E4hlen Sie eine Gruppe
-Add=hinzuf\u00FCgen
+Please\ select\ a\ group=Bitte wählen Sie eine Gruppe
+Add=hinzufügen
 View\ User=Benutzer anzeigen
-Back=zur\u00FCck
+Back=zurück
 Edit\ Group=Gruppe bearbeiten
-Add\ New=neu hinzuf\u00FCgen
+Add\ New=neu hinzufügen
 Group\ Name=Name der Gruppe
-Forward=vorw\u00E4rts
+Forward=vorwärts
+

@@ -1,10 +1,11 @@
 #
 #Thu Feb 12 16:11:05 EST 2015
 Uploading,\ please\ wait...=Hochladen, bitte warten ...
-Next=als n\u00E4chstes
+Next=nächstes
 Upload\ multiple\ files\ by\ using\ the=Upload mehrerer Dateien mit Hilfe der
-Drop\ files\ here\!=Drop von Dateien online\!
-key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=Taste auf der Tastatur , w\u00E4hrend Sie die Dateien, die Sie hochladen m\u00F6chten
+Drop\ files\ here\!=Dateien hier ablegen\!
+key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=drücken Sie eine Taste bei der Auswahl der Dateien, die Sie hochladen m\u00F6chten
 Shift=Verschiebung
-Pick\ Files=Pick -Dateien
+Pick\ Files=Dateien auswählen
 Information=Informationen
+

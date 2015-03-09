@@ -7,14 +7,15 @@ This\ tool\ will\ remove\ all\ assets\ for\ a\ given\ catalog/subfolder\ whose\ 
 Clear\ Assets=Assets entfernen
 Optional\ Filter\ out\ of\ files=optionales Herausfiltern von Dateien
 Which\ folder\ would\ you\ like\ to\ import?=Welchen Ordner möchten Sie importieren?
-Importing\ only\ adds\ assets.=Import ausschließlich neuer Assets.
+Importing\ only\ adds\ assets.=Import fügt nur Assets hinzu.
 Which\ file\ types\ would\ you\ like\ to\ import?=Welche Dateiarten möchten Sie importieren?
 Re-Import\ Assets=Re-Import von Assets
 Click\ here\ to\ remove\ missing\ assets.=Klicken Sie hier, um fehlende Assets zu entfernen.
-Import\ Assets=Import Assets
+Import\ Assets=Assets importieren
 Into\ which\ catalog\ should\ your\ assets\ be\ added?=Welchem Katalog sollen Ihre Assets hinzugefügt werden?
 Scan\ Mounts\ Now=Mounts jetzt scannen
 All=alle
 space\ delimited=begrenzter Speicherplatz
 Enter\ full\ server\ path=Geben Sie den vollständigen Server-Pfad an
+
 

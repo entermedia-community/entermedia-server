@@ -2,13 +2,14 @@
 #Fri Feb 13 10:44:23 EST 2015
 Settings=Einstellungen
 Manager=Manager
-Related\ Media=verwandten Medien
+Related\ Media=verwandte Medien
 Logout=Logout
-Selected\ Media=Die ausgew\u00E4hlten Medien
-My\ Account=mein konto
-open=ge\u00F6ffnet
-There\ was\ a\ problem\ completing\ this\ request=es gab ein Problem Abschluss dieser Anfrage
+Selected\ Media=ausgewählte Medien
+My\ Account=mein Konto
+open=geöffnet
+There\ was\ a\ problem\ completing\ this\ request=es gab ein Problem beim Abschluss dieser Anfrage
 Login=einloggen
 closed=geschlossen
 System\ Settings=Systemeinstellungen
 Asset\ is\ missing=Asset fehlt
+
