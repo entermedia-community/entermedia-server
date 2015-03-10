@@ -45,6 +45,8 @@ public class BaseMediaModule extends BaseModule
 		inReq.putPageValue("applicationid", applicationid);
 		inReq.putPageValue("apphome", "/" + applicationid);
 
+		
+		
 		String prefix = inReq.getContentProperty("themeprefix");
 		UserProfile profile = inReq.getUserProfile();
 		if( profile != null)
@@ -80,6 +82,9 @@ public class BaseMediaModule extends BaseModule
 		archive = getMediaArchive(catalogid);
 		inReq.putPageValue("mediaarchive", archive);
 		inReq.putPageValue("cataloghome", archive.getCatalogHome());
+		String mediadb = archive.getCatalogSettingValue("mediadbappid");
+		inReq.putPageValue("mediadbappid", mediadb);
+		
 		inReq.putPageValue("catalogid", catalogid); // legacy
 		return archive;
 	}
