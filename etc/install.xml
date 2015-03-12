@@ -33,6 +33,7 @@
 
 		<delete quiet="true">
 			<fileset dir="../WEB-INF/base/manager/" />
+			<fileset dir="../WEB-INF/base/emgallery" />
 			<fileset dir="../WEB-INF/base/mediadb" />
 			<fileset dir="../WEB-INF/base/entermedia/" />
 			<fileset dir="../WEB-INF/base/system/" />
@@ -63,6 +64,10 @@
 
 		<copy todir="../WEB-INF/base/system" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/system" />
+		</copy>
+		
+		<copy todir="../WEB-INF/base/emgallery" preservelastmodified="true" overwrite="true">
+			<fileset dir="${workdir}/WEB-INF/base/emgallery" />
 		</copy>
 
 		<copy todir="../WEB-INF/base/mediadb" preservelastmodified="true" overwrite="true">
