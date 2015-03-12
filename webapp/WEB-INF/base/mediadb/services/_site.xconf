@@ -1,5 +1,4 @@
 <page>
-	<generator name="velocityGenerator" />
 	<inner-layout />
 
 	<path-action name="MediaArchiveModule.loadApplicationId" />

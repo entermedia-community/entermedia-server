@@ -2,6 +2,9 @@
 
 <page>
 
+	<generator  name="velocityGenerator" mimetypes="text/html"/>
+	<generator  name="velocityGenerator" mimetypes="text/json"/>
+
 	<property name="applicationid">mediadb</property>
 	<property name="catalogid">media/catalogs/public</property>
 	<path-action name="Admin.loadPermissions"/>
