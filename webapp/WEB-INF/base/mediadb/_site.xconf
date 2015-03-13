@@ -5,6 +5,8 @@
 	<generator  name="velocityGenerator" mimetypes="text/html"/>
 	<generator  name="velocityGenerator" mimetypes="text/json"/>
 
+ 	<property name="missingimagepath">/${applicationid}/views/images/missing150.jpg</property>
+
 	<property name="applicationid">mediadb</property>
 	<property name="catalogid">media/catalogs/public</property>
 	<path-action name="Admin.loadPermissions"/>

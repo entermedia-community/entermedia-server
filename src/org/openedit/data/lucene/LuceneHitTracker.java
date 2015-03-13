@@ -714,7 +714,7 @@ public class LuceneHitTracker extends HitTracker
 		fieldLuceneSort = inLuceneSort;
 	}
 
-	protected List<FilterNode> getFacetedResults() throws Exception
+	protected List<FilterNode> getFacetedResults()
 	{
 		IndexSearcher searcher = null;
 
@@ -837,6 +837,10 @@ public class LuceneHitTracker extends HitTracker
 				}
 				return facetNodes;
 			}
+		}
+		catch( Throwable ex)
+		{
+			throw new OpenEditException(ex);
 		}
 		finally
 		{

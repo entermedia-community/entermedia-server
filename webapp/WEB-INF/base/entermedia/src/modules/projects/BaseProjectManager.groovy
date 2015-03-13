@@ -178,7 +178,11 @@ public class BaseProjectManager implements ProjectManager
 		Collection<String> ids = new ArrayList();
 		for(Data hit in found)
 		{
-			ids.add(hit.get("asset"));
+			String id = hit.get("asset");
+			if( id != null)
+			{
+				ids.add(id);
+			}
 		}
 		return ids;
 	}
