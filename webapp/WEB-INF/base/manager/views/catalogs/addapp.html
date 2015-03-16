@@ -7,7 +7,7 @@
 				<h2>Available Applications</h2>
 		#set( $appsearcher = $searcherManager.getSearcher("system","frontend") )
 
-		#set( $frontends = $appsearcher.getAllHits($context) )
+		#set( $frontends = $appsearcher.query().match("id","*").sort("ordering").search($context) )
 		#foreach( $frontend in $frontends)
 				<div class="app-option">
 					<img class="app-store-icon" src="$home$themeprefix/images/folder.png" width="60" height="60" alt="$frontend.name" />

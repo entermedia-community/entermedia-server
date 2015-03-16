@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="em-mobile" ordering="03"  module="asset"  path="/WEB-INF/base/em-mobile/components/deploy" caption="Mobile Client" longdescription="Mobile client has gallery, search and filtering">EM Mobile Client</property>
+</properties>
