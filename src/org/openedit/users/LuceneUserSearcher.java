@@ -89,7 +89,8 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 			getUserManager().flush();
 			PropertyDetails details = getPropertyDetailsArchive()
 					.getPropertyDetails(getSearchType());
-			Collection usernames = getUserManager().listUserNames(catid);
+			//Collection usernames = getUserManager(catid).listUserNames();
+			Collection usernames = getUserManager().listUserNames();
 			if (usernames != null) {
 				for (Iterator iterator = usernames.iterator(); iterator
 						.hasNext();) {
