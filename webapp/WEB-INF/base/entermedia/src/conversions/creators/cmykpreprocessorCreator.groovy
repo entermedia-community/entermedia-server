@@ -46,8 +46,15 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		return ("jpg".equalsIgnoreCase(inInputType) || "jpeg".equalsIgnoreCase(inInputType) ||
 			/*"png".equalsIgnoreCase(inInputType) || */
 			"tiff".equalsIgnoreCase(inInputType) || "tif".equalsIgnoreCase(inInputType) ||
-			"gif".equalsIgnoreCase(inInputType) /*|| "eps".equalsIgnoreCase(inInputType)*/
+			"gif".equalsIgnoreCase(inInputType) || "eps".equalsIgnoreCase(inInputType)
 			);
+	}
+	
+	protected boolean omitEmbed(MediaArchive inArchive, Page inOriginal){
+		if (inOriginal.getName().toLowerCase().endsWith(".eps")){
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -93,7 +100,9 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 //		}
 		if (hasCMYKColorModel(inArchive, inAsset))
 		{
-			preprocessCMYKAsset(inArchive,inAsset,inStructions,result);
+			if (omitEmbed(inArchive,original) == false){
+				preprocessCMYKAsset(inArchive,inAsset,inStructions,result);
+			}
 			//if asset is CMKY, then make sure colormodel property is correct
 			String colorspace = inAsset.get("colorspace");
 			if (!colorspace || (colorspace!="4" && colorspace!="5")){
