@@ -26,7 +26,7 @@ import com.openedit.util.PathUtilities;
  * @author cburkey
  * @deprecated use LuceneUserSearcher
  */
-public class UserManagerSearcher extends BaseSearcher implements UserSearcher
+public class OldUserManagerSearcher extends BaseSearcher implements UserSearcher
 {
 	private static final Log log = LogFactory.getLog(UserSearcher.class);
 	protected UserManager fieldUserManager;

@@ -113,7 +113,21 @@ public class RegistrationModule extends BaseMediaModule
 		if(email == null){
 			email = inReq.getRequestParameter("email");
 		}
-		User user = getUserManager().getUserByEmail(email);
+		if(email == null){
+			return;
+		}
+		UserSearcher searcher =(UserSearcher) getMediaArchive(inReq).getSearcherManager().getSearcher("system", "user"); 
+		Data usert = (User) searcher.searchByField("email", email);
+		if(usert == null){
+			return;
+		}
+		User user = null;
+		
+			user = (User) searcher.searchById(usert.getId());
+		
+		
+		
+		
 		String id = inReq.getRequestParameter("id");
 		
 		User current = getUserManager().getUser(id);
@@ -125,8 +139,7 @@ public class RegistrationModule extends BaseMediaModule
 					return;
 				}
 			}
-			
-			
+					
 			// errors.put("error-email-in-use", "This email address is in use");
 			// inReq.putPageValue("errors", errors);
 			inReq.putPageValue("emailinuse", true);

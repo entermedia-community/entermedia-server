@@ -169,7 +169,7 @@ public class BaseMediaModule extends BaseModule
 
 	protected String resolveCatalogId(WebPageRequest inReq)
 	{
-		String catalogId = inReq.getRequestParameter("catalogid");
+		String catalogId = null;//inReq.getRequestParameter("catalogid");
 		if (catalogId == null || catalogId.startsWith("$"))
 		{
 			catalogId = inReq.findValue("catalogid");
@@ -179,6 +179,7 @@ public class BaseMediaModule extends BaseModule
 			catalogId = inReq.findValue("applicationid");
 		}
 		inReq.putPageValue("catalogid", catalogId);
+		
 		return catalogId;
 	}
 

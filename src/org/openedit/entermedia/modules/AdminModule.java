@@ -346,6 +346,7 @@ public class AdminModule extends BaseModule
 	{
 		String account = inReq.getRequestParameter("accountname");
 		String password = inReq.getRequestParameter("password");
+		String catalogid = inReq.findValue("catalogid");
 
 		if (account == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
 		{
@@ -409,13 +410,15 @@ public class AdminModule extends BaseModule
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 				String value = user.getUserName() + "md542" + md5;
 				inReq.putPageValue("entermediakey", value);
-				inReq.putSessionValue("user", user);
+				String catalogid =user.get("catalogid");
+				inReq.putSessionValue(catalogid + "user", user);
 			}
 		}
 		else
 		{
 			log.info("No such user" + account);
-			inReq.putSessionValue("user", null);
+			String catalogid =user.get("catalogid");
+			inReq.putSessionValue(catalogid + "user", null);
 		}
 
 		inReq.putPageValue("id", account);
@@ -451,6 +454,7 @@ public class AdminModule extends BaseModule
 		boolean userok = false;
 		String sendTo = inReq.getRequestParameter("loginokpage");
 		String maxcounts = inReq.findValue("maxfailedloginattemps");
+
 		int maxattemps = 5;
 		if (maxcounts != null)
 		{
@@ -514,7 +518,14 @@ public class AdminModule extends BaseModule
 			//			}
 
 			inReq.removeSessionValue("userprofile");
-			inReq.putSessionValue("user", inUser);
+			//inReq.putSessionValue("user", inUser);
+			String catalogid =inReq.findValue("catalogid");
+			if(catalogid == null){
+				catalogid = inReq.findValue("catalogid");
+				inUser.setProperty("catalogid", catalogid);
+			}
+			inReq.putSessionValue(catalogid + "user", inUser);
+			createUserSession(inReq);
 			// user is now logged in
 			String sendToOld = (String) inReq.getSessionValue("fullOriginalEntryPage");
 			if (sendTo == null || sendTo.trim().length() == 0)
@@ -705,6 +716,7 @@ public class AdminModule extends BaseModule
 		{
 			return;
 		}
+		createUserSession(inReq);
 		if (Boolean.parseBoolean(inReq.getContentProperty("oe.usernameinheader")))
 		{
 			autoLoginFromRequest(inReq);
@@ -728,7 +740,16 @@ public class AdminModule extends BaseModule
 		//			{
 		//				quickLogin(inReq);
 		//			}
+		createUserSession(inReq);
 
+	}
+
+	public void createUserSession(WebPageRequest inReq) {
+		String catalogid = inReq.findValue("catalogid");
+		User user = (User) inReq.getSessionValue(catalogid + "user");
+		inReq.putPageValue( "user", user);
+
+		
 	}
 
 	protected void quickLogin(WebPageRequest inReq) throws OpenEditException
@@ -907,7 +928,9 @@ public class AdminModule extends BaseModule
 					String hash = getCookieEncryption().getPasswordMd5(user.getPassword());
 					if (md5.equals(hash))
 					{
-						inReq.putSessionValue("user", user);
+						String catalogid =user.get("catalogid");
+						inReq.putSessionValue(catalogid + "user", user);
+						createUserSession(inReq);
 						return true;
 					}
 					else
@@ -1388,15 +1411,16 @@ public class AdminModule extends BaseModule
 			}
 
 			user = getUserManager().createGuestUser(null, null, "guest");
+			String catalogid =user.get("catalogid");
+			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
-			inReq.putSessionValue("user", user);
+
 		}
 
 	}
 
 	public void switchToUser(WebPageRequest inReq)
 	{
-
 		User user = inReq.getUser();
 		if (!user.isInGroup("administrators"))
 		{
@@ -1405,11 +1429,13 @@ public class AdminModule extends BaseModule
 
 		String userid = inReq.getRequestParameter("userid");
 		User target = getUserManager().getUser(userid);
+		
 		if (target != null)
 		{
 			clearSession(inReq);		
 			inReq.putSessionValue("realuser", user);
-			inReq.putSessionValue("user", target);
+			inReq.putSessionValue(target.get("catalogid") + "user", target);
+			createUserSession(inReq);
 		}
 
 	}
@@ -1423,7 +1449,8 @@ public class AdminModule extends BaseModule
 			clearSession(inReq);		
 
 			inReq.putSessionValue("realuser", null);
-			inReq.putSessionValue("user", olduser);
+			inReq.putSessionValue(olduser.get("catalogid") + "user", olduser);
+			createUserSession(inReq);
 		}
 
 	} 
