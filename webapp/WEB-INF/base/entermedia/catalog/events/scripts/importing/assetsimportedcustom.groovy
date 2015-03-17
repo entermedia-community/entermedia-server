@@ -345,7 +345,7 @@ public void setupCollection(){
 setAssetTypes();
 //setDefaultMetadataFields();
 //setDefaultLibrary();
-setDefaultTags();
+//setDefaultTags();
 //verifyRules();
 //sendEmail();
 

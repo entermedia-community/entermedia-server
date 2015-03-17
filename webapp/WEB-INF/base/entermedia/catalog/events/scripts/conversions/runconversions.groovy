@@ -76,7 +76,7 @@ class CompositeConvertRunner implements Runnable
 			
 		}
 		catch(Exception e){
-			log.info("ERRORS ${fieldSourcePath}");
+			log.error("ERRORS ${fieldSourcePath}");
 		}
 		finally
 		{

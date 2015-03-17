@@ -1588,7 +1588,7 @@ public class MediaArchive
 				{
 					allcomplete = false;
 					log.info("Found an incomplete task - status was: " + task.get("status") + " " + asset.getId());
-					String date = task.get("date");
+					String date = task.get("submitted");
 					if( "missinginput".equals( task.get("status") ) && date != null)
 					{
 						Date entered = DateStorageUtil.getStorageUtil().parseFromStorage(date);
@@ -1597,13 +1597,16 @@ public class MediaArchive
 						if( entered.before(cal.getTime()))
 						{
 							Data loadedtask = (Data)tasksearcher.searchById(task.getId());
-							loadedtask.setProperty("importstatus","error");
+							loadedtask.setProperty("status","error");
 							loadedtask.setProperty("errordetails","Image missing more than 24 hours, marked as error");
 							tasksearcher.saveData(loadedtask, null);
 							founderror = true;
 						}
 					}
-					break;
+					else
+					{
+						break;
+					}
 				}
 			}
 			if( founderror || allcomplete )
