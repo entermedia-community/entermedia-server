@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Element;
 import org.entermedia.error.EmailErrorHandler;
 import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
@@ -39,8 +38,7 @@ import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
-import org.openedit.xml.ElementData;
-import org.openedit.xml.XmlFile;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -1563,7 +1561,10 @@ public class MediaArchive
 
 		//log.info("existingpreviewstatus" + existingpreviewstatus);
 		//update importstatus and previewstatus to complete
-		log.info("Checking conversion status: " + asset.getId() + existingimportstatus +"/" + existingpreviewstatus);
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Checking conversion status: " + asset.getId() + existingimportstatus +"/" + existingpreviewstatus);
+		}
 
 		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
 		{
@@ -1586,7 +1587,22 @@ public class MediaArchive
 				if( !"complete".equals( task.get("status") ) )
 				{
 					allcomplete = false;
-					log.info(asset.getId() + "Found an incomplete task - status was: " + task.get("status"));
+					log.info("Found an incomplete task - status was: " + task.get("status") + " " + asset.getId());
+					String date = task.get("date");
+					if( "missinginput".equals( task.get("status") ) && date != null)
+					{
+						Date entered = DateStorageUtil.getStorageUtil().parseFromStorage(date);
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.add(Calendar.DAY_OF_YEAR, -2);
+						if( entered.before(cal.getTime()))
+						{
+							Data loadedtask = (Data)tasksearcher.searchById(task.getId());
+							loadedtask.setProperty("importstatus","error");
+							loadedtask.setProperty("errordetails","Image missing more than 24 hours, marked as error");
+							tasksearcher.saveData(loadedtask, null);
+							founderror = true;
+						}
+					}
 					break;
 				}
 			}

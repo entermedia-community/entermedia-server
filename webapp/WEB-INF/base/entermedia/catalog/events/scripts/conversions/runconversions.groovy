@@ -41,7 +41,12 @@ class CompositeConvertRunner implements Runnable
 	List runners = new ArrayList();
 	User user;
 	ScriptLogger log;
+	boolean fieldCompleted;
 	
+	public boolean hasComplete()
+	{
+		return fieldCompleted;
+	}
 	public CompositeConvertRunner(MediaArchive archive,String sourcepath)
 	{
 		fieldMediaArchive = archive;
@@ -59,10 +64,14 @@ class CompositeConvertRunner implements Runnable
 		}
 		try
 		{
-			for( Runnable runner: runners )
+			for( ConvertRunner runner: runners )
 			{
 				
 				runner.run();
+				if( runner.isComplete())
+				{
+					fieldCompleted = true;
+				}
 			}
 			
 		}
@@ -72,12 +81,12 @@ class CompositeConvertRunner implements Runnable
 		finally
 		{
 			
-			log.info("updating conversion statys on ${fieldSourcePath} - runner size was: " + runners.size());
+			//log.info("updating conversion status on ${fieldSourcePath} - runner size was: " + runners.size());
 			String result = fieldMediaArchive.updateAssetConvertStatus(fieldSourcePath);
-			log.info("Result on ${fieldSourcePath} was ${result}");
+			//log.info("Result on ${fieldSourcePath} was ${result}");
 			
 			fieldMediaArchive.releaseLock(lock);
-			fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
+			fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 		}
 	
 		
@@ -102,6 +111,14 @@ class ConvertRunner implements Runnable
 	ModuleManager moduleManager;
 	ConvertResult result = null;
 	
+	public boolean isComplete()
+	{
+		if( result != null && result.isComplete() )
+		{
+			return true;
+		}
+		return false;
+	}
 	public void run()
 	{
 		try
@@ -344,7 +361,7 @@ public void checkforTasks()
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry missinginput");
-	query.addSortBy("assetid");
+	query.addSortBy("assetidDown");
 	query.addSortBy("ordering");
 	
 	String assetids = context.getRequestParameter("assetids");
@@ -383,7 +400,6 @@ public void checkforTasks()
 		String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
 		if( id == null )
 		{
-//				throw new OpenEditException("asset id was null on " + hit );
 			log.info("No assetid set");
 			Data missingdata = tasksearcher.searchById(hit.getId())
 			missingdata.setProperty("status", "error");
@@ -413,10 +429,14 @@ public void checkforTasks()
 	executorQueue.execute(runners);
 	if( runners.size() > 0)
 	{
-		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
-		
-		
-			//mediaarchive.fireSharedMediaEvent("conversions/runconversions");   //this should not be needed
+		for( CompositeConvertRunner runner: runners )
+		{
+			if( runner.hasComplete() )
+			{
+				mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
+				break;
+			}
+		}
 	}
 	log.debug("Added ${newtasks.size()} conversion tasks for processing");
 	
