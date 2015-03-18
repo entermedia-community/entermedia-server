@@ -26,7 +26,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 	
 	protected String fieldCMYKProfile = null;
 	
-	public String getCMYKProfile() {
+	public String getCMYKProfile()
+	{
 		if (fieldCMYKProfile == null){
 			Page profile = getPageManager().getPage("/system/components/conversions/USWebCoatedSWOP.icc");
 			fieldCMYKProfile = profile.getContentItem().getAbsolutePath();
@@ -34,17 +35,26 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		return fieldCMYKProfile;
 	}
 
-	public void setCMYKProfile(String inCMYKProfile) {
+	public void setCMYKProfile(String inCMYKProfile)
+	{
 		fieldCMYKProfile = inCMYKProfile;
 	}
 
 	@Override
-	public boolean canReadIn(MediaArchive inArchive, String inInputType) {
+	public boolean canReadIn(MediaArchive inArchive, String inInputType) 
+	{
 		return ("jpg".equalsIgnoreCase(inInputType) || "jpeg".equalsIgnoreCase(inInputType) ||
-			"png".equalsIgnoreCase(inInputType) || 
+			/*"png".equalsIgnoreCase(inInputType) || */
 			"tiff".equalsIgnoreCase(inInputType) || "tif".equalsIgnoreCase(inInputType) ||
 			"gif".equalsIgnoreCase(inInputType) || "eps".equalsIgnoreCase(inInputType)
 			);
+	}
+	
+	protected boolean omitEmbed(MediaArchive inArchive, Page inOriginal){
+		if (inOriginal.getName().toLowerCase().endsWith(".eps")){
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -79,13 +89,25 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		Page original = inArchive.getOriginalDocument(inAsset);
 		String generatedpath = populateOutputPath(inArchive,inStructions);
 		Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
-		String colorspace = inAsset.get("colorspace");
-		if (colorspace!=null && colorspace.isEmpty()==false)
+//		String colorspace = inAsset.get("colorspace");
+//		if (colorspace!=null && colorspace.isEmpty()==false)
+//		{
+//			Data colorspacedata  = inArchive.getData("colorspace",colorspace);
+//			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk"))
+//			{
+//				preprocessCMYKAsset(inArchive,inAsset,inStructions,result);
+//			}
+//		}
+		if (hasCMYKColorModel(inArchive, inAsset))
 		{
-			Data colorspacedata  = inArchive.getData("colorspace",colorspace);
-			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk"))
-			{
+			if (omitEmbed(inArchive,original) == false){
 				preprocessCMYKAsset(inArchive,inAsset,inStructions,result);
+			}
+			//if asset is CMKY, then make sure colormodel property is correct
+			String colorspace = inAsset.get("colorspace");
+			if (!colorspace || (colorspace!="4" && colorspace!="5")){
+				inAsset.setProperty("colorspace","4");// CMYK is 4 or 5
+				inArchive.saveAsset(inAsset, null);
 			}
 		}
 		if (!generatedpage.exists()){
@@ -129,7 +151,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		}
 	}
 	
-	protected boolean requiresICCProfileEmbed(Page inPage){
+	protected boolean requiresICCProfileEmbed(Page inPage)
+	{
 		boolean requiresProfile = false;
 		String colorinfo = getColorModeAndProfileInfo(inPage);
 		if (colorinfo!=null){
@@ -147,7 +170,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		return requiresProfile;
 	}
 	
-	protected boolean hasICCProfile(Page inPage){
+	protected boolean hasICCProfile(Page inPage)
+	{
 		boolean hasprofile = false;
 		String colorinfo = getColorModeAndProfileInfo(inPage);
 		if (colorinfo!=null){
@@ -165,7 +189,45 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		return hasprofile;
 	}
 	
-	protected String getColorModeAndProfileInfo(Page inOriginal){
+	protected boolean hasCMYKColorModel(MediaArchive inArchive, Asset inAsset)
+	{
+		Page original = inArchive.getOriginalDocument(inAsset);
+		String colormode = getColorMode(original);
+		String [] tokens = colormode.split("\n");
+		if (tokens){
+			for(String token:tokens){
+				if (token && token.trim().startsWith("Colorspace:")){//Colorspace: CMYK
+					String [] words = token.trim().split("\\s");
+					if (words.length >= 2 && words[1]){
+						boolean isCMYK = (words[1].trim().toLowerCase() == "cmyk");
+						return isCMYK;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	protected String getColorMode(Page inOriginal)
+	{
+		StringBuilder out = new StringBuilder();
+		StringBuilder err = new StringBuilder();
+		List<String> command = new ArrayList<String>();
+		//identify -verbose <file> | grep 'Colorspace'
+		command.add("-verbose");
+		if (isOnWindows()){
+			command.add("\"" +  inOriginal.getContentItem().getAbsolutePath()+ "\"");
+		} else {
+			command.add(inOriginal.getContentItem().getAbsolutePath());
+		}
+		if (execute("identify",command,out,err)){
+			return out.toString();
+		}
+		return err.toString();
+	}
+	
+	protected String getColorModeAndProfileInfo(Page inOriginal)
+	{
 		StringBuilder out = new StringBuilder();
 		StringBuilder err = new StringBuilder();
 		List<String> command = new ArrayList<String>();
@@ -186,7 +248,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		return err.toString();
 	}
 	
-	protected void embedICCProfile(Page inOriginal, Page inGenerated){
+	protected void embedICCProfile(Page inOriginal, Page inGenerated)
+	{
 		StringBuilder out = new StringBuilder();
 		StringBuilder err = new StringBuilder();
 		List<String> command = new ArrayList<String>();
@@ -204,11 +267,13 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		execute("convert",command);
 	}
 	
-	protected boolean execute(String command, List<String> args){
+	protected boolean execute(String command, List<String> args)
+	{
 		return execute(command,args,null,null);
 	}
 	
-	protected boolean execute(String command, List<String> args, StringBuilder out, StringBuilder err){
+	protected boolean execute(String command, List<String> args, StringBuilder out, StringBuilder err)
+	{
 		ExecResult result = getExec().runExec(command, args, true);
 		if(!result.isRunOk()){
 			String error = result.getStandardError();
@@ -221,7 +286,7 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		}
 		String info = result.getStandardOut();
 		if (info != null){
-			log.info("standard out stream: \n"+info);
+//			log.info("standard out stream: \n"+info);
 			if (out!=null){
 				out.append(info);
 			}
@@ -229,11 +294,13 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		return (result.getReturnValue() == 0);
 	}
 	
-	protected void saveOutput(MediaArchive inArchive, ConvertInstructions inStructions){
+	protected void saveOutput(MediaArchive inArchive, ConvertInstructions inStructions)
+	{
 		saveOutput(inArchive,inStructions,"no change");
 	}
 	
-	protected void saveOutput(MediaArchive inArchive, ConvertInstructions inStructions, String inDetails){
+	protected void saveOutput(MediaArchive inArchive, ConvertInstructions inStructions, String inDetails)
+	{
 		String outputpath = populateOutputPath(inArchive,inStructions);
 		Page output = inArchive.getPageManager().getPage(outputpath);
 		File file = new File(output.getContentItem().getAbsolutePath());
@@ -247,7 +314,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		writeXmlFile(root,file);
 	}
 	
-	protected void writeXmlFile( Element inRoot, File inFile ){
+	protected void writeXmlFile( Element inRoot, File inFile )
+	{
 		File tempFile = new File( inFile.getParentFile(), inFile.getName() + ".temp" );
 		inFile.getParentFile().mkdirs();
 		FileOutputStream fos = null;
