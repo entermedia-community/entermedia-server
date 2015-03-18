@@ -19,26 +19,30 @@ public void init(){
 			Map<Data,List<Data>> map = new HashMap<Data,List<Data>>();
 			hits.each{
 				Data hit = it;
-				String cat = hit.get("category-exact").replace("|","").trim();
-				if (categoryid == "index"){
-					cat = "index_$cat";
-				}
-				if (cat.startsWith("${categoryid}_")){
-					cat = cat.substring("${categoryid}_".length());
-					String [] tokens = cat.split("_");
-					if (tokens && tokens.length > 0){
-						cat = tokens[0];
-						String searchid = (categoryid == "index" ? "$cat" : "${categoryid}_$cat");
-						Data categorydata = archive.getData("category",searchid);
-						if (!categorydata){
-							return;
-						}
-						if (!map.containsKey(categorydata)){
-							map.put(categorydata,new ArrayList<Data>());
-						}
-						List<Data> list = map.get(categorydata);
-						if (list.size() < max){
-							list.add(hit);
+
+				def cats = hit.get("category-exact")
+				if(cats != null){
+					String cat = cats.replace("|","").trim();
+					if (categoryid == "index"){
+						cat = "index_$cat";
+					}
+					if (cat.startsWith("${categoryid}_")){
+						cat = cat.substring("${categoryid}_".length());
+						String [] tokens = cat.split("_");
+						if (tokens && tokens.length > 0){
+							cat = tokens[0];
+							String searchid = (categoryid == "index" ? "$cat" : "${categoryid}_$cat");
+							Data categorydata = archive.getData("category",searchid);
+							if (!categorydata){
+								return;
+							}
+							if (!map.containsKey(categorydata)){
+								map.put(categorydata,new ArrayList<Data>());
+							}
+							List<Data> list = map.get(categorydata);
+							if (list.size() < max){
+								list.add(hit);
+							}
 						}
 					}
 				}
