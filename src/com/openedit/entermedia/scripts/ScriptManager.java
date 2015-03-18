@@ -114,7 +114,7 @@ public class ScriptManager
 			logger.setPrefix(inScript.getPage().getName());
 		}
 		variableMap.put("log", logger);
-		variableMap.put("userManager", getModuleManager().getBean( "userManager" ) ); 
+		//variableMap.put("userManager", getModuleManager().getBean( "userManager" ) ); //now catalogid based.
 		variableMap.put("moduleManager", getModuleManager() ); 
 		variableMap.put("beanFactory", getModuleManager() ); 
 		variableMap.put("pageManager", getPageManager() ); 

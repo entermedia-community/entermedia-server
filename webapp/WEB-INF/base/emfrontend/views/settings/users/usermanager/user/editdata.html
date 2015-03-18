@@ -10,7 +10,7 @@
 <div class="ui-widget commentbox columns-2" style="margin: 0 20px 0 0;">
 <div class="ui-widget-header">[[Profile]]</div>
 <div  class="ui-widget-content" > 
-	#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
+	#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 		<form class="ajaxform validate" id="usereditform" targetdiv="usereditproperties" name="usereditform" action="$home$usermanagerhome/user/editdata.html">
 			<input type="hidden" name="userid" value="$selectedUser.id"/>
 			<input type="hidden" name="save" value="true"/>

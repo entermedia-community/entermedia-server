@@ -106,15 +106,18 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 	// return false;
 	// }
 
-	public UserManager getUserManager()
-	{
+	public UserManager getUserManager() {
+		if (fieldUserManager == null) {
+			fieldUserManager = (UserManager) getModuleManager().getBean(
+					getCatalogId(), "userManager");
+
+		}
+
 		return fieldUserManager;
 	}
 
-	public void setUserManager(UserManager inUserManager)
-	{
-		fieldUserManager = inUserManager;
-	}
+
+
 	public Object searchById(String inId) 
 	{
 		return getGroup(inId);
@@ -193,14 +196,7 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 		updateIndex((Group) inData);
 	}
 	
-	public void setCatalogId(String inCatalogId)
-	{
-		if( !"system".equals(inCatalogId) )
-		{
-			throw new OpenEditException("group searcher should only be a system level not " + inCatalogId );
-		}
-		super.setCatalogId(inCatalogId);
-	}
+	
 
 	public void deleteData(Data inData)
 	{

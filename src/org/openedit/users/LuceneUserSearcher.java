@@ -34,62 +34,49 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 		UserSearcher {
 	private static final Log log = LogFactory.getLog(LuceneUserSearcher.class);
 	protected UserManager fieldUserManager;
-	protected String fieldUserCatalogId;
 
-	public String getUserCatalogId() {
-		if (fieldUserCatalogId ==  null) {
-			Data usercat = getSearcherManager().getData(getCatalogId(), "catalogsettings", "user_catalog_id");
-			if(usercat != null){
-				fieldUserCatalogId = usercat.get("value");
-			}
-			if(fieldUserCatalogId == null){
-				fieldUserCatalogId = "system";
-			}
-			
-			
-		}
-
-		return fieldUserCatalogId;
-	}
-
-	public void setUserCatalogId(String inUserCatalogId) {
-		fieldUserCatalogId = inUserCatalogId;
-	}
-
-	public HitTracker getAllHits(WebPageRequest inReq) {
-		SearchQuery query = createSearchQuery();
-		query.addMatches("enabled", "true");
-		query.addMatches("enabled", "false");
-		query.addSortBy("namesorted");
-		query.setAndTogether(false);
-		if (inReq == null) {
-			return search(query);
-		} else {
-			return cachedSearch(inReq, query);
-		}
-		// return new ListHitTracker().setList(getCustomerArchive().)
-	}
+//	public HitTracker getAllHits(WebPageRequest inReq) {
+//		SearchQuery query = createSearchQuery();
+//		query.addMatches("enabled", "true");
+//		query.addMatches("enabled", "false");
+//		query.addSortBy("namesorted");
+//		query.setAndTogether(false);
+//		if (inReq == null) {
+//			return search(query);
+//		} else {
+//			return cachedSearch(inReq, query);
+//		}
+//		// return new ListHitTracker().setList(getCustomerArchive().)
+//	}
 
 	public UserManager getUserManager() {
+		if (fieldUserManager == null) {
+			fieldUserManager = (UserManager) getModuleManager().getBean(
+					getCatalogId(), "userManager");
+
+		}
+
 		return fieldUserManager;
 	}
 
-	public void setUserManager(UserManager inUserManager) {
-		fieldUserManager = inUserManager;
-	}
+	//
+	// public void setUserManager(UserManager inUserManager) {
+	// fieldUserManager = inUserManager;
+	// }
 
 	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter)
 			throws OpenEditException {
-	
-		setUserCatalogId(null);
-		String catid = getUserCatalogId();
+
+		// setUserCatalogId(null);
+		// String catid = getUserCatalogId();
 		log.info("Reindex of customer users directory");
 		try {
 			// writer.setMergeFactor(50);
 			getUserManager().flush();
 			PropertyDetails details = getPropertyDetailsArchive()
 					.getPropertyDetails(getSearchType());
-			Collection usernames = getUserManager().listUserNames(catid);
+			Collection usernames = getUserManager().listUserNames(
+					);
 			if (usernames != null) {
 				for (Iterator iterator = usernames.iterator(); iterator
 						.hasNext();) {
@@ -182,33 +169,25 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 
 	}
 
-//	public void setCatalogId(String inCatalogId) {
-//		// This can be removed in the future once we track down a singleton bug
-//		if (inCatalogId != null && !inCatalogId.equals("system")) {
-//			OpenEditException ex = new OpenEditException(
-//					"Invalid catalogid catalogid=" + inCatalogId);
-//			ex.printStackTrace();
-//			log.error(ex);
-//
-//			// throw ex;
-//		}
-//
-//		super.setCatalogId("system");
-//		if (fieldPropertyDetailsArchive != null) {
-//			fieldPropertyDetailsArchive.setCatalogId("system");
-//
-//		}
-//	}
+	// public void setCatalogId(String inCatalogId) {
+	// // This can be removed in the future once we track down a singleton bug
+	// if (inCatalogId != null && !inCatalogId.equals("system")) {
+	// OpenEditException ex = new OpenEditException(
+	// "Invalid catalogid catalogid=" + inCatalogId);
+	// ex.printStackTrace();
+	// log.error(ex);
+	//
+	// // throw ex;
+	// }
+	//
+	// super.setCatalogId("system");
+	// if (fieldPropertyDetailsArchive != null) {
+	// fieldPropertyDetailsArchive.setCatalogId("system");
+	//
+	// }
+	// }
 
-	public PropertyDetailsArchive getPropertyDetailsArchive() {
-		if (fieldPropertyDetailsArchive == null) {
-			fieldPropertyDetailsArchive = (PropertyDetailsArchive) getSearcherManager()
-					.getModuleManager().getBean("system",
-							"propertyDetailsArchive");
-		}
-		fieldPropertyDetailsArchive.setCatalogId("system");
-		return fieldPropertyDetailsArchive;
-	}
+	
 
 	@Override
 	public Data createNewData() {

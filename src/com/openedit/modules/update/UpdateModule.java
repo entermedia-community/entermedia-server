@@ -46,6 +46,7 @@ import org.entermedia.upload.UploadRequest;
 import org.openedit.Data;
 import org.openedit.PlugIn;
 import org.openedit.data.Searcher;
+import org.openedit.entermedia.modules.BaseMediaModule;
 import org.openedit.entermedia.util.SyncFileDownloader;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.WindowsUtil;
@@ -57,7 +58,6 @@ import com.openedit.entermedia.scripts.Script;
 import com.openedit.entermedia.scripts.ScriptLogger;
 import com.openedit.entermedia.scripts.ScriptManager;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.modules.BaseModule;
 import com.openedit.modules.scriptrunner.ScriptModule;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
@@ -75,7 +75,7 @@ import com.openedit.util.ZipUtil;
  * 
  * @author dbrown
  */
-public class UpdateModule extends BaseModule {
+public class UpdateModule extends BaseMediaModule {
 	protected Map fieldPlugInFinders;
 	protected PostMail fieldPostMail;
 	protected ScriptManager fieldScriptManager;
@@ -169,7 +169,7 @@ public class UpdateModule extends BaseModule {
 		// set password
 		if (selected != null) {
 			String username = inSync.get("accountname");
-			String password = getUserManager().getUser(username).getPassword();
+			String password = getUserManager(inReq).getUser(username).getPassword();
 			selected.setUsername(username);
 			selected.setPassword(password);
 		}
@@ -275,8 +275,8 @@ public class UpdateModule extends BaseModule {
 		String username = inReq.getRequestParameter("username");
 		String password = inReq.getRequestParameter("password");
 
-		User admin = getUserManager().getUser(username);
-		if (!getUserManager().authenticate(admin, password)) {
+		User admin = getUserManager(inReq).getUser(username);
+		if (!getUserManager(inReq).authenticate(admin, password)) {
 			throw new OpenEditException("Did not authenticate: " + username);
 		} else {
 			inReq.setUser(admin);
@@ -645,8 +645,8 @@ public class UpdateModule extends BaseModule {
 			String username = inReq.getRequestParameter("accountname");
 			String password = inReq.getRequestParameter("password");
 
-			User admin = getUserManager().getUser(username);
-			if (!getUserManager().authenticate(admin, password)) {
+			User admin = getUserManager(inReq).getUser(username);
+			if (!getUserManager(inReq).authenticate(admin, password)) {
 				throw new OpenEditException("Did not authenticate: " + username);
 			} else {
 				inReq.setUser(admin);
@@ -686,9 +686,9 @@ public class UpdateModule extends BaseModule {
 		if (mailer.getFrom() == null) {
 			mailer.setFrom("support@openedit.org");
 		}
-		Group notify = getUserManager().getGroup("notify");
+		Group notify = getUserManager(inReq).getGroup("notify");
 		if (notify != null) {
-			Collection list = getUserManager().getUsersInGroup(notify);
+			Collection list = getUserManager(inReq).getUsersInGroup(notify);
 			for (Iterator iter = list.iterator(); iter.hasNext();) {
 				User user = (User) iter.next();
 				String email = user.getEmail();

@@ -24,14 +24,12 @@ import org.entermedia.upload.UploadRequest;
 import org.openedit.MultiValued;
 import org.openedit.data.Searcher;
 import org.openedit.repository.filesystem.StringItem;
-import org.openedit.users.GroupSearcher;
 import org.openedit.users.UserSearcher;
 
 import com.openedit.BaseWebPageRequest;
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
-import com.openedit.modules.BaseModule;
 import com.openedit.modules.admin.users.PasswordMismatchException;
 import com.openedit.modules.admin.users.PropertyContainerManipulator;
 import com.openedit.modules.admin.users.Question;
@@ -56,7 +54,7 @@ import com.openedit.util.strainer.OrFilter;
  * @author Matthew Avery, mavery@einnovation.com
  *  
  */
-public class UserManagerModule extends BaseModule
+public class UserManagerModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog( UserManagerModule.class );
 
@@ -82,7 +80,7 @@ public class UserManagerModule extends BaseModule
 		{
 			String id = PathUtilities.extractId(name,false);
 			inReq.setRequestParameter("groupid", id);
-			Group group = getUserManager().createGroup( id );
+			Group group = getUserManager(inReq).createGroup( id );
 			group.setName(name);
 
 			//	We no longer have standard properties, now we have standard
@@ -97,7 +95,7 @@ public class UserManagerModule extends BaseModule
 					group.addPermission( propertyName );
 				}
 			}
-			getGroupSearcher().saveData(group, inReq.getUser());
+			getGroupSearcher(inReq).saveData(group, inReq.getUser());
 		}
 		catch( UserManagerException ume )
 		{
@@ -265,7 +263,7 @@ public class UserManagerModule extends BaseModule
 		Group group = getGroup( inReq );
 		getPropertyContainerManipulator().createProperties( inReq.getParameterMap(),
 			group.getProperties() );
-		getUserManager().saveGroup( group );
+		getUserManager(inReq).saveGroup( group );
 	}
 	public void createGuestAccount(WebPageRequest inReq) throws OpenEditException
 	{
@@ -291,7 +289,7 @@ public class UserManagerModule extends BaseModule
 			}
 			if(newUser == null && email != null)
 			{
-				newUser = getUserSearcher().getUserByEmail(email);
+				newUser = getUserSearcher(inReq).getUserByEmail(email);
 			}
 			
 			if( newUser !=null)
@@ -300,7 +298,7 @@ public class UserManagerModule extends BaseModule
 				String password = "";
 				if (newUser.getPassword().startsWith("DES:"))
 				{
-					password = getUserManager().getStringEncryption().decrypt(newUser.getPassword());
+					password = getUserManager(inReq).getStringEncryption().decrypt(newUser.getPassword());
 				} 
 				else
 				{
@@ -314,17 +312,17 @@ public class UserManagerModule extends BaseModule
 			
 			String password = new PasswordGenerator().generate();//Integer.toString((int)(100000 + generator.nextDouble() * 899999D));
 			
-			newUser = getUserManager().createUser(null, password); //username may be null, in fact it always is
+			newUser = getUserManager(inReq).createUser(null, password); //username may be null, in fact it always is
 			newUser.setPassword(password);
 			getPropertyContainerManipulator().updateProperties( inReq.getParameterMap(),
 							newUser.getProperties() );
 			inReq.putPageValue("password", password);
 			newUser.put("refererurl", inReq.getSessionValue("refererurl"));
 			
-			Group group = getGroupSearcher().getGroup("guest");
+			Group group = getGroupSearcher(inReq).getGroup("guest");
 			if ( group == null)
 			{
-				group = getUserManager().createGroup("guest");
+				group = getUserManager(inReq).createGroup("guest");
 			}
 			newUser.addGroup(group);
 			
@@ -336,7 +334,7 @@ public class UserManagerModule extends BaseModule
 				if(referredGroupId != null)
 				{
 					//search for the media group if it exists add the user
-					Group referredGroup = getUserManager().getGroup(referredGroupId);
+					Group referredGroup = getUserManager(inReq).getGroup(referredGroupId);
 					if(referredGroup != null)
 					{
 						newUser.addGroup(referredGroup);
@@ -344,8 +342,8 @@ public class UserManagerModule extends BaseModule
 				}
 			}
 			
-			getUserSearcher().saveData(newUser,inReq.getUser());
-			getUserManager().saveGroup(group);
+			getUserSearcher(inReq).saveData(newUser,inReq.getUser());
+			getUserManager(inReq).saveGroup(group);
 			
 			inReq.putPageValue("newuser", newUser);
 			emailPassword(newUser, inReq);
@@ -367,7 +365,7 @@ public class UserManagerModule extends BaseModule
 				return;
 			}
 			
-			String md5 = getUserManager().getStringEncryption().getPasswordMd5(inNewUser.getPassword());
+			String md5 = getUserManager(inReq).getStringEncryption().getPasswordMd5(inNewUser.getPassword());
 			
 			inReq.putPageValue("entermediakey", inNewUser.getUserName() + "md542" + md5);
 
@@ -387,7 +385,7 @@ public class UserManagerModule extends BaseModule
 			{
 				sendtogroup = "administrators";
 			}
-			Collection users = getUserManager().getUsersInGroup(sendtogroup);
+			Collection users = getUserManager(inReq).getUsersInGroup(sendtogroup);
 			for (Iterator iterator = users.iterator(); iterator.hasNext();)
 			{
 				User user = (User) iterator.next();
@@ -436,7 +434,7 @@ public class UserManagerModule extends BaseModule
 				{
 					password = new PasswordGenerator().generate();
 				}
-				User user = getUserManager().createUser( username, password );
+				User user = getUserManager(inReq).createUser( username, password );
 				user.setPassword(password);
 				user.setEnabled(true);
 				getPropertyContainerManipulator().updateProperties( inReq.getParameterMap(),
@@ -447,12 +445,12 @@ public class UserManagerModule extends BaseModule
 				{
 					for (int i = 0; i < groups.length; i++)
 					{
-						Group group = getGroupSearcher().getGroup( groups[i] );
+						Group group = getGroupSearcher(inReq).getGroup( groups[i] );
 						user.addGroup(group);
-						getUserManager().saveGroup(group);
+						getUserManager(inReq).saveGroup(group);
 					}
 				}
-				getUserSearcher().saveData( user ,inReq.getUser());
+				getUserSearcher(inReq).saveData( user ,inReq.getUser());
 				inReq.putPageValue( "newUser", user );
 			}
 			catch( UserManagerException ume )
@@ -498,7 +496,7 @@ public class UserManagerModule extends BaseModule
 
 		try
 		{
-			User user = getUserSearcher().getUser(username);
+			User user = getUserSearcher(inReq).getUser(username);
 
 			user.clearGroups();
 			String groups[] = inReq.getRequestParameters(GROUPS);
@@ -506,11 +504,11 @@ public class UserManagerModule extends BaseModule
 			{
 				for (int i = 0; i < groups.length; i++)
 				{
-					Group group = getGroupSearcher().getGroup( groups[i] );
+					Group group = getGroupSearcher(inReq).getGroup( groups[i] );
 					user.addGroup( group );
 				}
 			}
-			getUserSearcher().saveData( user ,inReq.getUser());
+			getUserSearcher(inReq).saveData( user ,inReq.getUser());
 		}
 		catch( UserManagerException ume )
 		{
@@ -525,7 +523,7 @@ public class UserManagerModule extends BaseModule
 			User user = getUser( inReq );
 			getPropertyContainerManipulator().createProperties( inReq.getParameterMap(),
 				user.getProperties() );
-			getUserSearcher().saveData( user ,inReq.getUser());
+			getUserSearcher(inReq).saveData( user ,inReq.getUser());
 		}
 		catch( UserManagerException ume )
 		{
@@ -540,7 +538,7 @@ public class UserManagerModule extends BaseModule
 
 		try
 		{
-			user = getUserSearcher().getUser( username );
+			user = getUserSearcher(inReq).getUser( username );
 
 			return user;
 		}
@@ -562,7 +560,7 @@ public class UserManagerModule extends BaseModule
 			{
 				try
 				{
-					Group group = getGroupSearcher().getGroup( groups[i] );
+					Group group = getGroupSearcher(inReq).getGroup( groups[i] );
 					groupsForDeletion.add( group );
 				}
 				catch( UserManagerException e )
@@ -587,7 +585,7 @@ public class UserManagerModule extends BaseModule
 			{
 				try
 				{
-					User user = getUserSearcher().getUser( userNames[i] );
+					User user = getUserSearcher(inReq).getUser( userNames[i] );
 					if( user != null)
 					{
 						usersForDeletion.add( user );						
@@ -607,15 +605,15 @@ public class UserManagerModule extends BaseModule
 	{
 		checkAdminPermission(inReq);
 		Group group = loadGroup(inReq);
-		getUserManager().deleteGroup(group);
+		getUserManager(inReq).deleteGroup(group);
 	}
 
 	public void deleteUsers( WebPageRequest inReq ) throws OpenEditException
 	{
 		checkAdminPermission(inReq);
 		List users = (List) inReq.getSessionValue( USERNAMES );
-		getUserManager().deleteUsers( users );
-		getUserSearcher().reIndexAll();
+		getUserManager(inReq).deleteUsers( users );
+		getUserSearcher(inReq).reIndexAll();
 		inReq.removeSessionValue( USERNAMES );
 	}
 	
@@ -627,9 +625,9 @@ public class UserManagerModule extends BaseModule
 		{
 			usertodelete = inReq.getRequestParameter("id");
 		}
-		User user = getUserManager().getUser(usertodelete);
-		getUserManager().deleteUser(user);
-		getUserSearcher().delete(user, inReq.getUser());
+		User user = getUserManager(inReq).getUser(usertodelete);
+		getUserManager(inReq).deleteUser(user);
+		getUserSearcher(inReq).delete(user, inReq.getUser());
 	}
 
 	public void deleteGroupProperties( WebPageRequest inReq ) throws OpenEditException,
@@ -639,7 +637,7 @@ public class UserManagerModule extends BaseModule
 		Group group = getGroup( inReq );
 		getPropertyContainerManipulator().deleteProperties( inReq,
 			group.getProperties() );
-		getUserManager().saveGroup( group );
+		getUserManager(inReq).saveGroup( group );
 	}
 
 	public void deleteUserProperties( WebPageRequest inReq ) throws OpenEditException
@@ -650,7 +648,7 @@ public class UserManagerModule extends BaseModule
 			User user = getUser( inReq );
 			getPropertyContainerManipulator().deleteProperties( inReq,
 				user.getProperties() );
-			getUserSearcher().saveData( user ,inReq.getUser());
+			getUserSearcher(inReq).saveData( user ,inReq.getUser());
 		}
 		catch( UserManagerException e )
 		{
@@ -660,7 +658,9 @@ public class UserManagerModule extends BaseModule
 
 	public UserManager getUserManager( WebPageRequest inReq ) throws OpenEditException
 	{
-		UserManager userManager2 = getUserManager();
+		String catalogid = inReq.findValue("catalogid");
+		UserSearcher searcher =  (UserSearcher) getSearcherManager().getSearcher(catalogid, "user");
+		UserManager userManager2 = searcher.getUserManager();
 		inReq.putPageValue( USERMANAGER, userManager2 );
 		inReq.putPageValue( "usermanager", userManager2 );
 		inReq.putPageValue( "userManager", userManager2 );
@@ -705,7 +705,7 @@ public class UserManagerModule extends BaseModule
 			return;
 		}
 		
-		User user = getUserSearcher().getUser(username);
+		User user = getUserSearcher(inReq).getUser(username);
 		if ( user == null)
 		{
 			String error = "No such user";
@@ -729,7 +729,7 @@ public class UserManagerModule extends BaseModule
 		{
 			//copy the example page
 			Page starter = getPageManager().getPage( directory + "/starterpage.html");
-			User admin = getUserSearcher().getUser("admin");
+			User admin = getUserSearcher(inReq).getUser("admin");
 			WebPageRequest tempContext = new BaseWebPageRequest( inReq);
 			tempContext.putPageValue("user",admin); //we need a user with proper permissions
 			getPageManager().copyPage(starter,homePage);
@@ -758,7 +758,7 @@ public class UserManagerModule extends BaseModule
 		}				
 		if ( password != null)
 		{
-			boolean ok = getUserManager().authenticate(user, password);
+			boolean ok = getUserManager(inReq).authenticate(user, password);
 			//Phone1
 			if ( ok)
 			{
@@ -793,7 +793,7 @@ public class UserManagerModule extends BaseModule
 				checkAdminPermission(inReq);
 			}
 			user.setPassword( password );
-			getUserSearcher().saveData( user ,inReq.getUser());
+			getUserSearcher(inReq).saveData( user ,inReq.getUser());
 			inReq.putPageValue("message", "passwordchanged");
 			
 		}
@@ -836,7 +836,7 @@ public class UserManagerModule extends BaseModule
 			}
 		}
 
-		for ( Iterator iter = getUserManager().getPermissions().iterator(); iter.hasNext(); )
+		for ( Iterator iter = getUserManager(inReq).getPermissions().iterator(); iter.hasNext(); )
 		{
 			Group group = getGroup( inReq );
 			Permission element = (Permission) iter.next();
@@ -855,7 +855,7 @@ public class UserManagerModule extends BaseModule
 			}
 			if ( dirty)
 			{
-				getUserManager().saveGroup(group);
+				getUserManager(inReq).saveGroup(group);
 			}
 		}
 	}
@@ -890,7 +890,7 @@ public class UserManagerModule extends BaseModule
 		}
 		inReq.putPageValue("status","Saved");
 		inReq.putPageValue("saved","saved");
-		getUserSearcher().saveData( user ,inReq.getUser());
+		getUserSearcher(inReq).saveData( user ,inReq.getUser());
 	}
 
 	/**
@@ -903,7 +903,7 @@ public class UserManagerModule extends BaseModule
 		Group group = getGroup( inReq );
 		getPropertyContainerManipulator().updateProperties( inReq.getParameterMap(),
 				group );
-		getGroupSearcher().saveData(group,inReq.getUser());
+		getGroupSearcher(inReq).saveData(group,inReq.getUser());
 	}
 
 	/**
@@ -929,11 +929,11 @@ public class UserManagerModule extends BaseModule
 		{
 			for ( int i = 0; i < userNames.length; i++ )
 			{
-				User user = getUserSearcher().getUser( userNames[i] );
+				User user = getUserSearcher(inReq).getUser( userNames[i] );
 
 				if( user == null)
 				{
-					user = getUserSearcher().getUserByEmail(userNames[i]);
+					user = getUserSearcher(inReq).getUserByEmail(userNames[i]);
 				}
 				
 				if (user == null)
@@ -941,9 +941,9 @@ public class UserManagerModule extends BaseModule
 					throw new UserManagerException( "Could not find user " + userNames[i] );
 				}
 				user.addGroup(group );
-				getUserSearcher().saveData(user,inReq.getUser());
+				getUserSearcher(inReq).saveData(user,inReq.getUser());
 			}
-			getGroupSearcher().saveData(group,null); //This is probably called to update the index
+			getGroupSearcher(inReq).saveData(group,null); //This is probably called to update the index
 		}
 	}
 
@@ -968,7 +968,7 @@ public class UserManagerModule extends BaseModule
 
 		try
 		{
-			group = getGroupSearcher().getGroup( name );
+			group = getGroupSearcher(inReq).getGroup( name );
 
 			return group;
 		}
@@ -1007,12 +1007,12 @@ public class UserManagerModule extends BaseModule
 			}
 			for ( int i = 0; i < userNames.length; i++ )
 			{
-				User user = getUserSearcher().getUser( userNames[i] );
+				User user = getUserSearcher(inReq).getUser( userNames[i] );
 
 				if (user != null)
 				{
 					user.removeGroup(group);
-					getUserSearcher().saveData(user,inReq.getUser());
+					getUserSearcher(inReq).saveData(user,inReq.getUser());
 				}
 			}
 		}
@@ -1024,16 +1024,16 @@ public class UserManagerModule extends BaseModule
 		Group group = getGroup(inReq);
 		
 		List userstosave = new ArrayList();
-		HitTracker users = getUserSearcher().getUsersInGroup(group);
+		HitTracker users = getUserSearcher(inReq).getUsersInGroup(group);
 		for (Iterator iter = users.iterator(); iter.hasNext();)
 		{
 			Object userhit = (Object) iter.next();
 			String id = users.getValue(userhit, "id");
-			User user = getUserSearcher().getUser(id);
+			User user = getUserSearcher(inReq).getUser(id);
 			user.removeGroup(group);
 			userstosave.add(user);
 		}
-		getUserSearcher().saveUsers(userstosave,inReq.getUser());
+		getUserSearcher(inReq).saveUsers(userstosave,inReq.getUser());
 	}
 		
 	/**
@@ -1050,14 +1050,14 @@ public class UserManagerModule extends BaseModule
 		//end remove
 		
 		
-		inReq.putPageValue("searcher", getUserSearcher());
+		inReq.putPageValue("searcher", getUserSearcher(inReq));
 
 		
 		User user = null;//inReq.getUser();
 		String userName = inReq.getRequestParameter( "username" );
 		if( userName != null)
 		{
-			user = getUserSearcher().getUser( userName );
+			user = getUserSearcher(inReq).getUser( userName );
 		}
 		if( user != null)
 		{
@@ -1105,16 +1105,16 @@ public class UserManagerModule extends BaseModule
 				//now import it
 				//read csv file
 				UserImport uimport = new UserImport();
-				uimport.setUserManager(getUserManager());
+				uimport.setUserManager(getUserManager(inReq));
 				List users = uimport.listUsers(temp);
 				
-				Group group = getGroupSearcher().getGroup(id);
+				Group group = getGroupSearcher(inReq).getGroup(id);
 				
 				for (Iterator iter = users.iterator(); iter.hasNext();)
 				{
 					User user = (User) iter.next();
 					user.addGroup(group);
-					getUserSearcher().saveData(user, inReq.getUser());
+					getUserSearcher(inReq).saveData(user, inReq.getUser());
 				}
 			}
 			catch ( Exception ex)
@@ -1126,19 +1126,19 @@ public class UserManagerModule extends BaseModule
 	
 	public void findUsers(WebPageRequest inReq)
 	{
-		HitTracker hits = getUserSearcher().fieldSearch(inReq);
+		HitTracker hits = getUserSearcher(inReq).fieldSearch(inReq);
 		inReq.putPageValue("hits", hits);
 	
 	}
 	public void findAllUsers(WebPageRequest inReq)
 	{
-		HitTracker all = getUserSearcher().getAllHits();
+		HitTracker all = getUserSearcher(inReq).getAllHits();
 		all.setHitsName("userTracker");
-		all.setCatalogId(getUserSearcher().getCatalogId());
+		all.setCatalogId(getUserSearcher(inReq).getCatalogId());
 		inReq.putPageValue(all.getHitsName(), all);
 		inReq.putSessionValue(all.getSessionId(), all);
-		
-		inReq.putPageValue("searcher", getUserSearcher());
+		log.info(all.size());
+		inReq.putPageValue("searcher", getUserSearcher(inReq));
 	}
 	
 	public void findUsersInGroup(WebPageRequest inReq)
@@ -1147,7 +1147,7 @@ public class UserManagerModule extends BaseModule
 		String page = inReq.getRequestParameter("page");
 		if( page != null)
 		{
-			all = (HitTracker)inReq.getSessionValue("usergroupsTracker" + getUserSearcher().getCatalogId());
+			all = (HitTracker)inReq.getSessionValue("usergroupsTracker" + getUserSearcher(inReq).getCatalogId());
 			if( all != null)
 			{
 				all.setPage(Integer.parseInt(page));
@@ -1159,25 +1159,25 @@ public class UserManagerModule extends BaseModule
 			Group group = getGroup(inReq);
 			if(group != null)
 			{	
-				all = getUserSearcher().getUsersInGroup(group);
+				all = getUserSearcher(inReq).getUsersInGroup(group);
 			}
 		}	
 		if(all!= null)
 		{
 			all.setHitsName("userTracker");
-			all.setCatalogId(getUserSearcher().getCatalogId());
+			all.setCatalogId(getUserSearcher(inReq).getCatalogId());
 			
 			inReq.putPageValue(all.getHitsName(), all);
 			inReq.putSessionValue(all.getSessionId(), all);
 				
-			inReq.putPageValue("searcher", getUserSearcher());
+			inReq.putPageValue("searcher", getUserSearcher(inReq));
 		}
 	}
 
-	public HitTracker getGroupHits(String inGroup)
+	public HitTracker getGroupHits(WebPageRequest inReq, String inGroup)
 	{
-		Group group = getGroupSearcher().getGroup(inGroup);
-		HitTracker users = getUserSearcher().getUsersInGroup(group);
+		Group group = getGroupSearcher(inReq).getGroup(inGroup);
+		HitTracker users = getUserSearcher(inReq).getUsersInGroup(group);
 		return users;
 	}
 
@@ -1279,23 +1279,23 @@ public class UserManagerModule extends BaseModule
 		String value = inReq.getPageProperty("emailgroupid");
 		String email = inReq.getRequestParameter("email");
 		email = email.toLowerCase();
-		User user = getUserSearcher().getUserByEmail(email);
+		User user = getUserSearcher(inReq).getUserByEmail(email);
 		if( user == null)
 		{	
 			String password = new PasswordGenerator().generate();
-			user = getUserManager().createUser(email,password);
+			user = getUserManager(inReq).createUser(email,password);
 			user.setEmail(email);
 			user.setVirtual(false);
 		}
-		Group group = getGroupSearcher().getGroup(value);
+		Group group = getGroupSearcher(inReq).getGroup(value);
 		if( group == null)
 		{
-			group = getUserManager().createGroup(value);
+			group = getUserManager(inReq).createGroup(value);
 		}
 		if( !user.isInGroup(group))
 		{
 			user.addGroup(group);
-			getUserSearcher().saveData(user,inReq.getUser());
+			getUserSearcher(inReq).saveData(user,inReq.getUser());
 		}
 		else
 		{
@@ -1308,43 +1308,36 @@ public class UserManagerModule extends BaseModule
 		String value = inReq.getPageProperty("emailgroupid");
 		String email = inReq.getRequestParameter("email");
 		email = email.toLowerCase();
-		User user = getUserSearcher().getUserByEmail(email);
+		User user = getUserSearcher(inReq).getUserByEmail(email);
 		if( user == null)
 		{	
 			inReq.putPageValue("thanks", "Email is already removed");
 		}
-		Group group = getGroupSearcher().getGroup(value);
+		Group group = getGroupSearcher(inReq).getGroup(value);
 		if( group == null)
 		{
-			group = getUserManager().createGroup(value);
+			group = getUserManager(inReq).createGroup(value);
 		}
 		if( !user.isInGroup(group))
 		{
 			user.removeGroup(group);
-			getUserSearcher().saveData(user,inReq.getUser());
+			getUserSearcher(inReq).saveData(user,inReq.getUser());
 		}
 		inReq.putPageValue("removed", Boolean.TRUE);
 	}
-	protected UserSearcher getUserSearcher()
-	{
-		return (UserSearcher)getSearcherManager().getSearcher("system", "user");
-	}
-	protected GroupSearcher getGroupSearcher()
-	{
-		return (GroupSearcher)getSearcherManager().getSearcher("system", "group");
-	}
+	
 	public void loadPageOfResults(WebPageRequest inReq)
 	{
-		HitTracker hits = getUserSearcher().loadPageOfSearch(inReq);
+		HitTracker hits = getUserSearcher(inReq).loadPageOfSearch(inReq);
 		inReq.putPageValue("hits", hits);
 	}
 	public void loadPageOfGroupResults(WebPageRequest inReq)
 	{
-		getGroupSearcher().loadPageOfSearch(inReq);
+		getGroupSearcher(inReq).loadPageOfSearch(inReq);
 	}
 	public void loadAllGroupHits(WebPageRequest inReq)
 	{
-		HitTracker hits = getGroupSearcher().getAllHits();
+		HitTracker hits = getGroupSearcher(inReq).getAllHits();
 		String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue(hitsname, hits);
 	}
@@ -1352,52 +1345,52 @@ public class UserManagerModule extends BaseModule
 	public void loadHits(WebPageRequest inReq)
 	{
 		String hitsname = inReq.findValue("hitsname");
-		getUserSearcher().loadHits(inReq, hitsname);
-		inReq.putPageValue("searcher", getUserSearcher());
+		getUserSearcher(inReq).loadHits(inReq, hitsname);
+		inReq.putPageValue("searcher", getUserSearcher(inReq));
 	}
 	public void loadUserSearcher(WebPageRequest inReq)
 	{
-		inReq.putPageValue("searcher", getUserSearcher());
+		inReq.putPageValue("searcher", getUserSearcher(inReq));
 	}
 	
 	public void loadGroupHits(WebPageRequest inReq)
 	{
 		String hitsname = inReq.findValue("hitsname");
-		HitTracker hits = getGroupSearcher().loadHits(inReq, hitsname);
+		HitTracker hits = getGroupSearcher(inReq).loadHits(inReq, hitsname);
 		//log.info(hits);
-		inReq.putPageValue("searcher", getGroupSearcher());
+		inReq.putPageValue("searcher", getGroupSearcher(inReq));
 	}
 	public void findAllGroups(WebPageRequest inReq)
 	{
-		HitTracker all = getGroupSearcher().getAllHits();
+		HitTracker all = getGroupSearcher(inReq).getAllHits();
 		String hitsname = inReq.findValue("hitsname");
 		if (hitsname == null)
 		{
 			hitsname = "grouplist";
 		}
 		all.setHitsName(hitsname);
-		all.setCatalogId(getGroupSearcher().getCatalogId());
+		all.setCatalogId(getGroupSearcher(inReq).getCatalogId());
 		inReq.putSessionValue(all.getSessionId(), all);
 		inReq.putPageValue(hitsname, all);
-		inReq.putPageValue("searcher", getGroupSearcher());
+		inReq.putPageValue("searcher", getGroupSearcher(inReq));
 	}
 	public void findGroups(WebPageRequest inReq)
 	{
-		HitTracker all = getGroupSearcher().fieldSearch(inReq);
+		HitTracker all = getGroupSearcher(inReq).fieldSearch(inReq);
 /*		String hitsname = inReq.findValue("hitsname");
 
-		inReq.putSessionValue(hitsname + getGroupSearcher().getCatalogId(), all);
-		inReq.putPageValue("searcher", getGroupSearcher());*/
+		inReq.putSessionValue(hitsname + getGroupSearcher(inReq).getCatalogId(), all);
+		inReq.putPageValue("searcher", getGroupSearcher(inReq));*/
 	}
 	
 	public void reindexGroups(WebPageRequest inReq)
 	{
-		getGroupSearcher().reIndexAll();
+		getGroupSearcher(inReq).reIndexAll();
 	}
 	
 	public void reindexUsers(WebPageRequest inReq)
 	{
-		getUserSearcher().reIndexAll();
+		getUserSearcher(inReq).reIndexAll();
 	}
 	
 	public void setUserProperty(WebPageRequest inReq) 
@@ -1414,7 +1407,7 @@ public class UserManagerModule extends BaseModule
 			mode = inReq.findValue("userpropertyname");
 		}
 		user.put(mode,value);
-		getUserManager().saveUser(inReq.getUser());
+		getUserManager(inReq).saveUser(inReq.getUser());
 	}
 
 	public void saveLegacyPermissions( WebPageRequest inReq )
@@ -1434,7 +1427,7 @@ public class UserManagerModule extends BaseModule
 			}
 		}
 
-		for ( Iterator iter = getUserManager().getPermissions().iterator(); iter.hasNext(); )
+		for ( Iterator iter = getUserManager(inReq).getPermissions().iterator(); iter.hasNext(); )
 		{
 			Group group = getGroup( inReq );
 			com.openedit.users.Permission element = (com.openedit.users.Permission) iter.next();
@@ -1453,7 +1446,7 @@ public class UserManagerModule extends BaseModule
 			}
 			if ( dirty)
 			{
-				getUserManager().saveGroup(group);
+				getUserManager(inReq).saveGroup(group);
 			}
 		}
 	}
@@ -1480,7 +1473,7 @@ public class UserManagerModule extends BaseModule
 				}
 				for (int i = 0; i < vals.length; i++)
 				{
-					Group group = getGroupSearcher().getGroup( vals[i] );
+					Group group = getGroupSearcher(inReq).getGroup( vals[i] );
 					if( group != null )
 					{
 						user.addGroup( group );

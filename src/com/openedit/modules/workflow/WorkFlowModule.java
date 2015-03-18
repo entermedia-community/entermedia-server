@@ -7,16 +7,16 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.entermedia.modules.BaseMediaModule;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
-import com.openedit.modules.BaseModule;
 import com.openedit.page.Page;
 import com.openedit.page.PageAction;
 import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
 
-public class WorkFlowModule extends BaseModule
+public class WorkFlowModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(WorkFlowModule.class);
 	
@@ -40,14 +40,14 @@ public class WorkFlowModule extends BaseModule
 		inReq.getUser().put("oe.edit.mode","editing");
 		inReq.getUser().put("showdebug","false");
 
-		getUserManager().saveUser(inReq.getUser());
+		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
 	public void viewDebugMode(WebPageRequest inReq) 
 	{
 		inReq.getUser().put("oe.edit.mode","debug");
 		inReq.getUser().put("showdebug","true");
-		getUserManager().saveUser(inReq.getUser());
+		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
 	public void viewPreviewMode(WebPageRequest inReq) 
@@ -56,7 +56,7 @@ public class WorkFlowModule extends BaseModule
 		inReq.getUser().put("showdebug","false");
 
 		//inReq.getUser().put("openadmintoolbar","false");
-		getUserManager().saveUser(inReq.getUser());
+		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
 

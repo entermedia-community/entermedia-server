@@ -38,6 +38,8 @@ import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.GroupSearcher;
+import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.ModuleManager;
@@ -1637,6 +1639,14 @@ public class MediaArchive
 			}
 		}
 		return asset.get("importstatus");
+	}
+	public UserSearcher getUserSearcher() {
+		// TODO Auto-generated method stub
+		return (UserSearcher) getSearcher("user");
+	}
+	public GroupSearcher getGroupSearcher() {
+		// TODO Auto-generated method stub
+		return (GroupSearcher) getSearcher("group");
 	}
 	
 

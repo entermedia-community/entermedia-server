@@ -1,15 +1,13 @@
 import com.openedit.users.Group;
 
-import com.openedit.OpenEditException;
+import org.openedit.Data
+import org.openedit.data.Searcher
 
-import java.util.*;
-
-import org.openedit.Data 
-import org.openedit.data.Searcher 
-
-import com.openedit.users.Group 
-import com.openedit.users.User 
-import com.openedit.page.manage.*;
+import com.openedit.OpenEditException
+import com.openedit.page.manage.*
+import com.openedit.users.Group
+import com.openedit.users.User
+import com.openedit.users.UserManager
 
 public Group getGroup()
 {
@@ -38,6 +36,7 @@ public User getUser(Group inGroup)
 	{
 		throw new OpenEditException("E-mail addresses don't match.");
 	}
+	UserManager um = userManager;
 	
 	User newuser = userManager.getUserByEmail(email);
 	
@@ -101,7 +100,7 @@ public void addUser()
 	Group group = getGroup();
 	User newuser = getUser(group);
 	
-	Searcher usersearcher = searcherManager.getSearcher("system","user");
+	Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 	
 	List details = usersearcher.getDetailsForView("user/simpleuseradd", context.getPageValue("user"));
 	
@@ -126,7 +125,7 @@ public void editUser()
 		User edituser = usermanager.getUser(userid);
 		
 		//save the user object
-		Searcher usersearcher = searcherManager.getSearcher("system","user");
+		Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 		String groupid = context.findValue("mastergroup");
 		Group mastergroup = usermanager.getGroup(groupid);
 		if( mastergroup == null)

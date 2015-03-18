@@ -1,7 +1,7 @@
 <div id="roleeditor">
 
 <div class="ui-widget commentbox three-up last" style="margin-top: 20px;">
-#set($catalog = $searcherManager.getData("system","catalog", $catalogid))
+#set($catalog = $searcherManager.getData($catalogid,"catalog", $catalogid))
 #if($catalog)
 #set($label = $catalog.getName())
 #else

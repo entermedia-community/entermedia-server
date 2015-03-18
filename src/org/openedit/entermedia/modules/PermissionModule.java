@@ -453,7 +453,7 @@ public class PermissionModule extends BaseMediaModule
 		Permission perm = loadOrCreatePermission(page.getPageSettings(),permissionpath,id);
 		inReq.putPageValue("permission", perm);
 
-		HitTracker groups  = getUserManager().getGroups();
+		HitTracker groups  = getUserManager(inReq).getGroups();
 		Boolean simple = Boolean.TRUE;
 		
 		String usexml = inReq.getRequestParameter("addgroup");
@@ -479,7 +479,7 @@ public class PermissionModule extends BaseMediaModule
 								if( filters[j] instanceof GroupFilter)
 								{
 									String gid = ((GroupFilter)filters[j]).getGroupId();
-									Data group = (Group)getUserManager().getGroup(gid);
+									Data group = (Group)getUserManager(inReq).getGroup(gid);
 									if( group != null)
 									{
 										selgroups.add(group);

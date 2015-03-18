@@ -7,6 +7,7 @@ import org.openedit.data.Searcher;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.users.Group;
 import com.openedit.users.User;
+import com.openedit.users.UserManager;
 
 public interface UserSearcher extends Searcher
 {
@@ -18,5 +19,7 @@ public interface UserSearcher extends Searcher
 	public abstract HitTracker getUsersInGroup(Group inGroup);
 
 	public abstract void saveUsers(List userstosave, User user);
+	public abstract UserManager getUserManager();
+
 
 }

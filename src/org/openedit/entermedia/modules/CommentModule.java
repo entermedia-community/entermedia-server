@@ -152,7 +152,7 @@ public class CommentModule extends BaseMediaModule
 		
 		Comment comment = new Comment();
 		comment.setComment(text);
-		User u = getUserManager().getUser(user);
+		User u = getUserManager(inReq).getUser(user);
 		
 		comment.setUser(u);
 		comment.setDate(date);

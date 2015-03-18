@@ -203,7 +203,7 @@ public class MediaArchiveModule extends BaseMediaModule
 				{
 					user.put(id, String.valueOf(has));
 				}
-				getUserManager().saveUser(user);
+				getUserSearcher(inReq).getUserManager().saveUser(user);
 			}
 		}
 	}
@@ -228,11 +228,11 @@ public class MediaArchiveModule extends BaseMediaModule
 				String virtual = inReq.findValue("virtualuser");
 				if (!Boolean.parseBoolean(virtual))
 				{
-					user = getUserManager().getUser(username);
+					user = getUserSearcher(inReq).getUserManager().getUser(username);
 				}
 				if (user == null)
 				{
-					user = getUserManager().createGuestUser(username, null, groupid);
+					user = getUserSearcher(inReq).getUserManager().createGuestUser(username, null, groupid);
 					log.info("Creating virtual user " + username);
 				}
 

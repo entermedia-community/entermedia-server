@@ -114,7 +114,7 @@ public class AutoCompleteModule extends DataEditModule
 		HashSet<String> ids = new HashSet<String>();
 		for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
 			Group group = (Group) iterator.next();
-			Collection users = getUserManager().getUsersInGroup(group);
+			Collection users = getUserManager(inReq).getUsersInGroup(group);
 			for (Iterator iterator2 = users.iterator(); iterator2.hasNext();) {
 				User user = (User) iterator2.next();
 				ids.add(user.getId());

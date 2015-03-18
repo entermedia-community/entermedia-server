@@ -8,8 +8,7 @@
 
 -->
 <!--  real data -->
-    <bean id="userSearcher" bean="dataSearcher" catalogid="${catalogid}"  />
-    <bean id="groupSearcher" bean="dataSearcher" catalogid="system"  />
+   
 
 
 

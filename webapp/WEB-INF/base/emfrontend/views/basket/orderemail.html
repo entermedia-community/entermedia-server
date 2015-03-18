@@ -11,7 +11,7 @@ Order Number: $order.getId()
 
 <p>
 <h2>Customer: $user</h2>
-#set($usersearcher = $searcherManager.getSearcher("system", "user"))
+#set($usersearcher = $searcherManager.getSearcher($catalogid, "user"))
 $context.putPageValue("searcher", $usersearcher)	 
 $context.putPageValue("view", "user/useredit")	
 $context.putPageValue("data", $user)	

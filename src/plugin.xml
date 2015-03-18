@@ -243,18 +243,16 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="Date" class="com.openedit.modules.dates.DateModule"/>
 
-	<bean id="userSearcher" class="org.openedit.users.LuceneUserSearcher">
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
+	<bean id="userSearcher" class="org.openedit.users.LuceneUserSearcher" scope="prototype">
+			<property name="moduleManager"><ref bean="moduleManager" /></property>
+	
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
-	<bean id="groupSearcher" class="org.openedit.users.LuceneGroupSearcher">
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
+	<bean id="groupSearcher" class="org.openedit.users.LuceneGroupSearcher" scope="prototype">
+				<property name="moduleManager"><ref bean="moduleManager" /></property>
+		
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
