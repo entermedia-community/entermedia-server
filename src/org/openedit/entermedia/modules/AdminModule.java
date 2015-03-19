@@ -325,13 +325,21 @@ public class AdminModule extends BaseModule
 	protected UserSearcher getUserSearcher(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
+		if( catalogid == null)
+		{
+			catalogid = "system";
+		}
 		return (UserSearcher) getSearcherManager().getSearcher(catalogid, "user");
 	}
+
 
 	protected GroupSearcher getGroupSearcher(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
-
+		if( catalogid == null)
+		{
+			catalogid = "system";
+		}
 		return (GroupSearcher) getSearcherManager().getSearcher(catalogid, "group");
 	}
 
@@ -349,7 +357,6 @@ public class AdminModule extends BaseModule
 	{
 		String account = inReq.getRequestParameter("accountname");
 		String password = inReq.getRequestParameter("password");
-		String catalogid = inReq.findValue("catalogid");
 
 		if (account == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
 		{
@@ -362,10 +369,11 @@ public class AdminModule extends BaseModule
 		}
 		else if (account != null)
 		{
-			User user = getUserSearcher(inReq).getUser(account);
+			UserSearcher userSearcher = getUserSearcher(inReq);
+			User user = userSearcher.getUser(account);
 			if (user == null && account.contains("@"))
 			{
-				user = getUserSearcher(inReq).getUserByEmail(account);
+				user = userSearcher.getUserByEmail(account);
 			}
 			if (user == null) // Allow guest user
 			{
@@ -374,7 +382,7 @@ public class AdminModule extends BaseModule
 				{
 					//we dont want to save the real password since it might be NT based
 					String tmppassword = new PasswordGenerator().generate();
-					user = getUserSearcher(inReq).getUserManager().createGuestUser(account, tmppassword, groupname);
+					user = userSearcher.getUserManager().createGuestUser(account, tmppassword, groupname);
 					log.info("Username not found. Creating guest user.");
 				}
 			}
@@ -393,7 +401,7 @@ public class AdminModule extends BaseModule
 			if (loginAndRedirect(aReq, inReq))
 			{
 				user.setVirtual(false);
-				getUserSearcher(inReq).saveData(user, null);
+				userSearcher.saveData(user, null);
 			}
 		}
 	}
@@ -471,6 +479,7 @@ public class AdminModule extends BaseModule
 			}
 		}
 		boolean disable = Boolean.parseBoolean(inReq.getContentProperty("autodisableusers"));
+		UserSearcher userSearcher = getUserSearcher(inReq);
 		if (inUser != null)
 		{
 			// Save our logged-in user in the session,
@@ -479,7 +488,7 @@ public class AdminModule extends BaseModule
 			{
 				if (inUser.isEnabled())
 				{
-					userok = getUserSearcher(inReq).getUserManager().authenticate(inAReq); //<---- This is it!!!! we login
+					userok = userSearcher.getUserManager().authenticate(inAReq); //<---- This is it!!!! we login
 				}
 				else
 				{
@@ -498,7 +507,7 @@ public class AdminModule extends BaseModule
 			{
 				//This resets the "failed attemps" to 0.
 				inUser.setProperty("failedlogincount", "0");
-				getUserSearcher(inReq).saveData(inUser, null);
+				userSearcher.saveData(inUser, null);
 
 			}
 
@@ -522,11 +531,8 @@ public class AdminModule extends BaseModule
 
 			inReq.removeSessionValue("userprofile");
 			//inReq.putSessionValue("user", inUser);
-			String catalogid =inReq.findValue("catalogid");
-			if(catalogid == null){
-				catalogid = inReq.findValue("catalogid");
-				inUser.setProperty("catalogid", catalogid);
-			}
+			String catalogid = userSearcher.getCatalogId();
+			inUser.setProperty("catalogid", catalogid);
 			inReq.putSessionValue(catalogid + "user", inUser);
 			createUserSession(inReq);
 			// user is now logged in
@@ -592,7 +598,7 @@ public class AdminModule extends BaseModule
 					}
 					inUser.setEnabled(false);
 				}
-				getUserSearcher(inReq).saveData(inUser, null);
+				userSearcher.saveData(inUser, null);
 
 			}
 
@@ -658,18 +664,15 @@ public class AdminModule extends BaseModule
 
 	public void logout(WebPageRequest inReq) throws OpenEditException
 	{
-		String catalogid = inReq.findValue("catalogid");
-		if( catalogid == null)
-		{
-			catalogid = "system";
-		}
+		UserSearcher usearcher = getUserSearcher(inReq);
+		String catalogid = usearcher.getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
 		if (user == null)
 		{
 			//this user is already logged out
 			return;
 		}
-		getUserSearcher(inReq).getUserManager().logout(user);
+		usearcher.getUserManager().logout(user);
 
 		Enumeration enumeration = inReq.getSession().getAttributeNames();
 		List toremove = new ArrayList();
@@ -753,11 +756,8 @@ public class AdminModule extends BaseModule
 	}
 
 	public User createUserSession(WebPageRequest inReq) {
-		String catalogid = inReq.findValue("catalogid");
-		if( catalogid == null)
-		{
-			catalogid = "system";
-		}
+		UserSearcher userSearcher = getUserSearcher(inReq);
+		String catalogid = userSearcher.getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
 		inReq.putPageValue( "user", user);
 
