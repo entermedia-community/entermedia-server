@@ -493,8 +493,14 @@ public class PathEventManager
 		{
 			username = "admin";
 		}
-		UserManager usermanager = (UserManager)getModuleManager().getBean("userManager");
-		User user = usermanager.getUser(username);
+		
+		String catalogid = eventpage.getProperty("catalogid");
+		if( catalogid == null)
+		{
+			catalogid = "system";
+		}
+		User user = (User)getSearcherManager().getData(catalogid, "user", username);
+		//UserManager usermanager = (UserManager)getModuleManager().getBean(catalogid,"userManager");
 		if( user == null)
 		{
 			log.error("No such user: " + username);

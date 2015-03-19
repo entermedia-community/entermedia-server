@@ -658,7 +658,12 @@ public class AdminModule extends BaseModule
 
 	public void logout(WebPageRequest inReq) throws OpenEditException
 	{
-		User user = (User) inReq.getSessionValue("user");
+		String catalogid = inReq.findValue("catalogid");
+		if( catalogid == null)
+		{
+			catalogid = "system";
+		}
+		User user = (User) inReq.getSessionValue(catalogid + "user");
 		if (user == null)
 		{
 			//this user is already logged out
@@ -715,11 +720,11 @@ public class AdminModule extends BaseModule
 
 	public void autoLogin(WebPageRequest inReq) throws OpenEditException
 	{
+		createUserSession(inReq);
 		if (inReq.getUser() != null)
 		{
 			return;
 		}
-		createUserSession(inReq);
 		if (Boolean.parseBoolean(inReq.getContentProperty("oe.usernameinheader")))
 		{
 			autoLoginFromRequest(inReq);
@@ -747,11 +752,16 @@ public class AdminModule extends BaseModule
 
 	}
 
-	public void createUserSession(WebPageRequest inReq) {
+	public User createUserSession(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
+		if( catalogid == null)
+		{
+			catalogid = "system";
+		}
 		User user = (User) inReq.getSessionValue(catalogid + "user");
 		inReq.putPageValue( "user", user);
 
+		return user;
 		
 	}
 
