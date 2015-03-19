@@ -22,6 +22,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.UserSearcher;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.users.Group;
@@ -184,6 +185,32 @@ public class RegistrationModule extends BaseMediaModule
 				cancelAndForward(inReq);
 				return false;
 			}
+			String enddate = prepaidcode.get("expiry");
+			if(enddate != null){
+				Date now = new Date();
+				Date end = DateStorageUtil.getStorageUtil().parseFromStorage(enddate);
+				if(end.before(now)){
+					errors.put("error-expired", "This code is expired");
+					inReq.putPageValue("errors", errors);
+					cancelAndForward(inReq);
+					return false;
+				}
+			}
+			
+			String startdate = prepaidcode.get("startdate");
+			if(startdate != null){
+				Date now = new Date();
+				Date start = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+				if(now.before(start)){
+					errors.put("error-early", "This code is not available yet.");
+					inReq.putPageValue("errors", errors);
+					cancelAndForward(inReq);
+					return false;
+				}
+			}
+			
+			
+			
 			log.info("processed code successfully" + couponcode);
 
 			inReq.putSessionValue("coupon", prepaidcode);
