@@ -59,7 +59,6 @@ public class BasePushManager implements PushManager
 {
 	private static final Log log = LogFactory.getLog(PushManager.class);
 	protected SearcherManager fieldSearcherManager;
-	protected UserManager fieldUserManager;
 	protected PageManager fieldPageManager;
 	protected Downloader fielddownloader;
 	protected XmlUtil xmlUtil = new XmlUtil();
@@ -76,13 +75,13 @@ public class BasePushManager implements PushManager
 		HttpClient client = new HttpClient();
 		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
 		String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
-		User user = getUserManager().getUser(account);
+		User user = getUserManager(inCatalogId).getUser(account);
 		if( user == null)
 		{
 			log.info("No such user " + account);
 			return null;
 		}
-		String password = getUserManager().decryptPassword(user);
+		String password = getUserManager(inCatalogId).decryptPassword(user);
 		PostMethod method = new PostMethod(server + "/media/services/rest/login.xml");
 
 		//TODO: Support a session key and ssl
@@ -109,18 +108,11 @@ public class BasePushManager implements PushManager
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.push.PushManager#getUserManager()
 	 */
-	public UserManager getUserManager()
+	public UserManager getUserManager(String inCatalogId)
 	{
-		return fieldUserManager;
+		return 	(UserManager)getSearcherManager().getModuleManager().getBean(inCatalogId,"userManager");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#setUserManager(com.openedit.users.UserManager)
-	 */
-	public void setUserManager(UserManager inUserManager)
-	{
-		fieldUserManager = inUserManager;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.push.PushManager#getSearcherManager()

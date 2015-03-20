@@ -38,8 +38,6 @@ import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
-import org.openedit.users.GroupSearcher;
-import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.ModuleManager;
@@ -52,7 +50,10 @@ import com.openedit.page.Page;
 import com.openedit.page.Permission;
 import com.openedit.page.manage.MimeTypeMap;
 import com.openedit.page.manage.PageManager;
+import com.openedit.users.GroupSearcher;
 import com.openedit.users.User;
+import com.openedit.users.UserManager;
+import com.openedit.users.UserSearcher;
 import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.Replacer;
@@ -87,6 +88,8 @@ public class MediaArchive
 	protected MimeTypeMap fieldMimeTypeMap;
 	protected LockManager fieldLockManager;
 	protected Map<String,Data> fieldLibraries;
+	
+	protected UserManager fieldUserManager;
 	
 	public String getMimeTypeIcon(String inFormat)
 	{
@@ -1643,14 +1646,13 @@ public class MediaArchive
 		}
 		return asset.get("importstatus");
 	}
-	public UserSearcher getUserSearcher() {
-		// TODO Auto-generated method stub
-		return (UserSearcher) getSearcher("user");
+	public UserManager getUserManager()
+	{
+		if( fieldUserManager == null)
+		{
+			fieldUserManager = (UserManager)getModuleManager().getBean(getCatalogId(),"userManager");
+		}
+		return fieldUserManager;
 	}
-	public GroupSearcher getGroupSearcher() {
-		// TODO Auto-generated method stub
-		return (GroupSearcher) getSearcher("group");
-	}
-	
 
 }

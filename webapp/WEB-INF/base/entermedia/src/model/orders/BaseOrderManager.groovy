@@ -22,18 +22,16 @@ import org.openedit.event.WebEvent
 import org.openedit.event.WebEventHandler
 import org.openedit.util.DateStorageUtil
 
-import com.openedit.BaseWebPageRequest;
+import com.openedit.BaseWebPageRequest
 import com.openedit.ModuleManager
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
-import com.openedit.page.Page
-import com.openedit.page.PageRequestKeys;
 import com.openedit.page.manage.PageManager
 import com.openedit.users.User
 import com.openedit.users.UserManager
-import com.openedit.util.RequestUtils;
+import com.openedit.util.RequestUtils
 
 public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
@@ -42,7 +40,6 @@ public class BaseOrderManager implements OrderManager {
 	protected LockManager fieldLockManager;
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
-	protected UserManager fieldUserManager;
 	
 	public WebEventHandler getWebEventHandler() {
 		return fieldWebEventHandler;
@@ -991,7 +988,7 @@ public class BaseOrderManager implements OrderManager {
 			String userid = inOrder.get("userid");
 			if(userid != null)
 			{
-				User muser = getUserManager().getUser(userid);
+				User muser = inArchive.getUserManager().getUser(userid);
 				if(muser != null)
 				{
 					String owneremail = muser.getEmail();
@@ -1050,13 +1047,5 @@ public class BaseOrderManager implements OrderManager {
 	public void setPageManager(PageManager inManager)
 	{
 		fieldPageManager = inManager;
-	}
-	protected UserManager getUserManager()
-	{
-		return fieldUserManager;
-	}
-	public void setUserManager(UserManager inManager)
-	{
-		fieldUserManager = inManager;
-	}
+	}	
 }

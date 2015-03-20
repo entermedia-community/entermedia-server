@@ -24,7 +24,6 @@ import org.entermedia.upload.UploadRequest;
 import org.openedit.MultiValued;
 import org.openedit.data.Searcher;
 import org.openedit.repository.filesystem.StringItem;
-import org.openedit.users.UserSearcher;
 
 import com.openedit.BaseWebPageRequest;
 import com.openedit.OpenEditException;
@@ -43,6 +42,7 @@ import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.users.UserManagerException;
+import com.openedit.users.UserSearcher;
 import com.openedit.users.authenticate.PasswordGenerator;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.strainer.Filter;
@@ -658,11 +658,9 @@ public class UserManagerModule extends BaseMediaModule
 
 	public UserManager getUserManager( WebPageRequest inReq ) throws OpenEditException
 	{
-		String catalogid = inReq.findValue("catalogid");
-		UserSearcher searcher =  (UserSearcher) getSearcherManager().getSearcher(catalogid, "user");
-		UserManager userManager2 = searcher.getUserManager();
+		UserManager userManager2 = getUserManager(inReq);
 		inReq.putPageValue( USERMANAGER, userManager2 );
-		inReq.putPageValue( "usermanager", userManager2 );
+		inReq.putPageValue( "usermanager", userManager2 ); //No needed
 		inReq.putPageValue( "userManager", userManager2 );
 		inReq.putPageValue( "usermanagerhome", inReq.getContentProperty("usermanagerhome"));
 		return userManager2;
@@ -817,47 +815,6 @@ public class UserManagerModule extends BaseMediaModule
 		}
 
 		return fieldPropertyManipulator;
-	}
-
-	public void OLDsaveGroupPermissions( WebPageRequest inReq )
-			throws UserManagerException, OpenEditException
-	{
-		checkAdminPermission(inReq);
-
-		String[] savePermissions = inReq.getRequestParameters( "savePermissions" );
-		String[] permissions = savePermissions;
-
-		Set permissionsToRetain = new HashSet();
-		if (permissions != null)
-		{
-			for ( int i = 0; i < permissions.length; i++ )
-			{
-				permissionsToRetain.add( permissions[i] );
-			}
-		}
-
-		for ( Iterator iter = getUserManager(inReq).getPermissions().iterator(); iter.hasNext(); )
-		{
-			Group group = getGroup( inReq );
-			Permission element = (Permission) iter.next();
-			boolean dirty = false;
-			if (!permissionsToRetain.contains( element.getName() )
-					&& group.hasPermission( element.getName() ))
-			{
-				group.removePermission( element.getName() );
-				dirty = true;
-			}
-			else if (permissionsToRetain.contains( element.getName() )
-					&& !group.hasPermission( element.getName() ))
-			{
-				group.addPermission( element.getName() );
-				dirty = true;
-			}
-			if ( dirty)
-			{
-				getUserManager(inReq).saveGroup(group);
-			}
-		}
 	}
 
 	/**
@@ -1409,7 +1366,7 @@ public class UserManagerModule extends BaseMediaModule
 		user.put(mode,value);
 		getUserManager(inReq).saveUser(inReq.getUser());
 	}
-
+/*
 	public void saveLegacyPermissions( WebPageRequest inReq )
 			throws UserManagerException, OpenEditException
 	{
@@ -1450,7 +1407,7 @@ public class UserManagerModule extends BaseMediaModule
 			}
 		}
 	}
-	
+	*/
 	public void saveGroupData(WebPageRequest inReq) throws Exception
 	{
 		//Already save using DataEditModule.saveData

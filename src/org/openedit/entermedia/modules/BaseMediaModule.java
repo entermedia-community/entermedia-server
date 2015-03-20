@@ -6,12 +6,12 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.EnterMedia;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.GroupSearcher;
-import org.openedit.users.UserSearcher;
 
 import com.openedit.WebPageRequest;
 import com.openedit.modules.BaseModule;
+import com.openedit.users.GroupSearcher;
 import com.openedit.users.UserManager;
+import com.openedit.users.UserSearcher;
 
 public class BaseMediaModule extends BaseModule
 {
@@ -194,19 +194,24 @@ public class BaseMediaModule extends BaseModule
 		return searchtype;
 	}
 	
+	/**
+	 * are these used?
+	 * @param inReq
+	 * @return
+	 */
 	public UserSearcher getUserSearcher(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
-		return archive.getUserSearcher();
+		return archive.getUserManager().getUserSearcher();
 		
 	}
 	public GroupSearcher getGroupSearcher(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
-		return archive.getGroupSearcher();
+		return archive.getUserManager().getGroupSearcher();
 		
 	}
 	public UserManager getUserManager(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
-		return archive.getUserSearcher().getUserManager();
+		return archive.getUserManager();
 		
 	}
 	

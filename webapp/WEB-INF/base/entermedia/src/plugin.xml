@@ -77,18 +77,16 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<lang:property name="lockManager"><ref bean="lockManager" /></lang:property>
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="moduleManager"><ref bean="moduleManager" /></lang:property>
-		<lang:property name="userManager"><ref bean="userManager" /></lang:property>
 	</lang:groovy>
 	
 	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
-			<lang:property name="userManager"><ref bean="userManager" /></lang:property>
-	</lang:groovy>
-
-	<lang:groovy  id="mediaUploader" script-source="model/push/BaseMediaUploader.groovy" lazy-init="default">
-			<lang:property name="userManager"><ref bean="userManager" /></lang:property>
 	</lang:groovy>
 <!-- 
+
+	<lang:groovy  id="mediaUploader" script-source="model/push/BaseMediaUploader.groovy" lazy-init="default">
+			<lang:property name="moduleManager"><ref bean="moduleManager" /></lang:property>
+	</lang:groovy>
  
 	<bean id="mediaUploader" class="model.push.BaseMediaUploader" >
 			<property name="userManager"><ref bean="userManager" /></property>

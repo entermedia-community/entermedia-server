@@ -15,17 +15,16 @@ import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 
 import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.BaseUser;
 import com.openedit.users.Group;
 import com.openedit.users.User;
-import com.openedit.users.UserManager;
+import com.openedit.users.UserSearcher;
+import com.openedit.users.filesystem.XmlUserArchive;
 
 /**
  *
@@ -33,35 +32,21 @@ import com.openedit.users.UserManager;
 public class LuceneUserSearcher extends BaseLuceneSearcher implements
 		UserSearcher {
 	private static final Log log = LogFactory.getLog(LuceneUserSearcher.class);
-	protected UserManager fieldUserManager;
+	protected XmlUserArchive fieldXmlUserArchive;
 
-//	public HitTracker getAllHits(WebPageRequest inReq) {
-//		SearchQuery query = createSearchQuery();
-//		query.addMatches("enabled", "true");
-//		query.addMatches("enabled", "false");
-//		query.addSortBy("namesorted");
-//		query.setAndTogether(false);
-//		if (inReq == null) {
-//			return search(query);
-//		} else {
-//			return cachedSearch(inReq, query);
-//		}
-//		// return new ListHitTracker().setList(getCustomerArchive().)
-//	}
-
-	public UserManager getUserManager() {
-		if (fieldUserManager == null) {
-			fieldUserManager = (UserManager) getModuleManager().getBean(
-					getCatalogId(), "userManager");
+	public XmlUserArchive getXmlUserArchive() {
+		if (fieldXmlUserArchive == null) {
+			fieldXmlUserArchive = (XmlUserArchive) getModuleManager().getBean(
+					getCatalogId(), "XmlUserArchive");
 
 		}
 
-		return fieldUserManager;
+		return fieldXmlUserArchive;
 	}
 
 	//
-	// public void setUserManager(UserManager inUserManager) {
-	// fieldUserManager = inUserManager;
+	// public void setXmlUserArchive(XmlUserArchive inXmlUserArchive) {
+	// fieldXmlUserArchive = inXmlUserArchive;
 	// }
 
 	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter)
@@ -72,17 +57,17 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 		log.info("Reindex of customer users directory");
 		try {
 			// writer.setMergeFactor(50);
-			getUserManager().flush();
+			getXmlUserArchive().flush();
 			PropertyDetails details = getPropertyDetailsArchive()
 					.getPropertyDetails(getSearchType());
-			Collection usernames = getUserManager().listUserNames(
+			Collection usernames = getXmlUserArchive().listUserNames(
 					);
 			if (usernames != null) {
 				for (Iterator iterator = usernames.iterator(); iterator
 						.hasNext();) {
 					String userid = (String) iterator.next();
 					Document doc = new Document();
-					User data = getUserManager().getUser(userid);
+					User data = getXmlUserArchive().getUser(userid);
 					if (data != null) {
 						updateIndex(data, doc, details);
 						writer.addDocument(doc);
@@ -123,14 +108,14 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 
 	public void saveData(Data inData, User inUser) {
 		if (inData instanceof User) {
-			getUserManager().saveUser((User) inData);
+			getXmlUserArchive().saveUser((User) inData);
 		}
 		updateIndex((User) inData);
 	}
 
 	// TODO: Replace with search?
 	public Object searchById(String inId) {
-		return getUserManager().getUser(inId);
+		return getXmlUserArchive().getUser(inId);
 	}
 
 	/*
@@ -147,7 +132,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 	 * @deprecate use standard field search API
 	 */
 	public User getUserByEmail(String inEmail) {
-		return getUserManager().getUserByEmail(inEmail);
+		return getXmlUserArchive().getUserByEmail(inEmail);
 	}
 
 	public HitTracker getUsersInGroup(Group inGroup) {
@@ -191,12 +176,12 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 
 	@Override
 	public Data createNewData() {
-		// return getUserManager().createUser(null, null);
+		// return getXmlUserArchive().createUser(null, null);
 		return new BaseUser();
 	}
 
 	@Override
 	public void deleteData(Data inData) {
-		getUserManager().deleteUser((User) inData);
+		getXmlUserArchive().deleteUser((User) inData);
 	}
 }

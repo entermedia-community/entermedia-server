@@ -50,7 +50,7 @@ public void init(){
 		return;
 	}
 	ArrayList emails = new ArrayList();
-	UserManager sm = archive.getModuleManager().getBean("userManager");
+	UserManager sm = archive.getUserManager();
 	HitTracker results = sm.getUsersInGroup("emailnotification");
 	if (results.size() > 0) {
 		for(Iterator detail = results.iterator(); detail.hasNext();) {

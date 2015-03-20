@@ -26,9 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.AllowViewing;
-import org.openedit.users.GroupSearcher;
 import org.openedit.users.PasswordHelper;
-import org.openedit.users.UserSearcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
@@ -41,7 +39,10 @@ import com.openedit.page.Permission;
 import com.openedit.page.PermissionManager;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
+import com.openedit.users.GroupSearcher;
 import com.openedit.users.User;
+import com.openedit.users.UserManager;
+import com.openedit.users.UserManager;
 import com.openedit.users.authenticate.AuthenticationRequest;
 import com.openedit.users.authenticate.PasswordGenerator;
 import com.openedit.util.PathUtilities;
@@ -151,7 +152,7 @@ public class AdminModule extends BaseModule
 		String emailaddress = inReq.getRequestParameter(EMAIL);
 		if (emailaddress != null && emailaddress.length() > 0)
 		{
-			foundUser = (User) getUserSearcher(inReq).getUserByEmail(emailaddress);
+			foundUser = (User) getUserManager(inReq).getUserByEmail(emailaddress);
 		}
 		if (foundUser == null)
 		{
@@ -159,7 +160,7 @@ public class AdminModule extends BaseModule
 			username = inReq.getRequestParameter(UNAME);
 			if (username != null)
 			{
-				foundUser = (User) getUserSearcher(inReq).getUser(username);
+				foundUser = (User) getUserManager(inReq).getUser(username);
 			}
 		}
 		if (foundUser != null)
@@ -173,7 +174,7 @@ public class AdminModule extends BaseModule
 			// get the user's current password
 			if (foundUser.getPassword().startsWith("DES:"))
 			{
-				password = getUserSearcher(inReq).getUserManager().getStringEncryption().decrypt(foundUser.getPassword());
+				password = getUserManager(inReq).getStringEncryption().decrypt(foundUser.getPassword());
 			}
 			else
 			{
@@ -192,7 +193,7 @@ public class AdminModule extends BaseModule
 		// let the passwordHelper send the password
 		PasswordHelper passwordHelper = getPasswordHelper(inReq);
 
-		String passenc = getUserSearcher(inReq).getUserManager().getStringEncryption().getPasswordMd5(foundUser.getPassword());
+		String passenc = getUserManager(inReq).getStringEncryption().getPasswordMd5(foundUser.getPassword());
 		passenc = foundUser.getUserName() + "md542" + passenc;
 
 		//append an encrypted timestamp to passenc
@@ -220,7 +221,7 @@ public class AdminModule extends BaseModule
 				}
 				else
 				{
-					String tsenc = getUserSearcher(inReq).getUserManager().getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
+					String tsenc = getUserManager(inReq).getStringEncryption().encrypt(String.valueOf(new Date().getTime()));
 					if (tsenc != null && !tsenc.isEmpty())
 					{
 						if (tsenc.startsWith("DES:"))
@@ -307,7 +308,7 @@ public class AdminModule extends BaseModule
 	{
 		String email = inReq.getRequiredParameter("email");
 
-		User user = getUserSearcher(inReq).getUserByEmail(email);
+		User user = getUserManager(inReq).getUserByEmail(email);
 		if (user != null)
 		{
 			String page = inReq.getCurrentAction().getConfig().getChildValue("redirectpage");
@@ -322,16 +323,20 @@ public class AdminModule extends BaseModule
 		}
 	}
 
-	protected UserSearcher getUserSearcher(WebPageRequest inReq)
+	protected UserManager getUserSearcher(WebPageRequest inReq)
+	{
+		return (UserManager) getUserManager(inReq).getUserSearcher();
+	}
+
+	protected UserManager getUserManager(WebPageRequest inReq)
 	{
 		String catalogid = inReq.findValue("catalogid");
 		if( catalogid == null)
 		{
 			catalogid = "system";
 		}
-		return (UserSearcher) getSearcherManager().getSearcher(catalogid, "user");
+		return (UserManager) getModuleManager().getBean(catalogid, "userManager");
 	}
-
 
 	protected GroupSearcher getGroupSearcher(WebPageRequest inReq)
 	{
@@ -347,7 +352,7 @@ public class AdminModule extends BaseModule
 	 * public void loginByEmail( WebPageRequest inReq ) throws Exception {
 	 * String account = inReq.getRequestParameter("email");
 	 * 
-	 * if ( account != null ) { User user = getUserSearcher(inReq).getUserByEmail(
+	 * if ( account != null ) { User user = getUserManager(inReq).getUserByEmail(
 	 * account ); loginAndRedirect(user,inReq); } else { String referrer =
 	 * inReq.getRequest().getHeader("REFERER"); if ( referrer != null ) { //this
 	 * is the original page someone might have been on
@@ -369,11 +374,11 @@ public class AdminModule extends BaseModule
 		}
 		else if (account != null)
 		{
-			UserSearcher userSearcher = getUserSearcher(inReq);
-			User user = userSearcher.getUser(account);
+			UserManager userManager = getUserManager(inReq);
+			User user = userManager.getUser(account);
 			if (user == null && account.contains("@"))
 			{
-				user = userSearcher.getUserByEmail(account);
+				user = userManager.getUserByEmail(account);
 			}
 			if (user == null) // Allow guest user
 			{
@@ -382,7 +387,7 @@ public class AdminModule extends BaseModule
 				{
 					//we dont want to save the real password since it might be NT based
 					String tmppassword = new PasswordGenerator().generate();
-					user = userSearcher.getUserManager().createGuestUser(account, tmppassword, groupname);
+					user = userManager.createGuestUser(account, tmppassword, groupname);
 					log.info("Username not found. Creating guest user.");
 				}
 			}
@@ -401,7 +406,7 @@ public class AdminModule extends BaseModule
 			if (loginAndRedirect(aReq, inReq))
 			{
 				user.setVirtual(false);
-				userSearcher.saveData(user, null);
+				userManager.saveUser(user);
 			}
 		}
 	}
@@ -410,12 +415,12 @@ public class AdminModule extends BaseModule
 	{
 		String account = inReq.getRequestParameter("id");
 		String password = inReq.getRequestParameter("password");
-		User user = getUserSearcher(inReq).getUser(account);
+		User user = getUserManager(inReq).getUser(account);
 		Boolean ok = false;
 		if (user != null)
 		{
 			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
-			if (getUserSearcher(inReq).getUserManager().authenticate(aReq))
+			if (getUserManager(inReq).authenticate(aReq))
 			{
 				ok = true;
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
@@ -479,7 +484,7 @@ public class AdminModule extends BaseModule
 			}
 		}
 		boolean disable = Boolean.parseBoolean(inReq.getContentProperty("autodisableusers"));
-		UserSearcher userSearcher = getUserSearcher(inReq);
+		UserManager userManager = getUserManager(inReq);
 		if (inUser != null)
 		{
 			// Save our logged-in user in the session,
@@ -488,7 +493,7 @@ public class AdminModule extends BaseModule
 			{
 				if (inUser.isEnabled())
 				{
-					userok = userSearcher.getUserManager().authenticate(inAReq); //<---- This is it!!!! we login
+					userok = userManager.authenticate(inAReq); //<---- This is it!!!! we login
 				}
 				else
 				{
@@ -507,7 +512,7 @@ public class AdminModule extends BaseModule
 			{
 				//This resets the "failed attemps" to 0.
 				inUser.setProperty("failedlogincount", "0");
-				userSearcher.saveData(inUser, null);
+				userManager.saveUser(inUser);
 
 			}
 
@@ -531,7 +536,9 @@ public class AdminModule extends BaseModule
 
 			inReq.removeSessionValue("userprofile");
 			//inReq.putSessionValue("user", inUser);
-			String catalogid = userSearcher.getCatalogId();
+			
+			//TODO: Move this into the manager
+			String catalogid = userManager.getUserSearcher().getCatalogId();
 			inUser.setProperty("catalogid", catalogid);
 			inReq.putSessionValue(catalogid + "user", inUser);
 			createUserSession(inReq);
@@ -598,7 +605,7 @@ public class AdminModule extends BaseModule
 					}
 					inUser.setEnabled(false);
 				}
-				userSearcher.saveData(inUser, null);
+				userManager.saveUser(inUser);
 
 			}
 
@@ -647,12 +654,12 @@ public class AdminModule extends BaseModule
 	{
 		String account = inReq.getRequestParameter("id");
 		String password = inReq.getRequestParameter("password");
-		User user = getUserSearcher(inReq).getUser(account);
+		User user = getUserManager(inReq).getUser(account);
 		Boolean ok = false;
 		if (user != null)
 		{
 			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
-			if (getUserSearcher(inReq).getUserManager().authenticate(aReq))
+			if (getUserManager(inReq).authenticate(aReq))
 			{
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 				String value = user.getUserName() + "md542" + md5;
@@ -664,15 +671,15 @@ public class AdminModule extends BaseModule
 
 	public void logout(WebPageRequest inReq) throws OpenEditException
 	{
-		UserSearcher usearcher = getUserSearcher(inReq);
-		String catalogid = usearcher.getCatalogId();
+		UserManager usermanager = getUserManager(inReq);
+		String catalogid = usermanager.getUserSearcher().getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
 		if (user == null)
 		{
 			//this user is already logged out
 			return;
 		}
-		usearcher.getUserManager().logout(user);
+		usermanager.logout(user);
 
 		Enumeration enumeration = inReq.getSession().getAttributeNames();
 		List toremove = new ArrayList();
@@ -756,8 +763,8 @@ public class AdminModule extends BaseModule
 	}
 
 	public User createUserSession(WebPageRequest inReq) {
-		UserSearcher userSearcher = getUserSearcher(inReq);
-		String catalogid = userSearcher.getCatalogId();
+		UserManager userManager = getUserManager(inReq);
+		String catalogid = userManager.getUserSearcher().getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
 		inReq.putPageValue( "user", user);
 
@@ -774,18 +781,18 @@ public class AdminModule extends BaseModule
 			if (password == null)
 			{
 				password = inReq.getRequestParameter("code");
-				password = getUserSearcher(inReq).getUserManager().getStringEncryption().decrypt(password);
+				password = getUserManager(inReq).getStringEncryption().decrypt(password);
 			}
 			if (password == null)
 			{
 				return;
 			}
-			User user = getUserSearcher(inReq).getUser(username);
+			User user = getUserManager(inReq).getUser(username);
 			if (user == null)
 			{
 				return;
 			}
-			if (!getUserSearcher(inReq).getUserManager().authenticate(user, password))
+			if (!getUserManager(inReq).authenticate(user, password))
 			{
 				throw new OpenEditException("Did not authenticate: " + username);
 			}
@@ -807,14 +814,15 @@ public class AdminModule extends BaseModule
 		{
 			return;
 		}
-		User user = getUserSearcher(inRequest).getUser(username);
+		UserManager userManager = getUserManager(inRequest);
+		User user = userManager.getUser(username);
 
 		if (user == null)
 		{
 			String groupname = inRequest.getPageProperty("autologingroup");
 			if (groupname != null)
 			{
-				user = getUserSearcher(inRequest).getUserManager().createGuestUser(username, null, groupname);
+				user = userManager.createGuestUser(username, null, groupname);
 			}
 		}
 		if (user != null)
@@ -894,7 +902,7 @@ public class AdminModule extends BaseModule
 			}
 			String username = uandpass.substring(0, split);
 
-			User user = getUserSearcher(inReq).getUser(username);
+			User user = getUserManager(inReq).getUser(username);
 			if (user != null && user.getPassword() != null)
 			{
 				String md5 = uandpass.substring(split + 5);
@@ -1247,7 +1255,7 @@ public class AdminModule extends BaseModule
 			}
 			if (!user.isVirtual())
 			{
-				getUserSearcher(inReq).saveData(user, inReq.getUser());
+				getUserManager(inReq).saveUser(user);
 			}
 		}
 		redirectToOriginal(inReq);
@@ -1290,7 +1298,7 @@ public class AdminModule extends BaseModule
 				{
 					user.put(id, String.valueOf(has));
 				}
-				getUserSearcher(inReq).saveData(user, null);
+				getUserManager(inReq).saveUser(user);
 			}
 		}
 	}
@@ -1420,10 +1428,10 @@ public class AdminModule extends BaseModule
 			Group guest = getGroupSearcher(inReq).getGroup("guest");
 			if (guest == null)
 			{
-				getUserSearcher(inReq).getUserManager().createGroup("guest");
+				getUserManager(inReq).createGroup("guest");
 			}
 
-			user = getUserSearcher(inReq).getUserManager().createGuestUser(null, null, "guest");
+			user = getUserManager(inReq).createGuestUser(null, null, "guest");
 			String catalogid =user.get("catalogid");
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
@@ -1441,7 +1449,7 @@ public class AdminModule extends BaseModule
 		}
 
 		String userid = inReq.getRequestParameter("userid");
-		User target = getUserSearcher(inReq).getUserManager().getUser(userid);
+		User target = getUserManager(inReq).getUser(userid);
 		
 		if (target != null)
 		{

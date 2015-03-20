@@ -125,7 +125,7 @@ public boolean setMetadata(MediaArchive inArchive,Asset inAsset, XmpWriter inXmp
 		Searcher userprofilesearcher = inArchive.getSearcher("userprofile");
 		ownerdata = (Data) userprofilesearcher.searchById(owner);
 	}
-	UserManager usermanager = inArchive.getModuleManager().getBean("userManager");
+	UserManager usermanager = inArchive.getUserManager();
 	Searcher searcher = inArchive.getSearcher(ASSET_METADATA_TABLE);
 	if (searcher == null){
 		log.info(ASSET_METADATA_TABLE+" not defined, aborting");

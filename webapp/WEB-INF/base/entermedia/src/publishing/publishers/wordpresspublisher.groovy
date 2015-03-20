@@ -39,13 +39,6 @@ public class wordpresspublisher extends basepublisher implements Publisher
 		
 		log.info("Publishing ${asset} to EnterMedia server ${url}, with hash encoded password from ${username}.");
 		
-//		UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
-//		User user = userManager.getUser(username);
-//		if(user == null)
-//		{
-//			result.setErrorMessage("Unknown user, ${username}");
-//			return result;
-//		}
 		String password = destination.get("accesskey");
 		//http://hc.apache.org/httpcomponents-client-4.4.x/httpmime/examples/org/apache/http/examples/entity/mime/ClientMultipartFormPost.java
 		HttpPost method = new HttpPost(url);
