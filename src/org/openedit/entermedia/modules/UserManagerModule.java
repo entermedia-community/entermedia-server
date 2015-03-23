@@ -658,7 +658,7 @@ public class UserManagerModule extends BaseMediaModule
 
 	public UserManager getUserManager( WebPageRequest inReq ) throws OpenEditException
 	{
-		UserManager userManager2 = getUserManager(inReq);
+		UserManager userManager2 = super.getUserManager(inReq);
 		inReq.putPageValue( USERMANAGER, userManager2 );
 		inReq.putPageValue( "usermanager", userManager2 ); //No needed
 		inReq.putPageValue( "userManager", userManager2 );
