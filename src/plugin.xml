@@ -819,12 +819,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 
-	<bean id="xmlArchive" class="org.openedit.xml.XmlArchive">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-	</bean>
-
 	<bean id="assetSecurityDataArchive" class="org.openedit.entermedia.search.AssetSecurityDataArchive">
 			<property name="searcherManager">
 			<ref bean="searcherManager" />
