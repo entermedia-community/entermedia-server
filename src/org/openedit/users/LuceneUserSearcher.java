@@ -37,7 +37,7 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements
 	public XmlUserArchive getXmlUserArchive() {
 		if (fieldXmlUserArchive == null) {
 			fieldXmlUserArchive = (XmlUserArchive) getModuleManager().getBean(
-					getCatalogId(), "XmlUserArchive");
+					getCatalogId(), "xmlUserArchive");
 
 		}
 
