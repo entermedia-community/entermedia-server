@@ -1317,7 +1317,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 <bean id="jsonUtil" class="org.openedit.entermedia.util.JsonUtil">
 	</bean>
 
-	<bean id="RedirectModule" class="org.ijsolutions.testbench.modules.RedirectModule" >
+	<bean id="RedirectModule" class="org.openedit.entermedia.modules.RedirectModule" >
 <property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
