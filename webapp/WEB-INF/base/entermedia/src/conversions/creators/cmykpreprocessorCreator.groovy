@@ -44,10 +44,8 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 	public boolean canReadIn(MediaArchive inArchive, String inInputType) 
 	{
 		return ("jpg".equalsIgnoreCase(inInputType) || "jpeg".equalsIgnoreCase(inInputType) ||
-			/*"png".equalsIgnoreCase(inInputType) || */
 			"tiff".equalsIgnoreCase(inInputType) || "tif".equalsIgnoreCase(inInputType) ||
-			"gif".equalsIgnoreCase(inInputType) || "eps".equalsIgnoreCase(inInputType)
-			);
+			"gif".equalsIgnoreCase(inInputType) || "eps".equalsIgnoreCase(inInputType));
 	}
 	
 	protected boolean omitEmbed(MediaArchive inArchive, Page inOriginal){
@@ -73,10 +71,6 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			path.append("/generated/");
 		}
 		path.append(inStructions.getAssetSourcePath()).append("/cmykinfo.xconf");//make an xconf
-//		if (inStructions.getOutputExtension() != null)
-//		{
-//			path.append(".").append(inStructions.getOutputExtension());
-//		}
 		inStructions.setOutputPath(path.toString());
 		return inStructions.getOutputPath();
 	}
@@ -89,15 +83,6 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		Page original = inArchive.getOriginalDocument(inAsset);
 		String generatedpath = populateOutputPath(inArchive,inStructions);
 		Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
-//		String colorspace = inAsset.get("colorspace");
-//		if (colorspace!=null && colorspace.isEmpty()==false)
-//		{
-//			Data colorspacedata  = inArchive.getData("colorspace",colorspace);
-//			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk"))
-//			{
-//				preprocessCMYKAsset(inArchive,inAsset,inStructions,result);
-//			}
-//		}
 		if (hasCMYKColorModel(inArchive, inAsset))
 		{
 			if (omitEmbed(inArchive,original) == false){
@@ -111,9 +96,6 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			}
 		}
 		if (!generatedpage.exists()){
-//			String outputpath = generatedpage.getContentItem().getAbsolutePath();
-//			new File(outputpath).getParentFile().mkdirs();
-//			inArchive.getPageManager().copyPage(original,generatedpage);
 			//do not copy original file - create an xconf with a timestamp
 			saveOutput(inArchive,inStructions);
 		}
@@ -126,29 +108,37 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 	{
 		Page original = inArchive.getOriginalDocument(inAsset);
 		if (requiresICCProfileEmbed(original)){
-			log.info("preprocessing step: asset ["+inAsset.getId()+"] has CMYK ColorMode and no ICCProfile, need to embed profile");
-//			String generatedpath = populateOutputPath(inArchive,inStructions);
-//			Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
-//			String outputpath = generatedpage.getContentItem().getAbsolutePath();
-//			new File(outputpath).getParentFile().mkdirs();
-//			embedICCProfile(original,generatedpage);
-			embedICCProfile(original,original);//change the original
-//			if (requiresICCProfileEmbed(generatedpage)){
-			if (requiresICCProfileEmbed(original)){//check the original
-				log.warn("preprocessing step: asset ["+inAsset.getId()+"] still does not have ICCProfile, unable to embed");
-				saveOutput(inArchive,inStructions,"unable to embed ICCProfile");
-			} else {
-				log.info("preprocessing step: asset ["+inAsset.getId()+"] has embedded profile, executed successfully");
-				//at this point, need to replace original with embedded version
-				//this is so that all future conversions are working from embedded version
-//				inArchive.getPageManager().copyPage(generatedpage,original);
-//				log.info("preprocessing step: asset ["+inAsset.getId()+"] copied generated embedded file to original location");
-				saveOutput(inArchive,inStructions,"embedded ICCProfile");
-			}
+			log.info("preprocessing step: asset ["+inAsset.getId()+"] does not have ICCProfile, need to strip existing profile first");
+			stripProfile(original);
 		}
-		else {
-			log.info("preprocessing step: asset ["+inAsset.getId()+"] does not require an embedded ICCProfile");
+		log.info("preprocessing step: asset ["+inAsset.getId()+"] embedding profile");
+		embedICCProfile(original,original);//change the original
+		if (requiresICCProfileEmbed(original)){//check the original
+			log.warn("preprocessing step: asset ["+inAsset.getId()+"] still does not have ICCProfile, unable to embed");
+			saveOutput(inArchive,inStructions,"unable to embed ICCProfile");
+		} else {
+			log.info("preprocessing step: asset ["+inAsset.getId()+"] has embedded profile, executed successfully");
+			saveOutput(inArchive,inStructions,"embedded ICCProfile");
 		}
+	}
+	
+	protected void stripProfile(Page inOriginal){
+		StringBuilder out = new StringBuilder();
+		StringBuilder err = new StringBuilder();
+		List<String> command = new ArrayList<String>();
+		//convert input.jpg +profile "icc" out.jpg
+		if (isOnWindows()){
+			command.add("\"" +  inOriginal.getContentItem().getAbsolutePath()+ "\"");
+			command.add("+profile");
+			command.add("\"icc\"");
+			command.add("\"" +  inOriginal.getContentItem().getAbsolutePath()+ "\"");
+		} else {
+			command.add(inOriginal.getContentItem().getAbsolutePath());
+			command.add("+profile");
+			command.add("\"icc\"");
+			command.add(inOriginal.getContentItem().getAbsolutePath());
+		}
+		execute("convert",command,out,err);
 	}
 	
 	protected boolean requiresICCProfileEmbed(Page inPage)
@@ -157,34 +147,24 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		String colorinfo = getColorModeAndProfileInfo(inPage);
 		if (colorinfo!=null){
 			String [] tokens = colorinfo.split("\\s");
-//			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-//			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
 			String iccprofile = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-//			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
-//				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
-				if (iccprofile==null || !iccprofile.equalsIgnoreCase("cmyk")){
-					requiresProfile = true;
-				}
-//			}
+			if (iccprofile==null || !iccprofile.equalsIgnoreCase("cmyk")){
+				requiresProfile = true;
+			}
 		}
 		return requiresProfile;
 	}
 	
-	protected boolean hasICCProfile(Page inPage)
+	protected boolean hasICCProfile(Page inPage)//check if it has cmyk profile
 	{
 		boolean hasprofile = false;
 		String colorinfo = getColorModeAndProfileInfo(inPage);
 		if (colorinfo!=null){
 			String [] tokens = colorinfo.split("\\s");
-//			String colormode = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-//			String colorspace = (tokens!=null && tokens.length >= 6 ? tokens[5] : null);
 			String iccprofile = (tokens!=null && tokens.length >= 3 ? tokens[2] : null);
-//			if ( (colormode!=null && colormode.equalsIgnoreCase("cmyk")) ||
-//				(colorspace!=null && colorspace.equalsIgnoreCase("cmyk"))){
-				if (iccprofile!=null && iccprofile.equalsIgnoreCase("cmyk")){
-					hasprofile = true;
-				}
-//			}
+			if (iccprofile!=null && iccprofile.equalsIgnoreCase("cmyk")){
+				hasprofile = true;
+			}
 		}
 		return hasprofile;
 	}
@@ -234,8 +214,6 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		command.add("-a");
 		command.add("-S");
 		command.add("-G0");
-//		command.add("-ColorMode");
-//		command.add("-ColorSpace");
 		command.add("-ICC_Profile:ColorSpaceData");
 		if (isOnWindows()){
 			command.add("\"" +  inOriginal.getContentItem().getAbsolutePath()+ "\"");
