@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.AllowViewing;
+import org.openedit.users.GroupSearcher;
 import org.openedit.users.PasswordHelper;
 
 import com.openedit.OpenEditException;
@@ -39,7 +40,6 @@ import com.openedit.page.Permission;
 import com.openedit.page.PermissionManager;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
-import com.openedit.users.GroupSearcher;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.users.UserManager;

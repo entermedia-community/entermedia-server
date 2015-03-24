@@ -23,7 +23,6 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.BaseUser;
 import com.openedit.users.Group;
 import com.openedit.users.User;
-import com.openedit.users.UserSearcher;
 import com.openedit.users.filesystem.XmlUserArchive;
 
 /**

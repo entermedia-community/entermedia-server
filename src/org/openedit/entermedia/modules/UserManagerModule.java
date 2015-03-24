@@ -24,6 +24,7 @@ import org.entermedia.upload.UploadRequest;
 import org.openedit.MultiValued;
 import org.openedit.data.Searcher;
 import org.openedit.repository.filesystem.StringItem;
+import org.openedit.users.UserSearcher;
 
 import com.openedit.BaseWebPageRequest;
 import com.openedit.OpenEditException;
@@ -42,7 +43,6 @@ import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.users.UserManagerException;
-import com.openedit.users.UserSearcher;
 import com.openedit.users.authenticate.PasswordGenerator;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.strainer.Filter;

@@ -6,12 +6,12 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.EnterMedia;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.GroupSearcher;
+import org.openedit.users.UserSearcher;
 
 import com.openedit.WebPageRequest;
 import com.openedit.modules.BaseModule;
-import com.openedit.users.GroupSearcher;
 import com.openedit.users.UserManager;
-import com.openedit.users.UserSearcher;
 
 public class BaseMediaModule extends BaseModule
 {

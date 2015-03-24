@@ -20,7 +20,6 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.users.BaseGroup;
 import com.openedit.users.Group;
-import com.openedit.users.GroupSearcher;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
 import com.openedit.users.filesystem.XmlUserArchive;

@@ -21,13 +21,13 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.UserSearcher;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
-import com.openedit.users.UserSearcher;
 import com.openedit.users.authenticate.PasswordGenerator;
 import com.openedit.util.RequestUtils;
 
