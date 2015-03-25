@@ -3,11 +3,18 @@
 <div id="embed-wrapper" style="padding: 15px;">
 <div class="embedlink">
 <textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="60">
+
 #set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #if( !$prefix )
 #set( $prefix = $context.siteRoot )
 #end
+
+#set( $mediadbappid = $mediaarchive.getCatalogSettingValue("mediadbappid") )
+#if( $mediadbappid )
+<iframe src="$prefix$home/${mediadbappid}/services/modules/asset/embed/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true" width="550" height="400" style="border:none">
+#else
 <iframe src="$prefix$home$apphome/views/modules/asset/embed/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true" width="550" height="400" style="border:none">
+#end
 </iframe>
 </textarea>
 <p>[[Select code then right click to copy]]</p>

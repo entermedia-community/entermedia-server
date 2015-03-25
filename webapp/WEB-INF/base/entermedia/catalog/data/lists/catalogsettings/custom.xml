@@ -1,0 +1,4 @@
+
+<root>
+  <property id="cdn_prefix" name="CDN Prefix" value="http://cloud.com"/>
+</root>
