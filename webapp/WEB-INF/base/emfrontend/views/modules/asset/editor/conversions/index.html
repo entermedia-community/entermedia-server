@@ -49,11 +49,13 @@ p{
 }
 </style>
 
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+
 <h1>Automatic Conversions</h1>
                 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 #if($type != "document")
 <div class="info">
-<h2>Replace all conversion with a new custom thumbnail:</h2>
+<h2>Replace thumbnails with custom thumbnail:</h2>
 
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
 		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
@@ -70,11 +72,13 @@ p{
 #set($newpreset = $context.findValue("newpreset"))
 #set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+
 $context.putPageValue("results", $results)
 
 $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
 
 #foreach ($result in $results)
+
 	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
 <div class="info" >
 
@@ -145,5 +149,9 @@ $(document).ready(function(){
 You can specify custom width, height or formats. For example:
 </p>
 <p><i>
-$context.siteRoot$home$apphome/views/modules/asset/downloads/preview/cache/$asset.sourcePath/image1024-768.pdf </i></p>
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#if( !$cdnprefix )
+#set( $cdnprefix = $context.siteRoot )
+#end
+$cdnprefix$home$apphome/views/modules/asset/downloads/preview/cache/$asset.sourcePath/image1024-768.pdf </i></p>
 </p>
