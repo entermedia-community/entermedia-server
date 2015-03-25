@@ -2,6 +2,7 @@ package importing;
 import org.openedit.Data
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.scanner.HotFolderManager
 import org.openedit.entermedia.search.AssetSearcher
 
 import com.openedit.hittracker.HitTracker
@@ -11,7 +12,27 @@ import com.openedit.page.manage.*
 public void init()
 {
 	MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
+	
+	
+	//Make sure all the hot folders are connected to some assets
+	HotFolderManager manager = (HotFolderManager)archive.getmoduleManager().getBean("hotFolderManager");
 	PageManager pageManager = archive.getPageManager();
+	
+	Collection hits = manager.loadFolders( archive.getCatalogId() );
+	for(Iterator iterator = hits.iterator(); iterator.hasNext();)
+	{
+		Data folder = (Data)iterator.next();
+		String base = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
+		String name = folder.get("subfolder");
+		String path = base + "/" + name ;
+		List paths = pageManager.getChildrenPaths(path);
+		if( paths.size() == 0)
+		{
+			log.info("Found hot folder with no files, canceled delete request " + path);
+			return;
+		}
+	}
+	
 	List children = pageManager.getChildrenPaths("/WEB-INF/data/" + archive.getCatalogId() + "/originals");
 	if(children.size() == 0 )
 	{
