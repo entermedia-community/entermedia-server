@@ -143,7 +143,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 				return null;
 			}
 			getCacheManager().put(toCacheId(),inSourcePath,item);
-			getCacheManager().put(toCacheId(),item.getId(),item);
+			if( item.getId() != null)
+			{
+				getCacheManager().put(toCacheId(),item.getId(),item);
+			}
 		}
 		return item;
 	}

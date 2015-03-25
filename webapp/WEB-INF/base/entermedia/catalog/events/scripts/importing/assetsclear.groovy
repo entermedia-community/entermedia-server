@@ -15,7 +15,7 @@ public void init()
 	
 	
 	//Make sure all the hot folders are connected to some assets
-	HotFolderManager manager = (HotFolderManager)archive.getmoduleManager().getBean("hotFolderManager");
+	HotFolderManager manager = (HotFolderManager)archive.getModuleManager().getBean("hotFolderManager");
 	PageManager pageManager = archive.getPageManager();
 	
 	Collection hits = manager.loadFolders( archive.getCatalogId() );
