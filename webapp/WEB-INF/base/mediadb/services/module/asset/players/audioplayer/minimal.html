@@ -6,7 +6,7 @@
 #end
 
 #if( !$path)
-	#set ($path = "$home$mediaarchive.getCatalogHome()/downloads/mp3/$asset.sourcepath/audio.mp3")
+	#set ($path = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/mp3/$asset.sourcepath/audio.mp3")
 #end
 
 #set( $id = $asset.id )
@@ -14,8 +14,8 @@
 
 <div id="playerwindow${id}" style="width: 120px;">
 
-<script type="text/javascript" src="$home$apphome/components/javascript/jquery.jplayer.js">  </script>
-<link  rel="stylesheet" type="text/css" href="$home$themeprefix/jplayer/blue.monday/jplayer.blue.monday.css"/>
+<script type="text/javascript" src="$!prefix$home/${mediadbappid}/services/module/asset/players/jplayer/jquery.jplayer.js">  </script>
+<link  rel="stylesheet" type="text/css" href="$!prefix$home/${mediadbappid}/services/module/asset/players/jplayer/jplayer.blue.monday.css"/>
 
 <script type="text/javascript">
 //<![CDATA[

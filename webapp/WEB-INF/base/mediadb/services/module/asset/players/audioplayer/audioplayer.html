@@ -6,7 +6,7 @@
 #end
 
 #if( !$path)
-    #set ($path = "$home$apphome/views/modules/asset/downloads/mp3/$asset.sourcepath/audio.mp3")
+    #set ($path = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/mp3/$asset.sourcepath/audio.mp3")
 #end
 
 #set( $name = $asset.name )

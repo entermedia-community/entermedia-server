@@ -1,18 +1,18 @@
 #set( $catalogid = $asset.catalogId )
 #set( $sourcepath = $asset.sourcepath )
 #set($encode = $url_util.encode($sourcepath))
-#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
-#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $source = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $thumb = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set($thumb = $thumb.replace(" ", "%20"))
 
 #set( $root = "$context.siteRoot$home$page.directory")
 <!-- 1. skin -->
-<link rel="stylesheet" href="$apphome/components/javascript/flowplayer/skin/minimalist.css">
+<link rel="stylesheet" href="$!prefix$home/${mediadbappid}/services/module/asset/flowplayer/skin/minimalist.css">
  
  
 <!-- 3. flowplayer -->
-<script src="$apphome/components/javascript/flowplayer/flowplayer.min.js"></script>
-<!-- first try HTML5 playback: if serving as XML, expand `controls` to `controls="controls"` and autoplay likewise -->
+<script src="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.min.js"></script>
+
 <!-- warning: playback does not work on iOS3 if you include the poster attribute! fixed in iOS4.0 -->
 
 
@@ -27,9 +27,10 @@
 <script>
 // run script after document is ready
 $(function () {
- 
+ 	// TODO: This probably never worked before, updated path to actual flowplayer location anyway
+ 	
    // install flowplayer to an element with CSS class "player"
-  $(".player").flowplayer({ swf: "$apphome/components/javascript/swf/5.5.2/flowplayer.swf" });
+  $(".player").flowplayer({ swf: "$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.swf" });
  
 });
 </script>

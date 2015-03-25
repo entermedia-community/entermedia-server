@@ -1,7 +1,7 @@
 #if( $asset.youtubelink)
 	##future use?
 #elseif( $asset.embeddedurl)
-	$pages.include("$apphome/components/mediaviewer/embeddedplayer/index.html",$context)
+	$pages.include("$!prefix$home/${mediadbappid}/services/module/asset/players/embeddedplayer/index.html",$context)
 #elseif ( $asset.fileformat == "swf")
-	$pages.include("$apphome/components/mediaviewer/swfplayer/index.html",$context)
+	$pages.include("$!prefix$home/${mediadbappid}/services/module/asset/players/swf.html",$context)
 #end
