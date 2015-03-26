@@ -2,7 +2,7 @@
 <script src="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.min.js"></script>
 <link   href="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/skin/minimalist.css" rel="stylesheet" >
 
-#set( $sourcepath = $asset.sourcepath.replace(" ", "%20") )
+#set( $sourcepath = $url_util.encode($asset.sourcepath) )
 #set( $source = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
 #set( $thumb = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 

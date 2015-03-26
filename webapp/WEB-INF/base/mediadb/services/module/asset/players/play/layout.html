@@ -1,5 +1,2 @@
-#set( $type = $context.findValue("type"))
-#if( !$type)
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-#end
 $pages.include("$apphome/services/module/asset/players/types/${type}.html", $context)

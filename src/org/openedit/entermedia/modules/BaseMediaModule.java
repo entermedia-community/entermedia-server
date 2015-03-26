@@ -12,6 +12,7 @@ import org.openedit.users.UserSearcher;
 import com.openedit.WebPageRequest;
 import com.openedit.modules.BaseModule;
 import com.openedit.users.UserManager;
+import com.openedit.util.PathUtilities;
 
 public class BaseMediaModule extends BaseModule
 {
@@ -105,15 +106,24 @@ public class BaseMediaModule extends BaseModule
 			return (Asset)found;
 		}
 		
-		String sourcePath = inReq.getRequestParameter("sourcepath");
-		
 		MediaArchive archive = getMediaArchive(inReq);
-		
 		Asset asset = null;
-		if (sourcePath != null)
+		if( Boolean.parseBoolean( inReq.getContentProperty("assetpageid") ) ) 
 		{
-			//asset = archive.getAssetArchive().getAssetBySourcePath(sourcePath, true);
-			asset = archive.getAssetSearcher().getAssetBySourcePath(sourcePath, true);
+			String id = PathUtilities.extractPageName(inReq.getPath());
+			asset = archive.getAsset(id);
+		}
+		
+		if( asset == null)
+		{
+			String sourcePath = inReq.getRequestParameter("sourcepath");
+			
+			
+			if (sourcePath != null)
+			{
+				//asset = archive.getAssetArchive().getAssetBySourcePath(sourcePath, true);
+				asset = archive.getAssetSearcher().getAssetBySourcePath(sourcePath, true);
+			}
 		}
 		String assetid = null;
 		if( asset == null)
