@@ -11,7 +11,7 @@
 
 #set( $mediadbappid = $mediaarchive.getCatalogSettingValue("mediadbappid") )
 #if( "$!mediadbappid" != "")
-<iframe src="$prefix$home${mediadbappid}/services/modules/asset/players/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true" width="550" height="400" style="border:none">
+<iframe src="$prefix$home${mediadbappid}/services/module/asset/players/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true" width="550" height="400" style="border:none">
 #else
 <iframe src="$prefix$home$apphome/views/modules/asset/embed/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true" width="550" height="400" style="border:none">
 #end
