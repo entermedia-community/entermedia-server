@@ -1,6 +1,7 @@
 <page>
 	
-	<inner-layout>/${applicationid}/theme/layouts/embedlayout.html</inner-layout>
+	<inner-layout />
+	<layout />
 
 	<permission name="view">
 		<boolean value="true" />
