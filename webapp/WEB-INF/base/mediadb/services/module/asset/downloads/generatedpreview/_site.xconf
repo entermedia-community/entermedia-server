@@ -6,7 +6,7 @@
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/generatedpreview</property>
 
 	<permission name="view">
-		<pagevalue name="canviewasset" equals="true"/>
+		<boolean value="true" />
 	</permission>	
 	
 </page>
