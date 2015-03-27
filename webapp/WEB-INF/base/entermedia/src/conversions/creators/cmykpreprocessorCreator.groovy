@@ -45,7 +45,7 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 	{
 		return ("jpg".equalsIgnoreCase(inInputType) || "jpeg".equalsIgnoreCase(inInputType) ||
 			"tiff".equalsIgnoreCase(inInputType) || "tif".equalsIgnoreCase(inInputType) ||
-			"gif".equalsIgnoreCase(inInputType) || "eps".equalsIgnoreCase(inInputType));
+			"gif".equalsIgnoreCase(inInputType)); //|| "eps".equalsIgnoreCase(inInputType));
 	}
 	
 	protected boolean omitEmbed(MediaArchive inArchive, Page inOriginal){
