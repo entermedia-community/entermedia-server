@@ -1,0 +1,7 @@
+<page>
+  <permission name="view">
+    <boolean value="true"/>
+  </permission>
+  <property name="fallbackdirectory">/WEB-INF/base/system/components/authentication</property>
+  <property name="loginroot">/${applicationid}/views/authentication</property>
+</page>
