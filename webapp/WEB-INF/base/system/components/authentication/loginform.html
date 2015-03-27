@@ -3,10 +3,10 @@ $!request.getAttribute( "oe-exception")
 	#if($user)
 		<p>[[You are logged in as]] $user</p>		
 	#end
-		#set($loginok = $context.getRequestParameter("loginokpage") )
+		#set($loginok = $context.findValue("loginokpage") )
 		
 
-		<p class="note">Please enter your email and password to log in.</p>
+		<p class="note">[[Welcome! Please enter your email and password:]]</p>
 		<div class="hr"></div>
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
