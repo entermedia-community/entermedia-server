@@ -410,7 +410,7 @@ var AnnotationEditor = function(scope) {
 					//console.log('Opened a connection!');
 					//console.log(e);
 					// get user data, should this be in connect?
-					$.getJSON('/entermedia/services/json/users/status.json', function(data) {
+					$.getJSON(scope.dbhome + '/services/module/user/pickcolor.json', function(data) {
 						scope.annotationEditor.userData = data;
 						editor.loadAssetList();
 					});

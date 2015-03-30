@@ -321,6 +321,10 @@ public class MediaArchive
 		return "/" + getCatalogId();
 	}
 
+	public String getMediaDbId()
+	{
+		return getCatalogSettingValue("mediadbappid");
+	}
 	// public HistoryArchive getHistoryArchive()
 	// {
 	// return fieldHistoryArchive;
