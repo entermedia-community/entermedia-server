@@ -290,36 +290,28 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						value = DateStorageUtil.getStorageUtil().checkFormat(value);
 						inAsset.setProperty(property.getId(), value);
 					}
-					else if (property.isList() || property.isDataType("number"))
+					else if (property.isList() )  //|| property.isDataType("number")
 					{
 						m = p.matcher(numbers[i]);
 						if (m.find())
 						{
 							Searcher searcher = inArchive.getSearcherManager().getSearcher(property.getListCatalogId(), property.getListId());
 							Data lookup = (Data) searcher.searchByField("name", value);
-							if (lookup == null)
-							{
-								lookup = (Data) searcher.searchById(value);
-							}
-							
 							if (lookup != null)
 							{
 								inAsset.setProperty(property.getId(), lookup.getId());
 								continue;
 							}
-							if(lookup == null && Boolean.parseBoolean(property.get("autocreatefromexif"))){
+							else if(Boolean.parseBoolean(property.get("autocreatefromexif"))){
 								lookup = searcher.createNewData();
 								lookup.setName(value);
 								//lookup.setId(searcher.nextId());
 								searcher.saveData(lookup, null);
 								inAsset.setProperty(property.getId(), lookup.getId());
-
 							}
-
 							else
 							{
-
-								inAsset.setProperty(property.getId(), m.group(2));
+								inAsset.setProperty(property.getId(), value);
 							}
 						}
 					}
