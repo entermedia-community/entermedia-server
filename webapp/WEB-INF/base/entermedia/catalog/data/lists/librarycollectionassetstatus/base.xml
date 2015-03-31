@@ -1,0 +1,5 @@
+<properties>
+  <property id="1">Approved</property>
+  <property id="2">Pending</property>
+  <property id="3">Rejected</property>
+</properties>
