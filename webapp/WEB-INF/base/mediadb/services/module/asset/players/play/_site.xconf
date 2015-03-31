@@ -1,5 +1,4 @@
 <page>
-	
 	<inner-layout>./layout.html</inner-layout>
 	<layout />
 

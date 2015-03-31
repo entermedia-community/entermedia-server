@@ -3,7 +3,7 @@
 <ul class="emheaderbuttons" >
 
 #if( $canviewhomelink )
-<li><a id="module"  href="$home$apphome/index.html"> Home </a></li>
+<li><a id="module"  href="$home$apphome/index.html"> [[Home]] </a></li>
 #end
 
 #set ($lastselected = $content.module )
@@ -36,7 +36,7 @@
 
 #if ( $lastselected == "asset" )
     #if( $canviewupload )
-     <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >Upload Media</a></li>
+     <li #if( $section == "upload" ) class="navselected" #end><a href="$home$apphome/views/upload/index.html" >[[Upload Media]]</a></li>
     #end
 
     #if($canviewbasket)
@@ -55,7 +55,7 @@
 <form id="search_form" action="$home$apphome/views/search/search.html" class="em-widget-content">
 	<input type="hidden" name="field" value="description" />
 	<input type="hidden" name="operation" value="startswith" />
-	#set( $input = "Search...")
+	#set( $input = "[[Search...]]")
 	#set( $input = $hits.getInput("description") )
     <input type="text"  id="assetsearchinput" initialtext="Search..."  class="suggestsearchinput initialtext " name="description.value" value="$input" />
 </form>
