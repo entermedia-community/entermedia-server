@@ -1,5 +1,7 @@
 package org.openedit.entermedia.cluster;
 
+import java.util.List;
+
 import org.dom4j.Element;
 import org.openedit.data.SearcherManager;
 
@@ -83,4 +85,18 @@ public class NodeManager
 	{
 		return getLocalNode().getId();
 	}
+	
+	public String createSnapShot(String inCatalogId)
+	{		
+		throw new OpenEditException("Not implemented");
+	}
+	
+	public List listSnapShots(String inCatalogId)
+	{
+		throw new OpenEditException("Not implemented");
+	}
+	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
+	{
+		throw new OpenEditException("Not implemented");
+	}	
 }

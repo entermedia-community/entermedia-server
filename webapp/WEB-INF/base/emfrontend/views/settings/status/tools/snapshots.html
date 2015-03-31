@@ -1,0 +1,11 @@
+#set( $snapshots = $nodeManager.listSnapShots($catalogid) )
+
+<table>
+#foreach( $snap in $snapshots)
+	<tr><td>$snap</td>
+	<td><a href="./restore.html?id=$snap.getId()"> Restore</td>
+	</tr>
+#end
+</table>
+
+<a href="./create.html">Create New</a>
