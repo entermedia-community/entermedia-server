@@ -4,6 +4,7 @@ import java.util.Iterator
 import org.openedit.Data
 import org.openedit.data.*
 import org.openedit.entermedia.util.CSVWriter
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.hittracker.HitTracker
 	
@@ -40,46 +41,46 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	count++;
 }
 writer.writeNext(headers);
-	//log.info("about to start: " + hits);
-try
-{
+	log.info("about to start: " + hits);
 
 	for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 	{
 		Data hit =  iterator.next();
-		Data tracker = searcher.searchById(hit.get("id"));
-	
-		nextrow = new String[details.size()];//make an extra spot for c
-		int fieldcount = 0;
-		for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
+		try
 		{
-			PropertyDetail detail = (PropertyDetail) detailiter.next();
-			String value = tracker.get(detail.getId());
-			//do special logic here
-			if(detail.isList() && friendly){
-				//detail.get
-				Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
-			
-					if(remote != null){
-					value= remote.getName();
-				}
+				nextrow = new String[details.size()];//make an extra spot for c
+				int fieldcount = 0;
+				for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
+				{
+					PropertyDetail detail = (PropertyDetail) detailiter.next();
+					String value = hit.get(detail.getId());
+					//do special logic here
+					if(detail.isList() && friendly){
+						//detail.get
+						Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
+						if(remote != null)
+						{
+							value= remote.getName();
+						}
+					}
+					else if(detail.isDate() )
+					{
+						value = DateStorageUtil.getStorageUtil().checkFormat(value);
+					}
+					nextrow[fieldcount] = value;
 				
-			}
-	
-			nextrow[fieldcount] = value;
-		
-			fieldcount++;
-		}	
-		writer.writeNext(nextrow);
+					fieldcount++;
+				}	
+				writer.writeNext(nextrow);
+		}
+		catch( Exception ex)
+		{
+			log.error("Could not process " + hit.getSourcePath() , ex);
+			writer.flush();
+			output.write("Could not process path: " + hit.getSourcePath() + " id:" + hit.getId() );
+		}
 	}
 	
-}
-catch( Exception ex)
-{
-	log.error("Could not process " + hit.getSourcePath() , ex);
-	writer.flush();
-	output.write("Could not process path: " + hit.getSourcePath() + " id:" + hit.getId() );
-}
 
 writer.close();
 
