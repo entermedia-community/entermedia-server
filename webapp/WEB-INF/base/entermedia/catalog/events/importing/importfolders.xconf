@@ -3,5 +3,7 @@
 	<path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/importing/importfolders.groovy</script>
 	</path-action>
+	<property name="period">10m</property>
+	<property name="enabled">true</property>
 	
 </page>
