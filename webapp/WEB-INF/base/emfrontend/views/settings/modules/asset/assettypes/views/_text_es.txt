@@ -1,13 +1,14 @@
 #
-#Tue Apr 27 10:52:00 CLT 2010
+#Fri Mar 27 15:56:32 EDT 2015
 View=Vista
 Remove\ Selected\ From\ This\ View=Quitar Seleccionados de esta Vista
 New\ View\ Name=Nombre de la Nueva Vista
-Add\ New\ Property=Agregar Nueva Propiedad
+Add\ New\ Property=A\u00F1adir Nueva Propiedad
 Fields=Campos
 Visible\ Fields=Campos Visibles
 Views=Vistas
-Save=Guardar
-Add=Agregar
+Save\ Changes=Guardar cambios
 Rename\ View\ As=Renombrar Vista Como
+Add=A\u00F1adir
+Save=Guardar
 
