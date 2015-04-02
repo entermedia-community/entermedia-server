@@ -3,30 +3,20 @@ package org.openedit.entermedia.modules;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Iterator;
 
-import org.entermedia.upload.FileUpload;
-import org.entermedia.upload.FileUploadItem;
-import org.entermedia.upload.UploadRequest;
+import org.apache.commons.lang.math.NumberUtils;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.modules.BaseMediaModule;
-import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.repository.filesystem.StringItem;
 
 import com.openedit.WebPageRequest;
 import com.openedit.generators.Output;
-import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.PageRequestKeys;
-import com.openedit.users.User;
 import com.openedit.util.RequestUtils;
 import com.openedit.util.URLUtilities;
-
-import org.apache.commons.lang.math.NumberUtils;
 
 public class TemplateModule extends BaseMediaModule {
 
@@ -121,15 +111,12 @@ public class TemplateModule extends BaseMediaModule {
 	public void loadTemplate(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
 		Searcher templateSearcher = getSearcherManager().getSearcher(catalogid,
-				"portfolio");
-		
-		String owner = inReq.findValue("owner");
-		if (owner != null) {
-			Data template = (Data) templateSearcher.searchById(owner);
+				"template");
+		String templateid = inReq.findValue("templateid");
+		Data template = (Data) templateSearcher.searchById(templateid);
 			if (template != null) {
-				inReq.putPageValue("portfolio", template);
+				inReq.putPageValue("template", template);
 			}
-		}
 	}
 
 

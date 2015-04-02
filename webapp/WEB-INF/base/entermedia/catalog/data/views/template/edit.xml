@@ -1,0 +1,156 @@
+
+<properties beanname="">
+  
+  <!--  header information and style -->
+  <property id="logo" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio"  internalfield="false" listid="asset" datatype="list">Site Logo</property>
+  <property id="title" index="true" stored="true" editable="true" searchtype="portfolio">Site Title</property>
+  <property id="subheading" index="true" stored="true" editable="true" searchtype="portfolio">Site Subtitle</property>
+  <property id="headerstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list" tooltip="This configures the header - it can be 100% width, centered and the same width as the screen, or simply turned off.">Header Style</property>
+  <property id="headerheight" index="true" stored="true" editable="true" viewtype="slider" min="50" max="250" default="85" searchtype="portfolio"  desc="Height of header block (Between 50px and 250px):">Header Height</property>
+  <!-- 
+  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Header Solid Colour</property>
+  <property id="headergradientcolor1" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Header Vertical Gradient Color (High)</property>
+  <property id="headergradientcolor2" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Header Vertical Gradient Color (Low)</property>
+  -->
+  <!-- header color + gradients (new) -->
+  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Header Solid Colour</property>
+  <property id="headercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Header Vertical Gradient Color (High)</property>
+  <property id="headercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Header Vertical Gradient Color (Low)</property>
+  
+  <!-- header font -->
+  <property id="headerfont" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">Header Font</property>
+  <property id="headerfontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="Header Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">Header Font Size</property>
+  <property id="headerfontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Header Font Colour</property>
+  <property id="headerfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">Header Font Opacity</property>
+  <!-- done header font -->
+  
+  <!--  navigation styles -->
+  <!-- 
+  <property id="navbackground" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Solid Background Colour</property>
+  <property id="navgradientcolor1" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Colour (High)</property>
+  <property id="navgradientcolor2" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Colour (Low)</property>
+  -->
+  <!-- navigation color + gradients (new) -->
+  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Solid Colour</property>
+  <property id="navcolorgradienthi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Color (High)</property>
+  <property id="navcolorgradientlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Color (Low)</property>
+  
+  <!-- navigation font (new)-->
+  <property id="navfont" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">Navigation Font</property>
+  <property id="navfontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="Header Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">Navigation Font Size</property>
+  <property id="navfontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Font Colour</property>
+  <property id="navfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">Navigation Font Opacity</property>
+  <!-- end navigation font -->
+  
+  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Solid Button Colour</property>
+  <!-- 
+  <property id="navbuttongradientcolor1" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttongradientcolor2" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Button (Low)</property>
+  -->
+  <property id="navbuttoncolorgradienthi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttoncolorgradientlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Vertical Gradient Button (Low)</property>
+ 
+  <!-- navigation font hover (new)-->
+  <property id="navhoverfont" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">Navigation Hover Font</property>
+  <property id="navhoverfontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="Header Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">Navigation Hover Font Size</property>
+  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Font Colour</property>
+  <property id="navhoverfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">Navigation Hover Font Opacity</property>
+  <!-- end navigation font hover -->
+  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Solid Button Colour</property>
+  <!-- 
+  <property id="navbuttonhovercolor1" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttonhovercolor2" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  -->
+  <property id="navbuttonhovercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttonhovercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  
+  <!-- main -->
+  <property id="slidertype" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Home Page Top Section</property>
+  <property id="showprojectsonhome" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="portfolio" datatype="boolean">Show Projects on Home Page</property>
+  <property id="profileimage" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio" sourcepath="users/${userid}/profileimage" internalfield="false" listid="asset" datatype="list" tooltip="This will appear on your profile wherever a user photo is shown.">Profile Image</property>
+  <property id="showphoto" index="true" stored="true" editable="true" sortable="true" type="boolean" viewtype="boolean" searchtype="portfolio" default="true" datatype="boolean">Show Profile Image on Home Page</property>
+  
+  <!--  biography info -->
+  <property id="bioheader" index="true" stored="true" editable="true" viewtype="text" searchtype="portfolio">Biography Heading</property>
+  <property id="bio" index="true" stored="true" editable="true" viewtype="textarea" searchtype="portfolio">Biography</property>
+  
+  <!--  contact info -->
+  <property id="contactdisplayname" index="true" stored="true" editable="true" searchtype="portfolio">Contact Display Name</property>
+  <property id="contactoccupation" index="true" stored="true" editable="true" searchtype="portfolio">Contact Occupation</property>
+  <property id="contactlocation" index="true" stored="true" editable="true" searchtype="portfolio">Contact Location</property>
+  <property id="contactemail" index="true" stored="true" editable="true" searchtype="portfolio">Contact Email</property>
+  <property id="contactphone" index="true" stored="true" editable="true" searchtype="portfolio">Contact Phone</property>
+  <property id="resume" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio" sourcepath="users/${userid}/resume" internalfield="false" listid="asset" datatype="list">Resume</property>
+  
+  <!-- projects -->
+  <property id="projectresulttypes" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Projects Page Style</property>
+  
+  <!-- global styles -->
+  <property id="backgroundtile" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Background Tile</property>
+  <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio" sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site">Custom Background Tile</property>
+  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Custom Background Tile Style</property>
+  <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Content Background Colour</property>
+  <property id="backgroundoppacity" index="true" stored="true" editable="true" viewtype="slider" valtype="decimal" min="30" max="100" default="1" searchtype="portfolio" desc="Opacity (Between 0.3 and 1.0):">Background Oppacity</property>
+  <property id="disableshadows" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="portfolio" datatype="boolean">Disable Shadows Around Header and Content</property>
+  
+  <!-- global fonts -->
+  <!-- h1 -->
+  <property id="h1font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H1 Font</property>
+  <property id="h1fontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H1 Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">H1 Font Size</property>
+  <property id="h1fontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">H1 Font Colour</property>
+  <property id="h1fontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">H1 Font Opacity</property>
+  <!-- h2 -->
+  <property id="h2font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H2 Font</property>
+  <property id="h2fontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H2 Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">H2 Font Size</property>
+  <property id="h2fontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">H2 Font Colour</property>
+  <property id="h2fontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">H2 Font Opacity</property>
+  <!-- h3 -->
+  <property id="h3font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H3 Font</property>
+  <property id="h3fontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H3 Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">H3 Font Size</property>
+  <property id="h3fontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">H3 Font Colour</property>
+  <property id="h3fontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">H3 Font Opacity</property>
+  <!-- h4 -->
+  <property id="h4font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H4 Font</property>
+  <property id="h4fontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H4 Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">H4 Font Size</property>
+  <property id="h4fontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">H4 Font Colour</property>
+  <property id="h4fontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">H4 Font Opacity</property>
+  <!-- h5 -->
+  <property id="h5font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H5 Font</property>
+  <property id="h5fontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H5 Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">H5 Font Size</property>
+  <property id="h5fontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">H5 Font Colour</property>
+  <property id="h5fontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">H5 Font Opacity</property>
+  <!-- h6 -->
+  <property id="h6font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H6 Font</property>
+  <property id="h6fontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H6 Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">H6 Font Size</property>
+  <property id="h6fontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">H6 Font Colour</property>
+  <property id="h6fontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">H6 Font Opacity</property>
+  <!-- p -->
+  <property id="pfont" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">Paragraph Font</property>
+  <property id="pfontsize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="Paragraph Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">Paragraph Font Size</property>
+  <property id="pfontcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Paragraph Font Colour</property>
+  <property id="pfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" searchtype="portfolio">Paragraph Font Opacity</property>
+  
+  <!--
+  <property id="h1font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H1 Font</property>
+  <property id="h1size" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H1 Font Size (Between 10px and 80px)" default="40" searchtype="portfolio">H1 Font Size</property>
+  <property id="h1color" index="true" stored="true" editable="true" viewtype="color" default="#000000" searchtype="portfolio">H1 Font Colour</property>
+  <property id="h2font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H2 Font</property>
+  <property id="h2size" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H2 Font Size (Between 10px and 80px)" default="34" searchtype="portfolio">H2 Font Size</property>
+  <property id="h2color" index="true" stored="true" editable="true" viewtype="color" default="#000000" searchtype="portfolio">H2 Font Colour</property>
+  <property id="h3font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H3 Font</property>
+  <property id="h3size" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H3 Font Size (Between 10px and 80px)" default="28" searchtype="portfolio">H3 Font Size</property>
+  <property id="h3color" index="true" stored="true" editable="true" viewtype="color" default="#000000" searchtype="portfolio">H3 Font Colour</property>
+  <property id="h4font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H4 Font</property>
+  <property id="h4size" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H4 Font Size (Between 10px and 80px)" default="22" searchtype="portfolio">H4 Font Size</property>
+  <property id="h4color" index="true" stored="true" editable="true" viewtype="color" default="#000000" searchtype="portfolio">H4 Font Colour</property>
+  <property id="h5font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H5 Font</property>
+  <property id="h5size" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H5 Font Size (Between 10px and 80px)" default="18" searchtype="portfolio">H5 Font Size</property>
+  <property id="h5color" index="true" stored="true" editable="true" viewtype="color" default="#000000" searchtype="portfolio">H5 Font Colour</property>
+  <property id="h6font" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">H6 Font</property>
+  <property id="h6size" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="H6 Font Size (Between 10px and 80px)" default="14" searchtype="portfolio">H6 Font Size</property>
+  <property id="h6color" index="true" stored="true" editable="true" viewtype="color" default="#000000" searchtype="portfolio">H6 Font Colour</property>
+  <property id="pfont" index="true" stored="true" editable="true" viewtype="font" type="list" searchtype="portfolio">Paragraph Font</property>
+  <property id="psize" index="true" stored="true" editable="true" viewtype="slider" min="10" max="80" desc="Paragraph Font Size (Between 10px and 80px)" default="12" searchtype="portfolio">Paragraph Font Size</property>
+  <property id="pcolor" index="true" stored="true" editable="true" viewtype="color" default="#000000" searchtype="portfolio">Paragraph Font Colour</property>
+  -->
+</properties>

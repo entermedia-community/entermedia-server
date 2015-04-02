@@ -1,0 +1,54 @@
+
+<properties >
+  
+  <!--  header information and style -->
+  <property id="logo" index="true" stored="true" editable="true" type="list" viewtype="asset"   sourcepath="applicationassets/logo" internalfield="false" listid="asset" datatype="list">Site Logo</property>
+  <property id="title" index="true" stored="true" editable="true" >Site Title</property>
+  
+  <!-- header color + gradients (new) -->
+  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" >Header Solid Colour</property>
+  <property id="headercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Header Vertical Gradient Color (High)</property>
+  <property id="headercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Header Vertical Gradient Color (Low)</property>
+  
+ 
+  
+ 
+  <!-- navigation color + gradients (new) -->
+  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Solid Colour</property>
+  <property id="navcolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Color (High)</property>
+  <property id="navcolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Color (Low)</property>
+  
+ 
+  
+  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Solid Button Colour</property>
+  <!-- 
+  <property id="navbuttongradientcolor1" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttongradientcolor2" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
+  -->
+  <property id="navbuttoncolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttoncolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
+ 
+  <!-- navigation font hover (new)-->
+ 
+  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Colour</property>
+  <property id="navhoverfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" >Navigation Hover Font Opacity</property>
+  <!-- end navigation font hover -->
+  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Solid Button Colour</property>
+  <!-- 
+  <property id="navbuttonhovercolor1" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttonhovercolor2" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  -->
+  <property id="navbuttonhovercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttonhovercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  
+ 
+  
+  <!-- global styles -->
+  <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site">Custom Background Tile</property>
+   <property id="backgroundtile" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Background Tile</property>
+ 
+  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list"  datatype="list">Custom Background Tile Style</property>
+  <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Content Background Colour</property>
+  <property id="disableshadows" index="true" stored="true" editable="true" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
+  
+</properties>

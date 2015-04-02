@@ -1,6 +1,25 @@
-Choose Logo
+<h2>[[Data Editor]]</h2>
 
-<br>
+<div id="editlayout">
+#set($searcher = $mediaarchive.getSearcher("template"))
+#set($data = $mediaarchive.getData("template", "default"))
 
-Choose Header Color
+$context.putPageValue("searcher", $searcher)
+$context.putPageValue("data", $data)
 
+$context.putPageValue("view", "template/edit")
+
+<form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/preferences/save.html"  enctype="multipart/form-data">
+	<input name="save" type="hidden" value="true" />
+	<input name="id" type="hidden" value="default" />
+	<input name="searchtype" type="hidden" value="template" />
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+<input type="submit" value="Save" />
+<div id="messagearea">$!message
+</div>
+</form>
+
+
+
+</div>

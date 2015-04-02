@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root> 
+  <data id="default" backgroundtile="white_leather.png" logo="202" title="This is a new site title" headercolor="#F0ECEB" navcolor="#C4B8B8" navbuttoncolor="#2E2C2C" navbuttonhovercolor="#8F8080" disableshadows="true"/>
+</root>
