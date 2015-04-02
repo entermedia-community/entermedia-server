@@ -1,26 +1,25 @@
 						<div id="emresultscontent">
-
 #set( $moduleid = $context.findValue("module") )
 #set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
 #set( $searchhome = $context.findValue("searchhome") )
 
-    
 #if ( $hits.size() == 0 )
-$pages.stream("/${content.searchhome}/empty.html", $context)	
-                                                                                                                                                                                                              
+	$pages.include("${searchhome}/resultsactions.html",$context)
+	$pages.stream("/${content.searchhome}/empty.html", $context)	
 #else
 
+	#set( $resultdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}resultstable", $userprofile))
+	
+	
+	##set ( $canedit = $context.getPageValue("${moduleid}edit") )
+	
+	#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
+	#if ($popupdetail && $popupdetail.size() > 0)
+		#set( $enablepopup = "true")
+	#end
 
-#set( $resultdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}resultstable", $userprofile))
-
-
-##set ( $canedit = $context.getPageValue("${moduleid}edit") )
-
-#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
-#if ($popupdetail && $popupdetail.size() > 0)
-	#set( $enablepopup = "true")
-#end
-							$pages.include("${searchhome}/resultsactions.html",$context)
+##Header
+$pages.include("${searchhome}/resultsactions.html",$context)
 
 
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
