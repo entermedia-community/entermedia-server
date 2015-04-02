@@ -8,6 +8,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.repository.filesystem.StringItem;
 
@@ -63,6 +64,7 @@ public class TemplateModule extends BaseMediaModule {
 		loadTemplate(req);
 		
 		MediaArchive archive = getMediaArchive(inReq);
+		
 		req.putPageValue("mediaarchive", archive);
 		req.putPageValue("numberutils", new NumberUtils());
 		
@@ -84,7 +86,7 @@ public class TemplateModule extends BaseMediaModule {
 		outputpage.setContentItem(revision);
 		getPageManager().putPage(outputpage);
 		getPageManager().clearCache(outputpage);
-
+		
 	}
 
 	public void saveTemplate(WebPageRequest inReq) {

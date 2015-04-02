@@ -11,13 +11,8 @@
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 #set($logo = $mediaarchive.getAssetBySourcePath("applicationassets/logo"))
 
-#if($logo)
-#set($logourl = "$home$apphome/views/modules/asset/downloads/preview/thumbsmall/${logo.sourcepath}/preview.png")
-#else
 #set($logourl = "$home$themeprefix/images/logo.png")
-
-#end
-<a href="$home$apphome/views/modules/${module.getId()}/index.html"><img class="logo" src="$logourl" alt="EnterMedia Share" /></a>
+<a class="logocontainer" href="$home$apphome/views/modules/${module.getId()}/index.html"><img class="logo" src="$logourl" alt="EnterMedia Share" /></a>
 
 <span class="navlinks" style="position: relative;"> 
 	#if( $user )

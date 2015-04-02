@@ -2,7 +2,7 @@
 
 <properties>
 
-  <property id="appreferences"  type="toplevel"  module="system" path="/views/settings/applicationsetup/preferences/index.html" ordering="01">App Settings</property>
+  <property id="appreferences"  type="toplevel"  module="system" path="/views/settings/applicationsetup/preferences/index.html" ordering="01">Theme Editor</property>
   
   
 </properties>

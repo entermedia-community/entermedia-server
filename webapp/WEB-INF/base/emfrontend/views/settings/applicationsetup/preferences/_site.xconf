@@ -3,10 +3,8 @@
 <page>
 
 	<!-- This is not used any longer -->
-
-  <property name="tab">preferences</property>
-  <property name="subsettinglist">system</property>
-<script id="jquery-minicolors" src="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.js" />
+  
+	<script id="jquery-minicolors" src="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.js" />
 	
 	<style  id="jquery-minicolors-css" href="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.css" />
 </page>
