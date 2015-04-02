@@ -64,6 +64,19 @@
   <property id="navbuttonhovercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Vertical Gradient Button Colour (High)</property>
   <property id="navbuttonhovercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Hover Vertical Gradient Button Colour (Low)</property>
   
+  <!-- navigation links -->
+  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Links Background Colour</property>
+  
+  <!-- table header -->
+  <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Table Header Solid Colour</property>
+  <property id="tableheadercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Table Header Vertical Gradient Colour (High)</property>
+  <property id="tableheadercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Table Header Vertical Gradient Colour (Low)</property>
+  
+  <!-- asset details selected tab -->
+  <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Asset Details Selected Tab Solid Colour</property>
+  <property id="assetdetailsselectedtabgradientcolorhi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Asset Details Selected Tab Horizontal Gradient Colour (Left)</property>
+  <property id="assetdetailsselectedtabgradientcolorlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Asset Details Selected Tab Horizontal Gradient Colour (Right)</property>
+  
   <!-- main -->
   <property id="slidertype" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Home Page Top Section</property>
   <property id="showprojectsonhome" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="portfolio" datatype="boolean">Show Projects on Home Page</property>

@@ -27,7 +27,7 @@
   -->
   <property id="navbuttoncolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
   <property id="navbuttoncolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
- 
+  
   <!-- navigation font hover (new)-->
  
   <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Colour</property>
@@ -41,7 +41,18 @@
   <property id="navbuttonhovercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
   <property id="navbuttonhovercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
   
- 
+  <!-- navigation links -->
+  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Links Background Colour</property>
+  
+  <!-- table header -->
+  <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" >Table Header Solid Colour</property>
+  <property id="tableheadercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Colour (High)</property>
+  <property id="tableheadercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Colour (Low)</property>
+  
+  <!-- asset details selected tab -->
+  <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Solid Colour</property>
+  <property id="assetdetailsselectedtabgradientcolorhi" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Left)</property>
+  <property id="assetdetailsselectedtabgradientcolorlo" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Right)</property>
   
   <!-- global styles -->
   <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site">Custom Background Tile</property>
