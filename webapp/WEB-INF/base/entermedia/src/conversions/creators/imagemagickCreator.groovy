@@ -511,7 +511,12 @@ public class imagemagickCreator extends BaseImageCreator {
 		//				}
 
 		setValue("quality", "89", inStructions, com);
-
+		//add sampling-factor if specified
+		if (inStructions.get("sampling-factor")!=null)
+		{
+			com.add("-sampling-factor");
+			com.add(inStructions.get("sampling-factor"));
+		}
 		if( autocreated )  //we are using a color corrected input
 		{
 			com.add("-strip"); //This does not seem to do much
