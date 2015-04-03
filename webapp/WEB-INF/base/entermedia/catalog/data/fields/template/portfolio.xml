@@ -31,7 +31,6 @@
   <!-- navigation font hover (new)-->
  
   <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Colour</property>
-  <property id="navhoverfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" >Navigation Hover Font Opacity</property>
   <!-- end navigation font hover -->
   <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Solid Button Colour</property>
   <!-- 
@@ -40,6 +39,9 @@
   -->
   <property id="navbuttonhovercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
   <property id="navbuttonhovercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  
+  <!-- left column -->
+  <property id="leftcolumnbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Left Column Background Colour</property>
   
   <!-- navigation links -->
   <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Links Background Colour</property>
@@ -53,6 +55,9 @@
   <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Solid Colour</property>
   <property id="assetdetailsselectedtabgradientcolorhi" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Left)</property>
   <property id="assetdetailsselectedtabgradientcolorlo" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Right)</property>
+  
+  <!-- settings menu selection -->
+  <property id="settingsmenuselectioncolor" index="true" stored="true" editable="true" viewtype="color" >Settings Menu Selection Color</property>
   
   <!-- global styles -->
   <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site">Custom Background Tile</property>

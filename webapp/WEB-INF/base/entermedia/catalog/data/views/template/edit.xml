@@ -67,6 +67,9 @@
   <!-- navigation links -->
   <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Navigation Links Background Colour</property>
   
+  <!-- left column -->
+  <property id="leftcolumnbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Left Column Background Colour</property>
+  
   <!-- table header -->
   <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Table Header Solid Colour</property>
   <property id="tableheadercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Table Header Vertical Gradient Colour (High)</property>
@@ -76,6 +79,9 @@
   <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Asset Details Selected Tab Solid Colour</property>
   <property id="assetdetailsselectedtabgradientcolorhi" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Asset Details Selected Tab Horizontal Gradient Colour (Left)</property>
   <property id="assetdetailsselectedtabgradientcolorlo" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Asset Details Selected Tab Horizontal Gradient Colour (Right)</property>
+  
+  <!-- settings menu selection -->
+  <property id="settingsmenuselectioncolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Settings Menu Selection Color</property>
   
   <!-- main -->
   <property id="slidertype" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Home Page Top Section</property>
@@ -103,7 +109,6 @@
   <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio" sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site">Custom Background Tile</property>
   <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Custom Background Tile Style</property>
   <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" searchtype="portfolio">Content Background Colour</property>
-  <property id="backgroundoppacity" index="true" stored="true" editable="true" viewtype="slider" valtype="decimal" min="30" max="100" default="1" searchtype="portfolio" desc="Opacity (Between 0.3 and 1.0):">Background Oppacity</property>
   <property id="disableshadows" index="true" stored="true" editable="true" sortable="true" type="boolean" searchtype="portfolio" datatype="boolean">Disable Shadows Around Header and Content</property>
   
   <!-- global fonts -->
