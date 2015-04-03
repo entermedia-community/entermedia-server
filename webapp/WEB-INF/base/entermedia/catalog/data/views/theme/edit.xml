@@ -11,6 +11,14 @@
   <property id="logowidth" />
   <property id="logoheight" />
 
+  <property id="backgroundpath" />
+  <property id="backgroundtile" />
+  <property id="tileupload" />
+  <property id="backgroundstyle" />
+  <property id="contentbackgroundcolor" />
+  <property id="backgroundoppacity" />
+
+
   <property id="headerstyle" type="list" viewtype="list"  datatype="list" tooltip="This configures the header - it can be 100% width, centered and the same width as the screen, or simply turned off.">Header Style</property>
   <property id="headerheight" viewtype="slider" min="50" max="250" default="85"   desc="Height of header block (Between 50px and 250px):">Header Height</property>
   <!-- 
@@ -37,7 +45,10 @@
   <property id="navgradientcolor2" viewtype="color" >Navigation Vertical Gradient Colour (Low)</property>
   -->
   <!-- navigation color + gradients (new) -->
-  <property id="navcolor" viewtype="color" >Navigation Solid Colour</property>
+  
+  <property id="navbackgroundpath" />
+  
+  <property id="navcolor" viewtype="color"  >Navigation Solid Colour</property>
   <property id="navcolorgradienthi" viewtype="color" >Navigation Vertical Gradient Color (High)</property>
   <property id="navcolorgradientlo" viewtype="color" >Navigation Vertical Gradient Color (Low)</property>
   
@@ -50,7 +61,8 @@
    -->
   <!-- end navigation font -->
   
-  <property id="navbuttoncolor" viewtype="color" >Navigation Solid Button Colour</property>
+  <property id="navbuttoncolor" />
+  <property id="navbuttonbordercolor" />
   <!-- 
   <property id="navbuttongradientcolor1" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
   <property id="navbuttongradientcolor2" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
@@ -107,11 +119,6 @@
   <property id="projectresulttypes" type="list" viewtype="list"  datatype="list">Projects Page Style</property>
   
   <!-- global styles -->
-  <property id="backgroundtile" type="list" viewtype="list"  datatype="list">Background Tile</property>
-  <property id="tileupload" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site">Custom Background Tile</property>
-  <property id="backgroundstyle" type="list" viewtype="list"  datatype="list">Custom Background Tile Style</property>
-  <property id="contentbackgroundcolor" viewtype="color" >Content Background Colour</property>
-  <property id="backgroundoppacity" viewtype="slider" valtype="decimal" min="30" max="100" default="1"  desc="Opacity (Between 0.3 and 1.0):">Background Oppacity</property>
   <property id="disableshadows" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
   
   <!-- global fonts -->
