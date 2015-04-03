@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<root> 
-  <data id="default" backgroundtile="white_leather.png" logo="202" title="EMShare" navcolorgradienthi="#F0ECEB" navcolorgradientlo="#2B99BA" navcolor="#3BB0D2" navbuttoncolorgradienthi="#53BBD9" navbuttoncolorgradientlo="#328DA7" navbuttonhovercolor="#8F8080" navlinksbackgroundcolor="#2E2C2C" tableheadercolor="#2E2C2C" assetdetailsselectedtabcolor="#2E2C2C" disableshadows="true"/>
-</root>

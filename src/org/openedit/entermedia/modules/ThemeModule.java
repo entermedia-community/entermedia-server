@@ -4,11 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.Asset;
+import org.openedit.data.lucene.NumberUtils;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.repository.filesystem.StringItem;
 
@@ -16,10 +15,11 @@ import com.openedit.WebPageRequest;
 import com.openedit.generators.Output;
 import com.openedit.page.Page;
 import com.openedit.page.PageRequestKeys;
+import com.openedit.page.PageSettings;
 import com.openedit.util.RequestUtils;
 import com.openedit.util.URLUtilities;
 
-public class TemplateModule extends BaseMediaModule {
+public class ThemeModule extends BaseMediaModule {
 
 	protected RequestUtils fieldRequestUtils;
 	protected SearcherManager fieldSearcherManager;
@@ -41,6 +41,8 @@ public class TemplateModule extends BaseMediaModule {
 		String inputfile = inReq.findValue("templatecss");
 		String outputfile = inReq.findValue("outputcss");
 
+		Data theme = loadTheme(inReq);
+
 		Page page = getPageManager().getPage(inputfile);
 
 		
@@ -59,9 +61,9 @@ public class TemplateModule extends BaseMediaModule {
 						.getPageValue(PageRequestKeys.URL_UTILITIES));
 		Page outputpage = getPageManager().getPage(outputfile);
 		getPageManager().putPage(outputpage);
-		loadTheme(req);
+		//loadTheme(req);
+		req.putPageValue("theme", theme);
 
-		loadTemplate(req);
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		
@@ -87,54 +89,46 @@ public class TemplateModule extends BaseMediaModule {
 		getPageManager().putPage(outputpage);
 		getPageManager().clearCache(outputpage);
 		
+		String appid = inReq.findValue("applicationid");
+		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
+		
+		xconf.setProperty("themeid",theme.getId());
+		getPageManager().getPageSettingsManager().saveSetting(xconf);
+		
 	}
 
-	public void saveTemplate(WebPageRequest inReq) {
+	public void saveTheme(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
-		Searcher templateSearcher = getSearcherManager().getSearcher(catalogid,
-				"template");
+		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
+				"theme");
 		String owner = inReq.findValue("applicationid");
 		if (owner != null) {
-			Data template = (Data) templateSearcher.searchById(owner
-					+ "template");
-			if (template == null) {
-				template = templateSearcher.createNewData();
-				template.setId(owner + "template");
-				template.setSourcePath("templates" );
+			Data theme = (Data) themeSearcher.searchById(owner
+					+ "theme");
+			if (theme == null) {
+				theme = themeSearcher.createNewData();
+				theme.setId(owner + "theme");
+				theme.setSourcePath("themes" );
 			}
 			String[] fields = inReq.getRequestParameters("field");
-			templateSearcher.updateData(inReq, fields, template);
-			template.setId(owner + "template");
-			templateSearcher.saveData(template, inReq.getUser());
-			inReq.putPageValue("template", template);
+			themeSearcher.updateData(inReq, fields, theme);
+			theme.setId(owner + "theme");
+			themeSearcher.saveData(theme, inReq.getUser());
+			inReq.putPageValue("theme", theme);
 		}
 	}
 
-	public void loadTemplate(WebPageRequest inReq) {
+	public Data loadTheme(WebPageRequest inReq) {
 		String catalogid = inReq.findValue("catalogid");
-		Searcher templateSearcher = getSearcherManager().getSearcher(catalogid,
-				"template");
-		String templateid = inReq.findValue("templateid");
-		Data template = (Data) templateSearcher.searchById(templateid);
-			if (template != null) {
-				inReq.putPageValue("template", template);
-			}
-	}
-
-
-	public void loadTheme(WebPageRequest inReq) {
-		String catalogid = inReq.findValue("catalogid");
-		Searcher templateSearcher = getSearcherManager().getSearcher(catalogid,
+		Searcher themeSearcher = getSearcherManager().getSearcher(catalogid,
 				"theme");
-			String themeid = inReq.findValue("themeid");
-			if(themeid == null){
-				themeid = "theme";
+		String themeid = inReq.getRequestParameter("themeid");
+		Data theme = (Data) themeSearcher.searchById(themeid);
+			if (theme != null) {
+				inReq.putPageValue("theme", theme);
 			}
-			Data template = (Data) templateSearcher.searchById(themeid);
-			if (template != null) {
-				inReq.putPageValue("theme", template);
-			}
-		
+		return theme;
 	}
+
 
 }

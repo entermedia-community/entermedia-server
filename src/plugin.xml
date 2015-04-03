@@ -1296,7 +1296,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 	
-	<bean id="TemplateModule" class="org.openedit.entermedia.modules.TemplateModule" >
+	<bean id="ThemeModule" class="org.openedit.entermedia.modules.ThemeModule" >
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
 		</property>
@@ -1314,11 +1314,11 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	
 	<bean id="htmlUtil" class="org.openedit.entermedia.util.HtmlUtil">
 	</bean>
-<bean id="jsonUtil" class="org.openedit.entermedia.util.JsonUtil">
+	<bean id="jsonUtil" class="org.openedit.entermedia.util.JsonUtil">
 	</bean>
 
 	<bean id="RedirectModule" class="org.openedit.entermedia.modules.RedirectModule" >
-<property name="searcherManager">
+		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
 	</bean>

@@ -14,7 +14,14 @@
 #set( $rootid = $hits.sessionId )
 
 #set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
-<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" id="${detail.id}-preview">
+
+#if($foundrow && !$context.getRequestParameter("readonly") == "true")
+<div >
+<input id="${detail.id}-checkbox" name="${detail.id}-checkbox" type="checkbox" onchange='$("#${detail.id}-value").val("");$("#${detail.id}-previewlink").html("");' /> [[Clear]]
+</div>
+#end
+
+<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" id="${detail.id}-previewlink">
 
 	#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
 	
@@ -26,11 +33,6 @@
   	#set( $sourcepath = $foundrow.sourcePath )
 	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 </a>
-#if($foundrow && !$context.getRequestParameter("readonly") == "true")
-<div style="padding-left: 40px;">
-<label for="${detail.id}-checkbox" style="font-style:italic;">Remove: </label><input id="${detail.id}-checkbox" name="${detail.id}-checkbox" type="checkbox" />
-</div>
-#end
 
 
 	#if( $type == "audio")

@@ -1,9 +1,14 @@
 
 <properties >
-  
+
+  <property id="name" index="true" stored="true" editable="true" >Theme Name</property>
   <!--  header information and style -->
-  <property id="logo" index="true" stored="true" editable="true" type="list" viewtype="asset"   sourcepath="applicationassets/logo" internalfield="false" listid="asset" datatype="list">Site Logo</property>
-  <property id="title" index="true" stored="true" editable="true" >Site Title</property>
+  <property id="title" index="true" stored="true" editable="true">Site Title</property>
+  <property id="logopath" index="true" stored="true" editable="true" note="Relative path to image" >Logo</property>
+  <property id="logoasset" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio"  internalfield="false" listid="asset" datatype="list" note="Optional">Logo Asset Override</property>
+  <property id="logowidth" index="true" stored="true" editable="true" >Logo Width</property>
+  <property id="logoheight" index="true" stored="true" editable="true" >Logo Height</property>
+  
   
   <!-- header color + gradients (new) -->
   <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" >Header Solid Colour</property>
@@ -31,6 +36,9 @@
   <!-- navigation font hover (new)-->
  
   <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Colour</property>
+<!-- 
+  <property id="navhoverfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" >Navigation Hover Font Opacity</property>
+   -->
   <!-- end navigation font hover -->
   <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Solid Button Colour</property>
   <!-- 
