@@ -14,63 +14,61 @@
   <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site" note="Optional">Background Asset Override</property>
   <property id="backgroundtile" index="true" stored="true" type="boolean" editable="true" >Tile Background</property>
   
-   <property id="backgroundtile" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Background Tile</property>
- 
-  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list"  datatype="list">Custom Background Tile Style</property>
-  <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Content Background Colour</property>
+  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Background Style</property>
+  <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Content Background Color</property>
  
   
   <!-- header color + gradients (new) -->
-  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" >Header Solid Colour</property>
+  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" >Header Solid Color</property>
   <property id="headercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Header Vertical Gradient Color (High)</property>
   <property id="headercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Header Vertical Gradient Color (Low)</property>
   
  
   <!-- navigation color + gradients (new) -->
   <property id="navbackgroundpath" index="true" stored="true" editable="true" note="Overrides Colors">Nav Background Path</property>
-  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Colour</property>
+  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Color</property>
   <property id="navcolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Color (High)</property>
   <property id="navcolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Color (Low)</property>
   
-  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Colour</property>
+  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Color</property>
   <property id="navbuttonbordercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Border</property>
   <!-- 
-  <property id="navbuttongradientcolor1" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttongradientcolor1" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button Color (High)</property>
   <property id="navbuttongradientcolor2" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
   -->
-  <property id="navbuttoncolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
+  <property id="navbuttoncolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button Color (High)</property>
   <property id="navbuttoncolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
   
   <!-- navigation font hover (new)-->
  
-  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Colour</property>
+  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Color</property>
 <!-- 
   <property id="navhoverfontopacity" index="true" stored="true" editable="true" viewtype="slider" min="0" max="1" >Navigation Hover Font Opacity</property>
    -->
   <!-- end navigation font hover -->
-  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Solid Button Colour</property>
+  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Solid Button Color</property>
   <!-- 
-  <property id="navbuttonhovercolor1" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
-  <property id="navbuttonhovercolor2" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  <property id="navbuttonhovercolor1" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Color (High)</property>
+  <property id="navbuttonhovercolor2" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Color (Low)</property>
   -->
-  <property id="navbuttonhovercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
-  <property id="navbuttonhovercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  <property id="navbuttonhovercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Color (High)</property>
+  <property id="navbuttonhovercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Vertical Gradient Button Color (Low)</property>
   
   <!-- left column -->
-  <property id="leftcolumnbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Left Column Background Colour</property>
+  <property id="leftcolumnbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Left Column Background Color</property>
   
   <!-- navigation links -->
-  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Links Background Colour</property>
+  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Links Background Color</property>
   
   <!-- table header -->
-  <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" >Table Header Solid Colour</property>
-  <property id="tableheadercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Colour (High)</property>
-  <property id="tableheadercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Colour (Low)</property>
+  <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" >Table Header Solid Color</property>
+  <property id="tableheadercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Color (High)</property>
+  <property id="tableheadercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Color (Low)</property>
   
   <!-- asset details selected tab -->
-  <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Solid Colour</property>
-  <property id="assetdetailsselectedtabgradientcolorhi" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Left)</property>
-  <property id="assetdetailsselectedtabgradientcolorlo" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Right)</property>
+  <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Solid Color</property>
+  <property id="assetdetailsselectedtabgradientcolorhi" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Color (Left)</property>
+  <property id="assetdetailsselectedtabgradientcolorlo" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Color (Right)</property>
   
   <!-- settings menu selection -->
   <property id="settingsmenuselectioncolor" index="true" stored="true" editable="true" viewtype="color" >Settings Menu Selection Color</property>

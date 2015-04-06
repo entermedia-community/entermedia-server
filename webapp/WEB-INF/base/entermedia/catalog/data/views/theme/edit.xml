@@ -20,22 +20,22 @@
   <property id="backgroundoppacity" />
 
 
-  <property id="headerstyle" type="list" viewtype="list"  datatype="list" tooltip="This configures the header - it can be 100% width, centered and the same width as the screen, or simply turned off.">Header Style</property>
-  <property id="headerheight" viewtype="slider" min="50" max="250" default="85"   desc="Height of header block (Between 50px and 250px):">Header Height</property>
+  <property id="headerstyle" />
+  <property id="headerheight" />
   <!-- 
   <property id="headercolor" viewtype="color" >Header Solid Colour</property>
   <property id="headergradientcolor1" viewtype="color" >Header Vertical Gradient Color (High)</property>
   <property id="headergradientcolor2" viewtype="color" >Header Vertical Gradient Color (Low)</property>
   -->
   <!-- header color + gradients (new) -->
-  <property id="headercolor" viewtype="color" >Header Solid Colour</property>
-  <property id="headercolorgradienthi" viewtype="color" >Header Vertical Gradient Color (High)</property>
-  <property id="headercolorgradientlo" viewtype="color" >Header Vertical Gradient Color (Low)</property>
+  <property id="headercolor" />
+  <property id="headercolorgradienthi" />
+  <property id="headercolorgradientlo" />
   
   <!-- header font -->
-  <property id="headerfont" viewtype="font" type="list" >Header Font</property>
-  <property id="headerfontsize" viewtype="slider" min="10" max="80" desc="Header Font Size (Between 10px and 80px)" default="28" >Header Font Size</property>
-  <property id="headerfontcolor" viewtype="color" >Header Font Colour</property>
+  <property id="headerfont" />
+  <property id="headerfontsize" />
+  <property id="headerfontcolor" />
   <!-- done header font -->
   
   <!--  navigation styles -->
@@ -49,14 +49,14 @@
   
   <property id="navbackgroundpath" />
   
-  <property id="navcolor" viewtype="color"  >Navigation Solid Colour</property>
-  <property id="navcolorgradienthi" viewtype="color" >Navigation Vertical Gradient Color (High)</property>
-  <property id="navcolorgradientlo" viewtype="color" >Navigation Vertical Gradient Color (Low)</property>
+  <property id="navcolor" />
+  <property id="navcolorgradienthi" />
+  <property id="navcolorgradientlo" />
   
   <!-- navigation font (new)-->
-  <property id="navfont" viewtype="font" type="list" >Navigation Font</property>
-  <property id="navfontsize" viewtype="slider" min="10" max="80" desc="Header Font Size (Between 10px and 80px)" default="28" >Navigation Font Size</property>
-  <property id="navfontcolor" viewtype="color" >Navigation Font Colour</property>
+  <property id="navfont" />
+  <property id="navfontsize" />
+  <property id="navfontcolor" />
   <!-- 
   <property id="navfontopacity" viewtype="slider" min="0" max="1" >Navigation Font Opacity</property>
    -->
@@ -68,118 +68,38 @@
   <property id="navbuttongradientcolor1" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
   <property id="navbuttongradientcolor2" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
   -->
-  <property id="navbuttoncolorgradienthi" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
-  <property id="navbuttoncolorgradientlo" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
+  <property id="navbuttoncolorgradienthi" />
+  <property id="navbuttoncolorgradientlo" />
  
   <!-- navigation font hover (new)-->
-  <property id="navhoverfont" viewtype="font" type="list" >Navigation Hover Font</property>
-  <property id="navhoverfontsize" viewtype="slider" min="10" max="80" desc="Header Font Size (Between 10px and 80px)" default="28" >Navigation Hover Font Size</property>
-  <property id="navhoverfontcolor" viewtype="color" >Navigation Hover Font Colour</property>
-  <property id="navhoverfontopacity" viewtype="slider" min="0" max="1" >Navigation Hover Font Opacity</property>
+  <property id="navhoverfont" />
+  <property id="navhoverfontsize" />
+  <property id="navhoverfontcolor" />
+  <property id="navhoverfontopacity" />
   <!-- end navigation font hover -->
-  <property id="navbuttonhovercolor" viewtype="color" >Navigation Hover Solid Button Colour</property>
+  <property id="navbuttonhovercolor" />
   <!-- 
   <property id="navbuttonhovercolor1" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
   <property id="navbuttonhovercolor2" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
   -->
-  <property id="navbuttonhovercolorgradienthi" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
-  <property id="navbuttonhovercolorgradientlo" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
+  <property id="navbuttonhovercolorgradienthi" />
+  <property id="navbuttonhovercolorgradientlo" />
   
   <!-- navigation links -->
-  <property id="navlinksbackgroundcolor" viewtype="color" >Navigation Links Background Colour</property>
+  <property id="navlinksbackgroundcolor" />
   
   <!-- table header -->
-  <property id="tableheadercolor" viewtype="color" >Table Header Solid Colour</property>
-  <property id="tableheadercolorgradienthi" viewtype="color" >Table Header Vertical Gradient Colour (High)</property>
-  <property id="tableheadercolorgradientlo" viewtype="color" >Table Header Vertical Gradient Colour (Low)</property>
+  <property id="tableheadercolor" />
+  <property id="tableheadercolorgradienthi" />
+  <property id="tableheadercolorgradientlo" />
   
   <!-- asset details selected tab -->
-  <property id="assetdetailsselectedtabcolor" viewtype="color" >Asset Details Selected Tab Solid Colour</property>
-  <property id="assetdetailsselectedtabgradientcolorhi" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Left)</property>
-  <property id="assetdetailsselectedtabgradientcolorlo" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Colour (Right)</property>
-  
-  <!-- main -->
-  <property id="slidertype" type="list" viewtype="list"  datatype="list">Home Page Top Section</property>
-  <property id="showprojectsonhome" sortable="true" type="boolean"  datatype="boolean">Show Projects on Home Page</property>
-  <property id="profileimage" type="list" viewtype="asset"  sourcepath="users/${userid}/profileimage" internalfield="false" listid="asset" datatype="list" tooltip="This will appear on your profile wherever a user photo is shown.">Profile Image</property>
-  <property id="showphoto" sortable="true" type="boolean" viewtype="boolean"  default="true" datatype="boolean">Show Profile Image on Home Page</property>
-  
-  <!--  biography info -->
-  <property id="bioheader" viewtype="text" >Biography Heading</property>
-  <property id="bio" viewtype="textarea" >Biography</property>
-  
-  <!--  contact info -->
-  <property id="contactdisplayname" >Contact Display Name</property>
-  <property id="contactoccupation" >Contact Occupation</property>
-  <property id="contactlocation" >Contact Location</property>
-  <property id="contactemail" >Contact Email</property>
-  <property id="contactphone" >Contact Phone</property>
-  <property id="resume" type="list" viewtype="asset"  sourcepath="users/${userid}/resume" internalfield="false" listid="asset" datatype="list">Resume</property>
-  
-  <!-- projects -->
-  <property id="projectresulttypes" type="list" viewtype="list"  datatype="list">Projects Page Style</property>
+  <property id="assetdetailsselectedtabcolor" />
+  <property id="assetdetailsselectedtabgradientcolorhi" />
+  <property id="assetdetailsselectedtabgradientcolorlo" />
   
   <!-- global styles -->
   <property id="disableshadows" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
   
-  <!-- global fonts -->
-  <!-- h1 -->
-  <property id="h1font" viewtype="font" type="list" >H1 Font</property>
-  <property id="h1fontsize" viewtype="slider" min="10" max="80" desc="H1 Font Size (Between 10px and 80px)" default="28" >H1 Font Size</property>
-  <property id="h1fontcolor" viewtype="color" >H1 Font Colour</property>
-  <property id="h1fontopacity" viewtype="slider" min="0" max="1" >H1 Font Opacity</property>
-  <!-- h2 -->
-  <property id="h2font" viewtype="font" type="list" >H2 Font</property>
-  <property id="h2fontsize" viewtype="slider" min="10" max="80" desc="H2 Font Size (Between 10px and 80px)" default="28" >H2 Font Size</property>
-  <property id="h2fontcolor" viewtype="color" >H2 Font Colour</property>
-  <property id="h2fontopacity" viewtype="slider" min="0" max="1" >H2 Font Opacity</property>
-  <!-- h3 -->
-  <property id="h3font" viewtype="font" type="list" >H3 Font</property>
-  <property id="h3fontsize" viewtype="slider" min="10" max="80" desc="H3 Font Size (Between 10px and 80px)" default="28" >H3 Font Size</property>
-  <property id="h3fontcolor" viewtype="color" >H3 Font Colour</property>
-  <property id="h3fontopacity" viewtype="slider" min="0" max="1" >H3 Font Opacity</property>
-  <!-- h4 -->
-  <property id="h4font" viewtype="font" type="list" >H4 Font</property>
-  <property id="h4fontsize" viewtype="slider" min="10" max="80" desc="H4 Font Size (Between 10px and 80px)" default="28" >H4 Font Size</property>
-  <property id="h4fontcolor" viewtype="color" >H4 Font Colour</property>
-  <property id="h4fontopacity" viewtype="slider" min="0" max="1" >H4 Font Opacity</property>
-  <!-- h5 -->
-  <property id="h5font" viewtype="font" type="list" >H5 Font</property>
-  <property id="h5fontsize" viewtype="slider" min="10" max="80" desc="H5 Font Size (Between 10px and 80px)" default="28" >H5 Font Size</property>
-  <property id="h5fontcolor" viewtype="color" >H5 Font Colour</property>
-  <property id="h5fontopacity" viewtype="slider" min="0" max="1" >H5 Font Opacity</property>
-  <!-- h6 -->
-  <property id="h6font" viewtype="font" type="list" >H6 Font</property>
-  <property id="h6fontsize" viewtype="slider" min="10" max="80" desc="H6 Font Size (Between 10px and 80px)" default="28" >H6 Font Size</property>
-  <property id="h6fontcolor" viewtype="color" >H6 Font Colour</property>
-  <property id="h6fontopacity" viewtype="slider" min="0" max="1" >H6 Font Opacity</property>
-  <!-- p -->
-  <property id="pfont" viewtype="font" type="list" >Paragraph Font</property>
-  <property id="pfontsize" viewtype="slider" min="10" max="80" desc="Paragraph Font Size (Between 10px and 80px)" default="28" >Paragraph Font Size</property>
-  <property id="pfontcolor" viewtype="color" >Paragraph Font Colour</property>
-  <property id="pfontopacity" viewtype="slider" min="0" max="1" >Paragraph Font Opacity</property>
-  
-  <!--
-  <property id="h1font" viewtype="font" type="list" >H1 Font</property>
-  <property id="h1size" viewtype="slider" min="10" max="80" desc="H1 Font Size (Between 10px and 80px)" default="40" >H1 Font Size</property>
-  <property id="h1color" viewtype="color" default="#000000" >H1 Font Colour</property>
-  <property id="h2font" viewtype="font" type="list" >H2 Font</property>
-  <property id="h2size" viewtype="slider" min="10" max="80" desc="H2 Font Size (Between 10px and 80px)" default="34" >H2 Font Size</property>
-  <property id="h2color" viewtype="color" default="#000000" >H2 Font Colour</property>
-  <property id="h3font" viewtype="font" type="list" >H3 Font</property>
-  <property id="h3size" viewtype="slider" min="10" max="80" desc="H3 Font Size (Between 10px and 80px)" default="28" >H3 Font Size</property>
-  <property id="h3color" viewtype="color" default="#000000" >H3 Font Colour</property>
-  <property id="h4font" viewtype="font" type="list" >H4 Font</property>
-  <property id="h4size" viewtype="slider" min="10" max="80" desc="H4 Font Size (Between 10px and 80px)" default="22" >H4 Font Size</property>
-  <property id="h4color" viewtype="color" default="#000000" >H4 Font Colour</property>
-  <property id="h5font" viewtype="font" type="list" >H5 Font</property>
-  <property id="h5size" viewtype="slider" min="10" max="80" desc="H5 Font Size (Between 10px and 80px)" default="18" >H5 Font Size</property>
-  <property id="h5color" viewtype="color" default="#000000" >H5 Font Colour</property>
-  <property id="h6font" viewtype="font" type="list" >H6 Font</property>
-  <property id="h6size" viewtype="slider" min="10" max="80" desc="H6 Font Size (Between 10px and 80px)" default="14" >H6 Font Size</property>
-  <property id="h6color" viewtype="color" default="#000000" >H6 Font Colour</property>
-  <property id="pfont" viewtype="font" type="list" >Paragraph Font</property>
-  <property id="psize" viewtype="slider" min="10" max="80" desc="Paragraph Font Size (Between 10px and 80px)" default="12" >Paragraph Font Size</property>
-  <property id="pcolor" viewtype="color" default="#000000" >Paragraph Font Colour</property>
-  -->
+
 </properties>

@@ -1,0 +1,6 @@
+$!theme.setId(null)
+#set( $name = "$theme.getName() [[copy]]")
+$!theme.setName($name)
+#set( $themesearcher = $mediaarchive.getSearcher("theme") )
+$!themesearcher.saveData($theme,null)
+$pages.include("./index.html?themeid=$theme.getId()", $context)

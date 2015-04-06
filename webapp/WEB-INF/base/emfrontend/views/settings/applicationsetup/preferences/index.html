@@ -23,6 +23,12 @@
 		<option value="$theme.id" #if( $theme.id == $themeid)selected#end>$theme</option>		
 	#end
 	</select>
+	
+	<input type=button  onClick='location.href = "./copy.html?themeid=$!themeid"' value="Copy" />
+	<input type=button  onClick='location.href = "./remove.html?themeid=$!themeid"' value="Remove" />
+	<input type=button  onClick='location.href = "$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme"' value="Export" />
+	
+	
 </form>
 </div>
 </div>
