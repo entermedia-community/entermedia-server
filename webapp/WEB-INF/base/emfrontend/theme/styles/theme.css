@@ -4022,6 +4022,12 @@ div#folders.add .folder {
     max-width: 100%;
     min-width: 1120px;
 }
+
+#application {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
 #embody.max #view-picker-content {
     width: inherit;
 }

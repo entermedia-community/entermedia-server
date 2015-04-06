@@ -418,6 +418,10 @@ uiload = function() {
 		}
 	});		
 
+	$(".color-picker").minicolors({
+					defaultValue: '',
+					letterCase: 'uppercase'
+				});
 	
 }
 
