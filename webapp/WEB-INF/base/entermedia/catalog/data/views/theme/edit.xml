@@ -101,6 +101,9 @@
   <property id="tablemenubackgroundcolorhi" />
   <property id="tablemenubackgroundcolorlo" />
   <property id="tablemenuhovercolor" />
+  
+  <!-- widget border color -->
+  <property id="widgetbordercolor" />
 
   <!-- settings menu selection -->
   <property id="settingsmenuselectioncolor" />

@@ -13,7 +13,8 @@
 
   <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list"
    tooltip="This acts as a background for the whole site"  note="Optional">Background Asset</property>
-
+  
+  <property id="bodybackgroundcolor" index="true" stored="true" editable="true" >Body Background Color </property>
   <property id="backgroundpath" index="true" stored="true" editable="true" note="Optional">Background Image URL</property>
   
   <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list" note="Optional" >Standard Background Image</property>
@@ -76,6 +77,9 @@
   <property id="tablemenubackgroundcolorhi" index="true" stored="true" editable="true" viewtype="color" >Table Menu Gradient Color (High)</property>
   <property id="tablemenubackgroundcolorlo" index="true" stored="true" editable="true" viewtype="color" >Table Menu Gradient Color (Low)</property>
   <property id="tablemenuhovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Hover Color</property>
+  
+  <!-- widget border color -->
+  <property id="widgetbordercolor" index="true" stored="true" editable="true" viewtype="color" >Widget Border Color</property>
 
   <!-- asset details selected tab -->
   <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Solid Color</property>
