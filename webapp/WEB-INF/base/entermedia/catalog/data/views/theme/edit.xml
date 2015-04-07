@@ -12,6 +12,7 @@
   <property id="logoheight" />
 
   <property id="tileupload" />
+  <property id="bodybackgroundcolor" />
   <property id="backgroundpath" />
   <property id="backgroundstyle" />
   <property id="backgroundtile" />
