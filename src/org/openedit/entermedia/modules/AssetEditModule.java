@@ -2083,7 +2083,8 @@ public class AssetEditModule extends BaseMediaModule
 //			current.setProperty("owner", inReq.getUser().getId());
 //			archive.removeGeneratedImages(current);
 //			archive.saveAsset(current, null);
-//			inReq.setRequestParameter(detailid + ".value", current.getId());
+			inReq.putPageValue("newasset", current);
+			inReq.setRequestParameter(detailid + ".value", current.getId());
 			archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),current);
 			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),current);
 			archive.fireMediaEvent("importing/assetsimported",inReq.getUser(),current);

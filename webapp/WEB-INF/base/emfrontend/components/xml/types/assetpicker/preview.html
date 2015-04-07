@@ -1,3 +1,7 @@
+#set($detailid = $detail.id )
+#if( !$detailid)
+	#set( $detailid = $context.getRequestParameter("detailid"))
+#end	
 #set($idcount = $context.getRequestParameter("idcount"))
 #if(!$idcount)
 	#set($idcount = "")
@@ -5,7 +9,6 @@
 #if(!$val)
 	#set($val = $context.getRequestParameter('assetid'))
 #end
-$mediaarchive. getAsset($val)
 #if($val && $val != "")
 #set( $foundrow = $mediaarchive.getAsset($val)  )
 #end
@@ -15,13 +18,8 @@ $mediaarchive. getAsset($val)
 
 #set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
 
-#if($foundrow && !$context.getRequestParameter("readonly") == "true")
-<div >
-<input id="${detail.id}-checkbox" name="${detail.id}-checkbox" type="checkbox" onchange='$("#${detail.id}-value").val("");$("#${detail.id}-previewlink").html("");' /> [[Clear]]
-</div>
-#end
-
-<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" id="${detail.id}-previewlink">
+<div  id="${detailid}-previewlink" style="display: table-cell; text-align:right;">
+<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" >
 
 	#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
 	
@@ -33,6 +31,12 @@ $mediaarchive. getAsset($val)
   	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 </a>
 
+#if($foundrow && !$context.getRequestParameter("readonly") == "true")
+<br>
+<a href="#"  onclick='$("#${detailid}-value").val("");$("#${detailid}-previewlink").html(""); return false;' > [[clear]]</a>
+#end
+
+</div>
 
 	#if( $type == "audio")
 	<a href="$click" alt="$foundrow" class="audio-filename"> $foundrow.name	</a>

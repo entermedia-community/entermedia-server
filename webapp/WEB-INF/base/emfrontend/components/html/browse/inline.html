@@ -1,4 +1,3 @@
-<h2>Browse Categories</h2>
 <div id="oetree">
 
 #set( $rootpath = "$home$apphome/components/html/${content.pickermode}/")
@@ -80,8 +79,8 @@ jQuery(document).ready(function()
 </script>
 
 
-	<div id="emcategoryinline" >
-	<div id="emcategoryinlineinner" >
+	<div id="emcategoryinline" style="overflow: auto;" >
+	<div id="emcategoryinlineinner"  >
 			$pages.include("./tree.html",$context )
 	</div>
 	</div>
