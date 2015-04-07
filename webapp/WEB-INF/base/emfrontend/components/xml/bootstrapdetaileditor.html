@@ -22,6 +22,8 @@
 	#set ($details = $searcher.getPropertyDetails())
 	#end
 #end	
+
+
 <div class="row" style="padding: 20px;">
 <div class="oeinputform validate-inputs detaileditor">
 	<div id="allerrors">
@@ -41,14 +43,10 @@
 	$!context.putPageValue("detail",$detail)
 	
 	#set( $editrow = $detail.isEditable() && $readonly != "true" )
-	#if( $editrow || $val  || !$detail.isEditable()) 
-		#if( !$val) #set( $val = "") #end	
+	#if( $editrow || $val ) 
 	
 		$!context.putPageValue("val",$val)
 		<div id="inputarea_${detail.id}" class="row" >
-		
-		
-	
 		
 		<div class="col-md-8">
 		<strong>$!detail.name:</strong>
