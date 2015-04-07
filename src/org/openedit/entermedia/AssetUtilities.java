@@ -296,7 +296,10 @@ public class AssetUtilities
 		return "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 	}
 	
-
+	public String createSourcePath(WebPageRequest inReq, MediaArchive inArchive)
+	{
+		return createSourcePath( inReq,  inArchive, null);
+	}
 	public String createSourcePath(WebPageRequest inReq, MediaArchive inArchive, String fileName)
 	{
 		String sourcepath = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
@@ -322,13 +325,34 @@ public class AssetUtilities
 		{
 			vals.put("id",id);
 		}
-		vals.put("filename", fileName);
+		String library = inReq.getRequestParameter("libraries.value");
+		if(library != null)
+		{
+			vals.put("library", library);
+		}
+
+		library = inReq.getRequestParameter("library.value");
+		if(library != null)
+		{
+			vals.put("library", library);
+		}
+
+		String division = inReq.getRequestParameter("division.value");
+		if(division != null)
+		{
+			vals.put("division", division);
+		}
+
+		if(fileName != null)
+		{
+			vals.put("filename", fileName);
+		}
 		//vals.put("filename", item.getName());
 		//vals.put("guid", item.getName());
 		String guid = UUID.randomUUID().toString();
 		String sguid = guid.substring(0,Math.min(guid.length(), 13));
 		vals.put("guid", sguid);
-		vals.put("splitguid", sguid.substring(0,1) + "/" + sguid.substring(2).replace("-", ""));
+		vals.put("splitguid", sguid.substring(0,2) + "/" + sguid.substring(3).replace("-", ""));
 		
 		String date  = new SimpleDateFormat("yyyyMM").format(new Date());
 		vals.put("formatteddate",date );
@@ -344,6 +368,11 @@ public class AssetUtilities
 		{
 			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
 		}
+		if( sourcepath.startsWith("/") )
+		{
+			sourcepath = sourcepath.substring(1);
+		}
+		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 
 		return sourcepath;
 	}
