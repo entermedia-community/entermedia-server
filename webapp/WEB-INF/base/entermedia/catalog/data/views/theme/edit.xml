@@ -96,6 +96,7 @@
   <property id="tablebordercolor" />
   <property id="tablehovercolor" />
 
+  <property id="tablemenufontcolor" />
   <property id="tablemenubackgroundcolor" />
   <property id="tablemenubackgroundcolorhi" />
   <property id="tablemenubackgroundcolorlo" />

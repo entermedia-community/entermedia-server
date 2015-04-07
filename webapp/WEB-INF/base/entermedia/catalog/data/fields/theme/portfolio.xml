@@ -71,6 +71,7 @@
   <property id="tablebordercolor" index="true" stored="true" editable="true" viewtype="color" >Table Border Color</property>
   <property id="tablehovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Hover Color</property>
 
+  <property id="tablemenufontcolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Font Color</property>
   <property id="tablemenubackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Color</property>
   <property id="tablemenubackgroundcolorhi" index="true" stored="true" editable="true" viewtype="color" >Table Menu Gradient Color (High)</property>
   <property id="tablemenubackgroundcolorlo" index="true" stored="true" editable="true" viewtype="color" >Table Menu Gradient Color (Low)</property>
