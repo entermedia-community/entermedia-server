@@ -11,13 +11,12 @@
   <property id="logowidth" />
   <property id="logoheight" />
 
-  <property id="backgroundpath" />
   <property id="tileupload" />
+  <property id="backgroundpath" />
+  <property id="backgroundstyle" />
   <property id="backgroundtile" />
   
-  <property id="backgroundstyle" />
   <property id="contentbackgroundcolor" />
-  <property id="backgroundoppacity" />
 
 
   <property id="headerstyle" />
