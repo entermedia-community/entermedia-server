@@ -87,11 +87,17 @@
   <!-- navigation links -->
   <property id="navlinksbackgroundcolor" />
   
+  <!-- left column -->
+  <property id="leftcolumnbackgroundcolor" />
+  
   <!-- table header -->
   <property id="tableheadercolor" />
   <property id="tableheadercolorgradienthi" />
   <property id="tableheadercolorgradientlo" />
-  
+
+  <!-- settings menu selection -->
+  <property id="settingsmenuselectioncolor" />
+
   <!-- asset details selected tab -->
   <property id="assetdetailsselectedtabcolor" />
   <property id="assetdetailsselectedtabgradientcolorhi" />
