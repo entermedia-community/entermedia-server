@@ -15,9 +15,6 @@
   <property id="backgroundpath" />
   <property id="backgroundstyle" />
   <property id="backgroundtile" />
-  
-  <property id="contentbackgroundcolor" />
-
 
   <property id="headerstyle" />
   <property id="headerheight" />
@@ -94,6 +91,15 @@
   <property id="tableheadercolor" />
   <property id="tableheadercolorgradienthi" />
   <property id="tableheadercolorgradientlo" />
+  
+  <!-- table colors -->
+  <property id="tablebordercolor" />
+  <property id="tablehovercolor" />
+
+  <property id="tablemenubackgroundcolor" />
+  <property id="tablemenubackgroundcolorhi" />
+  <property id="tablemenubackgroundcolorlo" />
+  <property id="tablemenuhovercolor" />
 
   <!-- settings menu selection -->
   <property id="settingsmenuselectioncolor" />

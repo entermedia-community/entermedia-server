@@ -20,9 +20,6 @@
 
   <property id="backgroundtile" index="true" stored="true" type="boolean" editable="true" >Tile Background Image</property>
 
-  <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Content Background Color</property>
- 
-  
   <!-- header color + gradients (new) -->
   <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" >Header Solid Color</property>
   <property id="headercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Header Vertical Gradient Color (High)</property>
@@ -70,6 +67,15 @@
   <property id="tableheadercolorgradienthi" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Color (High)</property>
   <property id="tableheadercolorgradientlo" index="true" stored="true" editable="true" viewtype="color" >Table Header Vertical Gradient Color (Low)</property>
   
+  <!-- table colors -->
+  <property id="tablebordercolor" index="true" stored="true" editable="true" viewtype="color" >Table Border Color</property>
+  <property id="tablehovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Hover Color</property>
+
+  <property id="tablemenubackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Color</property>
+  <property id="tablemenubackgroundcolorhi" index="true" stored="true" editable="true" viewtype="color" >Table Menu Gradient Color (High)</property>
+  <property id="tablemenubackgroundcolorlo" index="true" stored="true" editable="true" viewtype="color" >Table Menu Gradient Color (Low)</property>
+  <property id="tablemenuhovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Hover Color</property>
+
   <!-- asset details selected tab -->
   <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Solid Color</property>
   <property id="assetdetailsselectedtabgradientcolorhi" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Horizontal Gradient Color (Left)</property>
