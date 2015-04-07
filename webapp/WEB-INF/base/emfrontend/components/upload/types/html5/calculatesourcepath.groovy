@@ -43,9 +43,11 @@ public void init()
 		{
 			vals.put("division", division);
 		}
+		String guid = UUID.randomUUID().toString();
+		String sguid = guid.substring(0,Math.min(guid.length(), 13));
+		vals.put("guid", sguid);
+		vals.put("splitguid", sguid.charAt(0) + "/" + sguid.substring(1));
 
-		vals.put("guid",UUID.randomUUID().toString() );
-		
 		Replacer replacer = new Replacer();
 		replacer.setSearcherManager(mediaArchive.getSearcherManager());
 		replacer.setCatalogId(mediaArchive.getCatalogId());

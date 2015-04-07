@@ -43,7 +43,6 @@ public class Asset implements MultiValued
 	protected Map fieldProperties;
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
-	protected boolean fieldIsFolder;
 
 	public Collection<String> getValues(String inPreference)
 	{
@@ -124,12 +123,12 @@ public class Asset implements MultiValued
 	
 	public boolean isFolder()
 	{
-		return fieldIsFolder;
+		return Boolean.parseBoolean(get("isfolder"));
 	}
 
 	public void setFolder(boolean inIsFolder)
 	{
-		fieldIsFolder = inIsFolder;
+		setProperty("isfolder",String.valueOf(inIsFolder));
 	}
 
 	// be shown in a list

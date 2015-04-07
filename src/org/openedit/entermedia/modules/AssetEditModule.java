@@ -1,5 +1,6 @@
 package org.openedit.entermedia.modules;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,13 +30,13 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.SourcePathCreator;
 import org.openedit.entermedia.edit.AssetEditor;
 import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.scanner.PresetCreator;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.xmp.XmpWriter;
 import org.openedit.event.WebEventListener;
-import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
@@ -2061,61 +2063,28 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
-			String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath");
+			//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
 			 
-			if(sourcepath == null){
-				 sourcepath = archive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
-			}		
-			String[] fields = inReq.getRequestParameters("field");
-			Map vals = new HashMap();
-			vals.putAll(inReq.getPageMap());
-			String prefix ="";
-
-			if( fields != null)
-			{
-				for (int i = 0; i < fields.length; i++)
-				{
-					String val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
-					if( val != null)
-					{
-						vals.put(fields[i],val);
-					}
-				}
-			}
-			String id = inReq.getRequestParameter("id");
-			if(id != null){
-				vals.put("id",id);
-			}
-			else{
-				id = archive.getAssetSearcher().nextAssetNumber();
-				vals.put("id",id);
-
-			}
-			vals.put("filename", item.getName());
-			Replacer replacer = new Replacer();
-			
-			replacer.setSearcherManager(archive.getSearcherManager());
-			replacer.setCatalogId(archive.getCatalogId());
-			replacer.setAlwaysReplace(true);
-			sourcepath = replacer.replace(sourcepath, vals);
-			//sourcepath = sourcepath + "/" + item.getName();
-			
+			String sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq,archive,item.getName());
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 			path = path.replace("//", "/");
 
-			Asset current = archive.getAssetBySourcePath(sourcepath);
-			if(current ==  null){
-				current = archive.createAsset(sourcepath);
-			}
-			current.setProperty("owner", inReq.getUser().getId());
 			properties.saveFileAs(item, path, inReq.getUser());
-			current.setPrimaryFile(item.getName());
-			archive.removeGeneratedImages(current);
-			archive.saveAsset(current, null);
-			inReq.setRequestParameter(detailid + ".value", current.getId());
+
+			//MediaArchive inArchive, User inUser, Page inAssetPage)
+			Asset current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
+			archive.saveAsset(current, inReq.getUser());
+//			current.setPrimaryFile(item.getName());
+//			current.setProperty("name", item.getName());
+//			current.setProperty("owner", inReq.getUser().getId());
+//			archive.removeGeneratedImages(current);
+//			archive.saveAsset(current, null);
+//			inReq.setRequestParameter(detailid + ".value", current.getId());
 			archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),current);
+			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),current);
+			archive.fireMediaEvent("importing/assetsimported",inReq.getUser(),current);
 
 		}
 

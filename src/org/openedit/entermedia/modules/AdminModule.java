@@ -626,8 +626,7 @@ public class AdminModule extends BaseModule
 		HttpServletResponse res = inReq.getResponse();
 		if (res != null)
 		{
-			String name = createMd5CookieName(inReq);
-
+			String name = createMd5CookieName(inReq,true);
 			try
 			{
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
@@ -637,8 +636,7 @@ public class AdminModule extends BaseModule
 				//Needs new servelet api jar
 				//				cookie.setHttpOnly(true);
 				
-				String root = PathUtilities.extractRootDirectory(inReq.getPath() );
-				cookie.setPath(root); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm
+				cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm   This does not really work. It tends to not send the data
 				res.addCookie(cookie);
 				inReq.putPageValue("entermediakey", value);
 			}
@@ -723,10 +721,16 @@ public class AdminModule extends BaseModule
 		HttpServletResponse res = inReq.getResponse();
 		if (res != null)
 		{
-			Cookie cookie = new Cookie(createMd5CookieName(inReq), "none");
+			Cookie cookie = new Cookie(createMd5CookieName(inReq,true), "none");
 			cookie.setMaxAge(0);
 			cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm
 			res.addCookie(cookie);
+
+			cookie = new Cookie(createMd5CookieName(inReq,false), "none");
+			cookie.setMaxAge(0);
+			cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm
+			res.addCookie(cookie);
+
 		}
 	}
 
@@ -833,10 +837,20 @@ public class AdminModule extends BaseModule
 		}
 	}
 
-	String createMd5CookieName(WebPageRequest inReq)
+	String createMd5CookieName(WebPageRequest inReq, boolean withapp)
 	{
 		String home = (String) inReq.getPageValue("home");
+		
 		String name = ENTERMEDIAKEY + home;
+		if( withapp )
+		{
+			String root = PathUtilities.extractRootDirectory(inReq.getPath() );
+			if( root != null && root.length() > 1)
+			{
+				name = name + root.substring(1);
+			}
+		}
+		
 		return name;
 	}
 
@@ -851,20 +865,24 @@ public class AdminModule extends BaseModule
 
 			if (cookies != null)
 			{
-				String id = createMd5CookieName(inReq);
+				String id = createMd5CookieName(inReq,true);
+				String idold = createMd5CookieName(inReq,false);
 				for (int i = 0; i < cookies.length; i++)
 				{
 					Cookie cook = cookies[i];
 					if (cook.getName() != null)
 					{
-						if (id.equals(cook.getName()) && autoLoginFromMd5Value(inReq, cook.getValue()))
+						if( id.equals(cook.getName() ) || idold.equals(cook.getName() ) )
 						{
-							return;
-						}
-						else
-						{
-							cook.setMaxAge(0); // remove the cookie
-							inReq.getResponse().addCookie(cook);
+							if (autoLoginFromMd5Value(inReq, cook.getValue()))
+							{
+								return;
+							}
+							else
+							{
+								cook.setMaxAge(0); // remove the cookie
+								inReq.getResponse().addCookie(cook);
+							}
 						}
 					}
 				}

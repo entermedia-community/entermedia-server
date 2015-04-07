@@ -489,6 +489,7 @@ public class MediaArchive
 		fieldOriginalFileManager = inOriginalFileManager;
 	}
 
+	//Only use on old style sourcepaths
 	public Asset createAsset(String inId, String inSourcePath)
 	{
 		Asset asset = new Asset();

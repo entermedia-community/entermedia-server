@@ -10,12 +10,16 @@
   <property id="logoheight" index="true" stored="true" editable="true" >Logo Height</property>
  
    <!-- global styles -->
-  <property id="backgroundpath" index="true" stored="true" editable="true" note="Overrides colors" >Background Image Path</property>
-  <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site" note="Optional">Background Asset Override</property>
-  <property id="backgroundtile" index="true" stored="true" type="boolean" editable="true" >Tile Background</property>
+  <property id="backgroundtile" index="true" stored="true" type="boolean" editable="true" >Tile Background Image</property>
+
+  <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list"
+   tooltip="This acts as a background for the whole site" note="Overrides Background Image URL">Background Asset</property>
+
+  <property id="backgroundpath" index="true" stored="true" editable="true" note="Overrides Standard Background Image" >Background Image URL</property>
   
-  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list">Background Style</property>
-  <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Content Background Color</property>
+  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list" >Standard Background Image</property>
+
+  <property id="contentbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" note="Optional" >Content Background Color</property>
  
   
   <!-- header color + gradients (new) -->
