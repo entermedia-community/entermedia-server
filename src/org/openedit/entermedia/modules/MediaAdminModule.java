@@ -238,23 +238,18 @@ public class MediaAdminModule extends BaseMediaModule
 
 	public void reindexLists(WebPageRequest inReq) throws Exception
 	{
-		HitTracker catalogs = getSearcherManager().getList("system", "catalog");
-		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
+		String catalogid = inReq.findValue("catalogid");
+		
+		List tables = getSearcherManager().getPropertyDetailsArchive(catalogid).listSearchTypes();
+		for (Iterator iterator2 = tables.iterator(); iterator2.hasNext();)
 		{
-			Data catalog = (Data) iterator.next();
-			List tables = getSearcherManager().getPropertyDetailsArchive(catalog.getId()).listSearchTypes();
-			for (Iterator iterator2 = tables.iterator(); iterator2.hasNext();)
+			String type = (String) iterator2.next();
+			Searcher searcher = getSearcherManager().getSearcher(catalogid, type);
+			if (searcher instanceof Reloadable)
 			{
-				String type = (String) iterator2.next();
-				Searcher searcher = getSearcherManager().getSearcher(catalog.getId(), type);
-				if (searcher instanceof Reloadable)
-				{
-					searcher.reIndexAll();
-				}
+				searcher.reIndexAll();
 			}
-
 		}
-
 	}
 
 }
