@@ -111,7 +111,7 @@ public class wordpresspublisher extends basepublisher implements Publisher
 				result.setErrorMessage("Wordpress Server error returned ${response2.getStatusLine().getStatusCode()}");
 			}
 			HttpEntity entity2 = response2.getEntity();
-			log.info( EntityUtils.toString(entity2));
+			log.info( "Wordpress Server response: " + EntityUtils.toString(entity2));
 			// do something useful with the response body
 			// and ensure it is fully consumed
 			EntityUtils.consume(entity2);
