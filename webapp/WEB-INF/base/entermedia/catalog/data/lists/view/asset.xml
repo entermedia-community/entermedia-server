@@ -14,6 +14,7 @@
 	<property id="restsearchresults" module="asset"  systemdefined="true" byassettype="false" ordering="07">REST API Results</property>
 	<property id="typeaheaddetails" module="asset"  systemdefined="true" byassettype="false" ordering="08">Details for Type Ahead Searches</property>
 	<property id="print" module="asset" systemdefined="true" byassettype="false" ordering="09">Printable Details</property>
+	<property id="csvexport" module="asset" systemdefined="true" byassettype="false" ordering="09">Metadata CSV Export</property>
 	
 	<!--   <data id="assetgeo" name="GEo" module="asset" ordering="1424280647932" rendertype="table" rendertable="assetlocation" renderexternalid="assetid" rendercustomview="map" recordstatus="deleted"/>
 	 -->  
