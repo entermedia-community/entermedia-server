@@ -1,5 +1,5 @@
 <properties  beanname="folderSearcher" >
-	<property id="id" editable="true">ID</property>
+	<property id="id" editable="true" stored="true" index="true">ID</property>
 	<property id="name" editable="true" stored="true" index="true">Name</property>	
 	<property id="url" editable="true" stored="true" index="true">URL Path</property>	
 	<property id="samplerequest" editable="true" stored="true" index="true">Sample JSON Request</property>	
