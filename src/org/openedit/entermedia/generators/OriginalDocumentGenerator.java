@@ -65,7 +65,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 		// source path cut off the parent folder name. Put a / back in there?
 		sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
 
-		Asset asset = archive.getAssetBySourcePath(sourcePath + "/");
+		Asset asset = archive.getAssetBySourcePath(sourcePath);
 
 		if (asset == null)
 		{
@@ -78,9 +78,9 @@ public class OriginalDocumentGenerator extends FileGenerator
 		}
 
 		String filename = asset.getSourcePath();
-		if (asset.getPrimaryFile() != null)
+		if (asset.isFolder() && asset.getPrimaryFile() != null)
 		{
-			filename += asset.getPrimaryFile();
+			filename = filename + "/" + asset.getPrimaryFile();
 		}
 
 		Page content = archive.getOriginalDocument(asset);

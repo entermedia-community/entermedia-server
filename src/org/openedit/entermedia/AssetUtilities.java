@@ -132,7 +132,10 @@ public class AssetUtilities
 			asset = (Asset)inArchive.getAssetSearcher().createNewData();
 			asset.setSourcePath(sourcePath);
 			asset.setFolder(inContent.isFolder());
-			asset.setPrimaryFile(inContent.getName());
+			if(inContent.isFolder())
+			{
+				asset.setPrimaryFile(inContent.getName());
+			}
 			asset.setProperty("datatype", "original");
 			asset.setProperty("editstatus", "1");
 			
