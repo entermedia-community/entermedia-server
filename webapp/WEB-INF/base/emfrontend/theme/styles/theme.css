@@ -1,3 +1,96 @@
+/* Imported from layout.css */
+  .page_margins { text-align:left; margin: 0 auto; }
+
+  /* (en) Layout: width, background, borders */
+  .page { margin: 0; padding: 0 5px;  }
+  #header, #header, #nav, #main, #extended, #footer {  min-width: 720px; }
+  #application {
+	  background: #fff;
+	  max-width: 1120px;
+	  margin: 0 auto;
+	  padding: 0 0px 10px 0px;
+	  border: 1px solid #c5c5c5;
+	}
+
+  /* (en) Designing main layout elements */
+  #header .page { 
+  	overflow:hidden;
+    }
+	
+  #header span.navlinks { 
+  	float:right;
+   }
+
+  #header .page {
+    padding: 0px 0px 10px 0px;
+  }
+
+  .emhomecontent
+  {
+  	margin-top: 100px;
+  	margin-left: 200px;
+  	margin-right: 200px;
+  }
+
+  #extended .subc  { padding: 0 10px; }
+  #extended .subcl { padding: 0 10px 0 0; }
+  #extended .subcr { padding: 0 0 0 10px; }
+
+  #main, #extended { padding-top: 0; padding-bottom: 0; }
+  #footer .page { padding: 10px 0px; }
+
+	#header {
+		height: 25px;
+		padding-right: 10px;
+	}
+	#footer {
+		border-top: 4px #90002a;
+	}
+	#header a {
+		font-family: Verdana, Geneva, sans-serif;
+		font-size:11px;
+		font-weight: normal;
+		color:#666;
+		background: transparent;
+		text-decoration: none;
+	}
+	#header a:focus,#header a:hover,#header a:active {
+		text-decoration: underline;
+		background-color: transparent;
+		color:#39578a;
+	}
+
+  #col1 { float:left; width:200px; }
+  #col2 { float:right; width:200px; }
+  #col3 { width:auto; margin:0 200px; }
+
+  /* (en) Preparation for absolute positioning within content columns */
+  /* (de) Vorbereitung für absolute Positionierungen innerhalb der Inhaltsspalten */
+  #col1_content, #col2_content, #col3_content { position:relative; }
+
+ /*------------------------------------------------------------------------------------------------------*/
+
+ /**
+  * @section subtemplates
+  * @see     http://www.yaml.de/en/documentation/practice/subtemplates.html
+  */
+  .equalize, .equalize .subcolumns { overflow:visible; display:table; table-layout:fixed;}
+
+  .subcolumns { width:100%; }
+
+  .equalize > div {
+    display:table-cell;
+    float:none; 
+    margin:0; 
+    overflow:hidden;
+    vertical-align:top;
+  }
+  
+  .emdetaileditorbox
+  {
+  	margin-bottom: 10px;
+  }
+
 /* ==|== normalize ========================================================== */
 
 article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
