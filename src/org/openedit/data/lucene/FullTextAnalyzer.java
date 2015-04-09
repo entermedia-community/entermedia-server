@@ -20,7 +20,7 @@ import org.apache.lucene.util.Version;
 
 public class FullTextAnalyzer extends StopwordAnalyzerBase
 {
-	//Version matchVersion;
+	Version matchVersion = LuceneIndexer.INDEX_VERSION;
 
 	//Stemming causes * * not to work on searches. It also does not split on -
 	

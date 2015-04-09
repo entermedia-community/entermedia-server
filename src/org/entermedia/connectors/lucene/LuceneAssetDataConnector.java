@@ -32,6 +32,7 @@ import org.openedit.entermedia.AssetArchive;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.search.DataConnector;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -149,9 +150,8 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 				Document doc = getIndexer().populateAsset(writer, asset, false,
 						details);
 
-				getIndexer().updateFacets(details, doc, getTaxonomyWriter());
-				getIndexer().writeDoc(writer, asset.getId().toLowerCase(), doc,
-						false);
+				doc = getIndexer().updateFacets(details, doc, getTaxonomyWriter(),getFacetConfig());
+				getIndexer().writeDoc(writer, asset.getId().toLowerCase(), doc,false);
 
 			}
 			// if (inOptimize)
@@ -190,13 +190,47 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 		// writer.setMaxBufferedDocs(2000);
 
 		try {
-			IndexAllAssets reindexer = new IndexAllAssets();
+			IndexAllAssets reindexer = new IndexAllAssets()
+			{
+				public void processFile(ContentItem inContent, User inUser)
+				{
+					String path = makeSourcePath(inContent);  //Does this deal with folder based assets?
+					IndexWriter writer = getWriter();
+					try
+					{
+						Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(path);
+						if (asset != null)
+						{
+							// This should try to convert the Id into a path. The path will be null if the asset is not in the index.
+							if(fieldSourcePaths.contains(asset.getSourcePath())) //Hack to deal with folders with sub assets in it
+							{
+								return;
+							}
+							updateIndex(asset);
+							incrementCount();
+							logcount++;
+							if( logcount == 1000 )
+							{
+								log.info("Reindex processed " + getExecCount() + " index updates so far");
+								logcount=0;
+							}
+						}
+						else
+						{
+							log.info("Error loading asset: " + path);
+						}
+					}
+					catch( Throwable ex)
+					{
+						log.error("Could not read asset: " + path+ " continuing " + ex,ex);
+					}
+				}
+			};
 			reindexer.setWriter(writer);
-
 			reindexer.setPageManager(getPageManager());
-			reindexer.setIndexer(getIndexer());
-			reindexer.setTaxonomyWriter(inTaxonomyWriter);
-			reindexer.setMediaArchive(getMediaArchive());
+			//reindexer.setIndexer(getIndexer());
+			//reindexer.setTaxonomyWriter(inTaxonomyWriter);
+			//reindexer.setMediaArchive(getMediaArchive());
 
 			/* Search in the new path, if it exists */
 			Page root = getPageManager().getPage(
@@ -224,7 +258,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements
 			log.error(ex);
 			throw new OpenEditException(ex);
 		}
-		// HitCollector
 	}
 
 	public MediaArchive getMediaArchive() {

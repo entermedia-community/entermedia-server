@@ -22,17 +22,18 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload-1.2.1-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-generic-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-common-4.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-codecs-4.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-core-4.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-facet-4.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-join-4.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-queryparser-4.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-4.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/servlet-gzip.jar"/>
 	<classpathentry kind="lib" path="lib/compile/websocket-api.jar"/>
 	<classpathentry kind="lib" path="lib/mp4parser-0826.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.43.jar"/>
 	<classpathentry kind="lib" path="lib/extras/jtds-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-common-4.10.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-codecs-4.10.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-4.10.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-facet-4.10.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-join-4.10.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-queries-4.10.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-queryparser-4.10.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-4.10.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

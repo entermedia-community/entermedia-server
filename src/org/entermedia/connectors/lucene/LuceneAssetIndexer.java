@@ -488,12 +488,12 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			if (add)
 			{
-				writer.addDocument(doc, getAnalyzer());
+				writer.addDocument(doc);
 			}
 			else
 			{
 				Term term = new Term("id", inId);
-				writer.updateDocument(term, doc, getAnalyzer());
+				writer.updateDocument(term,doc);
 			}
 		}
 		catch (IOException ex)
