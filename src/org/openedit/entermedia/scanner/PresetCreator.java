@@ -1,10 +1,12 @@
 package org.openedit.entermedia.scanner;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -80,10 +82,13 @@ public class PresetCreator
 	{
 		int added = 0;
 		boolean missingconversion = false;
+		List tosave = new ArrayList();
+		
 		if (!existingtasks.contains(preset.getId() + "1"))//See if the first page is already created.
 		{
 			missingconversion = true;
-			createPresetsForPage(tasksearcher, preset, asset, 0);
+			Data created = createPresetsForPage(tasksearcher, preset, asset, 0);
+			tosave.add(created);
 			added++;
 		}
 		Boolean onlyone = Boolean.parseBoolean(preset.get("singlepage"));
@@ -102,13 +107,15 @@ public class PresetCreator
 							;
 						{
 							missingconversion = true;
-							createPresetsForPage(tasksearcher, preset, asset, pagenum);
+							Data created = createPresetsForPage(tasksearcher, preset, asset, pagenum);
+							tosave.add(created);
 							added++;
 						}
 					}
 				}
 			}
 		}
+		tasksearcher.saveAllData(tosave, null);
 		return added;
 	}
 
