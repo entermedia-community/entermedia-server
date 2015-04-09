@@ -1028,7 +1028,7 @@ public class AssetEditModule extends BaseMediaModule
 		if( sample != null)
 		{
 			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
-			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids);
+			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
 			archive.fireMediaEvent("importing/assetsimported",inReq.getUser(),sample,listids);
 		}
 		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
@@ -1110,10 +1110,6 @@ public class AssetEditModule extends BaseMediaModule
 		if(sourcepath == null){
 			sourcepath = "";
 		}
-		if( sourcepath.endsWith("/"))
-		{
-			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
-		}
 		String filename = inPage.getName();
 		if(filename.startsWith("tmp") && filename.indexOf('_') > -1)
 		{
@@ -1142,8 +1138,13 @@ public class AssetEditModule extends BaseMediaModule
 //		}
 //		asset.setSourcePath(assetsourcepath);
 
-		
-		Page dest = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath +"/" + inPage.getName());
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath;
+		if( !assetsourcepath.endsWith("/"))
+		{
+			path  = path + "/";
+		}
+		path  = path + inPage.getName();			
+		Page dest = getPageManager().getPage( path );
 //		if(!inPage.exists()){
 //			log.info("Could not find uploaded file: " + inPage.getPath());
 //		}

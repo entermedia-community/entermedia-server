@@ -126,6 +126,7 @@ public class PresetCreator
 	public Data createPresetsForPage(Searcher tasksearcher, Data preset, Data asset, int thepage, boolean createall)
 	{
 		Data found = tasksearcher.createNewData();
+		//TODO: Remove this 
 		found.setSourcePath(asset.getSourcePath());
 		found.setProperty("status", "new");
 		found.setProperty("assetid", asset.getId());
@@ -136,9 +137,7 @@ public class PresetCreator
 		if (thepage > 0)
 		{
 			found.setProperty("pagenumber", String.valueOf(thepage));
-		}
-		tasksearcher.saveData(found, null);
-		
+		}		
 		return found;
 
 	}

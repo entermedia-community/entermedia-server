@@ -32,7 +32,8 @@ public void createTasksForUpload() throws Exception {
 	SearchQuery q = targetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
 	//log.info("Found ${ids} assets from context ${context}");
-
+	log.info("Running queueconversions on ${ids}");
+	
 	if( ids == null)
 	{
 		//Do a search for importstatus of "added" -> "converted"
@@ -53,11 +54,9 @@ public void createTasksForUpload() throws Exception {
 	assets.each
 	{
 		foundsome = false;
-
-
-		Lock lock = mediaArchive.getLockManager().lock(mediaArchive.getCatalogId(), "assetconversions/" + it.sourcepath, "admin");
+		Lock lock = mediaArchive.getLockManager().lock(mediaArchive.getCatalogId(), "assetconversions/" + it.id, "queueconversions56");
 		try{
-			Asset asset = mediaArchive.getAssetBySourcePath(it.sourcepath);
+			Asset asset = targetsearcher.loadData(it);
 
 			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 			SearchQuery query = presetsearcher.createSearchQuery();
@@ -66,17 +65,15 @@ public void createTasksForUpload() throws Exception {
 
 			HitTracker hits = presetsearcher.search(query);
 			//	log.info("Found ${hits.size()} automatic presets");
+			List tosave = new ArrayList();
 			hits.each
 			{
-				Data hit = it;
-				//	Data newconversion = tasksearcher.createNewData();
-
-				Data preset = (Data) presetsearcher.searchById(it.id);
+				Data preset = (Data) presetsearcher.loadData(it);
 				Boolean onlyone = Boolean.parseBoolean(preset.singlepage);
 				
 				//TODO: Move this to a new script just for auto publishing
-				presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
-
+				Data created = presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
+				tosave.add(created);
 				String pages = asset.get("pages");
 				if( pages != null && !onlyone)
 				{
@@ -86,7 +83,8 @@ public void createTasksForUpload() throws Exception {
 					{
 						for (int i = 1; i < npages; i++)
 						{
-							presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
+							created = presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
+							tosave.add(created);
 						}
 					}
 					
@@ -94,9 +92,7 @@ public void createTasksForUpload() throws Exception {
 				foundsome = true;
 			}
 			//Add auto publish queue tasks
-			saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
-
-
+			//saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
 			if( foundsome )
 			{
 				asset.setProperty("importstatus","imported");
@@ -121,13 +117,12 @@ public void createTasksForUpload() throws Exception {
 				}
 			}
 			mediaarchive.saveAsset( asset, user );
+			tasksearcher.saveAllData(tosave, null);
 		}
-		finally{
+		finally
+		{
 			mediaArchive.releaseLock(lock);
-
 		}
-
-
 	}
 	if( foundsome )
 	{

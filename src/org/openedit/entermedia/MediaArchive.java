@@ -1090,7 +1090,7 @@ public class MediaArchive
 			getMediaEventHandler().eventFired(event);
 	}
 
-	public void fireMediaEvent(String operation, String inMetadataType, String inSourcePath,  User inUser)
+	public void fireMediaEvent(String operation, String inMetadataType, String inId,  User inUser)
 	{
 			WebEvent event = new WebEvent();
 			event.setSearchType(inMetadataType);
@@ -1099,7 +1099,8 @@ public class MediaArchive
 			event.setOperation(operation);
 			event.setUser(inUser);
 			event.setSource(this);
-			event.setProperty("sourcepath", inSourcePath);
+			//event.setProperty("sourcepath", inSourcePath);
+			event.setProperty("targetid", inId);
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
 	}
@@ -1553,9 +1554,13 @@ public class MediaArchive
 		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
 		
 	}
-	public void updateAssetConvertStatus(String inSourcePath) 
+	public void updateAssetConvertStatus(String inAssetId) 
 	{
-		Asset asset = getAssetBySourcePath(inSourcePath);
+		Asset asset = getAsset(inAssetId);
+		if( asset == null)
+		{		
+			log.info("Could not load asset by sourcepath " + inAssetId );
+		}
 		updateAssetConvertStatus(asset);
 	}
 	public String updateAssetConvertStatus(Data asset) 

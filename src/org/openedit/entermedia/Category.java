@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.openedit.Data;
+import org.openedit.data.SaveableData;
 
 /**
  * @author cburkey
  * 
  */
-public class Category implements Data, Comparable<Category>
+public class Category implements Data, SaveableData, Comparable<Category>
 {
 	protected String fieldName;
 	protected String fieldId;

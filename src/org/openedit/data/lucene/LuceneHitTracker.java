@@ -223,7 +223,7 @@ public class LuceneHitTracker extends HitTracker
 					}
 					else
 					{
-						log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() );
+						log.info(getSearchType() + " " + docs.totalHits + " hits " + getLuceneQuery() + " " + getSessionId());
 					}
 				}
 				fieldSize = docs.totalHits;

@@ -130,12 +130,13 @@ public class AssetUtilities
 		else
 		{
 			asset = (Asset)inArchive.getAssetSearcher().createNewData();
-			asset.setSourcePath(sourcePath);
-			asset.setFolder(inContent.isFolder());
-			if(inContent.isFolder())
+			if( sourcePath.endsWith("/"))
 			{
+				asset.setFolder(true);
 				asset.setPrimaryFile(inContent.getName());
-			}
+				sourcePath = sourcePath.substring(0,sourcePath.length() - 1);
+			}	
+			asset.setSourcePath(sourcePath);
 			asset.setProperty("datatype", "original");
 			asset.setProperty("editstatus", "1");
 			
@@ -371,9 +372,9 @@ public class AssetUtilities
 		{
 			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
 		}
-		if( sourcepath.startsWith("/") )
+		if( !sourcepath.startsWith("/") )
 		{
-			sourcepath = sourcepath.substring(1);
+			sourcepath = sourcepath + "/";
 		}
 		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
 

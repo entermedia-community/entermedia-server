@@ -304,7 +304,7 @@ public void setDefaultTags(){
 }
 
 
-
+//cb What is this stuff?
 public void setupCollection(){
 	log.info("setting collections");
 	WebPageRequest req = context;
@@ -349,6 +349,6 @@ setAssetTypes();
 //verifyRules();
 //sendEmail();
 
-setupCollection();
+//setupCollection();
 
 

@@ -997,7 +997,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 	public void updateIndex(Collection inRecords, boolean optimize)
 	{
 		updateIndex(getIndexWriter(), getTaxonomyWriter(), inRecords);
-		clearIndex();
+		//clearIndex();
 	}
 
 	public void updateIndex(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter, Collection inRecords)
@@ -1037,8 +1037,13 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 					getCacheManager().remove(getIndexPath(), data.getId());
 				}
 			}
+//			for (int j = 0; j < terms.length; j++)
+//			{
+//				inWriter.updateDocument(terms[j], docs.get(j), getAnalyzer());				
+//			}
+			//This gives NPE
 			inWriter.deleteDocuments(terms);
-			inWriter.addDocuments(docs);
+			inWriter.addDocuments(docs, getAnalyzer());			
 			
 			//inWriter.updateDocument(term, doc, getAnalyzer());
 			clearIndex();
@@ -1278,7 +1283,4 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 		// TODO: Delete the last two older indexes
 
 	}
-
-	
-
 }

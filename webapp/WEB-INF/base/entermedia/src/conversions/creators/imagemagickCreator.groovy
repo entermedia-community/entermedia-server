@@ -68,7 +68,8 @@ public class imagemagickCreator extends BaseImageCreator {
 		//if watermarking is set
 		if(inStructions.isWatermark())
 		{
-			Page inputPage = getPageManager().getPage(inStructions.getAssetSourcePath());
+			Page inputPage = inArchive.getOriginalDocument(inAsset);
+			//Page inputPage = getPageManager().getPage(inStructions.getAssetSourcePath());
 			if(inputPage == null || !inputPage.exists())
 			{
 				result.setOk(false);
