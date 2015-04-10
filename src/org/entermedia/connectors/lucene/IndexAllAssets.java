@@ -12,21 +12,10 @@ import org.openedit.util.GenericsUtil;
 public abstract class IndexAllAssets extends AssetProcessor
 {
 	static final Log log = LogFactory.getLog(IndexAllAssets.class);
-	protected IndexWriter fieldWriter;
 	//protected Boolean fieldIndexFolders;
 	protected Set<String> fieldSourcePaths = GenericsUtil.createSet();
 	protected int logcount = 0;
 
-
-	public IndexWriter getWriter()
-	{
-		return fieldWriter;
-	}
-
-	public void setWriter(IndexWriter inWriter)
-	{
-		fieldWriter = inWriter;
-	}
 
 	public void processDir(ContentItem inContent)
 	{

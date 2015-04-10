@@ -190,9 +190,6 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 	public synchronized void reIndexAll() throws OpenEditException
 	{
-		
-		
-		
 		String indexname = String.valueOf(System.currentTimeMillis());
 		log.info(getSearchType() + " reindexing in " + "(" + getCatalogId() + ") as " + indexname);
 		File dir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
@@ -763,6 +760,18 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 	public void flush()
 	{
+		if(fieldTaxonomyWriter != null)
+		{
+			try
+			{
+				fieldTaxonomyWriter.commit();
+	
+			}
+			catch (Exception e)
+			{
+				throw new OpenEditRuntimeException(e);
+			}
+		}
 		if (fieldIndexWriter != null)
 		{
 			try
@@ -776,17 +785,6 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				throw new OpenEditRuntimeException(e);
 			}
 		}
-		if(fieldTaxonomyWriter != null){
-		try
-		{
-			fieldTaxonomyWriter.commit();
-
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditRuntimeException(e);
-		}
-	}
 		fieldPendingCommit = false;
 	}
 
