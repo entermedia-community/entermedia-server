@@ -831,7 +831,7 @@ public class LuceneHitTracker extends HitTracker
 					defaultcount = Integer.parseInt(count);
 				}
 				FacetResult hits = facets.getTopChildren(defaultcount, detail.getId());
-				if( hits.childCount == 0 )
+				if(hits == null ||  hits.childCount == 0 )
 				{
 					continue;
 				}					
