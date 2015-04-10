@@ -1563,31 +1563,33 @@ public class MediaArchive
 		}
 		updateAssetConvertStatus(asset);
 	}
-	public String updateAssetConvertStatus(Data asset) 
+	
+	//Look for previews that should be marked as complete now
+	public void updateAssetConvertStatus(Data asset) 
 	{
 		if( asset == null)
 		{
-			return null; //asset deleted
+			return; //asset deleted
 		}
-		//TODO: Lock the asset so that nobody edits it while we are doing this
-		
-		String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
-
+		//is it already complete?
+		
 		//log.info("existingpreviewstatus" + existingpreviewstatus);
 		//update importstatus and previewstatus to complete
 		if( log.isDebugEnabled() )
 		{
-			log.debug("Checking conversion status: " + asset.getId() + existingimportstatus +"/" + existingpreviewstatus);
+			log.debug("Checking preview status: " + asset.getId() +"/" + existingpreviewstatus);
 		}
+		boolean allcomplete = true;
+		boolean founderror = false;
+		String existingimportstatus = asset.get("importstatus");
 
-		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
+		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
 		{
+
 			//check tasks and update the asset status
 			Searcher tasksearcher = getSearcher( "conversiontask");
 			HitTracker conversions = tasksearcher.query().match("assetid",asset.getId()).search();
-			boolean allcomplete = true;
-			boolean founderror = false;
 
 			for( Object object : conversions )
 			{
@@ -1611,7 +1613,7 @@ public class MediaArchive
 						cal.add(Calendar.DAY_OF_YEAR, -2);
 						if( entered.before(cal.getTime()))
 						{
-							Data loadedtask = (Data)tasksearcher.searchById(task.getId());
+							Data loadedtask = (Data)tasksearcher.loadData(task);
 							loadedtask.setProperty("status","error");
 							loadedtask.setProperty("errordetails","Image missing more than 24 hours, marked as error");
 							tasksearcher.saveData(loadedtask, null);
@@ -1623,38 +1625,37 @@ public class MediaArchive
 						break;
 					}
 				}
-			}
-			if( founderror || allcomplete )
+			}	
+		}
+		else
+		{
+			allcomplete = true;
+		}
+		
+		//save importstatus
+		if( founderror || allcomplete )
+		{
+			//load the asset and save the import status to complete		
+			if( asset != null )
 			{
-				//load the asset and save the import status to complete
-			
-				if( asset != null )
+				if(founderror && "error".equals(existingimportstatus) || "complete".equals(existingimportstatus))
 				{
-					if(founderror && "error".equals(asset.get("importstatus"))){
-						return asset.get("importstatus");						
-					}
-					if(allcomplete && "complete".equals(asset.get("importstatus")) && "2".equals(asset.get("previewstatus")  ) )
-					{
-						return asset.get("importstatus");
-						
-					}
-					Asset target =  getAsset(asset.getId());
-					if( founderror)
-					{
-						target.setProperty("importstatus","error");
-						
-					}
-					else
-					{
-						target.setProperty("importstatus","complete");
-						target.setProperty("previewstatus","2");
-						
-					}
-					saveAsset(target, null);
+					return;						
 				}
+				Asset target =  (Asset)getAssetSearcher().loadData(asset);
+				if( founderror)
+				{
+					target.setProperty("importstatus","error");
+				}
+				else
+				{
+					target.setProperty("importstatus","complete");
+					target.setProperty("previewstatus","2");
+					
+				}
+				saveAsset(target, null);
 			}
 		}
-		return asset.get("importstatus");
 	}
 	public UserManager getUserManager()
 	{

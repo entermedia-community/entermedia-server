@@ -85,7 +85,7 @@ class CompositeConvertRunner implements Runnable
 		{
 			
 			//log.info("updating conversion status on ${fieldSourcePath} - runner size was: " + runners.size());
-			String result = fieldMediaArchive.updateAssetConvertStatus(fieldAssetId);
+			fieldMediaArchive.updateAssetConvertStatus(fieldAssetId);
 			//log.info("Result on ${fieldSourcePath} was ${result}");
 			
 			fieldMediaArchive.releaseLock(lock);
