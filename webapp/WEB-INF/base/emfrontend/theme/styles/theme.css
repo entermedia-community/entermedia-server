@@ -6760,3 +6760,11 @@ input[type="file"] {
     line-height: 22px;
 }
 
+select.smalldropdown {
+	padding: 0px;
+  height: 21px;
+  box-sizing: content-box;
+  font-family: inherit;
+  color:  inherit;
+  background:  inherit;
+}

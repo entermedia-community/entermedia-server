@@ -1,4 +1,4 @@
-<div>
+<div id="resultheader">
 	<ul id="sub-nav" class="search-views">
 		
 		#set ($classname="enabled")
@@ -107,16 +107,15 @@
 				#set($resultview = "table")
 			#end
 		#end
-		
-		
 			<li style="float: right;">
 				<div style="position: relative;">
 					<a class="table-edit-close">
-						<select name="resultview" onchange="selectresultview($(this).val());">
+					
+						<select name="resultview" onchange="selectresultview($(this).val());" class="smalldropdown">
 							<option value="none">[[Change Result View]]</option>
-							<option value="table">[[Table View]]</option>
-							<option value="gallery">[[Gallery View]]</option>
-							<option value="hierarchy">[[Category Folder View]]</option>
+							<option value="table" #if( $resultview == "table") selected #end>[[Table View]]</option>
+							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery View]]</option>
+							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Category Folder View]]</option>
 						</select>
 					</a>
 				</div>
@@ -125,13 +124,3 @@
 			</li>
 	</ul>
 </div>
-<script>
-function selectresultview(val){
-	if (val != "none"){
-		var href = $("#ajaxselectresultview").attr("href");
-		href = href + "&resultview="+val;
-		$("#ajaxselectresultview").attr("href",href);
-		$("#ajaxselectresultview").click();
-	}
-}
-</script>
