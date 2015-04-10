@@ -56,7 +56,7 @@ public void createTasksForUpload() throws Exception {
 		foundsome = false;
 		Lock lock = mediaArchive.getLockManager().lock(mediaArchive.getCatalogId(), "assetconversions/" + it.id, "queueconversions56");
 		try{
-			Asset asset = targetsearcher.loadData(it);
+			Asset asset = targetsearcher.searchById(it.id);
 
 			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 			SearchQuery query = presetsearcher.createSearchQuery();
