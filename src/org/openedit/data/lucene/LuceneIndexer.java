@@ -576,13 +576,17 @@ public class LuceneIndexer
 				String[] values = null;
 				if (value.contains("|"))
 				{
+					inConfig.setMultiValued(detail.getId(), true);
 					values = MultiValued.VALUEDELMITER.split(value);
+					for (String val: values)
+					{
+						inDoc.add(new FacetField(detail.getId(), val));						
+					}
 				}
 				else
 				{
-					values = new String[] { value };
+					inDoc.add(new FacetField(detail.getId(), value));
 				}
-				inDoc.add(new FacetField(detail.getId(), values));
 //				
 //				for (int i = 0; i < values.length; i++)
 //				{

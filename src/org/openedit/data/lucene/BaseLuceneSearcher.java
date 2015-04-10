@@ -102,6 +102,15 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			fieldFacetConfig =  new FacetsConfig();
 			//config.setHierarchical("Publish Date", true);
 			//config.setIndexFieldName("author", "facet_author");
+			for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if( detail.isMultiValue() || detail.getId().equals("category"))
+				{
+					fieldFacetConfig.setMultiValued(detail.getId(), true);
+				}
+			}
+
 		}
 		return fieldFacetConfig;
 	}
@@ -754,17 +763,6 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 	public void flush()
 	{
-		if(fieldTaxonomyWriter != null){
-			try
-			{
-				fieldTaxonomyWriter.commit();
-
-			}
-			catch (Exception e)
-			{
-				throw new OpenEditRuntimeException(e);
-			}
-		}
 		if (fieldIndexWriter != null)
 		{
 			try
@@ -778,6 +776,17 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				throw new OpenEditRuntimeException(e);
 			}
 		}
+		if(fieldTaxonomyWriter != null){
+		try
+		{
+			fieldTaxonomyWriter.commit();
+
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditRuntimeException(e);
+		}
+	}
 		fieldPendingCommit = false;
 	}
 
