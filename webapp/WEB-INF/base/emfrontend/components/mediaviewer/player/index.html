@@ -2,7 +2,6 @@
     #set($pagenum = $context.findValue('pagenum'))
     #set($totalpages = $numberutils.toInt($asset.pages))
     #set ( $hitssessionid = $context.findValue("hitssessionid"))
-    
     #if( !$currentpreview )
       #if ( !$pagenum )
         #set($currentpreview = 0)
@@ -92,6 +91,7 @@
     	<div id="mp-asset-info" style="display: none;">
     	    
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+    	   <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">$attachments.size()<span>&nbsp;</span></a>
            #if($canviewassetpreviewhistory)
 	   <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
 #end

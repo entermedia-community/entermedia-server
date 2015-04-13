@@ -150,7 +150,7 @@ public class AttachmentModule extends BaseMediaModule
 		{
 			String parentid = inReq.getRequestParameter("fileid");
 			String foldername = inReq.getRequestParameter("foldername");
-			getAttachmentManager().renameFilder(inReq, archive, asset, parentid, foldername);
+			getAttachmentManager().renameFolder(inReq, archive, asset, parentid, foldername);
 		}
 		reSyncAttachments(inReq);
 	}

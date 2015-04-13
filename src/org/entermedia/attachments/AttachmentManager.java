@@ -229,7 +229,7 @@ public class AttachmentManager
 		}
 	}
 
-	public void renameFilder(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inFolderId, String inNewName)
+	public void renameFolder(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inFolderId, String inNewName)
 	{
 		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
 		String sourcepath = null;

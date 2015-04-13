@@ -45,7 +45,7 @@
                 </div>
                 <div class="secondary">
                     <div id="mp-asset-info">
-                        
+                        <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitsessionid=$hitsessionid" class="attachments">$attachments.size()<span>&nbsp;</span></a>
                         #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
                         <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>
                         
