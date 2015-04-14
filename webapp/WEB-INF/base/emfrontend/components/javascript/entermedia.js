@@ -953,13 +953,19 @@ onloadselectors = function()
 					if( !running)
 					{
 						runningstatus[uid] = true;
-						var timeout = $(this).attr("period")
-						if( !timeout)
+						var timeout = $(this).data("period");
+						if( timeout == undefined)
 						{
-							timeout = "5000";
+							$(this).data("period","3000");
+							timeout = $(this).data("firstrun");
+							if( timeout == undefined)
+							{
+								timeout = "3000";
+							}
 						}
 						timeout = parseInt(timeout);
-						setTimeout('showajaxstatus("' + uid +'",' + timeout + ');',timeout);
+						//console.log("Started period " + uid + " " + timeout);
+						setTimeout('showajaxstatus("' + uid +'");',timeout);
 					}
 				}
 		);
@@ -968,17 +974,32 @@ onloadselectors = function()
 
 var runningstatus = {};
 
-showajaxstatus = function(uid, timeout)
+showajaxstatus = function(uid)
 {
 	//for each asset on the page reload it's status
-	var foundone = false;
 	var cell = jQuery("#" + uid);
 	if( cell )
 	{
 		var path = cell.attr("ajaxpath");
+		if( path == undefined)
+		{
+			return;
+		}
+		var timeout = cell.data("period");
+		//console.log(uid + " update running with next period " + timeout);
 		jQuery.get(path, {}, function(data) {
 			cell.replaceWith(data);
 			cell = jQuery("#" + uid);
+			if( !cell.hasClass("ajaxstatus") )
+			{
+				return;
+			}
+			if( timeout == undefined)
+			{
+				return;
+			}
+			cell.data("period",timeout);
+			timeout = parseInt(timeout);
 			if( cell.length > 0 )
 			{
 				setTimeout('showajaxstatus("' + uid +'",' + timeout + ');',timeout);
