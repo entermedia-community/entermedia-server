@@ -580,7 +580,10 @@ public class LuceneIndexer
 					values = MultiValued.VALUEDELMITER.split(value);
 					for (String val: values)
 					{
-						inDoc.add(new FacetField(detail.getId(), val));						
+						if( val != null && val.trim().length() > 0)
+						{
+							inDoc.add(new FacetField(detail.getId(), val));
+						}
 					}
 				}
 				else
