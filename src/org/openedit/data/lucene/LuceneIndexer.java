@@ -570,7 +570,7 @@ public class LuceneIndexer
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String value = inDoc.get(detail.getId());
-			if (value != null)
+			if (value != null && value.trim().length() > 0)
 			{
 				//split the values and add a path for each one?
 				String[] values = null;
