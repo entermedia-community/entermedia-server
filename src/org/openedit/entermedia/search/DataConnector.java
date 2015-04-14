@@ -64,5 +64,6 @@ public interface DataConnector
 
 	String nextId();
 	//public void updateFilters(WebPageRequest inReq);
+	public Data loadData(Data inHit);
 
 }

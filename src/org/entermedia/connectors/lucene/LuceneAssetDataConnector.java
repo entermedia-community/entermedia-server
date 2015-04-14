@@ -18,6 +18,7 @@ import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.util.Version;
+import org.entermedia.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
@@ -550,4 +551,14 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	// return fieldAssetPaths;
 	// }
 
+	@Override
+	public Data loadData(Data inHit)
+	{
+		if( inHit instanceof Asset)
+		{
+			return (Asset)inHit; //this will never happen
+		}
+		return (Data)searchById(inHit.getId());
+	}
+	
 }

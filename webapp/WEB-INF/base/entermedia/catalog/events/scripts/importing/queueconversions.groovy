@@ -25,11 +25,11 @@ public void createTasksForUpload() throws Exception {
 	Searcher publishqueuesearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishqueue");
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
-	Searcher targetsearcher = mediaArchive.getAssetSearcher();
+	Searcher assetsearcher = mediaArchive.getAssetSearcher();
 
 	//There is a chance that the index is out of date.
 
-	SearchQuery q = targetsearcher.createSearchQuery();
+	SearchQuery q = assetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
 	//log.info("Found ${ids} assets from context ${context}");
 	log.info("Running queueconversions on ${ids}");
@@ -45,7 +45,7 @@ public void createTasksForUpload() throws Exception {
 		q.addOrsGroup( "id", assetids );
 	}
 
-	List assets = new ArrayList(targetsearcher.search(q) );
+	List assets = new ArrayList(assetsearcher.search(q) );
 	if( assets.size() == 0 )
 	{
 		log.error("Problem with import, no asset found");
@@ -56,7 +56,7 @@ public void createTasksForUpload() throws Exception {
 		foundsome = false;
 		Lock lock = mediaArchive.getLockManager().lock(mediaArchive.getCatalogId(), "assetconversions/" + it.id, "queueconversions56");
 		try{
-			Asset asset = targetsearcher.searchById(it.id);
+			Asset asset = assetsearcher.loadData(it);
 
 			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 			SearchQuery query = presetsearcher.createSearchQuery();
