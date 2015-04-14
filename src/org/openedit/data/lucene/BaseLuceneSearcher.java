@@ -1059,9 +1059,11 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 //				inWriter.updateDocument(terms[j], docs.get(j), getAnalyzer());				
 //			}
 			//This gives NPE
-			inWriter.deleteDocuments(terms);
-			inWriter.addDocuments(docs);
-
+			if( terms.length > 0)
+			{
+				inWriter.deleteDocuments(terms);
+				inWriter.addDocuments(docs);
+			}
 			
 			//inWriter.updateDocument(term, doc, getAnalyzer());
 			clearIndex();
