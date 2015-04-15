@@ -26,8 +26,7 @@
   -->
   <!-- header color + gradients (new) -->
   <property id="headercolor" />
-  <property id="headercolorgradienthi" />
-  <property id="headercolorgradientlo" />
+  <property id="headercolorgradient" />
   
   <!-- header font -->
   <property id="headerfont" />
@@ -47,8 +46,7 @@
   <property id="navbackgroundpath" />
   
   <property id="navcolor" />
-  <property id="navcolorgradienthi" />
-  <property id="navcolorgradientlo" />
+  <property id="navcolorgradient" />
   
   <!-- navigation font (new)-->
   <property id="navfont" />
@@ -60,27 +58,18 @@
   <!-- end navigation font -->
   
   <property id="navbuttoncolor" />
+  <property id="navbuttoncolorgradient" />
   <property id="navbuttonbordercolor" />
-  <!-- 
-  <property id="navbuttongradientcolor1" viewtype="color" >Navigation Vertical Gradient Button Colour (High)</property>
-  <property id="navbuttongradientcolor2" viewtype="color" >Navigation Vertical Gradient Button (Low)</property>
-  -->
-  <property id="navbuttoncolorgradienthi" />
-  <property id="navbuttoncolorgradientlo" />
- 
+  
   <!-- navigation font hover (new)-->
   <property id="navhoverfont" />
   <property id="navhoverfontsize" />
   <property id="navhoverfontcolor" />
   <property id="navhoverfontopacity" />
+
   <!-- end navigation font hover -->
   <property id="navbuttonhovercolor" />
-  <!-- 
-  <property id="navbuttonhovercolor1" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (High)</property>
-  <property id="navbuttonhovercolor2" viewtype="color" >Navigation Hover Vertical Gradient Button Colour (Low)</property>
-  -->
-  <property id="navbuttonhovercolorgradienthi" />
-  <property id="navbuttonhovercolorgradientlo" />
+  <property id="navbuttonhovercolorgradient" />
   
   <!-- navigation links -->
   <property id="navlinksbackgroundcolor" />
@@ -90,19 +79,17 @@
   
   <!-- table header -->
   <property id="tableheadercolor" />
-  <property id="tableheadercolorgradienthi" />
-  <property id="tableheadercolorgradientlo" />
+  <property id="tableheadercolorgradient" />
   
   <!-- table colors -->
   <property id="tablebordercolor" />
   <property id="tablehovercolor" />
 
-  <property id="tablemenufontcolor" />
   <property id="tablemenubackgroundcolor" />
-  <property id="tablemenubackgroundcolorhi" />
-  <property id="tablemenubackgroundcolorlo" />
+  <property id="tablemenubackgroundcolorgradient" />
   <property id="tablemenuhovercolor" />
-  
+  <property id="tablemenufontcolor" />
+
   <!-- widget border color -->
   <property id="widgetbordercolor" />
 
@@ -111,8 +98,7 @@
 
   <!-- asset details selected tab -->
   <property id="assetdetailsselectedtabcolor" />
-  <property id="assetdetailsselectedtabgradientcolorhi" />
-  <property id="assetdetailsselectedtabgradientcolorlo" />
+  <property id="assetdetailsselectedtabcolorgradient" />
   
   <!-- global styles -->
   <property id="disableshadows" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
