@@ -4435,7 +4435,7 @@ span.drag-and-drop {
     margin: 0;
 }
 #module-list li a {
-    background: none;
+    background: none !important;
     border: none;
     color: #444;
     padding: 10px;
@@ -4448,7 +4448,7 @@ span.drag-and-drop {
     font-weight: normal;
 }
 #module-list li a:hover {
-    background: #eee;
+    background: #eee !important;
 }
 #module-list li a:active {
     border: none;
