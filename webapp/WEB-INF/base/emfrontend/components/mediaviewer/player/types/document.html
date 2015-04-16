@@ -20,7 +20,7 @@
         	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/preview.jpg")
         #end
         <a class="thickbox" href="$home$link" target="_parent"	
-        	title="[[$asset]]">
+        	title="$asset">
         	#set( $page = $currentpreview + 1)
         	<img id="main-media" class="emdropshadow #if( $totalpages > 1 ) document #end  assetdragdrop"  draggable="true"  data-sourcepath="$sourcepath" data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.jpg?pagenum=$!gotopage" alt="[[Preview Image]]"/>
         

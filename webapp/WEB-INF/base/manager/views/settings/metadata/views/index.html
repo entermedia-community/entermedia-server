@@ -28,8 +28,8 @@
 <tbody>
 #foreach( $view in $views)
 <tr rowid="$view.name">
-	<td>[[$view.name]]</td>
-	<td>[[$context.getText("$!view.usagelabel")]]</td>
+	<td>$context.getText("$!view.name")</td>
+	<td>$context.getText("$!view.usagelabel")</td>
 	<td>$view.size()</td>
 </tr>
 #end
