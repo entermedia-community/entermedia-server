@@ -46,6 +46,12 @@ public class AttachmentModule extends BaseMediaModule
 		{
 			parentsourcepath = inReq.getRequestParameter("sourcepath");
 		}
+		if(parentsourcepath == null)
+		{
+			Asset asset = getAsset(inReq);
+			parentsourcepath = asset.getSourcePath();
+		}
+		
 		HitTracker hits = getAttachmentManager().listChildren(inReq, archive, parentsourcepath);
 		inReq.putPageValue("attachments",hits);
 	}

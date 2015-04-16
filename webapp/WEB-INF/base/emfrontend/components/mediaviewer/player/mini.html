@@ -45,10 +45,10 @@
                 </div>
                 <div class="secondary">
                     <div id="mp-asset-info">
-                        #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-                        #if ($attachments)
+                        #if ($attachments && $attachments.size() > 1)
                         <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachments.size()<span>&nbsp;</span></a>
                         #end
+                        #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
                         <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>
                         
                         <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments">$!comments.size()<span>&nbsp;</span></a>

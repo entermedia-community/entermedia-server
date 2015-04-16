@@ -2265,7 +2265,7 @@ center #addcoment {
     border-radius: 5px;
     border: 1px solid #237b97;
     padding: 10px 18px;
-    margin: 3px 0;
+    margin: 3px -4px 0 0px;
     font-size: 13px;
     font-weight: bold;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .2);
@@ -6648,7 +6648,7 @@ div.tableheaderactions a
 /*---CSS CHANGES----------*/
 
 #module-dropdown {
-    height: 35px;
+    height: 34px;
 }
 
 #childrenlist #valuelist {
