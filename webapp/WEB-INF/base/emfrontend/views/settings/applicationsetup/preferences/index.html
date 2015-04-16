@@ -39,6 +39,8 @@ $context.putPageValue("data", $data)
 
 $context.putPageValue("view", "theme/edit")
 
+	<link rel="stylesheet" type="text/css" href="$home$apphome/theme/styles/custom.css?cache=false" />
+
 #if( $data )
 <form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/preferences/save.html"  enctype="multipart/form-data">
 	<input name="save" type="hidden" value="true" />
@@ -48,7 +50,7 @@ $context.putPageValue("view", "theme/edit")
 	<input name="searchtype" type="hidden" value="theme" />
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 
-<input type="submit" value="Save" />
+<input type="submit" value="Save" style="width:100px; height: 60px; padding:20px" />
 <div id="messagearea">$!message
 </div>
 </form>
