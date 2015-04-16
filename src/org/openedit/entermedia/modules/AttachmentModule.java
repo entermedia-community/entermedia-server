@@ -55,7 +55,14 @@ public class AttachmentModule extends BaseMediaModule
 		HitTracker hits = getAttachmentManager().listChildren(inReq, archive, parentsourcepath);
 		inReq.putPageValue("attachments",hits);
 	}
-
+	public void countAttachments(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		int count = getAttachmentManager().countAttachments(inReq, archive, asset);
+		inReq.putPageValue("attachmentcount",new Integer(count));
+	}
+	
 	public void reSyncAttachments(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

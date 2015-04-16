@@ -2,5 +2,5 @@
 	<property name="tab">viewmediaviewer</property>
 	<property name="assettab">viewmediaviewer</property>
 	<property name="showpreviewpage">true</property>
-	<path-action name="AttachmentModule.listChildren" />
+	<path-action name="AttachmentModule.countAttachments" />
 </page>

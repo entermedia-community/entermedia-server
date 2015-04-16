@@ -45,8 +45,8 @@
                 </div>
                 <div class="secondary">
                     <div id="mp-asset-info">
-                        #if ($attachments && $attachments.size() > 1)
-                        <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachments.size()<span>&nbsp;</span></a>
+                        #if ($attachmentcount > 0)
+                        <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>
                         #end
                         #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
                         <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>

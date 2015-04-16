@@ -80,6 +80,20 @@ public class AttachmentManager
 		return hits;
 	}
 
+	public int countAttachments(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset)
+	{
+		HitTracker tracker = listChildren(inReq, inArchive, inAsset.getSourcePath() );
+		int count = 0;
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Data child = (Data) iterator.next();
+			if( !"attachments.txt".equals( child.getName() ) && !child.getName().equals( inAsset.getPrimaryFile()) )
+			{
+				count++;
+			}
+		}
+		return count;
+	}
 	protected void syncFolder(Searcher attachmentSearcher, MediaArchive inArchive, String inAssetId, String inRootFolder, String inFolderSourcePath, String inAssetSourcePath, boolean inReprocess)
 	{
 		SearchQuery query = attachmentSearcher.createSearchQuery();
