@@ -27,8 +27,8 @@
 					#else
 						#set ( $sourcepath = $asset.sourcepath)
 					#end
-                    #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/preview.jpg")
-                    <a class="thickbox" href="$home$link" target="_parent" title="[[$asset]]">
+                    #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
+                    <a class="thickbox" href="$home$link" target="_parent" title="[[drag]] $asset [[as jpeg]]">
                         $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
                     </a>
                     <br>
