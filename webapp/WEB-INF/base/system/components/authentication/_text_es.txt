@@ -1,0 +1,11 @@
+#
+#Thu Apr 16 14:41:17 EDT 2015
+Please\ enter\ your\ password=Por favor, introduzca su contrase\u00F1a
+or\ Create\ a\ New\ Account=o Crear una cuenta nueva
+Email\ or\ Username=Correo electr\u00F3nico o nombre de usuario
+Forgotten\ your\ password?=Olvidaste tu contrase\u00F1a?
+Welcome\!\ Please\ enter\ your\ email\ and\ password\:=\u00A1Bienvenido\! 
+Login=Iniciar Sesi\u00F3n
+Log\ in=iniciar sesi\u00F3n
+You\ are\ logged\ in\ as=Has iniciado sesi\u00F3n como
+Password=contrase\u00F1a
