@@ -302,7 +302,26 @@ public class imagemagickCreator extends BaseImageCreator {
 				int width = inAsset.getInt("width");
 				if( width > 0 )
 				{
-					double outputw = inStructions.getMaxScaledSize().getWidth();
+					// calculate output width
+					int height = inAsset.getInt("height");
+					double ratio = height/width;
+
+					int prefw = inStructions.getMaxScaledSize().getWidth();
+					int prefh = inStructions.getMaxScaledSize().getHeight();
+
+					int distw = Math.abs(prefw - width);
+					int disth = Math.abs(prefh - height);
+
+					int outputw;
+					if(disth < distw)
+					{
+						outputw = width*(prefh/height);
+					}
+					else
+					{
+						outputw = prefw;
+					}
+
 					if( width < outputw)
 					{
 						//for small input files we want to scale up the density
