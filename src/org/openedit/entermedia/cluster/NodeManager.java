@@ -85,6 +85,10 @@ public class NodeManager
 	{
 		return getLocalNode().getId();
 	}
+	public String createDailySnapShot(String inCatalogId)
+	{		
+		throw new OpenEditException("Not implemented");
+	}
 	
 	public String createSnapShot(String inCatalogId)
 	{		

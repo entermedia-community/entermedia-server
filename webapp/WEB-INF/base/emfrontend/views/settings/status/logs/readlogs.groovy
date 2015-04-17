@@ -7,6 +7,10 @@ import com.openedit.hittracker.*
 public String readLastLines( String fileName , long chars) {
 	try {
 		java.io.File file = new java.io.File( fileName );
+		if( !file.exists())
+		{
+			return fileName + " not found. Please edit catalogsettings server_log_location";
+		}
 		java.io.RandomAccessFile fileHandler = new java.io.RandomAccessFile( file, "r" );
 		long fileLength = file.length();
 		

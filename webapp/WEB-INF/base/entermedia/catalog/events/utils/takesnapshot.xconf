@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Take DB Snapshot</property>	
+	<property name="eventname">Take Daily DB Snapshot</property>	
 	<property name="eventdescription">Creates snapshots of the database in Settings | Status | Tools</property>	
 	<path-action name="Script.run">
 		<script>/${catalogid}/events/scripts/utils/takesnapshot.groovy</script>

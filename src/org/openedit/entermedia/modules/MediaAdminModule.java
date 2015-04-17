@@ -1,5 +1,6 @@
 package org.openedit.entermedia.modules;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,6 @@ import org.openedit.data.Searcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
 import com.openedit.page.manage.PageManager;
@@ -240,11 +240,11 @@ public class MediaAdminModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		
-		List tables = getSearcherManager().getPropertyDetailsArchive(catalogid).listSearchTypes();
-		for (Iterator iterator2 = tables.iterator(); iterator2.hasNext();)
+		Collection<Searcher> tables = getSearcherManager().listLoadedSearchers(catalogid);
+		
+		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
 		{
-			String type = (String) iterator2.next();
-			Searcher searcher = getSearcherManager().getSearcher(catalogid, type);
+			Searcher searcher = (Searcher) iterator.next();
 			if (searcher instanceof Reloadable)
 			{
 				searcher.reIndexAll();
