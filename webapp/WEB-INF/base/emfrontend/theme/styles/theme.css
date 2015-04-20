@@ -3601,6 +3601,7 @@ body #emcontainer .emasseteditorarea {
 }
 .emdata {
     width: 100%;
+    border-collapse: collapse;
 }
 .emdata tr.tableheader th, .emdata tr td {
     border-right: 1px dashed rgba(0,0,0,0.05);
@@ -3609,7 +3610,7 @@ body #emcontainer .emasseteditorarea {
     border: none;
 }
 .emdata tr td {
-    padding: 6px 10px !important;
+    padding: 10px
     vertical-align: middle;
 }
 #main-results-table #tableheader th:first-child, #main-results-table #tableheader th:last-child {
@@ -6465,9 +6466,6 @@ a.audio-filename:hover
 }
 
 /* Groups page */
-div#emselectable {
-	overflow:auto;
-}
 
 div#filterscontent
 {

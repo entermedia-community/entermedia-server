@@ -31,7 +31,7 @@
         #set( $remaining = $conversions.size() - $conversionsremaining.size() )
         #set( $totalcount = $conversions.size() + 2 )
         #set( $total = 94 * $mathutil.getPercentage($remaining , $totalcount))
-        <div class="uiinfo" title="$conversionsremaining.size() convertions remaining"><div class="loadingbar" style="width:${total}px;"></div></div> 
+        <div class="uiinfo" title="$conversionsremaining.size() conversions remaining"><div class="loadingbar" style="width:${total}px;"></div></div> 
     </div>
     
 #elseif($publish && $publish.size() >0 )
