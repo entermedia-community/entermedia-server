@@ -82,13 +82,30 @@ public class XmlDataArchive implements DataArchive
 		}
 		else
 		{
-			element.setAttributes(new ArrayList());
-			populateElement(element, inData);
+			saveDataToElement(inData,element);
 		}
 	}
 	
 
+	protected void saveDataToElement(Data inData, Element inElement)
+	{
+		// TODO Auto-generated method stub
+		inElement.clearContent();
+		inElement.setAttributes(null);
+		
+		ElementData data = new ElementData(inElement);
+		data.setId(inData.getId());
+		data.setName(inData.getName());
+		data.setSourcePath(inData.getSourcePath());
+		for (Iterator iterator = inData.getProperties().keySet().iterator(); iterator.hasNext();)
+		{
+			String key	= (String) iterator.next();
+			data.setProperty(key, inData.get(key));
+		}
+	}
+
 	//Not recommeneded, use populateElementData
+	/*
 	protected void populateElement(Element inElement, Data inData)
 	{
 		for (Iterator iterator = inData.getProperties().keySet().iterator(); iterator.hasNext();)
@@ -104,7 +121,7 @@ public class XmlDataArchive implements DataArchive
 			}
 		}
 	}
-	
+	*/
 	protected void populateElementData(Element inElement, ElementData inData)
 	{
 		List attributes = inData.getAttributes();
@@ -173,7 +190,7 @@ public class XmlDataArchive implements DataArchive
 		return getPathToData() + getDataFileName();
 	}
 	
-	public Data loadData(DataFactory inFactory, String inSourcePath, String inId)
+	public Data loadData(String inSourcePath, String inId)
 	{
 		//This is used a bunch when loading and editing the same xml file
 		String path = getPathToXml(inSourcePath);
@@ -184,10 +201,8 @@ public class XmlDataArchive implements DataArchive
 		{
 			return null;
 		}
-		ElementData data = (ElementData)inFactory.createNewData();
-		data.setElement(elem);
+		ElementData data = new ElementData(elem);
 		data.setSourcePath(inSourcePath);
-		
 		return data;
 	}
 	public void clearCache()

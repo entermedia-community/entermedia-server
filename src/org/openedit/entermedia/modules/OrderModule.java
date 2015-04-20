@@ -560,39 +560,45 @@ public class OrderModule extends BaseMediaModule
 
 	public Order loadOrderBasket(WebPageRequest inReq)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
-		Order basket = (Order) inReq.getPageValue("orderbasket");
-
-		if (basket == null)
+		Order basket = null;
+		try
 		{
-			String id = inReq.getUserName() + "_orderbasket";
-			String appid = inReq.findValue("applicationid");
-			Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
-			basket = (Order) searcher.searchById(id);
+			MediaArchive archive = getMediaArchive(inReq);
+			basket = (Order) inReq.getPageValue("orderbasket");
+	
 			if (basket == null)
 			{
-				basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
-				basket.setId(id);
-				basket.setProperty("ordertype", "basket");
-				getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
+				String id = inReq.getUserName() + "_orderbasket";
+				String appid = inReq.findValue("applicationid");
+				Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(), "order");
+					basket = (Order) searcher.searchById(id);
+					if (basket == null)
+					{
+						basket = getOrderManager().createNewOrder(appid, archive.getCatalogId(), inReq.getUserName());
+						basket.setId(id);
+						basket.setProperty("ordertype", "basket");
+						getOrderManager().saveOrder(archive.getCatalogId(), inReq.getUser(), basket);
+					}
+					basket.setProperty("basket", "true");
+					basket.setProperty("ordertype", "basket");
+		
+					inReq.putSessionValue("orderbasket", basket);
 			}
-			basket.setProperty("basket", "true");
-			basket.setProperty("ordertype", "basket");
-
-			inReq.putSessionValue("orderbasket", basket);
-			
+			inReq.putPageValue("order", basket);
+	
+			HitTracker items = loadOrderManager(inReq).findOrderItems(inReq, archive.getCatalogId(), basket);
+			inReq.putPageValue("orderitems", items);
+	
+			String check = inReq.findValue("clearmissing");
+			if (Boolean.parseBoolean(check))
+			{
+				//Make sure these have the same number of assets found
+				getOrderManager().removeMissingAssets(inReq, archive, basket, items);
+			}
 		}
-		inReq.putPageValue("order", basket);
-
-		HitTracker items = loadOrderManager(inReq).findOrderItems(inReq, archive.getCatalogId(), basket);
-		inReq.putPageValue("orderitems", items);
-
-		String check = inReq.findValue("clearmissing");
-		if (Boolean.parseBoolean(check))
+		catch ( Throwable ex )
 		{
-			//Make sure these have the same number of assets found
-			getOrderManager().removeMissingAssets(inReq, archive, basket, items);
-
+			log.error(ex);
 		}
 
 		return basket;
