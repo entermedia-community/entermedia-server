@@ -82,14 +82,21 @@ public class AttachmentManager
 
 	public int countAttachments(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset)
 	{
+		if( inAsset == null || inAsset.getSourcePath() == null)
+		{
+			return 0;
+		}
 		HitTracker tracker = listChildren(inReq, inArchive, inAsset.getSourcePath() );
 		int count = 0;
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		if( tracker != null)
 		{
-			Data child = (Data) iterator.next();
-			if( !"attachments.txt".equals( child.getName() ) && !child.getName().equals( inAsset.getPrimaryFile()) )
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
-				count++;
+				Data child = (Data) iterator.next();
+				if( !"attachments.txt".equals( child.getName() ) && !child.getName().equals( inAsset.getPrimaryFile()) )
+				{
+					count++;
+				}
 			}
 		}
 		return count;
