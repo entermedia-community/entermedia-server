@@ -561,7 +561,12 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
-	<bean id="pdfExtractor" class="org.openedit.entermedia.scanner.MetadataPdfExtractor" />
+	<bean id="pdfExtractor" class="org.openedit.entermedia.scanner.MetadataPdfExtractor" >
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>	
+	
 
 	<bean id="exiftoolMetadataExtractor"
 		class="org.openedit.entermedia.scanner.ExiftoolMetadataExtractor">

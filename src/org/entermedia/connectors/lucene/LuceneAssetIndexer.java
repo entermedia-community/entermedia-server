@@ -2,6 +2,9 @@ package org.entermedia.connectors.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,8 +27,11 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.search.AssetSecurityArchive;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.OpenEditException;
+import com.openedit.page.manage.PageManager;
+import com.openedit.util.OutputFiller;
 
 public class LuceneAssetIndexer extends LuceneIndexer
 {
@@ -35,7 +41,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	protected MediaArchive fieldMediaArchive;
 	protected File fieldRootDirectory;
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
-	
+	OutputFiller filler = new OutputFiller();
 	public LuceneAssetIndexer()
 	{
 	}
@@ -381,6 +387,32 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			fullDesc.append(' ');
 		}
 
+		if( Boolean.parseBoolean(asset.get("hasfulltext")))
+		{
+			ContentItem item = getMediaArchive().getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
+			if( item.exists() )
+			{
+				Reader input = null;
+				try
+				{
+					input= new InputStreamReader( item.getInputStream(), "UTF-8");
+					StringWriter output = new StringWriter(); 
+					filler.fill(input, output);
+					fullDesc.append(output.toString());
+				}
+				catch( IOException ex)
+				{
+					log.error(ex);
+				}
+				finally
+				{
+					filler.close(input);
+				}
+			}
+		}
+
+		
+		
 //		try
 //		{
 //			String result = fullDesc.toString();//fixInvalidCharacters(fullDesc.toString());

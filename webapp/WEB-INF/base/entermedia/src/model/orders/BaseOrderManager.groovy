@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.dom4j.DocumentHelper
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.entermedia.locks.Lock
@@ -329,7 +328,7 @@ public class BaseOrderManager implements OrderManager {
 	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
 		Order order  = (Order)searcher.createNewData();
-		order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
+		//order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
 		//order.setId(searcher.nextId());
 		order.setProperty("orderstatus", "preorder");
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
