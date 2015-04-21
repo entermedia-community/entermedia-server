@@ -83,8 +83,7 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 		Page original = inArchive.getOriginalDocument(inAsset);
 		String generatedpath = populateOutputPath(inArchive,inStructions);
 		Page generatedpage = inArchive.getPageManager().getPage(generatedpath);
-		if (hasCMYKColorModel(inArchive, inAsset))
-		{
+		if (hasCMYKColorModel(inArchive, inAsset)){
 			if (omitEmbed(inArchive,original) == false){
 				preprocessCMYKAsset(inArchive,inAsset,inStructions,result);
 			}
@@ -93,6 +92,17 @@ public class cmykreprocessorCreator extends BaseImageCreator {
 			if (!colorspace || (colorspace!="4" && colorspace!="5")){
 				inAsset.setProperty("colorspace","4");// CMYK is 4 or 5
 				inArchive.saveAsset(inAsset, null);
+			}
+		}
+		else {
+			//check case where incoming image that does not have CMYK color model has an embedded CMYK color profile
+			if (requiresICCProfileEmbed(original) == false){
+				stripProfile(original);
+				if(requiresICCProfileEmbed(original) == false){
+					log.warn("could not remove CMYK profile from asset ${inAsset.getId()} that does not have CMYK color model, may result in conversion error");
+				} else {
+					log.info("removed CMYK profile from asset ${inAsset.getId()} that does not have a CMYK color model");
+				}
 			}
 		}
 		if (!generatedpage.exists()){
