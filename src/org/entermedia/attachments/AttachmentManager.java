@@ -75,6 +75,7 @@ public class AttachmentManager
 		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
 		SearchQuery query = attachmentSearcher.createSearchQuery();
+		query.setHitsName("attachmentcount");
 		query.addExact("parentsourcepath", inFolderSourcePath);
 		HitTracker hits = attachmentSearcher.cachedSearch(inReq, query);
 		return hits;
