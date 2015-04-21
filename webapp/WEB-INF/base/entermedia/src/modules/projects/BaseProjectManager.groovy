@@ -85,7 +85,7 @@ public class BaseProjectManager implements ProjectManager
 				inReq.putPageValue("librarysize",assetsize);
 			}
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
-			HitTracker allcollections = searcher.query().match("library",library.getId()).sort("name").named("sidebar").search(inReq);
+			HitTracker allcollections = searcher.query().exact("library",library.getId()).sort("name").named("sidebar").search(inReq);
 
 			//Show all the collections for a library
 			inReq.putPageValue("allcollections", allcollections);
@@ -103,12 +103,13 @@ public class BaseProjectManager implements ProjectManager
 					Data collection = (Data) iterator.next();
 					ids.add( collection.getId() );
 				}
-				if(ids.size() > 0){
-				HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
-				if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+				if(ids.size() > 0)
 				{
-					collectionhits = collectionassets.findFilterNode("librarycollection");
-				}
+					HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
+					if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+					{
+						collectionhits = collectionassets.findFilterNode("librarycollection");
+					}
 				}
 			}			
 			Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
