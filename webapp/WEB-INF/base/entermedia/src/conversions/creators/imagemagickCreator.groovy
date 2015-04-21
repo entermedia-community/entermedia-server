@@ -607,7 +607,9 @@ public class imagemagickCreator extends BaseImageCreator {
 
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
-		ExecResult execresult = getExec().runExec("convert", com, true);
+		
+		long timeout = getConversionTimeout(inArchive, inAsset);
+		ExecResult execresult = getExec().runExec("convert", com, true, timeout);
 
 		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
@@ -757,6 +759,7 @@ public class imagemagickCreator extends BaseImageCreator {
 		com.add(getWaterMarkPath(inArchive.getThemePrefix()));
 		com.add(inInputAbsPath);
 		com.add(inOutputAbsPath);
+		
 		boolean ok =  runExec("composite", com);
 		ConvertResult result = new ConvertResult();
 		result.setOk(ok);

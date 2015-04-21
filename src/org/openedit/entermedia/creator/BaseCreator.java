@@ -196,7 +196,12 @@ public abstract class BaseCreator implements MediaCreator
 	
 	protected boolean runExec(String inCommandName, List<String> inCom) throws OpenEditException
 	{
-		ExecResult result = getExec().runExec(inCommandName, inCom);
+		return runExec(inCommandName, inCom, -1);
+	}
+	
+	protected boolean runExec(String inCommandName, List<String> inCom, long inTimeout) throws OpenEditException
+	{
+		ExecResult result = getExec().runExec(inCommandName, inCom, inTimeout);
 		return result.isRunOk();
 	}
 	
@@ -273,12 +278,24 @@ public abstract class BaseCreator implements MediaCreator
 		}
 		return null;
 	}
-
-
+	
+	public long getConversionTimeout(MediaArchive inArchive, Asset inAsset){
+		long timeout = -1;
+		String fileformat = inAsset.get("fileformat");
+		if (fileformat!=null && !fileformat.isEmpty()){
+			Data format = inArchive.getData("fileformat",fileformat);
+			if (format!=null && format.get("conversiontimeout")!=null){
+				try{
+					timeout = Long.parseLong(format.get("conversiontimeout"));
+				}catch(Exception e){}//not handled
+			}
+		}
+		return timeout;
+	}
+	
 	public Exec getExec() {
 		return fieldExec;
 	}
-
 
 	public void setExec(Exec exec) {
 		fieldExec = exec;

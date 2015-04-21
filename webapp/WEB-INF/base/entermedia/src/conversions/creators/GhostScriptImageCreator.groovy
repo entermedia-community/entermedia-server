@@ -1,17 +1,13 @@
 package conversions.creators;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.creator.*
 
-import com.openedit.OpenEditException;
-import com.openedit.page.Page;
+import com.openedit.OpenEditException
+import com.openedit.page.Page
 
 public class GhostScriptImageCreator extends imagemagickCreator
 {
@@ -96,9 +92,13 @@ public class GhostScriptImageCreator extends imagemagickCreator
 		// -q -dBATCH -dSAFER -dMaxBitmap=500000000 -dNOPAUSE -dAlignToPixels=0
 
 		inOut.getParentFile().mkdirs();
+		
+		//get timeout
+		long timeout = getConversionTimeout(inArchive, inAsset);
+		
 		long start = System.currentTimeMillis();
 		//log.info("Running " + com + " on " + Thread.currentThread());
-		if (runExec("ghostscript", com))
+		if (runExec("ghostscript", com, timeout))
 		{
 			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " output " + inOut.getAbsolutePath());
 			result.setOk(true);

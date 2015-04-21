@@ -38,7 +38,7 @@
 	<property id="nef"  synctags="true"  rendertype="image" creator="imagemagick">NEF</property>
 	<property id="ogg"  synctags="true"  rendertype="audio" >OGG</property>
 	<property id="pbm"  synctags="true"  rendertype="image" creator="imagemagick">PBM</property>
-	<property id="pdf"  synctags="true"  rendertype="document" creator="imagemagick">PDF</property>
+	<property id="pdf"  synctags="true"  rendertype="document" creator="imagemagick"  conversiontimeout="60000">PDF</property>
 	<property id="pef"  synctags="true"  rendertype="image" creator="imagemagick">PEF</property>
 	<property id="pgm"  synctags="true"  rendertype="image" creator="imagemagick">PGM</property>
 	<property id="png"  synctags="true"  rendertype="image" creator="imagemagick">PNG</property>

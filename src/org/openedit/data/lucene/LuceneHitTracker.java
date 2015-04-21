@@ -24,7 +24,6 @@ import org.apache.lucene.facet.Facets;
 import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.LabelAndValue;
-import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.FastTaxonomyFacetCounts;
 import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.search.FieldCacheTermsFilter;
@@ -35,6 +34,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.openedit.Data;
+import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.util.DateStorageUtil;
@@ -164,7 +164,9 @@ public class LuceneHitTracker extends HitTracker
 
 		// 50 - (1 * 40) = 10 relative
 		int indexlocation = inCount - (page * getHitsPerPage());
-
+		if (row.isEmpty() || indexlocation < 0){
+			return new BaseData();//avoid nullpointer
+		}
 		return row.get(indexlocation);
 	}
 

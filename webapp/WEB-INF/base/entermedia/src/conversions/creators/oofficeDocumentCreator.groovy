@@ -60,7 +60,8 @@ public class oofficeDocumentCreator extends BaseCreator
 		
 		command.add(input.getContentItem().getAbsolutePath());
 		
-		ExecResult done = getExec().runExec("soffice",command);
+		long timeout = getConversionTimeout(inArchive, inAsset);
+		ExecResult done = getExec().runExec("soffice",command, timeout);
 		
 		result.setOk(done.isRunOk());
 		if( done.isRunOk() )
