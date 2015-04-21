@@ -668,7 +668,7 @@ public class DataEditModule extends BaseMediaModule
 	public void restoreDefaults(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
-		searcher.restoreDefaults();
+		searcher.restoreSettings();
 	}
 	
 	public void deleteData(WebPageRequest inReq) throws Exception

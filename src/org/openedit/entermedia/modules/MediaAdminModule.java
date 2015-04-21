@@ -237,7 +237,7 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().saveModule(catalogid, appid, module);
 	}
 
-	public void reindexLists(WebPageRequest inReq) throws Exception
+	public void reloadSettings(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");
 		
@@ -249,27 +249,13 @@ public class MediaAdminModule extends BaseMediaModule
 			Searcher searcher = (Searcher) iterator.next();
 			if (searcher instanceof Reloadable)
 			{
-				searcher.reIndexAll();
+				searcher.reloadSettings();
+				
 				types.add(searcher.getSearchType());
 			}
 		}
 		inReq.putPageValue("tables", types);
 
-	}
-	public void reindexAll(WebPageRequest inReq) throws Exception
-	{
-		String catalogid = inReq.findValue("catalogid");
-		
-		Collection<Searcher> tables = getSearcherManager().listLoadedSearchers(catalogid);
-		
-		List types = new ArrayList();
-		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
-		{
-			Searcher searcher = (Searcher) iterator.next();
-			searcher.reIndexAll();
-			types.add(searcher.getSearchType());
-		}
-		inReq.putPageValue("tables", types);
 	}
 	
 }
