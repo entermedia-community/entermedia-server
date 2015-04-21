@@ -271,5 +271,5 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		inReq.putPageValue("tables", types);
 	}
-
+	
 }

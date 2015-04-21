@@ -665,6 +665,11 @@ public class DataEditModule extends BaseMediaModule
 			searcher.deleteAll(inReq.getUser());
 		}		
 	}
+	public void restoreDefaults(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		searcher.restoreDefaults();
+	}
 	
 	public void deleteData(WebPageRequest inReq) throws Exception
 	{
