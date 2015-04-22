@@ -363,7 +363,7 @@ public class BaseOrderManager implements OrderManager {
 		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		Data item = itemsearcher.createNewData();
-		item.setId(itemsearcher.nextId());
+		//item.setId(itemsearcher.nextId());
 		item.setProperty("orderid", order.getId());
 		item.setProperty("userid", order.get("userid"));
 
@@ -851,11 +851,8 @@ public class BaseOrderManager implements OrderManager {
 			return false;
 		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
-		SearchQuery query = itemsearcher.createSearchQuery();
-		query.addMatches("orderid", inOrder.getId());
-		query.addMatches("assetid", inAssetId);
-		HitTracker results = itemsearcher.search(query);
-		if(results.size() > 0)
+		Data item = itemsearcher.query().match("orderid", inOrder.getId()).match("assetid", inAssetId).searchOne();
+		if(item != null)
 		{
 			return true;
 		}

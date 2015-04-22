@@ -816,14 +816,14 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-
+<!-- 
 	<bean id="relatedKeywordSearcher"
-		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher">
+		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher"  scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
-
+ -->
 	<bean id="assetSecurityDataArchive" class="org.openedit.entermedia.search.AssetSecurityDataArchive">
 			<property name="searcherManager">
 			<ref bean="searcherManager" />
@@ -1000,7 +1000,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="DistributedDataModule" class="org.openedit.entermedia.modules.DistributedDataModule" >
 			<property name="localDataManager"><ref bean="localDataManager" /></property>
 	</bean>
-
+<!-- 
 	<bean id="dataFileSearcher" class="org.openedit.entermedia.cluster.DataFileSearcher">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -1009,7 +1009,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<ref bean="root" />
 		</property>
 	</bean>
-
+ -->
 	<bean id="OrderModule" class="org.openedit.entermedia.modules.OrderModule" >
 		<property name="orderManager">
 			<ref bean="orderManager" />
