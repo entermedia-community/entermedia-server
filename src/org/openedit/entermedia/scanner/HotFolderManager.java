@@ -239,6 +239,7 @@ public class HotFolderManager
 
 	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
 	{
+		inFolder = getFolderSearcher(inArchive.getCatalogId()).loadData(inFolder);
 		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 		String name = inFolder.get("subfolder");
 		String path = base + "/" + name;

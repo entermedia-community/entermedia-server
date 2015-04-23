@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:lang="http://www.springframework.org/schema/lang"
@@ -243,18 +242,14 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 
 	<bean id="Date" class="com.openedit.modules.dates.DateModule"/>
 
-	<bean id="userSearcher" class="org.openedit.users.LuceneUserSearcher">
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
+	<bean id="userSearcher" class="org.openedit.users.LuceneUserSearcher" scope="prototype">
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
-	<bean id="groupSearcher" class="org.openedit.users.LuceneGroupSearcher">
-		<property name="userManager">
-			<ref bean="userManager" />
-		</property>
+	<bean id="groupSearcher" class="org.openedit.users.LuceneGroupSearcher" scope="prototype">
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
@@ -566,7 +561,12 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
-	<bean id="pdfExtractor" class="org.openedit.entermedia.scanner.MetadataPdfExtractor" />
+	<bean id="pdfExtractor" class="org.openedit.entermedia.scanner.MetadataPdfExtractor" >
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>	
+	
 
 	<bean id="exiftoolMetadataExtractor"
 		class="org.openedit.entermedia.scanner.ExiftoolMetadataExtractor">
@@ -816,20 +816,14 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-
+<!-- 
 	<bean id="relatedKeywordSearcher"
-		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher">
+		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher"  scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
-
-	<bean id="xmlArchive" class="org.openedit.xml.XmlArchive">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-	</bean>
-
+ -->
 	<bean id="assetSecurityDataArchive" class="org.openedit.entermedia.search.AssetSecurityDataArchive">
 			<property name="searcherManager">
 			<ref bean="searcherManager" />
@@ -1006,7 +1000,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="DistributedDataModule" class="org.openedit.entermedia.modules.DistributedDataModule" >
 			<property name="localDataManager"><ref bean="localDataManager" /></property>
 	</bean>
-
+<!-- 
 	<bean id="dataFileSearcher" class="org.openedit.entermedia.cluster.DataFileSearcher">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -1015,7 +1009,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 			<ref bean="root" />
 		</property>
 	</bean>
-
+ -->
 	<bean id="OrderModule" class="org.openedit.entermedia.modules.OrderModule" >
 		<property name="orderManager">
 			<ref bean="orderManager" />
@@ -1158,9 +1152,6 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		
 	</bean>
 
-	<bean id="lockManager" class="org.entermedia.locks.MemoryLockManager" >
-		
-	</bean>
 
 	<bean id="videoEditor" class="org.entermedia.videoedit.VideoEditor" >
 		
@@ -1268,21 +1259,16 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
-
-
-	
-	
 	<bean id="imagePreProcessors" class="java.util.ArrayList">
 	    <constructor-arg>
 		<list>
 			<ref bean="ffmpegimageCreator" />
 			<ref bean="exiftoolthumbCreator" />
 			<ref bean="oofficeDocumentCreator" />
-			
+			<ref bean="cmykpreprocessorCreator" />
 		</list>
 	    </constructor-arg>
 	</bean>
-	
 	<bean id="HotFolderModule" class="org.openedit.entermedia.modules.HotFolderModule">
 	</bean>			
 	<bean id="hotFolderManager" class="org.openedit.entermedia.scanner.HotFolderManager">
@@ -1315,7 +1301,7 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 		</property>
 	</bean>
 	
-	<bean id="TemplateModule" class="org.openedit.entermedia.modules.TemplateModule" >
+	<bean id="ThemeModule" class="org.openedit.entermedia.modules.ThemeModule" >
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
 		</property>
@@ -1333,7 +1319,14 @@ http://www.springframework.org/schema/lang http://www.springframework.org/schema
 	
 	<bean id="htmlUtil" class="org.openedit.entermedia.util.HtmlUtil">
 	</bean>
-<bean id="jsonUtil" class="org.openedit.entermedia.util.JsonUtil">
+	<bean id="jsonUtil" class="org.openedit.entermedia.util.JsonUtil">
 	</bean>
+
+	<bean id="RedirectModule" class="org.openedit.entermedia.modules.RedirectModule" >
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
+
 
 </beans>

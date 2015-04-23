@@ -1,5 +1,7 @@
 package org.openedit.entermedia.modules;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +16,6 @@ import org.openedit.data.Searcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
 import com.openedit.page.manage.PageManager;
@@ -236,25 +237,25 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().saveModule(catalogid, appid, module);
 	}
 
-	public void reindexLists(WebPageRequest inReq) throws Exception
+	public void reloadSettings(WebPageRequest inReq) throws Exception
 	{
-		HitTracker catalogs = getSearcherManager().getList("system", "catalog");
-		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
+		String catalogid = inReq.findValue("catalogid");
+		
+		Collection<Searcher> tables = getSearcherManager().listLoadedSearchers(catalogid);
+		
+		List types = new ArrayList();
+		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
 		{
-			Data catalog = (Data) iterator.next();
-			List tables = getSearcherManager().getPropertyDetailsArchive(catalog.getId()).listSearchTypes();
-			for (Iterator iterator2 = tables.iterator(); iterator2.hasNext();)
+			Searcher searcher = (Searcher) iterator.next();
+			if (searcher instanceof Reloadable)
 			{
-				String type = (String) iterator2.next();
-				Searcher searcher = getSearcherManager().getSearcher(catalog.getId(), type);
-				if (searcher instanceof Reloadable)
-				{
-					searcher.reIndexAll();
-				}
+				searcher.reloadSettings();
+				
+				types.add(searcher.getSearchType());
 			}
-
 		}
+		inReq.putPageValue("tables", types);
 
 	}
-
+	
 }

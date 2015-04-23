@@ -1,3 +1,7 @@
+#set($detailid = $detail.id )
+#if( !$detailid)
+	#set( $detailid = $context.getRequestParameter("detailid"))
+#end	
 #set($idcount = $context.getRequestParameter("idcount"))
 #if(!$idcount)
 	#set($idcount = "")
@@ -5,7 +9,6 @@
 #if(!$val)
 	#set($val = $context.getRequestParameter('assetid'))
 #end
-
 #if($val && $val != "")
 #set( $foundrow = $mediaarchive.getAsset($val)  )
 #end
@@ -14,7 +17,9 @@
 #set( $rootid = $hits.sessionId )
 
 #set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
-<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" id="${detail.id}-preview">
+
+<div  id="${detailid}-previewlink" style="display: table-cell; text-align:right;">
+<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" >
 
 	#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
 	
@@ -23,15 +28,15 @@
 	
 	$context.putPageValue("showdetails", "false")
 	$context.putPageValue("thumbsize", "thumbsmall")
-  	#set( $sourcepath = $foundrow.sourcePath )
-	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+  	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 </a>
+
 #if($foundrow && !$context.getRequestParameter("readonly") == "true")
-<div style="padding-left: 40px;">
-<label for="${detail.id}-checkbox" style="font-style:italic;">Remove: </label><input id="${detail.id}-checkbox" name="${detail.id}-checkbox" type="checkbox" />
-</div>
+<br>
+<a href="#"  onclick='$("#${detailid}-value").val("");$("#${detailid}-previewlink").html(""); return false;' > [[clear]]</a>
 #end
 
+</div>
 
 	#if( $type == "audio")
 	<a href="$click" alt="$foundrow" class="audio-filename"> $foundrow.name	</a>

@@ -22,10 +22,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.facet.params.FacetIndexingParams;
-import org.apache.lucene.facet.search.DrillDownQuery;
-import org.apache.lucene.facet.search.SearcherTaxonomyManager;
+import org.apache.lucene.facet.DrillDownQuery;
+import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
+import org.apache.lucene.facet.taxonomy.SearcherTaxonomyManager;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.index.CorruptIndexException;
@@ -35,7 +35,6 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.analyzing.AnalyzingQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -94,6 +93,32 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 	protected CacheManager fieldCacheManager;
 	protected DirectoryTaxonomyWriter fieldTaxonomyWriter;
 	protected LuceneConnectionManager fieldLuceneConnectionManager;
+	protected FacetsConfig fieldFacetConfig;
+
+	public FacetsConfig getFacetConfig()
+	{
+		if (fieldFacetConfig == null)
+		{
+			fieldFacetConfig =  new FacetsConfig();
+			//config.setHierarchical("Publish Date", true);
+			//config.setIndexFieldName("author", "facet_author");
+			for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if( detail.isMultiValue() || detail.getId().equals("category"))
+				{
+					fieldFacetConfig.setMultiValued(detail.getId(), true);
+				}
+			}
+
+		}
+		return fieldFacetConfig;
+	}
+
+	public void setFacetConfig(FacetsConfig inFacetConfig)
+	{
+		fieldFacetConfig = inFacetConfig;
+	}
 
 	public BaseLuceneSearcher()
 	{
@@ -165,9 +190,6 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 	public synchronized void reIndexAll() throws OpenEditException
 	{
-		
-		
-		
 		String indexname = String.valueOf(System.currentTimeMillis());
 		log.info(getSearchType() + " reindexing in " + "(" + getCatalogId() + ") as " + indexname);
 		File dir = new File(getRootDirectory(), getIndexPath() + "/" + indexname);
@@ -418,23 +440,17 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 			if (inQuery.hasFilters())
 			{
+//http://fossies.org/linux/www/lucene-5.0.0-src.tgz/lucene-5.0.0/demo/src/java/org/apache/lucene/demo/facet/SimpleFacetsExample.java			
 				for (Iterator iterator = inQuery.getFilters().iterator(); iterator.hasNext();)
 				{
 					FilterNode rootnode = (FilterNode) iterator.next();
-					ddq = new DrillDownQuery(FacetIndexingParams.DEFAULT, query1);  //this is recursive, is that the fastest way to do it?
+					ddq = new DrillDownQuery(getFacetConfig(), query1);  //this is recursive, is that the fastest way to do it?
+					
+					//filter down the results, add all the terms
 					
 					//Lets not do multiple paths just yet. For now support a single list of filters
-					
-//					for (Iterator iterator2 = rootnode.getChildren().iterator(); iterator2.hasNext();)
-//					{
-//						FilterNode node = (FilterNode) iterator2.next();
-//						if (node.isSelected())
-//						{
-//					String [] path = node.get("label").split("/");
-					String [] path = new String[] { rootnode.getId(), rootnode.get("value") };
-					ddq.add(new CategoryPath(path));
-//						}
-//					}
+					//String [] path = new String[] { rootnode.getId(), rootnode.get("value") };
+					ddq.add(rootnode.getId(), rootnode.get("value") );
 					//ddq.add(query1, BooleanClause.Occur.MUST);
 					query1 = ddq;
 				}
@@ -444,7 +460,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 			{
 				sort = buildSort(inOrdering);
 			}
-			LuceneHitTracker tracker = new LuceneHitTracker(getLuceneConnectionManager(), query1, sort, this);
+			LuceneHitTracker tracker = new LuceneHitTracker(getLuceneConnectionManager(), query1, sort, this, getFacetConfig());
 			tracker.setSearchType(getSearchType());
 			tracker.setIndexId(getIndexId());
 			
@@ -744,11 +760,12 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 	public void flush()
 	{
-		if(fieldTaxonomyWriter != null){
+		if(fieldTaxonomyWriter != null)
+		{
 			try
 			{
 				fieldTaxonomyWriter.commit();
-
+	
 			}
 			catch (Exception e)
 			{
@@ -997,7 +1014,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 	public void updateIndex(Collection inRecords, boolean optimize)
 	{
 		updateIndex(getIndexWriter(), getTaxonomyWriter(), inRecords);
-		clearIndex();
+		//clearIndex();
 	}
 
 	public void updateIndex(IndexWriter inWriter, TaxonomyWriter inTaxonomyWriter, Collection inRecords)
@@ -1030,15 +1047,23 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				updateIndex(data, doc, details);
 				Term term = new Term("id", data.getId());
 				terms[i++] = term;
+				doc = getLuceneIndexer().updateFacets(details,doc,inTaxonomyWriter,getFacetConfig());
 				docs.add(doc);
-				getLuceneIndexer().updateFacets(details,doc, inTaxonomyWriter);
 				if (fieldCacheManager != null)
 				{
 					getCacheManager().remove(getIndexPath(), data.getId());
 				}
 			}
-			inWriter.deleteDocuments(terms);
-			inWriter.addDocuments(docs);
+//			for (int j = 0; j < terms.length; j++)
+//			{
+//				inWriter.updateDocument(terms[j], docs.get(j), getAnalyzer());				
+//			}
+			//This gives NPE
+			if( terms.length > 0)
+			{
+				inWriter.deleteDocuments(terms);
+				inWriter.addDocuments(docs);
+			}
 			
 			//inWriter.updateDocument(term, doc, getAnalyzer());
 			clearIndex();
@@ -1082,11 +1107,10 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 				throw new OpenEditException("No " + getSearchType() + "properties.xml file available");
 			}
 			updateIndex(inData, doc, details);
-
-			getLuceneIndexer().updateFacets(details,doc, inTaxonomyWriter);
+			doc = getLuceneIndexer().updateFacets(details,doc,inTaxonomyWriter,getFacetConfig());
 
 			Term term = new Term("id", inData.getId());
-			inWriter.updateDocument(term, doc, getAnalyzer());
+			inWriter.updateDocument(term, doc);
 			if (fieldCacheManager != null)
 			{
 				getCacheManager().remove(getIndexPath(), inData.getId());
@@ -1278,7 +1302,4 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 		// TODO: Delete the last two older indexes
 
 	}
-
-	
-
 }

@@ -53,7 +53,7 @@ public class ftppublisher extends basepublisher implements Publisher
 		//get password and login
 		if(password == null)
 		{
-			UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
+			UserManager userManager = mediaArchive.getUserManager();
 			User user = userManager.getUser(username);
 			password = userManager.decryptPassword(user);
 		}

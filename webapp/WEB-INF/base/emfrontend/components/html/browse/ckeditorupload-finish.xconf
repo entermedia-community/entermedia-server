@@ -1,9 +1,6 @@
 <page>
 	
+	<path-action name="AssetEditModule.handleUploads"/>
 	
-	<path-action name="Script.run">
-		<script>/${applicationid}/components/html/browse/handleupload.groovy</script>    
-	
-	</path-action>
 <inner-layout>/${applicationid}/components/html/browse/assetlayout.html</inner-layout>
 </page>

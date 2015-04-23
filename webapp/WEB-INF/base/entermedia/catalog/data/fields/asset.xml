@@ -5,10 +5,12 @@
 	<!--<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property> -->
 	<property id="description" defaultoperation="freeform">All Fields</property>
 	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
+	<property id="isfolder" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Folder Based</property>
+
 	<property id="category" keyword="true" editable="true" viewtype="category" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
 	<property id="division"  editable="true"  keyword="true" index="true"  stored="true" type="list" >Division</property>
-	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Projects</property>
+	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"  editable="true"  stored="true" index="true" sort="name" foreignkeyid="division">Libraries</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
 
 	<!-- Push items -->
@@ -20,7 +22,7 @@
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	
-	<property id="fulltext" internalfield="true" keyword="true">Full Text</property> 	<!-- This is for PDFs -->
+	<property id="hasfulltext" index="true" type="boolean" stored="true" >Has Full Text</property> 	<!-- This is for PDFs -->
 	<property id="pages" datatype="number" viewtype="number" index="true" stored="true" >Pages</property> 	<!--  These are writen to by outside API -->
 	<property id="assetviews" internalfield="true" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
 	<property id="assetvotes" internalfield="true" datatype="number" index="true" stored="true" >Vote Rank</property>

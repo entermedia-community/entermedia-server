@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.dom4j.DocumentHelper
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.entermedia.locks.Lock
@@ -22,18 +21,16 @@ import org.openedit.event.WebEvent
 import org.openedit.event.WebEventHandler
 import org.openedit.util.DateStorageUtil
 
-import com.openedit.BaseWebPageRequest;
+import com.openedit.BaseWebPageRequest
 import com.openedit.ModuleManager
 import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
-import com.openedit.page.Page
-import com.openedit.page.PageRequestKeys;
 import com.openedit.page.manage.PageManager
 import com.openedit.users.User
 import com.openedit.users.UserManager
-import com.openedit.util.RequestUtils;
+import com.openedit.util.RequestUtils
 
 public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
@@ -42,7 +39,6 @@ public class BaseOrderManager implements OrderManager {
 	protected LockManager fieldLockManager;
 	protected ModuleManager fieldModuleManager;
 	protected PageManager fieldPageManager;
-	protected UserManager fieldUserManager;
 	
 	public WebEventHandler getWebEventHandler() {
 		return fieldWebEventHandler;
@@ -62,7 +58,7 @@ public class BaseOrderManager implements OrderManager {
 
 	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatlogId, "order");
-		Data order = createNewOrderWithId(frontendappid, inCatlogId,inUser.getUserName());
+		Data order = createNewOrder(frontendappid, inCatlogId,inUser.getUserName());
 
 		for (Iterator iterator = inProperties.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
@@ -310,21 +306,7 @@ public class BaseOrderManager implements OrderManager {
 		return toSave;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#createNewOrderWithId(java.lang.String, java.lang.String, java.lang.String)
-	 */
 
-	public Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername) {
-		Order order = createNewOrder(inAppId, inCatalogId, inUsername);
-		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
-		if( order.getId() == null) {
-			String id = searcher.nextId();
-			order.setName(id);
-			id = id + "_" + UUID.randomUUID().toString().replace('-', '_');
-			order.setId(id);
-		}
-		return order;
-	}
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#createNewOrder(java.lang.String, java.lang.String, java.lang.String)
 	 */
@@ -332,11 +314,21 @@ public class BaseOrderManager implements OrderManager {
 	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
 		Order order  = (Order)searcher.createNewData();
-		order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
+		//order.setElement(DocumentHelper.createElement(searcher.getSearchType()));
 		//order.setId(searcher.nextId());
 		order.setProperty("orderstatus", "preorder");
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		order.setSourcePath(inUsername + "/" + order.getId());
+		
+		if( order.getId() == null) {
+			//String id = searcher.nextId();
+			//order.setName(id);
+			String id = UUID.randomUUID().toString().replace('-', '_');
+			order.setId(id);
+			order.setName(id);
+			order.setSourcePath(inUsername + "/" + id.substring(0,2));
+		}
+
+
 		order.setProperty("userid", inUsername);
 		order.setProperty("applicationid",inAppId);
 		return order;
@@ -367,7 +359,7 @@ public class BaseOrderManager implements OrderManager {
 		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
 		Data item = itemsearcher.createNewData();
-		item.setId(itemsearcher.nextId());
+		//item.setId(itemsearcher.nextId());
 		item.setProperty("orderid", order.getId());
 		item.setProperty("userid", order.get("userid"));
 
@@ -855,11 +847,8 @@ public class BaseOrderManager implements OrderManager {
 			return false;
 		}
 		Searcher itemsearcher = getSearcherManager().getSearcher(inCatId, "orderitem");
-		SearchQuery query = itemsearcher.createSearchQuery();
-		query.addMatches("orderid", inOrder.getId());
-		query.addMatches("assetid", inAssetId);
-		HitTracker results = itemsearcher.search(query);
-		if(results.size() > 0)
+		Data item = itemsearcher.query().match("orderid", inOrder.getId()).match("assetid", inAssetId).searchOne();
+		if(item != null)
 		{
 			return true;
 		}
@@ -991,7 +980,7 @@ public class BaseOrderManager implements OrderManager {
 			String userid = inOrder.get("userid");
 			if(userid != null)
 			{
-				User muser = getUserManager().getUser(userid);
+				User muser = inArchive.getUserManager().getUser(userid);
 				if(muser != null)
 				{
 					String owneremail = muser.getEmail();
@@ -1050,13 +1039,5 @@ public class BaseOrderManager implements OrderManager {
 	public void setPageManager(PageManager inManager)
 	{
 		fieldPageManager = inManager;
-	}
-	protected UserManager getUserManager()
-	{
-		return fieldUserManager;
-	}
-	public void setUserManager(UserManager inManager)
-	{
-		fieldUserManager = inManager;
-	}
+	}	
 }

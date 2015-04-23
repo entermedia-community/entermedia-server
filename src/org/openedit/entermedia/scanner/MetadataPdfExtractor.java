@@ -1,22 +1,35 @@
 package org.openedit.entermedia.scanner;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringReader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.FileItem;
 
+import com.openedit.page.manage.PageManager;
 import com.openedit.util.FileUtils;
+import com.openedit.util.OutputFiller;
 import com.openedit.util.PathUtilities;
 
 public class MetadataPdfExtractor extends MetadataExtractor
 {
 	private static final Log log = LogFactory.getLog(MetadataPdfExtractor.class);
+	protected PageManager fieldPageManager;
+	OutputFiller filler = new OutputFiller();
+	public PageManager getPageManager()
+	{
+		return fieldPageManager;
+	}
+
+	public void setPageManager(PageManager inPageManager)
+	{
+		fieldPageManager = inPageManager;
+	}
 
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
@@ -55,7 +68,20 @@ public class MetadataPdfExtractor extends MetadataExtractor
 					Parse results = parser.parse(in); //Do we deal with encoding?
 					//We need to limit this size
 					String fulltext = results.getText();
-					inAsset.setProperty("fulltext", fulltext);
+					if( fulltext != null && fulltext.length() > 0)
+					{
+						
+						ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() +"/assets/" + inAsset.getSourcePath() + "/fulltext.txt");
+						if( item instanceof FileItem)
+						{
+							((FileItem)item).getFile().getParentFile().mkdirs();
+						}
+						PrintWriter output = new PrintWriter(item.getOutputStream());
+						filler.fill(new StringReader(fulltext), output );
+						filler.close(output);
+						inAsset.setProperty("hasfulltext", "true");
+					}
+					
 					if( inAsset.getInt("width") == 0)
 					{
 						String val = results.get("width");

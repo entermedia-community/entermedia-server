@@ -14,6 +14,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.XmlFileSearcher;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlFile;
 
 import com.openedit.OpenEditException;
@@ -54,10 +55,12 @@ public class UserProfileSearcher extends XmlFileSearcher {
 				{
 					Element element = (Element) iterator.next();
 					UserProfile data = (UserProfile)createNewData();
-					data.setElement(element);
+					ElementData raw = new ElementData(element);
+					data.setProperties(raw.getProperties());
 					data.setSourcePath(sourcepath);
+					data.setCatalogId(getCatalogId());
 					User target = getUserManager().getUser(data.getId());
-					data.setUser(target);
+					((UserProfile)data).setUser(target);
 					
 					buffer.add(data);
 					

@@ -1,10 +1,10 @@
 #
 #Thu Apr 08 15:12:35 EDT 2010
 Retype\ Password=Passwort wiederholen
-Permission\ Groups=Gruppen-Rechte
+Permission\ Groups=Gruppenrechte
 Import\ Users=Importieren von Benutzern
-USER=Benutzer
-Home\ Page\ Does\ Not\ Exist=Home Seite existiert nicht
+USER=BENUTZER
+Home\ Page\ Does\ Not\ Exist=Startseite existiert nicht
 Change\ Password=Passwort ändern
 Home\ Page=Startseite
 Orders=Bestellungen
@@ -15,3 +15,4 @@ User\ Search=Benutzer suchen
 Create\ New\ User=Erstellen eines neuen Benutzers
 Add=hinzufügen
 Save\ Changes=Änderungen speichern
+

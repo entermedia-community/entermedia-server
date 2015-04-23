@@ -39,13 +39,6 @@ public class wordpresspublisher extends basepublisher implements Publisher
 		
 		log.info("Publishing ${asset} to EnterMedia server ${url}, with hash encoded password from ${username}.");
 		
-//		UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
-//		User user = userManager.getUser(username);
-//		if(user == null)
-//		{
-//			result.setErrorMessage("Unknown user, ${username}");
-//			return result;
-//		}
 		String password = destination.get("accesskey");
 		//http://hc.apache.org/httpcomponents-client-4.4.x/httpmime/examples/org/apache/http/examples/entity/mime/ClientMultipartFormPost.java
 		HttpPost method = new HttpPost(url);
@@ -118,7 +111,7 @@ public class wordpresspublisher extends basepublisher implements Publisher
 				result.setErrorMessage("Wordpress Server error returned ${response2.getStatusLine().getStatusCode()}");
 			}
 			HttpEntity entity2 = response2.getEntity();
-			log.info( EntityUtils.toString(entity2));
+			log.info( "Wordpress Server response: " + EntityUtils.toString(entity2));
 			// do something useful with the response body
 			// and ensure it is fully consumed
 			EntityUtils.consume(entity2);

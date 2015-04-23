@@ -31,7 +31,9 @@ public class AssetControlModuleTest extends BaseEnterMediaTest
 		List<User> users = null;
 		List names = new ArrayList();
 		names.add("admin");
-		users = module.findUsersByName(names);
+		WebPageRequest req = getFixture().createPageRequest("/testcatalog/views/assets/index.html?assetid=101");
+
+		users = module.findUsersByName(req,names);
 		assertNotNull("users are NULL!", users);
 		assertTrue(users.size() > 0);
 	}

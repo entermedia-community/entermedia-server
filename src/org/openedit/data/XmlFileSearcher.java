@@ -77,15 +77,15 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		fieldXmlArchive = inXmlArchive;
 	}
-
+/*
 	public Data loadData(String inSourcePath, String inId)
 	{
 		//TODO: Load from cache?
 		
-		Data data = getXmlDataArchive().loadData(this,inSourcePath,inId);
+		Data data = getXmlDataArchive().loadData(inSourcePath,inId);
 		return data;
 	}
-	
+*/	
 	public Data createNewData()
 	{	
 		if( getNewDataName() == null)
@@ -118,18 +118,40 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		{
 			return null;
 		}
-		String sourcepath = first.getSourcePath();
-		if (sourcepath != null)
+		if( "id".equals(inId) )
 		{
-			first = loadData(sourcepath, first.getId());
-			if (fieldCacheManager != null && first != null && "id".equals(inId))
+			String sourcepath = first.getSourcePath();
+			if (sourcepath != null)
 			{
-				getCacheManager().put(getIndexPath(), inValue, first);
+				ElementData elementd = (ElementData)getXmlDataArchive().loadData(sourcepath, first.getId());
+				if( getNewDataName() != null )
+				{
+					first = createNewData();
+					copyData(elementd,first);
+				}
+				else
+				{
+					first = elementd;
+				}
+				if (fieldCacheManager != null)
+				{
+					getCacheManager().put(getIndexPath(), inValue, first);
+				}
+			}
+			else
+			{
+				throw new OpenEditException("Database missing sourcepath for asset " + getSearchType() +" / " + inId);
 			}
 		}
 		return first;
 	}
 	
+	protected void copyData(Data inElementd, Data inNewdata)
+	{
+		inNewdata.setId(inElementd.getId());
+		inNewdata.setName(inElementd.getName());
+		inNewdata.setProperties(inElementd.getProperties());
+	}
 	public void saveAllData(Collection inAll, User inUser)
 	{
 		//check that all have ids
@@ -140,14 +162,14 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			{
 				data.setId(nextId());
 			}
-			if( data.getSourcePath() == null)
+			if( data.getSourcePath() == null) //TODO: Move this to the saving code?
 			{
 				String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
 				data.setSourcePath(sourcepath);
 			}
 		}
-		getXmlDataArchive().saveAllData(inAll, getCatalogId(), getPrefix() + "/", inUser );
 		updateIndex(inAll);
+		getXmlDataArchive().saveAllData(inAll, getCatalogId(), getPrefix() + "/", inUser );
 		//getLiveSearcher(); //should flush the index
 	}
 

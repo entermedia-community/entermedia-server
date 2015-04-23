@@ -1,4 +1,11 @@
 <div id="detaileditor">
+	### figure out if attachments was selected
+	#set($uri = $context.getRequest().getRequestURI())
+	#set($isattachments = false)
+	#if($uri == "/$applicationid/views/modules/asset/editor/attachments/index.html")
+		#set($isattachments = true)
+	#end
+
     #set( $moduleid = $context.findValue("module") )
     #set ( $hitssessionid = $context.findValue("hitssessionid") )
     #macro (displaydetails $filename $label $assetid $view $print)
@@ -41,7 +48,7 @@
                 #if( $hits && $hits.hasMultipleSelections() )
                     <span style="text-align: center;">[[Selected Media]]</span>
                 #else
-                    <span style="text-align: center;">[[Related Media]]</span>
+                    <span style="text-align: center;">#if($isattachments)[[Attachments]] #else [[Related Media]]#end</span>
                 #end    
                 </div>
                 #end
@@ -140,3 +147,6 @@
     #end
 
 </div>
+
+
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/video</property>
+	<property name="sourcepathhasfilename">true</property>
+	<generator name="convertArchiveDocument"/>
+	
+	<permission name="view">
+		<pagevalue name="canviewasset" equals="true"/>
+	</permission>	
+	
+</page>
+
+

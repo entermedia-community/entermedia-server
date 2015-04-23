@@ -1,0 +1,20 @@
+<script src="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/jquery-1.11.1.min.js"></script>
+<script src="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.min.js"></script>
+<link   href="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/skin/minimalist.css" rel="stylesheet" >
+
+#set( $sourcepath = $url_util.encode($asset.sourcepath) )
+#set( $source = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/video.mp4/streaming.mp4" )
+#set( $thumb =  "$!prefix$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/image1024x768.jpg/thumb.jpg" )
+
+<div id="play$asset.getId()" class="player is-splash"  style="background-color:#777; background-image:url($thumb);">
+   <video>
+      <source type="video/mp4"  src="$source">
+   </video>
+</div>
+
+<script>
+$(function () {
+  $("#play$asset.getId()").flowplayer({ swf: "$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.swf" });
+ 
+});
+</script>

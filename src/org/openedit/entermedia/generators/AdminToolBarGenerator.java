@@ -146,6 +146,11 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 		catch ( Exception ex)
 		{
 			inContext.getPageStreamer().setOutput(oldOut);
+			if( ignoreError(ex) )
+			{
+				log.info("Browser canceled request");
+				return;
+			}
 			//write out any errors
 			if( ex instanceof OpenEditException)
 			{

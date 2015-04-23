@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 import org.openedit.Data;
 import org.openedit.entermedia.scanner.MetaDataReader;
@@ -14,9 +16,11 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.OpenEditException;
+import com.openedit.WebPageRequest;
 import com.openedit.users.User;
 import com.openedit.util.FileUtils;
 import com.openedit.util.PathUtilities;
+import com.openedit.util.Replacer;
 
 public class AssetUtilities
 {
@@ -43,12 +47,19 @@ public class AssetUtilities
 	{
 		fieldMetaDataReader = inMetaDataReader;
 	}
-	//Main API
 	public Asset createAssetIfNeeded(ContentItem inContent, final MediaArchive inArchive, User inUser)
 	{
 		String sourcepath = extractSourcePath(inContent,inArchive);
 		Asset asset = inArchive.getAssetSearcher().getAssetBySourcePath(sourcepath);
 		asset = populateAsset(asset, inContent, inArchive, sourcepath, inUser);
+		return asset;
+	}
+
+	//Main API
+	public Asset createAssetIfNeeded(final MediaArchive inArchive, ContentItem inContent, String inSourcePath, User inUser)
+	{
+		Asset asset = inArchive.getAssetSearcher().getAssetBySourcePath(inSourcePath);
+		asset = populateAsset(asset, inContent, inArchive, inSourcePath, inUser);
 		return asset;
 	}
 
@@ -118,10 +129,24 @@ public class AssetUtilities
 		}
 		else
 		{
-			asset = inArchive.createAsset(sourcePath);
-			asset.setFolder(inContent.isFolder());
+			asset = (Asset)inArchive.getAssetSearcher().createNewData();
+			if( sourcePath.endsWith("/"))
+			{
+				asset.setFolder(true);
+				asset.setPrimaryFile(inContent.getName());
+				sourcePath = sourcePath.substring(0,sourcePath.length() - 1);
+			}	
+			asset.setSourcePath(sourcePath);
 			asset.setProperty("datatype", "original");
 			asset.setProperty("editstatus", "1");
+			
+			asset.setName(inContent.getName());
+			String ext = PathUtilities.extractPageType(inContent.getName());
+			if( ext != null)
+			{
+				ext = ext.toLowerCase();
+			}
+			asset.setProperty("fileformat", ext);
 			
 			if( inUser != null ) 
 			{
@@ -273,6 +298,87 @@ public class AssetUtilities
 	public String getDataDir(MediaArchive inArchive)
 	{
 		return "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
+	}
+	
+	public String createSourcePath(WebPageRequest inReq, MediaArchive inArchive)
+	{
+		return createSourcePath( inReq,  inArchive, null);
+	}
+	public String createSourcePath(WebPageRequest inReq, MediaArchive inArchive, String fileName)
+	{
+		String sourcepath = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+		
+		Map vals = new HashMap();
+		vals.putAll(inReq.getPageMap());
+		String prefix ="";
+		String[] fields = inReq.getRequestParameters("field");
+
+		if( fields != null)
+		{
+			for (int i = 0; i < fields.length; i++)
+			{
+				String val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
+				if( val != null)
+				{
+					vals.put(fields[i],val);
+				}
+			}
+		}
+		String id = inReq.getRequestParameter("id");
+		if(id != null)
+		{
+			vals.put("id",id);
+		}
+		String library = inReq.getRequestParameter("libraries.value");
+		if(library != null)
+		{
+			vals.put("library", library);
+		}
+
+		library = inReq.getRequestParameter("library.value");
+		if(library != null)
+		{
+			vals.put("library", library);
+		}
+
+		String division = inReq.getRequestParameter("division.value");
+		if(division != null)
+		{
+			vals.put("division", division);
+		}
+
+		if(fileName != null)
+		{
+			vals.put("filename", fileName);
+		}
+		//vals.put("filename", item.getName());
+		//vals.put("guid", item.getName());
+		String guid = UUID.randomUUID().toString();
+		String sguid = guid.substring(0,Math.min(guid.length(), 13));
+		vals.put("guid", sguid);
+		vals.put("splitguid", sguid.substring(0,2) + "/" + sguid.substring(3).replace("-", ""));
+		
+		String date  = new SimpleDateFormat("yyyyMM").format(new Date());
+		vals.put("formatteddate",date );
+		
+		Replacer replacer = new Replacer();
+		
+		replacer.setSearcherManager(inArchive.getSearcherManager());
+		replacer.setCatalogId(inArchive.getCatalogId());
+		replacer.setAlwaysReplace(true);
+		sourcepath = replacer.replace(sourcepath, vals);
+		//sourcepath = sourcepath + "/" + item.getName();
+		if( sourcepath.endsWith("/"))
+		{
+			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
+		}
+		if( !sourcepath.startsWith("/") )
+		{
+			sourcepath = sourcepath + "/";
+		}
+		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
+
+		return sourcepath;
 	}
 
 }

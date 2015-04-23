@@ -78,10 +78,15 @@ public class CreatorManager
 
 	public String getRenderTypeByFileFormat(String inFileType)
 	{
+		if( inFileType == null)
+		{
+			return null;
+		}
+		inFileType = inFileType.toLowerCase();
 		String render = (String)getFileFormatCache().get(inFileType);
 		if( render == null)
 		{
-			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);			
+			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
 			if( row != null)
 			{
 				render = row.get("rendertype");

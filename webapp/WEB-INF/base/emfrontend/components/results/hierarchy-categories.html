@@ -1,0 +1,155 @@
+<div class="emgallery" style="clear:both">
+	<div id="emslidesheet" class="clearfix">
+	#set($keys = $categorymap.keySet())
+	#foreach($key in $keys)
+		#set($items = $categorymap.get($key))
+		<div class="emthumbbox emboxthumb" >
+			<a class="hovering" href="/$applicationid/views/categories/${key.id}.html">
+	            <div class="emthumbimage emthumb" title="$key">
+	            	<div class="hand spread">
+	            		#foreach ($item in $items)
+					    <div class="card suit${velocityCount}">
+					      <img src="/$applicationid/views/modules/asset/downloads/generatedpreview/${item.sourcepath}/image200x200.jpg/${item.name}200x200.jpg">
+					    </div>
+					    #end
+					  </div>
+	            </div>
+	        </a>
+	        <div class="gallery-caption">
+	           	<div class="gallery-field-label">
+	           		<a href="/$applicationid/views/categories/${key.id}.html">
+		           		<img src="/$applicationid/theme/images/folder.png" alt="$key" width="26px" height="26px">
+		           		&nbsp;&nbsp;
+		           		$key
+		           	</a>
+	           	</div>
+		        <div class="gallery-field-info" title="$key" ></div>
+	   		</div>
+		</div>
+	#end
+	</div>
+</div>
+
+#if($keys.size() > 0)
+<hr>
+#end
+
+<style>
+.hand {
+  margin: 50px;
+}
+
+/* For modern browsers */
+.hand:before,
+.hand:after {
+    content:"";
+    display:table;
+}
+ 
+.hand:after {
+    clear:both;
+}
+ 
+/* For IE 6/7 (trigger hasLayout) */
+.hand {
+    zoom:1;
+}
+
+.card {
+  position: relative;
+  float: left;
+  padding-top: 10px;
+  width: 146px;
+  height: 146px;
+  border-radius: 6px;
+  background: white;
+  -webkit-box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
+  box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
+}
+
+.card > img {
+	max-width:132px;
+	max-height:132px;
+}
+
+div[class*='suit']:before {
+  position: absolute;
+  font-size: 35px;
+  left: 5px;
+  top: 5px;
+}
+
+div[class*='suit']:after {
+  position: absolute;
+  font-size: 35px;
+  right: 5px;
+  bottom: 5px;
+}
+
+.card:hover {
+  cursor: pointer;
+}
+
+
+/*SPREAD*/
+.spread {
+  width: 126px;
+  height: 126px;
+  position: relative;
+}
+
+.spread > .card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  -webkit-transition: top 0.3s ease, left 0.3s ease;
+  -moz-transition: top 0.3s ease, left 0.3s ease;
+  -o-transition: top 0.3s ease, left 0.3s ease;
+  -ms-transition: top 0.3s ease, left 0.3s ease;
+  transition: top 0.3s ease, left 0.3s ease;
+}
+
+.spread:hover .suit1 {
+  left: -50px;
+  -webkit-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  -o-transform: rotate(-10deg);
+  -ms-transform: rotate(-10deg);
+  transform: rotate(-10deg);
+}
+
+.spread:hover .suit2 {
+  left: -30px;
+  top: 0px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.spread:hover .suit3 {
+  left: 0px;
+  top: 5px;
+  -webkit-transform: rotate(10deg);
+  -moz-transform: rotate(10deg);
+  -o-transform: rotate(10deg);
+  -ms-transform: rotate(10deg);
+  transform: rotate(10deg);
+}
+
+.spread:hover .suit4{
+  left: 30px;
+  top: 10px;
+  -webkit-transform: rotate(20deg);
+  -moz-transform: rotate(20deg);
+  -o-transform: rotate(20deg);
+  -ms-transform: rotate(20deg);
+  transform: rotate(20deg);
+}
+
+.spread > .card:hover {
+  -webkit-box-shadow: 1px 1px 7px rgba(0,0,0,0.4);
+  box-shadow: 1px 1px 7px rgba(0,0,0,0.4);
+}
+</style>

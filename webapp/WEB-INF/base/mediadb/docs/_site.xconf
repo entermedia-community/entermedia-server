@@ -15,6 +15,7 @@
  <script id="jquery" src="/${applicationid}/docs/bootstrap/js/jquery.js" />
  <script id="bootstrap" src="/${applicationid}/docs/bootstrap/js/bootstrap.js" />
  <style id="bootstrap" href='/${applicationid}/docs/bootstrap/css/bootstrap.min.css' />
+ <script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
 
  <inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>
 	<property name="title">EnterMedia MediaDB Documentation</property>

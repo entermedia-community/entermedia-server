@@ -75,13 +75,13 @@ public class MediaEmailModule extends BaseMediaModule
 			{
 				String id = (String) groupiter.next();
 
-				Group group = getUserManager().getGroup(id);
+				Group group = getUserManager(inReq).getGroup(id);
 				if (group != null)
 				{
 					gbuff.append(id);
 					gbuff.append(",");
 
-					HitTracker users = getUserManager().getUsersInGroup(group);
+					HitTracker users = getUserManager(inReq).getUsersInGroup(group);
 					for (Iterator iterator = users.iterator(); iterator.hasNext();)
 					{
 						User user = (User) iterator.next();
@@ -113,7 +113,7 @@ public class MediaEmailModule extends BaseMediaModule
 				}
 				else // This is a username
 				{
-					User user = getUserManager().getUser(address.trim());
+					User user = getUserManager(inReq).getUser(address.trim());
 					if( user != null && user.getEmail() != null && user.getEmail().contains("@") )
 					{
 						Recipient rec = new Recipient();

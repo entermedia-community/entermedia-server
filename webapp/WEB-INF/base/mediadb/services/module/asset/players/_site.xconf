@@ -1,0 +1,10 @@
+<page>
+	
+	<inner-layout />
+	<layout />
+
+	<permission name="view">
+		<boolean value="true" />
+	</permission>
+	
+</page>

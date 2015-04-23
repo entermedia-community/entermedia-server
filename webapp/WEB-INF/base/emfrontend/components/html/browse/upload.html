@@ -5,14 +5,10 @@
 
 #set( $sourcepath = $content.get('uploadsourcepath') )
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home$apphome/components/html/${content.pickermode}/ckeditorupload-finish.html">
-		<input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+		<input type="file" size="50"  value="Upload" name="file.0" onchange="doUpload()">
 		<input type="hidden" name="unzip" value="false" />
 		<input type="hidden" name="catalogid" value="$catalog" /> 
-		<input type="hidden" name="applicationid" value="media" />
-		<input type="hidden" name="sourcepath" value="$sourcepath" />
 		<input type="hidden" name="uploadtype" value="$uploadtype" />
-
-
 </form>
 
 <div id="waiting" style="display:none;">

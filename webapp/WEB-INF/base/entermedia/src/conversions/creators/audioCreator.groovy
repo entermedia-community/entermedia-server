@@ -29,7 +29,6 @@ public class audioCreator extends BaseCreator implements MediaCreator
 	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page converted, ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
-
 		if(!inStructions.isForce() && converted.length() > 1 )
 		{
 			result.setOk(true);
@@ -67,15 +66,16 @@ public class audioCreator extends BaseCreator implements MediaCreator
 			}
 			else
 			{
+				long timeout = getConversionTimeout(inArchive, inAsset);
 				String inOutputType = inStructions.getOutputExtension();
 				if( "wma".equalsIgnoreCase(inputExt) || "aac".equalsIgnoreCase(inputExt) || "m4a".equalsIgnoreCase(inputExt) || "flac".equalsIgnoreCase(inputExt) || "ogg".equalsIgnoreCase(inputExt))
 				{
 					String abspath = inputpage.getContentItem().getAbsolutePath();
-					runFfmpeg(abspath, converted, inStructions, result);
+					runFfmpeg(abspath, converted, inStructions, result, timeout);
 				}
 				else
 				{
-					runLame(inputpage, converted, inStructions, result);
+					runLame(inputpage, converted, inStructions, result, timeout);
 				}
 			}
 		}
@@ -86,7 +86,7 @@ public class audioCreator extends BaseCreator implements MediaCreator
 
 		return result;
 	}
-	private void runLame(Page input, Page output, ConvertInstructions inStructions, ConvertResult result)
+	private void runLame(Page input, Page output, ConvertInstructions inStructions, ConvertResult result, long inTimeout)
 	{
 		String inputExt = PathUtilities.extractPageType(input.getContentItem().getAbsolutePath());
 		long start = System.currentTimeMillis();
@@ -137,7 +137,7 @@ public class audioCreator extends BaseCreator implements MediaCreator
 			//make sure this folder exists
 			new File( output.getContentItem().getAbsolutePath() ).getParentFile().mkdirs();
 			
-			ExecResult res = getExec().runExec("lame", args);
+			ExecResult res = getExec().runExec("lame", args, inTimeout);
 			result.setOk( res.isRunOk());
 		}
 		catch (Exception ex)
@@ -160,7 +160,7 @@ public class audioCreator extends BaseCreator implements MediaCreator
 		log.info( message + " in " + (System.currentTimeMillis() - start)/1000L + " seconds" );
 	}
 	
-	private void runFfmpeg(String abspath, Page output, ConvertInstructions inStructions, ConvertResult result) 
+	private void runFfmpeg(String abspath, Page output, ConvertInstructions inStructions, ConvertResult result, long inTimeout) 
 	{
 		long start = System.currentTimeMillis();
 		
@@ -192,7 +192,7 @@ public class audioCreator extends BaseCreator implements MediaCreator
 		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 
 		//boolean ok =  runExec("ffmpeg", comm);
-		boolean ok =  runExec("avconv", comm);
+		boolean ok =  runExec("avconv", comm, inTimeout);
 		
 		result.setOk(ok);
 		log.info( "ok: ${ok} in " + (System.currentTimeMillis() - start)/1000L + " seconds" );

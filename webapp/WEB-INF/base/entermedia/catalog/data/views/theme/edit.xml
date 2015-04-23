@@ -1,0 +1,107 @@
+
+<properties beanname="">
+  
+  <!--  header information and style -->
+  <property id="name" />
+  <property id="title" />
+  <property id="subheading" />
+  <property id="logopath" />
+  <property id="logoasset" />
+  
+  <property id="logowidth" />
+  <property id="logoheight" />
+
+  <property id="tileupload" />
+  <property id="bodybackgroundcolor" />
+  <property id="backgroundpath" />
+  <property id="backgroundstyle" />
+  <property id="backgroundtile" />
+
+  <property id="headerstyle" />
+  <property id="headerheight" />
+  <!-- 
+  <property id="headercolor" viewtype="color" >Header Solid Colour</property>
+  <property id="headergradientcolor1" viewtype="color" >Header Vertical Gradient Color (High)</property>
+  <property id="headergradientcolor2" viewtype="color" >Header Vertical Gradient Color (Low)</property>
+  -->
+  <!-- header color + gradients (new) -->
+  <property id="headercolor" />
+  <property id="headercolorgradient" />
+  
+  <!-- header font -->
+  <property id="headerfont" />
+  <property id="headerfontsize" />
+  <property id="headerfontcolor" />
+  <!-- done header font -->
+  
+  <!--  navigation styles -->
+  <!-- 
+  <property id="headerfontopacity" viewtype="slider" min="0" max="1" >Header Font Opacity</property>
+  <property id="navbackground" viewtype="color" >Navigation Solid Background Colour</property>
+  <property id="navgradientcolor1" viewtype="color" >Navigation Vertical Gradient Colour (High)</property>
+  <property id="navgradientcolor2" viewtype="color" >Navigation Vertical Gradient Colour (Low)</property>
+  -->
+  <!-- navigation color + gradients (new) -->
+  
+  <property id="navbackgroundpath" />
+  
+  <property id="navcolor" />
+  <property id="navcolorgradient" />
+  
+  <!-- navigation font (new)-->
+  <property id="navfont" />
+  <property id="navfontsize" />
+  <property id="navfontcolor" />
+  <!-- 
+  <property id="navfontopacity" viewtype="slider" min="0" max="1" >Navigation Font Opacity</property>
+   -->
+  <!-- end navigation font -->
+  
+  <property id="navbuttoncolor" />
+  <property id="navbuttoncolorgradient" />
+  <property id="navbuttonbordercolor" />
+  
+  <!-- navigation font hover (new)-->
+  <property id="navhoverfont" />
+  <property id="navhoverfontsize" />
+  <property id="navhoverfontcolor" />
+  <property id="navhoverfontopacity" />
+
+  <!-- end navigation font hover -->
+  <property id="navbuttonhovercolor" />
+  <property id="navbuttonhovercolorgradient" />
+  
+  <!-- navigation links -->
+  <property id="navlinksbackgroundcolor" />
+  
+  <!-- left column -->
+  <property id="leftcolumnbackgroundcolor" />
+  
+  <!-- table header -->
+  <property id="tableheadercolor" />
+  <property id="tableheadercolorgradient" />
+  
+  <!-- table colors -->
+  <property id="tablebordercolor" />
+  <property id="tablehovercolor" />
+
+  <property id="tablemenubackgroundcolor" />
+  <property id="tablemenubackgroundcolorgradient" />
+  <property id="tablemenuhovercolor" />
+  <property id="tablemenufontcolor" />
+
+  <!-- widget border color -->
+  <property id="widgetbordercolor" />
+
+  <!-- settings menu selection -->
+  <property id="settingsmenuselectioncolor" />
+
+  <!-- asset details selected tab -->
+  <property id="assetdetailsselectedtabcolor" />
+  <property id="assetdetailsselectedtabcolorgradient" />
+  
+  <!-- global styles -->
+  <property id="disableshadows" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
+  
+
+</properties>

@@ -1,6 +1,8 @@
 package conversions;
 
 
+import java.util.Date;
+
 import model.assets.ConvertQueue
 
 import org.entermedia.locks.Lock
@@ -10,6 +12,7 @@ import org.openedit.entermedia.*
 import org.openedit.entermedia.creator.*
 import org.openedit.entermedia.edit.*
 import org.openedit.entermedia.modules.*
+import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.*
 
 import com.openedit.*
@@ -36,48 +39,58 @@ import com.openedit.util.*
 
 class CompositeConvertRunner implements Runnable
 {
-	String fieldSourcePath;
+	String fieldAssetId;
 	MediaArchive fieldMediaArchive;
 	List runners = new ArrayList();
 	User user;
 	ScriptLogger log;
+	boolean fieldCompleted;
 	
-	public CompositeConvertRunner(MediaArchive archive,String sourcepath)
+	public boolean hasComplete()
+	{
+		return fieldCompleted;
+	}
+	public CompositeConvertRunner(MediaArchive archive,String inAssetId)
 	{
 		fieldMediaArchive = archive;
-		fieldSourcePath = sourcepath;
+		fieldAssetId = inAssetId;
 	}
 	
 	public void run()
 	{
-		Lock lock = fieldMediaArchive.getLockManager().lockIfPossible(fieldMediaArchive.getCatalogId(), "assetconversions/" + fieldSourcePath, "admin");
+		Lock lock = fieldMediaArchive.getLockManager().lockIfPossible(fieldMediaArchive.getCatalogId(), "assetconversions/" + fieldAssetId, "runconversions61");
 		
 		if( lock == null)
 		{
-			log.info("asset already being processed ${fieldSourcePath}");
+			log.info("asset already being processed ${fieldAssetId}");
 			return;
 		}
 		try
 		{
-			for( Runnable runner: runners )
+			Asset asset = fieldMediaArchive.getAsset(fieldAssetId);
+			for( ConvertRunner runner: runners )
 			{
-				
+				runner.asset = asset;
 				runner.run();
+				if( runner.isComplete())
+				{
+					fieldCompleted = true;
+				}
 			}
 			
 		}
 		catch(Exception e){
-			log.info("ERRORS ${fieldSourcePath}");
+			log.error("ERRORS ${fieldAssetId}");
 		}
 		finally
 		{
 			
-			log.info("updating conversion statys on ${fieldSourcePath} - runner size was: " + runners.size());
-			String result = fieldMediaArchive.updateAssetConvertStatus(fieldSourcePath);
-			log.info("Result on ${fieldSourcePath} was ${result}");
+			//log.info("updating conversion status on ${fieldSourcePath} - runner size was: " + runners.size());
+			fieldMediaArchive.updateAssetConvertStatus(fieldAssetId);
+			//log.info("Result on ${fieldSourcePath} was ${result}");
 			
 			fieldMediaArchive.releaseLock(lock);
-			fieldMediaArchive.fireSharedMediaEvent("conversions/conversionscomplete");
+			fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 		}
 	
 		
@@ -99,9 +112,18 @@ class ConvertRunner implements Runnable
 	Data hit;
 	ScriptLogger log;
 	User user;
+	Asset asset;
 	ModuleManager moduleManager;
 	ConvertResult result = null;
 	
+	public boolean isComplete()
+	{
+		if( result != null && result.isComplete() )
+		{
+			return true;
+		}
+		return false;
+	}
 	public void run()
 	{
 		try
@@ -115,9 +137,12 @@ class ConvertRunner implements Runnable
 	}
 	public void convert()
 	{
-		Data realtask = tasksearcher.searchById(hit.getId());
+		Data realtask = tasksearcher.loadData(hit);
 		//log.info("should be ${hit.status} but was ${realtask.status}");
-		
+		if( asset == null)
+		{
+			asset = mediaarchive.getAsset(hit.get("assetid"));
+		}
 		if (realtask != null)
 		{
 			String presetid = hit.get("presetid");
@@ -127,15 +152,18 @@ class ConvertRunner implements Runnable
 			{
 				try
 				{
-					String sourcepath = hit.get("sourcepath");
-					result = doConversion(mediaarchive, realtask, preset,sourcepath);
+					if(asset == null)
+					{
+						throw new OpenEditException("Asset could not be loaded ${realtask.getSourcePath()} marking as error");
+					}
+					result = doConversion(mediaarchive, realtask, preset,asset);
 				}
 				catch(Throwable e)
 				{
 					result = new ConvertResult();
 					result.setOk(false);
 					result.setError(e.toString());
-					log.error("Conversion Failed" + e);
+					log.error("Conversion Failed",e);
 				}
 				
 				if(result != null)
@@ -154,9 +182,10 @@ class ConvertRunner implements Runnable
 								itemsearcher.saveData(item, null);
 							}
 							realtask.setProperty("externalid", result.get("externalid"));
+							String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+							realtask.setProperty("completed",completed);
 							tasksearcher.saveData(realtask, user);
-							log.info("Marked " + hit.getSourcePath() +  " complete");
-							Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
+							//log.info("Marked " + hit.getSourcePath() +  " complete");
 							
 							mediaarchive.fireMediaEvent("conversions/conversioncomplete",user,asset);
 							//mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
@@ -173,6 +202,8 @@ class ConvertRunner implements Runnable
 					{
 						realtask.setProperty('status', 'error');
 						realtask.setProperty("errordetails", result.getError() );
+						String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+						realtask.setProperty("completed",completed);
 						tasksearcher.saveData(realtask, user);
 						
 						//TODO: Remove this one day
@@ -184,21 +215,28 @@ class ConvertRunner implements Runnable
 							item.setProperty("errordetails", result.getError() );
 							itemsearcher.saveData(item, null);
 						}
+
 						//	conversionfailed  conversiontask assetsourcepath, params[id=102], admin
-						Map params = new HashMap();
-						params.put("taskid",realtask.getId());
-						//String operation, String inMetadataType, String inSourcePath, Map inParams, User inUser)
-						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask.getSourcePath(), params, user);
-						
+						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask.getId(), user);
 					}
 					else
 					{
-						String sourcepath = hit.get("sourcepath");
-						log.debug("conversion had no error and will try again later for ${sourcepath}");
-						realtask.setProperty('status', 'missinginput');
+						String assetid = realtask.get("assetid");
+						Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitted"));
+						Calendar cal = new GregorianCalendar();
+						cal.add(Calendar.DAY_OF_YEAR,-2);
+						if( olddate.before(cal.getTime()))
+						{
+							realtask.setProperty('status', 'error');
+							realtask.setProperty("errordetails", "Missing input expired" );
+						}
+						else
+						{
+							log.debug("conversion had no error and will try again later for ${assetid}");
+							realtask.setProperty('status', 'missinginput');
+						}	
 						tasksearcher.saveData(realtask, user);
 					}
-					
 				}
 			}
 			else
@@ -208,12 +246,12 @@ class ConvertRunner implements Runnable
 		}
 		else
 		{
-			log.info("Can't find task object with id '${hit.getId()}' '${hit.getSourcePath()}'. Index missing data?")
+			log.info("Can't find task object with id '${hit.getId()}'. Index missing data?")
 		}
 	}
 	
-	protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, String inSourcepath)
-	{
+protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, Asset inAsset)
+{
 	String status = inTask.get("status");
 	
 	String type = inPreset.get("type"); //rhozet, ffmpeg, etc
@@ -242,8 +280,8 @@ class ConvertRunner implements Runnable
 		{
 			props.put("pagenum",pagenumber);
 		}
-		
-		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inSourcepath);
+
+		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inAsset.getSourcePath());
 		
 		//TODO: Copy the task properties into the props so that crop stuff can be handled in the createInstructions
 		if(Boolean.parseBoolean(inTask.get("crop")))
@@ -273,16 +311,11 @@ class ConvertRunner implements Runnable
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );
-		Asset asset = inArchive.getAssetBySourcePath(inSourcepath);
-		if(asset == null)
+		if( inAsset.get("editstatus") == "7") 
 		{
-			throw new OpenEditException("Asset could not be loaded ${inSourcepath} marking as error"); 
+			throw new OpenEditException("Could not run conversions on deleted asset ${inAsset.getSourcePath()}");
 		}
-		if( asset.get("editstatus") == "7") 
-		{
-			throw new OpenEditException("Could not run conversions on deleted assets ${inSourcepath}");
-		}
-		inStructions.setAssetSourcePath(asset.getSourcePath());
+		//inStructions.setAssetSourcePath(asset.getSourcePath());
 		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
 		inStructions.setOutputExtension(extension);
 
@@ -292,12 +325,12 @@ class ConvertRunner implements Runnable
 			//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
 			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
 			Page output = inArchive.getPageManager().getPage(outputpage);
-			log.debug("Running Media type: ${type} on asset ${asset.getSourcePath()}" );
-			result = creator.convert(inArchive, asset, output, inStructions);
+			log.debug("Running Media type: ${type} on asset ${inAsset.getSourcePath()}" );
+			result = creator.convert(inArchive, inAsset, output, inStructions);
 		}
 		else if("submitted".equals(status))
 		{
-			result = creator.updateStatus(inArchive, inTask, asset, inStructions);
+			result = creator.updateStatus(inArchive, inTask, inAsset, inStructions);
 		}
 		else
 		{
@@ -344,7 +377,7 @@ public void checkforTasks()
 	
 	SearchQuery query = tasksearcher.createSearchQuery();
 	query.addOrsGroup("status", "new submitted retry missinginput");
-	query.addSortBy("assetid");
+	query.addSortBy("assetidDown");
 	query.addSortBy("ordering");
 	
 	String assetids = context.getRequestParameter("assetids");
@@ -383,9 +416,8 @@ public void checkforTasks()
 		String id = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
 		if( id == null )
 		{
-//				throw new OpenEditException("asset id was null on " + hit );
 			log.info("No assetid set");
-			Data missingdata = tasksearcher.searchById(hit.getId())
+			Data missingdata = tasksearcher.loadData(hit)
 			missingdata.setProperty("status", "error");
 			missingdata.setProperty("errordetails", "asset id is null");
 			tasksearcher.saveData(missingdata, null);
@@ -400,7 +432,7 @@ public void checkforTasks()
 				//log.info("Clearing " + id);
 			}
 			//lastcomposite = byassetid;
-			byassetid = new CompositeConvertRunner(mediaarchive,hit.getSourcePath() );
+			byassetid = new CompositeConvertRunner(mediaarchive,hit.assetid );
 			byassetid.log = log;
 			byassetid.user = user;
 			lastassetid = id;
@@ -413,10 +445,14 @@ public void checkforTasks()
 	executorQueue.execute(runners);
 	if( runners.size() > 0)
 	{
-		mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
-		
-		
-			//mediaarchive.fireSharedMediaEvent("conversions/runconversions");   //this should not be needed
+		for( CompositeConvertRunner runner: runners )
+		{
+			if( runner.hasComplete() )
+			{
+				mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
+				break;
+			}
+		}
 	}
 	log.debug("Added ${newtasks.size()} conversion tasks for processing");
 	

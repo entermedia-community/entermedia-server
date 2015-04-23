@@ -1,23 +1,26 @@
 #set( $appcatalogid = $context.getRequestParameter("appcatalogid"))
+#set( $appcatalog = $searcherManager.getData("system","catalog",$appcatalogid))
+
 	<div class="wizard clearfix">
 			<div class="wizard-top">
 				<h1>App Wizard</h1>
 			</div>
 			
-			<form name="adder" action="$home$apphome/views/catalogs/addapppath.html">
+			<form name="adder" action="$home$apphome/views/catalogs/addappfinish.html">
 				<input name="frontendid" value="${data.id}" type="hidden"/>
 				<input name="appcatalogid" value="$appcatalogid" type="hidden"/>
-				
+				<input name="module" value="$data.module" type="hidden"/>
+				<input name="sitename" value="$data.name" type="hidden"/>
+				<input name="deploypath" value="$appcatalog.rootpath/$data.id" type="hidden"/>
 			<div class="wizard-body clearfix">
 				<div class="app-info">
 					<img class="app-store-icon" src="$home$themeprefix/images/folder.png" width="60" height="60" alt="$data.name" />
 					<div class="app-nameplate">
 						<div class="app-title">$data.name</div>
 						<div class="app-subtitle">$data.caption</div>
-
 					</div>
 
-					<input type="submit" class="btn learn-more" value="Install" />
+					<input type="submit" class="mbtn learn-more" value="Install >>" />
 				</div>
 				<div class="app-info-content">
 					<p>

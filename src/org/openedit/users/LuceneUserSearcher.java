@@ -15,152 +15,131 @@ import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 
 import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.BaseUser;
 import com.openedit.users.Group;
 import com.openedit.users.User;
-import com.openedit.users.UserManager;
+import com.openedit.users.filesystem.XmlUserArchive;
 
 /**
  *
  */
-public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearcher
-{
+public class LuceneUserSearcher extends BaseLuceneSearcher implements
+		UserSearcher {
 	private static final Log log = LogFactory.getLog(LuceneUserSearcher.class);
-	protected UserManager fieldUserManager;
+	protected XmlUserArchive fieldXmlUserArchive;
 
-	public HitTracker getAllHits(WebPageRequest inReq)
-	{
-		SearchQuery query = createSearchQuery();
-		query.addMatches("enabled", "true");
-		query.addMatches("enabled", "false");
-		query.addSortBy("namesorted");
-		query.setAndTogether(false);
-		if( inReq == null)
-		{
-			return search(query);
+	public XmlUserArchive getXmlUserArchive() {
+		if (fieldXmlUserArchive == null) {
+			fieldXmlUserArchive = (XmlUserArchive) getModuleManager().getBean(
+					getCatalogId(), "xmlUserArchive");
+
 		}
-		else
-		{
-			return cachedSearch(inReq,query);
-		}
-		//return new ListHitTracker().setList(getCustomerArchive().)
+
+		return fieldXmlUserArchive;
 	}
 
-	public UserManager getUserManager()
-	{
-		return fieldUserManager;
-	}
+	//
+	// public void setXmlUserArchive(XmlUserArchive inXmlUserArchive) {
+	// fieldXmlUserArchive = inXmlUserArchive;
+	// }
 
-	public void setUserManager(UserManager inUserManager)
-	{
-		fieldUserManager = inUserManager;
-	}
+	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter)
+			throws OpenEditException {
 
-	
-	public void reIndexAll(IndexWriter writer, TaxonomyWriter inWriter) throws OpenEditException
-	{
+		// setUserCatalogId(null);
+		// String catid = getUserCatalogId();
 		log.info("Reindex of customer users directory");
-		try
-		{
-			//writer.setMergeFactor(50);
-			getUserManager().flush();
-			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
-			Collection usernames = getUserManager().listUserNames();
-			if( usernames != null)
-			{
-				for (Iterator iterator = usernames.iterator(); iterator.hasNext();)
-				{
+		try {
+			// writer.setMergeFactor(50);
+			getXmlUserArchive().flush();
+			PropertyDetails details = getPropertyDetailsArchive()
+					.getPropertyDetails(getSearchType());
+			Collection usernames = getXmlUserArchive().listUserNames(
+					);
+			if (usernames != null) {
+				for (Iterator iterator = usernames.iterator(); iterator
+						.hasNext();) {
 					String userid = (String) iterator.next();
 					Document doc = new Document();
-					User data = getUserManager().getUser(userid);
-					if( data != null)
-					{
-						updateIndex( data, doc, details);
+					User data = getXmlUserArchive().getUser(userid);
+					if (data != null) {
+						updateIndex(data, doc, details);
 						writer.addDocument(doc);
 					}
-					
-				}	
-					
+
+				}
+
 			}
-			//writer.optimize();
-		}
-		catch (Exception e)
-		{
+			// writer.optimize();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new OpenEditException(e);
 		}
 
 	}
-	protected void updateIndex(Data inData, Document doc, PropertyDetails inDetails)
-	{
-		User user = (User)inData;
-		doc.add(new Field("enabled", Boolean.toString(user.isEnabled()), Field.Store.YES, Field.Index.ANALYZED));
+
+	protected void updateIndex(Data inData, Document doc,
+			PropertyDetails inDetails) {
+		User user = (User) inData;
+		doc.add(new Field("enabled", Boolean.toString(user.isEnabled()),
+				Field.Store.YES, Field.Index.ANALYZED));
 		StringBuffer groups = new StringBuffer();
-		for (Iterator iterator = user.getGroups().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = user.getGroups().iterator(); iterator
+				.hasNext();) {
 			Group group = (Group) iterator.next();
 			groups.append(group.getId());
-			if( iterator.hasNext() )
-			{
+			if (iterator.hasNext()) {
 				groups.append(" | ");
 			}
 		}
-		if( groups.length() > 0)
-		{
-			doc.add(new Field("groups", groups.toString(), Field.Store.NO, Field.Index.ANALYZED));
+		if (groups.length() > 0) {
+			doc.add(new Field("groups", groups.toString(), Field.Store.NO,
+					Field.Index.ANALYZED));
 		}
 
 		super.updateIndex(inData, doc, inDetails);
 	}
-	
-	public void saveData(Data inData, User inUser)
-	{
-		if( inData instanceof User)
-		{
-			getUserManager().saveUser( (User)inData );
+
+	public void saveData(Data inData, User inUser) {
+		if (inData instanceof User) {
+			getXmlUserArchive().saveUser((User) inData);
 		}
 		updateIndex((User) inData);
 	}
 
-
-	//TODO: Replace with search?
-	public Object searchById(String inId)
-	{
-		return getUserManager().getUser(inId);
+	// TODO: Replace with search?
+	public Object searchById(String inId) {
+		return getXmlUserArchive().getUser(inId);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openedit.users.UserSearcherI#getUser(java.lang.String)
 	 */
-	public User getUser(String inAccount)
-	{
-		User user = (User)searchById(inAccount);
+	public User getUser(String inAccount) {
+		User user = (User) searchById(inAccount);
 		return user;
 	}
 
 	/**
 	 * @deprecate use standard field search API
 	 */
-	public User getUserByEmail(String inEmail)
-	{
-		return getUserManager().getUserByEmail(inEmail);
+	public User getUserByEmail(String inEmail) {
+		return getXmlUserArchive().getUserByEmail(inEmail);
 	}
 
-	public HitTracker getUsersInGroup(Group inGroup)
-	{
+	public HitTracker getUsersInGroup(Group inGroup) {
 		SearchQuery query = createSearchQuery();
-		if( inGroup == null)
-		{
+		if (inGroup == null) {
 			throw new OpenEditException("No group found");
 		}
-		query.addMatches("groups",inGroup.getId());
+		query.addMatches("groups", inGroup.getId());
 		query.setSortBy("namesorted");
 		HitTracker tracker = search(query);
 		return tracker;
@@ -171,48 +150,37 @@ public class LuceneUserSearcher extends BaseLuceneSearcher implements UserSearch
 			User user = (User) iterator.next();
 			saveData(user, inUser);
 		}
-		
+
 	}
 
-	public void setCatalogId(String inCatalogId)
-	{
-		//This can be removed in the future once we track down a singleton bug
-		if( inCatalogId != null && !inCatalogId.equals("system"))
-		{
-			OpenEditException ex = new OpenEditException("Invalid catalogid catalogid=" + inCatalogId );
-			ex.printStackTrace();
-			log.error( ex);
-			
-			//throw ex;
-		}
-		
-		super.setCatalogId("system");
-		if(fieldPropertyDetailsArchive != null){
-		   fieldPropertyDetailsArchive.setCatalogId("system");
-		   
-		}
-	}
-	public PropertyDetailsArchive getPropertyDetailsArchive()
-	{
-		if (fieldPropertyDetailsArchive == null)
-		{
-			fieldPropertyDetailsArchive = (PropertyDetailsArchive) getSearcherManager().getModuleManager().getBean("system", "propertyDetailsArchive");
-		}
-		fieldPropertyDetailsArchive.setCatalogId("system");
-		return fieldPropertyDetailsArchive;
-	}
+	// public void setCatalogId(String inCatalogId) {
+	// // This can be removed in the future once we track down a singleton bug
+	// if (inCatalogId != null && !inCatalogId.equals("system")) {
+	// OpenEditException ex = new OpenEditException(
+	// "Invalid catalogid catalogid=" + inCatalogId);
+	// ex.printStackTrace();
+	// log.error(ex);
+	//
+	// // throw ex;
+	// }
+	//
+	// super.setCatalogId("system");
+	// if (fieldPropertyDetailsArchive != null) {
+	// fieldPropertyDetailsArchive.setCatalogId("system");
+	//
+	// }
+	// }
+
 	
-	
-	
+
 	@Override
 	public Data createNewData() {
-		//return getUserManager().createUser(null, null);
+		// return getXmlUserArchive().createUser(null, null);
 		return new BaseUser();
 	}
-	
+
 	@Override
-	public void deleteData(Data inData)
-	{
-		getUserManager().deleteUser((User)inData);
+	public void deleteData(Data inData) {
+		getXmlUserArchive().deleteUser((User) inData);
 	}
 }

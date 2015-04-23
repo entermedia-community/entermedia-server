@@ -11,6 +11,7 @@ View\ Friends=Freunde anzeigen
 New=neu
 invite\ $owner\ to\ be\ your\ friend=$owner als Freund einladen
 EnterMedia=Entermedia
-Recent\ Activity=bisherige Tätigkeit
+Recent\ Activity=bisherige Aktionen
 Edit\ $content.albumname=\ $content.albumname bearbeiten
+
 

@@ -257,6 +257,16 @@ public class ConvertInstructions
 		fieldRotation = inRotation;
 	}
 
+	public String getAssetId()
+	{
+		return getProperty("assetid");
+	}
+
+	public void setAssetId(String inInd)
+	{
+		addProperty("assetid", inInd);
+	}
+
 	public String getAssetSourcePath()
 	{
 		return getProperty("assetsourcepath");

@@ -27,8 +27,8 @@
 					#else
 						#set ( $sourcepath = $asset.sourcepath)
 					#end
-                    #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/preview.jpg")
-                    <a class="thickbox" href="$home$link" target="_parent" title="[[$asset]]">
+                    #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
+                    <a class="thickbox" href="$home$link" target="_parent" title="[[drag]] $asset [[as jpeg]]">
                         $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
                     </a>
                     <br>
@@ -45,7 +45,9 @@
                 </div>
                 <div class="secondary">
                     <div id="mp-asset-info">
-                        
+                        #if ($attachmentcount > 0)
+                        <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>
+                        #end
                         #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
                         <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>
                         

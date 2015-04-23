@@ -481,5 +481,10 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 //	updateFilters(inReq);
 //	}
 
+	public Data loadData(Data inHit)
+	{
+		return getDataConnector().loadData(inHit);
+	}
+	
 
 }

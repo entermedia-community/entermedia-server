@@ -1,7 +1,7 @@
 #
 #Fri May 07 10:34:40 CLT 2010
 Upload=Subir
-Choose\ a\ media\ file\ to\ upload.=Eleja un archivo para subir.
+Choose\ a\ media\ file\ to\ upload.=Elija un archivo para subir.
 Unzip\ on\ server=Descomprimir en el servidor
 Grab\ asset=Obtener art\u00EDculo
 preview=vista previa
@@ -12,3 +12,4 @@ Create\ a\ new\ asset.=Crear un nuevo Art\u00EDculo.
 Please,\ enter\ the\ URL\ to\ the\ YouTube\ video=Por favor, introduzca la URL del v\u00EDdeo YouTube
 New\ Asset=Nuevo Art\u00EDculo
 Please,\ enter\ the\ URL\ to\ the\ asset=Por favor, introduzca la URL al art\u00EDculo
+

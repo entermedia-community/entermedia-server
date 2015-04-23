@@ -1,0 +1,34 @@
+#set( $attachmentroot = $content.attachmentroot )
+#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
+
+#macro(listattachments $parentfolder)
+	#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
+	#foreach($file in $files)
+		#set( $filesource  = "${file.parentsourcepath}/${file.name}")
+	    #set( $downloadpath = "/WEB-INF/data/$catalogid/originals/$filesource/" )
+	   	#if ( $file.folder != "true" && $file.name != "attachments.txt")
+	   		<li class="mediathumb emboxcrop ">
+	   			<img class="swappable sidebar-image" src="$home/${applicationid}/views/modules/asset/downloads/preview/thumb/$filesource/thumb.jpg" alt="${file.name}" width="110" >
+	   		</li>
+	   	#end
+	#end
+#end
+<div id="attachment-info-${asset.id}" style="display:none;">
+	<div id="emresultscontent">
+		<ul class="sidebar-media">
+#listattachments($asset.sourcePath)
+		</ul>
+	</div>
+</div>
+
+<script>
+$(document).ready(function(){
+	var info = $("#attachment-info-${asset.id}").html();
+	$("#related-media").html(info);
+	$(".swappable").on("click",function(e){
+		var src = e.currentTarget.src;
+		var html = "<img width=\"200\" class=\"emdropshadow assetdragdrop\" border=\"0\" src=\""+src+"\" data-sourcepath=\""+src+"\" draggable=\"true\" title=\"drag to download\" alt=\"\" assetid=\"${asset.id}\" catalogid=\"${catalogid}\" sourcepath=\"${asset.sourcepath}\">";		
+		$("#emthumbholder").html(html);
+	});
+})
+</script>

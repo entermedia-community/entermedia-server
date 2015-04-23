@@ -21,6 +21,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.MultiValued;
+import org.openedit.data.SaveableData;
 
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.Page;
@@ -30,7 +31,7 @@ import com.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class Asset implements MultiValued
+public class Asset implements MultiValued, SaveableData
 {
 	protected String fieldId;
 	protected String fieldName;
@@ -43,7 +44,6 @@ public class Asset implements MultiValued
 	protected Map fieldProperties;
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
-	protected boolean fieldIsFolder;
 
 	public Collection<String> getValues(String inPreference)
 	{
@@ -124,12 +124,12 @@ public class Asset implements MultiValued
 	
 	public boolean isFolder()
 	{
-		return fieldIsFolder;
+		return Boolean.parseBoolean(get("isfolder"));
 	}
 
 	public void setFolder(boolean inIsFolder)
 	{
-		fieldIsFolder = inIsFolder;
+		setProperty("isfolder",String.valueOf(inIsFolder));
 	}
 
 	// be shown in a list

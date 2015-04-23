@@ -1,12 +1,13 @@
 #
 #Thu Feb 12 16:23:02 EST 2015
 Batch\ Edit=Stapelverarbeitung
-Delete\ Selected\ Items=ausgew\u00E4hlte Artikel zu l\u00F6schen
-Edit\ Columns=edit Spalten
-Custom\ Export=benutzerdefinierte Export
-Add\ New=neue hinzuf\u00FCgen
-Export\ results=Exportergebnisse
-Download\ Assets=Download Verm\u00F6genswerte
-Export\ results\ (friendly)=Exportergebnisse ( freundlich)
-Add\ Column=Spalte hinzuf\u00FCgen
-Cancel=r\u00FCckg\u00E4ngig machen
+Delete\ Selected\ Items=ausgewählte Artikel löschen
+Edit\ Columns=Spalten bearbeiten
+Custom\ Export=benutzerdefinierter Export
+Add\ New=neue hinzufügen
+Export\ results=Ergebnisse exportieren
+Download\ Assets=Assets herunterladen
+Export\ results\ (friendly)=Ergebnisse exportieren ( freundlich)
+Add\ Column=Spalte hinzufügen
+Cancel=abbrechen
+

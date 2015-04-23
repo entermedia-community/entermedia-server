@@ -1,6 +1,6 @@
 <page>
+	<property name="showfilesdisplay">true</property>
 	<page-action name="PageValue.loadPageVariable" bean="sizer" class="org.openedit.links.FileSize" />
 	<page-action name="PageValue.loadPageVariable" bean="dateformat" class="java.text.SimpleDateFormat" />
 	<page-action name="AttachmentModule.syncAttachments"/>
-
 </page>

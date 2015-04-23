@@ -68,7 +68,8 @@ public class imagemagickCreator extends BaseImageCreator {
 		//if watermarking is set
 		if(inStructions.isWatermark())
 		{
-			Page inputPage = getPageManager().getPage(inStructions.getAssetSourcePath());
+			Page inputPage = inArchive.getOriginalDocument(inAsset);
+			//Page inputPage = getPageManager().getPage(inStructions.getAssetSourcePath());
 			if(inputPage == null || !inputPage.exists())
 			{
 				result.setOk(false);
@@ -217,7 +218,12 @@ public class imagemagickCreator extends BaseImageCreator {
 				//					}
 				if( tmpout.getContentItem().getLength() > 0)
 				{
-					input = tmpout;
+					//cmykpreprocessor returns an xconf
+					//so this should be safe since there are probably
+					//no other preprocessors that return xconf files
+					if ("xconf" != tmpout.getPageType()){
+						input = tmpout;
+					}
 					//					This is only useful for INDD at 1024. to complex to try and optimize
 					//					if( input.getPath().equals(inOutFile.getPath()))
 					//					{
@@ -230,6 +236,16 @@ public class imagemagickCreator extends BaseImageCreator {
 				{
 					//exifthumbtool probably did not work due to permissions
 					//Highlights doesn't have the original - maybe we can revert back to an input if the original doesn't exist?  Or just
+					String page = null;
+					if( inStructions.getPageNumber() > 1 )
+					{
+						page = "page" + inStructions.getPageNumber();
+					}
+					else
+					{
+						page = "";
+					}
+					
 					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
 					
 					result.setError("Prepropessor could not create tmp file");
@@ -239,7 +255,14 @@ public class imagemagickCreator extends BaseImageCreator {
 			}
 			else if( input == null)
 			{
-				input = tmpout; //we are looking for a working format to use as input
+				//we are looking for a working format to use as input
+				
+				//cmykpreprocessor returns an xconf
+				//so this should be safe since there are probably
+				//no other preprocessors that return xconf files
+				if ("xconf" != tmpout.getPageType()){
+					input = tmpout;
+				}
 			}
 		}
 		if( input == null)
@@ -279,7 +302,26 @@ public class imagemagickCreator extends BaseImageCreator {
 				int width = inAsset.getInt("width");
 				if( width > 0 )
 				{
-					double outputw = inStructions.getMaxScaledSize().getWidth();
+					// calculate output width
+					int height = inAsset.getInt("height");
+					double ratio = height/width;
+
+					int prefw = inStructions.getMaxScaledSize().getWidth();
+					int prefh = inStructions.getMaxScaledSize().getHeight();
+
+					int distw = Math.abs(prefw - width);
+					int disth = Math.abs(prefh - height);
+
+					int outputw;
+					if(disth < distw)
+					{
+						outputw = width*(prefh/height);
+					}
+					else
+					{
+						outputw = prefw;
+					}
+
 					if( width < outputw)
 					{
 						//for small input files we want to scale up the density
@@ -489,7 +531,12 @@ public class imagemagickCreator extends BaseImageCreator {
 		//				}
 
 		setValue("quality", "89", inStructions, com);
-
+		//add sampling-factor if specified
+		if (inStructions.get("sampling-factor")!=null)
+		{
+			com.add("-sampling-factor");
+			com.add(inStructions.get("sampling-factor"));
+		}
 		if( autocreated )  //we are using a color corrected input
 		{
 			com.add("-strip"); //This does not seem to do much
@@ -521,11 +568,24 @@ public class imagemagickCreator extends BaseImageCreator {
 			 com.add("RGB");
 			 }	
 			 }
-			 */		
-			setValue("profile", getPathtoProfile(), inStructions, com);
-			com.add("-auto-orient"); //Needed for rotate tool
-			com.add("-strip"); //This does not seem to do much
-			setValue("profile", getPathtoProfile(), inStructions, com);
+			 */	
+
+			String _colorspace = inAsset.get("colorspace");
+			log.info("Colorspace: " + _colorspace)
+			
+			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
+			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
+			{
+				setValue("profile", getPathtoProfile(), inStructions, com);
+				com.add("-auto-orient"); //Needed for rotate tool
+				com.add("-strip"); //This does not seem to do much
+				setValue("profile", getPathtoProfile(), inStructions, com);
+			}
+			else
+			{
+				setValue("colorspace", "sRGB", inStructions, com);
+			}
+			
 
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
 
@@ -547,7 +607,9 @@ public class imagemagickCreator extends BaseImageCreator {
 
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
-		ExecResult execresult = getExec().runExec("convert", com, true);
+		
+		long timeout = getConversionTimeout(inArchive, inAsset);
+		ExecResult execresult = getExec().runExec("convert", com, true, timeout);
 
 		boolean ok = execresult.isRunOk();
 		result.setOk(ok);
@@ -697,6 +759,7 @@ public class imagemagickCreator extends BaseImageCreator {
 		com.add(getWaterMarkPath(inArchive.getThemePrefix()));
 		com.add(inInputAbsPath);
 		com.add(inOutputAbsPath);
+		
 		boolean ok =  runExec("composite", com);
 		ConvertResult result = new ConvertResult();
 		result.setOk(ok);

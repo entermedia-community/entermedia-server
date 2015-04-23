@@ -143,7 +143,10 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 				return null;
 			}
 			getCacheManager().put(toCacheId(),inSourcePath,item);
-			getCacheManager().put(toCacheId(),item.getId(),item);
+			if( item.getId() != null)
+			{
+				getCacheManager().put(toCacheId(),item.getId(),item);
+			}
 		}
 		return item;
 	}
@@ -406,7 +409,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		for (Iterator iter = inAsset.getProperties().keySet().iterator(); iter.hasNext();)
 		{
 			String key = (String) iter.next();
-			if( key.startsWith("_"))
+			if( key.startsWith("_") || key.equals("description"))
 			{
 				continue;
 			}

@@ -3,6 +3,7 @@
 	<table id="shared-asset-table" class="striped download-table" >
 
 #set( $downloadall = false)
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 
 #foreach( $item in $orderitems )
 
@@ -52,7 +53,7 @@
 			#if( $presetid == "0")
 				<td></td>
 				<td>
-					<a class="btn small" href="$home$mediaarchive.asLinkToOriginal($asset)">Download</a>
+					<a class="btn small" href="$!cdnprefix$home$mediaarchive.asLinkToOriginal($asset)">Download</a>
 					#set( $downloadall = true)
 					
 				</td>
@@ -68,7 +69,7 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-						<a class="btn small" href="$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
+						<a class="btn small" href="$!cdnprefix$home/${applicationid}/views/modules/asset/downloads/generated/${asset.sourcepath}/${convertpreset.outputfile}/${publishqueue.exportname}">Download</a>
 										#set( $downloadall = true)
 				</td>
 			#end

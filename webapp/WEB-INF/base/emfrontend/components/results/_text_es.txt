@@ -1,0 +1,28 @@
+#
+#Fri Mar 27 15:49:38 EDT 2015
+resultados=resultados
+Gallery\ View=Ver galer\u00EDa
+Download=descargar
+Deselect\ All=Desmarcar todo
+Add\ to\ Basket=A\u00F1adir a la cesta
+Email\ Assets=Art\u0EDculos por correo electr\u00F3nico
+Change\ Result\ View=Cambiar Vista de Resultados
+Publish=publicar
+Select\ All\ Results=Seleccionar todos los resultados
+Publish\ Assets\ to\ Server=Publicar Articulos al servidor
+Category\ Folder\ View=Categor\u00EDa de vista de carpetas
+Select\ This\ Page=Seleccionar esta p\u00E1gina
+items=art\u00EDculos
+of=de
+Cancel=cancelar
+Add\ Column=A\u00F1adir columna
+Share\ Gallery=Compartir Galer\u00EDa
+Edit\ Columns=Editar columnas
+Displaying\ records=Visualizar registros
+Table\ View=Vista de tabla
+No\ results\ found=No se encontraron resultados
+Edit=editar
+Remove=eliminar
+Edit\ one\ or\ more\ selected\ records=Editar uno o m\u00E1s de los registros seleccionados
+Drag\ columns\ to\ move\ them=Arrastre columnas para moverlos
+

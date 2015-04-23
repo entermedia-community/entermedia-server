@@ -4,6 +4,6 @@
 		<path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/categories/clearemptycategories.groovy</script>
 	</path-action>
-		<property name="period">5h</property>
-	
+	<property name="period">5h</property>
+	<property name="enabled">false</property>
 </page>

@@ -504,7 +504,11 @@ public class MultiSearchModule extends BaseMediaModule
 	public void createNewCatalog(WebPageRequest inReq) throws Exception
 	{
 		String catname = inReq.getRequestParameter("name");
-		String catalogid = inReq.getRequestParameter("appcatalogid");
+		String rootpath = inReq.getRequestParameter("rootpath");
+		if( !rootpath.startsWith("/"))
+		{
+			rootpath = "/" + rootpath;
+		}
 //		String foldername = inReq.findValue("foldername");
 //		String appfolder = null;
 //		if(foldername == null)
@@ -536,6 +540,8 @@ public class MultiSearchModule extends BaseMediaModule
 //		{
 //			prefix = "";
 //		}
+		String catalogid = rootpath + "/catalog";
+		catalogid = catalogid.substring(1);
 		Page app = getPageManager().getPage("/" + catalogid + "/_site.xconf");
 		PageProperty prop = new PageProperty("fallbackdirectory");
 		prop.setValue(inReq.findValue("fallbackfolder"));
@@ -556,6 +562,8 @@ public class MultiSearchModule extends BaseMediaModule
 		Data row = searcher.createNewData();
 		row.setId(catalogid);
 		row.setProperty("name", catname);
+		row.setProperty("rootpath", rootpath);
+		
 		searcher.saveData(row, inReq.getUser());
 		inReq.putPageValue("catalog", row);
 

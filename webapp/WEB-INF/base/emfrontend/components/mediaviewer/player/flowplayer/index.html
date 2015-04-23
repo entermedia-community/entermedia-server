@@ -1,4 +1,5 @@
-#set( $root = "$home$page.directory")
+#set( $mediadbappid = $mediaarchive.getCatalogSettingValue("mediadbappid") )
+#set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
 #if(!$asset.sourcepath)
@@ -6,8 +7,8 @@
 #else
 	#set($sourcepath = $asset.sourcepath)
 #end
-#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
-#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $source = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $thumb = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 <a href="$source" style="background-image:url('$thumb')" class="mediaplayer" id="main-media" style="display: block;">
 	<img src="$root/play_large.png" alt="Play Video"/> 
 </a> 
@@ -61,7 +62,6 @@ a.mediaplayer img {
 </style>		
 
 #set( $loop = $context.getRequestParameter("loop") )
-		$loop
 <script language='javascript'>
 			flowplayer('a.mediaplayer', {src: '$root/flowplayer-3.2.7.swf'},
 			{  

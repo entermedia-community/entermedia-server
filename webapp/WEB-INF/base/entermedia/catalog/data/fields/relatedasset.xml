@@ -1,4 +1,4 @@
-<properties>
+<properties  beanname="dataSearcher">
 	<property id="id" index="true" stored="true">Item Id</property>
 	<property id="type" index="true" stored="true" type="list" listid="relatedassets/type" editable="true">Type</property>
 	<property id="assetid" index="true" stored="true" type="asset" editable="true" >Source Asset</property>

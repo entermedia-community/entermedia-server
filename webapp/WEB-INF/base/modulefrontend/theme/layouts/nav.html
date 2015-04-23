@@ -2,7 +2,7 @@
  <ul class="emheaderbuttons" >
 
 #if( $canviewhomelink )
-<li><a id="module"  href="$home$apphome/index.html"> Home </a></li>
+<li><a id="module"  href="$home$apphome/index.html"> [[Home]] </a></li>
 #end
 
 
@@ -18,7 +18,7 @@
 	<input type="hidden" name="operation" value="startswith" />
 	#set( $input = "Search...")
 	#set( $input = $hits.getInput("description") )
-    <input type="text"  id="assetsearchinput" initialtext="Search..."  class="suggestsearchinput initialtext " name="description.value" value="$input" />
+    <input type="text"  id="assetsearchinput" initialtext="[[Search]]..."  class="suggestsearchinput initialtext " name="description.value" value="$input" />
 </form>
 </div>
 #end

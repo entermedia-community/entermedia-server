@@ -29,7 +29,7 @@
         #set ( $systemdefined = $context.findValue("systemdefined") )
         
     #if( $canviewsettings )   
-	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">[[$view Settings]]</a>
+	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view [[Settings]]</a>
 	#end
 	
 	   #if($view.byassettype == "true" )

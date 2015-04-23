@@ -1,6 +1,7 @@
 package importing;
 
 import model.assets.LibraryManager
+import model.projects.ProjectManager
 
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -17,8 +18,6 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.manage.*
 import com.openedit.users.User
 import com.openedit.users.UserManager
-
-import java.util.StringTokenizer
 
 
 public void setAssetTypes()
@@ -126,7 +125,7 @@ public boolean setMetadata(MediaArchive inArchive,Asset inAsset, XmpWriter inXmp
 		Searcher userprofilesearcher = inArchive.getSearcher("userprofile");
 		ownerdata = (Data) userprofilesearcher.searchById(owner);
 	}
-	UserManager usermanager = inArchive.getModuleManager().getBean("userManager");
+	UserManager usermanager = inArchive.getUserManager();
 	Searcher searcher = inArchive.getSearcher(ASSET_METADATA_TABLE);
 	if (searcher == null){
 		log.info(ASSET_METADATA_TABLE+" not defined, aborting");
@@ -305,10 +304,51 @@ public void setDefaultTags(){
 }
 
 
+//cb What is this stuff?
+public void setupCollection(){
+	log.info("setting collections");
+	WebPageRequest req = context;
+	String ids = req.getRequestParameter("assetids");
+	if( ids == null)
+	{
+	   log.info("AssetIDS required");
+	   return;
+	}
+	String assetids = ids.replace(","," ");
+	MediaArchive archive = req.getPageValue("mediaarchive");
+	ProjectManager pm = archive.getModuleManager().getBean("projectManager");
+	Searcher assetsearcher = archive.getAssetSearcher();
+	SearchQuery q = assetsearcher.createSearchQuery();
+	q.addOrsGroup( "id", assetids );
+	HitTracker assets = assetsearcher.search(q);
+	List assetsToSave = new ArrayList();
+	assets.each{
+		 Asset asset = archive.getAsset("${it.id}");
+		 if (asset!=null)
+		 {
+			String librarycollectionid = asset.get("librarycollections_join");
+						   librarycollection = archive.getData("librarycollection", librarycollectionid);
+			if(librarycollection != null){
+							log.info("putting asset ${asset.name} into collectionid ${librarycollectionid}");
+				 req.setRequestParameter("librarycollection", librarycollectionid);
+								 pm.addAssetToCollection(req, archive, librarycollection.get("library"), asset.getId());
+			}
+		 }
+	}
+	if (!assetsToSave.isEmpty()){
+		archive.saveAssets( assetsToSave );
+	}
+}
+
+
+
 setAssetTypes();
 //setDefaultMetadataFields();
 //setDefaultLibrary();
-setDefaultTags();
+//setDefaultTags();
 //verifyRules();
 //sendEmail();
+
+//setupCollection();
+
 

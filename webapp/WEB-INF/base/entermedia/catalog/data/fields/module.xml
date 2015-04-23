@@ -1,4 +1,4 @@
-<properties>
+<properties  beanname="folderSearcher">
 
 	<!-- asset details -->
 	<property id="id" index="true" keyword="true" stored="true">Id</property>

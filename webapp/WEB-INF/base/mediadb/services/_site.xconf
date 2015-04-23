@@ -1,5 +1,4 @@
 <page>
-	<generator name="velocityGenerator" />
 	<inner-layout />
 
 	<path-action name="MediaArchiveModule.loadApplicationId" />
@@ -22,9 +21,6 @@
 
 	<!-- used in velocity macro -->
 	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true"/>		
-	<permission name="view">
-		<blank/>
-	</permission>	
 
 	<property name="alternative_extension">json</property>
 	<property name="cancelredirect">true</property>

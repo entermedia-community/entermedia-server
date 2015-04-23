@@ -1,3 +1,13 @@
+function selectresultview(val){
+	if (val != "none"){
+		var href = $("#ajaxselectresultview").attr("href");
+		href = href + "&resultview="+val;
+		$("#ajaxselectresultview").attr("href",href);
+		$("#ajaxselectresultview").click();
+	}
+}
+
+
 jQuery(document).ready(function(url,params) 
 { 
 	var home = $('#application').data('home') + $('#application').data('apphome');

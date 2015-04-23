@@ -1,0 +1,74 @@
+
+<properties >
+
+  <property id="name" index="true" stored="true" editable="true" >Theme Name</property>
+  
+  <!--  header information and style -->
+  <property id="title" index="true" stored="true" editable="true">Site Title</property>
+  <property id="logopath" index="true" stored="true" editable="true" note="Relative or absolute URL" >Logo URL</property>
+  <property id="logoasset" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio"  internalfield="false" listid="asset" datatype="list"  note="Optional">Logo Asset</property>
+  <property id="logowidth" index="true" stored="true" editable="true" >Logo Width</property>
+  <property id="logoheight" index="true" stored="true" editable="true" >Logo Height</property>
+ 
+   <!-- global styles -->
+  <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list"
+   tooltip="This acts as a background for the whole site"  note="Optional">Background Asset</property>
+  
+  <property id="bodybackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Body Background Color </property>
+  <property id="backgroundpath" index="true" stored="true" editable="true" note="Optional">Background Image URL</property>
+  
+  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list" note="Optional" >Standard Background Image</property>
+
+  <property id="backgroundtile" index="true" stored="true" type="boolean" editable="true" >Tile Background Image</property>
+
+  <!-- header color -->
+  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" >Header Color</property>
+  <property id="headercolorgradient" index="true" stored="true" editable="true" viewtype="color" >Header Color Gradient</property>
+  
+  <!-- navigation color -->
+  <property id="navbackgroundpath" index="true" stored="true" editable="true" note="Overrides Colors">Nav Background Path</property>
+  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Color</property>
+  <property id="navcolorgradient" index="true" stored="true" editable="true" viewtype="color" >Navigation Color Gradient </property>
+  
+  <!-- navigation button color -->
+  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Color</property>
+  <property id="navbuttoncolorgradient" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Color Gradient </property>
+  <property id="navbuttonbordercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Border</property>
+  
+  <!-- navigation font hover-->
+  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Button Color</property>
+  <property id="navbuttonhovercolorgradient" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Button Color Gradient</property>
+  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Color</property>
+
+  <!-- left column -->
+  <property id="leftcolumnbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Left Column Background Color</property>
+  
+  <!-- navigation links -->
+  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Links Background Color</property>
+  
+  <!-- table header -->
+  <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" >Table Header Color</property>
+  <property id="tableheadercolorgradient" index="true" stored="true" editable="true" viewtype="color" >Table Header Color Gradient </property>
+  
+  <!-- table colors -->
+  <property id="tablebordercolor" index="true" stored="true" editable="true" viewtype="color" >Table Border Color</property>
+  <property id="tablehovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Hover Color</property>
+
+  <property id="tablemenubackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Color</property>
+  <property id="tablemenubackgroundcolorgradient" index="true" stored="true" editable="true" viewtype="color" >Table Menu Color Gradient</property>
+  <property id="tablemenuhovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Hover Color</property>
+  <property id="tablemenufontcolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Font Color</property>
+  
+  <!-- widget border color -->
+  <property id="widgetbordercolor" index="true" stored="true" editable="true" viewtype="color" >Widget Border Color</property>
+
+  <!-- asset details selected tab -->
+  <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Color</property>
+  <property id="assetdetailsselectedtabcolorgradient" index="true" stored="true" editable="true" viewtype="color">Asset Details Selected Tab Color Gradient </property>
+  
+  <!-- settings menu selection -->
+  <property id="settingsmenuselectioncolor" index="true" stored="true" editable="true" viewtype="color" >Settings Menu Selection Color</property>
+  
+  <property id="disableshadows" index="true" stored="true" editable="true" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
+  
+</properties>

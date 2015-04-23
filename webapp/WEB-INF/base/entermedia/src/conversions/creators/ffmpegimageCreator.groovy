@@ -92,7 +92,10 @@ public class ffmpegimageCreator extends BaseImageCreator
             log.info("Input not ready yet" + input.getPath() );
 			return result;
 		}
-
+		
+		//get timeout
+		long timeout = getConversionTimeout(inArchive, inAsset);
+		
 		String offset = inStructions.getProperty("timeoffset");
 		if( offset == null)
 		{
@@ -141,7 +144,7 @@ public class ffmpegimageCreator extends BaseImageCreator
 		com.add(outputpath);
 		result.setOutputPath(null);
 		long start = System.currentTimeMillis();
-		if (runExec(getCommandName(), com))
+		if (runExec(getCommandName(), com, timeout))
 		{
 			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
 			result.setComplete(true);

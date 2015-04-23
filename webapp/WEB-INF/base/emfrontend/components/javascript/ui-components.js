@@ -418,7 +418,13 @@ uiload = function() {
 		}
 	});		
 
-	
+	if( jQuery.fn.minicolors )
+	{
+		$(".color-picker").minicolors({
+						defaultValue: '',
+						letterCase: 'uppercase'
+					});
+	}	
 }
 
 function doResize() {

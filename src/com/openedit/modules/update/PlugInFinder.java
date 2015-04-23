@@ -142,6 +142,7 @@ public class PlugInFinder
 		XmlUtil util = new XmlUtil();
 		try
 		{
+			//this does not seem to support redirects and some web servers don't support the Java user agent
 			URL link = new URL(getAppServerPath());
 			Element root = util.getXml(link.openStream(), "UTF-8");
 			return root.elements();

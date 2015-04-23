@@ -5,7 +5,6 @@ import java.util.Random;
 
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.search.FieldComparator;
-import org.apache.lucene.search.Scorer;
 
 /**
  * 
@@ -52,12 +51,18 @@ public class RandomOrderFieldComparator extends FieldComparator<Integer> {
 	}
 
 	@Override
-	public int compareDocToValue(int inDoc, Integer inValue) throws IOException
+	public int compareTop(int inArg0) throws IOException
 	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
+	@Override
+	public void setTopValue(Integer inArg0)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

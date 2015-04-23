@@ -22,6 +22,7 @@ import com.openedit.users.BaseGroup;
 import com.openedit.users.Group;
 import com.openedit.users.User;
 import com.openedit.users.UserManager;
+import com.openedit.users.filesystem.XmlUserArchive;
 import com.openedit.util.PathUtilities;
 
 /**
@@ -32,11 +33,22 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 		GroupSearcher
 {
 	private static final Log log = LogFactory.getLog(LuceneGroupSearcher.class);
-	protected UserManager fieldUserManager;
+
+	protected XmlUserArchive fieldXmlUserArchive;
+
+	public XmlUserArchive getXmlUserArchive() {
+		if (fieldXmlUserArchive == null) {
+			fieldXmlUserArchive = (XmlUserArchive) getModuleManager().getBean(
+					getCatalogId(), "xmlUserArchive");
+
+		}
+
+		return fieldXmlUserArchive;
+	}
 
 	public HitTracker getAllHits(WebPageRequest inReq)
 	{
-		return getUserManager().getGroups();
+		return getXmlUserArchive().getGroups();
 		// return new ListHitTracker().setList(getCustomerArchive().)
 	}
 
@@ -106,15 +118,6 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 	// return false;
 	// }
 
-	public UserManager getUserManager()
-	{
-		return fieldUserManager;
-	}
-
-	public void setUserManager(UserManager inUserManager)
-	{
-		fieldUserManager = inUserManager;
-	}
 	public Object searchById(String inId) 
 	{
 		return getGroup(inId);
@@ -154,7 +157,7 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 					File xconf = groupsxml[i];
 					String groupid = PathUtilities.extractPageName(xconf.getPath());
 	
-					Group group = getUserManager().getGroup(groupid);
+					Group group = getXmlUserArchive().getGroup(groupid);
 					updateIndex( group, doc, details);
 					writer.addDocument(doc);
 	
@@ -178,7 +181,7 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 	
 	public Group getGroup(String inGroupId)
 	{
-		Group group = getUserManager().getGroup(inGroupId);
+		Group group = getXmlUserArchive().getGroup(inGroupId);
 		if (group == null)
 		{
 			log.error("Index is out of date, group " + inGroupId
@@ -189,22 +192,15 @@ public class LuceneGroupSearcher extends BaseLuceneSearcher implements
 
 	public void saveData(Data inData, User inUser)
 	{
-		getUserManager().saveGroup((Group) inData);
+		getXmlUserArchive().saveGroup((Group) inData);
 		updateIndex((Group) inData);
 	}
 	
-	public void setCatalogId(String inCatalogId)
-	{
-		if( !"system".equals(inCatalogId) )
-		{
-			throw new OpenEditException("group searcher should only be a system level not " + inCatalogId );
-		}
-		super.setCatalogId(inCatalogId);
-	}
+	
 
 	public void deleteData(Data inData)
 	{
-		getUserManager().deleteGroup((Group)inData);
+		getXmlUserArchive().deleteGroup((Group)inData);
 	}
 	
 }

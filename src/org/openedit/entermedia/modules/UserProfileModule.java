@@ -46,7 +46,7 @@ public class UserProfileModule extends BaseMediaModule
 		{
 			id = PathUtilities.extractDirectoryName( inReq.getPath() );
 		}
-		User user = getUserManager().getUser(id);
+		User user = getUserManager(inReq).getUser(id);
 		inReq.putPageValue("owner", user);
 		return user;
 	}
@@ -70,7 +70,7 @@ public class UserProfileModule extends BaseMediaModule
 		{
 			id = inReq.getUser().getId();
 		}
-		User user = getUserManager().getUser(id);
+		User user = getUserManager(inReq).getUser(id);
 		inReq.putPageValue("owner", user);
 		
 		String applicationid = inReq.getContentProperty("applicationid");
@@ -149,7 +149,7 @@ public class UserProfileModule extends BaseMediaModule
 			archive.saveAsset(asset, inReq.getUser());
 			User user = inReq.getUser();
 			user.setProperty("hasportrait", "true");
-			getUserManager().saveUser(user);
+			getUserManager(inReq).saveUser(user);
 		//}
 		
 	}

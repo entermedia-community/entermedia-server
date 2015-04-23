@@ -1,0 +1,7 @@
+<searchtypes>
+  
+      <searchtypes id="group" catalogid="system" /> 
+      
+      <searchtypes id="user" catalogid="system" /> 
+ 
+</searchtypes>

@@ -1,0 +1,9 @@
+#
+#Tue Mar 31 09:33:09 EDT 2015
+File=expediente
+Share=cuota
+Results=resultados
+Download=descargar
+Delete\ Assets=eliminar Activos
+Delete=borrar
+Print=impresi\u00F3n

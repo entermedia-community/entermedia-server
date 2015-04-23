@@ -7,6 +7,9 @@
 
 <a href="$home$apphome/views/catalogs/edit.html?id=$appcatalogid&appcatalogid=$appcatalogid" style="position: relative; top: 8px; font-size: 16px;">&larr; Back to Catalog $catalog</a>
 <br><br>
+
+Catalog Root Path: $!catalog.rootpath
+
 <div id="folders" class="fwlist manual">
     <div class="folder" style="margin-top: 0;">
         <div class="name">
@@ -18,8 +21,8 @@
         </div>
         <div class="delete" style="margin-top: 15px; position: relative; z-index: 100;">
             #set( $path = $data.deploypath )
-            <a class="btn" href="./exports/${data}.zip?apppath=$path" >Export</a>
-            <a class="btn blue" href="./remove.html?appcatalogid=$appcatalogid&catalogid=$appcatalogid&searchtype=app&id=$data.id" confirm="Are you sure?">Delete</a>
+            <a class="mbtn" href="./exports/${data}.zip?apppath=$path" >Export</a>
+            <a class="mbtn blue" href="./remove.html?appcatalogid=$appcatalogid&catalogid=$appcatalogid&searchtype=app&id=$data.id" confirm="Are you sure?">Delete</a>
         </div>
     </div>
     <div class="fields" id="workspaceform">

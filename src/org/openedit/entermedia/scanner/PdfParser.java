@@ -52,6 +52,7 @@ public class PdfParser
 			}
 			catch(Throwable e)
 			{
+				e.printStackTrace();
 				log.error("Could not parse" , e);
 				text = "";
 			}

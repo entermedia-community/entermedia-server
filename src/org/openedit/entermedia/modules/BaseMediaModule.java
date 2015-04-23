@@ -6,9 +6,13 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.EnterMedia;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
+import org.openedit.users.GroupSearcher;
+import org.openedit.users.UserSearcher;
 
 import com.openedit.WebPageRequest;
 import com.openedit.modules.BaseModule;
+import com.openedit.users.UserManager;
+import com.openedit.util.PathUtilities;
 
 public class BaseMediaModule extends BaseModule
 {
@@ -45,6 +49,8 @@ public class BaseMediaModule extends BaseModule
 		inReq.putPageValue("applicationid", applicationid);
 		inReq.putPageValue("apphome", "/" + applicationid);
 
+		
+		
 		String prefix = inReq.getContentProperty("themeprefix");
 		UserProfile profile = inReq.getUserProfile();
 		if( profile != null)
@@ -80,6 +86,9 @@ public class BaseMediaModule extends BaseModule
 		archive = getMediaArchive(catalogid);
 		inReq.putPageValue("mediaarchive", archive);
 		inReq.putPageValue("cataloghome", archive.getCatalogHome());
+		String mediadb = archive.getCatalogSettingValue("mediadbappid");
+		inReq.putPageValue("mediadbappid", mediadb);
+		
 		inReq.putPageValue("catalogid", catalogid); // legacy
 		return archive;
 	}
@@ -97,15 +106,24 @@ public class BaseMediaModule extends BaseModule
 			return (Asset)found;
 		}
 		
-		String sourcePath = inReq.getRequestParameter("sourcepath");
-		
 		MediaArchive archive = getMediaArchive(inReq);
-		
 		Asset asset = null;
-		if (sourcePath != null)
+		if( Boolean.parseBoolean( inReq.getContentProperty("assetpageid") ) ) 
 		{
-			//asset = archive.getAssetArchive().getAssetBySourcePath(sourcePath, true);
-			asset = archive.getAssetSearcher().getAssetBySourcePath(sourcePath, true);
+			String id = PathUtilities.extractPageName(inReq.getPath());
+			asset = archive.getAsset(id);
+		}
+		
+		if( asset == null)
+		{
+			String sourcePath = inReq.getRequestParameter("sourcepath");
+			
+			
+			if (sourcePath != null)
+			{
+				//asset = archive.getAssetArchive().getAssetBySourcePath(sourcePath, true);
+				asset = archive.getAssetSearcher().getAssetBySourcePath(sourcePath, true);
+			}
 		}
 		String assetid = null;
 		if( asset == null)
@@ -164,7 +182,7 @@ public class BaseMediaModule extends BaseModule
 
 	protected String resolveCatalogId(WebPageRequest inReq)
 	{
-		String catalogId = inReq.getRequestParameter("catalogid");
+		String catalogId = null;//inReq.getRequestParameter("catalogid");
 		if (catalogId == null || catalogId.startsWith("$"))
 		{
 			catalogId = inReq.findValue("catalogid");
@@ -174,6 +192,7 @@ public class BaseMediaModule extends BaseModule
 			catalogId = inReq.findValue("applicationid");
 		}
 		inReq.putPageValue("catalogid", catalogId);
+		
 		return catalogId;
 	}
 
@@ -184,6 +203,26 @@ public class BaseMediaModule extends BaseModule
 		inReq.putPageValue("searchtype", searchtype);
 		return searchtype;
 	}
-
+	
+	/**
+	 * are these used?
+	 * @param inReq
+	 * @return
+	 */
+	public UserSearcher getUserSearcher(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		return archive.getUserManager().getUserSearcher();
+		
+	}
+	public GroupSearcher getGroupSearcher(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		return archive.getUserManager().getGroupSearcher();
+		
+	}
+	public UserManager getUserManager(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		return archive.getUserManager();
+		
+	}
 	
 }

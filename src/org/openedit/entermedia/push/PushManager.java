@@ -18,10 +18,6 @@ public interface PushManager
 	//TODO: Put a 5 minute timeout on this connection. This way we will reconnect
 	HttpClient login(String inCatalogId);
 
-	UserManager getUserManager();
-
-	void setUserManager(UserManager inUserManager);
-
 	SearcherManager getSearcherManager();
 
 	void setSearcherManager(SearcherManager inSearcherManager);

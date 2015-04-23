@@ -9,7 +9,7 @@
 #set( $userTracker = $hits)
 $context.putPageValue("hits", $hits)
 
-#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
+#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 #set( $oeview = "user/results")
 #set( $details = $userSearcher.getDetailsForView($oeview,$user))
 

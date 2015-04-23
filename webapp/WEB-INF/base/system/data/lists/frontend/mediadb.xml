@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="mediadb" ordering="02"  module="asset"  path="/WEB-INF/base/mediadb/components/deploy" caption="Media API" longdescription="EnterMediaDB allows developers to program against an API">MediaDB</property>
+</properties>

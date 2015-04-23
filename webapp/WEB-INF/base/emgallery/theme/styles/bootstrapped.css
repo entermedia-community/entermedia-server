@@ -1,0 +1,54 @@
+/** 
+ These are custom mods to panels, divs and other components
+ supplied by the default bootstrap styles
+ **/
+
+.loginpanel {
+	height:100%;
+}
+@media (min-width: 768px) { 
+	.loginpanel {height:100%;}
+}
+@media (min-width: 992px) { 
+	.loginpanel {height:590px;} 
+}
+@media (min-width: 1200px) { 
+	.loginpanel {height:440px;}
+}
+
+
+html {
+    overflow-y: scroll;
+}
+.panel-shadow{
+
+    box-shadow: 0 0 10px #CCC;
+}
+
+
+.img-center {
+    margin: 0 auto;
+}
+
+
+.node-required{
+	border-color: red;
+}
+
+
+
+
+.white, .white a {
+  color: #fff;
+}
+
+
+
+.green, .green a {
+ background-color: green;
+}
+
+
+.red, .red a {
+  color: green;
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+ <property id="id" index="true" stored="true">ID</property>
+ <property id="id" index="true" stored="true"  editable="true">Name</property>
+ <property id="position" type="position" datatype="position" viewtype="map" index="true" stored="true" searchcomponent="locationsearch"  editable="true">Position</property>
+ <property id="position_lat" index="true" stored="true"  editable="true">Latitude</property>
+ <property id="position_lng" index="true" stored="true"  editable="true">Longitude</property>
+ <property id="geoicon" index="true" stored="true" type="list" editable="true">Icon</property>
+ <property id="assetid" index="true" stored="true" type="list" viewtype="asset">Asset</property>
+</properties>

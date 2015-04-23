@@ -1,6 +1,9 @@
 #set ( $editPath = $context.findValue("editPath") )
 #set ( $parentsourcepath = $context.getRequestParameter("parentsourcepath"))
 
+#if($editPath)
+	#set($editPath = $url_util.encode($editPath).replace("%2F","/"))
+#end
 
 #if ( $revisions.getRevisions().size() > 1 )
     <p style="margin: 0; padding: 0; text-align: center;">

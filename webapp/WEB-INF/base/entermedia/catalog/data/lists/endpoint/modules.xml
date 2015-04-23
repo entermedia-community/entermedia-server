@@ -9,7 +9,7 @@
      }]]></samplerequest> 
   </data>  
   <endpoint id="modulelist" url="/${applicationid}/services/settings/modules/list" docsection="modules" name="List Modules" httpmethod="GET">List Modules</endpoint>  
-  <data id="moduleretrieve" name="Load Data " httpmethod="GET" url="/mediadb/services/settings/modules/data/testmodule" docsection="modules"/>  
+  <data id="moduleretrieve" name="Load Data " httpmethod="GET" url="/${applicationid}/services/settings/modules/data/testmodule" docsection="modules"/>  
   <data id="moduleupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/${applicationid}/services/settings/modules/data/testmodule" docsection="modules"> 
     <samplerequest><![CDATA[{  "name": "Test Module2"
    }]]></samplerequest> 

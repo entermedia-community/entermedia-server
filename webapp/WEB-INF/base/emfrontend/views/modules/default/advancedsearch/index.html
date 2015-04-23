@@ -42,7 +42,7 @@ $context.putPageValue("idprefix","search")
 			$pages.include("$searchhome//advancedsearch/section.html", $context)
 		#end
 	#end
-	<td class="submit"><input class="btn small" type="submit" value="Search" />
+	<td class="submit"><input class="btn small" type="submit" value="[[Search]]" />
 	</td>
 	</tr>
 	
@@ -69,7 +69,7 @@ $context.putPageValue("idprefix","search")
 	<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
 	
 	<select name="field" onChange="jQuery('#searchaddfield').submit();">
-		<option>Add Field</option>
+		<option>[[Add Field]]</option>
 		#foreach( $detail in $alldetails)
 			#if($detail.isLeaf())
 			<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
@@ -82,7 +82,7 @@ $context.putPageValue("idprefix","search")
 		#end	
 
 	</select>
-	<a class="ajax" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Done</a>
+	<a class="ajax" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
 	
 </form>
 #end

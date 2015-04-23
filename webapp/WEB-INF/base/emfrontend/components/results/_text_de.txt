@@ -1,24 +1,29 @@
 #
-#Mon Feb 16 09:59:47 EST 2015
-Share=Aktie
-View\ Table=view-Tabelle
+#Tue Mar 31 09:38:52 EDT 2015
+Share=Teilen
+View\ Table=Tabelle anzeigen
+Gallery\ View=Galerie-Ansicht
 Download=Download
 Deselect\ All=alle abw\u00E4hlen
 Add\ to\ Basket=in den Warenkorb
-Email\ Assets=E-Mail- Verm\u00F6genswerte
-Select\ All\ Results=w\u00E4hlen Sie alle Ergebnisse
-Publish\ Assets\ to\ Server=Verm\u00F6genswerte auf Server ver\u00F6ffentlichen
-Select\ This\ Page=W\u00E4hlen Sie diese Seite
-items=Gegenst\u00E4nde
+Email\ Assets=Assets mailen
+Change\ Result\ View=\u00C4nderung Ergebnisansicht
+Publish=ver\u00F6ffentlichen
+Select\ All\ Results=alle Ergebnisse ausw\u00E4hlen
+Publish\ Assets\ to\ Server=Assets auf Server ver\u00F6ffentlichen
+Category\ Folder\ View=Kategorie Ordneransicht
+Select\ This\ Page=diese Seite w\u00E4hlen
+items=Objekte
 of=von
-Cancel=r\u00FCckg\u00E4ngig machen
+Cancel=abbrechen
 Add\ Column=Spalte hinzuf\u00FCgen
-Share\ Gallery=Aktien Galerie
+Share\ Gallery=Galerie mit Anderen teilen
+Edit\ Columns=Spalten bearbeiten
 View\ Gallery=Galerie ansehen
-Edit\ Columns=edit Spalten
-No\ results\ found=keine Ergebnisse gefunden
+Table\ View=Tabellenansicht
 Displaying\ records=Anzeige von Datens\u00E4tzen
+No\ results\ found=keine Ergebnisse gefunden
 Edit=bearbeiten
 Remove=entfernen
-Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen
 Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
+Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen
