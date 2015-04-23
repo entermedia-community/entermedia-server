@@ -273,7 +273,7 @@
 					'id': id,
 					fileid: id,
 					'foldername': newname,
-					'assetid': $asset.id
+					'assetid': '$asset.id'
 					} , function () {						
 						jQuery("#" + id +"_display").show("fast");
 						jQuery("#" + id +"_edit").hide("fast");		
@@ -303,7 +303,7 @@
 					//'id': id,
 					fileid: id,
 					'foldername': newname,
-					'assetid': $asset.id
+					'assetid': '$asset.id'
 				
 					} , function () {						
 					repaint();
@@ -331,7 +331,7 @@
 				var id = $(this).attr('fileid');
 				jQuery.get("$home$attachmentroot/delete.html", {
 					fileid: id,					
-					'assetid': $asset.id
+					'assetid': '$asset.id'
 					} , function () {						
 						repaint();	 //this is problematic, delete should repaint
   				    }
