@@ -729,7 +729,7 @@ public class LuceneHitTracker extends HitTracker
 		fieldLuceneSort = inLuceneSort;
 	}
 
-	protected List<FilterNode> getFacetedResults()
+	protected List<FilterNode> loadFacetsFromResults()
 	{
 		IndexSearcher searcher = null;
 

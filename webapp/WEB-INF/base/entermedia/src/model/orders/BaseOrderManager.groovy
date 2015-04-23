@@ -58,7 +58,7 @@ public class BaseOrderManager implements OrderManager {
 
 	public Data placeOrder(String frontendappid, String inCatlogId, User inUser, HitTracker inAssets, Map inProperties) {
 		Searcher searcher = getSearcherManager().getSearcher(inCatlogId, "order");
-		Data order = createNewOrderWithId(frontendappid, inCatlogId,inUser.getUserName());
+		Data order = createNewOrder(frontendappid, inCatlogId,inUser.getUserName());
 
 		for (Iterator iterator = inProperties.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
@@ -306,21 +306,7 @@ public class BaseOrderManager implements OrderManager {
 		return toSave;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#createNewOrderWithId(java.lang.String, java.lang.String, java.lang.String)
-	 */
 
-	public Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername) {
-		Order order = createNewOrder(inAppId, inCatalogId, inUsername);
-		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "order");
-		if( order.getId() == null) {
-			String id = searcher.nextId();
-			order.setName(id);
-			id = id + "_" + UUID.randomUUID().toString().replace('-', '_');
-			order.setId(id);
-		}
-		return order;
-	}
 	/* (non-Javadoc)
 	 * @see org.openedit.entermedia.orders.OrderManager#createNewOrder(java.lang.String, java.lang.String, java.lang.String)
 	 */
@@ -332,7 +318,17 @@ public class BaseOrderManager implements OrderManager {
 		//order.setId(searcher.nextId());
 		order.setProperty("orderstatus", "preorder");
 		order.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		order.setSourcePath(inUsername + "/" + order.getId());
+		
+		if( order.getId() == null) {
+			//String id = searcher.nextId();
+			//order.setName(id);
+			String id = UUID.randomUUID().toString().replace('-', '_');
+			order.setId(id);
+			order.setName(id);
+			order.setSourcePath(inUsername + "/" + id.substring(0,2));
+		}
+
+
 		order.setProperty("userid", inUsername);
 		order.setProperty("applicationid",inAppId);
 		return order;

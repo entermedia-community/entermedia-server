@@ -145,7 +145,7 @@ public class OrderModule extends BaseMediaModule
 			Map props = new HashMap();
 
 			String applicationid = inReq.findValue("applicationid");
-			Order order = (Order) getOrderManager().createNewOrderWithId(applicationid, catalogid, inReq.getUserName());
+			Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
@@ -206,7 +206,7 @@ public class OrderModule extends BaseMediaModule
 			Map props = new HashMap();
 
 			String applicationid = inReq.findValue("applicationid");
-			Order order = (Order) getOrderManager().createNewOrderWithId(applicationid, catalogid, inReq.getUserName());
+			Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
 			inReq.putPageValue("order", order);
 			inReq.setRequestParameter("orderid", order.getId());
 
@@ -613,27 +613,27 @@ public class OrderModule extends BaseMediaModule
 	}
 	
 	public void preprocessOrder(WebPageRequest inReq)
-	{
-		
+	{		
 		String [] orderids = inReq.getRequestParameters("itemid");
-		
-	
-		for(String orderid:orderids)
+		if( orderids != null)
 		{
-			String formatkey = new StringBuilder().append(orderid).append(".itemfiletype.value").toString();
-			
-			
-			if (!inReq.getParameterMap().containsKey(formatkey)){
-				continue;
+			for(String orderid:orderids)
+			{
+				String formatkey = new StringBuilder().append(orderid).append(".itemfiletype.value").toString();
+				
+				
+				if (!inReq.getParameterMap().containsKey(formatkey)){
+					continue;
+				}
+				String format = inReq.getParameterMap().get(formatkey).toString();
+				String presetkey = new StringBuilder().append(format).append(".presetid.value").toString();
+				if (!inReq.getParameterMap().containsKey(presetkey)){
+					continue;
+				}
+				String preset = inReq.getParameterMap().get(presetkey).toString();
+				String itempresetkey = new StringBuilder().append(orderid).append(".presetid.value").toString();
+				inReq.setRequestParameter(itempresetkey, preset);
 			}
-			String format = inReq.getParameterMap().get(formatkey).toString();
-			String presetkey = new StringBuilder().append(format).append(".presetid.value").toString();
-			if (!inReq.getParameterMap().containsKey(presetkey)){
-				continue;
-			}
-			String preset = inReq.getParameterMap().get(presetkey).toString();
-			String itempresetkey = new StringBuilder().append(orderid).append(".presetid.value").toString();
-			inReq.setRequestParameter(itempresetkey, preset);
 		}
 	}
 
@@ -794,7 +794,7 @@ public class OrderModule extends BaseMediaModule
 		String catalogId = inReq.findValue("catalogid");
 		MediaArchive archive = getMediaArchive(catalogId);
 		String[] assetids = inReq.getRequestParameters("assetid");
-		Order order = getOrderManager().createNewOrderWithId(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
+		Order order = getOrderManager().createNewOrder(inReq.findValue("applicationid"), catalogId, inReq.getUserName());
 
 		for (int i = 0; i < assetids.length; i++)
 		{

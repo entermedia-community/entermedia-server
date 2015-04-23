@@ -58,8 +58,6 @@ public interface OrderManager
 
 	ArrayList saveItems(String catalogid, WebPageRequest inReq, String[] fields, String[] items);
 
-	Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername);
-
 	Order createNewOrder(String inAppId, String inCatalogId, String inUsername);
 
 	void removeItemFromOrder(String inCatId, Order inOrder, Asset inAsset);
