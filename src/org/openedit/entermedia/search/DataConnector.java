@@ -40,7 +40,7 @@ public interface DataConnector
 
 	void updateIndex(Data one);
 
-	void updateIndex(Collection<Data> all, boolean b);
+	//void updateIndex(Collection<Data> all, boolean b);
 
 	void reIndexAll();
 

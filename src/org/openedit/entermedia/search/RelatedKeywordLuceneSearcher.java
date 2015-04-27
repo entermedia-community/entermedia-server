@@ -44,6 +44,8 @@ import com.openedit.hittracker.Term;
  * 
  * @author jvalencia
  * 
+ * @deprecated Use Facets
+ * 
  */
 public class RelatedKeywordLuceneSearcher extends BaseLuceneSearcher implements RelatedKeywordSearcher
 {

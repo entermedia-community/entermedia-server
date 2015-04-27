@@ -1,3 +1,13 @@
 <beans>
 	<bean  id="authenticationLogSearcher" bean="logSearcher" />
+	<bean id="transientSearcher" bean="luceneTransientSearcher" />
+	<bean id="listSearcher" bean="xmllistSearcher" />
+	<bean id="folderSearcher" bean="xmlFolderSearcher" />
+	<bean id="dataSearcher" bean="xmlDataSearcher" />
+	<bean id="dynamicLogSearcher" bean="luceneDynamicLogSearcher" />
+
+	<!-- Java implementations -->
+	<bean id="userSearcher" bean="luceneUserSearcher" />
+	<bean id="groupSearcher" bean="luceneGroupSearcher" />
+
 </beans>

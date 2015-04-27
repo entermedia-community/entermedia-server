@@ -50,7 +50,12 @@ public class RelatedKeywordModule extends BaseModule
 		}
 		return searcher;
 	}
-
+	/**
+	 * @deprecated use facets
+	 * @param inReq
+	 * @return
+	 * @throws Exception
+	 */
 	public Map<String, String> getSuggestions(WebPageRequest inReq) throws Exception
 	{
 		String searchType = inReq.findValue("searchtype");
