@@ -13,7 +13,7 @@
 	<a folder="attachments" id="viewattachments"   module="asset"  useajax="false" name="Attachments"  ordering="180"/>
 	<a folder="permissions" id="assetpermissions"  module="asset"  useajax="true" multiedit="true" name="Permissions"  ordering="190"/>
     
-	<a folder="historypreviews"  id="viewassetpreviewhistory"  module="asset"  useajax="true" name="History"  ordering="200"/>
+	<a folder="converthistory"  id="converthistory"  module="asset"  useajax="true" name="History"  ordering="200"/>
 	
 	<a folder="fatwire"  id="viewfatwire"  module="asset"  useajax="true" name="Fatwire"  ordering="200"/>
 	<a folder="editshoppingcart"  id="editshoppingcart"  module="asset"  useajax="true" name="Shopping Cart"  ordering="210"  multiedit="true" />

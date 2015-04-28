@@ -1,8 +1,6 @@
 #if( $data )
 	#set($values = $data.getValues("category-exact") )
 #end
-
-
 #set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))
 
 	<div class="tageditor-viewer">
