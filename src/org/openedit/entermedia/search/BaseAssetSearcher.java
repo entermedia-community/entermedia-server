@@ -486,5 +486,15 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		return getDataConnector().loadData(inHit);
 	}
 	
+	@Override
+	public HitTracker loadHits(WebPageRequest inReq)
+	{
+		return getDataConnector().loadHits(inReq);
+	}
 
+	@Override
+	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker) throws OpenEditException
+	{
+		return getDataConnector().checkCurrent(inReq, inTracker);
+	}
 }

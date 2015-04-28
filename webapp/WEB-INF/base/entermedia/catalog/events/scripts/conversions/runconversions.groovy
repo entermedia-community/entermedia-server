@@ -401,7 +401,7 @@ public void checkforTasks()
 	
 	List runners = new ArrayList();
 
-	ConvertQueue executorQueue = getQueue();
+	ConvertQueue executorQueue = getQueue(mediaarchive.getCatalogId());
 	
 	CompositeConvertRunner byassetid = null;
 //		CompositeConvertRunner lastcomposite = null;
@@ -465,7 +465,7 @@ public ConvertQueue getQueue(String inCatalogId)
 	ConvertQueue queue = null;
 	if( moduleManager.contains( inCatalogId, "convertQueue") )
 	{
-		queue =  (ConvertQueue)moduleManager.getBean(mediaarchive.getCatalogId(),"convertQueue");
+		queue =  (ConvertQueue)moduleManager.getBean(inCatalogId,"convertQueue");
 	}
 	else
 	{

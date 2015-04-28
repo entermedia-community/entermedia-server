@@ -69,7 +69,7 @@ public class MediaArchive
 
 	protected AssetArchive fieldAssetArchive;
 	protected AssetArchive fieldMirrorAssetArchive;
-	protected Map fieldTaxRates;
+//	protected Map fieldTaxRates;
 	protected AssetSearcher fieldAssetSearcher;
 	protected CatalogConverter fieldImportConverter;
 	protected CategoryArchive fieldCategoryArchive;
@@ -1398,11 +1398,19 @@ public class MediaArchive
 	}
 	public LockManager getLockManager()
 	{
+		if( fieldLockManager == null)
+		{
+			fieldLockManager = (LockManager)getModuleManager().getBean(getCatalogId(),"lockManager");
+		}
 		return fieldLockManager;
 	}
 	public void setLockManager(LockManager inLockManager)
 	{
 		fieldLockManager = inLockManager;
+	}
+	public Lock lock(String inPath, String inOwner)
+	{
+		return getLockManager().lock(inPath, inOwner);
 	}
 	
 	public boolean releaseLock(Lock inLock)
@@ -1416,7 +1424,7 @@ public class MediaArchive
 			throw new OpenEditException("Previous lock id was null");
 		}
 
-		boolean ok = getLockManager().release(getCatalogId(), inLock);
+		boolean ok = getLockManager().release( inLock);
 		return ok;
 	}
 	

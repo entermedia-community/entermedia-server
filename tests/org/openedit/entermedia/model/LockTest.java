@@ -18,18 +18,18 @@ public class LockTest extends BaseEnterMediaTest
 	
 	public void testLocks()
 	{
-		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
+		String catid = "entermedia/catalogs/testcatalog";
+		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean(catid,"lockManager");
 		
 		String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
-		String catid = "entermedia/catalogs/testcatalog";
-		manager.releaseAll(catid,path);
+		manager.releaseAll(path);
 		
-		Lock lock = manager.lock(catid, path, "admin");
+		Lock lock = manager.lock( path, "admin");
 		assertNotNull(lock);
-		assertTrue(manager.isOwner(catid, lock));
+		assertTrue(manager.isOwner(lock));
 
-		manager.release(catid,lock);
-		lock = manager.loadLock(catid, path);
+		manager.release(lock);
+		lock = manager.loadLock(path);
 		assertFalse(lock.isLocked());
 
 		//clear
@@ -39,22 +39,22 @@ public class LockTest extends BaseEnterMediaTest
 	
 	public void testAssetIsAlreadyLocked() throws Exception
 	{
-		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
-
 		String catid = "entermedia/catalogs/testcatalog";
+		LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean(catid,"lockManager");
+
 		
 		String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
-		manager.releaseAll("entermedia/catalogs/testcatalog",path);
+		manager.releaseAll(path);
 
-		Lock lock = manager.lock("entermedia/catalogs/testcatalog", path, "admin");
+		Lock lock = manager.lock(path, "admin");
 		assertNotNull(lock);
-		assertTrue(manager.isOwner(catid,lock));
+		assertTrue(manager.isOwner(lock));
 
 		//this should fail
 		boolean failed = false;
 		try
 		{
-			 manager.lock("entermedia/catalogs/testcatalog", path, "testuser");
+			 manager.lock(path, "testuser");
 		}
 		catch( Exception ex)
 		{
@@ -66,15 +66,15 @@ public class LockTest extends BaseEnterMediaTest
 
 	public void testWaitForLock() throws Exception
 	{
-		final LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean("lockManager");
+		String catid = "entermedia/catalogs/testcatalog";
+		final LockManager manager = (LockManager)getStaticFixture().getModuleManager().getBean(catid,"lockManager");
 		
 		final String path = "/entermedia/catalogs/testcatalog/assets/users/101/index.html";
-		manager.releaseAll("entermedia/catalogs/testcatalog",path);
-		String catid = "entermedia/catalogs/testcatalog";
+		manager.releaseAll(path);
 		
-		final Lock lock = manager.lock("entermedia/catalogs/testcatalog", path, "admin");
+		final Lock lock = manager.lock(path, "admin");
 		assertNotNull(lock);
-		assertTrue(manager.isOwner(catid,lock));
+		assertTrue(manager.isOwner(lock));
 
 		//this should pass
 		boolean failed = false;
@@ -84,11 +84,11 @@ public class LockTest extends BaseEnterMediaTest
 			{
 				public void run()
 				{	
-					manager.release("entermedia/catalogs/testcatalog", lock);
+					manager.release(lock);
 				}
 			}).start();
 			
-			Lock lock2 = manager.lock("entermedia/catalogs/testcatalog", path, "testuser");
+			Lock lock2 = manager.lock(path, "testuser");
 			
 		}
 		catch( Exception ex)

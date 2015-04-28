@@ -11,6 +11,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.entermedia.cache.CacheManager;
 import org.entermedia.locks.Lock;
+import org.entermedia.locks.LockManager;
 import org.openedit.Data;
 import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
@@ -247,6 +248,7 @@ public class XmlDataArchive implements DataArchive
 	{
 		XmlFile xml = null;//
 		Lock lock = null;
+		LockManager lockManager = getXmlArchive().getLockManager(catalogid);
 		try
 		{
 			for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
@@ -261,9 +263,9 @@ public class XmlDataArchive implements DataArchive
 					if( xml != null)
 					{
 						getXmlArchive().saveXml(xml, null, lock);
-						getXmlArchive().getLockManager().release(catalogid, lock);
+						lockManager.release(lock);
 					}
-					lock = getXmlArchive().getLockManager().lock(catalogid, inLockPrefix + data.getSourcePath(), null);
+					lock = lockManager.lock(inLockPrefix + data.getSourcePath(), null);
 					xml = getXmlArchive().getXml(path, getElementName());
 				}
 				addRow(data, xml);
@@ -277,7 +279,7 @@ public class XmlDataArchive implements DataArchive
 		{
 			if( lock != null)
 			{
-				getXmlArchive().getLockManager().release(catalogid, lock);
+				lockManager.release(lock);
 			}
 		}
 

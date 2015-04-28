@@ -237,7 +237,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		Lock lock = null;
 		try
 		{
-			lock = getLockManager().lock(getCatalogId(), getPrefix() + "/" + data.getSourcePath(),"admin");
+			lock = getLockManager().lock(getPrefix() + "/" + data.getSourcePath(),"admin");
 			getXmlDataArchive().saveData(data,inUser, lock);
 		
 //		String nullcheck = data.get("publishqueueid");
@@ -245,7 +245,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		updateIndex(data);
 		} 	finally
 		{
-			getLockManager().release(getCatalogId(), lock);
+			getLockManager().release(lock);
 		}
 	}
 

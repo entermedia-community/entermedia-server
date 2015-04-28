@@ -21,6 +21,17 @@ public class ClusterLockManager implements LockManager
 
 	protected SearcherManager fieldSearcherManager;
 	protected NodeManager fieldNodeManager;
+	protected String fieldCatalogId;
+	
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -29,12 +40,12 @@ public class ClusterLockManager implements LockManager
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Lock lock(String inCatId, String inPath, String inOwnerId)
+	public Lock lock(String inPath, String inOwnerId)
 	{
-		Searcher searcher = getLockSearcher(inCatId);
-		Lock lock = loadLock(inCatId, inPath);
+		//Searcher searcher = getLockSearcher(inCatId);
+		Lock lock = loadLock(inPath);
 		int tries = 0;
-		while (!grabLock(inCatId, inOwnerId, lock))
+		while (!grabLock(inOwnerId, lock))
 		{
 			tries++;
 			if (tries > 9)
@@ -51,12 +62,12 @@ public class ClusterLockManager implements LockManager
 				log.info(ex);
 			}
 			log.info("Could not lock " + inPath + " trying again  " + tries);
-			lock = loadLock(inCatId, inPath);
+			lock = loadLock(inPath);
 		}
 		return lock;
 	}
 
-	public boolean grabLock(String inCatId, String inOwner, Lock lock)
+	public boolean grabLock(String inOwner, Lock lock)
 	{
 		if (lock == null)
 		{
@@ -74,7 +85,7 @@ public class ClusterLockManager implements LockManager
 			lock.setDate(new Date());
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setLocked(true);
-			getLockSearcher(inCatId).saveData(lock, null);
+			getLockSearcher().saveData(lock, null);
 		}
 		catch (ConcurrentModificationException ex)
 		{
@@ -107,9 +118,9 @@ public class ClusterLockManager implements LockManager
 	 * java.lang.String)
 	 */
 	@Override
-	public Lock loadLock(String inCatId, String inPath)
+	public Lock loadLock(String inPath)
 	{
-		Searcher searcher = getLockSearcher(inCatId);
+		Searcher searcher = getLockSearcher();
 
 		SearchQuery q = searcher.createSearchQuery(); 
 		q.addExact("path", inPath);
@@ -151,22 +162,22 @@ public class ClusterLockManager implements LockManager
 	 * java.lang.String)
 	 */
 	@Override
-	public HitTracker getLocksByDate(String inCatId, String inPath)
+	public HitTracker getLocksByDate(String inPath)
 	{
-		Searcher searcher = getLockSearcher(inCatId);
+		Searcher searcher = getLockSearcher();
 		SearchQuery q = searcher.createSearchQuery();
 		q.addExact("path", inPath);
 		q.addSortBy("date");
 		return searcher.search(q);
 	}
 
-	public Searcher getLockSearcher(String inCatalogId)
+	public Searcher getLockSearcher()
 	{
-		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "lock");
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"lock");
 		return searcher;
 	}
 
-	public boolean isOwner(String inCatId, Lock lock)
+	public boolean isOwner(Lock lock)
 	{
 		if (lock == null)
 		{
@@ -177,7 +188,7 @@ public class ClusterLockManager implements LockManager
 			throw new OpenEditException("lock id is currently null");
 		}
 
-		Lock owner = loadLock(inCatId, lock.getPath());
+		Lock owner = loadLock(lock.getPath());
 		if (owner == null)
 		{
 			throw new OpenEditException("Owner lock is currently null");
@@ -197,15 +208,15 @@ public class ClusterLockManager implements LockManager
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Lock lockIfPossible(String inCatId, String inPath, String inOwnerId)
+	public Lock lockIfPossible(String inPath, String inOwnerId)
 	{
-		Lock lock = loadLock(inCatId, inPath);
+		Lock lock = loadLock(inPath);
 
 		if (lock.isLocked())
 		{
 			return null;
 		}
-		if (grabLock(inCatId, inOwnerId, lock))
+		if (grabLock(inOwnerId, lock))
 		{
 			return lock;
 		}
@@ -219,11 +230,11 @@ public class ClusterLockManager implements LockManager
 	 * org.entermedia.locks.Lock)
 	 */
 	@Override
-	public boolean release(String inCatId, Lock inLock)
+	public boolean release(Lock inLock)
 	{
 		if (inLock != null)
 		{
-			Searcher searcher = getLockSearcher(inCatId);
+			Searcher searcher = getLockSearcher();
 			inLock.setLocked(false);
 			inLock.setProperty("version", (String) null);
 			searcher.saveData(inLock, null);
@@ -239,10 +250,10 @@ public class ClusterLockManager implements LockManager
 	 * java.lang.String)
 	 */
 	@Override
-	public void releaseAll(String inCatalogId, String inPath)
+	public void releaseAll(String inPath)
 	{
-		Lock existing = loadLock(inCatalogId, inPath);
-		release(inCatalogId, existing);
+		Lock existing = loadLock( inPath);
+		release( existing);
 	}
 
 	public SearcherManager getSearcherManager()
