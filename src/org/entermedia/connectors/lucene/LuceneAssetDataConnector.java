@@ -139,7 +139,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return fieldLuceneIndexer;
 	}
 
-	public synchronized void updateIndex(List<Data> inAssets, boolean inOptimize)
+	public void updateIndex(Collection<Data> inAssets, User inUser)
 	{
 		if (log.isDebugEnabled())
 		{
@@ -165,7 +165,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			// getIndexWriter().optimize();
 			// log.info("Optimized");
 			// }
-			if (inOptimize || inAssets.size() > 100)
+			if (inAssets.size() > 100)
 			{
 				flush();
 			}
@@ -503,6 +503,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 		return getMediaArchive().getAssetArchive().getAssetBySourcePath(inSourcePath, inAutocreate);
 	}
 
+
 	//	@Override
 	//	public void saveAllData(Collection<Data> inAll, User inUser)
 	//	{
@@ -511,12 +512,6 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 	//	}
 	//
 	//	@Override
-	//	public void updateIndex(Collection<Data> inAll, boolean inB)
-	//	{
-	//		// TODO Auto-generated method stub
-	//		
-	//	}
-
 	// public String idToPath(String inAssetId)
 	// {
 	// String path = (String) getAssetPaths().get(inAssetId);

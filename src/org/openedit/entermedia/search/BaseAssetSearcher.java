@@ -133,9 +133,9 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	{
 		getDataConnector().updateIndex(inAssets);
 	}
-	public synchronized void updateIndex(List inAssets, boolean inOptimize)
+	public void updateIndex(List inAssets)
 	{
-		getDataConnector().updateIndex(inAssets, inOptimize);
+		getDataConnector().updateIndex(inAssets, null);
 
 		//TODO: Update ids path lookup? mem leak?
 //		if (asset.getId() != null)
