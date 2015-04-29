@@ -6,6 +6,7 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.*
 import org.openedit.entermedia.creator.*
+import org.openedit.entermedia.creator.ConvertQueue;
 import org.openedit.entermedia.edit.*
 import org.openedit.entermedia.modules.*
 import org.openedit.util.DateStorageUtil
