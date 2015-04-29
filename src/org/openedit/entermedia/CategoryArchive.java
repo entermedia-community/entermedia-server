@@ -25,7 +25,7 @@ public interface CategoryArchive
 
 	public void deleteCategory(Category inCatalog);
 
-	void setRootCategory(Category inRoot);
+	//void setRootCategory(Category inRoot);
 
 	Category getRootCategory();
 

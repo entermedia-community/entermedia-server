@@ -518,14 +518,22 @@ public class MediaArchive
 		return createAsset(null,inSourcePath);
 	}
 
+	public CategorySearcher getCategorySearcher()
+	{
+		CategorySearcher searcher = (CategorySearcher)getSearcher("category");
+		return searcher;
+	}
+	/**
+	 * @deprecated use getCategorySearcher()
+	 * @return
+	 */
 	public CategoryArchive getCategoryArchive()
 	{
 		if (fieldCategoryArchive == null)
 		{
-			CategorySearcher searcher = (CategorySearcher)getSearcher("category");
-			fieldCategoryArchive = searcher.getCategoryArchive();
-			fieldCategoryArchive.setCatalogId(getCatalogId());
-
+			//CategorySearcher searcher = (CategorySearcher)getSearcher("category");
+			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(),"categoryArchive");
+			//fieldCategoryArchive.setCatalogId(getCatalogId());
 		}
 		return fieldCategoryArchive;
 	}
@@ -883,7 +891,7 @@ public class MediaArchive
 
 	public Category getCategory(String inCategoryId)
 	{
-		return getCategoryArchive().getCategory(inCategoryId);
+		return getCategorySearcher().getCategory(inCategoryId);
 	}
 	
 	public String getLinkToSize(String inSourcePath, String inSize)
@@ -1152,7 +1160,7 @@ public class MediaArchive
 		// Why the content page? Page page = inPageRequest.getContentPage();
 		if (category == null)
 		{
-			category = getCategoryArchive().getCategory(categoryId);
+			category = getCategorySearcher().getCategory(categoryId);
 		}
 		if (category == null)
 		{

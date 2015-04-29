@@ -749,7 +749,7 @@
 		<property name="pageManager"><ref bean="pageManager"/></property>
 	</bean>
 
-	<bean id="categoryArchive" class="org.openedit.entermedia.xmldb.XmlCategoryArchive"
+	<bean id="xmlCategoryArchive" class="org.openedit.entermedia.xmldb.XmlCategoryArchive"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />

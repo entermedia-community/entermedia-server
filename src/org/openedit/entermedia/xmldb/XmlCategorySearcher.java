@@ -146,6 +146,19 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	}
 
 	@Override
+	public void saveCategory(Category inCategory)
+	{
+		saveData(inCategory,null);
+	}
+	
+	@Override
+	public Category getCategory(String inCatalog)
+	{
+		Category category = getCategoryArchive().getCategory(inCatalog);
+		return category;
+	}
+	
+	@Override
 	public void saveData(Data inData, User inUser)
 	{
 		Collection<Data> list = new ArrayList<Data>(1);

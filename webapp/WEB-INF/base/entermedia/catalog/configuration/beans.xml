@@ -17,6 +17,7 @@
 	<bean id="orderSearcher" bean="luceneOrderSearcher" />
 	<bean id="orderhistorySearcher" bean="xmlDataSearcher" />
 	<bean id="orderitemSearcher" bean="xmlDataSearcher" />
+	<bean id="xmlCategoryArchive" bean="xmlCategoryArchive" />
 
 	<!--  Little used -->
 	<bean id="emailSearcher" bean="xmlDataSearcher" />

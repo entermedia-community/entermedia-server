@@ -189,7 +189,12 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 	{
 		if (getRootCategory().getId().equals(inCategory.getId()))
 		{
-			setRootCategory(new Category("index", "Index"));
+			//setRootCategory(new Category("index", "Index"));
+			for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
+			{
+				Category child = (Category) iterator.next();
+				deleteAll(child);
+			}
 		}
 		else
 		{
@@ -220,22 +225,22 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 		fieldRootCatalog = null;
 	}
 
-	public void setRootCategory(Category inRootCatalog)
-	{
-		fieldRootCatalog = inRootCatalog;
-
-		if (fieldRootCatalog != null)
-		{
-			// This is not used much anymore
-			String home = fieldRootCatalog.getProperty("categoryhome");
-			if (home == null)
-			{
-				fieldRootCatalog.setProperty("categoryhome", "/" + getCatalogId() + "/categories/");
-			}
-			cacheCategory(fieldRootCatalog);
-		}
-
-	}
+//	public void setRootCategory(Category inRootCatalog)
+//	{
+//		fieldRootCatalog = inRootCatalog;
+//
+//		if (fieldRootCatalog != null)
+//		{
+//			// This is not used much anymore
+//			String home = fieldRootCatalog.getProperty("categoryhome");
+//			if (home == null)
+//			{
+//				fieldRootCatalog.setProperty("categoryhome", "/" + getCatalogId() + "/categories/");
+//			}
+//			cacheCategory(fieldRootCatalog);
+//		}
+//
+//	}
 
 	protected String listCatalogXml()
 	{
@@ -354,7 +359,17 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 					rootConfig.populate(rootE);
 
 					Category root = createCatalog(rootConfig);
-					setRootCategory(root);
+					if( fieldRootCatalog == null)
+					{
+						fieldRootCatalog  = root;
+					}
+					else					
+					{
+						//Just update the root object
+						getRootCategory().setName(root.getName());
+						getRootCategory().setProperties(root.getProperties());
+						getRootCategory().setChildren(root.getChildren());
+					}
 				}
 				catch (Exception ex)
 				{
@@ -368,7 +383,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 				Category root = new Category();
 				root.setId("index");
 				root.setName("Index");
-				setRootCategory(root);
+				fieldRootCatalog  = root;//setRootCategory(root);
 			}
 		}
 		catch (Exception ex)

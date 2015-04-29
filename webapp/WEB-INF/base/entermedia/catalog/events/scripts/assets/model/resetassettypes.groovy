@@ -1,13 +1,9 @@
-package utils;
+package assets.model;
 
-import org.openedit.data.Searcher
-import org.openedit.entermedia.MediaArchive
-
-import assets.model.AssetTypeManager
-import assets.model.LibraryAddingAssetTypeManager
+import org.openedit.data.Searcher;
+import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 
 
 
@@ -18,8 +14,9 @@ Searcher assetsearcher = mediaArchive.getAssetSearcher();
 
 log.info("Ran");
 HitTracker assets = assetsearcher.getAllHits();
-AssetTypeManager manager = new LibraryAddingAssetTypeManager();
+AssetTypeManager manager = new AssetTypeManager();
 manager.context = context;
+manager.log = log;
 manager.saveAssetTypes(assets);
 
 }

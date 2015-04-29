@@ -31,7 +31,7 @@ public class Category implements Data, SaveableData, Comparable<Category>
 	protected Map fieldProperties;
 	protected List fieldRelatedCategoryIds;
 	protected String fieldLinkedToCategoryId;
-
+	
 	public Category()
 	{
 	}
@@ -588,6 +588,18 @@ public class Category implements Data, SaveableData, Comparable<Category>
 			return 1;
 		}
 		return getName().toLowerCase().compareTo(c2.getName().toLowerCase());
+	}
+
+	public boolean refresh()
+	{
+		boolean dirty = isPropertyTrue("dirty");
+		if( dirty )
+		{
+			fieldChildren = null;
+			setProperty("dirty", false);
+			return true;
+		}
+		return false;
 	}
 
 
