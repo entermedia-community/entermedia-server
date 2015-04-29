@@ -5,10 +5,12 @@ import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors
 
+import org.openedit.entermedia.creator.ConvertQueue;
+
 import com.openedit.entermedia.scripts.EnterMediaObject
 import com.openedit.util.ExecutorManager
 
-public class ConvertQueue extends EnterMediaObject
+public class BaseConvertQueue extends EnterMediaObject implements ConvertQueue
 {
 	///Load this on a per catallogid basis
 	protected ExecutorManager fieldExecutorManager;

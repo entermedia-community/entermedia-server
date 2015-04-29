@@ -124,9 +124,10 @@ public class ClusterLockManager implements LockManager
 
 		SearchQuery q = searcher.createSearchQuery(); 
 		q.addExact("path", inPath);
-		// q.addSortBy("date");
-
+		//q.addSortBy("date"); //We just have one now
+		
 		HitTracker tracker = searcher.search(q);
+		tracker.setHitsPerPage(1);
 		Data first = (Data) tracker.first();
 
 		if (first == null)
@@ -148,7 +149,8 @@ public class ClusterLockManager implements LockManager
 			}
 		}
 
-		first = (Data) searcher.searchById(first.getId());
+		first = (Data) searcher.loadData(first); //TODO: Replace this with some
+		//kind of createNewData option
 		Lock lock = new Lock();
 		lock.setId(first.getId());
 		lock.getProperties().putAll(first.getProperties());

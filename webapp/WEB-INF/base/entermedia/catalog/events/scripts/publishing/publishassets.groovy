@@ -74,7 +74,7 @@ public void init() {
 			try
 			{
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
-				Lock lock = mediaArchive.getLockManager().lockIfPossible(mediaArchive.getCatalogId(), "assetpublish/" + asset.getSourcePath(), "admin");
+				Lock lock = mediaArchive.getLockManager().lockIfPossible("assetpublish/" + asset.getSourcePath(), "admin");
 				if( lock == null)
 				{
 					log.info("asset already being published ${asset}");

@@ -1411,7 +1411,7 @@ small {
    text-decoration: underline;
 }
 #cat-list .delete-row {
-    margin-top: 3px;
+    margin-top: -15px;
     margin-right: 5px;
 }
 

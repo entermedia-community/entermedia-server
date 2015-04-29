@@ -22,10 +22,9 @@
 			</li>
 		#end
 		
-		
-		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
-		
 		#if($canquickpublish )
+
+		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
 		
 		<li><a>[[Publish]]</a>
 				<ul>

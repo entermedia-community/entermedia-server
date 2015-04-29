@@ -18,8 +18,9 @@
 <!-- 
 	<property id="categorytreemask" value="users/${username}/">Default mask for creating categories on upload/asset creation</property>
 	 -->
+	 <!-- Just give them a custom source path 
 	<property id="categorytreemask" value="${folderpath}">Default mask for creating categories on upload/asset creation</property>
-
+ -->
 
 
 	<property id="server_log_location" value="/opt/entermedia/tomcat/logs/catalina.log">Web Server Logs</property>

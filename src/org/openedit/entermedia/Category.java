@@ -27,7 +27,7 @@ public class Category implements Data, SaveableData, Comparable<Category>
 	protected int fieldItemCount;
 	protected List fieldChildren;
 	protected Category fieldParentCategory;
-	protected String fieldParentId;
+	//protected String fieldParentId;
 	protected Map fieldProperties;
 	protected List fieldRelatedCategoryIds;
 	protected String fieldLinkedToCategoryId;
@@ -554,12 +554,12 @@ public class Category implements Data, SaveableData, Comparable<Category>
 
 	public String getParentId()
 	{
-		return fieldParentId;
+		return get("parentid");
 	}
 
 	public void setParentId(String inParentId)
 	{
-		fieldParentId = inParentId;
+		setProperty("parentid", inParentId);
 	}
 
 	public String getSourcePath()

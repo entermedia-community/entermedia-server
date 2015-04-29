@@ -420,6 +420,21 @@ public class Asset implements MultiValued, SaveableData
 		{
 			return getSourcePath();
 		}
+		if ("category-exact".equals(inKey))
+		{
+			StringBuffer buffer = new StringBuffer();
+			List cats = getCategories();
+			for (Iterator iterator = cats.iterator(); iterator.hasNext();)
+			{
+				Category cat = (Category) iterator.next();
+				buffer.append(cat.getId());
+				if( iterator.hasNext() )
+				{
+					buffer.append(" | ");
+				}
+			}
+			return buffer.toString();
+		}
 		String value = (String) getProperties().get(inKey);
 		return value;
 	}
@@ -470,11 +485,12 @@ public class Asset implements MultiValued, SaveableData
 				}
 			}
 		}
-		else if ("category".equals(inKey))
+		else if ("category-exact".equals(inKey))
 		{
 			if (inValue != null)
 			{
 				//This is annoying. We will need to fix categories when we save this asset
+				getCategories().clear();
 				if( inValue.contains("|") )
 				{
 					String[] vals = VALUEDELMITER.split(inValue);

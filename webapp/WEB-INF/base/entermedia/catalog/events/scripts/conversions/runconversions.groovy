@@ -1,10 +1,6 @@
 package conversions;
 
 
-import java.util.Date;
-
-import model.assets.ConvertQueue
-
 import org.entermedia.locks.Lock
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -12,7 +8,7 @@ import org.openedit.entermedia.*
 import org.openedit.entermedia.creator.*
 import org.openedit.entermedia.edit.*
 import org.openedit.entermedia.modules.*
-import org.openedit.util.DateStorageUtil;
+import org.openedit.util.DateStorageUtil
 import org.openedit.xml.*
 
 import com.openedit.*
@@ -58,7 +54,7 @@ class CompositeConvertRunner implements Runnable
 	
 	public void run()
 	{
-		Lock lock = fieldMediaArchive.getLockManager().lockIfPossible(fieldMediaArchive.getCatalogId(), "assetconversions/" + fieldAssetId, "runconversions61");
+		Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + fieldAssetId, "runconversions61");
 		
 		if( lock == null)
 		{
@@ -458,22 +454,9 @@ public void checkforTasks()
 	
 }
 
-//Temporary work around for a lack of an interface
 public ConvertQueue getQueue(String inCatalogId)
 {
-	//(ConvertQueue)moduleManager.getBean(mediaarchive.getCatalogId(),"convertQueue");
-	ConvertQueue queue = null;
-	if( moduleManager.contains( inCatalogId, "convertQueue") )
-	{
-		queue =  (ConvertQueue)moduleManager.getBean(inCatalogId,"convertQueue");
-	}
-	else
-	{
-		queue = new ConvertQueue();
-		ExecutorManager manager = (ExecutorManager)moduleManager.getBean("executorManager");
-		queue.setExecutorManager(manager);
-		moduleManager.getCatalogIdBeans().put(inCatalogId + "_" + "convertQueue", queue);
-	}
+	ConvertQueue queue =  (ConvertQueue)moduleManager.getBean(inCatalogId,"convertQueue");
 	return queue;
 }
 

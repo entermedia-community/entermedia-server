@@ -256,6 +256,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		asset.removeCategory(c);
 		archive.saveAsset(asset, inPageRequest.getUser());
 		archive.fireMediaEvent("asset/saved", inPageRequest.getUser(), asset);
+		inPageRequest.putPageValue("asset", asset);
 	}
 
 	public void addCategoryToAsset(WebPageRequest inPageRequest) throws Exception 
