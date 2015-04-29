@@ -175,6 +175,17 @@ public class CategoryModule extends BaseMediaModule
 				}
 			}
 		}
+		else
+		{
+			String catid = inReq.getRequestParameter("nodeID");
+			Object target = tree.getModel().getChildById(catid);
+			//tree.getTreeRenderer().expandNode(target);
+			tree.getTreeRenderer().selectNodes(null);
+			tree.getTreeRenderer().selectNode(target);
+			
+		}
+
+		
 		String clear = inReq.getRequestParameter("clearselection");
 		if( Boolean.parseBoolean(clear))
 		{

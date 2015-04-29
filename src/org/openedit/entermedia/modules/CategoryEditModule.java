@@ -184,6 +184,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			currentCatalog.setProperty("sortfield", sortfield);
 		}
 		editor.saveCategory(currentCatalog);
+		inContext.putSessionValue("reloadcategorytree","true");
 	}
 
 	public void saveCategoryProperties(WebPageRequest inReq)
