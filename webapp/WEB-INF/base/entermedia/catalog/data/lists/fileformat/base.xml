@@ -10,7 +10,7 @@
 	<property id="crw"  synctags="true"  rendertype="image" creator="imagemagick">CRW</property>
 	<property id="cr2"  synctags="true"  rendertype="image" creator="imagemagick">CR2</property>
 	<property id="dng"  synctags="true"  rendertype="image" creator="imagemagick">DNG</property>
-	<property id="eps"  synctags="true"  rendertype="document" creator="imagemagick" conversiontimeout="3600000">EPS</property>
+	<property id="eps"  synctags="true"  rendertype="document" creator="imagemagick">EPS</property>
 	<property id="flv"  synctags="true"  rendertype="video" creator="ffmpeg">FLV</property>
 	<property id="gif"  synctags="true"  rendertype="image" creator="imagemagick">GIF</property>
 	<property id="indd"  synctags="true"  rendertype="image" >INDD</property>
@@ -38,7 +38,7 @@
 	<property id="nef"  synctags="true"  rendertype="image" creator="imagemagick">NEF</property>
 	<property id="ogg"  synctags="true"  rendertype="audio" >OGG</property>
 	<property id="pbm"  synctags="true"  rendertype="image" creator="imagemagick">PBM</property>
-	<property id="pdf"  synctags="true"  rendertype="document" creator="imagemagick"  conversiontimeout="3600000">PDF</property>
+	<property id="pdf"  synctags="true"  rendertype="document" creator="imagemagick">PDF</property>
 	<property id="pef"  synctags="true"  rendertype="image" creator="imagemagick">PEF</property>
 	<property id="pgm"  synctags="true"  rendertype="image" creator="imagemagick">PGM</property>
 	<property id="png"  synctags="true"  rendertype="image" creator="imagemagick">PNG</property>

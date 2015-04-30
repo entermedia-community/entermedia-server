@@ -1300,7 +1300,7 @@
 	
 	<bean id="xmlCategorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="categoryArchive"><ref bean="categoryArchive" /></property>
+		<property name="categoryArchive"><ref bean="xmlCategoryArchive" /></property>
 	</bean>
 	
 	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" scope="prototype">
