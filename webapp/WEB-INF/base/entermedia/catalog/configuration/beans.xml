@@ -1,4 +1,5 @@
 <beans>
+	<!--  These are defaults. Can be overriden in each catalogs folder or in their data/.../lists/bean/ folder -->
 
 	<!-- Core types -->
 	<bean id="transientSearcher" bean="luceneTransientSearcher" />
