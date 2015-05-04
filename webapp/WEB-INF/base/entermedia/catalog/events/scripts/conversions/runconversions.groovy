@@ -55,7 +55,7 @@ class CompositeConvertRunner implements Runnable
 	
 	public void run()
 	{
-		Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + fieldAssetId, "runconversions61");
+		Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + fieldAssetId, "CompositeConvertRunner.run");
 		
 		if( lock == null)
 		{

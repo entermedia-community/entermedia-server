@@ -106,7 +106,7 @@ public class ClusterLockManager implements LockManager
 	protected Lock createLock(String inPath, Searcher searcher)
 	{
 		Lock lockrequest = (Lock) searcher.createNewData();
-		lockrequest.setPath(inPath);
+		lockrequest.setSourcePath(inPath);
 		lockrequest.setLocked(false);
 		return lockrequest;
 	}
@@ -123,7 +123,7 @@ public class ClusterLockManager implements LockManager
 		Searcher searcher = getLockSearcher();
 
 		SearchQuery q = searcher.createSearchQuery(); 
-		q.addExact("path", inPath);
+		q.addMatches("sourcepath", inPath);
 		//q.addSortBy("date"); //We just have one now
 		
 		HitTracker tracker = searcher.search(q);
@@ -132,20 +132,19 @@ public class ClusterLockManager implements LockManager
 
 		if (first == null)
 		{
-
 			synchronized (searcher)
 			{
-				tracker = searcher.search(q);
+				tracker = searcher.search(q); //Make sure there was not a thread waiting
+				tracker.setHitsPerPage(1);
 				first = (Data) tracker.first();
-
-			}
-			if (first == null)
-			{
-				Lock lock = createLock(inPath, searcher);
-				lock.setNodeId(getNodeManager().getLocalNodeId());
-				lock.setDate(new Date());
-				searcher.saveData(lock, null);
-				return lock;
+				if (first == null)
+				{
+					Lock lock = createLock(inPath, searcher);
+					lock.setNodeId(getNodeManager().getLocalNodeId());
+					lock.setDate(new Date());
+					searcher.saveData(lock, null);
+					return lock;
+				}
 			}
 		}
 
@@ -168,7 +167,7 @@ public class ClusterLockManager implements LockManager
 	{
 		Searcher searcher = getLockSearcher();
 		SearchQuery q = searcher.createSearchQuery();
-		q.addExact("path", inPath);
+		q.addExact("sourcepath", inPath);
 		q.addSortBy("date");
 		return searcher.search(q);
 	}
@@ -190,7 +189,7 @@ public class ClusterLockManager implements LockManager
 			throw new OpenEditException("lock id is currently null");
 		}
 
-		Lock owner = loadLock(lock.getPath());
+		Lock owner = loadLock(lock.getSourcePath());
 		if (owner == null)
 		{
 			throw new OpenEditException("Owner lock is currently null");

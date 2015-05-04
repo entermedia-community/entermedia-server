@@ -61,6 +61,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			fieldXmlDataArchive.setDataFileName(getDataFileName());
 			fieldXmlDataArchive.setElementName(getSearchType());
 			fieldXmlDataArchive.setPathToData(getPathToData());
+			fieldXmlDataArchive.setSearcherManager(getSearcherManager());
 		}
 		return fieldXmlDataArchive;
 	}
@@ -169,7 +170,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			}
 		}
 		updateIndex(inAll);
-		getXmlDataArchive().saveAllData(inAll, getCatalogId(), getPrefix() + "/", inUser );
+		getXmlDataArchive().saveAllData(getCatalogId(), inAll,inUser );
 		//getLiveSearcher(); //should flush the index
 	}
 
@@ -232,21 +233,9 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		{
 			String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
 			data.setSourcePath(sourcepath);
-		}
-		
-		Lock lock = null;
-		try
-		{
-			lock = getLockManager().lock(getPrefix() + "/" + data.getSourcePath(),"admin");
-			getXmlDataArchive().saveData(data,inUser, lock);
-		
-//		String nullcheck = data.get("publishqueueid");
-//		log.info( getSearchType() + " " + data.getId() + " " + nullcheck );
+		}		
+		getXmlDataArchive().saveData(getCatalogId(), data,inUser);
 		updateIndex(data);
-		} 	finally
-		{
-			getLockManager().release(lock);
-		}
 	}
 
 	protected IntCounter getIntCounter()
@@ -353,7 +342,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		{
 			throw new OpenEditException("Cannot delete null data.");
 		}
-		getXmlDataArchive().delete(inData,inUser);
+		getXmlDataArchive().delete(getCatalogId(),inData,inUser);
 		// Remove from Index
 		deleteRecord(inData);
 	}

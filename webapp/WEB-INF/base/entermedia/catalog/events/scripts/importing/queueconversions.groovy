@@ -54,7 +54,7 @@ public void createTasksForUpload() throws Exception {
 	assets.each
 	{
 		foundsome = false;
-		Lock lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions56");
+		Lock lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
 		try{
 			Asset asset = assetsearcher.loadData(it);
 

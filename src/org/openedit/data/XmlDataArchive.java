@@ -23,6 +23,17 @@ import com.openedit.users.User;
 public class XmlDataArchive implements DataArchive 
 {
 	protected XmlArchive fieldXmlArchive;
+	protected SearcherManager fieldSearcherManager;
+	
+	public SearcherManager getSearcherManager()
+	{
+		return fieldSearcherManager;
+	}
+
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
+		fieldSearcherManager = inSearcherManager;
+	}
 
 	public String getPathToData()
 	{
@@ -210,16 +221,25 @@ public class XmlDataArchive implements DataArchive
 	{
 		//getIdCache().clear();
 	}
-	public void delete(Data inData, User inUser)
+	public void delete(String inCatalogId, Data inData, User inUser)
 	{
 		String path = getPathToXml(inData.getSourcePath());
-		XmlFile xml = getXmlArchive().getXml(path, getElementName());
-		Element element = xml.getElementById(inData.getId());
-		if( element != null )
+		LockManager lockManager = getSearcherManager().getLockManager(inCatalogId);
+		Lock lock = lockManager.lock(path, "xmlDataArchive.delete");
+		try
 		{
-			xml.deleteElement(element);
+			XmlFile xml = getXmlArchive().getXml(path, getElementName());
+			Element element = xml.getElementById(inData.getId());
+			if( element != null )
+			{
+				xml.deleteElement(element);
+			}
+			getXmlArchive().saveXml(xml, inUser);
 		}
-		getXmlArchive().saveXml(xml, inUser);
+		finally
+		{
+			lockManager.release(lock);
+		}	
 	}
 //	public XmlFile getXml(String inPath, String inSearchType)
 //	{
@@ -227,7 +247,7 @@ public class XmlDataArchive implements DataArchive
 //	}
 
 	
-	public void saveData(Data inData, User inUser, Lock inLock) {
+	public void saveData(String inCatalogId, Data inData, User inUser) {
 		
 		if( inData == null )
 		{
@@ -239,16 +259,24 @@ public class XmlDataArchive implements DataArchive
 		}
 		String path = getPathToXml(inData.getSourcePath());
 		//TODO: Need to lock this file so another person does not call save
-		XmlFile xml = getXmlArchive().getXml(path, getElementName());
-		addRow(inData, xml);
-		getXmlArchive().saveXml(xml, null,inLock);
-		
+		LockManager lockManager = getSearcherManager().getLockManager(inCatalogId);
+		Lock lock = lockManager.lock(path, "xmlDataArchive.saveData");
+		try
+		{
+			XmlFile xml = getXmlArchive().getXml(path, getElementName());
+			addRow(inData, xml);
+			getXmlArchive().saveXml(xml, null);
+		}
+		finally
+		{
+			lockManager.release(lock);
+		}
 	}
-	public void saveAllData(Collection<Data> inAll, String catalogid, String inLockPrefix, User inUser) 
+	public void saveAllData(String catalogid, Collection<Data> inAll, User inUser) 
 	{
 		XmlFile xml = null;//
 		Lock lock = null;
-		LockManager lockManager = getXmlArchive().getLockManager(catalogid);
+		LockManager lockManager = getSearcherManager().getLockManager(catalogid);
 		try
 		{
 			for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
@@ -262,17 +290,17 @@ public class XmlDataArchive implements DataArchive
 				{
 					if( xml != null)
 					{
-						getXmlArchive().saveXml(xml, null, lock);
+						getXmlArchive().saveXml(xml, null);
 						lockManager.release(lock);
 					}
-					lock = lockManager.lock(inLockPrefix + data.getSourcePath(), null);
+					lock = lockManager.lock(path, "xmlDataArchive.saveAllData");
 					xml = getXmlArchive().getXml(path, getElementName());
 				}
 				addRow(data, xml);
 			}
 			if( xml != null)
 			{
-				getXmlArchive().saveXml(xml, null, lock);
+				getXmlArchive().saveXml(xml, null);
 			}
 		}
 		finally
