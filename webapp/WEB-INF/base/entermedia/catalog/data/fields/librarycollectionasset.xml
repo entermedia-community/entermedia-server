@@ -2,7 +2,7 @@
   <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
   <property id="sourcepath" index="true" stored="true"  >SourcePath</property>  
   <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
-  <property id="asset" index="true" stored="true" editable="false" type="list" viewtype="asset" >Asset</property>
+  <property id="asset" index="true" stored="true" editable="true" type="list" viewtype="asset" >Asset</property>
   <property id="librarycollectionassetstatus" index="true" stored="true" editable="true" type="list"  >Approval</property>
   <property id="approvedby" index="true" stored="true" editable="true" type="list" listid="user" listcatalogid="system" viewtype="user"  >Approval By</property>
   <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Approval Date</property>
