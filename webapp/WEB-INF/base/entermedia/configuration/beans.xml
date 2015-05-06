@@ -6,6 +6,7 @@
 	<bean id="listSearcher" bean="xmllistSearcher" />
 	<bean id="folderSearcher" bean="xmlFolderSearcher" />
 	<bean id="dataSearcher" bean="xmlDataSearcher" />
+	<bean id="dynamicSearcher" bean="xmllistSearcher" />
 
 	<!-- Java implementations -->
 	<bean id="assetSearcher" bean="luceneAssetSearcher" />
