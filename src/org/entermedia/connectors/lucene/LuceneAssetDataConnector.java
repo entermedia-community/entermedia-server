@@ -421,8 +421,8 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 				data.setId(nextId());
 			}
 		}
-		updateIndex(inAll);
 		getAssetArchive().saveAllData(inAll, getCatalogId(), "assets/", inUser);
+		updateIndex(inAll);
 	}
 
 	public IntCounter getIntCounter()
