@@ -86,7 +86,7 @@ public class AssetPathProcessor extends PathProcessor
 			}
 		}
 		
-		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); //this clears the list
+		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); 
 
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{

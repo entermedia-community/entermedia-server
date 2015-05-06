@@ -1076,7 +1076,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 
 			inWriter.commit();
 
-			inRecords.clear();
+			//inRecords.clear();
 		}
 		catch (Exception e)
 		{
