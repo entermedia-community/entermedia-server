@@ -1255,7 +1255,7 @@
 			<ref bean="ffmpegimageCreator" />
 			<ref bean="exiftoolthumbCreator" />
 			<ref bean="oofficeDocumentCreator" />
-			<ref bean="cmykpreprocessorCreator" />
+			<!--  ref bean="cmykpreprocessorCreator" / -->
 		</list>
 	    </constructor-arg>
 	</bean>
