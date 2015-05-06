@@ -2,6 +2,7 @@ package org.openedit.entermedia.cluster;
 
 import java.util.ConcurrentModificationException;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,15 +43,23 @@ public class ClusterLockManager implements LockManager
 	@Override
 	public Lock lock(String inPath, String inOwnerId)
 	{
-		//Searcher searcher = getLockSearcher(inCatId);
+		Searcher searcher = getLockSearcher();
 		Lock lock = loadLock(inPath);
+		
+		//See if I already have the lock, because I created it or because I called this twice in a row
+		
 		int tries = 0;
-		while (!grabLock(inOwnerId, lock))
+		while (true)
 		{
+			Lock found = grabLock(lock,inOwnerId, inPath, searcher);
+			if( found != null)
+			{
+				return found;
+			}			
 			tries++;
 			if (tries > 9)
 			{
-				throw new OpenEditException("Could not lock file " + inPath + " locked by " + lock.getNodeId() + " " + lock.getOwnerId());
+				break;
 			}
 			try
 			{
@@ -64,19 +73,62 @@ public class ClusterLockManager implements LockManager
 			log.info("Could not lock " + inPath + " trying again  " + tries);
 			lock = loadLock(inPath);
 		}
-		return lock;
+		throw new OpenEditException("Could not lock file " + inPath + " locked by " + lock.getNodeId() + " " + lock.getOwnerId());
 	}
-
-	public boolean grabLock(String inOwner, Lock lock)
+	public Lock grabLock(Lock lock, String inOwner, String inPath )
 	{
-		if (lock == null)
+		return grabLock(lock, inOwner, inPath,getLockSearcher());
+	}
+	public Lock grabLock(Lock lock, String inOwner, String inPath, Searcher inSearcher )
+	{
+		if( lock == null)
 		{
-			throw new OpenEditException("Lock should not be null");
+			lock = createLock(inPath, inSearcher);
+			lock.setNodeId(getNodeManager().getLocalNodeId());
+			lock.setDate(new Date());
+			lock.setLocked(true);
+			lock.setOwnerId(inOwner);
+			inSearcher.saveData(lock, null);
+			
+			String savedid = lock.getId();
+			//See if anyone else also happen to save a lock and delete the older one
+			SearchQuery q = inSearcher.createSearchQuery(); 
+			q.addMatches("sourcepath", inPath);
+			q.addSortBy("date"); 
+			HitTracker tracker = inSearcher.search(q); //Make sure there was not a thread waiting
+			tracker.setHitsPerPage(1);
+			Iterator iter = tracker.iterator();
+			Data first = (Data)iter.next();
+			if (tracker.size() > 1) //Someone else also locked
+			{
+				//TODO: Delete the older one
+				for (Iterator iterator = iter; iterator.hasNext();)
+				{
+					Data old = (Data) iterator.next();
+					try
+					{
+						inSearcher.delete(old, null);
+					}
+					catch( Throwable ex)
+					{
+						log.error("Deleted already deleted lock");
+					}
+				}
+			}
+			
+			if ( first.getId().equals(savedid))
+			{
+				return lock;
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		if (lock.isLocked())
 		{
-			return false;
+			return null;
 		}
 		// set owner
 		try
@@ -89,17 +141,17 @@ public class ClusterLockManager implements LockManager
 		}
 		catch (ConcurrentModificationException ex)
 		{
-			return false;
+			return null;
 		}
 		catch (OpenEditException ex)
 		{
 			if (ex.getCause() instanceof ConcurrentModificationException)
 			{
-				return false;
+				return null;
 			}
 			throw ex;
 		}
-		return true;
+		return lock;
 
 	}
 
@@ -120,11 +172,14 @@ public class ClusterLockManager implements LockManager
 	@Override
 	public Lock loadLock(String inPath)
 	{
+//		return loadLock(inPath, false, null);
+//	}
+//	public Lock loadLock(String inPath, boolean lockIt, String inOwner)
+//	{
 		Searcher searcher = getLockSearcher();
 
 		SearchQuery q = searcher.createSearchQuery(); 
 		q.addMatches("sourcepath", inPath);
-		//q.addSortBy("date"); //We just have one now
 		
 		HitTracker tracker = searcher.search(q);
 		tracker.setHitsPerPage(1);
@@ -132,23 +187,9 @@ public class ClusterLockManager implements LockManager
 
 		if (first == null)
 		{
-			synchronized (searcher)
-			{
-				tracker = searcher.search(q); //Make sure there was not a thread waiting
-				tracker.setHitsPerPage(1);
-				first = (Data) tracker.first();
-				if (first == null)
-				{
-					Lock lock = createLock(inPath, searcher);
-					lock.setNodeId(getNodeManager().getLocalNodeId());
-					lock.setDate(new Date());
-					searcher.saveData(lock, null);
-					return lock;
-				}
-			}
+			return null;
 		}
-
-		first = (Data) searcher.loadData(first); //TODO: Replace this with some
+		//first = (Data) searcher.loadData(first); //This should already create a lock
 		//kind of createNewData option
 		Lock lock = new Lock();
 		lock.setId(first.getId());
@@ -213,15 +254,12 @@ public class ClusterLockManager implements LockManager
 	{
 		Lock lock = loadLock(inPath);
 
-		if (lock.isLocked())
+		if(lock != null && lock.isLocked())
 		{
 			return null;
 		}
-		if (grabLock(inOwnerId, lock))
-		{
-			return lock;
-		}
-		return null;
+		lock = grabLock(lock, inOwnerId, inPath);
+		return lock;
 	}
 
 	/*
@@ -237,7 +275,7 @@ public class ClusterLockManager implements LockManager
 		{
 			Searcher searcher = getLockSearcher();
 			inLock.setLocked(false);
-			inLock.setProperty("version", (String) null);
+			//inLock.setProperty("version", (String) null); //Once this is saved other people can go get it
 			searcher.saveData(inLock, null);
 			return true;
 		}

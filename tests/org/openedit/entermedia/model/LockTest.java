@@ -77,25 +77,33 @@ public class LockTest extends BaseEnterMediaTest
 		assertTrue(manager.isOwner(lock));
 
 		//this should pass
-		boolean failed = false;
+		boolean passed = false;
 		try
 		{
 			new Thread(new Runnable()
 			{
 				public void run()
 				{	
+					try
+					{
+						Thread.sleep(500);
+					}
+					catch( Throwable ex)
+					{
+						
+					}
 					manager.release(lock);
 				}
 			}).start();
 			
 			Lock lock2 = manager.lock(path, "testuser");
-			
+			passed = true;
 		}
 		catch( Exception ex)
 		{
-			failed = true;
+			passed = false;
 		}
-		assertFalse("Should have released",failed);
+		assertTrue("Should have released",passed);
 
 		
 	}
