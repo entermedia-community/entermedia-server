@@ -47,6 +47,7 @@ public class oofficeDocumentCreator extends BaseCreator
 		command.add("-nologo");
 		//command.add("-invisible");
 		command.add("-norestore");		
+		command.add("-nolockcheck");
 		
 		command.add("-convert-to");		
 		command.add("pdf:writer_pdf_Export");

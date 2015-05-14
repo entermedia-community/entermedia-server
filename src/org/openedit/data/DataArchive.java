@@ -21,11 +21,14 @@ public interface DataArchive
 
 	XmlArchive getXmlArchive();
 
-	void delete(String inCatalogId, Data inData, User inUser);
+	void delete(Data inData, User inUser);
 
-	void saveData(String inCatalogId, Data inData, User inUser);
+	void saveData(Data inData, User inUser);
 	
-	public void saveAllData(String inCatalogId, Collection<Data> inAll, User inUser);
+	public void saveAllData(Collection<Data> inAll, User inUser);
+
+	void setCatalogId(String inId);
+	String getCatalogId();
 
 
 }

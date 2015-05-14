@@ -736,7 +736,7 @@ public class MediaArchive
 	{
 		if (fieldAssetArchive == null)
 		{
-			fieldAssetArchive = (AssetArchive) getModuleManager().getBean(getCatalogId(), "assetArchive");
+			fieldAssetArchive = (AssetArchive) getModuleManager().getBean(getCatalogId(), "assetDataArchive");
 		}
 		return fieldAssetArchive;
 	}

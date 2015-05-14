@@ -16,7 +16,7 @@ import com.openedit.users.User;
  * @author cburkey
  * 
  */
-public interface AssetArchive
+public interface AssetArchive extends DataArchive
 {
 
 	void setXmlArchive(XmlArchive inXmlArchive);
@@ -30,12 +30,7 @@ public interface AssetArchive
 	XmlArchive getXmlArchive();
 
 	void delete(Data inData, User inUser);
-
-	void saveData(Data inData, User inUser, Lock inLock);
 	
-	public void saveAllData(Collection<Data> inAll, String inLockPrefix, User inUser);
-
-
 	public Asset getAssetBySourcePath(String inSourcePath, boolean inAutoCreate);
 	public Asset getAssetBySourcePath(String inSourcePath);
 
@@ -49,10 +44,7 @@ public interface AssetArchive
 	void saveAsset(Asset inAsset);
 	
 	void deleteAsset(Asset inItem);
-		
-	void setCatalogId(String inId);
-	String getCatalogId();
-	
+			
 	public String buildXmlPath(Asset inAsset);
 
 }

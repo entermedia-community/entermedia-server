@@ -8,16 +8,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermedia.cache.CacheManager;
+import org.openedit.data.BaseDataArchive;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.repository.filesystem.StringItem;
@@ -35,7 +34,7 @@ import com.openedit.util.XmlUtil;
  * @author cburkey
  * 
  */
-public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchive
+public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchive
 {
 	private static final Log log = LogFactory.getLog(XmlCategoryArchive.class);
 	protected Category fieldRootCatalog;

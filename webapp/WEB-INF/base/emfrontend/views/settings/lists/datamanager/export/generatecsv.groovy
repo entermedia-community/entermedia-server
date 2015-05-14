@@ -41,7 +41,7 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	count++;
 }
 writer.writeNext(headers);
-	log.info("about to start: " + hits);
+	log.info("about to start: " + hits.size() );
 
 	for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 	{

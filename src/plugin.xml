@@ -541,7 +541,7 @@
 	
 
 	
-	<bean id="assetArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
+	<bean id="assetDataArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -1317,6 +1317,16 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
+
+	<bean id="xmlDataArchive" class="org.openedit.data.XmlDataArchive" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>		
+	</bean>
+	
 
 
 </beans>

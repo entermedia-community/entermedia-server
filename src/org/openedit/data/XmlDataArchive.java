@@ -24,7 +24,18 @@ public class XmlDataArchive implements DataArchive
 {
 	protected XmlArchive fieldXmlArchive;
 	protected SearcherManager fieldSearcherManager;
+	protected String fieldCatalogId;
 	
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
+
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -221,10 +232,10 @@ public class XmlDataArchive implements DataArchive
 	{
 		//getIdCache().clear();
 	}
-	public void delete(String inCatalogId, Data inData, User inUser)
+	public void delete(Data inData, User inUser)
 	{
 		String path = getPathToXml(inData.getSourcePath());
-		LockManager lockManager = getSearcherManager().getLockManager(inCatalogId);
+		LockManager lockManager = getSearcherManager().getLockManager(getCatalogId());
 		Lock lock = lockManager.lock(path, "xmlDataArchive.delete");
 		try
 		{
@@ -247,7 +258,7 @@ public class XmlDataArchive implements DataArchive
 //	}
 
 	
-	public void saveData(String inCatalogId, Data inData, User inUser) {
+	public void saveData(Data inData, User inUser) {
 		
 		if( inData == null )
 		{
@@ -259,7 +270,7 @@ public class XmlDataArchive implements DataArchive
 		}
 		String path = getPathToXml(inData.getSourcePath());
 		//TODO: Need to lock this file so another person does not call save
-		LockManager lockManager = getSearcherManager().getLockManager(inCatalogId);
+		LockManager lockManager = getSearcherManager().getLockManager(getCatalogId());
 		Lock lock = lockManager.lock(path, "xmlDataArchive.saveData");
 		try
 		{
@@ -272,11 +283,11 @@ public class XmlDataArchive implements DataArchive
 			lockManager.release(lock);
 		}
 	}
-	public void saveAllData(String catalogid, Collection<Data> inAll, User inUser) 
+	public void saveAllData(Collection<Data> inAll, User inUser) 
 	{
 		XmlFile xml = null;//
 		Lock lock = null;
-		LockManager lockManager = getSearcherManager().getLockManager(catalogid);
+		LockManager lockManager = getSearcherManager().getLockManager(getCatalogId());
 		try
 		{
 			for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
