@@ -38,6 +38,7 @@
   <!-- navigation font hover-->
   <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Button Color</property>
   <property id="navbuttonhovercolorgradient" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Button Color Gradient</property>
+  <property id="navfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Font Color</property>
   <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Color</property>
 
   <!-- left column -->
