@@ -123,6 +123,11 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			if (sourcepath != null)
 			{
 				ElementData elementd = (ElementData)getXmlDataArchive().loadData(sourcepath, first.getId());
+				if( elementd == null)
+				{
+					log.error("Could not load xml data for " + sourcepath);
+					return null;
+				}
 				if( getNewDataName() != null )
 				{
 					first = createNewData();

@@ -74,6 +74,7 @@ public class oofficeDocumentCreator extends BaseCreator
 				throw new OpenEditException("OpenOffice did not create output file " + tmpfile);
 			}
 			getPageManager().movePage(tmpfile, inOut);
+			log.info("Completed: " + input.getName());
 		}
 	    result.setOk(true);
 	    return result;
