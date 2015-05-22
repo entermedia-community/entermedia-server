@@ -351,6 +351,10 @@ public class AssetUtilities
 		if(fileName != null)
 		{
 			vals.put("filename", fileName);
+			String ext = PathUtilities.extractPageType(fileName);
+			String render = inArchive.getMediaRenderType(ext);
+			vals.put("extension", ext);
+			vals.put("rendertype", render);			
 		}
 		//vals.put("filename", item.getName());
 		//vals.put("guid", item.getName());
