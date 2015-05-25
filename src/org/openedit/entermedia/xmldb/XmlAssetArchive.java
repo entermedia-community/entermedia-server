@@ -242,6 +242,24 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 			String key	= (String) iterator.next();
 			inAsset.setProperty(key, data.get(key));
 		}
+		
+		inAsset.clearCategories();
+		Collection collection = data.getValues("category-exact");
+		if( collection != null)
+		{
+			for (Object o: collection)
+			{
+				String catid = (String)o;
+				Category category = getCategoryArchive().getCategory(catid);
+				if (category == null)
+				{
+					log.debug("Could not find a category with id: " + catid);
+					continue;
+				}
+				inAsset.addCategory(category);
+			}
+		}
+		
 	}
 	
 	protected void populateAsset(Element inAssetElement, Asset inAsset) 
