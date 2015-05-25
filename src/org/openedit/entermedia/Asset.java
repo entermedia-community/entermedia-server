@@ -140,12 +140,23 @@ public class Asset implements MultiValued, SaveableData
 	public Asset()
 	{
 	}
+	protected MediaArchive fieldMediaArchive;
 
-	public Asset(String inName)
+	public Asset(MediaArchive inMediaArchive)
 	{
-		setName(inName);
+		setMediaArchive(inMediaArchive);
 	}
 
+	public MediaArchive getMediaArchive()
+	{
+		return fieldMediaArchive;
+	}
+
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
+		fieldMediaArchive = inMediaArchive;
+	}
+	
 	public int getOrdering()
 	{
 		return fieldOrdering;
@@ -496,12 +507,14 @@ public class Asset implements MultiValued, SaveableData
 					String[] vals = VALUEDELMITER.split(inValue);
 					for (int i = 0; i < vals.length; i++)
 					{
-						addCategory(new Category(vals[i],null));
+						Category cat = getMediaArchive().getCategory(vals[i]);
+						addCategory(cat);
 					}
 				}
 				else
 				{
-					addCategory(new Category(inValue,null));
+					Category cat = getMediaArchive().getCategory(inValue);
+					addCategory(cat);
 				}
 			}
 		}

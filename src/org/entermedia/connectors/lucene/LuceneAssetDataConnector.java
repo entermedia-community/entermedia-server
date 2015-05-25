@@ -62,7 +62,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 
 	public Data createNewData()
 	{
-		Asset temp = new Asset();
+		Asset temp = new Asset(getMediaArchive());
 		return temp;
 
 	}

@@ -131,7 +131,7 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 		Asset item = (Asset)getCacheManager().get(toCacheId(), inSourcePath);
 		if( item == null)
 		{
-			item = new Asset();
+			item = new Asset(getMediaArchive());
 			item.setCatalogId(getCatalogId());
 			item.setSourcePath(inSourcePath);
 			String url = buildXmlPath(item);
@@ -602,7 +602,7 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 		{
 			Element categoriesConfig = (Element) o;
 			String catid = categoriesConfig.attributeValue("id");
-			Category category = getCategoryArchive().getCategory(catid);
+			Category category = getMediaArchive().getCategorySearcher().getCategory(catid);
 			if (category == null)
 			{
 				log.debug("Could not find a category with id: " + catid);
