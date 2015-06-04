@@ -90,8 +90,8 @@ public class TranslationModule extends BaseModule {
 					// save off the last stuff and get ready for next file
 					Page page = getPageManager().getPage(filepath);
 					// dont save to folders that do not exists
-					if (!getPageManager().getPage(page.getParentPath())
-							.exists()) {
+					Page parent = getPageManager().getPage(page.getParentPath());
+					if (!parent.exists()) {
 						continue;
 					}
 					String existing = "";
