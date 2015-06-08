@@ -5,15 +5,16 @@
 			</div>
 
 			<div class="wizard-body">
-				<h3>Catalog Name</h3>
-					<center>
+				<h3>Client Name</h3>
+				<center>
 					<input class="field" type="text" name="name" id="catalog-name" value="My Site"/>
-				<hr>
-				<h3>Catalog Root Path:</h3> <input class="field" name="rootpath" value="/mysite" >
-				<input name="fallbackfolder" value="/media/catalog" type="hidden">
-
+					<hr>
+					<h3>[[Client Sub-Domain]]:</h3> <input class="field" name="clientsubdomain" value="" >
+					<hr>
+					<h3>[[Client Root Path]]:</h3> <input class="field" name="rootpath" value="/mysite" >
 				</center>
 				<input name="reloadprofile" value="true" type="hidden">
+				<input name="fallbackfolder" value="/media/catalog" type="hidden">	
 			</div>
 			<div class="wizard-bottom">
 				<input class="mbtn blue build-your-own-app" value="[[Create Catalog]]" type="submit"/>	
