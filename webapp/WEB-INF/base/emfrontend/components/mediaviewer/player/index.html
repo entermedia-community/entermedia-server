@@ -91,7 +91,7 @@
     	<div id="mp-asset-info" style="display: none;">
     	    
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-    	    #if ($attachmentcount > 0)
+    	    #if ($!attachmentcount && $attachmentcount > 0)
     	   <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">$attachmentcount<span>&nbsp;</span></a>
     	   #end
            #if($canviewassetpreviewhistory)

@@ -2265,7 +2265,7 @@ center #addcoment {
     border-radius: 5px;
     border: 1px solid #237b97;
     padding: 10px 18px;
-    margin: 3px -1px 0 0px;
+    margin: 5px -1px 0 0px;
     font-size: 13px;
     font-weight: bold;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .2);
@@ -4402,7 +4402,7 @@ span.drag-and-drop {
     position: relative;
 }
 #module-dropdown span {
-    background: url('../images/sort-desc.png') 0 0 no-repeat;
+    /* background: url('../images/sort-desc.png') 0 0 no-repeat; */
     width: 10px;
     height: 10px;
     margin: 0;
