@@ -1,0 +1,11 @@
+#
+#Wed Feb 04 06:35:03 EST 2015
+Log\ in=einloggen
+Email\ or\ Username=E-Mail oder Benutzername
+You\ are\ logged\ in\ as=Sie sind angemeldet als
+Password=Passwort
+Forgotten\ your\ password?=Passwort vergessen ?
+Login=einloggen
+or\ Create\ a\ New\ Account=oder erstellen Sie ein neues Konto
+Please\ enter\ your\ password=Bitte geben Sie Ihr Passwort ein
+

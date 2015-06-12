@@ -113,12 +113,12 @@ public class AssetControlModule extends BaseMediaModule
 
 		// this is failing, getAccessList is throwing NUll
 		List userNames = mediaArchive.getAssetSecurityArchive().getAccessList(mediaArchive, asset);
-		List<User> users = findUsersByName(userNames);
+		List<User> users = findUsersByName(inReq, userNames);
 		
 		inReq.putPageValue("peoples", users);
 
 		
-		List<Group> groups = findGroupByIds(userNames);
+		List<Group> groups = findGroupByIds(inReq, userNames);
 		Collections.sort(groups);
 
 		inReq.putPageValue("groups", groups);
@@ -126,10 +126,10 @@ public class AssetControlModule extends BaseMediaModule
 		return users;
 	}
 
-	public List<User> findUsersByName(List<String> inUserNames)
+	public List<User> findUsersByName(WebPageRequest inReq, List<String> inUserNames)
 	{
 		List<User> users = new ArrayList<User>();
-		UserManager mgr = getUserManager();
+		UserManager mgr = getUserManager(inReq);
 		for (String name : inUserNames)
 		{
 			if(name.contains("user_")){
@@ -145,10 +145,10 @@ public class AssetControlModule extends BaseMediaModule
 		}
 		return users;
 	}
-	protected List<Group> findGroupByIds(List<String> inIds)
+	protected List<Group> findGroupByIds(WebPageRequest inReq, List<String> inIds)
 	{
 		List<Group> groups = new ArrayList<Group>();
-		UserManager mgr = getUserManager();
+		UserManager mgr = getUserManager(inReq);
 		for (String id: inIds)
 		{
 			if( id.startsWith("group_" ))
@@ -297,7 +297,7 @@ public class AssetControlModule extends BaseMediaModule
 		User user = inReq.getUser();
 		Collection<Group> groups = new ArrayList<Group>(user.getGroups());
 		List groupids = archive.getAssetSecurityArchive().getAccessList(archive, asset);
-		List<Group> allowedgroups = findGroupByIds(groupids);
+		List<Group> allowedgroups = findGroupByIds(inReq, groupids);
 		
 		groups.removeAll(allowedgroups);
 		if(groups.size() == 0)

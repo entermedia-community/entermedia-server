@@ -8,5 +8,6 @@ Desktop\ Size=Tama\u00F1o de Escritorio
 URL=URL
 Original\ Download=Descargar original
 Medium\ Plus=Adem\u00E1s Medio
-Small\ Thumbnail=Peque\u00F1as Miniatura
-Full\ Size\ JPG=Full Size JPG
+Small\ Thumbnail=En Miniatura
+Full\ Size\ JPG=Tama\u00F1o Completo JPG
+

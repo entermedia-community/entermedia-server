@@ -1,0 +1,6 @@
+#
+#Fri Feb 13 10:35:11 EST 2015
+Choose\ Table=wählen Sie Tabelle
+selected=ausgewählt
+Create\ New\ Table=neue Tabelle erstellen
+

@@ -42,10 +42,27 @@ public class AttachmentModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String parentsourcepath = inReq.getRequestParameter("parentsourcepath");
+		if( parentsourcepath == null ) 
+		{
+			parentsourcepath = inReq.getRequestParameter("sourcepath");
+		}
+		if(parentsourcepath == null)
+		{
+			Asset asset = getAsset(inReq);
+			parentsourcepath = asset.getSourcePath();
+		}
+		
 		HitTracker hits = getAttachmentManager().listChildren(inReq, archive, parentsourcepath);
 		inReq.putPageValue("attachments",hits);
 	}
-
+	public void countAttachments(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		int count = getAttachmentManager().countAttachments(inReq, archive, asset);
+		inReq.putPageValue("attachmentcount",new Integer(count));
+	}
+	
 	public void reSyncAttachments(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -99,10 +116,11 @@ public class AttachmentModule extends BaseMediaModule
 			String finalpath = folder + name;
 			properties.saveFileAs(item, finalpath, inReq.getUser());
 		}		
-		getAttachmentManager().processAttachments(archive, asset, false);
+		getAttachmentManager().processAttachments(archive, asset, true);
 
 		//inReq.putPageValue("newattachments", newattachments);
 		inReq.putPageValue("first", firstfile);
+		inReq.setRequestParameter("filename", firstfile);
 		// inIn.delete();
 
 	}
@@ -145,7 +163,7 @@ public class AttachmentModule extends BaseMediaModule
 		{
 			String parentid = inReq.getRequestParameter("fileid");
 			String foldername = inReq.getRequestParameter("foldername");
-			getAttachmentManager().renameFilder(inReq, archive, asset, parentid, foldername);
+			getAttachmentManager().renameFolder(inReq, archive, asset, parentid, foldername);
 		}
 		reSyncAttachments(inReq);
 	}

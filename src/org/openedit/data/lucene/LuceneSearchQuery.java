@@ -370,6 +370,7 @@ public class LuceneSearchQuery extends SearchQuery
 					val = val.substring(0,val.length()-2);
 				}
 				val = QueryParser.escape(val);
+				//val = val.replace(" ", "\\ ");
 				return getDetail().getId() + ":\"" + val + "\"";
 			}
 		};
@@ -596,7 +597,7 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			public String toQuery()
 			{
-				String inVal = getValue();
+				String inVal = "+(" + getValue() + ")";
 				return inVal;
 			}
 		};

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+  <endpoint id="upgradeserver" name="Run Application Upgrade" url="/${applicationid}/services/system/upgradeserver" docsection="1418334117799" description="Upgrade Server" httpmethod="POST">
+    <samplerequest><![CDATA[
+    	{
+    		"serverid": "4",
+    		"toupdate": 
+    			["app-emshare"]
+	    } 
+	      ]]></samplerequest> Run Application Upgrade</endpoint>  
+  <endpoint id="systemstatus" name="Show System Cache Status" url="/${applicationid}/services/system/systemstatus" docsection="1418334117799" description="Shows a status report of overall cache usage" httpmethod="GET">Show System Cache Status</endpoint>  
+ </endpoints>

@@ -1,0 +1,7 @@
+<page>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
+
+	<path-action name="DataImportModule.deleteTable" alltypes="true"/>
+		<path-action name="DataEditModule.loadSearchTypes" alltypes="true"/>
+	
+</page>

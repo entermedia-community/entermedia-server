@@ -154,11 +154,10 @@ public class PathEventManager
 		if (event != null)
 		{ 
 			String name = event.getName();
-			if( name.equals("Run media conversions") )
-			{
-				log.info("Running YYYY conversion task ");
-			}
-
+//			if( name.equals("Run media conversions") )
+//			{
+//				log.info("Running YYYY conversion task ");
+//			}
 			synchronized (getRunningTasks())
 			{
 				Date now = new Date();
@@ -170,10 +169,10 @@ public class PathEventManager
 					TaskRunner task = (TaskRunner) iterator.next();
 					if( name.equals( task.getTask().getName() ) )
 					{
-						if( name.equals("Run media conversions") )
-						{
-							log.info("Found conversion task " + now + "  "  + name + " " + task.isRepeating());
-						}
+//						if( name.equals("Run media conversions") )
+//						{
+//							log.info("Found conversion task " + now + "  "  + name + " " + task.isRepeating());
+//						}
 						if( task.getTask().isRunning() )
 						{
 							//task.run();
@@ -494,8 +493,14 @@ public class PathEventManager
 		{
 			username = "admin";
 		}
-		UserManager usermanager = (UserManager)getModuleManager().getBean("userManager");
-		User user = usermanager.getUser(username);
+		
+		String catalogid = eventpage.getProperty("catalogid");
+		if( catalogid == null)
+		{
+			catalogid = "system";
+		}
+		User user = (User)getSearcherManager().getData(catalogid, "user", username);
+		//UserManager usermanager = (UserManager)getModuleManager().getBean(catalogid,"userManager");
 		if( user == null)
 		{
 			log.error("No such user: " + username);

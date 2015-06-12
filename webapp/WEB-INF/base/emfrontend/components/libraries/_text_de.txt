@@ -1,0 +1,8 @@
+#
+#Thu Feb 12 12:45:46 EST 2015
+Details=Einzelheiten
+Assets=Assets
+Create\ New=neue
+Project\ Tracker=Projekt-Tracker
+Collections=Sammlungen
+

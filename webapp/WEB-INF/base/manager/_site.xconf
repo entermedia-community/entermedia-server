@@ -34,11 +34,13 @@
   <style id="app-css" href="${themeprefix}/styles/theme.css"/>
   <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.6.1.js"/>
   <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.8.12.custom.min.js"/>
-  <script id="jquery-fancybox" src="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox-1.2.1.js"/>
-  <style id="jquery-fancybox-css" href="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.css"/>
+  
+  <script id="bootstrap" src="/${applicationid}/components/bootstrap/js/bootstrap.js" />
+ <style id="bootstrap" href='/${applicationid}/components/bootstrap/css/bootstrap.min.css' />
+  
+  
   <script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
   <script id="jquery-livequery" src="/${applicationid}/components/javascript/jquery.livequery.js"/>
-  <script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validate.js"/>
   <script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
   <inner-layout>${themeprefix}/layouts/application.html</inner-layout>
 

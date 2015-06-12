@@ -122,14 +122,14 @@ public class CategoryEditor {
 		 {
 			 getCurrentCategory().addChild(newCat);
 		 }
-		 else if (getRootCategory() != null)
+		 else
 		 {
 			 getRootCategory().addChild(newCat);
 		 }
-		 else
-		 {
-			 getMediaArchive().getCategoryArchive().setRootCategory(newCat);
-		 }
+//		 else
+//		 {
+//			 getMediaArchive().getCategoryArchive().setRootCategory(newCat);
+//		 }
 		 getMediaArchive().getCategoryArchive().cacheCategory(newCat);
 		 return newCat;
 	 }
@@ -359,52 +359,52 @@ public class CategoryEditor {
 		fieldCurrentCategory = currentCategory;
 	}
 
-	 public void reBuildCategories() throws OpenEditRuntimeException
-	 {
-		Page totrash = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/categories.xml" );
-		getPageManager().removePage(totrash);
-		
-		String	datadir = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
-		getMediaArchive().getCategoryArchive().clearCategories();
-		Category root = getMediaArchive().getCategoryArchive().createNewCategory("Index");
-		getMediaArchive().getCategoryArchive().setRootCategory(root);
-
-		reBuildCategories(getMediaArchive().getCategoryArchive(), root, datadir,datadir);
-		
-	 }
-
-	private void reBuildCategories(CategoryArchive inCategoryArchive, Category inParent,  String inStartingFrom, String inFolder )
-	{
-		List children = getPageManager().getChildrenPaths(inFolder);
-		List assets = new ArrayList();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();)
-		{
-			String path = (String) iterator.next();
-			ContentItem item = getPageManager().getRepository().get(path);
-			String source = path.substring(inStartingFrom.length());
-			Asset existing = getMediaArchive().getAssetBySourcePath(source);
-
-			if( existing == null && item.isFolder() )
-			{
-				Category cat = inCategoryArchive.createCategoryTree(source);
-				reBuildCategories(inCategoryArchive,cat, inStartingFrom,path);
-			}
-			else if(existing != null )
-			{
-				if( existing.getCategories().size() == 1 )
-				{
-					Category found = (Category)existing.getCategories().get(0);
-					if( found.getId().equals(inParent.getId() ) )
-					{
-						continue;
-					}
-				}
-				existing.clearCategories();
-				existing.addCategory(inParent);
-				assets.add(existing);
-			}
-		}
-		getMediaArchive().saveAssets(assets);
-	}
-	
+//	 public void reBuildCategories() throws OpenEditRuntimeException
+//	 {
+//		Page totrash = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/categories.xml" );
+//		getPageManager().removePage(totrash);
+//		
+//		String	datadir = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
+//		getMediaArchive().getCategoryArchive().clearCategories();
+//		//Category root = getMediaArchive().getCategoryArchive().createNewCategory("Index");
+//		//getMediaArchive().getCategoryArchive().setRootCategory(root);
+//
+//		reBuildCategories(getMediaArchive().getCategoryArchive(), root, datadir,datadir);
+//		
+//	 }
+//
+//	private void reBuildCategories(CategoryArchive inCategoryArchive, Category inParent,  String inStartingFrom, String inFolder )
+//	{
+//		List children = getPageManager().getChildrenPaths(inFolder);
+//		List assets = new ArrayList();
+//		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+//		{
+//			String path = (String) iterator.next();
+//			ContentItem item = getPageManager().getRepository().get(path);
+//			String source = path.substring(inStartingFrom.length());
+//			Asset existing = getMediaArchive().getAssetBySourcePath(source);
+//
+//			if( existing == null && item.isFolder() )
+//			{
+//				Category cat = inCategoryArchive.createCategoryTree(source);
+//				reBuildCategories(inCategoryArchive,cat, inStartingFrom,path);
+//			}
+//			else if(existing != null )
+//			{
+//				if( existing.getCategories().size() == 1 )
+//				{
+//					Category found = (Category)existing.getCategories().get(0);
+//					if( found.getId().equals(inParent.getId() ) )
+//					{
+//						continue;
+//					}
+//				}
+//				existing.clearCategories();
+//				existing.addCategory(inParent);
+//				assets.add(existing);
+//			}
+//		}
+//		getMediaArchive().saveAssets(assets);
+//	}
+//	
 }

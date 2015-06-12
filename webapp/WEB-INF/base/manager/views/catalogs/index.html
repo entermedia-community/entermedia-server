@@ -1,4 +1,5 @@
-#set ($catalogs = $searcherManager.getList("system","catalog"))
+#set ($searcher = $searcherManager.getSearcher("system","catalog"))
+#set( $catalogs = $searcher.fieldSearch("id","*","name") )
 
 #if( $catalogs.size() == 0 )
 
@@ -12,18 +13,16 @@
 <ul class="catalog-list">
 
 #foreach ($catalog in $catalogs)
-     <li class="section-title" >
-     	<div class="folder"></div>
-       <span ><a href="$home$apphome/views/catalogs/edit.html?appcatalogid=$catalog.id">$catalog</a></span>
+     <li class="section-title row" >
+       <div class="catalog col-sm-1"></div>
+       <div class="col-sm-7"><a href="$home$apphome/views/catalogs/edit.html?appcatalogid=$catalog.id">$catalog</a></div>
+       <div class="col-sm-4 listid" ><a href="$home$apphome/views/catalogs/edit.html?appcatalogid=$catalog.id">/$catalog.id</a></div>
      </li>
 #end
-
-
-
 </ul>
 
              <div class="scan" style="margin-right: 0; float: left;">
-                 <a class="btn"  href="$home$apphome/views/catalogs/addcatalog.html">Create New Catalog</a>
+                 <a class="mbtn"  href="$home$apphome/views/catalogs/addcatalog.html">Create New Catalog</a>
              </div> 
 		
 

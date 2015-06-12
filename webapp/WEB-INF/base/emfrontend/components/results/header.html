@@ -1,31 +1,32 @@
-
-<div>
+<div id="resultheader">
 	<ul id="sub-nav" class="search-views">
 		
 		#set ($classname="enabled")
 		#if( $candownload || $canconvert || $candownloadfpo )
-			<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >Download</a></li>
+			<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
 		#end	
 		##Email and publish should be under share
 		#if($canpublish || $canemaillink )
 			<li><a>Share</a>
 				<ul>
 					#if( $canemaillink )
-					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >Email Assets</a></li>
+					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a></li>
 					#end
 					#if( $canpublish)
-					<li><a href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >Publish Assets to Server</a></li>
+					<li><a href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a></li>
 					#end
+					##if( $canpublish)
+					<li><a href="$home$apphome/views/activity/sharegallery.html?hitssessionid=$!hits.getSessionId()&field=publishdestination&publishdestination.value=gallery&field=ordertype&ordertype.value=gallery&field=publishtype&publishtype.value=gallery" >[[Share Gallery]]</a></li>
+					##end
 				</ul>
 			</li>
 		#end
 		
-		
+		#if($canquickpublish )
+
 		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
 		
-		#if($canquickpublish )
-		
-		<li><a>Publish</a>
+		<li><a>[[Publish]]</a>
 				<ul>
 					#foreach($item in $quickpublishlist)
 						<li><a href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a></li>
@@ -48,18 +49,15 @@
 				#set( $showremoveselections = false )
 			#end
 			#if($showremoveselections )
-				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">Remove</a></li>
+				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
 			#else
-				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">Add to Basket</a></li>
+				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add to Basket]]</a></li>
 			#end
 		#end
 		
 		#if ($canmetadatageneral && $hits)
-			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">Edit</a></li>
+			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">[[Edit]]</a></li>
 		#end
-		##test angular
-		<li><a href="$home$apphome/views/modules/asset/test/test_angular.html">TEST ANGULAR</a></li>
-		##test angular
 		#set( $edit = $context.getRequestParameter("editheader") )
 		#if($edit && $edit == "true"  )
 			<li>
@@ -78,13 +76,13 @@
 				<div style="position: relative;">
 					#if( $canedittablecolumns )
 					<div id="table-edit-outside">
-						#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="Edit Columns" src="$home$themeprefix/images/edit.gif" /></a>
-						#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+						#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
+						#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
 						<div id="column-editor">
 							<div id="column-editor-content">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
 								<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
-									<option>Add Column</option>
+									<option>[[Add Column]]</option>
 									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 									#end
 								</select>
@@ -102,15 +100,25 @@
 			</li>
 		#end
 		
-			<li style="float: right;">	
-				<a class="ajax" targetdivinner="view-picker-content" title="$hits.size() results" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
-				
-					#if (!$resultview || $resultview == 'table')
-						View Gallery
-					#else
-						View Table
-					#end
+		#if(!$resultview)
+			#set($resultview = $userprofile.get("resultview"))
+			#if (!$resultview)
+				#set($resultview = "table")
+			#end
+		#end
+			<li style="float: right;">
+				<div style="position: relative;">
+					<a class="table-edit-close">
 					
+						<select name="resultview" onchange="selectresultview($(this).val());" class="smalldropdown">
+							<option value="none">[[Change Result View]]</option>
+							<option value="table" #if( $resultview == "table") selected #end>[[Table View]]</option>
+							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery View]]</option>
+							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Category Folder View]]</option>
+						</select>
+					</a>
+				</div>
+				<a  style="display:none;" class="ajax" id="ajaxselectresultview" targetdivinner="resultsdiv" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
 				</a>
 			</li>
 	</ul>

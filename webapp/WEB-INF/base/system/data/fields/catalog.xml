@@ -1,4 +1,6 @@
 <properties beanname="folderSearcher">
 	<property id="id" editable="true">ID</property>
 	<property id="name" editable="true" stored="true" index="true">Name</property>	
+	<property id="rootpath" editable="true" stored="true" index="true">Root Path</property>	
+	<property id="clientsubdomain" editable="true" stored="true" index="true">Sub-Domain</property>	
 </properties>

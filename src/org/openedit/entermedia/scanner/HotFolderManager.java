@@ -70,6 +70,7 @@ public class HotFolderManager
 	public void saveMounts(String inCatalogId)
 	{
 		//remove any old hot folders for this catalog
+		getWebServer().reloadMounts();
 		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
 		String path = "/WEB-INF/data/" + inCatalogId + "/";
 		List extras = new ArrayList();
@@ -238,6 +239,7 @@ public class HotFolderManager
 
 	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
 	{
+		inFolder = getFolderSearcher(inArchive.getCatalogId()).loadData(inFolder);
 		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 		String name = inFolder.get("subfolder");
 		String path = base + "/" + name;

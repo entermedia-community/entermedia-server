@@ -75,11 +75,33 @@ public class AttachmentManager
 		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
 		SearchQuery query = attachmentSearcher.createSearchQuery();
+		query.setHitsName("attachmentcount");
 		query.addExact("parentsourcepath", inFolderSourcePath);
 		HitTracker hits = attachmentSearcher.cachedSearch(inReq, query);
 		return hits;
 	}
 
+	public int countAttachments(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset)
+	{
+		if( inAsset == null || inAsset.getSourcePath() == null)
+		{
+			return 0;
+		}
+		HitTracker tracker = listChildren(inReq, inArchive, inAsset.getSourcePath() );
+		int count = 0;
+		if( tracker != null)
+		{
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+			{
+				Data child = (Data) iterator.next();
+				if( !"attachments.txt".equals( child.getName() ) && !child.getName().equals( inAsset.getPrimaryFile()) )
+				{
+					count++;
+				}
+			}
+		}
+		return count;
+	}
 	protected void syncFolder(Searcher attachmentSearcher, MediaArchive inArchive, String inAssetId, String inRootFolder, String inFolderSourcePath, String inAssetSourcePath, boolean inReprocess)
 	{
 		SearchQuery query = attachmentSearcher.createSearchQuery();
@@ -217,17 +239,19 @@ public class AttachmentManager
 	{
 		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
 		Data file = (Data) attachmentSearcher.searchById(inFileid);
-
-		String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
-		String sourcepath = file.get("parentsourcepath") + "/" + file.getName();
-
-		Page page = getPageManager().getPage(root + sourcepath);
-		getPageManager().removePage(page);
-
-		attachmentSearcher.delete(file, inReq.getUser());
+		if( file != null)
+		{
+			String root = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
+			String sourcepath = file.get("parentsourcepath") + "/" + file.getName();
+	
+			Page page = getPageManager().getPage(root + sourcepath);
+			getPageManager().removePage(page);
+	
+			attachmentSearcher.delete(file, inReq.getUser());
+		}
 	}
 
-	public void renameFilder(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inFolderId, String inNewName)
+	public void renameFolder(WebPageRequest inReq, MediaArchive inArchive, Asset inAsset, String inFolderId, String inNewName)
 	{
 		Searcher attachmentSearcher = getAttachmentSearcher(inArchive.getCatalogId());
 		String sourcepath = null;
@@ -269,6 +293,10 @@ public class AttachmentManager
 	}
 	public String parseFileSubPath(String inAssetSourcePath, String inParentSourcePath, String inFilename)
 	{
+		if( inParentSourcePath == null)
+		{
+			return null;
+		}
 		String folder = inParentSourcePath.substring(inAssetSourcePath.length());
 		if( folder.length() > 0)
 		{

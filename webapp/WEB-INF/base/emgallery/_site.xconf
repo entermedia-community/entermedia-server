@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<page>
+  <property name="applicationid">emgallery</property>
+  <property name="catalogid">media/catalogs/public</property>
+  <script id="jquery" src="/${applicationid}/bootstrap/js/jquery.js" />
+  <script id="bootstrap" src="/${applicationid}/bootstrap/js/bootstrap.js" />
+  <style id="bootstrap" href='/${applicationid}/bootstrap/css/bootstrap.min.css' />
+  <inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
+  <property name="title">Entermedia Gallery</property>
+  <property name="themeprefix">/${applicationid}/theme</property>
+  
+  <property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
+  
+  <path-action name="MediaArchiveModule.loadApplicationId" />
+  <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+  <path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+  <path-action bean="DateStorageUtil" name="PageValue.loadPageVariable"  class="org.openedit.util.DateStorageUtil" />
+  <path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+  
+</page>

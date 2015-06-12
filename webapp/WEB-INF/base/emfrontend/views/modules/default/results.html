@@ -1,23 +1,25 @@
+						<div id="emresultscontent">
 #set( $moduleid = $context.findValue("module") )
 #set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
 #set( $searchhome = $context.findValue("searchhome") )
 
-    
 #if ( $hits.size() == 0 )
-$pages.stream("/${content.searchhome}/empty.html", $context)	
-                                                                                                                                                                                                              
+	$pages.include("${searchhome}/resultsactions.html",$context)
+	$pages.stream("/${content.searchhome}/empty.html", $context)	
 #else
 
+	#set( $resultdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}resultstable", $userprofile))
+	
+	
+	##set ( $canedit = $context.getPageValue("${moduleid}edit") )
+	
+	#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
+	#if ($popupdetail && $popupdetail.size() > 0)
+		#set( $enablepopup = "true")
+	#end
 
-#set( $resultdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}resultstable", $userprofile))
-
-
-##set ( $canedit = $context.getPageValue("${moduleid}edit") )
-
-#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
-#if ($popupdetail && $popupdetail.size() > 0)
-	#set( $enablepopup = "true")
-#end
+##Header
+$pages.include("${searchhome}/resultsactions.html",$context)
 
 
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
@@ -28,9 +30,9 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <div class="editholder" style="margin-top: 0;">
  <div id="messagearea"> </div>
 
-#if( $canviewmodulesettings ) 
-  <a id="editboxlink" class="ir  emdialog" data-width="700" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/indexdialog.html?viewid=${moduleid}resultstable&viewpath=${moduleid}/${moduleid}resultstable">Edit</a>
-#end  
+###if( $canviewmodulesettings ) 
+##  <a id="editboxlink" class="ir  emdialog" data-width="700" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/indexdialog.html?viewid=${moduleid}resultstable&viewpath=${moduleid}/${moduleid}resultstable">Edit</a>
+###end  
 
 </div>
 <div id="emselectable" >
@@ -58,21 +60,24 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 	
 #end
 
-#set( $sortby = $hits.getSearchQuery().getSortBy() )
-#foreach( $detail in $resultdetail )
-		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
+#set( $edit = $context.getRequestParameter("editheader"))
+#if( !$edit || $edit == "false")
+#set( $edit = false)
+#end
+	#set( $sortby = $hits.getSearchQuery().getSortBy() )
+	#foreach( $detail in $resultdetail)
+	
+		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
 					
-			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
-					#text( $detail.text )
+			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="XXheaderdraggable XXheaderdroppable"> 
+					#text( $detail.name )
 					#if( $edit)
-						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 					
 					#end
 			</div>
-		 </th>  
-	
-#end
-
+		 </th>
+	#end
 
 </tr>
 </thead>
@@ -122,8 +127,6 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 	
               $context.putPageValue('detail',  $detail)
               $pages.include("${searchhome}/cell.html", $context)    
-    		
-
     </div>
 </td>
 #end
@@ -153,7 +156,7 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 <script>
     $('th.sortable').on({
         click: function(){
-            var id = $(this).attr('id');
+            var id = $(this).attr('sortby');
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
                     jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
@@ -192,3 +195,4 @@ $pages.stream("/${content.searchhome}/empty.html", $context)
 #end
 
 ## $pages.include("/${content.searchhome}/actions.html", $context)
+		</div>

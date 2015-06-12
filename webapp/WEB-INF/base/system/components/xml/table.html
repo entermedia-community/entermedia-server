@@ -74,6 +74,8 @@
 				#end
 				$context.putPageValue("detail",$detail)
 				$context.putPageValue("val",$val)
+								$context.putPageValue("hit",$hit)
+				
 				$pages.include("$xmledithome/detailreadonly.html", $context)
 			</td>
 		#end
@@ -124,7 +126,7 @@
 #if($link)
 	#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
 	#if( $jumptomodule && $jumptomodule == "true")
-		#set( $link = "$apphome/views/modules/${searchtype}/edit/index.html")
+		#set( $link = "$apphome/views/modules/${searchtype}/edit/edit.html")
 		<form name="editrow" method="post" action="$home$link?$passalongdec">
 		#set($fieldname = "id" )
 		#set($fieldname = $context.getRequestParameter("fieldname"))

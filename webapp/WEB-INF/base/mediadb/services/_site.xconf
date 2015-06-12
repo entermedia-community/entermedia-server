@@ -1,0 +1,28 @@
+<page>
+	<inner-layout />
+
+	<path-action name="MediaArchiveModule.loadApplicationId" />
+	<path-action name="Admin.autoLogin" alltypes="true"/>
+	<path-action name="ProfileModule.loadUserProfile" alltypes="true" />
+	<path-action name="MediaArchiveModule.getMediaArchive" />
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true"  />		
+	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+    <path-action bean="moduleManager" name="PageValue.loadPageVariable" allowduplicates="true"  />
+	
+	<path-action name="Admin.loadPermissions" alltypes="true"/>
+
+	<path-action name="TranslationModule.loadBrowserLanguage" />	
+	<path-action name="JsonAdminModule.allowHeaders" />	
+	
+	<path-action name="Admin.allowViewing" alltypes="true">
+		<login-path>/${applicationid}/services/authentication/noaccess.json</login-path>
+		<exclude>/${applicationid}/services/authentication/getkey.json</exclude>
+	</path-action>
+
+	<!-- used in velocity macro -->
+	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true"/>		
+
+	<property name="alternative_extension">json</property>
+	<property name="cancelredirect">true</property>
+	
+</page>

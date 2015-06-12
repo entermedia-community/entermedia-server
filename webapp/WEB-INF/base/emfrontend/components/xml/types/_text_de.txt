@@ -1,0 +1,7 @@
+#
+#Fri Feb 13 10:32:42 EST 2015
+Over=zu ende
+Pick\ Categories=Kategorien wählen
+Enter\ a\ Custom\ Range=geben Sie einen benutzerdefinierten Bereich an
+Enter\ comma\ separated\ tags=geben Sie durch Komma getrennte Tags ein
+

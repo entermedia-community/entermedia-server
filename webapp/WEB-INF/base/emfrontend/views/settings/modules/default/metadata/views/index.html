@@ -29,7 +29,7 @@
         #set ( $systemdefined = $context.findValue("systemdefined") )
         
     #if( $canviewsettings )   
-	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view Settings</a>
+	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view [[Settings]]</a>
 	#end
 	
 	   #if($view.byassettype == "true" )
@@ -55,44 +55,46 @@
 	    
         <form id="changename" name="newgroup" method="post" action="$home$viewsroot/changeviewname.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">
             <input type="hidden" name="field" value="name" />
-            <div>View Name</div>
+            <div>[[View Name]]</div>
             <input class="field" name="name.value" value="$view.name" >
 	 		<div class="checkbox">
                 <input type="checkbox" name="byassettype.value" value="true" #if( $view.byassettype && $view.byassettype == "true" ) checked #end />
-                Use Asset Type
+                [[Use Asset Type]]
             	<input type="hidden" value="byassettype" name="field" />
             </div>
 
             <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
-                Render as Table?
+                [[Render as Table?]]
             	<input type="hidden" value="rendertype" name="field" />
 
             </div>
 
    <div class="checkbox"><input id="systemdefined" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
-                Show on registration section:
+                [[Show on registration section:]]
             	<input type="hidden" value="showonregistration" name="field" />
 
             </div>
 
 	    <div class="checkbox"><input id="systemdefined" type="checkbox" name="systemdefined.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
-                System View?
+                [[System View?]]
             	<input type="hidden" value="systemdefined" name="field" />
 
             </div>
 
 
             <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
-                <div>Render Table</div>
+                <div>[[Render Table]]</div>
             	<input type="hidden" value="rendertable" name="field" />
                 <input class="field" name="rendertable.value" value="$!view.rendertable" >
-                <div>Render Table External ID</div>
+                <div>[[Render Table External ID]]</div>
             	<input type="hidden" value="renderexternalid" name="field" />
                 <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
-                <div>Render Table Default Sort</div>
+                <div>[[Render Table Default Sort]]</div>
 				<input type="hidden" value="rendersort" name="field" />
                 <input class="field" name="rendersort.value" value="$!view.rendersort" >
-
+				<div>[[Render Table Custom View]]</div>
+				<input type="hidden" value="rendercustomview" name="field" />
+                <input class="field" name="rendercustomview.value" value="$!view.rendercustomview" >
 
             </div>
             #set($editpath = $context.findValue("editPath"))

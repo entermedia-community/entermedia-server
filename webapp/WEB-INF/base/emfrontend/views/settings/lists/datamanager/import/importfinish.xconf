@@ -2,7 +2,8 @@
 
 <page>
 <path-action name="Page.uploadFile"/>
-<property name="allowspecifiedpath" >true</property>
+<property name="path" >/WEB-INF/temp/importing/${catalogid}/uploaded.csv</property>
+<property name="importpath" >/WEB-INF/temp/importing/${catalogid}/uploaded.csv</property>
 
 <path-action name="DataImportModule.importDataWithScript"/>
 <!--

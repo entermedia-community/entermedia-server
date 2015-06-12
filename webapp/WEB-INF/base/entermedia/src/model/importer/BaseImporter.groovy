@@ -37,8 +37,8 @@ public class BaseImporter extends EnterMediaObject
 	{
 		fieldSearcher = loadSearcher(context);
 		
-		String path = context.getRequestParameter("path");
-		Page upload = getPageManager().getPage(path);
+		String importpath = context.findValue("importpath");
+		Page upload = getPageManager().getPage(importpath);
 		Reader reader = upload.getReader();
 		List data = new ArrayList();
 		

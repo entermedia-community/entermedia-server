@@ -17,6 +17,7 @@ import org.openedit.data.PropertyDetails;
 
 import com.openedit.OpenEditException;
 import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
 
 public class CompositeAsset extends Asset implements Data, CompositeData
 {
@@ -128,9 +129,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	
 	protected void reloadData() 
 	{
-		// TODO Auto-generated method stub
 		HitTracker existing = getInitialSearchResults();
-		HitTracker selecteddata = getArchive().getAssetSearcher().search(existing.getSearchQuery());
+		SearchQuery q = existing.getSearchQuery().copy();
+		q.setSortBy("id");
+		
+		HitTracker selecteddata = getArchive().getAssetSearcher().search(q);
 		if( existing.isAllSelected() )
 		{
 			//rerun the search
@@ -140,8 +143,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		{
 			selecteddata.setSelections(existing.getSelections());
 			selecteddata.setShowOnlySelected(true);
-			selecteddata.setHitsPerPage(10000);
 		}
+		selecteddata.setHitsPerPage(1000);
 		setSelectedResults(selecteddata);			
 
 		getProperties().clear();
@@ -430,7 +433,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	public void saveChanges() 
 	{
 		//compare keywords, categories and data. 
-		List tosave = new ArrayList(100);
+		List tosave = new ArrayList(500);
+
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -629,8 +633,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		if( inFieldCurrentAsset != null )
 		{
-			toSave.add(inFieldCurrentAsset);
 			checkSave(toSave);
+			toSave.add(inFieldCurrentAsset);
 		}
 		return inFieldCurrentAsset;
 	}

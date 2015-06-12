@@ -3,10 +3,11 @@
 Forward=Adelante
 Data\ Search=B\u00FAsqueda de Datos
 Back=Atr\u00E1s
-Add\ New\ Record=Agregar Nuevo Registro
+Add\ New\ Record=A\u00F1adir Nuevo Registro
 Found=Encontrados
 Data\ Type=Tipo de Datos
 of=de
 Records=Registros
 Page=P\u00E1gina
+
 

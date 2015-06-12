@@ -1,3 +1,95 @@
+/* Imported from layout.css */
+  .page_margins { text-align:left; margin: 0 auto; }
+
+  /* (en) Layout: width, background, borders */
+  .page { margin: 0; padding: 0 5px;  }
+  #header, #header, #nav, #main, #extended, #footer {  min-width: 720px; }
+  #application {
+	  background: #fff;
+	  max-width: 1120px;
+	  margin: 0 auto;
+	  padding: 0 0px 10px 0px;
+	  border: 1px solid #c5c5c5;
+	}
+
+  /* (en) Designing main layout elements */
+  #header .page { 
+  	overflow:hidden;
+    }
+	
+  #header span.navlinks { 
+  	float:right;
+   }
+
+  #header .page {
+    padding: 0px 0px 10px 0px;
+  }
+
+  .emhomecontent
+  {
+  	margin-top: 100px;
+  	margin-left: 200px;
+  	margin-right: 200px;
+  }
+
+  #extended .subc  { padding: 0 10px; }
+  #extended .subcl { padding: 0 10px 0 0; }
+  #extended .subcr { padding: 0 0 0 10px; }
+
+  #main, #extended { padding-top: 0; padding-bottom: 0; }
+  #footer .page { padding: 10px 0px; }
+
+	#header {
+		height: 25px;
+		padding-right: 10px;
+	}
+	#footer {
+		border-top: 4px #90002a;
+	}
+	#header a {
+		font-family: Verdana, Geneva, sans-serif;
+		font-size:11px;
+		font-weight: normal;
+		color:#666;
+		text-decoration: none;
+	}
+	#header a:focus,#header a:hover,#header a:active {
+		text-decoration: underline;
+		background-color: transparent;
+		color:#39578a;
+	}
+
+  #col1 { float:left; width:200px; }
+  #col2 { float:right; width:200px; }
+  #col3 { width:auto; margin:0 200px; }
+
+  /* (en) Preparation for absolute positioning within content columns */
+  /* (de) Vorbereitung für absolute Positionierungen innerhalb der Inhaltsspalten */
+  #col1_content, #col2_content, #col3_content { position:relative; }
+
+ /*------------------------------------------------------------------------------------------------------*/
+
+ /**
+  * @section subtemplates
+  * @see     http://www.yaml.de/en/documentation/practice/subtemplates.html
+  */
+  .equalize, .equalize .subcolumns { overflow:visible; display:table; table-layout:fixed;}
+
+  .subcolumns { width:100%; }
+
+  .equalize > div {
+    display:table-cell;
+    float:none; 
+    margin:0; 
+    overflow:hidden;
+    vertical-align:top;
+  }
+  
+  .emdetaileditorbox
+  {
+  	margin-bottom: 10px;
+  }
+
 /* ==|== normalize ========================================================== */
 
 article, aside, details, figcaption, figure, footer, header, hgroup, nav, section {
@@ -1319,7 +1411,7 @@ small {
    text-decoration: underline;
 }
 #cat-list .delete-row {
-    margin-top: 3px;
+    margin-top: -15px;
     margin-right: 5px;
 }
 
@@ -2173,7 +2265,7 @@ center #addcoment {
     border-radius: 5px;
     border: 1px solid #237b97;
     padding: 10px 18px;
-    margin: 3px 0;
+    margin: 5px -1px 0 0px;
     font-size: 13px;
     font-weight: bold;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .2);
@@ -2221,7 +2313,7 @@ tr.odd {
     background: #000 url('../images/asset-bg.png');
     box-shadow: inset 0px 0px 60px 15px rgba(0, 0, 0, .8);
     position: relative;
-    padding: 20px 0;
+    padding: 0;
 }
 #media-player-table {
     background: #000 url('../images/asset-bg.png');
@@ -2814,8 +2906,8 @@ table.emdata th {
 .emtree ul li div {
     padding: 0 0 0 20px;
     border-bottom: 1px solid #E2EFF4;
-    height: 34px;
-    line-height: 34px;
+    height: 27px;
+    line-height: 27px;
     display: block;
     cursor: pointer;
     white-space: no-wrap;
@@ -2829,12 +2921,12 @@ table.emdata th {
 }
 .emtree .checkbox {
     position: absolute;
-    height: 34px;
+    height: 7px;
     border-right: 1px dashed #ddd;
     left: 0;
     top: 0;
     width: 15px;
-    padding: 0 15px;
+    padding: 10px;
     text-align: center;
 }
 .emtree .checkbox .field
@@ -3509,6 +3601,7 @@ body #emcontainer .emasseteditorarea {
 }
 .emdata {
     width: 100%;
+    border-collapse: collapse;
 }
 .emdata tr.tableheader th, .emdata tr td {
     border-right: 1px dashed rgba(0,0,0,0.05);
@@ -3517,7 +3610,7 @@ body #emcontainer .emasseteditorarea {
     border: none;
 }
 .emdata tr td {
-    padding: 6px 10px !important;
+    padding: 10px
     vertical-align: middle;
 }
 #main-results-table #tableheader th:first-child, #main-results-table #tableheader th:last-child {
@@ -4022,6 +4115,12 @@ div#folders.add .folder {
     max-width: 100%;
     min-width: 1120px;
 }
+
+#application {
+  max-width: 1170px;
+  margin: 0 auto;
+}
+
 #embody.max #view-picker-content {
     width: inherit;
 }
@@ -4303,7 +4402,7 @@ span.drag-and-drop {
     position: relative;
 }
 #module-dropdown span {
-    background: url('../images/sort-desc.png') 0 0 no-repeat;
+    /* background: url('../images/sort-desc.png') 0 0 no-repeat; */
     width: 10px;
     height: 10px;
     margin: 0;
@@ -4337,7 +4436,7 @@ span.drag-and-drop {
     margin: 0;
 }
 #module-list li a {
-    background: none;
+    background: none !important;
     border: none;
     color: #444;
     padding: 10px;
@@ -4350,7 +4449,7 @@ span.drag-and-drop {
     font-weight: normal;
 }
 #module-list li a:hover {
-    background: #eee;
+    background: #eee !important;
 }
 #module-list li a:active {
     border: none;
@@ -4849,6 +4948,7 @@ p.resultsnumber {
     background: #F7F7F7 url('../images/sidebar-shadow.png') right top repeat-y;
     border-right: 1px solid #CCC;
     width: 48px;
+    min-width: 48px;
     -webkit-transition: width 0.05s ease-out;
     -moz-transition: width 0.05s ease-out;
     -ms-transition: width 0.05s ease-out;
@@ -6366,9 +6466,6 @@ a.audio-filename:hover
 }
 
 /* Groups page */
-div#emselectable {
-	overflow:auto;
-}
 
 div#filterscontent
 {
@@ -6530,13 +6627,141 @@ div#left-col-libraries div.ui-widget-content
 }
 
 
-.detail-select{
+.detail-select {
 margin-top: 8px; max-width: 200px;
 }
 
 div.tableheaderactions 
 {
-	padding: 6px;
-	background-color: #eee;  
+	padding: 10px;
 	
+}
+
+div.tableheaderactions a 
+{
+	padding: 6px;
+	
+}
+
+/*---CSS CHANGES----------*/
+
+#module-dropdown {
+    height: 35px;
+}
+
+#childrenlist #valuelist {
+    margin:  -10px -4px 0px !important;
+}
+.borderedcell, .resultstablecell {
+    display: table-cell;
+}
+.form-control {
+    height: 15px;
+    padding: 0px;
+}
+#listdetail_division {
+    width:47% !important;
+}
+#de-side-nav ul li a{
+	opacity:1 !important;
+}
+.folder:after {
+    height: 0 !important;
+}
+#media-player-table {
+    margin-bottom: 0;
+}
+
+/* CSS Bootstrap Overrides*/
+/* 9/9/14 - CR */
+
+.tooltip {
+    position: relative;
+    opacity: 1;
+    z-index: auto;
+    line-height: normal;
+}
+
+.btn {
+    line-height: normal;
+    white-space: normal;
+    vertical-align: baseline;
+}
+
+#advsearchpanel table[width="100%"] select {
+    padding: 0px;
+    height: 21px;
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+.oeinputform  select {
+    padding: 0px;
+    height: 21px;
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
+#nav, #maximizer a, a.btn, input[type="text"], input[type="password"], textarea, .emtree .arrow, .emtable a.row  {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
+.thumbnail {
+    background-color: transparent;
+    border: none;
+}
+
+.checkbox input[type="checkbox"] {
+    margin-top: -2px;
+    margin-left: 1px;
+}
+
+.checkbox input[type="checkbox"]:not(.categorycheckbox) {
+    float: none;
+}
+
+.checkbox {
+    min-height: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
+
+#emcontainer #resultslist #default-fields .settings-table tr td:first-child, #de-metadata #default-fields .cellrow span.bodylabel, #workarea ul li:first-child, #emcontainer #emselectable table th, .categories-widget, #emcontainer #emselectable #main-results-table tr td.checkbox, #emcontainer #emselectable table tr, #usersearchresultspanel .tab-actions, .list-adder {
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+}
+
+h4 {
+    font-weight: bold;
+}
+
+#nav .flat-left {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+#attachmenttree ul li div:hover .actions a {
+    line-height: 34px;
+}
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+input[type="file"] {
+    display:inline;
+}
+.emtree ul li div .actions a {
+    line-height: 22px;
+}
+
+select.smalldropdown {
+	padding: 0px;
+  height: 21px;
+  box-sizing: content-box;
+  font-family: inherit;
+  color:  inherit;
+  background:  inherit;
 }

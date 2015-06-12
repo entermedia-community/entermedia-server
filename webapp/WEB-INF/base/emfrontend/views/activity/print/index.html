@@ -1,0 +1,38 @@
+<div class="container">
+#set($order = $data)
+
+			#if( $order.userid != $user.getId() )
+			Invalid order
+			#end
+		
+			#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+			#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+			#set($owner = $userManager.getUser($order.userid))
+			
+			
+				#foreach( $item in $orderitems )
+			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("item", $item)
+			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+			<div class="newpage">
+			$pages.include("${apphome}/views/activity/print/page.html", $context)
+			</div>
+			#end
+		</div>
+		
+		<script type="text/javascript">
+		jQuery(document).ready(function() 
+				{ 
+					window.print();
+				});	
+		</script>
+
+	<style type="text/css" >
+      div.newpage
+      {
+
+        page-break-after: always;
+        page-break-inside: avoid;
+      }
+    </style>

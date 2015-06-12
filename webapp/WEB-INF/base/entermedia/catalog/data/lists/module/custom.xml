@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root> 
+  <data id="testmodule" name="Test Module"/>  
+  <data id="order" name="Orders" href="/views/modules/order/index.html"/>
+</root>

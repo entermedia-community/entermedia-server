@@ -1,0 +1,4 @@
+<page>
+
+	<path-action name="PathEventModule.savePathEvent" alltypes="true" />
+</page>

@@ -4,4 +4,5 @@ Category\ Id=ID de Categor\u00EDa
 Id=Id
 File\ Name=Nombre del Archivo
 Short\ Description=Descripci\u00F3n Breve
-Category\ Name=Nombre de Categor\u00EDa
+Category\ Name=Nombre de la Categor\u00EDa
+

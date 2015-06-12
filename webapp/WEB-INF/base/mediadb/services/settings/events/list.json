@@ -1,0 +1,30 @@
+{ #set( $hits = $pathevents )
+	"response":
+	{
+	        "status":"ok",
+			"totalhits" : $hits.size(),
+			"searchtype" : "event",
+			"page": 1,
+			"pages": 1,
+			"query":
+			{
+				"search":"*"
+			}
+	},
+	"results":[
+#foreach( $event in $hits )
+#set( $seltype = $event.getPage().getDirectoryName() )
+		{
+			"name": #jesc($context.getText($event.getName())),
+			"type": "$seltype",
+			"path": #jesc($event.getPage().getPath()),
+			"description": #jesc($!event.getPage().getProperty("eventdescription")),
+			"running":"$event.isRunning()",
+			"lastrun":#jesc($!event.getFormattedLastRun()),
+			"period":"$event.getPeriod()",
+			"enabled":"$event.isEnabled()"
+		 }	#if( $velocityCount != $hits.size() ), #end
+
+#end		
+	]
+}

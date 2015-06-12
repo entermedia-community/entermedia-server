@@ -1,41 +1,33 @@
 <beans>
+	<!--  These are defaults. Can be overriden in each catalogs folder or in their data/.../lists/bean/ folder -->
 
-<!--  Upraded 
+	<!-- Core types -->
+	<bean id="transientSearcher" bean="luceneTransientSearcher" />
+	<bean id="listSearcher" bean="xmllistSearcher" />
+	<bean id="folderSearcher" bean="xmlFolderSearcher" />
+	<bean id="dataSearcher" bean="xmlDataSearcher" />
+	<bean id="dynamicSearcher" bean="xmllistSearcher" />
 
-	<bean id="publishqueueSearcher" bean="dataSearcher"/>
-	<bean id="catalogsettingsSearcher" bean="folderSearcher"/>
-	<bean id="viewSearcher" bean="folderSearcher"/>
+	<!-- Java implementations -->
+	<bean id="assetSearcher" bean="luceneAssetSearcher" />
+	<!--  bean id="lockSearcher" bean="luceneLockSearcher" / -->
+	<bean id="userSearcher" bean="luceneUserSearcher" />
+	<bean id="groupSearcher" bean="luceneGroupSearcher" />
+	<bean id="userprofileSearcher" bean="luceneUserProfileSearcher" />
+	<bean id="conversiontaskSearcher" bean="luceneTransientSearcher" />
+	<bean id="categorySearcher" bean="xmlCategorySearcher" />
+	<bean id="orderSearcher" bean="luceneOrderSearcher" />
+	<bean id="orderhistorySearcher" bean="xmlDataSearcher" />
+	<bean id="orderitemSearcher" bean="xmlDataSearcher" />
+	<bean id="categoryArchive" bean="xmlCategoryArchive" />
 
--->
-<!--  real data -->
-    <bean id="userSearcher" bean="cataloguserSearcher" />
+	<!--  Little used -->
+	<bean id="emailSearcher" bean="xmlDataSearcher" />
+	<bean id="uploadqueueSearcher" bean="luceneDataSearcher" />
+	<bean id="assetAutoCompleteSearcher" bean="luceneAssetAutoCompleteSearcher" />
+	<bean id="dynamicLogSearcher" bean="luceneDynamicLogSearcher" />
+
+	<!--  deprecated AssetRelatedKeywordSearcher -->
 
 
-
-<!--  menus -->
-	<bean id="asseteditorSearcher" bean="folderSearcher"/>
-	<bean id="asseteditorhistorySearcher" bean="folderSearcher"/>
-	<bean id="asseteditormetadataSearcher" bean="folderSearcher"/>
-
-
-	<bean id="settingsmenumoduleSearcher" bean="folderSearcher"/>
-
-	<bean id="moduleSearcher" bean="folderSearcher"/>
-
-<!--  Old? -->
-	<bean id="relatedassetSearcher" bean="dataSearcher" /> 
-	<bean id="relatedassethistorySearcher" bean="dataSearcher" /> 
-
-	<bean id="assetThesaurusSearcher" bean="thesaurusSearcher"/>
-	<bean id="usagehistorySearcher" bean="dataSearcher"/>
-	<bean id="assetalbumsSearcher" bean="dataSearcher"/>
-	<bean id="conversionSearcher" bean="dataSearcher"/>
-	<bean id="publishSearcher" bean="dataSearcher"/>
-    <bean id="catalogImportConverter" bean="assetCompositeConverter" /> 
-    <bean id="productThesaurusSearcher" bean="thesaurusSearcher" /> 
-
-   
-   
-   
-  
 </beans>

@@ -93,11 +93,11 @@
 			&nbsp;&nbsp;
 			
 			#if( $datalist.prevPage() )
-			<a href="$home$page.path?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType" ><b>&lt;&lt;  [[Back]]</a>
+			<a href="$home$page.path?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b>&lt;&lt;  [[Back]]</a>
 			#end
 			
 			#if ( $datalist.nextPage() )
-			<a style="margin-left: 10px;" href="$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt; </a>
+			<a style="margin-left: 10px;" href="$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt; </a>
 			#end
 		#end
 	</div>

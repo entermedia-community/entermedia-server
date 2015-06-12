@@ -1,0 +1,18 @@
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $asset.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
+
+#set( $link = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.jpg")
+<a class="thickbox" href="$home$link" target="_parent" title="[[drag to download]]">
+	<img id="main-media" class="emdropshadow  assetdragdrop"  draggable="true"  data-sourcepath="$urlenc" data-name="$asset.name" src="$!prefix$home/${mediadbappid}/services/module/asset/downloads/preview/mediumplus/$urlenc/thumb.jpg" alt="$!asset.name"/>
+	<link rel="image_src" type="image/jpeg" href="$!prefix$home/${mediadbappid}/services/module/asset/downloads/preview/mediumplus/$urlenc/thumb.jpg" />
+</a>
+
+<div style="float:left;">
+<input style="border:0px;width:300px;text-overflow:ellipsis;color:#555555;background-color: transparent;" overflow:hidden;white-space:nowrap;" value="$asset.sourcepath" onclick="$(this).select();"/>...
+</div>
+

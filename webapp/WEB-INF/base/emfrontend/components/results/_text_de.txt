@@ -1,0 +1,29 @@
+#
+#Tue Mar 31 09:38:52 EDT 2015
+Share=Teilen
+View\ Table=Tabelle anzeigen
+Gallery\ View=Galerie-Ansicht
+Download=Download
+Deselect\ All=alle abw\u00E4hlen
+Add\ to\ Basket=in den Warenkorb
+Email\ Assets=Assets mailen
+Change\ Result\ View=\u00C4nderung Ergebnisansicht
+Publish=ver\u00F6ffentlichen
+Select\ All\ Results=alle Ergebnisse ausw\u00E4hlen
+Publish\ Assets\ to\ Server=Assets auf Server ver\u00F6ffentlichen
+Category\ Folder\ View=Kategorie Ordneransicht
+Select\ This\ Page=diese Seite w\u00E4hlen
+items=Objekte
+of=von
+Cancel=abbrechen
+Add\ Column=Spalte hinzuf\u00FCgen
+Share\ Gallery=Galerie mit Anderen teilen
+Edit\ Columns=Spalten bearbeiten
+View\ Gallery=Galerie ansehen
+Table\ View=Tabellenansicht
+Displaying\ records=Anzeige von Datens\u00E4tzen
+No\ results\ found=keine Ergebnisse gefunden
+Edit=bearbeiten
+Remove=entfernen
+Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
+Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen

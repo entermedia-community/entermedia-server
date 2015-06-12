@@ -1,0 +1,19 @@
+<page>
+	<property name="forcelayout">true</property>
+	<layout>/${applicationid}/services/module/asset/data/layout.json</layout>
+	<property name="virtual">true</property>
+
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+	
+	
+	<path-action name="JsonDataModule.createData" alltypes="true" method="POST" cancel="true"/>
+	<path-action name="JsonDataModule.updateData" alltypes="true" method="PUT" cancel="true"/>
+	
+	<path-action name="JsonAssetModule.createAsset" alltypes="true" method="POST"/>
+	<path-action name="JsonAssetModule.updateAsset" alltypes="true" method="PUT"/>
+	
+	
+	<property name="alternative_extension">json</property>
+	
+</page>
+

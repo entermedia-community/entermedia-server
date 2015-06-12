@@ -33,7 +33,7 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	@Override
 	public void reIndexAll() throws OpenEditException
 	{
-		
+		getCategoryArchive().reloadCategories();
 	}
 	@Override
 	public Data createNewData()
@@ -50,6 +50,18 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	public HitTracker search(SearchQuery inQuery)
 	{
 		ListHitTracker hits = new ListHitTracker();
+		//load them all up?
+		Term desc = inQuery.getTermByDetailId("description");
+		if( desc == null)
+		{
+			desc = inQuery.getTermByDetailId("id");
+		}
+		if( desc != null && "*".equals( desc.getValue() ) ) 
+		{
+			hits.setList( getCategoryArchive().listAllCategories() );
+			return hits;
+		}
+		
 		Term id = inQuery.getTermByDetailId("id");
 		if( id != null)
 		{
@@ -79,6 +91,31 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 				hits.getList().addAll(category.getChildren());
 			}
 		}
+
+		Term path = inQuery.getTermByTermId("path");
+		if( path != null)
+		{
+			String paths = path.getValue();
+			if( paths != null)
+			{
+				String[] parents = paths.split("/");
+				Category hit = getCategoryArchive().getRootCategory();
+				int i = 1;
+				for (; i < parents.length; i++)
+				{
+					hit = hit.getChildByName(parents[i]);
+					if( hit == null)
+					{
+						break;
+					}
+				}
+				if( i == parents.length && hit != null)
+				{
+					hits.getList().add(hit);
+				}
+			}
+		}
+
 		
 		return hits;
 	}
@@ -108,6 +145,19 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		getCategoryArchive().deleteCategory(cat);
 	}
 
+	@Override
+	public void saveCategory(Category inCategory)
+	{
+		saveData(inCategory,null);
+	}
+	
+	@Override
+	public Category getCategory(String inCatalog)
+	{
+		Category category = getCategoryArchive().getCategory(inCatalog);
+		return category;
+	}
+	
 	@Override
 	public void saveData(Data inData, User inUser)
 	{

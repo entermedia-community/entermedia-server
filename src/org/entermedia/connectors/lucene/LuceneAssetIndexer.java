@@ -2,6 +2,9 @@ package org.entermedia.connectors.lucene;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,8 +27,11 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.search.AssetSecurityArchive;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.OpenEditException;
+import com.openedit.page.manage.PageManager;
+import com.openedit.util.OutputFiller;
 
 public class LuceneAssetIndexer extends LuceneIndexer
 {
@@ -35,7 +41,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 	protected MediaArchive fieldMediaArchive;
 	protected File fieldRootDirectory;
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
-	
+	OutputFiller filler = new OutputFiller();
 	public LuceneAssetIndexer()
 	{
 	}
@@ -207,19 +213,19 @@ public class LuceneAssetIndexer extends LuceneIndexer
 //							// case versions
 //		}
 
-		Field path = new Field("sourcepath", asset.getSourcePath(), ID_FIELD_TYPE );
+		Field path = new Field("sourcepath", asset.getSourcePath(), INPUT_FIELD_TYPE_ONE_TOKEN );
 		doc.add(path);
 
 		String primaryfile = asset.getPrimaryFile();
 		if (primaryfile != null)
 		{
-			Field imagename = new Field("primaryfile", primaryfile, ID_FIELD_TYPE);
+			Field imagename = new Field("primaryfile", primaryfile, INPUT_FIELD_TYPE_ONE_TOKEN);
 			doc.add(imagename);
 		}
 		String fileformat = asset.getFileFormat();
 		if(fileformat != null)
 		{
-			Field format = new Field("fileformat", fileformat, ID_FIELD_TYPE);
+			Field format = new Field("fileformat", fileformat, INPUT_FIELD_TYPE_ONE_TOKEN);
 			doc.add(format);
 		}
 		
@@ -235,7 +241,7 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			asset.setCatalogId(getMediaArchive().getCatalogId());
 		}
-		Field catalogid = new Field("catalogid", asset.getCatalogId(),ID_FIELD_TYPE);
+		Field catalogid = new Field("catalogid", asset.getCatalogId(),INPUT_FIELD_TYPE_ONE_TOKEN);
 		doc.add(catalogid);
 
 		// this may be invalid field of -1 but we still need to add it for
@@ -304,12 +310,12 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			Category catalog = (Category) iter.next();
 			buffer.append(catalog.getId());
-			buffer.append(" ");
+			buffer.append(" | ");
 		}
 
 		if (buffer.length() > 0)
 		{
-			doc.add(new Field("category-exact", buffer.toString(), INTERNAL_FIELD_TYPE ));
+			doc.add(new Field("category-exact", buffer.toString(), INPUT_FIELD_TYPE_ONE_TOKEN ));
 		}
 		/*
 		 * Not used any more if ( item.getDepartment() != null) { doc.add( new
@@ -381,6 +387,32 @@ public class LuceneAssetIndexer extends LuceneIndexer
 			fullDesc.append(' ');
 		}
 
+		if( Boolean.parseBoolean(asset.get("hasfulltext")))
+		{
+			ContentItem item = getMediaArchive().getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
+			if( item.exists() )
+			{
+				Reader input = null;
+				try
+				{
+					input= new InputStreamReader( item.getInputStream(), "UTF-8");
+					StringWriter output = new StringWriter(); 
+					filler.fill(input, output);
+					fullDesc.append(output.toString());
+				}
+				catch( IOException ex)
+				{
+					log.error(ex);
+				}
+				finally
+				{
+					filler.close(input);
+				}
+			}
+		}
+
+		
+		
 //		try
 //		{
 //			String result = fullDesc.toString();//fixInvalidCharacters(fullDesc.toString());
@@ -488,12 +520,12 @@ public class LuceneAssetIndexer extends LuceneIndexer
 		{
 			if (add)
 			{
-				writer.addDocument(doc, getAnalyzer());
+				writer.addDocument(doc);
 			}
 			else
 			{
 				Term term = new Term("id", inId);
-				writer.updateDocument(term, doc, getAnalyzer());
+				writer.updateDocument(term,doc);
 			}
 		}
 		catch (IOException ex)

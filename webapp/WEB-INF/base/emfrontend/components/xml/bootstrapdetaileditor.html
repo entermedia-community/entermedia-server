@@ -1,0 +1,116 @@
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+#set( $readonly = "false" )
+#set( $readonly = $context.getRequestParameter("detailsreadonly"))
+#set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
+
+##$context.putPageValue("caneditlists","false")
+
+##We need 3 things passed in: $searcher, $view, $data
+#if ($view)
+	#if( $context.getUserProfile() )
+		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	#else
+		#set ($details = $searcher.getDetailsForView($view))
+	#end
+	#if( !$details)
+		No details available for this view.  Please configure your view settings.	
+
+	#end
+#else
+	##leagacy check. We used to pass in the $details
+	#if( !$details)
+	#set ($details = $searcher.getPropertyDetails())
+	#end
+#end	
+
+
+<div class="row" style="padding: 20px;">
+<div class="oeinputform validate-inputs detaileditor">
+	<div id="allerrors">
+	</div>
+
+#foreach ($detail in $details)
+
+	#set($val = false)
+	#set($target = "${detail.id}.value")
+	#set( $val = $context.getRequestParameter($target))					
+	#if( !$val )
+		#set( $val = $!{data.getProperty($detail.getId())} )
+	#end
+	#if( !$val)
+		#set( $val = $!{data.get($detail.getId())} )
+	#end
+	$!context.putPageValue("detail",$detail)
+	
+	#set( $editrow = $detail.isEditable() && $readonly != "true" )
+	#if( $editrow || $val ) 
+	
+		$!context.putPageValue("val",$val)
+		<div id="inputarea_${detail.id}" class="row" >
+		
+		<div class="col-md-8">
+		<strong>$!detail.name:</strong>
+			#if( $editrow )	
+				$pages.include("$xmledithome/detailedit.html", $context)
+			#else  ##NOT EDITABLE
+				$pages.include("$xmledithome/detailreadonly.html", $context) 
+			#end
+			#if ( $detail.note )
+				<span class="help-block">$detail.note</span>
+			#end
+		</div>
+	
+	</div>
+	#end
+	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
+		#if($usedhtml)
+			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
+		#else
+			#set( $usedhtml = "htmltextarea=${detail.getId()}")
+		#end
+	#end
+	
+		#if($detail.get('dependson'))
+	
+   <script type="text/javascript">			
+			jQuery(document).ready(function(){
+				DetailEditor.find_field_from_row("$!detail.get('dependson')").bind_and_run('change',function(){
+					DetailEditor.toggle_dependency_row("$!detail.getId()",
+																						 jQuery(this),
+																						 "$!detail.get('dependsonvalue')",
+																						 "$!detail.get('dependsondefault')",
+																						 "$!detail.get('dependsonvaluedelimiter')")
+				});
+			});									 
+		</script>
+	#end
+	
+	
+	
+#end
+
+
+
+
+
+
+
+##needed for fast loading HTML edit boxes
+#if( $usedhtml && $readonly !=  "true") 
+	$pages.include("/system/tools/html/textarea.html?$usedhtml")	
+#end
+
+
+
+<!-- 
+<script type="text/javascript">
+	//jQuery(".required").find('input[type!="hidden"], textarea, select, radio').rules( "add", {required:true} );
+	//var form = jQuery(".required").closest("form");
+	//form.addClass("validate");
+	//jQuery(".validate").validate();
+	//form.validate();
+	
+</script>
+ -->
+ 
+ </div></div>

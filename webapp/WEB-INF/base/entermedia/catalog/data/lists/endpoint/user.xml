@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+    
+  <data id="createuser" name="Create New User" url="/${applicationid}/services/settings/users/create" docsection="1420730727080" description="Create new user" httpmethod="POST"> 
+    <samplerequest><![CDATA[{ "id":"testuser", "password":"changeme"}]]></samplerequest> 
+  </data>  
+    <data id="usersearch" name="Search for Users" httpmethod="POST" url="/${applicationid}/services/settings/users/search" docsection="1420730727080"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+  <data id="updateuser" name="Update User" url="/${applicationid}/services/settings/users/data/testuser" docsection="1420730727080" description="Change user settings" httpmethod="PUT"> 
+    <samplerequest><![CDATA[{"email":"myemail@domain.tld"}]]></samplerequest> 
+  </data>  
+  <data id="getuser" name="Load User" url="/${applicationid}/services/settings/users/data/testuser" docsection="1420730727080" description="List user data" httpmethod="GET"/>
+  <data id="deleteuser" name="Delete User" url="/${applicationid}/services/settings/users/data/testuser?id=testuser" docsection="1420730727080" description="Delete user by name" httpmethod="DELETE"/>  
+
+  <endpoint id="authenticate" name="User Security Key" url="/${applicationid}/services/authentication/getkey" docsection="1420730727080" httpmethod="POST" description="Send authentication information and return entermedia key"> 
+    <samplerequest><![CDATA[{ 	"id":"admin",     "password":"admin" }]]></samplerequest>User Security Key
+  </endpoint>  
+  <endpoint id="userlogin" name="User Login" url="/${applicationid}/services/authentication/login" docsection="1420730727080" httpmethod="POST" description="Saves a cookie so the user session remains open"> 
+    <samplerequest><![CDATA[{   "id": "admin",   "password": "admin" }]]></samplerequest>User Login
+  </endpoint>  
+  <endpoint id="userlogout" name="User Logout" url="/${applicationid}/services/authentication/logout" docsection="1420730727080" description="Removes the session cookie for this user" httpmethod="GET">User Logout</endpoint>  
+
+  <!--
+  <endpoint id="registeruser" name="Register New User" url="/${applicationid}/services/authentication/registeruser" docsection="1420730727080" description="Register New User" httpmethod="POST">Register New User</endpoint>
+  -->  
+  <endpoint id="groupadd" name="Add Group to User" url="/${applicationid}/services/settings/users/groupadd" docsection="1420730727080" description="Add group to user" httpmethod="POST"> 
+    <samplerequest><![CDATA[{ "id":"testuser", "groupid":"testgroup"}]]></samplerequest> 
+  </endpoint>  
+  
+  <endpoint id="groupremove" name="Remove Group from User" url="/${applicationid}/services/settings/users/groupremove" docsection="1420730727080" description="Remove group from user" httpmethod="POST"> 
+    <samplerequest><![CDATA[{ "id":"testuser", "groupid":"testgroup"}]]></samplerequest> 
+  </endpoint>  
+    
+  <endpoint id="userexport1" url="/${applicationid}/services/settings/users/export/user.csv" docsection="1420730727080" name="Export To CSV" httpmethod="POST" description="You must search first"> 
+     <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </endpoint>
+<!--
+  <endpoint id="userimport2" url="/${applicationid}/services/settings/users/import/import" docsection="1420730727080" name="Import From CSV" httpmethod="POST" uploadfile="true"> 
+    <samplerequest><![CDATA[{"scriptname":"ImportCsvFile.groovy"}]]></samplerequest>
+  </endpoint>  
+-->
+</endpoints>

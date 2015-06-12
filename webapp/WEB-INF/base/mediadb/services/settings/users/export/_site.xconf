@@ -1,0 +1,16 @@
+<page>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true"/>
+
+    <path-action name="PageValue.loadPageVariable"  bean="searcherManager" alltypes="true"/>
+	<path-action name="DataEditModule.search"  alltypes="true" >
+		<property name="hitsname">hits</property>
+		<property name="catalogid">system</property>
+	</path-action> 
+	
+	<path-action name="Script.run" alltypes="true" >
+		<script>./generatecsv.groovy</script>
+	</path-action>
+	
+	<property name="virtual">true</property>
+	
+</page>

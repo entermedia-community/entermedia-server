@@ -52,6 +52,8 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 			result.setOk(false);
 			return result;
 		}
+		//get timeout
+		long timeout = getConversionTimeout(inArchive, inAsset);
 		
 		//deal with custom codec
 		String videocodec = inAsset.get("videocodec");
@@ -64,7 +66,7 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 			if( !tmp.exists() )
 			{
 				comm.add(tmp.getContentItem().getAbsolutePath());
-				boolean ok =  runExec("mencodermkv", comm);
+				boolean ok =  runExec("mencodermkv", comm, timeout);
 				if( ok )
 				{
 					inputpage = tmp;
@@ -132,6 +134,7 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 //					width = inStructions.getMaxScaledSize().width;
 //					height = inStructions.getMaxScaledSize().height;
 //				}
+
 				int aw = inAsset.getInt("width");
 				int ah = inAsset.getInt("height");
 				if( aw > width || ah > height)
@@ -162,6 +165,25 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 					if( ( height % 2 ) != 0 )
 					{
 						height++;
+					}
+				}
+				else
+				{
+					// Asset has smaller size than destination
+
+					boolean scaledownonly = false;
+					if( inStructions.get("scaledownonly") != null )
+					{
+						scaledownonly = new Boolean(inStructions.get("scaledownonly"));
+					}
+					
+					log.info(scaledownonly);
+
+					if(scaledownonly)
+					{
+						// Make destination size the same as original
+						width = aw;
+						height = ah;
 					}
 				}
 				comm.add("-s");
@@ -205,11 +227,11 @@ Here is a simple PCM audio format for low CPU devices
 				new File( outpath).getParentFile().mkdirs();
 				//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 				
-				boolean ok =  runExec("avconv", comm);
+				boolean ok =  runExec("avconv", comm); //, timeout);
 				result.setOk(ok);
 				if( !ok )
 				{
-					ExecResult execresult = getExec().runExec("avconv", comm, true);
+					ExecResult execresult = getExec().runExec("avconv", comm, true);//, timeout);
 					String output = execresult.getStandardError();
 					result.setError(output);
 					return result;
@@ -219,7 +241,7 @@ Here is a simple PCM audio format for low CPU devices
 					comm = new ArrayList();
 					comm.add(converted.getContentItem().getAbsolutePath()  + "tmp.mp4");
 					comm.add(converted.getContentItem().getAbsolutePath());
-					ok =  runExec("qt-faststart", comm);
+					ok =  runExec("qt-faststart", comm, timeout);
 					result.setOk(ok);
 					Page old = getPageManager().getPage(converted.getContentItem().getPath() + "tmp.mp4");
 					old.getContentItem().setMakeVersion(false);

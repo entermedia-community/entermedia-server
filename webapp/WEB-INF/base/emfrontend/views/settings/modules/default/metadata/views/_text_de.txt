@@ -1,0 +1,15 @@
+#
+#Thu Feb 12 12:15:29 EST 2015
+System\ View?=Systemansicht?
+Render\ Table\ Custom\ View=Tabelle in benutzerdefinierter Ansicht
+Asset\ Type=Asset-Typ
+View\ Name=Name anzeigen
+Show\ on\ registration\ section\:=Sektion bei Registrierung anzeigen\:
+$view\ Settings=Einstellungen für $view
+Use\ Asset\ Type=Asset-Typ benutzen
+Render\ Table=Tabelle anzeigen
+Editing\ Boxes=Bearbeitungsboxen
+Render\ Table\ Default\ Sort=Tabelle in Standardsortierung
+Render\ as\ Table?=als Tabelle anzeigen?
+Render\ Table\ External\ ID=Tabelle mit externer ID anzeigen
+

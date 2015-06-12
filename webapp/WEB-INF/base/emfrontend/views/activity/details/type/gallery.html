@@ -1,0 +1,40 @@
+	#set($order = $data)
+
+			#if( $order.userid != $user.getId() )
+			Invalid order
+			#end
+		
+			#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+			#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+			#set($owner = $userManager.getUser($order.userid))
+			
+	
+	<div class="panel panel-default">
+  <div class="panel-heading">Gallery	
+    
+
+  
+  </div>
+  <div class="panel-body">
+    
+	
+		<div class="row">
+	#foreach( $item in $orderitems )
+			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+			#set( $thumbend = $mediaarchive.getLinkToSize($asset.sourcepath, "thumb") )
+			$context.putPageValue("asset", $asset)
+			$context.putPageValue("item", $item)
+			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+					#set( $click = "$home$apphome/views/modules/asset/editor/index.html?assetid=${asset.id}&hitssessionid=$rootid" )
+		
+			<div class="col-xs-2 col-md-2">
+    <a href="$click" class="thumbnail">
+      <img src="$thumbend" alt="...">
+    </a>
+  </div>
+	#end
+	</div>
+</div>
+</div>
+Actions:	<a class="btn" href="$home$apphome/views/activity/print/index.html?hitssessionid=$!hits.getSessionId()&orderid=$order.id">Print</a>
+<a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">Download Metadata</a>

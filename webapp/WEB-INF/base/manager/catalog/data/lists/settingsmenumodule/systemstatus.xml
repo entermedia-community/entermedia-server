@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="cache" type="toplevel" parentid="cache" module="system" path="/views/settings/status/cache/index.html" ordering="031" sublabel="Cache Status">System Status</property>
+
+  <property id="logs" parentid="cache" module="system" path="/views/settings/status/logs/index.html" ordering="031">Logs</property>
+  <property id="version" parentid="cache" module="system" path="/views/settings/status/version/index.html" ordering="031">Versions</property>
+  <property id="tools" parentid="cache" module="system" path="/views/settings/status/tools/index.html" ordering="031">Tools</property>
+
+
+
+</properties>
+

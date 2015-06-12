@@ -81,7 +81,7 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 {
 	var val = $("#list-" + fieldname).val();
 	//validate(catalogid, searchtype, view , fieldname);
-	
+
 	var node = findOrAddNode(fieldname);
 	
 	if( node.children )
@@ -98,7 +98,13 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 			//we are missing the data element of the children
 			//required: catalogid, searchtype, fieldname, value
 			//optional: query, foreignkeyid and foreignkeyvalue
-			jQuery("#" + div).load(apphome + '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+			
+			var rendertype = jQuery("#" + div).data("rendertype");
+			if(rendertype == "multiselect"){
+				jQuery("#" + div).load(apphome + '/components/xml/multiselect.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+			} else{
+				jQuery("#" + div).load(apphome + '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+			}
 		}
 	}
 }

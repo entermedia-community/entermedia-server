@@ -1,2 +1,16 @@
-<a class="drag-columns-text" title="[[Clear Selections]]" href="$home$apphome/views/search/index.html?clearselection=true&hitssessionid=$hits.getSessionId()">
-$hits.getSelectionSize() [[selected]]<span class="ui-icon ui-icon-closethick" style="float: right; margin-top: 14px; margin-right: 5px;"></span></a>
+<div >
+	<div style="clear:both; width:200px;height:100%;">
+
+#if( $hits.isShowOnlySelected() )	
+		<a style="float:left;" title="[[Show All]]" href="$home$apphome/views/search/index.html?assetshowonlyselections=false&hitssessionid=$hits.getSessionId()">
+	[[Show All]]</a>
+#else
+		<a style="float:left;" title="[[View Selections]]" href="$home$apphome/views/search/index.html?assetshowonlyselections=true&hitssessionid=$hits.getSessionId()">
+	 [[Show Selected]] ($hits.getSelectionSize())</a>
+#end	
+	
+		<a style="display:block; float:left; padding:14px 8px 0 0;line-height:0px;"  title="[[Clear Selections]]" href="$home$apphome/views/search/index.html?assetclearselection=true&hitssessionid=$hits.getSessionId()">
+		 <span class="ui-icon ui-icon-closethick" ></span></a>
+	</div>
+</div>
+

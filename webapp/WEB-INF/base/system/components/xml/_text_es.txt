@@ -1,0 +1,5 @@
+#
+#Fri Mar 27 15:56:32 EDT 2015
+No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=No hay datos disponibles para esta vista . Por favor configure las opciones
+required=requerido
+

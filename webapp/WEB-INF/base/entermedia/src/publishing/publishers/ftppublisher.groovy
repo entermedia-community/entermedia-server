@@ -21,7 +21,13 @@ public class ftppublisher extends basepublisher implements Publisher
 	
 	public PublishResult publish(MediaArchive mediaArchive,Asset asset, Data inPublishRequest,  Data destination, Data preset)
 	{
-		PublishResult result = new PublishResult();
+		PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,asset,preset);
+		if( result != null)
+		{
+			return result;
+		}
+		
+		result = new PublishResult();
 
 		Page inputpage = findInputPage(mediaArchive,asset,preset);
 		String servername = destination.get("server");
@@ -47,7 +53,7 @@ public class ftppublisher extends basepublisher implements Publisher
 		//get password and login
 		if(password == null)
 		{
-			UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
+			UserManager userManager = mediaArchive.getUserManager();
 			User user = userManager.getUser(username);
 			password = userManager.decryptPassword(user);
 		}

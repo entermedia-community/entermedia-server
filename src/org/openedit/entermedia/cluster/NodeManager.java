@@ -1,9 +1,12 @@
 package org.openedit.entermedia.cluster;
 
+import java.util.List;
+
 import org.dom4j.Element;
 import org.openedit.data.SearcherManager;
 
 import com.openedit.OpenEditException;
+import com.openedit.WebServer;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.util.XmlUtil;
@@ -14,7 +17,18 @@ public class NodeManager
 	protected XmlUtil fieldXmlUtil;
 	protected PageManager fieldPageManager;
 	protected SearcherManager fieldSearcherManager;
+	protected WebServer fieldWebServer;
 	
+	public WebServer getWebServer()
+	{
+		return fieldWebServer;
+	}
+
+	public void setWebServer(WebServer inWebServer)
+	{
+		fieldWebServer = inWebServer;
+	}
+
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -57,6 +71,12 @@ public class NodeManager
 			Element root = getXmlUtil().getXml(page.getInputStream(),"UTF-8");
 			
 			fieldLocalNode = new Node(root);
+			String nodeid = getWebServer().getNodeId();
+			if( nodeid != null)
+			{
+				fieldLocalNode.setId( nodeid );
+			}
+			
 		}
 
 		return fieldLocalNode;
@@ -65,4 +85,22 @@ public class NodeManager
 	{
 		return getLocalNode().getId();
 	}
+	public String createDailySnapShot(String inCatalogId)
+	{		
+		throw new OpenEditException("Not implemented");
+	}
+	
+	public String createSnapShot(String inCatalogId)
+	{		
+		throw new OpenEditException("Not implemented");
+	}
+	
+	public List listSnapShots(String inCatalogId)
+	{
+		throw new OpenEditException("Not implemented");
+	}
+	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
+	{
+		throw new OpenEditException("Not implemented");
+	}	
 }

@@ -3,7 +3,7 @@
 <div class="subcolumns">
 	<div class="c25l" id="left-col">
 		<div class="ui-widget">
-			<div class="ui-widget-header">My Account</div>
+			<div class="ui-widget-header">[[My Account]]</div>
 			<div class="ui-widget-content categories-widget no-padding-for-real">
 				<ul id="settings-menu" class="sidebar-list">
 					#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
@@ -16,7 +16,7 @@
 						#end
 						#if($canview)
 							<li id="$screen.id" #if( $tab== "$screen.id" ) class="current" #end>
-								<a href="$home$apphome${screen.path}">$screen</a>
+								<a href="$home$apphome${screen.path}">$context.getText($screen.getName())</a>
 							</li>
 						#end
 					#end

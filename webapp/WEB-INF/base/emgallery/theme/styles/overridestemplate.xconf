@@ -1,0 +1,10 @@
+<page>
+	<generator name="velocity"/>
+	<path-action name="TemplateModule.loadTemplate" alltypes="true"/>
+	
+	
+	<path-action name="MediaArchiveModule.getMediaArchive" alltypes="true" allowduplicates="true"/>
+	<!--
+	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils" alltypes="true"/>
+	-->
+</page>

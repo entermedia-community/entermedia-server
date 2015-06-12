@@ -1,0 +1,8 @@
+<page>
+	<property name="module">module</property>
+	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+	<property name="searchtype">module</property>
+	<permission name="view">
+		<userprofile property="api-manage-modules" equals="true"/>
+	</permission>
+</page>

@@ -1,5 +1,6 @@
 package org.openedit.entermedia.modules;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,13 +30,13 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.SourcePathCreator;
 import org.openedit.entermedia.edit.AssetEditor;
 import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.scanner.PresetCreator;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.xmp.XmpWriter;
 import org.openedit.event.WebEventListener;
-import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
@@ -812,13 +814,13 @@ public class AssetEditModule extends BaseMediaModule
 				Asset asset = archive.getAsset("multiedit:" + hits.getSessionId(),inReq);
 				inReq.putPageValue("asset", asset );
 			}
-
+			/*
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
 			{
 				Data data = (Data) iterator.next();
 				hits.addSelection(data.getId());
 			}			
-
+			*/
 			inReq.putPageValue("hits", hits );
 			
 		}
@@ -982,7 +984,7 @@ public class AssetEditModule extends BaseMediaModule
 		for (Iterator iterator = inPages.iterator(); iterator.hasNext();)
 		{
 			Page page = (Page) iterator.next();
-			readMetaData(inReq, archive,"", page, tracker);
+			readMetaData(inReq, archive,"", page, tracker); //This creates and moves assets
 		}
 		//set the group view permissions if something was passed in
 		findUploadTeam(inReq, archive, tracker);
@@ -1026,9 +1028,14 @@ public class AssetEditModule extends BaseMediaModule
 		if( sample != null)
 		{
 			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
+			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
+			archive.fireMediaEvent("importing/assetsimported",inReq.getUser(),sample,listids);
 		}
 		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
-		results.addSelection(sample.getId());		
+		results.addSelection(sample.getId());	
+		
+
+		
 //		HitTracker selected = results.getSelectedHitracker();
 //		inReq.putSessionValue("selectedhitsasset" + archive.getCatalogId() , selected );
 		
@@ -1103,49 +1110,50 @@ public class AssetEditModule extends BaseMediaModule
 		if(sourcepath == null){
 			sourcepath = "";
 		}
-		if( sourcepath.endsWith("/"))
-		{
-			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
-		}
 		String filename = inPage.getName();
 		if(filename.startsWith("tmp") && filename.indexOf('_') > -1)
 		{
 			filename = filename.substring(filename.indexOf('_') + 1);
 		}
-		String assetsourcepath = sourcepath + "/" + filename; //TODO: Should we save like /a/allstuff.jpg
+		String assetsourcepath = sourcepath;// + "/" + filename; //TODO: Should we save like /a/allstuff.jpg
 		//getPageManager().clearCache(inPage);
-		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
-		Asset asset = new Asset();
-		
-		if (existing != null) 
-		{
-			asset.setId(archive.getAssetSearcher().nextAssetNumber());
-			String startpart = PathUtilities.extractPagePath(assetsourcepath);
-			startpart = startpart + "_" + asset.getId();
-			String type = PathUtilities.extractPageType(assetsourcepath);
-			if( type == null )
-			{
-				assetsourcepath = startpart;
-			}
-			else
-			{
-				assetsourcepath = startpart + "." + type;
-			}
-			
-		}
-		asset.setSourcePath(assetsourcepath);
+//		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
+//		Asset asset = new Asset();
+//		
+//		if (existing != null) 
+//		{
+//			asset.setId(archive.getAssetSearcher().nextAssetNumber());
+//			String startpart = PathUtilities.extractPagePath(assetsourcepath);
+//			startpart = startpart + "_" + asset.getId();
+//			String type = PathUtilities.extractPageType(assetsourcepath);
+//			if( type == null )
+//			{
+//				assetsourcepath = startpart;
+//			}
+//			else
+//			{
+//				assetsourcepath = startpart + "." + type;
+//			}
+//			
+//		}
+//		asset.setSourcePath(assetsourcepath);
 
-		
-		Page dest = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath);
-		if(!inPage.exists()){
-			log.info("Could not find uploaded file: " + inPage.getPath());
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath;
+		if( !assetsourcepath.endsWith("/"))
+		{
+			path  = path + "/";
 		}
-		if(inPage.exists() && !inPage.getPath().equals(dest.getPath()))//move from tmp location to final location
+		path  = path + inPage.getName();			
+		Page dest = getPageManager().getPage( path );
+//		if(!inPage.exists()){
+//			log.info("Could not find uploaded file: " + inPage.getPath());
+//		}
+		if(!inPage.getPath().equals(dest.getPath()))//move from tmp location to final location
 		{
 			getPageManager().movePage(inPage, dest);
 		}
 		
-		asset = getAssetImporter().getAssetUtilities().populateAsset(asset, dest.getContentItem(), archive, assetsourcepath, inReq.getUser());
+		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, assetsourcepath, inReq.getUser());
 		for (Iterator iterator = vals.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();
@@ -1178,9 +1186,6 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset.setProperty("previewtatus", "0");
 		}
-		asset.setProperty("owner", inReq.getUserName());
-		asset.setProperty("datatype", "original");
-		asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		
 		if( asset.get("assettype") == null)
 		{
@@ -1223,7 +1228,7 @@ public class AssetEditModule extends BaseMediaModule
 	public void selectPrimaryAsset(WebPageRequest inReq) throws Exception
 	{
 		String primaryname = inReq.getRequestParameter("filename");
-		String imagefilename = inReq.getRequestParameter("imagefilename");
+		String imagefilename = inReq.getRequestParameter("imagefilename"); //Dont support this any longer since we have conversion thumbs
 		MediaArchive archive = getMediaArchive(inReq);
 
 		Asset target = getAsset(inReq);
@@ -1800,6 +1805,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			asset.setProperty("assetvotes", String.valueOf( hits.size()) );
 			MediaArchive archive = getMediaArchive(inReq);
+			//async asset save?
 			archive.fireMediaEvent("asset/assetsave", inReq.getUser(), asset);
 		}
 		
@@ -2060,55 +2066,29 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
-			String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath");
+			//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
 			 
-			if(sourcepath == null){
-				 sourcepath = archive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
-			}		
-			String[] fields = inReq.getRequestParameters("field");
-			Map vals = new HashMap();
-			vals.putAll(inReq.getPageMap());
-			String prefix ="";
-
-			if( fields != null)
-			{
-				for (int i = 0; i < fields.length; i++)
-				{
-					String val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
-					if( val != null)
-					{
-						vals.put(fields[i],val);
-					}
-				}
-			}
-			String id = inReq.getRequestParameter("id");
-			if(id != null){
-				vals.put("id",id);
-			}
-			vals.put("filename", item.getName());
-			Replacer replacer = new Replacer();
-			
-			replacer.setSearcherManager(archive.getSearcherManager());
-			replacer.setCatalogId(archive.getCatalogId());
-			replacer.setAlwaysReplace(true);
-			sourcepath = replacer.replace(sourcepath, vals);
-			//sourcepath = sourcepath + "/" + item.getName();
-			
+			String sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq,archive,item.getName());
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
+			path = path.replace("//", "/");
 
-			Asset current = archive.getAssetBySourcePath("sourcepath");
-			if(current ==  null){
-				current = archive.createAsset(sourcepath);
-			}
-			current.setProperty("owner", inReq.getUser().getId());
 			properties.saveFileAs(item, path, inReq.getUser());
-			current.setPrimaryFile(item.getName());
-			archive.removeGeneratedImages(current);
-			archive.saveAsset(current, null);
+
+			//MediaArchive inArchive, User inUser, Page inAssetPage)
+			Asset current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
+			archive.saveAsset(current, inReq.getUser());
+//			current.setPrimaryFile(item.getName());
+//			current.setProperty("name", item.getName());
+//			current.setProperty("owner", inReq.getUser().getId());
+//			archive.removeGeneratedImages(current);
+//			archive.saveAsset(current, null);
+			inReq.putPageValue("newasset", current);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
 			archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),current);
+			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),current);
+			archive.fireMediaEvent("importing/assetsimported",inReq.getUser(),current);
 
 		}
 

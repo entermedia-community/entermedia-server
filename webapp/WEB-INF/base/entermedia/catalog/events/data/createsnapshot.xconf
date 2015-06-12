@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Create Snapshot</property>	
+	
+	<path-action name="Script.run" alltypes="true" >
+		<script>/${catalogid}/events/scripts/data/createsnapshot.groovy</script>
+	</path-action>
+	
+</page>

@@ -41,12 +41,13 @@ public class exiftoolthumbCreator extends BaseImageCreator
 
 			List command = new ArrayList(base);			
 			command.add("PageImage");
-			ExecResult done = getExec().runExec("exiftoolthumb",command);
+			long timeout = getConversionTimeout(inArchive, inAsset);
+			ExecResult done = getExec().runExec("exiftoolthumb",command,timeout);
 			if(inOut.length() == 0)
 			{
 				command = new ArrayList(base);
 				command.add("ThumbnailImage");
-				done = getExec().runExec("exiftoolthumb",command);
+				done = getExec().runExec("exiftoolthumb",command,timeout);
 			}	
 			result.setOk(done.isRunOk());
 			

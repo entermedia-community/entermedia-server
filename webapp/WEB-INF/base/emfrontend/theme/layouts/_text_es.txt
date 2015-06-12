@@ -1,0 +1,12 @@
+#
+#Fri Mar 27 15:52:14 EDT 2015
+Settings=Ajustes
+Logout=Cerrar sesi\u00F3n
+Selected\ Media=Medios Seleccionados
+\#if($isattachments)\ Attachments\ \#else\ Related\ Media\ \#end=\#if ( $ isattachments ) Adjuntos \#else \#end Medios relacionados
+My\ Account=Mi Cuenta
+Login=Iniciar Sesi\u00F3n
+There\ was\ a\ problem\ completing\ this\ request=Hubo un problema para completar esta solicitud
+System\ Settings=Configuraci\u00F3n del sistema
+Applications=Aplicaciones
+

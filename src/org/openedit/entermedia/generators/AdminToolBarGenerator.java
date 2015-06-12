@@ -66,6 +66,12 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 				showtoolbar = user.hasPermission("oe.administration");
 			}
 		}
+		
+		if(!showtoolbar){
+			if(inContext.getSessionValue("realuser") != null){
+				showtoolbar = true;
+			}
+		}
 //		if( !showtoolbar)
 //		{
 //			String mode = (String)user.getProperty("oe.edit.mode");
@@ -140,6 +146,11 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 		catch ( Exception ex)
 		{
 			inContext.getPageStreamer().setOutput(oldOut);
+			if( ignoreError(ex) )
+			{
+				log.info("Browser canceled request");
+				return;
+			}
 			//write out any errors
 			if( ex instanceof OpenEditException)
 			{

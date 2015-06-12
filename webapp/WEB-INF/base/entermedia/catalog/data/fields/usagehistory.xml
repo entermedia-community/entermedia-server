@@ -1,4 +1,4 @@
-<properties>
+<properties  beanname="dataSearcher">
   <property id="id" datatype="number" index="true" stored="true">Id</property>
   <property id="description" editable="true" index="true" stored="true">Status</property>
   <property id="projectnumber" editable="true" index="true" stored="true">Project Number</property>

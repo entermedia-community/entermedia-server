@@ -15,7 +15,7 @@ public void init()
 		//HitTracker assets = assetsearcher.getAllHits();
 //		SearchQuery q = assetsearcher.createSearchQuery();
 //		q.addOrsGroup("importstatus", "imported reimported");
-		SearchQuery q = assetsearcher.createSearchQuery().append("category", "index");
+		SearchQuery q = assetsearcher.createSearchQuery().append("id", "*");
 		q.addNot("editstatus","7");
 		q.addSortBy("id");
 		HitTracker assets =  assetsearcher.search(q);
@@ -34,37 +34,37 @@ public void init()
 			checked++;
 			logcount++;
 			
-			Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
-			if( asset == null )
-			{
-				log.info("Missing" + hit.getSourcePath() );
-				continue; //Bad index
-			}
+//			Asset asset = mediaarchive.getAssetBySourcePath(hit.getSourcePath());
+//			if( asset == null )
+//			{
+//				log.info("Missing" + hit.getSourcePath() );
+//				continue; //Bad index
+//			}
 
-			int more = presets.createMissingOnImport(mediaarchive, tasksearcher, asset);
+			int more = presets.createMissingOnImport(mediaarchive, tasksearcher, hit);
 			added = added + more;
 			if( logcount == 1000 )
 			{
 				logcount = 0;
-				log.info("Checked ${checked} ${added} ${more} "  + asset.get("importstatus"));
+				log.info("Checked ${checked} ${added} ${more} "  + hit.get("importstatus"));
 			}
-			if( more == 0 && !"converting".equals(asset.get("previewstatus") ) )
-			{
-				//log.info("complete ${asset}");
-				asset.setProperty("previewstatus","converting");
-				//mediaarchive.saveAsset(asset, null);
-				tosave.add(asset);
-				completed++;
-			}
-			if( tosave.size() == 500 )
-			{
-				mediaarchive.saveAssets(tosave);
-				tosave.clear();
-				log.info("checked ${checked} assets. ${added} tasks queued, ${completed} completed. please run event again since index has changed order" );
-				
-			}
+//			if( more == 0 && !"converting".equals(asset.get("previewstatus") ) )
+//			{
+//				//log.info("complete ${asset}");
+//				asset.setProperty("previewstatus","converting");
+//				//mediaarchive.saveAsset(asset, null);
+//				tosave.add(asset);
+//				completed++;
+//			}
+//			if( tosave.size() == 500 )
+//			{
+//				mediaarchive.saveAssets(tosave);
+//				tosave.clear();
+//				log.info("checked ${checked} assets. ${added} tasks queued, ${completed} completed. please run event again since index has changed order" );
+//				
+//			}
 		}
-		mediaarchive.saveAssets(tosave);
+//		mediaarchive.saveAssets(tosave);
 		log.info("checked ${checked} assets. ${added} tasks queued , ${completed} completed." );
 }
 

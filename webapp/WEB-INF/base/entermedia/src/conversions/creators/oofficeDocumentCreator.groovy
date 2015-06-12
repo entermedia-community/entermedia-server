@@ -47,6 +47,7 @@ public class oofficeDocumentCreator extends BaseCreator
 		command.add("-nologo");
 		//command.add("-invisible");
 		command.add("-norestore");		
+		command.add("-nolockcheck");
 		
 		command.add("-convert-to");		
 		command.add("pdf:writer_pdf_Export");
@@ -60,7 +61,8 @@ public class oofficeDocumentCreator extends BaseCreator
 		
 		command.add(input.getContentItem().getAbsolutePath());
 		
-		ExecResult done = getExec().runExec("soffice",command);
+		long timeout = getConversionTimeout(inArchive, inAsset);
+		ExecResult done = getExec().runExec("soffice",command, timeout);
 		
 		result.setOk(done.isRunOk());
 		if( done.isRunOk() )
@@ -72,6 +74,7 @@ public class oofficeDocumentCreator extends BaseCreator
 				throw new OpenEditException("OpenOffice did not create output file " + tmpfile);
 			}
 			getPageManager().movePage(tmpfile, inOut);
+			log.info("Completed: " + input.getName());
 		}
 	    result.setOk(true);
 	    return result;

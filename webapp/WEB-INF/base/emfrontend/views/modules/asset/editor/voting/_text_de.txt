@@ -1,0 +1,10 @@
+#
+#Thu Feb 12 14:29:48 EST 2015
+Be\ the\ first\ to\ like\ this\ asset\!=seien Sie der Erste, dem dieser Datensatz gefällt!
+likes\ this=gefällt das
+You=Sie
+You\ like\ this=Sie mögen dies
+others=andere
+and=und
+like\ this=lieben dies
+

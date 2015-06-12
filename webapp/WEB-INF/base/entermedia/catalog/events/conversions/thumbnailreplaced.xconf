@@ -1,0 +1,6 @@
+<page>
+	<property name="eventname">Thumbnail Replaced</property>	
+	
+	<path-action name="PathEventModule.runEvent" runpath="/${catalogid}/events/importing/queueconversions.html"  allowduplicates="true"/>
+	
+</page>

@@ -364,11 +364,11 @@ public class DataEditModule extends BaseMediaModule
 	public void deleteProperty(WebPageRequest inReq) throws Exception
 	{
 		String id = inReq.getRequestParameter("id");
-		String fieldName = resolveSearchType(inReq);
+		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = loadSearcher(inReq);
-		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(fieldName);
+		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype);
 		details.removeDetail(id);
-		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		searcher.getPropertyDetailsArchive().savePropertyDetails(details, searchtype, inReq.getUser());
 	}
 
 	public void saveMultiJoinData(WebPageRequest inReq) throws Exception
@@ -510,6 +510,14 @@ public class DataEditModule extends BaseMediaModule
 				ArrayList<String> fieldswithvalues = new ArrayList<String>();
 				for(int i=0;i<fields.length;i++)
 				{
+					//see if we have boolean fields
+					PropertyDetail detail = searcher.getDetail(fields[i]);
+					if( detail != null && detail.isBoolean())
+					{
+						fieldswithvalues.add(fields[i]);
+						continue;
+					}
+					
 					val = inReq.getRequestParameter(fields[i]+".value");
 					if(val!= null && val.length() > 0)
 					{
@@ -657,17 +665,28 @@ public class DataEditModule extends BaseMediaModule
 			searcher.deleteAll(inReq.getUser());
 		}		
 	}
+	public void restoreDefaults(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		searcher.restoreSettings();
+	}
+	
 	public void deleteData(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
 		if (searcher != null)
 		{
 			String[] id = inReq.getRequestParameters("id");
+			String field = inReq.getRequestParameter("field");
+			String value = inReq.getRequestParameter("value");
+			
 			int changes = 0;
+			
 			if (id != null)
 			{
 				for (int i = 0; i < id.length; i++)
 				{
+					
 					Data data = (Data) searcher.searchById(id[i]);
 					if (data != null)
 					{
@@ -689,12 +708,47 @@ public class DataEditModule extends BaseMediaModule
 					}
 				}
 			}
+			else if(field != null && value != null)
+			{
+				SearchQuery query = searcher.createSearchQuery();
+				
+				query.addExact(field, value);
+				HitTracker hits = (HitTracker)searcher.search(query);
+				
+				if( hits.size() > 0)
+				{
+					for( Object hit : hits)
+					{
+						Data curdata = (Data)hit;
+						
+						if(curdata != null)
+						{
+							searcher.delete(curdata, inReq.getUser());
+							
+							if(getWebEventListener() != null)
+							{
+								WebEvent event = new WebEvent();
+								event.setSearchType(searcher.getSearchType());
+								event.setCatalogId(searcher.getCatalogId());
+								event.setOperation(searcher.getSearchType() + "/deleted");
+								event.setProperty("dataid", curdata.getId());
+								event.setProperty("id", curdata.getId());
 
+								event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+								getWebEventListener().eventFired(event);
+							}
+						}
+					}				
+				}
 			
+			}
+
 			inReq.putPageValue("rowsedited", String.valueOf(changes));
 		}
 
 	}
+
 
 	public void searchAndDeleteData(WebPageRequest inReq) throws Exception
 	{
@@ -967,6 +1021,7 @@ public class DataEditModule extends BaseMediaModule
 					hits.toggleSelected(id);
 				}
 			}
+			inReq.putPageValue(hits.getHitsName(), hits);
 		}
 	}
 
@@ -992,6 +1047,7 @@ public class DataEditModule extends BaseMediaModule
 		{
 			hits.deselectAll();
 		}
+		inReq.putPageValue(hits.getHitsName(), hits);
 
 	}
 
@@ -1148,11 +1204,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
-		String clear = inReq.getRequestParameter("clearselection");
-		if( Boolean.parseBoolean(clear))
-		{
-			hits.deselectAll();
-		}
 		return hits;
 	}
 
@@ -1638,5 +1689,11 @@ public class DataEditModule extends BaseMediaModule
 	public void setGeoCoder(GeoCoder inGeoCoder)
 	{
 		fieldGeoCoder = inGeoCoder;
+	}
+	
+	public void reload(WebPageRequest inReq)
+	{
+		getSearcherManager().clear();
+		
 	}
 }

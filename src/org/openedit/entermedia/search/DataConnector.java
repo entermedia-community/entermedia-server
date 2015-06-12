@@ -7,14 +7,13 @@ import org.openedit.Data;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.SearcherManager;
 
+import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.users.User;
 
 public interface DataConnector 
 {
-
-	
 	public Data getDataBySourcePath(String inSourcePath);
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate);
 	
@@ -40,7 +39,7 @@ public interface DataConnector
 
 	void updateIndex(Data one);
 
-	void updateIndex(Collection<Data> all, boolean b);
+	public void updateIndex(Collection<Data> inBuffer, User inUser);
 
 	void reIndexAll();
 
@@ -64,5 +63,8 @@ public interface DataConnector
 
 	String nextId();
 	//public void updateFilters(WebPageRequest inReq);
+	public Data loadData(Data inHit);
+	public HitTracker loadHits(WebPageRequest inReq);
+	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker);
 
 }

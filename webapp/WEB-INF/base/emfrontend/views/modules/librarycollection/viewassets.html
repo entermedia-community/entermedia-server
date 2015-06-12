@@ -1,22 +1,49 @@
-<!-- Nav tabs -->
-<div class="row">
-	<div class="col-md-4">
-	<div class="tableheaderactions">
-	<a href="$home$apphome/views/modules/librarycollection/edit/index.html?id=${data.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection" class="librarylabel"  data-targetdiv="left-col-libraries" title="$!{data.notes}"><span> $data.getName() ($hits.size())</span></a>
-</div>
-
+  
+<div id="collectiontoplevel" data-collectionid='$data.getId()' data-catalogid='$catalogid'>
+	<!-- Nav tabs -->
+	<div class="row">
+		<div class="col-md-4">
+		<div class="tableheaderactions">
+#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${data.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
+		<a href="$editlink" class="librarylabel"  data-targetdiv="left-col-libraries" title="$!{data.notes}"><span> $data.getName() ($hits.size())</span></a>
+		</div>
+		</div>
+		<div class="col-md-8">
+		<ul class="nav nav-tabs pull-right" role="tablist">
+		  <li class="active"><a href="#mediatab" role="tab" data-toggle="tab">Media</a></li>
+		  <li><a href="#ordering" role="tab" data-toggle="tab">Approvals</a></li>
+		  <li><a href="#annotationtab" role="tab" data-toggle="tab">Feedback</a></li>
+		  <li><a href="#sharedwith" role="tab" data-toggle="tab">Notifications</a></li>
+		  <li><a href="#settings" role="tab" data-toggle="tab">Status</a></li>
+		</ul>
+		</div>
 	</div>
-	<div class="col-md-8">
-	<ul class="nav nav-tabs pull-right" role="tablist">
-	  <li class="active"><a href="#media" role="tab" data-toggle="tab">Media</a></li>
-	  <li><a href="#annotation" role="tab" data-toggle="tab">Annotations</a></li>
-	</ul>
+	<!-- Tab panes -->
+	<div class="tab-content emajaxtabs" id="assettab" ng-scope="tabscope" >
+	  <div class="tab-pane active" data-tabloaded="true" id="mediatab" data-tabpath="$apphome/views/search/index.html" >$pages.include("$apphome/views/search/index.html")</div>
+	  <div class="tab-pane em-workspace" data-tabloaded="true"  id="annotationtab"  ng-scope="annoscope" data-tabpath="$apphome/components/annotations/ajax/annotation-details.tpl.html?oemaxlevel=1">
+	  $pages.include("$apphome/components/annotations/ajax/annotation-details.tpl.html")
+	  </div>
+#set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${data.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection&oemaxlevel=1")		
+	  <div class="tab-pane" data-tabloaded="false" id="ordering" data-tabpath="$link" ></div>
+#set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${data.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection&oemaxlevel=1")		
+	  <div class="tab-pane" data-tabloaded="false" id="sharedwith" data-tabpath="$link" ></div>
+	  <div class="tab-pane" data-tabloaded="false" id="settings" data-tabpath="$editlink&oemaxlevel=1" ></div>
 	</div>
-</div>
-<!-- Tab panes -->
-<div class="tab-content">
-  <div class="tab-pane active" id="media">$pages.include("$apphome/views/search/index.html")</div>
-  <div class="tab-pane" id="annotation">$pages.include("$apphome/components/annotations/workspace/index.html")</div>
-</div>
 
+	<style>
+	
+<!--	
+	jQuery(document).ready(function() 
+	{
+		var scope = new Scope();
+		scope.add("selectedtab" , "mediatab");
+		jAngular.addScope("tabscope",scope);
+		
+		jAngular.render("assettab");
+		
+	});
+-->
+	</style>	 
 
+</div>

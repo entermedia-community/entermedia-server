@@ -1,0 +1,92 @@
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" >
+
+### style 
+### style="border-style: solid;border-width: 1px; color:red;"
+
+	#set( $showtoolbar = "true")
+	$context.putPageValue("showtoolbar",  $showtoolbar)
+	#if( $hideheader &&  $hideheader != "true")
+		$pages.include("$apphome/components/results/header.html",$context) 
+	#end
+	#if($category)
+		#set($categorycarousel = "true")
+		$context.putPageValue("categorycarousel","true")
+	#else
+		#set($categorycarousel = "false")
+		$context.putPageValue("categorycarousel","false")
+	#end
+	
+	#if($categorycarousel == "true")
+		$pages.include("$apphome/components/results/hierarchy-categories.html",$context)
+	#end
+	
+	$context.putPageValue("assetrootfolder", "/$catalogid/assets")
+	#if( !$thumbsize )
+	    #set( $thumbsize  = "thumb" )
+	    $context.putPageValue("thumbsize", "thumb")
+	#end
+	#if( $category )
+	    #set( $catid = $category.id )
+	#else
+	    #set( $catid = "index" )
+	#end
+	$context.putPageValue("category",$catid)
+    #if ( $hits && $hits.size() > 0 )
+	    #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
+	    $context.putPageValue("details",$details)
+		#set( $viewerlink = $content.get("assetviewerlink") )
+		<div  class="emgallery " style="clear:both;" >      
+	        <div  id="emslidesheet" class="clearfix" style="clear:both;">
+	        #set( $rootid = $hits.sessionId )
+	        #set($count = 0)
+	        #foreach ($hit in $hits.getPageOfHits())
+	        
+	            #set ($sourcepath = $hit.sourcepath)
+	            $context.putPageValue("hit", $hit)
+	            #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+	            $context.putPageValue("type", $type)
+	            #set( $click = "$home$viewerlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
+	           
+	            $context.putPageValue("clink", $clink)
+	            $context.putPageValue("assetid", $hit.id)
+	            $context.putPageValue("count", $count )
+	            $context.putPageValue("click", $click)
+	            $context.putPageValue("sourcepath", $sourcepath)
+	            
+	            $pages.include("$apphome/components/results/gallery-cell.html", $context)
+	            #set ( $count = $count + 1)
+	        #end
+			</div>
+    	$pages.include("$apphome/components/results/pages.html",$context)
+	#elseif ( $hits.totalPages == 0 )
+		<p class="info" style="margin: 20px;">
+		[[No results found.]]
+		</p>
+	#end
+<div id="messagearea"></div>  
+</div>
+</div>
+
+<script type="text/javascript">
+##Move all these scripts to results.js!
+toggleHit =  function(div, count, sessionid)
+{
+    if (!e) var e = window.event;
+    e.cancelBubble = true;
+    if (e.stopPropagation) e.stopPropagation();
+    jQuery(this).load("$home$apphome/components/results/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
+    jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
+    return false;
+}
+$("input[name=pagetoggle]").click(function () {     
+	var status = jQuery('input[name=pagetoggle]').is(':checked');
+	if(status){
+	 $('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
+	 $('.selectionbox').attr('checked','checked');
+	}
+	else{
+	    $('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
+	    $('.selectionbox').removeAttr('checked');  
+	}
+});
+</script>

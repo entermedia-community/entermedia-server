@@ -72,18 +72,6 @@ public class ConvertInstructions
 			return null;
 		}
 		String value = getProperties().get(inName);
-		if( value == null && getParameters() != null)
-		{
-			for (Iterator iterator = getParameters().iterator(); iterator.hasNext();)
-			{
-				Data data = (Data) iterator.next();
-				if( data.getName().equals(inName) )
-				{
-					value = data.get("value");
-					break;
-				}
-			}
-		}
 		return value;
 		
 	}
@@ -267,6 +255,16 @@ public class ConvertInstructions
 	public void setRotation(int inRotation)
 	{
 		fieldRotation = inRotation;
+	}
+
+	public String getAssetId()
+	{
+		return getProperty("assetid");
+	}
+
+	public void setAssetId(String inInd)
+	{
+		addProperty("assetid", inInd);
 	}
 
 	public String getAssetSourcePath()

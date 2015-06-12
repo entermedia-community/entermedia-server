@@ -1,0 +1,7 @@
+<properties beannameXXX="transientSearcher" >
+  <property id="synonyms" editable="true" index="true" stored="true">A Word</property>
+  <property id="hitcount" editable="true" index="true" stored="true">Hit Count</property>
+  <property id="timestamp" editable="true" index="true" stored="true">Time Stamp</property>
+  <property id="synonymsenc" editable="true" index="true" stored="true">Singular</property>
+  <property id="hits" editable="true" index="true" stored="true">Hits Sortable</property>
+</properties>

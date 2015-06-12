@@ -46,7 +46,7 @@ public class Downloader
 	        //*** fill output stream
 	        new OutputFiller().fill(in,out);
 		}
-		catch ( Exception ex)
+		catch ( Throwable ex)
 		{
 			throw new OpenEditException(ex);
 		}

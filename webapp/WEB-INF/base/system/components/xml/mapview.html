@@ -1,0 +1,94 @@
+##Why is this here? Looks like a duplicate of types/table.html
+
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+
+#set( $searchtype = $context.getRequestParameter("searchtype")) ##jointable
+#set( $candelete = $context.getRequestParameter("candelete")) 
+
+
+#set( $viewid = $context.getRequestParameter("viewid"))
+#set( $viewpath = $context.getRequestParameter("viewpath"))
+#if( !$viewpath )
+	#set( $viewpath = $context.getRequestParameter("view"))
+#end
+#if( !$viewpath )
+	#set( $viewpath = $view)
+#end
+
+#set( $editpath = $context.getRequestParameter("editpath"))
+#set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+#set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+#set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set( $moduleid = $context.findValue("module") )
+
+#set ($catalogId = $context.getRequestParameter("catalogid") )
+			
+#set( $joinsearcher = $searcherManager.getSearcher($catalogId, $searchtype))
+#if(!$existingrecords)
+
+	##set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
+	
+	#set ($query = $joinsearcher.createSearchQuery().append($fieldexternalid, $fieldexternalvalue) )
+	#set ( $sortby = $context.findValue("sortby"))
+	$!query.addSortBy($sortby)
+	#set( $existingrecords = $joinsearcher.search($query) )
+     
+	
+#end
+
+#set ($id = $context.getRequestParameter("id"))
+
+#set( $details = $joinsearcher.getDataProperties($viewpath,$user) )
+#set( $passalong = $context.getRequestParameter("passalong"))
+#set( $passalongdec = $url_util.decode($passalong) )
+#set( $passalong = $url_util.encode($passalongdec) )
+#set( $args = "id=$id&module=$moduleid&hitssessionid=$hitssessionid&catalogid=$catalogId&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&candelete=$!candelete&viewpath=$viewpath&viewid=$viewid&editpath=$editpath#if( $passalong )&$passalongdec&passalong=$passalong#end")
+  
+
+#set($selectedid = $context.getRequestParameter("selectedid"))
+
+#if( $existingrecords && $existingrecords.size() > 0 )
+
+
+
+<script type="text/javascript">
+
+jQuery(document).ready(function(){ 
+$('#map').gmap({
+	 'center':'$mediaarchive.getCatalogSettingValue("startinglatlong")',
+}).bind('init', function(ev, map) {
+	#foreach($location in $existingrecords)
+		#set($lat = $location.position_lat)
+		#set($lng = $location.position_lng)
+      	$('#map').gmap('addMarker', 
+		{
+			'position': '$lat,$lng'		    
+	 	}).click(function() {
+	 		var location = this;
+	 		jQuery.get("$apphome/views/modules/${module}/search/mapbubble.html?id=$location.id&sourcepath=$location.sourcepath", function (content){
+	 			$('#map').gmap('openInfoWindow', {'content': content}, location);
+
+	 		});
+
+		});;
+	
+	#end
+});
+});
+    
+
+
+   
+    </script>
+<div id="map" align style="width: 100%; height: 750px;"></div>
+
+
+
+
+
+
+   
+
+#end
+
+

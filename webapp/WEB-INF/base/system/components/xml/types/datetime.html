@@ -8,9 +8,9 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!val)"  type="hidden" >
+<input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="$!val"  type="hidden" >
  <br/>
-<input type="text" class="mydatepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
+<input type="text" class="datepicker #if($detail.isRequired() && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
 
 
 
@@ -18,12 +18,10 @@
 	<span style="color:gray;font-style:italic;font-size:.9em;">$detail.format<span>
 #end
 
-	
 #set($hour = $context.getRequestParameter("${detail.id}.hour"))
 #if(!$hour)
 	#set($hour =  $context.getHours($val))
 #end
-
 
 #set($minute = $context.getRequestParameter("${detail.id}.minute"))
 #if(!$minute)
@@ -39,23 +37,7 @@
 		<option value="#if($val < 10)0#end$val" #if($minute == $val || $minute == "0$val")) selected #end>#if($val < 10)0#end$val</option>
 		#end
 	</select> 
-<!-- 	
-<input name="${detail.getId()}.value" type="hidden" name="${detail.id}.value" class="result" id="${detail.id}.value" />
- -->
 </div>
 
 
-<script type="text/javascript">
-jQuery("input.mydatepicker").livequery( function() 
-		{
-			var targetid = jQuery(this).data("targetid");
-			jQuery(this).datepicker( {
-				altField: "#"+ targetid,
-				altFormat: "dd/mm/yy",
-				dateFormat: "dd/mm/yy",
-				yearRange: '1900:2050'
-			});
-}
-);
-			
-			</script>
+

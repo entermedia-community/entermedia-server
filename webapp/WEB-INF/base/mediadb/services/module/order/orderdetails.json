@@ -1,0 +1,47 @@
+#set($searcher = $searcherManager.getSearcher($catalogid,"order") )
+#set($hsearcher = $searcherManager.getSearcher($catalogid,"orderhistory") )
+#set($psearcher = $searcherManager.getSearcher($catalogid,"convertpreset") )
+#set($pqsearcher = $searcherManager.getSearcher($catalogid,"publishqueue") )
+ #set($itemsearcher = $searcherManager.getSearcher($catalogid,"orderitem") )
+{
+  "response":
+      {
+        "status":"ok",
+        "id":"$order.id"
+      }
+  ,  
+  "order":#json($order $searcher.getPropertyDetails())
+, "orderitems": [
+#foreach( $item in $orderManager.findOrderItems($context,$catalogid,$order) )
+#if( $velocityCount != 1), #end 
+{"id":"$item.getId()",
+#set($pqueue = false)#set($pqueue = $pqsearcher.searchById($item.publishqueueid) )
+"publishqueue": #json($pqueue $pqsearcher.getPropertyDetails()),
+"preset": {
+#set($preset = false)#set($preset = $psearcher.searchById($item.presetid) )
+#set($asset = false)#set($asset = $mediaarchive.getAsset($item.assetid) )
+	"id":#jesc($item.assetid),
+	"name":#jesc($preset.name),
+#if( $preset.getId() == "0")
+	#set( $url = "$home$apphome/services/module/asset/downloads/originals/${asset.sourcepath}/$asset.getMediaName()")
+#else
+	#set( $outputfile = "${preset.outputfile}/$mediaarchive.asExportFileName($asset, $preset)")
+	#set( $url = "$home$apphome/services/module/asset/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
+#end	
+	"path":#jesc($url)
+},
+"asset": { 
+	"id":#jesc($asset.getId()),
+	"name":#jesc($asset.getName())	
+}	
+}
+#end  
+]
+, "history": [
+#set( $historyhits = $orderManager.findOrderHistory( $catalogid,$order) )
+	#foreach( $history in $historyhits ) 
+	 #if( $velocityCount != 1), #end 
+	 #json($history $hsearcher.getPropertyDetails())
+	#end
+ ] 
+}

@@ -1,0 +1,5 @@
+#
+#Tue Mar 31 09:55:09 EDT 2015
+Edit=bearbeiten
+Search=Suche
+Add\ Field=Feld hinzuf\u00FCgen

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+
+  <data id="modulecreate" description="Creates a new record without an ID." name="Create a new Module" httpmethod="POST" url="/${applicationid}/services/settings/modules/create" docsection="modules"> 
+    <samplerequest><![CDATA[{ 
+    "id":"testmodule",     
+     "name": "Test Module"   
+     }]]></samplerequest> 
+  </data>  
+  <endpoint id="modulelist" url="/${applicationid}/services/settings/modules/list" docsection="modules" name="List Modules" httpmethod="GET">List Modules</endpoint>  
+  <data id="moduleretrieve" name="Load Data " httpmethod="GET" url="/${applicationid}/services/settings/modules/data/testmodule" docsection="modules"/>  
+  <data id="moduleupdate" description="Update data with key/values in request" name="Update Data" httpmethod="PUT" url="/${applicationid}/services/settings/modules/data/testmodule" docsection="modules"> 
+    <samplerequest><![CDATA[{  "name": "Test Module2"
+   }]]></samplerequest> 
+  </data>  
+  <data id="moduledelete" description="Delete Data" name="Delete Data" httpmethod="DELETE" url="/${applicationid}/services/settings/modules/data/testmodule" docsection="modules"/>
+
+ </endpoints>

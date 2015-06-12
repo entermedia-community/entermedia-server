@@ -1,0 +1,5 @@
+#
+#Thu Feb 12 16:17:25 EST 2015
+Next=als nächstes
+Create\ New\ Asset\ Record=neuen Datensatz erstellen
+

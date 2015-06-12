@@ -1,0 +1,7 @@
+<page>
+	<property name="virtual">true</property>
+
+<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+
+	<path-action name="AssetEditModule.removeAssetImages" alltypes="true"/>
+</page>

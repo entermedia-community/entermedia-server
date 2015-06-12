@@ -1,0 +1,13 @@
+#
+#Thu Feb 12 16:23:02 EST 2015
+Batch\ Edit=Stapelverarbeitung
+Delete\ Selected\ Items=ausgewählte Artikel löschen
+Edit\ Columns=Spalten bearbeiten
+Custom\ Export=benutzerdefinierter Export
+Add\ New=neue hinzufügen
+Export\ results=Ergebnisse exportieren
+Download\ Assets=Assets herunterladen
+Export\ results\ (friendly)=Ergebnisse exportieren ( freundlich)
+Add\ Column=Spalte hinzufügen
+Cancel=abbrechen
+

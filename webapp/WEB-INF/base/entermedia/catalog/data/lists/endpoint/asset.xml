@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+  <endpoint id="uploadasset" name="Upload File" url="/${applicationid}/services/module/asset/create" docsection="moduleasset" description="Upload new local file to DAM" httpmethod="POST" uploadfile="true"> 
+    <samplerequest><![CDATA[{  
+    "id":"101",  
+     "assettype": "article",     "keywords": ["animals","bird"],        
+     "description": "TEST",      "creator":{  
+      	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   
+     "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>
+  </endpoint>  
+  <endpoint id="createasset" name="Fetch External Asset" url="/${applicationid}/services/module/asset/data/create" module="asset" docsection="moduleasset" httpmethod="POST"> 
+    <samplerequest><![CDATA[{
+  "assettype": "article",
+  "fileformat": "jpg",
+  "keywords": "animals",
+  "fetchURL": "http://o.onionstatic.com/images/25/25530/16x9/700.jpg?8747",
+
+  "description": "Image of a squirrel who waterskis",
+  "purpose": {
+    "id": "sales",
+    "name": "Sales Channel"
+  },
+  "category": {
+    "id": "index"
+  },
+  "editstatus": 6
+}]]></samplerequest>  
+    <description><![CDATA[This endpoint creates a new asset on the server and returns the resulting object.  Nested lists can be created automatically.
+
+If you include a "localPath" parameter, EnterMedia will copy the file at that path into the DAM. 
+
+If you include a "fetchURL" parameter, EnterMedia will download the file at that URL into the DAM. 
+]]></description>
+  </endpoint>  
+  
+    <data id="moduleassetfiltersearch" name="List Search Filters" httpmethod="POST" url="/${applicationid}/services/module/asset/search" docsection="moduleasset"> 
+    <samplerequest><![CDATA[
+    	{
+    	    "page": "1", 
+    	    "hitsperpage":"20",
+    	    "showfilters":"true",
+            "query": 
+            {
+            	"terms":[{
+	            	"field": "id",
+					"operator": "matches",
+					"value": "*"
+				}]
+	         }
+	        } 
+	      ]]></samplerequest> 
+  </data>  
+
+  <endpoint id="customupdateasset" name="Update Purpose" url="/${applicationid}/services/module/asset/data/101" docsection="moduleasset" description="Updates an existing asset" httpmethod="PUT"> 
+    <samplerequest><![CDATA[{     "assettype": "article",    
+ "fileformat":"jpg",    
+ "keywords": "animals",     
+ "name": "Updated Name",     
+ "description": "TEST",    
+ "purpose":{   	"id":"pressprelease",  "name":"Press Release"  },   
+ "category": {         "id": "index"     },     
+ "editstatus": 6 }]]></samplerequest>
+  </endpoint>  
+  <endpoint id="convertasset" name="Run a conversion" httpmethod="POST" url="/${applicationid}/services/module/asset/media/convertasset" docsection="assetmedia" description="Run an asset conversion.  Returns a path to the generated file."> 
+    <samplerequest><![CDATA[{   "assetid": "101",   "presetid": "imagepreviewfpo" }]]></samplerequest>Run a conversion
+  </endpoint>  
+    
+    <endpoint id="customthumb" name="Conversion Override" url="/${applicationid}/services/module/asset/media/customthumb" description="Creates custom thumbnails for assets" httpmethod="POST" docsection="assetmedia" uploadfile="true"> 
+    <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>Conversion Override
+  </endpoint>  
+  <endpoint id="listconversions" name="List Conversions" url="/${applicationid}/services/module/asset/media/listconversions" httpmethod="POST" description="Lists conversions" docsection="assetmedia"> 
+    <samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>List Conversions
+  </endpoint>  
+  
+  <endpoint id="removeassetimages" name="Remove Generated Asset Images" url="/${applicationid}/services/module/asset/media/removeassetimages" docsection="assetmedia" description="This endpoint will remove any conversions that the system has created for the given asset." httpmethod="POST"> 
+    <samplerequest><![CDATA[{ "assetid":"101"}]]></samplerequest>Remove Generated Asset Images
+  </endpoint>  
+
+  <endpoint id="getassetversions" name="Show version history" url="/${applicationid}/services/module/asset/versions/getrevisions" docsection="moduleasset" description="Shows a history of all versions of this asset." httpmethod="POST"> 
+    <samplerequest><![CDATA[{   "assetid": "101" }]]></samplerequest>Show version history
+  </endpoint>  
+  <endpoint id="1418755308373" name="List asset attachments" url="/${applicationid}/services/module/asset/attachments/listattachments" docsection="assetmedia" description="Lists all of the attached files for an asset." httpmethod="POST" > 
+    <samplerequest><![CDATA[{ "parentsourcepath":"users/admin/2014/06/IMG_4838_2107.JPG"}]]></samplerequest>List asset attachments
+  </endpoint>  
+    
+  <endpoint id="uploadattachment" name="Upload Attachment" url="/${applicationid}/services/module/asset/attachments/uploadattachment" docsection="assetmedia" description="Add file to attachments of asset" httpmethod="POST" uploadfile="true">
+      <samplerequest><![CDATA[{   "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" }]]></samplerequest> 
+  </endpoint>  
+  <endpoint id="deleteattachment" name="Delete Attachment" url="/${applicationid}/services/module/asset/attachments/deleteattachment" docsection="assetmedia" description="Remove attachment from asset" httpmethod="POST">
+	 <samplerequest><![CDATA[{  "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" , "fileid": "101" }]]></samplerequest>
+  </endpoint>  
+  <endpoint id="selectprimary" name="Select Primary File" url="/${applicationid}/services/module/asset/attachments/selectprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST" >
+	<samplerequest><![CDATA[{  "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" , "filename": "img_0002_01.jpg" }]]></samplerequest> 
+  </endpoint>
+  <endpoint id="uploadprimary" name="Upload Primary Attachment" url="/${applicationid}/services/module/asset/attachments/uploadprimary" docsection="assetmedia" description="Set primary file for asset attachments" httpmethod="POST" uploadfile="true">
+	<samplerequest><![CDATA[{  "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" }]]></samplerequest>
+  </endpoint>
+
+
+</endpoints>

@@ -41,7 +41,7 @@
 <div id="emvalueeditor">
 	<div id="valuelist" class="emtable clearfix">
 	#foreach($librarygroup in $librarygroups) 
-		 #set( $thegroup = $searcherManager.getData("system","group",$librarygroup.groupid) )
+		 #set( $thegroup = $searcherManager.getData($catalogid,"group",$librarygroup.groupid) )
 		<a class="row">$thegroup</a>
 		<a style="display:inline;" class="ajax delete-row" targetdiv="grouppermissioneditor" href="$home$apphome/views/modules/library/userpermissions/groupremove.html?searchtype=librarygroups&id=$librarygroup.id&libraryid=$libraryid"></a>
 		</a>

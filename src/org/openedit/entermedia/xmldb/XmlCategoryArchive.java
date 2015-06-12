@@ -8,16 +8,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermedia.cache.CacheManager;
+import org.openedit.data.BaseDataArchive;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CategoryArchive;
 import org.openedit.repository.filesystem.StringItem;
@@ -35,7 +34,7 @@ import com.openedit.util.XmlUtil;
  * @author cburkey
  * 
  */
-public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchive
+public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchive
 {
 	private static final Log log = LogFactory.getLog(XmlCategoryArchive.class);
 	protected Category fieldRootCatalog;
@@ -189,7 +188,12 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 	{
 		if (getRootCategory().getId().equals(inCategory.getId()))
 		{
-			setRootCategory(new Category("index", "Index"));
+			//setRootCategory(new Category("index", "Index"));
+			for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
+			{
+				Category child = (Category) iterator.next();
+				deleteAll(child);
+			}
 		}
 		else
 		{
@@ -220,22 +224,22 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 		fieldRootCatalog = null;
 	}
 
-	public void setRootCategory(Category inRootCatalog)
-	{
-		fieldRootCatalog = inRootCatalog;
-
-		if (fieldRootCatalog != null)
-		{
-			// This is not used much anymore
-			String home = fieldRootCatalog.getProperty("categoryhome");
-			if (home == null)
-			{
-				fieldRootCatalog.setProperty("categoryhome", "/" + getCatalogId() + "/categories/");
-			}
-			cacheCategory(fieldRootCatalog);
-		}
-
-	}
+//	public void setRootCategory(Category inRootCatalog)
+//	{
+//		fieldRootCatalog = inRootCatalog;
+//
+//		if (fieldRootCatalog != null)
+//		{
+//			// This is not used much anymore
+//			String home = fieldRootCatalog.getProperty("categoryhome");
+//			if (home == null)
+//			{
+//				fieldRootCatalog.setProperty("categoryhome", "/" + getCatalogId() + "/categories/");
+//			}
+//			cacheCategory(fieldRootCatalog);
+//		}
+//
+//	}
 
 	protected String listCatalogXml()
 	{
@@ -252,13 +256,14 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 		try
 		{
 			Page catalogFile = getPageManager().getPage(listCatalogXml());
-
+			Page tempfile = getPageManager().getPage("/WEB-INF/data/" + getCatalogId() + "/categories.tmp.xml");
 			Element root = createElement(getRootCategory());
 			// lets write to a stream
 			//TODO: Lock the path
 			
-			OutputStream out = getPageManager().saveToStream(catalogFile);
+			OutputStream out = getPageManager().saveToStream(tempfile);
 			getXmlUtil().saveXml(root, out, catalogFile.getCharacterEncoding());
+			getPageManager().movePage(tempfile, catalogFile);
 		}
 		catch (Exception e)
 		{
@@ -353,7 +358,17 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 					rootConfig.populate(rootE);
 
 					Category root = createCatalog(rootConfig);
-					setRootCategory(root);
+					if( fieldRootCatalog == null)
+					{
+						fieldRootCatalog  = root;
+					}
+					else					
+					{
+						//Just update the root object
+						getRootCategory().setName(root.getName());
+						getRootCategory().setProperties(root.getProperties());
+						getRootCategory().setChildren(root.getChildren());
+					}
 				}
 				catch (Exception ex)
 				{
@@ -367,7 +382,7 @@ public class XmlCategoryArchive extends BaseXmlArchive implements CategoryArchiv
 				Category root = new Category();
 				root.setId("index");
 				root.setName("Index");
-				setRootCategory(root);
+				fieldRootCatalog  = root;//setRootCategory(root);
 			}
 		}
 		catch (Exception ex)

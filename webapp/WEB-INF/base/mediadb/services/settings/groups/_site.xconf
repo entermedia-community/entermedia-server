@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  	<property name="subtab">users</property>
+  	<property name="oeuseradmintabid">userstab</property>
+  	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+  	<property name="module">group</property>
+  	<property name="searchtype">group</property>
+  
+ <permission name="view">
+		<userprofile property="api-manage-users" equals="true"/>
+	</permission>
+ 
+</page>

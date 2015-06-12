@@ -17,11 +17,13 @@ import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.LongField;
-import org.apache.lucene.facet.index.FacetFields;
+import org.apache.lucene.facet.FacetField;
+import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.FieldInfo;
+import org.apache.lucene.util.Version;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
@@ -35,6 +37,8 @@ import com.openedit.hittracker.HitTracker;
 
 public class LuceneIndexer
 {
+	public static final Version INDEX_VERSION = Version.LATEST;  //Do this until there is a problem
+	
 	protected List fieldStandardProperties = null;
 	private static final Log log = LogFactory.getLog(LuceneIndexer.class);
 	protected NumberUtils fieldNumberUtils;
@@ -111,7 +115,7 @@ public class LuceneIndexer
 		if (tosave != null)
 		{
 			String val = DateTools.dateToString(tosave, Resolution.SECOND);
-			doc.add(new Field(inDetail.getId(), val, ID_FIELD_TYPE));
+			doc.add(new Field(inDetail.getId(), val, INPUT_FIELD_TYPE_ONE_TOKEN));
 		}
 	}
 
@@ -252,7 +256,7 @@ public class LuceneIndexer
 	 * @param inId
 	 * @param inValue
 	 */
-	protected void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue)
+	public void docAdd(PropertyDetail inDetail, Document doc, String inId, String inValue)
 	{
 		if( inDetail == null)
 		{
@@ -269,7 +273,7 @@ public class LuceneIndexer
 					
 		Field field = null;//new Field(inId, inValue ,inStore, inIndex);
 		
-		boolean treatasnumber = isNumber(inDetail);
+		boolean treatasnumber = inDetail.isNumber();
 		if (inDetail.isDataType("date"))
 		{
 			Date target = DateStorageUtil.getStorageUtil().parseFromStorage(inValue);
@@ -301,33 +305,39 @@ public class LuceneIndexer
 				return;
 			}
 		}
-		else if( inId.equals("id") || inDetail.isList() )
+		else if( ( inId.equals("id") || inId.contains("sourcepath") )  ) //TODO: be sure attachments still works with spaces in sourcepath
 		{
-			field = new Field(inId, inValue, ID_FIELD_TYPE );
+			field = new Field(inId, inValue, INPUT_FIELD_TYPE_ONE_TOKEN );
 		}
-
 		if( field == null)
 		{
-			field = new Field(inId, inValue, INPUT_FIELD_TYPE );
+			if( !inDetail.isMultiValue() && ( inDetail.isList() || inDetail.isBoolean() || inDetail.isNumber() || inDetail.isDate() ) )
+			{
+				field = new Field(inId, inValue, INPUT_FIELD_TYPE_ONE_TOKEN ); //not tokenized for lower memory
+			}
+			else
+			{
+				field = new Field(inId, inValue, INPUT_FIELD_TYPE ); //tokenized for searchability
+			}
 		}
 		doc.add(field);
 
-		if (inDetail.isList() && inDetail.isSortable() )
+		if (inDetail.isExternalSort() )
 		{
-			String id = inDetail.getSortProperty();
-			if (inId.equals(id) && !treatasnumber)
-			{
-				return;
-			}
-			else if ( inDetail.getListCatalogId() != null)
+			String sortfield = inDetail.getSortProperty();
+			if ( inDetail.isList() && inDetail.getListCatalogId() != null)
 			{
 				Data row = getSearcherManager().getData(inDetail.getListCatalogId(), inDetail.getListId(), inValue);
-				if (inValue != null)
+				if( row != null)
 				{
-					inValue = inValue.toString().toLowerCase();
+					inValue = row.getName();
 				}
-				doc.add(new Field(id, inValue, SORT_FIELD_TYPE ));
 			}
+			if (inValue != null)
+			{
+				inValue = inValue.toString().toLowerCase();
+			}
+			doc.add(new Field(sortfield, inValue, SORT_FIELD_TYPE ));
 		}
 		
 	}
@@ -414,19 +424,6 @@ public class LuceneIndexer
 		}
 	}
 */
-	protected boolean isNumber(PropertyDetail inDetail)
-	{
-		boolean treatasnumber = false;
-
-		if (inDetail != null)
-		{
-			if (inDetail.isDataType("double") || inDetail.isDataType("number") || inDetail.isDataType("long"))
-			{
-				treatasnumber = true;
-			}
-		}
-		return treatasnumber;
-	}
 
 	protected void readProperty(Data inData, Document doc, StringBuffer keywords, PropertyDetail detail)
 	{
@@ -440,7 +437,23 @@ public class LuceneIndexer
 		Data text = null;
 		if (value != null && detail.isKeyword())
 		{
-			if (detail.isList())
+			if( detail.isMultiValue() && inData instanceof MultiValued)
+			{
+				Collection values = ((MultiValued)inData).getValues(detail.getId());
+				if(values != null){
+				for (Iterator iterator = values.iterator(); iterator.hasNext();)
+				{
+					String val = (String) iterator.next();
+					text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), val);
+					if (text != null)
+					{
+						keywords.append(" ");
+						keywords.append(text.getName());
+					}
+				}
+				}
+			}
+			else if (detail.isList())
 			{
 				//Loop up the correct text for the search. Should combine this with the lookup for sorting
 				text = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), value);
@@ -545,69 +558,64 @@ public class LuceneIndexer
 		return false;
 	}
 
-	public void updateFacets(PropertyDetails inDetails, Document inDoc, TaxonomyWriter inTaxonomyWriter)
+	public Document updateFacets(PropertyDetails inDetails, Document inDoc, TaxonomyWriter inTaxonomyWriter, FacetsConfig inConfig) 
 	{
 		if (inTaxonomyWriter == null)
 		{
-			return;
+			return inDoc;
 		}
 
 		List facetlist = inDetails.getDetailsByProperty("filter", "true");
-		ArrayList<CategoryPath> categorypaths = new ArrayList();
 		for (Iterator iterator = facetlist.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			String value = inDoc.get(detail.getId());
-
-			if (detail.isFilter())
+			if (value != null && value.trim().length() > 0)
 			{
-				if (value != null)
+				//split the values and add a path for each one?
+				String[] values = null;
+				if (value.contains("|"))
 				{
-					//split the values and add a path for each one?
-					String[] values = null;
-					if (value.contains("|"))
+					inConfig.setMultiValued(detail.getId(), true);
+					values = MultiValued.VALUEDELMITER.split(value);
+					for (String val: values)
 					{
-						values = MultiValued.VALUEDELMITER.split(value);
-					}
-					else
-					{
-						values = new String[] { value };
-					}
-					for (int i = 0; i < values.length; i++)
-					{
-						if (detail.getId().equals("category") && values[i].equals("index"))
+						if( val != null && val.trim().length() > 0)
 						{
-							continue;
-						}
-						String val = values[i];
-						if (val != null && !val.trim().isEmpty())
-						{
-							String[] vals = new String[2];
-							vals[0] = detail.getId().replace('/', '_');
-							vals[1] = values[i].replace('/', '_');
-							categorypaths.add(new CategoryPath(vals));
+							inDoc.add(new FacetField(detail.getId(), val));
 						}
 					}
-					//log.info("Adding: " + vals);
-
 				}
+				else
+				{
+					inDoc.add(new FacetField(detail.getId(), value));
+				}
+//				
+//				for (int i = 0; i < values.length; i++)
+//				{
+//					if (detail.getId().equals("category") && values[i].equals("index"))
+//					{
+//						continue;
+//					}
+//					String val = values[i];
+//					if (val != null && !val.trim().isEmpty())
+//					{
+//						String[] vals = new String[2];
+//						vals[0] = detail.getId().replace('/', '_');
+//						vals[1] = values[i].replace('/', '_');
+//						categorypaths.add(new CategoryPath(vals));
+//					}
+//				}
 			}
-
 		}
-
-		if (categorypaths.size() > 0)
+		try
 		{
-			FacetFields facetFields = new FacetFields(inTaxonomyWriter);
-			try
-			{
-				facetFields.addFields(inDoc, categorypaths);
-			}
-			catch (IOException e)
-			{
-				throw new OpenEditException(e);
-			}
+			return inConfig.build(inTaxonomyWriter, inDoc);
 		}
-		// do stuff
+		catch (IOException e)
+		{
+			throw new OpenEditException(e);
+		}
 
 	}
 
@@ -629,23 +637,22 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(true);
 		type.setTokenized(true);
-		type.setOmitNorms(false); //Makes it sortable?
+		type.setOmitNorms(true); //Makes it sortable?
 		return type;
 	}
-	
-	protected static final FieldType ID_FIELD_TYPE = getIdFieldType();
+	protected static final FieldType INPUT_FIELD_TYPE_ONE_TOKEN = getInputFieldTypeOneToken();
 
-	static FieldType getIdFieldType()
+	static FieldType getInputFieldTypeOneToken()
 	{
 		FieldType type = new FieldType();
 		type.setIndexed(true);
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(true);
-		type.setTokenized(false);
-		type.setOmitNorms(true); 
+		type.setTokenized(false);//true Makes it searchable  and means you cant sort
+		type.setOmitNorms(true);  //Makes it ranked
 		return type;
 	}
-
+	
 	protected static final FieldType INTERNAL_FIELD_TYPE = getInternalFieldType();
 
 	static FieldType getInternalFieldType()
@@ -655,11 +662,11 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(false);
 		type.setTokenized(true);
-		type.setOmitNorms(true); 
+		type.setOmitNorms(true); //This saves memory, at the expense of scoring (results not ranked)
 		return type;
 	}
 
-	protected static final FieldType SORT_FIELD_TYPE = getIdFieldType();
+	protected static final FieldType SORT_FIELD_TYPE = getSortFieldType();
 
 	static FieldType getSortFieldType()
 	{
@@ -668,7 +675,7 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_ONLY);
 		type.setStored(false);
 		type.setTokenized(false);
-		type.setOmitNorms(false); 
+		type.setOmitNorms(true); 
 		return type;
 	}
 
@@ -681,7 +688,7 @@ public class LuceneIndexer
 		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_AND_FREQS);  //TODO: Move this to freq check
 		type.setStored(false);
 		type.setTokenized(true);
-		type.setOmitNorms(true); //Norms are faster for dates and numbers
+		type.setOmitNorms(true); //Norms are nice to have but not really needed
 		return type;
 	}
 

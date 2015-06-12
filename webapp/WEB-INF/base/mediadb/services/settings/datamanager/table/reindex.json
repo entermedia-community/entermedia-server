@@ -1,0 +1,14 @@
+{ #set( $hits = $searcher.getAllHits() )
+	"response":
+	{	
+		"status":"complete",
+		"totalhits" : $hits.size(),
+		"searchtype" : "$searcher.getSearchType()",
+		"page": 1,
+		"pages": 1,
+		"query":
+		{
+			"search":"*"
+		}
+	}
+}

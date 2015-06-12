@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Check on Orders</property>	
+	<property name="eventname">Update Order History</property>	
 	<property name="delay">1</property>
 	<property name="period">1m</property>
 	

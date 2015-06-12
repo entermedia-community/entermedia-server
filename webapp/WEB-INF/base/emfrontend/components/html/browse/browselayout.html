@@ -35,6 +35,9 @@
       <li class="active"><a href="$apphome/components/html/${content.pickermode}/filepicker/index.html">All Files</a></li> 
       #end
     </ul>
+    <ul class="nav navbar-nav navbar-right">
+	<li class="navbar-form">$pages.include("./upload.html")</li>
+    <li>
     <form class="navbar-form navbar-left ajaxform" targetdiv="resultsarea" role="search" action="$home$apphome/components/html/${content.pickermode}/quicksearch.html">
       <div class="form-group">
         <input type="hidden" name="field" value="description" />
@@ -46,19 +49,12 @@
 		
         <input type="text" class="form-control" placeholder="Search" name="description.value">
       </div>
-      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-default" style="margin-left:26px">Submit</button>
     </form>
-    
-    
-    <!-- Maybe do something inline?
-    <ul class="nav navbar-nav navbar-right">
-    
-      <li><a href="#" data-toggle="modal" data-target="#myModal" >Upload Media</a></li>
-     
-      
-    </ul>
-  </div><!--
-   --> 
+
+	</li>
+   	</ul>
+  </div>
 </nav>
 	<div id="openedit">
 		$pages.includeContent()
@@ -94,19 +90,22 @@ jQuery("body").on("click",".asset-select" ,function(){
 	var detailid = jQuery('#detailinfo').data('detailid');
 	
 	var assetid = jQuery(this).data('assetid');
-	//This works for bootstrap based front ends or anywhere we load inline/ajaxxy
-	jQuery("#" + targetdiv).attr("value", assetid);
-	jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
-		alert("target div was " + targetdiv);
-		$('#editmodal').modal('hide');
-		$('.modal-backdrop').remove();
-		 e.stopPropagation();
-		 
-	});
-	if(jQuery.fancybox != null){
-		//This is for fancybox
-		parent.jQuery("#" + targetdiv).attr("value", assetid);
-		parent.jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
+	if(jQuery.fancybox == null)
+	{
+		//This works for bootstrap based front ends or anywhere we load inline/ajaxxy
+		jQuery("#" + targetdiv).attr("value", assetid);
+		jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
+			alert("target div was " + targetdiv);
+			$('#editmodal').modal('hide');
+			$('.modal-backdrop').remove();
+			 e.stopPropagation();
+			 
+		});
+	}
+	else
+	{	//This is for fancybox
+		parent.jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid + "&detailid=" + detailid, function(){
+			parent.jQuery("#" + targetdiv).attr("value", assetid);
 			parent.jQuery(".fancybox-close").trigger("click");	
 		});
 	}

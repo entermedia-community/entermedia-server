@@ -1,0 +1,5 @@
+#
+#Fri Mar 27 15:49:36 EDT 2015
+Over=encima
+Enter\ a\ Custom\ Range=Introduzca una Serie personalizada
+

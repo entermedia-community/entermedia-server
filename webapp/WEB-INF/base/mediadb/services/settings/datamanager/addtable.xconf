@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
+
+	<path-action name="DataImportModule.createTable"  alltypes="true"/>
+	<path-action name="DataEditModule.loadSearchTypes"  alltypes="true"/>
+	
+	<permission name="view">
+		
+			<userprofile property="api-manage-list" equals="true"/>
+			
+		
+	</permission>
+</page>

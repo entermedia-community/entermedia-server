@@ -58,8 +58,6 @@ public interface OrderManager
 
 	ArrayList saveItems(String catalogid, WebPageRequest inReq, String[] fields, String[] items);
 
-	Order createNewOrderWithId(String inAppId, String inCatalogId, String inUsername);
-
 	Order createNewOrder(String inAppId, String inCatalogId, String inUsername);
 
 	void removeItemFromOrder(String inCatId, Order inOrder, Asset inAsset);
@@ -70,9 +68,9 @@ public interface OrderManager
 
 	void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, boolean inResetId);
 
-	void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder, OrderHistory inHistory);
+	//void saveOrderWithHistory(String inCatalogId, User inUser, Order inOrder, OrderHistory inHistory);
 
-	OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser, String inStatus);
+	//OrderHistory createNewHistory(String inCatId, Order inOrder, User inUser, String inStatus);
 
 	List<String> addConversionAndPublishRequest(WebPageRequest inReq, Order order, MediaArchive archive, Map<String, String> properties, User inUser);
 

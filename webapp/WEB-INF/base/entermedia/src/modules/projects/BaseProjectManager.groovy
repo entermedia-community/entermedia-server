@@ -6,6 +6,7 @@ import model.projects.UserCollection
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
+import com.openedit.users.*
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset;
@@ -77,11 +78,14 @@ public class BaseProjectManager implements ProjectManager
 			inReq.putPageValue("selectedlibrary",library);
 			
 			Searcher assetsearcher = getSearcherManager().getSearcher(getCatalogId(),"asset");
-			int assetsize = assetsearcher.query().match("libraries",library.getId()).named("sidebar").search(inReq).size();
-			inReq.putPageValue("librarysize",assetsize);
 			
+			HitTracker hits = assetsearcher.query().match("libraries",library.getId()).named("sidebar").search(inReq);
+			if(hits != null){
+				int assetsize = hits.size();
+				inReq.putPageValue("librarysize",assetsize);
+			}
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
-			HitTracker allcollections = searcher.query().match("library",library.getId()).sort("name").named("sidebar").search(inReq);
+			HitTracker allcollections = searcher.query().exact("library",library.getId()).sort("name").named("sidebar").search(inReq);
 
 			//Show all the collections for a library
 			inReq.putPageValue("allcollections", allcollections);
@@ -99,12 +103,13 @@ public class BaseProjectManager implements ProjectManager
 					Data collection = (Data) iterator.next();
 					ids.add( collection.getId() );
 				}
-				if(ids.size() > 0){
-				HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
-				if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+				if(ids.size() > 0)
 				{
-					collectionhits = collectionassets.findFilterNode("librarycollection");
-				}
+					HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
+					if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+					{
+						collectionhits = collectionassets.findFilterNode("librarycollection");
+					}
 				}
 			}			
 			Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
@@ -163,7 +168,7 @@ public class BaseProjectManager implements ProjectManager
 		if (asset != null && !asset.getLibraries().contains(libraryid))
 		{
 			asset.addLibrary(libraryid);
-			archive.saveAsset(asset, inReq.getUser());
+			archive.saveAsset(asset, inReq.getUser());	
 		}
 	}
 
@@ -174,9 +179,27 @@ public class BaseProjectManager implements ProjectManager
 		Collection<String> ids = new ArrayList();
 		for(Data hit in found)
 		{
-			ids.add(hit.get("asset"));
+			String id = hit.get("asset");
+			if( id != null)
+			{
+				ids.add(id);
+			}
 		}
 		return ids;
+	}
+	public boolean addUserToLibrary( MediaArchive archive, Data inLibrary, User inUser) 
+	{
+		Searcher searcher = archive.getSearcher("libraryusers");
+		Data found = searcher.query().match("userid",inUser.getId()).match("libraryid", inLibrary.getId()).searchOne();	
+		if( found == null )
+		{
+			found = searcher.createNewData();
+			found.setProperty("userid",inUser.getId());
+			found.setProperty("libraryid",inLibrary.getId());
+			searcher.saveData(found,null);
+			return true;
+		}				
+		return false;	
 	}
 	
 }

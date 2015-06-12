@@ -1,0 +1,122 @@
+<!-- load in lodash for now, can replace these calls later if needed -->
+    <script src="$home$apphome/components/annotations/vendor/lodash/lodash.js"></script>
+<!-- fabric formatting stuff... probably does not belong here -->
+<!-- one of the FabricModel imports is not working, taking the following line out causes an inability to locate despite getScript call in the AnnotationEditor, probably a timing issue, TODO breakpoint it if it keeps acting up -->
+    <script src="$home$apphome/components/annotations/ajax/main.js"></script>
+
+	$pages.include("$apphome/components/annotations/ajax/svg/svg-definitions.tpl.html")
+ 
+    <div class="row">
+        <div class="col-md-9" style="margin-right: -11px;" >
+        
+                <div class="annotations-carousel">
+                <ul>
+                    <li class="previous">
+                        <svg class="icon icon-arrow-left" viewBox="0 0 32 32"><use xlink:href="#icon-arrow-left"></use></svg>
+                    </li>
+                    <li ng-repeat="image in assets" class="clearfix">
+                    	<a id="thumb{{image.id}}" class="thumb">
+                            <img ng-click='annotationEditor.switchToAsset("{{image.id}}")' ng-src="$home$apphome/views/modules/asset/downloads/preview/thumbsmall/{{image.sourcepath}}/thumb.jpg"></img>
+                        </a>
+                    </li>
+                    <li class="next icon-arrow-right">
+                        <svg class="icon icon-arrow-right" viewBox="0 0 32 32"><use xlink:href="#icon-arrow-right"></use></svg>
+                    </li>
+                </ul>
+            </div>
+ 			<div id="annotation-holder">
+        
+		 	   <ul id="annotation-toolbar" class="annotations-toolbar" >
+		               <!-- try to reference the right object -->
+		        <li ng-click="annotationEditor.fabricModel.selectTool('move')" id="movetool">
+		            <svg class="icon icon-move" viewBox="0 0 32 32"><use xlink:href="#icon-move"></use></svg>
+		        </li>
+		        <li ng-click="annotationEditor.fabricModel.selectTool('draw')" id="drawtool">
+		            <svg class="icon icon-draw" viewBox="0 0 32 32"><use xlink:href="#icon-draw"></use></svg>
+		        </li>
+		        <li ng-click="annotationEditor.fabricModel.setShapeTypeFromUi('rectangle')" id="rectangletool">
+		            <svg class="icon icon-rectangle" viewBox="0 0 32 32"><use xlink:href="#icon-rectangle" ></use></svg>
+		        </li>
+		        <li ng-show="shapeToolType == 'circle'" ng-click="annotationEditor.fabricModel.setShapeTypeFromUi('circle')" id="circletool">
+		            <svg class="icon icon-circle" viewBox="0 0 32 32"><use xlink:href="#icon-circle"></use></svg>
+		        </li>
+		        <!--<li ng-click="annotationEditor.fabricModel.selectTool('arrow')" ng-class="{ 'active': currentTool.name == 'arrow' }">
+		            <svg class="icon icon-arrow" viewBox="0 0 32 32"><use xlink:href="#icon-arrow"></use></svg>
+		        </li>
+		        <li ng-click="annotationEditor.fabricModel.selectTool('text')" ng-class="{ 'active': currentTool.name == 'text' }">
+		            <svg class="icon icon-text" viewBox="0 0 32 32"><use xlink:href="#icon-text"></use></svg>
+		        </li>
+		        <li ng-click="annotationEditor.fabricModel.selectTool('zoom')" ng-class="{ 'active': currentTool.name == 'zoom' }">
+		            <svg class="icon icon-zoom-in" viewBox="0 0 32 32"><use xlink:href="#icon-zoom-in"></use></svg>
+		        </li>
+		        <li ng-click="annotationEditor.fabricModel.selectTool('comment')" ng-class="{ 'active': currentTool.name == 'comment' }">
+		            <svg class="icon icon-comment" viewBox="0 0 32 32"><use xlink:href="#icon-comment"></use></svg>
+		        </li>
+		        <li ng-click="exportCanvas()">
+		            <svg class="icon icon-load-images" viewBox="0 0 32 32"><use xlink:href="#icon-load-images"></use></svg>
+		        </li>
+		       -->
+		        <li id="colortoolbararea" ng-click="annotationEditor.showColorPicker('color')" class="last colorpicker-li">
+		            <input type="hidden" id="color-hidden-input" class="colorpicker-input" value="{{userColor}}" size="7">
+		            <div colorpicker-position="bottom" colorpicker class="clearfix">
+		            	<svg fill="{{userColor}}" class="icon icon-colorpicker" viewBox="0 0 32 32"><use xlink:href="#icon-colorpicker"></use></svg>
+		            </div>
+		            
+		            
+		        </li>
+				<!--
+		        <li class="comment" ng-click="fabric.selectTool('comment')"><span class="icon glyphicon glyphicon-pushpin"></span></li>
+		        <li class="colorpicker" ng-click="fabric.selectTool('colorpicker')"><span class="icon glyphicon glyphicon-tint colorpicker"></span></li>
+		        <li class="comments"><span class="icon glyphicon glyphicon-comment"></span><span class="additional-info">{{comments.length}}</span></li>
+		        <li class="approved"><span class="icon glyphicon glyphicon-thumbs-up"></span><span class="additional-info">{{getApprovals().length}}</span></li>
+		        <li class="rejected"><span class="icon glyphicon glyphicon-thumbs-down"></span><span class="additional-info">{{getRejections().length}}</span></li>
+		        -->
+		    </ul>
+		            <div class="canvas-holder">
+		                <canvas id="annotation_canvas" class="annotations-canvas" width="800" height="600"></canvas>
+		            </div>
+		            <h3 class="jangular-render">{{annotationEditor.currentAnnotatedAsset.assetData.name}}</h3>
+		</div>
+        </div>
+        <div class="col-md-3">
+            <ul class="comment-list" id="annotationlist">
+                <li class="user-input clearfix" id="annotation-template">
+                    <form id="annotation-input{{annotation.id}}" >
+                        <textarea class="user-comment-input" name="user-input" rows="7" cols="30" >{{annotation.comment}}</textarea>
+                        <div class="pull-right">
+                            <button name="user-add-comment" class="btn btn-danger" ng-click='annotationEditor.cancelComment("{{annotation.id}}")'>Cancel</button>
+                            <button name="user-add-comment" class="btn btn-primary" ng-click='annotationEditor.saveComment("{{annotation.id}}")'>Add Comment</button>
+                        </div>
+                    </form>
+                     <div class="separator" ></div>
+                </li>
+                <li ng-repeat="annotation in annotations" >
+                    <div ng-when="normal" class="comment" id="annotation{{annotation.id}}" data-author="{{annotation.user}}">
+                        <div dynamic-id="comment-data" class="comment-holder">
+                        	<div class="colornumber" style="background-color: {{annotation.color}}" >
+                        	<span>{{loopcountone}}</span></div>
+                             <div class="pull-right" ><strong>{{annotation.getUserName()}}</strong></div>
+                            <div class="comment-content">
+                              
+                                <p class="editableinput">
+                                    {{annotation.comment}}
+                                </p>
+                                <!-- text input that isn't smart... will have to update its data from a persistent source -->
+                                <!-- also needs to have scaling size -->
+                                <!-- in order to have fully functioning comment boxes that are editable in-line and uniquely so
+                                it is necessary to append the unique annotation ID to the input field as id= and value=
+                                then when processing the button toggling, the proper element can be selected from the given
+                                annotation ID example @ https://www.unleashed-technologies.com/blog/2010/01/13/jquery-javascript-easy-edit-place-input-boxes-and-select-boxes --> 
+                                <!-- <input id="user-comment-input" type="text" value="" size="40" readonly="readonly" /> -->
+                                </div>
+                            </div>
+                            <div class="comment-meta">
+                                <button ng-click='annotationEditor.removeAnnotation("{{annotation.id}}")'>remove</button>
+                                <button ng-click='annotationEditor.toggleCommentEdit("{{annotation.id}}")' class="user-comment" >edit</button>
+                                <span class="comment-timestamp pull-right">{{annotation.getFormattedDate()}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>

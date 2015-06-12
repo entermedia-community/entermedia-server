@@ -1,0 +1,28 @@
+{ #set( $hits = $revisions.getRevisions() )
+	"response":
+		{
+			"totalhits" : "$hits.size()",
+			"searchtype" : "revision",
+			"page": 1,
+			"pages": 1,
+			"query":
+			{
+				"search":#jesc($context.getRequestParameter("editPath"))
+			}
+		},
+	"results":[
+#foreach( $revision in $hits )#if( $velocityCount != 1 ), #end
+{	
+	"number":"$!revision.getVersion()", 
+	"bytes":"$!revision.getLength()",
+	"size":"$sizer.inEnglish($revision.getLength())",
+	"date":"$context.getLocaleManager().getDateStorageUtil().formatForStorage( $revision.lastModified())",
+	"message":"$revision.getMessage()"
+	#if( $revision.author )
+			,"userid":#jesc($revision.author),
+			"user":#jesc($userManager.getUser($revision.author))
+	#end	
+}
+#end
+]
+}

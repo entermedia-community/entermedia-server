@@ -1,0 +1,26 @@
+<h2>Snapshots</h2>
+#set( $snapshots = $nodeManager.listSnapShots($catalogid) )
+
+#if( $snapshots.size() == 0)
+
+<p>No snapshots found</p>
+#end
+<a class="btn"  href="./snapshots.html">Refresh</a>
+
+<table width="50%" class="striped">
+<tr>
+<th>Name</th><th>Sections</th><th></th>
+</tr>
+#foreach( $snap in $snapshots)
+	<tr><td>$snap.name()</td>
+	<td>$snap.totalShards()</td>
+	<td><a href="./restore.html?id=$snap.name()" class="btn"> Restore</td>
+	</tr>
+#end
+</table>
+
+<br>
+<br>
+<br>
+<br>
+<a class="btn"  href="./create.html">Create New</a>

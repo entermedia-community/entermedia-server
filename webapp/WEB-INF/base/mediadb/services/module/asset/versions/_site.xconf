@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	
+	<path-action name="PageValue.loadPageVariable" bean="attachmentManager" alltypes="true"  />
+	<path-action name="PageValue.loadPageVariable" bean="userManager" alltypes="true"  />
+	<path-action name="PageValue.loadPageVariable" bean="sizer" alltypes="true"/>	
+	<path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<path-action name="JsonDataModule.loadData" alltypes="true" />
+	
+</page>

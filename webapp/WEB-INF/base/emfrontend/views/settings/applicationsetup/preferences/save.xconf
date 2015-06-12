@@ -1,0 +1,12 @@
+<page>
+
+<path-action name="AssetEditModule.handleUploads"/>
+
+<path-action name="DataEditModule.saveData" >
+			<property name="searchtype">theme</property>
+	</path-action>
+
+<path-action name="ThemeModule.saveCSS"/>
+<property name="templatecss">/${applicationid}/theme/styles/overridestemplate.css</property>
+<property name="outputcss">/${applicationid}/theme/styles/custom.css</property>
+</page>

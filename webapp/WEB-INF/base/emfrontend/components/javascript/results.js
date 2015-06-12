@@ -1,16 +1,33 @@
-jQuery(document).ready(function() 
-{ 
+function selectresultview(val){
+	if (val != "none"){
+		var href = $("#ajaxselectresultview").attr("href");
+		href = href + "&resultview="+val;
+		$("#ajaxselectresultview").attr("href",href);
+		$("#ajaxselectresultview").click();
+	}
+}
 
+
+jQuery(document).ready(function(url,params) 
+{ 
+	var home = $('#application').data('home') + $('#application').data('apphome');
+
+	var refreshdiv = function(url,params)
+	{
+		jQuery.get(url, params, function(data) 
+		{
+			jQuery("#resultheader").replaceWith(data);
+		});	
+	}
+	
+	
 jQuery("input.selectionbox").livequery( function() 
 {
 	jQuery(this).change(function() 
 	{
-		var home = $('#application').data('home') + $('#application').data('apphome');
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		var dataid = jQuery(this).data('dataid');
-		
-		jQuery(this).load( home + "/components/results/toggle.html", {dataid:dataid, searchtype: "asset", hitssessionid: hitssessionid });
-			//jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitsessionid });
+		refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: "asset", hitssessionid: hitssessionid });
 	});
 });
 
@@ -18,15 +35,15 @@ jQuery("a.selectpage").livequery( 'click', function()
 {
 	jQuery('input[name=pagetoggle]').attr('checked','checked');
 	jQuery('.selectionbox').attr('checked','checked');
-   // jQuery("#select-dropdown-open").click();
+//    jQuery("#select-dropdown-open").click();
 
 });
-	
+	//Uses ajax
 jQuery("a.deselectpage").livequery( 'click', function() 
 {
 	jQuery('input[name=pagetoggle]').removeAttr('checked');
-	jQuery('.selectionbox').removeAttr('checked');
-	//jQuery("#select-dropdown-open").click();
+	jQuery('.selectionbox').removeAttr('checked'); //Not firing the page
+//	jQuery("#select-dropdown-open").click();
 
 });
 
@@ -39,12 +56,12 @@ jQuery("input[name=pagetoggle]").livequery( 'click', function()
 	   var status = jQuery('input[name=pagetoggle]').is(':checked');
 	   if(status)
 	   {
-		   jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"page"});
+		   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"page"});
 		   jQuery('.selectionbox').attr('checked','checked');
        }
        else
        {
-   	       jQuery(this).load( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"none"});         
+    	   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"none"});         
    	       jQuery('.selectionbox').removeAttr('checked');  
    	   }
 	   //jQuery("#select-dropdown-open").click();
@@ -84,7 +101,7 @@ jQuery(".moduleselectionbox").livequery("click", function(e) {
 });        //document ready
         
 
-//TODO: remove this. using ajax
+//TODO: remove this. using ajax Used for modules
 togglehits =  function(action)
 {
 	var searchhome = $('#resultsdiv').data('searchhome');

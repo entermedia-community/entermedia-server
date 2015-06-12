@@ -1,0 +1,32 @@
+{
+#set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+#set($hits = $conversionUtil.getActivePresetList($catalogid,$type) )
+	"response":
+		{
+            "status":"ok",
+			"totalhits" : "$hits.size()",
+			"searchtype" : "presetdata",
+			"page": 1,
+			"pages": 1,
+			"query":
+			{
+				"search":"assetid:$asset.id"
+			}
+		},
+	"results":[
+#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
+#foreach( $preset in $hits )#if( $velocityCount != 1 ), #end
+{	
+	"name":#jesc($preset.name),	
+#if( $preset.getId() == "0")
+	#set( $url = "$home$apphome/services/module/asset/downloads/originals/${asset.sourcepath}/$asset.getMediaName()")
+#else
+	#set( $outputfile = "${preset.outputfile}/$mediaarchive.asExportFileName($asset, $preset)")
+	"outputfile":#jesc($outputfile),
+	#set( $url = "$home$apphome/services/module/asset/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
+#end	
+	"url":"$url",
+	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $preset.id))
+	"iscomplete":"$isready"}#end
+]
+}

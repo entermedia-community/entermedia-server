@@ -173,7 +173,7 @@ public class DvdImportConverter extends CatalogConverter
 		inArchive.getCategoryArchive().addChild(inCategory);
 		inArchive.getCategoryArchive().saveAll();
 
-		inArchive.getAssetSearcher().updateIndex(assets, true);
+		inArchive.getAssetSearcher().updateIndex(assets);
 		inStatus.addConvertedAssets(assets);
 	}
 

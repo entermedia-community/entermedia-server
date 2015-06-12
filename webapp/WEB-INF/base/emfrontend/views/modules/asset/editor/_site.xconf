@@ -5,6 +5,11 @@
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
 	<path-action name="CommentModule.loadComments" />
+	<path-action name="DataEditModule.loadHits" allowduplicates="true">
+		<property name="searchtype">asset</property>
+		<property name="hitsname">hits</property>
+	</path-action>	
+	
 	
 	<property name="saveokpage">/tools/edit/saveok.html</property>
 		
@@ -34,4 +39,9 @@
 	</permission>	
 
 	<property name="section">details</property>
+	
+	<script external="true" id="googlemaps" src="https://maps.google.com/maps/api/js?sensor=false" />
+  	<script id="theme-map" src="/${applicationid}/components/javascript/jquery.ui.map.full.min.js"/>
+	
+	
 </page>

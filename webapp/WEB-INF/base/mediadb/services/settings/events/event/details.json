@@ -1,0 +1,16 @@
+{
+  "response":
+      {
+        "eventpath":"$pathevent.getPage().getPath()"
+      }
+  ,
+  "data":
+  {
+  	"name":"$!pathevent.getName()",
+  	"period":"$!pathevent.getFormattedPeriod()",
+  	"enabled":"$pathevent.isEnabled()",
+  	"lastrun":"$jsonUtil.formatDateObj($pathevent.getLastRun())",
+  	"running" : "$pathevent.isRunning()"
+  	##"exists" : "$pathevent.getPage().getPageSettings().exists()"
+  }
+}

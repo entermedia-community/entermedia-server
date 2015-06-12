@@ -1,0 +1,13 @@
+<page>
+	<path-action name="DataEditModule.loadSearchTypes" alltypes="true"/>
+	
+	
+	<permission name="view">
+		
+			<userprofile property="api-manage-list" equals="true"/>
+			
+		
+	</permission>
+	
+	
+</page>

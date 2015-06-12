@@ -1,6 +1,10 @@
 
 <root>
   <property id="asset"/>
-  <property id="collectioncategory"/>
+  <property id="ordering"/>  
   <property id="collectionstatus"/>
+  <property id="approvedby" />
+  <property id="approvedwhen" />
+  <property id="collectioncategory" />
+  
 </root>

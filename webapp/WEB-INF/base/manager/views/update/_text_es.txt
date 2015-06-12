@@ -1,7 +1,7 @@
 #
 #Tue Apr 27 12:09:42 CLT 2010
 Description=Descripci\u00F3n
-Release\ Notes=Notas de Publicación
+Release\ Notes=Notas de Publicaci\u00F3
 To\ Update=Actualizar
 Upgrade\ Plugins=Actualizar Plugins
 Installed\ Version=Versi\u00F3n Instalada
@@ -9,4 +9,5 @@ notes=notas
 Upgrade=Actualizar
 show=mostrar
 Latest\ Version=\u00DAltima Versi\u00F3n
+
 

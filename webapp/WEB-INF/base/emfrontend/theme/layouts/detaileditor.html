@@ -1,4 +1,11 @@
 <div id="detaileditor">
+	### figure out if attachments was selected
+	#set($uri = $context.getRequest().getRequestURI())
+	#set($isattachments = false)
+	#if($uri == "/$applicationid/views/modules/asset/editor/attachments/index.html")
+		#set($isattachments = true)
+	#end
+
     #set( $moduleid = $context.findValue("module") )
     #set ( $hitssessionid = $context.findValue("hitssessionid") )
     #macro (displaydetails $filename $label $assetid $view $print)
@@ -39,16 +46,16 @@
                 
                 <div class="title-bar" style="border-right: none;">
                 #if( $hits && $hits.hasMultipleSelections() )
-                    <span style="text-align: center;">Selected Media</span>
+                    <span style="text-align: center;">[[Selected Media]]</span>
                 #else
-                    <span style="text-align: center;">Related Media</span>
+                    <span style="text-align: center;">#if($isattachments)[[Attachments]] #else [[Related Media]]#end</span>
                 #end    
                 </div>
                 #end
             </div>
             <div class="tr">
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
-                <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
+                <div id="de-side-nav" class="#if( $expanded )[[open]] #else [[closed]] #end">
 
                     $pages.include("$apphome/components/detaileditor/assetmenuul.html?moduleid=$moduleid",$context)
 
@@ -64,16 +71,22 @@
                         #end
                         #if( $inpreviewpage )
 	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
+	                   
                         #else
+                           #set( $showviewer = $content.isPropertyTrue("showviewer") )
+                            #if($showviewer)
+                            	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
                             
-                            $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                            #else
                             
+                                                        $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                            #end
                             #set ($listid =  $content.tab )
                             #if ($content.subtab)
                             <div id="eml-tab-subnav">
                                 
                                 <ul>
-                                    #set( $screens = $searcherManager.getList($catalogid,$listid) )
+                                    #set( $screens = $searcherManager.query($catalogid,$listid).all().sort("name").search() )
                                     #foreach($screen in $screens)
                                     <li #if( $content.subtab == "$screen.id" ) class="current" #end>
                                         <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$screen </a>
@@ -134,3 +147,6 @@
     #end
 
 </div>
+
+
+

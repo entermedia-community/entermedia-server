@@ -1,0 +1,12 @@
+#set ($status = "ok")
+
+{
+  "response":
+  		{
+			"status":"$status"
+  		},
+  "results":
+  	{ 	
+  		"asset":"$asset.id"
+  	}
+}

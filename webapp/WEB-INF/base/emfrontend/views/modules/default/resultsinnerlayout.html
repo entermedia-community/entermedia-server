@@ -19,6 +19,7 @@ $context.putPageValue("searchhome",$searchhome)
 $context.putPageValue("hits", $hits)
 #set( $moduleid = $context.findValue("module") )
 
+
 <div id="searchplugin">
 	<div class="subcolumns">
 		<div class="c25l" id="left-col">
@@ -30,9 +31,7 @@ $context.putPageValue("hits", $hits)
 		<div id="right-col" class="module-inner">
 				
 					<div id="resultsdiv" data-searchhome="$home$content.searchhome" data-hitssessionid="$hits.sessionId">
-						<div id="emresultscontent">
 							
-							$pages.include("${searchhome}/resultsactions.html",$context)
 							
 							<div id="resultsarea">
 								<div id="resultslist">
@@ -43,6 +42,5 @@ $context.putPageValue("hits", $hits)
 						</div>
 					</div>
 
-		</div>
 	</div>
 </div>    

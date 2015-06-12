@@ -1,0 +1,11 @@
+<properties  beanname="folderSearcher" >
+	<property id="id" editable="true" stored="true" index="true">ID</property>
+	<property id="name" editable="true" stored="true" index="true">Name</property>	
+	<property id="url" editable="true" stored="true" index="true">URL Path</property>	
+	<property id="samplerequest" editable="true" stored="true" index="true">Sample JSON Request</property>	
+	<property id="docsection" type="list" editable="true" stored="true" index="true">Documentation Section</property>	
+	<property id="parameters" editable="true" stored="true" index="true">Parameters</property>	
+	<property id="description" editable="true" stored="true" index="true">Description</property>	
+	<property id="httpmethod" type="list" editable="true" stored="true" index="true">Method</property>	
+	<property id="uploadfile" type="boolean" editable="true" stored="true" index="true">Upload</property>	
+</properties>

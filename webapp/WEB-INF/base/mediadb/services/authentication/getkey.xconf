@@ -1,0 +1,7 @@
+<page>
+	<permission name="view">
+		<blank/>
+	</permission>
+	<path-action name="JsonAdminModule.preprocess"  alltypes="true" />
+	<path-action name="Admin.loadEnterMediaKey"  alltypes="true" />
+</page>

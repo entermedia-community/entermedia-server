@@ -21,6 +21,7 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.MultiValued;
+import org.openedit.data.SaveableData;
 
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.Page;
@@ -30,7 +31,7 @@ import com.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class Asset implements MultiValued
+public class Asset implements MultiValued, SaveableData
 {
 	protected String fieldId;
 	protected String fieldName;
@@ -43,7 +44,6 @@ public class Asset implements MultiValued
 	protected Map fieldProperties;
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
-	protected boolean fieldIsFolder;
 
 	public Collection<String> getValues(String inPreference)
 	{
@@ -124,12 +124,12 @@ public class Asset implements MultiValued
 	
 	public boolean isFolder()
 	{
-		return fieldIsFolder;
+		return Boolean.parseBoolean(get("isfolder"));
 	}
 
 	public void setFolder(boolean inIsFolder)
 	{
-		fieldIsFolder = inIsFolder;
+		setProperty("isfolder",String.valueOf(inIsFolder));
 	}
 
 	// be shown in a list
@@ -140,12 +140,23 @@ public class Asset implements MultiValued
 	public Asset()
 	{
 	}
+	protected MediaArchive fieldMediaArchive;
 
-	public Asset(String inName)
+	public Asset(MediaArchive inMediaArchive)
 	{
-		setName(inName);
+		setMediaArchive(inMediaArchive);
 	}
 
+	public MediaArchive getMediaArchive()
+	{
+		return fieldMediaArchive;
+	}
+
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
+		fieldMediaArchive = inMediaArchive;
+	}
+	
 	public int getOrdering()
 	{
 		return fieldOrdering;
@@ -314,6 +325,10 @@ public class Asset implements MultiValued
 		{
 			getProperties().remove(inKey);
 		}
+		if ("category".equals(inKey))
+		{
+			getCategories().clear();
+		}
 	}
 
 	public void addCategory(Category inCatid)
@@ -416,6 +431,21 @@ public class Asset implements MultiValued
 		{
 			return getSourcePath();
 		}
+		if ("category-exact".equals(inKey))
+		{
+			StringBuffer buffer = new StringBuffer();
+			List cats = getCategories();
+			for (Iterator iterator = cats.iterator(); iterator.hasNext();)
+			{
+				Category cat = (Category) iterator.next();
+				buffer.append(cat.getId());
+				if( iterator.hasNext() )
+				{
+					buffer.append(" | ");
+				}
+			}
+			return buffer.toString();
+		}
 		String value = (String) getProperties().get(inKey);
 		return value;
 	}
@@ -466,22 +496,25 @@ public class Asset implements MultiValued
 				}
 			}
 		}
-		else if ("category".equals(inKey))
+		else if ("category-exact".equals(inKey))
 		{
 			if (inValue != null)
 			{
 				//This is annoying. We will need to fix categories when we save this asset
+				getCategories().clear();
 				if( inValue.contains("|") )
 				{
 					String[] vals = VALUEDELMITER.split(inValue);
 					for (int i = 0; i < vals.length; i++)
 					{
-						addCategory(new Category(vals[i],null));
+						Category cat = getMediaArchive().getCategory(vals[i]);
+						addCategory(cat);
 					}
 				}
 				else
 				{
-					addCategory(new Category(inValue,null));
+					Category cat = getMediaArchive().getCategory(inValue);
+					addCategory(cat);
 				}
 			}
 		}

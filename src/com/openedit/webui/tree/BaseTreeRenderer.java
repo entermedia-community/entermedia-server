@@ -85,7 +85,7 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 	public boolean isIdSelected(String inNodeId)
 	{
-		return getSelectedNodes().contains(inNodeId);
+		return getSelectedNodes().contains(inNodeId); // TODO: look at this
 	}
 	public boolean isNodeSelected(Object inNode)
 	{
@@ -125,6 +125,7 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	public void selectNodes(Collection inNodes)
 	{
 		Set newselection = new HashSet();
+		if(inNodes != null){
 		for (Iterator iterator = inNodes.iterator(); iterator.hasNext();)
 		{
 			Object object = (Object) iterator.next();
@@ -134,6 +135,7 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 			{
 				expandNode(parent);
 			}
+		}
 		}
 		setSelectedNodes(newselection);
 		

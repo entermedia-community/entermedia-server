@@ -18,6 +18,8 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.EnterMedia;
+import org.openedit.event.WebEvent;
+import org.openedit.event.WebEventHandler;
 import org.openedit.profile.UserProfile;
 
 import com.openedit.WebPageRequest;
@@ -27,6 +29,7 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
+import com.openedit.users.User;
 
 
 /**
@@ -39,7 +42,16 @@ public class MultiSearchModule extends BaseMediaModule
 {
 	protected SearcherManager fieldSearcherManager;
 	protected SearchQueryArchive fieldSearchQueryArchive;
+	protected WebEventHandler fieldWebEventHandler;
+	
+	protected WebEventHandler getWebEventHandler() {
+		return fieldWebEventHandler;
+	}
 
+	public void setWebEventHandler(WebEventHandler inListener) {
+		fieldWebEventHandler = inListener;
+	}
+	
 	public SearchQueryArchive getSearchQueryArchive()
 	{
 		return fieldSearchQueryArchive;
@@ -504,7 +516,12 @@ public class MultiSearchModule extends BaseMediaModule
 	public void createNewCatalog(WebPageRequest inReq) throws Exception
 	{
 		String catname = inReq.getRequestParameter("name");
-		String catalogid = inReq.getRequestParameter("appcatalogid");
+		String rootpath = inReq.getRequestParameter("rootpath");
+		if( !rootpath.startsWith("/"))
+		{
+			rootpath = "/" + rootpath;
+		}
+		String subdomain = inReq.getRequestParameter("clientsubdomain");
 //		String foldername = inReq.findValue("foldername");
 //		String appfolder = null;
 //		if(foldername == null)
@@ -536,6 +553,8 @@ public class MultiSearchModule extends BaseMediaModule
 //		{
 //			prefix = "";
 //		}
+		String catalogid = rootpath + "/catalog";
+		catalogid = catalogid.substring(1);
 		Page app = getPageManager().getPage("/" + catalogid + "/_site.xconf");
 		PageProperty prop = new PageProperty("fallbackdirectory");
 		prop.setValue(inReq.findValue("fallbackfolder"));
@@ -556,13 +575,30 @@ public class MultiSearchModule extends BaseMediaModule
 		Data row = searcher.createNewData();
 		row.setId(catalogid);
 		row.setProperty("name", catname);
+		row.setProperty("rootpath", rootpath);
+		row.setProperty("clientsubdomain", subdomain);
+		
 		searcher.saveData(row, inReq.getUser());
 		inReq.putPageValue("catalog", row);
 
 //		String id = appid + "usersettings" + inReq.getUserName();
 //		inReq.removeSessionValue(id);
+		fireCatalogEvent("catalog/saved", catalogid);
 	}
 
+	protected void fireCatalogEvent(String inOperation, String newcatalogid) 
+	{
+		if (fieldWebEventHandler != null) {
+			WebEvent event = new WebEvent();
+			event.setOperation(inOperation);
+			event.setSearchType("catalog");
+			event.setSource(this);
+			event.setProperty("newcatalogid", newcatalogid);
+			event.setCatalogId("system");
+			getWebEventHandler().eventFired(event);
+		}
+	}
+	
 	public Map loadMultiViews(WebPageRequest inReq)
 	{
 		String applicationid = inReq.findValue("applicationid");

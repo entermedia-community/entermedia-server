@@ -2,11 +2,7 @@ package org.openedit.entermedia.modules;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
@@ -148,46 +144,73 @@ public class CategoryModule extends BaseMediaModule
 
 			inRequest.putSessionValue(treeid, webTree);
 			inRequest.putPageValue(webTree.getName(), webTree);
+		//	inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
 		else
 		{
 			inRequest.putPageValue(webTree.getName(), webTree);
+			//inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
 		return webTree;
 	}
 	public void selectNodes(WebPageRequest inReq)
 	{
 		WebTree tree =  getCatalogTree(inReq);
-		Collection nodes = (Collection)inReq.getPageValue("selectednodes");
-		if( nodes == null)
+		//check param data
+		String cats = inReq.getRequestParameter("categories");
+		if( cats != null)
 		{
+		    String[] selected = cats.replace(' ','|').split("\\|");
+		    MediaArchive archive = getMediaArchive(inReq); 
+		    for (int i = 0; i < selected.length; i++)
+			{
+				Category found = archive.getCategory(selected[i].trim());
+				if( found != null)
+				{
+					tree.getTreeRenderer().selectNode(found);
+				}
+			}
+		}
+		else
+		{
+			String catid = inReq.getRequestParameter("nodeID");
+			Object target = tree.getModel().getChildById(catid);
+			//tree.getTreeRenderer().expandNode(target);
+			tree.getTreeRenderer().selectNodes(null);
+			tree.getTreeRenderer().selectNode(target);
+			
+		}
+
+		
+		String clear = inReq.getRequestParameter("clearselection");
+		if( Boolean.parseBoolean(clear))
+		{
+			 tree.getTreeRenderer().selectNodes(null);
+		}
+		
+		
+	}
+	public void deselectNodes(WebPageRequest inReq)
+	{
+		WebTree tree =  getCatalogTree(inReq);
+		
 			//check param data
 			String cats = inReq.getRequestParameter("categories");
 			if( cats != null)
 			{
 			    String[] selected = cats.replace(' ','|').split("\\|");
-			    nodes = new ArrayList();
 			    MediaArchive archive = getMediaArchive(inReq); 
 			    for (int i = 0; i < selected.length; i++)
 				{
 					Category found = archive.getCategory(selected[i].trim());
 					if( found != null)
 					{
-						nodes.add(found);
+						tree.getTreeRenderer().unSelectNode(found);
 					}
 				}
 			}
-		}
-		String clear = inReq.getRequestParameter("clearselection");
-		if( Boolean.parseBoolean(clear))
-		{
-			 nodes = new ArrayList();
-		}
 		
-		if( nodes != null )
-		{		
-			tree.getTreeRenderer().selectNodes(nodes);
-		}
+		
 	}
 	public void expandNode(WebPageRequest inReq){
 		WebTree tree =  getCatalogTree(inReq);
@@ -339,14 +362,14 @@ public class CategoryModule extends BaseMediaModule
 		{
 			String text = inReq.getRequestParameter("addtext");
 			Category child = archive.getCategoryArchive().createNewCategory(text);
-			if( archive.getCategory(child.getId()) != null )
+			if( child.getId() != null && archive.getCategory(child.getId()) != null )
 			{
 				//fix duplicate id
 				child.setId(catid + "-" + child.getId());
 			}
 			parent.addChild(child);
-			archive.getCategoryArchive().cacheCategory(child);
-			archive.getCategoryArchive().saveAll();
+			archive.getCategoryArchive().saveCategory(child);
+			//archive.getCategoryArchive().saveAll();
 		}
 		inReq.setRequestParameter("reload", "true");
 		WebTree tree = getCatalogTree(inReq);
@@ -387,12 +410,12 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
-	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
-	{
-		WebTree tree = getCatalogTree(inReq);
-		MediaArchive archive = getMediaArchive(inReq);
-		archive.getCategoryEditor().reBuildCategories();
-		reloadTree(inReq);
-	}	
+//	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
+//	{
+//		WebTree tree = getCatalogTree(inReq);
+//		MediaArchive archive = getMediaArchive(inReq);
+//		archive.getCategoryEditor().reBuildCategories();
+//		reloadTree(inReq);
+//	}	
 
 }

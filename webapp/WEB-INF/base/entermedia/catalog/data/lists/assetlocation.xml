@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<assetlocations> 
+  <assetlocation position_lat="44.50076869999999" position_lng="-80.21690469999999" geoicon="purple" assetid="101" id="1424281903930"/>  
+  <assetlocation position_lat="44.38935559999999" position_lng="-79.69033159999998" geoicon="yellow" assetid="101" id="1424282598636"/>  
+  <assetlocation id="1428945276655" name="xxxx" assetid="2561"/>  
+  <assetlocation id="1428946883962" geoicon="red" assetid="2561"/>  
+  <assetlocation id="1428948462643" assetid="2561"/>  
+  <assetlocation id="1428948474351" position_lng="-82.90712300000001" assetid="2561" position_lat="40.4172871" geoicon="yellow"/> 
+</assetlocations>

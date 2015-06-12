@@ -1,0 +1,8 @@
+#
+#Fri Mar 27 15:49:37 EDT 2015
+Details=Detalles
+Assets=Activos
+Create\ New=crear nuevo
+Project\ Tracker=Rastreador de Proyectos
+Collections=Colecciones
+

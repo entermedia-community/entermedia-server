@@ -270,10 +270,10 @@
 				
 				var newname = $("#" + id + "_edit_field").attr("value");
 				jQuery.get("$home$attachmentroot/renamefolder.html", {
-					'id': id,
+					id: id,
 					fileid: id,
-					'foldername': newname,
-					'assetid': $asset.id
+					foldername: newname.toString(),
+					assetid: '$asset.id'
 					} , function () {						
 						jQuery("#" + id +"_display").show("fast");
 						jQuery("#" + id +"_edit").hide("fast");		
@@ -331,7 +331,7 @@
 				var id = $(this).attr('fileid');
 				jQuery.get("$home$attachmentroot/delete.html", {
 					fileid: id,					
-					'assetid': $asset.id
+					assetid: '$asset.id'
 					} , function () {						
 						repaint();	 //this is problematic, delete should repaint
   				    }

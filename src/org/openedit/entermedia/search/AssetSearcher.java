@@ -12,6 +12,7 @@ import org.openedit.entermedia.Category;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.users.User;
 
 public interface AssetSearcher extends Searcher
 {
@@ -29,7 +30,7 @@ public interface AssetSearcher extends Searcher
 
 	public abstract void updateIndex(Data inAsset);
 
-	public abstract void updateIndex(List inAssets, boolean inOptimize);
+	public abstract void updateIndex(List inAssets);
 
 	public abstract AssetArchive getAssetArchive();
 

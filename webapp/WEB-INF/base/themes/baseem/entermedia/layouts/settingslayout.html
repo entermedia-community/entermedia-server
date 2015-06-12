@@ -28,7 +28,7 @@ $!oestoreadmin.addNewTab("editpermissions","[[Edit Permissions]]","$cataloghome/
 #end
 <tr>
 #foreach ( $tab in $oestoreadmin.tabs)
-<td id="$tab.id" #if($oestoreadmin.lastSelected && $tab == $oestoreadmin.lastSelected )class="catalogadmintabselected" #end><span><a href="$home$tab.path">$tab.name</a></span></td>
+<td id="$tab.id" #if($oestoreadmin.lastSelected && $tab == $oestoreadmin.lastSelected )class="catalogadmintabselected" #end><span><a href="$home$tab.path">$context.getText($tab.name)</a></span></td>
 #end
 </tr>	
 </table>

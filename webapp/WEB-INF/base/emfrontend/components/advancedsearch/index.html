@@ -37,7 +37,7 @@ $context.putPageValue("idprefix","search")
 			$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
 		#end
 	#end
-	<td class="submit"><input class="btn small" type="submit" value="Search" />
+	<td class="submit"><input class="btn small" type="submit" value="[[Search]]" />
 	</td>
 	</tr>
 	
@@ -64,7 +64,7 @@ $context.putPageValue("idprefix","search")
 	<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
 	
 	<select name="field" onChange="jQuery('#searchaddfield').submit();">
-		<option>Add Field</option>
+		<option>[[Add Field]]</option>
 		#foreach( $detail in $alldetails)
 			#if($detail.isLeaf())
 			<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>

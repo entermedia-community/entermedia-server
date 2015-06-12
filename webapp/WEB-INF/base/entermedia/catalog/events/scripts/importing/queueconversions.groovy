@@ -1,38 +1,38 @@
 package importing;
 
+import org.entermedia.locks.Lock
 import org.openedit.Data
-import org.openedit.MultiValued;
-import org.openedit.data.BaseData
+import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.scanner.PresetCreator
 import org.openedit.util.DateStorageUtil
-import com.openedit.page.Page
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
+import com.openedit.page.Page
 
-public void createTasksForUpload() throws Exception
-{
+public void createTasksForUpload() throws Exception {
 	PresetCreator presets = new PresetCreator();
-	 
+
 	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 	Searcher destinationsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishdestination");
-	
+
 	Searcher publishqueuesearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishqueue");
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
-	Searcher targetsearcher = mediaArchive.getAssetSearcher();
-	
-	//There is a chance that the index is out of date. 
-	
-	SearchQuery q = targetsearcher.createSearchQuery();
+	Searcher assetsearcher = mediaArchive.getAssetSearcher();
+
+	//There is a chance that the index is out of date.
+
+	SearchQuery q = assetsearcher.createSearchQuery();
 	String ids = context.getRequestParameter("assetids");
 	//log.info("Found ${ids} assets from context ${context}");
+	log.info("Running queueconversions on ${ids}");
 	
 	if( ids == null)
 	{
@@ -44,8 +44,8 @@ public void createTasksForUpload() throws Exception
 		String assetids = ids.replace(","," ");
 		q.addOrsGroup( "id", assetids );
 	}
-	
-	List assets = new ArrayList(targetsearcher.search(q) );
+
+	List assets = new ArrayList(assetsearcher.search(q) );
 	if( assets.size() == 0 )
 	{
 		log.error("Problem with import, no asset found");
@@ -54,58 +54,75 @@ public void createTasksForUpload() throws Exception
 	assets.each
 	{
 		foundsome = false;
-		Asset asset = mediaArchive.getAssetBySourcePath(it.sourcepath);
-		
-		String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
-		SearchQuery query = presetsearcher.createSearchQuery();
-		query.addMatches("onimport", "true");
-		query.addMatches("inputtype", rendertype); //video
+		Lock lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
+		try{
+			Asset asset = assetsearcher.loadData(it);
 
-		HitTracker hits = presetsearcher.search(query);
-	//	log.info("Found ${hits.size()} automatic presets");
-		hits.each
-		{
-			Data hit = it;
-		//	Data newconversion = tasksearcher.createNewData();
+			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
+			SearchQuery query = presetsearcher.createSearchQuery();
+			query.addMatches("onimport", "true");
+			query.addMatches("inputtype", rendertype); //video
 
-			Data preset = (Data) presetsearcher.searchById(it.id);
-			
-			//TODO: Move this to a new script just for auto publishing
-			presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
-			
-			String pages = asset.get("pages");
-			if( pages != null )
+			HitTracker hits = presetsearcher.search(query);
+			//	log.info("Found ${hits.size()} automatic presets");
+			List tosave = new ArrayList();
+			hits.each
 			{
-				int npages = Integer.parseInt(pages);
-				if( npages > 1 )
+				Data preset = (Data) presetsearcher.loadData(it);
+				Boolean onlyone = Boolean.parseBoolean(preset.singlepage);
+				
+				//TODO: Move this to a new script just for auto publishing
+				Data created = presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
+				tosave.add(created);
+				String pages = asset.get("pages");
+				if( pages != null && !onlyone)
 				{
-					for (int i = 1; i < npages; i++)
+					
+					int npages = Integer.parseInt(pages);
+					if( npages > 1 )
 					{
-						presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
+						for (int i = 1; i < npages; i++)
+						{
+							created = presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
+							tosave.add(created);
+						}
 					}
+					
+				}
+				foundsome = true;
+			}
+			//Add auto publish queue tasks
+			//saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
+			if( foundsome )
+			{
+				asset.setProperty("importstatus","imported");
+				if( asset.get("previewstatus") == null)
+				{
+					asset.setProperty("previewstatus","converting");
+				}
+				//runconversions will take care of setting the importstatus
+			}
+			else
+			{
+
+				if(asset.getProperty("fileformat") == "embeddedvideo")
+				{
+					asset.setProperty("importstatus","complete");
+					asset.setProperty("previewstatus","2");
+				}
+				else
+				{
+					asset.setProperty("importstatus","complete");
+					asset.setProperty("previewstatus","mime");
 				}
 			}
-			foundsome = true;
+			mediaarchive.saveAsset( asset, user );
+			tasksearcher.saveAllData(tosave, null);
 		}
-		//Add auto publish queue tasks
-		saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
-
-		
-		if( foundsome )
+		finally
 		{
-			asset.setProperty("importstatus","imported");
-			if( asset.get("previewstatus") == null)
-			{
-				asset.setProperty("previewstatus","converting");
-			}
-			//runconversions will take care of setting the importstatus
+			mediaArchive.releaseLock(lock);
 		}
-		else
-		{
-			asset.setProperty("importstatus","complete");
-			asset.setProperty("previewstatus","mime");
-		}
-		mediaarchive.saveAsset( asset, user );
 	}
 	if( foundsome )
 	{
@@ -117,7 +134,7 @@ public void createTasksForUpload() throws Exception
 	{
 		log.info("No assets found");
 	}
-	
+
 }
 
 private saveAutoPublishTasks(Searcher publishqueuesearcher, Searcher destinationsearcher, Searcher presetsearcher, Asset asset, MediaArchive mediaArchive) {

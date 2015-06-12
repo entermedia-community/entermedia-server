@@ -1,0 +1,10 @@
+<page>
+
+
+	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+	<path-action name="AssetEditModule.selectPrimaryAsset" alltypes="true"/>
+	<path-action name="AttachmentModule.listChildren" alltypes="true"/>
+
+
+	
+</page>

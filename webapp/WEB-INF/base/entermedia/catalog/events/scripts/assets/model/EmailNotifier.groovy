@@ -62,7 +62,7 @@ public void emailOnImport()
 	def url = "/${appid}/components/notification/assetsimportedcustom.html"
 	
 	//get password and login
-	UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
+	UserManager userManager = mediaArchive.getUserManager();
 	
 	HitTracker hits = userManager.getUsersInGroup("uploadnotification");
 	

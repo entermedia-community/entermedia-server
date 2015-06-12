@@ -184,7 +184,11 @@ public class ScriptLogger extends Handler
 
 	protected String toString(LogEntry inEntry)
 	{
-		if( inEntry.getName().equals(getClass().getName() ) )
+		if( inEntry == null)
+		{
+			return "null LogEntry";
+		}
+		if(inEntry.getName() != null && inEntry.getName().equals(getClass().getName() ) )
 		{
 			return inEntry.getMessage();
 		}

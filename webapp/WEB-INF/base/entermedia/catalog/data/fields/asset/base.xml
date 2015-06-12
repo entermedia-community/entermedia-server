@@ -1,0 +1,7 @@
+<page>
+	<property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains"  sortable="true" >Exact Categories</property>
+
+
+	<property id="location" index="true" editable="true" stored="true" externalid="Location" type="list" writenametoexif="true" autocreatefromexif="true" >Location</property>
+
+</page>

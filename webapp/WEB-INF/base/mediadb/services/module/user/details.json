@@ -1,0 +1,29 @@
+## This should not have HTML in it
+#if($user)
+{
+    "status":"ok",
+    "userid":"$user.id",
+    "defaultcolor":"$user.defaultcolor"
+}
+#else
+{
+	"status":"error",
+	"authenticated":"false"
+}
+#end
+
+#if (!$userName)
+	#set ($userName = $context.getRequestParameter("userid"))
+#end
+
+#if($userName)
+
+<div style="width: 800px">
+$pages.include("$content.usermanagerhome/user/editdata.html")
+$pages.include("$content.usermanagerhome/user/editgroups.html")
+$pages.include("$content.usermanagerhome/user/editrole.html")
+</div>
+#else
+	<br/>
+	[[Select a user]].
+#end

@@ -1,0 +1,8 @@
+<page>
+	<property name="runmultiple">true</property>
+	<property name="eventname">Order History Changed</property>
+	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/ordering/orderhistorychanged.groovy</script>
+	</path-action>
+</page>

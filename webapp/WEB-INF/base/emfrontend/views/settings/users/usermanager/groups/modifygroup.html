@@ -22,15 +22,13 @@ $context.putPageValue( "groupid", $group.id)
         
         <div id="groupeditarea" style="margin: 15px 0;">
             <div id="groupeditareasaved"></div>
-                #set( $groupsearcher = $searcherManager.getSearcher("system","group") )
+                #set( $groupsearcher = $searcherManager.getSearcher($catalogid,"group") )
                 <form class="ajaxform" id="groupeditform" targetdiv="groupeditareasaved" action="$home$usermanagerhome/groups/savegroup.html?">
                     <input type="hidden" name="id" value="$group.id"/>
                     <input type="hidden" name="save" value="true"/>
                     <input type="hidden" name="searchtype" value="group"/>
-                    <input type="hidden" name="catalogid" value="system"/>
                     
                     $context.putPageValue("searcher", $groupsearcher)	
-                    $context.putPageValue("catalogid", "system")	 
                     $context.putPageValue("view", "group/groupedit")	
                     $context.putPageValue("data", $group)	
                     

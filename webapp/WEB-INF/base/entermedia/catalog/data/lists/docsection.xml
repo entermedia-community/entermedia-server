@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<docsections> 
+  <docsection name="Assets" id="moduleasset">Assets</docsection>  
+  <docsection name="Asset Media" id="assetmedia">Asset Media</docsection>  
+  <docsection id="moduledivision" name="Divisions"/>  
+  <docsection id="modulelibrary" name="Projects"/>  
+  <docsection id="modulelibrarycollection" name="Collections">Collections</docsection>  
+  <docsection id="moduleorder" name="Orders"/>  
+  <docsection id="modules" name="Data Modules">Data Modules</docsection>  
+  <docsection name="Data Lists" id="1418330376263">Data Lists</docsection>  
+  <docsection id="datamanager" name="Data Manager">Data Manager</docsection>  
+  <docsection id="events" name="Events">Events</docsection>  
+  <docsection name="User" id="1420730727080">Users</docsection>  
+  <docsection name="System" id="1418334117799">System</docsection>  
+  <docsection id="moduletestmodule" name="Test Module"/>  
+  <docsection id="modulegroups" name="Groups"/>
+</docsections>

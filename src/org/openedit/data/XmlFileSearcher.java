@@ -56,8 +56,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		if (fieldXmlDataArchive == null)
 		{
-			fieldXmlDataArchive = new XmlDataArchive();
-			fieldXmlDataArchive.setXmlArchive(getXmlArchive());
+			fieldXmlDataArchive = (XmlDataArchive)getModuleManager().getBean(getCatalogId(),"xmlDataArchive");
 			fieldXmlDataArchive.setDataFileName(getDataFileName());
 			fieldXmlDataArchive.setElementName(getSearchType());
 			fieldXmlDataArchive.setPathToData(getPathToData());
@@ -77,15 +76,15 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		fieldXmlArchive = inXmlArchive;
 	}
-
+/*
 	public Data loadData(String inSourcePath, String inId)
 	{
 		//TODO: Load from cache?
 		
-		Data data = getXmlDataArchive().loadData(this,inSourcePath,inId);
+		Data data = getXmlDataArchive().loadData(inSourcePath,inId);
 		return data;
 	}
-	
+*/	
 	public Data createNewData()
 	{	
 		if( getNewDataName() == null)
@@ -105,9 +104,11 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 				return cached;
 			}
 		}
-		
+		if(inValue == null || inValue.trim().length() == 0){
+			return null;
+		}
 		SearchQuery query = createSearchQuery();
-		query.addExact(inId, inValue);
+		query.addMatches(inId, inValue);
 		
 		HitTracker hits = search(query);
 		hits.setHitsPerPage(1);
@@ -116,18 +117,45 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		{
 			return null;
 		}
-		String sourcepath = first.getSourcePath();
-		if (sourcepath != null)
+		if( "id".equals(inId) )
 		{
-			first = loadData(sourcepath, first.getId());
-			if (fieldCacheManager != null && first != null && "id".equals(inId))
+			String sourcepath = first.getSourcePath();
+			if (sourcepath != null)
 			{
-				getCacheManager().put(getIndexPath(), inValue, first);
+				ElementData elementd = (ElementData)getXmlDataArchive().loadData(sourcepath, first.getId());
+				if( elementd == null)
+				{
+					log.error("Could not load xml data for " + sourcepath);
+					return null;
+				}
+				if( getNewDataName() != null )
+				{
+					first = createNewData();
+					copyData(elementd,first);
+				}
+				else
+				{
+					first = elementd;
+				}
+				if (fieldCacheManager != null)
+				{
+					getCacheManager().put(getIndexPath(), inValue, first);
+				}
+			}
+			else
+			{
+				throw new OpenEditException("Database missing sourcepath for asset " + getSearchType() +" / " + inId);
 			}
 		}
 		return first;
 	}
 	
+	protected void copyData(Data inElementd, Data inNewdata)
+	{
+		inNewdata.setId(inElementd.getId());
+		inNewdata.setName(inElementd.getName());
+		inNewdata.setProperties(inElementd.getProperties());
+	}
 	public void saveAllData(Collection inAll, User inUser)
 	{
 		//check that all have ids
@@ -138,14 +166,14 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 			{
 				data.setId(nextId());
 			}
-			if( data.getSourcePath() == null)
+			if( data.getSourcePath() == null) //TODO: Move this to the saving code?
 			{
 				String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
 				data.setSourcePath(sourcepath);
 			}
 		}
-		getXmlDataArchive().saveAllData(inAll, getCatalogId(), getPrefix() + "/", inUser );
 		updateIndex(inAll);
+		getXmlDataArchive().saveAllData(inAll,inUser );
 		//getLiveSearcher(); //should flush the index
 	}
 
@@ -208,21 +236,9 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		{
 			String sourcepath = getSourcePathCreator().createSourcePath(data, data.getId() );
 			data.setSourcePath(sourcepath);
-		}
-		
-		Lock lock = null;
-		try
-		{
-			lock = getLockManager().lock(getCatalogId(), getPrefix() + "/" + data.getSourcePath(),"admin");
-			getXmlDataArchive().saveData(data,inUser, lock);
-		
-//		String nullcheck = data.get("publishqueueid");
-//		log.info( getSearchType() + " " + data.getId() + " " + nullcheck );
+		}		
+		getXmlDataArchive().saveData(data,inUser);
 		updateIndex(data);
-		} 	finally
-		{
-			getLockManager().release(getCatalogId(), lock);
-		}
 	}
 
 	protected IntCounter getIntCounter()

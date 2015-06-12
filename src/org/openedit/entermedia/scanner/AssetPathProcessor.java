@@ -86,7 +86,7 @@ public class AssetPathProcessor extends PathProcessor
 			}
 		}
 		
-		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); //this clears the list
+		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); 
 
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
@@ -116,7 +116,7 @@ public class AssetPathProcessor extends PathProcessor
 	@Override
 	public boolean acceptFile(ContentItem inItem)
 	{
-		String path = inItem.getPath();
+		String path = inItem.getAbsolutePath();
 		if (isOnWindows())
 		{
 			int absolutepathlimit = 260;
@@ -126,7 +126,7 @@ public class AssetPathProcessor extends PathProcessor
 				return false;
 			}
 		}
-		if( !fieldFileUtils.isLegalFilename(path))
+		if( !fieldFileUtils.isLegalFilename(inItem.getPath()))
 		{
 			log.info("Path is not web friendly. Couldn't import " + path);
 			return false;

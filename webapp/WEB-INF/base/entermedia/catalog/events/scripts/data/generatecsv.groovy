@@ -40,7 +40,7 @@ public void init(){
 	String exportpath = context.findValue("exportpath");
 
 	HashMap map = new HashMap();
-	String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+	String date = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
 	map.put("date",date );
 	Replacer replacer = new Replacer();
 	exportpath = replacer.replace(exportpath, map);

@@ -93,6 +93,10 @@
 		</and>		
 	</permission>
 
+    <permission name="addnewcollection">
+	    	<userprofile property="addnewcollection" equals="true" />
+    </permission>
+
 	<permission name="converthistory">
 			<userprofile property="converthistory" equals="true" />
 	</permission>
@@ -155,6 +159,8 @@
   <permission name="printpreview">
  	 <userprofile property="printpreview" equals="true" />
   </permission>
+
+
   
   <!-- USER DEFUALTS -->
   

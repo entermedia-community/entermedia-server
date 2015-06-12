@@ -1,0 +1,18 @@
+#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+
+  <div class="primary">$asset.id</div>
+  <div id="embedded-player-table" class="thickbox" >
+    <iframe id="embedded_video" width="396" height="240" title="$asset.assettitle" src="$asset.embeddedurl?api=1&amp;player_id=media-vimeo-95026867&amp;portrait=0&amp;title=0&amp;byline=0&amp;color=ffffff" frameborder="0" allowfullscreen=""></iframe>
+  </div>
+  
+    <div id="mp-asset-info">
+      <a href="$home$apphome/views/module/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
+      <a style="margin-right: 0;" href="$home$apphome/views/module/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitsessionsid" class="comments">$comments.size()<span>&nbsp;</span></a>                 
+    </div>
+  
+  <div class="asset-details-more">
+     <p style="line-height: 25px; text-align: left; color: #fff;">
+      </p>
+      <p style="line-height: 25px; text-align: left; color: #fff; ">
+      </p>
+   </div>

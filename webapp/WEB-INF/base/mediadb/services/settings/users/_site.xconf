@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  	<path-action name="User.getUserManager"/>
+  	<property name="subtab">users</property>
+  	<property name="oeuseradmintabid">userstab</property>
+  	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+  
+  	<property name="module">user</property>
+  	<property name="searchtype">user</property>
+ 
+ <permission name="view">
+		<userprofile property="api-manage-users" equals="true"/>
+	</permission>
+ 
+ 
+ 
+</page>

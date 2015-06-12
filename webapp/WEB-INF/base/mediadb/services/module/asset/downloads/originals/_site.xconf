@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/originals</property>
+	<property name="sourcepathhasfilename">true</property>
+	
+	<generator name="originalDownloadGenerator"/>
+	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
+	
+	<permission name="viewasset">
+		<and>
+			 <userprofile property="download" equals="true" />
+			<action name="AssetControlModule.canViewAsset" /> 
+		</and>
+	</permission>	
+	<permission name="view">
+		<pagevalue name="canviewasset" equals="true"/>
+	</permission>	
+</page>

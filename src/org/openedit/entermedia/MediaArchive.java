@@ -38,6 +38,9 @@ import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.GroupSearcher;
+import org.openedit.users.UserSearcher;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -50,6 +53,8 @@ import com.openedit.page.Permission;
 import com.openedit.page.manage.MimeTypeMap;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
+import com.openedit.users.UserManager;
+import com.openedit.util.PathProcessor;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.Replacer;
 
@@ -64,7 +69,7 @@ public class MediaArchive
 
 	protected AssetArchive fieldAssetArchive;
 	protected AssetArchive fieldMirrorAssetArchive;
-	protected Map fieldTaxRates;
+//	protected Map fieldTaxRates;
 	protected AssetSearcher fieldAssetSearcher;
 	protected CatalogConverter fieldImportConverter;
 	protected CategoryArchive fieldCategoryArchive;
@@ -83,6 +88,8 @@ public class MediaArchive
 	protected MimeTypeMap fieldMimeTypeMap;
 	protected LockManager fieldLockManager;
 	protected Map<String,Data> fieldLibraries;
+	
+	protected UserManager fieldUserManager;
 	
 	public String getMimeTypeIcon(String inFormat)
 	{
@@ -314,6 +321,10 @@ public class MediaArchive
 		return "/" + getCatalogId();
 	}
 
+	public String getMediaDbId()
+	{
+		return getCatalogSettingValue("mediadbappid");
+	}
 	// public HistoryArchive getHistoryArchive()
 	// {
 	// return fieldHistoryArchive;
@@ -478,6 +489,7 @@ public class MediaArchive
 		fieldOriginalFileManager = inOriginalFileManager;
 	}
 
+	//Only use on old style sourcepaths
 	public Asset createAsset(String inId, String inSourcePath)
 	{
 		Asset asset = new Asset();
@@ -506,14 +518,22 @@ public class MediaArchive
 		return createAsset(null,inSourcePath);
 	}
 
+	public CategorySearcher getCategorySearcher()
+	{
+		CategorySearcher searcher = (CategorySearcher)getSearcher("category");
+		return searcher;
+	}
+	/**
+	 * @deprecated use getCategorySearcher()
+	 * @return
+	 */
 	public CategoryArchive getCategoryArchive()
 	{
 		if (fieldCategoryArchive == null)
 		{
-			CategorySearcher searcher = (CategorySearcher)getSearcher("category");
-			fieldCategoryArchive = searcher.getCategoryArchive();
-			fieldCategoryArchive.setCatalogId(getCatalogId());
-
+			//CategorySearcher searcher = (CategorySearcher)getSearcher("category");
+			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(),"categoryArchive");
+			//fieldCategoryArchive.setCatalogId(getCatalogId());
 		}
 		return fieldCategoryArchive;
 	}
@@ -716,7 +736,7 @@ public class MediaArchive
 	{
 		if (fieldAssetArchive == null)
 		{
-			fieldAssetArchive = (AssetArchive) getModuleManager().getBean(getCatalogId(), "assetArchive");
+			fieldAssetArchive = (AssetArchive) getModuleManager().getBean(getCatalogId(), "assetDataArchive");
 		}
 		return fieldAssetArchive;
 	}
@@ -871,7 +891,7 @@ public class MediaArchive
 
 	public Category getCategory(String inCategoryId)
 	{
-		return getCategoryArchive().getCategory(inCategoryId);
+		return getCategorySearcher().getCategory(inCategoryId);
 	}
 	
 	public String getLinkToSize(String inSourcePath, String inSize)
@@ -901,6 +921,46 @@ public class MediaArchive
 		
 	}
 	
+	
+	
+	
+	public void removeGeneratedImages(Asset inAsset, boolean everything)
+	{
+		if(everything){
+			removeGeneratedImages(inAsset);
+			return;
+		}
+		
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
+		if(inAsset.isFolder() && !path.endsWith("/")){
+			path = path + "/"; 
+				
+		}
+		
+		
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+			
+				//getPageManager().removePage(page);
+				String type = PathUtilities.extractPageType(inContent.getPath()); 
+				String fileformat = getMediaRenderType(type);
+				if("image".equals(fileformat)){
+					Page page = getPageManager().getPage(inContent.getPath());
+					getPageManager().removePage(page);
+				}
+				
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(path);
+		processor.setPageManager(getPageManager());
+		processor.process();
+		
+
+		
+	}
 	
 	public void removeOriginals(Asset inAsset)
 	{
@@ -977,6 +1037,7 @@ public class MediaArchive
 		if( inids.size() < 10000)
 		{
 			StringBuffer paths = new StringBuffer();
+			
 			for (Iterator iterator = inids.iterator(); iterator.hasNext();)
 			{
 				String path = (String) iterator.next();
@@ -988,6 +1049,7 @@ public class MediaArchive
 			}
 			event.setProperty("assetids", paths.toString());
 		}
+		event.setValues("dataids", inids);
 		//archive.getWebEventListener()
 		getMediaEventHandler().eventFired(event);
 		
@@ -1018,6 +1080,7 @@ public class MediaArchive
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
 			event.setProperty("assetids", asset.getId() );
+			event.setProperty("dataid", asset.getId() );
 
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
@@ -1035,7 +1098,7 @@ public class MediaArchive
 			getMediaEventHandler().eventFired(event);
 	}
 
-	public void fireMediaEvent(String operation, String inMetadataType, String inSourcePath,  User inUser)
+	public void fireMediaEvent(String operation, String inMetadataType, String inId,  User inUser)
 	{
 			WebEvent event = new WebEvent();
 			event.setSearchType(inMetadataType);
@@ -1044,7 +1107,8 @@ public class MediaArchive
 			event.setOperation(operation);
 			event.setUser(inUser);
 			event.setSource(this);
-			event.setProperty("sourcepath", inSourcePath);
+			//event.setProperty("sourcepath", inSourcePath);
+			event.setProperty("targetid", inId);
 			//archive.getWebEventListener()
 			getMediaEventHandler().eventFired(event);
 	}
@@ -1096,10 +1160,11 @@ public class MediaArchive
 		// Why the content page? Page page = inPageRequest.getContentPage();
 		if (category == null)
 		{
-			category = getCategoryArchive().getCategory(categoryId);
+			category = getCategorySearcher().getCategory(categoryId);
 		}
 		if (category == null)
 		{
+
 //			if (inReq.getContentPage() == inReq.getPage())
 //			{
 //				String val = inReq.findValue("showmissingcategories");
@@ -1341,11 +1406,19 @@ public class MediaArchive
 	}
 	public LockManager getLockManager()
 	{
+		if( fieldLockManager == null)
+		{
+			fieldLockManager = (LockManager)getModuleManager().getBean(getCatalogId(),"lockManager");
+		}
 		return fieldLockManager;
 	}
 	public void setLockManager(LockManager inLockManager)
 	{
 		fieldLockManager = inLockManager;
+	}
+	public Lock lock(String inPath, String inOwner)
+	{
+		return getLockManager().lock(inPath, inOwner);
 	}
 	
 	public boolean releaseLock(Lock inLock)
@@ -1359,7 +1432,7 @@ public class MediaArchive
 			throw new OpenEditException("Previous lock id was null");
 		}
 
-		boolean ok = getLockManager().release(getCatalogId(), inLock);
+		boolean ok = getLockManager().release( inLock);
 		return ok;
 	}
 	
@@ -1497,37 +1570,49 @@ public class MediaArchive
 		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
 		
 	}
-	public void updateAssetConvertStatus(String inSourcePath) 
+	public void updateAssetConvertStatus(String inAssetId) 
 	{
-		Asset asset = getAssetBySourcePath(inSourcePath);
+		Asset asset = getAsset(inAssetId);
+		if( asset == null)
+		{		
+			log.info("Could not load asset by sourcepath " + inAssetId );
+		}
 		updateAssetConvertStatus(asset);
 	}
-	public void updateAssetConvertStatus(Asset asset) 
+	
+	//Look for previews that should be marked as complete now
+	public void updateAssetConvertStatus(Data asset) 
 	{
 		if( asset == null)
 		{
 			return; //asset deleted
 		}
-		//TODO: Lock the asset so that nobody edits it while we are doing this
-		
-		String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
-
+		//is it already complete?
+		
 		//log.info("existingpreviewstatus" + existingpreviewstatus);
 		//update importstatus and previewstatus to complete
-		if(!"complete".equals(existingimportstatus ) || !"2".equals( existingpreviewstatus ) )
+		if( log.isDebugEnabled() )
 		{
+			log.debug("Checking preview status: " + asset.getId() +"/" + existingpreviewstatus);
+		}
+		boolean allcomplete = true;
+		boolean founderror = false;
+		String existingimportstatus = asset.get("importstatus");
+
+		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
+		{
+
 			//check tasks and update the asset status
 			Searcher tasksearcher = getSearcher( "conversiontask");
 			HitTracker conversions = tasksearcher.query().match("assetid",asset.getId()).search();
-			boolean allcomplete = true;
-			boolean founderror = false;
 
 			for( Object object : conversions )
 			{
 				Data task = (Data)object;
 				if( "error".equals( task.get("status") ) )
 				{
+					log.info(asset.getId() + "Found an error");
 					founderror = true;
 					break;
 				}
@@ -1535,29 +1620,66 @@ public class MediaArchive
 				if( !"complete".equals( task.get("status") ) )
 				{
 					allcomplete = false;
-					break;
-				}
-			}
-			if( founderror || allcomplete )
-			{
-				//load the asset and save the import status to complete
-				
-				if( asset != null )
-				{
-					if( founderror)
+					log.info("Found an incomplete task - status was: " + task.get("status") + " " + asset.getId());
+					String date = task.get("submitted");
+					if( "missinginput".equals( task.get("status") ) && date != null)
 					{
-						asset.setProperty("importstatus","error");
+						Date entered = DateStorageUtil.getStorageUtil().parseFromStorage(date);
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.add(Calendar.DAY_OF_YEAR, -2);
+						if( entered.before(cal.getTime()))
+						{
+							Data loadedtask = (Data)tasksearcher.loadData(task);
+							loadedtask.setProperty("status","error");
+							loadedtask.setProperty("errordetails","Image missing more than 24 hours, marked as error");
+							tasksearcher.saveData(loadedtask, null);
+							founderror = true;
+						}
 					}
 					else
 					{
-						asset.setProperty("importstatus","complete");
-						asset.setProperty("previewstatus","2");
+						break;
 					}
-					saveAsset(asset, null);
 				}
+			}	
+		}
+		else
+		{
+			allcomplete = true;
+		}
+		
+		//save importstatus
+		if( founderror || allcomplete )
+		{
+			//load the asset and save the import status to complete		
+			if( asset != null )
+			{
+				if(founderror && "error".equals(existingimportstatus) || "complete".equals(existingimportstatus))
+				{
+					return;						
+				}
+				Asset target =  (Asset)getAssetSearcher().loadData(asset);
+				if( founderror)
+				{
+					target.setProperty("importstatus","error");
+				}
+				else
+				{
+					target.setProperty("importstatus","complete");
+					target.setProperty("previewstatus","2");
+					
+				}
+				saveAsset(target, null);
 			}
 		}
 	}
-	
+	public UserManager getUserManager()
+	{
+		if( fieldUserManager == null)
+		{
+			fieldUserManager = (UserManager)getModuleManager().getBean(getCatalogId(),"userManager");
+		}
+		return fieldUserManager;
+	}
 
 }

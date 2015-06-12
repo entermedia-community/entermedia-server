@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+
+	<page-action name="RevisionEditor.restoreRevision" alltypes="true"/>   
+	
+	<!-- Requires an assetid and filename -->
+	<page-action name="AssetEditModule.selectPrimaryAsset" alltypes="true"/>
+	
+	<path-action name="Script.run" alltypes="true">
+		<script>./updatefiletype.groovy</script>
+	</path-action>
+</page>

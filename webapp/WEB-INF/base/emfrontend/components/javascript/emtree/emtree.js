@@ -222,7 +222,32 @@ jQuery(document).ready(function()
 			catcontent.scrollLeft(parseInt(left));
 		}
 	});
-	
+
+	//does this do anything?
+	$(".categorycheckbox").on("click", function()
+			{
+				var home = $(this).closest(".emtree").data("home");
+				var checkbox = $(this);
+				var checked = checkbox.is(":checked");
+				var assetid = checkbox.data("assetid");
+				var categoryid = checkbox.attr("value");
+				var treeid = checkbox.data("treeid");
+				if (checked)
+				{
+					jQuery.get(home  + "/components/emtree/addassetcategory.html?categories="+categoryid+"&treeid="+treeid)
+					.fail(function()
+						{
+							alert("failed to add category to asset");
+						});
+				} else {
+				    jQuery.get(home + "/components/emtree/deleteassetcategory.html?categories="+categoryid+"&treeid="+treeid)
+					.fail(function()
+						{
+							alert("failed to delete category to asset");
+						});
+				}
+			});
+
 	//end document ready
 	
 });

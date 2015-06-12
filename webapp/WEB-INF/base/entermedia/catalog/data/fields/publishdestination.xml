@@ -35,6 +35,8 @@
 	<property id="emergencyphone" index="true" stored="true" editable="true" >Emergency Phone</property>
 	<property id="emergencyemail" index="true" stored="true" editable="true" >Emergency Email</property>
 
-	<property id="assetvideoidfield" index="true" stored="true" editable="true" >Asset Video ID Field</property>
-	
+	<property id="assetvideoidfield" index="true" stored="true" editable="true" >Asset Video ID Field</property>	
+<!--  google oauth v2 -->
+	<property id="access_token" index="true" stored="true" editable="true" >Access Token</property>
+	<property id="refresh_token" index="true" stored="true" editable="true" >Refresh Token</property>
 </properties>

@@ -1,6 +1,6 @@
 #set($selectedUser = $user)
 
-#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
+#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 $context.putPageValue("searcher", $userSearcher)     
 $context.putPageValue("view", "user/editmyuser")  
 $context.putPageValue("data", $selectedUser) 

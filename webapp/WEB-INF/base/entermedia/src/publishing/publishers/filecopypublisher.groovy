@@ -1,12 +1,8 @@
 package publishing.publishers;
 
-import java.io.File;
-import java.util.Iterator;
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
-import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
@@ -18,13 +14,18 @@ public class filecopypublisher extends basepublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(filecopypublisher.class);
 	
-	
-	
-	
-	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, Data inPreset)
+	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
-		PublishResult result = new PublishResult();
 		
+		PublishResult result = checkOnConversion(mediaArchive,inPublishRequest,inAsset,inPreset); 
+		if( result != null)
+		{
+			return result;
+		}
+
+		result = new PublishResult();
+
+		//Now publish it!		
 		Page inputpage = findInputPage(mediaArchive,inAsset,inPreset);
 		String destinationpath = inDestination.get("url");
 		if(!destinationpath.endsWith("/"))
@@ -32,7 +33,7 @@ public class filecopypublisher extends basepublisher implements Publisher
 			destinationpath = destinationpath + "/";
 		}
 		String exportname = inPublishRequest.get("exportname");
-		String guid = inPreset.get("guid");
+		//String guid = inPreset.get("guid");
 		
 		FileUtils utils = new FileUtils();
 		File destination = new File(destinationpath);

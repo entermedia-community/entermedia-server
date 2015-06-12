@@ -1,6 +1,7 @@
 #
-#Tue Apr 27 15:26:34 CLT 2010
+#Fri Mar 27 15:52:53 EDT 2015
 Language=Idioma
 Read=Leer
+all\ translations\ within\ the\ WEB-INF/base/\ directory\ tree=todas las traducciones dentro del / \u00E1rbol de directorio WEB -INF / base
 Translation\ Exporter=Exportador de Traducci\u00F3n
 

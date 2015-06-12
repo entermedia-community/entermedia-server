@@ -3,10 +3,12 @@ package org.openedit.entermedia.orders;
 import java.util.Date;
 
 import org.openedit.Data;
+import org.openedit.data.BaseData;
+import org.openedit.data.SaveableData;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.ElementData;
 
-public class Order extends ElementData
+public class Order extends BaseData implements SaveableData
 {
 	protected OrderHistory fieldRecentOrderHistory;
 
@@ -66,6 +68,13 @@ public class Order extends ElementData
 		return super.get(inId);
 	}
 
+	@Override
+	public void setProperty(String inId, String inValue)
+	{
+		// TODO Auto-generated method stub
+		super.setProperty(inId, inValue);
+	}
+	
 	public boolean isExpired()
 	{
 		String expiration = get("expireson");

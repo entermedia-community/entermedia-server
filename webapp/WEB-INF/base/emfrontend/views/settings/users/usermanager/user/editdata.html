@@ -10,7 +10,7 @@
 <div class="ui-widget commentbox columns-2" style="margin: 0 20px 0 0;">
 <div class="ui-widget-header">[[Profile]]</div>
 <div  class="ui-widget-content" > 
-	#set ($userSearcher = $searcherManager.getSearcher("system", "user"))
+	#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 		<form class="ajaxform validate" id="usereditform" targetdiv="usereditproperties" name="usereditform" action="$home$usermanagerhome/user/editdata.html">
 			<input type="hidden" name="userid" value="$selectedUser.id"/>
 			<input type="hidden" name="save" value="true"/>
@@ -35,7 +35,9 @@
 			<a href="#" class="btn" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
 			<a class="btn red" style="float: right;" href="./removeuser.html?groupid=$content.mastergroup&usertodelete=$selectedUser.id">[[Delete User]]</a>
 			<a href="$home$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn" >[[Edit Password]]</a>
-			
+					#if($canactasotherusers)
+	<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn" >[[Act As this user temporarily]]</a>
+#end
 		</form>
 </div>	
 </div>

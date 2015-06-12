@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+	<generator  name="velocityGenerator" mimetypes="text/html"/>
+	<generator  name="velocityGenerator" mimetypes="text/json"/>
+
+ 	<property name="missingimagepath">/${applicationid}/views/images/missing150.jpg</property>
+  	<property name="allowguestregistration">false</property>
+  	<property name="loginokpage">/${applicationid}/index.html</property>
+ 	<property name="login-path">/${applicationid}/views/authentication/nopermissions.html</property>
+
+
+	<property name="applicationid">mediadb</property>
+	<property name="catalogid">media/catalogs/public</property>
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+	<permission name="view">
+		<user />
+	</permission>	
+
+</page>

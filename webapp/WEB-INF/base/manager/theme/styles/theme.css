@@ -116,7 +116,7 @@ a:hover {
 
 /* ==|== buttons ============================================== */
 
-.btn {
+.mbtn {
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
@@ -136,13 +136,13 @@ a:hover {
 	font-weight: bold;
 	text-decoration: none;
 }
-.btn:hover {
+.mbtn:hover {
 	-webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 	-moz-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 	box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 	color: #fff;
 }
-.btn:active {
+.mbtn:active {
 	position: relative;
 	top: 1px;
 	box-shadow: none;
@@ -157,10 +157,10 @@ a:hover {
 	background: -ms-linear-gradient(top, #329b27 0%,#4bd63c 100%); /* IE10+ */
 	background: linear-gradient(top, #329b27 0%,#4bd63c 100%); /* W3C */
 }
-.btn:visited {
+.mbtn:visited {
 	color: #fff;
 }
-.btn.blue {
+.mbtn.blue {
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
@@ -180,13 +180,13 @@ a:hover {
 	font-weight: bold;
 	text-decoration: none;
 }
-.btn.blue:hover {
+.mbtn.blue:hover {
 	-webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 	-moz-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 	box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .3);
 	color: #fff;
 }
-.btn-blue:active {
+.mbtn-blue:active {
 	position: relative;
 	top: 1px;
 	box-shadow: none;
@@ -201,7 +201,7 @@ a:hover {
 	background: -ms-linear-gradient(top, #2a65cc 0%,#4f8bf2 100%); /* IE10+ */
 	background: linear-gradient(top, #2a65cc 0%,#4f8bf2 100%); /* W3C */
 }
-.btn-blue:visited {
+.mbtn-blue:visited {
 	color: #fff;
 }
 
@@ -285,17 +285,13 @@ a:hover {
 
 .catalog-list {
     padding: 0;
+    max-width: 500px;
+    margin: 20px 0 0 30px;
+    
 }
 .catalog-list li {
 	
-	height: 28px;
-    background: url('../images/small-server.png') top left no-repeat;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 28px;
     list-style: none outside none;
-    margin: 15px 0 0px 40px;
-    padding: 0 0 0 45px;
 }
 .catalog-list li a {
     color: #252525;
@@ -443,7 +439,7 @@ table tr:hover {
 .wizard-bottom {
 	background: url('../images/wizard-bottom.png');
 	width: 520px;
-	height: 84px;
+	height: 114px;
 	margin: 0; 
 	padding: 30px 0 0 0;
 	text-align: center;
@@ -778,7 +774,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cd5153', end
     margin-top: 43px;
     margin-right: 20px;
 }
-.scan .btn, .delete .btn {
+.scan .mbtn, .delete .mbtn {
     text-align: center;
     width: 60px;
 }
@@ -998,4 +994,27 @@ div#folders.add .folder {
   @page { margin: 0.5cm; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
+}
+
+.listname
+{
+	
+	
+}
+
+.listid
+{
+	color: green;
+}
+
+li div.listid A
+{
+	color: green;
+}
+
+.catalog
+{
+	padding: 50px 0px 0px 0px;
+	margin-top: -5px;
+    background: url('../images/small-server.png') top left no-repeat;
 }

@@ -1,0 +1,5 @@
+<page>
+	<property name="module">order</property>
+	<property name="fallbackdirectory">/WEB-INF/base/mediadb/services/module/default</property>
+	<path-action name="OrderModule.loadOrderManager" />
+</page>

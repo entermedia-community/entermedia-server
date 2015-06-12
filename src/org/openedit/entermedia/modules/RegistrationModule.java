@@ -22,6 +22,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.UserSearcher;
+import org.openedit.util.DateStorageUtil;
 
 import com.openedit.WebPageRequest;
 import com.openedit.users.Group;
@@ -110,16 +111,42 @@ public class RegistrationModule extends BaseMediaModule
 			return;
 		}
 		String email = inReq.getRequestParameter("email.value");
-
-		User user = getUserManager().getUserByEmail(email);
-
-		Map errors = new HashMap();
+		if(email == null){
+			email = inReq.getRequestParameter("email");
+		}
+		if(email == null){
+			return;
+		}
+		UserSearcher searcher =(UserSearcher) getMediaArchive(inReq).getSearcherManager().getSearcher("system", "user"); 
+		Data usert = (User) searcher.searchByField("email", email);
+		if(usert == null){
+			return;
+		}
+		User user = null;
+		
+			user = (User) searcher.searchById(usert.getId());
+		
+		
+		
+		
+		String id = inReq.getRequestParameter("id");
+		
+		User current = getUserManager().getUser(id);
+		
 		if (user != null)
 		{
+			if(id != null){
+				if(id.equals(user.getId())){
+					return;
+				}
+			}
+					
 			// errors.put("error-email-in-use", "This email address is in use");
 			// inReq.putPageValue("errors", errors);
 			inReq.putPageValue("emailinuse", true);
-			cancelAndForward(inReq);
+			if(current != null){
+				inReq.setRequestParameter("email.value", current.getEmail());
+				}			cancelAndForward(inReq);
 		}
 
 	}
@@ -158,6 +185,32 @@ public class RegistrationModule extends BaseMediaModule
 				cancelAndForward(inReq);
 				return false;
 			}
+			String enddate = prepaidcode.get("expiry");
+			if(enddate != null){
+				Date now = new Date();
+				Date end = DateStorageUtil.getStorageUtil().parseFromStorage(enddate);
+				if(end.before(now)){
+					errors.put("error-expired", "This code is expired");
+					inReq.putPageValue("errors", errors);
+					cancelAndForward(inReq);
+					return false;
+				}
+			}
+			
+			String startdate = prepaidcode.get("startdate");
+			if(startdate != null){
+				Date now = new Date();
+				Date start = DateStorageUtil.getStorageUtil().parseFromStorage(startdate);
+				if(now.before(start)){
+					errors.put("error-early", "This code is not available yet.");
+					inReq.putPageValue("errors", errors);
+					cancelAndForward(inReq);
+					return false;
+				}
+			}
+			
+			
+			
 			log.info("processed code successfully" + couponcode);
 
 			inReq.putSessionValue("coupon", prepaidcode);
