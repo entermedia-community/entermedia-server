@@ -661,7 +661,7 @@ public class BaseOrderManager implements OrderManager {
 	{
 		//look up all the tasks
 		//if all done then save order status
-		Lock lock = archive.lock(inOrder.getSourcePath(), "BaseOrderManager");
+		Lock lock = archive.lock("orders" + inOrder.getId(), "BaseOrderManager");
 
 		try
 		{
