@@ -7,7 +7,7 @@
 		#end	
 		##Email and publish should be under share
 		#if($canpublish || $canemaillink )
-			<li><a>Share</a>
+			<li><a>[[Share]]</a>
 				<ul>
 					#if( $canemaillink )
 					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a></li>
