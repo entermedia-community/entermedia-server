@@ -301,9 +301,9 @@
 
 				jQuery.get("$home$attachmentroot/createfolder-finish.html", {
 					//'id': id,
-					fileid: id,
+					'fileid': id,
 					'foldername': newname,
-					'assetid': $asset.id
+					'assetid': '$asset.id'
 				
 					} , function () {						
 					repaint();
