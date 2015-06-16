@@ -4,10 +4,11 @@
 	<path-action name="Date.now">
 		<format>yyyyMM</format>
 	</path-action>
-
+<!--
 	<path-action name="Script.run" >
 		<script>./calculatesourcepath.groovy</script>
 	</path-action>
+-->
 	
 	<path-action name="Page.uploadFile"/>
 	<permission name="view">
