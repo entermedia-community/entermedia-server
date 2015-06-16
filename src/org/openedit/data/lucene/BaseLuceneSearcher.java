@@ -1243,11 +1243,20 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 		{
 			try
 			{
-				if( fieldTaxonomyWriter != null)
+				try
 				{
-					fieldTaxonomyWriter.close();
+					if( fieldTaxonomyWriter != null)
+					{
+						fieldTaxonomyWriter.close();
+						fieldTaxonomyWriter = null;
+					}
+				}
+				catch (IOException ex)
+				{
+					log.error(ex);
 				}
 				fieldIndexWriter.close();
+				fieldIndexWriter = null;
 			}
 			catch (IOException ex)
 			{

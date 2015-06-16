@@ -411,7 +411,6 @@
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
-		<property name="executorManager"><ref bean="executorManager"/></property>
 		
 	</bean>
 
