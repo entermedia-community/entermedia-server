@@ -135,11 +135,7 @@ public class ConvertInstructions
 
 	public void setWatermark(boolean inWatermark)
 	{
-		if(inWatermark){
-			setProperty("watermark", "true");
-		}   else{
-			setProperty("watermark", "false");
-		}
+		setProperty("watermark", String.valueOf(inWatermark));
 	}
 
 	public boolean isTransparencyMaintained(String inputtype)
