@@ -927,6 +927,8 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>		
+				<property name="moduleManager"><ref bean="moduleManager"/></property>
+		
 	</bean>
 	
 	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
