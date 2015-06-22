@@ -325,7 +325,7 @@ onloadselectors = function()
 		{
 			var form = jQuery(this);
 			form.validate({
-			  ignore: ".ignore, .select2-input"
+			  ignore: ".ignore"
 			});
 			
 			
