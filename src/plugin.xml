@@ -107,6 +107,10 @@
 		<property name="searchQueryArchive">
 			<ref bean="searchQueryArchive" />
 		</property>
+		<property name="webEventHandler">
+			<ref bean="mediaEventHandler" />
+		</property>
+		
 	</bean>
 
 
