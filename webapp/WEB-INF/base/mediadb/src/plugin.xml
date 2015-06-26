@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans default-lazy-init="true">
-	<!-- 
-	<bean  id="ProjectModule" class="modules.projects.ProjectModule" lazy-init="default" />
-	<bean  id="projectManager" class="model.projects.BaseProjectManager" lazy-init="default">
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-	</bean>
- 	-->
- 	<!-- 
-	<lang:groovy  id="ProjectModule" script-source="modules/projects/ProjectModule.groovy" lazy-init="default" />
-	 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+		default-lazy-init="true">
 	 
 	<lang:groovy  id="JsonModule" script-source="rest/json/JsonModule.groovy" lazy-init="default" />
 	<lang:groovy  id="JsonAssetModule" script-source="rest/json/JsonAssetModule.groovy" lazy-init="default" />
