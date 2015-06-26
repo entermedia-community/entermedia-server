@@ -4402,7 +4402,7 @@ span.drag-and-drop {
     position: relative;
 }
 #module-dropdown span {
-    /* background: url('../images/sort-desc.png') 0 0 no-repeat; */
+    background: url('../images/sort-desc.png') 0 0 no-repeat;
     width: 10px;
     height: 10px;
     margin: 0;
