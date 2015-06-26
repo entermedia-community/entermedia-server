@@ -116,13 +116,20 @@ public class ProjectModule extends BaseMediaModule
 		Collection<String> ids = manager.loadAssetsInCollection(inReq, archive, collectionid );
 		//Do an asset search with permissions, showing only the assets on this collection
 		HitTracker all = archive.getAssetSearcher().getAllHits();
+		
 		all.setSelections(ids);
 		all.setShowOnlySelected(true);
+		String hpp = inReq.getRequestParameter("page");
+		if( hpp != null)
+		{
+			all.setPage(Integer.parseInt( hpp ) );
+		}
 		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
 		if( usersettings != null )
 		{
 			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
 		}
+		//all.setHitsPerPage(1000);
 		all.getSearchQuery().setHitsName("collectionassets");
 		inReq.putPageValue("hits", all);
 		inReq.putSessionValue(all.getSessionId(),all);

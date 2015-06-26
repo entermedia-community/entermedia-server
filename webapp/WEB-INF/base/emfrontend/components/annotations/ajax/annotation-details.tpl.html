@@ -10,19 +10,21 @@
         <div class="col-md-9" style="margin-right: -11px;" >
         
                 <div class="annotations-carousel">
-                <ul>
-                    <li class="previous">
-                        <svg class="icon icon-arrow-left" viewBox="0 0 32 32"><use xlink:href="#icon-arrow-left"></use></svg>
-                    </li>
+                 <a class="previous"  href="#previous">
+                     <svg class="icon icon-arrow-left" viewBox="0 0 32 32"><use xlink:href="#icon-arrow-left"></use></svg>
+                 </a>
+                <div class="carousel-window">
+                <ul style="width: {{scope.totaliconwidth}}px">
                     <li ng-repeat="image in assets" class="clearfix">
                     	<a id="thumb{{image.id}}" class="thumb">
                             <img ng-click='annotationEditor.switchToAsset("{{image.id}}")' ng-src="$home$apphome/views/modules/asset/downloads/preview/thumbsmall/{{image.sourcepath}}/thumb.jpg"></img>
                         </a>
                     </li>
-                    <li class="next icon-arrow-right">
-                        <svg class="icon icon-arrow-right" viewBox="0 0 32 32"><use xlink:href="#icon-arrow-right"></use></svg>
-                    </li>
                 </ul>
+                </div>
+                   <a class="next icon-arrow-right" href="#next">
+                       <svg class="icon icon-arrow-right" viewBox="0 0 32 32"><use xlink:href="#icon-arrow-right"></use></svg>
+                   </a>
             </div>
  			<div id="annotation-holder">
         

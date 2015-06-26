@@ -172,50 +172,51 @@ Below css from old highlights.css
   margin-top: 10px;
   margin-left: 10px;
 }
-.em-workspace .annotations-carousel ul {
-  margin: 0;
-  padding: 0 15px 0 5px;
-  list-style: none;
+.em-workspace .annotations-carousel .carousel-window {
+  overflow: hidden;
+   height: 83px;
+   width: 780px;
+   float:left;
+ 
+  
+  
+}
+.em-workspace .annotations-carousel ul
+{
+	 margin: 0;
+ 
+	padding: 0 15px 0 5px;
+	list-style: none;
+	height: 83px;
+	float:left;
 }
 .em-workspace .annotations-carousel ul li {
-  height: 60px;
-  
+  height: 66px;
   float: left;
   margin: 15px 0 0 12px;
   text-align: center;
   border-radius: 0;
   cursor: pointer;
-}
-.em-workspace .annotations-carousel ul li.thumb {
-  padding: 5px;
-  /* margin: 15px 40px; */
-}
-.em-workspace .annotations-carousel ul li.thumb a {
-  margin: 0px 0px 0px 15px;
-  background: #fff;
-  width: 98px;
-  height: 80px;
-  display: block;
-  float: right;
-  padding: 4px;
-  
-  /* margin: 15px 40px; */
+  background-color: #fff;
+
 }
 
+
 .em-workspace .annotations-carousel ul li a.thumb  {
-  height: 77px;
+  height: 58px;
   padding: 0;
   display: block;
-  /* width: 111px; */
-  float:  right;
-  margin-right: 10px;
-  margin-top: -7px;
-  background-color: #fff;
-  padding:  4px;
+  width: 111px;
+  margin: 4px;
+  overflow: hidden;
 }
+
+.em-workspace .annotations-carousel ul li.active {
+	background: yellow;
+}
+
 .em-workspace .annotations-carousel ul li a.thumb  img {
-  height: 100%;
-  
+ 
 }
 .em-workspace .annotations-carousel ul a.thumb:hover {
   background: #fff;
@@ -223,22 +224,28 @@ Below css from old highlights.css
 .em-workspace .annotations-carousel ul a.thumb.active {
   background: #abdcef;
 }
-.em-workspace .annotations-carousel ul li.previous,
-.em-workspace .annotations-carousel ul li.next {
-  width: 25px;
+.em-workspace .annotations-carousel a.previous,
+.em-workspace .annotations-carousel a.next {
+  width: 30px;
+  height: 83px;
+   display: block;
   background: none;
   cursor: pointer;
-  padding-top: 18px;
+  padding: 18px 0px 0px 10px;
 }
-.em-workspace .annotations-carousel ul li.previous .icon,
-.em-workspace .annotations-carousel ul li.next .icon {
+.em-workspace .annotations-carousel a.previous .icon,
+.em-workspace .annotations-carousel a.next .icon {
   fill: #333;
 }
-.em-workspace .annotations-carousel ul li.previous:hover .icon,
-.em-workspace .annotations-carousel ul li.next:hover .icon {
+.em-workspace .annotations-carousel a.previous:hover .icon,
+.em-workspace .annotations-carousel a.next:hover .icon {
   fill: #777;
 }
-.em-workspace .annotations-carousel ul li.next {
+.em-workspace .annotations-carousel a.previous {
+  float: left;
+}
+
+.em-workspace .annotations-carousel a.next {
   float: right;
 }
 .em-workspace .colorpicker span {
