@@ -9,11 +9,12 @@ public void init()
 		MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		
 		String prefix ="";
-		String sourcepath = mediaArchive.getAssetImporter().getAssetUtilities().createSourcePath(context,mediaArchive);
+		String name = context.getRequestParameter("name");
+		//String sourcepath = mediaArchive.getAssetImporter().getAssetUtilities().createSourcePath(context,mediaArchive,name);
 		
-		context.setRequestParameter("sourcepath",sourcepath);
-		context.putPageValue("sourcepath",sourcepath);
+		//context.setRequestParameter("sourcepath",sourcepath);
+		//context.putPageValue("sourcepath",sourcepath);
 		
 }
 
-init();
+//init();
