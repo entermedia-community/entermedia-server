@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="DataEditModule.saveData" alltypes="true"/>  
+	<path-action name="AssetEditModule.writeAssetKeywords"  alltypes="true"/>
+	<path-action name="AssetEditModule.writeXmpData"  alltypes="true"/>
+	<property name="searchtype">asset</property>
+	<property name="save">true</property>
+</page>

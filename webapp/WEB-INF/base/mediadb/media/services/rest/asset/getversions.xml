@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+#foreach( $revision in $allrevisions )
+	<revision number="$!{revision.getVersion()}" 
+		name="$!{revision.getName()}"
+		path="$!{revision.getPath()}"
+		bytes="$!{revision.getLength()}" 
+		size="$!{sizer.inEnglish($revision.getLength())}"
+		#if( $revision.author )
+			userid="$!{revision.author}"
+			user="$!{userManager.getUser($revision.author)}"
+		#end	
+		date="$!context.getLocaleManager().getDateStorageUtil().formatForStorage( $revision.lastModified())"
+		message="$!{revision.getMessage()}"
+	/>
+#end
+</rsp>
