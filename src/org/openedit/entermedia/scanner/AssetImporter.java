@@ -205,8 +205,7 @@ public class AssetImporter
 			return createAssetFromPage(inArchive, inUser, page);
 		}
 	}
-	
-	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)
+	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage, String inAssetId)
 	{
 		Asset asset = getAssetUtilities().createAssetIfNeeded(inAssetPage.getContentItem(),inArchive, inUser);
 		boolean existing = true;
@@ -222,6 +221,10 @@ public class AssetImporter
 		{
 			existing = false;
 		}
+		if( asset.getId() == null) 
+		{
+			asset.setId(inAssetId);
+		}
 		inArchive.saveAsset(asset, inUser);
 		if( existing )
 		{
@@ -236,6 +239,11 @@ public class AssetImporter
 		
 		
 		return asset;
+	}
+
+	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)
+	{
+		return createAssetFromPage(inArchive, inUser, inAssetPage, null);
 	}
 	
 	public List removeExpiredAssets(MediaArchive archive, String sourcepath, User inUser)

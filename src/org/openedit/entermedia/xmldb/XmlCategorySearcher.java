@@ -149,6 +149,7 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	public void saveCategory(Category inCategory)
 	{
 		saveData(inCategory,null);
+
 	}
 	
 	@Override
@@ -164,6 +165,7 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		Collection<Data> list = new ArrayList<Data>(1);
 		list.add(inData);
 		saveAllData(list,inUser);
+		getRootCategory().setProperty("dirty", true);
 	}	
 	@Override
 	public void saveAllData(Collection<Data> inAll, User inUser)
