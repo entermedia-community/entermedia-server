@@ -161,7 +161,7 @@ public class JsonModule extends BaseMediaModule
 	}
 
 
-
+	//Not used anymore?
 	public JSONObject handleAssetPost(WebPageRequest inReq)
 	{
 		inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
