@@ -20,8 +20,8 @@
 <option value=""></option>
 #foreach( $libraryid in $userprofile.getCombinedLibraries() )
 	#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
-	#set( $division = $searcherManager.getData($catalogid,"division",$library.division))
-	<option value="$libraryid">$division / $library</option>
+	#set( $project = $searcherManager.getData($catalogid,"project",$library.project))
+	<option value="$libraryid">$!project / $library</option>
 #end
 </select>
 

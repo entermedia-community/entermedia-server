@@ -5146,7 +5146,6 @@ p.resultsnumber {
     background-position: 240px 26px;
 }
 
-
 #de-side-nav .viewattachments .icon {
     background-position: 134px 0;
     width: 24px;
@@ -5167,14 +5166,14 @@ p.resultsnumber {
 #de-side-nav .current.assetpermissions, #de-side-nav .current.librarypermissions .icon {
     background-position: 85px 26px;
 }
-#de-side-nav .viewassetpreviewhistory .icon {
+#de-side-nav .converthistory .icon {
     background-position: 109px 0;
     width: 24px;
     height: 26px;
     left: 12px;
     top: 8px;
 }
-#de-side-nav .current.viewassetpreviewhistory .icon {
+#de-side-nav .current.converthistory .icon {
     background-position: 109px 26px;
 }
 #de-side-nav.open #opener .icon {

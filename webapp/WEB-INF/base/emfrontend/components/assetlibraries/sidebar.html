@@ -7,11 +7,11 @@
 	#set($selected = $hits.getInput("libraries") )
     	#foreach($libraryid in $userprofile.getCombinedLibraries() )
     		 #set( $library = $searcherManager.getData($catalogid,"library",$libraryid ) )
-    		 #set( $division = false )
-    		 #set( $division = $searcherManager.getData($catalogid,"division",$library.division ) )
+    		 #set( $project = false )
+    		 #set( $project = $searcherManager.getData($catalogid,"project",$library.project ) )
     		 
     		<li class="#if( $selected && $selected == $libraryid) currentsubtle #end "> 
-    				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">$division / $library</a>
+    				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">$project / $library</a>
     		</li>		
     	#end
     	</ul>
