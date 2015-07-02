@@ -72,7 +72,7 @@ public class YoutubeImporter implements UrlMetadataImporter
 		if (pcat == null)
 		{
 			pcat = new Category("users", "Users");
-			inArchive.getCategoryArchive().addChild(pcat);
+			inArchive.getCategorySearcher().saveCategory(pcat);
 		}
 		Category cat = inArchive.getCategory("users_" + inUser.getId());
 		if( cat == null)

@@ -22,6 +22,10 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	
 	public CategoryArchive getCategoryArchive()
 	{
+		if( fieldCategoryArchive == null)
+		{
+			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(),"categoryArchive");
+		}
 		return fieldCategoryArchive;
 	}
 
@@ -135,7 +139,8 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	@Override
 	public void deleteAll(User inUser)
 	{
-		getCategoryArchive().deleteCategory(getCategoryArchive().getRootCategory());
+		getCategoryArchive().deleteCategory(getRootCategory());
+		getRootCategory().refresh();
 	}
 
 	@Override
@@ -143,6 +148,7 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	{
 		Category cat = getCategoryArchive().getCategory(inData.getId());
 		getCategoryArchive().deleteCategory(cat);
+		getRootCategory().refresh();
 	}
 
 	@Override
@@ -165,7 +171,6 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		Collection<Data> list = new ArrayList<Data>(1);
 		list.add(inData);
 		saveAllData(list,inUser);
-		getRootCategory().setProperty("dirty", true);
 	}	
 	@Override
 	public void saveAllData(Collection<Data> inAll, User inUser)
@@ -207,10 +212,10 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	{
 		return getCategoryArchive().getRootCategory();
 	}
-	@Override
-	public void setCatalogId(String inCatalogId)
-	{
-		getCategoryArchive().setCatalogId(inCatalogId);
-		super.setCatalogId(inCatalogId);
-	}
+//	@Override
+//	public void setCatalogId(String inCatalogId)
+//	{
+//		getCategoryArchive().setCatalogId(inCatalogId);
+//		super.setCatalogId(inCatalogId);
+//	}
 }

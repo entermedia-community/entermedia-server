@@ -212,11 +212,11 @@ public class AssetUtilities
 			
 			//This now is really long, unique, and has a GUID...lets strip off the last folder?
 					
-			category = inArchive.getCategoryArchive().createCategoryTree(folderPath);
+			category = inArchive.getCategoryArchive().createCategoryTree(folderPath); //
 		}
 		else
 		{
-			category = inArchive.getCategoryArchive().getRootCategory();
+			category = inArchive.getCategorySearcher().getRootCategory();
 		}
 		if (inUser != null && category.getId().equals(inUser.getId())) //See if we are in the users home folder
 		{
@@ -224,7 +224,7 @@ public class AssetUtilities
 			{
 				category.setName(inUser.getShortDescription());
 				category.getParentCategory().setName("Users"); //fixes parent name
-				inArchive.getCategoryArchive().saveAll();
+				inArchive.getCategorySearcher().saveCategory(category.getParentCategory());
 			}
 		}
 

@@ -176,9 +176,15 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 
 	public Category getRootCategory()
 	{
-		if (fieldRootCatalog == null)
+		if (fieldRootCatalog == null )
 		{
-			reloadCategories();
+			synchronized (this )
+			{
+				if (fieldRootCatalog == null )
+				{
+					reloadCategories();
+				}
+			}
 		}
 		return fieldRootCatalog;
 	}
@@ -353,6 +359,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 			{
 				try
 				{
+					log.info("Reload categories.xml");
 					Element rootE = getXmlUtil().getXml(catalogFile.getReader(), catalogFile.getCharacterEncoding());
 					XMLConfiguration rootConfig = new XMLConfiguration();
 					rootConfig.populate(rootE);
@@ -365,10 +372,11 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 					else					
 					{
 						//Just update the root object
-						getRootCategory().setName(root.getName());
-						getRootCategory().setProperties(root.getProperties());
-						getRootCategory().setChildren(root.getChildren());
+						fieldRootCatalog.setName(root.getName());
+						fieldRootCatalog.setProperties(root.getProperties());
+						fieldRootCatalog.setChildren(root.getChildren());
 					}
+					//fieldRootCatalog.setProperty("dirty", "false");
 				}
 				catch (Exception ex)
 				{
@@ -543,6 +551,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 	public Category createCategoryTree(String inPath) throws OpenEditException
 	{
 		Category created = createCategoryTree(inPath, null);
+		saveCategory(created);
 
 		return created;
 	}
@@ -595,7 +604,6 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 				}
 			});
 			inParentCategory.setChildren(children);
-			saveAll(); //This is slow.
 			cacheCategory(child);
 		}
 		return child;

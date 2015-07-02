@@ -29,7 +29,7 @@ public class CategoryEditor {
 
 	public Category getCategory(String inCategoryId) throws OpenEditRuntimeException
 	{
-		return getMediaArchive().getCategoryArchive().getCategory(inCategoryId);
+		return getMediaArchive().getCategorySearcher().getCategory(inCategoryId);
 	}
 
 	public void moveCategoryUp(Category inCategory) throws OpenEditRuntimeException
@@ -130,7 +130,7 @@ public class CategoryEditor {
 //		 {
 //			 getMediaArchive().getCategoryArchive().setRootCategory(newCat);
 //		 }
-		 getMediaArchive().getCategoryArchive().cacheCategory(newCat);
+		 getMediaArchive().getCategorySearcher().saveCategory(newCat);
 		 return newCat;
 	 }
 
@@ -138,24 +138,24 @@ public class CategoryEditor {
 	 {
 		 if ( inCategory.getParentCategory() == null && getMediaArchive().getCategoryArchive().getRootCategory().getId() != inCategory.getId())
 		 {
-			 getMediaArchive().getCategoryArchive().getRootCategory().addChild(inCategory);
-			 getMediaArchive().getCategoryArchive().cacheCategory(inCategory);
+			 getMediaArchive().getCategorySearcher().getRootCategory().addChild(inCategory);
+			// getMediaArchive().getCategoryArchive().cacheCategory(inCategory);
 		 }
-		 try
-		 {
-			 Page desc = getPageManager().getPage(getMediaArchive().getCatalogHome() + "/categories/" + inCategory.getId() + ".html");
-			 if ( !desc.exists() )
-			 {
-				 StringItem item = new StringItem(desc.getPath(), " ",desc.getCharacterEncoding() );
-				 desc.setContentItem(item);
-				 getPageManager().putPage(desc);
-			 }
-		 }
-		 catch ( Exception ex )
-		 {
-			 throw new OpenEditRuntimeException(ex);
-		 }
-		 getMediaArchive().getCategoryArchive().saveCategory(inCategory);		
+//		 try
+//		 {
+//			 Page desc = getPageManager().getPage(getMediaArchive().getCatalogHome() + "/categories/" + inCategory.getId() + ".html");
+//			 if ( !desc.exists() )
+//			 {
+//				 StringItem item = new StringItem(desc.getPath(), " ",desc.getCharacterEncoding() );
+//				 desc.setContentItem(item);
+//				 getPageManager().putPage(desc);
+//			 }
+//		 }
+//		 catch ( Exception ex )
+//		 {
+//			 throw new OpenEditRuntimeException(ex);
+//		 }
+		 getMediaArchive().getCategorySearcher().saveCategory(inCategory);		
 	 }
 
 	 /**
@@ -170,13 +170,13 @@ public class CategoryEditor {
 			 Asset element = (Asset) iter.next();
 			 element.removeCategory(inCategory);
 		 }
-		 getMediaArchive().getCategoryArchive().deleteCategory(inCategory);
+		 getMediaArchive().getCategorySearcher().delete(inCategory,null);
 		 getMediaArchive().saveAssets(assets);
 	 }
 
 	 public Category getRootCategory() throws OpenEditRuntimeException
 	 {
-		 return getMediaArchive().getCategoryArchive().getRootCategory();
+		 return getMediaArchive().getCategorySearcher().getRootCategory();
 	 }
 
 	 public void clearCategories() throws OpenEditRuntimeException

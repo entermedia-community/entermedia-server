@@ -629,4 +629,9 @@ public class Category implements Data, SaveableData, Comparable<Category>
 		}
 		setProperty(inKey,values.toString());
 	}
+	
+	public boolean isDirty()
+	{
+		return Boolean.valueOf(get("dirty"));
+	}
 }
