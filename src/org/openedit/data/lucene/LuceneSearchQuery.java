@@ -20,7 +20,7 @@ import com.openedit.hittracker.Term;
 public class LuceneSearchQuery extends SearchQuery
 {
 	
-	protected List <PropertyDetail> fieldFacetList;
+	//protected List <PropertyDetail> fieldFacetList;
 	
 	
 
