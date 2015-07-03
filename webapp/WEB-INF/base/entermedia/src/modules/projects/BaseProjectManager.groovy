@@ -6,16 +6,16 @@ import model.projects.UserCollection
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
-import com.openedit.users.*
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.Asset
+import org.openedit.entermedia.MediaArchive
 import org.openedit.profile.UserProfile
 
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.FilterNode
 import com.openedit.hittracker.HitTracker
+import com.openedit.users.*
 
 public class BaseProjectManager implements ProjectManager
 {
@@ -140,7 +140,41 @@ public class BaseProjectManager implements ProjectManager
 		 
 		return usercollections;
 	}
-
+	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> assets)
+	{
+		addAssetToLibrary(inReq, archive, libraryid, assets);
+	
+		String librarycollection = inReq.getRequestParameter("librarycollection");
+		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
+	
+		List tosave = new ArrayList();
+		for(Data asset : assets)
+		{
+			Data found = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).match("asset", asset.getId()).searchOne();
+		
+			if (found == null)
+			{
+				found = librarycollectionassetSearcher.createNewData();
+				found.setSourcePath(libraryid + "/" + librarycollection);
+				found.setProperty("librarycollection", librarycollection);
+				found.setProperty("asset", asset.getId());
+				tosave.add(found);
+				if( tosave.size() > 200)
+				{
+					for(Data save : tosave)
+					{
+						librarycollectionassetSearcher.saveData(save, inReq.getUser());
+					}
+					tosave.clear();
+				}
+				//log.info("Saved " + found.getId());
+			}
+		}
+		for(Data found : tosave)
+		{
+			librarycollectionassetSearcher.saveData(found, inReq.getUser());
+		}
+	}
 	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid)
 	{
 		addAssetToLibrary(inReq, archive, libraryid, assetid);
@@ -158,6 +192,32 @@ public class BaseProjectManager implements ProjectManager
 			found.setProperty("asset", assetid);
 			librarycollectionassetSearcher.saveData(found, inReq.getUser());
 			log.info("Saved " + found.getId());
+		}
+	}
+	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> assets)
+	{
+		List tosave = new ArrayList();
+		for(Data toadd: assets)
+		{
+			Asset asset = archive.getAssetSearcher().loadData(toadd)
+		
+			if (asset != null && !asset.getLibraries().contains(libraryid))
+			{
+				asset.addLibrary(libraryid);
+				tosave.add(asset);
+				if( tosave.size() > 500)
+				{
+					for(Data save : tosave)
+					{
+						archive.saveAsset(save, inReq.getUser());
+					}
+					tosave.clear();
+				}
+			}
+		}
+		for(Data asset : tosave)
+		{
+			archive.saveAsset(asset, inReq.getUser());
 		}
 	}
 

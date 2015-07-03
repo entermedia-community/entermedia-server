@@ -58,11 +58,7 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( tracker != null && tracker.size() > 0 )
 			{
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-				{
-					Data data = (Data) iterator.next();
-					manager.addAssetToCollection(inReq, archive, libraryid, data.getId());
-				}
+				manager.addAssetToCollection(inReq, archive, libraryid, tracker);
 				inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
 				return;
 			}
@@ -88,16 +84,12 @@ public class ProjectModule extends BaseMediaModule
 			if( tracker != null )
 			{
 				tracker = tracker.getSelectedHitracker();
-			}
-			if( tracker != null && tracker.size() > 0 )
-			{
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+				if( tracker != null && tracker.size() > 0 )
 				{
-					Data data = (Data) iterator.next();
-					manager.addAssetToLibrary(inReq, archive, libraryid, data.getId());
+					manager.addAssetToLibrary(inReq, archive, libraryid, tracker);
+					inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
+					return;
 				}
-				inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
-				return;
 			}
 		}
 

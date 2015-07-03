@@ -56,7 +56,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 	{
 		if (fieldXmlDataArchive == null)
 		{
-			fieldXmlDataArchive = (XmlDataArchive)getModuleManager().getBean(getCatalogId(),"xmlDataArchive");
+			fieldXmlDataArchive = (XmlDataArchive)getModuleManager().getBean(getCatalogId(),"xmlDataArchive",false);
 			fieldXmlDataArchive.setDataFileName(getDataFileName());
 			fieldXmlDataArchive.setElementName(getSearchType());
 			fieldXmlDataArchive.setPathToData(getPathToData());
