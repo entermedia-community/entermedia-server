@@ -3586,6 +3586,7 @@ body #emcontainer .emasseteditorarea {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
 }
 #emcontainer #emselectable #main-results-table #tableheader th, .settings-table #tableheader th {
+	position: relative;
     color: #fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.2);
     background: rgba(0,0,0,0);
@@ -3624,12 +3625,6 @@ body #emcontainer .emasseteditorarea {
     box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
     border-right: none;
     
-}
-#emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort.up {
-    background: rgba(0,0,0,0.1) url('../images/sort-asc.png') right 12px no-repeat;
-}
-#emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort.down {
-    background: rgba(0,0,0,0.1) url('../images/sort-desc.png') right 12px no-repeat;
 }
 #th-checkbox .anchor {
     position: relative; 
@@ -4200,6 +4195,18 @@ div#folders.add .folder {
     color: #444;
     background: #ededed url('../images/sidebar-shadow.png') top right repeat-y;
 }
+
+#tableheader th.sortable div span.glyphicon {	
+
+	font-size: 10px;
+	float: right;
+	margin-top: 8px;
+	margin-right: 8px;
+	position: absolute;
+	right: 0;
+
+}
+
 #side-nav-inner ul li.ui-sortable-helper a:hover {
     background: #fff;
 }
@@ -6713,6 +6720,7 @@ div.tableheaderactions a
 .checkbox input[type="checkbox"] {
     margin-top: -2px;
     margin-left: 1px;
+	position: relative;
 }
 
 .checkbox input[type="checkbox"]:not(.categorycheckbox) {
