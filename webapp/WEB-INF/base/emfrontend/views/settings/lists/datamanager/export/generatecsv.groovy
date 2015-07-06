@@ -27,7 +27,7 @@ if(details == null){
 Writer output = context.getPageStreamer().getOutput().getWriter();
 
 //StringWriter output  = new StringWriter();
-CSVWriter writer  = new CSVWriter(output);
+CSVWriter writer  = new CSVWriter(output,CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
 int count = 0;
 headers = new String[details.size()];
 for (Iterator iterator = details.iterator(); iterator.hasNext();)

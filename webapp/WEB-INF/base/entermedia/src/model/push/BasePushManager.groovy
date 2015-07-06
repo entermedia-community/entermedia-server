@@ -1,17 +1,6 @@
 package model.push;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import org.openedit.data.PropertyDetail;
-
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
 
 import org.apache.commons.httpclient.HttpClient
 import org.apache.commons.httpclient.HttpException
@@ -23,14 +12,15 @@ import org.apache.commons.httpclient.methods.multipart.Part
 import org.apache.commons.httpclient.methods.multipart.StringPart
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.dom4j.Attribute
 import org.dom4j.DocumentException
 import org.dom4j.Element
-import org.dom4j.io.SAXReader;
-import org.dom4j.Attribute;
 import org.entermedia.upload.FileUpload
 import org.entermedia.upload.FileUploadItem
 import org.entermedia.upload.UploadRequest
 import org.openedit.Data
+import org.openedit.data.ImmutableData
+import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
@@ -47,7 +37,7 @@ import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
-import com.openedit.modules.update.Downloader;
+import com.openedit.modules.update.Downloader
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 import com.openedit.users.User
@@ -1080,7 +1070,7 @@ asset: " + asset);
 		
 		//Make sure we ADD libraries not replace them
 		Collection existing = target.getLibraries();
-		archive.getAssetSearcher().updateData(inReq, fields, target);
+		archive.getAssetSearcher().updateData(inReq, fields, new ImmutableData(target));
 
 		String libraries = inReq.getRequestParameter("libraries");
 		if( libraries != null )
