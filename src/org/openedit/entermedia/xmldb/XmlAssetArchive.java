@@ -13,14 +13,15 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.entermedia.cache.CacheManager;
 import org.entermedia.locks.Lock;
-import org.entermedia.locks.LockManager;
 import org.openedit.Data;
+import org.openedit.data.BaseDataArchive;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.entermedia.Asset;
@@ -32,6 +33,7 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.RelatedAsset;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlArchive;
 
 import com.openedit.ModuleManager;
@@ -49,22 +51,23 @@ import com.openedit.util.XmlUtil;
  * 
  * @author cburkey
  */
-public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
+public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 {
 	private static final Log log = LogFactory.getLog(XmlAssetArchive.class);
-
 
 	protected PageManager fieldPageManager;
 	protected ModuleManager fieldModuleManager;
 	protected MediaArchive fieldMediaArchive;
 	protected XmlUtil fieldXmlUtil;
-	
-	
 	protected boolean fieldUpdateExistingRecord = true;
 	protected CacheManager fieldCacheManager;
-	public XmlAssetArchive()
+	protected XmlArchive fieldXmlArchive;
+
+	
+	
+	public XmlArchive getXmlArchive()
 	{
-		log.debug("Created archive");
+		return fieldXmlArchive;
 	}
 
 	public CacheManager getCacheManager()
@@ -128,7 +131,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		Asset item = (Asset)getCacheManager().get(toCacheId(), inSourcePath);
 		if( item == null)
 		{
-			item = new Asset();
+			item = new Asset(getMediaArchive());
 			item.setCatalogId(getCatalogId());
 			item.setSourcePath(inSourcePath);
 			String url = buildXmlPath(item);
@@ -219,17 +222,56 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		{
 			return false;
 		}
+		populateAsset(asset,inAsset);
 		
-		boolean ok =  populateAsset(inAsset, asset);
 		if( inAsset.getId() == null)
 		{
 			throw new OpenEditException("Id is required " + assetPage.getPath());
 		}
-		return ok;
+		return true;
 	}
 	
-	protected boolean populateAsset(Asset inAsset, Element inAssetElement) 
+	protected void populateFromData(Element inElement, Asset inAsset)
 	{
+		ElementData data = new ElementData(inElement);
+		inAsset.setId(data.getId());
+		inAsset.setName(data.getName());
+		inAsset.setSourcePath(data.getSourcePath());
+		for (Iterator iterator = data.getProperties().keySet().iterator(); iterator.hasNext();)
+		{
+			String key	= (String) iterator.next();
+			inAsset.setProperty(key, data.get(key));
+		}
+		
+		inAsset.clearCategories();
+		Collection collection = data.getValues("category-exact");
+		if( collection != null)
+		{
+			for (Object o: collection)
+			{
+				String catid = (String)o;
+				Category category = getCategoryArchive().getCategory(catid);
+				if (category == null)
+				{
+					log.debug("Could not find a category with id: " + catid);
+					continue;
+				}
+				inAsset.addCategory(category);
+			}
+		}
+		
+	}
+	
+	protected void populateAsset(Element inAssetElement, Asset inAsset) 
+	{
+		if( inAssetElement.getName().equals("assets")) //This was due to a mistake. 
+			//We needed to export out a bunch of assets
+		{
+			//this is a multifile asset
+			Element row = (Element)inAssetElement.elementIterator().next();
+			populateFromData(row,inAsset);	
+			return;
+		}
 		String name = inAssetElement.attributeValue("name");
 		inAsset.setName(name);
 
@@ -276,7 +318,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		ContentItem originalPage = getPageManager().getRepository().getStub("/WEB-INF/data/" + inAsset.getCatalogId() + "/originals/" + inAsset.getSourcePath());
 		inAsset.setFolder(originalPage.isFolder());
 		loadRelatedAssets(inAsset, inAssetElement);
-		return true;
 	}
 
 	protected void loadRelatedAssets(Asset inAsset, Element inAssetConfig)
@@ -323,12 +364,12 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		Lock lock = null;
 		try
 		{
-			lock = getMediaArchive().getLockManager().lock(getCatalogId(), "assets/" + inAsset.getSourcePath(),"admin");
+			lock = getMediaArchive().getLockManager().lock("assets/" + inAsset.getSourcePath(),"admin");
 			saveAsset(inAsset, inUser, lock);
 		}
 		finally
 		{
-			getMediaArchive().getLockManager().release(getCatalogId(), lock);
+			getMediaArchive().releaseLock(lock);
 		}
 	}
 	
@@ -561,7 +602,7 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		{
 			Element categoriesConfig = (Element) o;
 			String catid = categoriesConfig.attributeValue("id");
-			Category category = getCategoryArchive().getCategory(catid);
+			Category category = getMediaArchive().getCategorySearcher().getCategory(catid);
 			if (category == null)
 			{
 				log.debug("Could not find a category with id: " + catid);
@@ -634,10 +675,37 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 	@Override
 	public void setXmlArchive(XmlArchive inXmlArchive)
 	{
-		// TODO Auto-generated method stub
+		fieldXmlArchive = inXmlArchive;
+
+	}
+
+
+	@Override
+	public void delete(Data inData, User inUser)
+	{
+		deleteAsset((Asset)inData);
+	}
+
+	public void saveAllData(Collection<Data> inAll,User inUser)
+	{
+		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			Lock lock = null;
+			try
+			{
+				lock = getMediaArchive().lock("assets/" + asset.getSourcePath(),"XmlAssetArchive.saveAllData");
+				saveAsset(asset, inUser, lock);
+			}
+			finally
+			{
+				getMediaArchive().releaseLock(lock);
+			}
+		}
 		
 	}
 
+	//Hard coded 
 	@Override
 	public void setDataFileName(String inDataFileName)
 	{
@@ -659,47 +727,6 @@ public class XmlAssetArchive extends BaseXmlArchive implements AssetArchive
 		
 	}
 
-	@Override
-	public XmlArchive getXmlArchive()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public void delete(Data inData, User inUser)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void saveAllData(Collection<Data> inAll,String catalogid, String inLockPrefix, User inUser)
-	{
-		for (Iterator iterator = inAll.iterator(); iterator.hasNext();)
-		{
-			Asset asset = (Asset) iterator.next();
-			Lock lock = null;
-			try
-			{
-				lock = getMediaArchive().getLockManager().lock(getCatalogId(), inLockPrefix + asset.getSourcePath(),"admin");
-				saveAsset(asset, inUser, lock);
-			}
-			finally
-			{
-				getMediaArchive().getLockManager().release(getCatalogId(), lock);
-			}
-		}
-		
-	}
-
-	@Override
-	public void saveData(Data inData, User inUser, Lock inLock) {
-		
-		saveAsset((Asset)inData, inUser);
-
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 }

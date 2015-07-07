@@ -6,7 +6,7 @@
   <property id="folder" editable="true" index="true" stored="true" note="Relative Folder hotfolder/sub1/song123">Hot Folder Path</property>
   <property id="giturl" editable="true" index="true" stored="true" note="ssh://servername/vol1/git/song123.git">Git URL</property>
 
-  <property id="division" type="list" viewtype="list" editable="true" index="true"  sort="name" stored="true" >Division</property>
+  <property id="project" type="list" viewtype="list" editable="true" index="true"  sort="name" stored="true" >Project</property>
   <!--  property id="gitprojectname" editable="true" index="true" stored="true" note="Just the name">Git Project Name</property  -->
   <property id="startdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="library" internalfield="false" datatype="date">Start Date</property>
   <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="library" internalfield="false" datatype="list">Project Status</property>

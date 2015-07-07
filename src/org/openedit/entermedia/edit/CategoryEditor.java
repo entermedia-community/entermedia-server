@@ -29,7 +29,7 @@ public class CategoryEditor {
 
 	public Category getCategory(String inCategoryId) throws OpenEditRuntimeException
 	{
-		return getMediaArchive().getCategoryArchive().getCategory(inCategoryId);
+		return getMediaArchive().getCategorySearcher().getCategory(inCategoryId);
 	}
 
 	public void moveCategoryUp(Category inCategory) throws OpenEditRuntimeException
@@ -122,15 +122,15 @@ public class CategoryEditor {
 		 {
 			 getCurrentCategory().addChild(newCat);
 		 }
-		 else if (getRootCategory() != null)
+		 else
 		 {
 			 getRootCategory().addChild(newCat);
 		 }
-		 else
-		 {
-			 getMediaArchive().getCategoryArchive().setRootCategory(newCat);
-		 }
-		 getMediaArchive().getCategoryArchive().cacheCategory(newCat);
+//		 else
+//		 {
+//			 getMediaArchive().getCategoryArchive().setRootCategory(newCat);
+//		 }
+		 getMediaArchive().getCategorySearcher().saveCategory(newCat);
 		 return newCat;
 	 }
 
@@ -138,24 +138,24 @@ public class CategoryEditor {
 	 {
 		 if ( inCategory.getParentCategory() == null && getMediaArchive().getCategoryArchive().getRootCategory().getId() != inCategory.getId())
 		 {
-			 getMediaArchive().getCategoryArchive().getRootCategory().addChild(inCategory);
-			 getMediaArchive().getCategoryArchive().cacheCategory(inCategory);
+			 getMediaArchive().getCategorySearcher().getRootCategory().addChild(inCategory);
+			// getMediaArchive().getCategoryArchive().cacheCategory(inCategory);
 		 }
-		 try
-		 {
-			 Page desc = getPageManager().getPage(getMediaArchive().getCatalogHome() + "/categories/" + inCategory.getId() + ".html");
-			 if ( !desc.exists() )
-			 {
-				 StringItem item = new StringItem(desc.getPath(), " ",desc.getCharacterEncoding() );
-				 desc.setContentItem(item);
-				 getPageManager().putPage(desc);
-			 }
-		 }
-		 catch ( Exception ex )
-		 {
-			 throw new OpenEditRuntimeException(ex);
-		 }
-		 getMediaArchive().getCategoryArchive().saveCategory(inCategory);		
+//		 try
+//		 {
+//			 Page desc = getPageManager().getPage(getMediaArchive().getCatalogHome() + "/categories/" + inCategory.getId() + ".html");
+//			 if ( !desc.exists() )
+//			 {
+//				 StringItem item = new StringItem(desc.getPath(), " ",desc.getCharacterEncoding() );
+//				 desc.setContentItem(item);
+//				 getPageManager().putPage(desc);
+//			 }
+//		 }
+//		 catch ( Exception ex )
+//		 {
+//			 throw new OpenEditRuntimeException(ex);
+//		 }
+		 getMediaArchive().getCategorySearcher().saveCategory(inCategory);		
 	 }
 
 	 /**
@@ -170,13 +170,13 @@ public class CategoryEditor {
 			 Asset element = (Asset) iter.next();
 			 element.removeCategory(inCategory);
 		 }
-		 getMediaArchive().getCategoryArchive().deleteCategory(inCategory);
+		 getMediaArchive().getCategorySearcher().delete(inCategory,null);
 		 getMediaArchive().saveAssets(assets);
 	 }
 
 	 public Category getRootCategory() throws OpenEditRuntimeException
 	 {
-		 return getMediaArchive().getCategoryArchive().getRootCategory();
+		 return getMediaArchive().getCategorySearcher().getRootCategory();
 	 }
 
 	 public void clearCategories() throws OpenEditRuntimeException
@@ -359,52 +359,52 @@ public class CategoryEditor {
 		fieldCurrentCategory = currentCategory;
 	}
 
-	 public void reBuildCategories() throws OpenEditRuntimeException
-	 {
-		Page totrash = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/categories.xml" );
-		getPageManager().removePage(totrash);
-		
-		String	datadir = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
-		getMediaArchive().getCategoryArchive().clearCategories();
-		Category root = getMediaArchive().getCategoryArchive().createNewCategory("Index");
-		getMediaArchive().getCategoryArchive().setRootCategory(root);
-
-		reBuildCategories(getMediaArchive().getCategoryArchive(), root, datadir,datadir);
-		
-	 }
-
-	private void reBuildCategories(CategoryArchive inCategoryArchive, Category inParent,  String inStartingFrom, String inFolder )
-	{
-		List children = getPageManager().getChildrenPaths(inFolder);
-		List assets = new ArrayList();
-		for (Iterator iterator = children.iterator(); iterator.hasNext();)
-		{
-			String path = (String) iterator.next();
-			ContentItem item = getPageManager().getRepository().get(path);
-			String source = path.substring(inStartingFrom.length());
-			Asset existing = getMediaArchive().getAssetBySourcePath(source);
-
-			if( existing == null && item.isFolder() )
-			{
-				Category cat = inCategoryArchive.createCategoryTree(source);
-				reBuildCategories(inCategoryArchive,cat, inStartingFrom,path);
-			}
-			else if(existing != null )
-			{
-				if( existing.getCategories().size() == 1 )
-				{
-					Category found = (Category)existing.getCategories().get(0);
-					if( found.getId().equals(inParent.getId() ) )
-					{
-						continue;
-					}
-				}
-				existing.clearCategories();
-				existing.addCategory(inParent);
-				assets.add(existing);
-			}
-		}
-		getMediaArchive().saveAssets(assets);
-	}
-	
+//	 public void reBuildCategories() throws OpenEditRuntimeException
+//	 {
+//		Page totrash = getPageManager().getPage("/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/categories.xml" );
+//		getPageManager().removePage(totrash);
+//		
+//		String	datadir = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals/";
+//		getMediaArchive().getCategoryArchive().clearCategories();
+//		//Category root = getMediaArchive().getCategoryArchive().createNewCategory("Index");
+//		//getMediaArchive().getCategoryArchive().setRootCategory(root);
+//
+//		reBuildCategories(getMediaArchive().getCategoryArchive(), root, datadir,datadir);
+//		
+//	 }
+//
+//	private void reBuildCategories(CategoryArchive inCategoryArchive, Category inParent,  String inStartingFrom, String inFolder )
+//	{
+//		List children = getPageManager().getChildrenPaths(inFolder);
+//		List assets = new ArrayList();
+//		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+//		{
+//			String path = (String) iterator.next();
+//			ContentItem item = getPageManager().getRepository().get(path);
+//			String source = path.substring(inStartingFrom.length());
+//			Asset existing = getMediaArchive().getAssetBySourcePath(source);
+//
+//			if( existing == null && item.isFolder() )
+//			{
+//				Category cat = inCategoryArchive.createCategoryTree(source);
+//				reBuildCategories(inCategoryArchive,cat, inStartingFrom,path);
+//			}
+//			else if(existing != null )
+//			{
+//				if( existing.getCategories().size() == 1 )
+//				{
+//					Category found = (Category)existing.getCategories().get(0);
+//					if( found.getId().equals(inParent.getId() ) )
+//					{
+//						continue;
+//					}
+//				}
+//				existing.clearCategories();
+//				existing.addCategory(inParent);
+//				assets.add(existing);
+//			}
+//		}
+//		getMediaArchive().saveAssets(assets);
+//	}
+//	
 }

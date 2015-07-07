@@ -2,11 +2,7 @@ package org.openedit.entermedia.modules;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
@@ -175,6 +171,17 @@ public class CategoryModule extends BaseMediaModule
 				}
 			}
 		}
+		else
+		{
+			String catid = inReq.getRequestParameter("nodeID");
+			Object target = tree.getModel().getChildById(catid);
+			//tree.getTreeRenderer().expandNode(target);
+			tree.getTreeRenderer().selectNodes(null);
+			tree.getTreeRenderer().selectNode(target);
+			
+		}
+
+		
 		String clear = inReq.getRequestParameter("clearselection");
 		if( Boolean.parseBoolean(clear))
 		{
@@ -355,14 +362,14 @@ public class CategoryModule extends BaseMediaModule
 		{
 			String text = inReq.getRequestParameter("addtext");
 			Category child = archive.getCategoryArchive().createNewCategory(text);
-			if( archive.getCategory(child.getId()) != null )
+			if( child.getId() != null && archive.getCategory(child.getId()) != null )
 			{
 				//fix duplicate id
 				child.setId(catid + "-" + child.getId());
 			}
 			parent.addChild(child);
-			archive.getCategoryArchive().cacheCategory(child);
-			archive.getCategoryArchive().saveAll();
+			archive.getCategoryArchive().saveCategory(child);
+			//archive.getCategoryArchive().saveAll();
 		}
 		inReq.setRequestParameter("reload", "true");
 		WebTree tree = getCatalogTree(inReq);
@@ -403,12 +410,12 @@ public class CategoryModule extends BaseMediaModule
 			}
 		}
 	}
-	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
-	{
-		WebTree tree = getCatalogTree(inReq);
-		MediaArchive archive = getMediaArchive(inReq);
-		archive.getCategoryEditor().reBuildCategories();
-		reloadTree(inReq);
-	}	
+//	public void reBuildTree(WebPageRequest inReq) throws OpenEditException
+//	{
+//		WebTree tree = getCatalogTree(inReq);
+//		MediaArchive archive = getMediaArchive(inReq);
+//		archive.getCategoryEditor().reBuildCategories();
+//		reloadTree(inReq);
+//	}	
 
 }

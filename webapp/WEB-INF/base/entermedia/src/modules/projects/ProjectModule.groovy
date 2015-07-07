@@ -58,11 +58,7 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( tracker != null && tracker.size() > 0 )
 			{
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-				{
-					Data data = (Data) iterator.next();
-					manager.addAssetToCollection(inReq, archive, libraryid, data.getId());
-				}
+				manager.addAssetToCollection(inReq, archive, libraryid, tracker);
 				inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
 				return;
 			}
@@ -88,16 +84,12 @@ public class ProjectModule extends BaseMediaModule
 			if( tracker != null )
 			{
 				tracker = tracker.getSelectedHitracker();
-			}
-			if( tracker != null && tracker.size() > 0 )
-			{
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+				if( tracker != null && tracker.size() > 0 )
 				{
-					Data data = (Data) iterator.next();
-					manager.addAssetToLibrary(inReq, archive, libraryid, data.getId());
+					manager.addAssetToLibrary(inReq, archive, libraryid, tracker);
+					inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
+					return;
 				}
-				inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
-				return;
 			}
 		}
 
@@ -116,13 +108,20 @@ public class ProjectModule extends BaseMediaModule
 		Collection<String> ids = manager.loadAssetsInCollection(inReq, archive, collectionid );
 		//Do an asset search with permissions, showing only the assets on this collection
 		HitTracker all = archive.getAssetSearcher().getAllHits();
+		
 		all.setSelections(ids);
 		all.setShowOnlySelected(true);
+		String hpp = inReq.getRequestParameter("page");
+		if( hpp != null)
+		{
+			all.setPage(Integer.parseInt( hpp ) );
+		}
 		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
 		if( usersettings != null )
 		{
 			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
 		}
+		//all.setHitsPerPage(1000);
 		all.getSearchQuery().setHitsName("collectionassets");
 		inReq.putPageValue("hits", all);
 		inReq.putSessionValue(all.getSessionId(),all);

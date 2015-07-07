@@ -46,6 +46,36 @@ var AnnotationEditor = function(scope) {
 					div.find("button").hide();
 				}
 			});
+			
+			$(".annotations-carousel a.next").on("click",function() 
+			{
+				var wind = $(".annotations-carousel .carousel-window");
+				var wwide = wind.width();
+				
+				var ul = $(".annotations-carousel .carousel-window ul");
+				var ulwide = ul.width();
+				//.css("margin-left","-800px");
+				var n = parseFloat(ul.css("margin-left"));
+				if( Math.abs(n) < ulwide )
+				{
+					n = n - wwide;					
+					ul.animate({ marginLeft: n + 'px' });
+				}
+			});
+			$(".annotations-carousel a.previous").on("click",function() 
+				{
+					var wind = $(".annotations-carousel .carousel-window");
+					var wwide = wind.width();
+					
+					var ul = $(".annotations-carousel .carousel-window ul");
+					var ulwide = ul.width();
+					var n = parseFloat(ul.css("margin-left"));
+					if( Math.abs(n) > 0)
+					{
+						n = n + wwide;					
+						ul.animate({ marginLeft: n + 'px' });
+					}
+				});
 		}
 		,
 		showColorPicker: function()
@@ -205,19 +235,21 @@ var AnnotationEditor = function(scope) {
 
 			// it seems like we trash the data when we render, thus may need to update the active status post-render
 
+			///TODO Mark the ones that have annotations on it
 			$("a.thumb").each(function()
 				{
 					var element = $(this);
 					if (element.attr("id") == "thumb" + inAnnotatedAsset.assetData.id)
 					{
-						element.addClass("active");
+						element.parent().addClass("active");
 					}
 					else
 					{
-						element.removeClass("active");
+						element.parent().removeClass("active");
 					}
 				}
 			);
+			
 			// jAngular.render("#annotationlist"); // shouldn't have to do this
 			// this method also needs to clear the canvas and comments and update from the persisted data
 			// DONE: Clear canvas state, refresh with AnnotatedAsset data
@@ -345,13 +377,13 @@ var AnnotationEditor = function(scope) {
 		{
 			jQuery.ajax({
 				type: "GET",
-				url: scope.dbhome + "/services/module/librarycollection/viewassets.json?id=" + scope.collectionid + "&catalogid=" + scope.catalogid,
+				url: scope.dbhome + "/services/module/librarycollection/viewassets.json?id=" + scope.collectionid,
 				async: false,
 				error: function(data, status, err) {
 					console.log('from error:', data);
 				},
 				success: function(data) {
-					// console.log('from success:', data);
+					//console.log('from success:', data);
 					scope.add('assets', data);
 					if( data.length > 0 )
 					{
@@ -373,6 +405,8 @@ var AnnotationEditor = function(scope) {
 					
 					scope.annotationEditor.fabricModel.selectTool("draw");
 					//Grab list of users and annotations for assets
+					var totalwidth = data.length * 131;
+					scope.add("totaliconwidth",totalwidth);
 					
 				},
 				failure: function(errMsg) {

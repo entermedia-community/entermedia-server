@@ -3,7 +3,12 @@
  */
 package org.openedit.entermedia;
 
+import java.util.Collection;
+
+import org.entermedia.locks.Lock;
+import org.openedit.Data;
 import org.openedit.data.DataArchive;
+import org.openedit.xml.XmlArchive;
 
 import com.openedit.users.User;
 
@@ -14,6 +19,18 @@ import com.openedit.users.User;
 public interface AssetArchive extends DataArchive
 {
 
+	void setXmlArchive(XmlArchive inXmlArchive);
+
+	void setDataFileName(String inDataFileName);
+
+	void setElementName(String inSearchType);
+
+	void setPathToData(String inPathToData);
+
+	XmlArchive getXmlArchive();
+
+	void delete(Data inData, User inUser);
+	
 	public Asset getAssetBySourcePath(String inSourcePath, boolean inAutoCreate);
 	public Asset getAssetBySourcePath(String inSourcePath);
 
@@ -27,10 +44,7 @@ public interface AssetArchive extends DataArchive
 	void saveAsset(Asset inAsset);
 	
 	void deleteAsset(Asset inItem);
-		
-	void setCatalogId(String inId);
-	String getCatalogId();
-	
+			
 	public String buildXmlPath(Asset inAsset);
 
 }

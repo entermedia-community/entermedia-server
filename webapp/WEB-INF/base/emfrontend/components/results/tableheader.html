@@ -20,13 +20,19 @@
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
 	
-		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id">
+		<th  class="sortable #if($edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" sortby="$detail.id">
 					
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
-					#if( $edit)
+					#if($edit)
 						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
-					
+					#elseif ($sortby.startsWith($detail.getId()))
+		 				#if($sortby.endsWith("Up"))
+		 				#set($sorticon="top")
+		 				#elseif ($sortby.endsWith("Down") )
+		 				#set($sorticon="bottom")
+		 				#end	
+		 				<span class="glyphicon glyphicon-triangle-$sorticon"></span>
 					#end
 			</div>
 		 </th>

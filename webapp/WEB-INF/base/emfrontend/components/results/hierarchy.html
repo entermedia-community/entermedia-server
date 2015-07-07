@@ -1,4 +1,4 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" >
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-category="$!category.getId()">
 
 ### style 
 ### style="border-style: solid;border-width: 1px; color:red;"
@@ -8,17 +8,7 @@
 	#if( $hideheader &&  $hideheader != "true")
 		$pages.include("$apphome/components/results/header.html",$context) 
 	#end
-	#if($category)
-		#set($categorycarousel = "true")
-		$context.putPageValue("categorycarousel","true")
-	#else
-		#set($categorycarousel = "false")
-		$context.putPageValue("categorycarousel","false")
-	#end
-	
-	#if($categorycarousel == "true")
 		$pages.include("$apphome/components/results/hierarchy-categories.html",$context)
-	#end
 	
 	$context.putPageValue("assetrootfolder", "/$catalogid/assets")
 	#if( !$thumbsize )

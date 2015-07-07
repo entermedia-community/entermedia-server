@@ -191,31 +191,32 @@ public class AssetUtilities
 		if (dir.length() > datadir.length())
 		{
 			String folderPath = dir.substring(datadir.length());
-			String folderfilter = inArchive.getCatalogSettingValue("categorytreemask");
-			if(folderfilter == null || folderfilter.length() == 0){
-				return;
-				
-			}
-			HashMap properties = new HashMap();
-			for (Iterator iterator = asset.getProperties().keySet().iterator(); iterator.hasNext();)
-			{
-				String key = (String) iterator.next();
-				String value = asset.get(key);
-				properties.put(key, value);
-			}
-			if(inUser != null){
-				properties.put("username", inUser.getUserName());
-			}
-			properties.put("folderpath", folderPath);
-			String categorypath = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), folderfilter, properties);
+//			This code is not needed. Just user runtime filters for categories			
+//			String folderfilter = inArchive.getCatalogSettingValue("categorytreemask");
+//			if(folderfilter == null || folderfilter.length() == 0){
+//				return;
+//				
+//			}
+//			HashMap properties = new HashMap();
+//			for (Iterator iterator = asset.getProperties().keySet().iterator(); iterator.hasNext();)
+//			{
+//				String key = (String) iterator.next();
+//				String value = asset.get(key);
+//				properties.put(key, value);
+//			}
+//			if(inUser != null){
+//				properties.put("username", inUser.getUserName());
+//			}
+//			properties.put("folderpath", folderPath);
+//			String categorypath = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), folderfilter, properties);
 			
 			//This now is really long, unique, and has a GUID...lets strip off the last folder?
 					
-			category = inArchive.getCategoryArchive().createCategoryTree(categorypath);
+			category = inArchive.getCategoryArchive().createCategoryTree(folderPath); //
 		}
 		else
 		{
-			category = inArchive.getCategoryArchive().getRootCategory();
+			category = inArchive.getCategorySearcher().getRootCategory();
 		}
 		if (inUser != null && category.getId().equals(inUser.getId())) //See if we are in the users home folder
 		{
@@ -223,7 +224,7 @@ public class AssetUtilities
 			{
 				category.setName(inUser.getShortDescription());
 				category.getParentCategory().setName("Users"); //fixes parent name
-				inArchive.getCategoryArchive().saveAll();
+				inArchive.getCategorySearcher().saveCategory(category.getParentCategory());
 			}
 		}
 
@@ -350,6 +351,10 @@ public class AssetUtilities
 		if(fileName != null)
 		{
 			vals.put("filename", fileName);
+			String ext = PathUtilities.extractPageType(fileName);
+			String render = inArchive.getMediaRenderType(ext);
+			vals.put("extension", ext);
+			vals.put("rendertype", render);			
 		}
 		//vals.put("filename", item.getName());
 		//vals.put("guid", item.getName());

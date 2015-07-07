@@ -14,7 +14,10 @@ var uploadid;
          		for (var i = 0; i < files.length; i++) 
         	 	{
         	    	var file = files[i];
-        	    	allfiles.push(file);
+        	    	if( file.size > 0)
+ 	        	    {
+        	    		allfiles.push(file);
+ 	        	    }
         	    }
         	    files = allfiles;
 				var inputbox = jQuery("#upload_field")[0];
@@ -33,16 +36,19 @@ var uploadid;
 	        	 for (var i = 0; i < files.length; i++) 
 	        	 {
 	        	    var file = files[i];
+	        	    if( file.size > 0)
+	        	    {
+		        	    var html = $("#progress_report_template").html();
+		        	    
+		        	    html = html.replace(regex,i);
+		        	    $("#up-files-list").append(html);
+		        	    
+		        	    //TODO: set the name and size of each row
+		        	    $("#progress_report_name" + i).text(file.name);
+		        	    var size = bytesToSize(file.size,2);
+		        	    $("#progress_report_size" + i).text(size);
+	        	    }
 	        	    
-	        	    var html = $("#progress_report_template").html();
-	        	    
-	        	    html = html.replace(regex,i);
-	        	    $("#up-files-list").append(html);
-	        	    
-	        	    //TODO: set the name and size of each row
-	        	    $("#progress_report_name" + i).text(file.name);
-	        	    var size = bytesToSize(file.size,2);
-	        	    $("#progress_report_size" + i).text(size);
 	        	 }
 	        	 console.log("Picked " + files.length );
 	        	 

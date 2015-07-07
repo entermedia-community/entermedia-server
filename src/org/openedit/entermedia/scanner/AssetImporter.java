@@ -4,29 +4,22 @@
 package org.openedit.entermedia.scanner;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetUtilities;
-import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.fetch.UrlMetadataImporter;
 import org.openedit.entermedia.search.AssetSearcher;
 
 import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
@@ -34,7 +27,6 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
-import com.openedit.util.Replacer;
 import com.openedit.util.ZipUtil;
 
 public class AssetImporter
@@ -205,8 +197,7 @@ public class AssetImporter
 			return createAssetFromPage(inArchive, inUser, page);
 		}
 	}
-	
-	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)
+	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage, String inAssetId)
 	{
 		Asset asset = getAssetUtilities().createAssetIfNeeded(inAssetPage.getContentItem(),inArchive, inUser);
 		boolean existing = true;
@@ -222,6 +213,10 @@ public class AssetImporter
 		{
 			existing = false;
 		}
+		if( asset.getId() == null) 
+		{
+			asset.setId(inAssetId);
+		}
 		inArchive.saveAsset(asset, inUser);
 		if( existing )
 		{
@@ -236,6 +231,11 @@ public class AssetImporter
 		
 		
 		return asset;
+	}
+
+	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)
+	{
+		return createAssetFromPage(inArchive, inUser, inAssetPage, null);
 	}
 	
 	public List removeExpiredAssets(MediaArchive archive, String sourcepath, User inUser)

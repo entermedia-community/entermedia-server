@@ -1,7 +1,13 @@
 function selectresultview(val){
 	if (val != "none"){
 		var href = $("#ajaxselectresultview").attr("href");
+		
 		href = href + "&resultview="+val;
+		var category = $("#resultsdiv").data("category");
+		if( category )
+		{
+			href = href + "&category="+category;
+		}
 		$("#ajaxselectresultview").attr("href",href);
 		$("#ajaxselectresultview").click();
 	}

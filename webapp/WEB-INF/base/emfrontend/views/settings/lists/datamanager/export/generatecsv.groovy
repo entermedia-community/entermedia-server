@@ -27,7 +27,7 @@ if(details == null){
 Writer output = context.getPageStreamer().getOutput().getWriter();
 
 //StringWriter output  = new StringWriter();
-CSVWriter writer  = new CSVWriter(output);
+CSVWriter writer  = new CSVWriter(output,CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
 int count = 0;
 headers = new String[details.size()];
 for (Iterator iterator = details.iterator(); iterator.hasNext();)
@@ -41,7 +41,7 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	count++;
 }
 writer.writeNext(headers);
-	log.info("about to start: " + hits);
+	log.info("about to start: " + hits.size() );
 
 	for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 	{

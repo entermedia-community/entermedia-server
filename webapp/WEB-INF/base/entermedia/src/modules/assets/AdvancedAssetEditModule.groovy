@@ -100,7 +100,7 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 			log.info("Warning: unable to determine rendertype, aborting remove generated");
 			return;
 		}
-		Lock lock = archive.getLockManager().lockIfPossible(archive.getCatalogId(), "assetconversions/" + asset.getSourcePath(), "admin");
+		Lock lock = archive.getLockManager().lockIfPossible("assetconversions/" + asset.getSourcePath(), "admin");
 		if (lock!=null){
 			try{
 				Searcher searcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "conversiontask");

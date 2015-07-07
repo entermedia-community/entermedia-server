@@ -325,7 +325,7 @@ onloadselectors = function()
 		{
 			var form = jQuery(this);
 			form.validate({
-			  ignore: ".ignore, .select2-input"
+			  ignore: ".ignore"
 			});
 			
 			
@@ -1128,14 +1128,27 @@ emcomponents = function() {
 				jQuery(this).droppable(
 					{
 						drop: function(event, ui) {
+							
 							var assetid = ui.draggable.data("assetid");
 							var node = $(this);
+							
+							node.removeClass("selected");
+							node.removeClass("dragoverselected");
+							
+							node.css('background-image','url("' + themeprefix + '/images/icons/loader.gif")');
 							var targetDiv = node.data("targetdiv");
 							var libraryid = node.data("libraryid");
+							var hitssessionid = $("#resultsdiv").data("hitssessionid");
+							if( !hitssessionid )
+							{
+								hitssessionid = $("#main-results-table").data("hitssessionid");
+							}
+							
 							jQuery.get(apphome + "/components/libraries/addasset.html", 
 									{
 										assetid:assetid,
-										libraryid:libraryid
+										libraryid:libraryid,
+										hitssessionid: hitssessionid
 									},
 									function(data) 
 									{

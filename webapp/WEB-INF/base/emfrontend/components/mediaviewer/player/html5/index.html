@@ -7,9 +7,8 @@
 
 #set( $root = "$context.siteRoot$home$page.directory")
 <!-- 1. skin -->
-<link rel="stylesheet" href="$apphome/components/javascript/flowplayer/skin/minimalist.css">
- 
- 
+<link rel="stylesheet" href="$apphome/components/javascript/flowplayer/skin/entermedia.css">
+  
 <!-- 3. flowplayer -->
 <script src="$apphome/components/javascript/flowplayer/flowplayer.min.js"></script>
 <!-- first try HTML5 playback: if serving as XML, expand `controls` to `controls="controls"` and autoplay likewise -->
@@ -21,6 +20,8 @@
    
    <video>
       <source type="video/mp4"  src="$source">
+      #set( $short = $url_util.getPathUtilities().extractPagePath($source) )
+      <source type="video/flash"  src="mp4:$short"></video>
    </video>
 </div>
 
@@ -30,6 +31,7 @@ $(function () {
  
    // install flowplayer to an element with CSS class "player"
   $(".player").flowplayer({ swf: "$apphome/components/javascript/swf/5.5.2/flowplayer.swf" });
+   
  
 });
 </script>

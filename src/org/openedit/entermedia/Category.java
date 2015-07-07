@@ -4,6 +4,7 @@
 package org.openedit.entermedia;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,11 +28,11 @@ public class Category implements Data, SaveableData, Comparable<Category>
 	protected int fieldItemCount;
 	protected List fieldChildren;
 	protected Category fieldParentCategory;
-	protected String fieldParentId;
+	//protected String fieldParentId;
 	protected Map fieldProperties;
 	protected List fieldRelatedCategoryIds;
 	protected String fieldLinkedToCategoryId;
-
+	
 	public Category()
 	{
 	}
@@ -554,12 +555,12 @@ public class Category implements Data, SaveableData, Comparable<Category>
 
 	public String getParentId()
 	{
-		return fieldParentId;
+		return get("parentid");
 	}
 
 	public void setParentId(String inParentId)
 	{
-		fieldParentId = inParentId;
+		setProperty("parentid", inParentId);
 	}
 
 	public String getSourcePath()
@@ -590,6 +591,18 @@ public class Category implements Data, SaveableData, Comparable<Category>
 		return getName().toLowerCase().compareTo(c2.getName().toLowerCase());
 	}
 
+	public boolean refresh()
+	{
+		boolean dirty = isPropertyTrue("dirty");
+		if( dirty )
+		{
+			fieldChildren = null;
+			setProperty("dirty", false);
+			return true;
+		}
+		return false;
+	}
+
 
 	// public String getSourcePath()
 	// {
@@ -602,5 +615,23 @@ public class Category implements Data, SaveableData, Comparable<Category>
 	//		
 	// return null;
 	// }
-
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		StringBuffer values = new StringBuffer();
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			values.append(detail);
+			if( iterator.hasNext())
+			{
+				values.append(" | ");
+			}
+		}
+		setProperty(inKey,values.toString());
+	}
+	
+	public boolean isDirty()
+	{
+		return Boolean.valueOf(get("dirty"));
+	}
 }

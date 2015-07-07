@@ -69,9 +69,14 @@ p{
 </form>
 </div>
 #end
+#set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($newpreset = $context.findValue("newpreset"))
 #set( $type =$mediaarchive.getMediaRenderType($asset.fileformat))
 #set($results = $conversionUtil.getActivePresetList($catalogid,$type) )
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if( !$cdnprefix )
+#set( $cdnprefix = $context.siteRoot )
+#end
 
 $context.putPageValue("results", $results)
 
@@ -146,12 +151,9 @@ $(document).ready(function(){
 
 <hr>
 <p>
-You can specify custom width, height or formats. For example:
+You can specify custom width, height or formats. For example, a large PDF:
 </p>
 <p><i>
-#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
-#if( !$cdnprefix )
-#set( $cdnprefix = $context.siteRoot )
-#end
-$cdnprefix$home$apphome/views/modules/asset/downloads/preview/cache/$asset.sourcePath/image1024-768.pdf </i></p>
+
+$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i></p>
 </p>

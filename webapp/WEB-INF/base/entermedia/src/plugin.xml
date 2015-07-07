@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:lang="http://www.springframework.org/schema/lang"
-		default-lazy-init="true">
+       default-lazy-init="true">
 
 <!-- GROOVY Script Version -->
 	<lang:groovy id="cmykpreprocessorCreator" script-source="conversions/creators/cmykpreprocessorCreator.groovy" lazy-init="false">
@@ -59,13 +59,13 @@
 	<lang:groovy id="pushpublisher" script-source="publishing/publishers/pushpublisher.groovy" />
 	
 -->	
-	<lang:groovy id="filecopypublisher" script-source="publishing/publishers/filecopypublisher.groovy" />
-	<lang:groovy id="ftppublisher" script-source="publishing/publishers/ftppublisher.groovy" />
-	<lang:groovy id="sftppublisher" script-source="publishing/publishers/sftppublisher.groovy" />
-	<lang:groovy id="smbpublisher" script-source="publishing/publishers/smbpublisher.groovy" />
-	<lang:groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy" />
-	<lang:groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy" />
-	<lang:groovy id="wordpresspublisher" script-source="publishing/publishers/wordpresspublisher.groovy" />
+	<lang:groovy id="filecopypublisher" script-source="publishing/publishers/filecopypublisher.groovy"   lazy-init="default"/>
+	<lang:groovy id="ftppublisher" script-source="publishing/publishers/ftppublisher.groovy"  lazy-init="default"/>
+	<lang:groovy id="sftppublisher" script-source="publishing/publishers/sftppublisher.groovy"  lazy-init="default" />
+	<lang:groovy id="smbpublisher" script-source="publishing/publishers/smbpublisher.groovy"  lazy-init="default" />
+	<lang:groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy"  lazy-init="default"/>
+	<lang:groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy"  lazy-init="default" />
+	<lang:groovy id="wordpresspublisher" script-source="publishing/publishers/wordpresspublisher.groovy"  lazy-init="default"/>
 	
 	<lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy" lazy-init="default">
 	   	<lang:property name="searcherManager"><ref bean="searcherManager"/></lang:property>
@@ -118,10 +118,8 @@
 	</bean>
 	
  -->
- <!-- 
-	<lang:groovy  id="convertQueue" script-source="model/assets/ConvertQueue.groovy" lazy-init="default"  scope="prototype" >
+	<lang:groovy  id="convertQueue" script-source="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
 			<lang:property name="executorManager"><ref bean="executorManager" /></lang:property>
 	</lang:groovy>
- -->
  	
 </beans>

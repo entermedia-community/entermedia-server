@@ -1106,14 +1106,15 @@ public class AssetEditModule extends BaseMediaModule
 				}
 			}
 		}
-		String sourcepath = inReq.findValue(prefix + "sourcepath");
-		if(sourcepath == null){
-			sourcepath = "";
-		}
 		String filename = inPage.getName();
 		if(filename.startsWith("tmp") && filename.indexOf('_') > -1)
 		{
 			filename = filename.substring(filename.indexOf('_') + 1);
+		}
+		String sourcepath = inReq.findValue(prefix + "sourcepath");
+		if(sourcepath == null)
+		{
+			sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq,archive,filename);
 		}
 		String assetsourcepath = sourcepath;// + "/" + filename; //TODO: Should we save like /a/allstuff.jpg
 		//getPageManager().clearCache(inPage);

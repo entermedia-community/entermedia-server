@@ -16,6 +16,8 @@
 <div class="col-md-6">
 <form name="picker" action="index.html">
 	
+	<input name="reload" type="hidden" value="true" />
+	
 	<select name="themeid"  style="margin: 8px;" onchange="this.form.submit()">
 		
 	#set( $themes = $mediaarchive.getList("theme") )

@@ -107,6 +107,10 @@
 		<property name="searchQueryArchive">
 			<ref bean="searchQueryArchive" />
 		</property>
+		<property name="webEventHandler">
+			<ref bean="mediaEventHandler" />
+		</property>
+		
 	</bean>
 
 
@@ -236,13 +240,13 @@
 
 	<bean id="Date" class="com.openedit.modules.dates.DateModule"/>
 
-	<bean id="userSearcher" class="org.openedit.users.LuceneUserSearcher" scope="prototype">
+	<bean id="luceneUserSearcher" class="org.openedit.users.LuceneUserSearcher" scope="prototype">
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
-	<bean id="groupSearcher" class="org.openedit.users.LuceneGroupSearcher" scope="prototype">
+	<bean id="luceneGroupSearcher" class="org.openedit.users.LuceneGroupSearcher" scope="prototype">
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="rootDirectory">
 			<ref bean="root" />
@@ -250,7 +254,7 @@
 	</bean>
 
 	<!--  TODO: Change to an alias transientSearcher listSearcher folderSearcher dataSearcher-->
-	<bean id="transientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" scope="prototype">
+	<bean id="luceneTransientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" scope="prototype">
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="rootDirectory">
@@ -260,7 +264,7 @@
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
 	</bean>
-	<bean id="listSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
+	<bean id="xmllistSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -269,8 +273,8 @@
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
-	
-	<bean id="dynamicSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
+	<!-- 
+	<bean id="xmlDynamicSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -279,13 +283,12 @@
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
-	
-	
-	<bean id="folderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
+	 -->
+	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 	</bean>
-	<bean id="dataSearcher" class="org.openedit.data.XmlFileSearcher" scope="prototype">
+	<bean id="xmlDataSearcher" class="org.openedit.data.XmlFileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -412,7 +415,6 @@
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
-		<property name="executorManager"><ref bean="executorManager"/></property>
 		
 	</bean>
 
@@ -488,9 +490,10 @@
 		<property name="mimeTypeMap">
 			<ref bean="mimeTypeMap" />
 		</property>
-		<property name="lockManager">
+<!-- 		<property name="lockManager">
 			<ref bean="lockManager" />
 		</property>
+		 -->
 	</bean>
 
 	<bean id="albumArchive" class="org.openedit.entermedia.albums.AlbumArchive"
@@ -541,7 +544,7 @@
 	
 
 	
-	<bean id="assetArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
+	<bean id="assetDataArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -695,7 +698,7 @@
 	<bean id="youtubeImporter" class="org.openedit.entermedia.fetch.YoutubeImporter" />
 	<bean id="urlDownloadImporter" class="org.openedit.entermedia.fetch.UrlDownloadImporter" />
 
-	<bean id="assetRelatedKeywordSearcher"
+	<bean id="luceneAssetRelatedKeywordSearcher"
 		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher"
 		scope="prototype">
 		<property name="rootDirectory">
@@ -713,7 +716,7 @@
 		</property>
 	</bean>
 
-	<bean id="dynamicLogSearcher" class="org.openedit.logger.LuceneLogSearcher"
+	<bean id="luceneDynamicLogSearcher" class="org.openedit.logger.LuceneLogSearcher"
 		scope="prototype">
 		<property name="rootDirectory">
 			<bean class="java.io.File">
@@ -738,7 +741,7 @@
 		
 	</bean>
 	
-	<bean id="logSearcher" 
+	<bean id="luceneLogSearcher" 
 		class="org.openedit.logger.LuceneLogSearcher" scope="prototype" >
 		<property name="rootDirectory">
 			<bean class="java.io.File">
@@ -749,7 +752,7 @@
 		<property name="pageManager"><ref bean="pageManager"/></property>
 	</bean>
 
-	<bean id="categoryArchive" class="org.openedit.entermedia.xmldb.XmlCategoryArchive"
+	<bean id="xmlCategoryArchive" class="org.openedit.entermedia.xmldb.XmlCategoryArchive"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -771,7 +774,7 @@
 	</bean>
 
   <!-- This can be aliased using beans.xml to one with a nicer connector -->
-	<bean id="assetSearcher" class="org.openedit.entermedia.search.BaseAssetSearcher"
+	<bean id="luceneAssetSearcher" class="org.openedit.entermedia.search.BaseAssetSearcher"
 		scope="prototype">
 		<property name="dataConnector">
 			<ref bean="luceneAssetDataConnector" />
@@ -928,6 +931,8 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>		
+				<property name="moduleManager"><ref bean="moduleManager"/></property>
+		
 	</bean>
 	
 	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
@@ -940,7 +945,7 @@
 		<property name="root"><ref bean="root"/></property>	
 	</bean>
 	
-	<bean id="emailSearcher" class="org.entermedia.email.EmailSearcher" scope="prototype">
+	<bean id="luceneEmailSearcher" class="org.entermedia.email.EmailSearcher" scope="prototype">
 		<property name="emailArchive"><ref bean="emailArchive"/></property>	
 		<property name="rootDirectory"><ref bean="root"/></property>	
 	</bean>
@@ -969,7 +974,7 @@
 	<bean id="AssetStatsModule" class="org.openedit.entermedia.modules.AssetStatsModule">
 	</bean>
 
-	<bean id="assetAutoCompleteSearcher"
+	<bean id="luceneAssetAutoCompleteSearcher"
 		class="org.openedit.entermedia.autocomplete.AutoCompleteLuceneSearcher"
 		scope="prototype">
 		<property name="rootDirectory">
@@ -1012,7 +1017,7 @@
 	</bean>
 
 
-	<bean id="orderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	scope="prototype">
+	<bean id="luceneOrderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1025,7 +1030,7 @@
 	</bean>
 	<bean id="order" class="org.openedit.entermedia.orders.Order" scope="prototype">
 	</bean>
-	<bean id="orderitemSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
+	<bean id="luceneOrderitemSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1035,7 +1040,7 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 
-	<bean id="orderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
+	<bean id="luceneOrderhistorySearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1105,7 +1110,7 @@
 
 	<bean id="sizer" class="org.openedit.entermedia.util.Sizer" />
     
-    <bean id="userprofileSearcher" class="org.entermedia.profile.UserProfileSearcher" scope="prototype">
+    <bean id="luceneUserProfileSearcher" class="org.entermedia.profile.UserProfileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		
@@ -1213,10 +1218,6 @@
 		
 	</bean>
  -->
-	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-	</bean>
 
 	<bean id="AttachmentModule" class="org.openedit.entermedia.modules.AttachmentModule" >
 		<property name="attachmentManager">
@@ -1259,7 +1260,7 @@
 			<ref bean="ffmpegimageCreator" />
 			<ref bean="exiftoolthumbCreator" />
 			<ref bean="oofficeDocumentCreator" />
-			<ref bean="cmykpreprocessorCreator" />
+			<!--  ref bean="cmykpreprocessorCreator" / -->
 		</list>
 	    </constructor-arg>
 	</bean>
@@ -1302,9 +1303,12 @@
 	</bean>
 	
 	
-	<bean id="categorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" scope="prototype">
+	<bean id="xmlCategorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="categoryArchive"><ref bean="categoryArchive" /></property>
+		<property name="moduleManager">
+        	<ref bean="moduleManager" />
+        </property>
+		
 	</bean>
 	
 	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" scope="prototype">
@@ -1321,6 +1325,16 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
+
+	<bean id="xmlDataArchive" class="org.openedit.data.XmlDataArchive" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>		
+	</bean>
+	
 
 
 </beans>

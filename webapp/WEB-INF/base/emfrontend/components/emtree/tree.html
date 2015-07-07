@@ -9,6 +9,7 @@
 #set( $adding = $context.getRequestParameter("adding" ) )
 #if($selectednodes)
 $!webtree.getTreeRenderer().selectNodes($selectednodes)
+
 #end
 
 #macro(showtreecategories $cat $depth) 
@@ -107,27 +108,3 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 	</div>
 </div>
 #end
-<script type="text/javascript">
-	$(".categorycheckbox").on("click", function()
-	{
-		var checkbox = $(this);
-		var checked = checkbox.is(":checked");
-		var assetid = checkbox.data("assetid");
-		var categoryid = checkbox.attr("value");
-		var treeid = checkbox.data("treeid");
-		if (checked)
-		{
-			jQuery.get("$home$apphome/components/emtree/addassetcategory.html?categories="+categoryid+"&treeid="+treeid)
-			.fail(function()
-				{
-					alert("failed to add category to asset");
-				});
-		} else {
-		    jQuery.get("$home$apphome/components/emtree/deleteassetcategory.html?categories="+categoryid+"&treeid="+treeid)
-			.fail(function()
-				{
-					alert("failed to delete category to asset");
-				});
-		}
-	});
-</script>

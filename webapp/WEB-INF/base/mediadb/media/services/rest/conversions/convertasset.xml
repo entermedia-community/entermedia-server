@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+#set( $error = "ok")
+#if( $conversiontask.get("status") == "error")
+	#set( $error = "error")
+	##why not just set to the value of the method call above?
+#end
+<rsp stat="$error">
+#if($preset.type == "original")
+	#set( $link = "$home/$catalogid/downloads/originals/${asset.sourcepath}/${asset.primaryfile}")
+	<path>$link</path>
+#else
+	#set( $genname = $preset.get("outputfile") )
+	#if($genname)
+		#set( $link = "$home/$catalogid/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
+		<path>$link</path>
+	#else
+		<msg>Error: unable to find outputfile of preset #${preset.id}</msg>
+	#end
+#end
+</rsp>
+
+##localhost:8080/media/services/rest/conversions/convertasset.xml?catalogid=media/catalogs/public&assetid=101&presetid=imagepreviewfpo

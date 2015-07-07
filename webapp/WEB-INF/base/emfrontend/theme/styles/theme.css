@@ -1411,7 +1411,7 @@ small {
    text-decoration: underline;
 }
 #cat-list .delete-row {
-    margin-top: 3px;
+    margin-top: -15px;
     margin-right: 5px;
 }
 
@@ -2265,7 +2265,7 @@ center #addcoment {
     border-radius: 5px;
     border: 1px solid #237b97;
     padding: 10px 18px;
-    margin: 3px -1px 0 0px;
+    margin: 5px -1px 0 0px;
     font-size: 13px;
     font-weight: bold;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .2);
@@ -2313,7 +2313,7 @@ tr.odd {
     background: #000 url('../images/asset-bg.png');
     box-shadow: inset 0px 0px 60px 15px rgba(0, 0, 0, .8);
     position: relative;
-    padding: 20px 0;
+    padding: 0;
 }
 #media-player-table {
     background: #000 url('../images/asset-bg.png');
@@ -3586,6 +3586,7 @@ body #emcontainer .emasseteditorarea {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
 }
 #emcontainer #emselectable #main-results-table #tableheader th, .settings-table #tableheader th {
+	position: relative;
     color: #fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.2);
     background: rgba(0,0,0,0);
@@ -3624,12 +3625,6 @@ body #emcontainer .emasseteditorarea {
     box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
     border-right: none;
     
-}
-#emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort.up {
-    background: rgba(0,0,0,0.1) url('../images/sort-asc.png') right 12px no-repeat;
-}
-#emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort.down {
-    background: rgba(0,0,0,0.1) url('../images/sort-desc.png') right 12px no-repeat;
 }
 #th-checkbox .anchor {
     position: relative; 
@@ -4200,6 +4195,18 @@ div#folders.add .folder {
     color: #444;
     background: #ededed url('../images/sidebar-shadow.png') top right repeat-y;
 }
+
+#tableheader th.sortable div span.glyphicon {	
+
+	font-size: 10px;
+	float: right;
+	margin-top: 8px;
+	margin-right: 8px;
+	position: absolute;
+	right: 0;
+
+}
+
 #side-nav-inner ul li.ui-sortable-helper a:hover {
     background: #fff;
 }
@@ -5146,7 +5153,6 @@ p.resultsnumber {
     background-position: 240px 26px;
 }
 
-
 #de-side-nav .viewattachments .icon {
     background-position: 134px 0;
     width: 24px;
@@ -5167,14 +5173,14 @@ p.resultsnumber {
 #de-side-nav .current.assetpermissions, #de-side-nav .current.librarypermissions .icon {
     background-position: 85px 26px;
 }
-#de-side-nav .viewassetpreviewhistory .icon {
+#de-side-nav .converthistory .icon {
     background-position: 109px 0;
     width: 24px;
     height: 26px;
     left: 12px;
     top: 8px;
 }
-#de-side-nav .current.viewassetpreviewhistory .icon {
+#de-side-nav .current.converthistory .icon {
     background-position: 109px 26px;
 }
 #de-side-nav.open #opener .icon {
@@ -6714,6 +6720,7 @@ div.tableheaderactions a
 .checkbox input[type="checkbox"] {
     margin-top: -2px;
     margin-left: 1px;
+	position: relative;
 }
 
 .checkbox input[type="checkbox"]:not(.categorycheckbox) {

@@ -1,6 +1,8 @@
 package org.openedit.entermedia;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.openedit.Data;
@@ -128,6 +130,21 @@ public class RelatedAsset implements Data
 	public void setProperties(Map<String,String> inProperties)
 	{
 		getProperties().putAll(inProperties);
+	}
+	
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		StringBuffer values = new StringBuffer();
+		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			values.append(detail);
+			if( iterator.hasNext())
+			{
+				values.append(" | ");
+			}
+		}
+		setProperty(inKey,values.toString());
 	}
 
 }

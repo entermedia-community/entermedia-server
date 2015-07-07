@@ -20,6 +20,7 @@ import org.openedit.util.SynchronizedLinkedList;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
+import com.openedit.Shutdownable;
 import com.openedit.WebPageRequest;
 import com.openedit.error.ErrorHandler;
 import com.openedit.page.Page;
@@ -39,7 +40,7 @@ import com.openedit.util.RequestUtils;
  * @author cburkey
  * 
  */
-public class PathEventManager
+public class PathEventManager implements Shutdownable
 {
 	protected static final Log log = LogFactory.getLog(PathEventManager.class);
 
@@ -59,6 +60,10 @@ public class PathEventManager
 	
 	public ExecutorManager getExecutorManager()
 	{
+		if( fieldExecutorManager == null)
+		{
+			fieldExecutorManager = (ExecutorManager)getModuleManager().getBean("executorManager");
+		}
 		return fieldExecutorManager;
 	}
 

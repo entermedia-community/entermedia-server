@@ -52,6 +52,8 @@
   <property id="navfont" />
   <property id="navfontsize" />
   <property id="navfontcolor" />
+  <property id="navhoverfontcolor" />
+  <property id="navdropdownbackgroundcolor" />
   <!-- 
   <property id="navfontopacity" viewtype="slider" min="0" max="1" >Navigation Font Opacity</property>
    -->
@@ -75,7 +77,10 @@
   <property id="navlinksbackgroundcolor" />
   
   <!-- left column -->
-  <property id="leftcolumnbackgroundcolor" />
+  <property id="leftcolumnnavcolor" />
+  <property id="leftcolumnnavcolorgradient" />
+  <property id="leftcolumnbackgroundcolor"/>
+  <property id="leftcolumnnavfontcolor"/>
   
   <!-- table header -->
   <property id="tableheadercolor" />
@@ -96,9 +101,10 @@
   <!-- settings menu selection -->
   <property id="settingsmenuselectioncolor" />
 
-  <!-- asset details selected tab -->
+  <!-- asset details  -->
   <property id="assetdetailsselectedtabcolor" />
   <property id="assetdetailsselectedtabcolorgradient" />
+  <property id="detailsrightcolumnselectedcolor"/>
   
   <!-- global styles -->
   <property id="disableshadows" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>

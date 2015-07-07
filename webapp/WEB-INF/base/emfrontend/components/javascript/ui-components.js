@@ -86,10 +86,22 @@ uiload = function() {
 	jQuery(".validate-inputs").livequery(
 			function() 
 			{
-					jQuery(this).closest("form").validate({
-						  ignore: ".ignore, .select2-input"
-					});
-
+//				jQuery(".required",this).each(function()
+//				{
+//					//jQuery(this).attr("required","true");
+//				});
+				
+				var theform = jQuery(this).closest("form");
+				
+				theform.on("click", function()
+				{
+					theform.valid();
+				});
+				
+				theform.validate({
+					  ignore: ".ignore"
+				});
+							
 			}
 		);
 	

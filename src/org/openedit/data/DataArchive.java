@@ -23,9 +23,12 @@ public interface DataArchive
 
 	void delete(Data inData, User inUser);
 
-	void saveData(Data inData, User inUser, Lock inLock);
+	void saveData(Data inData, User inUser);
 	
-	public void saveAllData(Collection<Data> inAll, String catalogid, String inLockPrefix, User inUser);
+	public void saveAllData(Collection<Data> inAll, User inUser);
+
+	void setCatalogId(String inId);
+	String getCatalogId();
 
 
 }

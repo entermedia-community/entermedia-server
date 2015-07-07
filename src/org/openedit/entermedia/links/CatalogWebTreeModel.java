@@ -235,7 +235,7 @@ public class CatalogWebTreeModel extends BaseTreeModel
 		if (fieldRoot == null)
 			return getCatalogArchive().getRootCategory();
 		else
-			return fieldRoot;
+			return getCatalogArchive().getCategory(fieldRoot.getId());
 	}
 
 	public String getId(Object inNode)

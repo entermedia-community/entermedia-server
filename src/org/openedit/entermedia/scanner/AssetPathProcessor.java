@@ -86,7 +86,7 @@ public class AssetPathProcessor extends PathProcessor
 			}
 		}
 		
-		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); //this clears the list
+		getMediaArchive().saveAssets(new ArrayList(getAssetsToSave())); 
 
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
@@ -252,7 +252,7 @@ public class AssetPathProcessor extends PathProcessor
 									{
 										//we dont need to load the asset so dont load it
 										String filesourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
-										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/assets/" + filesourcepath;
+										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/assets/" + filesourcepath + "/data.xml";
 										if( !getPageManager().getRepository().doesExist(filepath) )
 										{
 											processFile(item, inUser); //Loads the asset and does a check on mod date

@@ -56,8 +56,12 @@ public class imagemagickCreator extends BaseImageCreator {
 				createOutput(inArchive, inAsset, outputPage, inStructions); //this will create smaller version
 			}
 			inStructions.setWatermark(true);
-			populateOutputPath(inArchive, inStructions);
-			inStructions.setAssetSourcePath(outputPath);
+			String finaloutputPath = populateOutputPath(inArchive, inStructions);
+			//inStructions.setAssetSourcePath(outputPath);
+			Page finaloutputPage = getPageManager().getPage(finaloutputPath);
+			
+			return applyWaterMark(inArchive, outputPage.getContentItem().getAbsolutePath(), finaloutputPage.getContentItem().getAbsolutePath(), inStructions);
+			
 		}
 		return createOutput(inArchive, inAsset, inOutFile, inStructions);
 	}
