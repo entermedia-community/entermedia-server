@@ -508,13 +508,19 @@ public class Asset implements MultiValued, SaveableData
 					for (int i = 0; i < vals.length; i++)
 					{
 						Category cat = getMediaArchive().getCategory(vals[i]);
-						addCategory(cat);
+						if( cat != null)
+						{
+							addCategory(cat);
+						}
 					}
 				}
 				else
 				{
 					Category cat = getMediaArchive().getCategory(inValue);
-					addCategory(cat);
+					if( cat != null)
+					{
+						addCategory(cat);
+					}
 				}
 			}
 		}
