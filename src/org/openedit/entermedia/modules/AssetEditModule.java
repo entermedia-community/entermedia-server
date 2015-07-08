@@ -1111,12 +1111,31 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			filename = filename.substring(filename.indexOf('_') + 1);
 		}
-		String sourcepath = inReq.findValue(prefix + "sourcepath");
-		if(sourcepath == null)
+		String inputsourcepath = inReq.findValue(prefix + "sourcepath");
+		String assetsourcepath = null;
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";
+
+		if(inputsourcepath == null)
 		{
-			sourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq,archive,filename);
+			assetsourcepath = archive.getAssetImporter().getAssetUtilities().createSourcePath(inReq,archive,filename);
+			path = path + assetsourcepath;
+			if( !path.endsWith("/"))
+			{
+				path  = path + "/";
+			}
+			path  = path + inPage.getName();			
 		}
-		String assetsourcepath = sourcepath;// + "/" + filename; //TODO: Should we save like /a/allstuff.jpg
+		else if (inputsourcepath.endsWith("/") ) //EMBridge expects the filename to be added on
+		{
+			assetsourcepath = inputsourcepath + filename; 
+			path = path + assetsourcepath;
+		}
+		else
+		{
+			assetsourcepath = inputsourcepath;
+			path = path + assetsourcepath;
+		}
+		
 		//getPageManager().clearCache(inPage);
 //		Asset existing = archive.getAssetBySourcePath(assetsourcepath);
 //		Asset asset = new Asset();
@@ -1139,12 +1158,7 @@ public class AssetEditModule extends BaseMediaModule
 //		}
 //		asset.setSourcePath(assetsourcepath);
 
-		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + assetsourcepath;
-		if( !assetsourcepath.endsWith("/"))
-		{
-			path  = path + "/";
-		}
-		path  = path + inPage.getName();			
+		
 		Page dest = getPageManager().getPage( path );
 //		if(!inPage.exists()){
 //			log.info("Could not find uploaded file: " + inPage.getPath());
