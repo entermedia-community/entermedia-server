@@ -1,0 +1,24 @@
+<script type="text/javascript" src="$home$apphome/components/mediaviewer/player/recorder/player/js/hdwplayer.js"></script>
+<style>
+#iframe1
+            {
+                height:   100%;
+                left:     0px;
+                position: absolute;
+                top:      0px;
+                width:    100%;
+            }
+</style>
+<div id="player"></div>
+<script>
+hdwplayer({ 
+	id       : 'player',
+	swf      : '$home$apphome/components/mediaviewer/player/recorder/player/player.swf',
+	width    : '630',
+	height   : '360',
+	type	 : 'rtmp',
+	streamer : 'rtmp://54.175.82.124:1935/hdfvr',
+	video    : 'livestream',
+	autoStart: 'true'
+});
+</script>
