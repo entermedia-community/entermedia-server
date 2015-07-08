@@ -78,9 +78,6 @@
 
 <div id="media-player" class="#if( $totalpages > 1 ) document #end">
 
- ##   <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
-   
-
     <div id="mp-player">
         <div id="mp-asset-title" style="display: none;"><span class="name" title="#if ( $asset.title ) $asset.title #else $asset #end">#if ( $asset.title ) $asset.title #else $asset #end</span> #if( $totalpages > 1 ) <span class="pagenum">(Page $pagenum of $totalpages)</span> #end</div>
     	#if( !$asset.importstatus || $asset.importstatus != "complete" )

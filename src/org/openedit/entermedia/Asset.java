@@ -335,7 +335,7 @@ public class Asset implements MultiValued, SaveableData
 	{
 		if (inCatid == null)
 		{
-			throw new IllegalArgumentException("Catalogs cannot be null");
+			throw new IllegalArgumentException("Categories cannot be null");
 		}
 		if (!isInCatalog(inCatid))
 		{
@@ -508,13 +508,27 @@ public class Asset implements MultiValued, SaveableData
 					for (int i = 0; i < vals.length; i++)
 					{
 						Category cat = getMediaArchive().getCategory(vals[i]);
-						addCategory(cat);
+						if( cat == null)
+						{
+							log.debug("Could not find category: " + vals[i]);
+						}
+						else
+						{
+							addCategory(cat);
+						}
 					}
 				}
 				else
 				{
 					Category cat = getMediaArchive().getCategory(inValue);
-					addCategory(cat);
+					if( cat == null)
+					{
+						log.debug("Could not find category: " + inValue);
+					}
+					else
+					{
+						addCategory(cat);
+					}
 				}
 			}
 		}
