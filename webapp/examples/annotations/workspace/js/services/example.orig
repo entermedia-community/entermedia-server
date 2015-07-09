@@ -1,3 +1,0 @@
-Site.factory('QuickNewsApi', ['$resource', ($resource) ->
-    $resource('/api/QuickNews/')
-])
