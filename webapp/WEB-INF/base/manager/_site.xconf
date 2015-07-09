@@ -5,7 +5,7 @@
   <property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
   <property name="section">home</property>
   <property name="title">EnterMedia Manager</property>
-  <property name="catalogid">media</property>
+  <property name="catalogid">system</property>
   <property name="parentapplicationid">media</property>
   <property name="applicationid">manager</property>
   <property name="themeprefix">/${applicationid}/theme</property>

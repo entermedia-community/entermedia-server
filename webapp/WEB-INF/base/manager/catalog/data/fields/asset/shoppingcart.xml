@@ -1,7 +1,0 @@
-<page>
-	<property id="shoppingcartlink" index="true" stored="true" editable="true"  sortable="true" >Shopping Cart URL</property>
-	<property id="shoppingcarttarget" index="true" stored="true" editable="true"  sortable="true"  datatype="boolean">Shopping Cart Launch New Window</property>
-	<property id="shoppingcartargs" index="true" stored="true" editable="true"  sortable="true" >Shopping Cart Arguments</property>
-	<property id="shoppingcartlabel" index="true" stored="true" editable="true"  sortable="true" >Shopping Cart Label</property>
-	<property id="shoppingcarttooltip" index="true" stored="true" editable="true"  sortable="true" >Shopping Cart Tooltip</property>
-</page>
