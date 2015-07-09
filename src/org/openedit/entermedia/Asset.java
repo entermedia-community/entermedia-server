@@ -508,11 +508,7 @@ public class Asset implements MultiValued, SaveableData
 					for (int i = 0; i < vals.length; i++)
 					{
 						Category cat = getMediaArchive().getCategory(vals[i]);
-						if( cat == null)
-						{
-							log.debug("Could not find category: " + vals[i]);
-						}
-						else
+						if( cat != null)
 						{
 							addCategory(cat);
 						}
@@ -521,11 +517,7 @@ public class Asset implements MultiValued, SaveableData
 				else
 				{
 					Category cat = getMediaArchive().getCategory(inValue);
-					if( cat == null)
-					{
-						log.debug("Could not find category: " + inValue);
-					}
-					else
+					if( cat != null)
 					{
 						addCategory(cat);
 					}
