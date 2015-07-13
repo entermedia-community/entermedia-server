@@ -1003,9 +1003,8 @@ public class MediaArchive
 		}
 		String thistype = inAsset.getFileFormat();
 		String found = getMediaRenderType(thistype);
-		if( found.equals(inType))
+		if( found != null && found.equals(inType))
 		{
-			//path = path + "/" + filename;
 			Page tryPage = getPageManager().getPage(path);
 			if(tryPage.exists())
 			{

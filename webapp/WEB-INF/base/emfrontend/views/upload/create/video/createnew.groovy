@@ -1,6 +1,7 @@
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.store.*
+import org.openedit.util.DateStorageUtil
 
 import com.openedit.page.*
 
@@ -17,6 +18,7 @@ asset.setProperty("importstatus", "complete")
 asset.setProperty("datatype", "original");
 asset.setProperty("fileformat", "flv");
 asset.setProperty("editstatus", "recording");
+asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 
 String assettype = context.getRequestParameter("assettype");
 asset.setProperty("assettype", assettype);

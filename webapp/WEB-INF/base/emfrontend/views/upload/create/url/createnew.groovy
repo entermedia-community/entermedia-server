@@ -14,12 +14,13 @@ String sourcepath = "newassets/${context.getUserName()}/${asset.id}";
 asset.setSourcePath(sourcepath);
 asset.setFolder(true);
 asset.setProperty("owner", context.userName);
-asset.setProperty("importstatus", "complete")
+asset.setProperty("importstatus", "needsdownload")
 asset.setProperty("datatype", "original");
 asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 
-String assettype = context.getRequestParameter("assettype");
-asset.setProperty("assettype", assettype);
+
+//String assettype = context.getRequestParameter("assettype");
+//asset.setProperty("assettype", assettype);
 branch = mediaarchive.getCategoryArchive().createCategoryTree("/newassets/${context.getUserName()}");
 asset.addCategory(branch);
 
@@ -49,6 +50,8 @@ context.setRequestParameter("sourcepath", asset.sourcePath);
 //{
 //	context.redirect("/" + editor.store.catalogId + "/admin/products/editor/" + product.id + ".html");
 //}
+
+mediaarchive.fireMediaEvent("importing/fetchdownloads", user);
 
 String tosourcepath = context.findValue("redirecttosourcepath");
 
