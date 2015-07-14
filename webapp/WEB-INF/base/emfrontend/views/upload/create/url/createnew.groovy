@@ -51,7 +51,7 @@ context.setRequestParameter("sourcepath", asset.sourcePath);
 //	context.redirect("/" + editor.store.catalogId + "/admin/products/editor/" + product.id + ".html");
 //}
 
-mediaarchive.fireMediaEvent("importing/fetchdownloads", user);
+mediaarchive.fireSharedMediaEvent("importing/fetchdownloads");
 
 String tosourcepath = context.findValue("redirecttosourcepath");
 

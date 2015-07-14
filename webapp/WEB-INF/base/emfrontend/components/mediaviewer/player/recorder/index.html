@@ -16,9 +16,11 @@ hdwplayer({
 	swf      : '$home$apphome/components/mediaviewer/player/recorder/player/player.swf',
 	width    : '630',
 	height   : '360',
-	type	 : 'rtmp',
-	streamer : 'rtmp://54.175.82.124:1935/hdfvr',
-	video    : 'livestream',
+	type	 : 'rtmp',	
+#set( $transcoder = $mediaarchive.getData("transcoder","wowza") )
+#set( $serverid = $transcoder.get("serverid") )	
+	streamer : 'rtmp://${serverid}:1935/hdfvr',
+	video    : 'flv:livestream${asset.getId()}',
 	autoStart: 'true'
 });
 </script>
