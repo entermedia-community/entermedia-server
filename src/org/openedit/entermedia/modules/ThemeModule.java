@@ -91,6 +91,12 @@ public class ThemeModule extends BaseMediaModule {
 		
 		String appid = inReq.findValue("applicationid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
+
+		String title = theme.get("title");
+		if( title !=  null )
+		{
+			xconf.setProperty("title",title);
+		}
 		
 		xconf.setProperty("themeid",theme.getId());
 		getPageManager().getPageSettingsManager().saveSetting(xconf);
