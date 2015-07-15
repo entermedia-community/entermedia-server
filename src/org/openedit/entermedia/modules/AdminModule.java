@@ -433,8 +433,8 @@ public class AdminModule extends BaseModule
 		else
 		{
 			log.info("No such user" + account);
-			String catalogid =user.get("catalogid");
-			inReq.putSessionValue(catalogid + "user", null);
+//			String catalogid =user.get("catalogid");
+//			inReq.putSessionValue(catalogid + "user", null);
 		}
 
 		inReq.putPageValue("id", account);

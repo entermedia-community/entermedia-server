@@ -4,7 +4,7 @@
 	<nm>864x480@30fps</nm>
 	<df>0</df>
 	<bytes>0</bytes>
-	<q>90</q><fps>30</fps><kfps>15</kfps>
+	<q>85</q><fps>15</fps><kfps>15</kfps>
 	<w>864</w><h>480</h>
 			<!-- Flash Player supports encoding sound with 2 codecs: NellyMoser's ASAO and Speex.
 			Speex is optimised for speech, uses less bandwidth and has more quality levels.
@@ -31,7 +31,7 @@
 	<snd>22</snd>
 	<sndSilencelevel>0</sndSilencelevel>
 	
-	<vcodec>sorenson</vcodec>
+	<vcodec>h264_w</vcodec>
 		<!--
 		Flash Player 6  (released in 2002) and above supports encoding video with the Sorenson Spark codec.
 		Flash Player 11 (released in 2011) and above supports encoding video with both Sorenson Spark and H.264 .
