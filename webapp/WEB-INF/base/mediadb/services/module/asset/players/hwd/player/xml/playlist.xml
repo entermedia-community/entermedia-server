@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<playlist>
+  <media>
+    <type>video</type>
+    <video>http://hdwplayer.com/videos/2012.mp4</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>Sample Video</title>
+  </media>
+  <media>
+    <type>video</type>
+    <video>http://www.hdwplayer.com/videos/2012.mp4</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>2012 Trailor</title>
+  </media>
+  <media>
+    <type>vimeo</type>
+    <video>http://vimeo.com/24456787</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>The Arctic Light</title>
+  </media>
+  <media>
+    <type>youtube</type>
+    <video>http://www.youtube.com/watch?v=oihG3Y7Q7M8</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>Funny animal videos Youtube</title>
+  </media>
+  <media>
+    <type>dailymotion</type>
+    <video>http://www.dailymotion.com/video/xvf1xc_funny-video-fight-of-animal_fun</video>
+    <thumb></thumb>
+    <preview></preview>
+    <title>funny video fight of animal</title>
+  </media>
+</playlist>

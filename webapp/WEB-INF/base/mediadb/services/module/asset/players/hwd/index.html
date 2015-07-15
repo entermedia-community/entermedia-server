@@ -1,4 +1,4 @@
-<script type="text/javascript" src="$home$apphome/components/mediaviewer/player/recorder/player/js/hdwplayer.js"></script>
+<script type="text/javascript" src="$home$apphome/services/module/asset/players/hwd/player/js/hdwplayer.js"></script>
 <style>
 #iframe1
             {
@@ -10,12 +10,12 @@
             }
 </style>
 <div id="player"></div>
-<script>
+<script> 
 hdwplayer({ 
 	id       : 'player',
-	swf      : '$home$apphome/components/mediaviewer/player/recorder/player/player.swf',
-	width    : '630',
-	height   : '360',
+	swf      : '$home$apphome/services/module/asset/players/hwd/player/player.swf',
+	width    : '100%',
+	height   : '350',
 	type	 : 'rtmp',	
 #set( $transcoder = $mediaarchive.getData("transcoder","wowza") )
 #set( $serverid = $transcoder.get("serverid") )	

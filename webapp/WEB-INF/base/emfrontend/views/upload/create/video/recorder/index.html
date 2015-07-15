@@ -1,4 +1,4 @@
-<div class="ui-widget uipanel" style="padding: 40px;">   <div class="ui-widget-header">[[Create Streaming Video]]</div>   <div class="ui-widget-content">		    
+<div class="ui-widget uipanel" style="margin:20px;">   <div class="ui-widget-header">[[Create Streaming Video]]</div>   <div class="ui-widget-content" style="overflow: hidden;">		    
 <link rel="stylesheet" type="text/css" href="HDFVR-mobile.css">
 
 <script type="text/javascript" src="swfobject.js"></script>
@@ -32,7 +32,7 @@
 	}
 	
 	if(mobile == false){
-		swfobject.embedSWF("VideoRecorder.swf", "hdfvr-content", "640", "540", "10.3.0", "", flashvars, params, attributes);
+		swfobject.embedSWF("VideoRecorder.swf", "hdfvr-content", "416", "312", "10.3.0", "", flashvars, params, attributes);
 	}else{
 		//do nothing
 	}
@@ -47,20 +47,19 @@ window.onbeforeunload = function(){
 			var swf = document.getElementById('VideoRecorder');
 			swf.disconnectAndRemove();
 		}
-}
+}togglevideo = function(){	if( $("#VideoRecorder").css('visibility') == 'visible')	{		$("#VideoRecorder").css('visibility', 'hidden');		$("#togglevideo").text("show");	}	else 	{		$("#VideoRecorder").css('visibility', 'visible');		$("#togglevideo").text("hide");				}}
 </script>
-<div class="wrapper" id="livearea">
-	<div id="hdfvr-content">
+<div class="wrapper" id="livearea" style="margin:auto;float:left; text-align:right; width:416px;"><a href="#" id="togglevideo" onclick="togglevideo()">hide</a><br>
+	<div id="hdfvr-content" style="width:400px; >
 	<form action="uploadFromMobile.php" method="post" enctype="multipart/form-data" id="hdfvr-recording-form">
 		<input name="FileInput" id="hdfvr-file-input" type="file" accept="video/*" capture="camcorder" value="Start Recording" />
 		<input type="submit"  id="hdfvr-submit-btn" value="2. Upload"/>
 	</form>
 	<img src="loaderb16.gif" id="hdfvr-loading-img" alt="Uploading please wait..."/>
 	<div id="output"></div>
-	</div>
-</div>
-
-<script>			//document.VideoRecorder.record();		//$('#hdfvr-submit-btn').prop('value','Started Reorder');			$("#hdfvr-content").html("Recording complete");	
+	</div>	<div id="instructions">	<p>Press record button to start live streaming</p>	</div></div>
+<div style="float:left;width:480px;margin-left: 20px; padding:20px; background-color: #eee; border-radius: 5px;"><h4>Live Stream Link</h4><div style="margin-left:12px"><a  title="Share this live recording with others" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()">${context.siteRoot}$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()</a></div><h4>Live Stream Embed Code</h4>$pages.include("$apphome/components/share/embed.html?sourcepath=$asset.sourcePath")<h4>Screen Capture</h4><div style="margin-left:12px"><p>Download <a href="https://manycam.com/">ManyCam</a> (is limited to 720px)</p></div></div>
+<script>			//document.VideoRecorder.record();		//$('#hdfvr-submit-btn').prop('value','Started Reorder');		
 	function userHasCamMic(cam_number,mic_number,recorderId){
 		//alert("userHasCamMic("+cam_number+","+mic_number+")");
 		//this function is called when HDFVR is initialized
@@ -71,7 +70,7 @@ window.onbeforeunload = function(){
 		//alert("btRecordPressed");
 		//this function is called whenever the Record button is pressed to start a recording
 		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page		//document.getElementById("recordbtn").disabled = true;
-		//document.getElementById("stopBtn").disabled = false;
+		//document.getElementById("stopBtn").disabled = false;		$("#instructions").html("Live stream is started");
 	}
 	
 	function btStopRecordingPressed(recorderId){
@@ -161,5 +160,4 @@ window.onbeforeunload = function(){
 		//streamName: the name of the stream for which the conversion finished
 	}
 	
-</script><h2>Live Stream Link</h2><a href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()">${context.siteRoot}$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()</a>
-</div></div>
+</script></div></div>
