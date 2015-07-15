@@ -22,7 +22,6 @@ import com.openedit.hittracker.SearchQuery;
 public class CompositeAsset extends Asset implements Data, CompositeData
 {
 	private static final long serialVersionUID = -7154445212382362391L;
-	protected MediaArchive fieldArchive;
 	protected HitTracker fieldInitialSearchResults; 
 	protected HitTracker fieldSelectedResults; 
 	protected List<String> fieldRemovedCategories;
@@ -34,7 +33,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	
 	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
 	{
-		setArchive(inMediaArchive);
+		setMediaArchive(inMediaArchive);
 		setInitialSearchResults(inHits);
 		reloadData();
 	}
@@ -79,7 +78,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	
 	public PropertyDetails getPropertyDetails() 
 	{
-		return fieldArchive.getAssetPropertyDetails();
+		return getMediaArchive().getAssetPropertyDetails();
 	}
 
 	public Map getPropertiesSet()
@@ -133,7 +132,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		SearchQuery q = existing.getSearchQuery().copy();
 		q.setSortBy("id");
 		
-		HitTracker selecteddata = getArchive().getAssetSearcher().search(q);
+		HitTracker selecteddata = getMediaArchive().getAssetSearcher().search(q);
 		if( existing.isAllSelected() )
 		{
 			//rerun the search
@@ -198,7 +197,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( inTosave.size() > 99 )
 		{
-			getArchive().saveAssets(inTosave);
+			getMediaArchive().saveAssets(inTosave);
 			inTosave.clear();
 		}
 	}
@@ -244,7 +243,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					String  catid = catlist[i];
 					if( catid != null )
 					{
-						Category cat = getArchive().getCategory(catid.trim());
+						Category cat = getMediaArchive().getCategory(catid.trim());
 						if( cat != null )
 						{
 							categories.add( cat );
@@ -416,15 +415,6 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		return new AssetIterator(getSelectedResults().iterator());
 	}
 	
-	public MediaArchive getArchive()
-	{
-		return fieldArchive;
-	}
-
-	public void setArchive(MediaArchive inArchive)
-	{
-		fieldArchive = inArchive;
-	}
 
 	/**
 	 * Do not call this more than once!
@@ -540,11 +530,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			}
 			if( tosave.size() > 1000)
 			{
-				getArchive().saveAssets(tosave);
+				getMediaArchive().saveAssets(tosave);
 				tosave.clear();
 			}
 		}
-		getArchive().saveAssets(tosave);
+		getMediaArchive().saveAssets(tosave);
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
 	}
@@ -611,7 +601,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		{
 			Data next = (Data)fieldDataIterator.next();
 			
-			return getArchive().getAssetBySourcePath(next.getSourcePath());
+			return getMediaArchive().getAssetBySourcePath(next.getSourcePath());
 		}
 
 		public void remove()
@@ -625,7 +615,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( inFieldCurrentAsset == null )
 		{
-			inFieldCurrentAsset =  getArchive().getAssetBySourcePath(inData.getSourcePath());
+			inFieldCurrentAsset =  getMediaArchive().getAssetBySourcePath(inData.getSourcePath());
 		}
 		else
 		{
