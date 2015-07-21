@@ -1,0 +1,33 @@
+<beans>
+	<!--  These are defaults. Can be overriden in each catalogs folder or in their data/.../lists/bean/ folder -->
+
+	<!-- Core types -->
+	<bean id="transientSearcher" bean="luceneTransientSearcher" />
+	<bean id="listSearcher" bean="xmllistSearcher" />
+	<bean id="folderSearcher" bean="xmlFolderSearcher" />
+	<bean id="dataSearcher" bean="xmlDataSearcher" />
+	<bean id="dynamicSearcher" bean="xmllistSearcher" />
+
+	<!-- Java implementations -->
+	<bean id="assetSearcher" bean="luceneAssetSearcher" />
+	<!--  bean id="lockSearcher" bean="luceneLockSearcher" / -->
+	<bean id="userSearcher" bean="luceneUserSearcher" />
+	<bean id="groupSearcher" bean="luceneGroupSearcher" />
+	<bean id="userprofileSearcher" bean="luceneUserProfileSearcher" />
+	<bean id="conversiontaskSearcher" bean="luceneTransientSearcher" />
+	<bean id="categorySearcher" bean="xmlCategorySearcher" />
+	<bean id="orderSearcher" bean="luceneOrderSearcher" />
+	<bean id="orderhistorySearcher" bean="xmlDataSearcher" />
+	<bean id="orderitemSearcher" bean="xmlDataSearcher" />
+	<bean id="categoryArchive" bean="xmlCategoryArchive" />
+
+	<!--  Little used -->
+	<bean id="emailSearcher" bean="xmlDataSearcher" />
+	<bean id="uploadqueueSearcher" bean="luceneDataSearcher" />
+	<bean id="assetAutoCompleteSearcher" bean="luceneAssetAutoCompleteSearcher" />
+	<bean id="dynamicLogSearcher" bean="luceneDynamicLogSearcher" />
+
+	<!--  deprecated AssetRelatedKeywordSearcher -->
+
+
+</beans>

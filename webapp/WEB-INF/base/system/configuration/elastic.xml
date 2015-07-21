@@ -1,0 +1,35 @@
+<beans>
+
+	<!-- Core types -->
+	<bean id="transientSearcher" bean="elasticTransientSearcher" />
+	<bean id="listSearcher" bean="elasticListSearcher" />
+	<bean id="folderSearcher" bean="elasticFolderSearcher" />
+	<bean id="dataSearcher" bean="elasticDataSearcher" />
+	<bean id="lockManager" bean="elasticLockManager" />
+
+	<!-- Java implementations -->
+	<bean id="assetSearcher" bean="elasticAssetSearcher" />
+	<bean id="lockSearcher" bean="elasticLockSearcher" />
+	<bean id="userSearcher" bean="elasticUserSearcher" />
+	<bean id="groupSearcher" bean="elasticGroupSearcher" />
+	<bean id="userprofileSearcher" bean="elasticUserProfileSearcher" />
+	<bean id="conversiontaskSearcher" bean="elasticTransientSearcher" />
+	<bean id="categorySearcher" bean="elasticCategorySearcher" />
+	<bean id="orderSearcher" bean="elasticOrderSearcher" />
+	<bean id="orderhistorySearcher" bean="elasticDataSearcher" />
+	<bean id="orderitemSearcher" bean="elasticDataSearcher" />
+	<bean id="categoryArchive" bean="elasticCategoryArchive" />
+
+
+
+	<!--  Little used -->
+	<bean id="uploadqueueSearcher" bean="elasticDataSearcher" />
+	<bean id="emailSearcher" bean="elasticDataSearcher" />
+	<bean id="uploadqueueSearcher" bean="elasticDataSearcher" />
+	<bean id="assetAutoCompleteSearcher" bean="assetAutoCompleteElasticSearcher" />
+	<bean id="dynamicLogSearcher" bean="elasticLogSearcher" />
+
+<!--  deprecated AssetRelatedKeywordSearcher -->
+
+</beans>
+	    
