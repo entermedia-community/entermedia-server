@@ -2,7 +2,7 @@
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 <div id="embed-wrapper" style="padding: 15px;">
 <div class="embedlink">
-<textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="60">
+<textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="45">
 #set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #if( !$prefix )#set( $prefix = $context.siteRoot )#end
 #set( $mediadbappid = $mediaarchive.getCatalogSettingValue("mediadbappid") )
