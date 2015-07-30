@@ -248,7 +248,7 @@ public class BasePushManager implements PushManager
 				continue;
 			}
 			
-			upload(asset, archive, "delete", null, Collections.EMPTY_LIST );
+			upload(asset, archive, "delete", Collections.EMPTY_LIST );
 			asset.setProperty("pushstatus", "deleted");
 			archive.saveAsset(asset, null);
 			deleted++;
@@ -293,7 +293,7 @@ public class BasePushManager implements PushManager
 		{
 			try
 			{
-				upload(target, archive, "generated", path, filestosend);
+				upload(target, archive, "generated", filestosend);
 				target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
 
@@ -402,7 +402,7 @@ public class BasePushManager implements PushManager
 		return result;
 	}
 	
-	protected Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, String inRootPath, List<ContentItem> inFiles)
+	protected Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, List<ContentItem> inFiles)
 	{
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		//String account = inArchive.getCatalogSettingValue("push_server_username");
@@ -846,8 +846,8 @@ asset: " + asset);
 //				ors.append(" ");
 //			}
 //		}
-		method.addParameter("field", "remotepublish");
-		method.addParameter("remotepublish.value", "true");
+		method.addParameter("field", "publishdestination");
+		method.addParameter("publishdestination.value", "pushhttp");
 		method.addParameter("operation", "matches");
 
 		method.addParameter("field", "status");
@@ -948,16 +948,16 @@ asset: " + asset);
 				}
 
 			} 
-			else if( destinationid.equals("0") )
+			else// must be complete if( destinationid.equals("0") )
 			{
 				//If this is a browser download then we need to upload the file
 				List<ContentItem> filestosend = new ArrayList<ContentItem>(1);
 
 				filestosend.add(inputpage.getContentItem());
 
-				String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
+				//String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
 				
-				upload(asset, inArchive, type, rootpath, filestosend);
+				upload(asset, inArchive, type, filestosend);
 			}
 
 			

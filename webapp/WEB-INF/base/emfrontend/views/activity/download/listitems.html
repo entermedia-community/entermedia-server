@@ -44,7 +44,7 @@
 	#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
 
 	#set( $presetid = $publishqueue.get("presetid") )
-	#if( $publishqueue.publishdestination == "0")   ##download with the browser
+	#if( $publishqueue.publishdestination == "0" || $publishqueue.publishdestination == "pushhttp")   ##download with the browser
 	
 		#if( $order.orderstatus == "error" )
 			<td></td>
@@ -77,7 +77,7 @@
 				</td>
 			#end
 		#end	
-	#elseif( $publishqueue.publishdestination == "1") )
+	#elseif( $publishqueue.publishdestination == "1" )
 		<td></td>
 		<td>
 			#if( $destination.publishtype == "aspera")
