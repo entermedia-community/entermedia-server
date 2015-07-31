@@ -598,16 +598,16 @@ public class imagemagickCreator extends BaseImageCreator {
 
 
 
-
-		if (isOnWindows() )
-		{
-			// windows needs quotes if paths have a space
-			com.add("\"\\\\?\\" + outputpath + "\"");
-		}
-		else
-		{
+//
+//		if (isOnWindows() )
+//		{
+//			// windows needs quotes if paths have a space
+//			com.add("\"\\\\?\\" + outputpath + "\"");
+//		}
+//		else
+//		{
 			com.add(outputpath);
-		}
+//		}
 
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
