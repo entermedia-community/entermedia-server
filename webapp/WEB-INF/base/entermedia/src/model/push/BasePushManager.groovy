@@ -767,6 +767,9 @@ public class BasePushManager implements PushManager
 			String presetid = hit.attributeValue("presetid");
 			String destinationid = hit.attributeValue("publishdestination");
 			
+			
+			//TODO: Use the standard browser download here
+			
 			Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
 
 			String exportpath = hit.attributeValue("exportpath");

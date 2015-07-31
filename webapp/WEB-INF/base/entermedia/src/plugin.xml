@@ -110,15 +110,17 @@
 		<property name="lockManager"><ref bean="lockManager" /></property>
 
 	</bean>
+	
+ -->
 	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
-	
- -->
+<!-- 
 	<bean  id="pushManager" class="model.push.BasePushManager" >
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
-	<lang:groovy  id="convertQueue" script-source="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
+ -->
+ 	<lang:groovy  id="convertQueue" script-source="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
 			<lang:property name="executorManager"><ref bean="executorManager" /></lang:property>
 	</lang:groovy>
  	
