@@ -59,11 +59,12 @@
 	<lang:groovy id="pushpublisher" script-source="publishing/publishers/pushpublisher.groovy" />
 	
 -->	
+	<lang:groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy"  lazy-init="default"/>
+	<lang:groovy id="pushhttppublisher" script-source="publishing/publishers/pushhttppublisher.groovy"  lazy-init="default"/>
 	<lang:groovy id="filecopypublisher" script-source="publishing/publishers/filecopypublisher.groovy"   lazy-init="default"/>
 	<lang:groovy id="ftppublisher" script-source="publishing/publishers/ftppublisher.groovy"  lazy-init="default"/>
 	<lang:groovy id="sftppublisher" script-source="publishing/publishers/sftppublisher.groovy"  lazy-init="default" />
 	<lang:groovy id="smbpublisher" script-source="publishing/publishers/smbpublisher.groovy"  lazy-init="default" />
-	<lang:groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy"  lazy-init="default"/>
 	<lang:groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy"  lazy-init="default" />
 	<lang:groovy id="wordpresspublisher" script-source="publishing/publishers/wordpresspublisher.groovy"  lazy-init="default"/>
 	
@@ -75,9 +76,6 @@
 		<lang:property name="moduleManager"><ref bean="moduleManager" /></lang:property>
 	</lang:groovy>
 	
-	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
-			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
-	</lang:groovy>
 <!-- 
 
 	<lang:groovy  id="mediaUploader" script-source="model/push/BaseMediaUploader.groovy" lazy-init="default">
@@ -112,12 +110,14 @@
 		<property name="lockManager"><ref bean="lockManager" /></property>
 
 	</bean>
-	<bean  id="pushManager" class="model.push.BasePushManager" >
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-			<property name="userManager"><ref bean="userManager" /></property>
-	</bean>
+	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
+			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
+	</lang:groovy>
 	
  -->
+	<bean  id="pushManager" class="model.push.BasePushManager" >
+			<property name="searcherManager"><ref bean="searcherManager" /></property>
+	</bean>
 	<lang:groovy  id="convertQueue" script-source="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
 			<lang:property name="executorManager"><ref bean="executorManager" /></lang:property>
 	</lang:groovy>

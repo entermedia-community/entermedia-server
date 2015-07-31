@@ -22,10 +22,10 @@ public class ImmutableData extends BaseData
 	
 	public void setProperty(String inKey, String inValue)
 	{
-		String existing = get(inKey);
+		String existing = getTarget().get(inKey);
 		if( existing == null)
 		{
-			super.setProperty(inKey, inValue);
+			getTarget().setProperty(inKey, inValue);
 		}
 	}
 			
