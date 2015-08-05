@@ -173,11 +173,10 @@ Below css from old highlights.css
   margin-left: 10px;
 }
 .em-workspace .annotations-carousel .carousel-window {
-  overflow: hidden;
+   overflow: hidden;
    height: 83px;
    width: 90%;
    float:left;
-   
 }
 .em-workspace .annotations-carousel ul
 {
@@ -360,7 +359,6 @@ div.tab-pane div#default-fields
 	padding: 0px 30px 0px 30px;	
 	
 }
-
 #annotation-holder 
 {
 	padding-top: 10px;
