@@ -10,7 +10,6 @@ import org.apache.commons.httpclient.methods.multipart.FilePart
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
 import org.apache.commons.httpclient.methods.multipart.Part
 import org.apache.commons.httpclient.methods.multipart.StringPart
-import org.apache.commons.httpclient.params.HttpMethodParams
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.Attribute
@@ -977,7 +976,14 @@ public class BasePushManager implements PushManager
 				String inputName = fileItem.getFieldName();
 				if( inputName.startsWith("original") )
 				{
-					properties.saveFileAs(fileItem, originalsaveroot + "/" + fileItem.getName(), inReq.getUser());
+//					if( target.isFolder())
+//					{
+//						properties.saveFileAs(fileItem, originalsaveroot + "/" + target.getMediaName(), inReq.getUser());
+//					}
+//					else
+//					{
+						properties.saveFileAs(fileItem, originalsaveroot, inReq.getUser());
+//					}
 				}
 				else
 				{

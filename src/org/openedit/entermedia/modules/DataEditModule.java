@@ -1022,6 +1022,10 @@ public class DataEditModule extends BaseMediaModule
 				}
 			}
 			inReq.putPageValue(hits.getHitsName(), hits);
+			if( inReq.getPageValue("hits") == null)
+			{
+				inReq.putPageValue("hits", hits); //could this cause problems?
+			}
 		}
 	}
 
@@ -1326,7 +1330,12 @@ public class DataEditModule extends BaseMediaModule
 		{
 			variablename = "data";
 		}
-		String id = inReq.getRequestParameter("id");
+		String idname = inReq.findValue("idname");
+		if (idname == null)
+		{
+			idname = "id";
+		}
+		String id = inReq.getRequestParameter(idname);
 		if (id == null)			
 		{
 			String pagename = inReq.getPage().getName();
