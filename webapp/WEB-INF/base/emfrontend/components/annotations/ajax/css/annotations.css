@@ -175,11 +175,9 @@ Below css from old highlights.css
 .em-workspace .annotations-carousel .carousel-window {
   overflow: hidden;
    height: 83px;
-   width: 780px;
+   width: 90%;
    float:left;
- 
-  
-  
+   
 }
 .em-workspace .annotations-carousel ul
 {
@@ -226,12 +224,12 @@ Below css from old highlights.css
 }
 .em-workspace .annotations-carousel a.previous,
 .em-workspace .annotations-carousel a.next {
-  width: 30px;
-  height: 83px;
+  width: 20px;
+  height: 20px;
    display: block;
   background: none;
   cursor: pointer;
-  padding: 18px 0px 0px 10px;
+  
 }
 .em-workspace .annotations-carousel a.previous .icon,
 .em-workspace .annotations-carousel a.next .icon {
@@ -243,10 +241,12 @@ Below css from old highlights.css
 }
 .em-workspace .annotations-carousel a.previous {
   float: left;
+  margin:35px 5px 0;
 }
 
 .em-workspace .annotations-carousel a.next {
   float: right;
+  margin:35px 5px 0;
 }
 .em-workspace .colorpicker span {
   color: #005E7A;
