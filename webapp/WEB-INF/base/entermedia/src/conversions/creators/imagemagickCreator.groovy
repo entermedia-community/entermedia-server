@@ -598,16 +598,16 @@ public class imagemagickCreator extends BaseImageCreator {
 
 
 
-//
-//		if (isOnWindows() )
-//		{
-//			// windows needs quotes if paths have a space
-//			com.add("\"\\\\?\\" + outputpath + "\"");
-//		}
-//		else
-//		{
+
+		if (isOnWindows() )
+		{
+			// windows needs quotes if paths have a space
+			com.add("\"" + outputpath + "\"");
+		}
+		else
+		{
 			com.add(outputpath);
-//		}
+		}
 
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
@@ -667,14 +667,14 @@ public class imagemagickCreator extends BaseImageCreator {
 			prefix = inStructions.getInputExtension() + ":";
 
 		}
-//		if (isOnWindows())
-//		{
-//			com.add("\"\\\\?\\" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
-//		}
-//		else
-//		{
+		if (isOnWindows())
+		{
+			com.add("\"" + prefix + inFile.getAbsolutePath() + "[" + page + "]\"");
+		}
+		else
+		{
 			com.add(prefix + inFile.getAbsolutePath() + "[" + page + "]");
-//		}
+		}
 		return com;
 	}
 
