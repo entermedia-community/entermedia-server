@@ -42,7 +42,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 
 	public void generate(WebPageRequest inReq, Page inPage, Output inOut) throws OpenEditException
 	{
-		 log.info("XXX Downloading " + inPage.getPath());
+		// log.info("Downloading " + inPage.getPath());
 		// this depends on the URL path to be /stuff/1/2/3/abc.eps/abs.eps This
 		// way we support weird source paths
 
@@ -59,8 +59,6 @@ public class OriginalDocumentGenerator extends FileGenerator
 			//send them to the jpg version
 			String name = PathUtilities.extractFileName(sourcePath);
 			inReq.redirect("/" + catalogid + "/downloads/converted/cache/" +sourcePath + "/" + name + "wm.jpg");
-			log.info("XXX Watermarked");
-
 			return;
 		}
 		// source path cut off the beginning
@@ -68,7 +66,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 		sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
 
 		Asset asset = archive.getAssetBySourcePath(sourcePath);
-		log.info("XXX Found: ${asset}");
+
 		if (asset == null)
 		{
 			asset = archive.getAssetBySourcePath(sourcePath);
@@ -92,7 +90,6 @@ public class OriginalDocumentGenerator extends FileGenerator
 			WebPageRequest req = inReq.copy(content);
 			req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
 			super.generate(req, content, inOut);
-			log.info("XXX sent: ${asset}");
 		}
 		else
 		{
