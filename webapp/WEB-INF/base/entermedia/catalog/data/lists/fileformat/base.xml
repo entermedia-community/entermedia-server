@@ -13,7 +13,7 @@
 	<property id="eps"  synctags="true"  rendertype="document" creator="imagemagick">EPS</property>
 	<property id="flv"  synctags="true"  rendertype="video" creator="ffmpeg">FLV</property>
 	<property id="gif"  synctags="true"  rendertype="image" creator="imagemagick">GIF</property>
-	<property id="indd"  synctags="true"  rendertype="image" >INDD</property>
+	<property id="indd"  synctags="true"  rendertype="image" creator="imagemagick">INDD</property>
 	<property id="ico"  synctags="true"  rendertype="image" creator="imagemagick">ICO</property>
 	<property id="jpg"  synctags="true"  rendertype="image" creator="imagemagick">JPG</property>
 	<property id="jpeg"  synctags="true"  rendertype="image" creator="imagemagick">JPEG</property>
