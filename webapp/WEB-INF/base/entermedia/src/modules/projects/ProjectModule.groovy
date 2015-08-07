@@ -1,18 +1,20 @@
 package model.projects;
 
-import java.util.Iterator;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.openedit.Data
+import org.openedit.data.Searcher
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.modules.BaseMediaModule
+import org.openedit.profile.UserProfile
 
-import org.openedit.Data;
-import com.openedit.users.*;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.modules.BaseMediaModule;
-import org.openedit.profile.UserProfile;
-
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
+import com.openedit.WebPageRequest
+import com.openedit.hittracker.HitTracker
+import com.openedit.users.*
 
 public class ProjectModule extends BaseMediaModule
 {
+	private static final Log log = LogFactory.getLog(ProjectModule.class);
 	
 	public void loadCollections(WebPageRequest inReq) throws Exception
 	{
@@ -107,10 +109,32 @@ public class ProjectModule extends BaseMediaModule
 		
 		Collection<String> ids = manager.loadAssetsInCollection(inReq, archive, collectionid );
 		//Do an asset search with permissions, showing only the assets on this collection
-		HitTracker all = archive.getAssetSearcher().getAllHits();
+		HitTracker all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
 		
 		all.setSelections(ids);
 		all.setShowOnlySelected(true);
+		//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
+		
+		if( all.size() != ids.size() )
+		{
+			//Some assets got deleted, lets remove them from the collection
+			Set extras = new HashSet(ids);
+			for (Data hit in all)
+			{
+				extras.remove(hit.getId());
+			}
+			//log.info("remaining " + extras );
+			Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
+			for (String id in extras)
+			{
+				Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
+				if( toremove != null)
+				{
+					collectionassetsearcher.delete(toremove, null);
+				}
+			}
+		}
+		
 		String hpp = inReq.getRequestParameter("page");
 		if( hpp != null)
 		{

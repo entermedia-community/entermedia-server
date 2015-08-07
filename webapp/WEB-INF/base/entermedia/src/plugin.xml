@@ -87,17 +87,20 @@
 	</bean>
 -->
 	<!-- 
-	<bean  id="ProjectModule" class="modules.projects.ProjectModule" lazy-init="default" />
-	<bean  id="projectManager" class="model.projects.BaseProjectManager" lazy-init="default">
+
+ 	<bean  id="ProjectModule" class="modules.projects.ProjectModule" lazy-init="default" />
+	<bean  id="projectManager" class="modules.projects.BaseProjectManager" lazy-init="default" scope="prototype"  >
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
+	
  	-->
- 	
+
+
 	<lang:groovy  id="ProjectModule" script-source="modules/projects/ProjectModule.groovy" lazy-init="default" />
 	<lang:groovy  id="projectManager" script-source="modules/projects/BaseProjectManager.groovy" lazy-init="default"  scope="prototype" >
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
-
+	
 	<lang:groovy  id="ConvertModule" script-source="modules/convert/ConvertModule.groovy" lazy-init="default" />
 
 	<lang:groovy  id="AnnotationModule" script-source="modules/annotations/AnnotationModule.groovy" lazy-init="default" />
