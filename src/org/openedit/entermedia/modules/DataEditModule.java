@@ -1047,6 +1047,10 @@ public class DataEditModule extends BaseMediaModule
 		{
 			hits.selectCurrentPage();
 		}
+		else if ("pagenone".equals(action))
+		{
+			hits.deselectCurrentPage();
+		}
 		else if ("none".equals(action))
 		{
 			hits.deselectAll();
@@ -1177,7 +1181,7 @@ public class DataEditModule extends BaseMediaModule
 
 		Searcher searcher = null;
 
-		String catalogid = inReq.getRequestParameter("catalogid");
+		String catalogid = inReq.getRequestParameter("catalogid"); //TODO: Security isssue?
 		if(catalogid == null){
 			catalogid = inReq.findValue("catalogid");
 		}
@@ -1208,6 +1212,8 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
+		inReq.putPageValue("hits", hits);
+		
 		return hits;
 	}
 

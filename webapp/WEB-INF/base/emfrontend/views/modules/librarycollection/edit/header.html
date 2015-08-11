@@ -10,8 +10,6 @@
 	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
     
-    
-    
       <div class="main-info" style="padding-bottom: 20px; margin-top: 20px;">
       	#foreach($detail in $details)     	
         	#set($val = $data.get($detail.id))

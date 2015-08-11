@@ -1,6 +1,17 @@
+#if( !$hits )
+#set( $hits = $collectionassets)
+$context.putPageValue("hits",$hits)
+#end
+
+#if($hits)
+	#set( $collectionid = $hits.getInput("collectionid") )
+	#if( $collectionid)
+		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
+		$context.putPageValue("librarycol",$librarycol)
+	#end
+#end	
 <div id="resultheader">
 	<ul id="sub-nav" class="search-views">
-		
 		#set ($classname="enabled")
 		#if( $candownload || $canconvert || $candownloadfpo )
 			<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
@@ -33,11 +44,6 @@
 					#end
 				</ul>
 			</li>
-		
-		
-		
-		
-		
 		#end
 		
 		#if ( $canviewbasket )
@@ -54,9 +60,22 @@
 				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add to Basket]]</a></li>
 			#end
 		#end
+
+			#if( $librarycol )
+				<li><a>[[Collection]]</a>	
+				<ul>
+					<li><a href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
+					class="confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
+					<li><a href="$home$apphome/views/modules/librarycollection/removefromlibrary.html?hitssessionid=$!hits.getSessionId()&libraryid=${librarycol.library}&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
+					class="confirm" confirm="[[Remove from liibrary and all collections?]]"
+					>[[Remove from Library]]</a></li>
+				</ul>
+				</li>
+				#end
 		
 		#if ($canmetadatageneral && $hits)
-			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">[[Edit]]</a></li>
+			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">[[Edit]]</a>
+			</li>
 		#end
 		#set( $edit = $context.getRequestParameter("editheader") )
 		#if($edit && $edit == "true"  )
@@ -64,7 +83,7 @@
 				<a class="drag-columns-text"><span class="ui-icon ui-icon-info" style="float: left; margin-top: 14px; margin-right: 5px;"></span>
 				[[Drag columns to move them]]</a>
 			</li>
-		#elseif($hits.hasSelections() )
+		#elseif(!$librarycol && $hits.hasSelections()  )
 			<li>
 				$pages.include("$apphome/components/results/selected/index.html",$context)
 			</li>
@@ -118,7 +137,7 @@
 						</select>
 					</a>
 				</div>
-				<a  style="display:none;" class="ajax" id="ajaxselectresultview" targetdivinner="resultsdiv" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections">
+				<a  style="display:none;" class="ajax" id="ajaxselectresultview" targetdivinner="resultsdiv" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections&collectionid=$!librarycol.getId()">
 				</a>
 			</li>
 	</ul>

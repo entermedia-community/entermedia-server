@@ -941,6 +941,13 @@ public class Asset implements MultiValued, SaveableData
 		addValue("libraries", inLibraryid);
 		
 	}
+	public void removeLibrary(String inLibraryid) 
+	{
+		Collection<String> values = new ArrayList( getLibraries() );
+		values.remove(inLibraryid);
+		setValues("libraries", values);
+		
+	}
 
 //	public String getOriginalAttachment()
 //	{

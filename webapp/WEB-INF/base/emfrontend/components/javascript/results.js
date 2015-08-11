@@ -67,7 +67,7 @@ jQuery("input[name=pagetoggle]").livequery( 'click', function()
        }
        else
        {
-    	   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"none"});         
+    	   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"pagenone"});         
    	       jQuery('.selectionbox').removeAttr('checked');  
    	   }
 	   //jQuery("#select-dropdown-open").click();
