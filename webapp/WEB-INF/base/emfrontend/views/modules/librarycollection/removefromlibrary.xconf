@@ -3,13 +3,14 @@
 	<property name="hitsname">hits</property>
 	<property name="searchtype">asset</property>
 	
-    <path-action name="DataEditModule.loadData" >
+	<path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>
 			<searchtype>${module}</searchtype>
 			<idname>collectionid</idname>
     </path-action>
 	
-	<path-action name="ProjectModule.searchForAssetsOnCollection"/>
+	<path-action name="ProjectModule.removeFromLibrary"/>
+		<path-action name="ProjectModule.searchForAssetsOnCollection"/>
 	
 	  <permission name="view">
     		<action name="ProjectModule.checkLibraryPermission" />

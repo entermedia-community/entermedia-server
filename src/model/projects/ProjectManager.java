@@ -25,6 +25,10 @@ public interface ProjectManager
 	
 	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid);
 
+	public void removeAssetFromLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> inAssets );
+
+	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, Collection<Data> inAssets );
+
 	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
 	
 	public boolean addUserToLibrary(MediaArchive archive, Data inLibrary, User inUser);

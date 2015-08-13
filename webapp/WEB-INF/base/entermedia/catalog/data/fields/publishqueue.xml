@@ -1,6 +1,6 @@
 <properties beanname="dataSearcher" >
 	<property id="id" index="true" stored="true">Id</property>
-	<property id="assetid" index="true" stored="true">Asset Id</property>
+	<property id="assetid" index="true" stored="true" type="list" listid="asset" viewtype="text">Asset Id</property>
 	<property id="assetsourcepath" index="true" stored="true">Asset SourcePath</property>
 	<property id="publishdestination" editable="true"  type="list" index="true"  stored="true">Publish Destination</property>
 	<property id="exportname" editable="true"  index="true"  stored="true">Export Name</property>
@@ -13,5 +13,5 @@
 	<property id="completionpercent" editable="true"  index="true"  stored="true">Completion Percent</property>
 	<property id="conversiontaskid" index="true" stored="true" >Conversion Task Id</property>
 	<property id="notes" index="true" stored="true" >Notes</property>
-	
+		
 </properties>

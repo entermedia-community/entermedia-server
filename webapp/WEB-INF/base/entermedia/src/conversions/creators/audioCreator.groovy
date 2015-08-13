@@ -171,6 +171,7 @@ public class audioCreator extends BaseCreator implements MediaCreator
 		//audio
 		comm.add("-acodec");
 		comm.add("libmp3lame");
+		
 		//comm.add("libfaac"); //libfaac  libmp3lame
 		comm.add("-ab");
 		String bitRate = inStructions.getProperty("bitrate");
@@ -184,6 +185,7 @@ public class audioCreator extends BaseCreator implements MediaCreator
 		comm.add("-ac");
 		comm.add("1"); //mono
 
+		comm.add("-vn");
 		String outpath = null;
 
 		outpath = output.getContentItem().getAbsolutePath();

@@ -63,6 +63,7 @@
 	<property id="doc"  synctags="true"  rendertype="document"  creator="oofficeDocument">DOC</property>
 	<property id="docx"  synctags="true"  rendertype="document" >DOCx</property>
 	<property id="rtf"  synctags="true"  rendertype="document" >RTF</property>
+	<property id="raw"  synctags="true"  rendertype="image" creator="imagemagick" >RAW</property>
 	<property id="xls"  synctags="true"  rendertype="document" >XLS</property>
 	<property id="xlsx"  synctags="true"  rendertype="document" >XLS</property>
 	<property id="ppt"  synctags="true"  rendertype="document" >PPT</property>
