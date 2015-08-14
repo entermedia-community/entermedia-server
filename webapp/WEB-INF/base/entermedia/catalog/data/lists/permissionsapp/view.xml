@@ -18,8 +18,8 @@
   	<permission id="viewmodulesettings" permissiontype="view" name="Module Settings" description="Enables access to module specific settings." ordering="623"/>
   	<permission id="viewcategorynav" permissiontype="view" name="Category Navigation" description="Enables the Category Navigation in the sidebar." ordering="634"/>
 	<permission id="viewerrors" permissiontype="view" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." ordering="644"/>
-	<permission id="viewlibrarysearch" permissiontype="view" name="Project Tracker" description="Enables a list of libraries on the sidebar." ordering="655"/>
-	<permission id="addnewcollection" permissiontype="view" name="Create New Collection" description="Allows user to create new collections from Project Tracker." ordering="200"/>
+	<permission id="viewlibrarysearch" permissiontype="view" name="Library Tracker" description="Enables a list of libraries on the sidebar." ordering="655"/>
+	<permission id="addnewcollection" permissiontype="view" name="Create New Collection" description="Allows user to create new collections from Library Tracker." ordering="200"/>
 	
 	<permission id="filterbyassettype" permissiontype="view" name="Filter By Asset Type" description="Enables filters." ordering="665"/>
 	<permission id="viewrelatedkeywords" permissiontype="view" name="Related Keywords" description="Enables a list of related keywords when searching." ordering="676"/>
