@@ -4,7 +4,9 @@
   <property id="name" index="true" stored="true" editable="true" >Theme Name</property>
   
   <!--  header information and style -->
-  <property id="title" index="true" stored="true" editable="true">Site Title</property>
+  <property id="title" index="true" stored="true" editable="true" note="EM Share">Site Title</property>
+  <property id="systemfromemail" index="true" stored="true" editable="true"  note="noreply@entermediasoftware.com">Email Address</property>
+  <property id="systemfromemailname" index="true" stored="true" editable="true"  note="No Reply">Email Name</property>
   <property id="logopath" index="true" stored="true" editable="true" note="Relative or absolute URL" >Logo URL</property>
   <property id="logoasset" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio"  internalfield="false" listid="asset" datatype="list"  note="Optional">Logo Asset</property>
   <property id="logowidth" index="true" stored="true" editable="true" >Logo Width</property>

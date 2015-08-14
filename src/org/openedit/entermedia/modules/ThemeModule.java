@@ -97,6 +97,17 @@ public class ThemeModule extends BaseMediaModule {
 		{
 			xconf.setProperty("title",title);
 		}
+		String systemfromemail = theme.get("systemfromemail");
+		if( systemfromemail !=  null )
+		{
+			xconf.setProperty("systemfromemail",systemfromemail);
+		}
+		String systemfromemailname = theme.get("systemfromemailname");
+		if( systemfromemailname !=  null )
+		{
+			xconf.setProperty("systemfromemailname",systemfromemailname);
+		}
+		// <property name="systemfromemail">noreply@entermediasoftware.com</property> 
 		
 		xconf.setProperty("themeid",theme.getId());
 		getPageManager().getPageSettingsManager().saveSetting(xconf);

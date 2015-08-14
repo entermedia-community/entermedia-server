@@ -504,13 +504,18 @@ public class TemplateWebEmail extends WebEmail implements Data
 		String output = render(out);
 		try
 		{
+			String from = getFrom();
+			if(getFromName() != null)
+			{
+				from = getFromName() + " <" + from + ">";
+			}
 			if (getBCCRecipients()==null || getBCCRecipients().isEmpty())
 			{
-				postMail.postMail(getRecipients(),getSubject(),output,null,getFrom(),getFileAttachments(), getProperties());
+				postMail.postMail(getRecipients(),getSubject(),output,null,from,getFileAttachments(), getProperties());
 			}
 			else
 			{
-				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,getFrom(),getFileAttachments(), getProperties());
+				postMail.postMail(getRecipients(),getBCCRecipients(),getSubject(),output,null,from,getFileAttachments(), getProperties());
 			}
 		}
 		catch ( MessagingException ex)

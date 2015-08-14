@@ -108,6 +108,9 @@
   
   <!-- global styles -->
   <property id="disableshadows" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
+
+  <property id="systemfromemail" />
+  <property id="systemfromemailname" />
   
 
 </properties>
