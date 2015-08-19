@@ -148,10 +148,10 @@ public class ProjectModule extends BaseMediaModule
 	public void searchForAssetsOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String collectionid = inReq.getRequestParameter("id");
+		String collectionid = inReq.getRequestParameter("collectionid");
 		if( collectionid == null)
 		{
-			collectionid = inReq.getRequestParameter("collectionid");
+			collectionid = inReq.getRequestParameter("id");
 		}
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		
@@ -211,7 +211,11 @@ public class ProjectModule extends BaseMediaModule
 			//dont filter since its the admin
 			return true;
 		}
-		String collectionid = inReq.getRequestParameter("id");
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			collectionid = inReq.getRequestParameter("id");
+		}
 		Data data = archive.getData("librarycollection", collectionid);
 		if( data != null)
 		{

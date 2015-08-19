@@ -934,9 +934,19 @@ public class BasePushManager implements PushManager
 		String[] fields = inReq.getRequestParameters("field");
 		
 		//Make sure we ADD libraries not replace them
+		String editstatus = inReq.getRequestParameter("editstatus.value");
+		String k4processed = inReq.getRequestParameter("k4processed.value");
+		
+		
 		Collection existing = target.getLibraries();
-		archive.getAssetSearcher().updateData(inReq, fields, new ImmutableData(target));
-
+		if( k4processed == "true" || editstatus == "override") 
+		{
+			archive.getAssetSearcher().updateData(inReq, fields, target);
+		}
+		else
+		{
+			archive.getAssetSearcher().updateData(inReq, fields, new ImmutableData(target));
+		}
 		String libraries = inReq.getRequestParameter("libraries");
 		if( libraries != null )
 		{
