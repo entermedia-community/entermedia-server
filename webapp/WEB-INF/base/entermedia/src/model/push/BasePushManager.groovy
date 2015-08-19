@@ -274,7 +274,11 @@ public class BasePushManager implements PushManager
 		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath();
 		
 		readFiles( archive.getPageManager(), path, path, filestosend );
-		
+		ContentItem item = archive.getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + target.getSourcePath() + "/fulltext.txt");
+		if( item.exists() )
+		{
+			filestosend.add(item);
+		}
 		//			}
 //			else
 //			{
@@ -967,7 +971,6 @@ public class BasePushManager implements PushManager
 			}
 		}
 		
-		archive.saveAsset(target, inReq.getUser());
 		List<FileUploadItem> uploadFiles = properties.getUploadItems();
 
 
@@ -995,12 +998,17 @@ public class BasePushManager implements PushManager
 						properties.saveFileAs(fileItem, originalsaveroot, inReq.getUser());
 //					}
 				}
+				else if( fileItem.getName().equals( "fulltext.txt"))
+				{
+					properties.saveFileAs(fileItem, "/WEB-INF/data/" + archive.getCatalogId() + "/assets/" + sourcepath + "/fulltext.txt", inReq.getUser());
+				}
 				else
 				{
 					properties.saveFileAs(fileItem, generatedsaveroot + "/" + fileItem.getName(), inReq.getUser());
 				}
 			}
 		}
+		archive.saveAsset(target, inReq.getUser());
 		archive.fireMediaEvent("importing/pushassetimported", inReq.getUser(), target);
 
 	}
