@@ -943,7 +943,7 @@ public class BasePushManager implements PushManager
 		
 		
 		Collection existing = target.getLibraries();
-		if( k4processed == "true" || editstatus == "override") 
+		if( k4processed == "true" || editstatus == "override" || editstatus == "7") 
 		{
 			archive.getAssetSearcher().updateData(inReq, fields, target);
 		}
