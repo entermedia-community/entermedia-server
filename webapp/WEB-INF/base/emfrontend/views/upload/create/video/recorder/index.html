@@ -6,7 +6,7 @@
 <script type="text/javascript">
 	var flashvars = {
 		userId : "XXY",
-		qualityurl: "audio_video_quality_profiles/wide/864x480x30x90.xml",
+		qualityurl: "audio_video_quality_profiles/wide/1024x768x15x85.xml",
 		recorderId: "$asset.getId()",
 		sscode: "html",
 		lstext : "Loading Settings..."	
@@ -74,10 +74,9 @@ window.onbeforeunload = function(){
 	}
 	
 	function btStopRecordingPressed(recorderId){
-		//alert("btStopRecordingPressed");		//$("#livearea").html("");		window.location.href = "$home$apphome/views/upload/create/video/recorder/finish.html?assetid=$asset.getId()";
-		//this function is called whenever a recording is stopped
+		//alert("btStopRecordingPressed");		//$("#livearea").html("");		//this function is called whenever a recording is stopped
 		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-		
+				window.location.href = "$home$apphome/views/upload/create/video/recorder/finish.html?assetid=$asset.getId()";		
 		//document.getElementById("recordbtn").disabled = false;
 		//document.getElementById("stopBtn").disabled = true;
 	}
