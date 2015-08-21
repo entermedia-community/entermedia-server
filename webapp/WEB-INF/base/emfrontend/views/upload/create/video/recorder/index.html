@@ -1,23 +1,17 @@
 <div class="ui-widget uipanel" style="margin:20px;">   <div class="ui-widget-header">[[Create Streaming Video]]</div>   <div class="ui-widget-content" style="overflow: hidden;">		    
-<link rel="stylesheet" type="text/css" href="HDFVR-mobile.css">
-
-<script type="text/javascript" src="swfobject.js"></script>
+<link rel="stylesheet" type="text/css" href="HDFVR-mobile.css"><script type="text/javascript" src="swfobject.js"></script>
 
 <script type="text/javascript">
 	var flashvars = {
-		userId : "XXY",
-		qualityurl: "audio_video_quality_profiles/wide/1024x768x15x85.xml",
-		recorderId: "$asset.getId()",
-		sscode: "html",
-		lstext : "Loading Settings..."	
-	};
+		userId : "XXY",#set($size =  "1024x768x15x85")#if($asset.bandwidth)	#set( $bandwidth = $mediaarchive.getData("bandwidth",$asset.bandwidth) )	#set( $size = $bandwidth.name )#end
+		qualityurl: "audio_video_quality_profiles/wide/${size}.xml",		recorderId: "$asset.getId()",		sscode: "html",		lstext : "Loading Settings..."	};
 	var params = {
-		quality : "high",
-		bgcolor : "#dfdfdf",
-		play : "true",
-		loop : "false",
-		allowscriptaccess: "sameDomain",
-		wmode:"transparent"
+		quality : "high",
+		bgcolor : "#dfdfdf",
+		play : "true",
+		loop : "false",
+		allowscriptaccess: "sameDomain",
+		wmode:"transparent"
 	};
 	var attributes = {
 		name : "VideoRecorder",
@@ -74,14 +68,14 @@ window.onbeforeunload = function(){
 	}
 	
 	function btStopRecordingPressed(recorderId){
-		//alert("btStopRecordingPressed");		//$("#livearea").html("");		//this function is called whenever a recording is stopped
+		//alert("btStopRecordingPressed");		//document.VideoRecorder.save();		//alert("btStopRecordingPressed2");		//$("#livearea").html("");		//this function is called whenever a recording is stopped
 		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-				window.location.href = "$home$apphome/views/upload/create/video/recorder/finish.html?assetid=$asset.getId()";		
+		setTimeout( function() 		{				window.location.href = "$home$apphome/views/upload/create/video/recorder/finish.html?assetid=$asset.getId()";		}, 2000);				
 		//document.getElementById("recordbtn").disabled = false;
 		//document.getElementById("stopBtn").disabled = true;
 	}
 		function onUploadDone(streamName,streamDuration,userId,recorderId,audioCodec,videoCodec,fileType){
-		//alert("onUploadDone("+streamName+","+streamDuration+","+userId+")");
+		//alert("onUploadDone("+streamName+","+streamDuration+","+userId+")");	    alert("Upload done");
 		
 		//this function is called when the video/audio stream has been all sent to the video server and has been saved to the video server HHD, 
 		//on slow client->server connections, because the data can not reach the video server in real time, it is stored in the recorder's buffer until it is sent to the server, you can configure the buffer size in avc_settings.XXX
