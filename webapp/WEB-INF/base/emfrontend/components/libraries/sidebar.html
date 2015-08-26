@@ -10,8 +10,9 @@
 
 		<div class="collectionheaderleft">
 			<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" data-sortby="name" onChange='$("#librarychange").submit()' />
-		</div>
-#if ($canaddnewcollection)		
+		</div>		
+#set( $caneditlibrary = $context.getPageStreamer().canDo("editdata","$apphome/views/modules/library/index.html"))
+#if ($caneditlibrary)		
 		<div class="collectionheaderright">
 			<a href="$home$apphome/components/libraries/addnewlibrary.html" class="emdialog" title="Add Library"><img src="$home$themeprefix/images/icons/addgray.png"> </a>
 		</div>

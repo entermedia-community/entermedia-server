@@ -389,25 +389,10 @@ public class LuceneAssetIndexer extends LuceneIndexer
 
 		if( Boolean.parseBoolean(asset.get("hasfulltext")))
 		{
-			ContentItem item = getMediaArchive().getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
-			if( item.exists() )
+			final String fulltext = getMediaArchive().getAssetSearcher().getFulltext(asset);
+			if( fulltext != null)
 			{
-				Reader input = null;
-				try
-				{
-					input= new InputStreamReader( item.getInputStream(), "UTF-8");
-					StringWriter output = new StringWriter(); 
-					filler.fill(input, output);
-					fullDesc.append(output.toString());
-				}
-				catch( IOException ex)
-				{
-					log.error(ex);
-				}
-				finally
-				{
-					filler.close(input);
-				}
+				fullDesc.append(fulltext);
 			}
 		}
 

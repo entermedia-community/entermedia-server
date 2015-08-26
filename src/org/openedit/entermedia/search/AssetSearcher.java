@@ -53,5 +53,7 @@ public interface AssetSearcher extends Searcher
 	public Asset getAssetBySourcePath(String inSourcepath, boolean autocreate);
 	public Asset getAssetBySourcePath(String inSourcepath);
 
+	public String getFulltext(Asset asset);
+
 
 }
