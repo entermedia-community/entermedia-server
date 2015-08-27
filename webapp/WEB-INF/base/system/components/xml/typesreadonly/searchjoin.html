@@ -2,10 +2,12 @@
 	#set( $xmledithome = $context.getPageProperty("xmledithome"))
 #end
 #set( $id = $detail.getId() )
+#if( $id && $id.length() >  0 )
 #set( $index = $id.indexOf(".") )
 #set( $table = $id.substring(0,$index) )
 #set( $index = $index  + 1)
 #set( $column = $id.substring($index) )
+#end
 
 #set( $newsearcher = $searcherManager.getSearcher($catalogid,$table) )
 $context.putPageValue("searcher",$newsearcher)

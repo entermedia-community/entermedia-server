@@ -303,6 +303,7 @@ public class ConversionUtil {
 		both.add("all");
 		both.add(mediatype);
 		HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").orgroup("inputtype", both).sort("ordering").search();
+		//HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").sort("ordering").search();
 		return all;
 	}
 	
@@ -329,7 +330,12 @@ public class ConversionUtil {
 		return null;
 	}
 
-	public boolean doesExist(String inCatalogId, String inAssetId, String assetSourcePath, String inPresetId){
+	public boolean doesExist(String inCatalogId, String inAssetId, String assetSourcePath, String inPresetId)
+	{
+		if( "0".equals( inPresetId ))
+		{
+			return true;
+		}
 		SearcherManager sm = getSearcherManager();
 		Searcher ctsearcher = sm.getSearcher(inCatalogId, "conversiontask");
 		SearchQuery q = ctsearcher.createSearchQuery();
