@@ -331,6 +331,7 @@ public class imagemagickCreator extends BaseImageCreator {
 						//for small input files we want to scale up the density
 						float density = ((float)outputw / (float)width) * 300f;
 						density = Math.max(density,300);
+						density = Math.min(density,900);						
 						String val = String.valueOf( Math.round(density) );
 						com.add(0,val);
 						com.add(0,"-density");
