@@ -3,37 +3,52 @@
     <div class="ui-widget-content">
 
 <div class="row" style="max-width: 800px;margin: auto;">
-  <div class="col-sm-6 col-md-4">
+#if( $canviewupload)
+  <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
-      <img  src="./url/add.png" style="height: 150px; width: 100%; display: block;">
+      <img  src="./upload/add.png" style="height: 100px; width: 100%; display: block;">
       <div class="caption">
-        <h3>Add Media URL</h3>
-        <p>Create Assets based on a URL to the media itself</p>
-        <p><a href="./url/start.html" class="btn btn-default" role="button">Next</a></p>
+        <h3>[[Upload Media]]</h3>
+        <p>[[Upload media from local file system or camera]]</p>
+        <p><a href="$home$apphome/views/upload/index.html" class="btn btn-default" role="button">[[Next]]</a></p>
       </div>
     </div>
     </div>
-  <div class="col-sm-6 col-md-4">
+  <div class="col-sm-6 col-md-3">
+    <div class="thumbnail">
+      <img  src="./url/add.png" style="height: 100px; width: 100%; display: block;">
+      <div class="caption">
+        <h3>[[Add Media by URL]]</h3>
+        <p>[[Create Assets based on a URL to the media itself]]</p>
+        <p><a href="./url/start.html" class="btn btn-default" role="button">[[Next]]</a></p>
+      </div>
+    </div>
+    </div>
+  #end
+  #if( $cancreatenewrecord)
+  <div class="col-sm-6 col-md-3">
      <div class="thumbnail">
-	 <img  src="./data/add.png" style="height: 150px; width: 100%; display: block;">     
+	 <img  src="./data/add.png" style="height: 100px; width: 100%; display: block;">     
 	 <div class="caption">
-        <h3>Data Only</h3>
-        <p>Create empty records then attach media later</p>
-        <p><a href="./data/newdatastart.html" class="btn btn-default" role="button">Next</a></p>
+        <h3>[[Empty Data Record]]</h3>
+        <p>[[Create empty records then attach media later]]</p>
+        <p><a href="./data/newdatastart.html" class="btn btn-default" role="button">[[Next]]</a></p>
       </div>
     </div>
 	    </div>
-  <div class="col-sm-6 col-md-4">
+  #end
+  #if( $cancreatelivemedia)
+  <div class="col-sm-6 col-md-3">
      <div class="thumbnail">
-       <img  src="./video/add.png" style="height: 150px; width: 100%; display: block;">
+       <img  src="./video/add.png" style="height: 100px; width: 100%; display: block;">
        <div class="caption">
-        <h3>Live Video Stream</h3>
-        <p>Make a live stream recording from your webcam</p>
-        <p><a href="./video/newvideostart.html"  class="btn btn-default" role="button">Next</a></p>
+        <h3>[[Live Video Stream]]</h3>
+        <p>[[Make a live stream recording from your webcam]]</p>
+        <p><a href="./video/newvideostart.html"  class="btn btn-default" role="button">[[Next]]</a></p>
       </div>
     </div>
    </div> 
-    
+  #end  
   </div>
 </div>
 
