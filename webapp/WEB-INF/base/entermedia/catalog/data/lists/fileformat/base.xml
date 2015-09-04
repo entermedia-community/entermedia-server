@@ -46,6 +46,8 @@
 	<property id="ppm"  synctags="true"  rendertype="image" creator="imagemagick">PPM</property>
 	<property id="psd"  synctags="true"  rendertype="document" creator="imagemagick">PSD</property>
 	<property id="rm"  synctags="true"  rendertype="video" creator="ffmpeg">RM</property>
+	<property id="rw2"  synctags="true"  rendertype="image" creator="imagemagick">RW2</property>
+	
 	<property id="swf"  synctags="true"  rendertype="embedded" >SWF</property>
 	<property id="tga"  synctags="true"  rendertype="image" creator="imagemagick">TGA</property>
 	<property id="tif"  synctags="true"  rendertype="image" creator="imagemagick">TIFF (.tif)</property>
