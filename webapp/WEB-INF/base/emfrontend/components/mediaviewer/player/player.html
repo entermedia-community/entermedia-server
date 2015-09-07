@@ -1,2 +1,9 @@
+#if( $asset.embeddedurl )
+
+$pages.include("$apphome/components/mediaviewer/player/types/embedded.html",$context)
+
+#else
+
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 $pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
+#end

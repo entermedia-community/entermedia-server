@@ -22,7 +22,7 @@ public class YoutubeParser
 	public Map<String, String> parseUrl( String inYoutubeUrl )
 	{
 		
-		if( inYoutubeUrl == null || !inYoutubeUrl.contains("youtube.com") )
+		if( inYoutubeUrl == null || !inYoutubeUrl.contains("youtube.") )
 		{
 			return null;
 		}

@@ -6,6 +6,8 @@
 #end
 $context.putPageValue("thumbsize",$thumbsize)
 
+
+
     #if( $hit.importstatus && $hit.importstatus == "uploading" )
      <div class="smallthumb emdropshadow proxythumb">
         <div class="loadingborder">
@@ -25,6 +27,7 @@ $context.putPageValue("thumbsize",$thumbsize)
         #if( $type == "audio" || $type == "default")
             $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
         #else
+
             #set ( $urlutils = $context.getPageValue("url_util"))
             #if (!$urlutils)
             	#set ($urlenc = $sourcepath)

@@ -1,12 +1,10 @@
 
 <div class="ui-widget uipanel" style="padding: 40px;">
-		    <div class="ui-widget-header">[[Create Asset from URL]]</div>
+		    <div class="ui-widget-header">[[Add Remote Media]]</div>
 		    <div class="ui-widget-content">
 
-#set( $catalog = $context.getRequestParameter('uploadcatalog') )
-#set( $sourcepath = $formatteddate )
 
-<p>Enter a URL to an image, video or other binary data. If there is no login or password required then EnterMedia scheduler will
+<p>Fetch URL is an an image, video. If there is no login or password required then EnterMedia scheduler will
 download the file and create thumbnails or conversions.</p> 
 
 <form  name="wizard" method="post" 
@@ -15,16 +13,70 @@ download the file and create thumbnails or conversions.</p>
 	
 <div id="eml-tab-green-container" class="clearfix">
 	<div class="inner-content">
-	
+<script>
+
+jQuery(document).ready(function() 
+{ 
+	$("#externalmediainput").on("change",function()
+	{
+		var externalmediainput = $(this).val();
+		var youtubeid = false;
+		if( externalmediainput.startsWith("https://youtu.be/") )			//https://youtu.be/n7GxnhQjBaw		
+		{
+			youtubeid = externalmediainput.substring(17);
+		}
+		else if (externalmediainput.indexOf("youtube.com/") > -1 ) //https://www.youtube.com/watch?v=n7GxnhQjBaw
+		{
+			var start = externalmediainput.indexOf("watch?v=");
+			youtubeid = externalmediainput.substring( start + 8);
+		}
+		if( youtubeid )
+		{
+			var code = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + youtubeid + '" frameborder="0" allowfullscreen></iframe>';
+			$("#embeddedurl").val(code);
+		}
+		
+		if( externalmediainput.indexOf("vimeo") > -1) 
+		{
+			var vimeoid = externalmediainput.substring(externalmediainput.lastIndexOf("/") + 1);
+			var code = '<iframe src="https://player.vimeo.com/video/' + vimeoid +'" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+			$("#embeddedurl").val(code);
+		}
+		
+	});
+});
+
+</script>	
 
 <style>
 
-input.detail_fetchurl
+#embeddedurl
+{
+	width: 450px;
+	height: 60px;
+}
+#detail_embeddedurl
+{
+	margin-bottom: 10px;
+}
+.detail-note {
+	font-style: italic;
+}
+#externalmediainput
 {
 	width: 450px;
 	border: 2px solid #444;
 }
 </style>
+<div class="inputformrow">
+	<span class="emdatafield">
+			Media URL Address: 
+	</span>
+	<div id="detail_embeddedurl" class="emdatafieldvalue ">
+		<input name="externalmediainput" id="externalmediainput"  />
+		<span class="detail-note">External image, video, YouTube or Vimeo<span></span></span>
+	</div>
+</div>
 
 		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 		$context.putPageValue("view","asset/assettype/default/createnewurl")	

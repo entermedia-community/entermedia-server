@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties usagelabel="New Record">
-  <property id="fetchurl"/> 
-  <property id="assettitle"/>
-  <property id="longcaption"/>
+  <property id="embeddedurl"/> 
   <property id="libraries"/> 
 </properties>

@@ -4,7 +4,7 @@
 	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
 	<!--<property id="catalogid" internalfield="true"  viewtype="list" catalogid="entermedia" listid="catalogs">Catalog</property> -->
 	<property id="description" defaultoperation="freeform">All Fields</property>
-	<property id="sourcepath" internalfield="true" index="true" stored="true">Source Path</property>
+	<property id="sourcepath" internalfield="false" index="true" stored="true">Source Path</property>
 	<property id="isfolder" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Folder Based</property>
 
 	<property id="category" keyword="true" editable="true" viewtype="category" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
@@ -48,7 +48,6 @@
 	<property id="bitspersample" externalid="Bits Per Sample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="videocodec"  index="true" stored="true" >Video Codec</property>
 	<property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true" >Audio Codec</property>
-	<property id="embeddedurl" externalid="Embedded Video URL" index="true" stored="true" datatype="text" editable="true">Embedded Video URL</property>
 
 	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="exif:Orientation">Image Rotation</property>
 	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
