@@ -816,7 +816,7 @@ public class BasePushManager implements PushManager
 				}
 
 			} 
-			else// must be complete if( destinationid.equals("0") )
+			else if( destinationid.equals("0") ||  destinationid.equals("pushhttp"))
 			{
 				//If this is a browser download then we need to upload the file
 				List<ContentItem> filestosend = new ArrayList<ContentItem>(1);
