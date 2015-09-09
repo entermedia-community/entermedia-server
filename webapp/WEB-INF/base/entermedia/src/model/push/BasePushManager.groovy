@@ -693,26 +693,27 @@ public class BasePushManager implements PushManager
 		PostMethod method = new PostMethod(url);
 		
 		//loop over all the destinations we are monitoring
-////		Searcher dests = getSearcherManager().getSearcher(inArchive.getCatalogId(),"publishdestination");
-////		Collection hits = dests.fieldSearch("remotempublish","true");
-////		if( hits.size() == 0 )
-////		{
-////			log.info("No remote publish destinations defined. Disable Pull Remote Event");
-////			return;
-////		}
-//		StringBuffer ors = new StringBuffer();
-//		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-//		{
-//			Data dest = (Data) iterator.next();
-//			ors.append(dest.getId());
-//			if( iterator.hasNext() )
-//			{
-//				ors.append(" ");
-//			}
-//		}
+		Searcher dests = inArchive.getSearcher("publishdestination");
+		Collection hits = dests.fieldSearch("remotempublish","true");
+		if( hits.size() == 0 )
+		{
+			log.info("No remote publish destinations defined. Disable Pull Remote Event");
+			return;
+		}
+		StringBuffer ors = new StringBuffer();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data dest = (Data) iterator.next();
+			ors.append(dest.getId());
+			if( iterator.hasNext() )
+			{
+				ors.append(" ");
+			}
+		}
 		method.addParameter("field", "publishdestination");
-		method.addParameter("publishdestination.value", "pushhttp");
-		method.addParameter("operation", "matches");
+		//method.addParameter("publishdestination.value", "pushhttp");
+		method.addParameter("publishdestination.value", ors.toString());
+		method.addParameter("operation", "orsgroup");
 
 		method.addParameter("field", "status");
 		method.addParameter("status.value", "complete");
