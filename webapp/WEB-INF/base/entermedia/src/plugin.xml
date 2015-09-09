@@ -61,6 +61,7 @@
 -->	
 	<lang:groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy"  lazy-init="default"/>
 	<lang:groovy id="pushhttppublisher" script-source="publishing/publishers/pushhttppublisher.groovy"  lazy-init="default"/>
+	<lang:groovy id="externalpublisher" script-source="publishing/publishers/externalpublisher.groovy"  lazy-init="default"/>
 	<lang:groovy id="filecopypublisher" script-source="publishing/publishers/filecopypublisher.groovy"   lazy-init="default"/>
 	<lang:groovy id="ftppublisher" script-source="publishing/publishers/ftppublisher.groovy"  lazy-init="default"/>
 	<lang:groovy id="sftppublisher" script-source="publishing/publishers/sftppublisher.groovy"  lazy-init="default" />

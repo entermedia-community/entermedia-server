@@ -11,7 +11,10 @@
 		
 	#else
 	
-	Published!
+	#set( $history = $order.getRecentOrderHistory() )
+	
+	[[Published]] $history.getItemSuccessCount() [[with]] $history.getItemErrorCount() [[errors]]
+	
 	
 	#end
 #elseif( $order.orderstatus == "error" )

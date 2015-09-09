@@ -694,7 +694,7 @@ public class BasePushManager implements PushManager
 		
 		//loop over all the destinations we are monitoring
 		Searcher dests = inArchive.getSearcher("publishdestination");
-		Collection hits = dests.fieldSearch("remotempublish","true");
+		Collection hits = dests.fieldSearch("remotepublish","true");
 		if( hits.size() == 0 )
 		{
 			log.info("No remote publish destinations defined. Disable Pull Remote Event");
@@ -712,7 +712,7 @@ public class BasePushManager implements PushManager
 		}
 		method.addParameter("field", "publishdestination");
 		//method.addParameter("publishdestination.value", "pushhttp");
-		method.addParameter("publishdestination.value", ors.toString());
+		method.addParameter("publishdestination.value", ors.toString() );
 		method.addParameter("operation", "orsgroup");
 
 		method.addParameter("field", "status");

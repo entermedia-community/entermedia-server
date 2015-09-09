@@ -28,9 +28,10 @@ public void init() {
 	Downloader dl = new Downloader();
 	assets.each
 	{
+		Asset current = null;
 		try
 		{	
-			Asset current = archive.getAssetBySourcePath(it.sourcepath);
+			current = archive.getAssetBySourcePath(it.sourcepath);
 			String fetchurl = current.fetchurl;
 			boolean regenerate = false;
 			if( fetchurl != null )
@@ -76,6 +77,9 @@ public void init() {
 		catch( Exception ex )
 		{
 			log.error("could not process asset: " + it.sourcepath,ex);
+			current.setProperty("importstatus","error");
+			archive.saveAsset(current,user);
+			
 		}	
 	}
 

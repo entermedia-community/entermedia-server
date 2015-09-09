@@ -1,5 +1,6 @@
 <publishtype>
 	<location id="http">Browser Download</location> 
+	<location id="external">External Publisher</location> 
 	<location id="pushhttp">Push Download</location> 
 <!-- 
 	<location id="java">Applet Download</location>
