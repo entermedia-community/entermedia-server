@@ -21,9 +21,18 @@ public class OrderSearcher extends XmlFileSearcher
 		fieldOrderManager = inOrderManager;
 	}
 
+	public Data createNewData()
+	{
+		Order order = (Order)super.createNewData();
+		order.setCatalogId(getCatalogId());
+		order.setOrderManager(getOrderManager());
+		return order;
+	}
+	
+	
 	protected void updateIndex(Data inData, Document doc, PropertyDetails inDetails) 
 	{
-		getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
+		//getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
 		super.updateIndex(inData, doc, getPropertyDetails());
 	}
 }

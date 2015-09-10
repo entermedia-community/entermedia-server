@@ -1,30 +1,23 @@
 #if( $orders.size() > 0 )
 
-#set( $details = $searcherManager.getSearcher($catalogid,"order").getDetailsForView("order/activityresults",$context.getUserProfile() ) )
+#set( $ordersearcher = $searcherManager.getSearcher($catalogid,"order") )
+
+#set( $details = $ordersearcher.getDetailsForView("order/activityresults",$context.getUserProfile() ) ) 
 
 <div id="emselectable" >
 <table class="emresultscontent" > 
 <tr id="tableheader">
-<td>Order Type</td>
 #foreach( $detail in $details)
-	#if( $velocityCount == 1)
-	<th class="firstheader">$detail.text</th>
-	#elseif( $velocityCount == $details.size() ) 
-	<th class="lastheader">$detail.text</th>
-	#elseif( $detail.id.endsWith("note"))
-	<th width="50%">$detail.text</th>
-	#else
 	<th >$detail.text</th>
-	#end
 #end
 
 
 </tr>
 #foreach( $order in $orders )
+	#set( $order = $ordersearcher.loadData($order) )
 #set( $userstatus = false )
 #set( $userstatus = $searcherManager.getData($catalogid,"order/userstatus",$order.historyuserstatus ))
 	<tr rowid="$order.id">
-	<td> $searcherManager.getData($catalogid,"order/ordertype",$order.ordertype )</td>
 	#foreach( $detail in $details)
 		$!context.putPageValue("detail",$detail)
 		#if( $detail.id == "historyuserstatus" && $userstatus)

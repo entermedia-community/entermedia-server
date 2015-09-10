@@ -309,7 +309,14 @@ public class DataEditModule extends BaseMediaModule
 		Element element = file.getElementById(toremove);
 		file.deleteElement(element);
 
-		getXmlArchive().saveXml(file, inReq.getUser());
+		if( file.getRoot().elements().size() == 0)
+		{
+			getXmlArchive().deleteXmlFile(file);
+		}
+		else
+		{
+			getXmlArchive().saveXml(file, inReq.getUser());
+		}
 		Searcher searcher = loadSearcher(inReq);
 		searcher.getPropertyDetailsArchive().clearCache();
 

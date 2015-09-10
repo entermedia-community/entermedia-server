@@ -3,4 +3,7 @@
 	<property id="name" editable="true" stored="true" index="true">Name</property>	
 	<property id="rootpath" editable="true" stored="true" index="true">Root Path</property>	
 	<property id="clientsubdomain" editable="true" stored="true" index="true">Sub-Domain</property>	
+	<property id="owner" editable="true" stored="true" type="list"  listid="user" index="true">Created By</property>
+	<property id="email" editable="true" stored="true" index="true">Email</property>	
+	
 </properties>

@@ -1,8 +1,11 @@
 <properties>
-	<property id="historyuserstatus" />
+
+	<property id="orderstatus" />
+	<property id="ordertype" />
+	<property id="date" />
+	<property id="historytype" />
 	<property id="historydate" />
+	<property id="historyitemsuccesscount" />
+	<property id="historyitemerrorcount" />
 	<property id="id" />
-	<property id="project" />
-	<property id="historyuserid" />
-	<property id="historynote" />
 </properties>

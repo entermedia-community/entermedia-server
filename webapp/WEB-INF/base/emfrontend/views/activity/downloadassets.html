@@ -1,7 +1,7 @@
 <div class="em-rounded" style="margin:20px;">
 #set($order = $data)
 #if( $order.userid != $context.getUserName() )
-Invalid order, username does not match
+Invalid order, username does not match $order.userid != $context.getUserName()
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
