@@ -1,14 +1,10 @@
 package conversions.creators;
 
-import java.io.File
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
+import java.awt.Dimension
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
-import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.creator.BaseImageCreator
@@ -18,10 +14,8 @@ import org.openedit.entermedia.creator.MediaCreator
 
 import com.openedit.OpenEditException
 import com.openedit.page.Page
-import com.openedit.util.ExecResult;
+import com.openedit.util.ExecResult
 import com.openedit.util.PathUtilities
-
-import java.awt.Dimension;
 
 public class imagemagickCreator extends BaseImageCreator {
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
@@ -69,6 +63,7 @@ public class imagemagickCreator extends BaseImageCreator {
 	protected ConvertResult createOutput(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions) {
 		ConvertResult result = new ConvertResult();
 		String outputpath = inOutFile.getContentItem().getAbsolutePath();
+		Page input = null;
 		//if watermarking is set
 		if(inStructions.isWatermark())
 		{
@@ -80,10 +75,11 @@ public class imagemagickCreator extends BaseImageCreator {
 				return result;
 			}
 			String fullInputPath = inputPage.getContentItem().getAbsolutePath();
-			return applyWaterMark(inArchive, fullInputPath, outputpath, inStructions);
+			String tmpoutputpath = PathUtilities.extractPagePath(outputpath) + ".wm.jpg";
+			applyWaterMark(inArchive, fullInputPath, tmpoutputpath, inStructions);
+			input = getPageManager().getPage(tmpoutputpath);  
 		}
 
-		Page input = null;
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
 		String offset = inStructions.getProperty("timeoffset");
 
