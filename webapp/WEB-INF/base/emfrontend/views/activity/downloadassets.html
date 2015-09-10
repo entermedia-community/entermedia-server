@@ -1,7 +1,10 @@
 <div class="em-rounded" style="margin:20px;">
 #set($order = $data)
+#if( !$order )
+	[[Session expired, Reload browser]]
+#end
 #if( $order.userid != $context.getUserName() )
-Invalid order, username does not match $order.userid != $context.getUserName()
+Invalid order, username does not match
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))

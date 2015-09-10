@@ -3,11 +3,21 @@
 $context.putPageValue("hits",$hits)
 #end
 
+#if( !$hits )
+#set( $hits = $orderassets)
+$context.putPageValue("hits",$hits)
+#end
+
 #if($hits)
 	#set( $collectionid = $hits.getInput("collectionid") )
 	#if( $collectionid)
 		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
 		$context.putPageValue("librarycol",$librarycol)
+	#end
+	#set( $orderid = $hits.getInput("orderid") )
+	#if( $orderid)
+		#set( $order = $mediaarchive.getData("order",$orderid) )
+		$context.putPageValue("order",$order)
 	#end
 #end	
 <div id="resultheader">
@@ -47,14 +57,7 @@ $context.putPageValue("hits",$hits)
 		#end
 		
 		#if ( $canviewbasket )
-
-			#set( $showremoveselections = $context.findValue("showremoveselections") )
-			#if( $showremoveselections == "true" )
-				#set( $showremoveselections = true )
-			#else
-				#set( $showremoveselections = false )
-			#end
-			#if($showremoveselections )
+			#if($order)
 				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
 			#else
 				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add to Basket]]</a></li>

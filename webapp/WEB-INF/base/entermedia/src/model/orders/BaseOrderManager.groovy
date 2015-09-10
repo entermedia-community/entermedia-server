@@ -190,6 +190,7 @@ public class BaseOrderManager implements OrderManager {
 		SearchQuery query = assetsearcher.createSearchQuery();
 		query.setHitsName("orderassets");
 		query.addOrsGroup("id", ids.toString());
+		query.setProperty("orderid",inOrder.getId());
 		inReq.setRequestParameter("hitssessionid", "none");
 		HitTracker hits = assetsearcher.cachedSearch(inReq, query);
 		return hits;
