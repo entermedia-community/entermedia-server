@@ -455,8 +455,12 @@ public class BasePushManager implements PushManager
 				String key = (String) iterator.next();
 				if( !key.equals("libraries"))  //handled below
 				{
-					parts.add(new StringPart("field", key));
-					parts.add(new StringPart(key+ ".value", inAsset.get(key)));
+					String value = inAsset.get(key);
+					if( value != null)
+					{
+						parts.add(new StringPart("field", key));
+						parts.add(new StringPart(key+ ".value", value));
+					}
 				}
 			}
 			parts.add(new StringPart("field", "name"));
