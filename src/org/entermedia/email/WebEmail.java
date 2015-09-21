@@ -179,6 +179,10 @@ public abstract class WebEmail
 		if (getFrom() == null)
 		{
 			String from = inContext.findValue("from");
+			if( from == null)
+			{
+				from = (String)inContext.getPageValue("from");
+			}
 			setFrom(from);
 		}
 		if (getFrom() == null)
