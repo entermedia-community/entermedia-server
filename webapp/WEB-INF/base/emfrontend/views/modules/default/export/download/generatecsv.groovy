@@ -79,15 +79,17 @@ for (Iterator iterator = i; iterator.hasNext();)
 		String value = tracker.get(detail.getId());
 		//do special logic here
 		if(detail.isList() && friendly){
-			detail.get
 			Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
 		
 				if(remote != null){
 				value= remote.getName();
 			}
-			
 		}
-	
+		String render = detail.get("render");
+		if(render != null)
+		{
+			value = searcherManager.getValue(detail.getListCatalogId(), render, tracker.getProperties());
+		}
 
 		nextrow[fieldcount] = value;
 	

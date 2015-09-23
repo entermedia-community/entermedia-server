@@ -1,10 +1,7 @@
-import java.io.StringWriter
-import java.util.Iterator
-
 import org.openedit.Data
 import org.openedit.data.*
 import org.openedit.entermedia.util.CSVWriter
-import org.openedit.util.DateStorageUtil;
+import org.openedit.util.DateStorageUtil
 
 import com.openedit.hittracker.HitTracker
 	
@@ -56,7 +53,8 @@ writer.writeNext(headers);
 					PropertyDetail detail = (PropertyDetail) detailiter.next();
 					String value = hit.get(detail.getId());
 					//do special logic here
-					if(detail.isList() && friendly){
+					if(value != null && detail.isList() && friendly)
+					{
 						//detail.get
 						Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
 						if(remote != null)
@@ -64,10 +62,16 @@ writer.writeNext(headers);
 							value= remote.getName();
 						}
 					}
-					else if(detail.isDate() )
+					else if(value != null && detail.isDate() )
 					{
 						value = DateStorageUtil.getStorageUtil().checkFormat(value);
 					}
+					String render = detail.get("render");
+					if(render != null)
+					{
+						value = searcherManager.getValue(detail.getListCatalogId(), render, hit.getProperties());
+					}
+					
 					nextrow[fieldcount] = value;
 				
 					fieldcount++;
