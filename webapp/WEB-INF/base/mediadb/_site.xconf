@@ -10,6 +10,8 @@
   	<property name="loginokpage">/${applicationid}/index.html</property>
  	<property name="login-path">/${applicationid}/views/authentication/nopermissions.html</property>
 
+	<property name="editable">false</property>
+	<property name="showdebug">false</property>
 
 	<property name="applicationid">mediadb</property>
 	<property name="catalogid">media/catalogs/public</property>
