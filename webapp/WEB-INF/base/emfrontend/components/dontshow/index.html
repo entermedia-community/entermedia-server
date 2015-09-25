@@ -1,3 +1,7 @@
+#set( $hitsname = $content.hitsname )
+#if( $hitsname )
+	#set( $hits = $context.getPageValue($hitsname) )
+#end
 <div class="ui-widget uipanel" id="left-col-search" >
 			<div  #if($userprofile.minimizefilterscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" #else class="ui-widget-header" #end data-target="filterscontent">
 				<span class="widget-header-title">[[Filters]]</span>

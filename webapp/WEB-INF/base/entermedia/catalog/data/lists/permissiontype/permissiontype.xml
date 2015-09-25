@@ -6,5 +6,6 @@
 	<type id="view">Views</type> 
 	<type id="internal">System Fields</type> 
 	<type id="api">JSON API</type> 
+	<type id="system">System</type> 
 	
 </types>
