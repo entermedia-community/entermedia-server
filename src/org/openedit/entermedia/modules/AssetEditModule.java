@@ -1168,7 +1168,7 @@ public class AssetEditModule extends BaseMediaModule
 			getPageManager().movePage(inPage, dest);
 		}
 		
-		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, assetsourcepath, inReq.getUser());
+		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, false, assetsourcepath, inReq.getUser());
 		for (Iterator iterator = vals.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();

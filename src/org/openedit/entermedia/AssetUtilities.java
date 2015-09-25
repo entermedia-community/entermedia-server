@@ -6,7 +6,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -103,6 +102,14 @@ public class AssetUtilities
 				{
 					populateCategory(asset, inContent, inArchive, inUser);
 				}
+//				else
+//				{
+//					Category parent = inArchive.getCategory("users");
+//					if ( parent != null)
+//					{
+//						inUser
+//					}
+//				}
 				return asset;
 			}
 			

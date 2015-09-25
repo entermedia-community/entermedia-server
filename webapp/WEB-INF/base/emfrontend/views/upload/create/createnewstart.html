@@ -1,12 +1,12 @@
 <div class="ui-widget uipanel" style="margin: 20px;">
-    <div class="ui-widget-header">[[Create Media]]</div>
+    <div class="ui-widget-header">[[Add Media]]</div>
     <div class="ui-widget-content">
 
 <div class="row" style="max-width: 800px;margin: auto;">
 #if( $canviewupload)
   <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
-      <img  src="./upload/add.png" style="height: 100px; width: 100%; display: block;">
+      <a href="$home$apphome/views/upload/index.html"><img  src="./upload/add.png" style="height: 100px; width: 100%; display: block;"></a>
       <div class="caption">
         <h3>[[Upload Media]]</h3>
         <p>[[Upload media from local file system or camera]]</p>
@@ -18,7 +18,7 @@
   #if( $cancreatenewrecord)
   <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
-      <img  src="./url/add.png" style="height: 100px; width: 100%; display: block;">
+      <a href="./url/start.html" ><img  src="./url/add.png" style="height: 100px; width: 100%; display: block;"></a>
       <div class="caption">
         <h3>[[Add Remote Media]]</h3>
         <p>[[Create media assets from a URL or Embed code]]</p>
@@ -28,7 +28,7 @@
     </div>
   <div class="col-sm-6 col-md-3">
      <div class="thumbnail">
-	 <img  src="./data/add.png" style="height: 100px; width: 100%; display: block;">     
+	<a href="./data/newdatastart.html"> <img  src="./data/add.png" style="height: 100px; width: 100%; display: block;"></a>     
 	 <div class="caption">
         <h3>[[Empty Data Record]]</h3>
         <p>[[Create empty data records then attach media later]]</p>
@@ -40,7 +40,7 @@
   #if( $cancreatelivemedia)
   <div class="col-sm-6 col-md-3">
      <div class="thumbnail">
-       <img  src="./video/add.png" style="height: 100px; width: 100%; display: block;">
+       <a href="./video/newvideostart.html" ><img  src="./video/add.png" style="height: 100px; width: 100%; display: block;"></a>  
        <div class="caption">
         <h3>[[Live Video Stream]]</h3>
         <p>[[Make a live stream recording from your webcam]]</p>

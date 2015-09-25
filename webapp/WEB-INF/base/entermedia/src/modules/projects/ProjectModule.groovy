@@ -196,7 +196,8 @@ public class ProjectModule extends BaseMediaModule
 		//all.setHitsPerPage(1000);
 		all.getSearchQuery().setProperty("collectionid", collectionid);
 		all.getSearchQuery().setHitsName("collectionassets");
-		inReq.putPageValue("hits", all);
+		String hitsname = inReq.findValue("hitsname");
+		inReq.putPageValue(hitsname, all);
 		inReq.putSessionValue(all.getSessionId(),all);
 	}
 
