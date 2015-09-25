@@ -1,6 +1,6 @@
 <page>
 	<inner-layout>${themeprefix}/layouts/searchlayout.html</inner-layout>
-	<property name="hitsname">collectionassets</property>
+	<property name="hitsname">hits</property>
 	<property name="searchtype">asset</property>
 	
     <path-action name="DataEditModule.loadData" >
