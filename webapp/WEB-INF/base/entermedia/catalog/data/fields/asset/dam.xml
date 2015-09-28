@@ -29,7 +29,7 @@
 	<property id="hasfulltext" index="true" type="boolean" stored="true" >Has Full Text</property> 	<!-- This is for PDFs -->
 	<property id="pages" datatype="number" viewtype="number" index="true" stored="true" >Pages</property> 	<!--  These are writen to by outside API -->
 	<property id="assetviews" internalfield="true" datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
-	<property id="assetvotes"  datatype="number" index="true" stored="true" >Vote Rank</property>
+	<property id="assetvotes"  type="number" index="true" stored="true" >Vote Rank</property>
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text" >Compression</property>
 	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text" sortable="true">Artist</property>
 	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text"  sortable="true">Contributor</property>

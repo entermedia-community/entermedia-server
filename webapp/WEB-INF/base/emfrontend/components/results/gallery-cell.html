@@ -7,12 +7,13 @@
                         <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
                     </div>
                     #end
-                    
+#if( $canviewvoting )       
    <div id="assetVoteTool">
    		<div class="votebox" id="votebox${hit.id}">
    			$pages.include("$apphome/components/voting/status.html",$context)
 		</div>
     </div>
+#end
                     <a class="hovering" href="$click">
                         <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
                             $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
