@@ -5628,7 +5628,6 @@ ul.filters-sidebar li a:hover
 
 .emgallery {
     text-align: left;
-    margin-left: 25px;
 }
 .emgallery .emthumbbox {
     padding: 0 0 11px 0;
@@ -5638,11 +5637,10 @@ ul.filters-sidebar li a:hover
     width: 230px;
     display: inline-block;
     text-align: center;
-    border-radius: 3px;
 }
 .emgallery .emthumbimage {
     width: 230px;
-    height: 230px;
+    height: 231px;
     display: table-cell;
     veritcal-align: middle;
     text-align: center;
