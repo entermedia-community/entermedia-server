@@ -201,7 +201,7 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
 {
 	background-color: #90be5a;
 }
-.emdropshadow {
+#emslidesheet .emdropshadow {
 	background: #fff;
 	padding: 3px;
 	border: 1px solid #f4f4f4;

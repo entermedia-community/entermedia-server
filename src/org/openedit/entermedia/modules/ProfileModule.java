@@ -244,32 +244,9 @@ public class ProfileModule extends MediaArchiveModule
 	{
 		UserProfile userProfile = inReq.getUserProfile();
 		String changerequest = inReq.getRequestParameter("resultview");
-		if (changerequest == null || changerequest.isEmpty())
+		if (changerequest != null )
 		{
-			String resultview = userProfile.get("resultview");
-			if (resultview == null || resultview.equalsIgnoreCase("table"))
-			{
-				userProfile.setProperty("resultview", "gallery");
-			}
-			else
-			{
-				userProfile.setProperty("resultview", "table");
-			}
-		}
-		else
-		{
-			if (changerequest.equalsIgnoreCase("gallery"))
-			{
-				userProfile.setProperty("resultview", "gallery");
-			}
-			else if (changerequest.equalsIgnoreCase("hierarchy"))
-			{
-				userProfile.setProperty("resultview", "hierarchy");
-			}
-			else
-			{
-				userProfile.setProperty("resultview", "table");
-			}
+			userProfile.setProperty("resultview", changerequest);
 		}
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
 		if (hits == null)
