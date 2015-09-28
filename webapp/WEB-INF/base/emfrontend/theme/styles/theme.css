@@ -5675,7 +5675,7 @@ ul.filters-sidebar li a:hover
     border-left: 1px solid #DDD;
     padding: 0 8px;
     position: relative;
-    top: -32px;
+    top: -20px;
     height: 36px;
     display: block;
     margin-right: -10px;
@@ -5795,6 +5795,48 @@ ul.filters-sidebar li a:hover
 #assetVoteCount a:hover {
     text-decoration: underline;
 }
+
+#assetVoteTool {
+    display: inline-block;
+    position: relative;
+    float:right;
+    height:0px;
+}
+#assetVoteTool .votebox 
+{
+   background: white;
+    border-left: 1px solid #DDD;
+     border-bottom: 1px solid #DDD;
+    padding: 4px 0px 0 3px;
+    position: relative;
+    top: 0px;
+    height: 27px;
+    display: block;
+    border-radius: 0 5px 0 5px;
+}
+
+#assetVoteTool .star {
+    display: block;
+    width: 24px;
+    height: 23px;
+    background: url('../images/likestar.png');
+    float: right;
+    margin: -4px 5px 0 3px;
+}
+#assetVoteTool .votecounter {
+	 text-decoration: none;
+	 margin-right: 5px;
+}
+#assetVoteTool .star.full {
+    background-position: 24px 0;
+}
+#assetVoteTool a {
+    color: #3490B2;
+}
+#assetVoteTool a:hover {
+    text-decoration: underline;
+}
+
 .learnmore span {
     background: #777;
     border: 1px solid #444;
