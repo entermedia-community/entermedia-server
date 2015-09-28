@@ -874,9 +874,6 @@ div#folders.add .folder {
     margin: -33px 0 0 0;
     float: right;
 }
-#folders {
-    border: 1px solid #937B60;
-}
 #folders a {
     text-decoration: none;
 }
@@ -1014,7 +1011,11 @@ li div.listid A
 
 .catalog
 {
-	padding: 50px 0px 0px 0px;
-	margin-top: -5px;
+	padding: 5px 15px 13px 35px;
     background: url('../images/small-server.png') top left no-repeat;
+}
+.catalog div
+{
+   margin: 10px 0 0 40px;
+ 
 }

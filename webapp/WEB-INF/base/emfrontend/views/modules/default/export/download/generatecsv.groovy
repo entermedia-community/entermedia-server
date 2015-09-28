@@ -18,7 +18,7 @@ boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"))
 String[] detaillist = context.getRequestParameters("detail");
 Collection details = null;
 if(detaillist != null){
-	log.info("Detail List was used - customizing export");
+//	log.info("Detail List was used - customizing export");
 	details = new ArrayList();
 	for(int i = 0;i<detaillist.length;i++){
 		String detailid = detaillist[i];
@@ -29,10 +29,10 @@ if(detaillist != null){
 	}
 } 
 else{
-	log.info("here " + context.findValue("view"));
+	//log.info("here " + context.findValue("view"));
 	if(context.findValue("view")){
 		details = searcher.getDetailsForView(context.findValue("view"), context.getUser());
-		log.info("details" + details);
+	//	log.info("details" + details);
 	} 
 	else{
 		
@@ -79,15 +79,17 @@ for (Iterator iterator = i; iterator.hasNext();)
 		String value = tracker.get(detail.getId());
 		//do special logic here
 		if(detail.isList() && friendly){
-			detail.get
 			Data remote  = searcherManager.getData( detail.getListCatalogId(),detail.getListId(), value);
 		
 				if(remote != null){
 				value= remote.getName();
 			}
-			
 		}
-	
+		String render = detail.get("render");
+		if(render != null)
+		{
+			value = searcherManager.getValue(detail.getListCatalogId(), render, tracker.getProperties());
+		}
 
 		nextrow[fieldcount] = value;
 	

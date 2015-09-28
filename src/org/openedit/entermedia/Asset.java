@@ -33,6 +33,8 @@ import com.openedit.util.PathUtilities;
  */
 public class Asset implements MultiValued, SaveableData
 {
+	private static final Log log = LogFactory.getLog(Asset.class);
+
 	protected String fieldId;
 	protected String fieldName;
 	protected String fieldSourcePath;
@@ -44,6 +46,13 @@ public class Asset implements MultiValued, SaveableData
 	protected Map fieldProperties;
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
+	protected MediaArchive fieldMediaArchive;
+	// be shown in a list
+	protected Collection fieldRelatedAssets;
+
+	public Asset()
+	{
+	}
 
 	public Collection<String> getValues(String inPreference)
 	{
@@ -131,16 +140,6 @@ public class Asset implements MultiValued, SaveableData
 	{
 		setProperty("isfolder",String.valueOf(inIsFolder));
 	}
-
-	// be shown in a list
-	protected Collection fieldRelatedAssets;
-
-	private static final Log log = LogFactory.getLog(Asset.class);
-
-	public Asset()
-	{
-	}
-	protected MediaArchive fieldMediaArchive;
 
 	public Asset(MediaArchive inMediaArchive)
 	{
@@ -246,6 +245,10 @@ public class Asset implements MultiValued, SaveableData
 		{
 			return getSourcePath();
 		}
+		else if ("fulltext".equals(inAttribute))
+		{
+			return getMediaArchive().getAssetSearcher().getFulltext(this);
+		}
 		else if ("catalogid".equals(inAttribute))
 		{
 			return getCatalogId();
@@ -335,7 +338,7 @@ public class Asset implements MultiValued, SaveableData
 	{
 		if (inCatid == null)
 		{
-			throw new IllegalArgumentException("Catalogs cannot be null");
+			throw new IllegalArgumentException("Categories cannot be null");
 		}
 		if (!isInCatalog(inCatid))
 		{
@@ -939,6 +942,13 @@ public class Asset implements MultiValued, SaveableData
 	}
 	public void addLibrary(String inLibraryid) {
 		addValue("libraries", inLibraryid);
+		
+	}
+	public void removeLibrary(String inLibraryid) 
+	{
+		Collection<String> values = new ArrayList( getLibraries() );
+		values.remove(inLibraryid);
+		setValues("libraries", values);
 		
 	}
 

@@ -11,9 +11,38 @@ import org.openedit.xml.ElementData;
 public class Order extends BaseData implements SaveableData
 {
 	protected OrderHistory fieldRecentOrderHistory;
+	protected OrderManager fieldOrderManager;
+	protected String fieldCatalogId;
+	
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
+
+	public OrderManager getOrderManager() 
+	{
+		return fieldOrderManager;
+	}
+
+	public void setOrderManager(OrderManager inOrderManager) {
+		this.fieldOrderManager = inOrderManager;
+	}
 
 	public OrderHistory getRecentOrderHistory()
 	{
+		if( fieldRecentOrderHistory == null)
+		{
+			fieldRecentOrderHistory = getOrderManager().loadOrderHistory(getCatalogId(), this);
+			if( fieldRecentOrderHistory == null)
+			{
+				fieldRecentOrderHistory = new OrderHistory();
+			}
+		}
 		return fieldRecentOrderHistory;
 	}
 

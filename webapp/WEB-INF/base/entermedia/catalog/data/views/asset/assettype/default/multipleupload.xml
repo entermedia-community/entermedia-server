@@ -4,4 +4,6 @@
   <property id="assettitle"/>
   <property id="longcaption"/>
   <property id="assettype"/>
+  <property id="linkurl"/> 
+  
 </properties>

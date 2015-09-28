@@ -1,0 +1,3 @@
+<page>
+	<property id="bandwidth" index="true" stored="true" type="list" editable="true"  sortable="true" >Bandwidth</property>
+</page>

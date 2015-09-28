@@ -405,7 +405,7 @@ var AnnotationEditor = function(scope) {
 					
 					scope.annotationEditor.fabricModel.selectTool("draw");
 					//Grab list of users and annotations for assets
-					var totalwidth = data.length * 131;
+					var totalwidth = data.length * 140;
 					scope.add("totaliconwidth",totalwidth);
 					
 				},

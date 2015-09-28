@@ -7,6 +7,13 @@
                         <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
                     </div>
                     #end
+#if( $canviewvoting )       
+   <div id="assetVoteTool">
+   		<div class="votebox" id="votebox${hit.id}">
+   			$pages.include("$apphome/components/voting/status.html",$context)
+		</div>
+    </div>
+#end
                     <a class="hovering" href="$click">
                         <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
                             $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
@@ -15,9 +22,6 @@
                     
                     #if( $showcaption )
                     <div class="gallery-caption">
-                        <div class="gallery-field-label">Asset Title:</div>
-                        
-                         
                         <div class="gallery-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a href="$click">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div> 
                         #if($canviewbasket) 
                         $pages.include("$apphome/components/basket/toggleitem.html", $context)

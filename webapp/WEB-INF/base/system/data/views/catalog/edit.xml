@@ -1,0 +1,10 @@
+<properties >
+	<property id="id" />
+	<property id="name" />
+	<property id="rootpath"/>	
+	<property id="clientsubdomain" />	
+	<property id="owner" />
+	<property id="email" />	
+	<property id="plan" />	
+	<property id="createdon" />	
+</properties>

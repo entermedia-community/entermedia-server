@@ -13,7 +13,7 @@
 	<property id="eps"  synctags="true"  rendertype="document" creator="imagemagick">EPS</property>
 	<property id="flv"  synctags="true"  rendertype="video" creator="ffmpeg">FLV</property>
 	<property id="gif"  synctags="true"  rendertype="image" creator="imagemagick">GIF</property>
-	<property id="indd"  synctags="true"  rendertype="image" >INDD</property>
+	<property id="indd"  synctags="true"  rendertype="image" creator="imagemagick">INDD</property>
 	<property id="ico"  synctags="true"  rendertype="image" creator="imagemagick">ICO</property>
 	<property id="jpg"  synctags="true"  rendertype="image" creator="imagemagick">JPG</property>
 	<property id="jpeg"  synctags="true"  rendertype="image" creator="imagemagick">JPEG</property>
@@ -46,6 +46,8 @@
 	<property id="ppm"  synctags="true"  rendertype="image" creator="imagemagick">PPM</property>
 	<property id="psd"  synctags="true"  rendertype="document" creator="imagemagick">PSD</property>
 	<property id="rm"  synctags="true"  rendertype="video" creator="ffmpeg">RM</property>
+	<property id="rw2"  synctags="true"  rendertype="image" creator="imagemagick">RW2</property>
+	
 	<property id="swf"  synctags="true"  rendertype="embedded" >SWF</property>
 	<property id="tga"  synctags="true"  rendertype="image" creator="imagemagick">TGA</property>
 	<property id="tif"  synctags="true"  rendertype="image" creator="imagemagick">TIFF (.tif)</property>
@@ -63,6 +65,7 @@
 	<property id="doc"  synctags="true"  rendertype="document"  creator="oofficeDocument">DOC</property>
 	<property id="docx"  synctags="true"  rendertype="document" >DOCx</property>
 	<property id="rtf"  synctags="true"  rendertype="document" >RTF</property>
+	<property id="raw"  synctags="true"  rendertype="image" creator="imagemagick" >RAW</property>
 	<property id="xls"  synctags="true"  rendertype="document" >XLS</property>
 	<property id="xlsx"  synctags="true"  rendertype="document" >XLS</property>
 	<property id="ppt"  synctags="true"  rendertype="document" >PPT</property>
@@ -75,6 +78,7 @@
 	<property id="html"  synctags="true"  rendertype="document" >HTML</property>
 	<property id="xml"  synctags="true"  rendertype="document" >XML</property>
 	<property id="csv"  synctags="true"  rendertype="document" >CSV</property>
+	<property id="webp"  synctags="false"  rendertype="image" >Webp</property>
 	
 	<property id="default"  synctags="true"  rendertype="default" >Default</property>
 </properties>

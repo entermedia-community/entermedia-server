@@ -39,7 +39,7 @@ public class WorkFlowModule extends BaseMediaModule
 	{
 		inReq.getUser().put("oe.edit.mode","editing");
 		inReq.getUser().put("showdebug","false");
-
+		inReq.putSessionValue("oe.edit.mode", "editing");
 		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
@@ -47,6 +47,7 @@ public class WorkFlowModule extends BaseMediaModule
 	{
 		inReq.getUser().put("oe.edit.mode","debug");
 		inReq.getUser().put("showdebug","true");
+		inReq.putSessionValue("oe.edit.mode","debug");
 		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
@@ -54,6 +55,7 @@ public class WorkFlowModule extends BaseMediaModule
 	{
 		inReq.getUser().put("oe.edit.mode","preview");
 		inReq.getUser().put("showdebug","false");
+		inReq.putSessionValue("oe.edit.mode","preview");
 
 		//inReq.getUser().put("openadmintoolbar","false");
 		getUserManager(inReq).saveUser(inReq.getUser());

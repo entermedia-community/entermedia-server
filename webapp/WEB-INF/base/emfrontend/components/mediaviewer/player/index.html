@@ -78,9 +78,6 @@
 
 <div id="media-player" class="#if( $totalpages > 1 ) document #end">
 
- ##   <a id="mp-minmax" class="max ir propertyset" propertyname="maximize_player" propertyvalue="false" targetdivinner="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2"></a>
-   
-
     <div id="mp-player">
         <div id="mp-asset-title" style="display: none;"><span class="name" title="#if ( $asset.title ) $asset.title #else $asset #end">#if ( $asset.title ) $asset.title #else $asset #end</span> #if( $totalpages > 1 ) <span class="pagenum">(Page $pagenum of $totalpages)</span> #end</div>
     	#if( !$asset.importstatus || $asset.importstatus != "complete" )
@@ -89,10 +86,9 @@
     		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
     	#end
     	<div id="mp-asset-info" style="display: none;">
-    	    
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-    	    #if ($!attachmentcount && $attachmentcount > 0)
-    	   <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">$attachmentcount<span>&nbsp;</span></a>
+    	    #if ($attachmentcount && $attachmentcount.size() > 1)
+    	   <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">$attachmentcount.size()<span>&nbsp;</span></a>
     	   #end
            #if($canviewassetpreviewhistory)
 	   <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>

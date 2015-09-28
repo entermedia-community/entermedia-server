@@ -309,7 +309,14 @@ public class DataEditModule extends BaseMediaModule
 		Element element = file.getElementById(toremove);
 		file.deleteElement(element);
 
-		getXmlArchive().saveXml(file, inReq.getUser());
+		if( file.getRoot().elements().size() == 0)
+		{
+			getXmlArchive().deleteXmlFile(file);
+		}
+		else
+		{
+			getXmlArchive().saveXml(file, inReq.getUser());
+		}
 		Searcher searcher = loadSearcher(inReq);
 		searcher.getPropertyDetailsArchive().clearCache();
 
@@ -1022,6 +1029,10 @@ public class DataEditModule extends BaseMediaModule
 				}
 			}
 			inReq.putPageValue(hits.getHitsName(), hits);
+			if( inReq.getPageValue("hits") == null)
+			{
+				inReq.putPageValue("hits", hits); //could this cause problems?
+			}
 		}
 	}
 
@@ -1042,6 +1053,10 @@ public class DataEditModule extends BaseMediaModule
 		else if ("page".equals(action))
 		{
 			hits.selectCurrentPage();
+		}
+		else if ("pagenone".equals(action))
+		{
+			hits.deselectCurrentPage();
 		}
 		else if ("none".equals(action))
 		{
@@ -1173,7 +1188,7 @@ public class DataEditModule extends BaseMediaModule
 
 		Searcher searcher = null;
 
-		String catalogid = inReq.getRequestParameter("catalogid");
+		String catalogid = inReq.getRequestParameter("catalogid"); //TODO: Security isssue?
 		if(catalogid == null){
 			catalogid = inReq.findValue("catalogid");
 		}
@@ -1204,6 +1219,8 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue(hitsname + catalogid, hits);
 		inReq.putPageValue(hitsname, hits);
+		inReq.putPageValue("hits", hits);
+		
 		return hits;
 	}
 
@@ -1326,7 +1343,12 @@ public class DataEditModule extends BaseMediaModule
 		{
 			variablename = "data";
 		}
-		String id = inReq.getRequestParameter("id");
+		String idname = inReq.findValue("idname");
+		if (idname == null)
+		{
+			idname = "id";
+		}
+		String id = inReq.getRequestParameter(idname);
 		if (id == null)			
 		{
 			String pagename = inReq.getPage().getName();

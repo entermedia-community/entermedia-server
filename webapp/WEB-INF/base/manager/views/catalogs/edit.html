@@ -1,26 +1,18 @@
 #set( $appcatalogid = $context.getRequestParameter("appcatalogid") )
 #set ($catalog = $searcherManager.getData("system","catalog",$appcatalogid))
 
+<div class="panel panel-default">
+  <div class="panel-heading section-title">
+           <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 	0px 15px 0 15px;">
+                 <span>$catalog Applications</span> 
+   </div>              
+  <div class="panel-body">
+
 <ul class="fwlist" id="folders">
 
-	<li class="section-title">
-           <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 9px 15px 0 15px;">
-                 <span>$catalog</span>
-                 <span>$!catalog.rootpath</span>
-               </li>
+	
 	#set( $apps = $searcherManager.getList($appcatalogid,"app") )
-	<li class="auto">
-       <a href="#" class="app"> 
-           <img height="60" width="60" alt="$app" src="/manager/theme/images/folder.png" style="float:left; margin: -15px 15px 0 0;">
-           <div class="name" style="margin-left: 85px; margin-top: -12px;">
-               <div class="alias" style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Catalog Data</div>
-               <div class="path">$catalog.rootpath/catalog</div>
-                <div class="last-activity"></div>
-           </div>
-		</a>           
-	       <div class="scan">
-       </div>
-	</li>	
+	
 	#foreach( $app in $apps)
 	<li class="auto">
        <a href="$home$apphome/views/applications/index.html?appcatalogid=$appcatalogid&id=$app.id" class="app">
@@ -41,11 +33,47 @@
 	</li>
 	#end
 	</ul> 
-    
-<div class="scan" style="margin-top: 30px;margin-right: 0;">
+	
+	<div class="scan" style="margin-top: 30px;margin-right: 0;">
     <a class="mbtn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$appcatalogid">Create New Application</a>
     <a class="mbtn" href="$home$apphome/views/applications/uploadapp.html?appcatalogid=$appcatalogid">Import Application</a>
-	<a class="mbtn blue confirm" style="margin-left: 200px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Catalog</a>
 
 </div> 
+	
+</div>
+</div>   
+<br> 
+    <div class="panel panel-default">
+  <div class="panel-heading section-title">
+           <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 	0px 15px 0 15px;">
+                 <span>$catalog Properties</span> 
+   </div>   
+  <div class="panel-body" style="padding: 30px">
+
+<form action="./save.html" method="post">
+    #set($searcher = $searcherManager.getSearcher("system", "catalog"))
+	$context.putPageValue("searcher", $searcher)	 
+	$context.putPageValue("data", $catalog)	 
+	$context.putPageValue("view", "catalog/edit")	
+	<input type="hidden" name="view" value="catalog/edit"/>
+	<input type="hidden" name="save" value="true"/>
+	<input type="hidden" name="id" value="$catalog.id"/>
+	
+	<div id="shares">
+	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
+	</div>
+
+<div class="scan" style="margin-top: 30px;margin-right: 0;">
+	<button class="btn green" style="margin-left: 200px;" href="#" data-confirm="[[Are you sure?]]">Save</button>
+	<a class="mbtn blue confirm" style="margin-left: 200px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Catalog</a>
+</div>
+<br>
+<p><b>Admin Password</b>: $userManager.decryptPassword( $searcherManager.getData($catalog.id,"user","admin") )
+
+</from>
+	
+</div>
+</div>
+    
+
 		

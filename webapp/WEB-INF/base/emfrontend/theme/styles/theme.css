@@ -1,7 +1,7 @@
 /* Imported from layout.css */
   .page_margins { text-align:left; margin: 0 auto; }
 
-  /* (en) Layout: width, background, borders */
+/* (en) Layout: width, background, borders */
   .page { margin: 0; padding: 0 5px;  }
   #header, #header, #nav, #main, #extended, #footer {  min-width: 720px; }
   #application {
@@ -12,7 +12,7 @@
 	  border: 1px solid #c5c5c5;
 	}
 
-  /* (en) Designing main layout elements */
+/* (en) Designing main layout elements */
   #header .page { 
   	overflow:hidden;
     }
@@ -1857,19 +1857,23 @@ ul#sub-nav li ul {
     padding: 0;
     margin: 0;
     box-shadow: 0px 3px 3px 0 rgba(0, 0, 0, .2);
+	
+	background: #81cee0;
+	height: auto;
 }
 ul#sub-nav li ul li {
     float: none;
     padding: 0;
     margin: 0;
 }
+ul#sub-nav li ul li a {
+    height: 40px;
+    line-height: 40px;
+	color: #fff;
+}
 ul#sub-nav li:hover ul li a {
-    padding: 4px 15px;
-    height: 30px;
-    line-height: 30px;
     white-space: nowrap;
     background: #81cee0;
-    color: #fff;
 }
 ul#sub-nav li:hover ul li a:hover {
     background: #39b4d0;
@@ -2185,7 +2189,6 @@ center #addcoment {
 /* LEFT COL STYLES */
 
 #main {
-    box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
     margin: 0;
     
 }
@@ -4897,12 +4900,8 @@ p.resultsnumber {
 }
 
 /* NEW MEDIA VIEW */
-
 #mediaviewer {
     position: relative;
-}
-#sub-nav.mediaview {
-    margin-bottom: 20;
 }
 #de-table {
     display: table;
@@ -5033,14 +5032,14 @@ p.resultsnumber {
 }
 #de-side-nav ul li a .icon {
     float: left;
-    background: url('../images/side-bar-nav-icons.png');
-    width: 20px;
-    height: 22px;
+    background: url('../images/side-bar-nav-icons.png') no-repeat;
+    width: 26px;
+    height: 26px;
     padding: 0;
     margin: 0;
     position: relative;
-    left: 15px;
-    top: 11px;
+    left: 12px;
+    top: 8px;
 }
 #de-side-nav li.current a, #de-side-nav li.current a:hover {
     background: rgb(43,153,186);
@@ -5057,7 +5056,7 @@ p.resultsnumber {
     height: 40px;
 }
 #de-side-nav ul li.current a .icon {
-    background-position: 0 26px;
+    background-position: 0 -26px;
 }
 #de-side-nav ul li.current {
     position: relative;
@@ -5077,121 +5076,102 @@ p.resultsnumber {
     margin: 0;
 }
 #de-side-nav .comment .icon {
-    background-position: -20px 0;
-    width: 26px;
-    height: 26px;
-    left: 12px;
-    top: 8px;
+    background-position: -25px 0;
 }
 #de-side-nav .current.comment .icon {
-    background-position: -20px 26px;
+    background-position: -25px -26px;
+}
+#de-side-nav .viewassetedit .icon {
+    background-position: -339px 0;
+}
+#de-side-nav .current.viewassetedit .icon {
+    background-position: -339px -26px;
 }
 #de-side-nav .editassetcategories .icon, #de-side-nav .projects-libraryassets .icon {
-    background-position: 26px 0;
-    width: 26px;
-    height: 26px;
-    left: 12px;
-    top: 8px;
+    background-position: -287px 0;
 }
 #de-side-nav .current.editassetcategories .icon, #de-side-nav .current.projects-libraryassets .icon  {
-    background-position: 26px 26px;
+    background-position: -287px -26px;
 }
 #de-side-nav .current .text {
     top: -1px;
     color: #fff;
 }
 #de-side-nav .editassettags .icon {
-    background-position: 187px 0;
-    width: 26px;
-    height: 26px;
-    left: 11px;
-    top: 8px;
+    background-position: -104px 0;
 }
 #de-side-nav .current.editassettags .icon {
-    background-position: 187px 26px;
+    background-position: -104px -26px;
 }
 #de-side-nav .asseteditorlibraries .icon, #de-side-nav  .projects-librarygeneral .icon {
-    background-position: 160px 0;
-    width: 26px;
-    height: 26px;
-    left: 11px;
-    top: 8px;
+    background-position: -131px 0;
 }
 #de-side-nav .current.asseteditorlibraries .icon, #de-side-nav .current.projects-librarygeneral .icon {
-    background-position: 160px 26px;
+    background-position: -131px -26px;
 }
-
+#de-side-nav .asseteditorlibraries .icon, #de-side-nav  .projects-librarycollection .icon {
+    background-position: -365px 0;
+}
+#de-side-nav .current.asseteditorlibraries .icon, #de-side-nav .current.projects-librarycollection .icon {
+    background-position: -365px -26px;
+}
+#de-side-nav .asseteditorlibraries .icon {
+    background-position: -131px 0;
+}
+#de-side-nav .current.asseteditorlibraries .icon {
+    background-position: -131px -26px;
+}
+#de-side-nav  .librarygit .icon {
+    background-position: -287px 0;
+}
+#de-side-nav .current.librarygit .icon {
+    background-position: -287px -26px;
+}
 #de-side-nav .viewmediaviewer .icon {
-    background-position: 240px 0;
-    width: 26px;
-    height: 26px;
-    left: 10px;
-    top: 8px;
+    background-position: -52px 0;
 }
 #de-side-nav .current.viewmediaviewer .icon {
-    background-position: 240px 26px;
+    background-position: -52px -26px; 
 }
 #de-side-nav .viewmap .icon {
-    background-position: 213px 0;
-    width: 26px;
-    height: 26px;
-    left: 10px;
-    top: 8px;
+    background-position: -78px 0;
 }
 #de-side-nav .current.viewmap .icon {
-    background-position: 213px 26px;
+    background-position: -78px -26px;
 }
-
 #de-side-nav .viewconversions .icon {
-    background-position: 240px 0;
-    width: 26px;
-    height: 26px;
-    left: 10px;
-    top: 8px;
+    background-position: -313px 0;
 }
 #de-side-nav .current.viewconversions .icon {
-    background-position: 240px 26px;
+    background-position: -313px -26px;
 }
-
 #de-side-nav .viewattachments .icon {
-    background-position: 134px 0;
-    width: 24px;
-    height: 26px;
-    left: 12px;
-    top: 8px;
+    background-position: -157px 0;
 }
 #de-side-nav .current.viewattachments .icon {
-    background-position: 134px 26px;
+    background-position: -157px -26px;
 }
 #de-side-nav .assetpermissions .icon, #de-side-nav .librarypermissions .icon {
-    background-position: 85px 0;
-    width: 19px;
-    height: 26px;
-    left: 14px;
-    top: 8px;
+    background-position: -210px 0;
 }
-#de-side-nav .current.assetpermissions, #de-side-nav .current.librarypermissions .icon {
-    background-position: 85px 26px;
+#de-side-nav .current.assetpermissions .icon, #de-side-nav .current.librarypermissions .icon {
+    background-position: -210px -26px;
 }
 #de-side-nav .converthistory .icon {
-    background-position: 109px 0;
-    width: 24px;
-    height: 26px;
-    left: 12px;
-    top: 8px;
+    background-position: -183px 0;
 }
 #de-side-nav .current.converthistory .icon {
-    background-position: 109px 26px;
+    background-position: -183px -26px;
 }
 #de-side-nav.open #opener .icon {
-    background-position: 44px 26px;
+    background-position: -264px -26px;
     width: 19px;
     height: 26px;
     left: 14px;
     top: 8px;
 }
 #de-side-nav.closed #opener .icon {
-    background-position: 44px 0;
+    background-position: -264px 0;
     width: 19px;
     height: 26px;
     left: 14px;
@@ -5648,7 +5628,6 @@ ul.filters-sidebar li a:hover
 
 .emgallery {
     text-align: left;
-    margin-left: 25px;
 }
 .emgallery .emthumbbox {
     padding: 0 0 11px 0;
@@ -5658,11 +5637,10 @@ ul.filters-sidebar li a:hover
     width: 230px;
     display: inline-block;
     text-align: center;
-    border-radius: 3px;
 }
 .emgallery .emthumbimage {
     width: 230px;
-    height: 230px;
+    height: 231px;
     display: table-cell;
     veritcal-align: middle;
     text-align: center;
@@ -5695,7 +5673,7 @@ ul.filters-sidebar li a:hover
     border-left: 1px solid #DDD;
     padding: 0 8px;
     position: relative;
-    top: -32px;
+    top: -20px;
     height: 36px;
     display: block;
     margin-right: -10px;
@@ -5815,6 +5793,48 @@ ul.filters-sidebar li a:hover
 #assetVoteCount a:hover {
     text-decoration: underline;
 }
+
+#assetVoteTool {
+    display: inline-block;
+    position: relative;
+    float:right;
+    height:0px;
+}
+#assetVoteTool .votebox 
+{
+   background: white;
+    border-left: 1px solid #DDD;
+     border-bottom: 1px solid #DDD;
+    padding: 4px 0px 0 3px;
+    position: relative;
+    top: 0px;
+    height: 27px;
+    display: block;
+    border-radius: 0 5px 0 5px;
+}
+
+#assetVoteTool .star {
+    display: block;
+    width: 24px;
+    height: 23px;
+    background: url('../images/likestar.png');
+    float: right;
+    margin: -4px 5px 0 3px;
+}
+#assetVoteTool .votecounter {
+	 text-decoration: none;
+	 margin-right: 5px;
+}
+#assetVoteTool .star.full {
+    background-position: 24px 0;
+}
+#assetVoteTool a {
+    color: #3490B2;
+}
+#assetVoteTool a:hover {
+    text-decoration: underline;
+}
+
 .learnmore span {
     background: #777;
     border: 1px solid #444;
@@ -6771,4 +6791,8 @@ select.smalldropdown {
   font-family: inherit;
   color:  inherit;
   background:  inherit;
+}
+
+#resultslist p {
+ word-wrap: break-word;
 }

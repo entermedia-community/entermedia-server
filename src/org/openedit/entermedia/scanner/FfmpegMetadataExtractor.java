@@ -25,7 +25,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 			//Run it again
 			List args = new ArrayList();
 			args.add(inFile.getAbsolutePath());
-			ExecResult resulttext = getExec().runExec("ffprobe", args, true);
+			ExecResult resulttext = getExec().runExec("avprobe", args, true);
 			if( !resulttext.isRunOk())
 			{
 				String error = resulttext.getStandardError();

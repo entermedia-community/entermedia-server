@@ -125,13 +125,16 @@ public class ProfileModule extends MediaArchiveModule
 		{
 			List details = archive.getAssetSearcher().getDetailsForView("asset/resultstable", userProfile);
 			boolean exists = false;
-			for (Iterator iterator = details.iterator(); iterator.hasNext();)
+			if( details != null)
 			{
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (add.equals(detail.getId()))
+				for (Iterator iterator = details.iterator(); iterator.hasNext();)
 				{
-					exists = true;
-					break;
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					if (add.equals(detail.getId()))
+					{
+						exists = true;
+						break;
+					}
 				}
 			}
 			if (!exists)
@@ -227,7 +230,13 @@ public class ProfileModule extends MediaArchiveModule
 		{
 			userProfile.removeValue(viewkey, fields[i]);
 		}
-
+		String values = userProfile.get(viewkey);
+		if(values == null || values.trim().length() == 0)
+		{
+			userProfile.setProperty(viewkey, null);
+			initList(inReq, view, userProfile, viewkey);
+		}
+		
 		userProfile.save(inReq.getUser());
 	}
 

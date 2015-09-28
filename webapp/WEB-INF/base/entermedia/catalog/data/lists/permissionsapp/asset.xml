@@ -1,7 +1,7 @@
 <permissions name="Application Permissions">
 	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="200"/>
 	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="200"/>
-	<permission id="viewvoting" permissiontype="asset" name="Like" description="Enables a like button for users to express approval of an asset." ordering="200"/>
+	<permission id="viewvoting" permissiontype="asset" name="View Like" description="Enables a like button for users to express approval of an asset." ordering="200"/>
 	<permission id="publish" permissiontype="asset" name="Publish" description="Enables the publishing of an asset to a specified set of servers." ordering="200"/>
 	<permission id="shareasset" permissiontype="asset" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share."  ordering="200"/>
 	<permission id="addnewcollection" permissiontype="asset" name="Create New Collection" description="Allows creation of new collections." ordering="200"/>

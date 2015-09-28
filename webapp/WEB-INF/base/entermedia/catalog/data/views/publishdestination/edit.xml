@@ -12,8 +12,7 @@
 	<property id="convertpreset" viewtype="multiselect"/>
 
 	<property id="onimport" />
-	<property id="remotempublish" />
-	<property id="onlyremotempublish" />
+	<property id="remotepublish" />
 	
 	<property id="bucket" note="Amazon bucket"/>
 	<property id="accesskey" note="Amazon Key" />

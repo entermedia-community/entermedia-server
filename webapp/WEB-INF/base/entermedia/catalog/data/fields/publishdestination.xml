@@ -4,12 +4,11 @@
 	
 	<property id="publishtype"  index="true" stored="true" editable="true" viewtype="list" type="list">Publish Type</property>
 	<property id="notifyadmin" index="true" stored="true" editable="true" type="boolean" >Notify Administrator</property>
+	<property id="remotepublish" index="true" stored="true" editable="true" type="boolean" >Remotely Published</property>
 	
 	<property id="server" index="true" stored="true" editable="true" >Server IP</property>
 	<property id="url" index="true" stored="true" editable="true" >Path/URL</property>
 	<property id="onimport" index="true" type="boolean" stored="true" editable="true" >On Import</property>
-	<property id="remotempublish" index="true" type="boolean" stored="true" editable="true"  note="Tries to publish locally first">Allow Remote Monitoring</property>
-	<property id="onlyremotempublish" index="true" type="boolean" stored="true" editable="true" note="Always handled remotely" >Force Remote Publishing</property>
 
 <!-- Amazon -->
 	<property id="bucket" index="true" stored="true" editable="true" >Bucket / Catalog</property>

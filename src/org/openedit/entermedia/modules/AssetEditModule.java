@@ -1168,7 +1168,7 @@ public class AssetEditModule extends BaseMediaModule
 			getPageManager().movePage(inPage, dest);
 		}
 		
-		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, assetsourcepath, inReq.getUser());
+		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, false, assetsourcepath, inReq.getUser());
 		for (Iterator iterator = vals.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();
@@ -1783,8 +1783,12 @@ public class AssetEditModule extends BaseMediaModule
 		archive.removeGeneratedImages(asset);
 	}
 	
-	
-	public void loadAssetVotes(WebPageRequest inReq) throws Exception
+	/**
+	 * Update vote counts
+	 * @param inReq
+	 * @throws Exception
+	 */
+	public void loadAssetVotes(WebPageRequest inReq) 
 	{
 		Asset asset = (Asset)inReq.getPageValue("asset");
 		if( asset == null)
@@ -1833,6 +1837,7 @@ public class AssetEditModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(ex);
 		removeVote(asset, archive, user);
+		loadAssetVotes(ex);
 	}
 	public void removeVote(Asset asset, MediaArchive archive, User user)
 	{
@@ -1842,6 +1847,8 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			searcher.delete(row, user);
 		}
+		archive.fireMediaEvent("asset/userunlikes", user, asset);
+
 	}
 
 	public void voteForAsset(WebPageRequest ex) throws Exception
@@ -1857,6 +1864,7 @@ public class AssetEditModule extends BaseMediaModule
 		Asset asset = getAsset(ex);
 
 		voteForAsset(asset,  archive, ex.getUser());
+		loadAssetVotes(ex);
 	}
 	public void voteForAsset(Asset asset, MediaArchive archive, User inUser)
 	{
@@ -1864,7 +1872,7 @@ public class AssetEditModule extends BaseMediaModule
 	//	DateFormat dateformat = searcher.getDetail("time").getDateFormat();
 		if( asset.getId().contains("multiedit:") )
 		{
-			throw new OpenEditException("Can't edit");
+			throw new OpenEditException("Can't edit votes");
 		}
 		Data row = searcher.createNewData();
 		String username = inUser.getUserName();

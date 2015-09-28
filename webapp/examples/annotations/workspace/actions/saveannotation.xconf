@@ -1,8 +1,0 @@
-
-<page>
-<!-- run DataEditModule.saveData method -->
-	<path-action name="DataEditModule.saveData">
-		<!-- this is related to the 'annotation' part of the request URL -->
-		<searchtype>annotation</searchtype>
-	</path-action>
-</page>

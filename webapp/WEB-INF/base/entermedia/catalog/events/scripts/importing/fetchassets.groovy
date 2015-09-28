@@ -28,10 +28,12 @@ public void init() {
 	Downloader dl = new Downloader();
 	assets.each
 	{
+		Asset current = null;
 		try
 		{	
-			Asset current = archive.getAssetBySourcePath(it.sourcepath);
+			current = archive.getAssetBySourcePath(it.sourcepath);
 			String fetchurl = current.fetchurl;
+			boolean regenerate = false;
 			if( fetchurl != null )
 			{
 				String filename = current.name;
@@ -48,7 +50,8 @@ public void init() {
 		
 				current.setPrimaryFile(image.getName());
 				MetaDataReader reader = archive.getModuleManager().getBean("metaDataReader");
-				reader.populateAsset(archive, finalfile.getContentItem(), current)
+				reader.populateAsset(archive, finalfile.getContentItem(), current);
+				regenerate = true;
 			}	
 			String fetchthumbnailurl = current.fetchthumbnailurl;
 			if(fetchthumbnailurl != null )
@@ -59,18 +62,24 @@ public void init() {
 				archive.removeGeneratedImages(current, false);	
 				dl.download(fetchthumbnailurl, image);
 			}		
-			def tasksearcher = archive.getSearcher("conversiontask");
-			def existing = tasksearcher.query().match("assetid", current.getId() ).search(); 
-			existing.each
+			if( regenerate )
 			{
-				tasksearcher.delete(it,user);		
-			}			
-			archive.saveAsset(current,user);
-			archive.fireMediaEvent( "importing/queueconversions", user, current); //this will save the asset as imported
+				def tasksearcher = archive.getSearcher("conversiontask");
+				def existing = tasksearcher.query().match("assetid", current.getId() ).search(); 
+				existing.each
+				{
+					tasksearcher.delete(it,user);		
+				}			
+				archive.saveAsset(current,user);
+				archive.fireMediaEvent( "importing/queueconversions", user, current); //this will save the asset as imported
+			}
 		}
 		catch( Exception ex )
 		{
 			log.error("could not process asset: " + it.sourcepath,ex);
+			current.setProperty("importstatus","error");
+			archive.saveAsset(current,user);
+			
 		}	
 	}
 

@@ -2,6 +2,7 @@
 
 
 	<permission id="createnewrecord" permissiontype="filetransfers" name="Create a New Record" description="Enables the creation of a new record." ordering="500"/>
+	<permission id="createlivemedia" permissiontype="filetransfers" name="Record Live Video" description="Enables to record live video." ordering="500"/>
 	<permission id="convert" permissiontype="filetransfers" name="Download Additional Sizes" description="Enables downloading of alternate media asset resolutions." ordering="500"/>
 	<permission id="download" permissiontype="filetransfers" name="Download Original" description="Enables downloading of the original asset." ordering="500"/>
 	<permission id="downloadfpo" permissiontype="filetransfers" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="500"/>

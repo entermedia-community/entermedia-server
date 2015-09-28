@@ -127,13 +127,13 @@ public class BaseOrderManager implements OrderManager {
 		if( order == null) {
 			return null;
 		}
-		if( order.getRecentOrderHistory() == null) {
+		//if( order.getRecentOrderHistory() == null) {
 			OrderHistory history = findRecentOrderHistory(inCataId,order.getId());
 			if( history == null) {
 				history = OrderHistory.EMPTY;
 			}
 			order.setRecentOrderHistory(history);
-		}
+		//}
 		return order.getRecentOrderHistory();
 	}
 	/* (non-Javadoc)
@@ -190,6 +190,7 @@ public class BaseOrderManager implements OrderManager {
 		SearchQuery query = assetsearcher.createSearchQuery();
 		query.setHitsName("orderassets");
 		query.addOrsGroup("id", ids.toString());
+		query.setProperty("orderid",inOrder.getId());
 		inReq.setRequestParameter("hitssessionid", "none");
 		HitTracker hits = assetsearcher.cachedSearch(inReq, query);
 		return hits;
@@ -694,9 +695,10 @@ public class BaseOrderManager implements OrderManager {
 				Data orderitemhit = (Data) iterator.next();
 				addItemToHistory(archive, temphistory,  orderitemhit);
 			}
-			OrderHistory recent = loadOrderHistory(archive.getCatalogId(), inOrder);
+			OrderHistory recent = inOrder.getRecentOrderHistory();//loadOrderHistory(archive.getCatalogId(), inOrder);
 			if(temphistory.hasCountChanged(recent))
 			{
+				temphistory.setProperty("historytype","countchange");
 				saveOrderHistory(archive, temphistory, inOrder)	;
 			}
 			//If changed then save history and update order
@@ -715,6 +717,8 @@ public class BaseOrderManager implements OrderManager {
 				}
 				saveOrder(archive.getCatalogId(), null, inOrder);
 				//complete the order
+				temphistory.setProperty("historytype","ordercomplete");
+				saveOrderHistory(archive, temphistory, inOrder)	;
 			}
 		}
 		finally

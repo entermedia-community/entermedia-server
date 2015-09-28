@@ -91,6 +91,23 @@ public class ThemeModule extends BaseMediaModule {
 		
 		String appid = inReq.findValue("applicationid");
 		PageSettings xconf = getPageManager().getPageSettingsManager().getPageSettings("/" + appid + "/_site.xconf");
+
+		String title = theme.get("title");
+		if( title !=  null )
+		{
+			xconf.setProperty("title",title);
+		}
+		String systemfromemail = theme.get("systemfromemail");
+		if( systemfromemail !=  null )
+		{
+			xconf.setProperty("systemfromemail",systemfromemail);
+		}
+		String systemfromemailname = theme.get("systemfromemailname");
+		if( systemfromemailname !=  null )
+		{
+			xconf.setProperty("systemfromemailname",systemfromemailname);
+		}
+		// <property name="systemfromemail">noreply@entermediasoftware.com</property> 
 		
 		xconf.setProperty("themeid",theme.getId());
 		getPageManager().getPageSettingsManager().saveSetting(xconf);

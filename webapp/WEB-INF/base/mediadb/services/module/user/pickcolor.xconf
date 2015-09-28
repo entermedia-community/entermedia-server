@@ -1,5 +1,5 @@
 <page>
-<generator name="velocity"/>
+<generator name="velocityGenerator"/>
 <page-action name="Script.run" alltypes="true">
 	<script>./userdetails.groovy</script>
 </page-action>

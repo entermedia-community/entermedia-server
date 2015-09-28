@@ -359,6 +359,15 @@ public class MediaArchive
 	{
 		return getCreatorManager().getRenderTypeByFileFormat(inFileFormat);
 	}
+	public String getMediaRenderType(Data inAsset)
+	{
+		if( inAsset.get("embeddedurl") != null)
+		{
+			return "embedded";
+		}
+		String format = inAsset.get("fileformat");
+		return getCreatorManager().getRenderTypeByFileFormat(format);
+	}	
 	public Data getDefaultAssetTypeForFile(String inFileName)
 	{
 		String ext = PathUtilities.extractPageType(inFileName,true);
@@ -1003,9 +1012,8 @@ public class MediaArchive
 		}
 		String thistype = inAsset.getFileFormat();
 		String found = getMediaRenderType(thistype);
-		if( found.equals(inType))
+		if( found != null && found.equals(inType))
 		{
-			//path = path + "/" + filename;
 			Page tryPage = getPageManager().getPage(path);
 			if(tryPage.exists())
 			{

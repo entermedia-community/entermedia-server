@@ -1,5 +1,8 @@
 <div class="em-rounded" style="margin:20px;">
 #set($order = $data)
+#if( !$order )
+	[[Session expired, Reload browser]]
+#end
 #if( $order.userid != $context.getUserName() )
 Invalid order, username does not match
 #else
@@ -23,7 +26,7 @@ $context.putPageValue("view", "order/downloadform")
 <input type="hidden" name="newuserstatus" value="downloadrequested"/>
 
 <input type="hidden" name="field" value="publishdestination" />
-<input type="hidden" name="publishdestination.value" value="0" /> ## 0 is http 1 is aspera
+<input type="hidden" name="publishdestination.value" value="$mediaarchive.getCatalogSettingValue("downloadpublisher")" /> ## 0 is http 1 is aspera
 
 <input type="hidden" name="field" value="ordertype" />
 <input type="hidden" name="ordertype.value" value="download" />

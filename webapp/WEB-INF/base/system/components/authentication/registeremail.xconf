@@ -5,7 +5,6 @@
   	<value>Registration Password</value>
   	<value locale="es">Contraseña de registro</value>
   </property>
-  <property name="from">support@openedit.org</property>
 
   <property name="text.E-mail address">
     <value locale="es">E-mail</value>

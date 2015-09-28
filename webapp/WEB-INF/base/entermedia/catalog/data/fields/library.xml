@@ -8,14 +8,17 @@
 
   <property id="project" type="list" viewtype="list" editable="true" index="true"  sort="name" stored="true" >Project</property>
   <!--  property id="gitprojectname" editable="true" index="true" stored="true" note="Just the name">Git Project Name</property  -->
+  <property id="librarystatus" index="true" stored="true" editable="true" type="list">Library Status</property>
+  
+  <property id="thumbnail" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="library" internalfield="false" listid="assetid" datatype="list">Thumbnail</property>
+
+<!--  Legacy -->  
+  <property id="url" index="true" stored="true" editable="true" searchtype="library">URL</property>
+  <property id="duedate" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="library" internalfield="false" datatype="list">Due Date</property>
   <property id="startdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" searchtype="library" internalfield="false" datatype="date">Start Date</property>
   <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="library" internalfield="false" datatype="list">Project Status</property>
-  <property id="url" index="true" stored="true" editable="true" searchtype="library">URL</property>
   <property id="projecttype" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="library" internalfield="false" datatype="list">Project Type</property>
   <property id="projectdescription" index="true" stored="true" editable="true" viewtype="html" searchtype="library" internalfield="false">Project Description</property>
-  <property id="duedate" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="library" internalfield="false" datatype="list">Due Date</property>
-  <property id="thumbnail" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="library" internalfield="false" listid="assetid" datatype="list">Thumbnail</property>
-  
   
   
   

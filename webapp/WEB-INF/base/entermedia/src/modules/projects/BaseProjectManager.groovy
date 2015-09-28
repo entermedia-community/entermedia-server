@@ -261,6 +261,45 @@ public class BaseProjectManager implements ProjectManager
 		}				
 		return false;	
 	}
+
+	@Override
+	public void removeAssetFromLibrary(WebPageRequest inReq, MediaArchive inArchive, String inLibraryid, Collection<Data> inAssets)
+	{
+		Searcher librarycollectionsearcher = inArchive.getSearcher("librarycollection");
+		HitTracker collections = librarycollectionsearcher.query().match("library",inLibraryid).search();
+		for(Data collection: collections)
+		{
+			removeAssetFromCollection(inReq,inArchive,collection.getId(),inAssets);
+		}
+		for(Data toadd: inAssets)
+		{
+			Asset asset = inArchive.getAssetSearcher().loadData(toadd)
+		
+			if (asset != null && asset.getLibraries().contains(inLibraryid))
+			{
+				asset.removeLibrary(inLibraryid);
+				inArchive.getAssetSearcher().delete(asset, null);
+			}
+		}
+	}
+
+	@Override
+	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, Collection<Data> inAssets)
+	{
+			Searcher librarycollectionassetSearcher = inArchive.getSearcher("librarycollectionasset");
+		
+			List tosave = new ArrayList();
+			for(Data asset : inAssets)
+			{
+				Data found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).match("asset", asset.getId()).searchOne();
+			
+				if (found != null)
+				{
+					librarycollectionassetSearcher.delete(found,null);
+				}
+			}
+			
+	}
 	
 }
 

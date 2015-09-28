@@ -1,4 +1,4 @@
-<presets>Preview
+<presets>
     <preset id="0"  type="original"  inputtype="all" ordering="00">Original Format</preset>
      <preset id="attachments"  type="original"  inputtype="all" ordering="01" attachments="true">Attachments</preset>
  
@@ -20,6 +20,8 @@
     <preset id="1" guid="ffmpeg1080p" display="true" outputfile="video1080p.mp4" fileexportformat="${shortfilename}1080p.mp4" type="ffmpeg" inputtype="video"  extension="mp4" ordering="09">Video HQ MP4</preset>
 
     <preset id="previewffmpegthumb" guid="previewffmpegthumb" display="true" outputfile="image1024x768.jpg" fileexportformat="${shortfilename}1024x768.jpg" type="ffmpegimage" extension="mp4" inputtype="video" onimport="true" ordering="10">Video Thumb</preset>
+
+    <preset id="streamserver" display="false" outputfile="video.flv" fileexportformat="${shortfilename}video.flv" type="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="11">Streaming Video</preset>
 
     <!-- 
     <preset id="preview" outputfile="preview-rhozet.mp4" fileexportformat="${shortfilename}LQ.mp4" type="rhozet" extension="mp4" guid="21F5E3B8-FD4D-452A-A351-173FCC26FA0E" inputtype="video" ordering="01">Video Rhozet LQ MP4</preset>

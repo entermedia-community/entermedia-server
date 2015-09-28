@@ -1,5 +1,9 @@
 package org.openedit.entermedia.search;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,15 +19,14 @@ import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.AssetArchive;
 import org.openedit.entermedia.Category;
-import org.openedit.entermedia.CategoryArchive;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.xmldb.CategorySearcher;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
-import com.openedit.OpenEditRuntimeException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
@@ -31,6 +34,7 @@ import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.Group;
 import com.openedit.users.User;
+import com.openedit.util.OutputFiller;
 
 
 public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
@@ -46,7 +50,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	protected ModuleManager fieldModuleManager;
 	protected CategorySearcher fieldCategorySearcher;
 	protected MediaArchive fieldMediaArchive;
-	
+	protected OutputFiller fieldOutputFiller = new OutputFiller();
 	public BaseAssetSearcher()
 	{
 		setFireEvents(true);
@@ -496,5 +500,32 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker) throws OpenEditException
 	{
 		return getDataConnector().checkCurrent(inReq, inTracker);
+	}
+
+	@Override
+	public String getFulltext(Asset asset) 
+	{
+		ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
+		if( item.exists() )
+		{
+			Reader input = null;
+			try
+			{
+				input= new InputStreamReader( item.getInputStream(), "UTF-8");
+				StringWriter output = new StringWriter(); 
+				fieldOutputFiller.fill(input, output);
+				return output.toString();
+			}
+			catch( IOException ex)
+			{
+				log.error(ex);
+			}
+			finally
+			{
+				fieldOutputFiller.close(input);
+			}
+		}
+
+		return null;
 	}
 }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="project"/>
   <property id="name"/>
   <property id="thumbnail"/>
+  <property id="project"/>
+  <property id="librarystatus"/>
   <property id="folder"/>
   <property id="giturl"/>
   

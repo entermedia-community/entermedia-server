@@ -19,11 +19,11 @@
 	<property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true"  stored="true">Share Type</property>
 	<property id="emailsent"  type="boolean" editable="true" index="true" stored="true">Email Sent</property>
 
-	<property id="historyuserstatus" stored="true" index="true" type="list" listid="order/userstatus" >Last Status</property>
-	<property id="historyuserid" editable="false" stored="true" index="true">Last User ID</property>
-	<property id="historynote" editable="false" stored="true" index="true">Last Note</property>
-	<property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" >Last Changed</property>
-	<property id="historyassetids" editable="false" stored="true" index="true"  >Last Attachments</property>
+	<property id="historytype" stored="true" index="true" type="list" listid="order/historytype" >History Status</property>
+	<property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" >Status Updated</property>
+	<property id="historyitemsuccesscount" editable="false" stored="true" index="true"  >Complete Count</property>
+	<property id="historyitemerrorcount" editable="false" stored="true" index="true"  >Error Count</property>
+	
 	<property id="basket"  index="true" stored="true" type="boolean">Is an order basket</property>
 
 

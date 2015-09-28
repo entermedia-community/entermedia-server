@@ -230,7 +230,7 @@ public class LuceneHitTracker extends HitTracker
 				{
 					docs = searcher.search(getLuceneQuery(), filter, max);
 				}
-				if (max > 1)
+				if (log.isDebugEnabled() || max > 1)
 				{
 					if( docs.totalHits > 1)
 					{

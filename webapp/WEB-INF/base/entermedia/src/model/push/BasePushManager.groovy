@@ -62,6 +62,10 @@ public class BasePushManager implements PushManager
 	 */
 	public HttpClient login(String inCatalogId)
 	{
+//		System.getProperties().put("proxySet", "true");
+//		System.getProperties().put("proxyHost", "localhost");
+//		System.getProperties().put("proxyPort", "8082");
+		
 		HttpClient client = new HttpClient();
 		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
 		String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
@@ -248,7 +252,7 @@ public class BasePushManager implements PushManager
 				continue;
 			}
 			
-			upload(asset, archive, "delete", null, Collections.EMPTY_LIST );
+			upload(asset, archive, "delete", Collections.EMPTY_LIST );
 			asset.setProperty("pushstatus", "deleted");
 			archive.saveAsset(asset, null);
 			deleted++;
@@ -270,7 +274,11 @@ public class BasePushManager implements PushManager
 		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath();
 		
 		readFiles( archive.getPageManager(), path, path, filestosend );
-		
+		ContentItem item = archive.getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + target.getSourcePath() + "/fulltext.txt");
+		if( item.exists() )
+		{
+			filestosend.add(item);
+		}
 		//			}
 //			else
 //			{
@@ -293,7 +301,7 @@ public class BasePushManager implements PushManager
 		{
 			try
 			{
-				upload(target, archive, "generated", path, filestosend);
+				upload(target, archive, "generated", filestosend);
 				target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
 
@@ -396,13 +404,14 @@ public class BasePushManager implements PushManager
 			throw new Exception(" ${inMethod} Request failed: status code ${status}");
 		}
 		
+		
 //		log.info(inMethod.getResponseBodyAsString());//for debug purposes only
 		
 		Element result = xmlUtil.getXml(inMethod.getResponseBodyAsStream(),"UTF-8");
 		return result;
 	}
 	
-	protected Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, String inRootPath, List<ContentItem> inFiles)
+	protected Map<String, String> upload(Asset inAsset, MediaArchive inArchive, String inUploadType, List<ContentItem> inFiles)
 	{
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		//String account = inArchive.getCatalogSettingValue("push_server_username");
@@ -411,9 +420,10 @@ public class BasePushManager implements PushManager
 
 		String url = server + "/media/services/rest/" + "handlesync.xml?catalogid=" + targetcatalogid;
 		PostMethod method = new PostMethod(url);
-		method.getParams().setContentCharset("utf-8"); //The line I added
-		method.setRequestHeader("Content-Type", "multipart/form-data; charset=utf-8");
 		
+		method.getParams().setContentCharset("utf-8"); //The line I added
+		//method.setRequestHeader("Content-Type", "multipart/form-data; charset=utf-8");
+		//method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
 		
 		String prefix = inArchive.getCatalogSettingValue("push_asset_prefix");
 		if( prefix == null)
@@ -445,10 +455,16 @@ public class BasePushManager implements PushManager
 				String key = (String) iterator.next();
 				if( !key.equals("libraries"))  //handled below
 				{
-					parts.add(new StringPart("field", key));
-					parts.add(new StringPart(key+ ".value", inAsset.get(key)));
+					String value = inAsset.get(key);
+					if( value != null)
+					{
+						parts.add(new StringPart("field", key));
+						parts.add(new StringPart(key+ ".value", value));
+					}
 				}
 			}
+			parts.add(new StringPart("field", "name"));
+			parts.add(new StringPart("name.value", inAsset.getName()));
 			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
 			
 			parts.add(new StringPart("uploadtype", inUploadType)); 
@@ -484,9 +500,11 @@ public class BasePushManager implements PushManager
 				parts.add(new StringPart("libraries", buffer.toString() ));
 			}
 
-			Part[] arrayOfparts = parts.toArray(new Part[0]);
+			Part[] arrayOfparts = parts.toArray(new Part[parts.size()]);
 
-			method.setRequestEntity(new MultipartRequestEntity(arrayOfparts, method.getParams()));
+			MultipartRequestEntity entity = new MultipartRequestEntity(arrayOfparts, method.getParams());
+			//entity.
+			method.setRequestEntity(entity);
 			
 			Element root = execute(inArchive.getCatalogId(), method);
 			Map<String, String> result = new HashMap<String, String>();
@@ -503,157 +521,7 @@ public class BasePushManager implements PushManager
 			throw new OpenEditException(e);
 		}
 	} 
-	/*
-	protected boolean checkPublish(MediaArchive archive, Searcher pushsearcher, String assetid, User inUser)
-	{
-		Data hit = (Data) pushsearcher.searchByField("assetid", assetid);
-		String oldstatus = null;
-		Asset asset = null;
-		if (hit == null)
-		{
-			hit = pushsearcher.createNewData();
-			hit.setProperty("assetid", assetid);
-			oldstatus = "none";
-			asset = archive.getAsset(assetid);
-			hit.setSourcePath(asset.getSourcePath());
-			hit.setProperty("assetname", asset.getName());
-			hit.setProperty("assetfilesize", asset.get("filesize"));
-		}
-		else
-		{
-			oldstatus = hit.get("status");
-			if( "1pushcomplete".equals( oldstatus ) )
-			{
-				return false;
-			}
-			asset = archive.getAssetBySourcePath(hit.getSourcePath());
-		}
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Checking 		String server = inArchive.getCatalogSettingValue("push_server_url");
-		//String account = inArchive.getCatalogSettingValue("push_server_username");
-		String targetcatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
-		//String password = getUserManager().decryptPassword(getUserManager().getUser(account));
-
-		String url = server + "/media/services/rest/" + "handlesync.xml?catalogid=" + targetcatalogid;
-		PostMethod method = new PostMethod(url);
-
-		String prefix = inArchive.getCatalogSettingValue("push_asset_prefix");
-		if( prefix == null)
-		{
-			prefix = "";
-		}
-		
-		try
-		{
-			List<Part> parts = new ArrayList();
-			int count = 0;
-			for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
-			{
-				File file = (File) iterator.next();
-				FilePart part = new FilePart("file." + count, file.getName(),upload file);
-				parts.add(part);
-				count++;
-			}
-//			parts.add(new StringPart("username", account));
-//			parts.add(new StringPart("password", password));
-			for (Iterator iterator = inAsset.getProperties().keySet().iterator(); iterator.hasNext();)
-			{
-				String key = (String) iterator.next();
-				parts.add(new StringPart("field", key));
-				parts.add(new StringPart(key+ ".value", inAsset.get(key)));
-			}
-			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
-			
-			if(inAsset.getName() != null )
-			{upload(target, archive, filestosend);
-				parts.add(new StringPart("original", inAsset.getName())); //What is this?
-			}
-			parts.add(new StringPart("id", prefix + inAsset.getId()));
-			
-//			StringBuffer buffer = new StringBuffer();
-//			for (Iterator iterator = inAsset.getCategories().iterator(); iterator.hasNext();)
-//			{
-//				Category cat = (Category) iterator.next();
-//				buffer.append( cat );
-//				if( iterator.hasNext() )
-//				{
-//					buffer.append(' ');
-//				}
-//			}
-//			parts.add(new StringPart("catgories", buffer.toString() ));
-			
-			Part[] arrayOfparts = parts.toArray(new Part[] {});
-
-			method.setRequestEntity(new MultipartRequestEntity(arrayOfparts, method.getParams()));
-			
-			Element root = execute(inArchive.getCatalogId(), method);
-			Map<String, String> result = new HashMap<String, String>();
-			for (Object o : root.elements("asset"))
-			{
-				Element asset = (Element) o;
-				result.put(asset.attributeValue("id"), asset.attributeValue("sourcepath"));
-			}
-			log.info("Sent " + server + "/" + inAsset.getSourcePath());
-			return result;
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
-asset: " + asset);
-		}
-		
-		if(asset == null)
-		{
-			return false;
-		}
-		String rendertype = archive.getMediaRenderType(asset.getFileFormat());
-		if( rendertype == null )
-		{
-			rendertype = "document";
-		}
-		boolean readyforpush = true;
-		Collection presets = archive.getCatalogSettingValues("push_convertpresets");
-		for (Iterator iterator2 = presets.iterator(); iterator2.hasNext();)
-		{
-			String presetid = (String) iterator2.next();
-			Data preset = archive.getSearcherManager().getData(archive.getCatalogId(), "convertpreset", presetid);
-			if( rendertype.equals(preset.get("inputtype") ) )
-			{
-				Page tosend = findInputPage(archive, asset, preset);
-				if (!tosend.exists())
-				{
-					if( log.isDebugEnabled() )
-					{
-						log.debug("Convert not ready for push " + tosend.getPath());
-					}
-					readyforpush = false;
-					break;
-				}
-			}
-		}
-		String newstatus = null;
-		if( readyforpush )
-		{
-			newstatus = "3readyforpush";
-			hit.setProperty("percentage","0");
-		}
-		else
-		{
-			newstatus = "2converting";			
-		}
-		if( !newstatus.equals(oldstatus) )
-		{
-			hit.setProperty("status", newstatus);
-			pushsearcher.saveData(hit, inUser);
-		}
-		return readyforpush;
-	}
-	*/
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#resetPushStatus(org.openedit.entermedia.MediaArchive, java.lang.String, java.lang.String)
-	 */
+	
 	public void resetPushStatus(MediaArchive inArchive, String oldStatus,String inNewStatus)
 	{
 		AssetSearcher assetSearcher = inArchive.getAssetSearcher();
@@ -829,26 +697,27 @@ asset: " + asset);
 		PostMethod method = new PostMethod(url);
 		
 		//loop over all the destinations we are monitoring
-////		Searcher dests = getSearcherManager().getSearcher(inArchive.getCatalogId(),"publishdestination");
-////		Collection hits = dests.fieldSearch("remotempublish","true");
-////		if( hits.size() == 0 )
-////		{
-////			log.info("No remote publish destinations defined. Disable Pull Remote Event");
-////			return;
-////		}
-//		StringBuffer ors = new StringBuffer();
-//		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-//		{
-//			Data dest = (Data) iterator.next();
-//			ors.append(dest.getId());
-//			if( iterator.hasNext() )
-//			{
-//				ors.append(" ");
-//			}
-//		}
-		method.addParameter("field", "remotepublish");
-		method.addParameter("remotepublish.value", "true");
-		method.addParameter("operation", "matches");
+		Searcher dests = inArchive.getSearcher("publishdestination");
+		Collection hits = dests.fieldSearch("remotepublish","true");
+		if( hits.size() == 0 )
+		{
+			log.info("No remote publish destinations defined. Disable Pull Remote Event");
+			return;
+		}
+		StringBuffer ors = new StringBuffer();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data dest = (Data) iterator.next();
+			ors.append(dest.getId());
+			if( iterator.hasNext() )
+			{
+				ors.append(" ");
+			}
+		}
+		method.addParameter("field", "publishdestination");
+		//method.addParameter("publishdestination.value", "pushhttp");
+		method.addParameter("publishdestination.value", ors.toString() );
+		method.addParameter("operation", "orsgroup");
 
 		method.addParameter("field", "status");
 		method.addParameter("status.value", "complete");
@@ -906,6 +775,9 @@ asset: " + asset);
 			String presetid = hit.attributeValue("presetid");
 			String destinationid = hit.attributeValue("publishdestination");
 			
+			
+			//TODO: Use the standard browser download here
+			
 			Data preset = getSearcherManager().getData(inArchive.getCatalogId(), "convertpreset", presetid);
 
 			String exportpath = hit.attributeValue("exportpath");
@@ -948,16 +820,16 @@ asset: " + asset);
 				}
 
 			} 
-			else if( destinationid.equals("0") )
+			else if( destinationid.equals("0") ||  destinationid.equals("pushhttp"))
 			{
 				//If this is a browser download then we need to upload the file
 				List<ContentItem> filestosend = new ArrayList<ContentItem>(1);
 
 				filestosend.add(inputpage.getContentItem());
 
-				String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
+				//String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
 				
-				upload(asset, inArchive, type, rootpath, filestosend);
+				upload(asset, inArchive, type, filestosend);
 			}
 
 			
@@ -1049,14 +921,16 @@ asset: " + asset);
 		if (target == null)
 		{
 			String id = inReq.getRequestParameter("id");
-			target = archive.createAsset(id, sourcepath);
+			target = archive.getAssetSearcher().createNewData();
+			target.setId(id);
+			target.setSourcePath(sourcepath);
 		}
 		
-		String name = inReq.getRequestParameter("name");
-		if( name != null)
-		{
-			target.setName(name);
-		}
+//		String name = inReq.getRequestParameter("name");
+//		if( name != null)
+//		{
+//			target.setName(name);
+//		}
 		
 //		String categories = inReq.getRequestParameter("categories");
 //		String[] vals = categories.split(";");
@@ -1069,9 +943,19 @@ asset: " + asset);
 		String[] fields = inReq.getRequestParameters("field");
 		
 		//Make sure we ADD libraries not replace them
+		String editstatus = inReq.getRequestParameter("editstatus.value");
+		String k4processed = inReq.getRequestParameter("k4processed.value");
+		
+		
 		Collection existing = target.getLibraries();
-		archive.getAssetSearcher().updateData(inReq, fields, new ImmutableData(target));
-
+		if( k4processed == "true" || editstatus == "override" || editstatus == "7") 
+		{
+			archive.getAssetSearcher().updateData(inReq, fields, target);
+		}
+		else
+		{
+			archive.getAssetSearcher().updateData(inReq, fields, new ImmutableData(target));
+		}
 		String libraries = inReq.getRequestParameter("libraries");
 		if( libraries != null )
 		{
@@ -1092,7 +976,6 @@ asset: " + asset);
 			}
 		}
 		
-		archive.saveAsset(target, inReq.getUser());
 		List<FileUploadItem> uploadFiles = properties.getUploadItems();
 
 
@@ -1111,7 +994,18 @@ asset: " + asset);
 				String inputName = fileItem.getFieldName();
 				if( inputName.startsWith("original") )
 				{
-					properties.saveFileAs(fileItem, originalsaveroot, inReq.getUser());
+//					if( target.isFolder())
+//					{
+//						properties.saveFileAs(fileItem, originalsaveroot + "/" + target.getMediaName(), inReq.getUser());
+//					}
+//					else
+//					{
+						properties.saveFileAs(fileItem, originalsaveroot, inReq.getUser());
+//					}
+				}
+				else if( fileItem.getName().equals( "fulltext.txt"))
+				{
+					properties.saveFileAs(fileItem, "/WEB-INF/data/" + archive.getCatalogId() + "/assets/" + sourcepath + "/fulltext.txt", inReq.getUser());
 				}
 				else
 				{
@@ -1119,6 +1013,7 @@ asset: " + asset);
 				}
 			}
 		}
+		archive.saveAsset(target, inReq.getUser());
 		archive.fireMediaEvent("importing/pushassetimported", inReq.getUser(), target);
 
 	}

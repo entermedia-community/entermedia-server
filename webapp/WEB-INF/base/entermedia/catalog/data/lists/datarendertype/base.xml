@@ -17,6 +17,7 @@
 		<type id="image"  >Image</type>
 		<type id="multiselect"   >Multi-Select</type>
 		<type id="text"   >Text</type>
+		<type id="textarea"   >Text Area</type>
 		<type id="textjoin"   >Text Join</type>
 		<type id="timelength"   >Time Length</type>
 		<type id="url"  >URL</type>
