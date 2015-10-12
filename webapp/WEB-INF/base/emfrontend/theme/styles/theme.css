@@ -6646,6 +6646,7 @@ a.librarydroparea
 #librarychange div.listautocomplete
 {
 	min-width: 174px; !important;
+    max-width: 174px;
 }	
 div#left-col-libraries div.ui-widget-content
 {
