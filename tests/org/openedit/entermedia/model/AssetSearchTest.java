@@ -15,9 +15,22 @@ import com.openedit.WebPageRequest;
 import com.openedit.hittracker.FilterNode;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
+import com.openedit.hittracker.Term;
 
 public class AssetSearchTest extends BaseEnterMediaTest
 {
+	
+	public void testQueryParse() throws Exception
+	{
+		
+		LuceneSearchQuery q = new LuceneSearchQuery();
+		PropertyDetail detail = getMediaArchive().getAssetSearcher().getDetail("description");
+		assertEquals( "+(*tom* AND *nancy*)", q.addFreeFormQuery(detail, "tom and nancy").toQuery() );
+		assertEquals( "+(*tom* AND *nancy*)", q.addFreeFormQuery(detail, "tom nancy").toQuery() );
+		assertEquals( "+(tom*nancy)", q.addFreeFormQuery(detail, "tom*nancy").toQuery() );
+		assertEquals( "+(\"Big Deal\")", q.addFreeFormQuery(detail, "\"Big Deal\"").toQuery() );
+				
+	}
 	
 	public void xtestLuceneIds() throws Exception
 	{

@@ -4,7 +4,8 @@
 package org.openedit.data.lucene;
 
 import java.util.Date;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
@@ -21,8 +22,8 @@ public class LuceneSearchQuery extends SearchQuery
 {
 	
 	//protected List <PropertyDetail> fieldFacetList;
-	
-	
+	Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
+
 
 	public LuceneSearchQuery()
 	{
@@ -585,20 +586,80 @@ public class LuceneSearchQuery extends SearchQuery
 	}
 	public Term addFreeFormQuery(PropertyDetail inField, String inValue)
 	{
-		if( inValue != null && 
-				!inValue.contains("NOT ") &&
-				!inValue.contains("AND ") &&
-				!inValue.contains("OR ") &&
-				!inValue.contains(":") && !inValue.contains("*") && !inValue.contains("!") && !inValue.contains("-") && !inValue.contains("+"))
+		if( inValue == null)
 		{
-			return addContains(inField, inValue);
+			return null; //throw exception?
 		}
+		String uppercase = inValue.toUpperCase();
+//		if(  
+//				!uppercase.contains(" NOT ") &&
+//				!uppercase.contains(" AND ") &&
+//				!uppercase.contains(" OR ") &&
+//				!inValue.contains(":")  && !inValue.contains("*")  && !inValue.contains("\"")  && !inValue.contains("!") && !inValue.contains("-") && !inValue.contains("+"))
+//		{
+//			if( inValue.contains(" "))
+//			{
+//				inValue = inValue.replaceAll("  ", " "); //recurse
+//				inValue = inValue.replaceAll(" ", " AND ");
+//			}
+//			else
+//			{
+//				return addContains(inField, inValue);
+//			}
+//		}
 		Term term = new Term()
 		{
 			public String toQuery()
 			{
-				String inVal = "+(" + getValue() + ")";
+				String query = getValue();
+				boolean expert = false;
+				if( query.contains("*")  || query.contains("\"") )
+				{
+					expert = true;
+				}
+				
+				if( !expert ) //If there is one * then let them add them all in
+				{
+					//Parse by Operator
+					//Add wildcards
+					//Look for Quotes 
+					String uppercase = query.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ");
+					
+					Matcher m = operators.matcher(uppercase);
+					if( !m.find() )
+					{
+						//inValue = inValue.replaceAll("  ", " "); //recurse
+						uppercase = uppercase.replaceAll(" ", " AND ");
+					}
+					m = operators.matcher(uppercase);
+					StringBuffer output = new StringBuffer();
+					int location = 0;
+					while (m.find()) 
+					{
+					   String word = uppercase.substring(location, m.start());
+					   String operator = m.group();
+					   wildcard(output, word);
+					   output.append(operator);
+					   location = m.end();
+					}
+					wildcard(output, uppercase.substring(location, uppercase.length()));
+					query = output.toString();
+					//tom and nancy   == *tom* AND *nancy*
+					//tom or nancy   == *tom* OR *nancy*
+					//tom nancy => *tom* AND *nancy*
+					//tom*nancy  => tom*nancy
+					//tom AND "Nancy Druew" => *tom* AND "Nancy Druew"
+					//"Big Deal"  => "Big Deal"
+				}
+				String inVal = "+(" + query + ")";
 				return inVal;
+			}
+
+			private void wildcard(StringBuffer output, String word)
+			{
+			   output.append("*");
+			   output.append(QueryParser.escape(word));
+			   output.append("*");
 			}
 		};
 		term.setOperation("freeform");
