@@ -23,7 +23,7 @@ $context.putPageValue("hits", $hits)
 		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.getText($context)</th>
 		#end
 		<th>
-			Security Group 
+			[[Role]] 
 		</th>
 	</tr>
 	</thead>

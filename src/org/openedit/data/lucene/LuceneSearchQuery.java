@@ -590,23 +590,6 @@ public class LuceneSearchQuery extends SearchQuery
 		{
 			return null; //throw exception?
 		}
-		String uppercase = inValue.toUpperCase();
-//		if(  
-//				!uppercase.contains(" NOT ") &&
-//				!uppercase.contains(" AND ") &&
-//				!uppercase.contains(" OR ") &&
-//				!inValue.contains(":")  && !inValue.contains("*")  && !inValue.contains("\"")  && !inValue.contains("!") && !inValue.contains("-") && !inValue.contains("+"))
-//		{
-//			if( inValue.contains(" "))
-//			{
-//				inValue = inValue.replaceAll("  ", " "); //recurse
-//				inValue = inValue.replaceAll(" ", " AND ");
-//			}
-//			else
-//			{
-//				return addContains(inField, inValue);
-//			}
-//		}
 		Term term = new Term()
 		{
 			public String toQuery()
