@@ -2,11 +2,11 @@
 #set( $results = $searcher.getAllHits($context) )
 $context.putPageValue("hits",$results)
 <div class="row">
-	<div class="col-md-6">
-		<h4 style="margin-left:-20px">[[Total Assets Available]]</h4>
+	<div class="col-md-6"  >
+		<h4 style="margin-left:-20px"> Total Assets Available ($!hits.total)</h4> 
 	</div>
 	<div class="col-md-6"  style="text-align:right;" >
-		<div class="resultsnumber">[[Results]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total &nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" style="padding: 10px 20px;">View Assets</a></div>
+		<a class="btn btn-primary" style="padding: 20px; background-color:#234;" href="">View Assets</a></div>
 	</div>
 </div>
 
@@ -27,7 +27,7 @@ $context.putPageValue("hits",$results)
 	    #elseif ($asset.longcaption)
 	    	#set( $synopsis = $asset.longcaption )
 	    #end
-<tr>	
+	<tr>	
 		<td style="padding: 0 0 20px 0px; max-width:700px;" >
 				#set( $type = $mediaarchive.getMediaRenderType($asset))
 				$context.putPageValue("asset",$asset)

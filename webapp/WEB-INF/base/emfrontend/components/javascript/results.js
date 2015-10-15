@@ -96,8 +96,6 @@ jQuery(document).ready(function(url,params)
 	});
 	
 	
-	
-	
 	jQuery(".moduleselectionbox").livequery("click", function(e) {
 		
 		
@@ -116,8 +114,50 @@ jQuery(document).ready(function(url,params)
 		
 	});
 
-
-	jQuery('div.masonry-grid a.playerclink').bind('click',function(e)
+	overlayResize = function()
+	{
+		var img = $("#main-media");
+		var w = img.data("width");
+		if(!isNaN(w) && w != "")
+		{
+			w = parseInt(w);
+			var h = parseInt(img.data("height"));	
+			var newh = Math.floor( $(window).width() * h / w );
+			var neww = Math.floor( $(window).width() * w / h );
+			var setwidth = true;
+			if( newh > $(window).height() ) //limit by height
+			{	
+				setwidth = false;
+			}
+			if( setwidth )
+			{
+				//For 
+				img.width($(window).width());
+				
+				//Only if limited by height
+				var remaining = $(window).height() - newh;
+				if ( remaining > 0 )
+				{
+					remaining = remaining/2;
+					img.css("margin-top",remaining + "px");
+				}	
+			}
+			else
+			{
+				img.height($(window).height());
+				img.css("margin-top","0px");
+			}
+		}
+		else
+		{
+			img.height($(window).height());
+		}
+	}
+	$(window).resize(function(){
+				overlayResize(); //TODO: Add this to the shared
+	});
+	
+	jQuery('div.masonry-grid a.playerclink').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
@@ -139,20 +179,21 @@ jQuery(document).ready(function(url,params)
 		jQuery.get(href, {oemaxlevel:1}, function(data) 
 		{
 			hidden.html(data);
+			overlayResize();
+			hidden.show();
 		});
-	
-		//Now show overlay
-		hidden.show();
-	
 	});
-	$(document).on('click',".overlay-close",function(e)
+	
+	
+	
+	$("#hiddenoverlay .overlay-close").livequery('click',function(e)
 	{	
 		e.preventDefault();
 		var hidden = $("#hiddenoverlay");
 		hidden.hide();
 	});
 	
-	$(document).on('click',".overlay-play",function(e)
+	$("#hiddenoverlay .overlay-play").livequery('click',function(e)
 	{	
 		e.preventDefault();
 		var div = $('span', this);
@@ -160,7 +201,7 @@ jQuery(document).ready(function(url,params)
 		div.addClass("glyphicon-pause");
 		console.log("Now Play slideshow");
 	});
-	jQuery('a.imageplayer').bind('click',function(e)
+	jQuery('a.imageplayer').livequery('click',function(e)
 	{
 		e.preventDefault();isNaN(w) 
 		var link = $(this);
@@ -266,7 +307,6 @@ gridResize = function()
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		//var w = cell.data("width");
 		var useimage = false;
 		var w = jQuery("#emthumbholder img",cell).width();
 		if(w == 0 || w == null) //not loaded yet
@@ -320,12 +360,13 @@ gridResize = function()
 					var newcell = this;
 					var newwidth = Math.floor(newheight * newcell.aspect); 
 					var area = jQuery(".imagearea",newcell.cell);
+					area = $(area);
 					var img = jQuery("#emthumbholder img",area);
-					
+					img = $(img);
 					img.width(newwidth);
 					area.height(roundedheight); 
 					//area.width(newwidth); 
-					area.data("rowcount",count);
+					jQuery.data( area, "rowcount",count);
 				}	
 			);
 			row = [];

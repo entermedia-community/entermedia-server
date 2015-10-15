@@ -8,7 +8,9 @@
 
 #set( $link = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$asset.id")
 <a class="imageplayer" href="$home$link" target="_parent" title="[[drag to download]]">
-	<span class="emdropshadow"><img id="main-media" class="assetdragdrop"  draggable="true"  data-sourcepath="$urlenc" data-name="$asset.name" 
+	<span class="emdropshadow"><img id="main-media" class="assetdragdrop"  draggable="true" 
+		data-sourcepath="$urlenc" data-name="$asset.name" 
+		data-width="$!asset.width" data-height="$!asset.height" 
 		src="/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.jpg" alt="$!asset.name"/>
 	</span>
 </a>
