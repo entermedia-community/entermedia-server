@@ -2,7 +2,7 @@
     <preset id="0"  type="original"  inputtype="all" ordering="00">Original Format</preset>
      <preset id="attachments"  type="original"  inputtype="all" ordering="01" attachments="true">Attachments</preset>
  
-    <preset id="largeimage" guid="imagepreview" outputfile="image1024x768.jpg" display="true" fileexportformat="${shortfilename}L.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="02">Image Large</preset>
+    <preset id="largeimage" guid="imagepreview" outputfile="image1920x1080.jpg" display="true" fileexportformat="${shortfilename}L.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="02">Image Large</preset>
     <preset id="mediumimage" guid="imagemedium" outputfile="image550x350.jpg" display="true" fileexportformat="${shortfilename}M.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true" ordering="03">Image Medium</preset>
     <preset id="thumbimage" guid="imagethumb" 	outputfile="image200x200.jpg" display="true" fileexportformat="${shortfilename}S.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="04">Image Thumbnail</preset>
     <preset id="imagecrop" guid="imagecrop"  outputfile="image110x62cropped.jpg" display="true" fileexportformat="${shortfilename}110x62cropped.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="05" >Small Crop</preset>

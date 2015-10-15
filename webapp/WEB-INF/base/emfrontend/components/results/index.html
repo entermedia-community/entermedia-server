@@ -17,7 +17,7 @@
 	<div id="emresultscontent">
 	$pages.include("$apphome/components/results/hierarchy.html", $context)
 	</div>
-#elseif ($resultview == "gridgallery")
+#elseif ($resultview == "stackedgallery")
 	$context.putPageValue("showcaption", false)
 	$context.putPageValue("showhover", "false")
 	$context.putPageValue("thumbsize", "medium")
@@ -25,7 +25,7 @@
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
 	<div id="emresultscontent">
-	$pages.include("$apphome/components/results/gridgallery.html", $context)
+	$pages.include("$apphome/components/results/stackedgallery.html", $context)
 	</div>	
 #else
 	$context.putPageValue("showcaption", true)

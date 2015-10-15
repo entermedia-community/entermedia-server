@@ -59,6 +59,33 @@
 {
 }
 
+div.emdropshadow {
+    background: white;
+    padding: 3px;
+    border: 1px solid #e5e5e5;
+    display: inline-block;
+    min-width: 40px;
+    min-height: 40px;
+}
+
+span.emdropshadow {
+    background: white;
+    padding: 3px;
+    border: 1px solid #e5e5e5;
+    display: inline-block;
+    min-width: 40px;
+    min-height: 40px;
+}
+div.masonry-grid-cell span.emdropshadow 
+{
+	padding: 0px;
+	margin:0px;
+	border:0px;
+}
+
+
+
+
 .emboxthumblarge
 {
 	height:300px;
@@ -201,4 +228,16 @@
 #player_play.em_hover
 {
 	background: url("../../images/audioplayer/spirites.jpg") -41px 0 no-repeat;
+}
+#resultselection
+{
+	clear:both;
+	height:100% !important;
+}
+#resultselectionclear
+{
+ display:block; 
+ float:left;
+ padding:14px 8px 0 0 !important;
+ line-height:0p !important;
 }

@@ -107,6 +107,11 @@ public class ffmpegimageCreator extends BaseImageCreator
 		}
 		catch( Exception e )
 		{
+			log.error(e);
+			offset = "0";
+		}
+		if( input.length() < 1000000 )
+		{
 			offset = "0";
 		}
 		

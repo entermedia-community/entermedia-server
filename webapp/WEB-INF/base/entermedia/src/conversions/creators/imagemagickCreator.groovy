@@ -132,9 +132,13 @@ public class imagemagickCreator extends BaseImageCreator {
 			//					autocreated = true;
 			//				}
 			//			}
-			if( input == null && box.getWidth() < 1024 )
+			if( input == null && box.getWidth() < 1920 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1920x1080" + page + ".jpg");
+				if( !input.exists() )
+				{
+					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+				}
 				if( input.length() < 2 )
 				{
 					input = null;
@@ -246,7 +250,7 @@ public class imagemagickCreator extends BaseImageCreator {
 						page = "";
 					}
 					
-					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+					//input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
 					
 					result.setError("Prepropessor could not create tmp file");
 					result.setOk(false);

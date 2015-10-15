@@ -1,19 +1,3 @@
-function selectresultview(val){
-	if (val != "none"){
-		var href = $("#ajaxselectresultview").attr("href");
-		
-		href = href + "&resultview="+val;
-		var category = $("#resultsdiv").data("category");
-		if( category )
-		{
-			href = href + "&category="+category;
-		}
-		$("#ajaxselectresultview").attr("href",href);
-		$("#ajaxselectresultview").click();
-	}
-}
-
-
 jQuery(document).ready(function(url,params) 
 { 
 	var home = $('#application').data('home') + $('#application').data('apphome');
@@ -25,6 +9,35 @@ jQuery(document).ready(function(url,params)
 			jQuery("#resultheader").replaceWith(data);
 		});	
 	}
+		
+	jQuery("select#selectresultview").livequery( function()
+	{
+		var select = $(this);
+		select.on("change",function() 
+		{
+			var href = home  +  "/components/results/changeresultview.html?oemaxlevel=1";
+
+			var args = { hitssessionid: select.data("hitssessionid") ,
+						 searchtype:  select.data("searchtype") ,
+						 page:  select.data("page") ,
+						 showremoveselections:  select.data("showremoveselections") ,
+						  };
+						 
+			var category = $("#resultsdiv").data("category");
+			if( category )
+			{
+				args.category = category;
+			}
+			args.resultview = select.val();
+						 
+			jQuery.get(href, args, function(data) 
+			{
+				$("#resultsdiv").html(data);
+				gridResize();
+			});
+		});
+		
+	});
 		
 	jQuery("input.selectionbox").livequery( function() 
 	{
@@ -103,6 +116,74 @@ jQuery(document).ready(function(url,params)
 		
 	});
 
+
+	jQuery('div.masonry-grid a.playerclink').bind('click',function(e)
+	{
+		e.preventDefault();
+		var link = $(this);
+		var image = $('img', link);
+		if (image.length) {
+			console.log(image);
+			var percentleft = Math.floor(((e.pageX - link.offset().left) / image.width()) * 100);
+			var percenttop = Math.floor(((e.pageY - link.offset().top) / image.height()) * 100);
+		
+			if (percenttop >= 70) {
+				console.log('Click in bottom 30%');
+				return;
+			}
+		}
+		
+		var href = link.attr("href");
+		var hidden = $("#hiddenoverlay");
+	
+		jQuery.get(href, {oemaxlevel:1}, function(data) 
+		{
+			hidden.html(data);
+		});
+	
+		//Now show overlay
+		hidden.show();
+	
+	});
+	$(document).on('click',".overlay-close",function(e)
+	{	
+		e.preventDefault();
+		var hidden = $("#hiddenoverlay");
+		hidden.hide();
+	});
+	
+	$(document).on('click',".overlay-play",function(e)
+	{	
+		e.preventDefault();
+		var div = $('span', this);
+		div.removeClass("glyphicon-play");
+		div.addClass("glyphicon-pause");
+		console.log("Now Play slideshow");
+	});
+	jQuery('a.imageplayer').bind('click',function(e)
+	{
+		e.preventDefault();isNaN(w) 
+		var link = $(this);
+		var image = $('img', link);
+		var percentleft = Math.floor(((e.pageX - link.offset().left) / image.width()) * 100);
+		var percenttop = Math.floor(((e.pageY - link.offset().top) / image.height()) * 100);
+	
+		if (percentleft >= 70) {
+			console.log('Click on right 30%');
+		} else if (percentleft <= 30) {
+			console.log('Click on left 30%');
+		}
+	});
+	
+	$(window).scroll(function() 
+	{
+		checkScroll();
+	});
+	//END Gallery stuff
+	
+	
+	
+
 	$(window).load(function() {
 		gridResize();
 	});	
@@ -128,13 +209,51 @@ togglehits =  function(action)
        return false;       
 
 }
+var loadingscroll = false;
+checkScroll = function()
+{
 
-
-
+if( loadingscroll )
+		{
+			return;
+		}
+		//are we near the end? Are there more pages?
+  		var totalHeight = document.body.offsetHeight;
+  		var visibleHeight = document.documentElement.clientHeight;
+		//var attop = $(window).scrollTop() < $(window).height(); //past one entire window
+		var atbottom = ($(window).scrollTop() + (visibleHeight + 40)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
+		if(	!atbottom )
+	    {
+		  return;
+		}
+		var gallery= $("#resultsdiv");
+		var lastcell = $(".masonry-grid-cell",gallery).last();
+		 
+		loadingscroll = true; 
+	    var page = parseInt(gallery.data("pagenum"));   
+	    var total = parseInt(gallery.data("totalpages"));
+	    if( total > page)
+	    {
+		   var session = gallery.data("hitssessionid");
+		   page = page + 1;
+		   gallery.data("pagenum",page);
+		   console.log("loading page: " + page);
+		   var home = $('#application').data('home') + $('#application').data('apphome');
+		   jQuery.get(home + "/components/results/stackedgallery.html", {hitssessionid:session,page:page,oemaxlevel:"1"}, function(data) 
+		   {
+			   var jdata = $(data);
+			   var code = $(".masonry-grid",jdata).html();
+			   $(".masonry-grid",gallery).append(code);
+			   gridResize();
+			   loadingscroll = false; 
+			});
+	     }   
+}
 
 
 gridResize = function() 
 {
+	checkScroll();
 	var fixedheight = 250;
 	var cellpadding = 12;
 	var sofarused = 0;
@@ -190,6 +309,10 @@ gridResize = function()
 
 			//Need to figure aspect of entire row
 			var roundedheight = Math.floor( newheight ); //make smaller
+			if( roundedheight > fixedheight )
+			{
+				roundedheight = fixedheight;
+			} 
 			$.each( row, function()
 				{
 					var newcell = this;
