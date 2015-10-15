@@ -1,4 +1,4 @@
-#if( $hits )
+#if( $hits && $hits.getTotalPages() >  1  )
 	#if($categorycarousel == "true" && $category)
 		#set($categoryid = $category)
 	#else
@@ -10,7 +10,6 @@
 	#set($thispage = $hits.getPage())
 	
 	#set($targetdivinner = "emresultscontent")
-	<p class="resultsnumber">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
 	<div id="pages">
 		<ul>
 			#if( $hits.prevPage() )

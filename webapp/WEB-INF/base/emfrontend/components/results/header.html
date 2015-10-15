@@ -56,14 +56,6 @@ $context.putPageValue("hits",$hits)
 			</li>
 		#end
 		
-		#if ( $canviewbasket )
-			#if($order)
-				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
-			#else
-				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add to Basket]]</a></li>
-			#end
-		#end
-
 			#if( $librarycol )
 				<li><a>[[Collection]]</a>	
 				<ul>
@@ -80,6 +72,14 @@ $context.putPageValue("hits",$hits)
 			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">[[Edit]]</a>
 			</li>
 		#end
+		#if ( $canviewbasket )
+			#if($order)
+				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
+			#else
+				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add to Basket]]</a></li>
+			#end
+		#end
+		
 		#set( $edit = $context.getRequestParameter("editheader") )
 		#if($edit && $edit == "true"  )
 			<li>
@@ -91,7 +91,9 @@ $context.putPageValue("hits",$hits)
 				$pages.include("$apphome/components/results/selected/index.html",$context)
 			</li>
 		#end
-		
+		<li>
+		$pages.include("$apphome/components/results/pages.html",$context)
+		</li>
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			<li style="float: right;" class="edit-columns">	

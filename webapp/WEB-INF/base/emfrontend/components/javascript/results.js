@@ -309,18 +309,23 @@ gridResize = function()
 
 			//Need to figure aspect of entire row
 			var roundedheight = Math.floor( newheight ); //make smaller
-			if( roundedheight > fixedheight )
+			if( roundedheight > fixedheight + 50 )
 			{
 				roundedheight = fixedheight;
 			} 
+			var count = 0;
 			$.each( row, function()
 				{
+					count++;
 					var newcell = this;
 					var newwidth = Math.floor(newheight * newcell.aspect); 
+					var area = jQuery(".imagearea",newcell.cell);
+					var img = jQuery("#emthumbholder img",area);
 					
-					var img = jQuery("#emthumbholder img",newcell.cell);
 					img.width(newwidth);
-					jQuery(".imagearea",newcell.cell).height(roundedheight); //TODO: Fix aspect
+					area.height(roundedheight); 
+					//area.width(newwidth); 
+					area.data("rowcount",count);
 				}	
 			);
 			row = [];

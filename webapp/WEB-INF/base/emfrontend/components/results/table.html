@@ -53,6 +53,8 @@ $context.putPageValue("thumbsize", $thumbsize)
 
 </div>
 </div>	
+<p class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
+
 $pages.include("$apphome/components/results/pages.html",$context)
 #else
 <p class="info" style="margin: 20px;">[[No results found]]</p>
