@@ -90,10 +90,10 @@ $context.putPageValue("hits",$hits)
 			<li>
 				$pages.include("$apphome/components/results/selected/index.html",$context)
 			</li>
+			<li>
+			$pages.include("$apphome/components/results/pages.html",$context)
+			</li>
 		#end
-		<li>
-		$pages.include("$apphome/components/results/pages.html",$context)
-		</li>
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			<li style="float: right;" class="edit-columns">	
@@ -130,6 +130,7 @@ $context.putPageValue("hits",$hits)
 				#set($resultview = "table")
 			#end
 		#end
+		#if(!$edit || $edit == "false"  )
 			<li style="float: right;">
 				<div style="position: relative;">
 					<a class="table-edit-close">
@@ -144,5 +145,6 @@ $context.putPageValue("hits",$hits)
 					</a>
 				</div>
 			</li>
+		#end	
 	</ul>
 </div>

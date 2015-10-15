@@ -1,0 +1,38 @@
+#set( $searcher = $mediaarchive.getAssetSearcher())
+#set( $results = $searcher.getAllHits($context) )
+$context.putPageValue("hits",$results)
+<div class="row">
+	<div class="col-md-6">
+		<h4 style="margin-left:-20px">Total Assets Available</h4>
+	</div>
+	<div class="col-md-6"  style="text-align:right;" >
+		<div class="resultsnumber">Results $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total &nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" style="padding: 20px;">View Assets</a></div>
+	</div>
+</div>
+
+<table>
+#foreach( $hit in $results )
+		#set( $asset = $mediaarchive.getAssetSearcher().loadData($hit))
+<tr>	
+		<td style="padding: 0 0 20px 20px; max-width:700px;" >
+				#set( $type = $mediaarchive.getMediaRenderType($asset))
+				$context.putPageValue("asset",$asset)
+				   <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${asset.id}" title="$sourcepath"> 
+                            $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+                        </div>
+				##$pages.include("$apphome/components/mediaviewer/player/types/${type}.html",$context)
+				##$pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
+		</td>
+		<td style="padding: 0 0 20px 20px; ">							
+			<div id="watchNextMetaData">
+                <h3 id="watchNextLabel">Watch this next</h3>
+				<span class="title ">    Friendship Is Magic: Part 1	    </span>
+                <h4>
+                    Season 1 : Episode 1
+                </h4>
+                <p class="synopsis">After attempting to warn Princess Celestia about the return of wicked Nightmare Moon, Twilight Sparkle and Spike travel to Ponyville.</p>
+          </td>
+</tr>                                    
+#end
+</table>
+
