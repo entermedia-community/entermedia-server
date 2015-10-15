@@ -1,5 +1,4 @@
 #set ($resultview = $userprofile.get('resultview'))
-
 #if (!$resultview || $resultview == 'table')
 	$context.putPageValue("showhover", "false")
 	$context.putPageValue("thumbsize", "crop")
@@ -18,6 +17,16 @@
 	<div id="emresultscontent">
 	$pages.include("$apphome/components/results/hierarchy.html", $context)
 	</div>
+#elseif ($resultview == "gridgallery")
+	$context.putPageValue("showcaption", false)
+	$context.putPageValue("showhover", "false")
+	$context.putPageValue("thumbsize", "medium")
+	$context.putPageValue("showcaption", "false")
+	$context.putPageValue("hideheader", "false")
+	$context.putPageValue("pickable", false )
+	<div id="emresultscontent">
+	$pages.include("$apphome/components/results/gridgallery.html", $context)
+	</div>	
 #else
 	$context.putPageValue("showcaption", true)
 	$context.putPageValue("showhover", "false")

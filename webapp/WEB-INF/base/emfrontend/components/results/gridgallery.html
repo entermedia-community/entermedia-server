@@ -1,0 +1,66 @@
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
+#if( $hideheader &&  $hideheader != "true")
+	$pages.include("$apphome/components/results/header.html",$context) 
+#end
+
+$context.putPageValue("assetrootfolder", "/$catalogid/assets")
+#if( !$thumbsize )
+    #set( $thumbsize  = "thumb" )
+#end
+
+$context.putPageValue("showtoolbar", "false")
+
+#if( !$thumbsize )
+    #set( $thumbsize  = "thumb" )
+#end
+
+#if ( $hits && $hits.size() > 0 )
+    #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
+    $context.putPageValue("details",$details)
+	
+<div class="row masonry-grid">
+ 	#set( $rootid = $hits.sessionId )
+    #set($count = 0)
+    #foreach ($hit in $hits.getPageOfHits())
+    
+        #set ($sourcepath = $hit.sourcepath)
+        
+        $context.putPageValue("hit", $hit)
+        #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+        $context.putPageValue("type", $type)
+        #set( $click = "$home$apphome/views/modules/asset/play/index.html?assetid=$hit.id&hitssessionid=$rootid" )
+        
+        $context.putPageValue("clink", $clink)
+        $context.putPageValue("assetid", $hit.id)
+        $context.putPageValue("count", $count )
+        $context.putPageValue("click", $click)
+        $context.putPageValue("sourcepath", $sourcepath)
+		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-width="$!hit.width" data-height="$!hit.height" >
+			<div class="imagearea">
+		    	<a class="playerclink" href="$click">
+		    	    <div class="grid-thumbimage assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
+		        	    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+		        	</div>
+		    	</a>
+		    </div>
+		      <div class="caption">
+			      <div class="grid-gallery-checkbox">
+			          <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
+			      </div>
+		         <div class="gallery-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a href="$click">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div>
+		     </div>
+		</div>
+        #set ( $count = $count + 1)
+    #end
+</div>	
+#end
+#if ( $hits.totalPages == 0 )
+	<p class="info" style="margin: 20px;">
+	[[No results found.]]
+	</p>
+#end
+</div>
+<div id="hiddenoverlay"></div>
