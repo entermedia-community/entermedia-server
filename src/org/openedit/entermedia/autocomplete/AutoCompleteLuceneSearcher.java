@@ -22,6 +22,7 @@ import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.util.Version;
 import org.openedit.data.lucene.BaseLuceneSearcher;
 import org.openedit.data.lucene.FullTextAnalyzer;
@@ -114,7 +115,6 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 			getCache().clear();
 			setCacheDate(null);
 		}
-		
 		if( getCache().contains(word))
 		{
 			return;
@@ -134,14 +134,16 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 				
 		SearchQuery suggestionsQuery = createSearchQuery();
 		//String nospace = word.replace(' ', '_'); //hot_dog
+		word = QueryParser.escape(word);
+
 		suggestionsQuery.addExact("synonyms", word);
 
 		//Todo: Do a local mem cache with a max of 1000 entries. To keep us from search for the same things
 
-		HitTracker wordsHits = search(suggestionsQuery);
-		Field id = new Field("synonyms", word, Store.YES, Index.NOT_ANALYZED_NO_NORMS);
 		try
 		{
+			HitTracker wordsHits = search(suggestionsQuery);
+			Field id = new Field("synonyms", word, Store.YES, Index.NOT_ANALYZED_NO_NORMS);
 			if (wordsHits.size() == 0)
 			{
 				saveHitCount(word, hits, id);
@@ -171,7 +173,8 @@ public class AutoCompleteLuceneSearcher extends BaseLuceneSearcher implements Au
 		}
 		catch(Exception ex)
 		{
-			throw new OpenEditException(ex);
+			//throw new OpenEditException(ex);
+			log.error(ex);
 		}
 	}
 

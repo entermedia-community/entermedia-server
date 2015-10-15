@@ -62,9 +62,9 @@ class CompositeConvertRunner implements Runnable
 			log.info("asset already being processed ${fieldAssetId}");
 			return;
 		}
+		Asset asset = fieldMediaArchive.getAsset(fieldAssetId);
 		try
 		{
-			Asset asset = fieldMediaArchive.getAsset(fieldAssetId);
 			for( ConvertRunner runner: runners )
 			{
 				runner.asset = asset;
@@ -74,23 +74,24 @@ class CompositeConvertRunner implements Runnable
 					fieldCompleted = true;
 				}
 			}
-			
 		}
 		catch(Exception e){
 			log.error("ERRORS ${fieldAssetId}");
 		}
 		finally
 		{
-			
-			//log.info("updating conversion status on ${fieldSourcePath} - runner size was: " + runners.size());
-			fieldMediaArchive.updateAssetConvertStatus(fieldAssetId);
-			//log.info("Result on ${fieldSourcePath} was ${result}");
-			
+			if( hasComplete())
+			{
+				fieldMediaArchive.updateAssetImportStatus(asset);
+			}	
+					
 			fieldMediaArchive.releaseLock(lock);
-			fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+			
+			if( hasComplete() )
+			{
+				fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+			}
 		}
-	
-		
 	}
 
 	

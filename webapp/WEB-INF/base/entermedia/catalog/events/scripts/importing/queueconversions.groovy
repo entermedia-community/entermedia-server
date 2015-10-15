@@ -14,10 +14,10 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 
 public void createTasksForUpload() throws Exception {
-	PresetCreator presets = new PresetCreator();
 
-	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
-
+	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
+	PresetCreator presets = mediaarchive.getPresetManager();
+	
 	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 	Searcher destinationsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishdestination");
@@ -58,12 +58,8 @@ public void createTasksForUpload() throws Exception {
 		try{
 			Asset asset = assetsearcher.loadData(it);
 
-			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
-			SearchQuery query = presetsearcher.createSearchQuery();
-			query.addMatches("onimport", "true");
-			query.addMatches("inputtype", rendertype); //video
-
-			HitTracker hits = presetsearcher.search(query);
+			String rendertype = mediaarchive.getMediaRenderType(asset);
+			Collection hits = presets.getPresets(mediaarchive,rendertype);
 			//	log.info("Found ${hits.size()} automatic presets");
 			List tosave = new ArrayList();
 			hits.each

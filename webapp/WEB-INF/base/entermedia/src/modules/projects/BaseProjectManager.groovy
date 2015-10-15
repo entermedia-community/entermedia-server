@@ -278,7 +278,7 @@ public class BaseProjectManager implements ProjectManager
 			if (asset != null && asset.getLibraries().contains(inLibraryid))
 			{
 				asset.removeLibrary(inLibraryid);
-				inArchive.getAssetSearcher().delete(asset, null);
+				inArchive.saveAsset(asset, inReq.getUser());
 			}
 		}
 	}

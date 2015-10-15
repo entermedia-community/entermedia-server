@@ -111,3 +111,82 @@
 	color: #888888;
 }
 
+#emcontent .media-carousel {
+  height: 143px;
+  background: #181818;
+  padding: 0;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+#emcontent .media-carousel .carousel-window {
+   height: 133px;
+   overflow: hidden;
+   width: 90%;
+   float:left;
+}
+#emcontent .media-carousel ul
+{
+	height: 153px;
+	margin: 0;
+	padding: 0 15px 0 5px;
+	list-style: none;
+	float:left;
+}
+#emcontent .media-carousel ul li {
+  height: 116px;
+  float: left;
+  margin: 15px 0 0 12px;
+  text-align: center;
+  border-radius: 0;
+  cursor: pointer;
+  background-color: #fff;
+
+}
+#emcontent .media-carousel ul li a.thumb  {
+  height: 108px;
+  padding: 0;
+  display: block;
+  width: 111px;
+  margin: 4px;
+  overflow: hidden;
+}
+
+#emcontent .media-carousel ul li.active {
+	background: yellow;
+}
+
+#emcontent .media-carousel ul li a.thumb  img {
+ 
+}
+#emcontent .media-carousel ul a.thumb:hover {
+  background: #fff;
+}
+#emcontent .media-carousel ul a.thumb.active {
+  background: #abdcef;
+}
+#emcontent .media-carousel a.previous,
+#emcontent .media-carousel a.next {
+  height: 20px;
+  width: 20px;
+  display: block;
+  background: none;
+  cursor: pointer;
+  
+}
+#emcontent .media-carousel a.previous .icon,
+#emcontent .media-carousel a.next .icon {
+  fill: #333;
+}
+#emcontent .media-carousel a.previous:hover .icon,
+#emcontent .media-carousel a.next:hover .icon {
+  fill: #777;
+}
+#emcontent .media-carousel a.previous {
+  float: left;
+  margin:35px 5px 0;
+}
+
+#emcontent .media-carousel a.next {
+  float: right;
+  margin:35px 5px 0;
+}

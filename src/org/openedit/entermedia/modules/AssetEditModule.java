@@ -1998,7 +1998,7 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		String[] assetids = inRequest.getRequestParameters("assetids");
 		MediaArchive mediaArchive = getMediaArchive(inRequest);
-		PresetCreator presets = new PresetCreator();
+		PresetCreator presets = mediaArchive.getPresetManager();
 		Searcher tasksearcher = mediaArchive.getSearcher("conversiontask");
 		int missing = 0;
 		for (int i = 0; i < assetids.length; i++)

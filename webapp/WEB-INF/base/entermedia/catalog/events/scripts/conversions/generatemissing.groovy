@@ -10,7 +10,7 @@ public void init()
 		MediaArchive mediaarchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher assetsearcher = mediaarchive.getAssetSearcher();
 		Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
-		PresetCreator presets = new PresetCreator();
+		PresetCreator presets = mediaarchive.getPresetManager();
 
 		//HitTracker assets = assetsearcher.getAllHits();
 //		SearchQuery q = assetsearcher.createSearchQuery();
@@ -22,7 +22,6 @@ public void init()
 		assets.setHitsPerPage(1000);
 		
 		log.info("Processing ${assets.size()}" + q	);
-		
 		
 		long added = 0;
 		long checked  = 0;

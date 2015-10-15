@@ -53,7 +53,9 @@
                 	<li class="#if ( $page == $currentpreview ) current #end">
                         <a href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&currentpreview=$page&hitssessionid=$hitssessionid">
                             #set( $page = $page + 1)
-                            <img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/preview.jpg?pagenum=$page" />
+                            <div class="emdropshadow">
+       							<img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/preview.jpg?pagenum=$page" />
+       						</div>	
                             <p><span>$page</span></p>
                         </a>
                     </li>
