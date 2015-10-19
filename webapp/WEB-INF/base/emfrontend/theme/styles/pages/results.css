@@ -45,7 +45,7 @@
 .emboxthumb
 {
 	width: 200px;
-	height: 270px;
+	height: 262px;
 	text-align: center;
 	border-bottom:1px solid #666;
 	padding-bottom:15px;
@@ -333,12 +333,6 @@ div.masonry-grid-cell span.emdropshadow
 .masonry-grid-cell:hover .caption {
             opacity:1;
  }
-
-.masonry-grid-cell .gallery-field-info .caption a
-{
-	color: white;
-	text-shadow:0 0 2px #121212;
-}
 
 .masonry-grid-cell .grid-gallery-checkbox
 {

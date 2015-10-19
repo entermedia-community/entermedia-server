@@ -5664,7 +5664,7 @@ ul.filters-sidebar li a:hover
     background: #f9f9f9;
     border-top: 1px solid #ddd;
     margin: 0;
-    padding: 4px 10px;
+    padding: 2px 10px;
     border-radius: 0 0 0 5px;
 }
 .emgallery .emthumbimage img {
@@ -5684,8 +5684,8 @@ ul.filters-sidebar li a:hover
     border-left: 1px solid #DDD;
     padding: 0 8px;
     position: relative;
-    top: -20px;
-    height: 36px;
+    top: -25px;
+    height: 28px;
     display: block;
     margin-right: -10px;
     border-radius: 0 0 5px 0;
@@ -5709,6 +5709,7 @@ ul.filters-sidebar li a:hover
 .gallery-field-info {
     text-align: left; 
     color:#444; 
+     line-height:1.8;
     overflow: hidden; 
     text-overflow: ellipsis; 
     width: 170px; 
@@ -5732,7 +5733,20 @@ ul.filters-sidebar li a:hover
     border-radius: 0 0 3px 0; 
     padding: 4px 5px 2px 4px;
 }
-
+.stacked-field-info {
+    text-align: left; 
+    color:#efefef; 
+    line-height:1.8;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+}
+#embody .stacked-field-info a {
+    font-weight: normal;
+    color: #fff;
+    font-size: 12px;
+    text-shadow:0 0 2px #121212;
+}
 
 /* AUTOCOMPLETE */
 
