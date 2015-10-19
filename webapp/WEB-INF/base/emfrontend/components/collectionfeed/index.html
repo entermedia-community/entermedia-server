@@ -2,18 +2,31 @@
 #set( $collections = $manager.loadRecentCollections($context))
 #foreach( $collection in $collections )
 <div class="panel panel-default" style="margin: 0px auto 20px auto;">
-	<div class="panel-heading">
-		<h3 class="panel-title">$collection</h3>
+					#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
+					$!collectionassets.setHitsPerPage(5)
+
+	<div class="panel-footer">
+		<table width="100%">
+		<tr>
+		<td class="panel-title" style="padding: 5px;">$collection.getCollection() 
+<span style="font-size: .7em; font-style:italic;">in library <a href="">$searcherManager.getData( $catalogid, "library",$collection.getCollection().library)</a>
+</span>
+		</td>
+		
+		<td align="right"><a class="btn btn-primary" style="padding: 5px; background-color:#234;" href="">View Assets ($collectionassets.size())</a></td>
+		</tr>
+		</table>
 	</div>
-	<div class="panel-body" class="media-carousel">
+	
+	<div class="panel-body" style="padding:0px;margin:0px auto;background: #181818;">
+		<div class="media-carousel" style="width: 750px;padding:0px;margin:0px">
 			<a class="previous" href="#previous"> <svg
 					class="icon icon-arrow-left" viewBox="0 0 32 32">
 					<use xlink:href="#icon-arrow-left"></use></svg>
 			</a>
 			<div class="carousel-window">
 				<ul>
-					#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.id))
-					#foreach( $hit in $collectionassets)
+					#foreach( $hit in $collectionassets.getPageOfHits())
 					<li class="clearfix"><a id="thumb${hit.id}}" class="thumb">
 							<img src="$home$apphome/views/modules/asset/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg" />
 					</a></li> 
@@ -24,6 +37,12 @@
 					class="icon icon-arrow-right" viewBox="0 0 32 32">
 					<use xlink:href="#icon-arrow-right"></use></svg>
 			</a>
+	</div>
+	</div>
+	<div class="panel-footer">
+	<span style="font-size: .7em; font-style:italic;">modified by <a href="">Donnie Masterton</a>
+October 16 at 10:46pm
+</span>
 	</div>
 </div>
 
