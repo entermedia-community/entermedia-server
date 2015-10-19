@@ -3,6 +3,7 @@
   <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
   <property id="name" index="true" stored="true" editable="true" sortable="true" internalfield="false">Name</property>
   <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date"  internalfield="false" datatype="date">Delivery Date</property>
+  <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date"  internalfield="false" datatype="date">Update Date</property>
   <property id="owner" index="true" stored="true" editable="true" type="list" searchtype="user" >Owner</property>
   <property id="laststatus" index="true" stored="true" editable="true" type="list" viewtype="list" >Last Status</property>
   <property id="sourcepath" >SourcePath</property>

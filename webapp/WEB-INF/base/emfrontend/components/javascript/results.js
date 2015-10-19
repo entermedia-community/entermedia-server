@@ -157,10 +157,95 @@ jQuery(document).ready(function(url,params)
 				overlayResize(); //TODO: Add this to the shared
 	});
 	
+	$.fn.exists = function () {
+   		 return this.length !== 0;
+	}
+	
+	getCurrentAssetId = function()
+	{
+		var mainmedia = $("#main-media");
+		return mainmedia.data("assetid");
+		
+		
+	}
+	showOverlay = function(assetid)
+	{
+		var hidden = getOverlay();
+		var href = home + "/components/mediaviewer/fullscreen/index.html";
+		var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
+		jQuery.get(href, {assetid:assetid,hitssessionid,oemaxlevel:1}, function(data) 
+		{
+			hidden.html(data);
+			overlayResize();
+			hidden.show();
+		});
+	}
+	getOverlay = function()
+	{
+		var hidden = $("#hiddenoverlay");
+		if( !hidden.exists() )
+		{
+			$('body').append('<div id="hiddenoverlay"></div>');
+			hidden = $("#hiddenoverlay");
+			$(document).keyup(function(e) 
+			{
+				if( !hidden.is(":visible") )
+				{
+					return;
+				}
+				switch(e.which) {
+			        case 27: // esc
+			       	 getOverlay().hide();
+			        break;
+				    
+				    default: return; 
+			     }
+			});	
+			$(document).keydown(function(e) {
+				if( !hidden.is(":visible") )
+				{
+					return;
+				}
+			    switch(e.which) {
+			        case 37: // left
+			        	//need to find out what asset is previous.
+			        	var assetid = getCurrentAssetId();
+			        	var div = $("#clickid"  + assetid );
+			        	var link = div.parent(".masonry-grid-cell").prev(".masonry-grid-cell");
+			        	var id = link.data("assetid");
+			        	showOverlay(id);
+			        break;
+			
+					case 39: // right
+						var assetid = getCurrentAssetId();
+			        	var div = $("#clickid"  + assetid );
+			        	var link = div.parent(".masonry-grid-cell").next(".masonry-grid-cell");
+			        	var id = link.data("assetid");
+			        	showOverlay(id);
+			        break;
+			
+			        case 27: // esc
+			         getOverlay().hide();
+			        break;
+			
+			       
+			        //case : // space //toggle slideshow
+			        //break;
+			
+			        default: return; // exit this handler for other keys
+			    }
+			    e.preventDefault(); // prevent the default action (scroll / move caret)
+			});
+		}
+		return hidden;
+		
+	}
+	
 	jQuery('div.masonry-grid a.playerclink').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
+		/*
 		var image = $('img', link);
 		if (image.length) {
 			console.log(image);
@@ -172,16 +257,8 @@ jQuery(document).ready(function(url,params)
 				return;
 			}
 		}
-		
-		var href = link.attr("href");
-		var hidden = $("#hiddenoverlay");
-	
-		jQuery.get(href, {oemaxlevel:1}, function(data) 
-		{
-			hidden.html(data);
-			overlayResize();
-			hidden.show();
-		});
+		*/
+		showOverlay(link.parent(".masonry-grid-cell").data("assetid"));
 	});
 	
 	

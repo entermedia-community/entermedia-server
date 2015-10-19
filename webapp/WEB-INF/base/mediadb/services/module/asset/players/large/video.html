@@ -1,0 +1,5 @@
+#if( $asset.editstatus == "recording" )
+$pages.include("/${mediadbappid}/services/module/asset/players/hwd/index.html",$context)
+#else
+$pages.include("/${mediadbappid}/services/module/asset/players/flowplayer/index.html",$context)
+#end

@@ -80,7 +80,8 @@ public class BaseProjectManager implements ProjectManager
 			Searcher assetsearcher = getSearcherManager().getSearcher(getCatalogId(),"asset");
 			
 			HitTracker hits = assetsearcher.query().match("libraries",library.getId()).named("sidebar").search(inReq);
-			if(hits != null){
+			if(hits != null)
+			{
 				int assetsize = hits.size();
 				inReq.putPageValue("librarysize",assetsize);
 			}
@@ -298,7 +299,37 @@ public class BaseProjectManager implements ProjectManager
 					librarycollectionassetSearcher.delete(found,null);
 				}
 			}
+	}
+	public Collection<UserCollection> loadRecentCollections(WebPageRequest inReq)
+	{
+		//enable filters to show the asset count on each collection node
+		UserProfile profile = inReq.getUserProfile();
+		Searcher librarycollectionsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
+		HitTracker allcollections = librarycollectionsearcher.query().orgroup("library",profile.getCombinedLibraries()).sort("name").named("sidebar").search(inReq);
+		FilterNode collectionhits = null;
+		if( allcollections.size() > 0 ) //May not have any collections
+		{
+			Searcher collectionassetsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollectionasset");
 			
+			//Build list of ID's
+			List ids = new ArrayList(allcollections.size());
+			for (Iterator iterator = allcollections.iterator(); iterator.hasNext();)
+			{
+				Data collection = (Data) iterator.next();
+				ids.add( collection.getId() );
+			}
+			if(ids.size() > 0)
+			{
+				HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).sort("recorddate").named("homecollections").search(inReq); 
+				if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+				{
+					collectionhits = collectionassets.findFilterNode("librarycollection");
+				}
+			}
+		}
+		Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
+		inReq.putPageValue("usercollections", usercollections);
+		return usercollections;
 	}
 	
 }

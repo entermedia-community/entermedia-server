@@ -31,21 +31,15 @@ $context.putPageValue("showtoolbar", "false")
         $context.putPageValue("hit", $hit)
         #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
         $context.putPageValue("type", $type)
-        #set( $click = "$home$apphome/components/mediaviewer/fullscreen/index.html?assetid=$hit.id&hitssessionid=$rootid" )
-        
-        $context.putPageValue("clink", $clink)
         $context.putPageValue("assetid", $hit.id)
         $context.putPageValue("count", $count )
-        $context.putPageValue("click", $click)
-        $context.putPageValue("sourcepath", $sourcepath)
-		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-width="$!hit.width" data-height="$!hit.height" >
-			<div class="imagearea">
-		    	<a class="playerclink" href="$click">
+         $context.putPageValue("sourcepath", $hit.sourcepath )
+		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$!hit.width" data-height="$!hit.height"  >
+		    	<a class="playerclink imagearea" id="clickid${hit.id}" href="#">
 		    	    <div class="grid-thumbimage assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
 		        	    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
 		        	</div>
 		    	</a>
-		    </div>
 		      <div class="caption">
 			      <div class="grid-gallery-checkbox">
 			          <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
@@ -63,4 +57,4 @@ $context.putPageValue("showtoolbar", "false")
 	</p>
 #end
 </div>
-<div id="hiddenoverlay"></div>
+

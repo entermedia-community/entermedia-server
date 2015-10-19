@@ -1,0 +1,14 @@
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $asset.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
+
+#set( $link = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.jpg")
+	<img id="main-media" class="emdropshadow  assetdragdrop"  draggable="true"  
+	data-assetid="$asset.id" data-sourcepath="$urlenc" data-name="$asset.name"
+	data-width="$!asset.width" data-height="$!asset.height" 
+	src="$link" alt="$!asset.name"/>
+
