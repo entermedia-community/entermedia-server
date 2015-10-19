@@ -278,8 +278,12 @@ div.masonry-grid-cell span.emdropshadow
 	border-radius: 0 0 .2em .2em;
 }
 
-
 .masonry-grid-cell .gallery-status-info
+{
+	opacity: 0;
+}
+
+.masonry-grid-cell:hover .gallery-status-info
 {
 	position: absolute;
 	top: 0px;
@@ -288,19 +292,20 @@ div.masonry-grid-cell span.emdropshadow
 	border-radius: .2em .2em 0 0;
 	padding: 0px 5px 5px 5px;
 	text-align: center;
+	opacity: 1;
 }
+
 .masonry-grid-cell .gallery-status-info span
 {
+	opacity: 0;
+}
+
+.masonry-grid-cell:hover .gallery-status-info span
+{
+	opacity: 1;
 	color: rgb(90,90,90);
 	text-shadow:0 0 2px white;
 }
-
-.masonry-grid-cell .caption a
-{
-	color: white;
-	text-shadow:0 0 2px #121212;
-}	
-
 
 .masonry-grid-cell .caption
 {
@@ -310,13 +315,30 @@ div.masonry-grid-cell span.emdropshadow
 	width: 100%;
 	border-radius: 0 0 .2em .2em;
 	padding: 0px 5px 5px 5px;
-
+    opacity:0;
+    -webkit-transition:opacity 250ms ease-out;
+    -moz-transition:opacity 250ms ease-out;
+    -ms-transition:opacity 250ms ease-out;
+    -o-transition:opacity 250ms ease-out;
+    transition:opacity 250ms ease-out;
 }
-.masonry-grid-cell .caption a
+
+.masonry-grid-cell .caption:before {
+    content:' '; /* Must have content to display */
+            position:absolute;
+            
+        }
+        
+
+.masonry-grid-cell:hover .caption {
+            opacity:1;
+ }
+
+.masonry-grid-cell .gallery-field-info .caption a
 {
 	color: white;
 	text-shadow:0 0 2px #121212;
-}	
+}
 
 .masonry-grid-cell .grid-gallery-checkbox
 {
