@@ -6,6 +6,7 @@ import org.openedit.Data;
 import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
 import com.openedit.users.User;
 
 public interface ProjectManager
@@ -29,7 +30,7 @@ public interface ProjectManager
 
 	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, Collection<Data> inAssets );
 
-	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
+	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
 	
 	public boolean addUserToLibrary(MediaArchive archive, Data inLibrary, User inUser);
 }

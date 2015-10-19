@@ -17,6 +17,7 @@ import com.openedit.hittracker.FilterNode
 import com.openedit.hittracker.HitTracker
 import com.openedit.users.*
 
+
 public class BaseProjectManager implements ProjectManager
 {
 	private static final Log log = LogFactory.getLog(BaseProjectManager.class);
@@ -233,7 +234,7 @@ public class BaseProjectManager implements ProjectManager
 		}
 	}
 
-	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
+	public Collection<String> loadAssetIdsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
 	{
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
@@ -248,6 +249,54 @@ public class BaseProjectManager implements ProjectManager
 		}
 		return ids;
 	}
+	
+	
+	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
+	{
+		Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
+		//Do an asset search with permissions, showing only the assets on this collection
+		HitTracker all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
+
+		all.setSelections(ids);
+		all.setShowOnlySelected(true);
+		//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
+
+		if( all.size() != ids.size() )
+		{
+			//Some assets got deleted, lets remove them from the collection
+			Set extras = new HashSet(ids);
+			for (Data hit in all)
+			{
+				extras.remove(hit.getId());
+			}
+			//log.info("remaining " + extras );
+			Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
+			for (String id in extras)
+			{
+				Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
+				if( toremove != null)
+				{
+					collectionassetsearcher.delete(toremove, null);
+				}
+			}
+		}
+
+		String hpp = inReq.getRequestParameter("page");
+		if( hpp != null)
+		{
+			all.setPage(Integer.parseInt( hpp ) );
+		}
+		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
+		if( usersettings != null )
+		{
+			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
+		}
+		//all.setHitsPerPage(1000);
+		all.getSearchQuery().setProperty("collectionid", collectionid);
+		all.getSearchQuery().setHitsName("collectionassets")
+		return all
+	}
+	
 	public boolean addUserToLibrary( MediaArchive archive, Data inLibrary, User inUser) 
 	{
 		Searcher searcher = archive.getSearcher("libraryusers");
@@ -305,6 +354,16 @@ public class BaseProjectManager implements ProjectManager
 		//enable filters to show the asset count on each collection node
 		UserProfile profile = inReq.getUserProfile();
 		Searcher librarycollectionsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
+		Collection combined = profile.getCombinedLibraries();
+		if( inReq.getUser().isInGroup("administrators"))
+		{
+			combined.clear();
+			combined.add("*");
+		}
+		if(combined.size() == 0 )
+		{
+			return Collections.EMPTY_LIST;
+		}
 		HitTracker allcollections = librarycollectionsearcher.query().orgroup("library",profile.getCombinedLibraries()).sort("name").named("sidebar").search(inReq);
 		FilterNode collectionhits = null;
 		if( allcollections.size() > 0 ) //May not have any collections

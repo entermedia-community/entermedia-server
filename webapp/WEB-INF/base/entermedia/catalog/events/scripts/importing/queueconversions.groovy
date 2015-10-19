@@ -58,7 +58,7 @@ public void createTasksForUpload() throws Exception {
 		try{
 			Asset asset = assetsearcher.loadData(it);
 
-			String rendertype = mediaarchive.getMediaRenderType(asset);
+			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 			Collection hits = presets.getPresets(mediaarchive,rendertype);
 			//	log.info("Found ${hits.size()} automatic presets");
 			List tosave = new ArrayList();

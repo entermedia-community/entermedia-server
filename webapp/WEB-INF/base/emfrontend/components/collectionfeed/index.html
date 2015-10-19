@@ -1,0 +1,30 @@
+#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
+#set( $collections = $manager.loadRecentCollections($context))
+#foreach( $collection in $collections )
+<div class="panel panel-default" style="margin: 0px auto 20px auto;">
+	<div class="panel-heading">
+		<h3 class="panel-title">$collection</h3>
+	</div>
+	<div class="panel-body" class="media-carousel">
+			<a class="previous" href="#previous"> <svg
+					class="icon icon-arrow-left" viewBox="0 0 32 32">
+					<use xlink:href="#icon-arrow-left"></use></svg>
+			</a>
+			<div class="carousel-window">
+				<ul>
+					#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.id))
+					#foreach( $hit in $collectionassets)
+					<li class="clearfix"><a id="thumb${hit.id}}" class="thumb">
+							<img src="$home$apphome/views/modules/asset/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg" />
+					</a></li> 
+					#end
+				</ul>
+			</div>
+			<a class="next icon-arrow-right" href="#next"> <svg
+					class="icon icon-arrow-right" viewBox="0 0 32 32">
+					<use xlink:href="#icon-arrow-right"></use></svg>
+			</a>
+	</div>
+</div>
+
+#end

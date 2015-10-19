@@ -155,47 +155,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		
-		Collection<String> ids = manager.loadAssetsInCollection(inReq, archive, collectionid );
-		//Do an asset search with permissions, showing only the assets on this collection
-		HitTracker all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
-		
-		all.setSelections(ids);
-		all.setShowOnlySelected(true);
-		//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
-		
-		if( all.size() != ids.size() )
-		{
-			//Some assets got deleted, lets remove them from the collection
-			Set extras = new HashSet(ids);
-			for (Data hit in all)
-			{
-				extras.remove(hit.getId());
-			}
-			//log.info("remaining " + extras );
-			Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
-			for (String id in extras)
-			{
-				Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
-				if( toremove != null)
-				{
-					collectionassetsearcher.delete(toremove, null);
-				}
-			}
-		}
-		
-		String hpp = inReq.getRequestParameter("page");
-		if( hpp != null)
-		{
-			all.setPage(Integer.parseInt( hpp ) );
-		}
-		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
-		if( usersettings != null )
-		{
-			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
-		}
-		//all.setHitsPerPage(1000);
-		all.getSearchQuery().setProperty("collectionid", collectionid);
-		all.getSearchQuery().setHitsName("collectionassets");
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
 		inReq.putSessionValue(all.getSessionId(),all);

@@ -5,7 +5,16 @@ import org.openedit.Data;
 public class UserCollection
 {
 	protected Data fieldCollection;
+	protected Data fieldLibrary;
 	
+	public Data getLibrary()
+	{
+		return fieldLibrary;
+	}
+	public void setLibrary(Data inLibrary)
+	{
+		fieldLibrary = inLibrary;
+	}
 	public Data getCollection()
 	{
 		return fieldCollection;

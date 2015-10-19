@@ -10,7 +10,7 @@ import com.openedit.page.*
 
 MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 
-Asset asset = new Asset();
+Asset asset = mediaarchive.getAssetSearcher().createNewData();
 asset.setId(mediaarchive.getAssetSearcher().nextAssetNumber());
 String sourcepath = "newassets/${context.getUserName()}/${asset.id}";
 asset.setSourcePath(sourcepath);
