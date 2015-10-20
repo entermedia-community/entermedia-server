@@ -13,7 +13,7 @@ import org.openedit.entermedia.publishing.*
  *
  */
 
-public class externalpublisher extends basepublisher implements Publisher
+public class externalpublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(externalpublisher.class);
 	

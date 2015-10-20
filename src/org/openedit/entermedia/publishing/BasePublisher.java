@@ -1,26 +1,35 @@
-package publishing.publishers
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.openedit.Data
-import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
+package org.openedit.entermedia.publishing;
 
-import com.openedit.page.Page
+import java.util.Iterator;
+import java.util.List;
 
-public abstract class basepublisher implements Publisher {
-	private static final Log log = LogFactory.getLog(basepublisher.class);
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
+import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.MediaArchive;
+import com.openedit.page.Page;
 
-	protected publishFailure(MediaArchive mediaArchive,Data inPublishRequest, String inMessage) {
+public abstract class BasePublisher implements Publisher 
+{
+	public BasePublisher()
+	{
+		
+	}
+	
+	private static final Log log = LogFactory.getLog(BasePublisher.class);
+
+	protected void publishFailure(MediaArchive mediaArchive,Data inPublishRequest, String inMessage) {
 		inPublishRequest.setProperty("errormessage", inMessage);
 		inPublishRequest.setProperty("status", "error");
 	}
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset) {
-		if( inPreset.get("type") == "original") {
+		if( "original".equals( inPreset.get("type") ) )
+		{
 			return mediaArchive.getOriginalDocument(asset);
 		}
-		String input= "/WEB-INF/data/${mediaArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
+		String input= "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + inPreset.get("outputfile");
 		Page inputpage= mediaArchive.getPageManager().getPage(input);
 		return inputpage;
 	}
@@ -58,7 +67,7 @@ public abstract class basepublisher implements Publisher {
 		}
 		else
 		{
-			found = searcher.searchById(found.getId());
+			found = (Data)searcher.searchById(found.getId());
 		}
 		return found;
 	}
@@ -69,20 +78,22 @@ public abstract class basepublisher implements Publisher {
 	}
 	protected PublishResult checkOnConversion(MediaArchive mediaArchive, Data inPublishRequest, Asset inAsset, Data inPreset)
 	{
+		String status = inPublishRequest.get("status");
 		if( inPreset.getId() == "0")// || isremote)
 		{
 			return null;
 		}
-		else if(inPublishRequest.get("status") == "new")
+		else if("new".equals(status))
 		{
 			//make sure conversions task exists and are marked as new (not error)
 			Data conversiontask = loadConversionTask(mediaArchive, inAsset, inPreset.getId());
-			if( conversiontask.get("status") == "error" || conversiontask.get("status") == "new")
+			String cstatus = conversiontask.get("status");
+			if(  "error".equals(cstatus) || "new".equals(cstatus))
 			{
 				conversiontask.setProperty("status","retry");
 				saveConversionTask(mediaArchive,conversiontask);
 			}
-			if( conversiontask.get("status") == "retry" || conversiontask.get("status") == "new")
+			if( "retry".equals(cstatus) || "new".equals(cstatus))
 			{
 				mediaArchive.fireSharedMediaEvent("conversions/runconversions");				
 			}
@@ -95,12 +106,13 @@ public abstract class basepublisher implements Publisher {
 		{
 			PublishResult result = new PublishResult();
 			Data conversiontask = loadConversionTask(mediaArchive, inAsset, inPreset.getId());
-			if( conversiontask.get("status") == "error") //missinginput is ok
+			String cstatus = conversiontask.get("status");
+			if( "error".equals(cstatus)) //missinginput is ok
 			{
 				result.setErrorMessage(inPreset.getName()  + " conversion had an error: " + conversiontask.get("errordetails"));
 				return result;
 			}
-			else if( conversiontask.get("status") != "complete") 
+			else if( !"complete".equals(cstatus)) 
 			{
 				result.setPending(true);
 				return result;
@@ -123,7 +135,7 @@ public abstract class basepublisher implements Publisher {
 		//		}
 				
 	}
-
+	
 
 	
 }

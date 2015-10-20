@@ -15,7 +15,7 @@ import com.openedit.page.Page
 import com.openedit.users.User
 import com.openedit.users.UserManager
 
-public class ftppublisher extends basepublisher implements Publisher
+public class ftppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(ftppublisher.class);
 	

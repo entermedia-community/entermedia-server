@@ -15,7 +15,7 @@ import org.openedit.entermedia.publishing.*;
 import org.openedit.repository.filesystem.StringItem;
 import org.openedit.data.*;
 
-public class asperapublisher extends basepublisher implements Publisher
+public class asperapublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(asperapublisher.class);
 
