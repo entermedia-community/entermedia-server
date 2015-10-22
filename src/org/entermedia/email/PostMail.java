@@ -51,6 +51,17 @@ public class PostMail
 	protected String fieldSmtpServer = "localhost";
 	protected Integer fieldPort;
 	protected boolean fieldSmtpSecured = false;
+	protected boolean fieldEnableTls = false;
+	public boolean isEnableTls()
+	{
+		return fieldEnableTls;
+	}
+
+	public void setEnableTls(boolean inEnableTls)
+	{
+		fieldEnableTls = inEnableTls;
+	}
+
 	protected PageManager fieldPageManager;
 	protected boolean fieldSslEnabled = false;
 	protected ModuleManager fieldModuleManager;
@@ -173,10 +184,18 @@ public class PostMail
 			props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		}
-
-		Session session;
-		// If we need to authenticate, create the authenticator
-		if (fieldSmtpSecured)
+		Session session = null;
+		if( isEnableTls())
+		{
+			props.put("mail.smtp.starttls.enable", "true");
+			session = Session.getInstance(props,
+					new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(getSmtpUsername(), getSmtpPassword());
+				}
+			  });
+		}
+		else if (fieldSmtpSecured)
 		{
 			SmtpAuthenticator auth = new SmtpAuthenticator();
 			session = Session.getInstance(props, auth);
