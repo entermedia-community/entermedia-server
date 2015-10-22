@@ -24,7 +24,7 @@ $context.putPageValue("hits",$hits)
 	<ul id="sub-nav" class="search-views">
 		#set ($classname="enabled")
 		#if( $candownload || $canconvert || $candownloadfpo )
-			<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
+			<li><a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()">[[Download]]</a></li>
 		#end	
 		##Email and publish should be under share
 		#if($canpublish || $canemaillink )
