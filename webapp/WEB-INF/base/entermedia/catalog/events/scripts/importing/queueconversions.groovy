@@ -54,8 +54,9 @@ public void createTasksForUpload() throws Exception {
 	assets.each
 	{
 		foundsome = false;
-		Lock lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
+		//Lock lock = null;
 		try{
+			//lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
 			Asset asset = assetsearcher.loadData(it);
 
 			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
@@ -117,10 +118,18 @@ public void createTasksForUpload() throws Exception {
 			mediaarchive.saveAsset( asset, user );
 			tasksearcher.saveAllData(tosave, null);
 		}
-		finally
+		catch( Throwable ex)
 		{
-			mediaArchive.releaseLock(lock);
+			log.error(it.id,ex);
+			//asset.setProperty("importstatus","error");
 		}
+//		finally
+//		{
+//			if( lock != null)
+//			{
+//				mediaArchive.releaseLock(lock);
+//			}
+//		}
 	}
 	if( foundsome )
 	{
