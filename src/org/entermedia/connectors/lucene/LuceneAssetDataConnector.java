@@ -41,6 +41,7 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
 import com.openedit.util.IntCounter;
+import com.openedit.util.PathProcessor;
 
 public class LuceneAssetDataConnector extends BaseLuceneSearcher implements DataConnector
 {
@@ -284,7 +285,25 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 
 		return fieldMediaArchive;
 	}
-
+	public void deleteAll(User inUser)
+	{
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				if (inContent.getPath().endsWith("data.xml"))
+				{
+					getPageManager().getRepository().remove(inContent);
+				}
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath("/WEB-INF/data/" + getCatalogId() + "/assets/");
+		processor.setPageManager(getPageManager());
+		processor.setIncludeExtensions("xml");
+		processor.process();
+		reIndexAll();
+	}
 	public void deleteData(Data inData)
 	{
 		if (inData instanceof Asset)

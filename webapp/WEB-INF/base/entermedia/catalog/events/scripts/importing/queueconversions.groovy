@@ -1,3 +1,4 @@
+
 package importing;
 
 import org.entermedia.locks.Lock
@@ -51,6 +52,8 @@ public void createTasksForUpload() throws Exception {
 		log.error("Problem with import, no asset found");
 	}
 	boolean foundsome = false;
+	List tosave = new ArrayList();
+	List assetsave = new ArrayList();
 	assets.each
 	{
 		foundsome = false;
@@ -62,10 +65,10 @@ public void createTasksForUpload() throws Exception {
 			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
 			Collection hits = presets.getPresets(mediaarchive,rendertype);
 			//	log.info("Found ${hits.size()} automatic presets");
-			List tosave = new ArrayList();
 			hits.each
 			{
-				Data preset = (Data) presetsearcher.loadData(it);
+				//Data preset = (Data) presetsearcher.loadData(it);
+				Data preset = it;
 				Boolean onlyone = Boolean.parseBoolean(preset.singlepage);
 				
 				//TODO: Move this to a new script just for auto publishing
@@ -97,6 +100,8 @@ public void createTasksForUpload() throws Exception {
 				{
 					asset.setProperty("previewstatus","converting");
 				}
+				assetsave.add(asset);
+				
 				//runconversions will take care of setting the importstatus
 			}
 			else
@@ -112,11 +117,10 @@ public void createTasksForUpload() throws Exception {
 					{
 						asset.setProperty("previewstatus","mime");
 					}
+					assetsave.add(asset);
 				}
 
 			}
-			mediaarchive.saveAsset( asset, user );
-			tasksearcher.saveAllData(tosave, null);
 		}
 		catch( Throwable ex)
 		{
@@ -131,6 +135,10 @@ public void createTasksForUpload() throws Exception {
 //			}
 //		}
 	}
+
+	mediaarchive.saveAssets( assetsave,user);
+	tasksearcher.saveAllData(tosave, user);
+
 	if( foundsome )
 	{
 		//PathEventManager pemanager = (PathEventManager)moduleManager.getBean(mediaarchive.getCatalogId(), "pathEventManager");

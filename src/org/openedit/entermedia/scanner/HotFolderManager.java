@@ -306,7 +306,8 @@ public class HotFolderManager
 			inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 			getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
 		}
-		log.info(inFolder + " Imported " + paths.size() );
+		
+		log.info(inFolder + " Imported " + paths.size() + " in " + ((new Date().getTime() - started.getTime())/6000L) );
 		
 		return paths;
 	}

@@ -253,6 +253,7 @@ public class PathEventManager implements Shutdownable
 			return false;
 		}
 		PathEvent event = getPathEvent(runpath);
+		//synchronized( event )
 		inReq.putPageValue("ranevent", event);
 //		String force = inReq.getRequestParameter("forcerun");
 				
