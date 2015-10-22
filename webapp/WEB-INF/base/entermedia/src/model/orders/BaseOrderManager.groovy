@@ -19,6 +19,7 @@ import org.openedit.entermedia.orders.OrderHistory
 import org.openedit.entermedia.orders.OrderManager
 import org.openedit.event.WebEvent
 import org.openedit.event.WebEventHandler
+import org.openedit.profile.UserProfile
 import org.openedit.util.DateStorageUtil
 
 import com.openedit.BaseWebPageRequest
@@ -27,9 +28,9 @@ import com.openedit.OpenEditException
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
+import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 import com.openedit.users.User
-import com.openedit.users.UserManager
 import com.openedit.util.RequestUtils
 
 public class BaseOrderManager implements OrderManager {
@@ -662,8 +663,11 @@ public class BaseOrderManager implements OrderManager {
 	{
 		//look up all the tasks
 		//if all done then save order status
-		Lock lock = archive.lock("orders" + inOrder.getId(), "BaseOrderManager");
-
+		Lock lock = archive.getLockManager().lockIfPossible("orders" + inOrder.getId(), "BaseOrderManager");
+		if( lock == null)
+		{
+			return;
+		}
 		try
 		{
 			if( inOrder.getOrderStatus() == "complete" )
@@ -713,7 +717,8 @@ public class BaseOrderManager implements OrderManager {
 				}
 				catch( Exception ex)
 				{
-					inOrder.setOrderStatus('complete',"could not send notification " + ex.getMessage() );
+					log.error(ex);
+					inOrder.setOrderStatus('complete',": could not send notification " + ex );
 				}
 				saveOrder(archive.getCatalogId(), null, inOrder);
 				//complete the order
@@ -952,14 +957,14 @@ public class BaseOrderManager implements OrderManager {
 		Map context = new HashMap();
 		context.put("orderid", inOrder.getId());
 		context.put("order", inOrder);
-
+		//context.put("user", inArchive.getUser)
 		String publishid = inOrder.get("publishdestination");
 		String appid = inOrder.get("applicationid");
 		if(publishid != null){
 			Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
 			String email = dest.get("administrativeemail");
 			if(email != null){
-				sendEmail(context, email, "/${appid}/views/activity/email/admintemplate.html");
+				sendEmail(inArchive.getCatalogId(),context, email, "/${appid}/views/activity/email/admintemplate.html");
 				//TODO: Save the fact that email was sent back to the publishtask?
 			}
 		}
@@ -976,7 +981,7 @@ public class BaseOrderManager implements OrderManager {
 					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 				}
 
-				sendEmail(context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
+				sendEmail(inArchive.getCatalogId(),context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
 			}
 		}
 		if( "download" != inOrder.get("ordertype") )
@@ -991,7 +996,7 @@ public class BaseOrderManager implements OrderManager {
 					if(owneremail != null)
 					{
 						context.put("sharewithemail", emailto);
-						sendEmail(context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+						sendEmail(inArchive.getCatalogId(),context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
 					}
 				}
 			}
@@ -1000,12 +1005,13 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 
-	protected void sendEmail(Map pageValues, String email, String templatePage){
+	protected void sendEmail(String inCatalogId, Map pageValues, String email, String templatePage){
 		//send e-mail
 		//Page template = getPageManager().getPage(templatePage);
 		RequestUtils rutil = getModuleManager().getBean("requestUtils");
-		BaseWebPageRequest newcontext = rutil.createVirtualPageRequest(templatePage,null, null); 
-		
+		User user = getSearcherManager().getData(inCatalogId,"user","admin");
+		UserProfile profile = getSearcherManager().getData(inCatalogId,"userprofile","admin");
+		BaseWebPageRequest newcontext = rutil.createVirtualPageRequest(templatePage,user,profile); 
 		newcontext.putPageValues(pageValues);
 
 		TemplateWebEmail mailer = getMail();
