@@ -23,22 +23,14 @@ public class ProjectModule extends BaseMediaModule
 		manager.loadCollections(inReq);
 	}
 	
-	public void savedLibrary(WebPageRequest inReq)
+	public void savedCollection(WebPageRequest inReq)
 	{
-		Data saved = (Data)inReq.getPageValue("data");
-		if( saved != null)
-		{
-			inReq.setRequestParameter("profilepreference","last_selected_library" );
-			inReq.setRequestParameter("profilepreference.value", saved.getId() );
-		}
-		//Make sure I am in the list of users for the library
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
-		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+		Data collection = (Data)inReq.getPageValue("data");
+		if( collection != null)
 		{
-			//reload profile?
-			UserProfile profile = inReq.getUserProfile();
-			profile.getCombinedLibraries().add(saved.getId());
+			ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
+			manager.savedCollection(archive,collection,inReq.getUser());
 		}
 	}
 	
@@ -189,5 +181,24 @@ public class ProjectModule extends BaseMediaModule
 			}
 		}
 		return false;
+	}
+	
+	public void savedLibrary(WebPageRequest inReq)
+	{
+		Data saved = (Data)inReq.getPageValue("data");
+		if( saved != null)
+		{
+			inReq.setRequestParameter("profilepreference","last_selected_library" );
+			inReq.setRequestParameter("profilepreference.value", saved.getId() );
+		}
+		//Make sure I am in the list of users for the library
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+		{
+			//reload profile?
+			UserProfile profile = inReq.getUserProfile();
+			profile.getCombinedLibraries().add(saved.getId());
+		}
 	}
 }

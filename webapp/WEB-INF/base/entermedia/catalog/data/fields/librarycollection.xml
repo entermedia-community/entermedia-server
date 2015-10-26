@@ -1,13 +1,13 @@
 
 <properties beanname="dataSearcher">
   <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
-  <property id="name" index="true" stored="true" editable="true" sortable="true" internalfield="false">Name</property>
-  <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date"  internalfield="false" datatype="date">Delivery Date</property>
-  <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date"  internalfield="false" datatype="date">Update Date</property>
+  <property id="name" index="true" stored="true" editable="true" sortable="true" >Name</property>
+  <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Delivery Date</property>
+  <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Update Date</property>
   <property id="owner" index="true" stored="true" editable="true" type="list" searchtype="user" >Owner</property>
-  <property id="laststatus" index="true" stored="true" editable="true" type="list" viewtype="list" >Last Status</property>
+  <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date"  datatype="date">Created Date</property>
   <property id="sourcepath" >SourcePath</property>
-  <property id="library" index="true" stored="true" editable="true" sortable="true" type="list"  internalfield="false" listid="library" datatype="list">Project</property>
+  <property id="library" index="true" stored="true" editable="true" sortable="true" type="list"   listid="library" datatype="list">Project</property>
   <property id="notes" index="true" stored="true" editable="true" >Notes</property>
   <property id="addnotifypolicy" index="true" type="list" listid="librarycollection/addnotifypolicy" stored="true" editable="true" note="Who do we notify when assets are added" >Send Notifications</property>
   

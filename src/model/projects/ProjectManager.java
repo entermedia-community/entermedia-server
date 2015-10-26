@@ -33,4 +33,6 @@ public interface ProjectManager
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
 	
 	public boolean addUserToLibrary(MediaArchive archive, Data inLibrary, User inUser);
+	
+	//public void savedCollection(MediaArchive archive, Data inLibrary, User inUser);
 }
