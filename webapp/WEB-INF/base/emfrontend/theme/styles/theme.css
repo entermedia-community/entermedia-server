@@ -1338,6 +1338,7 @@ small {
 #emresultscontent  #pages .ellipsis {
     color: #797979;
     width: auto !important;
+    line-height: 26px;
 }
 #emresultscontent #pages ul {
     margin: 0px;

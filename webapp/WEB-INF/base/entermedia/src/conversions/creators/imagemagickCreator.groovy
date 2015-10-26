@@ -132,7 +132,7 @@ public class imagemagickCreator extends BaseImageCreator {
 			//					autocreated = true;
 			//				}
 			//			}
-			if( input == null && box.getWidth() < 1920 )
+			if( input == null && box.getWidth() < 1921 )
 			{
 				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1920x1080" + page + ".jpg");
 				if( !input.exists() )

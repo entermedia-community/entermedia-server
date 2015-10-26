@@ -5,12 +5,12 @@
 					#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
 					$!collectionassets.setHitsPerPage(5)
 
-	<div class="panel-footer">
+	<div class="panel-header" style="padding: 8px 8px 2px 8px">
 		<table width="100%">
 		<tr>
-		<td class="panel-title" style="padding: 5px;">$collection.getCollection() 
-<span style="font-size: .7em; font-style:italic;">in library <a href="">$searcherManager.getData( $catalogid, "library",$collection.getCollection().library)</a>
-</span>
+		<td class="panel-title" >
+				<span style="font-size: 1.2em;" >$collection.getCollection() </span>  
+			<span style="font-size: .7em; font-style:italic;"> collection edited by <a href="">Donnie Masterton</a> </span>
 		</td>
 		
 		<td align="right"><a class="btn btn-primary" style="padding: 5px; background-color:#234;" href="">View Assets ($collectionassets.size())</a></td>
@@ -40,9 +40,7 @@
 	</div>
 	</div>
 	<div class="panel-footer">
-	<span style="font-size: .7em; font-style:italic;">modified by <a href="">Donnie Masterton</a>
-October 16 at 10:46pm
-</span>
+		 Library $searcherManager.getData( $catalogid, "library",$collection.getCollection().library) <span style="font-size: .7em; font-style:italic;">edited on October 16 at 10:46pm</span> 
 	</div>
 </div>
 
