@@ -3,7 +3,7 @@
 #foreach( $collection in $collections )
 <div class="panel panel-default" style="margin: 0px auto 20px auto;">
 					#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
-					$!collectionassets.setHitsPerPage(5)
+					$!collectionassets.setHitsPerPage(15)
 
 	<div class="panel-header" style="padding: 8px 8px 2px 8px">
 		<table width="100%">
@@ -19,11 +19,8 @@
 	</div>
 	
 	<div class="panel-body" style="padding:0px;margin:0px auto;background: #181818;">
-		<div class="media-carousel" style="width: 750px;padding:0px;margin:0px">
-			<a class="previous" href="#previous"> <svg
-					class="icon icon-arrow-left" viewBox="0 0 32 32">
-					<use xlink:href="#icon-arrow-left"></use></svg>
-			</a>
+		<div class="media-carousel" style="position: relative;">
+			<a class="prevpage" href="#previous"></a>
 			<div class="carousel-window">
 				<ul>
 					#foreach( $hit in $collectionassets.getPageOfHits())
@@ -33,10 +30,7 @@
 					#end
 				</ul>
 			</div>
-			<a class="next icon-arrow-right" href="#next"> <svg
-					class="icon icon-arrow-right" viewBox="0 0 32 32">
-					<use xlink:href="#icon-arrow-right"></use></svg>
-			</a>
+			<a class="nextpage" href="#next"></a>
 	</div>
 	</div>
 	<div class="panel-footer">

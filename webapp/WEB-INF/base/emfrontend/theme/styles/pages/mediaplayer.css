@@ -115,27 +115,23 @@
   height: 143px;
   background: #181818;
   padding: 0;
-  margin-top: 10px;
-  margin-left: 10px;
 }
 #emcontent .media-carousel .carousel-window {
    height: 133px;
    overflow: hidden;
-   width: 90%;
-   float:left;
 }
 #emcontent .media-carousel ul
 {
 	height: 153px;
 	margin: 0;
-	padding: 0 15px 0 5px;
+	padding: 0;
 	list-style: none;
-	float:left;
+	width:1000px;
 }
 #emcontent .media-carousel ul li {
   height: 116px;
   float: left;
-  margin: 15px 0 0 12px;
+  margin: 15px 10px 0 0px;
   text-align: center;
   border-radius: 0;
   cursor: pointer;
@@ -189,4 +185,33 @@
 #emcontent .media-carousel a.next {
   float: right;
   margin:35px 5px 0;
+}
+
+
+.media-carousel .carousel-window {
+	margin:0 60px 0 60px;	
+}
+.media-carousel .nextpage {
+	
+}
+
+.media-carousel .nextpage,
+.media-carousel .prevpage {
+	width:50px;
+	height: 100px;
+	opacity: 0.2;
+	position: absolute;
+	top:20px;
+}
+.media-carousel .nextpage:hover,
+.media-carousel .prevpage:hover {
+	opacity: 0.8;
+}
+.media-carousel .nextpage {
+	background: url('http://demo.entermediadb.com/emshare/theme/images/pdf-next-page.png');
+	right:5px;
+}
+.media-carousel .prevpage {
+	background: url('http://demo.entermediadb.com/emshare/theme/images/pdf-prev-page.png');
+	left:5px;
 }
