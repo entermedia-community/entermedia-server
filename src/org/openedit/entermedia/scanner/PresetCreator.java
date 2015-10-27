@@ -70,6 +70,7 @@ public class PresetCreator
 			existingtasks.add(existing.get("presetid") + page);
 			if( "error".equals( existing.get("status")) )
 			{
+				existing = tasksearcher.loadData(existing);
 				existing.setProperty("status","retry");
 				tosave.add(existing);
 			}
