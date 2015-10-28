@@ -20,8 +20,9 @@
 
 <form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
 #foreach($type in $facets )
+#set( $viewpermission = true)
 #set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
-#if( !$viewpermission || $viewpermission )
+#if( $viewpermission )
 	#if(!$hits.isChildFacetSelected($type))
 	<h4>$context.getText($type.toString())</h4>
 	<ul class="filters-sidebar">
