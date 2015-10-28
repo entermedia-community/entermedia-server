@@ -8,12 +8,17 @@
 #set( $column = $id.substring($index) )
 #set( $newsearcher = $searcherManager.getSearcher($catalogid,$table) )
 $context.putPageValue("searcher",$newsearcher)
-#set( $newdetail = $newsearcher.getDetail($column) )
+#set( $newdetail = $newsearcher.getDetail($column).copy() )
+$!newdetail.setId($detail.getId())
+$context.putPageValue("detail",$newdetail)
 #set ($viewtype = $newdetail.viewType)
 #if( $data)
-	#set( $data = $newsearcher.searchById($data.get($table)) )
-	$context.putPageValue("data",$data)
-	$context.putPageValue("detail",$newdetail)
+	#if( $detail.render )
+		#set($val = $searcherManager.getValue($newdetail.getListCatalogId(), $detail.render, $data.properties))
+	#else
+		#set($val = $data.name)
+	#end
+	$context.putPageValue("val",$val)
 #end
 
 #if (!$viewtype)

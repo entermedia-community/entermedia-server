@@ -3,7 +3,15 @@
 #if( !$collectionassets)
 	#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
 	#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collectionid ) )
-	$!collectionassets.setHitsPerPage(6)
+	#set( $width = $context.getRequestParameter("width") )
+	#if( $width)
+			#set( $zero = 0)
+			#set( $width = $zero.parseInt( $width ) )
+			#set( $count = $math.div($width,35) )	
+			$!collectionassets.setHitsPerPage($count)
+	#else
+			$!collectionassets.setHitsPerPage(8)			
+	#end
 #end
 #set( $page = $context.getRequestParameter("page") )
 #if( $page)
