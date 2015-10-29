@@ -414,7 +414,11 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 					
 					try
 					{
-						Query filter = tosearcher.getQueryParser().parse(join.getRemoteQuery().toQuery());
+						//librarycollectionasset (assetid , collectionid )
+						//localcolumn  = id
+						//remotecolumn = assetid
+						
+						Query filter = tosearcher.getQueryParser().parse(join.getRemoteQuery().toQuery());  //collectionid=101
 						filter = JoinUtil.createJoinQuery(join.getRemoteColumn(), join.isRemoteHasMultiValues(), join.getLocalColumn(), filter, connection.getIndexSearcher(), ScoreMode.None);
 						if (query1 != null)
 						{

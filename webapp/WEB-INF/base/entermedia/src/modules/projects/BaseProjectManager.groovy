@@ -15,6 +15,7 @@ import org.openedit.profile.UserProfile
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.FilterNode
 import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
 import com.openedit.users.*
 
 
@@ -134,7 +135,7 @@ public class BaseProjectManager implements ProjectManager
 			uc.setCollection(collection);
 			if( collectionhits != null)
 			{
-				int assetcount = collectionhits.getCount(collection.getId());
+				int assetcount = collloadAssetIdsInCollectionectionhits.getCount(collection.getId());
 				uc.setAssetCount(assetcount);
 			}
 			usercollections.add(uc);
@@ -253,16 +254,26 @@ public class BaseProjectManager implements ProjectManager
 	
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
 	{
-		Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
+		SearchQuery assetsearch = archive.getAssetSearcher().createSearchQuery();
+		SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
+		assetsearch.addRemoteJoin(collectionassetsearch,"asset",false,"librarycollectionasset","id");
+		HitTracker all = archive.getAssetSearcher().search(assetsearch);
+		/*
+		 *
+		 
 		//Do an asset search with permissions, showing only the assets on this collection
 		HitTracker all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
 
 		all.setSelections(ids);
 		all.setShowOnlySelected(true);
 		//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
-
+		*/
+		
+		//create script that syncs up the assets that have been removed
+		/*
 		if( all.size() != ids.size() )
 		{
+			Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
 			//Some assets got deleted, lets remove them from the collection
 			Set extras = new HashSet(ids);
 			for (Data hit in all)
@@ -280,7 +291,7 @@ public class BaseProjectManager implements ProjectManager
 				}
 			}
 		}
-
+		*/
 		String hpp = inReq.getRequestParameter("page");
 		if( hpp != null)
 		{
@@ -291,7 +302,6 @@ public class BaseProjectManager implements ProjectManager
 		{
 			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
 		}
-		//all.setHitsPerPage(1000);
 		all.getSearchQuery().setProperty("collectionid", collectionid);
 		all.getSearchQuery().setHitsName("collectionassets")
 		return all
