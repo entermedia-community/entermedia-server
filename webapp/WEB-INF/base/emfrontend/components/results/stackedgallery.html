@@ -20,7 +20,7 @@ $context.putPageValue("showtoolbar", "false")
 #if ( $hits && $hits.size() > 0 )
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
-	
+
 <div class="row masonry-grid">
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
@@ -33,8 +33,12 @@ $context.putPageValue("showtoolbar", "false")
         $context.putPageValue("type", $type)
         $context.putPageValue("assetid", $hit.id)
         $context.putPageValue("count", $count )
-         $context.putPageValue("sourcepath", $hit.sourcepath )
-		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$!hit.width" data-height="$!hit.height"  >
+        $context.putPageValue("sourcepath", $hit.sourcepath )
+        #if ($!hit.width) #set($assetwidth = $hit.width) #else #set($assetwidth = 300) #end
+        #if($!hit.height) #set ($assetheight = $hit.height) #else #set($assetheight = 150) #end
+        #set($click = "${applicationid}/views/modules/asset/editor/viewer/index.html?hitssessionid=${hits.getSessionId()}&assetid=${assetid}")
+        
+		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >
 		    	<a class="playerclink imagearea" id="clickid${hit.id}" href="#">
 		    	    <div class="grid-thumbimage assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
 		        	    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
