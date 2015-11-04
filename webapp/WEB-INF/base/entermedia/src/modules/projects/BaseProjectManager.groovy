@@ -135,7 +135,7 @@ public class BaseProjectManager implements ProjectManager
 			uc.setCollection(collection);
 			if( collectionhits != null)
 			{
-				int assetcount = collloadAssetIdsInCollectionectionhits.getCount(collection.getId());
+				int assetcount = collectionhits.getCount(collection.getId());
 				uc.setAssetCount(assetcount);
 			}
 			usercollections.add(uc);
