@@ -20,15 +20,15 @@ public interface ProjectManager
 	
 	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid);
 
-	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> inAssets );
+	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker inAssets );
 
-	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> inAssets );
+	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker inAssets );
 	
 	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid);
 
-	public void removeAssetFromLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> inAssets );
+	public void removeAssetFromLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker inAssets );
 
-	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, Collection<Data> inAssets );
+	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, HitTracker inAssets );
 
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
 	

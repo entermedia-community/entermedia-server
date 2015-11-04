@@ -1,65 +1,85 @@
 <div id="collectionfeed">
 
-	<div class="row">
-		<div class="col-md-2">
-			[[Library]]
-		</div>
-		<div class="col-md-4">
-			<form name="librarychange" id="librarychange" action="$home$apphome/components/collectionfeed/index.html" class="ajaxform" targetdiv="collectionfeed"  > 
-				<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  
-				data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" data-sortby="name" onChange='$("#librarychange").submit()' />
-	
-			<input name="oemaxlevel"    value="1" type="hidden" />
-			<input name="profilepreference"    value="last_selected_library" type="hidden" />
-			<input name="profilepreference.value"  id="list-sidebarlibraryvalue"   value="$!selectedlibrary.getId()" type="hidden" />
-			</form>
-
-		</div>
-		<div class="col-md-3 text-right">
-		#set( $caneditlibrary = $context.getPageStreamer().canDo("editdata","$apphome/views/modules/library/index.html"))
-		#if ($caneditlibrary)		
-			<a href="$home$apphome/components/libraries/addnewlibrary.html" class="emdialog" title="Add Library"><img src="$home$themeprefix/images/icons/addgray.png">&nbsp;New Library </a>
-		#end		
-		</div>
-		<div class="col-md-3 text-right">
-			<div id="createnewarea"><a class="ajax" targetdivinner="createnewarea" data-oemaxlevel="1" 
-				href="$home$apphome/components/collectionfeed/addnewchild.html?libraryid=$selectedlibrary.id" ><span><img src="$home$themeprefix/images/icons/addgray.png"> [[New Collection]]</span></a>
-			</div>
-		</div>
-	</div>	
 
 
-#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
-#foreach( $collection in $usercollections )
-#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
-<div class="panel panel-default" style="margin: 0px auto 20px auto; background-color:#f5f5f5">
+ <div class="panel panel-default" style="margin: 0px auto 20px auto;">
+
 	<div class="panel-header" style="padding: 8px 8px 2px 8px">
 		<table width="100%">
-		<tr>
-		<td class="panel-title" >
-				<span style="font-size: 1.2em;" >$collection.getCollection() ($collectionassets.size())</span>  
-			##<span style="font-size: .7em; font-style:italic;"> collection edited by <a href="">Donnie Masterton</a> </span>
-		</td>
-		
-		<td align="right"><a class="btn btn-primary" style="padding: 5px; background-color:#234;" 
-			href="$home$apphome/views/modules/librarycollection/viewassets.html?collectionid=$collection.getCollection().getId()&width=400">#if( $collectionassets.size() == 0)View Collection #else View Assets #end</a></td>
-		</tr>
+			<tr>
+			<td>
+				<form name="librarychange" id="librarychange" action="$home$apphome/components/collectionfeed/index.html" class="ajaxform" targetdiv="collectionfeed"  > 
+					<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  
+					data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" data-sortby="name" onChange='$("#librarychange").submit()' />
+			
+					<input name="oemaxlevel"    value="1" type="hidden" />
+					<input name="profilepreference"    value="last_selected_library" type="hidden" />
+					<input name="profilepreference.value"  id="list-sidebarlibraryvalue"   value="$!selectedlibrary.getId()" type="hidden" />
+				</form>
+			</td>		
+			<td>
+				#set( $caneditlibrary = $context.getPageStreamer().canDo("editdata","$apphome/views/modules/library/index.html"))
+				#if ($caneditlibrary)		
+					<a href="$home$apphome/components/libraries/addnewlibrary.html" class="emdialog" title="Add Library"><img src="$home$themeprefix/images/icons/addgray.png">&nbsp;New Library </a>
+				#end	
+			</td>		
+			<td>
+				<div id="createnewarea"><a class="ajax" targetdivinner="createnewarea" data-oemaxlevel="1" 
+					href="$home$apphome/components/collectionfeed/addnewchild.html?libraryid=$selectedlibrary.id" ><span><img src="$home$themeprefix/images/icons/addgray.png"> [[New Collection]]</span></a>
+				</div>
+			</td>
+			</tr>
 		</table>
 	</div>
-	#if( $collectionassets.size() == 0)
-		<div class="panel-body" style="padding:0px;margin:auto;text-align: center;min-height:40px;">
-		##<p>Empty Collection</p>
-			</div>
-	#else
-		<div class="panel-body" style="padding:0px;margin:0px auto;background: #181818;">
-				$context.putPageValue("collectionassets",$collectionassets)
-				$pages.include("$apphome/components/collectionfeed/listassets.html?collectionid=$collection.getCollection().getId()",$context)
-		</div>
-	</div>
-	<div class="panel-footer">
-		##<span style="font-size: .7em; font-style:italic;">created by on 	October 16 at 10:46pm</span> 
-	</div>
-	#end
-</div>
-#end
-</div>
+
+	<div class="panel-body" style="padding:0px;margin:auto;text-align: center;min-height:40px;">
+		<table width="100%" class="collheader">
+		<tr style=" background-color:#999">
+				<th align=left style="padding:5px 0 5px 15px" >
+						Collection Name
+				</th>
+				<th  style="padding:5px" >
+						Date 
+				</th>
+				<th  style="padding:5px" >
+						Owner 
+				</th>
+				<th  style="padding:5px;text-align:center" >
+						Assets 
+				</th>
+		</tr>		
+		#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
+		#foreach( $collection in $usercollections )
+		#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
+		$!collectionassets.setHitsPerPage(10)
+			<tr style=" background-color:#f5f5f5">
+				<td align=left style="padding:5px 0 0px 15px" >
+					<div class="ui-widget-header loadcollection" data-target="collection123">
+						<span class="widget-header-title">$collection.getCollection()</span>
+					</div>
+				</td>
+				<td align=left style="padding:5px 0 0px 15px" >
+						10/10/2015 4:20:01 pm</span>  
+				</td>
+				<td align=left style="padding:5px 0 0px 15px" >
+						Casey Abernathy $!collectionassets.getCollection().owner</span>  
+				</td>
+				<td align=center  style="padding:5px 5px 0px 15px" >
+					<a class=""
+					href="$home$apphome/views/modules/librarycollection/viewassets.html?collectionid=$collection.getCollection().getId()&width=400">
+					$collectionassets.size()</a>
+				</td>
+			</tr>
+				<tr>
+			<td colspan="4" id="collection123" style=";">
+				#if( $collectionassets.size() > 0)
+						$context.putPageValue("collectionassets",$collectionassets)
+						$pages.include("$apphome/components/collectionfeed/listassets.html?collectionid=$collection.getCollection().getId()",$context)
+				#end
+			</td>
+			</tr>
+		#end
+		</table>
+	</div>	
+ </div>	
+</div> 

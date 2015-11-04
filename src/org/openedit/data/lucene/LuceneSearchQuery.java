@@ -90,7 +90,7 @@ public class LuceneSearchQuery extends SearchQuery
 			inTerm.setDetail(detail);
 			q.addTerm(inTerm);
 
-			addRemoteJoin(q, remotejoincolumn, false, localfield, localfield);
+			addJoinFilter(q, remotejoincolumn, false, localfield, localfield);
 
 			//We dont actually add a term
 			Term stub = new Term() {

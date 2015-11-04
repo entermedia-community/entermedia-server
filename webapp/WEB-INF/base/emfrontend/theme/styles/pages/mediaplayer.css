@@ -113,7 +113,7 @@
 
 #emcontent .media-carousel {
   height: 143px;
-  background: #181818;
+  background: #666;
   padding: 0;
 }
 #emcontent .media-carousel .carousel-window {
@@ -126,7 +126,6 @@
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	width:1000px;
 }
 #emcontent .media-carousel ul li {
   height: 116px;
@@ -214,4 +213,15 @@
 .media-carousel .prevpage {
 	background: url('http://demo.entermediadb.com/emshare/theme/images/pdf-prev-page.png');
 	left:5px;
+}
+
+#collectionfeed #librarychange div.listautocomplete {
+    min-width: 220px;
+    max-width: 220px;
+    margin: 0 0 8px 0;
+}
+#collectionfeed  .collheader th
+{
+color: #fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
 }
