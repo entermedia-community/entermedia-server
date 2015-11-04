@@ -1397,6 +1397,29 @@ small {
     color: #fff;
 }
 
+span.glyphicon {
+
+	font-size: 10px;
+    float: right;
+    margin-top: 7px;
+    margin-right: 0px;
+    position: absolute;
+    right: 0;
+    color: #595959;
+
+}
+
+span.glyphicon.glyphicon-triangle-right:before {
+
+	content: "\e250";
+
+}
+
+span.glyphicon-triangle-left:before {
+
+	content: "\e251";
+
+}
 
 /* CATEGORIES AGAIN */
 
