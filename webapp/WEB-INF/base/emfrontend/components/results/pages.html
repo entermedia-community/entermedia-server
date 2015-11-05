@@ -13,7 +13,7 @@
 	<div id="pages">
 		<ul>
 			#if( $hits.prevPage() )
-				<li><a class="ajax" targetdivinner="$targetdivinner" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ></a><span class="glyphicon glyphicon-triangle-left"></span></li>
+				<li><a class="ajax" targetdivinner="$targetdivinner" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="glyphicon glyphicon-triangle-left"></span></a></li>
 			#end
 			#set( $befores = $hits.linksBefore() )					
 			#if($befores.size()!=0)
@@ -39,7 +39,7 @@
 				#end
 			#end
 			#if ( $hits.nextPage() )
-				<li><a class="ajax" targetdivinner="$targetdivinner" href="$resultsPage=$hits.nextPage()" title="Next (alt n enter)" accesskey="n"></a><span class="glyphicon glyphicon-triangle-right"></span></li>
+				<li><a class="ajax" targetdivinner="$targetdivinner" href="$resultsPage=$hits.nextPage()" title="Next (alt n enter)" accesskey="n"><span class="glyphicon glyphicon-triangle-right"></span></a></li>
 			#end
 		</ul>
 	</div>
