@@ -6,6 +6,7 @@ import model.projects.UserCollection
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
+import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
@@ -152,11 +153,11 @@ public class BaseProjectManager implements ProjectManager
 	
 		List tosave = new ArrayList();
 		assets.setHitsPerPage(200);
-		
-		for(Collection page: tracker.getPageOfHits())
+		for(int i=0;i < assets.getTotalPages();i++)
 		{
+			assets.setPage(i+1);
 			Set assetids = new HashSet();
-			for(Data asset: page)
+			for(Data asset: assets.getPageOfHits())
 			{
 				assetids.add(asset.getId());
 			}
@@ -210,8 +211,14 @@ public class BaseProjectManager implements ProjectManager
 	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker assets)
 	{
 		List tosave = new ArrayList();
-		for(Data toadd: assets)
+		for(MultiValued toadd: assets)
 		{
+			//TODO: Skip loading?
+			Collection libraries = toadd.getValues("libraries");
+			if ( libraries != null && libraries.contains(libraryid))
+			{
+				continue;
+			}
 			Asset asset = archive.getAssetSearcher().loadData(toadd)
 		
 			if (asset != null && !asset.getLibraries().contains(libraryid))
