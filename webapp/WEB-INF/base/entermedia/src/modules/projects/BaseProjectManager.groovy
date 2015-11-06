@@ -57,7 +57,7 @@ public class BaseProjectManager implements ProjectManager
 		fieldSearcherManager = inSearcherManager;
 	}
 	
-	protected Data getCurrentLibrary( UserProfile inProfile)
+	public Data getCurrentLibrary( UserProfile inProfile)
 	{
 		if( inProfile != null)
 		{
@@ -261,6 +261,11 @@ public class BaseProjectManager implements ProjectManager
 		return ids;
 	}
 	
+	public HitTracker loadAssetsInLibrary(Data inLibrary,  MediaArchive archive, WebPageRequest inReq)
+	{
+		HitTracker hits = archive.getAssetSearcher().query().match("libraries",inLibrary.getId()).search(inReq);
+		return hits;
+	}
 	
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
 	{

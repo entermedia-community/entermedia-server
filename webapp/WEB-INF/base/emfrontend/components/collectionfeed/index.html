@@ -1,38 +1,24 @@
-<div id="collectionfeed"><br>
- <div class="panel panel-default" style="margin: 0px auto 20px auto;">
-	<div class="panel-body" style="padding:0px;margin:auto;text-align: center;min-height:40px;">
-		<table width="100%" class="collheader">
-		<!-- <tr style=" background-color:#999">
-				<th align=left style="padding:5px 0 5px 15px" >
-						Collection Name
-				</th>
-				<th  style="padding:5px" >
-						Date 
-				</th>
-				<th  style="padding:5px" >
-						Owner 
-				</th>
-				<th  style="padding:5px;text-align:center" >
-						Assets 
-				</th>
-		</tr>	
-		 -->	
+<div id="collectionfeed" style="background-color: white;">
+		<table class="collheader" style="margin:0 20px 0 20px;">
 		#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
 		#foreach( $collection in $usercollections )
 		#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
-		$!collectionassets.setHitsPerPage(4)
-			<tr style=" background-color:#f5f5f5">
-				<td align=left style="padding:5px 0 0px 15px" >
-					<div class="ui-widget-header loadcollection" data-target="collection123">
-						<span class="widget-header-title">$mediaarchive.getData("library",$collection.getCollection().library) / $collection.getCollection() <a class=""
-					href="$home$apphome/views/modules/librarycollection/viewassets.html?collectionid=$collection.getCollection().getId()&width=400">(
-					$collectionassets.size() )</a></span>
+		#if( $collectionassets.size() > 0 )
+		$!collectionassets.setHitsPerPage(6)
+			<tr >
+				<td align=left style="padding:20px 0 0px 0px;" >
+				    <div class="btn-toolbar">
+				    	<a  href="$home$apphome/views/modules/librarycollection/viewassets.html?collectionid=$collection.getCollection().getId()&width=400">$collectionassets.size()</a> 
+					</div>
+					<div class="ui-widget-header loadcollection" data-target="collection123" style="width: 400px;">
+						<span class="widget-header-title">
+						  $collection.getCollection() - $mediaarchive.getData("library",$collection.getCollection().library)
 					</div>
 				</td>
-				<td align=left style="padding:5px 0 0px 15px" >
+				<td align=left style="padding:20px 0 0px 15px" >
 					##	10/10/2015 4:20:01 pm</span>  
 				</td>
-				<td align=left style="padding:5px 0 0px 15px" >
+				<td align=left style="padding:15px 0 0px 15px" >
 					##	Casey Abernathy $!collectionassets.getCollection().owner</span>  
 				</td>
 				<td align=center  style="padding:5px 5px 0px 15px" >
@@ -47,8 +33,7 @@
 				#end
 			</td>
 			</tr>
+			#end
 		#end
 		</table>
-	</div>	
- </div>	
 </div> 

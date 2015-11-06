@@ -134,9 +134,18 @@ public class ProjectModule extends BaseMediaModule
 				return;
 			}
 		}
-	
 	}
-	
+	public void searchForAssetsInLibrary(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		Data library = manager.getCurrentLibrary(inReq.getUserProfile());
+		if( library != null)
+		{
+			HitTracker hits = manager.loadAssetsInLibrary(library,archive,inReq);
+			inReq.putPageValue("hits", hits);
+		}
+	}
 	public void searchForAssetsOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
