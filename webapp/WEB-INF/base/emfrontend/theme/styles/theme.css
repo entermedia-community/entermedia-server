@@ -1397,6 +1397,24 @@ small {
     color: #fff;
 }
 
+#emresultscontent #pages ul li.pagenav {
+
+	width: 17px;
+
+}
+
+#emresultscontent #pages ul li.pagenav a span.glyphicon-triangle-right {
+
+	margin-right: 2px;
+
+}
+
+#emresultscontent #pages ul li.pagenav a span.glyphicon-triangle-left {
+
+	margin-right: 4px;
+
+}
+
 span.glyphicon {
 
 	font-size: 10px;

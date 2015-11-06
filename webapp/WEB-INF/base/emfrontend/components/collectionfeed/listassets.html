@@ -10,7 +10,7 @@
 			#set( $count = $math.div($width,35) )	
 			$!collectionassets.setHitsPerPage($count)
 	#else
-			$!collectionassets.setHitsPerPage(10)			
+			$!collectionassets.setHitsPerPage(6)			
 	#end
 #end
 #set( $page = $context.getRequestParameter("page") )
@@ -24,9 +24,14 @@
 	<div class="carousel-window">
 		<ul>
 		#foreach( $hit in $collectionassets.getPageOfHits())
-		<li class="clearfix"><a id="thumb${hit.id}}" class="thumb" href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$collectionassets.getSessionId()&assetid=$hit.getId()">
-				<img src="$home$apphome/views/modules/asset/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg" />
-		</a></li> 
+			<li class="clearfix">
+			<a id="thumb${hit.id}}" class="thumb" href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$collectionassets.getSessionId()&assetid=$hit.getId()">
+				<div class="thumbframe">
+					<img style="width:225px;" src="$home$apphome/views/modules/asset/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg" />
+				</div>	
+				<span>$hit.name</span>
+			</a>
+		</li> 
 		#end
 		</ul>
 	</div>
