@@ -274,13 +274,19 @@ jQuery(document).ready(function(url,params)
 	{	
 		e.preventDefault();
 		var div = $('span', this);
-		div.removeClass("glyphicon-play");
-		div.addClass("glyphicon-pause");
-		console.log("Now Play slideshow");
+		if (div.hasClass("glyphicon-play")) {
+			div.removeClass("glyphicon-play");
+			div.addClass("glyphicon-pause");
+			console.log("Now Play slideshow");
+		} else {
+			div.removeClass("glyphicon-pause");
+			div.addClass("glyphicon-play");
+			console.log("Now Pause slideshow");
+		}
 	});
-	jQuery('a.imageplayer').livequery('click',function(e)
+	jQuery('div.playerarea').livequery('click',function(e)
 	{
-		e.preventDefault();isNaN(w) 
+		e.preventDefault(); 
 		var link = $(this);
 		var image = $('img', link);
 		var percentleft = Math.floor(((e.pageX - link.offset().left) / image.width()) * 100);
