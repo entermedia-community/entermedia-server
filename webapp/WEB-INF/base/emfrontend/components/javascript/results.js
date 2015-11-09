@@ -223,7 +223,9 @@ jQuery(document).ready(function(url,params)
 			        	var id = link.data("assetid");
 			        	showOverlay(id);
 			        break;
-			
+			        
+			        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
+			        
 			        case 27: // esc
 			         getOverlay().hide();
 			        break;
