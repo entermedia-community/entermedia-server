@@ -1415,7 +1415,7 @@ small {
 
 }
 
-span.glyphicon {
+a span.glyphicon {
 
 	font-size: 10px;
     float: right;
