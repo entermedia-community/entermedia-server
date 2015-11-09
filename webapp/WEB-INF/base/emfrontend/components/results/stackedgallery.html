@@ -34,14 +34,18 @@ $context.putPageValue("showtoolbar", "false")
         $context.putPageValue("assetid", $hit.id)
         $context.putPageValue("count", $count )
         $context.putPageValue("sourcepath", $hit.sourcepath )
+         $context.putPageValue("thumbsize", "medium" )
         #if ($!hit.width) #set($assetwidth = $hit.width) #else #set($assetwidth = 300) #end
         #if($!hit.height) #set ($assetheight = $hit.height) #else #set($assetheight = 300) #end
         #set($click = "editor/viewer/index.html?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
 		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >
 		    	<a class="playerclink imagearea" id="clickid${hit.id}" href="#">
-		    	    <div class="grid-thumbimage assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
-		        	    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+		    	    <div class="grid-thumbimage assetdraggable"> 
+		    	    	#if( $type =="audio")
+		    	    		#set( $type = "mime" )
+		    	    	#end
+		        	   $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
 		        	</div>
 		    	</a>
 		      <div class="caption">

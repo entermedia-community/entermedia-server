@@ -91,12 +91,15 @@ span.emdropshadow {
 }
 div.masonry-grid-cell span.emdropshadow 
 {
+	display: inline;
 	padding: 0px;
 	margin:0px;
 	border:0px;
 }
-
-
+div.masonry-grid-cell span.emdropshadow img
+{
+	width:100%;
+}
 
 
 .emboxthumblarge
@@ -257,7 +260,6 @@ div.masonry-grid-cell span.emdropshadow
 
 .masonry-grid
 {
-	background-color: rgb(200,200,200);
 }
 
 .masonry-grid-cell
@@ -268,7 +270,15 @@ div.masonry-grid-cell span.emdropshadow
 	border: 0;
 	text-overflow: ellipsis;
 	background-color: white;
+	overflow:hidden;
+	
 }
+.masonry-grid-cell .grid-thumbimage
+{
+	vertical-align: middle;
+	
+}
+
 .masonry-grid-cell .imagearea
 {
 	overflow: hidden;

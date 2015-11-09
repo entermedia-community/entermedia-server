@@ -33,7 +33,7 @@ jQuery(document).ready(function(url,params)
 			jQuery.get(href, args, function(data) 
 			{
 				$("#resultsdiv").html(data);
-				gridResize();
+				$(window).trigger( "resize" );
 			});
 		});
 		
@@ -307,16 +307,13 @@ jQuery(document).ready(function(url,params)
 	});
 	//END Gallery stuff
 	
-	
-	
-
-	$(window).load(function() {
-		gridResize();
-	});	
-	$(window).resize(function(){
+//	$(window).load(function() {
+//		gridResize();
+//	});	
+	$(window).on('resize',function(){
 		gridResize();
 	});
-
+	gridResize();
 });        //document ready
         
 
@@ -336,10 +333,11 @@ togglehits =  function(action)
 
 }
 var loadingscroll = false;
+
 checkScroll = function()
 {
-
-if( loadingscroll )
+		//console.log("checking scroll" + loadingscroll);
+		if( loadingscroll )
 		{
 			return;
 		}
@@ -347,7 +345,7 @@ if( loadingscroll )
   		var totalHeight = document.body.offsetHeight;
   		var visibleHeight = document.documentElement.clientHeight;
 		//var attop = $(window).scrollTop() < $(window).height(); //past one entire window
-		var atbottom = ($(window).scrollTop() + (visibleHeight + 40)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
+		var atbottom = ($(window).scrollTop() + (visibleHeight + 200)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
 		if(	!atbottom )
 	    {
 		  return;
@@ -355,11 +353,11 @@ if( loadingscroll )
 		var gallery= $("#resultsdiv");
 		var lastcell = $(".masonry-grid-cell",gallery).last();
 		 
-		loadingscroll = true; 
 	    var page = parseInt(gallery.data("pagenum"));   
 	    var total = parseInt(gallery.data("totalpages"));
 	    if( total > page)
 	    {
+		   loadingscroll = true; 
 		   var session = gallery.data("hitssessionid");
 		   page = page + 1;
 		   gallery.data("pagenum",page);
@@ -379,6 +377,7 @@ if( loadingscroll )
 
 gridResize = function() 
 {
+	console.log("resized grid");
 	checkScroll();
 	var fixedheight = 250;
 	var cellpadding = 12;
@@ -393,38 +392,21 @@ gridResize = function()
 	{		
 		var cell = $(this);
 		var useimage = false;
-		var w = jQuery("#emthumbholder img",cell).width();
-		if(w == 0 || w == null) //not loaded yet
-		{
-			useimage = true;
-			w = cell.data("width");
-			if( isNaN(w) || w == "" )
-			{
-				w = 80;
-			}
-		}
-		
-		if( useimage )
-		{
-			h= cell.data("height");
-			if(isNaN(h)  || h == "")
-			{
-				h = 80;
-			}			
-		}
-		else
-		{
-			h = jQuery("#emthumbholder img",cell).height();
-		}
+		var w = cell.data("width");
+		var	h= cell.data("height");
 		if( w == 0 )
 		{
 			w = 100;
+			h = 100;
 		}
 		w = parseInt(w);
 		h = parseInt(h);
 		var a = w / h;  
 	
 		var neww = Math.floor( fixedheight * a );
+		
+		//TODO: Default the height to comething smart
+		cell.width(neww); 
 		
 		var over = sofarused + neww;
 		if( over > totalavailable )
@@ -438,20 +420,17 @@ gridResize = function()
 			{
 				roundedheight = fixedheight;
 			} 
-			var count = 0;
 			$.each( row, function()
 				{
-					count++;
 					var newcell = this;
+					var div = newcell.cell;
 					var newwidth = Math.floor(newheight * newcell.aspect); 
-					var area = jQuery(".imagearea",newcell.cell);
-					area = $(area);
-					var img = jQuery("#emthumbholder img",area);
-					img = $(img);
-					img.width(newwidth);
-					area.height(roundedheight); 
-					//area.width(newwidth); 
-					jQuery.data( area, "rowcount",count);
+					//var area = jQuery(".imagearea img",div);
+					//area = $(area);
+					//area.height(roundedheight); 
+					div.height(roundedheight); 
+					div.width(newwidth); 
+					jQuery.data( div, "rowcount",rownum);
 				}	
 			);
 			row = [];
@@ -475,10 +454,16 @@ gridResize = function()
 	$.each( row, function()
 		{
 			var newcell = this;
+			var div = newcell.cell;
 			var newwidth = Math.floor(newheight * newcell.aspect); 
-			jQuery("#emthumbholder img",newcell.cell).width(newwidth);
-			jQuery(".imagearea",newcell.cell).height(roundedheight); //TODO: Fix aspect
-			jQuery(".imagearea",newcell.cell).width(newwidth);
+			//var area = jQuery(".imagearea",div);
+			//area = $(area);
+			div.height(roundedheight); 
+			div.width(newwidth); 
+			jQuery.data( div, "rowcount",rownum);
+			//jQuery("#emthumbholder img",newcell.cell).width(newwidth);
+			//jQuery(".imagearea",newcell.cell).height(roundedheight); //TODO: Fix aspect
+			//jQuery(".imagearea",newcell.cell).width(newwidth);
 		}	
 	);
 }

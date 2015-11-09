@@ -27,7 +27,7 @@ uiload = function() {
 			$('#embody').addClass('max');
 			$('#maximize').html('Minimize');
 			$('#maximize').attr('title', 'Minimize the application.');
-			doResize();
+
 		} else {
 			
 			$('#embody').removeClass('max');
@@ -40,6 +40,7 @@ uiload = function() {
 			var w3 = ( 551 );
 			$('#commenttext').width(w3);
 		}
+			$(window).trigger( "resize" );
 		
 		toggleUserProperty("maximize_screen");
 		
@@ -439,24 +440,20 @@ uiload = function() {
 	}	
 }
 
-function doResize() {
+
+jQuery(document).ready(function() 
+{ 
+	uiload();
+	$(window).on('resize',function()
+	{
 		w1 = ( $('#main').width() - $('#left-col').width() - 41 );
 		$('#right-col .liquid-sizer').width(w1);
 		w2 = ( $('#data').width() - 40 );
 		$('#asset-data').width(w2);
 		w3 = ( w2 - 23);
 		$('#commenttext').width(w3);
-	}
+	});
 
-
-jQuery(document).ready(function() 
-{ 
-	uiload();
-	doResize();
 }); 
-
-$(window).resize(function(){
-	doResize();
-});
 
 
