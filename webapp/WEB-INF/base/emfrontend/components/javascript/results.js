@@ -393,14 +393,14 @@ gridResize = function()
 		var cell = $(this);
 		var useimage = false;
 		var w = cell.data("width");
-		var	h= cell.data("height");
+		var	h = cell.data("height");
+		w = parseInt(w);
+		h = parseInt(h);
 		if( w == 0 )
 		{
 			w = 100;
 			h = 100;
 		}
-		w = parseInt(w);
-		h = parseInt(h);
 		var a = w / h;  
 	
 		var neww = Math.floor( fixedheight * a );
