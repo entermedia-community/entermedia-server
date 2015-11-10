@@ -132,13 +132,13 @@ public class imagemagickCreator extends BaseImageCreator {
 			//					autocreated = true;
 			//				}
 			//			}
-			if( input == null && box.getWidth() < 1921 )
+			if( input == null && box.getWidth() < 1025 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1920x1080" + page + ".jpg");
-				if( !input.exists() )
-				{
+				//input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1920x1080" + page + ".jpg");
+				//if( !input.exists() )
+				//{
 					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
-				}
+				//}
 				if( input.length() < 2 )
 				{
 					input = null;
@@ -627,8 +627,15 @@ public class imagemagickCreator extends BaseImageCreator {
 			return result;
 		}
 		//problems
-		log.info("Could not exec: " + execresult.getStandardError() );
-		result.setError(execresult.getStandardError());
+		log.info("Could not exec: " + execresult.getStandardOut() );
+		if( execresult.getReturnValue() == 124)
+		{
+			result.setError("Exec timed out after " + timeout);
+		}
+		else
+		{
+			result.setError(execresult.getStandardOut());
+		}
 		return result;
 	}
 

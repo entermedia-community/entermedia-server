@@ -1332,6 +1332,37 @@
 		</property>		
 	</bean>
 	
+	<bean id="WebTree" class="com.openedit.webui.tree.TreeModule">
+		<property name="pageManager"><ref bean="pageManager"/></property>
+	</bean>
 
+	<bean id="WorkFlow" class="com.openedit.modules.workflow.WorkFlowModule">
+		<property name="workFlow"><ref bean="workFlowBean"/></property>
+	</bean>
+
+	<bean id="workFlowBean" class="com.openedit.modules.workflow.WorkFlow" >
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="userManager"><ref bean="userManager"/></property>
+		<property name="root"><ref bean="root"/></property>
+		<property name="workFlowListeners">
+			<list>
+			</list>
+		</property>
+	</bean>
+	<bean id="HtmlEditor" class="com.openedit.modules.html.HtmlEditorModule">
+	  <property name="welcomeFiles">
+			<list>
+				<value>index.html</value>
+				<value>index.htm</value>
+				<value>index.shtml</value>
+				<value>index.jsp</value>
+				<value>index.php</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="EditModule" class="com.openedit.modules.edit.EditModule" />
+	
+	<bean id="Config" class="com.openedit.modules.settings.ConfigModule"/>
+	<bean id="RevisionEditor" class="com.openedit.modules.revisions.RevisionEditorModule"/>
 
 </beans>

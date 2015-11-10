@@ -6,8 +6,8 @@
   <parameter id="imagemedium1" parameterdata="imagemedium" value="550" >prefwidth</parameter> 
   <parameter id="imagemedium2" parameterdata="imagemedium" value="350" >prefheight</parameter> 
 
-  <parameter id="imagepreview1" parameterdata="imagepreview" value="1920" >prefwidth</parameter> 
-  <parameter id="imagepreview2" parameterdata="imagepreview" value="1080" >prefheight</parameter> 
+  <parameter id="imagepreview1" parameterdata="imagepreview" value="1024" >prefwidth</parameter> 
+  <parameter id="imagepreview2" parameterdata="imagepreview" value="768" >prefheight</parameter> 
 
   <parameter id="imagecrop1" parameterdata="imagecrop" value="110" >prefwidth</parameter> 
   <parameter id="imagecrop2" parameterdata="imagecrop" value="62" >prefheight</parameter> 
