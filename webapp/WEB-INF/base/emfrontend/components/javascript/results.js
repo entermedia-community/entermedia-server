@@ -301,7 +301,7 @@ jQuery(document).ready(function(url,params)
 		}
 	});
 	
-	$(window).scroll(function() 
+	$(window).on('scroll',function() 
 	{
 		checkScroll();
 	});
@@ -336,7 +336,7 @@ var loadingscroll = false;
 
 checkScroll = function()
 {
-		//console.log("checking scroll" + loadingscroll);
+		
 		if( loadingscroll )
 		{
 			return;
@@ -352,9 +352,14 @@ checkScroll = function()
 		}
 		var gallery= $("#resultsdiv");
 		var lastcell = $(".masonry-grid-cell",gallery).last();
+		 if( lastcell.length == 0 )
+		 {
+		 	return;
+		 }
 		 
 	    var page = parseInt(gallery.data("pagenum"));   
 	    var total = parseInt(gallery.data("totalpages"));
+		 console.log("checking scroll" + loadingscroll + " page " + page + " of " + total);
 	    if( total > page)
 	    {
 		   loadingscroll = true; 
@@ -377,6 +382,12 @@ checkScroll = function()
 
 gridResize = function() 
 {
+	
+	var grid = $(".masonry-grid");
+	if( grid.length == 0 )
+	{
+		return;
+	}
 	console.log("resized grid");
 	checkScroll();
 	var fixedheight = 250;
@@ -385,7 +396,7 @@ gridResize = function()
 	var totalwidth = 0;
 	var rownum = 0;
 
-	var totalavailable = $(".masonry-grid").width() - 5;
+	var totalavailable = grid.width() - 5;
 	
 	var row = [];
 	$(".masonry-grid .masonry-grid-cell").each(function()

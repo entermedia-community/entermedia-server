@@ -1,4 +1,4 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-category="$!category.getId()">
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 <div id="emresultscontent" >
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
