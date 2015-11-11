@@ -1380,6 +1380,17 @@ span.glyphicon-triangle-right.overlay-nav {
 
 }
 
+img.mimethumb {
+
+	position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+}
+
 /* PAGINATION */
 
 #emresultscontent #pages {
