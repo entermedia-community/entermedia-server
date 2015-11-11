@@ -1342,6 +1342,44 @@ small {
 
 }
 
+#goleftclick span.glyphicon {
+
+	font-size: 50px;
+
+}
+
+#gorightclick span.glyphicon {
+
+	font-size: 50px;
+
+}
+
+.overlay-margin {
+
+	height: 100%;
+
+}
+
+.overlay-margin span.overlay-nav {
+
+	font-size: 50px;
+	color: rgb(200,200,200);
+
+}
+
+span.glyphicon-triangle-right.overlay-nav {
+
+	float: right;
+
+}
+
+.overlay-nav {
+
+	margin: 30px;
+	margin-top: 400px;
+
+}
+
 /* PAGINATION */
 
 #emresultscontent #pages {
@@ -1445,6 +1483,8 @@ a span.glyphicon {
 
 }
 
+/* THIS SHOULD BE HANDLED BY BOOTSTRAP.CSS
+
 span.glyphicon.glyphicon-triangle-right:before {
 
 	content: "\e250";
@@ -1456,6 +1496,8 @@ span.glyphicon-triangle-left:before {
 	content: "\e251";
 
 }
+
+*/
 
 /* CATEGORIES AGAIN */
 

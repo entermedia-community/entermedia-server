@@ -1,25 +1,24 @@
 ##Use one touch in middle to show all the toolbars and metadata
 ##otherwise just look for swipe events on image or on the sides of video
 
-<div id="detailspanel" >
-
-	<div class="overlay-play largeicon"><span class="glyphicon glyphicon-play"></span></div>
-	
+  <div class="col-xs-2 overlay-margin">
+    <div class="overlay-play largeicon"><span class="glyphicon glyphicon-play"></span></div>
 	<div class="goleftlick" >
+		<span class="glyphicon glyphicon-triangle-left overlay-nav"></span>
 	</div>
+  </div>
 	
-	<div class="playerarea">
+  <div class="col-xs-8 playerarea">
 	#set( $mediadbappid = $mediaarchive.getCatalogSettingValue("mediadbappid") )
 	#if( !$mediadbappid)
 		<p style="color: white;">mediadbappid not defined in datamanager</p>
 	#end
 	#set( $type = $mediaarchive.getMediaRenderType($asset))
 	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
-	</div>
-	
-	<div class="overlay-close largeicon"><span class="glyphicon glyphicon-remove-circle"></span></div>
-	
+  </div>
+  <div class="col-xs-2 overlay-margin">
+    <div class="overlay-close largeicon"><span class="glyphicon glyphicon-remove-circle"></span></div>	
 	<div class="gorightlick" >
+		<span class="glyphicon glyphicon-triangle-right overlay-nav"></span>
 	</div>
-
-</div>
+  </div>

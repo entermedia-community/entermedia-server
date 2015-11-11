@@ -405,8 +405,8 @@ gridResize = function()
 	
 		var neww = Math.floor( fixedheight * a );
 		
-		//TODO: Default the height to comething smart
-		cell.width(neww); 
+		//TODO: Default the height to something smart
+		cell.width(neww);
 		
 		var over = sofarused + neww;
 		if( over > totalavailable )
