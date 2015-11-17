@@ -337,8 +337,25 @@ public class BaseHotFolderManager implements HotFolderManager
 
 			//Save it
 			//TODO: Make a map of existing device ids
-			Set devices = new Set();
-			config.get("devices");
+			Set existingdevices = new HashSet();
+			List devices = config.get("devices");
+				for(Map device: devices)
+{
+	existingdevices.add(device.get("id"));
+}
+
+List allfolders = config.get("folders");
+List folders = new ArrayList(allfolders);
+for(Map folder:allfolders)
+			{
+				String path = folder.get("path");
+				if( path.contains("/" + inCatalogId + "/originals/") )
+{
+	allfolders.remove(folder);
+}	
+				
+			}
+
 			//TODO: Remove all existing folders with that that contains inCatalogId + "/originals"
 			
 			//TODO: Add all the folders and devices needed
