@@ -137,7 +137,13 @@ public class imagemagickCreator extends BaseImageCreator {
 				//input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1920x1080" + page + ".jpg");
 				//if( !input.exists() )
 				//{
-					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+					if (transparent) {
+						
+						input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".png");
+					} else {
+						
+						input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+					}
 				//}
 				if( input.length() < 2 )
 				{
@@ -431,25 +437,7 @@ public class imagemagickCreator extends BaseImageCreator {
 			}
 
 			//now let's crop
-			String gravity = inStructions.get("gravity");
-			if(!"default".equals(gravity))
-			{
-				com.add("-gravity");
-				if( gravity == null )
-				{
-					String thistype = inAsset.getFileFormat();
-					String found = inArchive.getMediaRenderType(thistype);
-					if( "document".equals(found) )
-					{
-						gravity = "NorthEast";
-					}
-				}
-				if( gravity == null )
-				{
-					gravity = "Center";
-				}
-				com.add(gravity);
-			}
+			setValue("gravity", "Center", inStructions, com);
 
 			if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{

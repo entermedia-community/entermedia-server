@@ -9,8 +9,7 @@
     <preset id="imagepreviewfpo" watermark="true" guid="imagepreviewfpo" display="true" outputfile="image1024x768wm.jpg" fileexportformat="${shortfilename}1024x768-fpo.jpg" type="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="06" >Image Large FPO</preset>
     
     <preset id="largedocument" guid="imagepreview" outputfile="image1024x768.jpg"  display="true" fileexportformat="${shortfilename}L.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="04" singlepage="true">Document Preview</preset>
-    <preset id="cropdocument" guid="imagecrop"  outputfile="image110x62cropped.jpg" display="true" fileexportformat="${shortfilename}110x62cropped.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="05"  singlepage="true">Document Crop</preset>
-
+<data id="cropdocument" guid="cropdocument" outputfile="image110x62cropped.jpg" display="true" fileexportformat="${shortfilename}110x62cropped.jpg" type="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="05" singlepage="true" name="Document Crop"/>
     <preset id="mp3audio" guid="mp3audio"  outputfile="audio.mp3"  fileexportformat="${shortfilename}.mp3" type="audio" extension="mp3"  inputtype="audio" onimport="true" ordering="06">Mp3 Audio</preset>
 
 <!--gui= ffmpeg480p or ffmpegpreviewmp4 -->

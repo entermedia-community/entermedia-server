@@ -54,7 +54,7 @@
                         <a href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&currentpreview=$page&hitssessionid=$hitssessionid">
                             #set( $page = $page + 1)
                             <div class="emdropshadow">
-       							<img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/preview.jpg?pagenum=$page" />
+       							<img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${asset.sourcepath}/preview.jpg?pagenum=$page" />
        						</div>	
                             <p><span>$page</span></p>
                         </a>
@@ -96,7 +96,7 @@
 	   <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>
 #end
             #if($canviewcomments)
-            <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitsessionsid" class="comments">$comments.size()<span>&nbsp;</span></a>
+            <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments">$comments.size()<span>&nbsp;</span></a>
             #end
             <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">19<span>&nbsp;</span></a -->
        
