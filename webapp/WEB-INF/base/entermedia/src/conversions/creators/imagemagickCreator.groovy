@@ -462,8 +462,10 @@ public class imagemagickCreator extends BaseImageCreator {
 				com.add("-background");
 				com.add("transparent");
 				com.add("-flatten");
+			} else {
+				setValue("background", null, inStructions, com);
+				setValue("layers", null, inStructions, com);
 			}
-
 
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
@@ -525,6 +527,10 @@ public class imagemagickCreator extends BaseImageCreator {
 			com.add("-background");
 			com.add("transparent");
 			com.add("-flatten");
+		} else {
+			
+			setValue("background", null, inStructions, com);
+			setValue("layers", null, inStructions, com);
 		}
 		//				String colorspace = inStructions.get("colorspace");
 		//				if(colorspace != null){
