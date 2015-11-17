@@ -1,0 +1,5 @@
+
+<catalogss>
+  <catalogs id="syncthingapikey" value="sdfsdfdsf32fd" >SyncThing API Key</catalogs>
+  <catalogs id="syncthingserver" value="127.0.0.1:8340" >SyncThing Server</catalogs>
+</catalogss>

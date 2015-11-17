@@ -119,6 +119,12 @@
 	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
+	
+	<lang:groovy  id="hotFolderManager" script-source="model/importer/BaseHotFolderManager.groovy" lazy-init="default">
+			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
+			<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
+			<lang:property name="webServer"><ref bean="WebServer" /></lang:property>
+	</lang:groovy>`
 <!-- 
 	<bean  id="pushManager" class="model.push.BasePushManager" >
 			<property name="searcherManager"><ref bean="searcherManager" /></property>

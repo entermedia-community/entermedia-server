@@ -4,7 +4,7 @@
 		#foreach( $collection in $usercollections )
 		#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
 		#if( $collectionassets.size() > 0 )
-		$!collectionassets.setHitsPerPage(6)
+		$!collectionassets.setHitsPerPage(5)
 			<tr >
 				<td align=left style="padding:20px 0 0px 0px;" >
 				    <div class="btn-toolbar">

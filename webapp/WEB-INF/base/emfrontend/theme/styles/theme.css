@@ -3690,7 +3690,6 @@ body #emcontainer .emasseteditorarea {
     text-align: left;
     border-left: 1px dashed #E2EFF4;
     padding: 0 10px;
-    height: 68px;
 }
 #emcontainer #emselectable #main-results-table tr td:first-child, #emcontainer #emselectable #main-results-table tr td:nth-child(2) {
     border-left: none;

@@ -435,4 +435,7 @@ div.masonry-grid-cell span.emdropshadow img
     margin:auto;
 }
 
+#emcontainer #emselectable  #main-results-table .tableresults tr td {
+    height: 68px;
 
+}

@@ -661,6 +661,7 @@ public class BaseOrderManager implements OrderManager {
 	 */
 	public void updateStatus(MediaArchive archive, Order inOrder)
 	{
+		
 		//look up all the tasks
 		//if all done then save order status
 		Lock lock = archive.getLockManager().lockIfPossible("orders" + inOrder.getId(), "BaseOrderManager");
@@ -809,6 +810,11 @@ public class BaseOrderManager implements OrderManager {
 		{
 			Data hit = (Data) iterator.next();
 			Order order = loadOrder(archive.getCatalogId(), hit.getId());
+			if( order == null)
+			{
+				log.error("Invalid order: ${archive.getCatalogId()}" + hit.getId());
+				continue;
+			}
 			updateStatus(archive, order);
 		}
 	}

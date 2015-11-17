@@ -1,15 +1,28 @@
 
 <properties>
   <property id="id" index="true" stored="true">Id</property>
-  <property id="name" editable="true" index="true" stored="true">Name</property>
-  <property id="subfolder" editable="true" index="true" stored="true">Sub Folder Name</property>
+  <property id="name" editable="true" index="true" stored="true">Nick Name</property>
+  <property id="hotfoldertype" editable="true" index="true" type="list" stored="true">Hot Folder Type</property>
+   
+<!-- Syncthing -->  
+  <property id="deviceid" editable="true" index="true" stored="true">Device ID</property>
+  <property id="folderid" editable="true" index="true" stored="true">Remote Folder ID</property>
+  <property id="categoryname" editable="true" index="true" stored="true">Category Folder</property>
+  
+<!-- Local Folder -->    
   <property id="externalpath" editable="true" index="true" stored="true">External Path</property>
+
+<!-- Amazon S3 -->    
+  <property id="bucket" editable="true" index="true" stored="true">Bucket</property>
+  <property id="accesskey" editable="true" index="true" stored="true">Access Key</property>
+  <property id="secretkey" editable="true" index="true" stored="true">Secret Key</property>
+  
+  
   <property id="includes" editable="true" index="true" stored="true">Includes</property>
   <property id="excludes" editable="true" index="true" stored="true">Excludes</property>
   <property id="attachmenttrigger" editable="true" index="true" stored="true">Attachment Trigger</property>
   <property id="enabled" editable="true" index="true" stored="true" type="boolean">Enabled</property>
   <property id="lastscanstart" index="true" stored="true" type="time">Last Scan Start</property>
-  <property id="versioncontrol" editable="true" index="true" stored="true" type="boolean">Version Control</property>
 
 <!-- Move to system settings -->
 <!--    

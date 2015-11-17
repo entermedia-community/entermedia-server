@@ -1,22 +1,15 @@
 package importing;
 
 import org.openedit.entermedia.MediaArchive 
-import org.openedit.*;
+import org.openedit.*
+import org.openedit.entermedia.MediaArchive
+import org.openedit.entermedia.creator.*
+import org.openedit.entermedia.scanner.HotFolderManager
+import org.openedit.repository.ContentItem
 
-import com.openedit.hittracker.*;
-import com.openedit.page.Page
+import com.openedit.hittracker.*
 import com.openedit.util.Exec
 import com.openedit.util.ExecResult
-
-import org.openedit.entermedia.creator.*;
-
-import java.text.Normalizer.Form;
-import java.util.Iterator;
-
-import org.openedit.entermedia.MediaArchive;
-
-import org.openedit.entermedia.scanner.HotFolderManager
-import org.openedit.repository.ContentItem;
 
 public void init()
 {
