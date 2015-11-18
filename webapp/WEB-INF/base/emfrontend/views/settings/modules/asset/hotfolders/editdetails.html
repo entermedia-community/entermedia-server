@@ -10,7 +10,7 @@
 <select name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=${data.id}&type=" data-targetdiv="editdetails">
 	<option value="mount" #if( $type == "mount") selected #end>Local Files</option>
 ##	<option value="version" >Version Control</option>
-##	<option value="s3">Amazon S3 Drive</option>
+	<option value="s3" #if( $type == "s3") selected #end>Amazon S3 Drive</option>
 	<option value="syncthing" #if( $type == "syncthing") selected #end>SyncThing</option>
 </select>
 
@@ -20,6 +20,23 @@
 <input type="hidden" name="field" value="deviceid" />
 <input class="field" name="deviceid.value" value="$!data.deviceid" />
 <div class="note">[[Your client Syncthing Device ID]] </div> 
+
+#elseif ($type == "s3")
+
+<label>[[Bucket]]</label>
+<input type="hidden" name="field" value="bucket" />
+<input class="field" name="bucket.value" value="$!data.bucket" />
+<div class="note">[[Your Amazon S3 Bucket]] </div>
+
+<label>[[Access Key]]</label>
+<input type="hidden" name="field" value="accesskey" />
+<input class="field" name="accesskey.value" value="$!data.accesskey" />
+<div class="note">[[Your Amazon Access Key]] </div> 
+
+<label>[[Secret Key]]</label>
+<input type="hidden" name="field" value="secretkey" />
+<input class="field" name="secretkey.value" value="$!data.secretkey" />
+<div class="note">[[Your Amazon Secret Key]] </div>
 
 #else
 
