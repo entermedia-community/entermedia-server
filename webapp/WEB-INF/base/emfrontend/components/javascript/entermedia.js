@@ -172,6 +172,11 @@ runajaxonthis = function(inlink,e)
 		return false;
 	}
 	
+	if( inlink.hasClass("activelistener") )
+	{
+		jQuery(".activelistener").removeClass("active");
+		inlink.addClass("active");
+	}
 	var nextpage= inlink.attr('href');
 	var targetDiv = inlink.attr("targetdiv");
 	

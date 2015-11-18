@@ -16,6 +16,7 @@ public class ProjectModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(ProjectModule.class);
 	
+	
 	public void loadCollections(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");

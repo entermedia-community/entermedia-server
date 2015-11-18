@@ -1,5 +1,24 @@
-<div id="collectionfeed" >
-		<table class="collheader" style="margin:0 20px 0 20px;">
+<div id="collectionfeed"  >
+
+		<form name="librarychange" id="librarychange"  class="ajaxform" targetdiv="collectionfeed"  method="post"  action="$home$apphome/views/search/collections/index.html" > 
+		<div style="padding:20px 0 0 20px;"  >
+			<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  
+				data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" data-sortby="name" onChange='$("#librarychange").submit()' />
+		</div>	
+		
+		<input name="profilepreference"    value="last_selected_library" type="hidden" />
+		<input name="oemaxlevel"    value="1" type="hidden" />
+		<input name="profilepreference.value"  id="list-sidebarlibraryvalue"   value="$!selectedlibrary.getId()" type="hidden" />
+		</form>
+#if( $usercollections.size() == 0 )
+
+<div style="margin:100px">
+No collections on library
+</div>
+
+#end
+
+		<table class="collheader " style="margin:0 20px 0 20px;">
 		#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
 		#foreach( $collection in $usercollections )
 		#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
@@ -36,4 +55,5 @@
 			#end
 		#end
 		</table>
+		
 </div> 
