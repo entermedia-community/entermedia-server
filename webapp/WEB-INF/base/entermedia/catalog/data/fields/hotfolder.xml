@@ -6,8 +6,7 @@
    
 <!-- Syncthing -->  
   <property id="deviceid" editable="true" index="true" stored="true">Device ID</property>
-  <property id="folderid" editable="true" index="true" stored="true">Remote Folder ID</property>
-  <property id="categoryname" editable="true" index="true" stored="true">Category Folder</property>
+  <property id="foldername" editable="true" index="true" stored="true">Top Level Folder</property>
   
 <!-- Local Folder -->    
   <property id="externalpath" editable="true" index="true" stored="true">External Path</property>

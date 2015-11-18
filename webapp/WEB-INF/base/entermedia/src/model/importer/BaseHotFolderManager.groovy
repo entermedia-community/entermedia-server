@@ -10,6 +10,7 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
+import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.openedit.Data
@@ -24,9 +25,12 @@ import org.openedit.repository.filesystem.FileRepository
 import org.openedit.repository.filesystem.XmlVersionRepository
 import org.openedit.util.DateStorageUtil
 
+import com.openedit.OpenEditException
 import com.openedit.WebServer
+import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 import com.openedit.util.EmStringUtils
+import com.openedit.util.PathUtilities
 
 public class BaseHotFolderManager implements HotFolderManager
 {
@@ -95,7 +99,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		{
 			Data folder = (Data) iterator.next();
 			String external = folder.get("externalpath");;
-			String categoryname =  folder.get("categoryname");
+			String toplevelfolder =  folder.get("toplevelfolder");
 			String type = folder.get("hotfoldertype");
 			
 			if(type == null || type  == "mount" )
@@ -104,19 +108,8 @@ public class BaseHotFolderManager implements HotFolderManager
 				
 			}
 			
-			//save subfolder with the value of the end of externalpath
-//			if( external != null )
-//			{
-//				String epath = external.trim();
-//				epath = epath.replace('\\', '/');
-//				if( epath.endsWith("/"))
-//				{
-//					epath = epath.substring(0,epath.length() - 1);
-//				}
-//				folderpath = PathUtilities.extractDirectoryName(epath + "/junk.html");
-//			}
 			
-			String fullpath = originalpath + "/" + categoryname;
+			String fullpath = originalpath + "/" + toplevelfolder;
 			//String versioncontrol = folder.get("versioncontrol");
 			Repository created = createRepo(type);
 			created.setPath(fullpath);
@@ -225,20 +218,34 @@ public class BaseHotFolderManager implements HotFolderManager
 	@Override
 	public void saveFolder(String inCatalogId, Data inNewrow)
 	{
-		//String categoryfolder = inNewrow.get("categoryfolder");
 		String type = inNewrow.get("hotfoldertype");
 		if( type == "syncthing")
 		{
-			//getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/originals/" + categoryfolder );
-			//inNewrow.setProperty("externalpath",
+			String toplevelfolder = inNewrow.get("toplevelfolder");
+			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
+			inNewrow.setProperty("externalpath",toplevel.getContentItem().getAbsolutePath() );
+			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			updateSyncThingFolders(inCatalogId);
 		}
 		else if( type == "mount")
 		{
-			
-		}
+		String toplevelfolder = inNewrow.get("toplevelfolder");
 		
-		getFolderSearcher(inCatalogId).saveData(inNewrow, null);		
+		//save subfolder with the value of the end of externalpath
+		if( toplevelfolder == null )
+		{
+			String epath =  type = inNewrow.get("externalpath").trim();
+			epath = epath.replace('\\', '/');
+			if( epath.endsWith("/"))
+			{
+				epath = epath.substring(0,epath.length() - 1);
+			}
+			toplevelfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
+			inNewrow.setProperty("toplevelfolder",toplevelfolder);
+			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
+		}
+		}		
+				
 	}	
 
 	/* (non-Javadoc)
@@ -325,55 +332,115 @@ public class BaseHotFolderManager implements HotFolderManager
 		Collection hotfolders = loadFolders(inCatalogId);
 		
 		//TODO: get login/key information from system/systemsettings
-		Data server = getSearcherManager().getData("system","systemsettings","syncthingserver");
-		String postUrl = "http://" + server.get("value") + "/rest/sdfdsf";
+		Data server = getSearcherManager().getData("system","systemsettings","syncthing_server_address");
+		if( server == null)
+		{
+			return;
+		}
+		String serverapi = getSearcherManager().getData("system","systemsettings","syncthing_server_apikey").get("value");
+		String serverdeviceid = getSearcherManager().getData("system","systemsettings","syncthing_server_deviceid").get("value");
+		
+		String postUrl = "http://" + server.get("value") + "/rest/system/config";
 		try
 		{
 			CloseableHttpClient httpclient = HttpClients.createDefault();
 			HttpGet httpGet = new HttpGet(postUrl);
+			httpGet.addHeader("X-API-Key", serverapi);
 			CloseableHttpResponse response1 = httpclient.execute(httpGet);
-			String returned = EntityUtils.toString(response1);
+			if( response1.getStatusLine().getStatusCode() != 200 )
+			{
+				throw new OpenEditException("SyncThing Server error " + response1.getStatusLine().getStatusCode());
+			}
+			String returned = EntityUtils.toString(response1.getEntity());
 			JSONObject config = new JSONParser().parse(returned);
 
 			//Save it
 			//TODO: Make a map of existing device ids
 			Set existingdevices = new HashSet();
 			List devices = config.get("devices");
-				for(Map device: devices)
-{
-	existingdevices.add(device.get("id"));
-}
-
-List allfolders = config.get("folders");
-List folders = new ArrayList(allfolders);
-for(Map folder:allfolders)
+			for(Map device: devices)
+			{
+				existingdevices.add(device.get("id"));
+			}
+			
+			List allfolders = config.get("folders");
+			List folders = new ArrayList(allfolders);
+			for(Map folder:folders)
 			{
 				String path = folder.get("path");
 				if( path.contains("/" + inCatalogId + "/originals/") )
-{
-	allfolders.remove(folder);
-}	
-				
+				{
+					allfolders.remove(folder);
+				}								
 			}
-
-			//TODO: Remove all existing folders with that that contains inCatalogId + "/originals"
-			
 			//TODO: Add all the folders and devices needed
 			for(Data folder:hotfolders)
 			{
-				//TODO: add back in the device and the folder
-				
+				String type = folder.get("hotfoldertype");
+				if( type != "syncthing")
+				{
+					continue;
+				}
+				//Add self if not already in there
+				String clientdeviceid = folder.get("deviceid");
+				String toplevelfolder = folder.get("toplevelfolder");
+				if( !existingdevices.contains(clientdeviceid))
+				{
+					def newdevice = new JSONObject()
+					newdevice.put("addresses", [ "dynamic" ]  )
+					newdevice.put("certName" , "")
+					newdevice.put("compression" , "metadata")
+					newdevice.put("deviceID", clientdeviceid )
+					newdevice.put("introducer", false )
+					newdevice.put("name", "EnterMediaDB/" + inCatalogId + "/" + clientdeviceid.substring(0,7) )
+					devices.add(newdevice)
+				}
+				//TODO: add the folder
+				JSONObject newfolder = new JSONObject()
+				//dev json = new JsonBuilder()
+				newfolder.put("autoNormalize", true)
+				newfolder.put("copiers", 0)
+	            newfolder.put("hashers", 0)
+	            newfolder.put("id", "EnterMediaDB/" + inCatalogId + "/" + toplevelfolder)
+	            newfolder.put("ignoreDelete", false)
+	            newfolder.put("ignorePerms", false)
+	            newfolder.put("invalid","")
+	            newfolder.put("maxConflicts", -1)
+	            newfolder.put("minDiskFreePct", 1)
+	            newfolder.put("order", "random")
+	            newfolder.put("path", folder.get("externalpath"))
+	            newfolder.put("pullerPauseS", 0)
+	            newfolder.put("pullerSleepS", 0)
+	            newfolder.put("pullers", 0)
+	            newfolder.put("readOnly", false)
+	            newfolder.put("rescanIntervalS", 60)
+	            newfolder.put("scanProgressIntervalS", 0)
+				newfolder.devices = new JSONArray();
+				newfolder.devices.add([deviceID: serverdeviceid])
+				newfolder.devices.add([deviceID: clientdeviceid])
+				newfolder.versioning = [ params: new JSONObject(), type: ""]
+				allfolders.add(newfolder)
 			}
 	
 			HttpPost post = new HttpPost(postUrl);
-			StringEntity  postingString =new StringEntity(config.toJSONString());//convert your pojo to   json
-			post.setEntity(postingString);
+			post.setHeader("X-API-Key", serverapi);
 			post.setHeader("Content-type", "application/json");
+			String json = config.toJSONString();
+			StringEntity  postingString = new StringEntity(json);//convert your pojo to   json
+			post.setEntity(postingString);
+			
 			HttpResponse  response = httpclient.execute(post);
+			if( response.getStatusLine().getStatusCode() != 200 )
+			{
+				log.info(json);
+				throw new OpenEditException("SyncThing Server post error " + response.getStatusLine().getStatusCode());
+			}
+
 		}
 		catch( Throwable ex)
 		{
 			log.error(ex);
+			throw new OpenEditException(ex);
 		}
 		
 	

@@ -1,0 +1,33 @@
+<div id="editdetails" >
+
+<label>[[Hot Folder Type]]</label>
+<input type="hidden" name="field" value="hotfoldertype" />
+
+#set( $type = $context.getRequestParameter("type"))
+#if( !$type )
+ #set( $type = $data.get("hotfoldertype") )
+#end
+<select name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=${data.id}&type=" data-targetdiv="editdetails">
+	<option value="mount" #if( $type == "mount") selected #end>Local Files</option>
+##	<option value="version" >Version Control</option>
+##	<option value="s3">Amazon S3 Drive</option>
+	<option value="syncthing" #if( $type == "syncthing") selected #end>SyncThing</option>
+</select>
+
+#if( $type == "syncthing" )
+
+<label>[[SyncThing Device ID]]</label>
+<input type="hidden" name="field" value="deviceid" />
+<input class="field" name="deviceid.value" value="$!data.deviceid" />
+<div class="note">[[Your client Syncthing Device ID]] </div> 
+
+#else
+
+<label>[[External Path]]</label>
+<input type="hidden" name="field" value="externalpath" />
+<input class="field" name="externalpath.value" value="$!data.externalpath" />
+<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
+
+#end
+
+</div>

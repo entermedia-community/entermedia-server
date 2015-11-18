@@ -105,7 +105,22 @@ uiload = function() {
 							
 			}
 		);
-	
+		jQuery("select.ajax").livequery('change',
+			function(e) 
+			{
+				var inlink = jQuery(this);
+				var nextpage= inlink.data('href');
+				nextpage = nextpage + inlink.val();
+				var targetDiv = inlink.data("targetdiv");
+				targetDiv = targetDiv.replace(/\//g, "\\/");
+				jQuery.get(nextpage, {}, function(data) 
+				{
+					var	cell = jQuery("#" + targetDiv);
+					cell.replaceWith(data);
+					$(window).trigger( "resize" );
+				});	
+			}
+		);
 	
 	jQuery("a.toggle-visible").livequery('click',
 			function(e) 

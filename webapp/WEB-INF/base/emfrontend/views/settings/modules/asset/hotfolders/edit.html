@@ -11,36 +11,17 @@
 #end
 ##TODO: Use a detail editor here
 
-<label>[[Hot Folder Type]]</label>
-<select name="foldertype.value" >
-	<option value="mount">Local Files</option>
-##	<option value="version">Version Control</option>
-##	<option value="s3">Amazon S3 Drive</option>
-	<option value="syncthing">SyncThing</option>
-</select>
+<label>[[Nickname]]</label>
+<input type="hidden" name="field" value="name" />
+<input class="field" name="name.value" value="$!data.name" />
+<div class="note">[[Required: Nickname of this hot folder]] </div> 
 
-<label>[[Device ID]]</label>
-<input type="hidden" name="field" value="deviceid" />
-<input class="field" name="deviceid.value" value="$!data.deviceid" />
-<div class="note">[[Optional: Syncthing Device ID]] </div> 
+<label>[[Top Level Folder]]</label>
+<input type="hidden" name="field" value="toplevelfolder" />
+<input class="field" name="toplevelfolder.value" value="$!data.toplevelfolder" />
+<div class="note">[[Required: Top-level folder used in category tree]] </div> 
 
-<label>[[Folder ID]]</label>
-<input type="hidden" name="field" value="folderid" />
-<input class="field" name="folderid.value" value="$!data.folderid" />
-<div class="note">[[Optional: Syncthing Folder ID]] </div> 
-
-<label>[[Category Name]]</label>
-<input type="hidden" name="field" value="categoryname" />
-<input class="field" name="categoryname.value" value="$!data.categoryname" />
-<div class="note">[[Required: Top-level folder name used in category tree]] </div> 
-
-
-<label>[[External Path]]</label>
-<input type="hidden" name="field" value="externalpath" />
-<input class="field" name="externalpath.value" value="$!data.externalpath" />
-<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
-
-
+$pages.include("./editdetails.html")
 
 <label>[[Include Only Extensions]]</label>
 <input type="hidden" name="field" value="includes" />

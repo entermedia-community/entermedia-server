@@ -1,5 +1,5 @@
-
-<catalogss>
-  <catalogs id="syncthingapikey" value="sdfsdfdsf32fd" >SyncThing API Key</catalogs>
-  <catalogs id="syncthingserver" value="127.0.0.1:8340" >SyncThing Server</catalogs>
-</catalogss>
+<properties>
+  <property id="syncthing_server_apikey" value="sdfsdfdsf32fd" >SyncThing API Key</property>
+  <property id="syncthing_server_address" value="camarena.entermediadb.net:8384" >SyncThing Server</property>
+  <property id="syncthing_server_deviceid" value="xxxx-xxxx" >SyncThing Server Device ID</property>
+</properties>
