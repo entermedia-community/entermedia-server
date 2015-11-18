@@ -5,7 +5,6 @@
     #set($thumbsize = "crop")
 #end
 $context.putPageValue("thumbsize",$thumbsize)
-$hit.importstatus
     #if( $hit.importstatus && $hit.importstatus == "uploading" )
     <div class="smallthumb emdropshadow proxythumb">
         <div class="loadingborder">
