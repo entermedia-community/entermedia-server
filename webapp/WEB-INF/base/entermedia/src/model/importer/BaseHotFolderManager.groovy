@@ -441,9 +441,9 @@ public class BaseHotFolderManager implements HotFolderManager
 			HttpPost restartPost = new HttpPost(restartUrl);
 			restartPost.setHeader("X-API-Key", serverapi);
 			HttpResponse restartResponse = httpclient.execute(restartPost);
+			log.info("sending restart order to Syncthing");
 			if( restartResponse.getStatusLine().getStatusCode() != 200 )
 			{
-				log.info("sending restart order to Syncthing");
 				throw new OpenEditException("SyncThing Server restart error " + restartResponse.getStatusLine().getStatusCode());
 			}
 			
