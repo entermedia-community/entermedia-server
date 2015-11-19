@@ -204,11 +204,12 @@ public class BaseHotFolderManager implements HotFolderManager
 	public void deleteFolder(String inCatalogId, Data inExisting)
 	{
 		String type = inExisting.get("hotfoldertype");
+		getFolderSearcher(inCatalogId).delete(inExisting, null);
 		if( type == "syncthing")
 		{
 			updateSyncThingFolders(inCatalogId);
 		}
-		getFolderSearcher(inCatalogId).delete(inExisting, null);
+		
 	}
 
 
@@ -341,7 +342,6 @@ public class BaseHotFolderManager implements HotFolderManager
 		String serverdeviceid = getSearcherManager().getData("system","systemsettings","syncthing_server_deviceid").get("value");
 		
 		String postUrl = "http://" + server.get("value") + "/rest/system/config";
-		String restartUrl = "http://" + server.get("value") + "/rest/system/restart";
 		
 		try
 		{
