@@ -116,7 +116,7 @@ jQuery(document).ready(function(url,params)
 
 	overlayResize = function()
 	{
-		var img = $("#main-media");
+		var img = $("#hiddenoverlay #main-media");
 		var w = img.data("width");
 		if(!isNaN(w) && w != "")
 		{
@@ -157,6 +157,10 @@ jQuery(document).ready(function(url,params)
 				overlayResize(); //TODO: Add this to the shared
 	});
 	
+	$.fn.exists = function () {
+   		 return this.length !== 0;
+	}
+	
 	getCurrentAssetId = function()
 	{
 		var mainmedia = $("#main-media");
@@ -177,7 +181,7 @@ jQuery(document).ready(function(url,params)
 	getOverlay = function()
 	{
 		var hidden = $("#hiddenoverlay");
-		if( hidden.length == 0 )
+		if( hidden.length )
 		{
 			$('body').append('<div id="hiddenoverlay"></div>');
 			hidden = $("#hiddenoverlay");
