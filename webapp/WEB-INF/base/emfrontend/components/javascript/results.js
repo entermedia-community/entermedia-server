@@ -157,10 +157,6 @@ jQuery(document).ready(function(url,params)
 				overlayResize(); //TODO: Add this to the shared
 	});
 	
-	$.fn.exists = function () {
-   		 return this.length !== 0;
-	}
-	
 	getCurrentAssetId = function()
 	{
 		var mainmedia = $("#main-media");
@@ -181,7 +177,7 @@ jQuery(document).ready(function(url,params)
 	getOverlay = function()
 	{
 		var hidden = $("#hiddenoverlay");
-		if( !hidden.exists() )
+		if( hidden.length == 0 )
 		{
 			$('body').append('<div id="hiddenoverlay"></div>');
 			hidden = $("#hiddenoverlay");
