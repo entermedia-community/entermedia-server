@@ -341,6 +341,8 @@ public class BaseHotFolderManager implements HotFolderManager
 		String serverdeviceid = getSearcherManager().getData("system","systemsettings","syncthing_server_deviceid").get("value");
 		
 		String postUrl = "http://" + server.get("value") + "/rest/system/config";
+		String restartUrl = "http://" + server.get("value") + "/rest/system/restart";
+		
 		try
 		{
 			CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -436,6 +438,14 @@ public class BaseHotFolderManager implements HotFolderManager
 				throw new OpenEditException("SyncThing Server post error " + response.getStatusLine().getStatusCode());
 			}
 
+			HttpPost restartPost = new HttpPost(restartUrl);
+			restartPost.setHeader("X-API-Key", serverapi);
+			HttpResponse restartResponse = httpclient.execute(restartPost);
+			if( restartResponse.getStatusLine().getStatusCode() != 200 )
+			{
+				throw new OpenEditException("SyncThing Server restart error " + restartResponse.getStatusLine().getStatusCode());
+			}
+			
 		}
 		catch( Throwable ex)
 		{
