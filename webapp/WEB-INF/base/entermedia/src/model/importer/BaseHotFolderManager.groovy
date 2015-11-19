@@ -186,7 +186,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		for (Iterator iterator = loadFolders(inCatalogId).iterator(); iterator.hasNext();)
 		{
 			Data folder = (Data) iterator.next();
-			String subfolder = folder.get("subfolder");
+			String subfolder = folder.get("foldername");
 			if(inFolder.equals(subfolder) )
 			{
 				return folder;
@@ -256,7 +256,7 @@ public class BaseHotFolderManager implements HotFolderManager
 	{
 		inFolder = getFolderSearcher(inArchive.getCatalogId()).loadData(inFolder);
 		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
-		String name = inFolder.get("subfolder");
+		String name = inFolder.get("foldername");
 		String path = base + "/" + name;
 
 //		Page local = getPageManager().getPage(path + "/");
