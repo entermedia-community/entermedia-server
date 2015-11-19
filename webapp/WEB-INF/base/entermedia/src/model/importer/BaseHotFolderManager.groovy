@@ -443,6 +443,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			HttpResponse restartResponse = httpclient.execute(restartPost);
 			if( restartResponse.getStatusLine().getStatusCode() != 200 )
 			{
+				log.info("sending restart order to Syncthing");
 				throw new OpenEditException("SyncThing Server restart error " + restartResponse.getStatusLine().getStatusCode());
 			}
 			
