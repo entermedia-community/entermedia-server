@@ -99,7 +99,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		{
 			Data folder = (Data) iterator.next();
 			String external = folder.get("externalpath");;
-			String toplevelfolder =  folder.get("toplevelfolder");
+			String toplevelfolder =  folder.get("subfolder");
 			String type = folder.get("hotfoldertype");
 			
 			if(type == null || type  == "mount" )
@@ -186,7 +186,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		for (Iterator iterator = loadFolders(inCatalogId).iterator(); iterator.hasNext();)
 		{
 			Data folder = (Data) iterator.next();
-			String subfolder = folder.get("foldername");
+			String subfolder = folder.get("subfolder");
 			if(inFolder.equals(subfolder) )
 			{
 				return folder;
@@ -221,7 +221,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		String type = inNewrow.get("hotfoldertype");
 		if( type == "syncthing")
 		{
-			String toplevelfolder = inNewrow.get("toplevelfolder");
+			String toplevelfolder = inNewrow.get("subfolder");
 			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
 			inNewrow.setProperty("externalpath",toplevel.getContentItem().getAbsolutePath() );
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
@@ -229,7 +229,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		}
 		else if( type == "mount")
 		{
-		String toplevelfolder = inNewrow.get("toplevelfolder");
+		String toplevelfolder = inNewrow.get("subfolder");
 		
 		//save subfolder with the value of the end of externalpath
 		if( toplevelfolder == null )
@@ -241,7 +241,7 @@ public class BaseHotFolderManager implements HotFolderManager
 				epath = epath.substring(0,epath.length() - 1);
 			}
 			toplevelfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
-			inNewrow.setProperty("toplevelfolder",toplevelfolder);
+			inNewrow.setProperty("subfolder",toplevelfolder);
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 		}
 		}		
@@ -256,7 +256,7 @@ public class BaseHotFolderManager implements HotFolderManager
 	{
 		inFolder = getFolderSearcher(inArchive.getCatalogId()).loadData(inFolder);
 		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
-		String name = inFolder.get("foldername");
+		String name = inFolder.get("subfolder");
 		String path = base + "/" + name;
 
 //		Page local = getPageManager().getPage(path + "/");
@@ -385,7 +385,7 @@ public class BaseHotFolderManager implements HotFolderManager
 				}
 				//Add self if not already in there
 				String clientdeviceid = folder.get("deviceid");
-				String toplevelfolder = folder.get("toplevelfolder");
+				String toplevelfolder = folder.get("subfolder");
 				if( !existingdevices.contains(clientdeviceid))
 				{
 					def newdevice = new JSONObject()

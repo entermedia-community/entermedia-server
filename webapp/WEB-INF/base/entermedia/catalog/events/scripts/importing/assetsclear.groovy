@@ -24,7 +24,7 @@ public void init()
 	{
 		Data folder = (Data)iterator.next();
 		String base = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
-		String name = folder.get("toplevelfolder");
+		String name = folder.get("subfolder");
 		String path = base + "/" + name ;
 		List paths = pageManager.getChildrenPaths(path);
 		if( paths.size() == 0)
