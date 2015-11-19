@@ -437,15 +437,6 @@ public class BaseHotFolderManager implements HotFolderManager
 				log.info(json);
 				throw new OpenEditException("SyncThing Server post error " + response.getStatusLine().getStatusCode());
 			}
-
-			HttpPost restartPost = new HttpPost(restartUrl);
-			restartPost.setHeader("X-API-Key", serverapi);
-			HttpResponse restartResponse = httpclient.execute(restartPost);
-			log.info("sending restart order to Syncthing");
-			if( restartResponse.getStatusLine().getStatusCode() != 200 )
-			{
-				throw new OpenEditException("SyncThing Server restart error " + restartResponse.getStatusLine().getStatusCode());
-			}
 			
 		}
 		catch( Throwable ex)
