@@ -1370,7 +1370,6 @@ small {
 span.glyphicon-triangle-right.overlay-nav {
 
 	float: right;
-
 }
 
 .overlay-nav {
@@ -1382,12 +1381,8 @@ span.glyphicon-triangle-right.overlay-nav {
 
 #emthumbholder img.mimethumb {
 
-	position: absolute;
     margin: auto;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  
 
 }
 
@@ -1493,22 +1488,6 @@ a span.glyphicon {
     color: #595959;
 
 }
-
-/* THIS SHOULD BE HANDLED BY BOOTSTRAP.CSS
-
-span.glyphicon.glyphicon-triangle-right:before {
-
-	content: "\e250";
-
-}
-
-span.glyphicon-triangle-left:before {
-
-	content: "\e251";
-
-}
-
-*/
 
 /* CATEGORIES AGAIN */
 

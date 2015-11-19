@@ -165,8 +165,6 @@ jQuery(document).ready(function(url,params)
 	{
 		var mainmedia = $("#main-media");
 		return mainmedia.data("assetid");
-		
-		
 	}
 	showOverlay = function(assetid)
 	{
@@ -242,7 +240,39 @@ jQuery(document).ready(function(url,params)
 		return hidden;
 		
 	}
+	jQuery('div.gorightlick .glyphicon-triangle-left').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var assetid = getCurrentAssetId();
+    	var div = $("#clickid"  + assetid );
+    	var link = div.parent(".masonry-grid-cell").previous(".masonry-grid-cell");
+    	if( link.length == 0 )
+    	{
+	    	 getOverlay().hide();
+	    }
+	    else
+	    { 
+    		var id = link.data("assetid");
+    		showOverlay(id);
+    	}	
+	});
 	
+	jQuery('div.gorightlick .glyphicon-triangle-right').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var assetid = getCurrentAssetId();
+    	var div = $("#clickid"  + assetid );
+    	var link = div.parent(".masonry-grid-cell").next(".masonry-grid-cell");
+    	if( link.length == 0 )
+    	{
+	    	 getOverlay().hide();
+	    }
+	    else
+	    { 
+	  		var id = link.data("assetid");
+    		showOverlay(id);
+    	}	
+	});
 	jQuery('div.masonry-grid a.playerclink').livequery('click',function(e)
 	{
 		e.preventDefault();

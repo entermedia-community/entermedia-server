@@ -360,15 +360,15 @@ public class BaseHotFolderManager implements HotFolderManager
 			List devices = config.get("devices");
 			for(Map device: devices)
 			{
-				existingdevices.add(device.get("id"));
+				existingdevices.add(device.get("deviceID"));
 			}
 			
 			List allfolders = config.get("folders");
 			List folders = new ArrayList(allfolders);
 			for(Map folder:folders)
 			{
-				String path = folder.get("path");
-				if( path.contains("/" + inCatalogId + "/originals/") )
+				String folderid = folder.get("id");
+				if( folderid.startsWith("EnterMediaDB/" + inCatalogId + "/") )
 				{
 					allfolders.remove(folder);
 				}								
@@ -387,10 +387,10 @@ public class BaseHotFolderManager implements HotFolderManager
 				if( !existingdevices.contains(clientdeviceid))
 				{
 					def newdevice = new JSONObject()
+					newdevice.put("deviceID", clientdeviceid )
 					newdevice.put("addresses", [ "dynamic" ]  )
 					newdevice.put("certName" , "")
 					newdevice.put("compression" , "metadata")
-					newdevice.put("deviceID", clientdeviceid )
 					newdevice.put("introducer", false )
 					newdevice.put("name", "EnterMediaDB/" + inCatalogId + "/" + clientdeviceid.substring(0,7) )
 					devices.add(newdevice)

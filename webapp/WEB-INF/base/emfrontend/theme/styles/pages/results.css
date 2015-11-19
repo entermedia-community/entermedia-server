@@ -429,6 +429,16 @@ div.masonry-grid-cell span.emdropshadow img
 	z-index: 10001;
 }
 
+span.glyphicon-triangle-right.overlay-nav {
+
+	cursor:pointer
+}
+
+span.glyphicon-triangle-left.overlay-nav {
+
+	cursor:pointer
+}
+
 #main-media
 {
 	display:block;
