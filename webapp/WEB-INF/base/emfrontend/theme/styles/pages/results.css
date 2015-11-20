@@ -107,6 +107,31 @@ span.emdropshadow {
 .playerarea a.imageplayer {
     flex: 1;
 }
+
+
+.playerarea .player
+{
+	height:100%;
+	width:100%;
+	background-size: 100% auto;
+}
+
+div#hiddenoverlay .playerarea {
+
+	float: left;
+	width: 80%;
+
+}
+
+
+div#hiddenoverlay .overlay-margin {
+
+	width: 100px;
+	position: relative;
+	float: left;
+
+}
+
 div.masonry-grid-cell span.emdropshadow 
 {
 	display: inline;
@@ -402,12 +427,6 @@ div.masonry-grid-cell span.emdropshadow img
 	
 }
 
-.playerarea .player
-{
-	height:100%;
-	width:100%;
-	background-size: 100% auto;
-}
 
 .overlay-play.largeicon
 {

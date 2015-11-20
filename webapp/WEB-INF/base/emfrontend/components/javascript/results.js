@@ -117,6 +117,7 @@ jQuery(document).ready(function(url,params)
 	overlayResize = function()
 	{
 		var img = $("#hiddenoverlay #main-media");
+		$("#hiddenoverlay .playerarea").width($(window).width() - 200);
 		var w = img.data("width");
 		if(!isNaN(w) && w != "")
 		{
@@ -125,14 +126,15 @@ jQuery(document).ready(function(url,params)
 			var newh = Math.floor( $(window).width() * h / w );
 			var neww = Math.floor( $(window).width() * w / h );
 			var setwidth = true;
-			if( newh > $(window).height() ) //limit by height
+			if( newh > $(window).height() && neww < $(window).width()) //limit by height
 			{	
 				setwidth = false;
 			}
 			if( setwidth )
 			{
 				//For 
-				img.width($(window).width());
+				img.width($(window).width() - 200);
+				img.css("height", "auto");
 				
 				//Only if limited by height
 				var remaining = $(window).height() - newh;
@@ -146,11 +148,13 @@ jQuery(document).ready(function(url,params)
 			{
 				img.height($(window).height());
 				img.css("margin-top","0px");
+				img.css("width", "auto");
 			}
 		}
 		else
 		{
 			img.height($(window).height());
+			img.css("width", "auto");
 		}
 	}
 	$(window).resize(function(){
@@ -171,17 +175,17 @@ jQuery(document).ready(function(url,params)
 		var hidden = getOverlay();
 		var href = home + "/components/mediaviewer/fullscreen/index.html";
 		var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
-		jQuery.get(href, {assetid:assetid,hitssessionid,oemaxlevel:1}, function(data) 
+		jQuery.get(href, {playerareawidth: $(window).width() - 200, assetid:assetid,hitssessionid,oemaxlevel:1}, function(data) 
 		{
 			hidden.html(data);
-			overlayResize();
+			//overlayResize();
 			hidden.show();
 		});
 	}
 	getOverlay = function()
 	{
 		var hidden = $("#hiddenoverlay");
-		if( hidden.length )
+		if( hidden.length == 0 )
 		{
 			$('body').append('<div id="hiddenoverlay"></div>');
 			hidden = $("#hiddenoverlay");
@@ -316,6 +320,7 @@ jQuery(document).ready(function(url,params)
 			console.log("Now Pause slideshow");
 		}
 	});
+	/*
 	jQuery('div.playerarea').livequery('click',function(e)
 	{
 		e.preventDefault(); 
@@ -330,7 +335,7 @@ jQuery(document).ready(function(url,params)
 			console.log('Click on left 30%');
 		}
 	});
-	
+	*/
 	$(window).on('scroll',function() 
 	{
 		checkScroll();
