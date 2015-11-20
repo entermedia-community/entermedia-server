@@ -171,13 +171,13 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 				{
 					// Asset has smaller size than destination
 
-					boolean scaledownonly = false;
+					boolean scaledownonly = true;
 					if( inStructions.get("scaledownonly") != null )
 					{
 						scaledownonly = new Boolean(inStructions.get("scaledownonly"));
 					}
 					
-					log.info(scaledownonly);
+					//log.info(scaledownonly);
 
 					if(scaledownonly)
 					{
