@@ -123,12 +123,78 @@ div#hiddenoverlay .playerarea {
 
 }
 
+/* STACKED VIEW OVERLAY */
+
+#hiddenoverlay div.jp-audio {
+
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+    ##top: 50%;
+    ##transform: translateY(-50%);
+    top: 360px;
+    
+
+}
+
+#hiddenoverlay div.jp-playlist {
+
+	width: 100%;
+
+}
+
+#goleftclick span.glyphicon {
+
+	font-size: 50px;
+
+}
+
+#gorightclick span.glyphicon {
+
+	font-size: 50px;
+
+}
+
+.overlay-margin span.overlay-nav {
+
+	font-size: 50px;
+	color: rgb(200,200,200);
+
+}
+
+span.glyphicon-triangle-right.overlay-nav {
+
+	float: right;
+}
+
+.overlay-nav {
+
+	margin: 30px;
+	margin-top: 400px;
+
+}
+
+#emthumbholder img.mimethumb {
+
+    margin: auto;
+    top: 85px;
+    left: 85px;
+  
+
+}
+
 
 div#hiddenoverlay .overlay-margin {
 
 	width: 100px;
 	position: relative;
 	float: left;
+
+}
+
+.overlay-margin {
+
+	height: 100%;
 
 }
 
@@ -428,7 +494,7 @@ div.masonry-grid-cell span.emdropshadow img
 }
 
 
-.overlay-play.largeicon
+.overlay-popup.largeicon
 {
 	font-size:30px;
 	color: rgb(200,200,200);
@@ -449,17 +515,28 @@ div.masonry-grid-cell span.emdropshadow img
 }
 div#hiddenoverlay span.glyphicon.glyphicon-remove-circle
 {
-	cursor:pointer
+	cursor:pointer;
+}
+
+div#hiddenoverlay span.glyphicon.glyphicon-new-window
+{
+	cursor:pointer;
+	-moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
 }
 
 span.glyphicon-triangle-right.overlay-nav {
 
-	cursor:pointer
+	cursor:pointer;
 }
 
 span.glyphicon-triangle-left.overlay-nav {
 
-	cursor:pointer
+	cursor:pointer;
 }
 
 #main-media

@@ -283,19 +283,6 @@ jQuery(document).ready(function(url,params)
 	{
 		e.preventDefault();
 		var link = $(this);
-		/*
-		var image = $('img', link);
-		if (image.length) {
-			console.log(image);
-			var percentleft = Math.floor(((e.pageX - link.offset().left) / image.width()) * 100);
-			var percenttop = Math.floor(((e.pageY - link.offset().top) / image.height()) * 100);
-		
-			if (percenttop >= 70) {
-				console.log('Click in bottom 30%');
-				return;
-			}
-		}
-		*/
 		showOverlay(link.parent(".masonry-grid-cell").data("assetid"));
 	});
 	
@@ -308,45 +295,22 @@ jQuery(document).ready(function(url,params)
 		hidden.hide();
 	});
 	
-	$("#hiddenoverlay .overlay-play").livequery('click',function(e)
-	{	
-		e.preventDefault();
-		var div = $('span', this);
-		if (div.hasClass("glyphicon-play")) {
-			div.removeClass("glyphicon-play");
-			div.addClass("glyphicon-pause");
-			console.log("Now Play slideshow");
-		} else {
-			div.removeClass("glyphicon-pause");
-			div.addClass("glyphicon-play");
-			console.log("Now Pause slideshow");
-		}
-	});
-	/*
-	jQuery('div.playerarea').livequery('click',function(e)
-	{
-		e.preventDefault(); 
-		var link = $(this);
-		var image = $('img', link);
-		var percentleft = Math.floor(((e.pageX - link.offset().left) / image.width()) * 100);
-		var percenttop = Math.floor(((e.pageY - link.offset().top) / image.height()) * 100);
+	$("#hiddenoverlay .overlay-popup span").livequery('click',function(e)
+			{	
+				e.preventDefault();
+				// editor/viewer/index.html?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}
+				var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
+				var href = home + "/views/modules/asset/editor/viewer/index.html?hitssessionid=" + hitssessionid + "&assetid=" + getCurrentAssetId();
+				window.location = href;
+				
+			});
 	
-		if (percentleft >= 70) {
-			console.log('Click on right 30%');
-		} else if (percentleft <= 30) {
-			console.log('Click on left 30%');
-		}
-	});
-	*/
 	$(window).on('scroll',function() 
 	{
 		checkScroll();
 	});
 	//END Gallery stuff
 	
-//	$(window).load(function() {
-//		gridResize();
-//	});	
 	$(window).on('resize',function(){
 		gridResize();
 	});
