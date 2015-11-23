@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermedia.cache.CacheManager;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
@@ -26,15 +26,24 @@ public class PresetCreator
 {
 	private static final Log log = LogFactory.getLog(PresetCreator.class);
 
-	protected Map<String, Collection> fieldPresetCache;
+	protected CacheManager fieldCacheManager;
 
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+	public void clearCaches()
+	{
+		getCacheManager().clear("preset_lookup");
+	}
 	protected Collection getPresets(MediaArchive inArchive, String rendertype)
 	{
-		if (fieldPresetCache == null)
-		{
-			fieldPresetCache = new HashMap<String, Collection>();
-		}
-		Collection hits = fieldPresetCache.get(rendertype);
+		Collection hits = (Collection)getCacheManager().get("preset_lookup",rendertype);
 		if (hits == null)
 		{
 			Searcher presetsearcher = inArchive.getSearcher("convertpreset");
@@ -42,7 +51,7 @@ public class PresetCreator
 			query.addMatches("onimport", "true");
 			query.addMatches("inputtype", rendertype);
 			hits = presetsearcher.search(query);
-			fieldPresetCache.put(rendertype, hits);
+			getCacheManager().put("preset_lookup",rendertype, hits);
 		}
 		return hits;
 	}

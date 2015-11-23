@@ -4,6 +4,7 @@
 	
 	<path-action name="DataEditModule.search" />
 	<property name="save">true</property>
-
+ 
+    <path-action name="MediaArchiveModule.clearCache" />
 			
 </page>

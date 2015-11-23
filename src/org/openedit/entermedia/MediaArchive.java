@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermedia.cache.CacheManager;
 import org.entermedia.error.EmailErrorHandler;
 import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
@@ -87,12 +88,26 @@ public class MediaArchive
 	protected LockManager fieldLockManager;
 	protected Map<String,Data> fieldLibraries;
 	protected PresetCreator fieldPresetManager;
+	protected CacheManager fieldCacheManager;
 	
+	public CacheManager getCacheManager()
+	{
+		if (fieldCacheManager == null)
+		{
+			fieldCacheManager = new CacheManager();
+		}
+		return fieldCacheManager;
+	}
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
 	public PresetCreator getPresetManager()
 	{
 		if( fieldPresetManager == null)
 		{
 			fieldPresetManager = new PresetCreator();
+			fieldPresetManager.setCacheManager(getCacheManager());
 		}
 		return fieldPresetManager;
 	}
@@ -1556,7 +1571,7 @@ public class MediaArchive
 	}
 	public Data getLibrary(String inId)
 	{
-		Data library = getLibraries().get(inId);
+		Data library = (Data)getCacheManager().get("library_lookup",inId);
 		if( library == null )
 		{
 			library = getSearcherManager().getData(getCatalogId(), "library", inId);
@@ -1564,11 +1579,7 @@ public class MediaArchive
 			{
 				library = BaseData.NULL;
 			}
-			if( getLibraries().size() > 1000 )
-			{
-				getLibraries().clear();
-			}
-			getLibraries().put(inId,library);
+			getCacheManager().put("library_lookup",inId,library);
 		}
 		if ( library == BaseData.NULL )
 		{
@@ -1577,14 +1588,6 @@ public class MediaArchive
 		return library;
 	}
 	
-	protected Map<String,Data> getLibraries()
-	{
-		if (fieldLibraries == null)
-		{
-			fieldLibraries = new HashMap<String,Data>();
-		}
-		return fieldLibraries;
-	}
 	
 	public UserProfile getUserProfile(String inId){
 		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
@@ -1597,7 +1600,7 @@ public class MediaArchive
 		{
 			return; //asset deleted
 		}
-		String existingimportstatus = asset.get("importstatus");
+		//String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 		
 		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
@@ -1614,6 +1617,11 @@ public class MediaArchive
 			fieldUserManager = (UserManager)getModuleManager().getBean(getCatalogId(),"userManager");
 		}
 		return fieldUserManager;
+	}
+	public void clearCaches()
+	{
+		getCacheManager().clear("library_lookup");
+		getPresetManager().clearCaches();
 	}
 
 }

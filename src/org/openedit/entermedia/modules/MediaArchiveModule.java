@@ -332,6 +332,11 @@ public class MediaArchiveModule extends BaseMediaModule
 		}
 	}
 
+	public void clearCache(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.clearCaches();
+	}
 
 }
 
