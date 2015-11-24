@@ -77,7 +77,7 @@
 	
 	<property id="html"  synctags="true"  rendertype="document" >HTML</property>
 	<property id="xml"  synctags="true"  rendertype="document" >XML</property>
-	<property id="csv"  synctags="true"  rendertype="document" >CSV</property>
+	<property id="csv"  synctags="true"  >CSV</property>
 	<property id="webp"  synctags="false"  rendertype="image" >Webp</property>
 	
 	<property id="default"  synctags="true"  rendertype="default" >Default</property>

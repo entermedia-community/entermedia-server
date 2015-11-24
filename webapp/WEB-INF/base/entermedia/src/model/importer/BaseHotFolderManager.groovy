@@ -30,6 +30,8 @@ import com.openedit.WebServer
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
 import com.openedit.util.EmStringUtils
+import com.openedit.util.Exec
+import com.openedit.util.ExecResult
 import com.openedit.util.PathUtilities
 
 public class BaseHotFolderManager implements HotFolderManager
@@ -228,6 +230,14 @@ public class BaseHotFolderManager implements HotFolderManager
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			updateSyncThingFolders(inCatalogId);
 		}
+		else if( type == "googledrive")
+		{
+			String toplevelfolder = inNewrow.get("subfolder");
+			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
+			inNewrow.setProperty("externalpath",toplevel.getContentItem().getAbsolutePath() );
+			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
+			addGoogleFolder(inCatalogId);
+		}
 		else if( type == "mount")
 		{
 		String toplevelfolder = inNewrow.get("subfolder");
@@ -327,7 +337,34 @@ public class BaseHotFolderManager implements HotFolderManager
 		
 		return paths;
 	}
-	
+	public void addGoogleFolders(String inCatalogId)
+	{
+		Collection hotfolders = loadFolders(inCatalogId);
+		for(Data folder:hotfolders)
+		{
+			String type = folder.get("hotfoldertype");
+			if( type != "googledrive")
+			{
+				continue;
+			}
+			String key = folder.get("accesskey");
+			String email = folder.get("email");
+			String externalpath = folder.get("externalpath");
+			
+			List com = ["add_account","-a", key,"-p",externalpath,"-e","link"];
+			ExecResult result = getExec().runExec("insync-headless",com,true);
+			log.info("insync-headless " + com + " =" + result.getStandardOut());
+		}
+		//TODO: get
+	}
+	protected Exec fieldExec;
+	protected Exec getExec()
+	{
+		if( fieldExec == null)
+		{
+			fieldExec = getWebServer().getModuleManager().getBean("exec");
+		}
+	}
 	public void updateSyncThingFolders(String inCatalogId)	
 	{
 		Collection hotfolders = loadFolders(inCatalogId);
