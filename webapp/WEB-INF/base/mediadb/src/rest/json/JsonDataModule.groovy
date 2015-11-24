@@ -43,7 +43,7 @@ public class JsonDataModule extends BaseJsonModule
 				String[] values = it.values.toArray(new String[it.values.size()]);
 				inReq.setRequestParameter(it.field + ".values", values);
 			}
-			else
+			else if( it.value != null)
 			{
 				inReq.setRequestParameter(it.field + ".value", it.value);
 			}
