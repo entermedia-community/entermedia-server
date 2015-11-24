@@ -162,7 +162,7 @@ jQuery(document).ready(function(url,params)
 	
 	getCurrentAssetId = function()
 	{
-		var mainmedia = $("#main-media");
+		var mainmedia = $("#main-media-viewer");
 		return mainmedia.data("assetid");
 	}
 	
