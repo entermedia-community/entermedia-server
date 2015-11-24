@@ -235,8 +235,10 @@ public class BaseHotFolderManager implements HotFolderManager
 			String toplevelfolder = inNewrow.get("subfolder");
 			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
 			inNewrow.setProperty("externalpath",toplevel.getContentItem().getAbsolutePath() );
+			new File(toplevel.getContentItem().getAbsolutePath()).mkdirs();
+			
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
-			addGoogleFolder(inCatalogId);
+			addGoogleFolders(inCatalogId);
 		}
 		else if( type == "mount")
 		{
@@ -364,6 +366,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		{
 			fieldExec = getWebServer().getModuleManager().getBean("exec");
 		}
+		return fieldExec;
 	}
 	public void updateSyncThingFolders(String inCatalogId)	
 	{
