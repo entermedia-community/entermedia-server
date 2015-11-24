@@ -176,9 +176,10 @@ span.glyphicon-triangle-right.overlay-nav {
 
 #emthumbholder img.mimethumb {
 
+	position: absolute;
     margin: auto;
-    top: 85px;
-    left: 85px;
+    top: 38%;
+    left: 38%;
   
 
 }
