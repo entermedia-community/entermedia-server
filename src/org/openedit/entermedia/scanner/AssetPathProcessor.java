@@ -287,16 +287,26 @@ public class AssetPathProcessor extends PathProcessor
 		
 		protected ContentItem findPrimary(List inPaths)
 		{
+			ContentItem first = null;
 			for (Iterator iterator = inPaths.iterator(); iterator.hasNext();)
 			{
 				String path = (String) iterator.next();
+				
 				ContentItem item = getPageManager().getRepository().getStub(path);
 				if( !item.isFolder() && acceptFile(item))
 				{
-					return item;
+					if(first == null){
+						first = item;
+					}
+					String format = PathUtilities.extractPageType(path);
+					
+					if("indd".equals(format)){
+						return item;
+					}
 				}
 			}
-			return null;
+			
+			return first;
 		}
 		public void processFile(ContentItem inContent, User inUser)
 		{
