@@ -18,32 +18,17 @@ import com.openedit.util.*
 
 import conversions.*
 
-public class AssetTypeManager extends EnterMediaObject 
-{
-	public void saveAssetTypes(HitTracker inAssets) 
-	{
+public class AssetTypeManager extends EnterMediaObject {
+	public void saveAssetTypes(HitTracker inAssets) {
 		MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 		AssetSearcher searcher = mediaarchive.getAssetSearcher();
 
-		Searcher typesearcher = mediaarchive.getSearcher("assettype");
-
-		HitTracker types = typesearcher.getAllHits();
-		HashMap typemap = new HashMap();
-		types.each{
-			String extentions = it.extensions;
-			String type = it.id;
-			if(extentions != null){
-				String[] splits = extentions.split(" ");
-				splits.each{
-					typemap.put(it, type)
-				}
-			}
-		}
+		
 		List tosave = new ArrayList();
 		for (Data hit in inAssets)
 		{
-			Asset real = checkForEdits(typemap, hit);
+			Asset real = checkForEdits( mediaarchive, hit);
 			if( real == null )
 			{
 				real = checkLibrary(mediaarchive,hit);
@@ -62,7 +47,7 @@ public class AssetTypeManager extends EnterMediaObject
 				saveAssets(searcher, tosave);
 				tosave.clear();
 			}
-			
+
 		}
 		saveAssets(searcher, tosave);
 	}
@@ -70,9 +55,44 @@ public class AssetTypeManager extends EnterMediaObject
 	{
 		return loadedAsset;
 	}
-	public Asset checkForEdits(Map typemap, Data hit)
+	public Asset checkForEdits(MediaArchive inArchive,  Data hit)
 	{
+		String sourcepath = hit.sourcepath;
+		Searcher typesearcher = inArchive.getSearcher("assettype");
 		String fileformat = hit.fileformat;
+		//First check to see if we have a path mask for the asset type
+
+		HitTracker types = typesearcher.getAllHits();
+		types.each{
+			String paths =it.paths;
+			String type = it.id;
+			
+			if(paths != null){
+				String [] splits = paths.split(',');
+				splits.each{
+
+					if(PathUtilities.match(hit.sourcepath, it)){
+						Asset real = inArchive.getAssetBySourcePath(hit.sourcepath);
+						real.setProperty("assettype", type);
+						return real;
+					}
+				}
+			}
+		}
+
+		//now check extensions
+		HashMap typemap = new HashMap();
+		types.each{
+			String extentions = it.extensions;
+			String type = it.id;
+			if(extentions != null){
+				String[] splits = extentions.split(" ");
+				splits.each{
+					typemap.put(it, type)
+				}
+			}
+		}
+
 		String currentassettype = hit.assettype;
 		String assettype = typemap.get(fileformat);
 		if(assettype == null)
@@ -106,17 +126,17 @@ public class AssetTypeManager extends EnterMediaObject
 	}
 	public String findCorrectAssetType(Data inAssetHit, String inSuggested)
 	{
-/*		String path = inAssetHit.getSourcePath().toLowercase();
-		if( path.contains("/links/") )
-		{
-			return "links";
-		}
-		if( path.contains("/press ready pdf/") || path.endsWith("_pfinal.pdf") )
-		{
-			return "printreadyfinal";
-		}
-*/		
+		/*		String path = inAssetHit.getSourcePath().toLowercase();
+		 if( path.contains("/links/") )
+		 {
+		 return "links";
+		 }
+		 if( path.contains("/press ready pdf/") || path.endsWith("_pfinal.pdf") )
+		 {
+		 return "printreadyfinal";
+		 }
+		 */		
 		return inSuggested;
 	}
-	
+
 }
