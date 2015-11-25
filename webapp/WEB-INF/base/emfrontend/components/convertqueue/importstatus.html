@@ -26,18 +26,16 @@
 
 
 #elseif($conversionsremaining && $conversionsremaining.size()  > 0)
-    <div id="status$hit.id" class="ajaxstatus proxythumb " data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-	   <div class="loadingborder">
+    <div id="status$hit.id" class="ajaxstatus  " data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         #set( $remaining = $conversions.size() - $conversionsremaining.size() )
         #set( $totalcount = $conversions.size() + 2 )
         #set( $total = 94 * $mathutil.getPercentage($remaining , $totalcount))
-        <div class="uiinfo" title="$conversionsremaining.size() conversions remaining"><div class="loadingbar" style="width:${total}px;"></div></div> 
+        <div class="uiinfo proxythumb" title="$conversionsremaining.size() conversions remaining"><div class="loadingbar" style="width:${total}px;"></div>
     </div>
     </div>
 #elseif($publish && $publish.size() >0 )
-    <div id="status$hit.id"  class="ajaxstatus proxythumb"   data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-	 <div class="loadingborder">
-    <div class="uiinfo">Publishing Proxy $publish.size()</div>
+    <div id="status$hit.id"  class="ajaxstatus "   data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div class="uiinfo proxythumb">Publishing Proxy $publish.size()</div>
     <img src='$home$themeprefix/images/ajax-loader.gif'/></div>
      </div>
 #elseif($conversions && $conversions.size() == 0)
@@ -45,13 +43,40 @@
         #set( $remaining = $conversions.size() - $conversionsremaining.size() + 2 )
         #set( $totalcount = $conversions.size() + 2 )
         #set( $total = 94 * $mathutil.getPercentage($remaining , $totalcount))
-        <div class="uiinfo tooltip" title="Adding to Queue" ><div class="loadingbar" style="width:${total}px;"></div></div> 
+        <div class="uiinfo proxythumb" title="Adding to Queue" ><img  class="infloading"  src='$home$themeprefix/images/ajax-loader.gif'/></div>
     </div>
 #else
-    <div id="status$hit.id" class="ajaxstatus loadingborder"  data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div id="status$hit.id" class="ajaxstatus"  data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         #set( $remaining = $conversions.size() - $conversionsremaining.size() + 2 )
         #set( $totalcount = $conversions.size() + 2 )
-        #set( $total = 94 * $mathutil.getPercentage($remaining , $totalcount))
-        <div class="uiinfo tooltip" title="Completing" ><div class="loadingbar" style="width:${total}px;"></div></div> 
+        #set( $total = 100 * $mathutil.getPercentage($remaining , $totalcount))
+        <div class="uiinfo	 proxythumb" title="Completing" ><div class="loadingbar" style="width:${total}px;"></div></div> 
     </div>
 #end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+		
+	</td>

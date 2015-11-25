@@ -1059,7 +1059,7 @@ public class MediaArchive
 		}
 		return null;
 	}
-	public void firePathEvent(String operation, User inUser, HitTracker inData)
+	public void firePathEvent(String operation, User inUser, Collection inData)
 	{
 		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(),"pathEventManager");

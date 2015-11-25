@@ -19,7 +19,7 @@ import com.openedit.util.*
 import conversions.*
 
 public class AssetTypeManager extends EnterMediaObject {
-	public void saveAssetTypes(HitTracker inAssets) {
+	public void saveAssetTypes(Collection inAssets) {
 		MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 		AssetSearcher searcher = mediaarchive.getAssetSearcher();
@@ -72,7 +72,7 @@ public class AssetTypeManager extends EnterMediaObject {
 				splits.each{
 
 					if(PathUtilities.match(hit.sourcepath, it)){
-						Asset real = inArchive.getAssetBySourcePath(hit.sourcepath);
+						Asset real = inArchive.getAssetSearcher().loadData(hit);
 						real.setProperty("assettype", type);
 						return real;
 					}
@@ -102,7 +102,7 @@ public class AssetTypeManager extends EnterMediaObject {
 		assettype = findCorrectAssetType(hit,assettype);
 		if(!assettype.equals(currentassettype))
 		{
-			Asset real = mediaArchive.getAssetBySourcePath(hit.sourcepath);
+			Asset real = inArchive.getAssetSearcher().loadData(hit);
 			real.setProperty("assettype", assettype);
 			return real;
 		}

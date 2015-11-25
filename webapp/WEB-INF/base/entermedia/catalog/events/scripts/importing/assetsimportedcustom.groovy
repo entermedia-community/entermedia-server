@@ -58,7 +58,7 @@ public void sendEmail()
 	emailer.emailOnImport();
 }
 
-public void setupProjects(HitTracker assets)
+public void setupProjects(Collection assets)
 {
 	//Look at source path for each asset?
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos

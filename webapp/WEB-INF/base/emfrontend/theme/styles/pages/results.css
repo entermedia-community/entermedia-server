@@ -68,6 +68,20 @@ td.resultstablecell .proxythumb {
 	border-bottom:1px solid #666;
 	padding-bottom:15px;
 }
+
+td.resultstablecell .proxythumb .loadingbar {
+    height: 8px;
+    margin-top: 22px;
+    margin-left: 4px;
+    background: url('../../images/loadingbar.gif');
+}
+
+.proxythumb .infloading
+{
+	margin-top: 22px;
+    margin-left: 4px;
+}
+
 .emthumb
 {
 	width: 200px;

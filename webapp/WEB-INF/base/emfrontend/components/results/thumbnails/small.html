@@ -6,15 +6,9 @@
 #end
 $context.putPageValue("thumbsize",$thumbsize)
     #if( $hit.importstatus && $hit.importstatus == "uploading" )
-    <div class="smallthumb emdropshadow proxythumb">
-        <div class="loadingborder">
         $pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=$!{hit.id}",$context)
-        </div>
-    </div>
     #elseif( !$hit.importstatus || $hit.importstatus != "complete" )
-    <div class="smallthumb emdropshadow proxythumb">
-          $pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
-    </div>
+        $pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
     #elseif( $hit.previewstatus && $hit.previewstatus == "mime")
         #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
         #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )

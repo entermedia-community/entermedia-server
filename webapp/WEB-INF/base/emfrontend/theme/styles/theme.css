@@ -4762,18 +4762,6 @@ p.resultsnumber {
     display: block !important;
     visibility: visible;
 }
-td.resultstablecell .proxythumb .loadingborder {
-    padding: 2px;
-    height: 10px;
-    margin: 22px 5px 0px 5px;
-    background: #fff;
-}
-td.resultstablecell .proxythumb .loadingbar {
-    height: 8px;
-    margin-top: 0px;
-    background: url('../images/loadingbar.gif');
-}
-
 /* PRINT PREVIEW */
 
 #printpreview-top {

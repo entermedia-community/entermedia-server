@@ -16,7 +16,7 @@ public class LibraryManager extends EnterMediaObject
 	protected Map fieldLibraryFolders = null;
 	protected Object NULL = new BaseData();
 	
-	public void assignLibraries(MediaArchive mediaarchive, HitTracker assets)
+	public void assignLibraries(MediaArchive mediaarchive, Collection assets)
 	{
 		
 		Searcher searcher = mediaarchive.getAssetSearcher();
@@ -48,7 +48,7 @@ public class LibraryManager extends EnterMediaObject
 					{
 						if( loaded == null)
 						{
-							loaded = mediaarchive.getAssetBySourcePath(sourcepath);
+							loaded =  searcher.loadData(hit);
 							tosave.add(loaded);
 							savedsofar++;
 						}
