@@ -335,7 +335,8 @@ public class BaseHotFolderManager implements HotFolderManager
 			getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
 		}
 		
-		log.info(inFolder + " Imported " + paths.size() + " in " + ((new Date().getTime() - started.getTime())/6000L) );
+		long taken = ((new Date().getTime() - started.getTime())/6000L);
+		log.info("${inFolder} Imported ${paths.size()} in ${taken} milli-seconds" );
 		
 		return paths;
 	}

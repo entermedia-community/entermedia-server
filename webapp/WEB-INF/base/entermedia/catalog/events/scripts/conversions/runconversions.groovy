@@ -6,7 +6,6 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.*
 import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.creator.ConvertQueue;
 import org.openedit.entermedia.edit.*
 import org.openedit.entermedia.modules.*
 import org.openedit.util.DateStorageUtil
@@ -399,7 +398,7 @@ public void checkforTasks()
 	
 	List runners = new ArrayList();
 
-	ConvertQueue executorQueue = getQueue(mediaarchive.getCatalogId());
+	ExecutorManager executorQueue = getQueue(mediaarchive.getCatalogId());
 	
 	CompositeConvertRunner byassetid = null;
 //		CompositeConvertRunner lastcomposite = null;
@@ -425,7 +424,7 @@ public void checkforTasks()
 		{
 			if( runners.size() > 100)
 			{
-				executorQueue.execute(runners);
+				executorQueue.execute("conversions",runners);
 				runners.clear();
 				//log.info("Clearing " + id);
 			}
@@ -440,7 +439,7 @@ public void checkforTasks()
 		byassetid.add(runner);
 		
 	}
-	executorQueue.execute(runners);
+	executorQueue.execute("conversions",runners);
 	if( runners.size() > 0)
 	{
 		for( CompositeConvertRunner runner: runners )
@@ -456,9 +455,9 @@ public void checkforTasks()
 	
 }
 
-public ConvertQueue getQueue(String inCatalogId)
+public ExecutorManager getQueue(String inCatalogId)
 {
-	ConvertQueue queue =  (ConvertQueue)moduleManager.getBean(inCatalogId,"convertQueue");
+	ExecutorManager queue =  (ExecutorManager)moduleManager.getBean(inCatalogId,"executorManager");
 	return queue;
 }
 

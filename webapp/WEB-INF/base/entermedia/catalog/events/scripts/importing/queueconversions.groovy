@@ -61,8 +61,9 @@ public void createTasksForUpload() throws Exception {
 		try{
 			//lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
 			Asset asset = assetsearcher.loadData(it);
-
-			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
+			//Data asset =  it;
+			
+			String rendertype = mediaarchive.getMediaRenderType(asset);
 			Collection hits = presets.getPresets(mediaarchive,rendertype);
 			//	log.info("Found ${hits.size()} automatic presets");
 			hits.each
