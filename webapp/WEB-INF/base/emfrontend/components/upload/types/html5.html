@@ -17,8 +17,7 @@
 			                [[Upload multiple files by using the]] <strong>[[Shift]]</strong> [[key on your keyboard while selecting the files you wish to upload]].
 			             </p>			             
 				</div>				
-
-				<ul id="up-files-list"	>				
+				<ul id="up-files-list" class="up-files-list">				
 				</ul>	
 				
 				<div class="uploadinstructions">	  
@@ -26,7 +25,8 @@
 					<div class="drop-over"></div>
 					<div class="hints" >[[Drop files here!]]</div>
 				</div>
-				</div>	 
+				</div>	
+				
 				<!-- This is not shown -->
 		        <div id="progress_report_template" style="display:none;">
 			        <li class="uploadprogressrow" >
@@ -45,7 +45,6 @@
 
 
 		<div id="uploadmetadata">
-		
 		<div class="ui-widget uipanel">
 		    <div  class="ui-widget-header">[[Information]]</div>
 		    <div  class="ui-widget-content">
@@ -60,11 +59,22 @@
 				
 				##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
-				       <a class="btn" id="startbutton" href="#">[[Next]]</a>
+				       <a class="btn" id="startbutton" href="#">[[Upload]]</a>
 		        	</div>
 				</form>
 			</div>
 		</div>
+		</div>
+		
+		<div id="completed-uploads" style="display:none;margin-top:10px;" >
+		<div class="ui-widget uipanel">
+		    <div  class="ui-widget-header">[[Upload Queue]]</div>
+		    <div  class="ui-widget-content">
+					<ul id="up-files-list-completed" class="up-files-list" >
+					</ul>	
+					<a class="btn" href="$home$apphome/views/myaccount/myassets/index.html">View Uploads</a>
+			</div>
+		</div>	
 		</div>
 	</div>
     

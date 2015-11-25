@@ -27,7 +27,11 @@ var uploadid;
 				
 	         	//jQuery("#upload_field").setFiles( allfiles );
 	         	
-	        	 jQuery("#uploadinstructionsafter").show();
+	         	jQuery("#uploadinstructionsafter").hide();
+	        	var startb = $("#startbutton");
+	        	$(startb).text("Upload");
+    			$(startb).removeAttr('disabled');
+	        	jQuery("#uploadinstructionsafter").show();
 	        	 
 	        	 var regex = new RegExp("currentupload", 'g');  
 	        	 
@@ -129,8 +133,14 @@ $(document).ready(function()
 	         sendBoundary: window.FormData || $.browser.mozilla,
 	         onStart: function(event, total, files) 
 	         {
-	        	 jQuery(".uploadinstructions").hide();
+	        	 //jQuery(".uploadinstructions").hide();
         	  	 console.log("On start " + files.length );
+	        	 var completed = $("#up-files-list li").clone();
+			    $("#up-files-list").empty();
+
+				$("#up-files-list-completed").append(completed);
+				$("#completed-uploads").show();
+	        	 
 	        	 
 	             return true;
 	        	 //Loop over all the files. add rows
@@ -177,6 +187,7 @@ $(document).ready(function()
 //	        		 document.location.href = home + "/views/myaccount/myassets/index.html";
 	        		 
 	        		 var nexturl = "/views/myaccount/myassets/index.html";
+	        		/*
 	        		 var uploadarea = $("#uploadarea");
 	        		 if (uploadarea!=null && uploadarea!=undefined){
 	        			 if (uploadarea.data("nextpage")!=null && uploadarea.data("nextpage")!=undefined && uploadarea.data("nextpage")!="default"){
@@ -184,6 +195,21 @@ $(document).ready(function()
 	        			 }
 	        		 }
 	        		 document.location.href = home + nexturl;
+	        		 */
+	        			//jQuery("#uploadinstructionsafter").hide();
+	        			var startb = $("#startbutton");
+	        			$(startb).text("Upload Complete");
+    					//$(startb).removeAttr('disabled');
+    				   allfiles = new Array();
+    				   
+		   				var completed = $("#up-files-list-completed li span");
+						jQuery.each(completed,function()
+						{
+							$(this).removeAttr("id");
+						});
+    				   jQuery("#filePicker").text("Pick More Files...");
+    				   jQuery("#upload_field").removeAttr('disabled');
+	        		 //jQuery("#upload_field").triggerHandler('html5_upload.filesPicked', []);	
 	        	}
 	
 	         }

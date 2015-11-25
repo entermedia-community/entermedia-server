@@ -23,28 +23,32 @@ import com.openedit.users.UserManager
 public void setAssetTypes()
 {
 	log.info("Starting Assets Imported Custom")
-	String ids = context.getRequestParameter("assetids");
-	if( ids == null)
-	{
-	   log.info("AssetIDS required");
-	   return;
-	}
 	
 	//TODO: Get rid of the need to search all the assets use the Asset Cache
-	String assetids = ids.replace(","," ");
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
-	Searcher assetsearcher = mediaArchive.getAssetSearcher();
-	SearchQuery q = assetsearcher.createSearchQuery();
-	q.addOrsGroup( "id", assetids );
-
-	HitTracker assets = assetsearcher.search(q);
+	HitTracker hits = context.getPageValue("hits");
+	if( hits == null)
+	{
+		String ids = context.getRequestParameter("assetids");
+		if( ids == null)
+		{
+		   log.info("AssetIDS required");
+		   return;
+		}
+		Searcher assetsearcher = mediaArchive.getAssetSearcher();
+		SearchQuery q = assetsearcher.createSearchQuery();
+		String assetids = ids.replace(","," ");
+		q.addOrsGroup( "id", assetids );
+	
+		hits = assetsearcher.search(q);
+	}
 	AssetTypeManager manager = new AssetTypeManager();
 	manager.context = context;
 	manager.log = log;
-	manager.saveAssetTypes(assets);
+	manager.saveAssetTypes(hits);
 	
-	setupProjects(assets);
+	setupProjects(hits);
 	
 }
 public void sendEmail()

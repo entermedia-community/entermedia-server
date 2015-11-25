@@ -800,12 +800,10 @@ public class AssetEditModule extends BaseMediaModule
 		
 		Runnable runthis = new Runnable()
 		{
-		@Override
-		public void run()
-		{
-			// TODO Auto-generated method stub
-			HitTracker hits = createAssetsFromPages(pages,basepath,inReq);
-		}
+			public void run()
+			{
+				HitTracker hits = createAssetsFromPages(pages,basepath,inReq);
+			}
 		};
 		manager.execute("importing",runthis);
 				
@@ -1011,19 +1009,18 @@ public class AssetEditModule extends BaseMediaModule
 		Asset sample = (Asset)tracker.first();
 		if( sample != null)
 		{
-			archive.fireMediaEvent("importing/assetsuploaded",inReq.getUser(),sample,listids);
-			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
-			archive.fireMediaEvent("importing/assetsimported",inReq.getUser(),sample,listids);
+			archive.firePathEvent("importing/assetsuploaded",inReq.getUser(),tracker);
+			//archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
+			archive.firePathEvent("importing/assetsimported",inReq.getUser(),tracker);
 		}
-		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
-		results.addSelection(sample.getId());	
-		
+//		HitTracker results = archive.getAssetSearcher().cachedSearch(inReq, q);
+//		results.addSelection(sample.getId());	
 
 		
 //		HitTracker selected = results.getSelectedHitracker();
 //		inReq.putSessionValue("selectedhitsasset" + archive.getCatalogId() , selected );
 		
-		return results;
+		return tracker;
 	}
 	protected void readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix, Page inPage, ListHitTracker output)
 	{

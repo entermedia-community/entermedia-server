@@ -1059,6 +1059,16 @@ public class MediaArchive
 		}
 		return null;
 	}
+	public void firePathEvent(String operation, User inUser, HitTracker inData)
+	{
+		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
+		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(),"pathEventManager");
+		WebPageRequest request = manager.getRequestUtils().createPageRequest(runpath, inUser);
+		
+		request.setRequestParameter("catalogid", getCatalogId());
+		request.putPageValue("hits", inData);
+		manager.runPathEvent(runpath, request);
+	}	
 	public void fireMediaEvent(String operation, User inUser, Asset asset, List<String> inids)
 	{
 		WebEvent event = new WebEvent();
@@ -1087,7 +1097,6 @@ public class MediaArchive
 		event.setValues("dataids", inids);
 		//archive.getWebEventListener()
 		getMediaEventHandler().eventFired(event);
-		
 	}
 	
 	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)

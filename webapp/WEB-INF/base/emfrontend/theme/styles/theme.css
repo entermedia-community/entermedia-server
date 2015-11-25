@@ -2640,34 +2640,34 @@ tr.odd {
     margin-top: 20px;
     float: right;
 }
-#up-files-list {
+.up-files-list {
     padding: 0;
     margin: 15px 0;
 }
-#up-files-list li {
+.up-files-list li {
     padding:0;
     margin: 0;
     border-bottom: 1px solid #ddd;
     list-style: none;
     position: relative;
 }
-#up-files-list li a {
+.up-files-list li a {
     padding: 10px 0px 5px 0px;
     display: block;
     margin: 0;
     color: #444;
 }
-#up-files-list li:hover a {
+.up-files-list li:hover a {
     background: #f3f3f3;
 }
-#up-files-list li a .name {
+.up-files-list li a .name {
     width: 200px;
     overflow: hidden; 
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
 }
-#up-files-list li a .size {
+.up-files-list li a .size {
     color: #3DAACD;
     font-size: 10px;
     width: 100px;
@@ -2676,7 +2676,7 @@ tr.odd {
     float: right;
     margin-top: 1px; 
 }
-#up-files-list li a .uploadstatus {
+.up-files-list li a .uploadstatus {
     font-style: italic;
     color: #3DAACD;
     font-size: 10px;
@@ -2685,7 +2685,7 @@ tr.odd {
     float: right;
     margin-top: 1px; 
 }
-#up-files-list li .delete-row, #up-files-list li:hover .delete-row {
+.up-files-list li .delete-row, .up-files-list li:hover .delete-row {
     background: url('../images/iconset-10x10.png') 20px 10px;
     opacity: 0.7;
     width: 10px;
@@ -2696,11 +2696,11 @@ tr.odd {
     float: left;
     margin: 8px 0 0 6px;
 }
-#up-files-list li:hover .delete-row:hover {
+.up-files-list li:hover .delete-row:hover {
     background: url('../images/iconset-10x10.png') 20px 10px;
     opacity: 1;
 }
-#up-files-list li .uploadprogress {
+.up-files-list li .uploadprogress {
     background: rgba(113, 206, 113, 0.2);
     display: block;
     height: 26px;

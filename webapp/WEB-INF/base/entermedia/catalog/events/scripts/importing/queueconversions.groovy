@@ -28,33 +28,37 @@ public void createTasksForUpload() throws Exception {
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	Searcher assetsearcher = mediaArchive.getAssetSearcher();
 
-	//There is a chance that the index is out of date.
-
-	SearchQuery q = assetsearcher.createSearchQuery();
-	String ids = context.getRequestParameter("assetids");
-	//log.info("Found ${ids} assets from context ${context}");
-	log.info("Running queueconversions on ${ids}");
+	Collection hits = context.getPageValue("hits");
+	if( hits == null)
+	{
+		//There is a chance that the index is out of date.
 	
-	if( ids == null)
-	{
-		//Do a search for importstatus of "added" -> "converted"
-		q.addOrsGroup( "importstatus", "imported reimported" );
+		SearchQuery q = assetsearcher.createSearchQuery();
+		String ids = context.getRequestParameter("assetids");
+		//log.info("Found ${ids} assets from context ${context}");
+		log.info("Running queueconversions on ${ids}");
+		
+		if( ids == null)
+		{
+			//Do a search for importstatus of "added" -> "converted"
+			q.addOrsGroup( "importstatus", "imported reimported" );
+		}
+		else
+		{
+			String assetids = ids.replace(","," ");
+			q.addOrsGroup( "id", assetids );
+		}
+	
+		hits = new ArrayList(assetsearcher.search(q) );
 	}
-	else
-	{
-		String assetids = ids.replace(","," ");
-		q.addOrsGroup( "id", assetids );
-	}
-
-	List assets = new ArrayList(assetsearcher.search(q) );
-	if( assets.size() == 0 )
+	if( hits.size() == 0 )
 	{
 		log.error("Problem with import, no asset found");
 	}
 	boolean foundsome = false;
 	List tosave = new ArrayList();
 	List assetsave = new ArrayList();
-	assets.each
+	hits.each
 	{
 		foundsome = false;
 		//Lock lock = null;
@@ -64,9 +68,9 @@ public void createTasksForUpload() throws Exception {
 			//Data asset =  it;
 			
 			String rendertype = mediaarchive.getMediaRenderType(asset);
-			Collection hits = presets.getPresets(mediaarchive,rendertype);
+			Collection presethits= presets.getPresets(mediaarchive,rendertype);
 			//	log.info("Found ${hits.size()} automatic presets");
-			hits.each
+			presethits.each
 			{
 				//Data preset = (Data) presetsearcher.loadData(it);
 				Data preset = it;
