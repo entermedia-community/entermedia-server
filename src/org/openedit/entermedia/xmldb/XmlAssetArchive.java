@@ -98,6 +98,7 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 			{
 				getPageManager().removePage(page);
 			}
+			getCacheManager().remove(toCacheId(), inAsset.getSourcePath());
 		}
 		catch (Exception ex)
 		{

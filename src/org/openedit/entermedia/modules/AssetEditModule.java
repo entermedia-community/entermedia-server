@@ -1,6 +1,5 @@
 package org.openedit.entermedia.modules;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,7 +9,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +28,6 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CompositeAsset;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.SourcePathCreator;
 import org.openedit.entermedia.edit.AssetEditor;
 import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.scanner.PresetCreator;
@@ -51,8 +48,8 @@ import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.users.User;
+import com.openedit.util.ExecutorManager;
 import com.openedit.util.PathUtilities;
-import com.openedit.util.Replacer;
 
 public class AssetEditModule extends BaseMediaModule
 {
@@ -794,36 +791,24 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.putPageValue("asset", asset);
 	}
 	
-	public void createAssetFromUploads(WebPageRequest inReq) throws Exception
+	public void createAssetFromUploads(final WebPageRequest inReq) throws Exception
 	{
-		MediaArchive archive = getMediaArchive(inReq);
-		String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
-
-		HitTracker hits = createAssetsFromPages(getUploadedPages(inReq),basepath,inReq);
-		if( hits != null )
+		final MediaArchive archive = getMediaArchive(inReq);
+		final String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
+		final List pages = getUploadedPages(inReq);
+		ExecutorManager manager = (ExecutorManager)getModuleManager().getBean(archive.getCatalogId(), "executorManager");
+		
+		Runnable runthis = new Runnable()
 		{
-			//hits.selectAll(); //important
-			if (hits.size() ==  1 )
-			{
-				String sourcepath = ((Data)hits.first()).getSourcePath();
-				Asset asset = archive.getAssetBySourcePath(sourcepath);
-				inReq.putPageValue("asset", asset);
-			}
-			else
-			{		
-				Asset asset = archive.getAsset("multiedit:" + hits.getSessionId(),inReq);
-				inReq.putPageValue("asset", asset );
-			}
-			/*
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();) 
-			{
-				Data data = (Data) iterator.next();
-				hits.addSelection(data.getId());
-			}			
-			*/
-			inReq.putPageValue("hits", hits );
-			
+		@Override
+		public void run()
+		{
+			// TODO Auto-generated method stub
+			HitTracker hits = createAssetsFromPages(pages,basepath,inReq);
 		}
+		};
+		manager.execute("importing",runthis);
+				
 	}
 	
 	public void appendRecentUploads(WebPageRequest inReq) throws Exception
@@ -935,7 +920,6 @@ public class AssetEditModule extends BaseMediaModule
 		//TODO: Move into the loop
 		archive.saveAssets(tracker, inReq.getUser());
 
-		
 		String hitsname = inReq.findValue("hitsname");
 		if (hitsname != null)
 		{

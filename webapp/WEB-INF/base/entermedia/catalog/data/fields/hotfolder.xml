@@ -3,13 +3,15 @@
   <property id="id" index="true" stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Nick Name</property>
   <property id="hotfoldertype" editable="true" index="true" type="list" stored="true">Hot Folder Type</property>
+  <property id="subfolder" editable="true" index="true" stored="true">Top Level Folder</property>
    
 <!-- Syncthing -->  
   <property id="deviceid" editable="true" index="true" stored="true">Device ID</property>
-  <property id="subfolder" editable="true" index="true" stored="true">Top Level Folder</property>
   
 <!-- Local Folder -->    
   <property id="externalpath" editable="true" index="true" stored="true">External Path</property>
+
+  <property id="email" editable="true" index="true" stored="true">Email</property>
 
 <!-- Amazon S3 -->    
   <property id="bucket" editable="true" index="true" stored="true">Bucket</property>

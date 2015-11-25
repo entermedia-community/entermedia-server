@@ -531,7 +531,7 @@ public class PathEventManager implements Shutdownable
 
 	public void addToRunQueue(Runnable inExecrun)
 	{
-		getExecutorManager().getSharedExecutor().execute(inExecrun);
+		getExecutorManager().execute(inExecrun);
 		
 	}
 

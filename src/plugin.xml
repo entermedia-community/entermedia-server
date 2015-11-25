@@ -490,6 +490,9 @@
 		<property name="mimeTypeMap">
 			<ref bean="mimeTypeMap" />
 		</property>
+		<property name="cacheManager">
+			<ref bean="cacheManager" />
+		</property>
 <!-- 		<property name="lockManager">
 			<ref bean="lockManager" />
 		</property>

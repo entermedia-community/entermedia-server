@@ -29,14 +29,10 @@
 		<option value="before365" #if( $op && $op == "before365" )selected #end>[[Past year]]</option>
 	</select>
 	
-	<span id="datevalue${inputid}" style="display: none; width: 1px;">
-	<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><br/>	
-	<input type="text" class="datepicker " data-targetid="datebox${inputid}" /> 
+	<span id="dateinput${inputid}" >
 
-	
 	</span>
 	
-	<span id="daterange${inputid}" style="display: none;">
 	#if($hits)
 		#set($after = $hits.getInput("${inputname}.after"))
 		#set($before = $hits.getInput("${inputname}.before"))
@@ -47,34 +43,32 @@
 		#set($after = $context.getRequestParameter("${inputname}.after"))
 		#set($before = $context.getRequestParameter("${inputname}.before"))
 	#end
-	<input name="${inputname}.after" class="" id="dateafter${inputid}" value="$!after" size="8" type="hidden">
-	<input type="text" class="datepicker " data-targetid="dateafter${inputid}" value="$!after" size="8" /> 	
-
-	<br />
-	<input name="${inputname}.before" class="" id="datebefore${inputid}" value="$!before" size="8" type="hidden">
-	<input type="text" class="datepicker " data-targetid="datebefore${inputid}" value="$!before" size="8" /> 	
-
-	</span>
+	
 	
 	<script type="text/javascript">
 		updateDateInput${inputid} = function(value)
 		{
-			var valueblock = document.getElementById('datevalue${inputid}');
-			var rangeblock = document.getElementById('daterange${inputid}');
+			var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><input type="text" class="datepicker " data-targetid="datebox${inputid}" /> ';
+			var twoinputs = '<input name="${inputname}.after"  id="dateafter${inputid}" value="$!after" size="8" type="hidden"> \
+						<input type="text" class="datepicker " data-targetid="dateafter${inputid}" value="$!after" size="8" /> \
+						<br />   \
+						<input name="${inputname}.before"  id="datebefore${inputid}" value="$!before" size="8" type="hidden">  \
+						<input type="text" class="datepicker " data-targetid="datebefore${inputid}" value="$!before" size="8" /> ';
+
+
 			if( value < 3 )
 			{
-				valueblock.style.display='block';
-				rangeblock.style.display='none';
+				$("#dateinput${inputid}").html(oneinput);
+				//valueblock.style.display='block';
+				//rangeblock.style.display='none';
 			}
 			else if ( value == 3 )
 			{
-				valueblock.style.display='none';
-				rangeblock.style.display='block';
+				$("#dateinput${inputid}").html(twoinputs);
 			}
 			else
 			{
-				valueblock.style.display='none';
-				rangeblock.style.display='none';
+				$("#dateinput${inputid}").html("");
 			}
 		}
 		updateDateInput${inputid}(document.getElementById('operation${inputid}').selectedIndex);
