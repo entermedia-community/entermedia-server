@@ -60,7 +60,10 @@
 	<property id="flac"  rendertype="audio"  synctags="false">Flac</property>
 	<property id="m4a"   rendertype="audio"  synctags="false">M4A</property>
 	<property id="aac"   rendertype="audio"  synctags="false">aac</property>
-
+	<property id="gddoc"  synctags="true"  rendertype="document">GDOC</property>
+	<property id="gdsheet"  synctags="true"  rendertype="document">GSHEET</property>
+	<property id="gdslide"  synctags="true"  rendertype="document">GSLIDE</property>
+	<property id="gddraw"  synctags="true"  rendertype="document">GDRAW</property>
 	<property id="wmv"  synctags="true"  rendertype="video" creator="ffmpeg">WMV</property>
 	<property id="doc"  synctags="true"  rendertype="document"  creator="oofficeDocument">DOC</property>
 	<property id="docx"  synctags="true"  rendertype="document" >DOCx</property>
