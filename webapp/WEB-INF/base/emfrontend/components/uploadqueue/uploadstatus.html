@@ -8,11 +8,7 @@
 #set( $percentageString=$percentage.toString())
 #set( $percentageString=$percentageString.substring(0, $percentageString.indexOf(".")) )
 
-<div id="upload$assetid" class="ajaxstatus" period="1000" ajaxpath="$home$apphome/components/uploadqueue/uploadstatus.html?assetid=$assetid">
-    <div class="proxythumb loadingborder" style="text-align: left;">
-		<div class="loadingbar">
-		    ##${percentageString}%
-		</div>
-	</div>
-</div>
+<div id="upload$assetid" class="ajaxstatus" data-firstrun="500"  ajaxpath="$home$apphome/components/uploadqueue/uploadstatus.html?assetid=$assetid">
+         <div class="uiinfo	 proxythumb" title="Completing" ><div class="loadingbar" style="width:10px;"></div></div> 
+ </div>
 #end
