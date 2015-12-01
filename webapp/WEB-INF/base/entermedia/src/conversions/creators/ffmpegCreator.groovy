@@ -186,9 +186,11 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 						height = ah;
 					}
 				}
-				comm.add("-s");
-				comm.add(width + "x"  + height);
-				
+				if( width > 1 &&  height > 1)
+				{
+					comm.add("-s");
+					comm.add(width + "x"  + height);
+				}				
 				
 				//640x360 853x480 704x480 = 480p
 /*
@@ -227,21 +229,20 @@ Here is a simple PCM audio format for low CPU devices
 				new File( outpath).getParentFile().mkdirs();
 				//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 				
-				boolean ok =  runExec("avconv", comm); //, timeout);
-				result.setOk(ok);
-				if( !ok )
+				ExecResult execresult = getExec().runExec("avconv", comm, true);
+				result.setOk(execresult.isRunOk());
+				if( !execresult.isRunOk() )
 				{
-					ExecResult execresult = getExec().runExec("avconv", comm, true);//, timeout);
 					String output = execresult.getStandardError();
 					result.setError(output);
 					return result;
 				}
-				if(ok && h264)
+				if(h264)
 				{
 					comm = new ArrayList();
 					comm.add(converted.getContentItem().getAbsolutePath()  + "tmp.mp4");
 					comm.add(converted.getContentItem().getAbsolutePath());
-					ok =  runExec("qt-faststart", comm, timeout);
+					boolean ok =  runExec("qt-faststart", comm, timeout);
 					result.setOk(ok);
 					Page old = getPageManager().getPage(converted.getContentItem().getPath() + "tmp.mp4");
 					old.getContentItem().setMakeVersion(false);
