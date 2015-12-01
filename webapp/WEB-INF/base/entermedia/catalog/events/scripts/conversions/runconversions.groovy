@@ -277,34 +277,27 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 		{
 			props.put("pagenum",pagenumber);
 		}
-
-		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inAsset.getSourcePath());
-		
-		//TODO: Copy the task properties into the props so that crop stuff can be handled in the createInstructions
 		if(Boolean.parseBoolean(inTask.get("crop")))
 		{
-//			log.info("HERE!!!");
-			inStructions.setCrop(true);
-			inStructions.setProperty("x1", inTask.get("x1"));
-			inStructions.setProperty("y1", inTask.get("y1"));
-			inStructions.setProperty("cropwidth", inTask.get("cropwidth"));
-			inStructions.setProperty("cropheight", inTask.get("cropheight"));
-			if(inStructions.getProperty("prefwidth") == null){
-				inStructions.setProperty("prefwidth", inTask.get("cropwidth"));
-			}
-			if(inStructions.getProperty("prefheight") == null){
-				inStructions.setProperty("prefheight", inTask.get("cropheight"));
-			}
-			//inStructions.setProperty("useinput", "cropinput");//hard-coded a specific image size (large)
-			inStructions.setProperty("useoriginalasinput", "true");//hard-coded a specific image size (large)
+			props.put("iscrop","true");
+			props.putAll(inTask.getProperties() );
 			
-			inStructions.setProperty("gravity", "default");//hard-coded a specific image size (large)
-			inStructions.setProperty("croplast", "true");//hard-coded a specific image size (large)
+			if(inTask.get("prefwidth") == null){
+				props.put("prefwidth", inTask.get("cropwidth"));
+			}
+			if(inTask.get("prefheight") == null){
+				props.put("prefheight", inTask.get("cropheight"));
+			}
+			props.put("useoriginalasinput", "true");//hard-coded a specific image size (large)
+			props.put("croplast", "true");//hard-coded a specific image size (large)
 			
-			if(Boolean.parseBoolean(inTask.get("force"))){
-				inStructions.setForce(true);
+			if(Boolean.parseBoolean(inTask.get("force")))
+			{
+				props.put("isforced","true");
 			}
 		}
+
+		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inAsset.getSourcePath());
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );

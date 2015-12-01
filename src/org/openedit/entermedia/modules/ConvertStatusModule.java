@@ -105,7 +105,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		
 		taskSearcher.saveData(newTask, inReq.getUser());
-		archive.fireMediaEvent("conversions/runconversions", inReq.getUser(), asset);//block
+		archive.fireMediaEvent("conversions/runconversion", inReq.getUser(), asset);//block
 		Data preset = archive.getData("convertpreset", presetId);
 		
 		Page outputpage = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "generated"+ asset.getSourcePath() + "/" + preset.get("outputfile"));

@@ -436,8 +436,8 @@ public class imagemagickCreator extends BaseImageCreator {
 				com.add(resizestring.toString());
 			}
 
-			//now let's crop
-			setValue("gravity", "Center", inStructions, com);
+			//This gravity is the relative point of the crop marks
+			setValue("gravity", "NorthWest", inStructions, com);
 
 			if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{

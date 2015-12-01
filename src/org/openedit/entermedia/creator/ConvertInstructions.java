@@ -18,13 +18,11 @@ public class ConvertInstructions
 	protected int fieldPageNumber = 1;  //This is 1 based
 	//protected String fieldOutputExtension;
 	//protected String fieldInputType;
-	protected boolean fieldForce = false;
 	//protected String fieldWatermarkPlacement; 
 	protected int fieldRotation = 360;
 	//protected String fieldInputSourcePath;
 	//protected String fieldSourceFile;
 	protected Map<String, String> fieldProperties;
-	protected boolean fieldCrop;
 	protected Collection<Data> fieldParameters;
 	
 
@@ -38,8 +36,9 @@ public class ConvertInstructions
 		fieldParameters = inParameters;
 	}
 
-	public boolean isForce() {
-		return fieldForce;
+	public boolean isForce() 
+	{
+		return Boolean.parseBoolean( getProperty("isforced") );
 	}
 
 	public void addProperty(String inName, String inValue)
@@ -76,8 +75,9 @@ public class ConvertInstructions
 		
 	}
 	
-	public void setForce(boolean force) {
-		fieldForce = force;
+	public void setForce(boolean force)
+	{
+		setProperty("isforced",String.valueOf(force));
 	}
 
 	public Dimension getMaxScaledSize()
@@ -235,12 +235,13 @@ public class ConvertInstructions
 	
 	public boolean isCrop()
 	{
-		return fieldCrop;
+		return Boolean.parseBoolean( getProperty("iscrop") );
 	}
 
 	public void setCrop(boolean inFieldCrop)
 	{
-		fieldCrop = inFieldCrop;
+		setProperty("iscrop",String.valueOf(inFieldCrop));
+
 	}
 
 	public int getRotation()
