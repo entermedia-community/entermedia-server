@@ -1,6 +1,5 @@
-
-<div class="ui-widget uipanel" style="padding: 40px;">
-		    <div class="ui-widget-header">[[Create New Asset Record]]</div>
+<div class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+		    <div class="ui-widget-header">[[Create New Record]]</div>
 		    <div class="ui-widget-content">
 	
 
@@ -9,8 +8,9 @@
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = $formatteddate )
 <form  name="wizard" method="post" 
-	action="$home/${applicationid}/views/upload/create/data/createnew.html">
+	action="$home$apphome/components/createmedia/data/createnew.html">
 	<input type="hidden" name="categoryid" value="index"/>
+    <input type="hidden" name="currentcollection" id="urlcurrentcollection"/>
 	
 <div id="eml-tab-green-container" class="clearfix">
 	<div class="inner-content">
@@ -30,8 +30,18 @@
 				<div style="clear: both;"></div>
 </div>
 </form>
+<script>
+	var collectionid = $("#collectiontoplevel").data("collectionid");
+	if( collectionid )
+	{
+		 $("#urlcurrentcollection").val(collectionid);
+	}
+</script>	
+
+
 </div>
 </div>
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
 
 			</div>
 		</div>

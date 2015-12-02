@@ -1,0 +1,25 @@
+<page>
+	<inner-layout>/${applicationid}/views/modules/librarycollection/viewmedia.html</inner-layout>
+	<property name="hitsname">hits</property>
+	<property name="searchtype">${module}</property>
+	<property name="virtual">true</property>
+	
+    <path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<searchtype>${module}</searchtype>
+    </path-action>
+	
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>${module}</searchtype>
+	</path-action>
+	
+	  <permission name="view">
+    		<action name="ProjectModule.checkLibraryPermission" />
+    </permission>
+	
+	<style id="uploadstyle" href="${themeprefix}/styles/pages/upload.css" />
+	<script id="upload" src="/${applicationid}/components/upload/types/html5/upload.js" />
+	<script id="html5_upload" src="/${applicationid}/components/javascript/upload/jquery.html5_upload.js" />
+	
+	
+</page>

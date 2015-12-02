@@ -274,8 +274,14 @@ jAngular.render = function(div, scope)
 		}
 		
 		var toplevel = $(div);
-		
-		//look at all the attributes
-		jAngular.process(toplevel,scope);
+		if( toplevel.length == 0 )
+		{
+			console.log("No such div element " + div);
+		}
+		else
+		{
+			//look at all the attributes
+			jAngular.process(toplevel,scope);
+		}	
 		
 };

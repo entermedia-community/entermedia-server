@@ -144,11 +144,13 @@ public class BaseProjectManager implements ProjectManager
 		 
 		return usercollections;
 	}
-	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker assets)
+	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, HitTracker assets)
 	{
-		addAssetToLibrary(inReq, archive, libraryid, assets);
-	
-		String librarycollection = inReq.getRequestParameter("librarycollection");
+		addAssetToLibrary(archive, libraryid, assets);
+		addAssetToCollection(archive, collectionid, assets);
+	}
+	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets)
+	{
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 	
 		List tosave = new ArrayList();
@@ -169,7 +171,7 @@ public class BaseProjectManager implements ProjectManager
 			for(String assetid: assetids)
 			{
 				Data found = librarycollectionassetSearcher.createNewData();
-				found.setSourcePath(libraryid + "/" + librarycollection);
+				//found.setSourcePath(libraryid + "/" + librarycollection);
 				found.setProperty("librarycollection", librarycollection);
 				found.setProperty("asset", assetid);
 				tosave.add(found);
@@ -177,7 +179,7 @@ public class BaseProjectManager implements ProjectManager
 				{
 					for(Data save : tosave)
 					{
-						librarycollectionassetSearcher.saveData(save, inReq.getUser());
+						librarycollectionassetSearcher.saveData(save, null);
 					}
 					tosave.clear();
 				}
@@ -186,29 +188,32 @@ public class BaseProjectManager implements ProjectManager
 		}
 		for(Data found : tosave)
 		{
-			librarycollectionassetSearcher.saveData(found, inReq.getUser());
+			librarycollectionassetSearcher.saveData(found, null);
 		}
 	}
-	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid)
+	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
 	{
-		addAssetToLibrary(inReq, archive, libraryid, assetid);
-	
-		String librarycollection = inReq.getRequestParameter("librarycollection");
+		addAssetToLibrary(archive, libraryid, assetid);
+		//String librarycollection = inReq.getRequestParameter("librarycollection");
+		addAssetToCollection(archive, collectionid, assetid);
+	}
+	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid)
+	{
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 	
-		Data found = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).match("asset", assetid).searchOne();
+		Data found = librarycollectionassetSearcher.query().match("librarycollection", collectionid).match("asset", assetid).searchOne();
 	
 		if (found == null)
 		{
 			found = librarycollectionassetSearcher.createNewData();
-			found.setSourcePath(libraryid + "/" + librarycollection);
-			found.setProperty("librarycollection", librarycollection);
+			//found.setSourcePath(libraryid + "/" + collectionid);
+			found.setProperty("librarycollection", collectionid);
 			found.setProperty("asset", assetid);
-			librarycollectionassetSearcher.saveData(found, inReq.getUser());
+			librarycollectionassetSearcher.saveData(found, null);
 			log.info("Saved " + found.getId());
 		}
 	}
-	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker assets)
+	public void addAssetToLibrary(MediaArchive archive, String libraryid, HitTracker assets)
 	{
 		List tosave = new ArrayList();
 		for(MultiValued toadd: assets)
@@ -229,7 +234,7 @@ public class BaseProjectManager implements ProjectManager
 				{
 					for(Data save : tosave)
 					{
-						archive.saveAsset(save, inReq.getUser());
+						archive.saveAsset(save, null);
 					}
 					tosave.clear();
 				}
@@ -237,35 +242,19 @@ public class BaseProjectManager implements ProjectManager
 		}
 		for(Data asset : tosave)
 		{
-			archive.saveAsset(asset, inReq.getUser());
+			archive.saveAsset(asset, null);
 		}
 	}
 
-	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid)
+	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid)
 	{
 		Asset asset = archive.getAsset(assetid);
 	
 		if (asset != null && !asset.getLibraries().contains(libraryid))
 		{
 			asset.addLibrary(libraryid);
-			archive.saveAsset(asset, inReq.getUser());	
+			archive.saveAsset(asset, null);	
 		}
-	}
-
-	public Collection<String> loadAssetIdsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
-	{
-		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
-		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
-		Collection<String> ids = new ArrayList();
-		for(Data hit in found)
-		{
-			String id = hit.get("asset");
-			if( id != null)
-			{
-				ids.add(id);
-			}
-		}
-		return ids;
 	}
 	
 	public HitTracker loadAssetsInLibrary(Data inLibrary,  MediaArchive archive, WebPageRequest inReq)
@@ -344,7 +333,7 @@ public class BaseProjectManager implements ProjectManager
 		return false;	
 	}
 
-	public void removeAssetFromLibrary(WebPageRequest inReq, MediaArchive inArchive, String inLibraryid, HitTracker inAssets)
+	public void removeAssetFromLibrary(MediaArchive inArchive, String inLibraryid, HitTracker inAssets)
 	{
 		Searcher librarycollectionsearcher = inArchive.getSearcher("librarycollection");
 		HitTracker collections = librarycollectionsearcher.query().match("library",inLibraryid).search();
@@ -359,12 +348,12 @@ public class BaseProjectManager implements ProjectManager
 			if (asset != null && asset.getLibraries().contains(inLibraryid))
 			{
 				asset.removeLibrary(inLibraryid);
-				inArchive.saveAsset(asset, inReq.getUser());
+				inArchive.saveAsset(asset, null);
 			}
 		}
 	}
 
-	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, HitTracker inAssets)
+	public void removeAssetFromCollection(MediaArchive inArchive, String inCollectionid, HitTracker inAssets)
 	{
 			Searcher librarycollectionassetSearcher = inArchive.getSearcher("librarycollectionasset");
 		

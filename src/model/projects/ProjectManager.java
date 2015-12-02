@@ -20,17 +20,18 @@ public interface ProjectManager
 
 	public Collection<UserCollection> loadCollections(WebPageRequest inReq);
 	
-	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid);
+	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid);
 
-	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker inAssets );
+	public void addAssetToLibrary(MediaArchive archive, String libraryid, HitTracker inAssets );
 
-	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker inAssets );
-	
-	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid);
+	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, HitTracker inAssets );
+	public void addAssetToCollection(MediaArchive archive, String collectionid, HitTracker inAssets );
+	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid);
+	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid);
 
-	public void removeAssetFromLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, HitTracker inAssets );
+	public void removeAssetFromLibrary(MediaArchive archive, String libraryid, HitTracker inAssets );
 
-	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, HitTracker inAssets );
+	public void removeAssetFromCollection(MediaArchive archive, String collectionid, HitTracker inAssets );
 
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId);
 	

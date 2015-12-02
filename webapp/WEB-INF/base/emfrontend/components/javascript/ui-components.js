@@ -360,22 +360,92 @@ uiload = function() {
 
 	});
 
-	$(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e)   
+	$(".emtabs").livequery( function()   
 	{
-	    var link = $(e.target); // activated tab
-	    
-	    var tab = $(link.attr("href"));
-	    
-		//var tab = $(this);
-		var url = tab.data("tabpath");
-		if( !tab.data("tabloaded") )
+		var tabs = $(this); 
+		
+		var tabcontent = $("#" + tabs.data("targetdiv") );
+		
+		//active the right tab
+		var hash = window.location.hash;
+		if( !hash )
 		{
-			jQuery.get(url, {}, function(data) 
-			{
-				tab.html(data);
-				tab.data("tabloaded",true);
-			});
+			hash = "#" + tabs.data("defaulttab");
+		}
+		var activelink = $(hash);
+		var loadedpanel = $(hash + "panel");
+		if( loadedpanel.length == 0)
+		{
+			loadedpanel = $("#loadedpanel",tabcontent);
+			loadedpanel.attr("id",activelink.attr("id") + "panel");
+			activelink.data("tabloaded",true);
 		}	
+		activelink.parent("li").addClass("ui-state-active");
+		activelink.data("loadpageonce",false);
+		
+		$("a",tabs).livequery("click", function (e)   
+		{
+			e.preventDefault();
+			
+	    	var link = $(this); // activated tab
+			$("li",tabs).removeClass("ui-state-active");
+	    	link.parent("li").addClass("ui-state-active");
+	    	
+		    var id = link.attr("id");
+
+		    var url = link.attr("href");
+		    url = url + "#" + id;
+			var panelid =  id + "panel";
+			var tab = $( "#" + panelid);
+			if( tab.length == 0)
+			{
+			  tab = tabcontent.append('<div class="tab-pane" id="' + panelid + '" ></div>');
+			  tab = $( "#" + panelid);
+			}	  
+			
+			var reloadpage = link.data("loadpageonce");
+			if( reloadpage )
+			{
+				if( window.location.href.endsWith( url ) )
+				{
+					window.location.reload();
+				}
+				else
+				{
+					window.location.href = url;
+				}
+			}
+			else
+			{
+				var loaded = link.data("tabloaded");
+				if( link.data("allwaysloadpage") )
+				{	
+					loaded = false;
+				}
+				if( !loaded )
+				{
+					var levels = link.data("layouts");
+					if( !levels)
+					{
+						levels = "1";
+					}
+					jQuery.get(url , {oemaxlevel:levels}, function(data) 
+					{
+						tab.html(data);
+						link.data("tabloaded",true);
+						$(".tab-pane",tabcontent).hide();
+						tab.show();
+						$(window).trigger( "resize" );
+					});
+				}
+				else
+				{
+					$(".tab-pane",tabcontent).hide();
+					tab.show();
+					$(window).trigger( "resize" );
+				}
+			}	
+		});
 	});
 
 

@@ -142,7 +142,6 @@ $(document).ready(function()
 				$("#up-files-list-completed").prepend(completed);
 				$("#completed-uploads").show();
 	        	 
-	        	 
 	             return true;
 	        	 //Loop over all the files. add rows
 	        	 //alert("start");
@@ -197,6 +196,7 @@ $(document).ready(function()
     				   var viewassets = $("#viewassets");
 	        		   viewassets.removeAttr('disabled');
     				   
+    				   //$(".media_results_tab").data("tabloaded",false);
 	        	}
 	
 	         }
