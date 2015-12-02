@@ -7,7 +7,7 @@
 
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = $formatteddate )
-<form  name="wizard" method="post" 
+<form  name="wizard" method="post"  class="ajaxform" targetdiv="addedcomplete"
 	action="$home$apphome/components/createmedia/data/createnew.html">
 	<input type="hidden" name="categoryid" value="index"/>
     <input type="hidden" name="currentcollection" id="urlcurrentcollection"/>
@@ -23,10 +23,9 @@
 
 		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 
-<hr />
 
-	<input class="btn" style="float: right" type="submit" id="finishbutton" value="[[Next]]">
-	
+	<input class="btn" style="margin-left:260px"  type="submit" id="finishbutton" value="[[Create Data]]">
+	 <span id="addedcomplete"></span>
 				<div style="clear: both;"></div>
 </div>
 </form>

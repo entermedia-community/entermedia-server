@@ -68,6 +68,11 @@ else if (externalmediainput.contains("vimeo") )
 }
 else
 {
+	int ques = externalmediainput.indexOf("?");
+	if( ques > -1)
+	{
+		externalmediainput = externalmediainput.substring(0,ques);
+	}
 	asset.setName( PathUtilities.extractFileName(externalmediainput));		
 }
 

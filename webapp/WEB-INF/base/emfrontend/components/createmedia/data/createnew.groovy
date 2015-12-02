@@ -1,3 +1,5 @@
+import model.projects.ProjectManager
+
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.store.*

@@ -3515,6 +3515,7 @@ body #emcontainer .emasseteditorarea {
     width: 130px;
     text-align: center;
     padding: 0 10px;
+    background-color: transparent;
 }
 #emcontainer #emselectable #tableheader, #emcontainer .emdata tr.tableheader {
     background: rgb(187,232,132);
@@ -6780,12 +6781,12 @@ select.smalldropdown {
 	padding-left: 20px;
 }
 
-#createmediapanel .thumbnail {
+#createmediapanel .btnthumbnail {
 	background-color: transparent;
     border: 1px solid transparent;
     min-height: 300px;
 }
-#createmediapanel .thumbnail:hover {
+#createmediapanel .btnthumbnail:hover {
     border: 1px solid #eee;
     border-radius: 8px;
     background: none repeat scroll 0 0 #C9E8F2;

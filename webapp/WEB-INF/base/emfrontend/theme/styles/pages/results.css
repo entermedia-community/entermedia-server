@@ -45,7 +45,7 @@ td.resultstablecell .proxythumb {
     width: 118px;
     height: 62px;
     vertical-align: middle;
-    margin: 0;
+    margin: 5px auto;
     padding: 3px;
     border: 1px solid #e5e5e5;
     
@@ -98,6 +98,8 @@ div.emdropshadow {
     display: inline-block;
     min-width: 40px;
     min-height: 40px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 span.emdropshadow {

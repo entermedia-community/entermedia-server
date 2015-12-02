@@ -388,6 +388,11 @@ public class MediaArchive
 	}
 	public String getMediaRenderType(Data inAsset)
 	{
+		String format = inAsset.get("fileformat");
+		return getMediaRenderType(format);
+	}	
+	public String getMediaPlayerType(Data inAsset)
+	{
 		if( inAsset.get("embeddedurl") != null)
 		{
 			return "embedded";
