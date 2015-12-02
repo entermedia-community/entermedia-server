@@ -29,7 +29,11 @@ public abstract class TempFileGenerator   extends BaseGenerator implements Gener
 			long len = inFile.length();
 			if ( len != -1)
 			{
-				res.setContentLength((int)len);
+				//res.setHeader("Content-Length", String.valueOf(len));
+				if( len < Integer.MAX_VALUE)
+				{
+					res.setContentLength((int)len);
+				}	
 			}
 			
 			res.setDateHeader("Last-Modified",inFile.lastModified());
