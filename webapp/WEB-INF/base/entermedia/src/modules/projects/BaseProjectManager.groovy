@@ -177,19 +177,13 @@ public class BaseProjectManager implements ProjectManager
 				tosave.add(found);
 				if( tosave.size() > 200)
 				{
-					for(Data save : tosave)
-					{
-						librarycollectionassetSearcher.saveData(save, null);
-					}
+					librarycollectionassetSearcher.saveAllData(tosave,null);
 					tosave.clear();
 				}
 				//log.info("Saved " + found.getId());
 			}
 		}
-		for(Data found : tosave)
-		{
-			librarycollectionassetSearcher.saveData(found, null);
-		}
+		librarycollectionassetSearcher.saveAllData(tosave,null);
 	}
 	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
 	{
@@ -232,18 +226,13 @@ public class BaseProjectManager implements ProjectManager
 				tosave.add(asset);
 				if( tosave.size() > 500)
 				{
-					for(Data save : tosave)
-					{
-						archive.saveAsset(save, null);
-					}
+					archive.saveAssets(tosave);
 					tosave.clear();
 				}
 			}
 		}
-		for(Data asset : tosave)
-		{
-			archive.saveAsset(asset, null);
-		}
+		archive.saveAssets(tosave);
+		
 	}
 
 	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid)
@@ -339,7 +328,7 @@ public class BaseProjectManager implements ProjectManager
 		HitTracker collections = librarycollectionsearcher.query().match("library",inLibraryid).search();
 		for(Data collection: collections)
 		{
-			removeAssetFromCollection(inReq,inArchive,collection.getId(),inAssets);
+			removeAssetFromCollection(inArchive,collection.getId(),inAssets);
 		}
 		for(Data toadd: inAssets)
 		{
