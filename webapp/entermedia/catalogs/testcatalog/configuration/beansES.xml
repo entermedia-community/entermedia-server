@@ -1,21 +1,3 @@
-<beans>
+<beans basedatatype="elastic">
 
-	<!-- Core types -->
-	<bean id="transientSearcher" bean="elasticTransientSearcher" /> 
-	<bean id="listSearcher" bean="elasticListSearcher" /> 
-	<bean id="folderSearcher" bean="elasticFolderSearcher" /> 
-	<bean id="dataSearcher" bean="elasticDataSearcher" /> 
-
-	<bean id="assetSearcher" bean="elasticAssetSearcher" /> 
-	<bean id="lockSearcher" bean="elasticLockSearcher" /> 
-
-
-	<!-- Override custom settings? TODO: Remove these -->
-	
-	 
-	<bean id="userprofileSearcher" bean="elasticUserProfileSearcher" /> 
-	<bean id="conversiontaskSearcher" bean="elasticTransientSearcher" /> 
-	<bean id="uploadqueueSearcher" bean="elasticDataSearcher" />
-	
-	     
 </beans>
