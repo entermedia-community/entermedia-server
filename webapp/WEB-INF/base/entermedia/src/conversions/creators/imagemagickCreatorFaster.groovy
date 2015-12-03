@@ -17,8 +17,8 @@ import com.openedit.page.Page
 import com.openedit.util.ExecResult
 import com.openedit.util.PathUtilities
 
-public class imagemagickCreator extends BaseImageCreator {
-	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
+public class imagemagickCreatorFaster extends BaseImageCreator {
+	private static final Log log = LogFactory.getLog(imagemagickCreatorFaster.class);
 	protected String fieldPathToProfile;
 
 	public String getPathtoProfile(){

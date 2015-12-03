@@ -3516,6 +3516,7 @@ body #emcontainer .emasseteditorarea {
     text-align: center;
     padding: 0 10px;
     background-color: transparent;
+    border: 0px;
 }
 #emcontainer #emselectable #tableheader, #emcontainer .emdata tr.tableheader {
     background: rgb(187,232,132);

@@ -322,9 +322,11 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 					data.setElement(element);
 					data.setSourcePath(sourcepath);
 					buffer.add(data);
+					incrementCount();
 					if( buffer.size() > 99)
 					{
 						updateIndex(inWriter, inTaxonomyWriter, buffer);
+						buffer.clear();
 					}
 				}
 			}
@@ -335,6 +337,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		processor.setIncludeExtensions("xml");
 		processor.process();
 		updateIndex(inWriter, inTaxonomyWriter, buffer);
+		log.info("Reindexed " + processor.getExecCount() );
 	}
 	
 

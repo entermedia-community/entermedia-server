@@ -9,6 +9,8 @@ import org.openedit.Data
 import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
+import org.openedit.data.lucene.BaseLuceneSearcher
+import org.openedit.data.lucene.LuceneSearchQuery;
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.profile.UserProfile
@@ -254,44 +256,45 @@ public class BaseProjectManager implements ProjectManager
 	
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
 	{
-		SearchQuery assetsearch = archive.getAssetSearcher().createSearchQuery();
-		SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
-		assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
-		HitTracker all = archive.getAssetSearcher().search(assetsearch);
-		/*
-		 *
-		 
-		//Do an asset search with permissions, showing only the assets on this collection
-		HitTracker all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
-
-		all.setSelections(ids);
-		all.setShowOnlySelected(true);
-		//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
-		*/
-		
-		//create script that syncs up the assets that have been removed
-		/*
-		if( all.size() != ids.size() )
+		Searcher searcher = archive.getAssetSearcher();
+		SearchQuery assetsearch = searcher.createSearchQuery();
+		HitTracker all = null;
+		if( 1 > 2 && assetsearch instanceof LuceneSearchQuery)
 		{
+			SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
+			assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
+			all = archive.getAssetSearcher().search(assetsearch);
+		}
+		else
+		{	
 			Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
-			//Some assets got deleted, lets remove them from the collection
-			Set extras = new HashSet(ids);
-			for (Data hit in all)
+			
+			//Do an asset search with permissions, showing only the assets on this collection
+			all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
+			all.setSelections(ids);
+			all.setShowOnlySelected(true);
+			//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
+			//create script that syncs up the assets that have been removed
+			if( all.size() != ids.size() )
 			{
-				extras.remove(hit.getId());
-			}
-			//log.info("remaining " + extras );
-			Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
-			for (String id in extras)
-			{
-				Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
-				if( toremove != null)
+				//Some assets got deleted, lets remove them from the collection
+				Set extras = new HashSet(ids);
+				for (Data hit in all)
 				{
-					collectionassetsearcher.delete(toremove, null);
+					extras.remove(hit.getId());
+				}
+				//log.info("remaining " + extras );
+				Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
+				for (String id in extras)
+				{
+					Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
+					if( toremove != null)
+					{
+						collectionassetsearcher.delete(toremove, null);
+					}
 				}
 			}
 		}
-		*/
 		String hpp = inReq.getRequestParameter("page");
 		if( hpp != null)
 		{
@@ -305,6 +308,22 @@ public class BaseProjectManager implements ProjectManager
 		all.getSearchQuery().setProperty("collectionid", collectionid);
 		all.getSearchQuery().setHitsName("collectionassets")
 		return all
+	}
+	//TODO: delete this
+	private Collection<String> loadAssetIdsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
+	{
+		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
+		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
+		Collection<String> ids = new ArrayList();
+		for(Data hit in found)
+		{
+			String id = hit.get("asset");
+			if( id != null)
+			{
+				ids.add(id);
+			}
+		}
+		return ids;
 	}
 	
 	public boolean addUserToLibrary( MediaArchive archive, Data inLibrary, User inUser) 

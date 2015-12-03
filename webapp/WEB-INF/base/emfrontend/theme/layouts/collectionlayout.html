@@ -4,6 +4,7 @@
 	<div class="row">
 		<div class="col-md-4">
 		<div class="collectionheaderactions">
+		#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
 		<a href="$editlink" class="librarylabel"  data-targetdiv="left-col-libraries" title="$!{librarycol.notes}"><span> $librarycol.getName() ($hits.size())</span></a>
 		</div>
 		</div>
@@ -16,7 +17,6 @@
 		  <li  class="ui-state-default ui-corner-top "><a id="approvalstab"  href="$link" >[[Approvals]]</a></li>
 #set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${librarycol.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection")		
 		  <li class="ui-state-default ui-corner-top "><a  id="sharetab"  href="$link" >[[Share]]</a></li>
-#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
 		  <li class="ui-state-default ui-corner-top " ><a id="settingstab" href="$editlink" >[[Settings]]</a></li>
 		</ul>
 		</div>
