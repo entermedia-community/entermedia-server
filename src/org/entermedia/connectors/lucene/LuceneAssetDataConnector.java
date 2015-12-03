@@ -91,7 +91,7 @@ public class LuceneAssetDataConnector extends BaseLuceneSearcher implements Data
 			Map analyzermap = new HashMap();
 			// analyzermap.put("description", new
 			// EnglishAnalyzer(Version.LUCENE_36));
-			analyzermap.put("description", new FullTextAnalyzer(Version.LUCENE_41));
+			analyzermap.put("description", new FullTextAnalyzer(Version.LUCENE_4_1));
 
 			analyzermap.put("foldersourcepath", new NullAnalyzer());
 
