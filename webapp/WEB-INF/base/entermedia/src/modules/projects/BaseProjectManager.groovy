@@ -6,8 +6,11 @@ import model.projects.UserCollection
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
+import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
+import org.openedit.data.lucene.BaseLuceneSearcher
+import org.openedit.data.lucene.LuceneSearchQuery;
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.profile.UserProfile
@@ -15,7 +18,9 @@ import org.openedit.profile.UserProfile
 import com.openedit.WebPageRequest
 import com.openedit.hittracker.FilterNode
 import com.openedit.hittracker.HitTracker
+import com.openedit.hittracker.SearchQuery
 import com.openedit.users.*
+
 
 public class BaseProjectManager implements ProjectManager
 {
@@ -55,7 +60,7 @@ public class BaseProjectManager implements ProjectManager
 		fieldSearcherManager = inSearcherManager;
 	}
 	
-	protected Data getCurrentLibrary( UserProfile inProfile)
+	public Data getCurrentLibrary( UserProfile inProfile)
 	{
 		if( inProfile != null)
 		{
@@ -80,7 +85,8 @@ public class BaseProjectManager implements ProjectManager
 			Searcher assetsearcher = getSearcherManager().getSearcher(getCatalogId(),"asset");
 			
 			HitTracker hits = assetsearcher.query().match("libraries",library.getId()).named("sidebar").search(inReq);
-			if(hits != null){
+			if(hits != null)
+			{
 				int assetsize = hits.size();
 				inReq.putPageValue("librarysize",assetsize);
 			}
@@ -140,65 +146,80 @@ public class BaseProjectManager implements ProjectManager
 		 
 		return usercollections;
 	}
-	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> assets)
+	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, HitTracker assets)
 	{
-		addAssetToLibrary(inReq, archive, libraryid, assets);
-	
-		String librarycollection = inReq.getRequestParameter("librarycollection");
+		addAssetToLibrary(archive, libraryid, assets);
+		addAssetToCollection(archive, collectionid, assets);
+	}
+	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets)
+	{
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 	
 		List tosave = new ArrayList();
-		for(Data asset : assets)
+		assets.setHitsPerPage(200);
+		for(int i=0;i < assets.getTotalPages();i++)
 		{
-			Data found = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).match("asset", asset.getId()).searchOne();
-		
-			if (found == null)
+			assets.setPage(i+1);
+			Set assetids = new HashSet();
+			for(Data asset: assets.getPageOfHits())
 			{
-				found = librarycollectionassetSearcher.createNewData();
-				found.setSourcePath(libraryid + "/" + librarycollection);
+				assetids.add(asset.getId());
+			}
+			Collection existing = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).orgroup("asset", assetids).search();
+			for(Data collasset:existing)
+			{
+				assetids.remove(collasset.get("asset"));
+			}
+			for(String assetid: assetids)
+			{
+				Data found = librarycollectionassetSearcher.createNewData();
+				//found.setSourcePath(libraryid + "/" + librarycollection);
 				found.setProperty("librarycollection", librarycollection);
-				found.setProperty("asset", asset.getId());
+				found.setProperty("asset", assetid);
 				tosave.add(found);
 				if( tosave.size() > 200)
 				{
-					for(Data save : tosave)
-					{
-						librarycollectionassetSearcher.saveData(save, inReq.getUser());
-					}
+					librarycollectionassetSearcher.saveAllData(tosave,null);
 					tosave.clear();
 				}
 				//log.info("Saved " + found.getId());
 			}
 		}
-		for(Data found : tosave)
-		{
-			librarycollectionassetSearcher.saveData(found, inReq.getUser());
-		}
+		librarycollectionassetSearcher.saveAllData(tosave,null);
 	}
-	public void addAssetToCollection(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid)
+	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
 	{
-		addAssetToLibrary(inReq, archive, libraryid, assetid);
-	
-		String librarycollection = inReq.getRequestParameter("librarycollection");
+		addAssetToLibrary(archive, libraryid, assetid);
+		//String librarycollection = inReq.getRequestParameter("librarycollection");
+		addAssetToCollection(archive, collectionid, assetid);
+	}
+	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid)
+	{
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 	
-		Data found = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).match("asset", assetid).searchOne();
+		Data found = librarycollectionassetSearcher.query().match("librarycollection", collectionid).match("asset", assetid).searchOne();
 	
 		if (found == null)
 		{
 			found = librarycollectionassetSearcher.createNewData();
-			found.setSourcePath(libraryid + "/" + librarycollection);
-			found.setProperty("librarycollection", librarycollection);
+			//found.setSourcePath(libraryid + "/" + collectionid);
+			found.setProperty("librarycollection", collectionid);
 			found.setProperty("asset", assetid);
-			librarycollectionassetSearcher.saveData(found, inReq.getUser());
+			librarycollectionassetSearcher.saveData(found, null);
 			log.info("Saved " + found.getId());
 		}
 	}
-	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, Collection<Data> assets)
+	public void addAssetToLibrary(MediaArchive archive, String libraryid, HitTracker assets)
 	{
 		List tosave = new ArrayList();
-		for(Data toadd: assets)
+		for(MultiValued toadd: assets)
 		{
+			//TODO: Skip loading?
+			Collection libraries = toadd.getValues("libraries");
+			if ( libraries != null && libraries.contains(libraryid))
+			{
+				continue;
+			}
 			Asset asset = archive.getAssetSearcher().loadData(toadd)
 		
 			if (asset != null && !asset.getLibraries().contains(libraryid))
@@ -207,32 +228,90 @@ public class BaseProjectManager implements ProjectManager
 				tosave.add(asset);
 				if( tosave.size() > 500)
 				{
-					for(Data save : tosave)
-					{
-						archive.saveAsset(save, inReq.getUser());
-					}
+					archive.saveAssets(tosave);
 					tosave.clear();
 				}
 			}
 		}
-		for(Data asset : tosave)
-		{
-			archive.saveAsset(asset, inReq.getUser());
-		}
+		archive.saveAssets(tosave);
+		
 	}
 
-	public void addAssetToLibrary(WebPageRequest inReq, MediaArchive archive, String libraryid, String assetid)
+	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid)
 	{
 		Asset asset = archive.getAsset(assetid);
 	
 		if (asset != null && !asset.getLibraries().contains(libraryid))
 		{
 			asset.addLibrary(libraryid);
-			archive.saveAsset(asset, inReq.getUser());	
+			archive.saveAsset(asset, null);	
 		}
 	}
-
-	public Collection<String> loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
+	
+	public HitTracker loadAssetsInLibrary(Data inLibrary,  MediaArchive archive, WebPageRequest inReq)
+	{
+		HitTracker hits = archive.getAssetSearcher().query().match("libraries",inLibrary.getId()).search(inReq);
+		return hits;
+	}
+	
+	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
+	{
+		Searcher searcher = archive.getAssetSearcher();
+		SearchQuery assetsearch = searcher.createSearchQuery();
+		HitTracker all = null;
+		if( 1 > 2 && assetsearch instanceof LuceneSearchQuery)
+		{
+			SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
+			assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
+			all = archive.getAssetSearcher().search(assetsearch);
+		}
+		else
+		{	
+			Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
+			
+			//Do an asset search with permissions, showing only the assets on this collection
+			all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
+			all.setSelections(ids);
+			all.setShowOnlySelected(true);
+			//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
+			//create script that syncs up the assets that have been removed
+			if( all.size() != ids.size() )
+			{
+				Collection<String> ids = loadAssetIdsInCollection(archive, collectionid );
+				//Some assets got deleted, lets remove them from the collection
+				Set extras = new HashSet(ids);
+				for (Data hit in all)
+				{
+					extras.remove(hit.getId());
+				}
+				//log.info("remaining " + extras );
+				Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
+				for (String id in extras)
+				{
+					Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
+					if( toremove != null)
+					{
+						collectionassetsearcher.delete(toremove, null);
+					}
+				}
+			}
+		}
+		String hpp = inReq.getRequestParameter("page");
+		if( hpp != null)
+		{
+			all.setPage(Integer.parseInt( hpp ) );
+		}
+		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
+		if( usersettings != null )
+		{
+			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
+		}
+		all.getSearchQuery().setProperty("collectionid", collectionid);
+		all.getSearchQuery().setHitsName("collectionassets")
+		return all
+	}
+	//TODO: delete this
+	private Collection<String> loadAssetIdsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
 	{
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
@@ -247,6 +326,7 @@ public class BaseProjectManager implements ProjectManager
 		}
 		return ids;
 	}
+	
 	public boolean addUserToLibrary( MediaArchive archive, Data inLibrary, User inUser) 
 	{
 		Searcher searcher = archive.getSearcher("libraryusers");
@@ -262,14 +342,13 @@ public class BaseProjectManager implements ProjectManager
 		return false;	
 	}
 
-	@Override
-	public void removeAssetFromLibrary(WebPageRequest inReq, MediaArchive inArchive, String inLibraryid, Collection<Data> inAssets)
+	public void removeAssetFromLibrary(MediaArchive inArchive, String inLibraryid, HitTracker inAssets)
 	{
 		Searcher librarycollectionsearcher = inArchive.getSearcher("librarycollection");
 		HitTracker collections = librarycollectionsearcher.query().match("library",inLibraryid).search();
 		for(Data collection: collections)
 		{
-			removeAssetFromCollection(inReq,inArchive,collection.getId(),inAssets);
+			removeAssetFromCollection(inArchive,collection.getId(),inAssets);
 		}
 		for(Data toadd: inAssets)
 		{
@@ -278,13 +357,12 @@ public class BaseProjectManager implements ProjectManager
 			if (asset != null && asset.getLibraries().contains(inLibraryid))
 			{
 				asset.removeLibrary(inLibraryid);
-				inArchive.saveAsset(asset, inReq.getUser());
+				inArchive.saveAsset(asset, null);
 			}
 		}
 	}
 
-	@Override
-	public void removeAssetFromCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, Collection<Data> inAssets)
+	public void removeAssetFromCollection(MediaArchive inArchive, String inCollectionid, HitTracker inAssets)
 	{
 			Searcher librarycollectionassetSearcher = inArchive.getSearcher("librarycollectionasset");
 		
@@ -298,7 +376,47 @@ public class BaseProjectManager implements ProjectManager
 					librarycollectionassetSearcher.delete(found,null);
 				}
 			}
+	}
+	public Collection<UserCollection> loadRecentCollections(WebPageRequest inReq)
+	{
+		//enable filters to show the asset count on each collection node
+		UserProfile profile = inReq.getUserProfile();
+		Searcher librarycollectionsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
+		Collection combined = profile.getCombinedLibraries();
+		if( inReq.getUser().isInGroup("administrators"))
+		{
+			combined.clear();
+			combined.add("*");
+		}
+		if(combined.size() == 0 )
+		{
+			return Collections.EMPTY_LIST;
+		}
+		HitTracker allcollections = librarycollectionsearcher.query().orgroup("library",profile.getCombinedLibraries()).sort("name").named("sidebar").search(inReq);
+		FilterNode collectionhits = null;
+		if( allcollections.size() > 0 ) //May not have any collections
+		{
+			Searcher collectionassetsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollectionasset");
 			
+			//Build list of ID's
+			List ids = new ArrayList(allcollections.size());
+			for (Iterator iterator = allcollections.iterator(); iterator.hasNext();)
+			{
+				Data collection = (Data) iterator.next();
+				ids.add( collection.getId() );
+			}
+			if(ids.size() > 0)
+			{
+				HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).sort("recorddate").named("homecollections").search(inReq); 
+				if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+				{
+					collectionhits = collectionassets.findFilterNode("librarycollection");
+				}
+			}
+		}
+		Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
+		inReq.putPageValue("usercollections", usercollections);
+		return usercollections;
 	}
 	
 }
