@@ -10,7 +10,7 @@ import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.data.lucene.BaseLuceneSearcher
-import org.openedit.data.lucene.LuceneSearchQuery;
+import org.openedit.data.lucene.LuceneSearchQuery
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.profile.UserProfile
@@ -186,6 +186,7 @@ public class BaseProjectManager implements ProjectManager
 			}
 		}
 		librarycollectionassetSearcher.saveAllData(tosave,null);
+		archive.getAssetSearcher().clearIndex();
 	}
 	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
 	{
@@ -259,7 +260,7 @@ public class BaseProjectManager implements ProjectManager
 		Searcher searcher = archive.getAssetSearcher();
 		SearchQuery assetsearch = searcher.createSearchQuery();
 		HitTracker all = null;
-		if( 1 > 2 && assetsearch instanceof LuceneSearchQuery)
+		if( assetsearch instanceof LuceneSearchQuery)
 		{
 			SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
 			assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
@@ -277,7 +278,7 @@ public class BaseProjectManager implements ProjectManager
 			//create script that syncs up the assets that have been removed
 			if( all.size() != ids.size() )
 			{
-				Collection<String> ids = loadAssetIdsInCollection(archive, collectionid );
+				//Collection<String> ids = loadAssetIdsInCollection(archive, collectionid );
 				//Some assets got deleted, lets remove them from the collection
 				Set extras = new HashSet(ids);
 				for (Data hit in all)
