@@ -23,16 +23,6 @@
     $pages.include("$apphome/components/results/thumbnails/small.html",$context)
     #end        
 
-#elseif($conversions && $conversions.size() > 0 && $conversionsremaining && $conversionsremaining.size()  > 0)
-    <div id="status$hit.id" class="ajaxstatus  " data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-        #set( $remaining = $conversionsremaining.size() )
-        #set( $totalcount = $conversions.size() )
-        #set( $completed = $totalcount - $remaining )
-        #set( $total = 90 * $mathutil.getPercentage($remaining , $totalcount) )
-        #set( $total = $total + 20 )
-        <div class="uiinfo proxythumb" title="$completed Conversions Completed"><div class="loadingbar" style="width:${total}px;"></div>
-    </div>
-    </div>
 #elseif($publish && $publish.size() >0 )
     <div id="status$hit.id"  class="ajaxstatus "   data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
     <div class="uiinfo	 proxythumb" title="Publishing Proxy $publish.size()" ><div class="loadingbar" style="width:30px;"></div></div> 
@@ -42,13 +32,21 @@
         <div class="uiinfo	 proxythumb" title="Queing Conversions" ><div class="loadingbar" style="width:20px;"></div></div> 
     </div>
 #else
-    <div id="status$hit.id" class="ajaxstatus"  data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
-        #set( $remaining = $conversions.size() - $conversionsremaining.size()  )
+    <div id="status$hit.id" class="ajaxstatus  " data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         #set( $totalcount = $conversions.size() )
-        #set( $total = 90 * $mathutil.getPercentage($remaining , $totalcount))
-         #set( $total = $total + 20 )
-        <div class="uiinfo	 proxythumb" title="$totalcount Conversions Completed" ><div class="loadingbar" style="width:${total}px;"></div></div> 
+
+        #if( $conversionsremaining )
+        	#set( $remaining = $conversions.size() )
+        #else
+        	#set( $remaining = $totalcount )
+        #end
+        
+        #set( $completed = $totalcount - $remaining )
+        #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
+        #set( $total = $total + 20 )
+        <div class="uiinfo proxythumb" title="Conversions Completed $completed / $totalcount"><div class="loadingbar" style="width:${total}px;"></div></div>
     </div>
+
 #end
 
 

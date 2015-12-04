@@ -1,5 +1,9 @@
 package org.openedit.entermedia.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.lucene.BaseLuceneSearcher;
@@ -29,9 +33,12 @@ public class CollectionTest extends BaseEnterMediaTest
 		ListHitTracker tracker = new ListHitTracker();
 		tracker.add(found);
 		manager.addAssetToCollection(getMediaArchive(), collection.getId(), tracker);
-		lsearcher.flush();
-		getMediaArchive().getAssetSearcher().flush();
-		
+
+//		manager.addAssetToCollection(getMediaArchive(), collection.getId(), tracker);
+		List all = new ArrayList();
+		all.add(found.getId());
+		//Collection existing = lsearcher.query().match("librarycollection", collection.getId()).orgroup("asset", all).search();
+
 		WebPageRequest req = getFixture().createPageRequest();
 		HitTracker assets = manager.loadAssetsInCollection(req, getMediaArchive(), collection.getId());
 		assertEquals(1, assets.size());

@@ -77,6 +77,12 @@ public class BaseProjectManager implements ProjectManager
 	public Collection<UserCollection> loadCollections(WebPageRequest inReq)
 	{
 		//get a library
+		Collection<UserCollection> usercollections = inReq.getPageValue("usercollections");
+		if( usercollections != null)
+		{
+			return usercollections;
+		}
+		
 		Data library = getCurrentLibrary(inReq.getUserProfile());
 		if( library != null)
 		{
@@ -91,6 +97,7 @@ public class BaseProjectManager implements ProjectManager
 				inReq.putPageValue("librarysize",assetsize);
 			}
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
+			String reloadcollectoin = inReq.getRequestParameter("reloadcollection");
 			HitTracker allcollections = searcher.query().exact("library",library.getId()).sort("name").named("sidebar").search(inReq);
 
 			//Show all the collections for a library
@@ -118,7 +125,7 @@ public class BaseProjectManager implements ProjectManager
 					}
 				}
 			}			
-			Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
+			usercollections = loadUserCollections(allcollections, collectionhits);
 			inReq.putPageValue("usercollections", usercollections);
 			return usercollections;
 		}
@@ -186,7 +193,14 @@ public class BaseProjectManager implements ProjectManager
 			}
 		}
 		librarycollectionassetSearcher.saveAllData(tosave,null);
-		archive.getAssetSearcher().clearIndex();
+		
+		//Join have a weird problem of caching until we search for it
+		if( librarycollectionassetSearcher instanceof BaseLuceneSearcher)
+		{
+			librarycollectionassetSearcher.query().match("librarycollection", librarycollection).search();
+		}
+
+		
 	}
 	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
 	{
@@ -264,6 +278,7 @@ public class BaseProjectManager implements ProjectManager
 		{
 			SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
 			assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
+//			all = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);
 			all = archive.getAssetSearcher().search(assetsearch);
 		}
 		else
@@ -377,6 +392,12 @@ public class BaseProjectManager implements ProjectManager
 					librarycollectionassetSearcher.delete(found,null);
 				}
 			}
+			//Joins have a weird problem of caching until we search for it
+			if( librarycollectionassetSearcher instanceof BaseLuceneSearcher)
+			{
+				librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).search();
+			}
+
 	}
 	public Collection<UserCollection> loadRecentCollections(WebPageRequest inReq)
 	{
