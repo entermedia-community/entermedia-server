@@ -277,6 +277,7 @@ public class BaseProjectManager implements ProjectManager
 			//create script that syncs up the assets that have been removed
 			if( all.size() != ids.size() )
 			{
+				Collection<String> ids = loadAssetIdsInCollection(archive, collectionid );
 				//Some assets got deleted, lets remove them from the collection
 				Set extras = new HashSet(ids);
 				for (Data hit in all)
