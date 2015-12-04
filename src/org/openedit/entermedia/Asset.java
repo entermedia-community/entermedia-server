@@ -247,7 +247,9 @@ public class Asset implements MultiValued, SaveableData
 		}
 		else if ("fulltext".equals(inAttribute))
 		{
-			return getMediaArchive().getAssetSearcher().getFulltext(this);
+			if(getMediaArchive() != null){
+				return getMediaArchive().getAssetSearcher().getFulltext(this);
+			} 
 		}
 		else if ("catalogid".equals(inAttribute))
 		{

@@ -19,7 +19,7 @@ import com.openedit.util.FileUtils
  *
  */
 
-public class httppublisher extends basepublisher implements Publisher
+public class httppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(httppublisher.class);
 	

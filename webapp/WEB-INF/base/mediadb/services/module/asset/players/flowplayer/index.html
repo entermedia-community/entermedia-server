@@ -10,6 +10,8 @@
      data-native_fullscreen="true">
    <video>
       <source type="video/mp4"  src="$source">
+      #set( $short = $url_util.getPathUtilities().extractPagePath($source) )
+      <source type="video/flash"  src="mp4:$short"></video>
    </video>
 </div>
 

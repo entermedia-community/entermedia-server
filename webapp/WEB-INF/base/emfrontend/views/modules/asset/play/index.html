@@ -1,0 +1,29 @@
+<div class="container-fluid" style="flex: 1;">
+
+##Use one touch in middle to show all the toolbars and metadata
+##otherwise just look for swipe events on image or on the sides of video
+
+<div id="detailspanel" style="flex: 1;">
+
+<div class="overlay-play largeicon"><span class="glyphicon glyphicon-play"></span></div>
+
+
+<div class="goleftlick" >
+##Only needed if there is a previous image
+</div>
+
+<div class="playerarea">
+	
+#set( $type = $mediaarchive.getMediaRenderType($asset))
+$pages.include("$apphome/components/mediaviewer/player/large/${type}.html",$context)
+
+</div>
+
+<div class="overlay-close largeicon"><span class="glyphicon glyphicon-remove-circle"></span></div>
+
+<div class="gorightlick" >
+</div>
+
+</div>
+
+</div>

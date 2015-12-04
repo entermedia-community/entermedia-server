@@ -8,10 +8,9 @@
 
 #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$urlenc/preview.jpg")
 <a class="thickbox" href="$home$link" target="_parent" title="[[Drag into applications as jpeg]]">
-	<img id="main-media" class="emdropshadow assetdragdrop" title="[[Drag to desktop]]"  draggable="true"  data-sourcepath="$urlenc" data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$urlenc/thumb.jpg" alt="$!asset.name"/>
+	<div class="emdropshadow">
+       <img id="main-media" class="assetdragdrop" title="[[Drag to desktop]]"  draggable="true"  data-sourcepath="$urlenc" data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$urlenc/thumb.jpg" alt="$!asset.name"/>
+    </div>  
 </a>
 
-<div style="float:left;">
-<input style="border:0px;width:300px;text-overflow:ellipsis;color:#555555;background-color: transparent;" overflow:hidden;white-space:nowrap;" value="$asset.sourcepath" onclick="$(this).select();"/>...
-</div>
 

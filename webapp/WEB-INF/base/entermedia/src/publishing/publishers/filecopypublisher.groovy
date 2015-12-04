@@ -10,7 +10,7 @@ import org.openedit.entermedia.publishing.*
 import com.openedit.page.Page
 import com.openedit.util.FileUtils
 
-public class filecopypublisher extends basepublisher implements Publisher
+public class filecopypublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(filecopypublisher.class);
 	

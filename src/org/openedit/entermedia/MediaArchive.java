@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermedia.cache.CacheManager;
 import org.entermedia.error.EmailErrorHandler;
 import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
@@ -29,6 +30,7 @@ import org.openedit.entermedia.creator.CreatorManager;
 import org.openedit.entermedia.edit.AssetEditor;
 import org.openedit.entermedia.edit.CategoryEditor;
 import org.openedit.entermedia.scanner.AssetImporter;
+import org.openedit.entermedia.scanner.PresetCreator;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.search.AssetSecurityArchive;
 import org.openedit.entermedia.search.SearchFilterArchive;
@@ -38,9 +40,6 @@ import org.openedit.event.WebEventHandler;
 import org.openedit.events.PathEventManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
-import org.openedit.users.GroupSearcher;
-import org.openedit.users.UserSearcher;
-import org.openedit.util.DateStorageUtil;
 
 import com.openedit.ModuleManager;
 import com.openedit.OpenEditException;
@@ -88,7 +87,35 @@ public class MediaArchive
 	protected MimeTypeMap fieldMimeTypeMap;
 	protected LockManager fieldLockManager;
 	protected Map<String,Data> fieldLibraries;
+	protected PresetCreator fieldPresetManager;
+	protected CacheManager fieldCacheManager;
 	
+	public CacheManager getCacheManager()
+	{
+		if (fieldCacheManager == null)
+		{
+			fieldCacheManager = new CacheManager();
+		}
+		return fieldCacheManager;
+	}
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+	public PresetCreator getPresetManager()
+	{
+		if( fieldPresetManager == null)
+		{
+			fieldPresetManager = new PresetCreator();
+			fieldPresetManager.setCacheManager(getCacheManager());
+		}
+		return fieldPresetManager;
+	}
+	public void setPresetManager(PresetCreator inPresetManager)
+	{
+		fieldPresetManager = inPresetManager;
+	}
+
 	protected UserManager fieldUserManager;
 	
 	public String getMimeTypeIcon(String inFormat)
@@ -360,6 +387,11 @@ public class MediaArchive
 		return getCreatorManager().getRenderTypeByFileFormat(inFileFormat);
 	}
 	public String getMediaRenderType(Data inAsset)
+	{
+		String format = inAsset.get("fileformat");
+		return getMediaRenderType(format);
+	}	
+	public String getMediaPlayerType(Data inAsset)
 	{
 		if( inAsset.get("embeddedurl") != null)
 		{
@@ -1004,7 +1036,7 @@ public class MediaArchive
 			{
 				fileformat = getMediaRenderType(inAsset.getFileFormat());
 			}
-			if( found.equals(inType) || fileformat.equals(inType))
+			if( ( found != null && found.equals(inType) ) || fileformat.equals(inType))
 			{
 				path = path + "/" + filename;
 				return getPageManager().getPage(path);
@@ -1032,6 +1064,16 @@ public class MediaArchive
 		}
 		return null;
 	}
+	public void firePathEvent(String operation, User inUser, Collection inData)
+	{
+		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
+		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(),"pathEventManager");
+		WebPageRequest request = manager.getRequestUtils().createPageRequest(runpath, inUser);
+		
+		request.setRequestParameter("catalogid", getCatalogId());
+		request.putPageValue("hits", inData);
+		manager.runPathEvent(runpath, request);
+	}	
 	public void fireMediaEvent(String operation, User inUser, Asset asset, List<String> inids)
 	{
 		WebEvent event = new WebEvent();
@@ -1060,7 +1102,6 @@ public class MediaArchive
 		event.setValues("dataids", inids);
 		//archive.getWebEventListener()
 		getMediaEventHandler().eventFired(event);
-		
 	}
 	
 	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)
@@ -1544,7 +1585,7 @@ public class MediaArchive
 	}
 	public Data getLibrary(String inId)
 	{
-		Data library = getLibraries().get(inId);
+		Data library = (Data)getCacheManager().get("library_lookup",inId);
 		if( library == null )
 		{
 			library = getSearcherManager().getData(getCatalogId(), "library", inId);
@@ -1552,11 +1593,7 @@ public class MediaArchive
 			{
 				library = BaseData.NULL;
 			}
-			if( getLibraries().size() > 1000 )
-			{
-				getLibraries().clear();
-			}
-			getLibraries().put(inId,library);
+			getCacheManager().put("library_lookup",inId,library);
 		}
 		if ( library == BaseData.NULL )
 		{
@@ -1565,120 +1602,26 @@ public class MediaArchive
 		return library;
 	}
 	
-	protected Map<String,Data> getLibraries()
-	{
-		if (fieldLibraries == null)
-		{
-			fieldLibraries = new HashMap<String,Data>();
-		}
-		return fieldLibraries;
-	}
 	
 	public UserProfile getUserProfile(String inId){
 		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
 		
 	}
-	public void updateAssetConvertStatus(String inAssetId) 
-	{
-		Asset asset = getAsset(inAssetId);
-		if( asset == null)
-		{		
-			log.info("Could not load asset by sourcepath " + inAssetId );
-		}
-		updateAssetConvertStatus(asset);
-	}
-	
 	//Look for previews that should be marked as complete now
-	public void updateAssetConvertStatus(Data asset) 
+	public void updateAssetImportStatus(Data asset) 
 	{
 		if( asset == null)
 		{
 			return; //asset deleted
 		}
+		//String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
-		//is it already complete?
 		
-		//log.info("existingpreviewstatus" + existingpreviewstatus);
-		//update importstatus and previewstatus to complete
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Checking preview status: " + asset.getId() +"/" + existingpreviewstatus);
-		}
-		boolean allcomplete = true;
-		boolean founderror = false;
-		String existingimportstatus = asset.get("importstatus");
-
 		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
 		{
-
-			//check tasks and update the asset status
-			Searcher tasksearcher = getSearcher( "conversiontask");
-			HitTracker conversions = tasksearcher.query().match("assetid",asset.getId()).search();
-
-			for( Object object : conversions )
-			{
-				Data task = (Data)object;
-				if( "error".equals( task.get("status") ) )
-				{
-					log.info(asset.getId() + "Found an error");
-					founderror = true;
-					break;
-				}
-
-				if( !"complete".equals( task.get("status") ) )
-				{
-					allcomplete = false;
-					log.info("Found an incomplete task - status was: " + task.get("status") + " " + asset.getId());
-					String date = task.get("submitted");
-					if( "missinginput".equals( task.get("status") ) && date != null)
-					{
-						Date entered = DateStorageUtil.getStorageUtil().parseFromStorage(date);
-						GregorianCalendar cal = new GregorianCalendar();
-						cal.add(Calendar.DAY_OF_YEAR, -2);
-						if( entered.before(cal.getTime()))
-						{
-							Data loadedtask = (Data)tasksearcher.loadData(task);
-							loadedtask.setProperty("status","error");
-							loadedtask.setProperty("errordetails","Image missing more than 24 hours, marked as error");
-							tasksearcher.saveData(loadedtask, null);
-							founderror = true;
-						}
-					}
-					else
-					{
-						break;
-					}
-				}
-			}	
-		}
-		else
-		{
-			allcomplete = true;
-		}
-		
-		//save importstatus
-		if( founderror || allcomplete )
-		{
-			//load the asset and save the import status to complete		
-			if( asset != null )
-			{
-				if(founderror && "error".equals(existingimportstatus) || "complete".equals(existingimportstatus))
-				{
-					return;						
-				}
-				Asset target =  (Asset)getAssetSearcher().loadData(asset);
-				if( founderror)
-				{
-					target.setProperty("importstatus","error");
-				}
-				else
-				{
-					target.setProperty("importstatus","complete");
-					target.setProperty("previewstatus","2");
-					
-				}
-				saveAsset(target, null);
-			}
+			Searcher tasksearcher = getSearcher( "conversiontask");	
+			HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search();
+			getPresetManager().updateAssetImportStatus(this, asset, conversions);
 		}
 	}
 	public UserManager getUserManager()
@@ -1688,6 +1631,11 @@ public class MediaArchive
 			fieldUserManager = (UserManager)getModuleManager().getBean(getCatalogId(),"userManager");
 		}
 		return fieldUserManager;
+	}
+	public void clearCaches()
+	{
+		getCacheManager().clear("library_lookup");
+		getPresetManager().clearCaches();
 	}
 
 }

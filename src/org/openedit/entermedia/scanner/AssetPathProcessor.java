@@ -73,8 +73,8 @@ public class AssetPathProcessor extends PathProcessor
 			return;
 		}
 		
-		Asset	eventasset = (Asset)getAssetsToSave().get(0);	
-		List<String> someids = new ArrayList();
+		//Asset	eventasset = (Asset)getAssetsToSave().get(0);	
+		//List<String> someids = new ArrayList();
 
 		List existingassets = new ArrayList();
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
@@ -91,7 +91,7 @@ public class AssetPathProcessor extends PathProcessor
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
 			Asset asset = (Asset) iter.next();
-			someids.add(asset.getId() );
+			//someids.add(asset.getId() );
 			
 			if( existingassets.contains(asset) )
 			{
@@ -102,9 +102,11 @@ public class AssetPathProcessor extends PathProcessor
 				getMediaArchive().fireMediaEvent("asset/assetcreated",inUser, asset);
 			}
 		}
-		assetsids.addAll(someids);
+		//assetsids.addAll(someids);
 
-		getMediaArchive().fireMediaEvent("importing/assetsimported", inUser, eventasset, someids);
+		//archive.firePathEvent("importing/assetsuploaded",inReq.getUser(),getAssetsToSave());
+		//archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
+		getMediaArchive().firePathEvent("importing/assetsimported",inUser,getAssetsToSave());
 		
 		getAssetsToSave().clear();
 	}
@@ -287,16 +289,26 @@ public class AssetPathProcessor extends PathProcessor
 		
 		protected ContentItem findPrimary(List inPaths)
 		{
+			ContentItem first = null;
 			for (Iterator iterator = inPaths.iterator(); iterator.hasNext();)
 			{
 				String path = (String) iterator.next();
+				
 				ContentItem item = getPageManager().getRepository().getStub(path);
 				if( !item.isFolder() && acceptFile(item))
 				{
-					return item;
+					if(first == null){
+						first = item;
+					}
+					String format = PathUtilities.extractPageType(path);
+					
+					if("indd".equals(format)){
+						return item;
+					}
 				}
 			}
-			return null;
+			
+			return first;
 		}
 		public void processFile(ContentItem inContent, User inUser)
 		{

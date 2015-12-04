@@ -372,7 +372,7 @@ public class AssetUtilities
 		
 		String date  = new SimpleDateFormat("yyyyMM").format(new Date());
 		vals.put("formatteddate",date );
-		
+		vals.put("user",inReq.getUser());
 		Replacer replacer = new Replacer();
 		
 		replacer.setSearcherManager(inArchive.getSearcherManager());

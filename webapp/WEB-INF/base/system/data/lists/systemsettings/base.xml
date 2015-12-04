@@ -1,0 +1,5 @@
+<properties>
+  <property id="syncthing_server_apikey" value="sdfsdfdsf32fd" >SyncThing API Key</property>
+  <property id="syncthing_server_address" value="camarena.entermediadb.net:8384" >SyncThing Server</property>
+  <property id="syncthing_server_deviceid" value="xxxx-xxxx" >SyncThing Server Device ID</property>
+</properties>

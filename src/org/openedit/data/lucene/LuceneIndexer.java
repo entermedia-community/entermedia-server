@@ -286,7 +286,7 @@ public class LuceneIndexer
 		{
 			try
 			{
-				if (inDetail.isDataType("double"))
+				if (inDetail.isDataType("double") || inValue.contains("."))
 				{
 					Double l = Double.parseDouble(inValue);
 					field = new DoubleField(inId, l, Field.Store.YES);

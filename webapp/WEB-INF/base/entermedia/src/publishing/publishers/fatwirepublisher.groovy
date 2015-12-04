@@ -37,7 +37,7 @@ import org.openedit.entermedia.creator.ConversionUtil;
 import org.openedit.util.DateStorageUtil;
 //import org.entermedia.fatwire.FatwireManager
 
-public class fatwirepublisher extends basepublisher implements Publisher
+public class fatwirepublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(fatwirepublisher.class);
 	

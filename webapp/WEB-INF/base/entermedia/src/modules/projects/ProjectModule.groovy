@@ -1,9 +1,10 @@
-package model.projects;
+package modules.projects;
+
+import model.projects.ProjectManager
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
-import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.modules.BaseMediaModule
 import org.openedit.profile.UserProfile
@@ -16,6 +17,7 @@ public class ProjectModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(ProjectModule.class);
 	
+	
 	public void loadCollections(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");
@@ -23,22 +25,14 @@ public class ProjectModule extends BaseMediaModule
 		manager.loadCollections(inReq);
 	}
 	
-	public void savedLibrary(WebPageRequest inReq)
+	public void savedCollection(WebPageRequest inReq)
 	{
-		Data saved = (Data)inReq.getPageValue("data");
-		if( saved != null)
-		{
-			inReq.setRequestParameter("profilepreference","last_selected_library" );
-			inReq.setRequestParameter("profilepreference.value", saved.getId() );
-		}
-		//Make sure I am in the list of users for the library
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
-		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+		Data collection = (Data)inReq.getPageValue("data");
+		if( collection != null)
 		{
-			//reload profile?
-			UserProfile profile = inReq.getUserProfile();
-			profile.getCombinedLibraries().add(saved.getId());
+			ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
+			manager.savedCollection(archive,collection,inReq.getUser());
 		}
 	}
 	
@@ -86,7 +80,7 @@ public class ProjectModule extends BaseMediaModule
 				tracker = tracker.getSelectedHitracker();
 				if( tracker != null && tracker.size() > 0 )
 				{
-					manager.removeAssetFromLibrary(inReq, archive, libraryid, tracker);
+					manager.removeAssetFromLibrary(archive, libraryid, tracker);
 					inReq.putPageValue("count" , String.valueOf( tracker.size() ) );
 					return;
 				}
@@ -100,7 +94,7 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String libraryid = inReq.getRequestParameter("libraryid");
-		
+		String librarycollection = inReq.getRequestParameter("librarycollection");
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		if( hitssessionid != null )
 		{
@@ -111,21 +105,21 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( tracker != null && tracker.size() > 0 )
 			{
-				manager.addAssetToCollection(inReq, archive, libraryid, tracker);
+				manager.addAssetToCollection(archive, libraryid,  librarycollection, tracker);
 				inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
 				return;
 			}
 		}
 		String assetid = inReq.getRequestParameter("assetid");
 		
-		manager.addAssetToCollection(inReq, archive, libraryid, assetid);
+		manager.addAssetToCollection(archive, libraryid, assetid);
 		inReq.putPageValue("added" , "1" );
 	}
 	public void removeAssetFromCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		String collectionid = inReq.getRequestParameter("collectionid");
+		String collectionid = loadCollectionId(inReq);
 		
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		if( hitssessionid != null )
@@ -137,69 +131,55 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( tracker != null && tracker.size() > 0 )
 			{
-				manager.removeAssetFromCollection(inReq, archive, collectionid, tracker);
+				manager.removeAssetFromCollection(archive, collectionid, tracker);
 				inReq.putPageValue("count" , String.valueOf( tracker.size() ) );
 				return;
 			}
 		}
-	
 	}
-	
+	public void searchForAssetsInLibrary(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		Data library = manager.getCurrentLibrary(inReq.getUserProfile());
+		if( library != null)
+		{
+			HitTracker hits = manager.loadAssetsInLibrary(library,archive,inReq);
+			inReq.putPageValue("hits", hits);
+		}
+	}
 	public void searchForAssetsOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String collectionid = inReq.getRequestParameter("collectionid");
+		String collectionid = loadCollectionId(inReq);
 		if( collectionid == null)
 		{
-			collectionid = inReq.getRequestParameter("id");
-		}
+			return;
+		}		
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		
-		Collection<String> ids = manager.loadAssetsInCollection(inReq, archive, collectionid );
-		//Do an asset search with permissions, showing only the assets on this collection
-		HitTracker all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
-		
-		all.setSelections(ids);
-		all.setShowOnlySelected(true);
-		//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
-		
-		if( all.size() != ids.size() )
-		{
-			//Some assets got deleted, lets remove them from the collection
-			Set extras = new HashSet(ids);
-			for (Data hit in all)
-			{
-				extras.remove(hit.getId());
-			}
-			//log.info("remaining " + extras );
-			Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
-			for (String id in extras)
-			{
-				Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
-				if( toremove != null)
-				{
-					collectionassetsearcher.delete(toremove, null);
-				}
-			}
-		}
-		
-		String hpp = inReq.getRequestParameter("page");
-		if( hpp != null)
-		{
-			all.setPage(Integer.parseInt( hpp ) );
-		}
-		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
-		if( usersettings != null )
-		{
-			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
-		}
-		//all.setHitsPerPage(1000);
-		all.getSearchQuery().setProperty("collectionid", collectionid);
-		all.getSearchQuery().setHitsName("collectionassets");
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
 		inReq.putSessionValue(all.getSessionId(),all);
 	}
+	protected String loadCollectionId(WebPageRequest inReq)
+	{
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			collectionid = inReq.getRequestParameter("id");
+			if( collectionid == null)
+			{
+				Data coll = (Data)inReq.getPageValue("librarycol");
+				if( coll != null)
+				{
+					collectionid = coll.getId();
+				}
+			}	
+		}
+		return collectionid;
+	}	
 
 	public boolean checkLibraryPermission(WebPageRequest inReq)
 	{
@@ -212,11 +192,7 @@ public class ProjectModule extends BaseMediaModule
 			//dont filter since its the admin
 			return true;
 		}
-		String collectionid = inReq.getRequestParameter("collectionid");
-		if( collectionid == null)
-		{
-			collectionid = inReq.getRequestParameter("id");
-		}
+		String collectionid = loadCollectionId(inReq);
 		Data data = archive.getData("librarycollection", collectionid);
 		if( data != null)
 		{
@@ -229,5 +205,24 @@ public class ProjectModule extends BaseMediaModule
 			}
 		}
 		return false;
+	}
+	
+	public void savedLibrary(WebPageRequest inReq)
+	{
+		Data saved = (Data)inReq.getPageValue("data");
+		if( saved != null)
+		{
+			inReq.setRequestParameter("profilepreference","last_selected_library" );
+			inReq.setRequestParameter("profilepreference.value", saved.getId() );
+		}
+		//Make sure I am in the list of users for the library
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+		{
+			//reload profile?
+			UserProfile profile = inReq.getUserProfile();
+			profile.getCombinedLibraries().add(saved.getId());
+		}
 	}
 }

@@ -12,7 +12,7 @@ import com.openedit.page.Page
 import com.openedit.users.User
 import com.openedit.users.UserManager
 
-public class sftppublisher extends basepublisher implements Publisher
+public class sftppublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(sftppublisher.class);
 	

@@ -9,7 +9,6 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.scanner.HotFolderManager;
 
 import com.openedit.WebPageRequest;
-import com.openedit.util.PathUtilities;
 
 public class HotFolderModule extends BaseMediaModule
 {
@@ -29,7 +28,7 @@ public class HotFolderModule extends BaseMediaModule
 		{
 			return null;
 		}
-		Searcher searcher = getHotFolderManager().getFolderSearcher(archive.getCatalogId());
+		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(),"hotfolder");
 		Data data = (Data)searcher.searchById(id);
 		inReq.putPageValue("data", data);
 		return data;
@@ -45,7 +44,7 @@ public class HotFolderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
-		Searcher searcher = getHotFolderManager().getFolderSearcher(archive.getCatalogId());
+		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(),"hotfolder");
 		Data data = (Data)searcher.searchById(id);
 		searcher.delete(data, inReq.getUser());
 		getHotFolderManager().saveMounts(archive.getCatalogId());
@@ -56,7 +55,7 @@ public class HotFolderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		String[] fields = inReq.getRequestParameters("field");
-		Searcher searcher = getHotFolderManager().getFolderSearcher(archive.getCatalogId());
+		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(),"hotfolder");
 		String id = inReq.getRequestParameter("id");
 		Data data = null;
 		if( id.equals("new") )
@@ -68,25 +67,7 @@ public class HotFolderModule extends BaseMediaModule
 			data = (Data)searcher.searchById(id);
 		}
 		searcher.updateData(inReq, fields, data);			
-		
-		//save subfolder with the value of the end of externalpath
-		String epath = data.get("externalpath");
-		if( epath != null )
-		{
-			epath = epath.trim();
-			epath = epath.replace('\\', '/');
-			if( epath.endsWith("/"))
-			{
-				epath = epath.substring(0,epath.length() - 1);
-			}
-			String subfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
-			data.setProperty("subfolder", subfolder);
-		}
-		else
-		{
-			data.setProperty("subfolder", data.getName());
-		}
-		
+
 		getHotFolderManager().saveFolder(archive.getCatalogId(),data);
 	}
 	protected HotFolderManager getHotFolderManager()
@@ -100,6 +81,10 @@ public class HotFolderModule extends BaseMediaModule
 		Data folder = loadHotFolder(inReq);
 		List found = getHotFolderManager().importHotFolder(archive,folder);
 		inReq.putPageValue("found", found);
-		
+	}
+	public void saveMounts(WebPageRequest inReq)  throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);		
+		getHotFolderManager().saveMounts(archive.getCatalogId());
 	}
 }

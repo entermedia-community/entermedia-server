@@ -1,0 +1,19 @@
+#set( $searcher = $mediaarchive.getAssetSearcher())
+#set( $results = $searcher.query().match("libraries","102").sort("assetvotes").search($context) )
+<table>
+#foreach( $hit in $results )
+#set( $asset = $searcher.loadData($hit))
+<tr>	
+	<td>
+	#set( $type = $mediaarchive.getMediaRenderType($asset))
+	$context.putPageValue("asset",$asset)
+       $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+	</td>
+	<td>							
+          <h3 id="watchNextLabel" style="margin:0 0 10px;">${asset}</h3>
+          ${asset.owner}
+       </td>
+</tr>                                    
+#end
+</table>
+

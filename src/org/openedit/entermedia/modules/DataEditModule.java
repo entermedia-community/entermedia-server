@@ -1349,6 +1349,10 @@ public class DataEditModule extends BaseMediaModule
 			idname = "id";
 		}
 		String id = inReq.getRequestParameter(idname);
+//		if( idname != null && id==null)
+//		{
+//			return null;
+//		}
 		if (id == null)			
 		{
 			String pagename = inReq.getPage().getName();

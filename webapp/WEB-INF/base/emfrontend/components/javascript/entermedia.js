@@ -172,6 +172,11 @@ runajaxonthis = function(inlink,e)
 		return false;
 	}
 	
+	if( inlink.hasClass("activelistener") )
+	{
+		jQuery(".activelistener").removeClass("active");
+		inlink.addClass("active");
+	}
 	var nextpage= inlink.attr('href');
 	var targetDiv = inlink.attr("targetdiv");
 	
@@ -197,11 +202,7 @@ runajaxonthis = function(inlink,e)
 				
 				cell.replaceWith(data);
 				
-				
-				if (typeof(doResize) == "function")
-				{
-					doResize();
-				}
+				$(window).trigger( "resize" );
 				
 			}
 		);
@@ -224,10 +225,7 @@ runajaxonthis = function(inlink,e)
 						cell = jQuery("#" + loaddiv);
 					}
 					cell.html(data);
-					if (typeof(doResize) == "function")
-					{
-						doResize();
-					}
+					$(window).trigger( "resize" );
 				}
 
 			);

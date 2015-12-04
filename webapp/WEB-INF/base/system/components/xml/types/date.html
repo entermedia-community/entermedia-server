@@ -9,7 +9,6 @@
 	#set($idcount = "")
 #end
 <input name="$!{detailprefix}${detail.getId()}.value" id="${detail.id}${idcount}value" value="#esc($!val)"  type="hidden" >
- <br/>
 <input type="text" class="datepicker #if($detail.isRequired()  && !$multiedit) required #end " data-targetid="${detail.id}${idcount}value" /> 
 
 #if ($detail.picker == "false" && $detail.format)

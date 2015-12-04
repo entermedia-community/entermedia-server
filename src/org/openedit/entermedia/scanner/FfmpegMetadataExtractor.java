@@ -1,10 +1,15 @@
 package org.openedit.entermedia.scanner;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.repository.ContentItem;
@@ -24,7 +29,15 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 		{
 			//Run it again
 			List args = new ArrayList();
+			args.add("-loglevel");
+			args.add("quiet");
+			args.add("-show_format");
+			args.add("-show_streams");
+			args.add("-sexagesimal");
 			args.add(inFile.getAbsolutePath());
+			args.add("-of");
+			args.add("json");
+			
 			ExecResult resulttext = getExec().runExec("avprobe", args, true);
 			if( !resulttext.isRunOk())
 			{
@@ -41,48 +54,48 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 			{
 				return false;
 			}
-			//Stream #0.2: Video: G2M3 / 0x334D3247,
-			int start = textinfo.indexOf("Video: ");
-			if( start > -1)
+			int startjson = textinfo.indexOf("{");
+			if( startjson == -1)
 			{
-				start = start + 7;
-				int end = textinfo.indexOf(",",start);
-				String val = textinfo.substring(start,end);
-				inAsset.setProperty("videocodec", val);
+				log.error("JSON not found");
+				return false;
 			}
-			start = textinfo.indexOf("Audio: ");
-			if( start > -1)
+			try
 			{
-				start = start + 7;
-				int end = textinfo.indexOf(",",start);
-				String val = textinfo.substring(start,end);
-				inAsset.setProperty("audiocodec", val);
-			}
-			start = textinfo.indexOf(" Duration: ");
-			if( start > -1 )
-			{
-				start = textinfo.indexOf(":",start);
-				int end = textinfo.indexOf(",",start);
-				String val = textinfo.substring(start + 1,end);
-				try
+				textinfo = textinfo.substring(startjson,textinfo.length());
+				JSONObject config = (JSONObject)new JSONParser().parse(textinfo);
+				Collection streams = (Collection)config.get("streams");
+				for (Iterator iterator = streams.iterator(); iterator.hasNext();)
 				{
-					inAsset.setProperty("duration", val);
-					val = processDuration(val);
-					inAsset.setProperty("length", val); //in seconds rounded
-				} 
-				catch ( Exception ex)
-				{
-					log.error("Could not read duration " + val);
+					Map stream = (Map) iterator.next();
+					if( "video".equals( stream.get("codec_type") ) )
+					{
+						inAsset.setProperty("videocodec", (String)stream.get("codec_name"));	
+						inAsset.setProperty("width", String.valueOf( stream.get("width")) );	
+						inAsset.setProperty("height", String.valueOf( stream.get("height")) );
+						
+						String val =  (String)stream.get("duration");
+						inAsset.setProperty("duration",val);
+						val = processDuration(val);
+						inAsset.setProperty("length", val); //in seconds rounded
+						inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
+						
+					}
+					if( "audio".equals( stream.get("codec_type") ) )
+					{
+						inAsset.setProperty("audiocodec", (String)stream.get("codec_name"));						
+					}
 				}
-				
+			} 
+			catch ( Exception ex)
+			{
+				log.error("Could not read metadata on " + inAsset.getName() );
 			}
-			
-			    
-			
 			return true;
 		}
 		return false;
 	}
+	//66.116667  vs 0:01:06.116667 vs 00:01:06.12 -sexagesimal  HOURS:MM:SS.MICROSECONDS
 	protected String processDuration(String value)
 	{
 		//00:00:19.89,
@@ -93,13 +106,10 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 		else
 		{
 			String[] parts = value.split(":");
-			double total = 0;
-			for(int j = 0; j < parts.length; j++)
-			{
-				double adding = Math.pow(60, parts.length - 1 - j) * Double.parseDouble(parts[j]);				
-				total = total + adding;
-			}
-			value = String.valueOf(Math.round( total ) );
+			double totals = 	60L * 60L * Double.parseDouble(parts[0]);				
+			totals = totals +  60L * Double.parseDouble(parts[1]);				
+			totals = totals +  Double.parseDouble(parts[2]);
+			value = Double.toString(totals); 
 		}
 		return value;
 	}

@@ -6,7 +6,7 @@
 			<div class="name">
 				<div class="alias" title="Alias">$folder.name</div>
 				#if( $folder.externalpath )
-				<div class="path" title="$folder.externalpath">$folder.externalpath</div>
+				<div class="path" title="$folder.subfolder">$folder.subfolder</div>
 				#end
 				<div class="last-activity">Fully Scanned: $!context.getDateTime($folder.lastscanstart)</div>
 			</div>

@@ -1,0 +1,12 @@
+#set( $index = $hits.indexOfId($asset.id))
+#set( $next = $hits.next($index))
+#set( $previous = $hits.previous($index))
+
+<div id="main-media-viewer" data-assetid="$asset.id" data-indexOf="$index"  data-next="$!next.id"  data-previous="$!previous.id" >
+	#set( $mediadbappid = $mediaarchive.getCatalogSettingValue("mediadbappid") )
+	#if( !$mediadbappid)
+		<p style="color: white;">mediadbappid not defined in datamanager</p>
+	#end
+	#set( $type = $mediaarchive.getMediaPlayerType($asset))
+	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
+</div>

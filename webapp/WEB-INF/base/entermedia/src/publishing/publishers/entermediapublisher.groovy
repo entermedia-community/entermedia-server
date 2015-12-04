@@ -14,7 +14,7 @@ import com.openedit.users.UserManager
 
 import em.model.push.MediaUploader
 
-public class entermediapublisher extends basepublisher implements Publisher
+public class entermediapublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(entermediapublisher.class);
 	private SAXReader reader = new SAXReader();

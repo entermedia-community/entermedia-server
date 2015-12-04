@@ -27,7 +27,11 @@ var uploadid;
 				
 	         	//jQuery("#upload_field").setFiles( allfiles );
 	         	
-	        	 jQuery("#uploadinstructionsafter").show();
+	         	jQuery("#uploadinstructionsafter").hide();
+	        	var startb = $("#startbutton");
+	        	$(startb).text("Upload");
+    			$(startb).removeAttr('disabled');
+	        	jQuery("#uploadinstructionsafter").show();
 	        	 
 	        	 var regex = new RegExp("currentupload", 'g');  
 	        	 
@@ -71,6 +75,7 @@ $(document).ready(function()
     	}
     	$(this).text("Uploading");
     	$(this).attr('disabled', 'disabled');
+    	 $("#viewassets").attr('disabled', 'disabled');
     	jQuery("#upload_field").triggerHandler("html5_upload.start");
     	
     });
@@ -129,8 +134,13 @@ $(document).ready(function()
 	         sendBoundary: window.FormData || $.browser.mozilla,
 	         onStart: function(event, total, files) 
 	         {
-	        	 jQuery(".uploadinstructions").hide();
+	        	 //jQuery(".uploadinstructions").hide();
         	  	 console.log("On start " + files.length );
+	        	 var completed = $("#up-files-list li").clone();
+			    $("#up-files-list").empty();
+
+				$("#up-files-list-completed").prepend(completed);
+				$("#completed-uploads").show();
 	        	 
 	             return true;
 	        	 //Loop over all the files. add rows
@@ -161,9 +171,7 @@ $(document).ready(function()
 	             $("#progress_report_bar" + currentupload).css('width', Math.ceil(val*100)+"%");
 	         },
 	         onFinishOne: function(event, response, name, number, total) {
-	             //alert(response);
 	             $("#progress_report_bar" + currentupload).css('width', "100%");
-	             //$("#progress_report_bar" + currentupload).css('background-color', "green");
 	         },
 	         onError: function(event, name, error) {
 	             alert('error while uploading file ' + name);
@@ -173,17 +181,22 @@ $(document).ready(function()
 	             //do a search
 	        	 if( !haderror)
 	        	{
-//	        		 document.location.href = home + "/views/search/reports/runsavedsearch.html?queryid=01newlyuploaded&searchtype=asset&reporttype=01newlyuploaded";
-//	        		 document.location.href = home + "/views/myaccount/myassets/index.html";
-	        		 
-	        		 var nexturl = "/views/myaccount/myassets/index.html";
-	        		 var uploadarea = $("#uploadarea");
-	        		 if (uploadarea!=null && uploadarea!=undefined){
-	        			 if (uploadarea.data("nextpage")!=null && uploadarea.data("nextpage")!=undefined && uploadarea.data("nextpage")!="default"){
-	        				 nexturl = uploadarea.data("nextpage");
-	        			 }
-	        		 }
-	        		 document.location.href = home + nexturl;
+	        			var startb = $("#startbutton");
+	        			$(startb).text("Upload Complete");
+    				   allfiles = new Array();
+    				   
+		   				var completed = $("#up-files-list-completed li span");
+						jQuery.each(completed,function()
+						{
+							$(this).removeAttr("id");
+						});
+    				   jQuery("#filePicker").text("Pick More Files...");
+    				   jQuery("#upload_field").removeAttr('disabled');
+    				   
+    				   var viewassets = $("#viewassets");
+	        		   viewassets.removeAttr('disabled');
+    				   
+    				   //$(".media_results_tab").data("tabloaded",false);
 	        	}
 	
 	         }

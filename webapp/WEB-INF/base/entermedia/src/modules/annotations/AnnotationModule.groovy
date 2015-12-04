@@ -1,4 +1,4 @@
-package model.projects;
+package modules.annotations;
 
 import java.util.Iterator;
 

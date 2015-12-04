@@ -18,7 +18,7 @@ import com.openedit.users.UserManager
 import com.openedit.util.FileUtils
 import com.openedit.util.OutputFiller
 
-public class smbpublisher extends basepublisher implements Publisher
+public class smbpublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(smbpublisher.class);
 	

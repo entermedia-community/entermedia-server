@@ -5,9 +5,11 @@
 		<span class="widget-header-title">[[Libraries]]</span>
 	</div>
 	<div  class="ui-widget-content"  id="projectscontent" #if($userprofile.minimizeprojectscontent == "true" && $cantogglesidebar) style="display: none;" #end>
-
+#if( $content.isPropertyTrue("libraryreloadpage") )
+<form name="librarychange" id="librarychange"   > 
+#else
 <form name="librarychange" id="librarychange" action="$home$apphome/components/libraries/sidebar.html" class="ajaxform" targetdiv="left-col-libraries"  > 
-
+#end
 		<div class="collectionheaderleft">
 			<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" data-sortby="name" onChange='$("#librarychange").submit()' />
 		</div>		
@@ -40,7 +42,7 @@
 			#if( $inmodule && $librarycol && $usercollection.getId() == $librarycol.id )
 				#set( $selected = true )
 			#end
-			<a href="$home$apphome/views/modules/librarycollection/viewassets.html?collectionid=${usercollection.getId()}&searchtype=librarycollection" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
+			<a href="$home$apphome/views/modules/librarycollection/media/${usercollection.getId()}.html" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
 		</li>
 		#end
 		#if ($canaddnewcollection)

@@ -1,16 +1,18 @@
 package org.openedit.entermedia.scanner;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermedia.cache.CacheManager;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
@@ -24,15 +26,34 @@ public class PresetCreator
 {
 	private static final Log log = LogFactory.getLog(PresetCreator.class);
 
-	protected Map<String, Collection> fieldPresetCache;
+	protected CacheManager fieldCacheManager;
 
-	protected Collection getPresets(String rendertype)
+	public CacheManager getCacheManager()
 	{
-		if (fieldPresetCache == null)
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+	public void clearCaches()
+	{
+		getCacheManager().clear("preset_lookup");
+	}
+	protected Collection getPresets(MediaArchive inArchive, String rendertype)
+	{
+		Collection hits = (Collection)getCacheManager().get("preset_lookup",rendertype);
+		if (hits == null)
 		{
-			fieldPresetCache = new HashMap<String, Collection>();
+			Searcher presetsearcher = inArchive.getSearcher("convertpreset");
+			SearchQuery query = presetsearcher.createSearchQuery();
+			query.addMatches("onimport", "true");
+			query.addMatches("inputtype", rendertype);
+			hits = presetsearcher.search(query);
+			getCacheManager().put("preset_lookup",rendertype, hits);
 		}
-		return fieldPresetCache.get(rendertype);
+		return hits;
 	}
 
 	public int createMissingOnImport(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
@@ -40,21 +61,14 @@ public class PresetCreator
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
 
 		int added = 0;
-		Collection hits = getPresets(rendertype);
-		if (hits == null)
-		{
-			Searcher presetsearcher = mediaarchive.getSearcher("convertpreset");
-			SearchQuery query = presetsearcher.createSearchQuery();
-			query.addMatches("onimport", "true");
-			query.addMatches("inputtype", rendertype);
-			hits = presetsearcher.search(query);
-			fieldPresetCache.put(rendertype, hits);
-		}
+		Collection hits = getPresets(mediaarchive,rendertype);
+		
 
 		boolean missingconversion = false;
-		HitTracker taskq = tasksearcher.query().match("assetid", asset.getId()).search(); //This is so dumb
+		HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search(); //This is so dumb
 		HashSet existingtasks = new HashSet();
-		for (Iterator iterator = taskq.iterator(); iterator.hasNext();)
+		List tosave = new ArrayList();
+		for (Iterator iterator = conversions.iterator(); iterator.hasNext();)
 		{
 			Data existing = (Data) iterator.next();
 			String page = existing.get("pagenumber");
@@ -63,26 +77,33 @@ public class PresetCreator
 				page = "1";
 			}
 			existingtasks.add(existing.get("presetid") + page);
-
+			if( "error".equals( existing.get("status")) )
+			{
+				existing = tasksearcher.loadData(existing);
+				existing.setProperty("status","retry");
+				tosave.add(existing);
+			}
 		}
-
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
-
 			Data preset = (Data) iterator.next();
-			added = added + createMissing(mediaarchive, tasksearcher, existingtasks, preset, asset);
+			added = added + createMissing(mediaarchive, tasksearcher, existingtasks, tosave, preset, asset);
 		}
-		
-			mediaarchive.updateAssetConvertStatus(asset);
-		
+		if( tosave.size() > 0)
+		{
+			tasksearcher.saveAllData(tosave, null);
+		}
+		else
+		{
+			//updateAssetImportStatus(mediaarchive,  asset,  conversions ); //Nothing to convert, try updating status
+		}
 		return added;
 	}
 
-	public int createMissing(MediaArchive mediaarchive, Searcher tasksearcher, HashSet existingtasks, Data preset, Data asset)
+	public int createMissing(MediaArchive mediaarchive, Searcher tasksearcher, HashSet existingtasks, List tosave, Data preset, Data asset)
 	{
 		int added = 0;
 		boolean missingconversion = false;
-		List tosave = new ArrayList();
 		
 		if (!existingtasks.contains(preset.getId() + "1"))//See if the first page is already created.
 		{
@@ -115,7 +136,6 @@ public class PresetCreator
 				}
 			}
 		}
-		tasksearcher.saveAllData(tosave, null);
 		return added;
 	}
 
@@ -146,6 +166,90 @@ public class PresetCreator
 			found.setProperty("pagenumber", String.valueOf(thepage));
 		}		
 		return found;
-
+	}
+	public void updateAssetImportStatus(MediaArchive inArchive, Data asset, HitTracker conversions )
+	{
+		String existingpreviewstatus = asset.get("previewstatus");
+		//is it already complete?
+		
+		//log.info("existingpreviewstatus" + existingpreviewstatus);
+		//update importstatus and previewstatus to complete
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Checking preview status: " + asset.getId() +"/" + existingpreviewstatus);
+		}
+		boolean allcomplete = true;
+		boolean founderror = false;
+		String existingimportstatus = asset.get("importstatus");
+	
+		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
+		{
+			//check tasks and update the asset status
+			Searcher tasksearcher = inArchive.getSearcher( "conversiontask");	
+			for( Object object : conversions )
+			{
+				Data task = (Data)object;
+				if( "error".equals( task.get("status") ) )
+				{
+					log.info(asset.getId() + "Found an error");
+					founderror = true;
+					break;
+				}
+	
+				if( !"complete".equals( task.get("status") ) )
+				{
+					allcomplete = false;
+					log.info("Found an incomplete task - status was: " + task.get("status") + " " + asset.getId());
+					String date = task.get("submitted");
+					if( "missinginput".equals( task.get("status") ) && date != null)
+					{
+						Date entered = DateStorageUtil.getStorageUtil().parseFromStorage(date);
+						GregorianCalendar cal = new GregorianCalendar();
+						cal.add(Calendar.DAY_OF_YEAR, -2);
+						if( entered.before(cal.getTime()))
+						{
+							Data loadedtask = (Data)tasksearcher.loadData(task);
+							loadedtask.setProperty("status","error");
+							loadedtask.setProperty("errordetails","Image missing more than 24 hours, marked as error");
+							tasksearcher.saveData(loadedtask, null);
+							founderror = true;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+			}	
+		}
+		else
+		{
+			allcomplete = true;
+		}
+		
+		//save importstatus
+		if( founderror || allcomplete )
+		{
+			//load the asset and save the import status to complete		
+			if( asset != null )
+			{
+				if(founderror && "error".equals(existingimportstatus) || "complete".equals(existingimportstatus))
+				{
+					return;						
+				}
+				Asset target =  (Asset)inArchive.getAssetSearcher().loadData(asset);
+				if( founderror)
+				{
+					target.setProperty("importstatus","error");
+				}
+				else
+				{
+					target.setProperty("importstatus","complete");
+					target.setProperty("previewstatus","2");
+					
+				}
+				inArchive.saveAsset(target, null);
+			}
+		}
 	}
 }

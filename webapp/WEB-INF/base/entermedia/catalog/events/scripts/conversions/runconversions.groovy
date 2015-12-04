@@ -6,7 +6,6 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.*
 import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.creator.ConvertQueue;
 import org.openedit.entermedia.edit.*
 import org.openedit.entermedia.modules.*
 import org.openedit.util.DateStorageUtil
@@ -62,9 +61,9 @@ class CompositeConvertRunner implements Runnable
 			log.info("asset already being processed ${fieldAssetId}");
 			return;
 		}
+		Asset asset = fieldMediaArchive.getAsset(fieldAssetId);
 		try
 		{
-			Asset asset = fieldMediaArchive.getAsset(fieldAssetId);
 			for( ConvertRunner runner: runners )
 			{
 				runner.asset = asset;
@@ -74,23 +73,24 @@ class CompositeConvertRunner implements Runnable
 					fieldCompleted = true;
 				}
 			}
-			
 		}
 		catch(Exception e){
 			log.error("ERRORS ${fieldAssetId}");
 		}
 		finally
 		{
-			
-			//log.info("updating conversion status on ${fieldSourcePath} - runner size was: " + runners.size());
-			fieldMediaArchive.updateAssetConvertStatus(fieldAssetId);
-			//log.info("Result on ${fieldSourcePath} was ${result}");
-			
+			if( hasComplete())
+			{
+				fieldMediaArchive.updateAssetImportStatus(asset);
+			}	
+					
 			fieldMediaArchive.releaseLock(lock);
-			fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+			
+			if( hasComplete() )
+			{
+				fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+			}
 		}
-	
-		
 	}
 
 	
@@ -277,34 +277,27 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 		{
 			props.put("pagenum",pagenumber);
 		}
-
-		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inAsset.getSourcePath());
-		
-		//TODO: Copy the task properties into the props so that crop stuff can be handled in the createInstructions
 		if(Boolean.parseBoolean(inTask.get("crop")))
 		{
-//			log.info("HERE!!!");
-			inStructions.setCrop(true);
-			inStructions.setProperty("x1", inTask.get("x1"));
-			inStructions.setProperty("y1", inTask.get("y1"));
-			inStructions.setProperty("cropwidth", inTask.get("cropwidth"));
-			inStructions.setProperty("cropheight", inTask.get("cropheight"));
-			if(inStructions.getProperty("prefwidth") == null){
-				inStructions.setProperty("prefwidth", inTask.get("cropwidth"));
-			}
-			if(inStructions.getProperty("prefheight") == null){
-				inStructions.setProperty("prefheight", inTask.get("cropheight"));
-			}
-			//inStructions.setProperty("useinput", "cropinput");//hard-coded a specific image size (large)
-			inStructions.setProperty("useoriginalasinput", "true");//hard-coded a specific image size (large)
+			props.put("iscrop","true");
+			props.putAll(inTask.getProperties() );
 			
-			inStructions.setProperty("gravity", "default");//hard-coded a specific image size (large)
-			inStructions.setProperty("croplast", "true");//hard-coded a specific image size (large)
+			if(inTask.get("prefwidth") == null){
+				props.put("prefwidth", inTask.get("cropwidth"));
+			}
+			if(inTask.get("prefheight") == null){
+				props.put("prefheight", inTask.get("cropheight"));
+			}
+			props.put("useoriginalasinput", "true");//hard-coded a specific image size (large)
+			props.put("croplast", "true");//hard-coded a specific image size (large)
 			
-			if(Boolean.parseBoolean(inTask.get("force"))){
-				inStructions.setForce(true);
+			if(Boolean.parseBoolean(inTask.get("force")))
+			{
+				props.put("isforced","true");
 			}
 		}
+
+		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inAsset.getSourcePath());
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );
@@ -398,7 +391,7 @@ public void checkforTasks()
 	
 	List runners = new ArrayList();
 
-	ConvertQueue executorQueue = getQueue(mediaarchive.getCatalogId());
+	ExecutorManager executorQueue = getQueue(mediaarchive.getCatalogId());
 	
 	CompositeConvertRunner byassetid = null;
 //		CompositeConvertRunner lastcomposite = null;
@@ -424,7 +417,7 @@ public void checkforTasks()
 		{
 			if( runners.size() > 100)
 			{
-				executorQueue.execute(runners);
+				executorQueue.execute("conversions",runners);
 				runners.clear();
 				//log.info("Clearing " + id);
 			}
@@ -439,7 +432,7 @@ public void checkforTasks()
 		byassetid.add(runner);
 		
 	}
-	executorQueue.execute(runners);
+	executorQueue.execute("conversions",runners);
 	if( runners.size() > 0)
 	{
 		for( CompositeConvertRunner runner: runners )
@@ -455,9 +448,9 @@ public void checkforTasks()
 	
 }
 
-public ConvertQueue getQueue(String inCatalogId)
+public ExecutorManager getQueue(String inCatalogId)
 {
-	ConvertQueue queue =  (ConvertQueue)moduleManager.getBean(inCatalogId,"convertQueue");
+	ExecutorManager queue =  (ExecutorManager)moduleManager.getBean(inCatalogId,"executorManager");
 	return queue;
 }
 

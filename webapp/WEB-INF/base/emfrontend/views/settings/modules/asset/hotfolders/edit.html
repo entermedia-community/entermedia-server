@@ -11,21 +11,13 @@
 #end
 ##TODO: Use a detail editor here
 
-<label>[[Folder Name]]</label>
+<label>[[Nickname]]</label>
 <input type="hidden" name="field" value="name" />
-<input class="field short required" name="name.value" value ="$!data.name" />
-<div class="note">[[Folder directory name, lowercase, no special characters.]] </div>
-
-<label>[[External Path]]</label>
-<input type="hidden" name="field" value="externalpath" />
-<input class="field" name="externalpath.value" value="$!data.externalpath" />
-<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] f:\media</div> 
+<input class="field" name="name.value" value="$!data.name" />
+<div class="note">[[Required: Nickname of this hot folder]] </div> 
 
 
-<label>[[Modified File Check]]</label>
-<input type="hidden" name="field" value="lastscanstart" />
-<input class="field short" name="lastscanstart.value" value ="$!data.lastscanstart" />
-<div class="note">[[Most recent check for files that were edited after being initially imported]]</div>
+$pages.include("./editdetails.html")
 
 <label>[[Include Only Extensions]]</label>
 <input type="hidden" name="field" value="includes" />
@@ -35,7 +27,7 @@
 <label>[[Exclude Filter]]</label>
 <input type="hidden" name="field" value="excludes" />
 <textarea class="field" name="excludes.value" cols="45" rows="3" >$!data.excludes</textarea>
-<div class="note">[[comma or new line delimited]] [[*/.*,*/Thumb.db,*.old ]]</div> 
+<div class="note">[[comma or new line delimited]] [[*/.*,*/Thumbs.db,*.old ]]</div> 
 
 <label>[[Attachment Filter]]</label>
 <input type="hidden" name="field" value="attachmenttrigger" />

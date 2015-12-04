@@ -1,3 +1,4 @@
+
 package importing;
 
 import org.entermedia.locks.Lock
@@ -14,10 +15,10 @@ import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 
 public void createTasksForUpload() throws Exception {
-	PresetCreator presets = new PresetCreator();
 
-	mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
-
+	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
+	PresetCreator presets = mediaarchive.getPresetManager();
+	
 	Searcher tasksearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "conversiontask");
 	Searcher presetsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "convertpreset");
 	Searcher destinationsearcher = mediaarchive.getSearcherManager().getSearcher (mediaarchive.getCatalogId(), "publishdestination");
@@ -27,48 +28,52 @@ public void createTasksForUpload() throws Exception {
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 	Searcher assetsearcher = mediaArchive.getAssetSearcher();
 
-	//There is a chance that the index is out of date.
-
-	SearchQuery q = assetsearcher.createSearchQuery();
-	String ids = context.getRequestParameter("assetids");
-	//log.info("Found ${ids} assets from context ${context}");
-	log.info("Running queueconversions on ${ids}");
+	Collection hits = context.getPageValue("hits");
+	if( hits == null)
+	{
+		//There is a chance that the index is out of date.
 	
-	if( ids == null)
-	{
-		//Do a search for importstatus of "added" -> "converted"
-		q.addOrsGroup( "importstatus", "imported reimported" );
+		SearchQuery q = assetsearcher.createSearchQuery();
+		String ids = context.getRequestParameter("assetids");
+		//log.info("Found ${ids} assets from context ${context}");
+		log.info("Running queueconversions on ${ids}");
+		
+		if( ids == null)
+		{
+			//Do a search for importstatus of "added" -> "converted"
+			q.addOrsGroup( "importstatus", "imported reimported" );
+		}
+		else
+		{
+			String assetids = ids.replace(","," ");
+			q.addOrsGroup( "id", assetids );
+		}
+	
+		hits = new ArrayList(assetsearcher.search(q) );
 	}
-	else
-	{
-		String assetids = ids.replace(","," ");
-		q.addOrsGroup( "id", assetids );
-	}
-
-	List assets = new ArrayList(assetsearcher.search(q) );
-	if( assets.size() == 0 )
+	if( hits.size() == 0 )
 	{
 		log.error("Problem with import, no asset found");
 	}
 	boolean foundsome = false;
-	assets.each
+	List tosave = new ArrayList();
+	List assetsave = new ArrayList();
+	hits.each
 	{
 		foundsome = false;
-		Lock lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
+		//Lock lock = null;
 		try{
+			//lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
 			Asset asset = assetsearcher.loadData(it);
-
-			String rendertype = mediaarchive.getMediaRenderType(asset.getFileFormat());
-			SearchQuery query = presetsearcher.createSearchQuery();
-			query.addMatches("onimport", "true");
-			query.addMatches("inputtype", rendertype); //video
-
-			HitTracker hits = presetsearcher.search(query);
+			//Data asset =  it;
+			
+			String rendertype = mediaarchive.getMediaRenderType(asset);
+			Collection presethits= presets.getPresets(mediaarchive,rendertype);
 			//	log.info("Found ${hits.size()} automatic presets");
-			List tosave = new ArrayList();
-			hits.each
+			presethits.each
 			{
-				Data preset = (Data) presetsearcher.loadData(it);
+				//Data preset = (Data) presetsearcher.loadData(it);
+				Data preset = it;
 				Boolean onlyone = Boolean.parseBoolean(preset.singlepage);
 				
 				//TODO: Move this to a new script just for auto publishing
@@ -100,6 +105,8 @@ public void createTasksForUpload() throws Exception {
 				{
 					asset.setProperty("previewstatus","converting");
 				}
+				assetsave.add(asset);
+				
 				//runconversions will take care of setting the importstatus
 			}
 			else
@@ -115,17 +122,28 @@ public void createTasksForUpload() throws Exception {
 					{
 						asset.setProperty("previewstatus","mime");
 					}
+					assetsave.add(asset);
 				}
 
 			}
-			mediaarchive.saveAsset( asset, user );
-			tasksearcher.saveAllData(tosave, null);
 		}
-		finally
+		catch( Throwable ex)
 		{
-			mediaArchive.releaseLock(lock);
+			log.error(it.id,ex);
+			//asset.setProperty("importstatus","error");
 		}
+//		finally
+//		{
+//			if( lock != null)
+//			{
+//				mediaArchive.releaseLock(lock);
+//			}
+//		}
 	}
+
+	mediaarchive.saveAssets( assetsave,user);
+	tasksearcher.saveAllData(tosave, user);
+
 	if( foundsome )
 	{
 		//PathEventManager pemanager = (PathEventManager)moduleManager.getBean(mediaarchive.getCatalogId(), "pathEventManager");

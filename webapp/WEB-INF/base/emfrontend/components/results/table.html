@@ -1,4 +1,4 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-category="$!category.getId()">
+<div id="resultsdiv" class="tableresults" data-hitssessionid="$hits.getSessionId()" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 <div id="emresultscontent" >
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
@@ -53,6 +53,8 @@ $context.putPageValue("thumbsize", $thumbsize)
 
 </div>
 </div>	
+<p class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
+
 $pages.include("$apphome/components/results/pages.html",$context)
 #else
 <p class="info" style="margin: 20px;">[[No results found]]</p>

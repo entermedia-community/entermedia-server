@@ -1,0 +1,96 @@
+<div id="editdetails" >
+
+<label>[[Hot Folder Type]]</label>
+<input type="hidden" name="field" value="hotfoldertype" />
+
+#set( $type = $context.getRequestParameter("type"))
+#if( !$type )
+ #set( $type = $data.get("hotfoldertype") )
+#end
+<select name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=${data.id}&type=" data-targetdiv="editdetails">
+	<option value="mount" #if( $type == "mount") selected #end>Server Files</option>
+##	<option value="version" >Version Control</option>
+	<option value="googledrive" #if( $type == "googledrive") selected #end>Google Drive</option>
+	<option value="s3" #if( $type == "s3") selected #end>Amazon S3 Drive</option>
+	<option value="syncthing" #if( $type == "syncthing") selected #end>SyncThing</option>
+</select>
+
+#if( $type == "syncthing" )
+
+<a href="http://entermediadb.org/knowledge/syncthing-hotfolder/">help me with SyncThing</a>
+
+
+<label>[[SyncThing Device ID]]</label>
+<input type="hidden" name="field" value="deviceid" />
+<input class="field" name="deviceid.value" value="$!data.deviceid" />
+<div class="note">[[Your client Syncthing Device ID]] </div> 
+
+
+<label>[[Folder Name]]</label>
+<input type="hidden" name="field" value="subfolder" />
+<input class="field" name="subfolder.value" value="$!data.subfolder" />
+<div class="note">[[Required: The name of folder such as Marketing or My Files. Do not include path information. No slashes allowed]] </div> 
+
+#elseif ($type == "s3")
+<a href="http://entermediadb.org/knowledge/amazon-s3-hotfolder/">help me with Amazon S3</a>
+<label>[[Folder Name]]</label>
+<input type="hidden" name="field" value="subfolder" />
+<input class="field" name="subfolder.value" value="$!data.subfolder" />
+<div class="note">[[Required: The name of folder such as Marketing or My Files. Do not include path information. No slashes allowed]] </div> 
+
+<label>[[Bucket]]</label>
+<input type="hidden" name="field" value="bucket" />
+<input class="field" name="bucket.value" value="$!data.bucket" />
+<div class="note">[[Your Amazon S3 Bucket]] </div>
+
+<label>[[Access Key]]</label>
+<input type="hidden" name="field" value="accesskey" />
+<input class="field" name="accesskey.value" value="$!data.accesskey" />
+<div class="note">[[Your Amazon Access Key]] </div> 
+
+<label>[[Secret Key]]</label>
+<input type="hidden" name="field" value="secretkey" />
+<input class="field" name="secretkey.value" value="$!data.secretkey" />
+<div class="note">[[Your Amazon Secret Key]] </div>
+
+#elseif ($type == "googledrive")
+
+<a href="http://entermediadb.org/knowledge/google-drive-hotfolder/">help me with Google Drive</a>
+
+<label>[[Folder Name]]</label>
+<input type="hidden" name="field" value="subfolder" />
+<input class="field" name="subfolder.value" value="$!data.subfolder" />
+<div class="note">[[Required: The unique name of folder such as "My Files". Do not include path information. No slashes allowed]] </div> 
+
+
+<label>[[Google Email]]</label>
+<input type="hidden" name="field" value="email" />
+<input class="field" name="email.value" value="$!data.email" />
+<div class="note">[[Google Email Address that has the folders you want to sync]] </div>
+
+
+<label>[[Access Code]]</label>
+<input type="hidden" name="field" value="accesskey" />
+<input class="field" name="accesskey.value" value="$!data.accesskey" />
+<div class="note">[[Get your application access code from here for this email: ]]<a target="_blank" href="https://goo.gl/jv797S">Google API</a></div> 
+
+<!-- 
+<label>[[Folder to Sync]]</label>
+<input type="hidden" name="field" value="subfolder" />
+<select class="field" name="subfolder.value" > ##use auto complete
+	<option value=""></option>
+	
+</select>
+<div class="note">[[Required: The name of folder such as Marketing or My Files. Do not include path information. No slashes allowed]] </div> 
+ -->
+ 
+#else
+
+<label>[[External Path]]</label>
+<input type="hidden" name="field" value="externalpath" />
+<input class="field" name="externalpath.value" value="$!data.externalpath" />
+<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
+
+#end
+
+</div>

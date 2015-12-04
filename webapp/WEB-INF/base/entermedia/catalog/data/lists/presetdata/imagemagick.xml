@@ -5,6 +5,6 @@
   <preset id="imagecrop" >Image Crop</preset>
     <preset id="imagecmyk" >CMYK Crop</preset>
     <preset id="imagepreviewfpo" >Preview - FPO</preset>
-    <preset id="cropinput" >Input Crop</preset>
-  
+    <preset id="cropinput" >Manual Crop</preset>
+    <preset id="cropdocument" >Document Crop</preset>  
 </properties>

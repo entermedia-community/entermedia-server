@@ -8,9 +8,16 @@
 
   <parameter id="imagepreview1" parameterdata="imagepreview" value="1024" >prefwidth</parameter> 
   <parameter id="imagepreview2" parameterdata="imagepreview" value="768" >prefheight</parameter> 
+  <data name="background" value="white" parameterdata="imagepreview" id="1447784755291"/> 
+  <data name="layers" value="flatten" parameterdata="imagepreview" id="1447786760361"/>
+  <data name="x1" value="0" parameterdata="imagecrop" id="1447788355708"/>  
+  <data name="y1" value="0" parameterdata="imagecrop" id="1447788364305"/>
+  <data name="crop" value="true" parameterdata="imagecrop" id="1447788371700"/>
 
   <parameter id="imagecrop1" parameterdata="imagecrop" value="110" >prefwidth</parameter> 
-  <parameter id="imagecrop2" parameterdata="imagecrop" value="62" >prefheight</parameter> 
+  <parameter id="imagecrop2" parameterdata="imagecrop" value="62" >prefheight</parameter>
+  <data name="background" value="white" parameterdata="imagecrop" id="1447786042115"/>
+  <data name="layers" value="flatten" parameterdata="imagecrop" id="1447786789989"/>  
 
   <parameter id="imagecrop1" parameterdata="imagecrop" value="110" >prefwidth</parameter> 
   <parameter id="imagecrop2" parameterdata="imagecrop" value="62" >prefheight</parameter> 
@@ -22,11 +29,15 @@
   <parameter id="imagepreviewfpo1" parameterdata="imagepreviewfpo" value="1024"  >prefwidth</parameter> 
   <parameter id="imagepreviewfpo2" parameterdata="imagepreviewfpo" value="768" >prefheight</parameter> 
   <parameter id="imagepreviewfpo3" parameterdata="imagepreviewfpo" value="true" >watermark</parameter> 
-
-  <!-- 
-    <parameter id="cropinput1" parameterdata="cropinput" value="1280" >prefwidth</parameter> 
-  <parameter id="cropinput2" parameterdata="cropinput" value="1024" >prefheight</parameter> 
-   -->
+  
+  <data name="background" value="white" parameterdata="cropdocument" id="1447789384658"/>  
+  <data name="layers" value="flatten" parameterdata="cropdocument" id="1447790062578"/>  
+  <data name="gravity" value="NorthEast" parameterdata="cropdocument" id="1447790070354"/>  
+  <data name="prefheight" value="62" parameterdata="cropdocument" id="1447790093028"/>  
+  <data name="prefwidth" value="110" parameterdata="cropdocument" id="1447790100132"/>  
+  <data name="crop" value="true" parameterdata="cropdocument" id="1447790183613"/>  
+  <data name="x1" value="0" parameterdata="cropdocument" id="1447790399176"/>  
+  <data name="y1" value="0" parameterdata="cropdocument" id="1447790405247"/>
   
   
 </properties>

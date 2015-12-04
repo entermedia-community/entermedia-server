@@ -67,6 +67,7 @@ public class UserProfileSearcher extends XmlFileSearcher {
 					if( buffer.size() > 99)
 					{
 						updateIndex(inWriter, inTaxonomyWriter, buffer);
+						buffer.clear();
 					}
 				}
 			}

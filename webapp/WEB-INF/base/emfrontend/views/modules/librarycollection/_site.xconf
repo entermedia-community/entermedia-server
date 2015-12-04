@@ -4,15 +4,6 @@
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
     <property name="module">librarycollection</property>
     
-    <script id="fabric" src="/${applicationid}/components/javascript/fabric/dist/fabric.js" />
-  
-	<script id="fabricmodel" src="/${applicationid}/components/annotations/ajax/FabricModel.js" />
-    <script id="annotationeditor" src="/${applicationid}/components/annotations/ajax/AnnotationEditor.js" />
-    <script id="colorpicker" src="/${applicationid}/components/javascript/colorpicker-master/jquery.colorpicker.js" />
-  
-    <style id="annotations" href="/${applicationid}/components/annotations/ajax/css/annotations.css" />
-    <style id="colorpickercss" href="/${applicationid}/components/javascript/colorpicker-master/jquery.colorpicker.css"/>
-    
- 	<inner-layout>./viewassets.html</inner-layout>
+  	<inner-layout>./viewassets.html</inner-layout>
     
 </page>

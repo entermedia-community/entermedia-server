@@ -2,4 +2,6 @@
 <properties>
   <property id="name" editable="true" index="true" stored="true">Name</property>
   <property id="extensions" editable="true" index="true" stored="true">Extensions</property>
+    <property id="paths" editable="true" index="true" stored="true" note="Wildcards are acceptable - for example */docs/*">Paths</property>
+  
 </properties>

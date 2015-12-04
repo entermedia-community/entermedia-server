@@ -27,7 +27,7 @@ uiload = function() {
 			$('#embody').addClass('max');
 			$('#maximize').html('Minimize');
 			$('#maximize').attr('title', 'Minimize the application.');
-			doResize();
+
 		} else {
 			
 			$('#embody').removeClass('max');
@@ -40,6 +40,7 @@ uiload = function() {
 			var w3 = ( 551 );
 			$('#commenttext').width(w3);
 		}
+			$(window).trigger( "resize" );
 		
 		toggleUserProperty("maximize_screen");
 		
@@ -104,7 +105,22 @@ uiload = function() {
 							
 			}
 		);
-	
+		jQuery("select.ajax").livequery('change',
+			function(e) 
+			{
+				var inlink = jQuery(this);
+				var nextpage= inlink.data('href');
+				nextpage = nextpage + inlink.val();
+				var targetDiv = inlink.data("targetdiv");
+				targetDiv = targetDiv.replace(/\//g, "\\/");
+				jQuery.get(nextpage, {}, function(data) 
+				{
+					var	cell = jQuery("#" + targetDiv);
+					cell.replaceWith(data);
+					$(window).trigger( "resize" );
+				});	
+			}
+		);
 	
 	jQuery("a.toggle-visible").livequery('click',
 			function(e) 
@@ -344,22 +360,92 @@ uiload = function() {
 
 	});
 
-	$(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e)   
+	$(".emtabs").livequery( function()   
 	{
-	    var link = $(e.target); // activated tab
-	    
-	    var tab = $(link.attr("href"));
-	    
-		//var tab = $(this);
-		var url = tab.data("tabpath");
-		if( !tab.data("tabloaded") )
+		var tabs = $(this); 
+		
+		var tabcontent = $("#" + tabs.data("targetdiv") );
+		
+		//active the right tab
+		var hash = window.location.hash;
+		if( !hash )
 		{
-			jQuery.get(url, {}, function(data) 
-			{
-				tab.html(data);
-				tab.data("tabloaded",true);
-			});
+			hash = "#" + tabs.data("defaulttab");
+		}
+		var activelink = $(hash);
+		var loadedpanel = $(hash + "panel");
+		if( loadedpanel.length == 0)
+		{
+			loadedpanel = $("#loadedpanel",tabcontent);
+			loadedpanel.attr("id",activelink.attr("id") + "panel");
+			activelink.data("tabloaded",true);
 		}	
+		activelink.parent("li").addClass("ui-state-active");
+		activelink.data("loadpageonce",false);
+		
+		$("a",tabs).livequery("click", function (e)   
+		{
+			e.preventDefault();
+			
+	    	var link = $(this); // activated tab
+			$("li",tabs).removeClass("ui-state-active");
+	    	link.parent("li").addClass("ui-state-active");
+	    	
+		    var id = link.attr("id");
+
+		    var url = link.attr("href");
+		    url = url + "#" + id;
+			var panelid =  id + "panel";
+			var tab = $( "#" + panelid);
+			if( tab.length == 0)
+			{
+			  tab = tabcontent.append('<div class="tab-pane" id="' + panelid + '" ></div>');
+			  tab = $( "#" + panelid);
+			}	  
+			
+			var reloadpage = link.data("loadpageonce");
+			if( reloadpage )
+			{
+				if( window.location.href.endsWith( url ) )
+				{
+					window.location.reload();
+				}
+				else
+				{
+					window.location.href = url;
+				}
+			}
+			else
+			{
+				var loaded = link.data("tabloaded");
+				if( link.data("allwaysloadpage") )
+				{	
+					loaded = false;
+				}
+				if( !loaded )
+				{
+					var levels = link.data("layouts");
+					if( !levels)
+					{
+						levels = "1";
+					}
+					jQuery.get(url , {oemaxlevel:levels}, function(data) 
+					{
+						tab.html(data);
+						link.data("tabloaded",true);
+						$(".tab-pane",tabcontent).hide();
+						tab.show();
+						$(window).trigger( "resize" );
+					});
+				}
+				else
+				{
+					$(".tab-pane",tabcontent).hide();
+					tab.show();
+					$(window).trigger( "resize" );
+				}
+			}	
+		});
 	});
 
 
@@ -439,24 +525,20 @@ uiload = function() {
 	}	
 }
 
-function doResize() {
+
+jQuery(document).ready(function() 
+{ 
+	uiload();
+	$(window).on('resize',function()
+	{
 		w1 = ( $('#main').width() - $('#left-col').width() - 41 );
 		$('#right-col .liquid-sizer').width(w1);
 		w2 = ( $('#data').width() - 40 );
 		$('#asset-data').width(w2);
 		w3 = ( w2 - 23);
 		$('#commenttext').width(w3);
-	}
+	});
 
-
-jQuery(document).ready(function() 
-{ 
-	uiload();
-	doResize();
 }); 
-
-$(window).resize(function(){
-	doResize();
-});
 
 

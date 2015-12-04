@@ -1,0 +1,3 @@
+<page>
+	<inner-layout>${themeprefix}/layouts/homelayout.html</inner-layout>
+</page>

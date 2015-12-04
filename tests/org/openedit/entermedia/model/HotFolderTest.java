@@ -6,13 +6,14 @@ import org.openedit.Data;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.cluster.NodeManager;
-import org.openedit.entermedia.scanner.HotFolderManager;
+
+import model.importer.BaseHotFolderManager;
 
 public class HotFolderTest extends BaseEnterMediaTest
 {
 	public void testAdd() throws Exception
 	{
-		HotFolderManager manager = (HotFolderManager)getBean("hotFolderManager");
+		BaseHotFolderManager manager = (BaseHotFolderManager)getBean("hotFolderManager");
 		MediaArchive archive = getMediaArchive();		
 		String catalogId = archive.getCatalogId();
 		String path = "/WEB-INF/data/" + catalogId + "/originals/test";

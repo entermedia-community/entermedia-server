@@ -23,12 +23,15 @@ $context.putPageValue("hits",$hits)
 <div id="resultheader">
 	<ul id="sub-nav" class="search-views">
 		#set ($classname="enabled")
+		#set ($enabled=$hits.getSelectionSize() > 0)
+		
 		#if( $candownload || $canconvert || $candownloadfpo )
-			<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
+			<li><a #if( $enabled )href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" #else style="text-decoration:none;" #end>[[Download]]</a></li>
 		#end	
 		##Email and publish should be under share
 		#if($canpublish || $canemaillink )
-			<li><a>[[Share]]</a>
+			<li><a #if( !$enabled ) style="text-decoration:none;" #end>[[Share]]</a>
+				#if( $enabled )
 				<ul>
 					#if( $canemaillink )
 					<li><a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a></li>
@@ -40,6 +43,7 @@ $context.putPageValue("hits",$hits)
 					<li><a href="$home$apphome/views/activity/sharegallery.html?hitssessionid=$!hits.getSessionId()&field=publishdestination&publishdestination.value=gallery&field=ordertype&ordertype.value=gallery&field=publishtype&publishtype.value=gallery" >[[Share Gallery]]</a></li>
 					##end
 				</ul>
+				#end
 			</li>
 		#end
 		
@@ -56,14 +60,6 @@ $context.putPageValue("hits",$hits)
 			</li>
 		#end
 		
-		#if ( $canviewbasket )
-			#if($order)
-				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
-			#else
-				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add to Basket]]</a></li>
-			#end
-		#end
-
 			#if( $librarycol )
 				<li><a>[[Collection]]</a>	
 				<ul>
@@ -76,22 +72,25 @@ $context.putPageValue("hits",$hits)
 				</li>
 				#end
 		
-		#if ($canmetadatageneral && $hits)
-			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/index.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">[[Edit]]</a>
-			</li>
+		#if ( $canviewbasket )
+			#if($order)
+				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
+			#end
 		#end
-		#set( $edit = $context.getRequestParameter("editheader") )
+  		#set( $edit = $context.getRequestParameter("editheader") )
 		#if($edit && $edit == "true"  )
 			<li>
 				<a class="drag-columns-text"><span class="ui-icon ui-icon-info" style="float: left; margin-top: 14px; margin-right: 5px;"></span>
 				[[Drag columns to move them]]</a>
 			</li>
-		#elseif(!$librarycol && $hits.hasSelections()  )
+		#else
 			<li>
 				$pages.include("$apphome/components/results/selected/index.html",$context)
 			</li>
+			<li>
+			$pages.include("$apphome/components/results/pages.html",$context)
+			</li>
 		#end
-		
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			<li style="float: right;" class="edit-columns">	
@@ -128,20 +127,20 @@ $context.putPageValue("hits",$hits)
 				#set($resultview = "table")
 			#end
 		#end
+		#if(!$edit || $edit == "false"  )
 			<li style="float: right;">
 				<div style="position: relative;">
 					<a class="table-edit-close">
-					
-						<select name="resultview" onchange="selectresultview($(this).val());" class="smalldropdown">
-							<option value="none">[[Change Result View]]</option>
-							<option value="table" #if( $resultview == "table") selected #end>[[Table View]]</option>
-							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery View]]</option>
-							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Category Folder View]]</option>
+						<select name="resultview" id="selectresultview" class="smalldropdown" 
+							data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()">
+							<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
+							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery]]</option>
+							<option value="stackedgallery" #if( $resultview == "stackedgallery") selected #end>[[Stacked]]</option>
+							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Folders]]</option>
 						</select>
 					</a>
 				</div>
-				<a  style="display:none;" class="ajax" id="ajaxselectresultview" targetdivinner="resultsdiv" href="$home$apphome/components/results/changeresultview.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&searchtype=asset&page=$hits.getPage()&showremoveselections=$showremoveselections&collectionid=$!librarycol.getId()">
-				</a>
 			</li>
+		#end	
 	</ul>
 </div>

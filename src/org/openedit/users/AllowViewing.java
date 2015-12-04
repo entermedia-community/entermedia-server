@@ -81,7 +81,8 @@ public class AllowViewing
 
 		if (!inExcludeList(requestPath))
 		{
-			Permission filter = inReq.getPage().getPermission("view"); 			if ( (filter != null) )			
+			Permission filter = inReq.getPage().getPermission("view"); 		
+			if ( (filter != null) )			
 			{
 				if ( !filter.passes( inReq ))
 				{

@@ -16,10 +16,15 @@
 <property name="showactions">true</property>
  <path-action allowduplicates="true" bean="searcherManager" name="PageValue.loadPageVariable"/>
  <permission name="delete">
- 	<permission name="oe.administration"/>
+ 	<or>
+		<group name="administrators" />
+	</or>
  </permission>
  <permission name="editdata">
- 	<permission name="oe.administration"/>
+ 	<or>
+		<group name="administrators" />
+		<group name="users" />
+	</or>
  </permission>
  	<script id="results" src="/${applicationid}/components/javascript/results.js"/>
  	

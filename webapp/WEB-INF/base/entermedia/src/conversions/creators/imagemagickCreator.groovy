@@ -17,8 +17,10 @@ import com.openedit.page.Page
 import com.openedit.util.ExecResult
 import com.openedit.util.PathUtilities
 
-public class imagemagickCreator extends BaseImageCreator {
+public class imagemagickCreator extends BaseImageCreator 
+{
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
+	
 	protected String fieldPathToProfile;
 
 	public String getPathtoProfile(){
@@ -132,9 +134,19 @@ public class imagemagickCreator extends BaseImageCreator {
 			//					autocreated = true;
 			//				}
 			//			}
-			if( input == null && box.getWidth() < 1024 )
+			if( input == null && box.getWidth() < 1025 )
 			{
-				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+				//input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1920x1080" + page + ".jpg");
+				//if( !input.exists() )
+				//{
+					if (transparent) {
+						
+						input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".png");
+					} else {
+						
+						input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+					}
+				//}
 				if( input.length() < 2 )
 				{
 					input = null;
@@ -246,7 +258,7 @@ public class imagemagickCreator extends BaseImageCreator {
 						page = "";
 					}
 					
-					input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
+					//input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".jpg");
 					
 					result.setError("Prepropessor could not create tmp file");
 					result.setOk(false);
@@ -426,26 +438,8 @@ public class imagemagickCreator extends BaseImageCreator {
 				com.add(resizestring.toString());
 			}
 
-			//now let's crop
-			String gravity = inStructions.get("gravity");
-			if(!"default".equals(gravity))
-			{
-				com.add("-gravity");
-				if( gravity == null )
-				{
-					String thistype = inAsset.getFileFormat();
-					String found = inArchive.getMediaRenderType(thistype);
-					if( "document".equals(found) )
-					{
-						gravity = "NorthEast";
-					}
-				}
-				if( gravity == null )
-				{
-					gravity = "Center";
-				}
-				com.add(gravity);
-			}
+			//This gravity is the relative point of the crop marks
+			setValue("gravity", "NorthWest", inStructions, com);
 
 			if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{
@@ -458,8 +452,10 @@ public class imagemagickCreator extends BaseImageCreator {
 				com.add("-background");
 				com.add("transparent");
 				com.add("-flatten");
+			} else {
+				setValue("background", null, inStructions, com);
+				setValue("layers", null, inStructions, com);
 			}
-
 
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
@@ -521,6 +517,10 @@ public class imagemagickCreator extends BaseImageCreator {
 			com.add("-background");
 			com.add("transparent");
 			com.add("-flatten");
+		} else {
+			
+			setValue("background", null, inStructions, com);
+			setValue("layers", null, inStructions, com);
 		}
 		//				String colorspace = inStructions.get("colorspace");
 		//				if(colorspace != null){
@@ -577,7 +577,6 @@ public class imagemagickCreator extends BaseImageCreator {
 			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
 			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
 			{
-				setValue("profile", getPathtoProfile(), inStructions, com);
 				com.add("-auto-orient"); //Needed for rotate tool
 				com.add("-strip"); //This does not seem to do much
 				setValue("profile", getPathtoProfile(), inStructions, com);
@@ -624,8 +623,15 @@ public class imagemagickCreator extends BaseImageCreator {
 			return result;
 		}
 		//problems
-		log.info("Could not exec: " + execresult.getStandardError() );
-		result.setError(execresult.getStandardError());
+		log.info("Could not exec: " + execresult.getStandardOut() );
+		if( execresult.getReturnValue() == 124)
+		{
+			result.setError("Exec timed out after " + timeout);
+		}
+		else
+		{
+			result.setError(execresult.getStandardOut());
+		}
 		return result;
 	}
 

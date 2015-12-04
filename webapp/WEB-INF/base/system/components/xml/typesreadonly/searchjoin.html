@@ -16,8 +16,12 @@ $context.putPageValue("detail",$newdetail)
 
 #set ($viewtype = $newdetail.viewType)
 #if( $data)
-	#set( $data = $newsearcher.searchById($data.get($table)) )
-	$context.putPageValue("data",$data)
+	#if( $detail.render )
+		#set($val = $searcherManager.getValue($newdetail.getListCatalogId(), $detail.render, $data.properties))
+	#else
+		#set($val = $data.name)
+	#end
+	$context.putPageValue("val",$val)
 #end
 
 #if (!$viewtype)
@@ -26,7 +30,5 @@ $context.putPageValue("detail",$newdetail)
 #if (!$viewtype || $viewtype== "text")
 	#set ($viewtype = "default")
 #end
-
-	
 	
 $pages.include("$xmledithome/typesreadonly/${viewtype}.html", $context)

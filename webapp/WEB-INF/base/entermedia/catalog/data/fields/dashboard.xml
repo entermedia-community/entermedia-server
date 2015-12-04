@@ -1,0 +1,8 @@
+<properties beanname="folderSearcher">
+  <property id="id" editable="true" index="true" stored="true">Id</property>
+  <property id="name"  editable="true" index="true" stored="true">Name</property>
+  <property id="link"  editable="true" index="true" stored="true">Link</property>
+  <property id="count"  editable="true" index="true" stored="true">Code</property>
+  
+  
+</properties>

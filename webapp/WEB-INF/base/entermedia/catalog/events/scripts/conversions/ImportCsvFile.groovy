@@ -11,7 +11,7 @@ class CsvImporter extends BaseImporter
 	protected void addProperties( Row inRow, Data inData)
 	{
 		super.addProperties( inRow, inData);
-		//createLookUp(inSearcher.getCatalogId(),inData,"Division","val_divisions");
+		//createLookUp(getSearcher().getCatalogId(),inData,"Division","val_divisions");
 	}
 
 }

@@ -19,7 +19,7 @@ import org.openedit.entermedia.publishing.*
 import com.openedit.OpenEditException
 import com.openedit.page.Page
 
-public class wordpresspublisher extends basepublisher implements Publisher
+public class wordpresspublisher extends BasePublisher implements Publisher
 {
 	private static final Log log = LogFactory.getLog(wordpresspublisher.class);
 	protected ThreadLocal perThreadCache = new ThreadLocal();

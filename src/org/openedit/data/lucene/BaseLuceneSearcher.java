@@ -406,7 +406,7 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 					 */
 					//
 
-					BaseLuceneSearcher tosearcher = (BaseLuceneSearcher) getSearcherManager().getSearcher(getCatalogId(), join.getRemoteSearchType());
+					BaseLuceneSearcher tosearcher = (BaseLuceneSearcher) getSearcherManager().getSearcher(getCatalogId(), join.getFilterSearchType());
 					
 					LuceneConnection  connection = tosearcher.getLuceneConnectionManager().acquire();
 					
@@ -414,8 +414,14 @@ public abstract class BaseLuceneSearcher  extends BaseSearcher implements Shutdo
 					
 					try
 					{
-						Query filter = tosearcher.getQueryParser().parse(join.getRemoteQuery().toQuery());
-						filter = JoinUtil.createJoinQuery(join.getRemoteColumn(), join.isRemoteHasMultiValues(), join.getLocalColumn(), filter, connection.getIndexSearcher(), ScoreMode.None);
+						//Results: library and Filter: contact
+						//resultscolumn = contact
+						//filter.column = id
+						//Filter.Query = company:1234
+						
+						Query filter = tosearcher.getQueryParser().parse(join.getFilterQuery().toQuery());  //collectionid=101
+						
+						filter = JoinUtil.createJoinQuery(join.getFilterColumn(), join.isFilterHasMultiValues(), join.getResultsColumn(), filter, connection.getIndexSearcher(), ScoreMode.None);
 						if (query1 != null)
 						{
 							BooleanQuery finalQuery = new BooleanQuery();

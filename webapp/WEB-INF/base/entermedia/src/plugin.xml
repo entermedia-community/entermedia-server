@@ -5,11 +5,11 @@
        default-lazy-init="true">
 
 <!-- GROOVY Script Version -->
-	<lang:groovy id="cmykpreprocessorCreator" script-source="conversions/creators/cmykpreprocessorCreator.groovy" lazy-init="false">
+	<lang:groovy id="cmykpreprocessorCreator" script-source="conversions/creators/cmykpreprocessorCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="imagemagickCreator" script-source="conversions/creators/imagemagickCreator.groovy" lazy-init="false">
+	<lang:groovy id="imagemagickCreator" script-source="conversions/creators/imagemagickCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 		<lang:property name="preProcessors"><ref bean="imagePreProcessors" /></lang:property>
@@ -119,6 +119,12 @@
 	<lang:groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
 			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
 	</lang:groovy>
+	
+	<lang:groovy  id="hotFolderManager" script-source="model/importer/BaseHotFolderManager.groovy" lazy-init="default">
+			<lang:property name="searcherManager"><ref bean="searcherManager" /></lang:property>
+			<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
+			<lang:property name="webServer"><ref bean="WebServer" /></lang:property>
+	</lang:groovy>`
 <!-- 
 	<bean  id="pushManager" class="model.push.BasePushManager" >
 			<property name="searcherManager"><ref bean="searcherManager" /></property>

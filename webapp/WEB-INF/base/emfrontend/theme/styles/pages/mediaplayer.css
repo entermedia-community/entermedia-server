@@ -111,3 +111,156 @@
 	color: #888888;
 }
 
+#emcontent .media-carousel {
+  background: #eee;
+  border: 1px solid #a3c8d4;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .1);
+  margin-bottom: 5px;
+  padding: 0 0 15px 0;
+  position: relative;
+}
+#emcontent .media-carousel .carousel-window {
+   overflow: hidden;
+}
+#emcontent .media-carousel ul
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+#emcontent .media-carousel ul li {
+ 
+  width: 200px;
+  height: 180px;
+  float: left;
+  margin: 15px 10px 0 0px;
+  text-align: center;
+  border-radius: 0;
+  cursor: pointer;
+  background-color: #fff;
+  overflow: hidden;
+
+}
+#emcontent .media-carousel ul li .thumbframe {
+  text-align: center;
+  border-radius: 0;
+  cursor: pointer;
+  background-color: #fff;
+  overflow: hidden;
+  margin: 4px;
+
+}
+#emcontent .media-carousel ul li a  {
+  display: block;
+}
+
+#emcontent .media-carousel ul li span  {
+}
+#emcontent .media-carousel ul li.active {
+	background: yellow;
+}
+
+#emcontent .media-carousel ul li a.thumb  img {
+  min-height: 170px;
+  max-width: 360px;
+}
+#emcontent .media-carousel ul a.thumb:hover {
+  background: #fff;
+}
+#emcontent .media-carousel ul a.thumb.active {
+  background: #abdcef;
+}
+#emcontent .media-carousel a.previous,
+#emcontent .media-carousel a.next {
+  height: 20px;
+  width: 20px;
+  display: block;
+  background: none;
+  cursor: pointer;
+  
+}
+#emcontent .media-carousel a.previous .icon,
+#emcontent .media-carousel a.next .icon {
+  fill: #333;
+}
+#emcontent .media-carousel a.previous:hover .icon,
+#emcontent .media-carousel a.next:hover .icon {
+  fill: #777;
+}
+#emcontent .media-carousel a.previous {
+  float: left;
+  margin:35px 5px 0;
+}
+
+#emcontent .media-carousel a.next {
+  float: right;
+  margin:35px 5px 0;
+}
+
+
+.media-carousel .carousel-window {
+	margin:0 60px 0 60px;	
+}
+.media-carousel .nextpage {
+	
+}
+
+.media-carousel .nextpage,
+.media-carousel .prevpage {
+	width:50px;
+	height: 100px;
+	opacity: 0.2;
+	position: absolute;
+	top:20px;
+}
+.media-carousel .nextpage:hover,
+.media-carousel .prevpage:hover {
+	opacity: 0.8;
+}
+.media-carousel .nextpage {
+	background: url('http://demo.entermediadb.com/emshare/theme/images/pdf-next-page.png');
+	right:5px;
+}
+.media-carousel .prevpage {
+	background: url('http://demo.entermediadb.com/emshare/theme/images/pdf-prev-page.png');
+	left:5px;
+}
+
+#collectionfeed #librarychange div.listautocomplete {
+    min-width: 220px;
+    max-width: 220px;
+    margin: 0 0 8px 0;
+}
+#collectionfeed  .collheader th
+{
+color: #fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+#collectionfeed  .btn-toolbar {
+	float: right;
+	position:relative;
+}
+#collectionfeed  .btn-toolbar  a 
+{
+	border-radius: 4px 4px 0px 0px;
+    border: 1px solid #a3c8d4;
+    border-bottom: 0px;
+    display: inline-block;
+    margin: 0px 0 -12px 0;
+    padding: 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #eee;
+	bottom: -5;
+	width: 40px;
+	height: 27px;
+	position:absolute;
+	z-index: 100;
+	font-weight: bold;
+}
+#collectionfeed  .btn-toolbar  a:hover
+{
+	 text-decoration: underline;
+	 
+}

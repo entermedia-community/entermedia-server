@@ -44,8 +44,10 @@
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
 	#else	
-		<img class="emdropshadow assetdragdrop" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="[[Drag to Library or Category]]"
+	<span class="emdropshadow">
+		<img class=" assetdragdrop" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="[[Drag to Library or Category]]"
 		draggable="true"  data-sourcepath="$sourcepath" data-name="$asset.name" 
 		src="$home/${applicationid}/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
+	</span>	
 	#end
 </span>

@@ -2,10 +2,7 @@
 
 <root>
   <property id="name"/>
-  <property id="thumbnail"/>
   <property id="project"/>
-  <property id="librarystatus"/>
   <property id="folder"/>
-  <property id="giturl"/>
   
 </root>

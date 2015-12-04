@@ -5,4 +5,5 @@
 	<path-action name="DataEditModule.loadPageOfSearch" />
 	<property name="sortby">assetaddeddateDown</property>
 	<property name="section">assets</property>
+	<property name="sectiontitle">Search</property>	
 </page>

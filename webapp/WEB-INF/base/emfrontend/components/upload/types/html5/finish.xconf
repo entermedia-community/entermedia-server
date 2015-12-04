@@ -23,5 +23,5 @@
 	<property name="indatamanager">true</property>
 	
 	<property name="section">details</property>
-	<path-action name="AssetEditModule.appendRecentUploads"/>
+	<!-- path-action name="AssetEditModule.appendRecentUploads"/ -->
 </page>

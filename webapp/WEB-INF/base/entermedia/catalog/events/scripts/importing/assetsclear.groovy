@@ -7,7 +7,7 @@ import org.openedit.entermedia.search.AssetSearcher
 
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
-import com.openedit.page.manage.*
+import com.openedit.page.manage.PageManager
 
 public void init()
 {
