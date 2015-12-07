@@ -393,6 +393,10 @@ public class MediaArchive
 	}	
 	public String getMediaPlayerType(Data inAsset)
 	{
+		if(inAsset == null){
+			return null;
+		}
+		
 		if( inAsset.get("embeddedurl") != null)
 		{
 			return "embedded";

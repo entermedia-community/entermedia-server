@@ -46,6 +46,10 @@ jQuery(document).ready(function(url,params)
 			var hitssessionid = $('#resultsdiv').data('hitssessionid');
 			var dataid = jQuery(this).data('dataid');
 			refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: "asset", hitssessionid: hitssessionid });
+			if(typeof(refreshSelections) != 'undefined'){
+				refreshSelections();
+			}
+		
 		});
 	});
 	
@@ -53,6 +57,11 @@ jQuery(document).ready(function(url,params)
 	{
 		jQuery('input[name=pagetoggle]').attr('checked','checked');
 		jQuery('.selectionbox').attr('checked','checked');
+		if(typeof(refreshSelections) != 'undefined'){
+			refreshSelections();
+		}
+		
+		
 	//    jQuery("#select-dropdown-open").click();
 	
 	});
@@ -62,6 +71,9 @@ jQuery(document).ready(function(url,params)
 		jQuery('input[name=pagetoggle]').removeAttr('checked');
 		jQuery('.selectionbox').removeAttr('checked'); //Not firing the page
 	//	jQuery("#select-dropdown-open").click();
+		if(typeof(refreshSelections) != 'undefined'){
+			refreshSelections();
+		}
 	
 	});
 	

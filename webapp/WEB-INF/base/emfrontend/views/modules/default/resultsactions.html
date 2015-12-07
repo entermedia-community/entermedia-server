@@ -8,7 +8,7 @@
 	$pages.include("$content.searchhome/selectionactions.html")
 #end
 #if($hits.hasSelections() )
-<li>		$pages.include("${content.searchhome}/selections/selected.html",$context)
+<li id="moduleselections">		$pages.include("${content.searchhome}/selections/selected.html",$context)
 </li>
 #end
 <li>
@@ -35,11 +35,7 @@
 									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 									#end
 								</select>
-								<script type="text/javascript">
-									function addColumn(inId) {
-										jQuery('#emresultscontent').load("$content.searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
-									}
-								</script>
+								
 							</div>
 						</div>
 						#end
@@ -49,3 +45,17 @@
 			</li>
 
 </ul>
+
+
+<script type="text/javascript">
+									
+									function addColumn(inId) {
+										jQuery('#emresultscontent').load("$content.searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+									}
+									
+									function refreshSelections() {
+										jQuery('#moduleselections').load("$content.searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
+									}
+									
+									
+								</script>
