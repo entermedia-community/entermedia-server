@@ -4,5 +4,4 @@
 	<property name="sectiontitle">Add Media</property>
 	<property name="section">upload</property>
 	<inner-layout>${themeprefix}/layouts/myaccount.html</inner-layout>
-
 </page>

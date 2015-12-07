@@ -1,15 +1,18 @@
 <page>
-	<inner-layout>${themeprefix}/layouts/searchlayout.html</inner-layout>
-	<property name="hitsname">hits</property>
-	<property name="searchtype">asset</property>
+	<inner-layout>${themeprefix}/layouts/collectionlayout.html</inner-layout>
+	
+		<property name="hitsname">hits</property>
+	<property name="searchtype">${module}</property>
+	<property name="virtual">true</property>
 	
     <path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>
 			<searchtype>${module}</searchtype>
-			<idname>collectionid</idname>
     </path-action>
-	
-	<path-action name="ProjectModule.searchForAssetsOnCollection"/>
+	<path-action name="ProjectModule.loadCollections"/>
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>${module}</searchtype>
+	</path-action>
 	
 	  <permission name="view">
     		<action name="ProjectModule.checkLibraryPermission" />

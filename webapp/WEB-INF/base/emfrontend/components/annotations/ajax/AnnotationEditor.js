@@ -231,7 +231,7 @@ var AnnotationEditor = function(scope) {
 			});
 			*/
 			editor.fabricModel.canvas.renderAll();
-			jAngular.render("#annotationtab", scope); 
+			jAngular.render("#annotationarea", scope); 
 
 			// it seems like we trash the data when we render, thus may need to update the active status post-render
 
@@ -370,7 +370,6 @@ var AnnotationEditor = function(scope) {
 			console.log( "trying to get ", inAssetId);
 			console.log( "got ", toAsset);
 			this.setCurrentAnnotatedAsset(toAsset);
-			//jAngular.render("#annotationtab");
 		}
 		,
 		loadAssetList: function()
@@ -394,7 +393,8 @@ var AnnotationEditor = function(scope) {
 						});
 						scope.annotationEditor.setCurrentAnnotatedAsset(scope.annotationEditor.annotatedAssets[0]);
 					} else {
-						$("#annotationtab").html("Please add media to the collection.");
+						$("#annotationarea").html("Please add media to the collection.");
+						$("#annotationarea").show();
 						return;
 					}
 					
@@ -407,6 +407,8 @@ var AnnotationEditor = function(scope) {
 					//Grab list of users and annotations for assets
 					var totalwidth = data.length * 140;
 					scope.add("totaliconwidth",totalwidth);
+					$("#annotationarea").show();
+					$(window).trigger( "resize" );
 					
 				},
 				failure: function(errMsg) {

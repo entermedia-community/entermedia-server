@@ -1,9 +1,10 @@
-package model.projects;
+package modules.projects;
+
+import model.projects.ProjectManager
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
-import org.openedit.data.Searcher
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.modules.BaseMediaModule
 import org.openedit.profile.UserProfile
@@ -79,7 +80,7 @@ public class ProjectModule extends BaseMediaModule
 				tracker = tracker.getSelectedHitracker();
 				if( tracker != null && tracker.size() > 0 )
 				{
-					manager.removeAssetFromLibrary(inReq, archive, libraryid, tracker);
+					manager.removeAssetFromLibrary(archive, libraryid, tracker);
 					inReq.putPageValue("count" , String.valueOf( tracker.size() ) );
 					return;
 				}
@@ -93,7 +94,7 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String libraryid = inReq.getRequestParameter("libraryid");
-		
+		String librarycollection = inReq.getRequestParameter("librarycollection");
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		if( hitssessionid != null )
 		{
@@ -104,21 +105,21 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( tracker != null && tracker.size() > 0 )
 			{
-				manager.addAssetToCollection(inReq, archive, libraryid, tracker);
+				manager.addAssetToCollection(archive, libraryid,  librarycollection, tracker);
 				inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
 				return;
 			}
 		}
 		String assetid = inReq.getRequestParameter("assetid");
 		
-		manager.addAssetToCollection(inReq, archive, libraryid, assetid);
+		manager.addAssetToCollection(archive, libraryid, assetid);
 		inReq.putPageValue("added" , "1" );
 	}
 	public void removeAssetFromCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		String collectionid = inReq.getRequestParameter("collectionid");
+		String collectionid = loadCollectionId(inReq);
 		
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		if( hitssessionid != null )
@@ -130,7 +131,7 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( tracker != null && tracker.size() > 0 )
 			{
-				manager.removeAssetFromCollection(inReq, archive, collectionid, tracker);
+				manager.removeAssetFromCollection(archive, collectionid, tracker);
 				inReq.putPageValue("count" , String.valueOf( tracker.size() ) );
 				return;
 			}
@@ -150,11 +151,11 @@ public class ProjectModule extends BaseMediaModule
 	public void searchForAssetsOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String collectionid = inReq.getRequestParameter("collectionid");
+		String collectionid = loadCollectionId(inReq);
 		if( collectionid == null)
 		{
-			collectionid = inReq.getRequestParameter("id");
-		}
+			return;
+		}		
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
 		
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
@@ -162,6 +163,23 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("hits", all);
 		inReq.putSessionValue(all.getSessionId(),all);
 	}
+	protected String loadCollectionId(WebPageRequest inReq)
+	{
+		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			collectionid = inReq.getRequestParameter("id");
+			if( collectionid == null)
+			{
+				Data coll = (Data)inReq.getPageValue("librarycol");
+				if( coll != null)
+				{
+					collectionid = coll.getId();
+				}
+			}	
+		}
+		return collectionid;
+	}	
 
 	public boolean checkLibraryPermission(WebPageRequest inReq)
 	{
@@ -174,11 +192,7 @@ public class ProjectModule extends BaseMediaModule
 			//dont filter since its the admin
 			return true;
 		}
-		String collectionid = inReq.getRequestParameter("collectionid");
-		if( collectionid == null)
-		{
-			collectionid = inReq.getRequestParameter("id");
-		}
+		String collectionid = loadCollectionId(inReq);
 		Data data = archive.getData("librarycollection", collectionid);
 		if( data != null)
 		{

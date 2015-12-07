@@ -22,17 +22,17 @@ $pages.include("./editdetails.html")
 <label>[[Include Only Extensions]]</label>
 <input type="hidden" name="field" value="includes" />
 <textarea class="field" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
-<div class="note">[[comma or new line delimited]] [[jpg,pdf,mp4]]</div> 
+<div class="note">[[comma or new line delimited]] jpg,pdf,mp4</div> 
 
 <label>[[Exclude Filter]]</label>
 <input type="hidden" name="field" value="excludes" />
-<textarea class="field" name="excludes.value" cols="45" rows="3" >$!data.excludes</textarea>
-<div class="note">[[comma or new line delimited]] [[*/.*,*/Thumbs.db,*.old ]]</div> 
+<textarea class="field" name="excludes.value" cols="45" rows="3" >#if ($!data.excludes) $!data.excludes #else */.*,*/Thumbs.db,*.old #end</textarea>
+<div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div> 
 
 <label>[[Attachment Filter]]</label>
 <input type="hidden" name="field" value="attachmenttrigger" />
 <textarea class="field" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
-<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts */attachments.txt</div> 
+<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts, */attachments.txt</div> 
 
 <div class="clearfix" style="margin-bottom: 20px;">
 	<input type="hidden" name="field" value="versioncontrol" />

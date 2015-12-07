@@ -17,8 +17,10 @@ import com.openedit.page.Page
 import com.openedit.util.ExecResult
 import com.openedit.util.PathUtilities
 
-public class imagemagickCreator extends BaseImageCreator {
+public class imagemagickCreator extends BaseImageCreator 
+{
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
+	
 	protected String fieldPathToProfile;
 
 	public String getPathtoProfile(){
@@ -436,8 +438,8 @@ public class imagemagickCreator extends BaseImageCreator {
 				com.add(resizestring.toString());
 			}
 
-			//now let's crop
-			setValue("gravity", "Center", inStructions, com);
+			//This gravity is the relative point of the crop marks
+			setValue("gravity", "NorthWest", inStructions, com);
 
 			if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{

@@ -1,3 +1,5 @@
+import model.projects.ProjectManager
+
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.store.*
@@ -28,7 +30,16 @@ if(fields != null) {
 	mediaarchive.getAssetSearcher().updateData(context,fields,asset);
 }
 
+
 mediaarchive.saveAsset(asset, context.getUser());
+
+String currentcollection = context.getRequestParameter("currentcollection");
+if( currentcollection != null)
+{
+	ProjectManager manager = (ProjectManager)moduleManager.getBean(mediaarchive.getCatalogId(),"projectManager");
+	manager.addAssetToCollection(mediaarchive,currentcollection,asset.getId());
+}
+
 
 context.putPageValue("asset", asset);
 context.setRequestParameter("assetid", asset.id);
@@ -50,12 +61,4 @@ context.setRequestParameter("sourcepath", asset.sourcePath);
 //	context.redirect("/" + editor.store.catalogId + "/admin/products/editor/" + product.id + ".html");
 //}
 
-String tosourcepath = context.findValue("redirecttosourcepath");
-
-if (Boolean.parseBoolean(tosourcepath))
-{
-	String path = "$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=${asset.id}&edit=true";
-	
-	context.redirect(path);
-}
 

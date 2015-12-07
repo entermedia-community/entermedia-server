@@ -38,10 +38,10 @@
 Above css from old main.css
 Below css from old highlights.css
 */
-.em-workspace {
-  background: #86cae5;
+#annotationarea {
   /* Bootstrap Overrides */
   /* Annotations Specific */
+   display: none;
 }
 .em-workspace .sidebar {
   background: #abdcef;
@@ -340,24 +340,6 @@ colornumber
 }
 .em-workspace .comment-list li.comment.normal .comment-meta .comment-timestamp {
   color: #87cbe6;
-}
-.tab-pane
-{
-	background-color: white;
-	border-top: 2px solid #eee;
-	margin-top: -2px;
-}
-div.tab-pane div#default-fields
-{
-	background-color: #eee;	
-	padding: 20px;	
-	margin: 15px 20px 0px 20px;
-	
-}
-#settings.tab-pane div#default-fields .emdatafield
-{
-	padding: 0px 30px 0px 30px;	
-	
 }
 #annotation-holder 
 {

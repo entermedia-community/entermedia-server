@@ -1,7 +1,6 @@
-<script src="$home$apphome/components/upload/types/html5/upload.js"></script>
-<script src="$home$apphome/components/javascript/upload/jquery.html5_upload.js"></script>
-#set( $root = "$home$apphome/components/upload/types/html5")
 
+#set( $root = "$home$apphome/components/upload/types/html5")
+#set( $collectionid = $context.getRequestParameter("collectionid") )
 
 <div class="subcolumns">
     
@@ -46,16 +45,18 @@
 
 		<div id="uploadmetadata">
 		<div class="ui-widget uipanel">
-		    <div  class="ui-widget-header">[[Information]]</div>
+		    <div  class="ui-widget-header">[[Metadata]]</div>
 		    <div  class="ui-widget-content">
 				<form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="validate"  >
 				
-				##Add asset id's here
-				
+						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
+										
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						$context.putPageValue("view","asset/multipleupload")	
 						$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+				
+				
 				
 				##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
@@ -70,7 +71,13 @@
 		<div class="ui-widget uipanel">
 		    <div  class="ui-widget-header">[[Upload Queue]]</div>
 		    <div  class="ui-widget-content">
-					<a id="viewassets" class="btn" disabled href="$home$apphome/views/myaccount/myassets/index.html">View Uploads</a>
+					<a id="viewassets" class="btn" disabled 
+					#if( $collectionid ) 
+						href="$home$apphome/views/modules/librarycollection/media/${collectionid}.html">[[View Collection]]
+					#else
+						 href="$home$apphome/views/myaccount/myassets/index.html">[[View Uploads]]
+					#end
+					</a>	 
 					<ul id="up-files-list-completed" class="up-files-list" >
 					</ul>	
 			</div>

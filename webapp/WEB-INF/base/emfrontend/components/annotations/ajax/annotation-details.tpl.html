@@ -1,9 +1,4 @@
-<!-- load in lodash for now, can replace these calls later if needed -->
-    <script src="$home$apphome/components/annotations/vendor/lodash/lodash.js"></script>
-<!-- fabric formatting stuff... probably does not belong here -->
-<!-- one of the FabricModel imports is not working, taking the following line out causes an inability to locate despite getScript call in the AnnotationEditor, probably a timing issue, TODO breakpoint it if it keeps acting up -->
-    <script src="$home$apphome/components/annotations/ajax/main.js"></script>
-
+<div id="annotationarea" class="em-workspace">
 	$pages.include("$apphome/components/annotations/ajax/svg/svg-definitions.tpl.html")
  
     <div class="row">
@@ -122,3 +117,4 @@
                 </li>
             </ul>
         </div>
+</div>

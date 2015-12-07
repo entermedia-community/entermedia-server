@@ -16,4 +16,7 @@ public interface HotFolderManager
 
 	List<String> importHotFolder(MediaArchive inArchive, Data inFolder);
 	public void saveMounts(String inCatalogId);
+	
+	public Data getFolderByPathEnding(String inCatalogId, String inFolder);
+
 }

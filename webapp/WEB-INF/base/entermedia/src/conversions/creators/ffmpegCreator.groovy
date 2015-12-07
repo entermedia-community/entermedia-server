@@ -100,7 +100,7 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 					comm.add("-fpre");
 					comm.add(inStructions.get("fpre"));
 				}
-				
+				comm.add("-nostats");
 				//video
 				setValue("vcodec","libx264",inStructions,comm);				
 				setValue("preset",null,inStructions,comm);
