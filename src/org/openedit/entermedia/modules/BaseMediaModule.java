@@ -108,6 +108,17 @@ public class BaseMediaModule extends BaseModule
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = null;
+
+		String assetid = inReq.getRequestParameter("assetid");
+			
+		if( assetid != null )
+		{
+			Asset data = archive.getAsset(assetid, inReq);
+			inReq.putPageValue("asset", data);
+			inReq.putPageValue("data", data);
+			return (Asset) data;
+		}
+
 		if( Boolean.parseBoolean( inReq.getContentProperty("assetpageid") ) ) 
 		{
 			String id = PathUtilities.extractPageName(inReq.getPath());
@@ -118,27 +129,11 @@ public class BaseMediaModule extends BaseModule
 		{
 			String sourcePath = inReq.getRequestParameter("sourcepath");
 			
-			
 			if (sourcePath != null)
 			{
 				//asset = archive.getAssetArchive().getAssetBySourcePath(sourcePath, true);
 				asset = archive.getAssetSearcher().getAssetBySourcePath(sourcePath, true);
 			}
-		}
-		String assetid = null;
-		if( asset == null)
-		{
-			assetid = inReq.getRequestParameter("assetid");
-			
-			if( assetid != null && assetid.startsWith("multiedit:") )
-			{
-//				Data data = (Data)inReq.getSessionValue(assetid);
-				Asset data = archive.getAsset(assetid, inReq);
-				inReq.putPageValue("asset", data);
-				inReq.putPageValue("data", data);
-				return (Asset) data;
-			}
-
 		}
 		if (asset == null && archive != null)
 		{
