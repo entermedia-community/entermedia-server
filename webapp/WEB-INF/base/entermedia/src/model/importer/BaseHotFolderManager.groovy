@@ -240,23 +240,23 @@ public class BaseHotFolderManager implements HotFolderManager
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			addGoogleFolders(inCatalogId);
 		}
-		else if( type == "mount")
+		else 
 		{
-		String toplevelfolder = inNewrow.get("subfolder");
-		
-		//save subfolder with the value of the end of externalpath
-		if( toplevelfolder == null )
-		{
-			String epath =  type = inNewrow.get("externalpath").trim();
-			epath = epath.replace('\\', '/');
-			if( epath.endsWith("/"))
+			String toplevelfolder = inNewrow.get("subfolder");
+			
+			//save subfolder with the value of the end of externalpath
+			if( toplevelfolder == null )
 			{
-				epath = epath.substring(0,epath.length() - 1);
+				String epath =  type = inNewrow.get("externalpath").trim();
+				epath = epath.replace('\\', '/');
+				if( epath.endsWith("/"))
+				{
+					epath = epath.substring(0,epath.length() - 1);
+				}
+				toplevelfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
+				inNewrow.setProperty("subfolder",toplevelfolder);
 			}
-			toplevelfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
-			inNewrow.setProperty("subfolder",toplevelfolder);
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
-		}
 		}		
 				
 	}	
