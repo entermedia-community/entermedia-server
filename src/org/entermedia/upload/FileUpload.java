@@ -17,10 +17,7 @@
  */
 package org.entermedia.upload;
 
-import groovy.json.JsonSlurper;
-
 import java.io.File;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,7 +31,6 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.FileCleaningTracker;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
@@ -47,6 +43,8 @@ import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
+
+import groovy.json.JsonSlurper;
 
 /**
  * DOCUMENT ME!

@@ -7,7 +7,6 @@ import java.io.Writer;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.data.lucene.NumberUtils;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.repository.filesystem.StringItem;
 
@@ -68,7 +67,7 @@ public class ThemeModule extends BaseMediaModule {
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		req.putPageValue("mediaarchive", archive);
-		req.putPageValue("numberutils", new NumberUtils());
+		//req.putPageValue("numberutils", new NumberUtils());
 		
 		req.putProtectedPageValue(PageRequestKeys.HOME,
 				urlUtil.relativeHomePrefix());

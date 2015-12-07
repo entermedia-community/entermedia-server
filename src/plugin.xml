@@ -119,12 +119,13 @@
 			<ref bean="emailErrorHandler" />
 		</property>
 	</bean>
-
+<!-- 
 	<bean id="MediaEmailModule" class="org.openedit.entermedia.modules.MediaEmailModule">
 		<property name="postMail">
 			<ref bean="postMail" />
 		</property>
 	</bean>
+ -->	
 	<bean id="MountModule" class="org.openedit.entermedia.modules.MountModule">
 		<property name="webServer">
 			<ref bean="WebServer" />
@@ -469,9 +470,6 @@
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
-		<property name="searchFilterArchive">
-			<ref bean="searchFilterArchive" />
-		</property>
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -765,7 +763,7 @@
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
-
+<!-- 
 	<bean id="searchFilterArchive" class="org.openedit.entermedia.search.SearchFilterArchive"
 		>
 		<property name="xmlArchive">
@@ -775,7 +773,7 @@
 			<ref bean="pageManager" />
 		</property>
 	</bean>
-
+ -->
   <!-- This can be aliased using beans.xml to one with a nicer connector -->
 	<bean id="luceneAssetSearcher" class="org.openedit.entermedia.search.BaseAssetSearcher"
 		scope="prototype">
@@ -981,13 +979,14 @@
 			<ref bean="root" />
 		</property>
 	</bean>
-
+<!-- 
 	 <bean id="localDataManager" class="org.openedit.entermedia.cluster.LocalDataManager" >
 		<property name="root"><ref bean="root" /></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="userManager"><ref bean="userManager"/></property>
  	</bean>
+ 	
 	 <bean id="remoteDataManager" class="org.openedit.entermedia.cluster.RemoteDataManager" >
 		<property name="root"><ref bean="root" /></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -999,6 +998,7 @@
 	<bean id="DistributedDataModule" class="org.openedit.entermedia.modules.DistributedDataModule" >
 			<property name="localDataManager"><ref bean="localDataManager" /></property>
 	</bean>
+ -->	
 <!-- 
 	<bean id="dataFileSearcher" class="org.openedit.entermedia.cluster.DataFileSearcher">
 		<property name="pageManager">
@@ -1250,10 +1250,11 @@
 	</bean>
 	
 		 -->
-	
+	<!-- 
 	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
+	 -->
 	<bean id="imagePreProcessors" class="java.util.ArrayList">
 	    <constructor-arg>
 		<list>
@@ -1310,9 +1311,10 @@
 	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
-	
+<!-- 	
 	<bean id="htmlUtil" class="org.openedit.entermedia.util.HtmlUtil">
 	</bean>
+ -->	
 	<bean id="jsonUtil" class="org.openedit.entermedia.util.JsonUtil">
 	</bean>
 
@@ -1363,5 +1365,11 @@
 	
 	<bean id="Config" class="com.openedit.modules.settings.ConfigModule"/>
 	<bean id="RevisionEditor" class="com.openedit.modules.revisions.RevisionEditorModule"/>
+
+ 	<bean  id="ProjectModule" class="modules.projects.ProjectModule" lazy-init="default" />
+	<bean  id="projectManager" class="modules.projects.BaseProjectManager" lazy-init="default" scope="prototype"  >
+			<property name="searcherManager"><ref bean="searcherManager" /></property>
+	</bean>
+	
 
 </beans>

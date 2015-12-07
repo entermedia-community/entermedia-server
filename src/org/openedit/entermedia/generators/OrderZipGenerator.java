@@ -3,7 +3,6 @@
  */
 package org.openedit.entermedia.generators;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;

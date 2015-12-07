@@ -2,7 +2,6 @@ package org.openedit.data;
 
 import java.util.Collection;
 
-import org.entermedia.locks.Lock;
 import org.openedit.Data;
 import org.openedit.xml.XmlArchive;
 

@@ -23,7 +23,6 @@ import org.openedit.data.FilteredTracker;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.data.lucene.DocumentData;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.CompositeAsset;
@@ -275,10 +274,10 @@ public class AssetEditModule extends BaseMediaModule
 		inContext.setRequestParameter("newassetid", newasset.getId());
 		inContext.putPageValue("target", newasset);
 
-		copyJoinData(asset, newasset);
+		//copyJoinData(asset, newasset);
 	}
 
-	
+	/*
 	protected void copyJoinData(Asset source, Asset target)
 	{
 		PropertyDetails properties = getMediaArchive(source.getCatalogId()).getAssetPropertyDetails();
@@ -346,7 +345,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 	}	
-	
+	*/
 	public void saveAssetResultsEdits(WebPageRequest inRequest) throws OpenEditException 
 	{
 		MediaArchive store = getMediaArchive(inRequest);

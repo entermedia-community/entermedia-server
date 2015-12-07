@@ -234,9 +234,9 @@ public class CreatorManager
 
 		for (int i = 0; i < hits.getTotal(); i++)
 		{
-			Object hit = hits.get(i);
+			Data hit = (Data)hits.get(i);
 			// check for medium size. If not then convert to jpg and render
-			String sourcePath = hits.getValue(hit,"sourcepath");
+			String sourcePath = hit.getSourcePath();
 			inMediumStructions.setAssetSourcePath(sourcePath);
 			inThumbStructions.setAssetSourcePath(sourcePath);
 			

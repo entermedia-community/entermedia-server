@@ -13,7 +13,6 @@ import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.links.CatalogTreeRenderer;
 import org.openedit.entermedia.links.CatalogWebTreeModel;
-import org.openedit.entermedia.search.SearchFilter;
 import org.openedit.links.Link;
 import org.openedit.links.LinkTree;
 
@@ -101,9 +100,7 @@ public class CategoryModule extends BaseMediaModule
 			CatalogWebTreeModel model = new CatalogWebTreeModel( );
 			model.setCatalogId(archive.getCatalogId());
 			model.setRoot(main);
-			SearchFilter filter = archive.getSearchFilterArchive().getSearchFilter(inRequest,false, false,archive.getCatalogId());
-			model.setSearchFilter(filter);
-			model.setCatalogArchive(archive.getCategoryArchive());
+			model.setCategorySearcher(archive.getCategorySearcher());
 			model.setUser(inRequest.getUser());
 			model.setRequestUtils(getRequestUtils());
 			webTree = new WebTree(model);

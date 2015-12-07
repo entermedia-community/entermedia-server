@@ -1,7 +1,6 @@
 package org.openedit.entermedia.scanner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 

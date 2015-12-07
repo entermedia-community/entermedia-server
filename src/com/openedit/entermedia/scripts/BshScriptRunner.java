@@ -3,11 +3,11 @@ package com.openedit.entermedia.scripts;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.openedit.OpenEditException;
+
 import bsh.EvalError;
 import bsh.Interpreter;
 import bsh.TargetError;
-
-import com.openedit.OpenEditException;
 
 public class BshScriptRunner implements ScriptRunner
 {

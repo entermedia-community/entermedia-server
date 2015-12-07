@@ -9,6 +9,7 @@ import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
+
 import com.openedit.page.Page;
 
 public abstract class BasePublisher implements Publisher 

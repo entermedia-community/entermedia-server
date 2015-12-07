@@ -1,8 +1,5 @@
 package org.openedit.entermedia.modules;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;

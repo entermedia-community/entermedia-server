@@ -1,6 +1,5 @@
 package org.entermedia.attachments;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.data.XmlFileSearcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.scanner.MetaDataReader;

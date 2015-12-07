@@ -1,7 +1,6 @@
 package org.openedit.entermedia.modules;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -12,25 +11,19 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.email.PostMail;
-import org.entermedia.email.TemplateWebEmail;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.orders.Order;
-import org.openedit.entermedia.orders.OrderHistory;
 import org.openedit.entermedia.orders.OrderManager;
 import org.openedit.util.DateStorageUtil;
 
-import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.ListHitTracker;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
 import com.openedit.users.User;
 
 public class OrderModule extends BaseMediaModule

@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.entermedia.profile.UserProfileSearcher;
-import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.MediaArchive;
@@ -404,7 +402,7 @@ public class ProfileModule extends MediaArchiveModule
 		}
 
 	}
-
+/*
 	public void updateIndex(WebPageRequest inReq)
 	{
 		// This is used if we've created a user profile but an associated user
@@ -424,15 +422,14 @@ public class ProfileModule extends MediaArchiveModule
 		}
 
 		MediaArchive archive = getMediaArchive(inReq);
-		UserProfileSearcher upsearcher = (UserProfileSearcher) archive.getSearcher("userprofile");
+		Searcher upsearcher = (Searcher) archive.getSearcher("userprofile");
 		Data up = (Data) upsearcher.searchById(username);
 		if (up != null)
 		{
 			upsearcher.updateIndex(up);
 		}
-
 	}
-
+*/
 	public void addRemoveColumnModule(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);

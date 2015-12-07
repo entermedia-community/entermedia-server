@@ -2,14 +2,11 @@ package org.openedit.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
-import org.entermedia.cache.CacheManager;
 import org.entermedia.locks.Lock;
 import org.entermedia.locks.LockManager;
 import org.openedit.Data;

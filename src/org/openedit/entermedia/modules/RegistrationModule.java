@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermedia.email.PostMail;
 import org.entermedia.email.TemplateWebEmail;
-import org.entermedia.profile.UserProfileSearcher;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -348,7 +347,7 @@ public class RegistrationModule extends BaseMediaModule
 		inReq.putPageValue("password", password);
 		// lets create a user profile now too.
 		MediaArchive archive = getMediaArchive(inReq);
-		UserProfileSearcher upsearcher = (UserProfileSearcher) archive.getSearcher("userprofile");
+		Searcher upsearcher = (Searcher) archive.getSearcher("userprofile");
 		UserProfile up = (UserProfile) upsearcher.createNewData();
 		up.setProperty("settingsgroup", "guest");
 		up.setUser(current);

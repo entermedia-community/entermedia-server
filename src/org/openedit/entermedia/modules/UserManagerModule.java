@@ -9,11 +9,9 @@ package org.openedit.entermedia.modules;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +22,6 @@ import org.entermedia.upload.UploadRequest;
 import org.openedit.MultiValued;
 import org.openedit.data.Searcher;
 import org.openedit.repository.filesystem.StringItem;
-import org.openedit.users.UserSearcher;
 
 import com.openedit.BaseWebPageRequest;
 import com.openedit.OpenEditException;

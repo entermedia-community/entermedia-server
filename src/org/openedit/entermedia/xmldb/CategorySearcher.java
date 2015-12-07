@@ -2,7 +2,6 @@ package org.openedit.entermedia.xmldb;
 
 import org.openedit.data.Searcher;
 import org.openedit.entermedia.Category;
-import org.openedit.entermedia.CategoryArchive;
 
 public interface CategorySearcher extends Searcher
 {

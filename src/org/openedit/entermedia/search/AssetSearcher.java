@@ -12,7 +12,6 @@ import org.openedit.entermedia.Category;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.users.User;
 
 public interface AssetSearcher extends Searcher
 {

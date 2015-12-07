@@ -6,7 +6,6 @@ import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.xml.ElementData;
 
 public class Order extends BaseData implements SaveableData
 {

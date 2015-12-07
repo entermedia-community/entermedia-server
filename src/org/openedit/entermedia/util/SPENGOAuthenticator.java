@@ -5,16 +5,16 @@ package org.openedit.entermedia.util;
 
 import java.net.InetAddress;
 
-import jcifs.UniAddress;
-import jcifs.smb.NtlmPasswordAuthentication;
-import jcifs.smb.SmbSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.openedit.users.UserManagerException;
 import com.openedit.users.authenticate.AuthenticationRequest;
 import com.openedit.users.authenticate.BaseAuthenticator;
+
+import jcifs.UniAddress;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbSession;
 
 public class SPENGOAuthenticator extends BaseAuthenticator
 {

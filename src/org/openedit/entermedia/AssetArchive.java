@@ -3,9 +3,6 @@
  */
 package org.openedit.entermedia;
 
-import java.util.Collection;
-
-import org.entermedia.locks.Lock;
 import org.openedit.Data;
 import org.openedit.data.DataArchive;
 import org.openedit.xml.XmlArchive;

@@ -13,7 +13,6 @@ See the GNU Lesser General Public License for more details.
 package org.entermedia.email;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -25,7 +24,6 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.BodyPart;
 import javax.mail.Message;
-import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
@@ -40,7 +38,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.openedit.ModuleManager;
-import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.manage.PageManager;
 
 public class PostMail

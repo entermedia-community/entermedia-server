@@ -26,7 +26,6 @@ import com.openedit.error.ErrorHandler;
 import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
-import com.openedit.users.UserManager;
 import com.openedit.util.ExecutorManager;
 import com.openedit.util.PathUtilities;
 import com.openedit.util.RequestUtils;

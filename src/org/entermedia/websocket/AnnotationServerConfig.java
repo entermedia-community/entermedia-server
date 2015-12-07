@@ -26,7 +26,6 @@ import javax.websocket.server.ServerEndpointConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermedia.websocket.annotation.AnnotationConnection;
-import org.entermedia.websocket.annotation.AnnotationServer;
 
 public class AnnotationServerConfig implements ServerApplicationConfig
 {

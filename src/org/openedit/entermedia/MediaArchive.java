@@ -33,7 +33,6 @@ import org.openedit.entermedia.scanner.AssetImporter;
 import org.openedit.entermedia.scanner.PresetCreator;
 import org.openedit.entermedia.search.AssetSearcher;
 import org.openedit.entermedia.search.AssetSecurityArchive;
-import org.openedit.entermedia.search.SearchFilterArchive;
 import org.openedit.entermedia.xmldb.CategorySearcher;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventHandler;
@@ -75,7 +74,6 @@ public class MediaArchive
 	protected AssetExport fieldAssetExport;
 	protected SearcherManager fieldSearcherManager;
 	protected OriginalFileManager fieldOriginalFileManager;
-	protected SearchFilterArchive fieldSearchFilterArchive;
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
 
 	protected CategoryEditor fieldCategoryEditor;
@@ -182,16 +180,6 @@ public class MediaArchive
 	public void setAssetStatsManager(AssetStatsManager inAssetStatsManager)
 	{
 		fieldAssetStatsManager = inAssetStatsManager;
-	}
-
-	public SearchFilterArchive getSearchFilterArchive()
-	{
-		return fieldSearchFilterArchive;
-	}
-
-	public void setSearchFilterArchive(SearchFilterArchive searchFilterArchive)
-	{
-		fieldSearchFilterArchive = searchFilterArchive;
 	}
 
 	protected PropertyDetailsArchive fieldPropertyDetailsArchive;

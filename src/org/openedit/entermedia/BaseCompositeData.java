@@ -18,7 +18,6 @@ import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.data.lucene.LuceneIndexer;
 
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;

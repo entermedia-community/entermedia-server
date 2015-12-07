@@ -1,27 +1,31 @@
 package modules.projects;
 
-import model.projects.ProjectManager
-import model.projects.UserCollection
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.openedit.Data
-import org.openedit.MultiValued
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.data.lucene.BaseLuceneSearcher
-import org.openedit.data.lucene.LuceneSearchQuery
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.profile.UserProfile
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
+import org.openedit.MultiValued;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.MediaArchive;
+import org.openedit.profile.UserProfile;
 
-import com.openedit.WebPageRequest
-import com.openedit.hittracker.FilterNode
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.users.*
+import com.openedit.WebPageRequest;
+import com.openedit.hittracker.FilterNode;
+import com.openedit.hittracker.HitTracker;
+import com.openedit.hittracker.SearchQuery;
+import com.openedit.users.User;
 
-
+import model.projects.ProjectManager;
+import model.projects.UserCollection;
 public class BaseProjectManager implements ProjectManager
 {
 	private static final Log log = LogFactory.getLog(BaseProjectManager.class);
@@ -77,7 +81,7 @@ public class BaseProjectManager implements ProjectManager
 	public Collection<UserCollection> loadCollections(WebPageRequest inReq)
 	{
 		//get a library
-		Collection<UserCollection> usercollections = inReq.getPageValue("usercollections");
+		Collection<UserCollection> usercollections = (Collection<UserCollection>)inReq.getPageValue("usercollections");
 		if( usercollections != null)
 		{
 			return usercollections;
@@ -168,17 +172,20 @@ public class BaseProjectManager implements ProjectManager
 		{
 			assets.setPage(i+1);
 			Set assetids = new HashSet();
-			for(Data asset: assets.getPageOfHits())
+			for(Object hit: assets.getPageOfHits())
 			{
+				Data asset = (Data)hit;
 				assetids.add(asset.getId());
 			}
 			Collection existing = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).orgroup("asset", assetids).search();
-			for(Data collasset:existing)
+			for (Iterator iterator = existing.iterator(); iterator.hasNext();)
 			{
+				Data collasset = (Data)iterator.next();
 				assetids.remove(collasset.get("asset"));
 			}
-			for(String assetid: assetids)
+			for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
 			{
+				String assetid = (String)iterator.next();
 				Data found = librarycollectionassetSearcher.createNewData();
 				//found.setSourcePath(libraryid + "/" + librarycollection);
 				found.setProperty("librarycollection", librarycollection);
@@ -193,13 +200,6 @@ public class BaseProjectManager implements ProjectManager
 			}
 		}
 		librarycollectionassetSearcher.saveAllData(tosave,null);
-		
-		//Join have a weird problem of caching until we search for it
-		if( librarycollectionassetSearcher instanceof BaseLuceneSearcher)
-		{
-			librarycollectionassetSearcher.query().match("librarycollection", librarycollection).search();
-		}
-
 		
 	}
 	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
@@ -227,15 +227,16 @@ public class BaseProjectManager implements ProjectManager
 	public void addAssetToLibrary(MediaArchive archive, String libraryid, HitTracker assets)
 	{
 		List tosave = new ArrayList();
-		for(MultiValued toadd: assets)
+		for(Object data: assets)
 		{
 			//TODO: Skip loading?
+			MultiValued toadd = (MultiValued)data;
 			Collection libraries = toadd.getValues("libraries");
 			if ( libraries != null && libraries.contains(libraryid))
 			{
 				continue;
 			}
-			Asset asset = archive.getAssetSearcher().loadData(toadd)
+			Asset asset = (Asset)archive.getAssetSearcher().loadData(toadd);
 		
 			if (asset != null && !asset.getLibraries().contains(libraryid))
 			{
@@ -274,15 +275,15 @@ public class BaseProjectManager implements ProjectManager
 		Searcher searcher = archive.getAssetSearcher();
 		SearchQuery assetsearch = searcher.createSearchQuery();
 		HitTracker all = null;
-		if( assetsearch instanceof LuceneSearchQuery)
-		{
-			SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
-			assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
-//			all = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);
-			all = archive.getAssetSearcher().search(assetsearch);
-		}
-		else
-		{	
+//		if( assetsearch instanceof LuceneSearchQuery)
+//		{
+//			SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
+//			assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
+////			all = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);
+//			all = archive.getAssetSearcher().search(assetsearch);
+//		}
+//		else
+//		{	
 			Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
 			
 			//Do an asset search with permissions, showing only the assets on this collection
@@ -295,14 +296,15 @@ public class BaseProjectManager implements ProjectManager
 			{
 				//Collection<String> ids = loadAssetIdsInCollection(archive, collectionid );
 				//Some assets got deleted, lets remove them from the collection
-				Set extras = new HashSet(ids);
-				for (Data hit in all)
+				Set<String> extras = new HashSet(ids);
+				for (Object hit : all)
 				{
-					extras.remove(hit.getId());
+					Data data = (Data)hit;
+					extras.remove(data.getId());
 				}
 				//log.info("remaining " + extras );
 				Searcher collectionassetsearcher = archive.getSearcher("librarycollectionasset");
-				for (String id in extras)
+				for (String id : extras)
 				{
 					Data toremove = collectionassetsearcher.query().match("asset",id).match("librarycollection", collectionid).searchOne();
 					if( toremove != null)
@@ -311,7 +313,7 @@ public class BaseProjectManager implements ProjectManager
 					}
 				}
 			}
-		}
+//		}
 		String hpp = inReq.getRequestParameter("page");
 		if( hpp != null)
 		{
@@ -323,8 +325,8 @@ public class BaseProjectManager implements ProjectManager
 			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
 		}
 		all.getSearchQuery().setProperty("collectionid", collectionid);
-		all.getSearchQuery().setHitsName("collectionassets")
-		return all
+		all.getSearchQuery().setHitsName("collectionassets");
+		return all;
 	}
 	//TODO: delete this
 	private Collection<String> loadAssetIdsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
@@ -332,9 +334,10 @@ public class BaseProjectManager implements ProjectManager
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
 		Collection<String> ids = new ArrayList();
-		for(Data hit in found)
+		for(Object hit : found)
 		{
-			String id = hit.get("asset");
+			Data data = (Data)hit;
+			String id = data.get("asset");
 			if( id != null)
 			{
 				ids.add(id);
@@ -361,14 +364,14 @@ public class BaseProjectManager implements ProjectManager
 	public void removeAssetFromLibrary(MediaArchive inArchive, String inLibraryid, HitTracker inAssets)
 	{
 		Searcher librarycollectionsearcher = inArchive.getSearcher("librarycollection");
-		HitTracker collections = librarycollectionsearcher.query().match("library",inLibraryid).search();
-		for(Data collection: collections)
+		HitTracker<Data> collections = (HitTracker<Data>)librarycollectionsearcher.query().match("library",inLibraryid).search();
+		for(Object collection : collections) 
 		{
-			removeAssetFromCollection(inArchive,collection.getId(),inAssets);
+			removeAssetFromCollection(inArchive,((Data)collection).getId(),inAssets);
 		}
-		for(Data toadd: inAssets)
+		for(Object toadd: inAssets)
 		{
-			Asset asset = inArchive.getAssetSearcher().loadData(toadd)
+			Asset asset = (Asset)inArchive.getAssetSearcher().loadData((Data)toadd);
 		
 			if (asset != null && asset.getLibraries().contains(inLibraryid))
 			{
@@ -383,8 +386,9 @@ public class BaseProjectManager implements ProjectManager
 			Searcher librarycollectionassetSearcher = inArchive.getSearcher("librarycollectionasset");
 		
 			List tosave = new ArrayList();
-			for(Data asset : inAssets)
+			for(Object hit: inAssets)
 			{
+				Data asset = (Data)hit;
 				Data found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).match("asset", asset.getId()).searchOne();
 			
 				if (found != null)
@@ -392,12 +396,6 @@ public class BaseProjectManager implements ProjectManager
 					librarycollectionassetSearcher.delete(found,null);
 				}
 			}
-			//Joins have a weird problem of caching until we search for it
-			if( librarycollectionassetSearcher instanceof BaseLuceneSearcher)
-			{
-				librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).search();
-			}
-
 	}
 	public Collection<UserCollection> loadRecentCollections(WebPageRequest inReq)
 	{

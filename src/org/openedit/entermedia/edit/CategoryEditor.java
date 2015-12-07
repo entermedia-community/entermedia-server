@@ -8,11 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
-import org.openedit.entermedia.CategoryArchive;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.repository.ContentItem;
 import org.openedit.repository.RepositoryException;
-import org.openedit.repository.filesystem.StringItem;
 
 import com.openedit.OpenEditException;
 import com.openedit.OpenEditRuntimeException;

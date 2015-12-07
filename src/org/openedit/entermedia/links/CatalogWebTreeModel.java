@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openedit.entermedia.Category;
-import org.openedit.entermedia.CategoryArchive;
-import org.openedit.entermedia.search.SearchFilter;
+import org.openedit.entermedia.xmldb.CategorySearcher;
 
 import com.openedit.page.manage.PageManager;
 import com.openedit.users.User;
@@ -21,12 +20,20 @@ public class CatalogWebTreeModel extends BaseTreeModel
 	protected User fieldUser;
 	protected Set fieldHiddenCatalogs;
 	protected Set fieldLimitToCatalogs;
-	protected CategoryArchive fieldCatalogArchive;
-	protected SearchFilter fieldSearchFilter;
+	protected CategorySearcher fieldCategorySearcher;
 	protected PageManager fieldPageManager;
 	protected String fieldCatalogId;
 	protected RequestUtils fieldRequestUtils;
 	protected Category fieldRoot;
+	public CategorySearcher getCategorySearcher()
+	{
+		return fieldCategorySearcher;
+	}
+
+	public void setCategorySearcher(CategorySearcher inCategorySearcher)
+	{
+		fieldCategorySearcher = inCategorySearcher;
+	}
 
 	public RequestUtils getRequestUtils()
 	{
@@ -92,10 +99,10 @@ public class CatalogWebTreeModel extends BaseTreeModel
 		{
 			return false;
 		}
-		if( getSearchFilter().hasExcludedCategory(inCat.getId()) )
-		{
-			return false;
-		}
+//		if( getSearchFilter().hasExcludedCategory(inCat.getId()) )
+//		{
+//			return false;
+//		}
 
 		if (getLimitToCatalogs().size() > 0)
 		{
@@ -157,35 +164,35 @@ public class CatalogWebTreeModel extends BaseTreeModel
 		// look over this users permissions and see if there is a limit
 		fieldHiddenCatalogs = new HashSet();
 		fieldLimitToCatalogs = new HashSet();
-		for (Iterator iterator = getSearchFilter().listAllFilters().iterator(); iterator.hasNext();)
-		{
-			String perm = (String) iterator.next();
-			if (perm.startsWith("limittocategory:"))
-			{
-				String catid = perm.substring("limittocategory:".length());
-				Category cat = getCatalogArchive().getCategory(catid);
-				if (cat != null)
-				{
-					fieldLimitToCatalogs.add(cat);
-				}
-			}
-			// This is old way to do it
-			else if (perm.startsWith("hidecategory:")) // Aways exclude it
-			{
-				String catid = perm.substring("hidecategory:".length());
-				fieldHiddenCatalogs.add(catid);
-			}
-			else if (perm.startsWith("hidecatalog:")) // Aways exclude it
-			{
-				String catid = perm.substring("hidecatalog:".length());
-				fieldHiddenCatalogs.add(catid);
-			}
-			else if (perm.startsWith("backgroundcatalog:")) // Aways exclude it
-			{
-				String catid = perm.substring("backgroundcatalog:".length());
-				fieldHiddenCatalogs.add(catid);
-			}
-		}
+//		for (Iterator iterator = getSearchFilter().listAllFilters().iterator(); iterator.hasNext();)
+//		{
+//			String perm = (String) iterator.next();
+//			if (perm.startsWith("limittocategory:"))
+//			{
+//				String catid = perm.substring("limittocategory:".length());
+//				Category cat = getCategorySearcher().getCategory(catid);
+//				if (cat != null)
+//				{
+//					fieldLimitToCatalogs.add(cat);
+//				}
+//			}
+//			// This is old way to do it
+//			else if (perm.startsWith("hidecategory:")) // Aways exclude it
+//			{
+//				String catid = perm.substring("hidecategory:".length());
+//				fieldHiddenCatalogs.add(catid);
+//			}
+//			else if (perm.startsWith("hidecatalog:")) // Aways exclude it
+//			{
+//				String catid = perm.substring("hidecatalog:".length());
+//				fieldHiddenCatalogs.add(catid);
+//			}
+//			else if (perm.startsWith("backgroundcatalog:")) // Aways exclude it
+//			{
+//				String catid = perm.substring("backgroundcatalog:".length());
+//				fieldHiddenCatalogs.add(catid);
+//			}
+//		}
 	}
 
 	public List getChildren(Object inParent)
@@ -233,9 +240,9 @@ public class CatalogWebTreeModel extends BaseTreeModel
 	public Object getRoot()
 	{
 		if (fieldRoot == null)
-			return getCatalogArchive().getRootCategory();
+			return getCategorySearcher().getRootCategory();
 		else
-			return getCatalogArchive().getCategory(fieldRoot.getId());
+			return getCategorySearcher().getCategory(fieldRoot.getId());
 	}
 
 	public String getId(Object inNode)
@@ -265,7 +272,7 @@ public class CatalogWebTreeModel extends BaseTreeModel
 
 	public Category getRootCatalog()
 	{
-		return getCatalogArchive().getRootCategory();
+		return getCategorySearcher().getRootCategory();
 	}
 
 	public Object getChildById(String inId)
@@ -290,26 +297,6 @@ public class CatalogWebTreeModel extends BaseTreeModel
 			}
 		}
 		return null;
-	}
-
-	public CategoryArchive getCatalogArchive()
-	{
-		return fieldCatalogArchive;
-	}
-
-	public void setCatalogArchive(CategoryArchive inCatalogArchive)
-	{
-		fieldCatalogArchive = inCatalogArchive;
-	}
-
-	public SearchFilter getSearchFilter()
-	{
-		return fieldSearchFilter;
-	}
-
-	public void setSearchFilter(SearchFilter inSearchFilter)
-	{
-		fieldSearchFilter = inSearchFilter;
 	}
 
 	public String getCatalogId()

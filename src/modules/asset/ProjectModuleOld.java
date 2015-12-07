@@ -2,8 +2,6 @@ package modules.asset;
 
 import java.util.Iterator;
 
-import model.projects.ProjectManager;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
@@ -14,6 +12,8 @@ import org.openedit.entermedia.modules.BaseMediaModule;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
+
+import model.projects.ProjectManager;
 
 public class ProjectModuleOld extends BaseMediaModule
 {

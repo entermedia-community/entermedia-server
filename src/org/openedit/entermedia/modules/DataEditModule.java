@@ -30,7 +30,6 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.entermedia.BaseCompositeData;
-import org.openedit.entermedia.MediaArchive;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.profile.UserProfile;

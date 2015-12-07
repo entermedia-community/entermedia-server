@@ -17,14 +17,12 @@ import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.edit.CategoryEditor;
-import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.users.User;
 import com.openedit.util.PathUtilities;
 
 /**

@@ -2,9 +2,6 @@ package test.projects;
 
 import java.util.Collection;
 
-import model.projects.ProjectManager;
-import model.projects.UserCollection;
-
 import org.junit.Test;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
@@ -12,6 +9,9 @@ import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.modules.ProfileModule;
 
 import com.openedit.WebPageRequest;
+
+import model.projects.ProjectManager;
+import model.projects.UserCollection;
 
 public class ProjectTest extends BaseEnterMediaTest
 {

@@ -1,10 +1,5 @@
 package com.openedit.entermedia.scripts;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
-import groovy.util.GroovyScriptEngine;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +19,11 @@ import com.openedit.config.ScriptPathLoader;
 import com.openedit.page.Page;
 import com.openedit.page.PageSettings;
 import com.openedit.page.manage.PageManager;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
+import groovy.util.GroovyScriptEngine;
 
 public class GroovyScriptRunner implements ScriptRunner
 {

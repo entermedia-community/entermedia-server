@@ -10,7 +10,6 @@ import org.openedit.entermedia.MediaArchive;
 
 import com.openedit.WebPageRequest;
 import com.openedit.users.User;
-import com.openedit.users.UserManager;
 
 public interface PushManager
 {

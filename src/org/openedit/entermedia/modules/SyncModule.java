@@ -1,25 +1,16 @@
 package org.openedit.entermedia.modules;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermedia.upload.FileUpload;
-import org.entermedia.upload.FileUploadItem;
-import org.entermedia.upload.UploadRequest;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.push.OLDPublishChecker;
 import org.openedit.entermedia.push.PushManager;
 
 import com.openedit.WebPageRequest;
 import com.openedit.hittracker.SearchQuery;
-import com.openedit.util.PathUtilities;
 
 public class SyncModule extends BaseMediaModule
 {

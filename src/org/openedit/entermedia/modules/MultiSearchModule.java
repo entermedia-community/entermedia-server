@@ -29,7 +29,6 @@ import com.openedit.hittracker.SearchQuery;
 import com.openedit.hittracker.Term;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
-import com.openedit.users.User;
 
 
 /**

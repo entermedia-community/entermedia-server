@@ -1,8 +1,5 @@
 package com.openedit.entermedia.scripts;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.util.GroovyScriptEngine;
-
 import java.io.File;
 
 import org.openedit.data.Searcher;
@@ -17,6 +14,9 @@ import com.openedit.page.Page;
 import com.openedit.page.manage.PageManager;
 import com.openedit.servlet.OpenEditEngine;
 import com.openedit.users.UserManager;
+
+import groovy.lang.GroovyClassLoader;
+import groovy.util.GroovyScriptEngine;
 
 public class EnterMediaObject
 {

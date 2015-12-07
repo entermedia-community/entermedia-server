@@ -1,17 +1,17 @@
 package modules.projects;
 
-import model.projects.ProjectManager
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
+import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.modules.BaseMediaModule;
+import org.openedit.profile.UserProfile;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.openedit.Data
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.modules.BaseMediaModule
-import org.openedit.profile.UserProfile
+import com.openedit.WebPageRequest;
+import com.openedit.hittracker.HitTracker;
+import com.openedit.users.User;
 
-import com.openedit.WebPageRequest
-import com.openedit.hittracker.HitTracker
-import com.openedit.users.*
+import model.projects.ProjectManager;
 
 public class ProjectModule extends BaseMediaModule
 {
@@ -25,16 +25,16 @@ public class ProjectModule extends BaseMediaModule
 		manager.loadCollections(inReq);
 	}
 	
-	public void savedCollection(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		Data collection = (Data)inReq.getPageValue("data");
-		if( collection != null)
-		{
-			ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
-			manager.savedCollection(archive,collection,inReq.getUser());
-		}
-	}
+//	public void savedCollection(WebPageRequest inReq)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		Data collection = (Data)inReq.getPageValue("data");
+//		if( collection != null)
+//		{
+//			ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
+//			manager.savedCollection(archive,collection,inReq.getUser());
+//		}
+//	}
 	
 	public void addAssetToLibrary(WebPageRequest inReq)
 	{
@@ -52,7 +52,7 @@ public class ProjectModule extends BaseMediaModule
 				tracker = tracker.getSelectedHitracker();
 				if( tracker != null && tracker.size() > 0 )
 				{
-					manager.addAssetToLibrary(inReq, archive, libraryid, tracker);
+					manager.addAssetToLibrary(archive, libraryid, tracker);
 					inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
 					return;
 				}
@@ -60,7 +60,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 
 		String assetid = inReq.getRequestParameter("assetid");
-		manager.addAssetToLibrary(inReq, archive, libraryid, assetid);
+		manager.addAssetToLibrary(archive, libraryid, assetid);
 		inReq.putPageValue("added" , "1" );
 		
 	}

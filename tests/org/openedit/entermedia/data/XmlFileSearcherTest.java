@@ -5,8 +5,8 @@ import java.io.File;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.data.XmlFileSearcher;
 import org.openedit.entermedia.Asset;
 import org.openedit.entermedia.BaseEnterMediaTest;
 import org.openedit.entermedia.MediaArchive;
@@ -38,7 +38,7 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 		historyRecord.setSourcePath(asset.getSourcePath());
 		historyRecord.setProperty("message", "New record");
 		historyRecord.setProperty("assetid", asset.getId());
-		XmlFileSearcher searcher = getNewSearcher(catalog, "usagehistory");
+		Searcher searcher = getNewSearcher(catalog, "usagehistory");
 		searcher.saveData(historyRecord, null);
 		
 		SearchQuery idQuery = searcher.createSearchQuery();
@@ -102,7 +102,7 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 	 */
 	public void testAssetReviewers() throws Exception
 	{
-		XmlFileSearcher searcher = getNewSearcher("entermedia/catalogs/testcatalog", "reviewers");
+		Searcher searcher = getNewSearcher("entermedia/catalogs/testcatalog", "reviewers");
 		SearchQuery query = searcher.createSearchQuery();
 		String sourcepath = "path/to/test/asset"; //Just needs to be unique and might as well match the assetsourcepath
 		query.addMatches("sourcepath", sourcepath);
@@ -138,15 +138,15 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 		assertNotNull(after);
 		assertEquals(before.size() + 1, after.size());
 		
-		searcher.deleteRecord(data);
+		searcher.delete(data,null);
 		after = searcher.search(query);
 		assertNotNull(after);
 		assertEquals(before.size(), after.size());
 	}
 
-	protected XmlFileSearcher getNewSearcher(String inCatalogId, String inSearchType)
+	protected Searcher getNewSearcher(String inCatalogId, String inSearchType)
 	{
-		XmlFileSearcher searcher = (XmlFileSearcher) getBean("xmlFileSearcher");
+		Searcher searcher = (Searcher) getBean("Searcher");
 		searcher.setCatalogId(inCatalogId);
 		searcher.setSearchType(inSearchType);
 		return searcher;
@@ -168,7 +168,7 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 		asset.setFolder(false);
 		asset.setName("xml");
 		
-		XmlFileSearcher searcher = getNewSearcher(catalog, "asset");
+		Searcher searcher = getNewSearcher(catalog, "asset");
 		/*
 		 * searcher.setIndexer(AssetLuceneIndexer) ?
 		 * searcher.setXml{Parser, Processor, Loader, ...}(AssetXmlParser) ?
