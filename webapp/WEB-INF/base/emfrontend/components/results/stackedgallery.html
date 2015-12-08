@@ -24,6 +24,7 @@ $context.putPageValue("showtoolbar", "false")
 <div class="row masonry-grid">
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
+    #set( $viewerlink = $content.get("assetviewerlink") )
     #foreach ($hit in $hits.getPageOfHits())
     
         #set ($sourcepath = $hit.sourcepath)
@@ -37,7 +38,7 @@ $context.putPageValue("showtoolbar", "false")
          $context.putPageValue("thumbsize", "medium" )
         #if ($!hit.width) #set($assetwidth = $hit.width) #else #set($assetwidth = 0) #end
         #if($!hit.height) #set ($assetheight = $hit.height) #else #set($assetheight = 0) #end
-        #set($click = "editor/viewer/index.html?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+        #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
 		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >
 		    	<a class="playerclink imagearea" id="clickid${hit.id}" href="#">
