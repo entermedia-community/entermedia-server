@@ -73,7 +73,7 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 		}
 //		if( !showtoolbar)
 //		{
-//			String mode = (String)user.getProperty("oe.edit.mode");
+//			String mode = (String)user.getProperty("oe_edit_mode");
 //			if( "edit".equals( mode) || "debug".equals(mode) )
 //			{
 //				showtoolbar = true;
@@ -81,7 +81,7 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 //		}
 //		if( showtoolbar )
 //		{
-//			String mode = inContext.getRequestParameter("oe.edit.mode");
+//			String mode = inContext.getRequestParameter("oe_edit_mode");
 //			if( "preview".equals(mode) )
 //			{
 //				showtoolbar = false;

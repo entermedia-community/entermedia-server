@@ -165,14 +165,14 @@ public class UserProfileModule extends BaseMediaModule
 
 	public void toggleDebug(WebPageRequest inReq) 
 	{
-		String mode = inReq.getUser().get("oe.edit.mode");
+		String mode = inReq.getUser().get("oe_edit_mode");
 		if( mode == null || mode.equals("preview"))
 		{
-			inReq.getUser().put("oe.edit.mode","debug");
+			inReq.getUser().put("oe_edit_mode","debug");
 		}
 		else
 		{
-			inReq.getUser().put("oe.edit.mode","preview");
+			inReq.getUser().put("oe_edit_mode","preview");
 		}
 		//redirectBack(inReq);		
 	}

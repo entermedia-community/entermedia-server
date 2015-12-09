@@ -54,7 +54,7 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 			return false;
 		}
 		
-		String val = user.get("oe.edit.mode");
+		String val = user.get("oe_edit_mode");
 		
 		if( "preview".equals( val ) )
 		{

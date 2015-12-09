@@ -366,6 +366,12 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 			lock = getMediaArchive().getLockManager().lock("assets/" + inAsset.getSourcePath(),"admin");
 			saveAsset(inAsset, inUser, lock);
 		}
+		catch(Exception e){
+			if(e instanceof OpenEditException){
+				throw (OpenEditException) e;
+			}
+			throw new OpenEditException("failed to lock", e);
+		}
 		finally
 		{
 			getMediaArchive().releaseLock(lock);
