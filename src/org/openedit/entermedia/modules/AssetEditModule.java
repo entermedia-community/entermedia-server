@@ -387,7 +387,7 @@ public class AssetEditModule extends BaseMediaModule
 		Asset asset = getAsset(inRequest);
 		MediaArchive archive = getMediaArchive(inRequest);
 		
-		archive.removeGeneratedImages(asset);
+		archive.removeGeneratedImages(asset,false);
 	}
 //	public Data createMultiEditData(WebPageRequest inReq) throws Exception
 //	{
@@ -1956,7 +1956,7 @@ public class AssetEditModule extends BaseMediaModule
 			
 			mediaArchive.removeGeneratedImages(asset);
 			
-			missing = missing + presets.createMissingOnImport(mediaArchive, tasksearcher, asset);
+			missing = missing + presets.retryConversions(mediaArchive, tasksearcher, asset);
 		}
 		if( missing > 0 )
 		{
