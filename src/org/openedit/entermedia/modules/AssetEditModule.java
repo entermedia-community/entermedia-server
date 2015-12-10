@@ -994,6 +994,7 @@ public class AssetEditModule extends BaseMediaModule
 				createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
 			}
 			saveAssetData(archive, tracker, currentcollection, user);
+			inReq.putPageValue("assets", tracker);
 		}
 	}
 	protected Map savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
