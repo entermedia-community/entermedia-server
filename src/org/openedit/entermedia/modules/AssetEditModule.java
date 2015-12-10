@@ -1214,8 +1214,10 @@ public class AssetEditModule extends BaseMediaModule
 			updateMetadata(archive, target, itemFile);
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
-			inReq.setRequestParameter("assetids", new String[] { target.getId() });
-			originalModified(inReq);
+			
+			archive.removeGeneratedImages(target);
+			archive.getPresetManager().retryConversions(archive, archive.getSearcher("conversiontask"), target);
+			archive.fireSharedMediaEvent("conversions/runconversions");
 		}
 	}
 	protected void updateMetadata(MediaArchive archive, Asset target, Page itemFile)
