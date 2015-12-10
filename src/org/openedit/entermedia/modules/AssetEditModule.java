@@ -963,23 +963,38 @@ public class AssetEditModule extends BaseMediaModule
 			log.error("No pages uploaded");
 			return;
 		}
-		ExecutorManager manager = (ExecutorManager)getModuleManager().getBean(archive.getCatalogId(), "executorManager");
-		
-		Runnable runthis = new Runnable()
+		String threaded = inReq.findValue("threadedupload");
+		if( Boolean.valueOf(threaded))
 		{
-			public void run()
+			ExecutorManager manager = (ExecutorManager)getModuleManager().getBean(archive.getCatalogId(), "executorManager");
+			
+			Runnable runthis = new Runnable()
 			{
-				ListHitTracker tracker = new ListHitTracker();
-				for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+				public void run()
 				{
-					String sourcepath = (String) iterator.next();
-					Page page = (Page)pages.get(sourcepath);
-					createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+					ListHitTracker tracker = new ListHitTracker();
+					for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+					{
+						String sourcepath = (String) iterator.next();
+						Page page = (Page)pages.get(sourcepath);
+						createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+					}
+					saveAssetData(archive, tracker, currentcollection, user);
 				}
-				saveAssetData(archive, tracker, currentcollection, user);
+			};
+			manager.execute("importing",runthis);
+		}
+		else
+		{
+			ListHitTracker tracker = new ListHitTracker();
+			for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+			{
+				String sourcepath = (String) iterator.next();
+				Page page = (Page)pages.get(sourcepath);
+				createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
 			}
-		};
-		manager.execute("importing",runthis);	
+			saveAssetData(archive, tracker, currentcollection, user);
+		}
 	}
 	protected Map savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
 	{
