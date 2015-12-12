@@ -27,7 +27,7 @@ public void setAssetTypes()
 	//TODO: Get rid of the need to search all the assets use the Asset Cache
 
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
-	HitTracker hits = context.getPageValue("hits");
+	Collection hits = context.getPageValue("hits");
 	if( hits == null)
 	{
 		String ids = context.getRequestParameter("assetids");

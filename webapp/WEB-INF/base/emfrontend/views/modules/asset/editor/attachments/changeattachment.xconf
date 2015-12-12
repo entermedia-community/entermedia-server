@@ -1,5 +1,4 @@
 <page>
-	<path-action name="AssetEditModule.removeAssetImages" />
 	<path-action name="AssetEditModule.selectPrimaryAsset"/>
 	
 	<permission name="view">

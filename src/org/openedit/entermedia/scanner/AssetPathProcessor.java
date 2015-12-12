@@ -295,13 +295,12 @@ public class AssetPathProcessor extends PathProcessor
 				String path = (String) iterator.next();
 				
 				ContentItem item = getPageManager().getRepository().getStub(path);
-				if( !item.isFolder() && acceptFile(item))
+				String format = PathUtilities.extractPageType(path);
+				if( !item.isFolder() && acceptFile(item) )
 				{
-					if(first == null){
+					if(first == null && format != null && !"txt".equals(format) && !"xml".equals(format)){
 						first = item;
 					}
-					String format = PathUtilities.extractPageType(path);
-					
 					if("indd".equals(format)){
 						return item;
 					}
