@@ -3,7 +3,7 @@
 	<a folder="generalinformation"  id="metadatageneral" module="asset" useajax="true" name="Edit Metadata" multiedit="true"  ordering="110"/>
 	<a folder="comment" id="comment"  module="asset"  useajax="true" name="Comments" multiedit="false"  ordering="120"/>
 	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->
-	<a folder="edit"  id="viewassetedit"  module="asset"  useajax="false" name="Image Crop"  ordering="130"/>
+	<!-- <a folder="edit"  id="viewassetedit"  module="asset"  useajax="false" name="Image Crop"  ordering="130"/> -->
 	<a folder="conversions"  id="viewconversions"  module="asset"  useajax="false" name="Conversions"  ordering="130"/>
 	<a folder="categorize"  id="editassetcategories"  module="asset" useajax="true" name="Categories" multiedit="true"  ordering="140"/>
 	<a folder="tags"  id="editassettags"  module="asset"  useajax="true" name="Tags" multiedit="true"  ordering="150"/>   	
