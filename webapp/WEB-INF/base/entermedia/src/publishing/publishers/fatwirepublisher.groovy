@@ -16,7 +16,9 @@ import org.openedit.data.BaseData
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
+import org.openedit.entermedia.publishing.
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
 import com.openedit.hittracker.SearchQuery;
 
@@ -24,18 +26,16 @@ import java.net.URL;
 import java.awt.Dimension;
 
 import com.openedit.page.Page
-import com.openedit.util.FileUtils
-import com.openedit.util.RequestUtils
-import com.openedit.users.UserManager
-import com.openedit.users.User
 
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import org.apache.commons.io.IOUtils
 import org.apache.commons.net.io.Util;
 import org.openedit.entermedia.creator.ConversionUtil;
-import org.openedit.util.DateStorageUtil;
-//import org.entermedia.fatwire.FatwireManager
+import org.openedit.util.DateStorageUtil
+import org.openedit.util.FileUtils;
+import org.openedit.util.RequestUtils;;
+//import org.entermediadb.fatwire.FatwireManager
 
 public class fatwirepublisher extends BasePublisher implements Publisher
 {

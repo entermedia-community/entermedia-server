@@ -1,11 +1,11 @@
 import org.openedit.Data
+import org.openedit.WebPageRequest;
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.Category;
 import org.openedit.entermedia.MediaArchive
+import org.openedit.util.PathUtilities
 
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
-import com.openedit.util.PathUtilities
 
 
 

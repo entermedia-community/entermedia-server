@@ -1,8 +1,7 @@
 package notifications;
 
-import java.net.URL;
+import java.net.URL
 
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 
@@ -13,6 +12,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.openedit.Data
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive

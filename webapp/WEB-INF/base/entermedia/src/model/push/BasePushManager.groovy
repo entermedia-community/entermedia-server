@@ -19,6 +19,8 @@ import org.entermedia.upload.FileUpload
 import org.entermedia.upload.FileUploadItem
 import org.entermedia.upload.UploadRequest
 import org.openedit.Data
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.ImmutableData
 import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
@@ -31,19 +33,17 @@ import org.openedit.entermedia.push.PushManager
 import org.openedit.entermedia.scanner.AssetImporter
 import org.openedit.entermedia.search.AssetSearcher
 import org.openedit.repository.ContentItem
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil
+import org.openedit.util.PathUtilities;
+import org.openedit.util.XmlUtil
 
-import com.openedit.OpenEditException
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.modules.update.Downloader
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
-import com.openedit.users.User
-import com.openedit.users.UserManager
-import com.openedit.util.PathUtilities
-import com.openedit.util.XmlUtil
 
 public class BasePushManager implements PushManager
 {
@@ -58,7 +58,7 @@ public class BasePushManager implements PushManager
 	
 	//TODO: Put a 5 minute timeout on this connection. This way we will reconnect
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#login(java.lang.String)
+	 * @see org.entermediadb.asset.push.PushManager#login(java.lang.String)
 	 */
 	public HttpClient login(String inCatalogId)
 	{
@@ -100,7 +100,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getUserManager()
+	 * @see org.entermediadb.asset.push.PushManager#getUserManager()
 	 */
 	public UserManager getUserManager(String inCatalogId)
 	{
@@ -109,7 +109,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getSearcherManager()
+	 * @see org.entermediadb.asset.push.PushManager#getSearcherManager()
 	 */
 	public SearcherManager getSearcherManager()
 	{
@@ -117,7 +117,7 @@ public class BasePushManager implements PushManager
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#setSearcherManager(org.openedit.data.SearcherManager)
+	 * @see org.entermediadb.asset.push.PushManager#setSearcherManager(org.openedit.data.SearcherManager)
 	 */
 	public void setSearcherManager(SearcherManager inSearcherManager)
 	{
@@ -132,7 +132,7 @@ public class BasePushManager implements PushManager
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getClient(java.lang.String)
+	 * @see org.entermediadb.asset.push.PushManager#getClient(java.lang.String)
 	 */
 	public HttpClient getClient(String inCatalogId)
 	{
@@ -149,14 +149,14 @@ public class BasePushManager implements PushManager
 		return ref;
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#processPushQueue(org.openedit.entermedia.MediaArchive, com.openedit.users.User)
+	 * @see org.entermediadb.asset.push.PushManager#processPushQueue(org.entermediadb.asset.MediaArchive, org.openedit.users.User)
 	 */
 	public void processPushQueue(MediaArchive archive, User inUser)
 	{
 		processPushQueue(archive,null,inUser);
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#processPushQueue(org.openedit.entermedia.MediaArchive, java.lang.String, com.openedit.users.User)
+	 * @see org.entermediadb.asset.push.PushManager#processPushQueue(org.entermediadb.asset.MediaArchive, java.lang.String, org.openedit.users.User)
 	 */
 	public void processPushQueue(MediaArchive archive, String inAssetIds, User inUser)
 	{
@@ -221,7 +221,7 @@ public class BasePushManager implements PushManager
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#processDeletedAssets(org.openedit.entermedia.MediaArchive, com.openedit.users.User)
+	 * @see org.entermediadb.asset.push.PushManager#processDeletedAssets(org.entermediadb.asset.MediaArchive, org.openedit.users.User)
 	 */
 	public void processDeletedAssets(MediaArchive archive, User inUser)
 	{
@@ -262,7 +262,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#uploadGenerated(org.openedit.entermedia.MediaArchive, com.openedit.users.User, org.openedit.entermedia.Asset, java.util.List)
+	 * @see org.entermediadb.asset.push.PushManager#uploadGenerated(org.entermediadb.asset.MediaArchive, org.openedit.users.User, org.entermediadb.asset.Asset, java.util.List)
 	 */
 	public void uploadGenerated(MediaArchive archive, User inUser, Asset target, List savequeue)
 	{
@@ -565,7 +565,7 @@ public class BasePushManager implements PushManager
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getCompletedAssets(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#getCompletedAssets(org.entermediadb.asset.MediaArchive)
 	 */
 	public Collection getCompletedAssets(MediaArchive inArchive)
 	{
@@ -574,7 +574,7 @@ public class BasePushManager implements PushManager
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getPendingAssets(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#getPendingAssets(org.entermediadb.asset.MediaArchive)
 	 */
 	public Collection getPendingAssets(MediaArchive inArchive)
 	{
@@ -593,7 +593,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getNoGenerated(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#getNoGenerated(org.entermediadb.asset.MediaArchive)
 	 */
 	public Collection getNoGenerated(MediaArchive inArchive)
 	{
@@ -604,7 +604,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getErrorAssets(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#getErrorAssets(org.entermediadb.asset.MediaArchive)
 	 */
 	public Collection getErrorAssets(MediaArchive inArchive)
 	{
@@ -613,7 +613,7 @@ public class BasePushManager implements PushManager
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getImportCompleteAssets(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#getImportCompleteAssets(org.entermediadb.asset.MediaArchive)
 	 */
 	public Collection getImportCompleteAssets(MediaArchive inArchive)
 	{
@@ -628,7 +628,7 @@ public class BasePushManager implements PushManager
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getImportPendingAssets(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#getImportPendingAssets(org.entermediadb.asset.MediaArchive)
 	 */
 	public Collection getImportPendingAssets(MediaArchive inArchive)
 	{
@@ -642,7 +642,7 @@ public class BasePushManager implements PushManager
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#getImportErrorAssets(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#getImportErrorAssets(org.entermediadb.asset.MediaArchive)
 	 */
 	public Collection getImportErrorAssets(MediaArchive inArchive)
 	{
@@ -652,7 +652,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#pushAssets(org.openedit.entermedia.MediaArchive, java.util.List)
+	 * @see org.entermediadb.asset.push.PushManager#pushAssets(org.entermediadb.asset.MediaArchive, java.util.List)
 	 */
 	public void pushAssets(MediaArchive inArchive, List<Asset> inAssetsSaved)
 	{
@@ -676,7 +676,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#pollRemotePublish(org.openedit.entermedia.MediaArchive)
+	 * @see org.entermediadb.asset.push.PushManager#pollRemotePublish(org.entermediadb.asset.MediaArchive)
 	 */
 	public void pollRemotePublish(MediaArchive inArchive)
 	{
@@ -901,7 +901,7 @@ public class BasePushManager implements PushManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.push.PushManager#toggle(java.lang.String)
+	 * @see org.entermediadb.asset.push.PushManager#toggle(java.lang.String)
 	 */
 	public void toggle(String inCatalogId)
 	{

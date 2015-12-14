@@ -12,6 +12,8 @@ import org.entermedia.upload.UploadRequest
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.openedit.Data
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
@@ -23,8 +25,6 @@ import org.openedit.entermedia.orders.OrderSearcher
 import org.openedit.entermedia.scanner.AssetImporter
 import org.openedit.entermedia.search.AssetSearcher
 
-import com.openedit.OpenEditException
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
 

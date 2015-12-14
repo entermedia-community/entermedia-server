@@ -2,7 +2,7 @@
 
 <beans default-lazy-init="true">
 
-	<bean id="Admin" class="org.openedit.entermedia.modules.AdminModule">
+	<bean id="Admin" class="org.entermediadb.asset.modules.AdminModule">
 		<property name="sendMailModule">
 			<ref bean="Email" />
 		</property>
@@ -21,7 +21,7 @@
 	</bean>
 	
 	
-	<bean id="AssetEditModule" class="org.openedit.entermedia.modules.AssetEditModule">
+	<bean id="AssetEditModule" class="org.entermediadb.asset.modules.AssetEditModule">
 		<property name="assetImporter"><ref bean="assetImporter" /></property>
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
 		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
@@ -30,9 +30,9 @@
 	</bean>
 
 
-	<bean id="AssetControlModule" class="org.openedit.entermedia.modules.AssetControlModule" />
+	<bean id="AssetControlModule" class="org.entermediadb.asset.modules.AssetControlModule" />
 	
-	<bean id="AssetSyncModule" class="org.openedit.entermedia.modules.AssetSyncModule">
+	<bean id="AssetSyncModule" class="org.entermediadb.asset.modules.AssetSyncModule">
 		<property name="assetImporter">
 			<ref bean="assetImporter" />
 		</property>
@@ -40,14 +40,14 @@
 			<ref bean="fileUpload" />
 		</property>
 	</bean>
-	<bean id="AutoCompleteModule" class="org.openedit.entermedia.modules.AutoCompleteModule">
+	<bean id="AutoCompleteModule" class="org.entermediadb.asset.modules.AutoCompleteModule">
 	</bean>
 
 
-	<bean id="CategoryModule" class="org.openedit.entermedia.modules.CategoryModule">
+	<bean id="CategoryModule" class="org.entermediadb.asset.modules.CategoryModule">
 	</bean>
 
-	<bean id="CommentModule" class="org.openedit.entermedia.modules.CommentModule">
+	<bean id="CommentModule" class="org.entermediadb.asset.modules.CommentModule">
 		<property name="commentArchive">
 			<ref bean="commentArchive" />
 		</property>
@@ -55,12 +55,12 @@
 			<ref bean="mediaEventHandler" />
 		</property>
 	</bean>
-	<bean id="CategoryEditModule" class="org.openedit.entermedia.modules.CategoryEditModule">
+	<bean id="CategoryEditModule" class="org.entermediadb.asset.modules.CategoryEditModule">
 		<property name="webEventListener">
 			<ref bean="mediaEventHandler" />
 		</property>
 	</bean>
-	<bean id="DataEditModule" class="org.openedit.entermedia.modules.DataEditModule">
+	<bean id="DataEditModule" class="org.entermediadb.asset.modules.DataEditModule">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -70,37 +70,37 @@
 
 	</bean>
 
-	<bean id="emailErrorHandler" class="org.entermedia.error.EmailErrorHandler">
+	<bean id="emailErrorHandler" class="org.entermediadb.error.EmailErrorHandler">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="userManager"><ref bean="userManager"/></property>
 		 <property name="postMail"><ref bean="postMail" /></property>
 	</bean>
 	
 
-	<bean id="Email" class="org.openedit.entermedia.modules.SendMailModule">
+	<bean id="Email" class="org.entermediadb.asset.modules.SendMailModule">
 		<property name="postMail">
 			<ref bean="postMail" />
 		</property>
 	</bean>
 
-	<bean id="FetchModule" class="org.openedit.entermedia.modules.FetchModule" />
+	<bean id="FetchModule" class="org.entermediadb.asset.modules.FetchModule" />
 
-	<bean id="LDAPModule" class="org.openedit.entermedia.modules.LDAPModule">
+	<bean id="LDAPModule" class="org.entermediadb.asset.modules.LDAPModule">
 	</bean>
 
 
-	<bean id="MediaSearchModule" class="org.openedit.entermedia.modules.MediaSearchModule">
+	<bean id="MediaSearchModule" class="org.entermediadb.asset.modules.MediaSearchModule">
 	
 	</bean>
 
-	<bean id="MediaAdminModule" class="org.openedit.entermedia.modules.MediaAdminModule">
+	<bean id="MediaAdminModule" class="org.entermediadb.asset.modules.MediaAdminModule">
 			<property name="workspaceManager"><ref bean="workspaceManager" /></property>
 				<property name="pageManager"><ref bean="pageManager" /></property>
 	
 	</bean>
 
 
-	<bean id="MultiSearchModule" class="org.openedit.entermedia.modules.MultiSearchModule">
+	<bean id="MultiSearchModule" class="org.entermediadb.asset.modules.MultiSearchModule">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -114,44 +114,44 @@
 	</bean>
 
 
-	<bean id="MediaArchiveModule" class="org.openedit.entermedia.modules.MediaArchiveModule">
+	<bean id="MediaArchiveModule" class="org.entermediadb.asset.modules.MediaArchiveModule">
 		<property name="emailErrorHandler">
 			<ref bean="emailErrorHandler" />
 		</property>
 	</bean>
 <!-- 
-	<bean id="MediaEmailModule" class="org.openedit.entermedia.modules.MediaEmailModule">
+	<bean id="MediaEmailModule" class="org.entermediadb.asset.modules.MediaEmailModule">
 		<property name="postMail">
 			<ref bean="postMail" />
 		</property>
 	</bean>
  -->	
-	<bean id="MountModule" class="org.openedit.entermedia.modules.MountModule">
+	<bean id="MountModule" class="org.entermediadb.asset.modules.MountModule">
 		<property name="webServer">
 			<ref bean="WebServer" />
 		</property>
 	</bean>
 
-	<bean id="PermissionModule" class="org.openedit.entermedia.modules.PermissionModule">
+	<bean id="PermissionModule" class="org.entermediadb.asset.modules.PermissionModule">
 	</bean>
 
 
-	<bean id="PathEventModule" class="org.openedit.entermedia.modules.PathEventModule">
+	<bean id="PathEventModule" class="org.entermediadb.asset.modules.PathEventModule">
 
 	</bean>
 
-	<bean id="RelatedAssetsModule" class="org.openedit.entermedia.modules.RelatedAssetsModule" />
+	<bean id="RelatedAssetsModule" class="org.entermediadb.asset.modules.RelatedAssetsModule" />
 
-	<bean id="Script" class="com.openedit.modules.scriptrunner.ScriptModule"/>
+	<bean id="Script" class="org.entermediadb.modules.scriptrunner.ScriptModule"/>
 
 
-	<bean id="RelatedKeywordModule" class="org.openedit.entermedia.modules.RelatedKeywordModule">
+	<bean id="RelatedKeywordModule" class="org.entermediadb.asset.modules.RelatedKeywordModule">
 	</bean>
-	<bean id="TabModule" class="org.openedit.webui.tabs.TabModule">
+	<bean id="TabModule" class="org.entermediadb.webui.tabs.TabModule">
 	</bean>
 
 	<!-- bean id="TaskModule" name="TaskModule"
-		class="org.openedit.entermedia.workflow.TaskModule" abstract="false"
+		class="org.entermediadb.asset.workflow.TaskModule" abstract="false"
 		 lazy-init="default" autowire="default"
 		dependency-check="default">
 		<property name="mediaArchiveManager">
@@ -168,7 +168,7 @@
 
 
 
-	<bean id="UserProfileModule" class="org.openedit.entermedia.modules.UserProfileModule">
+	<bean id="UserProfileModule" class="org.entermediadb.asset.modules.UserProfileModule">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
@@ -177,21 +177,21 @@
 		</property>
 	</bean>
 
-	<bean id="User" class="org.openedit.entermedia.modules.UserManagerModule">
+	<bean id="User" class="org.entermediadb.asset.modules.UserManagerModule">
 		<property name="postMail"><ref bean="postMail" /></property>
 		<property name="questionArchive"><ref bean="questionArchive" /></property>
 	</bean>
 
-	<bean id="questionArchive" class="com.openedit.modules.admin.users.QuestionArchive">
+	<bean id="questionArchive" class="org.entermediadb.modules.admin.users.QuestionArchive">
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 	</bean>
-	<bean id="Page" class="com.openedit.modules.admin.filemanager.FileManagerModule">
+	<bean id="Page" class="org.entermediadb.modules.admin.filemanager.FileManagerModule">
 			<property name="treeSupport"><ref bean="WebTree"/></property>
 			<property name="fileUpload"><ref bean="fileUpload"/></property>
 	</bean>
 
 
-	<bean id="UpdateModule" class="com.openedit.modules.update.UpdateModule">
+	<bean id="UpdateModule" class="org.entermediadb.modules.update.UpdateModule">
 		<property name="windowsUtil">
 			<ref bean="windowsUtil" />
 		</property>
@@ -201,7 +201,7 @@
 	</bean>
 
 
-	<bean id="postMail" class="org.entermedia.email.PostMail">
+	<bean id="postMail" class="org.entermediadb.email.PostMail">
 		<!-- property name="smtpUsername">
 			<value>username</value>
 		</property>
@@ -227,7 +227,7 @@
 	</bean>
 
 
-	<bean id="plugInFinder" class="com.openedit.modules.update.PlugInFinder" scope="prototype">
+	<bean id="plugInFinder" class="org.entermediadb.modules.update.PlugInFinder" scope="prototype">
 		<property name="webServer">
 			<ref bean="WebServer" />
 		</property>
@@ -239,7 +239,7 @@
 		</property>
 	</bean>
 
-	<bean id="Date" class="com.openedit.modules.dates.DateModule"/>
+	<bean id="Date" class="org.entermediadb.modules.dates.DateModule"/>
 
 	<bean id="luceneUserSearcher" class="org.openedit.users.LuceneUserSearcher" scope="prototype">
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
@@ -264,15 +264,6 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="indexRootFolder"><value>lucene</value></property>
-	</bean>
-	<bean id="xmllistSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
-		<property name="xmlArchive">
-			<ref bean="xmlArchive" />
-		</property>
-		<property name="webEventListener">
-			<ref bean="editorEventHandler" />
-		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 	<!-- 
 	<bean id="xmlDynamicSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
@@ -340,7 +331,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="fileUpload" class="org.entermedia.upload.FileUpload">
+	<bean id="fileUpload" class="org.entermediadb.asset.upload.FileUpload">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -352,7 +343,7 @@
 		</property>
 	</bean>
 
-	<bean id="commentArchive" class="com.openedit.comments.CommentArchive">
+	<bean id="commentArchive" class="org.entermediadb.comments.CommentArchive">
 		<property name="userManager">
 			<ref bean="userManager" />
 		</property>
@@ -362,7 +353,7 @@
 	</bean>
 
 
-	<bean id="pathAction" class="com.openedit.modules.scheduler.PathAction"
+	<bean id="pathAction" class="org.entermediadb.modules.scheduler.PathAction"
 		scope="prototype">
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
@@ -372,14 +363,6 @@
 		</property>
 	</bean>
 
-	<bean id="propertyDetailsArchive" class="org.openedit.data.PropertyDetailsArchive"
-		scope="prototype">
-		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
-		<property name="textLabelManager"><ref bean="textLabelManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-				<property name="searcherManager"><ref bean="searcherManager" /></property>
-		
-	</bean>
 
 
 	<bean id="editorEventHandler" class="org.openedit.event.WebEventCompositeHandler">
@@ -389,20 +372,20 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="logSearcherEventHandler" class="org.openedit.logger.LogSearcherEventHandler">
+	<bean id="logSearcherEventHandler" class="org.entermediadb.logger.LogSearcherEventHandler">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
 
 
-	<bean id="urlRepository" class="org.openedit.entermedia.util.UrlRepository"
+	<bean id="urlRepository" class="org.entermediadb.asset.util.UrlRepository"
 		scope="prototype" />
 
-	<bean id="sftpRepository" class="org.openedit.entermedia.util.ssh.SftpRepository"
+	<bean id="sftpRepository" class="org.entermediadb.asset.util.ssh.SftpRepository"
 		scope="prototype" />
 
-	<bean id="pathEventManager" class="org.openedit.events.PathEventManager"
+	<bean id="pathEventManager" class="org.entermediadb.events.PathEventManager"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -419,7 +402,7 @@
 		
 	</bean>
 
-	<bean id="pathEvent" class="org.openedit.events.PathEvent"
+	<bean id="pathEvent" class="org.entermediadb.events.PathEvent"
 		scope="prototype">
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
@@ -429,13 +412,13 @@
 		</property>
 	</bean>
 
-	<bean id="pathEventHandler" class="org.openedit.events.PathEventHandler">
+	<bean id="pathEventHandler" class="org.entermediadb.events.PathEventHandler">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
-	<bean id="ldapSearcher" class="org.openedit.entermedia.util.LdapSearcher"
+	<bean id="ldapSearcher" class="org.entermediadb.asset.util.LdapSearcher"
 		scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
@@ -450,7 +433,7 @@
 
 
 
-	<bean id="enterMedia" class="org.openedit.entermedia.EnterMedia"
+	<bean id="enterMedia" class="org.entermediadb.asset.EnterMedia"
 		scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -460,7 +443,7 @@
 		</property>
 	</bean>
 
-	<bean id="mediaArchive" class="org.openedit.entermedia.MediaArchive" scope="prototype">
+	<bean id="mediaArchive" class="org.entermediadb.asset.MediaArchive" scope="prototype">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -497,7 +480,7 @@
 		 -->
 	</bean>
 
-	<bean id="albumArchive" class="org.openedit.entermedia.albums.AlbumArchive"
+	<bean id="albumArchive" class="org.entermediadb.asset.albums.AlbumArchive"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -516,36 +499,36 @@
 	<bean id="userAlbums" class="com.entermedia.archive.albums.UserAlbums"
 		scope="prototype" />
 
-	<bean id="zipAlbumGenerator" class="org.openedit.entermedia.generators.ZipAlbumGenerator">
+	<bean id="zipAlbumGenerator" class="org.entermediadb.asset.generators.ZipAlbumGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="downloadZipGenerator" class="org.openedit.entermedia.generators.DownloadZipGenerator">
-		<property name="moduleManager">
-			<ref bean="moduleManager" />
-		</property>
-	</bean>
-	
-	<bean id="orderZipGenerator" class="org.openedit.entermedia.generators.OrderZipGenerator">
+	<bean id="downloadZipGenerator" class="org.entermediadb.asset.generators.DownloadZipGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 	
+	<bean id="orderZipGenerator" class="org.entermediadb.asset.generators.OrderZipGenerator">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 	
 	
-	<bean id="zipGenerator" class="org.openedit.entermedia.generators.ZipGenerator">
+	
+	<bean id="zipGenerator" class="org.entermediadb.asset.generators.ZipGenerator">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="root"><ref bean="root"/></property>
 	</bean>
-	<bean id="wikiGenerator" class="org.openedit.entermedia.generators.WikiGenerator">
+	<bean id="wikiGenerator" class="org.entermediadb.asset.generators.WikiGenerator">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
 	
 
 	
-	<bean id="assetDataArchive" class="org.openedit.entermedia.xmldb.XmlAssetArchive"
+	<bean id="assetDataArchive" class="org.entermediadb.asset.xmldb.XmlAssetArchive"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -559,7 +542,7 @@
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 
-	<bean id="pdfExtractor" class="org.openedit.entermedia.scanner.MetadataPdfExtractor" >
+	<bean id="pdfExtractor" class="org.entermediadb.asset.scanner.MetadataPdfExtractor" >
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -567,7 +550,7 @@
 	
 
 	<bean id="exiftoolMetadataExtractor"
-		class="org.openedit.entermedia.scanner.ExiftoolMetadataExtractor">
+		class="org.entermediadb.asset.scanner.ExiftoolMetadataExtractor">
 		<property name="exec">
 			<ref bean="exec" />
 		</property>
@@ -577,13 +560,13 @@
 	</bean>
 
 	<bean id="ffmpegMetadataExtractor"
-		class="org.openedit.entermedia.scanner.FfmpegMetadataExtractor">
+		class="org.entermediadb.asset.scanner.FfmpegMetadataExtractor">
 		<property name="exec">
 			<ref bean="exec" />
 		</property>
 	</bean>
 
-	<bean id="creatorManager" class="org.openedit.entermedia.creator.CreatorManager"
+	<bean id="creatorManager" class="org.entermediadb.asset.creator.CreatorManager"
 		scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
@@ -596,7 +579,7 @@
 		</property>
 	</bean>
 
-	<bean id="metaDataReader" class="org.openedit.entermedia.scanner.MetaDataReader">
+	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
 	<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -610,19 +593,19 @@
 	</bean>
 
 	<bean id="originalDownloadGenerator"
-		class="org.openedit.entermedia.generators.OriginalDocumentGenerator">
+		class="org.entermediadb.asset.generators.OriginalDocumentGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
 
 	<!-- bean id="originalArchiveDocument"
-		class="org.openedit.entermedia.generators.OriginalDocumentGenerator">
+		class="org.entermediadb.asset.generators.OriginalDocumentGenerator">
 		<property name="mediaArchiveManager">
 			<ref bean="mediaArchiveManager" />
 		</property>
 	</bean  -->
-	<bean id="convertArchiveDocument" class="org.openedit.entermedia.generators.ConvertGenerator">
+	<bean id="convertArchiveDocument" class="org.entermediadb.asset.generators.ConvertGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -631,7 +614,7 @@
 		</property>
 	</bean>
 
-	<bean id="generatedMediaGenerator" class="org.openedit.entermedia.generators.GeneratedMediaGenerator">
+	<bean id="generatedMediaGenerator" class="org.entermediadb.asset.generators.GeneratedMediaGenerator">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -644,7 +627,7 @@
 	
 
 
-	<bean id="assetCompositeConverter" class="org.openedit.entermedia.scanner.CompositeConverter">
+	<bean id="assetCompositeConverter" class="org.entermediadb.asset.scanner.CompositeConverter">
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
@@ -660,7 +643,7 @@
 
 
 
-	<bean id="authenticator" class="com.openedit.users.authenticate.CompositeAuthenticator">
+	<bean id="authenticator" class="org.openedit.users.authenticate.CompositeAuthenticator">
 		<property name="authenticators">
 			<list>
 				<ref bean="fileAuthenticator" />
@@ -671,17 +654,17 @@
 		</property>
 	</bean>
 
-	<bean id="windowsAuthenticator" class="org.openedit.entermedia.util.WindowsAuthenticator">
+	<bean id="windowsAuthenticator" class="org.entermediadb.asset.util.WindowsAuthenticator">
 	</bean>
 
-	<bean id="assetUtilities" class="org.openedit.entermedia.AssetUtilities">
+	<bean id="assetUtilities" class="org.entermediadb.asset.AssetUtilities">
 		<property name="metaDataReader">
 			<ref bean="metaDataReader" />
 		</property>
 		<property name="includeCategories" value="true"/>
 	</bean>
 
-	<bean id="assetImporter" class="org.openedit.entermedia.scanner.AssetImporter"  scope="prototype">
+	<bean id="assetImporter" class="org.entermediadb.asset.scanner.AssetImporter"  scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -696,11 +679,11 @@
 		</property>
 	</bean>
 
-	<bean id="youtubeImporter" class="org.openedit.entermedia.fetch.YoutubeImporter" />
-	<bean id="urlDownloadImporter" class="org.openedit.entermedia.fetch.UrlDownloadImporter" />
+	<bean id="youtubeImporter" class="org.entermediadb.asset.fetch.YoutubeImporter" />
+	<bean id="urlDownloadImporter" class="org.entermediadb.asset.fetch.UrlDownloadImporter" />
 
 	<bean id="luceneAssetRelatedKeywordSearcher"
-		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher"
+		class="org.entermediadb.asset.search.RelatedKeywordLuceneSearcher"
 		scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
@@ -710,14 +693,14 @@
 	</bean>
 
 	<bean id="compositeLuceneAutoCompleteSearcher"
-		class="org.openedit.entermedia.autocomplete.AutoCompleteLuceneSearcher"
+		class="org.entermediadb.asset.autocomplete.AutoCompleteLuceneSearcher"
 		scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
 
-	<bean id="luceneDynamicLogSearcher" class="org.openedit.logger.LuceneLogSearcher"
+	<bean id="luceneDynamicLogSearcher" class="org.entermediadb.logger.LuceneLogSearcher"
 		scope="prototype">
 		<property name="rootDirectory">
 			<bean class="java.io.File">
@@ -736,14 +719,14 @@
 
 
 	<bean id="LogSearchModule" 
-		class="org.openedit.logger.LogSearchModule" abstract="false"
+		class="org.entermediadb.logger.LogSearchModule" abstract="false"
 		 lazy-init="default" autowire="default"
 		dependency-check="default">
 		
 	</bean>
 	
 	<bean id="luceneLogSearcher" 
-		class="org.openedit.logger.LuceneLogSearcher" scope="prototype" >
+		class="org.entermediadb.logger.LuceneLogSearcher" scope="prototype" >
 		<property name="rootDirectory">
 			<bean class="java.io.File">
 				<constructor-arg><ref bean="root"/></constructor-arg>
@@ -753,7 +736,7 @@
 		<property name="pageManager"><ref bean="pageManager"/></property>
 	</bean>
 
-	<bean id="xmlCategoryArchive" class="org.openedit.entermedia.xmldb.XmlCategoryArchive"
+	<bean id="xmlCategoryArchive" class="org.entermediadb.asset.xmldb.XmlCategoryArchive"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -764,7 +747,7 @@
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
 <!-- 
-	<bean id="searchFilterArchive" class="org.openedit.entermedia.search.SearchFilterArchive"
+	<bean id="searchFilterArchive" class="org.entermediadb.asset.search.SearchFilterArchive"
 		>
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
@@ -775,7 +758,7 @@
 	</bean>
  -->
   <!-- This can be aliased using beans.xml to one with a nicer connector -->
-	<bean id="luceneAssetSearcher" class="org.openedit.entermedia.search.BaseAssetSearcher"
+	<bean id="luceneAssetSearcher" class="org.entermediadb.asset.search.BaseAssetSearcher"
 		scope="prototype">
 		<property name="dataConnector">
 			<ref bean="luceneAssetDataConnector" />
@@ -789,46 +772,46 @@
 	</bean>
 
 
-	<bean id="ConvertGenerator" class="org.openedit.entermedia.generators.ConvertGenerator">
+	<bean id="ConvertGenerator" class="org.entermediadb.asset.generators.ConvertGenerator">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
 	</bean>
 
-	<bean id="originalFileManager" class="org.openedit.entermedia.OriginalFileManager"
+	<bean id="originalFileManager" class="org.entermediadb.asset.OriginalFileManager"
 		scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
 	</bean>
 
-	<bean id="assetEditor" class="org.openedit.entermedia.edit.AssetEditor" scope="prototype">
+	<bean id="assetEditor" class="org.entermediadb.asset.edit.AssetEditor" scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
 		<property name="commentArchive"><ref bean="commentArchive"/></property>
 	</bean>
 
-	<bean id="categoryEditor" class="org.openedit.entermedia.edit.CategoryEditor" scope="prototype">
+	<bean id="categoryEditor" class="org.entermediadb.asset.edit.CategoryEditor" scope="prototype">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
 	</bean>
 <!-- 
 	<bean id="relatedKeywordSearcher"
-		class="org.openedit.entermedia.search.RelatedKeywordLuceneSearcher"  scope="prototype">
+		class="org.entermediadb.asset.search.RelatedKeywordLuceneSearcher"  scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
  -->
-	<bean id="assetSecurityDataArchive" class="org.openedit.entermedia.search.AssetSecurityDataArchive">
+	<bean id="assetSecurityDataArchive" class="org.entermediadb.asset.search.AssetSecurityDataArchive">
 			<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
 	
 </bean>
-	<bean id="assetSecurityPageArchive" class="org.openedit.entermedia.search.AssetSecurityPageArchive">
+	<bean id="assetSecurityPageArchive" class="org.entermediadb.asset.search.AssetSecurityPageArchive">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -844,11 +827,11 @@
 
 
 
-	<bean id="sourcepathcreator" class="org.openedit.entermedia.AssetSourcePathCreator">
+	<bean id="sourcepathcreator" class="org.entermediadb.asset.AssetSourcePathCreator">
 
 	</bean>
 
-	<bean name="xmpWriter" class="org.openedit.entermedia.xmp.XmpWriter">
+	<bean name="xmpWriter" class="org.entermediadb.asset.xmp.XmpWriter">
 		<property name="exec">
 			<ref bean="exec" />
 		</property>
@@ -864,7 +847,7 @@
 	</bean>
 
 	
-	<bean id="uploadQueue" class="org.openedit.entermedia.scanner.UploadQueue">
+	<bean id="uploadQueue" class="org.entermediadb.asset.scanner.UploadQueue">
 		<property name="assetImporter">
 			<ref bean="assetImporter" />
 		</property>
@@ -873,7 +856,7 @@
 		</property>
 	</bean>
 
-	<bean id="keywordWriter" class="org.openedit.entermedia.xmp.MetadataWriter"
+	<bean id="keywordWriter" class="org.entermediadb.asset.xmp.MetadataWriter"
 		scope="prototype">
 		<property name="xmpWriter">
 			<ref bean="xmpWriter" />
@@ -883,41 +866,41 @@
 		</property>
 	</bean>
 
-	<bean id="velocityGenerator" class="com.openedit.generators.VelocityGenerator" >
+	<bean id="velocityGenerator" class="org.openedit.generators.VelocityGenerator" >
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
 	</bean>
 
-	<bean id="admintoolbarGenerator"  class="com.openedit.generators.VelocityGenerator" >
+	<bean id="admintoolbarGenerator"  class="org.openedit.generators.VelocityGenerator" >
 		<property name="rootDirectory"><ref bean="root" /></property>
 		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
 	</bean>
 
  	
 	<bean id="ValidationModule" 
-		class="org.openedit.modules.validation.ValidationModule" >
+		class="org.entermediadb.modules.validation.ValidationModule" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="validator"><ref bean="validator"/></property>
 	</bean>
 
 	<bean id="validator" 
-		class="org.openedit.modules.validation.Validator" />
+		class="org.entermediadb.modules.validation.Validator" />
 		
-  	<bean id="LinkTree" class="org.openedit.links.LinkModule" init-method="init" >
+  	<bean id="LinkTree" class="org.entermediadb.links.LinkModule" init-method="init" >
   		  		<property name="workFlow"><ref bean="workFlowBean"/></property>
   		
 	  </bean>
-  	<bean id="htmlLinkLoader" class="org.openedit.links.HtmlLinkLoader">
+  	<bean id="htmlLinkLoader" class="org.entermediadb.links.HtmlLinkLoader">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="xmlUtil"><ref bean="xmlUtil"/></property>
   	</bean>
-  	<bean id="xmlLinkLoader" class="org.openedit.links.XmlLinkLoader">
+  	<bean id="xmlLinkLoader" class="org.entermediadb.links.XmlLinkLoader">
   		<property name="xmlUtil"><ref bean="xmlUtil"/></property>
   	</bean>
 	
-	<bean id="ImageEditor" class="org.openedit.images.ImageEditModule" />
+	<bean id="ImageEditor" class="org.entermediadb.images.ImageEditModule" />
 
-	<bean id="TranslationModule" class="org.openedit.entermedia.modules.TranslationModule" />
+	<bean id="TranslationModule" class="org.entermediadb.asset.modules.TranslationModule" />
 
 	
 	
@@ -933,9 +916,9 @@
 		
 	</bean>
 	
-	<bean id="chunkySourcePathCreator" class="org.openedit.entermedia.ChunkySourcePathCreator" />
+	<bean id="chunkySourcePathCreator" class="org.entermediadb.asset.ChunkySourcePathCreator" />
 	
-	<bean id="emailArchive" class="org.entermedia.email.XmlEmailArchive" scope="prototype">
+	<bean id="emailArchive" class="org.entermediadb.email.XmlEmailArchive" scope="prototype">
 		<property name="userManager"><ref bean="userManager"/></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
@@ -943,7 +926,7 @@
 		<property name="root"><ref bean="root"/></property>	
 	</bean>
 	
-	<bean id="luceneEmailSearcher" class="org.entermedia.email.EmailSearcher" scope="prototype">
+	<bean id="luceneEmailSearcher" class="org.entermediadb.email.EmailSearcher" scope="prototype">
 		<property name="emailArchive"><ref bean="emailArchive"/></property>	
 		<property name="rootDirectory"><ref bean="root"/></property>	
 	</bean>
@@ -963,31 +946,31 @@
 		</property>		
 	</bean>
 
-	<bean id="assetStatsManager" class="org.openedit.entermedia.AssetStatsManager">
+	<bean id="assetStatsManager" class="org.entermediadb.asset.AssetStatsManager">
 		<property name="mediaEventHandler">
 			<ref bean="mediaEventHandler" />
 		</property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 	</bean>
-	<bean id="AssetStatsModule" class="org.openedit.entermedia.modules.AssetStatsModule">
+	<bean id="AssetStatsModule" class="org.entermediadb.asset.modules.AssetStatsModule">
 	</bean>
 
 	<bean id="luceneAssetAutoCompleteSearcher"
-		class="org.openedit.entermedia.autocomplete.AutoCompleteLuceneSearcher"
+		class="org.entermediadb.asset.autocomplete.AutoCompleteLuceneSearcher"
 		scope="prototype">
 		<property name="rootDirectory">
 			<ref bean="root" />
 		</property>
 	</bean>
 <!-- 
-	 <bean id="localDataManager" class="org.openedit.entermedia.cluster.LocalDataManager" >
+	 <bean id="localDataManager" class="org.entermediadb.asset.cluster.LocalDataManager" >
 		<property name="root"><ref bean="root" /></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="userManager"><ref bean="userManager"/></property>
  	</bean>
  	
-	 <bean id="remoteDataManager" class="org.openedit.entermedia.cluster.RemoteDataManager" >
+	 <bean id="remoteDataManager" class="org.entermediadb.asset.cluster.RemoteDataManager" >
 		<property name="root"><ref bean="root" /></property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
@@ -995,12 +978,12 @@
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
  	</bean>
 
-	<bean id="DistributedDataModule" class="org.openedit.entermedia.modules.DistributedDataModule" >
+	<bean id="DistributedDataModule" class="org.entermediadb.asset.modules.DistributedDataModule" >
 			<property name="localDataManager"><ref bean="localDataManager" /></property>
 	</bean>
  -->	
 <!-- 
-	<bean id="dataFileSearcher" class="org.openedit.entermedia.cluster.DataFileSearcher">
+	<bean id="dataFileSearcher" class="org.entermediadb.asset.cluster.DataFileSearcher">
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -1009,7 +992,7 @@
 		</property>
 	</bean>
  -->
-	<bean id="OrderModule" class="org.openedit.entermedia.modules.OrderModule" >
+	<bean id="OrderModule" class="org.entermediadb.asset.modules.OrderModule" >
 		<property name="orderManager">
 			<ref bean="orderManager" />
 		</property>
@@ -1017,7 +1000,7 @@
 	</bean>
 
 
-	<bean id="luceneOrderSearcher" class="org.openedit.entermedia.orders.OrderSearcher"	scope="prototype">
+	<bean id="luceneOrderSearcher" class="org.entermediadb.asset.orders.OrderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1028,7 +1011,7 @@
 		<property name="orderManager"><ref bean="orderManager" /></property>
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 	</bean>
-	<bean id="order" class="org.openedit.entermedia.orders.Order" scope="prototype">
+	<bean id="order" class="org.entermediadb.asset.orders.Order" scope="prototype">
 	</bean>
 	<bean id="luceneOrderitemSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
@@ -1052,9 +1035,9 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>				
 	</bean>
 	 -->
-	<bean id="orderhistory" class="org.openedit.entermedia.orders.OrderHistory" scope="prototype"/>
+	<bean id="orderhistory" class="org.entermediadb.asset.orders.OrderHistory" scope="prototype"/>
 	
-	<bean id="publishManager" class="org.openedit.entermedia.publishing.PublishManager" >
+	<bean id="publishManager" class="org.entermediadb.asset.publishing.PublishManager" >
 			<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
@@ -1066,7 +1049,7 @@
 	</bean>
 	
 	
-	<bean id="ConvertStatusModule" class="org.openedit.entermedia.modules.ConvertStatusModule">
+	<bean id="ConvertStatusModule" class="org.entermediadb.asset.modules.ConvertStatusModule">
 		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
@@ -1074,7 +1057,7 @@
 
 
 	  
-	  <bean id="DataImportModule" class="org.openedit.entermedia.modules.DataImportModule">
+	  <bean id="DataImportModule" class="org.entermediadb.asset.modules.DataImportModule">
 		<property name="scriptManager"><ref bean="scriptManager" /></property>
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
@@ -1085,18 +1068,18 @@
 	
 	
 	<bean id="ftpRepository" name="ftpRepository"
-        class="org.openedit.entermedia.FtpRepository" abstract="false"
+        class="org.entermediadb.asset.FtpRepository" abstract="false"
         scope="prototype" lazy-init="default" autowire="default"
         dependency-check="default">
         <property name="userManager"><ref bean="userManager" /></property>
         <property name="searcherManager"><ref bean="searcherManager" /></property> 
     </bean>
 
-    <bean id="scriptManager" class="com.openedit.entermedia.scripts.ScriptManager">
+    <bean id="scriptManager" class="org.entermediadb.scripts.ScriptManager">
 		<property name="moduleManager"><ref bean="moduleManager" /></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
 	</bean>
-    <bean id="groovyScriptRunner" class="com.openedit.entermedia.scripts.GroovyScriptRunner" >
+    <bean id="groovyScriptRunner" class="org.entermediadb.scripts.GroovyScriptRunner" >
 	    <property name="pageManager"><ref bean="pageManager"/></property>
 	    	<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -1104,13 +1087,13 @@
 		<property name="root"><ref bean="root" /></property>
 		
     </bean>
-    <bean id="bshScriptRunner" class="com.openedit.entermedia.scripts.BshScriptRunner" />
-    <bean id="rhinoScriptRunner" class="com.openedit.entermedia.scripts.RhinoScriptRunner" />
-    <bean id="bsfScriptRunner" class="com.openedit.entermedia.scripts.BsfScriptRunner" />
+    <bean id="bshScriptRunner" class="org.entermediadb.scripts.BshScriptRunner" />
+    <bean id="rhinoScriptRunner" class="org.entermediadb.scripts.RhinoScriptRunner" />
+    <bean id="bsfScriptRunner" class="org.entermediadb.scripts.BsfScriptRunner" />
 
-	<bean id="sizer" class="org.openedit.entermedia.util.Sizer" />
+	<bean id="sizer" class="org.entermediadb.asset.util.Sizer" />
     
-    <bean id="luceneUserProfileSearcher" class="org.entermedia.profile.UserProfileSearcher" scope="prototype">
+    <bean id="luceneUserProfileSearcher" class="org.openedit.profile.UserProfileSearcher" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 		
@@ -1122,17 +1105,17 @@
 		
 	</bean>
 
-	<bean id="ProfileModule" class="org.openedit.entermedia.modules.ProfileModule" >
+	<bean id="ProfileModule" class="org.entermediadb.asset.modules.ProfileModule" >
 		<property name="userProfileManager"><ref bean="userProfileManager"/></property>
 	</bean>
 
 	<bean id="BannerModule" name="BannerModule"
-		class="org.openedit.images.BannerModule" abstract="false"
+		class="org.entermediadb.images.BannerModule" abstract="false"
 		 lazy-init="default" autowire="default"
 		dependency-check="default">
 	</bean>
     
-    <bean id="luceneAssetDataConnector" class="org.entermedia.connectors.lucene.LuceneAssetDataConnector"
+    <bean id="luceneAssetDataConnector" class="org.entermediadb.connectors.lucene.LuceneAssetDataConnector"
 		scope="prototype">
 		<property name="webEventListener">
 			<ref bean="mediaEventHandler" />
@@ -1152,11 +1135,11 @@
 	</bean>
 
 
-	<bean id="videoEditor" class="org.entermedia.videoedit.VideoEditor" >
+	<bean id="videoEditor" class="org.entermediadb.videoedit.VideoEditor" >
 		
 	</bean>
 	
-	<bean id="mp4Generator" class="org.openedit.entermedia.generators.Mp4Generator">
+	<bean id="mp4Generator" class="org.entermediadb.asset.generators.Mp4Generator">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -1168,7 +1151,7 @@
 	</bean>
 	
 	
-	<bean id="attachmentManager" class="org.entermedia.attachments.AttachmentManager" >
+	<bean id="attachmentManager" class="org.entermediadb.asset.attachments.AttachmentManager" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 					<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="metaDataReader">
@@ -1187,12 +1170,12 @@
 		
 	</bean>
  -->
-	<bean id="SavedQueryModule" class="org.openedit.entermedia.modules.SavedQueryModule">
+	<bean id="SavedQueryModule" class="org.entermediadb.asset.modules.SavedQueryModule">
 		<property name="savedQueryManager"><ref bean="savedQueryManager" /></property>
 	</bean>
 
 
-	<bean id="savedQueryManager" class="org.openedit.entermedia.savedqueries.SavedQueryManager"	scope="prototype">
+	<bean id="savedQueryManager" class="org.entermediadb.asset.savedqueries.SavedQueryManager"	scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 <!-- 
@@ -1219,14 +1202,14 @@
 	</bean>
  -->
 
-	<bean id="AttachmentModule" class="org.openedit.entermedia.modules.AttachmentModule" >
+	<bean id="AttachmentModule" class="org.entermediadb.asset.modules.AttachmentModule" >
 		<property name="attachmentManager">
 			<ref bean="attachmentManager" />
 		</property>
 		
 		
 	</bean>
-		<bean id="RegistrationModule" class="org.openedit.entermedia.modules.RegistrationModule" >
+		<bean id="RegistrationModule" class="org.entermediadb.asset.modules.RegistrationModule" >
 		<property name="userManager">
 			<ref bean="userManager" />
 		</property>
@@ -1251,7 +1234,7 @@
 	
 		 -->
 	<!-- 
-	<bean id="EmailSearchModule" class="org.entermedia.email.EmailSearchModule" >
+	<bean id="EmailSearchModule" class="org.entermediadb.email.EmailSearchModule" >
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 	 -->
@@ -1265,42 +1248,42 @@
 		</list>
 	    </constructor-arg>
 	</bean>
-	<bean id="HotFolderModule" class="org.openedit.entermedia.modules.HotFolderModule">
+	<bean id="HotFolderModule" class="org.entermediadb.asset.modules.HotFolderModule">
 	</bean>			
 
 
-	<bean id="SyncModule" class="org.openedit.entermedia.modules.SyncModule" >
+	<bean id="SyncModule" class="org.entermediadb.asset.modules.SyncModule" >
 		<property name="pushManager"><ref bean="pushManager" /></property>
 	</bean>
 
 	
 	
-	<bean id="workspaceManager" class="org.entermedia.workspace.WorkspaceManager">
+	<bean id="workspaceManager" class="org.entermediadb.workspace.WorkspaceManager">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 	</bean>
 	
-	<bean id="workspaceExportGenerator" class="org.openedit.entermedia.generators.WorkspaceExportGenerator">
+	<bean id="workspaceExportGenerator" class="org.entermediadb.asset.generators.WorkspaceExportGenerator">
 		<property name="workspaceManager"><ref bean="workspaceManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
 
 	
-	<bean id="templateWebEmail" class="org.entermedia.email.TemplateWebEmail" scope="prototype">
+	<bean id="templateWebEmail" class="org.entermediadb.email.TemplateWebEmail" scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
 	
-	<bean id="ThemeModule" class="org.openedit.entermedia.modules.ThemeModule" >
+	<bean id="ThemeModule" class="org.entermediadb.asset.modules.ThemeModule" >
 		<property name="requestUtils">
 			<ref bean="requestUtils" />
 		</property>
 	</bean>
 	
 	
-	<bean id="xmlCategorySearcher" class="org.openedit.entermedia.xmldb.XmlCategorySearcher" scope="prototype">
+	<bean id="xmlCategorySearcher" class="org.entermediadb.asset.xmldb.XmlCategorySearcher" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 		<property name="moduleManager">
         	<ref bean="moduleManager" />
@@ -1308,17 +1291,17 @@
 		
 	</bean>
 	
-	<bean id="conversionUtil" class="org.openedit.entermedia.creator.ConversionUtil" scope="prototype">
+	<bean id="conversionUtil" class="org.entermediadb.asset.creator.ConversionUtil" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 <!-- 	
-	<bean id="htmlUtil" class="org.openedit.entermedia.util.HtmlUtil">
+	<bean id="htmlUtil" class="org.entermediadb.asset.util.HtmlUtil">
 	</bean>
  -->	
-	<bean id="jsonUtil" class="org.openedit.entermedia.util.JsonUtil">
+	<bean id="jsonUtil" class="org.entermediadb.asset.util.JsonUtil">
 	</bean>
 
-	<bean id="RedirectModule" class="org.openedit.entermedia.modules.RedirectModule" >
+	<bean id="RedirectModule" class="org.entermediadb.asset.modules.RedirectModule" >
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -1333,15 +1316,15 @@
 		</property>		
 	</bean>
 	
-	<bean id="WebTree" class="com.openedit.webui.tree.TreeModule">
+	<bean id="WebTree" class="org.entermediadb.webui.tree.TreeModule">
 		<property name="pageManager"><ref bean="pageManager"/></property>
 	</bean>
 
-	<bean id="WorkFlow" class="com.openedit.modules.workflow.WorkFlowModule">
+	<bean id="WorkFlow" class="org.entermediadb.modules.workflow.WorkFlowModule">
 		<property name="workFlow"><ref bean="workFlowBean"/></property>
 	</bean>
 
-	<bean id="workFlowBean" class="com.openedit.modules.workflow.WorkFlow" >
+	<bean id="workFlowBean" class="org.entermediadb.modules.workflow.WorkFlow" >
 		<property name="pageManager"><ref bean="pageManager"/></property>
 		<property name="userManager"><ref bean="userManager"/></property>
 		<property name="root"><ref bean="root"/></property>
@@ -1350,7 +1333,7 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="HtmlEditor" class="com.openedit.modules.html.HtmlEditorModule">
+	<bean id="HtmlEditor" class="org.entermediadb.modules.html.HtmlEditorModule">
 	  <property name="welcomeFiles">
 			<list>
 				<value>index.html</value>
@@ -1361,10 +1344,10 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="EditModule" class="com.openedit.modules.edit.EditModule" />
+	<bean id="EditModule" class="org.entermediadb.modules.edit.EditModule" />
 	
-	<bean id="Config" class="com.openedit.modules.settings.ConfigModule"/>
-	<bean id="RevisionEditor" class="com.openedit.modules.revisions.RevisionEditorModule"/>
+	<bean id="Config" class="org.entermediadb.modules.settings.ConfigModule"/>
+	<bean id="RevisionEditor" class="org.entermediadb.modules.revisions.RevisionEditorModule"/>
 
  	<bean  id="ProjectModule" class="modules.projects.ProjectModule" lazy-init="default" />
 	<bean  id="projectManager" class="modules.projects.BaseProjectManager" lazy-init="default" scope="prototype"  >

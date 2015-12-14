@@ -5,10 +5,10 @@ import org.apache.commons.logging.LogFactory
 import org.openedit.Data
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
+import org.openedit.entermedia.publishing.
+import org.openedit.util.FileUtils;
 
 import com.openedit.page.Page
-import com.openedit.util.FileUtils
 
 public class filecopypublisher extends BasePublisher implements Publisher
 {

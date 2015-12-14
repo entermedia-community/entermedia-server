@@ -2,13 +2,15 @@ package modules.annotations;
 
 import java.util.Iterator;
 
-import org.openedit.Data;
+import org.openedit.Data
+import org.openedit.WebPageRequest;
+
 import com.openedit.users.*;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.entermedia.modules.BaseMediaModule;
-import org.openedit.profile.UserProfile;
+import org.openedit.profile.UserProfile
+import org.openedit.users.User
 
-import com.openedit.WebPageRequest;
 import com.openedit.hittracker.HitTracker;
 
 public class AnnotationModule extends BaseMediaModule

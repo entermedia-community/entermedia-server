@@ -5,11 +5,11 @@ import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.scanner.MetaDataReader
+import org.openedit.util.PathUtilities;
 
 import com.openedit.hittracker.*
 import com.openedit.modules.update.Downloader
 import com.openedit.page.Page
-import com.openedit.util.PathUtilities
 
 public void init() {
 	MediaArchive archive = context.getPageValue("mediaarchive");

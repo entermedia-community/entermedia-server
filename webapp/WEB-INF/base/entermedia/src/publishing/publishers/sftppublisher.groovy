@@ -7,10 +7,10 @@ import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
 import org.openedit.entermedia.util.ssh.SftpUtil
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
 import com.openedit.page.Page
-import com.openedit.users.User
-import com.openedit.users.UserManager
 
 public class sftppublisher extends BasePublisher implements Publisher
 {

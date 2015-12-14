@@ -3,16 +3,15 @@ package publishing.publishers;
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.io.SAXReader
+import org.entermediadb.asset.push.MediaUploader;
 import org.openedit.Data
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
+import org.openedit.entermedia.publishing.
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
 import com.openedit.page.Page
-import com.openedit.users.User
-import com.openedit.users.UserManager
-
-import em.model.push.MediaUploader
 
 public class entermediapublisher extends BasePublisher implements Publisher
 {

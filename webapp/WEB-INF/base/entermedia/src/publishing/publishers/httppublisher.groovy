@@ -8,10 +8,10 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
+import org.openedit.entermedia.publishing.
+import org.openedit.util.FileUtils;
 
 import com.openedit.page.Page
-import com.openedit.util.FileUtils
 
 /**
  * This is a poorly named browser download publisher. 

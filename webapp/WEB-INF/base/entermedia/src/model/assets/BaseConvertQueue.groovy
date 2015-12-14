@@ -5,10 +5,10 @@ import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors
 
-import org.openedit.entermedia.creator.ConvertQueue;
+import org.openedit.entermedia.creator.ConvertQueue
+import org.openedit.util.ExecutorManager;
 
 import com.openedit.entermedia.scripts.EnterMediaObject
-import com.openedit.util.ExecutorManager
 
 public class BaseConvertQueue extends EnterMediaObject implements ConvertQueue
 {

@@ -4,9 +4,8 @@ import com.openedit.page.Page
 import org.openedit.data.Searcher 
 import org.openedit.entermedia.Asset 
 import org.openedit.entermedia.MediaArchive 
-import org.openedit.*;
+import org.openedit.
 
-import com.openedit.WebPageRequest;
 import com.openedit.hittracker.*;
 import org.openedit.entermedia.creator.*;
 
@@ -34,10 +33,8 @@ import org.openedit.entermedia.Category;
 import org.openedit.entermedia.ConvertStatus;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.xml.XmlArchive;
-import org.openedit.xml.XmlFile;
+import org.openedit.xml.XmlFile
 
-import com.openedit.ModuleManager;
-import com.openedit.OpenEditException;
 import com.openedit.page.manage.PageManager;
 import org.openedit.entermedia.scanner.AssetImporter;
 

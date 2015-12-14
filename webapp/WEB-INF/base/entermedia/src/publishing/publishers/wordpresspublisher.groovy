@@ -12,11 +12,11 @@ import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
 import org.openedit.Data
+import org.openedit.OpenEditException;
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
+import org.openedit.entermedia.publishing.
 
-import com.openedit.OpenEditException
 import com.openedit.page.Page
 
 public class wordpresspublisher extends BasePublisher implements Publisher

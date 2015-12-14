@@ -12,12 +12,12 @@
 
 	<filter>
 	    <filter-name>gzip</filter-name>
-	    <filter-class>com.openedit.servlet.gzip.GzipFilter</filter-class>
+	    <filter-class>org.openedit.servlet.gzip.GzipFilter</filter-class>
 	</filter>
 
 	<filter>
 		<filter-name>EMFilter</filter-name>
-		<filter-class>com.openedit.servlet.OpenEditFilter</filter-class>
+		<filter-class>org.openedit.servlet.OpenEditFilter</filter-class>
 	</filter>
 		
 			

@@ -9,6 +9,7 @@ import org.openedit.entermedia.edit.*
 import org.openedit.entermedia.episode.*
 import org.openedit.entermedia.modules.*
 import org.openedit.entermedia.search.AssetSearcher
+import org.openedit.util.PathUtilities;
 import org.openedit.xml.*
 
 import com.openedit.entermedia.scripts.EnterMediaObject;

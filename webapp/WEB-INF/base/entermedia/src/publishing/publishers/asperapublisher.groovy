@@ -1,13 +1,13 @@
 package publishing.publishers;
 
-import com.openedit.OpenEditException;
 import com.openedit.page.Page 
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-//import org.entermedia.aspera.AsperaManager 
-//import org.entermedia.aspera.AsperaRepository 
-import org.openedit.Data 
+//import org.entermediadb.aspera.AsperaManager 
+//import org.entermediadb.aspera.AsperaRepository 
+import org.openedit.Data
+import org.openedit.OpenEditException;
 import org.openedit.entermedia.Asset 
 import org.openedit.entermedia.MediaArchive 
 import org.openedit.entermedia.modules.OrderModule;

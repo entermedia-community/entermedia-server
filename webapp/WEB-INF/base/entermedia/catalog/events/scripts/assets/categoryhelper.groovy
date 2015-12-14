@@ -1,7 +1,7 @@
 import org.openedit.Data
+import org.openedit.WebPageRequest;
 import org.openedit.entermedia.MediaArchive
 
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 
 

@@ -19,7 +19,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Element;
+import org.dom4j.Element
+import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.entermedia.Asset;
@@ -28,10 +30,8 @@ import org.openedit.entermedia.Category;
 import org.openedit.entermedia.ConvertStatus;
 import org.openedit.entermedia.MediaArchive;
 import org.openedit.xml.XmlArchive;
-import org.openedit.xml.XmlFile;
+import org.openedit.xml.XmlFile
 
-import com.openedit.ModuleManager;
-import com.openedit.OpenEditException;
 import com.openedit.page.manage.PageManager;
 
 public class SqlImportConverter extends CatalogConverter

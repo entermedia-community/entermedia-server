@@ -8,7 +8,11 @@ import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.entermedia.locks.Lock
 import org.entermedia.locks.LockManager
+import org.openedit.BaseWebPageRequest;
 import org.openedit.Data
+import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
@@ -20,18 +24,14 @@ import org.openedit.entermedia.orders.OrderManager
 import org.openedit.event.WebEvent
 import org.openedit.event.WebEventHandler
 import org.openedit.profile.UserProfile
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil
+import org.openedit.util.RequestUtils
 
-import com.openedit.BaseWebPageRequest
-import com.openedit.ModuleManager
-import com.openedit.OpenEditException
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
-import com.openedit.users.User
-import com.openedit.util.RequestUtils
 
 public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
@@ -95,7 +95,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#findOrdersForUser(java.lang.String, com.openedit.users.User)
+	 * @see org.entermediadb.asset.orders.OrderManager#findOrdersForUser(java.lang.String, org.openedit.users.User)
 	 */
 
 	public HitTracker findOrdersForUser(String inCatlogId, User inUser) {
@@ -110,7 +110,7 @@ public class BaseOrderManager implements OrderManager {
 		return ordersearcher.search(query);
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#loadOrderHistoryForPage(com.openedit.hittracker.HitTracker)
+	 * @see org.entermediadb.asset.orders.OrderManager#loadOrderHistoryForPage(org.openedit.hittracker.HitTracker)
 	 */
 
 	public void loadOrderHistoryForPage(HitTracker inPage) {
@@ -121,7 +121,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#loadOrderHistory(java.lang.String, org.openedit.entermedia.orders.Order)
+	 * @see org.entermediadb.asset.orders.OrderManager#loadOrderHistory(java.lang.String, org.entermediadb.asset.orders.Order)
 	 */
 
 	public OrderHistory loadOrderHistory(String inCataId, Order order) {
@@ -138,14 +138,14 @@ public class BaseOrderManager implements OrderManager {
 		return order.getRecentOrderHistory();
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#findOrderItems(com.openedit.WebPageRequest, java.lang.String, org.openedit.entermedia.orders.Order)
+	 * @see org.entermediadb.asset.orders.OrderManager#findOrderItems(org.openedit.WebPageRequest, java.lang.String, org.entermediadb.asset.orders.Order)
 	 */
 
 	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid,  Order inOrder) {
 		return findOrderItems(inReq, inCatalogid,inOrder.getId() );
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#findOrderItems(com.openedit.WebPageRequest, java.lang.String, java.lang.String)
+	 * @see org.entermediadb.asset.orders.OrderManager#findOrderItems(org.openedit.WebPageRequest, java.lang.String, java.lang.String)
 	 */
 
 	public HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId) {
@@ -158,7 +158,7 @@ public class BaseOrderManager implements OrderManager {
 		return items;
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#findOrderAssets(java.lang.String, java.lang.String)
+	 * @see org.entermediadb.asset.orders.OrderManager#findOrderAssets(java.lang.String, java.lang.String)
 	 */
 
 	public HitTracker findOrderAssets(String inCatalogid, String inOrderId) {
@@ -170,7 +170,7 @@ public class BaseOrderManager implements OrderManager {
 		return items;
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#findAssets(com.openedit.WebPageRequest, java.lang.String, org.openedit.entermedia.orders.Order)
+	 * @see org.entermediadb.asset.orders.OrderManager#findAssets(org.openedit.WebPageRequest, java.lang.String, org.entermediadb.asset.orders.Order)
 	 */
 
 	public HitTracker findAssets(WebPageRequest inReq, String inCatalogid, Order inOrder) {
@@ -199,7 +199,7 @@ public class BaseOrderManager implements OrderManager {
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#findOrderHistory(java.lang.String, org.openedit.entermedia.orders.Order)
+	 * @see org.entermediadb.asset.orders.OrderManager#findOrderHistory(java.lang.String, org.entermediadb.asset.orders.Order)
 	 */
 
 	public HitTracker findOrderHistory(String inCatalogid, Order inOrder) {
@@ -220,7 +220,7 @@ public class BaseOrderManager implements OrderManager {
 		return items;
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#findRecentOrderHistory(java.lang.String, java.lang.String)
+	 * @see org.entermediadb.asset.orders.OrderManager#findRecentOrderHistory(java.lang.String, java.lang.String)
 	 */
 
 	public OrderHistory findRecentOrderHistory(String inCatalogid, String inOrderId) {
@@ -237,7 +237,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#loadOrder(java.lang.String, java.lang.String)
+	 * @see org.entermediadb.asset.orders.OrderManager#loadOrder(java.lang.String, java.lang.String)
 	 */
 
 	public Order loadOrder(String catalogid, String orderid) {
@@ -248,7 +248,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#createOrder(java.lang.String, com.openedit.WebPageRequest, boolean)
+	 * @see org.entermediadb.asset.orders.OrderManager#createOrder(java.lang.String, org.openedit.WebPageRequest, boolean)
 	 */
 
 	public Order createOrder(String catalogid, WebPageRequest inReq, boolean saveitems) {
@@ -285,7 +285,7 @@ public class BaseOrderManager implements OrderManager {
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#saveItems(java.lang.String, com.openedit.WebPageRequest, java.lang.String[], java.lang.String[])
+	 * @see org.entermediadb.asset.orders.OrderManager#saveItems(java.lang.String, org.openedit.WebPageRequest, java.lang.String[], java.lang.String[])
 	 */
 
 	public ArrayList saveItems(String catalogid, WebPageRequest inReq, String[] fields, String[] items) {
@@ -310,7 +310,7 @@ public class BaseOrderManager implements OrderManager {
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#createNewOrder(java.lang.String, java.lang.String, java.lang.String)
+	 * @see org.entermediadb.asset.orders.OrderManager#createNewOrder(java.lang.String, java.lang.String, java.lang.String)
 	 */
 
 	public Order createNewOrder(String inAppId, String inCatalogId, String inUsername) {
@@ -337,7 +337,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#removeItemFromOrder(java.lang.String, org.openedit.entermedia.orders.Order, org.openedit.entermedia.Asset)
+	 * @see org.entermediadb.asset.orders.OrderManager#removeItemFromOrder(java.lang.String, org.entermediadb.asset.orders.Order, org.entermediadb.asset.Asset)
 	 */
 
 	public void removeItemFromOrder(String inCatId, Order inOrder, Asset inAsset) {
@@ -352,7 +352,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#addItemToOrder(java.lang.String, org.openedit.entermedia.orders.Order, org.openedit.entermedia.Asset, java.util.Map)
+	 * @see org.entermediadb.asset.orders.OrderManager#addItemToOrder(java.lang.String, org.entermediadb.asset.orders.Order, org.entermediadb.asset.Asset, java.util.Map)
 	 */
 
 	public Data addItemToOrder(String inCatId, Order order, Asset inAsset, Map inProps) {
@@ -382,7 +382,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#saveOrder(java.lang.String, com.openedit.users.User, org.openedit.entermedia.orders.Order)
+	 * @see org.entermediadb.asset.orders.OrderManager#saveOrder(java.lang.String, org.openedit.users.User, org.entermediadb.asset.orders.Order)
 	 */
 
 	public void saveOrder(String inCatalogId, User inUser, Order inBasket)
@@ -392,7 +392,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#placeOrder(com.openedit.WebPageRequest, org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order, boolean)
+	 * @see org.entermediadb.asset.orders.OrderManager#placeOrder(org.openedit.WebPageRequest, org.entermediadb.asset.MediaArchive, org.entermediadb.asset.orders.Order, boolean)
 	 */
 
 	public void placeOrder(WebPageRequest inReq, MediaArchive inArchive, Order inOrder, boolean inResetId)
@@ -620,7 +620,7 @@ public class BaseOrderManager implements OrderManager {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#getPresetForOrderItem(java.lang.String, org.openedit.Data)
+	 * @see org.entermediadb.asset.orders.OrderManager#getPresetForOrderItem(java.lang.String, org.openedit.Data)
 	 */
 
 	public String getPresetForOrderItem(String inCataId, Data inOrderItem)
@@ -633,7 +633,7 @@ public class BaseOrderManager implements OrderManager {
 		return presetid;
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#getPublishDestinationForOrderItem(java.lang.String, org.openedit.Data)
+	 * @see org.entermediadb.asset.orders.OrderManager#getPublishDestinationForOrderItem(java.lang.String, org.openedit.Data)
 	 */
 
 	public String getPublishDestinationForOrderItem(String inCataId, Data inOrderItem)
@@ -657,7 +657,7 @@ public class BaseOrderManager implements OrderManager {
 		fieldLockManager = inManager;
 	}
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#updateStatus(org.openedit.entermedia.MediaArchive, org.openedit.entermedia.orders.Order)
+	 * @see org.entermediadb.asset.orders.OrderManager#updateStatus(org.entermediadb.asset.MediaArchive, org.entermediadb.asset.orders.Order)
 	 */
 	public void updateStatus(MediaArchive archive, Order inOrder)
 	{

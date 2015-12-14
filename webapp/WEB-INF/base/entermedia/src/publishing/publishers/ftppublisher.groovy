@@ -5,15 +5,15 @@ import org.apache.commons.logging.LogFactory
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import org.openedit.Data
+import org.openedit.OpenEditException;
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
+import org.openedit.entermedia.publishing.
+import org.openedit.users.User;
+import org.openedit.users.UserManager
 
-import com.openedit.OpenEditException
 import com.openedit.page.Page
-import com.openedit.users.User
-import com.openedit.users.UserManager
 
 public class ftppublisher extends BasePublisher implements Publisher
 {

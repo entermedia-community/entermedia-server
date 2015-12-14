@@ -1,18 +1,19 @@
 package notifications;
 
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
 import com.openedit.page.Page
-import com.openedit.users.UserManager
+
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.search.AssetSearcher
+import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil
 
 

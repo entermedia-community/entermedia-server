@@ -5,18 +5,18 @@ import jcifs.smb.SmbFile
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.openedit.Data
+import org.openedit.OpenEditException;
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
-import org.openedit.entermedia.publishing.PublishResult;
+import org.openedit.entermedia.publishing.PublishResult
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
+import org.openedit.util.FileUtils;
+import org.openedit.util.OutputFiller
 
-import com.openedit.OpenEditException
 import com.openedit.page.Page
-import com.openedit.users.User
-import com.openedit.users.UserManager
-import com.openedit.util.FileUtils
-import com.openedit.util.OutputFiller
 
 public class smbpublisher extends BasePublisher implements Publisher
 {

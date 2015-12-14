@@ -1,23 +1,23 @@
 package importing;
 
 import model.assets.LibraryManager
-import model.projects.ProjectManager
 
+import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data
+import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.xmp.XmpWriter
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
 import assets.model.AssetTypeManager
 import assets.model.EmailNotifier
 
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.hittracker.SearchQuery
-import com.openedit.page.manage.*
-import com.openedit.users.User
-import com.openedit.users.UserManager
+import com.openedit.page.manage.
 
 
 public void setAssetTypes()

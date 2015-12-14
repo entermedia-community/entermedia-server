@@ -14,6 +14,8 @@ import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.openedit.Data
+import org.openedit.OpenEditException;
+import org.openedit.WebServer;
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
@@ -24,15 +26,13 @@ import org.openedit.repository.Repository
 import org.openedit.repository.filesystem.FileRepository
 import org.openedit.repository.filesystem.XmlVersionRepository
 import org.openedit.util.DateStorageUtil
+import org.openedit.util.EmStringUtils;
+import org.openedit.util.Exec;
+import org.openedit.util.ExecResult;
+import org.openedit.util.PathUtilities
 
-import com.openedit.OpenEditException
-import com.openedit.WebServer
 import com.openedit.page.Page
 import com.openedit.page.manage.PageManager
-import com.openedit.util.EmStringUtils
-import com.openedit.util.Exec
-import com.openedit.util.ExecResult
-import com.openedit.util.PathUtilities
 
 public class BaseHotFolderManager implements HotFolderManager
 {
@@ -200,7 +200,7 @@ public class BaseHotFolderManager implements HotFolderManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.scanner.HotFolderManager2#deleteFolder(java.lang.String, org.openedit.Data)
+	 * @see org.entermediadb.asset.scanner.HotFolderManager2#deleteFolder(java.lang.String, org.openedit.Data)
 	 */
 	@Override
 	public void deleteFolder(String inCatalogId, Data inExisting)
@@ -216,7 +216,7 @@ public class BaseHotFolderManager implements HotFolderManager
 
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.scanner.HotFolderManager2#saveFolder(java.lang.String, org.openedit.Data)
+	 * @see org.entermediadb.asset.scanner.HotFolderManager2#saveFolder(java.lang.String, org.openedit.Data)
 	 */
 	@Override
 	public void saveFolder(String inCatalogId, Data inNewrow)
@@ -262,7 +262,7 @@ public class BaseHotFolderManager implements HotFolderManager
 	}	
 
 	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.scanner.HotFolderManager2#importHotFolder(org.openedit.entermedia.MediaArchive, org.openedit.Data)
+	 * @see org.entermediadb.asset.scanner.HotFolderManager2#importHotFolder(org.entermediadb.asset.MediaArchive, org.openedit.Data)
 	 */
 	@Override
 	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
