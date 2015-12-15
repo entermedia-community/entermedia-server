@@ -16,7 +16,7 @@
 			<pagevalue name="canviewupload" equals="false"/>
 		</not>
 	</permission>
-
+	<property name="threadedupload">true</property>
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 	<property name="hitsname">hits</property>
  	<property name="assetshowonly"></property>

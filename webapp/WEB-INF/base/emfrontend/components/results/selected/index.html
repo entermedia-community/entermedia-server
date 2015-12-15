@@ -15,7 +15,15 @@
 			#end
 		#end
   		#if ($canmetadatageneral)
-			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/editall.html?hitssessionid=$!hits.getSessionId()" title="[[Edit one or more selected records]]">[[Multi Edit]]</a>
+  		#set($multi = $hits.getSelectionSize() > 1)
+  		#if ($multi)
+  			#set($link = "editall.html")
+  			#set($text = "[[Multi Edit]]")
+  		#else
+  			#set($link = "index.html")
+  			#set($text = "[[Edit]]")
+  		#end
+			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
 			</li>
 		#end
     	<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>

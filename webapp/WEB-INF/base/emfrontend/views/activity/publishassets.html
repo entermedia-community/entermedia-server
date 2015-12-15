@@ -1,9 +1,4 @@
 <div class="em-rounded">
-#set($order = $data)
-#if( $order.userid != $user.getId() )
-Invalid order
-#else
-
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
@@ -32,4 +27,3 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 <input style="margin-left: 300px;" type="submit" name="submit" value="Next"/> 
 
 </form>
-#end

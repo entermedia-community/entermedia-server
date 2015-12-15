@@ -1,0 +1,32 @@
+<div class="ui-widget" style="margin: 20px;">
+	<div class="ui-widget-header">[[Path Check]]</div>
+	<div class="ui-widget-content">
+Searching for non web friendly characters:
+	#foreach( $chars in $finder.util().getInvalidChars() )
+		$chars
+	#end
+<br>
+<br>#if( $finder.badfiles().size() == 0 )
+	[[No bad files found]]
+#else
+<b>$finder.badfiles().size() [[Bad Paths]]</b>
+<pre>
+#foreach( $path in $finder.badfiles())
+	$path<br>
+#end
+</pre>
+#end
+
+
+#if( $finder.folders().size() > 0 )
+<br>	<b>Also $finder.folders().size() [[paths over 240 characters deep]]: </b>
+	<pre>#foreach( $path in $finder.folders())
+		$path<br>
+	#end
+	</pre>
+#end
+
+	</div>
+</div>
+
+

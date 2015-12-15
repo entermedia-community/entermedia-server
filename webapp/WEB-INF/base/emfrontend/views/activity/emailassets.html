@@ -1,7 +1,6 @@
 <div class="em-rounded">
-#set($order = $data)
 #if( $order.userid != $user.getId() )
-No assets have been selected.
+Invalid order 
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))

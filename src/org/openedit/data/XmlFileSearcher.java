@@ -323,8 +323,9 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 					data.setSourcePath(sourcepath);
 					buffer.add(data);
 					incrementCount();
-					if( buffer.size() > 99)
+					if( buffer.size() > 1000)
 					{
+						log.info(getSearchType() + " saved 199 more " + getExecCount());
 						updateIndex(inWriter, inTaxonomyWriter, buffer);
 						buffer.clear();
 					}
@@ -337,7 +338,7 @@ public class XmlFileSearcher extends BaseLuceneSearcher
 		processor.setIncludeExtensions("xml");
 		processor.process();
 		updateIndex(inWriter, inTaxonomyWriter, buffer);
-		log.info("Reindexed " + processor.getExecCount() );
+		log.info("Reindexed " + getSearchType() + " count: " + processor.getExecCount() );
 	}
 	
 
