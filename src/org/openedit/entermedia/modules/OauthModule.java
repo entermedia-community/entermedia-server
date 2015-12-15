@@ -191,11 +191,7 @@ public class OauthModule extends BaseMediaModule
 
 		User target = (User) searcher.searchById(username);
 
-		if (target != null)
-		{
-			inReq.putSessionValue(searcher.getCatalogId() + "user", target);
-
-		}
+	
 		if (matchOnEmail)
 		{
 			Data record = (Data) searcher.searchByField("email", email);
@@ -203,11 +199,7 @@ public class OauthModule extends BaseMediaModule
 			if (record != null)
 			{
 				target = (User) searcher.searchById(record.getId());
-				if (target != null)
-				{
-					inReq.putSessionValue(searcher.getCatalogId() + "user", target);
-
-				}
+			
 			}
 		}
 
@@ -219,11 +211,11 @@ public class OauthModule extends BaseMediaModule
 			target.setLastName(lastname);
 			target.setEmail(email);
 			searcher.saveData(target, null);
-			inReq.putSessionValue(archive.getCatalogId() + "user", target);
 
 		}
 		if(target != null){
-			
+			inReq.putSessionValue(searcher.getCatalogId() + "user", target);
+
 			String md5 = getCookieEncryption().getPasswordMd5(target.getPassword());
 			String value = target.getUserName() + "md542" + md5;
 			inReq.putPageValue("entermediakey", value);
