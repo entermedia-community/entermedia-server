@@ -989,6 +989,10 @@ public class MediaArchive
 			{
 			
 				//getPageManager().removePage(page);
+				if( inContent.getName().startsWith("customthumb."))
+				{
+					return;
+				}
 				String type = PathUtilities.extractPageType(inContent.getPath()); 
 				String fileformat = getMediaRenderType(type);
 				if("image".equals(fileformat)){
