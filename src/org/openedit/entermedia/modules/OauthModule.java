@@ -19,8 +19,10 @@ import org.openedit.users.UserSearcher;
 
 import com.openedit.OpenEditException;
 import com.openedit.WebPageRequest;
+import com.openedit.page.PageRequestKeys;
 import com.openedit.users.User;
 import com.openedit.util.StringEncryption;
+import com.openedit.util.URLUtilities;
 
 public class OauthModule extends BaseMediaModule
 {	
@@ -42,6 +44,9 @@ public class OauthModule extends BaseMediaModule
 	public void redirectToHost(WebPageRequest inReq)
 	{
 		//http://yfrankfeng.blogspot.ca/2015/07/working-example-on-oauth2-spring.html
+		
+		
+		
 		try
 		{
 
@@ -49,7 +54,16 @@ public class OauthModule extends BaseMediaModule
 			MediaArchive archive = getMediaArchive(inReq);
 			String appid = inReq.findValue("applicationid");
 			Data authinfo = archive.getData("oauthprovider", provider);
-			String redirect = inReq.findValue("siteroot") + "/" + appid + authinfo.get("redirecturi");
+			String siteroot = inReq.findValue("siteroot");
+			
+			URLUtilities utils = (URLUtilities) inReq
+					.getPageValue(PageRequestKeys.URL_UTILITIES);
+			if (siteroot == null && utils != null) {
+
+				siteroot = utils.siteRoot();
+			}
+			
+			String redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
 			if ("google".equals(provider))
 			{
 
@@ -87,6 +101,16 @@ public class OauthModule extends BaseMediaModule
 		String appid = inReq.findValue("applicationid");
 		MediaArchive archive = getMediaArchive(inReq);
 
+		String siteroot = inReq.findValue("siteroot");
+		
+		URLUtilities utils = (URLUtilities) inReq
+				.getPageValue(PageRequestKeys.URL_UTILITIES);
+		if (siteroot == null && utils != null) {
+
+			siteroot = utils.siteRoot();
+		}
+		
+		
 		if ("google".equals(provider))
 		{
 
@@ -96,7 +120,7 @@ public class OauthModule extends BaseMediaModule
 			String code = oar.getCode();
 			//GOOGLE
 
-			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(inReq.findValue("siteroot") + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
+			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
 
 			try
 			{
@@ -138,7 +162,7 @@ public class OauthModule extends BaseMediaModule
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 
-			String redirect = inReq.findValue("siteroot") + "/" + appid + authinfo.get("redirecturi");
+			String redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(authinfo.get("remoteroot") + "/oauth2/token").setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).setCode(code).buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
