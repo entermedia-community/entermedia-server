@@ -179,9 +179,9 @@ public class OauthModule extends BaseMediaModule
 			
 			JSONObject data =  (JSONObject) parser.parse(userinfoJSON);
 			handleLogin(inReq, "drupal-" + (String)data.get("id"), (String)data.get("firstname"), (String)data.get("lastname"), (String)data.get("email"),true, true);
-
+			
 		}
-
+		inReq.redirect("/" + appid + "/index.html");
 	}
 
 	protected void handleLogin(WebPageRequest inReq, String username, String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate)
