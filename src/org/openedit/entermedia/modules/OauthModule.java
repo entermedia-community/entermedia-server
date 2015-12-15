@@ -178,7 +178,7 @@ public class OauthModule extends BaseMediaModule
 			JSONParser parser = new JSONParser();
 			
 			JSONObject data =  (JSONObject) parser.parse(userinfoJSON);
-			handleLogin(inReq, "drupal-" + (String)data.get("id"), (String)data.get("firstname"), (String)data.get("lastname"), (String)data.get("email"),true, true);
+			handleLogin(inReq, authinfo.getId() + "-" + (String)data.get("sub"), (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),true, true);
 			
 		}
 		inReq.redirect("/" + appid + "/index.html");
