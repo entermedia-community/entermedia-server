@@ -219,6 +219,13 @@ public class ConvertStatusModule extends BaseMediaModule
 		saveCustomThumb( inReq, archive, asset);
 
 	}
+	public void rerunConversions(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		saveCustomThumb( inReq, archive, asset);
+
+	}
 	protected void saveCustomThumb(WebPageRequest inReq, MediaArchive archive, Asset current)
 	{
 		archive.removeGeneratedImages(current, false);

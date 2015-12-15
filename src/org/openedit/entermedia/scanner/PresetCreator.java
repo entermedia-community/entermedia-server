@@ -88,6 +88,9 @@ public class PresetCreator
 			{
 				existing = tasksearcher.loadData(existing);
 				existing.setProperty("status","retry");
+				existing.setProperty("errordetails",null);
+				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+				existing.setProperty("submitted", nowdate);
 				tosave.add(existing);
 			}
 		}
