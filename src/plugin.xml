@@ -1363,5 +1363,15 @@
 	
 	<bean id="Config" class="com.openedit.modules.settings.ConfigModule"/>
 	<bean id="RevisionEditor" class="com.openedit.modules.revisions.RevisionEditorModule"/>
+	
+	
+	<bean id="OauthModule" class="org.openedit.entermedia.modules.OauthModule">
+		<property name="cookieEncryption">
+			<ref bean="stringEncryption" />
+		</property>
+	</bean>
+	
+	
+	
 
 </beans>
