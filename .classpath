@@ -36,5 +36,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/lucene-queries-4.10.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-queryparser-4.10.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-4.10.4.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.oltu.oauth2.client-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
