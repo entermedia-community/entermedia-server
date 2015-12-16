@@ -387,7 +387,7 @@ public class AssetEditModule extends BaseMediaModule
 		Asset asset = getAsset(inRequest);
 		MediaArchive archive = getMediaArchive(inRequest);
 		
-		archive.removeGeneratedImages(asset);
+		archive.removeGeneratedImages(asset,false);
 	}
 //	public Data createMultiEditData(WebPageRequest inReq) throws Exception
 //	{
@@ -787,7 +787,9 @@ public class AssetEditModule extends BaseMediaModule
 
 		inReq.setRequestParameter("assetids",new String[]{asset.getId()});
 
-		originalModified(inReq);
+		archive.removeGeneratedImages(asset);
+		archive.getPresetManager().retryConversions(archive, archive.getSearcher("conversiontask"), asset);
+		archive.fireSharedMediaEvent("conversions/runconversions");
 		
 		getAttachmentManager().processAttachments(archive, asset, true);//don't reprocess everything else
 		inReq.putPageValue("asset", asset);
@@ -961,23 +963,39 @@ public class AssetEditModule extends BaseMediaModule
 			log.error("No pages uploaded");
 			return;
 		}
-		ExecutorManager manager = (ExecutorManager)getModuleManager().getBean(archive.getCatalogId(), "executorManager");
-		
-		Runnable runthis = new Runnable()
+		String threaded = inReq.findValue("threadedupload");
+		if( Boolean.valueOf(threaded))
 		{
-			public void run()
+			ExecutorManager manager = (ExecutorManager)getModuleManager().getBean(archive.getCatalogId(), "executorManager");
+			
+			Runnable runthis = new Runnable()
 			{
-				ListHitTracker tracker = new ListHitTracker();
-				for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+				public void run()
 				{
-					String sourcepath = (String) iterator.next();
-					Page page = (Page)pages.get(sourcepath);
-					createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+					ListHitTracker tracker = new ListHitTracker();
+					for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+					{
+						String sourcepath = (String) iterator.next();
+						Page page = (Page)pages.get(sourcepath);
+						createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+					}
+					saveAssetData(archive, tracker, currentcollection, user);
 				}
-				saveAssetData(archive, tracker, currentcollection, user);
+			};
+			manager.execute("importing",runthis);
+		}
+		else
+		{
+			ListHitTracker tracker = new ListHitTracker();
+			for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+			{
+				String sourcepath = (String) iterator.next();
+				Page page = (Page)pages.get(sourcepath);
+				createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
 			}
-		};
-		manager.execute("importing",runthis);	
+			saveAssetData(archive, tracker, currentcollection, user);
+			inReq.putPageValue("assets", tracker);
+		}
 	}
 	protected Map savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
 	{
@@ -1214,8 +1232,10 @@ public class AssetEditModule extends BaseMediaModule
 			updateMetadata(archive, target, itemFile);
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
-			inReq.setRequestParameter("assetids", new String[] { target.getId() });
-			originalModified(inReq);
+			
+			archive.removeGeneratedImages(target);
+			archive.getPresetManager().retryConversions(archive, archive.getSearcher("conversiontask"), target);
+			archive.fireSharedMediaEvent("conversions/runconversions");
 		}
 	}
 	protected void updateMetadata(MediaArchive archive, Asset target, Page itemFile)
@@ -1956,7 +1976,7 @@ public class AssetEditModule extends BaseMediaModule
 			
 			mediaArchive.removeGeneratedImages(asset);
 			
-			missing = missing + presets.createMissingOnImport(mediaArchive, tasksearcher, asset);
+			missing = missing + presets.retryConversions(mediaArchive, tasksearcher, asset);
 		}
 		if( missing > 0 )
 		{

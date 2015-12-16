@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="fail">
-Must call login.xml first
+Must call login.xml first or include MD5 auto login parameter entermedia.key=adminmd5421c0af185908a6c0c40d50fd5e3f16760d5580bc
 </rsp>

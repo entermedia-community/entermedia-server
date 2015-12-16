@@ -393,6 +393,10 @@ public class MediaArchive
 	}	
 	public String getMediaPlayerType(Data inAsset)
 	{
+		if(inAsset == null){
+			return null;
+		}
+		
 		if( inAsset.get("embeddedurl") != null)
 		{
 			return "embedded";
@@ -985,6 +989,10 @@ public class MediaArchive
 			{
 			
 				//getPageManager().removePage(page);
+				if( inContent.getName().startsWith("customthumb."))
+				{
+					return;
+				}
 				String type = PathUtilities.extractPageType(inContent.getPath()); 
 				String fileformat = getMediaRenderType(type);
 				if("image".equals(fileformat)){

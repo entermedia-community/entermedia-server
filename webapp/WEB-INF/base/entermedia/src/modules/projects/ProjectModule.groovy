@@ -52,7 +52,7 @@ public class ProjectModule extends BaseMediaModule
 				tracker = tracker.getSelectedHitracker();
 				if( tracker != null && tracker.size() > 0 )
 				{
-					manager.addAssetToLibrary(inReq, archive, libraryid, tracker);
+					manager.addAssetToLibrary(archive, libraryid, tracker);
 					inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
 					return;
 				}
@@ -60,7 +60,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 
 		String assetid = inReq.getRequestParameter("assetid");
-		manager.addAssetToLibrary(inReq, archive, libraryid, assetid);
+		manager.addAssetToLibrary(archive, libraryid, assetid);
 		inReq.putPageValue("added" , "1" );
 		
 	}

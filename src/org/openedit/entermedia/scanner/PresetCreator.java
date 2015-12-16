@@ -55,8 +55,15 @@ public class PresetCreator
 		}
 		return hits;
 	}
-
+	public int retryConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
+	{
+		return queueConversions(mediaarchive, tasksearcher, asset, true);
+	}
 	public int createMissingOnImport(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
+	{
+		return queueConversions(mediaarchive, tasksearcher, asset, false);
+	}
+	public int queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean rerun )
 	{
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
 
@@ -77,10 +84,13 @@ public class PresetCreator
 				page = "1";
 			}
 			existingtasks.add(existing.get("presetid") + page);
-			if( "error".equals( existing.get("status")) )
+			if( rerun || "error".equals( existing.get("status")) )
 			{
 				existing = tasksearcher.loadData(existing);
 				existing.setProperty("status","retry");
+				existing.setProperty("errordetails",null);
+				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+				existing.setProperty("submitted", nowdate);
 				tosave.add(existing);
 			}
 		}

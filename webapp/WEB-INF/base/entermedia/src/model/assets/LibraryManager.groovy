@@ -8,12 +8,11 @@ import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 
 import com.openedit.entermedia.scripts.EnterMediaObject
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 
 public class LibraryManager extends EnterMediaObject
 {
 	protected Map fieldLibraryFolders = null;
+	protected Map fieldLibraries = null;
 	protected Object NULL = new BaseData();
 	
 	public void assignLibraries(MediaArchive mediaarchive, Collection assets)
@@ -53,6 +52,8 @@ public class LibraryManager extends EnterMediaObject
 							savedsofar++;
 						}
 						loaded.addLibrary(libraryid);
+						Data li = fieldLibraries.get(libraryid);
+						loaded.setProperty("project",li.get("project") );
 						//log.info("found ${sofar}" );
 					}
 				}
@@ -81,12 +82,14 @@ public class LibraryManager extends EnterMediaObject
 			//load up all the folder we have
 			Collection alllibraries = librarySearcher.query().match("folder", "*").search();
 			fieldLibraryFolders = new HashMap(alllibraries.size());
+			fieldLibraries = new HashMap(alllibraries.size());
 			for (Data hit in alllibraries)
 			{
 				String folder = hit.get("folder");
 				if( folder != null)
 				{
 					fieldLibraryFolders.put( folder, hit.getId());
+					fieldLibraries.put(hit.getId(),hit);
 				}
 			}
 		}

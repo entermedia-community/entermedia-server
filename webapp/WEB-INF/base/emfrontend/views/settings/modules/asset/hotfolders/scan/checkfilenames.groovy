@@ -51,7 +51,9 @@ public void init()
 		
 		finder.setPageManager(archive.getPageManager());
 
-		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals";
+		String from = context.getRequestParameter("from");
+		
+		String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + from;
 		finder.setRootPath(assetRoot);
 		log.info("Checking for bad paths");
 		
@@ -59,8 +61,8 @@ public void init()
 		
 		log.info("found ${finder.badfiles.size()} bad files");
 		
-		context.putPageValue("longpaths",finder.folders);		
-		context.putPageValue("badpaths",finder.badfiles);	
+		
+		context.putPageValue("finder",finder);		
 		Page root = archive.getPageManager().getPage(assetRoot);
 		int edited = 0;
 //		for(String sourcepath: finder.badfiles)
@@ -80,9 +82,21 @@ public void init()
 
 	class LongPathFinder extends  PathProcessor
 		{
-			List folders = new ArrayList();
-			List badfiles = new ArrayList();
-			FileUtils util = new FileUtils();
+			public List folders = new ArrayList();
+			public List folders()
+			{
+				return folders;
+			}
+			public List badfiles = new ArrayList();
+			public List badfiles()
+			{
+				return badfiles;
+			} 
+			public FileUtils util = new FileUtils();
+			public FileUtils util()
+			{
+				return util;
+			}
 			int count = 0;
 			public void processDir(ContentItem inContent)
 			{
@@ -95,6 +109,7 @@ public void init()
 			}
 			public  void processFile(ContentItem inContent, User inUser) 
 			{ 
+				incrementCount();
 				String path = inContent.getPath();
 			
 				if (!util.isLegalFilename(path)) 
