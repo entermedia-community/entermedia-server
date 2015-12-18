@@ -955,15 +955,7 @@ public class MediaArchive
 
 	public void removeGeneratedImages(Asset inAsset)
 	{
-		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
-		if(inAsset.isFolder() && !path.endsWith("/")){
-			path = path + "/"; 
-				
-		}
-		Page dir = getPageManager().getPage(path);
-		getPageManager().removePage(dir);
-		getPageManager().clearCache(dir);
-		
+		removeGeneratedImages(inAsset,false);
 	}
 	
 	
@@ -971,10 +963,10 @@ public class MediaArchive
 	
 	public void removeGeneratedImages(Asset inAsset, boolean everything)
 	{
-		if(everything){
-			removeGeneratedImages(inAsset);
-			return;
-		}
+//		if(everything){
+//			removeGeneratedImages(inAsset);
+//			return;
+//		}
 		
 		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
 		if(inAsset.isFolder() && !path.endsWith("/")){
@@ -987,12 +979,15 @@ public class MediaArchive
 		{
 			public void processFile(ContentItem inContent, User inUser)
 			{
-			
 				//getPageManager().removePage(page);
 				if( inContent.getName().startsWith("customthumb."))
 				{
 					return;
 				}
+//				if( inContent.getName().equals("document.pdf"))
+//				{
+//					return;
+//				}
 				String type = PathUtilities.extractPageType(inContent.getPath()); 
 				String fileformat = getMediaRenderType(type);
 				if("image".equals(fileformat)){
