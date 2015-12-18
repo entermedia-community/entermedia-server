@@ -1616,7 +1616,7 @@ public class MediaArchive
 		
 	}
 	//Look for previews that should be marked as complete now
-	public void updateAssetImportStatus(Data asset) 
+	public void updateAssetPreviewStatus(Data asset) 
 	{
 		if( asset == null)
 		{
@@ -1625,11 +1625,11 @@ public class MediaArchive
 		//String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 		
-		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
+		if( !"2".equals( existingpreviewstatus ))
 		{
 			Searcher tasksearcher = getSearcher( "conversiontask");	
 			HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search();
-			getPresetManager().updateAssetImportStatus(this, asset, conversions);
+			getPresetManager().updateAssetPreviewStatus(this, asset, conversions);
 		}
 	}
 	public UserManager getUserManager()

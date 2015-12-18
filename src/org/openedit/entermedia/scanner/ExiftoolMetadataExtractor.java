@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +25,6 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 
 import com.openedit.page.Page;
-import com.openedit.page.PageProperty;
 import com.openedit.util.Exec;
 import com.openedit.util.ExecResult;
 import com.openedit.util.PathUtilities;
@@ -376,38 +373,89 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected void extractThumb(MediaArchive inArchive, ContentItem inInputFile, Asset inAsset)
 	{
-		if (!getExifToolThumbCreator().canReadIn(inArchive, inAsset.getFileFormat()))
+		if (getExifToolThumbCreator().canReadIn(inArchive, inAsset.getFileFormat()))
 		{
-			return;
-		}
-
-		//TODO: Increase this for INDD with larger Page thumbnails
-		Page def = inArchive.getPageManager().getPage("/" + inArchive.getCatalogId() + "/downloads/preview/large/image.jpg");
-
-		Map all = new HashMap();
-		for (Iterator iterator = def.getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
-		{
-			PageProperty type = (PageProperty) iterator.next();
-			all.put(type.getName(), type.getValue());
-		}
-
-		ConvertInstructions ins = getExifToolThumbCreator().createInstructions(all, inArchive, "jpg", inAsset.getSourcePath());
-		getExifToolThumbCreator().populateOutputPath(inArchive, ins);
-		String path = ins.getOutputPath();
-		Page thumb = inArchive.getPageManager().getPage(path);
-		if (!thumb.exists() || thumb.length() == 0)
-		{
-			ConvertResult res = getExifToolThumbCreator().convert(inArchive, inAsset, thumb, ins);
+			Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+	
+			//if we have embdeded thumb 
+			ConvertInstructions instructions = new ConvertInstructions();
+			instructions.setForce(true);
+			instructions.setInputPath(inInputFile.getPath());
+			instructions.setOutputPath(custom.getPath());
+			ConvertResult res = getExifToolThumbCreator().convert(inArchive, inAsset, custom, instructions);
 			if (res.isOk())
 			{
-				if (!"generated".equals(inAsset.get("previewstatus")))
-				{
-					inAsset.setProperty("previewstatus", "exif");
-				}
+	//			if (!"generated".equals(inAsset.get("previewstatus")))
+	//			{
+	//				inAsset.setProperty("previewstatus", "exif");
+	//			}
+				return;
+			}
+		}
+		//OR if we have CMYK with no profile input
+		String colorspace =  inAsset.get("colorspace");
+		if( colorspace == null)
+		{
+			if( isCMYKColorSpace(inInputFile) )
+			{
+				colorspace = "4";
+				inAsset.setProperty("colorspsace", colorspace);
+			}
+		}
+		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
+		{
+			if( !isCMYKProfile(inInputFile) )
+			{
+				Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+
+		        MediaCreator c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
+				ConvertInstructions instructions = new ConvertInstructions();
+				instructions.setForce(true);
+				//instructions.setMaxScaledSize(1900, height);
+				instructions.setProperty("fixcmyk", "true");
+				instructions.setInputPath(inInputFile.getPath());
+				instructions.setOutputPath(custom.getPath());
+			 	c.createOutput(inArchive, instructions);
+				
 			}
 		}
 	}
-
+	protected boolean isCMYKColorSpace(ContentItem inOriginal)
+	{
+		List<String> command = new ArrayList<String>();
+		command.add("-verbose");
+		command.add(inOriginal.getAbsolutePath());
+		ExecResult result = getExec().runExec("identify",command, true);
+		String sout = result.getStandardOut();
+		String[] tokens = sout.split("\n");
+		if (tokens.length > 0){
+			for(String token:tokens)
+			{
+				if (token != null && token.trim().startsWith("Colorspace:")){//Colorspace: CMYK
+					boolean isCMYK = token.toLowerCase().contains("cmyk");
+					return isCMYK;
+				}
+			}
+		}
+		return false;
+	}
+	protected boolean isCMYKProfile(ContentItem inOriginal)
+	{
+		List<String> command = new ArrayList<String>();
+		
+		command.add("-a");
+		command.add("-S");
+		command.add("-G0");
+		command.add("-ICC_Profile:ColorSpaceData");
+		command.add(inOriginal.getAbsolutePath());
+		ExecResult result = getExec().runExec("exiftool",command, true);
+		String sout = result.getStandardOut();
+		if( sout.toLowerCase().contains("cmyk"))
+		{
+			return true;
+		}
+		return false;
+	}
 	public Exec getExec()
 	{
 		return fieldExec;

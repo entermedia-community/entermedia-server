@@ -22,13 +22,21 @@ public class imagemagickCreator extends BaseImageCreator
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
 	
 	protected String fieldPathToProfile;
-
+	protected String fieldPathToCMYKProfile;
+	
 	public String getPathtoProfile(){
 		if(fieldPathToProfile == null){
 			Page profile = getPageManager().getPage("/system/components/conversions/tinysRGB.icc");
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
+	}
+	public String getPathCMYKProfile(){
+		if(fieldPathToCMYKProfile == null){
+			Page profile = getPageManager().getPage("/system/components/conversions/USWebCoatedSWOP.icc");
+			fieldPathToCMYKProfile = profile.getContentItem().getAbsolutePath();
+		}
+		return fieldPathToCMYKProfile;
 	}
 
 	public boolean canReadIn(MediaArchive inArchive, String inInput) {
@@ -159,33 +167,23 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 
 		boolean hascustomthumb = false;
-		Page customthumb = null;
-
-		if("png".equals(ext)){
-			customthumb = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
-
-		}	else
+		if( input == null)
 		{
-			customthumb = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
-		}
-		String filetype = inArchive.getMediaRenderType(inAsset.getFileFormat());
-		if(customthumb.exists()){
-			hascustomthumb = true;
-			if(input == null && !"document".equals(filetype)){
-				input = customthumb;
-				log.info("Length was ${input.length()}");
-				if( input.length() < 2 )
-				{
-					input = null;
-				}
-				else
-				{
-					autocreated = true;
-				}
+			input = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+			if( input.length() < 2 )
+			{
+				input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 			}
 		}
-
-
+		if( input.length() < 2 )
+		{
+			input = null;
+		}
+		else
+		{
+			autocreated = true;
+			hascustomthumb = true;
+		}
 
 		//get the original inut
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
@@ -571,24 +569,22 @@ public class imagemagickCreator extends BaseImageCreator
 			 }
 			 */	
 
-			String _colorspace = inAsset.get("colorspace");
-			log.info("Colorspace: " + _colorspace)
-			
-			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
-			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
-			{
-				com.add("-auto-orient"); //Needed for rotate tool
-				com.add("-strip"); //This does not seem to do much
+//			String _colorspace = inAsset.get("colorspace");
+//			log.info("Colorspace: " + _colorspace)
+//			
+//			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
+//			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
+//			{
+//				com.add("-auto-orient"); //Needed for rotate tool
+//				com.add("-strip"); //This does not seem to do much
 				setValue("profile", getPathtoProfile(), inStructions, com);
-			}
-			else
-			{
-				setValue("colorspace", "sRGB", inStructions, com);
-			}
+//			}
+//			else
+//			{
+//				setValue("colorspace", "sRGB", inStructions, com);
+//			}
 			
-
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
-
 
 		}
 
@@ -640,6 +636,13 @@ public class imagemagickCreator extends BaseImageCreator
 	{
 		List<String> com = new ArrayList<String>();
 
+		String prestrip = inStructions.get("fixcmyk");
+		if( "true".equals(prestrip) )
+		{
+			com.add("-strip");
+			com.add("-profile");
+			com.add(getPathCMYKProfile());
+		}
 		//		if( inStructions.getParameters() != null )
 		//		{
 		//			for (Iterator iterator = inStructions.getParameters().iterator(); iterator.hasNext();)
