@@ -1,5 +1,5 @@
 <page>
-<path-action name="ConvertStatusModule.clearCustomThumb">
+<path-action name="ConvertStatusModule.rerunAllThumbnails">
 	
 </path-action>
 </page>

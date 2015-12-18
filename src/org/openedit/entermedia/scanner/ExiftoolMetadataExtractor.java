@@ -406,7 +406,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		{
 			if( !isCMYKProfile(inInputFile) )
 			{
-				Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+				Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 
 		        MediaCreator c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
 				ConvertInstructions instructions = new ConvertInstructions();

@@ -102,9 +102,9 @@
 		</div>
 		#set( $savetoall = $context.getRequestParameter("savetoall"))
 		#if( $savetoall)
-		    <form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
+		    <form id="coords" class="coords" method="post"  targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
 		#else
-			    <form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
+			    <form id="coords" class="coords" method="post" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
 		#end    
 		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
 		    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
@@ -125,6 +125,7 @@
 		    <input type="hidden" name="crop.value" value="true"/>
 		    <input type="hidden" name="force.value" value="true"/>
 		    <input type="hidden" name="assetid.value" value="${asset.id}"/>
+		    <input type="hidden" name="assetid" value="${asset.id}"/>
 		    <span style="margin: 0 10px 20px;">
 			    <input class="thickbox btn" type="submit" name="submitbutton" value="Submit" style="margin: 5px;" />
 			</span>
