@@ -22,13 +22,21 @@ public class imagemagickCreator extends BaseImageCreator
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
 	
 	protected String fieldPathToProfile;
-
+	protected String fieldPathToCMYKProfile;
+	
 	public String getPathtoProfile(){
 		if(fieldPathToProfile == null){
 			Page profile = getPageManager().getPage("/system/components/conversions/tinysRGB.icc");
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
+	}
+	public String getPathCMYKProfile(){
+		if(fieldPathToCMYKProfile == null){
+			Page profile = getPageManager().getPage("/system/components/conversions/USWebCoatedSWOP.icc");
+			fieldPathToCMYKProfile = profile.getContentItem().getAbsolutePath();
+		}
+		return fieldPathToCMYKProfile;
 	}
 
 	public boolean canReadIn(MediaArchive inArchive, String inInput) {
@@ -66,27 +74,30 @@ public class imagemagickCreator extends BaseImageCreator
 		ConvertResult result = new ConvertResult();
 		String outputpath = inOutFile.getContentItem().getAbsolutePath();
 		Page input = null;
-		//if watermarking is set
+
+		//if watermarking is set, what is this about??!?
 		if(inStructions.isWatermark())
 		{
-			Page inputPage = inArchive.getOriginalDocument(inAsset);
-			//Page inputPage = getPageManager().getPage(inStructions.getAssetSourcePath());
-			if(inputPage == null || !inputPage.exists())
+			if( input == null )
+			{
+				input = inArchive.getOriginalDocument(inAsset);
+			}
+			if(input  == null || !input.exists())
 			{
 				result.setOk(false);
 				return result;
 			}
-			String fullInputPath = inputPage.getContentItem().getAbsolutePath();
+			String fullInputPath = input.getContentItem().getAbsolutePath();
 			String tmpoutputpath = PathUtilities.extractPagePath(outputpath) + ".wm.jpg";
 			applyWaterMark(inArchive, fullInputPath, tmpoutputpath, inStructions);
 			input = getPageManager().getPage(tmpoutputpath);  
 		}
-
 		boolean autocreated = false; //If we already have a smaller version we just need to make a copy of that
+		
 		String offset = inStructions.getProperty("timeoffset");
 
 		String tmpinput = PathUtilities.extractPageType( inOutFile.getPath() );
-		boolean transparent = inStructions.isTransparencyMaintained(tmpinput);
+		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
 		String ext = inStructions.getInputExtension();
 		if( ext == null && input != null)
 		{
@@ -97,7 +108,7 @@ public class imagemagickCreator extends BaseImageCreator
 		{
 			ext = inAsset.getFileFormat();
 		}
-		if( !transparent  && ( inStructions.getMaxScaledSize() != null && offset == null ) ) //page numbers are 1 based
+		if( ( inStructions.getMaxScaledSize() != null && offset == null ) ) //page numbers are 1 based
 		{
 			String page = null;
 			if( inStructions.getPageNumber() > 1 )
@@ -134,13 +145,12 @@ public class imagemagickCreator extends BaseImageCreator
 			//					autocreated = true;
 			//				}
 			//			}
-			if( input == null && box.getWidth() < 1025 )
+			if( (input == null) && box.getWidth() < 1025 )
 			{
 				//input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1920x1080" + page + ".jpg");
 				//if( !input.exists() )
 				//{
-					if (transparent) {
-						
+					if (usepng) {
 						input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/image1024x768" + page + ".png");
 					} else {
 						
@@ -157,35 +167,25 @@ public class imagemagickCreator extends BaseImageCreator
 				}
 			}
 		}
-
-		boolean hascustomthumb = false;
-		Page customthumb = null;
-
-		if("png".equals(ext)){
-			customthumb = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
-
-		}	else
+		boolean hascustomthumb = false; //If we already have a smaller version we just need to make a copy of that
+		
+		if( usepng )
 		{
-			customthumb = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+			input = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
 		}
-		String filetype = inArchive.getMediaRenderType(inAsset.getFileFormat());
-		if(customthumb.exists()){
+		if( input == null || input.length() < 2 )
+		{
+			input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+		}
+		if( input.length() < 2 )
+		{
+			input = null;
+		}
+		else
+		{
+			autocreated = true;
 			hascustomthumb = true;
-			if(input == null && !"document".equals(filetype)){
-				input = customthumb;
-				log.info("Length was ${input.length()}");
-				if( input.length() < 2 )
-				{
-					input = null;
-				}
-				else
-				{
-					autocreated = true;
-				}
-			}
 		}
-
-
 
 		//get the original inut
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
@@ -196,10 +196,6 @@ public class imagemagickCreator extends BaseImageCreator
 		if( input == null || useoriginal)
 		{
 			input = inArchive.findOriginalMediaByType("image",inAsset);
-		}
-		if( input == null)
-		{
-			input = inArchive.findOriginalMediaByType("video",inAsset);
 		}
 		if(input == null){
 			if(inStructions.getInputPath() != null){
@@ -230,19 +226,6 @@ public class imagemagickCreator extends BaseImageCreator
 				//					}
 				if( tmpout.getContentItem().getLength() > 0)
 				{
-					//cmykpreprocessor returns an xconf
-					//so this should be safe since there are probably
-					//no other preprocessors that return xconf files
-					if ("xconf" != tmpout.getPageType()){
-						input = tmpout;
-					}
-					//					This is only useful for INDD at 1024. to complex to try and optimize
-					//					if( input.getPath().equals(inOutFile.getPath()))
-					//					{
-					//preprosessor took care of the entire file. such as exiftol
-					//						result.setOk(true);
-					//						return result;
-					//					}
 				}
 				else
 				{
@@ -268,13 +251,6 @@ public class imagemagickCreator extends BaseImageCreator
 			else if( input == null)
 			{
 				//we are looking for a working format to use as input
-				
-				//cmykpreprocessor returns an xconf
-				//so this should be safe since there are probably
-				//no other preprocessors that return xconf files
-				if ("xconf" != tmpout.getPageType()){
-					input = tmpout;
-				}
 			}
 		}
 		if( input == null)
@@ -441,7 +417,7 @@ public class imagemagickCreator extends BaseImageCreator
 			//This gravity is the relative point of the crop marks
 			setValue("gravity", "NorthWest", inStructions, com);
 
-			if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
+			if( !usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
 			{
 				com.add("-background");
 				com.add("white");
@@ -506,7 +482,7 @@ public class imagemagickCreator extends BaseImageCreator
 				com.add(resizestring.toString());
 			}
 		}
-		else if( !transparent && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext) ) )
+		else if( !usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext) ) )
 		{
 			com.add("-background");
 			com.add("white");
@@ -571,24 +547,22 @@ public class imagemagickCreator extends BaseImageCreator
 			 }
 			 */	
 
-			String _colorspace = inAsset.get("colorspace");
-			log.info("Colorspace: " + _colorspace)
-			
-			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
-			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
-			{
-				com.add("-auto-orient"); //Needed for rotate tool
-				com.add("-strip"); //This does not seem to do much
+//			String _colorspace = inAsset.get("colorspace");
+//			log.info("Colorspace: " + _colorspace)
+//			
+//			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
+//			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
+//			{
+//				com.add("-auto-orient"); //Needed for rotate tool
+//				com.add("-strip"); //This does not seem to do much
 				setValue("profile", getPathtoProfile(), inStructions, com);
-			}
-			else
-			{
-				setValue("colorspace", "sRGB", inStructions, com);
-			}
+//			}
+//			else
+//			{
+//				setValue("colorspace", "sRGB", inStructions, com);
+//			}
 			
-
 			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
-
 
 		}
 
@@ -640,6 +614,13 @@ public class imagemagickCreator extends BaseImageCreator
 	{
 		List<String> com = new ArrayList<String>();
 
+		String prestrip = inStructions.get("fixcmyk");
+		if( "true".equals(prestrip) )
+		{
+			com.add("-strip");
+			com.add("-profile");
+			com.add(getPathCMYKProfile());
+		}
 		//		if( inStructions.getParameters() != null )
 		//		{
 		//			for (Iterator iterator = inStructions.getParameters().iterator(); iterator.hasNext();)

@@ -167,68 +167,48 @@ public class ConvertStatusModule extends BaseMediaModule
 			return;
 			
 		}
-		String assetid = inReq.getRequestParameter("assetid");
-		Asset current = archive.getAsset(assetid);
+		Asset current = getAsset(inReq);
 		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + properties.getFirstItem().getName(); //TODO: Should run a conversion here first to ensure this is a large JPG
 		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
-		Page page = getPageManager().getPage(input);
-		Page crop1024jpg = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.jpg");
-		getPageManager().removePage(crop1024jpg);
-		Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.png");
-		getPageManager().removePage(crop1024);
 		
-		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
-		String generatedpng = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/customthumb.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
-
 		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
-
+		
         MediaCreator c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
-		instructions.setInputPath(page.getPath());
-		instructions.setOutputPath(generated);
-	 	 
-	 	// instructions.setOutputExtension("jpg");
+		instructions.setInputPath(input);
+		instructions.setOutputPath(s1024);
+		instructions.setMaxScaledSize(1024, 768);
 	 	 c.createOutput(archive, instructions);
-		instructions.setOutputPath(generatedpng);
-		 c.createOutput(archive, instructions);
-		 instructions.setMaxScaledSize(1024, 768);
-		 instructions.setOutputPath(s1024);
+
+	 	String png1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
+	 	instructions.setOutputPath(png1024);
 		 c.createOutput(archive, instructions);
 		
-		saveCustomThumb( inReq, archive, current);
+		 archive.removeGeneratedImages(current, false);
+		 reloadThumbnails( inReq, archive, current);
 		
 	}
-	public void copyLargeForCustomThumb(WebPageRequest inReq)
+	public void rerunSmallerThumbnails(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg"); 
-		Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
-		getPageManager().copyPage(s1024, crop1024);
-		saveCustomThumb( inReq, archive, asset);
+//		Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg"); 
+//		Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
+//		getPageManager().copyPage(s1024, crop1024);
+		archive.removeGeneratedImages(asset, false);
+		reloadThumbnails( inReq, archive, asset);
 	}
-	public void clearCustomThumb(WebPageRequest inReq)
+	public void rerunAllThumbnails(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		Page crop1024jpg = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
-		getPageManager().removePage(crop1024jpg);
-		Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.png");
-		getPageManager().removePage(crop1024);
-		saveCustomThumb( inReq, archive, asset);
+		archive.removeGeneratedImages(asset, true);
+		reloadThumbnails( inReq, archive, asset);
 
 	}
-	public void rerunConversions(WebPageRequest inReq)
+	protected void reloadThumbnails(WebPageRequest inReq, MediaArchive archive, Asset current)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
-		Asset asset = getAsset(inReq);
-		saveCustomThumb( inReq, archive, asset);
-
-	}
-	protected void saveCustomThumb(WebPageRequest inReq, MediaArchive archive, Asset current)
-	{
-		archive.removeGeneratedImages(current, false);
 		archive.getPresetManager().queueConversions(archive,archive.getSearcher("conversiontask"),current,true);
 		//current.setProperty("importstatus", "imported");
 		//archive.fireMediaEvent("importing/assetsimported", inReq.getUser());

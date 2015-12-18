@@ -955,26 +955,18 @@ public class MediaArchive
 
 	public void removeGeneratedImages(Asset inAsset)
 	{
-		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
-		if(inAsset.isFolder() && !path.endsWith("/")){
-			path = path + "/"; 
-				
-		}
-		Page dir = getPageManager().getPage(path);
-		getPageManager().removePage(dir);
-		getPageManager().clearCache(dir);
-		
+		removeGeneratedImages(inAsset,false);
 	}
 	
 	
 	
 	
-	public void removeGeneratedImages(Asset inAsset, boolean everything)
+	public void removeGeneratedImages(Asset inAsset, final boolean everything)
 	{
-		if(everything){
-			removeGeneratedImages(inAsset);
-			return;
-		}
+//		if(everything){
+//			removeGeneratedImages(inAsset);
+//			return;
+//		}
 		
 		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
 		if(inAsset.isFolder() && !path.endsWith("/")){
@@ -987,12 +979,19 @@ public class MediaArchive
 		{
 			public void processFile(ContentItem inContent, User inUser)
 			{
-			
 				//getPageManager().removePage(page);
-				if( inContent.getName().startsWith("customthumb."))
+				if( inContent.getName().startsWith("customthumb"))
 				{
 					return;
 				}
+				if( !everything && inContent.getName().equals("image1024x768.jpg"))
+				{
+					return;
+				}
+//				if( inContent.getName().equals("document.pdf"))
+//				{
+//					return;
+//				}
 				String type = PathUtilities.extractPageType(inContent.getPath()); 
 				String fileformat = getMediaRenderType(type);
 				if("image".equals(fileformat)){
@@ -1616,7 +1615,7 @@ public class MediaArchive
 		
 	}
 	//Look for previews that should be marked as complete now
-	public void updateAssetImportStatus(Data asset) 
+	public void updateAssetPreviewStatus(Data asset) 
 	{
 		if( asset == null)
 		{
@@ -1625,11 +1624,11 @@ public class MediaArchive
 		//String existingimportstatus = asset.get("importstatus");
 		String existingpreviewstatus = asset.get("previewstatus");
 		
-		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
+		if( !"2".equals( existingpreviewstatus ))
 		{
 			Searcher tasksearcher = getSearcher( "conversiontask");	
 			HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search();
-			getPresetManager().updateAssetImportStatus(this, asset, conversions);
+			getPresetManager().updateAssetPreviewStatus(this, asset, conversions);
 		}
 	}
 	public UserManager getUserManager()
