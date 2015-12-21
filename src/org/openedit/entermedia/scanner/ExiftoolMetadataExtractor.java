@@ -415,7 +415,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				instructions.setProperty("fixcmyk", "true");
 				instructions.setInputPath(inInputFile.getPath());
 				instructions.setOutputPath(custom.getPath());
-			 	c.createOutput(inArchive, instructions);
+			 	c.convert(inArchive, inAsset, custom, instructions);
 				
 			}
 		}
