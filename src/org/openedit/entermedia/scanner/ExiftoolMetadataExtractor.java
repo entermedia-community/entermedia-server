@@ -392,31 +392,39 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				return;
 			}
 		}
-		//OR if we have CMYK with no profile input
-		String colorspace =  inAsset.get("colorspace");
-		if( colorspace == null)
+		String type = inArchive.getMediaRenderType(inAsset);
+		if( type == null )
 		{
-			if( isCMYKColorSpace(inInputFile) )
-			{
-				colorspace = "4";
-				inAsset.setProperty("colorspsace", colorspace);
-			}
+			return;
 		}
-		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
+		if( type.equals("image") || type.equals("document") )
 		{
-			if( !isCMYKProfile(inInputFile) )
+			//OR if we have CMYK with no profile input
+			String colorspace =  inAsset.get("colorspace");
+			if( colorspace == null)
 			{
-				Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
-
-		        MediaCreator c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
-				ConvertInstructions instructions = new ConvertInstructions();
-				instructions.setForce(true);
-				//instructions.setMaxScaledSize(1900, height);
-				instructions.setProperty("fixcmyk", "true");
-				instructions.setInputPath(inInputFile.getPath());
-				instructions.setOutputPath(custom.getPath());
-			 	c.convert(inArchive, inAsset, custom, instructions);
-				
+				if( isCMYKColorSpace(inInputFile) )
+				{
+					colorspace = "4";
+					inAsset.setProperty("colorspsace", colorspace);
+				}
+			}
+			if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
+			{
+				if( !isCMYKProfile(inInputFile) )
+				{
+					Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+	
+			        MediaCreator c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
+					ConvertInstructions instructions = new ConvertInstructions();
+					instructions.setForce(true);
+					//instructions.setMaxScaledSize(1900, height);
+					instructions.setProperty("fixcmyk", "true");
+					instructions.setInputPath(inInputFile.getPath());
+					instructions.setOutputPath(custom.getPath());
+				 	c.convert(inArchive, inAsset, custom, instructions);
+					
+				}
 			}
 		}
 	}
