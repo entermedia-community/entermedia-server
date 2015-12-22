@@ -169,7 +169,7 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		boolean hascustomthumb = false; //If we already have a smaller version we just need to make a copy of that
 		
-		if( usepng )
+		if(  input == null && usepng )
 		{
 			input = getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
 		}
@@ -226,6 +226,7 @@ public class imagemagickCreator extends BaseImageCreator
 				//					}
 				if( tmpout.getContentItem().getLength() > 0)
 				{
+					input = tmpout;
 				}
 				else
 				{
@@ -251,6 +252,7 @@ public class imagemagickCreator extends BaseImageCreator
 			else if( input == null)
 			{
 				//we are looking for a working format to use as input
+				input = tmpout;
 			}
 		}
 		if( input == null)
