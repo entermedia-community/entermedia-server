@@ -9,7 +9,7 @@ $context.putPageValue("thumbsize",$thumbsize)
         #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
         #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
         <img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
-    #elseif( $hit.previewstatus != "2" && $hit.previewstatus != "exif")
+    #elseif( $hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "generated")
         $pages.include("$apphome/components/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
     #else   
         #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
