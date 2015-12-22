@@ -75,9 +75,11 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 			comm.add("-i");
 			comm.add(abspath);
 			comm.add("-y");
+			comm.add("-strict");
+			comm.add("experimental");
 
 			//audio
-			setValue("acodec", "libfaac", inStructions, comm); //libfaac  libmp3lame libvo_aacenc				
+			setValue("acodec", "aac", inStructions, comm); //libfaac  libmp3lame libvo_aacenc				
 
 			if (inStructions.get("fpre") == null) //legacy?
 			{
