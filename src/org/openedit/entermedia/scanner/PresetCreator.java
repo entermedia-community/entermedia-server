@@ -196,9 +196,9 @@ public class PresetCreator
 		boolean allcomplete = true;
 		boolean founderror = false;
 		
-		String existingimportstatus = asset.get("importstatus");
+		String existingimportstatus = asset.get("previewstatus");
 	
-		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
+		if( existingpreviewstatus == null || !"2".equals( existingpreviewstatus ) )
 		{
 			//check tasks and update the asset status
 			Searcher tasksearcher = inArchive.getSearcher( "conversiontask");	
