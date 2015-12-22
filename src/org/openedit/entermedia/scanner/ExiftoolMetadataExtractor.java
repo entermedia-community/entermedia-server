@@ -392,13 +392,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				return;
 			}
 		}
-		String type = inArchive.getMediaRenderType(inAsset);
-		if( type == null )
+		String format = inAsset.getFileFormat();
+		if( format == null)
 		{
 			return;
 		}
-		if( type.equals("image") || type.equals("document") )
-		{
+		if ("jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) ||
+				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) ||  "pdf".equalsIgnoreCase(format) )
+		{	
 			//OR if we have CMYK with no profile input
 			String colorspace =  inAsset.get("colorspace");
 			if( colorspace == null)
