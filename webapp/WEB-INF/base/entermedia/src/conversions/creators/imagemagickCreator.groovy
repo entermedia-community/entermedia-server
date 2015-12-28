@@ -516,60 +516,12 @@ public class imagemagickCreator extends BaseImageCreator
 			com.add("-sampling-factor");
 			com.add(inStructions.get("sampling-factor"));
 		}
-		if( autocreated )  //we are using a color corrected input
+		String prestrip = inStructions.get("fixcmyk");
+		if( !"true".equals(prestrip) )
 		{
-			com.add("-strip"); //This does not seem to do much
+			com.add("-strip"); //This removes the extra profile info
 		}
-		else
-		{
-			//			TODO: use parameters to specify the color space
-			//Make sure we use 8 bit output and
-			//http://entermediasoftware.com/views/learningcenter/wiki/wiki/ImageMagick.html
-			//		com.add("-quality");
-			//		com.add("90"); I think the default is about 80
-			//			setValue("colorspace", "sRGB", inStructions, com);
-			//			String colorspace = inStructions.get("colorspace");
-			//			if(colorspace != null){
-			//				com.add("-colorspace");
-			//				com.add(colorspace);
-			//			} else{
-			//				com.add("-colorspace");
-			//				com.add("sRGB");
-			//			}
-
-			/*			String type = inAsset.get("colortype");
-			 if( type != null && type.equalsIgnoreCase("RGB") )
-			 {
-			 String cmyk = inAsset.get("colorspace");  
-			 if( cmyk != null && cmyk.equalsIgnoreCase("CMYK") )  //Edge case where someone has the wrong colorspace set in the file
-			 {
-			 com.add("-colorspace");
-			 com.add("RGB");
-			 }	
-			 }
-			 */	
-
-//			String _colorspace = inAsset.get("colorspace");
-//			log.info("Colorspace: " + _colorspace)
-//			
-//			Data colorspacedata  = _colorspace!=null ? inArchive.getData("colorspace",_colorspace) : null;
-//			if (colorspacedata!=null && colorspacedata.getName().equalsIgnoreCase("cmyk")) //Edge case where someone has the wrong colorspace set in the file 
-//			{
-//				com.add("-auto-orient"); //Needed for rotate tool
-//				com.add("-strip"); //This does not seem to do much
-				setValue("profile", getPathtoProfile(), inStructions, com);
-//			}
-//			else
-//			{
-//				setValue("colorspace", "sRGB", inStructions, com);
-//			}
-			
-			//Some old images have a conflict between a Color Mode of CMYK but they have an RGB Profile embeded. Make sure we check for this case
-
-		}
-
-
-
+		setValue("profile", getPathtoProfile(), inStructions, com);
 
 		if (isOnWindows() )
 		{
