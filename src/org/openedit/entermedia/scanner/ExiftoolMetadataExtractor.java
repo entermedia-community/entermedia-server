@@ -398,7 +398,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			return;
 		}
 		if ("jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) ||
-				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) ||  "pdf".equalsIgnoreCase(format) )
+				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) )// ||  "pdf".equalsIgnoreCase(format) )
 		{	
 			//OR if we have CMYK with no profile input
 			String colorspace =  inAsset.get("colorspace");
