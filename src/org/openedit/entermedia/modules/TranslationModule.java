@@ -1,6 +1,8 @@
 package org.openedit.entermedia.modules;
 
 import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import com.openedit.modules.translations.TranslationSearcher;
 import com.openedit.page.Page;
 import com.openedit.page.PageProperty;
 import com.openedit.page.PageRequestKeys;
+import com.openedit.util.FileUtils;
 import com.openedit.web.Browser;
 
 public class TranslationModule extends BaseModule {
@@ -40,16 +43,28 @@ public class TranslationModule extends BaseModule {
 		String path = "/WEB-INF/base/";
 		String lang = inReq.getRequestParameter("lang");
 		List translations = gatherTranslations(path, lang);
-		StringBuffer out = new StringBuffer();
+		StringWriter out = new StringWriter();
 		for (Iterator iterator = translations.iterator(); iterator.hasNext();) {
 			path = (String) iterator.next();
 			Page page = getPageManager().getPage(path);
+			Properties props = new Properties();
+			Reader reader = page.getReader();
+			try
+			{
+				props.load(reader);
+			}
+			catch( Throwable ex)
+			{
+				FileUtils.safeClose(reader);
+			}
 			out.append(path);
 			out.append("\n");
-			out.append(page.getContent());
+			props.list(new PrintWriter(out));
 			out.append("\n===\n");
 		}
-		inReq.putPageValue("translations", out.toString());
+		String text = out.toString();
+		text = text.replaceAll("-- listing properties --\n", "");
+		inReq.putPageValue("translations", text);
 	}
 
 	public List gatherTranslations(String inPath, String inlang) {
