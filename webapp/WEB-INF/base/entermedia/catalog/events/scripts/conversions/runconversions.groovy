@@ -85,7 +85,7 @@ class CompositeConvertRunner implements Runnable
 		{
 			if( hasComplete())
 			{
-				fieldMediaArchive.updateAssetImportStatus(asset);
+				fieldMediaArchive.updateAssetPreviewStatus(asset);
 			}	
 					
 			fieldMediaArchive.releaseLock(lock);

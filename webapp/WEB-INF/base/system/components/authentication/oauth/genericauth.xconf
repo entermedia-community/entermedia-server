@@ -1,0 +1,4 @@
+<page>
+<path-action name="OauthModule.login"/> 
+<property name="provider">generic</property>
+</page>

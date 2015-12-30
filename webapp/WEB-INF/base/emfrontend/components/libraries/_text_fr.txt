@@ -1,0 +1,7 @@
+#
+#Wed Dec 30 12:35:24 CST 2015
+Libraries=Biblioth\u00E8ques
+Details=D\u00E9tails
+Assets=Des atouts
+Create\ New=Cr\u00E9er nouveau
+Collections=Collections

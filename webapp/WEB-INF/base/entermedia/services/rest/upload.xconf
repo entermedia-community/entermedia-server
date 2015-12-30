@@ -2,4 +2,6 @@
 	<path-action name="Page.uploadFile" alltypes="true"/>
 	<path-action name="AssetEditModule.createAssetFromUploads" alltypes="true"/>
 	<property name="hitsname">assets</property>
+	<property name="threadedupload">false</property>
+	
 </page>

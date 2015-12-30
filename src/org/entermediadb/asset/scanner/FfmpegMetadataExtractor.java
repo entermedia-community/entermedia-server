@@ -76,7 +76,8 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 						String val =  (String)stream.get("duration");
 						inAsset.setProperty("duration",val);
 						val = processDuration(val);
-						inAsset.setProperty("length", val); //in seconds rounded
+						inAsset.setProperty("length", String.valueOf( Math.round( Double.parseDouble( val ) ) ) ); //in seconds rounded
+						//inAsset.setProperty("length_mill", val); //in seconds rounded
 						inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
 						
 					}
@@ -86,7 +87,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 					}
 				}
 			} 
-			catch ( Exception ex)
+			catch ( Throwable ex)
 			{
 				log.error("Could not read metadata on " + inAsset.getName() );
 			}

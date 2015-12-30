@@ -1,35 +1,33 @@
-package org.entermediadb.asset.scanner;
+package org.openedit.entermedia.scanner;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.creator.ConvertInstructions;
-import org.entermediadb.asset.creator.ConvertResult;
-import org.entermediadb.asset.creator.MediaCreator;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.page.Page;
-import org.openedit.page.PageProperty;
+import org.openedit.entermedia.Asset;
+import org.openedit.entermedia.MediaArchive;
+import org.openedit.entermedia.creator.ConvertInstructions;
+import org.openedit.entermedia.creator.ConvertResult;
+import org.openedit.entermedia.creator.MediaCreator;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
-import org.openedit.util.Exec;
-import org.openedit.util.ExecResult;
-import org.openedit.util.PathUtilities;
+
+import com.openedit.page.Page;
+import com.openedit.util.Exec;
+import com.openedit.util.ExecResult;
+import com.openedit.util.PathUtilities;
 
 public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
@@ -375,38 +373,98 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected void extractThumb(MediaArchive inArchive, ContentItem inInputFile, Asset inAsset)
 	{
-		if (!getExifToolThumbCreator().canReadIn(inArchive, inAsset.getFileFormat()))
+		if (getExifToolThumbCreator().canReadIn(inArchive, inAsset.getFileFormat()))
+		{
+			Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+	
+			//if we have embdeded thumb 
+			ConvertInstructions instructions = new ConvertInstructions();
+			instructions.setForce(true);
+			instructions.setInputPath(inInputFile.getPath());
+			instructions.setOutputPath(custom.getPath());
+			ConvertResult res = getExifToolThumbCreator().convert(inArchive, inAsset, custom, instructions);
+			if (res.isOk())
+			{
+	//			if (!"generated".equals(inAsset.get("previewstatus")))
+	//			{
+	//				inAsset.setProperty("previewstatus", "exif");
+	//			}
+				return;
+			}
+		}
+		String format = inAsset.getFileFormat();
+		if( format == null)
 		{
 			return;
 		}
-
-		//TODO: Increase this for INDD with larger Page thumbnails
-		Page def = inArchive.getPageManager().getPage("/" + inArchive.getCatalogId() + "/downloads/preview/large/image.jpg");
-
-		Map all = new HashMap();
-		for (Iterator iterator = def.getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
-		{
-			PageProperty type = (PageProperty) iterator.next();
-			all.put(type.getName(), type.getValue());
-		}
-
-		ConvertInstructions ins = getExifToolThumbCreator().createInstructions(all, inArchive, "jpg", inAsset.getSourcePath());
-		getExifToolThumbCreator().populateOutputPath(inArchive, ins);
-		String path = ins.getOutputPath();
-		Page thumb = inArchive.getPageManager().getPage(path);
-		if (!thumb.exists() || thumb.length() == 0)
-		{
-			ConvertResult res = getExifToolThumbCreator().convert(inArchive, inAsset, thumb, ins);
-			if (res.isOk())
+		if ("jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) ||
+				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) )// ||  "pdf".equalsIgnoreCase(format) )
+		{	
+			//OR if we have CMYK with no profile input
+			String colorspace =  inAsset.get("colorspace");
+			if( colorspace == null)
 			{
-				if (!"generated".equals(inAsset.get("previewstatus")))
+				if( isCMYKColorSpace(inInputFile) )
 				{
-					inAsset.setProperty("previewstatus", "exif");
+					colorspace = "4";
+					inAsset.setProperty("colorspsace", colorspace);
+				}
+			}
+			if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
+			{
+				if( !isCMYKProfile(inInputFile) )
+				{
+					Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+	
+			        MediaCreator c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
+					ConvertInstructions instructions = new ConvertInstructions();
+					instructions.setForce(true);
+					//instructions.setMaxScaledSize(1900, height);
+					instructions.setProperty("fixcmyk", "true");
+					instructions.setInputPath(inInputFile.getPath());
+					instructions.setOutputPath(custom.getPath());
+				 	c.convert(inArchive, inAsset, custom, instructions);
+					
 				}
 			}
 		}
 	}
-
+	protected boolean isCMYKColorSpace(ContentItem inOriginal)
+	{
+		List<String> command = new ArrayList<String>();
+		command.add("-verbose");
+		command.add(inOriginal.getAbsolutePath());
+		ExecResult result = getExec().runExec("identify",command, true);
+		String sout = result.getStandardOut();
+		String[] tokens = sout.split("\n");
+		if (tokens.length > 0){
+			for(String token:tokens)
+			{
+				if (token != null && token.trim().startsWith("Colorspace:")){//Colorspace: CMYK
+					boolean isCMYK = token.toLowerCase().contains("cmyk");
+					return isCMYK;
+				}
+			}
+		}
+		return false;
+	}
+	protected boolean isCMYKProfile(ContentItem inOriginal)
+	{
+		List<String> command = new ArrayList<String>();
+		
+		command.add("-a");
+		command.add("-S");
+		command.add("-G0");
+		command.add("-ICC_Profile:ColorSpaceData");
+		command.add(inOriginal.getAbsolutePath());
+		ExecResult result = getExec().runExec("exiftool",command, true);
+		String sout = result.getStandardOut();
+		if( sout.toLowerCase().contains("cmyk"))
+		{
+			return true;
+		}
+		return false;
+	}
 	public Exec getExec()
 	{
 		return fieldExec;

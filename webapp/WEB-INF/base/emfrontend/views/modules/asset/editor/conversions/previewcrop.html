@@ -85,17 +85,27 @@
 
 <div style="padding:30px;">
 	<div class="jc-demo-box">
-		<!--  
-		<h2>Debug Information</h2>
-		<ul>
-		    <li><strong[Input Dimensions</strong></li>
-		    <li>Image Dimension: $assetwidth x $assetheight &nbsp; Crop Dimension: $width x $height </li>
-		    <li><strong>Display Dimensions</strong></li>
-		    <li>Image Dimension: $img_width x $img_height &nbsp; Preview Dimension: $preview_img_width x $preview_img_height</li>
-		</ul>
-	     -->
-	    <form id="coords" class="coords" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
-		    
+				<label id="dimension"></label>
+		<div >
+			<img id="target" src="$cropinputlink" alt="Crop Area" style="display:none;"/>
+		</div>
+		<div id="preview-panel" class="display-container"  style="display:none;"  >
+			<div class="preview-container">
+				<a href="#fancybox-container" id="showpreview">
+					<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview" style="display:none;" />
+				</a>
+			</div>
+			<div class="preview-labels">
+				<label>[[Preview Panel]]</label>
+				<label id="dimension"></label>
+			</div>
+		</div>
+		#set( $savetoall = $context.getRequestParameter("savetoall"))
+		#if( $savetoall)
+		    <form id="coords" class="coords" method="post"  targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
+		#else
+			    <form id="coords" class="coords" method="post" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
+		#end    
 		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
 		    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
 		    <input class="clearable" type="hidden" size="4" id="x2" name="x2.value" />
@@ -115,26 +125,12 @@
 		    <input type="hidden" name="crop.value" value="true"/>
 		    <input type="hidden" name="force.value" value="true"/>
 		    <input type="hidden" name="assetid.value" value="${asset.id}"/>
+		    <input type="hidden" name="assetid" value="${asset.id}"/>
 		    <span style="margin: 0 10px 20px;">
-			    <label for="submitbutton">Crop the image below</label>
 			    <input class="thickbox btn" type="submit" name="submitbutton" value="Submit" style="margin: 5px;" />
 			</span>
 		</form>
-		<hr>
-		<div class="display-container">
-			<img id="target" src="$cropinputlink" alt="Crop Area" style="display:none;"/>
-		</div>
-		<div id="preview-panel">
-			<div class="preview-container">
-				<a href="#fancybox-container" id="showpreview">
-					<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview" style="display:none;" />
-				</a>
-			</div>
-			<div class="preview-labels">
-				<label>[[Preview Panel]]</label>
-				<label id="dimension"></label>
-			</div>
-		</div>
+		
 		<div id="infopanel">
 			<h2>Instructions</h2>
 			<ul>
@@ -176,12 +172,6 @@
   box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
 }
 .jc-demo-box #infopanel {
-  width: ${preview_img_width}px;
-  display: none;
-  position: relative;
-  z-index: 2000;
-  top: -${preview_info_top}px;
-  left: ${preview_info_width_offset}px;
   padding: 6px;
   border: 1px rgba(0,0,0,.4) solid;
   background-color: white;
@@ -198,9 +188,9 @@
   overflow: hidden;
 }
 .display-container{
-  width:${img_width}px;
-  height: ${img_height}px;
+  width:250px;
   padding: 6px;
+  margin-top: 10px;
   border: 1px rgba(0,0,0,.4) solid;
   background-color: white;
   -webkit-border-radius: 6px;
@@ -216,6 +206,12 @@
 	text-align:center;
 }
 </style>
+#set( $forceaspect = $context.getRequestParameter("forceaspect"))
+#if($forceaspect && $forceaspect == "false" )
+#set( $forceaspect = false)
+#else
+#set( $forceaspect = true)
+#end
 
 <script>
 $(document).ready(function(){
@@ -231,18 +227,22 @@ $(document).ready(function(){
 			onChange: updatePreview,
 			onSelect: updatePreview,
 			minSize: [xsize,ysize],
-			boxWidth: ${img_width},
-			boxHeight: ${img_height},
-			setSelect: [0,0,xsize,ysize],
-			aspectRatio: xsize / ysize
+			setSelect: [0,0,xsize,ysize]
 		},function(){
 		    jcrop_api = this;
 			var bounds = this.getBounds();
 			boundx = bounds[0];
 			boundy = bounds[1];
-			$('#preview-panel').appendTo(this.ui.holder);
+			//$('#preview-panel').appendTo(this.ui.holder);
 		});
+		/*
+					trueSize: [1024,768]
+			#if( $forceaspect),
+			aspectRatio: xsize / ysize
+			#end
+		*/
 		function updatePreview(c){
+			/*
 			if (parseInt(c.w) > 0){
 		    	var rx = xsize / c.w;
 		    	var ry = ysize / c.h;
@@ -261,6 +261,7 @@ $(document).ready(function(){
 		          	marginTop: '-' + Math.round(ry * c.y) + 'px'
 		        });
 		  	}
+			*/
 		  	var x1 = Math.round(c.x),
 		 		y1 = Math.round(c.y),
 		 		x2 = Math.round(c.x2),
@@ -275,10 +276,12 @@ $(document).ready(function(){
 		  	$('#h').val(h); 
 		  	$('#dimension').text(w+"x"+h);
 		};
+		/*
 		$("#showpreview").fancybox({
 			'autoScale':'false',
 			'scrolling':'no'
 		});
+		*/
 	}
 	$("#maximize").bind("click",function(){
 		

@@ -122,26 +122,24 @@
 #emcontent .media-carousel .carousel-window {
    overflow: hidden;
 }
-#emcontent .media-carousel ul
+#emcontent .media-carousel>ul
 {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
-#emcontent .media-carousel ul li {
+#emcontent .media-carousel ul li.carousel-item {
  
-  width: 200px;
-  height: 180px;
+  width: 220px;
   float: left;
   margin: 15px 10px 0 0px;
   text-align: center;
   border-radius: 0;
   cursor: pointer;
-  background-color: #fff;
   overflow: hidden;
 
 }
-#emcontent .media-carousel ul li .thumbframe {
+#emcontent .media-carousel ul li.carousel-item .thumbframe {
   text-align: center;
   border-radius: 0;
   cursor: pointer;
@@ -150,24 +148,22 @@
   margin: 4px;
 
 }
-#emcontent .media-carousel ul li a  {
+#emcontent .media-carousel ul li.carousel-item>a  {
   display: block;
 }
 
-#emcontent .media-carousel ul li span  {
-}
 #emcontent .media-carousel ul li.active {
 	background: yellow;
 }
 
-#emcontent .media-carousel ul li a.thumb  img {
-  min-height: 170px;
-  max-width: 360px;
+#emcontent .media-carousel ul li.carousel-item a.thumb  img {
+  min-height: 80px;
+  max-width: 120px;
 }
-#emcontent .media-carousel ul a.thumb:hover {
+#emcontent .media-carousel ul>a.thumb:hover {
   background: #fff;
 }
-#emcontent .media-carousel ul a.thumb.active {
+#emcontent .media-carousel ul>a.thumb.active {
   background: #abdcef;
 }
 #emcontent .media-carousel a.previous,
@@ -198,9 +194,6 @@
 }
 
 
-.media-carousel .carousel-window {
-	margin:0 60px 0 60px;	
-}
 .media-carousel .nextpage {
 	
 }
@@ -237,30 +230,12 @@ color: #fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.2);
 }
 
-#collectionfeed  .btn-toolbar {
-	float: right;
-	position:relative;
-}
-#collectionfeed  .btn-toolbar  a 
-{
-	border-radius: 4px 4px 0px 0px;
-    border: 1px solid #a3c8d4;
-    border-bottom: 0px;
-    display: inline-block;
-    margin: 0px 0 -12px 0;
-    padding: 5px 5px;
-    text-align: center;
-    text-decoration: none;
-    background-color: #eee;
-	bottom: -5;
-	width: 40px;
-	height: 27px;
-	position:absolute;
-	z-index: 100;
-	font-weight: bold;
-}
 #collectionfeed  .btn-toolbar  a:hover
 {
 	 text-decoration: underline;
 	 
 }
+
+#collectionfeed .vcarousel {
+	height: 500px;
+} 

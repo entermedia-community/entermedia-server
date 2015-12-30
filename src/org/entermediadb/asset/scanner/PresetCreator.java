@@ -86,6 +86,9 @@ public class PresetCreator
 			{
 				existing = tasksearcher.loadData(existing);
 				existing.setProperty("status","retry");
+				existing.setProperty("errordetails",null);
+				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+				existing.setProperty("submitted", nowdate);
 				tosave.add(existing);
 			}
 		}
@@ -172,8 +175,13 @@ public class PresetCreator
 		}		
 		return found;
 	}
-	public void updateAssetImportStatus(MediaArchive inArchive, Data asset, HitTracker conversions )
+	public void updateAssetPreviewStatus(MediaArchive inArchive, Data asset, HitTracker conversions )
 	{
+		if( conversions.size() == 0 )
+		{
+			log.info("No conversions queued " + asset.getSourcePath());
+			return;
+		}
 		String existingpreviewstatus = asset.get("previewstatus");
 		//is it already complete?
 		
@@ -185,9 +193,10 @@ public class PresetCreator
 		}
 		boolean allcomplete = true;
 		boolean founderror = false;
-		String existingimportstatus = asset.get("importstatus");
+		
+		String existingimportstatus = asset.get("previewstatus");
 	
-		if( existingpreviewstatus == null || "converting".equals( existingpreviewstatus ) || "0".equals( existingpreviewstatus ))
+		if( existingpreviewstatus == null || !"2".equals( existingpreviewstatus ) )
 		{
 			//check tasks and update the asset status
 			Searcher tasksearcher = inArchive.getSearcher( "conversiontask");	
@@ -227,10 +236,7 @@ public class PresetCreator
 				}
 			}	
 		}
-		else
-		{
-			allcomplete = true;
-		}
+		
 		
 		//save importstatus
 		if( founderror || allcomplete )
@@ -246,6 +252,7 @@ public class PresetCreator
 				if( founderror)
 				{
 					target.setProperty("importstatus","error");
+					target.setProperty("previewstatus","3");
 				}
 				else
 				{
