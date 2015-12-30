@@ -1,5 +1,10 @@
 #
-#Tue Sep 04 11:11:35 EDT 2012
+#Wed Dec 30 12:35:20 CST 2015
+Logout=Se d\u00E9connecter
 Editing\ across\ $asset.size()\ records=Modification \u00E0 travers asset.size $ () enregistre
 There\ was\ a\ problem\ completing\ this\ request=Il y avait une difficult\u00E9 \u00E0 remplir cette demande
+My\ Account=Mon compte
 Asset\ is\ missing=Actif est manquant
+Settings=Param\u00E8tres
+Applications=Applications
+Login=S&\#39;identifier
