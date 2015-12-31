@@ -5,10 +5,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.creator.ConvertInstructions;
-import org.entermediadb.asset.creator.ConvertResult;
-import org.entermediadb.asset.creator.MediaCreator;
-import org.openedit.Data;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.trancode.TranscodeManager;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -16,7 +15,6 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
 /**
@@ -78,11 +76,13 @@ public class ConvertGenerator extends FileGenerator
 		//TODO: Use hard coded path lookups for these based on media type?
 		
 		//We use the output extension so that we don't have look up the original input file to find the actual type
-		MediaCreator creator = archive.getCreatorManager().getMediaCreatorByOutputFormat(outputype);
-		if( creator == null )
-		{
-			return;
-		}
+		
+//		MediaConverter creator = archive.getCreatorManager().getMediaCreatorByOutputFormat(outputype);
+//		if( creator == null )
+//		{
+//			return;
+//		}
+		TranscodeManager transcoder = archive.getTranscodeManager();
 		Map all = new HashMap(); //TODO: Get parent ones as well
 		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{
@@ -94,9 +94,8 @@ public class ConvertGenerator extends FileGenerator
 			
 		//return calculateInstructions(all, inArchive, inOutputType, inSourcePath);
 		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
-		ConvertInstructions inStructions = creator.createInstructions(archive,all,null, sourcePath, null, outputype); //String inSourcePath, Data inPreset, String inOutputType);
-
-		ConvertResult result = creator.createOutputIfNeeded(inStructions);
+		ConvertResult result = transcoder.createOutputIfNeeded(all,sourcePath, outputype); //String inSourcePath, Data inPreset, String inOutputType);
+		
 		if( result.isComplete() )
 		{
 			Page output = new Page() //SPEED UP
@@ -108,7 +107,10 @@ public class ConvertGenerator extends FileGenerator
 			WebPageRequest copy = inReq.copy(output);
 			copy.putProtectedPageValue("content", result.getOutput());
 			super.generate(copy, output, inOut);
-			if (inStructions.getMaxScaledSize() == null && !inStructions.isWatermark() && inStructions.getOutputExtension() == null)
+			ConvertInstructions instructions = result.getInstructions();
+
+			//TODO: Find a better way to do this
+			if (instructions.getMaxScaledSize() == null && !instructions.isWatermark() && instructions.getOutputExtension() == null)
 			{
 				archive.logDownload(sourcePath, "success", inReq.getUser()); //does this work?
 			}

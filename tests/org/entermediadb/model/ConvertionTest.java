@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.creator.ConvertInstructions;
-import org.entermediadb.asset.creator.CreatorManager;
-import org.entermediadb.asset.creator.MediaCreator;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConverterManager;
+import org.entermediadb.asset.convert.MediaConverter;
 import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;
 
@@ -18,8 +18,8 @@ public class ConvertionTest extends BaseEnterMediaTest
 	{
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		CreatorManager manager = archive.getCreatorManager();
-		MediaCreator creater = manager.getMediaCreatorByOutputFormat("jpg");
+		ConverterManager manager = archive.getCreatorManager();
+		MediaConverter creater = manager.getMediaCreatorByOutputFormat("jpg");
 		Map map = new HashMap();
 		
 		for (int i = 0; i < 1000; i++)
@@ -49,8 +49,8 @@ public class ConvertionTest extends BaseEnterMediaTest
 	{
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		CreatorManager manager = archive.getCreatorManager();
-		MediaCreator creater = manager.getMediaCreatorByOutputFormat("jpg");
+		ConverterManager manager = archive.getCreatorManager();
+		MediaConverter creater = manager.getMediaCreatorByOutputFormat("jpg");
 		Map map = new HashMap();
 	
 		ConvertInstructions instructions = new ConvertInstructions();
@@ -84,7 +84,7 @@ public class ConvertionTest extends BaseEnterMediaTest
 		instructions.setInputExtension("tiff");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		CreatorManager manager = archive.getCreatorManager();
+		ConverterManager manager = archive.getCreatorManager();
 		
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);

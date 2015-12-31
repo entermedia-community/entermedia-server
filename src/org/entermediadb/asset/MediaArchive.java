@@ -16,13 +16,14 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.creator.CreatorManager;
+import org.entermediadb.asset.convert.ConverterManager;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.AssetSecurityArchive;
+import org.entermediadb.asset.trancode.TranscodeManager;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
@@ -62,7 +63,8 @@ public class MediaArchive
 	protected EmailErrorHandler fieldEmailErrorHandler;
 	protected PageManager fieldPageManager;
 	protected WebEventHandler fieldMediaEventHandler;
-	protected CreatorManager fieldCreatorManager;
+	protected ConverterManager fieldCreatorManager;
+	protected TranscodeManager fieldTranscodeManager;
 
 	protected AssetArchive fieldAssetArchive;
 	protected AssetArchive fieldMirrorAssetArchive;
@@ -485,12 +487,22 @@ public class MediaArchive
 		boolean folder = getPageManager().getRepository().getStub(path).isFolder();
 		return folder;
 	}
+	public TranscodeManager getTranscodeManager()
+	{
+		if (fieldTranscodeManager == null)
+		{
+			fieldTranscodeManager = (TranscodeManager) getModuleManager().getBean(getCatalogId(), "transcodeManager");
+			fieldTranscodeManager.setMediaArchive(this);
+		}
 
-	public CreatorManager getCreatorManager()
+		return fieldTranscodeManager;
+	}
+
+	public ConverterManager getCreatorManager()
 	{
 		if (fieldCreatorManager == null)
 		{
-			fieldCreatorManager = (CreatorManager) getModuleManager().getBean(getCatalogId(), "creatorManager");
+			fieldCreatorManager = (ConverterManager) getModuleManager().getBean(getCatalogId(), "creatorManager");
 			fieldCreatorManager.setMediaArchive(this);
 		}
 
@@ -807,7 +819,7 @@ public class MediaArchive
 		fieldAssetSecurityArchive = assetSecurityArchive;
 	}
 
-	public void setConvertManager(CreatorManager creatorManager)
+	public void setConvertManager(ConverterManager creatorManager)
 	{
 		fieldCreatorManager = creatorManager;
 	}
@@ -1632,4 +1644,8 @@ public class MediaArchive
 		getPresetManager().clearCaches();
 	}
 
+	public ContentItem getContent(String inPath)
+	{
+		return getPageManager().getRepository().getStub(inPath);
+	}
 }

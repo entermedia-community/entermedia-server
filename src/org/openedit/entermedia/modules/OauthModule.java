@@ -1,7 +1,5 @@
 package org.openedit.entermedia.modules;
 
-import java.util.Map;
-
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -10,19 +8,19 @@ import org.apache.oltu.oauth2.client.response.OAuthAuthzResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.modules.BaseMediaModule;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
-import org.openedit.entermedia.MediaArchive;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.entermedia.util.EmTokenResponse;
+import org.openedit.page.PageRequestKeys;
+import org.openedit.users.User;
 import org.openedit.users.UserSearcher;
-
-import com.openedit.OpenEditException;
-import com.openedit.WebPageRequest;
-import com.openedit.page.PageRequestKeys;
-import com.openedit.users.User;
-import com.openedit.util.StringEncryption;
-import com.openedit.util.URLUtilities;
+import org.openedit.util.StringEncryption;
+import org.openedit.util.URLUtilities;
 
 public class OauthModule extends BaseMediaModule
 {	

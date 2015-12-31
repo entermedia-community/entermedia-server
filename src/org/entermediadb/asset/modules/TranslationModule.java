@@ -23,6 +23,7 @@ import org.openedit.modules.translations.TranslationSearcher;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageRequestKeys;
+import org.openedit.util.FileUtils;
 import org.openedit.web.Browser;
 
 public class TranslationModule extends BaseModule {

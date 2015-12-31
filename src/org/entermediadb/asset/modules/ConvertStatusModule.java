@@ -1,24 +1,19 @@
-package org.openedit.entermedia.modules;
+package org.entermediadb.asset.modules;
 
-import java.util.Iterator;
-
-import org.entermedia.upload.FileUpload;
-import org.entermedia.upload.UploadRequest;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.MediaConverter;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
+import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.ConvertInstructions;
-import org.openedit.entermedia.creator.MediaCreator;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
-
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.HitTracker;
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
+import org.openedit.page.Page;
 
 public class ConvertStatusModule extends BaseMediaModule
 {
@@ -84,7 +79,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
-        MediaCreator c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+        MediaConverter c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
         
 		ConvertInstructions instructions = c.createInstructions(settings.getProperties(), archive, "jpg", asset.getSourcePath());
 		instructions.setForce(true);
@@ -173,7 +168,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		
-        MediaCreator c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+        MediaConverter c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
 		instructions.setInputPath(input);

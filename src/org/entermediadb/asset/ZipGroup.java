@@ -12,7 +12,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.creator.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertInstructions;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;

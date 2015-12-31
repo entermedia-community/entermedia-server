@@ -1,4 +1,4 @@
-package org.openedit.entermedia.scanner;
+package org.entermediadb.asset.scanner;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,28 +12,27 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.convert.MediaConverter;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.ConvertInstructions;
-import org.openedit.entermedia.creator.ConvertResult;
-import org.openedit.entermedia.creator.MediaCreator;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
-
-import com.openedit.page.Page;
-import com.openedit.util.Exec;
-import com.openedit.util.ExecResult;
-import com.openedit.util.PathUtilities;
+import org.openedit.util.Exec;
+import org.openedit.util.ExecResult;
+import org.openedit.util.PathUtilities;
 
 public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
 	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
-	protected MediaCreator fieldExifToolThumbCreator;
+	protected MediaConverter fieldExifToolThumbCreator;
 	protected Exec fieldExec;
 	protected Set fieldTextFields;
 
@@ -56,12 +55,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		fieldTextFields = inTextFields;
 	}
 
-	public MediaCreator getExifToolThumbCreator()
+	public MediaConverter getExifToolThumbCreator()
 	{
 		return fieldExifToolThumbCreator;
 	}
 
-	public void setExifToolThumbCreator(MediaCreator inExifToolThumbCreator)
+	public void setExifToolThumbCreator(MediaConverter inExifToolThumbCreator)
 	{
 		fieldExifToolThumbCreator = inExifToolThumbCreator;
 	}
@@ -416,7 +415,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 	
-			        MediaCreator c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
+			        MediaConverter c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
 					ConvertInstructions instructions = new ConvertInstructions();
 					instructions.setForce(true);
 					//instructions.setMaxScaledSize(1900, height);

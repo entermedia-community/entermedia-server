@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.ZipGroup;
-import org.entermediadb.asset.creator.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.modules.MediaArchiveModule;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
