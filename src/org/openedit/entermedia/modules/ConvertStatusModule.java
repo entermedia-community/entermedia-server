@@ -204,6 +204,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
 		archive.removeGeneratedImages(asset, true);
+		Page original = archive.getOriginalDocument(asset);
+		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, original.getContentItem(), asset);
+
 		reloadThumbnails( inReq, archive, asset);
 
 	}

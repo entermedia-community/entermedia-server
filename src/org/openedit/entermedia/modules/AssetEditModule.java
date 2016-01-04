@@ -1233,7 +1233,7 @@ public class AssetEditModule extends BaseMediaModule
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
 			
-			archive.removeGeneratedImages(target);
+			archive.removeGeneratedImages(target,true);
 			archive.getPresetManager().retryConversions(archive, archive.getSearcher("conversiontask"), target);
 			archive.fireSharedMediaEvent("conversions/runconversions");
 		}

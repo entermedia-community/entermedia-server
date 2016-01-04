@@ -955,7 +955,7 @@ public class MediaArchive
 
 	public void removeGeneratedImages(Asset inAsset)
 	{
-		removeGeneratedImages(inAsset,false);
+		removeGeneratedImages(inAsset,true);
 	}
 	
 	
@@ -980,7 +980,7 @@ public class MediaArchive
 			public void processFile(ContentItem inContent, User inUser)
 			{
 				//getPageManager().removePage(page);
-				if( inContent.getName().startsWith("customthumb"))
+				if(  !everything && inContent.getName().startsWith("customthumb"))
 				{
 					return;
 				}
