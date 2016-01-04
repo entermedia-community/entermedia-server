@@ -1229,11 +1229,11 @@ public class AssetEditModule extends BaseMediaModule
 			
 			// We're going to allow the metadata reader to replace this asset's properties
 			// but we want to keep old values the reader is not going to replace
-			updateMetadata(archive, target, itemFile);
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
-			
 			archive.removeGeneratedImages(target,true);
+			updateMetadata(archive, target, itemFile);
+			
 			archive.getPresetManager().retryConversions(archive, archive.getSearcher("conversiontask"), target);
 			archive.fireSharedMediaEvent("conversions/runconversions");
 		}
