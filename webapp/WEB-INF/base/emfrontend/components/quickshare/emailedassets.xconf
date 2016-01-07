@@ -1,0 +1,9 @@
+<page>
+<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+
+	<path-action name="OrderModule.loadOrderForVisitor"/>
+	<permission name="view">
+		<boolean value="true" />
+	</permission>
+	<property name="sectiontitle">Shared Assets</property>
+</page>
