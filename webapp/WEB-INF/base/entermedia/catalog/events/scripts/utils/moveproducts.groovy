@@ -1,10 +1,9 @@
-package utils;
+package utils
 
+import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher
-import org.openedit.entermedia.MediaArchive
-
-import com.openedit.page.Page
-import com.openedit.page.manage.PageManager
+import org.openedit.page.Page
+import org.openedit.page.manage.PageManager
 
 public void init(){
 MediaArchive archive = context.getPageValue("mediaarchive");

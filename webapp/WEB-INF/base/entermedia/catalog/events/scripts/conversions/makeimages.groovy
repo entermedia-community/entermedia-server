@@ -1,12 +1,14 @@
-package conversions
-import com.openedit.page.Page 
-import org.openedit.data.Searcher 
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive 
-import org.openedit.
+package conversions	
 
-import com.openedit.hittracker.*;
-import org.openedit.entermedia.creator.*;
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.convert.ConvertInstructions
+import org.openedit.Data
+import org.openedit.WebPageRequest
+import org.openedit.data.Searcher
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.page.Page
 
 public boolean  createOutput(MediaCreator creator, incontext, mediaArchive, hit, forceConvert)
 {

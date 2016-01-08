@@ -1,13 +1,9 @@
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
-import org.openedit.WebPageRequest;
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.Category;
-import org.openedit.entermedia.MediaArchive
+import org.openedit.WebPageRequest
+import org.openedit.hittracker.HitTracker
 import org.openedit.util.PathUtilities
-
-import com.openedit.hittracker.HitTracker
-
-
 
 public void init(){
 	WebPageRequest req = context;
@@ -22,7 +18,7 @@ public void init(){
 		if( hit.get("category-exact") == null)
 		{
 			String path = PathUtilities.extractDirectoryPath(hit.getSourcePath());
-			org.openedit.entermedia.Category catparent = archive.getCategoryArchive().createCategoryTree(path);
+			org.entermediadb.asset.Category catparent = archive.getCategoryArchive().createCategoryTree(path);
 			Asset found = archive.getAssetBySourcePath(hit.getSourcePath());
 			found.addCategory(catparent);
 			tosave.add(found);

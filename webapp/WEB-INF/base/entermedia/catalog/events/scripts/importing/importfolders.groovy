@@ -1,15 +1,11 @@
-package importing;
+package importing
 
-import org.openedit.entermedia.MediaArchive 
-import org.openedit.*
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.scanner.HotFolderManager
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.scanner.HotFolderManager
+import org.openedit.Data
 import org.openedit.repository.ContentItem
-import org.openedit.util.Exec;
-import org.openedit.util.ExecResult;
-
-import com.openedit.hittracker.
+import org.openedit.util.Exec
+import org.openedit.util.ExecResult
 
 public void init()
 {

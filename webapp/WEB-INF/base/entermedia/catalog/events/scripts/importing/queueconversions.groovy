@@ -1,18 +1,16 @@
 
 package importing;
 
-import org.entermedia.locks.Lock
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.scanner.PresetCreator
 import org.openedit.Data
 import org.openedit.MultiValued
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.scanner.PresetCreator
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.page.Page
 import org.openedit.util.DateStorageUtil
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.page.Page
 
 public void createTasksForUpload() throws Exception {
 

@@ -1,21 +1,11 @@
 package assets
-import org.openedit.data.Searcher 
+
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.search.AssetSearcher
 import org.openedit.Data
-import org.openedit.data.Searcher
-import org.openedit.entermedia.*
-import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.edit.*
-import org.openedit.entermedia.episode.*
-import org.openedit.entermedia.modules.*
-import org.openedit.entermedia.search.AssetSearcher
-import org.openedit.xml.*
-
-import com.openedit.hittracker.*
-import com.openedit.page.*
-import com.openedit.util.*
-
-import conversions.*
-
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 
 public void checkforTasks()
 {

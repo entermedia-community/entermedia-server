@@ -1,28 +1,14 @@
 package conversions;
 
-import org.openedit.data.Searcher 
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.email.PostMail
+import org.entermediadb.email.TemplateWebEmail
 import org.openedit.Data
-import org.openedit.WebPageRequest;
-import org.openedit.entermedia.modules.*;
-import org.openedit.entermedia.edit.
-
-import com.openedit.page.*;
-import org.openedit.entermedia.*;
-import org.openedit.data.Searcher;
-import com.openedit.hittracker.*;
-import org.openedit.entermedia.creator.*;
-
-import com.openedit.util.*;
-
-import org.openedit.xml.*;
-import org.openedit.entermedia.episode.*;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import org.entermedia.email.PostMail
-import org.entermedia.email.TemplateWebEmail
-import org.openedit.entermedia.util.*
+import org.openedit.WebPageRequest
+import org.openedit.WebPageRequest.*
+import org.openedit.data.Searcher
+import org.openedit.page.Page
 
 
 public void sendNotify()

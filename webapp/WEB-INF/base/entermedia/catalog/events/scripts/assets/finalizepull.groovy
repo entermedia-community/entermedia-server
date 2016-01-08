@@ -1,17 +1,8 @@
-
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
-import org.openedit.data.*
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
-import org.openedit.event.*
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.page.Page
-
-import org.openedit.entermedia.Category;
-
+import org.openedit.data.Searcher
+import org.openedit.event.WebEvent
 
 public init(){
 	log.info("Starting Finalize Pull Event");

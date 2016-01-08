@@ -1,12 +1,8 @@
 package categories
 
-import org.openedit.entermedia.Category;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.Data;
-
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.page.Page;
-
+import org.entermediadb.asset.MediaArchive
+import org.openedit.Data
+import org.openedit.hittracker.SearchQuery
 
 public void init()
 {

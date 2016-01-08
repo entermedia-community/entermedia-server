@@ -1,10 +1,8 @@
-import com.openedit.page.Page
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.
-
-import com.openedit.hittracker.*;
+import org.openedit.hittracker.SearchQuery
 
 public void init()
 {

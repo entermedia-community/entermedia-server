@@ -1,6 +1,4 @@
-package importing;
-import com.openedit.page.manage.*
-
+package importing
 
 public void init()
 {

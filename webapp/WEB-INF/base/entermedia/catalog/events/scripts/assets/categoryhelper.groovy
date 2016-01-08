@@ -1,10 +1,7 @@
+import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
-import org.openedit.WebPageRequest;
-import org.openedit.entermedia.MediaArchive
-
-import com.openedit.hittracker.HitTracker
-
-
+import org.openedit.WebPageRequest
+import org.openedit.hittracker.HitTracker
 
 public void init(){
 	log.info("Here");
@@ -12,7 +9,7 @@ public void init(){
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	HitTracker hits = req.getPageValue("hits");
 	if (hits){
-		org.openedit.entermedia.Category data = req.getPageValue("category");
+		org.entermediadb.asset.Category data = req.getPageValue("category");
 		if( data == null)
 		{
 			String catid = req.getRequestParameter("category");

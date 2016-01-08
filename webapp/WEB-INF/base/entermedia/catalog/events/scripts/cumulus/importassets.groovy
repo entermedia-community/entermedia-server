@@ -1,8 +1,7 @@
-package cumulus;
+package cumulus
 
-import org.openedit.entermedia.ConvertStatus; 
-import org.openedit.entermedia.MediaArchive;
-
+import org.entermediadb.asset.ConvertStatus
+import org.entermediadb.asset.MediaArchive
 
 public void init()
 {

@@ -1,12 +1,8 @@
-import org.openedit.entermedia.modules.*;
-import org.openedit.entermedia.edit.*;
-import org.openedit.*;
-import com.openedit.page.*;
-import org.openedit.entermedia.*;
-import org.openedit.data.Searcher;
-import com.openedit.hittracker.*;
-import org.openedit.entermedia.creator.*
-
+import org.entermediadb.asset.convert.ConvertInstructions
+import org.openedit.data.Searcher
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.page.Page
 
 public void init()
 {

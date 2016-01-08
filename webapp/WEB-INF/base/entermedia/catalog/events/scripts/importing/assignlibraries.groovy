@@ -1,12 +1,10 @@
-package importing;
+package importing
 
 import model.assets.LibraryManager
 
+import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher
-import org.openedit.entermedia.MediaArchive
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.page.manage.*
+import org.openedit.hittracker.HitTracker
 
 public void setupLibraries()
 {

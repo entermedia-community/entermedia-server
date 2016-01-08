@@ -1,11 +1,12 @@
 package assets
-import org.openedit.*
-import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.event.WebEvent
 
-import com.openedit.hittracker.*
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.openedit.Data
+import org.openedit.data.Searcher
+import org.openedit.event.WebEvent
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 
 public void init() {
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos

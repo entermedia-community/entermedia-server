@@ -1,7 +1,7 @@
 import model.importer.BaseImporter
-import org.openedit.Data;
-import org.openedit.data.Searcher;
-import org.openedit.entermedia.util.Row;
+
+import org.entermediadb.asset.util.Row
+import org.openedit.Data
 
 class CsvImporter extends BaseImporter
 {

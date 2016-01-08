@@ -1,20 +1,17 @@
 package notifications;
 
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.page.Page
-
-import org.entermedia.email.PostMail
-import org.entermedia.email.TemplateWebEmail
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.search.AssetSearcher
+import org.entermediadb.email.PostMail
+import org.entermediadb.email.TemplateWebEmail
 import org.openedit.Data
-import org.openedit.WebPageRequest;
+import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.search.AssetSearcher
-import org.openedit.users.UserManager;
-import org.openedit.util.DateStorageUtil
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.page.Page
+import org.openedit.users.UserManager
 
 
 public void init(){

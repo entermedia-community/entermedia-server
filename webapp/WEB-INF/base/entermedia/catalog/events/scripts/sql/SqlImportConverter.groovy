@@ -1,38 +1,27 @@
 package sql;
 
-/*
-* Created on Mar 24, 2006
-*/
+import java.sql.Connection
+import java.sql.Driver
+import java.sql.DriverManager
+import java.sql.ResultSetMetaData
+import java.sql.Statement
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.dom4j.Element
-import org.openedit.ModuleManager;
-import org.openedit.OpenEditException;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.CatalogConverter;
-import org.openedit.entermedia.Category;
-import org.openedit.entermedia.ConvertStatus;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.xml.XmlArchive;
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.CatalogConverter
+import org.entermediadb.asset.ConvertStatus
+import org.entermediadb.asset.MediaArchive
+import org.openedit.ModuleManager
+import org.openedit.OpenEditException
+import org.openedit.data.PropertyDetail
+import org.openedit.data.PropertyDetails
+import org.openedit.page.manage.PageManager
+import org.openedit.xml.XmlArchive
 import org.openedit.xml.XmlFile
-
-import com.openedit.page.manage.PageManager;
 
 public class SqlImportConverter extends CatalogConverter
 {

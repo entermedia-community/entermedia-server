@@ -1,19 +1,14 @@
 package importing;
 
-import org.openedit.entermedia.MediaArchive
 import groovy.util.slurpersupport.GPathResult
 
-import org.openedit.*
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.search.AssetSearcher
+import org.entermediadb.asset.xmldb.XmlCategoryArchive
 import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.search.AssetSearcher
-import org.openedit.entermedia.xmldb.XmlCategoryArchive
-
-import com.openedit.hittracker.*
-import com.openedit.page.Page
+import org.openedit.page.Page
 
 public void init() {
 	MediaArchive archive = context.getPageValue("mediaarchive");
@@ -91,7 +86,7 @@ public void init() {
 				}
 				String sp = sourcepath.toString().substring(0, sourcepath.length() -1)
 				
-				org.openedit.entermedia.Category category = archive.getCategoryArchive().createCategoryTree("${catalog}/${sp}");
+				org.entermediadb.asset.Category category = archive.getCategoryArchive().createCategoryTree("${catalog}/${sp}");
 				asset.addCategory(category);
 				
 				asset.setSourcePath("${catalog}/${sp}/${filename}");
@@ -140,9 +135,9 @@ public void createCategories(){
 		String id = properties.get(catid);
 		String pid = properties.get(parentuid);
 		String name = properties.get(categoryname);
-		org.openedit.entermedia.Category category = catarc.getCategory(id);
+		org.entermediadb.asset.Category category = catarc.getCategory(id);
 		if(category == null){
-			category = new org.openedit.entermedia.Category();
+			category = new org.entermediadb.asset.Category();
 		}
 		if(pid != null && pid != "0"){
 			category.setParentId(pid);
@@ -170,7 +165,7 @@ public void createCategories(){
 }
 
 
-public void findParent(ArrayList categories, org.openedit.entermedia.Category inCategory){
+public void findParent(ArrayList categories, org.entermediadb.asset.Category inCategory){
 	Category parent = null;
 	categories.each{
 		if(it.getId().equals(inCategory.getParentId())){

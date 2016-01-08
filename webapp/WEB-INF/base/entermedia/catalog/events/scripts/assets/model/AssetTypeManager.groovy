@@ -1,23 +1,14 @@
 package assets.model;
 
-import org.openedit.data.Searcher
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.search.AssetSearcher
+import org.entermediadb.scripts.EnterMediaObject
 import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.*
-import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.edit.*
-import org.openedit.entermedia.episode.*
-import org.openedit.entermedia.modules.*
-import org.openedit.entermedia.search.AssetSearcher
-import org.openedit.util.PathUtilities;
-import org.openedit.xml.*
-
-import com.openedit.entermedia.scripts.EnterMediaObject;
-import com.openedit.hittracker.*
-import com.openedit.page.*
-import com.openedit.util.*
-
-import conversions.*
+import org.openedit.data.Searcher.*
+import org.openedit.hittracker.HitTracker
+import org.openedit.util.PathUtilities
 
 public class AssetTypeManager extends EnterMediaObject {
 	public void saveAssetTypes(Collection inAssets) {

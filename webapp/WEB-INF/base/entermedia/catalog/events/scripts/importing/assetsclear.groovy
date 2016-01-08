@@ -1,13 +1,13 @@
-package importing;
-import org.openedit.Data
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.scanner.HotFolderManager
-import org.openedit.entermedia.search.AssetSearcher
+package importing
 
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.page.manage.PageManager
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.scanner.HotFolderManager
+import org.entermediadb.asset.search.AssetSearcher
+import org.openedit.Data
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.page.manage.PageManager
 
 public void init()
 {

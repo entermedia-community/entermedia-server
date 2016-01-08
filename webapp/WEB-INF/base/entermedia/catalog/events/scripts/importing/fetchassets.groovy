@@ -1,15 +1,13 @@
-package importing;
+package importing
 
-import org.openedit.*
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.scanner.MetaDataReader
+import org.entermediadb.modules.update.Downloader
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.scanner.MetaDataReader
-import org.openedit.util.PathUtilities;
-
-import com.openedit.hittracker.*
-import com.openedit.modules.update.Downloader
-import com.openedit.page.Page
+import org.openedit.hittracker.HitTracker
+import org.openedit.page.Page
+import org.openedit.util.PathUtilities
 
 public void init() {
 	MediaArchive archive = context.getPageValue("mediaarchive");

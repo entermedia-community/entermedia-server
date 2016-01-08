@@ -1,17 +1,15 @@
 package publishing;
 
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.publishing.PublishResult
+import org.entermediadb.asset.publishing.Publisher
 import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.*
-import org.openedit.event.*
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.page.Page
-
-import org.entermedia.locks.Lock;
+import org.openedit.event.WebEvent
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.locks.Lock
 
 
 public void init() {

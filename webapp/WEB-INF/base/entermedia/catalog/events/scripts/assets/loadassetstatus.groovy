@@ -1,13 +1,9 @@
-package assets;
-import java.util.*
+package assets
 
+import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.page.manage.*
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 
 public void init()
 {

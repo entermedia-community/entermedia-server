@@ -1,39 +1,13 @@
-package fatwire;
+package fatwire
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
-import org.openedit.data.Searcher;
-import org.openedit.data.SearcherManager;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.Data;
-import com.openedit.page.Page;
-import com.openedit.page.manage.PageManager
-import com.openedit.hittracker.SearchQuery;
-import com.openedit.hittracker.HitTracker;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.scanner.AssetImporter
-import org.openedit.repository.ContentItem
-import org.openedit.users.User;
-
-import java.security.MessageDigest
-
-import com.openedit.entermedia.scripts.EnterMediaObject
-import com.openedit.entermedia.scripts.ScriptLogger;
-import com.openedit.page.Page
-import com.openedit.servlet.OpenEditEngine
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
-import org.openedit.WebPageRequest;
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.modules.OrderModule
-import org.openedit.entermedia.orders.Order
-
+import org.openedit.data.Searcher
+import org.openedit.data.SearcherManager
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 import org.openedit.util.DateStorageUtil
-import org.openedit.util.FileUtils;
-import org.openedit.util.PathProcessor;
-import org.openedit.util.XmlUtil;
-
 
 public void init()
 {

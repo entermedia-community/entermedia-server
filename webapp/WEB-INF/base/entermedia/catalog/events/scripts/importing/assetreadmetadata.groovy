@@ -1,17 +1,10 @@
-package importing;
+package importing
 
-import java.rmi.server.LoaderHandler;
-
-import com.openedit.page.Page
-
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.scanner.MetaDataReader
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.
-
-import com.openedit.hittracker.*;
-
-import org.openedit.entermedia.scanner.MetaDataReader;
+import org.openedit.page.Page
 
 public void init()
 {

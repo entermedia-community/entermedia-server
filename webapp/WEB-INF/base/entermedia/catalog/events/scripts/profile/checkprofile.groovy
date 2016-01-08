@@ -1,8 +1,8 @@
-package profile;
+package profile
 
+import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.MediaArchive
 
 user = context.getUser();
 if(user == null){

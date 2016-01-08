@@ -1,18 +1,11 @@
-package importing;
+package importing
 
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
-import org.openedit.MultiValued;
-import org.openedit.data.BaseData
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.scanner.PresetCreator
-import org.openedit.util.DateStorageUtil
-import com.openedit.page.Page
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 
 //I do not need this at all since the assets are already set based on the import script or the conversion script
 
