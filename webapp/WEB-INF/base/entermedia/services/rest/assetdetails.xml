@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<rsp stat="ok">
+<rsp #if( $asset )stat="ok" #else stat="404" #end>
 #set($details = $searcher.getDetailsForView("asset/restassetdetails", $user))
 #foreach( $detail in $details )
 #set( $value = false )
