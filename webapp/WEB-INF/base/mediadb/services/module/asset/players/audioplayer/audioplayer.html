@@ -10,6 +10,9 @@
 #end
 
 #set( $name = $asset.name )
+<script src="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/jquery-1.11.1.min.js"></script>
+<script src="$!prefix$home/${mediadbappid}/services/module/asset/players/jplayer/jquery.jplayer.min.js"></script>
+<link   href="$!prefix$home/${mediadbappid}/services/module/asset/players/jplayer/skin/premium-pixels.css" rel="stylesheet" >
 
         <div id="jp_container_mediaviewer" class="jp-audio" title="$asset.sourcepath">
             <div class="jp-type-single">
@@ -54,3 +57,34 @@
                 </div -->
             </div>
         </div>
+
+        
+  <script>
+  jQuery(".jp-play").on("click", function(){
+		
+		
+		//	alert("Found a player, setting it up");
+			var player = jQuery(this).closest(".jp-audio").find(".jp-jplayer");
+			var url = player.data("url");
+			var containerid = player.data("container");
+			var container = jQuery("#" + containerid);
+			
+			player.jPlayer({
+		        ready: function (event) {
+		        	player.jPlayer("setMedia", {
+		                mp3:url
+		            }).jPlayer("play");
+		        },
+		        play: function() { // To avoid both jPlayers playing together.
+		        	player.jPlayer("pauseOthers");
+				},
+		        swfPath: '$!prefix$home/${mediadbappid}/services/module/asset/players/jplayer',
+		        supplied: "mp3",
+		        wmode: "window",
+		        cssSelectorAncestor: "#" + containerid
+		    });
+			
+			//player.jPlayer("play");
+
+		});
+  </script>
