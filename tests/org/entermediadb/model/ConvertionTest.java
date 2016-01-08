@@ -5,15 +5,23 @@ import java.util.Map;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.ConverterManager;
-import org.entermediadb.asset.convert.MediaConverter;
-import org.openedit.page.Page;
-import org.openedit.util.PathUtilities;
+import org.entermediadb.asset.convert.ConvertResult;
 
 public class ConvertionTest extends BaseEnterMediaTest
 {
 	
+	public void testLoader() throws Exception
+	{
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		Map settings = new HashMap();
+		settings.put("prefwidth", "100");
+		settings.put("prefheight", "100");
+		ConvertResult result = archive.getTranscodeManager().createOutputIfNeeded(settings, "users/admin/105", "jpg");
+		assertTrue(result.isOk());
+		assertNotNull(result.getOutput());
+		
+	}
+	/*
 	public void testPdfToJpeg()
 	{
 
@@ -40,9 +48,9 @@ public class ConvertionTest extends BaseEnterMediaTest
 		assertTrue(converted.length() > 0);
 		assertEquals("jpg", PathUtilities.extractPageType(converted.getPath()));
 	}
+	*/
 	
-	
-	
+	/*
 	
 	
 	public void testCropInstructions()
@@ -92,6 +100,7 @@ public class ConvertionTest extends BaseEnterMediaTest
 		assertTrue(converted.length() > 0);
 		assertEquals("eps", PathUtilities.extractPageType(converted.getPath()));
 	}
+	*/
 	/**
 	public void xtestConvertInddFile() throws Exception
 	{

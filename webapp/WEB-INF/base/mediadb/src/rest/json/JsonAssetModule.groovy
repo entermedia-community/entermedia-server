@@ -7,26 +7,25 @@ import java.text.SimpleDateFormat
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.entermedia.upload.FileUpload
-import org.entermedia.upload.UploadRequest
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.convert.ConversionUtil
+import org.entermediadb.asset.orders.Order
+import org.entermediadb.asset.orders.OrderManager
+import org.entermediadb.asset.orders.OrderSearcher
+import org.entermediadb.asset.scanner.AssetImporter
+import org.entermediadb.asset.search.AssetSearcher
+import org.entermediadb.asset.upload.FileUpload
+import org.entermediadb.asset.upload.UploadRequest
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.openedit.Data
-import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
+import org.openedit.OpenEditException
+import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.creator.ConversionUtil
-import org.openedit.entermedia.orders.Order
-import org.openedit.entermedia.orders.OrderManager
-import org.openedit.entermedia.orders.OrderSearcher
-import org.openedit.entermedia.scanner.AssetImporter
-import org.openedit.entermedia.search.AssetSearcher
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.page.Page
+import org.openedit.hittracker.HitTracker
+import org.openedit.page.Page
 
 
 public class JsonAssetModule extends BaseJsonModule 

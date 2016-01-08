@@ -2,15 +2,14 @@ package rest.json
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
-import org.openedit.WebPageRequest;
+import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.MediaArchive
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 import org.openedit.util.PathUtilities
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
 
 
 public class JsonDataModule extends BaseJsonModule 
