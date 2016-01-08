@@ -1,4 +1,4 @@
-package org.entermediadb.asset.trancode;
+package org.entermediadb.asset.convert.transcoders;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -10,18 +10,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.convert.BaseConverter;
+import org.entermediadb.asset.convert.BaseTranscoder;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.MediaConverter;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class AudioHandler extends BaseConverter implements MediaConverter
+public class audioCreator extends BaseTranscoder implements ConversionManager
 {
-	private static final Log log = LogFactory.getLog(AudioHandler.class);
+	private static final Log log = LogFactory.getLog(audioCreator.class);
 
 	public boolean canReadIn(MediaArchive inArchive, String inOutputType)
 	{

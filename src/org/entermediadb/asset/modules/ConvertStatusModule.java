@@ -3,7 +3,7 @@ package org.entermediadb.asset.modules;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.MediaConverter;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
@@ -79,7 +79,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
-        MediaConverter c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+        ConversionManager c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
         
 		ConvertInstructions instructions = c.createInstructions(settings.getProperties(), archive, "jpg", asset.getSourcePath());
 		instructions.setForce(true);
@@ -168,7 +168,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		
-        MediaConverter c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+        ConversionManager c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
 		instructions.setInputPath(input);

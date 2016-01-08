@@ -1,4 +1,4 @@
-package org.entermediadb.asset.converters;
+package org.entermediadb.asset.convert.transcoders;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -10,18 +10,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.convert.BaseConverter;
+import org.entermediadb.asset.convert.BaseTranscoder;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.MediaConverter;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class audioCreator extends BaseConverter implements MediaConverter
+public class audioConverter extends BaseTranscoder implements ConversionManager
 {
-	private static final Log log = LogFactory.getLog(audioCreator.class);
+	private static final Log log = LogFactory.getLog(audioConverter.class);
 
 	public boolean canReadIn(MediaArchive inArchive, String inOutputType)
 	{
@@ -193,36 +193,6 @@ public class audioCreator extends BaseConverter implements MediaConverter
 		log.info("ok: ${ok} in " + (System.currentTimeMillis() - start) / 1000L + " seconds");
 	}
 
-	public ConvertResult applyWaterMark(MediaArchive inArchive, File inConverted, File inWatermarked, ConvertInstructions inStructions)
-	{
-		return null;
-	}
 
-	//	public String createConvertPath(ConvertInstructions inStructions)
-	//	{
-	//		String path = inStructions.getAssetSourcePath() + "audio." + inStructions.getOutputExtension();
-	//		
-	//		return path;
-	//	}
-	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
-	{
-		StringBuffer path = new StringBuffer();
-		String prefix = inStructions.getProperty("pathprefix");
-		if (prefix != null)
-		{
-			path.append(prefix);
-		}
-		else
-		{
-			path.append("/WEB-INF/data");
-			path.append(inArchive.getCatalogHome());
-			path.append("/generated/");
-		}
-		path.append(inStructions.getAssetSourcePath());
-
-		path.append("/audio." + inStructions.getOutputExtension());
-		inStructions.setOutputPath(path.toString());
-		return path.toString();
-	}
 
 }

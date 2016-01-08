@@ -21,9 +21,9 @@ import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public abstract class BaseConverter implements MediaConverter
+public abstract class BaseTranscoder implements MediaTranscoder
 {
-	private static final Log log = LogFactory.getLog(BaseConverter.class);
+	private static final Log log = LogFactory.getLog(BaseTranscoder.class);
 	protected PageManager fieldPageManager;
 	//protected String fieldWaterMarkPath;
 	protected Exec fieldExec;
@@ -132,7 +132,7 @@ public abstract class BaseConverter implements MediaConverter
 
 		return fieldPreProcessors;
 	}
-	public void addPreProcessor(MediaConverter inCreator)
+	public void addPreProcessor(ConversionManager inCreator)
 	{
 		getPreProcessors().add(inCreator);
 	}
@@ -141,14 +141,14 @@ public abstract class BaseConverter implements MediaConverter
 		fieldPreProcessors = inPreProcessors;
 	}
 
-	protected MediaConverter getPreProcessor(MediaArchive inArchive, String ext)
+	protected MediaTranscoder getPreProcessor(MediaArchive inArchive, String ext)
 	{
 		if( fieldPreProcessors != null)
 		{
 			//Loop over the children and find a match
 			for (Iterator iterator = getPreProcessors().iterator(); iterator.hasNext();)
 			{
-				MediaConverter type = (MediaConverter) iterator.next();
+				MediaTranscoder type = (MediaTranscoder) iterator.next();
 				if( type.canReadIn(inArchive, ext) )
 					return type;
 			}
@@ -160,7 +160,7 @@ public abstract class BaseConverter implements MediaConverter
 	{
 		for (Iterator iterator = getPreProcessors().iterator(); iterator.hasNext();)
 		{
-			MediaConverter type = (MediaConverter) iterator.next();
+			MediaTranscoder type = (MediaTranscoder) iterator.next();
 			if( type.canReadIn(inArchive, inInput))
 			{
 				return true;

@@ -1,4 +1,4 @@
-package org.entermediadb.asset.converters.inputloaders;
+package org.entermediadb.asset.convert.inputloaders;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory

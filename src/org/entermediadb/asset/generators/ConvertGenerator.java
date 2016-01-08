@@ -7,7 +7,7 @@ import java.util.Map;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.trancode.TranscodeManager;
+import org.entermediadb.asset.convert.MediaCreator;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -82,7 +82,7 @@ public class ConvertGenerator extends FileGenerator
 //		{
 //			return;
 //		}
-		TranscodeManager transcoder = archive.getTranscodeManager();
+		MediaCreator transcoder = archive.getTranscodeManager();
 		Map all = new HashMap(); //TODO: Get parent ones as well
 		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{

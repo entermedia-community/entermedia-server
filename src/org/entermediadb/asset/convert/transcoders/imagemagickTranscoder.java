@@ -1,4 +1,4 @@
-package org.entermediadb.asset.converters;
+package org.entermediadb.asset.convert.transcoders;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import org.openedit.page.Page;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class imagemagickCreator extends BaseCreator
+public class imagemagickTranscoder extends MediaTranscoder
 {
 	private static final Log log = LogFactory.getLog(imagemagickCreator.class);
 

@@ -16,7 +16,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.MediaConverter;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -32,7 +32,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
 	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
-	protected MediaConverter fieldExifToolThumbCreator;
+	protected ConversionManager fieldExifToolThumbCreator;
 	protected Exec fieldExec;
 	protected Set fieldTextFields;
 
@@ -55,12 +55,12 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		fieldTextFields = inTextFields;
 	}
 
-	public MediaConverter getExifToolThumbCreator()
+	public ConversionManager getExifToolThumbCreator()
 	{
 		return fieldExifToolThumbCreator;
 	}
 
-	public void setExifToolThumbCreator(MediaConverter inExifToolThumbCreator)
+	public void setExifToolThumbCreator(ConversionManager inExifToolThumbCreator)
 	{
 		fieldExifToolThumbCreator = inExifToolThumbCreator;
 	}
@@ -415,7 +415,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 	
-			        MediaConverter c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
+			        ConversionManager c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
 					ConvertInstructions instructions = new ConvertInstructions();
 					instructions.setForce(true);
 					//instructions.setMaxScaledSize(1900, height);

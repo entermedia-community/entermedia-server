@@ -16,14 +16,14 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.convert.ConverterManager;
+import org.entermediadb.asset.convert.MediaCreator;
+import org.entermediadb.asset.convert.MediaCreator;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.AssetSecurityArchive;
-import org.entermediadb.asset.trancode.TranscodeManager;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
@@ -63,8 +63,8 @@ public class MediaArchive
 	protected EmailErrorHandler fieldEmailErrorHandler;
 	protected PageManager fieldPageManager;
 	protected WebEventHandler fieldMediaEventHandler;
-	protected ConverterManager fieldCreatorManager;
-	protected TranscodeManager fieldTranscodeManager;
+	protected MediaCreator fieldCreatorManager;
+	protected MediaCreator fieldTranscodeManager;
 
 	protected AssetArchive fieldAssetArchive;
 	protected AssetArchive fieldMirrorAssetArchive;
@@ -487,22 +487,22 @@ public class MediaArchive
 		boolean folder = getPageManager().getRepository().getStub(path).isFolder();
 		return folder;
 	}
-	public TranscodeManager getTranscodeManager()
+	public MediaCreator getTranscodeManager()
 	{
 		if (fieldTranscodeManager == null)
 		{
-			fieldTranscodeManager = (TranscodeManager) getModuleManager().getBean(getCatalogId(), "transcodeManager");
+			fieldTranscodeManager = (MediaCreator) getModuleManager().getBean(getCatalogId(), "transcodeManager");
 			fieldTranscodeManager.setMediaArchive(this);
 		}
 
 		return fieldTranscodeManager;
 	}
 
-	public ConverterManager getCreatorManager()
+	public MediaCreator getCreatorManager()
 	{
 		if (fieldCreatorManager == null)
 		{
-			fieldCreatorManager = (ConverterManager) getModuleManager().getBean(getCatalogId(), "creatorManager");
+			fieldCreatorManager = (MediaCreator) getModuleManager().getBean(getCatalogId(), "creatorManager");
 			fieldCreatorManager.setMediaArchive(this);
 		}
 
@@ -819,7 +819,7 @@ public class MediaArchive
 		fieldAssetSecurityArchive = assetSecurityArchive;
 	}
 
-	public void setConvertManager(ConverterManager creatorManager)
+	public void setConvertManager(MediaCreator creatorManager)
 	{
 		fieldCreatorManager = creatorManager;
 	}

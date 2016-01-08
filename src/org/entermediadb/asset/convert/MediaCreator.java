@@ -23,9 +23,9 @@ import org.openedit.page.manage.PageManager;
  * @author shanti
  *
  */
-public class ConverterManager
+public class MediaCreator
 {
-	private static final Log log = LogFactory.getLog(ConverterManager.class);
+	private static final Log log = LogFactory.getLog(MediaCreator.class);
 
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager fieldModuleManager;
@@ -37,14 +37,14 @@ public class ConverterManager
 
 	public ConvertResult createOutput(ConvertInstructions inStructions)
 	{
-		MediaConverter creator = getMediaCreatorByOutputFormat(inStructions.getOutputExtension());
+		MediaTranscoder creator = getMediaCreatorByOutputFormat(inStructions.getOutputExtension());
 		return creator.convert(inStructions);
 	}
 
 	// filetype is jpg asset.fileformat
-	public MediaConverter getMediaCreatorByOutputFormat(String inFileType)
+	public MediaTranscoder getMediaCreatorByOutputFormat(String inFileType)
 	{
-		MediaConverter converter = (MediaConverter) getConverterCache().get(inFileType);
+		MediaTranscoder converter = (MediaTranscoder) getConverterCache().get(inFileType);
 		if (converter == null)
 		{
 			if( inFileType == null)
@@ -71,7 +71,7 @@ public class ConverterManager
 					return null; //TODO: Cache a Null value?
 				}
 				String bean = type + "Converter";
-				converter = (MediaConverter) getModuleManager().getBean(bean);
+				converter = (MediaTranscoder) getModuleManager().getBean(bean);
 			}
 			getConverterCache().put(inFileType, converter);
 		}
@@ -174,7 +174,7 @@ public class ConverterManager
 	//We use the output as they key converter then let it decide if it can read in a certain input type
 	public boolean canConvert(String inInput, String inOutput)
 	{
-		MediaConverter con = getMediaCreatorByOutputFormat(inOutput);
+		MediaTranscoder con = getMediaCreatorByOutputFormat(inOutput);
 		//If we get a converter for this output we are in good shape
 		return con != null && con.canReadIn(getMediaArchive(), inInput);
 	}
@@ -252,4 +252,43 @@ public class ConverterManager
 		fieldFileFormatCache = inFileFormatCache;
 	}
 
+	protected Map fieldHandlerCache = new HashMap(5);
+	
+	protected ConversionManager getManager(String inFileFormat)
+	{
+		ConversionManager handler = (ConversionManager)fieldHandlerCache.get(inFileFormat);
+		if( handler == null)
+		{
+			synchronized (this)
+			{
+				handler = (ConversionManager)fieldHandlerCache.get(inFileFormat);
+				if( handler == null)
+				{
+					String type = getMediaArchive().getMediaRenderType(inFileFormat);
+					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), type + "Handler");
+					fieldHandlerCache.put( inFileFormat, handler);
+				}	
+			}
+		}
+		return handler;
+	}
+
+	
+	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath, String inOutputType)
+	{
+		//Minimal information here. We dont know what kind of input we have
+		ConversionManager handler = getManager(inOutputType);
+		return handler.createOutputIfNeeded(inCreateProperties,inSourcePath, inOutputType);
+	}
+//	public ConvertInstructions createInstructions(Asset inAsset,Data inPreset,String inOutputType)
+//	{
+//		
+//	}
+//	public ConvertInstructions createInstructions(Map inCreateProperties, Asset inAsset, String inSourcePath, Data inPreset,String inOutputType)
+//	{
+//		
+//	}
+
+
+	
 }

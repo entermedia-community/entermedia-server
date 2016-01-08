@@ -1,4 +1,4 @@
-package org.entermediadb.asset.converters.outputfilters;
+package org.entermediadb.asset.convert.outputfilters;
 
 import org.entermediadb.asset.creator.ImageOutputFilter;
 import org.openedit.page.Page;

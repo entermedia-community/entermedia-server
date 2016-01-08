@@ -5,7 +5,7 @@ import org.openedit.Data;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.Exec;
 
-public interface MediaConverter
+public interface MediaTranscoder
 {
 	/**
 	 * The creator is selected based on the output format as found here: fileformat.xml. The question becomes can this creator handle this input format?

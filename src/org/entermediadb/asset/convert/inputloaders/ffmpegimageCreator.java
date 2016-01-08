@@ -1,7 +1,7 @@
 /*
  * Created on Sep 20, 2005
  */
-package org.entermediadb.asset.converters.inputloaders;
+package org.entermediadb.asset.convert.inputloaders;
 
 import java.io.File;
 import java.util.ArrayList;
