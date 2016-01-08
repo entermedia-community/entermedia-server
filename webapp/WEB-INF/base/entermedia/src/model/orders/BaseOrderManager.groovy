@@ -4,34 +4,32 @@ import java.text.SimpleDateFormat
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.entermedia.email.PostMail
-import org.entermedia.email.TemplateWebEmail
-import org.entermedia.locks.Lock
-import org.entermedia.locks.LockManager
-import org.openedit.BaseWebPageRequest;
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.CompositeAsset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.orders.Order
+import org.entermediadb.asset.orders.OrderHistory
+import org.entermediadb.asset.orders.OrderManager
+import org.entermediadb.email.PostMail
+import org.entermediadb.email.TemplateWebEmail
+import org.openedit.BaseWebPageRequest
 import org.openedit.Data
-import org.openedit.ModuleManager;
-import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
+import org.openedit.ModuleManager
+import org.openedit.OpenEditException
+import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.CompositeAsset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.orders.Order
-import org.openedit.entermedia.orders.OrderHistory
-import org.openedit.entermedia.orders.OrderManager
 import org.openedit.event.WebEvent
 import org.openedit.event.WebEventHandler
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.locks.Lock
+import org.openedit.locks.LockManager
+import org.openedit.page.manage.PageManager
 import org.openedit.profile.UserProfile
-import org.openedit.users.User;
+import org.openedit.users.User
 import org.openedit.util.DateStorageUtil
 import org.openedit.util.RequestUtils
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.page.Page
-import com.openedit.page.manage.PageManager
 
 public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);

@@ -10,29 +10,28 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.scanner.AssetImporter
+import org.entermediadb.asset.scanner.HotFolderManager
+import org.entermediadb.asset.util.TimeParser
 import org.json.simple.JSONArray
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.openedit.Data
-import org.openedit.OpenEditException;
-import org.openedit.WebServer;
+import org.openedit.OpenEditException
+import org.openedit.WebServer
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.scanner.AssetImporter
-import org.openedit.entermedia.scanner.HotFolderManager
-import org.openedit.entermedia.util.TimeParser
+import org.openedit.page.Page
+import org.openedit.page.manage.PageManager
 import org.openedit.repository.Repository
 import org.openedit.repository.filesystem.FileRepository
 import org.openedit.repository.filesystem.XmlVersionRepository
 import org.openedit.util.DateStorageUtil
-import org.openedit.util.EmStringUtils;
-import org.openedit.util.Exec;
-import org.openedit.util.ExecResult;
+import org.openedit.util.EmStringUtils
+import org.openedit.util.Exec
+import org.openedit.util.ExecResult
 import org.openedit.util.PathUtilities
-
-import com.openedit.page.Page
-import com.openedit.page.manage.PageManager
 
 public class BaseHotFolderManager implements HotFolderManager
 {

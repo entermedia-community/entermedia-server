@@ -1,11 +1,11 @@
 package modules.convert;
 
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.modules.BaseMediaModule
 import org.openedit.Data
-import org.openedit.WebPageRequest;
+import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.modules.BaseMediaModule
 import org.openedit.util.DateStorageUtil
 
 public class ConvertModule extends BaseMediaModule

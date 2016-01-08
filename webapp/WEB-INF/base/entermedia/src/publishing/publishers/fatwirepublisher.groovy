@@ -1,40 +1,27 @@
 package publishing.publishers;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Iterator;
+import java.awt.Dimension
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTPReply
+import org.apache.commons.net.io.Util
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.convert.ConversionUtil
+import org.entermediadb.asset.publishing.BasePublisher
+import org.entermediadb.asset.publishing.PublishResult
+import org.entermediadb.asset.publishing.Publisher
 import org.openedit.Data
 import org.openedit.data.BaseData
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.
-import org.openedit.users.User;
-import org.openedit.users.UserManager;
-
-import com.openedit.hittracker.SearchQuery;
-
-import java.net.URL;
-import java.awt.Dimension;
-
-import com.openedit.page.Page
-
-import org.apache.commons.net.ftp.FTPClient
-import org.apache.commons.net.ftp.FTPReply
-import org.apache.commons.io.IOUtils
-import org.apache.commons.net.io.Util;
-import org.openedit.entermedia.creator.ConversionUtil;
+import org.openedit.entermedia.publishing.*
+import org.openedit.hittracker.SearchQuery
+import org.openedit.page.Page
+import org.openedit.users.User
+import org.openedit.users.UserManager
 import org.openedit.util.DateStorageUtil
-import org.openedit.util.FileUtils;
-import org.openedit.util.RequestUtils;;
 //import org.entermediadb.fatwire.FatwireManager
 
 public class fatwirepublisher extends BasePublisher implements Publisher

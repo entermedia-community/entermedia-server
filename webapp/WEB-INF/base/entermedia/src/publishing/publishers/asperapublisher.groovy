@@ -1,19 +1,17 @@
 package publishing.publishers;
 
-import com.openedit.page.Page 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-//import org.entermediadb.aspera.AsperaManager 
-//import org.entermediadb.aspera.AsperaRepository 
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.publishing.BasePublisher
+import org.entermediadb.asset.publishing.PublishResult
+import org.entermediadb.asset.publishing.Publisher
 import org.openedit.Data
-import org.openedit.OpenEditException;
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive 
-import org.openedit.entermedia.modules.OrderModule;
-import org.openedit.entermedia.publishing.*;
-import org.openedit.repository.filesystem.StringItem;
-import org.openedit.data.*;
+import org.openedit.data.*
+import org.openedit.entermedia.publishing.*
+import org.openedit.page.Page
+import org.openedit.repository.filesystem.StringItem
 
 public class asperapublisher extends BasePublisher implements Publisher
 {

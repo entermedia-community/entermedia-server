@@ -1,17 +1,15 @@
 package publishing.publishers;
 
-import java.io.File;
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.publishing.BasePublisher
+import org.entermediadb.asset.publishing.PublishResult
+import org.entermediadb.asset.publishing.Publisher
 import org.openedit.Data
-import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.
-import org.openedit.util.FileUtils;
-
-import com.openedit.page.Page
+import org.openedit.entermedia.publishing.*
+import org.openedit.page.Page
 
 /**
  * This is a poorly named browser download publisher. 

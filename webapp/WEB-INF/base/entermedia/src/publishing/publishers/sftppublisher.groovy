@@ -2,15 +2,17 @@ package publishing.publishers;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.publishing.BasePublisher
+import org.entermediadb.asset.publishing.PublishResult
+import org.entermediadb.asset.publishing.Publisher
+import org.entermediadb.asset.util.ssh.SftpUtil
 import org.openedit.Data
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.publishing.*
-import org.openedit.entermedia.util.ssh.SftpUtil
-import org.openedit.users.User;
-import org.openedit.users.UserManager;
-
-import com.openedit.page.Page
+import org.openedit.page.Page
+import org.openedit.users.User
+import org.openedit.users.UserManager
 
 public class sftppublisher extends BasePublisher implements Publisher
 {

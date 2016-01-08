@@ -1,13 +1,12 @@
 package model.assets
 
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.scripts.EnterMediaObject
 import org.openedit.Data
 import org.openedit.MultiValued
 import org.openedit.data.BaseData
 import org.openedit.data.Searcher
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-
-import com.openedit.entermedia.scripts.EnterMediaObject
 
 public class LibraryManager extends EnterMediaObject
 {

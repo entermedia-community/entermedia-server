@@ -15,35 +15,33 @@ import org.apache.commons.logging.LogFactory
 import org.dom4j.Attribute
 import org.dom4j.DocumentException
 import org.dom4j.Element
-import org.entermedia.upload.FileUpload
-import org.entermedia.upload.FileUploadItem
-import org.entermedia.upload.UploadRequest
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.push.PushManager
+import org.entermediadb.asset.scanner.AssetImporter
+import org.entermediadb.asset.search.AssetSearcher
+import org.entermediadb.asset.upload.FileUpload
+import org.entermediadb.asset.upload.FileUploadItem
+import org.entermediadb.asset.upload.UploadRequest
+import org.entermediadb.data.ImmutableData
+import org.entermediadb.modules.update.Downloader
 import org.openedit.Data
-import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
-import org.openedit.data.ImmutableData
+import org.openedit.OpenEditException
+import org.openedit.WebPageRequest
 import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.Category
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.push.PushManager
-import org.openedit.entermedia.scanner.AssetImporter
-import org.openedit.entermedia.search.AssetSearcher
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
+import org.openedit.page.Page
+import org.openedit.page.manage.PageManager
 import org.openedit.repository.ContentItem
-import org.openedit.users.User;
-import org.openedit.users.UserManager;
+import org.openedit.users.User
+import org.openedit.users.UserManager
 import org.openedit.util.DateStorageUtil
-import org.openedit.util.PathUtilities;
+import org.openedit.util.PathUtilities
 import org.openedit.util.XmlUtil
-
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
-import com.openedit.modules.update.Downloader
-import com.openedit.page.Page
-import com.openedit.page.manage.PageManager
 
 public class BasePushManager implements PushManager
 {

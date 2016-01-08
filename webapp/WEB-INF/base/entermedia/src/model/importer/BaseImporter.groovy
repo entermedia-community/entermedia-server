@@ -1,31 +1,24 @@
 package model.importer;
 
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.zip.Inflater;
-
-import org.openedit.*;
-import org.openedit.data.BaseData;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
-import org.openedit.data.Searcher;
-import org.openedit.entermedia.util.CSVReader;
-import org.openedit.entermedia.util.Header
-import org.openedit.entermedia.util.ImportFile;
-import org.openedit.entermedia.util.Row
-import org.openedit.util.EmStringUtils;
-import org.openedit.util.FileUtils;
-import org.openedit.util.PathUtilities;
+import org.entermediadb.asset.util.CSVReader
+import org.entermediadb.asset.util.Header;
+import org.entermediadb.asset.util.ImportFile
+import org.entermediadb.asset.util.Row;
+import org.entermediadb.scripts.EnterMediaObject;
+import org.openedit.*
+import org.openedit.data.PropertyDetail
+import org.openedit.data.PropertyDetails
+import org.openedit.data.Searcher
+import org.openedit.page.Page
+import org.openedit.util.EmStringUtils
+import org.openedit.util.FileUtils
+import org.openedit.util.PathUtilities
 import org.openedit.util.URLUtilities
 
-import com.openedit.entermedia.scripts.EnterMediaObject;
-import com.openedit.page.Page;
-import com.openedit.util.*;
+import com.openedit.util.*
 
 
-public class BaseImporter extends EnterMediaObject 
+public class BaseImporter extends EnterMediaObject
 {
 	protected Map<String,String> fieldLookUps;
 	protected Searcher fieldSearcher;

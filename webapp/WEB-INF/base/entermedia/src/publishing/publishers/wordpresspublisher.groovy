@@ -11,13 +11,15 @@ import org.apache.http.entity.mime.content.StringBody
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.util.EntityUtils
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.publishing.BasePublisher
+import org.entermediadb.asset.publishing.PublishResult
+import org.entermediadb.asset.publishing.Publisher
 import org.openedit.Data
-import org.openedit.OpenEditException;
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.publishing.
-
-import com.openedit.page.Page
+import org.openedit.OpenEditException
+import org.openedit.entermedia.publishing.*
+import org.openedit.page.Page
 
 public class wordpresspublisher extends BasePublisher implements Publisher
 {
