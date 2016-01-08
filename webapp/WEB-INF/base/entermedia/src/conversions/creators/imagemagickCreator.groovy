@@ -500,15 +500,10 @@ public class imagemagickCreator extends BaseImageCreator
 			setValue("background", null, inStructions, com);
 			setValue("layers", null, inStructions, com);
 		}
-		//				String colorspace = inStructions.get("colorspace");
-		//				if(colorspace != null){
-		//					com.add("-colorspace");
-		//					com.add(colorspace);
-		//				} else{
-		//					com.add("-colorspace");
-		//					com.add("sRGB");
-		//				}
-
+		if( !usepng && ("eps".equals(ext) || "pdf".equals(ext) ) )
+		{
+			setValue("colorspace", "sRGB", inStructions, com);
+		}
 		setValue("quality", "89", inStructions, com);
 		//add sampling-factor if specified
 		if (inStructions.get("sampling-factor")!=null)
