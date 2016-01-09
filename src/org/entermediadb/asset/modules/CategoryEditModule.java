@@ -143,7 +143,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		try {
 			List failures = editor
 					.getMediaArchive()
-					.getCreatorManager()
+					.getMediaCreator()
 					.run(createthumb, createmedium, replacethumb,
 							replacemedium, targetsearcher.search(q));
 			inContext.putPageValue("failures", failures);

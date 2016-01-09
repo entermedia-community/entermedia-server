@@ -14,13 +14,11 @@ public class imagecacheLoader implements InputLoader
 	private static final Log log = LogFactory.getLog(imagecacheLoader.class);
 
 	@Override
-	public ContentItem createInput(ConvertInstructions inStructions)
+	public ContentItem loadInput(ConvertInstructions inStructions)
 	{
-		Dimension box = inStructions.getMaxScaledSize();
-		boolean transpatent = inStructions.isTransparencyMaintained();
-		
+		boolean isDocument = inStructions.isDocumentFormat();		
 		String cachetype = "jpg";
-		if( transpatent )
+		if( isDocument )
 		{
 			 cachetype = "png";
 		}
@@ -33,9 +31,25 @@ public class imagecacheLoader implements InputLoader
 		{
 			page = "";
 		}
+		ContentItem item = loadFile(inStructions, page, cachetype);
+		if(item == null && isDocument){
+			 item = loadFile(inStructions, page, "jpg");
+		}
+		
+		
+		return item;
+		
+
+	}
+	
+	
+	protected ContentItem loadFile(ConvertInstructions inStructions, String page, String cachetype)
+	{
 		ContentItem input = null;
-		if( inStructions.getMaxScaledSize() != null && inStructions.getOffset() == null ) //page numbers are 1 based
+		if( inStructions.getMaxScaledSize() != null && inStructions.getTimeOffset() == null ) //page numbers are 1 based
 		{
+			Dimension box = inStructions.getMaxScaledSize();
+
 			if( box.getWidth() < 1025 )
 			{
 				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" +  inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
@@ -52,8 +66,6 @@ public class imagecacheLoader implements InputLoader
 			return input;
 		}
 		return null;
-		
-
 	}
 	@Override
 	public void setExec(Exec inExec)

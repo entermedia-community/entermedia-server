@@ -19,7 +19,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getCreatorManager();
+		MediaCreator manager = archive.getMediaCreator();
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -36,7 +36,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getCreatorManager();
+		MediaCreator manager = archive.getMediaCreator();
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -53,7 +53,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getCreatorManager();
+		MediaCreator manager = archive.getMediaCreator();
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -72,7 +72,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions1.setOutputExtension("mp4");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getCreatorManager();
+		MediaCreator manager = archive.getMediaCreator();
 
 		Page converted = manager.createOutput(instructions1);
 		assertNotNull(converted);

@@ -172,12 +172,12 @@ public class MediaCreator
 //	}
 	//For example: canConvert("jpg","pdf") returns true
 	//We use the output as they key converter then let it decide if it can read in a certain input type
-	public boolean canConvert(String inInput, String inOutput)
-	{
-		MediaTranscoder con = getMediaCreatorByOutputFormat(inOutput);
-		//If we get a converter for this output we are in good shape
-		return con != null && con.canReadIn(getMediaArchive(), inInput);
-	}
+//	public boolean canConvert(String inInput, String inOutput)
+//	{
+//		MediaTranscoder con = getMediaCreatorByOutputFormat(inOutput);
+//		//If we get a converter for this output we are in good shape
+//		return con != null && con.canReadIn(getMediaArchive(), inInput);
+//	}
 
 //	public List run(boolean inCreateT, boolean inCreateM, boolean inReplaceT,
 //			boolean inReplaceM, HitTracker hits) 

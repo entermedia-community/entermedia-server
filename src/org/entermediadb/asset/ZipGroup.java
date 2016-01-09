@@ -131,7 +131,7 @@ public class ZipGroup
 						ConvertInstructions instructions = inAssets.get(asset);
 						if (getMediaArchive().canConvert(asset, instructions.getOutputExtension(), getUser()))
 						{
-							ContentItem converted = getMediaArchive().getCreatorManager().createOutput(instructions).getOutput();
+							ContentItem converted = getMediaArchive().getMediaCreator().createOutput(instructions).getOutput();
 							source = new File(converted.getAbsolutePath());
 							String extension = "";
 							if (instructions.getOutputExtension() != null)

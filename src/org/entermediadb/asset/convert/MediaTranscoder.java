@@ -13,7 +13,6 @@ public interface MediaTranscoder
 	 * @param inInputType
 	 * @return
 	 */
-	boolean canReadIn(MediaArchive inArchive, String inInputType);
 
 	
 	/**

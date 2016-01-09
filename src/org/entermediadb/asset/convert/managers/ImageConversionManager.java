@@ -1,16 +1,13 @@
 package org.entermediadb.asset.convert.managers;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.HashMap;
 
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.InputLoader;
-import org.openedit.page.manage.PageManager;
+import org.entermediadb.asset.convert.MediaCreator;
+import org.entermediadb.asset.convert.MediaTranscoder;
 import org.openedit.repository.ContentItem;
-import org.openedit.util.Exec;
 
 public class ImageConversionManager extends BaseConversionManager
 {
@@ -88,5 +85,51 @@ public class ImageConversionManager extends BaseConversionManager
 		return getMediaArchive().getContent( path.toString() );
 	}
 
+	
+	public ConvertResult createOutput(ConvertInstructions inStructions, ContentItem input)
+    {
+    	
+		if(input == null){
+			input = createInput(inStructions, input);
+			
+
+		}
+		
+		
+		
+		if(input == null){
+    		input = inStructions.getOriginalDocument();
+    	}
+		
+		
+		
+		inStructions.setInputFile(input);
+
+
+		
+    	return getMediaTranscoder().convert(inStructions);
+    	
+    }
+
+
+	protected ContentItem createInput(ConvertInstructions inStructions, ContentItem input)
+	{
+		
+		
+			MediaCreator creatorManager = inStructions.getMediaArchive().getMediaCreator();
+			MediaTranscoder c = creatorManager.getMediaCreatorByOutputFormat("jpg");
+			HashMap map = new HashMap();
+			map.put("prefwidth", "1024");
+			map.put("prefheight", "768");
+			ConvertInstructions cacheInsructions = createInstructions(map, inStructions.getAsset(), "jpg");
+			inStructions.setInputFile(inStructions.getOriginalDocument());
+
+	    	return getMediaTranscoder().convert(inStructions).getOutput();
+		
+	}
+
+	
+	
+	
 
 }

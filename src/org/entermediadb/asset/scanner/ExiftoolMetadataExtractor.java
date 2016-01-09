@@ -415,7 +415,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 	
-			        ConversionManager c = inArchive.getCreatorManager().getMediaCreatorByOutputFormat("png");
+			        ConversionManager c = inArchive.getMediaCreator().getMediaCreatorByOutputFormat("png");
 					ConvertInstructions instructions = new ConvertInstructions();
 					instructions.setForce(true);
 					//instructions.setMaxScaledSize(1900, height);

@@ -36,7 +36,7 @@ public class MediaArchiveModule extends BaseMediaModule
 	public void createThumbAndMedium(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		archive.getCreatorManager().run(true, true, false, false, archive.getAssetSearcher().getAllHits());
+		archive.getMediaCreator().run(true, true, false, false, archive.getAssetSearcher().getAllHits());
 	}
 
 	public void voteUp(WebPageRequest inReq) throws Exception

@@ -79,7 +79,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
-        ConversionManager c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+        ConversionManager c = archive.getMediaCreator().getMediaCreatorByOutputFormat("jpg");
         
 		ConvertInstructions instructions = c.createInstructions(settings.getProperties(), archive, "jpg", asset.getSourcePath());
 		instructions.setForce(true);
@@ -168,7 +168,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		
-        ConversionManager c = archive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+        ConversionManager c = archive.getMediaCreator().getMediaCreatorByOutputFormat("jpg");
 		ConvertInstructions instructions = new ConvertInstructions();
 		instructions.setForce(true);
 		instructions.setInputPath(input);

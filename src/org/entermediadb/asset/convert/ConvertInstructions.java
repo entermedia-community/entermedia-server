@@ -452,6 +452,25 @@ public class ConvertInstructions
 		return timeout;
 	}
 
+	public ContentItem getOriginalDocument()
+	{
+		return getMediaArchive().getOriginalDocument(getAsset()).getContentItem();
+	}
+
+	public boolean isDocumentFormat()
+	{
+		String type = getMediaArchive().getMediaRenderType(getAsset());
+		return "document".equals(type);
+	}
+
+ 
+	
+	
+	public String getTimeOffset()
+	{
+		return get("timeoffset");
+	}
+
 	
 }
 

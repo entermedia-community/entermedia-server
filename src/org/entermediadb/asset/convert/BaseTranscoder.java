@@ -141,33 +141,9 @@ public abstract class BaseTranscoder implements MediaTranscoder
 		fieldPreProcessors = inPreProcessors;
 	}
 
-	protected MediaTranscoder getPreProcessor(MediaArchive inArchive, String ext)
-	{
-		if( fieldPreProcessors != null)
-		{
-			//Loop over the children and find a match
-			for (Iterator iterator = getPreProcessors().iterator(); iterator.hasNext();)
-			{
-				MediaTranscoder type = (MediaTranscoder) iterator.next();
-				if( type.canReadIn(inArchive, ext) )
-					return type;
-			}
-		}
-		return null;
-	}
+	
 
-	protected boolean canPreProcess(MediaArchive inArchive, String inInput)
-	{
-		for (Iterator iterator = getPreProcessors().iterator(); iterator.hasNext();)
-		{
-			MediaTranscoder type = (MediaTranscoder) iterator.next();
-			if( type.canReadIn(inArchive, inInput))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+	
 
 	/**
 	 * For this to work, inSourcePath needs to have an extention, i.e.

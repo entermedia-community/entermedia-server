@@ -61,7 +61,7 @@ public void init()
 	context.setSession(null);
 	context.putSessionValue(assets.getSessionId(), assets);
 
-	MediaCreator creator = mediaArchive.getCreatorManager().getMediaCreatorByOutputFormat("jpg");
+	MediaCreator creator = mediaArchive.getMediaCreator().getMediaCreatorByOutputFormat("jpg");
 	
 	//TODO: Use preset settings instead of paths
 	WebPageRequest previewcontext = makeContext( mediaArchive.getCatalogHome() + "/downloads/preview/cache/preview.jpg", context);

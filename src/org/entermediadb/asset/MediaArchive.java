@@ -373,7 +373,7 @@ public class MediaArchive
 
 	public String getMediaRenderType(String inFileFormat)
 	{
-		return getCreatorManager().getRenderTypeByFileFormat(inFileFormat);
+		return getMediaCreator().getRenderTypeByFileFormat(inFileFormat);
 	}
 	public String getMediaRenderType(Data inAsset)
 	{
@@ -391,7 +391,7 @@ public class MediaArchive
 			return "embedded";
 		}
 		String format = inAsset.get("fileformat");
-		return getCreatorManager().getRenderTypeByFileFormat(format);
+		return getMediaCreator().getRenderTypeByFileFormat(format);
 	}	
 	public Data getDefaultAssetTypeForFile(String inFileName)
 	{
@@ -434,30 +434,30 @@ public class MediaArchive
 		}
 		return value;
 	}
-	public boolean canConvert(Asset inAsset, String inOutputType, User inUser)
-	{
-		/*
-		 * Note: we removed inUser.hasPermission("convert") checking.
-		 * that permission doesn't seem to exist anymore.
-		 */
-		if (inAsset != null)
-		{
-			String type = inAsset.getFileFormat();
-			if (type == null)
-			{
-				type = inAsset.getName();
-			}
-			if(type == null)
-			{
-				return false;
-			}
-			if (getCreatorManager().canConvert(type, inOutputType))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+//	public boolean canConvert(Asset inAsset, String inOutputType, User inUser)
+//	{
+//		/*
+//		 * Note: we removed inUser.hasPermission("convert") checking.
+//		 * that permission doesn't seem to exist anymore.
+//		 */
+//		if (inAsset != null)
+//		{
+//			String type = inAsset.getFileFormat();
+//			if (type == null)
+//			{
+//				type = inAsset.getName();
+//			}
+//			if(type == null)
+//			{
+//				return false;
+//			}
+//			if (getMediaCreator().canConvert(type, inOutputType))
+//			{
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 	public WebEventHandler getMediaEventHandler()
 	{
@@ -487,6 +487,20 @@ public class MediaArchive
 		boolean folder = getPageManager().getRepository().getStub(path).isFolder();
 		return folder;
 	}
+	
+	public MediaCreator getMediaCreator()
+	{
+		if (fieldCreatorManager == null)
+		{
+			fieldCreatorManager = (MediaCreator) getModuleManager().getBean(getCatalogId(), "mediaCreator");
+			fieldCreatorManager.setMediaArchive(this);
+		}
+
+		return fieldCreatorManager;
+	}
+	
+	
+	
 	public MediaCreator getTranscodeManager()
 	{
 		if (fieldTranscodeManager == null)
@@ -498,16 +512,7 @@ public class MediaArchive
 		return fieldTranscodeManager;
 	}
 
-	public MediaCreator getCreatorManager()
-	{
-		if (fieldCreatorManager == null)
-		{
-			fieldCreatorManager = (MediaCreator) getModuleManager().getBean(getCatalogId(), "creatorManager");
-			fieldCreatorManager.setMediaArchive(this);
-		}
-
-		return fieldCreatorManager;
-	}
+	
 	/**The home for the catalog
 	 * The 
 	 * @return
