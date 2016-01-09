@@ -1238,6 +1238,14 @@
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 	 -->
+	 
+	 
+	 <bean id="exiftoolthumbCreator" class="org.entermediadb.asset.convert.inputloaders.ExiftoolthumbCreator" lazy-init="default">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
+	 
+	 
 	<bean id="imagePreProcessors" class="java.util.ArrayList">
 	    <constructor-arg>
 		<list>

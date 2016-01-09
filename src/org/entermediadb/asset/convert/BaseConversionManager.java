@@ -102,7 +102,7 @@ public abstract class BaseConversionManager implements ConversionManager
     	boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
     	if(!useoriginal){
 	    	//Load input
-	    	for (Iterator iterator = fieldInputLoaders.iterator(); iterator.hasNext();)
+	    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
 			{
 				InputLoader loader = (InputLoader) iterator.next();
 				input = loader.loadInput(inStructions);

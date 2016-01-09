@@ -2,21 +2,16 @@ package org.entermediadb.asset.convert.inputloaders;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.openedit.Data;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
+import org.openedit.page.Page;
 import org.openedit.util.ExecResult;
 
-import com.openedit.page.Page;
-import com.openedit.page.PageProperty;
-
-public class exiftoolthumbCreator extends BaseImageCreator
+public class ExiftoolthumbCreator extends BaseImageCreator
 {
 	public boolean canReadIn(MediaArchive inArchive, String inInputType)
 	{

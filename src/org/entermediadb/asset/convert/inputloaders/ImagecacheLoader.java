@@ -9,9 +9,9 @@ import org.entermediadb.asset.convert.InputLoader;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 
-public class imagecacheLoader implements InputLoader
+public class ImagecacheLoader implements InputLoader
 {
-	private static final Log log = LogFactory.getLog(imagecacheLoader.class);
+	private static final Log log = LogFactory.getLog(ImagecacheLoader.class);
 
 	@Override
 	public ContentItem loadInput(ConvertInstructions inStructions)

@@ -26,10 +26,7 @@
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="exiftoolthumbCreator" script-source="conversions/creators/exiftoolthumbCreator.groovy" lazy-init="default">
-		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
-		<lang:property name="exec"><ref bean="exec" /></lang:property>
-	</lang:groovy>
+	
 	<lang:groovy id="audioCreator" script-source="conversions/creators/audioCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
