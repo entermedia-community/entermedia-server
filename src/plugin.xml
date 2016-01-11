@@ -1240,7 +1240,7 @@
 	 -->
 	 
 	 
-	 <bean id="exiftoolthumbCreator" class="org.entermediadb.asset.convert.inputloaders.ExiftoolthumbCreator" lazy-init="default">
+	 <bean id="exiftoolthumbCreator" class="org.entermediadb.asset.convert.transcoders.ExiftoolthumbCreator" lazy-init="default">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>

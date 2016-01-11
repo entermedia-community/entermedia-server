@@ -1,7 +1,7 @@
 /*
  * Created on Sep 20, 2005
  */
-package org.entermediadb.asset.convert.inputloaders;
+package org.entermediadb.asset.convert.transcoders;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,16 +9,14 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.Data;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.MediaArchive;
-import org.openedit.entermedia.creator.*
+import org.entermediadb.asset.convert.BaseTranscoder;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
+import org.openedit.page.Page;
 
-import com.openedit.page.Page;
-
-public class ffmpegimageCreator extends BaseImageCreator
+public class ffmpegimageTranscoder extends BaseTranscoder
 {
-	private static final Log log = LogFactory.getLog(ffmpegimageCreator.class);
+	private static final Log log = LogFactory.getLog(ffmpegimageTranscoder.class);
 	protected String fieldCommandName = "avconv"; // ffmpeg -itsoffset 10
 
 	// -deinterlace -i $TRACK -y
@@ -35,27 +33,7 @@ public class ffmpegimageCreator extends BaseImageCreator
 	{
 		fieldCommandName = inCommandName;
 	}
-
-	public boolean canReadIn(MediaArchive inArchive, String inFileFormatInput)
-	{
-		//TODO: Add a bunch of video formats
-		if( inFileFormatInput == null)
-		{
-			return false;
-		}
-		String lcfileformat = inFileFormatInput.toLowerCase();
-		
-		//This should also read in WMV... ?
-		String type = inArchive.getMediaRenderType(inFileFormatInput);
-		if( "video".equals(type))
-		{
-			return true;
-		}
-		return false;
-		//return "flv".equals(lcfileformat) || "avi".equals(lcfileformat) || (lcfileformat.startsWith("m") && !lcfileformat.equals("mp3"));
-	}
-
-	public ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOutFile, ConvertInstructions inStructions)
+	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
 		

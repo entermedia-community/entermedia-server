@@ -14,9 +14,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.MediaTranscoder;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -32,7 +33,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
 	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
-	protected ConversionManager fieldExifToolThumbCreator;
+	protected MediaTranscoder fieldExifToolTranscoder;
 	protected Exec fieldExec;
 	protected Set fieldTextFields;
 
@@ -55,14 +56,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		fieldTextFields = inTextFields;
 	}
 
-	public ConversionManager getExifToolThumbCreator()
+	public MediaTranscoder getExifToolThumbCreator()
 	{
-		return fieldExifToolThumbCreator;
+		return fieldExifToolTranscoder;
 	}
 
-	public void setExifToolThumbCreator(ConversionManager inExifToolThumbCreator)
+	public void setExifToolThumbCreator(MediaTranscoder inExifToolThumbCreator)
 	{
-		fieldExifToolThumbCreator = inExifToolThumbCreator;
+		fieldExifToolTranscoder = inExifToolThumbCreator;
 	}
 
 	/**
@@ -372,26 +373,22 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected void extractThumb(MediaArchive inArchive, ContentItem inInputFile, Asset inAsset)
 	{
-		if (getExifToolThumbCreator().canReadIn(inArchive, inAsset.getFileFormat()))
+		String format = inAsset.getFileFormat();
+		if ("indd".equalsIgnoreCase(format))
 		{
-			Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+			ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
 	
 			//if we have embdeded thumb 
-			ConvertInstructions instructions = new ConvertInstructions();
+			ConvertInstructions instructions = new ConvertInstructions(inArchive);
 			instructions.setForce(true);
-			instructions.setInputPath(inInputFile.getPath());
-			instructions.setOutputPath(custom.getPath());
-			ConvertResult res = getExifToolThumbCreator().convert(inArchive, inAsset, custom, instructions);
+			instructions.setInputFile(inInputFile);
+			instructions.setOutputFile(custom);
+			ConvertResult res = getExifToolThumbCreator().convert(instructions);
 			if (res.isOk())
 			{
-	//			if (!"generated".equals(inAsset.get("previewstatus")))
-	//			{
-	//				inAsset.setProperty("previewstatus", "exif");
-	//			}
 				return;
 			}
 		}
-		String format = inAsset.getFileFormat();
 		if( format == null)
 		{
 			return;
@@ -413,16 +410,16 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			{
 				if( !isCMYKProfile(inInputFile) )
 				{
-					Page custom = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+					ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
 	
-			        ConversionManager c = inArchive.getMediaCreator().getMediaCreatorByOutputFormat("png");
-					ConvertInstructions instructions = new ConvertInstructions();
+			        MediaTranscoder c = inArchive.getTranscodeTools().getMediaCreatorByOutputFormat("png");
+					ConvertInstructions instructions = new ConvertInstructions(inArchive);
 					instructions.setForce(true);
 					//instructions.setMaxScaledSize(1900, height);
 					instructions.setProperty("fixcmyk", "true");
-					instructions.setInputPath(inInputFile.getPath());
-					instructions.setOutputPath(custom.getPath());
-				 	c.convert(inArchive, inAsset, custom, instructions);
+					instructions.setInputFile(inInputFile);
+					instructions.setOutputFile(custom);
+				 	c.convert(instructions);
 					
 				}
 			}

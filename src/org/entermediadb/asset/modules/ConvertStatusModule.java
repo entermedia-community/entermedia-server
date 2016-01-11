@@ -2,8 +2,9 @@ package org.entermediadb.asset.modules;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.MediaTranscoder;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
@@ -13,7 +14,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
-import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 
 public class ConvertStatusModule extends BaseMediaModule
 {
@@ -79,19 +80,20 @@ public class ConvertStatusModule extends BaseMediaModule
 		}
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
-        ConversionManager c = archive.getMediaCreator().getMediaCreatorByOutputFormat("jpg");
+		settings.setProperty("force", "true");
+        //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
+		ConversionManager manager = archive.getTranscodeTools().getConversionManagerForInputType(asset.getFileFormat());
         
-		ConvertInstructions instructions = c.createInstructions(settings.getProperties(), archive, "jpg", asset.getSourcePath());
-		instructions.setForce(true);
-		Page outputpage = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("outputfile"));
-		instructions.setOutputPath(outputpage.getPath());
-	 	 
-	 	 c.createOutput(archive, instructions);
-		
-		//archive.fireMediaEvent("conversions/runconversion", inReq.getUser(), asset);//block
-		if(outputpage.exists()){
-			getPageManager().putPage(outputpage); // this should create a new version
-		}
+		ConvertInstructions instructions = manager.createInstructions(settings.getProperties(), asset,asset.getSourcePath(),preset);
+        
+		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("outputfile"));
+		instructions.setOutputFile(outputpage);
+		manager.createOutput(instructions); //This will go back to the original if needed
+
+//		//TODO: Re-enamble version control
+//		if(outputpage.exists()){
+//			getPageManager().putPage(outputpage); // this should create a new version
+//		}
 		processConversions(inReq);//non-block
 	}
 	
@@ -168,17 +170,17 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		
-        ConversionManager c = archive.getMediaCreator().getMediaCreatorByOutputFormat("jpg");
-		ConvertInstructions instructions = new ConvertInstructions();
+        MediaTranscoder c = archive.getTranscodeTools().getMediaCreatorByOutputFormat("jpg");
+		ConvertInstructions instructions = new ConvertInstructions(archive);
 		instructions.setForce(true);
-		instructions.setInputPath(input);
-		instructions.setOutputPath(s1024);
+		instructions.setInputFile(archive.getContent( input ) );
+		instructions.setOutputFile(archive.getContent( s1024) );
 		instructions.setMaxScaledSize(1024, 768);
-	 	 c.createOutput(archive, instructions);
+	 	c.convert(instructions);
 
 	 	String png1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
-	 	instructions.setOutputPath(png1024);
-		 c.createOutput(archive, instructions);
+		instructions.setOutputFile(archive.getContent( png1024) );
+	 	c.convert(instructions);
 		
 		 archive.removeGeneratedImages(current, false);
 		 reloadThumbnails( inReq, archive, current);

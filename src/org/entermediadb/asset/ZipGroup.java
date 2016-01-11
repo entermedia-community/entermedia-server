@@ -129,9 +129,9 @@ public class ZipGroup
 						File source = null;
 						File temp = null;
 						ConvertInstructions instructions = inAssets.get(asset);
-						if (getMediaArchive().canConvert(asset, instructions.getOutputExtension(), getUser()))
+						if (instructions != null)
 						{
-							ContentItem converted = getMediaArchive().getMediaCreator().createOutput(instructions).getOutput();
+							ContentItem converted = getMediaArchive().getTranscodeTools().createOutput(instructions).getOutput();
 							source = new File(converted.getAbsolutePath());
 							String extension = "";
 							if (instructions.getOutputExtension() != null)

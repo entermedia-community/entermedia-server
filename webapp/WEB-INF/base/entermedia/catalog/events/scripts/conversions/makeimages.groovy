@@ -61,7 +61,7 @@ public void init()
 	context.setSession(null);
 	context.putSessionValue(assets.getSessionId(), assets);
 
-	MediaCreator creator = mediaArchive.getMediaCreator().getMediaCreatorByOutputFormat("jpg");
+	MediaCreator creator = mediaArchive.getTranscodeTools().getMediaCreatorByOutputFormat("jpg");
 	
 	WebPageRequest previewcontext = makeContext( mediaArchive.getCatalogHome() + "/downloads/preview/cache/preview.jpg", context);
 	WebPageRequest mediumpluscontext = makeContext(mediaArchive.getCatalogHome() + "/downloads/preview/mediumplus/medium.jpg", context);

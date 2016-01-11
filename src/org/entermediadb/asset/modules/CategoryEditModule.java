@@ -126,7 +126,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		// check for a web tree?
 
 	}
-
+/*
 	public void resizeAllImages(WebPageRequest inContext) throws Exception {
 		CategoryEditor editor = getCategoryEditor(inContext);
 
@@ -143,7 +143,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		try {
 			List failures = editor
 					.getMediaArchive()
-					.getMediaCreator()
+					.getTranscodeTools()
 					.run(createthumb, createmedium, replacethumb,
 							replacemedium, targetsearcher.search(q));
 			inContext.putPageValue("failures", failures);
@@ -152,7 +152,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			log.error(e);
 		}
 	}
-
+*/
 	public void saveCategory(WebPageRequest inContext) throws OpenEditException {
 		String id = inContext.getRequestParameter("id");
 		String name = inContext.getRequestParameter("name");

@@ -3,7 +3,7 @@ package org.entermediadb.model;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.MediaCreator;
+import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.events.PathEventManager;
 import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
@@ -19,7 +19,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getMediaCreator();
+		TranscodeTools manager = archive.getTranscodeTools();
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -36,7 +36,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getMediaCreator();
+		TranscodeTools manager = archive.getTranscodeTools();
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -53,7 +53,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getMediaCreator();
+		TranscodeTools manager = archive.getTranscodeTools();
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -72,7 +72,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions1.setOutputExtension("mp4");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		MediaCreator manager = archive.getMediaCreator();
+		TranscodeTools manager = archive.getTranscodeTools();
 
 		Page converted = manager.createOutput(instructions1);
 		assertNotNull(converted);

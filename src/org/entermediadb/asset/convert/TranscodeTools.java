@@ -1,13 +1,8 @@
 package org.entermediadb.asset.convert;
 
-import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
@@ -15,17 +10,15 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 /**
  * This deals with actual conversions from one file to another
  * @author shanti
  *
  */
-public class MediaCreator
+public class TranscodeTools
 {
-	private static final Log log = LogFactory.getLog(MediaCreator.class);
+	private static final Log log = LogFactory.getLog(TranscodeTools.class);
 
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager fieldModuleManager;
@@ -254,7 +247,7 @@ public class MediaCreator
 
 	protected Map fieldHandlerCache = new HashMap(5);
 	
-	protected ConversionManager getManager(String inFileFormat)
+	public ConversionManager getConversionManagerForInputType(String inFileFormat)
 	{
 		ConversionManager handler = (ConversionManager)fieldHandlerCache.get(inFileFormat);
 		if( handler == null)
@@ -277,8 +270,8 @@ public class MediaCreator
 	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath, String inOutputType)
 	{
 		//Minimal information here. We dont know what kind of input we have
-		ConversionManager handler = getManager(inOutputType);
-		return handler.createOutputIfNeeded(inCreateProperties,inSourcePath, inOutputType);
+		ConversionManager handler = getConversionManagerForInputType(inOutputType);
+		return handler.createOutputIfNeeded(inCreateProperties,inSourcePath);
 	}
 //	public ConvertInstructions createInstructions(Asset inAsset,Data inPreset,String inOutputType)
 //	{

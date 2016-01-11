@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.ZipGroup;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.modules.MediaArchiveModule;
 import org.openedit.Data;
@@ -86,9 +87,13 @@ public class DownloadZipGenerator extends BaseGenerator
 				}
 				
 				Asset asset = archive.getAsset(id);
-				ConvertInstructions ins = new ConvertInstructions();
-				ins.setAssetSourcePath(asset.getSourcePath());
-				assets.put(asset, ins);
+				ConversionManager manager =  archive.getTranscodeTools().getConversionManagerForInputType(asset.getFileFormat());
+				if( manager != null)
+				{
+					ConvertInstructions ins = manager.createInstructions(new HashMap(), asset,asset.getSourcePath(),null);
+					populateInstructions( inReq, ins, catalogid, id );
+					assets.put(asset, ins);
+				}
 			}
 		
 		}
@@ -103,36 +108,13 @@ public class DownloadZipGenerator extends BaseGenerator
 					log.warn("Cannot add asset with id '" + assetid + "': does not exist in catalog " + catalogid);
 					continue;
 				}
-				ConvertInstructions ins = new ConvertInstructions();
 				inReq.putPageValue("asset",asset);
-				//archive.loadAssetPermissions(asset.getSourcePath(), inReq);
-				
-				ins.addPageProperties(inReq.getPage());
-				ins.addPageValues(inReq.getPageMap());
-				ins.setAssetSourcePath(asset.getSourcePath());
-				//ins.setSourceFile("original");
-				
-				String height = inReq.getRequestParameter(catalogid + "." + assetid + ".height");
-				String width = inReq.getRequestParameter(catalogid + "." + assetid + ".width");
-				
-				if( width !=null )
+				ConversionManager manager =  archive.getTranscodeTools().getConversionManagerForInputType(asset.getFileFormat());
+				if( manager != null)
 				{
-					int w = Integer.parseInt(width);
-					int h = -1;
-					if (height == null)
-					{
-						h = Integer.MAX_VALUE;
-					}
-					else
-					{
-						h = Integer.parseInt(height);
-					}
-					ins.setMaxScaledSize(w, h);
-				}
-				String extension = inReq.getRequestParameter(catalogid + "." + assetid + ".extension");
-				if (extension != null)
-				{
-					ins.setOutputExtension(extension);
+					ConvertInstructions ins = manager.createInstructions(new HashMap(), asset,asset.getSourcePath(),null);
+					populateInstructions( inReq, ins, catalogid, assetid );
+					assets.put(asset, ins);
 				}
 				/*
 				Boolean watermark = (Boolean)inReq.getPageValue("canforcewatermark");
@@ -155,13 +137,44 @@ public class DownloadZipGenerator extends BaseGenerator
 //					ins.setWatermark(true);
 //				}
 				*/
-				assets.put(asset, ins);
 			}
 		}
 		ZipGroup zip = new ZipGroup();
 		zip.setMediaArchive(archive);
 		zip.setUser(inReq.getUser());
 		zip.zipItems(assets, inOut.getStream());
+	}
+
+	private void populateInstructions(WebPageRequest inReq, ConvertInstructions ins, String catalogid, String assetid)
+	{
+		// TODO Auto-generated method stub
+		ins.addPageProperties(inReq.getPage());
+		ins.addPageValues(inReq.getPageMap());
+		//ins.setSourceFile("original");
+		
+		String height = inReq.getRequestParameter(catalogid + "." + assetid + ".height");
+		String width = inReq.getRequestParameter(catalogid + "." + assetid + ".width");
+		
+		if( width !=null )
+		{
+			int w = Integer.parseInt(width);
+			int h = -1;
+			if (height == null)
+			{
+				h = Integer.MAX_VALUE;
+			}
+			else
+			{
+				h = Integer.parseInt(height);
+			}
+			ins.setMaxScaledSize(w, h);
+		}
+		String extension = inReq.getRequestParameter(catalogid + "." + assetid + ".extension");
+		if (extension != null)
+		{
+			ins.setOutputExtension(extension);
+		}
+
 	}
 
 	public boolean canGenerate(WebPageRequest inReq)

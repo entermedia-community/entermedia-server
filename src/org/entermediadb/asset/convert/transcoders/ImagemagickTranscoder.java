@@ -12,7 +12,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.MediaCreator;
+import org.entermediadb.asset.convert.TranscodeTools;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;

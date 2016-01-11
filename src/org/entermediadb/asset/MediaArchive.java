@@ -16,8 +16,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.convert.MediaCreator;
-import org.entermediadb.asset.convert.MediaCreator;
+import org.entermediadb.asset.convert.TranscodeTools;
+import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
 import org.entermediadb.asset.scanner.AssetImporter;
@@ -63,8 +63,7 @@ public class MediaArchive
 	protected EmailErrorHandler fieldEmailErrorHandler;
 	protected PageManager fieldPageManager;
 	protected WebEventHandler fieldMediaEventHandler;
-	protected MediaCreator fieldCreatorManager;
-	protected MediaCreator fieldTranscodeManager;
+	protected TranscodeTools fieldTranscodeTools;
 
 	protected AssetArchive fieldAssetArchive;
 	protected AssetArchive fieldMirrorAssetArchive;
@@ -373,7 +372,7 @@ public class MediaArchive
 
 	public String getMediaRenderType(String inFileFormat)
 	{
-		return getMediaCreator().getRenderTypeByFileFormat(inFileFormat);
+		return getTranscodeTools().getRenderTypeByFileFormat(inFileFormat);
 	}
 	public String getMediaRenderType(Data inAsset)
 	{
@@ -391,7 +390,7 @@ public class MediaArchive
 			return "embedded";
 		}
 		String format = inAsset.get("fileformat");
-		return getMediaCreator().getRenderTypeByFileFormat(format);
+		return getTranscodeTools().getRenderTypeByFileFormat(format);
 	}	
 	public Data getDefaultAssetTypeForFile(String inFileName)
 	{
@@ -488,30 +487,16 @@ public class MediaArchive
 		return folder;
 	}
 	
-	public MediaCreator getMediaCreator()
+	public TranscodeTools getTranscodeTools()
 	{
-		if (fieldCreatorManager == null)
+		if (fieldTranscodeTools == null)
 		{
-			fieldCreatorManager = (MediaCreator) getModuleManager().getBean(getCatalogId(), "mediaCreator");
-			fieldCreatorManager.setMediaArchive(this);
+			fieldTranscodeTools = (TranscodeTools) getModuleManager().getBean(getCatalogId(), "mediaCreator");
+			fieldTranscodeTools.setMediaArchive(this);
 		}
 
-		return fieldCreatorManager;
+		return fieldTranscodeTools;
 	}
-	
-	
-	
-	public MediaCreator getTranscodeManager()
-	{
-		if (fieldTranscodeManager == null)
-		{
-			fieldTranscodeManager = (MediaCreator) getModuleManager().getBean(getCatalogId(), "transcodeManager");
-			fieldTranscodeManager.setMediaArchive(this);
-		}
-
-		return fieldTranscodeManager;
-	}
-
 	
 	/**The home for the catalog
 	 * The 
@@ -824,9 +809,9 @@ public class MediaArchive
 		fieldAssetSecurityArchive = assetSecurityArchive;
 	}
 
-	public void setConvertManager(MediaCreator creatorManager)
+	public void setConvertManager(TranscodeTools creatorManager)
 	{
-		fieldCreatorManager = creatorManager;
+		fieldTranscodeTools = creatorManager;
 	}
 
 	public Asset getAssetBySourcePath(Page inPage)

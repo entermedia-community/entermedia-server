@@ -7,7 +7,7 @@ import java.util.Map;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.MediaCreator;
+import org.entermediadb.asset.convert.TranscodeTools;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -82,7 +82,7 @@ public class ConvertGenerator extends FileGenerator
 //		{
 //			return;
 //		}
-		MediaCreator transcoder = archive.getTranscodeManager();
+		TranscodeTools transcodetools = archive.getTranscodeTools();
 		Map all = new HashMap(); //TODO: Get parent ones as well
 		for (Iterator iterator = inReq.getContentPage().getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{
@@ -94,7 +94,7 @@ public class ConvertGenerator extends FileGenerator
 			
 		//return calculateInstructions(all, inArchive, inOutputType, inSourcePath);
 		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
-		ConvertResult result = transcoder.createOutputIfNeeded(all,sourcePath, outputype); //String inSourcePath, Data inPreset, String inOutputType);
+		ConvertResult result = transcodetools.createOutputIfNeeded(all,sourcePath, outputype); //String inSourcePath, Data inPreset, String inOutputType);
 		
 		if( result.isComplete() )
 		{

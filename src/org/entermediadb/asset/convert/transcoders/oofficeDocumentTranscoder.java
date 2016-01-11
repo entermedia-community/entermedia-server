@@ -1,37 +1,33 @@
-package org.entermediadb.asset.convert.inputloaders;
+package org.entermediadb.asset.convert.transcoders;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.BaseTranscoder;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.OpenEditException;
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.entermedia.creator.BaseCreator
-import org.openedit.entermedia.creator.ConvertInstructions
-import org.openedit.entermedia.creator.ConvertResult
+import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
-import org.openedit.util.PathUtilities
+import org.openedit.util.PathUtilities;
 
-import com.openedit.page.Page
-
-public class oofficeDocumentCreator extends BaseCreator
+public class oofficeDocumentTranscoder extends BaseTranscoder
 {
-	protected final def formats = ["doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls", "xlsx", "odp"];
-	private static final Log log = LogFactory.getLog(this.class);
+//	protected final def formats = ["doc","docx","rtf","ppt","pptx","wps","odt","html","xml","csv", "xls", "xlsx", "odp"];
+	private static final Log log = LogFactory.getLog(oofficeDocumentTranscoder.class);
 	
-	public boolean canReadIn(MediaArchive inArchive, String inInputType)
+	public synchronized ConvertResult convert(ConvertInstructions inStructions)
 	{
-		for (int i = 0; i < formats.size(); i++)
-		{
-			if( inInputType.equals(formats.get(i)))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public synchronized ConvertResult convert(MediaArchive inArchive, Asset inAsset, Page inOut, ConvertInstructions inStructions)
-	{
+		MediaArchive inArchive = inStructions.getMediaArchive();
+		Asset inAsset = inStructions.getAsset();
+		ContentItem inOut = inStructions.getOutputFile();
+		
 		ConvertResult result = new ConvertResult();
 		result.setOk(false);
 		
@@ -53,15 +49,15 @@ public class oofficeDocumentCreator extends BaseCreator
 		command.add("pdf:writer_pdf_Export");
 
 		command.add("-outdir");
-		String dir = inOut.getDirectory();
-		log.info("{$inOut} turns into ${dir}");
+		//String dir = inOut.getDirectory();
+		//log.info("{$inOut} turns into ${dir}");
 		dir = getPageManager().getPage(dir).getContentItem().getAbsolutePath();
 		new File( dir ).mkdirs();
 		command.add(dir);
 		
 		command.add(input.getContentItem().getAbsolutePath());
 		
-		long timeout = getConversionTimeout(inArchive, inAsset);
+		long timeout = inStructions.getConversionTimeout();
 		ExecResult done = getExec().runExec("soffice",command, timeout);
 		
 		result.setOk(done.isRunOk());

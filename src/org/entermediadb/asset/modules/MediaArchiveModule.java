@@ -33,11 +33,11 @@ public class MediaArchiveModule extends BaseMediaModule
 	{
 	}
 
-	public void createThumbAndMedium(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		archive.getMediaCreator().run(true, true, false, false, archive.getAssetSearcher().getAllHits());
-	}
+//	public void createThumbAndMedium(WebPageRequest inReq) throws Exception
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		archive.getTranscodeTools().run(true, true, false, false, archive.getAssetSearcher().getAllHits());
+//	}
 
 	public void voteUp(WebPageRequest inReq) throws Exception
 	{

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 
 public abstract class BaseConversionManager implements ConversionManager
@@ -49,10 +50,10 @@ public abstract class BaseConversionManager implements ConversionManager
 	//Come up with the expected output path based on the input parameters
 	//All image handlers will use a standard file saving conversion
 	@Override
-	public ConvertResult createOutputIfNeeded(Map inSettings, String inSourcePath, String inOutputType)
+	public ConvertResult createOutputIfNeeded(Map inSettings, String inSourcePath)
 	{
 		//First thing is first. We need to check out cache and make sure this file is not already in existence
-		ConvertInstructions instructions = createInstructions(inSettings,inSourcePath,inOutputType);
+		ConvertInstructions instructions = createInstructions(inSettings,inSourcePath);
 		ContentItem output = instructions.getOutputFile();
 		if( output.getLength() < 2 )
 		{
@@ -64,7 +65,19 @@ public abstract class BaseConversionManager implements ConversionManager
 		result.setInstructions(instructions);
 		return result;
 	}
-	public ConvertInstructions createInstructions(Map inSettings, String inSourcePath, String inOutputType)
+	public ConvertInstructions createInstructions(Map inSettings, Asset inAsset, String inSourcePath, Data inPreset)
+	{
+		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
+		instructions.loadSettings(inSettings);
+		instructions.loadPreset(inPreset);
+		instructions.setAssetSourcePath(inSourcePath);
+		instructions.setAsset(inAsset);
+		ContentItem output = findOutputFile(instructions);
+		instructions.setOutputFile(output);
+		return instructions;
+	}
+	
+	public ConvertInstructions createInstructions(Map inSettings, String inSourcePath)
 	{ 
 		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 		instructions.loadSettings(inSettings);
@@ -76,8 +89,7 @@ public abstract class BaseConversionManager implements ConversionManager
 		
 	}
 	
-	
-	public ConvertInstructions createInstructions(Map inSettings,Asset inAsset, String inOutputType)
+	public ConvertInstructions createInstructions(Map inSettings,Asset inAsset)
 	{ 
 		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 		instructions.loadSettings(inSettings);

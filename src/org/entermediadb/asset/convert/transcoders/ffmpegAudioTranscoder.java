@@ -19,14 +19,9 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class audioConverter extends BaseTranscoder implements ConversionManager
+public class ffmpegAudioTranscoder extends BaseTranscoder
 {
-	private static final Log log = LogFactory.getLog(audioConverter.class);
-
-	public boolean canReadIn(MediaArchive inArchive, String inOutputType)
-	{
-		return true;
-	}
+	private static final Log log = LogFactory.getLog(ffmpegAudioTranscoder.class);
 
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{

@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.BaseTranscoder;
-import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.page.Page;
@@ -18,15 +17,9 @@ import org.openedit.util.PathUtilities;
 
 //apt-get install libavcodec-extra-53
 
-public class ffmpegCreator extends BaseTranscoder implements ConversionManager
+public class ffmpegVideoTranscoder extends BaseTranscoder
 {
-	private static final Log log = LogFactory.getLog(ffmpegCreator.class);
-
-	public boolean canReadIn(MediaArchive inArchive, String inInput)
-	{
-		//reads all video formats
-		return true;//"flv".equals(inOutput) || mpeg; //This has a bunch of types
-	}
+	private static final Log log = LogFactory.getLog(ffmpegVideoTranscoder.class);
 
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
@@ -246,33 +239,5 @@ public class ffmpegCreator extends BaseTranscoder implements ConversionManager
 		return result;
 	}
 
-
-	public String createConvertPath(ConvertInstructions inStructions)
-	{
-		String path = inStructions.getAssetSourcePath() + "video." + inStructions.getOutputExtension();
-
-		return path;
-	}
-
-	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
-	{
-		StringBuffer path = new StringBuffer();
-		String prefix = inStructions.getProperty("pathprefix");
-		if (prefix != null)
-		{
-			path.append(prefix);
-		}
-		else
-		{
-			path.append("/WEB-INF/data");
-			path.append(inArchive.getCatalogHome());
-			path.append("/generated/");
-		}
-		path.append(inStructions.getAssetSourcePath());
-
-		path.append("/video." + inStructions.getOutputExtension());
-		inStructions.setOutputPath(path.toString());
-		return path.toString();
-	}
 
 }
