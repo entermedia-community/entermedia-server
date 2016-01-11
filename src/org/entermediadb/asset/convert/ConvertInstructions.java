@@ -471,6 +471,11 @@ public class ConvertInstructions
 		return get("timeoffset");
 	}
 
-	
+
+	public void setOutputExtension(String inType)
+	{
+		setProperty("outputextension",inType);
+	}
+
 }
 
