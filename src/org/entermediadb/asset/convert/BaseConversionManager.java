@@ -167,9 +167,5 @@ public abstract class BaseConversionManager implements ConversionManager
     }
 
 	protected abstract ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput);
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
