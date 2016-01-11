@@ -247,7 +247,7 @@ public class TranscodeTools
 
 	protected Map fieldHandlerCache = new HashMap(5);
 	
-	public ConversionManager getConversionManagerForInputType(String inFileFormat)
+	public ConversionManager getConversionManagerForOuputType(String inFileFormat)
 	{
 		ConversionManager handler = (ConversionManager)fieldHandlerCache.get(inFileFormat);
 		if( handler == null)
@@ -270,7 +270,7 @@ public class TranscodeTools
 	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath, String inOutputType)
 	{
 		//Minimal information here. We dont know what kind of input we have
-		ConversionManager handler = getConversionManagerForInputType(inOutputType);
+		ConversionManager handler = getConversionManagerForOuputType(inOutputType);
 		return handler.createOutputIfNeeded(inCreateProperties,inSourcePath);
 	}
 //	public ConvertInstructions createInstructions(Asset inAsset,Data inPreset,String inOutputType)

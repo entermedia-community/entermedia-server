@@ -82,7 +82,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
         //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
-		ConversionManager manager = archive.getTranscodeTools().getConversionManagerForInputType(asset.getFileFormat());
+		ConversionManager manager = archive.getTranscodeTools().getConversionManagerForOuputType(asset.getFileFormat());
         
 		ConvertInstructions instructions = manager.createInstructions(settings.getProperties(), asset,asset.getSourcePath(),preset);
         

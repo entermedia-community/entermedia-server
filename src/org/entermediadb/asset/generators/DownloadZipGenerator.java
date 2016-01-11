@@ -87,7 +87,7 @@ public class DownloadZipGenerator extends BaseGenerator
 				}
 				
 				Asset asset = archive.getAsset(id);
-				ConversionManager manager =  archive.getTranscodeTools().getConversionManagerForInputType(asset.getFileFormat());
+				ConversionManager manager =  archive.getTranscodeTools().getConversionManagerForOuputType(asset.getFileFormat());
 				if( manager != null)
 				{
 					ConvertInstructions ins = manager.createInstructions(new HashMap(), asset,asset.getSourcePath(),null);
@@ -109,7 +109,7 @@ public class DownloadZipGenerator extends BaseGenerator
 					continue;
 				}
 				inReq.putPageValue("asset",asset);
-				ConversionManager manager =  archive.getTranscodeTools().getConversionManagerForInputType(asset.getFileFormat());
+				ConversionManager manager =  archive.getTranscodeTools().getConversionManagerForOuputType(asset.getFileFormat());
 				if( manager != null)
 				{
 					ConvertInstructions ins = manager.createInstructions(new HashMap(), asset,asset.getSourcePath(),null);
