@@ -27,4 +27,11 @@ public class VideoConversionManager extends BaseConversionManager
 
 		return getMediaArchive().getContent( outputpage.toString() );
 	}
+
+	@Override
+	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

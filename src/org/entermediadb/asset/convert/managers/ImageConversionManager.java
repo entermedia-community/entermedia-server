@@ -86,24 +86,6 @@ public class ImageConversionManager extends BaseConversionManager
 	}
 
 	
-	public ConvertResult createOutput(ConvertInstructions inStructions, ContentItem input)
-    {
-    	
-		if(input == null)
-		{
-			input = createCacheFile(inStructions, input);
-		}
-		
-		if(input == null)
-		{
-    		input = inStructions.getOriginalDocument();
-    	}
-		
-		inStructions.setInputFile(input);
-    	return getMediaTranscoder().convert(inStructions);
-    	
-    }
-
 
 	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 	{

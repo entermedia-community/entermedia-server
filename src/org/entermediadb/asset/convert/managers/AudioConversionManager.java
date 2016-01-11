@@ -95,5 +95,12 @@ public class AudioConversionManager extends BaseConversionManager
 		return null;
 	}
 
+	@Override
+	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

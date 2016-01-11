@@ -13,6 +13,17 @@ public abstract class BaseConversionManager implements ConversionManager
 {
 	protected MediaArchive fieldMediaArchive;
 	protected Collection fieldInputLoaders;
+	protected Collection fieldOutputFilters;
+	public Collection getOutputFilters()
+	{
+		return fieldOutputFilters;
+	}
+
+	public void setOutputFilters(Collection inOutputFilters)
+	{
+		fieldOutputFilters = inOutputFilters;
+	}
+
 	protected MediaTranscoder fieldMediaTranscoder;
 	
 	
@@ -102,11 +113,6 @@ public abstract class BaseConversionManager implements ConversionManager
 		return instructions;
 		
 	}
-	
-	
-	
-	
-	
     @Override
 	public ConvertResult createOutput(ConvertInstructions inStructions)
 	{
@@ -132,17 +138,38 @@ public abstract class BaseConversionManager implements ConversionManager
     	
     	//return transcode(inStructions);
 	}
-    
+
     public ConvertResult createOutput(ConvertInstructions inStructions, ContentItem input)
     {
-    	
-    	
-    	if(input == null){
+    	if(input == null)
+		{
+			input = createCacheFile(inStructions, input);
+		}
+    	if(input == null)
+    	{
     		input = inStructions.getOriginalDocument();
     	}
-    	return getMediaTranscoder().convert(inStructions);
-    	
+		inStructions.setInputFile(input);
+    	ConvertResult result = getMediaTranscoder().convert(inStructions);
+    	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
+    	{
+    		for (Iterator iterator = getOutputFilters().iterator(); iterator.hasNext();)
+			{
+				OutputFilter filter = (OutputFilter) iterator.next();
+				ConvertResult tmpresult = filter.filterOutput(inStructions);
+				if( tmpresult != null)
+				{
+					result = tmpresult;
+				}
+			}
+    	}
+    	return result;
     }
 
+	protected abstract ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput);
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
