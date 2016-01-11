@@ -51,7 +51,7 @@ public class oofficeDocumentTranscoder extends BaseTranscoder
 		command.add("-outdir");
 		//String dir = inOut.getDirectory();
 		//log.info("{$inOut} turns into ${dir}");
-		dir = getPageManager().getPage(dir).getContentItem().getAbsolutePath();
+		String dir = inStructions.getOutputFile().getAbsolutePath();
 		new File( dir ).mkdirs();
 		command.add(dir);
 		
@@ -64,48 +64,50 @@ public class oofficeDocumentTranscoder extends BaseTranscoder
 		if( done.isRunOk() )
 		{
 			String newname = PathUtilities.extractPageName(input.getName()) + ".pdf";
-			Page tmpfile = getPageManager().getPage(inOut.getDirectory() + "/" + newname);
+			
+			Page tmpfile = getPageManager().getPage(dir+ "/" + newname);
 			if( !tmpfile.exists())
 			{
 				throw new OpenEditException("OpenOffice did not create output file " + tmpfile);
 			}
-			getPageManager().movePage(tmpfile, inOut);
+			Page output = getPageManager().getPage(inOut.getPath());
+			getPageManager().movePage(tmpfile, output);
 			log.info("Completed: " + input.getName());
 		}
 	    result.setOk(true);
 	    return result;
 	}
 
-	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
-	{
-		//we only generate PDF for now
-		StringBuffer path = new StringBuffer();
-
-		//legacy for people who want to keep their images in the old location
-		String prefix = inStructions.getProperty("pathprefix");
-		if( prefix != null)
-		{
-			path.append(prefix);
-		}
-		else
-		{
-			path.append("/WEB-INF/data");
-			path.append(inArchive.getCatalogHome());
-			path.append("/generated/");
-		}
-		path.append(inStructions.getAssetSourcePath());
-		path.append("/");
-
-		String postfix = inStructions.getProperty("pathpostfix");
-		if( postfix != null)
-		{
-			path.append(postfix);
-		}	
-		inStructions.setOutputExtension("pdf");
-		path.append("document." + inStructions.getOutputExtension());
-
-		inStructions.setOutputPath(path.toString());
-		return path.toString();
-	}
+//	public String populateOutputPath(MediaArchive inArchive, ConvertInstructions inStructions)
+//	{
+//		//we only generate PDF for now
+//		StringBuffer path = new StringBuffer();
+//
+//		//legacy for people who want to keep their images in the old location
+//		String prefix = inStructions.getProperty("pathprefix");
+//		if( prefix != null)
+//		{
+//			path.append(prefix);
+//		}
+//		else
+//		{
+//			path.append("/WEB-INF/data");
+//			path.append(inArchive.getCatalogHome());
+//			path.append("/generated/");
+//		}
+//		path.append(inStructions.getAssetSourcePath());
+//		path.append("/");
+//
+//		String postfix = inStructions.getProperty("pathpostfix");
+//		if( postfix != null)
+//		{
+//			path.append(postfix);
+//		}	
+//		inStructions.setOutputExtension("pdf");
+//		path.append("document." + inStructions.getOutputExtension());
+//
+//		inStructions.setOutputPath(path.toString());
+//		return path.toString();
+//	}
 
 }

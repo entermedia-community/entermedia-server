@@ -13,6 +13,7 @@ import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 
 public class ffmpegimageTranscoder extends BaseTranscoder
 {
@@ -37,7 +38,8 @@ public class ffmpegimageTranscoder extends BaseTranscoder
 	{
 		ConvertResult result = new ConvertResult();
 		
-		if(!inStructions.isForce() && inOutFile.length() > 0 )
+		ContentItem outputFile = inStructions.getOutputFile();
+		if(!inStructions.isForce() && outputFile.getLength() > 0 )
 		{
 			result.setOk(true);
 			result.setComplete(true);
@@ -45,10 +47,11 @@ public class ffmpegimageTranscoder extends BaseTranscoder
 		}
 		result.setOk(true);
 		
-		Page customthumb = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+		Page customthumb = getPageManager().getPage("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb.jpg");
 		if( customthumb.exists() )
 		{
-			getPageManager().copyPage(customthumb,inOutFile);
+			Page destination = getPageManager().getPage(inStructions.getOutputPath());
+			getPageManager().copyPage(customthumb,destination);
 			result.setComplete(true);
 			return result;
 		}
@@ -59,7 +62,7 @@ public class ffmpegimageTranscoder extends BaseTranscoder
 //		ci.setAssetSourcePath(inAsset.getSourcePath());
 //		ci.setOutputExtension("flv");
 //		inArchive.getCreatorManager().getMediaCreatorByOutputFormat("flv").populateOutputPath(inArchive, ci);
-		Page input = getPageManager().getPage("/WEB-INF/data" + inArchive.getCatalogHome() + "/generated/" + inAsset.getSourcePath() + "/video.mp4");
+		Page input = getPageManager().getPage("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/video.mp4");
 		
 //		Page input = getPageManager().getPage(ci.getOutputPath());
 		
@@ -72,7 +75,7 @@ public class ffmpegimageTranscoder extends BaseTranscoder
 		}
 		
 		//get timeout
-		long timeout = getConversionTimeout(inArchive, inAsset);
+		long timeout = inStructions.getConversionTimeout();
 		
 		String offset = inStructions.getProperty("timeoffset");
 		if( offset == null)
@@ -122,20 +125,20 @@ public class ffmpegimageTranscoder extends BaseTranscoder
 		// com.add( (int)inStructions.getMaxScaledSize().getWidth() + "x" +
 		// (int)inStructions.getMaxScaledSize().getHeight() + ">" );
 		
-		String outputpath = inOutFile.getContentItem().getAbsolutePath();
+		String outputpath = outputFile.getAbsolutePath();
 		new File(outputpath).getParentFile().mkdirs();
 		com.add(outputpath);
 		result.setOutputPath(null);
 		long start = System.currentTimeMillis();
 		if (runExec(getCommandName(), com, timeout))
 		{
-			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " " + outputFile.getName());
 			result.setComplete(true);
-			result.setOutputPath(inOutFile.getContentItem().getAbsolutePath());
+			result.setOutputPath(outputFile.getAbsolutePath());
 		}
 		else
 		{
-			if(!inOutFile.exists() || inOutFile.length() == 0)
+			if(!outputFile.exists() || outputFile.getLength() == 0)
 			{
 				log.info("Thumnail creation failed " + outputpath);
 				result.setOk(false);
