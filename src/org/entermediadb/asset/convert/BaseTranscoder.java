@@ -27,7 +27,7 @@ public abstract class BaseTranscoder implements MediaTranscoder
 	protected PageManager fieldPageManager;
 	//protected String fieldWaterMarkPath;
 	protected Exec fieldExec;
-    protected Collection fieldPreProcessors;
+//    protected Collection fieldPreProcessors;
 	protected Boolean fieldOnWindows;
 
 
@@ -119,28 +119,8 @@ public abstract class BaseTranscoder implements MediaTranscoder
 		return result.isRunOk();
 	}
 	
-	public boolean hasPreprocessor()
-	{
-		return fieldPreProcessors != null && fieldPreProcessors.size() > 0;
-	}
-	public Collection getPreProcessors()
-	{
-		if (fieldPreProcessors == null)
-		{
-			fieldPreProcessors = new ArrayList();
-		}
-
-		return fieldPreProcessors;
-	}
-	public void addPreProcessor(ConversionManager inCreator)
-	{
-		getPreProcessors().add(inCreator);
-	}
-	public void setPreProcessors(Collection inPreProcessors)
-	{
-		fieldPreProcessors = inPreProcessors;
-	}
-
+	
+	
 	
 
 	

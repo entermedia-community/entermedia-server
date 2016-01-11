@@ -16,7 +16,7 @@ public class ConvertionTest extends BaseEnterMediaTest
 		Map settings = new HashMap();
 		settings.put("prefwidth", "100");
 		settings.put("prefheight", "100");
-		ConvertResult result = archive.getTranscodeManager().createOutputIfNeeded(settings, "users/admin/105", "jpg");
+		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(settings, "users/admin/105", "jpg");
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
 		

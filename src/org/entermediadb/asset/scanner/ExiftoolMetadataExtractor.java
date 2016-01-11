@@ -33,7 +33,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
 	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
-	protected MediaTranscoder fieldExifToolTranscoder;
+	protected MediaTranscoder fieldExiftoolThumbTranscoder;
 	protected Exec fieldExec;
 	protected Set fieldTextFields;
 
@@ -51,20 +51,22 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		return fieldTextFields;
 	}
 
+	public MediaTranscoder getExiftoolThumbTranscoder()
+	{
+		return fieldExiftoolThumbTranscoder;
+	}
+
+	public void setExiftoolThumbTranscoder(MediaTranscoder inExiftoolThumbTranscoder)
+	{
+		fieldExiftoolThumbTranscoder = inExiftoolThumbTranscoder;
+	}
+
 	public void setTextFields(Set inTextFields)
 	{
 		fieldTextFields = inTextFields;
 	}
 
-	public MediaTranscoder getExifToolThumbCreator()
-	{
-		return fieldExifToolTranscoder;
-	}
 
-	public void setExifToolThumbCreator(MediaTranscoder inExifToolThumbCreator)
-	{
-		fieldExifToolTranscoder = inExifToolThumbCreator;
-	}
 
 	/**
 	 * synchronized because ExifTool is not thread safe
@@ -383,7 +385,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			instructions.setForce(true);
 			instructions.setInputFile(inInputFile);
 			instructions.setOutputFile(custom);
-			ConvertResult res = getExifToolThumbCreator().convert(instructions);
+			ConvertResult res = getExiftoolThumbTranscoder().convert(instructions);
 			if (res.isOk())
 			{
 				return;

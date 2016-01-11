@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 
@@ -19,4 +20,6 @@ public interface ConversionManager
 	public ConvertResult createOutput(ConvertInstructions inStructions);
 	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath);
 	void setInputLoaders(Collection inList);
+
+	public void setMediaArchive(MediaArchive inMediaArchive);
 }

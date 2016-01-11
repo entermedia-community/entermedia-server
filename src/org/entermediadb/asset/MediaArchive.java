@@ -491,7 +491,7 @@ public class MediaArchive
 	{
 		if (fieldTranscodeTools == null)
 		{
-			fieldTranscodeTools = (TranscodeTools) getModuleManager().getBean(getCatalogId(), "mediaCreator");
+			fieldTranscodeTools = (TranscodeTools) getModuleManager().getBean(getCatalogId(), "transcodeTools");
 			fieldTranscodeTools.setMediaArchive(this);
 		}
 

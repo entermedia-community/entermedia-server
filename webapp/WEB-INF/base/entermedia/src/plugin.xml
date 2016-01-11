@@ -9,11 +9,7 @@
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>
 	</lang:groovy>
-	<lang:groovy id="imagemagickCreator" script-source="conversions/creators/imagemagickCreator.groovy" lazy-init="default">
-		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
-		<lang:property name="exec"><ref bean="exec" /></lang:property>
-		<lang:property name="preProcessors"><ref bean="imagePreProcessors" /></lang:property>
-	</lang:groovy>
+
 	<lang:groovy id="oofficeDocumentCreator" script-source="conversions/creators/oofficeDocumentCreator.groovy" lazy-init="default">
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="exec"><ref bean="exec" /></lang:property>

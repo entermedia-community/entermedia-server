@@ -73,7 +73,10 @@ public class ConvertInstructions
 	{
 		if( fieldAsset == null)
 		{
-			fieldAsset = getMediaArchive().getAsset(getAssetId());
+			String assetid = getProperty("assetid");
+			if(assetid != null){
+				fieldAsset = getMediaArchive().getAsset(assetid);
+			}
 		}
 		return fieldAsset;
 	}

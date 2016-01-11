@@ -258,7 +258,8 @@ public class TranscodeTools
 				if( handler == null)
 				{
 					String type = getMediaArchive().getMediaRenderType(inFileFormat);
-					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), type + "Handler");
+					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), type + "ConversionManager");
+					handler.setMediaArchive(getMediaArchive());
 					fieldHandlerCache.put( inFileFormat, handler);
 				}	
 			}
