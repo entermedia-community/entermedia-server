@@ -15,7 +15,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.filters.Filters.Bucket;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -213,7 +212,7 @@ public class ElasticHitTracker extends HitTracker
 					}
 					for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
 					{
-						Bucket entry = (Bucket) iterator2.next();
+						org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
 						long count = entry.getDocCount();
 						String term = entry.getKeyAsString();
 						FilterNode child = new FilterNode();

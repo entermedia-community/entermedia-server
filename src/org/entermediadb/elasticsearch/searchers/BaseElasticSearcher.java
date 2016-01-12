@@ -69,6 +69,7 @@ import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.Join;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.users.User;
@@ -546,6 +547,13 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.endObject();
 					continue;
 				}
+				if ("_parent".equals(detail.getId()))
+				{
+					jsonproperties = jsonproperties.startObject("_parent");
+					jsonproperties = jsonproperties.field("type", detail.getListId());
+					jsonproperties = jsonproperties.endObject();
+					continue;
+				}
 				jsonproperties = jsonproperties.startObject(detail.getId());
 				if ("description".equals(detail.getId()))
 				{
@@ -638,7 +646,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
 	{
 
-		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0)
+		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0)  //Shortcut for common cases
 		{
 			Term term = (Term) inQuery.getTerms().iterator().next();
 
@@ -717,6 +725,16 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					bool.should(builder);
 				}
+			}
+		}
+		if (inQuery.getParentJoins() != null)
+		{
+			for (Iterator iterator = inQuery.getParentJoins().iterator(); iterator.hasNext();)
+			{
+				Join join = (Join) iterator.next();
+				QueryBuilder parent = QueryBuilders.termQuery(join.getChildColumn(), join.getEqualsValue() );
+				QueryBuilder haschild = QueryBuilders.hasChildQuery(join.getChildTable(), parent);
+				bool.must(haschild);
 			}
 		}
 		return bool;
@@ -1222,9 +1240,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			log.info("Null Data");
 		}
 		populateDoc(inContent, inData, inDetails);
-		
-		
-	
 	}
 	
 	protected void populateDoc(XContentBuilder inContent, Data inData, PropertyDetails inDetails){

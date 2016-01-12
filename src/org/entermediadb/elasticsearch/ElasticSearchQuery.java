@@ -14,7 +14,7 @@ import org.openedit.hittracker.Term;
 import org.openedit.util.DateStorageUtil;
 
 public class ElasticSearchQuery extends SearchQuery
-{
+{	
 	public ElasticSearchQuery()
 	{
 		// TODO Auto-generated constructor stub
@@ -49,11 +49,11 @@ public class ElasticSearchQuery extends SearchQuery
 		}
 		return addAfter(detail, inSearchDate);
 	}
-	public void addJoinFilter(SearchQuery filterQuery, String inFilterColumn, boolean inFilterHasMultiValues, String filterSearchType, String inResultsColumn)
-	{
-		//TODO: Upgrade to ElasticSearch and create a smart object that will perform the 
-		//https://www.elastic.co/guide/en/elasticsearch/reference/2.0/query-dsl-has-parent-query.html
-	}
+	//public void addJoinFilter(SearchQuery filterQuery, String inFilterColumn, boolean inFilterHasMultiValues, String filterSearchType, String inResultsColumn)
+		//https://www.elastic.co/guide/en/elasticsearch/guide/current/parent-child-mapping.html
+		//https://www.elastic.co/guide/en/elasticsearch/guide/master/indexing-parent-child.html
+		//https://www.elastic.co/guide/en/elasticsearch/guide/master/has-child.html
+
 	public Term addAfter(PropertyDetail inFieldId,final Date inDate)
 	{
 		Term term = new Term()
