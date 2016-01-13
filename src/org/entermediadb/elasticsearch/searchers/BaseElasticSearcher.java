@@ -111,7 +111,15 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public ElasticNodeManager getElasticNodeManager()
 	{
+		
+		
+		if(!getModuleManager().getLoadedBeans().contains(fieldElasticNodeManager)){
+			getModuleManager().addForShutdown(fieldElasticNodeManager);
+			getModuleManager().getLoadedBeans().add(fieldElasticNodeManager);
+			
+		}
 		return fieldElasticNodeManager;
+		
 	}
 
 	public void setElasticNodeManager(ElasticNodeManager inElasticNodeManager)
@@ -1426,6 +1434,10 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public void deleteAll(User inUser)
 	{
+		
+		
+		//https://github.com/elastic/elasticsearch/blob/master/plugins/delete-by-query/src/main/java/org/elasticsearch/action/deletebyquery/TransportDeleteByQueryAction.java#L104
+		
 		log.info("Deleted all records database " + getSearchType());
 //		DeleteByQueryRequestBuilder delete = getClient().prepareDeleteByQuery(toId(getCatalogId()));
 //		delete.setTypes(getSearchType());

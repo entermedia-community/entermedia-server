@@ -39,6 +39,7 @@ import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.entermediadb.asset.cluster.NodeManager;
 import org.openedit.OpenEditException;
+import org.openedit.Shutdownable;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
@@ -53,7 +54,7 @@ import org.xbib.elasticsearch.action.knapsack.imp.KnapsackImportResponse;
 import org.xbib.elasticsearch.action.knapsack.state.KnapsackStateRequestBuilder;
 import org.xbib.elasticsearch.action.knapsack.state.KnapsackStateResponse;
 
-public class ElasticNodeManager extends NodeManager
+public class ElasticNodeManager extends NodeManager implements Shutdownable
 {
 	protected Log log = LogFactory.getLog(ElasticNodeManager.class);
 
@@ -136,7 +137,7 @@ public class ElasticNodeManager extends NodeManager
 			}
 		}
 		fieldShutdown = true;
-		log.info("Elastic Shutdown called");
+		System.out.println("OpenEditEngine shutdown complete");
 	}
 
 
