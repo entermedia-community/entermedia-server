@@ -43,9 +43,9 @@ public class oofficeDocumentCreator extends BaseCreator
 
 		List command = new ArrayList();
 		
+		command.add("-invisible");
 		command.add("-headless");
 		command.add("-nologo");
-		//command.add("-invisible");
 		command.add("-norestore");		
 		command.add("-nolockcheck");
 		
