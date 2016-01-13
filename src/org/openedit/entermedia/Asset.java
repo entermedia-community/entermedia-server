@@ -4,6 +4,7 @@
 package org.openedit.entermedia;
 
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +27,7 @@ import org.openedit.data.SaveableData;
 import com.openedit.OpenEditRuntimeException;
 import com.openedit.page.Page;
 import com.openedit.util.PathUtilities;
-
+import java.util.regex.Pattern;
 /**
  * @author cburkey
  * 
@@ -584,16 +585,17 @@ public class Asset implements MultiValued, SaveableData
 				start = inString.indexOf("\"",end +1);
 			} 
 			
-			String[] keywords = inString.split("\\s+");
-			for(int i = 0; i < keywords.length; i++)
-			{
-				String key = keywords[i].trim();
-				if( key.length() == 0 || key.startsWith("\"") || key.endsWith("\""))
-				{
-					continue;
-				}
-				addKeyword(key);
-			}
+			Pattern tags = Pattern.compile("[^\\s\"]+|\"([^\"]*)\"");
+			Matcher tagmatches = tags.matcher(inString);
+			while (tagmatches.find()) {
+			    if (tagmatches.group(1) != null) {
+			        // Add double-quoted string without the quotes
+			        addKeyword(tagmatches.group(1));
+			    } else {
+			        // Add unquoted word
+			        addKeyword(tagmatches.group());
+			    }
+			} 
 		}
 	}
 
