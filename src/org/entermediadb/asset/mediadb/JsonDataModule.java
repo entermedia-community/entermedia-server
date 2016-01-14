@@ -109,15 +109,10 @@ public class JsonDataModule extends BaseJsonModule
 		if( request != null)
 		{
 			String id = (String)request.get("id");
-			String sourcepath = request.sourcepath;
+			String sourcepath = (String) request.get("sourcepath");
+			newdata.setProperties(request);
 			newdata.setId(id);
 			newdata.setProperty("sourcepath", sourcepath);
-			request.each
-			{
-				String key = it.key;
-				String value = it.value;
-				newdata.setProperty(key, value);
-			}
 		}
 
 
@@ -133,8 +128,6 @@ public class JsonDataModule extends BaseJsonModule
 	public Data loadData(WebPageRequest inReq)
 	{
 
-		SearcherManager sm = inReq.getPageValue("searcherManager");
-
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 
@@ -145,12 +138,12 @@ public class JsonDataModule extends BaseJsonModule
 		log.info("JSON get with ${id} and ${catalogid}");
 		
 
-		Data data = searcher.searchById(id);
+		Data data = (Data) searcher.searchById(id);
 
 		if(data == null)
 		{
 			//throw new OpenEditException("Asset was not found!");
-			return;
+			return null;
 		}
 		
 		inReq.putPageValue("data", data);
@@ -164,8 +157,6 @@ public class JsonDataModule extends BaseJsonModule
 	public void deleteData(WebPageRequest inReq)
 	{
 
-		SearcherManager sm = inReq.getPageValue("searcherManager");
-
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 
@@ -176,7 +167,7 @@ public class JsonDataModule extends BaseJsonModule
 		log.info("JSON get with ${id} and ${catalogid}");
 		
 
-		Data data = searcher.searchById(id);
+		Data data = (Data) searcher.searchById(id);
 
 		if(data == null)
 		{
@@ -212,15 +203,14 @@ public class JsonDataModule extends BaseJsonModule
 	public void updateData(WebPageRequest inReq)
 	{
 	
-		SearcherManager sm = inReq.getPageValue("searcherManager");
-		def request = inReq.getJsonRequest();
+		Map request = inReq.getJsonRequest();
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = archive.getSearcher(searchtype);
 		
 		Data newdata = loadData(inReq);
-		if(newdata)
+		if(newdata != null)
 		{
 			saveJsonData(request,searcher,newdata);
 			searcher.saveData(newdata, inReq.getUser());

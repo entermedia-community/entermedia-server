@@ -424,16 +424,18 @@ public class JsonAssetModule extends BaseJsonModule
 		JsonSlurper slurper = new JsonSlurper();
 		Map request = null;
 		String content = (String)inReq.getPageValue("jsondata");
-
-		if(content != null)
-		{
-			request = (Map)slurper.parseText(content); //NOTE:  This is for unit tests.
+		try {
+			if(content != null)
+			{
+				request = (Map)slurper.parseText(content); //NOTE:  This is for unit tests.
+			}
+			else
+			{
+				request = (Map)slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+			}
+		} catch (Throwable ex) {
+			throw new OpenEditException(ex);
 		}
-		else
-		{
-			request = (Map)slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
-		}
-
 		String publishdestination = (String)request.get("publishdestination");
 		Order order = (Order)ordersearcher.createNewData();
 		order.setProperty("publishdestination", publishdestination);
