@@ -1,9 +1,8 @@
-package rest.json
+package org.entermediadb.asset.mediadb;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.openedit.WebPageRequest
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openedit.WebPageRequest;
 
 public class JsonAdminModule extends BaseJsonModule 
 {

@@ -82,9 +82,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
         //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
-		ConversionManager manager = archive.getTranscodeTools().getConversionManagerForOuputType(asset.getFileFormat());
+		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
         
-		ConvertInstructions instructions = manager.createInstructions(settings.getProperties(), asset,asset.getSourcePath(),preset);
+		ConvertInstructions instructions = manager.createInstructions(settings.getProperties(), asset,preset);
         
 		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("outputfile"));
 		instructions.setOutputFile(outputpage);
@@ -170,17 +170,17 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		
-        MediaTranscoder c = archive.getTranscodeTools().getMediaCreatorByOutputFormat("jpg");
-		ConvertInstructions instructions = new ConvertInstructions(archive);
+        ConversionManager c = archive.getTranscodeTools().getManagerByFileFormat("jpg");
+		ConvertInstructions instructions = c.createInstructions();
 		instructions.setForce(true);
 		instructions.setInputFile(archive.getContent( input ) );
 		instructions.setOutputFile(archive.getContent( s1024) );
 		instructions.setMaxScaledSize(1024, 768);
-	 	c.convert(instructions);
+	 	c.transcode(instructions);
 
 	 	String png1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		instructions.setOutputFile(archive.getContent( png1024) );
-	 	c.convert(instructions);
+	 	c.transcode(instructions);
 		
 		 archive.removeGeneratedImages(current, false);
 		 reloadThumbnails( inReq, archive, current);

@@ -6,11 +6,14 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.joda.time.convert.ConverterManager;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.manage.PageManager;
+
+import groovy.lang.Lazy;
 /**
  * This deals with actual conversions from one file to another
  * @author shanti
@@ -19,59 +22,67 @@ import org.openedit.page.manage.PageManager;
 public class TranscodeTools
 {
 	private static final Log log = LogFactory.getLog(TranscodeTools.class);
-
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager fieldModuleManager;
-	protected Map fieldConverterCache;
-	protected Map fieldFileFormatCache;
-	protected PageManager fieldPageManager;
-	//protected HttpClient fieldHttpClient;
-	protected MediaArchive fieldMediaArchive;
-
-	public ConvertResult createOutput(ConvertInstructions inStructions)
+	protected Map fieldRenderTypeCache = new HashMap(5);
+	protected Map fieldManagerCache = new HashMap(5);
+	protected Map<String,String> fieldTranscoderForFileFormatCache = new HashMap<String,String>(5);
+	
+	public Map getRenderTypeCache()
 	{
-		MediaTranscoder creator = getMediaCreatorByOutputFormat(inStructions.getOutputExtension());
-		return creator.convert(inStructions);
+		return fieldRenderTypeCache;
+	}
+	public void setRenderTypeCache(Map inRenderTypeCache)
+	{
+		fieldRenderTypeCache = inRenderTypeCache;
 	}
 
-	// filetype is jpg asset.fileformat
-	public MediaTranscoder getMediaCreatorByOutputFormat(String inFileType)
+
+	public Map getManagerCache()
 	{
-		MediaTranscoder converter = (MediaTranscoder) getConverterCache().get(inFileType);
-		if (converter == null)
+		return fieldManagerCache;
+	}
+	public void setManagerCache(Map inManagerCache)
+	{
+		fieldManagerCache = inManagerCache;
+	}
+
+	protected PageManager fieldPageManager;
+	protected MediaArchive fieldMediaArchive;
+	
+
+//	public ConvertResult createOutput(ConvertInstructions inStructions)
+//	{
+//		ConverterManager creator = getManagerByFileFormat( inStructions.getOutputExtension());
+//		return creator.cre(inStructions);
+//	}
+
+	// filetype is jpg asset.fileformat
+	
+	public String getRenderTypeByFileFormat(String inFileType)
+	{
+		if( inFileType == null)
 		{
-			if( inFileType == null)
+			return null;
+		}
+		inFileType = inFileType.toLowerCase();
+		String render = (String)getRenderTypeCache().get(inFileType);
+		if( render == null)
+		{
+			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
+			if( row != null)
 			{
-				return null;
-			}
-			String catid = getMediaArchive().getCatalogId();
-			
-			Searcher searcher = getSearcherManager().getSearcher(catid, "fileformat");
-			Data row = (Data) searcher.searchById(inFileType);
-			if (row == null)
-			{
-				return null;
+				render = row.get("rendertype");
 			}
 			else
 			{
-				String type = row.get("converter"); 
-				if( type == null)
-				{
-					 type = row.get("creator"); //legacy
-				}
-				if( type == null)
-				{
-					return null; //TODO: Cache a Null value?
-				}
-				String bean = type + "Converter";
-				converter = (MediaTranscoder) getModuleManager().getBean(bean);
+				render = "default";
 			}
-			getConverterCache().put(inFileType, converter);
+			getRenderTypeCache().put( inFileType, render);
 		}
-		return converter;
+		return render;
 	}
-
-	public String getRenderTypeByFileFormat(String inFileType)
+/*	public String getTranscoderByFileFormat(String inFileType)
 	{
 		if( inFileType == null)
 		{
@@ -84,17 +95,13 @@ public class TranscodeTools
 			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
 			if( row != null)
 			{
-				render = row.get("rendertype");
+				render = row.get("creator");
+				getFileFormatCache().put( inFileType, render);
 			}
-			else
-			{
-				render = "default";
-			}
-			getFileFormatCache().put( inFileType, render);
 		}
 		return render;
 	}
-
+*/
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -105,19 +112,6 @@ public class TranscodeTools
 		fieldModuleManager = inModuleManager;
 	}
 
-	public Map getConverterCache()
-	{
-		if (fieldConverterCache == null)
-		{
-			fieldConverterCache = new HashMap();
-		}
-		return fieldConverterCache;
-	}
-
-	public void setConverterCache(Map inCache)
-	{
-		fieldConverterCache = inCache;
-	}
 
 	public PageManager getPageManager()
 	{
@@ -231,47 +225,71 @@ public class TranscodeTools
 //		return failures;
 //	}
 
-	public Map getFileFormatCache()
-	{
-		if (fieldFileFormatCache == null)
-		{
-			fieldFileFormatCache = new HashMap();
-		}
-		return fieldFileFormatCache;
-	}
 
-	public void setFileFormatCache(Map inFileFormatCache)
-	{
-		fieldFileFormatCache = inFileFormatCache;
-	}
-
-	protected Map fieldHandlerCache = new HashMap(5);
 	
-	public ConversionManager getConversionManagerForOuputType(String inFileFormat)
+	public ConversionManager getManagerByFileFormat(String inFileType)
 	{
-		ConversionManager handler = (ConversionManager)fieldHandlerCache.get(inFileFormat);
+		if( inFileType == null)
+		{
+			return null;
+		}
+		String renderer = fieldTranscoderForFileFormatCache.get(inFileType);
+		if( renderer == null)
+		{
+			
+			String catid = getMediaArchive().getCatalogId();
+			
+			Searcher searcher = getSearcherManager().getSearcher(catid, "fileformat");
+			Data row = (Data) searcher.searchById(inFileType);
+			if (row == null)
+			{
+				return null;
+			}
+			else
+			{
+				renderer = row.get("transcoder"); 
+				if( renderer == null)
+				{
+					renderer = row.get("converter"); //legacy
+				}
+				if( renderer == null)
+				{
+					renderer = row.get("creator"); //legacy
+				}
+				if( renderer == null)
+				{
+					return null; //TODO: Cache a Null value?
+				}
+			}
+			fieldTranscoderForFileFormatCache.put(inFileType,renderer);
+		}	
+		ConversionManager c = getManagerByTranscoder(renderer);
+		return c;
+	}
+	public ConversionManager getManagerByTranscoder(String inTranscoder)
+	{
+		ConversionManager handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
 		if( handler == null)
 		{
 			synchronized (this)
 			{
-				handler = (ConversionManager)fieldHandlerCache.get(inFileFormat);
+				handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
 				if( handler == null)
 				{
-					String type = getMediaArchive().getMediaRenderType(inFileFormat);
-					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), type + "ConversionManager");
+					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inTranscoder + "ConversionManager");
 					handler.setMediaArchive(getMediaArchive());
-					fieldHandlerCache.put( inFileFormat, handler);
+					fieldManagerCache.put( inTranscoder, handler);
 				}	
 			}
 		}
-		return handler;
+		return handler;		
 	}
-
+	
 	
 	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath, String inOutputType)
 	{
 		//Minimal information here. We dont know what kind of input we have
-		ConversionManager handler = getConversionManagerForOuputType(inOutputType);
+		ConversionManager handler = getManagerByFileFormat(inOutputType);
 		return handler.createOutputIfNeeded(inCreateProperties,inSourcePath);
 	}
 //	public ConvertInstructions createInstructions(Asset inAsset,Data inPreset,String inOutputType)

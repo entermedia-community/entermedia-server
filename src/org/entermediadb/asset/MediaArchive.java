@@ -20,6 +20,7 @@ import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
+import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
@@ -87,6 +88,7 @@ public class MediaArchive
 	protected Map<String,Data> fieldLibraries;
 	protected PresetCreator fieldPresetManager;
 	protected CacheManager fieldCacheManager;
+	protected OrderManager fieldOrderManager;
 	
 	public CacheManager getCacheManager()
 	{
@@ -1637,5 +1639,15 @@ public class MediaArchive
 	public ContentItem getContent(String inPath)
 	{
 		return getPageManager().getRepository().getStub(inPath);
+	}
+	
+	public OrderManager getOrderManager()
+	{
+		if (fieldOrderManager == null)
+		{
+			fieldOrderManager = (OrderManager)getModuleManager().getBean(getCatalogId(),"orderManager");
+		}
+
+		return fieldOrderManager;
 	}
 }

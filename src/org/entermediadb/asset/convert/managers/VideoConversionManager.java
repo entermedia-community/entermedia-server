@@ -15,6 +15,21 @@ public class VideoConversionManager extends BaseConversionManager
 		outputpage.append("/generated/" );
 		outputpage.append(inStructions.getAssetSourcePath() );
 		outputpage.append("/" );
+		String cachefilename = inStructions.get("cachefilename");
+		if( cachefilename == null)
+		{
+			outputpage.append(getCacheName());
+			if( inStructions.isWatermark() )
+			{
+				outputpage.append("wm");
+			}
+			//if( inStructions.get)
+			outputpage.append(".mp4");
+		}
+		else
+		{
+			outputpage.append(cachefilename);
+		}
 //		String output = inPreset.get("outputfile");
 //		int pagenumber = inStructions.getPageNumber();
 //		if( pagenumber > 1 )
@@ -34,4 +49,10 @@ public class VideoConversionManager extends BaseConversionManager
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	protected String getCacheName()
+	{
+		return "video";
+	}
+
 }

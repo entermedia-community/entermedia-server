@@ -1297,7 +1297,7 @@
 		
 	</bean>
 	
-	<bean id="conversionUtil" class="org.entermediadb.asset.creator.ConversionUtil" scope="prototype">
+	<bean id="conversionUtil" class="org.entermediadb.asset.convert.ConversionUtil" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 <!-- 	
@@ -1730,12 +1730,24 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 	</bean>
 	
+
+	 <bean id="ffmpegConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
+		<property name="mediaTranscoder">
+			<ref bean="ffmpegTranscoder" />
+		</property>
 	
-	 <bean id="imageConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
+	</bean>
+	
+	 <bean id="imagemagickConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
 		<property name="mediaTranscoder">
 			<ref bean="imagemagickTranscoder" />
 		</property>
-	
+		<list>
+				<ref bean="imageCacheLoader" />
+		</list>
+	</bean>
+	<bean id="imageCacheLoader" class="org.entermediadb.asset.convert.inputloaders.ImageCacheLoader" >
+		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
 	
 	<bean id="imagemagickTranscoder" class="org.entermediadb.asset.convert.transcoders.ImagemagickTranscoder" >
@@ -1743,6 +1755,10 @@
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
 	
-	  <bean id="mathutil"  class="org.entermediadb.asset.util.MathUtils" />	
+	<bean id="mathutil"  class="org.entermediadb.asset.util.MathUtils" />	
+	<bean id="JsonModule" class="org.entermediadb.asset.mediadb.JsonModule" />
+	<bean id="JsonAssetModule" class="org.entermediadb.asset.mediadb.JsonAssetModule"  />
+	<bean id="JsonDataModule" class="org.entermediadb.asset.mediadb.JsonDataModule"  />
+	<bean id="JsonAdminModule" class="org.entermediadb.asset.mediadb.JsonAdminModule"  />
 	
 </beans>

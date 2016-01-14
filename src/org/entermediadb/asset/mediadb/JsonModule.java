@@ -1,36 +1,49 @@
-package rest.json
+package org.entermediadb.asset.mediadb;
 
-import groovy.json.JsonSlurper
 
-import java.awt.Dimension
-import java.text.SimpleDateFormat
+import java.awt.Dimension;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.convert.ConversionUtil
-import org.entermediadb.asset.modules.BaseMediaModule
-import org.entermediadb.asset.orders.Order
-import org.entermediadb.asset.orders.OrderManager
-import org.entermediadb.asset.orders.OrderSearcher
-import org.entermediadb.asset.scanner.AssetImporter
-import org.entermediadb.asset.search.AssetSearcher
-import org.entermediadb.asset.upload.FileUpload
-import org.entermediadb.asset.upload.UploadRequest
-import org.json.simple.JSONArray
-import org.json.simple.JSONObject
-import org.json.simple.parser.JSONParser
-import org.openedit.Data
-import org.openedit.OpenEditException
-import org.openedit.WebPageRequest
-import org.openedit.data.PropertyDetail
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.hittracker.HitTracker
-import org.openedit.hittracker.SearchQuery
-import org.openedit.page.Page
-import org.openedit.util.OutputFiller
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConversionUtil;
+import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.orders.Order;
+import org.entermediadb.asset.orders.OrderManager;
+import org.entermediadb.asset.orders.OrderSearcher;
+import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.search.AssetSearcher;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.UploadRequest;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
+import org.openedit.util.OutputFiller;
+
+import groovy.json.JsonSlurper;
+
+
 
 
 public class JsonModule extends BaseMediaModule 
@@ -44,13 +57,13 @@ public class JsonModule extends BaseMediaModule
 		
 		JSONObject object = null;
 		String method = inReq.getMethod();
-		if(method == "POST"){
+		if(method.equals("POST")){
 			object = handleAssetPost(inReq);
 		}
 		if(method == "PUT"){
 			object = handleAssetPut(inReq);
 		}
-		if(method == "DELETE"){
+		if(method.equals("DELETE")){
 			object = handleAssetDelete(inReq);
 		}
 
@@ -466,17 +479,15 @@ public class JsonModule extends BaseMediaModule
 
 
 
-	public void handleAssetDelete(WebPageRequest inReq)
+	public boolean handleAssetDelete(WebPageRequest inReq)
 	{
 	    inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
 	
 		JsonSlurper slurper = new JsonSlurper();
 
-		SearcherManager sm = inReq.getPageValue("searcherManager");
 		String catalogid = findCatalogId(inReq);
 
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
 		String id = getId(inReq);
@@ -484,16 +495,16 @@ public class JsonModule extends BaseMediaModule
 		Asset asset = archive.getAsset(id);
 
 		if(asset != null){
-			searcher.delete(asset, null);
+			archive.getAssetSearcher().delete(asset, null);
 		}
-
+		return true;
 
 	}
 
 	//this is not needed see parent class
 	public MediaArchive getMediaArchive(WebPageRequest inReq,  String inCatalogid)
 	{
-		SearcherManager sm = inReq.getPageValue("searcherManager");
+		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
 
 		if (inCatalogid == null)
 		{

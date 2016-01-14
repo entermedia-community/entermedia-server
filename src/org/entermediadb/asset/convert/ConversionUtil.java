@@ -37,7 +37,7 @@ public class ConversionUtil {
 		fieldSearcherManager = inSearcherManager;
 	}
 	
-	protected HitTracker getParameterData(String inCatalogId, String inPresetId) throws Exception{
+	protected HitTracker getParameterData(String inCatalogId, String inPresetId) {
 		SearcherManager sm = getSearcherManager();
 		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
 		Searcher pdsearcher = sm.getSearcher(inCatalogId, "presetdata");
@@ -123,7 +123,7 @@ public class ConversionUtil {
 		return canCrop;
 	}
 	
-	public Dimension getConvertPresetDimension(String inCatalogId, String inPresetId) throws Exception {
+	public Dimension getConvertPresetDimension(String inCatalogId, String inPresetId) {
 		Dimension dimension = new Dimension();
 		double width = 0d;
 		double height = 0d;
@@ -296,7 +296,7 @@ public class ConversionUtil {
 		return hits;
 	}
 	
-	public HitTracker getActivePresetList(String inCatalogId, String mediatype) throws Exception {
+	public HitTracker getActivePresetList(String inCatalogId, String mediatype)  {
 		SearcherManager sm = getSearcherManager();
 		Collection both = new ArrayList();
 		both.add("all");
@@ -306,7 +306,7 @@ public class ConversionUtil {
 		return all;
 	}
 	
-	public HitTracker getFatwireConvertPresetList(String inCatalogId, String inAssetId) throws Exception {
+	public HitTracker getFatwireConvertPresetList(String inCatalogId, String inAssetId) {
 		SearcherManager sm = getSearcherManager();
 		Searcher cpsearcher = sm.getSearcher(inCatalogId, "convertpreset");
 		SearchQuery query = cpsearcher.createSearchQuery().append("publishtofatwire","true");
@@ -315,7 +315,7 @@ public class ConversionUtil {
 		return hits;
 	}
 	
-	public HitTracker getFatwirePublishQueueList(String inCatalogId, String inAssetId, String inPresetId) throws Exception{
+	public HitTracker getFatwirePublishQueueList(String inCatalogId, String inAssetId, String inPresetId) {
 		SearcherManager sm = getSearcherManager();
 		Searcher pdsearcher = sm.getSearcher(inCatalogId, "publishdestination");
 		Data data = (Data) pdsearcher.searchByField("name", "Fatwire");

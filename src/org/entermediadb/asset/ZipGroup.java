@@ -12,6 +12,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
@@ -131,7 +132,8 @@ public class ZipGroup
 						ConvertInstructions instructions = inAssets.get(asset);
 						if (instructions != null)
 						{
-							ContentItem converted = getMediaArchive().getTranscodeTools().createOutput(instructions).getOutput();
+							ConversionManager manager = getMediaArchive().getTranscodeTools().getManagerByFileFormat(instructions.getOutputExtension());
+							ContentItem converted = manager.createOutput(instructions).getOutput();
 							source = new File(converted.getAbsolutePath());
 							String extension = "";
 							if (instructions.getOutputExtension() != null)

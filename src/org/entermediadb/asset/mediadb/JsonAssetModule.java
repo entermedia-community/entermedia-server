@@ -1,32 +1,37 @@
-package rest.json
+package org.entermediadb.asset.mediadb;
 
-import groovy.json.JsonSlurper
+import java.awt.Dimension;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
-import java.awt.Dimension
-import java.text.SimpleDateFormat
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConversionUtil;
+import org.entermediadb.asset.orders.Order;
+import org.entermediadb.asset.orders.OrderSearcher;
+import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.search.AssetSearcher;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.UploadRequest;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Page;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.convert.ConversionUtil
-import org.entermediadb.asset.orders.Order
-import org.entermediadb.asset.orders.OrderManager
-import org.entermediadb.asset.orders.OrderSearcher
-import org.entermediadb.asset.scanner.AssetImporter
-import org.entermediadb.asset.search.AssetSearcher
-import org.entermediadb.asset.upload.FileUpload
-import org.entermediadb.asset.upload.UploadRequest
-import org.json.simple.JSONArray
-import org.json.simple.JSONObject
-import org.openedit.Data
-import org.openedit.OpenEditException
-import org.openedit.WebPageRequest
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.hittracker.HitTracker
-import org.openedit.page.Page
-
+import groovy.json.JsonSlurper;
 
 public class JsonAssetModule extends BaseJsonModule 
 {
@@ -102,18 +107,18 @@ public class JsonAssetModule extends BaseJsonModule
 
 	public void createAsset(WebPageRequest inReq)
 	{
-		SearcherManager sm = inReq.getPageValue("searcherManager");
+		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
 
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
+		AssetSearcher searcher = archive.getAssetSearcher();
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
 
-		FileUpload command = archive.getSearcherManager().getModuleManager().getBean("fileUpload");
+		FileUpload command = (FileUpload)archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 		UploadRequest properties = command.parseArguments(inReq);
 
-		def request = inReq.getJsonRequest(); 
+		Map request = inReq.getJsonRequest(); 
 
 		AssetImporter importer = archive.getAssetImporter();
 		HashMap keys = new HashMap();
@@ -125,16 +130,15 @@ public class JsonAssetModule extends BaseJsonModule
 		df = format.format(new Date());
 		keys.put("formattedmonth", df);
 
-		String id = request.id;
+		String id = (String)request.get("id");
 		if(id == null)
 		{
-			id = searcher.nextAssetNumber()
+			id = searcher.nextAssetNumber();
 		}
 		keys.put("id",id);		
 		keys.put("guid",UUID.randomUUID().toString() );
-
 		
-		String sourcepath = keys.get("sourcepath");
+		String sourcepath = (String)keys.get("sourcepath");
 
 		if(sourcepath == null)
 		{
@@ -159,13 +163,13 @@ public class JsonAssetModule extends BaseJsonModule
 
 		if(asset == null && keys.get("fetchURL") != null)
 		{
-			asset = importer.createAssetFromFetchUrl(archive, keys.get("fetchURL"), inReq.getUser(), sourcepath, keys.get("importfilename"));
+			asset = importer.createAssetFromFetchUrl(archive, (String)keys.get("fetchURL"), inReq.getUser(), sourcepath, (String)keys.get("importfilename"));
 		}
 
 		if(asset == null && keys.get("localPath") != null)
 		{
 			//log.info("HERE!!!");
-			File file = new File(keys.get("localPath"));
+			File file = new File((String)keys.get("localPath"));
 			if(file.exists())
 			{
 				String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/${file.getName()}";
@@ -173,7 +177,7 @@ public class JsonAssetModule extends BaseJsonModule
 				String realpath = newfile.getContentItem().getAbsolutePath();
 				File target = new File(realpath);
 				target.getParentFile().mkdirs();
-				if(file.renameTo(realpath))
+				if(file.renameTo(new File( realpath) ) )
 				{
 					asset = importer.createAssetFromPage(archive, inReq.getUser(), newfile,id);
 				}
@@ -207,16 +211,16 @@ public class JsonAssetModule extends BaseJsonModule
 	public void updateAsset(WebPageRequest inReq)
 	{
 
-		SearcherManager sm = inReq.getPageValue("searcherManager");
+		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
 
-		JSONObject inputdata  = inReq.getJsonRequest(); 
+		JSONObject inputdata  = (JSONObject)inReq.getJsonRequest(); 
 
 
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
 
 
-		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
+		AssetSearcher searcher = archive.getAssetSearcher();
 		//We will need to handle this differently depending on whether or not this asset has a real file attached to it.
 		//if it does, we should move it and use the asset importer to create it so metadata gets read, etc.
 
@@ -235,7 +239,7 @@ public class JsonAssetModule extends BaseJsonModule
 		saveJsonData(inputdata,searcher,asset);
 						
 		searcher.saveData(asset, inReq.getUser());
-		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset)
+		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset);
 		
 		inReq.putPageValue("asset", asset);
 		inReq.putPageValue("data", asset);
@@ -385,11 +389,12 @@ public class JsonAssetModule extends BaseJsonModule
 		asset.put("original", original);
 		
 		HitTracker conversions = util.getActivePresetList(inArchive.getCatalogId(),inAsset.get("assettype"));
-		conversions.each
+		for (Iterator iterator = conversions.iterator(); iterator.hasNext();)
 		{
-			if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.id))
+			Data it = (Data) iterator.next();
+			if(util.doesExist(inArchive.getCatalogId(), inAsset.getId(), inAsset.getSourcePath(), it.getId()))
 			{
-				Dimension dimension = util.getConvertPresetDimension(inArchive.getCatalogId(), it.id);
+				Dimension dimension = (Dimension)util.getConvertPresetDimension(inArchive.getCatalogId(), it.getId());
 				JSONObject data = new JSONObject();
 				//			<a class="thickbox btn" href="$home$apphome/views/modules/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)">Preview</a>
 				String exportfilename = inArchive.asExportFileName(inAsset, it);
@@ -397,8 +402,7 @@ public class JsonAssetModule extends BaseJsonModule
 				data.put("URL", url);
 				data.put("height", dimension.getHeight());
 				data.put("width", dimension.getWidth());
-				asset.put(it.id, data);
-
+				asset.put(it.getId(), data);
 			}
 		}
 		return asset;
@@ -408,42 +412,41 @@ public class JsonAssetModule extends BaseJsonModule
 	{
 	
 		log.info("starting to handle create order request");
-		SearcherManager sm = inReq.getPageValue("searcherManager");
 
 		String catalogid =  findCatalogId(inReq);
 		MediaArchive archive = getMediaArchive(inReq, catalogid);
-		AssetSearcher searcher = sm.getSearcher(catalogid,"asset" );
-		OrderSearcher ordersearcher = sm.getSearcher(catalogid,"order" );
-		Searcher itemsearcher = sm.getSearcher(catalogid,"orderitem" );
-		OrderManager orderManager = ordersearcher.getOrderManager();
+		AssetSearcher searcher = (AssetSearcher)archive.getSearcher("asset" );
+		OrderSearcher ordersearcher = (OrderSearcher)archive.getSearcher("order" );
+		Searcher itemsearcher = archive.getSearcher("orderitem" );
+		//OrderManager orderManager = archive.getOrderManager();
 
 
 		JsonSlurper slurper = new JsonSlurper();
-		def request = null;
-		String content = inReq.getPageValue("jsondata");
+		Map request = null;
+		String content = (String)inReq.getPageValue("jsondata");
 
 		if(content != null)
 		{
-			request = slurper.parseText(content); //NOTE:  This is for unit tests.
+			request = (Map)slurper.parseText(content); //NOTE:  This is for unit tests.
 		}
 		else
 		{
-			request = slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
+			request = (Map)slurper.parse(inReq.getRequest().getReader()); //this is real, the other way is just for testing
 		}
 
-
-
-		String publishdestination = request.publishdestination;
-		Order order = ordersearcher.createNewData();
+		String publishdestination = (String)request.get("publishdestination");
+		Order order = (Order)ordersearcher.createNewData();
 		order.setProperty("publishdestination", publishdestination);
 		order.setId(ordersearcher.nextId());
 
 		ordersearcher.saveData(order, null);
 
-		request.items.each
+		Collection items = (Collection)request.get("items");
+		for (Iterator iterator = items.iterator(); iterator.hasNext();)
 		{
-			String assetid = it.assetid;
-			String presetid = it.presetid;
+			Data it= (Data) iterator.next();
+			String assetid = it.get("assetid");
+			String presetid = it.get("presetid");
 			Data orderitem = itemsearcher.createNewData();
 			orderitem.setProperty("assetid", assetid);
 			orderitem.setProperty("presetid", presetid);
@@ -451,13 +454,9 @@ public class JsonAssetModule extends BaseJsonModule
 			itemsearcher.saveData(orderitem, null);
 
 		}
+		archive.getOrderManager().addConversionAndPublishRequest(inReq, order, archive, new HashMap(), inReq.getUser());
 
-
-		orderManager.addConversionAndPublishRequest(inReq, order, archive, new HashMap(), inReq.getUser())
-
-
-
-		JSONObject result = getOrderJson(sm, ordersearcher, order);
+		JSONObject result = getOrderJson(archive.getSearcherManager(), ordersearcher, order);
 		String jsondata = result.toString();
 		inReq.putPageValue("json", jsondata);
 		return result;

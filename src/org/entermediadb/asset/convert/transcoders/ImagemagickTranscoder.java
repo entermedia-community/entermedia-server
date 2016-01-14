@@ -47,23 +47,24 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
+		ConvertResult result = new ConvertResult();
+
 		MediaArchive archive = inStructions.getMediaArchive();
 		Asset asset = inStructions.getAsset();
 		ContentItem inOutFile = inStructions.getOutputFile();
-		ConvertResult result = new ConvertResult();
 		String outputpath = inOutFile.getAbsolutePath();
-		Page input = null;
-		String tmpinput = PathUtilities.extractPageType( inOutFile.getPath() );
+
+		String tmpinput = PathUtilities.extractPageType( inStructions.getInputFile().getPath() );
 		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
 		
 		String ext = inStructions.getOutputExtension();
 	
 		//File inputFile = new File(input.getContentItem().getAbsolutePath());
-		String newext = PathUtilities.extractPageType( input.getPath() );
-		if( newext != null && newext.length()> 1)
-		{
-			ext = newext.toLowerCase();
-		}
+//		String newext = PathUtilities.extractPageType( input.getPath() );
+//		if( newext != null && newext.length()> 1)
+//		{
+//			ext = newext.toLowerCase();
+//		}
 		List<String> com = createCommand(inStructions);
 		
 

@@ -3,9 +3,11 @@ package org.entermediadb.asset.convert.managers;
 import java.util.HashMap;
 
 import org.entermediadb.asset.convert.BaseConversionManager;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
+import org.joda.time.convert.ConverterManager;
 import org.entermediadb.asset.convert.MediaTranscoder;
 import org.openedit.repository.ContentItem;
 
@@ -42,14 +44,14 @@ public class ImageConversionManager extends BaseConversionManager
 		{
 			path.append(postfix);
 		}
-		if( "pdf".equals(inStructions.getOutputExtension()) )
-		{
-			path.append("document");
-		}
-		else
-		{
-			path.append("image"); //part of filename
-		}
+//		if( "pdf".equals(inStructions.getOutputExtension()) )
+//		{
+//			path.append("document");
+//		}
+//		else
+//		{
+			path.append(getCacheName()); //part of filename
+//		}
 		if (inStructions.getMaxScaledSize() != null) // If either is set then
 		{
 			path.append(Math.round(inStructions.getMaxScaledSize().getWidth()));
@@ -85,20 +87,20 @@ public class ImageConversionManager extends BaseConversionManager
 		return getMediaArchive().getContent( path.toString() );
 	}
 
-	
+	protected String getCacheName()
+	{
+		return "image";
+	}
 
 	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 	{
 			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
-			MediaTranscoder c = creatorManager.getMediaCreatorByOutputFormat("jpg");
 			HashMap map = new HashMap();
 			map.put("prefwidth", "1024");
 			map.put("prefheight", "768");
 			ConvertInstructions cacheInsructions = createInstructions(map, inStructions.getAsset());
 			inStructions.setInputFile(inStructions.getOriginalDocument());
-
 	    	return getMediaTranscoder().convert(inStructions).getOutput();
-		
 	}
 
 	

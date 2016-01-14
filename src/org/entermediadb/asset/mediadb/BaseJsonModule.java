@@ -1,17 +1,26 @@
-package rest.json
+package org.entermediadb.asset.mediadb;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.modules.BaseMediaModule
-import org.json.simple.JSONArray
-import org.json.simple.JSONObject
-import org.openedit.Data
-import org.openedit.WebPageRequest
-import org.openedit.data.PropertyDetail
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.hittracker.HitTracker
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.modules.BaseMediaModule;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.openedit.Data;
+import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
+
+
 
 
 public class BaseJsonModule extends BaseMediaModule 
@@ -49,7 +58,7 @@ public class BaseJsonModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 		if(catalogid == null)
 		{
-			if(inReq.getRequest())
+			if(inReq.getRequest() != null)
 			{
 				catalogid = inReq.getRequest().getHeader("catalogid");
 			}
@@ -60,31 +69,26 @@ public class BaseJsonModule extends BaseMediaModule
 	
 	public void populateJsonObject(Searcher inSearcher, JSONObject inObject, Data inData)
 	{
-		inSearcher.getPropertyDetails().each
+		for (Iterator iterator = inSearcher.getPropertyDetails().iterator(); iterator.hasNext();)
 		{
-			PropertyDetail detail = it;
-			String key = it.id;
-			String value=inData.get(it.id);
-			if(key && value)
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String key = detail.getId();
+			String value = inData.get(detail.getId());
+			if(key !=null && value != null)
 			{
 				if(detail.isList())
 				{
-
 					inObject.put(key, value);
-
 				}
 				else if(detail.isBoolean())
 				{
 					inObject.put(key, Boolean.parseBoolean(value));
-
-
-				} else {
+				}
+				else 
+				{
 					inObject.put(key, value);
 				}
-
-
 			}
-
 		}
 	}
 
@@ -100,9 +104,9 @@ public class BaseJsonModule extends BaseMediaModule
 		HitTracker items = itemsearcher.query().match("orderid", inOrder.getId()).search();
 
 		JSONArray array = new JSONArray();
-		items.each
+		for (Iterator iterator = items.iterator(); iterator.hasNext();)
 		{
-
+			Data it = (Data)iterator.next();
 			JSONObject item = new JSONObject();
 			populateJsonObject(itemsearcher, item,it);
 			array.add(item);
@@ -118,7 +122,7 @@ public class BaseJsonModule extends BaseMediaModule
 	{
 		allowHeaders(inReq);
 		
-		SearcherManager sm = inReq.getPageValue("searcherManager");
+		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
 
 		if (inCatalogid == null)
 		{
@@ -130,7 +134,7 @@ public class BaseJsonModule extends BaseMediaModule
 	public JSONObject getDataJson(SearcherManager sm, PropertyDetail inDetail, String inId)
 	{
 		Searcher searcher = sm.getSearcher(inDetail.getListCatalogId(), inDetail.getListId());
-		Data data = searcher.searchById(inId);
+		Data data = (Data)searcher.searchById(inId);
 		if( data == null)
 		{
 			return null;
@@ -142,12 +146,12 @@ public class BaseJsonModule extends BaseMediaModule
 		JSONObject asset = new JSONObject();
 		asset.put("id", inData.getId());
 		asset.put("name", inData.getName());
-		inSearcher.getPropertyDetails().each
+		for (Iterator iterator = inSearcher.getPropertyDetails().iterator(); iterator.hasNext();)
 		{
-			PropertyDetail detail = it;
-			String key = it.id;
-			String value=inData.get(it.id);
-			if(key && value)
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			String key = detail.getId();
+			String value = inData.get(key);
+			if(key != null && value != null)
 			{
 				if(detail.isList())
 				{
@@ -190,13 +194,13 @@ public class BaseJsonModule extends BaseMediaModule
 	
 	public void saveJsonData(Map inputdata, Searcher searcher, Data inData)
 	{
-		inputdata.keySet().each
+		for (Iterator iterator = inputdata.keySet().iterator(); iterator.hasNext();)
 		{
-			String key = it;
+			String key = (String) iterator.next();
 			Object value = inputdata.get(key);
 			if(value instanceof String)
 			{
-				inData.setProperty(key, value);
+				inData.setProperty(key, (String)value);
 			} 
 			
 			if(value instanceof List)
@@ -205,32 +209,34 @@ public class BaseJsonModule extends BaseMediaModule
 				PropertyDetail detail = searcher.getDetail(key);
 				
 				//We have a list full of maps or strings
-				value.each
+				for (Iterator iterator2 = ids.iterator(); iterator2.hasNext();)
 				{
+					Object it = (Object) iterator2.next();
 					if( it instanceof String)
 					{
 						ids.add(it);
 					}
 					else
 					{
-						JSONObject object = it;
-						String val = it.get("id");
+						JSONObject object = (JSONObject)it;
+						String val = (String)object.get("id");
 						//log.info("In VALUE: ${val}");
 						ids.add(val);
 						if(detail != null)
 						{
 							Searcher rsearcher = searcher.getSearcherManager().getSearcher(searcher.getCatalogId(),key);
-							Data remote = rsearcher.searchById(val);
+							Data remote = (Data)rsearcher.searchById(val);
 							if(remote == null)
 							{
 								remote = rsearcher.createNewData();
 								remote.setId(val);							
 							}
-							object.keySet().each
+							for (Iterator iterator3 = object.keySet().iterator(); iterator3.hasNext();)
 							{
-								remote.setProperty(it, object.get(it));
+								String it2 = (String) iterator3.next();
+								remote.setProperty(it2, (String)object.get(it2));
 							}
-							rsearcher.saveData(remote, inReq.getUser());
+							rsearcher.saveData(remote, null);
 						}
 					}
 				} 
@@ -238,23 +244,24 @@ public class BaseJsonModule extends BaseMediaModule
 			}
 			if(value instanceof Map )
 			{
-					Map values = value;
+					Map values = (Map)value;
 					
 					PropertyDetail detail = searcher.getDetail(key);
 					Searcher rsearcher = searcher.getSearcherManager().getListSearcher(detail);
-					String targetid = value.id;
-					Data remote = rsearcher.searchById(targetid);
+					String targetid = (String)values.get("id");
+					Data remote = (Data)rsearcher.searchById(targetid);
 					if(remote == null)
 					{
 						remote = rsearcher.createNewData();
 						remote.setId(targetid);
 					}
-					values.keySet().each
+					for (Iterator iterator2 = values.keySet().iterator(); iterator2.hasNext();)
 					{
+						String it = (String) iterator2.next();
 						Object test = values.get(it);
 						if(test instanceof String)
 						{
-							remote.setProperty(it,test );
+							remote.setProperty(it,(String)test );
 						}
 					}
 					rsearcher.saveData(remote, null);

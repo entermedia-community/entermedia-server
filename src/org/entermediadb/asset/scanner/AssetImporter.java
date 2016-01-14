@@ -196,7 +196,7 @@ public class AssetImporter
 			return createAssetFromPage(inArchive, inUser, page);
 		}
 	}
-	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage, String inAssetId)
+	public Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage, String inAssetId)
 	{
 		Asset asset = getAssetUtilities().createAssetIfNeeded(inAssetPage.getContentItem(),inArchive, inUser);
 		boolean existing = true;

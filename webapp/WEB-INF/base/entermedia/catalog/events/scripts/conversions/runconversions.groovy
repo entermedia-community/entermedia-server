@@ -3,6 +3,7 @@ package conversions;
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions
 import org.entermediadb.asset.convert.ConvertResult
 import org.entermediadb.scripts.ScriptLogger
@@ -248,16 +249,16 @@ class ConvertRunner implements Runnable
 			log.info("Can't find task object with id '${hit.getId()}'. Index missing data?")
 		}
 	}
-	
+
 protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, Asset inAsset)
 {
 	String status = inTask.get("status");
 	
 	String type = inPreset.get("type"); //rhozet, ffmpeg, etc
-	MediaCreator creator = getMediaCreator(inArchive, type);
-	log.debug("Converting with type: ${type} using ${creator.class} with status: ${status}");
+	ConversionManager manager = inArchive.getTranscodeTools().getManagerByTranscoder(type);
+	//log.debug("Converting with type: ${type} using ${creator.class} with status: ${status}");
 	
-	if (creator != null)
+	if (manager != null)
 	{
 		Map props = new HashMap();
 		
@@ -284,10 +285,12 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 			props.put("iscrop","true");
 			props.putAll(inTask.getProperties() );
 			
-			if(inTask.get("prefwidth") == null){
+			if(inTask.get("prefwidth") == null)
+			{
 				props.put("prefwidth", inTask.get("cropwidth"));
 			}
-			if(inTask.get("prefheight") == null){
+			if(inTask.get("prefheight") == null)
+			{
 				props.put("prefheight", inTask.get("cropheight"));
 			}
 			props.put("useoriginalasinput", "true");//hard-coded a specific image size (large)
@@ -299,7 +302,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 			}
 		}
 
-		ConvertInstructions inStructions = creator.createInstructions(props,inArchive,inPreset.get("extension"),inAsset.getSourcePath());
+		ConvertInstructions inStructions = manager.createInstructions(props,inAsset,inPreset);
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );
@@ -315,14 +318,14 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 		if("new".equals(status) || "submitted".equals(status) || "retry".equals(status)  || "missinginput".equals(status))
 		{
 			//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
-			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
-			Page output = inArchive.getPageManager().getPage(outputpage);
-			log.debug("Running Media type: ${type} on asset ${inAsset.getSourcePath()}" );
-			result = creator.convert(inArchive, inAsset, output, inStructions);
+//			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
+//			Page output = inArchive.getPageManager().getPage(outputpage);
+//			log.debug("Running Media type: ${type} on asset ${inAsset.getSourcePath()}" );
+			result = manager.createOutput(inStructions);
 		}
 		else if("submitted".equals(status))
 		{
-			result = creator.updateStatus(inArchive, inTask, inAsset, inStructions);
+			result = manager.updateStatus(inTask,inStructions);
 		}
 		else
 		{
@@ -335,14 +338,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 	}
 	return result;
   }
-//TODO: Cache in map
-private MediaCreator getMediaCreator(MediaArchive inArchive, String inType)
-{
-	MediaCreator creator = moduleManager.getBean(inType + "Creator");
-	return creator;
- }
-} //End Runnable methods
-
+}
 protected ConvertRunner createRunnable(MediaArchive mediaarchive, Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
 {
 	   ConvertRunner runner = new ConvertRunner();

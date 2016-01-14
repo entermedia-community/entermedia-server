@@ -504,7 +504,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			//https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html
 			//https://github.com/jprante/elasticsearch-knapsack
 			log.error("Could not put mapping over existing mapping. Please use restoreDefaults",ex);
-			throw new OpenEditException("Mapping was not able to be merged, you will need to export data");
+			//throw new OpenEditException("Mapping was not able to be merged, you will need to export data");
 		}
 //		try
 //		{

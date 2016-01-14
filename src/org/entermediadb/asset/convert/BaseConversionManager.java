@@ -76,12 +76,12 @@ public abstract class BaseConversionManager implements ConversionManager
 		result.setInstructions(instructions);
 		return result;
 	}
-	public ConvertInstructions createInstructions(Map inSettings, Asset inAsset, String inSourcePath, Data inPreset)
+	public ConvertInstructions createInstructions(Map inSettings, Asset inAsset, Data inPreset)
 	{
 		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 		instructions.loadSettings(inSettings);
 		instructions.loadPreset(inPreset);
-		instructions.setAssetSourcePath(inSourcePath);
+		//instructions.setAssetSourcePath(inSourcePath);
 		instructions.setAsset(inAsset);
 		ContentItem output = findOutputFile(instructions);
 		instructions.setOutputFile(output);
@@ -102,7 +102,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	
 	public ConvertInstructions createInstructions(Map inSettings,Asset inAsset)
 	{ 
-		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
+		ConvertInstructions instructions = createInstructions();
 		instructions.loadSettings(inSettings);
 		//instructions.loadPreset(inPreset);
 		instructions.setAsset(inAsset);
@@ -116,27 +116,26 @@ public abstract class BaseConversionManager implements ConversionManager
     @Override
 	public ConvertResult createOutput(ConvertInstructions inStructions)
 	{
-    	ContentItem input = null;
-    	boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
-    	if(!useoriginal){
-	    	//Load input
-	    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
-			{
-				InputLoader loader = (InputLoader) iterator.next();
-				input = loader.loadInput(inStructions);
-				if( input != null)
+    	ContentItem input = inStructions.getInputFile();
+    	if( input == null)
+    	{
+	    	boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
+	    	if(!useoriginal && fieldInputLoaders != null)
+	    	{
+		    	//Load input
+		    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
 				{
-					break;
+					InputLoader loader = (InputLoader) iterator.next();
+					input = loader.loadInput(inStructions);
+					if( input != null)
+					{
+						break;
+					}
 				}
-			}
-    	}
-    	//TODO: create input
-    	
+	    	}
+    	}	
+    	//TODO: create input?
     	return createOutput(inStructions, input);
-    	//use original
-    		
-    	
-    	//return transcode(inStructions);
 	}
 
     public ConvertResult createOutput(ConvertInstructions inStructions, ContentItem input)
@@ -150,7 +149,7 @@ public abstract class BaseConversionManager implements ConversionManager
     		input = inStructions.getOriginalDocument();
     	}
 		inStructions.setInputFile(input);
-    	ConvertResult result = getMediaTranscoder().convert(inStructions);
+    	ConvertResult result = transcode(inStructions);
     	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
     	{
     		for (Iterator iterator = getOutputFilters().iterator(); iterator.hasNext();)
@@ -166,6 +165,24 @@ public abstract class BaseConversionManager implements ConversionManager
     	return result;
     }
 
+	public ConvertResult transcode(ConvertInstructions inStructions)
+	{
+		return getMediaTranscoder().convert(inStructions);
+	}
+
+	@Override
+	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
+	{
+		return getMediaTranscoder().updateStatus(inTask, inStructions);
+	}
+	
 	protected abstract ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput);
+
+	@Override
+	public ConvertInstructions createInstructions()
+	{
+		return new ConvertInstructions(getMediaArchive());
+	}
+	protected abstract String getCacheName();
 
 }

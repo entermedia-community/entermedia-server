@@ -102,5 +102,11 @@ public class AudioConversionManager extends BaseConversionManager
 		return null;
 	}
 
+	@Override
+	protected String getCacheName()
+	{
+		return "audio";
+	}
+
 
 }

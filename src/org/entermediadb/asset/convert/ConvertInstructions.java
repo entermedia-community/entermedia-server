@@ -57,6 +57,7 @@ public class ConvertInstructions
 	}
 
 	protected ContentItem fieldInputFile;
+	private String fieldOutputExtension;
 
 	//Should this be a stack?
 	public ContentItem getInputFile()
@@ -215,8 +216,19 @@ public class ConvertInstructions
 	
 	public String getOutputExtension()
 	{
-		return PathUtilities.extractPageType(getOutputPath());
+		String ext = getProperty("outputextension");
+		if( ext != null)
+		{
+			return ext;
+		}
+		if( getOutputFile() != null)
+		{
+			return PathUtilities.extractPageType(getOutputPath());			
+		}
+		return null;
 	}
+
+	
 
 	public String getOutputPath()
 	{
@@ -371,7 +383,7 @@ public class ConvertInstructions
 				}
 			}
 		}
-
+		setProperty("cachefilename",inPreset.get("outputfile"));
 	}
 	public void loadSettings(Map inSettings)
 	{
