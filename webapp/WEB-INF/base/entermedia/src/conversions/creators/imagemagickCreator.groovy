@@ -512,9 +512,8 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		
 		String prestrip = inStructions.get("fixcmyk");
-		if( !"true".equals(prestrip) )
+		if( "true".equals(prestrip) )
 		{
-			com.add("-strip"); //This removes the extra profile info
 			setValue("profile", getPathtoProfile(), inStructions, com);
 		}
 		else if( !usepng )
@@ -525,6 +524,7 @@ public class imagemagickCreator extends BaseImageCreator
 			}
 			else
 			{
+				com.add("-strip"); //This removes the extra profile info
 				setValue("profile", getPathtoProfile(), inStructions, com);
 			}			
 	    }
