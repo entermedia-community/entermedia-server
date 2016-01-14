@@ -290,6 +290,8 @@ public class TranscodeTools
 	{
 		//Minimal information here. We dont know what kind of input we have
 		ConversionManager handler = getManagerByFileFormat(inOutputType);
+		inCreateProperties.put("outputextension", inOutputType);
+
 		return handler.createOutputIfNeeded(inCreateProperties,inSourcePath);
 	}
 //	public ConvertInstructions createInstructions(Asset inAsset,Data inPreset,String inOutputType)

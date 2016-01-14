@@ -301,7 +301,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		String prefix = "";
 		String extension = "";
-		String filename = inStructions.getOutputFile().getName();
+		String filename = inStructions.getInputFile().getName();  //TODO: Remove this old crud?
 		int dotIndex = filename.lastIndexOf('.');
 		if (dotIndex > 0)
 		{
@@ -311,7 +311,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			prefix = "dng:";
 		}
-		String absolutePath = inStructions.getOutputFile().getAbsolutePath();
+		String absolutePath = inStructions.getInputFile().getAbsolutePath();
 		if (isOnWindows())
 		{
 			com.add("\"" + prefix + absolutePath + "[" + page + "]\"");

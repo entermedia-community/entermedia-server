@@ -73,6 +73,7 @@ public abstract class BaseConversionManager implements ConversionManager
 		ConvertResult result = new ConvertResult();
 		result.setOutput(output);
 		result.setOk(true);
+		result.setComplete(true);
 		result.setInstructions(instructions);
 		return result;
 	}
@@ -92,6 +93,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	{ 
 		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 		instructions.loadSettings(inSettings);
+		instructions.setAssetSourcePath(inSourcePath);
 		//instructions.loadPreset(inPreset);
 		ContentItem output = findOutputFile(instructions);
 		instructions.setOutputFile(output);
@@ -134,7 +136,7 @@ public abstract class BaseConversionManager implements ConversionManager
 				}
 	    	}
     	}	
-    	//TODO: create input?
+    	
     	return createOutput(inStructions, input);
 	}
 

@@ -91,7 +91,6 @@ public class ConvertGenerator extends FileGenerator
 		}
 		all.putAll( inReq.getPageMap()); //these could be objects, needed?
 		all.putAll( inReq.getParameterMap() );
-			
 		//return calculateInstructions(all, inArchive, inOutputType, inSourcePath);
 		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
 		ConvertResult result = transcodetools.createOutputIfNeeded(all,sourcePath, outputype); //String inSourcePath, Data inPreset, String inOutputType);
@@ -105,7 +104,7 @@ public class ConvertGenerator extends FileGenerator
 			output.setPageSettings(inPage.getPageSettings());
 			output.setContentItem(result.getOutput());
 			WebPageRequest copy = inReq.copy(output);
-			copy.putProtectedPageValue("content", result.getOutput());
+			copy.putProtectedPageValue("content",output);
 			super.generate(copy, output, inOut);
 			ConvertInstructions instructions = result.getInstructions();
 

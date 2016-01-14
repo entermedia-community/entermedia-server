@@ -595,10 +595,10 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				if ("_id".equals(detail.getId()) || "id".equals(detail.getId()))
 				{
-					jsonproperties = jsonproperties.startObject("_id");
-					jsonproperties = jsonproperties.field("index", "not_analyzed");
-					jsonproperties = jsonproperties.field("type", "string");
-					jsonproperties = jsonproperties.endObject();
+//					jsonproperties = jsonproperties.startObject("_id");
+//					jsonproperties = jsonproperties.field("index", "not_analyzed");
+//					jsonproperties = jsonproperties.field("type", "_id");
+//					jsonproperties = jsonproperties.endObject();
 					continue;
 				}
 				if ("_parent".equals(detail.getId()))

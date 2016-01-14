@@ -44,6 +44,13 @@ public class ImageConversionManager extends BaseConversionManager
 		{
 			path.append(postfix);
 		}
+		String cachefilename = inStructions.get("cachefilename");
+		if( cachefilename != null)
+		{
+			path.append(cachefilename);
+			return getMediaArchive().getContent( path.toString() );
+		}
+
 //		if( "pdf".equals(inStructions.getOutputExtension()) )
 //		{
 //			path.append("document");
@@ -98,6 +105,7 @@ public class ImageConversionManager extends BaseConversionManager
 			HashMap map = new HashMap();
 			map.put("prefwidth", "1024");
 			map.put("prefheight", "768");
+			map.put("outputextension", "jpg");
 			ConvertInstructions cacheInsructions = createInstructions(map, inStructions.getAsset());
 			inStructions.setInputFile(inStructions.getOriginalDocument());
 	    	return getMediaTranscoder().convert(inStructions).getOutput();

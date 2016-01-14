@@ -78,6 +78,10 @@ public class ConvertInstructions
 			if(assetid != null){
 				fieldAsset = getMediaArchive().getAsset(assetid);
 			}
+			if( fieldAsset == null && getAssetSourcePath() != null)
+			{
+	    		fieldAsset = getMediaArchive().getAssetBySourcePath(getAssetSourcePath());
+			}
 		}
 		return fieldAsset;
 	}
@@ -297,9 +301,9 @@ public class ConvertInstructions
 
 	public String getAssetSourcePath()
 	{
-		if( getAsset() != null)
+		if( fieldAsset != null)
 		{
-			return getAsset().getSourcePath();
+			return fieldAsset.getSourcePath();
 		}
 		return getProperty("assetsourcepath");
 	}
