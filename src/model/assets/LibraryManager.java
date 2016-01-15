@@ -1,12 +1,19 @@
-package model.assets
+package model.assets;
 
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.scripts.EnterMediaObject
-import org.openedit.Data
-import org.openedit.MultiValued
-import org.openedit.data.BaseData
-import org.openedit.data.Searcher
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.scripts.EnterMediaObject;
+import org.openedit.Data;
+import org.openedit.MultiValued;
+import org.openedit.data.BaseData;
+import org.openedit.data.Searcher;
 
 public class LibraryManager extends EnterMediaObject
 {
@@ -18,13 +25,14 @@ public class LibraryManager extends EnterMediaObject
 	{
 		
 		Searcher searcher = mediaarchive.getAssetSearcher();
-		Searcher librarySearcher = mediaarchive.getSearcher("library")
+		Searcher librarySearcher = mediaarchive.getSearcher("library");
 		
 		List tosave = new ArrayList();
 		int savedsofar = 0;
-		for (MultiValued hit in assets)
-		{
-			def sourcepath = hit.getSourcePath();
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
+			MultiValued hit = (MultiValued) iterator.next();
+			
+			String sourcepath = hit.getSourcePath();
 			//log.info("try ${sourcepath}" );
 			String[] split = sourcepath.split("/");
 			String sofar = "";
@@ -46,12 +54,12 @@ public class LibraryManager extends EnterMediaObject
 					{
 						if( loaded == null)
 						{
-							loaded =  searcher.loadData(hit);
+							loaded = (Asset) searcher.loadData(hit);
 							tosave.add(loaded);
 							savedsofar++;
 						}
 						loaded.addLibrary(libraryid);
-						Data li = fieldLibraries.get(libraryid);
+						Data li = (Data) fieldLibraries.get(libraryid);
 						loaded.setProperty("project",li.get("project") );
 						//log.info("found ${sofar}" );
 					}
@@ -82,8 +90,9 @@ public class LibraryManager extends EnterMediaObject
 			Collection alllibraries = librarySearcher.query().match("folder", "*").search();
 			fieldLibraryFolders = new HashMap(alllibraries.size());
 			fieldLibraries = new HashMap(alllibraries.size());
-			for (Data hit in alllibraries)
-			{
+			for (Iterator iterator = alllibraries.iterator(); iterator
+					.hasNext();) {
+				Data hit = (Data) iterator.next();
 				String folder = hit.get("folder");
 				if( folder != null)
 				{
@@ -92,7 +101,7 @@ public class LibraryManager extends EnterMediaObject
 				}
 			}
 		}
-		String libraryid = fieldLibraryFolders.get(inFolder);
+		String libraryid = (String) fieldLibraryFolders.get(inFolder);
 		return libraryid;
 
 	}

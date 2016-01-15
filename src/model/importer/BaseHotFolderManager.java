@@ -1,37 +1,48 @@
 package model.importer;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.apache.http.HttpResponse
-import org.apache.http.client.methods.CloseableHttpResponse
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.CloseableHttpClient
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.util.EntityUtils
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.scanner.AssetImporter
-import org.entermediadb.asset.scanner.HotFolderManager
-import org.entermediadb.asset.util.TimeParser
-import org.json.simple.JSONArray
-import org.json.simple.JSONObject
-import org.json.simple.parser.JSONParser
-import org.openedit.Data
-import org.openedit.OpenEditException
-import org.openedit.WebServer
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.page.Page
-import org.openedit.page.manage.PageManager
-import org.openedit.repository.Repository
-import org.openedit.repository.filesystem.FileRepository
-import org.openedit.repository.filesystem.XmlVersionRepository
-import org.openedit.util.DateStorageUtil
-import org.openedit.util.EmStringUtils
-import org.openedit.util.Exec
-import org.openedit.util.ExecResult
-import org.openedit.util.PathUtilities
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.scanner.HotFolderManager;
+import org.entermediadb.asset.util.TimeParser;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebServer;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
+import org.openedit.repository.Repository;
+import org.openedit.repository.filesystem.FileRepository;
+import org.openedit.repository.filesystem.XmlVersionRepository;
+import org.openedit.util.DateStorageUtil;
+import org.openedit.util.EmStringUtils;
+import org.openedit.util.Exec;
+import org.openedit.util.ExecResult;
+import org.openedit.util.PathUtilities;
 
 public class BaseHotFolderManager implements HotFolderManager
 {
@@ -118,9 +129,10 @@ public class BaseHotFolderManager implements HotFolderManager
 			created.setFilterIn(folder.get("includes"));
 			created.setFilterOut(folder.get("excludes"));
 			//add varliables
-			for (String key:folder.getProperties().keySet()) 
-			{
-				created.setProperty(key,folder.getProperties().get(key))
+			
+			for (Iterator iterator2 = folders.iterator(); iterator2.hasNext();) {
+				String key = (String) iterator2.next();
+				created.setProperty(key, (String) folder.getProperties().get(key));
 			}
 			
 			newrepos.add(created);
@@ -342,8 +354,9 @@ public class BaseHotFolderManager implements HotFolderManager
 	public void addGoogleFolders(String inCatalogId)
 	{
 		Collection hotfolders = loadFolders(inCatalogId);
-		for(Data folder:hotfolders)
-		{
+		
+		for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
+			Data folder = (Data) iterator.next();
 			String type = folder.get("hotfoldertype");
 			if( type != "googledrive")
 			{
@@ -353,7 +366,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			String email = folder.get("email");
 			String externalpath = folder.get("externalpath");
 			
-			List com = ["add_account","-a", key,"-p",externalpath,"-e","link"];
+			List<String> com = Arrays.asList("add_account","-a", key,"-p",externalpath,"-e","link");
 			ExecResult result = getExec().runExec("insync-headless",com,true);
 			log.info("insync-headless " + com + " =" + result.getStandardOut());
 		}
@@ -364,7 +377,7 @@ public class BaseHotFolderManager implements HotFolderManager
 	{
 		if( fieldExec == null)
 		{
-			fieldExec = getWebServer().getModuleManager().getBean("exec");
+			fieldExec = (Exec) getWebServer().getModuleManager().getBean("exec");
 		}
 		return fieldExec;
 	}
@@ -394,21 +407,22 @@ public class BaseHotFolderManager implements HotFolderManager
 				throw new OpenEditException("SyncThing Server error " + response1.getStatusLine().getStatusCode());
 			}
 			String returned = EntityUtils.toString(response1.getEntity());
-			JSONObject config = new JSONParser().parse(returned);
+			JSONObject config = (JSONObject) new JSONParser().parse(returned);
 
 			//Save it
 			//TODO: Make a map of existing device ids
 			Set existingdevices = new HashSet();
-			List devices = config.get("devices");
-			for(Map device: devices)
-			{
+			List devices = (List) config.get("devices");
+			
+			for (Iterator iterator = devices.iterator(); iterator.hasNext();) {
+				Map device = (Map) iterator.next();
 				existingdevices.add(device.get("deviceID"));
 			}
 			
-			List allfolders = config.get("folders");
+			List allfolders = (List) config.get("folders");
 			List folders = new ArrayList(allfolders);
-			for(Map folder:folders)
-			{
+			for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
+				Data folder = (Data) iterator.next();
 				String folderid = folder.get("id");
 				if( folderid.startsWith("EnterMediaDB/" + inCatalogId + "/") )
 				{
@@ -416,8 +430,8 @@ public class BaseHotFolderManager implements HotFolderManager
 				}								
 			}
 			//TODO: Add all the folders and devices needed
-			for(Data folder:hotfolders)
-			{
+			for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
+				Data folder = (Data) iterator.next();
 				String type = folder.get("hotfoldertype");
 				if( type != "syncthing")
 				{
@@ -428,40 +442,50 @@ public class BaseHotFolderManager implements HotFolderManager
 				String toplevelfolder = folder.get("subfolder");
 				if( !existingdevices.contains(clientdeviceid))
 				{
-					def newdevice = new JSONObject()
-					newdevice.put("deviceID", clientdeviceid )
-					newdevice.put("addresses", [ "dynamic" ]  )
-					newdevice.put("certName" , "")
-					newdevice.put("compression" , "metadata")
-					newdevice.put("introducer", false )
-					newdevice.put("name", "EnterMediaDB/" + inCatalogId + "/" + clientdeviceid.substring(0,7) )
-					devices.add(newdevice)
+					JSONObject newdevice = new JSONObject();
+					newdevice.put("deviceID", clientdeviceid );
+					newdevice.put("addresses", Arrays.asList("dynamic")  );
+					newdevice.put("certName" , "");
+					newdevice.put("compression" , "metadata");
+					newdevice.put("introducer", false );
+					newdevice.put("name", "EnterMediaDB/" + inCatalogId + "/" + clientdeviceid.substring(0,7) );
+					devices.add(newdevice);
 				}
 				//TODO: add the folder
-				JSONObject newfolder = new JSONObject()
+				JSONObject newfolder = new JSONObject();
 				//dev json = new JsonBuilder()
-				newfolder.put("autoNormalize", true)
-				newfolder.put("copiers", 0)
-	            newfolder.put("hashers", 0)
-	            newfolder.put("id", "EnterMediaDB/" + inCatalogId + "/" + toplevelfolder)
-	            newfolder.put("ignoreDelete", false)
-	            newfolder.put("ignorePerms", false)
-	            newfolder.put("invalid","")
-	            newfolder.put("maxConflicts", -1)
-	            newfolder.put("minDiskFreePct", 1)
-	            newfolder.put("order", "random")
-	            newfolder.put("path", folder.get("externalpath"))
-	            newfolder.put("pullerPauseS", 0)
-	            newfolder.put("pullerSleepS", 0)
-	            newfolder.put("pullers", 0)
-	            newfolder.put("readOnly", false)
-	            newfolder.put("rescanIntervalS", 60)
-	            newfolder.put("scanProgressIntervalS", 0)
-				newfolder.devices = new JSONArray();
-				newfolder.devices.add([deviceID: serverdeviceid])
-				newfolder.devices.add([deviceID: clientdeviceid])
-				newfolder.versioning = [ params: new JSONObject(), type: ""]
-				allfolders.add(newfolder)
+				newfolder.put("autoNormalize", true);
+				newfolder.put("copiers", 0);
+	            newfolder.put("hashers", 0);
+	            newfolder.put("id", "EnterMediaDB/" + inCatalogId + "/" + toplevelfolder);
+	            newfolder.put("ignoreDelete", false);
+	            newfolder.put("ignorePerms", false);
+	            newfolder.put("invalid","");
+	            newfolder.put("maxConflicts", -1);
+	            newfolder.put("minDiskFreePct", 1);
+	            newfolder.put("order", "random");
+	            newfolder.put("path", folder.get("externalpath"));
+	            newfolder.put("pullerPauseS", 0);
+	            newfolder.put("pullerSleepS", 0);
+	            newfolder.put("pullers", 0);
+	            newfolder.put("readOnly", false);
+	            newfolder.put("rescanIntervalS", 60);
+	            newfolder.put("scanProgressIntervalS", 0);
+	            
+	            // TODO: check integrity of this messy thing
+	            JSONArray outputdevices = new JSONArray();
+	            JSONObject serverdevice = new JSONObject();
+	            serverdevice.put("deviceID", serverdeviceid);
+	            JSONObject clientdevice = new JSONObject();
+	            clientdevice.put("deviceID", clientdeviceid);
+	            outputdevices.add(serverdevice);
+	            outputdevices.add(clientdevice);
+	            JSONObject versioning = new JSONObject();
+	            versioning.put("params", new JSONObject());
+	            versioning.put("type", "");
+	            newfolder.put("devices", outputdevices);
+				newfolder.put("versioning",  versioning);
+				allfolders.add(newfolder);
 			}
 	
 			HttpPost post = new HttpPost(postUrl);

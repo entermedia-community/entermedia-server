@@ -1,35 +1,48 @@
 package model.orders;
 
-import java.text.SimpleDateFormat
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.CompositeAsset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.orders.Order
-import org.entermediadb.asset.orders.OrderHistory
-import org.entermediadb.asset.orders.OrderManager
-import org.entermediadb.email.PostMail
-import org.entermediadb.email.TemplateWebEmail
-import org.openedit.BaseWebPageRequest
-import org.openedit.Data
-import org.openedit.ModuleManager
-import org.openedit.OpenEditException
-import org.openedit.WebPageRequest
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.event.WebEvent
-import org.openedit.event.WebEventHandler
-import org.openedit.hittracker.HitTracker
-import org.openedit.hittracker.SearchQuery
-import org.openedit.locks.Lock
-import org.openedit.locks.LockManager
-import org.openedit.page.manage.PageManager
-import org.openedit.profile.UserProfile
-import org.openedit.users.User
-import org.openedit.util.DateStorageUtil
-import org.openedit.util.RequestUtils
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.CompositeAsset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
+import org.entermediadb.asset.orders.OrderHistory;
+import org.entermediadb.asset.orders.OrderManager;
+import org.entermediadb.email.PostMail;
+import org.entermediadb.email.TemplateWebEmail;
+import org.openedit.BaseWebPageRequest;
+import org.openedit.Data;
+import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.event.WebEvent;
+import org.openedit.event.WebEventHandler;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.locks.Lock;
+import org.openedit.locks.LockManager;
+import org.openedit.page.manage.PageManager;
+import org.openedit.profile.UserProfile;
+import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
+import org.openedit.util.RequestUtils;
 
 public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
@@ -709,7 +722,7 @@ public class BaseOrderManager implements OrderManager {
 			if((temphistory.getItemErrorCount() + temphistory.getItemSuccessCount()) == hits.size() )
 			{
 				//Finalize should be only for complete orders.
-				inOrder.setOrderStatus('complete');
+				inOrder.setOrderStatus("complete");
 				try
 				{
 					sendOrderNotifications(archive, inOrder);
@@ -717,7 +730,7 @@ public class BaseOrderManager implements OrderManager {
 				catch( Exception ex)
 				{
 					log.error(ex);
-					inOrder.setOrderStatus('complete',": could not send notification " + ex );
+					inOrder.setOrderStatus("complete",": could not send notification " + ex );
 				}
 				saveOrder(archive.getCatalogId(), null, inOrder);
 				//complete the order
@@ -764,7 +777,7 @@ public class BaseOrderManager implements OrderManager {
 				else if ("error".equals( publish.get("status") ) )
 				{
 					inHistory.addItemErrorCount();
-					return;
+					return false;
 				}
 			}
 		}
@@ -774,29 +787,6 @@ public class BaseOrderManager implements OrderManager {
 		}
 		return publishcomplete;
 	}
-/*
-	protected processOrder(MediaArchive archive, Order inOrder)
-	{
-		inOrder.setOrderStatus("complete");
-		OrderHistory history = createNewHistory(archive.getCatalogId(), inOrder, null, "ordercomplete");
-		saveOrderWithHistory(archive.getCatalogId(), null, inOrder, history);
-
-		WebEvent event = new WebEvent();
-		event.setSearchType("order");
-		event.setCatalogId(archive.getCatalogId());
-		event.setOperation("ordering/finalizeorder");
-		event.setUser(null);
-		event.setSource(this);
-		event.setProperty("sourcepath", inOrder.getSourcePath());
-		event.setProperty("orderid", inOrder.getId());
-		//archive.getWebEventListener()
-		archive.getMediaEventHandler().eventFired(event); //Marks it as an error if email cant be sent or leaves it as complete
-	}
-	*/
-	
-	/* (non-Javadoc)
-	 * @see org.openedit.entermedia.orders.OrderManager#updatePendingOrders(org.openedit.entermedia.MediaArchive)
-	 */
 
 	public void updatePendingOrders(MediaArchive archive)
 	{
@@ -972,8 +962,8 @@ public class BaseOrderManager implements OrderManager {
 				//TODO: Save the fact that email was sent back to the publishtask?
 			}
 		}
-		String emailto = inOrder.get('sharewithemail');
-		String notes = inOrder.get('sharenote');
+		String emailto = inOrder.get("sharewithemail");
+		String notes = inOrder.get("sharenote");
 
 		if( inOrder.getRecentOrderHistory().getItemErrorCount() == 0)
 		{
@@ -1005,17 +995,17 @@ public class BaseOrderManager implements OrderManager {
 				}
 			}
 		}
-		inOrder.setProperty('emailsent', 'true');
+		inOrder.setProperty("emailsent", "true");
 	}
 
 
 	protected void sendEmail(String inCatalogId, Map pageValues, String email, String templatePage){
 		//send e-mail
 		//Page template = getPageManager().getPage(templatePage);
-		RequestUtils rutil = getModuleManager().getBean("requestUtils");
-		User user = getSearcherManager().getData(inCatalogId,"user","admin");
-		UserProfile profile = getSearcherManager().getData(inCatalogId,"userprofile","admin");
-		BaseWebPageRequest newcontext = rutil.createVirtualPageRequest(templatePage,user,profile); 
+		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+		User user = (User) getSearcherManager().getData(inCatalogId,"user","admin");
+		UserProfile profile = (UserProfile) getSearcherManager().getData(inCatalogId,"userprofile","admin");
+		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(templatePage,user,profile); 
 		newcontext.putPageValues(pageValues);
 
 		TemplateWebEmail mailer = getMail();

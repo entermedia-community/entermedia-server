@@ -1,26 +1,31 @@
 package model.importer;
 
-import org.entermediadb.asset.util.CSVReader
+import org.entermediadb.asset.util.CSVReader;
 import org.entermediadb.asset.util.Header;
-import org.entermediadb.asset.util.ImportFile
+import org.entermediadb.asset.util.ImportFile;
 import org.entermediadb.asset.util.Row;
 import org.entermediadb.scripts.EnterMediaObject;
-import org.openedit.*
-import org.openedit.data.PropertyDetail
-import org.openedit.data.PropertyDetails
-import org.openedit.data.Searcher
-import org.openedit.page.Page
-import org.openedit.util.EmStringUtils
-import org.openedit.util.FileUtils
-import org.openedit.util.PathUtilities
-import org.openedit.util.URLUtilities
+import org.openedit.*;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
+import org.openedit.data.Searcher;
+import org.openedit.page.Page;
+import org.openedit.util.EmStringUtils;
+import org.openedit.util.FileUtils;
+import org.openedit.util.PathUtilities;
+import org.openedit.util.URLUtilities;
 
-import com.openedit.util.*
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class BaseImporter extends EnterMediaObject
 {
-	protected Map<String,String> fieldLookUps;
+	protected HashMap<String, Map> fieldLookUps;
 	protected Searcher fieldSearcher;
 	protected boolean fieldMakeId;
 	
@@ -35,7 +40,7 @@ public class BaseImporter extends EnterMediaObject
 		String importpath = context.findValue("importpath");
 		Page upload = getPageManager().getPage(importpath);
 		Reader reader = upload.getReader();
-		List data = new ArrayList();
+		ArrayList data = new ArrayList();
 		
 		try 
 		{
@@ -102,11 +107,11 @@ public class BaseImporter extends EnterMediaObject
 	{
 		return (Data) getSearcher().searchById(inId);
 	}
-	protected Map<String,Map> getLookUps()
+	protected HashMap<String,Map> getLookUps()
 	{
 		if( fieldLookUps == null )
 		{
-			fieldLookUps = new HashMap<String,Map>();
+			HashMap<String,Map> fieldLookUps = new HashMap<String,Map>();
 			//fieldLookUps.put("Division", "val_Archive_Division");
 		}
 		return fieldLookUps;
@@ -118,18 +123,18 @@ public class BaseImporter extends EnterMediaObject
 		String value = inRow.get(inField);
 		if( value != null )
 		{			
-			Map datavalues = loadValueList(inField,inTable,true)
-			Collection values = EmStringUtils.split(value);
-			List valueids = new ArrayList();
+			HashMap datavalues = (HashMap) loadValueList(inField,inTable,true);
+			Collection<String> values = (Collection<String>) EmStringUtils.split(value);
+			ArrayList valueids = new ArrayList();
 			for (String val: values)
 			{
 				String id = PathUtilities.extractId(val,true);
-				Data data = datavalues.get(id);
+				Data data = (Data) datavalues.get(id);
 				if( data == null )
 				{
 					//create it
 					Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
-					data = searcher.searchById(id);
+					data = (Data) searcher.searchById(id);
 					if( data == null )
 					{
 						data = searcher.createNewData();
@@ -147,13 +152,13 @@ public class BaseImporter extends EnterMediaObject
 	}
 
 	protected HashMap loadValueList(String inField, String inTableName, boolean inMulti) {
-		Map datavalues = getLookUps().get(inField);
+		HashMap datavalues = (HashMap) getLookUps().get(inField);
 		if( datavalues == null )
 		{
 			datavalues = new HashMap();
 			getLookUps().put( inField, datavalues);
 			String id = PathUtilities.extractId(inField,true);
-			PropertyDetails details = getSearcher().getPropertyDetails()
+			PropertyDetails details = getSearcher().getPropertyDetails();
 			PropertyDetail	detail = details.getDetail(id);
 			//if( detail.getL
 			if( detail.getDataType() != "list")
@@ -169,7 +174,7 @@ public class BaseImporter extends EnterMediaObject
 				
 
 		}
-		return datavalues
+		return datavalues;
 	}
 	protected void createLookUp(Data inRow, String inField, String inTable)
 	{
@@ -182,14 +187,14 @@ public class BaseImporter extends EnterMediaObject
 			{
 				value = value.substring(0,comma);
 			}
-			Map datavalues = loadValueList(inField,inTable,false)
-			Data data = datavalues.get(value);
+			Map datavalues = loadValueList(inField,inTable,false);
+			Data data = (Data) datavalues.get(value);
 			if( data == null )
 			{
 				//create it
 				String id = PathUtilities.extractId(value,true);
 				Searcher searcher = getSearcherManager().getSearcher(getSearcher().getCatalogId(), inTable);
-				data = searcher.searchById(id);
+				data = (Data) searcher.searchById(id);
 				if( data == null )
 				{
 					data = searcher.createNewData();
@@ -199,7 +204,7 @@ public class BaseImporter extends EnterMediaObject
 				}
 				datavalues.put(value,  data);
 			}
-			inRow.setProperty(inField, data.id);
+			inRow.setProperty(inField, data.get("id"));
 		} 
 	}
 	

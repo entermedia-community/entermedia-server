@@ -22,7 +22,7 @@ if (input.exists())
             if (id == null || id.trim().equals(""))
             {
                     skipped++;
-                    log.info("No AssetSourcePath colum");
+                    log.info("No AssetSourcePath column");
                     continue;
             }
             Asset asset = mediaarchive.getAssetBySourcePath( id );

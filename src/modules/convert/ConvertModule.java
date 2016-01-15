@@ -1,12 +1,14 @@
 package modules.convert;
 
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.modules.BaseMediaModule
-import org.openedit.Data
-import org.openedit.WebPageRequest
-import org.openedit.data.Searcher
-import org.openedit.util.DateStorageUtil
+import java.util.Date;
+
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.modules.BaseMediaModule;
+import org.openedit.Data;
+import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
+import org.openedit.util.DateStorageUtil;
 
 public class ConvertModule extends BaseMediaModule
 {
@@ -24,7 +26,7 @@ public class ConvertModule extends BaseMediaModule
 		
 		Searcher presetsearcher = archive.getSearcher("convertpreset");
 		Searcher tasksearcher = archive.getSearcher("conversiontask");
-		Data preset = archive.getSearcher("convertpreset").searchById( presetid );
+		Data preset = (Data) archive.getSearcher("convertpreset").searchById( presetid );
 		
 		Data one = tasksearcher.query().match("assetid", asset.getId() ).match("presetid", presetid ).searchOne();
 		
@@ -35,7 +37,7 @@ public class ConvertModule extends BaseMediaModule
 		}
 		else
 		{
-			one = tasksearcher.searchById(one.getId());
+			one = (Data) tasksearcher.searchById(one.getId());
 		}
 		String status = one.get("status");
 		if( status != "complete")

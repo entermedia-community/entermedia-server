@@ -1,48 +1,63 @@
 package model.push;
 
-import java.text.SimpleDateFormat
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
-import org.apache.commons.httpclient.HttpClient
-import org.apache.commons.httpclient.HttpException
-import org.apache.commons.httpclient.HttpMethod
-import org.apache.commons.httpclient.methods.PostMethod
-import org.apache.commons.httpclient.methods.multipart.FilePart
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
-import org.apache.commons.httpclient.methods.multipart.Part
-import org.apache.commons.httpclient.methods.multipart.StringPart
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.dom4j.Attribute
-import org.dom4j.DocumentException
-import org.dom4j.Element
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.push.PushManager
-import org.entermediadb.asset.scanner.AssetImporter
-import org.entermediadb.asset.search.AssetSearcher
-import org.entermediadb.asset.upload.FileUpload
-import org.entermediadb.asset.upload.FileUploadItem
-import org.entermediadb.asset.upload.UploadRequest
-import org.entermediadb.data.ImmutableData
-import org.entermediadb.modules.update.Downloader
-import org.openedit.Data
-import org.openedit.OpenEditException
-import org.openedit.WebPageRequest
-import org.openedit.data.PropertyDetail
-import org.openedit.data.PropertyDetails
-import org.openedit.data.Searcher
-import org.openedit.data.SearcherManager
-import org.openedit.hittracker.HitTracker
-import org.openedit.hittracker.SearchQuery
-import org.openedit.page.Page
-import org.openedit.page.manage.PageManager
-import org.openedit.repository.ContentItem
-import org.openedit.users.User
-import org.openedit.users.UserManager
-import org.openedit.util.DateStorageUtil
-import org.openedit.util.PathUtilities
-import org.openedit.util.XmlUtil
-
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.dom4j.Attribute;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.push.PushManager;
+import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.search.AssetSearcher;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.data.ImmutableData;
+import org.entermediadb.modules.update.Downloader;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
+import org.openedit.page.manage.PageManager;
+import org.openedit.repository.ContentItem;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
+import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
+import org.openedit.util.XmlUtil;
 public class BasePushManager implements PushManager
 {
 	private static final Log log = LogFactory.getLog(PushManager.class);
@@ -250,7 +265,7 @@ public class BasePushManager implements PushManager
 				continue;
 			}
 			
-			upload(asset, archive, "delete", Collections.EMPTY_LIST );
+			upload(asset, archive, "delete",  (List<ContentItem>) Collections.EMPTY_LIST );
 			asset.setProperty("pushstatus", "deleted");
 			archive.saveAsset(asset, null);
 			deleted++;
@@ -919,7 +934,7 @@ public class BasePushManager implements PushManager
 		if (target == null)
 		{
 			String id = inReq.getRequestParameter("id");
-			target = archive.getAssetSearcher().createNewData();
+			target = (Asset) archive.getAssetSearcher().createNewData();
 			target.setId(id);
 			target.setSourcePath(sourcepath);
 		}
@@ -1038,9 +1053,9 @@ public class BasePushManager implements PushManager
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 		log.info("push_server_url = $server, push_target_catalogid = $remotecatalogid");
-		String [] inFields = ["approvalstatus", "editstatus"] as String[];
-		String [] inValues = ["approved", "7"] as String[];
-		String [] inOperations = ["matches", "not"] as String[];
+		String [] inFields = {"approvalstatus", "editstatus"};
+		String [] inValues = {"approved", "7"};
+		String [] inOperations = {"matches", "not"};
 
 		String url = server + "/media/services/rest/assetsearch.xml";
 		PostMethod method = new PostMethod(url);
@@ -1058,7 +1073,7 @@ public class BasePushManager implements PushManager
 		int pages = Integer.parseInt(hits.attributeValue("pages"));
 		String sessionid = hits.attributeValue("sessionid");
 		
-		log.info("found $pages, $sessionid, $root")
+		log.info("found $pages, $sessionid, $root");
 		Map<String, Properties> map = new HashMap<String, Properties>();
 		addHits(hits, map);
 		
@@ -1074,7 +1089,7 @@ public class BasePushManager implements PushManager
 			hits = (Element)root.elements().get(0);
 			addHits(hits, map);
 		}
-		return map;
+		return (HashMap<String,Properties>) map;
 	}
 	
 	protected void addHits(Element inHits, Map<String, Properties> inResults){
@@ -1199,10 +1214,10 @@ public class BasePushManager implements PushManager
 		if ( (index = path.toLowerCase().indexOf(exportpath.toLowerCase())) !=-1 ){
 			path = path.substring(index + exportpath.length());
 		}
-		Asset asset = importer.createAssetFromExistingFile(inArchive,null,false,path);
+		Asset asset = (Asset) importer.createAssetFromExistingFile(inArchive,null,false,path);
 		if (asset == null){
 			log.info("unable to create asset, aborting");
-			return false;
+			return null;
 		}
 		log.info("created $asset: ${asset.getId()}");
 		Enumeration<?> keys = inMetadata.keys();
@@ -1223,9 +1238,10 @@ public class BasePushManager implements PushManager
 		String pattern = inArchive.getCatalogSettingValue("push_download_sourcepath");
 		if (pattern!=null && !pattern.isEmpty()){
             List<String> tokens = findKeys(pattern,"//");
-            tokens.each{
-                String token = it;
-                if (token.startsWith("\$")){//metadata field
+            for (Iterator iterator = tokens.iterator(); iterator.hasNext();) {
+				String token = (String) iterator.next();
+                if (token.startsWith("\\$"))
+                {	//metadata field
 					//get field, parameter and value from metadata map
                     String field = token.substring(1);
                     String param = null;
@@ -1285,9 +1301,15 @@ public class BasePushManager implements PushManager
 			String user = inMetadata.getProperty("owner","admin").trim();//make the default "admin" if owner has not been specified
 			Calendar cal = Calendar.getInstance();
 			String month = String.valueOf(cal.get(Calendar.MONTH)+1);
-			if (month.size() == 1) month = "0${month}";
+			if (month.length() == 1)
+			{
+				month = "0${month}";
+			}
 			String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
-			if (day.size() == 1) day = "0${day}";
+			if (day.length() == 1)
+			{
+				day = "0${day}";
+			}
 			String year = String.valueOf(cal.get(Calendar.YEAR));
 			buf.append("users/${user}/${year}/${month}/${day}/${inPage.getName()}");
 		}

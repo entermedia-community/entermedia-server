@@ -1,20 +1,24 @@
 package modules.assets;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.modules.AssetEditModule
-import org.entermediadb.asset.scanner.MetaDataReader
-import org.openedit.Data
-import org.openedit.OpenEditException
-import org.openedit.WebPageRequest
-import org.openedit.data.Searcher
-import org.openedit.hittracker.HitTracker
-import org.openedit.hittracker.SearchQuery
-import org.openedit.locks.Lock
-import org.openedit.page.Page
-import org.openedit.util.PathUtilities
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.modules.AssetEditModule;
+import org.entermediadb.asset.scanner.MetaDataReader;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
+import org.openedit.locks.Lock;
+import org.openedit.page.Page;
+import org.openedit.util.PathUtilities;
 
 public class AdvancedAssetEditModule extends AssetEditModule{
 	
@@ -75,7 +79,7 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 		asset.setProperty("previewstatus", "converting");
 		archive.saveAsset(asset, null);
 		
-		String[] assetids = [asset.getId()] as String[];
+		String[] assetids = {asset.getId()};
 		inReq.setRequestParameter("assetids",assetids);
 		originalModified(inReq);
 		getAttachmentManager().processAttachments(archive, asset, true);
@@ -152,20 +156,20 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 		String primaryname = inReq.getRequestParameter("filename");
 		String imagefilename = inReq.getRequestParameter("imagefilename");
 		MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
-		if (!archive){
+		if (archive == null){
 			archive = getMediaArchive(inReq);
 		}
-		if (!archive){
+		if (archive == null) {
 			String catalogid = inReq.findValue("catalogid");
-			if (catalogid){
+			if (catalogid != null){
 				archive = getMediaArchive(catalogid);
 			}
 		}
-		if (!archive){
+		if (archive == null){
 			throw new OpenEditException("Archive is null");
 		}
 		String assetid = inReq.getRequestParameter("assetid");
-		if (!assetid){
+		if (assetid == null){
 			throw new OpenEditException("Unable to find assetid");
 		}
 		Asset target = archive.getAsset(assetid);
@@ -213,7 +217,7 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 			updateMetadata(archive, target, itemFile);
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
-			String[] assetids = [target.getId()] as String[];
+			String[] assetids = {target.getId()};
 			inReq.setRequestParameter("assetids",assetids);
 			originalModified(inReq);
 			getAttachmentManager().processAttachments(archive, target, true);
