@@ -60,8 +60,22 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 
 	protected Client fieldClient;
 	protected boolean fieldShutdown = false;
-
+	protected List fieldMappingErrors;
 	
+	public List getMappingErrors()
+	{
+		if (fieldMappingErrors == null)
+		{
+			fieldMappingErrors = new ArrayList<>();
+		}
+		return fieldMappingErrors;
+	}
+
+	public void setMappingErrors(List inMappingErrors)
+	{
+		fieldMappingErrors = inMappingErrors;
+	}
+
 	public Client getClient()
 	{
 		if( fieldShutdown == false && fieldClient == null)
@@ -421,9 +435,18 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 			getLockManager(inCatalogId).release(lock);
 		}
 	}
-	
-	
-	
-	
+
+	public void addMappingError(String inSearchType, String inMessage)
+	{
+		MappingError error = new MappingError();
+		error.setError(inMessage);
+		error.setSearchType(inSearchType);
+		getMappingErrors().add(error);
+		
+	}
+	public boolean hasMappingErrors()
+	{
+		return !getMappingErrors().isEmpty();
+	}
 	
 }

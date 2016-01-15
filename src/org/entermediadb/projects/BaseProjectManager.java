@@ -269,7 +269,6 @@ public class BaseProjectManager implements ProjectManager
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
 	{
 		Searcher searcher = archive.getAssetSearcher();
-		SearchQuery assetsearch = searcher.createSearchQuery();
 		HitTracker all = null;
 //		if( assetsearch instanceof LuceneSearchQuery)
 //		{
@@ -280,12 +279,18 @@ public class BaseProjectManager implements ProjectManager
 //		}
 //		else
 //		{	
-			Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
-			
-			//Do an asset search with permissions, showing only the assets on this collection
-			all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
-			all.setSelections(ids);
-			all.setShowOnlySelected(true);
+		//SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
+		SearchQuery assetsearch = searcher.createSearchQuery();
+		assetsearch.addChildFilter("librarycollectionasset","librarycollection",collectionid);
+		all = archive.getAssetSearcher().search(assetsearch);
+		
+/*		
+		
+//			Collection<String> ids = loadAssetIdsInCollection(inReq, archive, collectionid );
+//			//Do an asset search with permissions, showing only the assets on this collection
+//			all = archive.getAssetSearcher().query().match("id", "*").not("editstatus", "7").search();
+//			all.setSelections(ids);
+//			all.setShowOnlySelected(true);
 			//log.info("Searching for assets " + all.size() + " ANND " + ids.size() );
 			//create script that syncs up the assets that have been removed
 			if( all.size() != ids.size() )
@@ -309,6 +314,7 @@ public class BaseProjectManager implements ProjectManager
 					}
 				}
 			}
+		*/	
 //		}
 		String hpp = inReq.getRequestParameter("page");
 		if( hpp != null)

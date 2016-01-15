@@ -46,7 +46,6 @@ import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
@@ -75,6 +74,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.Join;
 import org.openedit.hittracker.SearchQuery;
@@ -333,20 +333,20 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					log.error("index could not be created ", ex);
 				}
-				if (runmapping)
-				{
-					try
-					{
-						reIndexAll();
-					
-
-					}
-					catch (Exception ex)
-					{
-						log.error("Problem with reindex", ex);
-					}
-
-				}
+//				if (runmapping)
+//				{
+//					try
+//					{
+//						reIndexAll();
+//					
+//
+//					}
+//					catch (Exception ex)
+//					{
+//						log.error("Problem with reindex", ex);
+//					}
+//
+//				}
 				fieldConnected = true;
 			}
 		}
@@ -383,9 +383,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		
 		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(indexid);
 		IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
-
-		
-		
 		
 		if (!res.isExists())
 		{
@@ -419,6 +416,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				log.debug("Index already exists " + indexid);
 			}
 		}
+		
+		//TODO: This should have beeb already setup by the NodeManager
 		if(alias != null && !indexexists){
 			admin.indices().prepareAliases().addAlias(indexid, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
 
@@ -446,8 +445,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			log.error("Could not refresh shards");
 		}
-		
-		
 		return runmapping;
 	}
 	
@@ -481,6 +478,14 @@ public class BaseElasticSearcher extends BaseSearcher
 		AdminClient admin = getElasticNodeManager().getClient().admin();
 		String indexid = toId(getCatalogId());
 
+		List dependson = getPropertyDetails().getDependsOn();
+		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
+		{
+			String searchtype = (String) iterator.next();
+			Searcher child = getSearcherManager().getSearcher(getCatalogId(), searchtype);
+			child.reloadSettings();
+		}
+		
 		XContentBuilder source = buildMapping();
 		try
 		{
@@ -503,7 +508,8 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			//https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html
 			//https://github.com/jprante/elasticsearch-knapsack
-			log.error("Could not put mapping over existing mapping. Please use restoreDefaults",ex);
+			log.info("Could not put mapping over existing mapping. Please use restoreDefaults",ex);
+			getElasticNodeManager().addMappingError(getSearchType(),ex.getMessage());
 			//throw new OpenEditException("Mapping was not able to be merged, you will need to export data");
 		}
 //		try
@@ -603,9 +609,6 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				if ("_parent".equals(detail.getId()))
 				{
-					jsonproperties = jsonproperties.startObject("_parent");
-					jsonproperties = jsonproperties.field("type", detail.getListId());
-					jsonproperties = jsonproperties.endObject();
 					continue;
 				}
 				jsonproperties = jsonproperties.startObject(detail.getId());
@@ -689,6 +692,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				
 			}
 			jsonproperties = jsonproperties.endObject();
+			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
+			if( _parent != null)
+			{
+				jsonproperties = jsonproperties.startObject("_parent");
+				jsonproperties = jsonproperties.field("type", _parent.getListId());
+				jsonproperties = jsonproperties.endObject();
+			}	
 			jsonBuilder = jsonproperties.endObject();
 			return jsonproperties;
 		}
@@ -1225,7 +1235,19 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
+			PropertyDetail parent = details.getDetail("_parent");
+			if( parent != null)
+			{
+				String _parent = data.get(parent.getListId());
+				if( _parent != null)
+				{
+					builder = builder.setParent(_parent);
+				}
+			}
+			
 			XContentBuilder content = XContentFactory.jsonBuilder().startObject();
+			
+			
 			updateIndex(content, data, details);
 			content.endObject();
 			if( log.isDebugEnabled() )
@@ -1324,7 +1346,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			try
 			{
-				if ("_id".equals(key))
+				if ("_id".equals(key) || "_parent".equals(key))
 				{
 					// if( value != null)
 					// {
@@ -1623,16 +1645,17 @@ public class BaseElasticSearcher extends BaseSearcher
 	public void restoreSettings()
 	{
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
-		deleteOldMapping();  //you will lose your data!
-		reIndexAll();
+		//deleteOldMapping();  //you will lose your data!
+		//reIndexAll();
+		putMappings();
 	}
 	
 	@Override
 	public void reloadSettings()
 	{
-		//getPropertyDetailsArchive().clearCustomSettings(getSearchType());
-		deleteOldMapping();  //you will lose your data!
-		reIndexAll();
+		//deleteOldMapping();  //you will lose your data!
+		//reIndexAll();
+		putMappings();
 	}
 	
 	public HitTracker loadHits(WebPageRequest inReq)
