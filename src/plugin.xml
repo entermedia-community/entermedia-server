@@ -1756,9 +1756,17 @@
 	</bean>
 	
 	<bean id="mathutil"  class="org.entermediadb.asset.util.MathUtils" />	
-	<bean id="JsonModule" class="org.entermediadb.asset.mediadb.JsonModule" />
 	<bean id="JsonAssetModule" class="org.entermediadb.asset.mediadb.JsonAssetModule"  />
 	<bean id="JsonDataModule" class="org.entermediadb.asset.mediadb.JsonDataModule"  />
 	<bean id="JsonAdminModule" class="org.entermediadb.asset.mediadb.JsonAdminModule"  />
+	<!-- Beans from recently converted classes 01-15-2016 -->
+	<bean id="ConvertQueue" class="model.assets.BaseConvertQueue" />
+	<bean id="LibraryManager" class="model.assets.LibraryManager" />
+	<bean id="HotFolderManager" class="model.importer.BaseHotFolderManager" />
+	<bean id="Importer" class="model.importer.BaseImporter" />
+	<bean id="OrderManager" class="model.orders.BaseOrderManager" />
+	<bean id="AnnotationModule" class="modules.annotations.AnnotationModule" />
+	<bean id="AdvancedAssetEditModule" class="modules.assets.AdvancedAssetEditModule" />
+	<bean id="ConvertModule" class="modules.convert.ConvertModule" />
 	
 </beans>
