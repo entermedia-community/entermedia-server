@@ -1,9 +1,9 @@
 
 <properties>
-  <property id="id" index="true" stored="true" editable="true" searchtype="fatwireexception" internalfield="true">Id</property>
-  <property id="name" index="true" stored="true" editable="true" searchtype="fatwireexception">Name</property>
-  <property id="sourcepath" searchtype="fatwireexception">SourcePath</property>
-  <property id="errorcode" index="true" stored="true" editable="true" searchtype="fatwireexception" internalfield="false">Error Code</property>
-  <property id="message" index="true" stored="true" editable="true" searchtype="fatwireexception" internalfield="false">Message</property>
-  <property id="description" index="true" stored="true" editable="true" searchtype="fatwireexception">Description</property>
+  <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
+  <property id="name" index="true" stored="true" editable="true">Name</property>
+  <property id="sourcepath">SourcePath</property>
+  <property id="errorcode" index="true" stored="true" editable="true" internalfield="false">Error Code</property>
+  <property id="fatwiremessage" index="true" stored="true" editable="true" internalfield="false" legacy="message">Message</property>
+  <property id="description" index="true" stored="true" editable="true">Description</property>
 </properties>

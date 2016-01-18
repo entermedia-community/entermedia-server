@@ -62,6 +62,8 @@
 	<lang:groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy"  lazy-init="default" />
 	<lang:groovy id="wordpresspublisher" script-source="publishing/publishers/wordpresspublisher.groovy"  lazy-init="default"/>
 	
+	
+	<!-- 
 	<lang:groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy" lazy-init="default">
 	   	<lang:property name="searcherManager"><ref bean="searcherManager"/></lang:property>
 		<lang:property name="webEventHandler"><ref bean="mediaEventHandler" /></lang:property>
@@ -69,7 +71,7 @@
 		<lang:property name="pageManager"><ref bean="pageManager" /></lang:property>
 		<lang:property name="moduleManager"><ref bean="moduleManager" /></lang:property>
 	</lang:groovy>
-	
+	 -->
 <!-- 
 
 	<lang:groovy  id="mediaUploader" script-source="model/push/BaseMediaUploader.groovy" lazy-init="default">

@@ -5,5 +5,5 @@
   <property id="assetids" index="true" stored="true" editable="true"  >Asset Ids</property>
   <property id="userids" index="true" stored="true" editable="true"   >User Ids</property>
   <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
-  <property id="recorddate" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Record Update Date</property>
+  <property id="recorddate" index="true" stored="true" editable="true" type="date" viewtype="datetime"  >Record Update Date</property>
 </properties>

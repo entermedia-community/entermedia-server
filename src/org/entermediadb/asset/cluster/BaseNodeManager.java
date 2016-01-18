@@ -1,5 +1,6 @@
 package org.entermediadb.asset.cluster;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,12 @@ public class BaseNodeManager implements NodeManager
 	
 	public Set getConnectedCatalogIds()
 	{
+		if (fieldConnectedCatalogIds == null)
+		{
+			fieldConnectedCatalogIds = new HashSet();
+			
+		}
+
 		return fieldConnectedCatalogIds;
 	}
 

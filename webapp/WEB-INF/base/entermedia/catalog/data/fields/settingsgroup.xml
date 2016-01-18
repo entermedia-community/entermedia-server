@@ -12,6 +12,7 @@
 	<property id="deleteorder" >Delete Order</property>
 	<property id="viewsettings" stored="true" editable="true" datatype="list"  index="true" listid="partialaccesslevels">Settings Access</property>
 	<property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of Assets to view per page</property>
+  <property id="multiedit" editable="true" type="boolean" index="true" stored="true">Multi-Edit</property>
 
 <!--TODO: I think elastic search needs all the permissions defined in here! -->
 

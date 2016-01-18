@@ -98,12 +98,11 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		{
 			getMediaArchive().getAssetArchive().clearAssets();
 			//For now just add things to the index. It never deletes
-			if( fieldConnected )
-			{
+			
 				//Someone is forcing a reindex
 				//deleteOldMapping();
 				putMappings();
-			}
+			
 			final List tosave = new ArrayList(500);
 			
 			PathProcessor processor = new PathProcessor()

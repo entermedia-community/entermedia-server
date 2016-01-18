@@ -5,7 +5,7 @@
   <property id="byassettype" type="boolean" editable="true" index="true" stored="true">By Asset Type</property>
   <property id="systemdefined" type="boolean" editable="true" index="true" stored="true">System Defined</property>
   <property id="module"  index="true" stored="true">Module</property>
-  <property id="ordering" editable="true" index="true" stored="true">Ordering</property>
+  <property id="ordering" type="number"  editable="true" index="true" stored="true">Ordering</property>
   <property id="rendertype"  index="true" stored="true">Renderer Type</property>
   <property id="rendertable"  index="true" stored="true">Table</property>
   <property id="renderexternalid"  index="true" stored="true">Table External ID</property>

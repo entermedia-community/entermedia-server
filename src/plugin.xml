@@ -1804,4 +1804,17 @@
 	<bean id="AdvancedAssetEditModule" class="modules.assets.AdvancedAssetEditModule" />
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" />
 	
+	
+	<bean id="orderManager" class="model.orders.BaseOrderManager" >
+	   	<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
+		<property name="lockManager"><ref bean="lockManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="moduleManager"><ref bean="moduleManager" /></property>
+	</bean>
+	
+	
+	
+	
+	
 </beans>

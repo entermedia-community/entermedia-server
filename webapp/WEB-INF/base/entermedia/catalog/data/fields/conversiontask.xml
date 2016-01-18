@@ -12,7 +12,7 @@
 	<property id="errorcount"  index="true"  stored="true">Error Count</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>	
 	<property id="pagenumber" index="true" stored="true">Page Number</property>	
-	<property id="ordering" index="true" stored="true" editable="true">Ordering</property>
+	<property id="ordering"  type="number" index="true" stored="true" editable="true">Ordering</property>
 	
 	<property id="x1" index="true" stored="true" editable="true">X1</property>
 	<property id="y1" index="true" stored="true" editable="true">Y1</property>

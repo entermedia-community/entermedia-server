@@ -138,7 +138,7 @@ public class AttachmentManager
 					attachment.setSourcePath(inAssetSourcePath);
 					attachment.setProperty("name", page.getName());
 					attachment.setProperty("assetid", inAssetId);
-					attachment.setProperty("folder", String.valueOf(page.isFolder()));
+					attachment.setProperty("isfolder", String.valueOf(page.isFolder()));
 					attachment.setProperty("parentsourcepath", inFolderSourcePath);
 
 					Asset asset = new Asset();

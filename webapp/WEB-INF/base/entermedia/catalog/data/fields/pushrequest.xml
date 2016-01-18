@@ -8,7 +8,7 @@
 	<property id="errordetails"  index="true"  stored="true">Error Details</property>
 	<property id="errorcount"  index="true"  stored="true">Error Count</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>	
-	<property id="ordering" index="true" stored="true" editable="true">Ordering</property>
+	<property id="ordering" type="number" index="true" stored="true" editable="true">Ordering</property>
 	<property id="hotfolder" index="true" stored="true" editable="true" type="list">Push Folder</property>
 
 

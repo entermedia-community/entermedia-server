@@ -88,13 +88,12 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		try
 		{
 			//For now just add things to the index. It never deletes
-			if( fieldConnected )
-			{
+		
 				//Someone is forcing a reindex
 				//deleteOldMapping();
 				putMappings();
 
-			}
+			
 			 
 			getXmlSearcher().clearIndex();
 			HitTracker settings = getXmlSearcher().getAllHits();

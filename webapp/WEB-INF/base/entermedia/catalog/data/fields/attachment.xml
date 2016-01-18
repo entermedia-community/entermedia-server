@@ -7,7 +7,7 @@
  	<property id="fulltext" keyword="true" index="true">Full Text</property> 	<!-- This is for PDFs -->
  	<property id="sourcepath" index="true" stored="true">Asset Source Path</property>
  	<property id="parentsourcepath" index="true" stored="true">Parent Source Path</property>
- 	<property id="folder" index="true" type="boolean" stored="true">Is Folder</property>
+ 	<property id="isfolder" index="true" type="boolean" stored="true" legacy="folder">Is Folder</property>
  
     <property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>

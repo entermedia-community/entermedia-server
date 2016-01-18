@@ -49,11 +49,9 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 		log.info("Reindex of customer groups directory");
 		try
 		{
-			if( fieldConnected )
-			{
-				//deleteOldMapping();
+			
 				putMappings();
-			}
+		
 			Collection ids = getXmlUserArchive().listGroupIds();
 			if( ids != null)
 			{

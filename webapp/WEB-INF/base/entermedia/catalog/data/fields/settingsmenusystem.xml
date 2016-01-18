@@ -1,7 +1,7 @@
 <properties beanname="folderSearcher">
 	<property id="id" index="true" stored="true">Id</property>
 	<property id="name" index="true" stored="true" editable="true">Name</property>
-	<property id="ordering" index="true" stored="true" editable="true">Ordering</property>
+	<property id="ordering" type="number" index="true" stored="true" editable="true">Ordering</property>
 	<property id="type" index="true" stored="true" editable="true">Type</property>
 	<property id="parentid" index="true" stored="true" editable="true">Parent</property>
 	<property id="sublabel" index="true" stored="true" editable="true">Label Used on Sub</property>

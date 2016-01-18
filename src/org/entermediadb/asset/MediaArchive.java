@@ -45,6 +45,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
+import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.Permission;
 import org.openedit.page.manage.MimeTypeMap;
@@ -1650,4 +1651,12 @@ public class MediaArchive
 
 		return fieldOrderManager;
 	}
+	
+	public NodeManager getNodeManager(){
+		return (NodeManager)getModuleManager().getBean(getCatalogId(),"nodeManager");
+
+		
+	}
+	
+	
 }

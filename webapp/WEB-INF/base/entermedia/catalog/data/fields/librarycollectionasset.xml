@@ -7,7 +7,7 @@
   <property id="approvedby" index="true" stored="true" editable="true" type="list" listid="user" listcatalogid="system" viewtype="user"  >Approval By</property>
   <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Approval Date</property>
   <property id="collectioncategory" index="true" stored="true" editable="true" type="list" viewtype="tageditor" >Notes</property>
-  <property id="ordering" index="true" stored="true" editable="true" type="number" >Rank</property>
+  <property id="ordering"  type="number" index="true" stored="true" editable="true"  >Rank</property>
   <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Approval Date</property>
   <!-- property id="recorddate" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Record Update Date</property -->
   <property id="_parent" index="true" type="list" listid="asset"   >Parent Table</property>

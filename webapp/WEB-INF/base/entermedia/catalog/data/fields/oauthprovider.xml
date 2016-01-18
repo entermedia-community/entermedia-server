@@ -1,11 +1,11 @@
 
 <properties prefix="oauthproviders">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true" searchtype="oauthprovider">Id</property>
-  <property id="name" index="true" stored="true" editable="true" searchtype="oauthprovider">Name</property>
-  <property id="sourcepath" searchtype="oauthprovider">SourcePath</property>
-  <property id="clientid" index="true" stored="true" editable="true" searchtype="oauthprovider">clientid</property>
-  <property id="clientsecret" index="true" stored="true" editable="true" searchtype="oauthprovider">clientsecret</property>
-  <property id="redirecturi" index="true" stored="true" editable="true" searchtype="oauthprovider">redirecturi</property>
-  <property id="enabled" index="true" stored="true" editable="true" sortable="true" type="boolean" internalfield="false" datatype="boolean" searchtype="oauthprovider">enabled</property>
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" >Id</property>
+  <property id="name" index="true" stored="true" editable="true" >Name</property>
+  <property id="sourcepath" >SourcePath</property>
+  <property id="clientid" index="true" stored="true" editable="true" >clientid</property>
+  <property id="clientsecret" index="true" stored="true" editable="true" >clientsecret</property>
+  <property id="redirecturi" index="true" stored="true" editable="true" >redirecturi</property>
+  <property id="enabled" index="true" stored="true" editable="true"  type="boolean" internalfield="false" datatype="boolean" >enabled</property>
   <property id="remoteroot" index="true" stored="true" editable="true">remoteroot</property>
 </properties>

@@ -14,7 +14,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchService;
 import org.openedit.Shutdownable;
 
-public class LockSearcher extends BaseElasticSearcher implements Shutdownable
+public class LockSearcher extends BaseElasticSearcher 
 {
 	private static final Log log = LogFactory.getLog(LockSearcher.class);
 
@@ -30,22 +30,22 @@ public class LockSearcher extends BaseElasticSearcher implements Shutdownable
 		fieldClearIndexOnStart = inClearIndexOnStart;
 	}
 	
-	@Override
-	protected void connect()
-	{
-		if( !isConnected() )
-		{
-			super.connect();
-
-			clearStaleLocks();
-
-		}
-		else
-		{
-			super.connect();
-		}
-		
-	}
+//	@Override
+//	protected void connect()
+//	{
+//		if( !isConnected() )
+//		{
+//			super.connect();
+//
+//			clearStaleLocks();
+//
+//		}
+//		else
+//		{
+//			super.connect();
+//		}
+//		
+//	}
 
 	//TODO: move this to the ClientPool shutdown ruitine
 	public void clearStaleLocks()
@@ -76,17 +76,17 @@ public class LockSearcher extends BaseElasticSearcher implements Shutdownable
 		
 	}
 	
-	public void shutdown()
-	{
-		if( isConnected() )
-		{
-			clearStaleLocks();
-		}
-		if (fieldElasticNodeManager != null)
-		{
-			fieldElasticNodeManager.shutdown();
-			fieldConnected = false;
-			fieldElasticNodeManager = null;
-		}
-	}
+//	public void shutdown()
+//	{
+//		if( isConnected() )
+//		{
+//			clearStaleLocks();
+//		}
+//		if (fieldElasticNodeManager != null)
+//		{
+//			fieldElasticNodeManager.shutdown();
+//			fieldConnected = false;
+//			fieldElasticNodeManager = null;
+//		}
+//	}
 }

@@ -1,0 +1,5 @@
+<properties beanname="listSearcher" >
+	<property id="id" index="true" stored="true" >ID</property>
+	<property id="name" index="true" stored="true" >Name</property>
+	<property id="country" index="true" stored="true" type="list">Country</property>
+</properties>

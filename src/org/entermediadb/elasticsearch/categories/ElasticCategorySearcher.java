@@ -76,11 +76,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		try
 		{
 			setReIndexing(true);
-			if( fieldConnected )
-			{
+		
 				putMappings(); //We can only try to put mapping. If this failes then they will
 				//need to export their data and factory reset the fields 
-			}
+			
 			//deleteAll(null); //This only deleted the index
 			//This is the one time we load up the categories from the XML file
 //			Category parent = getCategoryArchive().getRootCategory();

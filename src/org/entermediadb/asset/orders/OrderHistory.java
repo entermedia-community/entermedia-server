@@ -22,11 +22,11 @@ public class OrderHistory extends ElementData {
 	}
 
 	public String getHistoryType() {
-		return get("type");
+		return get("historytype");
 	}
 
 	public void setHistoryType(String inS) {
-		setProperty("type", inS);
+		setProperty("historytype", inS);
 	}
 
 	public String toString() {

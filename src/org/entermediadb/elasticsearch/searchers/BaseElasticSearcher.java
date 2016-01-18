@@ -148,11 +148,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		fieldAutoIncrementId = inAutoIncrementId;
 	}
 
-	public boolean isInitialized()
-	{
-		return fieldItialized;
-	}
-
+	
 	public SearchQuery createSearchQuery()
 	{
 		ElasticSearchQuery query = new ElasticSearchQuery();
@@ -296,16 +292,24 @@ public class BaseElasticSearcher extends BaseSearcher
 	public boolean initialize()
 	{
 		try
-		{
+		{			
 			
-			getElasticNodeManager().prepareIndex(getCatalogId());
-			putMappings();
+			if( getAllHits().size() == 0 )
+			{
+				reIndexAll();
+			} else{
+				putMappings();
+			}
+			
+			
 			log.info(getCatalogId() + " Node is ready for " + getSearchType());
 		}
 		catch (Exception ex)
 		{
 			log.error("index could not be created ", ex);
+			return false;
 		}
+		return true;
 	}
 
 
@@ -1200,8 +1204,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		for (Iterator iterator = everything.iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
-
 			String value = inData.get(key);
+			
+			if(key.contains(".")){
+				log.info("Warning - data id : " + inData.getId() + " of type " + getSearchType() + " contained a . in field " + key);
+				key = key.replace(".", "_");
+			}
+			
 			if (value != null && value.trim().length() == 0)
 			{
 				value = null;
@@ -1490,11 +1499,8 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			setReIndexing(true);
-			if( fieldConnected )
-			{
-				putMappings(); //We can only try to put mapping. If this failes then they will
-				//need to export their data and factory reset the fields 
-			}
+			putMappings(); //We can only try to put mapping. If this failes then they will
+			//need to export their data and factory reset the fields 
 			//deleteAll(null); //This only deleted the index
 		}
 		finally
@@ -1518,10 +1524,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
 		putMappings();
-		if( getAllHits().size() == 0 )
-		{
-			reIndexAll();
-		}
+		
 		
 	}
 	
@@ -1602,75 +1605,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 	}
-	
-	
-	public void reindexInternal() {
-		try
-		{
-			Date date = new Date();
-			String id = toId(getCatalogId());
-			String tempindex = id + date.getTime() ;
-			prepareIndex(true, tempindex, null);
-			
-			SearchResponse searchResponse = getClient().prepareSearch(id)
-			        .setQuery(QueryBuilders.matchAllQuery())
-			        .setSearchType(SearchType.SCAN)
-			        .setScroll("60000")
-			        .setSize(500).execute().actionGet();
+	//This is good code, don't delete:
 
-			BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(),
-			        createLoggingBulkProcessorListener()).setBulkActions(10000)
-			        .setConcurrentRequests(2)
-			        .setFlushInterval(TimeValue.timeValueSeconds(5))
-			        .build();
-
-			while (true) {
-			    searchResponse = getClient().prepareSearchScroll(searchResponse.getScrollId())
-			            .setScroll(new TimeValue(600000)).execute().actionGet();
-
-			    if (searchResponse.getHits().getHits().length == 0) {
-					bulkProcessor.flush();
-
-			        bulkProcessor.close();
-			        break; //Break condition: No hits are returned
-			    }
-
-			    for (SearchHit hit : searchResponse.getHits()) {
-			        IndexRequest request = new IndexRequest(tempindex, hit.type(), hit.id());
-			        request.source(hit.sourceAsString());
-			        bulkProcessor.add(request);
-			    }
-			}
-			String oldindex = getIndexNameFromAliasName(id);
-			
-			getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(tempindex, id).execute().actionGet();
-			DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
-			log.info("Dropped: " + response.isAcknowledged());
-		}
-		catch (Exception e)
-		{
-			throw new OpenEditException(e);
-		}
-	    
-}
-
-private Listener createLoggingBulkProcessorListener()
-{
-	return new BulkProcessor.Listener() {
-        @Override
-        public void beforeBulk(long executionId,
-                               BulkRequest request) { } 
-
-        @Override
-        public void afterBulk(long executionId,
-                              BulkRequest request,
-                              BulkResponse response) { } 
-
-        @Override
-        public void afterBulk(long executionId,
-                              BulkRequest request,
-                              Throwable failure) { } 
-    };
-}
 	
 }
