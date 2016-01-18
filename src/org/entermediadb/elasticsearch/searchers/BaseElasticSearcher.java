@@ -88,7 +88,6 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	protected ElasticNodeManager fieldElasticNodeManager;
-	protected boolean fieldConnected = false;
 	//protected IntCounter fieldIntCounter;
 	//protected PageManager fieldPageManager;
 	//protected LockManager fieldLockManager;
@@ -97,10 +96,6 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
 	
-	
-	
-	
-
 	public boolean isRefreshSaves()
 	{
 		return fieldRefreshSaves;
@@ -115,15 +110,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public ElasticNodeManager getElasticNodeManager()
 	{
-		
-		
-		if(!getModuleManager().getLoadedBeans().contains(fieldElasticNodeManager)){
-			getModuleManager().addForShutdown(fieldElasticNodeManager);
-			getModuleManager().getLoadedBeans().add(fieldElasticNodeManager);
-			
-		}
 		return fieldElasticNodeManager;
-		
 	}
 
 	public void setElasticNodeManager(ElasticNodeManager inElasticNodeManager)
@@ -161,14 +148,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		fieldAutoIncrementId = inAutoIncrementId;
 	}
 
-	public boolean isConnected()
+	public boolean isInitialized()
 	{
-		return fieldConnected;
-	}
-
-	public void setConnected(boolean inConnected)
-	{
-		fieldConnected = inConnected;
+		return fieldItialized;
 	}
 
 	public SearchQuery createSearchQuery()
@@ -183,8 +165,6 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	protected Client getClient()
 	{
-		connect();
-
 		return getElasticNodeManager().getClient();
 	}
 
@@ -312,157 +292,30 @@ public class BaseElasticSearcher extends BaseSearcher
 	
 	
 	
-	protected void connect()
+	@Override
+	public boolean initialize()
 	{
-		if (!isConnected())
+		try
 		{
-			synchronized (this)
-			{
-				if (isConnected())
-				{
-					return;
-				}
-				boolean runmapping = true;
-
-				try
-				{
-					String indexid = toId(getCatalogId());
-					String cluster = indexid + "-internal";
-					
-					runmapping = prepareIndex(runmapping,   cluster, indexid);
-					
-					log.info(getCatalogId() + " Node is ready for " + getSearchType());
-				}
- 				catch (Exception ex)
-				{
-					log.error("index could not be created ", ex);
-				}
-//				if (runmapping)
-//				{
-//					try
-//					{
-//						reIndexAll();
-//					
-//
-//					}
-//					catch (Exception ex)
-//					{
-//						log.error("Problem with reindex", ex);
-//					}
-//
-//				}
-				fieldConnected = true;
-			}
-		}
-	}
-
-	private boolean prepareIndex(boolean runmapping,   String indexid, String alias) throws IOException
-	{
-		AdminClient admin = getElasticNodeManager().getClient().admin();
-
-		ClusterHealthResponse health = admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
-
-		if (health.isTimedOut())
-		{
-			throw new OpenEditException("Could not get yellow status");
-		}
-		boolean indexexists = false;
-		
-		if(alias != null){
-		 AliasOrIndex indexToAliasesMap = admin.cluster()
-		            .state(Requests.clusterStateRequest())
-		            .actionGet()
-		            .getState()
-		            .getMetaData()
-		            .getAliasAndIndexLookup().get(alias);
-		 	
-			   if(indexToAliasesMap != null && !indexToAliasesMap.isAlias()){
-			    throw new OpenEditException("An old index exists with the name we want to use for the alias!");
-			   }
-		   if(indexToAliasesMap != null && indexToAliasesMap.isAlias()){
-			   indexexists = true;//we have an index already with this alias..
-			   indexid= indexToAliasesMap.getIndices().iterator().next().getIndex();;
-		   } 
-		}
-		
-		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(indexid);
-		IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
-		boolean createdIndex = false;
-		if (!res.isExists())
-		{
-			try
-			{
-				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder()
-						.startObject()
-							.startObject("analysis")
-//								.startObject("filter").
-//									startObject("snowball").field("type", "snowball").field("language", "English")
-//									.endObject()
-//								.endObject()
-								.startObject("analyzer").
-									startObject("lowersnowball").field("type", "snowball").field("language", "English")								
-									.endObject()
-								.endObject()
-							.endObject()
-						.endObject();
-
-				CreateIndexResponse newindexres = admin.indices().prepareCreate(indexid).setSettings(settingsBuilder).execute().actionGet();
-				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
-
-				if (newindexres.isAcknowledged())
-				{
-					log.info("index created " + indexid);
-				}
-				createdIndex = true;
-
-			}
-			catch (RemoteTransportException exists)
-			{
-				// silent error
-				log.debug("Index already exists " + indexid);
-			}
-		}
-		
-		//TODO: This should have beeb already setup by the NodeManager
-		if(alias != null && !indexexists){
-			admin.indices().prepareAliases().addAlias(indexid, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
-
-		}
-		ClusterState cs = admin.cluster().prepareState().setIndices(indexid).execute().actionGet().getState();
-		IndexMetaData data = cs.getMetaData().index(indexid);
-		if (data != null)
-		{
-			if (data.getMappings() != null)
-			{
-				MappingMetaData fields = data.getMappings().get(getSearchType());
-				if (fields != null && fields.source() != null)
-				{
-					runmapping = false;
-				}
-			}
-		}
-		if (runmapping)
-		{
+			
+			getElasticNodeManager().prepareIndex(getCatalogId());
 			putMappings();
+			log.info(getCatalogId() + " Node is ready for " + getSearchType());
 		}
-		RefreshRequest req = Requests.refreshRequest(indexid);
-		RefreshResponse rres = admin.indices().refresh(req).actionGet();
-		if (rres.getFailedShards() > 0)
+		catch (Exception ex)
 		{
-			log.error("Could not refresh shards");
+			log.error("index could not be created ", ex);
 		}
-		if(createdIndex){
-			getElasticNodeManager().initializeCatalog(getCatalogId());
-		}
-		return runmapping;
 	}
+
+
 	
+//	
+//	protected void deleteOldMapping()
+//	{
+//		log.info("Does not work");
+//	}
 	
-	
-	protected void deleteOldMapping()
-	{
-		log.info("Does not work");
-	}
 //		AdminClient admin = getElasticNodeManager().getClient().admin();
 //		String indexid = toId(getCatalogId());
 //		//XContentBuilder source = buildMapping();
@@ -1665,6 +1518,11 @@ public class BaseElasticSearcher extends BaseSearcher
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
 		putMappings();
+		if( getAllHits().size() == 0 )
+		{
+			reIndexAll();
+		}
+		
 	}
 	
 	public HitTracker loadHits(WebPageRequest inReq)
@@ -1814,28 +1672,5 @@ private Listener createLoggingBulkProcessorListener()
                               Throwable failure) { } 
     };
 }
-
-private String getIndexNameFromAliasName(final String aliasName) {
-   AliasOrIndex indexToAliasesMap = getClient().admin().cluster()
-            .state(Requests.clusterStateRequest())
-            .actionGet()
-            .getState()
-            .getMetaData().getAliasAndIndexLookup().get(aliasName);
-            
-    	if(indexToAliasesMap.isAlias() && indexToAliasesMap.getIndices().size() > 0){
-    		return indexToAliasesMap.getIndices().iterator().next().getIndex();
-    	}
-            
-
-    return null;
-}
-
-@Override
-public boolean isLazyInit()
-{
-	// TODO Auto-generated method stub
-	return false;
-}
-	
 	
 }

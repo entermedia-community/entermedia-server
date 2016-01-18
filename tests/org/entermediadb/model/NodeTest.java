@@ -1,7 +1,7 @@
 package org.entermediadb.model;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
-import org.entermediadb.asset.cluster.NodeManager;
+import org.openedit.node.NodeManager;
 
 public class NodeTest extends BaseEnterMediaTest
 {

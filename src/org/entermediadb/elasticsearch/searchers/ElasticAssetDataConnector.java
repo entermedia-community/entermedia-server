@@ -101,7 +101,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			if( fieldConnected )
 			{
 				//Someone is forcing a reindex
-				deleteOldMapping();
+				//deleteOldMapping();
 				putMappings();
 			}
 			final List tosave = new ArrayList(500);

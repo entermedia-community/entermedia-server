@@ -51,7 +51,7 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 		{
 			if( fieldConnected )
 			{
-				deleteOldMapping();
+				//deleteOldMapping();
 				putMappings();
 			}
 			Collection ids = getXmlUserArchive().listGroupIds();

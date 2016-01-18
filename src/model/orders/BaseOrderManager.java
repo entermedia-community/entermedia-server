@@ -267,6 +267,7 @@ public class BaseOrderManager implements OrderManager {
 		Order order = (Order)searcher.createNewData();
 		String[] fields = inReq.getRequestParameters("field");
 		searcher.updateData(inReq, fields, order);
+		/*
 		String newstatus = inReq.getRequestParameter("newuserstatus");
 		if( newstatus != null) {
 			OrderHistory history = createNewHistory(catalogid, order, inReq.getUser(), newstatus);
@@ -289,8 +290,9 @@ public class BaseOrderManager implements OrderManager {
 			saveOrderWithHistory(catalogid, inReq.getUser(), order, history);
 		}
 		else {
+		*/
 			saveOrder(catalogid, inReq.getUser(), order);
-		}
+		//}
 		return order;
 	}
 

@@ -29,6 +29,8 @@
 	<bean id="assetAutoCompleteSearcher" bean="assetAutoCompleteElasticSearcher" />
 	<bean id="dynamicLogSearcher" bean="elasticLogSearcher" />
 
+	<bean id="nodeManager" bean="elasticNodeManager" />
+
 <!--  deprecated AssetRelatedKeywordSearcher -->
 
 </beans>

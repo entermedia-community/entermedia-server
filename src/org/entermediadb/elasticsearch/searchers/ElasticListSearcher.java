@@ -91,7 +91,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			if( fieldConnected )
 			{
 				//Someone is forcing a reindex
-				deleteOldMapping();
+				//deleteOldMapping();
 				putMappings();
 
 			}

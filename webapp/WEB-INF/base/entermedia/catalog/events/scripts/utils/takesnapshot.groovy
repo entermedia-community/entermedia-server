@@ -1,7 +1,7 @@
 package utils
 
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.cluster.NodeManager
+import org.openedit.node.NodeManager;
 
 public void runit()
 {

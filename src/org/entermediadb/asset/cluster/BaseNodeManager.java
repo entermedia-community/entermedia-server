@@ -1,23 +1,37 @@
 package org.entermediadb.asset.cluster;
 
 import java.util.List;
+import java.util.Set;
 
 import org.dom4j.Element;
 import org.openedit.OpenEditException;
 import org.openedit.WebServer;
 import org.openedit.data.SearcherManager;
+import org.openedit.node.Node;
+import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.XmlUtil;
 
-public class NodeManager
+public class BaseNodeManager implements NodeManager
 {
 	protected Node fieldLocalNode;
 	protected XmlUtil fieldXmlUtil;
 	protected PageManager fieldPageManager;
 	protected SearcherManager fieldSearcherManager;
 	protected WebServer fieldWebServer;
+	protected Set fieldConnectedCatalogIds;
 	
+	public Set getConnectedCatalogIds()
+	{
+		return fieldConnectedCatalogIds;
+	}
+
+	public void setConnectedCatalogIds(Set inConnectedCatalogIds)
+	{
+		fieldConnectedCatalogIds = inConnectedCatalogIds;
+	}
+
 	public WebServer getWebServer()
 	{
 		return fieldWebServer;
@@ -101,5 +115,12 @@ public class NodeManager
 	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
 	{
 		throw new OpenEditException("Not implemented");
+	}
+
+	@Override
+	public boolean connectCatalog(String inCatalogId)
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}	
 }

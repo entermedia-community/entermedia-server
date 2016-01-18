@@ -57,7 +57,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		{
 			if( fieldConnected )
 			{
-				deleteOldMapping();
+				//deleteOldMapping();
 				putMappings();
 
 			}

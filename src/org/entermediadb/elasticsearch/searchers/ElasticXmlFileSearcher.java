@@ -164,13 +164,6 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 		setReIndexing(true);
 		try
 		{
-			if( fieldConnected )
-			{
-				//Someone is forcing a reindex
-				deleteOldMapping();
-				putMappings();
-
-			}
 			final List buffer = new ArrayList(100);
 			PathProcessor processor = new PathProcessor()
 			{
