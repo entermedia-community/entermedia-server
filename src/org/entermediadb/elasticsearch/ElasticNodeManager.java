@@ -40,6 +40,9 @@ import org.elasticsearch.snapshots.SnapshotInfo;
 import org.entermediadb.asset.cluster.NodeManager;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
+import org.openedit.data.PropertyDetails;
+import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
@@ -61,7 +64,7 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 	protected Client fieldClient;
 	protected boolean fieldShutdown = false;
 	protected List fieldMappingErrors;
-	
+
 	public List getMappingErrors()
 	{
 		if (fieldMappingErrors == null)
@@ -78,75 +81,76 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 
 	public Client getClient()
 	{
-		if( fieldShutdown == false && fieldClient == null)
+		if (fieldShutdown == false && fieldClient == null)
 		{
 			synchronized (this)
 			{
-				if( fieldClient != null)
+				if (fieldClient != null)
 				{
 					return fieldClient;
 				}
 				NodeBuilder nb = NodeBuilder.nodeBuilder();//.client(client)local(true);
-				
+
 				Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
-				if( !config.exists() )
+				if (!config.exists())
 				{
 					//throw new OpenEditException("Missing " + config.getPath());
 					config = getPageManager().getPage("/system/configuration/node.xml");
 				}
-				
+
 				for (Iterator iterator = getLocalNode().getElement().elementIterator("property"); iterator.hasNext();)
 				{
-					Element	prop = (Element) iterator.next();
+					Element prop = (Element) iterator.next();
 					String key = prop.attributeValue("id");
 					String val = prop.getTextTrim();
 
 					val = getSetting(key);
-					
+
 					nb.settings().put(key, val);
 				}
 				//extras
-	            //nb.settings().put("index.store.type", "mmapfs");
-	            //nb.settings().put("index.store.fs.mmapfs.enabled", "true");
-	            //nb.settings().put("index.merge.policy.merge_factor", "20");
-	           // nb.settings().put("discovery.zen.ping.unicast.hosts", "localhost:9300");
-	           // nb.settings().put("discovery.zen.ping.unicast.hosts", elasticSearchHostsList);
-	
-	            fieldClient = nb.node().client();   //when this line executes, I get the error in the other node 
+				//nb.settings().put("index.store.type", "mmapfs");
+				//nb.settings().put("index.store.fs.mmapfs.enabled", "true");
+				//nb.settings().put("index.merge.policy.merge_factor", "20");
+				// nb.settings().put("discovery.zen.ping.unicast.hosts", "localhost:9300");
+				// nb.settings().put("discovery.zen.ping.unicast.hosts", elasticSearchHostsList);
+
+				fieldClient = nb.node().client(); //when this line executes, I get the error in the other node 
 			}
 		}
 		return fieldClient;
 	}
-	
-	protected String getSetting(String inId) 
+
+	protected String getSetting(String inId)
 	{
-		Page config = getPageManager().getPage("/WEB-INF/node.xml");		
+		Page config = getPageManager().getPage("/WEB-INF/node.xml");
 		String abs = config.getContentItem().getAbsolutePath();
 		File parent = new File(abs);
 		Map params = new HashMap();
 		params.put("webroot", parent.getParentFile().getParentFile().getAbsolutePath());
 		params.put("nodeid", getLocalNodeId());
 		Replacer replace = new Replacer();
-		
+
 		String value = getLocalNode().get(inId);
-		if( value == null)
+		if (value == null)
 		{
 			return null;
 		}
-		if( value.startsWith("."))
+		if (value.startsWith("."))
 		{
-			value = PathUtilities.resolveRelativePath(value, abs );
+			value = PathUtilities.resolveRelativePath(value, abs);
 		}
-		
+
 		return replace.replace(value, params);
 	}
 
 	//called from the lock manager
 	public void shutdown()
 	{
-		if(!fieldShutdown)
+		if (!fieldShutdown)
 		{
-			if(fieldClient != null){
+			if (fieldClient != null)
+			{
 				fieldClient.close();
 			}
 		}
@@ -154,25 +158,26 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 		System.out.println("OpenEditEngine shutdown complete");
 	}
 
-
 	protected String toId(String inId)
 	{
 		String id = inId.replace('/', '_');
 		return id;
 	}
+
 	public String createSnapShot(String inCatalogId)
 	{
-		Lock lock  = null;
+		Lock lock = null;
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-			return createSnapShot(inCatalogId,lock);
+			return createSnapShot(inCatalogId, lock);
 		}
 		finally
 		{
 			getLockManager(inCatalogId).release(lock);
 		}
 	}
+
 	protected LockManager getLockManager(String inCatalogId)
 	{
 		return getSearcherManager().getLockManager(inCatalogId);
@@ -182,64 +187,56 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 	{
 		String indexid = toId(inCatalogId);
 		String path = getSetting("repo.root.location") + "/" + indexid; //Store it someplace unique so we can be isolated?
-	
-	//log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
-	
-	    Settings settings = Settings.settingsBuilder()
-	            .put("location", path)
-	            .build();
-	    PutRepositoryRequestBuilder putRepo = 
-	    		new PutRepositoryRequestBuilder(getClient().admin().cluster(),PutRepositoryAction.INSTANCE);
-	    putRepo.setName(indexid)
-	            .setType("fs")
-	            .setSettings(settings) //With Unique location saved for each catalog
-	            .execute().actionGet();
 
-	    
-//	    PutRepositoryRequestBuilder putRepo = 
-//	    		new PutRepositoryRequestBuilder(getClient().admin().cluster());
-//	    putRepo.setName(indexid)
-//	            .setType("fs")
-//	            .setSettings(settings) //With Unique location saved for each catalog
-//	            .execute().actionGet();
+		//log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
 
-	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-	  //  CreateSnapshotRequestBuilder(elasticSearchClient, CreateSnapshotAction.INSTANCE)
-	    
-	    CreateSnapshotRequestBuilder builder = new CreateSnapshotRequestBuilder(getClient(),CreateSnapshotAction.INSTANCE);
-	    String snapshotid =  format.format(new Date());
-	    builder.setRepository(indexid)
-	            .setIndices(indexid)
-	            .setWaitForCompletion(true)
-	            .setSnapshot(snapshotid);
-	    builder.execute().actionGet();
-	
-	    return snapshotid;
-	}	
+		Settings settings = Settings.settingsBuilder().put("location", path).build();
+		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
+		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
+		.execute().actionGet();
+
+		//	    PutRepositoryRequestBuilder putRepo = 
+		//	    		new PutRepositoryRequestBuilder(getClient().admin().cluster());
+		//	    putRepo.setName(indexid)
+		//	            .setType("fs")
+		//	            .setSettings(settings) //With Unique location saved for each catalog
+		//	            .execute().actionGet();
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		//  CreateSnapshotRequestBuilder(elasticSearchClient, CreateSnapshotAction.INSTANCE)
+
+		CreateSnapshotRequestBuilder builder = new CreateSnapshotRequestBuilder(getClient(), CreateSnapshotAction.INSTANCE);
+		String snapshotid = format.format(new Date());
+		builder.setRepository(indexid).setIndices(indexid).setWaitForCompletion(true).setSnapshot(snapshotid);
+		builder.execute().actionGet();
+
+		return snapshotid;
+	}
+
 	public String createDailySnapShot(String inCatalogId)
-	{		
-		Lock lock  = null;
-		
+	{
+		Lock lock = null;
+
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-	
+
 			List list = listSnapShots(inCatalogId);
-			if( list.size() > 0)
+			if (list.size() > 0)
 			{
-				SnapshotInfo recent = (SnapshotInfo)list.iterator().next();
+				SnapshotInfo recent = (SnapshotInfo) list.iterator().next();
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 				Date date = format.parse(recent.name());
 				Calendar yesterday = new GregorianCalendar();
 				yesterday.add(Calendar.DAY_OF_YEAR, -1);
-				if( date.after(yesterday.getTime()))
+				if (date.after(yesterday.getTime()))
 				{
 					return recent.name();
 				}
 			}
 			return createSnapShot(inCatalogId, lock);
 		}
-		catch( Throwable ex)
+		catch (Throwable ex)
 		{
 			throw new OpenEditException(ex);
 		}
@@ -248,144 +245,131 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 			getLockManager(inCatalogId).release(lock);
 		}
 	}
-		
+
 	public List listSnapShots(String inCatalogId)
 	{
 		String indexid = toId(inCatalogId);
-	    
-	    String path = getSetting("repo.root.location") + "/" + indexid;
-	    
-	    if (!new File(path).exists()) {
-	    	return Collections.emptyList();
-	    }
-	    Settings settings = Settings.settingsBuilder()
-	            .put("location", path)
-	            .build();
-	    
-	    PutRepositoryRequestBuilder putRepo = 
-	    		new PutRepositoryRequestBuilder(getClient().admin().cluster(),PutRepositoryAction.INSTANCE);
-	    putRepo.setName(indexid)
-	            .setType("fs")
-	            .setSettings(settings) //With Unique location saved for each catalog
-	            .execute().actionGet();
-	    
-		GetSnapshotsRequestBuilder builder = 
-		            new GetSnapshotsRequestBuilder(getClient(),GetSnapshotsAction.INSTANCE);
-	    builder.setRepository(indexid);
-	    
-	    GetSnapshotsResponse getSnapshotsResponse = builder.execute().actionGet();
-	    List results =  new ArrayList(getSnapshotsResponse.getSnapshots());
-	
-	    Collections.sort(results, new Comparator<SnapshotInfo>()
+
+		String path = getSetting("repo.root.location") + "/" + indexid;
+
+		if (!new File(path).exists())
 		{
-	    	@Override
-	    	public int compare(SnapshotInfo inO1, SnapshotInfo inO2)
-	    	{
-	    		return inO1.name().toLowerCase().compareTo(inO2.name().toLowerCase());
-	    	}
+			return Collections.emptyList();
+		}
+		Settings settings = Settings.settingsBuilder().put("location", path).build();
+
+		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
+		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
+		.execute().actionGet();
+
+		GetSnapshotsRequestBuilder builder = new GetSnapshotsRequestBuilder(getClient(), GetSnapshotsAction.INSTANCE);
+		builder.setRepository(indexid);
+
+		GetSnapshotsResponse getSnapshotsResponse = builder.execute().actionGet();
+		List results = new ArrayList(getSnapshotsResponse.getSnapshots());
+
+		Collections.sort(results, new Comparator<SnapshotInfo>()
+		{
+			@Override
+			public int compare(SnapshotInfo inO1, SnapshotInfo inO2)
+			{
+				return inO1.name().toLowerCase().compareTo(inO2.name().toLowerCase());
+			}
 		});
-	    Collections.reverse(results);
-	    return results;
+		Collections.reverse(results);
+		return results;
 	}
-	
+
 	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
 	{
 		String indexid = toId(inCatalogId);
-	   // String reponame = indexid + "_repo";
+		// String reponame = indexid + "_repo";
 
-		   // Obtain the snapshot and check the indices that are in the snapshot
-	    AdminClient admin = getClient().admin();
-	
-	    //TODO: Close index!!
-	    
-	    try
-	    {
-		    CloseIndexRequestBuilder closeIndexRequestBuilder =
-		            new CloseIndexRequestBuilder(getClient(),CloseIndexAction.INSTANCE);
-		    closeIndexRequestBuilder.setIndices(indexid);
-		    closeIndexRequestBuilder.execute().actionGet();
-	
-		    try
-		    {
-				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet(); 
-		    }
-		    catch( Exception ex)
-		    {
-		    	log.error(ex);
-		    }
-		    
-		    // Now execute the actual restore action
-		    RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(),RestoreSnapshotAction.INSTANCE);
-		    restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId);
-		    restoreBuilder.execute().actionGet();
+		// Obtain the snapshot and check the indices that are in the snapshot
+		AdminClient admin = getClient().admin();
 
-		    try
-		    {
-				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet(); 
-		    }
-		    catch( Exception ex)
-		    {
-		    	log.error(ex);
-		    }
-}
-	    catch( Throwable ex)
-	    {
-	    	log.error(ex);
-	    }
-	    admin.indices().open(new OpenIndexRequest(indexid));
-	    try
-	    {
-			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet(); 
-	    }
-	    catch( Exception ex)
-	    {
-	    	log.info(ex);
-	    }
+		//TODO: Close index!!
+
+		try
+		{
+			CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
+			closeIndexRequestBuilder.setIndices(indexid);
+			closeIndexRequestBuilder.execute().actionGet();
+
+			try
+			{
+				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+			}
+			catch (Exception ex)
+			{
+				log.error(ex);
+			}
+
+			// Now execute the actual restore action
+			RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(), RestoreSnapshotAction.INSTANCE);
+			restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId);
+			restoreBuilder.execute().actionGet();
+
+			try
+			{
+				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+			}
+			catch (Exception ex)
+			{
+				log.error(ex);
+			}
+		}
+		catch (Throwable ex)
+		{
+			log.error(ex);
+		}
+		admin.indices().open(new OpenIndexRequest(indexid));
+		try
+		{
+			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+		}
+		catch (Exception ex)
+		{
+			log.info(ex);
+		}
 	}
-	
-	
-	
-	
-	
+
 	public void exportKnapsack(String inCatalogId)
-	{		
-		Lock lock  = null;
-		
+	{
+		Lock lock = null;
+
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
 			Client client = getClient();
 			Date date = new Date();
-			Page target = getPageManager().getPage("/WEB-INF/data" + inCatalogId + "snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz"  );
+			Page target = getPageManager().getPage("/WEB-INF/data" + inCatalogId + "snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
 			Page folder = getPageManager().getPage(target.getParentPath());
 			File file = new File(folder.getContentItem().getAbsolutePath());
 			file.mkdirs();
-		        Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
-		        KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices())
-		                .setArchivePath(exportPath)
-		                .setOverwriteAllowed(true).setIndex(inCatalogId);
-		        KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
-		        
-		        KnapsackStateRequestBuilder knapsackStateRequestBuilder =
-		               new KnapsackStateRequestBuilder(client.admin().indices());
-		        KnapsackStateResponse knapsackStateResponse = knapsackStateRequestBuilder.execute().actionGet();
-		        knapsackStateResponse.isExportActive(exportPath);
-		        Thread.sleep(1000L);
-		        // delete index
-//		        client("1").admin().indices().delete(new DeleteIndexRequest("index1")).actionGet();
-//		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client("1").admin().indices())
-//		                .setPath(exportPath);
-//		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
-//		        if (!knapsackImportResponse.isRunning()) {
-//		            logger.error(knapsackImportResponse.getReason());
-//		        }
-//		        assertTrue(knapsackImportResponse.isRunning());
-//		        Thread.sleep(1000L);
-//		        // count
-//		        long count = client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
-//		        assertEquals(1L, count);
+			Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
+			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(inCatalogId);
+			KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
+
+			KnapsackStateRequestBuilder knapsackStateRequestBuilder = new KnapsackStateRequestBuilder(client.admin().indices());
+			KnapsackStateResponse knapsackStateResponse = knapsackStateRequestBuilder.execute().actionGet();
+			knapsackStateResponse.isExportActive(exportPath);
+			Thread.sleep(1000L);
+			// delete index
+			//		        client("1").admin().indices().delete(new DeleteIndexRequest("index1")).actionGet();
+			//		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client("1").admin().indices())
+			//		                .setPath(exportPath);
+			//		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
+			//		        if (!knapsackImportResponse.isRunning()) {
+			//		            logger.error(knapsackImportResponse.getReason());
+			//		        }
+			//		        assertTrue(knapsackImportResponse.isRunning());
+			//		        Thread.sleep(1000L);
+			//		        // count
+			//		        long count = client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
+			//		        assertEquals(1L, count);
 		}
-		catch( Throwable ex)
+		catch (Throwable ex)
 		{
 			throw new OpenEditException(ex);
 		}
@@ -394,9 +378,9 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 			getLockManager(inCatalogId).release(lock);
 		}
 	}
-	
-	
-	public HitTracker listKnapsacks(String inCatalogId){
+
+	public HitTracker listKnapsacks(String inCatalogId)
+	{
 		List snaps = getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + inCatalogId + "/snapshots/");
 		ListHitTracker tracker = new ListHitTracker();
 		for (Iterator iterator = snaps.iterator(); iterator.hasNext();)
@@ -407,26 +391,25 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 		}
 		return tracker;
 	}
-	
+
 	public void importKnapsack(String inCatalogId, String inFile)
-	{		
-		Lock lock  = null;
-		
+	{
+		Lock lock = null;
+
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
 
-			Page target = getPageManager().getPage("/WEB-INF/" + inCatalogId +"snapshots/" + inFile  );
+			Page target = getPageManager().getPage("/WEB-INF/" + inCatalogId + "snapshots/" + inFile);
 
 			Client client = getClient();
-			   File exportFile = new File(target.getContentItem().getAbsolutePath());
-		        Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
-		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices())
-		                .setArchivePath(exportPath).setIndex(inCatalogId);
-		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
-		
+			File exportFile = new File(target.getContentItem().getAbsolutePath());
+			Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
+			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(inCatalogId);
+			KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
+
 		}
-		catch( Throwable ex)
+		catch (Throwable ex)
 		{
 			throw new OpenEditException(ex);
 		}
@@ -442,11 +425,30 @@ public class ElasticNodeManager extends NodeManager implements Shutdownable
 		error.setError(inMessage);
 		error.setSearchType(inSearchType);
 		getMappingErrors().add(error);
-		
+
 	}
+
 	public boolean hasMappingErrors()
 	{
 		return !getMappingErrors().isEmpty();
 	}
-	
+
+	public void initializeCatalog(String inCatalogId)
+	{
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+		List sorted = archive.listSearchTypes();
+		for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+		{
+			String type = (String) iterator.next();
+			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "type");
+			if(!searcher.isLazyInit()){
+				searcher.reIndexAll();	
+				
+				
+			}
+
+		}
+
+	}
+
 }

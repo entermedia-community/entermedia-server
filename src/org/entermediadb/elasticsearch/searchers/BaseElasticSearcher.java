@@ -97,6 +97,10 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
 	
+	
+	
+	
+
 	public boolean isRefreshSaves()
 	{
 		return fieldRefreshSaves;
@@ -383,7 +387,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		
 		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(indexid);
 		IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
-		
+		boolean createdIndex = false;
 		if (!res.isExists())
 		{
 			try
@@ -409,6 +413,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					log.info("index created " + indexid);
 				}
+				createdIndex = true;
+
 			}
 			catch (RemoteTransportException exists)
 			{
@@ -444,6 +450,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		if (rres.getFailedShards() > 0)
 		{
 			log.error("Could not refresh shards");
+		}
+		if(createdIndex){
+			getElasticNodeManager().initializeCatalog(getCatalogId());
 		}
 		return runmapping;
 	}
@@ -1819,6 +1828,13 @@ private String getIndexNameFromAliasName(final String aliasName) {
             
 
     return null;
+}
+
+@Override
+public boolean isLazyInit()
+{
+	// TODO Auto-generated method stub
+	return false;
 }
 	
 	
