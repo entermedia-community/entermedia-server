@@ -24,7 +24,7 @@
 		<login-path>/system/components/authentication/logon.html</login-path>
 	</path-action>
 	
-	<property name="oe.edit.directedits">true</property>	
+	<property name="oe_edit_directedits">true</property>	
 	<property name="showadmintoolbar">true</property>	
 
 	<generator name="velocityGenerator" mimetypes="text/html"/>

@@ -191,7 +191,7 @@ public class WorkFlow
 		loadLevelCount();
 		if( getLevelCount() == 0)
 		{
-			if( inUser.hasPermission("oe.edit.approves") )
+			if( inUser.hasPermission("oe_edit_approves") )
 			{
 				return true;
 			}
@@ -218,7 +218,7 @@ public class WorkFlow
 		int level = 0;
 		for (int i = 1; i < getLevelCount()+1; i++)
 		{
-			if( inUser.hasPermission("oe.edit.approve.level" + i) )
+			if( inUser.hasPermission("oe_edit_approve_level" + i) )
 			{
 				level = i;
 			}

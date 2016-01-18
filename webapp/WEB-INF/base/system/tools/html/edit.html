@@ -23,7 +23,7 @@ $context.putPageValue("parentName",$parentName )
 	<td style="padding-left: 4px; padding-right: 4px;"><img src="$home/system/images/toolbar/vbr.gif" width="2" height="19" /></td>
 	<td> <input type="text" size="35" name="message" class="oemessageinput" value="reason for your change" onclick="if ( value=='reason for your change') value='';" /> </td>
 	<td style="padding-left: 4px; padding-right: 4px;"><img src="$home/system/images/toolbar/vbr.gif" width="2" height="19" /></td>
-#if( $user.hasPermission("oe.edit.editor.advanced") )
+#if( $user.hasPermission("oe_edit_editor_advanced") )
 	<td align="left" >
 	<div class="imagebutton" id="showCss" style="padding-top: 3px;"><a href="#" onclick="window.open('$home/system/tools/text/edit.html?editPath=/layout/_styles.css&origURL=$origURL&type=text&parentName=$parentName', 'texteditor','alwaysRaised=yes,menubar=no,resizable=yes,top=100,left=130,width=830,height=550' );return false;"><img border=0 class="image" src="$home/system/images/toolbar/css.gif" alt="_styles.css" title="[[Edit CSS]]"></a></div>
 	</td> 
