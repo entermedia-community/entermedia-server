@@ -518,7 +518,7 @@ public class imagemagickCreator extends BaseImageCreator
 		}
 		else if( !usepng )
 		{
-			if( "eps".equals(ext) || "pdf".equals(ext) )
+			if( "eps".equals(ext) || "pdf".equals(ext) || "ai".equals( ext) )
 			{
 				setValue("colorspace", "sRGB", inStructions, com);
 			}
