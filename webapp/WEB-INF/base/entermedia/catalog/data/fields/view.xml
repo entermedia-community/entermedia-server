@@ -6,7 +6,7 @@
   <property id="systemdefined" type="boolean" editable="true" index="true" stored="true">System Defined</property>
   <property id="moduleid"  index="true" stored="true" legacyid="module">Module</property>
   <property id="ordering" type="number"  editable="true" index="true" stored="true">Ordering</property>
-  <property id="rendertype"  index="true" stored="true">Renderer Type</property>
+	<property id="rendertype" type="list"  editable="true"  index="true" stored="true" >Render Type</property>
   <property id="rendertable"  index="true" stored="true">Table</property>
   <property id="renderexternalid"  index="true" stored="true">Table External ID</property>
   <property id="rendercustomview"  index="true" stored="true">Renderer Custom View</property>
