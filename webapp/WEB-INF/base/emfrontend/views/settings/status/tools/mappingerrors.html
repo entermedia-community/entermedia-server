@@ -1,0 +1,20 @@
+
+#set($nm = $mediaarchive.getNodeManager())
+
+$nm
+
+#foreach($error in $nm.getMappingErrors())
+
+<div class="well">
+<p>
+$error.getSearchType()
+</p>
+<p>
+$error.getError()
+</p>
+
+</div>
+
+
+#end
+
