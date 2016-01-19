@@ -1602,7 +1602,7 @@ public class DataEditModule extends BaseMediaModule
 		{
 			throw new OpenEditException("Module not defined");
 		}
-		query.addMatches("module",module);
+		query.addMatches("moduleid",module);
 		query.addNot("systemdefined","true");
 		query.addSortBy("ordering");
 

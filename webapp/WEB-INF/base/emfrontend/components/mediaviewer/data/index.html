@@ -1,0 +1,77 @@
+#set($hitssessionid = $hits.sessionId )
+
+<div id="data" class="row" >
+	<div class="asset-data col-sm-6">
+			#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
+			#foreach( $viewpath in $views.keySet() )
+			 
+				#set( $target = $views.get($viewpath) )
+				 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+			                       #if("$!permissionvalue" == "" || $permissionvalue == true)
+			     
+					#if( !$target.rendertable )
+						##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+						$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+						$context.putPageValue("data",$asset)	
+						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+						
+						$context.putPageValue("view",$viewpath)
+						<h3>$target</h3>
+						$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+					#end
+				#end
+                #set($permissionvalue = "")
+				
+			#end
+	</div>		
+	<div class="asset-data col-sm-6">						
+			#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
+						
+			<div class="" style="padding: 0 0 20px 0">
+				#set( $libraries = $asset.getLibraries())
+				#if( $libraries.size() > 0)
+    				<h3>Libraries</h3>
+    					<p style="line-height: 25px;">
+            				#foreach($library in $libraries)
+            					  
+            					 #set( $ldata = $searcherManager.getData($catalogid,"library",$library) )
+            					 #set( $division = $searcherManager.getData($catalogid,"division",$ldata.division ) )
+            					 
+            					<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="">$division / $ldata</a>
+            			
+            				#end
+    				</p>
+				#end
+				#if( $asset.hasKeywords() )
+				<h3>Related Tags</h3>
+					<p style="line-height: 25px;">
+						#foreach ($tag in $asset.keywords)
+							<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+						#end
+					</p>
+				#end	
+				<h3>Categories</h3>
+					<p style="line-height: 25px;">
+					#foreach ($category in $asset.categories)
+						<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
+					#end
+					</p>
+			</div>	
+			#end
+				
+				#if ($canviewslideshow)
+				
+    				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+    				#if( $type != "video" )
+    					<div>	
+    							<a class="slideshow emdialog" href="$home$link" target="_parent"
+    								pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
+    								title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
+    					</div>
+    				#end
+					
+				
+				#end		
+			
+	</div>		
+</div>

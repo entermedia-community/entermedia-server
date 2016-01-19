@@ -87,7 +87,14 @@
     	#else
     		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
     	#end
-    	<div id="mp-asset-info" style="display: none;">
+    	<div id="mp-asset-info"  class="row">
+    	
+	    	#if ( $canviewvoting )
+			    <div id="assetVoteCount" class="col-sm-6" >
+			        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+			    </div>
+			#end
+    		<div class="col-sm-6">
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
     	    #if ($attachmentcount && $attachmentcount.size() > 1)
     	   <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">$attachmentcount.size()<span>&nbsp;</span></a>
@@ -99,6 +106,7 @@
             <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments">$comments.size()<span>&nbsp;</span></a>
             #end
             <!-- a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">19<span>&nbsp;</span></a -->
+            </div>
        
         </div>
     </div>

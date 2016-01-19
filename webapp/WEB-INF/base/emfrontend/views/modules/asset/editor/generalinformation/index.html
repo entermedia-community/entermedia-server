@@ -6,6 +6,7 @@
 
 <div id="de-metadata">
 #foreach( $viewpath in $views.keySet() )
+ 
 	#set( $target = $views.get($viewpath) )
 	 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
                        #if("$!permissionvalue" == "" || $permissionvalue == true)

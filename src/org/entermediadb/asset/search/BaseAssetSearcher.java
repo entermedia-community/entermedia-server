@@ -527,4 +527,10 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 
 		return null;
 	}
+	
+	public boolean initialize()
+	{
+		// TODO Auto-generated method stub
+		return getDataConnector().initialize();
+	}
 }

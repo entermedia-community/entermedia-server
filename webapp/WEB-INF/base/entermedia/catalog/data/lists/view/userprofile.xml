@@ -1,6 +1,6 @@
 <properties>
 	
-	<property id="userprofileedit" module="userprofile" systemdefined="true" byassettype="false">Edit</property>
+	<property id="userprofileedit" moduleid="userprofile" systemdefined="true" byassettype="false">Edit</property>
 	
 	
 	

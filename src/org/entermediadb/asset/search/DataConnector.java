@@ -65,5 +65,6 @@ public interface DataConnector
 	public Data loadData(Data inHit);
 	public HitTracker loadHits(WebPageRequest inReq);
 	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker);
+	public boolean initialize();
 
 }

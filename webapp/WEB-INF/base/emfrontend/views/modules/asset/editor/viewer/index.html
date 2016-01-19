@@ -18,10 +18,14 @@
                     $pages.include("$apphome/components/mediaviewer/player/index.html", $context)
                 </div>
                 
-                <div id="asset-viewer-status">
-                    $pages.include("$apphome/components/mediaviewer/details/status.html", $context)
-                </div>
+##                <div id="asset-viewer-data">
+ ##                   $pages.include("$apphome/components/mediaviewer/details/status.html", $context)
+  ##              </div>
            
+                <div id="media-data-table" class="table" >
+                    $pages.include("$apphome/components/mediaviewer/data/index.html", $context)
+                </div>
+
             #end
         
     </div>

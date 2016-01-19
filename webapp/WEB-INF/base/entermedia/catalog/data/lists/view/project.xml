@@ -1,11 +1,11 @@
 <properties>
 	
-	<property id="projectgeneral" module="project" systemdefined="false" byassettype="false" ordering="01">Details</property>
+	<property id="projectgeneral" moduleid="project" systemdefined="false" byassettype="false" ordering="01">Details</property>
 	
 	
-	  <property id="projectadvancedsearch" module="project" systemdefined="true" byassettype="false">Advanced Search</property>
-  <property id="projectresultstable" module="project" systemdefined="true" byassettype="false">Results Table</property>
-  <property id="projectbatchedit" module="project" systemdefined="true" byassettype="false">Batch Edit</property>
+	  <property id="projectadvancedsearch" moduleid="project" systemdefined="true" byassettype="false">Advanced Search</property>
+  <property id="projectresultstable" moduleid="project" systemdefined="true" byassettype="false">Results Table</property>
+  <property id="projectbatchedit" moduleid="project" systemdefined="true" byassettype="false">Batch Edit</property>
 	
 	
 	

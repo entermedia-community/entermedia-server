@@ -346,7 +346,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			String searchtype = (String) iterator.next();
 			Searcher child = getSearcherManager().getSearcher(getCatalogId(), searchtype);
-			child.reloadSettings();
+			//child.reloadSettings();
 		}
 		
 		XContentBuilder source = buildMapping();
@@ -407,7 +407,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		
 		if (pres.isAcknowledged())
 		{
-			log.info("mapping applied " + getSearchType());
+			//log.info("mapping applied " + getSearchType());
 			admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 		}
 		

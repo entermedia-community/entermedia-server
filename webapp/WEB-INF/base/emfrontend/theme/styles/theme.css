@@ -317,6 +317,11 @@ h1, h2 {
     color: #2790B0;
 }
 
+h3
+{
+	font-size: 1em;
+	color: gray;
+}
 /* MAIN STYLES */
 
 #emcontainer .emdatafieldvalue input {
@@ -1421,45 +1426,36 @@ small {
 #asset-info {
     padding: 0 20px;
 }
-#asset-data {
-    display: table;
-    padding: 5px 20px 20px 20px;
+.asset-data {
     /* background: url('../images/top-shadow.png') top center repeat-x; */
-    width: 594px;
 }
-#asset-data ul, #preview-pane ul {
+.asset-data ul, #preview-pane ul {
     padding: 0;
-    float: left;
     font-size: 12px;
     line-height: 18px;
 }
-#asset-data ul li, #preview-pane ul li {
+.asset-data ul li, #preview-pane ul li {
     margin: 0 0 10px 0;
     padding: 0;
     list-style: none;
 }
-#asset-data ul li span:first-child, #preview-pane ul li span:first-child {
-    font-weight: bold;
+.asset-data ul li span:first-child, #preview-pane ul li span:first-child {
     display: block;
+    color: gray;
     margin-bottom: 0;
+	font-size: 1.1em;
 }
-#asset-data .col1 {
-    display: table-cell;
-    vertical-align: top;
-    padding-right: 20px;
+.asset-data h3
+{
+	color: white;
+	padding: 4px;
+	background-color: gray;
+	
 }
-#asset-data .col2 {
-    display: table-cell;
-    width: 30%;
-    vertical-align: top;
-}
-#data {
-    max-height: 250px;
-    border-bottom: 1px solid #ccc;
-    overflow: hidden;
-    width: 100%;
-    background: url('../images/bottom-shadow.png') bottom center repeat-x;
-    position: relative;
+.asset-data ul li .data
+{
+    font-weight: bold;
+	font-size: 1.3em;
 }
 #asset-assettype-default-general {
     margin-right: 20px;
@@ -5664,9 +5660,8 @@ ul.filters-sidebar li a:hover
 
 /* VOTING */
 #assetVoteCount {
-    display: inline-block;
-    position: relative;
-    top: 4px;
+    color: white;
+    text-align: left;
 }
 #asset-viewer-status {
     background: #f7f7f7;
@@ -6785,9 +6780,12 @@ select.smalldropdown {
 #createmediapanel .btnthumbnail {
 	background-color: transparent;
     border: 1px solid transparent;
-    min-height: 300px;
+    min-height: 270px;
+    display:  block;
+    padding: 10px;
+    margin: 10px;
 }
-#createmediapanel .btnthumbnail:hover {
+#createmediapanel a.btnthumbnail:hover {
     border: 1px solid #eee;
     border-radius: 8px;
     background-color: #C9E8F2;

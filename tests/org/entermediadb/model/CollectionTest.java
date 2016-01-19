@@ -16,7 +16,8 @@ public class CollectionTest extends BaseEnterMediaTest
 {
 	public void testCollectionEdit() throws Exception
 	{
-		getMediaArchive().getSearcher("librarycollectionasset").getAllHits();
+		//getMediaArchive().getSearcher("asset").getAllHits();
+		//getMediaArchive().getSearcher("librarycollectionasset").getAllHits();
 		
 		Searcher csearcher  = getMediaArchive().getSearcher("librarycollection");
 		Data collection = csearcher.createNewData();
@@ -27,7 +28,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		ProjectManager manager = (ProjectManager)getFixture().getModuleManager().getBean(getMediaArchive().getCatalogId(),"projectManager");
 
 		Asset found = getMediaArchive().getAsset("101");
-		
+		assertNotNull(found);
 		ListHitTracker tracker = new ListHitTracker();
 		tracker.add(found);
 		manager.addAssetToCollection(getMediaArchive(), collection.getId(), tracker);

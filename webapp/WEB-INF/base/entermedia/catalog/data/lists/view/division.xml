@@ -1,11 +1,11 @@
 <properties>
 	
-	<property id="divisiongeneral" module="division" systemdefined="false" byassettype="false" ordering="01">Details</property>
+	<property id="divisiongeneral" moduleid="division" systemdefined="false" byassettype="false" ordering="01">Details</property>
 	
 	
-	  <property id="divisionadvancedsearch" module="division" systemdefined="true" byassettype="false">Advanced Search</property>
-  <property id="divisionresultstable" module="division" systemdefined="true" byassettype="false">Results Table</property>
-  <property id="divisionbatchedit" module="division" systemdefined="true" byassettype="false">Batch Edit</property>
+	  <property id="divisionadvancedsearch" moduleid="division" systemdefined="true" byassettype="false">Advanced Search</property>
+  <property id="divisionresultstable" moduleid="division" systemdefined="true" byassettype="false">Results Table</property>
+  <property id="divisionbatchedit" moduleid="division" systemdefined="true" byassettype="false">Batch Edit</property>
 	
 	
 	
