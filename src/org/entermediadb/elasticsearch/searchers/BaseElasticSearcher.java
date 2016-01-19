@@ -399,8 +399,9 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	protected void putMapping(AdminClient admin, String indexid, XContentBuilder source)
 	{
-		PutMappingRequest req = Requests.putMappingRequest(indexid).type(getSearchType());
+		PutMappingRequest req = Requests.putMappingRequest(indexid).updateAllTypes(true).type(getSearchType());
 		req = req.source(source);
+	
 		req.validate();
 		PutMappingResponse pres = admin.indices().putMapping(req).actionGet();
 		
