@@ -1186,28 +1186,36 @@ public class BaseElasticSearcher extends BaseSearcher
 	
 	protected void populateDoc(XContentBuilder inContent, Data inData, PropertyDetails inDetails){
 		
-		Map props = inData.getProperties();
-		HashSet everything = new HashSet(props.keySet());
-		everything.add("id");
-		everything.add("name");
-		everything.add("sourcepath");
-		for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
+		
+		
+//		Map props = inData.getProperties();
+//		HashSet everything = new HashSet(props.keySet());
+//		everything.add("id");
+//		everything.add("name");
+//		everything.add("sourcepath");
+//		for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
+//		{
+//			PropertyDetail detail = (PropertyDetail) iterator.next();
+//			everything.add(detail.getId());// We need this to handle booleans
+//											// and potentially other things.
+//
+//		}
+//		everything.remove(".version"); // is this correct?
+		for (Iterator iterator = inDetails.getDetails().iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			everything.add(detail.getId());// We need this to handle booleans
-											// and potentially other things.
+			if (!detail.isIndex())
+			{
+				continue;
+			}
 
-		}
-		everything.remove(".version"); // is this correct?
-		for (Iterator iterator = everything.iterator(); iterator.hasNext();)
-		{
-			String key = (String) iterator.next();
+			String key = detail.getId();
 			String value = inData.get(key);
 			
-			if(key.contains(".")){
-				log.info("Warning - data id : " + inData.getId() + " of type " + getSearchType() + " contained a . in field " + key);
-				key = key.replace(".", "_");
-			}
+//			if(key.contains(".")){
+//				log.info("Warning - data id : " + inData.getId() + " of type " + getSearchType() + " contained a . in field " + key);
+//				key = key.replace(".", "_");
+//			}
 			
 			if (value != null && value.trim().length() == 0)
 			{
@@ -1225,13 +1233,6 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 
-				PropertyDetail detail = (PropertyDetail) inDetails.getDetail(key);
-				if (detail != null && !detail.isIndex())
-				{
-					// inContent.field(key, value);
-
-					continue;
-				}
 				if (detail != null && detail.isDate())
 				{
 					if (value != null)
