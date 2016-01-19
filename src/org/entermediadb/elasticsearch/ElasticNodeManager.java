@@ -452,14 +452,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			getConnectedCatalogIds().add(inCatalogId);
 			prepareIndex(inCatalogId);
-			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-			List sorted = archive.listSearchTypes();
-			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
-			{
-				String type = (String) iterator.next();
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
-				searcher.initialize();	
-			}
+//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+//			List sorted = archive.listSearchTypes();
+//			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+//			{
+//				String type = (String) iterator.next();
+//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+//				searcher.initialize();	
+//			}
 			
 		}
 		return true;//what does this mean?

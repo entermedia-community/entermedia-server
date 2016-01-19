@@ -19,7 +19,7 @@ public class RelatedKeywordModule extends BaseModule
 
 	protected SearcherManager getSearcherManager()
 	{
-		return (SearcherManager) getBeanFactory().getBean("searcherManager");
+		return (SearcherManager) getBeanLoader().getBean("searcherManager");
 	}
 
 	public RelatedKeywordSearcher getSuggestionsSearcher(WebPageRequest inReq)

@@ -85,7 +85,7 @@ public class AdminModule extends BaseModule
 
 	public SearcherManager getSearcherManager()
 	{
-		return (SearcherManager) getBeanFactory().getBean("searcherManager");
+		return (SearcherManager) getBeanLoader().getBean("searcherManager");
 	}
 
 	/**

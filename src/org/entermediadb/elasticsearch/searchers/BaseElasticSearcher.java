@@ -293,15 +293,12 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{			
-			
 			if( getAllHits().size() == 0 )
 			{
 				reIndexAll();
 			} else{
 				putMappings();
 			}
-			
-			
 			log.info(getCatalogId() + " Node is ready for " + getSearchType());
 		}
 		catch (Exception ex)

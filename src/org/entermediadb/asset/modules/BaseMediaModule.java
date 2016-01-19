@@ -177,7 +177,7 @@ public class BaseMediaModule extends BaseModule
 	protected String resolveCatalogId(WebPageRequest inReq)
 	{
 		String catalogId = null;//inReq.getRequestParameter("catalogid");
-		if (catalogId == null || catalogId.startsWith("$"))
+		if (catalogId == null)
 		{
 			catalogId = inReq.findValue("catalogid");
 		}
