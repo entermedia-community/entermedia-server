@@ -4,7 +4,7 @@
   <property id="name" editable="true" index="true" stored="true">Name</property>
   <property id="folder" editable="true" index="true" stored="true">Folder</property>
   <property id="ordering" type="number" editable="true" index="true" stored="true">Ordering</property>
-  <property id="module" editable="true" index="true" stored="true">Module</property>
+  <property id="moduleid" editable="true" index="true" stored="true" legacyid="module">Module</property>
   <property id="useajax" editable="true" index="true" stored="true" type="boolean">Use Ajax</property>
   <property id="multiedit" editable="true" type="boolean" index="true" stored="true">Multi-Edit</property>
 </properties>

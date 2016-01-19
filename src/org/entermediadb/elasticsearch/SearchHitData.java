@@ -10,16 +10,30 @@ import org.elasticsearch.search.SearchHitField;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData
 {
 	protected SearchHit fieldSearchHit;
-
-	public SearchHitData(SearchHit inDoc)
+	protected PropertyDetails fieldPropertyDetails;
+	
+	public PropertyDetails getPropertyDetails()
 	{
-		setSearchHit(inDoc);
+		return fieldPropertyDetails;
+	}
+
+	public void setPropertyDetails(PropertyDetails inPropertyDetails)
+	{
+		fieldPropertyDetails = inPropertyDetails;
+	}
+
+	public SearchHitData(SearchHit inHit, PropertyDetails inPropertyDetails)
+	{
+		setSearchHit(inHit);
 		setId(getSearchHit().getId());
+		setPropertyDetails(inPropertyDetails);
 	}
 
 	public SearchHit getSearchHit()
@@ -68,6 +82,18 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		if( value == null)
 		{
 			value = getSearchHit().getSource().get(inId);
+		}
+		if( value == null)
+		{
+			PropertyDetail detail = getPropertyDetails().getDetail(inId);
+			if( detail != null)
+			{
+				String legacy = detail.get("legacyid");
+				if( legacy != null)
+				{
+					value = get(legacy);
+				}
+			}
 		}
 		if (value != null)
 		{

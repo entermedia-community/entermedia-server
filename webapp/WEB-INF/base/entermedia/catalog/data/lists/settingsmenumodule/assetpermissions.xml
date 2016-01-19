@@ -2,7 +2,7 @@
 
 <properties>
 <!-- 
-  <property id="permissions" module="asset" type="toplevel"  path="/views/settings/datatypes/default/permissions.html" ordering="20">Permissions</property>
+  <property id="permissions" moduleid="asset" menulevel="toplevel"  path="/views/settings/datatypes/default/permissions.html" ordering="20">Permissions</property>
    -->
   
 </properties>

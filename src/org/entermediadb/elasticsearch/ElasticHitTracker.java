@@ -150,7 +150,7 @@ public class ElasticHitTracker extends HitTracker
 			throw new OpenEditException("row request falls beyond one page of results");
 		}
 		SearchHit hit = hits[indexlocation];
-		SearchHitData data = new SearchHitData(hit);
+		SearchHitData data = new SearchHitData(hit, getSearcher().getPropertyDetails() );
 //		if (searchResponse.getVersion() > -1)
 //		{
 //			data.setProperty(".version", String.valueOf(searchResponse.getVersion()));

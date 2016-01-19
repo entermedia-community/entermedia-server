@@ -10,7 +10,7 @@
 
 #set( $tab = $context.findValue("assettab") )
 #set( $searcher = $searcherManager.getSearcher($catalogid,"detaileditormenu") )
-#set( $query = $searcher.createSearchQuery().append("module",$moduleid) )
+#set( $query = $searcher.createSearchQuery().append("moduleid",$moduleid) )
 #set( $nil = $query.addSortBy("ordering") ) 
 #set( $links = $searcher.cachedSearch($context,$query) )
 

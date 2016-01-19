@@ -720,9 +720,7 @@
  -->
 
 	<bean id="LogSearchModule" 
-		class="org.entermediadb.logger.LogSearchModule" abstract="false"
-		 lazy-init="default" autowire="default"
-		dependency-check="default">
+		class="org.entermediadb.logger.LogSearchModule"		>
 		
 	</bean>
 <!-- 	

@@ -2,6 +2,6 @@
 
 <properties>
 
-  <property id="modules" type="toplevel" parentid="modules" module="system" path="/views/settings/modules/setup/index.html" ordering="030">Modules</property>
+  <property id="modules" menulevel="toplevel" parentid="modules" moduleid="system" path="/views/settings/modules/setup/index.html" ordering="030">Modules</property>
 </properties>
 

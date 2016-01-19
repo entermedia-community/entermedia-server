@@ -254,7 +254,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 {
 	String status = inTask.get("status");
 	
-	String type = inPreset.get("type"); //rhozet, ffmpeg, etc
+	String type = inPreset.get("transcoderid"); //rhozet, ffmpeg, etc
 	ConversionManager manager = inArchive.getTranscodeTools().getManagerByTranscoder(type);
 	//log.debug("Converting with type: ${type} using ${creator.class} with status: ${status}");
 	

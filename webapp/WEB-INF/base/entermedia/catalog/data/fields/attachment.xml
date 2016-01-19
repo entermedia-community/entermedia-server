@@ -9,17 +9,14 @@
  	<property id="parentsourcepath" index="true" stored="true">Parent Source Path</property>
  	<property id="isfolder" index="true" type="boolean" stored="true" legacy="folder">Is Folder</property>
  
-    <property id="bitspersample" externalid="BitsPerSample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>
 	<property id="cammaker" externalid="Make" index="true" stored="true" datatype="text">Camera Maker</property>
 	<property id="cammodel" externalid="Model" index="true" stored="true" datatype="text">Camera Model</property>
 	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text">Artist</property>
-	<property id="comment" externalid="Comment,UserComment" index="true" stored="true" datatype="text">Comment</property>
 	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text">Contributor</property>
 	<property id="creator" externalid="Creator" index="true" stored="true" datatype="text">Creator</property>
 	<property id="source" externalid="Source" index="true" stored="true" datatype="text">Source</property>
 	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text">ISO</property>
-	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="Orientation">Image Rotation</property>
 	<property id="author" externalid="Author" index="true" stored="true" datatype="text">Author</property>
 	<property id="localpath" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
 	<property id="fileformat" index="true" stored="true" viewtype="list" editable="true" externalid="FileType">File Format</property>
