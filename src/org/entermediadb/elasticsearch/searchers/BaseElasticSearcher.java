@@ -296,8 +296,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			if( getAllHits().size() == 0 )
 			{
 				reIndexAll();
-			} else{
-				putMappings();
+//			} else{
+//				putMappings();
 			}
 			log.info(getCatalogId() + " Node is ready for " + getSearchType());
 		}

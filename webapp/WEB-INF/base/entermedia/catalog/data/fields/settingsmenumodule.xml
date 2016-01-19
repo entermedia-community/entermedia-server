@@ -6,4 +6,5 @@
 	<property id="parentid" index="true" stored="true" editable="true">Parent</property>
 	<property id="moduleid" index="true" stored="true" editable="true" legacyid="module">Module</property>
 	<property id="sublabel" index="true" stored="true" editable="true">Label Used on Sub</property>
+	<property id="path" index="true" stored="true" editable="true">Path</property>
 </properties>
