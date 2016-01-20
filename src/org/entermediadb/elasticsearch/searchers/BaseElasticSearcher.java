@@ -221,12 +221,12 @@ public class BaseElasticSearcher extends BaseSearcher
 			hits.setSearchQuery(inQuery);
 
 
-			if (log.isDebugEnabled())
-			//if( true )
+			//if (log.isDebugEnabled())
+			if( true )
 			{
 				json = search.toString();
 				long end = System.currentTimeMillis() - start;
-				log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + hits.size() + " hits in: " + (double) end / 1000D + " seconds]" );
+				log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + hits.size() + " hits in: " + (double) end / 1000D + " seconds]\n q=" + inQuery.toQuery() );
 			}
 			else
 			{

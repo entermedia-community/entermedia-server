@@ -317,11 +317,6 @@ h1, h2 {
     color: #2790B0;
 }
 
-h3
-{
-	font-size: 1em;
-	color: gray;
-}
 /* MAIN STYLES */
 
 #emcontainer .emdatafieldvalue input {
@@ -1447,9 +1442,10 @@ small {
 }
 .asset-data h3
 {
-	color: white;
-	padding: 4px;
-	background-color: gray;
+	color: #666;
+	padding: 6px;
+	font-weight: bold;
+	background-color: #eee;
 	
 }
 .asset-data ul li .data

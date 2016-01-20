@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.queryparser.flexible.standard.QueryParserUtil;
+import org.apache.lucene.queryparser.xml.FilterBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -96,10 +98,17 @@ public class ElasticHitTracker extends HitTracker
 			if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
 			{
 				String[] fieldSelected = (String[])fieldSelections.toArray(new String[fieldSelections.size()]);
-				QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
-				//FilterBuilder filter = FilterBuilders.idsFilter().ids(fieldSelected);
-				//andFilter.add(filter);
-				getSearcheRequestBuilder().setPostFilter(built);
+				BoolQueryBuilder bool = QueryBuilders.boolQuery();
+//				for (int i = 0; i < fieldSelected.length; i++)
+//				{
+//					bool.filter(QueryBuilders.termQuery("_id",fieldSelected[i]));
+//				}
+				QueryBuilder ids = QueryBuilders.termsQuery("_id", fieldSelections);
+//				QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
+//				
+//				FilterBuilder filter = ;//FilterBuilders.idsFilter().ids(fieldSelected);
+//				andFilter.add(filter);
+				getSearcheRequestBuilder().setPostFilter(ids);
 			}
 			else
 			{
