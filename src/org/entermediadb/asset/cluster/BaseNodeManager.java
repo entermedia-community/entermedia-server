@@ -22,7 +22,8 @@ public class BaseNodeManager implements NodeManager
 	protected SearcherManager fieldSearcherManager;
 	protected WebServer fieldWebServer;
 	protected Set fieldConnectedCatalogIds;
-	
+	protected Set fieldShowLogs;
+
 	public Set getConnectedCatalogIds()
 	{
 		if (fieldConnectedCatalogIds == null)
@@ -130,4 +131,29 @@ public class BaseNodeManager implements NodeManager
 		// TODO Auto-generated method stub
 		return false;
 	}	
+	public boolean getShowSearchLogs(String inCatalogId)
+	{
+		return getShowLogs().contains(inCatalogId);
+	}
+	protected Set getShowLogs()
+	{
+		if (fieldShowLogs == null)
+		{
+			fieldShowLogs = new HashSet();
+		}
+		return fieldShowLogs;
+	}
+	public void setShowSearchLogs(String inCatalogId, boolean inValue)
+	{
+		if( inValue )
+		{
+			getShowLogs().add(inCatalogId);
+		}
+		else
+		{
+			getShowLogs().remove(inCatalogId);
+		}
+	}
+
+
 }

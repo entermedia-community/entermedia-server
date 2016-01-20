@@ -25,5 +25,18 @@
 <a class="btn" href="./knapsack.html">[[View Snapshots]]</a>
 
 
-
+<p>
 <a class="btn" href="mappingerrors.html">[[View Mapping Errors]]</a>
+</p>
+
+
+
+<p>
+#set($nm = $mediaarchive.getNodeManager())
+<h2>Change Log Level</h2>
+#if($nm.getShowSearchLogs($catalogid) )
+<a class="btn" href="togglesearchlogs.html">[[Ignore Searches]]</a>
+#else
+<a class="btn" href="togglesearchlogs.html">[[Log All Searches]]</a>
+#end
+</p>

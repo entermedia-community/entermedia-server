@@ -15,9 +15,9 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
-public class ffmpegimageTranscoder extends BaseTranscoder
+public class FfmpegImageTranscoder extends BaseTranscoder
 {
-	private static final Log log = LogFactory.getLog(ffmpegimageTranscoder.class);
+	private static final Log log = LogFactory.getLog(FfmpegImageTranscoder.class);
 	protected String fieldCommandName = "avconv"; // ffmpeg -itsoffset 10
 
 	// -deinterlace -i $TRACK -y

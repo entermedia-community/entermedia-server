@@ -184,6 +184,7 @@ class ConvertRunner implements Runnable
 							realtask.setProperty("externalid", result.get("externalid"));
 							String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 							realtask.setProperty("completed",completed);
+							realtask.setProperty("errordetails","");
 							tasksearcher.saveData(realtask, user);
 							//log.info("Marked " + hit.getSourcePath() +  " complete");
 							

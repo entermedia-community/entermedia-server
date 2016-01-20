@@ -17,9 +17,9 @@ import org.openedit.util.PathUtilities;
 
 //apt-get install libavcodec-extra-53
 
-public class ffmpegVideoTranscoder extends BaseTranscoder
+public class FfmpegVideoTranscoder extends BaseTranscoder
 {
-	private static final Log log = LogFactory.getLog(ffmpegVideoTranscoder.class);
+	private static final Log log = LogFactory.getLog(FfmpegVideoTranscoder.class);
 
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
@@ -64,7 +64,7 @@ public class ffmpegVideoTranscoder extends BaseTranscoder
 
 			ArrayList<String> comm = new ArrayList<String>();
 			comm.add("-i");
-			comm.add(inStructions.getOutputFile().getAbsolutePath());
+			comm.add(inputpage.getAbsolutePath());
 			comm.add("-y");
 			comm.add("-strict");
 			comm.add("experimental");

@@ -9,6 +9,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.joda.time.convert.ConverterManager;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.manage.PageManager;
@@ -292,7 +293,15 @@ public class TranscodeTools
 		ConversionManager handler = getManagerByFileFormat(inOutputType);
 		inCreateProperties.put("outputextension", inOutputType);
 
-		return handler.createOutputIfNeeded(inCreateProperties,inSourcePath);
+		ConvertResult result = handler.createOutputIfNeeded(inCreateProperties,inSourcePath);
+		if( result.isComplete() )
+		{
+			if( result.getOutput() == null)
+			{
+				throw new OpenEditException("Output not found " + inSourcePath);
+			}
+		}
+		return result;
 	}
 //	public ConvertInstructions createInstructions(Asset inAsset,Data inPreset,String inOutputType)
 //	{

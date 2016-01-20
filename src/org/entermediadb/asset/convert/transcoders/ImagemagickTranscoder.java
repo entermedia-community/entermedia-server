@@ -40,15 +40,12 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		return fieldPathToCMYKProfile;
 	}
-
-	
-	
 	
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
-
+		result.setOutput(inStructions.getOutputFile());
 		MediaArchive archive = inStructions.getMediaArchive();
 		Asset asset = inStructions.getAsset();
 		ContentItem inOutFile = inStructions.getOutputFile();

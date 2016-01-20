@@ -1729,26 +1729,44 @@
 	</bean>
 	
 
-	 <bean id="ffmpegConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
+	<bean id="ffmpegConversionManager" class="org.entermediadb.asset.convert.managers.VideoConversionManager" scope="prototype">
 		<property name="mediaTranscoder">
 			<ref bean="ffmpegTranscoder" />
 		</property>
-	
 	</bean>
+	<bean id="ffmpegimageConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
+		<property name="mediaTranscoder">
+			<ref bean="ffmpegimageTranscoder" />
+		</property>
+	</bean>
+	
 	
 	 <bean id="imagemagickConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
 		<property name="mediaTranscoder">
 			<ref bean="imagemagickTranscoder" />
 		</property>
-		<list>
+		<property name="inputLoaders">
+			<list>
 				<ref bean="imageCacheLoader" />
-		</list>
+			</list>
+		</property>
 	</bean>
+
 	<bean id="imageCacheLoader" class="org.entermediadb.asset.convert.inputloaders.ImageCacheLoader" >
 		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
 	
 	<bean id="imagemagickTranscoder" class="org.entermediadb.asset.convert.transcoders.ImagemagickTranscoder" >
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
+
+	<bean id="ffmpegimageTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegImageTranscoder" >
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
+
+	<bean id="ffmpegTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegVideoTranscoder" >
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>

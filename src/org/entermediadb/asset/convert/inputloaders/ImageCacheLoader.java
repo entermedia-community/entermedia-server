@@ -9,9 +9,9 @@ import org.entermediadb.asset.convert.InputLoader;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 
-public class ImagecacheLoader implements InputLoader
+public class ImageCacheLoader implements InputLoader
 {
-	private static final Log log = LogFactory.getLog(ImagecacheLoader.class);
+	private static final Log log = LogFactory.getLog(ImageCacheLoader.class);
 
 	@Override
 	public ContentItem loadInput(ConvertInstructions inStructions)
@@ -59,10 +59,14 @@ public class ImagecacheLoader implements InputLoader
 		if( (input == null || input.getLength() < 2) && inStructions.getPageNumber() == 1 )
 		{
 			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb." + cachetype);
+			if( input != null && input.getLength() < 2 )
+			{
+				//TODO: Save the fact that we used a cached file
+				return input;
+			}
 		}
-		if( input != null && input.getLength() < 2 )
+		else
 		{
-			//TODO: Save the fact that we used a cached file
 			return input;
 		}
 		return null;

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -256,5 +257,18 @@ public class MediaAdminModule extends BaseMediaModule
 		inReq.putPageValue("tables", types);
 
 	}
+
+	public void toggleSearchLogs(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		if( archive.getNodeManager().getShowSearchLogs(archive.getCatalogId()))
+		{
+			archive.getNodeManager().setShowSearchLogs(archive.getCatalogId(),false);
+		}
+		else
+		{
+			archive.getNodeManager().setShowSearchLogs(archive.getCatalogId(),true);
+		}
+	}	
 	
 }
