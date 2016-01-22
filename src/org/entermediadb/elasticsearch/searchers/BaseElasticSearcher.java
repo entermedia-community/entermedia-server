@@ -337,11 +337,12 @@ public class BaseElasticSearcher extends BaseSearcher
 //			log.error(ex);
 //		}
 //	}
-	protected void putMappings()
+	public void putMappings(String indexid)
 	{
 		AdminClient admin = getElasticNodeManager().getClient().admin();
-		String indexid = toId(getCatalogId());
-
+		if(indexid == null){
+			 indexid = toId(getCatalogId());
+		}
 		List dependson = getPropertyDetails().getDependsOn();
 		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
 		{
@@ -1499,7 +1500,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			setReIndexing(true);
-			putMappings(); //We can only try to put mapping. If this failes then they will
+			putMappings(toId(getCatalogId())); //We can only try to put mapping. If this failes then they will
 			//need to export their data and factory reset the fields 
 			//deleteAll(null); //This only deleted the index
 		}
@@ -1515,7 +1516,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
-		putMappings();
+		putMappings(toId(getCatalogId()));
 	}
 	
 	@Override
@@ -1523,7 +1524,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
-		putMappings();
+		putMappings(toId(getCatalogId()));
 		
 		
 	}

@@ -12,11 +12,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,24 +32,39 @@ import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotR
 import org.elasticsearch.action.admin.indices.close.CloseIndexAction;
 import org.elasticsearch.action.admin.indices.close.CloseIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.bulk.BulkProcessor;
+import org.elasticsearch.action.bulk.BulkProcessor.Listener;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
+import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
+import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
@@ -73,7 +86,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected Client fieldClient;
 	protected boolean fieldShutdown = false;
 	protected List fieldMappingErrors;
-	
+
 	public List getMappingErrors()
 	{
 		if (fieldMappingErrors == null)
@@ -444,33 +457,40 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean connectCatalog(String inCatalogId)
 	{
-		if( !getConnectedCatalogIds().contains(inCatalogId))
+		if (!getConnectedCatalogIds().contains(inCatalogId))
 		{
 			getConnectedCatalogIds().add(inCatalogId);
-			prepareIndex(inCatalogId);
-//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-//			List sorted = archive.listSearchTypes();
-//			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
-//			{
-//				String type = (String) iterator.next();
-//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
-//				searcher.initialize();	
-//			}
-			
+
+			String alias = toId(inCatalogId);
+			String index = getIndexNameFromAliasName(alias);//see if we already have an index  
+
+			if (index == null)
+			{
+				index = alias + "-0";
+			}
+
+			boolean createdIndex = prepareIndex(index);
+			if (createdIndex)
+			{
+				AdminClient admin = getClient().admin();
+
+				admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
+			}
+			//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+			//			List sorted = archive.listSearchTypes();
+			//			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+			//			{
+			//				String type = (String) iterator.next();
+			//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+			//				searcher.initialize();	
+			//			}
+
 		}
 		return true;//what does this mean?
 	}
-	
-	public void prepareIndex(String inCatalogId)
+
+	public boolean prepareIndex(String index)
 	{
-		String alias = toId(inCatalogId);  //media_catalogs_public
-		
-		String index = getIndexNameFromAliasName(alias);//see if we already have an index  
-		
-		
-		if(index == null){
-		 index = alias + "-0";
-		}
 
 		AdminClient admin = getClient().admin();
 
@@ -481,16 +501,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			throw new OpenEditException("Could not get yellow status");
 		}
 		boolean indexexists = false;
-		AliasOrIndex indexToAliasesMap = admin.cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(alias);
-		if(indexToAliasesMap != null && !indexToAliasesMap.isAlias()){
-			    throw new OpenEditException("An old index exists with the name we want to use for the alias!");
-		}
-		if(indexToAliasesMap != null && indexToAliasesMap.isAlias()){
-		    indexexists = true;//we have an index already with this alias..
-			   index= indexToAliasesMap.getIndices().iterator().next().getIndex();;
-		} 
+		//		AliasOrIndex indexToAliasesMap = admin.cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(alias);
+		//		if(indexToAliasesMap != null && !indexToAliasesMap.isAlias()){
+		//			    throw new OpenEditException("An old index exists with the name we want to use for the alias!");
+		//		}
+		//		if(indexToAliasesMap != null && indexToAliasesMap.isAlias()){
+		//		    indexexists = true;//we have an index already with this alias..
+		//			   index= indexToAliasesMap.getIndices().iterator().next().getIndex();;
+		//		} 
 
-		
 		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index);
 		IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
 		boolean createdIndex = false;
@@ -498,19 +517,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			try
 			{
-				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder()
-						.startObject()
-							.startObject("analysis")
-//								.startObject("filter").
-//									startObject("snowball").field("type", "snowball").field("language", "English")
-//									.endObject()
-//								.endObject()
-								.startObject("analyzer").
-									startObject("lowersnowball").field("type", "snowball").field("language", "English")								
-									.endObject()
-								.endObject()
-							.endObject()
-						.endObject();
+				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder().startObject().startObject("analysis")
+				//								.startObject("filter").
+				//									startObject("snowball").field("type", "snowball").field("language", "English")
+				//									.endObject()
+				//								.endObject()
+				.startObject("analyzer").startObject("lowersnowball").field("type", "snowball").field("language", "English").endObject().endObject().endObject().endObject();
 
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
 				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
@@ -527,136 +539,147 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				// silent error
 				log.debug("Index already exists " + index);
 			}
-			catch(Exception e){
+			catch (Exception e)
+			{
 				throw new OpenEditException(e);
 			}
+			return createdIndex;
 		}
-		
+
 		//TODO: This should have beeb already setup by the NodeManager
-		if(createdIndex){
-			admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
-		}
+
 		//from this point forward we can use the alias = media_catalogs_public instead of the actual index string..
-		
-//		ClusterState cs = admin.cluster().prepareState().setIndices(alias).execute().actionGet().getState();
-//		IndexMetaData data = cs.getMetaData().index(alias);
-//		if (data != null)
-//		{
-//			if (data.getMappings() != null)
-//			{
-//				MappingMetaData fields = data.getMappings().get(getSearchType());
-//				if (fields != null && fields.source() != null)
-//				{
-//					runmapping = false;
-//				}
-//			}
-//		}
-		RefreshRequest req = Requests.refreshRequest(alias);
+
+		//		ClusterState cs = admin.cluster().prepareState().setIndices(alias).execute().actionGet().getState();
+		//		IndexMetaData data = cs.getMetaData().index(alias);
+		//		if (data != null)
+		//		{
+		//			if (data.getMappings() != null)
+		//			{
+		//				MappingMetaData fields = data.getMappings().get(getSearchType());
+		//				if (fields != null && fields.source() != null)
+		//				{
+		//					runmapping = false;
+		//				}
+		//			}
+		//		}
+		RefreshRequest req = Requests.refreshRequest(index);
 		RefreshResponse rres = admin.indices().refresh(req).actionGet();
 		if (rres.getFailedShards() > 0)
 		{
 			log.error("Could not refresh shards");
 		}
-//		if(createdIndex){
-//			
-//			initializeCatalog(getCatalogId());
-//		}
+		
+		return createdIndex;
+
+		//		if(createdIndex){
+		//			
+		//			initializeCatalog(getCatalogId());
+		//		}
 		//return runmapping;
 	}
 
+	protected String getIndexNameFromAliasName(final String aliasName)
+	{
+		AliasOrIndex indexToAliasesMap = getClient().admin().cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(aliasName);
 
-protected String getIndexNameFromAliasName(final String aliasName) {
-   AliasOrIndex indexToAliasesMap = getClient().admin().cluster()
-            .state(Requests.clusterStateRequest())
-            .actionGet()
-            .getState()
-            .getMetaData().getAliasAndIndexLookup().get(aliasName);
-           
-   if(indexToAliasesMap == null){
-	   return null;
-   }
-   
-    	if(indexToAliasesMap.isAlias() && indexToAliasesMap.getIndices().size() > 0){
-    		return indexToAliasesMap.getIndices().iterator().next().getIndex();
-    	}
-            
+		if (indexToAliasesMap == null)
+		{
+			return null;
+		}
 
-    return null;
-}
+		if (indexToAliasesMap.isAlias() && indexToAliasesMap.getIndices().size() > 0)
+		{
+			return indexToAliasesMap.getIndices().iterator().next().getIndex();
+		}
 
+		return null;
+	}
 
+	public void reindexInternal(String inCatalogId)
+	{
+		try
+		{
+			Date date = new Date();
+			String id = toId(inCatalogId);
+			String tempindex = id + date.getTime();
+			prepareIndex(tempindex);
+			//need to reset/creat the mappings here!
+			
+				PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+				List sorted = archive.listSearchTypes();
+				for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+				{
+					String type = (String) iterator.next();
+					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+					//searcher.reIndexAll();
+					if (searcher instanceof BaseElasticSearcher)
+					{
+						BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
+						if(new_name.getAllHits().size() > 0){
+							new_name.putMappings(tempindex);
+						}
+						
+					}
+				}
 
+			
+			
+			SearchResponse searchResponse = getClient().prepareSearch(id).setQuery(QueryBuilders.matchAllQuery()).setSearchType(SearchType.SCAN).setScroll(new TimeValue(600000)).setSize(500).execute().actionGet();
 
-//	public void reindexInternal()
-//	{
-//		try
-//		{
-//			Date date = new Date();
-//			String id = toId(getCatalogId());
-//			String tempindex = id + date.getTime();
-//			prepareIndex(true, tempindex, null);
-//
-//			SearchResponse searchResponse = getClient().prepareSearch(id).setQuery(QueryBuilders.matchAllQuery()).setSearchType(SearchType.SCAN).setScroll("60000").setSize(500).execute().actionGet();
-//
-//			BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), createLoggingBulkProcessorListener()).setBulkActions(10000).setConcurrentRequests(2).setFlushInterval(TimeValue.timeValueSeconds(5)).build();
-//
-//			while (true)
-//			{
-//				searchResponse = getClient().prepareSearchScroll(searchResponse.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
-//
-//				if (searchResponse.getHits().getHits().length == 0)
-//				{
-//					bulkProcessor.flush();
-//
-//					bulkProcessor.close();
-//					break; //Break condition: No hits are returned
-//				}
-//
-//				for (SearchHit hit : searchResponse.getHits())
-//				{
-//					IndexRequest request = new IndexRequest(tempindex, hit.type(), hit.id());
-//					request.source(hit.sourceAsString());
-//					bulkProcessor.add(request);
-//				}
-//			}
-//			String oldindex = getIndexNameFromAliasName(id);
-//
-//			getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(tempindex, id).execute().actionGet();
-//			DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
-//			log.info("Dropped: " + response.isAcknowledged());
-//		}
-//		catch (Exception e)
-//		{
-//			throw new OpenEditException(e);
-//		}
-//
-//	}
-//
-//	private Listener createLoggingBulkProcessorListener()
-//	{
-//		return new BulkProcessor.Listener()
-//		{
-//			@Override
-//			public void beforeBulk(long executionId, BulkRequest request)
-//			{
-//			}
-//
-//			@Override
-//			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
-//			{
-//			}
-//
-//			@Override
-//			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
-//			{
-//			}
-//		};
-//	}
-//
-//
+			BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), createLoggingBulkProcessorListener()).setBulkActions(10000).setConcurrentRequests(2).setFlushInterval(TimeValue.timeValueSeconds(5)).build();
 
+			while (true)
+			{
+				searchResponse = getClient().prepareSearchScroll(searchResponse.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
 
+				if (searchResponse.getHits().getHits().length == 0)
+				{
+					bulkProcessor.flush();
 
+					bulkProcessor.close();
+					break; //Break condition: No hits are returned
+				}
 
+				for (SearchHit hit : searchResponse.getHits())
+				{
+					IndexRequest request = new IndexRequest(tempindex, hit.type(), hit.id());
+					request.source(hit.sourceAsString());
+					bulkProcessor.add(request);
+				}
+			}
+			String oldindex = getIndexNameFromAliasName(id);
+
+			getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(tempindex, id).execute().actionGet();
+			DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
+			log.info("Dropped: " + response.isAcknowledged());
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
+
+	}
+
+	private Listener createLoggingBulkProcessorListener()
+	{
+		return new BulkProcessor.Listener()
+		{
+			@Override
+			public void beforeBulk(long executionId, BulkRequest request)
+			{
+			}
+
+			@Override
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
+			{
+			}
+
+			@Override
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
+			{
+			}
+		};
+	}
 
 }
