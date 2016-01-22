@@ -1,0 +1,36 @@
+<div id="homelayout">
+<h3>[[Add New Collection]]</h3>
+
+<form name="adder" class="ajaxform  validate-inputs" targetdiv="parent.left-col-libraries" action="$home$apphome/components/collectionfeed/addnewcollection.html">
+
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="library" />
+
+Collection Name:<br>
+<input />
+<br><br><br>
+
+	<div class="collectionheaderleft">
+		<form name="librarychange" id="librarychange"  class="ajaxform" targetdiv="collectionfeed"  method="post"  action="$home$apphome/views/search/collections/index.html" > 
+		<div style="padding:20px 0 0 20px;"  >
+			<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  
+				data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" data-sortby="name" onChange='$("#librarychange").submit()' />
+		</div>	
+		
+		<input name="profilepreference"    value="last_selected_library" type="hidden" />
+		<input name="oemaxlevel"    value="1" type="hidden" />
+		<input name="profilepreference.value"  id="list-sidebarlibraryvalue"   value="$!selectedlibrary.getId()" type="hidden" />
+		</form>
+	</div>
+	<div  class="collectionheaderright">
+		<a href="$home$apphome/components/collectionfeed/addnewcollection.html" class="emdialog" title="Add Library"><img src="$home$apphome/theme/images/icons/addgray.png"> </a>
+	</div>
+
+
+
+<br><br><br>
+<input class="btn small" type="submit" value="[[Add]]" />
+<input class="btn small cancel" type="button" value="[[Cancel]]" />
+</form>
+
+</div>

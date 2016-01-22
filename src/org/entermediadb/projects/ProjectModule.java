@@ -1,5 +1,7 @@
 package org.entermediadb.projects;
 
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
@@ -222,4 +224,25 @@ public class ProjectModule extends BaseMediaModule
 			profile.getCombinedLibraries().add(saved.getId());
 		}
 	}
+	
+	public void addCollectionTab(WebPageRequest inReq)
+	{
+		UserProfile profile = inReq.getUserProfile();
+		String collectionid = inReq.getRequestParameter("collectionid");
+		Collection cols = profile.getValues("opencollections");
+		if( cols == null || !cols.contains(collectionid))
+		{
+			profile.addValue("opencollections", collectionid);
+		}
+		profile.setProperty("selectedcollection", collectionid);
+	}
+
+	public void closeCollectionTab(WebPageRequest inReq)
+	{
+		UserProfile profile = inReq.getUserProfile();
+		String collectionid = inReq.getRequestParameter("collectionid");
+		profile.removeValue("opencollections", collectionid);
+		profile.setProperty("selectedcollection", null);
+	}
+	
 }
