@@ -718,11 +718,11 @@
 		</property>
 	</bean>
  -->
-
 	<bean id="LogSearchModule" 
 		class="org.entermediadb.logger.LogSearchModule"		>
 		
 	</bean>
+	
 <!-- 	
 	<bean id="luceneLogSearcher" 
 		class="org.entermediadb.logger.LuceneLogSearcher" scope="prototype" >
@@ -820,7 +820,7 @@
 
 	</bean>
 
-	<bean name="xmpWriter" class="org.entermediadb.asset.xmp.XmpWriter">
+	<bean id="xmpWriter" class="org.entermediadb.asset.xmp.XmpWriter">
 		<property name="exec">
 			<ref bean="exec" />
 		</property>

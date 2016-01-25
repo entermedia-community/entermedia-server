@@ -1,6 +1,7 @@
 <div id="downloadreport">
 
 <h2>[[Download Report]]</h2>
+#set( $searcher = $mediaarchive.getSearcher("downloadlog") )
 
 #set( $details = $searcher.getDetailsForView("downloadlog/historydownloads",$user) )
 $context.putPageValue("details",$details)

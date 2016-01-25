@@ -118,7 +118,7 @@ public class AssetEditModule extends BaseMediaModule
 
 	public void writeXmpData(WebPageRequest inReq) throws Exception
 	{
-		XmpWriter writer = (XmpWriter) getBeanLoader().getBean("xmpWriter");
+		XmpWriter writer = (XmpWriter) getModuleManager().getBean("xmpWriter");
 		String assetid = inReq.getRequestParameter("assetid");
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		Asset asset = mediaArchive.getAsset(assetid);

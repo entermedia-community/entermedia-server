@@ -1,4 +1,4 @@
 <page>
-	<page-action name="LogSearchModule.fieldSearch"/>
-	<path-action name="LogSearchModule.loadPageOfSearch" />
+	<page-action name="DataEditModule.fieldSearch"/>
+	<path-action name="DataEditModule.loadPageOfSearch" />
 </page>
