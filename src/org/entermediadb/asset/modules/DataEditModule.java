@@ -923,7 +923,7 @@ public class DataEditModule extends BaseMediaModule
 		data.setId(id);
 		data.setName(name);
 		
-		data.setProperty("module", module);
+		data.setProperty("moduleid", module);
 		data.setProperty("systemdefined", "false" );
 		data.setProperty("ordering", System.currentTimeMillis() + "" );
 		
