@@ -1336,7 +1336,6 @@ public class BaseElasticSearcher extends BaseSearcher
 //		DeleteByQueryRequestBuilder delete = getClient().prepareDeleteByQuery(toId(getCatalogId()));
 //		delete.setTypes(getSearchType());
 //		delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
-		getAllHits().setHitsPerPage(10000);
 		for (Iterator iterator = getAllHits().iterator(); iterator.hasNext();)
 		{
 			Data row = (Data) iterator.next();

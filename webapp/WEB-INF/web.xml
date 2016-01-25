@@ -5,7 +5,7 @@
 	"http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-	<display-name>EnterMedia 7</display-name>
+	<display-name>EnterMedia</display-name>
 	
 	<cache-mapping url-pattern='*.gif'  expires='1h'/>
   	<cache-mapping url-pattern='*.jpg'       expires='25h'/>
