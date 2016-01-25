@@ -433,14 +433,14 @@ uiload = function() {
 					{
 						tab.html(data);
 						link.data("tabloaded",true);
-						$(".tab-pane",tabcontent).hide();
+						$(">.tab-pane",tabcontent).hide();
 						tab.show();
 						$(window).trigger( "resize" );
 					});
 				}
 				else
 				{
-					$(".tab-pane",tabcontent).hide();
+					$(">.tab-pane",tabcontent).hide();
 					tab.show();
 					$(window).trigger( "resize" );
 				}

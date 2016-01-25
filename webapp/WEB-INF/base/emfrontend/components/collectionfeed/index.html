@@ -61,17 +61,19 @@
 	<script>
 	jQuery(document).ready(function() 
 	{ 
-		$(".vcarousel").mThumbnailScroller({
-				theme:"hover-classic",
-				axis:"y"
-		});
+		if(jQuery().mThumbnailScroller) {
+			$(".vcarousel").mThumbnailScroller({
+					theme:"hover-classic",
+					axis:"y"
+			});
+		}
 		
 		$("#homelayout .ui-icon-newwin").on('click',
 				function(e) 
 				{
 					e.preventDefault();
 					var colid = $(this).data("collectionid");
-					var nextpage = "$home$apphome/components/collectionfeed/addtab.html?collectionid=" + colid;
+					var nextpage = "$home$apphome/components/collectionfeed/viewassets.html?collectionid=" + colid + "&emtabid=" + colid;
 					jQuery.get(nextpage, {oemaxlayout:2}, function(data) 
 					{
 						//add new tab. reload page
