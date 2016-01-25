@@ -1,5 +1,7 @@
-<div id="collectionfeed"  >
+<div id="collectionfeed"  class="colresults media-carousel" >
 
+<div >
+	<div class="collectionheaderleft">
 		<form name="librarychange" id="librarychange"  class="ajaxform" targetdiv="collectionfeed"  method="post"  action="$home$apphome/views/search/collections/index.html" > 
 		<div style="padding:20px 0 0 20px;"  >
 			<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  
@@ -10,14 +12,18 @@
 		<input name="oemaxlevel"    value="1" type="hidden" />
 		<input name="profilepreference.value"  id="list-sidebarlibraryvalue"   value="$!selectedlibrary.getId()" type="hidden" />
 		</form>
-#if( $usercollections.size() == 0 )
-
-<div style="margin:100px">
-No collections on library
+	</div>
+	<div  class="collectionheaderright">
+		<a href="$home$apphome/components/collectionfeed/addnewcollection.html" class="emdialog" title="Add Collection"><img src="$home$apphome/theme/images/icons/addgray.png"> </a>
+	</div>
 </div>
-
-#end
-		<div class="colresults media-carousel" >
+<div class="clearfix"></div>
+		#if( $usercollections.size() == 0 )
+		<div style="margin:100px">
+		No collections on library
+		</div>
+		#end
+	<div >
 		#if( $usercollections.prevPage() )
 		<a class="prevpage ajax" targetdiv="media-carousel$collectionid" href="$home$apphome/components/collectionfeed/listassets.html?page=$collectionassets.prevPage()&collectionid=$collectionid"></a>
 		#end
@@ -29,13 +35,15 @@ No collections on library
 					<div class="ui-widget uipanel">		
 						#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collection.getCollection().getId() ) )
 						$!collectionassets.setHitsPerPage(100)
-						<div class="ui-widget-header" data-target="collection123" style="">
+						#set( $colid = $collection.getCollection().getId() )
+						<div class="ui-widget-header" style="">
+							 <span class="ui-icon ui-icon-newwin" data-collectionid="$colid" ></span>
 							<span class="widget-header-title">$collection.getCollection()</span> 
 						</div>
 						<div class="ui-widget-content">	
-						    <div class="btn-toolbar">
-						    	<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getCollection().getId()}.html?width=400">View Collection [$collectionassets.size()]</a> 
-							</div>
+##						    <div class="btn-toolbar">
+##						    	<a  href="$home$apphome/views/modules/librarycollection/media/${colid}.html?width=400">View Collection [$collectionassets.size()]</a> 
+##							</div>
 							#if( $collectionassets.size() > 0)
 									$context.putPageValue("collectionassets",$collectionassets)
 									$pages.include("$apphome/components/collectionfeed/listassets.html?collectionid=$collection.getCollection().getId()",$context)
@@ -49,7 +57,6 @@ No collections on library
 		#if( $collectionassets.nextPage() )
 			<a class="nextpage ajax" targetdiv="media-carousel$collectionid"  href="$home$apphome/components/collectionfeed/listassets.html?page=$collectionassets.nextPage()&collectionid=$collectionid"></a>
 		#end	
-		</div>	
 	
 	<script>
 	jQuery(document).ready(function() 
@@ -58,8 +65,39 @@ No collections on library
 				theme:"hover-classic",
 				axis:"y"
 		});
+		
+		$("#homelayout .ui-icon-newwin").on('click',
+				function(e) 
+				{
+					e.preventDefault();
+					var colid = $(this).data("collectionid");
+					var nextpage = "$home$apphome/components/collectionfeed/addtab.html?collectionid=" + colid;
+					jQuery.get(nextpage, {oemaxlayout:2}, function(data) 
+					{
+						//add new tab. reload page
+						$("#homelayout").html(data);						
+					});
+					return false;
+				}
+		);
+
+		$("#homelayout .ui-icon-closethick").livequery('click',
+				function(e) 
+				{
+					e.preventDefault();
+					var colid = $(this).data("collectionid");
+					var nextpage = "$home$apphome/components/collectionfeed/removetab.html?collectionid=" + colid;
+					jQuery.get(nextpage, {oemaxlayout:2}, function(data) 
+					{
+						//add new tab. reload page
+						$("#homelayout").html(data);						
+					});
+					return false;
+				}
+		);
+
 	});	
 				
 		</script>		
-		
+	</div>	
 </div> 

@@ -242,7 +242,11 @@ public class ProjectModule extends BaseMediaModule
 		UserProfile profile = inReq.getUserProfile();
 		String collectionid = inReq.getRequestParameter("collectionid");
 		profile.removeValue("opencollections", collectionid);
-		profile.setProperty("selectedcollection", null);
+		String selcol = profile.get("selectedcollection");
+		if( collectionid.equals(selcol))
+		{
+			profile.setProperty("selectedcollection", null);
+		}
 	}
 	
 }

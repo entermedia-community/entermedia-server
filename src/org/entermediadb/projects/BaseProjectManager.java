@@ -150,7 +150,6 @@ public class BaseProjectManager implements ProjectManager
 			}
 			usercollections.add(uc);
 		}
-		 
 		return usercollections;
 	}
 	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, HitTracker assets)

@@ -110,13 +110,98 @@
 	display: block;
 	color: #888888;
 }
+#homelayout .emtabs 
+{
+	margin-left: 20px;
+}
+#homelayout .emtabs li
+{
+	float: left;
+	margin-left: 10px;
+	border: 1px solid #a3c8d4;
+  	position: relative;
+  	margin-top: -1px;
+  	background: #ddd;
+}
+#homelayout .emtabs li a
+{
+  background: #ddd;
+  color: #666;
+  padding: 5px 5px 5px 5px;
+  pasition: absolute;
+}
 
-#emcontent .media-carousel {
-  background: #eee;
+#homelayout .emtabs li.emtab a
+{
+  padding: 5px 25px 5px 5px;
+  
+}
+#homelayout .emtabs li.emtabselected 
+{
+	margin-top: 0px;
+	background: #eee;
+	border-bottom: 0 none !important;
+}
+#homelayout .emtabs li.emtabselected A 
+{
+	background: #eee;
+}
+#homelayout .emtabs li.ui-state-default A
+{
+	padding-right: 5px
+}
+#homelayout div.collectionheaderleft {
+    width: 250px;
+    float: left;
+ }
+#homelayout div.collectionheaderright {
+    float: left;
+    padding: 20px 0 0 0;
+ }
+
+
+#homelayout .emtabs span.ui-icon-closethick
+{
+	position: absolute;
+	display: block;
+	right: 3px;
+	z-index: 1000;
+	top:3px;
+	cursor: pointer; 
+}
+#homelayout .ui-icon-newwin
+{
+	right: 3px;
+	z-index: 1000;
+	top:3px;
+	font-size: 2.2em;
+	float: right;
+	 zoom: 1.6;
+}
+
+#homelayout 
+{
+	background: white;
+}
+
+#emcontent .tab-container {
   border: 1px solid #a3c8d4;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .1);
+  margin-top: 40px;
   margin-bottom: 5px;
   padding: 0 0 15px 0;
+  background: #eee;
+}
+
+#emcontent .carousel-window>ul
+{
+	margin: 0 0 0 20px;
+	padding: 0;
+	list-style: none;
+}
+
+
+#emcontent .media-carousel {
   position: relative;
 }
 #emcontent .media-carousel .carousel-window {

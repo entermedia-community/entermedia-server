@@ -380,7 +380,7 @@ uiload = function() {
 			loadedpanel.attr("id",activelink.attr("id") + "panel");
 			activelink.data("tabloaded",true);
 		}	
-		activelink.parent("li").addClass("ui-state-active");
+		activelink.parent("li").addClass("ui-state-active").addClass("emtabselected");
 		activelink.data("loadpageonce",false);
 		
 		$("a",tabs).livequery("click", function (e)   
@@ -388,8 +388,8 @@ uiload = function() {
 			e.preventDefault();
 			
 	    	var link = $(this); // activated tab
-			$("li",tabs).removeClass("ui-state-active");
-	    	link.parent("li").addClass("ui-state-active");
+			$("li",tabs).removeClass("ui-state-active").removeClass("emtabselected");
+	    	link.parent("li").addClass("ui-state-active").addClass("emtabselected");
 	    	
 		    var id = link.attr("id");
 

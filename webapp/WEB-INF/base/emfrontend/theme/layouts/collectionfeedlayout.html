@@ -1,4 +1,4 @@
-  
+#if( $librarycol )
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 	<!-- Nav tabs -->
 	<div class="row">
@@ -27,3 +27,6 @@
 	</div>
 
 </div>
+#else
+$pages.includeContent()
+#end

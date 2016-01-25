@@ -15,6 +15,9 @@
 	<property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of Assets to view per page</property>
 	<property id="modulehitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of rows show on Module results</property>
 	
+	<property id="opencollections" index="true" stored="true"  internalfield="true" >Open Collection Tabs</property>
+	<property id="selectedcollection" index="true" stored="true"  internalfield="true" >Selected Collection</property>
+	
 	<!--  Custom fields -->
 
     <property id="phone" index="true" stored="true" keyword="true" editable="true">Phone</property>
