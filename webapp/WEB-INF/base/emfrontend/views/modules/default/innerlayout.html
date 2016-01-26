@@ -7,7 +7,7 @@
 				#set( $moduleid = "asset" )
 			#end
 			<div class="ui-widget" >
-				<div  class="ui-widget-header">$moduleid.name Settings</div>
+				<div  class="ui-widget-header">$context.getText($moduleid.name) [[Settings]]</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
 						#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
@@ -17,7 +17,7 @@
 						$!query.addSort("ordering")
 						#foreach($screen in $searcher.cachedSearch($context,$query) )
 						<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
-							<a href="$home$apphome${screen.path}">$screen</a>
+							<a href="$home$apphome${screen.path}">$context.getText($screen.toString())</a>
 						</li>
 						#end
 					</ul>
@@ -25,7 +25,7 @@
 			</div>
 
 			<div class="ui-widget" >
-				<div  class="ui-widget-header">System Settings</div>
+				<div  class="ui-widget-header">[[System Settings]]</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
 						
@@ -36,7 +36,7 @@
 						$!query.addSort("ordering")
 						#foreach($screen in $searcher.cachedSearch($context,$query) )
 						<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
-							<a href="$home$apphome${screen.path}">$screen</a>
+							<a href="$home$apphome${screen.path}">$context.getText($screen.toString())</a>
 						</li>
 						#end
 					</ul>

@@ -4,11 +4,11 @@
 	<li class="auto">
 		<a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id" class="folder">
 			<div class="name">
-				<div class="alias" title="Alias">$folder.name</div>
+				<div class="alias" title="[[Alias]]">$folder.name</div>
 				#if( $folder.externalpath )
 				<div class="path" title="$folder.subfolder">$folder.subfolder</div>
 				#end
-				<div class="last-activity">Fully Scanned: $!context.getDateTime($folder.lastscanstart)</div>
+				<div class="last-activity">[[Fully Scanned]]: $!context.getDateTime($folder.lastscanstart)</div>
 			</div>
 		</a>
 	</li>
@@ -17,14 +17,14 @@
 	<li class="add">
 			<div class="folder"></div>
 
-			<a class="btn right" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">Add Hot Folder</a>
+			<a class="btn right" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">[[Add Hot Folder]]</a>
 			
 			#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
 			#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
 			#if( $event.isRunning() )
-				<a class="btn right">Scan in Progress</a>
+				<a class="btn right">[[Scan in Progress]]</a>
 			#else
-				<a class="btn right" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">Schedule Importing</a>
+				<a class="btn right" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">[[Schedule Importing]]</a>
 			#end
 	</li>
 	

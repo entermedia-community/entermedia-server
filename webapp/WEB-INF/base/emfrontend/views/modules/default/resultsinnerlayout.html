@@ -25,7 +25,7 @@ $context.putPageValue("hits", $hits)
 		<div class="c25l" id="left-col">
 #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 
-			<h2>$module</h2>
+			<h2>$context.getText($module.getName())</h2>
 				$pages.include("${searchhome}/sidebar/standard.html",$context)
 		</div>
 		<div id="right-col" class="module-inner">
