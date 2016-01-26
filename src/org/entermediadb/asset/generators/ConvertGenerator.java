@@ -109,7 +109,7 @@ public class ConvertGenerator extends FileGenerator
 			ConvertInstructions instructions = result.getInstructions();
 
 			//TODO: Find a better way to do this
-			if (instructions.getMaxScaledSize() == null && !instructions.isWatermark() && instructions.getOutputExtension() == null)
+			if (instructions != null && instructions.getMaxScaledSize() == null && !instructions.isWatermark() && instructions.getOutputExtension() == null)
 			{
 				archive.logDownload(sourcePath, "success", inReq.getUser()); //does this work?
 			}
