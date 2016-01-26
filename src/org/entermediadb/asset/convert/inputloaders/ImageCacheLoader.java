@@ -59,7 +59,7 @@ public class ImageCacheLoader implements InputLoader
 		if( (input == null || input.getLength() < 2) && inStructions.getPageNumber() == 1 )
 		{
 			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb." + cachetype);
-			if( input != null && input.getLength() < 2 )
+			if( input != null && input.getLength() < 2 && input.exists())
 			{
 				//TODO: Save the fact that we used a cached file
 				return input;
