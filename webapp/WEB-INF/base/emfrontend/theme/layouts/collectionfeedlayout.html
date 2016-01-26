@@ -5,7 +5,9 @@
 		<div class="col-md-4">
 		<div class="collectionheaderactions">
 		#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
-		<a href="$editlink" class="librarylabel"  data-targetdiv="left-col-libraries" title="$!{librarycol.notes}"><span> $librarycol.getName() ($hits.size())</span></a>
+		#set( $library = $mediaarchive.getData("library",$librarycol.library))
+		##<a class="librarydetails" href="$home$apphome/views/modules/library/edit/edit.html?id=${librarycol.library}&viewid=librarygeneral&viewpath=library/librarygeneral&searchtype=library">$library</a>
+		<a href="$editlink" class="librarylabel"  data-targetdiv="left-col-libraries" title="$!{librarycol.notes}"><span>$hits.size() [[Assets]] in $library / $librarycol.getName()  </span></a>
 		</div>
 		</div>
 		<div class="col-md-8 ui-tabs">
